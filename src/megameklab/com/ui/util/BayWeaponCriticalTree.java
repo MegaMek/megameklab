@@ -610,6 +610,11 @@ public class BayWeaponCriticalTree extends JTree {
                     } else {
                         av += ((WeaponType) m.getType()).getShortAV();
                     }
+                    // Capacitors in bays are always considered charged.
+                    if ((m.getLinkedBy() != null)
+                            && (m.getLinkedBy().getType().hasFlag(MiscType.F_PPC_CAPACITOR))) {
+                        av += 5;
+                    }
                 }
             }
             sb.append(" (").append((int)av).append("/");
@@ -1101,6 +1106,11 @@ public class BayWeaponCriticalTree extends JTree {
                     }
                 } else {
                     av += ((WeaponType) w.getType()).getShortAV();
+                }
+                // Capacitors in bays are always considered charged.
+                if ((w.getLinkedBy() != null)
+                        && (w.getLinkedBy().getType().hasFlag(MiscType.F_PPC_CAPACITOR))) {
+                    av += 5;
                 }
             }
             if (((WeaponType)eq.getType()).isCapital()) {
