@@ -87,7 +87,7 @@ public class EquipmentTab extends ITab implements ActionListener {
     private static final int T_BALLISTIC =  1;
     private static final int T_MISSILE   =  2;
     private static final int T_ARTILLERY =  3;
-    private static final int T_PHYSICAL  =  4;
+    private static final int T_CAPITAL   =  4;
     private static final int T_WEAPON    =  5;
     private static final int T_AMMO      =  6;
     private static final int T_OTHER     =  7;
@@ -133,8 +133,8 @@ public class EquipmentTab extends ITab implements ActionListener {
             return "Missile Weapons";
         case T_ARTILLERY:
             return "Artillery Weapons";
-        case T_PHYSICAL:
-            return "Physical Weapons";
+        case T_CAPITAL:
+            return "Capital Weapons";
         case T_AMMO:
             return "Ammunition";
         case T_OTHER:
@@ -580,6 +580,14 @@ public class EquipmentTab extends ITab implements ActionListener {
                 WeaponType wtype = null;
                 if (etype instanceof WeaponType) {
                     wtype = (WeaponType)etype;
+                    if (wtype instanceof BayWeapon) {
+                        return false;
+                    }
+                    if ((wtype.isCapital() || (wtype.getAmmoType() == AmmoType.T_SCREEN_LAUNCHER))
+                            && (nType != T_CAPITAL)
+                            && (nType != T_WEAPON)) {
+                        return false;
+                    }
                 }
                 AmmoType atype = null;
                 if (etype instanceof AmmoType) {
@@ -603,8 +611,11 @@ public class EquipmentTab extends ITab implements ActionListener {
                         || ((nType == T_MISSILE) && UnitUtil.isAeroWeapon(etype, aero)
                             && (wtype != null) && ((wtype.hasFlag(WeaponType.F_MISSILE)
                                     && (wtype.getAmmoType() != AmmoType.T_NA)) || (wtype.getAmmoType() == AmmoType.T_C3_REMOTE_SENSOR)))
+                        || ((nType == T_CAPITAL) && UnitUtil.isAeroWeapon(etype, aero)
+                                && (wtype != null) && (wtype.isCapital()
+                                        || (wtype.getAmmoType() == AmmoType.T_SCREEN_LAUNCHER)))
                         || ((nType == T_ARTILLERY) && UnitUtil.isAeroWeapon(etype, aero)
-                            && (wtype != null) && (wtype instanceof ArtilleryWeapon))
+                                && (wtype != null) && (wtype instanceof ArtilleryWeapon))
                         || (((nType == T_AMMO) & (atype != null)) && UnitUtil.canUseAmmo(aero, atype))) {
                     if (!eSource.getTechManager().isLegal(etype)) {
                         return false;
