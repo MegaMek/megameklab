@@ -18,6 +18,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
@@ -90,7 +91,7 @@ public class AerospaceBuildView extends IView implements MouseListener {
        }
        equipmentTable.setIntercellSpacing(new Dimension(0, 0));
        equipmentTable.setShowGrid(false);
-       equipmentTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+       equipmentTable.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
        equipmentTable.setDoubleBuffered(true);
        equipmentScroll.setViewportView(equipmentTable);
        equipmentScroll.setMinimumSize(new java.awt.Dimension(400, 400));
@@ -206,48 +207,72 @@ public class AerospaceBuildView extends IView implements MouseListener {
            JPopupMenu popup = new JPopupMenu();
            JMenuItem item = null;
 
-           final int selectedRow = equipmentTable.rowAtPoint(e.getPoint());
-           Mounted eq = (Mounted)equipmentTable.getModel().getValueAt(
-                   selectedRow, CriticalTableModel.EQUIPMENT);
-           for (BayWeaponCriticalTree l : arcViews) {
-               // Aerodyne small craft and dropships skip the aft side arcs
-               if (getAero().hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)
-                       && !getAero().isSpheroid() && !l.validForAerodyne()) {
-                   continue;
+           if (equipmentTable.getSelectedRowCount() > 1) {
+               List<Mounted> list = new ArrayList<>();
+               for (int row : equipmentTable.getSelectedRows()) {
+                   list.add((Mounted) equipmentTable.getModel().getValueAt(row, CriticalTableModel.EQUIPMENT));
                }
-               
-               if (getAero().usesWeaponBays()) {
-                   JMenu menu = new JMenu(l.getLocationName());
-                   for (Mounted bay : l.baysFor(eq)) {
-                       if (eq.getType() instanceof AmmoType) {
-                           final int shotCount = ((AmmoType)eq.getType()).getShots();
-                           JMenu locMenu = new JMenu(bay.getName());
-                           for (int shots = shotCount; shots <= eq.getUsableShotsLeft(); shots += shotCount) {
-                               item = new JMenuItem("Add " + shots + ((shots > 1)?" shots" : " shot"));
-                               final int addShots = shots;
-                               item.addActionListener(ev -> l.addAmmoToBay(bay, eq, addShots));
-                               locMenu.add(item);
+               for (BayWeaponCriticalTree l : arcViews) {
+                   // Aerodyne small craft and dropships skip the aft side arcs
+                   if (getAero().hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)
+                           && !getAero().isSpheroid() && !l.validForAerodyne()) {
+                       continue;
+                   }
+                   if (list.stream().anyMatch(eq -> l.canAdd(eq))) {
+                       item = new JMenuItem(l.getLocationName());
+                       item.addActionListener(ev -> l.addToLocation(list));
+                       popup.add(item);
+                   }
+               }
+           } else {
+               final int selectedRow = equipmentTable.rowAtPoint(e.getPoint());
+               Mounted eq = (Mounted)equipmentTable.getModel().getValueAt(
+                       selectedRow, CriticalTableModel.EQUIPMENT);
+               for (BayWeaponCriticalTree l : arcViews) {
+                   // Aerodyne small craft and dropships skip the aft side arcs
+                   if (getAero().hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)
+                           && !getAero().isSpheroid() && !l.validForAerodyne()) {
+                       continue;
+                   }
+                   
+                   if (getAero().usesWeaponBays()) {
+                       JMenu menu = new JMenu(l.getLocationName());
+                       for (Mounted bay : l.baysFor(eq)) {
+                           if (eq.getType() instanceof AmmoType) {
+                               final int shotCount = ((AmmoType)eq.getType()).getShots();
+                               JMenu locMenu = new JMenu(bay.getName());
+                               for (int shots = shotCount; shots <= eq.getUsableShotsLeft(); shots += shotCount) {
+                                   item = new JMenuItem("Add " + shots + ((shots > 1)?" shots" : " shot"));
+                                   final int addShots = shots;
+                                   item.addActionListener(ev -> l.addAmmoToBay(bay, eq, addShots));
+                                   locMenu.add(item);
+                               }
+                               menu.add(locMenu);
+                           } else {
+                               item = new JMenuItem(bay.getName());
+                               item.addActionListener(ev -> l.addToBay(bay, eq));
+                               menu.add(item);
                            }
-                           menu.add(locMenu);
-                       } else {
-                           item = new JMenuItem(bay.getName());
-                           item.addActionListener(ev -> l.addToBay(bay, eq));
+                       }
+                       if (eq.getType() instanceof WeaponType) {
+                           final EquipmentType bayType = ((WeaponType)eq.getType()).getBayType();
+                           item = new JMenuItem("New " + bayType.getName());
+                           item.addActionListener(ev -> l.addToNewBay(bayType,  eq));
                            menu.add(item);
                        }
+                       if (menu.getItemCount() > 0) {
+                           popup.add(menu);
+                       } else if ((eq.getType() instanceof MiscType)
+                               && l.canAdd(eq)) {
+                           item = new JMenuItem(l.getLocationName());
+                           item.addActionListener(ev -> l.addToLocation(eq));
+                           popup.add(item);
+                       }                           
+                   } else {
+                       item = new JMenuItem(l.getLocationName());
+                       item.addActionListener(ev -> l.addToLocation(eq));
+                       popup.add(item);
                    }
-                   if (eq.getType() instanceof WeaponType) {
-                       final EquipmentType bayType = ((WeaponType)eq.getType()).getBayType();
-                       item = new JMenuItem("New " + bayType.getName());
-                       item.addActionListener(ev -> l.addToNewBay(bayType,  eq));
-                       menu.add(item);
-                   }
-                   if (menu.getItemCount() > 0) {
-                       popup.add(menu);
-                   }
-               } else {
-                   item = new JMenuItem(l.getLocationName());
-                   item.addActionListener(ev -> l.addToLocation(eq));
-                   popup.add(item);
                }
            }
            
