@@ -282,11 +282,11 @@ public class AerospaceCrewView extends BuildView implements ActionListener, Chan
             } else if (e.getSource() == spnOfficers) {
                 listeners.forEach(l -> l.officersChanged((Integer) spnOfficers.getValue()));
             } else if (e.getSource() == spnPassengers) {
-                listeners.forEach(l -> l.officersChanged((Integer) spnPassengers.getValue()));
+                listeners.forEach(l -> l.passengersChanged((Integer) spnPassengers.getValue()));
             } else if (e.getSource() == spnMarines) {
-                listeners.forEach(l -> l.officersChanged((Integer) spnMarines.getValue()));
+                listeners.forEach(l -> l.marinesChanged((Integer) spnMarines.getValue()));
             } else if (e.getSource() == spnBAMarines) {
-                listeners.forEach(l -> l.officersChanged((Integer) spnBAMarines.getValue()));
+                listeners.forEach(l -> l.baMarinesChanged((Integer) spnBAMarines.getValue()));
             } else if ((e.getSource() == spnLifeBoats)
                     || (e.getSource() == spnEscapePods)) {
                 listeners.forEach(l -> l.escapeChanged((Integer) spnLifeBoats.getValue(),
