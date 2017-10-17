@@ -1307,7 +1307,7 @@ public class BayWeaponCriticalTree extends JTree {
         TreePath path = getSelectionPath();
         if ((null != path) && (path.getLastPathComponent() instanceof EquipmentNode)) {
             EquipmentNode node = (EquipmentNode)path.getLastPathComponent();
-            StringJoiner sj = new StringJoiner(",");
+            StringJoiner sj = new StringJoiner(":");
             sj.add(String.valueOf(eSource.getEntity().getEquipmentNum(node.getMounted())));
             sj.add(String.valueOf(node.getParent().getIndex(node)));
             if (node.getParent() instanceof BayNode) {
@@ -1320,7 +1320,7 @@ public class BayWeaponCriticalTree extends JTree {
     }
     
     public void removeExported(String selection, int action) {
-        String[] sources = selection.split(",");
+        String[] sources = selection.split(":");
         if (sources.length < 2) {
             return;
         }
