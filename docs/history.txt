@@ -8,6 +8,7 @@ v0.43.5-git
 + Bug: Set superheavy engine flag for superheavy mechs.
 + Bug: Superheavy mixed tech units cannot use Clan structure, since superheavy and standard structure are
        different and there is no Clan superheavy Endo-Steel.
++ Issue #93: Conventional Fighter Heat Sinks
 
 v0.43.4 (2017-10-01 11:00 UTC)
 + Issue #58: Right-click > Left/Right Torso > Add to Left/Right Torso for targeting computer makes it use only one crit slot
