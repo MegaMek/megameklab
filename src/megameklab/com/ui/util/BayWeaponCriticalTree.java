@@ -42,6 +42,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeSelectionModel;
 
 import megamek.common.AmmoType;
 import megamek.common.Entity;
@@ -107,6 +108,7 @@ public class BayWeaponCriticalTree extends JTree {
         setModel(model);
         setCellRenderer(renderer);
         addMouseListener(mouseListener);
+        getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         
         AeroBayTransferHandler cth = new AeroBayTransferHandler(eSource);
         setDragEnabled(true);
