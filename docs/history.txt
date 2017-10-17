@@ -9,6 +9,7 @@ v0.43.5-git
 + Bug: Superheavy mixed tech units cannot use Clan structure, since superheavy and standard structure are
        different and there is no Clan superheavy Endo-Steel.
 + Issue #93: Conventional Fighter Heat Sinks
++ Issue #90: Conventional infantry not showing support weapons.
 
 v0.43.4 (2017-10-01 11:00 UTC)
 + Issue #58: Right-click > Left/Right Torso > Add to Left/Right Torso for targeting computer makes it use only one crit slot
