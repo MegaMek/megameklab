@@ -66,9 +66,9 @@ public class MainUI extends MegaMekLabMainUI {
     JScrollPane scroll = new JScrollPane();
     private MenuBarCreator menubarcreator;
     
-    public MainUI() {
+    public MainUI(boolean primitive) {
         super();
-        createNewUnit(Entity.ETYPE_DROPSHIP, false, false);
+        createNewUnit(Entity.ETYPE_DROPSHIP, primitive, false);
         setTitle(getEntity().getChassis() + " " + getEntity().getModel() + ".blk");
         menubarcreator = new MenuBarCreator(this);
         setJMenuBar(menubarcreator);
@@ -98,11 +98,6 @@ public class MainUI extends MegaMekLabMainUI {
 
     @Override
     public void createNewUnit(long entitytype, boolean isPrimitive, boolean isIndustrial, Entity oldUnit) {
-        createNewUnit(entitytype, oldUnit);
-    }
-
-    @Override
-    public void createNewUnit(long entitytype, Entity oldUnit) {
         if (entitytype == Entity.ETYPE_SMALL_CRAFT) {
             setEntity(new SmallCraft());
             getEntity().setTechLevel(TechConstants.T_IS_TW_NON_BOX);
@@ -117,10 +112,16 @@ public class MainUI extends MegaMekLabMainUI {
 
         SmallCraft smallCraft = (SmallCraft) getEntity();
 
-        smallCraft.setYear(3145);
+        if (isPrimitive) {
+            smallCraft.setYear(2450);
+            smallCraft.setOriginalBuildYear(2450);
+            smallCraft.setArmorType(EquipmentType.T_ARMOR_LC_PRIMITIVE_AERO);
+        } else {
+            smallCraft.setYear(3145);
+            smallCraft.setArmorType(EquipmentType.T_ARMOR_AEROSPACE);
+        }
         smallCraft.setWeight(200);
         smallCraft.setOriginalWalkMP(2); // Start at 1G
-        smallCraft.setArmorType(EquipmentType.T_ARMOR_AEROSPACE);
         smallCraft.setArmorTechLevel(getEntity().getTechLevel());
         smallCraft.set0SI(3);
         smallCraft.setDesignType(SmallCraft.MILITARY);

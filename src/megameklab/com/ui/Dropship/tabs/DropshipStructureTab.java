@@ -244,6 +244,9 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
     @Override
     public void yearChanged(int year) {
         getSmallCraft().setYear(year);
+        if (getSmallCraft().isPrimitive()) {
+            getSmallCraft().setOriginalBuildYear(year);
+        }
         updateTechLevel();
     }
 

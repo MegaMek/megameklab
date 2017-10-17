@@ -57,6 +57,7 @@ import megamek.common.Mech;
 import megamek.common.MechFileParser;
 import megamek.common.MechTextView;
 import megamek.common.MechView;
+import megamek.common.SmallCraft;
 import megamek.common.Tank;
 import megamek.common.loaders.BLKFile;
 import megameklab.com.MegaMekLab;
@@ -324,7 +325,8 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             unitMenu.add(item);
         }
 
-        if (!(parentFrame.getEntity().isFighter())) {
+        if (!(en.isFighter()
+                || (en.isFighter() && ((Aero)en).isPrimitive()))) {
             item = new JMenuItem();
             item.setText("Aero/Conv Fighter");
             item.setMnemonic(KeyEvent.VK_A);
@@ -339,18 +341,14 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             unitMenu.add(item);
         }
 
-        if (!(parentFrame.getEntity().hasETypeFlag(Entity.ETYPE_SMALL_CRAFT))) {
+        if (!(en instanceof SmallCraft)
+                || ((Aero)en).isPrimitive()) {
             item = new JMenuItem();
             item.setText("Dropship/Small Craft");
             item.setMnemonic(KeyEvent.VK_D);
             item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D,
                     Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-            item.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    jMenuLoadDropship();
-                }
-
-            });
+            item.addActionListener(e -> jMenuLoadDropship());
             unitMenu.add(item);
         }
 
@@ -408,11 +406,19 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             pMenu.add(item);
         }
         
-        if (!(en instanceof Aero)
+        if (!(en.isFighter())
                 || !((Aero)en).isPrimitive()) {
             item = new JMenuItem();
             item.setText("Aero");
             item.addActionListener(e ->jMenuLoadPrimitiveAero());
+            pMenu.add(item);
+        }
+        
+        if (!(en.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT))
+                || !((Aero)en).isPrimitive()) {
+            item = new JMenuItem();
+            item.setText("Dropship/Small Craft");
+            item.addActionListener(e ->jMenuLoadPrimitiveDropship());
             pMenu.add(item);
         }
         
@@ -1052,7 +1058,12 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
     }
     
     private void jMenuLoadDropship() {
-        new megameklab.com.ui.Dropship.MainUI();
+        new megameklab.com.ui.Dropship.MainUI(false);
+        parentFrame.dispose();
+    }
+
+    private void jMenuLoadPrimitiveDropship() {
+        new megameklab.com.ui.Dropship.MainUI(true);
         parentFrame.dispose();
     }
 
@@ -1301,7 +1312,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         if (newUnit.getEntityType() != parentFrame.getEntity().getEntityType()) {
             MegaMekLabMainUI newUI = null;
             if (newUnit.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)) {
-                newUI = new megameklab.com.ui.Dropship.MainUI();
+                newUI = new megameklab.com.ui.Dropship.MainUI(((Aero)newUnit).isPrimitive());
             } else if (newUnit.hasETypeFlag(Entity.ETYPE_AERO)
                     && !(newUnit.hasETypeFlag(Entity.ETYPE_JUMPSHIP)
                     || newUnit.hasETypeFlag(Entity.ETYPE_FIXED_WING_SUPPORT))) {
@@ -1416,7 +1427,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             if (tempEntity.getEntityType() != parentFrame.getEntity().getEntityType()) {
                 MegaMekLabMainUI newUI = null;
                 if (tempEntity.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)) {
-                    newUI = new megameklab.com.ui.Dropship.MainUI();
+                    newUI = new megameklab.com.ui.Dropship.MainUI(((Aero)tempEntity).isPrimitive());
                 } else if ((tempEntity instanceof Aero)
                         && !((tempEntity instanceof Jumpship)
                         || (tempEntity instanceof FixedWingSupport))) {
