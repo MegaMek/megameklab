@@ -826,6 +826,27 @@ public class BayWeaponCriticalTree extends JTree {
         }
         return retVal;
     }
+    
+    /**
+     * Determines whether equipment can be added to this location. Ammo requires a bay with a suitable
+     * weapon, as do weapon enhancements. All other equipment can be added.
+     * 
+     * @param eq Potential equipment to be added to the location.
+     * @return   Whether the equipment can be added to the location.
+     */
+    public boolean canAdd(Mounted eq) {
+        if (eSource.getEntity().usesWeaponBays()
+                && ((eq.getType() instanceof AmmoType)
+                        || ((eq.getType() instanceof MiscType)
+                                && (eq.getType().hasFlag(MiscType.F_ARTEMIS)
+                                        || eq.getType().hasFlag(MiscType.F_ARTEMIS_V)
+                                        || eq.getType().hasFlag(MiscType.F_ARTEMIS_PROTO)
+                                        || eq.getType().hasFlag(MiscType.F_RISC_LASER_PULSE_MODULE)
+                                        || eq.getType().hasFlag(MiscType.F_PPC_CAPACITOR))))) {
+            return baysFor(eq).size() > 0;
+        }
+        return true;
+    }
 
     /**
      * Adds a new bay of the appropriate type to the unit and adds the equipment to the bay.
@@ -994,6 +1015,34 @@ public class BayWeaponCriticalTree extends JTree {
         refresh.refreshPreview();
         refresh.refreshStatus();
         refresh.refreshSummary();
+    }
+    
+    /**
+     * Adds multiple equipment mounts to this location. Weapons and ammo will go into the first available
+     * bay. Ammo that does not have a legal bay will be skipped.
+     * 
+     * @param eq
+     */
+    public void addToLocation(List<Mounted> eqList) {
+        LIST:for (Mounted eq : eqList) {
+            if (eSource.getEntity().usesWeaponBays() && ((eq.getType() instanceof WeaponType)
+                    || (eq.getType() instanceof AmmoType))) {
+                for (Enumeration<?> e = ((MutableTreeNode)model.getRoot()).children(); e.hasMoreElements(); ) {
+                    final Mounted bay = ((EquipmentNode)e.nextElement()).getMounted();
+                    if ((bay.getType() instanceof BayWeapon)
+                            && (canTakeEquipment(bay, eq))) {
+                        addToBay(bay, eq);
+                        continue LIST;
+                    }
+                }
+                if (eq.getType() instanceof WeaponType) {
+                    addToNewBay(((WeaponType)eq.getType()).getBayType(), eq);
+                }
+                // Skip any ammo that can't go into a bay here
+            } else {
+                addToLocation(eq);
+            }
+        }
     }
     
     /**
