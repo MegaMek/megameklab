@@ -53,6 +53,7 @@ import megamek.common.SmallCraft;
 import megamek.common.WeaponType;
 import megamek.common.annotations.Nullable;
 import megamek.common.logging.LogLevel;
+import megamek.common.verifier.TestAero;
 import megamek.common.weapons.bayweapons.BayWeapon;
 import megamek.common.weapons.bayweapons.PPCBayWeapon;
 import megamek.common.weapons.ppc.PPCWeapon;
@@ -139,8 +140,10 @@ public class BayWeaponCriticalTree extends JTree {
             final Object node = e.nextElement();
             if (node instanceof BayNode) {
                 count += ((BayNode)node).getMounted().getBayWeapons().size();
-            } else if (node instanceof EquipmentNode) {
-                count += ((EquipmentNode)node).getMounted().getType().getCriticals(eSource.getEntity());
+            } else if ((node instanceof EquipmentNode)
+                    && (TestAero.usesWeaponSlot(eSource.getEntity(),
+                            ((EquipmentNode)node).getMounted().getType()))) {
+                count++;
             }
         }
         return count;
