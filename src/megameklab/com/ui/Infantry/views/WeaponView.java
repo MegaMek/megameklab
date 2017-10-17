@@ -323,9 +323,6 @@ public class WeaponView extends IView implements ActionListener {
                 if(getInfantry().getSquadSize() < (getInfantry().getSecondaryN() * weapon.getCrew())) {
                     return false;
                 }
-                if((getInfantry().getSecondaryN() <= 0) && etype.hasFlag(WeaponType.F_INF_SUPPORT)) {
-                    return false;
-                }
                 if ((nType == T_WEAPON)
                         || ((nType == T_ARCHAIC) && etype.hasFlag(WeaponType.F_INF_ARCHAIC))
                         || ((nType == T_PERSONAL) && !etype.hasFlag(WeaponType.F_INF_ARCHAIC) && !etype.hasFlag(WeaponType.F_INF_SUPPORT))
