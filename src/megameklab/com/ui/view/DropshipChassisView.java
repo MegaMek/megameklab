@@ -29,6 +29,7 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import megamek.common.Dropship;
 import megamek.common.Entity;
 import megamek.common.ITechManager;
 import megamek.common.SmallCraft;
@@ -68,12 +69,14 @@ public class DropshipChassisView extends BuildView implements ActionListener, Ch
     
     final private JSpinner spnTonnage = new JSpinner(spnTonnageModel);
     final private JCheckBox chkMilitary = new JCheckBox();
+    final private JCheckBox chkKFBoom = new JCheckBox();
     final private JComboBox<String> cbBaseType = new JComboBox<>();
     final private JComboBox<String> cbChassisType = new JComboBox<>();
     final private JSpinner spnSI = new JSpinner(spnSIModel);
     
     private ITechManager techManager;
     private boolean dropship;
+    private boolean primitive;
     private int maxTonnage;
     private int maxThrust;
     
@@ -108,6 +111,14 @@ public class DropshipChassisView extends BuildView implements ActionListener, Ch
         chkMilitary.setToolTipText(resourceMap.getString("DropshipChassisView.chkFunction.tooltip")); //$NON-NLS-1$
         add(chkMilitary, gbc);
         chkMilitary.addActionListener(this);
+
+        chkKFBoom.setText(resourceMap.getString("DropshipChassisView.chkKFBoom.text")); //$NON-NLS-1$
+        gbc.gridx = 3;
+        gbc.gridy = 0;
+        chkMilitary.setToolTipText(resourceMap.getString("DropshipChassisView.chkKFBoom.tooltip")); //$NON-NLS-1$
+        add(chkKFBoom, gbc);
+        chkKFBoom.addActionListener(this);
+        chkKFBoom.setVisible(false);
 
         gbc.gridx = 0;
         gbc.gridy = 2;
@@ -149,6 +160,7 @@ public class DropshipChassisView extends BuildView implements ActionListener, Ch
     
     public void setFromEntity(SmallCraft craft) {
         dropship = craft.hasETypeFlag(Entity.ETYPE_DROPSHIP);
+        primitive = craft.isPrimitive();
         maxTonnage = TestAero.getMaxTonnage(craft, techManager.getTechFaction());
         maxThrust = craft.getRunMP();
         refresh();
@@ -159,6 +171,12 @@ public class DropshipChassisView extends BuildView implements ActionListener, Ch
         setMilitary(craft.getDesignType() == SmallCraft.MILITARY);
         chkMilitary.addActionListener(this);
         
+        if (dropship && primitive) {
+            chkKFBoom.removeActionListener(this);
+            chkKFBoom.setSelected(((Dropship)craft).getCollarType() != Dropship.COLLAR_NO_BOOM);
+            chkKFBoom.addActionListener(this);
+        }
+
         cbBaseType.removeActionListener(this);
         cbBaseType.setSelectedIndex(dropship? TYPE_DROPSHIP : TYPE_SMALL_CRAFT);
         cbBaseType.addActionListener(this);
@@ -179,6 +197,7 @@ public class DropshipChassisView extends BuildView implements ActionListener, Ch
     public void refresh() {
         refreshTonnage();
         refreshSI();
+        refreshKFBoom();
     }
 
     private void refreshTonnage() {
@@ -205,6 +224,22 @@ public class DropshipChassisView extends BuildView implements ActionListener, Ch
         }
         if (prev > maxThrust * 30) {
             spnSI.setValue(maxThrust * 30);
+        }
+    }
+    
+    private void refreshKFBoom() {
+        chkMilitary.setVisible(!primitive);
+        
+        if (dropship && primitive) {
+            chkKFBoom.setVisible(true);
+            if (techManager.isLegal(Dropship.getCollarTA())) {
+                chkKFBoom.setEnabled(true);
+            } else {
+                chkKFBoom.setSelected(false);
+                chkKFBoom.setEnabled(false);
+            }
+        } else {
+            chkKFBoom.setVisible(false);
         }
     }
     
@@ -250,6 +285,8 @@ public class DropshipChassisView extends BuildView implements ActionListener, Ch
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == chkMilitary) {
             listeners.forEach(l -> l.militaryChanged(isMilitary()));
+        } else if (e.getSource() == chkKFBoom) {
+            listeners.forEach(l -> l.kfBoomChanged(chkKFBoom.isSelected()));
         } else if (e.getSource() == cbBaseType) {
             listeners.forEach(l -> l.baseTypeChanged(cbBaseType.getSelectedIndex()));
         } else if (e.getSource() == cbChassisType) {
