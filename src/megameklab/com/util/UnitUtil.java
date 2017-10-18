@@ -49,6 +49,7 @@ import megamek.common.AmmoType;
 import megamek.common.BattleArmor;
 import megamek.common.BipedMech;
 import megamek.common.CriticalSlot;
+import megamek.common.Dropship;
 import megamek.common.Entity;
 import megamek.common.EntityWeightClass;
 import megamek.common.EquipmentType;
@@ -2343,10 +2344,41 @@ public class UnitUtil {
         return UnitUtil.TECH_INTRO;
     }
 
-    public static void updateLoadedMech(Entity unit) {
+    public static void updateLoadedUnit(Entity unit) {
+
+        // Check for illegal armor tech levels and set to the tech level of the unit.
+        for (int loc = 0; loc < unit.locations(); loc++) {
+            if (unit.getArmorType(loc) >= 0) {
+                if (unit.getArmorTechLevel(loc) < 0) {
+                    unit.setArmorTechLevel(unit.getTechLevel());
+                }
+            }
+        }
 
         if (unit instanceof Mech) {
             UnitUtil.updateLoadedMech((Mech) unit);
+        } else if (unit.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)) {
+            if (unit.getArmorType(Aero.LOC_NOSE) == EquipmentType.T_ARMOR_STANDARD) {
+                unit.setArmorType(EquipmentType.T_ARMOR_AEROSPACE);
+            } else if (unit.getArmorType(Aero.LOC_NOSE) == EquipmentType.T_ARMOR_PRIMITIVE) {
+                unit.setArmorType(EquipmentType.T_ARMOR_PRIMITIVE_AERO);
+            }
+            if ((unit instanceof Dropship) && ((Dropship)unit).isPrimitive()) {
+                if (unit.getYear() < Dropship.getCollarTA().getIntroductionDate()) {
+                    ((Dropship)unit).setCollarType(Dropship.COLLAR_NO_BOOM);
+                } else if ((unit.getYear() < Dropship.getCollarTA().getIntroductionDate())
+                        && (((Dropship)unit).getCollarType() == Dropship.COLLAR_STANDARD)) {
+                    ((Dropship)unit).setCollarType(Dropship.COLLAR_PROTOTYPE);
+                }
+            }
+        } else if (unit.hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
+            if (unit.getArmorType(Aero.LOC_NOSE) == EquipmentType.T_ARMOR_STANDARD) {
+                unit.setArmorType(EquipmentType.T_ARMOR_AEROSPACE);
+            }
+        } else if (unit.hasETypeFlag(Entity.ETYPE_AERO)) {
+            if (unit.getArmorType(Aero.LOC_NOSE) == EquipmentType.T_ARMOR_PRIMITIVE) {
+                unit.setArmorType(EquipmentType.T_ARMOR_PRIMITIVE_FIGHTER);
+            }
         }
     }
 

@@ -1099,7 +1099,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         } else if (en.hasETypeFlag(Entity.ETYPE_DROPSHIP)) {
             parentFrame.createNewUnit(Entity.ETYPE_DROPSHIP);
         } else if (en.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)) {
-            parentFrame.createNewUnit(Entity.ETYPE_SMALL_CRAFT);
+            parentFrame.createNewUnit(Entity.ETYPE_SMALL_CRAFT, ((Aero)en).isPrimitive());
         } else if (parentFrame.getEntity() instanceof Aero) {
             parentFrame.createNewUnit(Entity.ETYPE_AERO, ((Aero)en).isPrimitive());
         } else if (parentFrame.getEntity() instanceof BattleArmor) {
@@ -1335,7 +1335,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
                 return;
             }
             parentFrame.dispose();
-            UnitUtil.updateLoadedMech(newUnit);
+            UnitUtil.updateLoadedUnit(newUnit);
             newUI.setEntity(newUnit);
             newUI.reloadTabs();
             newUI.repaint();
@@ -1344,7 +1344,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         }
 
         CConfig.updateSaveFiles("");
-        UnitUtil.updateLoadedMech(newUnit);
+        UnitUtil.updateLoadedUnit(newUnit);
 
         if (viewer.getChosenMechSummary().getSourceFile().getName().endsWith(".zip")) {
             String fileName = viewer.getChosenMechSummary().getSourceFile().getAbsolutePath();
@@ -1448,7 +1448,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
                     return;
                 }
                 parentFrame.dispose();
-                UnitUtil.updateLoadedMech(tempEntity);
+                UnitUtil.updateLoadedUnit(tempEntity);
                 newUI.setEntity(tempEntity);
                 newUI.reloadTabs();
                 newUI.repaint();
@@ -1456,7 +1456,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
                 return;
             }
             parentFrame.setEntity(tempEntity);
-            UnitUtil.updateLoadedMech(parentFrame.getEntity());
+            UnitUtil.updateLoadedUnit(parentFrame.getEntity());
 
             CConfig.updateSaveFiles(unitFile.getAbsolutePath());
         } catch (Exception ex) {
