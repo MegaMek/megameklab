@@ -47,6 +47,7 @@ import javax.swing.text.html.HTMLEditorKit;
 import megamek.common.Aero;
 import megamek.common.AmmoType;
 import megamek.common.BattleArmor;
+import megamek.common.Bay;
 import megamek.common.BipedMech;
 import megamek.common.CriticalSlot;
 import megamek.common.Dropship;
@@ -2357,28 +2358,8 @@ public class UnitUtil {
 
         if (unit instanceof Mech) {
             UnitUtil.updateLoadedMech((Mech) unit);
-        } else if (unit.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)) {
-            if (unit.getArmorType(Aero.LOC_NOSE) == EquipmentType.T_ARMOR_STANDARD) {
-                unit.setArmorType(EquipmentType.T_ARMOR_AEROSPACE);
-            } else if (unit.getArmorType(Aero.LOC_NOSE) == EquipmentType.T_ARMOR_PRIMITIVE) {
-                unit.setArmorType(EquipmentType.T_ARMOR_PRIMITIVE_AERO);
-            }
-            if ((unit instanceof Dropship) && ((Dropship)unit).isPrimitive()) {
-                if (unit.getYear() < Dropship.getCollarTA().getIntroductionDate()) {
-                    ((Dropship)unit).setCollarType(Dropship.COLLAR_NO_BOOM);
-                } else if ((unit.getYear() < Dropship.getCollarTA().getIntroductionDate())
-                        && (((Dropship)unit).getCollarType() == Dropship.COLLAR_STANDARD)) {
-                    ((Dropship)unit).setCollarType(Dropship.COLLAR_PROTOTYPE);
-                }
-            }
-        } else if (unit.hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
-            if (unit.getArmorType(Aero.LOC_NOSE) == EquipmentType.T_ARMOR_STANDARD) {
-                unit.setArmorType(EquipmentType.T_ARMOR_AEROSPACE);
-            }
-        } else if (unit.hasETypeFlag(Entity.ETYPE_AERO)) {
-            if (unit.getArmorType(Aero.LOC_NOSE) == EquipmentType.T_ARMOR_PRIMITIVE) {
-                unit.setArmorType(EquipmentType.T_ARMOR_PRIMITIVE_FIGHTER);
-            }
+        } else if (unit instanceof Aero) {
+            UnitUtil.updateLoadedAero((Aero) unit);
         }
     }
 
@@ -2387,6 +2368,50 @@ public class UnitUtil {
         UnitUtil.removeClanCase(unit);
         UnitUtil.expandUnitMounts(unit);
         UnitUtil.checkArmor(unit);
+    }
+    
+    public static void updateLoadedAero(Aero unit) {
+        if (unit.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)) {
+            if (unit.getArmorType(Aero.LOC_NOSE) == EquipmentType.T_ARMOR_STANDARD) {
+                unit.setArmorType(EquipmentType.T_ARMOR_AEROSPACE);
+            } else if (unit.getArmorType(Aero.LOC_NOSE) == EquipmentType.T_ARMOR_PRIMITIVE) {
+                unit.setArmorType(EquipmentType.T_ARMOR_PRIMITIVE_AERO);
+            }
+            if (unit.isPrimitive() && (unit instanceof Dropship)) {
+                if (unit.getYear() < Dropship.getCollarTA().getIntroductionDate()) {
+                    ((Dropship)unit).setCollarType(Dropship.COLLAR_NO_BOOM);
+                } else if ((unit.getYear() < Dropship.getCollarTA().getIntroductionDate())
+                        && (((Dropship)unit).getCollarType() == Dropship.COLLAR_STANDARD)) {
+                    ((Dropship)unit).setCollarType(Dropship.COLLAR_PROTOTYPE);
+                }
+            }
+            // Minimum crew levels
+            ((SmallCraft) unit).setNGunners(Math.max(unit.getNGunners(),
+                    TestSmallCraft.requiredGunners((SmallCraft) unit)));
+            ((SmallCraft) unit).setNCrew(Math.max(unit.getNCrew(),
+                    unit.getNGunners() + unit.getBayPersonnel()
+                    + TestSmallCraft.minimumBaseCrew((SmallCraft) unit)));
+            ((SmallCraft) unit).setNOfficers(Math.max(unit.getNOfficers(),
+                    (int) Math.ceil((unit.getNCrew() - unit.getBayPersonnel()) / 5.0)));
+            // Check whether there are any quarters allocated. If not, assign standard levels
+            if (!unit.getTransportBays().stream().anyMatch(Bay::isQuarters)) {
+                unit.addTransporter(TestAero.Quarters.FIRST_CLASS.newQuarters(unit.getNOfficers()));
+                unit.addTransporter(TestAero.Quarters.SECOND_CLASS.newQuarters(unit.getNPassenger()));
+                int std = unit.getNCrew() - unit.getBayPersonnel() - unit.getNOfficers()
+                       + unit.getNMarines() + unit.getNBattleArmor();
+                if (std > 0) {
+                    unit.addTransporter(TestAero.Quarters.STANDARD.newQuarters(std));
+                }
+            }
+        } else if (unit.hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
+            if (unit.getArmorType(Aero.LOC_NOSE) == EquipmentType.T_ARMOR_STANDARD) {
+                unit.setArmorType(EquipmentType.T_ARMOR_AEROSPACE);
+            }
+        } else {
+            if (unit.getArmorType(Aero.LOC_NOSE) == EquipmentType.T_ARMOR_PRIMITIVE) {
+                unit.setArmorType(EquipmentType.T_ARMOR_PRIMITIVE_FIGHTER);
+            }
+        }
     }
 
     public static boolean isUnitWeapon(EquipmentType eq, Entity unit) {

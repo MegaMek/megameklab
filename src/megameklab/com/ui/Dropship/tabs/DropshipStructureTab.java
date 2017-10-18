@@ -515,8 +515,8 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
     }
 
     @Override
-    public void crewSizeChanged(int nCrew) {
-        getSmallCraft().setNCrew(nCrew + getSmallCraft().getBayPersonnel());
+    public void baseCrewChanged(int nCrew) {
+        getSmallCraft().setNCrew(nCrew + getSmallCraft().getNGunners() + getSmallCraft().getBayPersonnel());
         // May need to adjust number of officers
         panCrew.setFromEntity(getSmallCraft());
         refresh.refreshPreview();
@@ -525,6 +525,14 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
     @Override
     public void officersChanged(int nOfficers) {
         getSmallCraft().setNOfficers(nOfficers);
+        panCrew.setFromEntity(getSmallCraft());
+        refresh.refreshPreview();
+    }
+
+    @Override
+    public void gunnersChanged(int nGunners) {
+        getSmallCraft().setNCrew(getSmallCraft().getNCrew() + nGunners - getSmallCraft().getNGunners());
+        getSmallCraft().setNGunners(nGunners);
         panCrew.setFromEntity(getSmallCraft());
         refresh.refreshPreview();
     }

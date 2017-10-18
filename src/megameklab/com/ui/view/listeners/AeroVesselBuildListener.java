@@ -21,8 +21,9 @@ package megameklab.com.ui.view.listeners;
  */
 public interface AeroVesselBuildListener extends BuildListener {
 
-    void crewSizeChanged(int nCrew);
     void officersChanged(int nOfficers);
+    void baseCrewChanged(int nCrew);
+    void gunnersChanged(int nGunners);
     void passengersChanged(int nPassengers);
     void marinesChanged(int nMarines);
     void baMarinesChanged(int nBAMarines);

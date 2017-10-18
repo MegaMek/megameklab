@@ -62,12 +62,13 @@ public class AerospaceCrewView extends BuildView implements ActionListener, Chan
         listeners.remove(l);
     }
     
-    private final JSpinner spnCrew = new JSpinner(new SpinnerNumberModel(3, 1, null, 1));
     private final JSpinner spnOfficers = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
-    private final JLabel lblEnlisted = new JLabel();
-    private final JLabel lblGunners = new JLabel();
+    private final JSpinner spnBaseCrew = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
+    private final JSpinner spnGunners = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
+    private final JLabel lblBayPersonnel = new JLabel();
     private final JSpinner spnMarines = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
     private final JSpinner spnBAMarines = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
+    private final JLabel lblTotalCrew = new JLabel();
     private final JSpinner spnPassengers = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
     private final JSpinner spnQuartersStandard = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
     private final JSpinner spnQuartersFirstClass = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
@@ -93,12 +94,11 @@ public class AerospaceCrewView extends BuildView implements ActionListener, Chan
         
         gbc.gridx = 0;
         gbc.gridy = 0;
-        add(createLabel(resourceMap.getString("AerospaceCrewView.spnCrew.text"), labelSize), gbc);
+        add(createLabel(resourceMap.getString("AerospaceCrewView.lblTotalCrew.text"), labelSize), gbc);
         gbc.gridx = 1;
-        setFieldSize(spnCrew, spinnerSize);
-        spnCrew.setToolTipText(resourceMap.getString("AerospaceCrewView.spnCrew.tooltip"));
-        add(spnCrew, gbc);
-        spnCrew.addChangeListener(this);
+        add(lblTotalCrew, gbc);
+        lblTotalCrew.setToolTipText(resourceMap.getString("AerospaceCrewView.lblTotalCrew.tooltip"));
+        lblTotalCrew.setHorizontalAlignment(JLabel.RIGHT);
         
         gbc.gridx = 0;
         gbc.gridy++;
@@ -111,19 +111,29 @@ public class AerospaceCrewView extends BuildView implements ActionListener, Chan
         
         gbc.gridx = 0;
         gbc.gridy++;
-        add(createLabel(resourceMap.getString("AerospaceCrewView.lblEnlisted.text"), labelSize), gbc);
+        add(createLabel(resourceMap.getString("AerospaceCrewView.spnBaseCrew.text"), labelSize), gbc);
         gbc.gridx = 1;
-        add(lblEnlisted, gbc);
-        lblEnlisted.setToolTipText(resourceMap.getString("AerospaceCrewView.lblEnlisted.tooltip"));
-        lblEnlisted.setHorizontalAlignment(JLabel.RIGHT);
+        setFieldSize(spnBaseCrew, spinnerSize);
+        add(spnBaseCrew, gbc);
+        spnBaseCrew.setToolTipText(resourceMap.getString("AerospaceCrewView.spnBaseCrew.tooltip"));
+        spnBaseCrew.addChangeListener(this);
         
         gbc.gridx = 0;
         gbc.gridy++;
-        add(createLabel(resourceMap.getString("AerospaceCrewView.lblGunners.text"), labelSize), gbc);
+        add(createLabel(resourceMap.getString("AerospaceCrewView.spnGunners.text"), labelSize), gbc);
         gbc.gridx = 1;
-        add(lblGunners, gbc);
-        lblGunners.setToolTipText(resourceMap.getString("AerospaceCrewView.lblGunners.tooltip"));
-        lblGunners.setHorizontalAlignment(JLabel.RIGHT);
+        setFieldSize(spnGunners, spinnerSize);
+        add(spnGunners, gbc);
+        spnGunners.setToolTipText(resourceMap.getString("AerospaceCrewView.spnGunners.tooltip"));
+        spnGunners.addChangeListener(this);
+        
+        gbc.gridx = 0;
+        gbc.gridy++;
+        add(createLabel(resourceMap.getString("AerospaceCrewView.lblBayPersonnel.text"), labelSize), gbc);
+        gbc.gridx = 1;
+        add(lblBayPersonnel, gbc);
+        lblBayPersonnel.setToolTipText(resourceMap.getString("AerospaceCrewView.lblBayPersonnel.tooltip"));
+        lblBayPersonnel.setHorizontalAlignment(JLabel.RIGHT);
         
         gbc.gridx = 0;
         gbc.gridy++;
@@ -152,14 +162,6 @@ public class AerospaceCrewView extends BuildView implements ActionListener, Chan
         spnBAMarines.setToolTipText(resourceMap.getString("AerospaceCrewView.spnBAMarines.tooltip"));
         add(spnBAMarines, gbc);
         spnBAMarines.addChangeListener(this);
-        
-        gbc.gridx = 0;
-        gbc.gridy++;
-        gbc.gridwidth = 2;
-        btnAssignQuarters.setText(resourceMap.getString("AerospaceCrewView.btnAssignQuarters.text"));
-        btnAssignQuarters.setToolTipText(resourceMap.getString("AerospaceCrewView.btnAssignQuarters.tooltip"));
-        add(btnAssignQuarters, gbc);
-        btnAssignQuarters.addActionListener(this);
         
         gbc.gridx = 2;
         gbc.gridy = 0;
@@ -204,7 +206,16 @@ public class AerospaceCrewView extends BuildView implements ActionListener, Chan
         spnQuartersSteerage.addChangeListener(this);
         
         gbc.gridx = 2;
-        gbc.gridy += 2;
+        gbc.gridy++;
+        gbc.gridwidth = 2;
+        btnAssignQuarters.setText(resourceMap.getString("AerospaceCrewView.btnAssignQuarters.text"));
+        btnAssignQuarters.setToolTipText(resourceMap.getString("AerospaceCrewView.btnAssignQuarters.tooltip"));
+        add(btnAssignQuarters, gbc);
+        btnAssignQuarters.addActionListener(this);
+        
+        gbc.gridx = 2;
+        gbc.gridy++;
+        gbc.gridwidth = 1;
         add(createLabel(resourceMap.getString("AerospaceCrewView.spnLifeBoats.text"), labelSize), gbc);
         gbc.gridx = 3;
         setFieldSize(spnLifeBoats, spinnerSize);
@@ -223,19 +234,21 @@ public class AerospaceCrewView extends BuildView implements ActionListener, Chan
     }
     
     public void setFromEntity(SmallCraft sc) {
-        int gunners = TestSmallCraft.requiredGunners(sc);
+        int minGunners = TestSmallCraft.requiredGunners(sc);
         int minBase = TestSmallCraft.minimumBaseCrew(sc);
         int nonBay = sc.getNCrew() - sc.getBayPersonnel();
         int minOfficers = (int)Math.ceil(nonBay / 5.0);
-        ((SpinnerNumberModel)spnCrew.getModel()).setMinimum(minBase + gunners);
+        ((SpinnerNumberModel)spnBaseCrew.getModel()).setMinimum(minBase);
+        ((SpinnerNumberModel)spnGunners.getModel()).setMinimum(minGunners);
         ((SpinnerNumberModel)spnOfficers.getModel()).setMinimum(minOfficers);
         // If we do not meet the minimum, set the values and trigger an event that will update the vessel.
         
         ignoreChangeEvents = true;
-        spnCrew.setValue(nonBay);
         spnOfficers.setValue(Math.max(minOfficers, sc.getNOfficers()));
-        lblEnlisted.setText(String.valueOf(Math.max(0, nonBay - gunners - ((Integer) spnOfficers.getValue()))));
-        lblGunners.setText(String.valueOf(gunners));
+        spnBaseCrew.setValue(nonBay - sc.getNGunners());
+        spnGunners.setValue(sc.getNGunners());
+        lblTotalCrew.setText(String.valueOf(nonBay));
+        lblBayPersonnel.setText(String.valueOf(sc.getBayPersonnel()));
         spnPassengers.setValue(sc.getNPassenger());
         spnMarines.setValue(sc.getNMarines());
         
@@ -265,8 +278,11 @@ public class AerospaceCrewView extends BuildView implements ActionListener, Chan
         spnEscapePods.setValue(sc.getEscapePods());
         ignoreChangeEvents = false;
         
-        if (nonBay < minBase + gunners) {
-            spnCrew.setValue(minBase + gunners);
+        if (sc.getNGunners() < minGunners) {
+            spnGunners.setValue(minGunners);
+        }
+        if (nonBay - sc.getNGunners() < minBase) {
+            spnBaseCrew.setValue(minBase);
         }
         if (sc.getNOfficers() < minOfficers) {
             spnOfficers.setValue(minOfficers);
@@ -277,10 +293,12 @@ public class AerospaceCrewView extends BuildView implements ActionListener, Chan
     @Override
     public void stateChanged(ChangeEvent e) {
         if (!ignoreChangeEvents) {
-            if (e.getSource() == spnCrew) {
-                listeners.forEach(l -> l.crewSizeChanged((Integer) spnCrew.getValue()));
+            if (e.getSource() == spnBaseCrew) {
+                listeners.forEach(l -> l.baseCrewChanged((Integer) spnBaseCrew.getValue()));
             } else if (e.getSource() == spnOfficers) {
                 listeners.forEach(l -> l.officersChanged((Integer) spnOfficers.getValue()));
+            } else if (e.getSource() == spnGunners) {
+                listeners.forEach(l -> l.gunnersChanged((Integer) spnGunners.getValue()));
             } else if (e.getSource() == spnPassengers) {
                 listeners.forEach(l -> l.passengersChanged((Integer) spnPassengers.getValue()));
             } else if (e.getSource() == spnMarines) {
