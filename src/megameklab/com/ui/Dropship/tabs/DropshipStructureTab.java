@@ -29,6 +29,7 @@ import javax.swing.JPanel;
 import megamek.common.Aero;
 import megamek.common.Bay;
 import megamek.common.CriticalSlot;
+import megamek.common.Dropship;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.ITechManager;
@@ -246,6 +247,7 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
         getSmallCraft().setYear(year);
         if (getSmallCraft().isPrimitive()) {
             getSmallCraft().setOriginalBuildYear(year);
+            panChassis.refresh();
         }
         updateTechLevel();
     }
@@ -398,6 +400,21 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
     @Override
     public void militaryChanged(boolean military) {
         getSmallCraft().setDesignType(military? SmallCraft.MILITARY : SmallCraft.CIVILIAN);
+        refresh.refreshPreview();
+    }
+
+    @Override
+    public void kfBoomChanged(boolean hasBoom) {
+        if (getSmallCraft() instanceof Dropship) {
+            if (!hasBoom) {
+                ((Dropship) getSmallCraft()).setCollarType(Dropship.COLLAR_NO_BOOM);
+            } else if (Dropship.getCollarTA().getProductionDate() > getTechManager().getTechIntroYear()) {
+                ((Dropship) getSmallCraft()).setCollarType(Dropship.COLLAR_PROTOTYPE);
+            } else {
+                ((Dropship) getSmallCraft()).setCollarType(Dropship.COLLAR_STANDARD);
+            }
+        }
+        refresh.refreshSummary();
         refresh.refreshPreview();
     }
 

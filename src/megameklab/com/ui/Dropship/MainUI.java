@@ -113,9 +113,10 @@ public class MainUI extends MegaMekLabMainUI {
         SmallCraft smallCraft = (SmallCraft) getEntity();
 
         if (isPrimitive) {
-            smallCraft.setYear(2450);
-            smallCraft.setOriginalBuildYear(2450);
-            smallCraft.setArmorType(EquipmentType.T_ARMOR_LC_PRIMITIVE_AERO);
+            smallCraft.setYear(2470);
+            smallCraft.setOriginalBuildYear(2470);
+            smallCraft.setArmorType(EquipmentType.T_ARMOR_PRIMITIVE_AERO);
+            smallCraft.setDesignType(SmallCraft.CIVILIAN);
         } else {
             smallCraft.setYear(3145);
             smallCraft.setArmorType(EquipmentType.T_ARMOR_AEROSPACE);
