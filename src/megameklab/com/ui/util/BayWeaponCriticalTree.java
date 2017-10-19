@@ -36,6 +36,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JTree;
+import javax.swing.ToolTipManager;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
@@ -113,6 +114,7 @@ public class BayWeaponCriticalTree extends JTree {
         AeroBayTransferHandler cth = new AeroBayTransferHandler(eSource);
         setDragEnabled(true);
         setTransferHandler(cth);
+        ToolTipManager.sharedInstance().registerComponent(this);
     }
     
     /**
@@ -667,6 +669,7 @@ public class BayWeaponCriticalTree extends JTree {
                 return label;
             }
             EquipmentNode node = (EquipmentNode)value;
+            label.setToolTipText(node.toString());
 
             setPreferredSize(new Dimension(180, 15));
             setMaximumSize(new Dimension(180, 15));
