@@ -42,6 +42,7 @@ public class SummaryView extends IView {
     private JTextField txtAmmoTon = new JTextField("?");
     private JTextField txtMiscTon = new JTextField("?");
     private JTextField txtTransportTon = new JTextField("?");
+    private JTextField txtCrewTon = new JTextField("?");
     private JTextField txtOtherTon = new JTextField("?");
 
     private EntityVerifier entityVerifier = EntityVerifier.getInstance(
@@ -62,6 +63,7 @@ public class SummaryView extends IView {
         valueFields.add(txtAmmoTon);
         valueFields.add(txtMiscTon);
         valueFields.add(txtTransportTon);
+        valueFields.add(txtCrewTon);
         valueFields.add(txtOtherTon);
 
         Dimension size = new Dimension(60,25);
@@ -115,6 +117,8 @@ public class SummaryView extends IView {
         gbc.gridy = 10;
         this.add(createLabel("Transport:", size, SwingConstants.RIGHT), gbc);
         gbc.gridy = 11;
+        this.add(createLabel("Crew:", size, SwingConstants.RIGHT), gbc);
+        gbc.gridy = 12;
         this.add(createLabel("Other:", size, SwingConstants.RIGHT), gbc);
 
         size = new Dimension(45,25);
@@ -143,6 +147,8 @@ public class SummaryView extends IView {
         gbc.gridy = 10;
         this.add(txtTransportTon, gbc);
         gbc.gridy = 11;
+        this.add(txtCrewTon, gbc);
+        gbc.gridy = 12;
         this.add(txtOtherTon, gbc);
 
         setBorder(BorderFactory.createTitledBorder("Summary"));
@@ -178,6 +184,7 @@ public class SummaryView extends IView {
         txtAmmoTon.setText(Double.toString(testSmallCraft.getWeightAmmo()));
         txtMiscTon.setText(Double.toString(testSmallCraft.getWeightMiscEquip()));
         txtTransportTon.setText(Double.toString(testSmallCraft.getWeightCarryingSpace()));
+        txtCrewTon.setText(Double.toString(testSmallCraft.getWeightQuarters()));
         txtOtherTon.setText(Double.toString(testSmallCraft.getWeightMisc()));
     }
 }
