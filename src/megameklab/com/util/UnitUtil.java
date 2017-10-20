@@ -40,6 +40,7 @@ import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
+import javax.swing.JTextPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.text.DefaultCaret;
 import javax.swing.text.html.HTMLEditorKit;
@@ -3575,8 +3576,41 @@ public class UnitUtil {
 
     public static void showUnitWeightBreakDown(Entity unit, JFrame frame) {
         TestEntity testEntity = getEntityVerifier(unit);
-        JOptionPane.showMessageDialog(frame, testEntity.printEntity(),
-                "Unit Breakdown", JOptionPane.NO_OPTION);
+
+        JTextPane textPane = new JTextPane();
+        JScrollPane scroll = new JScrollPane();
+
+        textPane.setText(testEntity.printEntity().toString());
+        textPane.setEditable(false);
+        textPane.setCaret(new DefaultCaret());
+
+        scroll.setViewportView(textPane);
+        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scroll.getVerticalScrollBar().setUnitIncrement(20);
+
+        scroll.setVisible(true);
+
+        JDialog jdialog = new JDialog();
+
+        jdialog.add(scroll);
+        Dimension size = new Dimension(CConfig.getIntParam("WINDOWWIDTH") / 2,
+                CConfig.getIntParam("WINDOWHEIGHT"));
+
+        jdialog.setPreferredSize(size);
+        jdialog.setMinimumSize(size);
+        scroll.setPreferredSize(size);
+        scroll.setMinimumSize(size);
+
+        jdialog.setLocationRelativeTo(frame);
+        jdialog.setVisible(true);
+
+        try {
+            textPane.setSelectionStart(0);
+            textPane.setSelectionEnd(0);
+        } catch (Exception ex) {
+        }
+
     }
 
     public static void showBVCalculations(String bvText, JFrame frame) {
