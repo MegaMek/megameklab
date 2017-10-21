@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -533,8 +534,10 @@ public class EquipmentTab extends ITab implements ActionListener {
                 equipmentList.removeMounted(row);
             }
             equipmentList.removeCrits(selectedRows);
+            removeEmptyBays();
         } else if (e.getActionCommand().equals(REMOVEALL_COMMAND)) {
             removeAllEquipment();
+            removeEmptyBays();
         } else {
             return;
         }
@@ -553,6 +556,14 @@ public class EquipmentTab extends ITab implements ActionListener {
             equipmentList.removeMounted(count);
         }
         equipmentList.removeAllCrits();
+    }
+    
+    private void removeEmptyBays() {
+        List<Mounted> emptyBays = getSmallCraft().getWeaponBayList().stream()
+                .filter(bay -> bay.getBayWeapons().isEmpty()).collect(Collectors.toList());
+        for (Mounted bay : emptyBays) {
+            UnitUtil.removeMounted(getAero(), bay);
+        }
     }
 
     private void fireTableRefresh() {

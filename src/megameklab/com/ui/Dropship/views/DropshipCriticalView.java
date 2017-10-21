@@ -62,9 +62,6 @@ public class DropshipCriticalView extends IView {
     private JPanel midColumn = new JPanel();
     private JPanel rightColumn = new JPanel();
     
-    private boolean spheroid = true; // Track the chassis type so we can tell whether side arc equipment
-                              // needs to be shuffled when a refresh is triggered.
-    
     private BayWeaponCriticalTree arcTrees[] = new BayWeaponCriticalTree[NUM_ARCS];
     private String aerodyneArcNames[];
     private String spheroidArcNames[];
@@ -198,20 +195,10 @@ public class DropshipCriticalView extends IView {
             aftRightPanel.setVisible(false);
         }
 
-        if (spheroid != getSmallCraft().isSpheroid()) {
-            arcTrees[TestSmallCraft.ARC_FWD_LEFT].rebuild();
-            arcTrees[TestSmallCraft.ARC_FWD_RIGHT].rebuild();
-            arcTrees[TestSmallCraft.ARC_AFT_LEFT].rebuild();
-            arcTrees[TestSmallCraft.ARC_AFT_RIGHT].rebuild();
-            spheroid = getSmallCraft().isSpheroid();
-        } else {
-            for (BayWeaponCriticalTree tree : arcTrees) {
-                tree.repaint();
-            }
-        }
-        
         double[] extra = TestSmallCraft.extraSlotCost(getSmallCraft());
         for (int arc = 0; arc < extra.length; arc++) {
+            arcTrees[arc].rebuild();
+            arcTrees[arc].repaint();
             lblSlotCount[arc].setText(String.valueOf(arcTrees[arc].getSlotCount()));
             lblExtraTonnage[arc].setText(String.valueOf(extra[arc]));
         }
