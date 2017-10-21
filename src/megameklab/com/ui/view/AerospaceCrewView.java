@@ -237,14 +237,11 @@ public class AerospaceCrewView extends BuildView implements ActionListener, Chan
         int minGunners = TestSmallCraft.requiredGunners(sc);
         int minBase = TestSmallCraft.minimumBaseCrew(sc);
         int nonBay = sc.getNCrew() - sc.getBayPersonnel();
-        int minOfficers = (int)Math.ceil(nonBay / 5.0);
         ((SpinnerNumberModel)spnBaseCrew.getModel()).setMinimum(minBase);
         ((SpinnerNumberModel)spnGunners.getModel()).setMinimum(minGunners);
-        ((SpinnerNumberModel)spnOfficers.getModel()).setMinimum(minOfficers);
-        // If we do not meet the minimum, set the values and trigger an event that will update the vessel.
         
         ignoreChangeEvents = true;
-        spnOfficers.setValue(Math.max(minOfficers, sc.getNOfficers()));
+        spnOfficers.setValue(sc.getNOfficers());
         spnBaseCrew.setValue(nonBay - sc.getNGunners());
         spnGunners.setValue(sc.getNGunners());
         lblTotalCrew.setText(String.valueOf(nonBay));
@@ -278,14 +275,12 @@ public class AerospaceCrewView extends BuildView implements ActionListener, Chan
         spnEscapePods.setValue(sc.getEscapePods());
         ignoreChangeEvents = false;
         
+        // If we do not meet the minimum, set the values and trigger an event that will update the vessel.
         if (sc.getNGunners() < minGunners) {
             spnGunners.setValue(minGunners);
         }
         if (nonBay - sc.getNGunners() < minBase) {
             spnBaseCrew.setValue(minBase);
-        }
-        if (sc.getNOfficers() < minOfficers) {
-            spnOfficers.setValue(minOfficers);
         }
 
     }
