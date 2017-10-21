@@ -94,23 +94,6 @@ public class AerospaceCrewView extends BuildView implements ActionListener, Chan
         
         gbc.gridx = 0;
         gbc.gridy = 0;
-        add(createLabel(resourceMap.getString("AerospaceCrewView.lblTotalCrew.text"), labelSize), gbc);
-        gbc.gridx = 1;
-        add(lblTotalCrew, gbc);
-        lblTotalCrew.setToolTipText(resourceMap.getString("AerospaceCrewView.lblTotalCrew.tooltip"));
-        lblTotalCrew.setHorizontalAlignment(JLabel.RIGHT);
-        
-        gbc.gridx = 0;
-        gbc.gridy++;
-        add(createLabel(resourceMap.getString("AerospaceCrewView.spnOfficers.text"), labelSize), gbc);
-        gbc.gridx = 1;
-        setFieldSize(spnOfficers, spinnerSize);
-        spnOfficers.setToolTipText(resourceMap.getString("AerospaceCrewView.spnOfficers.tooltip"));
-        add(spnOfficers, gbc);
-        spnOfficers.addChangeListener(this);
-        
-        gbc.gridx = 0;
-        gbc.gridy++;
         add(createLabel(resourceMap.getString("AerospaceCrewView.spnBaseCrew.text"), labelSize), gbc);
         gbc.gridx = 1;
         setFieldSize(spnBaseCrew, spinnerSize);
@@ -126,6 +109,23 @@ public class AerospaceCrewView extends BuildView implements ActionListener, Chan
         add(spnGunners, gbc);
         spnGunners.setToolTipText(resourceMap.getString("AerospaceCrewView.spnGunners.tooltip"));
         spnGunners.addChangeListener(this);
+        
+        gbc.gridx = 0;
+        gbc.gridy++;
+        add(createLabel(resourceMap.getString("AerospaceCrewView.lblTotalCrew.text"), labelSize), gbc);
+        gbc.gridx = 1;
+        add(lblTotalCrew, gbc);
+        lblTotalCrew.setToolTipText(resourceMap.getString("AerospaceCrewView.lblTotalCrew.tooltip"));
+        lblTotalCrew.setHorizontalAlignment(JLabel.RIGHT);
+        
+        gbc.gridx = 0;
+        gbc.gridy++;
+        add(createLabel(resourceMap.getString("AerospaceCrewView.spnOfficers.text"), labelSize), gbc);
+        gbc.gridx = 1;
+        setFieldSize(spnOfficers, spinnerSize);
+        spnOfficers.setToolTipText(resourceMap.getString("AerospaceCrewView.spnOfficers.tooltip"));
+        add(spnOfficers, gbc);
+        spnOfficers.addChangeListener(this);
         
         gbc.gridx = 0;
         gbc.gridy++;
