@@ -568,6 +568,19 @@ public class BayWeaponCriticalTree extends JTree {
             return name;
         }
         
+        public String getTooltip() {
+            StringBuilder sb = new StringBuilder("<html>");
+            sb.append(toString());
+            if (getMounted().getType() instanceof WeaponType) {
+                final WeaponType wtype = (WeaponType)getMounted().getType();
+                sb.append("<br/>AV: ").append(wtype.getShortAV()).append("/")
+                    .append(wtype.getMedAV()).append("/").append(wtype.getLongAV());
+                sb.append("<br/>Heat: ").append(wtype.getHeat());
+            }
+            sb.append("</html>");
+            return sb.toString();
+        }
+        
     }
     
     /**
@@ -636,6 +649,25 @@ public class BayWeaponCriticalTree extends JTree {
             return sb.toString();
         }
         
+        
+        public String getTooltip() {
+            StringBuilder sb = new StringBuilder("<html>");
+            sb.append(toString());
+            double shortAV = 0;
+            double medAV = 0;
+            double longAV = 0;
+            int heat = 0;
+            for (Integer wNum : getMounted().getBayWeapons()) {
+                final WeaponType wtype = (WeaponType)eSource.getEntity().getEquipment(wNum).getType();
+                shortAV += wtype.getShortAV();
+                medAV += wtype.getMedAV();
+                longAV += wtype.getLongAV();
+                heat += wtype.getHeat();
+            }
+            sb.append("<br/>AV: ").append(shortAV).append("/").append(medAV).append("/")
+                .append(longAV).append("<br/>Heat: ").append(heat).append("</html>");
+            return sb.toString();
+        }
     }
     
     /**
@@ -669,7 +701,7 @@ public class BayWeaponCriticalTree extends JTree {
                 return label;
             }
             EquipmentNode node = (EquipmentNode)value;
-            label.setToolTipText(node.toString());
+            label.setToolTipText(node.getTooltip());
 
             setPreferredSize(new Dimension(180, 15));
             setMaximumSize(new Dimension(180, 15));
