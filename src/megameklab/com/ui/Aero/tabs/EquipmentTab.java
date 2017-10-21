@@ -562,6 +562,7 @@ public class EquipmentTab extends ITab implements ActionListener {
             refresh.refreshStatus();
             refresh.refreshBuild();
             refresh.refreshPreview();
+            refresh.refreshSummary();
         }
     }
 
