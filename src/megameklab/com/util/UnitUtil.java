@@ -2392,8 +2392,9 @@ public class UnitUtil {
             ((SmallCraft) unit).setNCrew(Math.max(unit.getNCrew(),
                     unit.getNGunners() + unit.getBayPersonnel()
                     + TestSmallCraft.minimumBaseCrew((SmallCraft) unit)));
-            ((SmallCraft) unit).setNOfficers(Math.max(unit.getNOfficers(),
-                    (int) Math.ceil((unit.getNCrew() - unit.getBayPersonnel()) / 5.0)));
+            if (((SmallCraft) unit).getNOfficers() == 0) {
+                ((SmallCraft) unit).setNOfficers((int) Math.ceil((unit.getNCrew() - unit.getBayPersonnel()) / 5.0));
+            }
             // Check whether there are any quarters allocated. If not, assign standard levels
             if (!unit.getTransportBays().stream().anyMatch(Bay::isQuarters)) {
                 unit.addTransporter(TestAero.Quarters.FIRST_CLASS.newQuarters(unit.getNOfficers()));
