@@ -657,15 +657,27 @@ public class BayWeaponCriticalTree extends JTree {
             double medAV = 0;
             double longAV = 0;
             int heat = 0;
+            double weight = 0;
             for (Integer wNum : getMounted().getBayWeapons()) {
-                final WeaponType wtype = (WeaponType)eSource.getEntity().getEquipment(wNum).getType();
+                final Mounted eq = eSource.getEntity().getEquipment(wNum);
+                final WeaponType wtype = (WeaponType) eq.getType();
                 shortAV += wtype.getShortAV();
                 medAV += wtype.getMedAV();
                 longAV += wtype.getLongAV();
                 heat += wtype.getHeat();
+                weight += wtype.getTonnage(eSource.getEntity());
+                if (eq.getLinkedBy() != null) {
+                    weight += eq.getLinkedBy().getType().getTonnage(eSource.getEntity());
+                }
+            }
+            for (Integer aNum : getMounted().getBayAmmo()) {
+                final Mounted eq = eSource.getEntity().getEquipment(aNum);
+                final AmmoType at = (AmmoType) eq.getType();
+                weight += at.getTonnage(eSource.getEntity()) * eq.getBaseShotsLeft() / at.getShots();
             }
             sb.append("<br/>AV: ").append(shortAV).append("/").append(medAV).append("/")
-                .append(longAV).append("<br/>Heat: ").append(heat).append("</html>");
+                .append(longAV).append("<br/>Heat: ").append(heat)
+                .append("<br/>Bay Weight: ").append(weight).append(" tons</html>");
             return sb.toString();
         }
     }
