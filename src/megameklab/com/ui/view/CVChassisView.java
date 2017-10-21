@@ -371,7 +371,7 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
     }
     
     private void refreshTurrets() {
-        Integer prev = cbTurrets.getSelectedIndex();
+        Integer prev = (Integer) cbTurrets.getSelectedItem();
         cbTurrets.removeActionListener(this);
         cbTurrets.removeAllItems();
         cbTurrets.addItem(TURRET_NONE);
