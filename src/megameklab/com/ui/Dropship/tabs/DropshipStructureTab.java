@@ -248,6 +248,9 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
         if (getSmallCraft().isPrimitive()) {
             getSmallCraft().setOriginalBuildYear(year);
             panChassis.refresh();
+            panSummary.refresh();
+            // Weight-free heat sinks may change due to change in engine weight.
+            panHeat.setFromAero(getSmallCraft());
         }
         updateTechLevel();
     }
@@ -272,19 +275,16 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
     
     @Override
     public void updateTechLevel() {
-        removeAllListeners();
         getSmallCraft().setTechLevel(panInfo.getTechLevel().getCompoundTechLevel(panInfo.useClanTechBase()));
         if (UnitUtil.checkEquipmentByTechLevel(getSmallCraft(), panInfo)) {
             refresh.refreshEquipment();
         } else {
             refresh.refreshEquipmentTable();
         }
-        panChassis.refresh();
-        panHeat.refresh();
         panArmor.refresh();
-        panMovement.refresh();
+        panHeat.setFromAero(getSmallCraft());
         panArmorAllocation.setFromEntity(getSmallCraft());
-        addAllListeners();
+        panSummary.refresh();
     }
 
     @Override
