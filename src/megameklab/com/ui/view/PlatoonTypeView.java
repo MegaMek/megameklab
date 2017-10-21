@@ -182,14 +182,14 @@ public class PlatoonTypeView extends BuildView implements ActionListener, Change
         }
         cbMotiveType.addActionListener(this);
         
-        if (inf.getSquadN() <= (int)spnNumSquadsModel.getMaximum()) {
+        if (inf.getSquadN() <= (Integer)spnNumSquadsModel.getMaximum()) {
             spnNumSquads.removeChangeListener(this);
             spnNumSquads.setValue(inf.getSquadN());
             spnNumSquads.addChangeListener(this);
         } else {
             spnNumSquads.setValue(spnNumSquadsModel.getMaximum());
         }
-        if (inf.getSquadSize() <= (int)spnSquadSizeModel.getMaximum()) {
+        if (inf.getSquadSize() <= (Integer)spnSquadSizeModel.getMaximum()) {
             spnSquadSize.removeChangeListener(this);
             spnSquadSize.setValue(inf.getSquadSize());
             spnSquadSize.addChangeListener(this);
