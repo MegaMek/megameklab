@@ -101,7 +101,8 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
     private final JCheckBox chkOmni = new JCheckBox();
     private final JCheckBox chkSuperheavy = new JCheckBox();
     private final CustomComboBox<EntityMovementMode> cbMotiveType = new CustomComboBox<>(m -> motiveNames.get(m));
-    private final TechComboBox<Engine> cbEngine = new TechComboBox<>(e -> e.getEngineName().replaceAll("^\\d+ ", ""));
+    private final TechComboBox<Engine> cbEngine = new TechComboBox<>(e -> e.getEngineName()
+            .replaceAll("^\\d+ ", "").replace(" [Vehicle]", ""));
     private final CustomComboBox<Integer> cbTurrets = new CustomComboBox<>(i -> turretNames[i]);
     private final JSpinner spnChassisTurretWt = new JSpinner(spnTurretWtModel);
     private final JSpinner spnChassisTurret2Wt = new JSpinner(spnTurret2WtModel);
