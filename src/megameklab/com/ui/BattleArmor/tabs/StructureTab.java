@@ -529,6 +529,7 @@ public class StructureTab extends ITab implements ActionListener, BABuildListene
         panBasicInfo.setFromEntity(getBattleArmor());
         panChassis.refresh();
         panMovement.setFromEntity(getBattleArmor());
+        panArmor.setFromEntity(getBattleArmor());
         panEnhancements.setFromEntity(getBattleArmor());
         refreshPreview();
         refresh.refreshStatus();
