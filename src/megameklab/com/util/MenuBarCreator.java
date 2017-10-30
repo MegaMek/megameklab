@@ -1227,7 +1227,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         String filePathName = new File(System.getProperty("user.dir").toString()).getAbsolutePath();
 
         fDialog.setDirectory(filePathName);
-        fDialog.setFile(unitName + ".html");
+        fDialog.setFile(unitName + ".txt");
         fDialog.setLocationRelativeTo(parentFrame);
 
         fDialog.setVisible(true);
