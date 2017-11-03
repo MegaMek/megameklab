@@ -438,6 +438,7 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
     @Override
     public void chassisTypeChanged(int type) {
         getSmallCraft().setSpheroid(type == DropshipChassisView.CHASSIS_SPHEROID);
+        panArmor.setFromEntity(getSmallCraft());
         refresh.refreshBuild();
         refresh.refreshStatus();
         refresh.refreshPreview();
@@ -446,6 +447,7 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
     @Override
     public void siChanged(int si) {
         getSmallCraft().set0SI(si);
+        panArmor.setFromEntity(getSmallCraft());
         refresh.refreshStatus();
         refresh.refreshSummary();
         refresh.refreshPreview();
