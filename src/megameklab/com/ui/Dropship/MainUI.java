@@ -25,6 +25,7 @@ import javax.swing.SwingConstants;
 import megamek.common.Aero;
 import megamek.common.Dropship;
 import megamek.common.Entity;
+import megamek.common.EntityMovementMode;
 import megamek.common.EquipmentType;
 import megamek.common.ITechManager;
 import megamek.common.MechSummaryCache;
@@ -140,6 +141,8 @@ public class MainUI extends MegaMekLabMainUI {
             } else {
                 smallCraft.setModel("Dropship");
             }
+            smallCraft.setSpheroid(false);
+            smallCraft.setMovementMode(EntityMovementMode.AERODYNE);
         } else {
             smallCraft.setChassis(oldUnit.getChassis());
             smallCraft.setModel(oldUnit.getModel());
@@ -151,6 +154,9 @@ public class MainUI extends MegaMekLabMainUI {
                     SimpleTechLevel.convertCompoundToSimple(oldUnit.getTechLevel()));
             smallCraft.setTechLevel(lvl.getCompoundTechLevel(oldUnit.isClan()));
             smallCraft.setMixedTech(oldUnit.isMixedTech());
+
+            smallCraft.setSpheroid(((SmallCraft) oldUnit).isSpheroid());
+            smallCraft.setMovementMode(oldUnit.getMovementMode());
         }
     }
 

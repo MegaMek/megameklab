@@ -31,6 +31,7 @@ import megamek.common.Bay;
 import megamek.common.CriticalSlot;
 import megamek.common.Dropship;
 import megamek.common.Entity;
+import megamek.common.EntityMovementMode;
 import megamek.common.EquipmentType;
 import megamek.common.ITechManager;
 import megamek.common.SimpleTechLevel;
@@ -437,7 +438,13 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
 
     @Override
     public void chassisTypeChanged(int type) {
-        getSmallCraft().setSpheroid(type == DropshipChassisView.CHASSIS_SPHEROID);
+        if (type == DropshipChassisView.CHASSIS_SPHEROID) {
+            getSmallCraft().setSpheroid(true);
+            getSmallCraft().setMovementMode(EntityMovementMode.SPHEROID);
+        } else {
+            getSmallCraft().setSpheroid(false);
+            getSmallCraft().setMovementMode(EntityMovementMode.AERODYNE);
+        }
         panArmor.setFromEntity(getSmallCraft());
         refresh.refreshBuild();
         refresh.refreshStatus();
