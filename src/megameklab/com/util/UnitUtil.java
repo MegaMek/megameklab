@@ -3735,6 +3735,10 @@ public class UnitUtil {
                 && atype.hasFlag(AmmoType.F_BATTLEARMOR)){
             return false;
         }
+        if (unit.hasETypeFlag(Entity.ETYPE_AERO)
+                && !atype.canAeroUse()) {
+            return false;
+        }
 
         for (Mounted m : unit.getTotalWeaponList()) {
             if (m.getType() instanceof AmmoWeapon) {
