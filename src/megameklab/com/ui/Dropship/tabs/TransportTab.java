@@ -18,21 +18,29 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 import javax.swing.AbstractCellEditor;
+import javax.swing.DropMode;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.TransferHandler;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.table.AbstractTableModel;
@@ -46,6 +54,7 @@ import megamek.common.InfantryBay;
 import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestAero;
 import megamek.common.verifier.TestAero.TransportBay;
+import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
@@ -163,6 +172,10 @@ public class TransportTab extends IView implements ActionListener {
         tblInstalled.getSelectionModel().addListSelectionListener(e -> checkButtons());
         tblAvailable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tblAvailable.getSelectionModel().addListSelectionListener(e -> checkButtons());
+        
+        tblInstalled.setDragEnabled(true);
+        tblInstalled.setDropMode(DropMode.INSERT_ROWS);
+        tblInstalled.setTransferHandler(new BayReorderTransferHandler());
         refresh();
     }
     
@@ -237,7 +250,6 @@ public class TransportTab extends IView implements ActionListener {
      * alter it.
      */
     private void rebuildBays() {
-        modelInstalled.refreshBays();
         int bayNum = 1;
         List<Bay> newBayList = new ArrayList<>();
         for (Iterator<Bay> iter = modelInstalled.getBays(); iter.hasNext(); ) {
@@ -276,6 +288,7 @@ public class TransportTab extends IView implements ActionListener {
                     newBay.setDoors(1);
                 }
                 addBay(newBay);
+                modelInstalled.refreshBays();
                 rebuildBays();
                 refresh();
             }
@@ -284,6 +297,7 @@ public class TransportTab extends IView implements ActionListener {
             if (selected >= 0) {
                 Bay bay = modelInstalled.getBay(tblInstalled.convertRowIndexToModel(selected));
                 removeBay(bay);
+                modelInstalled.refreshBays();
                 rebuildBays();
                 refresh();
             }
@@ -331,9 +345,16 @@ public class TransportTab extends IView implements ActionListener {
         public void refreshBays() {
             bayList.clear();
             bayTypeList.clear();
-            for (Bay bay : getAero().getTransportBays()) {
+            // Find all the bays and sort them by bay number.
+            // Entity.getTransportBays() iterates through all transports and builds a collection of
+            // Bays so we're going to save ourselves a second list instantiation and iteration by
+            // doing it all at once here.
+            List<Bay> bays = getAero().getTransports().stream()
+                    .filter(t -> (t instanceof Bay) && !((Bay) t).isQuarters())
+                    .map(t -> (Bay) t).collect(Collectors.toList());
+            Collections.sort(bays, (b1, b2) -> b1.getBayNumber() - b2.getBayNumber());
+            for (Bay bay : bays) {
                 TestAero.TransportBay bayType = TestAero.TransportBay.getBayType(bay);
-                // Make sure it's not crew quarters
                 if (null != bayType) {
                     bayList.add(bay);
                     bayTypeList.add(bayType);
@@ -414,6 +435,18 @@ public class TransportTab extends IView implements ActionListener {
             return (columnIndex == COL_SIZE);
         }
 
+        public void reorder(int from, int to) {
+            Bay bay = bayList.remove(from);
+            TestAero.TransportBay bayType = bayTypeList.remove(from);
+            if (to > from) {
+                to--;
+            }
+            bayList.add(to, bay);
+            bayTypeList.add(to, bayType);
+            rebuildBays();
+            refresh();
+        }
+        
     }
     
     private class AvailableBaysModel extends AbstractTableModel {
@@ -557,5 +590,53 @@ public class TransportTab extends IView implements ActionListener {
             return null;
         }
         
+    }
+    
+    private class BayReorderTransferHandler extends TransferHandler {
+        
+        /**
+         * 
+         */
+        private static final long serialVersionUID = -6442201464476396078L;
+
+        @Override
+        protected Transferable createTransferable(JComponent c) {
+            return new StringSelection(String.valueOf(tblInstalled.getSelectedRow()));
+        }
+
+        @Override
+        public boolean importData(TransferSupport support) {
+            JTable target = (JTable) support.getComponent();
+            JTable.DropLocation dl = (JTable.DropLocation) support.getDropLocation();
+            int index = dl.getRow();
+            int max = modelInstalled.getRowCount();
+            if (index < 0 || index > max)
+               index = max;
+            try {
+               Integer rowFrom = Integer.parseInt((String) support.getTransferable().getTransferData(DataFlavor.stringFlavor));
+               if (rowFrom != -1 && rowFrom != index) {
+                  modelInstalled.reorder(rowFrom, index);
+                  if (index > rowFrom)
+                     index--;
+                  target.getSelectionModel().addSelectionInterval(index, index);
+                  return true;
+               }
+            } catch (Exception e) {
+               MegaMekLab.getLogger().log(getClass(), "importData(TransferSupport)", e);
+            }
+            return false;
+        }
+
+        @Override
+        public boolean canImport(TransferSupport support) {
+            return support.isDataFlavorSupported(DataFlavor.stringFlavor)
+                    && (support.getComponent() == tblInstalled)
+                    && support.isDrop();
+        }
+
+        @Override
+        public int getSourceActions(JComponent c) {
+            return COPY_OR_MOVE;
+        }
     }
 }
