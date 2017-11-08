@@ -178,6 +178,11 @@ public class AeroBayTransferHandler extends TransferHandler {
                     }
                     UnitUtil.compactCriticals(eSource.getEntity());
                 }
+                if (mount.getType() instanceof BayWeapon) {
+                    mount.getBayWeapons().clear();
+                    mount.getBayAmmo().clear();
+                    UnitUtil.removeMounted(eSource.getEntity(), mount);
+                }
             }
         }
         return true;
