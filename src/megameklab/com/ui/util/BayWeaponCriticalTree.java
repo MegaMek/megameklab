@@ -23,6 +23,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
@@ -886,12 +887,7 @@ public class BayWeaponCriticalTree extends JTree {
     public boolean canAdd(Mounted eq) {
         if (eSource.getEntity().usesWeaponBays()
                 && ((eq.getType() instanceof AmmoType)
-                        || ((eq.getType() instanceof MiscType)
-                                && (eq.getType().hasFlag(MiscType.F_ARTEMIS)
-                                        || eq.getType().hasFlag(MiscType.F_ARTEMIS_V)
-                                        || eq.getType().hasFlag(MiscType.F_ARTEMIS_PROTO)
-                                        || eq.getType().hasFlag(MiscType.F_RISC_LASER_PULSE_MODULE)
-                                        || eq.getType().hasFlag(MiscType.F_PPC_CAPACITOR))))) {
+                        || UnitUtil.isWeaponEnhancement(eq.getType()))) {
             return baysFor(eq).size() > 0;
         }
         return true;
@@ -1073,9 +1069,16 @@ public class BayWeaponCriticalTree extends JTree {
      * @param eq
      */
     public void addToLocation(List<Mounted> eqList) {
+        // We want to check for weapons first since they might make a new bay that creates a legal space
+        // for non-weapon equipment that might not have a place otherwise.
+        Collections.sort(eqList, (m1, m2) -> {
+            return ((m1.getType() instanceof WeaponType)? 0 : 1)
+                    - ((m2.getType() instanceof WeaponType)? 0 : 1);
+        });
         LIST:for (Mounted eq : eqList) {
             if (eSource.getEntity().usesWeaponBays() && ((eq.getType() instanceof WeaponType)
-                    || (eq.getType() instanceof AmmoType))) {
+                    || (eq.getType() instanceof AmmoType)
+                    || (UnitUtil.isWeaponEnhancement(eq.getType())))) {
                 for (Enumeration<?> e = ((MutableTreeNode)model.getRoot()).children(); e.hasMoreElements(); ) {
                     final Mounted bay = ((EquipmentNode)e.nextElement()).getMounted();
                     if ((bay.getType() instanceof BayWeapon)
@@ -1315,12 +1318,7 @@ public class BayWeaponCriticalTree extends JTree {
         if (eq.getType() instanceof AmmoType) {
             return (null != bay) && canTakeEquipment(bay, eq);
         }
-        if ((eq.getType() instanceof MiscType)
-                && (eq.getType().hasFlag(MiscType.F_ARTEMIS)
-                        || eq.getType().hasFlag(MiscType.F_ARTEMIS_V)
-                        || eq.getType().hasFlag(MiscType.F_ARTEMIS_PROTO)
-                        || eq.getType().hasFlag(MiscType.F_APOLLO)
-                        || eq.getType().hasFlag(MiscType.F_RISC_LASER_PULSE_MODULE))) {
+        if (UnitUtil.isWeaponEnhancement(eq.getType())) {
             if ((null != bay) && canTakeEquipment(bay, eq)) {
                 for (Integer eqNum : bay.getBayWeapons()) {
                     if (eSource.getEntity().getEquipment(eqNum) == eq.getLinked()) {

@@ -1003,6 +1003,22 @@ public class UnitUtil {
         }
     }
 
+
+    /**
+     * Checks whether equipment can be linked to a weapon to enhance it (e.g. Artemis, PPC Capacitor, etc).
+     * @param type The equipment to check
+     * @return     true if the equipment is a MiscType that can be linked to a weapon.
+     */
+    public static boolean isWeaponEnhancement(EquipmentType type) {
+        return (type instanceof MiscType)
+                && (type.hasFlag(MiscType.F_ARTEMIS)
+                        || type.hasFlag(MiscType.F_ARTEMIS_V)
+                        || type.hasFlag(MiscType.F_ARTEMIS_PROTO)
+                        || type.hasFlag(MiscType.F_APOLLO)
+                        || type.hasFlag(MiscType.F_PPC_CAPACITOR)
+                        || type.hasFlag(MiscType.F_RISC_LASER_PULSE_MODULE));
+    }
+
     /**
      * Removes all enhancements (TSM and MASC) from the mek
      *
