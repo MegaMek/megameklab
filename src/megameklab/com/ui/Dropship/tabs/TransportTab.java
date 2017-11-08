@@ -21,6 +21,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -230,6 +231,37 @@ public class TransportTab extends IView implements ActionListener {
         }
     }
     
+    /**
+     * Removing bays can cause undesirable gaps in bay numbers, and it would be nice to let the
+     * user order the bays. Since bay numbers are immutable we have to instantiate a new bay to
+     * alter it.
+     */
+    private void rebuildBays() {
+        modelInstalled.refreshBays();
+        int bayNum = 1;
+        List<Bay> newBayList = new ArrayList<>();
+        for (Iterator<Bay> iter = modelInstalled.getBays(); iter.hasNext(); ) {
+            final Bay bay = iter.next();
+            if (bay.getBayNumber() == bayNum) {
+                newBayList.add(bay);
+            } else {
+                TestAero.TransportBay bayType = TestAero.TransportBay.getBayType(bay);
+                Bay newBay = bayType.newBay(bay.getCapacity(), bayNum);
+                newBay.setDoors(bay.getDoors());
+                newBayList.add(newBay);
+            }
+            bayNum++;
+        }
+        for (Bay bay : getAero().getTransportBays()) {
+            if (bay.isQuarters()) {
+                newBayList.add(bay);
+            }
+        }
+        getAero().removeAllTransporters();
+        newBayList.forEach(b -> getAero().addTransporter(b));
+        modelInstalled.refreshBays();
+    }
+    
     public void actionPerformed(ActionEvent ev) {
         if (ev.getSource() == btnAddBay) {
             int selected = tblAvailable.getSelectedRow();
@@ -244,6 +276,7 @@ public class TransportTab extends IView implements ActionListener {
                     newBay.setDoors(1);
                 }
                 addBay(newBay);
+                rebuildBays();
                 refresh();
             }
         } else if (ev.getSource() == btnRemoveBay) {
@@ -251,6 +284,7 @@ public class TransportTab extends IView implements ActionListener {
             if (selected >= 0) {
                 Bay bay = modelInstalled.getBay(tblInstalled.convertRowIndexToModel(selected));
                 removeBay(bay);
+                rebuildBays();
                 refresh();
             }
         } else if (ev.getSource() == btnAddToCargo) {
@@ -310,6 +344,10 @@ public class TransportTab extends IView implements ActionListener {
         
         public Bay getBay(int row) {
             return bayList.get(row);
+        }
+        
+        public Iterator<Bay> getBays() {
+            return bayList.iterator();
         }
         
         public TestAero.TransportBay getBayType(int row) {
