@@ -43,6 +43,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
@@ -342,15 +343,17 @@ public class EquipmentTab extends ITab implements ActionListener {
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridwidth = 2;
-        gbc.fill = java.awt.GridBagConstraints.VERTICAL;
+        gbc.fill = java.awt.GridBagConstraints.BOTH;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         loadoutPanel.add(equipmentScroll, gbc);
 
+        JSplitPane pane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+                new JScrollPane(loadoutPanel),
+                new JScrollPane(databasePanel));
+        pane.setOneTouchExpandable(true);
         setLayout(new BorderLayout());
-        this.add(loadoutPanel, BorderLayout.WEST);
-        this.add(databasePanel, BorderLayout.CENTER);
-
+        add(pane, BorderLayout.CENTER);
     }
 
     public void addRefreshedListener(RefreshListener l) {
