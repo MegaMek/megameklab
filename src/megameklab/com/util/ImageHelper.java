@@ -39,6 +39,9 @@ import java.util.Vector;
 
 import javax.swing.ImageIcon;
 
+import com.kitfox.svg.SVGDiagram;
+import com.kitfox.svg.SVGUniverse;
+
 import megamek.common.Aero;
 import megamek.common.AmmoType;
 import megamek.common.BattleArmor;
@@ -58,9 +61,6 @@ import megamek.common.SmallCraft;
 import megamek.common.Tank;
 import megamek.common.TechConstants;
 import megamek.common.VTOL;
-
-import com.kitfox.svg.SVGDiagram;
-import com.kitfox.svg.SVGUniverse;
 
 public class ImageHelper {
     public static String recordSheetPath = "./data/images/recordsheets/";

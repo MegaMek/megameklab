@@ -37,6 +37,8 @@ import java.util.Vector;
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.standard.PrintQuality;
 
+import com.kitfox.svg.SVGException;
+
 import megamek.common.AmmoType;
 import megamek.common.Crew;
 import megamek.common.CriticalSlot;
@@ -50,8 +52,6 @@ import megamek.common.TechConstants;
 import megamek.common.WeaponType;
 import megameklab.com.util.ImageHelper;
 import megameklab.com.util.UnitUtil;
-
-import com.kitfox.svg.SVGException;
 
 // TODO Remove this when implemented
 @SuppressWarnings("unused")
@@ -107,13 +107,13 @@ public class PrintTripod implements Printable {
         printMekImage(g2d, hud);
 
         if (mech.hasShield()) {
-            if ((UnitUtil.getShieldDamageAbsorbtion(mech, Mech.LOC_RARM) > 0) && (UnitUtil.getShieldDamageAbsorbtion(mech, Mech.LOC_LARM) > 0)) {
+            if ((UnitUtil.getShieldDamageAbsorption(mech, Mech.LOC_RARM) > 0) && (UnitUtil.getShieldDamageAbsorption(mech, Mech.LOC_LARM) > 0)) {
                 try {
                     ImageHelper.loadSVGImage(new File("data/images/recordsheets/TripodBothShields.svg")).render(g2d);
                 } catch (SVGException e) {
                     e.printStackTrace();
                 }
-            } else if (UnitUtil.getShieldDamageAbsorbtion(mech, Mech.LOC_RARM) > 0) {
+            } else if (UnitUtil.getShieldDamageAbsorption(mech, Mech.LOC_RARM) > 0) {
                 try {
                     ImageHelper.loadSVGImage(new File("data/images/recordsheets/TripodRightShields.svg")).render(g2d);
                 } catch (SVGException e) {

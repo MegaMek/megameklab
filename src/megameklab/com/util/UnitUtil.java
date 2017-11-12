@@ -49,7 +49,11 @@ import megamek.common.BattleArmor;
 import megamek.common.BipedMech;
 import megamek.common.CriticalSlot;
 import megamek.common.Entity;
+import megamek.common.EntityMovementMode;
+import megamek.common.EntityWeightClass;
 import megamek.common.EquipmentType;
+import megamek.common.ITechManager;
+import megamek.common.ITechnology;
 import megamek.common.Infantry;
 import megamek.common.LandAirMech;
 import megamek.common.LocationFullException;
@@ -57,12 +61,17 @@ import megamek.common.Mech;
 import megamek.common.MechView;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
+import megamek.common.Protomech;
 import megamek.common.QuadMech;
+import megamek.common.SimpleTechLevel;
 import megamek.common.Tank;
 import megamek.common.TechConstants;
 import megamek.common.TripodMech;
 import megamek.common.VTOL;
 import megamek.common.WeaponType;
+import megamek.common.annotations.Nullable;
+import megamek.common.logging.LogLevel;
+import megamek.common.logging.MMLogger;
 import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestAero;
 import megamek.common.verifier.TestBattleArmor;
@@ -71,50 +80,51 @@ import megamek.common.verifier.TestInfantry;
 import megamek.common.verifier.TestMech;
 import megamek.common.verifier.TestSupportVehicle;
 import megamek.common.verifier.TestTank;
-import megamek.common.weapons.ACWeapon;
 import megamek.common.weapons.AmmoWeapon;
-import megamek.common.weapons.BPodWeapon;
-import megamek.common.weapons.CLAMS;
-import megamek.common.weapons.CLChemicalLaserWeapon;
-import megamek.common.weapons.CLLaserAMS;
-import megamek.common.weapons.CLLightTAG;
-import megamek.common.weapons.CLPlasmaCannon;
-import megamek.common.weapons.CLTAG;
-import megamek.common.weapons.EnergyWeapon;
-import megamek.common.weapons.GaussWeapon;
-import megamek.common.weapons.HAGWeapon;
-import megamek.common.weapons.HVACWeapon;
-import megamek.common.weapons.ISAMS;
-import megamek.common.weapons.ISAPDS;
-import megamek.common.weapons.ISC3M;
-import megamek.common.weapons.ISC3MBS;
-import megamek.common.weapons.ISLaserAMS;
-import megamek.common.weapons.ISPlasmaRifle;
-import megamek.common.weapons.ISTAG;
-import megamek.common.weapons.LBXACWeapon;
-import megamek.common.weapons.LRMWeapon;
-import megamek.common.weapons.LRTWeapon;
 import megamek.common.weapons.LegAttack;
-import megamek.common.weapons.MGWeapon;
-import megamek.common.weapons.MPodWeapon;
-import megamek.common.weapons.MRMWeapon;
-import megamek.common.weapons.PPCWeapon;
-import megamek.common.weapons.RLWeapon;
-import megamek.common.weapons.SRMWeapon;
-import megamek.common.weapons.SRTWeapon;
 import megamek.common.weapons.StopSwarmAttack;
-import megamek.common.weapons.StreakLRMWeapon;
-import megamek.common.weapons.StreakSRMWeapon;
 import megamek.common.weapons.SwarmAttack;
 import megamek.common.weapons.SwarmWeaponAttack;
-import megamek.common.weapons.ThunderBoltWeapon;
-import megamek.common.weapons.UACWeapon;
-import megamek.common.weapons.VehicleFlamerWeapon;
+import megamek.common.weapons.autocannons.ACWeapon;
+import megamek.common.weapons.autocannons.HVACWeapon;
+import megamek.common.weapons.autocannons.LBXACWeapon;
+import megamek.common.weapons.autocannons.UACWeapon;
 import megamek.common.weapons.battlearmor.CLBALBX;
 import megamek.common.weapons.battlearmor.CLBALightTAG;
 import megamek.common.weapons.battlearmor.ISBALightTAG;
+import megamek.common.weapons.defensivepods.BPodWeapon;
+import megamek.common.weapons.defensivepods.MPodWeapon;
+import megamek.common.weapons.flamers.VehicleFlamerWeapon;
+import megamek.common.weapons.gaussrifles.GaussWeapon;
+import megamek.common.weapons.gaussrifles.HAGWeapon;
 import megamek.common.weapons.infantry.InfantryRifleAutoRifleWeapon;
 import megamek.common.weapons.infantry.InfantryWeapon;
+import megamek.common.weapons.lasers.CLChemicalLaserWeapon;
+import megamek.common.weapons.lasers.EnergyWeapon;
+import megamek.common.weapons.lrms.LRMWeapon;
+import megamek.common.weapons.lrms.LRTWeapon;
+import megamek.common.weapons.lrms.StreakLRMWeapon;
+import megamek.common.weapons.mgs.MGWeapon;
+import megamek.common.weapons.missiles.MRMWeapon;
+import megamek.common.weapons.missiles.RLWeapon;
+import megamek.common.weapons.missiles.ThunderBoltWeapon;
+import megamek.common.weapons.other.CLAMS;
+import megamek.common.weapons.other.CLLaserAMS;
+import megamek.common.weapons.other.ISAMS;
+import megamek.common.weapons.other.ISAPDS;
+import megamek.common.weapons.other.ISC3M;
+import megamek.common.weapons.other.ISC3MBS;
+import megamek.common.weapons.other.ISLaserAMS;
+import megamek.common.weapons.ppc.CLPlasmaCannon;
+import megamek.common.weapons.ppc.ISPlasmaRifle;
+import megamek.common.weapons.ppc.PPCWeapon;
+import megamek.common.weapons.srms.SRMWeapon;
+import megamek.common.weapons.srms.SRTWeapon;
+import megamek.common.weapons.srms.StreakSRMWeapon;
+import megamek.common.weapons.tag.CLLightTAG;
+import megamek.common.weapons.tag.CLTAG;
+import megamek.common.weapons.tag.ISTAG;
+import megameklab.com.MegaMekLab;
 
 public class UnitUtil {
 
@@ -445,12 +455,25 @@ public class UnitUtil {
      * Checks to see if unit can use the techlevel
      *
      * @param unit
-     * @param techLevel
+     * @param tech
      * @return Boolean if the tech level is legal for the passed unit
      */
-    public static boolean isLegal(Entity unit, int techLevel) {
-        return TechConstants.isLegal(unit.getTechLevel(), techLevel, false,
-                unit.isMixedTech());
+    public static boolean isLegal(Entity unit, ITechnology tech) {
+        if (unit.isMixedTech()) {
+            if (!tech.isAvailableIn(unit.getTechLevelYear())) {
+                return false;
+            }
+        } else {
+            if (tech.getTechBase() != ITechnology.TECH_BASE_ALL
+                    && unit.isClan() != tech.isClan()) {
+                return false;
+            }
+            if (!tech.isAvailableIn(unit.getTechLevelYear(), unit.isClan())) {
+                return false;
+            }
+        }
+        return TechConstants.convertFromNormalToSimple(tech.getTechLevel(unit.getTechLevelYear(),
+                unit.isClan())) <= TechConstants.convertFromNormalToSimple(unit.getTechLevel());
     }
 
     /**
@@ -566,6 +589,8 @@ public class UnitUtil {
      * @param unit
      */
     public static void removeHeatSinks(Mech unit, int number) {
+        final String METHOD_NAME = "removeHeatSinks(Mech, int)";
+        
         Vector<Mounted> toRemove = new Vector<Mounted>();
         int base = UnitUtil.getCriticalFreeHeatSinks(unit,
                 unit.hasCompactHeatSinks());
@@ -633,7 +658,7 @@ public class UnitUtil {
                             new Mounted(unit, EquipmentType
                                     .get("IS1 Compact Heat Sink")), loc, false);
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    getLogger().log(UnitUtil.class, METHOD_NAME, ex);
                 }
             }
 
@@ -648,11 +673,20 @@ public class UnitUtil {
      * @param hsType
      */
     public static void addHeatSinkMounts(Mech unit, int hsAmount, String hsType) {
+        addHeatSinkMounts(unit, hsAmount, EquipmentType.get(UnitUtil.getHeatSinkType(hsType, unit.isClan())));
+    }
+    
+    /**
+     * adds all heat sinks to the mech
+     * 
+     * @param unit
+     * @param hsAmount
+     * @param sinkType
+     */
+    public static void addHeatSinkMounts(Mech unit, int hsAmount, EquipmentType sinkType) {
+        final String METHOD_NAME = "addHeatSinkMounts(Mech, int, String)";
 
-        EquipmentType sinkType;
-        sinkType = EquipmentType.get(UnitUtil.getHeatSinkType(hsType,
-                unit.isClan()));
-        if (hsType.equals("Compact")) {
+        if (sinkType.hasFlag(MiscType.F_COMPACT_HEAT_SINK)) {
             UnitUtil.addCompactHeatSinkMounts(unit, hsAmount);
         } else {
             for (; hsAmount > 0; hsAmount--) {
@@ -660,13 +694,15 @@ public class UnitUtil {
                     unit.addEquipment(new Mounted(unit, sinkType),
                             Entity.LOC_NONE, false);
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    getLogger().log(UnitUtil.class, METHOD_NAME, ex);
                 }
             }
         }
     }
 
     public static void addCompactHeatSinkMounts(Mech unit, int hsAmount) {
+        final String METHOD_NAME = "addCompactHeatSinkMounts(Mech, int)";
+        
         // first we need to figure out how many single compacts we need to add
         // for the engine, if any
         int currentSinks = UnitUtil.countActualHeatSinks(unit);
@@ -683,7 +719,7 @@ public class UnitUtil {
                                     .get("IS1 Compact Heat Sink")),
                             Entity.LOC_NONE, false);
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    getLogger().log(UnitUtil.class, METHOD_NAME, ex);
                 }
             } else {
                 int loc = singleCompact.getLocation();
@@ -695,7 +731,7 @@ public class UnitUtil {
                                     .getHeatSinkType("Compact", unit.isClan()))),
                             loc, false);
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    getLogger().log(UnitUtil.class, METHOD_NAME, ex);
                 }
             }
             restHS -= 1;
@@ -706,7 +742,7 @@ public class UnitUtil {
                                 .getHeatSinkType("Compact", unit.isClan()))),
                         Entity.LOC_NONE, false);
             } catch (Exception ex) {
-                ex.printStackTrace();
+                getLogger().log(UnitUtil.class, METHOD_NAME, ex);
             }
         }
     }
@@ -813,9 +849,8 @@ public class UnitUtil {
      *
      * @param unit
      */
-    public static void updateAutoSinks(Mech unit, String hsType) {
-        int base = UnitUtil.getCriticalFreeHeatSinks(unit,
-                hsType.equals("Compact"));
+    public static void updateAutoSinks(Mech unit, boolean compact) {
+        int base = UnitUtil.getCriticalFreeHeatSinks(unit, compact);
         Vector<Mounted> unassigned = new Vector<Mounted>();
         Vector<Mounted> assigned = new Vector<Mounted>();
         for (Mounted m : unit.getMisc()) {
@@ -894,6 +929,8 @@ public class UnitUtil {
      * @param jjType
      */
     public static void updateJumpJets(Mech unit, int jjAmount, int jjType) {
+        final String METHOD_NAME = "updateJumpJets(Mech, int, int)";
+        
         unit.setOriginalJumpMP(jjAmount);
         int ctype = unit.getJumpType();
         if (jjType == ctype) {
@@ -927,7 +964,7 @@ public class UnitUtil {
                                     .getJumpJetType(jjType, unit.isClan()))),
                             Entity.LOC_NONE, false);
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    getLogger().log(UnitUtil.class, METHOD_NAME, ex);
                 }
                 jjAmount--;
             }
@@ -951,30 +988,6 @@ public class UnitUtil {
             if (UnitUtil.isTSM(eq.getType()) || UnitUtil.isMASC(eq.getType())) {
                 unit.getMisc().remove(eq);
                 unit.getEquipment().remove(eq);
-            }
-        }
-    }
-
-    public static void updateEnhancements(Mech unit, boolean hasMASC,
-            boolean hasTSM) {
-        UnitUtil.removeEnhancements(unit);
-        if (hasTSM) {
-            if (unit.isIndustrial()) {
-                UnitUtil.createSpreadMounts(unit,
-                        EquipmentType.get("Industrial TSM"));
-            } else {
-                UnitUtil.createSpreadMounts(unit, EquipmentType.get("TSM"));
-            }
-        }
-        if (hasMASC) {
-            Mounted mount = new Mounted(unit, EquipmentType.get("ISMASC"));
-            if (unit.isClan()) {
-                mount = new Mounted(unit, EquipmentType.get("CLMASC"));
-            }
-            try {
-                unit.addEquipment(mount, Entity.LOC_NONE, false);
-            } catch (LocationFullException lfe) {
-                // this can't happen, we add to Entity.LOC_NONE
             }
         }
     }
@@ -1264,16 +1277,20 @@ public class UnitUtil {
 
     public static int getMaximumArmorPoints(Entity unit) {
         int points = 0;
-        if (unit instanceof Mech) {
+        if (unit.hasETypeFlag(Entity.ETYPE_MECH)) {
             int headPoints = 3;
-            if (((Mech)unit).isSuperHeavy()) {
+            if (unit.getWeightClass() == EntityWeightClass.WEIGHT_SUPER_HEAVY) {
                 headPoints = 4;
             }
             points = (unit.getTotalInternal() * 2) + headPoints;
-        } else if (unit instanceof Tank) {
+        } else if (unit.hasETypeFlag(Entity.ETYPE_TANK)) {
             points = (int) Math.floor((unit.getWeight() * 3.5) + 40);
-        } else if (unit instanceof BattleArmor) {
+        } else if (unit.hasETypeFlag(Entity.ETYPE_BATTLEARMOR)) {
             points = (unit.getWeightClass() * 4) + 2;
+        } else if (unit.hasETypeFlag(Entity.ETYPE_CONV_FIGHTER)) {
+            points = (int) Math.floor(unit.getWeight());
+        } else if (unit.hasETypeFlag(Entity.ETYPE_AERO)) {
+            points = (int) Math.floor(unit.getWeight() * 8);
         }
         return points;
     }
@@ -1324,6 +1341,7 @@ public class UnitUtil {
             double points =
                     TestAero.maxArmorPoints(unit, unit.getWeight());
             armorWeight = points / armorPerTon;
+            armorWeight = Math.ceil(armorWeight * 2.0) / 2.0;
         }
         return armorWeight;
     }
@@ -1335,13 +1353,24 @@ public class UnitUtil {
      * @param armorTons
      * @return
      */
-    public static int getArmorPoints(Entity unit, double armorTons) {
+    public static int getRawArmorPoints(Entity unit, double armorTons) {
         double armorPerTon = 16.0 * EquipmentType.getArmorPointMultiplier(
                 unit.getArmorType(1), unit.getArmorTechLevel(1));
         if (unit.getArmorType(1) == EquipmentType.T_ARMOR_HARDENED) {
             armorPerTon = 8.0;
         }
-        return Math.min((int) Math.floor(armorPerTon * armorTons),
+        return (int)Math.floor(armorPerTon * armorTons);
+    }
+
+    /**
+     * NOTE: only use for non-patchwork armor
+     *
+     * @param unit
+     * @param armorTons
+     * @return
+     */
+    public static int getArmorPoints(Entity unit, double armorTons) {
+        return Math.min(UnitUtil.getRawArmorPoints(unit, armorTons),
                 UnitUtil.getMaximumArmorPoints(unit));
     }
 
@@ -1361,6 +1390,35 @@ public class UnitUtil {
         return Math.min((int) Math.floor(armorPerTon * armorTons),
                 UnitUtil.getMaximumArmorPoints(unit, loc));
     }
+    
+    /**
+     * Calculate the number of armor points per ton of armor for the given unit.
+     * 
+     * @param en
+     * @param at
+     * @param clanArmor
+     * @return
+     */
+    // TODO: aerospace and support vehicle armor
+    public static double getArmorPointsPerTon(Entity en, int at, boolean clanArmor) {
+       if (at == EquipmentType.T_ARMOR_HARDENED) {
+           return 8.0;
+       } else {
+           return 16.0 * EquipmentType.getArmorPointMultiplier(at, clanArmor);
+       }
+    }
+    
+    /**
+     * Calculate the number of armor points per ton of armor for the given unit.
+     * 
+     * @param en
+     * @param at
+     * @param atTechLevel
+     * @return
+     */
+    public static double getArmorPointsPerTon(Entity en, int at, int techLevel) {
+        return getArmorPointsPerTon(en, at, TechConstants.isClan(techLevel));
+    }
 
     public static void compactCriticals(Entity unit) {
         for (int loc = 0; loc < unit.locations(); loc++) {
@@ -1372,6 +1430,105 @@ public class UnitUtil {
         }
     }
 
+    /**
+     * Determine the maximum number of armor points that can be mounted in a location.
+     * 
+     * @param entity
+     * @param location
+     * @return  The maximum number of armor points for the location, or null if there is no maximum.
+     */
+    public static @Nullable Integer getMaxArmor(Entity entity, int location) {
+        if ((location < 0) || (location >= entity.locations())) {
+            return 0;
+        }
+        if (entity.hasETypeFlag(Entity.ETYPE_MECH)) {
+            if (location == Mech.LOC_HEAD) {
+                return (entity.getWeightClass() == EntityWeightClass.WEIGHT_SUPER_HEAVY)? 12 : 9;
+            } else {
+                return entity.getOInternal(location) * 2;
+            }
+        } else if (entity.hasETypeFlag(Entity.ETYPE_PROTOMECH)) {
+            if (location == Protomech.LOC_HEAD) {
+                return 2 + (int)entity.getWeight() / 2;
+            } else if (location == Protomech.LOC_MAINGUN) {
+                return entity.getOInternal(location) * 3;
+            } else if ((location == Protomech.LOC_LARM)
+                    || (location == Protomech.LOC_RARM)) {
+                return Math.min(entity.getOInternal(location) * 2, 6);
+            } else {
+                return entity.getOInternal(location) * 2;
+            }
+        }
+        return null;
+    }
+
+    //Types available for industrial mechs, used by legalArmorsFor
+    private final static int[] INDUSTRIAL_TYPES = {
+            EquipmentType.T_ARMOR_INDUSTRIAL, EquipmentType.T_ARMOR_HEAVY_INDUSTRIAL,
+            EquipmentType.T_ARMOR_COMMERCIAL
+    };
+    
+    /**
+     * Compiles a list of all armor types legal for the unit under given tech limits
+     * 
+     * @param en           The unit for which to compile the list
+     * @param techManager  Provides era and tech constraints to determine whether the armor is legal
+     * @return             A list of armors legal for the unit type under the tech constaints
+     */
+    public static List<EquipmentType> legalArmorsFor(Entity en, ITechManager techManager) {
+        List<EquipmentType> retVal = new ArrayList<>();
+        // IndustrialMechs can only use industrial armor below experimental rules level
+        if ((en instanceof Mech) && ((Mech)en).isIndustrial()
+                && (techManager.getTechLevel().ordinal() < SimpleTechLevel.EXPERIMENTAL.ordinal())) {
+            
+            for (int at : INDUSTRIAL_TYPES) {
+                String name = EquipmentType.getArmorTypeName(at, false);
+                EquipmentType eq = EquipmentType.get(name);
+                if ((null != eq) && techManager.isLegal(eq)) {
+                    retVal.add(eq);
+                }
+            }
+        } else {
+            BigInteger flag = MiscType.F_MECH_EQUIPMENT;
+            if (en.hasETypeFlag(Entity.ETYPE_AERO)) {
+                flag = MiscType.F_AERO_EQUIPMENT;
+            } else if (en.hasETypeFlag(Entity.ETYPE_TANK)) {
+                flag = MiscType.F_TANK_EQUIPMENT;
+            }
+            boolean isLAM = en.hasETypeFlag(Entity.ETYPE_LAND_AIR_MECH);
+            boolean hardenedIllegal = isLAM
+                    || (en.getMovementMode() == EntityMovementMode.VTOL)
+                    || (en.getMovementMode() == EntityMovementMode.WIGE)
+                    || (en.getMovementMode() == EntityMovementMode.HOVER);
+            
+            for (int at = 0; at < EquipmentType.armorNames.length; at++) {
+                if (at == EquipmentType.T_ARMOR_PATCHWORK) {
+                    continue;
+                }
+                if ((at == EquipmentType.T_ARMOR_HARDENED) && hardenedIllegal) {
+                    continue;
+                }
+                String name = EquipmentType.getArmorTypeName(at, techManager.useClanTechBase());
+                EquipmentType eq = EquipmentType.get(name);
+                if ((null == eq) || (isLAM && ((eq.getCriticals(null) > 0)))) {
+                    continue;
+                }
+                if ((null != eq) && eq.hasFlag(flag) && techManager.isLegal(eq)) {
+                    retVal.add(eq);
+                }
+                if (techManager.useMixedTech()) {
+                    name = EquipmentType.getArmorTypeName(at, !techManager.useClanTechBase());
+                    EquipmentType eq2 = EquipmentType.get(name);
+                    if ((null != eq2) && (eq != eq2) && eq2.hasFlag(flag)
+                            && techManager.isLegal(eq2)) {
+                        retVal.add(eq2);
+                    }
+                }
+            }
+        }
+        return retVal;
+    }
+    
     public static void compactCriticals(Entity unit, int loc) {
         int firstEmpty = -1;
         for (int slot = 0; slot < unit.getNumberOfCriticals(loc); slot++) {
@@ -1539,6 +1696,8 @@ public class UnitUtil {
      * @return
      */
     public static Mounted createSpreadMounts(Mech unit, EquipmentType equip) {
+        final String METHOD_NAME = "createSpreadMounts(Mech, EquipmentType)";
+        
         // how many non-spreadable contiguous blocks of crits?
         int blocks = 0;
         boolean isMisc = equip instanceof MiscType;
@@ -1668,7 +1827,7 @@ public class UnitUtil {
                         }
                     }
                 } catch (LocationFullException lfe) {
-                    lfe.printStackTrace();
+                    getLogger().log(UnitUtil.class, METHOD_NAME, lfe);
                     JOptionPane.showMessageDialog(
                             null,
                             lfe.getMessage(),
@@ -1686,6 +1845,7 @@ public class UnitUtil {
     }
 
     public static void loadFonts() {
+        final String METHOD_NAME = "loadFonts()";
 
         if ((euroFont != null) && (euroBoldFont != null)) {
             return;
@@ -1700,8 +1860,8 @@ public class UnitUtil {
             ge.registerFont(euroFont);
             is.close();
         } catch (Exception ex) {
-            ex.printStackTrace();
-            System.err.println(fName + " not loaded.  Using Arial font.");
+            getLogger().log(UnitUtil.class, METHOD_NAME, LogLevel.ERROR,
+                            fName + " not loaded.  Using Arial font.", ex);
             euroFont = new Font("Arial", Font.PLAIN, 8);
         }
 
@@ -1713,8 +1873,8 @@ public class UnitUtil {
             ge.registerFont(euroBoldFont);
             is.close();
         } catch (Exception ex) {
-            ex.printStackTrace();
-            System.err.println(fName + " not loaded.  Using Arial font.");
+            getLogger().log(UnitUtil.class, METHOD_NAME, LogLevel.ERROR,
+                            fName + " not loaded.  Using Arial font.", ex);
             euroBoldFont = new Font("Arial", Font.PLAIN, 8);
         }
 
@@ -1829,9 +1989,8 @@ public class UnitUtil {
      */
     public static boolean isJumpJet(EquipmentType eq) {
         if ((eq instanceof MiscType)
-                && (eq.hasFlag(MiscType.F_JUMP_BOOSTER)
-                        || eq.hasFlag(MiscType.F_JUMP_JET) || eq
-                            .hasFlag(MiscType.F_UMU))) {
+                && (eq.hasFlag(MiscType.F_JUMP_JET)
+                        || eq.hasFlag(MiscType.F_UMU))) {
             return true;
         }
 
@@ -1858,12 +2017,6 @@ public class UnitUtil {
 
     public static String getCritName(Entity unit, EquipmentType eq) {
         String name = eq.getName();
-        if ((eq instanceof WeaponType)
-                && (eq.hasFlag(WeaponType.F_C3M) || eq
-                        .hasFlag(WeaponType.F_C3MBS))) {
-            return name = name.substring(0,
-                    eq.getName().indexOf("with TAG") - 1);
-        }
         if (unit.isMixedTech()
                 && (eq.getTechLevel(unit.getTechLevelYear()) != TechConstants.T_ALLOWED_ALL)
                 && (eq.getTechLevel(unit.getTechLevelYear()) != TechConstants.T_TECH_UNKNOWN)) {
@@ -2312,6 +2465,13 @@ public class UnitUtil {
                     return false;
                 }
             }
+            
+            if ((unit instanceof LandAirMech)
+                    && (weapon.getAmmoType() == AmmoType.T_GAUSS_HEAVY
+                    || weapon.getAmmoType() == AmmoType.T_IGAUSS_HEAVY)) {
+                return false;
+            }
+            
             return true;
         }
         return false;
@@ -2459,6 +2619,26 @@ public class UnitUtil {
                             || eq.hasFlag(MiscType.F_MODULAR_ARMOR)
                             || eq.hasFlag(MiscType.F_PARTIAL_WING)
                             || eq.hasFlag(MiscType.F_UMU))) {
+                return false;
+            }
+            
+            if ((unit instanceof LandAirMech)
+                    && ((eq.hasFlag(MiscType.F_MASC) && eq.getSubType() == MiscType.S_SUPERCHARGER)
+                            || eq.hasFlag(MiscType.F_MODULAR_ARMOR)
+                            || eq.hasFlag(MiscType.F_JUMP_BOOSTER)
+                            || eq.hasFlag(MiscType.F_PARTIAL_WING)
+                            || eq.hasFlag(MiscType.F_VOIDSIG)
+                            || eq.hasFlag(MiscType.F_NULLSIG)
+                            || eq.hasFlag(MiscType.F_BLUE_SHIELD)
+                            || eq.hasFlag(MiscType.F_CHAMELEON_SHIELD)
+                            || eq.hasFlag(MiscType.F_ENVIRONMENTAL_SEALING)
+                            || eq.hasFlag(MiscType.F_DUMPER)
+                            || eq.hasFlag(MiscType.F_HEAVY_BRIDGE_LAYER)
+                            || eq.hasFlag(MiscType.F_MEDIUM_BRIDGE_LAYER)
+                            || eq.hasFlag(MiscType.F_LIGHT_BRIDGE_LAYER)
+                            || (eq.hasFlag(MiscType.F_CLUB)
+                                    && (eq.getSubType() == MiscType.S_BACKHOE)
+                                    || (eq.getSubType() == MiscType.S_COMBINE)))) {
                 return false;
             }
 
@@ -2684,7 +2864,8 @@ public class UnitUtil {
         return false;
     }
 
-    public static int getShieldDamageAbsorbtion(Mech mech, int location) {
+    public static int getShieldDamageAbsorption(Mech mech, int location) {
+        final String METHOD_NAME = "getShieldDamageAbsorption(Mech, int)";
         for (int slot = 0; slot < mech.getNumberOfCriticals(location); slot++) {
             CriticalSlot cs = mech.getCritical(location, slot);
 
@@ -2699,7 +2880,8 @@ public class UnitUtil {
             Mounted m = cs.getMount();
 
             if (m == null) {
-                System.err.println("Null Mount index: " + cs.getIndex());
+                getLogger().log(UnitUtil.class, METHOD_NAME, LogLevel.ERROR,
+                                "Null Mount index: " + cs.getIndex());
                 m = cs.getMount();
             }
 
@@ -2713,6 +2895,7 @@ public class UnitUtil {
     }
 
     public static int getShieldDamageCapacity(Mech mech, int location) {
+        final String METHOD_NAME = "getShieldDamageCapacity(Mech, int)";
         for (int slot = 0; slot < mech.getNumberOfCriticals(location); slot++) {
             CriticalSlot cs = mech.getCritical(location, slot);
 
@@ -2727,7 +2910,8 @@ public class UnitUtil {
             Mounted m = cs.getMount();
 
             if (m == null) {
-                System.err.println("Null Mount index: " + cs.getIndex());
+                getLogger().log(UnitUtil.class, METHOD_NAME, LogLevel.ERROR,
+                                "Null Mount index: " + cs.getIndex());
                 m = cs.getMount();
             }
 
@@ -2835,6 +3019,31 @@ public class UnitUtil {
             unit.setArmorType(EquipmentType.T_ARMOR_STANDARD);
             unit.setArmorTechLevel(unit.getTechLevel());
         }
+    }
+
+    /**
+     * Remove all mounts for the current armor type from a single location on the passed unit
+     * and sets the armor type in that location to standard.
+     *
+     * @param unit The <code>Entity</code>
+     * @param loc  The location from which to remove the armor mounts.
+     */
+    public static void resetArmor(Entity unit, int loc) {
+        String name = EquipmentType.getArmorTypeName(unit.getArmorType(loc),
+                TechConstants.isClan(unit.getArmorTechLevel(loc)));
+        EquipmentType eq = EquipmentType.get(name);
+        if (null != eq) {
+            for (int slot = 0; slot < unit.getNumberOfCriticals(loc); slot++) {
+                final CriticalSlot crit = unit.getCritical(loc, slot);
+                if ((null != crit) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)
+                        && (null != crit.getMount()) && crit.getMount().getType().equals(eq)) {
+                    unit.getMisc().remove(crit.getMount());
+                    unit.setCritical(loc, slot, null);
+                }
+            }
+        }
+        unit.setArmorType(EquipmentType.T_ARMOR_STANDARD, loc);
+        unit.setArmorTechLevel(TechConstants.T_INTRO_BOXSET, loc);
     }
 
     public static void checkArmor(Entity unit) {
@@ -3536,6 +3745,10 @@ public class UnitUtil {
         return sinks;
     }
 
+    /**
+     * @deprecated Use {@link checkEquipmentByTechLevel(Entity,ITechManager)} instead
+     */
+    @Deprecated
     public static void checkEquipmentByTechLevel(Entity unit) {
         Vector<Mounted> toRemove = new Vector<Mounted>();
         for (Mounted m : unit.getEquipment()) {
@@ -3549,8 +3762,7 @@ public class UnitUtil {
                     || etype.hasFlag(MiscType.F_MASC)) {
                 continue;
             }
-            if (!UnitUtil.isLegal(unit,
-                    etype.getTechLevel(unit.getTechLevelYear()))) {
+            if (!UnitUtil.isLegal(unit, etype)) {
                 toRemove.add(m);
             }
         }
@@ -3560,18 +3772,63 @@ public class UnitUtil {
         if (unit instanceof Infantry) {
             Infantry pbi = (Infantry) unit;
             if ((null != pbi.getPrimaryWeapon())
-                    && !UnitUtil.isLegal(unit, pbi.getPrimaryWeapon()
-                            .getTechLevel(pbi.getTechLevelYear()))) {
+                    && !UnitUtil.isLegal(unit, pbi.getPrimaryWeapon())) {
                 UnitUtil.replaceMainWeapon((Infantry) unit,
                         (InfantryWeapon) EquipmentType
                                 .get("Infantry Auto Rifle"), false);
             }
             if ((null != pbi.getSecondaryWeapon())
-                    && !UnitUtil.isLegal(unit, pbi.getSecondaryWeapon()
-                            .getTechLevel(pbi.getTechLevelYear()))) {
+                    && !UnitUtil.isLegal(unit, pbi.getSecondaryWeapon())) {
                 UnitUtil.replaceMainWeapon((Infantry) unit, null, true);
             }
         }
+    }
+
+    public static boolean checkEquipmentByTechLevel(Entity unit, ITechManager techManager) {
+        Vector<Mounted> toRemove = new Vector<Mounted>();
+        ITechnology acTA = Entity.getArmoredComponentTechAdvancement();
+        boolean dirty = false;
+        for (Mounted m : unit.getEquipment()) {
+            if (m.isArmored() && !techManager.isLegal(acTA)) {
+                m.setArmored(false);
+                updateCritsArmoredStatus(unit, m);
+                dirty = true;
+            }
+            EquipmentType etype = m.getType();
+            if (UnitUtil.isArmorOrStructure(etype)
+                    || UnitUtil.isHeatSink(etype) || UnitUtil.isJumpJet(etype)) {
+                continue;
+            }
+            if (etype.hasFlag(MiscType.F_TSM)
+                    || etype.hasFlag(MiscType.F_INDUSTRIAL_TSM)
+                    || (etype.hasFlag(MiscType.F_MASC) && !etype.hasSubType(MiscType.S_SUPERCHARGER))
+                    || etype.hasFlag(MiscType.F_SCM)) {
+                continue;
+            }
+            if (!techManager.isLegal(etype)) {
+                toRemove.add(m);
+            }
+        }
+        dirty |= toRemove.size() > 0;
+        for (Mounted m : toRemove) {
+            UnitUtil.removeMounted(unit, m);
+        }
+        if (unit instanceof Infantry) {
+            Infantry pbi = (Infantry) unit;
+            if ((null != pbi.getPrimaryWeapon())
+                    && techManager.isLegal(pbi.getPrimaryWeapon())) {
+                dirty = true;
+                UnitUtil.replaceMainWeapon((Infantry) unit,
+                        (InfantryWeapon) EquipmentType
+                                .get("Infantry Auto Rifle"), false);
+            }
+            if ((null != pbi.getSecondaryWeapon())
+                    && !techManager.isLegal(pbi.getSecondaryWeapon())) {
+                dirty = true;
+                UnitUtil.replaceMainWeapon((Infantry) unit, null, true);
+            }
+        }
+        return dirty;
     }
 
     public static void replaceMainWeapon(Infantry unit, InfantryWeapon weapon,
@@ -3722,5 +3979,9 @@ public class UnitUtil {
             }
         }
 
+    }
+
+    public static MMLogger getLogger() {
+        return MegaMekLab.getLogger();
     }
 }

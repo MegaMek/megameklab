@@ -35,6 +35,8 @@ import java.util.Vector;
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.standard.PrintQuality;
 
+import com.kitfox.svg.SVGException;
+
 import megamek.common.Aero;
 import megamek.common.SmallCraft;
 //TODO: uncomment when print issue is fixed and pilot data is ready to position
@@ -43,8 +45,6 @@ import megamek.common.TechConstants;
 import megameklab.com.util.ImageHelper;
 import megameklab.com.util.ImageHelperAero;
 import megameklab.com.util.UnitUtil;
-
-import com.kitfox.svg.SVGException;
 
 public class PrintSmallCraftSpheroid implements Printable {
 

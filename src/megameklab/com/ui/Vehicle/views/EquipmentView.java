@@ -133,7 +133,7 @@ public class EquipmentView extends IView implements ActionListener {
         equipmentTypes = new Vector<EquipmentType>();
 
         for (EquipmentType eq : masterEquipmentList) {
-            if (UnitUtil.isLegal(getTank(), eq.getTechLevel(getTank().getTechLevelYear()))) {
+            if (UnitUtil.isLegal(getTank(), eq)) {
                 equipmentTypes.add(eq);
                 equipmentCombo.addItem(eq);
             }

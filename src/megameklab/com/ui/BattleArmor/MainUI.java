@@ -30,6 +30,7 @@ import megamek.common.BattleArmor;
 import megamek.common.Entity;
 import megamek.common.EntityWeightClass;
 import megamek.common.EquipmentType;
+import megamek.common.ITechManager;
 import megamek.common.TechConstants;
 import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.BattleArmor.tabs.BuildTab;
@@ -59,7 +60,7 @@ public class MainUI extends MegaMekLabMainUI {
 
         super();
         // ConfigPane.setMinimumSize(new Dimension(300, 300));
-        createNewUnit(Entity.ETYPE_BATTLEARMOR, false);
+        createNewUnit(Entity.ETYPE_BATTLEARMOR);
         setTitle(getEntity().getChassis() + " " + getEntity().getModel() + ".blk");
         menubarcreator = new MenuBarCreator(this);
         setJMenuBar(menubarcreator);
@@ -104,7 +105,7 @@ public class MainUI extends MegaMekLabMainUI {
     }
 
     @Override
-    public void createNewUnit(long entityType, boolean isSuperHeavy) {
+    public void createNewUnit(long entityType, boolean isPrimitive, boolean isIndustrial, Entity oldEntity) {
         setEntity(new BattleArmor());
         BattleArmor ba = (BattleArmor) getEntity();
 
@@ -182,6 +183,23 @@ public class MainUI extends MegaMekLabMainUI {
     @Override
     public void refreshPreview() {
         structureTab.refreshPreview();
+    }
+    
+    @Override
+    public void refreshSummary() {
+    }
+    
+    @Override
+    public void refreshEquipmentTable() {
+        equipTab.refreshTable();
+    }
+
+    @Override
+    public ITechManager getTechManager() {
+        if (structureTab != null) {
+            return structureTab.getTechManager();
+        }
+        return null;
     }
 
 }

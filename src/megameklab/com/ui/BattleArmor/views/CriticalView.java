@@ -76,6 +76,11 @@ public class CriticalView extends IView {
      */
     private JPanel bodyPanel = new JPanel();
     
+    /**
+     * JPanel for all of the turret components
+     */
+    private JPanel turretPanel = new JPanel();
+
     private JLabel weightLabel = new JLabel();
     
     private RefreshListener refresh;
@@ -132,7 +137,16 @@ public class CriticalView extends IView {
         bodyPanel.setLayout(new BoxLayout(bodyPanel, BoxLayout.Y_AXIS));
         suitPanel.add(bodyPanel,gbc);
         
+        gbc.gridy++;
+        turretPanel.setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createEmptyBorder(),
+                BattleArmor.MOUNT_LOC_NAMES[BattleArmor.MOUNT_LOC_TURRET],
+                TitledBorder.CENTER, TitledBorder.TOP));
+        turretPanel.setLayout(new BoxLayout(turretPanel, BoxLayout.Y_AXIS));
+        suitPanel.add(turretPanel,gbc);
+        
         gbc.gridx++;
+        gbc.gridy = 0;
         rightPanel.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createEmptyBorder(),
                 BattleArmor.MOUNT_LOC_NAMES[BattleArmor.MOUNT_LOC_RARM],
@@ -160,6 +174,7 @@ public class CriticalView extends IView {
         leftPanel.removeAll();
         rightPanel.removeAll();
         bodyPanel.removeAll();
+        turretPanel.removeAll();
         
         int [] numAPWeapons = new int[BattleArmor.MOUNT_NUM_LOCS];
         int [] numAMWeapons = new int[BattleArmor.MOUNT_NUM_LOCS];
@@ -168,13 +183,18 @@ public class CriticalView extends IView {
             if (m.getLocation() == BattleArmor.LOC_SQUAD 
                     || m.getLocation() == trooper){
                 critSuit.addMounted(m.getBaMountLoc(), m);
-                if (m.getBaMountLoc() != BattleArmor.MOUNT_LOC_NONE){
+                // Weapons mounted in a quad turret count against the body limits
+                int useLoc = m.getBaMountLoc();
+                if (useLoc == BattleArmor.MOUNT_LOC_TURRET) {
+                    useLoc = BattleArmor.MOUNT_LOC_BODY;
+                }
+                if (useLoc != BattleArmor.MOUNT_LOC_NONE){
                     if ((m.getType() instanceof WeaponType) 
                             && !(m.getType() instanceof InfantryWeapon)){
-                        numAMWeapons[m.getBaMountLoc()]++;
+                        numAMWeapons[useLoc]++;
                     }
                     if (m.getType().hasFlag(MiscType.F_AP_MOUNT)){
-                        numAPWeapons[m.getBaMountLoc()]++;  
+                        numAPWeapons[useLoc]++;  
                     }
                 }
             }            
@@ -234,11 +254,14 @@ public class CriticalView extends IView {
                     case BattleArmor.MOUNT_LOC_LARM:
                         leftPanel.add(criticalSlotList);
                         break;
-                    case  BattleArmor.MOUNT_LOC_RARM:
+                    case BattleArmor.MOUNT_LOC_RARM:
                         rightPanel.add(criticalSlotList);
                         break;
-                    case  BattleArmor.MOUNT_LOC_BODY:
+                    case BattleArmor.MOUNT_LOC_BODY:
                         bodyPanel.add(criticalSlotList);
+                        break;
+                    case BattleArmor.MOUNT_LOC_TURRET:
+                        turretPanel.add(criticalSlotList);
                         break;
                 }
             }
@@ -279,9 +302,11 @@ public class CriticalView extends IView {
                     BattleArmor.CHASSIS_TYPE_QUAD){
                 leftPanel.setVisible(false);
                 rightPanel.setVisible(false);
+                turretPanel.setVisible(getBattleArmor().getTurretCapacity() > 0);
             } else {
                 leftPanel.setVisible(true);
                 rightPanel.setVisible(true);
+                turretPanel.setVisible(false);
             }
             
             EntityVerifier entityVerifier = EntityVerifier.getInstance(new File(
@@ -303,14 +328,17 @@ public class CriticalView extends IView {
             leftPanel.add(Box.createVerticalStrut(8));
             rightPanel.add(Box.createVerticalStrut(8));
             bodyPanel.add(Box.createVerticalStrut(8));
+            turretPanel.add(Box.createVerticalStrut(8));
             
             leftPanel.invalidate();
             leftPanel.invalidate();
             rightPanel.invalidate();
+            turretPanel.invalidate();
             
             bodyPanel.repaint();
             leftPanel.repaint();
             rightPanel.repaint();
+            turretPanel.repaint();
         }
     }
     

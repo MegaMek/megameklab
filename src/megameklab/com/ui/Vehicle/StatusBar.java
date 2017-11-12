@@ -219,7 +219,7 @@ public class StatusBar extends ITab {
         if (fDialog.getFile() != null) {
             String relativeFilePath = new File(fDialog.getDirectory() + fDialog.getFile()).getAbsolutePath();
             relativeFilePath = "." + File.separatorChar + relativeFilePath.substring(new File(System.getProperty("user.dir").toString()).getAbsolutePath().length() + 1);
-            getMech().getFluff().setMMLImagePath(relativeFilePath);
+            getTank().getFluff().setMMLImagePath(relativeFilePath);
         }
         refresh.refreshPreview();
         return;

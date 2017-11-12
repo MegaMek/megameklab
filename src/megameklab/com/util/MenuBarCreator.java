@@ -48,8 +48,8 @@ import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.client.ui.swing.UnitSelectorDialog;
 import megamek.common.Aero;
 import megamek.common.BattleArmor;
-import megamek.common.ConvFighter;
 import megamek.common.Entity;
+import megamek.common.FixedWingSupport;
 import megamek.common.GunEmplacement;
 import megamek.common.Infantry;
 import megamek.common.Jumpship;
@@ -312,25 +312,22 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
 
         JMenu unitMenu = new JMenu("Switch Unit Type");
         unitMenu.setMnemonic(KeyEvent.VK_S);
+        Entity en = parentFrame.getEntity();
 
-        if (!(parentFrame.getEntity() instanceof Mech)) {
+        if (!(en instanceof Mech)
+                || ((Mech)en).isPrimitive()) {
             item = new JMenuItem();
             item.setText("Mech");
             item.setMnemonic(KeyEvent.VK_M);
             item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M,
                     Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-            item.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    jMenuLoadMech();
-                }
-
-            });
+            item.addActionListener(e -> jMenuLoadMech());
             unitMenu.add(item);
         }
 
         if (!(parentFrame.getEntity() instanceof Aero)) {
             item = new JMenuItem();
-            item.setText("Aero");
+            item.setText("Aero/Conv Fighter");
             item.setMnemonic(KeyEvent.VK_A);
             item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A,
                     Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
@@ -387,6 +384,25 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             });
             unitMenu.add(item);
         }
+        
+        JMenu pMenu = new JMenu("Primitive/Retro");
+        if (!(en instanceof Mech)
+                || !((Mech)en).isPrimitive()) {
+            item = new JMenuItem();
+            item.setText("Mech");
+            item.addActionListener(e ->jMenuLoadPrimitiveMech());
+            pMenu.add(item);
+        }
+        
+        if (!(en instanceof Aero)
+                || !((Aero)en).isPrimitive()) {
+            item = new JMenuItem();
+            item.setText("Aero");
+            item.addActionListener(e ->jMenuLoadPrimitiveAero());
+            pMenu.add(item);
+        }
+        
+        unitMenu.add(pMenu);
 
         file.add(unitMenu);
 
@@ -912,7 +928,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         JLabel license1 = new JLabel("MegaMekLab software is under GPL. See");
         JLabel license2 = new JLabel("license.txt in ./Docs/licenses for details.");
         JLabel license3 = new JLabel("Project Info:");
-        JLabel license4 = new JLabel("       http://www.sourceforge.net/projects/megameklab       ");
+        JLabel license4 = new JLabel("       https://github.com/MegaMek/megameklab       ");
 
         // center everything
         mekwars.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -977,7 +993,8 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
     }
 
     public void jMenuConfiguration_actionPerformed(ActionEvent event) {
-        new ConfigurationDialog();
+        new ConfigurationDialog(parentFrame).setVisible(true);
+        parentFrame.refreshAll();
     }
 
     public void jMenuExit_actionPerformed(ActionEvent event) {
@@ -1001,12 +1018,22 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
     }
 
     private void jMenuLoadMech() {
-        new megameklab.com.ui.Mek.MainUI();
+        new megameklab.com.ui.Mek.MainUI(false, false);
+        parentFrame.dispose();
+    }
+    
+    private void jMenuLoadPrimitiveMech() {
+        new megameklab.com.ui.Mek.MainUI(true, false);
         parentFrame.dispose();
     }
 
     private void jMenuLoadAero() {
-        new megameklab.com.ui.Aero.MainUI();
+        new megameklab.com.ui.Aero.MainUI(false);
+        parentFrame.dispose();
+    }
+
+    private void jMenuLoadPrimitiveAero() {
+        new megameklab.com.ui.Aero.MainUI(true);
         parentFrame.dispose();
     }
 
@@ -1034,16 +1061,17 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
     public void jMenuResetEntity_actionPerformed(ActionEvent event) {
         CConfig.updateSaveFiles("Reset Unit");
         CConfig.setParam(CConfig.CONFIG_SAVE_FILE_1, "");
-        if (parentFrame.getEntity() instanceof Tank) {
-            parentFrame.createNewUnit(Entity.ETYPE_TANK, false);
-        } else if (parentFrame.getEntity() instanceof Mech) {
-            parentFrame.createNewUnit(Entity.ETYPE_BIPED_MECH, false);
+        Entity en = parentFrame.getEntity();
+        if (en instanceof Tank) {
+            parentFrame.createNewUnit(Entity.ETYPE_TANK);
+        } else if (en instanceof Mech) {
+            parentFrame.createNewUnit(Entity.ETYPE_BIPED_MECH, ((Mech)en).isPrimitive(), ((Mech)en).isIndustrial());
         } else if (parentFrame.getEntity() instanceof Aero) {
-            parentFrame.createNewUnit(Entity.ETYPE_AERO, false);
+            parentFrame.createNewUnit(Entity.ETYPE_AERO, ((Aero)en).isPrimitive());
         } else if (parentFrame.getEntity() instanceof BattleArmor) {
-            parentFrame.createNewUnit(Entity.ETYPE_BATTLEARMOR, false);
+            parentFrame.createNewUnit(Entity.ETYPE_BATTLEARMOR);
         } else if (parentFrame.getEntity() instanceof Infantry) {
-            parentFrame.createNewUnit(Entity.ETYPE_INFANTRY, false);
+            parentFrame.createNewUnit(Entity.ETYPE_INFANTRY);
         } else {
             System.out.println("util.MenuBarCreatoer: " +
                         "Received unknown entityType!");
@@ -1199,7 +1227,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         String filePathName = new File(System.getProperty("user.dir").toString()).getAbsolutePath();
 
         fDialog.setDirectory(filePathName);
-        fDialog.setFile(unitName + ".html");
+        fDialog.setFile(unitName + ".txt");
         fDialog.setLocationRelativeTo(parentFrame);
 
         fDialog.setVisible(true);
@@ -1252,8 +1280,8 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             if ((newUnit instanceof Aero)
                     && !((newUnit instanceof SmallCraft)
                     || (newUnit instanceof Jumpship)
-                    || (newUnit instanceof ConvFighter))) {
-                newUI = new megameklab.com.ui.Aero.MainUI();
+                    || (newUnit instanceof FixedWingSupport))) {
+                newUI = new megameklab.com.ui.Aero.MainUI(((Aero)newUnit).isPrimitive());
             } else if (newUnit instanceof BattleArmor) {
                 newUI = new megameklab.com.ui.BattleArmor.MainUI();
             } else if (newUnit instanceof Infantry) {
@@ -1365,8 +1393,8 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
                 if ((tempEntity instanceof Aero)
                         && !((tempEntity instanceof SmallCraft)
                         || (tempEntity instanceof Jumpship)
-                        || (tempEntity instanceof ConvFighter))) {
-                    newUI = new megameklab.com.ui.Aero.MainUI();
+                        || (tempEntity instanceof FixedWingSupport))) {
+                    newUI = new megameklab.com.ui.Aero.MainUI(((Aero)tempEntity).isPrimitive());
                 } else if (tempEntity instanceof BattleArmor) {
                     newUI = new megameklab.com.ui.BattleArmor.MainUI();
                 } else if (tempEntity instanceof Infantry) {

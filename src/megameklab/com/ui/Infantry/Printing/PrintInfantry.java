@@ -41,7 +41,7 @@ import megamek.common.EquipmentType;
 import megamek.common.Infantry;
 import megamek.common.Mounted;
 import megamek.common.WeaponType;
-import megamek.common.weapons.ArtilleryWeapon;
+import megamek.common.weapons.artillery.ArtilleryWeapon;
 import megamek.common.weapons.infantry.InfantryWeapon;
 import megameklab.com.util.ImageHelper;
 
