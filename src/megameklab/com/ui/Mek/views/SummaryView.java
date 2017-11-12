@@ -275,17 +275,32 @@ public class SummaryView extends IView{
         txtCockpitTon.setText(Double.toString(testMech.getWeightCockpit()));
         txtHeatTon.setText(Double.toString(testMech.getWeightHeatSinks()));
         txtStructTon.setText(Double.toString(testMech.getWeightStructure()));
-        txtArmorTon.setText(Double.toString(testMech.getWeightArmor()));
+        if (getMech().hasPatchworkArmor()) {
+            txtArmorTon.setText(Double.toString(testMech.getWeightAllocatedArmor()));
+        } else {
+            txtArmorTon.setText(Double.toString(testMech.getWeightArmor()));
+        }
         txtOtherTon.setText(Double.toString(testMech.getWeightPowerAmp() + testMech.getWeightCarryingSpace() + testMech.getWeightMisc()));
 
 
         txtGyroCrit.setText(Integer.toString(getGyroCrits()));
         txtEngineCrit.setText(Integer.toString(getEngineCrits()));
         txtCockpitCrit.setText(Integer.toString(getCockpitCrits()));
-        String structName = EquipmentType.getStructureTypeName(getMech().getStructureType(),TechConstants.isClan(getMech().getStructureTechLevel()));
-        txtStructCrit.setText(Integer.toString(EquipmentType.get(structName).getCriticals(getMech())));
-        String armorName = EquipmentType.getArmorTypeName(getMech().getArmorType(0),TechConstants.isClan(getMech().getArmorTechLevel(0)));
-        txtArmorCrit.setText(Integer.toString(EquipmentType.get(armorName).getCriticals(getMech())));
+        if ((getMech().getStructureType() >= 0)
+                && (getMech().getStructureType() < EquipmentType.structureNames.length)) {
+            String structName = EquipmentType.getStructureTypeName(getMech().getStructureType(),TechConstants.isClan(getMech().getStructureTechLevel()));
+            txtStructCrit.setText(Integer.toString(EquipmentType.get(structName).getCriticals(getMech())));
+        } else {
+            txtStructCrit.setText("?");
+        }
+        //FIXME: This doesn't account for patchwork armor crits.
+        if ((getMech().getArmorType(0) >= 0)
+                && (getMech().getArmorType(0) < EquipmentType.armorNames.length)) {
+            String armorName = EquipmentType.getArmorTypeName(getMech().getArmorType(0),TechConstants.isClan(getMech().getArmorTechLevel(0)));
+            txtArmorCrit.setText(Integer.toString(EquipmentType.get(armorName).getCriticals(getMech())));
+        } else {
+            txtArmorCrit.setText("?");
+        }
 
         runThroughEquipment(testMech);
 

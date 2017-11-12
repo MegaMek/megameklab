@@ -33,7 +33,7 @@ import megamek.common.Entity;
 import megamek.common.EntityMovementMode;
 import megamek.common.Mounted;
 import megamek.common.TechConstants;
-import megamek.common.weapons.BayWeapon;
+import megamek.common.weapons.bayweapons.BayWeapon;
 
 public class ImageHelperDropShip {
     public static final String[] LOCATION_ABBRS_SPHEROID = { "N", "LF", "RF", "A", "FL",

@@ -40,11 +40,11 @@ import megamek.common.TripodMech;
 import megamek.common.WeaponType;
 import megamek.common.loaders.EntityLoadingException;
 import megamek.common.verifier.TestBattleArmor;
-import megamek.common.weapons.ACWeapon;
-import megamek.common.weapons.GaussWeapon;
-import megamek.common.weapons.LBXACWeapon;
-import megamek.common.weapons.PPCWeapon;
-import megamek.common.weapons.UACWeapon;
+import megamek.common.weapons.autocannons.ACWeapon;
+import megamek.common.weapons.autocannons.LBXACWeapon;
+import megamek.common.weapons.autocannons.UACWeapon;
+import megamek.common.weapons.gaussrifles.GaussWeapon;
+import megamek.common.weapons.ppc.PPCWeapon;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.util.CritListCellRenderer;
 import megameklab.com.util.RefreshListener;
@@ -132,7 +132,10 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                     return;
                 }                
                 
-                if (mount != null) {
+                if (mount != null
+                        && !((getUnit().getEntityType() & Entity.ETYPE_QUADVEE) == Entity.ETYPE_QUADVEE
+                        && mount.getType() instanceof MiscType
+                        && mount.getType().hasFlag(MiscType.F_TRACKS))) {
                     JMenuItem info;
                     if (!UnitUtil.isFixedLocationSpreadEquipment(mount
                             .getType())) {
@@ -451,10 +454,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                 }
 
                 if (UnitUtil.isArmorable(cs) && !(getUnit() instanceof BattleArmor)
-                        && ((UnitUtil.getUnitTechType(getUnit()) == 
-                                UnitUtil.TECH_EXPERIMENTAL) 
-                            || (UnitUtil.getUnitTechType(getUnit()) == 
-                                UnitUtil.TECH_UNOFFICAL))) {
+                        && eSource.getTechManager().isLegal(Entity.getArmoredComponentTechAdvancement())) {
                     popup.addSeparator();
                     if (cs.isArmored()) {
                         JMenuItem info = new JMenuItem("Remove Armoring");

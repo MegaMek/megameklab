@@ -28,4 +28,8 @@ public interface RefreshListener extends EventListener{
     public void refreshEquipment();
     public void refreshBuild();
     public void refreshPreview();
+
+    // Refreshers for just one thing on a tab
+    public void refreshSummary();
+    public void refreshEquipmentTable();
 }

@@ -29,58 +29,58 @@ import megamek.common.Mounted;
 import megamek.common.WeaponType;
 import megamek.common.actions.ClubAttackAction;
 import megamek.common.actions.KickAttackAction;
-import megamek.common.weapons.ACWeapon;
-import megamek.common.weapons.ArtilleryCannonWeapon;
-import megamek.common.weapons.ArtilleryWeapon;
-import megamek.common.weapons.BPodWeapon;
-import megamek.common.weapons.CLERSmallPulseLaser;
-import megamek.common.weapons.CLMicroPulseLaser;
-import megamek.common.weapons.CLPlasmaCannon;
-import megamek.common.weapons.CLSmallPulseLaser;
-import megamek.common.weapons.CLVehicularGrenadeLauncher;
-import megamek.common.weapons.FlamerWeapon;
-import megamek.common.weapons.HAGWeapon;
-import megamek.common.weapons.ISBombastLaser;
-import megamek.common.weapons.ISC3M;
-import megamek.common.weapons.ISC3RemoteSensorLauncher;
-import megamek.common.weapons.ISHGaussRifle;
-import megamek.common.weapons.ISLargeVariableSpeedPulseLaser;
-import megamek.common.weapons.ISMediumVariableSpeedPulseLaser;
-import megamek.common.weapons.ISPlasmaRifle;
-import megamek.common.weapons.ISSilverBulletGauss;
-import megamek.common.weapons.ISSmallPulseLaser;
-import megamek.common.weapons.ISSmallVariableSpeedPulseLaser;
-import megamek.common.weapons.ISSmallXPulseLaser;
-import megamek.common.weapons.ISSnubNosePPC;
-import megamek.common.weapons.ISThunderBolt10;
-import megamek.common.weapons.ISThunderBolt15;
-import megamek.common.weapons.ISThunderBolt20;
-import megamek.common.weapons.ISThunderBolt5;
-import megamek.common.weapons.ISVehicularGrenadeLauncher;
-import megamek.common.weapons.LBXACWeapon;
-import megamek.common.weapons.LRMWeapon;
-import megamek.common.weapons.MGWeapon;
-import megamek.common.weapons.MRMWeapon;
-import megamek.common.weapons.MekMortarWeapon;
-import megamek.common.weapons.NarcWeapon;
-import megamek.common.weapons.PPCWeapon;
-import megamek.common.weapons.RLWeapon;
-import megamek.common.weapons.SRMWeapon;
-import megamek.common.weapons.ScreenLauncherWeapon;
-import megamek.common.weapons.StreakLRMWeapon;
-import megamek.common.weapons.StreakSRMWeapon;
-import megamek.common.weapons.TAGWeapon;
-import megamek.common.weapons.ThunderBoltWeapon;
-import megamek.common.weapons.UACWeapon;
-import megamek.common.weapons.battlearmor.CLBAERSmallPulseLaser;
+import megamek.common.weapons.artillery.ArtilleryCannonWeapon;
+import megamek.common.weapons.artillery.ArtilleryWeapon;
+import megamek.common.weapons.autocannons.ACWeapon;
+import megamek.common.weapons.autocannons.LBXACWeapon;
+import megamek.common.weapons.autocannons.UACWeapon;
+import megamek.common.weapons.battlearmor.CLBAERPulseLaserSmall;
 import megamek.common.weapons.battlearmor.CLBALBX;
-import megamek.common.weapons.battlearmor.CLBAMicroPulseLaser;
-import megamek.common.weapons.battlearmor.CLBASmallPulseLaser;
-import megamek.common.weapons.battlearmor.ISBAMediumVariableSpeedPulseLaser;
+import megamek.common.weapons.battlearmor.CLBAPulseLaserMicro;
+import megamek.common.weapons.battlearmor.CLBAPulseLaserSmall;
+import megamek.common.weapons.battlearmor.ISBALaserPulseSmall;
+import megamek.common.weapons.battlearmor.ISBALaserVSPMedium;
+import megamek.common.weapons.battlearmor.ISBALaserVSPSmall;
 import megamek.common.weapons.battlearmor.ISBAPopUpMineLauncher;
-import megamek.common.weapons.battlearmor.ISBASmallPulseLaser;
-import megamek.common.weapons.battlearmor.ISBASmallVariableSpeedPulseLaser;
+import megamek.common.weapons.capitalweapons.ScreenLauncherWeapon;
+import megamek.common.weapons.defensivepods.BPodWeapon;
+import megamek.common.weapons.flamers.FlamerWeapon;
+import megamek.common.weapons.gaussrifles.HAGWeapon;
+import megamek.common.weapons.gaussrifles.ISHGaussRifle;
+import megamek.common.weapons.gaussrifles.ISSilverBulletGauss;
 import megamek.common.weapons.infantry.InfantryWeapon;
+import megamek.common.weapons.lasers.CLERPulseLaserSmall;
+import megamek.common.weapons.lasers.CLPulseLaserMicro;
+import megamek.common.weapons.lasers.CLPulseLaserSmall;
+import megamek.common.weapons.lasers.ISBombastLaser;
+import megamek.common.weapons.lasers.ISPulseLaserSmall;
+import megamek.common.weapons.lasers.ISVariableSpeedPulseLaserLarge;
+import megamek.common.weapons.lasers.ISVariableSpeedPulseLaserMedium;
+import megamek.common.weapons.lasers.ISVariableSpeedPulseLaserSmall;
+import megamek.common.weapons.lasers.ISXPulseLaserSmall;
+import megamek.common.weapons.lrms.LRMWeapon;
+import megamek.common.weapons.lrms.StreakLRMWeapon;
+import megamek.common.weapons.mgs.MGWeapon;
+import megamek.common.weapons.missiles.ISThunderBolt10;
+import megamek.common.weapons.missiles.ISThunderBolt15;
+import megamek.common.weapons.missiles.ISThunderBolt20;
+import megamek.common.weapons.missiles.ISThunderBolt5;
+import megamek.common.weapons.missiles.MRMWeapon;
+import megamek.common.weapons.missiles.RLWeapon;
+import megamek.common.weapons.missiles.ThunderBoltWeapon;
+import megamek.common.weapons.mortars.CLVehicularGrenadeLauncher;
+import megamek.common.weapons.mortars.ISVehicularGrenadeLauncher;
+import megamek.common.weapons.mortars.MekMortarWeapon;
+import megamek.common.weapons.other.ISC3M;
+import megamek.common.weapons.other.ISC3RemoteSensorLauncher;
+import megamek.common.weapons.other.NarcWeapon;
+import megamek.common.weapons.ppc.CLPlasmaCannon;
+import megamek.common.weapons.ppc.ISPlasmaRifle;
+import megamek.common.weapons.ppc.ISSnubNosePPC;
+import megamek.common.weapons.ppc.PPCWeapon;
+import megamek.common.weapons.srms.SRMWeapon;
+import megamek.common.weapons.srms.StreakSRMWeapon;
+import megamek.common.weapons.tag.TAGWeapon;
 
 public class StringUtils {
 
@@ -239,11 +239,11 @@ public class StringUtils {
                     info = "1/Msl [M,C]";
                 } else if (weapon instanceof ISSnubNosePPC) {
                     info = "10/8/5 [DE,V]";
-                } else if ((weapon instanceof ISSmallVariableSpeedPulseLaser) || (weapon instanceof ISBASmallVariableSpeedPulseLaser)) {
+                } else if ((weapon instanceof ISBALaserVSPSmall) || (weapon instanceof ISBALaserVSPSmall)) {
                     info = "5/4/3 [P,V]";
-                } else if ((weapon instanceof ISMediumVariableSpeedPulseLaser) || (weapon instanceof ISBAMediumVariableSpeedPulseLaser)) {
+                } else if ((weapon instanceof ISBALaserVSPMedium) || (weapon instanceof ISBALaserVSPMedium)) {
                     info = "9/7/5 [P,V]";
-                } else if (weapon instanceof ISLargeVariableSpeedPulseLaser) {
+                } else if (weapon instanceof ISVariableSpeedPulseLaserLarge) {
                     info = "11/9/7 [P,V]";
                 } else if (weapon instanceof ISHGaussRifle) {
                     info = "25/20/10 [DB,X]";
@@ -317,15 +317,15 @@ public class StringUtils {
                     info += "H,";
                 }
                 if ((weapon instanceof MGWeapon) || (weapon instanceof BPodWeapon) ||
-                        (weapon instanceof CLERSmallPulseLaser) ||
-                        (weapon instanceof CLBAERSmallPulseLaser) ||
-                        (weapon instanceof ISSmallXPulseLaser) ||
-                        (weapon instanceof ISSmallPulseLaser) ||
-                        (weapon instanceof ISBASmallPulseLaser) ||
-                        (weapon instanceof CLSmallPulseLaser) ||
-                        (weapon instanceof CLBASmallPulseLaser) ||
-                        (weapon instanceof CLMicroPulseLaser) ||
-                        (weapon instanceof CLBAMicroPulseLaser) ||
+                        (weapon instanceof CLERPulseLaserSmall) ||
+                        (weapon instanceof CLBAERPulseLaserSmall) ||
+                        (weapon instanceof ISXPulseLaserSmall) ||
+                        (weapon instanceof ISPulseLaserSmall) ||
+                        (weapon instanceof ISBALaserPulseSmall) || 
+                        (weapon instanceof CLPulseLaserSmall) ||
+                        (weapon instanceof CLBAPulseLaserSmall) ||
+                        (weapon instanceof CLPulseLaserMicro) ||
+                        (weapon instanceof CLBAPulseLaserMicro) ||
                         (weapon.hasFlag(WeaponType.F_FLAMER) ||
                         (weapon.hasFlag(WeaponType.F_BURST_FIRE)))) {
                     info += "AI,";
@@ -403,11 +403,11 @@ public class StringUtils {
                     info = "[M,C]";
                 } else if ((weapon instanceof ISSnubNosePPC) || (weapon instanceof ISBombastLaser)) {
                     info = "[DE,V]";
-                } else if (weapon instanceof ISSmallVariableSpeedPulseLaser) {
+                } else if (weapon instanceof ISVariableSpeedPulseLaserSmall) {
                     info = "[P,V]";
-                } else if (weapon instanceof ISMediumVariableSpeedPulseLaser) {
+                } else if (weapon instanceof ISVariableSpeedPulseLaserMedium) {
                     info = "[P,V]";
-                } else if (weapon instanceof ISLargeVariableSpeedPulseLaser) {
+                } else if (weapon instanceof ISVariableSpeedPulseLaserLarge) {
                     info = "[P,V]";
                 } else if (weapon instanceof ISHGaussRifle) {
                     info = "[DB,X]";
@@ -453,11 +453,11 @@ public class StringUtils {
                 }
 
                 if ((weapon instanceof MGWeapon) || (weapon instanceof BPodWeapon) ||
-                        (weapon instanceof CLERSmallPulseLaser) ||
-                        (weapon instanceof ISSmallXPulseLaser) ||
-                        (weapon instanceof ISSmallPulseLaser) ||
-                        (weapon instanceof CLSmallPulseLaser) ||
-                        (weapon instanceof CLMicroPulseLaser)) {
+                        (weapon instanceof CLERPulseLaserSmall) ||
+                        (weapon instanceof ISXPulseLaserSmall) ||
+                        (weapon instanceof ISPulseLaserSmall) ||
+                        (weapon instanceof CLPulseLaserSmall) ||
+                        (weapon instanceof CLPulseLaserMicro)) {
                     info += "AI,";
                 }
 

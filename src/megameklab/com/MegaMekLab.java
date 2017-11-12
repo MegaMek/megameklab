@@ -22,12 +22,21 @@ import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.Locale;
 
+import megamek.MegaMek;
+import megamek.common.logging.DefaultMmLogger;
+import megamek.common.logging.LogConfig;
+import megamek.common.logging.LogLevel;
+import megamek.common.logging.MMLogger;
 import megameklab.com.ui.Mek.MainUI;
 
 public class MegaMekLab {
-    public static final String VERSION = "0.43.3-git";
+    public static final String VERSION = "0.43.5-git";
+
+    private static MMLogger logger = null;
 
     public static void main(String[] args) {
+        final String METHOD_NAME = "main(String[])";
+        
     	System.setProperty("apple.laf.useScreenMenuBar", "true");
         System.setProperty("com.apple.mrj.application.apple.menu.about.name","MegaMekLab");
 
@@ -43,37 +52,28 @@ public class MegaMekLab {
         boolean vehicle = false;
         boolean battlearmor = false;
 
-        for (int pos = 0; pos < args.length; pos++) {
-            if (args[pos].equalsIgnoreCase("-vehicle")) {
+        for (String arg : args) {
+            if (arg.equalsIgnoreCase("-vehicle")) {
                 vehicle = true;
             }
 
-            if (args[pos].equalsIgnoreCase("-battlearmor")) {
+            if (arg.equalsIgnoreCase("-battlearmor")) {
                 battlearmor = true;
             }
 
-            if (args[pos].equalsIgnoreCase("-nolog")) {
+            if (arg.equalsIgnoreCase("-nolog")) {
                 logs = false;
             }
         }
 
-        if (logs) {
-            try {
-                if (!new File("./logs/").exists()) {
-                    new File("./logs/").mkdir();
-                }
-                PrintStream ps = new PrintStream(new BufferedOutputStream(new FileOutputStream(logFileName), 64));
-                System.setOut(ps);
-                System.setErr(ps);
-            } catch (Exception ex) {
-                System.err.println("Unable to redirect output");
-            }
-        }
-
+        setupLogging(logs, logFileName);
+        
         if (vehicle) {
             Runtime runtime = Runtime.getRuntime();
 
-            System.out.println("Memory Allocated [" + (runtime.maxMemory() / 1000) + "]");
+            getLogger().log(MegaMekLab.class, METHOD_NAME, LogLevel.INFO,
+                            "Memory Allocated [" +
+                            (runtime.maxMemory() / 1000) + "]");
             // Need at least 200m to run MegaMekLab
             if (runtime.maxMemory() < 200000000) {
                 try {
@@ -87,7 +87,7 @@ public class MegaMekLab {
                     runtime.exec(call);
                     System.exit(0);
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    getLogger().log(MegaMekLab.class, METHOD_NAME, ex);
                 }
             }
 
@@ -95,7 +95,9 @@ public class MegaMekLab {
         } else if (battlearmor) {
             Runtime runtime = Runtime.getRuntime();
 
-            System.out.println("Memory Allocated [" + (runtime.maxMemory() / 1000) + "]");
+            getLogger().log(MegaMekLab.class, METHOD_NAME, LogLevel.INFO,
+                            "Memory Allocated [" +
+                            (runtime.maxMemory() / 1000) + "]");
             // Need at least 200m to run MegaMekLab
             if (runtime.maxMemory() < 200000000) {
                 try {
@@ -109,7 +111,7 @@ public class MegaMekLab {
                     runtime.exec(call);
                     System.exit(0);
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    getLogger().log(MegaMekLab.class, METHOD_NAME, ex);
                 }
             }
 
@@ -118,7 +120,9 @@ public class MegaMekLab {
 
             Runtime runtime = Runtime.getRuntime();
 
-            System.out.println("Memory Allocated [" + (runtime.maxMemory() / 1000) + "]");
+            getLogger().log(MegaMekLab.class, METHOD_NAME, LogLevel.INFO,
+                            "Memory Allocated [" +
+                            (runtime.maxMemory() / 1000) + "]");
             // Need at least 200m to run MegaMekLab
             if (runtime.maxMemory() < 200000000) {
                 try {
@@ -133,10 +137,42 @@ public class MegaMekLab {
                     runtime.exec(call);
                     System.exit(0);
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    getLogger().log(MegaMekLab.class, METHOD_NAME, ex);
                 }
             }
             new MainUI();
         }
+    }
+
+    private static void setupLogging(final boolean logs,
+                                     final String logFileName) {
+        if (logs) {
+            try {
+                File logPath = new File("./logs/");
+                if (!logPath.exists()) {
+                    logPath.mkdir();
+                }
+                MegaMek.resetLogFile(logFileName);
+                PrintStream ps =
+                        new PrintStream(
+                                new BufferedOutputStream(
+                                        new FileOutputStream(logFileName,
+                                                             true),
+                                        64));
+                System.setOut(ps);
+                System.setErr(ps);
+            } catch (Exception ex) {
+                System.err.println("Unable to redirect output");
+            }
+        } else {
+            LogConfig.getInstance().disableAll();
+        }
+    }
+
+    public static MMLogger getLogger() {
+        if (null == logger) {
+            logger = DefaultMmLogger.getInstance();
+        }
+        return logger;
     }
 }
