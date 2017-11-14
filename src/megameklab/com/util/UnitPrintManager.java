@@ -67,6 +67,7 @@ import megameklab.com.ui.Dropship.Printing.PrintAerodyne;
 import megameklab.com.ui.Dropship.Printing.PrintSpheroid;
 import megameklab.com.ui.Infantry.Printing.PrintInfantry;
 import megameklab.com.ui.Mek.Printing.PrintMech;
+import megameklab.com.ui.Mek.Printing.PrintMechCommon;
 import megameklab.com.ui.Mek.Printing.PrintQuad;
 import megameklab.com.ui.Mek.Printing.PrintTripod;
 import megameklab.com.ui.ProtoMek.Printing.PrintProtomech;
@@ -223,8 +224,7 @@ public class UnitPrintManager {
         }
 
         if (bipedList.size() > 0) {
-            PrintMech printMech = new PrintMech(bipedList, masterPrintJob);
-
+            PrintMechCommon printMech = new PrintMechCommon(bipedList, masterPrintJob);
             printMech.print(aset);
         }
 
