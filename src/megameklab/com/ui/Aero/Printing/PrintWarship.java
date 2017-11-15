@@ -21,7 +21,6 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
 import java.awt.print.PageFormat;
-import java.awt.print.Paper;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
@@ -34,9 +33,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
-
-import javax.print.attribute.HashPrintRequestAttributeSet;
-import javax.print.attribute.standard.PrintQuality;
 
 import com.kitfox.svg.ImageSVG;
 import com.kitfox.svg.Rect;
@@ -225,9 +221,9 @@ public class PrintWarship implements Printable {
     private Warship warship = null;
 
     /**
-     * A list of all warships to print.
+     * The index of the first page of the record sheet.
      */
-    private ArrayList<Warship> warshipList;
+    private int firstPage;
 
     PrinterJob masterPrintJob;
     
@@ -263,55 +259,15 @@ public class PrintWarship implements Printable {
      */
     boolean noFluffImg = false;
 
-    public PrintWarship(ArrayList<Warship> list, PrinterJob masterPrintJob) {
-        warshipList = list;
-        this.masterPrintJob = masterPrintJob;
-    }
-
-    /**
-     * 
-     * @param aset
-     */
-    public void print(HashPrintRequestAttributeSet aset) {
-
-        try {
-            for (int pos = 0; pos < warshipList.size(); pos++) {
-                PrinterJob pj = PrinterJob.getPrinterJob();
-                pj.setPrintService(masterPrintJob.getPrintService());
-
-                aset.add(PrintQuality.HIGH);
-
-                PageFormat pageFormat = new PageFormat();
-                pageFormat = pj.getPageFormat(null);
-
-                Paper p = pageFormat.getPaper();
-                p.setImageableArea(0, 0, p.getWidth(), p.getHeight());
-                pageFormat.setPaper(p);
-
-                pj.setPrintable(this, pageFormat);
-                warship = warshipList.get(pos);
-                pj.setJobName(warship.getChassis() + " " + warship.getModel());
-
-                try {
-                    pj.print(aset);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-                System.gc();
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+    public PrintWarship(Warship warship, int firstPage) {
+        this.warship = warship;
+        this.firstPage = firstPage;
     }
 
     /**
      * 
      */
     public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
-        if (pageIndex >= 1) {
-            return Printable.NO_SUCH_PAGE;
-        }
-
         Graphics2D g2d = (Graphics2D) graphics;
         // f.setPaper(this.paper);
         printImage(g2d, pageFormat);

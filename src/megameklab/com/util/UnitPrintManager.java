@@ -20,9 +20,14 @@ import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.print.Book;
+import java.awt.print.PageFormat;
+import java.awt.print.Paper;
+import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 import javax.print.attribute.HashPrintRequestAttributeSet;
@@ -81,7 +86,6 @@ import megameklab.com.ui.Vehicle.Printing.PrintLargeSupportVehicle;
 import megameklab.com.ui.Vehicle.Printing.PrintNavalVehicle;
 import megameklab.com.ui.Vehicle.Printing.PrintVTOL;
 import megameklab.com.ui.Vehicle.Printing.PrintVehicle;
-import megameklab.com.ui.Vehicle.Printing.PrintWiGE;
 import megameklab.com.ui.dialog.UnitPrintQueueDialog;
 
 public class UnitPrintManager {
@@ -139,98 +143,12 @@ public class UnitPrintManager {
     }
 
     public static boolean printAllUnits(Vector<Entity> loadedUnits, boolean singlePrint) {
-        ArrayList<Mech> quadList = new ArrayList<Mech>();
-        ArrayList<Mech> bipedList = new ArrayList<Mech>();
-        ArrayList<Mech> tripodList = new ArrayList<Mech>();
-        ArrayList<Tank> tankList = new ArrayList<Tank>();
-        ArrayList<Tank> wigeList = new ArrayList<Tank>();
-        ArrayList<Tank> dualTurretList = new ArrayList<Tank>();
-        ArrayList<Tank> navalList = new ArrayList<Tank>();
-        ArrayList<VTOL> VTOLList = new ArrayList<VTOL>();
-        ArrayList<Aero> aeroList = new ArrayList<Aero>();
-        ArrayList<ConvFighter> convFighterList = new ArrayList<ConvFighter>();
-        ArrayList<FixedWingSupport> fixedWingSupportList = new ArrayList<FixedWingSupport>();
-        ArrayList<Dropship> aerodyneList = new ArrayList<Dropship>();
-        ArrayList<Dropship> spheroidList = new ArrayList<Dropship>();
-        ArrayList<Infantry> infList = new ArrayList<Infantry>();
-        ArrayList<BattleArmor> baList = new ArrayList<BattleArmor>();
-        ArrayList<Protomech> protoList = new ArrayList<Protomech>();
-        ArrayList<Tank> largeSupportTankList = new ArrayList<Tank>();
-        ArrayList<SmallCraft> smallCraftAerodyneList = new ArrayList<SmallCraft>();
-        ArrayList<SmallCraft> smallCraftSpheroidList = new ArrayList<SmallCraft>();
-        ArrayList<Warship> warshipList = new ArrayList<>();
-        ArrayList<Jumpship> jumpshipList = new ArrayList<>();
-        ArrayList<SpaceStation> spaceStationList = new ArrayList<>();
-
-        for (Entity unit : loadedUnits) {
-            if (unit instanceof QuadMech) {
-                UnitUtil.removeOneShotAmmo(unit);
-                UnitUtil.expandUnitMounts((Mech) unit);
-
-                quadList.add((Mech) unit);
-            } else if (unit instanceof BipedMech) {
-                UnitUtil.removeOneShotAmmo(unit);
-                UnitUtil.expandUnitMounts((Mech) unit);
-
-                bipedList.add((Mech) unit);
-            } else if (unit instanceof TripodMech) {
-                UnitUtil.removeOneShotAmmo(unit);
-                UnitUtil.expandUnitMounts((Mech) unit);
-
-                tripodList.add((Mech) unit);
-            } else if ((unit instanceof LargeSupportTank) || ((unit instanceof Tank)
-                    && (unit.getMovementMode() != EntityMovementMode.VTOL) && ((Tank) unit).isSuperHeavy())) {
-                largeSupportTankList.add((Tank)unit);
-            } else if (unit instanceof VTOL) {
-                VTOLList.add((VTOL) unit);
-            } else if (unit.getMovementMode() == EntityMovementMode.WIGE) {
-                wigeList.add((Tank) unit);
-            } else if ((unit instanceof Tank) && ((unit.getMovementMode() == EntityMovementMode.NAVAL)
-                    || (unit.getMovementMode() == EntityMovementMode.SUBMARINE)
-                    || (unit.getMovementMode() == EntityMovementMode.HYDROFOIL))) {
-                navalList.add((Tank) unit);
-            } else if (unit instanceof Tank) {
-                if (!((Tank) unit).hasNoDualTurret()) {
-                    dualTurretList.add((Tank) unit);
-                } else {
-                    tankList.add((Tank) unit);
-                }
-            } else if (unit instanceof Aero) {
-                if (unit instanceof Dropship) {
-                    if (unit.getMovementMode() == EntityMovementMode.AERODYNE) {
-                        aerodyneList.add((Dropship) unit);
-                    } else {
-                        spheroidList.add((Dropship) unit);
-                    }
-                } else if (unit instanceof FixedWingSupport) {
-                    fixedWingSupportList.add((FixedWingSupport) unit);
-                } else if (unit instanceof ConvFighter) {
-                    convFighterList.add((ConvFighter) unit);
-                } else if (unit instanceof SmallCraft) {
-                    if (unit.getMovementMode() == EntityMovementMode.AERODYNE) {
-                        smallCraftAerodyneList.add((SmallCraft) unit);
-                    } else {
-                        smallCraftSpheroidList.add((SmallCraft) unit);
-                    }
-                } else if (unit instanceof Warship) {
-                    warshipList.add((Warship)unit);
-                } else if (unit instanceof Jumpship) {
-                    jumpshipList.add((Jumpship)unit);
-                } else if (unit instanceof SpaceStation) {
-                    spaceStationList.add((SpaceStation)unit);
-                } else {
-                    aeroList.add((Aero) unit);
-                }
-            } else if (unit instanceof BattleArmor) {
-                baList.add((BattleArmor) unit);
-            } else if (unit instanceof Infantry) {
-            	infList.add((Infantry) unit);
-            } else if (unit instanceof Protomech) {
-                protoList.add((Protomech) unit);
-            } else {
-                return false;
-            }
-        }
+        Book book = new Book();
+        
+        List<Infantry> infList = new ArrayList<>();
+        List<BattleArmor> baList = new ArrayList<>();
+        List<Protomech> protoList = new ArrayList<>();
+        List<Entity> unprintable = new ArrayList<>();
 
         HashPrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
         aset.add(MediaSizeName.NA_LETTER);
@@ -240,117 +158,149 @@ public class UnitPrintManager {
             return true;
         }
 
-        if (bipedList.size() > 0) {
-            PrintMech printMech = new PrintMech(bipedList, masterPrintJob);
-            printMech.print(aset);
+        PageFormat pageFormat = new PageFormat();
+        pageFormat = masterPrintJob.getPageFormat(null);
+
+        Paper p = pageFormat.getPaper();
+        p.setImageableArea(0, 0, p.getWidth(), p.getHeight());
+
+        pageFormat.setPaper(p);
+
+        Tank tank1 = null;
+        Tank wige1 = null;
+        Tank dualTurret1 = null;
+        for (Entity unit : loadedUnits) {
+            if (unit instanceof QuadMech) {
+                UnitUtil.removeOneShotAmmo(unit);
+                UnitUtil.expandUnitMounts((Mech) unit);
+                book.append(new PrintQuad((QuadMech) unit), pageFormat);
+            } else if (unit instanceof BipedMech) {
+                UnitUtil.removeOneShotAmmo(unit);
+                UnitUtil.expandUnitMounts((Mech) unit);
+                book.append(new PrintMech((BipedMech) unit), pageFormat);
+            } else if (unit instanceof TripodMech) {
+                UnitUtil.removeOneShotAmmo(unit);
+                UnitUtil.expandUnitMounts((Mech) unit);
+                book.append(new PrintTripod((TripodMech) unit), pageFormat);
+            } else if ((unit instanceof LargeSupportTank) || ((unit instanceof Tank)
+                    && (unit.getMovementMode() != EntityMovementMode.VTOL) && ((Tank) unit).isSuperHeavy())) {
+                book.append(new PrintLargeSupportVehicle((Tank) unit), pageFormat);
+            } else if (unit instanceof VTOL) {
+                book.append(new PrintVTOL((VTOL) unit), pageFormat);
+            } else if (unit.getMovementMode() == EntityMovementMode.WIGE) {
+                if (singlePrint) {
+                    book.append(new PrintVehicle((Tank) unit,  null), pageFormat);
+                } else if (null != wige1) {
+                    book.append(new PrintVehicle(wige1, (Tank) unit), pageFormat);
+                    wige1 = null;
+                } else {
+                    wige1 = (Tank) unit;
+                }
+            } else if ((unit instanceof Tank) && ((unit.getMovementMode() == EntityMovementMode.NAVAL)
+                    || (unit.getMovementMode() == EntityMovementMode.SUBMARINE)
+                    || (unit.getMovementMode() == EntityMovementMode.HYDROFOIL))) {
+                book.append(new PrintNavalVehicle((Tank) unit), pageFormat);
+            } else if (unit instanceof Tank) {
+                if (!((Tank) unit).hasNoDualTurret()) {
+                    if (singlePrint) {
+                        book.append(new PrintDualTurretVehicle((Tank) unit,  null), pageFormat);
+                    } else if (null != dualTurret1) {
+                        book.append(new PrintDualTurretVehicle(dualTurret1, (Tank) unit), pageFormat);
+                        dualTurret1 = null;
+                    } else {
+                        dualTurret1 = (Tank) unit;
+                    }
+                } else {
+                    if (singlePrint) {
+                        book.append(new PrintVehicle((Tank) unit,  null), pageFormat);
+                    } else if (null != tank1) {
+                        book.append(new PrintVehicle(tank1, (Tank) unit), pageFormat);
+                        tank1 = null;
+                    } else {
+                        tank1 = (Tank) unit;
+                    }
+                }
+            } else if (unit instanceof Aero) {
+                if (unit instanceof Dropship) {
+                    if (unit.getMovementMode() == EntityMovementMode.AERODYNE) {
+                        book.append(new PrintAerodyne((Dropship) unit), pageFormat);
+                    } else {
+                        book.append(new PrintSpheroid((Dropship) unit), pageFormat);
+                    }
+                } else if (unit instanceof FixedWingSupport) {
+                    book.append(new PrintFixedWingSupport((FixedWingSupport) unit), pageFormat);
+                } else if (unit instanceof ConvFighter) {
+                    book.append(new PrintConventionalFighter((ConvFighter) unit), pageFormat);
+                } else if (unit instanceof SmallCraft) {
+                    if (unit.getMovementMode() == EntityMovementMode.AERODYNE) {
+                        book.append(new PrintSmallCraftAerodyne((SmallCraft) unit), pageFormat);
+                    } else {
+                        book.append(new PrintSmallCraftSpheroid((SmallCraft) unit), pageFormat);
+                    }
+                } else if (unit instanceof Warship) {
+                    book.append(new PrintWarship((Warship) unit, book.getNumberOfPages()), pageFormat);
+                } else if (unit instanceof Jumpship) {
+                    book.append(new PrintJumpship((Jumpship) unit), pageFormat);
+                } else if (unit instanceof SpaceStation) {
+                    book.append(new PrintSpaceStation((SpaceStation) unit), pageFormat);
+                } else {
+                    book.append(new PrintAero((Aero) unit), pageFormat);
+                }
+            } else if (unit instanceof BattleArmor) {
+                baList.add((BattleArmor) unit);
+                if (singlePrint || baList.size() > 4) {
+                    book.append(new PrintBattleArmor(baList),  pageFormat);
+                    baList = new ArrayList<>();
+                }
+            } else if (unit instanceof Infantry) {
+                infList.add((Infantry) unit);
+                if (singlePrint || infList.size() > 3) {
+                    book.append(new PrintInfantry(infList),  pageFormat);
+                    infList = new ArrayList<>();
+                }
+            } else if (unit instanceof Protomech) {
+                protoList.add((Protomech) unit);
+                if (singlePrint || protoList.size() > 4) {
+                    book.append(new PrintProtomech(protoList),  pageFormat);
+                    protoList = new ArrayList<>();
+                }
+            } else {
+                //TODO: show a message dialog that lists the unprintable units
+                unprintable.add(unit);
+            }
         }
-
-        if (quadList.size() > 0) {
-            PrintQuad printQuad = new PrintQuad(quadList, masterPrintJob);
-            printQuad.print(aset);
+        if (null != tank1) {
+            book.append(new PrintVehicle(tank1, null), pageFormat);
         }
-
-        if (tripodList.size() > 0) {
-            PrintTripod printTripod = new PrintTripod(tripodList, masterPrintJob);
-            printTripod.print(aset);
+        if (null != wige1) {
+            book.append(new PrintVehicle(wige1, null), pageFormat);
         }
-
-
-        if (tankList.size() > 0) {
-            PrintVehicle printTank = new PrintVehicle(tankList, singlePrint, masterPrintJob);
-            printTank.print(aset);
+        if (null != dualTurret1) {
+            book.append(new PrintDualTurretVehicle(dualTurret1, null), pageFormat);
         }
-
-        if (wigeList.size() > 0) {
-            PrintWiGE printWiGE = new PrintWiGE(wigeList, singlePrint, masterPrintJob);
-            printWiGE.print(aset);
-        }
-
-        if (navalList.size() > 0) {
-            PrintNavalVehicle printNaval = new PrintNavalVehicle(navalList, masterPrintJob);
-            printNaval.print(aset);
-        }
-
-        if (dualTurretList.size() > 0) {
-            PrintDualTurretVehicle printDualTurret = new PrintDualTurretVehicle(dualTurretList, singlePrint, masterPrintJob);
-            printDualTurret.print(aset);
-        }
-
-        if (aeroList.size() > 0) {
-            PrintAero printAero = new PrintAero(aeroList, masterPrintJob);
-            printAero.print(aset);
-        }
-
-        if (fixedWingSupportList.size() > 0) {
-            PrintFixedWingSupport printFixedWingSupport = new PrintFixedWingSupport(fixedWingSupportList, masterPrintJob);
-            printFixedWingSupport.print(aset);
-        }
-
-        if (convFighterList.size() > 0) {
-            PrintConventionalFighter printConventionalFighter = new PrintConventionalFighter(convFighterList, masterPrintJob);
-            printConventionalFighter.print(aset);
-        }
-
-        if (aerodyneList.size() > 0) {
-            PrintAerodyne printAerodyne = new PrintAerodyne(aerodyneList, masterPrintJob);
-            printAerodyne.print(aset);
-        }
-
-        if (spheroidList.size() > 0) {
-            PrintSpheroid printSpheroid = new PrintSpheroid(spheroidList, masterPrintJob);
-            printSpheroid.print(aset);
-        }
-
-        if (VTOLList.size() > 0) {
-            PrintVTOL printVTOL = new PrintVTOL(VTOLList, masterPrintJob);
-            printVTOL.print(aset);
-        }
-
         if (baList.size() > 0) {
-            PrintBattleArmor printBA = new PrintBattleArmor(baList, masterPrintJob);
-            printBA.print(aset);
+            book.append(new PrintBattleArmor(baList), pageFormat);
         }
-        
         if (infList.size() > 0) {
-        	PrintInfantry printInf = new PrintInfantry(infList, masterPrintJob);
-        	printInf.print(aset);
+            book.append(new PrintInfantry(infList), pageFormat);
         }
-
         if (protoList.size() > 0) {
-            PrintProtomech printProto = new PrintProtomech(protoList, masterPrintJob);
-            printProto.print(aset);
-        }
-
-        if (largeSupportTankList.size() > 0) {
-            PrintLargeSupportVehicle sp = new PrintLargeSupportVehicle(largeSupportTankList, singlePrint, masterPrintJob);
-            sp.print(aset);
-        }
-
-        if (smallCraftAerodyneList.size() > 0) {
-            PrintSmallCraftAerodyne sp = new PrintSmallCraftAerodyne(smallCraftAerodyneList, masterPrintJob);
-            sp.print(aset);
-        }
-
-        if (smallCraftSpheroidList.size() > 0) {
-            PrintSmallCraftSpheroid sp = new PrintSmallCraftSpheroid(smallCraftSpheroidList, masterPrintJob);
-            sp.print(aset);
-        }
-
-        if (warshipList.size() > 0) {
-            PrintWarship sp = new PrintWarship(warshipList, masterPrintJob);
-            sp.print(aset);
+            book.append(new PrintProtomech(protoList), pageFormat);
         }
         
-        if (jumpshipList.size() > 0) {
-            PrintJumpship sp = new PrintJumpship(jumpshipList, masterPrintJob);
-            sp.print(aset);
+        masterPrintJob.setPageable(book);
+        if (loadedUnits.size() > 1) {
+            masterPrintJob.setJobName(loadedUnits.get(0).getShortNameRaw() + " etc");
+        } else if (loadedUnits.size() > 0) {
+            masterPrintJob.setJobName(loadedUnits.get(0).getShortNameRaw());
+        }
+        try {
+            masterPrintJob.print(aset);
+        } catch (PrinterException e) {
+            // printing cancelled
+            return false;
         }
 
-        if (spaceStationList.size() > 0) {
-            PrintSpaceStation sp = new PrintSpaceStation(spaceStationList, masterPrintJob);
-            sp.print(aset);
-        }
-        
         return true;
     }
 

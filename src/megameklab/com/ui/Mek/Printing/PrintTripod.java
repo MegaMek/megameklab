@@ -59,7 +59,6 @@ public class PrintTripod implements Printable {
 
     protected Image awtHud = null;
     private Mech mech = null;
-    private ArrayList<Mech> mechList;
 
     private Mounted startingMount = null;
     private float startMountx = 0;
@@ -70,22 +69,12 @@ public class PrintTripod implements Printable {
     private int topMargin = 6;
     private int leftMargin = 11;
 
-    public PrintTripod(ArrayList<Mech> list, PrinterJob masterPrintJob) {
-        mechList = list;
-        this.masterPrintJob = masterPrintJob;
-
-        /*
-         * if (awtImage != null) { System.out.println("Width: " +
-         * awtImage.getWidth(null)); System.out.println("Height: " +
-         * awtImage.getHeight(null)); }
-         */
+    public PrintTripod(Mech mech) {
+        this.mech = mech;
+        awtHud = ImageHelper.getFluffImage(mech, ImageHelper.imageMech);
     }
 
     public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
-        if (pageIndex >= 1) {
-            return Printable.NO_SUCH_PAGE;
-        }
-
         Graphics2D g2d = (Graphics2D) graphics;
         // f.setPaper(this.paper);
         try {
@@ -619,41 +608,6 @@ public class PrintTripod implements Printable {
     private void printWeaponsNEquipment(Graphics2D g2d) {
 
         ImageHelper.printMechWeaponsNEquipment(mech, g2d, leftMargin, topMargin);
-    }
-
-    public void print(HashPrintRequestAttributeSet aset) {
-
-        try {
-            for (Mech currentMech : mechList) {
-                PrinterJob pj = PrinterJob.getPrinterJob();
-                pj.setPrintService(masterPrintJob.getPrintService());
-
-                aset.add(PrintQuality.HIGH);
-
-                PageFormat pageFormat = new PageFormat();
-                pageFormat = pj.getPageFormat(null);
-
-                Paper p = pageFormat.getPaper();
-                p.setImageableArea(0, 0, p.getWidth(), p.getHeight());
-
-                pageFormat.setPaper(p);
-
-                pj.setPrintable(this, pageFormat);
-
-                mech = currentMech;
-                awtHud = ImageHelper.getFluffImage(currentMech, ImageHelper.imageMech);
-                pj.setJobName(mech.getChassis() + " " + mech.getModel());
-
-                try {
-                    pj.print(aset);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-                System.gc();
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
     }
 
     private void setCritConnection(Mounted m, float startx, float starty, float endx, float endy, Graphics2D g2d) {

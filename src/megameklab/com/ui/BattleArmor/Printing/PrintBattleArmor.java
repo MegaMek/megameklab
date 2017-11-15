@@ -20,16 +20,11 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.print.PageFormat;
-import java.awt.print.Paper;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
-import java.awt.print.PrinterJob;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Calendar;
-
-import javax.print.attribute.HashPrintRequestAttributeSet;
-import javax.print.attribute.standard.PrintQuality;
+import java.util.List;
 
 import com.kitfox.svg.SVGException;
 
@@ -43,17 +38,18 @@ import megameklab.com.util.UnitUtil;
 public class PrintBattleArmor implements Printable {
 
     private BattleArmor battleArmor = null;
-    private ArrayList<BattleArmor> battleArmorList;
+    private List<BattleArmor> battleArmorList;
     private int pageMarginBase = 135; // How far down the text should be printed
     // for a second vehicle.
     private int currentPosition = 0;
     private int currentMargin = 0;
     private boolean isAdvanced = false;
-    PrinterJob masterPrintJob;
 
-    public PrintBattleArmor(ArrayList<BattleArmor> list, PrinterJob masterPrintJob) {
+    public PrintBattleArmor(List<BattleArmor> list) {
         battleArmorList = list;
-        this.masterPrintJob = masterPrintJob;
+        if (list.size() > 0) {
+            battleArmor = list.get(0);
+        }
 
         /*
          * if (awtImage != null) { System.out.println("Width: " +
@@ -63,17 +59,13 @@ public class PrintBattleArmor implements Printable {
     }
 
     public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
-        if (pageIndex != 0) {
-            return Printable.NO_SUCH_PAGE;
-        }
-
         Graphics2D g2d = (Graphics2D) graphics;
         printImage(g2d, pageFormat);
         return Printable.PAGE_EXISTS;
     }
 
     public void printImage(Graphics2D g2d, PageFormat pageFormat) {
-        if (g2d == null) {
+        if ((null == g2d) || (null == battleArmor)) {
             return;
         }
 
@@ -299,38 +291,5 @@ public class PrintBattleArmor implements Printable {
 
     private void printWeaponsNEquipment(Graphics2D g2d) {
         ImageHelperBattleArmor.printBattleArmorWeaponsNEquipment(battleArmor, g2d, currentMargin);
-    }
-
-    public void print(HashPrintRequestAttributeSet aset) {
-
-        try {
-            for (; currentPosition < battleArmorList.size(); currentPosition += 5) {
-                PrinterJob pj = PrinterJob.getPrinterJob();
-                pj.setPrintService(masterPrintJob.getPrintService());
-
-                aset.add(PrintQuality.HIGH);
-
-                PageFormat pageFormat = new PageFormat();
-                pageFormat = pj.getPageFormat(null);
-
-                Paper p = pageFormat.getPaper();
-                p.setImageableArea(0, 0, p.getWidth(), p.getHeight());
-                pageFormat.setPaper(p);
-
-                pj.setPrintable(this, pageFormat);
-
-                battleArmor = battleArmorList.get(currentPosition);
-                pj.setJobName(battleArmor.getChassis() + " " + battleArmor.getModel());
-
-                try {
-                    pj.print(aset);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-                System.gc();
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
     }
 }
