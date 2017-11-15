@@ -22,17 +22,11 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.print.PageFormat;
-import java.awt.print.Paper;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
-import java.awt.print.PrinterJob;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Vector;
-
-import javax.print.attribute.HashPrintRequestAttributeSet;
-import javax.print.attribute.standard.PrintQuality;
 
 import com.kitfox.svg.SVGException;
 
@@ -50,18 +44,14 @@ import megameklab.com.util.UnitUtil;
 public class PrintLargeSupportVehicle implements Printable {
 
     private Tank largesupporttank = null;
-    private ArrayList<Tank> largesupporttankList;
     private int secondPageMargin = 375; // How far down the text should be
-    PrinterJob masterPrintJob;
     private float yoffset = 7;
     private float xoffset = 17;
 
     // printed for a second vehicle.
 
-    public PrintLargeSupportVehicle(ArrayList<Tank> list, boolean singlePrint,
-            PrinterJob masterPrintJob) {
-        largesupporttankList = list;
-        this.masterPrintJob = masterPrintJob;
+    public PrintLargeSupportVehicle(Tank tank) {
+        this.largesupporttank = tank;
         /*
          * if (awtImage != null) { System.out.println("Width: " +
          * awtImage.getWidth(null)); System.out.println("Height: " +
@@ -71,10 +61,6 @@ public class PrintLargeSupportVehicle implements Printable {
 
     public int print(Graphics graphics, PageFormat pageFormat, int pageIndex)
             throws PrinterException {
-        if (pageIndex >= 1) {
-            return Printable.NO_SUCH_PAGE;
-        }
-
         Graphics2D g2d = (Graphics2D) graphics;
         // f.setPaper(this.paper);
         printImage(g2d, pageFormat);
@@ -456,42 +442,6 @@ public class PrintLargeSupportVehicle implements Printable {
         ImageHelperVehicle.printLargeSupportTankWeaponsNEquipment(
                 largesupporttank, g2d, yoffset, xoffset);
 
-    }
-
-    public void print(HashPrintRequestAttributeSet aset) {
-
-        try {
-            for (int pos = 0; pos < largesupporttankList.size(); pos++) {
-                PrinterJob pj = PrinterJob.getPrinterJob();
-
-                pj.setPrintService(masterPrintJob.getPrintService());
-
-                aset.add(PrintQuality.HIGH);
-
-                PageFormat pageFormat = new PageFormat();
-                pageFormat = pj.getPageFormat(null);
-
-                Paper p = pageFormat.getPaper();
-                p.setImageableArea(0, 0, p.getWidth(), p.getHeight());
-                pageFormat.setPaper(p);
-
-                pj.setPrintable(this, pageFormat);
-
-                largesupporttank = largesupporttankList.get(pos);
-                pj.setJobName(largesupporttank.getChassis() + " "
-                        + largesupporttank.getModel());
-
-                try {
-                    pj.print(aset);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                } finally {
-                    System.gc();
-                }
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
     }
 
     private void printFrontArmor(Graphics2D g2d, int totalArmor,

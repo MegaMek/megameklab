@@ -22,16 +22,10 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.print.PageFormat;
-import java.awt.print.Paper;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
-import java.awt.print.PrinterJob;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Vector;
-
-import javax.print.attribute.HashPrintRequestAttributeSet;
-import javax.print.attribute.standard.PrintQuality;
 
 import megamek.common.Aero;
 import megamek.common.ConvFighter;
@@ -45,20 +39,13 @@ import megameklab.com.util.UnitUtil;
 public class PrintConventionalFighter implements Printable {
 
     private ConvFighter convFighter = null;
-    private ArrayList<ConvFighter> convFighterList;
-    PrinterJob masterPrintJob;
 
-    public PrintConventionalFighter(ArrayList<ConvFighter> list, PrinterJob masterPrintJob) {
-        convFighterList = list;
-        this.masterPrintJob = masterPrintJob;
+    public PrintConventionalFighter(ConvFighter convFighter) {
+        this.convFighter = convFighter;
 
     }
 
     public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
-        if (pageIndex >= 1) {
-            return Printable.NO_SUCH_PAGE;
-        }
-
         Graphics2D g2d = (Graphics2D) graphics;
         // f.setPaper(this.paper);
         printImage(g2d, pageFormat);
@@ -263,38 +250,6 @@ public class PrintConventionalFighter implements Printable {
 
         ImageHelperAero.printAeroWeaponsNEquipment(convFighter, g2d);
 
-    }
-
-    public void print(HashPrintRequestAttributeSet aset) {
-
-        try {
-            for (int pos = 0; pos < convFighterList.size(); pos++) {
-                PrinterJob pj = PrinterJob.getPrinterJob();
-                pj.setPrintService(masterPrintJob.getPrintService());
-
-                aset.add(PrintQuality.HIGH);
-
-                PageFormat pageFormat = new PageFormat();
-                pageFormat = pj.getPageFormat(null);
-
-                Paper p = pageFormat.getPaper();
-                p.setImageableArea(0, 0, p.getWidth(), p.getHeight());
-                pageFormat.setPaper(p);
-
-                pj.setPrintable(this, pageFormat);
-                convFighter = convFighterList.get(pos);
-                pj.setJobName(convFighter.getChassis() + " " + convFighter.getModel());
-
-                try {
-                    pj.print(aset);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-                System.gc();
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
     }
 
     private void printFrontArmor(Graphics2D g2d, int totalArmor) {
