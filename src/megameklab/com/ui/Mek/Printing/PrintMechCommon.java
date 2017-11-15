@@ -27,6 +27,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import com.kitfox.svg.Rect;
 import com.kitfox.svg.SVGDiagram;
@@ -174,7 +175,17 @@ public class PrintMechCommon implements Printable {
     
     private void writeEquipment(Rect svgRect) throws SVGException {
         Map<Integer, Map<RecordSheetEquipmentLine,Integer>> eqMap = new TreeMap<>();
+        Map<String,Integer> ammo = new HashMap<>();
         for (Mounted m : mech.getEquipment()) {
+            if (m.getType() instanceof AmmoType) {
+                if (m.getLocation() != Entity.LOC_NONE) {
+                    String shortName = ((AmmoType) m.getType()).getShortName().replace("Ammo", "");
+                    shortName = shortName.replace("(Clan)", "");
+                    shortName = shortName.replace("-capable", "");
+                    ammo.merge(shortName, m.getBaseShotsLeft(), Integer::sum);
+                }
+                continue;
+            }
             if ((m.getType() instanceof AmmoType)
                     || (m.getLocation() == Entity.LOC_NONE)
                     || !UnitUtil.isPrintableEquipment(m.getType(), true)) {
@@ -240,6 +251,23 @@ public class PrintMechCommon implements Printable {
                 }
             }
         }
+        
+        if (ammo.size() > 0) {
+            String ammoLine = ammo.entrySet().stream()
+                    .map(e -> String.format("(%s): %d", e.getKey(), e.getValue()))
+                    .collect(Collectors.joining(", "));
+            Text newText = new Text();
+            newText.addAttribute("font-family", AnimationElement.AT_XML, "Eurostile");
+            newText.addAttribute("font-size", AnimationElement.AT_XML, Double.toString(fontSize));
+            newText.addAttribute("font-weight", AnimationElement.AT_XML, "normal");
+            newText.addAttribute("text-anchor", AnimationElement.AT_CSS, "start");
+            newText.addAttribute("x", AnimationElement.AT_XML, Double.toString(viewX));
+            newText.addAttribute("y", AnimationElement.AT_XML, Double.toString(viewY + viewHeight - lineHeight));
+            newText.appendText("Ammo: " + ammoLine);
+            canvas.loaderAddChild(null, newText);
+            newText.rebuild();
+        }
+
     }
     
     private double getFontHeight(double fontSize, SVGElement canvas) throws SVGException {
