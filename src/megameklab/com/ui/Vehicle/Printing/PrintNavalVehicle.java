@@ -22,17 +22,11 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.print.PageFormat;
-import java.awt.print.Paper;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
-import java.awt.print.PrinterJob;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Vector;
-
-import javax.print.attribute.HashPrintRequestAttributeSet;
-import javax.print.attribute.standard.PrintQuality;
 
 import com.kitfox.svg.SVGException;
 
@@ -47,23 +41,16 @@ import megameklab.com.util.UnitUtil;
 public class PrintNavalVehicle implements Printable {
 
     private Tank sub = null;
-    private ArrayList<Tank> subList;
-    PrinterJob masterPrintJob;
     private int topmargin = 0;
     private int leftmargin = 8;
 
 
-    public PrintNavalVehicle(ArrayList<Tank> list, PrinterJob masterPrintJob) {
-        subList = list;
-        this.masterPrintJob = masterPrintJob;
+    public PrintNavalVehicle(Tank sub) {
+        this.sub = sub;
 
     }
 
     public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
-        if (pageIndex >= 1) {
-            return Printable.NO_SUCH_PAGE;
-        }
-
         Graphics2D g2d = (Graphics2D) graphics;
         printImage(g2d, pageFormat);
         return Printable.PAGE_EXISTS;
@@ -331,41 +318,6 @@ public class PrintNavalVehicle implements Printable {
 
         ImageHelperVehicle.printTankWeaponsNEquipment(sub, g2d, 3, 14);
 
-    }
-
-    public void print(HashPrintRequestAttributeSet aset) {
-
-        try {
-            for (int pos = 0; pos < subList.size(); pos++) {
-                PrinterJob pj = PrinterJob.getPrinterJob();
-
-                pj.setPrintService(masterPrintJob.getPrintService());
-
-                aset.add(PrintQuality.HIGH);
-
-                PageFormat pageFormat = new PageFormat();
-                pageFormat = pj.getPageFormat(null);
-
-                Paper p = pageFormat.getPaper();
-                p.setImageableArea(0, 0, p.getWidth(), p.getHeight());
-                pageFormat.setPaper(p);
-
-                pj.setPrintable(this, pageFormat);
-
-                sub = subList.get(pos);
-                pj.setJobName(sub.getChassis() + " " + sub.getModel());
-
-                try {
-                    pj.print(aset);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                } finally {
-                    System.gc();
-                }
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
     }
 
     private void printExtraFrontArmor(Graphics2D g2d, int totalArmor, boolean secondImage, boolean hasModularArmor) {

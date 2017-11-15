@@ -16,18 +16,13 @@ package megameklab.com.ui.Infantry.Printing;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.print.PageFormat;
-import java.awt.print.Paper;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
-import java.awt.print.PrinterJob;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.StringJoiner;
-
-import javax.print.attribute.HashPrintRequestAttributeSet;
-import javax.print.attribute.standard.PrintQuality;
 
 import com.kitfox.svg.SVGDiagram;
 import com.kitfox.svg.SVGException;
@@ -85,13 +80,14 @@ public class PrintInfantry implements Printable {
 	private final static String ID_NOTE_LINE = "note_line_";
 
     private Infantry infantry = null;
-    private ArrayList<Infantry> infantryList;
-    PrinterJob masterPrintJob;
+    private List<Infantry> infantryList;
     private int currentPosition;
     
-    public PrintInfantry(ArrayList<Infantry> list, PrinterJob masterPrintJob) {
+    public PrintInfantry(List<Infantry> list) {
     	infantryList = list;
-        this.masterPrintJob = masterPrintJob;
+    	if (list.size() > 0) {
+    	    infantry = list.get(0);
+    	}
     }
 
     
@@ -100,17 +96,13 @@ public class PrintInfantry implements Printable {
 	 */
 	@Override
 	public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
-        if (pageIndex != 0) {
-            return Printable.NO_SUCH_PAGE;
-        }
-
         Graphics2D g2d = (Graphics2D) graphics;
         printImage(g2d, pageFormat);
         return Printable.PAGE_EXISTS;
 	}
 
 	public void printImage(Graphics2D g2d, PageFormat pageFormat) {
-        if (g2d == null) {
+        if ((null == g2d) || (null == infantry)) {
             return;
         }
         
@@ -508,36 +500,4 @@ public class PrintInfantry implements Printable {
 		return Integer.toString(mod);
 	}
 
-	public void print(HashPrintRequestAttributeSet aset) {
-
-        try {
-            for (; currentPosition < infantryList.size(); currentPosition += 4) {
-                PrinterJob pj = PrinterJob.getPrinterJob();
-                pj.setPrintService(masterPrintJob.getPrintService());
-
-                aset.add(PrintQuality.HIGH);
-
-                PageFormat pageFormat = new PageFormat();
-                pageFormat = pj.getPageFormat(null);
-
-                Paper p = pageFormat.getPaper();
-                p.setImageableArea(0, 0, p.getWidth(), p.getHeight());
-                pageFormat.setPaper(p);
-
-                pj.setPrintable(this, pageFormat);
-
-                infantry = infantryList.get(currentPosition);
-                pj.setJobName(infantry.getChassis() + " " + infantry.getModel());
-
-                try {
-                    pj.print(aset);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-                System.gc();
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
 }

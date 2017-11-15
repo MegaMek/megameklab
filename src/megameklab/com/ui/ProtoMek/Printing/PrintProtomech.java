@@ -21,16 +21,11 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.print.PageFormat;
-import java.awt.print.Paper;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
-import java.awt.print.PrinterJob;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Calendar;
-
-import javax.print.attribute.HashPrintRequestAttributeSet;
-import javax.print.attribute.standard.PrintQuality;
+import java.util.List;
 
 import com.kitfox.svg.SVGException;
 
@@ -44,16 +39,17 @@ import megameklab.com.util.UnitUtil;
 public class PrintProtomech implements Printable {
 
     private Protomech protoMech = null;
-    private ArrayList<Protomech> protoMechList;
+    private List<Protomech> protoMechList;
     private int pageMarginBase = 130; // How far down the text should be printed
     // for a second vehicle.
     private int currentPosition = 0;
     private int currentMargin = 0;
-    PrinterJob masterPrintJob;
 
-    public PrintProtomech(ArrayList<Protomech> list, PrinterJob masterPrintJob) {
+    public PrintProtomech(List<Protomech> list) {
         protoMechList = list;
-        this.masterPrintJob = masterPrintJob;
+        if (list.size() > 0) {
+            protoMech = list.get(0);
+        }
 
         /*
          * if (awtImage != null) { System.out.println("Width: " +
@@ -64,10 +60,6 @@ public class PrintProtomech implements Printable {
 
     public int print(Graphics graphics, PageFormat pageFormat, int pageIndex)
             throws PrinterException {
-        if (pageIndex != 0) {
-            return Printable.NO_SUCH_PAGE;
-        }
-
         Graphics2D g2d = (Graphics2D) graphics;
         // f.setPaper(this.paper);
         printImage(g2d, pageFormat);
@@ -75,7 +67,7 @@ public class PrintProtomech implements Printable {
     }
 
     public void printImage(Graphics2D g2d, PageFormat pageFormat) {
-        if (g2d == null) {
+        if ((null == g2d) || (null == protoMech)) {
             return;
         }
 
@@ -536,39 +528,5 @@ public class PrintProtomech implements Printable {
     private void printWeaponsNEquipment(Graphics2D g2d) {
         ImageHelperProto.printProtomechWeaponsNEquipment(protoMech, g2d,
                 currentMargin);
-    }
-
-    public void print(HashPrintRequestAttributeSet aset) {
-
-        try {
-            for (; currentPosition < protoMechList.size(); currentPosition += 5) {
-                PrinterJob pj = PrinterJob.getPrinterJob();
-                pj.setPrintService(masterPrintJob.getPrintService());
-
-                aset.add(PrintQuality.HIGH);
-
-                PageFormat pageFormat = new PageFormat();
-                pageFormat = pj.getPageFormat(null);
-
-                Paper p = pageFormat.getPaper();
-                p.setImageableArea(0, 0, p.getWidth(), p.getHeight());
-                pageFormat.setPaper(p);
-
-                pj.setPrintable(this, pageFormat);
-
-                protoMech = protoMechList.get(currentPosition);
-                pj.setJobName(protoMech.getChassis() + " "
-                        + protoMech.getModel());
-
-                try {
-                    pj.print(aset);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-                System.gc();
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
     }
 }
