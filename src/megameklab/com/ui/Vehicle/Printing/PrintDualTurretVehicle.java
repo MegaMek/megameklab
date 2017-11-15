@@ -22,16 +22,10 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.print.PageFormat;
-import java.awt.print.Paper;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
-import java.awt.print.PrinterJob;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Vector;
-
-import javax.print.attribute.HashPrintRequestAttributeSet;
-import javax.print.attribute.standard.PrintQuality;
 
 import megamek.common.Crew;
 import megamek.common.Engine;
@@ -46,25 +40,16 @@ public class PrintDualTurretVehicle implements Printable {
 
     private Tank tank = null;
     private Tank tank2 = null;
-    private ArrayList<Tank> tankList;
     private int secondPageMargin = 373; // How far down the text should be
-    private boolean singlePrint = false;
-    PrinterJob masterPrintJob;
 
     // printed for a second vehicle.
 
-    public PrintDualTurretVehicle(ArrayList<Tank> list, boolean singlePrint, PrinterJob masterPrintJob) {
-        tankList = list;
-        this.singlePrint = singlePrint;
-        this.masterPrintJob = masterPrintJob;
-
+    public PrintDualTurretVehicle(Tank tank, Tank tank2) {
+        this.tank = tank;
+        this.tank2 = tank2;
     }
 
     public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
-        if (pageIndex >= 1) {
-            return Printable.NO_SUCH_PAGE;
-        }
-
         Graphics2D g2d = (Graphics2D) graphics;
         // f.setPaper(this.paper);
         printImage(g2d, pageFormat);
@@ -524,47 +509,6 @@ public class PrintDualTurretVehicle implements Printable {
             ImageHelperVehicle.printTankWeaponsNEquipment(tank2, g2d, secondPageMargin);
         }
 
-    }
-
-    public void print(HashPrintRequestAttributeSet aset) {
-
-        try {
-            for (int pos = 0; pos < tankList.size(); pos++) {
-                PrinterJob pj = PrinterJob.getPrinterJob();
-
-                pj.setPrintService(masterPrintJob.getPrintService());
-
-                aset.add(PrintQuality.HIGH);
-
-                PageFormat pageFormat = new PageFormat();
-                pageFormat = pj.getPageFormat(null);
-
-                Paper p = pageFormat.getPaper();
-                p.setImageableArea(0, 0, p.getWidth(), p.getHeight());
-                pageFormat.setPaper(p);
-
-                pj.setPrintable(this, pageFormat);
-
-                tank = tankList.get(pos);
-                pj.setJobName(tank.getChassis() + " " + tank.getModel());
-
-                if (!singlePrint && ((pos + 1) < tankList.size())) {
-                    tank2 = tankList.get(++pos);
-                } else {
-                    tank2 = null;
-                }
-
-                try {
-                    pj.print(aset);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                } finally {
-                    System.gc();
-                }
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
     }
 
     @SuppressWarnings("unused")
