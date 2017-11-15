@@ -18,21 +18,15 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
 import java.awt.print.PageFormat;
-import java.awt.print.Paper;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
-import java.awt.print.PrinterJob;
 import java.io.File;
 import java.text.NumberFormat;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.function.Function;
-
-import javax.print.attribute.HashPrintRequestAttributeSet;
-import javax.print.attribute.standard.PrintQuality;
 
 import com.kitfox.svg.Rect;
 import com.kitfox.svg.SVGDiagram;
@@ -105,58 +99,14 @@ public class PrintMechCommon implements Printable {
      */
     private Mech mech = null;
 
-    /**
-     * A list of all warships to print.
-     */
-    private List<Mech> mechList;
-
-    PrinterJob masterPrintJob;
-    
-    public PrintMechCommon(List<Mech> list, PrinterJob masterPrintJob) {
-        mechList = list;
-        this.masterPrintJob = masterPrintJob;
-    }
-    
-    public void print(HashPrintRequestAttributeSet aset) {
-
-        try {
-            for (int pos = 0; pos < mechList.size(); pos++) {
-                PrinterJob pj = PrinterJob.getPrinterJob();
-                pj.setPrintService(masterPrintJob.getPrintService());
-
-                aset.add(PrintQuality.HIGH);
-
-                PageFormat pageFormat = new PageFormat();
-                pageFormat = pj.getPageFormat(null);
-
-                Paper p = pageFormat.getPaper();
-                p.setImageableArea(0, 0, p.getWidth(), p.getHeight());
-                pageFormat.setPaper(p);
-
-                pj.setPrintable(this, pageFormat);
-                mech = mechList.get(pos);
-                pj.setJobName(mech.getChassis() + " " + mech.getModel());
-
-                try {
-                    pj.print(aset);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-                System.gc();
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+    public PrintMechCommon(Mech mech) {
+        this.mech = mech;
     }
 
     /**
      * 
      */
     public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
-        if (pageIndex >= 1) {
-            return Printable.NO_SUCH_PAGE;
-        }
-
         Graphics2D g2d = (Graphics2D) graphics;
         // f.setPaper(this.paper);
         printImage(g2d, pageFormat);

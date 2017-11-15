@@ -23,17 +23,11 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.geom.AffineTransform;
 import java.awt.print.PageFormat;
-import java.awt.print.Paper;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
-import java.awt.print.PrinterJob;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Vector;
-
-import javax.print.attribute.HashPrintRequestAttributeSet;
-import javax.print.attribute.standard.PrintQuality;
 
 import com.kitfox.svg.SVGException;
 
@@ -51,21 +45,13 @@ import megameklab.com.util.UnitUtil;
 public class PrintVTOL implements Printable {
 
     private VTOL vtol = null;
-    private ArrayList<VTOL> vtolList;
-    PrinterJob masterPrintJob;
 
-    public PrintVTOL(ArrayList<VTOL> list, PrinterJob masterPrintJob) {
-        vtolList = list;
-        this.masterPrintJob = masterPrintJob;
-
+    public PrintVTOL(VTOL vtol) {
+        this.vtol = vtol;
     }
 
     public int print(Graphics graphics, PageFormat pageFormat, int pageIndex)
             throws PrinterException {
-        if (pageIndex >= 1) {
-            return Printable.NO_SUCH_PAGE;
-        }
-
         Graphics2D g2d = (Graphics2D) graphics;
         printImage(g2d, pageFormat);
         return Printable.PAGE_EXISTS;
@@ -362,41 +348,6 @@ public class PrintVTOL implements Printable {
 
         ImageHelperVehicle.printVTOLWeaponsNEquipment(vtol, g2d, 6, 9);
 
-    }
-
-    public void print(HashPrintRequestAttributeSet aset) {
-
-        try {
-            for (int pos = 0; pos < vtolList.size(); pos++) {
-                PrinterJob pj = PrinterJob.getPrinterJob();
-                pj.setPrintService(masterPrintJob.getPrintService());
-
-                aset.add(PrintQuality.HIGH);
-
-                PageFormat pageFormat = new PageFormat();
-                pageFormat = pj.getPageFormat(null);
-
-                Paper p = pageFormat.getPaper();
-                p.setImageableArea(0, 0, p.getWidth(), p.getHeight());
-                pageFormat.setPaper(p);
-
-                pj.setPrintable(this, pageFormat);
-
-                vtol = vtolList.get(pos);
-                pj.setJobName(vtol.getChassis() + " " + vtol.getModel());
-
-                try {
-                    pj.print(aset);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                } finally {
-                    System.gc();
-                }
-            }
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
     }
 
     private void printFrontArmor(Graphics2D g2d, int totalArmor) {
