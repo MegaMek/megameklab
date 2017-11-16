@@ -22,12 +22,14 @@ import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.io.File;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import com.kitfox.svg.Rect;
 import com.kitfox.svg.SVGDiagram;
@@ -175,7 +177,7 @@ public class PrintMechCommon implements Printable {
     
     private void writeEquipment(Rect svgRect) throws SVGException {
         Map<Integer, Map<RecordSheetEquipmentLine,Integer>> eqMap = new TreeMap<>();
-        Map<String,Integer> ammo = new HashMap<>();
+        Map<String,Integer> ammo = new TreeMap<>();
         for (Mounted m : mech.getEquipment()) {
             if (m.getType() instanceof AmmoType) {
                 if (m.getLocation() != Entity.LOC_NONE) {
@@ -253,19 +255,46 @@ public class PrintMechCommon implements Printable {
         }
         
         if (ammo.size() > 0) {
-            String ammoLine = ammo.entrySet().stream()
-                    .map(e -> String.format("(%s): %d", e.getKey(), e.getValue()))
-                    .collect(Collectors.joining(", "));
-            Text newText = new Text();
-            newText.addAttribute("font-family", AnimationElement.AT_XML, "Eurostile");
-            newText.addAttribute("font-size", AnimationElement.AT_XML, Double.toString(fontSize));
-            newText.addAttribute("font-weight", AnimationElement.AT_XML, "normal");
-            newText.addAttribute("text-anchor", AnimationElement.AT_CSS, "start");
-            newText.addAttribute("x", AnimationElement.AT_XML, Double.toString(viewX));
-            newText.addAttribute("y", AnimationElement.AT_XML, Double.toString(viewY + viewHeight - lineHeight));
-            newText.appendText("Ammo: " + ammoLine);
-            canvas.loaderAddChild(null, newText);
-            newText.rebuild();
+            List<String> lines = new ArrayList<>();
+            String line = "Ammo: ";
+            double commaLen = getTextLength(", ", fontSize, canvas);
+            double currX = getTextLength(line, fontSize, canvas);
+
+            boolean first = true;
+            for (String name : ammo.keySet()) {
+                String str = String.format("(%s) %d", name, ammo.get(name));
+                double len = getTextLength(str, fontSize, canvas);
+                if (!first) {
+                    len += commaLen;
+                }
+                if (currX + len < viewWidth) {
+                    if (!first) {
+                        line += ", ";
+                    } else {
+                        first = false;
+                    }
+                    line += str;
+                } else {
+                    lines.add(line);
+                    line = str;
+                    currX = indent;
+                }
+            }
+            lines.add(line);
+            
+            currY = (int) (viewY + viewHeight - lines.size() * lineHeight);
+            for (String l : lines) {
+                Text newText = new Text();
+                newText.addAttribute("font-family", AnimationElement.AT_XML, "Eurostile");
+                newText.addAttribute("font-size", AnimationElement.AT_XML, Double.toString(fontSize));
+                newText.addAttribute("font-weight", AnimationElement.AT_XML, "normal");
+                newText.addAttribute("text-anchor", AnimationElement.AT_CSS, "start");
+                newText.addAttribute("x", AnimationElement.AT_XML, Double.toString(viewX));
+                newText.addAttribute("y", AnimationElement.AT_XML, Double.toString(currY));
+                newText.appendText(l);
+                canvas.loaderAddChild(null, newText);
+                newText.rebuild();
+            }
         }
 
     }
@@ -284,6 +313,22 @@ public class PrintMechCommon implements Printable {
 
         canvas.removeChild(newText);
         return textHeight;
+    }
+    
+    private double getTextLength(String text, double fontSize, SVGElement canvas) throws SVGException {
+        Text newText = new Text();
+        newText.appendText(text);        
+        newText.addAttribute("x", AnimationElement.AT_XML, "0");
+        newText.addAttribute("y", AnimationElement.AT_XML, "0");
+        newText.addAttribute("font-family", AnimationElement.AT_XML, "Eurostile");
+        newText.addAttribute("font-size", AnimationElement.AT_XML, Double.toString(fontSize));
+        canvas.loaderAddChild(null, newText);
+        newText.rebuild();
+        
+        double width = newText.getShape().getBounds().getWidth();
+
+        canvas.removeChild(newText);
+        return width;
     }
     
     private static String formatRunMp(Mech mech) {
