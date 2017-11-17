@@ -24,24 +24,28 @@ import java.io.File;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.function.Function;
 
+import com.kitfox.svg.Path;
 import com.kitfox.svg.Rect;
 import com.kitfox.svg.SVGDiagram;
 import com.kitfox.svg.SVGElement;
+import com.kitfox.svg.SVGElementException;
 import com.kitfox.svg.SVGException;
 import com.kitfox.svg.Text;
 import com.kitfox.svg.Tspan;
 import com.kitfox.svg.animation.AnimationElement;
 
 import megamek.common.AmmoType;
+import megamek.common.CriticalSlot;
+import megamek.common.Engine;
 import megamek.common.Entity;
 import megamek.common.Mech;
+import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.logging.LogLevel;
 import megameklab.com.MegaMekLab;
@@ -148,6 +152,20 @@ public class PrintMechCommon implements Printable {
                 writeEquipment((Rect) eqRect);
             }
             
+            for (int loc = 0; loc < mech.locations(); loc++) {
+                SVGElement critRect = diagram.getElement("crits_" + mech.getLocationAbbr(loc));
+                if (null != critRect) {
+                    writeLocationCriticals(loc, (Rect) critRect);
+                }
+            }
+            
+            if (mech.getGyroType() == Mech.GYRO_HEAVY_DUTY) {
+                SVGElement pip = diagram.getElement("heavyDutyGyroPip");
+                if ((null != pip) && pip.hasAttribute("visibility", AnimationElement.AT_XML)) {
+                    pip.setAttribute("visibility", AnimationElement.AT_XML, "visible");
+                }
+                pip.updateTime(0);
+            }
             diagram.render(g2d);
         } catch (SVGException e) {
             e.printStackTrace();
@@ -299,6 +317,113 @@ public class PrintMechCommon implements Printable {
 
     }
     
+    private void writeLocationCriticals(int loc, Rect svgRect) throws SVGException {
+        Rectangle2D bbox = svgRect.getBoundingBox();
+        SVGElement canvas = svgRect.getRoot();
+        int viewWidth = (int)bbox.getWidth();
+        int viewHeight = (int)bbox.getHeight();
+        int viewX = (int)bbox.getX();
+        int viewY = (int)bbox.getY();
+        
+        double rollX = viewX;
+        double critX = viewX + viewWidth * 0.11;
+        double gap = 0;
+        if (mech.getNumberOfCriticals(loc) > 6) {
+            gap = viewHeight * 0.05;
+        }
+        double lineHeight = (viewHeight - gap) / mech.getNumberOfCriticals(loc);
+        double currY = viewY;
+        double fontSize = lineHeight * 0.9;
+        
+        Mounted startingMount = null;
+        double startingMountY = 0;
+        double endingMountY = 0;
+        double connWidth = viewWidth * 0.02;
+        
+        for (int slot = 0; slot < mech.getNumberOfCriticals(loc); slot++) {
+            currY += lineHeight;
+            if (slot == 6) {
+                currY += gap;
+            }
+            addTextElement(canvas, rollX, currY, ((slot % 6) + 1) + ".", fontSize, "start", "bold");
+            CriticalSlot crit = mech.getCritical(loc, slot);
+            String style = "bold";
+            String fill = "#000000";
+            if ((null == crit)
+                    || ((crit.getType() == CriticalSlot.TYPE_EQUIPMENT)
+                            && (!crit.getMount().getType().isHittable()))) {
+                style = "standard";
+                fill = "#3f3f3f";
+                addTextElement(canvas, critX, currY, formatCritName(crit), fontSize, "start", style, fill);
+            } else if (crit.isArmored()) {
+                SVGElement pip = createPip(critX, currY - fontSize * 0.8, fontSize * 0.4);
+                canvas.loaderAddChild(null, pip);
+                canvas.updateTime(0);
+                addTextElement(canvas, critX + fontSize, currY, formatCritName(crit), fontSize, "start", style, fill);
+            } else if ((crit.getType() == CriticalSlot.TYPE_EQUIPMENT)
+                    && (crit.getMount().getType() instanceof MiscType)
+                    && (crit.getMount().getType().hasFlag(MiscType.F_MODULAR_ARMOR))) {
+                String critName = formatCritName(crit);
+                addTextElement(canvas, critX, currY, critName, fontSize, "start", style, fill);
+                double x = critX + getTextLength(critName, fontSize, canvas);
+                double remainingW = viewX + viewWidth - x;
+                double spacing = remainingW / 6.0;
+                double radius = spacing * 0.25;
+                double y = currY - lineHeight + spacing;
+                double y2 = currY - spacing;
+                x += spacing;
+                for (int i = 0; i < 10; i++) {
+                    if (i == 5) {
+                        x -= spacing * 5.5;
+                        y = y2;
+                    }
+                    SVGElement pip = createPip(x, y, radius);
+                    canvas.loaderAddChild(null, pip);
+                    canvas.updateTime(0);
+                    x += spacing;
+                }
+            } else {
+                addTextElement(canvas, critX, currY, formatCritName(crit), fontSize, "start", style, fill);
+            }
+            Mounted m = null;
+            if ((null != crit) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)
+                    && (crit.getMount().getType().isHittable())
+                    && (crit.getMount().getType().getCriticals(mech) > 1)) {
+                m = crit.getMount();
+            }
+            if ((startingMount != null) && (startingMount != m)) {
+                connectSlots(canvas, critX - 1, startingMountY, connWidth, endingMountY - startingMountY);
+            }
+            if (m != startingMount) {
+                startingMount = m;
+                if (null != m) {
+                    startingMountY = currY - lineHeight * 0.6;
+                }
+            } else {
+                endingMountY = currY;
+            }
+        }
+        if ((null != startingMount) && (startingMount.getType().getCriticals(mech) > 1)) {
+            connectSlots(canvas, critX - 1, startingMountY, connWidth, endingMountY - startingMountY);
+        }
+    }
+
+    private void connectSlots(SVGElement canvas, double x, double y, double w,
+            double h) throws SVGElementException, SVGException {
+        Path p = new Path();
+        p.addAttribute("d", AnimationElement.AT_XML,
+                "M " + x + " " + y
+                + " h " + (-w)
+                + " v " + h
+                + " h " + w);
+        p.addAttribute("stroke", AnimationElement.AT_CSS, "black");
+        p.addAttribute("stroke-width", AnimationElement.AT_CSS, "0.72");
+        p.addAttribute("fill", AnimationElement.AT_CSS, "none");
+        p.updateTime(0);
+        canvas.loaderAddChild(null, p);
+        canvas.updateTime(0);
+    }
+    
     private double getFontHeight(double fontSize, SVGElement canvas) throws SVGException {
         Text newText = new Text();
         newText.appendText("Medium Laser");        
@@ -396,6 +521,132 @@ public class PrintMechCommon implements Printable {
         NumberFormat nf = NumberFormat.getNumberInstance(Locale.getDefault());
         return nf.format(mech.getCost(true)) + " C-bills";
     }
+    
+    private String formatCritName(CriticalSlot cs) {
+        if (null == cs) {
+            return "Roll Again";
+        } else if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
+            if (cs.getIndex() == Mech.SYSTEM_ENGINE) {
+                StringBuilder sb = new StringBuilder();
+                if (mech.isPrimitive()) {
+                    sb.append("Primitive ");
+                }
+                switch (mech.getEngine().getEngineType()) {
+                    case Engine.COMBUSTION_ENGINE:
+                        sb.append("I.C.E."); //$NON-NLS-1$
+                        break;
+                    case Engine.NORMAL_ENGINE:
+                        sb.append("Fusion"); //$NON-NLS-1$
+                        break;
+                    case Engine.XL_ENGINE:
+                        sb.append("XL Fusion"); //$NON-NLS-1$
+                        break;
+                    case Engine.LIGHT_ENGINE:
+                        sb.append("Light Fusion"); //$NON-NLS-1$
+                        break;
+                    case Engine.XXL_ENGINE:
+                        sb.append("XXL Fusion"); //$NON-NLS-1$
+                        break;
+                    case Engine.COMPACT_ENGINE:
+                        sb.append("Compact Fusion"); //$NON-NLS-1$
+                        break;
+                    case Engine.FUEL_CELL:
+                        sb.append("Fuel Cell"); //$NON-NLS-1$
+                        break;
+                    case Engine.FISSION:
+                        sb.append("Fission"); //$NON-NLS-1$
+                        break;
+                }
+                sb.append(" Engine");
+                return sb.toString();
+            } else {
+                String name = mech.getSystemName(cs.getIndex()).replace("Standard ", "");
+                if (((cs.getIndex() >= Mech.ACTUATOR_UPPER_ARM) && (cs.getIndex() <= Mech.ACTUATOR_HAND))
+                        || ((cs.getIndex() >= Mech.ACTUATOR_UPPER_LEG) && (cs.getIndex() <= Mech.ACTUATOR_FOOT))) {
+                    name += " Actuator";
+                }
+                return name;
+            }
+        } else {
+            Mounted m = cs.getMount();
+            StringBuffer critName = new StringBuffer(UnitUtil.getCritName(mech, m.getType()));
+
+            if (UnitUtil.isTSM(m.getType())) {
+                critName.setLength(0);
+                critName.append("Triple-Strength Myomer");
+            }
+
+            if (m.isRearMounted()) {
+                critName.append(" (R)");
+            } else if (m.isMechTurretMounted()) {
+                critName.append(" (T)");
+            } else if ((m.getType() instanceof AmmoType) && (((AmmoType) m.getType()).getAmmoType() != AmmoType.T_COOLANT_POD)) {
+                AmmoType ammo = (AmmoType) m.getType();
+
+                critName = new StringBuffer("Ammo (");
+                // Remove Text (Clan) from the name
+                critName.append(ammo.getShortName().replace('(', '.').replace(')', '.').replaceAll(".Clan.", "").trim());
+                // Remove any additional Ammo text.
+                if (critName.toString().endsWith("Ammo")) {
+                    critName.setLength(critName.length() - 5);
+                    critName.trimToSize();
+                }
+
+                // Remove Capable with the name
+                if (critName.indexOf("-capable") > -1) {
+                    int startPos = critName.indexOf("-capable");
+                    critName.delete(startPos, startPos + "-capable".length());
+                    critName.trimToSize();
+                }
+
+                // Trim trailing spaces.
+                while (critName.charAt(critName.length() - 1) == ' ') {
+                    critName.setLength(critName.length() - 1);
+                }
+                critName.trimToSize();
+                critName.append(") ");
+                critName.append(m.getUsableShotsLeft());
+            }
+
+            if (cs.getMount2() != null) {
+                critName.append(" | ");
+                if (!(cs.getMount2().getType() instanceof AmmoType)) {
+                    critName.append(UnitUtil.getCritName(mech, cs.getMount2().getType()));
+                } else {
+                    AmmoType ammo = (AmmoType)cs.getMount2().getType();
+                    critName.append(ammo.getShortName().replace('(', '.').replace(')', '.').replaceAll(".Clan.", "").trim());
+                    // Remove any additional Ammo text.
+                    if (critName.toString().endsWith("Ammo")) {
+                        critName.setLength(critName.length() - 5);
+                        critName.trimToSize();
+                    }
+
+                    // Remove Capable with the name
+                    if (critName.indexOf("-capable") > -1) {
+                        int startPos = critName.indexOf("-capable");
+                        critName.delete(startPos, startPos + "-capable".length());
+                        critName.trimToSize();
+                    }
+
+                    // Trim trailing spaces.
+                    while (critName.charAt(critName.length() - 1) == ' ') {
+                        critName.setLength(critName.length() - 1);
+                    }
+                    critName.trimToSize();
+                    critName.append(") ");
+                    critName.append(m.getUsableShotsLeft());
+                }
+            }
+            if (!mech.isMixedTech()) {
+                int startPos = critName.indexOf("[Clan]");
+                if (startPos >= 0) {
+                    critName.delete(startPos, startPos + "[Clan]".length());
+                    critName.trimToSize();
+                }
+            }
+            return critName.toString();
+        }
+    }
 
     /**
      * Convenience method for creating a new SVG Text element and adding it to the parent.  The height of the text is
@@ -411,7 +662,13 @@ public class PrintMechCommon implements Printable {
      *
      * @throws SVGException
      */
-    private void addTextElement(SVGElement parent, int x, int y, String text, double fontSize, String anchor, String weight)
+    private void addTextElement(SVGElement parent, double x, double y, String text,
+            double fontSize, String anchor, String weight) throws SVGException {
+        addTextElement(parent, x, y, text, fontSize, anchor, weight, "#000000");
+    }
+    
+    private void addTextElement(SVGElement parent, double x, double y, String text,
+            double fontSize, String anchor, String weight, String fill)
             throws SVGException {
         Text newText = new Text();
         newText.appendText(text);
@@ -419,10 +676,43 @@ public class PrintMechCommon implements Printable {
         newText.addAttribute("x", AnimationElement.AT_XML, x + "");
         newText.addAttribute("y", AnimationElement.AT_XML, y + "");
         newText.addAttribute("font-family", AnimationElement.AT_XML, "Eurostile");
-        newText.addAttribute("font-size", AnimationElement.AT_XML, Double.toString(fontSize));
+        newText.addAttribute("font-size", AnimationElement.AT_XML, fontSize + "px");
         newText.addAttribute("font-weight", AnimationElement.AT_XML, weight);
         newText.addAttribute("text-anchor", AnimationElement.AT_CSS, anchor);
+        newText.addAttribute("fill", AnimationElement.AT_XML, fill);
         parent.loaderAddChild(null, newText);
         newText.rebuild();
+    }
+    
+    private final static double CONST_C = 0.55191502449;
+    private final static String FMT_CURVE = " c %f %f,%f %f,%f %f";
+    
+    /**
+     * Approximates a circle using four bezier curves.
+     * 
+     * @param x      Position of left of bounding rectangle.
+     * @param y      Position of top of bounding rectangle.
+     * @param radius Radius of the circle
+     * @return       A Path describing the circle
+     * @throws SVGException
+     */
+    private Path createPip(double x, double y, double radius) throws SVGException {
+        // c is the length of each control line
+        double c = CONST_C * radius;
+        Path path = new Path();
+        path.addAttribute("fill", AnimationElement.AT_CSS, "none");
+        path.addAttribute("stroke", AnimationElement.AT_CSS, "black");
+        path.addAttribute("stroke-width", AnimationElement.AT_CSS, "0.7");
+        
+        // Move to start of circle, at (1, 0)
+        StringBuilder d = new StringBuilder("M").append(x + radius * 2).append(",").append(y + radius);
+        // Draw arcs anticlockwise. The coordinates are relative to the beginning of the arc.
+        d.append(String.format(FMT_CURVE, 0.0, -c, c - radius, -radius, -radius, -radius));
+        d.append(String.format(FMT_CURVE, -c, 0.0, -radius, radius - c, -radius, radius));
+        d.append(String.format(FMT_CURVE, 0.0, c, radius - c, radius, radius, radius));
+        d.append(String.format(FMT_CURVE, c, 0.0, radius, c - radius, radius, -radius));
+        path.addAttribute("d", AnimationElement.AT_XML, d.toString());
+        path.updateTime(0);
+        return path;
     }
 }
