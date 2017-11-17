@@ -183,6 +183,7 @@ public class PrintMechCommon implements Printable {
             }
             
             writeTextFields(diagram);
+            drawArmor(diagram);
             SVGElement eqRect = diagram.getElement("inventory");
             if (null != eqRect) {
                 writeEquipment((Rect) eqRect);
@@ -207,6 +208,7 @@ public class PrintMechCommon implements Printable {
             if (null != hsRect) {
                 drawHeatSinkPips((Rect) hsRect);
             }
+            
             diagram.render(g2d);
         } catch (SVGException e) {
             e.printStackTrace();
@@ -242,6 +244,33 @@ public class PrintMechCommon implements Printable {
                 ((Text) svgEle).appendText(element.getText(mech));
             }
             ((Text) svgEle).rebuild();
+        }
+    }
+    
+    private void drawArmor(SVGDiagram diagram) throws SVGException {
+        final String FORMAT = "( %d )";
+        SVGElement element = null;
+        for (int loc = 0; loc < mech.locations(); loc++) {
+            element = diagram.getElement("textArmor_" + mech.getLocationAbbr(loc));
+            if (null != element) {
+                ((Text) element).getContent().clear();
+                ((Text) element).appendText(String.format(FORMAT, mech.getOArmor(loc)));
+                ((Text) element).rebuild();
+            }
+            element = diagram.getElement("textIS_" + mech.getLocationAbbr(loc));
+            if (null != element) {
+                ((Text) element).getContent().clear();
+                ((Text) element).appendText(String.format(FORMAT, mech.getOInternal(loc)));
+                ((Text) element).rebuild();
+            }
+            if (mech.hasRearArmor(loc)) {
+                element = diagram.getElement("textArmor_" + mech.getLocationAbbr(loc) + "R");
+                if (null != element) {
+                    ((Text) element).getContent().clear();
+                    ((Text) element).appendText(String.format(FORMAT, mech.getOArmor(loc, true)));
+                    ((Text) element).rebuild();
+                }
+            }
         }
     }
     
