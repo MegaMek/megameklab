@@ -23,6 +23,7 @@ import java.awt.print.PrinterException;
 import java.io.File;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -172,6 +173,15 @@ public class PrintMechCommon implements Printable {
                 new Rectangle(0, 0, (int) pageFormat.getImageableWidth(), (int) pageFormat.getImageableHeight()));
 
         try {
+            SVGElement element = null;
+            
+            element = diagram.getElement("tspanCopyright");
+            if (null != element) {
+                ((Tspan) element).setText(String.format(((Tspan) element).getText(),
+                        Calendar.getInstance().get(Calendar.YEAR)));
+                ((Text) element.getParent()).rebuild();
+            }
+            
             writeTextFields(diagram);
             SVGElement eqRect = diagram.getElement("inventory");
             if (null != eqRect) {
