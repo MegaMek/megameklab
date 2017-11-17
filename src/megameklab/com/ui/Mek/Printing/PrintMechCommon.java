@@ -29,6 +29,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import com.kitfox.svg.Path;
 import com.kitfox.svg.Rect;
@@ -81,15 +82,27 @@ public class PrintMechCommon implements Printable {
         RULES_LEVEL("rulesLevel", m -> formatRulesLevel(m)),
         ERA("era", m -> formatEra(m.getYear())),
         COST("cost", m -> formatCost(m)),
-        BV("bv", m -> Integer.toString(m.calculateBattleValue()))
+        BV("bv", m -> Integer.toString(m.calculateBattleValue())),
+        PILOT_NAME("pilotName", m -> m.getCrew().getName(0),
+                m -> !m.getCrew().getName().equalsIgnoreCase("unnamed")),
+        GUNNERY_SKILL("gunnerySkill", m -> Integer.toString(m.getCrew().getGunnery(0)),
+                m -> !m.getCrew().getName().equalsIgnoreCase("unnamed")),
+        PILOTING_SKILL("pilotingSkill", m -> Integer.toString(m.getCrew().getPiloting(0)),
+                m -> !m.getCrew().getName().equalsIgnoreCase("unnamed"))
         ;
         
         private String elementName;
         private Function<Mech, String> provider;
+        private Predicate<Mech> show;
         
         MechTextElements(String elementName, Function<Mech, String> provider) {
+            this(elementName, provider, m -> true);
+        }
+        
+        MechTextElements(String elementName, Function<Mech, String> provider, Predicate<Mech> show) {
             this.elementName = elementName;
             this.provider = provider;
+            this.show = show;
         }
         
         public String getElementName() {
@@ -99,7 +112,18 @@ public class PrintMechCommon implements Printable {
         public String getText(Mech mech) {
             return provider.apply(mech);
         }
+        
+        public boolean shouldWrite(Mech mech) {
+            return show.test(mech);
+        }
     }
+    
+    /**
+     * IDs of fields to hide if there is an assigned pilot
+     */
+    private static final String[] CREW_BLANKS = {
+            "blankPilotName", "blankGunnerySkill", "blankPilotingSkill"
+    };
     
     /**
      * The current mech being printed.
@@ -180,6 +204,15 @@ public class PrintMechCommon implements Printable {
                 ((Text) svgEle.getParent()).rebuild();
             }
         }
+        if (!mech.getCrew().getName().equalsIgnoreCase("unnamed")) {
+            for (String fieldName : CREW_BLANKS) {
+                SVGElement svgEle = diagram.getElement(fieldName);
+                if (null != svgEle) {
+                    svgEle.addAttribute("visibility", AnimationElement.AT_XML, "hidden");
+                    svgEle.updateTime(0);
+                }
+            }
+        }
         for (MechTextElements element : MechTextElements.values()) {
             SVGElement svgEle = diagram.getElement(element.getElementName());
             
@@ -188,7 +221,9 @@ public class PrintMechCommon implements Printable {
                 continue;
             }
             ((Text) svgEle).getContent().clear();
-            ((Text) svgEle).appendText(element.getText(mech));
+            if (element.shouldWrite(mech)) {
+                ((Text) svgEle).appendText(element.getText(mech));
+            }
             ((Text) svgEle).rebuild();
         }
     }

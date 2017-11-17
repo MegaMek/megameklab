@@ -1861,10 +1861,14 @@
          y="0"
          sodipodi:role="line"
          id="tspan56985">Name:</tspan><tspan
-         x="0 4.9155378 8.9250479 12.968366 17.011683 20.865681 24.104391 27.383671 29.763683 34.314106 37.9585 39.554192 41.258064 42.961937 71.332771 75.971092 77.56678 79.270653 83.205788 86.079384 87.675072 91.718391 95.734665 98.114677 102.6651 106.30949 107.90518 109.60905 111.31293"
+         x="0"
          y="12.319271"
          sodipodi:role="line"
-         id="tspan56987">Gunnery Skill:Piloting Skill:</tspan></text>
+         id="tspan4446">Gunnery Skill:</tspan><tspan
+         x="71.332771"
+         y="12.319271"
+         sodipodi:role="line"
+         id="tspan4446">Piloting Skill:</tspan></text>
 <g
        id="g56989"
        transform="translate(315.1356,624.7078)"><path
@@ -1973,23 +1977,24 @@
        transform="matrix(0.9980061,0,0,-1,372.5741,608.9293)"
        style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.21589994px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text57047"><tspan
-         x="0 3.9327886 6.9058514 9.9780169"
+         x="0"
          y="0"
          sodipodi:role="line"
-         id="tspan57049">Dead</tspan></text>
-<text
-       transform="matrix(0.99799845,0,0,-1,254.4296,609.208)"
-       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.7954998px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         id="tspan57049">Dead</tspan></text><text
+       transform="matrix(0.99799845,0,0,-1,296.4296,609.208)"
+       style="text-anchor:end;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.7954998px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text57051"><tspan
-         x="0 4.033668 7.4066491 10.872358 14.100451 17.293772 18.66151 22.034491 25.471222 28.699316 32.165024 35.46846 38.696552 41.924648"
+         x="0"
          y="0"
          sodipodi:role="line"
-         id="tspan57053">Consciousness#</tspan><tspan
-         x="16.238991 20.69573 22.063469 24.526556 27.75465 29.794666 32.704006 36.117558 39.241329 42.544765"
+         id="tspan57053">Consciousness#</tspan></text><text
+       transform="matrix(0.99799845,0,0,-1,296.4296,609.208)"
+       style="text-anchor:end;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.7954998px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="text57051"><tspan
+         x="0"
          y="-9.3075733"
          sodipodi:role="line"
-         id="tspan57055">Hits Taken</tspan></text>
-<g
+         id="tspan57055">Hits Taken</tspan></text><g
        id="g57057"><g
          id="g57059"
          clip-path="url(#clipPath57061)"><g
@@ -1999,7 +2004,7 @@
              style="fill:none;stroke:#231f20;stroke-width:1.03199995;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
              id="path57067"
              inkscape:connector-curvature="0" /></g></g></g><g
-       id="g57069"
+       id="blankPilotName"
        transform="translate(282.3856,643.4332)"><path
          d="M 0,0 103.153,0"
          style="fill:none;stroke:#231f20;stroke-width:0.72399998;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
@@ -2009,13 +2014,13 @@
        transform="translate(304.769,631.1126)"><path
          d="M 0,0 13.689,0"
          style="fill:none;stroke:#231f20;stroke-width:0.72399998;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         id="path57075"
+         id="blankGunnerySkill"
          inkscape:connector-curvature="0" /></g><g
        id="g57077"
        transform="translate(371.8506,631.1126)"><path
          d="M 0,0 13.689,0"
          style="fill:none;stroke:#231f20;stroke-width:0.72399998;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         id="path57079"
+         id="blankPilotingSkill"
          inkscape:connector-curvature="0" /></g><text
        transform="matrix(0.99809506,0,0,-1,43.2878,644.8024)"
        style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.65909958px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
@@ -7330,72 +7335,64 @@
        
        <g id="textFields"
             style="font-family:Eurostile;font-size:8.4434px;word-spacing:0px;letter-spacing:0px"
-       		fill="#000000">
+       		fill="#000000" line-height="125%">
          <text
 	       id="type"
 	       font-weight="bold"
 		   font-size="9.65909958px"
-	       xml:space="preserve"
-	       line-height="125%"
 	       x="67.6192"
 	       y="120.2247">Lorem Ipsum</text>
          <text
 	       id="mpWalk"
-	       xml:space="preserve"
-	       line-height="125%"
 	       text-anchor="middle"
 	       x="100.6794"
 	       y="144.7207">0</text>
          <text
 	       id="mpRun"
-	       xml:space="preserve"
-	       line-height="125%"
 	       text-anchor="middle"
 	       x="100.6794"
 	       y="154.9882">0</text>
          <text
 	       id="mpJump"
-	       xml:space="preserve"
-	       line-height="125%"
 	       text-anchor="middle"
 	       x="100.6794"
 	       y="165.2557">0</text>
          <text
 	       id="tonnage"
-	       xml:space="preserve"
-	       line-height="125%"
 	       x="177"
 	       y="134.42">0</text>
          <text
 	       id="techBase"
-	       xml:space="preserve"
-	       line-height="125%"
 	       x="181.2"
 	       y="145">Inner Sphere</text>
          <text
 	       id="rulesLevel"
-	       xml:space="preserve"
-	       line-height="125%"
 	       x="186.39"
 	       y="154.86">Standard</text>
          <text
 	       id="era"
-	       xml:space="preserve"
-	       line-height="125%"
 	       x="158"
 	       y="164.72">Lorem Ipsum</text>
          <text
 	       id="cost"
-	       xml:space="preserve"
-	       line-height="125%"
 	       x="69.84"
 	       y="348.8224">0 C-bills</text>
          <text
 	       id="bv"
-	       xml:space="preserve"
-	       line-height="125%"
 	       x="168.68"
 	       y="348.8224">0</text>
+	     <text
+	       id="pilotName"
+	       x="282.3856"
+	       y="120.25">Lorem Ipsum</text>
+	     <text
+	       id="gunnerySkill"
+	       x="304.77"
+	       y="132.56">4</text>
+	     <text
+	       id="pilotingSkill"
+	       x="371.85"
+	       y="132.56">5</text>
        
        </g><g id="rectAreas" fill="none">
          <rect
