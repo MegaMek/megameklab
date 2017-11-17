@@ -88,7 +88,9 @@ public class PrintMechCommon implements Printable {
         GUNNERY_SKILL("gunnerySkill", m -> Integer.toString(m.getCrew().getGunnery(0)),
                 m -> !m.getCrew().getName().equalsIgnoreCase("unnamed")),
         PILOTING_SKILL("pilotingSkill", m -> Integer.toString(m.getCrew().getPiloting(0)),
-                m -> !m.getCrew().getName().equalsIgnoreCase("unnamed"))
+                m -> !m.getCrew().getName().equalsIgnoreCase("unnamed")),
+        HEAT_SINK_TYPE("hsType", m -> formatHeatSinkType(m)),
+        HEAT_SINK_COUNT("hsCount", m -> formatHeatSinkCount(m))
         ;
         
         private String elementName;
@@ -189,6 +191,11 @@ public class PrintMechCommon implements Printable {
                     pip.setAttribute("visibility", AnimationElement.AT_XML, "visible");
                 }
                 pip.updateTime(0);
+            }
+            
+            SVGElement hsRect = diagram.getElement("heatSinkPips");
+            if (null != hsRect) {
+                drawHeatSinkPips((Rect) hsRect);
             }
             diagram.render(g2d);
         } catch (SVGException e) {
@@ -391,7 +398,7 @@ public class PrintMechCommon implements Printable {
                 fill = "#3f3f3f";
                 addTextElement(canvas, critX, currY, formatCritName(crit), fontSize, "start", style, fill);
             } else if (crit.isArmored()) {
-                SVGElement pip = createPip(critX, currY - fontSize * 0.8, fontSize * 0.4);
+                SVGElement pip = createPip(critX, currY - fontSize * 0.8, fontSize * 0.4, 0.7);
                 canvas.loaderAddChild(null, pip);
                 canvas.updateTime(0);
                 addTextElement(canvas, critX + fontSize, currY, formatCritName(crit), fontSize, "start", style, fill);
@@ -412,7 +419,7 @@ public class PrintMechCommon implements Printable {
                         x -= spacing * 5.5;
                         y = y2;
                     }
-                    SVGElement pip = createPip(x, y, radius);
+                    SVGElement pip = createPip(x, y, radius, 0.5);
                     canvas.loaderAddChild(null, pip);
                     canvas.updateTime(0);
                     x += spacing;
@@ -457,6 +464,52 @@ public class PrintMechCommon implements Printable {
         p.updateTime(0);
         canvas.loaderAddChild(null, p);
         canvas.updateTime(0);
+    }
+    
+    private void drawHeatSinkPips(Rect svgRect) throws SVGException {
+        Rectangle2D bbox = svgRect.getBoundingBox();
+        SVGElement canvas = svgRect.getRoot();
+        int viewWidth = (int)bbox.getWidth();
+        int viewHeight = (int)bbox.getHeight();
+        int viewX = (int)bbox.getX();
+        int viewY = (int)bbox.getY();
+        
+        int hsCount = mech.heatSinks();
+
+        // r = 3.5
+        // spacing = 9.66
+        // stroke width = 0.9
+        double size = 9.66;
+        int cols = (int) (viewWidth / size);
+        int rows = (int) (viewHeight / size);
+        
+        // Use 10 pips/column unless there are too many sinks for the space.
+        if (hsCount <= cols * 10) {
+            rows = 10;
+        }
+        // The rare unit with this many heat sinks will require us to shrink the pips
+        while (hsCount > rows * cols) {
+            // Figure out how much we will have to shrink to add another column
+            double nextCol = (cols + 1.0) / cols;
+            // First check whether we can shrink them less than what is required for a new column
+            if (cols * (int) (rows * nextCol) > hsCount) {
+                rows = (int) Math.ceil((double) hsCount / cols);
+                size = viewHeight / rows;
+            } else {
+                cols++;
+                size = viewWidth / (cols * size);
+                rows = (int) (viewHeight / size);
+            }
+        }
+        double radius = size * 0.36;
+        double strokeWidth = 0.9;
+        for (int i = 0; i < hsCount; i++) {
+            int row = i % rows;
+            int col = i / rows;
+            SVGElement pip = this.createPip(viewX + size * col, viewY + size * row, radius, strokeWidth);
+            canvas.loaderAddChild(null, pip);
+            canvas.updateTime(0);
+        }
     }
     
     private double getFontHeight(double fontSize, SVGElement canvas) throws SVGException {
@@ -555,6 +608,25 @@ public class PrintMechCommon implements Printable {
     private static String formatCost(Mech mech) {
         NumberFormat nf = NumberFormat.getNumberInstance(Locale.getDefault());
         return nf.format(mech.getCost(true)) + " C-bills";
+    }
+    
+    private static String formatHeatSinkType(Mech mech) {
+        if (mech.hasLaserHeatSinks()) {
+            return "Laser Heat Sinks:";
+        } else if (mech.hasDoubleHeatSinks()) {
+            return "Double Heat Sinks:";
+        } else {
+            return "Heat Sinks";
+        }
+    }
+    
+    private static String formatHeatSinkCount(Mech mech) {
+        int hsCount = mech.heatSinks();
+        if (mech.hasDoubleHeatSinks()) {
+            return String.format("%d (%d)", hsCount, hsCount * 2);
+        } else {
+            return Integer.toString(hsCount);
+        }
     }
     
     private String formatCritName(CriticalSlot cs) {
@@ -731,13 +803,13 @@ public class PrintMechCommon implements Printable {
      * @return       A Path describing the circle
      * @throws SVGException
      */
-    private Path createPip(double x, double y, double radius) throws SVGException {
+    private Path createPip(double x, double y, double radius, double strokeWidth) throws SVGException {
         // c is the length of each control line
         double c = CONST_C * radius;
         Path path = new Path();
         path.addAttribute("fill", AnimationElement.AT_CSS, "none");
         path.addAttribute("stroke", AnimationElement.AT_CSS, "black");
-        path.addAttribute("stroke-width", AnimationElement.AT_CSS, "0.7");
+        path.addAttribute("stroke-width", AnimationElement.AT_CSS, Double.toString(strokeWidth));
         
         // Move to start of circle, at (1, 0)
         StringBuilder d = new StringBuilder("M").append(x + radius * 2).append(",").append(y + radius);
