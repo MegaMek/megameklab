@@ -25,9 +25,11 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -270,6 +272,13 @@ public class PrintMechCommon implements Printable {
                     ((Text) element).appendText(String.format(FORMAT, mech.getOArmor(loc, true)));
                     ((Text) element).rebuild();
                 }
+            }
+            if (loc == Mech.LOC_CT) {
+                element = diagram.getElement("armorPips" + mech.getLocationAbbr(loc));
+                if (null != element) {
+                    setArmorPips(element, mech.getOArmor(loc));
+                }
+                element.updateTime(0);
             }
         }
     }
@@ -860,5 +869,190 @@ public class PrintMechCommon implements Printable {
         path.addAttribute("d", AnimationElement.AT_XML, d.toString());
         path.updateTime(0);
         return path;
+    }
+    
+    private void setArmorPips(SVGElement group, int armorVal) throws SVGException {
+        final String METHOD_NAME = "setArmorPips(SVGElement,int)";
+        // First sort pips into rows. We can't rely on the pips to be in order, so we use
+        // maps to allow non-sequential loading.
+        Map<Integer,Map<Integer,SVGElement>> rowMap = new TreeMap<>();
+        int pipCount = 0;
+        for (int i = 0; i < group.getNumChildren(); i++) {
+            final SVGElement pip = group.getChild(i);
+            try {
+                int index = pip.getId().indexOf(":");
+                String[] coords = pip.getId().substring(index + 1).split(",");
+                int r = Integer.parseInt(coords[0]);
+                rowMap.putIfAbsent(r, new TreeMap<>());
+                rowMap.get(r).put(Integer.parseInt(coords[1]), pip);
+                pipCount++;
+            } catch (Exception ex) {
+                MegaMekLab.getLogger().log(getClass(), METHOD_NAME, LogLevel.ERROR,
+                        "Malformed id for SVG armor pip element: " + pip.getId());
+            }
+        }
+        if (pipCount < armorVal) {
+            MegaMekLab.getLogger().log(getClass(), METHOD_NAME, LogLevel.ERROR,
+                    "Armor pip group " + group.getId() + " does not contain enough pips for " + armorVal + " armor");
+            return;
+        } else if (pipCount == armorVal) {
+            // Simple case; leave as is
+            return;
+        }
+        // Convert map into array for easier iteration in both directions. This will also skip
+        // over gaps in the numbering.
+        SVGElement[][] rows = new SVGElement[rowMap.size()][];
+        int row = 0;
+        for (Map<Integer,SVGElement> r : rowMap.values()) {
+            rows[row] = new SVGElement[r.size()];
+            int i = 0;
+            for (SVGElement e : r.values()) {
+                rows[row][i] = e;
+                i++;
+            }
+            row++;
+        }
+        
+        // Get the ratio of the number of pips to show to the total number of pips
+        // and distribute the number of pips proportionally to each side
+        double saturation = Math.min(1.0, (double) armorVal / pipCount);
+        
+        // Now we find the center row, which is the row that has the same number of pips above
+        // and below it as nearly as possible.
+        
+        int centerRow = rows.length / 2;
+        int pipsAbove = 0;
+        for (int r = 0; r < rows.length; r++) {
+            pipsAbove += rows[r].length;
+            if (pipsAbove > pipCount / 2) {
+                centerRow = r;
+                break;
+            }
+        }
+        int showAbove = (int) Math.round(pipsAbove * saturation);
+        int showBelow = armorVal - showAbove;
+        // keep a running total of the number to hide in each row
+        int[] showByRow = new int[rows.length];
+        double remaining = pipsAbove;
+        for (int i = centerRow; i >= 0; i--) {
+            showByRow[i] = (int) Math.round(rows[i].length * showAbove / remaining);
+            if ((showByRow[i] > 0) && (showByRow[i] % 2) != (rows[i].length % 2)) {
+                if ((showByRow[i] < showAbove) && (showByRow[i] < rows[i].length)) {
+                    showByRow[i]++;
+                } else {
+                    showByRow[i]--;
+                }
+            }
+            showAbove -= showByRow[i];
+            remaining -= rows[i].length;
+        }
+        // We may have some odd ones left over due to symmetry imposed on middle pip of the row
+        showBelow += showAbove;
+        remaining = pipCount - pipsAbove;
+        for (int i = centerRow + 1; i < rows.length; i++) {
+            showByRow[i] = (int) Math.round(rows[i].length * showBelow / remaining);
+            if ((showByRow[i] > 0) && (showByRow[i] % 2) != (rows[i].length % 2)) {
+                if ((showByRow[i] < showBelow) && (showByRow[i] < rows[i].length)) {
+                    showByRow[i]++;
+                } else {
+                    showByRow[i]--;
+                }
+            }
+            showBelow -= showByRow[i];
+            remaining -= rows[i].length;
+        }
+        
+        // Now we need to deal with leftovers, starting in the middle and adding one or two at a time
+        // (depending on whether there are an odd or even number of pips in the row) moving out toward
+        // the top and bottom and repeating until they are all placed.
+        
+        remaining = showBelow;
+        while (remaining > 0) {
+            for (int i = 0; i <= centerRow; i++) {
+                row = centerRow - i;
+                int toAdd = 2 - rows[row].length % 2;
+                if (remaining < toAdd) {
+                    continue;
+                }
+                if (rows[row].length >= showByRow[row] + toAdd) {
+                    showByRow[row] += toAdd;
+                    remaining -= toAdd;
+                }
+                if (i > 0) {
+                    row = centerRow + i;
+                    if (row >= rows.length) {
+                        continue;
+                    }
+                    toAdd = 2 - rows[row].length % 2;
+                    if (remaining < toAdd) {
+                        continue;
+                    }
+                    if (rows[row].length >= showByRow[row] + toAdd) {
+                        showByRow[row] += toAdd;
+                        remaining -= toAdd;
+                    }
+                }
+            }
+        }
+        
+        // Now select which pips in each row to hide
+        for (row = 0; row < rows.length; row++) {
+            int toHide = rows[row].length - showByRow[row];
+            if (toHide == 0) {
+                continue;
+            }
+            double ratio = (double) toHide / rows[row].length;
+            int half = rows[row].length / 2;
+            if (toHide % 2 == 1) {
+                hideElement(rows[row][half]);
+                toHide--;
+                ratio = (double) toHide / (rows[row].length - 1);
+            }
+            Set<Integer> indices = new HashSet<>();
+            double accum = 0.0;
+            for (int i = half % 2; i < half; i += 2) {
+                accum += ratio;
+                if (accum >= 1 -saturation) {
+                    indices.add(i);
+                    accum -= 1.0;
+                    toHide -= 2;
+                }
+                if (toHide == 0) {
+                    break;
+                }
+            }
+            for (int i = half - 1; i >= 0; i -= 2) {
+                accum += ratio;
+                if (accum >= saturation) {
+                    indices.add(i);
+                    accum -= 1.0;
+                    toHide -= 2;
+                }
+                if (toHide == 0) {
+                    break;
+                }
+            }
+            int i = 0;
+            while (toHide > 0) {
+                if (!indices.contains(i)) {
+                    indices.add(i);
+                    toHide -= 2;
+                }
+                i++;
+            }
+            for (int index : indices) {
+                hideElement(rows[row][index]);
+                hideElement(rows[row][rows[row].length - index - 1]);
+            }
+        }
+    }
+    
+    private void hideElement(SVGElement element) throws SVGException {
+        if (element.hasAttribute("visibility", AnimationElement.AT_XML)) {
+            element.setAttribute("visibility", AnimationElement.AT_XML, "hidden");
+        } else {
+            element.addAttribute("visibility", AnimationElement.AT_XML, "hidden");
+        }
+        element.updateTime(0);
     }
 }
