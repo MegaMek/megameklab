@@ -276,7 +276,8 @@ public class PrintMechCommon implements Printable {
             if (loc == Mech.LOC_CT) {
                 element = diagram.getElement("armorPips" + mech.getLocationAbbr(loc));
                 if (null != element) {
-                    setArmorPips(element, mech.getOArmor(loc));
+                    setArmorPips(element, mech.getOArmor(loc),
+                            (loc == Mech.LOC_HEAD) || (loc == Mech.LOC_CT));
                 }
                 element.updateTime(0);
             }
@@ -871,7 +872,7 @@ public class PrintMechCommon implements Printable {
         return path;
     }
     
-    private void setArmorPips(SVGElement group, int armorVal) throws SVGException {
+    private void setArmorPips(SVGElement group, int armorVal, boolean symmetric) throws SVGException {
         final String METHOD_NAME = "setArmorPips(SVGElement,int)";
         // First sort pips into rows. We can't rely on the pips to be in order, so we use
         // maps to allow non-sequential loading.
@@ -936,7 +937,7 @@ public class PrintMechCommon implements Printable {
         double remaining = pipsAbove;
         for (int i = centerRow; i >= 0; i--) {
             showByRow[i] = (int) Math.round(rows[i].length * showAbove / remaining);
-            if ((showByRow[i] > 0) && (showByRow[i] % 2) != (rows[i].length % 2)) {
+            if (symmetric && (showByRow[i] > 0) && (showByRow[i] % 2) != (rows[i].length % 2)) {
                 if ((showByRow[i] < showAbove) && (showByRow[i] < rows[i].length)) {
                     showByRow[i]++;
                 } else {
@@ -951,7 +952,7 @@ public class PrintMechCommon implements Printable {
         remaining = pipCount - pipsAbove;
         for (int i = centerRow + 1; i < rows.length; i++) {
             showByRow[i] = (int) Math.round(rows[i].length * showBelow / remaining);
-            if ((showByRow[i] > 0) && (showByRow[i] % 2) != (rows[i].length % 2)) {
+            if (symmetric && (showByRow[i] > 0) && (showByRow[i] % 2) != (rows[i].length % 2)) {
                 if ((showByRow[i] < showBelow) && (showByRow[i] < rows[i].length)) {
                     showByRow[i]++;
                 } else {
@@ -970,7 +971,7 @@ public class PrintMechCommon implements Printable {
         while (remaining > 0) {
             for (int i = 0; i <= centerRow; i++) {
                 row = centerRow - i;
-                int toAdd = 2 - rows[row].length % 2;
+                int toAdd = symmetric? (2 - rows[row].length % 2) : 1;
                 if (remaining < toAdd) {
                     continue;
                 }
@@ -983,7 +984,7 @@ public class PrintMechCommon implements Printable {
                     if (row >= rows.length) {
                         continue;
                     }
-                    toAdd = 2 - rows[row].length % 2;
+                    toAdd = symmetric? (2 - rows[row].length % 2) : 1;
                     if (remaining < toAdd) {
                         continue;
                     }
@@ -1002,31 +1003,42 @@ public class PrintMechCommon implements Printable {
                 continue;
             }
             double ratio = (double) toHide / rows[row].length;
-            int half = rows[row].length / 2;
-            if (toHide % 2 == 1) {
-                hideElement(rows[row][half]);
-                toHide--;
-                ratio = (double) toHide / (rows[row].length - 1);
+            int length = rows[row].length;
+            if (symmetric) {
+                length /= 2;
+                if (toHide % 2 == 1) {
+                    hideElement(rows[row][length]);
+                    toHide--;
+                    ratio = (double) toHide / (rows[row].length - 1);
+                }
             }
             Set<Integer> indices = new HashSet<>();
             double accum = 0.0;
-            for (int i = half % 2; i < half; i += 2) {
+            for (int i = length % 2; i < length; i += 2) {
                 accum += ratio;
                 if (accum >= 1 -saturation) {
                     indices.add(i);
                     accum -= 1.0;
-                    toHide -= 2;
+                    toHide--;
+                    if (symmetric) {
+                        indices.add(rows[row].length - 1 - i);
+                        toHide--;
+                    }
                 }
                 if (toHide == 0) {
                     break;
                 }
             }
-            for (int i = half - 1; i >= 0; i -= 2) {
+            for (int i = length - 1; i >= 0; i -= 2) {
                 accum += ratio;
                 if (accum >= saturation) {
                     indices.add(i);
                     accum -= 1.0;
-                    toHide -= 2;
+                    toHide--;
+                }
+                if (symmetric) {
+                    indices.add(rows[row].length - 1 - i);
+                    toHide--;
                 }
                 if (toHide == 0) {
                     break;
@@ -1036,7 +1048,11 @@ public class PrintMechCommon implements Printable {
             while (toHide > 0) {
                 if (!indices.contains(i)) {
                     indices.add(i);
-                    toHide -= 2;
+                    toHide--;
+                    if (symmetric) {
+                        indices.add(rows[row].length - 1 - i);
+                        toHide--;
+                    }
                 }
                 i++;
             }
