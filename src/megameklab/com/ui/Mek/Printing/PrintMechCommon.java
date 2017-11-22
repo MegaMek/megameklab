@@ -24,6 +24,7 @@ import java.io.File;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -265,6 +266,14 @@ public class PrintMechCommon implements Printable {
                 ((Text) element).appendText(String.format(FORMAT, mech.getOInternal(loc)));
                 ((Text) element).rebuild();
             }
+            element = diagram.getElement("armorPips" + mech.getLocationAbbr(loc));
+            if (null != element) {
+                addPips(element, mech.getOArmor(loc),
+                        (loc == Mech.LOC_HEAD) || (loc == Mech.LOC_CT) || (loc == Mech.LOC_CLEG));
+                //                        setArmorPips(element, mech.getOArmor(loc), true);
+                //                      (loc == Mech.LOC_HEAD) || (loc == Mech.LOC_CT));
+            }
+            element.updateTime(0);
             if (mech.hasRearArmor(loc)) {
                 element = diagram.getElement("textArmor_" + mech.getLocationAbbr(loc) + "R");
                 if (null != element) {
@@ -272,14 +281,6 @@ public class PrintMechCommon implements Printable {
                     ((Text) element).appendText(String.format(FORMAT, mech.getOArmor(loc, true)));
                     ((Text) element).rebuild();
                 }
-            }
-            if (loc == Mech.LOC_CT) {
-                element = diagram.getElement("armorPips" + mech.getLocationAbbr(loc));
-                if (null != element) {
-                    setArmorPips(element, mech.getOArmor(loc),
-                            (loc == Mech.LOC_HEAD) || (loc == Mech.LOC_CT));
-                }
-                element.updateTime(0);
             }
         }
     }
@@ -872,6 +873,311 @@ public class PrintMechCommon implements Printable {
         return path;
     }
     
+    private void addPips(SVGElement group, int armorVal, boolean symmetric) throws SVGException {
+        final String METHOD_NAME = "addArmorPips(SVGElement,int)";
+        double spacing = 6.15152;
+        List<Rectangle2D> rows = new ArrayList<>();
+        double left = Double.MAX_VALUE;
+        double top = Double.MAX_VALUE;
+        double right = 0;
+        double bottom = 0;
+        
+        for (int i = 0; i < group.getNumChildren(); i++) {
+            final SVGElement r = group.getChild(i);
+            if (r instanceof Rect) {
+                Rectangle2D bbox = ((Rect) r).getBoundingBox();
+                spacing = Math.min(spacing, bbox.getHeight());
+                if (bbox.getX() < left) {
+                    left = bbox.getX();
+                }
+                if (bbox.getY() < top) {
+                    top = bbox.getY();
+                }
+                if (bbox.getX() + bbox.getWidth() > right) {
+                    right = bbox.getX() + bbox.getWidth();
+                }
+                if (bbox.getY() + bbox.getHeight() > bottom) {
+                    bottom = bbox.getY() + bbox.getHeight();
+                }
+                rows.add(bbox);
+            }
+        }
+        if (rows.isEmpty()) {
+            MegaMekLab.getLogger().log(getClass(), METHOD_NAME, LogLevel.WARNING,
+                    "No pip rows defined for region " + group.getId());
+            return;
+        }
+        Collections.sort(rows, (r1, r2) -> (int) r1.getY() - (int) r2.getY());
+        
+        Rectangle2D bounds = new Rectangle2D.Double(left, top, right - left, bottom - top);
+        double aspect = bounds.getWidth() / bounds.getHeight();
+        double centerLine = rows.get(0).getX() + rows.get(0).getWidth() / 2.0;
+        
+        int maxWidth = 0;
+        int totalPips = 0;
+        // Maximum number of pips that can be displayed on each row
+        int[] rowLength = new int[rows.size()];
+        int[][] halfPipCount = new int[rows.size()][];
+        
+        double prevRowBottom = 0;
+        int centerPip = 0;
+        for (int i = 0; i < rows.size(); i++) {
+            final Rectangle2D rect = rows.get(i);
+            int halfPipsLeft = (int) ((centerLine - rect.getX()) / (spacing / 2));
+            int halfPipsRight = (int) ((rect.getX() + rect.getWidth() - centerLine) / (spacing / 2));
+            if ((i > 0) && (rect.getY() < prevRowBottom)) {
+                centerPip = (1 - centerPip);
+                if (halfPipsLeft %2 != centerPip) {
+                    halfPipsLeft--;
+                }
+                if (halfPipsRight %2 != centerPip) {
+                    halfPipsRight--;
+                }
+                rowLength[i] = (halfPipsLeft + halfPipsRight) / 2;
+            } else {
+                rowLength[i] = (halfPipsLeft + halfPipsRight) / 2;
+                centerPip = rowLength[i] % 2;
+            }
+            if (rowLength[i] > maxWidth) {
+                maxWidth = rowLength[i];
+            }
+            halfPipCount[i] = new int[] { halfPipsLeft, halfPipsRight };
+            totalPips += rowLength[i];
+            prevRowBottom = rect.getY() + spacing;
+        }
+        
+        int nRows = adjustedRows(armorVal, rows.size(), maxWidth, aspect);
+        
+        // Now we need to select the rows to use. If the total pips available in those rows is
+        // insufficient, add a row and try again.
+        
+        int available = 0;
+        int minWidth = maxWidth;
+        List<Integer> useRows = new ArrayList<>();
+        while (available < armorVal) {
+            int start = rows.size() / (nRows * 2);
+            for (int i = 0; i < nRows; i++) {
+                int r = start + i * rows.size() / nRows;
+                useRows.add(r);
+                available += rowLength[r];
+                if (rowLength[r] < minWidth) {
+                    minWidth = rowLength[r];
+                }
+            }
+            if (available < armorVal) {
+                nRows++;
+                available = 0;
+                useRows.clear();
+                minWidth = maxWidth;
+            }
+        }
+        
+        // Sort the rows into the order pips should be added: longest rows first, then for rows of
+        // equal length the one closest to the middle first
+        Collections.sort(useRows, (r1, r2) -> {
+            if (rowLength[r1] == rowLength[r2]) {
+                return Math.abs(r1 - rows.size() / 2) - Math.abs(r2 - rows.size() / 2);
+            } else {
+                return rowLength[r2] - rowLength[r1];
+            }
+        });
+        
+        // Now we iterate through the rows and assign pips as many times as it takes to get all assigned.
+        int[] pipsByRow = new int[rows.size()];
+        int remaining = armorVal;
+        while (remaining > 0) {
+            for (int r : useRows) {
+                int toAdd = Math.min(remaining,
+                        Math.min(rowLength[r] / minWidth, rowLength[r] - pipsByRow[r]));
+                pipsByRow[r] += toAdd;
+                remaining -= toAdd;
+            }
+        }
+        
+        // Locations on the unit's center line require that rows with an even width don't get assigned
+        // an odd number of pips.
+        if (symmetric) {
+            // First we remove all the odd pips in even rows
+            remaining = 0;
+            for (int r = 0; r < rows.size(); r++) {
+                if ((rowLength[r] % 2 == 0) && (pipsByRow[r] % 2 == 1)) {
+                    pipsByRow[r]--;
+                    remaining++;
+                }
+            }
+            // Now we go through all the selected rows and assign them; this time even rows can
+            // only be assigned pips in pairs.
+            int toAdd = 0;
+            boolean added = false;
+            do {
+                for (int r : useRows) {
+                    toAdd = 2 - rowLength[r] % 2;
+                    if ((remaining >= toAdd) && (pipsByRow[r] + toAdd <= rowLength[r])) {
+                        pipsByRow[r] += toAdd;
+                        remaining -= toAdd;
+                    }
+                }
+            } while ((remaining > 0) && added);
+            
+            // We may still have one or more left. At this point all rows are considered available.
+            int centerRow = rows.size() / 2;
+            while (remaining > 0) {
+                for (int i = 0; i <= centerRow; i++) {
+                    int r = centerRow - i;
+                    toAdd = 2 - rowLength[r] % 2;
+                    if (remaining < toAdd) {
+                        continue;
+                    }
+                    if (rowLength[r] >= pipsByRow[r] + toAdd) {
+                        pipsByRow[r] += toAdd;
+                        remaining -= toAdd;
+                    }
+                    if (i > 0) {
+                        r = centerRow + i;
+                        if (r >= rows.size()) {
+                            continue;
+                        }
+                        toAdd = 2 - rowLength[r] % 2;
+                        if (remaining < toAdd) {
+                            continue;
+                        }
+                        if (rowLength[r] >= pipsByRow[r] + toAdd) {
+                            pipsByRow[r] += toAdd;
+                            remaining -= toAdd;
+                        }
+                    }
+                }
+            }
+        }
+        
+        // It's likely that there's extra spacing between rows, so we're going to check whether
+        // we can increase horizontal spacing between pips to keep the approximate aspect ratio.
+        
+        int firstRow = 0;
+        int lastRow = rows.size();
+        int r = 0;
+        while (r < rows.size()) {
+            if (pipsByRow[r] > 0) {
+                firstRow = r;
+                break;
+            }
+            r++;
+        }
+        r = rows.size() - 1;
+        while (r >= 0) {
+            if (pipsByRow[r] > 0) {
+                lastRow = r;
+                break;
+            }
+            r--;
+        }
+        double targetWidth = aspect * (rows.get(lastRow).getY() + rows.get(lastRow).getHeight()
+                - rows.get(firstRow).getY());
+        double hSpacing = targetWidth / pipsByRow[firstRow];
+        for (r = firstRow + 1; r <= lastRow; r++) {
+            if (pipsByRow[r] > 0) {
+                hSpacing = Math.min(hSpacing, Math.min(targetWidth, rows.get(r).getWidth()) / pipsByRow[r]);
+            }
+        }
+        if (hSpacing < spacing) {
+            hSpacing = spacing;
+        }
+        
+        for (r = 0; r < pipsByRow.length; r++) {
+            if (pipsByRow[r] > 0) {
+                double radius = rows.get(r).getHeight() * 0.38;
+                SVGElement pip = null;
+                // Symmetric and this row is centered
+                if (symmetric && (halfPipCount[r][0] == halfPipCount[r][1])) {
+                    double leftX = centerLine - hSpacing;
+                    double rightX = centerLine;
+                    if (rowLength[r] % 2 == 1) {
+                        leftX -= spacing / 2.0;
+                        rightX += hSpacing - spacing / 2.0;
+                        if (pipsByRow[r] % 2 == 1) {
+                            pip = createPip(leftX + hSpacing, rows.get(r).getY(), radius, 0.5);
+                            group.loaderAddChild(null, pip);
+                            pipsByRow[r]--;
+                        }
+                    } else {
+                        leftX += (hSpacing - spacing) / 2.0;
+                        rightX += (hSpacing - spacing) / 2.0;
+                    }
+                    while (pipsByRow[r] > 0) {
+                        pip = createPip(leftX, rows.get(r).getY(), radius, 0.5);
+                        group.loaderAddChild(null, pip);
+                        pip = createPip(rightX, rows.get(r).getY(), radius, 0.5);
+                        group.loaderAddChild(null, pip);
+                        leftX -= hSpacing;
+                        rightX += hSpacing;
+                        pipsByRow[r] -= 2;
+                    }
+                } else {
+                    // If the location is symmetric but the middle of the current row is to the left
+                    // of the centerline, right justify. If non-symmetric, balance the extra space at the
+                    // ends of the rows with any odd space going on the right margin.
+                    double x = centerLine - halfPipCount[r][0] * spacing / 2.0;
+                    if (symmetric && halfPipCount[r][0] > halfPipCount[r][1]) {
+                        x += (rowLength[r] - pipsByRow[r]) * hSpacing;
+                    } else if (!symmetric) {
+                        x += ((rowLength[r] - pipsByRow[r]) / 2) * hSpacing;
+                    }
+                    while (pipsByRow[r] > 0) {
+                        pip = createPip(x, rows.get(r).getY(), radius, 0.5);
+                        group.loaderAddChild(null, pip);
+                        pipsByRow[r]--;
+                        x += hSpacing;
+                    }
+                }
+            }
+        }
+        group.updateTime(0);
+    }
+    
+    /**
+     * Calculate how many rows to use to give the pip pattern the approximate aspect ratio of the region
+     * 
+     * @param pipCount  The number of pips to display
+     * @param maxRows   The maximum number of rows in the region
+     * @param maxWidth  The number of pips in the longest row
+     * @param aspect    The aspect ratio of the region (w/h)
+     * @return          The number of rows to use in the pattern
+     */
+    private int adjustedRows(int pipCount, int maxRows, int maxWidth, double aspect) {
+        double nRows = Math.min(pipCount,  maxRows);
+        double width = Math.ceil(pipCount / nRows);
+        double pipAspect = width / nRows;
+        double sqrAspect = aspect * aspect;
+        if (aspect <= 1) {
+            while ((width < maxWidth) && (nRows > 1)) {
+                double tmpWidth = width + 1;
+                double tmpRows = Math.ceil(pipCount / tmpWidth);
+                double tmpAspect = tmpWidth / tmpRows;
+                if (pipAspect * tmpAspect / sqrAspect < 2) {
+                    width = tmpWidth;
+                    nRows = tmpRows;
+                    pipAspect = tmpAspect;
+                } else {
+                    break;
+                }
+            }
+        } else {
+            while ((nRows < maxRows) && (width > 1)) {
+                double tmpRows = nRows + 1;
+                double tmpWidth = Math.ceil(pipCount / tmpRows);
+                double tmpAspect = tmpWidth / tmpRows;
+                if (pipAspect * tmpAspect / sqrAspect > 2) {
+                    width = tmpWidth;
+                    nRows = tmpRows;
+                    pipAspect = tmpAspect;
+                } else {
+                    break;
+                }
+            }
+        }
+        return (int) nRows;
+    }
+    
     private void setArmorPips(SVGElement group, int armorVal, boolean symmetric) throws SVGException {
         final String METHOD_NAME = "setArmorPips(SVGElement,int)";
         // First sort pips into rows. We can't rely on the pips to be in order, so we use
@@ -1029,19 +1335,21 @@ public class PrintMechCommon implements Printable {
                     break;
                 }
             }
-            for (int i = length - 1; i >= 0; i -= 2) {
-                accum += ratio;
-                if (accum >= saturation) {
-                    indices.add(i);
-                    accum -= 1.0;
-                    toHide--;
-                }
-                if (symmetric) {
-                    indices.add(rows[row].length - 1 - i);
-                    toHide--;
-                }
-                if (toHide == 0) {
-                    break;
+            if (toHide > 0) {
+                for (int i = length - 1; i >= 0; i -= 2) {
+                    accum += ratio;
+                    if (accum >= saturation) {
+                        indices.add(i);
+                        accum -= 1.0;
+                        toHide--;
+                        if (symmetric) {
+                            indices.add(rows[row].length - 1 - i);
+                            toHide--;
+                        }
+                    }
+                    if (toHide == 0) {
+                        break;
+                    }
                 }
             }
             int i = 0;
@@ -1058,7 +1366,6 @@ public class PrintMechCommon implements Printable {
             }
             for (int index : indices) {
                 hideElement(rows[row][index]);
-                hideElement(rows[row][rows[row].length - index - 1]);
             }
         }
     }
