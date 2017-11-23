@@ -23,6 +23,7 @@ import java.awt.print.PrinterException;
 import java.io.File;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
@@ -63,6 +64,8 @@ import megameklab.com.util.UnitUtil;
  *
  */
 public class PrintMechCommon implements Printable {
+    
+    final static double PIP_SIZE = 0.38;
     
     private enum MechTextElements {
         TYPE ("type", m -> m.getChassis() + " " + m.getModel()),
@@ -874,19 +877,38 @@ public class PrintMechCommon implements Printable {
     }
     
     private void addPips(SVGElement group, int armorVal, boolean symmetric) throws SVGException {
+        addPips(group, armorVal, symmetric, PIP_SIZE);
+    }
+    
+    /**
+     * Adds pips to the SVG diagram. The rows are defined in the SVG diagram with a series of <rect>
+     * elements, each of which determines the bounds of a row of pips. The spacing between pips is
+     * determined by the height of the first row. If rows overlap the pips are offset by half in the next
+     * row. 
+     * 
+     * @param group           A <g> element that has <rect> children that describe pip rows
+     * @param pipCount        The number of pips to place in the region
+     * @param symmetric       If true, the left and right sides will be mirror images (assuming the row
+     *                        bounds are symmetric). Used for regions on a unit's center line.
+     * @param size            The ratio of pip radius to the spacing between pips. 
+     * @param density         Determines the number of rows to place in each <rect>. 0 and 1 are special
+     *                        values, with 0 meaning 1 row/rect and 1 meaning 1.5 rows/rect.
+     * @throws SVGException
+     */
+    private void addPips(SVGElement group, int armorVal, boolean symmetric,
+            double size) throws SVGException {
         final String METHOD_NAME = "addArmorPips(SVGElement,int)";
         double spacing = 6.15152;
-        List<Rectangle2D> rows = new ArrayList<>();
         double left = Double.MAX_VALUE;
         double top = Double.MAX_VALUE;
         double right = 0;
         double bottom = 0;
         
+        List<Rectangle2D> regions = new ArrayList<>();
         for (int i = 0; i < group.getNumChildren(); i++) {
             final SVGElement r = group.getChild(i);
             if (r instanceof Rect) {
                 Rectangle2D bbox = ((Rect) r).getBoundingBox();
-                spacing = Math.min(spacing, bbox.getHeight());
                 if (bbox.getX() < left) {
                     left = bbox.getX();
                 }
@@ -899,52 +921,64 @@ public class PrintMechCommon implements Printable {
                 if (bbox.getY() + bbox.getHeight() > bottom) {
                     bottom = bbox.getY() + bbox.getHeight();
                 }
-                rows.add(bbox);
+                regions.add(bbox);
             }
         }
-        if (rows.isEmpty()) {
+        if (regions.isEmpty()) {
             MegaMekLab.getLogger().log(getClass(), METHOD_NAME, LogLevel.WARNING,
                     "No pip rows defined for region " + group.getId());
             return;
         }
-        Collections.sort(rows, (r1, r2) -> (int) r1.getY() - (int) r2.getY());
         
         Rectangle2D bounds = new Rectangle2D.Double(left, top, right - left, bottom - top);
         double aspect = bounds.getWidth() / bounds.getHeight();
-        double centerLine = rows.get(0).getX() + rows.get(0).getWidth() / 2.0;
+        double centerLine = regions.get(0).getX() + regions.get(0).getWidth() / 2.0;
         
         int maxWidth = 0;
-        int totalPips = 0;
-        // Maximum number of pips that can be displayed on each row
-        int[] rowLength = new int[rows.size()];
-        int[][] halfPipCount = new int[rows.size()][];
         
-        double prevRowBottom = 0;
-        int centerPip = 0;
-        for (int i = 0; i < rows.size(); i++) {
-            final Rectangle2D rect = rows.get(i);
-            int halfPipsLeft = (int) ((centerLine - rect.getX()) / (spacing / 2));
-            int halfPipsRight = (int) ((rect.getX() + rect.getWidth() - centerLine) / (spacing / 2));
-            if ((i > 0) && (rect.getY() < prevRowBottom)) {
-                centerPip = (1 - centerPip);
-                if (halfPipsLeft %2 != centerPip) {
-                    halfPipsLeft--;
+        Collections.sort(regions, (r1, r2) -> (int) r1.getY() - (int) r2.getY());
+        // Maximum number of pips that can be displayed on each row
+        int[] rowLength = null;
+        int[][] halfPipCount = null;
+        int totalPips = 0;
+        double scale = 1.0;
+        List<Rectangle2D> rows = null;
+        while (totalPips < armorVal) {
+            totalPips = 0;
+            rows = rescaleRows(regions, scale);
+            rowLength = new int[rows.size()];
+            halfPipCount = new int[rows.size()][];
+            
+            double prevRowBottom = 0;
+            int centerPip = 0;
+            spacing = rows.stream().mapToDouble(Rectangle2D::getHeight).min().orElse(spacing);
+            for (int i = 0; i < rows.size(); i++) {
+                final Rectangle2D rect = rows.get(i);
+                int halfPipsLeft = (int) ((centerLine - rect.getX()) / (spacing / 2));
+                int halfPipsRight = (int) ((rect.getX() + rect.getWidth() - centerLine) / (spacing / 2));
+                if ((i > 0) && (rect.getY() < prevRowBottom)) {
+                    centerPip = (1 - centerPip);
+                    if (halfPipsLeft %2 != centerPip) {
+                        halfPipsLeft--;
+                    }
+                    if (halfPipsRight %2 != centerPip) {
+                        halfPipsRight--;
+                    }
+                    rowLength[i] = (halfPipsLeft + halfPipsRight) / 2;
+                } else {
+                    rowLength[i] = (halfPipsLeft + halfPipsRight) / 2;
+                    centerPip = rowLength[i] % 2;
                 }
-                if (halfPipsRight %2 != centerPip) {
-                    halfPipsRight--;
+                if (rowLength[i] > maxWidth) {
+                    maxWidth = rowLength[i];
                 }
-                rowLength[i] = (halfPipsLeft + halfPipsRight) / 2;
-            } else {
-                rowLength[i] = (halfPipsLeft + halfPipsRight) / 2;
-                centerPip = rowLength[i] % 2;
+                halfPipCount[i] = new int[] { halfPipsLeft, halfPipsRight };
+                totalPips += rowLength[i];
+                prevRowBottom = rect.getY() + spacing;
             }
-            if (rowLength[i] > maxWidth) {
-                maxWidth = rowLength[i];
-            }
-            halfPipCount[i] = new int[] { halfPipsLeft, halfPipsRight };
-            totalPips += rowLength[i];
-            prevRowBottom = rect.getY() + spacing;
-        }
+            
+            scale *= 0.9;
+        };
         
         int nRows = adjustedRows(armorVal, rows.size(), maxWidth, aspect);
         
@@ -958,10 +992,12 @@ public class PrintMechCommon implements Printable {
             int start = rows.size() / (nRows * 2);
             for (int i = 0; i < nRows; i++) {
                 int r = start + i * rows.size() / nRows;
-                useRows.add(r);
-                available += rowLength[r];
-                if (rowLength[r] < minWidth) {
-                    minWidth = rowLength[r];
+                if (rowLength[r] > 0) {
+                    useRows.add(r);
+                    available += rowLength[r];
+                    if (rowLength[r] < minWidth) {
+                        minWidth = rowLength[r];
+                    }
                 }
             }
             if (available < armorVal) {
@@ -974,11 +1010,13 @@ public class PrintMechCommon implements Printable {
         
         // Sort the rows into the order pips should be added: longest rows first, then for rows of
         // equal length the one closest to the middle first
+        final int rowCount = rows.size();
+        final int[] rowSize = Arrays.copyOf(rowLength, rowLength.length);
         Collections.sort(useRows, (r1, r2) -> {
-            if (rowLength[r1] == rowLength[r2]) {
-                return Math.abs(r1 - rows.size() / 2) - Math.abs(r2 - rows.size() / 2);
+            if (rowSize[r1] == rowSize[r2]) {
+                return Math.abs(r1 - rowCount / 2) - Math.abs(r2 - rowCount / 2);
             } else {
-                return rowLength[r2] - rowLength[r1];
+                return rowSize[r2] - rowSize[r1];
             }
         });
         
@@ -987,10 +1025,12 @@ public class PrintMechCommon implements Printable {
         int remaining = armorVal;
         while (remaining > 0) {
             for (int r : useRows) {
-                int toAdd = Math.min(remaining,
-                        Math.min(rowLength[r] / minWidth, rowLength[r] - pipsByRow[r]));
-                pipsByRow[r] += toAdd;
-                remaining -= toAdd;
+                if (rowLength[r] > pipsByRow[r]) {
+                    int toAdd = Math.min(remaining,
+                            Math.min(rowLength[r] / minWidth, rowLength[r] - pipsByRow[r]));
+                    pipsByRow[r] += toAdd;
+                    remaining -= toAdd;
+                }
             }
         }
         
@@ -1054,7 +1094,7 @@ public class PrintMechCommon implements Printable {
         // we can increase horizontal spacing between pips to keep the approximate aspect ratio.
         
         int firstRow = 0;
-        int lastRow = rows.size();
+        int lastRow = rows.size() - 1;
         int r = 0;
         while (r < rows.size()) {
             if (pipsByRow[r] > 0) {
@@ -1085,7 +1125,7 @@ public class PrintMechCommon implements Printable {
         
         for (r = 0; r < pipsByRow.length; r++) {
             if (pipsByRow[r] > 0) {
-                double radius = rows.get(r).getHeight() * 0.38;
+                double radius = rows.get(r).getHeight() * size;
                 SVGElement pip = null;
                 // Symmetric and this row is centered
                 if (symmetric && (halfPipCount[r][0] == halfPipCount[r][1])) {
@@ -1132,6 +1172,53 @@ public class PrintMechCommon implements Printable {
             }
         }
         group.updateTime(0);
+    }
+    
+    /**
+     * Creates a new set pip row regions sized according to the scaling factor.
+     * 
+     * @param rows  The rectangular regions describing pip rows in the SVG diagram.
+     * @param scale The scaling factor
+     * @return      A list of rectangular regions scaled according to the provided factor.
+     */
+    private List<Rectangle2D> rescaleRows(List<Rectangle2D> rows, double scale) {
+        //FIXME: This does not currently respect gaps between rows.
+        if (rows.isEmpty() || (rows.size() == Math.floor(rows.size() * scale))) {
+            return rows;
+        }
+        List<Rectangle2D> retVal = new ArrayList<>();
+        Rectangle2D rect = rows.get(0);
+        Rectangle2D rect2 = null;
+        double yPos = rect.getY();
+        double height = rows.get(rows.size() - 1).getY() + rows.get(rows.size() - 1).getHeight();
+        double dy = scale * height / rows.size();
+        double rowHeight = dy / 0.866;
+        
+        int r = 0;
+        while ((r < rows.size()) && (yPos + rowHeight <= height)) {
+            rect = rows.get(r);
+            if (r + 1 < rows.size()) {
+                rect2 = rows.get(r + 1);
+            } else {
+                rect2 = null;
+            }
+            
+            if ((rect2 == null) || (rect2.getY() > yPos)) {
+                retVal.add(new Rectangle2D.Double(rect.getX(), yPos,
+                        rect.getWidth(), rowHeight));
+            } else {
+                double left = Math.max(rect.getX(), rect2.getX());
+                double right = Math.min(rect.getX() + rect.getWidth(), rect2.getX() + rect2.getWidth());
+                retVal.add(new Rectangle2D.Double(left, yPos, right - left, rowHeight));
+            }
+            
+            yPos += dy;
+            if (yPos > rect.getY() + rect.getHeight()) {
+                r++;
+            }
+        }
+        
+        return retVal;
     }
     
     /**
