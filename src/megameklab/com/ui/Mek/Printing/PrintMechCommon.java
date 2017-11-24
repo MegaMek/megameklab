@@ -284,6 +284,10 @@ public class PrintMechCommon implements Printable {
                     ((Text) element).appendText(String.format(FORMAT, mech.getOArmor(loc, true)));
                     ((Text) element).rebuild();
                 }
+                element = diagram.getElement("armorPips" + mech.getLocationAbbr(loc) + "R");
+                if (null != element) {
+                    addPips(element, mech.getOArmor(loc, true), loc == Mech.LOC_CT);
+                }
             }
         }
     }
@@ -1113,10 +1117,10 @@ public class PrintMechCommon implements Printable {
         }
         double targetWidth = aspect * (rows.get(lastRow).getY() + rows.get(lastRow).getHeight()
                 - rows.get(firstRow).getY());
-        double hSpacing = targetWidth / pipsByRow[firstRow];
+        double hSpacing = targetWidth / pipsByRow[firstRow] - spacing;
         for (r = firstRow + 1; r <= lastRow; r++) {
             if (pipsByRow[r] > 0) {
-                hSpacing = Math.min(hSpacing, Math.min(targetWidth, rows.get(r).getWidth()) / pipsByRow[r]);
+                hSpacing = Math.min(hSpacing, (Math.min(targetWidth, rows.get(r).getWidth()) - spacing) / pipsByRow[r]);
             }
         }
         if (hSpacing < spacing) {
