@@ -269,7 +269,11 @@ public class PrintMechCommon implements Printable {
                 ((Text) element).appendText(String.format(FORMAT, mech.getOInternal(loc)));
                 ((Text) element).rebuild();
             }
-            element = diagram.getElement("armorPips" + mech.getLocationAbbr(loc));
+            if (mech.isSuperHeavy() && (loc == Mech.LOC_HEAD)) {
+                element = diagram.getElement("armorPips" + mech.getLocationAbbr(loc) + "_SH");
+            } else {
+                element = diagram.getElement("armorPips" + mech.getLocationAbbr(loc));
+            }
             if (null != element) {
                 addPips(element, mech.getOArmor(loc),
                         (loc == Mech.LOC_HEAD) || (loc == Mech.LOC_CT) || (loc == Mech.LOC_CLEG));
