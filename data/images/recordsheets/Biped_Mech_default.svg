@@ -4071,9 +4071,17 @@
          <g id="armorPipsHD" fill="none"
            transform="translate(476.74915,68.1505)">
            <rect x="6.15152" y="0" width="6.15152" height="6.15152" id="armorHDRow00" />
-           <rect x="3.07576" y="6.15152" width="12.30304" height="6.15152" id="armorHDRow01" />
-           <rect x="0" y="12.30304" width="18.45456" height="6.15152" id="armorHDRow02" />
-           <rect x="0" y="18.45456" width="18.45456" height="6.15152" id="armorHDRow03" />
+           <rect x="0" y="5.3272" width="18.5" height="6.15152" id="armorHDRow01" />
+           <rect x="0" y="10.6544" width="18.5" height="6.15152" id="armorHDRow02" />
+           <rect x="0" y="16.9" width="18.5" height="6.15152" id="armorHDRow03" />
+          </g>
+
+         <g id="armorPipsHD_SH" fill="none"
+           transform="translate(473.8294,68.1505)">
+           <rect x="6.15152" y="0" width="12.4" height="6.15152" id="armorHDSHRow00" />
+           <rect x="0" y="5.3272" width="24.7" height="6.15152" id="armorHDSHRow01" />
+           <rect x="0" y="10.6544" width="24.7" height="6.15152" id="armorHDSHRow02" />
+           <rect x="0" y="15.9816" width="24.7" height="6.15152" id="armorHDSHRow03" />
           </g>
 
          <g id="armorPipsCT" fill="none"
