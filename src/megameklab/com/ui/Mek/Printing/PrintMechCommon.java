@@ -1177,44 +1177,61 @@ public class PrintMechCommon implements Printable {
     /**
      * Creates a new set pip row regions sized according to the scaling factor.
      * 
-     * @param rows  The rectangular regions describing pip rows in the SVG diagram.
+     * @param list  The rectangular regions describing pip rows in the SVG diagram.
      * @param scale The scaling factor
      * @return      A list of rectangular regions scaled according to the provided factor.
      */
     private List<Rectangle2D> rescaleRows(List<Rectangle2D> rows, double scale) {
-        //FIXME: This does not currently respect gaps between rows.
         if (rows.isEmpty() || (rows.size() == Math.floor(rows.size() * scale))) {
             return rows;
         }
         List<Rectangle2D> retVal = new ArrayList<>();
-        Rectangle2D rect = rows.get(0);
-        Rectangle2D rect2 = null;
-        double yPos = rect.getY();
-        double height = rows.get(rows.size() - 1).getY() + rows.get(rows.size() - 1).getHeight();
-        double dy = scale * height / rows.size();
-        double rowHeight = dy / 0.866;
+        // We need to account for the possibility of gaps between some rows, so we split the
+        // list into sublists of contiguous regions.
+        List<List<Rectangle2D>> groups = new ArrayList<>();
+        List<Rectangle2D> group = new ArrayList<>();
+        for (int r = 0; r < rows.size(); r++) {
+            final Rectangle2D rect = rows.get(r);
+            group.add(rows.get(r));
+            if ((r + 1 < rows.size()) && rows.get(r + 1).getY() > rect.getY() + rect.getHeight()) {
+                groups.add(group);
+                group = new ArrayList<>();
+            }
+        }
+        if (group.size() > 0) {
+            groups.add(group);
+        }
         
-        int r = 0;
-        while ((r < rows.size()) && (yPos + rowHeight <= height)) {
-            rect = rows.get(r);
-            if (r + 1 < rows.size()) {
-                rect2 = rows.get(r + 1);
-            } else {
-                rect2 = null;
-            }
+        for (List<Rectangle2D> list : groups) {
+            Rectangle2D rect = list.get(0);
+            Rectangle2D rect2 = null;
+            double yPos = rect.getY();
+            double height = list.get(list.size() - 1).getY() + list.get(list.size() - 1).getHeight();
+            double dy = scale * height / list.size();
+            double rowHeight = dy / 0.866;
             
-            if ((rect2 == null) || (rect2.getY() > yPos)) {
-                retVal.add(new Rectangle2D.Double(rect.getX(), yPos,
-                        rect.getWidth(), rowHeight));
-            } else {
-                double left = Math.max(rect.getX(), rect2.getX());
-                double right = Math.min(rect.getX() + rect.getWidth(), rect2.getX() + rect2.getWidth());
-                retVal.add(new Rectangle2D.Double(left, yPos, right - left, rowHeight));
-            }
-            
-            yPos += dy;
-            if (yPos > rect.getY() + rect.getHeight()) {
-                r++;
+            int r = 0;
+            while ((r < list.size()) && (yPos + rowHeight <= height)) {
+                rect = list.get(r);
+                if (r + 1 < list.size()) {
+                    rect2 = list.get(r + 1);
+                } else {
+                    rect2 = null;
+                }
+                
+                if ((rect2 == null) || (rect2.getY() > yPos)) {
+                    retVal.add(new Rectangle2D.Double(rect.getX(), yPos,
+                            rect.getWidth(), rowHeight));
+                } else {
+                    double left = Math.max(rect.getX(), rect2.getX());
+                    double right = Math.min(rect.getX() + rect.getWidth(), rect2.getX() + rect2.getWidth());
+                    retVal.add(new Rectangle2D.Double(left, yPos, right - left, rowHeight));
+                }
+                
+                yPos += dy;
+                if (yPos > rect.getY() + rect.getHeight()) {
+                    r++;
+                }
             }
         }
         
