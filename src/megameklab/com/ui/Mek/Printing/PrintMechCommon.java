@@ -814,58 +814,34 @@ public class PrintMechCommon implements Printable {
                 AmmoType ammo = (AmmoType) m.getType();
 
                 critName = new StringBuffer("Ammo (");
-                // Remove Text (Clan) from the name
-                critName.append(ammo.getShortName().replace('(', '.').replace(')', '.').replaceAll(".Clan.", "").trim());
-                // Remove any additional Ammo text.
-                if (critName.toString().endsWith("Ammo")) {
-                    critName.setLength(critName.length() - 5);
-                    critName.trimToSize();
-                }
-
-                // Remove Capable with the name
-                if (critName.indexOf("-capable") > -1) {
-                    int startPos = critName.indexOf("-capable");
-                    critName.delete(startPos, startPos + "-capable".length());
-                    critName.trimToSize();
-                }
-
-                // Trim trailing spaces.
-                while (critName.charAt(critName.length() - 1) == ' ') {
-                    critName.setLength(critName.length() - 1);
-                }
-                critName.trimToSize();
+                appendAmmoCritName(critName, ammo);
                 critName.append(") ");
-                critName.append(m.getUsableShotsLeft());
-            }
-
-            if (cs.getMount2() != null) {
-                critName.append(" | ");
-                if (!(cs.getMount2().getType() instanceof AmmoType)) {
-                    critName.append(UnitUtil.getCritName(mech, cs.getMount2().getType()));
-                } else {
-                    AmmoType ammo = (AmmoType)cs.getMount2().getType();
-                    critName.append(ammo.getShortName().replace('(', '.').replace(')', '.').replaceAll(".Clan.", "").trim());
-                    // Remove any additional Ammo text.
-                    if (critName.toString().endsWith("Ammo")) {
-                        critName.setLength(critName.length() - 5);
-                        critName.trimToSize();
+                int shots = m.getUsableShotsLeft();
+                if ((cs.getMount2() != null) && (cs.getMount2().getType() instanceof AmmoType)) {
+                    if (cs.getMount2().getType() == m.getType()) {
+                        shots += cs.getMount2().getUsableShotsLeft();
+                    } else {
+                        critName.append(shots).append(", (");
+                        appendAmmoCritName(critName, (AmmoType) cs.getMount2().getType());
+                        shots = cs.getMount2().getBaseShotsLeft();
                     }
-
-                    // Remove Capable with the name
-                    if (critName.indexOf("-capable") > -1) {
-                        int startPos = critName.indexOf("-capable");
-                        critName.delete(startPos, startPos + "-capable".length());
-                        critName.trimToSize();
-                    }
-
-                    // Trim trailing spaces.
-                    while (critName.charAt(critName.length() - 1) == ' ') {
-                        critName.setLength(critName.length() - 1);
-                    }
-                    critName.trimToSize();
-                    critName.append(") ");
-                    critName.append(m.getUsableShotsLeft());
                 }
+                critName.append(") ").append(shots);
+            } else if ((cs.getMount2() != null)
+                    && (m.getType() instanceof MiscType) && (m.getType().hasFlag(MiscType.F_HEAT_SINK))
+                    && (m.getType() == cs.getMount2().getType())) {
+                critName.insert(0, "2 ").append("s");
+            } else if ((cs.getMount2() != null)
+                    && (m.getType() instanceof MiscType) && (m.getType().hasFlag(MiscType.F_COMPACT_HEAT_SINK))
+                    && (cs.getMount2().getType() instanceof MiscType) && (cs.getMount2().getType().hasFlag(MiscType.F_COMPACT_HEAT_SINK))) {
+                int hs = 2;
+                if (m.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK)) {
+                    hs++;
+                }
+                if (cs.getMount2().getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK)) {
+                    hs++;
+                }
+                critName.replace(0, 1, Integer.toString(hs));
             }
             if (!mech.isMixedTech()) {
                 int startPos = critName.indexOf("[Clan]");
@@ -876,6 +852,29 @@ public class PrintMechCommon implements Printable {
             }
             return critName.toString();
         }
+    }
+    
+    private void appendAmmoCritName(StringBuffer buffer, AmmoType ammo) {
+        // Remove Text (Clan) from the name
+        buffer.append(ammo.getShortName().replace('(', '.').replace(')', '.').replaceAll(".Clan.", "").trim());
+        // Remove any additional Ammo text.
+        if (buffer.toString().endsWith("Ammo")) {
+            buffer.setLength(buffer.length() - 5);
+            buffer.trimToSize();
+        }
+
+        // Remove Capable with the name
+        if (buffer.indexOf("-capable") > -1) {
+            int startPos = buffer.indexOf("-capable");
+            buffer.delete(startPos, startPos + "-capable".length());
+            buffer.trimToSize();
+        }
+
+        // Trim trailing spaces.
+        while (buffer.charAt(buffer.length() - 1) == ' ') {
+            buffer.setLength(buffer.length() - 1);
+        }
+        buffer.trimToSize();
     }
 
     /**
