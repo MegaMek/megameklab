@@ -190,6 +190,7 @@ public class PrintMechCommon implements Printable {
             
             writeTextFields(diagram);
             drawArmor(diagram);
+            drawStructure(diagram);
             SVGElement eqRect = diagram.getElement("inventory");
             if (null != eqRect) {
                 writeEquipment((Rect) eqRect);
@@ -258,6 +259,67 @@ public class PrintMechCommon implements Printable {
         SVGElement element = null;
         for (int loc = 0; loc < mech.locations(); loc++) {
             element = diagram.getElement("textArmor_" + mech.getLocationAbbr(loc));
+            if (null != element) {
+                ((Text) element).getContent().clear();
+                ((Text) element).appendText(String.format(FORMAT, mech.getOArmor(loc)));
+                ((Text) element).rebuild();
+            }
+            element = diagram.getElement("textIS_" + mech.getLocationAbbr(loc));
+            if (null != element) {
+                ((Text) element).getContent().clear();
+                ((Text) element).appendText(String.format(FORMAT, mech.getOInternal(loc)));
+                ((Text) element).rebuild();
+            }
+            if (mech.isSuperHeavy() && (loc == Mech.LOC_HEAD)) {
+                element = diagram.getElement("armorPips" + mech.getLocationAbbr(loc) + "_SH");
+            } else {
+                element = diagram.getElement("armorPips" + mech.getLocationAbbr(loc));
+            }
+            if (null != element) {
+                addPips(element, mech.getOArmor(loc),
+                        (loc == Mech.LOC_HEAD) || (loc == Mech.LOC_CT) || (loc == Mech.LOC_CLEG));
+                //                        setArmorPips(element, mech.getOArmor(loc), true);
+                //                      (loc == Mech.LOC_HEAD) || (loc == Mech.LOC_CT));
+            }
+            if (loc > Mech.LOC_HEAD) {
+                element = diagram.getElement("isPips" + mech.getLocationAbbr(loc));
+                if (null != element) {
+                    addPips(element, mech.getOInternal(loc),
+                            (loc == Mech.LOC_HEAD) || (loc == Mech.LOC_CT) || (loc == Mech.LOC_CLEG));
+                }
+            }
+            if (mech.hasRearArmor(loc)) {
+                element = diagram.getElement("textArmor_" + mech.getLocationAbbr(loc) + "R");
+                if (null != element) {
+                    ((Text) element).getContent().clear();
+                    ((Text) element).appendText(String.format(FORMAT, mech.getOArmor(loc, true)));
+                    ((Text) element).rebuild();
+                }
+                element = diagram.getElement("armorPips" + mech.getLocationAbbr(loc) + "R");
+                if (null != element) {
+                    addPips(element, mech.getOArmor(loc, true), loc == Mech.LOC_CT);
+                }
+            }
+            
+        }
+        if (mech.isSuperHeavy()) {
+            element = diagram.getElement("isPipsHD");
+            if (null != element) {
+                hideElement(element, true);
+            }
+            element = diagram.getElement("isPipsHD_SH");
+            if (null != element) {
+                hideElement(element, false);
+            }
+        }
+        diagram.updateTime(0);
+    }
+    
+    private void drawStructure(SVGDiagram diagram) throws SVGException {
+        final String FORMAT = "( %d )";
+        SVGElement element = null;
+        for (int loc = 1; loc < mech.locations(); loc++) {
+            element = diagram.getElement("textIS_" + mech.getLocationAbbr(loc));
             if (null != element) {
                 ((Text) element).getContent().clear();
                 ((Text) element).appendText(String.format(FORMAT, mech.getOArmor(loc)));
@@ -1095,6 +1157,27 @@ public class PrintMechCommon implements Printable {
                         }
                     }
                 }
+                // Possible gotcha: one remaining pip to allocate and the only rows with empty space have
+                // an even number of pips. In that case remove one from an odd row and assign it along
+                // with the remaining pip to one of the even rows.
+                if (remaining == 1) {
+                    boolean noSingle = true;
+                    int fromRow = -1;
+                    for (int r = 0; r < rows.size(); r++) {
+                        if (rowLength[r] % 2 == 1) {
+                            if (pipsByRow[r] < rowLength[r]) {
+                                noSingle = false;
+                                break;
+                            } else {
+                                fromRow = r;
+                            }
+                        }
+                    }
+                    if (noSingle) {
+                        pipsByRow[fromRow]--;
+                        remaining++;
+                    }
+                }
             }
         }
         
@@ -1140,16 +1223,16 @@ public class PrintMechCommon implements Printable {
                     double leftX = centerLine - hSpacing;
                     double rightX = centerLine;
                     if (rowLength[r] % 2 == 1) {
-                        leftX -= spacing / 2.0;
-                        rightX += hSpacing - spacing / 2.0;
+                        leftX -= radius;
+                        rightX += hSpacing - radius;
                         if (pipsByRow[r] % 2 == 1) {
                             pip = createPip(leftX + hSpacing, rows.get(r).getY(), radius, 0.5);
                             group.loaderAddChild(null, pip);
                             pipsByRow[r]--;
                         }
                     } else {
-                        leftX += (hSpacing - spacing) / 2.0;
-                        rightX += (hSpacing - spacing) / 2.0;
+                        leftX += hSpacing / 2 - radius;
+                        rightX += hSpacing / 2 - radius;
                     }
                     while (pipsByRow[r] > 0) {
                         pip = createPip(leftX, rows.get(r).getY(), radius, 0.5);
@@ -1483,9 +1566,17 @@ public class PrintMechCommon implements Printable {
     }
     
     private void hideElement(SVGElement element) throws SVGException {
+        hideElement(element, true);
+    }
+    
+    private void hideElement(SVGElement element, boolean hide) throws SVGException {
         if (element.hasAttribute("visibility", AnimationElement.AT_XML)) {
-            element.setAttribute("visibility", AnimationElement.AT_XML, "hidden");
-        } else {
+            if (hide) {
+                element.setAttribute("visibility", AnimationElement.AT_XML, "hidden");
+            } else {
+                element.removeAttribute("visibility", AnimationElement.AT_XML);
+            }
+        } else if (hide) {
             element.addAttribute("visibility", AnimationElement.AT_XML, "hidden");
         }
         element.updateTime(0);
