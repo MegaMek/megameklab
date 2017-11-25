@@ -47,9 +47,6 @@ public class RecordSheetEquipmentLine {
     public String getNameField(int row) {
         if (row == 0) {
             String name = eqInfo.name;
-            if (rear) {
-                name += " (R)";
-            }
             if (turret) {
                 name += " (T)";
             }
