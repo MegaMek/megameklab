@@ -553,7 +553,7 @@ public class PrintMechCommon implements Printable {
             Mounted m = null;
             if ((null != crit) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)
                     && (crit.getMount().getType().isHittable())
-                    && (crit.getMount().getType().getCriticals(mech) > 1)) {
+                    && (crit.getMount().getType().getCriticals(mech) > (mech.isSuperHeavy()? 2 : 1))) {
                 m = crit.getMount();
             }
             if ((startingMount != null) && (startingMount != m)) {
@@ -815,7 +815,6 @@ public class PrintMechCommon implements Printable {
 
                 critName = new StringBuffer("Ammo (");
                 appendAmmoCritName(critName, ammo);
-                critName.append(") ");
                 int shots = m.getUsableShotsLeft();
                 if ((cs.getMount2() != null) && (cs.getMount2().getType() instanceof AmmoType)) {
                     if (cs.getMount2().getType() == m.getType()) {
