@@ -12,6 +12,8 @@ v0.43.5-git
 + Issue #90: Conventional infantry not showing support weapons.
 + Issue #95: Vehicle fusion engine weight calculated inconsistently
 + Issue #98: Changing MP on VTOL causing chin turret to disappear
++ Issue #91: Print multiple recordsheets to the same file as multiple pages?
++ PR #110: Added XCT specialization for infantry.
 
 v0.43.4 (2017-10-01 11:00 UTC)
 + Issue #58: Right-click > Left/Right Torso > Add to Left/Right Torso for targeting computer makes it use only one crit slot
