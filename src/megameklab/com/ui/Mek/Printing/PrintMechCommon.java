@@ -419,20 +419,25 @@ public class PrintMechCommon implements Printable {
         for (Integer loc : eqMap.keySet()) {
             for (RecordSheetEquipmentLine line : eqMap.get(loc).keySet()) {
                 for (int row = 0; row < line.nRows(); row++) {
+                    int lines;
                     if (row == 0) {
                         addTextElement(canvas, qtyX, currY, Integer.toString(eqMap.get(loc).get(line)), fontSize, "middle", "normal");
-                        addTextElement(canvas, nameX, currY, line.getNameField(row), fontSize, "start", "normal");
+                        lines = addMultilineTextElement(canvas, nameX, currY, locX - nameX, lineHeight,
+                                line.getNameField(row), fontSize, "start", "normal");
+
                     } else {
-                        addTextElement(canvas, nameX + indent, currY, line.getNameField(row), fontSize, "start", "normal");
+                        lines = addMultilineTextElement(canvas, nameX + indent, currY, locX - nameX, lineHeight,
+                                line.getNameField(row), fontSize, "start", "normal");
                     }
                     addTextElement(canvas, locX,  currY, line.getLocationField(row), fontSize, "middle", "normal");
                     addTextElement(canvas, heatX, currY, line.getHeatField(row), fontSize, "middle", "normal");
-                    addTextElement(canvas, dmgX, currY, line.getDamageField(row), fontSize, "start", "normal");
+                    lines = Math.max(lines, addMultilineTextElement(canvas, dmgX, currY, minX - dmgX, lineHeight,
+                            line.getDamageField(row), fontSize, "start", "normal"));
                     addTextElement(canvas, minX, currY, line.getMinField(row), fontSize, "middle", "normal");
                     addTextElement(canvas, shortX, currY, line.getShortField(row), fontSize, "middle", "normal");
                     addTextElement(canvas, medX, currY, line.getMediumField(row), fontSize, "middle", "normal");
                     addTextElement(canvas, longX, currY, line.getLongField(row), fontSize, "middle", "normal");
-                    currY += lineHeight;
+                    currY += lineHeight * lines;
                 }
             }
         }
@@ -910,6 +915,38 @@ public class PrintMechCommon implements Printable {
         newText.addAttribute("fill", AnimationElement.AT_XML, fill);
         parent.loaderAddChild(null, newText);
         newText.rebuild();
+    }
+    
+    private int addMultilineTextElement(SVGElement canvas, double x, double y, double width, double lineHeight,
+            String text, double fontSize, String anchor, String weight)
+                    throws SVGException {
+        return addMultilineTextElement(canvas, x, y, width, lineHeight,
+                text, fontSize, anchor, weight, "#000000", ' ');
+    }
+    
+    private int addMultilineTextElement(SVGElement canvas, double x, double y, double width, double lineHeight,
+            String text, double fontSize, String anchor, String weight, String fill, char delimiter)
+                    throws SVGException {
+        int lines = 0;
+        int pos = 0;
+        while (text.length() > 0) {
+            if (getTextLength(text, fontSize, canvas) <= width) {
+                addTextElement(canvas, x, y, text, fontSize, anchor, weight, fill);
+                lines++;
+                return lines;
+            }
+            int index = text.substring(pos).indexOf(delimiter);
+            if ((index < 0) || (getTextLength(text.substring(0, pos + index), fontSize, canvas) > width)) {
+                addTextElement(canvas, x, y, text.substring(0, pos), fontSize, anchor, weight, fill);
+                lines++;
+                y += lineHeight;
+                text = text.substring(pos);
+                pos = 0;
+            } else if (index > 0) {
+                pos += index + 1;
+            }
+        }
+        return lines;
     }
     
     private final static double CONST_C = 0.55191502449;
