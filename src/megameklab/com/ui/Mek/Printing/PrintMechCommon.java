@@ -35,7 +35,9 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
+import com.kitfox.svg.Group;
 import com.kitfox.svg.Path;
 import com.kitfox.svg.Rect;
 import com.kitfox.svg.SVGDiagram;
@@ -443,48 +445,16 @@ public class PrintMechCommon implements Printable {
         }
         
         if (ammo.size() > 0) {
-            List<String> lines = new ArrayList<>();
-            String line = "Ammo: ";
-            double commaLen = getTextLength(", ", fontSize, canvas);
-            double currX = getTextLength(line, fontSize, canvas);
-
-            boolean first = true;
-            for (String name : ammo.keySet()) {
-                String str = String.format("(%s) %d", name, ammo.get(name));
-                double len = getTextLength(str, fontSize, canvas);
-                if (!first) {
-                    len += commaLen;
-                }
-                if (currX + len < viewWidth) {
-                    if (!first) {
-                        line += ", ";
-                    } else {
-                        first = false;
-                    }
-                    line += str;
-                } else {
-                    lines.add(line);
-                    line = str;
-                    currX = indent;
-                }
-            }
-            lines.add(line);
-            
-            currY = (int) (viewY + viewHeight - lines.size() * lineHeight);
-            for (String l : lines) {
-                Text newText = new Text();
-                newText.addAttribute("font-family", AnimationElement.AT_XML, "Eurostile");
-                newText.addAttribute("font-size", AnimationElement.AT_XML, Double.toString(fontSize));
-                newText.addAttribute("font-weight", AnimationElement.AT_XML, "normal");
-                newText.addAttribute("text-anchor", AnimationElement.AT_CSS, "start");
-                newText.addAttribute("x", AnimationElement.AT_XML, Double.toString(viewX));
-                newText.addAttribute("y", AnimationElement.AT_XML, Double.toString(currY));
-                newText.appendText(l);
-                canvas.loaderAddChild(null, newText);
-                newText.rebuild();
-            }
+            Group group = new Group();
+            canvas.loaderAddChild(null, group);
+            addMultilineTextElement(group, viewX + viewWidth * 0.025, 0, viewWidth * 0.95, lineHeight,
+                    "Ammo: " + ammo.entrySet().stream()
+                    .map(e -> String.format("(%s) %d", e.getKey(), e.getValue()))
+                    .collect(Collectors.joining(", ")), fontSize, "start", "normal");
+            group.addAttribute("transform", AnimationElement.AT_XML,
+                    String.format("translate(0,%f)", viewY + viewHeight - group.getBoundingBox().getHeight()));
+            group.updateTime(0);
         }
-
     }
     
     private void writeLocationCriticals(int loc, Rect svgRect) throws SVGException {
