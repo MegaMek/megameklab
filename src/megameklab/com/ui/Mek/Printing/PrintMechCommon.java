@@ -26,12 +26,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.StringJoiner;
 import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -56,6 +58,9 @@ import megamek.common.Mech;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.logging.LogLevel;
+import megamek.common.options.IOption;
+import megamek.common.options.IOptionGroup;
+import megamek.common.options.Quirks;
 import megameklab.com.MegaMekLab;
 import megameklab.com.util.ImageHelper;
 import megameklab.com.util.RecordSheetEquipmentLine;
@@ -444,17 +449,40 @@ public class PrintMechCommon implements Printable {
             }
         }
         
-        if (ammo.size() > 0) {
-            Group group = new Group();
-            canvas.loaderAddChild(null, group);
-            addMultilineTextElement(group, viewX + viewWidth * 0.025, 0, viewWidth * 0.95, lineHeight,
-                    "Ammo: " + ammo.entrySet().stream()
-                    .map(e -> String.format("(%s) %d", e.getKey(), e.getValue()))
-                    .collect(Collectors.joining(", ")), fontSize, "start", "normal");
-            group.addAttribute("transform", AnimationElement.AT_XML,
-                    String.format("translate(0,%f)", viewY + viewHeight - group.getBoundingBox().getHeight()));
-            group.updateTime(0);
+        StringJoiner quirksList = new StringJoiner(", ");
+        Quirks quirks = mech.getQuirks();
+        for (Enumeration<IOptionGroup> optionGroups = quirks.getGroups(); optionGroups.hasMoreElements();) {
+            IOptionGroup optiongroup = optionGroups.nextElement();
+            if (quirks.count(optiongroup.getKey()) > 0) {
+                for (Enumeration<IOption> options = optiongroup.getOptions(); options.hasMoreElements();) {
+                    IOption option = options.nextElement();
+                    if (option != null && option.booleanValue()) {
+                        quirksList.add(option.getDisplayableNameWithValue());
+                    }
+                }
+            }
         }
+
+        if ((ammo.size() > 0) || (quirksList.length() > 0)) {
+            Group svgGroup = new Group();
+            canvas.loaderAddChild(null, svgGroup);
+            int lines = 0; 
+            if (ammo.size() > 0) {
+                lines = addMultilineTextElement(svgGroup, viewX + viewWidth * 0.025, 0, viewWidth * 0.95, lineHeight,
+                        "Ammo: " + ammo.entrySet().stream()
+                        .map(e -> String.format("(%s) %d", e.getKey(), e.getValue()))
+                        .collect(Collectors.joining(", ")), fontSize, "start", "normal");
+            }
+            if (quirksList.length() > 0) {
+                addMultilineTextElement(svgGroup, viewX + viewWidth * 0.025, lines * lineHeight,
+                        viewWidth * 0.95, lineHeight,
+                        "Quirks: " + quirksList.toString(), fontSize, "start", "normal");
+            }
+            svgGroup.addAttribute("transform", AnimationElement.AT_XML,
+                    String.format("translate(0,%f)", viewY + viewHeight - svgGroup.getBoundingBox().getHeight()));
+            svgGroup.updateTime(0);
+        }        
+
     }
     
     private void writeLocationCriticals(int loc, Rect svgRect) throws SVGException {
