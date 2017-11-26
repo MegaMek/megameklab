@@ -120,18 +120,7 @@ public class RecordSheetEquipmentLine {
         } else if (eqInfo.isCenturion) {
             return "0";
         } else if (row == 0) {
-            if (eqInfo.damage.length() > 12) {
-                int index = eqInfo.damage.indexOf("[");
-                if (index >= 0) {
-                    return eqInfo.damage.substring(0, index);
-                }
-            }
             return eqInfo.damage;
-        } else if ((row == 1) && eqInfo.damage.length() > 12) {
-            int index = eqInfo.damage.indexOf("[");
-            if (index >= 0) {
-                return eqInfo.damage.substring(index);
-            }
         }
         return "";
     }
@@ -270,8 +259,6 @@ public class RecordSheetEquipmentLine {
         } else if (eqInfo.isATM) {
             return 4;
         } else if (eqInfo.hasArtemis || eqInfo.hasArtemisV || eqInfo.hasApollo) {
-            return 2;
-        } else if (eqInfo.damage.length() > 12) {
             return 2;
         }
         return 1;
