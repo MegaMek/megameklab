@@ -110,6 +110,21 @@ public abstract class PrintRecordSheet implements Printable {
         addTextElement(parent, x, y, text, fontSize, anchor, weight, "#000000");
     }
     
+    /**
+     * Convenience method for creating a new SVG Text element and adding it to the parent.  The height of the text is
+     * returned, to aid in layout.
+     * 
+     * @param parent    The SVG element to add the text element to.
+     * @param x         The X position of the new element.
+     * @param y         The Y position of the new element.
+     * @param text      The text to display.
+     * @param fontSize  Font size of the text.
+     * @param anchor    Set the Text elements text-anchor.  Should be either start, middle, or end.
+     * @param weight    The font weight, either normal or bold.
+     * @param fill      The fill color for the text (e.g. foreground color)
+     *
+     * @throws SVGException
+     */
     protected void addTextElement(SVGElement parent, double x, double y, String text,
             double fontSize, String anchor, String weight, String fill)
             throws SVGException {
@@ -127,6 +142,24 @@ public abstract class PrintRecordSheet implements Printable {
         newText.rebuild();
     }
     
+    /**
+     * Adds a text element to a region with limited width. If there are multiple lines, the text
+     * will be split over multiple lines, broken on a space character. The space will still be
+     * included on the next line as a small indent.
+     * 
+     * @param canvas      The parent <code>SVGElement</code> to the new <code>Text</code>.
+     * @param x           The x coordinate of the upper left corner of the text region
+     * @param y           The y coordinate of the upper left corner of the text region
+     * @param width       The allowable width of the text element.
+     * @param lineHeight  The amount to increase the y coordinate for a new line
+     * @param text        The text to add
+     * @param fontSize    The font-size attribute
+     * @param anchor      The text-anchor attribute
+     * @param weight      The font-weight attribute
+     * 
+     * @return            The number of lines of text added
+     * @throws SVGException
+     */
     protected int addMultilineTextElement(SVGElement canvas, double x, double y, double width, double lineHeight,
             String text, double fontSize, String anchor, String weight)
                     throws SVGException {
@@ -134,6 +167,26 @@ public abstract class PrintRecordSheet implements Printable {
                 text, fontSize, anchor, weight, "#000000", ' ');
     }
     
+    /**
+     * Adds a text element to a region with limited width. If there are multiple lines, the text
+     * will be split over multiple lines, broken on the provided character. The line break character
+     * will be included on the next line.
+     * 
+     * @param canvas      The parent <code>SVGElement</code> to the new <code>Text</code>.
+     * @param x           The x coordinate of the upper left corner of the text region
+     * @param y           The y coordinate of the upper left corner of the text region
+     * @param width       The allowable width of the text element.
+     * @param lineHeight  The amount to increase the y coordinate for a new line
+     * @param text        The text to add
+     * @param fontSize    The font-size attribute
+     * @param anchor      The text-anchor attribute
+     * @param weight      The font-weight attribute
+     * @param fill        The fill color for the text (e.g. foreground color)
+     * @param delimiter   The character to use as an acceptable line ending
+     * 
+     * @return            The number of lines of text added
+     * @throws SVGException
+     */
     protected int addMultilineTextElement(SVGElement canvas, double x, double y, double width, double lineHeight,
             String text, double fontSize, String anchor, String weight, String fill, char delimiter)
                     throws SVGException {
@@ -159,11 +212,15 @@ public abstract class PrintRecordSheet implements Printable {
         return lines;
     }
     
+    // Constants used for approximating circles with Bezier curves.
+    
+    // Ratio of distance from end point to control point to the radius.
     private final static double CONST_C = 0.55191502449;
+    // Format String for writing a curve to a path definition attribute
     private final static String FMT_CURVE = " c %f %f,%f %f,%f %f";
     
     /**
-     * Approximates a circle using four bezier curves.
+     * Approximates a circle using four Bezier curves.
      * 
      * @param x      Position of left of bounding rectangle.
      * @param y      Position of top of bounding rectangle.
@@ -812,23 +869,42 @@ public abstract class PrintRecordSheet implements Printable {
         }
     }
     
+    /**
+     * Sets the visibility attribute to "hidden"
+     * @param element The element to hide
+     * 
+     * @throws SVGException
+     */
     protected void hideElement(SVGElement element) throws SVGException {
         hideElement(element, true);
     }
     
+    /**
+     * Sets an element's visibility attribute
+     * 
+     * @param element  The element to hide or show
+     * @param hide     If true, visibility will be set to hidden. If false, the 
+     * @throws SVGException
+     */
     protected void hideElement(SVGElement element, boolean hide) throws SVGException {
+        String value = hide? "hidden" : "visible";
         if (element.hasAttribute("visibility", AnimationElement.AT_XML)) {
-            if (hide) {
-                element.setAttribute("visibility", AnimationElement.AT_XML, "hidden");
-            } else {
-                element.removeAttribute("visibility", AnimationElement.AT_XML);
-            }
-        } else if (hide) {
-            element.addAttribute("visibility", AnimationElement.AT_XML, "hidden");
+            element.setAttribute("visibility", AnimationElement.AT_XML, value);
+        } else {
+            element.addAttribute("visibility", AnimationElement.AT_XML, value);
         }
         element.updateTime(0);
     }
 
+    /**
+     * Determines the vertical space taken up by a line of text.
+     * 
+     * @param fontSize  Value of CSS font-family attribute
+     * @param canvas    The parent element for the text
+     * @return          The height of the bounding box of a text element
+     * 
+     * @throws SVGException
+     */
     public static double getFontHeight(double fontSize, SVGElement canvas) throws SVGException {
         Text newText = new Text();
         newText.appendText("Medium Laser");        
@@ -845,6 +921,15 @@ public abstract class PrintRecordSheet implements Printable {
         return textHeight;
     }
     
+    /**
+     * Determines the horizontal space taken up by a String in a given font size
+     * 
+     * @param text      The text to measure
+     * @param fontSize  Value of CSS font-family attribute
+     * @param canvas    The parent element for the text
+     * @return          The width taken up by the string when rendered
+     * @throws SVGException
+     */
     public static double getTextLength(String text, double fontSize, SVGElement canvas) throws SVGException {
         Text newText = new Text();
         newText.appendText(text);        
