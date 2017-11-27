@@ -53,6 +53,11 @@ public abstract class PrintRecordSheet implements Printable {
     final static double DEFAULT_PIP_SIZE = 0.38;
 
     private SVGDiagram diagram;
+    private final int firstPage;
+    
+    protected PrintRecordSheet(int firstPage) {
+        this.firstPage = firstPage;
+    }
     
     protected final SVGDiagram getSVGDiagram() {
         return diagram;
@@ -71,14 +76,38 @@ public abstract class PrintRecordSheet implements Printable {
             } else {
                 diagram.setDeviceViewport(
                         new Rectangle(0, 0, (int) pageFormat.getImageableWidth(), (int) pageFormat.getImageableHeight()));
-        
-                printImage(g2d, pageFormat);
+
+                try {
+                    printImage(g2d, pageFormat, pageIndex - firstPage);
+                    diagram.render(g2d);
+                } catch (SVGException e) {
+                    MegaMekLab.getLogger().log(PrintRecordSheet.class, METHOD_NAME, e);
+                    // TODO: report to user
+                }
             }
         }
         return Printable.PAGE_EXISTS;
     }
+
+    /**
+     * @return The number of pages required to print this record sheet
+     */
+    public int getPageCount() {
+        return 1;
+    }
     
-    protected abstract void printImage(Graphics2D g2d, PageFormat pageFormat);
+    /**
+     * Renders the sheet to the Graphics object.
+     * 
+     * @param graphics   The graphics object passed by {@link Printable#print(Graphics, PageFormat, int) print}
+     * @param pageFormat The page format passed by {@link Printable#print(Graphics, PageFormat, int) print}
+     * @param pageNum    Indicates which page of multi-page sheets to print. The first page is 0.
+     * 
+     * @throws PrinterException
+     * @throws SVGException
+     */
+    protected abstract void printImage(Graphics2D g2d, PageFormat pageFormat, int pageNum)
+            throws PrinterException, SVGException;
 
     protected abstract String getSVGFileName();
     
