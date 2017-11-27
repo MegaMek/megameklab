@@ -29,10 +29,9 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import megamek.common.Aero;
-import megamek.common.Entity;
 import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestAero;
-import megameklab.com.ui.view.listeners.AeroBuildListener;
+import megameklab.com.ui.view.listeners.BuildListener;
 
 /**
  * Structure tab panel for aero unit fuel
@@ -47,11 +46,11 @@ public class AeroFuelView extends BuildView implements ChangeListener {
      */
     private static final long serialVersionUID = -3321986392656071192L;
 
-    List<AeroBuildListener> listeners = new CopyOnWriteArrayList<>();
-    public void addListener(AeroBuildListener l) {
+    List<BuildListener> listeners = new CopyOnWriteArrayList<>();
+    public void addListener(BuildListener l) {
         listeners.add(l);
     }
-    public void removeListener(AeroBuildListener l) {
+    public void removeListener(BuildListener l) {
         listeners.remove(l);
     }
 
@@ -94,9 +93,9 @@ public class AeroFuelView extends BuildView implements ChangeListener {
         add(lblFuelPoints, gbc);
         gbc.insets = new Insets(0,0,0,0);
 
-        JPanel panInfoTurns = new JPanel(new GridLayout(0,2));
-        panInfoTurns.add(createLabel(resourceMap.getString("AeroFuelView.lblTurnsAtSafe.text"), labelSize), gbc); //$NON-NLS-1$
-        panInfoTurns.add(createLabel(resourceMap.getString("AeroFuelView.lblTurnsAtMax.text"), labelSize), gbc); //$NON-NLS-1$
+        JPanel panInfoTurns = new JPanel(new GridLayout(0, 2));
+        panInfoTurns.add(new JLabel(resourceMap.getString("AeroFuelView.lblTurnsAtSafe.text")), gbc); //$NON-NLS-1$
+        panInfoTurns.add(new JLabel(resourceMap.getString("AeroFuelView.lblTurnsAtMax.text")), gbc); //$NON-NLS-1$
         lblTurnsAtSafe.setToolTipText(resourceMap.getString("AeroFuelView.lblTurnsAtSafe.tooltip")); //$NON-NLS-1$
         lblTurnsAtMax.setToolTipText(resourceMap.getString("AeroFuelView.lblTurnsAtMax.tooltip")); //$NON-NLS-1$
         panInfoTurns.add(lblTurnsAtSafe);
@@ -109,9 +108,9 @@ public class AeroFuelView extends BuildView implements ChangeListener {
         gbc.insets = new Insets(10,10,10,10);
         add(panInfoTurns, gbc);
 
-        panBurnDays.setLayout(new GridLayout(0,2));
-        panBurnDays.add(createLabel(resourceMap.getString("AeroFuelView.lblBurnDays1G.text"), labelSize), gbc); //$NON-NLS-1$
-        panBurnDays.add(createLabel(resourceMap.getString("AeroFuelView.lblBurnDaysMax.text"), labelSize), gbc); //$NON-NLS-1$
+        panBurnDays.setLayout(new GridLayout(0, 2));
+        panBurnDays.add(new JLabel(resourceMap.getString("AeroFuelView.lblBurnDays1G.text")), gbc); //$NON-NLS-1$
+        panBurnDays.add(new JLabel(resourceMap.getString("AeroFuelView.lblBurnDaysMax.text")), gbc); //$NON-NLS-1$
         lblBurnDays1G.setToolTipText(resourceMap.getString("AeroFuelView.lblBurnDays1G.tooltip")); //$NON-NLS-1$
         lblBurnDaysMax.setToolTipText(resourceMap.getString("AeroFuelView.lblBurnDaysMax.tooltip")); //$NON-NLS-1$
         panBurnDays.add(lblBurnDays1G);
@@ -123,6 +122,12 @@ public class AeroFuelView extends BuildView implements ChangeListener {
         gbc.fill = GridBagConstraints.BOTH;
         gbc.insets = new Insets(10,10,10,10);
         add(panInfoTurns, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.insets = new Insets(10,10,10,10);
+        add(panBurnDays, gbc);
     }
     
     public void setFromEntity(Aero aero) {
@@ -136,8 +141,14 @@ public class AeroFuelView extends BuildView implements ChangeListener {
         spnFuel.removeChangeListener(this);
         spnFuel.setValue(aero.getFuelTonnage());
         spnFuel.addChangeListener(this);
-        panBurnDays.setVisible(aero.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)
-                || aero.hasETypeFlag(Entity.ETYPE_JUMPSHIP));
+        
+        if (aero.getStrategicFuelUse() > 0) {
+            lblBurnDays1G.setText(String.format("%3.2f", TestAero.calculateDaysAt1G(aero)));
+            lblBurnDaysMax.setText(String.format("%3.2f", TestAero.calculateDaysAtMax(aero)));
+            panBurnDays.setVisible(true);
+        } else {
+            panBurnDays.setVisible(false);
+        }
     }
     
     @Override
