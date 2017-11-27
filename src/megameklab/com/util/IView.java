@@ -22,6 +22,7 @@ import megamek.common.Aero;
 import megamek.common.BattleArmor;
 import megamek.common.Infantry;
 import megamek.common.Mech;
+import megamek.common.SmallCraft;
 import megamek.common.Tank;
 import megamek.common.VTOL;
 import megameklab.com.ui.EntitySource;
@@ -52,6 +53,10 @@ public class IView extends JPanel {
 
     public Aero getAero() {
         return (Aero) eSource.getEntity();
+    }
+    
+    public SmallCraft getSmallCraft() {
+        return (SmallCraft) eSource.getEntity();
     }
 
     public BattleArmor getBattleArmor() {
