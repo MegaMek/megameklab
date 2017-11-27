@@ -63,4 +63,6 @@ public interface BuildListener {
     default void patchworkChanged(int location, EquipmentType armor) {};
     default void autoAllocateArmor() {};
 
+    // For aerospace units and support vehicles
+    default void fuelTonnageChanged(double tonnage) {};
 }

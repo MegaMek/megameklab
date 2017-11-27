@@ -145,12 +145,18 @@ public class CriticalTableModel extends AbstractTableModel {
             } else if (crit.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)
                     && crit.getLinked() != null){
                 return crit.getLinked().getType().getTonnage(unit) * 0.75;
+            } else if (unit.usesWeaponBays() && (crit.getType() instanceof AmmoType)) {
+                return crit.getType().getTonnage(unit) * crit.getUsableShotsLeft()
+                        / ((AmmoType)crit.getType()).getShots();
             } else {
                 return crit.getType().getTonnage(unit);
             }
         case CRITS:
             if (unit instanceof Tank) {
                 return crit.getType().getTankslots(unit);
+            }
+            if (unit.usesWeaponBays() && (crit.getType() instanceof AmmoType)) {
+                return crit.getUsableShotsLeft() / ((AmmoType)crit.getType()).getShots();
             }
             if (tableType == BUILDTABLE) {
                 return UnitUtil.getCritsUsed(unit, crit.getType());

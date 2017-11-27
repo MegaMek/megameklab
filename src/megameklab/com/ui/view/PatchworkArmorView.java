@@ -31,12 +31,13 @@ import megamek.common.Aero;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.ITechManager;
+import megamek.common.Mech;
 import megamek.common.Tank;
 import megamek.common.TechConstants;
 import megamek.common.util.EncodeControl;
+import megamek.common.verifier.TestEntity;
 import megameklab.com.ui.util.TechComboBox;
 import megameklab.com.ui.view.listeners.BuildListener;
-import megameklab.com.util.UnitUtil;
 
 /**
  * Displays a list of comboboxes with labels that displays the current armor type per location for
@@ -105,7 +106,9 @@ public class PatchworkArmorView extends BuildView implements ActionListener {
     }
     
     public void setFromEntity(Entity en) {
-        List<EquipmentType> armors = UnitUtil.legalArmorsFor(en, techManager);
+        List<EquipmentType> armors = TestEntity.legalArmorsFor(en.getEntityType(),
+                (en instanceof Mech) && ((Mech)en).isIndustrial(),
+                en.getMovementMode(), techManager);
         ignoreEvents = true;
         for (int loc = 0; loc < combos.size(); loc++) {
             if ((loc < en.locations())

@@ -15,12 +15,16 @@
  */
 package megameklab.com.util;
 
+import java.awt.Dimension;
+
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 import megamek.common.Aero;
 import megamek.common.BattleArmor;
 import megamek.common.Infantry;
 import megamek.common.Mech;
+import megamek.common.SmallCraft;
 import megamek.common.Tank;
 import megamek.common.VTOL;
 import megameklab.com.ui.EntitySource;
@@ -52,6 +56,10 @@ public class ITab extends JPanel {
     public Aero getAero() {
         return (Aero) eSource.getEntity();
     }
+    
+    public SmallCraft getSmallCraft() {
+        return (SmallCraft) eSource.getEntity();
+    }
 
     public BattleArmor getBattleArmor() {
         return (BattleArmor) eSource.getEntity();
@@ -59,6 +67,12 @@ public class ITab extends JPanel {
     
     public Infantry getInfantry() {
     	return (Infantry) eSource.getEntity();
+    }
+
+    protected void setFieldSize(JComponent box, Dimension maxSize) {
+        box.setPreferredSize(maxSize);
+        box.setMaximumSize(maxSize);
+        box.setMinimumSize(maxSize);
     }
 
 }
