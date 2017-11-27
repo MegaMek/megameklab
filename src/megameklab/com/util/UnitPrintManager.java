@@ -172,7 +172,7 @@ public class UnitPrintManager {
             } else if (unit instanceof BipedMech) {
                 UnitUtil.removeOneShotAmmo(unit);
                 UnitUtil.expandUnitMounts((Mech) unit);
-                book.append(new PrintMechCommon((BipedMech) unit), pageFormat);
+                book.append(new PrintMechCommon((Mech) unit, book.getNumberOfPages()), pageFormat);
             } else if (unit instanceof TripodMech) {
                 UnitUtil.removeOneShotAmmo(unit);
                 UnitUtil.expandUnitMounts((Mech) unit);

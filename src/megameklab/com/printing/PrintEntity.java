@@ -27,7 +27,6 @@ import com.kitfox.svg.Tspan;
 import com.kitfox.svg.animation.AnimationElement;
 
 import megamek.common.Entity;
-import megamek.common.Mech;
 
 /**
  * Base class for printing Entity record sheets
@@ -43,56 +42,30 @@ public abstract class PrintEntity extends PrintRecordSheet {
     private static final String[] CREW_BLANKS = {
             "blankPilotName", "blankGunnerySkill", "blankPilotingSkill"
     };
-
-    private final Entity entity;
-    private final Entity entity2;
     
-    public PrintEntity(Entity entity) {
-        this(entity, null);
-    }
-    
-    public PrintEntity(Entity entity, Entity entity2) {
-        this.entity = entity;
-        this.entity2 = entity2;
-    }
-    
-    protected Entity getEntity() {
-        return entity;
-    }
-    
-    protected Entity getEntity2() {
-        return entity2;
-    }
-    
-    protected Mech getMech() {
-        return (Mech) entity;
+    protected PrintEntity(int startPage) {
+        super(startPage);
     }
 
+    protected abstract Entity getEntity();
+    
     @Override
-    protected void printImage(Graphics2D g2d, PageFormat pageFormat) {
-        final String METHOD_NAME = "printImage(Graphics2D, PageFormat";
-
-        try {
-            SVGElement element = null;
-            
-            element = getSVGDiagram().getElement("tspanCopyright");
-            if (null != element) {
-                ((Tspan) element).setText(String.format(((Tspan) element).getText(),
-                        Calendar.getInstance().get(Calendar.YEAR)));
-                ((Text) element.getParent()).rebuild();
-            }
-            
-            writeTextFields();
-            drawArmor();
-            drawStructure();
-            SVGElement eqRect = getSVGDiagram().getElement("inventory");
-            if (null != eqRect) {
-                writeEquipment((Rect) eqRect);
-            }
-            
-            getSVGDiagram().render(g2d);
-        } catch (SVGException e) {
-            e.printStackTrace();
+    protected void printImage(Graphics2D g2d, PageFormat pageFormat, int pageNum) throws SVGException {
+        SVGElement element = null;
+        
+        element = getSVGDiagram().getElement("tspanCopyright");
+        if (null != element) {
+            ((Tspan) element).setText(String.format(((Tspan) element).getText(),
+                    Calendar.getInstance().get(Calendar.YEAR)));
+            ((Text) element.getParent()).rebuild();
+        }
+        
+        writeTextFields();
+        drawArmor();
+        drawStructure();
+        SVGElement eqRect = getSVGDiagram().getElement("inventory");
+        if (null != eqRect) {
+            writeEquipment((Rect) eqRect);
         }
     }
     
