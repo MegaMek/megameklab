@@ -38,6 +38,7 @@ import com.kitfox.svg.SVGException;
 import com.kitfox.svg.Text;
 import com.kitfox.svg.animation.AnimationElement;
 
+import megamek.common.EquipmentType;
 import megamek.common.logging.LogLevel;
 import megameklab.com.MegaMekLab;
 import megameklab.com.util.ImageHelper;
@@ -51,6 +52,18 @@ import megameklab.com.util.ImageHelper;
 public abstract class PrintRecordSheet implements Printable {
     
     final static double DEFAULT_PIP_SIZE = 0.38;
+    
+    enum PipType {
+        CIRCLE, DIAMOND;
+        
+        public static PipType forAT(int at) {
+            if (at == EquipmentType.T_ARMOR_HARDENED) {
+                return DIAMOND;
+            } else {
+                return CIRCLE;
+            }
+        }
+    }
 
     private SVGDiagram diagram;
     private final int firstPage;
@@ -247,7 +260,11 @@ public abstract class PrintRecordSheet implements Printable {
     private final static double CONST_C = 0.55191502449;
     // Format String for writing a curve to a path definition attribute
     private final static String FMT_CURVE = " c %f %f,%f %f,%f %f";
+    private final static String FMT_LINE = " l %f %f";
     
+    protected Path createPip(double x, double y, double radius, double strokeWidth) throws SVGException {
+        return createPip(x, y, radius, strokeWidth, PipType.CIRCLE);
+    }
     /**
      * Approximates a circle using four Bezier curves.
      * 
@@ -257,28 +274,45 @@ public abstract class PrintRecordSheet implements Printable {
      * @return       A Path describing the circle
      * @throws SVGException
      */
-    protected Path createPip(double x, double y, double radius, double strokeWidth) throws SVGException {
-        // c is the length of each control line
-        double c = CONST_C * radius;
+    protected Path createPip(double x, double y, double radius, double strokeWidth,
+            PipType type) throws SVGException {
         Path path = new Path();
         path.addAttribute("fill", AnimationElement.AT_CSS, "none");
         path.addAttribute("stroke", AnimationElement.AT_CSS, "black");
         path.addAttribute("stroke-width", AnimationElement.AT_CSS, Double.toString(strokeWidth));
         
-        // Move to start of circle, at (1, 0)
+        // Move to start of pip, at (1, 0)
         StringBuilder d = new StringBuilder("M").append(x + radius * 2).append(",").append(y + radius);
-        // Draw arcs anticlockwise. The coordinates are relative to the beginning of the arc.
-        d.append(String.format(FMT_CURVE, 0.0, -c, c - radius, -radius, -radius, -radius));
-        d.append(String.format(FMT_CURVE, -c, 0.0, -radius, radius - c, -radius, radius));
-        d.append(String.format(FMT_CURVE, 0.0, c, radius - c, radius, radius, radius));
-        d.append(String.format(FMT_CURVE, c, 0.0, radius, c - radius, radius, -radius));
+        if (type == PipType.DIAMOND) {
+            d.append(String.format(FMT_LINE, -radius, -radius));
+            d.append(String.format(FMT_LINE, -radius, radius));
+            d.append(String.format(FMT_LINE, radius, radius));
+            d.append(String.format(FMT_LINE, radius, -radius));
+        } else {
+            // c is the length of each control line
+            double c = CONST_C * radius;
+            
+            // Draw arcs anticlockwise. The coordinates are relative to the beginning of the arc.
+            d.append(String.format(FMT_CURVE, 0.0, -c, c - radius, -radius, -radius, -radius));
+            d.append(String.format(FMT_CURVE, -c, 0.0, -radius, radius - c, -radius, radius));
+            d.append(String.format(FMT_CURVE, 0.0, c, radius - c, radius, radius, radius));
+            d.append(String.format(FMT_CURVE, c, 0.0, radius, c - radius, radius, -radius));
+        }
         path.addAttribute("d", AnimationElement.AT_XML, d.toString());
         path.updateTime(0);
         return path;
     }
     
     protected void addPips(SVGElement group, int armorVal, boolean symmetric) throws SVGException {
-        addPips(group, armorVal, symmetric, DEFAULT_PIP_SIZE);
+        addPips(group, armorVal, symmetric, PipType.CIRCLE, DEFAULT_PIP_SIZE);
+    }
+    
+    protected void addPips(SVGElement group, int armorVal, boolean symmetric, PipType pipType) throws SVGException {
+        addPips(group, armorVal, symmetric, pipType, DEFAULT_PIP_SIZE);
+    }
+    
+    protected void addPips(SVGElement group, int armorVal, boolean symmetric, double size) throws SVGException {
+        addPips(group, armorVal, symmetric, PipType.CIRCLE, size);
     }
     
     /**
@@ -296,7 +330,7 @@ public abstract class PrintRecordSheet implements Printable {
      *                        values, with 0 meaning 1 row/rect and 1 meaning 1.5 rows/rect.
      * @throws SVGException
      */
-    protected void addPips(SVGElement group, int armorVal, boolean symmetric,
+    protected void addPips(SVGElement group, int armorVal, boolean symmetric, PipType pipType,
             double size) throws SVGException {
         final String METHOD_NAME = "addArmorPips(SVGElement,int)";
         double spacing = 6.15152;
@@ -557,7 +591,7 @@ public abstract class PrintRecordSheet implements Printable {
                         leftX -= radius;
                         rightX += hSpacing - radius;
                         if (pipsByRow[r] % 2 == 1) {
-                            pip = createPip(leftX + hSpacing, rows.get(r).getY(), radius, 0.5);
+                            pip = createPip(leftX + hSpacing, rows.get(r).getY(), radius, 0.5, pipType);
                             group.loaderAddChild(null, pip);
                             pipsByRow[r]--;
                         }
@@ -566,9 +600,9 @@ public abstract class PrintRecordSheet implements Printable {
                         rightX += hSpacing / 2 - radius;
                     }
                     while (pipsByRow[r] > 0) {
-                        pip = createPip(leftX, rows.get(r).getY(), radius, 0.5);
+                        pip = createPip(leftX, rows.get(r).getY(), radius, 0.5, pipType);
                         group.loaderAddChild(null, pip);
-                        pip = createPip(rightX, rows.get(r).getY(), radius, 0.5);
+                        pip = createPip(rightX, rows.get(r).getY(), radius, 0.5, pipType);
                         group.loaderAddChild(null, pip);
                         leftX -= hSpacing;
                         rightX += hSpacing;
@@ -585,7 +619,7 @@ public abstract class PrintRecordSheet implements Printable {
                         x += ((rowLength[r] - pipsByRow[r]) / 2) * hSpacing;
                     }
                     while (pipsByRow[r] > 0) {
-                        pip = createPip(x, rows.get(r).getY(), radius, 0.5);
+                        pip = createPip(x, rows.get(r).getY(), radius, 0.5, pipType);
                         group.loaderAddChild(null, pip);
                         pipsByRow[r]--;
                         x += hSpacing;
