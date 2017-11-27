@@ -247,7 +247,7 @@ public class PrintMechCommon extends PrintEntity {
         
         int currY = viewY + 10;
         
-        double fontSize = viewHeight * 0.044;
+        double fontSize = FONT_SIZE_MEDIUM;
         double lineHeight = getFontHeight(fontSize, canvas) * 1.2;
         
         addTextElement(canvas, qtyX, currY, "Qty", fontSize, "middle", "bold");

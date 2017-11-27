@@ -52,6 +52,7 @@ import megameklab.com.util.ImageHelper;
 public abstract class PrintRecordSheet implements Printable {
     
     final static double DEFAULT_PIP_SIZE = 0.38;
+    final static double FONT_SIZE_MEDIUM = 6.76;
     
     enum PipType {
         CIRCLE, DIAMOND;
