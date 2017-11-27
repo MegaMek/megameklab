@@ -71,6 +71,9 @@ public class ImageHelperDropShip {
         g2d.setFont(font);
         Map<Integer, List<Bay>> baySetup = new HashMap<Integer, List<Bay>>();
         for (Bay bay : dropship.getTransportBays()) {
+            if (bay.isQuarters()) {
+                continue;
+            }
             if (baySetup.get(bay.getBayNumber()) == null) {
                 List<Bay> list = new ArrayList<Bay>();
                 list.add(bay);
@@ -1062,15 +1065,7 @@ public class ImageHelperDropShip {
     }
 
     public static String getBayString(Bay bay) {
-        StringBuffer returnString = new StringBuffer(bay.getUnusedString(false));
-
-        if (bay.getDoors() > 0) {
-            returnString.append(" (");
-            returnString.append(bay.getDoors());
-            returnString.append(bay.getDoors() > 1 ? " doors)" : " door)");
-        }
-
-        return returnString.toString();
+        return bay.getUnusedString(false);
     }
 
     static public void printISPoints(Graphics2D g2d,

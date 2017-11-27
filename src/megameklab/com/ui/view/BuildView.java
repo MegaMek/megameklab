@@ -38,6 +38,7 @@ public abstract class BuildView extends JPanel {
     final protected Dimension controlSize = new Dimension(180, 25);
     final protected Dimension spinnerSize = new Dimension(55, 25);
     final protected Dimension editorSize = new Dimension(40, 25);
+    final protected Dimension editorSizeLg = new Dimension(55, 25);
 
     public JLabel createLabel(String text, Dimension maxSize) {
         JLabel label = new JLabel(text, SwingConstants.RIGHT);

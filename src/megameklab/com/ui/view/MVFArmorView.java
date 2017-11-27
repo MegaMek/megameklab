@@ -17,7 +17,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -34,10 +33,9 @@ import megamek.common.EntityMovementMode;
 import megamek.common.EquipmentType;
 import megamek.common.ITechManager;
 import megamek.common.Mech;
-import megamek.common.MiscType;
-import megamek.common.SimpleTechLevel;
 import megamek.common.TechConstants;
 import megamek.common.util.EncodeControl;
+import megamek.common.verifier.TestEntity;
 import megameklab.com.ui.util.TechComboBox;
 import megameklab.com.ui.view.listeners.BuildListener;
 import megameklab.com.util.UnitUtil;
@@ -76,12 +74,7 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
     
     private long etype;
     private boolean industrial;
-    private boolean hardenedIllegal;
-    
-    private final static int[] INDUSTRIAL_TYPES = {
-            EquipmentType.T_ARMOR_INDUSTRIAL, EquipmentType.T_ARMOR_HEAVY_INDUSTRIAL,
-            EquipmentType.T_ARMOR_COMMERCIAL
-    };
+    private EntityMovementMode movementMode;
     
     public MVFArmorView(ITechManager techManager) {
         this.techManager = techManager;
@@ -142,10 +135,7 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
     public void setFromEntity(Entity en) {
         etype = en.getEntityType();
         industrial = (en instanceof Mech) && ((Mech)en).isIndustrial();
-        hardenedIllegal = ((etype & Entity.ETYPE_LAND_AIR_MECH) != 0)
-                || (en.getMovementMode() == EntityMovementMode.VTOL)
-                || (en.getMovementMode() == EntityMovementMode.WIGE)
-                || (en.getMovementMode() == EntityMovementMode.HOVER);
+        movementMode = en.getMovementMode();
         refresh();
         cbArmorType.removeActionListener(this);
         spnTonnage.removeChangeListener(this);
@@ -182,51 +172,10 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
         EquipmentType prev = (EquipmentType)cbArmorType.getSelectedItem();
         cbArmorType.removeActionListener(this);
         cbArmorType.removeAllItems();
-        
-        // IndustrialMechs can only use industrial armor below experimental rules level
-        if (industrial && (techManager.getTechLevel().ordinal() < SimpleTechLevel.EXPERIMENTAL.ordinal())) {
-            for (int at : INDUSTRIAL_TYPES) {
-                String name = EquipmentType.getArmorTypeName(at, false);
-                EquipmentType eq = EquipmentType.get(name);
-                if ((null != eq) && techManager.isLegal(eq)) {
-                    cbArmorType.addItem(eq);
-                }
-            }
-        } else {
-            BigInteger flag = MiscType.F_MECH_EQUIPMENT;
-            if ((etype & Entity.ETYPE_AERO) != 0) {
-                flag = MiscType.F_AERO_EQUIPMENT;
-            } else if ((etype & Entity.ETYPE_TANK) != 0) {
-                flag = MiscType.F_TANK_EQUIPMENT;
-            }
-            boolean isLAM = (etype & Entity.ETYPE_LAND_AIR_MECH) != 0;
-            
-            for (int at = 0; at < EquipmentType.armorNames.length; at++) {
-                if (at == EquipmentType.T_ARMOR_PATCHWORK) {
-                    continue;
-                }
-                if ((at == EquipmentType.T_ARMOR_HARDENED) && hardenedIllegal) {
-                    continue;
-                }
-                String name = EquipmentType.getArmorTypeName(at, techManager.useClanTechBase());
-                EquipmentType eq = EquipmentType.get(name);
-                if ((null == eq) || (isLAM && ((eq.getCriticals(null) != 0)))) {
-                    continue;
-                }
-                if ((null != eq) && eq.hasFlag(flag) && techManager.isLegal(eq)) {
-                    cbArmorType.addItem(eq);
-                }
-                if (techManager.useMixedTech()) {
-                    name = EquipmentType.getArmorTypeName(at, !techManager.useClanTechBase());
-                    EquipmentType eq2 = EquipmentType.get(name);
-                    if ((null != eq2) && (eq != eq2) && eq2.hasFlag(flag)
-                            && techManager.isLegal(eq2)) {
-                        cbArmorType.addItem(eq2);
-                    }
-                }
-            }
-        }
-        if (techManager.isLegal(Entity.getPatchworkArmorAdvancement())) {
+        List<EquipmentType> allArmors = TestEntity.legalArmorsFor(etype, industrial, movementMode, techManager);
+        allArmors.forEach(eq -> cbArmorType.addItem(eq));
+        if (((etype & (Entity.ETYPE_SMALL_CRAFT | Entity.ETYPE_JUMPSHIP)) == 0)
+                && techManager.isLegal(Entity.getPatchworkArmorAdvancement())) {
             cbArmorType.addItem(null);
         }
         if (null == prev) {

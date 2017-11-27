@@ -143,7 +143,8 @@ public class SpecializationView extends IView implements TableModelListener {
                 int spec = 1 << i;
                 String[] fields = new String[4];
                 fields[0] = Infantry.getSpecializationName(spec);
-                if ((spec == Infantry.PARATROOPS) || (spec == Infantry.TAG_TROOPS)) {
+                if ((spec == Infantry.PARATROOPS) || (spec == Infantry.TAG_TROOPS)
+                        || (spec == Infantry.XCT)) {
                     fields[1] = "-";
                     fields[2] = "-";
                     fields[3] = "-";
