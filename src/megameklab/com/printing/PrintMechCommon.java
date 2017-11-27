@@ -73,6 +73,8 @@ public class PrintMechCommon extends PrintEntity {
     
     @Override
     public void printImage(Graphics2D g2d, PageFormat pageFormat, int pageNum) throws SVGException {
+        printShields();
+        
         super.printImage(g2d, pageFormat, pageNum);
 
         for (int loc = 0; loc < mech.locations(); loc++) {
@@ -93,6 +95,32 @@ public class PrintMechCommon extends PrintEntity {
         SVGElement hsRect = getSVGDiagram().getElement("heatSinkPips");
         if (null != hsRect) {
             drawHeatSinkPips((Rect) hsRect);
+        }
+    }
+    
+    private void printShields() throws SVGException {
+        for (Mounted m : mech.getMisc()) {
+            if (((MiscType) m.getType()).isShield()) {
+                String loc = mech.getLocationAbbr(m.getLocation());
+                SVGElement element;
+                element = getSVGDiagram().getElement("armorDiagram" + loc);
+                if (null != element) {
+                    hideElement(element, true);
+                }
+                element = getSVGDiagram().getElement("shield" + loc);
+                if (null != element) {
+                    hideElement(element, false);
+                }
+                element = getSVGDiagram().getElement("shieldDC" + loc);
+                if (null != element) {
+                    addPips(element, m.getBaseDamageCapacity(), false, PipType.CIRCLE);
+                }
+                element = getSVGDiagram().getElement("shieldDA" + loc);
+                if (null != element) {
+                    addPips(element, m.getBaseDamageAbsorptionRate(), false, PipType.DIAMOND);
+                }
+                element.updateTime(0);
+            }
         }
     }
 
@@ -134,7 +162,8 @@ public class PrintMechCommon extends PrintEntity {
             }
             if (null != element) {
                 addPips(element, mech.getOArmor(loc),
-                        (loc == Mech.LOC_HEAD) || (loc == Mech.LOC_CT) || (loc == Mech.LOC_CLEG));
+                        (loc == Mech.LOC_HEAD) || (loc == Mech.LOC_CT) || (loc == Mech.LOC_CLEG),
+                        PipType.forAT(mech.getArmorType(loc)));
                 //                        setArmorPips(element, mech.getOArmor(loc), true);
                 //                      (loc == Mech.LOC_HEAD) || (loc == Mech.LOC_CT));
             }
@@ -154,7 +183,8 @@ public class PrintMechCommon extends PrintEntity {
                 }
                 element = getSVGDiagram().getElement("armorPips" + mech.getLocationAbbr(loc) + "R");
                 if (null != element) {
-                    addPips(element, mech.getOArmor(loc, true), loc == Mech.LOC_CT);
+                    addPips(element, mech.getOArmor(loc, true), loc == Mech.LOC_CT,
+                            PipType.forAT(mech.getArmorType(loc)));
                 }
             }
             
@@ -471,8 +501,8 @@ public class PrintMechCommon extends PrintEntity {
         if (mech.hasMPReducingHardenedArmor()) {
             mp--;
         }
-        if (mp > mech.getRunMP()) {
-            return mech.getRunMP() + " [" + mp + "]";
+        if (mp > mech.getRunMPwithoutMASC()) {
+            return mech.getRunMPwithoutMASC() + " [" + mp + "]";
         } else {
             return Integer.toString(mech.getRunMP());
         }
