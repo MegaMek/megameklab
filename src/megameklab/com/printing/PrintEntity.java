@@ -14,10 +14,13 @@
 package megameklab.com.printing;
 
 import java.awt.Graphics2D;
+import java.awt.geom.Rectangle2D;
 import java.awt.print.PageFormat;
 import java.text.NumberFormat;
 import java.util.Calendar;
+import java.util.Enumeration;
 import java.util.Locale;
+import java.util.StringJoiner;
 
 import com.kitfox.svg.Rect;
 import com.kitfox.svg.SVGElement;
@@ -27,6 +30,9 @@ import com.kitfox.svg.Tspan;
 import com.kitfox.svg.animation.AnimationElement;
 
 import megamek.common.Entity;
+import megamek.common.options.IOption;
+import megamek.common.options.IOptionGroup;
+import megamek.common.options.PilotOptions;
 
 /**
  * Base class for printing Entity record sheets
@@ -92,6 +98,37 @@ public abstract class PrintEntity extends PrintRecordSheet {
             setTextField("pilotName", getEntity().getCrew().getName(0));
             setTextField("gunnerySkill", Integer.toString(getEntity().getCrew().getGunnery(0)));
             setTextField("pilotingSkill", Integer.toString(getEntity().getCrew().getPiloting(0)));
+            
+            StringJoiner spaList = new StringJoiner(", ");
+            PilotOptions spas = getEntity().getCrew().getOptions();
+            for (Enumeration<IOptionGroup> optionGroups = spas.getGroups(); optionGroups.hasMoreElements();) {
+                IOptionGroup optiongroup = optionGroups.nextElement();
+                if (spas.count(optiongroup.getKey()) > 0) {
+                    for (Enumeration<IOption> options = optiongroup.getOptions(); options.hasMoreElements();) {
+                        IOption option = options.nextElement();
+                        if (option != null && option.booleanValue()) {
+                            spaList.add(option.getDisplayableNameWithValue().replaceAll(" \\(.*?\\)", ""));
+                        }
+                    }
+                }
+            }
+            if (spaList.length() > 0) {
+                Rect rect = (Rect) getSVGDiagram().getElement("spas");
+                if (null != rect) {
+                    Rectangle2D bbox = rect.getBoundingBox();
+                    SVGElement canvas = rect.getParent();
+                    String spaText = "Abilities: " + spaList.toString();
+                    double fontSize = FONT_SIZE_MEDIUM;
+                    if (getTextLength(spaText, fontSize, canvas) > bbox.getWidth()) {
+                        fontSize = bbox.getHeight() / 2.4;
+                    }
+                    double lineHeight = fontSize * 1.2;
+                    addMultilineTextElement(canvas, bbox.getX(), bbox.getY() + lineHeight,
+                            bbox.getWidth(), lineHeight, spaText, fontSize, "start", "normal",
+                            "black", ' ');
+                }
+            }
+
         } else {
             setTextField("pilotName", "");
             setTextField("gunnerySkill", "");
