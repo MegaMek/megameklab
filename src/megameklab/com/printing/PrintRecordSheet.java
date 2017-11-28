@@ -17,10 +17,18 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.RenderedImage;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -30,6 +38,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import javax.imageio.ImageIO;
+
+import com.kitfox.svg.ImageSVG;
 import com.kitfox.svg.Path;
 import com.kitfox.svg.Rect;
 import com.kitfox.svg.SVGDiagram;
@@ -37,6 +48,7 @@ import com.kitfox.svg.SVGElement;
 import com.kitfox.svg.SVGException;
 import com.kitfox.svg.Text;
 import com.kitfox.svg.animation.AnimationElement;
+import com.sun.org.apache.xml.internal.security.utils.Base64;
 
 import megamek.common.EquipmentType;
 import megamek.common.logging.LogLevel;
@@ -126,11 +138,33 @@ public abstract class PrintRecordSheet implements Printable {
     protected abstract String getSVGFileName();
     
     protected void setTextField(String id, String text) throws SVGException {
+        setTextField(id, text, false);
+    }
+    
+    /**
+     * Sets the text content of the text element in the SVG diagram corresponding with the given id.
+     * If the element does not exist, does nothing. If the text is null, hides the element instead.
+     * Any text previously in the element is cleared.
+     *  
+     * @param id     The String id of a text element
+     * @param text   The text to set as content
+     * @param unhide Sets the element visible if the text is non-null
+     * 
+     * @throws SVGException
+     */
+    protected void setTextField(String id, String text, boolean unhide) throws SVGException {
         SVGElement element = diagram.getElement(id);
         if (null != element) {
-            ((Text) element).getContent().clear();
-            ((Text) element).appendText(text);
-            ((Text) element).rebuild();
+            if (null == text) {
+                hideElement(element, true);
+            } else {
+                if (unhide) {
+                    hideElement(element, false);
+                }
+                ((Text) element).getContent().clear();
+                ((Text) element).appendText(text);
+                ((Text) element).rebuild();
+            }
         }
     }
     
@@ -933,6 +967,20 @@ public abstract class PrintRecordSheet implements Printable {
         }
     }
     
+    protected void hideElement(String id) throws SVGException {
+        SVGElement element = diagram.getElement(id);
+        if (null != element) {
+            hideElement(element, true);
+        }
+    }
+    
+    protected void hideElement(String id, boolean hide) throws SVGException {
+        SVGElement element = diagram.getElement(id);
+        if (null != element) {
+            hideElement(element, hide);
+        }
+    }
+    
     /**
      * Sets the visibility attribute to "hidden"
      * @param element The element to hide
@@ -1008,5 +1056,61 @@ public abstract class PrintRecordSheet implements Printable {
 
         canvas.removeChild(newText);
         return width;
+    }
+    
+    /**
+     * Inserts an image into the SVG diagram scaled to fit into the provided bounds. 
+     *
+     * @param imageFile  The file containing the image to embed.
+     * @param canvas     The parent element for the image element.
+     * @param bbox       The bounding box for the image. The image will be scaled to fit.
+     * @param center     Whether to center the image vertically and horizontally.
+     * 
+     * @throws SVGException
+     */
+    public void embedImage(File imageFile, SVGElement canvas, Rectangle2D bbox, boolean center) throws SVGException {
+        final String METHOD_NAME = "addFluffImage(File,Rectangle2D)";
+        if (null == imageFile) {
+            return;
+        }
+        try {
+            InputStream is = new BufferedInputStream(new FileInputStream(imageFile));
+            String mimeType = URLConnection.guessContentTypeFromStream(is);
+            String format = mimeType.substring(mimeType.indexOf("/") + 1);
+
+            RenderedImage fluffImage = ImageIO.read(imageFile);
+            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+            ImageIO.write(fluffImage, format, bytes);
+            
+            double width = fluffImage.getWidth();
+            double height = fluffImage.getHeight();
+            double scale = Math.min(bbox.getWidth() / width, bbox.getHeight() / height);
+            width *= scale;
+            height *= scale;
+            double x = bbox.getX();
+            double y = bbox.getY();
+            if (center) {
+                x += (bbox.getWidth() - width) / 2;
+                y += (bbox.getHeight() - height) / 2;
+            }
+            ImageSVG img = new ImageSVG();
+            img.addAttribute("x", AnimationElement.AT_XML, Double.toString(x));
+            img.addAttribute("y", AnimationElement.AT_XML, Double.toString(y));
+            img.addAttribute("width", AnimationElement.AT_XML, Double.toString(width));
+            img.addAttribute("height", AnimationElement.AT_XML, Double.toString(height));
+            img.addAttribute("xlink:href", AnimationElement.AT_XML,
+                    "data:" + mimeType + ";base64," + Base64.encode(bytes.toByteArray()));
+            canvas.loaderAddChild(null, img);
+            canvas.updateTime(0);
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            MegaMekLab.getLogger().log(PrintRecordSheet.class, METHOD_NAME, LogLevel.ERROR,
+                    "Fluff image file not found: " + imageFile.getPath());
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            MegaMekLab.getLogger().log(PrintRecordSheet.class, METHOD_NAME, LogLevel.ERROR,
+                    "Error reading fluff image file: " + imageFile.getPath());
+        }
+        
     }
 }

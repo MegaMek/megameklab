@@ -43,6 +43,7 @@ import megamek.common.Mounted;
 import megamek.common.options.IOption;
 import megamek.common.options.IOptionGroup;
 import megamek.common.options.Quirks;
+import megameklab.com.util.ImageHelper;
 import megameklab.com.util.RecordSheetEquipmentLine;
 import megameklab.com.util.UnitUtil;
 
@@ -133,6 +134,10 @@ public class PrintMechCommon extends PrintEntity {
                 ((Tspan) svgEle).setText("Underwater:");
                 ((Text) svgEle.getParent()).rebuild();
             }
+        }
+        if (mech.getCrew().getSlotCount() > 1) {
+            hideElement("warriorDataSingle", true);
+            hideElement("warriorDataDual", false);
         }
         setTextField("hsType", formatHeatSinkType());
         setTextField("hsCount", formatHeatSinkCount());
@@ -430,6 +435,20 @@ public class PrintMechCommon extends PrintEntity {
         canvas.updateTime(0);
     }
     
+    @Override
+    protected void drawFluffImage() throws SVGException {
+        Rect rect = null;
+        if (mech.getCrew().getSlotCount() == 1) {
+            rect = (Rect) getSVGDiagram().getElement("fluffSinglePilot");
+        } else {
+            rect = (Rect) getSVGDiagram().getElement("fluffDualPilot");
+        }
+        if (null != rect) {
+            embedImage(ImageHelper.getFluffFile(mech, ImageHelper.imageMech),
+                    rect.getParent(), rect.getBoundingBox(), true);
+        }
+    }
+    
     private void drawHeatSinkPips(Rect svgRect) throws SVGException {
         Rectangle2D bbox = svgRect.getBoundingBox();
         SVGElement canvas = svgRect.getRoot();
@@ -577,6 +596,15 @@ public class PrintMechCommon extends PrintEntity {
                 if (((cs.getIndex() >= Mech.ACTUATOR_UPPER_ARM) && (cs.getIndex() <= Mech.ACTUATOR_HAND))
                         || ((cs.getIndex() >= Mech.ACTUATOR_UPPER_LEG) && (cs.getIndex() <= Mech.ACTUATOR_FOOT))) {
                     name += " Actuator";
+                } else if (cs.getIndex() == Mech.SYSTEM_COCKPIT) {
+                    if (mech.getCockpitType() == Mech.COCKPIT_COMMAND_CONSOLE) {
+                        if (mech.getCrewForCockpitSlot(Mech.LOC_HEAD, cs) == 0) {
+                            name = "Cockpit";
+                        }
+                    } else if ((mech.getCockpitType() == Mech.COCKPIT_DUAL)
+                            || (mech.getCockpitType() == Mech.COCKPIT_QUADVEE)) {
+                        name = mech.getCrew().getCrewType().getRoleName(mech.getCrewForCockpitSlot(Mech.LOC_HEAD, cs));
+                    }
                 }
                 return name;
             }
