@@ -115,7 +115,7 @@ public class DropshipChassisView extends BuildView implements ActionListener, Ch
         chkKFBoom.setText(resourceMap.getString("DropshipChassisView.chkKFBoom.text")); //$NON-NLS-1$
         gbc.gridx = 3;
         gbc.gridy = 0;
-        chkMilitary.setToolTipText(resourceMap.getString("DropshipChassisView.chkKFBoom.tooltip")); //$NON-NLS-1$
+        chkKFBoom.setToolTipText(resourceMap.getString("DropshipChassisView.chkKFBoom.tooltip")); //$NON-NLS-1$
         add(chkKFBoom, gbc);
         chkKFBoom.addActionListener(this);
         chkKFBoom.setVisible(false);
