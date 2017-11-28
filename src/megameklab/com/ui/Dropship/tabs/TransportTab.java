@@ -283,7 +283,7 @@ public class TransportTab extends IView implements ActionListener {
                 while (getAero().getBayById(num) != null) {
                     num++;
                 }
-                Bay newBay = bayType.newBay(1, num);
+                Bay newBay = bayType.newBay(1.0, num);
                 if (doorsAvailable() > 0) {
                     newBay.setDoors(1);
                 }
@@ -407,7 +407,7 @@ public class TransportTab extends IView implements ActionListener {
                 case COL_NAME:
                     return bayTypeList.get(rowIndex).getDisplayName();
                 case COL_SIZE:
-                    if (bayTypeList.get(rowIndex) != TestAero.TransportBay.CARGO) {
+                    if (!bayTypeList.get(rowIndex).isCargoBay()) {
                         return (int)bayList.get(rowIndex).getUnusedSlots();
                     }
                     return bayList.get(rowIndex).getUnusedSlots();
@@ -420,7 +420,10 @@ public class TransportTab extends IView implements ActionListener {
                     return bayTypeList.get(rowIndex).getPersonnel()
                             * (int)bayList.get(rowIndex).getCapacity();
                 case COL_TONNAGE:
-                    return bayList.get(rowIndex).getWeight();
+                    if (!bayTypeList.get(rowIndex).isCargoBay()) {
+                        return bayList.get(rowIndex).getWeight();
+                    }
+                    return Math.ceil(bayList.get(rowIndex).getWeight() * 2.0) * 0.5;
                 default:
                     return null;
             }
@@ -507,7 +510,10 @@ public class TransportTab extends IView implements ActionListener {
                     case COL_NAME:
                         return bayList.get(rowIndex).getDisplayName();
                     case COL_SIZE:
-                        return bayList.get(rowIndex).getWeight();
+                        if (bayList.get(rowIndex).isCargoBay() && (bayList.get(rowIndex).getWeight() > 1)) {
+                            return String.format("%.3f", bayList.get(rowIndex).getWeight());
+                        }
+                        return Double.toString(bayList.get(rowIndex).getWeight());
                     case COL_PERSONNEL:
                         if (bayList.get(rowIndex).getDisplayName().startsWith("Infantry")) {
                             return "*";
@@ -548,7 +554,7 @@ public class TransportTab extends IView implements ActionListener {
             }
             final Bay bay = modelInstalled.bayList.get(row);
             if (column == InstalledBaysModel.COL_SIZE) {
-                Bay newBay = modelInstalled.bayTypeList.get(row).newBay((Double)getCellEditorValue(),
+                Bay newBay = modelInstalled.bayTypeList.get(row).newBay((Double) getCellEditorValue(),
                         bay.getBayNumber());
                 newBay.setDoors(bay.getDoors());
                 removeBay(bay);
@@ -569,7 +575,7 @@ public class TransportTab extends IView implements ActionListener {
         @Override
         public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row,
                 int column) {
-            boolean isCargo = modelInstalled.bayTypeList.get(row) == TestAero.TransportBay.CARGO;
+            boolean isCargo = modelInstalled.bayTypeList.get(row).isCargoBay();
             if (column == InstalledBaysModel.COL_DOORS) {
                 int doors = ((Integer)modelInstalled.getValueAt(row,  column)).intValue();
                 SpinnerNumberModel model = new SpinnerNumberModel(doors,
@@ -581,7 +587,7 @@ public class TransportTab extends IView implements ActionListener {
             } else if (column == InstalledBaysModel.COL_SIZE) {
                 double step = isCargo? 0.5 : 1.0;
                 SpinnerNumberModel model = new SpinnerNumberModel(modelInstalled.bayList.get(row).getUnusedSlots(),
-                            step, null, step);
+                        step, null, step);
                 spinner.removeChangeListener(this);
                 spinner.setModel(model);
                 spinner.addChangeListener(this);
