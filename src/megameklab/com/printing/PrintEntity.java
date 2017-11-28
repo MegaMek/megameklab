@@ -22,6 +22,7 @@ import java.util.Enumeration;
 import java.util.Locale;
 import java.util.StringJoiner;
 
+import com.kitfox.svg.Path;
 import com.kitfox.svg.Rect;
 import com.kitfox.svg.SVGElement;
 import com.kitfox.svg.SVGException;
@@ -41,13 +42,6 @@ import megamek.common.options.PilotOptions;
  *
  */
 public abstract class PrintEntity extends PrintRecordSheet {
-    
-    /**
-     * IDs of fields to hide if there is an assigned pilot
-     */
-    private static final String[] CREW_BLANKS = {
-            "blankPilotName", "blankGunnerySkill", "blankPilotingSkill"
-    };
     
     protected PrintEntity(int startPage) {
         super(startPage);
@@ -73,6 +67,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
         if (null != eqRect) {
             writeEquipment((Rect) eqRect);
         }
+        drawFluffImage();
     }
     
     protected void writeTextFields() throws SVGException {
@@ -87,52 +82,85 @@ public abstract class PrintEntity extends PrintRecordSheet {
         setTextField("cost", formatCost());
         setTextField("bv", Integer.toString(getEntity().calculateBattleValue()));
         
-        if (!getEntity().getCrew().getName().equalsIgnoreCase("unnamed")) {
-            for (String fieldName : CREW_BLANKS) {
-                SVGElement svgEle = getSVGDiagram().getElement(fieldName);
-                if (null != svgEle) {
-                    svgEle.addAttribute("visibility", AnimationElement.AT_XML, "hidden");
-                    svgEle.updateTime(0);
+        for (int i = 0; i < getEntity().getCrew().getSlotCount(); i++) {
+            // If we have multiple named crew for the unit, change the "Name:" label to
+            // the label of the slot. This will usually require adjusting the position of the
+            // name or the length of the blank.
+            double nameOffset = 0;
+            if (getEntity().getCrew().getSlotCount() > 1) {
+                SVGElement element = getSVGDiagram().getElement("crewName" + i);
+                if (null != element) {
+                    double oldWidth = ((Text) element).getBoundingBox().getWidth();
+                    ((Text) element).getContent().clear();
+                    ((Text) element).appendText(getEntity().getCrew().getCrewType().getRoleName(i) + ":");
+                    ((Text) element).rebuild();
+                    nameOffset = ((Text) element).getBoundingBox().getWidth() - oldWidth;
                 }
             }
-            setTextField("pilotName", getEntity().getCrew().getName(0));
-            setTextField("gunnerySkill", Integer.toString(getEntity().getCrew().getGunnery(0)));
-            setTextField("pilotingSkill", Integer.toString(getEntity().getCrew().getPiloting(0)));
-            
-            StringJoiner spaList = new StringJoiner(", ");
-            PilotOptions spas = getEntity().getCrew().getOptions();
-            for (Enumeration<IOptionGroup> optionGroups = spas.getGroups(); optionGroups.hasMoreElements();) {
-                IOptionGroup optiongroup = optionGroups.nextElement();
-                if (spas.count(optiongroup.getKey()) > 0) {
-                    for (Enumeration<IOption> options = optiongroup.getOptions(); options.hasMoreElements();) {
-                        IOption option = options.nextElement();
-                        if (option != null && option.booleanValue()) {
-                            spaList.add(option.getDisplayableNameWithValue().replaceAll(" \\(.*?\\)", ""));
+            if (!getEntity().getCrew().getName().equalsIgnoreCase("unnamed")) {
+                SVGElement element = getSVGDiagram().getElement("blanksCrew" + i);
+                if (null != element) {
+                    hideElement(element);
+                }
+                if (nameOffset != 0) {
+                    element = getSVGDiagram().getElement("pilotName" + i);
+                    if (null != element) {
+                        if (element.hasAttribute("x", AnimationElement.AT_XML)) {
+                            element.setAttribute("x", AnimationElement.AT_XML,
+                                    Double.toString(nameOffset + Double.valueOf(element.getPresAbsolute("x").getStringValue())));
+                        } else {
+                            element.addAttribute("x", AnimationElement.AT_XML,
+                                    Double.toString(((Text) element).getBoundingBox().getX() + nameOffset));
                         }
                     }
                 }
-            }
-            if (spaList.length() > 0) {
-                Rect rect = (Rect) getSVGDiagram().getElement("spas");
-                if (null != rect) {
-                    Rectangle2D bbox = rect.getBoundingBox();
-                    SVGElement canvas = rect.getParent();
-                    String spaText = "Abilities: " + spaList.toString();
-                    double fontSize = FONT_SIZE_MEDIUM;
-                    if (getTextLength(spaText, fontSize, canvas) > bbox.getWidth()) {
-                        fontSize = bbox.getHeight() / 2.4;
+                setTextField("pilotName" + i, getEntity().getCrew().getName(i), true);
+                setTextField("gunnerySkill" + i, Integer.toString(getEntity().getCrew().getGunnery(i)), true);
+                setTextField("pilotingSkill" + i, Integer.toString(getEntity().getCrew().getPiloting(i)), true);
+                
+                StringJoiner spaList = new StringJoiner(", ");
+                PilotOptions spas = getEntity().getCrew().getOptions();
+                for (Enumeration<IOptionGroup> optionGroups = spas.getGroups(); optionGroups.hasMoreElements();) {
+                    IOptionGroup optiongroup = optionGroups.nextElement();
+                    if (spas.count(optiongroup.getKey()) > 0) {
+                        for (Enumeration<IOption> options = optiongroup.getOptions(); options.hasMoreElements();) {
+                            IOption option = options.nextElement();
+                            if (option != null && option.booleanValue()) {
+                                spaList.add(option.getDisplayableNameWithValue().replaceAll(" \\(.*?\\)", ""));
+                            }
+                        }
                     }
-                    double lineHeight = fontSize * 1.2;
-                    addMultilineTextElement(canvas, bbox.getX(), bbox.getY() + lineHeight,
-                            bbox.getWidth(), lineHeight, spaText, fontSize, "start", "normal",
-                            "black", ' ');
+                }
+                if (spaList.length() > 0) {
+                    Rect rect = (Rect) getSVGDiagram().getElement("spas" + getEntity().getCrew().getSlotCount());
+                    if (null != rect) {
+                        Rectangle2D bbox = rect.getBoundingBox();
+                        SVGElement canvas = rect.getParent();
+                        String spaText = "Abilities: " + spaList.toString();
+                        double fontSize = FONT_SIZE_MEDIUM;
+                        if (getTextLength(spaText, fontSize, canvas) > bbox.getWidth()) {
+                            fontSize = bbox.getHeight() / 2.4;
+                        }
+                        double lineHeight = fontSize * 1.2;
+                        addMultilineTextElement(canvas, bbox.getX(), bbox.getY() + lineHeight,
+                                bbox.getWidth(), lineHeight, spaText, fontSize, "start", "normal",
+                                "black", ' ');
+                    }
+                }
+    
+            } else {
+                setTextField("pilotName" + i, null);
+                setTextField("gunnerySkill" + i, null);
+                setTextField("pilotingSkill" + i, null);
+                if (nameOffset != 0) {
+                    SVGElement element = getSVGDiagram().getElement("blankCrewName" + i);
+                    if (null != element) {
+                        double w = ((Path) element).getBoundingBox().getWidth();
+                        element.setAttribute("d", AnimationElement.AT_XML,
+                                String.format("M %f,0 %f,0", nameOffset, w - nameOffset));
+                    }
                 }
             }
-
-        } else {
-            setTextField("pilotName", "");
-            setTextField("gunnerySkill", "");
-            setTextField("pilotingSkill", "");
         }
     }
     
@@ -145,6 +173,10 @@ public abstract class PrintEntity extends PrintRecordSheet {
     }
     
     protected void writeEquipment(Rect canvas) throws SVGException {
+        
+    }
+    
+    protected void drawFluffImage() throws SVGException {
         
     }
     
