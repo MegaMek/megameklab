@@ -64,7 +64,11 @@ public class PrintMechCommon extends PrintEntity {
     }
     
     protected String getSVGFileName() {
-        return "Biped_Mech_default.svg";
+        if (mech.hasETypeFlag(Entity.ETYPE_QUAD_MECH)) {
+            return "mech_quad_default.svg";
+        } else {
+            return "mech_biped_default.svg";
+        }
     }
     
     @Override
