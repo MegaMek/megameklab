@@ -122,7 +122,7 @@ public class StatusBar extends ITab {
             maxCrits = 78;
         }
         int currentCrits = UnitUtil.countUsedCriticals(getMech());
-        int currentCost = (int)Math.round(getMech().getCost(false));
+        long currentCost = (long) Math.round(getMech().getCost(false));
 
         testEntity = new TestMech(getMech(), entityVerifier.mechOption, null);
 
