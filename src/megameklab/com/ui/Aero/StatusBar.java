@@ -108,7 +108,7 @@ public class StatusBar extends ITab {
         double tonnage = getAero().getWeight();
         double currentTonnage;
         int bv = getAero().calculateBattleValue();
-        int currentCost = (int)Math.round(getAero().getCost(false));
+        long currentCost = (long) Math.round(getAero().getCost(false));
 
         testAero = new TestAero(getAero(), entityVerifier.aeroOption, null);
 

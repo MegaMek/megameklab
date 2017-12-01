@@ -102,7 +102,7 @@ public class StatusBar extends ITab {
         double tonnage = getSmallCraft().getWeight();
         double currentTonnage;
         int bv = getSmallCraft().calculateBattleValue();
-        int currentCost = (int)Math.round(getSmallCraft().getCost(false));
+        long currentCost = (long) Math.round(getSmallCraft().getCost(false));
 
         testSmallCraft = new TestSmallCraft(getSmallCraft(), entityVerifier.aeroOption, null);
 
