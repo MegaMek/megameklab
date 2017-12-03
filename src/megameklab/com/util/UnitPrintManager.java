@@ -59,7 +59,6 @@ import megamek.common.MechFileParser;
 import megamek.common.Protomech;
 import megamek.common.SmallCraft;
 import megamek.common.Tank;
-import megamek.common.TripodMech;
 import megamek.common.VTOL;
 import megameklab.com.printing.PrintMechCommon;
 import megameklab.com.ui.Aero.Printing.PrintAero;
@@ -71,7 +70,6 @@ import megameklab.com.ui.BattleArmor.Printing.PrintBattleArmor;
 import megameklab.com.ui.Dropship.Printing.PrintAerodyne;
 import megameklab.com.ui.Dropship.Printing.PrintSpheroid;
 import megameklab.com.ui.Infantry.Printing.PrintInfantry;
-import megameklab.com.ui.Mek.Printing.PrintTripod;
 import megameklab.com.ui.ProtoMek.Printing.PrintProtomech;
 import megameklab.com.ui.Vehicle.Printing.PrintDualTurretVehicle;
 import megameklab.com.ui.Vehicle.Printing.PrintLargeSupportVehicle;
@@ -162,11 +160,7 @@ public class UnitPrintManager {
         Tank wige1 = null;
         Tank dualTurret1 = null;
         for (Entity unit : loadedUnits) {
-            if (unit instanceof TripodMech) {
-                UnitUtil.removeOneShotAmmo(unit);
-                UnitUtil.expandUnitMounts((Mech) unit);
-                book.append(new PrintTripod((TripodMech) unit), pageFormat);
-            } else if (unit instanceof Mech) {
+            if (unit instanceof Mech) {
                 UnitUtil.removeOneShotAmmo(unit);
                 UnitUtil.expandUnitMounts((Mech) unit);
                 book.append(new PrintMechCommon((Mech) unit, book.getNumberOfPages()), pageFormat);
