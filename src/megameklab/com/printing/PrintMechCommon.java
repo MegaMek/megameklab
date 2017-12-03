@@ -37,6 +37,7 @@ import megamek.common.AmmoType;
 import megamek.common.CriticalSlot;
 import megamek.common.Engine;
 import megamek.common.Entity;
+import megamek.common.EquipmentMessages;
 import megamek.common.Mech;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
@@ -66,6 +67,8 @@ public class PrintMechCommon extends PrintEntity {
     protected String getSVGFileName() {
         if (mech.hasETypeFlag(Entity.ETYPE_QUAD_MECH)) {
             return "mech_quad_default.svg";
+        } else if (mech.hasETypeFlag(Entity.ETYPE_TRIPOD_MECH)) {
+            return "mech_tripod_default.svg";
         } else {
             return "mech_biped_default.svg";
         }
@@ -603,7 +606,7 @@ public class PrintMechCommon extends PrintEntity {
                 } else if (cs.getIndex() == Mech.SYSTEM_COCKPIT) {
                     if (mech.getCockpitType() == Mech.COCKPIT_COMMAND_CONSOLE) {
                         if (mech.getCrewForCockpitSlot(Mech.LOC_HEAD, cs) == 0) {
-                            name = "Cockpit";
+                            name = EquipmentMessages.getString("SystemType.Cockpit.STANDARD_COCKPIT");
                         }
                     } else if ((mech.getCockpitType() == Mech.COCKPIT_DUAL)
                             || (mech.getCockpitType() == Mech.COCKPIT_QUADVEE)) {
