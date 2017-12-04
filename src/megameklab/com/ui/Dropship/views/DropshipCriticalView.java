@@ -194,13 +194,18 @@ public class DropshipCriticalView extends IView {
             aftLeftPanel.setVisible(false);
             aftRightPanel.setVisible(false);
         }
-
+        
+        boolean NC3 = TestSmallCraft.hasNC3(getSmallCraft());
         double[] extra = TestSmallCraft.extraSlotCost(getSmallCraft());
         for (int arc = 0; arc < extra.length; arc++) {
             arcTrees[arc].rebuild();
             arcTrees[arc].repaint();
             lblSlotCount[arc].setText(String.valueOf(arcTrees[arc].getSlotCount()));
-            lblExtraTonnage[arc].setText(String.valueOf(extra[arc]));
+            if (NC3 == true) {
+                lblExtraTonnage[arc].setText(String.valueOf(extra[arc] * 2));
+            } else {
+                lblExtraTonnage[arc].setText(String.valueOf(extra[arc]));
+            }
         }
         
     }
