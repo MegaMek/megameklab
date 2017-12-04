@@ -142,10 +142,9 @@ public class PrintMechCommon extends PrintEntity {
                 ((Text) svgEle.getParent()).rebuild();
             }
         }
-        if (mech.getCrew().getSlotCount() > 1) {
-            hideElement("warriorDataSingle", true);
-            hideElement("warriorDataDual", false);
-        }
+        hideElement("warriorDataSingle", mech.getCrew().getSlotCount() != 1);
+        hideElement("warriorDataDual", mech.getCrew().getSlotCount() != 2);
+        hideElement("warriorDataTriple", mech.getCrew().getSlotCount() != 3);
         setTextField("hsType", formatHeatSinkType());
         setTextField("hsCount", formatHeatSinkCount());
     }
@@ -445,10 +444,12 @@ public class PrintMechCommon extends PrintEntity {
     @Override
     protected void drawFluffImage() throws SVGException {
         Rect rect = null;
-        if (mech.getCrew().getSlotCount() == 1) {
-            rect = (Rect) getSVGDiagram().getElement("fluffSinglePilot");
-        } else {
+        if (mech.getCrew().getSlotCount() == 3) {
+            rect = (Rect) getSVGDiagram().getElement("fluffTriplePilot");
+        } else if (mech.getCrew().getSlotCount() == 2) {
             rect = (Rect) getSVGDiagram().getElement("fluffDualPilot");
+        } else {
+            rect = (Rect) getSVGDiagram().getElement("fluffSinglePilot");
         }
         if (null != rect) {
             embedImage(ImageHelper.getFluffFile(mech, ImageHelper.imageMech),
