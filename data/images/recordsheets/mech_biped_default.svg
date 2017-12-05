@@ -145,14 +145,10 @@
      inkscape:groupmode="layer"
      inkscape:label="BattleTech-35002c - Tech Manual"
      transform="matrix(1,0,0,-1,0,765)">
-               <text
-       transform="matrix(0.99799843,0,0,-1,146.4492,676.2897)"
+  <text
+       transform="matrix(1,0,0,-1,176,676.2897)"
        style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:11.59090042px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Bold;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-       id="text55901"><tspan
-         x="0 3.0715885 15.242034 23.112255 31.562021 40.707241 44.891556 53.503593 61.373814 69.823578 78.644257 87.256294 96.250832 100.43515 108.74583 117.89104 125.76127 133.63148"
-         y="0"
-         sodipodi:role="line"
-         id="tspan55903">’MECH RECORD SHEET</tspan></text>
+       id="title" text-anchor="middle">'MECH RECORD SHEET</text>
 <text
        transform="matrix(0.99799845,0,0,-1,306,23.0338)"
        style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.7954998px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"

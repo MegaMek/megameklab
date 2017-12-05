@@ -144,14 +144,11 @@
      id="g3344"
      inkscape:groupmode="layer"
      inkscape:label="E-CAT35006 BattleTech Interstellar Operations"
-     transform="matrix(1,0,0,-1,0,765)"><text
-       transform="matrix(0.99799862,0,0,-1,90.6584,679.3673)"
-       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:11.59200001px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Bold;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
-       id="text3346"><tspan
-         x="0 6.9088321 16.05492 24.667776 32.538746 40.409714 43.574329 50.367241 58.238209 67.036537 75.834862 83.705833 92.701225 96.885933 99.957817 112.12942 120.00038 128.45096 137.59705 141.78175 150.39461 158.26558 166.71614 175.53766 184.15051 193.1459 197.33061 205.64207 214.78816 222.65913 230.53011"
-         y="0"
-         sodipodi:role="line"
-         id="tspan3348">THREE-LEGGED ’MECH RECORD SHEET</tspan></text>
+     transform="matrix(1,0,0,-1,0,765)">
+  <text
+       transform="matrix(1,0,0,-1,176,679.3673)"
+       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:11.59090042px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Bold;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="title" text-anchor="middle">THREE-LEGGED 'MECH RECORD SHEET</text>
 <text
        transform="matrix(0.99799845,0,0,-1,306,23.0338)"
        style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.7954998px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"

@@ -137,6 +137,11 @@ public abstract class PrintRecordSheet implements Printable {
 
     protected abstract String getSVGFileName();
     
+    /**
+     * @return The title to use for the record sheet
+     */
+    protected abstract String getRecordSheetTitle();
+    
     protected void setTextField(String id, String text) throws SVGException {
         setTextField(id, text, false);
     }
