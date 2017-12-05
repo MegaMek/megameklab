@@ -281,13 +281,6 @@
          sodipodi:role="line"
          id="tspan3525">TM</tspan></text>
 <text
-       transform="matrix(1,0,0,-1,87.8451,23.0338)"
-       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.7954998px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-       id="text3527"><tspan
-         x="0"
-         y="0"
-         id="tspan3529">©</tspan></text>
-<text
        transform="matrix(0.99799845,0,0,-1,306,23.0338)"
        style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.7954998px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
        text-anchor="middle"
@@ -1862,37 +1855,47 @@
              d="m 0,0 c 0,-0.56 0.454,-1.015 1.015,-1.015 l 83.348,0 c 0.561,0 1.016,0.455 1.016,1.015 l 0,16.374 c 0,0.56 -0.455,1.015 -1.016,1.015 l -83.348,0 C 0.454,17.389 0,16.934 0,16.374 L 0,0 Z"
              style="fill:none;stroke:#231f20;stroke-width:1.03199995;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
              id="path4355"
-             inkscape:connector-curvature="0" /></g></g></g><text
-       transform="matrix(0.99809506,0,0,-1,43.2878,644.8024)"
-       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.65909958px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-       id="text4369"><tspan
-         x="0 5.1965957 9.881259 15.638083 21.14377"
-         y="0"
-         sodipodi:role="line"
-         id="tspan4371">Type:</tspan></text>
+             inkscape:connector-curvature="0" /></g></g></g>
 	<text
-       transform="matrix(0.99799412,0,0,-1,48.764,631.2985)"
+       transform="matrix(1,0,0,-1,43.2878,644.8024)"
+       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.65909958px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="lblType">Type:</text>
+	<text
+       transform="matrix(1,0,0,-1,48.764,633.25)"
        style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-       id="text57085"><tspan
-         x="0"
-         y="0"
-         sodipodi:role="line"
-         id="tspan57087">Movement Points:</tspan><tspan
-         x="94.790787"
-         y="11.003675"
-         sodipodi:role="line"
-         id="tspan57089">Tech Base:</tspan><tspan
-         x="94.790787"
-         y="21"
-         sodipodi:role="line"
-         id="tspan57089">Rules Level:</tspan></text><text
-       transform="matrix(0.99799412,0,0,-1,143.3631,600.2686)"
+       id="lblMovementPoints">Movement Points:</text>
+	<text
+       transform="matrix(1,0,0,-1,48.764,622.25)"
        style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-       id="text57839"><tspan
-         x="0"
-         y="0"
-         sodipodi:role="line"
-         id="eraLabel">Era: </tspan></text>
+       id="lblWalking">Walking:</text>
+	<text
+       transform="matrix(1,0,0,-1,48.764,614)"
+       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="lblRunning">Running:</text>
+	<text
+       transform="matrix(1,0,0,-1,48.764,605.75)"
+       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="lblJumping">Jumping:</text>
+	<text
+       transform="matrix(1,0,0,-1,150.1,630.5)"
+       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="lblTonnage">Tonnage:</text>
+    <text
+       transform="matrix(1,0,0,-1,150.1,622.25)"
+       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="lblTechBase">Tech Base:</text>
+	<text
+       transform="matrix(1,0,0,-1,150.1,614)"
+       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="lblRulesLevel">Rules Level:</text>
+	<text
+       transform="matrix(1,0,0,-1,150.1,605.75)"
+       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="lblEra">Era:</text>
+	<text
+       transform="matrix(1,0,0,-1,150.1,597.5)"
+       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="lblRole">Role:</text>
 
 <g
        id="g4379"
@@ -1916,26 +1919,7 @@
          y="0"
          sodipodi:role="line"
          id="tspan4389">(hexes)</tspan></text>
-<text
-       transform="matrix(0.99799412,0,0,-1,143.2255,631.298)"
-       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-       id="text4395"><tspan
-         x="0 3.8791046 8.3763933 12.997318 17.618244 22.169624 26.75964 31.164202 33.884209"
-         y="0"
-         sodipodi:role="line"
-         id="tspan4397">Tonnage: </tspan><tspan
-         x="-89.698502 -81.275742 -76.724365 -74.777084 -70.612068 -68.788422 -64.167496 -59.577484 -56.857475"
-         y="11.003675"
-         sodipodi:role="line"
-         id="tspan4399">Walking: </tspan><tspan
-         x="-89.698502 -84.119385 -79.537102 -74.916176 -70.29525 -68.471603 -63.850681 -59.260662 -56.540653"
-         y="21.018255"
-         sodipodi:role="line"
-         id="tspan4401">Running: </tspan><tspan
-         x="-89.698502 -85.193481 -80.611191 -73.471169 -68.8657 -67.042053 -62.421131 -57.831112 -55.111103"
-         y="31.032837"
-         sodipodi:role="line"
-         id="tspan4403">Jumping: </tspan></text>
+
 <text
        transform="matrix(0.99809211,0,0,-1,216.9537,49.284)"
        style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
@@ -3141,34 +3125,38 @@
          <text
 	       id="mpWalk"
 	       text-anchor="middle"
-	       x="100.6794"
-	       y="144.7207">0</text>
+	       x="100"
+	       y="142.5">0</text>
          <text
 	       id="mpRun"
 	       text-anchor="middle"
-	       x="100.6794"
-	       y="154.9882">0</text>
+	       x="100"
+	       y="151">0</text>
          <text
 	       id="mpJump"
 	       text-anchor="middle"
-	       x="100.6794"
-	       y="165.2557">0</text>
+	       x="100"
+	       y="159.25">0</text>
          <text
 	       id="tonnage"
-	       x="177"
-	       y="134.42">0</text>
+	       x="185"
+	       y="134.5">0</text>
          <text
 	       id="techBase"
-	       x="181.2"
-	       y="145">Inner Sphere</text>
+	       x="189.2"
+	       y="142.75">Inner Sphere</text>
          <text
 	       id="rulesLevel"
-	       x="186.39"
-	       y="154.86">Standard</text>
+	       x="194.39"
+	       y="151">Standard</text>
          <text
 	       id="era"
-	       x="158"
-	       y="164.72">Lorem Ipsum</text>
+	       x="166"
+	       y="159.25">Lorem Ipsum</text>
+         <text
+	       id="role"
+	       x="169.8"
+	       y="167.5">Lorem Ipsum</text>
          <text
 	       id="cost"
 	       x="69.84"
