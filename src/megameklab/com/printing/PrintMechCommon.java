@@ -38,6 +38,8 @@ import megamek.common.CriticalSlot;
 import megamek.common.Engine;
 import megamek.common.Entity;
 import megamek.common.EquipmentMessages;
+import megamek.common.LAMPilot;
+import megamek.common.LandAirMech;
 import megamek.common.Mech;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
@@ -69,6 +71,8 @@ public class PrintMechCommon extends PrintEntity {
             return "mech_quad_default.svg";
         } else if (mech.hasETypeFlag(Entity.ETYPE_TRIPOD_MECH)) {
             return "mech_tripod_default.svg";
+        } else if (mech.hasETypeFlag(Entity.ETYPE_LAND_AIR_MECH)) {
+            return "mech_biped_lam.svg";
         } else {
             return "mech_biped_default.svg";
         }
@@ -104,6 +108,12 @@ public class PrintMechCommon extends PrintEntity {
         if (null != hsRect) {
             drawHeatSinkPips((Rect) hsRect);
         }
+
+        if (mech.hasETypeFlag(Entity.ETYPE_LAND_AIR_MECH)) {
+            SVGElement si = getSVGDiagram().getElement("siPips");
+            addPips(si, mech.getOInternal(Mech.LOC_CT), true, PipType.CIRCLE, 0.38, 0.957);
+        }
+        
     }
     
     private void printShields() throws SVGException {
@@ -147,6 +157,30 @@ public class PrintMechCommon extends PrintEntity {
         hideElement("warriorDataTriple", mech.getCrew().getSlotCount() != 3);
         setTextField("hsType", formatHeatSinkType());
         setTextField("hsCount", formatHeatSinkCount());
+        
+        if (mech instanceof LandAirMech) {
+            LandAirMech lam = (LandAirMech) mech;
+            if (lam.getLAMType() == LandAirMech.LAM_BIMODAL) {
+                setTextField("mpAirMechWalk", "N/A");
+                setTextField("mpAirMechRun", "N/A");
+                setTextField("mpAirMechCruise", "N/A");
+                setTextField("mpAirMechFlank", "N/A");
+            } else {
+                setTextField("mpAirMechWalk", Integer.toString(lam.getAirMechWalkMP()));
+                setTextField("mpAirMechRun", Integer.toString(lam.getAirMechRunMP()));
+                setTextField("mpAirMechCruise", Integer.toString(lam.getAirMechCruiseMP()));
+                setTextField("mpAirMechFlank", Integer.toString(lam.getAirMechFlankMP()));
+            }
+            setTextField("mpSafeThrust", Integer.toString(lam.getJumpMP()));
+            setTextField("mpMaxThrust", Integer.toString((int) Math.ceil(lam.getJumpMP() * 1.5)));
+            if (!lam.getCrew().getName().equalsIgnoreCase("unnamed") && (lam.getCrew() instanceof LAMPilot)) {
+                setTextField("asfGunnerySkill", Integer.toString(((LAMPilot) mech.getCrew()).getGunneryAero()));
+                setTextField("asfPilotingSkill", Integer.toString(((LAMPilot) mech.getCrew()).getPilotingAero()));
+            } else {
+                hideElement("asfGunnerySkill");
+                hideElement("asfPilotingSkill");
+            }
+        }
     }
     
     @Override

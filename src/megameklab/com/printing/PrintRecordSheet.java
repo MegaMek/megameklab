@@ -349,6 +349,11 @@ public abstract class PrintRecordSheet implements Printable {
     protected void addPips(SVGElement group, int armorVal, boolean symmetric, double size) throws SVGException {
         addPips(group, armorVal, symmetric, PipType.CIRCLE, size);
     }
+
+    protected void addPips(SVGElement group, int armorVal, boolean symmetric, PipType pipType,
+            double size) throws SVGException {
+        addPips(group, armorVal, symmetric, pipType, size, 0.5);
+    }
     
     /**
      * Adds pips to the SVG diagram. The rows are defined in the SVG diagram with a series of <rect>
@@ -366,7 +371,7 @@ public abstract class PrintRecordSheet implements Printable {
      * @throws SVGException
      */
     protected void addPips(SVGElement group, int armorVal, boolean symmetric, PipType pipType,
-            double size) throws SVGException {
+            double size, double strokeWidth) throws SVGException {
         final String METHOD_NAME = "addArmorPips(SVGElement,int)";
         double spacing = 6.15152;
         double left = Double.MAX_VALUE;
@@ -626,7 +631,7 @@ public abstract class PrintRecordSheet implements Printable {
                         leftX -= radius;
                         rightX += hSpacing - radius;
                         if (pipsByRow[r] % 2 == 1) {
-                            pip = createPip(leftX + hSpacing, rows.get(r).getY(), radius, 0.5, pipType);
+                            pip = createPip(leftX + hSpacing, rows.get(r).getY(), radius, strokeWidth, pipType);
                             group.loaderAddChild(null, pip);
                             pipsByRow[r]--;
                         }
@@ -635,9 +640,9 @@ public abstract class PrintRecordSheet implements Printable {
                         rightX += hSpacing / 2 - radius;
                     }
                     while (pipsByRow[r] > 0) {
-                        pip = createPip(leftX, rows.get(r).getY(), radius, 0.5, pipType);
+                        pip = createPip(leftX, rows.get(r).getY(), radius, strokeWidth, pipType);
                         group.loaderAddChild(null, pip);
-                        pip = createPip(rightX, rows.get(r).getY(), radius, 0.5, pipType);
+                        pip = createPip(rightX, rows.get(r).getY(), radius, strokeWidth, pipType);
                         group.loaderAddChild(null, pip);
                         leftX -= hSpacing;
                         rightX += hSpacing;
@@ -654,7 +659,7 @@ public abstract class PrintRecordSheet implements Printable {
                         x += ((rowLength[r] - pipsByRow[r]) / 2) * hSpacing;
                     }
                     while (pipsByRow[r] > 0) {
-                        pip = createPip(x, rows.get(r).getY(), radius, 0.5, pipType);
+                        pip = createPip(x, rows.get(r).getY(), radius, strokeWidth, pipType);
                         group.loaderAddChild(null, pip);
                         pipsByRow[r]--;
                         x += hSpacing;
