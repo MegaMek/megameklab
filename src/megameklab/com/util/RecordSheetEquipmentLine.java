@@ -44,9 +44,12 @@ public class RecordSheetEquipmentLine {
         turret = m.isMechTurretMounted();
     }
     
-    public String getNameField(int row) {
+    public String getNameField(int row, boolean mixedTech) {
         if (row == 0) {
             String name = eqInfo.name;
+            if (!mixedTech) {
+                name = name.replace("[Clan]","").replace("(Clan)","").trim();
+            }
             if (turret) {
                 name += " (T)";
             }
