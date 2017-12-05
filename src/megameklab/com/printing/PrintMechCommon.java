@@ -38,6 +38,7 @@ import megamek.common.CriticalSlot;
 import megamek.common.Engine;
 import megamek.common.Entity;
 import megamek.common.EquipmentMessages;
+import megamek.common.ITechnology;
 import megamek.common.LAMPilot;
 import megamek.common.LandAirMech;
 import megamek.common.Mech;
@@ -297,7 +298,7 @@ public class PrintMechCommon extends PrintEntity {
         for (Mounted m : mech.getEquipment()) {
             if (m.getType() instanceof AmmoType) {
                 if (m.getLocation() != Entity.LOC_NONE) {
-                    String shortName = ((AmmoType) m.getType()).getShortName().replace("Ammo", "");
+                    String shortName = m.getType().getShortName().replace("Ammo", "");
                     shortName = shortName.replace("(Clan)", "");
                     shortName = shortName.replace("-capable", "");
                     ammo.merge(shortName, m.getBaseShotsLeft(), Integer::sum);
@@ -719,7 +720,14 @@ public class PrintMechCommon extends PrintEntity {
             }
         } else {
             Mounted m = cs.getMount();
-            StringBuffer critName = new StringBuffer(UnitUtil.getCritName(mech, m.getType()));
+            StringBuffer critName = new StringBuffer(m.getType().getShortName());
+            if (mech.isMixedTech()) {
+                if (mech.isClan() && (m.getType().getTechBase() == ITechnology.TECH_BASE_IS)) {
+                    critName.append(" [IS]");
+                } else if (!mech.isClan() && m.getType().isClan()) {
+                    critName.append(" [Clan]");
+                }
+            }
 
             if (UnitUtil.isTSM(m.getType())) {
                 critName.setLength(0);
