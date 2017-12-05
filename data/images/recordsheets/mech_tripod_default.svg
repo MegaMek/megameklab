@@ -2014,34 +2014,48 @@
          y="121.30352"
          sodipodi:role="line"
          id="tspan4560">–1 Movement Points</tspan></text>
-<text
-       transform="matrix(0.99809524,0,0,-1,35.8326,647.8771)"
-       style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:9.65999985px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
-       id="text4562"><tspan
-         x="0 5.1970801 9.8821802 15.63954 21.145741"
-         y="0"
-         sodipodi:role="line"
-         id="tspan4564">Type:</tspan></text>
-<text
-       transform="matrix(0.99799431,0,0,-1,41.3094,634.3719)"
-       style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:7.72800016px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
-       id="text4566"><tspan
-         x="0 7.7820959 12.279792 16.07424 20.4792 27.619871 32.024834 36.646175 39.930576 42.650833 47.95224 52.449936 54.273743 58.895088 62.179489 66.483986"
-         y="0"
-         sodipodi:role="line"
-         id="tspan4568">Movement Points:</tspan><tspan
-         x="94.799377"
-         y="11.004672"
-         sodipodi:role="line"
-         id="tspan4570">Tech Base:</tspan><tspan
-         x="94.790787"
-         y="21"
-         sodipodi:role="line"
-         id="tspan57089">Rules Level:</tspan><tspan
-         x="94.790787"
-         y="31"
-         sodipodi:role="line"
-         id="tspan57089">Era:</tspan></text>
+    <g transform="translate(-7.45,3.07)">
+	<text
+       transform="matrix(1,0,0,-1,43.2878,644.8024)"
+       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.65909958px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="lblType">Type:</text>
+	<text
+       transform="matrix(1,0,0,-1,48.764,633.25)"
+       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="lblMovementPoints">Movement Points:</text>
+	<text
+       transform="matrix(1,0,0,-1,48.764,622.25)"
+       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="lblWalking">Walking:</text>
+	<text
+       transform="matrix(1,0,0,-1,48.764,614)"
+       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="lblRunning">Running:</text>
+	<text
+       transform="matrix(1,0,0,-1,48.764,605.75)"
+       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="lblJumping">Jumping:</text>
+    </g><g transform="translate(-14.9,3.07)">
+	<text
+       transform="matrix(1,0,0,-1,150.1,630.5)"
+       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="lblTonnage">Tonnage:</text>
+    <text
+       transform="matrix(1,0,0,-1,150.1,622.25)"
+       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="lblTechBase">Tech Base:</text>
+	<text
+       transform="matrix(1,0,0,-1,150.1,614)"
+       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="lblRulesLevel">Rules Level:</text>
+	<text
+       transform="matrix(1,0,0,-1,150.1,605.75)"
+       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="lblEra">Era:</text>
+	<text
+       transform="matrix(1,0,0,-1,150.1,597.5)"
+       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="lblRole">Role:</text></g>
 <g
        id="g4572"
        transform="translate(34.4638,595.8499)"><path
@@ -2070,26 +2084,6 @@
          y="0"
          sodipodi:role="line"
          id="tspan4586">(hexes)</tspan></text>
-<text
-       transform="matrix(0.99799431,0,0,-1,135.7797,634.3714)"
-       style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:7.72800016px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
-       id="text4592"><tspan
-         x="0 3.879456 8.3771524 12.998496 17.619841 22.171633 26.762064 31.167025 33.88728"
-         y="0"
-         sodipodi:role="line"
-         id="tspan4594">Tonnage: </tspan><tspan
-         x="-89.706627 -81.283104 -76.731316 -74.783859 -70.618462 -68.794655 -64.173309 -59.582878 -56.862625"
-         y="11.004672"
-         sodipodi:role="line"
-         id="tspan4596">Walking: </tspan><tspan
-         x="-89.706627 -84.127007 -79.544304 -74.922958 -70.301613 -68.477806 -63.856464 -59.266033 -56.545776"
-         y="21.020161"
-         sodipodi:role="line"
-         id="tspan4598">Running: </tspan><tspan
-         x="-89.706627 -85.201202 -80.6185 -73.477821 -68.871933 -67.048126 -62.426785 -57.836353 -55.116096"
-         y="31.035648"
-         sodipodi:role="line"
-         id="tspan4600">Jumping: </tspan></text>
 <text
        transform="matrix(0.99808018,0,0,-1,61.2104,370.5798)"
        style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:10.6260004px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
@@ -4206,6 +4200,7 @@
             transform="translate(0,-3.18)"
             style="font-family:Eurostile;font-size:8.4434px;word-spacing:0px;letter-spacing:0px"
        		fill="#000000" line-height="125%">
+         <g transform="translate(-7.45,0)">
          <text
 	       id="type"
 	       font-weight="bold"
@@ -4215,34 +4210,39 @@
          <text
 	       id="mpWalk"
 	       text-anchor="middle"
-	       x="100.6794"
-	       y="144.7207">0</text>
+	       x="100"
+	       y="142.5">0</text>
          <text
 	       id="mpRun"
 	       text-anchor="middle"
-	       x="100.6794"
-	       y="154.9882">0</text>
+	       x="100"
+	       y="151">0</text>
          <text
 	       id="mpJump"
 	       text-anchor="middle"
-	       x="100.6794"
-	       y="165.2557">0</text>
+	       x="100"
+	       y="159.25">0</text>
+         </g><g transform="translate(-14.9,0)">
          <text
 	       id="tonnage"
-	       x="177"
-	       y="134.42">0</text>
+	       x="185"
+	       y="134.5">0</text>
          <text
 	       id="techBase"
-	       x="181.2"
-	       y="145">Inner Sphere</text>
+	       x="189.2"
+	       y="142.75">Inner Sphere</text>
          <text
 	       id="rulesLevel"
-	       x="186.39"
-	       y="154.86">Standard</text>
+	       x="194.39"
+	       y="151">Standard</text>
          <text
 	       id="era"
-	       x="158"
-	       y="164.72">Lorem Ipsum</text>
+	       x="166"
+	       y="159.25">Lorem Ipsum</text>
+         <text
+	       id="role"
+	       x="169.8"
+	       y="167.5">Lorem Ipsum</text></g>
          <text
 	       id="cost"
 	       x="69.84"
