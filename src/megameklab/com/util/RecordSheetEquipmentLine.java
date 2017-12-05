@@ -179,11 +179,14 @@ public class RecordSheetEquipmentLine {
         } else if (eqInfo.isCenturion) {
             return "6(1)";
         }
-        if (eqInfo.isWeapon) {
-            return Integer.toString(eqInfo.shtRange);
-        } else {
-            return DASH;
+        if (row == 0) {
+            if (eqInfo.isWeapon) {
+                return Integer.toString(eqInfo.shtRange);
+            } else {
+                return DASH;
+            }
         }
+        return "";
     }
     
     public String getMediumField(int row) {
@@ -210,11 +213,14 @@ public class RecordSheetEquipmentLine {
         } else if (eqInfo.isCenturion) {
             return "12(2)";
         }
-        if (eqInfo.isWeapon) {
-            return Integer.toString(eqInfo.medRange);
-        } else {
-            return "-";
+        if (row == 0) {
+            if (eqInfo.isWeapon) {
+                return Integer.toString(eqInfo.medRange);
+            } else {
+                return DASH;
+            }
         }
+        return "";
     }
     
     public String getLongField(int row) {
@@ -241,19 +247,25 @@ public class RecordSheetEquipmentLine {
         } else if (eqInfo.isCenturion) {
             return "18(3)";
         }
-        if (eqInfo.isWeapon) {
-            return Integer.toString(eqInfo.longRange);
-        } else {
-            return DASH;
+        if (row == 0) {
+            if (eqInfo.isWeapon) {
+                return Integer.toString(eqInfo.longRange);
+            } else {
+                return DASH;
+            }
         }
+        return "";
     }
     
-    public String getExtremeField() {
-        if (eqInfo.isWeapon) {
-            return Integer.toString(eqInfo.erRange);
-        } else {
-            return DASH;
+    public String getExtremeField(int row) {
+        if (row == 0) {
+            if (eqInfo.isWeapon) {
+                return Integer.toString(eqInfo.erRange);
+            } else {
+                return DASH;
+            }
         }
+        return "";
     }
     
     public int nRows() {
