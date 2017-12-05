@@ -31,6 +31,8 @@ import com.kitfox.svg.Tspan;
 import com.kitfox.svg.animation.AnimationElement;
 
 import megamek.common.Entity;
+import megamek.common.UnitRole;
+import megamek.common.UnitRoleHandler;
 import megamek.common.options.IOption;
 import megamek.common.options.IOptionGroup;
 import megamek.common.options.PilotOptions;
@@ -81,6 +83,13 @@ public abstract class PrintEntity extends PrintRecordSheet {
         setTextField("era", formatEra(getEntity().getYear()));
         setTextField("cost", formatCost());
         setTextField("bv", Integer.toString(getEntity().calculateBattleValue()));
+        UnitRole role = UnitRoleHandler.getRoleFor(getEntity());
+        if (role == UnitRole.UNDETERMINED) {
+            hideElement("lblRole", true);
+            hideElement("role", true);
+        } else {
+            setTextField("role", role.toString());
+        }
         
         for (int i = 0; i < getEntity().getCrew().getSlotCount(); i++) {
             // If we have multiple named crew for the unit, change the "Name:" label to

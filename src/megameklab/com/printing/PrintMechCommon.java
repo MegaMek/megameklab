@@ -43,6 +43,7 @@ import megamek.common.LandAirMech;
 import megamek.common.Mech;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
+import megamek.common.QuadVee;
 import megamek.common.options.IOption;
 import megamek.common.options.IOptionGroup;
 import megamek.common.options.Quirks;
@@ -67,7 +68,9 @@ public class PrintMechCommon extends PrintEntity {
     }
     
     protected String getSVGFileName() {
-        if (mech.hasETypeFlag(Entity.ETYPE_QUAD_MECH)) {
+        if (mech.hasETypeFlag(Entity.ETYPE_QUADVEE)) {
+            return "mech_quadvee.svg";
+        } else if (mech.hasETypeFlag(Entity.ETYPE_QUAD_MECH)) {
             return "mech_quad_default.svg";
         } else if (mech.hasETypeFlag(Entity.ETYPE_TRIPOD_MECH)) {
             return "mech_tripod_default.svg";
@@ -180,6 +183,10 @@ public class PrintMechCommon extends PrintEntity {
                 hideElement("asfGunnerySkill");
                 hideElement("asfPilotingSkill");
             }
+        } else if (mech instanceof QuadVee) {
+            setTextField("mpCruise", Integer.toString(((QuadVee) mech).getCruiseMP(false, false, false)));
+            setTextField("mpFlank", formatQuadVeeFlank());
+            setTextField("lblVeeMode", ((QuadVee) mech).getMotiveTypeString() + "s");
         }
     }
     
@@ -266,6 +273,11 @@ public class PrintMechCommon extends PrintEntity {
                     || !UnitUtil.isPrintableEquipment(m.getType(), true)) {
                 continue;
             }
+            if (mech.hasETypeFlag(Entity.ETYPE_QUADVEE)
+                    && (m.getType() instanceof MiscType)
+                    && m.getType().hasFlag(MiscType.F_TRACKS)) {
+                continue;
+            }
             eqMap.putIfAbsent(m.getLocation(), new HashMap<>());
             RecordSheetEquipmentLine line = new RecordSheetEquipmentLine(m);
             eqMap.get(m.getLocation()).merge(line, 1, Integer::sum);
@@ -313,11 +325,11 @@ public class PrintMechCommon extends PrintEntity {
                     if (row == 0) {
                         addTextElement(canvas, qtyX, currY, Integer.toString(eqMap.get(loc).get(line)), fontSize, "middle", "normal");
                         lines = addMultilineTextElement(canvas, nameX, currY, locX - nameX, lineHeight,
-                                line.getNameField(row), fontSize, "start", "normal");
+                                line.getNameField(row, mech.isMixedTech()), fontSize, "start", "normal");
 
                     } else {
                         lines = addMultilineTextElement(canvas, nameX + indent, currY, locX - nameX, lineHeight,
-                                line.getNameField(row), fontSize, "start", "normal");
+                                line.getNameField(row, mech.isMixedTech()), fontSize, "start", "normal");
                     }
                     addTextElement(canvas, locX,  currY, line.getLocationField(row), fontSize, "middle", "normal");
                     addTextElement(canvas, heatX, currY, line.getHeatField(row), fontSize, "middle", "normal");
@@ -454,7 +466,7 @@ public class PrintMechCommon extends PrintEntity {
                 endingMountY = currY;
             }
         }
-        if ((null != startingMount) && (startingMount.getType().getCriticals(mech) > 1)) {
+        if ((null != startingMount) && (mech.getNumberOfCriticals(startingMount.getType(), loc) > 1)) {
             connectSlots(canvas, critX - 1, startingMountY, connWidth, endingMountY - startingMountY);
         }
     }
@@ -566,6 +578,25 @@ public class PrintMechCommon extends PrintEntity {
             return mech.getRunMPwithoutMASC() + " [" + mp + "]";
         } else {
             return Integer.toString(mech.getRunMP());
+        }
+    }
+    
+    private String formatQuadVeeFlank() {
+        int mp = ((QuadVee) mech).getCruiseMP(false, false, false);
+        int noSupercharger = (int) Math.ceil(mp * 1.5);
+        if (mech.getSuperCharger() != null) {
+            mp *= 2;
+        } else {
+            mp = noSupercharger;
+        }
+        if (mech.hasMPReducingHardenedArmor()) {
+            mp--;
+            noSupercharger--;
+        }
+        if (mp > noSupercharger) {
+            return noSupercharger + " [" + mp + "]";
+        } else {
+            return Integer.toString(mp);
         }
     }
     
@@ -697,6 +728,9 @@ public class PrintMechCommon extends PrintEntity {
             }
             if (!mech.isMixedTech()) {
                 int startPos = critName.indexOf("[Clan]");
+                if (startPos < 0) {
+                    startPos = critName.indexOf("(Clan)");
+                }
                 if (startPos >= 0) {
                     critName.delete(startPos, startPos + "[Clan]".length());
                     critName.trimToSize();
