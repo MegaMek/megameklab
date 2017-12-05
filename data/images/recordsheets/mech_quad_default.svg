@@ -139,14 +139,11 @@
      id="g3401"
      inkscape:groupmode="layer"
      inkscape:label="BattleTech-35002c - Tech Manual"
-     transform="matrix(1,0,0,-1,0,765)"><text
-       transform="matrix(0.99799843,0,0,-1,101.538,676.2897)"
+     transform="matrix(1,0,0,-1,0,765)">
+  <text
+       transform="matrix(1,0,0,-1,176,676.2897)"
        style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:11.59090042px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Bold;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-       id="text3417"><tspan
-         x="0 7.1515851 15.97226 24.920435 33.532475 36.696789 43.489056 51.35928 60.156773 68.954262 76.824486 85.819023 90.003342 93.074928 105.24537 113.11559 121.56536 130.71059 134.8949 143.50693 151.37715 159.82692 168.6476 177.25963 186.25417 190.43849 198.74916 207.89438 215.7646 223.63483"
-         y="0"
-         sodipodi:role="line"
-         id="tspan3419">FOUR-LEGGED ’MECH RECORD SHEET</tspan></text>
+       id="title" text-anchor="middle">FOUR-LEGGED 'MECH RECORD SHEET</text>
 <g
        id="g3421"
        transform="translate(393.7534,693.6033)"><path

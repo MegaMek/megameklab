@@ -82,6 +82,42 @@ public class PrintMechCommon extends PrintEntity {
     }
     
     @Override
+    protected String getRecordSheetTitle() {
+        StringBuilder sb = new StringBuilder();
+        // General qualifier
+        if (mech.isSuperHeavy()) {
+            sb.append("SuperHeavy ");
+        }
+        if (mech.isPrimitive()) {
+            sb.append("Primitive ");
+        }
+        // Leg configuration
+        if (mech.hasETypeFlag(Entity.ETYPE_QUAD_MECH)
+                && !mech.hasETypeFlag(Entity.ETYPE_QUADVEE)) {
+            sb.append("Four-Legged ");
+        } else if (mech.hasETypeFlag(Entity.ETYPE_TRIPOD_MECH)) {
+            sb.append("Three-Legged ");
+        }
+        // mech type
+        if (mech.hasETypeFlag(Entity.ETYPE_LAND_AIR_MECH)) {
+            sb.append("Land-Air 'Mech");
+        } else if (mech.hasETypeFlag(Entity.ETYPE_QUADVEE)) {
+            if (mech.isOmni()) {
+                sb.append("Omni");
+            }
+            sb.append("QuadVee");
+        } else if (mech.isIndustrial()) {
+            sb.append("IndustrialMech");
+        } else if (mech.isOmni()) {
+            sb.append("OmniMech");
+        } else {
+            sb.append("BattleMech");
+        }
+        sb.append(" Record Sheet");
+        return sb.toString();
+    }
+    
+    @Override
     protected Entity getEntity() {
         return mech;
     }

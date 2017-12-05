@@ -73,6 +73,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
     }
     
     protected void writeTextFields() throws SVGException {
+        setTextField("title", getRecordSheetTitle().toUpperCase());
         setTextField("type", getEntity().getShortNameRaw());
         setTextField("mpWalk", formatWalk());
         setTextField("mpRun", formatRun());
