@@ -2048,14 +2048,10 @@
 	<text
        transform="matrix(1,0,0,-1,150.1,605.75)"
        style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-       id="lblEra">Era:</text>
-	<text
-       transform="matrix(1,0,0,-1,150.1,597.5)"
-       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="lblRole">Role:</text></g>
 <g
        id="g4572"
-       transform="translate(34.4638,595.8499)"><path
+       transform="translate(34.4638,604.10)"><path
          d="M 0,0 198.568,0"
          style="fill:none;stroke:#000000;stroke-width:1.93200004;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
          id="path4574"
@@ -2066,7 +2062,7 @@
          style="fill:none;stroke:#000000;stroke-width:1.93200004;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
          id="path4578"
          inkscape:connector-curvature="0" /></g><text
-       transform="matrix(0.99810214,0,0,-1,35.8326,585.6388)"
+       transform="matrix(0.99810214,0,0,-1,35.8326,593.8888)"
        style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:8.69400024px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text4580"><tspan
          x="0 9.4156017 14.371182 19.491947 24.673573 29.73348 34.932491 39.775051 42.835339 49.625351 52.685638 58.067226 63.257545 68.413086 70.464867 75.646492 83.679749 88.63533 93.834343 97.529289 100.58958 102.98912 108.18813 112.45689 117.41247 122.61148 126.30643 131.36633 135.53076"
@@ -2074,7 +2070,7 @@
          sodipodi:role="line"
          id="tspan4582">Weapons &amp; Equipment Inventory</tspan></text>
 <text
-       transform="matrix(0.99810707,0,0,-1,190.545,585.2449)"
+       transform="matrix(0.99810707,0,0,-1,190.545,593.4949)"
        style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6.76200008px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text4584"><tspan
          x="0 2.3531761 6.396852 10.251192 13.632192 17.486532 21.252966"
@@ -4170,13 +4166,9 @@
 	       x="194.39"
 	       y="151">Standard</text>
          <text
-	       id="era"
-	       x="166"
-	       y="159.25">Lorem Ipsum</text>
-         <text
 	       id="role"
 	       x="169.8"
-	       y="167.5">Lorem Ipsum</text></g>
+	       y="159.25">Lorem Ipsum</text></g>
          <text
 	       id="cost"
 	       x="69.84"
@@ -4319,9 +4311,9 @@
         </g><g id="rectAreas" fill="none">
          <rect
 	       id="inventory"
-	       height="152.5"
+	       height="160.75"
 	       width="199.64"
-	       y="182.08"
+	       y="173.83"
 	       x="35.37" />
 	     <rect
 	       id="crits_HD"

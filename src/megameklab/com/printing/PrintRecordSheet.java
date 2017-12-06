@@ -284,6 +284,11 @@ public abstract class PrintRecordSheet implements Printable {
                 return lines;
             }
             int index = text.substring(pos).indexOf(delimiter);
+            if ((index < 0) && (pos == 0)) {
+                addTextElement(canvas, x, y, text, fontSize, anchor, weight, fill);
+                lines++;
+                return lines;
+            }
             if ((index < 0) || (getTextLength(text.substring(0, pos + index), fontSize, canvas) > width)) {
                 addTextElement(canvas, x, y, text.substring(0, pos), fontSize, anchor, weight, fill);
                 lines++;
@@ -346,21 +351,21 @@ public abstract class PrintRecordSheet implements Printable {
         return path;
     }
     
-    protected void addPips(SVGElement group, int armorVal, boolean symmetric) throws SVGException {
-        addPips(group, armorVal, symmetric, PipType.CIRCLE, DEFAULT_PIP_SIZE);
+    protected void addPips(SVGElement group, int pipCount, boolean symmetric) throws SVGException {
+        addPips(group, pipCount, symmetric, PipType.CIRCLE, DEFAULT_PIP_SIZE);
     }
     
-    protected void addPips(SVGElement group, int armorVal, boolean symmetric, PipType pipType) throws SVGException {
-        addPips(group, armorVal, symmetric, pipType, DEFAULT_PIP_SIZE);
+    protected void addPips(SVGElement group, int pipCount, boolean symmetric, PipType pipType) throws SVGException {
+        addPips(group, pipCount, symmetric, pipType, DEFAULT_PIP_SIZE);
     }
     
-    protected void addPips(SVGElement group, int armorVal, boolean symmetric, double size) throws SVGException {
-        addPips(group, armorVal, symmetric, PipType.CIRCLE, size);
+    protected void addPips(SVGElement group, int pipCount, boolean symmetric, double size) throws SVGException {
+        addPips(group, pipCount, symmetric, PipType.CIRCLE, size);
     }
 
-    protected void addPips(SVGElement group, int armorVal, boolean symmetric, PipType pipType,
+    protected void addPips(SVGElement group, int pipCount, boolean symmetric, PipType pipType,
             double size) throws SVGException {
-        addPips(group, armorVal, symmetric, pipType, size, 0.5);
+        addPips(group, pipCount, symmetric, pipType, size, 0.5);
     }
     
     /**
@@ -378,8 +383,13 @@ public abstract class PrintRecordSheet implements Printable {
      *                        values, with 0 meaning 1 row/rect and 1 meaning 1.5 rows/rect.
      * @throws SVGException
      */
-    protected void addPips(SVGElement group, int armorVal, boolean symmetric, PipType pipType,
+    protected void addPips(SVGElement group, int pipCount, boolean symmetric, PipType pipType,
             double size, double strokeWidth) throws SVGException {
+        
+        if (pipCount == 0) {
+            return;
+        }
+        
         final String METHOD_NAME = "addArmorPips(SVGElement,int)";
         double spacing = 6.15152;
         double left = Double.MAX_VALUE;
@@ -426,7 +436,7 @@ public abstract class PrintRecordSheet implements Printable {
         int totalPips = 0;
         double scale = 1.0;
         List<Rectangle2D> rows = null;
-        while (totalPips < armorVal) {
+        while (totalPips < pipCount) {
             totalPips = 0;
             rows = rescaleRows(regions, scale);
             rowLength = new int[rows.size()];
@@ -463,7 +473,7 @@ public abstract class PrintRecordSheet implements Printable {
             scale *= 0.9;
         };
         
-        int nRows = adjustedRows(armorVal, rows.size(), maxWidth, aspect);
+        int nRows = adjustedRows(pipCount, rows.size(), maxWidth, aspect);
         
         // Now we need to select the rows to use. If the total pips available in those rows is
         // insufficient, add a row and try again.
@@ -471,7 +481,7 @@ public abstract class PrintRecordSheet implements Printable {
         int available = 0;
         int minWidth = maxWidth;
         List<Integer> useRows = new ArrayList<>();
-        while (available < armorVal) {
+        while (available < pipCount) {
             int start = rows.size() / (nRows * 2);
             for (int i = 0; i < nRows; i++) {
                 int r = start + i * rows.size() / nRows;
@@ -483,7 +493,7 @@ public abstract class PrintRecordSheet implements Printable {
                     }
                 }
             }
-            if (available < armorVal) {
+            if (available < pipCount) {
                 nRows++;
                 available = 0;
                 useRows.clear();
@@ -505,7 +515,7 @@ public abstract class PrintRecordSheet implements Printable {
         
         // Now we iterate through the rows and assign pips as many times as it takes to get all assigned.
         int[] pipsByRow = new int[rows.size()];
-        int remaining = armorVal;
+        int remaining = pipCount;
         while (remaining > 0) {
             for (int r : useRows) {
                 if (rowLength[r] > pipsByRow[r]) {
