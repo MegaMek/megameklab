@@ -718,7 +718,78 @@
              d="m 0,0 -66.745,0 -5.203,7.805 5.191,7.804 66.744,0 L 5.19,7.805 0,0 Z"
              style="fill:none;stroke:#ffffff;stroke-width:0.96600002;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
              id="path3764"
-             inkscape:connector-curvature="0" /></g></g></g><text
+             inkscape:connector-curvature="0" /></g></g></g>
+             
+    <g id="shieldRA" transform="matrix(1,0,0,-1,-5.149069,788.37352)" visibility="hidden">
+			<path fill="#c8c7c7" d="M587.766,144.193c-0.129,0-0.258-0.034-0.37-0.101l-7.497-4.248l0.369-0.657l0.747-0.09l-0.747,0.09
+				l-0.369,0.657c-0.207-0.117-0.342-0.333-0.369-0.567l-5.643-47.961l-10.71-12.501l-8.82-5.607
+				c-0.233-0.153-0.369-0.423-0.342-0.702l1.161-12.753c0.036-0.387,0.351-0.684,0.738-0.684l3.95-0.045l0.315-30.726
+				c0-0.207,0.09-0.405,0.243-0.54c0.137-0.13,0.311-0.201,0.495-0.201c0.021,0,0.042,0.001,0.063,0.003l24.759,1.665
+				c0.379,0.027,0.685,0.342,0.693,0.72l2.079,51.354v0.027v62.118c0,0.261-0.144,0.513-0.369,0.648
+				C588.025,144.16,587.895,144.193,587.766,144.193"/>
+			<polygon fill="#FFFFFF" stroke="#231f20" stroke-width="1.449" stroke-linejoin="round" points="578.271,137.189 585.761,141.441 
+				585.761,79.329 583.688,27.976 558.932,26.307 558.611,57.767 553.923,57.819 552.758,70.575 561.671,76.244 572.602,89 			"/>
+		<text transform="translate(571.885,34.2841)"
+		    style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;-inkscape-font-specification:EurostileBold;writing-mode:lr-tb;fill:#110f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+		    text-anchor="middle">DC</text>
+		<text transform="translate(579.349,90.901)"
+		    style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;-inkscape-font-specification:EurostileBold;writing-mode:lr-tb;fill:#110f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+		    text-anchor="middle">DA</text>
+			
+		<g id="shieldDCRA" fill="none"
+           transform="translate(558.145,30.2841)">
+           <rect x="5" y="5.3272" width="23.3" height="6.15152" id="rightShieldDARow00" />
+           <rect x="5" y="10.6544" width="23.3" height="6.15152" id="rightShieldDARow01" />
+           <rect x="5" y="15.9816" width="23.3" height="6.15152" id="rightShieldDARow02" />
+           <rect x="5" y="21.3088" width="23.3" height="6.15152" id="rightShieldDARow03" />
+           <rect x="5" y="26.636" width="23.3" height="6.15152" id="rightShieldDARow04" />
+           <rect x="0" y="31.9632" width="21.2" height="6.15152" id="rightShieldDARow05" />
+           <rect x="3.55" y="37.2904" width="19.8" height="6.15152" id="rightShieldDARow06" />
+           <rect x="9.67" y="42.6176" width="15.7" height="6.15152" id="rightShieldDARow07" />
+	    </g>
+
+		<g id="shieldDARA" fill="none"
+           transform="matrix(0.063749,0.997966,-0.997966,0.063749,586.248,91.6269)">
+           <rect x="0" y="0" width="44" height="6.15152" id="rightShieldDCRow00" />
+        </g>
+    </g>
+
+    <g id="shieldLA" transform="matrix(1,0,0,-1,-9.329069,788.37352)" visibility="hidden">
+		<path fill="#c8c7c7" d="M398.851,144.193c-0.129,0-0.258-0.034-0.374-0.101c-0.233-0.135-0.377-0.387-0.377-0.648V81.327v-0.027
+			l2.078-51.354c0.019-0.378,0.315-0.693,0.702-0.72l24.75-1.665c0.021-0.002,0.041-0.003,0.063-0.003
+			c0.186,0,0.366,0.071,0.495,0.201c0.153,0.135,0.243,0.333,0.243,0.54l0.315,30.726l3.95,0.045c0.388,0,0.702,0.297,0.739,0.684
+			l1.17,12.753c0.025,0.279-0.108,0.549-0.352,0.702l-8.812,5.607l-10.709,12.501l-5.644,47.961
+			c-0.027,0.234-0.171,0.45-0.378,0.567l-7.487,4.248C399.107,144.16,398.979,144.193,398.851,144.193"/>
+		<polygon fill="#FFFFFF" stroke="#231f20" stroke-width="1.449" stroke-linejoin="round" points="404.344,137.189 396.853,141.441 
+			396.853,79.329 398.927,27.976 423.683,26.307 424.003,57.767 428.69,57.819 429.855,70.575 420.942,76.244 410.013,89 		"/>
+			
+		<text transform="translate(411.434,34.2841)"
+		    style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;-inkscape-font-specification:EurostileBold;writing-mode:lr-tb;fill:#110f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+		    text-anchor="middle">DC</text>
+		<text transform="translate(403.302,90.901)"
+		    style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;-inkscape-font-specification:EurostileBold;writing-mode:lr-tb;fill:#110f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+		    text-anchor="middle">DA</text>
+			
+		<g id="shieldDCLA" fill="none"
+           transform="matrix(-1,0,0,1,427.8,30.2841)">
+           <rect x="5" y="5.3272" width="23.3" height="6.15152" id="leftShieldDARow00" />
+           <rect x="5" y="10.6544" width="23.3" height="6.15152" id="leftShieldDARow01" />
+           <rect x="5" y="15.9816" width="23.3" height="6.15152" id="leftShieldDARow02" />
+           <rect x="5" y="21.3088" width="23.3" height="6.15152" id="leftShieldDARow03" />
+           <rect x="5" y="26.636" width="23.3" height="6.15152" id="leftShieldDARow04" />
+           <rect x="0" y="31.9632" width="21.2" height="6.15152" id="leftShieldDARow05" />
+           <rect x="3.55" y="37.2904" width="19.8" height="6.15152" id="leftShieldDARow06" />
+           <rect x="9.67" y="42.6176" width="15.7" height="6.15152" id="leftShieldDARow07" />
+	    </g>
+
+		<g id="shieldDALA" fill="none"
+           transform="matrix(-0.063749,0.997966,0.997966,0.063749,401.123,91.6269)">
+           <rect x="0" y="0" width="44" height="6.15152" id="leftShieldDCRow00" />
+        </g>
+    </g>
+             
+             
+             <text
        transform="matrix(0.998099,0,0,-1,38.6722,661.5685)"
        style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:10.6260004px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3774"><tspan
@@ -1281,9 +1352,7 @@
          sodipodi:role="line"
          id="tspan4092">ARMOR DIAGRAM</tspan></text>
 <g
-       id="g4094"><g
-         id="g4096"
-         clip-path="url(#clipPath4098)"><g
+       id="g4094"><g transform="translate(7.6,0)"><g
            id="g4102"
            transform="translate(415.5197,604.0424)"><path
              d="M 0,0 1.145,-3.442 C 0.94,-2.829 0.955,-2.196 1.142,-1.629 0.625,-1.212 0.219,-0.661 0,0 Z"
@@ -1727,7 +1796,7 @@
              d="m 0,0 7.694,0 0.796,-3.583 -9.286,0 L 0,0 Z"
              style="fill:none;stroke:#c7c8ca;stroke-width:0.96600002;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
              id="path4396"
-             inkscape:connector-curvature="0" /></g><g
+             inkscape:connector-curvature="0" /></g></g><g
            id="g4398"
            transform="translate(473.5524,219.3008)"><path
              d="m 0,0 -0.714,1.85 -2.428,1.11 -0.899,4.812 1.372,0.371 0.183,5.181 1.697,0.741 2.061,4.812 -1.628,20.727 -0.612,0.74 0.384,11.166 -0.646,1.481 -0.114,2.592 -1.27,3.699 2.471,28.796 -16.827,0 2.471,-28.796 -1.269,-3.699 -0.114,-2.592 -0.645,-1.481 0.382,-11.166 -0.611,-0.74 -1.629,-20.727 2.062,-4.812 1.696,-0.741 0.183,-5.181 1.373,-0.371 -0.898,-4.812 -2.43,-1.11 -0.714,-1.85 -1.316,-1.11 -0.553,-2.962 7.602,0 5.648,0 7.602,0 L 1.318,-1.11 0,0 Z"
@@ -1859,7 +1928,7 @@
              d="m 0,0 0,16.999 c 7.677,4.935 7.677,27.146 7.677,27.146"
              style="fill:none;stroke:#000000;stroke-width:1.449;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
              id="path4484"
-             inkscape:connector-curvature="0" /></g></g></g><text
+             inkscape:connector-curvature="0" /></g></g><text
        transform="matrix(0.99800355,0,0,-1,401.3929,167.0188)"
        style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.76200008px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text4486"><tspan
@@ -3488,7 +3557,7 @@
          y="8.5143242"
          sodipodi:role="line"
          id="tspan6356">Leg</tspan></text><text
-       transform="matrix(0.99811939,0,0,-1,465.5264,721.81)"
+       transform="matrix(0.99811939,0,0,-1,473.1264,721.81)"
        style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.796px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text8242"><tspan
          x="0 4.3470001 7.6217399 10.92546"
@@ -3504,7 +3573,7 @@
          sodipodi:role="line"
          id="tspan8248">Torso</tspan></text>
 <text
-       transform="matrix(0.99810214,0,0,-1,500.1306,721.8104)"
+       transform="matrix(0.99810214,0,0,-1,507.7306,721.8104)"
        style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.796px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text8252"><tspan
          x="0 4.0629959 5.3091359 8.6302443 11.991924 14.11326 16.112881 18.923941 22.227659 24.789492 27.901943"
@@ -3522,7 +3591,10 @@
          x="63.924084 67.158249 70.432991"
          y="209.84998"
          sodipodi:role="line"
-         id="tspan8264">Leg</tspan><tspan
+         id="tspan8264">Leg</tspan></text><text
+       transform="matrix(0.99810214,0,0,-1,500.1306,721.8104)"
+       style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.796px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="text8252"><tspan
          x="-57.038437 -53.184097 -49.909355 -46.547676 -44.426338 -41.1516 -38.589767 -36.590149 -33.779087 -30.475368 -27.913536 -24.801085 -21.497364 -19.497744 -15.434748 -12.160008 -8.856288"
          y="319.00604"
          sodipodi:role="line"
@@ -3540,7 +3612,7 @@
          sodipodi:role="line"
          id="tspan8282">Torso Rear</tspan></text>
 <text
-       transform="matrix(0.99810214,0,0,-1,509.6006,762.3604)"
+       transform="matrix(0.99810214,0,0,-1,517.2006,762.3604)"
        style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.796px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text8252"><tspan
          x="-120.16267 -116.9285 -113.65376 -111.90337"
@@ -3551,7 +3623,7 @@
          y="209.84998"
          sodipodi:role="line"
          id="tspan8270">Leg</tspan></text><text
-       transform="matrix(0.99811939,0,0,-1,385.5072,588.6024)"
+       transform="matrix(0.99811939,0,0,-1,393.1072,588.6024)"
        style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.796px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text8284"><tspan
          x="0 3.2341681 6.5089078 8.2593002 10.380636 12.380256 16.350515 18.912348"
@@ -3562,7 +3634,7 @@
          y="0"
          sodipodi:role="line"
          id="tspan8290">Right Arm</tspan></text><text
-       transform="matrix(0.99811939,0,0,-1,495.2906,500.2148)"
+       transform="matrix(0.99811939,0,0,-1,502.8906,500.2148)"
        style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.796px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text8326"><tspan
          x="0 3.8543401 7.1290798 10.49076 12.612096 15.886836"
@@ -3698,7 +3770,7 @@
 
        <g id="armorPips">
          <g id="armorPipsHD" fill="none"
-           transform="translate(466.792,54.5856)">
+           transform="translate(474.392,54.5856)">
            <rect x="0" y="0" width="18.5" height="6.15152" />
            <rect x="0" y="6.2" width="18.5" height="6.15152" />
            <rect x="0" y="11.5272" width="18.5" height="6.15152" />
@@ -3706,7 +3778,7 @@
           </g>
 
          <g id="armorPipsHD_SH" fill="none"
-           transform="translate(463.69,54.5856)">
+           transform="translate(471.29,54.5856)">
            <rect x="6.15152" y="0" width="12.4" height="6.15152" />
            <rect x="0" y="6.2" width="24.7" height="6.15152" />
            <rect x="0" y="11.5272" width="24.7" height="6.15152" />
@@ -3714,7 +3786,7 @@
           </g>
 
          <g id="armorPipsCT" fill="none"
-           transform="translate(458.4124,50.178)">
+           transform="translate(466.0124,50.178)">
 			<rect x="0.854810" y="35.003537" width="34.404992" height="6.151520" />
 			<rect x="0.739970" y="40.330754" width="34.634672" height="6.151520" />
 			<rect x="0.625130" y="45.657970" width="34.864352" height="6.151520" />
@@ -3735,7 +3807,7 @@
          </g>
 
          <g id="armorPipsRT" fill="none"
-           transform="translate(488.2218,48.53478)">
+           transform="translate(495.8218,48.53478)">
 			<rect x="13.236" y="18.666885" width="7.308738" height="6.151520" />
 			<rect x="7.105999" y="23.994101" width="27.023858" height="6.151520" />
 			<rect x="7.105999" y="29.321318" width="27.070078" height="6.151520" />
@@ -3757,7 +3829,7 @@
          </g>
 
          <g id="armorPipsLT" fill="none"
-           transform="matrix(-1,0,0,1,464.362802,48.53478)">
+           transform="matrix(-1,0,0,1,471.962802,48.53478)">
 			<rect x="13.236" y="18.666885" width="7.308738" height="6.151520" />
 			<rect x="7.105999" y="23.994101" width="27.023858" height="6.151520" />
 			<rect x="7.105999" y="29.321318" width="27.070078" height="6.151520" />
@@ -3779,7 +3851,7 @@
          </g>
 
          <g id="armorPipsRA" fill="none"
-           transform="translate(511.9131,39.2747)">
+           transform="translate(519.5131,39.2747)">
 			<rect x="3.221828" y="11.898108" width="23.9" height="6.151520" />
 			<rect x="1.483286" y="17.225325" width="32.877979" height="6.151520" />
 			<rect x="9.774465" y="22.552541" width="26.855373" height="6.151520" />
@@ -3801,7 +3873,7 @@
          </g>
 
          <g id="armorPipsLA" fill="none"
-           transform="matrix(-1,0,0,1,440.6715,39.2747)">
+           transform="matrix(-1,0,0,1,448.2715,39.2747)">
 			<rect x="3.221828" y="11.898108" width="23.9" height="6.151520" />
 			<rect x="1.483286" y="17.225325" width="32.877979" height="6.151520" />
 			<rect x="9.774465" y="22.552541" width="26.855373" height="6.151520" />
@@ -3823,7 +3895,7 @@
          </g>
 
          <g id="armorPipsRL" fill="none"
-           transform="translate(474.5351,141.8953)">
+           transform="translate(482.1351,141.8953)">
 			<rect x="30.2267" y="24.663461" width="16.54" height="6.151520" />
 			<rect x="21.764158" y="29.990677" width="30.796721" height="6.151520" />
 			<rect x="27.091595" y="35.317894" width="30.796721" height="6.151520" />
@@ -3849,7 +3921,7 @@
          </g>
 
          <g id="armorPipsLL" fill="none"
-           transform="matrix(-1,0,0,1,478.6495,141.8953)">
+           transform="matrix(-1,0,0,1,486.2495,141.8953)">
 			<rect x="30.2267" y="24.663461" width="16.54" height="6.151520" />
 			<rect x="21.764158" y="29.990677" width="30.796721" height="6.151520" />
 			<rect x="27.091595" y="35.317894" width="30.796721" height="6.151520" />
@@ -3875,7 +3947,7 @@
          </g>
        
          <g id="armorPipsCL" fill="none"
-           transform="translate(457.1324,141.8953)">
+           transform="translate(464.7324,141.8953)">
 			<rect x="6.471371" y="35.318885" width="25.795251" height="6.151520" />
 			<rect x="6.928739" y="40.646102" width="24.880515" height="6.151520" />
 			<rect x="7.5976" y="45.973318" width="23.542793" height="6.151520" />
@@ -4227,11 +4299,11 @@
 	   <g id="armorValues" style="font-size:5.7954998px">
 	     <text
 	       id="textArmor_HD"
-	       x="487.97"
+	       x="495.57"
 	       y="46.27">( 0 )</text>
 	     <text text-anchor="middle"
 	       id="textArmor_CT"
-	       x="448.98"
+	       x="456.58"
 	       y="221.62">( 0 )</text>
 	     <text
 	       id="textArmor_CTR"
@@ -4239,7 +4311,7 @@
 	       y="365.49">( 0 )</text>
 	     <text text-anchor="middle"
 	       id="textArmor_RT"
-	       x="506.28"
+	       x="513.88"
 	       y="54.44">( 0 )</text>
 	     <text text-anchor="middle"
 	       id="textArmor_RTR"
@@ -4247,7 +4319,7 @@
 	       y="354.46">( 0 )</text>
 	     <text text-anchor="middle"
 	       id="textArmor_LT"
-	       x="447.6"
+	       x="455.2"
 	       y="54.44">( 0 )</text>
 	     <text text-anchor="middle"
 	       id="textArmor_LTR"
@@ -4255,23 +4327,23 @@
 	       y="354.46">( 0 )</text>
 	     <text text-anchor="middle"
 	       id="textArmor_RA"
-	       x="559.26"
+	       x="566.86"
 	       y="187.34">( 0 )</text>
 	     <text text-anchor="middle"
 	       id="textArmor_LA"
-	       x="396.8"
+	       x="404.4"
 	       y="187.34">( 0 )</text>
 	     <text text-anchor="middle"
 	       id="textArmor_RL"
-	       x="568.91"
+	       x="576.51"
 	       y="263.15">( 0 )</text>
 	     <text text-anchor="middle"
 	       id="textArmor_LL"
-	       x="394.85"
+	       x="402.45"
 	       y="221.6">( 0 )</text>
 	     <text text-anchor="middle"
 	       id="textArmor_CL"
-	       x="504.51"
+	       x="512.11"
 	       y="281.86">( 0 )</text>
 
 	     <text text-anchor="middle"
