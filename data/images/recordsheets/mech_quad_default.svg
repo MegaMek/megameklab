@@ -3160,11 +3160,11 @@
 	       x="420.51"
 	       y="354.61">( 0 )</text>
 	     <text text-anchor="middle"
-	       id="textArmor_RFL"
+	       id="textArmor_FRL"
 	       x="558.65"
 	       y="307.26">( 0 )</text>
 	     <text text-anchor="middle"
-	       id="textArmor_LFL"
+	       id="textArmor_FLL"
 	       x="415.37"
 	       y="307.26">( 0 )</text>
 	     <text text-anchor="middle"
@@ -3172,7 +3172,7 @@
 	       x="512.98"
 	       y="296.56">( 0 )</text>
 	     <text text-anchor="middle"
-	       id="textArmor_LRL"
+	       id="textArmor_RLL"
 	       x="460.76"
 	       y="296.56">( 0 )</text>
 
@@ -3189,11 +3189,11 @@
 	       x="414.52"
 	       y="412.26">( 0 )</text>
 	     <text
-	       id="textIS_RFL"
+	       id="textIS_FRL"
 	       x="533.46"
 	       y="477.51">( 0 )</text>
 	     <text text-anchor="middle"
-	       id="textIS_LFL"
+	       id="textIS_FLL"
 	       x="412.35"
 	       y="477.51">( 0 )</text>
 	     <text
@@ -3201,7 +3201,7 @@
 	       x="537.00"
 	       y="526.15">( 0 )</text>
 	     <text
-	       id="textIS_LRL"
+	       id="textIS_RLL"
 	       x="408.81"
 	       y="526.15">( 0 )</text></g>
 	       
