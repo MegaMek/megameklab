@@ -2373,7 +2373,7 @@
 	<text
        transform="matrix(1,0,0,-1,139.7,614.75)"
        style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-       id="text57839">Era:</text>
+       id="text57839">Role:</text>
        
 <text
        transform="matrix(0.99809765,0,0,-1,172.9651,47.9153)"
@@ -3875,7 +3875,7 @@
 	       x="186.39"
 	       y="141.9">Standard</text>
          <text
-	       id="era"
+	       id="role"
 	       x="158"
 	       y="150.15">Lorem Ipsum</text>
          <text

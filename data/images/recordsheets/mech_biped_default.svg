@@ -2319,14 +2319,10 @@
 	<text
        transform="matrix(1,0,0,-1,150.1,605.75)"
        style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-       id="lblEra">Era:</text>
-	<text
-       transform="matrix(1,0,0,-1,150.1,597.5)"
-       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="lblRole">Role:</text>
 	<g
        id="g57091"
-       transform="translate(41.9191,592.78)"><path
+       transform="translate(41.9191,601.03)"><path
          d="M 0,0 198.549,0"
          style="fill:none;stroke:#231f20;stroke-width:1.93200004;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
          id="path57093"
@@ -2337,7 +2333,7 @@
          style="fill:none;stroke:#231f20;stroke-width:1.93200004;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
          id="path57097"
          inkscape:connector-curvature="0" /></g><text
-       transform="matrix(0.99810196,0,0,-1,43.2878,582.57)"
+       transform="matrix(0.99810196,0,0,-1,43.2878,590.82)"
        style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:8.69320011px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text57099"><tspan
          x="0"
@@ -2345,7 +2341,7 @@
          sodipodi:role="line"
          id="tspan57101">Weapons &amp; Equipment Inventory</tspan></text>
 <text
-       transform="matrix(0.99809211,0,0,-1,197.9856,582.1762)"
+       transform="matrix(0.99809211,0,0,-1,197.9856,590.4262)"
        style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text57103"><tspan
          x="0 2.3529673 6.3962846 10.250282 13.630982 17.48498 21.25108"
@@ -3742,13 +3738,9 @@
 	       x="194.39"
 	       y="151">Standard</text>
          <text
-	       id="era"
-	       x="166"
-	       y="159.25">Lorem Ipsum</text>
-         <text
 	       id="role"
 	       x="169.8"
-	       y="167.5">Lorem Ipsum</text>
+	       y="159.25">Lorem Ipsum</text>
          <text
 	       id="cost"
 	       x="69.84"
@@ -3870,9 +3862,9 @@
         </g><g id="rectAreas" fill="none">
          <rect
 	       id="inventory"
-	       height="153.7"
+	       height="161.9"
 	       width="200"
-	       y="182.08"
+	       y="173.83"
 	       x="42.26" />
 	     <rect
 	       id="crits_HD"
