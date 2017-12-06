@@ -92,6 +92,9 @@ public class PrintMechCommon extends PrintEntity {
         if (mech.isPrimitive()) {
             sb.append("Primitive ");
         }
+        if ((mech instanceof LandAirMech) && (((LandAirMech) mech).getLAMType() == LandAirMech.LAM_BIMODAL)) {
+            sb.append("Bimodal ");
+        }
         // Leg configuration
         if (mech.hasETypeFlag(Entity.ETYPE_QUAD_MECH)
                 && !mech.hasETypeFlag(Entity.ETYPE_QUADVEE)) {
@@ -201,10 +204,10 @@ public class PrintMechCommon extends PrintEntity {
         if (mech instanceof LandAirMech) {
             LandAirMech lam = (LandAirMech) mech;
             if (lam.getLAMType() == LandAirMech.LAM_BIMODAL) {
-                setTextField("mpAirMechWalk", "N/A");
-                setTextField("mpAirMechRun", "N/A");
-                setTextField("mpAirMechCruise", "N/A");
-                setTextField("mpAirMechFlank", "N/A");
+                setTextField("mpAirMechWalk", "\u2014"); // em dash
+                setTextField("mpAirMechRun", "\u2014");
+                setTextField("mpAirMechCruise", "\u2014");
+                setTextField("mpAirMechFlank", "\u2014");
             } else {
                 setTextField("mpAirMechWalk", Integer.toString(lam.getAirMechWalkMP()));
                 setTextField("mpAirMechRun", Integer.toString(lam.getAirMechRunMP()));
@@ -440,6 +443,13 @@ public class PrintMechCommon extends PrintEntity {
         double endingMountY = 0;
         double connWidth = viewWidth * 0.02;
         
+        double x = viewX + viewWidth * 0.075;
+        x += addTextElement(canvas, x, viewY - 1, mech.getLocationName(loc),
+                fontSize * 1.25, "start", "bold");
+        if (mech.isClan() && UnitUtil.hasAmmo(mech, loc) && !mech.hasCASEII(loc)) {
+            addTextElement(canvas, x + fontSize / 2, viewY - 1, "(CASE)", fontSize, "start", "normal");
+        }
+        
         for (int slot = 0; slot < mech.getNumberOfCriticals(loc); slot++) {
             currY += lineHeight;
             if (slot == 6) {
@@ -465,7 +475,7 @@ public class PrintMechCommon extends PrintEntity {
                     && (crit.getMount().getType().hasFlag(MiscType.F_MODULAR_ARMOR))) {
                 String critName = formatCritName(crit);
                 addTextElement(canvas, critX, currY, critName, fontSize, "start", style, fill);
-                double x = critX + getTextLength(critName, fontSize, canvas);
+                x = critX + getTextLength(critName, fontSize, canvas);
                 double remainingW = viewX + viewWidth - x;
                 double spacing = remainingW / 6.0;
                 double radius = spacing * 0.25;

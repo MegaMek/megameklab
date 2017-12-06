@@ -2823,14 +2823,7 @@
              d="M 0,0 -3.27,-3.246 0,-6.493 l 0,2.166 3.268,0 0,2.163 L 0,-2.164 0,0 Z"
              style="fill:none;stroke:#231f20;stroke-width:0.241;stroke-linecap:butt;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
              id="path57437"
-             inkscape:connector-curvature="0" /></g></g></g><text
-       transform="matrix(0.99808,0,0,-1,68.6632,367.5312)"
-       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:10.625px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-       id="text57439"><tspan
-         x="0"
-         y="0"
-         sodipodi:role="line"
-         id="tspanCritLoc_LA">Left Arm</tspan></text>
+             inkscape:connector-curvature="0" /></g></g></g>
 <text
        transform="matrix(0.99810541,0,0,-1,43.2878,336.1203)"
        style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.65909958px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
@@ -2847,14 +2840,7 @@
          y="0"
          sodipodi:role="line"
          id="tspan57463">4-6</tspan></text>
-<text
-       transform="matrix(0.99808,0,0,-1,68.6632,232.1143)"
-       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:10.625px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-       id="text57479"><tspan
-         x="0"
-         y="0"
-         sodipodi:role="line"
-         id="tspanCritLoc_LT">Left Torso</tspan></text>
+
 <text
        transform="matrix(0.99810541,0,0,-1,43.2878,200.7035)"
        style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.65909958px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
@@ -2871,14 +2857,7 @@
          y="0"
          sodipodi:role="line"
          id="tspan57503">4-6</tspan></text>
-<text
-       transform="matrix(0.99808,0,0,-1,68.6632,95.725)"
-       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:10.625px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-       id="text57519"><tspan
-         x="0"
-         y="0"
-         sodipodi:role="line"
-         id="tspanCritLoc_LL">Left Leg</tspan></text>
+
 <text
        transform="matrix(0.99810541,0,0,-1,274.65,336.1203)"
        style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.65909958px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
@@ -2912,14 +2891,6 @@
          sodipodi:role="line"
          id="tspan57593">4-6</tspan></text>
 <text
-       transform="matrix(0.99808,0,0,-1,183.7403,376.4791)"
-       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:10.625px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-       id="text57621"><tspan
-         x="0"
-         y="0"
-         sodipodi:role="line"
-         id="tspanCritLoc_HD">Head</tspan></text>
-<text
        transform="matrix(0.99810541,0,0,-1,158.2843,276.216)"
        style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.65909958px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text57639"><tspan
@@ -2937,30 +2908,6 @@
          sodipodi:role="line"
          id="tspan57659">4-6</tspan></text>
 
-<text
-       transform="matrix(0.99808,0,0,-1,183.5083,307.627)"
-       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:10.625px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-       id="text57675"><tspan
-         x="0"
-         y="0"
-         sodipodi:role="line"
-         id="tspanCritLoc_CT">Center Torso</tspan><tspan
-         x="116.11"
-         y="-59.903751"
-         sodipodi:role="line"
-         id="tspanCritLoc_RA">Right Arm</tspan></text>
-<text
-       transform="matrix(0.99808,0,0,-1,299.391,232.1143)"
-       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:10.625px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-       id="text57687"><tspan
-         x="0"
-         y="0"
-         sodipodi:role="line"
-         id="tspanCritLoc_RT">Right Torso</tspan><tspan
-         x="0"
-         y="136.39313"
-         sodipodi:role="line"
-         id="tspanCritLoc_RL">Right Leg</tspan></text>
 <g
        id="g57703"><g
          id="g57705"

@@ -2082,14 +2082,6 @@
          sodipodi:role="line"
          id="tspan4586">(hexes)</tspan></text>
 <text
-       transform="matrix(0.99808018,0,0,-1,61.2104,370.5798)"
-       style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:10.6260004px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
-       id="text4602"><tspan
-         x="0 6.0036898 12.06051 15.758358 20.274408 24.014759 31.548594 36.638447"
-         y="0"
-         sodipodi:role="line"
-         id="tspan4604">Left Arm</tspan></text>
-<text
        transform="matrix(0.99810559,0,0,-1,35.8326,339.166)"
        style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:9.65999985px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text4606"><tspan
@@ -2106,14 +2098,6 @@
          sodipodi:role="line"
          id="tspan4626">4-6</tspan></text>
 <text
-       transform="matrix(0.99808018,0,0,-1,61.2104,235.1501)"
-       style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:10.6260004px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
-       id="text4642"><tspan
-         x="0 6.0036898 12.06051 15.758358 20.274408 24.014759 29.34795 35.53228 40.537128 46.455811"
-         y="0"
-         sodipodi:role="line"
-         id="tspan4644">Left Torso</tspan></text>
-<text
        transform="matrix(0.99810559,0,0,-1,35.8326,203.7363)"
        style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:9.65999985px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text4646"><tspan
@@ -2129,22 +2113,6 @@
          y="0"
          sodipodi:role="line"
          id="tspan4666">4-6</tspan></text>
-<text
-       transform="matrix(0.99808018,0,0,-1,61.2104,98.748)"
-       style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:10.6260004px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
-       id="text4682"><tspan
-         x="0 6.0036898 12.06051 15.758358 20.274408 24.014759 30.01845 36.075272"
-         y="0"
-         sodipodi:role="line"
-         id="tspan4684">Left Leg</tspan></text>
-<text
-       transform="matrix(0.99808018,0,0,-1,176.4135,98.748)"
-       style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:10.6260004px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
-       id="text4700"><tspan
-         x="0 7.3956962 13.452516 19.806864 24.322914 30.379734 35.384579 39.124931 45.12862 51.185444"
-         y="0"
-         sodipodi:role="line"
-         id="tspan4702">Center Leg</tspan></text>
 <text
        transform="matrix(0.99810559,0,0,-1,267.2166,339.166)"
        style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:9.65999985px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
@@ -2176,15 +2144,7 @@
          x="0 6.8102999 9.3798599"
          y="0"
          sodipodi:role="line"
-         id="tspan4774">4-6</tspan></text>
-<text
-       transform="matrix(0.99808018,0,0,-1,176.2984,379.5285)"
-       style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:10.6260004px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
-       id="text4802"><tspan
-         x="0 8.1713943 14.228214 20.486929"
-         y="0"
-         sodipodi:role="line"
-         id="tspan4804">Head</tspan></text><text
+         id="tspan4774">4-6</tspan></text><text
        transform="matrix(0.99810559,0,0,-1,150.84,279.256)"
        style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:9.65999985px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text4820"><tspan
@@ -2198,30 +2158,7 @@
          x="0 6.8102999 9.3798599"
          y="0"
          sodipodi:role="line"
-         id="tspan4840">4-6</tspan></text><text
-       transform="matrix(0.99808018,0,0,-1,176.0664,310.6699)"
-       style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:10.6260004px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
-       id="text4856"><tspan
-         x="0 7.3956962 13.452516 19.806864 24.322914 30.379734 35.384579 39.124931 44.459183 50.643517 55.648361 61.567043"
-         y="0"
-         sodipodi:role="line"
-         id="tspan4858">Center Torso</tspan><tspan
-         x="116.12093 123.7929 126.30064 132.61247 138.96683 143.48288 147.22324 154.75706 159.84692"
-         y="-59.909389"
-         sodipodi:role="line"
-         id="tspan4860">Right Arm</tspan></text>
-<text
-       transform="matrix(0.99808018,0,0,-1,291.9599,235.1501)"
-       style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:10.6260004px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
-       id="text4868"><tspan
-         x="0 7.6719718 10.179708 16.491552 22.8459 27.36195 31.102303 36.436554 42.620888 47.625732 53.544415"
-         y="0"
-         sodipodi:role="line"
-         id="tspan4870">Right Torso</tspan><tspan
-         x="0 7.6719718 10.179708 16.491552 22.8459 27.36195 31.102303 37.105991 43.162811"
-         y="136.40596"
-         sodipodi:role="line"
-         id="tspan4872">Right Leg</tspan></text>
+         id="tspan4840">4-6</tspan></text>
 <g
        id="g4884"><g
          id="g4886"

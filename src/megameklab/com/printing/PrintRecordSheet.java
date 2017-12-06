@@ -187,9 +187,9 @@ public abstract class PrintRecordSheet implements Printable {
      *
      * @throws SVGException
      */
-    protected void addTextElement(SVGElement parent, double x, double y, String text,
+    protected double addTextElement(SVGElement parent, double x, double y, String text,
             double fontSize, String anchor, String weight) throws SVGException {
-        addTextElement(parent, x, y, text, fontSize, anchor, weight, "#000000");
+        return addTextElement(parent, x, y, text, fontSize, anchor, weight, "#000000");
     }
     
     /**
@@ -204,10 +204,11 @@ public abstract class PrintRecordSheet implements Printable {
      * @param anchor    Set the Text elements text-anchor.  Should be either start, middle, or end.
      * @param weight    The font weight, either normal or bold.
      * @param fill      The fill color for the text (e.g. foreground color)
+     * @return          The width of the text element
      *
      * @throws SVGException
      */
-    protected void addTextElement(SVGElement parent, double x, double y, String text,
+    protected double addTextElement(SVGElement parent, double x, double y, String text,
             double fontSize, String anchor, String weight, String fill)
             throws SVGException {
         Text newText = new Text();
@@ -222,6 +223,8 @@ public abstract class PrintRecordSheet implements Printable {
         newText.addAttribute("fill", AnimationElement.AT_XML, fill);
         parent.loaderAddChild(null, newText);
         newText.rebuild();
+        
+        return newText.getBoundingBox().getWidth();
     }
     
     /**
