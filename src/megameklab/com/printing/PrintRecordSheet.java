@@ -379,8 +379,8 @@ public abstract class PrintRecordSheet implements Printable {
      * @param symmetric       If true, the left and right sides will be mirror images (assuming the row
      *                        bounds are symmetric). Used for regions on a unit's center line.
      * @param size            The ratio of pip radius to the spacing between pips. 
-     * @param density         Determines the number of rows to place in each <rect>. 0 and 1 are special
-     *                        values, with 0 meaning 1 row/rect and 1 meaning 1.5 rows/rect.
+     * @param strokeWidth     The value to use for the stroke-width attribute when drawing the pips.
+     * 
      * @throws SVGException
      */
     protected void addPips(SVGElement group, int pipCount, boolean symmetric, PipType pipType,
