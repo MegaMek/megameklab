@@ -364,11 +364,11 @@ public class PrintMechCommon extends PrintEntity {
                     int lines;
                     if (row == 0) {
                         addTextElement(canvas, qtyX, currY, Integer.toString(eqMap.get(loc).get(line)), fontSize, "middle", "normal");
-                        lines = addMultilineTextElement(canvas, nameX, currY, locX - nameX, lineHeight,
+                        lines = addMultilineTextElement(canvas, nameX, currY, locX - nameX - indent, lineHeight,
                                 line.getNameField(row, mech.isMixedTech()), fontSize, "start", "normal");
 
                     } else {
-                        lines = addMultilineTextElement(canvas, nameX + indent, currY, locX - nameX, lineHeight,
+                        lines = addMultilineTextElement(canvas, nameX + indent, currY, locX - nameX - indent, lineHeight,
                                 line.getNameField(row, mech.isMixedTech()), fontSize, "start", "normal");
                     }
                     addTextElement(canvas, locX,  currY, line.getLocationField(row), fontSize, "middle", "normal");
@@ -712,21 +712,21 @@ public class PrintMechCommon extends PrintEntity {
                 sb.append(" Engine");
                 return sb.toString();
             } else {
-                String name = mech.getSystemName(cs.getIndex()).replace("Standard ", "");
+                String name = mech.getSystemName(cs.getIndex());
                 if (((cs.getIndex() >= Mech.ACTUATOR_UPPER_ARM) && (cs.getIndex() <= Mech.ACTUATOR_HAND))
                         || ((cs.getIndex() >= Mech.ACTUATOR_UPPER_LEG) && (cs.getIndex() <= Mech.ACTUATOR_FOOT))) {
                     name += " Actuator";
                 } else if (cs.getIndex() == Mech.SYSTEM_COCKPIT) {
                     if (mech.getCockpitType() == Mech.COCKPIT_COMMAND_CONSOLE) {
                         if (mech.getCrewForCockpitSlot(Mech.LOC_HEAD, cs) == 0) {
-                            name = EquipmentMessages.getString("SystemType.Cockpit.STANDARD_COCKPIT");
+                            name = EquipmentMessages.getString("SystemType.Cockpit.COCKPIT_STANDARD");
                         }
                     } else if ((mech.getCockpitType() == Mech.COCKPIT_DUAL)
                             || (mech.getCockpitType() == Mech.COCKPIT_QUADVEE)) {
                         name = mech.getCrew().getCrewType().getRoleName(mech.getCrewForCockpitSlot(Mech.LOC_HEAD, cs));
                     }
                 }
-                return name;
+                return name.replace("Standard ", "");
             }
         } else {
             Mounted m = cs.getMount();
