@@ -56,14 +56,14 @@ import megameklab.com.util.UnitUtil;
  * @author Neoancient
  *
  */
-public class PrintMechCommon extends PrintEntity {
+public class PrintMech extends PrintEntity {
     
     /**
      * The current mech being printed.
      */
     private final Mech mech;
     
-    public PrintMechCommon(Mech mech, int startPage) {
+    public PrintMech(Mech mech, int startPage) {
         super(startPage);
         this.mech = mech;
     }

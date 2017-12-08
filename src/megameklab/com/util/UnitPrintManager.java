@@ -60,7 +60,7 @@ import megamek.common.Protomech;
 import megamek.common.SmallCraft;
 import megamek.common.Tank;
 import megamek.common.VTOL;
-import megameklab.com.printing.PrintMechCommon;
+import megameklab.com.printing.PrintMech;
 import megameklab.com.ui.Aero.Printing.PrintAero;
 import megameklab.com.ui.Aero.Printing.PrintConventionalFighter;
 import megameklab.com.ui.Aero.Printing.PrintFixedWingSupport;
@@ -163,7 +163,7 @@ public class UnitPrintManager {
             if (unit instanceof Mech) {
                 UnitUtil.removeOneShotAmmo(unit);
                 UnitUtil.expandUnitMounts((Mech) unit);
-                book.append(new PrintMechCommon((Mech) unit, book.getNumberOfPages()), pageFormat);
+                book.append(new PrintMech((Mech) unit, book.getNumberOfPages()), pageFormat);
             } else if ((unit instanceof LargeSupportTank) || ((unit instanceof Tank) && (unit.getMovementMode() != EntityMovementMode.VTOL) && ((Tank)unit).isSuperHeavy())) {
                 book.append(new PrintLargeSupportVehicle((Tank) unit), pageFormat);
             } else if (unit instanceof VTOL) {
