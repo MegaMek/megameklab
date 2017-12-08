@@ -931,11 +931,7 @@
              inkscape:connector-curvature="0" /></g></g></g><text
        transform="matrix(0.90000218,0,0,-1,563,372.1184)"
        style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.58809996px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-       id="text56243"><tspan
-         x="0 3.0786152 5.1570244 7.749301 9.8690033 12.222698 14.837915"
-         y="0"
-         sodipodi:role="line"
-         id="tspan56245">Overflow</tspan></text>
+       id="text56243" text-anchor="middle">Overflow</text>
 <path
        d="m 571.732,30.391 -17.798,0 0,10.679 17.798,0 0,-10.679 z"
        style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
@@ -1904,16 +1900,20 @@
 
 <text
        transform="matrix(1,0,0,-1,404.1643,181.1136)"
-       style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6.27839994px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.27839994px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text7535"><tspan
          x="0 4.8280897 8.4067774 12.104755"
          y="0"
          sodipodi:role="line"
          id="tspan7537">Heat</tspan><tspan
-         x="-6.3035135 -0.30073535 3.2465606 6.8252487 9.9079428 13.486631 15.068788 19.49506 46.03825 49.92458 52.178528 54.363411 57.942097 61.401497 64.069817"
+         x="-0.30073535"
          y="6.1842241"
          sodipodi:role="line"
-         id="tspan7539"> Level* Effects</tspan></text>
+         id="tspan7539">Level*</tspan><tspan
+         x="46.03825"
+         y="6.1842241"
+         sodipodi:role="line"
+         id="tspan7539">Effects</tspan></text>
 <text
        transform="matrix(1,0,0,-1,407.2186,168.7502)"
        style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.27839994px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
@@ -1922,10 +1922,10 @@
          y="0"
          sodipodi:role="line"
          id="tspan7543">30 Shutdown</tspan><tspan
-         x="-9.3610945 -0.0031391999 4.3289566 8.6610527"
+         x="0 4.3320961 8.6641922"
          y="6.1842241"
          sodipodi:role="line"
-         id="tspan7545"> 28 </tspan></text>
+         id="tspan7545">28 </tspan></text>
 <text
        transform="matrix(0.99800905,0,0,-1,425.2417,162.568)"
        style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.27839994px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
@@ -3326,7 +3326,7 @@
          id="path8127"
          inkscape:connector-curvature="0" /></g><text
        transform="translate(347.4987,309.4413)"
-       style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:9.35270023px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.35270023px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text8129"><tspan
          x="0"
          y="0"
@@ -3348,7 +3348,7 @@
          id="tspan8141">E</tspan></text>
 <text
        transform="translate(262.9326,325.5487)"
-       style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:9.65909958px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.65909958px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text8143"><tspan
          x="0 6.8483019 12.576148 17.318766 23.007977 28.784119 34.106281 39.611969"
          y="0"

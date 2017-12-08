@@ -1094,7 +1094,7 @@
              inkscape:connector-curvature="0" /></g></g></g><text
        transform="matrix(0.90000218,0,0,-1,563,372.1184)"
        style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.58809996px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-       id="text56243">Overflow</text>
+       id="text56243" text-anchor="middle">Overflow</text>
 <path
        d="m 571.732,30.391 -17.798,0 0,10.679 17.798,0 0,-10.679 z"
        style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
