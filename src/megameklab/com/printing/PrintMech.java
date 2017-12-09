@@ -294,12 +294,14 @@ public class PrintMech extends PrintEntity {
         Map<Integer, Map<RecordSheetEquipmentLine,Integer>> eqMap = new TreeMap<>();
         Map<String,Integer> ammo = new TreeMap<>();
         for (Mounted m : mech.getEquipment()) {
-            if (m.getType() instanceof AmmoType) {
+            if ((m.getType() instanceof AmmoType)
+                    && (((AmmoType) m.getType()).getAmmoType() != AmmoType.T_COOLANT_POD)) {
                 if (m.getLocation() != Entity.LOC_NONE) {
                     String shortName = m.getType().getShortName().replace("Ammo", "");
                     shortName = shortName.replace("(Clan)", "");
-                    shortName = shortName.replace("-capable", "");
-                    ammo.merge(shortName, m.getBaseShotsLeft(), Integer::sum);
+                    String munition = ((AmmoType) m.getType()).getSubMunitionName().replace("(Clan) ", "");
+                    shortName = shortName.replace(munition, "");
+                    ammo.merge(shortName.trim(), m.getBaseShotsLeft(), Integer::sum);
                 }
                 continue;
             }
@@ -727,9 +729,11 @@ public class PrintMech extends PrintEntity {
             Mounted m = cs.getMount();
             StringBuffer critName = new StringBuffer(m.getType().getShortName());
             if (mech.isMixedTech()) {
-                if (mech.isClan() && (m.getType().getTechBase() == ITechnology.TECH_BASE_IS)) {
+                if (mech.isClan() && (m.getType().getTechBase() == ITechnology.TECH_BASE_IS)
+                        && (critName.indexOf("[IS]") < 0)) {
                     critName.append(" [IS]");
-                } else if (!mech.isClan() && m.getType().isClan()) {
+                } else if (!mech.isClan() && m.getType().isClan()
+                        && (critName.indexOf("[Clan]") < 0)) {
                     critName.append(" [Clan]");
                 }
             }
@@ -743,22 +747,17 @@ public class PrintMech extends PrintEntity {
                 critName.append(" (R)");
             } else if (m.isMechTurretMounted()) {
                 critName.append(" (T)");
-            } else if ((m.getType() instanceof AmmoType) && (((AmmoType) m.getType()).getAmmoType() != AmmoType.T_COOLANT_POD)) {
+            } else if ((m.getType() instanceof AmmoType)
+                    && (((AmmoType) m.getType()).getAmmoType() != AmmoType.T_COOLANT_POD)) {
                 AmmoType ammo = (AmmoType) m.getType();
 
                 critName = new StringBuffer("Ammo (");
                 appendAmmoCritName(critName, ammo);
-                int shots = m.getUsableShotsLeft();
+                critName.append(") ");
+                critName.append(m.getBaseShotsLeft());
                 if ((cs.getMount2() != null) && (cs.getMount2().getType() instanceof AmmoType)) {
-                    if (cs.getMount2().getType() == m.getType()) {
-                        shots += cs.getMount2().getUsableShotsLeft();
-                    } else {
-                        critName.append(shots).append(", (");
-                        appendAmmoCritName(critName, (AmmoType) cs.getMount2().getType());
-                        shots = cs.getMount2().getBaseShotsLeft();
-                    }
+                    critName.append("/").append(cs.getMount2().getBaseShotsLeft());
                 }
-                critName.append(") ").append(shots);
             } else if ((cs.getMount2() != null)
                     && (m.getType() instanceof MiscType) && (m.getType().hasFlag(MiscType.F_HEAT_SINK))
                     && (m.getType() == cs.getMount2().getType())) {
@@ -797,11 +796,11 @@ public class PrintMech extends PrintEntity {
             buffer.setLength(buffer.length() - 5);
             buffer.trimToSize();
         }
-
-        // Remove Capable with the name
-        if (buffer.indexOf("-capable") > -1) {
-            int startPos = buffer.indexOf("-capable");
-            buffer.delete(startPos, startPos + "-capable".length());
+        
+        String submunitionName = ammo.getSubMunitionName().replace("(Clan) ", "");
+        int index = buffer.indexOf(submunitionName);
+        if (index >= 0) {
+            buffer.delete(index, index + submunitionName.length());
             buffer.trimToSize();
         }
 
