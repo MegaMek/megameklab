@@ -3012,8 +3012,95 @@
 	     
 	   <g id="armorValues" style="font-size:6.76140022px">
 	     <text
+	       id="armorType"
+	       style="font-weight:bold;font-size:8.4434px"
+	       text-anchor="start"
+	       x="535.81"
+	       y="33">Standard</text>
+	     <text
+	       id="armorType2"
+	       style="font-weight:bold;font-size:8.4434px"
+	       text-anchor="start"
+	       x="535.81"
+	       y="41" />
+	     <text
+	       id="patchworkHD"
+	       x="501.57"
+	       y="46.27" />
+	     <text
+	       id="patchworkCT"
+	       text-anchor="middle"
+	       x="485.215"
+	       y="211.78" />
+	     <text
+	       id="patchworkCT2"
+	       text-anchor="middle"
+	       x="485.215"
+	       y="218.38" />
+	     <text
+	       id="patchworkRT"
+	       text-anchor="start"
+	       x="555.31"
+	       y="142.91" />
+	     <text
+	       id="patchworkRT2"
+	       text-anchor="start"
+	       x="555.31"
+	       y="149.61" />
+	     <text
+	       id="patchworkLT"
+	       text-anchor="end"
+	       x="416.34"
+	       y="142.91" />
+	     <text
+	       id="patchworkLT2"
+	       text-anchor="end"
+	       x="416.34"
+	       y="149.61" />
+	     <text
+	       id="patchworkFRL"
+	       text-anchor="middle"
+	       x="558.65"
+	       y="312.96" />
+	     <text
+	       id="patchworkFRL2"
+	       text-anchor="middle"
+	       x="558.65"
+	       y="319.56" />
+	     <text
+	       id="patchworkFLL"
+	       text-anchor="middle"
+	       x="415.37"
+	       y="312.96" />
+	     <text
+	       id="patchworkFLL2"
+	       text-anchor="middle"
+	       x="415.37"
+	       y="319.56" />
+	     <text
+	       id="patchworkRRL"
+	       text-anchor="start"
+	       x="507.96"
+	       y="300.26" />
+	     <text
+	       id="patchworkRRL2"
+	       text-anchor="start"
+	       x="519.66"
+	       y="306.96" />
+	     <text
+	       id="patchworkRLL"
+	       text-anchor="end"
+	       x="466.19"
+	       y="300.26" />
+	     <text
+	       id="patchworkRLL2"
+	       text-anchor="end"
+	       x="451.43"
+	       y="306.96" />
+	       
+	     <text
 	       id="textArmor_HD"
-	       x="490.49"
+	       x="487.8"
 	       y="46.27">( 0 )</text>
 	     <text text-anchor="middle"
 	       id="textArmor_CT"
@@ -3042,19 +3129,19 @@
 	     <text text-anchor="middle"
 	       id="textArmor_FRL"
 	       x="558.65"
-	       y="307.26">( 0 )</text>
+	       y="304.26">( 0 )</text>
 	     <text text-anchor="middle"
 	       id="textArmor_FLL"
 	       x="415.37"
-	       y="307.26">( 0 )</text>
+	       y="304.26">( 0 )</text>
 	     <text text-anchor="middle"
 	       id="textArmor_RRL"
 	       x="512.98"
-	       y="296.56">( 0 )</text>
+	       y="293.56">( 0 )</text>
 	     <text text-anchor="middle"
 	       id="textArmor_RLL"
 	       x="460.76"
-	       y="296.56">( 0 )</text>
+	       y="293.56">( 0 )</text>
 
 	     <text text-anchor="middle"
 	       id="textIS_CT"

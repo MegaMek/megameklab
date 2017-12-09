@@ -4232,6 +4232,17 @@
 	     
 	   <g id="armorValues" style="font-size:5.7954998px">
 	     <text
+	       id="armorType"
+	       style="font-weight:bold;font-size:8.4434px"
+	       x="536"
+	       y="310">Standard</text>
+	     <text
+	       id="armorType2"
+	       style="font-weight:bold;font-size:8.4434px"
+	       x="536"
+	       y="318" />
+	       
+	     <text
 	       id="textArmor_HD"
 	       x="490.57"
 	       y="46.27">( 0 )</text>

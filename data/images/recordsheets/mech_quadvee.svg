@@ -2652,7 +2652,7 @@
          sodipodi:role="line"
          id="tspan5663">Torso Rear</tspan></text>
 <text
-       transform="matrix(0.9981069,0,0,-1,477.2377,621.894)"
+       transform="matrix(0.9981069,0,0,-1,477.2377,617.894)"
        style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text5679"><tspan
          x="0 4.4963312 8.3165216 12.238134 14.712807 18.532997"
@@ -3186,13 +3186,100 @@
 	     
 	   <g id="armorValues" style="font-size:6.76140022px">
 	     <text
+	       id="armorType"
+	       style="font-weight:bold;font-size:8.4434px"
+	       text-anchor="start"
+	       x="535.81"
+	       y="33">Standard</text>
+	     <text
+	       id="armorType2"
+	       style="font-weight:bold;font-size:8.4434px"
+	       text-anchor="start"
+	       x="535.81"
+	       y="41" />
+	     <text
+	       id="patchworkHD"
+	       x="501.57"
+	       y="46.27" />
+	     <text
+	       id="patchworkCT"
+	       text-anchor="middle"
+	       x="487.93"
+	       y="170.24" />
+	     <text
+	       id="patchworkCT2"
+	       text-anchor="middle"
+	       x="487.93"
+	       y="176.94" />
+	     <text
+	       id="patchworkRT"
+	       text-anchor="start"
+	       x="555.31"
+	       y="133.34" />
+	     <text
+	       id="patchworkRT2"
+	       text-anchor="start"
+	       x="555.31"
+	       y="139.94" />
+	     <text
+	       id="patchworkLT"
+	       text-anchor="end"
+	       x="422.4"
+	       y="133.34" />
+	     <text
+	       id="patchworkLT2"
+	       text-anchor="end"
+	       x="422.4"
+	       y="139.94" />
+	     <text
+	       id="patchworkFRL"
+	       text-anchor="middle"
+	       x="558.65"
+	       y="312.96" />
+	     <text
+	       id="patchworkFRL2"
+	       text-anchor="middle"
+	       x="558.65"
+	       y="319.56" />
+	     <text
+	       id="patchworkFLL"
+	       text-anchor="middle"
+	       x="415.37"
+	       y="312.96" />
+	     <text
+	       id="patchworkFLL2"
+	       text-anchor="middle"
+	       x="415.37"
+	       y="319.56" />
+	     <text
+	       id="patchworkRRL"
+	       text-anchor="start"
+	       x="510.62"
+	       y="293.56" />
+	     <text
+	       id="patchworkRRL2"
+	       text-anchor="start"
+	       x="510.62"
+	       y="300.26" />
+	     <text
+	       id="patchworkRLL"
+	       text-anchor="end"
+	       x="464.09"
+	       y="293.56" />
+	     <text
+	       id="patchworkRLL2"
+	       text-anchor="end"
+	       x="464.09"
+	       y="300.26" />
+
+	     <text
 	       id="textArmor_HD"
-	       x="490.49"
+	       x="487.8"
 	       y="46.27">( 0 )</text>
 	     <text text-anchor="middle"
 	       id="textArmor_CT"
 	       x="487.93"
-	       y="159.54">( 0 )</text>
+	       y="163.54">( 0 )</text>
 	     <text
 	       id="textArmor_CTR"
 	       x="511.58"
@@ -3200,7 +3287,7 @@
 	     <text text-anchor="middle"
 	       id="textArmor_RT"
 	       x="555.86"
-	       y="128.64">( 0 )</text>
+	       y="126.64">( 0 )</text>
 	     <text text-anchor="middle"
 	       id="textArmor_RTR"
 	       x="553.08"
@@ -3208,7 +3295,7 @@
 	     <text text-anchor="middle"
 	       id="textArmor_LT"
 	       x="419.35"
-	       y="128.64">( 0 )</text>
+	       y="126.64">( 0 )</text>
 	     <text text-anchor="middle"
 	       id="textArmor_LTR"
 	       x="420.51"
@@ -3216,19 +3303,19 @@
 	     <text text-anchor="middle"
 	       id="textArmor_FRL"
 	       x="555.65"
-	       y="307.26">( 0 )</text>
+	       y="305.26">( 0 )</text>
 	     <text text-anchor="middle"
 	       id="textArmor_FLL"
 	       x="418.37"
-	       y="307.26">( 0 )</text>
-	     <text text-anchor="middle"
+	       y="305.26">( 0 )</text>
+	     <text text-anchor="start"
 	       id="textArmor_RRL"
-	       x="509.98"
-	       y="296.56">( 0 )</text>
-	     <text text-anchor="middle"
+	       x="496.82"
+	       y="294.56">( 0 )</text>
+	     <text text-anchor="end"
 	       id="textArmor_RLL"
-	       x="463.76"
-	       y="296.56">( 0 )</text>
+	       x="477.61"
+	       y="294.56">( 0 )</text>
 
 	     <text text-anchor="middle"
 	       id="textIS_CT"
