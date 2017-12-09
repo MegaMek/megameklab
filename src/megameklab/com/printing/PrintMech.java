@@ -230,23 +230,12 @@ public class PrintMech extends PrintEntity {
         }
     }
     
+    // Mech armor and structure pips require special handling for rear armor and superheavy head armor/IS
     @Override
-    protected void drawArmor() throws SVGException {
+    protected void drawArmorStructurePips() throws SVGException {
         final String FORMAT = "( %d )";
         SVGElement element = null;
         for (int loc = 0; loc < mech.locations(); loc++) {
-            element = getSVGDiagram().getElement("textArmor_" + mech.getLocationAbbr(loc));
-            if (null != element) {
-                ((Text) element).getContent().clear();
-                ((Text) element).appendText(String.format(FORMAT, mech.getOArmor(loc)));
-                ((Text) element).rebuild();
-            }
-            element = getSVGDiagram().getElement("textIS_" + mech.getLocationAbbr(loc));
-            if (null != element) {
-                ((Text) element).getContent().clear();
-                ((Text) element).appendText(String.format(FORMAT, mech.getOInternal(loc)));
-                ((Text) element).rebuild();
-            }
             if (mech.isSuperHeavy() && (loc == Mech.LOC_HEAD)) {
                 element = getSVGDiagram().getElement("armorPips" + mech.getLocationAbbr(loc) + "_SH");
             } else {
@@ -291,7 +280,13 @@ public class PrintMech extends PrintEntity {
                 hideElement(element, false);
             }
         }
-        getSVGDiagram().updateTime(0);
+    }
+    
+    @Override
+    protected boolean isCenterlineLocation(int loc) {
+        return (loc == Mech.LOC_HEAD)
+                || (loc == Mech.LOC_CT)
+                || (loc == Mech.LOC_CLEG);
     }
     
     @Override

@@ -31,6 +31,8 @@ import com.kitfox.svg.Tspan;
 import com.kitfox.svg.animation.AnimationElement;
 
 import megamek.common.Entity;
+import megamek.common.EquipmentType;
+import megamek.common.Mech;
 import megamek.common.UnitRole;
 import megamek.common.UnitRoleHandler;
 import megamek.common.options.IOption;
@@ -44,6 +46,18 @@ import megamek.common.options.PilotOptions;
  *
  */
 public abstract class PrintEntity extends PrintRecordSheet {
+    
+    // Armor types with special properties that should be identified on the record sheet
+    private static final long AT_SPECIAL = (1 << EquipmentType.T_ARMOR_REACTIVE)
+            | (1 << EquipmentType.T_ARMOR_REFLECTIVE)
+            | (1 << EquipmentType.T_ARMOR_HARDENED)
+            | (1 << EquipmentType.T_ARMOR_STEALTH)
+            | (1 << EquipmentType.T_ARMOR_FERRO_LAMELLOR)
+            | (1 << EquipmentType.T_ARMOR_STEALTH_VEHICLE)
+            | (1 << EquipmentType.T_ARMOR_ANTI_PENETRATIVE_ABLATION)
+            | (1 << EquipmentType.T_ARMOR_HEAT_DISSIPATING)
+            | (1 << EquipmentType.T_ARMOR_IMPACT_RESISTANT)
+            | (1 << EquipmentType.T_ARMOR_BALLISTIC_REINFORCED);
     
     protected PrintEntity(int startPage) {
         super(startPage);
@@ -175,8 +189,93 @@ public abstract class PrintEntity extends PrintRecordSheet {
     }
     
     protected void drawArmor() throws SVGException {
-        
+        if (!getEntity().hasPatchworkArmor()) {
+            if ((AT_SPECIAL & (1 << getEntity().getArmorType(1))) != 0) {
+                String[] atName = EquipmentType.getArmorTypeName(getEntity().getArmorType(1)).split("\\-");
+                setTextField("armorType", atName[0]);
+                if (atName.length > 1) {
+                    setTextField("armorType2", atName[1]);
+                }
+            } else {
+                hideElement("armorType", true);
+            }
+        } else {
+            boolean hasSpecial = false;
+            for (int loc = firstArmorLocation(); loc < getEntity().locations(); loc++) {
+                if (((AT_SPECIAL & (1 << getEntity().getArmorType(loc))) != 0)
+                        // Stealth armor loses special properties when used with patchwork, so we don't
+                        // need to show it.
+                        && (getEntity().getArmorType(loc) != EquipmentType.T_ARMOR_STEALTH)
+                        && (getEntity().getArmorType(loc) != EquipmentType.T_ARMOR_STEALTH_VEHICLE)) {
+                    String atName = EquipmentType.getArmorTypeName(getEntity().getArmorType(loc));
+                    String eleName = "patchwork" + getEntity().getLocationAbbr(loc);
+                    int index = atName.indexOf('-');
+                    if ((index < 0) || (getSVGDiagram().getElement(eleName + "2") == null)) {
+                        setTextField("patchwork" + getEntity().getLocationAbbr(loc), atName);
+                    } else {
+                        setTextField("patchwork" + getEntity().getLocationAbbr(loc),
+                                atName.substring(0, index));
+                        setTextField("patchwork" + getEntity().getLocationAbbr(loc) + "2",
+                                atName.substring(index + 1));
+                    }
+                    hasSpecial = true;
+                }
+            }
+            if (hasSpecial) {
+                setTextField("armorType", EquipmentType.getArmorTypeName(EquipmentType.T_ARMOR_PATCHWORK));
+            } else {
+                hideElement("armorType", true);
+            }
+        }
+        final String FORMAT = "( %d )";
+        for (int loc = firstArmorLocation(); loc < getEntity().locations(); loc++) {
+            setTextField("textArmor_" + getEntity().getLocationAbbr(loc),
+                    String.format(FORMAT, getEntity().getOArmor(loc)));
+            setTextField("textIS_" + getEntity().getLocationAbbr(loc),
+                    String.format(FORMAT, getEntity().getOInternal(loc)));
+        }
+        drawArmorStructurePips();
+        getSVGDiagram().updateTime(0);
     }
+
+    /**
+     * Add armor and structure pips for each location.
+     * 
+     * @throws SVGException
+     */
+    protected void drawArmorStructurePips() throws SVGException {
+        SVGElement element = null;
+        for (int loc = firstArmorLocation(); loc < getEntity().locations(); loc++) {
+            if ((getEntity() instanceof Mech) && ((Mech) getEntity()).isSuperHeavy() && (loc == Mech.LOC_HEAD)) {
+                element = getSVGDiagram().getElement("armorPips" + getEntity().getLocationAbbr(loc) + "_SH");
+            } else {
+                element = getSVGDiagram().getElement("armorPips" + getEntity().getLocationAbbr(loc));
+            }
+            if (null != element) {
+                addPips(element, getEntity().getOArmor(loc), isCenterlineLocation(loc),
+                        PipType.forAT(getEntity().getArmorType(loc)));
+            }
+        }
+    }
+    
+    /**
+     * Identifies the index of the first location that can be armored. For vehicles this should be 1
+     * to skip the body.
+     * 
+     * @return The lowest location index that can be armored.
+     */
+    protected int firstArmorLocation() {
+        return 0;
+    }
+    
+    /**
+     * Identifies which locations are on the unit's centerline and should have armor and structure
+     * pips laid out with left-right symmetry
+     * 
+     * @param loc
+     * @return
+     */
+    protected abstract boolean isCenterlineLocation(int loc);
     
     protected void drawStructure() throws SVGException {
         
