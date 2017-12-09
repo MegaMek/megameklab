@@ -2953,19 +2953,19 @@
 	       y="159.25">0</text>
          <text
 	       id="tonnage"
-	       x="185"
+	       x="190"
 	       y="134.5">0</text>
          <text
 	       id="techBase"
-	       x="189.2"
+	       x="190"
 	       y="142.75">Inner Sphere</text>
          <text
 	       id="rulesLevel"
-	       x="194.39"
+	       x="190"
 	       y="151">Standard</text>
          <text
 	       id="role"
-	       x="169.8"
+	       x="190"
 	       y="159.25">Lorem Ipsum</text>
          <text
 	       id="cost"

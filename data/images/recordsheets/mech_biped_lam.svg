@@ -3794,21 +3794,21 @@
 	       text-anchor="end"
 	       x="236.2"
 	       y="176.25">0</text>
-         <text text-anchor="middle"
+         <text
 	       id="tonnage"
 	       x="100.6794"
 	       y="131.68">0</text>
          <text
 	       id="techBase"
-	       x="181.2"
+	       x="180"
 	       y="133.65">Inner Sphere</text>
          <text
 	       id="rulesLevel"
-	       x="186.39"
+	       x="180"
 	       y="141.9">Standard</text>
          <text
 	       id="role"
-	       x="158"
+	       x="180"
 	       y="150.15">Lorem Ipsum</text>
          <text
 	       id="cost"
@@ -3854,45 +3854,45 @@
 	       id="textArmor_HD"
 	       x="490.49"
 	       y="46.27">( 0 )</text>
-	     <text
+	     <text text-anchor="middle"
 	       id="textArmor_CT"
-	       x="483.37"
+	       x="485.215"
 	       y="216.5">( 0 )</text>
-	     <text
+	     <text text-anchor="middle"
 	       id="textArmor_CTR"
-	       x="483.37"
+	       x="485.215"
 	       y="275.11">( 0 )</text>
-	     <text
+	     <text text-anchor="middle"
 	       id="textArmor_RT"
 	       x="514.42"
 	       y="59.76">( 0 )</text>
-	     <text
+	     <text text-anchor="middle"
 	       id="textArmor_RTR"
-	       x="552.04"
+	       x="554.735"
 	       y="360.17">( 0 )</text>
-	     <text
+	     <text text-anchor="middle"
 	       id="textArmor_LT"
 	       x="449.24"
 	       y="59.76">( 0 )</text>
-	     <text
+	     <text text-anchor="middle"
 	       id="textArmor_LTR"
-	       x="413.1066"
+	       x="415.575"
 	       y="360.17">( 0 )</text>
 	     <text
 	       id="textArmor_RA"
-	       x="555.63"
+	       x="558.65"
 	       y="214.52">( 0 )</text>
 	     <text
 	       id="textArmor_LA"
 	       x="410.14"
 	       y="214.52">( 0 )</text>
-	     <text
+	     <text text-anchor="middle"
 	       id="textArmor_RL"
-	       x="562.28"
+	       x="564.925"
 	       y="266.9">( 0 )</text>
-	     <text
+	     <text text-anchor="middle"
 	       id="textArmor_LL"
-	       x="401.8"
+	       x="405"
 	       y="266.9">( 0 )</text>
 
 	     <text

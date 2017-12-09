@@ -3647,27 +3647,27 @@
 	       id="mpRun"
 	       text-anchor="middle"
 	       x="100"
-	       y="151">0</text>
+	       y="150.75">0</text>
          <text
 	       id="mpJump"
 	       text-anchor="middle"
 	       x="100"
-	       y="159.25">0</text>
+	       y="159">0</text>
          <text
 	       id="tonnage"
-	       x="185"
+	       x="190"
 	       y="134.5">0</text>
          <text
 	       id="techBase"
-	       x="189.2"
+	       x="190"
 	       y="142.75">Inner Sphere</text>
          <text
 	       id="rulesLevel"
-	       x="194.39"
+	       x="190"
 	       y="151">Standard</text>
          <text
 	       id="role"
-	       x="169.8"
+	       x="190"
 	       y="159.25">Lorem Ipsum</text>
          <text
 	       id="cost"
@@ -3717,45 +3717,45 @@
 	       id="textArmor_HD"
 	       x="490.49"
 	       y="46.27">( 0 )</text>
-	     <text
+	     <text text-anchor="middle"
 	       id="textArmor_CT"
-	       x="483.37"
+	       x="485.215"
 	       y="216.5">( 0 )</text>
-	     <text
+	     <text text-anchor="middle"
 	       id="textArmor_CTR"
-	       x="483.37"
+	       x="485.215"
 	       y="275.11">( 0 )</text>
-	     <text
+	     <text text-anchor="middle"
 	       id="textArmor_RT"
 	       x="514.42"
 	       y="59.76">( 0 )</text>
-	     <text
+	     <text text-anchor="middle"
 	       id="textArmor_RTR"
-	       x="552.04"
+	       x="554.735"
 	       y="360.17">( 0 )</text>
-	     <text
+	     <text text-anchor="middle"
 	       id="textArmor_LT"
 	       x="449.24"
 	       y="59.76">( 0 )</text>
-	     <text
+	     <text text-anchor="middle"
 	       id="textArmor_LTR"
-	       x="413.1066"
+	       x="415.575"
 	       y="360.17">( 0 )</text>
 	     <text
 	       id="textArmor_RA"
-	       x="555.63"
+	       x="558.65"
 	       y="214.52">( 0 )</text>
 	     <text
 	       id="textArmor_LA"
 	       x="410.14"
 	       y="214.52">( 0 )</text>
-	     <text
+	     <text text-anchor="middle"
 	       id="textArmor_RL"
-	       x="562.28"
+	       x="564.925"
 	       y="266.9">( 0 )</text>
-	     <text
+	     <text text-anchor="middle"
 	       id="textArmor_LL"
-	       x="401.8"
+	       x="405"
 	       y="266.9">( 0 )</text>
 
 	     <text
