@@ -754,10 +754,11 @@ public class PrintMech extends PrintEntity {
                 critName = new StringBuffer("Ammo (");
                 appendAmmoCritName(critName, ammo);
                 critName.append(") ");
-                critName.append(m.getBaseShotsLeft());
+                int shots = m.getBaseShotsLeft();
                 if ((cs.getMount2() != null) && (cs.getMount2().getType() instanceof AmmoType)) {
-                    critName.append("/").append(cs.getMount2().getBaseShotsLeft());
+                    shots += cs.getMount2().getBaseShotsLeft();
                 }
+                critName.append(shots);
             } else if ((cs.getMount2() != null)
                     && (m.getType() instanceof MiscType) && (m.getType().hasFlag(MiscType.F_HEAT_SINK))
                     && (m.getType() == cs.getMount2().getType())) {
