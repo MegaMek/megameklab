@@ -15,6 +15,13 @@ v0.43.5-git
 + Issue #91: Print multiple recordsheets to the same file as multiple pages?
 + PR #110: Added XCT specialization for infantry.
 + Build and customize Small Craft and Dropships.
++ Mech printing overhaul
+  o Printing for superheavies and tripods
+  o Stats for additional crew for tripods and command consoles
+  o Unit-specific sheets for LAMs and QuadVees
+  o Move layout info into the svg files to allow for custom record sheets without need to alter code.
+  o Show quirks and SPAs on record sheet (SPAs require printing from a mul file which contains the pilot data).
++ Issue #22: Can't print Superheavy 'mechs  
 
 v0.43.4 (2017-10-01 11:00 UTC)
 + Issue #58: Right-click > Left/Right Torso > Add to Left/Right Torso for targeting computer makes it use only one crit slot
