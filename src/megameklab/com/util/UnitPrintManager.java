@@ -45,7 +45,6 @@ import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.client.ui.swing.UnitSelectorDialog;
 import megamek.common.Aero;
 import megamek.common.BattleArmor;
-import megamek.common.BipedMech;
 import megamek.common.ConvFighter;
 import megamek.common.Dropship;
 import megamek.common.Entity;
@@ -58,11 +57,10 @@ import megamek.common.LargeSupportTank;
 import megamek.common.Mech;
 import megamek.common.MechFileParser;
 import megamek.common.Protomech;
-import megamek.common.QuadMech;
 import megamek.common.SmallCraft;
 import megamek.common.Tank;
-import megamek.common.TripodMech;
 import megamek.common.VTOL;
+import megameklab.com.printing.PrintMech;
 import megameklab.com.ui.Aero.Printing.PrintAero;
 import megameklab.com.ui.Aero.Printing.PrintConventionalFighter;
 import megameklab.com.ui.Aero.Printing.PrintFixedWingSupport;
@@ -72,9 +70,6 @@ import megameklab.com.ui.BattleArmor.Printing.PrintBattleArmor;
 import megameklab.com.ui.Dropship.Printing.PrintAerodyne;
 import megameklab.com.ui.Dropship.Printing.PrintSpheroid;
 import megameklab.com.ui.Infantry.Printing.PrintInfantry;
-import megameklab.com.ui.Mek.Printing.PrintMech;
-import megameklab.com.ui.Mek.Printing.PrintQuad;
-import megameklab.com.ui.Mek.Printing.PrintTripod;
 import megameklab.com.ui.ProtoMek.Printing.PrintProtomech;
 import megameklab.com.ui.Vehicle.Printing.PrintDualTurretVehicle;
 import megameklab.com.ui.Vehicle.Printing.PrintLargeSupportVehicle;
@@ -165,18 +160,10 @@ public class UnitPrintManager {
         Tank wige1 = null;
         Tank dualTurret1 = null;
         for (Entity unit : loadedUnits) {
-            if (unit instanceof QuadMech) {
+            if (unit instanceof Mech) {
                 UnitUtil.removeOneShotAmmo(unit);
                 UnitUtil.expandUnitMounts((Mech) unit);
-                book.append(new PrintQuad((QuadMech) unit), pageFormat);
-            } else if (unit instanceof BipedMech) {
-                UnitUtil.removeOneShotAmmo(unit);
-                UnitUtil.expandUnitMounts((Mech) unit);
-                book.append(new PrintMech((BipedMech) unit), pageFormat);
-            } else if (unit instanceof TripodMech) {
-                UnitUtil.removeOneShotAmmo(unit);
-                UnitUtil.expandUnitMounts((Mech) unit);
-                book.append(new PrintTripod((TripodMech) unit), pageFormat);
+                book.append(new PrintMech((Mech) unit, book.getNumberOfPages()), pageFormat);
             } else if ((unit instanceof LargeSupportTank) || ((unit instanceof Tank) && (unit.getMovementMode() != EntityMovementMode.VTOL) && ((Tank)unit).isSuperHeavy())) {
                 book.append(new PrintLargeSupportVehicle((Tank) unit), pageFormat);
             } else if (unit instanceof VTOL) {
@@ -255,11 +242,11 @@ public class UnitPrintManager {
                 unprintable.add(unit);
             }
         }
-        if (null != tank1) {
-            book.append(new PrintVehicle(tank1, null), pageFormat);
-        }
         if (null != wige1) {
             book.append(new PrintVehicle(wige1, null), pageFormat);
+        }
+        if (null != tank1) {
+            book.append(new PrintVehicle(tank1, null), pageFormat);
         }
         if (null != dualTurret1) {
             book.append(new PrintDualTurretVehicle(dualTurret1, null), pageFormat);

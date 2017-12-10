@@ -926,7 +926,7 @@
          id="path10113"
          inkscape:connector-curvature="0" /></g><text
        transform="matrix(0.998,0,0,-1,301.5,22.5151)"
-       style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
        text-anchor="middle"
        id="text10119"><tspan
          x="0"
@@ -970,17 +970,17 @@
          id="g11177"
          clip-path="url(#clipPath11179)"><text
            transform="matrix(1,0,0,-1,501.0273,748.6689)"
-           style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:10px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Bold;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:10px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Bold;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
            text-anchor="middle"
            id="text9688">CONVENTIONAL</text>
 <text
            transform="matrix(1,0,0,-1,501.0273,736.6689)"
-           style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:10px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Bold;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:10px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Bold;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
            text-anchor="middle"
            id="text9690">INFANTRY RECORD</text>
 <text
            transform="matrix(1,0,0,-1,501.0273,724.6689)"
-           style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:10px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Bold;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:10px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Bold;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
            text-anchor="middle"
            id="text9692">SHEET</text>
 </g></g>
@@ -1045,7 +1045,7 @@
          id="tspan3506">NON-INFANTRY WEAPON DAMAGE AGAINST INFANTRY TABLE</tspan></text>
 <text
        transform="matrix(1,0,0,-1,497.7,213.106)"
-       style="font-variant:normal;font-size:6px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-size:6px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3536"><tspan
          x="0 4.9619999 9.4860001 15.528 19.823999 23.538 27.870001 29.982 34.271999 37.764 39.875999 44.051998 48.341999 53.304001 57.366001 61.080002 66.042 69.564003 71.220001 75.510002 80.472 84.725998"
          y="0"
@@ -1061,7 +1061,7 @@
          id="tspan3542">Direct Fire (Ballistic or Energy)</tspan></text>
 <text
        transform="matrix(1,0,0,-1,513.036,198.706)"
-       style="font-variant:normal;font-weight:normal;font-size:6px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:normal;font-size:6px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3544"><tspan
          x="0 4.4039998 7.8239999 13.338 16.757999 20.195999 23.586 25.656 29.153999 32.574001 33.858002 37.278 40.667999 42.737999 47.099998 49.169998 53.310001"
          y="0"
@@ -1069,7 +1069,7 @@
          id="tspan3546">Damage Value / 10</tspan></text>
 <text
        transform="matrix(1,0,0,-1,340.758,191.506)"
-       style="font-variant:normal;font-size:6px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-size:6px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3548"><tspan
          x="0 4.1760001 5.6880002 9.2460003 12.588 15.138 18.558001 21.384001 23.496 25.584 29.879999 33.414001 34.925999 36.438 37.854 41.195999 43.745998 45.161999 48.467999"
          y="0"
@@ -1077,7 +1077,7 @@
          id="tspan3550">Cluster (Ballistic)</tspan></text>
 <text
        transform="matrix(1,0,0,-1,507.138,191.506)"
-       style="font-variant:normal;font-weight:normal;font-size:6px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:normal;font-size:6px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3552"><tspan
          x="0 4.4039998 7.8239999 13.338 16.757999 20.195999 23.586 25.656 29.153999 32.574001 33.858002 37.278 40.667999 42.737999 47.099998 49.169998 53.310001 57.450001 59.52 63.023998 65.094002"
          y="0"
@@ -1085,7 +1085,7 @@
          id="tspan3554">Damage Value / 10 + 1</tspan></text>
 <text
        transform="matrix(1,0,0,-1,340.758,184.306)"
-       style="font-variant:normal;font-size:6px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-size:6px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3556"><tspan
          x="0 4.1160002 7.6739998 9.1859999 12.528 15.948 20.177999"
          y="0"
@@ -1093,7 +1093,7 @@
          id="tspan3558">Pulse**</tspan></text>
 <text
        transform="matrix(1,0,0,-1,507.144,184.306)"
-       style="font-variant:normal;font-weight:normal;font-size:6px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:normal;font-size:6px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3560"><tspan
          x="0 4.4039998 7.8239999 13.338 16.757999 20.195999 23.586 25.656 29.153999 32.574001 33.858002 37.278 40.667999 42.737999 47.099998 49.169998 53.310001 57.450001 59.52 63.023998 65.094002"
          y="0"
@@ -1101,7 +1101,7 @@
          id="tspan3562">Damage Value / 10 + 2</tspan></text>
 <text
        transform="matrix(1,0,0,-1,340.758,177.106)"
-       style="font-variant:normal;font-size:6px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-size:6px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3564"><tspan
          x="0 4.1760001 5.6880002 9.2460003 12.588 15.138 18.558001 21.384001 23.496 25.584 31.625999 33.042 36.383999 39.726002 41.141998 42.653999 46.074001"
          y="0"
@@ -1109,7 +1109,7 @@
          id="tspan3566">Cluster (Missile)</tspan></text>
 <text
        transform="matrix(1,0,0,-1,515.106,177.106)"
-       style="font-variant:normal;font-weight:normal;font-size:6px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:normal;font-size:6px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3568"><tspan
          x="0 4.4039998 7.8239999 13.338 16.757999 20.195999 23.586 25.656 29.153999 32.574001 33.858002 37.278 40.667999 42.737999 47.099998 49.169998"
          y="0"
@@ -1117,7 +1117,7 @@
          id="tspan3570">Damage Value / 5</tspan></text>
 <text
        transform="matrix(1,0,0,-1,340.758,169.906)"
-       style="font-variant:normal;font-size:6px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-size:6px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3572"><tspan
          x="0 4.2540002 7.1279998 10.548 14.082 15.678 19.392 21.546 23.634001 27.054001 30.360001 32.91 35.022598 37.1106 41.364601 45.078602"
          y="0"
@@ -1125,7 +1125,7 @@
          id="tspan3574">Area-Effect (AE)</tspan></text>
 <text
        transform="matrix(1,0,0,-1,514.068,169.906)"
-       style="font-variant:normal;font-weight:normal;font-size:6px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:normal;font-size:6px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3576"><tspan
          x="0 4.4039998 7.8239999 13.338 16.757999 20.195999 23.586 25.656 29.153999 32.574001 33.858002 37.278 40.667999 42.737999 47.099998 49.169998 51.240002"
          y="0"
@@ -1133,7 +1133,7 @@
          id="tspan3578">Damage Value / .5</tspan></text>
 <text
        transform="matrix(1,0,0,-1,340.758,162.706)"
-       style="font-variant:normal;font-size:6px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-size:6px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3580"><tspan
          x="0 4.296 7.8540001 10.68 14.022 16.572001 18.167999 21.66 23.076 25.950001"
          y="0"
@@ -1141,7 +1141,7 @@
          id="tspan3582">Burst-Fire</tspan></text>
 <text
        transform="matrix(1,0,0,-1,498.846,162.706)"
-       style="font-variant:normal;font-weight:normal;font-size:6px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:normal;font-size:6px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3584"><tspan
          x="0 3.7739999 7.164 10.554 12.624 16.788 20.208 22.860001 26.082001 28.278 29.844 33.138 34.428001 37.080002 40.470001 42.540001 48.936001 52.326 55.745998 59.183998 62.604 66.084 69.306 71.375999 74.286003 77.706001 81.150002 82.433998"
          y="0"
@@ -1149,7 +1149,7 @@
          id="tspan3586">See Burst-Fire Weapons Table</tspan></text>
 <text
        transform="matrix(1,0,0,-1,340.758,155.506)"
-       style="font-variant:normal;font-size:6px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-size:6px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3588"><tspan
          x="0 4.6139998 8.0340004 11.568 14.118 15.714 19.427999 21.582001 23.67 27.09 30.396 32.945999 35.057999 41.556 44.976002 48.509998 52.085999 55.577999 59.166"
          y="0"
@@ -1157,7 +1157,7 @@
          id="tspan3590">Heat-Effect Weapons</tspan></text>
 <text
        transform="matrix(1,0,0,-1,503.46,155.506)"
-       style="font-variant:normal;font-weight:normal;font-size:6px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:normal;font-size:6px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3592"><tspan
          x="0 3.7739999 7.164 10.554 12.624 17.124001 20.514 23.934 26.129999 27.695999 31.056 32.952 34.764 38.153999 41.43 43.625999 45.695999 52.091999 55.481998 58.902 62.34 65.760002 69.239998 72.461998"
          y="0"
@@ -1165,7 +1165,7 @@
          id="tspan3594">See Heat-Effect Weapons‡</tspan></text>
 <text
        transform="matrix(1,0,0,-1,338.758,142.106)"
-       style="font-variant:normal;font-weight:normal;font-size:5px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:normal;font-size:5px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3596"><tspan
          x="0 3.4505 6.5960002 9.4215002"
          y="0"
@@ -1173,7 +1173,7 @@
          id="tspan3598">*See</tspan></text>
 <text
        transform="matrix(1,0,0,-1,352.728,142.106)"
-       style="font-style:italic;font-variant:normal;font-size:5px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd-Oblique;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-style:italic;font-variant:normal;font-size:5px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Oblique;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3600"><tspan
          x="0 3.3255 6.1760001 10.7715 13.642 16.4925"
          y="0"
@@ -1181,7 +1181,7 @@
          id="tspan3602">Combat</tspan></text>
 <text
        transform="matrix(1,0,0,-1,371.048,142.106)"
-       style="font-variant:normal;font-weight:normal;font-size:5px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:normal;font-size:5px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3604"><tspan
          x="0 1.725 3.45 6.3150001 8.04 9.7650003 13.215 16.665001 20.115 21.84 22.915001 25.815001"
          y="0"
@@ -1189,7 +1189,7 @@
          id="tspan3606">, p. 113 in </tspan></text>
 <text
        transform="matrix(1,0,0,-1,398.588,142.106)"
-       style="font-style:italic;font-variant:normal;font-size:5px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd-Oblique;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-style:italic;font-variant:normal;font-size:5px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Oblique;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3608"><tspan
          x="0 2.4245 5.2740002 7.1034999 9.9530001 11.0225 12.748 18.0825 20.931999 23.241501 24.750999 27.6005 29.809999"
          y="0"
@@ -1197,7 +1197,7 @@
          id="tspan3610">Total Warfare</tspan></text>
 <text
        transform="matrix(1,0,0,-1,431.228,142.106)"
-       style="font-variant:normal;font-weight:normal;font-size:5px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:normal;font-size:5px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3612"><tspan
          x="0 1.725 3.45 4.96 7.8099999 10.02 11.745 15.515 18.34 21.190001 24.055 26.905001 29.805 31.530001 33.360001 36.185001 38.395 42.990002 44.064999 46.965 49.814999 50.884998 53.735001 56.599998 58.334999"
          y="0"
@@ -1229,7 +1229,7 @@
          id="tspan3626"> appropriate Weapon and Equipment Tables or in </tspan></text>
 <text
        transform="matrix(1,0,0,-1,458.743,106.106)"
-       style="font-style:italic;font-variant:normal;font-size:5px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd-Oblique;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-style:italic;font-variant:normal;font-size:5px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Oblique;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3628"><tspan
          x="0 3.3555 5.1859999 8.0865002 10.912 13.1225 14.847 18.172501 21.023001 25.6185 28.489 31.3395 33.169998 34.894501 40.220001 43.045502 45.896 48.761501 51.612 54.512501 57.198002 58.922501 61.772999 64.6735 67.543999 69.268501 72.069 74.944504 77.794998 78.870499 81.736 86.331497 89.156998 92.057503"
          y="0"
@@ -1237,7 +1237,7 @@
          id="tspan3630">Other Combat Weapons and Equipment</tspan></text>
 <text
        transform="matrix(1,0,0,-1,554.348,106.106)"
-       style="font-variant:normal;font-weight:normal;font-size:5px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:normal;font-size:5px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3632"><tspan
          x="0 1.5599999 4.2449999 7.0700002 9.8950005 11.62 14.485 16.209999 17.934999 21.385 24.834999 28.285 30.01 31.084999"
          y="0"
@@ -1245,7 +1245,7 @@
          id="tspan3634">(see p. 129 in</tspan></text>
 <text
        transform="matrix(1,0,0,-1,342.7635,100.106)"
-       style="font-style:italic;font-variant:normal;font-size:5px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd-Oblique;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-style:italic;font-variant:normal;font-size:5px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Oblique;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3636"><tspan
          x="0 2.425 5.2750001 7.105 9.9549999 11.025 12.7505 18.085501 20.935499 23.245501 24.755501 27.605499 29.8155"
          y="0"
@@ -1253,7 +1253,7 @@
          id="tspan3638">Total Warfare</tspan></text>
 <text
        transform="matrix(1,0,0,-1,375.398,100.106)"
-       style="font-variant:normal;font-weight:normal;font-size:5px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:normal;font-size:5px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3640"><tspan
          x="0 1.5599999"
          y="0"
@@ -1261,7 +1261,7 @@
          id="tspan3642">).</tspan></text>
 <text
        transform="matrix(1,0,0,-1,62.4735,225.365)"
-       style="font-style:italic;font-variant:normal;font-size:6px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd-DemiOblique;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-style:italic;font-variant:normal;font-size:6px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-DemiOblique;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3644"><tspan
          x="0 1.392 7.434 11.148 15.324 19.938 23.976 26.087999 28.200001 32.316002 36.647999 40.938 44.459999 48.75 54.792 58.506001 62.681999 67.295998"
          y="0"
@@ -1269,7 +1269,7 @@
          id="tspan3646">’MECHS, PROTOMECHS</tspan></text>
 <text
        transform="matrix(1,0,0,-1,135.9195,225.365)"
-       style="font-variant:normal;font-size:6px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-size:6px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3648"><tspan
          x="0 4.2540002 9.2159996 13.74"
          y="0"
@@ -1277,7 +1277,7 @@
          id="tspan3650">AND </tspan></text>
 <text
        transform="matrix(1,0,0,-1,151.7715,225.365)"
-       style="font-style:italic;font-variant:normal;font-size:6px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd-DemiOblique;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-style:italic;font-variant:normal;font-size:6px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-DemiOblique;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3652"><tspan
          x="0 4.0619998 7.776 12.39 14.046 18.222 21.612 25.326"
          y="0"
@@ -1285,7 +1285,7 @@
          id="tspan3654">VEHICLES</tspan></text>
 <text
        transform="matrix(1,0,0,-1,62.4735,210.965)"
-       style="font-variant:normal;font-size:6px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-size:6px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3656"><tspan
          x="0 6.678 10.392 14.646 18.761999 23.052 127.08 131.604 135.858 141.89999 146.15401 150.51601 154.23 156.342 159.28799 162.63 164.742 166.854 171.03 175.32001 180.282 184.34399 188.058 193.02 196.54201 198.198 202.48801 207.45 211.70399 215.09399 217.20599 218.862 223.82401 227.166 231.42 236.382 239.90401 244.23599"
          y="0"
@@ -1297,7 +1297,7 @@
          id="tspan3660">AP Gauss Riﬂe</tspan></text>
 <text
        transform="matrix(1,0,0,-1,243.7995,203.765)"
-       style="font-variant:normal;font-weight:normal;font-size:6px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:normal;font-size:6px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3662"><tspan
          x="0 4.1399999 8.5439997"
          y="0"
@@ -1305,7 +1305,7 @@
          id="tspan3664">2D6</tspan></text>
 <text
        transform="matrix(1,0,0,-1,62.4735,196.565)"
-       style="font-variant:normal;font-size:6px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-size:6px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3666"><tspan
          x="0 3.3900001 4.8060002 8.3699999 11.958 14.508 16.620001 22.662001 26.195999 29.502001 33.09 34.506001 38.094002 41.514 43.625999 47.987999 51.546001"
          y="0"
@@ -1313,7 +1313,7 @@
          id="tspan3668">Light Machine Gun</tspan></text>
 <text
        transform="matrix(1,0,0,-1,243.7995,196.565)"
-       style="font-variant:normal;font-weight:normal;font-size:6px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:normal;font-size:6px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3670"><tspan
          x="0 4.1399999 8.5439997"
          y="0"
@@ -1321,7 +1321,7 @@
          id="tspan3672">1D6</tspan></text>
 <text
        transform="matrix(1,0,0,-1,62.4735,189.365)"
-       style="font-variant:normal;font-size:6px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-size:6px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3674"><tspan
          x="0 6.0419998 9.5760002 12.882 16.469999 17.886 21.474001 24.893999 27.0042 31.366199 34.924198"
          y="0"
@@ -1329,7 +1329,7 @@
          id="tspan3676">Machine Gun</tspan></text>
 <text
        transform="matrix(1,0,0,-1,243.7995,189.365)"
-       style="font-variant:normal;font-weight:normal;font-size:6px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:normal;font-size:6px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3678"><tspan
          x="0 4.1399999 8.5439997"
          y="0"
@@ -1337,7 +1337,7 @@
          id="tspan3680">2D6</tspan></text>
 <text
        transform="matrix(1,0,0,-1,62.4735,182.165)"
-       style="font-variant:normal;font-size:6px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-size:6px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3682"><tspan
          x="0 4.6139998 8.0340004 11.568 14.514 17.424 19.535999 25.577999 29.112 32.417999 36.006001 37.422001 41.009998 44.43 46.542 50.903999 54.462002"
          y="0"
@@ -1345,7 +1345,7 @@
          id="tspan3684">Heavy Machine Gun</tspan></text>
 <text
        transform="matrix(1,0,0,-1,243.7995,182.165)"
-       style="font-variant:normal;font-weight:normal;font-size:6px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:normal;font-size:6px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3686"><tspan
          x="0 4.1399999 8.5439997"
          y="0"
@@ -1353,7 +1353,7 @@
          id="tspan3688">3D6</tspan></text>
 <text
        transform="matrix(1,0,0,-1,62.4735,174.965)"
-       style="font-variant:normal;font-size:6px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-size:6px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3690"><tspan
          x="0 4.0380001 9.5819998 13.116 14.628 16.139999 20.232 26.274 27.690001 30.996 33.869999 37.362 39.473999 43.59 47.147999 48.66 52.001999 55.422001 57.534 60.924 64.458 67.800003 71.220001"
          y="0"
@@ -1361,7 +1361,7 @@
          id="tspan3692">Small/Micro Pulse Laser</tspan></text>
 <text
        transform="matrix(1,0,0,-1,243.7995,174.965)"
-       style="font-variant:normal;font-weight:normal;font-size:6px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:normal;font-size:6px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3694"><tspan
          x="0 4.1399999 8.5439997"
          y="0"
@@ -1369,7 +1369,7 @@
          id="tspan3696">2D6</tspan></text>
 <text
        transform="matrix(1,0,0,-1,62.4735,167.765)"
-       style="font-variant:normal;font-size:6px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-size:6px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3698"><tspan
          x="0 3.4926 5.0051999 8.5397997 14.0844 17.504999"
          y="0"
@@ -1377,7 +1377,7 @@
          id="tspan3700">Flamer</tspan></text>
 <text
        transform="matrix(1,0,0,-1,243.7995,167.765)"
-       style="font-variant:normal;font-weight:normal;font-size:6px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:normal;font-size:6px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3702"><tspan
          x="0 4.1399999 8.5439997"
          y="0"
@@ -1385,7 +1385,7 @@
          id="tspan3704">4D6</tspan></text>
 <text
        transform="matrix(1,0,0,-1,62.4735,153.365)"
-       style="font-style:italic;font-variant:normal;font-size:6px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd-DemiOblique;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-style:italic;font-variant:normal;font-size:6px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-DemiOblique;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3706"><tspan
          x="0 4.296 8.1780005 11.7 15.222 18.612 22.326 24.438 28.691999 33.023998 39.066002 43.355999"
          y="0"
@@ -1393,7 +1393,7 @@
          id="tspan3708">BATTLE ARMOR</tspan></text>
 <text
        transform="matrix(1,0,0,-1,62.4735,138.965)"
-       style="font-variant:normal;font-size:6px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-size:6px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3710"><tspan
          x="0 6.678 10.392 14.646 18.761999 23.052 127.08 131.604 135.858 141.89999 146.15401 150.51601 154.23 156.342 159.28799 162.63 164.742 166.854 171.03 175.32001 180.282 184.34399 188.058 193.02 196.54201 198.198 202.48801 207.45 211.70399 215.09399 217.20599 218.862 223.82401 227.166 231.42 236.382 239.90401 244.23599"
          y="0"
@@ -1405,7 +1405,7 @@
          id="tspan3714">Light Machine Gun</tspan></text>
 <text
        transform="matrix(1,0,0,-1,223.9695,131.765)"
-       style="font-variant:normal;font-weight:normal;font-size:6px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:normal;font-size:6px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3716"><tspan
          x="0 4.1399999 8.5439997 12.684 17.046 21.186001 23.256001 25.128 27.780001 31.200001 34.619999 38.099998 41.543999 43.613998 47.034 50.472"
          y="0"
@@ -1413,7 +1413,7 @@
          id="tspan3718">1D6/2 (round up)</tspan></text>
 <text
        transform="matrix(1,0,0,-1,62.4735,124.565)"
-       style="font-variant:normal;font-size:6px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-size:6px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3720"><tspan
          x="0 6.0419998 9.5760002 12.882 16.469999 17.886 21.474001 24.893999 27.0042 31.366199 34.924198"
          y="0"
@@ -1421,7 +1421,7 @@
          id="tspan3722">Machine Gun</tspan></text>
 <text
        transform="matrix(1,0,0,-1,243.7995,124.565)"
-       style="font-variant:normal;font-weight:normal;font-size:6px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:normal;font-size:6px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3724"><tspan
          x="0 4.1399999 8.5439997"
          y="0"
@@ -1429,7 +1429,7 @@
          id="tspan3726">1D6</tspan></text>
 <text
        transform="matrix(1,0,0,-1,62.4735,117.365)"
-       style="font-variant:normal;font-size:6px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-size:6px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3728"><tspan
          x="0 4.6139998 8.0340004 11.568 14.514 17.424 19.535999 25.577999 29.112 32.417999 36.006001 37.422001 41.009998 44.43 46.542 50.903999 54.462002"
          y="0"
@@ -1437,7 +1437,7 @@
          id="tspan3730">Heavy Machine Gun</tspan></text>
 <text
        transform="matrix(1,0,0,-1,243.7995,117.365)"
-       style="font-variant:normal;font-weight:normal;font-size:6px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:normal;font-size:6px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3732"><tspan
          x="0 4.1399999 8.5439997"
          y="0"
@@ -1445,7 +1445,7 @@
          id="tspan3734">2D6</tspan></text>
 <text
        transform="matrix(1,0,0,-1,62.4735,110.165)"
-       style="font-variant:normal;font-size:6px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-size:6px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3736"><tspan
          x="0 3.4926 5.0051999 8.5397997 14.0844 17.504999"
          y="0"
@@ -1453,7 +1453,7 @@
          id="tspan3738">Flamer</tspan></text>
 <text
        transform="matrix(1,0,0,-1,243.7995,110.165)"
-       style="font-variant:normal;font-weight:normal;font-size:6px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:normal;font-size:6px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3740"><tspan
          x="0 4.1399999 8.5439997"
          y="0"
@@ -1461,7 +1461,7 @@
          id="tspan3742">3D6</tspan></text>
 <text
        transform="matrix(1,0,0,-1,62.4735,102.965)"
-       style="font-variant:normal;font-size:6px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-size:6px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3744"><tspan
          x="0 3.3900001 4.8060002 8.3699999 11.958 14.508 16.620001 20.952 24.372 27.677999 31.17 32.585999 34.098 35.610001 39.029999 42.372002 45.714001 47.826 52.158001 53.574001 57.150002"
          y="0"
@@ -1469,7 +1469,7 @@
          id="tspan3746">Light Recoilless Riﬂe</tspan></text>
 <text
        transform="matrix(1,0,0,-1,243.7995,102.965)"
-       style="font-variant:normal;font-weight:normal;font-size:6px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:normal;font-size:6px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3748"><tspan
          x="0 4.1399999 8.5439997"
          y="0"
@@ -1477,7 +1477,7 @@
          id="tspan3750">1D6</tspan></text>
 <text
        transform="matrix(1,0,0,-1,62.4735,95.765)"
-       style="font-variant:normal;font-size:6px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-size:6px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3752"><tspan
          x="0 6.0419998 9.4619999 13.02 14.436 17.993999 23.538 25.65 29.982 33.402 36.708 40.200001 41.616001 43.127998 44.639999 48.060001 51.402 54.743999 56.855999 61.188 62.604 66.18"
          y="0"
@@ -1485,7 +1485,7 @@
          id="tspan3754">Medium Recoilless Riﬂe</tspan></text>
 <text
        transform="matrix(1,0,0,-1,243.7995,95.765)"
-       style="font-variant:normal;font-weight:normal;font-size:6px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:normal;font-size:6px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3756"><tspan
          x="0 4.1399999 8.5439997"
          y="0"
@@ -1493,7 +1493,7 @@
          id="tspan3758">2D6</tspan></text>
 <text
        transform="matrix(1,0,0,-1,62.4735,88.565)"
-       style="font-variant:normal;font-size:6px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-size:6px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3760"><tspan
          x="0 4.6139998 8.0340004 11.568 14.514 17.424 19.535999 23.868 27.288 30.594 34.085999 35.501999 37.014 38.526001 41.945999 45.287998 48.630001 50.742001 55.074001 56.490002 60.066002"
          y="0"
@@ -1501,7 +1501,7 @@
          id="tspan3762">Heavy Recoilless Riﬂe</tspan></text>
 <text
        transform="matrix(1,0,0,-1,243.7995,88.565)"
-       style="font-variant:normal;font-weight:normal;font-size:6px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:normal;font-size:6px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3764"><tspan
          x="0 4.1399999 8.5439997"
          y="0"
@@ -1509,7 +1509,7 @@
          id="tspan3766">2D6</tspan></text>
 <text
        transform="matrix(1,0,0,-1,62.4735,81.365)"
-       style="font-variant:normal;font-size:6px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-size:6px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3768"><tspan
          x="0 3.3900001 4.8060002 8.3699999 11.958 14.508 16.620001 22.662001 26.153999 29.028 31.577999 35.112"
          y="0"
@@ -1517,7 +1517,7 @@
          id="tspan3770">Light Mortar</tspan></text>
 <text
        transform="matrix(1,0,0,-1,243.7995,81.365)"
-       style="font-variant:normal;font-weight:normal;font-size:6px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:normal;font-size:6px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3772"><tspan
          x="0 4.1399999 8.5439997"
          y="0"
@@ -1525,7 +1525,7 @@
          id="tspan3774">1D6</tspan></text>
 <text
        transform="matrix(1,0,0,-1,62.4735,74.165)"
-       style="font-variant:normal;font-size:6px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-size:6px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3776"><tspan
          x="0 4.6139998 8.0340004 11.568 14.514 17.424 19.535999 25.577999 29.07 31.944 34.493999 38.028"
          y="0"
@@ -1533,7 +1533,7 @@
          id="tspan3778">Heavy Mortar</tspan></text>
 <text
        transform="matrix(1,0,0,-1,243.7995,74.165)"
-       style="font-variant:normal;font-weight:normal;font-size:6px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:normal;font-size:6px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3780"><tspan
          x="0 4.1399999 8.5439997"
          y="0"
@@ -1541,7 +1541,7 @@
          id="tspan3782">1D6</tspan></text>
 <text
        transform="matrix(1,0,0,-1,62.4735,66.965)"
-       style="font-variant:normal;font-size:6px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-size:6px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3784"><tspan
          x="0 4.2540002 7.8119998 10.362 13.854 19.398001 22.931999 25.482 26.898001 30.204 32.315399 36.677399 39.551399 42.971401 46.559399 50.093399 53.651402 57.0714 59.1828 62.5728 66.106796 69.664803 73.2528 76.5588 80.146797 83.566803"
          y="0"
@@ -1549,7 +1549,7 @@
          id="tspan3786">Automatic Grenade Launcher</tspan></text>
 <text
        transform="matrix(1,0,0,-1,223.9695,66.965)"
-       style="font-variant:normal;font-weight:normal;font-size:6px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:normal;font-size:6px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3788"><tspan
          x="0 4.1399999 8.5439997 12.684 17.046 21.186001 23.256001 25.128 27.780001 31.200001 34.619999 38.099998 41.543999 43.613998 47.034 50.472"
          y="0"
@@ -1557,7 +1557,7 @@
          id="tspan3790">1D6/2 (round up)</tspan></text>
 <text
        transform="matrix(1,0,0,-1,62.4735,59.765)"
-       style="font-variant:normal;font-size:6px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-size:6px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3792"><tspan
          x="0 4.6139998 8.0340004 11.568 14.514 17.424 19.5354 23.8974 26.7714 30.191401 33.7794 37.3134 40.871399 44.291401 46.402802 49.792801 53.326801 56.8848 60.472801 63.778801 67.366798 70.786797"
          y="0"
@@ -1565,7 +1565,7 @@
          id="tspan3794">Heavy Grenade Launcher</tspan></text>
 <text
        transform="matrix(1,0,0,-1,243.7995,59.765)"
-       style="font-variant:normal;font-weight:normal;font-size:6px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:normal;font-size:6px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3796"><tspan
          x="0 4.1399999 8.5439997"
          y="0"

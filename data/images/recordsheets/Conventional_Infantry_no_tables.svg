@@ -934,7 +934,7 @@
              inkscape:connector-curvature="0" /></g>
 <text
            transform="matrix(0.998,0,0,-1,301.5,22.5151)"
-           style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"
+           style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"
            id="text10119"><tspan
              x="0"
              y="0"
@@ -1137,15 +1137,15 @@
          clip-path="url(#clipPath11179)">
         <text
            transform="matrix(1,0,0,-1,501.0273,748.6689)"
-           style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:10px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Bold;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:10px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Bold;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
 text-anchor="middle">CONVENTIONAL</text>
         <text
            transform="matrix(1,0,0,-1,501.0273,736.6689)"
-           style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:10px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Bold;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:10px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Bold;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
 text-anchor="middle">INFANTRY RECORD</text>
         <text
            transform="matrix(1,0,0,-1,501.0273,724.6689)"
-           style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:10px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Bold;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:10px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Bold;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
 text-anchor="middle">SHEET</text></g>
     
 </g></g>
