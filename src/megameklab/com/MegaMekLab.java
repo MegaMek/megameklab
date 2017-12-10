@@ -19,10 +19,12 @@ package megameklab.com;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Locale;
 
 import megamek.MegaMek;
+import megamek.common.QuirksHandler;
 import megamek.common.logging.DefaultMmLogger;
 import megamek.common.logging.LogConfig;
 import megamek.common.logging.LogLevel;
@@ -139,6 +141,14 @@ public class MegaMekLab {
                 } catch (Exception ex) {
                     getLogger().log(MegaMekLab.class, METHOD_NAME, ex);
                 }
+            }
+            try {
+                // Needed for record sheet printing, and also displayed in unit preview.
+                QuirksHandler.initQuirksList();
+            } catch (IOException e) {
+                // File is probably missing.
+                getLogger().log(MegaMekLab.class, METHOD_NAME, LogLevel.INFO,
+                        "Could not load quirks file.");
             }
             new MainUI();
         }
