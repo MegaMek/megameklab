@@ -31,6 +31,7 @@ import java.io.InputStream;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -48,7 +49,6 @@ import com.kitfox.svg.SVGElement;
 import com.kitfox.svg.SVGException;
 import com.kitfox.svg.Text;
 import com.kitfox.svg.animation.AnimationElement;
-import com.sun.org.apache.xml.internal.security.utils.Base64;
 
 import megamek.common.EquipmentType;
 import megamek.common.logging.LogLevel;
@@ -1122,7 +1122,7 @@ public abstract class PrintRecordSheet implements Printable {
             img.addAttribute("width", AnimationElement.AT_XML, Double.toString(width));
             img.addAttribute("height", AnimationElement.AT_XML, Double.toString(height));
             img.addAttribute("xlink:href", AnimationElement.AT_XML,
-                    "data:" + mimeType + ";base64," + Base64.encode(bytes.toByteArray()));
+                    "data:" + mimeType + ";base64," + Base64.getEncoder().encode(bytes.toByteArray()));
             canvas.loaderAddChild(null, img);
             canvas.updateTime(0);
         } catch (FileNotFoundException e) {
