@@ -551,7 +551,8 @@ public class EquipmentTab extends ITab implements ActionListener {
                         && (etype.hasFlag(MiscType.F_TSM)
                                 || etype.hasFlag(MiscType.F_INDUSTRIAL_TSM)
                                 || (etype.hasFlag(MiscType.F_MASC)
-                                        && !etype.hasSubType(MiscType.S_SUPERCHARGER)))) {
+                                        && !etype.hasSubType(MiscType.S_SUPERCHARGER)
+                                        && !etype.hasSubType(MiscType.S_JETBOOSTER)))) {
                     return false;
                 }
                 boolean isSupportTankEquipment = false;
