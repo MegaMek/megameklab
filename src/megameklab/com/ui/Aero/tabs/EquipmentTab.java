@@ -537,7 +537,9 @@ public class EquipmentTab extends ITab implements ActionListener {
                 equipmentList.removeMounted(row);
             }
             equipmentList.removeCrits(selectedRows);
-            removeEmptyBays();
+            if (getAero().isLargeCraft()) {
+                removeEmptyBays();
+            }
         } else if (e.getActionCommand().equals(REMOVEALL_COMMAND)) {
             removeAllEquipment();
             removeEmptyBays();
