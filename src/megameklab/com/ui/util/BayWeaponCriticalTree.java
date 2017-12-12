@@ -566,6 +566,9 @@ public class BayWeaponCriticalTree extends JTree {
             } else if (getMounted().getType() instanceof AmmoType) {
                 name += " (" + getMounted().getBaseShotsLeft() + " shots)";
             }
+            if (!eSource.getEntity().usesWeaponBays() && getMounted().isRearMounted()) {
+                name += " (R)";
+            }
             return name;
         }
         
