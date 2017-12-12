@@ -431,11 +431,7 @@ public class TransportTab extends IView implements ActionListener {
 
         @Override
         public boolean isCellEditable(int rowIndex, int columnIndex) {
-            if (columnIndex == COL_DOORS) {
-                return getAero().hasETypeFlag(Entity.ETYPE_DROPSHIP)
-                        || getAero().hasETypeFlag(Entity.ETYPE_JUMPSHIP);
-            }
-            return (columnIndex == COL_SIZE);
+            return (columnIndex == COL_DOORS) || (columnIndex == COL_SIZE);
         }
 
         public void reorder(int from, int to) {
