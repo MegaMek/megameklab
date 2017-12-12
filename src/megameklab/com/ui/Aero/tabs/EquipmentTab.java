@@ -391,7 +391,8 @@ public class EquipmentTab extends ITab implements ActionListener {
 
         // On this table we want to show individual weapons, not bays.
         for (Mounted mount : getAero().getTotalWeaponList()) {
-            if (mount.getType() instanceof BayWeapon) {
+            if ((mount.getType() instanceof BayWeapon)
+                    || mount.isWeaponGroup()) {
                 continue;
             }
             equipmentList.addCrit(mount);
