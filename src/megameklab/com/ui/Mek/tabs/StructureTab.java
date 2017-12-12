@@ -206,6 +206,7 @@ public class StructureTab extends ITab implements MekBuildListener {
         getMech().clearCockpitCrits();
         getMech().clearGyroCrits();
         getMech().clearEngineCrits();
+        removeSystemCrits(LandAirMech.LAM_LANDING_GEAR);
 
         int[] ctEngine = getMech().getEngine().getCenterTorsoCriticalSlots(getMech().getGyroType());
         int lastEngine = ctEngine[ctEngine.length - 1];
@@ -219,18 +220,22 @@ public class StructureTab extends ITab implements MekBuildListener {
         getMech().addEngineCrits();
         switch (getMech().getGyroType()) {
             case Mech.GYRO_COMPACT:
+                clearCritsForGyro(2);
                 getMech().addCompactGyro();
                 break;
             case Mech.GYRO_HEAVY_DUTY:
+                clearCritsForGyro(4);
                 getMech().addHeavyDutyGyro();
                 break;
             case Mech.GYRO_XL:
+                clearCritsForGyro(6);
                 getMech().addXLGyro();
                 break;
             case Mech.GYRO_NONE:
                 UnitUtil.compactCriticals(getMech(), Mech.LOC_CT);
                 break;
             default:
+                clearCritsForGyro(4);
                 getMech().addGyro();
         }
 
@@ -301,6 +306,23 @@ public class StructureTab extends ITab implements MekBuildListener {
                 clearCritsForCockpit(false, false);
                 getMech().addCockpit();
         }
+        // For LAMs we want to put the landing gear in the first available slot after the engine and gyro.
+        if (getMech().hasETypeFlag(Entity.ETYPE_LAND_AIR_MECH)) {
+            int lgSlot = 10;
+            for (int i = 0; i < getMech().getNumberOfCriticals(Mech.LOC_CT); i++) {
+                final CriticalSlot slot = getMech().getCritical(Mech.LOC_CT, i);
+                if ((null == slot) || (slot.getType() == CriticalSlot.TYPE_EQUIPMENT)
+                        || ((slot.getIndex() != Mech.SYSTEM_ENGINE) && (slot.getIndex() != Mech.SYSTEM_GYRO))) {
+                    lgSlot = i;
+                    break;
+                }
+            }
+            CriticalSlot crit = new CriticalSlot(CriticalSlot.TYPE_SYSTEM,
+                    LandAirMech.LAM_LANDING_GEAR);
+            getMech().removeCriticals(Mech.LOC_CT, crit);
+            clearCrit(Mech.LOC_CT, lgSlot);
+            getMech().setCritical(Mech.LOC_CT, lgSlot, crit);
+        }
         refresh.refreshBuild();
     }
 
@@ -317,6 +339,13 @@ public class StructureTab extends ITab implements MekBuildListener {
                 continue;
             }
             clearCrit(Mech.LOC_HEAD, slot);
+        }
+    }
+    
+    private void clearCritsForGyro(int numSlots) {
+        for (int i = 3; i < 3 + numSlots; i++) {
+            clearCrit(Mech.LOC_CT, i);
+            getMech().setCritical(Mech.LOC_CT, i, null);
         }
     }
 
