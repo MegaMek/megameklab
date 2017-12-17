@@ -1,6 +1,6 @@
 VERSION HISTORY:
 ----------------
-v0.43.5-git
+v0.43.5 (2017-12-17 11:00 UTC)
 + PR #81: Armor allocation view: rewrite of the armor allocation panel for mechs, vees, and fighters, with
           more convenient controls for patchwork armor. Also fixes patchwork armor weight calculations per
           TacOps errata.
