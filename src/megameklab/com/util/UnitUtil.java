@@ -330,6 +330,7 @@ public class UnitUtil {
             unit.getAmmo().remove(mount);
         } else {
             unit.getWeaponList().remove(mount);
+            unit.getTotalWeaponList().remove(mount);
         }
         for (Mounted bay : bayWeapons.keySet()) {
             bay.getBayWeapons().clear();
