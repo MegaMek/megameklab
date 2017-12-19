@@ -2,6 +2,7 @@ VERSION HISTORY:
 ----------------
 v0.43.6-git
 + Issue #119: Mech printing issue on 0.43.5
++ Issue #120: Removing weapons or equipment does not return tonnage
 
 v0.43.5 (2017-12-17 11:00 UTC)
 + PR #81: Armor allocation view: rewrite of the armor allocation panel for mechs, vees, and fighters, with
