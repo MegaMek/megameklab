@@ -473,6 +473,7 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
     @Override
     public void armorPointsChanged(int location, int front, int rear) {
         getSmallCraft().initializeArmor(front, location);
+        getSmallCraft().initializeThresh(location);
         panArmorAllocation.setFromEntity(getSmallCraft());
         refresh.refreshPreview();
         refresh.refreshSummary();
@@ -510,6 +511,7 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
         getSmallCraft().initializeArmor(wing, Aero.LOC_LWING);
         getSmallCraft().initializeArmor(wing, Aero.LOC_RWING);
         getSmallCraft().initializeArmor(aft, Aero.LOC_AFT);
+        getSmallCraft().autoSetThresh();
 
         panArmorAllocation.setFromEntity(getSmallCraft());
         refresh.refreshPreview();
