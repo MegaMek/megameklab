@@ -502,6 +502,9 @@ public class StructureTab extends ITab implements AeroBuildListener {
     @Override
     public void vstolChanged(boolean vstol) {
         getAero().setVSTOL(vstol);
+        refresh.refreshPreview();
+        refresh.refreshStatus();
+        refresh.refreshSummary();
     }
     
     @Override

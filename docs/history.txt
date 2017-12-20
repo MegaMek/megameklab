@@ -7,6 +7,7 @@ v0.43.6-git
 + Issue #86: Aerospace Asset Armor Threshold
 + Issue #108: File | Export to Clipboard (missing elements)
 + Issue #118: Clan CASE Costs and BV Calculation
++ Issue #121: Adding VSTOL equipment to a conventional fighter does not add mass.
 
 v0.43.5 (2017-12-17 11:00 UTC)
 + PR #81: Armor allocation view: rewrite of the armor allocation panel for mechs, vees, and fighters, with
