@@ -1,6 +1,6 @@
 VERSION HISTORY:
 ----------------
-v0.43.6-git
+v0.43.6 (2017-12-22 10:00 UTC)
 + Issue #119: Mech printing issue on 0.43.5
 + Issue #120: Removing weapons or equipment does not return tonnage
 + Issue #82: Infantry PDF Print/Print Name not Changing
