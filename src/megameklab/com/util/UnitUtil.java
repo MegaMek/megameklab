@@ -1029,12 +1029,14 @@ public class UnitUtil {
         ConcurrentLinkedQueue<Mounted> equipmentList = new ConcurrentLinkedQueue<Mounted>(
                 unit.getMisc());
         for (Mounted eq : equipmentList) {
-            if (UnitUtil.isTSM(eq.getType()) || UnitUtil.isMASC(eq.getType())) {
+            if (UnitUtil.isTSM(eq.getType()) || UnitUtil.isMASC(eq.getType())
+                    || ((eq.getType() instanceof MiscType) && eq.getType().hasFlag(MiscType.F_SCM))) {
                 UnitUtil.removeCriticals(unit, eq);
             }
         }
         for (Mounted eq : equipmentList) {
-            if (UnitUtil.isTSM(eq.getType()) || UnitUtil.isMASC(eq.getType())) {
+            if (UnitUtil.isTSM(eq.getType()) || UnitUtil.isMASC(eq.getType())
+                    || ((eq.getType() instanceof MiscType) && eq.getType().hasFlag(MiscType.F_SCM))) {
                 unit.getMisc().remove(eq);
                 unit.getEquipment().remove(eq);
             }
