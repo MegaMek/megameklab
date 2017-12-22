@@ -23,7 +23,6 @@ import java.awt.event.KeyEvent;
 import java.awt.print.Book;
 import java.awt.print.PageFormat;
 import java.awt.print.Paper;
-import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.io.File;
 import java.util.ArrayList;
@@ -61,6 +60,7 @@ import megamek.common.SmallCraft;
 import megamek.common.Tank;
 import megamek.common.VTOL;
 import megameklab.com.printing.PrintMech;
+import megameklab.com.printing.PrintTask;
 import megameklab.com.ui.Aero.Printing.PrintAero;
 import megameklab.com.ui.Aero.Printing.PrintConventionalFighter;
 import megameklab.com.ui.Aero.Printing.PrintFixedWingSupport;
@@ -267,12 +267,9 @@ public class UnitPrintManager {
         } else if (loadedUnits.size() > 0) {
             masterPrintJob.setJobName(loadedUnits.get(0).getShortNameRaw());
         }
-        try {
-            masterPrintJob.print(aset);
-        } catch (PrinterException e) {
-            // printing cancelled
-            return false;
-        }
+
+        PrintTask task = new PrintTask(masterPrintJob, aset);
+        task.execute();
 
         return true;
     }

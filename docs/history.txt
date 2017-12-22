@@ -10,6 +10,7 @@ v0.43.6-git
 + Issue #121: Adding VSTOL equipment to a conventional fighter does not add mass.
 + Issue #105: Auto Allocate Armor on Mechs places the last armor point on the Right Leg instead of the CT
 + Issue #122: Super-cooled myomer not removed when unselected.
++ Moved record sheet printing to a background task, returning control to the ui immediately.
 
 v0.43.5 (2017-12-17 11:00 UTC)
 + PR #81: Armor allocation view: rewrite of the armor allocation panel for mechs, vees, and fighters, with
