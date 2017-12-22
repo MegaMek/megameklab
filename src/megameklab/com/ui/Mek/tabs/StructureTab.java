@@ -206,7 +206,7 @@ public class StructureTab extends ITab implements MekBuildListener {
         getMech().clearCockpitCrits();
         getMech().clearGyroCrits();
         getMech().clearEngineCrits();
-        removeSystemCrits(LandAirMech.LAM_LANDING_GEAR);
+        removeSystemCrits(LandAirMech.LAM_LANDING_GEAR, Mech.LOC_CT);
 
         int[] ctEngine = getMech().getEngine().getCenterTorsoCriticalSlots(getMech().getGyroType());
         int lastEngine = ctEngine[ctEngine.length - 1];
@@ -385,19 +385,17 @@ public class StructureTab extends ITab implements MekBuildListener {
         }
 
     }
+    
+    private void removeSystemCrits(int systemType, int loc) {
+        for (int slot = 0; slot < getMech().getNumberOfCriticals(loc); slot++) {
+            CriticalSlot cs = getMech().getCritical(loc, slot);
 
-    public void removeSystemCrits(int systemType) {
-        for (int loc = 0; loc < getMech().locations(); loc++) {
-            for (int slot = 0; slot < getMech().getNumberOfCriticals(loc); slot++) {
-                CriticalSlot cs = getMech().getCritical(loc, slot);
+            if ((cs == null) || (cs.getType() != CriticalSlot.TYPE_SYSTEM)) {
+                continue;
+            }
 
-                if ((cs == null) || (cs.getType() != CriticalSlot.TYPE_SYSTEM)) {
-                    continue;
-                }
-
-                if (cs.getIndex() == systemType) {
-                    getMech().setCritical(loc, slot, null);
-                }
+            if (cs.getIndex() == systemType) {
+                getMech().setCritical(loc, slot, null);
             }
         }
     }
