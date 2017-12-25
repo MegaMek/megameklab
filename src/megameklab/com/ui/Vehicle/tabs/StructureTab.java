@@ -446,6 +446,7 @@ public class StructureTab extends ITab implements CVBuildListener {
         getTank().setWeight(tonnage);
         getTank().setOriginalWalkMP((getTank().getEngine().getRating() + getTank().getSuspensionFactor())
                 / (int)getTank().getWeight());
+        getTank().autoSetInternal();
         refresh();
         refresh.refreshPreview();
         refresh.refreshStatus();
@@ -557,6 +558,7 @@ public class StructureTab extends ITab implements CVBuildListener {
             getTank().autoSetInternal();
             initTurretArmor(getTank().getLocTurret2());
         }
+        getTank().autoSetInternal();
         panChassis.setFromEntity(getTank());
         panArmorAllocation.setFromEntity(getTank());
         refresh.refreshBuild();
