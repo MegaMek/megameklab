@@ -250,19 +250,24 @@ public class CriticalTransferHandler extends TransferHandler {
                         + " on " + getUnit().getDisplayName());
             }
 
+            int currLoc = location;
             for (; critsUsed < totalCrits; critsUsed++) {
-                mech.addEquipment(eq, location, false, slotNumber);
+                mech.addEquipment(eq, currLoc, false, slotNumber);
                 slotNumber = 
-                        (slotNumber + 1) % mech.getNumberOfCriticals(location);
+                        (slotNumber + 1) % mech.getNumberOfCriticals(currLoc);
                 primaryLocSpace--;
                 if (primaryLocSpace == 0) {
                     slotNumber = 0;
-                    location = nextLocation;
+                    currLoc = nextLocation;
                     totalCrits -= critsUsed;
                     critsUsed = 0;
                 }
             }
-            changeMountStatus(eq, primaryLocation, nextLocation, false);
+            int secondary = Entity.LOC_NONE;
+            if ((primaryLocSpace <= 0) && (slotNumber > 0)) {
+                secondary = nextLocation;
+            }
+            changeMountStatus(eq, primaryLocation, secondary, false);
         } else if (primaryLocSpace >= totalCrits) {
             if ((eq.getType() instanceof WeaponType) 
                     && eq.getType().hasFlag(WeaponType.F_VGL)) {
@@ -460,7 +465,6 @@ public class CriticalTransferHandler extends TransferHandler {
 
 
             } catch (LocationFullException lfe) {
-                lfe.printStackTrace();
                 JOptionPane.showMessageDialog(null, lfe.getMessage(), 
                         "Location Full", JOptionPane.INFORMATION_MESSAGE);
                 return false;
