@@ -680,6 +680,7 @@ public class StructureTab extends ITab implements MekBuildListener {
             panMovement.setFromEntity(getMech());
         }
         refresh();
+        refresh.refreshBuild();
         refresh.refreshPreview();
         refresh.refreshStatus();
     }
@@ -968,6 +969,7 @@ public class StructureTab extends ITab implements MekBuildListener {
         }
         getMech().setOriginalWalkMP(walkMP);
         panSummary.refresh();
+        refresh.refreshBuild();
         refresh.refreshStatus();
         refresh.refreshPreview();
         panMovement.setFromEntity(getMech());
