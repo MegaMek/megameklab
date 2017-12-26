@@ -38,6 +38,7 @@ import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -53,6 +54,8 @@ import javax.swing.RowSorter;
 import javax.swing.SortOrder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
 
@@ -100,7 +103,7 @@ public class EquipmentTab extends ITab implements ActionListener {
 
     private JRadioButton rbtnStats = new JRadioButton("Stats");
     private JRadioButton rbtnFluff = new JRadioButton("Fluff");
-
+    final private JCheckBox chkShowAll = new JCheckBox("Show Unavailable");
 
     private TableRowSorter<EquipmentTableModel> equipmentSorter;
 
@@ -160,7 +163,7 @@ public class EquipmentTab extends ITab implements ActionListener {
         equipmentScroll.setMinimumSize(new java.awt.Dimension(300, 200));
         equipmentScroll.setPreferredSize(new java.awt.Dimension(300, 200));
 
-        masterEquipmentList = new EquipmentTableModel(eSource.getEntity());
+        masterEquipmentList = new EquipmentTableModel(eSource.getEntity(), eSource.getTechManager());
         masterEquipmentTable.setModel(masterEquipmentList);
         masterEquipmentTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         equipmentSorter = new TableRowSorter<EquipmentTableModel>(masterEquipmentList);
@@ -184,7 +187,8 @@ public class EquipmentTab extends ITab implements ActionListener {
         }
         masterEquipmentTable.setIntercellSpacing(new Dimension(0, 0));
         masterEquipmentTable.setShowGrid(false);
-        masterEquipmentTable.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        masterEquipmentTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        masterEquipmentTable.getSelectionModel().addListSelectionListener(selectionListener);
         masterEquipmentTable.setDoubleBuffered(true);
         masterEquipmentScroll.setViewportView(masterEquipmentTable);
 
@@ -253,19 +257,13 @@ public class EquipmentTab extends ITab implements ActionListener {
         bgroupView.add(rbtnFluff);
 
         rbtnStats.setSelected(true);
-        rbtnStats.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                setEquipmentView();
-            }
-        });
-        rbtnFluff.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                setEquipmentView();
-            }
-        });
-        JPanel viewPanel = new JPanel(new GridLayout(0,2));
+        rbtnStats.addActionListener(ev -> setEquipmentView());
+        rbtnFluff.addActionListener(ev -> setEquipmentView());
+        chkShowAll.addActionListener(ev -> filterEquipment());
+        JPanel viewPanel = new JPanel(new GridLayout(0,3));
         viewPanel.add(rbtnStats);
         viewPanel.add(rbtnFluff);
+        viewPanel.add(chkShowAll);
         setEquipmentView();
 
         //layout
@@ -601,7 +599,8 @@ public class EquipmentTab extends ITab implements ActionListener {
                         || (((nType == T_AMMO) && (atype != null)) && UnitUtil.canUseAmmo(ba, atype))
                         || ((nType == T_AP) && UnitUtil.isBattleArmorAPWeapon(etype))) {
                     if (eSource.getTechManager() != null
-                            && !eSource.getTechManager().isLegal(etype)) {
+                            && !eSource.getTechManager().isLegal(etype)
+                            && !chkShowAll.isSelected()) {
                         return false;
                     }
                     if (txtFilter.getText().length() > 0) {
@@ -629,6 +628,7 @@ public class EquipmentTab extends ITab implements ActionListener {
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_RANGE), true);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_SHOTS), true);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TECH), true);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TLEVEL), false);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TRATING), false);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DPROTOTYPE), false);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DPRODUCTION), false);
@@ -651,6 +651,7 @@ public class EquipmentTab extends ITab implements ActionListener {
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_RANGE), false);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_SHOTS), false);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TECH), true);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TLEVEL), true);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TRATING), true);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DPROTOTYPE), true);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DPRODUCTION), true);
@@ -831,6 +832,20 @@ public class EquipmentTab extends ITab implements ActionListener {
             return ((Comparable<Integer>)l0).compareTo(l1);
         }
     }
+    
+    private ListSelectionListener selectionListener = new ListSelectionListener() {
+
+        @Override
+        public void valueChanged(ListSelectionEvent e) {
+            int selected = masterEquipmentTable.getSelectedRow();
+            EquipmentType etype = null;
+            if (selected >= 0) {
+                etype = masterEquipmentList.getType(masterEquipmentTable.convertRowIndexToModel(selected));
+            }
+            addButton.setEnabled((null != etype) && eSource.getTechManager().isLegal(etype));
+        }
+        
+    };
 
     public void refreshTable() {
         filterEquipment();
