@@ -538,12 +538,14 @@ public class EquipmentTab extends ITab implements ActionListener {
                 equipmentList.removeMounted(row);
             }
             equipmentList.removeCrits(selectedRows);
-            if (getAero().isLargeCraft()) {
+            if (getAero().usesWeaponBays()) {
                 removeEmptyBays();
             }
         } else if (e.getActionCommand().equals(REMOVEALL_COMMAND)) {
             removeAllEquipment();
-            removeEmptyBays();
+            if (getAero().usesWeaponBays()) {
+                removeEmptyBays();
+            }
         } else {
             return;
         }
@@ -565,7 +567,7 @@ public class EquipmentTab extends ITab implements ActionListener {
     }
     
     private void removeEmptyBays() {
-        List<Mounted> emptyBays = getSmallCraft().getWeaponBayList().stream()
+        List<Mounted> emptyBays = getAero().getWeaponBayList().stream()
                 .filter(bay -> bay.getBayWeapons().isEmpty()).collect(Collectors.toList());
         for (Mounted bay : emptyBays) {
             UnitUtil.removeMounted(getAero(), bay);
