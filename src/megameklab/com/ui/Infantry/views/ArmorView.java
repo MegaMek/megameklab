@@ -51,10 +51,13 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
 
 import megamek.common.EquipmentType;
+import megamek.common.ITechManager;
 import megamek.common.MiscType;
 import megamek.common.TechConstants;
 import megameklab.com.ui.EntitySource;
@@ -81,6 +84,7 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
     private JRadioButton rbtnStats = new JRadioButton("Stats");
     private JRadioButton rbtnFluff = new JRadioButton("Fluff");
     private JRadioButton rbtnCustom = new JRadioButton("Custom");
+    final private JCheckBox chkShowAll = new JCheckBox("Show Unavailable");
     private TableRowSorter<EquipmentTableModel> equipmentSorter;
     private EquipmentTableModel masterEquipmentList;
     private JTable masterEquipmentTable = new JTable();
@@ -96,9 +100,9 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
     JCheckBox chSneakECM = new JCheckBox();
     private JSpinner armorValue = new JSpinner(new SpinnerNumberModel(1.0, 0.5, 3.0, 0.5));
     
-    public ArmorView(EntitySource eSource) {
+    public ArmorView(EntitySource eSource, ITechManager techManager) {
         super(eSource);
-        masterEquipmentList = new EquipmentTableModel(eSource.getEntity());
+        masterEquipmentList = new EquipmentTableModel(eSource.getEntity(), techManager);
         masterEquipmentTable.setModel(masterEquipmentList);
         masterEquipmentTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         equipmentSorter = new TableRowSorter<EquipmentTableModel>(masterEquipmentList);
@@ -119,7 +123,8 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
         }
         masterEquipmentTable.setIntercellSpacing(new Dimension(0, 0));
         masterEquipmentTable.setShowGrid(false);
-        masterEquipmentTable.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        masterEquipmentTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        masterEquipmentTable.getSelectionModel().addListSelectionListener(selectionListener);
         masterEquipmentTable.setDoubleBuffered(true);
         masterEquipmentScroll.setViewportView(masterEquipmentTable);
         masterEquipmentTable.getSelectionModel().addListSelectionListener(new javax.swing.event.ListSelectionListener() {
@@ -169,21 +174,10 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
         bgroupView.add(rbtnCustom);
 
         rbtnStats.setSelected(true);
-        rbtnStats.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                setEquipmentView();
-            }
-        });
-        rbtnFluff.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                setEquipmentView();
-            }
-        });
-        rbtnCustom.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                setEquipmentView();
-            }
-        });
+        rbtnStats.addActionListener(ev -> setEquipmentView());
+        rbtnFluff.addActionListener(ev -> setEquipmentView());
+        rbtnCustom.addActionListener(ev -> setEquipmentView());
+        chkShowAll.addActionListener(ev -> filterEquipment());
         
         setUpPanels();
         rbtnStats.setSelected(true);
@@ -209,6 +203,7 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
         btnPanel.add(rbtnStats);
         btnPanel.add(rbtnFluff);
         btnPanel.add(rbtnCustom);
+        btnPanel.add(chkShowAll);
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridwidth = GridBagConstraints.REMAINDER;
@@ -442,7 +437,8 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
                     return false;
                 }
                 if(null != eSource.getTechManager()
-                        && !eSource.getTechManager().isLegal(etype)) {
+                        && !eSource.getTechManager().isLegal(etype)
+                        && !chkShowAll.isSelected()) {
                     return false;
                 }
                 if (!etype.isAvailableIn(getInfantry().getTechLevelYear())) {
@@ -476,6 +472,7 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_RANGE), false);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_SHOTS), false);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TECH), true);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TLEVEL), false);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TRATING), false);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DPROTOTYPE), false);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DPRODUCTION), false);
@@ -498,6 +495,7 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_RANGE), false);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_SHOTS), false);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TECH), true);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TLEVEL), true);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TRATING), true);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DPROTOTYPE), false);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DPRODUCTION), false);
@@ -557,6 +555,19 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
                 return 0;
             }
         }
-
     }
+    
+    private ListSelectionListener selectionListener = new ListSelectionListener() {
+
+        @Override
+        public void valueChanged(ListSelectionEvent e) {
+            int selected = masterEquipmentTable.getSelectedRow();
+            EquipmentType etype = null;
+            if (selected >= 0) {
+                etype = masterEquipmentList.getType(masterEquipmentTable.convertRowIndexToModel(selected));
+            }
+            btnSetArmor.setEnabled((null != etype) && eSource.getTechManager().isLegal(etype));
+        }
+        
+    };
 }
