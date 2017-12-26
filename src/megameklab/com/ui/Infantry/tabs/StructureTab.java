@@ -407,6 +407,7 @@ public class StructureTab extends ITab implements InfantryBuildListener {
                 && getInfantry().getMovementMode() != EntityMovementMode.WHEELED) {
             UnitUtil.replaceFieldGun(getInfantry(), null, 0);
         }
+        enableTabs();
         panPlatoonType.setFromEntity(getInfantry());
         panWeapons.setFromEntity(getInfantry());
     }
