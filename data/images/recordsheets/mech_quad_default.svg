@@ -554,11 +554,11 @@
 	        <text
 		       transform="matrix(1,0,0,-1,256.85324,632.432819)"
 		       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-		       id="gunnerySkill1">Gunnery Skill:</text>
+		       id="gunnerySkillText1">Gunnery Skill:</text>
 	        <text
 		       transform="matrix(1,0,0,-1,328.186011,632.432819)"
 		       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-		       id="pilotingSkill1">Piloting Skill:</text>
+		       id="pilotingSkillText1">Piloting Skill:</text>
 
 		  <g id="blanksCrew1"><g
 	       transform="translate(282.3856,643.4332)"><path
@@ -718,11 +718,11 @@
 	        <text
 		       transform="matrix(1,0,0,-1,256.85324,632.432819)"
 		       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-		       id="gunnerySkill0">Gunnery Skill:</text>
+		       id="gunnerySkillText0">Gunnery Skill:</text>
 	        <text
 		       transform="matrix(1,0,0,-1,328.186011,632.432819)"
 		       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-		       id="pilotingSkill0">Piloting Skill:</text>
+		       id="pilotingSkillText0">Piloting Skill:</text>
 		       
 		    <text
 		       transform="matrix(1,0,0,-1,296.4296,618.515)"
@@ -910,6 +910,7 @@
              inkscape:connector-curvature="0" /></g></g></g><text
        transform="matrix(0.99809882,0,0,-1,46.1271,658.4925)"
        style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:10.625px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       fill="#ffffff"
        id="text3721"><tspan
          x="0 2.5287499 13.228125 19.805 27.200001 35.370625 39.110626 47.121876 53.99625 59.595627 214.29562 225.92999 233.46312 241.13437 248.80562 251.73813 259.33499 267.00626 270.74625 278.75751 285.63187 291.23126"
          y="0"
@@ -1390,6 +1391,7 @@
        style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:8.69320011px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text4035"><tspan
          x="0 2.4080164 9.6059856 14.717587 20.107372 26.392555 33.590527 39.762695 44.683048 47.751747 53.610966 58.722565 65.007751 71.571114 77.63028 82.741875 89.305244 95.590424 100.98021 104.04891 110.61227 113.02029 119.19247 125.52112 131.8063 137.97847"
+       fill="#ffffff"
          y="0"
          sodipodi:role="line"
          id="tspan4037">INTERNAL STRUCTURE DIAGRAM</tspan><tspan
