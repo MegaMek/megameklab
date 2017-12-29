@@ -15,7 +15,6 @@ package megameklab.com.printing;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.RenderedImage;
 import java.awt.print.PageFormat;
@@ -41,19 +40,24 @@ import java.util.TreeMap;
 
 import javax.imageio.ImageIO;
 
-import com.kitfox.svg.ImageSVG;
-import com.kitfox.svg.Path;
-import com.kitfox.svg.Rect;
-import com.kitfox.svg.SVGDiagram;
-import com.kitfox.svg.SVGElement;
-import com.kitfox.svg.SVGException;
-import com.kitfox.svg.Text;
-import com.kitfox.svg.animation.AnimationElement;
+import org.apache.batik.anim.dom.SVGDOMImplementation;
+import org.apache.batik.anim.dom.SVGLocatableSupport;
+import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.bridge.GVTBuilder;
+import org.apache.batik.bridge.UserAgentAdapter;
+import org.apache.batik.dom.util.SAXDocumentFactory;
+import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.util.XMLResourceDescriptor;
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.svg.SVGElement;
+import org.w3c.dom.svg.SVGRect;
 
 import megamek.common.EquipmentType;
 import megamek.common.logging.LogLevel;
 import megameklab.com.MegaMekLab;
-import megameklab.com.util.ImageHelper;
 
 /**
  * Base class for rendering record sheets. This is mostly a collection of utility methods.
@@ -78,15 +82,16 @@ public abstract class PrintRecordSheet implements Printable {
         }
     }
 
-    private SVGDiagram diagram;
+    public final String svgNS = SVGDOMImplementation.SVG_NAMESPACE_URI;
     private final int firstPage;
+    private Document svgDocument;
     
     protected PrintRecordSheet(int firstPage) {
         this.firstPage = firstPage;
     }
     
-    protected final SVGDiagram getSVGDiagram() {
-        return diagram;
+    protected final Document getSVGDocument() {
+        return svgDocument;
     }
 
     public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
@@ -94,25 +99,42 @@ public abstract class PrintRecordSheet implements Printable {
         
         Graphics2D g2d = (Graphics2D) graphics;
         if (null != g2d) {
-            diagram = ImageHelper.loadSVGImage(new File("data/images/recordsheets/" + getSVGFileName()));
-            if (null == diagram) {
+            File f = new File("data/images/recordsheets/" + getSVGFileName());
+            svgDocument = null;
+            try {
+                InputStream is = new FileInputStream(f);
+                DOMImplementation impl = SVGDOMImplementation.getDOMImplementation();
+                final String parser = XMLResourceDescriptor.getXMLParserClassName();
+                SAXDocumentFactory df = new SAXDocumentFactory(impl, parser);
+                svgDocument = df.createDocument(f.toURI().toASCIIString(), is);
+            } catch (Exception e) {
+                MegaMekLab.getLogger().log(PrintRecordSheet.class, METHOD_NAME, e);
+            }
+            if (null == svgDocument) {
                 MegaMekLab.getLogger().log(PrintRecordSheet.class, METHOD_NAME,
                         LogLevel.ERROR,
                         "Failed to open Mech SVG file! Path: data/images/recordsheets/" + getSVGFileName());
             } else {
-                diagram.setDeviceViewport(
-                        new Rectangle(0, 0, (int) pageFormat.getImageableWidth(), (int) pageFormat.getImageableHeight()));
-
-                try {
-                    printImage(g2d, pageFormat, pageIndex - firstPage);
-                    diagram.render(g2d);
-                } catch (SVGException e) {
-                    MegaMekLab.getLogger().log(PrintRecordSheet.class, METHOD_NAME, e);
-                    // TODO: report to user
-                }
+                printImage(g2d, pageFormat, pageIndex - firstPage);
+                GraphicsNode node = build();
+                node.paint(g2d);
             }
         }
         return Printable.PAGE_EXISTS;
+    }
+    
+    protected GraphicsNode build() {
+        GVTBuilder builder = new GVTBuilder();
+        BridgeContext ctx = new BridgeContext(new UserAgentAdapter());
+        ctx.setDynamic(true);
+        return builder.build(ctx, svgDocument);
+    }
+
+    protected GraphicsNode build(Element element) {
+        GVTBuilder builder = new GVTBuilder();
+        BridgeContext ctx = new BridgeContext(new UserAgentAdapter());
+        ctx.setDynamic(true);
+        return builder.build(ctx, element);
     }
 
     /**
@@ -130,10 +152,9 @@ public abstract class PrintRecordSheet implements Printable {
      * @param pageNum    Indicates which page of multi-page sheets to print. The first page is 0.
      * 
      * @throws PrinterException
-     * @throws SVGException
      */
     protected abstract void printImage(Graphics2D g2d, PageFormat pageFormat, int pageNum)
-            throws PrinterException, SVGException;
+            throws PrinterException;
 
     protected abstract String getSVGFileName();
     
@@ -142,7 +163,7 @@ public abstract class PrintRecordSheet implements Printable {
      */
     protected abstract String getRecordSheetTitle();
     
-    protected void setTextField(String id, String text) throws SVGException {
+    protected void setTextField(String id, String text) {
         setTextField(id, text, false);
     }
     
@@ -154,11 +175,9 @@ public abstract class PrintRecordSheet implements Printable {
      * @param id     The String id of a text element
      * @param text   The text to set as content
      * @param unhide Sets the element visible if the text is non-null
-     * 
-     * @throws SVGException
      */
-    protected void setTextField(String id, String text, boolean unhide) throws SVGException {
-        SVGElement element = diagram.getElement(id);
+    protected void setTextField(String id, String text, boolean unhide) {
+        Element element = svgDocument.getElementById(id);
         if (null != element) {
             if (null == text) {
                 hideElement(element, true);
@@ -166,9 +185,7 @@ public abstract class PrintRecordSheet implements Printable {
                 if (unhide) {
                     hideElement(element, false);
                 }
-                ((Text) element).getContent().clear();
-                ((Text) element).appendText(text);
-                ((Text) element).rebuild();
+                element.setTextContent(text);
             }
         }
     }
@@ -184,11 +201,9 @@ public abstract class PrintRecordSheet implements Printable {
      * @param fontSize  Font size of the text.
      * @param anchor    Set the Text elements text-anchor.  Should be either start, middle, or end.
      * @param weight    The font weight, either normal or bold.
-     *
-     * @throws SVGException
      */
-    protected double addTextElement(SVGElement parent, double x, double y, String text,
-            double fontSize, String anchor, String weight) throws SVGException {
+    protected double addTextElement(Element parent, double x, double y, String text,
+            double fontSize, String anchor, String weight) {
         return addTextElement(parent, x, y, text, fontSize, anchor, weight, "#000000");
     }
     
@@ -204,27 +219,24 @@ public abstract class PrintRecordSheet implements Printable {
      * @param anchor    Set the Text elements text-anchor.  Should be either start, middle, or end.
      * @param weight    The font weight, either normal or bold.
      * @param fill      The fill color for the text (e.g. foreground color)
-     * @return          The width of the text element
-     *
-     * @throws SVGException
+     * 
+     * @return          The width of the added text element
      */
-    protected double addTextElement(SVGElement parent, double x, double y, String text,
-            double fontSize, String anchor, String weight, String fill)
-            throws SVGException {
-        Text newText = new Text();
-        newText.appendText(text);
+    protected double addTextElement(Element parent, double x, double y, String text,
+            double fontSize, String anchor, String weight, String fill) {
+        Element newText = svgDocument.createElementNS(svgNS, "text");
+        newText.setTextContent(text);
+        newText.setAttributeNS(null, "x", String.valueOf(x));
+        newText.setAttributeNS(null, "y", String.valueOf(y));
+        newText.setAttributeNS(null, "font-family", "Eurostile");
+        newText.setAttributeNS(null, "font-size", fontSize + "px");
+        newText.setAttributeNS(null, "font-weight", weight);
+        newText.setAttributeNS(null, "font-anchor", anchor);
+        newText.setAttributeNS(null, "fill", fill);
+        parent.appendChild(newText);
         
-        newText.addAttribute("x", AnimationElement.AT_XML, x + "");
-        newText.addAttribute("y", AnimationElement.AT_XML, y + "");
-        newText.addAttribute("font-family", AnimationElement.AT_XML, "Eurostile");
-        newText.addAttribute("font-size", AnimationElement.AT_XML, fontSize + "px");
-        newText.addAttribute("font-weight", AnimationElement.AT_XML, weight);
-        newText.addAttribute("text-anchor", AnimationElement.AT_CSS, anchor);
-        newText.addAttribute("fill", AnimationElement.AT_XML, fill);
-        parent.loaderAddChild(null, newText);
-        newText.rebuild();
-        
-        return newText.getBoundingBox().getWidth();
+        build();
+        return SVGLocatableSupport.getBBox(newText).getWidth();
     }
     
     /**
@@ -243,11 +255,9 @@ public abstract class PrintRecordSheet implements Printable {
      * @param weight      The font-weight attribute
      * 
      * @return            The number of lines of text added
-     * @throws SVGException
      */
-    protected int addMultilineTextElement(SVGElement canvas, double x, double y, double width, double lineHeight,
-            String text, double fontSize, String anchor, String weight)
-                    throws SVGException {
+    protected int addMultilineTextElement(Element canvas, double x, double y, double width, double lineHeight,
+            String text, double fontSize, String anchor, String weight) {
         return addMultilineTextElement(canvas, x, y, width, lineHeight,
                 text, fontSize, anchor, weight, "#000000", ' ');
     }
@@ -270,11 +280,9 @@ public abstract class PrintRecordSheet implements Printable {
      * @param delimiter   The character to use as an acceptable line ending
      * 
      * @return            The number of lines of text added
-     * @throws SVGException
      */
-    protected int addMultilineTextElement(SVGElement canvas, double x, double y, double width, double lineHeight,
-            String text, double fontSize, String anchor, String weight, String fill, char delimiter)
-                    throws SVGException {
+    protected int addMultilineTextElement(Element canvas, double x, double y, double width, double lineHeight,
+            String text, double fontSize, String anchor, String weight, String fill, char delimiter) {
         int lines = 0;
         int pos = 0;
         while (text.length() > 0) {
@@ -310,7 +318,7 @@ public abstract class PrintRecordSheet implements Printable {
     private final static String FMT_CURVE = " c %f %f,%f %f,%f %f";
     private final static String FMT_LINE = " l %f %f";
     
-    protected Path createPip(double x, double y, double radius, double strokeWidth) throws SVGException {
+    protected Element createPip(double x, double y, double radius, double strokeWidth) {
         return createPip(x, y, radius, strokeWidth, PipType.CIRCLE);
     }
     /**
@@ -320,14 +328,13 @@ public abstract class PrintRecordSheet implements Printable {
      * @param y      Position of top of bounding rectangle.
      * @param radius Radius of the circle
      * @return       A Path describing the circle
-     * @throws SVGException
      */
-    protected Path createPip(double x, double y, double radius, double strokeWidth,
-            PipType type) throws SVGException {
-        Path path = new Path();
-        path.addAttribute("fill", AnimationElement.AT_CSS, "none");
-        path.addAttribute("stroke", AnimationElement.AT_CSS, "black");
-        path.addAttribute("stroke-width", AnimationElement.AT_CSS, Double.toString(strokeWidth));
+    protected Element createPip(double x, double y, double radius, double strokeWidth,
+            PipType type) {
+        Element path = svgDocument.createElementNS(svgNS, "path");
+        path.setAttributeNS(null, "fill", "none");
+        path.setAttributeNS(null, "stroke", "black");
+        path.setAttributeNS(null, "stroke-width", Double.toString(strokeWidth));
         
         // Move to start of pip, at (1, 0)
         StringBuilder d = new StringBuilder("M").append(x + radius * 2).append(",").append(y + radius);
@@ -346,25 +353,24 @@ public abstract class PrintRecordSheet implements Printable {
             d.append(String.format(FMT_CURVE, 0.0, c, radius - c, radius, radius, radius));
             d.append(String.format(FMT_CURVE, c, 0.0, radius, c - radius, radius, -radius));
         }
-        path.addAttribute("d", AnimationElement.AT_XML, d.toString());
-        path.updateTime(0);
+        path.setAttributeNS(null, "d", d.toString());
         return path;
     }
     
-    protected void addPips(SVGElement group, int pipCount, boolean symmetric) throws SVGException {
+    protected void addPips(Element group, int pipCount, boolean symmetric) {
         addPips(group, pipCount, symmetric, PipType.CIRCLE, DEFAULT_PIP_SIZE);
     }
     
-    protected void addPips(SVGElement group, int pipCount, boolean symmetric, PipType pipType) throws SVGException {
+    protected void addPips(Element group, int pipCount, boolean symmetric, PipType pipType) {
         addPips(group, pipCount, symmetric, pipType, DEFAULT_PIP_SIZE);
     }
     
-    protected void addPips(SVGElement group, int pipCount, boolean symmetric, double size) throws SVGException {
+    protected void addPips(Element group, int pipCount, boolean symmetric, double size) {
         addPips(group, pipCount, symmetric, PipType.CIRCLE, size);
     }
 
-    protected void addPips(SVGElement group, int pipCount, boolean symmetric, PipType pipType,
-            double size) throws SVGException {
+    protected void addPips(Element group, int pipCount, boolean symmetric, PipType pipType,
+            double size) {
         addPips(group, pipCount, symmetric, pipType, size, 0.5);
     }
     
@@ -380,11 +386,9 @@ public abstract class PrintRecordSheet implements Printable {
      *                        bounds are symmetric). Used for regions on a unit's center line.
      * @param size            The ratio of pip radius to the spacing between pips. 
      * @param strokeWidth     The value to use for the stroke-width attribute when drawing the pips.
-     * 
-     * @throws SVGException
      */
-    protected void addPips(SVGElement group, int pipCount, boolean symmetric, PipType pipType,
-            double size, double strokeWidth) throws SVGException {
+    protected void addPips(Element group, int pipCount, boolean symmetric, PipType pipType,
+            double size, double strokeWidth) {
         
         if (pipCount == 0) {
             return;
@@ -398,10 +402,11 @@ public abstract class PrintRecordSheet implements Printable {
         double bottom = 0;
         
         List<Rectangle2D> regions = new ArrayList<>();
-        for (int i = 0; i < group.getNumChildren(); i++) {
-            final SVGElement r = group.getChild(i);
-            if (r instanceof Rect) {
-                Rectangle2D bbox = ((Rect) r).getBoundingBox();
+        build();
+        for (int i = 0; i < group.getChildNodes().getLength(); i++) {
+            final Node r = group.getChildNodes().item(i);
+            if (r instanceof SVGRect) {
+                SVGRect bbox = SVGLocatableSupport.getBBox((Element) r);
                 if (bbox.getX() < left) {
                     left = bbox.getX();
                 }
@@ -414,12 +419,12 @@ public abstract class PrintRecordSheet implements Printable {
                 if (bbox.getY() + bbox.getHeight() > bottom) {
                     bottom = bbox.getY() + bbox.getHeight();
                 }
-                regions.add(bbox);
+                regions.add(new Rectangle2D.Float(bbox.getX(), bbox.getY(), bbox.getWidth(), bbox.getHeight()));
             }
         }
         if (regions.isEmpty()) {
             MegaMekLab.getLogger().log(getClass(), METHOD_NAME, LogLevel.WARNING,
-                    "No pip rows defined for region " + group.getId());
+                    "No pip rows defined for region " + group.getAttribute("id"));
             return;
         }
         
@@ -640,7 +645,7 @@ public abstract class PrintRecordSheet implements Printable {
         for (r = 0; r < pipsByRow.length; r++) {
             if (pipsByRow[r] > 0) {
                 double radius = rows.get(r).getHeight() * size;
-                SVGElement pip = null;
+                Element pip = null;
                 // Symmetric and this row is centered
                 if (symmetric && (halfPipCount[r][0] == halfPipCount[r][1])) {
                     double leftX = centerLine - hSpacing;
@@ -650,7 +655,7 @@ public abstract class PrintRecordSheet implements Printable {
                         rightX += hSpacing - radius;
                         if (pipsByRow[r] % 2 == 1) {
                             pip = createPip(leftX + hSpacing, rows.get(r).getY(), radius, strokeWidth, pipType);
-                            group.loaderAddChild(null, pip);
+                            group.appendChild(pip);
                             pipsByRow[r]--;
                         }
                     } else {
@@ -659,9 +664,9 @@ public abstract class PrintRecordSheet implements Printable {
                     }
                     while (pipsByRow[r] > 0) {
                         pip = createPip(leftX, rows.get(r).getY(), radius, strokeWidth, pipType);
-                        group.loaderAddChild(null, pip);
+                        group.appendChild(pip);
                         pip = createPip(rightX, rows.get(r).getY(), radius, strokeWidth, pipType);
-                        group.loaderAddChild(null, pip);
+                        group.appendChild(pip);
                         leftX -= hSpacing;
                         rightX += hSpacing;
                         pipsByRow[r] -= 2;
@@ -678,14 +683,13 @@ public abstract class PrintRecordSheet implements Printable {
                     }
                     while (pipsByRow[r] > 0) {
                         pip = createPip(x, rows.get(r).getY(), radius, strokeWidth, pipType);
-                        group.loaderAddChild(null, pip);
+                        group.appendChild(pip);
                         pipsByRow[r]--;
                         x += hSpacing;
                     }
                 }
             }
         }
-        group.updateTime(0);
     }
     
     /**
@@ -798,29 +802,32 @@ public abstract class PrintRecordSheet implements Printable {
     
     // Older method that was unsuitable for mechs but could work for vees and aerospace. Would need
     // some updating to work with regions rather than fixed pips in the SVG.
-    protected void setArmorPips(SVGElement group, int armorVal, boolean symmetric) throws SVGException {
+    protected void setArmorPips(Element group, int armorVal, boolean symmetric) {
         final String METHOD_NAME = "setArmorPips(SVGElement,int)";
         // First sort pips into rows. We can't rely on the pips to be in order, so we use
         // maps to allow non-sequential loading.
-        Map<Integer,Map<Integer,SVGElement>> rowMap = new TreeMap<>();
+        Map<Integer,Map<Integer,Element>> rowMap = new TreeMap<>();
         int pipCount = 0;
-        for (int i = 0; i < group.getNumChildren(); i++) {
-            final SVGElement pip = group.getChild(i);
-            try {
-                int index = pip.getId().indexOf(":");
-                String[] coords = pip.getId().substring(index + 1).split(",");
-                int r = Integer.parseInt(coords[0]);
-                rowMap.putIfAbsent(r, new TreeMap<>());
-                rowMap.get(r).put(Integer.parseInt(coords[1]), pip);
-                pipCount++;
-            } catch (Exception ex) {
-                MegaMekLab.getLogger().log(getClass(), METHOD_NAME, LogLevel.ERROR,
-                        "Malformed id for SVG armor pip element: " + pip.getId());
+        for (int i = 0; i < group.getChildNodes().getLength(); i++) {
+            final Node n = group.getChildNodes().item(i);
+            if (n instanceof SVGElement) {
+                final SVGElement pip = (SVGElement) n;
+                try {
+                    int index = pip.getId().indexOf(":");
+                    String[] coords = pip.getId().substring(index + 1).split(",");
+                    int r = Integer.parseInt(coords[0]);
+                    rowMap.putIfAbsent(r, new TreeMap<>());
+                    rowMap.get(r).put(Integer.parseInt(coords[1]), pip);
+                    pipCount++;
+                } catch (Exception ex) {
+                    MegaMekLab.getLogger().log(getClass(), METHOD_NAME, LogLevel.ERROR,
+                            "Malformed id for SVG armor pip element: " + pip.getId());
+                }
             }
         }
         if (pipCount < armorVal) {
             MegaMekLab.getLogger().log(getClass(), METHOD_NAME, LogLevel.ERROR,
-                    "Armor pip group " + group.getId() + " does not contain enough pips for " + armorVal + " armor");
+                    "Armor pip group " + ((SVGElement) group).getId() + " does not contain enough pips for " + armorVal + " armor");
             return;
         } else if (pipCount == armorVal) {
             // Simple case; leave as is
@@ -828,12 +835,12 @@ public abstract class PrintRecordSheet implements Printable {
         }
         // Convert map into array for easier iteration in both directions. This will also skip
         // over gaps in the numbering.
-        SVGElement[][] rows = new SVGElement[rowMap.size()][];
+        Element[][] rows = new Element[rowMap.size()][];
         int row = 0;
-        for (Map<Integer,SVGElement> r : rowMap.values()) {
-            rows[row] = new SVGElement[r.size()];
+        for (Map<Integer,Element> r : rowMap.values()) {
+            rows[row] = new Element[r.size()];
             int i = 0;
-            for (SVGElement e : r.values()) {
+            for (Element e : r.values()) {
                 rows[row][i] = e;
                 i++;
             }
@@ -990,15 +997,15 @@ public abstract class PrintRecordSheet implements Printable {
         }
     }
     
-    protected void hideElement(String id) throws SVGException {
-        SVGElement element = diagram.getElement(id);
+    protected void hideElement(String id) {
+        Element element = svgDocument.getElementById(id);
         if (null != element) {
             hideElement(element, true);
         }
     }
     
-    protected void hideElement(String id, boolean hide) throws SVGException {
-        SVGElement element = diagram.getElement(id);
+    protected void hideElement(String id, boolean hide) {
+        Element element = svgDocument.getElementById(id);
         if (null != element) {
             hideElement(element, hide);
         }
@@ -1007,10 +1014,8 @@ public abstract class PrintRecordSheet implements Printable {
     /**
      * Sets the visibility attribute to "hidden"
      * @param element The element to hide
-     * 
-     * @throws SVGException
      */
-    protected void hideElement(SVGElement element) throws SVGException {
+    protected void hideElement(Element element) {
         hideElement(element, true);
     }
     
@@ -1019,16 +1024,13 @@ public abstract class PrintRecordSheet implements Printable {
      * 
      * @param element  The element to hide or show
      * @param hide     If true, visibility will be set to hidden. If false, the 
-     * @throws SVGException
      */
-    protected void hideElement(SVGElement element, boolean hide) throws SVGException {
-        String value = hide? "hidden" : "visible";
-        if (element.hasAttribute("visibility", AnimationElement.AT_XML)) {
-            element.setAttribute("visibility", AnimationElement.AT_XML, value);
+    protected void hideElement(Element element, boolean hide) {
+        if (hide) {
+            element.setAttributeNS(null, "visibility", "hidden");
         } else {
-            element.addAttribute("visibility", AnimationElement.AT_XML, value);
+            element.setAttributeNS(null, "visibility", "visible");
         }
-        element.updateTime(0);
     }
 
     /**
@@ -1037,20 +1039,18 @@ public abstract class PrintRecordSheet implements Printable {
      * @param fontSize  Value of CSS font-family attribute
      * @param canvas    The parent element for the text
      * @return          The height of the bounding box of a text element
-     * 
-     * @throws SVGException
      */
-    public static double getFontHeight(double fontSize, SVGElement canvas) throws SVGException {
-        Text newText = new Text();
-        newText.appendText("Medium Laser");        
-        newText.addAttribute("x", AnimationElement.AT_XML, "0");
-        newText.addAttribute("y", AnimationElement.AT_XML, "0");
-        newText.addAttribute("font-family", AnimationElement.AT_XML, "Eurostile");
-        newText.addAttribute("font-size", AnimationElement.AT_XML, Double.toString(fontSize));
-        canvas.loaderAddChild(null, newText);
-        newText.rebuild();
+    public float getFontHeight(double fontSize, Element canvas) {
+        Element newText = svgDocument.createElementNS(svgNS, "text");
+        newText.setTextContent("Medium Laser");
+        newText.setAttributeNS(null, "x", "0");
+        newText.setAttributeNS(null, "y", "0");
+        newText.setAttributeNS(null, "font-family", "Eurostile");
+        newText.setAttributeNS(null, "font-size", Double.toString(fontSize));
+        canvas.appendChild(newText);
+        build(newText);
         
-        double textHeight = newText.getShape().getBounds().getHeight();
+        float textHeight = SVGLocatableSupport.getBBox(newText).getHeight();
 
         canvas.removeChild(newText);
         return textHeight;
@@ -1063,22 +1063,21 @@ public abstract class PrintRecordSheet implements Printable {
      * @param fontSize  Value of CSS font-family attribute
      * @param canvas    The parent element for the text
      * @return          The width taken up by the string when rendered
-     * @throws SVGException
      */
-    public static double getTextLength(String text, double fontSize, SVGElement canvas) throws SVGException {
-        Text newText = new Text();
-        newText.appendText(text);        
-        newText.addAttribute("x", AnimationElement.AT_XML, "0");
-        newText.addAttribute("y", AnimationElement.AT_XML, "0");
-        newText.addAttribute("font-family", AnimationElement.AT_XML, "Eurostile");
-        newText.addAttribute("font-size", AnimationElement.AT_XML, Double.toString(fontSize));
-        canvas.loaderAddChild(null, newText);
-        newText.rebuild();
+    public float getTextLength(String text, double fontSize, Element canvas) {
+        Element newText = svgDocument.createElementNS(svgNS, "text");
+        newText.setTextContent(text);
+        newText.setAttributeNS(null, "x", "0");
+        newText.setAttributeNS(null, "y", "0");
+        newText.setAttributeNS(null, "font-family", "Eurostile");
+        newText.setAttributeNS(null, "font-size", Double.toString(fontSize));
+        canvas.appendChild(newText);
+        build(newText);
         
-        double width = newText.getShape().getBounds().getWidth();
+        float textWidth = SVGLocatableSupport.getBBox(newText).getWidth();
 
         canvas.removeChild(newText);
-        return width;
+        return textWidth;
     }
     
     /**
@@ -1088,10 +1087,8 @@ public abstract class PrintRecordSheet implements Printable {
      * @param canvas     The parent element for the image element.
      * @param bbox       The bounding box for the image. The image will be scaled to fit.
      * @param center     Whether to center the image vertically and horizontally.
-     * 
-     * @throws SVGException
      */
-    public void embedImage(File imageFile, SVGElement canvas, Rectangle2D bbox, boolean center) throws SVGException {
+    public void embedImage(File imageFile, Element canvas, SVGRect bbox, boolean center) {
         final String METHOD_NAME = "addFluffImage(File,Rectangle2D)";
         if (null == imageFile) {
             return;
@@ -1116,15 +1113,14 @@ public abstract class PrintRecordSheet implements Printable {
                 x += (bbox.getWidth() - width) / 2;
                 y += (bbox.getHeight() - height) / 2;
             }
-            ImageSVG img = new ImageSVG();
-            img.addAttribute("x", AnimationElement.AT_XML, Double.toString(x));
-            img.addAttribute("y", AnimationElement.AT_XML, Double.toString(y));
-            img.addAttribute("width", AnimationElement.AT_XML, Double.toString(width));
-            img.addAttribute("height", AnimationElement.AT_XML, Double.toString(height));
-            img.addAttribute("xlink:href", AnimationElement.AT_XML,
+            Element img = svgDocument.createElementNS(svgNS, "image");
+            img.setAttributeNS(null, "x", Double.toString(x));
+            img.setAttributeNS(null, "y", Double.toString(y));
+            img.setAttributeNS(null, "width", Double.toString(width));
+            img.setAttributeNS(null, "height", Double.toString(height));
+            img.setAttributeNS("http://www.w3.org/1999/xlink", "href",
                     "data:" + mimeType + ";base64," + Base64.getEncoder().encode(bytes.toByteArray()));
-            canvas.loaderAddChild(null, img);
-            canvas.updateTime(0);
+            canvas.appendChild(img);
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
             MegaMekLab.getLogger().log(PrintRecordSheet.class, METHOD_NAME, LogLevel.ERROR,
