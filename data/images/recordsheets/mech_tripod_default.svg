@@ -792,6 +792,7 @@
              <text
        transform="matrix(0.998099,0,0,-1,38.6722,661.5685)"
        style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:10.6260004px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       fill="#ffffff"
        id="text3774"><tspan
          x="0 2.5289879 13.22937 19.806864 27.20256 35.373955 39.114307 47.126308 54.000271 59.60017"
          y="0"
@@ -1270,6 +1271,7 @@
 <text
        transform="matrix(0.99799862,0,0,-1,391.8178,386.8928)"
        style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:8.69400024px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       fill="#ffffff"
        id="text4088"><tspan
          x="0 2.4082379 9.6068697 14.718942 20.109222 26.394983 33.593616 39.766357 44.68716 47.756142 53.615898 58.72797 65.013733 71.577705 77.637421 82.749489 89.313461 95.59922 100.9895 104.05849 110.62246 113.03069 119.20344 125.53267 131.81842 137.99117"
          y="0"
@@ -2917,11 +2919,11 @@
 	        <text
 		       transform="matrix(1,0,0,-1,256.85324,632.432819)"
 		       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-		       id="gunnerySkill2">Gunnery Skill:</text>
+		       id="gunnerySkillText2">Gunnery Skill:</text>
 	        <text
 		       transform="matrix(1,0,0,-1,328.186011,632.432819)"
 		       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-		       id="pilotingSkill2">Piloting Skill:</text>
+		       id="pilotingSkillText2">Piloting Skill:</text>
 
 		  <g id="blanksCrew2"><g
 	       transform="translate(282.3856,643.4332)"><path
@@ -3083,11 +3085,11 @@
 	        <text
 		       transform="matrix(1,0,0,-1,256.85324,632.432819)"
 		       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-		       id="gunnerySkill1">Gunnery Skill:</text>
+		       id="gunnerySkillText1">Gunnery Skill:</text>
 	        <text
 		       transform="matrix(1,0,0,-1,328.186011,632.432819)"
 		       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-		       id="pilotingSkill1">Piloting Skill:</text>
+		       id="pilotingSkillText1">Piloting Skill:</text>
 
 		  <g id="blanksCrew1"><g
 	       transform="translate(282.3856,643.4332)"><path
@@ -3245,11 +3247,11 @@
 	        <text
 		       transform="matrix(1,0,0,-1,256.85324,632.432819)"
 		       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-		       id="gunnerySkill0">Gunnery Skill:</text>
+		       id="gunnerySkillText0">Gunnery Skill:</text>
 	        <text
 		       transform="matrix(1,0,0,-1,328.186011,632.432819)"
 		       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-		       id="pilotingSkill0">Piloting Skill:</text>
+		       id="pilotingSkillText0">Piloting Skill:</text>
 		       
 		    <text
 		       transform="matrix(1,0,0,-1,296.4296,618.515)"
@@ -3413,6 +3415,7 @@
              inkscape:connector-curvature="0" /></g>	         <text
        transform="matrix(0.998099,0,0,-1,252.5789,661.5685)"
        style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:10.6260004px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       fill="#ffffff"
        id="text5388"><tspan
          x="0 11.63547 19.169304 26.841276 34.513248 37.446026 45.043613 52.715588 56.455936 64.467941 71.342964 76.942863"
          y="0"
