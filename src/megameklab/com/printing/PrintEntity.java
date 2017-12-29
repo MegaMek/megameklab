@@ -14,7 +14,6 @@
 package megameklab.com.printing;
 
 import java.awt.Graphics2D;
-import java.awt.geom.Rectangle2D;
 import java.awt.print.PageFormat;
 import java.text.NumberFormat;
 import java.util.Calendar;
@@ -22,13 +21,10 @@ import java.util.Enumeration;
 import java.util.Locale;
 import java.util.StringJoiner;
 
-import com.kitfox.svg.Path;
-import com.kitfox.svg.Rect;
-import com.kitfox.svg.SVGElement;
-import com.kitfox.svg.SVGException;
-import com.kitfox.svg.Text;
-import com.kitfox.svg.Tspan;
-import com.kitfox.svg.animation.AnimationElement;
+import org.apache.batik.anim.dom.SVGLocatableSupport;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.svg.SVGRect;
 
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
@@ -66,27 +62,26 @@ public abstract class PrintEntity extends PrintRecordSheet {
     protected abstract Entity getEntity();
     
     @Override
-    protected void printImage(Graphics2D g2d, PageFormat pageFormat, int pageNum) throws SVGException {
-        SVGElement element = null;
+    protected void printImage(Graphics2D g2d, PageFormat pageFormat, int pageNum) {
+        Element element = null;
         
-        element = getSVGDiagram().getElement("tspanCopyright");
+        element = getSVGDocument().getElementById("tspanCopyright");
         if (null != element) {
-            ((Tspan) element).setText(String.format(((Tspan) element).getText(),
+            element.setTextContent(String.format(element.getTextContent(),
                     Calendar.getInstance().get(Calendar.YEAR)));
-            ((Text) element.getParent()).rebuild();
         }
         
         writeTextFields();
         drawArmor();
         drawStructure();
-        SVGElement eqRect = getSVGDiagram().getElement("inventory");
+        Element eqRect = getSVGDocument().getElementById("inventory");
         if (null != eqRect) {
-            writeEquipment((Rect) eqRect);
+            writeEquipment(eqRect);
         }
         drawFluffImage();
     }
     
-    protected void writeTextFields() throws SVGException {
+    protected void writeTextFields() {
         setTextField("title", getRecordSheetTitle().toUpperCase());
         setTextField("type", getEntity().getShortNameRaw());
         setTextField("mpWalk", formatWalk());
@@ -112,30 +107,31 @@ public abstract class PrintEntity extends PrintRecordSheet {
             // name or the length of the blank.
             double nameOffset = 0;
             if (getEntity().getCrew().getSlotCount() > 1) {
-                SVGElement element = getSVGDiagram().getElement("crewName" + i);
+                Element element = getSVGDocument().getElementById("crewName" + i);
                 if (null != element) {
-                    double oldWidth = ((Text) element).getBoundingBox().getWidth();
-                    ((Text) element).getContent().clear();
-                    ((Text) element).appendText(getEntity().getCrew().getCrewType().getRoleName(i) + ":");
-                    ((Text) element).rebuild();
-                    nameOffset = ((Text) element).getBoundingBox().getWidth() - oldWidth;
+                    build(element);
+                    float oldWidth = SVGLocatableSupport.getBBox(element).getWidth();
+                    element.setTextContent(getEntity().getCrew().getCrewType().getRoleName(i) + ":");
+                    nameOffset = SVGLocatableSupport.getBBox(element).getWidth() - oldWidth;
                 }
             }
             if (!getEntity().getCrew().getName().equalsIgnoreCase("unnamed")) {
-                SVGElement element = getSVGDiagram().getElement("blanksCrew" + i);
+                Element element = getSVGDocument().getElementById("blanksCrew" + i);
                 if (null != element) {
                     hideElement(element);
                 }
                 if (nameOffset != 0) {
-                    element = getSVGDiagram().getElement("pilotName" + i);
+                    element = getSVGDocument().getElementById("pilotName" + i);
                     if (null != element) {
-                        if (element.hasAttribute("x", AnimationElement.AT_XML)) {
-                            element.setAttribute("x", AnimationElement.AT_XML,
-                                    Double.toString(nameOffset + Double.valueOf(element.getPresAbsolute("x").getStringValue())));
+                        build(element);
+                        double offset = nameOffset;
+                        String prev = element.getAttribute("x");
+                        if (null != prev) {
+                            offset += Double.parseDouble(prev);
                         } else {
-                            element.addAttribute("x", AnimationElement.AT_XML,
-                                    Double.toString(((Text) element).getBoundingBox().getX() + nameOffset));
+                            offset += SVGLocatableSupport.getBBox(element).getX();
                         }
+                        element.setAttributeNS(null, "x", Double.toString(offset));
                     }
                 }
                 setTextField("pilotName" + i, getEntity().getCrew().getName(i), true);
@@ -156,10 +152,11 @@ public abstract class PrintEntity extends PrintRecordSheet {
                     }
                 }
                 if (spaList.length() > 0) {
-                    Rect rect = (Rect) getSVGDiagram().getElement("spas" + getEntity().getCrew().getSlotCount());
+                    Element rect = getSVGDocument().getElementById("spas" + getEntity().getCrew().getSlotCount());
                     if (null != rect) {
-                        Rectangle2D bbox = rect.getBoundingBox();
-                        SVGElement canvas = rect.getParent();
+                        build(rect);
+                        SVGRect bbox = SVGLocatableSupport.getBBox(rect);
+                        Element canvas = (Element) ((Node) rect).getParentNode();
                         String spaText = "Abilities: " + spaList.toString();
                         double fontSize = FONT_SIZE_MEDIUM;
                         if (getTextLength(spaText, fontSize, canvas) > bbox.getWidth()) {
@@ -177,10 +174,11 @@ public abstract class PrintEntity extends PrintRecordSheet {
                 setTextField("gunnerySkill" + i, null);
                 setTextField("pilotingSkill" + i, null);
                 if (nameOffset != 0) {
-                    SVGElement element = getSVGDiagram().getElement("blankCrewName" + i);
+                    Element element = getSVGDocument().getElementById("blankCrewName" + i);
                     if (null != element) {
-                        double w = ((Path) element).getBoundingBox().getWidth();
-                        element.setAttribute("d", AnimationElement.AT_XML,
+                        build(element);
+                        double w = SVGLocatableSupport.getBBox(element).getWidth();
+                        element.setAttributeNS(null, "d",
                                 String.format("M %f,0 %f,0", nameOffset, w - nameOffset));
                     }
                 }
@@ -188,7 +186,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
         }
     }
     
-    protected void drawArmor() throws SVGException {
+    protected void drawArmor() {
         if (!getEntity().hasPatchworkArmor()) {
             if ((AT_SPECIAL & (1 << getEntity().getArmorType(1))) != 0) {
                 String[] atName = EquipmentType.getArmorTypeName(getEntity().getArmorType(1)).split("\\-");
@@ -210,7 +208,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
                     String atName = EquipmentType.getArmorTypeName(getEntity().getArmorType(loc));
                     String eleName = "patchwork" + getEntity().getLocationAbbr(loc);
                     int index = atName.indexOf('-');
-                    if ((index < 0) || (getSVGDiagram().getElement(eleName + "2") == null)) {
+                    if ((index < 0) || (getSVGDocument().getElementById(eleName + "2") == null)) {
                         setTextField("patchwork" + getEntity().getLocationAbbr(loc), atName);
                     } else {
                         setTextField("patchwork" + getEntity().getLocationAbbr(loc),
@@ -235,21 +233,18 @@ public abstract class PrintEntity extends PrintRecordSheet {
                     String.format(FORMAT, getEntity().getOInternal(loc)));
         }
         drawArmorStructurePips();
-        getSVGDiagram().updateTime(0);
     }
 
     /**
      * Add armor and structure pips for each location.
-     * 
-     * @throws SVGException
      */
-    protected void drawArmorStructurePips() throws SVGException {
-        SVGElement element = null;
+    protected void drawArmorStructurePips() {
+        Element element = null;
         for (int loc = firstArmorLocation(); loc < getEntity().locations(); loc++) {
             if ((getEntity() instanceof Mech) && ((Mech) getEntity()).isSuperHeavy() && (loc == Mech.LOC_HEAD)) {
-                element = getSVGDiagram().getElement("armorPips" + getEntity().getLocationAbbr(loc) + "_SH");
+                element = getSVGDocument().getElementById("armorPips" + getEntity().getLocationAbbr(loc) + "_SH");
             } else {
-                element = getSVGDiagram().getElement("armorPips" + getEntity().getLocationAbbr(loc));
+                element = getSVGDocument().getElementById("armorPips" + getEntity().getLocationAbbr(loc));
             }
             if (null != element) {
                 addPips(element, getEntity().getOArmor(loc), isCenterlineLocation(loc),
@@ -277,15 +272,15 @@ public abstract class PrintEntity extends PrintRecordSheet {
      */
     protected abstract boolean isCenterlineLocation(int loc);
     
-    protected void drawStructure() throws SVGException {
+    protected void drawStructure() {
         
     }
     
-    protected void writeEquipment(Rect canvas) throws SVGException {
+    protected void writeEquipment(Element canvas) {
         
     }
     
-    protected void drawFluffImage() throws SVGException {
+    protected void drawFluffImage() {
         
     }
     
