@@ -178,7 +178,11 @@ public abstract class PrintRecordSheet implements Printable {
         GVTBuilder builder = new GVTBuilder();
         BridgeContext ctx = new BridgeContext(new UserAgentAdapter() {
             @Override
+            // If an image can't be rendered we'll log it and return an empty document in its place
+            // rather than throwing an exception.
             public SVGDocument getBrokenLinkDocument(Element e, String url, String message) {
+                MegaMekLab.getLogger().log(PrintRecordSheet.class, "build()",
+                        LogLevel.WARNING, "Cannot render image: " + message);
                 DOMImplementation impl = SVGDOMImplementation.getDOMImplementation();
                 SVGDocument doc = (SVGDocument) impl.createDocument(svgNS, "svg", null);
                 Element text = doc.createElementNS(svgNS, SVGConstants.SVG_TEXT_TAG);
