@@ -14,9 +14,12 @@
 package megameklab.com.printing;
 
 import java.awt.print.PrinterJob;
+import java.util.concurrent.ExecutionException;
 
 import javax.print.attribute.PrintRequestAttributeSet;
 import javax.swing.SwingWorker;
+
+import megameklab.com.MegaMekLab;
 
 /**
  * Runs a print job as a background task.
@@ -41,6 +44,18 @@ public class PrintTask extends SwingWorker<Void, Integer> {
     protected Void doInBackground() throws Exception {
         job.print(aset);
         return null;
+    }
+    
+    @Override
+    protected void done() {
+        try {
+            get();
+        } catch (ExecutionException e) {
+            MegaMekLab.getLogger().log(PrintTask.class, "done()",
+                    e.getCause());
+        } catch (InterruptedException e) {
+            // Shouldn't get here because we're done...
+        }
     }
 
 }
