@@ -450,7 +450,7 @@
 <text
        transform="matrix(0.99799845,0,0,-1,306,23.0338)"
        style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.7954998px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-       text-anchor="middle"
+       text-anchor="middle" textLength="522" lengthAdjust="spacingAndGlyphs"
        id="textCopyright"><tspan
          x="0"
          y="0"
@@ -458,7 +458,7 @@
 <text
        transform="matrix(0.99799845,0,0,-1,306,16.079)"
        style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.7954998px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-       text-anchor="middle"
+       text-anchor="middle" textLength="494" lengthAdjust="spacingAndGlyphs"
        id="text55909">Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of InMediaRes Production, LLC. Permission to photocopy for personal use.</text>
 <g
        id="g55915"
