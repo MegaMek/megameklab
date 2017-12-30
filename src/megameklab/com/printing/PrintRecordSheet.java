@@ -43,20 +43,19 @@ import java.util.TreeMap;
 import javax.imageio.ImageIO;
 
 import org.apache.batik.anim.dom.SVGDOMImplementation;
-import org.apache.batik.anim.dom.SVGLocatableSupport;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.GVTBuilder;
 import org.apache.batik.bridge.UserAgentAdapter;
 import org.apache.batik.dom.util.SAXDocumentFactory;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.svggen.SVGGraphics2D;
+import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLResourceDescriptor;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGElement;
-import org.w3c.dom.svg.SVGRect;
 import org.w3c.dom.svg.SVGRectElement;
 
 import megamek.common.EquipmentType;
@@ -179,13 +178,6 @@ public abstract class PrintRecordSheet implements Printable {
         return builder.build(ctx, svgDocument);
     }
 
-    protected GraphicsNode build(Element element) {
-        GVTBuilder builder = new GVTBuilder();
-        BridgeContext ctx = new BridgeContext(new UserAgentAdapter());
-        ctx.setDynamic(true);
-        return builder.build(ctx, element);
-    }
-
     /**
      * @return The number of pages required to print this record sheet
      */
@@ -252,7 +244,7 @@ public abstract class PrintRecordSheet implements Printable {
      * @param weight    The font weight, either normal or bold.
      */
     protected double addTextElement(Element parent, double x, double y, String text,
-            double fontSize, String anchor, String weight) {
+            float fontSize, String anchor, String weight) {
         return addTextElement(parent, x, y, text, fontSize, anchor, weight, "#000000");
     }
     
@@ -272,20 +264,19 @@ public abstract class PrintRecordSheet implements Printable {
      * @return          The width of the added text element
      */
     protected double addTextElement(Element parent, double x, double y, String text,
-            double fontSize, String anchor, String weight, String fill) {
-        Element newText = svgDocument.createElementNS(svgNS, "text");
+            float fontSize, String anchor, String weight, String fill) {
+        Element newText = svgDocument.createElementNS(svgNS, SVGConstants.SVG_TEXT_TAG);
         newText.setTextContent(text);
-        newText.setAttributeNS(null, "x", String.valueOf(x));
-        newText.setAttributeNS(null, "y", String.valueOf(y));
-        newText.setAttributeNS(null, "font-family", "Eurostile");
-        newText.setAttributeNS(null, "font-size", fontSize + "px");
-        newText.setAttributeNS(null, "font-weight", weight);
-        newText.setAttributeNS(null, "text-anchor", anchor);
-        newText.setAttributeNS(null, "fill", fill);
+        newText.setAttributeNS(null, SVGConstants.SVG_X_ATTRIBUTE, String.valueOf(x));
+        newText.setAttributeNS(null, SVGConstants.SVG_X_ATTRIBUTE, String.valueOf(y));
+        newText.setAttributeNS(null, SVGConstants.SVG_FONT_FAMILY_ATTRIBUTE, "Eurostile");
+        newText.setAttributeNS(null, SVGConstants.SVG_FONT_SIZE_ATTRIBUTE, fontSize + "px");
+        newText.setAttributeNS(null, SVGConstants.SVG_FONT_WEIGHT_ATTRIBUTE, weight);
+        newText.setAttributeNS(null, SVGConstants.SVG_TEXT_ANCHOR_ATTRIBUTE, anchor);
+        newText.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, fill);
         parent.appendChild(newText);
         
-        build();
-        return SVGLocatableSupport.getBBox(newText).getWidth();
+        return getTextLength(text, fontSize);
     }
     
     /**
@@ -380,10 +371,10 @@ public abstract class PrintRecordSheet implements Printable {
      */
     protected Element createPip(double x, double y, double radius, double strokeWidth,
             PipType type) {
-        Element path = svgDocument.createElementNS(svgNS, "path");
-        path.setAttributeNS(null, "fill", "none");
-        path.setAttributeNS(null, "stroke", "black");
-        path.setAttributeNS(null, "stroke-width", Double.toString(strokeWidth));
+        Element path = svgDocument.createElementNS(svgNS, SVGConstants.SVG_PATH_TAG);
+        path.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, "none");
+        path.setAttributeNS(null, SVGConstants.SVG_STROKE_ATTRIBUTE, "black");
+        path.setAttributeNS(null, SVGConstants.SVG_STROKE_WIDTH_ATTRIBUTE, Double.toString(strokeWidth));
         
         // Move to start of pip, at (1, 0)
         StringBuilder d = new StringBuilder("M").append(x + radius * 2).append(",").append(y + radius);
@@ -402,7 +393,7 @@ public abstract class PrintRecordSheet implements Printable {
             d.append(String.format(FMT_CURVE, 0.0, c, radius - c, radius, radius, radius));
             d.append(String.format(FMT_CURVE, c, 0.0, radius, c - radius, radius, -radius));
         }
-        path.setAttributeNS(null, "d", d.toString());
+        path.setAttributeNS(null, SVGConstants.SVG_D_ATTRIBUTE, d.toString());
         return path;
     }
     
@@ -449,16 +440,11 @@ public abstract class PrintRecordSheet implements Printable {
         double top = Double.MAX_VALUE;
         double right = 0;
         double bottom = 0;
-        build();
         List<Rectangle2D> regions = new ArrayList<>();
         for (int i = 0; i < group.getChildNodes().getLength(); i++) {
             final Node r = group.getChildNodes().item(i);
             if (r instanceof SVGRectElement) {
-//                build((Element) r);
-                SVGRect bbox = ((SVGRectElement) r).getBBox();
-                if (null == bbox) {
-                    continue;
-                }
+                Rectangle2D bbox = getRectBBox((SVGRectElement) r);
                 if (bbox.getX() < left) {
                     left = bbox.getX();
                 }
@@ -471,7 +457,7 @@ public abstract class PrintRecordSheet implements Printable {
                 if (bbox.getY() + bbox.getHeight() > bottom) {
                     bottom = bbox.getY() + bbox.getHeight();
                 }
-                regions.add(new Rectangle2D.Float(bbox.getX(), bbox.getY(), bbox.getWidth(), bbox.getHeight()));
+                regions.add(bbox);
             }
         }
         if (regions.isEmpty()) {
@@ -1079,9 +1065,9 @@ public abstract class PrintRecordSheet implements Printable {
      */
     protected void hideElement(Element element, boolean hide) {
         if (hide) {
-            element.setAttributeNS(null, "visibility", "hidden");
+            element.setAttributeNS(null, SVGConstants.CSS_VISIBILITY_PROPERTY, SVGConstants.CSS_HIDDEN_VALUE);
         } else {
-            element.setAttributeNS(null, "visibility", "visible");
+            element.setAttributeNS(null, SVGConstants.CSS_VISIBILITY_PROPERTY, SVGConstants.CSS_VISIBLE_VALUE);
         }
     }
 
@@ -1089,53 +1075,25 @@ public abstract class PrintRecordSheet implements Printable {
      * Determines the vertical space taken up by a line of text.
      * 
      * @param fontSize  Value of CSS font-family attribute
-     * @param canvas    The parent element for the text
      * @return          The height of the bounding box of a text element
      */
-    public float getFontHeight(double fontSize, Element canvas) {
-        Element newText = svgDocument.createElementNS(svgNS, "text");
-        newText.setTextContent("Medium Laser");
-        newText.setAttributeNS(null, "x", "0");
-        newText.setAttributeNS(null, "y", "0");
-        newText.setAttributeNS(null, "font-family", "Eurostile");
-        newText.setAttributeNS(null, "font-size", Double.toString(fontSize));
-        canvas.appendChild(newText);
-        build(newText);
-        
-        float textHeight = SVGLocatableSupport.getBBox(newText).getHeight();
-
-        canvas.removeChild(newText);
-        return textHeight;
-    }
-    
-    /**
-     * Determines the horizontal space taken up by a String in a given font size
-     * 
-     * @param text      The text to measure
-     * @param fontSize  Value of CSS font-family attribute
-     * @param canvas    The parent element for the text
-     * @return          The width taken up by the string when rendered
-     */
-    public float getTextLength(String text, double fontSize, Element canvas) {
-        Element newText = svgDocument.createElementNS(svgNS, "text");
-        newText.setTextContent(text);
-        newText.setAttributeNS(null, "x", "0");
-        newText.setAttributeNS(null, "y", "0");
-        newText.setAttributeNS(null, "font-family", "Eurostile");
-        newText.setAttributeNS(null, "font-size", Double.toString(fontSize));
-        canvas.appendChild(newText);
-        build(canvas);
-        
-        float textWidth = SVGLocatableSupport.getBBox(newText).getWidth();
-
-        canvas.removeChild(newText);
-        return textWidth;
+    public float getFontHeight(float fontSize) {
+        Font f = getNormalFont(fontSize);
+        FontMetrics fm = svgGenerator.getFontMetrics(f);
+        return fm.getHeight();
     }
     
     public double getTextLength(String text, float fontSize) {
         Font font = getNormalFont(fontSize);
         FontMetrics fm = svgGenerator.getFontMetrics(font);
         return fm.stringWidth(text);
+    }
+    
+    public static Rectangle2D getRectBBox(SVGRectElement rect) {
+        return new Rectangle2D.Float(rect.getX().getBaseVal().getValue(),
+                rect.getY().getBaseVal().getValue(),
+                rect.getWidth().getBaseVal().getValue(),
+                rect.getHeight().getBaseVal().getValue());
     }
     
     /**
@@ -1146,7 +1104,7 @@ public abstract class PrintRecordSheet implements Printable {
      * @param bbox       The bounding box for the image. The image will be scaled to fit.
      * @param center     Whether to center the image vertically and horizontally.
      */
-    public void embedImage(File imageFile, Element canvas, SVGRect bbox, boolean center) {
+    public void embedImage(File imageFile, Element canvas, Rectangle2D bbox, boolean center) {
         final String METHOD_NAME = "addFluffImage(File,Rectangle2D)";
         if (null == imageFile) {
             return;
@@ -1171,12 +1129,12 @@ public abstract class PrintRecordSheet implements Printable {
                 x += (bbox.getWidth() - width) / 2;
                 y += (bbox.getHeight() - height) / 2;
             }
-            Element img = svgDocument.createElementNS(svgNS, "image");
-            img.setAttributeNS(null, "x", Double.toString(x));
-            img.setAttributeNS(null, "y", Double.toString(y));
-            img.setAttributeNS(null, "width", Double.toString(width));
-            img.setAttributeNS(null, "height", Double.toString(height));
-            img.setAttributeNS("http://www.w3.org/1999/xlink", "href",
+            Element img = svgDocument.createElementNS(svgNS, SVGConstants.SVG_IMAGE_TAG);
+            img.setAttributeNS(null, SVGConstants.SVG_X_ATTRIBUTE, Double.toString(x));
+            img.setAttributeNS(null, SVGConstants.SVG_Y_ATTRIBUTE, Double.toString(y));
+            img.setAttributeNS(null, SVGConstants.SVG_WIDTH_ATTRIBUTE, Double.toString(width));
+            img.setAttributeNS(null, SVGConstants.SVG_HEIGHT_ATTRIBUTE, Double.toString(height));
+            img.setAttributeNS(SVGConstants.XLINK_NAMESPACE_URI, SVGConstants.XLINK_HREF_QNAME,
                     "data:" + mimeType + ";base64," + Base64.getEncoder().encodeToString(bytes.toByteArray()));
             canvas.appendChild(img);
         } catch (FileNotFoundException e) {

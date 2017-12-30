@@ -14,6 +14,7 @@
 package megameklab.com.printing;
 
 import java.awt.Graphics2D;
+import java.awt.geom.Rectangle2D;
 import java.awt.print.PageFormat;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -22,10 +23,10 @@ import java.util.StringJoiner;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
-import org.apache.batik.anim.dom.SVGLocatableSupport;
+import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.svg.SVGRect;
+import org.w3c.dom.svg.SVGRectElement;
 
 import megamek.common.AmmoType;
 import megamek.common.CriticalSlot;
@@ -128,8 +129,8 @@ public class PrintMech extends PrintEntity {
 
         for (int loc = 0; loc < mech.locations(); loc++) {
             Element critRect = getSVGDocument().getElementById("crits_" + mech.getLocationAbbr(loc));
-            if (null != critRect) {
-                writeLocationCriticals(loc, critRect);
+            if ((null != critRect) && (critRect instanceof SVGRectElement)) {
+                writeLocationCriticals(loc, (SVGRectElement) critRect);
             }
         }
         
@@ -138,8 +139,8 @@ public class PrintMech extends PrintEntity {
         }
         
         Element hsRect = getSVGDocument().getElementById("heatSinkPips");
-        if (null != hsRect) {
-            drawHeatSinkPips(hsRect);
+        if ((null != hsRect) && (hsRect instanceof SVGRectElement)) {
+            drawHeatSinkPips((SVGRectElement) hsRect);
         }
 
         if (mech.hasETypeFlag(Entity.ETYPE_LAND_AIR_MECH)) {
@@ -276,7 +277,7 @@ public class PrintMech extends PrintEntity {
     }
     
     @Override
-    protected void writeEquipment(Element svgRect) {
+    protected void writeEquipment(SVGRectElement svgRect) {
         Map<Integer, Map<RecordSheetEquipmentLine,Integer>> eqMap = new TreeMap<>();
         Map<String,Integer> ammo = new TreeMap<>();
         for (Mounted m : mech.getEquipment()) {
@@ -306,8 +307,7 @@ public class PrintMech extends PrintEntity {
             eqMap.get(m.getLocation()).merge(line, 1, Integer::sum);
         }
         
-        build();
-        SVGRect bbox = SVGLocatableSupport.getBBox(svgRect);
+        Rectangle2D bbox = getRectBBox(svgRect);
         Element canvas = (Element) ((Node) svgRect).getParentNode();
         int viewWidth = (int)bbox.getWidth();
         int viewHeight = (int)bbox.getHeight();
@@ -383,7 +383,7 @@ public class PrintMech extends PrintEntity {
         }
 
         if ((ammo.size() > 0) || (quirksList.length() > 0)) {
-            Element svgGroup = getSVGDocument().createElementNS(svgNS, "g");
+            Element svgGroup = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
             canvas.appendChild(svgGroup);
             int lines = 0; 
             if (ammo.size() > 0) {
@@ -393,20 +393,18 @@ public class PrintMech extends PrintEntity {
                         .collect(Collectors.joining(", ")), fontSize, "start", "normal");
             }
             if (quirksList.length() > 0) {
-                addMultilineTextElement(svgGroup, viewX + viewWidth * 0.025, lines * lineHeight,
+                lines += addMultilineTextElement(svgGroup, viewX + viewWidth * 0.025, lines * lineHeight,
                         viewWidth * 0.95, lineHeight,
                         "Quirks: " + quirksList.toString(), fontSize, "start", "normal");
             }
-            build(svgGroup);
-            svgGroup.setAttributeNS(null, "transform",
-                    String.format("translate(0,%f)", viewY + viewHeight - SVGLocatableSupport.getBBox(svgGroup).getHeight()));
+            svgGroup.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
+                    String.format("translate(0,%f)", viewY + viewHeight - lines * lineHeight));
         }        
 
     }
     
-    private void writeLocationCriticals(int loc, Element svgRect) {
-        build();
-        SVGRect bbox = SVGLocatableSupport.getBBox(svgRect);
+    private void writeLocationCriticals(int loc, SVGRectElement svgRect) {
+        Rectangle2D bbox = getRectBBox(svgRect);
         Element canvas = (Element) ((Node) svgRect).getParentNode();
         int viewWidth = (int)bbox.getWidth();
         int viewHeight = (int)bbox.getHeight();
@@ -430,7 +428,7 @@ public class PrintMech extends PrintEntity {
         
         double x = viewX + viewWidth * 0.075;
         x += addTextElement(canvas, x, viewY - 1, mech.getLocationName(loc),
-                fontSize * 1.25, "start", "bold");
+                fontSize * 1.25f, "start", "bold");
         if (mech.isClan() && UnitUtil.hasAmmo(mech, loc) && !mech.hasCASEII(loc)) {
             addTextElement(canvas, x + fontSize / 2, viewY - 1, "(CASE)", fontSize, "start", "normal");
         }
@@ -503,15 +501,15 @@ public class PrintMech extends PrintEntity {
 
     private void connectSlots(Element canvas, double x, double y, double w,
             double h) {
-        Element p = getSVGDocument().createElementNS(svgNS, "path");
-        p.setAttributeNS(null, "d",
+        Element p = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_PATH_TAG);
+        p.setAttributeNS(null, SVGConstants.SVG_D_ATTRIBUTE,
                 "M " + x + " " + y
                 + " h " + (-w)
                 + " v " + h
                 + " h " + w);
-        p.setAttributeNS(null, "stroke", "black");
-        p.setAttributeNS(null, "stroke-width", "0.72");
-        p.setAttributeNS(null, "fill", "none");
+        p.setAttributeNS(null, SVGConstants.SVG_STROKE_ATTRIBUTE, "black");
+        p.setAttributeNS(null, SVGConstants.SVG_STROKE_WIDTH_ATTRIBUTE, "0.72");
+        p.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, "none");
         canvas.appendChild(p);
     }
     
@@ -525,16 +523,14 @@ public class PrintMech extends PrintEntity {
         } else {
             rect = getSVGDocument().getElementById("fluffSinglePilot");
         }
-        if (null != rect) {
-            build(rect);
+        if ((null != rect) && (rect instanceof SVGRectElement)) {
             embedImage(ImageHelper.getFluffFile(mech, ImageHelper.imageMech),
-                    (Element) ((Node) rect).getParentNode(), SVGLocatableSupport.getBBox(rect), true);
+                    (Element) ((Node) rect).getParentNode(), getRectBBox((SVGRectElement) rect), true);
         }
     }
     
-    private void drawHeatSinkPips(Element svgRect) {
-        build();
-        SVGRect bbox = SVGLocatableSupport.getBBox(svgRect);
+    private void drawHeatSinkPips(SVGRectElement svgRect) {
+        Rectangle2D bbox = getRectBBox(svgRect);
         Element canvas = (Element) ((Node) svgRect).getParentNode();
         int viewWidth = (int)bbox.getWidth();
         int viewHeight = (int)bbox.getHeight();
