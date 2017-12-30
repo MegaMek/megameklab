@@ -338,7 +338,7 @@ public class PrintMech extends PrintEntity {
         addTextElement(canvas, shortX, currY, "Sht", fontSize, "middle", "bold");
         addTextElement(canvas, medX, currY, "Med", fontSize, "middle", "bold");
         addTextElement(canvas, longX, currY, "Lng", fontSize, "middle", "bold");
-        currY += lineHeight;
+        currY += lineHeight * 1.2;
 
         int lines = 0;
         for (Integer loc : eqMap.keySet()) {
