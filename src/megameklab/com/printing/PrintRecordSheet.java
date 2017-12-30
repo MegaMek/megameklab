@@ -13,6 +13,8 @@
  */
 package megameklab.com.printing;
 
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
@@ -47,6 +49,7 @@ import org.apache.batik.bridge.GVTBuilder;
 import org.apache.batik.bridge.UserAgentAdapter;
 import org.apache.batik.dom.util.SAXDocumentFactory;
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.svggen.SVGGraphics2D;
 import org.apache.batik.util.XMLResourceDescriptor;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
@@ -54,6 +57,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGElement;
 import org.w3c.dom.svg.SVGRect;
+import org.w3c.dom.svg.SVGRectElement;
 
 import megamek.common.EquipmentType;
 import megamek.common.logging.LogLevel;
@@ -67,8 +71,8 @@ import megameklab.com.MegaMekLab;
  */
 public abstract class PrintRecordSheet implements Printable {
     
-    final static double DEFAULT_PIP_SIZE = 0.38;
-    final static double FONT_SIZE_MEDIUM = 6.76;
+    final static float DEFAULT_PIP_SIZE = 0.38f;
+    final static float FONT_SIZE_MEDIUM = 6.76f;
     
     enum PipType {
         CIRCLE, DIAMOND;
@@ -85,6 +89,10 @@ public abstract class PrintRecordSheet implements Printable {
     public final String svgNS = SVGDOMImplementation.SVG_NAMESPACE_URI;
     private final int firstPage;
     private Document svgDocument;
+    private SVGGraphics2D svgGenerator;
+    
+    private Font normalFont = null;
+    private Font boldFont = null;
     
     protected PrintRecordSheet(int firstPage) {
         this.firstPage = firstPage;
@@ -92,6 +100,46 @@ public abstract class PrintRecordSheet implements Printable {
     
     protected final Document getSVGDocument() {
         return svgDocument;
+    }
+    
+    protected final Font getNormalFont(float size) {
+        if (null == normalFont) {
+            loadFonts();
+        }
+        return normalFont.deriveFont(size);
+    }
+    
+    protected final Font getBoldFont(float size) {
+        if (null == boldFont) {
+            loadFonts();
+        }
+        return boldFont.deriveFont(size);
+    }
+    
+    private void loadFonts() {
+        final String METHOD_NAME = "loadFonts()";
+        String fName = "data/fonts/Eurosti.TTF";
+        try {
+            File fontFile = new File(fName);
+            InputStream is = new FileInputStream(fontFile);
+            normalFont = Font.createFont(Font.TRUETYPE_FONT, is);
+            is.close();
+        } catch (Exception ex) {
+            MegaMekLab.getLogger().log(PrintRecordSheet.class, METHOD_NAME, LogLevel.ERROR,
+                            fName + " not loaded.  Using Arial font.", ex);
+            normalFont = new Font("Arial", Font.PLAIN, 8);
+        }
+        fName = "data/fonts/Eurostib.TTF";
+        try {
+            File fontFile = new File(fName);
+            InputStream is = new FileInputStream(fontFile);
+            boldFont = Font.createFont(Font.TRUETYPE_FONT, is);
+            is.close();
+        } catch (Exception ex) {
+            MegaMekLab.getLogger().log(PrintRecordSheet.class, METHOD_NAME, LogLevel.ERROR,
+                            fName + " not loaded.  Using Arial font.", ex);
+            normalFont = new Font("Arial", Font.BOLD, 8);
+        }
     }
 
     public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
@@ -115,6 +163,7 @@ public abstract class PrintRecordSheet implements Printable {
                         LogLevel.ERROR,
                         "Failed to open Mech SVG file! Path: data/images/recordsheets/" + getSVGFileName());
             } else {
+                svgGenerator = new SVGGraphics2D(svgDocument);
                 printImage(g2d, pageFormat, pageIndex - firstPage);
                 GraphicsNode node = build();
                 node.paint(g2d);
@@ -231,7 +280,7 @@ public abstract class PrintRecordSheet implements Printable {
         newText.setAttributeNS(null, "font-family", "Eurostile");
         newText.setAttributeNS(null, "font-size", fontSize + "px");
         newText.setAttributeNS(null, "font-weight", weight);
-        newText.setAttributeNS(null, "font-anchor", anchor);
+        newText.setAttributeNS(null, "text-anchor", anchor);
         newText.setAttributeNS(null, "fill", fill);
         parent.appendChild(newText);
         
@@ -257,7 +306,7 @@ public abstract class PrintRecordSheet implements Printable {
      * @return            The number of lines of text added
      */
     protected int addMultilineTextElement(Element canvas, double x, double y, double width, double lineHeight,
-            String text, double fontSize, String anchor, String weight) {
+            String text, float fontSize, String anchor, String weight) {
         return addMultilineTextElement(canvas, x, y, width, lineHeight,
                 text, fontSize, anchor, weight, "#000000", ' ');
     }
@@ -282,11 +331,11 @@ public abstract class PrintRecordSheet implements Printable {
      * @return            The number of lines of text added
      */
     protected int addMultilineTextElement(Element canvas, double x, double y, double width, double lineHeight,
-            String text, double fontSize, String anchor, String weight, String fill, char delimiter) {
+            String text, float fontSize, String anchor, String weight, String fill, char delimiter) {
         int lines = 0;
         int pos = 0;
         while (text.length() > 0) {
-            if (getTextLength(text, fontSize, canvas) <= width) {
+            if (getTextLength(text, fontSize) <= width) {
                 addTextElement(canvas, x, y, text, fontSize, anchor, weight, fill);
                 lines++;
                 return lines;
@@ -297,7 +346,7 @@ public abstract class PrintRecordSheet implements Printable {
                 lines++;
                 return lines;
             }
-            if ((index < 0) || (getTextLength(text.substring(0, pos + index), fontSize, canvas) > width)) {
+            if ((index < 0) || (getTextLength(text.substring(0, pos + index), fontSize) > width)) {
                 addTextElement(canvas, x, y, text.substring(0, pos), fontSize, anchor, weight, fill);
                 lines++;
                 y += lineHeight;
@@ -400,13 +449,16 @@ public abstract class PrintRecordSheet implements Printable {
         double top = Double.MAX_VALUE;
         double right = 0;
         double bottom = 0;
-        
-        List<Rectangle2D> regions = new ArrayList<>();
         build();
+        List<Rectangle2D> regions = new ArrayList<>();
         for (int i = 0; i < group.getChildNodes().getLength(); i++) {
             final Node r = group.getChildNodes().item(i);
-            if (r instanceof SVGRect) {
-                SVGRect bbox = SVGLocatableSupport.getBBox((Element) r);
+            if (r instanceof SVGRectElement) {
+//                build((Element) r);
+                SVGRect bbox = ((SVGRectElement) r).getBBox();
+                if (null == bbox) {
+                    continue;
+                }
                 if (bbox.getX() < left) {
                     left = bbox.getX();
                 }
@@ -1072,12 +1124,18 @@ public abstract class PrintRecordSheet implements Printable {
         newText.setAttributeNS(null, "font-family", "Eurostile");
         newText.setAttributeNS(null, "font-size", Double.toString(fontSize));
         canvas.appendChild(newText);
-        build(newText);
+        build(canvas);
         
         float textWidth = SVGLocatableSupport.getBBox(newText).getWidth();
 
         canvas.removeChild(newText);
         return textWidth;
+    }
+    
+    public double getTextLength(String text, float fontSize) {
+        Font font = getNormalFont(fontSize);
+        FontMetrics fm = svgGenerator.getFontMetrics(font);
+        return fm.stringWidth(text);
     }
     
     /**
@@ -1119,7 +1177,7 @@ public abstract class PrintRecordSheet implements Printable {
             img.setAttributeNS(null, "width", Double.toString(width));
             img.setAttributeNS(null, "height", Double.toString(height));
             img.setAttributeNS("http://www.w3.org/1999/xlink", "href",
-                    "data:" + mimeType + ";base64," + Base64.getEncoder().encode(bytes.toByteArray()));
+                    "data:" + mimeType + ";base64," + Base64.getEncoder().encodeToString(bytes.toByteArray()));
             canvas.appendChild(img);
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
