@@ -25,6 +25,7 @@ import org.apache.batik.anim.dom.SVGLocatableSupport;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGRect;
+import org.w3c.dom.svg.SVGRectElement;
 
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
@@ -151,16 +152,16 @@ public abstract class PrintEntity extends PrintRecordSheet {
                         }
                     }
                 }
+                build();
                 if (spaList.length() > 0) {
                     Element rect = getSVGDocument().getElementById("spas" + getEntity().getCrew().getSlotCount());
                     if (null != rect) {
-                        build(rect);
-                        SVGRect bbox = SVGLocatableSupport.getBBox(rect);
+                        SVGRect bbox = ((SVGRectElement) rect).getBBox();
                         Element canvas = (Element) ((Node) rect).getParentNode();
                         String spaText = "Abilities: " + spaList.toString();
-                        double fontSize = FONT_SIZE_MEDIUM;
-                        if (getTextLength(spaText, fontSize, canvas) > bbox.getWidth()) {
-                            fontSize = bbox.getHeight() / 2.4;
+                        float fontSize = FONT_SIZE_MEDIUM;
+                        if (getTextLength(spaText, fontSize) > bbox.getWidth()) {
+                            fontSize = bbox.getHeight() / 2.4f;
                         }
                         double lineHeight = fontSize * 1.2;
                         addMultilineTextElement(canvas, bbox.getX(), bbox.getY() + lineHeight,

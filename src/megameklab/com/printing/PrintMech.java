@@ -328,8 +328,8 @@ public class PrintMech extends PrintEntity {
         
         int currY = viewY + 10;
         
-        double fontSize = FONT_SIZE_MEDIUM;
-        double lineHeight = getFontHeight(fontSize, canvas) * 1.2;
+        float fontSize = FONT_SIZE_MEDIUM;
+        float lineHeight = fontSize;
         
         addTextElement(canvas, qtyX, currY, "Qty", fontSize, "middle", "bold");
         addTextElement(canvas, nameX + indent, currY, "Type", fontSize, "start", "bold");
@@ -421,7 +421,7 @@ public class PrintMech extends PrintEntity {
         }
         double lineHeight = (viewHeight - gap) / mech.getNumberOfCriticals(loc);
         double currY = viewY;
-        double fontSize = lineHeight * 0.9;
+        float fontSize = (float) lineHeight * 0.9f;
         
         Mounted startingMount = null;
         double startingMountY = 0;
@@ -459,7 +459,7 @@ public class PrintMech extends PrintEntity {
                     && (crit.getMount().getType().hasFlag(MiscType.F_MODULAR_ARMOR))) {
                 String critName = formatCritName(crit);
                 addTextElement(canvas, critX, currY, critName, fontSize, "start", style, fill);
-                x = critX + getTextLength(critName, fontSize, canvas);
+                x = critX + getTextLength(critName, fontSize);
                 double remainingW = viewX + viewWidth - x;
                 double spacing = remainingW / 6.0;
                 double radius = spacing * 0.25;
@@ -527,8 +527,8 @@ public class PrintMech extends PrintEntity {
         }
         if (null != rect) {
             build(rect);
-//            embedImage(ImageHelper.getFluffFile(mech, ImageHelper.imageMech),
-//                    (Element) ((Node) rect).getParentNode(), SVGLocatableSupport.getBBox(rect), true);
+            embedImage(ImageHelper.getFluffFile(mech, ImageHelper.imageMech),
+                    (Element) ((Node) rect).getParentNode(), SVGLocatableSupport.getBBox(rect), true);
         }
     }
     
