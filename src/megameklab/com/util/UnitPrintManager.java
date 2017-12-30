@@ -23,7 +23,6 @@ import java.awt.event.KeyEvent;
 import java.awt.print.Book;
 import java.awt.print.PageFormat;
 import java.awt.print.Paper;
-import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.io.File;
 import java.util.ArrayList;
@@ -269,14 +268,8 @@ public class UnitPrintManager {
             masterPrintJob.setJobName(loadedUnits.get(0).getShortNameRaw());
         }
 
-        try {
-            masterPrintJob.print(aset);
-        } catch (PrinterException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-//        PrintTask task = new PrintTask(masterPrintJob, aset);
-//        task.execute();
+        PrintTask task = new PrintTask(masterPrintJob, aset);
+        task.execute();
 
         return true;
     }
