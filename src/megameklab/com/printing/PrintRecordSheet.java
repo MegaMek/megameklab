@@ -71,8 +71,10 @@ import megameklab.com.MegaMekLab;
  */
 public abstract class PrintRecordSheet implements Printable {
     
-    final static float DEFAULT_PIP_SIZE = 0.38f;
-    final static float FONT_SIZE_MEDIUM = 6.76f;
+    final static float DEFAULT_PIP_SIZE  = 0.38f;
+    final static float FONT_SIZE_MEDIUM  = 6.76f;
+    final static float FONT_SIZE_SMALL   = 6.2f;
+    final static float FONT_SIZE_VSMALL  = 5.8f;
     
     enum PipType {
         CIRCLE, DIAMOND;
@@ -1096,8 +1098,7 @@ public abstract class PrintRecordSheet implements Printable {
     
     public double getTextLength(String text, float fontSize) {
         Font font = getNormalFont(fontSize);
-        FontMetrics fm = svgGenerator.getFontMetrics(font);
-        return fm.stringWidth(text);
+        return font.getStringBounds(text, svgGenerator.getFontRenderContext()).getWidth();
     }
     
     public static Rectangle2D getRectBBox(SVGRectElement rect) {

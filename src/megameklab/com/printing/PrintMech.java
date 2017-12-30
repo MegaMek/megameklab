@@ -319,9 +319,9 @@ public class PrintMech extends PrintEntity {
         int locX = (int) Math.round(viewX + viewWidth * 0.41);
         int heatX = (int) Math.round(viewX + viewWidth * 0.48);
         int dmgX = (int) Math.round(viewX + viewWidth * 0.53);
-        int minX = (int) Math.round(viewX + viewWidth * 0.72);
-        int shortX = (int) Math.round(viewX + viewWidth * 0.8);
-        int medX = (int) Math.round(viewX + viewWidth * 0.88);
+        int minX = (int) Math.round(viewX + viewWidth * 0.75);
+        int shortX = (int) Math.round(viewX + viewWidth * 0.82);
+        int medX = (int) Math.round(viewX + viewWidth * 0.89);
         int longX = (int) Math.round(viewX + viewWidth * 0.96);
         
         int indent = (int) Math.round(viewWidth * 0.02);
@@ -329,7 +329,7 @@ public class PrintMech extends PrintEntity {
         int currY = viewY + 10;
         
         float fontSize = FONT_SIZE_MEDIUM;
-        float lineHeight = fontSize;
+        float lineHeight = getFontHeight(fontSize) * 0.8f;
         
         addTextElement(canvas, qtyX, currY, "Qty", fontSize, "middle", "bold");
         addTextElement(canvas, nameX + indent, currY, "Type", fontSize, "start", "bold");
@@ -342,10 +342,29 @@ public class PrintMech extends PrintEntity {
         addTextElement(canvas, longX, currY, "Lng", fontSize, "middle", "bold");
         currY += lineHeight;
 
+        int lines = 0;
+        for (Integer loc : eqMap.keySet()) {
+            for (RecordSheetEquipmentLine line : eqMap.get(loc).keySet()) {
+                int rows = line.nRows();
+                if ((rows == 1) && (getTextLength(line.getNameField(0, mech.isMixedTech()), fontSize) > locX - nameX)) {
+                    rows++; 
+                }
+                lines += rows;
+            }
+        }
+        if (lines > 12) {
+            lineHeight = getFontHeight(fontSize) * 0.8f;
+        }
+        if (lines > 16) {
+            fontSize = FONT_SIZE_SMALL;
+        }
+        if (lines > 20) {
+            fontSize = FONT_SIZE_VSMALL;
+        }
+        
         for (Integer loc : eqMap.keySet()) {
             for (RecordSheetEquipmentLine line : eqMap.get(loc).keySet()) {
                 for (int row = 0; row < line.nRows(); row++) {
-                    int lines;
                     if (row == 0) {
                         addTextElement(canvas, qtyX, currY, Integer.toString(eqMap.get(loc).get(line)), fontSize, "middle", "normal");
                         lines = addMultilineTextElement(canvas, nameX, currY, locX - nameX - indent, lineHeight,
@@ -385,7 +404,7 @@ public class PrintMech extends PrintEntity {
         if ((ammo.size() > 0) || (quirksList.length() > 0)) {
             Element svgGroup = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
             canvas.appendChild(svgGroup);
-            int lines = 0; 
+            lines = 0; 
             if (ammo.size() > 0) {
                 lines = addMultilineTextElement(svgGroup, viewX + viewWidth * 0.025, 0, viewWidth * 0.95, lineHeight,
                         "Ammo: " + ammo.entrySet().stream()
@@ -419,7 +438,7 @@ public class PrintMech extends PrintEntity {
         }
         double lineHeight = (viewHeight - gap) / mech.getNumberOfCriticals(loc);
         double currY = viewY;
-        float fontSize = (float) lineHeight * 0.9f;
+        float fontSize = (float) lineHeight * 0.85f;
         
         Mounted startingMount = null;
         double startingMountY = 0;
