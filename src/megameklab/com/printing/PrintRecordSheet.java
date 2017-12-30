@@ -1122,7 +1122,7 @@ public abstract class PrintRecordSheet implements Printable {
             img.addAttribute("width", AnimationElement.AT_XML, Double.toString(width));
             img.addAttribute("height", AnimationElement.AT_XML, Double.toString(height));
             img.addAttribute("xlink:href", AnimationElement.AT_XML,
-                    "data:" + mimeType + ";base64," + Base64.getEncoder().encode(bytes.toByteArray()));
+                    "data:" + mimeType + ";base64," + Base64.getEncoder().encodeToString(bytes.toByteArray()));
             canvas.loaderAddChild(null, img);
             canvas.updateTime(0);
         } catch (FileNotFoundException e) {
