@@ -22,6 +22,7 @@ import java.util.Enumeration;
 import java.util.Locale;
 import java.util.StringJoiner;
 
+import org.apache.batik.anim.dom.SVGGraphicsElement;
 import org.apache.batik.anim.dom.SVGLocatableSupport;
 import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
@@ -29,6 +30,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGRectElement;
 import org.w3c.dom.svg.SVGTextContentElement;
 
+import megamek.common.CrewType;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.Mech;
@@ -104,6 +106,11 @@ public abstract class PrintEntity extends PrintRecordSheet {
             setTextField("role", role.toString());
         }
         
+        // If we need to fill in names of crew slots we will need to reposition blanks/name fields.
+        // This will require building the graphics tree so we measure the elements.
+        if (getEntity().getCrew().getCrewType() != CrewType.SINGLE) {
+            build();
+        }
         for (int i = 0; i < getEntity().getCrew().getSlotCount(); i++) {
             // If we have multiple named crew for the unit, change the "Name:" label to
             // the label of the slot. This will usually require adjusting the position of the
@@ -176,7 +183,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
                 if (nameOffset != 0) {
                     Element element = getSVGDocument().getElementById("blankCrewName" + i);
                     if (null != element) {
-                        float w = ((SVGTextContentElement) element).getComputedTextLength();
+                        float w = ((SVGGraphicsElement) element).getBBox().getWidth();
                         element.setAttributeNS(null, SVGConstants.SVG_D_ATTRIBUTE,
                                 String.format("M %f,0 %f,0", nameOffset, w - nameOffset));
                     }
