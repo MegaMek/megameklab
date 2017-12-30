@@ -134,9 +134,7 @@ public class PrintMech extends PrintEntity {
             }
         }
         
-        if (mech.getGyroType() == Mech.GYRO_HEAVY_DUTY) {
-            hideElement("heavyDutyGyroPip", false);
-        }
+        hideElement("heavyDutyGyroPip", mech.getGyroType() != Mech.GYRO_HEAVY_DUTY);
         
         Element hsRect = getSVGDocument().getElementById("heatSinkPips");
         if ((null != hsRect) && (hsRect instanceof SVGRectElement)) {
