@@ -440,7 +440,7 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
     public List<Engine> getAvailableEngines() {
         List<Engine> retVal = new ArrayList<>();
         boolean isMixed = techManager.useMixedTech();
-        int flags = 0;
+        int flags = Engine.TANK_ENGINE;
         if (techManager.useClanTechBase()) {
             flags |= Engine.CLAN_ENGINE;
         }
