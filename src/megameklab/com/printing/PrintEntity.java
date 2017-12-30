@@ -14,6 +14,7 @@
 package megameklab.com.printing;
 
 import java.awt.Graphics2D;
+import java.awt.geom.Rectangle2D;
 import java.awt.print.PageFormat;
 import java.text.NumberFormat;
 import java.util.Calendar;
@@ -22,10 +23,11 @@ import java.util.Locale;
 import java.util.StringJoiner;
 
 import org.apache.batik.anim.dom.SVGLocatableSupport;
+import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.svg.SVGRect;
 import org.w3c.dom.svg.SVGRectElement;
+import org.w3c.dom.svg.SVGTextContentElement;
 
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
@@ -76,8 +78,8 @@ public abstract class PrintEntity extends PrintRecordSheet {
         drawArmor();
         drawStructure();
         Element eqRect = getSVGDocument().getElementById("inventory");
-        if (null != eqRect) {
-            writeEquipment(eqRect);
+        if ((null != eqRect) && (eqRect instanceof SVGRectElement)) {
+            writeEquipment((SVGRectElement) eqRect);
         }
         drawFluffImage();
     }
@@ -110,8 +112,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
             if (getEntity().getCrew().getSlotCount() > 1) {
                 Element element = getSVGDocument().getElementById("crewName" + i);
                 if (null != element) {
-                    build(element);
-                    float oldWidth = SVGLocatableSupport.getBBox(element).getWidth();
+                    float oldWidth = ((SVGTextContentElement) element).getComputedTextLength();
                     element.setTextContent(getEntity().getCrew().getCrewType().getRoleName(i) + ":");
                     nameOffset = SVGLocatableSupport.getBBox(element).getWidth() - oldWidth;
                 }
@@ -124,15 +125,14 @@ public abstract class PrintEntity extends PrintRecordSheet {
                 if (nameOffset != 0) {
                     element = getSVGDocument().getElementById("pilotName" + i);
                     if (null != element) {
-                        build(element);
                         double offset = nameOffset;
-                        String prev = element.getAttribute("x");
+                        String prev = element.getAttribute(SVGConstants.SVG_X_ATTRIBUTE);
                         if (null != prev) {
                             offset += Double.parseDouble(prev);
                         } else {
-                            offset += SVGLocatableSupport.getBBox(element).getX();
+                            offset += ((SVGTextContentElement) element).getStartPositionOfChar(0).getX();
                         }
-                        element.setAttributeNS(null, "x", Double.toString(offset));
+                        element.setAttributeNS(null, SVGConstants.SVG_X_ATTRIBUTE, Double.toString(offset));
                     }
                 }
                 setTextField("pilotName" + i, getEntity().getCrew().getName(i), true);
@@ -152,16 +152,15 @@ public abstract class PrintEntity extends PrintRecordSheet {
                         }
                     }
                 }
-                build();
                 if (spaList.length() > 0) {
                     Element rect = getSVGDocument().getElementById("spas" + getEntity().getCrew().getSlotCount());
-                    if (null != rect) {
-                        SVGRect bbox = ((SVGRectElement) rect).getBBox();
+                    if ((null != rect) && (rect instanceof SVGRectElement)) {
+                        Rectangle2D bbox = getRectBBox((SVGRectElement) rect);
                         Element canvas = (Element) ((Node) rect).getParentNode();
                         String spaText = "Abilities: " + spaList.toString();
                         float fontSize = FONT_SIZE_MEDIUM;
                         if (getTextLength(spaText, fontSize) > bbox.getWidth()) {
-                            fontSize = bbox.getHeight() / 2.4f;
+                            fontSize = (float) bbox.getHeight() / 2.4f;
                         }
                         double lineHeight = fontSize * 1.2;
                         addMultilineTextElement(canvas, bbox.getX(), bbox.getY() + lineHeight,
@@ -177,9 +176,8 @@ public abstract class PrintEntity extends PrintRecordSheet {
                 if (nameOffset != 0) {
                     Element element = getSVGDocument().getElementById("blankCrewName" + i);
                     if (null != element) {
-                        build(element);
-                        double w = SVGLocatableSupport.getBBox(element).getWidth();
-                        element.setAttributeNS(null, "d",
+                        float w = ((SVGTextContentElement) element).getComputedTextLength();
+                        element.setAttributeNS(null, SVGConstants.SVG_D_ATTRIBUTE,
                                 String.format("M %f,0 %f,0", nameOffset, w - nameOffset));
                     }
                 }
@@ -277,7 +275,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
         
     }
     
-    protected void writeEquipment(Element canvas) {
+    protected void writeEquipment(SVGRectElement canvas) {
         
     }
     
