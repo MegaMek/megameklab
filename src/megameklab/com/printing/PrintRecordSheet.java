@@ -55,6 +55,7 @@ import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.svg.SVGElement;
 import org.w3c.dom.svg.SVGRectElement;
 
@@ -173,7 +174,17 @@ public abstract class PrintRecordSheet implements Printable {
     
     protected GraphicsNode build() {
         GVTBuilder builder = new GVTBuilder();
-        BridgeContext ctx = new BridgeContext(new UserAgentAdapter());
+        BridgeContext ctx = new BridgeContext(new UserAgentAdapter() {
+            @Override
+            public SVGDocument getBrokenLinkDocument(Element e, String url, String message) {
+                DOMImplementation impl = SVGDOMImplementation.getDOMImplementation();
+                SVGDocument doc = (SVGDocument) impl.createDocument(svgNS, "svg", null);
+                Element text = doc.createElementNS(svgNS, SVGConstants.SVG_TEXT_TAG);
+                text.setTextContent("?");
+                doc.getDocumentElement().appendChild(text);
+                return doc;
+            }
+        });
         ctx.setDynamic(true);
         return builder.build(ctx, svgDocument);
     }
