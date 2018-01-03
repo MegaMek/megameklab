@@ -7,6 +7,7 @@ v0.43.7-git
 + Issue #127: Combat Vehicle Internal Structure Calculation
 + Added "Show Unavailable" checkbox to equipment tab that will show equipment that is filtered out so user
   can check intro dates and tech levels. 
++ Issue #129: Fusion Powered vehicle has no shielding
 
 v0.43.6 (2017-12-22 10:00 UTC)
 + Issue #119: Mech printing issue on 0.43.5
