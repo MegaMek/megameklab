@@ -28,6 +28,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
+import java.util.stream.Collectors;
 
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.standard.MediaPrintableArea;
@@ -178,7 +179,8 @@ public class UnitPrintManager {
                     wige1 = (Tank) unit;
                 }
             } else if ((unit instanceof Tank) && ((unit.getMovementMode() == EntityMovementMode.NAVAL) || (unit.getMovementMode() == EntityMovementMode.SUBMARINE) || (unit.getMovementMode() == EntityMovementMode.HYDROFOIL))) {
-                book.append(new PrintNavalVehicle((Tank) unit), pageFormat);
+                unprintable.add(unit);
+                //book.append(new PrintNavalVehicle((Tank) unit), pageFormat);
             } else if (unit instanceof Tank) {
                 if (!((Tank) unit).hasNoDualTurret()) {
                     if (singlePrint) {
@@ -199,7 +201,7 @@ public class UnitPrintManager {
                         tank1 = (Tank) unit;
                     }
                 }
-            } else if (unit instanceof Aero) {
+            } else if (unit.hasETypeFlag(Entity.ETYPE_AERO) && !unit.hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
                 if (unit instanceof Dropship) {
                     if (unit.getMovementMode() == EntityMovementMode.AERODYNE) {
                         book.append(new PrintAerodyne((Dropship) unit), pageFormat);
@@ -216,7 +218,7 @@ public class UnitPrintManager {
                     } else {
                         book.append(new PrintSmallCraftSpheroid((SmallCraft) unit), pageFormat);
                     }
-                } else if (!(unit instanceof Jumpship)) {
+                } else {
                     book.append(new PrintAero((Aero) unit), pageFormat);
                 }
             } else if (unit instanceof BattleArmor) {
@@ -242,6 +244,13 @@ public class UnitPrintManager {
                 unprintable.add(unit);
             }
         }
+        
+        if (unprintable.size() > 0) {
+            JOptionPane.showMessageDialog(null, "Printing is not currently supported for the following units:\n"
+                    + unprintable.stream().map(en -> en.getChassis() + " " + en.getModel())
+                    .collect(Collectors.joining("\n")));
+        }
+        
         if (null != wige1) {
             book.append(new PrintVehicle(wige1, null), pageFormat);
         }
