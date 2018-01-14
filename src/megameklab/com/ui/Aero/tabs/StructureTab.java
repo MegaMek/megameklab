@@ -369,8 +369,10 @@ public class StructureTab extends ITab implements AeroBuildListener {
     public void heatSinksChanged(int index, int count) {
         getAero().setHeatType(index);
         getAero().setHeatSinks(count);
-        getAero().setPodHeatSinks(Math.max(0, count
-                - panHeat.getBaseCount()));
+        if (getAero().isOmni()) {
+            getAero().setPodHeatSinks(Math.max(0, count
+                    - panHeat.getBaseCount()));
+        }
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();

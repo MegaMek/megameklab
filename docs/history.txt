@@ -9,6 +9,7 @@ v0.43.7-git
   can check intro dates and tech levels. 
 + Issue #129: Fusion Powered vehicle has no shielding
 + PR #130: Embedded fonts for mech record sheet printing.
++ Issue #132: Aero heat sinks added as pod-mounted on non-omnifighter.
 
 v0.43.6 (2017-12-22 10:00 UTC)
 + Issue #119: Mech printing issue on 0.43.5
