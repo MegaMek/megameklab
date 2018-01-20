@@ -70,7 +70,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
     private JTable equipmentTable = new JTable();
     private JScrollPane equipmentScroll = new JScrollPane();
     private int engineHeatSinkCount = 0;
-    
+
     CriticalTransferHandler cth;
 
     public BuildView(EntitySource eSource, RefreshListener refresh) {

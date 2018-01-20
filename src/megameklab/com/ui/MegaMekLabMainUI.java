@@ -74,10 +74,10 @@ public abstract class MegaMekLabMainUI extends JFrame implements
                 }
                 CConfig.saveConfig();
 
-                String quitMsg = "Do you really want to quit MegaMekLab?"; 
+                String quitMsg = "Do you really want to quit MegaMekLab?";
                 int response = JOptionPane.showConfirmDialog(null, quitMsg,
                         "Quit?", JOptionPane.YES_NO_OPTION,
-                        JOptionPane.QUESTION_MESSAGE); 
+                        JOptionPane.QUESTION_MESSAGE);
                 if (response == JOptionPane.YES_OPTION) {
                     System.exit(0);
                 }

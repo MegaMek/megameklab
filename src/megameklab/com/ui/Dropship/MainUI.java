@@ -44,17 +44,17 @@ import megameklab.com.util.MenuBarCreator;
 
 /**
  * Main UI for Dropships and Small Craft
- * 
+ *
  * @author Neoancient
  *
  */
 public class MainUI extends MegaMekLabMainUI {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = -4014312789921114515L;
-    
+
     JTabbedPane configPane = new JTabbedPane(SwingConstants.TOP);
     JPanel contentPane;
     private DropshipStructureTab structureTab;
@@ -66,7 +66,7 @@ public class MainUI extends MegaMekLabMainUI {
     JPanel masterPanel = new JPanel();
     JScrollPane scroll = new JScrollPane();
     private MenuBarCreator menubarcreator;
-    
+
     public MainUI(boolean primitive) {
         super();
         createNewUnit(Entity.ETYPE_DROPSHIP, primitive, false);
@@ -126,7 +126,7 @@ public class MainUI extends MegaMekLabMainUI {
         smallCraft.setArmorTechLevel(getEntity().getTechLevel());
         smallCraft.set0SI(3);
         smallCraft.setDesignType(SmallCraft.MILITARY);
-        
+
         smallCraft.setHeatType(Aero.HEAT_SINGLE);
 
         smallCraft.autoSetInternal();

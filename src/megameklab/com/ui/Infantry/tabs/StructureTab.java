@@ -77,7 +77,7 @@ public class StructureTab extends ITab implements InfantryBuildListener {
     private BasicInfoView panBasicInfo;
     private PlatoonTypeView panPlatoonType;
     private InfantryWeaponView panWeapons;
-    
+
     private String[] tabNames = {"Weapons", "Field Guns", "Armor Kit", "Specializations", "Augmentation"};
 
     private JTextField txtArmor = new JTextField("None");
@@ -85,7 +85,7 @@ public class StructureTab extends ITab implements InfantryBuildListener {
     private JTextPane txtAugmentations = new JTextPane();
 
     private JTabbedPane equipmentPane;
-    
+
     private WeaponView weaponView;
     private FieldGunView fieldGunView;
     private ArmorView armorView;
@@ -117,10 +117,10 @@ public class StructureTab extends ITab implements InfantryBuildListener {
 
         txtArmor.setEditable(false);
         txtSpecializations.setEditable(false);
-        txtSpecializations.setContentType("text/html");        
+        txtSpecializations.setContentType("text/html");
         txtAugmentations.setEditable(false);
         txtAugmentations.setContentType("text/html");
-        
+
         gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.WEST;
         gbc.insets = new Insets(0, 0, 1, 2);
@@ -131,7 +131,7 @@ public class StructureTab extends ITab implements InfantryBuildListener {
         advancedPanel.add(createLabel("Armor:", labelSize), gbc);
         gbc.gridx = 1;
         advancedPanel.add(txtArmor, gbc);
-        
+
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.anchor = GridBagConstraints.NORTH;
@@ -151,7 +151,7 @@ public class StructureTab extends ITab implements InfantryBuildListener {
         panPlatoonType.setBorder(BorderFactory.createTitledBorder("Movement and Size"));
         panWeapons.setBorder(BorderFactory.createTitledBorder("Current Weapons"));
         advancedPanel.setBorder(BorderFactory.createTitledBorder("Advanced"));
-        
+
         equipmentPane = new JTabbedPane();
         equipmentPane.addTab(tabNames[T_INFANTRY_WEAPONS], weaponView);
         equipmentPane.addTab(tabNames[T_FIELD_GUNS], fieldGunView);
@@ -180,7 +180,7 @@ public class StructureTab extends ITab implements InfantryBuildListener {
         add(equipmentPane, gbc);
 
     }
-    
+
     public ITechManager getTechManager() {
         return panBasicInfo;
     }
@@ -207,13 +207,13 @@ public class StructureTab extends ITab implements InfantryBuildListener {
     }
 
     public void refresh() {
-        
+
         panBasicInfo.setFromEntity(getInfantry());
         panPlatoonType.setFromEntity(getInfantry());
         panWeapons.setFromEntity(getInfantry());
 
         removeAllListeners();
-        
+
         EquipmentType armor = getInfantry().getArmorKit();
         if (null != armor) {
             txtArmor.setText(armor.getName());
@@ -245,9 +245,9 @@ public class StructureTab extends ITab implements InfantryBuildListener {
         armorView.refresh();
         specializationView.refresh();
         augmentationView.refresh();
-        
+
         enableTabs();
-        
+
         addAllListeners();
     }
 
@@ -277,7 +277,7 @@ public class StructureTab extends ITab implements InfantryBuildListener {
     public void setAsCustomization() {
         panBasicInfo.setAsCustomization();
     }
-    
+
     private void updateSpecializations() {
         if (getInfantry().getSpecializations() == 0) {
             txtSpecializations.setText("None");
@@ -298,13 +298,13 @@ public class StructureTab extends ITab implements InfantryBuildListener {
             getInfantry().setSecondaryN(2);
         }
     }
-    
+
     private void enableTabs() {
         SimpleTechLevel level = panBasicInfo.getTechLevel();
         if (level.ordinal() >= SimpleTechLevel.ADVANCED.ordinal()) {
             txtArmor.setEnabled(true);
             txtSpecializations.setEnabled(true);
-            equipmentPane.setEnabledAt(T_FIELD_GUNS, 
+            equipmentPane.setEnabledAt(T_FIELD_GUNS,
                     getInfantry().getMovementMode() == EntityMovementMode.INF_MOTORIZED
                     || getInfantry().getMovementMode() == EntityMovementMode.TRACKED
                     || getInfantry().getMovementMode() == EntityMovementMode.WHEELED);
@@ -334,7 +334,7 @@ public class StructureTab extends ITab implements InfantryBuildListener {
     @Override
     public void refreshSummary() {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
@@ -419,7 +419,7 @@ public class StructureTab extends ITab implements InfantryBuildListener {
         getInfantry().autoSetInternal();
         panPlatoonType.setFromEntity(getInfantry());
     }
-    
+
     @Override
     public void specializationsChanged() {
         updateSpecializations();

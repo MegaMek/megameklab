@@ -19,7 +19,7 @@ import megamek.common.SimpleTechLevel;
 /**
  * Combined listener interface for the various subviews of the structure tab. Includes callbacks
  * used by multiple unit types. Listeners for specific unit types extend this one.
- * 
+ *
  * @author Neoancient
  *
  */
@@ -38,7 +38,7 @@ public interface BuildListener {
     void walkChanged(int walkMP);
     void jumpChanged(int jumpMP, EquipmentType jumpJet);
     void jumpTypeChanged(EquipmentType jumpJet);
-    
+
     /*
      * Methods used by multiple unit types but not all are given default implementations that
      * ignore them.

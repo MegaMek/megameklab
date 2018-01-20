@@ -62,14 +62,14 @@ public class StructureTab extends ITab implements CVBuildListener {
 
     private RefreshListener refresh = null;
     private JPanel masterPanel;
-    private BasicInfoView panBasicInfo; 
+    private BasicInfoView panBasicInfo;
     private CVChassisView panChassis;
     private MVFArmorView panArmor;
     private MovementView panMovement;
     private SummaryView panSummary;
     private ArmorAllocationView panArmorAllocation;
     private PatchworkArmorView panPatchwork;
-    
+
     public StructureTab(EntitySource eSource) {
         super(eSource);
         setLayout(new BorderLayout());
@@ -117,11 +117,11 @@ public class StructureTab extends ITab implements CVBuildListener {
         leftPanel.add(Box.createVerticalStrut(6));
         leftPanel.add(panMovement);
         leftPanel.add(Box.createGlue());
-        
+
         midPanel.add(panArmor);
         midPanel.add(panSummary);
         midPanel.add(Box.createVerticalGlue());
-        
+
         rightPanel.add(panArmorAllocation);
         rightPanel.add(panPatchwork);
 
@@ -149,7 +149,7 @@ public class StructureTab extends ITab implements CVBuildListener {
 
     public void refresh() {
         removeAllListeners();
-        
+
         panBasicInfo.setFromEntity(getTank());
         panChassis.setFromEntity(getTank());
         panMovement.setFromEntity(getTank());
@@ -161,11 +161,11 @@ public class StructureTab extends ITab implements CVBuildListener {
 
         addAllListeners();
     }
-    
+
     public ITechManager getTechManager() {
         return panBasicInfo;
     }
-    
+
     /*
      * Used by MekHQ to set the tech faction for custom refits.
      */
@@ -194,7 +194,7 @@ public class StructureTab extends ITab implements CVBuildListener {
     public void addRefreshedListener(RefreshListener l) {
         refresh = l;
     }
-    
+
     private void removeTurret(int loc) {
         for (int slot = 0; slot < getTank().getNumberOfCriticals(loc); slot++) {
             getTank().setCritical(loc, slot, null);
@@ -242,7 +242,7 @@ public class StructureTab extends ITab implements CVBuildListener {
         }
         return true;
     }
-    
+
     public void refreshSummary() {
         panSummary.refresh();
     }
@@ -284,7 +284,7 @@ public class StructureTab extends ITab implements CVBuildListener {
     public void techLevelChanged(SimpleTechLevel techLevel) {
         updateTechLevel();
     }
-    
+
     @Override
     public void updateTechLevel() {
         removeAllListeners();
@@ -389,7 +389,7 @@ public class StructureTab extends ITab implements CVBuildListener {
         refresh.refreshBuild();
         refresh.refreshPreview();
     }
-    
+
     @Override
     public void armorTonnageChanged(double tonnage) {
         getTank().setArmorTonnage(Math.round(tonnage * 2) / 2.0);
@@ -406,13 +406,13 @@ public class StructureTab extends ITab implements CVBuildListener {
         panArmor.removeListener(this);
         panArmor.setFromEntity(getTank());
         panArmor.addListener(this);
-        
+
         panArmorAllocation.setFromEntity(getTank());
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
     }
-    
+
     @Override
     public void useRemainingTonnageArmor() {
         double currentTonnage = UnitUtil.getEntityVerifier(getTank())
@@ -421,14 +421,14 @@ public class StructureTab extends ITab implements CVBuildListener {
         double totalTonnage = getTank().getWeight();
         double remainingTonnage = TestEntity.floor(
                 totalTonnage - currentTonnage, TestEntity.Ceil.HALFTON);
-        
+
         double maxArmor = Math.min(getTank().getArmorWeight() + remainingTonnage,
                 UnitUtil.getMaximumArmorTonnage(getTank()));
         getTank().setArmorTonnage(maxArmor);
         panArmor.removeListener(this);
         panArmor.setFromEntity(getTank());
         panArmor.addListener(this);
-        
+
         panArmorAllocation.setFromEntity(getTank());
         panSummary.refresh();
         refresh.refreshStatus();
@@ -467,7 +467,7 @@ public class StructureTab extends ITab implements CVBuildListener {
         refresh.refreshStatus();
         refresh.refreshSummary();
     }
-    
+
     @Override
     public void superheavyChanged(boolean superheavy) {
         // Non-VTOLs require creating a new Entity
@@ -547,7 +547,7 @@ public class StructureTab extends ITab implements CVBuildListener {
             getTank().setHasNoTurret(true);
             getTank().setBaseChassisTurretWeight(-1);
         }
-    
+
         if (getTank().hasNoTurret() && (turretConfig != CVChassisView.TURRET_NONE)) {
             getTank().setHasNoTurret(false);
             getTank().autoSetInternal();
@@ -622,7 +622,7 @@ public class StructureTab extends ITab implements CVBuildListener {
         for (int location = 0; location < getTank().locations(); location++) {
             getTank().initializeArmor(0, location);
         }
-        
+
         // Discount body, as it's not armored
         int numLocations = getTank().locations() - 1;
 
@@ -632,14 +632,14 @@ public class StructureTab extends ITab implements CVBuildListener {
             pointsToAllocate -= 2;
             numLocations--;
         }
-        
+
         // Determine the percentage of total armor each location should get
         double otherPercent = 1.0 / numLocations;
         double remainingPercent = 1.0 - (otherPercent * (numLocations - 2));
         // Front should be slightly more armored and rear slightly less
         double frontPercent = remainingPercent * 0.6;
         double rearPercent = remainingPercent * 0.4;
-        
+
         // With the percentage of total for each location, assign armor
         int allocatedPoints = 0;
         int rear = Tank.LOC_REAR;
@@ -661,13 +661,13 @@ public class StructureTab extends ITab implements CVBuildListener {
             getTank().initializeArmor(armorToAllocate, location);
             allocatedPoints += armorToAllocate;
         }
-        
+
         // Because of rounding, may have leftover armor: allocate it to front
         int unallocated = pointsToAllocate - allocatedPoints;
         int currentFrontArmor = getTank().getOArmor(Tank.LOC_FRONT);
         getTank().initializeArmor(currentFrontArmor + unallocated, Tank.LOC_FRONT);
 
-        
+
         panArmorAllocation.setFromEntity(getTank());
         refresh.refreshPreview();
         refresh.refreshSummary();

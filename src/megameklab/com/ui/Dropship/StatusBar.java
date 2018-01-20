@@ -39,16 +39,16 @@ import megameklab.com.util.UnitUtil;
 
 /**
  * Status bar for SmallCraft and Dropships
- * 
+ *
  * @author Neoancient
  *
  */
 public class StatusBar extends ITab {
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = -6303444326796852470L;
-    
+
     private JButton btnValidate = new JButton("Validate Unit");
     private JButton btnFluffImage = new JButton("Set Fluff Image");
     private JLabel bvLabel = new JLabel();

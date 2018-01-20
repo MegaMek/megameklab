@@ -136,7 +136,7 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
                 }
                 // If we are editing BA, we need to inform the user about how
                 //  many shots are in this Critical
-                if ((unit instanceof BattleArmor) 
+                if ((unit instanceof BattleArmor)
                         && (mount.getType() instanceof AmmoType)){
                     name += " (" + mount.getBaseShotsLeft() + ")";
                 }
@@ -154,20 +154,20 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
         }
 
         int loc = getCritLocation();
-        if ((cs != null) 
-                && UnitUtil.isLastCrit(unit, cs, index, loc) 
+        if ((cs != null)
+                && UnitUtil.isLastCrit(unit, cs, index, loc)
                 && UnitUtil.isPreviousCritEmpty(unit, cs, index, loc)) {
             label.setBorder(
                     BorderFactory.createMatteBorder(1, 0, 1, 0, Color.black));
-        } else if ((cs != null) 
+        } else if ((cs != null)
                 && UnitUtil.isLastCrit(unit, cs, index, loc)) {
             label.setBorder(
                     BorderFactory.createMatteBorder(0, 0, 1, 0, Color.black));
-        } else if ((cs != null) 
+        } else if ((cs != null)
                 && UnitUtil.isPreviousCritEmpty(unit, cs, index, loc)){
             label.setBorder(
                     BorderFactory.createMatteBorder(1, 0, 0, 0, Color.black));
-        } 
+        }
 
         return label;
     }

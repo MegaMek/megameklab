@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package megameklab.com.ui.util;
 
@@ -17,19 +17,19 @@ import megamek.common.ITechnology;
  * Combo box that uses the RATGenerator faction data to provide a list of factions appropriate
  * to a unit's intro year and with the era-appropriate name. The underlying data type is the
  * ITechnology faction constant.
- * 
+ *
  * @author Neoancient
  *
  */
 public class FactionComboBox extends CustomComboBox<Integer> {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 4722914142736815170L;
-    
+
     private Map<Integer,String> displayNames = new HashMap<>();
-    
+
     public FactionComboBox() {
         super();
         setRenderer(new Renderer<Integer>(i -> displayNames.get(i)));
@@ -40,7 +40,7 @@ public class FactionComboBox extends CustomComboBox<Integer> {
             }
         }
     }
-    
+
     public void refresh(int year, boolean clan) {
         displayNames.clear();
         for (int i = 0; i < ITechnology.MM_FACTION_CODES.length; i++) {

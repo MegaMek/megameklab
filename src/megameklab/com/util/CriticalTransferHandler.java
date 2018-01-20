@@ -64,7 +64,7 @@ public class CriticalTransferHandler extends TransferHandler {
             try {
                 Mounted mount = getUnit().getEquipment(Integer.parseInt((String) t
                         .getTransferData(DataFlavor.stringFlavor)));
-                
+
                 if (!UnitUtil.isValidLocation(getUnit(), mount.getType(), location)) {
                     JOptionPane.showMessageDialog(null, mount.getName() +
                             " can't be placed in " +
@@ -73,7 +73,7 @@ public class CriticalTransferHandler extends TransferHandler {
                             JOptionPane.INFORMATION_MESSAGE);
                     return false;
                 }
-                
+
                 if (!getUnit().addCritical(location, new CriticalSlot(mount))) {
                     JOptionPane.showMessageDialog(null, "Location Full",
                             "Location Full", JOptionPane.INFORMATION_MESSAGE);
@@ -92,7 +92,7 @@ public class CriticalTransferHandler extends TransferHandler {
             Transferable t = info.getTransferable();
             Mounted mount = getUnit().getEquipment(Integer.parseInt((String) t
                     .getTransferData(DataFlavor.stringFlavor)));
-            
+
             if (getUnit() instanceof BattleArmor){
                 mount.setBaMountLoc(BattleArmor.MOUNT_LOC_NONE);
             } else {
@@ -148,7 +148,7 @@ public class CriticalTransferHandler extends TransferHandler {
     public int getSourceActions(JComponent c) {
         return TransferHandler.LINK;
     }
-    
+
     private void changeMountStatus(Mounted eq, int location, boolean rear) {
         changeMountStatus(eq, location, -1, rear);
     }
@@ -171,7 +171,7 @@ public class CriticalTransferHandler extends TransferHandler {
             refresh.refreshAll();
         }
     }
-    
+
     public void addRefreshListener(RefreshListener r){
         refresh = r;
     }

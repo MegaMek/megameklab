@@ -130,7 +130,7 @@ public class StructureTab extends ITab implements MekBuildListener {
         leftPanel.add(Box.createGlue());
 
         centerPanel.add(panArmor);
-        centerPanel.add(panMovement);       
+        centerPanel.add(panMovement);
         centerPanel.add(panSummary);
         centerPanel.add(Box.createVerticalGlue());
 
@@ -329,7 +329,7 @@ public class StructureTab extends ITab implements MekBuildListener {
     /**
      * Removes equipment placed in head locations that are needed for a cockpit. For most cockpit
      * types, this is all but the fourth slot.
-     * 
+     *
      * @param small If true, only clears the first four slots.
      * @param dual  If true, removes all equipment mounted in the head.
      */
@@ -341,7 +341,7 @@ public class StructureTab extends ITab implements MekBuildListener {
             clearCrit(Mech.LOC_HEAD, slot);
         }
     }
-    
+
     private void clearCritsForGyro(int numSlots) {
         for (int i = 3; i < 3 + numSlots; i++) {
             clearCrit(Mech.LOC_CT, i);
@@ -385,7 +385,7 @@ public class StructureTab extends ITab implements MekBuildListener {
         }
 
     }
-    
+
     private void removeSystemCrits(int systemType, int loc) {
         for (int slot = 0; slot < getMech().getNumberOfCriticals(loc); slot++) {
             CriticalSlot cs = getMech().getCritical(loc, slot);
@@ -469,7 +469,7 @@ public class StructureTab extends ITab implements MekBuildListener {
     private boolean recalculateEngineRating(int walkMP, double tonnage) {
         int rating = walkMP * (int)tonnage;
         if (getMech().isPrimitive()) {
-            rating = (int)Math.ceil((rating * 1.2) / 5.0) * 5; 
+            rating = (int)Math.ceil((rating * 1.2) / 5.0) * 5;
         }
         int oldRating = getMech().getEngine().getRating();
         if (oldRating != rating) {

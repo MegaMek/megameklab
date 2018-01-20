@@ -45,14 +45,14 @@ import megameklab.com.util.XTableColumnModel;
 
 /**
  * View for selecting infantry specializations, including xenoplanetary conditions training (XCT).
- * 
+ *
  * @author Neoancient
  *
  */
 public class SpecializationView extends IView implements TableModelListener {
 
     private static final long serialVersionUID = -5851020780074510576L;
-    
+
     private List<InfantryBuildListener> listeners = new CopyOnWriteArrayList<>();
     public void addListener(InfantryBuildListener l) {
         listeners.add(l);
@@ -64,10 +64,10 @@ public class SpecializationView extends IView implements TableModelListener {
     private final JTable table = new JTable();
     private final SpecializationModel model;
     private final TableRowSorter<SpecializationModel> sorter;
-    
+
     public SpecializationView(EntitySource eSource) {
         super(eSource);
-        
+
         model = new SpecializationModel();
         table.setModel(model);
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
@@ -87,22 +87,22 @@ public class SpecializationView extends IView implements TableModelListener {
         table.setDoubleBuffered(true);
         JScrollPane scroll = new JScrollPane();
         scroll.setViewportView(table);
-        
+
         model.addTableModelListener(this);
-        
+
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         add(scroll);
         add(Box.createHorizontalGlue());
     }
-    
+
     public void addRefreshedListener(RefreshListener l) {
         // not used
     }
-    
+
     public void refresh() {
         filterSpecializations();
     }
-    
+
     private void filterSpecializations() {
         RowFilter<SpecializationModel, Integer> filter = new RowFilter<SpecializationModel, Integer>() {
             @Override
@@ -124,19 +124,19 @@ public class SpecializationView extends IView implements TableModelListener {
     public void tableChanged(TableModelEvent e) {
         listeners.forEach(InfantryBuildListener::specializationsChanged);
     }
-    
+
     private class SpecializationModel extends AbstractTableModel {
-        
+
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = -4321737516108874027L;
-        
+
         // Don't include SCUBA
         private final String[][] rows = new String[Infantry.NUM_SPECIALIZATIONS - 1][];
         private final TechAdvancement[] specTAs = new TechAdvancement[Infantry.NUM_SPECIALIZATIONS];
         private final String[] tooltips = new String[Infantry.NUM_SPECIALIZATIONS - 1];
-        
+
         SpecializationModel() {
             super();
             for (int i = 0; i < rows.length; i++) {
@@ -183,7 +183,7 @@ public class SpecializationView extends IView implements TableModelListener {
                 }
             }
         }
-        
+
         TechAdvancement getTechAdvancement(int row) {
             return specTAs[row];
         }
@@ -206,7 +206,7 @@ public class SpecializationView extends IView implements TableModelListener {
                 return rows[rowIndex][columnIndex - 1];
             }
         }
-        
+
         @Override
         public Class<?> getColumnClass(int columnIndex) {
             if (columnIndex == 0) {
@@ -226,7 +226,7 @@ public class SpecializationView extends IView implements TableModelListener {
                 default: return "";
             }
         }
-        
+
         @Override
         public boolean isCellEditable(int rowIndex, int columnIndex) {
             return columnIndex == 0;
@@ -251,7 +251,7 @@ public class SpecializationView extends IView implements TableModelListener {
             }
             fireTableCellUpdated(row, col);
         }
-        
+
         public int getColumnWidth(int c) {
             if (c == 1) {
                 return 512;

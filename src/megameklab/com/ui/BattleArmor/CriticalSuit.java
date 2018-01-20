@@ -8,17 +8,17 @@ import megamek.common.Mounted;
 /**
  * Since BattleArmor is setup in a squad, the standard CriticalSlot system
  * isn't used.  For construction purposes, we keep track of criticals.  In MM,
- * for purposes and dealing with hits, the "locations" for BattleArmor must 
- * correspond to the troopers in the squad.  This means that the standard 
+ * for purposes and dealing with hits, the "locations" for BattleArmor must
+ * correspond to the troopers in the squad.  This means that the standard
  * Mounted.location can't really be used, and it causes problems with the
- * criticals as well.  Since these really only matter for constructions, a 
+ * criticals as well.  Since these really only matter for constructions, a
  * separate critical system is tracked in MML only for construction purposes.
  **/
 public class CriticalSuit {
-    
+
     //store critical slots just like an entity
     protected CriticalSlot[][] crits; // [loc][slot]
-    
+
     BattleArmor ba;
 
     public CriticalSuit(BattleArmor ba) {
@@ -51,7 +51,7 @@ public class CriticalSuit {
 
         }
     }
-    
+
     public int locations() {
         return BattleArmor.MOUNT_NUM_LOCS;
     }
@@ -59,7 +59,7 @@ public class CriticalSuit {
     public int getNumCriticals(int loc) {
         return crits[loc].length;
     }
-    
+
     public boolean canAddMounted(int loc, Mounted m) {
         int critsToAdd;
         if (m.getType().isSpreadable()){
@@ -75,26 +75,26 @@ public class CriticalSuit {
         }
         return critsAvailable >= critsToAdd;
     }
-    
+
     public void addMounted(int loc, Mounted m){
         // Don't mount unmounted equipment
         if (loc == BattleArmor.MOUNT_LOC_NONE){
             return;
         }
-        
+
         // AP Weapons that are mounted in an AP Mount don't take up slots
-        if (m.isAPMMounted() && m.getLinkedBy() != null 
+        if (m.isAPMMounted() && m.getLinkedBy() != null
                 && m.getLinkedBy().getType().hasFlag(MiscType.F_AP_MOUNT)){
             return;
         }
-        
+
         // Manipulators will always go in the last slot in its location,
         //  as they get a special slot added for them
         if (m.getType().hasFlag(MiscType.F_BA_MANIPULATOR)){
             int slot = crits[loc].length - 1;
             crits[loc][slot] = new CriticalSlot(m);
         }
-        
+
         int critsToAdd;
         if (m.getType().isSpreadable()){
             critsToAdd = 1;
@@ -114,10 +114,10 @@ public class CriticalSuit {
             }
         }
     }
-    
+
     public CriticalSlot getCritical(int loc, int slot) {
         return crits[loc][slot];
     }
-    
-    
+
+
 }

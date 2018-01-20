@@ -18,7 +18,7 @@ import megamek.common.EquipmentType;
 
 /**
  * Listener for views used by BattleArmor.
- * 
+ *
  * @author Neoancient
  *
  */

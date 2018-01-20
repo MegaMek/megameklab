@@ -181,7 +181,7 @@ public class BuildTab extends ITab implements ActionListener {
         // tracked explicitly
         CriticalSuit crits = new CriticalSuit(getBattleArmor());
         for (Mounted mount : buildView.getTableModel().getCrits()) {
-            for (int location = BattleArmor.MOUNT_LOC_BODY; 
+            for (int location = BattleArmor.MOUNT_LOC_BODY;
                     location < BattleArmor.MOUNT_NUM_LOCS; location++) {
                 if (!UnitUtil.isValidLocation(getBattleArmor(), mount.getType(), location)) {
                     continue;

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package megameklab.com.ui.Dropship.views;
 
@@ -28,16 +28,16 @@ import megameklab.com.util.IView;
 public class SummaryView extends IView {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = -5445051117935554280L;
-    
+
     private JTextField txtStructTon = new JTextField("?");
-    private JTextField txtEngineTon = new JTextField("?");   
+    private JTextField txtEngineTon = new JTextField("?");
     private JTextField txtFuelTon = new JTextField("?");
     private JTextField txtControlTon = new JTextField("?");
     private JTextField txtHeatTon = new JTextField("?");
-    private JTextField txtArmorTon = new JTextField("?");   
+    private JTextField txtArmorTon = new JTextField("?");
     private JTextField txtWeapTon = new JTextField("?");
     private JTextField txtAmmoTon = new JTextField("?");
     private JTextField txtMiscTon = new JTextField("?");
@@ -55,7 +55,7 @@ public class SummaryView extends IView {
 
         valueFields.add(txtStructTon);
         valueFields.add(txtEngineTon);
-        valueFields.add(txtFuelTon);        
+        valueFields.add(txtFuelTon);
         valueFields.add(txtControlTon);
         valueFields.add(txtHeatTon);
         valueFields.add(txtArmorTon);
@@ -171,14 +171,14 @@ public class SummaryView extends IView {
     }
 
     public void refresh() {
-        TestSmallCraft testSmallCraft = 
+        TestSmallCraft testSmallCraft =
                 new TestSmallCraft(getSmallCraft(), entityVerifier.aeroOption, null);
-       
+
         txtStructTon.setText(Double.toString(testSmallCraft.getWeightStructure()));
         txtEngineTon.setText(Double.toString(testSmallCraft.getWeightEngine()));
         txtFuelTon.setText(Double.toString(testSmallCraft.getWeightFuel()));
         txtControlTon.setText(Double.toString(testSmallCraft.getWeightControls()));
-        txtHeatTon.setText(Double.toString(testSmallCraft.getWeightHeatSinks()));        
+        txtHeatTon.setText(Double.toString(testSmallCraft.getWeightHeatSinks()));
         txtArmorTon.setText(Double.toString(testSmallCraft.getWeightArmor()));
         txtWeapTon.setText(Double.toString(testSmallCraft.getWeightWeapon()));
         txtAmmoTon.setText(Double.toString(testSmallCraft.getWeightAmmo()));

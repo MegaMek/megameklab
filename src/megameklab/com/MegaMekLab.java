@@ -38,7 +38,7 @@ public class MegaMekLab {
 
     public static void main(String[] args) {
         final String METHOD_NAME = "main(String[])";
-        
+
     	System.setProperty("apple.laf.useScreenMenuBar", "true");
         System.setProperty("com.apple.mrj.application.apple.menu.about.name","MegaMekLab");
 
@@ -69,7 +69,7 @@ public class MegaMekLab {
         }
 
         setupLogging(logs, logFileName);
-        
+
         if (vehicle) {
             Runtime runtime = Runtime.getRuntime();
 

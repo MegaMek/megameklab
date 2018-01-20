@@ -116,7 +116,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         validate.add(loadSpecsMenuOptions());
 
         validate.add(loadUnitCostBreakdownMenuOptions());
-        
+
         validate.add(loadUnitWeightBreakdownMenuOptions());
 
         this.add(file);
@@ -226,7 +226,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         entityBreakdown.add(item);
         return entityBreakdown;
     }
-    
+
     private JMenu loadUnitWeightBreakdownMenuOptions() {
         JMenu entityBreakdown = new JMenu("Unit Weight Breakdown");
         JMenuItem item = new JMenuItem();
@@ -395,7 +395,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             });
             unitMenu.add(item);
         }
-        
+
         JMenu pMenu = new JMenu("Primitive/Retro");
         if (!(en instanceof Mech)
                 || !((Mech)en).isPrimitive()) {
@@ -404,7 +404,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             item.addActionListener(e ->jMenuLoadPrimitiveMech());
             pMenu.add(item);
         }
-        
+
         if (!(en.isFighter())
                 || !((Aero)en).isPrimitive()) {
             item = new JMenuItem();
@@ -412,7 +412,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             item.addActionListener(e ->jMenuLoadPrimitiveAero());
             pMenu.add(item);
         }
-        
+
         if (!(en.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT))
                 || !((Aero)en).isPrimitive()) {
             item = new JMenuItem();
@@ -420,7 +420,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             item.addActionListener(e ->jMenuLoadPrimitiveDropship());
             pMenu.add(item);
         }
-        
+
         unitMenu.add(pMenu);
 
         file.add(unitMenu);
@@ -672,7 +672,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         UnitUtil.showUnitCostBreakDown(tempEntity, parentFrame);
 
     }
-    
+
     private void jMenuGetUnitWeightBreakdownFromCache_actionPerformed() {
         UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(parentFrame);
         unitLoadingDialog.setVisible(true);
@@ -783,7 +783,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             UnitUtil.showUnitCostBreakDown(tempEntity, parentFrame);
         }
     }
-    
+
     private void jMenuGetUnitWeightBreakdownFromFile_actionPerformed() {
 
         Entity tempEntity = null;
@@ -814,7 +814,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         } finally {
             UnitUtil.showUnitWeightBreakDown(tempEntity, parentFrame);
         }
-    }    
+    }
 
     private void jMenuGetUnitSpecsFromFile_actionPerformed() {
 
@@ -917,7 +917,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
     public void jMenuUnitCostBreakdown_actionPerformed() {
         UnitUtil.showUnitCostBreakDown(parentFrame.getEntity(), parentFrame);
     }
-    
+
     public void jMenuUnitWeightBreakdown_actionPerformed() {
         UnitUtil.showUnitWeightBreakDown(parentFrame.getEntity(), parentFrame);
     }
@@ -1017,10 +1017,10 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
     }
 
     public void jMenuExit_actionPerformed(ActionEvent event) {
-        String quitMsg = "Do you really want to quit MegaMekLab?"; 
+        String quitMsg = "Do you really want to quit MegaMekLab?";
         int response = JOptionPane.showConfirmDialog(null, quitMsg,
                 "Quit?", JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE); 
+                JOptionPane.QUESTION_MESSAGE);
         if (response == JOptionPane.YES_OPTION) {
             System.exit(0);
         }
@@ -1040,7 +1040,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         new megameklab.com.ui.Mek.MainUI(false, false);
         parentFrame.dispose();
     }
-    
+
     private void jMenuLoadPrimitiveMech() {
         new megameklab.com.ui.Mek.MainUI(true, false);
         parentFrame.dispose();
@@ -1055,7 +1055,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         new megameklab.com.ui.Aero.MainUI(true);
         parentFrame.dispose();
     }
-    
+
     private void jMenuLoadDropship() {
         new megameklab.com.ui.Dropship.MainUI(false);
         parentFrame.dispose();

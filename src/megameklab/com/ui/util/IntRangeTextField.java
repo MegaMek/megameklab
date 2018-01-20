@@ -28,17 +28,17 @@ import javax.swing.text.NumberFormatter;
  * A text field for integer values that can specify a minimum and maximum value. Attempting to release
  * focus with an illegal value will set the value to the minimum or maximum as appropriate rather than
  * allowing the focus to be released.
- * 
+ *
  * @author Neoancient
  *
  */
 public class IntRangeTextField extends JFormattedTextField {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = -6477694991883737040L;
-    
+
     private Integer minimum = null;
     private Integer maximum = null;
 
@@ -57,19 +57,19 @@ public class IntRangeTextField extends JFormattedTextField {
         this();
         setColumns(columns);
     }
-    
+
     public Integer getMinimum() {
         return minimum;
     }
-    
+
     public void setMinimum(Integer min) {
         minimum = min;
     }
-    
+
     public Integer getMaximum() {
         return maximum;
     }
-    
+
     public void setMaximum(Integer max) {
         maximum = max;
     }

@@ -39,14 +39,14 @@ import megameklab.com.ui.view.listeners.BuildListener;
 
 /**
  * Structure table armor panel for units that allocate armor by point instead of ton.
- * 
+ *
  * @author Neoancient
  *
  */
 public class BAProtoArmorView extends BuildView implements ActionListener, ChangeListener {
-    
+
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 14527455823813010L;
 
@@ -57,19 +57,19 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
     public void removeListener(BuildListener l) {
         listeners.remove(l);
     }
-    
+
     private final TechComboBox<EquipmentType> cbArmorType = new TechComboBox<>(eq -> eq.getName());
     private final SpinnerNumberModel spnArmorPointsModel = new SpinnerNumberModel(0, 0, null, 1);
     private final JSpinner spnArmorPoints = new JSpinner(spnArmorPointsModel);
-    
+
     private final ITechManager techManager;
     private long etype;
-    
+
     public BAProtoArmorView(ITechManager techManager) {
         this.techManager = techManager;
         initUI();
     }
-    
+
     private void initUI() {
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl()); //$NON-NLS-1$
 
@@ -86,7 +86,7 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
         cbArmorType.setToolTipText(resourceMap.getString("ArmorView.cbArmorType.tooltip")); //$NON-NLS-1$
         add(cbArmorType, gbc);
         cbArmorType.addActionListener(this);
-        
+
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridwidth = 1;
@@ -98,7 +98,7 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
         add(spnArmorPoints, gbc);
         spnArmorPoints.addChangeListener(this);
     }
-    
+
     public void setFromEntity(Entity en) {
         etype = en.getEntityType();
         refresh();
@@ -115,16 +115,16 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
         } else {
             spnArmorPointsModel.setValue(en.getTotalOArmor());
         }
-        
+
         cbArmorType.addActionListener(this);
         spnArmorPoints.addChangeListener(this);
     }
-    
+
     public void refresh() {
         EquipmentType prev = (EquipmentType)cbArmorType.getSelectedItem();
         cbArmorType.removeActionListener(this);
         cbArmorType.removeAllItems();
-        
+
         BigInteger flag = BigInteger.valueOf(0);
         if ((etype & Entity.ETYPE_BATTLEARMOR) != 0) {
             flag = MiscType.F_BA_EQUIPMENT;
@@ -154,7 +154,7 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
         }
         cbArmorType.showTechBase(techManager.useMixedTech());
     }
-    
+
     @Override
     public void stateChanged(ChangeEvent e) {
         if (e.getSource() == spnArmorPoints) {

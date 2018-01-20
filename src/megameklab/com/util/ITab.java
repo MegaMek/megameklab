@@ -1,6 +1,6 @@
 /*
- * MegaMekLab - Copyright (C) 2008 
- * 
+ * MegaMekLab - Copyright (C) 2008
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -32,7 +32,7 @@ import megameklab.com.ui.EntitySource;
 public class ITab extends JPanel {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = -5771036622436158024L;
     protected EntitySource eSource;
@@ -56,7 +56,7 @@ public class ITab extends JPanel {
     public Aero getAero() {
         return (Aero) eSource.getEntity();
     }
-    
+
     public SmallCraft getSmallCraft() {
         return (SmallCraft) eSource.getEntity();
     }
@@ -64,7 +64,7 @@ public class ITab extends JPanel {
     public BattleArmor getBattleArmor() {
         return (BattleArmor) eSource.getEntity();
     }
-    
+
     public Infantry getInfantry() {
     	return (Infantry) eSource.getEntity();
     }

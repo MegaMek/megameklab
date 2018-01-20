@@ -52,17 +52,17 @@ import megameklab.com.util.UnitUtil;
  *
  */
 public class PrintMech extends PrintEntity {
-    
+
     /**
      * The current mech being printed.
      */
     private final Mech mech;
-    
+
     public PrintMech(Mech mech, int startPage) {
         super(startPage);
         this.mech = mech;
     }
-    
+
     protected String getSVGFileName() {
         if (mech.hasETypeFlag(Entity.ETYPE_QUADVEE)) {
             return "mech_quadvee.svg";
@@ -76,7 +76,7 @@ public class PrintMech extends PrintEntity {
             return "mech_biped_default.svg";
         }
     }
-    
+
     @Override
     protected String getRecordSheetTitle() {
         StringBuilder sb = new StringBuilder();
@@ -115,16 +115,16 @@ public class PrintMech extends PrintEntity {
         sb.append(" Record Sheet");
         return sb.toString();
     }
-    
+
     @Override
     protected Entity getEntity() {
         return mech;
     }
-    
+
     @Override
     public void printImage(Graphics2D g2d, PageFormat pageFormat, int pageNum) {
         printShields();
-        
+
         super.printImage(g2d, pageFormat, pageNum);
 
         for (int loc = 0; loc < mech.locations(); loc++) {
@@ -133,9 +133,9 @@ public class PrintMech extends PrintEntity {
                 writeLocationCriticals(loc, (SVGRectElement) critRect);
             }
         }
-        
+
         hideElement("heavyDutyGyroPip", mech.getGyroType() != Mech.GYRO_HEAVY_DUTY);
-        
+
         Element hsRect = getSVGDocument().getElementById("heatSinkPips");
         if ((null != hsRect) && (hsRect instanceof SVGRectElement)) {
             drawHeatSinkPips((SVGRectElement) hsRect);
@@ -145,9 +145,9 @@ public class PrintMech extends PrintEntity {
             Element si = getSVGDocument().getElementById("siPips");
             addPips(si, mech.getOInternal(Mech.LOC_CT), true, PipType.CIRCLE, 0.38, 0.957);
         }
-        
+
     }
-    
+
     private void printShields() {
         for (Mounted m : mech.getMisc()) {
             if (((MiscType) m.getType()).isShield()) {
@@ -187,7 +187,7 @@ public class PrintMech extends PrintEntity {
         hideElement("warriorDataTriple", mech.getCrew().getSlotCount() != 3);
         setTextField("hsType", formatHeatSinkType());
         setTextField("hsCount", formatHeatSinkCount());
-        
+
         if (mech instanceof LandAirMech) {
             LandAirMech lam = (LandAirMech) mech;
             if (lam.getLAMType() == LandAirMech.LAM_BIMODAL) {
@@ -216,7 +216,7 @@ public class PrintMech extends PrintEntity {
             setTextField("lblVeeMode", ((QuadVee) mech).getMotiveTypeString() + "s");
         }
     }
-    
+
     // Mech armor and structure pips require special handling for rear armor and superheavy head armor/IS
     @Override
     protected void drawArmorStructurePips() {
@@ -253,7 +253,7 @@ public class PrintMech extends PrintEntity {
                             PipType.forAT(mech.getArmorType(loc)));
                 }
             }
-            
+
         }
         if (mech.isSuperHeavy()) {
             element = getSVGDocument().getElementById("isPipsHD");
@@ -266,14 +266,14 @@ public class PrintMech extends PrintEntity {
             }
         }
     }
-    
+
     @Override
     protected boolean isCenterlineLocation(int loc) {
         return (loc == Mech.LOC_HEAD)
                 || (loc == Mech.LOC_CT)
                 || (loc == Mech.LOC_CLEG);
     }
-    
+
     @Override
     protected void writeEquipment(SVGRectElement svgRect) {
         Map<Integer, Map<RecordSheetEquipmentLine,Integer>> eqMap = new TreeMap<>();
@@ -304,14 +304,14 @@ public class PrintMech extends PrintEntity {
             RecordSheetEquipmentLine line = new RecordSheetEquipmentLine(m);
             eqMap.get(m.getLocation()).merge(line, 1, Integer::sum);
         }
-        
+
         Rectangle2D bbox = getRectBBox(svgRect);
         Element canvas = (Element) ((Node) svgRect).getParentNode();
         int viewWidth = (int)bbox.getWidth();
         int viewHeight = (int)bbox.getHeight();
         int viewX = (int)bbox.getX();
         int viewY = (int)bbox.getY();
-        
+
         int qtyX = (int) Math.round(viewX + viewWidth * 0.037);
         int nameX = (int) Math.round(viewX + viewWidth * 0.08);
         int locX = (int) Math.round(viewX + viewWidth * 0.41);
@@ -321,14 +321,14 @@ public class PrintMech extends PrintEntity {
         int shortX = (int) Math.round(viewX + viewWidth * 0.82);
         int medX = (int) Math.round(viewX + viewWidth * 0.89);
         int longX = (int) Math.round(viewX + viewWidth * 0.96);
-        
+
         int indent = (int) Math.round(viewWidth * 0.02);
-        
+
         int currY = viewY + 10;
-        
+
         float fontSize = FONT_SIZE_MEDIUM;
         float lineHeight = getFontHeight(fontSize) * 0.8f;
-        
+
         addTextElement(canvas, qtyX, currY, "Qty", fontSize, "middle", "bold");
         addTextElement(canvas, nameX + indent, currY, "Type", fontSize, "start", "bold");
         addTextElement(canvas, locX,  currY, "Loc", fontSize, "middle", "bold");
@@ -345,7 +345,7 @@ public class PrintMech extends PrintEntity {
             for (RecordSheetEquipmentLine line : eqMap.get(loc).keySet()) {
                 int rows = line.nRows();
                 if ((rows == 1) && (getTextLength(line.getNameField(0, mech.isMixedTech()), fontSize) > locX - nameX)) {
-                    rows++; 
+                    rows++;
                 }
                 lines += rows;
             }
@@ -359,7 +359,7 @@ public class PrintMech extends PrintEntity {
         if (lines > 20) {
             fontSize = FONT_SIZE_VSMALL;
         }
-        
+
         for (Integer loc : eqMap.keySet()) {
             for (RecordSheetEquipmentLine line : eqMap.get(loc).keySet()) {
                 for (int row = 0; row < line.nRows(); row++) {
@@ -384,7 +384,7 @@ public class PrintMech extends PrintEntity {
                 }
             }
         }
-        
+
         StringJoiner quirksList = new StringJoiner(", ");
         Quirks quirks = mech.getQuirks();
         for (Enumeration<IOptionGroup> optionGroups = quirks.getGroups(); optionGroups.hasMoreElements();) {
@@ -402,7 +402,7 @@ public class PrintMech extends PrintEntity {
         if ((ammo.size() > 0) || (quirksList.length() > 0)) {
             Element svgGroup = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
             canvas.appendChild(svgGroup);
-            lines = 0; 
+            lines = 0;
             if (ammo.size() > 0) {
                 lines = addMultilineTextElement(svgGroup, viewX + viewWidth * 0.025, 0, viewWidth * 0.95, lineHeight,
                         "Ammo: " + ammo.entrySet().stream()
@@ -416,10 +416,10 @@ public class PrintMech extends PrintEntity {
             }
             svgGroup.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
                     String.format("translate(0,%f)", viewY + viewHeight - lines * lineHeight));
-        }        
+        }
 
     }
-    
+
     private void writeLocationCriticals(int loc, SVGRectElement svgRect) {
         Rectangle2D bbox = getRectBBox(svgRect);
         Element canvas = (Element) ((Node) svgRect).getParentNode();
@@ -427,7 +427,7 @@ public class PrintMech extends PrintEntity {
         int viewHeight = (int)bbox.getHeight();
         int viewX = (int)bbox.getX();
         int viewY = (int)bbox.getY();
-        
+
         double rollX = viewX;
         double critX = viewX + viewWidth * 0.11;
         double gap = 0;
@@ -437,19 +437,19 @@ public class PrintMech extends PrintEntity {
         double lineHeight = (viewHeight - gap) / mech.getNumberOfCriticals(loc);
         double currY = viewY;
         float fontSize = (float) lineHeight * 0.85f;
-        
+
         Mounted startingMount = null;
         double startingMountY = 0;
         double endingMountY = 0;
         double connWidth = viewWidth * 0.02;
-        
+
         double x = viewX + viewWidth * 0.075;
         x += addTextElement(canvas, x, viewY - 1, mech.getLocationName(loc),
                 fontSize * 1.25f, "start", "bold");
         if (mech.isClan() && UnitUtil.hasAmmo(mech, loc) && !mech.hasCASEII(loc)) {
             addTextElement(canvas, x + fontSize / 2, viewY - 1, "(CASE)", fontSize, "start", "normal");
         }
-        
+
         for (int slot = 0; slot < mech.getNumberOfCriticals(loc); slot++) {
             currY += lineHeight;
             if (slot == 6) {
@@ -529,7 +529,7 @@ public class PrintMech extends PrintEntity {
         p.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, "none");
         canvas.appendChild(p);
     }
-    
+
     @Override
     protected void drawFluffImage() {
         Element rect = null;
@@ -545,7 +545,7 @@ public class PrintMech extends PrintEntity {
                     (Element) ((Node) rect).getParentNode(), getRectBBox((SVGRectElement) rect), true);
         }
     }
-    
+
     private void drawHeatSinkPips(SVGRectElement svgRect) {
         Rectangle2D bbox = getRectBBox(svgRect);
         Element canvas = (Element) ((Node) svgRect).getParentNode();
@@ -553,7 +553,7 @@ public class PrintMech extends PrintEntity {
         int viewHeight = (int)bbox.getHeight();
         int viewX = (int)bbox.getX();
         int viewY = (int)bbox.getY();
-        
+
         int hsCount = mech.heatSinks();
 
         // r = 3.5
@@ -562,7 +562,7 @@ public class PrintMech extends PrintEntity {
         double size = 9.66;
         int cols = (int) (viewWidth / size);
         int rows = (int) (viewHeight / size);
-        
+
         // Use 10 pips/column unless there are too many sinks for the space.
         if (hsCount <= cols * 10) {
             rows = 10;
@@ -590,7 +590,7 @@ public class PrintMech extends PrintEntity {
             canvas.appendChild(pip);
         }
     }
-    
+
     @Override
     protected String formatWalk() {
         if (mech.hasTSM()) {
@@ -599,7 +599,7 @@ public class PrintMech extends PrintEntity {
             return Integer.toString(mech.getWalkMP());
         }
     }
-    
+
     @Override
     protected String formatRun() {
         int mp = mech.getWalkMP();
@@ -622,7 +622,7 @@ public class PrintMech extends PrintEntity {
             return Integer.toString(mech.getRunMP());
         }
     }
-    
+
     private String formatQuadVeeFlank() {
         int mp = ((QuadVee) mech).getCruiseMP(false, false, false);
         int noSupercharger = (int) Math.ceil(mp * 1.5);
@@ -641,7 +641,7 @@ public class PrintMech extends PrintEntity {
             return Integer.toString(mp);
         }
     }
-    
+
     protected String formatJump() {
         if (mech.hasUMU()) {
             return Integer.toString(mech.getActiveUMUCount());
@@ -659,7 +659,7 @@ public class PrintMech extends PrintEntity {
             return "Heat Sinks";
         }
     }
-    
+
     private String formatHeatSinkCount() {
         int hsCount = mech.heatSinks();
         if (mech.hasDoubleHeatSinks()) {
@@ -668,7 +668,7 @@ public class PrintMech extends PrintEntity {
             return Integer.toString(hsCount);
         }
     }
-    
+
     private String formatCritName(CriticalSlot cs) {
         if (null == cs) {
             return "Roll Again";
@@ -786,7 +786,7 @@ public class PrintMech extends PrintEntity {
             return critName.toString();
         }
     }
-    
+
     private void appendAmmoCritName(StringBuffer buffer, AmmoType ammo) {
         // Remove Text (Clan) from the name
         buffer.append(ammo.getShortName().replace('(', '.').replace(')', '.').replaceAll(".Clan.", "").trim());
@@ -795,7 +795,7 @@ public class PrintMech extends PrintEntity {
             buffer.setLength(buffer.length() - 5);
             buffer.trimToSize();
         }
-        
+
         String submunitionName = ammo.getSubMunitionName().replace("(Clan) ", "");
         int index = buffer.indexOf(submunitionName);
         if (index >= 0) {

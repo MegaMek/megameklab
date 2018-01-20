@@ -54,7 +54,7 @@ public class IView extends JPanel {
     public Aero getAero() {
         return (Aero) eSource.getEntity();
     }
-    
+
     public SmallCraft getSmallCraft() {
         return (SmallCraft) eSource.getEntity();
     }

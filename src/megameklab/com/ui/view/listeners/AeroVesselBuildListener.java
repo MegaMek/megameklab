@@ -15,7 +15,7 @@ package megameklab.com.ui.view.listeners;
 
 /**
  * Listener for views used by small craft and large craft.
- * 
+ *
  * @author Neoancient
  *
  */

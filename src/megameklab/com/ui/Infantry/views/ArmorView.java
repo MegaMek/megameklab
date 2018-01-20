@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2008
- * 
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -74,12 +74,12 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
     private static final long serialVersionUID = -7235362583437251408L;
 
     private RefreshListener refresh = null;
-    
+
     private final static String CARD_TABLE = "table";
     private final static String CARD_CUSTOM = "custom";
-    
-    private JButton btnSetArmor = new JButton("Set Armor");    
-    private JButton btnRemoveArmor = new JButton("Remove Armor");    
+
+    private JButton btnSetArmor = new JButton("Set Armor");
+    private JButton btnRemoveArmor = new JButton("Remove Armor");
     private JTextField txtFilter = new JTextField();
     private JRadioButton rbtnStats = new JRadioButton("Stats");
     private JRadioButton rbtnFluff = new JRadioButton("Fluff");
@@ -99,7 +99,7 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
     JCheckBox chSneakIR = new JCheckBox();
     JCheckBox chSneakECM = new JCheckBox();
     private JSpinner armorValue = new JSpinner(new SpinnerNumberModel(1.0, 0.5, 3.0, 0.5));
-    
+
     public ArmorView(EntitySource eSource, ITechManager techManager) {
         super(eSource);
         masterEquipmentList = new EquipmentTableModel(eSource.getEntity(), techManager);
@@ -178,13 +178,13 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
         rbtnFluff.addActionListener(ev -> setEquipmentView());
         rbtnCustom.addActionListener(ev -> setEquipmentView());
         chkShowAll.addActionListener(ev -> filterEquipment());
-        
+
         setUpPanels();
         rbtnStats.setSelected(true);
         setEquipmentView();
         refresh();
     }
-    
+
     private void setUpPanels() {
         JPanel databasePanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -208,7 +208,7 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
         gbc.gridy = 1;
         gbc.gridwidth = GridBagConstraints.REMAINDER;
         databasePanel.add(btnPanel, gbc);
-        
+
         equipmentView.setLayout(equipmentLayout);
 
         gbc.insets = new Insets(2,0,0,0);
@@ -222,17 +222,17 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
 
         setLayout(new BorderLayout());
         this.add(databasePanel, BorderLayout.CENTER);
-        
+
         JPanel tableView = new JPanel(new GridBagLayout());
         gbc = new GridBagConstraints();
         gbc.anchor = GridBagConstraints.WEST;
         gbc.gridx = 0;
         gbc.gridy = 0;
         tableView.add(new JLabel("Filter:"), gbc);
-        
+
         gbc.gridx = 1;
         tableView.add(txtFilter, gbc);
-        
+
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridwidth = GridBagConstraints.REMAINDER;
@@ -240,14 +240,14 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         tableView.add(masterEquipmentScroll, gbc);
-        
+
         equipmentView.add(tableView, CARD_TABLE);
 
         JPanel customView = new JPanel(new GridBagLayout());
         gbc = new GridBagConstraints();
         gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = GridBagConstraints.NONE;
-        
+
         gbc.gridx = 0;
         gbc.gridy = 0;
         customView.add(new JLabel("Damage Divisor:"), gbc);
@@ -256,13 +256,13 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
         JFormattedTextField tf = ((JSpinner.DefaultEditor)armorValue.getEditor()).getTextField();
         tf.setEditable(false);
         tf.setBackground(Color.white);
-        
+
         chEncumber.setText("Encumbering");
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.anchor = GridBagConstraints.NORTHWEST;
         customView.add(chEncumber, gbc);
-        
+
         chSpaceSuit.setText("Space Suit");
         gbc.gridx = 1;
         gbc.gridy = 1;
@@ -290,9 +290,9 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
         gbc.weighty = 1.0;
         customView.add(chSneakECM, gbc);
 
-        equipmentView.add(customView, CARD_CUSTOM);        
+        equipmentView.add(customView, CARD_CUSTOM);
     }
-    
+
     public JLabel createLabel(String text, Dimension maxSize) {
 
         JLabel label = new JLabel(text, SwingConstants.TRAILING);
@@ -300,7 +300,7 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
         setFieldSize(label, maxSize);
         return label;
     }
-    
+
     public void setFieldSize(JComponent box, Dimension maxSize) {
         box.setPreferredSize(maxSize);
         box.setMaximumSize(maxSize);
@@ -324,7 +324,7 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
             chSneakCamo.setEnabled(false);
             chSneakIR.setEnabled(false);
             chSneakECM.setEnabled(false);
-        } else {            
+        } else {
             armorValue.setEnabled(true);
             chEncumber.setEnabled(true);
             chSpaceSuit.setEnabled(true);
@@ -370,22 +370,22 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
         }
         if (arg0.getSource().equals(chEncumber)) {
             getInfantry().setArmorEncumbering(chEncumber.isSelected());
-        } 
+        }
         else if (arg0.getSource().equals(chSpaceSuit)) {
             getInfantry().setSpaceSuit(chSpaceSuit.isSelected());
-        } 
+        }
         else if (arg0.getSource().equals(chDEST)) {
             getInfantry().setDEST(chDEST.isSelected());
-        } 
+        }
         else if (arg0.getSource().equals(chSneakCamo)) {
             getInfantry().setSneakCamo(chSneakCamo.isSelected());
-        } 
+        }
         else if (arg0.getSource().equals(chSneakIR)) {
             getInfantry().setSneakIR(chSneakIR.isSelected());
-        } 
+        }
         else if (arg0.getSource().equals(chSneakECM)) {
             getInfantry().setSneakECM(chSneakECM.isSelected());
-        } 
+        }
         addAllListeners();
         if (refresh != null) {
             refresh.refreshStructure();
@@ -416,7 +416,7 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
 
     public void stateChanged(ChangeEvent e) {
         JSpinner field = (JSpinner) e.getSource();
-        double value = (Double) field.getModel().getValue();      
+        double value = (Double) field.getModel().getValue();
         getInfantry().setDamageDivisor(value);
         if (refresh != null) {
             refresh.refreshStructure();
@@ -425,7 +425,7 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
         }
         refresh();
     }
-    
+
     private void filterEquipment() {
         RowFilter<EquipmentTableModel, Integer> equipmentTypeFilter = null;
         equipmentTypeFilter = new RowFilter<EquipmentTableModel,Integer>() {
@@ -510,16 +510,16 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_REF), true);
         }
     }
-    
+
     private boolean hasArmor() {
         return getInfantry().getArmorKit() != null
                 || !getInfantry().getArmorDesc().equals("1.0");
     }
-    
+
     /**
      * A comparator for damage divisor that sorts by numeric value first, then considers an appended
      * "E" (indicating encumbering).
-     * 
+     *
      * @author Neoancient
      *
      */
@@ -556,7 +556,7 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
             }
         }
     }
-    
+
     private ListSelectionListener selectionListener = new ListSelectionListener() {
 
         @Override
@@ -568,6 +568,6 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
             }
             btnSetArmor.setEnabled((null != etype) && eSource.getTechManager().isLegal(etype));
         }
-        
+
     };
 }

@@ -17,7 +17,7 @@ import megamek.common.Engine;
 
 /**
  * Listener for views used by aerospace units.
- * 
+ *
  * @author Neoancient
  *
  */

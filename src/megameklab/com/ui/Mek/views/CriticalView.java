@@ -108,28 +108,28 @@ public class CriticalView extends IView {
         rtPanel.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createEmptyBorder(), "Right Torso",
                 TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
-        
+
         laAlignPanel.add(Box.createVerticalStrut(100));
         laAlignPanel.add(laPanel);
-        
+
         leftAlignPanel.add(Box.createVerticalStrut(50));
         leftAlignPanel.add(ltPanel);
         leftAlignPanel.add(Box.createVerticalStrut(50));
         leftAlignPanel.add(llPanel);
-        
+
         centerAlignPanel.add(headPanel);
         centerAlignPanel.add(ctPanel);
         centerAlignPanel.add(clPanel);
         centerAlignPanel.add(Box.createVerticalStrut(75));
-        
+
         rightAlignPanel.add(Box.createVerticalStrut(50));
         rightAlignPanel.add(rtPanel);
         rightAlignPanel.add(Box.createVerticalStrut(50));
         rightAlignPanel.add(rlPanel);
-        
+
         raAlignPanel.add(Box.createVerticalStrut(100));
         raAlignPanel.add(raPanel);
-        
+
         mainPanel.add(laAlignPanel);
         mainPanel.add(leftAlignPanel);
         mainPanel.add(centerAlignPanel);
@@ -271,7 +271,7 @@ public class CriticalView extends IView {
                             criticalSlotList.setPreferredSize(size);
                             criticalSlotList.setMaximumSize(size);
                         }
-                        
+
                         raPanel.add(criticalSlotList);
                         break;
                     case Mech.LOC_CT:
@@ -338,7 +338,7 @@ public class CriticalView extends IView {
                         break;
                 }
             }
-            
+
             ctPanel.invalidate();
             raPanel.invalidate();
             headPanel.invalidate();
@@ -348,7 +348,7 @@ public class CriticalView extends IView {
             llPanel.invalidate();
             rlPanel.invalidate();
             clPanel.invalidate();
-            
+
             ctPanel.repaint();
             raPanel.repaint();
             headPanel.repaint();

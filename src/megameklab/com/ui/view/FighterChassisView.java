@@ -42,14 +42,14 @@ import megameklab.com.ui.view.listeners.AeroBuildListener;
 
 /**
  * Structure tab chassis panel for aerospace and conventional fighters.
- * 
+ *
  * @author Neoancient
  *
  */
 public class FighterChassisView extends BuildView implements ActionListener, ChangeListener {
-    
+
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = -1129246135285707937L;
 
@@ -60,10 +60,10 @@ public class FighterChassisView extends BuildView implements ActionListener, Cha
     public void removeListener(AeroBuildListener l) {
         listeners.remove(l);
     }
-    
+
     public final static int TYPE_AEROSPACE    = 0;
     public final static int TYPE_CONVENTIONAL = 1;
-    
+
     // Engines that can be used by aerospace or conventional fighters and the order they appear in the combobox
     private final static int[] ENGINE_TYPES = {
             Engine.NORMAL_ENGINE, Engine.XL_ENGINE, Engine.XXL_ENGINE, Engine.LIGHT_ENGINE,
@@ -71,7 +71,7 @@ public class FighterChassisView extends BuildView implements ActionListener, Cha
     };
     private final SpinnerNumberModel spnTonnageModel = new SpinnerNumberModel(20, 5, 100, 5);
     private String[] fighterTypeNames;
-    
+
     final private JSpinner spnTonnage = new JSpinner(spnTonnageModel);
     final private JCheckBox chkOmni = new JCheckBox();
     final private JTextField txtSI = new JTextField();
@@ -80,17 +80,17 @@ public class FighterChassisView extends BuildView implements ActionListener, Cha
     final private TechComboBox<Engine> cbEngine = new TechComboBox<>(e -> e.getEngineName().replaceAll("^\\d+ ", ""));
     final private CustomComboBox<Integer> cbCockpit = new CustomComboBox<>(c -> Aero.getCockpitTypeString(c));
     final private JButton btnResetChassis = new JButton();
-    
+
     private ITechManager techManager;
     private boolean primitive = false;
     private boolean conventional = false;
     private int engineRating;
-    
+
     public FighterChassisView(ITechManager techManager) {
         this.techManager = techManager;
         initUI();
     }
-    
+
     public void initUI() {
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl()); //$NON-NLS-1$
         setLayout(new GridBagLayout());
@@ -106,7 +106,7 @@ public class FighterChassisView extends BuildView implements ActionListener, Cha
         spnTonnage.setToolTipText(resourceMap.getString("FighterChassisView.spnTonnage.tooltip")); //$NON-NLS-1$
         add(spnTonnage, gbc);
         spnTonnage.addChangeListener(this);
-        
+
         chkOmni.setText(resourceMap.getString("FighterChassisView.chkOmni.text")); //$NON-NLS-1$
         gbc.gridx = 2;
         gbc.gridy = 0;
@@ -123,7 +123,7 @@ public class FighterChassisView extends BuildView implements ActionListener, Cha
         setFieldSize(txtSI, editorSize);
         txtSI.setToolTipText(resourceMap.getString("FighterChassisView.txtSI.tooltip")); //$NON-NLS-1$
         txtSI.setEditable(false);
-        
+
         chkVSTOL.setText(resourceMap.getString("FighterChassisView.chkVSTOL.text")); //$NON-NLS-1$
         chkVSTOL.setToolTipText(resourceMap.getString("FighterChassisView.chkVSTOL.tooltip")); //$NON-NLS-1$
         gbc.gridx = 1;
@@ -170,7 +170,7 @@ public class FighterChassisView extends BuildView implements ActionListener, Cha
         cbCockpit.setToolTipText(resourceMap.getString("FighterChassisView.cbCockpit.tooltip")); //$NON-NLS-1$
         add(cbCockpit, gbc);
         cbCockpit.addActionListener(this);
-        
+
         gbc.gridx = 1;
         gbc.gridy = 5;
         gbc.gridwidth = 3;
@@ -179,7 +179,7 @@ public class FighterChassisView extends BuildView implements ActionListener, Cha
         add(btnResetChassis, gbc);
         btnResetChassis.addActionListener(this);
     }
-    
+
     public void setFromEntity(Aero aero) {
         primitive = aero.isPrimitive();
         conventional = (aero.getEntityType() & Entity.ETYPE_CONV_FIGHTER) != 0;
@@ -205,30 +205,30 @@ public class FighterChassisView extends BuildView implements ActionListener, Cha
         setCockpitType(aero.getCockpitType());
         btnResetChassis.setEnabled(aero.isOmni());
     }
-    
+
     public void setAsCustomization() {
         spnTonnage.setEnabled(false);
     }
-    
+
     public int getEngineRating() {
         return engineRating;
     }
-    
+
     public void setEngineRating(int rating) {
         engineRating = rating;
     }
-    
+
     public void refresh() {
         refreshTonnage();
         refreshFighterType();
         refreshEngine();
         refreshCockpit();
-        
+
         chkOmni.setEnabled(!isPrimitive()
                 && techManager.isLegal(Entity.getOmniAdvancement()));
-        
+
     }
-    
+
     private void refreshTonnage() {
         int prev = spnTonnageModel.getNumber().intValue();
         int min = primitive? 10 : 5;
@@ -242,7 +242,7 @@ public class FighterChassisView extends BuildView implements ActionListener, Cha
             spnTonnage.setValue(max);
         }
     }
-    
+
     private void refreshFighterType() {
         // aerospace and conventional fighters have the same tech progression,
         // so we only need to change this if switch between standard and primitive,
@@ -263,7 +263,7 @@ public class FighterChassisView extends BuildView implements ActionListener, Cha
             }
         }
     }
-    
+
     private void refreshEngine() {
         cbEngine.removeActionListener(this);
         Engine prevEngine = (Engine)cbEngine.getSelectedItem();
@@ -277,7 +277,7 @@ public class FighterChassisView extends BuildView implements ActionListener, Cha
             cbEngine.setSelectedIndex(0);
         }
     }
-    
+
     public List<Engine> getAvailableEngines() {
         if (isPrimitive()) {
             return Collections.singletonList(new Engine(getEngineRating(),
@@ -311,7 +311,7 @@ public class FighterChassisView extends BuildView implements ActionListener, Cha
         }
         return retVal;
     }
-    
+
     private void refreshCockpit() {
         cbCockpit.removeActionListener(this);
         Integer prev = (Integer)cbCockpit.getSelectedItem();
@@ -334,43 +334,43 @@ public class FighterChassisView extends BuildView implements ActionListener, Cha
             cbCockpit.setSelectedIndex(0);
         }
     }
-    
+
     public boolean isPrimitive() {
         return primitive;
     }
-    
+
     public boolean isConventional() {
         return conventional;
     }
-    
+
     public double getTonnage() {
         return spnTonnageModel.getNumber().doubleValue();
     }
-    
+
     public void setTonnage(double tonnage) {
         spnTonnage.setValue(new Integer((int)Math.ceil(tonnage)));
     }
-    
+
     public boolean isOmni() {
         return chkOmni.isSelected() && chkOmni.isEnabled();
     }
-    
+
     public void setOmni(boolean omni) {
         chkOmni.setSelected(omni);
     }
-    
+
     public boolean isVSTOL() {
         return chkVSTOL.isSelected();
     }
-    
+
     public void setVSTOL(boolean vstol) {
         chkOmni.setSelected(vstol);
     }
-    
+
     public int getFighterType() {
         return (Integer)cbFighterType.getSelectedItem();
     }
-    
+
     public Engine getEngine() {
         Engine e = (Engine) cbEngine.getSelectedItem();
         if (null == e) {
@@ -395,11 +395,11 @@ public class FighterChassisView extends BuildView implements ActionListener, Cha
             }
         }
     }
-    
+
     public int getCockpitType() {
         return (Integer)cbCockpit.getSelectedItem();
     }
-    
+
     public void setCockpitType(int cockpit) {
         cbCockpit.setSelectedItem(cockpit);
     }

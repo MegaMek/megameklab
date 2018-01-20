@@ -72,14 +72,14 @@ public class CriticalTableModel extends AbstractTableModel {
         if (tableType == WEAPONTABLE) {
             longValues = new String[] { "XXXXXXXXX", "XXXXXXXXX", "XXXXXXXXX",
                     "XXXXXXXXX", "XXX" };
-            columnNames = new String[] { "Name", "Tons", "Crits", "Heat", 
+            columnNames = new String[] { "Name", "Tons", "Crits", "Heat",
                     "Loc" };
         }
-        
+
         if (unit instanceof Tank) {
             columnNames[CRITS] = "Slots";
         }
-        
+
         this.unit = unit;
     }
 
@@ -138,9 +138,9 @@ public class CriticalTableModel extends AbstractTableModel {
         case NAME:
             return UnitUtil.getCritName(unit, crit.getType());
         case TONNAGE:
-            if ((unit instanceof BattleArmor) 
+            if ((unit instanceof BattleArmor)
                     && (crit.getType() instanceof AmmoType)){
-                return ((AmmoType)crit.getType()).getKgPerShot() * 
+                return ((AmmoType)crit.getType()).getKgPerShot() *
                         crit.getBaseShotsLeft() / 1000;
             } else if (crit.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)
                     && crit.getLinked() != null){
@@ -201,7 +201,7 @@ public class CriticalTableModel extends AbstractTableModel {
 
             JLabel c = (JLabel) super.getTableCellRendererComponent(table,
                     value, isSelected, hasFocus, row, column);
-            
+
             c.setOpaque(true);
             if ((crits.size() < row) || (row < 0)) {
                 return c;
@@ -222,15 +222,15 @@ public class CriticalTableModel extends AbstractTableModel {
                     modifier += " (Squad)";
                 }
                 if (mount.isDWPMounted()){
-                    modifier += " (DWP)"; 
+                    modifier += " (DWP)";
                 }
                 if (mount.isSquadSupportWeapon()){
-                    modifier += " (Squad Support Weapon)"; 
+                    modifier += " (Squad Support Weapon)";
                 }
                 if ((mount.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)
                         || mount.getType().hasFlag(MiscType.F_AP_MOUNT))
                         && mount.getLinked() != null){
-                    modifier += " (attached " + mount.getLinked().getName() 
+                    modifier += " (attached " + mount.getLinked().getName()
                             + ")";
                 }
                 if (mount.getType().hasFlag(WeaponType.F_INFANTRY) &&
@@ -266,10 +266,10 @@ public class CriticalTableModel extends AbstractTableModel {
     public void removeCrit(int location) {
         crits.removeElementAt(location);
     }
-    
+
     /**
      * Remove a collection of crits specified by the given list of indices.
-     * 
+     *
      * @param locs  An array of indices that specifies the crits to remove
      */
     public void removeCrits(int locs[]) {

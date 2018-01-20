@@ -123,8 +123,8 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                 if ((e.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) != 0) {
                     changeOmniMounting(!mount.isOmniPodMounted());
                     return;
-                }                
-                
+                }
+
                 if (mount != null) {
                     popup.setAutoscrolls(true);
                     JMenuItem info;
@@ -193,7 +193,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                             popup.add(info);
                         }
                     }
-                    
+
                     if (getUnit().isOmni() && !mount.getType().isOmniFixedOnly()) {
                         if (mount.isOmniPodMounted()) {
                             info = new JMenuItem("Change to fixed mount");
@@ -203,7 +203,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                             info = new JMenuItem("Change to pod mount");
                             info.addActionListener(ev -> changeOmniMounting(true));
                             popup.add(info);
-                        }                        
+                        }
                     }
                 }
 

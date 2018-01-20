@@ -42,18 +42,18 @@ import megameklab.com.ui.view.listeners.AeroVesselBuildListener;
 
 /**
  * Structure tab panel for setting crew levels and quarters, as well as life boats and escape pods.
- * 
+ *
  * @author Neoancient
  *
  */
 
 public class AerospaceCrewView extends BuildView implements ActionListener, ChangeListener {
-    
+
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = -5340962405770541772L;
-    
+
     private List<AeroVesselBuildListener> listeners = new CopyOnWriteArrayList<>();
     public void addListener(AeroVesselBuildListener l) {
         listeners.add(l);
@@ -61,7 +61,7 @@ public class AerospaceCrewView extends BuildView implements ActionListener, Chan
     public void removeListener(AeroVesselBuildListener l) {
         listeners.remove(l);
     }
-    
+
     private final JSpinner spnOfficers = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
     private final JSpinner spnBaseCrew = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
     private final JSpinner spnGunners = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
@@ -81,17 +81,17 @@ public class AerospaceCrewView extends BuildView implements ActionListener, Chan
     private final JLabel lblBAMarines = createLabel("", labelSize);
     private final ITechManager techManager;
     private boolean ignoreChangeEvents = false;
-    
+
     public AerospaceCrewView(ITechManager techManager) {
         this.techManager = techManager;
         initUI();
     }
-    
+
     public void initUI() {
         setLayout(new GridBagLayout());
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl()); //$NON-NLS-1$
         GridBagConstraints gbc = new GridBagConstraints();
-        
+
         gbc.gridx = 0;
         gbc.gridy = 0;
         add(createLabel(resourceMap.getString("AerospaceCrewView.spnBaseCrew.text"), labelSize), gbc);
@@ -100,7 +100,7 @@ public class AerospaceCrewView extends BuildView implements ActionListener, Chan
         add(spnBaseCrew, gbc);
         spnBaseCrew.setToolTipText(resourceMap.getString("AerospaceCrewView.spnBaseCrew.tooltip"));
         spnBaseCrew.addChangeListener(this);
-        
+
         gbc.gridx = 0;
         gbc.gridy++;
         add(createLabel(resourceMap.getString("AerospaceCrewView.spnGunners.text"), labelSize), gbc);
@@ -109,7 +109,7 @@ public class AerospaceCrewView extends BuildView implements ActionListener, Chan
         add(spnGunners, gbc);
         spnGunners.setToolTipText(resourceMap.getString("AerospaceCrewView.spnGunners.tooltip"));
         spnGunners.addChangeListener(this);
-        
+
         gbc.gridx = 0;
         gbc.gridy++;
         add(createLabel(resourceMap.getString("AerospaceCrewView.lblTotalCrew.text"), labelSize), gbc);
@@ -117,7 +117,7 @@ public class AerospaceCrewView extends BuildView implements ActionListener, Chan
         add(lblTotalCrew, gbc);
         lblTotalCrew.setToolTipText(resourceMap.getString("AerospaceCrewView.lblTotalCrew.tooltip"));
         lblTotalCrew.setHorizontalAlignment(JLabel.RIGHT);
-        
+
         gbc.gridx = 0;
         gbc.gridy++;
         add(createLabel(resourceMap.getString("AerospaceCrewView.spnOfficers.text"), labelSize), gbc);
@@ -126,7 +126,7 @@ public class AerospaceCrewView extends BuildView implements ActionListener, Chan
         spnOfficers.setToolTipText(resourceMap.getString("AerospaceCrewView.spnOfficers.tooltip"));
         add(spnOfficers, gbc);
         spnOfficers.addChangeListener(this);
-        
+
         gbc.gridx = 0;
         gbc.gridy++;
         add(createLabel(resourceMap.getString("AerospaceCrewView.lblBayPersonnel.text"), labelSize), gbc);
@@ -134,7 +134,7 @@ public class AerospaceCrewView extends BuildView implements ActionListener, Chan
         add(lblBayPersonnel, gbc);
         lblBayPersonnel.setToolTipText(resourceMap.getString("AerospaceCrewView.lblBayPersonnel.tooltip"));
         lblBayPersonnel.setHorizontalAlignment(JLabel.RIGHT);
-        
+
         gbc.gridx = 0;
         gbc.gridy++;
         add(createLabel(resourceMap.getString("AerospaceCrewView.spnPassengers.text"), labelSize), gbc);
@@ -143,7 +143,7 @@ public class AerospaceCrewView extends BuildView implements ActionListener, Chan
         spnPassengers.setToolTipText(resourceMap.getString("AerospaceCrewView.spnPassengers.tooltip"));
         add(spnPassengers, gbc);
         spnPassengers.addChangeListener(this);
-        
+
         gbc.gridx = 0;
         gbc.gridy++;
         add(createLabel(resourceMap.getString("AerospaceCrewView.spnMarines.text"), labelSize), gbc);
@@ -152,7 +152,7 @@ public class AerospaceCrewView extends BuildView implements ActionListener, Chan
         spnMarines.setToolTipText(resourceMap.getString("AerospaceCrewView.spnMarines.tooltip"));
         add(spnMarines, gbc);
         spnMarines.addChangeListener(this);
-        
+
         gbc.gridx = 0;
         gbc.gridy++;
         lblBAMarines.setText(resourceMap.getString("AerospaceCrewView.spnBAMarines.text"));
@@ -162,12 +162,12 @@ public class AerospaceCrewView extends BuildView implements ActionListener, Chan
         spnBAMarines.setToolTipText(resourceMap.getString("AerospaceCrewView.spnBAMarines.tooltip"));
         add(spnBAMarines, gbc);
         spnBAMarines.addChangeListener(this);
-        
+
         gbc.gridx = 2;
         gbc.gridy = 0;
         gbc.gridwidth = 2;
         add(new JLabel(resourceMap.getString("AerospaceCrewView.lblQuarters.text")), gbc);
-        
+
         gbc.gridx = 2;
         gbc.gridy++;
         gbc.gridwidth = 1;
@@ -177,7 +177,7 @@ public class AerospaceCrewView extends BuildView implements ActionListener, Chan
         spnQuartersFirstClass.setToolTipText(resourceMap.getString("AerospaceCrewView.spnQuartersFirstClass.tooltip"));
         add(spnQuartersFirstClass, gbc);
         spnQuartersFirstClass.addChangeListener(this);
-        
+
         gbc.gridx = 2;
         gbc.gridy++;
         add(createLabel(resourceMap.getString("AerospaceCrewView.spnQuartersStandard.text"), labelSize), gbc);
@@ -186,7 +186,7 @@ public class AerospaceCrewView extends BuildView implements ActionListener, Chan
         spnQuartersStandard.setToolTipText(resourceMap.getString("AerospaceCrewView.spnQuartersStandard.tooltip"));
         add(spnQuartersStandard, gbc);
         spnQuartersStandard.addChangeListener(this);
-        
+
         gbc.gridx = 2;
         gbc.gridy++;
         add(createLabel(resourceMap.getString("AerospaceCrewView.spnQuartersSecondClass.text"), labelSize), gbc);
@@ -195,7 +195,7 @@ public class AerospaceCrewView extends BuildView implements ActionListener, Chan
         spnQuartersSecondClass.setToolTipText(resourceMap.getString("AerospaceCrewView.spnQuartersSecondClass.tooltip"));
         add(spnQuartersSecondClass, gbc);
         spnQuartersSecondClass.addChangeListener(this);
-        
+
         gbc.gridx = 2;
         gbc.gridy++;
         add(createLabel(resourceMap.getString("AerospaceCrewView.spnQuartersSteerage.text"), labelSize), gbc);
@@ -204,7 +204,7 @@ public class AerospaceCrewView extends BuildView implements ActionListener, Chan
         spnQuartersSteerage.setToolTipText(resourceMap.getString("AerospaceCrewView.spnQuartersSteerage.tooltip"));
         add(spnQuartersSteerage, gbc);
         spnQuartersSteerage.addChangeListener(this);
-        
+
         gbc.gridx = 2;
         gbc.gridy++;
         gbc.gridwidth = 2;
@@ -212,7 +212,7 @@ public class AerospaceCrewView extends BuildView implements ActionListener, Chan
         btnAssignQuarters.setToolTipText(resourceMap.getString("AerospaceCrewView.btnAssignQuarters.tooltip"));
         add(btnAssignQuarters, gbc);
         btnAssignQuarters.addActionListener(this);
-        
+
         gbc.gridx = 2;
         gbc.gridy++;
         gbc.gridwidth = 1;
@@ -222,7 +222,7 @@ public class AerospaceCrewView extends BuildView implements ActionListener, Chan
         spnLifeBoats.setToolTipText(resourceMap.getString("AerospaceCrewView.spnLifeBoats.tooltip"));
         add(spnLifeBoats, gbc);
         spnLifeBoats.addChangeListener(this);
-        
+
         gbc.gridx = 2;
         gbc.gridy++;
         add(createLabel(resourceMap.getString("AerospaceCrewView.spnEscapePods.text"), labelSize), gbc);
@@ -232,14 +232,14 @@ public class AerospaceCrewView extends BuildView implements ActionListener, Chan
         add(spnEscapePods, gbc);
         spnEscapePods.addChangeListener(this);
     }
-    
+
     public void setFromEntity(SmallCraft sc) {
         int minGunners = TestSmallCraft.requiredGunners(sc);
         int minBase = TestSmallCraft.minimumBaseCrew(sc);
         int nonBay = sc.getNCrew() - sc.getBayPersonnel();
         ((SpinnerNumberModel)spnBaseCrew.getModel()).setMinimum(minBase);
         ((SpinnerNumberModel)spnGunners.getModel()).setMinimum(minGunners);
-        
+
         ignoreChangeEvents = true;
         spnOfficers.setValue(sc.getNOfficers());
         spnBaseCrew.setValue(nonBay - sc.getNGunners());
@@ -248,7 +248,7 @@ public class AerospaceCrewView extends BuildView implements ActionListener, Chan
         lblBayPersonnel.setText(String.valueOf(sc.getBayPersonnel()));
         spnPassengers.setValue(sc.getNPassenger());
         spnMarines.setValue(sc.getNMarines());
-        
+
         if (techManager.isLegal(BattleArmor.getConstructionTechAdvancement(EntityWeightClass.WEIGHT_MEDIUM))) {
             spnBAMarines.setValue(sc.getNBattleArmor());
             lblBAMarines.setVisible(true);
@@ -258,7 +258,7 @@ public class AerospaceCrewView extends BuildView implements ActionListener, Chan
             lblBAMarines.setVisible(false);
             spnBAMarines.setVisible(false);
         }
-        
+
         EnumMap<TestAero.Quarters, Integer> sizes = new EnumMap<>(TestAero.Quarters.class);
         for (Bay bay : sc.getTransportBays()) {
             Quarters q = TestAero.Quarters.getQuartersForBay(bay);
@@ -270,11 +270,11 @@ public class AerospaceCrewView extends BuildView implements ActionListener, Chan
         spnQuartersStandard.setValue(sizes.getOrDefault(TestAero.Quarters.STANDARD, 0));
         spnQuartersSecondClass.setValue(sizes.getOrDefault(TestAero.Quarters.SECOND_CLASS, 0));
         spnQuartersSteerage.setValue(sizes.getOrDefault(TestAero.Quarters.STEERAGE, 0));
-        
+
         spnLifeBoats.setValue(sc.getLifeBoats());
         spnEscapePods.setValue(sc.getEscapePods());
         ignoreChangeEvents = false;
-        
+
         // If we do not meet the minimum, set the values and trigger an event that will update the vessel.
         if (sc.getNGunners() < minGunners) {
             spnGunners.setValue(minGunners);

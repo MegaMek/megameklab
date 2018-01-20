@@ -94,7 +94,7 @@ public class PrintAero implements Printable {
 
 		//TODO: Pilot Data: Fix coords. Below coords are pasted from Mech code.
         //if ((aero.getCrew() != null) && !aero.getCrew().getName().equalsIgnoreCase("unnamed")) {
-        //	Crew pilot = aero.getCrew();		
+        //	Crew pilot = aero.getCrew();
 		//	g2d.drawString(pilot.getName(), 270 + leftMargin, topMargin + 119);
 		//	g2d.drawString(String.valueOf(pilot.getGunnery()), 295 + leftMargin, topMargin + 132);
 		//  g2d.drawString(String.valueOf(pilot.getPiloting()), 365 + leftMargin, topMargin + 132);
@@ -103,7 +103,7 @@ public class PrintAero implements Printable {
 		//    g2d.drawString("Test Pilot", 270 + leftMargin, topMargin + 119);
 		//	g2d.drawString("5", 295 + leftMargin, topMargin + 132);
 		//    g2d.drawString("5", 365 + leftMargin, topMargin + 132);
-		
+
 
         g2d.drawString(Integer.toString(aero.getWalkMP()), 99, 143);
         g2d.drawString(Integer.toString(aero.getRunMP()), 99, 154);
