@@ -63,7 +63,7 @@
 	<condition property="isOsMac">
 		<os family="mac" />
 	</condition>
-	
+
 	<taskdef name="jarbundler" classname="com.ultramixer.jarbundler.JarBundler" classpath="${util}/jarbundler-core-3.3.0.jar"/>
 
 	<!-- if we're using a Mac then we'll use the launch4j for Mac OS -->
