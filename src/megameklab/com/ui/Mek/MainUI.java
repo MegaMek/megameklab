@@ -122,7 +122,7 @@ public class MainUI extends MegaMekLabMainUI {
 
     @Override
     public void createNewUnit(long entityType, boolean isPrimitive, boolean isIndustrial, Entity oldEntity) {
-        
+
         int cockpit = Mech.COCKPIT_STANDARD;
         int at = EquipmentType.T_ARMOR_STANDARD;
         int st = EquipmentType.T_STRUCTURE_STANDARD;
@@ -243,7 +243,7 @@ public class MainUI extends MegaMekLabMainUI {
 
         String title = getEntity().getChassis() + " " + getEntity().getModel()
                 + ".mtf";
-        /*  
+        /*
         if (UnitUtil.validateUnit(entity).length() > 0) {
             title += "  (Invalid)";
             setForeground(Color.red);
@@ -268,12 +268,12 @@ public class MainUI extends MegaMekLabMainUI {
     @Override
     public void refreshWeapons() {
     }
-    
+
     @Override
     public void refreshSummary() {
         structureTab.refreshSummary();
     }
-    
+
     @Override
     public void refreshEquipmentTable() {
         equipmentTab.refreshTable();

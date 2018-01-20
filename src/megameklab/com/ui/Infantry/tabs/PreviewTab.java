@@ -29,7 +29,7 @@ import megameklab.com.util.ITab;
 public class PreviewTab extends ITab implements ActionListener {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = -7410436201331568734L;
 
@@ -43,7 +43,7 @@ public class PreviewTab extends ITab implements ActionListener {
         setBackground(Color.WHITE);
         refresh();
     }
-    
+
     public void refresh() {
         boolean populateTextFields = true;
         MechView mechView = null;
@@ -60,10 +60,10 @@ public class PreviewTab extends ITab implements ActionListener {
             panelMekView.reset();
         }
     }
-    
+
     @Override
     public void actionPerformed(ActionEvent arg0) {
-        
+
     }
-    
+
 }

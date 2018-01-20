@@ -45,7 +45,7 @@ import megameklab.com.util.ImageHelper;
  *
  */
 public class PrintInfantry implements Printable {
-	
+
 	/* Id tags of elements in the SVG file */
 //	private final static String ID_FLUFF_IMAGE = "imageFluff";
 	private final static String ID_PLATOON_NAME = "platoon_name";
@@ -69,7 +69,7 @@ public class PrintInfantry implements Printable {
 	private final static String ID_FIELD_GUN_CREW = "field_gun_crew";
 	private final static String ID_DEST_MODS = "dest_mods";
 	private final static String ID_SNEAK_CAMO_MODS = "sneak_camo_mods";
-	private final static String ID_SNEAK_IR_MODS = "sneak_ir_mods";	
+	private final static String ID_SNEAK_IR_MODS = "sneak_ir_mods";
 	private final static String ID_BV = "bv";
 	private final static String ID_TRANSPORT_WT = "transport_wt";
 	private final static String ID_MP_1 = "mp_1";
@@ -82,7 +82,7 @@ public class PrintInfantry implements Printable {
     private Infantry infantry = null;
     private List<Infantry> infantryList;
     private int currentPosition;
-    
+
     public PrintInfantry(List<Infantry> list) {
     	infantryList = list;
     	if (list.size() > 0) {
@@ -90,7 +90,7 @@ public class PrintInfantry implements Printable {
     	}
     }
 
-    
+
 	/* (non-Javadoc)
 	 * @see java.awt.print.Printable#print(java.awt.Graphics, java.awt.print.PageFormat, int)
 	 */
@@ -105,9 +105,9 @@ public class PrintInfantry implements Printable {
         if ((null == g2d) || (null == infantry)) {
             return;
         }
-        
+
         SVGDiagram diagram;
-        
+
         int stop = Math.min(4, infantryList.size() - currentPosition);
     	if (stop > 3) {
     		diagram = ImageHelper.loadSVGImage(new File("data/images/recordsheets/Conventional_Infantry_no_tables.svg"));
@@ -136,7 +136,7 @@ public class PrintInfantry implements Printable {
             		tspan.setText(name);
         		}
         		((Text)tspan.getParent()).rebuild();
-        		
+
         		tspan = (Tspan)diagram.getElement(ID_ARMOR_KIT);
         		EquipmentType armor = infantry.getArmorKit();
         		if (armor != null) {
@@ -201,7 +201,7 @@ public class PrintInfantry implements Printable {
     				}
     				((Text)tspan.getParent()).rebuild();
         		}
-        		
+
         		int numGuns = 0;
         		int numShots = 0;
         		WeaponType gun = null;
@@ -280,24 +280,24 @@ public class PrintInfantry implements Printable {
 					tspan.setText(Integer.toString((int)Math.ceil(gun.getTonnage(infantry))));
 					((Text)tspan.getParent()).rebuild();
         		}
-        		
+
         		if (infantry.hasDEST()) {
         			diagram.getElement(ID_DEST_MODS).removeAttribute("display", AnimationElement.AT_XML);
         			diagram.getElement(ID_SNEAK_IR_MODS).removeAttribute("display", AnimationElement.AT_XML);
         		} else if (infantry.hasSneakCamo()) {
-        			diagram.getElement(ID_SNEAK_CAMO_MODS).removeAttribute("display", AnimationElement.AT_XML);        			
+        			diagram.getElement(ID_SNEAK_CAMO_MODS).removeAttribute("display", AnimationElement.AT_XML);
         		}
         		if (infantry.hasSneakIR()) {
         			diagram.getElement(ID_SNEAK_IR_MODS).removeAttribute("display", AnimationElement.AT_XML);
         		}
-        		
+
         		tspan = (Tspan)diagram.getElement(ID_BV);
         		tspan.setText(Integer.toString(infantry.calculateBattleValue()));
         		((Text)tspan.getParent()).rebuild();
         		tspan = (Tspan)diagram.getElement(ID_TRANSPORT_WT);
         		tspan.setText(String.format("%.1f tons", infantry.getWeight()));
         		((Text)tspan.getParent()).rebuild();
-        		
+
         		Tspan mp1 = (Tspan)diagram.getElement(ID_MP_1);
         		Tspan mode1 = (Tspan)diagram.getElement(ID_MODE_1);
         		Tspan mp2 = (Tspan)diagram.getElement(ID_MP_2);
@@ -362,7 +362,7 @@ public class PrintInfantry implements Printable {
         		}
 				((Text)mp1.getParent()).rebuild();
 				((Text)mode1.getParent()).rebuild();
-				
+
         		List<String> notes = new ArrayList<>();
         		if (infantry.isMechanized() || infantry.isArmorEncumbering()) {
         			notes.add("Cannot make anti-'Mech attacks.");
@@ -377,9 +377,9 @@ public class PrintInfantry implements Printable {
         			notes.add("Can only damage conventional infantry.");
         		}
         		if (infantry.getPrimaryWeapon().hasFlag(WeaponType.F_INFERNO)
-        				|| (infantry.getSecondaryWeapon() != null 
+        				|| (infantry.getSecondaryWeapon() != null
         					&& infantry.getSecondaryWeapon().hasFlag(WeaponType.F_INFERNO))) {
-    				notes.add("Flame-based weapon.");        			
+    				notes.add("Flame-based weapon.");
         		} else {
 	        		for (int i = 0; i < infantry.getPrimaryWeapon().getModesCount(); i++) {
 	        			if (infantry.getPrimaryWeapon().getMode(i).equals("Heat")) {
@@ -436,15 +436,15 @@ public class PrintInfantry implements Printable {
         		if (infantry.hasSneakECM()) {
         			notes.add("Invisible to standard/light active probes.");
         		}
-        		
+
         		for (int i = 0; i < Math.min(8, notes.size()); i++) {
         			tspan = (Tspan)diagram.getElement(ID_NOTE_LINE + i);
         			tspan.setText(notes.get(i));
         		}
     			((Text)diagram.getElement(ID_NOTES)).rebuild();
-        		
+
         		diagram.updateTime(0);
-        		
+
             	diagram.render(g2d);
         	}
         } catch (SVGException ex) {
@@ -464,7 +464,7 @@ public class PrintInfantry implements Printable {
 			{-1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 2, 2, 2, 4, 4, 4, 5, 5, 5},
 			{-1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 2, 2, 2, 2, 4, 4, 4, 6, 6, 6, 6}
 	};
-	
+
 	/**
 	 * Calculate range mod as a string value.
 	 * @param range - the range to the target.
@@ -480,7 +480,7 @@ public class PrintInfantry implements Printable {
 		if (underwater) {
 			mods = RANGE_MODS[weapon.getInfantryRange() / 2];
 		}
-		
+
 		if (range >= mods.length) {
 			return "—";
 		}

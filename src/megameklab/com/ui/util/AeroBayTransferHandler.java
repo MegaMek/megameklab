@@ -42,26 +42,26 @@ import megameklab.com.util.UnitUtil;
 /**
  * Handles drag-and-drop for aerospace units that use weapon bays. Most of the work of adding, removing,
  * and changing equipment locations is done by the JTree for the weapon arc.
- * 
+ *
  * @author Neoancient
  *
  */
 public class AeroBayTransferHandler extends TransferHandler {
-    
+
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 2534394664060762469L;
-    
+
     private EntitySource eSource;
-    
+
     /* Aliases for local usage.
      * When moving ammo, the default is to move a single ton (or whatever the atomic value is) at a time.
      * Holding the ctrl key will move all ammo of that type in that location.
      */
     public static final int AMMO_SINGLE = MOVE;
     public static final int AMMO_ALL    = COPY;
-    
+
     public AeroBayTransferHandler(EntitySource eSource) {
         this.eSource = eSource;
     }
@@ -71,11 +71,11 @@ public class AeroBayTransferHandler extends TransferHandler {
         if (!support.isDrop()) {
             return false;
         }
-        
+
         // Fields are equipmentNum, node child index, bay child index
         String[] source = null;
         List<Mounted> eqList = new ArrayList<>();
-        
+
         try {
             source = ((String) support.getTransferable().getTransferData(DataFlavor.stringFlavor)).split(":");
             for (String field : source[0].split(",")) {
@@ -122,7 +122,7 @@ public class AeroBayTransferHandler extends TransferHandler {
             for (Mounted mount : eqList) {
                 if (mount.getType() instanceof AmmoType) {
                     AmmoType at = (AmmoType)mount.getType();
-                    // Check whether we are moving one of multiple slots. 
+                    // Check whether we are moving one of multiple slots.
                     if ((support.getUserDropAction() == AMMO_SINGLE) && (mount.getUsableShotsLeft() > at.getShots())) {
                         mount.setShotsLeft(mount.getUsableShotsLeft() - at.getShots());
                     }
@@ -215,7 +215,7 @@ public class AeroBayTransferHandler extends TransferHandler {
         if (mounted.isEmpty()) {
             return false;
         }
-        
+
         // If allocating to an arc, make sure the bay can receive it
         if (support.getComponent() instanceof BayWeaponCriticalTree) {
             for (Mounted m : mounted) {
@@ -262,7 +262,7 @@ public class AeroBayTransferHandler extends TransferHandler {
             }
         }
     }
-    
-    
+
+
 
 }

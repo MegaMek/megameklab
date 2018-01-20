@@ -35,17 +35,17 @@ import megameklab.com.util.UnitUtil;
 
 /**
  * Build tab for Small Craft and Dropships
- * 
+ *
  * @author Neoancient
  *
  */
 public class DropshipBuildTab extends ITab implements ActionListener {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = -6625026210117558378L;
-    
+
     private RefreshListener refresh = null;
     private DropshipCriticalView critView = null;
     private AerospaceBuildView buildView = null;
@@ -69,7 +69,7 @@ public class DropshipBuildTab extends ITab implements ActionListener {
         critView.addAllocationListeners(buildView);
 
         resetButton.setMnemonic('R');
-        resetButton.setActionCommand(RESETCOMMAND);        
+        resetButton.setActionCommand(RESETCOMMAND);
         buttonPanel.add(resetButton);
 
         gbc.gridx = 0;

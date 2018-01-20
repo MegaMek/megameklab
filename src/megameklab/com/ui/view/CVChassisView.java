@@ -48,14 +48,14 @@ import megameklab.com.ui.view.listeners.CVBuildListener;
 
 /**
  * Chassis panel for combat vehicles
- * 
+ *
  * @author Neoancient
  *
  */
 public class CVChassisView extends BuildView implements ActionListener, ChangeListener {
-    
+
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = -5860627963911641227L;
 
@@ -66,15 +66,15 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
     public void removeListener(CVBuildListener l) {
         listeners.remove(l);
     }
-    
+
     private final static String CMD_RESET_CHASSIS = "resetChassis"; //$NON-NLS-1$
-    
+
     private final static EntityMovementMode[] MOTIVE_TYPES = {
             EntityMovementMode.TRACKED, EntityMovementMode.WHEELED, EntityMovementMode.HOVER,
             EntityMovementMode.VTOL, EntityMovementMode.WIGE,
             EntityMovementMode.NAVAL, EntityMovementMode.HYDROFOIL, EntityMovementMode.SUBMARINE
     };
-    
+
     // Engines that can be used by mechs and the order they appear in the combobox
     private final static int[] ENGINE_TYPES = {
             Engine.COMBUSTION_ENGINE, Engine.NORMAL_ENGINE, Engine.XL_ENGINE, Engine.XXL_ENGINE,
@@ -85,10 +85,10 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
     public final static int TURRET_SINGLE = 1;
     public final static int TURRET_DUAL   = 2;
     public final static int TURRET_CHIN   = 3;
-    
+
     private final static TechAdvancement TA_DUAL_TURRET = Tank.getDualTurretTA();
     private final static TechAdvancement TA_CHIN_TURRET = VTOL.getChinTurretTA();
-    
+
     private final SpinnerNumberModel spnTonnageModel = new SpinnerNumberModel(20, 1, 100, 1);
     private final SpinnerNumberModel spnTurretWtModel = new SpinnerNumberModel(0.0, 0.0, null, 0.5);
     private final SpinnerNumberModel spnTurret2WtModel = new SpinnerNumberModel(0.0, 0.0, null, 0.5);
@@ -108,26 +108,26 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
     private final JSpinner spnChassisTurret2Wt = new JSpinner(spnTurret2WtModel);
     private final JSpinner spnFixedTroop = new JSpinner(spnFixedTroopModel);
     private final JSpinner spnPodTroop = new JSpinner(spnPodTroopModel);
-    
+
     private final List<JComponent> omniComponents = new ArrayList<>();
 
     private ITechManager techManager;
     private int engineRating;
     private boolean isSuperheavy;
-    
+
     public CVChassisView(ITechManager techManager) {
         super();
         this.techManager = techManager;
         initUI();
     }
-    
+
     private void initUI() {
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl()); //$NON-NLS-1$
         turretNames = resourceMap.getString("CVChassisView.turrets.values").split(","); //$NON-NLS-1$
         for (EntityMovementMode m : MOTIVE_TYPES) {
             motiveNames.put(m, resourceMap.getString("MovementMode." + m.toString()));
         }
-        
+
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
@@ -142,13 +142,13 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
         spnTonnage.setToolTipText(resourceMap.getString("CVChassisView.spnTonnage.tooltip")); //$NON-NLS-1$
         add(spnTonnage, gbc);
         spnTonnage.addChangeListener(this);
-        
+
         chkOmni.setText(resourceMap.getString("CVChassisView.chkOmni.text")); //$NON-NLS-1$
         gbc.gridx = 2;
         chkOmni.setToolTipText(resourceMap.getString("CVChassisView.chkOmni.tooltip")); //$NON-NLS-1$
         add(chkOmni, gbc);
         chkOmni.addActionListener(this);
-        
+
         chkSuperheavy.setText(resourceMap.getString("CVChassisView.chkSuperheavy.text")); //$NON-NLS-1$
         gbc.gridx = 3;
         chkSuperheavy.setToolTipText(resourceMap.getString("CVChassisView.chkSuperheavy.tooltip")); //$NON-NLS-1$
@@ -190,7 +190,7 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
         cbTurrets.setToolTipText(resourceMap.getString("CVChassisView.cbTurrets.tooltip")); //$NON-NLS-1$
         add(cbTurrets, gbc);
         cbTurrets.addActionListener(this);
-        
+
         gbc.gridx = 0;
         gbc.gridy = 4;
         gbc.gridwidth = 3;
@@ -204,7 +204,7 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
         spnChassisTurretWt.addChangeListener(this);
         omniComponents.add(lbl);
         omniComponents.add(spnChassisTurretWt);
-        
+
         gbc.gridx = 0;
         gbc.gridy = 5;
         gbc.gridwidth = 3;
@@ -219,7 +219,7 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
         spnChassisTurret2Wt.addChangeListener(this);
         omniComponents.add(lbl);
         omniComponents.add(spnChassisTurret2Wt);
-        
+
         gbc.gridx = 0;
         gbc.gridy = 6;
         gbc.gridwidth = 3;
@@ -246,7 +246,7 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
         spnPodTroop.addChangeListener(this);
         omniComponents.add(lbl);
         omniComponents.add(spnPodTroop);
-        
+
         JButton btnResetChassis = new JButton(resourceMap.getString("CVChassisView.btnResetChassis.text")); //$NON-NLS-1$
         btnResetChassis.setActionCommand(CMD_RESET_CHASSIS);
         gbc.gridx = 1;
@@ -258,18 +258,18 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
         btnResetChassis.addActionListener(this);
         omniComponents.add(btnResetChassis);
     }
-    
+
     public void setFromEntity(Tank tank) {
         engineRating = tank.hasEngine()? tank.getEngine().getRating() : 0;
         isSuperheavy = tank.isSuperHeavy();
-        
+
         refresh();
         setTonnage(tank.getWeight());
         chkOmni.setSelected(tank.isOmni());
         chkSuperheavy.setSelected(isSuperheavy);
         cbMotiveType.setSelectedItem(tank.getMovementMode());
         setEngine(tank.getEngine());
-        
+
         if (!tank.hasNoDualTurret()) {
             cbTurrets.setSelectedItem(TURRET_DUAL);
         } else if (!tank.hasNoTurret()) {
@@ -280,7 +280,7 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
         }
         spnTurretWtModel.setValue(Math.max(0, tank.getBaseChassisTurretWeight()));
         spnTurret2WtModel.setValue(Math.max(0, tank.getBaseChassisTurret2Weight()));
-        
+
         double troops = tank.getTroopCarryingSpace();
         double podTroops = tank.getPodMountedTroopCarryingSpace();
         spnFixedTroop.setValue(troops - podTroops);
@@ -290,7 +290,7 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
         spnChassisTurretWt.setEnabled(chkOmni.isSelected() && (cbTurrets.getSelectedIndex() > 0));
         spnChassisTurret2Wt.setEnabled(chkOmni.isSelected() && (cbTurrets.getSelectedIndex() > 1));
     }
-    
+
     public void refresh() {
         refreshTonnage();
         chkOmni.removeActionListener(this);
@@ -311,7 +311,7 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
             spnFixedTroopModel.setValue(maxWt);
             spnFixedTroopModel.addChangeListener(this);
         }
-        
+
         omniComponents.forEach(c -> c.setEnabled(chkOmni.isSelected()));
         spnChassisTurretWt.setEnabled(chkOmni.isSelected() && (cbTurrets.getSelectedIndex() > 0));
         spnChassisTurret2Wt.setEnabled(chkOmni.isSelected() && (cbTurrets.getSelectedIndex() > 1));
@@ -355,7 +355,7 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
         }
         spnTonnage.addChangeListener(this);
     }
-    
+
     private void refreshEngine() {
         cbEngine.removeActionListener(this);
         Engine prevEngine = (Engine)cbEngine.getSelectedItem();
@@ -369,7 +369,7 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
             cbEngine.setSelectedIndex(0);
         }
     }
-    
+
     private void refreshTurrets() {
         Integer prev = (Integer) cbTurrets.getSelectedItem();
         cbTurrets.removeActionListener(this);
@@ -404,23 +404,23 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
             spnTurret2WtModel.addChangeListener(this);
         }
     }
-    
+
     public double getTonnage() {
         return spnTonnageModel.getNumber().doubleValue();
     }
-    
+
     public void setTonnage(double tonnage) {
         spnTonnageModel.setValue((int)tonnage);
     }
-    
+
     public boolean isSuperheavy() {
         return chkSuperheavy.isEnabled() && chkSuperheavy.isSelected();
     }
-    
+
     public EntityMovementMode getMovementMode() {
         return (EntityMovementMode)cbMotiveType.getSelectedItem();
     }
-    
+
     public Engine getEngine() {
         Engine e = (Engine) cbEngine.getSelectedItem();
         if (null == e) {
@@ -432,11 +432,11 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
     public int getEngineRating() {
         return engineRating;
     }
-    
+
     public void setEngineRating(int rating) {
         engineRating = rating;
     }
-    
+
     public List<Engine> getAvailableEngines() {
         List<Engine> retVal = new ArrayList<>();
         boolean isMixed = techManager.useMixedTech();
@@ -465,15 +465,15 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
         }
         return retVal;
     }
-    
+
     public boolean hasTurret() {
         return cbTurrets.getSelectedIndex() > 0;
     }
-    
+
     public boolean hasDualTurret() {
         return ((Integer)cbTurrets.getSelectedIndex()) == TURRET_DUAL;
     }
-    
+
     /**
      * Select the first engine in the list that matches engine type and flags, disregarding the large engine flag.
      */
@@ -490,7 +490,7 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
             }
         }
     }
-    
+
     public int getTurretConfiguration() {
         return (Integer)cbTurrets.getSelectedItem();
     }

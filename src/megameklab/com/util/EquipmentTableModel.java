@@ -305,7 +305,7 @@ public class EquipmentTableModel extends AbstractTableModel {
                 }
             } else if (type instanceof WeaponType) {
                 // Field gun crew size
-                special += Math.max(2, (int)Math.ceil(type.getTonnage(entity))); 
+                special += Math.max(2, (int)Math.ceil(type.getTonnage(entity)));
             }
             return special;
         } else if (col == COL_HEAT) {
@@ -427,7 +427,7 @@ public class EquipmentTableModel extends AbstractTableModel {
             for (int i = 2; i <= wtype.maxRange && allEq; i++) {
                 if (attackValue[i - 1] != attackValue[i]) {
                     allEq = false;
-                }                    
+                }
             }
             StringBuffer avString = new StringBuffer();
             avString.append(attackValue[RangeType.RANGE_SHORT]);
@@ -450,7 +450,7 @@ public class EquipmentTableModel extends AbstractTableModel {
                     + wtype.getDamage(wtype.getLongRange());
         } else if (wtype.getDamage() == WeaponType.DAMAGE_BY_CLUSTERTABLE) {
             if (wtype instanceof HAGWeapon) {
-                return wtype.getRackSize() + ""; 
+                return wtype.getRackSize() + "";
             } else if (wtype instanceof MekMortarWeapon) {
                 return "Special";
             } else if (wtype instanceof MissileWeapon) {
@@ -468,21 +468,21 @@ public class EquipmentTableModel extends AbstractTableModel {
                         default :
                             return "0";
                     }
-                } else if ((wtype instanceof ATMWeapon) 
-                        ||(wtype.getAmmoType() == AmmoType.T_SRM)  
+                } else if ((wtype instanceof ATMWeapon)
+                        ||(wtype.getAmmoType() == AmmoType.T_SRM)
                         || (wtype.getAmmoType() == AmmoType.T_SRM_STREAK)) {
                     dmg = 2;
                 } else {
                     dmg = 1;
                 }
                 return dmg + "/msl";
-            }            
+            }
             return "Cluster";
         } else if (wtype.getDamage() == WeaponType.DAMAGE_ARTILLERY) {
             return wtype.getRackSize() + "A";
-        } else if ((wtype instanceof RACWeapon) 
+        } else if ((wtype instanceof RACWeapon)
                 || (wtype instanceof UACWeapon)) {
-            return wtype.getDamage() + "/Shot";            
+            return wtype.getDamage() + "/Shot";
         } else if (wtype.getDamage() < 0) {
             return "Special";
         } else {

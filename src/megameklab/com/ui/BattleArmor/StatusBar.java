@@ -47,19 +47,19 @@ public class StatusBar extends ITab {
 
     private JButton btnValidate = new JButton("Validate Unit");
     private JButton btnFluffImage = new JButton("Set Fluff Image");
-    
+
     private JPanel tonnagePanel = new JPanel();
     private JPanel movementPanel = new JPanel();
     private JPanel bvPanel = new JPanel();
-    
+
     private JLabel move = new JLabel();
     private JLabel bvLabel = new JLabel();
     private JLabel tons = new JLabel();
     private JLabel cost = new JLabel();
-    
+
     private EntityVerifier entityVerifier = EntityVerifier.getInstance(new File(
             "data/mechfiles/UnitVerifierOptions.xml"));
-    
+
     private TestBattleArmor testBA = null;
     private DecimalFormat formatter;
     private JFrame parentFrame;
@@ -67,7 +67,7 @@ public class StatusBar extends ITab {
     private RefreshListener refresh;
     public StatusBar(MegaMekLabMainUI parent) {
         super(parent);
-        
+
         formatter = new DecimalFormat();
         btnValidate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -79,7 +79,7 @@ public class StatusBar extends ITab {
                 getFluffImage();
             }
         });
-        
+
 
         setLayout(new GridBagLayout());
         this.add(movementPanel());
@@ -104,7 +104,7 @@ public class StatusBar extends ITab {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
         this.add(cost, gbc);
-        
+
         refresh();
     }
 
@@ -145,7 +145,7 @@ public class StatusBar extends ITab {
         currentKilos = testBA.calculateWeight(BattleArmor.LOC_SQUAD);
         currentKilos += UnitUtil.getUnallocatedAmmoTonnage(getBattleArmor());
 
-        tons.setText("Suit Weight: " + String.format("%1$.3f",currentKilos) + 
+        tons.setText("Suit Weight: " + String.format("%1$.3f",currentKilos) +
                 "/" + maxKilos);
         tons.setToolTipText("This represents the weight of all squad-level " +
                 "equipment, it does not count individual equipment");
@@ -163,7 +163,7 @@ public class StatusBar extends ITab {
 
         cost.setText("Squad Cost: " + formatter.format(currentCost) + " C-bills");
     }
-    
+
     private void getFluffImage() {
         // copied from structureTab
         FileDialog fDialog = new FileDialog(getParentFrame(), "Image Path",
@@ -192,7 +192,7 @@ public class StatusBar extends ITab {
     private JFrame getParentFrame() {
         return parentFrame;
     }
-    
+
     public void addRefreshedListener(RefreshListener l) {
         refresh = l;
     }

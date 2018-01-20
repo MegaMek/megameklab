@@ -371,14 +371,14 @@ public class EquipmentTab extends ITab implements ActionListener {
         List<EquipmentType> spreadAlreadyAdded = new ArrayList<EquipmentType>();
 
         for (Mounted mount : getMech().getMisc()) {
-            
+
             EquipmentType etype = mount.getType();
             if (UnitUtil.isHeatSink(mount)
                     || etype.hasFlag(MiscType.F_JUMP_JET)
                     || etype.hasFlag(MiscType.F_JUMP_BOOSTER)
                     || etype.hasFlag(MiscType.F_TSM)
                     || etype.hasFlag(MiscType.F_INDUSTRIAL_TSM)
-                    || (etype.hasFlag(MiscType.F_MASC) 
+                    || (etype.hasFlag(MiscType.F_MASC)
                             && !etype.hasSubType(MiscType.S_SUPERCHARGER))
                     || ((getMech().getEntityType() & Entity.ETYPE_QUADVEE) == Entity.ETYPE_QUADVEE
                         && etype.hasFlag(MiscType.F_TRACKS))
@@ -386,7 +386,7 @@ public class EquipmentTab extends ITab implements ActionListener {
                 continue;
             }
             //if (UnitUtil.isUnitEquipment(mount.getType(), unit) || UnitUtil.isUn) {
-                if (UnitUtil.isFixedLocationSpreadEquipment(etype) 
+                if (UnitUtil.isFixedLocationSpreadEquipment(etype)
                         && !spreadAlreadyAdded.contains(etype)) {
                     equipmentList.addCrit(mount);
                     // keep track of spreadable equipment here, so it doesn't
@@ -429,7 +429,7 @@ public class EquipmentTab extends ITab implements ActionListener {
         addAllListeners();
         fireTableRefresh();
     }
-    
+
     public void refreshTable() {
         filterEquipment();
     }
@@ -807,7 +807,7 @@ public class EquipmentTab extends ITab implements ActionListener {
             return ((Comparable<Integer>)l0).compareTo(l1);
         }
     }
-    
+
     private ListSelectionListener selectionListener = new ListSelectionListener() {
 
         @Override
@@ -819,6 +819,6 @@ public class EquipmentTab extends ITab implements ActionListener {
             }
             addButton.setEnabled((null != etype) && eSource.getTechManager().isLegal(etype));
         }
-        
+
     };
 }

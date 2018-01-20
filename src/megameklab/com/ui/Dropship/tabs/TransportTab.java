@@ -62,17 +62,17 @@ import megameklab.com.util.UnitUtil;
 
 /**
  * Tab for adding and modifying aerospace transport bays.
- * 
+ *
  * @author Neoancient
  *
  */
 public class TransportTab extends IView implements ActionListener {
-    
+
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 6288658666144030993L;
-    
+
     private final JLabel lblMaxDoors = new JLabel();
     private final InstalledBaysModel modelInstalled = new InstalledBaysModel();
     private final JTable tblInstalled = new JTable(modelInstalled);
@@ -81,17 +81,17 @@ public class TransportTab extends IView implements ActionListener {
     private final JButton btnRemoveBay = new JButton();
     private final JButton btnAddBay = new JButton();
     private final JButton btnAddToCargo = new JButton();
-    
+
     private RefreshListener refresh = null;
-    
+
     public TransportTab(EntitySource eSource) {
         super(eSource);
         initUI();
     }
-    
+
     private void initUI() {
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Tabs", new EncodeControl()); //$NON-NLS-1$
-        
+
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
@@ -100,13 +100,13 @@ public class TransportTab extends IView implements ActionListener {
         gbc.gridy = 0;
         gbc.gridwidth = 2;
         add(new JLabel(resourceMap.getString("TransportTab.lblCurrentBays.text")), gbc); //$NON-NLS-1$
-        
+
         gbc.gridy++;
         gbc.gridwidth = 1;
         add(new JLabel(resourceMap.getString("TransportTab.lblMaxDoors.text")), gbc); //$NON-NLS-1$
         gbc.gridx = 1;
         add(lblMaxDoors, gbc);
-        
+
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 1;
@@ -114,36 +114,36 @@ public class TransportTab extends IView implements ActionListener {
         btnRemoveBay.setToolTipText(resourceMap.getString("TransportTab.btnRemoveBay.tooltip")); //$NON-NLS-1$
         add(btnRemoveBay, gbc);
         btnRemoveBay.addActionListener(this);
-        
+
         gbc.gridx = 1;
         btnAddToCargo.setText(resourceMap.getString("TransportTab.btnAddToCargo.text")); //$NON-NLS-1$
         btnAddToCargo.setToolTipText(resourceMap.getString("TransportTab.btnAddToCargo.tooltip")); //$NON-NLS-1$
         add(btnAddToCargo, gbc);
         btnAddToCargo.addActionListener(this);
-        
+
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 3;
         gbc.gridheight = GridBagConstraints.REMAINDER;
         add(new JScrollPane(tblInstalled), gbc);
-        
+
         gbc.gridx = 3;
         gbc.gridy = 0;
         gbc.gridwidth = 1;
         gbc.gridheight = 1;
         add(new JLabel(resourceMap.getString("TransportTab.lblAvailableBays.text")), gbc); //$NON-NLS-1$
-        
+
         gbc.gridy = 2;
         btnAddBay.setText(resourceMap.getString("TransportTab.btnAddBay.text")); //$NON-NLS-1$
         btnAddBay.setToolTipText(resourceMap.getString("TransportTab.btnAddBay.tooltip")); //$NON-NLS-1$
         add(btnAddBay, gbc);
         btnAddBay.addActionListener(this);
-        
+
         gbc.gridy++;
         gbc.gridwidth = 2;
         gbc.gridheight = GridBagConstraints.REMAINDER;
         add(new JScrollPane(tblAvailable), gbc);
-        
+
         tblInstalled.setRowHeight(24);
         TableColumn col = tblInstalled.getColumnModel().getColumn(InstalledBaysModel.COL_SIZE);
         col.setCellEditor(new SpinnerCellEditor(InstalledBaysModel.COL_SIZE));
@@ -167,22 +167,22 @@ public class TransportTab extends IView implements ActionListener {
         tblInstalled.setIntercellSpacing(new Dimension(0, 0));
         tblAvailable.setShowGrid(false);
         tblAvailable.setIntercellSpacing(new Dimension(0, 0));
-        
+
         tblInstalled.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tblInstalled.getSelectionModel().addListSelectionListener(e -> checkButtons());
         tblAvailable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tblAvailable.getSelectionModel().addListSelectionListener(e -> checkButtons());
-        
+
         tblInstalled.setDragEnabled(true);
         tblInstalled.setDropMode(DropMode.INSERT_ROWS);
         tblInstalled.setTransferHandler(new BayReorderTransferHandler());
         refresh();
     }
-    
+
     public void addRefreshedListener(RefreshListener l) {
         refresh = l;
     }
-    
+
     public void refresh() {
         lblMaxDoors.setText(String.valueOf(TestAero.maxBayDoors(getAero())));
         checkButtons();
@@ -194,13 +194,13 @@ public class TransportTab extends IView implements ActionListener {
             refresh.refreshPreview();
         }
     }
-    
+
     private void checkButtons() {
         btnRemoveBay.setEnabled(tblInstalled.getSelectedRow() >= 0);
         btnAddBay.setEnabled(canAddSelectedBay());
         btnAddToCargo.setEnabled(UnitUtil.getEntityVerifier(getAero()).calculateWeight() < getAero().getWeight());
     }
-    
+
     private int doorsAvailable() {
         int total = TestAero.maxBayDoors(getAero());
         for (Bay bay : getAero().getTransportBays()) {
@@ -208,7 +208,7 @@ public class TransportTab extends IView implements ActionListener {
         }
         return Math.max(total, 0);
     }
-    
+
     private boolean canAddSelectedBay() {
         int selected = tblAvailable.getSelectedRow();
         if (selected < 0) {
@@ -217,10 +217,10 @@ public class TransportTab extends IView implements ActionListener {
         TestAero.TransportBay bayType = modelAvailable.getBayType(tblAvailable.convertRowIndexToModel(selected));
         return (doorsAvailable() > 0) || (bayType == TestAero.TransportBay.CARGO);
     }
-    
+
     /**
      * Removes the bay from the vessel and adjusts the crew count.
-     * 
+     *
      * @param bay
      */
     private void removeBay(Bay bay) {
@@ -230,10 +230,10 @@ public class TransportTab extends IView implements ActionListener {
         }
         getAero().removeTransporter(bay);
     }
-    
+
     /**
      * Adds the bay to the vessel and adjusts the crew count.
-     * 
+     *
      * @param bay
      */
     private void addBay(Bay bay) {
@@ -243,7 +243,7 @@ public class TransportTab extends IView implements ActionListener {
             getSmallCraft().setNCrew(getSmallCraft().getNCrew() + personnel);
         }
     }
-    
+
     /**
      * Removing bays can cause undesirable gaps in bay numbers, and it would be nice to let the
      * user order the bays. Since bay numbers are immutable we have to instantiate a new bay to
@@ -273,7 +273,7 @@ public class TransportTab extends IView implements ActionListener {
         newBayList.forEach(b -> getAero().addTransporter(b));
         modelInstalled.refreshBays();
     }
-    
+
     public void actionPerformed(ActionEvent ev) {
         if (ev.getSource() == btnAddBay) {
             int selected = tblAvailable.getSelectedRow();
@@ -324,24 +324,24 @@ public class TransportTab extends IView implements ActionListener {
             }
         }
     }
-    
+
     private class InstalledBaysModel extends AbstractTableModel {
-        
+
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = -8643492032818089043L;
-        
+
         private static final int COL_NAME      = 0;
         private static final int COL_SIZE      = 1;
         private static final int COL_DOORS     = 2;
         private static final int COL_TONNAGE   = 3;
         private static final int COL_PERSONNEL = 4;
         private static final int NUM_COLS      = 5;
-        
+
         private final List<Bay> bayList = new ArrayList<>();
         private final List<TestAero.TransportBay> bayTypeList = new ArrayList<>();
-        
+
         public void refreshBays() {
             bayList.clear();
             bayTypeList.clear();
@@ -362,15 +362,15 @@ public class TransportTab extends IView implements ActionListener {
             }
             fireTableDataChanged();
         }
-        
+
         public Bay getBay(int row) {
             return bayList.get(row);
         }
-        
+
         public Iterator<Bay> getBays() {
             return bayList.iterator();
         }
-        
+
         public TestAero.TransportBay getBayType(int row) {
             return bayTypeList.get(row);
         }
@@ -396,7 +396,7 @@ public class TransportTab extends IView implements ActionListener {
         public int getRowCount() {
             return bayList.size();
         }
-        
+
         @Override
         public int getColumnCount() {
             return NUM_COLS;
@@ -445,23 +445,23 @@ public class TransportTab extends IView implements ActionListener {
             rebuildBays();
             refresh();
         }
-        
+
     }
-    
+
     private class AvailableBaysModel extends AbstractTableModel {
-        
+
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = -5456813671712646392L;
-        
+
         private static final int COL_NAME      = 0;
         private static final int COL_SIZE      = 1;
         private static final int COL_PERSONNEL = 2;
         private static final int NUM_COLS      = 3;
-        
+
         private List<TestAero.TransportBay> bayList = new ArrayList<>();
-        
+
         public void refreshBays() {
             bayList.clear();
             for (TestAero.TransportBay bay : TestAero.TransportBay.values()) {
@@ -516,22 +516,22 @@ public class TransportTab extends IView implements ActionListener {
                         }
                         return bayList.get(rowIndex).getPersonnel();
                 }
-            }            
+            }
             return "?";
         }
-        
+
     }
-    
+
     private class SpinnerCellEditor extends AbstractCellEditor implements TableCellEditor, ChangeListener {
-        
+
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = -5334192308060664513L;
-        
+
         private final JSpinner spinner = new JSpinner();
         private final int column;
-        
+
         SpinnerCellEditor(int column) {
             this.column = column;
             spinner.addChangeListener(this);
@@ -591,13 +591,13 @@ public class TransportTab extends IView implements ActionListener {
             }
             return null;
         }
-        
+
     }
-    
+
     private class BayReorderTransferHandler extends TransferHandler {
-        
+
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = -6442201464476396078L;
 

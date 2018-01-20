@@ -124,7 +124,7 @@ public class EquipmentTab extends ITab implements ActionListener {
     private String ADD_COMMAND = "ADD";
     private String REMOVE_COMMAND = "REMOVE";
     private String REMOVEALL_COMMAND = "REMOVEALL";
-    
+
     private final Dimension SPINNER_SIZE = new Dimension(55, 25);
 
     public static String getTypeName(int type) {
@@ -411,13 +411,13 @@ public class EquipmentTab extends ITab implements ActionListener {
                     || etype.hasFlag(MiscType.F_JUMP_BOOSTER)
                     || etype.hasFlag(MiscType.F_TSM)
                     || etype.hasFlag(MiscType.F_INDUSTRIAL_TSM)
-                    || (etype.hasFlag(MiscType.F_MASC) 
+                    || (etype.hasFlag(MiscType.F_MASC)
                             && !etype.hasSubType(MiscType.S_SUPERCHARGER))
                     || UnitUtil.isArmorOrStructure(etype)) {
                 continue;
             }
             //if (UnitUtil.isUnitEquipment(mount.getType(), unit) || UnitUtil.isUn) {
-                if (UnitUtil.isFixedLocationSpreadEquipment(etype) 
+                if (UnitUtil.isFixedLocationSpreadEquipment(etype)
                         && !spreadAlreadyAdded.contains(etype)) {
                     equipmentList.addCrit(mount);
                     // keep track of spreadable equipment here, so it doesn't
@@ -488,7 +488,7 @@ public class EquipmentTab extends ITab implements ActionListener {
                 if (null != mount) {
                     equipmentList.addCrit(mount);
                 }
-            }        
+            }
         } else {
             int count = (Integer)spnAddCount.getValue();
             if (getAero().usesWeaponBays() && (equip instanceof AmmoType)) {
@@ -564,7 +564,7 @@ public class EquipmentTab extends ITab implements ActionListener {
         }
         equipmentList.removeAllCrits();
     }
-    
+
     private void removeEmptyBays() {
         List<Mounted> emptyBays = getAero().getWeaponBayList().stream()
                 .filter(bay -> bay.getBayWeapons().isEmpty()).collect(Collectors.toList());
@@ -839,7 +839,7 @@ public class EquipmentTab extends ITab implements ActionListener {
             return ((Comparable<Integer>)l0).compareTo(l1);
         }
     }
-    
+
     private ListSelectionListener selectionListener = new ListSelectionListener() {
 
         @Override
@@ -851,7 +851,7 @@ public class EquipmentTab extends ITab implements ActionListener {
             }
             addButton.setEnabled((null != etype) && eSource.getTechManager().isLegal(etype));
         }
-        
+
     };
 
     public void refreshTable() {

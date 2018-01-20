@@ -141,15 +141,15 @@ public class CriticalTransferHandler extends TransferHandler {
             throws LocationFullException{
         int totalCrits = UnitUtil.getCritsUsed(getUnit(), eq.getType());
         // How much space we have in the selected location
-        int primaryLocSpace = 
+        int primaryLocSpace =
                 UnitUtil.getContiguousNumberOfCrits(getUnit(), location, slotNumber);
-        
+
         if ((eq.getType().isSpreadable() || eq.isSplitable()) &&
                 (totalCrits > 1)) {
             int critsUsed = 0;
             int primaryLocation = location;
             int nextLocation = getUnit().getTransferLocation(location);
-            
+
             // Determine if we should spread equipment over multiple locations
             if ((eq.getType().getCriticals(getUnit()) > primaryLocSpace)
                     && !((eq.getType() instanceof MiscType) && eq.getType().hasFlag(MiscType.F_TARGCOMP))
@@ -235,25 +235,25 @@ public class CriticalTransferHandler extends TransferHandler {
                 }
             }
 
-            
-            // Determine how much usable space we have in both locations            
+
+            // Determine how much usable space we have in both locations
             int secondarySpace = UnitUtil.getHighestContinuousNumberOfCrits(
                     getUnit(), nextLocation);
-            
+
             // Check for available space
             if ((primaryLocSpace < totalCrits) &&
                     ((nextLocation == Entity.LOC_DESTROYED)
                         || ((primaryLocSpace + secondarySpace) < totalCrits))) {
                 throw new LocationFullException(eq.getName() +
-                        " does not fit there in " 
-                        + getUnit().getLocationAbbr(location) 
+                        " does not fit there in "
+                        + getUnit().getLocationAbbr(location)
                         + " on " + getUnit().getDisplayName());
             }
 
             int currLoc = location;
             for (; critsUsed < totalCrits; critsUsed++) {
                 mech.addEquipment(eq, currLoc, false, slotNumber);
-                slotNumber = 
+                slotNumber =
                         (slotNumber + 1) % mech.getNumberOfCriticals(currLoc);
                 primaryLocSpace--;
                 if (primaryLocSpace == 0) {
@@ -269,7 +269,7 @@ public class CriticalTransferHandler extends TransferHandler {
             }
             changeMountStatus(eq, primaryLocation, secondary, false);
         } else if (primaryLocSpace >= totalCrits) {
-            if ((eq.getType() instanceof WeaponType) 
+            if ((eq.getType() instanceof WeaponType)
                     && eq.getType().hasFlag(WeaponType.F_VGL)) {
                     String[] facings;
                     if (location == Mech.LOC_LT) {
@@ -402,7 +402,7 @@ public class CriticalTransferHandler extends TransferHandler {
             }
             Transferable t = info.getTransferable();
             int slotNumber = list.getDropLocation().getIndex();
-            
+
             try {
                 Mounted eq = getUnit().getEquipment(Integer.parseInt(
                         (String) t.getTransferData(DataFlavor.stringFlavor)));
@@ -414,7 +414,7 @@ public class CriticalTransferHandler extends TransferHandler {
                 } else {
                     // If this equipment is already mounted, we need to clear
                     //  the criticals its mounted in
-                    if (eq.getLocation() != Entity.LOC_NONE 
+                    if (eq.getLocation() != Entity.LOC_NONE
                             || eq.getSecondLocation() != Entity.LOC_NONE){
                         UnitUtil.removeCriticals(getUnit(), eq);
                         changeMountStatus(eq,Entity.LOC_NONE,false);
@@ -434,7 +434,7 @@ public class CriticalTransferHandler extends TransferHandler {
                             JOptionPane.INFORMATION_MESSAGE);
                     return false;
                 }
-                
+
                 if (getUnit() instanceof Aero){
                     return addEquipmentAero((Aero)getUnit(), eq);
                 } else if (getUnit() instanceof Mech) {
@@ -465,7 +465,7 @@ public class CriticalTransferHandler extends TransferHandler {
 
 
             } catch (LocationFullException lfe) {
-                JOptionPane.showMessageDialog(null, lfe.getMessage(), 
+                JOptionPane.showMessageDialog(null, lfe.getMessage(),
                         "Location Full", JOptionPane.INFORMATION_MESSAGE);
                 return false;
             } catch (Exception ex) {

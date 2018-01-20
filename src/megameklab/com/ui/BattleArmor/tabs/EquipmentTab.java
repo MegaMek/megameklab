@@ -832,7 +832,7 @@ public class EquipmentTab extends ITab implements ActionListener {
             return ((Comparable<Integer>)l0).compareTo(l1);
         }
     }
-    
+
     private ListSelectionListener selectionListener = new ListSelectionListener() {
 
         @Override
@@ -844,7 +844,7 @@ public class EquipmentTab extends ITab implements ActionListener {
             }
             addButton.setEnabled((null != etype) && eSource.getTechManager().isLegal(etype));
         }
-        
+
     };
 
     public void refreshTable() {

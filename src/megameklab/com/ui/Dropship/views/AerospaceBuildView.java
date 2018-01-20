@@ -51,7 +51,7 @@ import megameklab.com.util.StringUtils;
 
 /**
  * Shows unallocated equipment and presents menus options for adding equipment to bays.
- * 
+ *
  * @author Neoancient
  *
  */
@@ -60,7 +60,7 @@ public class AerospaceBuildView extends IView implements MouseListener {
     *
     */
    private static final long serialVersionUID = 799195356642563937L;
-   
+
    private final List<BayWeaponCriticalTree> arcViews = new CopyOnWriteArrayList<>();
    public void addArcView(BayWeaponCriticalTree l) {
        arcViews.add(l);
@@ -70,7 +70,7 @@ public class AerospaceBuildView extends IView implements MouseListener {
    private Vector<Mounted> masterEquipmentList = new Vector<Mounted>(10, 1);
    private JTable equipmentTable = new JTable();
    private JScrollPane equipmentScroll = new JScrollPane();
-   
+
    public AerospaceBuildView(EntitySource eSource, RefreshListener refresh) {
        super(eSource);
 
@@ -103,7 +103,7 @@ public class AerospaceBuildView extends IView implements MouseListener {
        setLayout(new BorderLayout());
        this.add(equipmentScroll, BorderLayout.CENTER);
        setBorder(BorderFactory.createTitledBorder(
-               BorderFactory.createEmptyBorder(), "Unallocated Equipment", 
+               BorderFactory.createEmptyBorder(), "Unallocated Equipment",
                TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
    }
 
@@ -124,9 +124,9 @@ public class AerospaceBuildView extends IView implements MouseListener {
            }
        }
        for (Mounted mount : getAero().getAmmo()) {
-           if ((mount.getLocation() == Entity.LOC_NONE) && 
-                   ((mount.getUsableShotsLeft() > 1) || 
-                           (((AmmoType)mount.getType()).getAmmoType() == 
+           if ((mount.getLocation() == Entity.LOC_NONE) &&
+                   ((mount.getUsableShotsLeft() > 1) ||
+                           (((AmmoType)mount.getType()).getAmmoType() ==
                                AmmoType.T_COOLANT_POD))) {
                masterEquipmentList.add(mount);
            }
@@ -137,7 +137,7 @@ public class AerospaceBuildView extends IView implements MouseListener {
        // weapons and ammo
        Vector<Mounted> weaponsNAmmoList = new Vector<Mounted>(10, 1);
        for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
-           if ((masterEquipmentList.get(pos).getType() instanceof Weapon) || 
+           if ((masterEquipmentList.get(pos).getType() instanceof Weapon) ||
                    (masterEquipmentList.get(pos).getType() instanceof AmmoType)) {
                weaponsNAmmoList.add(masterEquipmentList.get(pos));
                masterEquipmentList.remove(pos);
@@ -187,7 +187,7 @@ public class AerospaceBuildView extends IView implements MouseListener {
    public JTable getTable() {
        return equipmentTable;
    }
-   
+
    public void mouseClicked(MouseEvent e) {
 
    }
@@ -201,7 +201,7 @@ public class AerospaceBuildView extends IView implements MouseListener {
    }
 
    public void mousePressed(MouseEvent e) {
-       // On right-click, we want to generate menu items to add to specific 
+       // On right-click, we want to generate menu items to add to specific
        //  locations, but only if those locations are make sense
        if (e.getButton() == MouseEvent.BUTTON3) {
            JPopupMenu popup = new JPopupMenu();
@@ -234,7 +234,7 @@ public class AerospaceBuildView extends IView implements MouseListener {
                            && !getAero().isSpheroid() && !l.validForAerodyne()) {
                        continue;
                    }
-                   
+
                    if (getAero().usesWeaponBays()) {
                        JMenu menu = new JMenu(l.getLocationName());
                        for (Mounted bay : l.baysFor(eq)) {
@@ -267,7 +267,7 @@ public class AerospaceBuildView extends IView implements MouseListener {
                            item = new JMenuItem(l.getLocationName());
                            item.addActionListener(ev -> l.addToLocation(eq));
                            popup.add(item);
-                       }                           
+                       }
                    } else {
                        item = new JMenuItem(l.getLocationName());
                        item.addActionListener(ev -> l.addToLocation(eq));
@@ -275,7 +275,7 @@ public class AerospaceBuildView extends IView implements MouseListener {
                    }
                }
            }
-           
+
            popup.show(this, e.getX(), e.getY());
        }
    }

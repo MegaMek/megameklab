@@ -42,14 +42,14 @@ import megameklab.com.util.CConfig;
 
 /**
  * Basic information common to all unit types: name, year, tech level.
- * 
+ *
  * @author Neoancient
  *
  */
 public class BasicInfoView extends BuildView implements ITechManager, ActionListener, FocusListener {
-    
+
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = -6831478201489228066L;
 
@@ -62,20 +62,20 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
     public void removeListener(BuildListener l) {
         listeners.remove(l);
     }
-    
+
     private static final TechAdvancement TA_MIXED_TECH = Entity.getMixedTechAdvancement();
     private static final int CLAN_START = 2807;
     private static final int IS_MIXED_START = TA_MIXED_TECH.getIntroductionDate(false);
     private static final int CLAN_MIXED_START = TA_MIXED_TECH.getIntroductionDate(true);
-    
+
     private static final int TECH_BASE_IS           = 0;
     private static final int TECH_BASE_CLAN         = 1;
     private static final int TECH_BASE_IS_MIXED     = 2;
     private static final int TECH_BASE_CLAN_MIXED   = 3;
-    
+
     private String[] techBaseNames;
     private TechAdvancement baseTA;
-    
+
     private final JTextField txtChassis = new JTextField(5);
     private final JTextField txtModel = new JTextField(5);
     private final IntRangeTextField txtYear = new IntRangeTextField(3);
@@ -85,22 +85,22 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
     private final CustomComboBox<Integer> cbTechBase = new CustomComboBox<>(i -> String.valueOf(techBaseNames[i]));
     private final JComboBox<SimpleTechLevel> cbTechLevel = new JComboBox<>();
     private final IntRangeTextField txtManualBV = new IntRangeTextField(3);
-    
+
     private int prevYear = 3145;
     private int prevBV = 0;
-    
+
     public BasicInfoView(TechAdvancement baseTA) {
         this.baseTA = baseTA;
         initUI();
     }
-    
+
     private void initUI() {
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl()); //$NON-NLS-1$
         techBaseNames = resourceMap.getString("BasicInfoView.cbTechBase.values").split(",");
-        
+
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        
+
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
@@ -186,7 +186,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         txtManualBV.setToolTipText(resourceMap.getString("BasicInfoView.txtManualBV.tooltip")); //$NON-NLS-1$
         add(txtManualBV, gbc);
         txtManualBV.addFocusListener(this);
-        
+
         if (CConfig.getBooleanParam(CConfig.TECH_SHOW_FACTION)) {
             lblFaction.setVisible(true);
             cbFaction.setVisible(true);
@@ -216,21 +216,21 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         if (en.getManualBV() >= 0) {
             setManualBV(en.getManualBV());
         }
-        
+
         refreshFaction();
     }
-    
+
     public void setAsCustomization() {
         txtChassis.setEditable(false);
         txtChassis.setEnabled(false);
         txtYear.setEditable(false);
         txtYear.setEnabled(false);
     }
-    
+
     public String getChassis() {
         return txtChassis.getText();
     }
-    
+
     public void setChassis(String chassis) {
         txtChassis.setText(chassis);
     }
@@ -238,7 +238,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
     public String getModel() {
         return txtModel.getText();
     }
-    
+
     public void setModel(String model) {
         txtModel.setText(model);
     }
@@ -247,19 +247,19 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
     public int getTechIntroYear() {
         return txtYear.getIntVal();
     }
-    
+
     public void setYear(int year) {
         txtYear.setIntVal(year);
         refreshTechBase();
     }
-    
+
     public int getTechFaction() {
         if (cbFaction.getSelectedIndex() < 0) {
             return -1;
         }
         return (Integer)cbFaction.getSelectedItem();
     }
-    
+
     public void setTechFaction(int techFaction) {
         cbFaction.setSelectedItem(techFaction);
     }
@@ -271,11 +271,11 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         }
         return getTechIntroYear();
     }
-    
+
     public String getSource() {
         return txtSource.getText();
     }
-    
+
     public void setSource(String source) {
         txtSource.setText(source);
     }
@@ -283,11 +283,11 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
     public int getManualBV() {
         return txtManualBV.getIntVal();
     }
-    
+
     public void setManualBV(int bv) {
         txtManualBV.setIntVal(bv);
     }
-    
+
     @Override
     public boolean useClanTechBase() {
         if (getTechIntroYear() < CLAN_START) {
@@ -298,7 +298,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
                     && ((selected == TECH_BASE_CLAN) || (selected == TECH_BASE_CLAN_MIXED)));
         }
     }
-    
+
     @Override
     public boolean useMixedTech() {
         if (getTechIntroYear() < CLAN_START) {
@@ -308,7 +308,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         return ((null != selected)
                 && ((selected == TECH_BASE_IS_MIXED) || (selected == TECH_BASE_CLAN_MIXED)));
     }
-    
+
     public void setTechBase(boolean clan, boolean mixed) {
         int item = 0;
         if (clan && (getTechIntroYear() > CLAN_START)) {
@@ -320,18 +320,18 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         cbTechBase.setSelectedItem(item);
         refreshFaction();
     }
-    
+
     public SimpleTechLevel getTechLevel() {
         if (cbTechLevel.getSelectedItem() == null) {
             return SimpleTechLevel.STANDARD;
         }
         return (SimpleTechLevel)cbTechLevel.getSelectedItem();
     }
-    
+
     public void setTechLevel(SimpleTechLevel level) {
         cbTechLevel.setSelectedItem(level);
     }
-    
+
     private void refreshTechBase() {
         Integer prev = (Integer)cbTechBase.getSelectedItem();
         cbTechBase.removeActionListener(this);
@@ -358,7 +358,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         refreshTechLevel();
         refreshFaction();
     }
-    
+
     private void refreshTechLevel() {
         SimpleTechLevel prev = getTechLevel();
         cbTechLevel.removeActionListener(this);
@@ -380,9 +380,9 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
             cbTechLevel.setSelectedIndex(0);
         }
     }
-    
+
     private void refreshFaction() {
-        
+
         if (CConfig.getBooleanParam(CConfig.TECH_SHOW_FACTION)) {
             cbFaction.removeActionListener(this);
             Integer prevFaction = (Integer)cbFaction.getSelectedItem();
@@ -399,7 +399,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
             cbFaction.setVisible(false);
         }
     }
-    
+
     @Override
     public void focusGained(FocusEvent e) {
         if (e.getSource().equals(txtYear)) {
@@ -408,7 +408,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
             prevBV = getManualBV();
         }
     }
-    
+
     @Override
     public void focusLost(FocusEvent e) {
         if (e.getSource() == txtChassis) {
@@ -438,7 +438,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         }
         listeners.forEach(l -> l.refreshSummary());
     }
-    
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == cbFaction) {
@@ -451,20 +451,20 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         }
         listeners.forEach(l -> l.refreshSummary());
     }
-    
+
     @Override
     public boolean unofficialNoYear() {
         return CConfig.getBooleanParam(CConfig.TECH_UNOFFICAL_NO_YEAR);
     }
-    
+
     @Override
     public boolean useVariableTechLevel() {
         return CConfig.getBooleanParam(CConfig.TECH_PROGRESSION);
     }
-    
+
     @Override
     public boolean showExtinct() {
         return CConfig.getBooleanParam(CConfig.TECH_EXTINCT);
     }
-    
+
 }

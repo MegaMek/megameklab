@@ -18,7 +18,7 @@ import megamek.common.EntityMovementMode;
 
 /**
  * Listener for views used by combat vehicles.
- * 
+ *
  * @author Neoancient
  *
  */

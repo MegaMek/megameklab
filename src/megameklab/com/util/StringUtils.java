@@ -321,7 +321,7 @@ public class StringUtils {
                         (weapon instanceof CLBAERPulseLaserSmall) ||
                         (weapon instanceof ISXPulseLaserSmall) ||
                         (weapon instanceof ISPulseLaserSmall) ||
-                        (weapon instanceof ISBALaserPulseSmall) || 
+                        (weapon instanceof ISBALaserPulseSmall) ||
                         (weapon instanceof CLPulseLaserSmall) ||
                         (weapon instanceof CLBAPulseLaserSmall) ||
                         (weapon instanceof CLPulseLaserMicro) ||

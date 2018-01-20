@@ -71,7 +71,7 @@ import megameklab.com.util.XTableColumnModel;
 
 /**
  * Shows options for infantry field guns/field artillery
- * 
+ *
  * @author Neoancient
  *
  */
@@ -176,7 +176,7 @@ public class FieldGunView extends IView implements ActionListener {
             if (eq instanceof GaussWeapon
                     && ((WeaponType)eq).getAmmoType() != AmmoType.T_GAUSS_HEAVY
                     && ((WeaponType)eq).getAmmoType() != AmmoType.T_IGAUSS_HEAVY
-                    && ((WeaponType)eq).getAmmoType() != AmmoType.T_MAGSHOT                    
+                    && ((WeaponType)eq).getAmmoType() != AmmoType.T_MAGSHOT
                     && ((WeaponType)eq).getAmmoType() != AmmoType.T_HAG) {
                 allTypes.add(eq);
             }
@@ -330,7 +330,7 @@ public class FieldGunView extends IView implements ActionListener {
                 EquipmentTableModel equipModel = entry.getModel();
                 EquipmentType etype = equipModel.getType(entry.getIdentifier());
                 if ((nType == T_ALL)
-                        || ((nType == T_GUN) 
+                        || ((nType == T_GUN)
                                 && !(etype instanceof ArtilleryWeapon)
                                 && !(etype instanceof ArtilleryCannonWeapon))
                         || ((nType == T_ARTILLERY) && etype instanceof ArtilleryWeapon)
@@ -474,8 +474,8 @@ public class FieldGunView extends IView implements ActionListener {
             return ((Comparable<Integer>)l0).compareTo(l1);
         }
     }
-    
-    
+
+
     private ListSelectionListener selectionListener = new ListSelectionListener() {
 
         @Override
@@ -487,6 +487,6 @@ public class FieldGunView extends IView implements ActionListener {
             }
             btnSetGun.setEnabled((null != etype) && eSource.getTechManager().isLegal(etype));
         }
-        
+
     };
 }

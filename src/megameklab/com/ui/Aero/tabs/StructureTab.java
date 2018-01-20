@@ -149,11 +149,11 @@ public class StructureTab extends ITab implements AeroBuildListener {
         panArmorAllocation.setBorder(BorderFactory.createTitledBorder("Armor Allocation"));
         panPatchwork.setBorder(BorderFactory.createTitledBorder("Patchwork Armor"));
     }
-    
+
     public ITechManager getTechManager() {
         return panInfo;
     }
-    
+
     /*
      * Used by MekHQ to set the tech faction for custom refits.
      */
@@ -163,7 +163,7 @@ public class StructureTab extends ITab implements AeroBuildListener {
 
     public void refresh() {
         removeAllListeners();
-        
+
         panInfo.setFromEntity(getAero());
         panChassis.setFromEntity(getAero());
         panHeat.setFromAero(getAero());
@@ -172,9 +172,9 @@ public class StructureTab extends ITab implements AeroBuildListener {
         panArmor.setFromEntity(getAero());
         panArmorAllocation.setFromEntity(getAero());
         panPatchwork.setFromEntity(getAero());
-        
+
         panHeat.setVisible(!getAero().hasETypeFlag(Entity.ETYPE_CONV_FIGHTER));
-        
+
         setAeroStructuralIntegrity();
 
         panSummary.refresh();
@@ -216,7 +216,7 @@ public class StructureTab extends ITab implements AeroBuildListener {
         }
         return true;
     }
-    
+
     public void removeSystemCrits(int systemType) {
 
         for (int loc = 0; loc < getAero().locations(); loc++) {
@@ -318,7 +318,7 @@ public class StructureTab extends ITab implements AeroBuildListener {
     public void techLevelChanged(SimpleTechLevel techLevel) {
         updateTechLevel();
     }
-    
+
     @Override
     public void updateTechLevel() {
         removeAllListeners();
@@ -403,7 +403,7 @@ public class StructureTab extends ITab implements AeroBuildListener {
         refresh.refreshBuild();
         refresh.refreshPreview();
     }
-    
+
     @Override
     public void armorTonnageChanged(double tonnage) {
         getAero().setArmorTonnage(Math.round(tonnage * 2) / 2.0);
@@ -420,13 +420,13 @@ public class StructureTab extends ITab implements AeroBuildListener {
         panArmor.removeListener(this);
         panArmor.setFromEntity(getAero());
         panArmor.addListener(this);
-        
+
         panArmorAllocation.setFromEntity(getAero());
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
     }
-    
+
     @Override
     public void useRemainingTonnageArmor() {
         double currentTonnage = UnitUtil.getEntityVerifier(getAero())
@@ -435,14 +435,14 @@ public class StructureTab extends ITab implements AeroBuildListener {
         double totalTonnage = getAero().getWeight();
         double remainingTonnage = TestEntity.floor(
                 totalTonnage - currentTonnage, TestEntity.Ceil.HALFTON);
-        
+
         double maxArmor = Math.min(getAero().getArmorWeight() + remainingTonnage,
                 UnitUtil.getMaximumArmorTonnage(getAero()));
         getAero().setArmorTonnage(maxArmor);
         panArmor.removeListener(this);
         panArmor.setFromEntity(getAero());
         panArmor.addListener(this);
-        
+
         panArmorAllocation.setFromEntity(getAero());
         panSummary.refresh();
         refresh.refreshStatus();
@@ -508,7 +508,7 @@ public class StructureTab extends ITab implements AeroBuildListener {
         refresh.refreshStatus();
         refresh.refreshSummary();
     }
-    
+
     @Override
     public void fighterTypeChanged(int type) {
         if ((FighterChassisView.TYPE_AEROSPACE == type)
@@ -578,14 +578,14 @@ public class StructureTab extends ITab implements AeroBuildListener {
         for (int loc = 0; loc < getAero().locations(); loc++) {
             getAero().initializeArmor(0, loc);
         }
-        
+
         // divide armor among positions, with more toward the front
         int points = UnitUtil.getArmorPoints(getAero(), getAero().getLabArmorTonnage());
         int nose = (int)Math.floor(points * 0.3);
         int wing = (int)Math.floor(points * 0.25);
         int aft = (int)Math.floor(points * 0.2);
         int remainder = points - nose - wing - wing - aft;
-        
+
         // spread remainder among nose and wings
         switch(remainder % 4) {
             case 1:

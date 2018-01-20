@@ -450,7 +450,7 @@ public class WeaponView extends IView implements ActionListener {
             return ((Comparable<Integer>)l0).compareTo(l1);
         }
     }
-    
+
     private ListSelectionListener selectionListener = new ListSelectionListener() {
 
         @Override
@@ -465,6 +465,6 @@ public class WeaponView extends IView implements ActionListener {
                     && !etype.hasFlag(WeaponType.F_INF_SUPPORT));
             addSecondaryButton.setEnabled((null != etype) && eSource.getTechManager().isLegal(etype));
         }
-        
+
     };
 }

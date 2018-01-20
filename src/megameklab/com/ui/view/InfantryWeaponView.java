@@ -46,14 +46,14 @@ import megameklab.com.util.UnitUtil;
 /**
  * Panel for conventional infantry weapons (primary, secondary, field gun). The only editable
  * controls are for changing the number of secondary weapons and field guns.
- * 
+ *
  * @author Neoancient
  *
  */
 public class InfantryWeaponView extends BuildView implements ActionListener {
-    
+
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 6150492212690074504L;
 
@@ -64,10 +64,10 @@ public class InfantryWeaponView extends BuildView implements ActionListener {
     public void removeListener(InfantryBuildListener l) {
         listeners.remove(l);
     }
-    
+
     private final EnumSet<EntityMovementMode> FIELD_GUN_MODES = EnumSet.of(
             EntityMovementMode.TRACKED, EntityMovementMode.WHEELED, EntityMovementMode.INF_MOTORIZED);
-    
+
     private final JTextField txtPrimary = new JTextField();
     private final JTextField txtSecondary = new JTextField();
     private final JTextField txtGuns = new JTextField();
@@ -78,20 +78,20 @@ public class InfantryWeaponView extends BuildView implements ActionListener {
     private ITechManager techManager;
     private String fgMotiveMsg;
     private String noneMsg;
-    
+
     public InfantryWeaponView(ITechManager techManager) {
         this.techManager = techManager;
         initUI();
     }
-    
+
     private void initUI() {
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl()); //$NON-NLS-1$
         fgMotiveMsg = resourceMap.getString("InfantryWeaponView.txtGuns.badMotive"); //$NON-NLS-1$
         noneMsg = resourceMap.getString("InfantryWeaponView.none"); //$NON-NLS-1$
-        
+
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        
+
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -105,7 +105,7 @@ public class InfantryWeaponView extends BuildView implements ActionListener {
         setFieldSize(txtPrimary, controlSize);
         txtPrimary.setEditable(false);
         add(txtPrimary, gbc);
-        
+
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridwidth = 1;
@@ -117,7 +117,7 @@ public class InfantryWeaponView extends BuildView implements ActionListener {
         txtSecondary.setToolTipText(resourceMap.getString("InfantryWeaponView.txtSecondary.tooltip")); //$NON-NLS-1$
         txtSecondary.setEditable(false);
         add(txtSecondary, gbc);
-        
+
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.gridwidth = 1;
@@ -129,7 +129,7 @@ public class InfantryWeaponView extends BuildView implements ActionListener {
         cbNumSecondary.setToolTipText(resourceMap.getString("InfantryWeaponView.cbNumSecondary.tooltip")); //$NON-NLS-1$
         add(cbNumSecondary, gbc);
         cbNumSecondary.addActionListener(this);
-        
+
         gbc.gridx = 0;
         gbc.gridy = 3;
         gbc.gridwidth = 1;
@@ -141,7 +141,7 @@ public class InfantryWeaponView extends BuildView implements ActionListener {
         txtGuns.setToolTipText(resourceMap.getString("InfantryWeaponView.txtGuns.tooltip")); //$NON-NLS-1$
         txtGuns.setEditable(false);
         add(txtGuns, gbc);
-        
+
         gbc.gridx = 0;
         gbc.gridy = 4;
         gbc.gridwidth = 1;
@@ -153,7 +153,7 @@ public class InfantryWeaponView extends BuildView implements ActionListener {
         cbNumGuns.setToolTipText(resourceMap.getString("InfantryWeaponView.cbNumGuns.tooltip")); //$NON-NLS-1$
         add(cbNumGuns, gbc);
         cbNumGuns.addActionListener(this);
-        
+
         chkAntiMek.setText(resourceMap.getString("InfantryWeaponView.chkAntiMek.text")); //$NON-NLS-1$
         gbc.gridx = 0;
         gbc.gridy = 5;
@@ -163,7 +163,7 @@ public class InfantryWeaponView extends BuildView implements ActionListener {
         add(chkAntiMek, gbc);
         chkAntiMek.addActionListener(this);
     }
-    
+
     public void setFromEntity(Infantry inf) {
         if (inf.getPrimaryWeapon() != null) {
             txtPrimary.setText(UnitUtil.trimInfantryWeaponNames(inf.getPrimaryWeapon().getName()));
@@ -175,7 +175,7 @@ public class InfantryWeaponView extends BuildView implements ActionListener {
         } else {
             txtSecondary.setText(noneMsg);
         }
-        
+
         cbNumSecondary.removeActionListener(this);
         cbNumSecondary.removeAllItems();
         cbNumSecondary.addItem(0);
@@ -191,7 +191,7 @@ public class InfantryWeaponView extends BuildView implements ActionListener {
         if (cbNumSecondary.getSelectedIndex() < 0) {
             cbNumSecondary.setSelectedIndex(0);
         }
-        
+
         List<EquipmentType> fieldGuns = inf.getWeaponList().stream()
                 .filter(m -> m.getLocation() == Infantry.LOC_FIELD_GUNS)
                 .map(m -> m.getType()).filter(et -> et instanceof WeaponType)
@@ -209,7 +209,7 @@ public class InfantryWeaponView extends BuildView implements ActionListener {
             if (!(fieldGuns.get(0) instanceof ArtilleryWeapon
                     || fieldGuns.get(0) instanceof ArtilleryCannonWeapon)) {
                 int crewReq = Math.max(2, (int)Math.ceil(fieldGuns.get(0).getTonnage(inf)));
-                maxNum = inf.getShootingStrength() / crewReq;                
+                maxNum = inf.getShootingStrength() / crewReq;
             }
             cbNumGuns.removeActionListener(this);
             cbNumGuns.removeAllItems();
@@ -227,7 +227,7 @@ public class InfantryWeaponView extends BuildView implements ActionListener {
             txtGuns.setEnabled(false);
             cbNumGuns.setEnabled(false);
         }
-        
+
         if (!inf.isMechanized() && techManager.isLegal(Infantry.getAntiMekTA())) {
             chkAntiMek.setEnabled(true);
             chkAntiMek.removeActionListener(this);
@@ -238,7 +238,7 @@ public class InfantryWeaponView extends BuildView implements ActionListener {
             chkAntiMek.setSelected(false);
         }
     }
-    
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == cbNumSecondary) {

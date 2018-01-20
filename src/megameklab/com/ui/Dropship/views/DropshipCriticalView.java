@@ -37,37 +37,37 @@ import megameklab.com.util.RefreshListener;
  * as rear-mounted weapons in the left/right side locations but here they are shown as separate locations
  * both to make it less confusing to the user and for the need to maintain a separate count of the number
  * of slots filled in that arc.
- * 
+ *
  * @author Neoancient
  *
  */
 public class DropshipCriticalView extends IView {
-    
+
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = -3093586215625228103L;
-    
+
     // Maximum number of arcs for small craft/dropship; aerodyne only use four
     private static final int NUM_ARCS = 6;
-    
+
     private JPanel nosePanel = new JPanel();
     private JPanel leftPanel = new JPanel();
     private JPanel aftLeftPanel = new JPanel();
     private JPanel rightPanel = new JPanel();
     private JPanel aftRightPanel = new JPanel();
     private JPanel aftPanel = new JPanel();
-    
+
     private JPanel leftColumn = new JPanel();
     private JPanel midColumn = new JPanel();
     private JPanel rightColumn = new JPanel();
-    
+
     private BayWeaponCriticalTree arcTrees[] = new BayWeaponCriticalTree[NUM_ARCS];
     private String aerodyneArcNames[];
     private String spheroidArcNames[];
     private JLabel lblSlotCount[] = new JLabel[NUM_ARCS];
     private JLabel lblExtraTonnage[] = new JLabel[NUM_ARCS];
-    
+
 
     public DropshipCriticalView(EntitySource eSource, RefreshListener refresh) {
         super(eSource);
@@ -82,7 +82,7 @@ public class DropshipCriticalView extends IView {
         leftColumn.setLayout(new BoxLayout(leftColumn, BoxLayout.Y_AXIS));
         midColumn.setLayout(new BoxLayout(midColumn, BoxLayout.Y_AXIS));
         rightColumn.setLayout(new BoxLayout(rightColumn, BoxLayout.Y_AXIS));
-        
+
         for (int arc = 0; arc < NUM_ARCS; arc++) {
             if (arc < getSmallCraft().locations()) {
                 arcTrees[arc] = new BayWeaponCriticalTree(arc, eSource, refresh);
@@ -103,7 +103,7 @@ public class DropshipCriticalView extends IView {
         midColumn.add(Box.createVerticalGlue());
         aftPanel = createArcPanel(TestSmallCraft.ARC_AFT, resourceMap);
         midColumn.add(aftPanel);
-        
+
         rightColumn.add(Box.createVerticalGlue());
         rightPanel = createArcPanel(TestSmallCraft.ARC_FWD_RIGHT, resourceMap);
         rightColumn.add(rightPanel);
@@ -115,11 +115,11 @@ public class DropshipCriticalView extends IView {
         mainPanel.add(midColumn);
         mainPanel.add(rightColumn);
         add(mainPanel);
-        
+
         refresh();
 
     }
-    
+
     private JPanel createArcPanel(int arc, ResourceBundle resourceMap) {
         JPanel arcPanel = new JPanel(new GridBagLayout());
         arcTrees[arc].setBorder(BorderFactory.createMatteBorder(0, 1, 1, 1, Color.black));
@@ -134,7 +134,7 @@ public class DropshipCriticalView extends IView {
         gbc.anchor = GridBagConstraints.NORTHWEST;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         arcPanel.add(arcTrees[arc], gbc);
-        
+
         lblSlotCount[arc] = new JLabel();
         JLabel lbl = new JLabel(resourceMap.getString("DropshipCriticalView.lblSlotCount.text")); //$NON-NLS-1$
         gbc.gridx = 0;
@@ -145,7 +145,7 @@ public class DropshipCriticalView extends IView {
         gbc.gridx = 1;
         arcPanel.add(lblSlotCount[arc], gbc);
         lblSlotCount[arc].setToolTipText(resourceMap.getString("DropshipCriticalView.lblSlotCount.tooltip")); //$NON-NLS-1$
-        
+
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 2;
@@ -153,7 +153,7 @@ public class DropshipCriticalView extends IView {
                 TestSmallCraft.SLOTS_PER_ARC));
         lbl.setToolTipText(resourceMap.getString("DropshipCriticalView.lblMaxSlots.format")); //$NON-NLS-1$
         arcPanel.add(lbl, gbc);
-        
+
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 1;
@@ -162,10 +162,10 @@ public class DropshipCriticalView extends IView {
         lblExtraTonnage[arc] = new JLabel();
         gbc.gridx = 1;
         arcPanel.add(lblExtraTonnage[arc], gbc);
-        
+
         return arcPanel;
     }
-    
+
     public void addAllocationListeners(AerospaceBuildView abv) {
         for (BayWeaponCriticalTree tree : arcTrees) {
             abv.addArcView(tree);
@@ -202,6 +202,6 @@ public class DropshipCriticalView extends IView {
             lblSlotCount[arc].setText(String.valueOf(arcTrees[arc].getSlotCount()));
             lblExtraTonnage[arc].setText(String.valueOf(extra[arc]));
         }
-        
+
     }
 }

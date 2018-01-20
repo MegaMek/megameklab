@@ -70,7 +70,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
     private JTable equipmentTable = new JTable();
     private JScrollPane equipmentScroll = new JScrollPane();
     private int engineHeatSinkCount = 0;
-    
+
     CriticalTransferHandler cth;
 
     public BuildView(EntitySource eSource, RefreshListener refresh) {
@@ -105,7 +105,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         setLayout(new BorderLayout());
         this.add(equipmentScroll, BorderLayout.CENTER);
         setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createEmptyBorder(), "Unallocated Equipment", 
+                BorderFactory.createEmptyBorder(), "Unallocated Equipment",
                 TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
     }
 
@@ -117,7 +117,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         equipmentList.removeAllCrits();
         masterEquipmentList.clear();
         for (Mounted mount : getAero().getMisc()) {
-            if ((mount.getLocation() == Entity.LOC_NONE) && 
+            if ((mount.getLocation() == Entity.LOC_NONE) &&
                     !isEngineHeatSink(mount)) {
                 masterEquipmentList.add(mount);
             }
@@ -128,9 +128,9 @@ public class BuildView extends IView implements ActionListener, MouseListener {
             }
         }
         for (Mounted mount : getAero().getAmmo()) {
-            if ((mount.getLocation() == Entity.LOC_NONE) && 
-                    ((mount.getUsableShotsLeft() > 1) || 
-                            (((AmmoType)mount.getType()).getAmmoType() == 
+            if ((mount.getLocation() == Entity.LOC_NONE) &&
+                    ((mount.getUsableShotsLeft() > 1) ||
+                            (((AmmoType)mount.getType()).getAmmoType() ==
                                 AmmoType.T_COOLANT_POD))) {
                 masterEquipmentList.add(mount);
             }
@@ -160,7 +160,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         // weapons and ammo
         Vector<Mounted> weaponsNAmmoList = new Vector<Mounted>(10, 1);
         for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
-            if ((masterEquipmentList.get(pos).getType() instanceof Weapon) || 
+            if ((masterEquipmentList.get(pos).getType() instanceof Weapon) ||
                     (masterEquipmentList.get(pos).getType() instanceof AmmoType)) {
                 weaponsNAmmoList.add(masterEquipmentList.get(pos));
                 masterEquipmentList.remove(pos);
@@ -174,8 +174,8 @@ public class BuildView extends IView implements ActionListener, MouseListener {
 
         // Equipment
         for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
-            if ((masterEquipmentList.get(pos).getType() instanceof MiscType) && 
-                    !UnitUtil.isArmor(masterEquipmentList.get(pos).getType()) && 
+            if ((masterEquipmentList.get(pos).getType() instanceof MiscType) &&
+                    !UnitUtil.isArmor(masterEquipmentList.get(pos).getType()) &&
                     !UnitUtil.isTSM(masterEquipmentList.get(pos).getType())) {
                 equipmentList.addCrit(masterEquipmentList.get(pos));
                 masterEquipmentList.remove(pos);
@@ -218,9 +218,9 @@ public class BuildView extends IView implements ActionListener, MouseListener {
     }
 
     private boolean isEngineHeatSink(Mounted mount) {
-        if ((mount.getLocation() == Entity.LOC_NONE) && 
+        if ((mount.getLocation() == Entity.LOC_NONE) &&
                 UnitUtil.isHeatSink(mount) && (engineHeatSinkCount > 0)) {
-            if(mount.getType().hasFlag(MiscType.F_COMPACT_HEAT_SINK) && 
+            if(mount.getType().hasFlag(MiscType.F_COMPACT_HEAT_SINK) &&
                     mount.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK)) {
                 //only single compact HS should be used for engine sinks
                 return false;
@@ -275,7 +275,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
     }
 
     public void mousePressed(MouseEvent e) {
-        // On right-click, we want to generate menu items to add to specific 
+        // On right-click, we want to generate menu items to add to specific
         //  locations, but only if those locations are make sense
         if (e.getButton() == MouseEvent.BUTTON3) {
             JPopupMenu popup = new JPopupMenu();
@@ -293,9 +293,9 @@ public class BuildView extends IView implements ActionListener, MouseListener {
             int numLocs = getAero().locations() - 1;
             // If it's a weapon, there are restrictions
             if (eq.getType() instanceof WeaponType){
-                int[] availSpace = TestAero.availableSpace(getAero()); 
+                int[] availSpace = TestAero.availableSpace(getAero());
                 int numWeapons[] = new int[availSpace.length];
-                
+
                 for (Mounted m : getAero().getWeaponList()){
                     if (m.getLocation() != Aero.LOC_NONE){
                         numWeapons[m.getLocation()]++;
@@ -308,11 +308,11 @@ public class BuildView extends IView implements ActionListener, MouseListener {
                 }
             // If it's not a weapon there are no space requirements
             } else {
-                for (int loc = 0; loc < numLocs; loc++){                    
+                for (int loc = 0; loc < numLocs; loc++){
                         validLocs.add(loc);
-                } 
+                }
             }
-            
+
             // Add a menu item for each potential location
             for (Integer location: validLocs) {
                 if (UnitUtil.isValidLocation(getAero(), eq.getType(), location)) {
@@ -335,20 +335,20 @@ public class BuildView extends IView implements ActionListener, MouseListener {
 
     }
 
-    
+
     /**
      * When the user right-clicks on the equipment table, a context menu is
      * generated that his menu items for each possible location that is clicked.
      * When the location is clicked, this is the method that adds the selected
      * equipment to the desired location.
-     * 
+     *
      * @param location
      * @param selectedRow
      */
-    private void jMenuLoadComponent_actionPerformed(int location, 
+    private void jMenuLoadComponent_actionPerformed(int location,
             int selectedRow) {
-        Mounted eq = (Mounted) 
-                equipmentTable.getModel().getValueAt(selectedRow, 
+        Mounted eq = (Mounted)
+                equipmentTable.getModel().getValueAt(selectedRow,
                         CriticalTableModel.EQUIPMENT);
         try {
             getAero().addEquipment(eq, location, false);

@@ -47,65 +47,65 @@ import com.kitfox.svg.SVGUniverse;
 /**
  * Utility to generate svg code that defines rows for armor or structure pips that will fit in a region,
  * given the svg code for the path.
- * 
+ *
  * @author Neoancient
  *
  */
 public class PipLayoutHelper {
 
     static class MainFrame extends JFrame {
-        
+
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = -8470193698981242677L;
-        
+
         private JTextArea txtRegionDef = new JTextArea();
         private JTextArea txtGeneratedCode = new JTextArea();
         private JTextField txtHeight = new JTextField(6);
         private JTextField txtAngle = new JTextField(6);
         private JCheckBox chkMirror = new JCheckBox("Mirror");
         private JButton btnGenerate = new JButton("Generate");
-        
+
         public MainFrame() {
             super();
             setTitle("Pip Layout Helper");
-            
+
             initUI();
             setSize(new Dimension(800,600));
-            
+
             setVisible(true);
         }
-        
+
         private void initUI() {
             Container pane = getContentPane();
             pane.setLayout(new GridBagLayout());
-            
+
             GridBagConstraints gbc = new GridBagConstraints();
             gbc.gridx = 0;
             gbc.gridy = 0;
             gbc.fill = GridBagConstraints.NONE;
             gbc.anchor = GridBagConstraints.WEST;
-            
+
             pane.add(new JLabel("Height: "), gbc);
             gbc.gridx = 1;
             gbc.gridy = 0;
             txtHeight.setText("6.15152");
             pane.add(txtHeight, gbc);
-            
+
             gbc.gridx = 0;
             gbc.gridy = 1;
             pane.add(new JLabel("Angle: "), gbc);
-            
+
             gbc.gridx = 1;
             gbc.gridy = 1;
             pane.add(txtAngle, gbc);
-            
+
             gbc.gridx = 0;
             gbc.gridy = 2;
             gbc.gridwidth = 2;
             pane.add(chkMirror, gbc);
-            
+
             gbc.gridx = 0;
             gbc.gridy = 3;
             gbc.gridwidth = 2;
@@ -123,7 +123,7 @@ public class PipLayoutHelper {
             scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
             pane.add(scroll, gbc);
             scroll.setBorder(BorderFactory.createTitledBorder("Region"));
-            
+
             gbc.gridx = 2;
             gbc.gridy = 4;
             gbc.fill = GridBagConstraints.BOTH;
@@ -133,9 +133,9 @@ public class PipLayoutHelper {
             scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
             pane.add(txtGeneratedCode, gbc);
             scroll.setBorder(BorderFactory.createTitledBorder("Generated Code"));
-            
+
         }
-        
+
         private Shape getRegionShape() {
             SVGUniverse universe = new SVGUniverse();
             String input = "<svg>" + txtRegionDef.getText() + "</svg>";
@@ -152,7 +152,7 @@ public class PipLayoutHelper {
                 return null;
             }
         }
-        
+
         private void generate() {
             Shape shape = getRegionShape();
             if (null == shape) {
@@ -184,7 +184,7 @@ public class PipLayoutHelper {
             Collections.reverse(regions);
             txtGeneratedCode.setText(regions.stream().collect(Collectors.joining("\n")));
         }
-        
+
         private List<Double> findIntersections(double curY, PathIterator iter) {
             double[] coords = new double[6];
             double[] curPos = new double[2];
@@ -272,7 +272,7 @@ public class PipLayoutHelper {
             return x1 + (y - y1)/(y2 - y1) * (x2 - x1);
         }
     }
-    
+
     /**
      * @param args
      */

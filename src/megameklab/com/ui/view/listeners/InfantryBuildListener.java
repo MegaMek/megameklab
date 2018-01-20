@@ -17,7 +17,7 @@ import megamek.common.EntityMovementMode;
 
 /**
  * Listener for views used by conventional infantry.
- * 
+ *
  * @author Neoancient
  *
  */
@@ -34,6 +34,6 @@ public interface InfantryBuildListener extends BuildListener {
      */
     void motiveTypeChanged(EntityMovementMode motiveType, boolean alt);
     void platoonSizeChanged(int numSquads, int squadSize);
-    
+
     void specializationsChanged();
 }

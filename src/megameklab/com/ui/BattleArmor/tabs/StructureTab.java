@@ -75,20 +75,20 @@ public class StructureTab extends ITab implements ActionListener, BABuildListene
     private MovementView panMovement;
     private BAProtoArmorView panArmor;
     private BAEnhancementView panEnhancements;
-    
+
     // Manipulator Panel
     private CustomComboBox<String> leftManipSelect = new CustomComboBox<>(s -> manipulatorDisplayName(s));
     private CustomComboBox<String> rightManipSelect = new CustomComboBox<>(s -> manipulatorDisplayName(s));
-    
+
     private MechViewPanel panelMekView;
-    
+
 	public StructureTab(EntitySource eSource) {
 	    super(eSource);
         setUpPanels();
         refresh();
 	}
 
-	public void setUpPanels() {	    
+	public void setUpPanels() {
 	    JPanel previewPanel = new JPanel();
 	    previewPanel.setLayout(new BoxLayout(previewPanel, BoxLayout.Y_AXIS));
 	    panelMekView = new MechViewPanel(450, 480,false);
@@ -96,10 +96,10 @@ public class StructureTab extends ITab implements ActionListener, BABuildListene
 	    //mekViewScrollPane.setMaximumSize(new java.awt.Dimension(450, 550));
 	    //mekViewScrollPane.setPreferredSize(new java.awt.Dimension(450, 550));
 	    previewPanel.add(panelMekView);
-	    
+
 	    JPanel leftPanel = new JPanel();
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
-        
+
         JPanel rightPanel = new JPanel();
         rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
 
@@ -111,11 +111,11 @@ public class StructureTab extends ITab implements ActionListener, BABuildListene
         panEnhancements = new BAEnhancementView(panBasicInfo);
         GridBagConstraints gbc = new GridBagConstraints();
         Dimension comboSize = new Dimension(250, 25);
-       
+
         gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.WEST;
 
-        gbc.gridx = 0; 
+        gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.NORTHWEST;
         gbc.fill = GridBagConstraints.NONE;
@@ -123,12 +123,12 @@ public class StructureTab extends ITab implements ActionListener, BABuildListene
         gbc.gridy = 1;
         manipPanel.add(createLabel("Right Arm:", labelSize), gbc);
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.gridx = 1; 
+        gbc.gridx = 1;
         gbc.gridy = 0;
         manipPanel.add(leftManipSelect, gbc);
         gbc.gridy = 1;
         manipPanel.add(rightManipSelect, gbc);
-        
+
         setFieldSize(leftManipSelect, comboSize);
         setFieldSize(rightManipSelect, comboSize);
 
@@ -145,12 +145,12 @@ public class StructureTab extends ITab implements ActionListener, BABuildListene
         leftPanel.add(panMovement);
         leftPanel.add(panArmor);
         //leftPanel.add(Box.createVerticalGlue());
-        
+
         rightPanel.add(Box.createVerticalStrut(5));
         rightPanel.add(previewPanel);
         rightPanel.add(panEnhancements);
         rightPanel.add(manipPanel);
-        
+
         setLayout(new GridBagLayout());
         gbc = new GridBagConstraints();
         gbc.insets = new Insets(0,30,0,30);
@@ -173,7 +173,7 @@ public class StructureTab extends ITab implements ActionListener, BABuildListene
         setFieldSize(label, maxSize);
         return label;
     }
-	
+
 	public JLabel createLabel(String text, Dimension maxSize) {
 
         JLabel label = new JLabel(text, SwingConstants.RIGHT);
@@ -194,9 +194,9 @@ public class StructureTab extends ITab implements ActionListener, BABuildListene
 	    panMovement.setFromEntity(getBattleArmor());
         panArmor.setFromEntity(getBattleArmor());
 	    panEnhancements.setFromEntity(getBattleArmor());
-	    
+
 	    removeAllListeners();
-	    
+
         // Manipulators
         leftManipSelect.removeAllItems();
         rightManipSelect.removeAllItems();
@@ -221,7 +221,7 @@ public class StructureTab extends ITab implements ActionListener, BABuildListene
 
         addAllListeners();
 	}
-	
+
 	public ITechManager getTechManager() {
 	    return panBasicInfo;
 	}
@@ -236,7 +236,7 @@ public class StructureTab extends ITab implements ActionListener, BABuildListene
 	public void addAllListeners() {
         leftManipSelect.addActionListener(this);
         rightManipSelect.addActionListener(this);
-        
+
         panBasicInfo.addListener(this);
         panChassis.addListener(this);
         panMovement.addListener(this);
@@ -247,7 +247,7 @@ public class StructureTab extends ITab implements ActionListener, BABuildListene
     public void removeAllListeners() {
         leftManipSelect.removeActionListener(this);
         rightManipSelect.removeActionListener(this);
-        
+
         panBasicInfo.removeListener(this);
         panChassis.removeListener(this);
         panMovement.removeListener(this);
@@ -275,10 +275,10 @@ public class StructureTab extends ITab implements ActionListener, BABuildListene
                     UnitUtil.removeMounted(getBattleArmor(), leftManip);
                     manipType = BAManipulator.getManipulator(
                             leftManip.getType().getInternalName());
-                    // If this manipulator was mounted as a pair, 
+                    // If this manipulator was mounted as a pair,
                     //   remove the paired manipulator
                     if (manipType.pairMounted){
-                        Mounted rightManip = 
+                        Mounted rightManip =
                                 getBattleArmor().getRightManipulator();
                         if (rightManip != null){
                             UnitUtil.removeMounted(getBattleArmor(), rightManip);
@@ -286,23 +286,23 @@ public class StructureTab extends ITab implements ActionListener, BABuildListene
                         }
                     }
                 }
-                
+
                 // If we selected something other than "None", mount it
                 if (leftManipSelect.getSelectedIndex() != 0){
-                    String manipName = 
+                    String manipName =
                             (String)leftManipSelect.getSelectedItem();
                     manipType = BAManipulator.getManipulator(manipName);
                     EquipmentType et = EquipmentType.get(manipType.internalName);
                     leftManip = new Mounted(getBattleArmor(), et);
                     leftManip.setBaMountLoc(BattleArmor.MOUNT_LOC_LARM);
-                    try { 
+                    try {
                         // Add the manipulator
                         getBattleArmor().addEquipment(leftManip,
                                 BattleArmor.LOC_SQUAD, false);
                         // Check to see if we need to add its mate
                         manipType = BAManipulator.getManipulator(
                                 leftManip.getType().getInternalName());
-                        // If this manipulator was mounted as a pair, 
+                        // If this manipulator was mounted as a pair,
                         //   remove the paired manipulator
                         if (manipType.pairMounted){
                             Mounted rightManip = new Mounted(getBattleArmor(), et);
@@ -325,10 +325,10 @@ public class StructureTab extends ITab implements ActionListener, BABuildListene
                     UnitUtil.removeMounted(getBattleArmor(), rightManip);
                     manipType = BAManipulator.getManipulator(
                             rightManip.getType().getInternalName());
-                    // If this manipulator was mounted as a pair, 
+                    // If this manipulator was mounted as a pair,
                     //   remove the paired manipulator
                     if (manipType.pairMounted){
-                        Mounted leftManip = 
+                        Mounted leftManip =
                                 getBattleArmor().getLeftManipulator();
                         if (leftManip != null){
                             UnitUtil.removeMounted(getBattleArmor(), leftManip);
@@ -336,23 +336,23 @@ public class StructureTab extends ITab implements ActionListener, BABuildListene
                         }
                     }
                 }
-                
+
                 // If we selected something other than "None", mount it
                 if (rightManipSelect.getSelectedIndex() != 0){
-                    String manipName = 
+                    String manipName =
                             (String)rightManipSelect.getSelectedItem();
                     manipType = BAManipulator.getManipulator(manipName);
                     EquipmentType et = EquipmentType.get(manipType.internalName);
                     rightManip = new Mounted(getBattleArmor(), et);
                     rightManip.setBaMountLoc(BattleArmor.MOUNT_LOC_RARM);
-                    try { 
+                    try {
                         // Add the manipulator
                         getBattleArmor().addEquipment(rightManip,
                                 BattleArmor.LOC_SQUAD, false);
                         // Check to see if we need to add its mate
                         manipType = BAManipulator.getManipulator(
                                 rightManip.getType().getInternalName());
-                        // If this manipulator was mounted as a pair, 
+                        // If this manipulator was mounted as a pair,
                         //   remove the paired manipulator
                         if (manipType.pairMounted){
                             Mounted leftManip = new Mounted(getBattleArmor(), et);
@@ -381,7 +381,7 @@ public class StructureTab extends ITab implements ActionListener, BABuildListene
         }
         return name;
     }
-    
+
     public void setAsCustomization() {
         panBasicInfo.setAsCustomization();
     }
@@ -402,12 +402,12 @@ public class StructureTab extends ITab implements ActionListener, BABuildListene
             panelMekView.reset();
         }
     }
-    
+
     @Override
     public void refreshSummary() {
         // no summary
     }
-    
+
     @Override
     public void chassisChanged(String chassis) {
         getBattleArmor().setChassis(chassis);
@@ -451,7 +451,7 @@ public class StructureTab extends ITab implements ActionListener, BABuildListene
     public void techLevelChanged(SimpleTechLevel techLevel) {
         updateTechLevel();
     }
-    
+
     @Override
     public void updateTechLevel() {
         removeAllListeners();
@@ -591,7 +591,7 @@ public class StructureTab extends ITab implements ActionListener, BABuildListene
             size = Math.max(1, size);
         }
         getBattleArmor().setTurretSize(size);
-        
+
         if (size == 0) {
             for (Mounted mount : getBattleArmor().getEquipment()) {
                 if (mount.getBaMountLoc() == BattleArmor.MOUNT_LOC_TURRET) {
@@ -618,7 +618,7 @@ public class StructureTab extends ITab implements ActionListener, BABuildListene
                 // for each critical
                 if (eq.isSpreadable()) {
                     numTimesToAdd = eq.getCriticals(getBattleArmor());
-                } 
+                }
                 for (int i = 0; i < numTimesToAdd; i++) {
                     Mounted newMount = new Mounted(getBattleArmor(), eq);
                     newMount.setBaMountLoc(loc);

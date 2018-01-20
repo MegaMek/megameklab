@@ -202,12 +202,12 @@ public class ImageHelper {
                 .getImage();
         return image;
     }
-    
+
     /**
      * Checks for a fluff image for the unit starting with any file explicitly associated with the
      * unit then in the default directory for the unit type for a file consisting of the name of the
      * unit with an image format extension.
-     * 
+     *
      * @param unit The unit to find a fluff image for
      * @param dir  The directory to check for a default image based on unit name
      * @return     A file to use for the fluff image, or null if no file is found.
@@ -215,7 +215,7 @@ public class ImageHelper {
     public static File getFluffFile(Entity unit, String dir) {
         String path = new File(fluffPath).getAbsolutePath();
         File f = null;
-        
+
         if (unit.getFluff().getMMLImagePath().length() > 0) {
             f = new File(path, unit.getFluff().getMMLImagePath());
             if (f.exists()) {

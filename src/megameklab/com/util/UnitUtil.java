@@ -394,7 +394,7 @@ public class UnitUtil {
             }
         }
     }
-    
+
     public static void addMounted(Entity unit, Mounted mounted, int loc,
             boolean rearMounted) throws LocationFullException {
         unit.addEquipment(mounted, loc, rearMounted);
@@ -623,7 +623,7 @@ public class UnitUtil {
      */
     public static void removeHeatSinks(Mech unit, int number) {
         final String METHOD_NAME = "removeHeatSinks(Mech, int)";
-        
+
         Vector<Mounted> toRemove = new Vector<Mounted>();
         int base = UnitUtil.getCriticalFreeHeatSinks(unit,
                 unit.hasCompactHeatSinks());
@@ -708,10 +708,10 @@ public class UnitUtil {
     public static void addHeatSinkMounts(Mech unit, int hsAmount, String hsType) {
         addHeatSinkMounts(unit, hsAmount, EquipmentType.get(UnitUtil.getHeatSinkType(hsType, unit.isClan())));
     }
-    
+
     /**
      * adds all heat sinks to the mech
-     * 
+     *
      * @param unit
      * @param hsAmount
      * @param sinkType
@@ -735,7 +735,7 @@ public class UnitUtil {
 
     public static void addCompactHeatSinkMounts(Mech unit, int hsAmount) {
         final String METHOD_NAME = "addCompactHeatSinkMounts(Mech, int)";
-        
+
         // first we need to figure out how many single compacts we need to add
         // for the engine, if any
         int currentSinks = UnitUtil.countActualHeatSinks(unit);
@@ -963,7 +963,7 @@ public class UnitUtil {
      */
     public static void updateJumpJets(Mech unit, int jjAmount, int jjType) {
         final String METHOD_NAME = "updateJumpJets(Mech, int, int)";
-        
+
         unit.setOriginalJumpMP(jjAmount);
         int ctype = unit.getJumpType();
         if (jjType == ctype) {
@@ -1169,11 +1169,11 @@ public class UnitUtil {
         eq.setSecondLocation(secondaryLocation, rear);
         eq.setSplit(secondaryLocation > -1);
     }
-    
+
     /**
      * Find unallocated ammo of the same type. Used by large aerospace units when removing ammo
      * from a location to find the group to add it to.
-     * 
+     *
      * @param unit The Entity
      * @param at   The type of armor to match
      * @return     An unallocated non-oneshot ammo mount of the same type, or null if there is not one.
@@ -1189,12 +1189,12 @@ public class UnitUtil {
         }
         return null;
     }
-    
+
     /**
      * Checks whether the equipment is eligible for pod mounting in an omni unit, either because the
      * equipment itself can never be pod-mounted (such as armor, structure, or myomer enhancements),
      * or the number of fixed heat sinks have not been assigned locations.
-     * 
+     *
      * @param unit
      * @param eq
      * @return
@@ -1203,7 +1203,7 @@ public class UnitUtil {
         if (!unit.isOmni() || eq.getType().isOmniFixedOnly()) {
             return false;
         }
-        
+
         if (eq.getType() instanceof MiscType && unit instanceof Mech
                 && (eq.getType().hasFlag(MiscType.F_HEAT_SINK)
                         || eq.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK)
@@ -1211,7 +1211,7 @@ public class UnitUtil {
                 && unit.hasEngine()) {
             int needed = Math.max(0, unit.getEngine().getWeightFreeEngineHeatSinks() -
                     UnitUtil.getCriticalFreeHeatSinks(unit, ((Mech)unit).hasCompactHeatSinks()));
-            long fixed = unit.getMisc().stream().filter(m -> 
+            long fixed = unit.getMisc().stream().filter(m ->
             (m.getType().hasFlag(MiscType.F_HEAT_SINK)
                     || m.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK)
                     || m.getType().hasFlag(MiscType.F_IS_DOUBLE_HEAT_SINK_PROTOTYPE))
@@ -1224,7 +1224,7 @@ public class UnitUtil {
         }
         return true;
     }
-    
+
     /**
      * Removes all pod-mounted equipment from an omni unit
      * @param unit
@@ -1359,7 +1359,7 @@ public class UnitUtil {
         } else if (unit.hasETypeFlag(Entity.ETYPE_BATTLEARMOR)) {
             points = (unit.getWeightClass() * 4) + 2;
         } else if (unit.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)) {
-            points = TestSmallCraft.maxArmorPoints((SmallCraft)unit); 
+            points = TestSmallCraft.maxArmorPoints((SmallCraft)unit);
         } else if (unit.hasETypeFlag(Entity.ETYPE_CONV_FIGHTER)) {
             points = (int) Math.floor(unit.getWeight());
         } else if (unit.hasETypeFlag(Entity.ETYPE_AERO)) {
@@ -1462,10 +1462,10 @@ public class UnitUtil {
         return Math.min((int) Math.floor(armorPerTon * armorTons),
                 UnitUtil.getMaximumArmorPoints(unit, loc));
     }
-    
+
     /**
      * Calculate the number of armor points per ton of armor for the given unit.
-     * 
+     *
      * @param en
      * @param at
      * @param clanArmor
@@ -1481,10 +1481,10 @@ public class UnitUtil {
             return 16.0 * EquipmentType.getArmorPointMultiplier(at, clanArmor);
         }
     }
-    
+
     /**
      * Calculate the number of armor points per ton of armor for the given unit.
-     * 
+     *
      * @param en
      * @param at
      * @param atTechLevel
@@ -1506,7 +1506,7 @@ public class UnitUtil {
 
     /**
      * Determine the maximum number of armor points that can be mounted in a location.
-     * 
+     *
      * @param entity
      * @param location
      * @return  The maximum number of armor points for the location, or null if there is no maximum.
@@ -1704,7 +1704,7 @@ public class UnitUtil {
      */
     public static Mounted createSpreadMounts(Mech unit, EquipmentType equip) {
         final String METHOD_NAME = "createSpreadMounts(Mech, EquipmentType)";
-        
+
         // how many non-spreadable contiguous blocks of crits?
         int blocks = 0;
         boolean isMisc = equip instanceof MiscType;
@@ -2112,7 +2112,7 @@ public class UnitUtil {
     /**
      * Return the number of critical-space free heatsinks that the given entity
      * can have.
-     * 
+     *
      * @param unit
      *            The unit mounting the heatsinks
      * @param compact
@@ -2389,7 +2389,7 @@ public class UnitUtil {
         UnitUtil.expandUnitMounts(unit);
         UnitUtil.checkArmor(unit);
     }
-    
+
     public static void updateLoadedAero(Aero unit) {
         if (unit.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)) {
             if (unit.getArmorType(Aero.LOC_NOSE) == EquipmentType.T_ARMOR_STANDARD) {
@@ -2525,13 +2525,13 @@ public class UnitUtil {
                     return false;
                 }
             }
-            
+
             if ((unit instanceof LandAirMech)
                     && (weapon.getAmmoType() == AmmoType.T_GAUSS_HEAVY
                     || weapon.getAmmoType() == AmmoType.T_IGAUSS_HEAVY)) {
                 return false;
             }
-            
+
             return true;
         }
         return false;
@@ -2540,18 +2540,18 @@ public class UnitUtil {
     public static boolean isAeroWeapon(EquipmentType eq, Aero unit) {
         if (!(eq instanceof WeaponType)) {
             return false;
-            
+
         }
         if (eq instanceof InfantryWeapon) {
             return false;
         }
 
         WeaponType weapon = (WeaponType) eq;
-        
+
         if (weapon.hasFlag(WeaponType.F_BOMB_WEAPON)) {
             return false;
         }
-        
+
         // small craft only; lacks aero weapon flag
         if (weapon.getAmmoType() == AmmoType.T_C3_REMOTE_SENSOR) {
             return unit.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)
@@ -2563,7 +2563,7 @@ public class UnitUtil {
                     || unit.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)
                     || unit.hasETypeFlag(Entity.ETYPE_JUMPSHIP);
         }
-        
+
         if (weapon.isSubCapital() || (weapon instanceof CapitalMissileWeapon)
                 || (weapon.getAtClass() == WeaponType.CLASS_SCREEN)) {
             return unit.hasETypeFlag(Entity.ETYPE_DROPSHIP)
@@ -2602,7 +2602,7 @@ public class UnitUtil {
         if ((weapon instanceof RLWeapon) && (weapon.getRackSize() < 10)) {
             return false;
         }
-        
+
         if (weapon.hasFlag(WeaponType.F_ENERGY)
                 || (weapon.hasFlag(WeaponType.F_PLASMA) && (weapon
                         .getAmmoType() == AmmoType.T_PLASMA))) {
@@ -2621,7 +2621,7 @@ public class UnitUtil {
         if (UnitUtil.isArmorOrStructure(eq)) {
             return false;
         }
-        
+
         if ((eq instanceof AmmoType)
                 && (((AmmoType)eq).getAmmoType() == AmmoType.T_COOLANT_POD)) {
             return !unit.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT);
@@ -2675,7 +2675,7 @@ public class UnitUtil {
                     && (eq.hasFlag(MiscType.F_SHOULDER_TURRET))) {
                 return false;
             }
-            
+
             if (unit.isSuperHeavy()
                     && (eq.hasFlag(MiscType.F_ACTUATOR_ENHANCEMENT_SYSTEM)
                             || eq.hasFlag(MiscType.F_MASC) // to catch Supercharger
@@ -2685,7 +2685,7 @@ public class UnitUtil {
                             || eq.hasFlag(MiscType.F_UMU))) {
                 return false;
             }
-            
+
             if ((unit instanceof LandAirMech)
                     && ((eq.hasFlag(MiscType.F_MASC) && eq.getSubType() == MiscType.S_SUPERCHARGER)
                             || eq.hasFlag(MiscType.F_MODULAR_ARMOR)
@@ -3343,7 +3343,7 @@ public class UnitUtil {
                 if ((location != Mech.LOC_RARM) && (location != Mech.LOC_LARM)
                         && (location != Mech.LOC_LLEG)
                         && (location != Mech.LOC_RLEG)
-                        && ((unit instanceof TripodMech) 
+                        && ((unit instanceof TripodMech)
                                 && location != Mech.LOC_CLEG)) {
                     return false;
                 }
@@ -3366,7 +3366,7 @@ public class UnitUtil {
                         || ((location != Mech.LOC_RT) && (location != Mech.LOC_LT)))) {
                 return false;
             }
-            
+
             //vehicular jump jets are auto-assigned to the body
             if (eq.hasFlag(MiscType.F_JUMP_JET) && unit instanceof Mech) {
             	if (location == Mech.LOC_HEAD) {
@@ -3377,7 +3377,7 @@ public class UnitUtil {
             		return false;
             	}
             }
-            
+
             if (eq.hasFlag(MiscType.F_AP_POD) && unit instanceof Mech) {
             	if (!(unit instanceof QuadMech)
             			&& (location == Mech.LOC_LARM || location == Mech.LOC_RARM)) {
@@ -3389,7 +3389,7 @@ public class UnitUtil {
             		return false;
             	}
             }
-            
+
             if (eq.hasFlag(MiscType.F_MODULAR_ARMOR)) {
             	if (unit instanceof Mech && location == Mech.LOC_HEAD) {
             		return false;
@@ -3398,7 +3398,7 @@ public class UnitUtil {
             		return false;
             	}
             }
-            
+
             if (eq.hasFlag(MiscType.F_CASE)) {
             	if (unit instanceof Mech
             			&& location != Mech.LOC_LT
@@ -3410,7 +3410,7 @@ public class UnitUtil {
             		return false;
             	}
             }
-            
+
             if (unit instanceof Tank) {
             	if (location == Tank.LOC_BODY) {
             		//Equipment which cannot be installed in the body
@@ -3427,10 +3427,10 @@ public class UnitUtil {
             	if (eq.hasFlag(MiscType.F_BULLDOZER) && location != Tank.LOC_FRONT) {
             		return false;
             	}
-            	
+
             	if (unit instanceof VTOL) {
             		/* Per Tech Manual, no equipment can be installed in the rotor, but TacOps
-            		 * allows some. This is equipment which is specifically disallowed. 
+            		 * allows some. This is equipment which is specifically disallowed.
             		 */
             		if (location == VTOL.LOC_ROTOR) {
             			if (eq.hasFlag(MiscType.F_HARJEL)
@@ -3446,7 +3446,7 @@ public class UnitUtil {
             		}
             	}
             }
-            
+
         } else if (eq instanceof WeaponType) {
             if (eq.hasFlag(WeaponType.F_VGL)) {
                 if ((unit instanceof Mech)
@@ -3952,7 +3952,7 @@ public class UnitUtil {
                         Infantry.LOC_INFANTRY);
             } catch (LocationFullException ex) {
 
-            }            
+            }
         } else if ((unit.getSecondaryN() < 2) || (null == unit.getSecondaryWeapon())) {
             try {
                 unit.addEquipment(unit.getPrimaryWeapon(),
@@ -3969,7 +3969,7 @@ public class UnitUtil {
             }
         }
     }
-    
+
     public static void replaceFieldGun(Infantry unit, WeaponType fieldGun, int num) {
         List<Mounted> toRemove = unit.getEquipment().stream()
                 .filter(m -> m.getLocation() == Infantry.LOC_FIELD_GUNS)
@@ -4004,7 +4004,7 @@ public class UnitUtil {
                 } catch (LocationFullException ex) {
                     ex.printStackTrace();
                 }
-            }                
+            }
         }
     }
 

@@ -63,7 +63,7 @@ public class SummaryView extends IView{
 
     private JTextField txtEngineCrit = new JTextField("?");
     private JTextField txtJumpCrit = new JTextField("?");
-    private JTextField txtArmorCrit = new JTextField("?");   
+    private JTextField txtArmorCrit = new JTextField("?");
 
     private JTextField txtStructAvail = new JTextField("?");
     private JTextField txtEngineAvail = new JTextField("?");
@@ -77,9 +77,9 @@ public class SummaryView extends IView{
     private JTextField txtSponsonAvail = new JTextField("?");
     private JTextField txtPowerAmpAvail = new JTextField("?");
     private JTextField txtEquipAvail = new JTextField("?");
-    
-    
-    
+
+
+
 
     private EntityVerifier entityVerifier = EntityVerifier.getInstance(new File("data/mechfiles/UnitVerifierOptions.xml"));
 
@@ -99,7 +99,7 @@ public class SummaryView extends IView{
         valueFields.add(txtRearTurretTon);
         valueFields.add(txtSponsonTon);
         valueFields.add(txtPowerAmpTon);
-        valueFields.add(txtEquipTon);        
+        valueFields.add(txtEquipTon);
 
 
         valueFields.add(txtEngineCrit);
@@ -130,7 +130,7 @@ public class SummaryView extends IView{
         valueFields.add(txtSponsonAvail);
         valueFields.add(txtPowerAmpAvail);
         valueFields.add(txtEquipAvail);
-        
+
         size = new Dimension(80,25);
         for(JTextField field : valueFields) {
             field.setEditable(false);
@@ -295,7 +295,7 @@ public class SummaryView extends IView{
         TestTank testTank = new TestTank(getTank(), entityVerifier.mechOption, null);
 
         txtStructTon.setText(Double.toString(testTank.getWeightStructure()));
-        txtEngineTon.setText(Double.toString(testTank.getWeightEngine()));        
+        txtEngineTon.setText(Double.toString(testTank.getWeightEngine()));
         txtLiftTon.setText(Double.toString(testTank.getTankWeightLifting()));
         txtControlsTon.setText(Double.toString(testTank.getWeightControls()));
         txtHeatTon.setText(Double.toString(testTank.getWeightHeatSinks()));
@@ -347,9 +347,9 @@ public class SummaryView extends IView{
         txtJumpTon.setText(Double.toString(weightJJ));
         txtEquipTon.setText(Double.toString(weightEquip));
         txtSponsonTon.setText(Double.toString(weightSponson));
-        
+
         if (weightJJ > 0) {
-            txtJumpCrit.setText(Integer.toString(1)); 
+            txtJumpCrit.setText(Integer.toString(1));
         } else {
             txtJumpCrit.setText(Integer.toString(0));
         }
@@ -385,8 +385,8 @@ public class SummaryView extends IView{
         }
         return usedSlots;
     }
-    
-    private int getArmorCrits() { 
+
+    private int getArmorCrits() {
         // different armor types take different amount of slots
         int usedSlots = 0;
         if (!getTank().hasPatchworkArmor()) {

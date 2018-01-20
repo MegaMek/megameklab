@@ -64,7 +64,7 @@ public class BuildTab extends ITab implements ActionListener {
         buildView = new BuildView(eSource,refresh);
 
         resetButton.setMnemonic('R');
-        resetButton.setActionCommand(RESETCOMMAND);        
+        resetButton.setActionCommand(RESETCOMMAND);
         buttonPanel.add(resetButton);
 
         gbc.gridx = 0;

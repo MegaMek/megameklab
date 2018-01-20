@@ -42,11 +42,11 @@ public class SummaryView extends IView{
     private static final long serialVersionUID = -8492419359401770037L;
 
     private JTextField txtStructTon = new JTextField("?");
-    private JTextField txtEngineTon = new JTextField("?");   
+    private JTextField txtEngineTon = new JTextField("?");
     private JTextField txtFuelTon = new JTextField("?");
     private JTextField txtCockpitTon = new JTextField("?");
     private JTextField txtHeatTon = new JTextField("?");
-    private JTextField txtArmorTon = new JTextField("?");   
+    private JTextField txtArmorTon = new JTextField("?");
     private JTextField txtEnhancementsTon = new JTextField("?");
     private JTextField txtWeapTon = new JTextField("?");
     private JTextField txtOtherTon = new JTextField("?");
@@ -61,7 +61,7 @@ public class SummaryView extends IView{
 
         valueFields.add(txtStructTon);
         valueFields.add(txtEngineTon);
-        valueFields.add(txtFuelTon);        
+        valueFields.add(txtFuelTon);
         valueFields.add(txtCockpitTon);
         valueFields.add(txtHeatTon);
         valueFields.add(txtArmorTon);
@@ -164,22 +164,22 @@ public class SummaryView extends IView{
     }
 
     public void refresh() {
-        TestAero testAero = 
+        TestAero testAero =
                 new TestAero(getAero(), entityVerifier.aeroOption, null);
-       
+
         txtStructTon.setText(Double.toString(testAero.getWeightStructure()));
         txtEngineTon.setText(Double.toString(testAero.getWeightEngine()));
         txtFuelTon.setText(Double.toString(testAero.getWeightFuel()));
         txtCockpitTon.setText(Double.toString(testAero.getWeightControls()));
-        txtHeatTon.setText(Double.toString(testAero.getWeightHeatSinks()));        
+        txtHeatTon.setText(Double.toString(testAero.getWeightHeatSinks()));
         txtArmorTon.setText(Double.toString(testAero.getWeightArmor()));
         txtEnhancementsTon.setText(Double.toString(testAero.getWeightMisc()));
         txtWeapTon.setText(Double.toString(testAero.getWeightWeapon()));
-        txtOtherTon.setText(Double.toString(testAero.getWeightPowerAmp() + 
+        txtOtherTon.setText(Double.toString(testAero.getWeightPowerAmp() +
                 testAero.getWeightCarryingSpace() + testAero.getWeightMisc()));
-        
-        
-        
+
+
+
     }
 
 

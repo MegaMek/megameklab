@@ -42,12 +42,12 @@ import megamek.common.options.PilotOptions;
 
 /**
  * Base class for printing Entity record sheets
- * 
+ *
  * @author Neoancient
  *
  */
 public abstract class PrintEntity extends PrintRecordSheet {
-    
+
     // Armor types with special properties that should be identified on the record sheet
     private static final long AT_SPECIAL = (1 << EquipmentType.T_ARMOR_REACTIVE)
             | (1 << EquipmentType.T_ARMOR_REFLECTIVE)
@@ -59,23 +59,23 @@ public abstract class PrintEntity extends PrintRecordSheet {
             | (1 << EquipmentType.T_ARMOR_HEAT_DISSIPATING)
             | (1 << EquipmentType.T_ARMOR_IMPACT_RESISTANT)
             | (1 << EquipmentType.T_ARMOR_BALLISTIC_REINFORCED);
-    
+
     protected PrintEntity(int startPage) {
         super(startPage);
     }
 
     protected abstract Entity getEntity();
-    
+
     @Override
     protected void printImage(Graphics2D g2d, PageFormat pageFormat, int pageNum) {
         Element element = null;
-        
+
         element = getSVGDocument().getElementById("tspanCopyright");
         if (null != element) {
             element.setTextContent(String.format(element.getTextContent(),
                     Calendar.getInstance().get(Calendar.YEAR)));
         }
-        
+
         writeTextFields();
         drawArmor();
         drawStructure();
@@ -85,7 +85,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
         }
         drawFluffImage();
     }
-    
+
     protected void writeTextFields() {
         setTextField("title", getRecordSheetTitle().toUpperCase());
         setTextField("type", getEntity().getShortNameRaw());
@@ -105,7 +105,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
         } else {
             setTextField("role", role.toString());
         }
-        
+
         // If we need to fill in names of crew slots we will need to reposition blanks/name fields.
         // This will require building the graphics tree so we measure the elements.
         if (getEntity().getCrew().getCrewType() != CrewType.SINGLE) {
@@ -145,7 +145,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
                 setTextField("pilotName" + i, getEntity().getCrew().getName(i), true);
                 setTextField("gunnerySkill" + i, Integer.toString(getEntity().getCrew().getGunnery(i)), true);
                 setTextField("pilotingSkill" + i, Integer.toString(getEntity().getCrew().getPiloting(i)), true);
-                
+
                 StringJoiner spaList = new StringJoiner(", ");
                 PilotOptions spas = getEntity().getCrew().getOptions();
                 for (Enumeration<IOptionGroup> optionGroups = spas.getGroups(); optionGroups.hasMoreElements();) {
@@ -175,7 +175,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
                                 "black", ' ');
                     }
                 }
-    
+
             } else {
                 setTextField("pilotName" + i, null);
                 setTextField("gunnerySkill" + i, null);
@@ -191,7 +191,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
             }
         }
     }
-    
+
     protected void drawArmor() {
         if (!getEntity().hasPatchworkArmor()) {
             if ((AT_SPECIAL & (1 << getEntity().getArmorType(1))) != 0) {
@@ -258,46 +258,46 @@ public abstract class PrintEntity extends PrintRecordSheet {
             }
         }
     }
-    
+
     /**
      * Identifies the index of the first location that can be armored. For vehicles this should be 1
      * to skip the body.
-     * 
+     *
      * @return The lowest location index that can be armored.
      */
     protected int firstArmorLocation() {
         return 0;
     }
-    
+
     /**
      * Identifies which locations are on the unit's centerline and should have armor and structure
      * pips laid out with left-right symmetry
-     * 
+     *
      * @param loc
      * @return
      */
     protected abstract boolean isCenterlineLocation(int loc);
-    
+
     protected void drawStructure() {
-        
+
     }
-    
+
     protected void writeEquipment(SVGRectElement canvas) {
-        
+
     }
-    
+
     protected void drawFluffImage() {
-        
+
     }
-    
+
     protected String formatWalk() {
         return Integer.toString(getEntity().getWalkMP());
     }
-    
+
     protected String formatRun() {
         return Integer.toString(getEntity().getRunMP());
     }
-    
+
     protected String formatJump() {
         return Integer.toString(getEntity().getJumpMP());
     }
@@ -311,12 +311,12 @@ public abstract class PrintEntity extends PrintRecordSheet {
             return "Inner Sphere";
         }
     }
-    
+
     protected String formatRulesLevel() {
         return getEntity().getStaticTechLevel().toString().substring(0, 1)
                 + getEntity().getStaticTechLevel().toString().substring(1).toLowerCase();
     }
-    
+
     private static String formatEra(int year) {
         if (year < 2571) {
             return "Age of War";
@@ -340,10 +340,10 @@ public abstract class PrintEntity extends PrintRecordSheet {
             return "Dark Ages";
         }
     }
-    
+
     protected String formatCost() {
         NumberFormat nf = NumberFormat.getNumberInstance(Locale.getDefault());
         return nf.format(getEntity().getCost(true)) + " C-bills";
     }
-    
+
 }

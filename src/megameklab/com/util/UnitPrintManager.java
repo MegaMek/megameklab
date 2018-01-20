@@ -133,7 +133,7 @@ public class UnitPrintManager {
 
     public static boolean printAllUnits(Vector<Entity> loadedUnits, boolean singlePrint) {
         Book book = new Book();
-        
+
         List<Infantry> infList = new ArrayList<>();
         List<BattleArmor> baList = new ArrayList<>();
         List<Protomech> protoList = new ArrayList<>();
@@ -242,13 +242,13 @@ public class UnitPrintManager {
                 unprintable.add(unit);
             }
         }
-        
+
         if (unprintable.size() > 0) {
             JOptionPane.showMessageDialog(null, "Printing is not currently supported for the following units:\n"
                     + unprintable.stream().map(en -> en.getChassis() + " " + en.getModel())
                     .collect(Collectors.joining("\n")));
         }
-        
+
         if (null != wige1) {
             book.append(new PrintVehicle(wige1, null), pageFormat);
         }
@@ -267,7 +267,7 @@ public class UnitPrintManager {
         if (protoList.size() > 0) {
             book.append(new PrintProtomech(protoList), pageFormat);
         }
-        
+
         masterPrintJob.setPageable(book);
         if (loadedUnits.size() > 1) {
             masterPrintJob.setJobName(loadedUnits.get(0).getShortNameRaw() + " etc");

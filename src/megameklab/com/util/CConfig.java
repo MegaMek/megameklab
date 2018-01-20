@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2008
- * 
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -59,25 +59,25 @@ public class CConfig {
     public static final String CONFIG_SYSTEMS_BACKGROUND = "Systems-Background";
     public static final String CONFIG_EMPTY_FOREGROUND = "Empty-Foreground";
     public static final String CONFIG_EMPTY_BACKGROUND = "Empty-Background";
-    
+
     public static final String TECH_PROGRESSION = "techProgression";
     public static final String TECH_USE_YEAR = "techUseYear";
     public static final String TECH_YEAR = "techYear";
     public static final String TECH_SHOW_FACTION = "techShowFaction";
     public static final String TECH_EXTINCT = "techShowExtinct";
     public static final String TECH_UNOFFICAL_NO_YEAR = "techUnofficialNoYear";
-    
+
     public static final String CONFIG_SAVE_LOC = "Save-Location-Default";
 
     private static Properties config;// config. player values.
 
     // CONSTRUCTOR
     public CConfig() {
-        
+
         if(!new File(CONFIG_DIR).exists()) {
             new File(CONFIG_DIR).mkdir();
         }
-        
+
         config = setDefaults();
         // check to see if a config is present. if not, make one.
         if (!(new File(CONFIG_FILE).exists()) && !(new File(CONFIG_BACKUP_FILE).exists())) {
