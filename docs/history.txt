@@ -1,6 +1,6 @@
 VERSION HISTORY:
 ----------------
-v0.43.7-git
+v0.43.7 (2018-01-21 2200 UTC)
 + Issue #123: Small Craft free heatsinks
 + Issue #124: Conventional fighters with fusion engines
 + Issue #126: LAM split crit weapons erroneous warning
