@@ -58,6 +58,7 @@ import megamek.common.EquipmentType;
 import megamek.common.ITechManager;
 import megamek.common.ITechnology;
 import megamek.common.Infantry;
+import megamek.common.Jumpship;
 import megamek.common.LandAirMech;
 import megamek.common.LocationFullException;
 import megamek.common.Mech;
@@ -76,6 +77,7 @@ import megamek.common.annotations.Nullable;
 import megamek.common.logging.LogLevel;
 import megamek.common.logging.MMLogger;
 import megamek.common.verifier.EntityVerifier;
+import megamek.common.verifier.TestAdvancedAerospace;
 import megamek.common.verifier.TestAero;
 import megamek.common.verifier.TestBattleArmor;
 import megamek.common.verifier.TestEntity;
@@ -3247,6 +3249,9 @@ public class UnitUtil {
                     entityVerifier.tankOption, null);
         } else if (unit.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)) {
             testEntity = new TestSmallCraft((SmallCraft) unit,
+                    entityVerifier.aeroOption, null);
+        } else if (unit.hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
+            testEntity = new TestAdvancedAerospace((Jumpship) unit,
                     entityVerifier.aeroOption, null);
         } else if (unit.hasETypeFlag(Entity.ETYPE_AERO)) {
             testEntity = new TestAero((Aero) unit,

@@ -29,6 +29,7 @@ import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.Aero.tabs.EquipmentTab;
 import megameklab.com.ui.Dropship.views.AerospaceBuildView;
 import megameklab.com.ui.Dropship.views.DropshipCriticalView;
+import megameklab.com.ui.advaero.AdvancedAeroCriticalView;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
@@ -47,7 +48,7 @@ public class DropshipBuildTab extends ITab implements ActionListener {
     private static final long serialVersionUID = -6625026210117558378L;
     
     private RefreshListener refresh = null;
-    private DropshipCriticalView critView = null;
+    private JPanel critView = null;
     private AerospaceBuildView buildView = null;
     private JPanel buttonPanel = new JPanel();
     private JPanel mainPanel = new JPanel();
@@ -64,9 +65,14 @@ public class DropshipBuildTab extends ITab implements ActionListener {
 
         GridBagConstraints gbc = new GridBagConstraints();
 
-        critView = new DropshipCriticalView(eSource, refresh);
         buildView = new AerospaceBuildView(eSource,refresh);
-        critView.addAllocationListeners(buildView);
+        if (eSource.getEntity().hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
+            critView = new AdvancedAeroCriticalView(eSource, refresh);
+            ((AdvancedAeroCriticalView) critView).addAllocationListeners(buildView);
+        } else {
+            critView = new DropshipCriticalView(eSource, refresh);
+            ((DropshipCriticalView) critView).addAllocationListeners(buildView);
+        }
 
         resetButton.setMnemonic('R');
         resetButton.setActionCommand(RESETCOMMAND);        
@@ -92,7 +98,11 @@ public class DropshipBuildTab extends ITab implements ActionListener {
 
     public void refresh() {
         removeAllActionListeners();
-        critView.refresh();
+        if (eSource.getEntity().hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
+            ((AdvancedAeroCriticalView) critView).refresh();
+        } else {
+            ((DropshipCriticalView) critView).refresh();
+        }
         critView.validate();
         buildView.refresh();
         addAllActionListeners();
@@ -125,7 +135,11 @@ public class DropshipBuildTab extends ITab implements ActionListener {
 
     public void addRefreshedListener(RefreshListener l) {
         refresh = l;
-        critView.updateRefresh(refresh);
+        if (eSource.getEntity().hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
+            ((AdvancedAeroCriticalView) critView).updateRefresh(refresh);
+        } else {
+            ((DropshipCriticalView) critView).updateRefresh(refresh);
+        }
         buildView.addRefreshedListener(refresh);
     }
 
