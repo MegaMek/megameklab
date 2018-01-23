@@ -110,7 +110,9 @@ public class AdvancedAeroStructureTab extends ITab implements AdvancedAeroBuildL
         leftPanel.add(panHeat);
         leftPanel.add(panCrew);
 
-        midPanel.add(panMovement);
+        if (getJumpship().hasETypeFlag(Entity.ETYPE_WARSHIP)) {
+            midPanel.add(panMovement);
+        }
         midPanel.add(panFuel);
         midPanel.add(panSummary);
         midPanel.add(Box.createHorizontalStrut(300));
