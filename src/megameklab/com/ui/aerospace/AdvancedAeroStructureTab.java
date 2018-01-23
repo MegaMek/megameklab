@@ -387,6 +387,8 @@ public class AdvancedAeroStructureTab extends ITab implements AdvancedAeroBuildL
     @Override
     public void tonnageChanged(double tonnage) {
         getJumpship().setWeight(tonnage);
+        getJumpship().initializeKFIntegrity();
+        getJumpship().initializeSailIntegrity();
         panChassis.setFromEntity(getJumpship());
         panCrew.setFromEntity(getJumpship());
         getJumpship().autoSetInternal();
