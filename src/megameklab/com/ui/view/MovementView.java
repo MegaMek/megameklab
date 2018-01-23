@@ -31,7 +31,6 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import megamek.common.Aero;
 import megamek.common.BattleArmor;
 import megamek.common.Entity;
 import megamek.common.EntityMovementMode;
@@ -238,8 +237,8 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
                 maxJump = TestBattleArmor.maxJumpMP((BattleArmor)en);
             }
             cbJumpType.addActionListener(this);
-        } else if (en.hasETypeFlag(Entity.ETYPE_WARSHIP) && ((Aero) en).isPrimitive()) {
-            minWalk = 0;
+        } else if (en.hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
+            minWalk = 0; // Station-keeping drive. Legal for warships, though unusual.
         }
 
         spnWalkModel.setMinimum(minWalk);
