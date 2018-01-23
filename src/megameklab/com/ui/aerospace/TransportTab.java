@@ -13,6 +13,7 @@
  */
 package megameklab.com.ui.aerospace;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -35,6 +36,7 @@ import javax.swing.DropMode;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTable;
@@ -49,9 +51,11 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 
 import megamek.common.Bay;
+import megamek.common.DockingCollar;
 import megamek.common.Entity;
 import megamek.common.InfantryBay;
 import megamek.common.util.EncodeControl;
+import megamek.common.verifier.TestAdvancedAerospace;
 import megamek.common.verifier.TestAero;
 import megamek.common.verifier.TestAero.TransportBay;
 import megameklab.com.MegaMekLab;
@@ -66,13 +70,16 @@ import megameklab.com.util.UnitUtil;
  * @author Neoancient
  *
  */
-public class TransportTab extends IView implements ActionListener {
+public class TransportTab extends IView implements ActionListener, ChangeListener {
     
     /**
      * 
      */
     private static final long serialVersionUID = 6288658666144030993L;
     
+    private final JLabel lblDockingHardpoints = new JLabel();
+    private final SpinnerNumberModel spnHardpointsModel = new SpinnerNumberModel(0, 0, null, 1);
+    private final JSpinner spnDockingHardpoints = new JSpinner(spnHardpointsModel);
     private final JLabel lblMaxDoors = new JLabel();
     private final InstalledBaysModel modelInstalled = new InstalledBaysModel();
     private final JTable tblInstalled = new JTable(modelInstalled);
@@ -92,57 +99,70 @@ public class TransportTab extends IView implements ActionListener {
     private void initUI() {
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Tabs", new EncodeControl()); //$NON-NLS-1$
         
-        setLayout(new GridBagLayout());
+        setLayout(new BorderLayout());
+        if (eSource.getEntity().hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
+            JPanel panHardpoints = new JPanel();
+            lblDockingHardpoints.setText(resourceMap.getString("TransportTab.spnDockingHardpoints.text")); //$NON-NLS-1$
+            panHardpoints.add(lblDockingHardpoints);
+            panHardpoints.add(spnDockingHardpoints);
+            Dimension size = new Dimension(60, 25);
+            spnDockingHardpoints.setPreferredSize(size);
+            add(panHardpoints, BorderLayout.NORTH);
+            spnDockingHardpoints.addChangeListener(this);
+        }
+        
+        JPanel bayPanel = new JPanel(new GridBagLayout());
+        add(bayPanel, BorderLayout.CENTER);
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.anchor = GridBagConstraints.NORTHWEST;
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 2;
-        add(new JLabel(resourceMap.getString("TransportTab.lblCurrentBays.text")), gbc); //$NON-NLS-1$
+        bayPanel.add(new JLabel(resourceMap.getString("TransportTab.lblCurrentBays.text")), gbc); //$NON-NLS-1$
         
         gbc.gridy++;
         gbc.gridwidth = 1;
-        add(new JLabel(resourceMap.getString("TransportTab.lblMaxDoors.text")), gbc); //$NON-NLS-1$
+        bayPanel.add(new JLabel(resourceMap.getString("TransportTab.lblMaxDoors.text")), gbc); //$NON-NLS-1$
         gbc.gridx = 1;
-        add(lblMaxDoors, gbc);
+        bayPanel.add(lblMaxDoors, gbc);
         
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 1;
         btnRemoveBay.setText(resourceMap.getString("TransportTab.btnRemoveBay.text")); //$NON-NLS-1$
         btnRemoveBay.setToolTipText(resourceMap.getString("TransportTab.btnRemoveBay.tooltip")); //$NON-NLS-1$
-        add(btnRemoveBay, gbc);
+        bayPanel.add(btnRemoveBay, gbc);
         btnRemoveBay.addActionListener(this);
         
         gbc.gridx = 1;
         btnAddToCargo.setText(resourceMap.getString("TransportTab.btnAddToCargo.text")); //$NON-NLS-1$
         btnAddToCargo.setToolTipText(resourceMap.getString("TransportTab.btnAddToCargo.tooltip")); //$NON-NLS-1$
-        add(btnAddToCargo, gbc);
+        bayPanel.add(btnAddToCargo, gbc);
         btnAddToCargo.addActionListener(this);
         
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 3;
         gbc.gridheight = GridBagConstraints.REMAINDER;
-        add(new JScrollPane(tblInstalled), gbc);
+        bayPanel.add(new JScrollPane(tblInstalled), gbc);
         
         gbc.gridx = 3;
         gbc.gridy = 0;
         gbc.gridwidth = 1;
         gbc.gridheight = 1;
-        add(new JLabel(resourceMap.getString("TransportTab.lblAvailableBays.text")), gbc); //$NON-NLS-1$
+        bayPanel.add(new JLabel(resourceMap.getString("TransportTab.lblAvailableBays.text")), gbc); //$NON-NLS-1$
         
         gbc.gridy = 2;
         btnAddBay.setText(resourceMap.getString("TransportTab.btnAddBay.text")); //$NON-NLS-1$
         btnAddBay.setToolTipText(resourceMap.getString("TransportTab.btnAddBay.tooltip")); //$NON-NLS-1$
-        add(btnAddBay, gbc);
+        bayPanel.add(btnAddBay, gbc);
         btnAddBay.addActionListener(this);
         
         gbc.gridy++;
         gbc.gridwidth = 2;
         gbc.gridheight = GridBagConstraints.REMAINDER;
-        add(new JScrollPane(tblAvailable), gbc);
+        bayPanel.add(new JScrollPane(tblAvailable), gbc);
         
         tblInstalled.setRowHeight(24);
         TableColumn col = tblInstalled.getColumnModel().getColumn(InstalledBaysModel.COL_SIZE);
@@ -184,6 +204,13 @@ public class TransportTab extends IView implements ActionListener {
     }
     
     public void refresh() {
+        if (eSource.getEntity().hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
+            int max = TestAdvancedAerospace.getMaxDockingHardpoints(getJumpship());
+            spnHardpointsModel.setValue(Math.min(getJumpship().getDockingCollars().size(), max));
+            spnHardpointsModel.setMaximum(max);
+            
+        }
+        
         lblMaxDoors.setText(String.valueOf(TestAero.maxBayDoors(getAero())));
         checkButtons();
         modelInstalled.refreshBays();
@@ -321,6 +348,28 @@ public class TransportTab extends IView implements ActionListener {
                 bay = TestAero.TransportBay.CARGO.newBay(size, bayNum);
                 addBay(bay);
                 refresh();
+            }
+        }
+    }
+    
+    @Override
+    public void stateChanged(ChangeEvent ev) {
+        if (ev.getSource() == spnDockingHardpoints) {
+            int numCollars = spnHardpointsModel.getNumber().intValue();
+            List<DockingCollar> collars = getJumpship().getDockingCollars();
+            if (numCollars < collars.size()) {
+                for (int i = 0; i < collars.size() - numCollars; i++) {
+                    getJumpship().removeTransporter(collars.get(i));
+                }
+            } else {
+                for (int i = 0; i < numCollars - collars.size(); i++) {
+                    getJumpship().addTransporter(new DockingCollar(1));
+                }
+            }
+            if (null != refresh) {
+                refresh.refreshStructure();
+                refresh.refreshStatus();
+                refresh.refreshPreview();
             }
         }
     }
@@ -641,4 +690,5 @@ public class TransportTab extends IView implements ActionListener {
             return COPY_OR_MOVE;
         }
     }
+
 }
