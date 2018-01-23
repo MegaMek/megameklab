@@ -144,7 +144,7 @@ public class MainUI extends MegaMekLabMainUI {
 
         ship.autoSetInternal();
         for (int loc = 0; loc < getEntity().locations(); loc++) {
-            ship.initializeArmor(ship.get0SI(), loc);
+            ship.initializeArmor((int) Math.round(ship.get0SI() / 10.0), loc);
         }
 
         if (null == oldUnit) {

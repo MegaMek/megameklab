@@ -32,6 +32,7 @@ import javax.swing.SwingConstants;
 import megamek.common.Aero;
 import megamek.common.Entity;
 import megamek.common.ITechManager;
+import megamek.common.Jumpship;
 import megamek.common.Mech;
 import megamek.common.SmallCraft;
 import megamek.common.SuperHeavyTank;
@@ -96,6 +97,13 @@ public class ArmorAllocationView extends BuildView implements
             {-1, Aero.LOC_NOSE, -1},
             {Aero.LOC_LWING, -1, Aero.LOC_RWING},
             {-1, Aero.LOC_AFT, -1}
+    };
+    
+    private static final int[][] CAPITAL_LAYOUT = {
+            {-1, Jumpship.LOC_NOSE, -1},
+            {Jumpship.LOC_FLS, -1, Jumpship.LOC_FRS},
+            {Jumpship.LOC_ALS, -1, Jumpship.LOC_ARS},
+            {-1, Jumpship.LOC_AFT, -1}
     };
     
     private final List<ArmorLocationView> locationViews = new ArrayList<>();
@@ -199,6 +207,8 @@ public class ArmorAllocationView extends BuildView implements
         int raw = UnitUtil.getRawArmorPoints(en, en.getLabArmorTonnage());
         if (en instanceof SmallCraft) {
             raw += ((SmallCraft)en).getSI() * en.locations();
+        } else if (en instanceof Jumpship) {
+            raw += Math.round(((Jumpship) en).getSI() / 10.0) * 6;
         }
         int currentPoints = en.getTotalOArmor();
         if (showPatchwork) {
@@ -263,6 +273,8 @@ public class ArmorAllocationView extends BuildView implements
         int[][] layout;
         if ((entitytype & Entity.ETYPE_MECH) != 0) {
             layout = MEK_LAYOUT;
+        } else if ((entitytype & Entity.ETYPE_JUMPSHIP) != 0) {
+            layout = CAPITAL_LAYOUT;
         } else if ((entitytype & Entity.ETYPE_AERO) != 0) {
             // Spheroids use lwing/rwing rear for l/r aft positions
             layout = AERODYNE_LAYOUT;

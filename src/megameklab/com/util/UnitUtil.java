@@ -1360,6 +1360,8 @@ public class UnitUtil {
             points = (int) Math.floor((unit.getWeight() * 3.5) + 40);
         } else if (unit.hasETypeFlag(Entity.ETYPE_BATTLEARMOR)) {
             points = (unit.getWeightClass() * 4) + 2;
+        } else if (unit.hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
+            points = TestAdvancedAerospace.maxArmorPoints((Jumpship)unit); 
         } else if (unit.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)) {
             points = TestSmallCraft.maxArmorPoints((SmallCraft)unit); 
         } else if (unit.hasETypeFlag(Entity.ETYPE_CONV_FIGHTER)) {
@@ -1388,6 +1390,10 @@ public class UnitUtil {
 
     public static double getMaximumArmorTonnage(Entity unit) {
 
+        if (unit instanceof Jumpship) {
+            return TestAdvancedAerospace.maxArmorWeight((Jumpship) unit);
+        }
+        
         double armorPerTon = 16.0 * EquipmentType.getArmorPointMultiplier(
                 unit.getArmorType(1), unit.getArmorTechLevel(1));
         double armorWeight = 0;
@@ -1477,6 +1483,8 @@ public class UnitUtil {
     public static double getArmorPointsPerTon(Entity en, int at, boolean clanArmor) {
         if (at == EquipmentType.T_ARMOR_HARDENED) {
             return 8.0;
+        } else if (en.hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
+            return TestAdvancedAerospace.armorPointsPerTon((Jumpship) en);
         } else if (en.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)) {
             return SmallCraft.armorPointsPerTon(en.getWeight(), ((Aero)en).isSpheroid(), at, clanArmor);
         } else {
