@@ -1484,7 +1484,7 @@ public class UnitUtil {
         if (at == EquipmentType.T_ARMOR_HARDENED) {
             return 8.0;
         } else if (en.hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
-            return TestAdvancedAerospace.armorPointsPerTon((Jumpship) en);
+            return TestAdvancedAerospace.armorPointsPerTon((Jumpship) en, at, clanArmor);
         } else if (en.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)) {
             return SmallCraft.armorPointsPerTon(en.getWeight(), ((Aero)en).isSpheroid(), at, clanArmor);
         } else {
