@@ -141,6 +141,8 @@ public class AdvancedAeroUI extends MegaMekLabMainUI {
         ship.setHeatType(Aero.HEAT_SINGLE);
 
         ship.autoSetInternal();
+        ship.initializeKFIntegrity();
+        ship.initializeSailIntegrity();
         for (int loc = 0; loc < getEntity().locations(); loc++) {
             ship.initializeArmor((int) Math.round(ship.get0SI() / 10.0), loc);
         }
