@@ -1,5 +1,5 @@
 /*
- * MegaMekLab - Copyright (C) 2018 - The MegaMek Team
+ * MegaMekLab - Copyright (C) 2017 - The MegaMek Team
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -11,7 +11,7 @@
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  */
-package megameklab.com.ui.advaero;
+package megameklab.com.ui.aerospace;
 
 import java.awt.Color;
 import java.awt.FileDialog;
@@ -30,7 +30,7 @@ import megamek.common.Entity;
 import megamek.common.Mounted;
 import megamek.common.WeaponType;
 import megamek.common.verifier.EntityVerifier;
-import megamek.common.verifier.TestAdvancedAerospace;
+import megamek.common.verifier.TestSmallCraft;
 import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.util.ITab;
 import megameklab.com.util.ImageHelper;
@@ -38,12 +38,12 @@ import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 
 /**
- * Status bar for Jumpships/Warships/Space Stations
+ * Status bar for SmallCraft and Dropships
  * 
  * @author Neoancient
  *
  */
-public class StatusBar extends ITab {
+public class DropshipStatusBar extends ITab {
     /**
      * 
      */
@@ -57,19 +57,19 @@ public class StatusBar extends ITab {
     private JLabel cost = new JLabel();
     private EntityVerifier entityVerifier = EntityVerifier.getInstance(new File(
             "data/mechfiles/UnitVerifierOptions.xml"));
-    private TestAdvancedAerospace testAdvAero = null;
+    private TestSmallCraft testSmallCraft = null;
     private DecimalFormat formatter;
     private JFrame parentFrame;
 
     private RefreshListener refresh;
 
-    public StatusBar(MegaMekLabMainUI parent) {
+    public DropshipStatusBar(MegaMekLabMainUI parent) {
         super(parent);
         parentFrame = parent;
 
         formatter = new DecimalFormat();
-        testAdvAero = new TestAdvancedAerospace(getJumpship(), entityVerifier.aeroOption, null);
-        btnValidate.addActionListener(e -> UnitUtil.showValidation(getJumpship(), getParentFrame()));
+        testSmallCraft = new TestSmallCraft(getSmallCraft(), entityVerifier.aeroOption, null);
+        btnValidate.addActionListener(e -> UnitUtil.showValidation(getSmallCraft(), getParentFrame()));
         btnFluffImage.addActionListener(e -> getFluffImage());
         //btnFluffImage.setEnabled(false);
         setLayout(new GridBagLayout());
@@ -98,14 +98,16 @@ public class StatusBar extends ITab {
 
     public void refresh() {
 
-        int heat = getJumpship().getHeatCapacity();
-        double tonnage = getJumpship().getWeight();
+        int heat = getSmallCraft().getHeatCapacity();
+        double tonnage = getSmallCraft().getWeight();
         double currentTonnage;
-        int bv = getJumpship().calculateBattleValue();
-        long currentCost = (long) Math.round(getJumpship().getCost(false));
+        int bv = getSmallCraft().calculateBattleValue();
+        long currentCost = (long) Math.round(getSmallCraft().getCost(false));
 
-        currentTonnage = testAdvAero.calculateWeight();
-        currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getJumpship());
+        testSmallCraft = new TestSmallCraft(getSmallCraft(), entityVerifier.aeroOption, null);
+
+        currentTonnage = testSmallCraft.calculateWeight();
+        currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getSmallCraft());
 
         double totalHeat = calculateTotalHeat();
 
@@ -116,7 +118,7 @@ public class StatusBar extends ITab {
         } else {
             heatSink.setForeground(Color.black);
         }
-        heatSink.setVisible(getJumpship().getEntityType() == Entity.ETYPE_AERO);
+        heatSink.setVisible(getSmallCraft().getEntityType() == Entity.ETYPE_AERO);
 
         tons.setText("Tonnage: " + currentTonnage + "/" + tonnage);
         tons.setToolTipText("Current Tonnage/Max Tonnage");
@@ -135,7 +137,7 @@ public class StatusBar extends ITab {
     public double calculateTotalHeat() {
         double heat = 0;
 
-        for (Mounted mounted : getJumpship().getWeaponList()) {
+        for (Mounted mounted : getSmallCraft().getWeaponList()) {
             WeaponType wtype = (WeaponType) mounted.getType();
             double weaponHeat = wtype.getHeat();
 
@@ -192,7 +194,7 @@ public class StatusBar extends ITab {
                     + relativeFilePath
                             .substring(new File(System.getProperty("user.dir")
                                     .toString()).getAbsolutePath().length() + 1);
-            getJumpship().getFluff().setMMLImagePath(relativeFilePath);
+            getSmallCraft().getFluff().setMMLImagePath(relativeFilePath);
         }
         refresh.refreshPreview();
         return;
@@ -205,4 +207,6 @@ public class StatusBar extends ITab {
     public void addRefreshedListener(RefreshListener l) {
         refresh = l;
     }
+
+
 }

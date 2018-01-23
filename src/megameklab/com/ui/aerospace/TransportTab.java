@@ -11,7 +11,7 @@
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  */
-package megameklab.com.ui.Dropship.tabs;
+package megameklab.com.ui.aerospace;
 
 import java.awt.Component;
 import java.awt.Dimension;

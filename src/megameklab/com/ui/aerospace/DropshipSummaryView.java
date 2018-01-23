@@ -1,7 +1,7 @@
 /**
  * 
  */
-package megameklab.com.ui.Dropship.views;
+package megameklab.com.ui.aerospace;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -25,7 +25,7 @@ import megameklab.com.util.IView;
  * @author Neoancient
  *
  */
-public class SummaryView extends IView {
+public class DropshipSummaryView extends IView {
 
     /**
      * 
@@ -48,7 +48,7 @@ public class SummaryView extends IView {
     private EntityVerifier entityVerifier = EntityVerifier.getInstance(
             new File("data/mechfiles/UnitVerifierOptions.xml"));
 
-    public SummaryView(EntitySource eSource) {
+    public DropshipSummaryView(EntitySource eSource) {
         super(eSource);
 
         Vector<JTextField> valueFields = new Vector<JTextField>();
