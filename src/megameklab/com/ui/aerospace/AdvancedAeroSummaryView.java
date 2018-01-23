@@ -11,7 +11,7 @@
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  */
-package megameklab.com.ui.advaero;
+package megameklab.com.ui.aerospace;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -35,7 +35,7 @@ import megameklab.com.util.IView;
  * @author Neoancient
  *
  */
-public class SummaryView extends IView {
+public class AdvancedAeroSummaryView extends IView {
 
     /**
      * 
@@ -59,7 +59,7 @@ public class SummaryView extends IView {
     private EntityVerifier entityVerifier = EntityVerifier.getInstance(
             new File("data/mechfiles/UnitVerifierOptions.xml"));
 
-    public SummaryView(EntitySource eSource) {
+    public AdvancedAeroSummaryView(EntitySource eSource) {
         super(eSource);
 
         Vector<JTextField> valueFields = new Vector<JTextField>();

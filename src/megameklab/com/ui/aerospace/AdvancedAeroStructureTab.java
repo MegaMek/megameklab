@@ -11,7 +11,7 @@
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  */
-package megameklab.com.ui.advaero;
+package megameklab.com.ui.aerospace;
 
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
@@ -70,7 +70,7 @@ public class AdvancedAeroStructureTab extends ITab implements AdvancedAeroBuildL
     private AeroFuelView panFuel;
     private HeatSinkView panHeat;
     private AerospaceCrewView panCrew;
-    private SummaryView panSummary;
+    private AdvancedAeroSummaryView panSummary;
     private ArmorAllocationView panArmorAllocation;
 
     RefreshListener refresh = null;
@@ -93,7 +93,7 @@ public class AdvancedAeroStructureTab extends ITab implements AdvancedAeroBuildL
         panHeat = new HeatSinkView(panInfo);
         panCrew = new AerospaceCrewView(panInfo);
         panArmorAllocation = new ArmorAllocationView(panInfo, Entity.ETYPE_AERO);
-        panSummary = new SummaryView(eSource);
+        panSummary = new AdvancedAeroSummaryView(eSource);
 
         GridBagConstraints gbc = new GridBagConstraints();
 

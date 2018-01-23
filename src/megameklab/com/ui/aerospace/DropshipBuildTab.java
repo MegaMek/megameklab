@@ -11,7 +11,7 @@
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  */
-package megameklab.com.ui.Dropship.tabs;
+package megameklab.com.ui.aerospace;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -27,8 +27,6 @@ import megamek.common.Entity;
 import megamek.common.Mounted;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.Aero.tabs.EquipmentTab;
-import megameklab.com.ui.Dropship.views.AerospaceBuildView;
-import megameklab.com.ui.Dropship.views.LargeCraftCritcalView;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;

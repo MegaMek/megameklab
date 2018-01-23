@@ -12,7 +12,7 @@
  * details.
  */
 
-package megameklab.com.ui.Dropship.tabs;
+package megameklab.com.ui.aerospace;
 
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
@@ -40,7 +40,6 @@ import megamek.common.verifier.TestAero;
 import megamek.common.verifier.TestAero.Quarters;
 import megamek.common.verifier.TestEntity;
 import megameklab.com.ui.EntitySource;
-import megameklab.com.ui.Dropship.views.SummaryView;
 import megameklab.com.ui.view.AeroFuelView;
 import megameklab.com.ui.view.AerospaceCrewView;
 import megameklab.com.ui.view.ArmorAllocationView;
@@ -75,7 +74,7 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
     private AeroFuelView panFuel;
     private HeatSinkView panHeat;
     private AerospaceCrewView panCrew;
-    private SummaryView panSummary;
+    private DropshipSummaryView panSummary;
     private ArmorAllocationView panArmorAllocation;
 
     RefreshListener refresh = null;
@@ -98,7 +97,7 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
         panHeat = new HeatSinkView(panInfo);
         panCrew = new AerospaceCrewView(panInfo);
         panArmorAllocation = new ArmorAllocationView(panInfo, Entity.ETYPE_AERO);
-        panSummary = new SummaryView(eSource);
+        panSummary = new DropshipSummaryView(eSource);
 
         GridBagConstraints gbc = new GridBagConstraints();
 
