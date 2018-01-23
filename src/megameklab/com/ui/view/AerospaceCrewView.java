@@ -61,7 +61,7 @@ public class AerospaceCrewView extends BuildView implements ActionListener, Chan
         listeners.remove(l);
     }
     
-    private final JSpinner spnOfficers = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
+    private final JSpinner spnOfficers = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
     private final JSpinner spnBaseCrew = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
     private final JSpinner spnGunners = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
     private final JLabel lblBayPersonnel = new JLabel();
