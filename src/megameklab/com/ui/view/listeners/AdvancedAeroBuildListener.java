@@ -13,6 +13,8 @@
  */
 package megameklab.com.ui.view.listeners;
 
+import java.util.List;
+
 /**
  *
  * Listener for views used by jumpships, warships, and space stations.
@@ -29,5 +31,6 @@ public interface AdvancedAeroBuildListener extends AeroVesselBuildListener {
     void baseTypeChanged(int type);
     void rangeChanged(int range);
     void siChanged(int si);
+    void gravDecksChanged(List<Integer> deckSizes);
     
 }

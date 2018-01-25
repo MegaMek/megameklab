@@ -43,6 +43,7 @@ import megameklab.com.ui.view.AeroFuelView;
 import megameklab.com.ui.view.AerospaceCrewView;
 import megameklab.com.ui.view.ArmorAllocationView;
 import megameklab.com.ui.view.BasicInfoView;
+import megameklab.com.ui.view.GravDeckView;
 import megameklab.com.ui.view.HeatSinkView;
 import megameklab.com.ui.view.MVFArmorView;
 import megameklab.com.ui.view.MovementView;
@@ -70,6 +71,7 @@ public class AdvancedAeroStructureTab extends ITab implements AdvancedAeroBuildL
     private AeroFuelView panFuel;
     private HeatSinkView panHeat;
     private AerospaceCrewView panCrew;
+    private GravDeckView panGravDecks;
     private AdvancedAeroSummaryView panSummary;
     private ArmorAllocationView panArmorAllocation;
 
@@ -92,6 +94,7 @@ public class AdvancedAeroStructureTab extends ITab implements AdvancedAeroBuildL
         panFuel = new AeroFuelView();
         panHeat = new HeatSinkView(panInfo);
         panCrew = new AerospaceCrewView(panInfo);
+        panGravDecks = new GravDeckView();
         panArmorAllocation = new ArmorAllocationView(panInfo, Entity.ETYPE_AERO);
         panSummary = new AdvancedAeroSummaryView(eSource);
 
@@ -113,6 +116,7 @@ public class AdvancedAeroStructureTab extends ITab implements AdvancedAeroBuildL
         midPanel.add(panMovement);
         panMovement.setVisible(getJumpship().hasETypeFlag(Entity.ETYPE_WARSHIP));
         midPanel.add(panFuel);
+        midPanel.add(panGravDecks);
         midPanel.add(panSummary);
         midPanel.add(Box.createHorizontalStrut(300));
 
@@ -139,6 +143,7 @@ public class AdvancedAeroStructureTab extends ITab implements AdvancedAeroBuildL
         panHeat.setBorder(BorderFactory.createTitledBorder("Heat Sinks"));
         panArmor.setBorder(BorderFactory.createTitledBorder("Armor"));
         panCrew.setBorder(BorderFactory.createTitledBorder("Crew and Quarters"));
+        panGravDecks.setBorder(BorderFactory.createTitledBorder("Gravity Decks"));
         panSummary.setBorder(BorderFactory.createTitledBorder("Summary"));
         panArmorAllocation.setBorder(BorderFactory.createTitledBorder("Armor Allocation"));
     }
@@ -164,6 +169,7 @@ public class AdvancedAeroStructureTab extends ITab implements AdvancedAeroBuildL
         panMovement.setFromEntity(getJumpship());
         panArmor.setFromEntity(getJumpship());
         panCrew.setFromEntity(getJumpship());
+        panGravDecks.setFromEntity(getJumpship());
         panArmorAllocation.setFromEntity(getJumpship());
         
         panMovement.setVisible(getJumpship().hasETypeFlag(Entity.ETYPE_WARSHIP));
@@ -197,6 +203,7 @@ public class AdvancedAeroStructureTab extends ITab implements AdvancedAeroBuildL
         panMovement.removeListener(this);
         panArmor.removeListener(this);
         panCrew.removeListener(this);
+        panGravDecks.removeListener(this);
         panArmorAllocation.removeListener(this);
     }
 
@@ -208,6 +215,7 @@ public class AdvancedAeroStructureTab extends ITab implements AdvancedAeroBuildL
         panMovement.addListener(this);
         panArmor.addListener(this);
         panCrew.addListener(this);
+        panGravDecks.addListener(this);
         panArmorAllocation.addListener(this);
     }
 
@@ -639,6 +647,15 @@ public class AdvancedAeroStructureTab extends ITab implements AdvancedAeroBuildL
         getJumpship().setLifeBoats(lifeBoats);
         getJumpship().setEscapePods(escapePods);
         refreshSummary();
+        refresh.refreshStatus();
+        refresh.refreshPreview();
+    }
+
+    @Override
+    public void gravDecksChanged(List<Integer> deckSizes) {
+        getJumpship().getGravDecks().clear();
+        getJumpship().getGravDecks().addAll(deckSizes);
+        refresh.refreshSummary();
         refresh.refreshStatus();
         refresh.refreshPreview();
     }
