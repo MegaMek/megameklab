@@ -410,6 +410,7 @@ public class AdvancedAeroStructureTab extends ITab implements AdvancedAeroBuildL
         getJumpship().setLF(battery);
         refresh.refreshPreview();
         refresh.refreshStatus();
+        refresh.refreshSummary();
     }
 
     @Override
