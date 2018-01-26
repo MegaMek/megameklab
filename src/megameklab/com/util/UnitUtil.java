@@ -2012,7 +2012,7 @@ public class UnitUtil {
 
             if ((ammo.getRackSize() == weapon.getRackSize())
                     && (ammo.getAmmoType() == weapon.getAmmoType())) {
-                ammoCount++;
+                ammoCount += mount.getUsableShotsLeft();
             }
         }
 
