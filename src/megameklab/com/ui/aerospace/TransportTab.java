@@ -54,6 +54,7 @@ import megamek.common.Bay;
 import megamek.common.DockingCollar;
 import megamek.common.Entity;
 import megamek.common.InfantryBay;
+import megamek.common.Transporter;
 import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestAdvancedAerospace;
 import megamek.common.verifier.TestAero;
@@ -278,26 +279,26 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
      */
     private void rebuildBays() {
         int bayNum = 1;
-        List<Bay> newBayList = new ArrayList<>();
+        List<Transporter> newTransporterList = new ArrayList<>();
         for (Iterator<Bay> iter = modelInstalled.getBays(); iter.hasNext(); ) {
             final Bay bay = iter.next();
             if (bay.getBayNumber() == bayNum) {
-                newBayList.add(bay);
+                newTransporterList.add(bay);
             } else {
                 TestAero.TransportBay bayType = TestAero.TransportBay.getBayType(bay);
                 Bay newBay = bayType.newBay(bay.getCapacity(), bayNum);
                 newBay.setDoors(bay.getDoors());
-                newBayList.add(newBay);
+                newTransporterList.add(newBay);
             }
             bayNum++;
         }
-        for (Bay bay : getAero().getTransportBays()) {
-            if (bay.isQuarters()) {
-                newBayList.add(bay);
+        for (Transporter transporter : getAero().getTransports()) {
+            if (!(transporter instanceof Bay) || ((Bay) transporter).isQuarters()) {
+                newTransporterList.add(transporter);
             }
         }
         getAero().removeAllTransporters();
-        newBayList.forEach(b -> getAero().addTransporter(b));
+        newTransporterList.forEach(b -> getAero().addTransporter(b));
         modelInstalled.refreshBays();
     }
     
