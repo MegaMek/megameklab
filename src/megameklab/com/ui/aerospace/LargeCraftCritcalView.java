@@ -91,10 +91,12 @@ public class LargeCraftCritcalView extends IView {
         rightColumn.setLayout(new BoxLayout(rightColumn, BoxLayout.Y_AXIS));
         
         for (int arc = 0; arc < NUM_ARCS; arc++) {
-            if (arc < eSource.getEntity().locations()) {
-                arcTrees[arc] = new BayWeaponCriticalTree(arc, eSource, refresh);
-            } else {
+            if (getAero().hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)
+                    && ((arc == TestSmallCraft.ARC_AFT_LEFT)
+                            || (arc == TestSmallCraft.ARC_AFT_RIGHT))) {
                 arcTrees[arc] = new BayWeaponCriticalTree(arc - 3, eSource, refresh, BayWeaponCriticalTree.AFT);
+            } else {
+                arcTrees[arc] = new BayWeaponCriticalTree(arc, eSource, refresh);
             }
         }
 
