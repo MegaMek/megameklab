@@ -5,6 +5,7 @@ VERSION HISTORY:
 + Issue #138: Changing tech base or tech level resets armor points per ton to 16
 + Issue #139: Right-clicking unallocated armor slot to allocate it uses too many slots in the chosen location.
 + Issue #140: Refresh Issue For Dropships
++ Issue #141: Assign Critical Display Bug
 
 v0.43.7-RC1 (2018-01-21 2200 UTC)
 + Issue #123: Small Craft free heatsinks
