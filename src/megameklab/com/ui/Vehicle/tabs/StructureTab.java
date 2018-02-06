@@ -37,6 +37,7 @@ import megamek.common.Mounted;
 import megamek.common.SimpleTechLevel;
 import megamek.common.SuperHeavyTank;
 import megamek.common.Tank;
+import megamek.common.TechConstants;
 import megamek.common.TroopSpace;
 import megamek.common.VTOL;
 import megamek.common.verifier.TestEntity;
@@ -289,7 +290,14 @@ public class StructureTab extends ITab implements CVBuildListener {
     public void updateTechLevel() {
         removeAllListeners();
         getTank().setTechLevel(panBasicInfo.getTechLevel().getCompoundTechLevel(panBasicInfo.useClanTechBase()));
-        if (!getTank().hasPatchworkArmor()) {
+        if (getTank().hasPatchworkArmor()) {
+            for (int loc = 0; loc < getTank().locations(); loc++) {
+                if (!getTechManager().isLegal(panPatchwork.getArmor(loc))) {
+                    getTank().setArmorType(EquipmentType.T_ARMOR_STANDARD, TechConstants.T_INTRO_BOXSET);
+                    UnitUtil.resetArmor(getTank(), loc);
+                }
+            }
+        } else if (!getTechManager().isLegal(panArmor.getArmor())) {
             UnitUtil.removeISorArmorMounts(getTank(), false);
         }
         // If we have a large engine, a drop in tech level may make it unavailable and we will need

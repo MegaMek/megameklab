@@ -608,7 +608,14 @@ public class StructureTab extends ITab implements MekBuildListener {
     public void updateTechLevel() {
         removeAllListeners();
         getMech().setTechLevel(panBasicInfo.getTechLevel().getCompoundTechLevel(panBasicInfo.useClanTechBase()));
-        if (!getMech().hasPatchworkArmor()) {
+        if (getMech().hasPatchworkArmor()) {
+            for (int loc = 0; loc < getMech().locations(); loc++) {
+                if (!getTechManager().isLegal(panPatchwork.getArmor(loc))) {
+                    getMech().setArmorType(EquipmentType.T_ARMOR_STANDARD, TechConstants.T_INTRO_BOXSET);
+                    UnitUtil.resetArmor(getMech(), loc);
+                }
+            }
+        } else if (!getTechManager().isLegal(panArmor.getArmor())) {
             UnitUtil.removeISorArmorMounts(getMech(), false);
         }
         // If we have a large engine, a drop in tech level may make it unavailable and we will need
@@ -635,10 +642,11 @@ public class StructureTab extends ITab implements MekBuildListener {
         }
         panChassis.refresh();
         panHeat.refresh();
-        panArmor.refresh();
         panMovement.refresh();
+        panArmor.refresh();
         panArmorAllocation.setFromEntity(getMech());
         panPatchwork.setFromEntity(getMech());
+        refresh.refreshBuild();
         addAllListeners();
     }
 
