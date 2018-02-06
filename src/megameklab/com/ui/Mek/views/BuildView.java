@@ -431,8 +431,16 @@ public class BuildView extends IView implements ActionListener, MouseListener {
     private void jMenuLoadComponent_actionPerformed(int location, int selectedRow) {
         Mounted eq = (Mounted) equipmentTable.getModel().getValueAt(selectedRow, CriticalTableModel.EQUIPMENT);
         if (eq.getType().isSpreadable() || eq.isSplitable()) {
-            jMenuLoadSplitComponent_actionPerformed(location, Entity.LOC_NONE, eq.getType().getCriticals(getMech()),
-                    selectedRow);
+            if (!(eq.getType() instanceof MiscType) || !eq.getType().hasFlag(MiscType.F_TARGCOMP)) {
+                jMenuLoadSplitComponent_actionPerformed(location, Entity.LOC_NONE, 1,
+                        selectedRow);
+            } else {
+                // Targetting computer is flagged as spreadable so the slots will be added one at a time when loaded,
+                // since we don't have a way of indicating the number of slots until we know all the weapons. But
+                // it's not really splittable, so we need to put add all the slots at once.
+                jMenuLoadSplitComponent_actionPerformed(location, Entity.LOC_NONE, eq.getType().getCriticals(getMech()),
+                        selectedRow);
+            }
             return;
         }
         try {
