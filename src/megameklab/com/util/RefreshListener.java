@@ -26,6 +26,7 @@ public interface RefreshListener extends EventListener{
     public void refreshArmor();
     public void refreshWeapons();
     public void refreshEquipment();
+    public void refreshTransport();
     public void refreshBuild();
     public void refreshPreview();
 
