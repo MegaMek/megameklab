@@ -233,6 +233,11 @@ public class MainUI extends MegaMekLabMainUI {
     }
 
     @Override
+    public void refreshTransport() {
+        // not used for mechs
+    }
+
+    @Override
     public void refreshPreview() {
         previewTab.refresh();
 

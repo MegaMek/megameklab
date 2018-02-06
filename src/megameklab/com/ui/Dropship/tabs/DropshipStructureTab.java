@@ -286,6 +286,7 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
         panHeat.setFromAero(getSmallCraft());
         panArmorAllocation.setFromEntity(getSmallCraft());
         panSummary.refresh();
+        refresh.refreshTransport();
     }
 
     @Override
@@ -394,6 +395,7 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
         panCrew.setFromEntity(getSmallCraft());
         getSmallCraft().autoSetInternal();
         refresh();
+        refresh.refreshTransport();
         refresh.refreshPreview();
         refresh.refreshStatus();
     }

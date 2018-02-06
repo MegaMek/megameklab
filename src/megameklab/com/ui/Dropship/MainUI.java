@@ -96,6 +96,11 @@ public class MainUI extends MegaMekLabMainUI {
     public void refreshEquipmentTable() {
         equipmentTab.refreshTable();
     }
+    
+    @Override
+    public void refreshTransport() {
+        transportTab.refresh();
+    }
 
     @Override
     public void createNewUnit(long entitytype, boolean isPrimitive, boolean isIndustrial, Entity oldUnit) {
