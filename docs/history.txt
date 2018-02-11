@@ -1,13 +1,13 @@
 VERSION HISTORY:
 ----------------
-0.43.8-RC2
+0.43.8-RC2 (2018-02-11 22:40 UTC)
 + Issue #137: BA Printing doesn't print Ammo
 + Issue #138: Changing tech base or tech level resets armor points per ton to 16
 + Issue #139: Right-clicking unallocated armor slot to allocate it uses too many slots in the chosen location.
 + Issue #140: Refresh Issue For Dropships
 + Issue #141: Assign Critical Display Bug
 
-v0.43.7-RC1 (2018-01-21 2200 UTC)
+v0.43.7-RC1 (2018-01-21 22:00 UTC)
 + Issue #123: Small Craft free heatsinks
 + Issue #124: Conventional fighters with fusion engines
 + Issue #126: LAM split crit weapons erroneous warning
