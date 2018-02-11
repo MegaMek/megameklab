@@ -39,6 +39,7 @@ import megamek.common.ITechManager;
 import megamek.common.LocationFullException;
 import megamek.common.Mounted;
 import megamek.common.SimpleTechLevel;
+import megamek.common.TechConstants;
 import megamek.common.verifier.TestAero;
 import megamek.common.verifier.TestEntity;
 import megameklab.com.ui.EntitySource;
@@ -323,7 +324,14 @@ public class StructureTab extends ITab implements AeroBuildListener {
     public void updateTechLevel() {
         removeAllListeners();
         getAero().setTechLevel(panInfo.getTechLevel().getCompoundTechLevel(panInfo.useClanTechBase()));
-        if (!getAero().hasPatchworkArmor()) {
+        if (getAero().hasPatchworkArmor()) {
+            for (int loc = 0; loc < getAero().locations(); loc++) {
+                if (!getTechManager().isLegal(panPatchwork.getArmor(loc))) {
+                    getAero().setArmorType(EquipmentType.T_ARMOR_STANDARD, TechConstants.T_INTRO_BOXSET);
+                    UnitUtil.resetArmor(getAero(), loc);
+                }
+            }
+        } else if (!getTechManager().isLegal(panArmor.getArmor())) {
             UnitUtil.removeISorArmorMounts(getAero(), false);
         }
         // If we have a large engine, a drop in tech level may make it unavailable and we will need

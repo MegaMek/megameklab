@@ -487,6 +487,7 @@ public class EquipmentTab extends ITab implements ActionListener {
                 equipmentList.removeMounted(row);
             }
             equipmentList.removeCrits(selectedRows);
+            UnitUtil.compactCriticals(getTank());
         } else if (e.getActionCommand().equals(REMOVEALL_COMMAND)) {
             removeAllEquipment();
         } else {

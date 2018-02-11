@@ -137,7 +137,11 @@ public class MainUI extends MegaMekLabMainUI {
     @Override
     public void refreshEquipment() {
         equipmentTab.refresh();
+    }
 
+    @Override
+    public void refreshTransport() {
+        // not used for vees
     }
 
     @Override

@@ -191,6 +191,11 @@ public class MainUI extends MegaMekLabMainUI {
     }
 
     @Override
+    public void refreshTransport() {
+        // not used for fighters
+    }
+
+    @Override
     public void refreshPreview() {
         previewTab.refresh();
 
