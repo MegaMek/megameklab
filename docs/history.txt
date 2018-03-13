@@ -1,6 +1,7 @@
 VERSION HISTORY:
 ----------------
-v0.43.9-git
+v0.43.9-RC3
++ Update MegaMek.jar to v0.43.9-RC3
 
 v0.43.8-RC2 (2018-02-11 22:40 UTC)
 + Issue #137: BA Printing doesn't print Ammo
