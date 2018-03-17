@@ -1,6 +1,7 @@
 VERSION HISTORY:
 ----------------
 v0.43.10-git
++ Issue #147: Clan Endo-Composite is showing wrong crit slots.
 
 v0.43.9-RC3
 + Update MegaMek.jar to v0.43.9-RC3
