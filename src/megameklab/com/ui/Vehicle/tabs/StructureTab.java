@@ -601,14 +601,14 @@ public class StructureTab extends ITab implements CVBuildListener {
         List<Transporter> toRemove = getTank().getTransports().stream()
                 .filter(t -> t instanceof TroopSpace).collect(Collectors.toList());
         toRemove.forEach(t -> getTank().removeTransporter(t));
-        if (fixed + pod > 0) {
-            double troopTons = Math
-                    .round((fixed) * 2) / 2.0;
+        double troopTons = Math
+                .round((fixed) * 2) / 2.0;
+        if (troopTons > 0) {
             getTank().addTransporter(new TroopSpace(troopTons), false);
-            if (pod > 0) {
-                troopTons = Math.round(pod * 2) / 2.0;
-                getTank().addTransporter(new TroopSpace(troopTons), true);
-            }
+        }
+        troopTons = Math.round(pod * 2) / 2.0;
+        if (troopTons > 0) {
+            getTank().addTransporter(new TroopSpace(troopTons), true);
         }
         panSummary.refresh();
         refresh.refreshStatus();
@@ -622,14 +622,14 @@ public class StructureTab extends ITab implements CVBuildListener {
                         && (bayType == BayData.getBayType((Bay) t)))
                         .collect(Collectors.toList());
         toRemove.forEach(t -> getTank().removeTransporter(t));
-        if (fixed + pod > 0) {
-            double bayTons = Math
-                    .round((fixed) * 2) / 2.0;
+        double bayTons = Math
+                .round((fixed) * 2) / 2.0;
+        if (bayTons > 0) {
             getTank().addTransporter(bayType.newBay(bayTons, getTank().getTransports().size()), false);
-            if (pod > 0) {
-                bayTons = Math.round(pod * 2) / 2.0;
-                getTank().addTransporter(bayType.newBay(bayTons, getTank().getTransports().size()), true);
-            }
+        }
+        bayTons = Math.round(pod * 2) / 2.0;
+        if (bayTons > 0) {
+            getTank().addTransporter(bayType.newBay(bayTons, getTank().getTransports().size()), true);
         }
         panSummary.refresh();
         refresh.refreshStatus();
