@@ -15,6 +15,7 @@ package megameklab.com.ui.view.listeners;
 
 import megamek.common.Engine;
 import megamek.common.EntityMovementMode;
+import megamek.common.verifier.BayData;
 
 /**
  * Listener for views used by combat vehicles.
@@ -32,6 +33,7 @@ public interface CVBuildListener extends BuildListener {
     void turretChanged(int turretConfig);
     void turretBaseWtChanged(double turret1, double turret2);
     void troopSpaceChanged(double fixed, double pod);
+    void cargoSpaceChanged(BayData bayType, double fixed, double pod);
     void resetChassis();
 
 }
