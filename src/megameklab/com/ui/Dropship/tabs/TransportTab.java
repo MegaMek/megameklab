@@ -53,7 +53,7 @@ import megamek.common.Entity;
 import megamek.common.InfantryBay;
 import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestAero;
-import megamek.common.verifier.TestAero.TransportBay;
+import megamek.common.verifier.BayData;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.util.IView;
@@ -214,8 +214,8 @@ public class TransportTab extends IView implements ActionListener {
         if (selected < 0) {
             return false;
         }
-        TestAero.TransportBay bayType = modelAvailable.getBayType(tblAvailable.convertRowIndexToModel(selected));
-        return (doorsAvailable() > 0) || (bayType == TestAero.TransportBay.CARGO);
+        BayData bayType = modelAvailable.getBayType(tblAvailable.convertRowIndexToModel(selected));
+        return (doorsAvailable() > 0) || (bayType == BayData.CARGO);
     }
     
     /**
@@ -257,7 +257,7 @@ public class TransportTab extends IView implements ActionListener {
             if (bay.getBayNumber() == bayNum) {
                 newBayList.add(bay);
             } else {
-                TestAero.TransportBay bayType = TestAero.TransportBay.getBayType(bay);
+                BayData bayType = BayData.getBayType(bay);
                 Bay newBay = bayType.newBay(bay.getCapacity(), bayNum);
                 newBay.setDoors(bay.getDoors());
                 newBayList.add(newBay);
@@ -278,7 +278,7 @@ public class TransportTab extends IView implements ActionListener {
         if (ev.getSource() == btnAddBay) {
             int selected = tblAvailable.getSelectedRow();
             if (selected >= 0) {
-                TestAero.TransportBay bayType = modelAvailable.getBayType(tblAvailable.convertRowIndexToModel(selected));
+                BayData bayType = modelAvailable.getBayType(tblAvailable.convertRowIndexToModel(selected));
                 int num = 1;
                 while (getAero().getBayById(num) != null) {
                     num++;
@@ -308,7 +308,7 @@ public class TransportTab extends IView implements ActionListener {
                 Bay bay = null;
                 int bayNum = 1;
                 if ((selected >= 0)
-                        && (modelInstalled.getBayType(tblInstalled.convertRowIndexToModel(selected)) == TestAero.TransportBay.CARGO)) {
+                        && (modelInstalled.getBayType(tblInstalled.convertRowIndexToModel(selected)) == BayData.CARGO)) {
                     bay = modelInstalled.getBay(tblInstalled.convertRowIndexToModel(selected));
                     size += bay.getCapacity();
                     bayNum = bay.getBayNumber();
@@ -318,7 +318,7 @@ public class TransportTab extends IView implements ActionListener {
                         bayNum++;
                     }
                 }
-                bay = TestAero.TransportBay.CARGO.newBay(size, bayNum);
+                bay = BayData.CARGO.newBay(size, bayNum);
                 addBay(bay);
                 refresh();
             }
@@ -340,7 +340,7 @@ public class TransportTab extends IView implements ActionListener {
         private static final int NUM_COLS      = 5;
         
         private final List<Bay> bayList = new ArrayList<>();
-        private final List<TestAero.TransportBay> bayTypeList = new ArrayList<>();
+        private final List<BayData> bayTypeList = new ArrayList<>();
         
         public void refreshBays() {
             bayList.clear();
@@ -354,7 +354,7 @@ public class TransportTab extends IView implements ActionListener {
                     .map(t -> (Bay) t).collect(Collectors.toList());
             Collections.sort(bays, (b1, b2) -> b1.getBayNumber() - b2.getBayNumber());
             for (Bay bay : bays) {
-                TestAero.TransportBay bayType = TestAero.TransportBay.getBayType(bay);
+                BayData bayType = BayData.getBayType(bay);
                 if (null != bayType) {
                     bayList.add(bay);
                     bayTypeList.add(bayType);
@@ -371,7 +371,7 @@ public class TransportTab extends IView implements ActionListener {
             return bayList.iterator();
         }
         
-        public TestAero.TransportBay getBayType(int row) {
+        public BayData getBayType(int row) {
             return bayTypeList.get(row);
         }
 
@@ -436,7 +436,7 @@ public class TransportTab extends IView implements ActionListener {
 
         public void reorder(int from, int to) {
             Bay bay = bayList.remove(from);
-            TestAero.TransportBay bayType = bayTypeList.remove(from);
+            BayData bayType = bayTypeList.remove(from);
             if (to > from) {
                 to--;
             }
@@ -460,11 +460,11 @@ public class TransportTab extends IView implements ActionListener {
         private static final int COL_PERSONNEL = 2;
         private static final int NUM_COLS      = 3;
         
-        private List<TestAero.TransportBay> bayList = new ArrayList<>();
+        private List<BayData> bayList = new ArrayList<>();
         
         public void refreshBays() {
             bayList.clear();
-            for (TestAero.TransportBay bay : TestAero.TransportBay.values()) {
+            for (BayData bay : BayData.values()) {
                 if (eSource.getTechManager().isLegal(bay.getTechAdvancement())) {
                     bayList.add(bay);
                 }
@@ -472,7 +472,7 @@ public class TransportTab extends IView implements ActionListener {
             fireTableDataChanged();
         }
 
-        public TransportBay getBayType(int row) {
+        public BayData getBayType(int row) {
             return bayList.get(row);
         }
 
