@@ -624,12 +624,14 @@ public class StructureTab extends ITab implements CVBuildListener {
         toRemove.forEach(t -> getTank().removeTransporter(t));
         double bayTons = Math
                 .round((fixed) * 2) / 2.0;
+        int lastBay = getTank().getTransportBays().stream().mapToInt(Bay::getBayNumber).max().orElse(0);
         if (bayTons > 0) {
-            getTank().addTransporter(bayType.newBay(bayTons, getTank().getTransports().size()), false);
+            getTank().addTransporter(bayType.newBay(bayTons, lastBay + 1), false);
+            lastBay++;
         }
         bayTons = Math.round(pod * 2) / 2.0;
         if (bayTons > 0) {
-            getTank().addTransporter(bayType.newBay(bayTons, getTank().getTransports().size()), true);
+            getTank().addTransporter(bayType.newBay(bayTons, lastBay + 1), true);
         }
         panSummary.refresh();
         refresh.refreshStatus();
