@@ -2,6 +2,7 @@ VERSION HISTORY:
 ----------------
 v0.43.10-git
 + Issue #147: Clan Endo-Composite is showing wrong crit slots.
++ Issue #136: 'Cargo Space' cannot be removed from canon units.
 
 v0.43.9-RC3
 + Update MegaMek.jar to v0.43.9-RC3
