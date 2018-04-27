@@ -1,5 +1,8 @@
 VERSION HISTORY:
 ----------------
+v0.43.11-RC5
++ Issue #156: Davy Crockett ammo issue
+
 v0.43.10-RC4
 + Issue #147: Clan Endo-Composite is showing wrong crit slots.
 + Issue #136: 'Cargo Space' cannot be removed from canon units.
