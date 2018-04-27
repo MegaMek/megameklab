@@ -1338,7 +1338,9 @@ public class UnitUtil {
             if ((mount.getLocation() == Entity.LOC_NONE)
                     && ((mount.getUsableShotsLeft() > 1)
                             || (ammoType == AmmoType.T_CRUISE_MISSILE)
-                            || (ammoType == AmmoType.T_COOLANT_POD))) {
+                            || (ammoType == AmmoType.T_COOLANT_POD)
+                            || (((AmmoType) mount.getType()).getMunitionType()
+                                    == AmmoType.M_DAVY_CROCKETT_M))) {
                 tonnage += mount.getType().getTonnage(unit);
             }
         }
