@@ -367,6 +367,11 @@ public class StructureTab extends ITab implements InfantryBuildListener {
         panWeapons.setFromEntity(getInfantry());
         updateSpecializations();
         enableTabs();
+        weaponView.refresh();
+        fieldGunView.refresh();
+        armorView.refresh();
+        specializationView.refresh();
+        augmentationView.refresh();
     }
 
     @Override
