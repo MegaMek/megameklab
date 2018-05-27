@@ -217,6 +217,10 @@ public class ImageHelper {
         File f = null;
         
         if (unit.getFluff().getMMLImagePath().length() > 0) {
+            f = new File(unit.getFluff().getMMLImagePath());
+            if (f.exists()) {
+                return f;
+            }
             f = new File(path, unit.getFluff().getMMLImagePath());
             if (f.exists()) {
                 return f;

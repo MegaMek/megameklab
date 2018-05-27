@@ -19,6 +19,8 @@ package megameklab.com.ui.Vehicle.tabs;
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -26,6 +28,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import megamek.common.Bay;
 import megamek.common.Engine;
 import megamek.common.Entity;
 import megamek.common.EntityMovementMode;
@@ -38,14 +41,17 @@ import megamek.common.SimpleTechLevel;
 import megamek.common.SuperHeavyTank;
 import megamek.common.Tank;
 import megamek.common.TechConstants;
+import megamek.common.Transporter;
 import megamek.common.TroopSpace;
 import megamek.common.VTOL;
 import megamek.common.verifier.TestEntity;
+import megamek.common.verifier.BayData;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.Vehicle.views.SummaryView;
 import megameklab.com.ui.view.ArmorAllocationView;
 import megameklab.com.ui.view.BasicInfoView;
 import megameklab.com.ui.view.CVChassisView;
+import megameklab.com.ui.view.CVTransportView;
 import megameklab.com.ui.view.MVFArmorView;
 import megameklab.com.ui.view.MovementView;
 import megameklab.com.ui.view.PatchworkArmorView;
@@ -70,6 +76,7 @@ public class StructureTab extends ITab implements CVBuildListener {
     private SummaryView panSummary;
     private ArmorAllocationView panArmorAllocation;
     private PatchworkArmorView panPatchwork;
+    private CVTransportView panTransport;
     
     public StructureTab(EntitySource eSource) {
         super(eSource);
@@ -88,6 +95,7 @@ public class StructureTab extends ITab implements CVBuildListener {
         panArmorAllocation = new ArmorAllocationView(panBasicInfo, Entity.ETYPE_TANK);
         panPatchwork = new PatchworkArmorView(panBasicInfo);
         panSummary = new SummaryView(eSource);
+        panTransport = new CVTransportView();
         if (getTank().hasPatchworkArmor()) {
             panArmorAllocation.showPatchwork(true);
         } else {
@@ -102,6 +110,7 @@ public class StructureTab extends ITab implements CVBuildListener {
         panArmor.setFromEntity(getTank());
         panArmorAllocation.setFromEntity(getTank());
         panPatchwork.setFromEntity(getTank());
+        panTransport.setFromEntity(getTank());
 
         gbc = new GridBagConstraints();
 
@@ -120,6 +129,7 @@ public class StructureTab extends ITab implements CVBuildListener {
         leftPanel.add(Box.createGlue());
         
         midPanel.add(panArmor);
+        midPanel.add(panTransport);
         midPanel.add(panSummary);
         midPanel.add(Box.createVerticalGlue());
         
@@ -146,6 +156,7 @@ public class StructureTab extends ITab implements CVBuildListener {
         panSummary.setBorder(BorderFactory.createTitledBorder("Summary"));
         panArmorAllocation.setBorder(BorderFactory.createTitledBorder("Armor Allocation"));
         panPatchwork.setBorder(BorderFactory.createTitledBorder("Patchwork Armor"));
+        panTransport.setBorder(BorderFactory.createTitledBorder("Transport"));
     }
 
     public void refresh() {
@@ -157,6 +168,7 @@ public class StructureTab extends ITab implements CVBuildListener {
         panArmor.setFromEntity(getTank());
         panArmorAllocation.setFromEntity(getTank());
         panPatchwork.setFromEntity(getTank());
+        panTransport.setFromEntity(getTank());
 
         panSummary.refresh();
 
@@ -181,6 +193,7 @@ public class StructureTab extends ITab implements CVBuildListener {
         panArmor.removeListener(this);
         panArmorAllocation.removeListener(this);
         panPatchwork.removeListener(this);
+        panTransport.removeListener(this);
     }
 
     public void addAllListeners() {
@@ -190,6 +203,7 @@ public class StructureTab extends ITab implements CVBuildListener {
         panArmor.addListener(this);
         panArmorAllocation.addListener(this);
         panPatchwork.addListener(this);
+        panTransport.addListener(this);
     }
 
     public void addRefreshedListener(RefreshListener l) {
@@ -465,11 +479,11 @@ public class StructureTab extends ITab implements CVBuildListener {
         getTank().setOmni(omni);
         if (!omni) {
             getTank().getEngine().setBaseChassisHeatSinks(-1);
-            troopSpaceChanged(getTank().getTroopCarryingSpace(), 0);
         }
         panChassis.removeListener(this);
         panChassis.setFromEntity(getTank());
         panChassis.addListener(this);
+        panTransport.setOmni(omni);
         panSummary.refresh();
         refresh.refreshBuild();
         refresh.refreshStatus();
@@ -584,26 +598,51 @@ public class StructureTab extends ITab implements CVBuildListener {
 
     @Override
     public void troopSpaceChanged(double fixed, double pod) {
-        getTank().removeAllTransporters();
-        if (fixed + pod > 0) {
-            double troopTons = Math
-                    .round((fixed) * 2) / 2.0;
+        List<Transporter> toRemove = getTank().getTransports().stream()
+                .filter(t -> t instanceof TroopSpace).collect(Collectors.toList());
+        toRemove.forEach(t -> getTank().removeTransporter(t));
+        double troopTons = Math
+                .round((fixed) * 2) / 2.0;
+        if (troopTons > 0) {
             getTank().addTransporter(new TroopSpace(troopTons), false);
-            if (pod > 0) {
-                troopTons = Math.round(pod * 2) / 2.0;
-                getTank().addTransporter(new TroopSpace(troopTons), true);
-            }
+        }
+        troopTons = Math.round(pod * 2) / 2.0;
+        if (troopTons > 0) {
+            getTank().addTransporter(new TroopSpace(troopTons), true);
         }
         panSummary.refresh();
         refresh.refreshStatus();
+        refresh.refreshPreview();
+    }
+    
+    @Override
+    public void cargoSpaceChanged(BayData bayType, double fixed, double pod) {
+        List<Transporter> toRemove = getTank().getTransports().stream()
+                .filter(t -> (t instanceof Bay)
+                        && (bayType == BayData.getBayType((Bay) t)))
+                        .collect(Collectors.toList());
+        toRemove.forEach(t -> getTank().removeTransporter(t));
+        double bayTons = Math
+                .round((fixed) * 2) / 2.0;
+        int lastBay = getTank().getTransportBays().stream().mapToInt(Bay::getBayNumber).max().orElse(0);
+        if (bayTons > 0) {
+            getTank().addTransporter(bayType.newBay(bayTons, lastBay + 1), false);
+            lastBay++;
+        }
+        bayTons = Math.round(pod * 2) / 2.0;
+        if (bayTons > 0) {
+            getTank().addTransporter(bayType.newBay(bayTons, lastBay + 1), true);
+        }
+        panSummary.refresh();
+        refresh.refreshStatus();
+        refresh.refreshPreview();
     }
 
     @Override
     public void resetChassis() {
         UnitUtil.resetBaseChassis(getTank());
-        troopSpaceChanged(getTank().getTroopCarryingSpace()
-                - getTank().getPodMountedTroopCarryingSpace(), 0);
         panChassis.setFromEntity(getTank());
+        panTransport.clearPodSpace();
         panSummary.refresh();
         refresh.refreshEquipment();
         refresh.refreshBuild();

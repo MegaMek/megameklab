@@ -278,6 +278,9 @@ public class CriticalView extends IView {
                         case VTOL.LOC_ROTOR:
                             turretPanel.add(criticalSlotList);
                             break;
+                        case VTOL.LOC_TURRET:
+                            dualTurretPanel.add(criticalSlotList);
+                            break;
                     }
                 } else {
                     switch (location) {
