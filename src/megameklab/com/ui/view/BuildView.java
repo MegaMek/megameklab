@@ -35,6 +35,7 @@ public abstract class BuildView extends JPanel {
     private static final long serialVersionUID = 8823653930022761924L;
     
     final protected Dimension labelSize = new Dimension(110, 25);
+    final protected Dimension labelSizeLg = new Dimension(180, 25);
     final protected Dimension controlSize = new Dimension(180, 25);
     final protected Dimension spinnerSize = new Dimension(55, 25);
     final protected Dimension spinnerSizeLg = new Dimension(70, 25);

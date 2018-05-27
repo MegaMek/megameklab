@@ -32,7 +32,7 @@ import megamek.common.logging.MMLogger;
 import megameklab.com.ui.Mek.MainUI;
 
 public class MegaMekLab {
-    public static final String VERSION = "0.43.8-RC2";
+    public static final String VERSION = "0.43.10-RC4";
 
     private static MMLogger logger = null;
 
