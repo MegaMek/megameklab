@@ -32,10 +32,14 @@ import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 import javax.swing.AbstractCellEditor;
+import javax.swing.DefaultCellEditor;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.DropMode;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
@@ -54,6 +58,7 @@ import megamek.common.Bay;
 import megamek.common.DockingCollar;
 import megamek.common.Entity;
 import megamek.common.InfantryBay;
+import megamek.common.Jumpship;
 import megamek.common.Transporter;
 import megamek.common.util.EncodeControl;
 import megamek.common.verifier.BayData;
@@ -89,6 +94,8 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
     private final JButton btnRemoveBay = new JButton();
     private final JButton btnAddBay = new JButton();
     private final JButton btnAddToCargo = new JButton();
+    
+    private final JComboBox<Integer> cbFacing = new JComboBox<>();
     
     private RefreshListener refresh = null;
     
@@ -184,6 +191,33 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
         renderer = new DefaultTableCellRenderer();
         renderer.setToolTipText(resourceMap.getString("TransportTab.colPersonnel.tooltip")); //$NON-NLS-1$
         col.setCellRenderer(renderer);
+        col = tblInstalled.getColumnModel().getColumn(InstalledBaysModel.COL_FACING);
+        if (getAero().hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
+            JComboBox<Integer> cb = new JComboBox<>(new Integer[] { Jumpship.LOC_NOSE,
+                    Jumpship.LOC_FLS, Jumpship.LOC_FRS,
+                    Jumpship.LOC_ALS, Jumpship.LOC_ARS, Jumpship.LOC_AFT });
+            col.setCellEditor(new DefaultCellEditor(cb));
+            cb.setRenderer(new DefaultListCellRenderer() {
+                private static final long serialVersionUID = 7950275386647167332L;
+
+                @Override
+                public Component getListCellRendererComponent(JList<?> list, Object value, int index,
+                        boolean isSelected, boolean cellHasFocus) {
+                    int loc = Entity.LOC_NONE;
+                    if (null != value) {
+                        loc = (Integer) value;
+                    }
+                    setText(getAero().getLocationName(loc));
+                    return this;
+                }
+                
+            });
+            renderer = new DefaultTableCellRenderer();
+            renderer.setToolTipText(resourceMap.getString("TransportTab.colFacing.tooltip"));
+            col.setCellRenderer(renderer);
+        } else {
+            tblInstalled.getColumnModel().removeColumn(col);
+        }
         tblInstalled.setShowGrid(false);
         tblInstalled.setIntercellSpacing(new Dimension(0, 0));
         tblAvailable.setShowGrid(false);
@@ -387,7 +421,8 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
         private static final int COL_DOORS     = 2;
         private static final int COL_TONNAGE   = 3;
         private static final int COL_PERSONNEL = 4;
-        private static final int NUM_COLS      = 5;
+        private static final int COL_FACING    = 5;
+        private static final int NUM_COLS      = 6;
         
         private final List<Bay> bayList = new ArrayList<>();
         private final List<BayData> bayTypeList = new ArrayList<>();
@@ -438,6 +473,8 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
                     return "Tonnage";
                 case COL_PERSONNEL:
                     return "Personnel";
+                case COL_FACING:
+                    return "Facing";
             }
             return "";
         }
@@ -451,6 +488,7 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
         public int getColumnCount() {
             return NUM_COLS;
         }
+        
         @Override
         public Object getValueAt(int rowIndex, int columnIndex) {
             switch (columnIndex) {
@@ -474,14 +512,28 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
                         return bayList.get(rowIndex).getWeight();
                     }
                     return Math.ceil(bayList.get(rowIndex).getWeight() * 2.0) * 0.5;
+                case COL_FACING:
+                    if (bayTypeList.get(rowIndex).requiresFacing()) {
+                        return getAero().getLocationAbbr(bayList.get(rowIndex).getFacing());
+                    } else {
+                        return "";
+                    }
                 default:
                     return null;
             }
         }
 
         @Override
+        public void setValueAt(Object value, int rowIndex, int columnIndex) {
+            if (columnIndex == COL_FACING) {
+                bayList.get(rowIndex).setFacing((Integer) value);
+            }
+        }
+
+        @Override
         public boolean isCellEditable(int rowIndex, int columnIndex) {
-            return (columnIndex == COL_DOORS) || (columnIndex == COL_SIZE);
+            return (columnIndex == COL_DOORS) || (columnIndex == COL_SIZE)
+                    || ((columnIndex ==  COL_FACING) && (bayTypeList.get(rowIndex).requiresFacing()));
         }
 
         public void reorder(int from, int to) {
