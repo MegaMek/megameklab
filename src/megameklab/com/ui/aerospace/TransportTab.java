@@ -84,6 +84,7 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
     private static final long serialVersionUID = 6288658666144030993L;
     
     private final JLabel lblDockingHardpoints = new JLabel();
+    private final JLabel lblMaxHardpoints = new JLabel();
     private final SpinnerNumberModel spnHardpointsModel = new SpinnerNumberModel(0, 0, null, 1);
     private final JSpinner spnDockingHardpoints = new JSpinner(spnHardpointsModel);
     private final JLabel lblMaxDoors = new JLabel();
@@ -94,9 +95,7 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
     private final JButton btnRemoveBay = new JButton();
     private final JButton btnAddBay = new JButton();
     private final JButton btnAddToCargo = new JButton();
-    
-    private final JComboBox<Integer> cbFacing = new JComboBox<>();
-    
+        
     private RefreshListener refresh = null;
     
     public TransportTab(EntitySource eSource) {
@@ -117,6 +116,9 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
             spnDockingHardpoints.setPreferredSize(size);
             add(panHardpoints, BorderLayout.NORTH);
             spnDockingHardpoints.addChangeListener(this);
+            panHardpoints.add(new JLabel(resourceMap.getString("TransportTab.spnMaxHardpoints.text"))); //$NON-NLS-1$
+            panHardpoints.add(lblMaxHardpoints);
+            lblMaxHardpoints.setToolTipText(resourceMap.getString("TransportTab.spnMaxHardpoints.tooltip")); //$NON-NLS-1$
         }
         
         JPanel bayPanel = new JPanel(new GridBagLayout());
@@ -243,7 +245,7 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
             int max = TestAdvancedAerospace.getMaxDockingHardpoints(getJumpship());
             spnHardpointsModel.setValue(Math.min(getJumpship().getDockingCollars().size(), max));
             spnHardpointsModel.setMaximum(max);
-            
+            lblMaxHardpoints.setText(Integer.toString(max));
         }
         
         lblMaxDoors.setText(String.valueOf(TestAero.maxBayDoors(getAero())));
