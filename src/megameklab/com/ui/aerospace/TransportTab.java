@@ -569,7 +569,8 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
         public void refreshBays() {
             bayList.clear();
             for (BayData bay : BayData.values()) {
-                if (eSource.getTechManager().isLegal(bay.getTechAdvancement())) {
+                if (eSource.getTechManager().isLegal(bay.getTechAdvancement())
+                        && bay.isLegalFor(getAero())) {
                     bayList.add(bay);
                 }
             }
