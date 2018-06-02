@@ -534,8 +534,13 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
 
         @Override
         public boolean isCellEditable(int rowIndex, int columnIndex) {
-            return (columnIndex == COL_DOORS) || (columnIndex == COL_SIZE)
-                    || ((columnIndex ==  COL_FACING) && (bayTypeList.get(rowIndex).requiresFacing()));
+            if (columnIndex == COL_SIZE) {
+                return bayTypeList.get(rowIndex).hasVariableSize();
+            } else if (columnIndex == COL_FACING) {
+                return bayTypeList.get(rowIndex).requiresFacing();
+            } else {
+                return (columnIndex == COL_DOORS);
+            }
         }
 
         public void reorder(int from, int to) {
