@@ -361,7 +361,9 @@ public class EquipmentTableModel extends AbstractTableModel {
                 return "-";
             }
         } else if (col == COL_TON) {
-            if ((entity instanceof BattleArmor) && (atype != null)){
+            if (type.getTonnage(entity) < 0.1) {
+                return String.format("%.2f kg", type.getTonnage(entity) * 1000);
+            } else if ((entity instanceof BattleArmor) && (atype != null)){
                 return (atype.getKgPerShot() * atype.getShots())/1000;
             } else {
                 return type.getTonnage(entity);
