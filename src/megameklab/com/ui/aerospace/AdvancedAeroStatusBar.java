@@ -53,6 +53,7 @@ public class AdvancedAeroStatusBar extends ITab {
     private JButton btnFluffImage = new JButton("Set Fluff Image");
     private JLabel bvLabel = new JLabel();
     private JLabel tons = new JLabel();
+    private JLabel remainingTons = new JLabel();
     private JLabel heatSink = new JLabel();
     private JLabel cost = new JLabel();
     private EntityVerifier entityVerifier = EntityVerifier.getInstance(new File(
@@ -84,10 +85,12 @@ public class AdvancedAeroStatusBar extends ITab {
         gbc.gridx = 2;
         this.add(tons, gbc);
         gbc.gridx = 3;
-        this.add(heatSink, gbc);
+        this.add(remainingTons, gbc);
         gbc.gridx = 4;
-        this.add(bvLabel, gbc);
+        this.add(heatSink, gbc);
         gbc.gridx = 5;
+        this.add(bvLabel, gbc);
+        gbc.gridx = 6;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
         this.add(cost, gbc);
@@ -119,12 +122,16 @@ public class AdvancedAeroStatusBar extends ITab {
         heatSink.setVisible(getJumpship().getEntityType() == Entity.ETYPE_AERO);
 
         tons.setText("Tonnage: " + currentTonnage + "/" + tonnage);
-        tons.setToolTipText("Current Tonnage/Max Tonnage");
+        tons.setToolTipText("Current Tonnage/Max Tonnage");        
+        remainingTons.setText("Remaining: " + (tonnage - currentTonnage));
         if (currentTonnage > tonnage) {
             tons.setForeground(Color.red);
+            remainingTons.setForeground(Color.red);
         } else {
             tons.setForeground(Color.black);
+            remainingTons.setForeground(Color.black);
         }
+
 
         bvLabel.setText("BV: " + bv);
         bvLabel.setToolTipText("BV 2.0");
