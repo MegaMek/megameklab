@@ -424,8 +424,6 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
             } finally {
                 setYear(prevYear);
             }
-        } else if (e.getSource() == txtYear) {
-            listeners.forEach(l -> l.updateTechLevel());
         } else if (e.getSource() == txtSource) {
             listeners.forEach(l -> l.sourceChanged(getSource()));
         } else if (e.getSource() == txtManualBV) {
