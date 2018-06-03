@@ -209,13 +209,10 @@ public class AdvancedAeroChassisView extends BuildView implements ActionListener
         cbBaseType.removeActionListener(this);
         cbBaseType.setSelectedIndex(baseType);
         cbBaseType.addActionListener(this);
+        cbBaseType.setEnabled(!craft.isPrimitive());
 
         spnSIModel.setValue(craft.get0SI());
         
-        // TODO: tech progression
-        chkLFBattery.setVisible(baseType != TYPE_STATION);
-        chkModular.setVisible((baseType == TYPE_STATION)
-                && techManager.isLegal(SpaceStation.getModularTA()));
         chkSail.setVisible((baseType == TYPE_STATION)
                 || craft.isPrimitive());
         lblRange.setVisible(craft.isPrimitive());
@@ -230,6 +227,10 @@ public class AdvancedAeroChassisView extends BuildView implements ActionListener
     public void refresh() {
         refreshTonnage();
         refreshSI();
+        chkLFBattery.setVisible((baseType != TYPE_STATION)
+                && techManager.isLegal(Jumpship.getLFBatteryTA()));
+        chkModular.setVisible((baseType == TYPE_STATION)
+                && techManager.isLegal(SpaceStation.getModularTA()));
     }
 
     private void refreshTonnage() {
