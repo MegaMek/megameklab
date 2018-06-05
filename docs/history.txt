@@ -1,17 +1,20 @@
 VERSION HISTORY:
 ----------------
-v0.43.11-RC5
+v0.43.12-RC6
+
+v0.43.11-RC5 (2018-06-04 0100 UTC)
 + Issue #156: Davy Crockett ammo issue
 + Issue #152: Mech Image not printing
 + Issue #157: Turret disappeared
 + PR #158: Infantry fixes (refresh equipment when year or tech level changes).
++ Updating Megamek.jar, updating what shows on infantry equipment table.
 
-v0.43.10-RC4
+v0.43.10-RC4 (2018-04-18 18:00 UTC)
 + Issue #147: Clan Endo-Composite is showing wrong crit slots.
 + Issue #136: 'Cargo Space' cannot be removed from canon units.
 + Update MegaMek.jar to v0.43.10-RC4
 
-v0.43.9-RC3
+v0.43.9-RC3 (2018-03-13 18:00 UTC)
 + Update MegaMek.jar to v0.43.9-RC3
 
 v0.43.8-RC2 (2018-02-11 22:40 UTC)
