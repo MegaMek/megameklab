@@ -2437,8 +2437,9 @@ public class UnitUtil {
                 }
             }
         } else if (unit.hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
-            if (unit.getArmorType(Aero.LOC_NOSE) == EquipmentType.T_ARMOR_STANDARD) {
-                unit.setArmorType(EquipmentType.T_ARMOR_AEROSPACE);
+            if ((unit.getArmorType(Aero.LOC_NOSE) == EquipmentType.T_ARMOR_STANDARD)
+                    || (unit.getArmorType(Aero.LOC_NOSE) == EquipmentType.T_ARMOR_AEROSPACE)) {
+                unit.setArmorType(EquipmentType.T_ARMOR_STANDARD_CAPITAL);
             }
         } else {
             if (unit.getArmorType(Aero.LOC_NOSE) == EquipmentType.T_ARMOR_PRIMITIVE) {
