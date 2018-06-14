@@ -589,7 +589,8 @@ public class MekChassisView extends BuildView implements ActionListener, ChangeL
             engineTypes = LAM_ENGINE_TYPES;
         }
         // Non-superheavies can use non-fusion engines under experimental rules
-        boolean allowNonFusion = isPrimitive() || (!isSuperheavy()
+        // industrials and primitives can use non-fusion under standard rules
+        boolean allowNonFusion = isIndustrial() || isPrimitive() || (!isSuperheavy()
                 && techManager.getTechLevel().compareTo(SimpleTechLevel.EXPERIMENTAL) >= 0);
         for (int i : engineTypes) {
             Engine e = new Engine(getEngineRating(), i, flags);
