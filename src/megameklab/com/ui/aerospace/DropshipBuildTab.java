@@ -45,7 +45,7 @@ public class DropshipBuildTab extends ITab implements ActionListener {
     private static final long serialVersionUID = -6625026210117558378L;
     
     private RefreshListener refresh = null;
-    private LargeCraftCritcalView critView = null;
+    private LargeCraftCriticalView critView = null;
     private AerospaceBuildView buildView = null;
     private JPanel buttonPanel = new JPanel();
     private JPanel mainPanel = new JPanel();
@@ -63,7 +63,7 @@ public class DropshipBuildTab extends ITab implements ActionListener {
         GridBagConstraints gbc = new GridBagConstraints();
 
         buildView = new AerospaceBuildView(eSource,refresh);
-        critView = new LargeCraftCritcalView(eSource, refresh);
+        critView = new LargeCraftCriticalView(eSource, refresh);
         critView.addAllocationListeners(buildView);
 
         resetButton.setMnemonic('R');

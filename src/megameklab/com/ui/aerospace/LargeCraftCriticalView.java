@@ -44,7 +44,7 @@ import megameklab.com.util.RefreshListener;
  * @author Neoancient
  *
  */
-public class LargeCraftCritcalView extends IView {
+public class LargeCraftCriticalView extends IView {
     
     /**
      * 
@@ -76,7 +76,7 @@ public class LargeCraftCritcalView extends IView {
     private JLabel lblExtraTonnage[] = new JLabel[NUM_ARCS];
     
 
-    public LargeCraftCritcalView(EntitySource eSource, RefreshListener refresh) {
+    public LargeCraftCriticalView(EntitySource eSource, RefreshListener refresh) {
         super(eSource);
 
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl()); //$NON-NLS-1$
