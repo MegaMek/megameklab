@@ -2641,7 +2641,13 @@ public class UnitUtil {
         }
 
         if ((eq instanceof MiscType)) {
-            if (unit.hasETypeFlag(Entity.ETYPE_DROPSHIP)) {
+            if (unit.hasETypeFlag(Entity.ETYPE_SPACE_STATION)) {
+                return eq.hasFlag(MiscType.F_SS_EQUIPMENT);
+            } else if (unit.hasETypeFlag(Entity.ETYPE_WARSHIP)) {
+                return eq.hasFlag(MiscType.F_WS_EQUIPMENT);
+            } else if (unit.hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
+                return eq.hasFlag(MiscType.F_JS_EQUIPMENT);
+            } else if (unit.hasETypeFlag(Entity.ETYPE_DROPSHIP)) {
                 return eq.hasFlag(MiscType.F_DS_EQUIPMENT);
             } else if (unit.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)) {
                 return eq.hasFlag(MiscType.F_SC_EQUIPMENT);
