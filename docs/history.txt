@@ -1,10 +1,11 @@
 VERSION HISTORY:
 ----------------
+v0.45.0-git
+
 v0.44.0 (2018-06-24 1900 UTC)
 + If no fluff image is found for the model, check for generic chassis image for record sheet.
 + Issue #160: Industrial Mechs ICE engine Tech Progression Wrong
 + Update MegaMek.jar to v0.44.0
-
 
 v0.43.11-RC5 (2018-06-04 0100 UTC)
 + Issue #156: Davy Crockett ammo issue
