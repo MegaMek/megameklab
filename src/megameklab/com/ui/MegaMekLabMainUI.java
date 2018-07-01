@@ -52,37 +52,15 @@ public abstract class MegaMekLabMainUI extends JFrame implements
         UnitUtil.loadFonts();
         new CConfig();
         System.out.println("Starting MegaMekLab version: " + MegaMekLab.VERSION);
-
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            //UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
-        } catch (Exception e) {
-            System.out.println("Setting look and feel failed: ");
-            e.printStackTrace();
-        }
+        
+        setLookAndFeel();
 
         setLocation(getLocation().x + 10, getLocation().y);
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent evt) {
-                CConfig.setParam("WINDOWSTATE", Integer.toString(getExtendedState()));
-                // Only save position and size if not maximized or minimized.
-                if (getExtendedState() == Frame.NORMAL) {
-                    CConfig.setParam("WINDOWHEIGHT", Integer.toString(getHeight()));
-                    CConfig.setParam("WINDOWWIDTH", Integer.toString(getWidth()));
-                    CConfig.setParam("WINDOWLEFT", Integer.toString(getX()));
-                    CConfig.setParam("WINDOWTOP", Integer.toString(getY()));
-                }
-                CConfig.saveConfig();
-
-                String quitMsg = "Do you really want to quit MegaMekLab?"; 
-                int response = JOptionPane.showConfirmDialog(null, quitMsg,
-                        "Quit?", JOptionPane.YES_NO_OPTION,
-                        JOptionPane.QUESTION_MESSAGE); 
-                if (response == JOptionPane.YES_OPTION) {
-                    System.exit(0);
-                }
+                exit();
             }
         });
 
@@ -115,6 +93,37 @@ public abstract class MegaMekLabMainUI extends JFrame implements
         });
     }
 
+    private void setLookAndFeel() {
+        try {
+            String plaf = CConfig.getParam(CConfig.CONFIG_PLAF, UIManager.getSystemLookAndFeelClassName());
+            UIManager.setLookAndFeel(plaf);
+        } catch (Exception e) {
+            MegaMekLab.getLogger().log(getClass(), "setLookAndFeel()", e);
+       }
+    }
+    
+    public void exit() {
+        String quitMsg = "Do you really want to quit MegaMekLab?"; 
+        int response = JOptionPane.showConfirmDialog(null, quitMsg,
+                "Quit?", JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE); 
+        
+        if (response == JOptionPane.YES_OPTION) {
+            CConfig.setParam("WINDOWSTATE", Integer.toString(getExtendedState()));
+            // Only save position and size if not maximized or minimized.
+            if (getExtendedState() == Frame.NORMAL) {
+                CConfig.setParam("WINDOWHEIGHT", Integer.toString(getHeight()));
+                CConfig.setParam("WINDOWWIDTH", Integer.toString(getWidth()));
+                CConfig.setParam("WINDOWLEFT", Integer.toString(getX()));
+                CConfig.setParam("WINDOWTOP", Integer.toString(getY()));
+            }
+            CConfig.setParam(CConfig.CONFIG_PLAF, UIManager.getLookAndFeel().getClass().getName());
+            CConfig.saveConfig();
+
+            System.exit(0);
+        }
+    }
+    
     public abstract void reloadTabs();
 
     public abstract void refreshAll();

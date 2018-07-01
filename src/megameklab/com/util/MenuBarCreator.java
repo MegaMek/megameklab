@@ -42,7 +42,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -619,11 +618,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         item.setText("Exit");
         item.setMnemonic(KeyEvent.VK_X);
         item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-        item.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                jMenuExit_actionPerformed(e);
-            }
-        });
+        item.addActionListener(ev -> parentFrame.exit());
         file.add(item);
 
     }
@@ -1059,16 +1054,6 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
     public void jMenuConfiguration_actionPerformed(ActionEvent event) {
         new ConfigurationDialog(parentFrame).setVisible(true);
         parentFrame.refreshAll();
-    }
-
-    public void jMenuExit_actionPerformed(ActionEvent event) {
-        String quitMsg = "Do you really want to quit MegaMekLab?"; 
-        int response = JOptionPane.showConfirmDialog(null, quitMsg,
-                "Quit?", JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE); 
-        if (response == JOptionPane.YES_OPTION) {
-            System.exit(0);
-        }
     }
 
     private void jMenuLoadVehicle() {
