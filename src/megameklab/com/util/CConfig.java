@@ -68,6 +68,7 @@ public class CConfig {
     public static final String TECH_UNOFFICAL_NO_YEAR = "techUnofficialNoYear";
     
     public static final String CONFIG_SAVE_LOC = "Save-Location-Default";
+    public static final String CONFIG_PLAF = "lookAndFeel";
 
     private static Properties config;// config. player values.
 
@@ -162,9 +163,13 @@ public class CConfig {
     }
 
     /**
-     * Get a config value.
+     * Get a config value, with a default value to be used if the value is not found.
+     * 
+     * @param param      The key
+     * @param defaultVal The value to return if the entry is not found
+     * @return           The value associated with the key
      */
-    public static String getParam(String param) {
+    public static String getParam(String param, String defaultVal) {
         String tparam = null;
 
         if (param.endsWith(":")) {
@@ -172,9 +177,19 @@ public class CConfig {
         }
         tparam = config.getProperty(param);
         if (tparam == null) {
-            tparam = "";
+            tparam = defaultVal;
         }
         return tparam;
+    }
+    
+    /**
+     * Get a config value.
+     * 
+     * @param param      The key
+     * @return           The value associated with the key. If not found, an empty String is returned
+     */
+    public static String getParam(String param) {
+        return getParam(param, "");
     }
 
     /**
