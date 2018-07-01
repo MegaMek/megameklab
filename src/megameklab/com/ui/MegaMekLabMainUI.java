@@ -23,7 +23,9 @@ import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
 
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
@@ -92,6 +94,25 @@ public abstract class MegaMekLabMainUI extends JFrame implements
         setPreferredSize(maxSize);
         setExtendedState(CConfig.getIntParam("WINDOWSTATE"));
         setLocation(CConfig.getIntParam("WINDOWLEFT"), CConfig.getIntParam("WINDOWTOP"));
+    }
+
+    /**
+     * Sets the look and feel for the application.
+     * 
+     * @param plaf The look and feel to use for the application.
+     */
+    public void changeTheme(LookAndFeelInfo plaf) {
+        SwingUtilities.invokeLater(() -> {
+            try {
+                UIManager.setLookAndFeel(plaf.getClassName());
+                SwingUtilities.updateComponentTreeUI(this);
+            } catch (Exception exception) {
+                JOptionPane.showMessageDialog(this,
+                        "Can't change look and feel", "Invalid PLAF",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+
+        });
     }
 
     public abstract void reloadTabs();
