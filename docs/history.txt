@@ -2,6 +2,8 @@ VERSION HISTORY:
 ----------------
 v0.45.0-git
 + Issue #169: Request Users Java Version Be Printed To Log File
++ Issue #32: UI elements do not allow enough area for text on Linux (Gnome 3/Fedora)
+		Added menu to allow user to select look and feel theme.
 
 v0.44.0 (2018-06-24 1900 UTC)
 + If no fluff image is found for the model, check for generic chassis image for record sheet.
