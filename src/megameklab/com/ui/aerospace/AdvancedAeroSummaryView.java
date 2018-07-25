@@ -18,6 +18,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.io.File;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -37,24 +39,26 @@ import megameklab.com.util.IView;
  */
 public class AdvancedAeroSummaryView extends IView {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = 3332719282944878899L;
     
-    private JTextField txtStructTon = new JTextField("?");
-    private JTextField txtEngineTon = new JTextField("?");   
-    private JTextField txtFuelTon = new JTextField("?");
-    private JTextField txtControlTon = new JTextField("?");
-    private JTextField txtJumpDriveTon = new JTextField("?");
+    private JTextField txtEngineTon = new JTextField("?");
+    private JTextField txtFuelTon = new JTextField("?");   
+    private JTextField txtStructureTon = new JTextField("?");
+    private JTextField txtKFDriveTon = new JTextField("?");
+    private JTextField txtLFBatteryTon = new JTextField("?");
+    private JTextField txtSailTon = new JTextField("?");
+    private JTextField txtControlTon = new JTextField("?");   
+    private JTextField txtQuartersTon = new JTextField("?");
     private JTextField txtHeatTon = new JTextField("?");
-    private JTextField txtArmorTon = new JTextField("?");   
-    private JTextField txtWeapTon = new JTextField("?");
+    private JTextField txtArmorTon = new JTextField("?");
+    private JTextField txtWeaponsTon = new JTextField("?");
     private JTextField txtAmmoTon = new JTextField("?");
-    private JTextField txtMiscTon = new JTextField("?");
+    private JTextField txtFireControlTon = new JTextField("?");
     private JTextField txtTransportTon = new JTextField("?");
-    private JTextField txtCrewTon = new JTextField("?");
-    private JTextField txtOtherTon = new JTextField("?");
+    private JTextField txtHardpointTon = new JTextField("?");
+    private JTextField txtGravDeckTon = new JTextField("?");
+    private JTextField txtLifeBoatTon = new JTextField("?");
+    private JTextField txtMiscTon = new JTextField("?");
 
     private EntityVerifier entityVerifier = EntityVerifier.getInstance(
             new File("data/mechfiles/UnitVerifierOptions.xml"));
@@ -64,21 +68,26 @@ public class AdvancedAeroSummaryView extends IView {
 
         Vector<JTextField> valueFields = new Vector<JTextField>();
 
-        valueFields.add(txtStructTon);
         valueFields.add(txtEngineTon);
-        valueFields.add(txtFuelTon);        
-        valueFields.add(txtControlTon);
-        valueFields.add(txtJumpDriveTon);
+        valueFields.add(txtFuelTon);   
+        valueFields.add(txtStructureTon);
+        valueFields.add(txtKFDriveTon);
+        valueFields.add(txtLFBatteryTon);
+        valueFields.add(txtSailTon);
+        valueFields.add(txtControlTon);   
+        valueFields.add(txtQuartersTon);
         valueFields.add(txtHeatTon);
         valueFields.add(txtArmorTon);
-        valueFields.add(txtWeapTon);
+        valueFields.add(txtWeaponsTon);
         valueFields.add(txtAmmoTon);
-        valueFields.add(txtMiscTon);
+        valueFields.add(txtFireControlTon);
         valueFields.add(txtTransportTon);
-        valueFields.add(txtCrewTon);
-        valueFields.add(txtOtherTon);
+        valueFields.add(txtHardpointTon);
+        valueFields.add(txtGravDeckTon);
+        valueFields.add(txtLifeBoatTon);
+        valueFields.add(txtMiscTon);
 
-        Dimension size = new Dimension(80,25);
+        Dimension size = new Dimension(100,25);
         for(JTextField field : valueFields) {
             field.setEditable(false);
             field.setSize(size);
@@ -88,9 +97,7 @@ public class AdvancedAeroSummaryView extends IView {
             field.setHorizontalAlignment(SwingConstants.RIGHT);
         }
 
-        valueFields.removeAllElements();
-
-        size = new Dimension(80,25);
+        size = new Dimension(100,25);
         for(JTextField field : valueFields) {
             field.setEditable(false);
             field.setSize(size);
@@ -109,63 +116,51 @@ public class AdvancedAeroSummaryView extends IView {
         gbc.insets = new Insets(0,0,0,5);
         this.add(createLabel("Category", size, SwingConstants.CENTER), gbc);
         gbc.gridy = 1;
-        this.add(createLabel("SI:", size, SwingConstants.RIGHT), gbc);
+        this.add(createLabel("Transit Drive:", size, SwingConstants.RIGHT), gbc);
         gbc.gridy = 2;
-        this.add(createLabel("Engine:", size, SwingConstants.RIGHT), gbc);
-        gbc.gridy = 3;
         this.add(createLabel("Fuel:", size, SwingConstants.RIGHT), gbc);
+        gbc.gridy = 3;
+        this.add(createLabel("Structure:", size, SwingConstants.RIGHT), gbc);
         gbc.gridy = 4;
-        this.add(createLabel("Control Systems:", size, SwingConstants.RIGHT), gbc);
+        this.add(createLabel("KF Drive:", size, SwingConstants.RIGHT), gbc);
         gbc.gridy = 5;
-        this.add(createLabel("KF Drive and Sail:", size, SwingConstants.RIGHT), gbc);
+        this.add(createLabel("LF Battery:", size, SwingConstants.RIGHT), gbc);
         gbc.gridy = 6;
-        this.add(createLabel("Heat Sinks:", size, SwingConstants.RIGHT), gbc);
+        this.add(createLabel("Sail:", size, SwingConstants.RIGHT), gbc);
         gbc.gridy = 7;
-        this.add(createLabel("Armor", size, SwingConstants.RIGHT), gbc);
+        this.add(createLabel("Control:", size, SwingConstants.RIGHT), gbc);
         gbc.gridy = 8;
-        this.add(createLabel("Weapons:", size, SwingConstants.RIGHT), gbc);
+        this.add(createLabel("Crew Quarters:", size, SwingConstants.RIGHT), gbc);
         gbc.gridy = 9;
-        this.add(createLabel("Ammo:", size, SwingConstants.RIGHT), gbc);
+        this.add(createLabel("Heat Sinks:", size, SwingConstants.RIGHT), gbc);
         gbc.gridy = 10;
-        this.add(createLabel("Equipment:", size, SwingConstants.RIGHT), gbc);
+        this.add(createLabel("Armor:", size, SwingConstants.RIGHT), gbc);
         gbc.gridy = 11;
-        this.add(createLabel("Transport:", size, SwingConstants.RIGHT), gbc);
+        this.add(createLabel("Weapons:", size, SwingConstants.RIGHT), gbc);
         gbc.gridy = 12;
-        this.add(createLabel("Crew:", size, SwingConstants.RIGHT), gbc);
+        this.add(createLabel("Ammo:", size, SwingConstants.RIGHT), gbc);
         gbc.gridy = 13;
-        this.add(createLabel("Other:", size, SwingConstants.RIGHT), gbc);
+        this.add(createLabel("Fire Control:", size, SwingConstants.RIGHT), gbc);
+        gbc.gridy = 14;
+        this.add(createLabel("Tranport Bays:", size, SwingConstants.RIGHT), gbc);
+        gbc.gridy = 15;
+        this.add(createLabel("Docking Hardpoints:", size, SwingConstants.RIGHT), gbc);
+        gbc.gridy = 16;
+        this.add(createLabel("Grav Decks:", size, SwingConstants.RIGHT), gbc);
+        gbc.gridy = 17;
+        this.add(createLabel("Life Boats:", size, SwingConstants.RIGHT), gbc);
+        gbc.gridy = 18;
+        this.add(createLabel("Misc:", size, SwingConstants.RIGHT), gbc);
 
         size = new Dimension(45,25);
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.insets = new Insets(0,0,0,0);
         this.add(createLabel("Ton", size, SwingConstants.CENTER), gbc);
-        gbc.gridy = 1;
-        this.add(txtStructTon, gbc);
-        gbc.gridy = 2;
-        this.add(txtEngineTon, gbc);
-        gbc.gridy = 3;
-        this.add(txtFuelTon, gbc);
-        gbc.gridy = 4;
-        this.add(txtControlTon, gbc);
-        gbc.gridy = 5;
-        this.add(txtJumpDriveTon, gbc);
-        gbc.gridy = 6;
-        this.add(txtHeatTon, gbc);
-        gbc.gridy = 7;
-        this.add(txtArmorTon, gbc);
-        gbc.gridy = 8;
-        this.add(txtWeapTon, gbc);
-        gbc.gridy = 9;
-        this.add(txtAmmoTon, gbc);
-        gbc.gridy = 10;
-        this.add(txtMiscTon, gbc);
-        gbc.gridy = 11;
-        this.add(txtTransportTon, gbc);
-        gbc.gridy = 12;
-        this.add(txtCrewTon, gbc);
-        gbc.gridy = 13;
-        this.add(txtOtherTon, gbc);
+        for (JTextField field : valueFields) {
+            gbc.gridy++;
+            this.add(field, gbc);
+        }
 
         setBorder(BorderFactory.createTitledBorder("Summary"));
 
@@ -187,22 +182,27 @@ public class AdvancedAeroSummaryView extends IView {
     }
 
     public void refresh() {
-        TestAdvancedAerospace testShip = 
+        final TestAdvancedAerospace testShip = 
                 new TestAdvancedAerospace(getJumpship(), entityVerifier.aeroOption, null);
+        final NumberFormat df = DecimalFormat.getInstance();
        
-        txtStructTon.setText(Double.toString(testShip.getWeightStructure()));
-        txtEngineTon.setText(Double.toString(testShip.getWeightEngine()));
-        txtFuelTon.setText(Double.toString(testShip.getWeightFuel()));
-        txtControlTon.setText(Double.toString(testShip.getWeightControls()));
-        txtJumpDriveTon.setText(Double.toString(testShip.getWeightDrive()
-                + testShip.getWeightSail()));
-        txtHeatTon.setText(Double.toString(testShip.getWeightHeatSinks()));        
-        txtArmorTon.setText(Double.toString(testShip.getWeightArmor()));
-        txtWeapTon.setText(Double.toString(testShip.getWeightWeapon()));
-        txtAmmoTon.setText(Double.toString(testShip.getWeightAmmo()));
-        txtMiscTon.setText(Double.toString(testShip.getWeightMiscEquip()));
-        txtTransportTon.setText(Double.toString(testShip.getWeightCarryingSpace()));
-        txtCrewTon.setText(Double.toString(testShip.getWeightQuarters()));
-        txtOtherTon.setText(Double.toString(testShip.getWeightMisc()));
+        txtEngineTon.setText(df.format(testShip.getWeightEngine()));
+        txtFuelTon.setText(df.format(testShip.getWeightFuel()));
+        txtStructureTon.setText(df.format(testShip.getWeightStructure()));
+        txtKFDriveTon.setText(df.format(testShip.getWeightKFDrive()));
+        txtLFBatteryTon.setText(df.format(testShip.getWeightLFBattery()));
+        txtSailTon.setText(df.format(testShip.getWeightSail()));
+        txtControlTon.setText(df.format(testShip.getWeightControls()));
+        txtQuartersTon.setText(df.format(testShip.getWeightQuarters()));
+        txtHeatTon.setText(df.format(testShip.getWeightHeatSinks()));        
+        txtArmorTon.setText(df.format(testShip.getWeightArmor()));
+        txtWeaponsTon.setText(df.format(testShip.getWeightWeapon()));
+        txtAmmoTon.setText(df.format(testShip.getWeightAmmo()));
+        txtFireControlTon.setText(df.format(testShip.getWeightFireControl()));
+        txtTransportTon.setText(df.format(testShip.getWeightCarryingSpace()));
+        txtHardpointTon.setText(df.format(testShip.getWeightHardpoints()));
+        txtGravDeckTon.setText(df.format(testShip.getWeightGravDecks()));
+        txtLifeBoatTon.setText(df.format(testShip.getWeightLifeBoats()));
+        txtMiscTon.setText(df.format(testShip.getWeightMiscEquip()));
     }
 }
