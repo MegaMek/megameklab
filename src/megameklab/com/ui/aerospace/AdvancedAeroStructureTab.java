@@ -19,6 +19,7 @@ import java.awt.GridBagLayout;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -637,10 +638,25 @@ public class AdvancedAeroStructureTab extends ITab implements AdvancedAeroBuildL
 
     @Override
     public void autoAssignQuarters() {
-        int standard = getJumpship().getNCrew() - getJumpship().getBayPersonnel();
-        standard = Math.max(0, standard - getJumpship().getNOfficers());
-        standard += getJumpship().getNPassenger() + getJumpship().getNMarines() + getJumpship().getNBattleArmor();
-        quartersChanged(getJumpship().getNOfficers(), standard, getJumpship().getNPassenger(), 0);
+        int crewQuartersNeeded = getJumpship().getNCrew() - getJumpship().getBayPersonnel()
+                + getJumpship().getNMarines() + getJumpship().getNBattleArmor();
+            Map<TestAero.Quarters, Integer> quartersCount = TestAero.Quarters.getQuartersByType(getJumpship());
+            // Provide the number of standard crew quarters needed by all enlisted crew.
+            int stdCrew = crewQuartersNeeded - getJumpship().getNOfficers();
+            // Provide enough first class/officer quarters for all officers. Allow extras up to the number
+            // of passengers as first class cabins.
+            int officer = Math.max(getJumpship().getNOfficers(), quartersCount.get(TestAero.Quarters.FIRST_CLASS));
+
+            // Any first class/officer quarters in excess of the number required for officers are assumed to be
+            // first class passenger cabins
+            int firstClass = Math.max(0, officer - getJumpship().getNOfficers());
+            // Keep the same number of steerage compartments already assigned up to the number of remaining passengers.
+            int steerage = Math.min(getJumpship().getNPassenger() - firstClass,
+                    quartersCount.get(TestAero.Quarters.STEERAGE));
+            // Assign all remaining passengers to second class cabins
+            int secondClass = Math.max(0, getJumpship().getNPassenger() - steerage - firstClass);
+            
+            quartersChanged(getJumpship().getNOfficers() + firstClass, stdCrew, secondClass, steerage);
     }
 
     @Override

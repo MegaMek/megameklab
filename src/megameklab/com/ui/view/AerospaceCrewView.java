@@ -19,6 +19,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -258,13 +259,7 @@ public class AerospaceCrewView extends BuildView implements ActionListener, Chan
             spnBAMarines.setVisible(false);
         }
         
-        EnumMap<TestAero.Quarters, Integer> sizes = new EnumMap<>(TestAero.Quarters.class);
-        for (Bay bay : aero.getTransportBays()) {
-            Quarters q = TestAero.Quarters.getQuartersForBay(bay);
-            if (null != q) {
-                sizes.merge(q, (int) bay.getCapacity(), Integer::sum);
-            }
-        }
+        Map<TestAero.Quarters, Integer> sizes = TestAero.Quarters.getQuartersByType(aero);
         spnQuartersFirstClass.setValue(sizes.getOrDefault(TestAero.Quarters.FIRST_CLASS, 0));
         spnQuartersStandard.setValue(sizes.getOrDefault(TestAero.Quarters.STANDARD, 0));
         spnQuartersSecondClass.setValue(sizes.getOrDefault(TestAero.Quarters.SECOND_CLASS, 0));

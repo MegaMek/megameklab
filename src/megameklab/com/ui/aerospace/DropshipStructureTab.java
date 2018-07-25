@@ -20,6 +20,7 @@ import java.awt.GridBagLayout;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -607,10 +608,25 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
 
     @Override
     public void autoAssignQuarters() {
-        int standard = getSmallCraft().getNCrew() - getSmallCraft().getBayPersonnel();
-        standard = Math.max(0, standard - getSmallCraft().getNOfficers());
-        standard += getSmallCraft().getNPassenger() + getSmallCraft().getNMarines() + getSmallCraft().getNBattleArmor();
-        quartersChanged(getSmallCraft().getNOfficers(), standard, getSmallCraft().getNPassenger(), 0);
+        int crewQuartersNeeded = getSmallCraft().getNCrew() - getSmallCraft().getBayPersonnel()
+            + getSmallCraft().getNMarines() + getSmallCraft().getNBattleArmor();
+        Map<TestAero.Quarters, Integer> quartersCount = TestAero.Quarters.getQuartersByType(getSmallCraft());
+        // Provide the number of standard crew quarters needed by all enlisted crew.
+        int stdCrew = crewQuartersNeeded - getSmallCraft().getNOfficers();
+        // Provide enough first class/officer quarters for all officers. Allow extras up to the number
+        // of passengers as first class cabins.
+        int officer = Math.max(getSmallCraft().getNOfficers(), quartersCount.get(TestAero.Quarters.FIRST_CLASS));
+
+        // Any first class/officer quarters in excess of the number required for officers are assumed to be
+        // first class passenger cabins
+        int firstClass = Math.max(0, officer - getSmallCraft().getNOfficers());
+        // Keep the same number of steerage compartments already assigned up to the number of remaining passengers.
+        int steerage = Math.min(getSmallCraft().getNPassenger() - firstClass,
+                quartersCount.get(TestAero.Quarters.STEERAGE));
+        // Assign all remaining passengers to second class cabins
+        int secondClass = Math.max(0, getSmallCraft().getNPassenger() - steerage - firstClass);
+        
+        quartersChanged(getSmallCraft().getNOfficers() + firstClass, stdCrew, secondClass, steerage);
     }
 
     @Override
