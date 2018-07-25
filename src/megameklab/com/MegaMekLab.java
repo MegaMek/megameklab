@@ -21,6 +21,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.text.NumberFormat;
+import java.util.Date;
 import java.util.Locale;
 
 import megamek.MegaMek;
@@ -29,10 +31,11 @@ import megamek.common.logging.DefaultMmLogger;
 import megamek.common.logging.LogConfig;
 import megamek.common.logging.LogLevel;
 import megamek.common.logging.MMLogger;
+import megamek.common.preference.PreferenceManager;
 import megameklab.com.ui.Mek.MainUI;
 
 public class MegaMekLab {
-    public static final String VERSION = "0.43.12-RC6";
+    public static final String VERSION = "0.45.0-git";
 
     private static MMLogger logger = null;
 
@@ -69,6 +72,7 @@ public class MegaMekLab {
         }
 
         setupLogging(logs, logFileName);
+        showInfo();
         
         if (vehicle) {
             Runtime runtime = Runtime.getRuntime();
@@ -184,5 +188,35 @@ public class MegaMekLab {
             logger = DefaultMmLogger.getInstance();
         }
         return logger;
+    }
+    
+    /**
+     * Prints some information about MegaMekLab. Used in logfiles to figure out the
+     * JVM and version of MegaMekLab.
+     */
+    private static void showInfo() {
+        final String METHOD_NAME = "showInfo";
+        final long TIMESTAMP = new File(PreferenceManager
+                .getClientPreferences().getLogDirectory()
+                + File.separator
+                + "timestamp").lastModified();
+        // echo some useful stuff
+        String msg = "Starting MegaMekLab v" + VERSION + " ..."; //$NON-NLS-1$ //$NON-NLS-2$
+        if (TIMESTAMP > 0) {
+            msg += "\n\tCompiled on " + new Date(TIMESTAMP).toString(); //$NON-NLS-1$
+        }
+        msg += "\n\tToday is " + new Date().toString(); //$NON-NLS-1$
+        msg += "\n\tJava vendor " + System.getProperty("java.vendor"); //$NON-NLS-1$ //$NON-NLS-2$
+        msg += "\n\tJava version " + System.getProperty("java.version"); //$NON-NLS-1$ //$NON-NLS-2$
+        msg += "\n\tPlatform " //$NON-NLS-1$
+               + System.getProperty("os.name") //$NON-NLS-1$
+               + " " //$NON-NLS-1$
+               + System.getProperty("os.version") //$NON-NLS-1$
+               + " (" //$NON-NLS-1$
+               + System.getProperty("os.arch") //$NON-NLS-1$
+               + ")"; //$NON-NLS-1$
+        long maxMemory = Runtime.getRuntime().maxMemory() / 1024;
+        msg += "\n\tTotal memory available to MegaMek: " + NumberFormat.getInstance().format(maxMemory) + " kB"; //$NON-NLS-1$ //$NON-NLS-2$
+        getLogger().log(MegaMekLab.class, METHOD_NAME, LogLevel.INFO, msg);
     }
 }
