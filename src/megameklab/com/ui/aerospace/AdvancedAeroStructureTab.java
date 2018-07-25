@@ -16,10 +16,7 @@ package megameklab.com.ui.aerospace;
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.util.ArrayList;
-import java.util.EnumMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -27,7 +24,6 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
 import megamek.common.Aero;
-import megamek.common.Bay;
 import megamek.common.CriticalSlot;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
@@ -35,8 +31,6 @@ import megamek.common.ITechManager;
 import megamek.common.Jumpship;
 import megamek.common.SimpleTechLevel;
 import megamek.common.SpaceStation;
-import megamek.common.verifier.TestAero;
-import megamek.common.verifier.TestAero.Quarters;
 import megamek.common.verifier.TestEntity;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.view.AdvancedAeroChassisView;
@@ -598,65 +592,20 @@ public class AdvancedAeroStructureTab extends ITab implements AdvancedAeroBuildL
 
     @Override
     public void quartersChanged(int officer, int standard, int secondclass, int steerage) {
-        EnumMap<TestAero.Quarters, Integer> sizes = new EnumMap<>(TestAero.Quarters.class);
-        for (Bay bay : getJumpship().getTransportBays()) {
-            Quarters q = TestAero.Quarters.getQuartersForBay(bay);
-            if (null != q) {
-                sizes.merge(q, (int) bay.getCapacity(), Integer::sum);
-            }
-        }
-        if (sizes.getOrDefault(TestAero.Quarters.FIRST_CLASS, 0) != officer) {
-            setQuarters(TestAero.Quarters.FIRST_CLASS, officer);
-        }
-        if (sizes.getOrDefault(TestAero.Quarters.STANDARD, 0) != standard) {
-            setQuarters(TestAero.Quarters.STANDARD, standard);
-        }
-        if (sizes.getOrDefault(TestAero.Quarters.SECOND_CLASS, 0) != secondclass) {
-            setQuarters(TestAero.Quarters.SECOND_CLASS, secondclass);
-        }
-        if (sizes.getOrDefault(TestAero.Quarters.STEERAGE, 0) != steerage) {
-            setQuarters(TestAero.Quarters.STEERAGE, steerage);
-        }
+        UnitUtil.assignQuarters(getJumpship(), officer, standard, secondclass, steerage);
         panCrew.setFromEntity(getJumpship());
         refreshSummary();
         refresh.refreshStatus();
         refresh.refreshPreview();
     }
     
-    private void setQuarters(TestAero.Quarters quarters, int size) {
-        List<Bay> toRemove = new ArrayList<>();
-        for (Bay bay : getJumpship().getTransportBays()) {
-            if (TestAero.Quarters.getQuartersForBay(bay) == quarters) {
-                toRemove.add(bay);
-            }
-        }
-        for (Bay bay : toRemove) {
-            getJumpship().removeTransporter(bay);
-        }
-        getJumpship().addTransporter(quarters.newQuarters(size));
-    }
-
     @Override
     public void autoAssignQuarters() {
-        int crewQuartersNeeded = getJumpship().getNCrew() - getJumpship().getBayPersonnel()
-                + getJumpship().getNMarines() + getJumpship().getNBattleArmor();
-            Map<TestAero.Quarters, Integer> quartersCount = TestAero.Quarters.getQuartersByType(getJumpship());
-            // Provide the number of standard crew quarters needed by all enlisted crew.
-            int stdCrew = crewQuartersNeeded - getJumpship().getNOfficers();
-            // Provide enough first class/officer quarters for all officers. Allow extras up to the number
-            // of passengers as first class cabins.
-            int officer = Math.max(getJumpship().getNOfficers(), quartersCount.get(TestAero.Quarters.FIRST_CLASS));
-
-            // Any first class/officer quarters in excess of the number required for officers are assumed to be
-            // first class passenger cabins
-            int firstClass = Math.max(0, officer - getJumpship().getNOfficers());
-            // Keep the same number of steerage compartments already assigned up to the number of remaining passengers.
-            int steerage = Math.min(getJumpship().getNPassenger() - firstClass,
-                    quartersCount.get(TestAero.Quarters.STEERAGE));
-            // Assign all remaining passengers to second class cabins
-            int secondClass = Math.max(0, getJumpship().getNPassenger() - steerage - firstClass);
-            
-            quartersChanged(getJumpship().getNOfficers() + firstClass, stdCrew, secondClass, steerage);
+        UnitUtil.autoAssignQuarters(getJumpship());
+        panCrew.setFromEntity(getJumpship());
+        refreshSummary();
+        refresh.refreshStatus();
+        refresh.refreshPreview();
     }
 
     @Override

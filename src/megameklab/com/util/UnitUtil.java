@@ -4094,6 +4094,104 @@ public class UnitUtil {
         }
 
     }
+    
+    /**
+     * Adjusts the number of crew quarters of a given type on an aerospace vessel.
+     * 
+     * @param aero      The aerospace unit to change crew quarters sizes for
+     * @param quarters  The type of crew quarters to change
+     * @param size      The number of personnel that can be housed in the designated type of quarters
+     */
+    public static void setQuarters(Aero aero, TestAero.Quarters quarters, int size) {
+        List<Bay> toRemove = new ArrayList<>();
+        for (Bay bay : aero.getTransportBays()) {
+            if (TestAero.Quarters.getQuartersForBay(bay) == quarters) {
+                toRemove.add(bay);
+            }
+        }
+        for (Bay bay : toRemove) {
+            aero.removeTransporter(bay);
+        }
+        if (size > 0) {
+            aero.addTransporter(quarters.newQuarters(size));
+        }
+    }
+
+    /**
+     * Adjusts the number of all types of crew quarters on an aerospace vessel.
+     * 
+     * @param aero          The vessel
+     * @param officer       The number of officer/first class quarters
+     * @param standard      The number of standard crew quarters
+     * @param secondclass   The number second class passenger quarters
+     * @param steerage      The number of steerage class crew/passenger quarters
+     */
+    public static void assignQuarters(Aero aero, int officer, int standard, int secondclass, int steerage) {
+        Map<TestAero.Quarters, Integer> sizes = TestAero.Quarters.getQuartersByType(aero);
+        if (sizes.get(TestAero.Quarters.FIRST_CLASS) != officer) {
+            UnitUtil.setQuarters(aero, TestAero.Quarters.FIRST_CLASS, officer);
+        }
+        if (sizes.get(TestAero.Quarters.STANDARD) != standard) {
+            UnitUtil.setQuarters(aero, TestAero.Quarters.STANDARD, standard);
+        }
+        if (sizes.get(TestAero.Quarters.SECOND_CLASS) != secondclass) {
+            UnitUtil.setQuarters(aero, TestAero.Quarters.SECOND_CLASS, secondclass);
+        }
+        if (sizes.get(TestAero.Quarters.STEERAGE) != steerage) {
+            UnitUtil.setQuarters(aero, TestAero.Quarters.STEERAGE, steerage);
+        }
+    }
+    
+    /**
+     * Adjusts the number of quarters of each to match the crew and passenger needs. If no quarters
+     * are already assigned, this will put all officers in officer/first class cabins, enlisted crew
+     * in standard crew quarters, and passengers in second class cabins. If there are already more
+     * officer/first class cabins assigned than there are officers, the extra will be used as first
+     * class passenger cabins. Any steerage quarters will be assigned first to marines, then to passengers,
+     * then to remaining enlisted.
+     *
+     * @param aero The vessel to assign quarters for.
+     */
+    public static void autoAssignQuarters(Aero aero) {
+        int marines = aero.getNMarines() + aero.getNBattleArmor(); 
+        int enlistedNeeds = aero.getNCrew() + marines - aero.getBayPersonnel() - aero.getNOfficers();
+        Map<TestAero.Quarters, Integer> quartersCount = TestAero.Quarters.getQuartersByType(aero);
+        
+        // Standard crew quarters should not be larger than the crew needs, but may be smaller as
+        // some crew may have officer or steerage housing.
+        int standardCrew = Math.min(enlistedNeeds, quartersCount.get(TestAero.Quarters.STANDARD));
+        // Limit the first class quarters to number of officers + passengers. It is possible to house
+        // enlisted in first class quarters, but that is beyond the scope of this and will need to
+        // be done by hand.
+        int officer = Math.min(aero.getNOfficers() + aero.getNPassenger(),
+                quartersCount.get(TestAero.Quarters.FIRST_CLASS));
+        officer = Math.max(officer, aero.getNOfficers());
+        int firstClass = Math.max(0, officer - aero.getNOfficers());
+
+        // Limit the steerage quarters to the number of crew that have not been assigned standard
+        // or officer quarters and passengers that have not been assigned first class.
+        int steeragePsgr = Math.min(aero.getNPassenger() - firstClass + enlistedNeeds - standardCrew,
+                quartersCount.get(TestAero.Quarters.STEERAGE));
+        // Assign any existing steerage quarters first to marines that have not already been assigned standard
+        // quarters
+        int steerageCrew = 0;
+        if (enlistedNeeds > standardCrew) {
+            steerageCrew = Math.min(steeragePsgr, marines);
+            steeragePsgr -= steerageCrew;
+        }
+        // Assign any remaining steerage quarters to passengers first, then remaining crew.
+        if (steeragePsgr > aero.getNPassenger() - firstClass) {
+            int excess = steeragePsgr - aero.getNPassenger() - firstClass;
+            steerageCrew += excess;
+            steeragePsgr -= excess;
+        }
+
+        // Any leftovers go to standard crew or second class
+        standardCrew = enlistedNeeds - steerageCrew;
+        int secondClass = aero.getNPassenger() - firstClass - steeragePsgr;
+        
+        assignQuarters(aero, officer + firstClass, standardCrew, secondClass, steerageCrew + steeragePsgr);
+    }
 
     public static MMLogger getLogger() {
         return MegaMekLab.getLogger();
