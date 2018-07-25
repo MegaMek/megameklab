@@ -31,6 +31,7 @@ import java.io.FileOutputStream;
 import java.io.PrintStream;
 
 import javax.swing.BoxLayout;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -41,6 +42,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
+import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import megamek.MegaMek;
@@ -71,6 +74,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
     private JMenu file = new JMenu("File");
     private JMenu help = new JMenu("Help");
     private JMenu validate = new JMenu("Validate");
+    private JMenu themeMenu = new JMenu("Themes");
     private MegaMekLabMainUI parentFrame = null;
 
     public MenuBarCreator(MegaMekLabMainUI parent) {
@@ -536,6 +540,9 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         exportMenu.add(item);
 
         file.add(exportMenu);
+        
+        JMenu themeMenu = createThemeMenu();
+        file.add(themeMenu);
 
         item = new JMenuItem("Configuration");
         item.setMnemonic(KeyEvent.VK_C);
@@ -630,13 +637,46 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         item.setText("Exit");
         item.setMnemonic(KeyEvent.VK_X);
         item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-        item.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                jMenuExit_actionPerformed(e);
-            }
-        });
+        item.addActionListener(ev -> parentFrame.exit());
         file.add(item);
 
+    }
+    
+    /**
+     * Creates a menu that includes all installed look and feel options
+     * 
+     * @return The new menu
+     */
+    private JMenu createThemeMenu() {
+        themeMenu = new JMenu("Themes");
+        JCheckBoxMenuItem item;
+        for (LookAndFeelInfo plaf : UIManager.getInstalledLookAndFeels()) {
+            item = new JCheckBoxMenuItem(plaf.getName());
+            if (plaf.getName().equalsIgnoreCase(
+                    UIManager.getLookAndFeel().getName())) {
+                item.setSelected(true);
+            }
+            themeMenu.add(item);
+            item.addActionListener(ev -> {
+                parentFrame.changeTheme(plaf);
+                refreshThemeMenu(plaf.getName());
+            });
+        }
+        return themeMenu;
+    }
+    
+    /**
+     * Updates the checkbox items on the theme menu to show which is currently selected.
+     * 
+     * @param currentThemeName The name returned by {@link LookAndFeelInfo#getName()}
+     */
+    private void refreshThemeMenu(String currentThemeName) {
+        for (int i = 0; i < themeMenu.getItemCount(); i++) {
+            final JMenuItem item = themeMenu.getItem(i);
+            if (item instanceof JCheckBoxMenuItem) {
+                ((JCheckBoxMenuItem) item).setSelected(item.getText().equals(currentThemeName));
+            }
+        }
     }
 
     private void jMenuGetUnitBVFromCache_actionPerformed() {
@@ -1033,16 +1073,6 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
     public void jMenuConfiguration_actionPerformed(ActionEvent event) {
         new ConfigurationDialog(parentFrame).setVisible(true);
         parentFrame.refreshAll();
-    }
-
-    public void jMenuExit_actionPerformed(ActionEvent event) {
-        String quitMsg = "Do you really want to quit MegaMekLab?"; 
-        int response = JOptionPane.showConfirmDialog(null, quitMsg,
-                "Quit?", JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE); 
-        if (response == JOptionPane.YES_OPTION) {
-            System.exit(0);
-        }
     }
 
     private void jMenuLoadVehicle() {

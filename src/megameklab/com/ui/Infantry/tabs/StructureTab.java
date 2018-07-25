@@ -340,12 +340,14 @@ public class StructureTab extends ITab implements InfantryBuildListener {
     @Override
     public void chassisChanged(String chassis) {
         getInfantry().setChassis(chassis);
+        refresh.refreshHeader();
         refresh.refreshPreview();
     }
 
     @Override
     public void modelChanged(String model) {
         getInfantry().setModel(model);
+        refresh.refreshHeader();
         refresh.refreshPreview();
     }
 
