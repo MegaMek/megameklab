@@ -533,18 +533,9 @@ public class MekChassisView extends BuildView implements ActionListener, ChangeL
         }
         cbCockpit.setSelectedItem(prev);
         cbCockpit.addActionListener(this);
-        if (cbCockpit.getSelectedIndex() < 0) {
-            try {
-                cbCockpit.setSelectedIndex(0);
-            } catch (NullPointerException ex) {
-                MegaMekLab.getLogger().log(getClass(), METHOD_NAME, LogLevel.ERROR,
-                        "No legal cockpit found"
-                                + "\nBase type: " + getBaseTypeIndex()
-                                + "\nTonnage: " + getTonnage()
-                                + "\nTech Year: " + techManager.getGameYear()
-                                + "\nTech Level: " + techManager.getTechLevel()
-                                + "\nTech Intro Year: " + techManager.getTechIntroYear());
-            }
+        if ((cbCockpit.getSelectedIndex() < 0)
+                && (cbCockpit.getModel().getSize() > 0)) {
+            cbCockpit.setSelectedIndex(0);
         }
     }
     
