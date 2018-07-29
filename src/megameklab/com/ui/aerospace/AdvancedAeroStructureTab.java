@@ -311,6 +311,8 @@ public class AdvancedAeroStructureTab extends ITab implements AdvancedAeroBuildL
     public void armorTypeChanged(int at, int aTechLevel) {
         getJumpship().setArmorTechLevel(aTechLevel);
         getJumpship().setArmorType(at);
+        // recalculate tonnage
+        getJumpship().setArmorTonnage(getJumpship().getArmorWeight());
         panArmorAllocation.setFromEntity(getJumpship());
         panSummary.refresh();
         refresh.refreshStatus();
