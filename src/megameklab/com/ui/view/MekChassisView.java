@@ -531,7 +531,9 @@ public class MekChassisView extends BuildView implements ActionListener, ChangeL
                 }
             }
         }
-        cbCockpit.setSelectedItem(prev);
+        if (prev != null && prev < cbCockpit.getModel().getSize()) {
+            cbCockpit.setSelectedItem(prev);
+        }
         cbCockpit.addActionListener(this);
         if ((cbCockpit.getSelectedIndex() < 0)
                 && (cbCockpit.getModel().getSize() > 0)) {
