@@ -1432,16 +1432,43 @@ public class UnitUtil {
     }
 
     /**
+     * Computes the total number of armor points available to the unit for a given tonnage of armor.
+     * This does not round down the calculation or take into account any maximum number of armor
+     * points or tonnage allowed to the unit.
+     * 
      * NOTE: only use for non-patchwork armor
      *
-     * @param unit
-     * @param armorTons
-     * @return
+     * @param   unit
+     * @param   armorTons
+     * @return  the number of armor points available for the armor tonnage
      */
-    public static int getRawArmorPoints(Entity unit, double armorTons) {
-        double armorPerTon = UnitUtil.getArmorPointsPerTon(unit,
+    public static double getRawArmorPoints(Entity unit, double armorTons) {
+        return armorTons * UnitUtil.getArmorPointsPerTon(unit,
                 unit.getArmorType(1), unit.getArmorTechLevel(1));
-        return (int)Math.floor(armorPerTon * armorTons);
+    }
+    
+    /**
+     * Computes the total number of additional points provided for aerospace vessels based on
+     * their SI. This is usually a whole number but may be a fractional amount for primitive
+     * jumpships.
+     * 
+     * @param entity The unit to compute bonus armor for.
+     * @return       The number of extra armor points received for SI. This is the total number, which
+     *               is usually divided evenly among armor facings.
+     */
+    public static double getSIBonusArmorPoints(Entity entity) {
+        if (entity.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)) {
+            return ((SmallCraft)entity).getSI() * entity.locations();
+        } else if (entity.hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
+            double points = Math.round(((Jumpship) entity).getSI() / 10.0) * 6;
+            if (((Jumpship) entity).isPrimitive()) {
+                return points * EquipmentType.getArmorPointMultiplier(EquipmentType.T_ARMOR_PRIMITIVE_AERO);
+            } else {
+                return points;
+            }
+        } else {
+            return 0;
+        }
     }
 
     /**
@@ -1452,8 +1479,9 @@ public class UnitUtil {
      * @return
      */
     public static int getArmorPoints(Entity unit, double armorTons) {
-        return Math.min(UnitUtil.getRawArmorPoints(unit, armorTons),
-                UnitUtil.getMaximumArmorPoints(unit));
+        int raw = (int) Math.floor(UnitUtil.getRawArmorPoints(unit,  armorTons)
+                + UnitUtil.getSIBonusArmorPoints(unit));
+        return Math.min(raw, UnitUtil.getMaximumArmorPoints(unit));
     }
 
     /**
@@ -2437,9 +2465,8 @@ public class UnitUtil {
                 }
             }
         } else if (unit.hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
-            if ((unit.getArmorType(Aero.LOC_NOSE) == EquipmentType.T_ARMOR_STANDARD)
-                    || (unit.getArmorType(Aero.LOC_NOSE) == EquipmentType.T_ARMOR_AEROSPACE)) {
-                unit.setArmorType(EquipmentType.T_ARMOR_STANDARD_CAPITAL);
+            if (unit.getArmorType(Aero.LOC_NOSE) == EquipmentType.T_ARMOR_STANDARD) {
+                unit.setArmorType(EquipmentType.T_ARMOR_AEROSPACE);
             }
         } else {
             if (unit.getArmorType(Aero.LOC_NOSE) == EquipmentType.T_ARMOR_PRIMITIVE) {

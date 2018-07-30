@@ -1233,7 +1233,7 @@ public class BayWeaponCriticalTree extends JTree {
             }
             if (eq.getType().hasFlag(WeaponType.F_MASS_DRIVER)) {
                 // Limit is one per firing arc; the medium and heavy exceed the 70-point limit.
-                return av > 0;
+                return av == 0;
             } else if (((WeaponType)eq.getType()).isCapital()) {
                 return av + ((WeaponType)eq.getType()).getShortAV() <= 70;
             } else {

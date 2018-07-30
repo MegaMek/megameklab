@@ -204,12 +204,8 @@ public class ArmorAllocationView extends BuildView implements
     public void setFromEntity(Entity en) {
         setEntityType(en.getEntityType());
         maxArmorPoints = UnitUtil.getMaximumArmorPoints(en);
-        int raw = UnitUtil.getRawArmorPoints(en, en.getLabArmorTonnage());
-        if (en instanceof SmallCraft) {
-            raw += ((SmallCraft)en).getSI() * en.locations();
-        } else if (en instanceof Jumpship) {
-            raw += Math.round(((Jumpship) en).getSI() / 10.0) * 6;
-        }
+        int raw = (int) (UnitUtil.getRawArmorPoints(en, en.getLabArmorTonnage())
+                + UnitUtil.getSIBonusArmorPoints(en));
         int currentPoints = en.getTotalOArmor();
         if (showPatchwork) {
             armorPoints = currentPoints;
