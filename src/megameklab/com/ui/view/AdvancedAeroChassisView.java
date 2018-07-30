@@ -212,6 +212,11 @@ public class AdvancedAeroChassisView extends BuildView implements ActionListener
         cbBaseType.setEnabled(!craft.isPrimitive());
 
         spnSIModel.setValue(craft.get0SI());
+        if (craft.isPrimitive()) {
+            spnRange.removeChangeListener(this);
+            spnRange.setValue(craft.getJumpRange());
+            spnRange.addChangeListener(this);
+        }
         
         chkSail.setVisible((baseType == TYPE_STATION)
                 || craft.isPrimitive());

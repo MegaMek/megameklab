@@ -132,7 +132,11 @@ public class AdvancedAeroUI extends MegaMekLabMainUI {
         } else {
             ship.setYear(3145);
         }
-        ship.setArmorType(EquipmentType.T_ARMOR_STANDARD_CAPITAL);
+        if (isPrimitive) {
+            ship.setArmorType(EquipmentType.T_ARMOR_PRIMITIVE_AERO);
+        } else {
+            ship.setArmorType(EquipmentType.T_ARMOR_AEROSPACE);
+        }
         ship.setWeight(TestAdvancedAerospace.getMinTonnage(ship));
         if (entitytype == Entity.ETYPE_WARSHIP) {
             ship.setOriginalWalkMP(2); // Start at 1G
