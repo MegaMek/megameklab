@@ -29,6 +29,7 @@ import megamek.common.Entity;
 import megamek.common.Warship;
 import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestAdvancedAerospace;
+import megamek.common.verifier.TestAero;
 import megamek.common.verifier.TestSmallCraft;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.util.BayWeaponCriticalTree;
@@ -73,6 +74,7 @@ public class LargeCraftCriticalView extends IView {
     private String aerodyneArcNames[];
     private String spheroidArcNames[];
     private JLabel lblSlotCount[] = new JLabel[NUM_ARCS];
+    private JLabel lblSlotsPerArc[] = new JLabel[NUM_ARCS];
     private JLabel lblExtraTonnage[] = new JLabel[NUM_ARCS];
     
 
@@ -159,13 +161,16 @@ public class LargeCraftCriticalView extends IView {
         arcPanel.add(lblSlotCount[arc], gbc);
         lblSlotCount[arc].setToolTipText(resourceMap.getString("DropshipCriticalView.lblSlotCount.tooltip")); //$NON-NLS-1$
         
+        lblSlotsPerArc[arc] = new JLabel();
+        lbl = new JLabel(resourceMap.getString("DropshipCriticalView.lblMaxSlots.text")); //$NON-NLS-1$
         gbc.gridx = 0;
         gbc.gridy++;
-        gbc.gridwidth = 2;
-        lbl = new JLabel(String.format(resourceMap.getString("DropshipCriticalView.lblMaxSlots.format"), //$NON-NLS-1$
-                TestSmallCraft.SLOTS_PER_ARC));
-        lbl.setToolTipText(resourceMap.getString("DropshipCriticalView.lblMaxSlots.format")); //$NON-NLS-1$
+        gbc.gridwidth = 1;
+        gbc.fill = GridBagConstraints.NONE;
         arcPanel.add(lbl, gbc);
+        gbc.gridx = 1;
+        arcPanel.add(lblSlotsPerArc[arc], gbc);
+        lblSlotsPerArc[arc].setToolTipText(resourceMap.getString("DropshipCriticalView.lblMaxSlots.tooltip")); //$NON-NLS-1$
         
         gbc.gridx = 0;
         gbc.gridy++;
@@ -225,6 +230,7 @@ public class LargeCraftCriticalView extends IView {
             arcTrees[arc].rebuild();
             arcTrees[arc].repaint();
             lblSlotCount[arc].setText(String.valueOf(arcTrees[arc].getSlotCount()));
+            lblSlotsPerArc[arc].setText(String.valueOf(TestAero.slotsPerArc(getAero())));
             lblExtraTonnage[arc].setText(String.valueOf(extra[arc]));
         }
         
