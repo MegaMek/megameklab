@@ -411,6 +411,13 @@ public class AdvancedAeroStructureTab extends ITab implements AdvancedAeroBuildL
     }
 
     @Override
+    public void militaryChanged(boolean military) {
+        getJumpship().setDesignType(military? Aero.MILITARY : Aero.CIVILIAN);
+        refresh.refreshPreview();
+        refresh.refreshStatus();
+    }
+
+    @Override
     public void modularChanged(boolean modular) {
         if (getJumpship() instanceof SpaceStation) {
             ((SpaceStation) getJumpship()).setModular(modular);
