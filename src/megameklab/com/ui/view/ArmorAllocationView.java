@@ -229,8 +229,9 @@ public class ArmorAllocationView extends BuildView implements
                 } else {
                     locView.setPointsRear(0);
                 }
-                if (en instanceof SmallCraft) {
-                    locView.setMinimum(((SmallCraft)en).get0SI());
+                if (en.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)
+                        || en.hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
+                    locView.setMinimum((int) (UnitUtil.getSIBonusArmorPoints(en) / locationViews.size()));
                 }
                 if (showPatchwork) {
                     double pointsPerTon = UnitUtil.getArmorPointsPerTon(en, en.getArmorType(location),  en.getArmorTechLevel(location));
