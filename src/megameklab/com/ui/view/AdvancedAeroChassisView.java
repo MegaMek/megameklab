@@ -30,6 +30,8 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import megamek.common.Aero;
+import megamek.common.Entity;
 import megamek.common.ITechManager;
 import megamek.common.Jumpship;
 import megamek.common.SpaceStation;
@@ -74,6 +76,7 @@ public class AdvancedAeroChassisView extends BuildView implements ActionListener
     final private JCheckBox chkLFBattery = new JCheckBox();
     final private JCheckBox chkModular = new JCheckBox();
     final private JCheckBox chkSail = new JCheckBox();
+    final private JCheckBox chkMilitary = new JCheckBox();
     final private JSpinner spnSI = new JSpinner(spnSIModel);
     
     private ITechManager techManager;
@@ -131,14 +134,14 @@ public class AdvancedAeroChassisView extends BuildView implements ActionListener
         add(cbBaseType, gbc);
         cbBaseType.addActionListener(this);
 
-        chkModular.setText(resourceMap.getString("AdvAeroChassisView.chkModular.text")); //$NON-NLS-1$
+        chkMilitary.setText(resourceMap.getString("AdvAeroChassisView.chkMilitary.text")); //$NON-NLS-1$
         gbc.gridx = 4;
         gbc.gridy = 1;
         gbc.fill = GridBagConstraints.NONE;
         gbc.gridwidth = 1;
-        chkModular.setToolTipText(resourceMap.getString("AdvAeroChassisView.chkModular.tooltip")); //$NON-NLS-1$
-        add(chkModular, gbc);
-        chkModular.addActionListener(this);
+        chkMilitary.setToolTipText(resourceMap.getString("AdvAeroChassisView.chkMilitary.tooltip")); //$NON-NLS-1$
+        add(chkMilitary, gbc);
+        chkMilitary.addActionListener(this);
 
         chkLFBattery.setText(resourceMap.getString("AdvAeroChassisView.chkLFBattery.text")); //$NON-NLS-1$
         gbc.gridx = 2;
@@ -173,6 +176,16 @@ public class AdvancedAeroChassisView extends BuildView implements ActionListener
         spnSI.setToolTipText(resourceMap.getString("AdvAeroChassisView.spnSI.tooltip")); //$NON-NLS-1$
         add(spnSI, gbc);
         spnSI.addChangeListener(this);
+
+        chkModular.setText(resourceMap.getString("AdvAeroChassisView.chkModular.text")); //$NON-NLS-1$
+        gbc.gridx = 4;
+        gbc.gridy = 4;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.gridwidth = 1;
+        chkModular.setToolTipText(resourceMap.getString("AdvAeroChassisView.chkModular.tooltip")); //$NON-NLS-1$
+        add(chkModular, gbc);
+        chkModular.addActionListener(this);
+
     }
     
     public void setFromEntity(Jumpship craft) {
@@ -205,6 +218,14 @@ public class AdvancedAeroChassisView extends BuildView implements ActionListener
         chkSail.removeActionListener(this);
         chkSail.setSelected(craft.hasSail());
         chkSail.addActionListener(this);
+        chkMilitary.removeActionListener(this);
+        chkMilitary.setSelected(craft.getDesignType() == Aero.MILITARY);
+        chkMilitary.addActionListener(this);
+        chkModular.removeActionListener(this);
+        chkModular.setSelected(craft.hasETypeFlag(Entity.ETYPE_SPACE_STATION)
+                && ((SpaceStation) craft).isModular());
+        chkModular.addActionListener(this);
+        
         
         cbBaseType.removeActionListener(this);
         cbBaseType.setSelectedIndex(baseType);
@@ -234,6 +255,7 @@ public class AdvancedAeroChassisView extends BuildView implements ActionListener
         refreshSI();
         chkLFBattery.setVisible((baseType != TYPE_STATION)
                 && techManager.isLegal(Jumpship.getLFBatteryTA()));
+        chkMilitary.setVisible((baseType == TYPE_STATION));
         chkModular.setVisible((baseType == TYPE_STATION)
                 && techManager.isLegal(SpaceStation.getModularTA()));
     }
