@@ -447,7 +447,7 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
     @Override
     public void siChanged(int si) {
         getSmallCraft().set0SI(si);
-        panArmor.setFromEntity(getSmallCraft());
+        panArmorAllocation.setFromEntity(getSmallCraft());
         refresh.refreshStatus();
         refresh.refreshSummary();
         refresh.refreshPreview();
