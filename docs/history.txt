@@ -1,6 +1,6 @@
 VERSION HISTORY:
 ----------------
-v0.45.0-git
+v0.45.0 (2018-08-02 0200 UTC)
 + Issue #169: Request Users Java Version Be Printed To Log File
 + Issue #32: UI elements do not allow enough area for text on Linux (Gnome 3/Fedora)
 		Added menu to allow user to select look and feel theme.
