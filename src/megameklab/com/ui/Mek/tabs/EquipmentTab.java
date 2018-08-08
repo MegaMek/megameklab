@@ -779,9 +779,9 @@ public class EquipmentTab extends ITab implements ActionListener {
          * @return  The value to use for sorting.
          */
         private int parseDamage(String s) {
-            s = s.replaceAll("[^0-9]+", ".");
-            if (s.contains(".")) {
-                s = s.substring(0, s.indexOf("."));
+            s = s.replaceAll("[^0-9]+", "/");
+            if (s.contains("/")) {
+                s = s.substring(0, s.indexOf("/"));
             }
             if (s.length() > 0) {
                 return Integer.parseInt(s);
