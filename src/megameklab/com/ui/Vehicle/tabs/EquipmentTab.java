@@ -768,14 +768,24 @@ public class EquipmentTab extends ITab implements ActionListener {
             }
         }
 
+        /**
+         * Extracts an integer value from the damage string for use in sorting by damage. If a String
+         * contains any non-digit character, that character and anything after it is ignored. If the string
+         * starts with a non-digit character the return value is 0.
+         * 
+         * @param s A weapon damage string
+         * @return  The value to use for sorting.
+         */
         private int parseDamage(String s) {
-            int damage = 0;
-            if(s.contains("/")) {
-                damage = Integer.parseInt(s.split("/")[0]);
-            } else {
-                damage = Integer.parseInt(s);
+            s = s.replaceAll("[^0-9]+", "/");
+            if (s.contains("/")) {
+                s = s.substring(0, s.indexOf("/"));
             }
-            return damage;
+            if (s.length() > 0) {
+                return Integer.parseInt(s);
+            } else {
+                return 0;
+            }
         }
     }
 
