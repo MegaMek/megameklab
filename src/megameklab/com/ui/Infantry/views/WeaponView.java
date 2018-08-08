@@ -417,10 +417,24 @@ public class WeaponView extends IView implements ActionListener {
             return ((Comparable<Double>)r1).compareTo(r0);
         }
 
+        /**
+         * Extracts a numeric value from the damage string for use in sorting by damage. If a String
+         * contains any non-digit character, that character and anything after it is ignored. If the string
+         * starts with a non-digit character the return value is 0.
+         * 
+         * @param s A weapon damage string
+         * @return  The value to use for sorting.
+         */
         private double parseDamage(String s) {
-            double damage = 0;
-            damage = Double.parseDouble(s);
-            return damage;
+            s = s.replaceAll("[^0-9\\.]+", "/");
+            if (s.contains("/")) {
+                s = s.substring(0, s.indexOf("/"));
+            }
+            if (s.length() > 0) {
+                return Double.parseDouble(s);
+            } else {
+                return 0;
+            }
         }
     }
 
