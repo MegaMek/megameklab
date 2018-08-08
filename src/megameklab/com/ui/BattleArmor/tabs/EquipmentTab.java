@@ -789,20 +789,30 @@ public class EquipmentTab extends ITab implements ActionListener {
                 return -1;
             } else {
                 //get the numbers associated with each string
-                float r1 = parseDamage(s1);
-                float r0 = parseDamage(s0);
-                return ((Comparable<Float>)r1).compareTo(r0);
+                double r1 = parseDamage(s1);
+                double r0 = parseDamage(s0);
+                return ((Comparable<Double>)r1).compareTo(r0);
             }
         }
 
-        private float parseDamage(String s) {
-            float damage = 0;
-            if(s.contains("/")) {
-                damage = Float.parseFloat(s.split("/")[0]);
-            } else {
-                damage = Float.parseFloat(s);
+        /**
+         * Extracts a numeric value from the damage string for use in sorting by damage. If a String
+         * contains any non-digit character, that character and anything after it is ignored. If the string
+         * starts with a non-digit character the return value is 0.
+         * 
+         * @param s A weapon damage string
+         * @return  The value to use for sorting.
+         */
+        private double parseDamage(String s) {
+            s = s.replaceAll("[^0-9\\.]+", "/");
+            if (s.contains("/")) {
+                s = s.substring(0, s.indexOf("/"));
             }
-            return damage;
+            if (s.length() > 0) {
+                return Double.parseDouble(s);
+            } else {
+                return 0;
+            }
         }
     }
 
