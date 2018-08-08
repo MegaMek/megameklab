@@ -35,7 +35,7 @@ import megamek.common.preference.PreferenceManager;
 import megameklab.com.ui.Mek.MainUI;
 
 public class MegaMekLab {
-    public static final String VERSION = "0.45.0-git";
+    public static final String VERSION = "0.45.1-git";
 
     private static MMLogger logger = null;
 

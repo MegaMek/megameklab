@@ -1,10 +1,14 @@
 VERSION HISTORY:
 ----------------
-v0.45.0-git
+v0.45.1-git
+
+v0.45.0 (2018-08-02 0200 UTC)
 + Issue #169: Request Users Java Version Be Printed To Log File
 + Issue #32: UI elements do not allow enough area for text on Linux (Gnome 3/Fedora)
 		Added menu to allow user to select look and feel theme.
 + Issue #170: Infantry Window Title Not Updating
++ Issue #168: Changing mech type, tonnage or heat sink type causes irrecoverable error when assigning critical locations
++ Issue #142: Fixed issues with setting cockpit type when switching other mech settings
 
 v0.44.0 (2018-06-24 1900 UTC)
 + If no fluff image is found for the model, check for generic chassis image for record sheet.
