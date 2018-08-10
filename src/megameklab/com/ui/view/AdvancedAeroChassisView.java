@@ -239,8 +239,15 @@ public class AdvancedAeroChassisView extends BuildView implements ActionListener
             spnRange.addChangeListener(this);
         }
         
-        chkSail.setVisible((baseType == TYPE_STATION)
-                || craft.isPrimitive());
+        if (!techManager.isLegal(Jumpship.getJumpSailTA())) {
+            chkSail.setVisible(false);
+            if (craft.hasSail()) {
+                chkSail.doClick();
+            }
+        } else {
+            chkSail.setVisible((baseType == TYPE_STATION)
+                    || craft.isPrimitive());
+        }
         lblRange.setVisible(craft.isPrimitive());
         spnRange.setVisible(craft.isPrimitive());
     }
