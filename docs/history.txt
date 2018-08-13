@@ -2,6 +2,7 @@ VERSION HISTORY:
 ----------------
 v0.45.1-git
 + Issue #178: Equipment Table getting stuck on one equipment type.
++ Issue #181: Cannot assign silver bullet gauss ammo to dropship
 
 v0.45.0 (2018-08-02 0200 UTC)
 + Issue #169: Request Users Java Version Be Printed To Log File
