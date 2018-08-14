@@ -123,10 +123,14 @@ public class AerospaceBuildView extends IView implements MouseListener {
                masterEquipmentList.add(mount);
            }
        }
+       // Don't show ammo for one-shot weapons. One-shot ammo is mounted in the location Entity.LOC_NONE
+       // and has a single shot. Exempt weapons that have a single shot/ton (e.g. cruise missiles,
+       // nuclear Arrow IV munitions), which are never one-shot and may just be unallocated.
        for (Mounted mount : getAero().getAmmo()) {
            if ((mount.getLocation() == Entity.LOC_NONE) && 
-                   ((mount.getUsableShotsLeft() > 1) || 
-                           (((AmmoType)mount.getType()).getAmmoType() == 
+                   ((mount.getUsableShotsLeft() > 1)
+                           || (((AmmoType) mount.getType()).getShots() == 1)
+                           || (((AmmoType)mount.getType()).getAmmoType() == 
                                AmmoType.T_COOLANT_POD))) {
                masterEquipmentList.add(mount);
            }
