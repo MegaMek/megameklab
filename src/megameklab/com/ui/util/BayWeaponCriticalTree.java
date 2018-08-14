@@ -631,6 +631,10 @@ public class BayWeaponCriticalTree extends JTree {
                         } else {
                             av += 13.5;
                         }
+                    } else if (m.getType().hasFlag(WeaponType.F_ARTILLERY)) {
+                        // No AV since they cannot be used air-to-air, but the ground damage needs
+                        // to count against the bay limit.
+                        av += ((WeaponType) m.getType()).getRackSize();
                     } else {
                         av += ((WeaponType) m.getType()).getShortAV();
                     }
@@ -1211,6 +1215,8 @@ public class BayWeaponCriticalTree extends JTree {
                 if (w.getType().hasFlag(WeaponType.F_PLASMA)) {
                     if (((WeaponType)w.getType()).getDamage() == WeaponType.DAMAGE_VARIABLE) {
                         av += 7;
+                    } else if (w.getType().hasFlag(WeaponType.F_ARTILLERY)) {
+                        av += ((WeaponType) w.getType()).getRackSize();
                     } else {
                         av += 13.5;
                     }
