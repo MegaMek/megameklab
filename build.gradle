@@ -23,13 +23,18 @@ sourceSets {
 
 ext {
 	gitRoot = 'https://github.com/MegaMek/megameklab.git'
+	mmGitRoot = 'https://github.com/MegaMek/megamek.git'
 	// Work on MML or MHQ sometimes requires changes in MM as well. The maven publishing tasks use
 	// these properties to append the branch name to the artifact id if the repo is not in the master
 	// branch, making it available separately to the child project. 
 	mmlBranch = grgit.branch.current.name
 	mmlBranchTag = mmlBranch.equals('master')? '' : '-' + mmlBranch
 	
-	mmBranchTag = '-gradle'
+	// Allows setting a dependency on a different MM branch.
+	mmBranch = 'gradle'
+	mmBranchTag = mmBranch.equals('master')? '' : '-' + mmBranch
+	
+	mmDir = '../megamek'
 }
 
 // A settings_local.gradle file can be used to override any of the above options. For instance,
@@ -57,4 +62,262 @@ dependencies {
 }
 
 mainClassName = 'megameklab.com.MegaMekLab'
+
+ext {
+	jvmOptions = ['-Xmx1024m']
+	dataDir = "data"
+	confDir = "mmconf"
+	logDir = "logs"
+	docDir = "docs"
+	libDir = "lib"
+	unitFilesDir = "data/mechfiles"
+	distributionDir = "${buildDir}/distributions"
+	fileStagingDir = "${buildDir}/files"
+	repoDir = "${buildDir}/repo/megameklab"
+	mmRepoDir = "${buildDir}/repo/megamek"
+	scriptTemplate = "startScriptTemplate.txt"
+}
+
+task setMMDir {
+	doLast{
+		if (hasProperty('localMMDir')) {
+			mmDir = findProperty('localMMDir')
+		} else {
+			println """To set the location of the MegaMek repository use the command line parameter
+-Porg.gradle.project.mmDir=/path/to/local/mm/repo.git or set it in the settings_local.gradle
+file. Defaulting to ${mmDir}"""
+		}
+	}
+}
+
+jar {
+	archiveName = "${rootProject.name}.${extension}"
+	manifest {
+	    attributes "Main-Class": mainClassName
+	    attributes 'Class-Path' : project.sourceSets.main.runtimeClasspath.files
+	    	.findAll { it.name.endsWith(".jar") }.collect { "${libDir}/${it.name}" }.join(' ')
+	}
+}
+
+task copyFiles(type: Copy) {
+	description = 'Stages files that are to be copied into the distribution.'
+	
+	from projectDir
+	include "${dataDir}/**"
+	include "${confDir}/**"
+	include "${docDir}/**"
+	exclude "**/*.psd"
+
+	into fileStagingDir
+}
+
+task unitFilesZip (dependsOn: setMMDir) {
+	description = 'Creates zip archives of all the unit file folders from the MegaMek repository.'
+	file("${mmDir}/megamek/${unitFilesDir}").eachDir {subDir ->
+		dependsOn tasks.create("${name}${subDir.name}", Zip) {
+			from subDir
+			archiveName "${subDir.name}.zip"
+			destinationDir file("${fileStagingDir}/${unitFilesDir}")
+		}
+	}
+}
+
+task createLogDir (dependsOn: copyFiles) {
+	description 'Creates the log directory and the timestamp file.'
+	doLast {
+		mkdir "${fileStagingDir}/${logDir}"
+		ant.touch(file: "${fileStagingDir}/${logDir}/timestamp")
+	}
+}
+
+task stageFiles {
+	description = 'Process data files to be included in distribution'
+	group = 'distribution'
+	dependsOn copyFiles
+	dependsOn unitFilesZip
+	dependsOn createLogDir
+}
+
+task unixStartScript (type: CreateStartScripts) {
+	description = 'Create shell script for *nix distribution.'
+	applicationName = 'lab'
+	mainClassName = project.mainClassName
+	outputDir = startScripts.outputDir
+	classpath = jar.outputs.files + files(project.sourceSets.main.runtimeClasspath.files)
+	    	.filter { it.name.endsWith(".jar") }
+	defaultJvmOpts = project.ext.jvmOptions
+	// The default template assumes the start script is in a subdirectory and always
+	// sets APP_HOME to the parent directory of the one containing the script.
+	// So we provide a modified template.
+	unixStartScriptGenerator.template = resources.text.fromFile(scriptTemplate)
+	doLast {
+		// The start script assumes all the files on the classpath will be in the lib directory.
+		unixScript.text = unixScript.text.replace("lib/${rootProject.name}", rootProject.name)
+	}
+}
+
+distributions {
+	// Creates tasks which package distribution with MM jar and startup script in root directory
+	unix {
+		baseName = rootProject.name.toLowerCase()
+		contents {
+			from fileStagingDir
+			from(unixStartScript.unixScript)
+			from(jar)
+			from (project.sourceSets.main.runtimeClasspath.files
+    				.findAll { it.name.endsWith(".jar") }) {
+    			into "${libDir}"
+			}
+		}
+	}
+	// Creates tasks which package distribution with MM jar wrapped in Windows executable
+	windows {
+		contents {
+			from ("${buildDir}/launch4j") {
+				include '*.exe'
+			}
+			contents {
+				from fileStagingDir
+				from (project.sourceSets.main.runtimeClasspath.files
+	    				.findAll { it.name.endsWith(".jar") }) {
+	    			into "${libDir}"
+				}
+			}
+		}
+	}
+}
+
+createExe {
+	description = 'Create Windows executable that wraps MM jar'
+	mainClassName = project.mainClassName
+	icon = "${projectDir}/data/images/misc/megameklab.ico"
+	jvmOptions = project.ext.jvmOptions
+}
+
+windowsDistZip {
+	description = 'Creates Windows distribution packaged as a zip archive'
+	dependsOn createExe
+}
+
+unixDistTar {
+	description = 'Creates *nix distribution packaged as a tar ball'
+	dependsOn stageFiles
+	dependsOn unixStartScript
+	compression = Compression.GZIP
+}
+
+// The repository can only be cloned into an empty directory so we need to delete anything left over
+// from a previous build
+task deleteRepoDir (type: Delete) {
+	delete = "${repoDir}"
+}
+
+task deleteMMRepoDir (type: Delete) {
+	delete = "${mmRepoDir}"
+}
+
+task cloneRepo (type: Exec, dependsOn: deleteRepoDir) {
+	description = 'Clones the repository to ensure we are working with a clean directory tree'
+	group = 'distribution'
+	commandLine "git"
+	args "clone", "--branch", mmlBranch, "--single-branch", gitRoot, "${repoDir}"
+}
+
+task cloneMMRepo (type: Exec, dependsOn: deleteMMRepoDir) {
+	description = 'Clones the MegaMek repository to ensure we are working with a clean directory tree'
+	group = 'distribution'
+	commandLine "git"
+	args "clone", "--branch", mmBranch, "--single-branch", mmGitRoot, "${mmRepoDir}"
+}
+
+task sourceZip (type: Zip) {
+	description 'Creates a zip archive of the source'
+	group = 'distribution'
+	from (rootDir) {
+		exclude "**/build/**"
+		exclude "**/.*"
+	}
+	archiveName "${rootProject.name.toLowerCase()}-${version}-source.zip"
+	destinationDir file(distributionDir)
+}
+
+task sourceTar (type: Tar) {
+	description 'Creates a compressed tar archive of the source'
+	from (rootDir) {
+		exclude "**/build/**"
+		exclude "**/.*"
+	}
+	archiveName "${rootProject.name.toLowerCase()}-${version}-source.tar.gz"
+	compression = Compression.GZIP
+	destinationDir file(distributionDir)
+}
+
+// Replace the assembleDist task created by the distributions plugin to create the packages we want to
+task assembleDist(overwrite: true) {
+	description = 'Build unix, Windows, and source packages'
+	group = 'distribution'
+	dependsOn unixDistTar
+	dependsOn windowsDistZip
+	dependsOn sourceZip
+	dependsOn sourceTar
+}
+
+task buildFromRepo (type: GradleBuild) {
+	description = 'Assembles the distribution packages in the clean repository copy'
+	group = 'distribution'
+	dependsOn cloneRepo
+	dependsOn cloneMMRepo
+	
+	buildFile = "${repoDir}/build.gradle"
+	dir = "${repoDir}"
+	tasks = [ 'assembleDist' ]
+}
+
+task release (type: Copy) {
+	description = 'Builds the release packages from the repository and copies them into the project build directory'
+	group = 'distribution'
+	dependsOn buildFromRepo
+	
+	from "${repoDir}/build/distributions"
+	into "${distributionDir}"
+}
+
+task sourcesJar(type: Jar) {
+	description = 'Creates a source archive for publication to a maven repository'
+    from sourceSets.main.allJava
+    classifier = 'sources'
+}
+
+task javadocJar(type: Jar) {
+	description = 'Creates a documentation archive for publication to a maven repository'
+    from javadoc
+    classifier = 'javadoc'
+}
+
+publishing {
+    publications {
+        publishMMLibrary(MavenPublication) {
+            artifactId = "megameklab${mmBranchTag}"
+            from components.java
+            artifact sourcesJar
+// Javadoc is full of errors
+//            artifact javadocJar
+
+            pom {
+                name = "MegaMekLab"
+                description = "MegaMekLab"
+                url = "http://megamek.org"
+                licenses {
+                    license {
+                        name = "GNU General Public License, version 2"
+                        url = "https://www.gnu.org/licenses/gpl-2.0.html"
+                    }
+                }
+            }
+        }
+	}
+	repositories {
+		mavenLocal()
+	}
+}
 

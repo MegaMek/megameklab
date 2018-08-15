@@ -8,3 +8,4 @@ timestamp
 .DS_Store
 /.gradle/
 /build/
+/settings_local.gradle
