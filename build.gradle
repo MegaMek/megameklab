@@ -1,0 +1,60 @@
+plugins {
+	id 'application'
+	id 'maven-publish'
+	id 'edu.sc.seis.launch4j' version '2.4.4'
+	id 'org.ajoberstar.grgit' version '2.3.0'
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+group = 'org.megamek'
+version = '0.45.1-SNAPSHOT'
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src']
+        }
+        resources {
+            srcDirs = ['resources']
+        }
+    }
+}
+
+ext {
+	gitRoot = 'https://github.com/MegaMek/megameklab.git'
+	// Work on MML or MHQ sometimes requires changes in MM as well. The maven publishing tasks use
+	// these properties to append the branch name to the artifact id if the repo is not in the master
+	// branch, making it available separately to the child project. 
+	mmlBranch = grgit.branch.current.name
+	mmlBranchTag = mmlBranch.equals('master')? '' : '-' + mmlBranch
+	
+	mmBranchTag = '-gradle'
+}
+
+// A settings_local.gradle file can be used to override any of the above options. For instance,
+// rootProject.ext.gitRoot = 'file:///path/to/local/repo' will cause the release target to clone a
+// local copy of the repository rather than downloading it.
+
+def localSettings = file('settings_local.gradle')
+if (localSettings.exists()) {
+	apply from: localSettings
+}
+
+repositories {
+	mavenLocal()
+	jcenter()
+}
+
+dependencies {
+	implementation "org.megamek:megamek${mmBranchTag}:0.45.0-SNAPSHOT"
+	
+	implementation 'log4j:log4j:1.2.17'
+	implementation 'org.apache.xmlgraphics:batik-all:1.9.1'
+	// We have been using a modified version of svgSalamander, which we'll keep around until
+	// the conversion to batik is complete.
+	implementation files('lib/svgSalamander.jar')
+}
+
+mainClassName = 'megameklab.com.MegaMekLab'
+
