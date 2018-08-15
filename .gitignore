@@ -6,3 +6,5 @@ timestamp
 /*.ps
 /MegaMekLab.jar
 .DS_Store
+/.gradle/
+/build/
