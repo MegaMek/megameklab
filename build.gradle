@@ -161,13 +161,16 @@ distributions {
 	unix {
 		baseName = rootProject.name.toLowerCase()
 		contents {
-			from fileStagingDir
+			from (fileStagingDir) {
+				exclude '**/history.txt'
+			}
 			from(unixStartScript.unixScript)
 			from(jar)
 			from (project.sourceSets.main.runtimeClasspath.files
     				.findAll { it.name.endsWith(".jar") }) {
     			into "${libDir}"
 			}
+			duplicatesStrategy = 'exclude'
 		}
 	}
 	// Creates tasks which package distribution with MM jar wrapped in Windows executable
@@ -183,6 +186,7 @@ distributions {
 	    			into "${libDir}"
 				}
 			}
+			duplicatesStrategy = 'exclude'
 		}
 	}
 }
