@@ -49,7 +49,7 @@ if (localSettings.exists()) {
 repositories {
 	mavenLocal()
 	maven {
-		url 'https://github.com/neoancient/mavenrepo/raw/master'
+		url 'https://github.com/MegaMek/mavenrepo/raw/master'
 	}
 	jcenter()
 }
@@ -84,6 +84,7 @@ ext {
 	repoDir = "${buildDir}/repo/megameklab"
 	mmRepoDir = "${buildDir}/repo/megamek"
 	scriptTemplate = "startScriptTemplate.txt"
+	mavenPublishDir = "${buildDir}/mavenrepo"
 }
 
 task setMMDir {
@@ -330,8 +331,13 @@ publishing {
 	}
 	repositories {
 		maven {
-			url uri("${buildDir}/mavenrepo")
+			url uri(mavenPublishDir)
 		}
 	}
 }
 
+task cleanPublishingDir (type: Delete) {
+	delete = mavenPublishDir
+}
+
+publishPublishMMLibraryPublicationToMavenRepository.dependsOn cleanPublishingDir
