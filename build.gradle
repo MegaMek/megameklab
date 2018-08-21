@@ -124,6 +124,7 @@ task copyFiles(type: Copy) {
 	include "${data}/**"
 	include "${conf}/**"
 	include "${docs}/**"
+	include 'license.txt'
 	exclude "**/*.psd"
 
 	into fileStagingDir
