@@ -140,20 +140,15 @@ task unitFilesZip (dependsOn: setMMDir) {
 	}
 }
 
-task createLogDir (dependsOn: copyFiles) {
-	description 'Creates the log directory and the timestamp file.'
-	doLast {
-		mkdir "${fileStagingDir}/${logDir}"
-		ant.touch(file: "${fileStagingDir}/${logDir}/timestamp")
-	}
-}
-
 task stageFiles {
 	description = 'Process data files to be included in distribution'
 	group = 'distribution'
 	dependsOn copyFiles
 	dependsOn unitFilesZip
-	dependsOn createLogDir
+	doLast {
+		mkdir "${fileStagingDir}/${logDir}"
+		ant.touch(file: "${fileStagingDir}/${logDir}/timestamp")
+	}
 }
 
 task createStartScripts (type: CreateStartScripts) {
@@ -198,7 +193,7 @@ task createOSXBundle (dependsOn: jar) {
 				dir: osxBundleDir,
 				jar: "${jar.destinationDir}/${jar.archiveName}",
 				jvmversion: '1.8+',
-				icon: "${projectDir}/${data}/images/misc/megamek.icns",
+				icon: "${projectDir}/${data}/images/misc/megameklab.icns",
 				useJavaXKey: 'true',
 				workingdirectory: '$APP_PACKAGE/../',
 				extraclasspath: files(project.sourceSets.main.runtimeClasspath.files)
@@ -231,6 +226,7 @@ distributions {
 	}
 	// Creates tasks which package distribution with MM jar wrapped in Windows executable
 	windows {
+		baseName = 'megameklab-windows'
 		contents {
 			from ("${buildDir}/launch4j") {
 				include '*.exe'
@@ -246,6 +242,7 @@ distributions {
 		}
 	}
 	mac {
+		baseName = 'megameklab-mac'
 		contents {
 			from osxBundleDir
 			from fileStagingDir
