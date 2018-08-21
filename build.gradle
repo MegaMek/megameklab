@@ -128,6 +128,12 @@ task copyFiles(type: Copy) {
 	exclude "**/*.psd"
 
 	into fileStagingDir
+	
+	inputs.dir "${data}"
+	inputs.dir "${conf}"
+	inputs.dir "${docs}"
+	inputs.file 'license.txt'
+	outputs.dir fileStagingDir
 }
 
 task unitFilesZip (dependsOn: setMMDir) {
@@ -139,6 +145,8 @@ task unitFilesZip (dependsOn: setMMDir) {
 			destinationDir file("${fileStagingDir}/${unitFiles}")
 		}
 	}
+	inputs.dir "${mmDir}/${unitFiles}"
+	outputs.dir "${fileStagingDir}/${unitFiles}"
 }
 
 task stageFiles {
@@ -260,8 +268,12 @@ createExe {
 	description = 'Create Windows executable that wraps MM jar'
 	mainClassName = project.mainClassName
 	icon = "${projectDir}/data/images/misc/megameklab.ico"
+	def inifile = outfile.replace('.exe', '.l4j.ini')
+	inputs.file  jar
+	outputs.file "${buildDir}/launch4j/${outfile}"
+	outputs.file "${buildDir}/launch4j/${inifile}"
 	doLast {
-        new File("${buildDir}/${outputDir}/MegaMekLab.l4j.ini").text = """# Launch4j runtime config
+        new File("${buildDir}/${outputDir}/${inifile}").text = """# Launch4j runtime config
 # you can add arguments here that will be processed by the JVM at runtime
 ${project.ext.jvmOptions.join('\n')}
 """		
@@ -342,8 +354,6 @@ task assembleDist(overwrite: true) {
 	dependsOn unixDistTar
 	dependsOn windowsDistZip
 	dependsOn macDistTar
-	dependsOn sourceZip
-	dependsOn sourceTar
 }
 
 task buildFromRepo (type: GradleBuild) {
