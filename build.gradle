@@ -230,6 +230,7 @@ distributions {
 		contents {
 			from ("${buildDir}/launch4j") {
 				include '*.exe'
+				include '*.ini'
 			}
 			contents {
 				from fileStagingDir
@@ -258,7 +259,12 @@ createExe {
 	description = 'Create Windows executable that wraps MM jar'
 	mainClassName = project.mainClassName
 	icon = "${projectDir}/data/images/misc/megameklab.ico"
-	jvmOptions = project.ext.jvmOptions
+	doLast {
+        new File("${buildDir}/${outputDir}/MegaMekLab.l4j.ini").text = """# Launch4j runtime config
+# you can add arguments here that will be processed by the JVM at runtime
+${project.ext.jvmOptions.join('\n')}
+"""		
+	}
 }
 
 windowsDistZip {
