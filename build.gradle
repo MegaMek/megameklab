@@ -64,8 +64,9 @@ dependencies {
 	implementation 'log4j:log4j:1.2.17'
 	implementation 'org.apache.xmlgraphics:batik-dom:1.9.1'
 	implementation ('org.apache.xmlgraphics:batik-bridge:1.9.1') {
-		// We're not using any scripting, and this module will also pull in a rather large jython library
-		exclude group: 'org.apache.xmlgraphics', module: 'batik-script'
+		// We don't need the python and javascript engine taking up space
+		exclude group: 'org.python', module: 'jython'
+		exclude group: 'org.mozilla', module: 'rhino'
 	}
 	implementation 'org.apache.xmlgraphics:batik-svggen:1.9.1'
 	// We have been using a modified version of svgSalamander, which we'll keep around until
