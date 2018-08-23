@@ -9,3 +9,4 @@ timestamp
 /.gradle/
 /build/
 /settings_local.gradle
+/.classpath
