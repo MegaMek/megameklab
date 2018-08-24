@@ -98,7 +98,7 @@ public abstract class MegaMekLabMainUI extends JFrame implements
             String plaf = CConfig.getParam(CConfig.CONFIG_PLAF, UIManager.getSystemLookAndFeelClassName());
             UIManager.setLookAndFeel(plaf);
         } catch (Exception e) {
-            MegaMekLab.getLogger().log(getClass(), "setLookAndFeel()", e);
+            MegaMekLab.getLogger().error(getClass(), "setLookAndFeel()", e);
        }
     }
     
