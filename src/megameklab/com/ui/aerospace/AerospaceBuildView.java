@@ -11,7 +11,7 @@
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  */
-package megameklab.com.ui.Dropship.views;
+package megameklab.com.ui.aerospace;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -123,14 +123,10 @@ public class AerospaceBuildView extends IView implements MouseListener {
                masterEquipmentList.add(mount);
            }
        }
-       // Don't show ammo for one-shot weapons. One-shot ammo is mounted in the location Entity.LOC_NONE
-       // and has a single shot. Exempt weapons that have a single shot/ton (e.g. cruise missiles,
-       // nuclear Arrow IV munitions), which are never one-shot and may just be unallocated.
        for (Mounted mount : getAero().getAmmo()) {
            if ((mount.getLocation() == Entity.LOC_NONE) && 
-                   ((mount.getUsableShotsLeft() > 1)
-                           || (((AmmoType) mount.getType()).getShots() == 1)
-                           || (((AmmoType)mount.getType()).getAmmoType() == 
+                   ((mount.getUsableShotsLeft() > 1) || 
+                           (((AmmoType)mount.getType()).getAmmoType() == 
                                AmmoType.T_COOLANT_POD))) {
                masterEquipmentList.add(mount);
            }
@@ -218,8 +214,7 @@ public class AerospaceBuildView extends IView implements MouseListener {
                }
                for (BayWeaponCriticalTree l : arcViews) {
                    // Aerodyne small craft and dropships skip the aft side arcs
-                   if (getAero().hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)
-                           && !getAero().isSpheroid() && !l.validForAerodyne()) {
+                   if (!l.validForUnit(getAero())) {
                        continue;
                    }
                    if (list.stream().anyMatch(eq -> l.canAdd(eq))) {
@@ -234,8 +229,7 @@ public class AerospaceBuildView extends IView implements MouseListener {
                        selectedRow, CriticalTableModel.EQUIPMENT);
                for (BayWeaponCriticalTree l : arcViews) {
                    // Aerodyne small craft and dropships skip the aft side arcs
-                   if (getAero().hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)
-                           && !getAero().isSpheroid() && !l.validForAerodyne()) {
+                   if (!l.validForUnit(getAero())) {
                        continue;
                    }
                    

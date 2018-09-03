@@ -58,6 +58,7 @@ import megamek.common.EquipmentType;
 import megamek.common.ITechManager;
 import megamek.common.ITechnology;
 import megamek.common.Infantry;
+import megamek.common.Jumpship;
 import megamek.common.LandAirMech;
 import megamek.common.LocationFullException;
 import megamek.common.Mech;
@@ -76,6 +77,7 @@ import megamek.common.annotations.Nullable;
 import megamek.common.logging.LogLevel;
 import megamek.common.logging.MMLogger;
 import megamek.common.verifier.EntityVerifier;
+import megamek.common.verifier.TestAdvancedAerospace;
 import megamek.common.verifier.TestAero;
 import megamek.common.verifier.TestBattleArmor;
 import megamek.common.verifier.TestEntity;
@@ -1360,6 +1362,8 @@ public class UnitUtil {
             points = (int) Math.floor((unit.getWeight() * 3.5) + 40);
         } else if (unit.hasETypeFlag(Entity.ETYPE_BATTLEARMOR)) {
             points = (unit.getWeightClass() * 4) + 2;
+        } else if (unit.hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
+            points = TestAdvancedAerospace.maxArmorPoints((Jumpship)unit); 
         } else if (unit.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)) {
             points = TestSmallCraft.maxArmorPoints((SmallCraft)unit); 
         } else if (unit.hasETypeFlag(Entity.ETYPE_CONV_FIGHTER)) {
@@ -1388,6 +1392,10 @@ public class UnitUtil {
 
     public static double getMaximumArmorTonnage(Entity unit) {
 
+        if (unit instanceof Jumpship) {
+            return TestAdvancedAerospace.maxArmorWeight((Jumpship) unit);
+        }
+        
         double armorPerTon = 16.0 * EquipmentType.getArmorPointMultiplier(
                 unit.getArmorType(1), unit.getArmorTechLevel(1));
         double armorWeight = 0;
@@ -1424,16 +1432,43 @@ public class UnitUtil {
     }
 
     /**
+     * Computes the total number of armor points available to the unit for a given tonnage of armor.
+     * This does not round down the calculation or take into account any maximum number of armor
+     * points or tonnage allowed to the unit.
+     * 
      * NOTE: only use for non-patchwork armor
      *
-     * @param unit
-     * @param armorTons
-     * @return
+     * @param   unit
+     * @param   armorTons
+     * @return  the number of armor points available for the armor tonnage
      */
-    public static int getRawArmorPoints(Entity unit, double armorTons) {
-        double armorPerTon = UnitUtil.getArmorPointsPerTon(unit,
+    public static double getRawArmorPoints(Entity unit, double armorTons) {
+        return armorTons * UnitUtil.getArmorPointsPerTon(unit,
                 unit.getArmorType(1), unit.getArmorTechLevel(1));
-        return (int)Math.floor(armorPerTon * armorTons);
+    }
+    
+    /**
+     * Computes the total number of additional points provided for aerospace vessels based on
+     * their SI. This is usually a whole number but may be a fractional amount for primitive
+     * jumpships.
+     * 
+     * @param entity The unit to compute bonus armor for.
+     * @return       The number of extra armor points received for SI. This is the total number, which
+     *               is usually divided evenly among armor facings.
+     */
+    public static double getSIBonusArmorPoints(Entity entity) {
+        if (entity.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)) {
+            return ((SmallCraft)entity).getSI() * entity.locations();
+        } else if (entity.hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
+            double points = Math.round(((Jumpship) entity).getSI() / 10.0) * 6;
+            if (((Jumpship) entity).isPrimitive()) {
+                return points * EquipmentType.getArmorPointMultiplier(EquipmentType.T_ARMOR_PRIMITIVE_AERO);
+            } else {
+                return points;
+            }
+        } else {
+            return 0;
+        }
     }
 
     /**
@@ -1444,8 +1479,9 @@ public class UnitUtil {
      * @return
      */
     public static int getArmorPoints(Entity unit, double armorTons) {
-        return Math.min(UnitUtil.getRawArmorPoints(unit, armorTons),
-                UnitUtil.getMaximumArmorPoints(unit));
+        int raw = (int) Math.floor(UnitUtil.getRawArmorPoints(unit,  armorTons)
+                + UnitUtil.getSIBonusArmorPoints(unit));
+        return Math.min(raw, UnitUtil.getMaximumArmorPoints(unit));
     }
 
     /**
@@ -1477,6 +1513,8 @@ public class UnitUtil {
     public static double getArmorPointsPerTon(Entity en, int at, boolean clanArmor) {
         if (at == EquipmentType.T_ARMOR_HARDENED) {
             return 8.0;
+        } else if (en.hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
+            return TestAdvancedAerospace.armorPointsPerTon((Jumpship) en, at, clanArmor);
         } else if (en.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)) {
             return SmallCraft.armorPointsPerTon(en.getWeight(), ((Aero)en).isSpheroid(), at, clanArmor);
         } else {
@@ -2630,7 +2668,13 @@ public class UnitUtil {
         }
 
         if ((eq instanceof MiscType)) {
-            if (unit.hasETypeFlag(Entity.ETYPE_DROPSHIP)) {
+            if (unit.hasETypeFlag(Entity.ETYPE_SPACE_STATION)) {
+                return eq.hasFlag(MiscType.F_SS_EQUIPMENT);
+            } else if (unit.hasETypeFlag(Entity.ETYPE_WARSHIP)) {
+                return eq.hasFlag(MiscType.F_WS_EQUIPMENT);
+            } else if (unit.hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
+                return eq.hasFlag(MiscType.F_JS_EQUIPMENT);
+            } else if (unit.hasETypeFlag(Entity.ETYPE_DROPSHIP)) {
                 return eq.hasFlag(MiscType.F_DS_EQUIPMENT);
             } else if (unit.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)) {
                 return eq.hasFlag(MiscType.F_SC_EQUIPMENT);
@@ -3249,6 +3293,9 @@ public class UnitUtil {
                     entityVerifier.tankOption, null);
         } else if (unit.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)) {
             testEntity = new TestSmallCraft((SmallCraft) unit,
+                    entityVerifier.aeroOption, null);
+        } else if (unit.hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
+            testEntity = new TestAdvancedAerospace((Jumpship) unit,
                     entityVerifier.aeroOption, null);
         } else if (unit.hasETypeFlag(Entity.ETYPE_AERO)) {
             testEntity = new TestAero((Aero) unit,
@@ -4073,6 +4120,104 @@ public class UnitUtil {
             }
         }
 
+    }
+    
+    /**
+     * Adjusts the number of crew quarters of a given type on an aerospace vessel.
+     * 
+     * @param aero      The aerospace unit to change crew quarters sizes for
+     * @param quarters  The type of crew quarters to change
+     * @param size      The number of personnel that can be housed in the designated type of quarters
+     */
+    public static void setQuarters(Aero aero, TestAero.Quarters quarters, int size) {
+        List<Bay> toRemove = new ArrayList<>();
+        for (Bay bay : aero.getTransportBays()) {
+            if (TestAero.Quarters.getQuartersForBay(bay) == quarters) {
+                toRemove.add(bay);
+            }
+        }
+        for (Bay bay : toRemove) {
+            aero.removeTransporter(bay);
+        }
+        if (size > 0) {
+            aero.addTransporter(quarters.newQuarters(size));
+        }
+    }
+
+    /**
+     * Adjusts the number of all types of crew quarters on an aerospace vessel.
+     * 
+     * @param aero          The vessel
+     * @param officer       The number of officer/first class quarters
+     * @param standard      The number of standard crew quarters
+     * @param secondclass   The number second class passenger quarters
+     * @param steerage      The number of steerage class crew/passenger quarters
+     */
+    public static void assignQuarters(Aero aero, int officer, int standard, int secondclass, int steerage) {
+        Map<TestAero.Quarters, Integer> sizes = TestAero.Quarters.getQuartersByType(aero);
+        if (sizes.get(TestAero.Quarters.FIRST_CLASS) != officer) {
+            UnitUtil.setQuarters(aero, TestAero.Quarters.FIRST_CLASS, officer);
+        }
+        if (sizes.get(TestAero.Quarters.STANDARD) != standard) {
+            UnitUtil.setQuarters(aero, TestAero.Quarters.STANDARD, standard);
+        }
+        if (sizes.get(TestAero.Quarters.SECOND_CLASS) != secondclass) {
+            UnitUtil.setQuarters(aero, TestAero.Quarters.SECOND_CLASS, secondclass);
+        }
+        if (sizes.get(TestAero.Quarters.STEERAGE) != steerage) {
+            UnitUtil.setQuarters(aero, TestAero.Quarters.STEERAGE, steerage);
+        }
+    }
+    
+    /**
+     * Adjusts the number of quarters of each to match the crew and passenger needs. If no quarters
+     * are already assigned, this will put all officers in officer/first class cabins, enlisted crew
+     * in standard crew quarters, and passengers in second class cabins. If there are already more
+     * officer/first class cabins assigned than there are officers, the extra will be used as first
+     * class passenger cabins. Any steerage quarters will be assigned first to marines, then to passengers,
+     * then to remaining enlisted.
+     *
+     * @param aero The vessel to assign quarters for.
+     */
+    public static void autoAssignQuarters(Aero aero) {
+        int marines = aero.getNMarines() + aero.getNBattleArmor(); 
+        int enlistedNeeds = aero.getNCrew() + marines - aero.getBayPersonnel() - aero.getNOfficers();
+        Map<TestAero.Quarters, Integer> quartersCount = TestAero.Quarters.getQuartersByType(aero);
+        
+        // Standard crew quarters should not be larger than the crew needs, but may be smaller as
+        // some crew may have officer or steerage housing.
+        int standardCrew = Math.min(enlistedNeeds, quartersCount.get(TestAero.Quarters.STANDARD));
+        // Limit the first class quarters to number of officers + passengers. It is possible to house
+        // enlisted in first class quarters, but that is beyond the scope of this and will need to
+        // be done by hand.
+        int officer = Math.min(aero.getNOfficers() + aero.getNPassenger(),
+                quartersCount.get(TestAero.Quarters.FIRST_CLASS));
+        officer = Math.max(officer, aero.getNOfficers());
+        int firstClass = Math.max(0, officer - aero.getNOfficers());
+
+        // Limit the steerage quarters to the number of crew that have not been assigned standard
+        // or officer quarters and passengers that have not been assigned first class.
+        int steeragePsgr = Math.min(aero.getNPassenger() - firstClass + enlistedNeeds - standardCrew,
+                quartersCount.get(TestAero.Quarters.STEERAGE));
+        // Assign any existing steerage quarters first to marines that have not already been assigned standard
+        // quarters
+        int steerageCrew = 0;
+        if (enlistedNeeds > standardCrew) {
+            steerageCrew = Math.min(steeragePsgr, marines);
+            steeragePsgr -= steerageCrew;
+        }
+        // Assign any remaining steerage quarters to passengers first, then remaining crew.
+        if (steeragePsgr > aero.getNPassenger() - firstClass) {
+            int excess = steeragePsgr - aero.getNPassenger() - firstClass;
+            steerageCrew += excess;
+            steeragePsgr -= excess;
+        }
+
+        // Any leftovers go to standard crew or second class
+        standardCrew = enlistedNeeds - steerageCrew;
+        int secondClass = aero.getNPassenger() - firstClass - steeragePsgr;
+        
+        assignQuarters(aero, officer + firstClass, standardCrew, secondClass, steerageCrew + steeragePsgr);
     }
 
     public static MMLogger getLogger() {

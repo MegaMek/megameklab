@@ -1,5 +1,5 @@
 /*
- * MegaMekLab - Copyright (C) 2017 - The MegaMek Team
+ * MegaMekLab - Copyright (C) 2018 - The MegaMek Team
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -11,7 +11,7 @@
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  */
-package megameklab.com.ui.Dropship;
+package megameklab.com.ui.aerospace;
 
 import java.awt.BorderLayout;
 
@@ -23,54 +23,54 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 
 import megamek.common.Aero;
-import megamek.common.Dropship;
 import megamek.common.Entity;
-import megamek.common.EntityMovementMode;
 import megamek.common.EquipmentType;
 import megamek.common.ITechManager;
+import megamek.common.Jumpship;
 import megamek.common.MechSummaryCache;
 import megamek.common.SimpleTechLevel;
-import megamek.common.SmallCraft;
+import megamek.common.SpaceStation;
 import megamek.common.TechConstants;
+import megamek.common.Warship;
 import megamek.common.logging.LogLevel;
+import megamek.common.verifier.TestAdvancedAerospace;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.MegaMekLabMainUI;
-import megameklab.com.ui.Aero.StatusBar;
 import megameklab.com.ui.Aero.tabs.EquipmentTab;
 import megameklab.com.ui.Aero.tabs.PreviewTab;
-import megameklab.com.ui.Dropship.tabs.DropshipStructureTab;
-import megameklab.com.ui.aerospace.DropshipBuildTab;
-import megameklab.com.ui.aerospace.TransportTab;
 import megameklab.com.util.MenuBarCreator;
 
 /**
- * Main UI for Dropships and Small Craft
+ * MainUI for Jumpships, Warship, and Space Stations
  * 
  * @author Neoancient
  *
  */
-public class MainUI extends MegaMekLabMainUI {
-
+public class AdvancedAeroUI extends MegaMekLabMainUI {
     /**
      * 
      */
-    private static final long serialVersionUID = -4014312789921114515L;
+    private static final long serialVersionUID = -91028543221939757L;
     
     JTabbedPane configPane = new JTabbedPane(SwingConstants.TOP);
     JPanel contentPane;
-    private DropshipStructureTab structureTab;
+    private AdvancedAeroStructureTab structureTab;
     private EquipmentTab equipmentTab;
     private PreviewTab previewTab;
     private DropshipBuildTab buildTab;
     private TransportTab transportTab;
-    private StatusBar statusbar;
+    private AdvancedAeroStatusBar statusbar;
     JPanel masterPanel = new JPanel();
     JScrollPane scroll = new JScrollPane();
     private MenuBarCreator menubarcreator;
     
-    public MainUI(boolean primitive) {
+    public AdvancedAeroUI(boolean primitive) {
         super();
-        createNewUnit(Entity.ETYPE_DROPSHIP, primitive, false);
+        if (!primitive) {
+            createNewUnit(Entity.ETYPE_JUMPSHIP, false, false);
+        } else {
+            createNewUnit(Entity.ETYPE_WARSHIP, true, false);
+        }
         setTitle(getEntity().getChassis() + " " + getEntity().getModel() + ".blk");
         menubarcreator = new MenuBarCreator(this);
         setJMenuBar(menubarcreator);
@@ -105,64 +105,77 @@ public class MainUI extends MegaMekLabMainUI {
 
     @Override
     public void createNewUnit(long entitytype, boolean isPrimitive, boolean isIndustrial, Entity oldUnit) {
-        if (entitytype == Entity.ETYPE_SMALL_CRAFT) {
-            setEntity(new SmallCraft());
-            getEntity().setTechLevel(TechConstants.T_IS_TW_NON_BOX);
-        } else if (entitytype == Entity.ETYPE_DROPSHIP) {
-            setEntity(new Dropship());
-            getEntity().setTechLevel(TechConstants.T_IS_TW_NON_BOX);
+        if (entitytype == Entity.ETYPE_JUMPSHIP) {
+            setEntity(new Jumpship());
+        } else if (entitytype == Entity.ETYPE_WARSHIP) {
+            setEntity(new Warship());
+            if ((null != oldUnit)
+                    && (((Jumpship) oldUnit).getDriveCoreType() == Jumpship.DRIVE_CORE_SUBCOMPACT)) {
+                ((Jumpship) getEntity()).setDriveCoreType(Jumpship.DRIVE_CORE_SUBCOMPACT);
+            }
+        } else if (entitytype == Entity.ETYPE_SPACE_STATION) {
+            setEntity(new SpaceStation());
         } else {
-            MegaMekLab.getLogger().log(MainUI.class, "createNewUnit(long)", LogLevel.ERROR,
+            MegaMekLab.getLogger().log(AdvancedAeroUI.class, "createNewUnit(long)", LogLevel.ERROR,
                     "Received incorrect entityType!");
             return;
         }
+        getEntity().setTechLevel(TechConstants.T_IS_ADVANCED);
 
-        SmallCraft smallCraft = (SmallCraft) getEntity();
+        Jumpship ship = (Jumpship) getEntity();
 
         if (isPrimitive) {
-            smallCraft.setYear(2470);
-            smallCraft.setOriginalBuildYear(2470);
-            smallCraft.setArmorType(EquipmentType.T_ARMOR_PRIMITIVE_AERO);
+            ship.setYear(2470);
+            ship.setOriginalBuildYear(2470);
+            ship.setDriveCoreType(Jumpship.DRIVE_CORE_PRIMITIVE);
+            ship.setJumpRange(30);
         } else {
-            smallCraft.setYear(3145);
-            smallCraft.setArmorType(EquipmentType.T_ARMOR_AEROSPACE);
+            ship.setYear(3145);
         }
-        smallCraft.setWeight(200);
-        smallCraft.setOriginalWalkMP(2); // Start at 1G
-        smallCraft.setArmorTechLevel(getEntity().getTechLevel());
-        smallCraft.set0SI(3);
-        smallCraft.setDesignType(SmallCraft.MILITARY);
+        if (isPrimitive) {
+            ship.setArmorType(EquipmentType.T_ARMOR_PRIMITIVE_AERO);
+        } else {
+            ship.setArmorType(EquipmentType.T_ARMOR_AEROSPACE);
+        }
+        ship.setWeight(TestAdvancedAerospace.getMinTonnage(ship));
+        if (entitytype == Entity.ETYPE_WARSHIP) {
+            ship.setOriginalWalkMP(2); // Start at 1G
+            ship.set0SI(3);
+        } else {
+            ship.setOriginalWalkMP(0);
+            ship.set0SI(1);
+        }
+        ship.setArmorTechLevel(getEntity().getTechLevel());
         
-        smallCraft.setHeatType(Aero.HEAT_SINGLE);
+        ship.setHeatType(Aero.HEAT_SINGLE);
 
-        smallCraft.autoSetInternal();
+        ship.autoSetInternal();
+        ship.initializeKFIntegrity();
+        ship.initializeSailIntegrity();
         for (int loc = 0; loc < getEntity().locations(); loc++) {
-            smallCraft.initializeArmor(smallCraft.get0SI(), loc);
+            ship.initializeArmor((int) Math.round(ship.get0SI() / 10.0), loc);
         }
 
         if (null == oldUnit) {
             getEntity().setChassis("New");
-            if (entitytype == Entity.ETYPE_SMALL_CRAFT) {
-                smallCraft.setModel("Small Craft");
+            if ((entitytype == Entity.ETYPE_WARSHIP) && !isPrimitive) {
+                ship.setModel("Warship");
+            } else if (entitytype == Entity.ETYPE_SPACE_STATION) {
+                ship.setModel("Station");
             } else {
-                smallCraft.setModel("Dropship");
+                ship.setModel("Jumpship");
             }
-            smallCraft.setSpheroid(false);
-            smallCraft.setMovementMode(EntityMovementMode.AERODYNE);
         } else {
-            smallCraft.setChassis(oldUnit.getChassis());
-            smallCraft.setModel(oldUnit.getModel());
-            smallCraft.setYear(Math.max(oldUnit.getYear(),
-                    smallCraft.getConstructionTechAdvancement().getIntroductionDate()));
-            smallCraft.setSource(oldUnit.getSource());
-            smallCraft.setManualBV(oldUnit.getManualBV());
-            SimpleTechLevel lvl = SimpleTechLevel.max(smallCraft.getStaticTechLevel(),
+            ship.setChassis(oldUnit.getChassis());
+            ship.setModel(oldUnit.getModel());
+            ship.setYear(Math.max(oldUnit.getYear(),
+                    ship.getConstructionTechAdvancement().getIntroductionDate()));
+            ship.setSource(oldUnit.getSource());
+            ship.setManualBV(oldUnit.getManualBV());
+            SimpleTechLevel lvl = SimpleTechLevel.max(ship.getStaticTechLevel(),
                     SimpleTechLevel.convertCompoundToSimple(oldUnit.getTechLevel()));
-            smallCraft.setTechLevel(lvl.getCompoundTechLevel(oldUnit.isClan()));
-            smallCraft.setMixedTech(oldUnit.isMixedTech());
-
-            smallCraft.setSpheroid(((SmallCraft) oldUnit).isSpheroid());
-            smallCraft.setMovementMode(oldUnit.getMovementMode());
+            ship.setTechLevel(lvl.getCompoundTechLevel(oldUnit.isClan()));
+            ship.setMixedTech(oldUnit.isMixedTech());
         }
     }
 
@@ -178,11 +191,11 @@ public class MainUI extends MegaMekLabMainUI {
 
         masterPanel.setLayout(new BorderLayout());
 
-        structureTab = new DropshipStructureTab(this);
+        structureTab = new AdvancedAeroStructureTab(this);
 
         previewTab = new PreviewTab(this);
 
-        statusbar = new StatusBar(this);
+        statusbar = new AdvancedAeroStatusBar(this);
         equipmentTab = new EquipmentTab(this);
         buildTab = new DropshipBuildTab(this, equipmentTab);
         transportTab = new TransportTab(this);

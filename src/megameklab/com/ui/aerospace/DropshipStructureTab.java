@@ -12,14 +12,11 @@
  * details.
  */
 
-package megameklab.com.ui.Dropship.tabs;
+package megameklab.com.ui.aerospace;
 
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -27,7 +24,6 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
 import megamek.common.Aero;
-import megamek.common.Bay;
 import megamek.common.CriticalSlot;
 import megamek.common.Dropship;
 import megamek.common.Entity;
@@ -36,11 +32,8 @@ import megamek.common.EquipmentType;
 import megamek.common.ITechManager;
 import megamek.common.SimpleTechLevel;
 import megamek.common.SmallCraft;
-import megamek.common.verifier.TestAero;
-import megamek.common.verifier.TestAero.Quarters;
 import megamek.common.verifier.TestEntity;
 import megameklab.com.ui.EntitySource;
-import megameklab.com.ui.Aero.views.SummaryView;
 import megameklab.com.ui.view.AeroFuelView;
 import megameklab.com.ui.view.AerospaceCrewView;
 import megameklab.com.ui.view.ArmorAllocationView;
@@ -75,7 +68,7 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
     private AeroFuelView panFuel;
     private HeatSinkView panHeat;
     private AerospaceCrewView panCrew;
-    private SummaryView panSummary;
+    private DropshipSummaryView panSummary;
     private ArmorAllocationView panArmorAllocation;
 
     RefreshListener refresh = null;
@@ -98,7 +91,7 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
         panHeat = new HeatSinkView(panInfo);
         panCrew = new AerospaceCrewView(panInfo);
         panArmorAllocation = new ArmorAllocationView(panInfo, Entity.ETYPE_AERO);
-        panSummary = new SummaryView(eSource);
+        panSummary = new DropshipSummaryView(eSource);
 
         GridBagConstraints gbc = new GridBagConstraints();
 
@@ -286,7 +279,6 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
         panHeat.setFromAero(getSmallCraft());
         panArmorAllocation.setFromEntity(getSmallCraft());
         panSummary.refresh();
-        refresh.refreshTransport();
     }
 
     @Override
@@ -395,7 +387,6 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
         panCrew.setFromEntity(getSmallCraft());
         getSmallCraft().autoSetInternal();
         refresh();
-        refresh.refreshTransport();
         refresh.refreshPreview();
         refresh.refreshStatus();
     }
@@ -456,7 +447,7 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
     @Override
     public void siChanged(int si) {
         getSmallCraft().set0SI(si);
-        panArmor.setFromEntity(getSmallCraft());
+        panArmorAllocation.setFromEntity(getSmallCraft());
         refresh.refreshStatus();
         refresh.refreshSummary();
         refresh.refreshPreview();
@@ -570,50 +561,20 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
 
     @Override
     public void quartersChanged(int officer, int standard, int secondclass, int steerage) {
-        EnumMap<TestAero.Quarters, Integer> sizes = new EnumMap<>(TestAero.Quarters.class);
-        for (Bay bay : getSmallCraft().getTransportBays()) {
-            Quarters q = TestAero.Quarters.getQuartersForBay(bay);
-            if (null != q) {
-                sizes.merge(q, (int) bay.getCapacity(), Integer::sum);
-            }
-        }
-        if (sizes.getOrDefault(TestAero.Quarters.FIRST_CLASS, 0) != officer) {
-            setQuarters(TestAero.Quarters.FIRST_CLASS, officer);
-        }
-        if (sizes.getOrDefault(TestAero.Quarters.STANDARD, 0) != standard) {
-            setQuarters(TestAero.Quarters.STANDARD, standard);
-        }
-        if (sizes.getOrDefault(TestAero.Quarters.SECOND_CLASS, 0) != secondclass) {
-            setQuarters(TestAero.Quarters.SECOND_CLASS, secondclass);
-        }
-        if (sizes.getOrDefault(TestAero.Quarters.STEERAGE, 0) != steerage) {
-            setQuarters(TestAero.Quarters.STEERAGE, steerage);
-        }
+        UnitUtil.assignQuarters(getSmallCraft(), officer, standard, secondclass, steerage);
         panCrew.setFromEntity(getSmallCraft());
         refreshSummary();
         refresh.refreshStatus();
         refresh.refreshPreview();
     }
     
-    private void setQuarters(TestAero.Quarters quarters, int size) {
-        List<Bay> toRemove = new ArrayList<>();
-        for (Bay bay : getSmallCraft().getTransportBays()) {
-            if (TestAero.Quarters.getQuartersForBay(bay) == quarters) {
-                toRemove.add(bay);
-            }
-        }
-        for (Bay bay : toRemove) {
-            getSmallCraft().removeTransporter(bay);
-        }
-        getSmallCraft().addTransporter(quarters.newQuarters(size));
-    }
-
     @Override
     public void autoAssignQuarters() {
-        int standard = getSmallCraft().getNCrew() - getSmallCraft().getBayPersonnel();
-        standard = Math.max(0, standard - getSmallCraft().getNOfficers());
-        standard += getSmallCraft().getNPassenger() + getSmallCraft().getNMarines() + getSmallCraft().getNBattleArmor();
-        quartersChanged(getSmallCraft().getNOfficers(), standard, getSmallCraft().getNPassenger(), 0);
+        UnitUtil.autoAssignQuarters(getSmallCraft());
+        panCrew.setFromEntity(getSmallCraft());
+        refreshSummary();
+        refresh.refreshStatus();
+        refresh.refreshPreview();
     }
 
     @Override

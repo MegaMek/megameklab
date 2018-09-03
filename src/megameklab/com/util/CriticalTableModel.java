@@ -146,8 +146,9 @@ public class CriticalTableModel extends AbstractTableModel {
                     && crit.getLinked() != null){
                 return crit.getLinked().getType().getTonnage(unit) * 0.75;
             } else if (unit.usesWeaponBays() && (crit.getType() instanceof AmmoType)) {
-                return crit.getType().getTonnage(unit) * crit.getUsableShotsLeft()
-                        / ((AmmoType)crit.getType()).getShots();
+                // Round up to the next half ton
+                return Math.ceil((crit.getType().getTonnage(unit) * crit.getUsableShotsLeft()
+                        / ((AmmoType)crit.getType()).getShots()) * 2.0) * 0.5;
             } else {
                 return crit.getType().getTonnage(unit);
             }

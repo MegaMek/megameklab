@@ -1,5 +1,5 @@
 /*
- * MegaMekLab - Copyright (C) 2017 - The MegaMek Team
+ * MegaMekLab - Copyright (C) 2018 - The MegaMek Team
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -11,7 +11,7 @@
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  */
-package megameklab.com.ui.Dropship;
+package megameklab.com.ui.aerospace;
 
 import java.awt.Color;
 import java.awt.FileDialog;
@@ -30,7 +30,7 @@ import megamek.common.Entity;
 import megamek.common.Mounted;
 import megamek.common.WeaponType;
 import megamek.common.verifier.EntityVerifier;
-import megamek.common.verifier.TestSmallCraft;
+import megamek.common.verifier.TestAdvancedAerospace;
 import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.util.ITab;
 import megameklab.com.util.ImageHelper;
@@ -38,12 +38,12 @@ import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 
 /**
- * Status bar for SmallCraft and Dropships
+ * Status bar for Jumpships/Warships/Space Stations
  * 
  * @author Neoancient
  *
  */
-public class StatusBar extends ITab {
+public class AdvancedAeroStatusBar extends ITab {
     /**
      * 
      */
@@ -53,23 +53,24 @@ public class StatusBar extends ITab {
     private JButton btnFluffImage = new JButton("Set Fluff Image");
     private JLabel bvLabel = new JLabel();
     private JLabel tons = new JLabel();
+    private JLabel remainingTons = new JLabel();
     private JLabel heatSink = new JLabel();
     private JLabel cost = new JLabel();
     private EntityVerifier entityVerifier = EntityVerifier.getInstance(new File(
             "data/mechfiles/UnitVerifierOptions.xml"));
-    private TestSmallCraft testSmallCraft = null;
+    private TestAdvancedAerospace testAdvAero = null;
     private DecimalFormat formatter;
     private JFrame parentFrame;
 
     private RefreshListener refresh;
 
-    public StatusBar(MegaMekLabMainUI parent) {
+    public AdvancedAeroStatusBar(MegaMekLabMainUI parent) {
         super(parent);
         parentFrame = parent;
 
         formatter = new DecimalFormat();
-        testSmallCraft = new TestSmallCraft(getSmallCraft(), entityVerifier.aeroOption, null);
-        btnValidate.addActionListener(e -> UnitUtil.showValidation(getSmallCraft(), getParentFrame()));
+        testAdvAero = new TestAdvancedAerospace(getJumpship(), entityVerifier.aeroOption, null);
+        btnValidate.addActionListener(e -> UnitUtil.showValidation(getJumpship(), getParentFrame()));
         btnFluffImage.addActionListener(e -> getFluffImage());
         //btnFluffImage.setEnabled(false);
         setLayout(new GridBagLayout());
@@ -84,10 +85,12 @@ public class StatusBar extends ITab {
         gbc.gridx = 2;
         this.add(tons, gbc);
         gbc.gridx = 3;
-        this.add(heatSink, gbc);
+        this.add(remainingTons, gbc);
         gbc.gridx = 4;
-        this.add(bvLabel, gbc);
+        this.add(heatSink, gbc);
         gbc.gridx = 5;
+        this.add(bvLabel, gbc);
+        gbc.gridx = 6;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
         this.add(cost, gbc);
@@ -98,16 +101,14 @@ public class StatusBar extends ITab {
 
     public void refresh() {
 
-        int heat = getSmallCraft().getHeatCapacity();
-        double tonnage = getSmallCraft().getWeight();
+        int heat = getJumpship().getHeatCapacity();
+        double tonnage = getJumpship().getWeight();
         double currentTonnage;
-        int bv = getSmallCraft().calculateBattleValue();
-        long currentCost = (long) Math.round(getSmallCraft().getCost(false));
+        int bv = getJumpship().calculateBattleValue();
+        long currentCost = (long) Math.round(getJumpship().getCost(false));
 
-        testSmallCraft = new TestSmallCraft(getSmallCraft(), entityVerifier.aeroOption, null);
-
-        currentTonnage = testSmallCraft.calculateWeight();
-        currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getSmallCraft());
+        currentTonnage = testAdvAero.calculateWeight();
+        currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getJumpship());
 
         double totalHeat = calculateTotalHeat();
 
@@ -118,15 +119,19 @@ public class StatusBar extends ITab {
         } else {
             heatSink.setForeground(Color.black);
         }
-        heatSink.setVisible(getSmallCraft().getEntityType() == Entity.ETYPE_AERO);
+        heatSink.setVisible(getJumpship().getEntityType() == Entity.ETYPE_AERO);
 
         tons.setText("Tonnage: " + currentTonnage + "/" + tonnage);
-        tons.setToolTipText("Current Tonnage/Max Tonnage");
+        tons.setToolTipText("Current Tonnage/Max Tonnage");        
+        remainingTons.setText("Remaining: " + (tonnage - currentTonnage));
         if (currentTonnage > tonnage) {
             tons.setForeground(Color.red);
+            remainingTons.setForeground(Color.red);
         } else {
             tons.setForeground(Color.black);
+            remainingTons.setForeground(Color.black);
         }
+
 
         bvLabel.setText("BV: " + bv);
         bvLabel.setToolTipText("BV 2.0");
@@ -137,7 +142,7 @@ public class StatusBar extends ITab {
     public double calculateTotalHeat() {
         double heat = 0;
 
-        for (Mounted mounted : getSmallCraft().getWeaponList()) {
+        for (Mounted mounted : getJumpship().getWeaponList()) {
             WeaponType wtype = (WeaponType) mounted.getType();
             double weaponHeat = wtype.getHeat();
 
@@ -194,7 +199,7 @@ public class StatusBar extends ITab {
                     + relativeFilePath
                             .substring(new File(System.getProperty("user.dir")
                                     .toString()).getAbsolutePath().length() + 1);
-            getSmallCraft().getFluff().setMMLImagePath(relativeFilePath);
+            getJumpship().getFluff().setMMLImagePath(relativeFilePath);
         }
         refresh.refreshPreview();
         return;
@@ -207,6 +212,4 @@ public class StatusBar extends ITab {
     public void addRefreshedListener(RefreshListener l) {
         refresh = l;
     }
-
-
 }
