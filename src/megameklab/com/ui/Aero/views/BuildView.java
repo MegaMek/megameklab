@@ -131,8 +131,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
             if ((mount.getLocation() == Entity.LOC_NONE) && 
                     ((mount.getUsableShotsLeft() > 1)
                             || (((AmmoType)mount.getType()).getAmmoType() == AmmoType.T_COOLANT_POD)
-                            || (((AmmoType) mount.getType()).getMunitionType()
-                                    == AmmoType.M_DAVY_CROCKETT_M))) {
+                            || (((AmmoType) mount.getType()).getShots() == 1))) {
                 masterEquipmentList.add(mount);
             }
         }

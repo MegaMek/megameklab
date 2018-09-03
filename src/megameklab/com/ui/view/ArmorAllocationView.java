@@ -34,7 +34,6 @@ import megamek.common.Entity;
 import megamek.common.ITechManager;
 import megamek.common.Jumpship;
 import megamek.common.Mech;
-import megamek.common.SmallCraft;
 import megamek.common.SuperHeavyTank;
 import megamek.common.Tank;
 import megamek.common.VTOL;
