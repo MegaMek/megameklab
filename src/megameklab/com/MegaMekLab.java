@@ -93,7 +93,7 @@ public class MegaMekLab {
                     runtime.exec(call);
                     System.exit(0);
                 } catch (Exception ex) {
-                    getLogger().log(MegaMekLab.class, METHOD_NAME, ex);
+                    getLogger().error(MegaMekLab.class, METHOD_NAME, ex);
                 }
             }
 
@@ -117,7 +117,7 @@ public class MegaMekLab {
                     runtime.exec(call);
                     System.exit(0);
                 } catch (Exception ex) {
-                    getLogger().log(MegaMekLab.class, METHOD_NAME, ex);
+                    getLogger().error(MegaMekLab.class, METHOD_NAME, ex);
                 }
             }
 
@@ -143,7 +143,7 @@ public class MegaMekLab {
                     runtime.exec(call);
                     System.exit(0);
                 } catch (Exception ex) {
-                    getLogger().log(MegaMekLab.class, METHOD_NAME, ex);
+                    getLogger().error(MegaMekLab.class, METHOD_NAME, ex);
                 }
             }
             try {

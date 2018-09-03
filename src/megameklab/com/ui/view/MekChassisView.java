@@ -45,9 +45,7 @@ import megamek.common.Mounted;
 import megamek.common.QuadVee;
 import megamek.common.SimpleTechLevel;
 import megamek.common.TechConstants;
-import megamek.common.logging.LogLevel;
 import megamek.common.util.EncodeControl;
-import megameklab.com.MegaMekLab;
 import megameklab.com.ui.util.CustomComboBox;
 import megameklab.com.ui.util.TechComboBox;
 import megameklab.com.ui.view.listeners.MekBuildListener;
@@ -503,8 +501,6 @@ public class MekChassisView extends BuildView implements ActionListener, ChangeL
     }
     
     private void refreshCockpit() {
-        final String METHOD_NAME = "refreshCockpit()";
-        
         cbCockpit.removeActionListener(this);
         Integer prev = (Integer)cbCockpit.getSelectedItem();
         cbCockpit.removeAllItems();
@@ -531,9 +527,7 @@ public class MekChassisView extends BuildView implements ActionListener, ChangeL
                 }
             }
         }
-        if (prev != null && prev < cbCockpit.getModel().getSize()) {
-            cbCockpit.setSelectedItem(prev);
-        }
+        cbCockpit.setSelectedItem(prev);
         cbCockpit.addActionListener(this);
         if ((cbCockpit.getSelectedIndex() < 0)
                 && (cbCockpit.getModel().getSize() > 0)) {

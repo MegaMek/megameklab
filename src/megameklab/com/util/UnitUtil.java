@@ -693,7 +693,7 @@ public class UnitUtil {
                             new Mounted(unit, EquipmentType
                                     .get("IS1 Compact Heat Sink")), loc, false);
                 } catch (Exception ex) {
-                    getLogger().log(UnitUtil.class, METHOD_NAME, ex);
+                    getLogger().error(UnitUtil.class, METHOD_NAME, ex);
                 }
             }
 
@@ -729,7 +729,7 @@ public class UnitUtil {
                     unit.addEquipment(new Mounted(unit, sinkType),
                             Entity.LOC_NONE, false);
                 } catch (Exception ex) {
-                    getLogger().log(UnitUtil.class, METHOD_NAME, ex);
+                    getLogger().error(UnitUtil.class, METHOD_NAME, ex);
                 }
             }
         }
@@ -754,7 +754,7 @@ public class UnitUtil {
                                     .get("IS1 Compact Heat Sink")),
                             Entity.LOC_NONE, false);
                 } catch (Exception ex) {
-                    getLogger().log(UnitUtil.class, METHOD_NAME, ex);
+                    getLogger().error(UnitUtil.class, METHOD_NAME, ex);
                 }
             } else {
                 int loc = singleCompact.getLocation();
@@ -766,7 +766,7 @@ public class UnitUtil {
                                     .getHeatSinkType("Compact", unit.isClan()))),
                             loc, false);
                 } catch (Exception ex) {
-                    getLogger().log(UnitUtil.class, METHOD_NAME, ex);
+                    getLogger().error(UnitUtil.class, METHOD_NAME, ex);
                 }
             }
             restHS -= 1;
@@ -777,7 +777,7 @@ public class UnitUtil {
                                 .getHeatSinkType("Compact", unit.isClan()))),
                         Entity.LOC_NONE, false);
             } catch (Exception ex) {
-                getLogger().log(UnitUtil.class, METHOD_NAME, ex);
+                getLogger().error(UnitUtil.class, METHOD_NAME, ex);
             }
         }
     }
@@ -999,7 +999,7 @@ public class UnitUtil {
                                     .getJumpJetType(jjType, unit.isClan()))),
                             Entity.LOC_NONE, false);
                 } catch (Exception ex) {
-                    getLogger().log(UnitUtil.class, METHOD_NAME, ex);
+                    getLogger().error(UnitUtil.class, METHOD_NAME, ex);
                 }
                 jjAmount--;
             }
@@ -1874,7 +1874,7 @@ public class UnitUtil {
                         }
                     }
                 } catch (LocationFullException lfe) {
-                    getLogger().log(UnitUtil.class, METHOD_NAME, lfe);
+                    getLogger().error(UnitUtil.class, METHOD_NAME, lfe);
                     JOptionPane.showMessageDialog(
                             null,
                             lfe.getMessage(),

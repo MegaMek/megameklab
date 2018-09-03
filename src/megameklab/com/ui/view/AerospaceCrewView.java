@@ -17,7 +17,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -32,12 +31,10 @@ import javax.swing.event.ChangeListener;
 
 import megamek.common.Aero;
 import megamek.common.BattleArmor;
-import megamek.common.Bay;
 import megamek.common.EntityWeightClass;
 import megamek.common.ITechManager;
 import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestAero;
-import megamek.common.verifier.TestAero.Quarters;
 import megameklab.com.ui.view.listeners.AeroVesselBuildListener;
 
 /**

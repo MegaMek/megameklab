@@ -86,7 +86,7 @@ public class AeroBayTransferHandler extends TransferHandler {
                 }
             }
         } catch (Exception ex) {
-            MegaMekLab.getLogger().log(AeroBayTransferHandler.class,
+            MegaMekLab.getLogger().error(AeroBayTransferHandler.class,
                     "importData(TransferSupport)", //$NON-NLS-1$
                     ex);
             return false;
@@ -256,7 +256,7 @@ public class AeroBayTransferHandler extends TransferHandler {
                 ((BayWeaponCriticalTree)source).removeExported((String)data.getTransferData(DataFlavor.stringFlavor),
                         action);
             } catch (Exception ex) {
-                MegaMekLab.getLogger().log(AeroBayTransferHandler.class,
+                MegaMekLab.getLogger().error(AeroBayTransferHandler.class,
                         "exportDone(JComponent,Transferable,action", //$NON-NLS-1$
                         ex);
             }
