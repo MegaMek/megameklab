@@ -11,7 +11,7 @@
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  */
-package megameklab.com.ui.Dropship;
+package megameklab.com.ui.aerospace;
 
 import java.awt.BorderLayout;
 
@@ -35,12 +35,8 @@ import megamek.common.TechConstants;
 import megamek.common.logging.LogLevel;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.MegaMekLabMainUI;
-import megameklab.com.ui.Aero.StatusBar;
 import megameklab.com.ui.Aero.tabs.EquipmentTab;
 import megameklab.com.ui.Aero.tabs.PreviewTab;
-import megameklab.com.ui.Dropship.tabs.DropshipStructureTab;
-import megameklab.com.ui.aerospace.DropshipBuildTab;
-import megameklab.com.ui.aerospace.TransportTab;
 import megameklab.com.util.MenuBarCreator;
 
 /**
@@ -49,7 +45,7 @@ import megameklab.com.util.MenuBarCreator;
  * @author Neoancient
  *
  */
-public class MainUI extends MegaMekLabMainUI {
+public class DropshipMainUI extends MegaMekLabMainUI {
 
     /**
      * 
@@ -63,12 +59,12 @@ public class MainUI extends MegaMekLabMainUI {
     private PreviewTab previewTab;
     private DropshipBuildTab buildTab;
     private TransportTab transportTab;
-    private StatusBar statusbar;
+    private DropshipStatusBar statusbar;
     JPanel masterPanel = new JPanel();
     JScrollPane scroll = new JScrollPane();
     private MenuBarCreator menubarcreator;
     
-    public MainUI(boolean primitive) {
+    public DropshipMainUI(boolean primitive) {
         super();
         createNewUnit(Entity.ETYPE_DROPSHIP, primitive, false);
         setTitle(getEntity().getChassis() + " " + getEntity().getModel() + ".blk");
@@ -112,7 +108,7 @@ public class MainUI extends MegaMekLabMainUI {
             setEntity(new Dropship());
             getEntity().setTechLevel(TechConstants.T_IS_TW_NON_BOX);
         } else {
-            MegaMekLab.getLogger().log(MainUI.class, "createNewUnit(long)", LogLevel.ERROR,
+            MegaMekLab.getLogger().log(DropshipMainUI.class, "createNewUnit(long)", LogLevel.ERROR,
                     "Received incorrect entityType!");
             return;
         }
@@ -182,7 +178,7 @@ public class MainUI extends MegaMekLabMainUI {
 
         previewTab = new PreviewTab(this);
 
-        statusbar = new StatusBar(this);
+        statusbar = new DropshipStatusBar(this);
         equipmentTab = new EquipmentTab(this);
         buildTab = new DropshipBuildTab(this, equipmentTab);
         transportTab = new TransportTab(this);

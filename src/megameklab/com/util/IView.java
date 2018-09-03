@@ -21,6 +21,7 @@ import javax.swing.JPanel;
 import megamek.common.Aero;
 import megamek.common.BattleArmor;
 import megamek.common.Infantry;
+import megamek.common.Jumpship;
 import megamek.common.Mech;
 import megamek.common.SmallCraft;
 import megamek.common.Tank;
@@ -57,6 +58,10 @@ public class IView extends JPanel {
     
     public SmallCraft getSmallCraft() {
         return (SmallCraft) eSource.getEntity();
+    }
+    
+    public Jumpship getJumpship() {
+        return (Jumpship) eSource.getEntity();
     }
 
     public BattleArmor getBattleArmor() {

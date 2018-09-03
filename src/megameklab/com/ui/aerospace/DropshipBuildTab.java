@@ -11,7 +11,7 @@
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  */
-package megameklab.com.ui.Dropship.tabs;
+package megameklab.com.ui.aerospace;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -27,8 +27,6 @@ import megamek.common.Entity;
 import megamek.common.Mounted;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.Aero.tabs.EquipmentTab;
-import megameklab.com.ui.Dropship.views.AerospaceBuildView;
-import megameklab.com.ui.Dropship.views.DropshipCriticalView;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
@@ -47,7 +45,7 @@ public class DropshipBuildTab extends ITab implements ActionListener {
     private static final long serialVersionUID = -6625026210117558378L;
     
     private RefreshListener refresh = null;
-    private DropshipCriticalView critView = null;
+    private LargeCraftCriticalView critView = null;
     private AerospaceBuildView buildView = null;
     private JPanel buttonPanel = new JPanel();
     private JPanel mainPanel = new JPanel();
@@ -64,8 +62,8 @@ public class DropshipBuildTab extends ITab implements ActionListener {
 
         GridBagConstraints gbc = new GridBagConstraints();
 
-        critView = new DropshipCriticalView(eSource, refresh);
         buildView = new AerospaceBuildView(eSource,refresh);
+        critView = new LargeCraftCriticalView(eSource, refresh);
         critView.addAllocationListeners(buildView);
 
         resetButton.setMnemonic('R');

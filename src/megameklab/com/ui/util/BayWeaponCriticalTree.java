@@ -46,6 +46,7 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
+import megamek.common.Aero;
 import megamek.common.AmmoType;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
@@ -859,11 +860,18 @@ public class BayWeaponCriticalTree extends JTree {
     
     /**
      * Used by the unallocated equipment list to determine whether the arc represented by this
-     * tree is valid for aerodyne small craft and dropships.
-     * @return false for small craft/dropship aft side arcs, true for all others
+     * tree is valid for the aero unit. This filters out aft side arcs for aerodyne small
+     * craft and broadsides for non-warships.
+     * @param  The unit to check
+     * @return Whether the arc is valid for the unit.
      */
-    public boolean validForAerodyne() {
-        return facing != AFT;
+    public boolean validForUnit(Aero aero) {
+        if (aero.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)
+                && !aero.isSpheroid()
+                && (facing == AFT)) {
+            return false;
+        }
+        return location < aero.locations();
     }
 
     /**
@@ -1229,7 +1237,10 @@ public class BayWeaponCriticalTree extends JTree {
                     av += 5;
                 }
             }
-            if (((WeaponType)eq.getType()).isCapital()) {
+            if (eq.getType().hasFlag(WeaponType.F_MASS_DRIVER)) {
+                // Limit is one per firing arc; the medium and heavy exceed the 70-point limit.
+                return av == 0;
+            } else if (((WeaponType)eq.getType()).isCapital()) {
                 return av + ((WeaponType)eq.getType()).getShortAV() <= 70;
             } else {
                 return av + ((WeaponType)eq.getType()).getShortAV() <= 700;

@@ -32,8 +32,8 @@ import javax.swing.SwingConstants;
 import megamek.common.Aero;
 import megamek.common.Entity;
 import megamek.common.ITechManager;
+import megamek.common.Jumpship;
 import megamek.common.Mech;
-import megamek.common.SmallCraft;
 import megamek.common.SuperHeavyTank;
 import megamek.common.Tank;
 import megamek.common.VTOL;
@@ -96,6 +96,13 @@ public class ArmorAllocationView extends BuildView implements
             {-1, Aero.LOC_NOSE, -1},
             {Aero.LOC_LWING, -1, Aero.LOC_RWING},
             {-1, Aero.LOC_AFT, -1}
+    };
+    
+    private static final int[][] CAPITAL_LAYOUT = {
+            {-1, Jumpship.LOC_NOSE, -1},
+            {Jumpship.LOC_FLS, -1, Jumpship.LOC_FRS},
+            {Jumpship.LOC_ALS, -1, Jumpship.LOC_ARS},
+            {-1, Jumpship.LOC_AFT, -1}
     };
     
     private final List<ArmorLocationView> locationViews = new ArrayList<>();
@@ -196,10 +203,8 @@ public class ArmorAllocationView extends BuildView implements
     public void setFromEntity(Entity en) {
         setEntityType(en.getEntityType());
         maxArmorPoints = UnitUtil.getMaximumArmorPoints(en);
-        int raw = UnitUtil.getRawArmorPoints(en, en.getLabArmorTonnage());
-        if (en instanceof SmallCraft) {
-            raw += ((SmallCraft)en).getSI() * en.locations();
-        }
+        int raw = (int) (UnitUtil.getRawArmorPoints(en, en.getLabArmorTonnage())
+                + UnitUtil.getSIBonusArmorPoints(en));
         int currentPoints = en.getTotalOArmor();
         if (showPatchwork) {
             armorPoints = currentPoints;
@@ -223,8 +228,9 @@ public class ArmorAllocationView extends BuildView implements
                 } else {
                     locView.setPointsRear(0);
                 }
-                if (en instanceof SmallCraft) {
-                    locView.setMinimum(((SmallCraft)en).get0SI());
+                if (en.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)
+                        || en.hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
+                    locView.setMinimum((int) (UnitUtil.getSIBonusArmorPoints(en) / locationViews.size()));
                 }
                 if (showPatchwork) {
                     double pointsPerTon = UnitUtil.getArmorPointsPerTon(en, en.getArmorType(location),  en.getArmorTechLevel(location));
@@ -263,6 +269,8 @@ public class ArmorAllocationView extends BuildView implements
         int[][] layout;
         if ((entitytype & Entity.ETYPE_MECH) != 0) {
             layout = MEK_LAYOUT;
+        } else if ((entitytype & Entity.ETYPE_JUMPSHIP) != 0) {
+            layout = CAPITAL_LAYOUT;
         } else if ((entitytype & Entity.ETYPE_AERO) != 0) {
             // Spheroids use lwing/rwing rear for l/r aft positions
             layout = AERODYNE_LAYOUT;
