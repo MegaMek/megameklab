@@ -1,11 +1,12 @@
 VERSION HISTORY:
 ----------------
-v0.45.1-git
+v0.45.1 (2018-09-03 2300 UTC)
 + Issue #178: Equipment Table getting stuck on one equipment type.
 + Issue #181: Cannot assign silver bullet gauss ammo to dropship
 + Issue #182: Cruise Missile Ammo on Dropships erratic allocation behavior
 + Issue #184: Vehicular Stealth Armour Requirements
 + PR #172: Advanced aerospace construction
++ Update MegaMek.jar to v0.45.1
 
 v0.45.0 (2018-08-02 0200 UTC)
 + Issue #169: Request Users Java Version Be Printed To Log File
