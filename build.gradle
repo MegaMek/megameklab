@@ -8,7 +8,7 @@ plugins {
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 group = 'org.megamek'
-version = '0.45.1-SNAPSHOT'
+version = '0.45.2-SNAPSHOT'
 
 sourceSets {
     main {
@@ -59,7 +59,7 @@ configurations {
 }
 
 dependencies {
-    implementation "org.megamek:megamek${mmBranchTag}:0.45.1-SNAPSHOT"
+    implementation "org.megamek:megamek${mmBranchTag}:${version}"
     
     implementation 'log4j:log4j:1.2.17'
     implementation 'org.apache.xmlgraphics:batik-dom:1.9.1'

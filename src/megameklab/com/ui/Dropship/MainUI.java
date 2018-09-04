@@ -35,11 +35,12 @@ import megamek.common.TechConstants;
 import megamek.common.logging.LogLevel;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.MegaMekLabMainUI;
+import megameklab.com.ui.Aero.StatusBar;
 import megameklab.com.ui.Aero.tabs.EquipmentTab;
 import megameklab.com.ui.Aero.tabs.PreviewTab;
-import megameklab.com.ui.Dropship.tabs.DropshipBuildTab;
 import megameklab.com.ui.Dropship.tabs.DropshipStructureTab;
-import megameklab.com.ui.Dropship.tabs.TransportTab;
+import megameklab.com.ui.aerospace.DropshipBuildTab;
+import megameklab.com.ui.aerospace.TransportTab;
 import megameklab.com.util.MenuBarCreator;
 
 /**

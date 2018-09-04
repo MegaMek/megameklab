@@ -40,7 +40,7 @@ import megamek.common.verifier.TestAero;
 import megamek.common.verifier.TestAero.Quarters;
 import megamek.common.verifier.TestEntity;
 import megameklab.com.ui.EntitySource;
-import megameklab.com.ui.Dropship.views.SummaryView;
+import megameklab.com.ui.Aero.views.SummaryView;
 import megameklab.com.ui.view.AeroFuelView;
 import megameklab.com.ui.view.AerospaceCrewView;
 import megameklab.com.ui.view.ArmorAllocationView;

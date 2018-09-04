@@ -624,7 +624,7 @@ public class TransportTab extends IView implements ActionListener {
                   return true;
                }
             } catch (Exception e) {
-               MegaMekLab.getLogger().log(getClass(), "importData(TransferSupport)", e);
+               MegaMekLab.getLogger().error(getClass(), "importData(TransferSupport)", e);
             }
             return false;
         }
