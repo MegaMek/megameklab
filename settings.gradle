@@ -1,0 +1,3 @@
+rootProject.name = 'MegaMekLab'
+
+enableFeaturePreview('STABLE_PUBLISHING')
