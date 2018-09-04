@@ -35,7 +35,7 @@ import megamek.common.preference.PreferenceManager;
 import megameklab.com.ui.Mek.MainUI;
 
 public class MegaMekLab {
-    public static final String VERSION = "0.45.1-SNAPSHOT";
+    public static final String VERSION = "0.45.2-SNAPSHOT";
 
     private static MMLogger logger = null;
 
@@ -93,7 +93,7 @@ public class MegaMekLab {
                     runtime.exec(call);
                     System.exit(0);
                 } catch (Exception ex) {
-                    getLogger().log(MegaMekLab.class, METHOD_NAME, ex);
+                    getLogger().error(MegaMekLab.class, METHOD_NAME, ex);
                 }
             }
 
@@ -117,7 +117,7 @@ public class MegaMekLab {
                     runtime.exec(call);
                     System.exit(0);
                 } catch (Exception ex) {
-                    getLogger().log(MegaMekLab.class, METHOD_NAME, ex);
+                    getLogger().error(MegaMekLab.class, METHOD_NAME, ex);
                 }
             }
 
@@ -143,7 +143,7 @@ public class MegaMekLab {
                     runtime.exec(call);
                     System.exit(0);
                 } catch (Exception ex) {
-                    getLogger().log(MegaMekLab.class, METHOD_NAME, ex);
+                    getLogger().error(MegaMekLab.class, METHOD_NAME, ex);
                 }
             }
             try {

@@ -17,8 +17,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -29,15 +29,12 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import megamek.common.Aero;
 import megamek.common.BattleArmor;
-import megamek.common.Bay;
 import megamek.common.EntityWeightClass;
 import megamek.common.ITechManager;
-import megamek.common.SmallCraft;
 import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestAero;
-import megamek.common.verifier.TestAero.Quarters;
-import megamek.common.verifier.TestSmallCraft;
 import megameklab.com.ui.view.listeners.AeroVesselBuildListener;
 
 /**
@@ -62,7 +59,7 @@ public class AerospaceCrewView extends BuildView implements ActionListener, Chan
         listeners.remove(l);
     }
     
-    private final JSpinner spnOfficers = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
+    private final JSpinner spnOfficers = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
     private final JSpinner spnBaseCrew = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
     private final JSpinner spnGunners = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
     private final JLabel lblBayPersonnel = new JLabel();
@@ -233,24 +230,24 @@ public class AerospaceCrewView extends BuildView implements ActionListener, Chan
         spnEscapePods.addChangeListener(this);
     }
     
-    public void setFromEntity(SmallCraft sc) {
-        int minGunners = TestSmallCraft.requiredGunners(sc);
-        int minBase = TestSmallCraft.minimumBaseCrew(sc);
-        int nonBay = sc.getNCrew() - sc.getBayPersonnel();
+    public void setFromEntity(Aero aero) {
+        int minGunners = TestAero.requiredGunners(aero);
+        int minBase = TestAero.minimumBaseCrew(aero);
+        int nonBay = aero.getNCrew() - aero.getBayPersonnel();
         ((SpinnerNumberModel)spnBaseCrew.getModel()).setMinimum(minBase);
         ((SpinnerNumberModel)spnGunners.getModel()).setMinimum(minGunners);
         
         ignoreChangeEvents = true;
-        spnOfficers.setValue(sc.getNOfficers());
-        spnBaseCrew.setValue(nonBay - sc.getNGunners());
-        spnGunners.setValue(sc.getNGunners());
+        spnOfficers.setValue(aero.getNOfficers());
+        spnBaseCrew.setValue(nonBay - aero.getNGunners());
+        spnGunners.setValue(aero.getNGunners());
         lblTotalCrew.setText(String.valueOf(nonBay));
-        lblBayPersonnel.setText(String.valueOf(sc.getBayPersonnel()));
-        spnPassengers.setValue(sc.getNPassenger());
-        spnMarines.setValue(sc.getNMarines());
+        lblBayPersonnel.setText(String.valueOf(aero.getBayPersonnel()));
+        spnPassengers.setValue(aero.getNPassenger());
+        spnMarines.setValue(aero.getNMarines());
         
         if (techManager.isLegal(BattleArmor.getConstructionTechAdvancement(EntityWeightClass.WEIGHT_MEDIUM))) {
-            spnBAMarines.setValue(sc.getNBattleArmor());
+            spnBAMarines.setValue(aero.getNBattleArmor());
             lblBAMarines.setVisible(true);
             spnBAMarines.setVisible(true);
         } else {
@@ -259,27 +256,21 @@ public class AerospaceCrewView extends BuildView implements ActionListener, Chan
             spnBAMarines.setVisible(false);
         }
         
-        EnumMap<TestAero.Quarters, Integer> sizes = new EnumMap<>(TestAero.Quarters.class);
-        for (Bay bay : sc.getTransportBays()) {
-            Quarters q = TestAero.Quarters.getQuartersForBay(bay);
-            if (null != q) {
-                sizes.merge(q, (int) bay.getCapacity(), Integer::sum);
-            }
-        }
+        Map<TestAero.Quarters, Integer> sizes = TestAero.Quarters.getQuartersByType(aero);
         spnQuartersFirstClass.setValue(sizes.getOrDefault(TestAero.Quarters.FIRST_CLASS, 0));
         spnQuartersStandard.setValue(sizes.getOrDefault(TestAero.Quarters.STANDARD, 0));
         spnQuartersSecondClass.setValue(sizes.getOrDefault(TestAero.Quarters.SECOND_CLASS, 0));
         spnQuartersSteerage.setValue(sizes.getOrDefault(TestAero.Quarters.STEERAGE, 0));
         
-        spnLifeBoats.setValue(sc.getLifeBoats());
-        spnEscapePods.setValue(sc.getEscapePods());
+        spnLifeBoats.setValue(aero.getLifeBoats());
+        spnEscapePods.setValue(aero.getEscapePods());
         ignoreChangeEvents = false;
         
         // If we do not meet the minimum, set the values and trigger an event that will update the vessel.
-        if (sc.getNGunners() < minGunners) {
+        if (aero.getNGunners() < minGunners) {
             spnGunners.setValue(minGunners);
         }
-        if (nonBay - sc.getNGunners() < minBase) {
+        if (nonBay - aero.getNGunners() < minBase) {
             spnBaseCrew.setValue(minBase);
         }
 

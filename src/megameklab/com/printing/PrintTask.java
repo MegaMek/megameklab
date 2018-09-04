@@ -51,7 +51,7 @@ public class PrintTask extends SwingWorker<Void, Integer> {
         try {
             get();
         } catch (ExecutionException e) {
-            MegaMekLab.getLogger().log(PrintTask.class, "done()",
+            MegaMekLab.getLogger().error(PrintTask.class, "done()",
                     e.getCause());
         } catch (InterruptedException e) {
             // Shouldn't get here because we're done...

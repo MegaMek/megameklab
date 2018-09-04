@@ -158,11 +158,10 @@ public abstract class PrintRecordSheet implements Printable {
                 SAXDocumentFactory df = new SAXDocumentFactory(impl, parser);
                 svgDocument = df.createDocument(f.toURI().toASCIIString(), is);
             } catch (Exception e) {
-                MegaMekLab.getLogger().log(PrintRecordSheet.class, METHOD_NAME, e);
+                MegaMekLab.getLogger().error(PrintRecordSheet.class, METHOD_NAME, e);
             }
             if (null == svgDocument) {
-                MegaMekLab.getLogger().log(PrintRecordSheet.class, METHOD_NAME,
-                        LogLevel.ERROR,
+                MegaMekLab.getLogger().error(PrintRecordSheet.class, METHOD_NAME,
                         "Failed to open Mech SVG file! Path: data/images/recordsheets/" + getSVGFileName());
             } else {
                 svgGenerator = new SVGGraphics2D(svgDocument);
