@@ -10,3 +10,4 @@ timestamp
 /build/
 /settings_local.gradle
 /.classpath
+/.project
