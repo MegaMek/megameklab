@@ -26,14 +26,14 @@ ext {
     mmGitRoot = 'https://github.com/MegaMek/megamek.git'
     // Work on MML or MHQ sometimes requires changes in MM as well. The maven publishing tasks use
     // these properties to append the branch name to the artifact id if the repo is not in the master
-    // branch, making it available separately to the child project. 
+    // branch, making it available separately to the child project.
     mmlBranch = grgit.branch.current.name
     mmlBranchTag = mmlBranch.equals('master')? '' : '-' + mmlBranch
-    
+
     // Allows setting a dependency on a different MM branch.
     mmBranch = 'master'
     mmBranchTag = mmBranch.equals('master')? '' : '-' + mmBranch
-    
+
     mmDir = '../megamek'
 }
 
@@ -60,8 +60,7 @@ configurations {
 
 dependencies {
     implementation "org.megamek:megamek${mmBranchTag}:${version}"
-    
-    implementation 'log4j:log4j:1.2.17'
+
     implementation 'org.apache.xmlgraphics:batik-dom:1.9.1'
     implementation ('org.apache.xmlgraphics:batik-bridge:1.9.1') {
         // We don't need the python and javascript engine taking up space
@@ -120,7 +119,7 @@ jar {
 
 task copyFiles(type: Copy) {
     description = 'Stages files that are to be copied into the distribution.'
-    
+
     from projectDir
     include "${data}/**"
     include "${conf}/**"
@@ -129,7 +128,7 @@ task copyFiles(type: Copy) {
     exclude "**/*.psd"
 
     into fileStagingDir
-    
+
     inputs.dir "${data}"
     inputs.dir "${conf}"
     inputs.dir "${docs}"
@@ -259,7 +258,7 @@ distributions {
             from fileStagingDir
             from (project.sourceSets.main.runtimeClasspath.files
                     .findAll { it.name.endsWith(".jar") }) {
-                into "${createOSXBundle.jarSubdir}/${lib}" 
+                into "${createOSXBundle.jarSubdir}/${lib}"
             }
         }
     }
@@ -277,7 +276,7 @@ createExe {
         new File("${buildDir}/${outputDir}/${inifile}").text = """# Launch4j runtime config
 # you can add arguments here that will be processed by the JVM at runtime
 ${project.ext.jvmOptions.join('\n')}
-"""        
+"""
     }
 }
 
@@ -368,7 +367,7 @@ task buildFromRepo (type: GradleBuild) {
     group = 'distribution'
     dependsOn cloneRepo
     dependsOn cloneMMRepo
-    
+
     buildFile = "${repoDir}/build.gradle"
     dir = "${repoDir}"
     tasks = [ 'assembleDist' ]
@@ -378,7 +377,7 @@ task release (type: Copy) {
     description = 'Builds the release packages from the repository and copies them into the project build directory'
     group = 'distribution'
     dependsOn buildFromRepo
-    
+
     from "${repoDir}/build/distributions"
     into "${distributionDir}"
 }
@@ -398,7 +397,7 @@ task javadocJar(type: Jar) {
 publishing {
     publications {
         publishMMLibrary(MavenPublication) {
-            artifactId = "megameklab${mmBranchTag}"
+            artifactId = "megameklab${mmlBranchTag.replaceAll('[^A-Za-z0-9_\\-.]','-')}"
             from components.java
             artifact sourcesJar
 // Javadoc has errors
