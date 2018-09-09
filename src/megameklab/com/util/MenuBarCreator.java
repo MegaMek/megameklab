@@ -60,6 +60,7 @@ import megamek.common.Mech;
 import megamek.common.MechFileParser;
 import megamek.common.MechView;
 import megamek.common.SmallCraft;
+import megamek.common.TROView;
 import megamek.common.Tank;
 import megamek.common.loaders.BLKFile;
 import megameklab.com.MegaMekLab;
@@ -1348,10 +1349,17 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
     }
 
     public void jMenuExportEntityClipboard_actionPerformed(ActionEvent event) {
-        MechView mview = new MechView(parentFrame.getEntity(), true, true, false);
+//        MechView mview = new MechView(parentFrame.getEntity(), true, true, false);
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-        StringSelection stringSelection = new StringSelection(mview.getMechReadout());
-        clipboard.setContents(stringSelection, this);
+//      StringSelection stringSelection = new StringSelection(mview.getMechReadout());
+//      clipboard.setContents(stringSelection, this);
+//      clipboard.setContents(stringSelection, this);
+        TROView mview = new TROView(parentFrame.getEntity(), false);
+        String doc = mview.processTemplate();
+        if (null != doc) {
+            StringSelection stringSelection = new StringSelection(doc);
+            clipboard.setContents(stringSelection, this);
+        }
     }
 
     private void loadUnit() {
