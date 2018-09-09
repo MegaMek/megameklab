@@ -41,9 +41,9 @@ ext {
 // rootProject.ext.mmlGitRoot = 'file:///path/to/local/repo' will cause the release target to clone a
 // local copy of the repository rather than downloading it.
 
-def localSettings = file('settings_local.gradle')
-if (localSettings.exists()) {
-    apply from: localSettings
+def localProperties = file('properties_local.gradle')
+if (localProperties.exists()) {
+    apply from: localProperties
 }
 
 repositories {
