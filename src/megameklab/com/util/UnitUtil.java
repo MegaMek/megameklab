@@ -1334,16 +1334,17 @@ public class UnitUtil {
         double tonnage = 0;
 
         for (Mounted mount : unit.getAmmo()) {
-            int ammoType = ((AmmoType)mount.getType()).getAmmoType();
             // don't add ammo with just one shot, that's OS ammo
             //  Unless it's a single shot ammo type, like Cruise Missiles
             if ((mount.getLocation() == Entity.LOC_NONE)
                     && ((mount.getUsableShotsLeft() > 1)
-                            || (ammoType == AmmoType.T_CRUISE_MISSILE)
-                            || (ammoType == AmmoType.T_COOLANT_POD)
-                            || (((AmmoType) mount.getType()).getMunitionType()
-                                    == AmmoType.M_DAVY_CROCKETT_M))) {
-                tonnage += mount.getType().getTonnage(unit);
+                            || (((AmmoType) mount.getType()).getShots() == 1)
+                            || (((AmmoType)mount.getType()).getAmmoType() == AmmoType.T_COOLANT_POD))) {
+                int slots = 1;
+                if (unit.usesWeaponBays()) {
+                    slots = (int) Math.ceil(mount.getUsableShotsLeft() / (double) ((AmmoType) mount.getType()).getShots());
+                }
+                tonnage += slots * mount.getType().getTonnage(unit);
             }
         }
 
