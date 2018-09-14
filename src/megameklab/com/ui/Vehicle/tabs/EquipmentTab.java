@@ -228,6 +228,7 @@ public class EquipmentTab extends ITab implements ActionListener {
         choiceType.setModel(typeModel);
         choiceType.setSelectedIndex(0);
         choiceType.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 filterEquipment();
             }
@@ -237,12 +238,15 @@ public class EquipmentTab extends ITab implements ActionListener {
         txtFilter.setMinimumSize(new java.awt.Dimension(200, 28));
         txtFilter.setPreferredSize(new java.awt.Dimension(200, 28));
         txtFilter.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
             public void changedUpdate(DocumentEvent e) {
                 filterEquipment();
             }
+            @Override
             public void insertUpdate(DocumentEvent e) {
                 filterEquipment();
             }
+            @Override
             public void removeUpdate(DocumentEvent e) {
                 filterEquipment();
             }
@@ -470,6 +474,7 @@ public class EquipmentTab extends ITab implements ActionListener {
         }
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
 
         if (e.getActionCommand().equals(ADD_COMMAND)) {
@@ -494,6 +499,8 @@ public class EquipmentTab extends ITab implements ActionListener {
             return;
         }
         fireTableRefresh();
+        refresh.refreshSummary();
+        refresh.refreshStatus();
     }
 
     public void updateEquipment() {
