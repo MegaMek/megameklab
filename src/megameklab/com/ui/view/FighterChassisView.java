@@ -348,7 +348,7 @@ public class FighterChassisView extends BuildView implements ActionListener, Cha
     }
     
     public void setTonnage(double tonnage) {
-        spnTonnage.setValue(new Integer((int)Math.ceil(tonnage)));
+        spnTonnage.setValue(Integer.valueOf((int)Math.ceil(tonnage)));
     }
     
     public boolean isOmni() {
@@ -380,18 +380,30 @@ public class FighterChassisView extends BuildView implements ActionListener, Cha
     }
 
     /**
-     * Select the first engine in the list that matches engine type and flags, disregarding the large engine flag.
+     * Select the first engine in the list that matches engine type and flags,
+     * ignoring large engine flag. If no match can be found based on type and flags,
+     * disregards flags as well.
+     * 
+     * @param engine The engine to match
      */
     public void setEngine(Engine engine) {
         if (null != engine) {
             int type = engine.getEngineType();
             int flags = engine.getFlags() & ~Engine.LARGE_ENGINE;
+            int nextBest = -1;
             for (int i = 0; i < cbEngine.getModel().getSize(); i++) {
                 final Engine e = cbEngine.getItemAt(i);
-                if ((e.getEngineType() == type) && ((e.getFlags() & ~Engine.LARGE_ENGINE) == flags)) {
-                    cbEngine.setSelectedIndex(i);
-                    return;
+                if (e.getEngineType() == type) {
+                    if ((e.getFlags() & ~Engine.LARGE_ENGINE) == flags) {
+                        cbEngine.setSelectedIndex(i);
+                        return;
+                    } else {
+                        nextBest = i;
+                    }
                 }
+            }
+            if (nextBest >= 0) {
+                cbEngine.setSelectedIndex(nextBest);
             }
         }
     }
