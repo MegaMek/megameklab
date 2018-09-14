@@ -305,15 +305,6 @@ public class UnitUtil {
                 apm.setLinkedBy(null);
             }
         }
-        // Some special checks for Aeros
-        if (unit instanceof Aero) {
-            if (mount.getType() instanceof WeaponType) {
-                // Aeros have additional weapon lists that need to be cleared
-                ((Aero)unit).getTotalWeaponList().remove(mount);
-                ((Aero)unit).getWeaponBayList().remove(mount);
-                ((Aero)unit).getWeaponGroupList().remove(mount);
-            }
-        }
         // We will need to reset the equipment numbers of the bay ammo and weapons
         Map<Mounted,List<Mounted>> bayWeapons = new HashMap<>();
         Map<Mounted,List<Mounted>> bayAmmo = new HashMap<>();
@@ -325,6 +316,15 @@ public class UnitUtil {
                     .map(n -> unit.getEquipment(n)).collect(Collectors.toList());
             bayAmmo.put(bay, list);
         }
+        // Some special checks for Aeros
+        if (unit instanceof Aero) {
+            if (mount.getType() instanceof WeaponType) {
+                // Aeros have additional weapon lists that need to be cleared
+                ((Aero)unit).getTotalWeaponList().remove(mount);
+                ((Aero)unit).getWeaponBayList().remove(mount);
+                ((Aero)unit).getWeaponGroupList().remove(mount);
+            }
+        }
         unit.getEquipment().remove(mount);
         if (mount.getType() instanceof MiscType) {
             unit.getMisc().remove(mount);
@@ -333,6 +333,23 @@ public class UnitUtil {
         } else {
             unit.getWeaponList().remove(mount);
             unit.getTotalWeaponList().remove(mount);
+        }
+        if (bayWeapons.containsKey(mount)) {
+            bayWeapons.get(mount).forEach(w -> {
+                removeCriticals(unit, w);
+                changeMountStatus(unit, w, Entity.LOC_NONE, Entity.LOC_NONE, false);
+            });
+            bayAmmo.get(mount).forEach(a -> {
+                removeCriticals(unit, a);
+                Mounted moveTo = UnitUtil.findUnallocatedAmmo(unit, a.getType());
+                if (null != moveTo) {
+                    moveTo.setShotsLeft(moveTo.getBaseShotsLeft() + a.getBaseShotsLeft());
+                    UnitUtil.removeMounted(unit, a);
+                }
+                changeMountStatus(unit, a, Entity.LOC_NONE, Entity.LOC_NONE, false);
+            });
+            bayWeapons.remove(mount);
+            bayAmmo.remove(mount);
         }
         for (Mounted bay : bayWeapons.keySet()) {
             bay.getBayWeapons().clear();
