@@ -4,6 +4,7 @@ v0.45.2-SNAPSHOT
 + Switched build system from ant to gradle.
 + Bug: Aerospace transport tab does not refresh when tech base/year/level changes.
 + Issue #195: Multiple Items of One Ammo Type Don't Add to Available Tonnage for Large Craft
++ Issue #198: Nova CEWS & heat sinks on vehicles
 
 v0.45.1 (2018-09-03 2300 UTC)
 + Issue #178: Equipment Table getting stuck on one equipment type.
