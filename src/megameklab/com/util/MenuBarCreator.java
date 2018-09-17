@@ -60,9 +60,9 @@ import megamek.common.Mech;
 import megamek.common.MechFileParser;
 import megamek.common.MechView;
 import megamek.common.SmallCraft;
-import megamek.common.TROView;
 import megamek.common.Tank;
 import megamek.common.loaders.BLKFile;
+import megamek.common.templates.TROView;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.MegaMekLabMainUI;
 
@@ -1354,7 +1354,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
 //      StringSelection stringSelection = new StringSelection(mview.getMechReadout());
 //      clipboard.setContents(stringSelection, this);
 //      clipboard.setContents(stringSelection, this);
-        TROView mview = new TROView(parentFrame.getEntity(), false);
+        TROView mview = TROView.createView(parentFrame.getEntity(), false);
         String doc = mview.processTemplate();
         if (null != doc) {
             StringSelection stringSelection = new StringSelection(doc);
