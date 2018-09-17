@@ -448,11 +448,22 @@ public class MekChassisView extends BuildView implements ActionListener, ChangeL
                 String name = EquipmentType.getStructureTypeName(i, isClan);
                 EquipmentType structure = EquipmentType.get(name);
                 // LAMs cannot use bulky structure
-                if ((getBaseTypeIndex() == BASE_TYPE_LAM) && (structure.getCriticals(null) != 0)) {
-                    continue;
-                }
-                if ((null != structure) && techManager.isLegal(structure)) {
+                if ((null != structure) && techManager.isLegal(structure)
+                        && ((getBaseTypeIndex() != BASE_TYPE_LAM)
+                                || (structure.getCriticals(null) == 0))) {
                     cbStructure.addItem(structure);
+                }
+                name = EquipmentType.getStructureTypeName(i, !isClan);
+                EquipmentType structure2 = EquipmentType.get(name);
+                if ((null != structure2) && (structure2 != structure) 
+                        && techManager.isLegal(structure2)
+                        && ((getBaseTypeIndex() != BASE_TYPE_LAM)
+                                || (structure2.getCriticals(null) == 0))) {
+                    cbStructure.addItem(structure2);
+                    // If we are allowing the opposite tech base it may be because we are using mixed
+                    // tech but it also may be that we are in the transitional early Clan stage when
+                    // IS equipment is available without a mixed base.
+                    cbStructure.showTechBase(true);
                 }
             }
         }
