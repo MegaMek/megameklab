@@ -350,7 +350,7 @@ public class StringUtils {
             if (mount.getType().hasSubType(MiscType.S_CLAW) || mount.getType().hasSubType(MiscType.S_CLAW_THB)) {
                 info = Integer.toString((int) Math.ceil(unit.getWeight() / 7.0));
             } else {
-                info = Integer.toString(ClubAttackAction.getDamageFor(unit, mount, false));
+                info = Integer.toString(ClubAttackAction.getDamageFor(unit, mount, false, false));
             }
         } else if ((mount.getType() instanceof MiscType) && (mount.getType().hasFlag(MiscType.F_AP_POD))) {
             info = "[PD,OS,AI]";
