@@ -42,6 +42,7 @@ import megameklab.com.ui.Mek.tabs.BuildTab;
 import megameklab.com.ui.Mek.tabs.EquipmentTab;
 import megameklab.com.ui.Mek.tabs.PreviewTab;
 import megameklab.com.ui.Mek.tabs.StructureTab;
+import megameklab.com.ui.tabs.FluffTab;
 import megameklab.com.util.MenuBarCreator;
 import megameklab.com.util.UnitUtil;
 
@@ -58,6 +59,7 @@ public class MainUI extends MegaMekLabMainUI {
     private EquipmentTab equipmentTab;
     private PreviewTab previewTab;
     private BuildTab buildTab;
+    private FluffTab fluffTab;
     private StatusBar statusbar;
     JPanel masterPanel = new JPanel();
     JScrollPane scroll = new JScrollPane();
@@ -100,6 +102,7 @@ public class MainUI extends MegaMekLabMainUI {
         statusbar = new StatusBar(this);
         equipmentTab = new EquipmentTab(this);
         buildTab = new BuildTab(this, equipmentTab);
+        fluffTab = new FluffTab(this);
         structureTab.addRefreshedListener(this);
         equipmentTab.addRefreshedListener(this);
         buildTab.addRefreshedListener(this);
@@ -110,6 +113,7 @@ public class MainUI extends MegaMekLabMainUI {
         configPane.addTab("Equipment", equipmentTab);
         //ConfigPane.addTab("Weapons", weaponTab);
         configPane.addTab("Assign Criticals", buildTab);
+        configPane.addTab("Fluff", fluffTab);
         configPane.addTab("Preview", previewTab);
 
         //masterPanel.add(header);
