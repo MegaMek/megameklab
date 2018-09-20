@@ -17,6 +17,8 @@ import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -41,7 +43,7 @@ import megameklab.com.util.ITab;
  * @author Neoancient
  *
  */
-public class FluffTab extends ITab {
+public class FluffTab extends ITab implements FocusListener {
 
     private static final long serialVersionUID = 5203904989540243537L;
 
@@ -56,6 +58,9 @@ public class FluffTab extends ITab {
     private final Map<System, JTextField> txtCompModels = new EnumMap<>(System.class);
     
     private final JTextArea txtNotes = new JTextArea(4, 40);
+    
+    private static final String TAG_MANUFACTURER = "manufacturer"; //$NON-NLS-1
+    private static final String TAG_MODEL = "model"; //$NON-NLS-1
     
     public FluffTab(EntitySource esource) {
         super(esource);
@@ -92,6 +97,7 @@ public class FluffTab extends ITab {
         txtCapabilities.setBorder(border);
         txtCapabilities.setText(getFluff().getCapabilities());
         panLeft.add(txtCapabilities, gbc);
+        txtCapabilities.addFocusListener(this);
         gbc.gridy++;
         
         panLeft.add(new JLabel(resourceMap.getString("FluffTab.txtOverview")), gbc);
@@ -101,6 +107,7 @@ public class FluffTab extends ITab {
         txtOverview.setText(getFluff().getOverview());
         txtOverview.setBorder(border);
         panLeft.add(txtOverview, gbc);
+        txtOverview.addFocusListener(this);
         gbc.gridy++;
 
         panLeft.add(new JLabel(resourceMap.getString("FluffTab.txtDeployment")), gbc);
@@ -110,6 +117,7 @@ public class FluffTab extends ITab {
         txtDeployment.setBorder(border);
         txtDeployment.setText(getFluff().getDeployment());
         panLeft.add(txtDeployment, gbc);
+        txtDeployment.addFocusListener(this);
         gbc.gridy++;
 
         panLeft.add(new JLabel(resourceMap.getString("FluffTab.txtHistory")), gbc);
@@ -119,6 +127,7 @@ public class FluffTab extends ITab {
         txtHistory.setBorder(border);
         txtHistory.setText(getFluff().getHistory());
         panLeft.add(txtHistory, gbc);
+        txtHistory.addFocusListener(this);
         gbc.gridy++;
         
         panLeft.add(new JLabel(resourceMap.getString("FluffTab.txtNotes")), gbc);
@@ -129,6 +138,7 @@ public class FluffTab extends ITab {
         txtNotes.setText(getFluff().getNotes());
         gbc.weighty = 1.0;
         panLeft.add(txtNotes, gbc);
+        txtNotes.addFocusListener(this);
         
         panRight.setLayout(new GridBagLayout());
         gbc.gridx = 0;
@@ -138,6 +148,7 @@ public class FluffTab extends ITab {
         txtManufacturer.setText(getFluff().getManufacturer());
         gbc.gridx = 1;
         panRight.add(txtManufacturer, gbc);
+        txtManufacturer.addFocusListener(this);
         gbc.gridy++;
 
         gbc.gridx = 0;
@@ -145,6 +156,7 @@ public class FluffTab extends ITab {
         txtPrimaryFactory.setText(getFluff().getPrimaryFactory());
         gbc.gridx = 1;
         panRight.add(txtPrimaryFactory, gbc);
+        txtPrimaryFactory.addFocusListener(this);
         gbc.gridy++;
         
         gbc.gridx = 0;
@@ -154,24 +166,62 @@ public class FluffTab extends ITab {
         gbc.gridx = 2;
         panRight.add(new JLabel(resourceMap.getString("FluffTab.Model")), gbc);
         gbc.gridy++;
-        for (EntityFluff.System comp : EntityFluff.System.values()) {
+        for (EntityFluff.System system : EntityFluff.System.values()) {
             gbc.gridx = 0;
-            panRight.add(new JLabel(resourceMap.getString("FluffTab.System." + comp.toString())), gbc);
+            panRight.add(new JLabel(resourceMap.getString("FluffTab.System." + system.toString())), gbc);
             gbc.gridx = 1;
             JTextField txt = new JTextField(12);
-            txt.setText(getFluff().getSystemManufacturer(comp));
+            txt.setText(getFluff().getSystemManufacturer(system));
             panRight.add(txt, gbc);
-            txtCompManufacturers.put(comp, txt);
+            txtCompManufacturers.put(system, txt);
+            txt.setName(system.name() + ":" + TAG_MANUFACTURER);
+            txt.addFocusListener(this);
             gbc.gridx = 2;
             txt = new JTextField(12);
-            txt.setText(getFluff().getSystemModel(comp));
+            txt.setText(getFluff().getSystemModel(system));
             panRight.add(txt, gbc);
-            txtCompModels.put(comp, txt);
+            txtCompModels.put(system, txt);
+            txt.setName(system.name() + ":" + TAG_MODEL);
+            txt.addFocusListener(this);
             gbc.gridy++;
         }
         gbc.gridx = 0;
         gbc.weighty = 1.0;
         panRight.add(new JPanel(), gbc);
         
+    }
+
+    @Override
+    public void focusGained(FocusEvent e) {
+        // do nothing
+    }
+
+    @Override
+    public void focusLost(FocusEvent e) {
+        if (e.getSource() == txtCapabilities) {
+            getFluff().setCapabilities(txtOverview.getText());
+        } else if (e.getSource() == txtOverview) {
+            getFluff().setOverview(txtOverview.getText());
+        } else if (e.getSource() == txtDeployment) {
+            getFluff().setDeployment(txtDeployment.getText());
+        } else if (e.getSource() == txtHistory) {
+            getFluff().setHistory(txtHistory.getText());
+        } else if (e.getSource() == txtManufacturer) {
+            getFluff().setManufacturer(txtManufacturer.getText());
+        } else if (e.getSource() == txtPrimaryFactory) {
+            getFluff().setPrimaryFactory(txtPrimaryFactory.getText());
+        } else if (e.getSource() == txtNotes) {
+            getFluff().setNotes(txtNotes.getText());
+        } else if (e.getSource() instanceof JTextField) {
+            String[] fields = ((JTextField) e.getSource()).getName().split(":");
+            EntityFluff.System system = EntityFluff.System.parse(fields[0]);
+            if (null != system) {
+                if (TAG_MANUFACTURER.equals(fields[1])) {
+                    getFluff().setSystemManufacturer(system, ((JTextField) e.getSource()).getText());
+                } else if (TAG_MODEL.equals(fields[1])) {
+                    getFluff().setSystemModel(system, ((JTextField) e.getSource()).getText());
+                }
+            }
+        }
     }
 }
