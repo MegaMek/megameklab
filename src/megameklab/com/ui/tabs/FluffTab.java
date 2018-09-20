@@ -36,6 +36,7 @@ import megamek.common.EntityFluff.System;
 import megamek.common.util.EncodeControl;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.util.ITab;
+import megameklab.com.util.RefreshListener;
 
 /**
  * Panel for editing unit fluff
@@ -62,6 +63,8 @@ public class FluffTab extends ITab implements FocusListener {
     private static final String TAG_MANUFACTURER = "manufacturer"; //$NON-NLS-1
     private static final String TAG_MODEL = "model"; //$NON-NLS-1
     
+    private RefreshListener refresh;
+    
     public FluffTab(EntitySource esource) {
         super(esource);
         initUi();
@@ -72,6 +75,10 @@ public class FluffTab extends ITab implements FocusListener {
         return eSource.getEntity().getFluff();
     }
     
+    public void setRefreshedListener(RefreshListener l) {
+        refresh = l;
+    }
+
     private void initUi() {
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Tabs", new EncodeControl()); //$NON-NLS-1$
         Border border = BorderFactory.createLineBorder(Color.BLACK);
@@ -199,7 +206,7 @@ public class FluffTab extends ITab implements FocusListener {
     @Override
     public void focusLost(FocusEvent e) {
         if (e.getSource() == txtCapabilities) {
-            getFluff().setCapabilities(txtOverview.getText());
+            getFluff().setCapabilities(txtCapabilities.getText());
         } else if (e.getSource() == txtOverview) {
             getFluff().setOverview(txtOverview.getText());
         } else if (e.getSource() == txtDeployment) {
@@ -222,6 +229,9 @@ public class FluffTab extends ITab implements FocusListener {
                     getFluff().setSystemModel(system, ((JTextField) e.getSource()).getText());
                 }
             }
+        }
+        if (null != refresh) {
+            refresh.refreshPreview();
         }
     }
 }
