@@ -106,6 +106,7 @@ public class MainUI extends MegaMekLabMainUI {
         structureTab.addRefreshedListener(this);
         equipmentTab.addRefreshedListener(this);
         buildTab.addRefreshedListener(this);
+        fluffTab.setRefreshedListener(this);
         statusbar.addRefreshedListener(this);
 
         configPane.addTab("Structure/Armor", structureTab);
