@@ -92,7 +92,10 @@ public class FluffTab extends ITab implements FocusListener {
         JPanel panLeft = new JPanel();
         JPanel panRight = new JPanel();
         add(panLeft);
-        add(panRight);
+        if (!eSource.getEntity().hasETypeFlag(Entity.ETYPE_INFANTRY)
+                || eSource.getEntity().hasETypeFlag(Entity.ETYPE_BATTLEARMOR)) {
+            add(panRight);
+        }
         
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
