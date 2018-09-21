@@ -31,6 +31,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 
+import megamek.common.Entity;
 import megamek.common.EntityFluff;
 import megamek.common.EntityFluff.System;
 import megamek.common.util.EncodeControl;
@@ -55,6 +56,10 @@ public class FluffTab extends ITab implements FocusListener {
     
     private final JTextField txtManufacturer = new JTextField(12);
     private final JTextField txtPrimaryFactory = new JTextField(12);
+    private final JTextField txtUse = new JTextField(12);
+    private final JTextField txtLength = new JTextField(8);
+    private final JTextField txtWidth = new JTextField(8);
+    private final JTextField txtHeight = new JTextField(8);
     private final Map<System, JTextField> txtCompManufacturers = new EnumMap<>(System.class);
     private final Map<System, JTextField> txtCompModels = new EnumMap<>(System.class);
     
@@ -166,6 +171,40 @@ public class FluffTab extends ITab implements FocusListener {
         txtPrimaryFactory.addFocusListener(this);
         gbc.gridy++;
         
+        if (eSource.getEntity().hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)
+                || eSource.getEntity().hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
+            gbc.gridx = 0;
+            panRight.add(new JLabel(resourceMap.getString("FluffTab.txtUse")), gbc);
+            gbc.gridx = 1;
+            txtUse.setText(getFluff().getUse());
+            panRight.add(txtUse, gbc);
+            txtUse.addFocusListener(this);
+            gbc.gridy++;
+            
+            gbc.gridx = 0;
+            panRight.add(new JLabel(resourceMap.getString("FluffTab.txtLength")), gbc);
+            gbc.gridx = 1;
+            panRight.add(new JLabel(resourceMap.getString("FluffTab.txtWidth")), gbc);
+            gbc.gridx = 2;
+            panRight.add(new JLabel(resourceMap.getString("FluffTab.txtHeight")), gbc);
+            gbc.gridy++;
+            
+            gbc.gridx = 0;
+            txtLength.setText(getFluff().getLength());
+            panRight.add(txtLength, gbc);
+            txtLength.addFocusListener(this);
+
+            gbc.gridx = 1;
+            txtWidth.setText(getFluff().getWidth());
+            panRight.add(txtWidth, gbc);
+            txtWidth.addFocusListener(this);
+
+            gbc.gridx = 2;
+            txtHeight.setText(getFluff().getHeight());
+            panRight.add(txtHeight, gbc);
+            txtHeight.addFocusListener(this);
+            gbc.gridy++;
+        }
         gbc.gridx = 0;
         panRight.add(new JLabel(resourceMap.getString("FluffTab.System")), gbc);
         gbc.gridx = 1;
@@ -174,6 +213,10 @@ public class FluffTab extends ITab implements FocusListener {
         panRight.add(new JLabel(resourceMap.getString("FluffTab.Model")), gbc);
         gbc.gridy++;
         for (EntityFluff.System system : EntityFluff.System.values()) {
+            if ((system == EntityFluff.System.JUMPJET)
+                    && eSource.getEntity().hasETypeFlag(Entity.ETYPE_AERO)) {
+                continue;
+            }
             gbc.gridx = 0;
             panRight.add(new JLabel(resourceMap.getString("FluffTab.System." + system.toString())), gbc);
             gbc.gridx = 1;
@@ -217,6 +260,14 @@ public class FluffTab extends ITab implements FocusListener {
             getFluff().setManufacturer(txtManufacturer.getText());
         } else if (e.getSource() == txtPrimaryFactory) {
             getFluff().setPrimaryFactory(txtPrimaryFactory.getText());
+        } else if (e.getSource() == txtUse) {
+            getFluff().setUse(txtUse.getText());
+        } else if (e.getSource() == txtLength) {
+            getFluff().setLength(txtLength.getText());
+        } else if (e.getSource() == txtWidth) {
+            getFluff().setWidth(txtWidth.getText());
+        } else if (e.getSource() == txtHeight) {
+            getFluff().setHeight(txtHeight.getText());
         } else if (e.getSource() == txtNotes) {
             getFluff().setNotes(txtNotes.getText());
         } else if (e.getSource() instanceof JTextField) {
