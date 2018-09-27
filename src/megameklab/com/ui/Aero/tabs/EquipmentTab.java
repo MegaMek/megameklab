@@ -71,8 +71,10 @@ import megamek.common.LocationFullException;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.WeaponType;
+import megamek.common.verifier.TestEntity;
 import megamek.common.weapons.artillery.ArtilleryWeapon;
 import megamek.common.weapons.bayweapons.BayWeapon;
+import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.util.CriticalTableModel;
 import megameklab.com.util.EquipmentTableModel;
@@ -236,6 +238,7 @@ public class EquipmentTab extends ITab implements ActionListener {
         choiceType.setModel(typeModel);
         choiceType.setSelectedIndex(0);
         choiceType.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 filterEquipment();
             }
@@ -245,12 +248,15 @@ public class EquipmentTab extends ITab implements ActionListener {
         txtFilter.setMinimumSize(new java.awt.Dimension(200, 28));
         txtFilter.setPreferredSize(new java.awt.Dimension(200, 28));
         txtFilter.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
             public void changedUpdate(DocumentEvent e) {
                 filterEquipment();
             }
+            @Override
             public void insertUpdate(DocumentEvent e) {
                 filterEquipment();
             }
+            @Override
             public void removeUpdate(DocumentEvent e) {
                 filterEquipment();
             }
@@ -481,6 +487,10 @@ public class EquipmentTab extends ITab implements ActionListener {
 
     private void addEquipment(EquipmentType equip) {
         Mounted mount = null;
+        int loc = Entity.LOC_NONE;
+        if (!TestEntity.eqRequiresLocation(getAero(), equip)) {
+            loc = TestEntity.getSystemWideLocation(getAero());
+        }
         boolean isMisc = equip instanceof MiscType;
         if (isMisc && equip.hasFlag(MiscType.F_TARGCOMP)) {
             if (!UnitUtil.hasTargComp(getAero())) {
@@ -500,7 +510,7 @@ public class EquipmentTab extends ITab implements ActionListener {
                     mount = new Mounted(getAero(), equip);
                     mount.setShotsLeft(((AmmoType)equip).getShots() * count);
                     try {
-                        getAero().addEquipment(mount, Entity.LOC_NONE, false);
+                        getAero().addEquipment(mount, loc, false);
                         equipmentList.addCrit(mount);
                     } catch (LocationFullException lfe) {
                         // this can't happen, we add to Entity.LOC_NONE
@@ -510,16 +520,19 @@ public class EquipmentTab extends ITab implements ActionListener {
                 try {
                     for (int i = 0; i < count; i++) {
                         mount = new Mounted(getAero(), equip);
-                        getAero().addEquipment(mount, Entity.LOC_NONE, false);
+                        getAero().addEquipment(mount, loc, false);
                         equipmentList.addCrit(mount);
                     }
                 } catch (LocationFullException lfe) {
-                    // this can't happen, we add to Entity.LOC_NONE
+                    MegaMekLab.getLogger().error(getClass(), "addEquipment(EquipmentType)",
+                            "While attempting to add " + equip + " to location " + loc);
+                    MegaMekLab.getLogger().error(getClass(), "addEquipment(EquipmentType)", lfe);
                 }
             }
         }
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
 
         if (e.getActionCommand().equals(ADD_COMMAND)) {
