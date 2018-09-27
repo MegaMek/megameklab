@@ -14,6 +14,8 @@
 package megameklab.com.ui.aerospace;
 
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.ResourceBundle;
@@ -21,8 +23,11 @@ import java.util.ResourceBundle;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.ListCellRenderer;
 import javax.swing.border.TitledBorder;
 
 import megamek.common.Entity;
@@ -30,6 +35,7 @@ import megamek.common.Warship;
 import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestAdvancedAerospace;
 import megamek.common.verifier.TestAero;
+import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestSmallCraft;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.util.BayWeaponCriticalTree;
@@ -54,7 +60,7 @@ public class LargeCraftCriticalView extends IView {
     
     // Maximum number of arcs for small craft/dropship; aerodyne only use four, spheroid
     // and non-warship capital ships use 6
-    private static final int NUM_ARCS = 8;
+    private static final int NUM_ARCS = 9;
     
     
     private JPanel nosePanel = new JPanel();
@@ -71,6 +77,7 @@ public class LargeCraftCriticalView extends IView {
     private JPanel rightColumn = new JPanel();
     
     private BayWeaponCriticalTree arcTrees[] = new BayWeaponCriticalTree[NUM_ARCS];
+    private JList<String> lstSystem = new JList<>();
     private String aerodyneArcNames[];
     private String spheroidArcNames[];
     private JLabel lblSlotCount[] = new JLabel[NUM_ARCS];
@@ -114,6 +121,15 @@ public class LargeCraftCriticalView extends IView {
         nosePanel = createArcPanel(TestSmallCraft.ARC_NOSE, resourceMap);
         midColumn.add(nosePanel);
         midColumn.add(Box.createVerticalGlue());
+        JPanel panel = new JPanel();
+        lstSystem.setCellRenderer(sysWideCellRenderer);
+        lstSystem.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.black));
+        panel.setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createEmptyBorder(), "System Wide",
+                TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
+        panel.add(lstSystem);
+        midColumn.add(panel);
+        midColumn.add(Box.createVerticalGlue());
         aftPanel = createArcPanel(TestSmallCraft.ARC_AFT, resourceMap);
         midColumn.add(aftPanel);
         
@@ -132,7 +148,6 @@ public class LargeCraftCriticalView extends IView {
         add(mainPanel);
         
         refresh();
-
     }
     
     private JPanel createArcPanel(int arc, ResourceBundle resourceMap) {
@@ -227,6 +242,9 @@ public class LargeCraftCriticalView extends IView {
                 ? TestSmallCraft.extraSlotCost(getSmallCraft())
                         : TestAdvancedAerospace.extraSlotCost(getJumpship());
         for (int arc = 0; arc < extra.length; arc++) {
+            if (null == lblSlotCount[arc]) {
+                continue;
+            }
             arcTrees[arc].rebuild();
             arcTrees[arc].repaint();
             lblSlotCount[arc].setText(String.valueOf(arcTrees[arc].getSlotCount()));
@@ -234,5 +252,34 @@ public class LargeCraftCriticalView extends IView {
             lblExtraTonnage[arc].setText(String.valueOf(extra[arc]));
         }
         
+        int syswide = TestEntity.getSystemWideLocation(getAero());
+        DefaultListModel<String> model = new DefaultListModel<>();
+        getAero().getEquipment().forEach(m -> {
+            if (m.getLocation() == syswide) {
+                model.addElement(m.getType().getName());
+            }
+        });
+        if (model.isEmpty()) {
+            model.addElement("None");
+        }
+        lstSystem.setModel(model);
     }
+    
+    private ListCellRenderer<String> sysWideCellRenderer = new ListCellRenderer<String>() {
+        @Override
+        public Component getListCellRendererComponent(JList<? extends String> list, String value, int index, boolean isSelected,
+                boolean cellHasFocus) {
+            JLabel label = new JLabel();
+
+            label.setText("<html><i>" + value + "</i></html>");
+            label.setToolTipText(value);
+            label.setBorder(BorderFactory.createLineBorder(Color.black, 1));
+            label.setPreferredSize(new Dimension(180, 15));
+            label.setMaximumSize(new Dimension(180, 15));
+            label.setMinimumSize(new Dimension(180, 15));
+
+            return label;
+        }
+
+    };
 }
