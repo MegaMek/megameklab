@@ -288,9 +288,9 @@ public class BuildView extends IView implements ActionListener, MouseListener {
             String[] locNames = getAero().getLocationNames();
             // A list of the valid locations we can add the selected eq to
             ArrayList<Integer> validLocs = new ArrayList<Integer>();
-            // The number of possible locations, Aeros' have LOC_WINGS, which we
-            //  want ot ignore, hence -1
-            int numLocs = getAero().locations() - 1;
+            // The number of possible locations, Aeros' have LOC_WINGS and LOC_FUSELAGE, which we
+            //  want ot ignore, hence -2
+            int numLocs = getAero().locations() - 2;
             // If it's a weapon, there are restrictions
             if (eq.getType() instanceof WeaponType){
                 int[] availSpace = TestAero.availableSpace(getAero()); 
