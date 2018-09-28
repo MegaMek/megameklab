@@ -3361,12 +3361,20 @@ public class UnitUtil {
 
     public static boolean isValidLocation(Entity unit, EquipmentType eq,
             int location) {
-        if (unit instanceof BattleArmor) {
+        if (unit.hasETypeFlag(Entity.ETYPE_BATTLEARMOR)) {
             // Infantry weapons can only be mounted in armored gloves/APMs
             if (eq.hasFlag(WeaponType.F_INFANTRY)) {
                 return false;
             }
             return true;
+        } else if (unit.isFighter()) {
+            // Weapons must have a firing arc. Mostly we don't want them going into the fuselage.
+            if ((eq instanceof WeaponType) || (UnitUtil.isWeaponEnhancement(eq))) {
+                return location < Aero.LOC_WINGS;
+            } else if ((eq instanceof AmmoType) || eq.hasFlag(MiscType.F_BLUE_SHIELD)) {
+                // All ammo goes into the fuselage, as does the blue shield system per construction rules.
+                return location == Aero.LOC_FUSELAGE;
+            }
         }
         if ((eq instanceof MiscType)) {
             if (((eq.hasFlag(MiscType.F_CLUB) || eq
@@ -3461,7 +3469,7 @@ public class UnitUtil {
             	}
             }
             
-            if (unit instanceof Tank) {
+            if (unit.hasETypeFlag(Entity.ETYPE_TANK)) {
             	if (location == Tank.LOC_BODY) {
             		//Equipment which cannot be installed in the body
             		if (eq.hasFlag(MiscType.F_HARJEL)
@@ -3470,7 +3478,7 @@ public class UnitUtil {
             		}
             	} else {
             		//Equipment which must be installed in the body
-            		if (eq.hasFlag(MiscType.F_CASE)) {
+            		if (eq.hasFlag(MiscType.F_CASE) || eq.hasFlag(MiscType.F_BLUE_SHIELD)) {
             			return false;
             		}
             	}
