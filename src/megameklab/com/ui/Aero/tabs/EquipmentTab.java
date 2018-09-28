@@ -504,8 +504,7 @@ public class EquipmentTab extends ITab implements ActionListener {
                     mount = new Mounted(getAero(), equip);
                     mount.setShotsLeft(((AmmoType)equip).getShots() * count);
                     try {
-                        getAero().addEquipment(mount,
-                                getAero().isFighter()? Aero.LOC_FUSELAGE : Entity.LOC_NONE, false);
+                        getAero().addEquipment(mount, Entity.LOC_NONE, false);
                         equipmentList.addCrit(mount);
                     } catch (LocationFullException lfe) {
                         // this can't happen, we add to Entity.LOC_NONE
@@ -515,7 +514,12 @@ public class EquipmentTab extends ITab implements ActionListener {
                 try {
                     for (int i = 0; i < count; i++) {
                         mount = new Mounted(getAero(), equip);
-                        getAero().addEquipment(mount, Entity.LOC_NONE, false);
+                        if ((equip instanceof AmmoType)
+                                || ((equip instanceof MiscType) && equip.hasFlag(MiscType.F_BLUE_SHIELD))) { 
+                            getAero().addEquipment(mount, Aero.LOC_FUSELAGE, false);
+                        } else {
+                            getAero().addEquipment(mount, Entity.LOC_NONE, false);
+                        }
                         equipmentList.addCrit(mount);
                     }
                 } catch (LocationFullException lfe) {

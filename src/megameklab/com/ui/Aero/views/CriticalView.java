@@ -17,19 +17,14 @@
 package megameklab.com.ui.Aero.views;
 
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.TitledBorder;
 
@@ -66,8 +61,6 @@ public class CriticalView extends IView {
     private JPanel middlePanel = new JPanel();   
     private JPanel bottomPanel = new JPanel();
     
-    private final JList<String> lstFuselage = new JList<>();
-
     private RefreshListener refresh;
 
     private boolean showEmpty = false;
@@ -104,8 +97,6 @@ public class CriticalView extends IView {
                 BorderFactory.createEmptyBorder(), "Left Wing"));  
         leftWingPanel.setLayout(new BoxLayout(leftWingPanel, BoxLayout.Y_AXIS));
         middlePanel.add(fuselagePanel);
-        fuselagePanel.add(lstFuselage);
-        lstFuselage.setCellRenderer(fuselageCellRenderer);
         fuselagePanel.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createEmptyBorder(), "Fuselage"));  
         fuselagePanel.setLayout(new BoxLayout(fuselagePanel, BoxLayout.Y_AXIS));
@@ -134,6 +125,7 @@ public class CriticalView extends IView {
         rightWingPanel.removeAll();
         nosePanel.removeAll();
         aftPanel.removeAll();
+        fuselagePanel.removeAll();
         
         int[] availSpace = TestAero.availableSpace(getAero());
         
@@ -145,9 +137,10 @@ public class CriticalView extends IView {
         }
 
         synchronized (getAero()) {
-            // Aeros have 5 locs, the 5th is "wings" which should be ignored
-            int numLocs = getAero().locations() - 1;
-            for (int location = 0; location < numLocs; location++) {
+            for (int location = 0; location < getAero().locations(); location++) {
+                if (location == Aero.LOC_WINGS) {
+                    continue;
+                }
                 Vector<String> critNames = new Vector<String>(1, 1);
                 int numWeapons = 0;
                 for (int slot = 0; slot < getAero().getNumberOfCriticals(location); 
@@ -241,21 +234,13 @@ public class CriticalView extends IView {
                         aftSpace.setText("Weapons: " + 
                                 numWeapons + "/" + availSpace[location]);
                         break;
+                    case Aero.LOC_FUSELAGE:
+                        fuselagePanel.add(criticalSlotList);
+                        break;
                 }
                     
                 
             }
-            
-            DefaultListModel<String> model = new DefaultListModel<>();
-            getAero().getEquipment().forEach(m -> {
-                if (m.getLocation() == Aero.LOC_FUSELAGE) {
-                    model.addElement(m.getType().getName());
-                }
-            });
-            if (model.isEmpty()) {
-                model.addElement("None");
-            }
-            lstFuselage.setModel(model);
             
             leftWingPanel.add(leftSpace);
             leftWingPanel.add(Box.createVerticalStrut(8));
@@ -277,22 +262,4 @@ public class CriticalView extends IView {
             aftPanel.invalidate();
         }
     }
-
-    private ListCellRenderer<String> fuselageCellRenderer = new ListCellRenderer<String>() {
-        @Override
-        public Component getListCellRendererComponent(JList<? extends String> list, String value, int index, boolean isSelected,
-                boolean cellHasFocus) {
-            JLabel label = new JLabel();
-
-            label.setText("<html><i>" + value + "</i></html>");
-            label.setToolTipText(value);
-            label.setBorder(BorderFactory.createLineBorder(Color.black, 1));
-            label.setPreferredSize(new Dimension(110,15));
-            label.setMaximumSize(new Dimension(110,15));
-            label.setMinimumSize(new Dimension(110,15));
-
-            return label;
-        }
-
-    };
 }
