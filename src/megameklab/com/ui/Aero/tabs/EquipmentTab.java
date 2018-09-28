@@ -71,10 +71,8 @@ import megamek.common.LocationFullException;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.WeaponType;
-import megamek.common.verifier.TestEntity;
 import megamek.common.weapons.artillery.ArtilleryWeapon;
 import megamek.common.weapons.bayweapons.BayWeapon;
-import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.util.CriticalTableModel;
 import megameklab.com.util.EquipmentTableModel;
@@ -487,10 +485,6 @@ public class EquipmentTab extends ITab implements ActionListener {
 
     private void addEquipment(EquipmentType equip) {
         Mounted mount = null;
-        int loc = Entity.LOC_NONE;
-        if (!TestEntity.eqRequiresLocation(getAero(), equip)) {
-            loc = TestEntity.getSystemWideLocation(getAero());
-        }
         boolean isMisc = equip instanceof MiscType;
         if (isMisc && equip.hasFlag(MiscType.F_TARGCOMP)) {
             if (!UnitUtil.hasTargComp(getAero())) {
@@ -510,7 +504,8 @@ public class EquipmentTab extends ITab implements ActionListener {
                     mount = new Mounted(getAero(), equip);
                     mount.setShotsLeft(((AmmoType)equip).getShots() * count);
                     try {
-                        getAero().addEquipment(mount, loc, false);
+                        getAero().addEquipment(mount,
+                                getAero().isFighter()? Aero.LOC_FUSELAGE : Entity.LOC_NONE, false);
                         equipmentList.addCrit(mount);
                     } catch (LocationFullException lfe) {
                         // this can't happen, we add to Entity.LOC_NONE
@@ -520,13 +515,11 @@ public class EquipmentTab extends ITab implements ActionListener {
                 try {
                     for (int i = 0; i < count; i++) {
                         mount = new Mounted(getAero(), equip);
-                        getAero().addEquipment(mount, loc, false);
+                        getAero().addEquipment(mount, Entity.LOC_NONE, false);
                         equipmentList.addCrit(mount);
                     }
                 } catch (LocationFullException lfe) {
-                    MegaMekLab.getLogger().error(getClass(), "addEquipment(EquipmentType)",
-                            "While attempting to add " + equip + " to location " + loc);
-                    MegaMekLab.getLogger().error(getClass(), "addEquipment(EquipmentType)", lfe);
+                    // Shouldn't happen when adding to LOC_NONE
                 }
             }
         }
