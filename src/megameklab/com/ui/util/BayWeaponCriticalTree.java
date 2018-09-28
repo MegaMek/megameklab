@@ -58,6 +58,7 @@ import megamek.common.WeaponType;
 import megamek.common.annotations.Nullable;
 import megamek.common.logging.LogLevel;
 import megamek.common.verifier.TestAero;
+import megamek.common.verifier.TestEntity;
 import megamek.common.weapons.bayweapons.BayWeapon;
 import megamek.common.weapons.bayweapons.PPCBayWeapon;
 import megamek.common.weapons.ppc.PPCWeapon;
@@ -905,6 +906,9 @@ public class BayWeaponCriticalTree extends JTree {
                         || UnitUtil.isWeaponEnhancement(eq.getType()))) {
             return baysFor(eq).size() > 0;
         }
+        if (TestEntity.eqRequiresLocation(eSource.getEntity(), eq.getType())) {
+            return location != TestEntity.getSystemWideLocation(eSource.getEntity());
+        }
         return true;
     }
 
@@ -1300,6 +1304,9 @@ public class BayWeaponCriticalTree extends JTree {
      * @return    Whether the equipment can be dropped in the location
      */
     public boolean isValidDropLocation(JTree.DropLocation loc, Mounted eq) {
+        if (!canAdd(eq)) {
+            return false;
+        }
         if (!eSource.getEntity().usesWeaponBays()) {
             return true;
         }

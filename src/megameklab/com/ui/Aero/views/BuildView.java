@@ -245,6 +245,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
     private void addAllListeners() {
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
         fireTableRefresh();
     }
@@ -262,18 +263,22 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         return equipmentTable;
     }
 
+    @Override
     public void mouseClicked(MouseEvent e) {
 
     }
 
+    @Override
     public void mouseEntered(MouseEvent e) {
 
     }
 
+    @Override
     public void mouseExited(MouseEvent e) {
 
     }
 
+    @Override
     public void mousePressed(MouseEvent e) {
         // On right-click, we want to generate menu items to add to specific 
         //  locations, but only if those locations are make sense
@@ -320,6 +325,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
 
                     final int loc = location;
                     item.addActionListener(new ActionListener() {
+                        @Override
                         public void actionPerformed(ActionEvent e) {
                             jMenuLoadComponent_actionPerformed(loc, selectedRow);
                         }
@@ -331,6 +337,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         }
     }
 
+    @Override
     public void mouseReleased(MouseEvent e) {
 
     }
