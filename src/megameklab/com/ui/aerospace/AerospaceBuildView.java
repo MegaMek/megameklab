@@ -233,7 +233,7 @@ public class AerospaceBuildView extends IView implements MouseListener {
                         selectedRow, CriticalTableModel.EQUIPMENT);
                 for (BayWeaponCriticalTree l : arcViews) {
                     // Aerodyne small craft and dropships skip the aft side arcs
-                    if (!l.validForUnit(getAero())) {
+                    if (!l.validForUnit(getAero()) || !l.canAdd(eq)) {
                         continue;
                     }
 
