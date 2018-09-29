@@ -514,7 +514,7 @@ public class EquipmentTab extends ITab implements ActionListener {
                 try {
                     for (int i = 0; i < count; i++) {
                         mount = new Mounted(getAero(), equip);
-                        if ((equip instanceof AmmoType)
+                        if ((getAero().isFighter() && (equip instanceof AmmoType))
                                 || ((equip instanceof MiscType) && equip.hasFlag(MiscType.F_BLUE_SHIELD))) { 
                             getAero().addEquipment(mount, Aero.LOC_FUSELAGE, false);
                         } else {
