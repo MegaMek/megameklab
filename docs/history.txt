@@ -8,6 +8,7 @@ v0.45.2-SNAPSHOT
 + Issue #203: Inner Sphere Endo Steel is unavailable to early clan mechs
 + Issue #194: Large Aerospace Unit Tonnage Doesn't Update at Bottom of Screen
 + Issue #206: Mass Driver Ammo doesn't use up weight
++ Issue #208: MMLs don't seem to need gunners
 
 v0.45.1 (2018-09-03 2300 UTC)
 + Issue #178: Equipment Table getting stuck on one equipment type.
