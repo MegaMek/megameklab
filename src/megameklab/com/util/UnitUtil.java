@@ -4208,10 +4208,11 @@ public class UnitUtil {
         // Limit the first class quarters to number of officers + passengers. It is possible to house
         // enlisted in first class quarters, but that is beyond the scope of this and will need to
         // be done by hand.
-        int officer = Math.min(aero.getNOfficers() + aero.getNPassenger(),
+        int officer1stC = Math.min(aero.getNOfficers() + aero.getNPassenger(),
                 quartersCount.get(TestAero.Quarters.FIRST_CLASS));
-        officer = Math.max(officer, aero.getNOfficers());
-        int firstClass = Math.max(0, officer - aero.getNOfficers());
+        officer1stC = Math.max(officer1stC, aero.getNOfficers());
+        int firstClass = Math.max(0, officer1stC - aero.getNOfficers());
+        int officer = officer1stC - firstClass;
 
         // Limit the steerage quarters to the number of crew that have not been assigned standard
         // or officer quarters and passengers that have not been assigned first class.
