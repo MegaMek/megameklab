@@ -236,6 +236,7 @@ public class EquipmentTab extends ITab implements ActionListener {
         choiceType.setModel(typeModel);
         choiceType.setSelectedIndex(0);
         choiceType.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 filterEquipment();
             }
@@ -245,12 +246,15 @@ public class EquipmentTab extends ITab implements ActionListener {
         txtFilter.setMinimumSize(new java.awt.Dimension(200, 28));
         txtFilter.setPreferredSize(new java.awt.Dimension(200, 28));
         txtFilter.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
             public void changedUpdate(DocumentEvent e) {
                 filterEquipment();
             }
+            @Override
             public void insertUpdate(DocumentEvent e) {
                 filterEquipment();
             }
+            @Override
             public void removeUpdate(DocumentEvent e) {
                 filterEquipment();
             }
@@ -510,16 +514,22 @@ public class EquipmentTab extends ITab implements ActionListener {
                 try {
                     for (int i = 0; i < count; i++) {
                         mount = new Mounted(getAero(), equip);
-                        getAero().addEquipment(mount, Entity.LOC_NONE, false);
+                        if ((getAero().isFighter() && (equip instanceof AmmoType))
+                                || ((equip instanceof MiscType) && equip.hasFlag(MiscType.F_BLUE_SHIELD))) { 
+                            getAero().addEquipment(mount, Aero.LOC_FUSELAGE, false);
+                        } else {
+                            getAero().addEquipment(mount, Entity.LOC_NONE, false);
+                        }
                         equipmentList.addCrit(mount);
                     }
                 } catch (LocationFullException lfe) {
-                    // this can't happen, we add to Entity.LOC_NONE
+                    // Shouldn't happen when adding to LOC_NONE
                 }
             }
         }
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
 
         if (e.getActionCommand().equals(ADD_COMMAND)) {
