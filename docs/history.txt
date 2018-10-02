@@ -10,6 +10,9 @@ v0.45.2-SNAPSHOT
 + Issue #206: Mass Driver Ammo doesn't use up weight
 + Issue #208: MMLs don't seem to need gunners
 + Issue #207: Warship Crew Accommodation Officer Count/Quarters
++ PR #209: System-wide equipment [general location for non-weapon equipment for aerospace units and
+           ammo in fighters]
++ Issue #205: Blue Shield Particle Field Dampener (BSPFD) can't be dragged into ASF slots
 
 v0.45.1 (2018-09-03 2300 UTC)
 + Issue #178: Equipment Table getting stuck on one equipment type.
