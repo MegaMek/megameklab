@@ -1378,7 +1378,7 @@ public class UnitUtil {
             }
             points = (unit.getTotalInternal() * 2) + headPoints;
         } else if (unit.hasETypeFlag(Entity.ETYPE_PROTOMECH)) {
-            TestProtomech.maxArmorFactor((Protomech) unit);
+            points = TestProtomech.maxArmorFactor((Protomech) unit);
         } else if (unit.hasETypeFlag(Entity.ETYPE_TANK)) {
             points = (int) Math.floor((unit.getWeight() * 3.5) + 40);
         } else if (unit.hasETypeFlag(Entity.ETYPE_BATTLEARMOR)) {
@@ -1464,6 +1464,10 @@ public class UnitUtil {
      * @return  the number of armor points available for the armor tonnage
      */
     public static double getRawArmorPoints(Entity unit, double armorTons) {
+        if (unit.hasETypeFlag(Entity.ETYPE_PROTOMECH)) {
+            return armorTons /
+                    EquipmentType.getProtomechArmorWeightPerPoint(unit.getArmorType(Protomech.LOC_TORSO));
+        }
         return armorTons * UnitUtil.getArmorPointsPerTon(unit,
                 unit.getArmorType(1), unit.getArmorTechLevel(1));
     }
