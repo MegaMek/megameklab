@@ -36,7 +36,7 @@ import megamek.common.TechConstants;
 import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.Aero.tabs.BuildTab;
 import megameklab.com.ui.Aero.tabs.EquipmentTab;
-import megameklab.com.ui.Aero.tabs.PreviewTab;
+import megameklab.com.ui.tabs.PreviewTab;
 import megameklab.com.ui.Aero.tabs.StructureTab;
 import megameklab.com.util.MenuBarCreator;
 
