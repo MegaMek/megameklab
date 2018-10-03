@@ -582,7 +582,12 @@ public class ProtomekStructureTab extends ITab implements ProtomekBuildListener 
                     m.setLocation(Entity.LOC_NONE);
                 }
             });
+        } else {
+            getProtomech().initializeArmor(0, Protomech.LOC_MAINGUN);
+            getProtomech().setArmorType(getProtomech().getArmorType(Protomech.LOC_TORSO));
+            getProtomech().setArmorTechLevel(getProtomech().getArmorTechLevel(Protomech.LOC_TORSO));
         }
+        getProtomech().autoSetInternal();
         panArmorAllocation.setFromEntity(getProtomech());
         refresh.refreshBuild();
         refresh.refreshPreview();
