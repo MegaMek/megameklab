@@ -2713,6 +2713,21 @@ public class UnitUtil {
 
         return false;
     }
+    
+    public static boolean isEntityEquipment(EquipmentType eq, Entity en) {
+        if (en instanceof Mech) {
+            return isMechEquipment(eq, (Mech) en);
+        } else if (en instanceof Protomech) {
+            return isProtomechEquipment(eq, (Protomech) en);
+        } else if (en instanceof Tank) {
+            return isTankEquipment(eq, (Tank) en);
+        } else if (en instanceof BattleArmor) {
+            return isBAEquipment(eq, (BattleArmor) en);
+        } else if (en instanceof Aero) {
+            return isAeroEquipment(eq, (Aero) en);
+        }
+        return true;
+    }
 
     public static boolean isMechEquipment(EquipmentType eq, Mech unit) {
 
@@ -2791,6 +2806,31 @@ public class UnitUtil {
 
         return false;
     }
+    
+    public static boolean isProtomechEquipment(EquipmentType eq, Protomech proto) {
+        if (eq instanceof MiscType) {
+            return eq.hasFlag(MiscType.F_PROTOMECH_EQUIPMENT);
+        } else if (eq instanceof WeaponType) {
+            return eq.hasFlag(WeaponType.F_PROTO_WEAPON);
+        }
+        return true;
+    }
+    
+    public static boolean isTankEquipment(EquipmentType eq, Tank tank) {
+        if (eq instanceof MiscType) {
+            if (tank.isSupportVehicle()) {
+                return eq.hasFlag(MiscType.F_SUPPORT_TANK_EQUIPMENT);
+            } else if (tank.hasETypeFlag(Entity.ETYPE_VTOL)){
+                return eq.hasFlag(MiscType.F_TANK_EQUIPMENT)
+                        || eq.hasFlag(MiscType.F_VTOL_EQUIPMENT);
+            } else {
+                return eq.hasFlag(MiscType.F_TANK_EQUIPMENT);
+            } 
+        } else if (eq instanceof WeaponType) {
+            return isTankWeapon(eq, tank);
+        }
+        return true;
+    }
 
     public static boolean isTankWeapon(EquipmentType eq, Entity unit) {
         if (eq instanceof InfantryWeapon) {
@@ -2848,6 +2888,16 @@ public class UnitUtil {
         }
         return false;
     }
+
+    public static boolean isBAEquipment(EquipmentType eq, BattleArmor ba) {
+        if (eq instanceof MiscType) {
+                return eq.hasFlag(MiscType.F_BA_EQUIPMENT);
+        } else if (eq instanceof WeaponType) {
+            return isBattleArmorWeapon(eq, ba);
+        }
+        return true;
+    }
+
     public static boolean isBattleArmorAPWeapon(EquipmentType etype){
         InfantryWeapon infWeap = null;
         if ((etype == null) || !(etype instanceof InfantryWeapon)){
