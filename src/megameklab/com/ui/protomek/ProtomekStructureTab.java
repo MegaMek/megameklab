@@ -200,11 +200,11 @@ public class ProtomekStructureTab extends ITab implements ProtomekBuildListener 
     }
 
     public boolean isQuad() {
-        return panChassis.getMotiveTypeIndex() == ProtomekChassisView.MOTIVE_TYPE_QUAD;
+        return panChassis.getMotiveType() == ProtomekChassisView.MOTIVE_TYPE_QUAD;
     }
 
     public boolean isGlider() {
-        return panChassis.getMotiveTypeIndex() == ProtomekChassisView.MOTIVE_TYPE_GLIDER;
+        return panChassis.getMotiveType() == ProtomekChassisView.MOTIVE_TYPE_GLIDER;
     }
 
     /**
@@ -321,7 +321,7 @@ public class ProtomekStructureTab extends ITab implements ProtomekBuildListener 
     @Override
     public void tonnageChanged(double tonnage) {
         if (!recalculateEngineRating(panMovement.getWalk(), tonnage,
-                panChassis.getMotiveTypeIndex() != ProtomekChassisView.MOTIVE_TYPE_BIPED)) {
+                panChassis.getMotiveType() != ProtomekChassisView.MOTIVE_TYPE_BIPED)) {
             panChassis.setFromEntity(getProtomech());
             return;
         }
@@ -335,6 +335,7 @@ public class ProtomekStructureTab extends ITab implements ProtomekBuildListener 
 
     @Override
     public void typeChanged(int motiveType) {
+        boolean wasQuad = getProtomech().isQuad();
         switch (motiveType) {
             case ProtomekChassisView.MOTIVE_TYPE_BIPED:
                 getProtomech().setMovementMode(EntityMovementMode.BIPED);
@@ -349,12 +350,20 @@ public class ProtomekStructureTab extends ITab implements ProtomekBuildListener 
                     .filter(m -> (m.getLocation() == Protomech.LOC_LARM)
                             || (m.getLocation() == Protomech.LOC_RARM))
                     .forEach(m -> m.setLocation(Entity.LOC_NONE));
+                getProtomech().initializeArmor(0, Protomech.LOC_LARM);
+                getProtomech().initializeArmor(0, Protomech.LOC_RARM);
                 break;
             case ProtomekChassisView.MOTIVE_TYPE_GLIDER:
                 getProtomech().setMovementMode(EntityMovementMode.WIGE);
                 getProtomech().setIsQuad(false);
                 getProtomech().setIsGlider(true);
                 break;
+        }
+        getProtomech().autoSetInternal();
+        if (wasQuad) {
+            getProtomech().autoSetInternal();
+            getProtomech().initializeArmor(0, Protomech.LOC_LARM);
+            getProtomech().initializeArmor(0, Protomech.LOC_RARM);
         }
         refresh();
         refresh.refreshBuild();
@@ -424,7 +433,7 @@ public class ProtomekStructureTab extends ITab implements ProtomekBuildListener 
     @Override
     public void walkChanged(int walkMP) {
         recalculateEngineRating(walkMP, panChassis.getTonnage(),
-                panChassis.getMotiveTypeIndex() != ProtomekChassisView.MOTIVE_TYPE_BIPED);
+                panChassis.getMotiveType() != ProtomekChassisView.MOTIVE_TYPE_BIPED);
         getProtomech().setOriginalWalkMP(walkMP);
         panSummary.refresh();
         refresh.refreshBuild();
