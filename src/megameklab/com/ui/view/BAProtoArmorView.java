@@ -33,6 +33,7 @@ import megamek.common.EquipmentType;
 import megamek.common.ITechManager;
 import megamek.common.MiscType;
 import megamek.common.TechConstants;
+import megamek.common.annotations.Nullable;
 import megamek.common.util.EncodeControl;
 import megameklab.com.ui.util.TechComboBox;
 import megameklab.com.ui.view.listeners.BuildListener;
@@ -118,6 +119,14 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
         
         cbArmorType.addActionListener(this);
         spnArmorPoints.addChangeListener(this);
+    }
+    
+    public @Nullable EquipmentType getArmor() {
+        return (EquipmentType) cbArmorType.getSelectedItem();
+    }
+    
+    public int getArmorPoints() {
+        return spnArmorPointsModel.getNumber().intValue();
     }
     
     public void refresh() {
