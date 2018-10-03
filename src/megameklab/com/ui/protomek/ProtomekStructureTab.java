@@ -44,7 +44,6 @@ import megamek.common.TechConstants;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestProtomech;
 import megameklab.com.ui.EntitySource;
-import megameklab.com.ui.Mek.views.SummaryView;
 import megameklab.com.ui.view.ArmorAllocationView;
 import megameklab.com.ui.view.BAProtoArmorView;
 import megameklab.com.ui.view.BasicInfoView;
@@ -69,7 +68,7 @@ public class ProtomekStructureTab extends ITab implements ProtomekBuildListener 
     private ProtomekChassisView panChassis;
     private BAProtoArmorView panArmor;
     private MovementView panMovement;
-    private SummaryView panSummary;
+//    private SummaryView panSummary;
     private ArmorAllocationView panArmorAllocation;
 
     RefreshListener refresh = null;
@@ -90,7 +89,7 @@ public class ProtomekStructureTab extends ITab implements ProtomekBuildListener 
         panArmor = new BAProtoArmorView(panBasicInfo);
         panMovement = new MovementView(panBasicInfo);
         panArmorAllocation = new ArmorAllocationView(panBasicInfo, Entity.ETYPE_MECH);
-        panSummary = new SummaryView(eSource);
+//        panSummary = new SummaryView(eSource);
 
         GridBagConstraints gbc;
 
@@ -113,8 +112,8 @@ public class ProtomekStructureTab extends ITab implements ProtomekBuildListener 
         leftPanel.add(Box.createGlue());
 
         centerPanel.add(panArmor);
-        centerPanel.add(panMovement);       
-        centerPanel.add(panSummary);
+        centerPanel.add(panMovement);
+//        centerPanel.add(panSummary);
         centerPanel.add(Box.createVerticalGlue());
 
         rightPanel.add(panArmorAllocation);
@@ -137,7 +136,7 @@ public class ProtomekStructureTab extends ITab implements ProtomekBuildListener 
         panChassis.setBorder(BorderFactory.createTitledBorder("Chassis"));
         panMovement.setBorder(BorderFactory.createTitledBorder("Movement"));
         panArmor.setBorder(BorderFactory.createTitledBorder("Armor"));
-        panSummary.setBorder(BorderFactory.createTitledBorder("Summary"));
+//        panSummary.setBorder(BorderFactory.createTitledBorder("Summary"));
         panArmorAllocation.setBorder(BorderFactory.createTitledBorder("Armor Allocation"));
     }
 
@@ -149,7 +148,7 @@ public class ProtomekStructureTab extends ITab implements ProtomekBuildListener 
         panMovement.setFromEntity(getProtomech());
         panArmorAllocation.setFromEntity(getProtomech());
 
-        panSummary.refresh();
+//        panSummary.refresh();
         addAllListeners();
 
     }
@@ -253,7 +252,7 @@ public class ProtomekStructureTab extends ITab implements ProtomekBuildListener 
 
     @Override
     public void refreshSummary() {
-        panSummary.refresh();
+//        panSummary.refresh();
     }
 
     @Override
@@ -368,7 +367,7 @@ public class ProtomekStructureTab extends ITab implements ProtomekBuildListener 
         UnitUtil.removeISorArmorMounts(getProtomech(), false);
         createArmorMountsAndSetArmorType(at, aTechLevel);
         panArmorAllocation.setFromEntity(getProtomech());
-        panSummary.refresh();
+//        panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshBuild();
         refresh.refreshPreview();
@@ -378,7 +377,7 @@ public class ProtomekStructureTab extends ITab implements ProtomekBuildListener 
     public void armorTonnageChanged(double tonnage) {
         getProtomech().setArmorTonnage(tonnage);
         panArmorAllocation.setFromEntity(getProtomech());
-        panSummary.refresh();
+//        panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
     }
@@ -392,7 +391,7 @@ public class ProtomekStructureTab extends ITab implements ProtomekBuildListener 
         panArmor.addListener(this);
 
         panArmorAllocation.setFromEntity(getProtomech());
-        panSummary.refresh();
+//        panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
     }
@@ -414,7 +413,7 @@ public class ProtomekStructureTab extends ITab implements ProtomekBuildListener 
         panArmor.addListener(this);
 
         panArmorAllocation.setFromEntity(getProtomech());
-        panSummary.refresh();
+//        panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
     }
@@ -424,7 +423,7 @@ public class ProtomekStructureTab extends ITab implements ProtomekBuildListener 
         recalculateEngineRating(walkMP, panChassis.getTonnage(),
                 panChassis.getMotiveTypeIndex() != ProtomekChassisView.MOTIVE_TYPE_BIPED);
         getProtomech().setOriginalWalkMP(walkMP);
-        panSummary.refresh();
+//        panSummary.refresh();
         refresh.refreshBuild();
         refresh.refreshStatus();
         refresh.refreshPreview();
@@ -458,7 +457,7 @@ public class ProtomekStructureTab extends ITab implements ProtomekBuildListener 
             }
             jumpMP--;
         }
-        panSummary.refresh();
+//        panSummary.refresh();
         refresh.refreshBuild();
         refresh.refreshStatus();
         refresh.refreshPreview();

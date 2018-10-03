@@ -92,24 +92,25 @@ public class ProtomekChassisView extends BuildView implements ActionListener, Ch
         gbc.gridy = 1;
         gbc.gridwidth = 3;
         setFieldSize(cbMotiveType, controlSize);
-        cbMotiveType.setToolTipText(resourceMap.getString("ProtomekChassisView.cbMotiveType.tooltip")); //$NON-NLS-1$
         add(cbMotiveType, gbc);
         cbMotiveType.addActionListener(this);
     }
 
-    public void setFromEntity(Protomech mech) {
+    public void setFromEntity(Protomech proto) {
         refresh();
-        setTonnage(mech.getWeight());
+        setTonnage(proto.getWeight());
         cbMotiveType.removeActionListener(this);
-        cbMotiveType.removeAllItems();
-        cbMotiveType.addItem(MOTIVE_TYPE_BIPED);
-        if (techManager.isLegal(Protomech.TA_QUAD)) {
-            cbMotiveType.addItem(MOTIVE_TYPE_QUAD);
-        }
-        if (techManager.isLegal(Protomech.TA_GLIDER)) {
-            cbMotiveType.addItem(MOTIVE_TYPE_GLIDER);
+        if (proto.isGlider()) {
+            cbMotiveType.setSelectedItem(MOTIVE_TYPE_GLIDER);
+        } else if (proto.isQuad()) {
+            cbMotiveType.setSelectedItem(MOTIVE_TYPE_QUAD);
+        } else {
+            cbMotiveType.setSelectedItem(MOTIVE_TYPE_BIPED);
         }
         cbMotiveType.addActionListener(this);
+        if (null == cbMotiveType.getSelectedItem()) {
+            cbMotiveType.setSelectedItem(MOTIVE_TYPE_BIPED);
+        }
     }
     
     public void setAsCustomization() {
@@ -123,6 +124,16 @@ public class ProtomekChassisView extends BuildView implements ActionListener, Ch
     
     public void refresh() {
         refreshTonnage();
+        cbMotiveType.removeActionListener(this);
+        cbMotiveType.removeAllItems();
+        cbMotiveType.addItem(MOTIVE_TYPE_BIPED);
+        if (techManager.isLegal(Protomech.TA_QUAD)) {
+            cbMotiveType.addItem(MOTIVE_TYPE_QUAD);
+        }
+        if (techManager.isLegal(Protomech.TA_GLIDER)) {
+            cbMotiveType.addItem(MOTIVE_TYPE_GLIDER);
+        }
+        cbMotiveType.addActionListener(this);
     }
 
     private void refreshTonnage() {
