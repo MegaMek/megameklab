@@ -58,6 +58,7 @@ import megamek.common.Jumpship;
 import megamek.common.Mech;
 import megamek.common.MechFileParser;
 import megamek.common.MechView;
+import megamek.common.Protomech;
 import megamek.common.SmallCraft;
 import megamek.common.Tank;
 import megamek.common.loaders.BLKFile;
@@ -1034,9 +1035,11 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             parentFrame.createNewUnit(Entity.ETYPE_BATTLEARMOR);
         } else if (parentFrame.getEntity() instanceof Infantry) {
             parentFrame.createNewUnit(Entity.ETYPE_INFANTRY);
+        } else if (parentFrame.getEntity() instanceof Protomech) {
+            parentFrame.createNewUnit(Entity.ETYPE_PROTOMECH);
         } else {
-            System.out.println("util.MenuBarCreatoer: " +
-                        "Received unknown entityType!");
+            MegaMekLab.getLogger().warning(getClass(), "jMenuResetEntity_actionPerformed",
+                    "Received unknown entityType!");
         }
         setVisible(true);
         reload();

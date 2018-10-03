@@ -30,6 +30,7 @@ import megamek.common.Protomech;
 import megamek.common.SimpleTechLevel;
 import megamek.common.verifier.TestProtomech;
 import megameklab.com.ui.MegaMekLabMainUI;
+import megameklab.com.ui.tabs.EquipmentTab;
 import megameklab.com.ui.tabs.PreviewTab;
 import megameklab.com.util.MenuBarCreator;
 
@@ -46,9 +47,9 @@ public class ProtomekMainUI extends MegaMekLabMainUI {
     JTabbedPane configPane = new JTabbedPane(SwingConstants.TOP);
     JPanel contentPane;
     private ProtomekStructureTab structureTab;
-//    private EquipmentTab equipmentTab;
+    private EquipmentTab equipmentTab;
     private PreviewTab previewTab;
-//    private BuildTab buildTab;
+    private ProtomekBuildTab buildTab;
     private ProtomekStatusBar statusbar;
     JPanel masterPanel = new JPanel();
     JScrollPane scroll = new JScrollPane();
@@ -85,16 +86,16 @@ public class ProtomekMainUI extends MegaMekLabMainUI {
         previewTab = new PreviewTab(this);
 
         statusbar = new ProtomekStatusBar(this);
-//        equipmentTab = new EquipmentTab(this);
-//        buildTab = new BuildTab(this, equipmentTab);
+        equipmentTab = new EquipmentTab(this);
+        buildTab = new ProtomekBuildTab(this, equipmentTab);
         structureTab.addRefreshedListener(this);
-//        equipmentTab.addRefreshedListener(this);
-//        buildTab.addRefreshedListener(this);
+        equipmentTab.addRefreshedListener(this);
+        buildTab.addRefreshedListener(this);
         statusbar.addRefreshedListener(this);
 
         configPane.addTab("Structure/Armor", structureTab);
-//        configPane.addTab("Equipment", equipmentTab);
-//        configPane.addTab("Assign Criticals", buildTab);
+        configPane.addTab("Equipment", equipmentTab);
+        configPane.addTab("Assign Criticals", buildTab);
         configPane.addTab("Preview", previewTab);
 
         //masterPanel.add(header);
@@ -147,8 +148,8 @@ public class ProtomekMainUI extends MegaMekLabMainUI {
     public void refreshAll() {
         statusbar.refresh();
         structureTab.refresh();
-//        equipmentTab.refresh();
-//        buildTab.refresh();
+        equipmentTab.refresh();
+        buildTab.refresh();
         previewTab.refresh();
     }
 
@@ -158,12 +159,12 @@ public class ProtomekMainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshBuild() {
-//        buildTab.refresh();
+        buildTab.refresh();
     }
 
     @Override
     public void refreshEquipment() {
-//        equipmentTab.refresh();
+        equipmentTab.refresh();
     }
 
     @Override
@@ -207,7 +208,7 @@ public class ProtomekMainUI extends MegaMekLabMainUI {
     
     @Override
     public void refreshEquipmentTable() {
-//        equipmentTab.refreshTable();
+        equipmentTab.refreshTable();
     }
 
     @Override
