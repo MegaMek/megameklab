@@ -83,6 +83,7 @@ import megamek.common.verifier.TestBattleArmor;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestInfantry;
 import megamek.common.verifier.TestMech;
+import megamek.common.verifier.TestProtomech;
 import megamek.common.verifier.TestSmallCraft;
 import megamek.common.verifier.TestSupportVehicle;
 import megamek.common.verifier.TestTank;
@@ -1376,6 +1377,8 @@ public class UnitUtil {
                 headPoints = 4;
             }
             points = (unit.getTotalInternal() * 2) + headPoints;
+        } else if (unit.hasETypeFlag(Entity.ETYPE_PROTOMECH)) {
+            TestProtomech.maxArmorFactor((Protomech) unit);
         } else if (unit.hasETypeFlag(Entity.ETYPE_TANK)) {
             points = (int) Math.floor((unit.getWeight() * 3.5) + 40);
         } else if (unit.hasETypeFlag(Entity.ETYPE_BATTLEARMOR)) {
