@@ -21,8 +21,10 @@ import java.util.Vector;
 import java.util.stream.Collectors;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
@@ -31,6 +33,7 @@ import javax.swing.border.TitledBorder;
 import megamek.common.Mounted;
 import megamek.common.Protomech;
 import megamek.common.loaders.MtfFile;
+import megamek.common.verifier.TestProtomech;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.util.CritListCellRenderer;
 import megameklab.com.util.DropTargetCriticalList;
@@ -52,6 +55,15 @@ public class ProtomekCriticalView extends IView {
     private JPanel rightPanel = new JPanel();
     private JPanel bodyPanel = new JPanel();
 
+    private JLabel mainGunSpace = new JLabel("",JLabel.LEFT);
+    private JLabel torsoSpace = new JLabel("",JLabel.LEFT);
+    private JLabel leftSpace = new JLabel("",JLabel.LEFT);
+    private JLabel rightSpace = new JLabel("",JLabel.LEFT);
+
+    private JLabel torsoWeight = new JLabel("",JLabel.LEFT);
+    private JLabel leftWeight = new JLabel("",JLabel.LEFT);
+    private JLabel rightWeight = new JLabel("",JLabel.LEFT);
+
     private JPanel topPanel = new JPanel();
     private JPanel middlePanel = new JPanel();
     private JPanel bottomPanel = new JPanel();
@@ -72,17 +84,25 @@ public class ProtomekCriticalView extends IView {
         middlePanel.setLayout(new BoxLayout(middlePanel, BoxLayout.X_AXIS));
         bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.X_AXIS));
 
+        topPanel.add(mainGunPanel);
+        mainGunPanel.setLayout(new BoxLayout(mainGunPanel, BoxLayout.Y_AXIS));
+        mainGunPanel.setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createEmptyBorder(), "Main Gun",
+                TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
         mainPanel.add(topPanel);
         
         middlePanel.add(leftPanel);
+        leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
         leftPanel.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createEmptyBorder(), "Left Arm",
                 TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
         middlePanel.add(torsoPanel);
+        torsoPanel.setLayout(new BoxLayout(torsoPanel, BoxLayout.Y_AXIS));
         torsoPanel.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createEmptyBorder(), "Torso", TitledBorder.TOP,
                 TitledBorder.DEFAULT_POSITION));
         middlePanel.add(rightPanel);
+        rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
         rightPanel.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createEmptyBorder(), "Right Arm",
                 TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
@@ -109,20 +129,17 @@ public class ProtomekCriticalView extends IView {
         rightPanel.removeAll();
         bodyPanel.removeAll();
 
-        if (getProtomech().hasMainGun()) {
-            mainGunPanel.setBorder(BorderFactory.createTitledBorder(
-                    BorderFactory.createEmptyBorder(), "Main Gun",
-                    TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
-            topPanel.add(mainGunPanel);
-        } else {
-            topPanel.remove(mainGunPanel);
-        }
+        mainGunPanel.setVisible(getProtomech().hasMainGun());
+        leftPanel.setVisible(!getProtomech().isQuad());
+        rightPanel.setVisible(!getProtomech().isQuad());
 
         Map<Integer, List<Mounted>> equipByLoc = getProtomech().getEquipment().stream()
                 .collect(Collectors.groupingBy(Mounted::getLocation));
         for (int location = 0; location < getProtomech().locations(); location++) {
             List<Mounted> equipment = equipByLoc.get(location);
             Vector<String> critNames = new Vector<>(1, 1);
+            int slotsUsed = 0;
+            double weightUsed = 0.0;
             
             if ((null == equipment) || equipment.isEmpty()) {
                 critNames.add(MtfFile.EMPTY);
@@ -137,6 +154,10 @@ public class ProtomekCriticalView extends IView {
                         critName.append(" (R)");
                     }
                     critNames.add(critName.toString());
+                    if (TestProtomech.requiresSlot(m.getType())) {
+                        slotsUsed++;
+                        weightUsed += m.getType().getTonnage(getProtomech(), location);
+                    }
                 }
             }
 
@@ -158,20 +179,42 @@ public class ProtomekCriticalView extends IView {
             switch (location) {
                 case Protomech.LOC_TORSO:
                     torsoPanel.add(criticalSlotList);
+                    torsoSpace.setText("Slots: " + slotsUsed
+                            + "/" + TestProtomech.maxSlotsByLocation(location, getProtomech()));
+                    torsoWeight.setText(String.format("Weight: %3.0f/%3.0f", weightUsed * 1000,
+                            TestProtomech.maxWeightByLocation(location, getProtomech()) * 1000));
                     break;
                 case Protomech.LOC_LARM:
                     leftPanel.add(criticalSlotList);
+                    leftSpace.setText("Slots: " + slotsUsed
+                            + "/" + TestProtomech.maxSlotsByLocation(location, getProtomech()));
+                    leftWeight.setText(String.format("Weight: %3.0f/%3.0f", weightUsed * 1000,
+                            TestProtomech.maxWeightByLocation(location, getProtomech()) * 1000));
                     break;
                 case Protomech.LOC_RARM:
                     rightPanel.add(criticalSlotList);
+                    rightSpace.setText("Slots: " + slotsUsed
+                            + "/" + TestProtomech.maxSlotsByLocation(location, getProtomech()));
+                    rightWeight.setText(String.format("Weight: %3.0f/%3.0f", weightUsed * 1000,
+                            TestProtomech.maxWeightByLocation(location, getProtomech()) * 1000));
                     break;
                 case Protomech.LOC_BODY:
                     bodyPanel.add(criticalSlotList);
                     break;
                 case Protomech.LOC_MAINGUN:
                     mainGunPanel.add(criticalSlotList);
+                    mainGunSpace.setText("Slots: " + slotsUsed
+                            + "/" + TestProtomech.maxSlotsByLocation(location, getProtomech()));
                     break;
             }
+            mainGunPanel.add(mainGunSpace);
+            torsoPanel.add(torsoSpace);
+            torsoPanel.add(torsoWeight);
+            leftPanel.add(leftSpace);
+            leftPanel.add(leftWeight);
+            rightPanel.add(rightSpace);
+            rightPanel.add(rightWeight);
+
             torsoPanel.repaint();
             leftPanel.repaint();
             rightPanel.repaint();
