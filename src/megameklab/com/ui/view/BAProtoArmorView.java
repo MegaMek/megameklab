@@ -32,9 +32,11 @@ import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.ITechManager;
 import megamek.common.MiscType;
+import megamek.common.Protomech;
 import megamek.common.TechConstants;
 import megamek.common.annotations.Nullable;
 import megamek.common.util.EncodeControl;
+import megamek.common.verifier.TestProtomech;
 import megameklab.com.ui.util.TechComboBox;
 import megameklab.com.ui.view.listeners.BuildListener;
 
@@ -113,6 +115,10 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
             spnArmorPointsModel.setValue(Math.min(((BattleArmor)en).getMaximumArmorPoints(),
                     en.getOArmor(BattleArmor.LOC_TROOPER_1)));
             spnArmorPointsModel.setMaximum(((BattleArmor)en).getMaximumArmorPoints());
+        } else if (en.hasETypeFlag(Entity.ETYPE_PROTOMECH)) {
+            final int max = TestProtomech.maxArmorFactor((Protomech) en);
+            spnArmorPointsModel.setValue(Math.min(max, en.getTotalOArmor()));
+            spnArmorPointsModel.setMaximum(max);
         } else {
             spnArmorPointsModel.setValue(en.getTotalOArmor());
         }
