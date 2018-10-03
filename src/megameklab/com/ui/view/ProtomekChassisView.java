@@ -93,6 +93,9 @@ public class ProtomekChassisView extends BuildView implements ActionListener, Ch
         gbc.gridx = 1;
         gbc.gridy = 1;
         gbc.gridwidth = 3;
+        cbMotiveType.addItem(MOTIVE_TYPE_BIPED);
+        cbMotiveType.addItem(MOTIVE_TYPE_QUAD);
+        cbMotiveType.addItem(MOTIVE_TYPE_GLIDER);
         setFieldSize(cbMotiveType, controlSize);
         add(cbMotiveType, gbc);
         cbMotiveType.addActionListener(this);
@@ -118,9 +121,6 @@ public class ProtomekChassisView extends BuildView implements ActionListener, Ch
             cbMotiveType.setSelectedItem(MOTIVE_TYPE_BIPED);
         }
         cbMotiveType.addActionListener(this);
-        if (null == cbMotiveType.getSelectedItem()) {
-            cbMotiveType.setSelectedItem(MOTIVE_TYPE_BIPED);
-        }
         chkMainGun.setSelected(proto.hasMainGun());
     }
     
@@ -135,16 +135,6 @@ public class ProtomekChassisView extends BuildView implements ActionListener, Ch
     
     public void refresh() {
         refreshTonnage();
-        cbMotiveType.removeActionListener(this);
-        cbMotiveType.removeAllItems();
-        cbMotiveType.addItem(MOTIVE_TYPE_BIPED);
-        if (techManager.isLegal(Protomech.TA_QUAD)) {
-            cbMotiveType.addItem(MOTIVE_TYPE_QUAD);
-        }
-        if (techManager.isLegal(Protomech.TA_GLIDER)) {
-            cbMotiveType.addItem(MOTIVE_TYPE_GLIDER);
-        }
-        cbMotiveType.addActionListener(this);
     }
 
     private void refreshTonnage() {
@@ -172,18 +162,14 @@ public class ProtomekChassisView extends BuildView implements ActionListener, Ch
         spnTonnage.setValue(Integer.valueOf((int)Math.ceil(tonnage)));
     }
     
-    public int getMotiveTypeIndex() {
-        return cbMotiveType.getSelectedIndex();
-    }
-    
-    public void setMotiveTypeIndex(int index) {
-        cbMotiveType.setSelectedIndex(index);
+    public int getMotiveType() {
+        return ((Integer) cbMotiveType.getSelectedItem()).intValue();
     }
     
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == cbMotiveType) {
-            listeners.forEach(l -> l.typeChanged(getMotiveTypeIndex()));
+            listeners.forEach(l -> l.typeChanged(getMotiveType()));
         } else if (e.getSource() == chkMainGun) {
             listeners.forEach(l -> l.mainGunChanged(chkMainGun.isSelected()));
         }
