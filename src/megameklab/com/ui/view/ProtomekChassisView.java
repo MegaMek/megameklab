@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import javax.swing.JCheckBox;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
@@ -59,6 +60,7 @@ public class ProtomekChassisView extends BuildView implements ActionListener, Ch
     final private SpinnerNumberModel tonnageModel = new SpinnerNumberModel(2, 2, 15, 1);
     final private JSpinner spnTonnage = new JSpinner(tonnageModel);
     final private CustomComboBox<Integer> cbMotiveType = new CustomComboBox<>(i -> motiveTypeNames[i]);
+    final private JCheckBox chkMainGun = new JCheckBox();
     
     private final ITechManager techManager;
     
@@ -94,6 +96,14 @@ public class ProtomekChassisView extends BuildView implements ActionListener, Ch
         setFieldSize(cbMotiveType, controlSize);
         add(cbMotiveType, gbc);
         cbMotiveType.addActionListener(this);
+        
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.gridwidth = 2;
+        chkMainGun.setText(resourceMap.getString("ProtomekChassisView.chkMainGun.text"));
+        chkMainGun.setToolTipText(resourceMap.getString("ProtomekChassisView.chkMainGun.tooltip"));
+        add(chkMainGun, gbc);
+        chkMainGun.addActionListener(this);
     }
 
     public void setFromEntity(Protomech proto) {
@@ -111,6 +121,7 @@ public class ProtomekChassisView extends BuildView implements ActionListener, Ch
         if (null == cbMotiveType.getSelectedItem()) {
             cbMotiveType.setSelectedItem(MOTIVE_TYPE_BIPED);
         }
+        chkMainGun.setSelected(proto.hasMainGun());
     }
     
     public void setAsCustomization() {
@@ -173,6 +184,8 @@ public class ProtomekChassisView extends BuildView implements ActionListener, Ch
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == cbMotiveType) {
             listeners.forEach(l -> l.typeChanged(getMotiveTypeIndex()));
+        } else if (e.getSource() == chkMainGun) {
+            listeners.forEach(l -> l.mainGunChanged(chkMainGun.isSelected()));
         }
         refresh();
     }
