@@ -32,6 +32,7 @@ import megamek.common.AmmoType;
 import megamek.common.Entity;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
+import megamek.common.verifier.TestProtomech;
 import megamek.common.weapons.Weapon;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.util.CriticalTableModel;
@@ -118,15 +119,6 @@ public class ProtomekBuildView extends IView implements ActionListener, MouseLis
         Collections.sort(masterEquipmentList, StringUtils.mountedComparator());
 
         // Time to Sort
-        // HeatSinks first
-        for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
-            if (UnitUtil.isHeatSink(masterEquipmentList.get(pos))) {
-                equipmentList.addCrit(masterEquipmentList.get(pos));
-                masterEquipmentList.remove(pos);
-                pos--;
-            }
-        }
-
         // weapons and ammo
         Vector<Mounted> weaponsNAmmoList = new Vector<Mounted>(10, 1);
         for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
@@ -144,15 +136,6 @@ public class ProtomekBuildView extends IView implements ActionListener, MouseLis
         // Equipment
         for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
             if ((masterEquipmentList.get(pos).getType() instanceof MiscType) && UnitUtil.isArmor(masterEquipmentList.get(pos).getType())) {
-                equipmentList.addCrit(masterEquipmentList.get(pos));
-                masterEquipmentList.remove(pos);
-                pos--;
-            }
-        }
-
-        // armor
-        for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
-            if (UnitUtil.isArmor(masterEquipmentList.get(pos).getType())) {
                 equipmentList.addCrit(masterEquipmentList.get(pos));
                 masterEquipmentList.remove(pos);
                 pos--;
@@ -196,6 +179,32 @@ public class ProtomekBuildView extends IView implements ActionListener, MouseLis
     public JTable getTable() {
         return equipmentTable;
     }
+    
+    /**
+     * Checks whether the space has room for the equipment within the slot and weight limits.
+     * 
+     * @param location A Protomech location
+     * @param mount    The equipment to be added to the location
+     * @return Whether the equipment can be added without exceeding the limits.
+     */
+    public boolean hasRoom(int location, Mounted mount) {
+        int slots = TestProtomech.maxSlotsByLocation(location, getProtomech()) - 1;
+        double weight = TestProtomech.maxWeightByLocation(location, getProtomech())
+                - mount.getType().getTonnage(getProtomech(), location);
+        if ((slots < 0) || (weight < 0)) {
+            return false;
+        }
+        for (Mounted m : getProtomech().getEquipment()) {
+            if (m.getLocation() == location) {
+                slots--;
+                weight -= m.getType().getTonnage(getProtomech(), location);
+                if ((slots < 0) || (weight < 0)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 
     @Override
     public void mouseClicked(MouseEvent e) {
@@ -222,12 +231,15 @@ public class ProtomekBuildView extends IView implements ActionListener, MouseLis
             String[] locations;
 
             locations = getProtomech().getLocationNames();
+            Mounted mount = (Mounted)equipmentTable.getModel().getValueAt(selectedRow, CriticalTableModel.EQUIPMENT);
 
             for (int location = 0; location < getProtomech().locations(); location++) {
-                item = new JMenuItem("Add to " + locations[location]);
-                final int loc = location;
-                item.addActionListener(ev -> jMenuLoadComponent_actionPerformed(loc, selectedRow));
-                popup.add(item);
+                if (hasRoom(location, mount)) {
+                    item = new JMenuItem("Add to " + locations[location]);
+                    final int loc = location;
+                    item.addActionListener(ev -> addToLocation(loc, mount));
+                    popup.add(item);
+                }
             }
 
             popup.show(this, e.getX(), e.getY());
@@ -239,15 +251,8 @@ public class ProtomekBuildView extends IView implements ActionListener, MouseLis
 
     }
 
-    private void jMenuLoadComponent_actionPerformed(int location, int selectedRow) {
-        Mounted eq = (Mounted)equipmentTable.getModel().getValueAt(selectedRow, CriticalTableModel.EQUIPMENT);
-        UnitUtil.changeMountStatus(getProtomech(), eq, location, -1, false);
-
-        try {
-            getProtomech().addEquipment(eq, location, false);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+    private void addToLocation(int location, Mounted mount) {
+        UnitUtil.changeMountStatus(getProtomech(), mount, location, -1, false);
 
         // go back up to grandparent build tab and fire a full refresh.
         ((ProtomekBuildTab) getParent().getParent()).refreshAll();
