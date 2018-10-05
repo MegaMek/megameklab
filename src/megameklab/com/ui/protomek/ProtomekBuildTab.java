@@ -28,6 +28,7 @@ import megamek.common.Entity;
 import megamek.common.MechFileParser;
 import megamek.common.Mounted;
 import megamek.common.loaders.EntityLoadingException;
+import megamek.common.verifier.TestProtomech;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.tabs.EquipmentTab;
 import megameklab.com.util.CriticalTableModel;
@@ -128,13 +129,9 @@ public class ProtomekBuildTab extends ITab implements ActionListener {
     private void autoFillCrits() {
 
         for (Mounted mount : buildView.getTableModel().getCrits()) {
-            for (int location = 0; location < getTank().locations(); location++) {
-                try {
-                    getTank().addEquipment(mount, location, false);
-                    UnitUtil.changeMountStatus(getTank(), mount, location, Entity.LOC_NONE, false);
-                    break;
-                } catch (Exception ex) {
-                    ex.printStackTrace();
+            for (int location = 0; location < getProtomech().locations(); location++) {
+                if (UnitUtil.protomechHasRoom(getProtomech(), location, mount)) {
+                    UnitUtil.changeMountStatus(getProtomech(), mount, location, Entity.LOC_NONE, false);
                 }
             }
         }
@@ -143,22 +140,11 @@ public class ProtomekBuildTab extends ITab implements ActionListener {
     }
 
     private void resetCrits() {
-        for (Mounted mount : getTank().getEquipment()) {
+        for (Mounted mount : getProtomech().getEquipment()) {
             // Fixed shouldn't be removed
-            if (UnitUtil.isFixedLocationSpreadEquipment(mount.getType())) {
-                continue;
+            if (TestProtomech.requiresSlot(mount.getType())) {
+                UnitUtil.changeMountStatus(getProtomech(), mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
             }
-            UnitUtil.removeCriticals(getTank(), mount);
-            UnitUtil.changeMountStatus(getTank(), mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
-        }
-        // Check linkings after you remove everything.
-        try {
-            MechFileParser.postLoadInit(getTank());
-        } catch (EntityLoadingException ele) {
-            // do nothing.
-        } catch (Exception ex) {
-
-            ex.printStackTrace();
         }
 
         refresh.refreshAll();
