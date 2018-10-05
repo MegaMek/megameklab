@@ -29,11 +29,13 @@ import javax.swing.table.TableColumn;
 import megamek.common.AmmoType;
 import megamek.common.BattleArmor;
 import megamek.common.Entity;
+import megamek.common.Mech;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.Tank;
 import megamek.common.WeaponType;
 import megamek.common.verifier.TestEntity;
+import megamek.common.verifier.TestProtomech;
 
 public class CriticalTableModel extends AbstractTableModel {
 
@@ -76,15 +78,15 @@ public class CriticalTableModel extends AbstractTableModel {
         if (tableType == WEAPONTABLE) {
             longValues = new String[] { "XXXXXXXXX", "XXXXXXXXX", "XXXXXXXXX",
                     "XXXXXXXXX", "XXX" };
-            columnNames = new String[] { "Name", "Tons", "Crits", "Heat", 
+            columnNames = new String[] { "Name", "Tons", "Slots", "Heat", 
                     "Loc" };
         }
         
         if (kgStandard) {
             columnNames[TONNAGE] = "Kg";
         }
-        if (unit instanceof Tank) {
-            columnNames[CRITS] = "Slots";
+        if ((unit instanceof Mech) || ((unit instanceof Tank) && ((Tank) unit).isSupportVehicle())) {
+            columnNames[CRITS] = "Crits";
         }
         
         this.unit = unit;
@@ -170,6 +172,9 @@ public class CriticalTableModel extends AbstractTableModel {
         case CRITS:
             if (unit instanceof Tank) {
                 return crit.getType().getTankslots(unit);
+            }
+            if (unit.hasETypeFlag(Entity.ETYPE_PROTOMECH)) {
+                return TestProtomech.requiresSlot(crit.getType())? 1 : 0;
             }
             if (unit.usesWeaponBays() && (crit.getType() instanceof AmmoType)) {
                 return crit.getUsableShotsLeft() / ((AmmoType)crit.getType()).getShots();
