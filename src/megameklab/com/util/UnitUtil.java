@@ -3448,6 +3448,12 @@ public class UnitUtil {
                 // All ammo goes into the fuselage, as does the blue shield system per construction rules.
                 return location == Aero.LOC_FUSELAGE;
             }
+        } else if (unit.hasETypeFlag(Entity.ETYPE_PROTOMECH)) {
+            if (TestProtomech.eqRequiresLocation(unit, eq)) {
+                return TestProtomech.maxSlotsByLocation(location, (Protomech) unit) > 0;
+            } else {
+                return location == Protomech.LOC_BODY;
+            }
         }
         if ((eq instanceof MiscType)) {
             if (((eq.hasFlag(MiscType.F_CLUB) || eq
@@ -3602,6 +3608,32 @@ public class UnitUtil {
             }
         }
 
+        return true;
+    }
+    
+    /**
+     * Checks whether the space has room for the equipment within the slot and weight limits.
+     * 
+     * @param location A Protomech location
+     * @param mount    The equipment to be added to the location
+     * @return Whether the equipment can be added without exceeding the limits.
+     */
+    public static boolean protomechHasRoom(Protomech proto, int location, Mounted mount) {
+        int slots = TestProtomech.maxSlotsByLocation(location, proto) - 1;
+        double weight = TestProtomech.maxWeightByLocation(location, proto)
+                - mount.getType().getTonnage(proto, location);
+        if ((slots < 0) || (weight < 0)) {
+            return false;
+        }
+        for (Mounted m : proto.getEquipment()) {
+            if (m.getLocation() == location) {
+                slots--;
+                weight -= m.getType().getTonnage(proto, location);
+                if ((slots < 0) || (weight < 0)) {
+                    return false;
+                }
+            }
+        }
         return true;
     }
 
