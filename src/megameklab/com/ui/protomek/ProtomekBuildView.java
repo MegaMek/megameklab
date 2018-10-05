@@ -13,6 +13,7 @@
  */
 package megameklab.com.ui.protomek;
 
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -70,6 +71,9 @@ public class ProtomekBuildView extends IView implements ActionListener, MouseLis
         equipmentTable.setDragEnabled(true);
         cth = new CriticalTransferHandler(eSource, refresh);
         equipmentTable.setTransferHandler(cth);
+        equipmentTable.setIntercellSpacing(new Dimension(0, 0));
+        equipmentTable.setShowGrid(false);
+        equipmentTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         equipmentList.initColumnSizes(equipmentTable);
 
