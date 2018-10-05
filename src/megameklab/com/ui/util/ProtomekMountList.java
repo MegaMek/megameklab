@@ -16,6 +16,7 @@ package megameklab.com.ui.util;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -30,6 +31,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+import javax.swing.ListSelectionModel;
 
 import megamek.common.AmmoType;
 import megamek.common.Entity;
@@ -55,22 +57,19 @@ public class ProtomekMountList extends JList<Mounted> {
     private final int location;
     private RefreshListener refresh;
     
-    private final MountedListModel model = new MountedListModel();
-
     public ProtomekMountList(EntitySource eSource, RefreshListener refresh, int location) {
         this.eSource = eSource;
         this.refresh = refresh;
         this.location = location;
-        for (Mounted m : eSource.getEntity().getEquipment()) {
-            if (m.getLocation() == location) {
-                model.add(m);
-            }
-        }
-        setModel(model);
+        refreshContents();
         setCellRenderer(new MountCellRenderer(true));
         addMouseListener(mouseListener);
         setDragEnabled(true);
         setTransferHandler(new CriticalTransferHandler(eSource, refresh));
+        
+        setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        setFont(new Font("Arial", Font.PLAIN, 10));
+        setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.BLACK.darker()));
     }
     
     public Protomech getProtomech() {
@@ -81,10 +80,27 @@ public class ProtomekMountList extends JList<Mounted> {
         return location;
     }
     
+    public void setRefresh(RefreshListener refresh) {
+        this.refresh = refresh;
+    }
+    
     private void refresh() {
-        refresh.refreshEquipment();
-        refresh.refreshPreview();
-        refresh.refreshBuild();
+        if (null != refresh) {
+            refresh.refreshEquipment();
+            refresh.refreshPreview();
+            refresh.refreshBuild();
+        }
+    }
+    
+    public void refreshContents() {
+        MountedListModel model = new MountedListModel();
+        for (Mounted m : getProtomech().getEquipment()) {
+            if (m.getLocation() == location) {
+                model.add(m);
+            }
+        }
+        setModel(model);
+        setVisibleRowCount(model.getSize());
     }
     
     private void removeMount(Mounted mount) {
@@ -109,7 +125,7 @@ public class ProtomekMountList extends JList<Mounted> {
                 return;
             }
             final int index = locationToIndex(e.getPoint());
-            final Mounted mount = model.getElementAt(index);
+            final Mounted mount = getModel().getElementAt(index);
             if (null == mount) {
                 return;
             }

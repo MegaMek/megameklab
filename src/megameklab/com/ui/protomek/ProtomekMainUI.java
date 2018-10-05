@@ -87,10 +87,9 @@ public class ProtomekMainUI extends MegaMekLabMainUI {
 
         statusbar = new ProtomekStatusBar(this);
         equipmentTab = new EquipmentTab(this);
-        buildTab = new ProtomekBuildTab(this, equipmentTab);
+        buildTab = new ProtomekBuildTab(this, equipmentTab, this);
         structureTab.addRefreshedListener(this);
         equipmentTab.addRefreshedListener(this);
-        buildTab.addRefreshedListener(this);
         statusbar.addRefreshedListener(this);
 
         configPane.addTab("Structure/Armor", structureTab);
