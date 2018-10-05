@@ -25,9 +25,7 @@ import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
 
 import megamek.common.Entity;
-import megamek.common.MechFileParser;
 import megamek.common.Mounted;
-import megamek.common.loaders.EntityLoadingException;
 import megamek.common.verifier.TestProtomech;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.tabs.EquipmentTab;
@@ -60,8 +58,9 @@ public class ProtomekBuildTab extends ITab implements ActionListener {
     private String AUTOFILLCOMMAND = "autofillbuttoncommand";
     private String RESETCOMMAND = "resetbuttoncommand";
 
-    public ProtomekBuildTab(EntitySource eSource, EquipmentTab equipment) {
+    public ProtomekBuildTab(EntitySource eSource, EquipmentTab equipment, RefreshListener refresh) {
         super(eSource);
+        this.refresh = refresh;
         this.critList = equipment.getEquipmentList();
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
