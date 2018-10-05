@@ -32,7 +32,6 @@ import megamek.common.AmmoType;
 import megamek.common.Entity;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
-import megamek.common.verifier.TestProtomech;
 import megamek.common.weapons.Weapon;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.util.CriticalTableModel;
@@ -180,32 +179,6 @@ public class ProtomekBuildView extends IView implements ActionListener, MouseLis
         return equipmentTable;
     }
     
-    /**
-     * Checks whether the space has room for the equipment within the slot and weight limits.
-     * 
-     * @param location A Protomech location
-     * @param mount    The equipment to be added to the location
-     * @return Whether the equipment can be added without exceeding the limits.
-     */
-    public boolean hasRoom(int location, Mounted mount) {
-        int slots = TestProtomech.maxSlotsByLocation(location, getProtomech()) - 1;
-        double weight = TestProtomech.maxWeightByLocation(location, getProtomech())
-                - mount.getType().getTonnage(getProtomech(), location);
-        if ((slots < 0) || (weight < 0)) {
-            return false;
-        }
-        for (Mounted m : getProtomech().getEquipment()) {
-            if (m.getLocation() == location) {
-                slots--;
-                weight -= m.getType().getTonnage(getProtomech(), location);
-                if ((slots < 0) || (weight < 0)) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
     @Override
     public void mouseClicked(MouseEvent e) {
 
@@ -234,7 +207,7 @@ public class ProtomekBuildView extends IView implements ActionListener, MouseLis
             Mounted mount = (Mounted)equipmentTable.getModel().getValueAt(selectedRow, CriticalTableModel.EQUIPMENT);
 
             for (int location = 0; location < getProtomech().locations(); location++) {
-                if (hasRoom(location, mount)) {
+                if (UnitUtil.protomechHasRoom(getProtomech(), location, mount)) {
                     item = new JMenuItem("Add to " + locations[location]);
                     final int loc = location;
                     item.addActionListener(ev -> addToLocation(loc, mount));

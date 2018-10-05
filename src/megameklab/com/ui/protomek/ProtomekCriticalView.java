@@ -32,7 +32,7 @@ import megamek.common.Protomech;
 import megamek.common.loaders.MtfFile;
 import megamek.common.verifier.TestProtomech;
 import megameklab.com.ui.EntitySource;
-import megameklab.com.ui.util.ProtomechMountList;
+import megameklab.com.ui.util.ProtomekMountList;
 import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
 
@@ -154,7 +154,7 @@ public class ProtomekCriticalView extends IView {
                 }
             }
 
-            ProtomechMountList criticalSlotList = new ProtomechMountList(eSource, refresh, location);
+            ProtomekMountList criticalSlotList = new ProtomekMountList(eSource, refresh, location);
             criticalSlotList.setVisibleRowCount(critNames.size());
             criticalSlotList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
             criticalSlotList.setFont(new Font("Arial", Font.PLAIN, 10));

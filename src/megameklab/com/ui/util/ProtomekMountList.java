@@ -16,8 +16,6 @@ package megameklab.com.ui.util;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.dnd.DropTargetDragEvent;
-import java.awt.dnd.DropTargetEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -38,6 +36,7 @@ import megamek.common.Entity;
 import megamek.common.Mounted;
 import megamek.common.Protomech;
 import megamek.common.WeaponType;
+import megamek.common.annotations.Nullable;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.util.CConfig;
 import megameklab.com.util.CriticalTransferHandler;
@@ -50,10 +49,8 @@ import megameklab.com.util.UnitUtil;
  */
 public class ProtomekMountList extends JList<Mounted> {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = -2051124199120063905L;
+
     private final EntitySource eSource;
     private final int location;
     private RefreshListener refresh;
@@ -72,23 +69,16 @@ public class ProtomekMountList extends JList<Mounted> {
         setModel(model);
         setCellRenderer(new MountCellRenderer(true));
         addMouseListener(mouseListener);
+        setDragEnabled(true);
         setTransferHandler(new CriticalTransferHandler(eSource, refresh));
     }
     
-    public void dragEnter(DropTargetDragEvent dtde) {
-    }
-
-    public void dragExit(DropTargetEvent dte) {
-    }
-
-    public void dragOver(DropTargetDragEvent dtde) {
-    }
-
-    public void dropActionChanged(DropTargetDragEvent dtde) {
-    }
-
     public Protomech getProtomech() {
         return (Protomech) eSource.getEntity();
+    }
+    
+    public int getMountLocation() {
+        return location;
     }
     
     private void refresh() {
@@ -248,5 +238,12 @@ public class ProtomekMountList extends JList<Mounted> {
 
             return label;
         }
+    }
+
+    /**
+     * @return The selected item, or null if nothing is selected.
+     */
+    public @Nullable Mounted getMounted() {
+        return getSelectedValue();
     }
 }
