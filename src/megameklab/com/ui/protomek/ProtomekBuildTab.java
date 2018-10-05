@@ -66,7 +66,7 @@ public class ProtomekBuildTab extends ITab implements ActionListener {
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
 
-        critView = new ProtomekCriticalView(eSource, true, refresh);
+        critView = new ProtomekCriticalView(eSource, refresh);
         buildView = new ProtomekBuildView(eSource, refresh);
 
         mainPanel.add(buildView);

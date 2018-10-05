@@ -33,6 +33,7 @@ import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.Tank;
 import megamek.common.WeaponType;
+import megamek.common.verifier.TestEntity;
 
 public class CriticalTableModel extends AbstractTableModel {
 
@@ -57,17 +58,20 @@ public class CriticalTableModel extends AbstractTableModel {
     public final static int BUILDTABLE = 2;
 
     private int tableType = EQUIPMENTTABLE;
+    private boolean kgStandard = false;
 
     String[] columnNames = { "Name", "Tons", "Crits"};
 
     String[] longValues = { "XXXXXXXXX", "XXXXXXXXX", "XXXXXXXXX"};
 
+    @Override
     public int getColumnCount() {
         return columnNames.length;
     }
 
     public CriticalTableModel(Entity unit, int tableType) {
         this.tableType = tableType;
+        kgStandard = TestEntity.usesKgStandard(unit);
 
         if (tableType == WEAPONTABLE) {
             longValues = new String[] { "XXXXXXXXX", "XXXXXXXXX", "XXXXXXXXX",
@@ -76,6 +80,9 @@ public class CriticalTableModel extends AbstractTableModel {
                     "Loc" };
         }
         
+        if (kgStandard) {
+            columnNames[TONNAGE] = "Kg";
+        }
         if (unit instanceof Tank) {
             columnNames[CRITS] = "Slots";
         }
@@ -112,6 +119,7 @@ public class CriticalTableModel extends AbstractTableModel {
         }
     }
 
+    @Override
     public int getRowCount() {
         return sortedEquipment.length;
     }
@@ -126,6 +134,7 @@ public class CriticalTableModel extends AbstractTableModel {
         return false;
     }
 
+    @Override
     public Object getValueAt(int row, int col) {
         if (row < 0) {
             return "";
@@ -138,19 +147,25 @@ public class CriticalTableModel extends AbstractTableModel {
         case NAME:
             return UnitUtil.getCritName(unit, crit.getType());
         case TONNAGE:
+            double tonnage;
             if ((unit instanceof BattleArmor) 
                     && (crit.getType() instanceof AmmoType)){
-                return ((AmmoType)crit.getType()).getKgPerShot() * 
+                tonnage = ((AmmoType)crit.getType()).getKgPerShot() * 
                         crit.getBaseShotsLeft() / 1000;
             } else if (crit.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)
                     && crit.getLinked() != null){
-                return crit.getLinked().getType().getTonnage(unit) * 0.75;
+                tonnage = crit.getLinked().getType().getTonnage(unit) * 0.75;
             } else if (unit.usesWeaponBays() && (crit.getType() instanceof AmmoType)) {
                 // Round up to the next half ton
-                return Math.ceil((crit.getType().getTonnage(unit) * crit.getUsableShotsLeft()
+                tonnage = Math.ceil((crit.getType().getTonnage(unit) * crit.getUsableShotsLeft()
                         / ((AmmoType)crit.getType()).getShots()) * 2.0) * 0.5;
             } else {
-                return crit.getType().getTonnage(unit);
+                tonnage = crit.getType().getTonnage(unit);
+            }
+            if (kgStandard) {
+                return Math.round(tonnage * 1000);
+            } else {
+                return tonnage;
             }
         case CRITS:
             if (unit instanceof Tank) {
@@ -167,9 +182,9 @@ public class CriticalTableModel extends AbstractTableModel {
             return crit;
         case HEAT:
             if (crit.getType() instanceof WeaponType) {
-                return new Integer(((WeaponType) crit.getType()).getHeat());
+                return ((WeaponType) crit.getType()).getHeat();
             }
-            return new Integer(0);
+            return 0;
         case LOCATION:
             if (unit instanceof BattleArmor){
                 return ((BattleArmor) unit).getBaMountLocAbbr(crit

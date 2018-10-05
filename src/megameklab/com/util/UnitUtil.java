@@ -2131,12 +2131,13 @@ public class UnitUtil {
         } else {
             sb.append("<br>Crits: ");
             sb.append(eq.getType().getCriticals(unit));
-            sb.append("<br>Tonnage: ");
-            if (eq.getType() instanceof MiscType) {
-                sb.append(((MiscType) eq.getType()).getTonnage(unit,
-                        eq.getLocation()));
+            sb.append("<br>Mass: ");
+            if (TestEntity.usesKgStandard(unit)) {
+                sb.append(Math.round(eq.getType().getTonnage(unit, eq.getLocation()) * 1000));
+                sb.append(" Kg");
             } else {
-                sb.append(eq.getType().getTonnage(unit));
+                sb.append(eq.getType().getTonnage(unit, eq.getLocation()));
+                sb.append(" tons");
             }
 
             if (eq.getType() instanceof WeaponType) {
@@ -2378,28 +2379,26 @@ public class UnitUtil {
         }
 
         Mounted mount = cs.getMount();
-        if (mount == null) {
+        return ((mount != null) && isArmorable(mount.getType()));
+    }
+    
+    public static boolean isArmorable(EquipmentType eq) {
+        if (UnitUtil.isArmorOrStructure(eq)) {
             return false;
         }
 
-        if (UnitUtil.isArmorOrStructure(mount.getType())) {
+        if (UnitUtil.isTSM(eq)) {
             return false;
         }
 
-        if (UnitUtil.isTSM(mount.getType())) {
-            return false;
-        }
-
-        if (mount.getType() instanceof MiscType) {
-            MiscType misc = (MiscType) mount.getType();
-            if (misc.hasFlag(MiscType.F_SPIKES)
-                    || misc.hasFlag(MiscType.F_REACTIVE)
-                    || misc.hasFlag(MiscType.F_MODULAR_ARMOR)
-                    || misc.isShield()) {
+        if (eq instanceof MiscType) {
+            if (eq.hasFlag(MiscType.F_SPIKES)
+                    || eq.hasFlag(MiscType.F_REACTIVE)
+                    || eq.hasFlag(MiscType.F_MODULAR_ARMOR)
+                    || ((MiscType) eq).isShield()) {
                 return false;
             }
         }
-
         return true;
     }
 

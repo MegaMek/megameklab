@@ -21,11 +21,8 @@ import java.util.Vector;
 import java.util.stream.Collectors;
 
 import javax.swing.BorderFactory;
-import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.TitledBorder;
@@ -35,8 +32,7 @@ import megamek.common.Protomech;
 import megamek.common.loaders.MtfFile;
 import megamek.common.verifier.TestProtomech;
 import megameklab.com.ui.EntitySource;
-import megameklab.com.util.CritListCellRenderer;
-import megameklab.com.util.DropTargetCriticalList;
+import megameklab.com.ui.util.ProtomechMountList;
 import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
 
@@ -69,11 +65,8 @@ public class ProtomekCriticalView extends IView {
     private JPanel bottomPanel = new JPanel();
     private RefreshListener refresh;
 
-    private boolean showEmpty = false;
-
-    public ProtomekCriticalView(EntitySource eSource, boolean showEmpty, RefreshListener refresh) {
+    public ProtomekCriticalView(EntitySource eSource, RefreshListener refresh) {
         super(eSource);
-        this.showEmpty = showEmpty;
         this.refresh = refresh;
 
         JPanel mainPanel = new JPanel();
@@ -161,20 +154,10 @@ public class ProtomekCriticalView extends IView {
                 }
             }
 
-            JList<String> criticalSlotList;
-            if (location == Protomech.LOC_BODY) {
-                criticalSlotList = new JList<>();
-                DefaultListModel<String> model = new DefaultListModel<>();
-                critNames.forEach(crit -> model.addElement(crit)); 
-                criticalSlotList.setModel(model);
-                criticalSlotList.setCellRenderer(new CritListCellRenderer(getProtomech(), true));
-            } else {
-                criticalSlotList = new DropTargetCriticalList<String>(critNames, eSource, refresh, showEmpty);
-            }
+            ProtomechMountList criticalSlotList = new ProtomechMountList(eSource, refresh, location);
             criticalSlotList.setVisibleRowCount(critNames.size());
             criticalSlotList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
             criticalSlotList.setFont(new Font("Arial", Font.PLAIN, 10));
-            criticalSlotList.setName(Integer.toString(location));
             criticalSlotList.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.BLACK.darker()));
             switch (location) {
                 case Protomech.LOC_TORSO:
@@ -207,20 +190,14 @@ public class ProtomekCriticalView extends IView {
                             + "/" + TestProtomech.maxSlotsByLocation(location, getProtomech()));
                     break;
             }
-            mainGunPanel.add(mainGunSpace);
-            torsoPanel.add(torsoSpace);
-            torsoPanel.add(torsoWeight);
-            leftPanel.add(leftSpace);
-            leftPanel.add(leftWeight);
-            rightPanel.add(rightSpace);
-            rightPanel.add(rightWeight);
-
-            torsoPanel.repaint();
-            leftPanel.repaint();
-            rightPanel.repaint();
-            mainGunPanel.repaint();
-            bodyPanel.repaint();
         }
+        mainGunPanel.add(mainGunSpace);
+        torsoPanel.add(torsoSpace);
+        torsoPanel.add(torsoWeight);
+        leftPanel.add(leftSpace);
+        leftPanel.add(leftWeight);
+        rightPanel.add(rightSpace);
+        rightPanel.add(rightWeight);
     }
 
 }
