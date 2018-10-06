@@ -28,7 +28,6 @@ import javax.swing.table.DefaultTableCellRenderer;
 
 import megamek.common.Aero;
 import megamek.common.AmmoType;
-import megamek.common.BattleArmor;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.ITechManager;
@@ -38,6 +37,7 @@ import megamek.common.RangeType;
 import megamek.common.Tank;
 import megamek.common.TechAdvancement;
 import megamek.common.WeaponType;
+import megamek.common.verifier.TestProtomech;
 import megamek.common.weapons.autocannons.RACWeapon;
 import megamek.common.weapons.autocannons.UACWeapon;
 import megamek.common.weapons.gaussrifles.HAGWeapon;
@@ -91,10 +91,12 @@ public class EquipmentTableModel extends AbstractTableModel {
         this.techManager = techManager;
     }
 
+    @Override
     public int getRowCount() {
         return data.size();
     }
 
+    @Override
     public int getColumnCount() {
         return N_COL;
     }
@@ -218,6 +220,7 @@ public class EquipmentTableModel extends AbstractTableModel {
         fireTableDataChanged();
     }
 
+    @Override
     public Object getValueAt(int row, int col) {
         EquipmentType type;
         WeaponType wtype = null;
@@ -361,16 +364,19 @@ public class EquipmentTableModel extends AbstractTableModel {
                 return "-";
             }
         } else if (col == COL_TON) {
-            if (type.getTonnage(entity) < 0.1) {
+            if ((atype != null) && (entity.hasETypeFlag(Entity.ETYPE_BATTLEARMOR)
+                    || entity.hasETypeFlag(Entity.ETYPE_PROTOMECH))) {
+                return atype.getKgPerShot() + " kg/shot";
+            } else if (type.getTonnage(entity) < 0.1) {
                 return String.format("%.2f kg", type.getTonnage(entity) * 1000);
-            } else if ((entity instanceof BattleArmor) && (atype != null)){
-                return (atype.getKgPerShot() * atype.getShots())/1000;
             } else {
                 return type.getTonnage(entity);
             }
         } else if (col == COL_CRIT) {
             if (entity instanceof Tank) {
                 return type.getTankslots(entity);
+            } else if (entity.hasETypeFlag(Entity.ETYPE_PROTOMECH)) {
+                return TestProtomech.requiresSlot(type)? 1 : 0;
             }
             return type.getCriticals(entity);
         } else if (col == COL_TRATING) {

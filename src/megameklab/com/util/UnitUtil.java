@@ -1587,16 +1587,7 @@ public class UnitUtil {
                 return entity.getOInternal(location) * 2;
             }
         } else if (entity.hasETypeFlag(Entity.ETYPE_PROTOMECH)) {
-            if (location == Protomech.LOC_HEAD) {
-                return 2 + (int)entity.getWeight() / 2;
-            } else if (location == Protomech.LOC_MAINGUN) {
-                return entity.getOInternal(location) * 3;
-            } else if ((location == Protomech.LOC_LARM)
-                    || (location == Protomech.LOC_RARM)) {
-                return Math.min(entity.getOInternal(location) * 2, 6);
-            } else {
-                return entity.getOInternal(location) * 2;
-            }
+            return TestProtomech.maxArmorFactor((Protomech) entity, location);
         }
         return null;
     }

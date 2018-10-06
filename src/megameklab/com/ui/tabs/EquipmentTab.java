@@ -272,13 +272,7 @@ public class EquipmentTab extends ITab implements ActionListener {
         choiceType.setModel(typeModel);
         choiceType.setSelectedIndex(0);
         choiceType.addActionListener(ev -> filterEquipment());
-        choiceType.setRenderer(new ListCellRenderer<EquipmentCategory>() {
-            @Override
-            public Component getListCellRendererComponent(JList<? extends EquipmentCategory> list,
-                    EquipmentCategory value, int index, boolean isSelected, boolean cellHasFocus) {
-                return new JLabel(value.getDisplayName());
-            }
-        });
+        choiceType.setRenderer(new CategoryListCellRenderer());
 
         txtFilter.setText("");
         txtFilter.setMinimumSize(new java.awt.Dimension(200, 28));
@@ -844,5 +838,33 @@ public class EquipmentTab extends ITab implements ActionListener {
         }
         
     };
+    
+    private static class CategoryListCellRenderer extends JLabel implements ListCellRenderer<EquipmentCategory> {
+        private static final long serialVersionUID = -6019108605730297067L;
+        
+        public CategoryListCellRenderer() {
+            setOpaque(true);
+        }
+
+        @Override
+        public Component getListCellRendererComponent(JList<? extends EquipmentCategory> list,
+                EquipmentCategory value, int index, boolean isSelected, boolean cellHasFocus) {
+            
+            if (isSelected) {
+                setBackground(list.getSelectionBackground());
+                setForeground(list.getSelectionForeground());
+            } else {
+                setBackground(list.getBackground());
+                setForeground(list.getForeground());
+            }
+            setEnabled(list.isEnabled());
+            setFont(list.getFont());
+
+            setText(value.getDisplayName());
+            
+            return this;
+        }
+    };
+
 
 }
