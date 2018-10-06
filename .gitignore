@@ -8,6 +8,7 @@ timestamp
 .DS_Store
 /.gradle/
 /build/
+/out/
 /settings_local.gradle
 /.classpath
 /.project
