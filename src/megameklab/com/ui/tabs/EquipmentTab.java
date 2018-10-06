@@ -91,11 +91,20 @@ public class EquipmentTab extends ITab implements ActionListener {
     private enum EquipmentCategory {
         ENERGY ("Energy", (eq, en) -> {
             return (eq instanceof WeaponType)
-                && (eq.hasFlag(WeaponType.F_ENERGY)
-                    || ((eq.hasFlag(WeaponType.F_PLASMA) && (((WeaponType) eq).getAmmoType() == AmmoType.T_PLASMA))));
+                    && !((WeaponType) eq).isCapital()
+                    && (eq.hasFlag(WeaponType.F_ENERGY)
+                            || ((eq.hasFlag(WeaponType.F_PLASMA) && (((WeaponType) eq).getAmmoType() == AmmoType.T_PLASMA))));
         }),
-        BALLISTIC ("Ballistic", (eq, en) -> (eq instanceof WeaponType) && eq.hasFlag(WeaponType.F_BALLISTIC)),
-        MISSILE ("Missile", (eq, en) -> (eq instanceof WeaponType) && eq.hasFlag(WeaponType.F_MISSILE)),
+        BALLISTIC ("Ballistic", (eq, en) -> {
+            return (eq instanceof WeaponType)
+                    && !((WeaponType) eq).isCapital()
+                    && eq.hasFlag(WeaponType.F_BALLISTIC);
+        }),
+        MISSILE ("Missile", (eq, en) ->  {
+            return (eq instanceof WeaponType)
+                    && !((WeaponType) eq).isCapital()
+                    && eq.hasFlag(WeaponType.F_MISSILE);
+        }),
         ARTILLERY ("Artillery", (eq, en) -> (eq instanceof WeaponType) && eq.hasFlag(WeaponType.F_ARTILLERY)),
         CAPITAL ("Capital",
                 (eq, en) -> (eq instanceof WeaponType) && ((WeaponType) eq).isCapital(),
