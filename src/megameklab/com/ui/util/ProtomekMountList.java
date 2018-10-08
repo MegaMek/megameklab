@@ -124,7 +124,7 @@ public class ProtomekMountList extends JList<Mounted> {
         public void mousePressed(MouseEvent e) {
             final int index = locationToIndex(e.getPoint());
             final Mounted mount = getModel().getElementAt(index);
-            if (null == mount) {
+            if ((null == mount) || UnitUtil.isFixedLocationSpreadEquipment(mount.getType())) {
                 return;
             }
             if ((mount.getType() instanceof MiscType)
@@ -152,8 +152,7 @@ public class ProtomekMountList extends JList<Mounted> {
 
                 JMenuItem info;
 
-                if (!UnitUtil.isFixedLocationSpreadEquipment(mount.getType())
-                        && !(mount.getType() instanceof AmmoType)) {
+                if (!(mount.getType() instanceof AmmoType)) {
                     info = new JMenuItem("Remove " + mount.getName());
                     info.addActionListener(ev -> removeMount(mount));
                     popup.add(info);
@@ -218,9 +217,9 @@ public class ProtomekMountList extends JList<Mounted> {
             final ProtomekMountList lstMount = (ProtomekMountList) list;
             final Entity entity = lstMount.eSource.getEntity();
             
-            label.setPreferredSize(new Dimension(110,15));
-            label.setMaximumSize(new Dimension(110,15));
-            label.setMinimumSize(new Dimension(110,15));
+            label.setPreferredSize(new Dimension(140,15));
+            label.setMaximumSize(new Dimension(140,15));
+            label.setMinimumSize(new Dimension(140,15));
 
             if (null == value) {
                 if (useColor) {
@@ -229,20 +228,24 @@ public class ProtomekMountList extends JList<Mounted> {
                 }
                 label.setText("-Empty-");
             } else {
-                    final Mounted mount = (Mounted) value;
-        
-                    if (useColor) {
-                        if (mount.getType() instanceof WeaponType) {
-                            label.setBackground(CConfig.getBackgroundColor(CConfig.CONFIG_WEAPONS));
-                            label.setForeground(CConfig.getForegroundColor(CConfig.CONFIG_WEAPONS));
-                        } else if (mount.getType() instanceof AmmoType) {
-                            label.setBackground(CConfig.getBackgroundColor(CConfig.CONFIG_AMMO));
-                            label.setForeground(CConfig.getForegroundColor(CConfig.CONFIG_AMMO));
-                        } else {
-                            label.setBackground(CConfig.getBackgroundColor(CConfig.CONFIG_EQUIPMENT));
-                            label.setForeground(CConfig.getForegroundColor(CConfig.CONFIG_EQUIPMENT));
-                        }
+                final Mounted mount = (Mounted) value;
+
+                if (useColor) {
+                    if (mount.getType() instanceof WeaponType) {
+                        label.setBackground(CConfig.getBackgroundColor(CConfig.CONFIG_WEAPONS));
+                        label.setForeground(CConfig.getForegroundColor(CConfig.CONFIG_WEAPONS));
+                    } else if (mount.getType() instanceof AmmoType) {
+                        label.setBackground(CConfig.getBackgroundColor(CConfig.CONFIG_AMMO));
+                        label.setForeground(CConfig.getForegroundColor(CConfig.CONFIG_AMMO));
+                    } else {
+                        label.setBackground(CConfig.getBackgroundColor(CConfig.CONFIG_EQUIPMENT));
+                        label.setForeground(CConfig.getForegroundColor(CConfig.CONFIG_EQUIPMENT));
                     }
+                }
+                if (UnitUtil.isFixedLocationSpreadEquipment(mount.getType())) {
+                    label.setFont(label.getFont().deriveFont(Font.ITALIC));
+                }
+                
                 String name = UnitUtil.getCritName(entity, mount.getType());
                 if (mount.isRearMounted()) {
                     name += " (R)";
