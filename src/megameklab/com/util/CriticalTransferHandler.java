@@ -28,6 +28,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.TransferHandler;
 
+import megamek.common.AmmoType;
 import megamek.common.BattleArmor;
 import megamek.common.CriticalSlot;
 import megamek.common.Entity;
@@ -173,6 +174,8 @@ public class CriticalTransferHandler extends TransferHandler {
             return new StringSelection(Integer.toString(getUnit().getEquipmentNum(mount)));
         } else if (c instanceof ProtomekMountList) {
             Mounted mount = ((ProtomekMountList) c).getMounted();
+            if (!UnitUtil.isFixedLocationSpreadEquipment(mount.getType())
+                    && !(mount.getType() instanceof AmmoType))
             return new StringSelection(Integer.toString(getUnit().getEquipmentNum(mount)));
         }
         return null;

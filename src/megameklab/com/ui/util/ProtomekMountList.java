@@ -35,6 +35,7 @@ import javax.swing.ListSelectionModel;
 
 import megamek.common.AmmoType;
 import megamek.common.Entity;
+import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.Protomech;
 import megamek.common.WeaponType;
@@ -121,12 +122,15 @@ public class ProtomekMountList extends JList<Mounted> {
     private MouseListener mouseListener = new MouseAdapter() {
         @Override
         public void mousePressed(MouseEvent e) {
-            if (location == Protomech.LOC_BODY) {
-                return;
-            }
             final int index = locationToIndex(e.getPoint());
             final Mounted mount = getModel().getElementAt(index);
             if (null == mount) {
+                return;
+            }
+            if ((mount.getType() instanceof MiscType)
+                    && (UnitUtil.isArmor(mount.getType())
+                            || mount.getType().hasFlag(MiscType.F_JUMP_JET)
+                            || mount.getType().hasFlag(MiscType.F_UMU))) {
                 return;
             }
             
@@ -148,9 +152,12 @@ public class ProtomekMountList extends JList<Mounted> {
 
                 JMenuItem info;
 
-                info = new JMenuItem("Remove " + mount.getName());
-                info.addActionListener(ev -> removeMount(mount));
-                popup.add(info);
+                if (!UnitUtil.isFixedLocationSpreadEquipment(mount.getType())
+                        && !(mount.getType() instanceof AmmoType)) {
+                    info = new JMenuItem("Remove " + mount.getName());
+                    info.addActionListener(ev -> removeMount(mount));
+                    popup.add(info);
+                }
                 info = new JMenuItem("Delete " + mount.getName());
                 info.addActionListener(ev -> deleteMount(mount));
                 popup.add(info);

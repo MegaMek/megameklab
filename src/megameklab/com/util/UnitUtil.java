@@ -169,6 +169,8 @@ public class UnitUtil {
                         || eq.hasFlag(MiscType.F_MAST_MOUNT)
                         || eq.hasFlag(MiscType.F_SCM)
                         || eq.hasFlag(MiscType.F_PROTOQMS)
+                        || (eq.hasFlag(MiscType.F_JUMP_JET) && eq.hasFlag(MiscType.F_PROTOMECH_EQUIPMENT))
+                        || (eq.hasFlag(MiscType.F_UMU) && eq.hasFlag(MiscType.F_PROTOMECH_EQUIPMENT))
                         || (eq.hasFlag(MiscType.F_MAGNETIC_CLAMP) && eq.hasFlag(MiscType.F_PROTOMECH_EQUIPMENT))
                         || (eq.hasFlag(MiscType.F_MASC) && eq.hasFlag(MiscType.F_PROTOMECH_EQUIPMENT)));
     }
@@ -3613,6 +3615,9 @@ public class UnitUtil {
      * @return Whether the equipment can be added without exceeding the limits.
      */
     public static boolean protomechHasRoom(Protomech proto, int location, Mounted mount) {
+        if (!TestProtomech.requiresSlot(mount.getType())) {
+            return true;
+        }
         int slots = TestProtomech.maxSlotsByLocation(location, proto) - 1;
         double weight = TestProtomech.maxWeightByLocation(location, proto)
                 - mount.getType().getTonnage(proto, location);
