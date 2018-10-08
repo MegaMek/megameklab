@@ -150,7 +150,8 @@ public class CriticalTableModel extends AbstractTableModel {
             return UnitUtil.getCritName(unit, crit.getType());
         case TONNAGE:
             double tonnage;
-            if ((unit instanceof BattleArmor) 
+            if ((unit.hasETypeFlag(Entity.ETYPE_BATTLEARMOR)
+                    || unit.hasETypeFlag(Entity.ETYPE_PROTOMECH)) 
                     && (crit.getType() instanceof AmmoType)){
                 tonnage = ((AmmoType)crit.getType()).getKgPerShot() * 
                         crit.getBaseShotsLeft() / 1000;
@@ -232,7 +233,7 @@ public class CriticalTableModel extends AbstractTableModel {
             }
 
             Mounted mount = sortedEquipment[row];
-            if (unit instanceof BattleArmor && column == NAME){
+            if ((unit instanceof BattleArmor) && column == NAME){
                 String modifier = "";
                 if (mount.getType() instanceof AmmoType){
                     modifier += " (" + mount.getBaseShotsLeft() + ")";
@@ -259,6 +260,9 @@ public class CriticalTableModel extends AbstractTableModel {
                     modifier += "*";
                 }
                 c.setText(c.getText() + modifier);
+            } else if ((column == NAME) && unit.hasETypeFlag(Entity.ETYPE_PROTOMECH)
+                    && (mount.getType() instanceof AmmoType)) {
+                c.setText(c.getText() + " (" + mount.getBaseShotsLeft() + ")");
             }
             c.setToolTipText(UnitUtil.getToolTipInfo(unit, mount));
             c.setHorizontalAlignment(getAlignment(column));

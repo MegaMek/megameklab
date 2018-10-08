@@ -43,9 +43,11 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -55,6 +57,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.RowFilter;
 import javax.swing.RowSorter;
 import javax.swing.SortOrder;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
@@ -62,6 +65,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
 
+import megamek.common.Aero;
 import megamek.common.AmmoType;
 import megamek.common.BombType;
 import megamek.common.Entity;
@@ -69,7 +73,10 @@ import megamek.common.EquipmentType;
 import megamek.common.LocationFullException;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
+import megamek.common.Protomech;
 import megamek.common.WeaponType;
+import megamek.common.verifier.TestEntity;
+import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.util.CriticalTableModel;
 import megameklab.com.util.EquipmentTableModel;
@@ -170,6 +177,7 @@ public class EquipmentTab extends ITab implements ActionListener {
     private JRadioButton rbtnStats = new JRadioButton("Stats");
     private JRadioButton rbtnFluff = new JRadioButton("Fluff");
     final private JCheckBox chkShowAll = new JCheckBox("Show Unavailable");
+    private JSpinner spnAddCount = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
 
     private TableRowSorter<EquipmentTableModel> equipmentSorter;
 
@@ -183,6 +191,8 @@ public class EquipmentTab extends ITab implements ActionListener {
     private String ADD_COMMAND = "ADD";
     private String REMOVE_COMMAND = "REMOVE";
     private String REMOVEALL_COMMAND = "REMOVEALL";
+
+    private final Dimension SPINNER_SIZE = new Dimension(55, 25);
 
     public EquipmentTab(EntitySource eSource) {
         super(eSource);
@@ -356,6 +366,27 @@ public class EquipmentTab extends ITab implements ActionListener {
         databasePanel.add(viewPanel, gbc);
 
         gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = 1;
+        gbc.insets = new Insets(2,2,2,2);
+        gbc.fill = java.awt.GridBagConstraints.NONE;
+        gbc.weightx = 0.0;
+        gbc.weighty = 0.0;
+        gbc.anchor = java.awt.GridBagConstraints.WEST;
+        databasePanel.add(new JLabel("Number to add:"), gbc);
+
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.gridwidth = 1;
+        gbc.insets = new Insets(2,2,2,2);
+        gbc.fill = java.awt.GridBagConstraints.NONE;
+        gbc.weightx = 0.0;
+        gbc.weighty = 0.0;
+        gbc.anchor = java.awt.GridBagConstraints.WEST;
+        setFieldSize(spnAddCount, SPINNER_SIZE);
+        databasePanel.add(spnAddCount, gbc);
+
+        gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 1;
         gbc.fill = java.awt.GridBagConstraints.NONE;
@@ -374,7 +405,7 @@ public class EquipmentTab extends ITab implements ActionListener {
 
         gbc.insets = new Insets(2,0,0,0);
         gbc.gridx = 0;
-        gbc.gridy = 1;
+        gbc.gridy = 2;
         gbc.gridwidth = 4;
         gbc.fill = java.awt.GridBagConstraints.BOTH;
         gbc.weightx = 1.0;
@@ -498,29 +529,94 @@ public class EquipmentTab extends ITab implements ActionListener {
         boolean success = false;
         Mounted mount = null;
         boolean isMisc = equip instanceof MiscType;
-        if (isMisc && equip.hasFlag(MiscType.F_TARGCOMP)) {
-            if (!UnitUtil.hasTargComp(eSource.getEntity())) {
-                mount = UnitUtil.updateTC(eSource.getEntity(), equip);
+        try {
+            if (isMisc && equip.hasFlag(MiscType.F_TARGCOMP)) {
+                if (!UnitUtil.hasTargComp(eSource.getEntity())) {
+                    mount = UnitUtil.updateTC(eSource.getEntity(), equip);
+                    success = mount != null;
+                }
+            } else if (isMisc && UnitUtil.isFixedLocationSpreadEquipment(equip)) {
+                if (eSource.getEntity().hasETypeFlag(Entity.ETYPE_MECH)) {
+                    mount = UnitUtil.createSpreadMounts(getMech(), equip);
+                } else {
+                    int location = TestEntity.getSystemWideLocation(eSource.getEntity());
+                    mount = new Mounted(eSource.getEntity(), equip);
+                    eSource.getEntity().addEquipment(mount, location, false);
+                }
                 success = mount != null;
+            } else {
+                int count = (Integer)spnAddCount.getValue();
+                if (equip instanceof AmmoType) {
+                    if (eSource.getEntity().hasETypeFlag(Entity.ETYPE_PROTOMECH)) {
+                        addProtomechAmmo(equip, count);
+                        return;
+                    } else if (eSource.getEntity().usesWeaponBays()) {
+                        addLargeCraftAmmo(equip, count);
+                        return;
+                    } else if (eSource.getEntity().isFighter()) {
+                        addFighterAmmo(equip, count);
+                        return;
+                    }
+                } else {
+                    for (int i = 0; i < count; i++) {
+                        mount = new Mounted(eSource.getEntity(), equip);
+                        if ((eSource.getEntity().isFighter()
+                                && equip instanceof MiscType) && equip.hasFlag(MiscType.F_BLUE_SHIELD)) { 
+                            getAero().addEquipment(mount, Aero.LOC_FUSELAGE, false);
+                        } else {
+                            eSource.getEntity().addEquipment(mount, Entity.LOC_NONE, false);
+                        }
+                        equipmentList.addCrit(mount);
+                    }
+                }
             }
-        } else if (isMisc && UnitUtil.isFixedLocationSpreadEquipment(equip)
-                && eSource.getEntity().hasETypeFlag(Entity.ETYPE_MECH)) {
-            mount = UnitUtil.createSpreadMounts(getMech(), equip);
-            success = mount != null;
-        } else {
-            try {
-                mount = new Mounted(eSource.getEntity(), equip);
-                eSource.getEntity().addEquipment(mount, Entity.LOC_NONE, false);
-                success = true;
-            } catch (LocationFullException lfe) {
-                // this can't happen, we add to Entity.LOC_NONE
-            }
+        } catch (LocationFullException ex) {
+            MegaMekLab.getLogger().error(getClass(), "addEquipment(EquipmentType)",
+                    "Location full while trying to add " + equip.getName());
+            JOptionPane.showMessageDialog(
+                    this,"Could not add " + equip.getName(),
+                    "Location Full", JOptionPane.ERROR_MESSAGE);
         }
         if (success) {
             equipmentList.addCrit(mount);
         }
     }
 
+    private void addProtomechAmmo(EquipmentType ammo, int shots) throws LocationFullException {
+        Mounted aMount = getProtomech().getAmmo().stream()
+                .filter(m -> m.getType() == ammo).findFirst().orElse(null);
+        if (null != aMount) {
+            aMount.setShotsLeft(aMount.getUsableShotsLeft() + shots);
+            return;
+        } else {
+            Mounted mount = new Mounted(getProtomech(), ammo);
+            getProtomech().addEquipment(mount, Protomech.LOC_BODY, false);
+            mount.setShotsLeft(shots);
+            equipmentList.addCrit(mount);
+        }
+    }
+    
+    private void addLargeCraftAmmo(EquipmentType ammo, int count) throws LocationFullException {
+        Mounted aMount = UnitUtil.findUnallocatedAmmo(getAero(), ammo);
+        if (null != aMount) {
+            aMount.setShotsLeft(aMount.getUsableShotsLeft() + ((AmmoType)ammo).getShots() * count);
+            return;
+        } else {
+            Mounted mount = new Mounted(getAero(), ammo);
+            mount.setShotsLeft(((AmmoType)ammo).getShots() * count);
+            getAero().addEquipment(mount, Entity.LOC_NONE, false);
+            equipmentList.addCrit(mount);
+        }
+    }
+    
+    private void addFighterAmmo(EquipmentType equip, int count) throws LocationFullException {
+        for (int i = 0; i < count; i++) {
+            Mounted mount = new Mounted(getAero(), equip);
+                getAero().addEquipment(mount, Aero.LOC_FUSELAGE, false);
+            equipmentList.addCrit(mount);
+        }
+    }
+    
     @Override
     public void actionPerformed(ActionEvent e) {
 
