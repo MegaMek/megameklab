@@ -424,6 +424,11 @@ public class ProtomekStructureTab extends ITab implements ProtomekBuildListener 
             getProtomech().autoSetInternal();
             getProtomech().initializeArmor(0, Protomech.LOC_LARM);
             getProtomech().initializeArmor(0, Protomech.LOC_RARM);
+            Optional<Mounted> qms = getProtomech().getMisc().stream().filter(m -> m.getType()
+                    .hasFlag(MiscType.F_PROTOQMS)).findFirst();
+            if (qms.isPresent()) {
+                UnitUtil.removeMounted(getProtomech(), qms.get());
+            }
         }
         refresh();
         refresh.refreshBuild();
@@ -657,6 +662,7 @@ public class ProtomekStructureTab extends ITab implements ProtomekBuildListener 
             getProtomech().setArmorTechLevel(getProtomech().getArmorTechLevel(Protomech.LOC_TORSO));
         }
         getProtomech().autoSetInternal();
+        panArmor.setFromEntity(getProtomech());
         panArmorAllocation.setFromEntity(getProtomech());
         refresh.refreshBuild();
         refresh.refreshPreview();
