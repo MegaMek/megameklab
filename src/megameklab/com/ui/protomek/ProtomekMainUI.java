@@ -29,6 +29,7 @@ import megamek.common.EquipmentType;
 import megamek.common.ITechManager;
 import megamek.common.Protomech;
 import megamek.common.SimpleTechLevel;
+import megamek.common.TechConstants;
 import megamek.common.verifier.TestProtomech;
 import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.tabs.EquipmentTab;
@@ -114,6 +115,7 @@ public class ProtomekMainUI extends MegaMekLabMainUI {
 
         getEntity().setWeight(2);
         proto.setMovementMode(EntityMovementMode.BIPED);
+        proto.setTechLevel(TechConstants.T_CLAN_TW);
         proto.setOriginalWalkMP(1);
         proto.setEngine(new Engine(TestProtomech.calcEngineRating(proto),
                 Engine.NORMAL_ENGINE, Engine.CLAN_ENGINE));
