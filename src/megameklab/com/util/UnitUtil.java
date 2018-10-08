@@ -269,6 +269,12 @@ public class UnitUtil {
         return (int)toReturn;
     }
 
+    /**
+     * Removes a piece of equipment from the Entity
+     * 
+     * @param unit  The Entity
+     * @param mount The equipment
+     */
     public static void removeMounted(Entity unit, Mounted mount) {
         UnitUtil.removeCriticals(unit, mount);
 

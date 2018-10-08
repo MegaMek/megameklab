@@ -19,6 +19,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.swing.BorderFactory;
@@ -360,8 +361,11 @@ public class ProtomekStructureTab extends ITab implements ProtomekBuildListener 
         } else {
             refresh.refreshEquipmentTable();
         }
-        panChassis.refresh();
-        panMovement.refresh();
+        if (!panBasicInfo.isLegal(Protomech.TA_INTERFACE_COCKPIT)) {
+            getProtomech().setInterfaceCockpit(false);
+        }
+        panChassis.setFromEntity(getProtomech());
+        panMovement.setFromEntity(getProtomech());
         panArmor.refresh();
         panArmorAllocation.setFromEntity(getProtomech());
         refresh.refreshBuild();
@@ -655,6 +659,46 @@ public class ProtomekStructureTab extends ITab implements ProtomekBuildListener 
         panArmorAllocation.setFromEntity(getProtomech());
         refresh.refreshBuild();
         refresh.refreshPreview();
+    }
+
+    @Override
+    public void setEnhancement(EquipmentType eq, boolean selected) {
+        if (null ==  eq) {
+            return;
+        }
+        if (selected) {
+            for (Mounted m : getProtomech().getMisc()) {
+                if (m.getType() == eq) {
+                    return;
+                }
+            }
+            Mounted m = new Mounted(getProtomech(), eq);
+            try {
+                if (TestProtomech.requiresSlot(eq) && this.freeUpSpace(Protomech.LOC_TORSO, 1)) {
+                        getProtomech().addEquipment(m, Protomech.LOC_TORSO, false);
+                } else {
+                    getProtomech().addEquipment(m,  Protomech.LOC_BODY, false);
+                }
+            } catch (LocationFullException e) {
+                // We've already checked for enough space where there are limits
+            }
+        } else {
+            Optional<Mounted> mounted = getProtomech().getMisc().stream()
+                    .filter(m -> m.getType() == eq).findFirst();
+            if (mounted.isPresent()) {
+                UnitUtil.removeMounted(getProtomech(), mounted.get());
+            }
+        }
+        panMovement.setFromEntity(getProtomech());
+        panSummary.refresh();
+        refresh.refreshPreview();
+        refresh.refreshBuild();
+        refresh.refreshStatus();
+    }
+
+    @Override
+    public void setISInterface(boolean selected) {
+        getProtomech().setInterfaceCockpit(selected);
     }
 
 }
