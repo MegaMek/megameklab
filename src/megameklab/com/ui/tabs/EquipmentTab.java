@@ -76,6 +76,7 @@ import megamek.common.Mounted;
 import megamek.common.Protomech;
 import megamek.common.WeaponType;
 import megamek.common.verifier.TestEntity;
+import megamek.common.weapons.tag.TAGWeapon;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.util.CriticalTableModel;
@@ -125,7 +126,7 @@ public class EquipmentTab extends ITab implements ActionListener {
             return (eq instanceof AmmoType) && !(eq instanceof BombType) && UnitUtil.canUseAmmo(en, (AmmoType) eq);
         }),
         OTHER ("Other", (eq, en) -> {
-            return (eq instanceof MiscType)
+            return ((eq instanceof MiscType)
                     && !UnitUtil.isPhysicalWeapon(eq)
                     && !UnitUtil.isJumpJet(eq)
                     && !UnitUtil.isHeatSink(eq)
@@ -134,7 +135,8 @@ public class EquipmentTab extends ITab implements ActionListener {
                     && !(eq.hasFlag(MiscType.F_MASC) 
                             && !eq.hasSubType(MiscType.S_SUPERCHARGER))
                     && !(en.hasETypeFlag(Entity.ETYPE_QUADVEE) && eq.hasFlag(MiscType.F_TRACKS))
-                    && !UnitUtil.isArmorOrStructure(eq);
+                    && !UnitUtil.isArmorOrStructure(eq))
+                    || (eq instanceof TAGWeapon);
         });
         
         private final String displayName;
