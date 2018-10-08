@@ -126,7 +126,7 @@ public class ProtomekMainUI extends MegaMekLabMainUI {
 
         if (null == oldEntity) {
             proto.setChassis("New");
-            proto.setModel("Mek");
+            proto.setModel("Protomek");
             proto.setYear(3145);
         } else {
             proto.setChassis(oldEntity.getChassis());
