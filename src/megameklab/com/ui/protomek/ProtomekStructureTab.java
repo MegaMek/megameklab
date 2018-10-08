@@ -291,13 +291,14 @@ public class ProtomekStructureTab extends ITab implements ProtomekBuildListener 
                 } catch (LocationFullException e) {
                     // fall through
                 }
-                JOptionPane.showMessageDialog(null,
-                        "Error adding armor to torso. Resetting to Standard Armor",
-                        "Location Full",
-                        JOptionPane.INFORMATION_MESSAGE);
-                getProtomech().setArmorType(EquipmentType.T_ARMOR_STANDARD);
-                getProtomech().setArmorTechLevel(TechConstants.T_ALL_CLAN);
             }
+            JOptionPane.showMessageDialog(null,
+                    "Requires free torso slot. Resetting to Standard Armor",
+                    "Location Full",
+                    JOptionPane.INFORMATION_MESSAGE);
+            getProtomech().setArmorType(EquipmentType.T_ARMOR_STANDARD);
+            getProtomech().setArmorTechLevel(TechConstants.T_ALL_CLAN);
+            panArmor.setFromEntity(getProtomech());
         }
     }
 
