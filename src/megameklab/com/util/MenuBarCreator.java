@@ -1373,6 +1373,8 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
                     newUI = new megameklab.com.ui.Infantry.MainUI();
                 } else if (tempEntity instanceof Mech) {
                     newUI = new megameklab.com.ui.Mek.MainUI();
+                } else if (tempEntity.hasETypeFlag(Entity.ETYPE_PROTOMECH)) {
+                    newUI = new megameklab.com.ui.protomek.ProtomekMainUI();
                 } else if ((tempEntity instanceof Tank)
                         && !(tempEntity instanceof GunEmplacement)) {
                     newUI = new megameklab.com.ui.Vehicle.MainUI();

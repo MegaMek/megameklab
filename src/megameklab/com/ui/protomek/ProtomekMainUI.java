@@ -24,6 +24,7 @@ import javax.swing.SwingConstants;
 
 import megamek.common.Engine;
 import megamek.common.Entity;
+import megamek.common.EntityMovementMode;
 import megamek.common.EquipmentType;
 import megamek.common.ITechManager;
 import megamek.common.Protomech;
@@ -112,6 +113,7 @@ public class ProtomekMainUI extends MegaMekLabMainUI {
         setEntity(proto);
 
         getEntity().setWeight(2);
+        proto.setMovementMode(EntityMovementMode.BIPED);
         proto.setOriginalWalkMP(1);
         proto.setEngine(new Engine(TestProtomech.calcEngineRating(proto),
                 Engine.NORMAL_ENGINE, Engine.CLAN_ENGINE));
