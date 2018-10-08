@@ -167,7 +167,10 @@ public class UnitUtil {
                         || eq.hasFlag(MiscType.F_CHAMELEON_SHIELD)
                         || eq.hasFlag(MiscType.F_BLUE_SHIELD)
                         || eq.hasFlag(MiscType.F_MAST_MOUNT)
-                        || eq.hasFlag(MiscType.F_SCM));
+                        || eq.hasFlag(MiscType.F_SCM)
+                        || eq.hasFlag(MiscType.F_PROTOQMS)
+                        || (eq.hasFlag(MiscType.F_MAGNETIC_CLAMP) && eq.hasFlag(MiscType.F_PROTOMECH_EQUIPMENT))
+                        || (eq.hasFlag(MiscType.F_MASC) && eq.hasFlag(MiscType.F_PROTOMECH_EQUIPMENT)));
     }
 
     /**
@@ -1906,7 +1909,7 @@ public class UnitUtil {
         }
         return mount;
     }
-
+    
     public static void loadFonts() {
         final String METHOD_NAME = "loadFonts()";
 
