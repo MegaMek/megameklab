@@ -13,6 +13,8 @@
  */
 package megameklab.com.ui.view.listeners;
 
+import megamek.common.EquipmentType;
+
 /**
  * Listener for views used by Protomechs.
  * 
@@ -23,4 +25,6 @@ public interface ProtomekBuildListener extends BuildListener {
     void tonnageChanged(double tonnage);
     void typeChanged(int motiveType);
     void mainGunChanged(boolean mainGun);
+    void setEnhancement(EquipmentType eq, boolean selected);
+    void setISInterface(boolean selected);
 }

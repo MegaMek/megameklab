@@ -17,6 +17,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -27,7 +28,9 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import megamek.common.EquipmentType;
 import megamek.common.ITechManager;
+import megamek.common.MiscType;
 import megamek.common.Protomech;
 import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestProtomech;
@@ -62,10 +65,32 @@ public class ProtomekChassisView extends BuildView implements ActionListener, Ch
     final private CustomComboBox<Integer> cbMotiveType = new CustomComboBox<>(i -> motiveTypeNames[i]);
     final private JCheckBox chkMainGun = new JCheckBox();
     
+    final private JCheckBox chkMyomerBooster = new JCheckBox();
+    final private JCheckBox chkPartialWing = new JCheckBox();
+    final private JCheckBox chkMagneticClamps = new JCheckBox();
+    final private JCheckBox chkISInterface = new JCheckBox();
+    
+    private EquipmentType myomerBooster = null;
+    private EquipmentType partialWing = null;
+    private EquipmentType magneticClamps = null;
+    
     private final ITechManager techManager;
     
     public ProtomekChassisView(ITechManager techManager) {
         this.techManager = techManager;
+        // Get the equipment based on the correct flags rather than relying on magic String literals.
+        for (Enumeration<EquipmentType> e = EquipmentType.getAllTypes(); e.hasMoreElements(); ) {
+            final EquipmentType eq = e.nextElement();
+            if ((eq instanceof MiscType) && eq.hasFlag(MiscType.F_PROTOMECH_EQUIPMENT)) {
+                if (eq.hasFlag(MiscType.F_MASC)) {
+                    myomerBooster = eq;
+                } else if (eq.hasFlag(MiscType.F_PARTIAL_WING)) {
+                    partialWing = eq;
+                } else if (eq.hasFlag(MiscType.F_MAGNETIC_CLAMP)) {
+                    magneticClamps = eq;
+                }
+            }
+        }
         initUI();
     }
 
@@ -101,12 +126,46 @@ public class ProtomekChassisView extends BuildView implements ActionListener, Ch
         cbMotiveType.addActionListener(this);
         
         gbc.gridx = 0;
-        gbc.gridy = 2;
+        gbc.gridy++;
         gbc.gridwidth = 2;
         chkMainGun.setText(resourceMap.getString("ProtomekChassisView.chkMainGun.text"));
         chkMainGun.setToolTipText(resourceMap.getString("ProtomekChassisView.chkMainGun.tooltip"));
         add(chkMainGun, gbc);
         chkMainGun.addActionListener(this);
+        
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.WEST;
+        add(createLabel(resourceMap.getString("ProtomekChassisView.lblEnhancements.text"), labelSize), gbc);
+        
+        gbc.gridx = 0;
+        gbc.gridy++;
+        chkMyomerBooster.setText(resourceMap.getString("ProtomekChassisView.chkMyomerBooster.text"));
+        chkMyomerBooster.setToolTipText(resourceMap.getString("ProtomekChassisView.chkMyomerBooster.tooltip"));
+        add(chkMyomerBooster, gbc);
+        chkMyomerBooster.addActionListener(this);
+        
+        gbc.gridx = 0;
+        gbc.gridy++;
+        chkPartialWing.setText(resourceMap.getString("ProtomekChassisView.chkPartialWing.text"));
+        chkPartialWing.setToolTipText(resourceMap.getString("ProtomekChassisView.chkPartialWing.tooltip"));
+        add(chkPartialWing, gbc);
+        chkPartialWing.addActionListener(this);
+        
+        gbc.gridx = 0;
+        gbc.gridy++;
+        chkMagneticClamps.setText(resourceMap.getString("ProtomekChassisView.chkMagneticClamps.text"));
+        chkMagneticClamps.setToolTipText(resourceMap.getString("ProtomekChassisView.chkMagneticClamps.tooltip"));
+        add(chkMagneticClamps, gbc);
+        chkMagneticClamps.addActionListener(this);
+        
+        gbc.gridx = 0;
+        gbc.gridy++;
+        chkISInterface.setText(resourceMap.getString("ProtomekChassisView.chkISInterface.text"));
+        chkISInterface.setToolTipText(resourceMap.getString("ProtomekChassisView.chkISInterface.tooltip"));
+        add(chkISInterface, gbc);
+        chkISInterface.addActionListener(this);
     }
 
     public void setFromEntity(Protomech proto) {
@@ -121,6 +180,11 @@ public class ProtomekChassisView extends BuildView implements ActionListener, Ch
             cbMotiveType.setSelectedItem(MOTIVE_TYPE_BIPED);
         }
         cbMotiveType.addActionListener(this);
+        
+        chkMyomerBooster.setSelected(proto.hasMisc(MiscType.F_MASC));
+        chkPartialWing.setSelected(proto.hasMisc(MiscType.F_PARTIAL_WING));
+        chkMagneticClamps.setSelected(proto.hasMisc(MiscType.F_MAGNETIC_CLAMP));
+        chkISInterface.setSelected(proto.hasInterfaceCockpit());
         chkMainGun.setSelected(proto.hasMainGun());
     }
     
@@ -135,6 +199,10 @@ public class ProtomekChassisView extends BuildView implements ActionListener, Ch
     
     public void refresh() {
         refreshTonnage();
+        chkMyomerBooster.setVisible((null != myomerBooster) && techManager.isLegal(myomerBooster));
+        chkPartialWing.setVisible((null != partialWing) && techManager.isLegal(partialWing));
+        chkMagneticClamps.setVisible((null != magneticClamps) && techManager.isLegal(magneticClamps));
+        chkISInterface.setVisible(techManager.isLegal(Protomech.TA_INTERFACE_COCKPIT));
     }
 
     private void refreshTonnage() {
@@ -172,6 +240,14 @@ public class ProtomekChassisView extends BuildView implements ActionListener, Ch
             listeners.forEach(l -> l.typeChanged(getMotiveType()));
         } else if (e.getSource() == chkMainGun) {
             listeners.forEach(l -> l.mainGunChanged(chkMainGun.isSelected()));
+        } else if (e.getSource() == chkMyomerBooster) {
+            listeners.forEach(l -> l.setEnhancement(myomerBooster, chkMyomerBooster.isSelected()));
+        } else if (e.getSource() == chkPartialWing) {
+            listeners.forEach(l -> l.setEnhancement(partialWing, chkPartialWing.isSelected()));
+        } else if (e.getSource() == chkMagneticClamps) {
+            listeners.forEach(l -> l.setEnhancement(magneticClamps, chkMagneticClamps.isSelected()));
+        } else if (e.getSource() == chkISInterface) {
+            listeners.forEach(l -> l.setISInterface(chkISInterface.isSelected()));
         }
         refresh();
     }
