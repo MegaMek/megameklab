@@ -17,6 +17,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -225,22 +226,76 @@ public class ProtomekStructureTab extends ITab implements ProtomekBuildListener 
         }
         return false;
     }
+    
+    /**
+     * Creates room for installing fixed equipment in a location by removing as much non-fixed
+     * equipment as necessary (if any) until there are a sufficient number of slots.
+     * 
+     * @param loc    The location to clear
+     * @param count  The number of slots required
+     * @return       Whether enough space was freed up
+     */
+    private boolean freeUpSpace(int loc, int count) {
+        int maxAvail = TestProtomech.maxSlotsByLocation(loc, getProtomech());
+        List<Mounted> optional = new ArrayList<>();
+        for (Mounted m : getProtomech().getEquipment()) {
+            if ((m.getLocation() != loc) || !TestProtomech.requiresSlot(m.getType())) {
+                continue;
+            }
+            if (UnitUtil.isFixedLocationSpreadEquipment(m.getType())) {
+                maxAvail--;
+            } else {
+                optional.add(m);
+            }
+        }
+        if (count > maxAvail) {
+            return false;
+        }
+        int empty = maxAvail - optional.size();
+        if (empty >= count) {
+            return true;
+        }
+        for (int i = optional.size() - 1; i >= 0; i--) {
+            UnitUtil.changeMountStatus(getProtomech(), optional.get(i), Entity.LOC_NONE, Entity.LOC_NONE, false);
+            empty++;
+            if (empty >= count) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-    private void createArmorMountsAndSetArmorType(int at, int aTechLevel) {
+    private void createArmorMountsAndSetArmorType(EquipmentType armor) {
         TestProtomech.ProtomechArmor pmArmor = TestProtomech.ProtomechArmor
-                .getArmor(getProtomech());
-        UnitUtil.removeISorArmorMounts(getProtomech(), false);
-        if ((null != pmArmor) && (pmArmor.getTorsoSlots() > 0)) {
-            try {
-                getProtomech().addEquipment(pmArmor.getArmorEqType(), Protomech.LOC_TORSO);
-            } catch (LocationFullException e) {
+                .getArmor(EquipmentType.getArmorType(armor), true);
+        List<Mounted> armorMounts = getProtomech().getMisc().stream()
+                .filter(m -> EquipmentType.getArmorType(m.getType()) != EquipmentType.T_ARMOR_UNKNOWN)
+                .collect(Collectors.toList());
+        for (Mounted m : armorMounts) {
+            UnitUtil.removeMounted(getProtomech(), m);
+        }
+        if (null == pmArmor) {
+            getProtomech().setArmorType(EquipmentType.T_ARMOR_STANDARD);
+            getProtomech().setArmorTechLevel(TechConstants.T_ALL_CLAN);
+        } else {
+            getProtomech().setArmorType(pmArmor.getType());
+            getProtomech().setArmorTechLevel(pmArmor.getArmorTech());
+        }
+        if (pmArmor.getTorsoSlots() > 0) {
+            if (freeUpSpace(Protomech.LOC_TORSO, pmArmor.getTorsoSlots())) {
+                try {
+                    Mounted mount = new Mounted(getProtomech(), pmArmor.getArmorEqType());
+                    getProtomech().addEquipment(mount, Protomech.LOC_TORSO, false);
+                    return;
+                } catch (LocationFullException e) {
+                    // fall through
+                }
                 JOptionPane.showMessageDialog(null,
-                        "Error adding armor to torso.",
-                        "Resetting to Standard Armor",
+                        "Error adding armor to torso. Resetting to Standard Armor",
+                        "Location Full",
                         JOptionPane.INFORMATION_MESSAGE);
-                getMech().setArmorType(EquipmentType.T_ARMOR_STANDARD);
-                getMech().setArmorTechLevel(TechConstants.T_ALL_CLAN);
-                panArmor.setFromEntity(getProtomech());
+                getProtomech().setArmorType(EquipmentType.T_ARMOR_STANDARD);
+                getProtomech().setArmorTechLevel(TechConstants.T_ALL_CLAN);
             }
         }
     }
@@ -372,9 +427,9 @@ public class ProtomekStructureTab extends ITab implements ProtomekBuildListener 
     }
 
     @Override
-    public void armorTypeChanged(int at, int aTechLevel) {
+    public void armorTypeChanged(EquipmentType armor) {
         UnitUtil.removeISorArmorMounts(getProtomech(), false);
-        createArmorMountsAndSetArmorType(at, aTechLevel);
+        createArmorMountsAndSetArmorType(armor);
         panArmorAllocation.setFromEntity(getProtomech());
         panSummary.refresh();
         refresh.refreshStatus();
