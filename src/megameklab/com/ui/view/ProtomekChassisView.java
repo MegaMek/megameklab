@@ -213,7 +213,9 @@ public class ProtomekChassisView extends BuildView implements ActionListener, Ch
         refreshTonnage();
         chkMyomerBooster.setVisible((null != myomerBooster) && techManager.isLegal(myomerBooster));
         chkPartialWing.setVisible((null != partialWing) && techManager.isLegal(partialWing));
-        chkMagneticClamps.setVisible((null != magneticClamps) && techManager.isLegal(magneticClamps));
+        chkMagneticClamps.setVisible((null != magneticClamps)
+                && (getMotiveType() == MOTIVE_TYPE_BIPED)
+                && techManager.isLegal(magneticClamps));
         chkQuadMelee.setVisible((null != quadMelee)
                 && (getMotiveType() == MOTIVE_TYPE_QUAD)
                 && techManager.isLegal(quadMelee));

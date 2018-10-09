@@ -430,6 +430,13 @@ public class ProtomekStructureTab extends ITab implements ProtomekBuildListener 
                 UnitUtil.removeMounted(getProtomech(), qms.get());
             }
         }
+        if (getProtomech().isQuad() || getProtomech().isGlider()) {
+            Optional<Mounted> clamp = getProtomech().getMisc().stream().filter(m -> m.getType()
+                    .hasFlag(MiscType.F_MAGNETIC_CLAMP)).findFirst();
+            if (clamp.isPresent()) {
+                UnitUtil.removeMounted(getProtomech(), clamp.get());
+            }
+        }
         refresh();
         refresh.refreshBuild();
         refresh.refreshPreview();
