@@ -3912,7 +3912,28 @@ public class UnitUtil {
         return sb.toString();
     }
 
+    /**
+     * Checks whether the unit has an weapon that uses the ammo type and the munition is legal for the
+     * type of unit. This includes one-shot launchers.
+     * 
+     * @param unit The unit
+     * @param atype The ammo
+     * @return Whether the unit can make use of the ammo
+     */
     public static boolean canUseAmmo(Entity unit, AmmoType atype) {
+        return canUseAmmo(unit, atype, true);
+    }
+    
+    /**
+     * Checks whether the unit has an weapon that uses the ammo type and the munition is legal for the
+     * type of unit.
+     * 
+     * @param unit The unit
+     * @param atype The ammo
+     * @param includeOneShot If false, ignores one-shot weapons
+     * @return Whether the unit can make use of the ammo
+     */
+    public static boolean canUseAmmo(Entity unit, AmmoType atype, boolean includeOneShot) {
         boolean match = false;
         if ((unit instanceof BattleArmor)
                 && !atype.hasFlag(AmmoType.F_BATTLEARMOR)){
@@ -3931,7 +3952,8 @@ public class UnitUtil {
             if (m.getType() instanceof AmmoWeapon) {
                 WeaponType wtype = (WeaponType) m.getType();
                 if ((wtype.getAmmoType() == atype.getAmmoType())
-                        && (wtype.getRackSize() == atype.getRackSize())) {
+                        && (wtype.getRackSize() == atype.getRackSize())
+                        && (includeOneShot || !((WeaponType) m.getType()).hasFlag(WeaponType.F_ONESHOT))) {
                     match = true;
                 }
             }
