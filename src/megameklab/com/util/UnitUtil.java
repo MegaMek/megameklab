@@ -168,7 +168,6 @@ public class UnitUtil {
                         || eq.hasFlag(MiscType.F_BLUE_SHIELD)
                         || eq.hasFlag(MiscType.F_MAST_MOUNT)
                         || eq.hasFlag(MiscType.F_SCM)
-                        || eq.hasFlag(MiscType.F_PROTOQMS)
                         || (eq.hasFlag(MiscType.F_JUMP_JET) && eq.hasFlag(MiscType.F_PROTOMECH_EQUIPMENT))
                         || (eq.hasFlag(MiscType.F_UMU) && eq.hasFlag(MiscType.F_PROTOMECH_EQUIPMENT))
                         || (eq.hasFlag(MiscType.F_MAGNETIC_CLAMP) && eq.hasFlag(MiscType.F_PROTOMECH_EQUIPMENT))
@@ -2809,6 +2808,21 @@ public class UnitUtil {
     }
     
     public static boolean isProtomechEquipment(EquipmentType eq, Protomech proto) {
+        return isProtomechEquipment(eq, proto, false);
+    }
+    
+    public static boolean isProtomechEquipment(EquipmentType eq, Protomech proto, boolean checkConfiguration) {
+        if (checkConfiguration && (eq instanceof MiscType)) {
+            if (eq.hasFlag(MiscType.F_MAGNETIC_CLAMP) && (proto.isQuad() || proto.isGlider())) {
+                return false;
+            }
+            if (eq.hasFlag(MiscType.F_CLUB) && eq.hasSubType(MiscType.S_PROTOMECH_WEAPON) && proto.isQuad()) {
+                return false;
+            }
+            if (eq.hasFlag(MiscType.F_CLUB) && eq.hasSubType(MiscType.S_PROTO_QMS) && !proto.isQuad()) {
+                return false;
+            }
+        }
         if (eq instanceof MiscType) {
             return eq.hasFlag(MiscType.F_PROTOMECH_EQUIPMENT);
         } else if (eq instanceof WeaponType) {
@@ -3451,6 +3465,17 @@ public class UnitUtil {
                 return location == Aero.LOC_FUSELAGE;
             }
         } else if (unit.hasETypeFlag(Entity.ETYPE_PROTOMECH)) {
+            if ((eq instanceof MiscType) && eq.hasFlag(MiscType.F_CLUB)) {
+                if (eq.hasSubType(MiscType.S_PROTOMECH_WEAPON)
+                        && (location != Protomech.LOC_LARM)
+                        && (location != Protomech.LOC_RARM)) {
+                    return false;
+                }
+                if (eq.hasSubType(MiscType.S_PROTO_QMS)
+                        && (location != Protomech.LOC_TORSO)) {
+                    return false;
+                }
+            }
             if (TestProtomech.eqRequiresLocation(unit, eq)) {
                 return TestProtomech.maxSlotsByLocation(location, (Protomech) unit) > 0;
             } else {

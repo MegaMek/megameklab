@@ -117,7 +117,8 @@ public class EquipmentTab extends ITab implements ActionListener {
         CAPITAL ("Capital",
                 (eq, en) -> (eq instanceof WeaponType) && ((WeaponType) eq).isCapital(),
                 e -> e.isLargeCraft()),
-        PHYSICAL ("Physical", (eq, en) -> UnitUtil.isPhysicalWeapon(eq), e -> e.hasETypeFlag(Entity.ETYPE_MECH)),
+        PHYSICAL ("Physical", (eq, en) -> UnitUtil.isPhysicalWeapon(eq),
+                e -> e.hasETypeFlag(Entity.ETYPE_MECH) || e.hasETypeFlag(Entity.ETYPE_PROTOMECH)),
         WEAPON ("All Weapons", (eq, en) -> {
             return ENERGY.filter(eq, en) || BALLISTIC.filter(eq, en)
                     || MISSILE.filter(eq, en) || CAPITAL.filter(eq, en) || PHYSICAL.filter(eq, en);
