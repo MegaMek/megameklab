@@ -123,7 +123,8 @@ public class EquipmentTab extends ITab implements ActionListener {
                     || MISSILE.filter(eq, en) || CAPITAL.filter(eq, en) || PHYSICAL.filter(eq, en);
         }),
         AMMO ("Ammo", (eq, en) -> {
-            return (eq instanceof AmmoType) && !(eq instanceof BombType) && UnitUtil.canUseAmmo(en, (AmmoType) eq);
+            return (eq instanceof AmmoType) && !(eq instanceof BombType)
+                    && UnitUtil.canUseAmmo(en, (AmmoType) eq, false);
         }),
         OTHER ("Other", (eq, en) -> {
             return ((eq instanceof MiscType)
