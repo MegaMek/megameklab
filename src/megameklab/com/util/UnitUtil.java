@@ -3375,6 +3375,9 @@ public class UnitUtil {
         if (unit.hasETypeFlag(Entity.ETYPE_MECH)) {
             testEntity = new TestMech((Mech) unit, entityVerifier.mechOption,
                     null);
+        } else if (unit.hasETypeFlag(Entity.ETYPE_PROTOMECH)) {
+            testEntity = new TestProtomech((Protomech) unit,
+                    entityVerifier.protomechOption, null);
         } else if (unit.hasETypeFlag(Entity.ETYPE_SUPPORT_TANK)) {
             testEntity = new TestSupportVehicle((Tank) unit,
                     entityVerifier.tankOption, null);
