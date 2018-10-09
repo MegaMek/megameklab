@@ -68,13 +68,11 @@ public class ProtomekChassisView extends BuildView implements ActionListener, Ch
     final private JCheckBox chkMyomerBooster = new JCheckBox();
     final private JCheckBox chkPartialWing = new JCheckBox();
     final private JCheckBox chkMagneticClamps = new JCheckBox();
-    final private JCheckBox chkQuadMelee = new JCheckBox();
     final private JCheckBox chkISInterface = new JCheckBox();
     
     private EquipmentType myomerBooster = null;
     private EquipmentType partialWing = null;
     private EquipmentType magneticClamps = null;
-    private EquipmentType quadMelee = null;
     
     private final ITechManager techManager;
     
@@ -90,8 +88,6 @@ public class ProtomekChassisView extends BuildView implements ActionListener, Ch
                     partialWing = eq;
                 } else if (eq.hasFlag(MiscType.F_MAGNETIC_CLAMP)) {
                     magneticClamps = eq;
-                } else if (eq.hasFlag(MiscType.F_PROTOQMS)) {
-                    quadMelee = eq;
                 }
             }
         }
@@ -166,13 +162,6 @@ public class ProtomekChassisView extends BuildView implements ActionListener, Ch
         
         gbc.gridx = 0;
         gbc.gridy++;
-        chkQuadMelee.setText(resourceMap.getString("ProtomekChassisView.chkQuadMelee.text"));
-        chkQuadMelee.setToolTipText(resourceMap.getString("ProtomekChassisView.chkQuadMelee.tooltip"));
-        add(chkQuadMelee, gbc);
-        chkQuadMelee.addActionListener(this);
-        
-        gbc.gridx = 0;
-        gbc.gridy++;
         chkISInterface.setText(resourceMap.getString("ProtomekChassisView.chkISInterface.text"));
         chkISInterface.setToolTipText(resourceMap.getString("ProtomekChassisView.chkISInterface.tooltip"));
         add(chkISInterface, gbc);
@@ -195,7 +184,6 @@ public class ProtomekChassisView extends BuildView implements ActionListener, Ch
         chkMyomerBooster.setSelected(proto.hasMisc(MiscType.F_MASC));
         chkPartialWing.setSelected(proto.hasMisc(MiscType.F_PARTIAL_WING));
         chkMagneticClamps.setSelected(proto.hasMisc(MiscType.F_MAGNETIC_CLAMP));
-        chkQuadMelee.setSelected(proto.hasMisc(MiscType.F_PROTOQMS));
         chkISInterface.setSelected(proto.hasInterfaceCockpit());
         chkMainGun.setSelected(proto.hasMainGun());
     }
@@ -216,9 +204,6 @@ public class ProtomekChassisView extends BuildView implements ActionListener, Ch
         chkMagneticClamps.setVisible((null != magneticClamps)
                 && (getMotiveType() == MOTIVE_TYPE_BIPED)
                 && techManager.isLegal(magneticClamps));
-        chkQuadMelee.setVisible((null != quadMelee)
-                && (getMotiveType() == MOTIVE_TYPE_QUAD)
-                && techManager.isLegal(quadMelee));
         chkISInterface.setVisible(techManager.isLegal(Protomech.TA_INTERFACE_COCKPIT));
     }
 
@@ -263,8 +248,6 @@ public class ProtomekChassisView extends BuildView implements ActionListener, Ch
             listeners.forEach(l -> l.setEnhancement(partialWing, chkPartialWing.isSelected()));
         } else if (e.getSource() == chkMagneticClamps) {
             listeners.forEach(l -> l.setEnhancement(magneticClamps, chkMagneticClamps.isSelected()));
-        } else if (e.getSource() == chkQuadMelee) {
-            listeners.forEach(l -> l.setEnhancement(quadMelee, chkQuadMelee.isSelected()));
         } else if (e.getSource() == chkISInterface) {
             listeners.forEach(l -> l.setISInterface(chkISInterface.isSelected()));
         }

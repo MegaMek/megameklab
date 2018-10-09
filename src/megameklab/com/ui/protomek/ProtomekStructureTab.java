@@ -425,18 +425,15 @@ public class ProtomekStructureTab extends ITab implements ProtomekBuildListener 
             getProtomech().initializeArmor(0, Protomech.LOC_LARM);
             getProtomech().initializeArmor(0, Protomech.LOC_RARM);
             Optional<Mounted> qms = getProtomech().getMisc().stream().filter(m -> m.getType()
-                    .hasFlag(MiscType.F_PROTOQMS)).findFirst();
+                    .hasFlag(MiscType.F_CLUB) && m.getType().hasSubType(MiscType.S_PROTO_QMS)).findFirst();
             if (qms.isPresent()) {
                 UnitUtil.removeMounted(getProtomech(), qms.get());
             }
         }
-        if (getProtomech().isQuad() || getProtomech().isGlider()) {
-            Optional<Mounted> clamp = getProtomech().getMisc().stream().filter(m -> m.getType()
-                    .hasFlag(MiscType.F_MAGNETIC_CLAMP)).findFirst();
-            if (clamp.isPresent()) {
-                UnitUtil.removeMounted(getProtomech(), clamp.get());
-            }
-        }
+        List<Mounted> toRemove = getProtomech().getMisc().stream()
+                .filter(m -> !UnitUtil.isProtomechEquipment(m.getType(), getProtomech(), true))
+                .collect(Collectors.toList());
+        toRemove.forEach(m -> UnitUtil.removeMounted(getProtomech(), m));
         refresh();
         refresh.refreshBuild();
         refresh.refreshPreview();
