@@ -110,6 +110,13 @@ public class ProtomekMountList extends JList<Mounted> {
     }
     
     private void deleteMount(Mounted mount) {
+        if ((mount.getType() instanceof WeaponType)
+                && (mount.getType().hasFlag(WeaponType.F_ONESHOT))) {
+            Mounted ammo = mount.getLinked();
+            if (null != ammo) {
+                UnitUtil.removeMounted(getProtomech(), ammo);
+            }
+        }
         UnitUtil.removeMounted(getProtomech(), mount);
         refresh();
     }

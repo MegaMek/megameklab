@@ -1219,7 +1219,7 @@ public class UnitUtil {
         }
         return null;
     }
-    
+
     /**
      * Checks whether the equipment is eligible for pod mounting in an omni unit, either because the
      * equipment itself can never be pod-mounted (such as armor, structure, or myomer enhancements),

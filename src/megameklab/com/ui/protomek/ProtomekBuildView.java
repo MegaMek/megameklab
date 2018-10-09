@@ -110,11 +110,7 @@ public class ProtomekBuildView extends IView implements ActionListener, MouseLis
             }
         }
         for (Mounted mount : getProtomech().getAmmo()) {
-            if ((mount.getLocation() == Entity.LOC_NONE) && 
-                    ((mount.getUsableShotsLeft() > 1)
-                            || (((AmmoType) mount.getType()).getShots() == 1)
-                            || (((AmmoType)mount.getType()).getAmmoType() == 
-                            AmmoType.T_COOLANT_POD))) {
+            if ((mount.getLocation() == Entity.LOC_NONE) && !mount.isOneShotAmmo()) {
                 masterEquipmentList.add(mount);
             }
         }
