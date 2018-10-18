@@ -13,6 +13,7 @@ v0.45.2-SNAPSHOT
 + PR #209: System-wide equipment [general location for non-weapon equipment for aerospace units and
            ammo in fighters]
 + Issue #205: Blue Shield Particle Field Dampener (BSPFD) can't be dragged into ASF slots
++ Issue #210: Superheavy printing issue: Armor distribution wrong?
 
 v0.45.1 (2018-09-03 2300 UTC)
 + Issue #178: Equipment Table getting stuck on one equipment type.
