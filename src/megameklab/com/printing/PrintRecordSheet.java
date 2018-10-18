@@ -658,6 +658,25 @@ public abstract class PrintRecordSheet implements Printable {
                     if (noSingle) {
                         pipsByRow[fromRow]--;
                         remaining++;
+                        for (int i = 0; i <= centerRow; i++) {
+                            int r = centerRow - i;
+                            if (rowLength[r] >= pipsByRow[r] + 2) {
+                                pipsByRow[r] += 2;
+                                remaining = 0;
+                                break;
+                            }
+                            if (i > 0) {
+                                r = centerRow + i;
+                                if (r >= rows.size()) {
+                                    continue;
+                                }
+                                if (rowLength[r] >= pipsByRow[r] + 2) {
+                                    pipsByRow[r] += 2;
+                                    remaining = 0;
+                                    break;
+                                }
+                            }
+                        }
                     }
                 }
             }
