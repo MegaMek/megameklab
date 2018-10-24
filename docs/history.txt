@@ -15,6 +15,7 @@ v0.45.2-SNAPSHOT
 + Issue #205: Blue Shield Particle Field Dampener (BSPFD) can't be dragged into ASF slots
 + Issue #210: Superheavy printing issue: Armor distribution wrong?
 + Issue #211: Warship Cost Breakdown shows BV calculation
++ Issue #186: Weapons & Equipment Inventory table content linespacing
 
 v0.45.1 (2018-09-03 2300 UTC)
 + Issue #178: Equipment Table getting stuck on one equipment type.
