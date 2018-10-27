@@ -364,9 +364,9 @@ public class EquipmentTableModel extends AbstractTableModel {
             if (type.getTonnage(entity) < 0.1) {
                 return String.format("%.2f kg", type.getTonnage(entity) * 1000);
             } else if ((entity instanceof BattleArmor) && (atype != null)){
-                return (atype.getKgPerShot() * atype.getShots())/1000;
+                return String.valueOf((atype.getKgPerShot() * atype.getShots())/1000);
             } else {
-                return type.getTonnage(entity);
+                return String.valueOf(type.getTonnage(entity));
             }
         } else if (col == COL_CRIT) {
             if (entity instanceof Tank) {
