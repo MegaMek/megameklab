@@ -288,6 +288,16 @@ public class BuildView extends IView implements ActionListener, MouseListener {
                     && !((eq.getType() instanceof MiscType) && eq.getType().hasFlag(MiscType.F_TARGCOMP))
                     && !(getMech() instanceof LandAirMech)) {
                 int[] critSpace = UnitUtil.getHighestContinuousNumberOfCritsArray(getMech());
+                // Superheavy mechs may have enough space in the CT for the whole thing.
+                if ((critSpace[Mech.LOC_CT] >= totalCrits) && UnitUtil.isValidLocation(getMech(), eq.getType(), Mech.LOC_CT)) {
+                    JMenu ctMenu = new JMenu(locations[Mech.LOC_CT]);
+
+                    item = new JMenuItem(String.format("Add to %1$s", locations[Mech.LOC_CT]));
+                    item.addActionListener(ev -> jMenuLoadSplitComponent_actionPerformed(Mech.LOC_CT, Mech.LOC_NONE, totalCrits, selectedRow));
+                    ctMenu.add(item);
+                    popup.add(ctMenu);
+                }
+
                 if ((critSpace[Mech.LOC_RT] >= 1) && UnitUtil.isValidLocation(getMech(), eq.getType(), Mech.LOC_RT)) {
                     JMenu rtMenu = new JMenu(locations[Mech.LOC_RT]);
 
