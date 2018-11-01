@@ -290,7 +290,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
                         item = new JMenuItem(String.format("Add to %1$s", locations[Mech.LOC_RT]));
                         item.addActionListener(new ActionListener() {
                             public void actionPerformed(ActionEvent e) {
-                                jMenuLoadComponent_actionPerformed(Mech.LOC_RT, selectedRow);
+                                jMenuLoadSplitComponent_actionPerformed(Mech.LOC_RT, Mech.LOC_NONE, totalCrits, selectedRow);
                             }
                         });
                         rtMenu.add(item);
@@ -336,7 +336,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
                         item = new JMenuItem(String.format("Add to %1$s", locations[Mech.LOC_LT]));
                         item.addActionListener(new ActionListener() {
                             public void actionPerformed(ActionEvent e) {
-                                jMenuLoadComponent_actionPerformed(Mech.LOC_LT, selectedRow);
+                                jMenuLoadSplitComponent_actionPerformed(Mech.LOC_LT, Mech.LOC_NONE, totalCrits, selectedRow);
                             }
                         });
                         ltMenu.add(item);
