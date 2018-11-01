@@ -237,6 +237,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
     private void addAllListeners() {
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
         fireTableRefresh();
     }
@@ -254,18 +255,22 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         return equipmentTable;
     }
 
+    @Override
     public void mouseClicked(MouseEvent e) {
 
     }
 
+    @Override
     public void mouseEntered(MouseEvent e) {
 
     }
 
+    @Override
     public void mouseExited(MouseEvent e) {
 
     }
 
+    @Override
     public void mousePressed(MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON3) {
             JPopupMenu popup = new JPopupMenu();
@@ -368,6 +373,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         }
     }
 
+    @Override
     public void mouseReleased(MouseEvent e) {
 
     }
