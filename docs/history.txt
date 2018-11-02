@@ -15,6 +15,7 @@ v0.45.2-SNAPSHOT
 + Issue #205: Blue Shield Particle Field Dampener (BSPFD) can't be dragged into ASF slots
 + Issue #210: Superheavy printing issue: Armor distribution wrong?
 + Issue #211: Warship Cost Breakdown shows BV calculation
++ Issue #186: Weapons & Equipment Inventory table content linespacing
 + Issue #213: Battle Armor Pop Up Mines way too heavy
 + Issue #214: Battle Armour Sorting Equipment by Weight
 + Issue #215: Quadvees have issues with Quadvee cockpits and XL/XXL engines

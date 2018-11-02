@@ -327,7 +327,7 @@ public class PrintMech extends PrintEntity {
         int currY = viewY + 10;
         
         float fontSize = FONT_SIZE_MEDIUM;
-        float lineHeight = getFontHeight(fontSize) * 0.8f;
+        float lineHeight = getFontHeight(fontSize) * 1.2f;
         
         addTextElement(canvas, qtyX, currY, "Qty", fontSize, "middle", "bold");
         addTextElement(canvas, nameX + indent, currY, "Type", fontSize, "start", "bold");
@@ -350,7 +350,10 @@ public class PrintMech extends PrintEntity {
                 lines += rows;
             }
         }
-        if (lines > 12) {
+        if (lines > 11) {
+            lineHeight = getFontHeight(fontSize) * 1.0f;
+        }
+        if (lines > 13) {
             lineHeight = getFontHeight(fontSize) * 0.8f;
         }
         if (lines > 16) {
