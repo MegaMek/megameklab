@@ -235,6 +235,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
     private void addAllListeners() {
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
         fireTableRefresh();
     }
@@ -252,18 +253,22 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         return equipmentTable;
     }
 
+    @Override
     public void mouseClicked(MouseEvent e) {
 
     }
 
+    @Override
     public void mouseEntered(MouseEvent e) {
 
     }
 
+    @Override
     public void mouseExited(MouseEvent e) {
 
     }
 
+    @Override
     public void mousePressed(MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON3) {
             JPopupMenu popup = new JPopupMenu();
@@ -281,16 +286,22 @@ public class BuildView extends IView implements ActionListener, MouseListener {
                     && !((eq.getType() instanceof MiscType) && eq.getType().hasFlag(MiscType.F_TARGCOMP))
                     && !(getMech() instanceof LandAirMech)) {
                 int[] critSpace = UnitUtil.getHighestContinuousNumberOfCritsArray(getMech());
+                // Superheavy mechs may have enough space in the CT for the whole thing.
+                if ((critSpace[Mech.LOC_CT] >= totalCrits) && UnitUtil.isValidLocation(getMech(), eq.getType(), Mech.LOC_CT)) {
+                    JMenu ctMenu = new JMenu(locations[Mech.LOC_CT]);
+
+                    item = new JMenuItem(String.format("Add to %1$s", locations[Mech.LOC_CT]));
+                    item.addActionListener(ev -> jMenuLoadSplitComponent_actionPerformed(Mech.LOC_CT, Mech.LOC_NONE, totalCrits, selectedRow));
+                    ctMenu.add(item);
+                    popup.add(ctMenu);
+                }
+
                 if ((critSpace[Mech.LOC_RT] >= 1) && UnitUtil.isValidLocation(getMech(), eq.getType(), Mech.LOC_RT)) {
                     JMenu rtMenu = new JMenu(locations[Mech.LOC_RT]);
 
                     if (critSpace[Mech.LOC_RT] >= totalCrits) {
                         item = new JMenuItem(String.format("Add to %1$s", locations[Mech.LOC_RT]));
-                        item.addActionListener(new ActionListener() {
-                            public void actionPerformed(ActionEvent e) {
-                                jMenuLoadComponent_actionPerformed(Mech.LOC_RT, selectedRow);
-                            }
-                        });
+                        item.addActionListener(ev -> jMenuLoadSplitComponent_actionPerformed(Mech.LOC_RT, Mech.LOC_NONE, totalCrits, selectedRow));
                         rtMenu.add(item);
                     }
 
@@ -305,11 +316,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
                             item = new JMenuItem(String.format("%1$s (%2$s)/%3$s (%4$s)", abbrLocations[Mech.LOC_RT], primarySlots, abbrLocations[splitLocations[location]], slots));
 
                             final int secondaryLocation = splitLocations[location];
-                            item.addActionListener(new ActionListener() {
-                                public void actionPerformed(ActionEvent e) {
-                                    jMenuLoadSplitComponent_actionPerformed(Mech.LOC_RT, secondaryLocation, primarySlots, selectedRow);
-                                }
-                            });
+                            item.addActionListener(ev -> jMenuLoadSplitComponent_actionPerformed(Mech.LOC_RT, secondaryLocation, primarySlots, selectedRow));
                             subMenu.add(item);
                         }
                         rtMenu.add(subMenu);
@@ -319,11 +326,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
 
                 if ((critSpace[Mech.LOC_RARM] >= totalCrits) && UnitUtil.isValidLocation(getMech(), eq.getType(), Mech.LOC_RARM)) {
                     item = new JMenuItem(String.format("Add to %1$s", locations[Mech.LOC_RARM]));
-                    item.addActionListener(new ActionListener() {
-                        public void actionPerformed(ActionEvent e) {
-                            jMenuLoadSplitComponent_actionPerformed(Mech.LOC_RARM, Mech.LOC_RARM, totalCrits, selectedRow);
-                        }
-                    });
+                    item.addActionListener(ev -> jMenuLoadSplitComponent_actionPerformed(Mech.LOC_RARM, Mech.LOC_RARM, totalCrits, selectedRow));
                     popup.add(item);
                 }
 
@@ -332,11 +335,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
 
                     if (critSpace[Mech.LOC_LT] >= totalCrits) {
                         item = new JMenuItem(String.format("Add to %1$s", locations[Mech.LOC_LT]));
-                        item.addActionListener(new ActionListener() {
-                            public void actionPerformed(ActionEvent e) {
-                                jMenuLoadComponent_actionPerformed(Mech.LOC_LT, selectedRow);
-                            }
-                        });
+                        item.addActionListener(ev -> jMenuLoadSplitComponent_actionPerformed(Mech.LOC_LT, Mech.LOC_NONE, totalCrits, selectedRow));
                         ltMenu.add(item);
                     }
 
@@ -351,11 +350,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
                             item = new JMenuItem(String.format("%1$s (%2$s)/%3$s (%4$s)", abbrLocations[Mech.LOC_LT], primarySlots, abbrLocations[splitLocations[location]], slots));
 
                             final int secondaryLocation = splitLocations[location];
-                            item.addActionListener(new ActionListener() {
-                                public void actionPerformed(ActionEvent e) {
-                                    jMenuLoadSplitComponent_actionPerformed(Mech.LOC_LT, secondaryLocation, primarySlots, selectedRow);
-                                }
-                            });
+                            item.addActionListener(ev -> jMenuLoadSplitComponent_actionPerformed(Mech.LOC_LT, secondaryLocation, primarySlots, selectedRow));
                             subMenu.add(item);
                         }
                         ltMenu.add(subMenu);
@@ -366,11 +361,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
 
                 if ((critSpace[Mech.LOC_LARM] >= totalCrits)  && UnitUtil.isValidLocation(getMech(), eq.getType(), Mech.LOC_LARM)) {
                     item = new JMenuItem(String.format("Add to %1$s", locations[Mech.LOC_LARM]));
-                    item.addActionListener(new ActionListener() {
-                        public void actionPerformed(ActionEvent e) {
-                            jMenuLoadSplitComponent_actionPerformed(Mech.LOC_LARM, Mech.LOC_LARM, totalCrits, selectedRow);
-                        }
-                    });
+                    item.addActionListener(ev -> jMenuLoadSplitComponent_actionPerformed(Mech.LOC_LARM, Mech.LOC_LARM, totalCrits, selectedRow));
                     popup.add(item);
                 }
 
@@ -381,11 +372,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
                         item = new JMenuItem("Add to " + locations[location]);
 
                         final int loc = location;
-                        item.addActionListener(new ActionListener() {
-                            public void actionPerformed(ActionEvent e) {
-                                jMenuLoadComponent_actionPerformed(loc, selectedRow);
-                            }
-                        });
+                        item.addActionListener(ev -> jMenuLoadComponent_actionPerformed(loc, selectedRow));
                         popup.add(item);
                     }
                 }
@@ -394,6 +381,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         }
     }
 
+    @Override
     public void mouseReleased(MouseEvent e) {
 
     }
