@@ -100,6 +100,7 @@ public class BuildTab extends ITab implements ActionListener {
         addAllActionListeners();
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getActionCommand().equals(AUTOFILLCOMMAND)) {
             autoFillCrits();
