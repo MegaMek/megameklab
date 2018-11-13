@@ -20,6 +20,7 @@ v0.45.2-SNAPSHOT
 + Issue #214: Battle Armour Sorting Equipment by Weight
 + Issue #215: Quadvees have issues with Quadvee cockpits and XL/XXL engines
 + iSSUE #218: Heavy Gauss Rifles on Superheavy 'Mechs Triggering Split Crit Dialog
++ PR #212: Protomechs
 
 v0.45.1 (2018-09-03 2300 UTC)
 + Issue #178: Equipment Table getting stuck on one equipment type.
