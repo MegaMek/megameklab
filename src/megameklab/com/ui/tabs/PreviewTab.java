@@ -19,8 +19,12 @@ package megameklab.com.ui.tabs;
 import java.awt.BorderLayout;
 import java.awt.Color;
 
+import javax.swing.JTabbedPane;
+
 import megamek.client.ui.swing.MechViewPanel;
+import megamek.common.Entity;
 import megamek.common.MechView;
+import megamek.common.templates.TROView;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.util.ITab;
 
@@ -32,30 +36,45 @@ public class PreviewTab extends ITab {
 	private static final long serialVersionUID = -7410436201331568734L;
 
     private MechViewPanel panelMekView;
+    private MechViewPanel panelTROView;
 
 	public PreviewTab(EntitySource eSource) {
 	    super(eSource);
 		this.setLayout(new BorderLayout());
-        panelMekView = new MechViewPanel(350, 500);
-        add(panelMekView, BorderLayout.CENTER);
+        JTabbedPane panPreview = new JTabbedPane();
+
+        panelMekView = new MechViewPanel();
+        panelMekView.setMinimumSize(new java.awt.Dimension(300, 500));
+        panelMekView.setPreferredSize(new java.awt.Dimension(300, 600));
+        panPreview.addTab("Summary", panelMekView);
+        
+        panelTROView = new MechViewPanel();
+        panPreview.addTab("TRO", panelTROView);
+
+        add(panPreview, BorderLayout.CENTER);
         setBackground(Color.WHITE);
         refresh();
 	}
 	
 	public void refresh() {
 		boolean populateTextFields = true;
-		MechView mechView = null;
+		final Entity selectedUnit = eSource.getEntity();
+        MechView mechView = null;
+        TROView troView = null;
         try {
-            mechView = new MechView(eSource.getEntity(), false);
+            mechView = new MechView(selectedUnit, false);
+            troView = TROView.createView(selectedUnit, true);
         } catch (Exception e) {
             e.printStackTrace();
             // error unit didn't load right. this is bad news.
             populateTextFields = false;
         }
         if (populateTextFields && (mechView != null)) {
-            panelMekView.setMech(eSource.getEntity());
+            panelMekView.setMech(selectedUnit, mechView);
+            panelTROView.setMech(selectedUnit, troView);
         } else {
             panelMekView.reset();
+            panelTROView.reset();
         }
 	}
 	
