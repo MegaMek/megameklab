@@ -3,6 +3,23 @@ VERSION HISTORY:
 v0.45.2-SNAPSHOT
 + Switched build system from ant to gradle.
 + Bug: Aerospace transport tab does not refresh when tech base/year/level changes.
++ Issue #195: Multiple Items of One Ammo Type Don't Add to Available Tonnage for Large Craft
++ Issue #198: Nova CEWS & heat sinks on vehicles
++ Issue #203: Inner Sphere Endo Steel is unavailable to early clan mechs
++ Issue #194: Large Aerospace Unit Tonnage Doesn't Update at Bottom of Screen
++ Issue #206: Mass Driver Ammo doesn't use up weight
++ Issue #208: MMLs don't seem to need gunners
++ Issue #207: Warship Crew Accommodation Officer Count/Quarters
++ PR #209: System-wide equipment [general location for non-weapon equipment for aerospace units and
+           ammo in fighters]
++ Issue #205: Blue Shield Particle Field Dampener (BSPFD) can't be dragged into ASF slots
++ Issue #210: Superheavy printing issue: Armor distribution wrong?
++ Issue #211: Warship Cost Breakdown shows BV calculation
++ Issue #186: Weapons & Equipment Inventory table content linespacing
++ Issue #213: Battle Armor Pop Up Mines way too heavy
++ Issue #214: Battle Armour Sorting Equipment by Weight
++ Issue #215: Quadvees have issues with Quadvee cockpits and XL/XXL engines
++ iSSUE #218: Heavy Gauss Rifles on Superheavy 'Mechs Triggering Split Crit Dialog
 
 v0.45.1 (2018-09-03 2300 UTC)
 + Issue #178: Equipment Table getting stuck on one equipment type.

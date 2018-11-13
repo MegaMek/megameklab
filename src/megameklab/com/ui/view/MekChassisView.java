@@ -448,11 +448,22 @@ public class MekChassisView extends BuildView implements ActionListener, ChangeL
                 String name = EquipmentType.getStructureTypeName(i, isClan);
                 EquipmentType structure = EquipmentType.get(name);
                 // LAMs cannot use bulky structure
-                if ((getBaseTypeIndex() == BASE_TYPE_LAM) && (structure.getCriticals(null) != 0)) {
-                    continue;
-                }
-                if ((null != structure) && techManager.isLegal(structure)) {
+                if ((null != structure) && techManager.isLegal(structure)
+                        && ((getBaseTypeIndex() != BASE_TYPE_LAM)
+                                || (structure.getCriticals(null) == 0))) {
                     cbStructure.addItem(structure);
+                }
+                name = EquipmentType.getStructureTypeName(i, !isClan);
+                EquipmentType structure2 = EquipmentType.get(name);
+                if ((null != structure2) && (structure2 != structure) 
+                        && techManager.isLegal(structure2)
+                        && ((getBaseTypeIndex() != BASE_TYPE_LAM)
+                                || (structure2.getCriticals(null) == 0))) {
+                    cbStructure.addItem(structure2);
+                    // If we are allowing the opposite tech base it may be because we are using mixed
+                    // tech but it also may be that we are in the transitional early Clan stage when
+                    // IS equipment is available without a mixed base.
+                    cbStructure.showTechBase(true);
                 }
             }
         }
@@ -616,7 +627,7 @@ public class MekChassisView extends BuildView implements ActionListener, ChangeL
     }
     
     public void setTonnage(double tonnage) {
-        spnTonnage.setValue(new Integer((int)Math.ceil(tonnage)));
+        spnTonnage.setValue(Integer.valueOf((int)Math.ceil(tonnage)));
     }
     
     public boolean isOmni() {
@@ -686,18 +697,29 @@ public class MekChassisView extends BuildView implements ActionListener, ChangeL
 
     /**
      * Select the first engine in the list that matches engine type and flags,
-     * ignoring any flags other than Clan.
+     * ignoring any flags other than Clan. If no match can be found based on type and flags,
+     * disregards Clan flag as well.
+     * 
+     * @param engine The engine to match
      */
     public void setEngine(Engine engine) {
         if (null != engine) {
             int type = engine.getEngineType();
             int flags = engine.getFlags() & Engine.CLAN_ENGINE;
+            int nextBest = -1;
             for (int i = 0; i < cbEngine.getModel().getSize(); i++) {
                 final Engine e = cbEngine.getItemAt(i);
-                if ((e.getEngineType() == type) && ((e.getFlags() & Engine.CLAN_ENGINE) == flags)) {
-                    cbEngine.setSelectedIndex(i);
-                    return;
+                if (e.getEngineType() == type) {
+                    if ((e.getFlags() & Engine.CLAN_ENGINE) == flags) {
+                        cbEngine.setSelectedIndex(i);
+                        return;
+                    } else {
+                        nextBest = i;
+                    }
                 }
+            }
+            if (nextBest >= 0) {
+                cbEngine.setSelectedIndex(nextBest);
             }
         }
     }

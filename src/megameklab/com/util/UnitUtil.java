@@ -305,15 +305,6 @@ public class UnitUtil {
                 apm.setLinkedBy(null);
             }
         }
-        // Some special checks for Aeros
-        if (unit instanceof Aero) {
-            if (mount.getType() instanceof WeaponType) {
-                // Aeros have additional weapon lists that need to be cleared
-                ((Aero)unit).getTotalWeaponList().remove(mount);
-                ((Aero)unit).getWeaponBayList().remove(mount);
-                ((Aero)unit).getWeaponGroupList().remove(mount);
-            }
-        }
         // We will need to reset the equipment numbers of the bay ammo and weapons
         Map<Mounted,List<Mounted>> bayWeapons = new HashMap<>();
         Map<Mounted,List<Mounted>> bayAmmo = new HashMap<>();
@@ -325,6 +316,15 @@ public class UnitUtil {
                     .map(n -> unit.getEquipment(n)).collect(Collectors.toList());
             bayAmmo.put(bay, list);
         }
+        // Some special checks for Aeros
+        if (unit instanceof Aero) {
+            if (mount.getType() instanceof WeaponType) {
+                // Aeros have additional weapon lists that need to be cleared
+                ((Aero)unit).getTotalWeaponList().remove(mount);
+                ((Aero)unit).getWeaponBayList().remove(mount);
+                ((Aero)unit).getWeaponGroupList().remove(mount);
+            }
+        }
         unit.getEquipment().remove(mount);
         if (mount.getType() instanceof MiscType) {
             unit.getMisc().remove(mount);
@@ -333,6 +333,23 @@ public class UnitUtil {
         } else {
             unit.getWeaponList().remove(mount);
             unit.getTotalWeaponList().remove(mount);
+        }
+        if (bayWeapons.containsKey(mount)) {
+            bayWeapons.get(mount).forEach(w -> {
+                removeCriticals(unit, w);
+                changeMountStatus(unit, w, Entity.LOC_NONE, Entity.LOC_NONE, false);
+            });
+            bayAmmo.get(mount).forEach(a -> {
+                removeCriticals(unit, a);
+                Mounted moveTo = UnitUtil.findUnallocatedAmmo(unit, a.getType());
+                if (null != moveTo) {
+                    moveTo.setShotsLeft(moveTo.getBaseShotsLeft() + a.getBaseShotsLeft());
+                    UnitUtil.removeMounted(unit, a);
+                }
+                changeMountStatus(unit, a, Entity.LOC_NONE, Entity.LOC_NONE, false);
+            });
+            bayWeapons.remove(mount);
+            bayAmmo.remove(mount);
         }
         for (Mounted bay : bayWeapons.keySet()) {
             bay.getBayWeapons().clear();
@@ -350,6 +367,18 @@ public class UnitUtil {
                 }
             }
         }
+        // Remove ammo added for a one-shot launcher
+        if ((mount.getType() instanceof WeaponType) && mount.isOneShot()) {
+            List<Mounted> osAmmo = new ArrayList<>();
+            for (Mounted ammo = mount.getLinked(); ammo != null; ammo = ammo.getLinked()) {
+                osAmmo.add(ammo);
+            }
+            osAmmo.forEach(m -> {
+                unit.getEquipment().remove(m);
+                unit.getAmmo().remove(m);
+            });
+        }
+        
         // It's possible that the equipment we are removing was linked to
         // something else, and so the linkedBy state may be set.  We should
         // remove it.  Using getLinked could be unreliable, so we'll brute force
@@ -1334,16 +1363,12 @@ public class UnitUtil {
         double tonnage = 0;
 
         for (Mounted mount : unit.getAmmo()) {
-            int ammoType = ((AmmoType)mount.getType()).getAmmoType();
-            // don't add ammo with just one shot, that's OS ammo
-            //  Unless it's a single shot ammo type, like Cruise Missiles
-            if ((mount.getLocation() == Entity.LOC_NONE)
-                    && ((mount.getUsableShotsLeft() > 1)
-                            || (ammoType == AmmoType.T_CRUISE_MISSILE)
-                            || (ammoType == AmmoType.T_COOLANT_POD)
-                            || (((AmmoType) mount.getType()).getMunitionType()
-                                    == AmmoType.M_DAVY_CROCKETT_M))) {
-                tonnage += mount.getType().getTonnage(unit);
+            if (!mount.isOneShotAmmo()) {
+                int slots = 1;
+                if (unit.usesWeaponBays()) {
+                    slots = (int) Math.ceil(mount.getUsableShotsLeft() / (double) ((AmmoType) mount.getType()).getShots());
+                }
+                tonnage += slots * mount.getType().getTonnage(unit);
             }
         }
 
@@ -3360,12 +3385,20 @@ public class UnitUtil {
 
     public static boolean isValidLocation(Entity unit, EquipmentType eq,
             int location) {
-        if (unit instanceof BattleArmor) {
+        if (unit.hasETypeFlag(Entity.ETYPE_BATTLEARMOR)) {
             // Infantry weapons can only be mounted in armored gloves/APMs
             if (eq.hasFlag(WeaponType.F_INFANTRY)) {
                 return false;
             }
             return true;
+        } else if (unit.isFighter()) {
+            // Weapons must have a firing arc. Mostly we don't want them going into the fuselage.
+            if ((eq instanceof WeaponType) || (UnitUtil.isWeaponEnhancement(eq))) {
+                return location < Aero.LOC_WINGS;
+            } else if ((eq instanceof AmmoType) || eq.hasFlag(MiscType.F_BLUE_SHIELD)) {
+                // All ammo goes into the fuselage, as does the blue shield system per construction rules.
+                return location == Aero.LOC_FUSELAGE;
+            }
         }
         if ((eq instanceof MiscType)) {
             if (((eq.hasFlag(MiscType.F_CLUB) || eq
@@ -3460,7 +3493,7 @@ public class UnitUtil {
             	}
             }
             
-            if (unit instanceof Tank) {
+            if (unit.hasETypeFlag(Entity.ETYPE_TANK)) {
             	if (location == Tank.LOC_BODY) {
             		//Equipment which cannot be installed in the body
             		if (eq.hasFlag(MiscType.F_HARJEL)
@@ -3469,7 +3502,7 @@ public class UnitUtil {
             		}
             	} else {
             		//Equipment which must be installed in the body
-            		if (eq.hasFlag(MiscType.F_CASE)) {
+            		if (eq.hasFlag(MiscType.F_CASE) || eq.hasFlag(MiscType.F_BLUE_SHIELD)) {
             			return false;
             		}
             	}
@@ -3855,9 +3888,7 @@ public class UnitUtil {
             }
         }
         for (Mounted mount : unit.getAmmo()) {
-            if ((mount.getLocation() == Entity.LOC_NONE)
-                    && ((mount.getUsableShotsLeft() > 1) || (((AmmoType) mount
-                            .getType()).getAmmoType() == AmmoType.T_COOLANT_POD))) {
+            if (!mount.isOneShotAmmo()) {
                 nCrits += UnitUtil.getCritsUsed(unit, mount.getType());
             }
         }
@@ -4190,10 +4221,11 @@ public class UnitUtil {
         // Limit the first class quarters to number of officers + passengers. It is possible to house
         // enlisted in first class quarters, but that is beyond the scope of this and will need to
         // be done by hand.
-        int officer = Math.min(aero.getNOfficers() + aero.getNPassenger(),
+        int officer1stC = Math.min(aero.getNOfficers() + aero.getNPassenger(),
                 quartersCount.get(TestAero.Quarters.FIRST_CLASS));
-        officer = Math.max(officer, aero.getNOfficers());
-        int firstClass = Math.max(0, officer - aero.getNOfficers());
+        officer1stC = Math.max(officer1stC, aero.getNOfficers());
+        int firstClass = Math.max(0, officer1stC - aero.getNOfficers());
+        int officer = officer1stC - firstClass;
 
         // Limit the steerage quarters to the number of crew that have not been assigned standard
         // or officer quarters and passengers that have not been assigned first class.
