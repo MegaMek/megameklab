@@ -40,9 +40,9 @@ import megamek.common.VTOL;
 import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.Vehicle.tabs.BuildTab;
 import megameklab.com.ui.Vehicle.tabs.EquipmentTab;
-import megameklab.com.ui.Vehicle.tabs.PreviewTab;
 import megameklab.com.ui.Vehicle.tabs.StructureTab;
 import megameklab.com.ui.tabs.FluffTab;
+import megameklab.com.ui.tabs.PreviewTab;
 import megameklab.com.util.MenuBarCreator;
 import megameklab.com.util.UnitUtil;
 

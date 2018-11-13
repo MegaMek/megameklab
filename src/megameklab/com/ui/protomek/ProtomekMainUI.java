@@ -1,7 +1,5 @@
 /*
- * MegaMekLab - Copyright (C) 2008
- *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * MegaMekLab - Copyright (C) 2018 - The MegaMek Team
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -13,8 +11,7 @@
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  */
-
-package megameklab.com.ui.Aero;
+package megameklab.com.ui.protomek;
 
 import java.awt.BorderLayout;
 
@@ -25,54 +22,49 @@ import javax.swing.JTabbedPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 
-import megamek.common.Aero;
-import megamek.common.ConvFighter;
 import megamek.common.Engine;
 import megamek.common.Entity;
+import megamek.common.EntityMovementMode;
 import megamek.common.EquipmentType;
 import megamek.common.ITechManager;
+import megamek.common.Protomech;
 import megamek.common.SimpleTechLevel;
 import megamek.common.TechConstants;
+import megamek.common.verifier.TestProtomech;
 import megameklab.com.ui.MegaMekLabMainUI;
-import megameklab.com.ui.Aero.tabs.BuildTab;
-import megameklab.com.ui.Aero.tabs.EquipmentTab;
-import megameklab.com.ui.Aero.tabs.StructureTab;
-import megameklab.com.ui.tabs.FluffTab;
+import megameklab.com.ui.tabs.EquipmentTab;
 import megameklab.com.ui.tabs.PreviewTab;
 import megameklab.com.util.MenuBarCreator;
 
-public class MainUI extends MegaMekLabMainUI {
+/**
+ * Main UI for building protomechs
+ * 
+ * @author Neoancient
+ *
+ */
+public class ProtomekMainUI extends MegaMekLabMainUI {
 
-
-    /**
-     *
-     */
-    private static final long serialVersionUID = -2117599432007026106L;
+    private static final long serialVersionUID = 8103672350822665207L;
 
     JTabbedPane configPane = new JTabbedPane(SwingConstants.TOP);
     JPanel contentPane;
-
-    private StructureTab structureTab;
+    private ProtomekStructureTab structureTab;
     private EquipmentTab equipmentTab;
     private PreviewTab previewTab;
-    private BuildTab buildTab;
-    private FluffTab fluffTab;
-    private StatusBar statusbar;
+    private ProtomekBuildTab buildTab;
+    private ProtomekStatusBar statusbar;
     JPanel masterPanel = new JPanel();
     JScrollPane scroll = new JScrollPane();
     private MenuBarCreator menubarcreator;
 
-    public MainUI(boolean primitive) {
-
+    public ProtomekMainUI() {
         super();
-        createNewUnit(Entity.ETYPE_AERO, primitive);
+        createNewUnit(Entity.ETYPE_PROTOMECH);
         setTitle(getEntity().getChassis() + " " + getEntity().getModel() + ".blk");
         menubarcreator = new MenuBarCreator(this);
         setJMenuBar(menubarcreator);
-        scroll.setHorizontalScrollBarPolicy(
-                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scroll.setVerticalScrollBarPolicy(
-                ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         scroll.getVerticalScrollBar().setUnitIncrement(20);
         scroll.setViewportView(masterPanel);
         scroll.setBorder(BorderFactory.createEmptyBorder());
@@ -91,26 +83,23 @@ public class MainUI extends MegaMekLabMainUI {
 
         masterPanel.setLayout(new BorderLayout());
 
-        structureTab = new StructureTab(this);
+        structureTab = new ProtomekStructureTab(this);
 
         previewTab = new PreviewTab(this);
 
-        statusbar = new StatusBar(this);
+        statusbar = new ProtomekStatusBar(this);
         equipmentTab = new EquipmentTab(this);
-        buildTab = new BuildTab(this, equipmentTab);
-        fluffTab = new FluffTab(this);
+        buildTab = new ProtomekBuildTab(this, equipmentTab, this);
         structureTab.addRefreshedListener(this);
         equipmentTab.addRefreshedListener(this);
-        buildTab.addRefreshedListener(this);
-        fluffTab.setRefreshedListener(this);
         statusbar.addRefreshedListener(this);
 
         configPane.addTab("Structure/Armor", structureTab);
         configPane.addTab("Equipment", equipmentTab);
         configPane.addTab("Assign Criticals", buildTab);
-        configPane.addTab("Fluff", fluffTab);
         configPane.addTab("Preview", previewTab);
 
+        //masterPanel.add(header);
         masterPanel.add(configPane, BorderLayout.CENTER);
         masterPanel.add(statusbar, BorderLayout.SOUTH);
 
@@ -119,56 +108,43 @@ public class MainUI extends MegaMekLabMainUI {
     }
 
     @Override
-    public void createNewUnit(long entityType, boolean isPrimitive, boolean isIndustrial, Entity oldEntity) {
+    public void createNewUnit(long entitytype, boolean isPrimitive, boolean isIndustrial, Entity oldEntity) {
 
-        if (entityType == Entity.ETYPE_AERO) {
-            setEntity(new Aero());
-            getEntity().setTechLevel(TechConstants.T_IS_TW_NON_BOX);
-        } else if (entityType == Entity.ETYPE_CONV_FIGHTER) {
-            setEntity(new ConvFighter());
-            getEntity().setTechLevel(TechConstants.T_IS_TW_NON_BOX);
-        } else {
-            System.out.println("Aero.MainUI: Received incorrect entityType!");
-            return;
-        }
+        Protomech proto = new Protomech();
+        setEntity(proto);
 
-        Aero aero = (Aero) getEntity();
+        getEntity().setWeight(2);
+        proto.setMovementMode(EntityMovementMode.BIPED);
+        proto.setTechLevel(TechConstants.T_CLAN_TW);
+        proto.setOriginalWalkMP(1);
+        proto.setEngine(new Engine(TestProtomech.calcEngineRating(proto),
+                Engine.NORMAL_ENGINE, Engine.CLAN_ENGINE));
+        proto.setArmorType(EquipmentType.T_ARMOR_STANDARD);
+        proto.setArmorTechLevel(getEntity().getTechLevel());
 
-        aero.setYear(3145);
-        aero.setWeight(25);
-        aero.setEngine(new Engine(25, Engine.NORMAL_ENGINE, 0));
-        if (isPrimitive) {
-            aero.setCockpitType(Aero.COCKPIT_PRIMITIVE);
-            aero.setArmorType(EquipmentType.T_ARMOR_PRIMITIVE_FIGHTER);
-        } else {
-            aero.setArmorType(EquipmentType.T_ARMOR_STANDARD);
-        }
-        aero.setArmorTechLevel(getEntity().getTechLevel());
-        aero.setStructureType(EquipmentType.T_STRUCTURE_STANDARD);
-
-        aero.setHeatSinks(10);
-        aero.setHeatType(Aero.HEAT_SINGLE);
-
-        aero.autoSetInternal();
-        for (int loc = 0; loc < getEntity().locations(); loc++) {
-            aero.initializeArmor(0, loc);
+        proto.autoSetInternal();
+        proto.setHasMainGun(false);
+        for (int loc = 0; loc < proto.locations(); loc++) {
+            proto.initializeArmor(0, loc);
         }
 
         if (null == oldEntity) {
-            getEntity().setChassis("New");
-            getEntity().setModel("Aero");
+            proto.setChassis("New");
+            proto.setModel("Protomek");
+            proto.setYear(3145);
         } else {
-            aero.setChassis(oldEntity.getChassis());
-            aero.setModel(oldEntity.getModel());
-            aero.setYear(Math.max(oldEntity.getYear(),
-                    aero.getConstructionTechAdvancement().getIntroductionDate()));
-            aero.setSource(oldEntity.getSource());
-            aero.setManualBV(oldEntity.getManualBV());
-            SimpleTechLevel lvl = SimpleTechLevel.max(aero.getStaticTechLevel(),
+            proto.setChassis(oldEntity.getChassis());
+            proto.setModel(oldEntity.getModel());
+            proto.setYear(Math.max(oldEntity.getYear(),
+                    proto.getConstructionTechAdvancement().getIntroductionDate()));
+            proto.setSource(oldEntity.getSource());
+            proto.setManualBV(oldEntity.getManualBV());
+            SimpleTechLevel lvl = SimpleTechLevel.max(proto.getStaticTechLevel(),
                     SimpleTechLevel.convertCompoundToSimple(oldEntity.getTechLevel()));
-            aero.setTechLevel(lvl.getCompoundTechLevel(oldEntity.isClan()));
-            aero.setMixedTech(oldEntity.isMixedTech());
+            proto.setTechLevel(lvl.getCompoundTechLevel(oldEntity.isClan()));
+            proto.setMixedTech(oldEntity.isMixedTech());
         }
+
     }
 
     @Override
@@ -192,12 +168,11 @@ public class MainUI extends MegaMekLabMainUI {
     @Override
     public void refreshEquipment() {
         equipmentTab.refresh();
-
     }
 
     @Override
     public void refreshTransport() {
-        // not used for fighters
+        // not used for protomechs
     }
 
     @Override
@@ -209,7 +184,8 @@ public class MainUI extends MegaMekLabMainUI {
     @Override
     public void refreshHeader() {
 
-        String title = getEntity().getChassis() + " " + getEntity().getModel() + ".blk";
+        String title = getEntity().getChassis() + " " + getEntity().getModel()
+                + ".blk";
         setTitle(title);
 
     }

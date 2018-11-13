@@ -303,7 +303,7 @@ public class AdvancedAeroChassisView extends BuildView implements ActionListener
     }
     
     public void setTonnage(double tonnage) {
-        spnTonnage.setValue(new Integer((int)Math.ceil(tonnage)));
+        spnTonnage.setValue(Integer.valueOf((int)Math.ceil(tonnage)));
     }
     
     public boolean hasLFBattery() {

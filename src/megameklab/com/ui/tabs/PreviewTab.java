@@ -14,56 +14,49 @@
  * details.
  */
 
-package megameklab.com.ui.Infantry.tabs;
+package megameklab.com.ui.tabs;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import megamek.client.ui.swing.MechViewPanel;
 import megamek.common.MechView;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.util.ITab;
 
-public class PreviewTab extends ITab implements ActionListener {
+public class PreviewTab extends ITab {
 
-    /**
-     * 
-     */
-    private static final long serialVersionUID = -7410436201331568734L;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7410436201331568734L;
 
     private MechViewPanel panelMekView;
 
-    public PreviewTab(EntitySource eSource) {
-        super(eSource);
-        this.setLayout(new BorderLayout());
+	public PreviewTab(EntitySource eSource) {
+	    super(eSource);
+		this.setLayout(new BorderLayout());
         panelMekView = new MechViewPanel(350, 500);
         add(panelMekView, BorderLayout.CENTER);
         setBackground(Color.WHITE);
         refresh();
-    }
-    
-    public void refresh() {
-        boolean populateTextFields = true;
-        MechView mechView = null;
+	}
+	
+	public void refresh() {
+		boolean populateTextFields = true;
+		MechView mechView = null;
         try {
-            mechView = new MechView(getInfantry(), false);
+            mechView = new MechView(eSource.getEntity(), false);
         } catch (Exception e) {
             e.printStackTrace();
             // error unit didn't load right. this is bad news.
             populateTextFields = false;
         }
         if (populateTextFields && (mechView != null)) {
-            panelMekView.setMech(getInfantry());
+            panelMekView.setMech(eSource.getEntity());
         } else {
             panelMekView.reset();
         }
-    }
-    
-    @Override
-    public void actionPerformed(ActionEvent arg0) {
-        
-    }
-    
+	}
+	
 }

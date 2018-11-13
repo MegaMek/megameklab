@@ -40,9 +40,9 @@ import megamek.common.TripodMech;
 import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.Mek.tabs.BuildTab;
 import megameklab.com.ui.Mek.tabs.EquipmentTab;
-import megameklab.com.ui.Mek.tabs.PreviewTab;
 import megameklab.com.ui.Mek.tabs.StructureTab;
 import megameklab.com.ui.tabs.FluffTab;
+import megameklab.com.ui.tabs.PreviewTab;
 import megameklab.com.util.MenuBarCreator;
 import megameklab.com.util.UnitUtil;
 

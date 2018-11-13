@@ -33,7 +33,7 @@ import megamek.common.LocationFullException;
 import megamek.common.TechConstants;
 import megamek.common.weapons.infantry.InfantryWeapon;
 import megameklab.com.ui.MegaMekLabMainUI;
-import megameklab.com.ui.Infantry.tabs.PreviewTab;
+import megameklab.com.ui.tabs.PreviewTab;
 import megameklab.com.ui.Infantry.tabs.StructureTab;
 import megameklab.com.ui.tabs.FluffTab;
 import megameklab.com.util.MenuBarCreator;
