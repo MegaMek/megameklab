@@ -151,7 +151,7 @@ public class CriticalTransferHandler extends TransferHandler {
             int nextLocation = getUnit().getTransferLocation(location);
             
             // Determine if we should spread equipment over multiple locations
-            if ((eq.getType().getCriticals(getUnit()) > primaryLocSpace)
+            if ((totalCrits > primaryLocSpace)
                     && !((eq.getType() instanceof MiscType) && eq.getType().hasFlag(MiscType.F_TARGCOMP))
                     && !(getUnit() instanceof LandAirMech)) {
                 if (location == Mech.LOC_RT) {

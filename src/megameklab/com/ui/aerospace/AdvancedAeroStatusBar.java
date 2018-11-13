@@ -106,7 +106,8 @@ public class AdvancedAeroStatusBar extends ITab {
         double currentTonnage;
         int bv = getJumpship().calculateBattleValue();
         long currentCost = (long) Math.round(getJumpship().getCost(false));
-
+        
+        testAdvAero = new TestAdvancedAerospace(getJumpship(), entityVerifier.aeroOption, null);
         currentTonnage = testAdvAero.calculateWeight();
         currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getJumpship());
 

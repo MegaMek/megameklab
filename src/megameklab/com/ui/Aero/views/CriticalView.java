@@ -46,21 +46,21 @@ public class CriticalView extends IView {
      */
     private static final long serialVersionUID = -6960975031034494605L;
 
-    private JPanel leftPanel = new JPanel();
-    private JPanel rightPanel = new JPanel();
+    private JPanel leftWingPanel = new JPanel();
+    private JPanel rightWingPanel = new JPanel();
     private JPanel nosePanel = new JPanel();
     private JPanel aftPanel = new JPanel();
+    private JPanel fuselagePanel = new JPanel();
     
     private JLabel noseSpace = new JLabel("",JLabel.LEFT);
     private JLabel leftSpace = new JLabel("",JLabel.LEFT);
     private JLabel rightSpace = new JLabel("",JLabel.LEFT);
     private JLabel aftSpace = new JLabel("",JLabel.LEFT);
     
-
     private JPanel topPanel = new JPanel();
     private JPanel middlePanel = new JPanel();   
     private JPanel bottomPanel = new JPanel();
-
+    
     private RefreshListener refresh;
 
     private boolean showEmpty = false;
@@ -84,7 +84,6 @@ public class CriticalView extends IView {
         rightSpace.setAlignmentX(JLabel.CENTER_ALIGNMENT);
         noseSpace.setAlignmentX(JLabel.CENTER_ALIGNMENT);
         aftSpace.setAlignmentX(JLabel.CENTER_ALIGNMENT);
-        
 
         topPanel.add(nosePanel);
         nosePanel.setBorder(BorderFactory.createTitledBorder(
@@ -93,14 +92,18 @@ public class CriticalView extends IView {
         nosePanel.setLayout(new BoxLayout(nosePanel, BoxLayout.Y_AXIS));
         mainPanel.add(topPanel);
 
-        middlePanel.add(leftPanel);
-        leftPanel.setBorder(BorderFactory.createTitledBorder(
+        middlePanel.add(leftWingPanel);
+        leftWingPanel.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createEmptyBorder(), "Left Wing"));  
-        leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
-        middlePanel.add(rightPanel);
-        rightPanel.setBorder(BorderFactory.createTitledBorder(
+        leftWingPanel.setLayout(new BoxLayout(leftWingPanel, BoxLayout.Y_AXIS));
+        middlePanel.add(fuselagePanel);
+        fuselagePanel.setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createEmptyBorder(), "Fuselage"));  
+        fuselagePanel.setLayout(new BoxLayout(fuselagePanel, BoxLayout.Y_AXIS));
+        middlePanel.add(rightWingPanel);
+        rightWingPanel.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createEmptyBorder(), "Right Wing"));
-        rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
+        rightWingPanel.setLayout(new BoxLayout(rightWingPanel, BoxLayout.Y_AXIS));
         mainPanel.add(middlePanel);
         
         aftPanel.setBorder(BorderFactory.createTitledBorder(
@@ -118,10 +121,11 @@ public class CriticalView extends IView {
     }
 
     public void refresh() {
-        leftPanel.removeAll();
-        rightPanel.removeAll();
+        leftWingPanel.removeAll();
+        rightWingPanel.removeAll();
         nosePanel.removeAll();
-        aftPanel.removeAll();                        
+        aftPanel.removeAll();
+        fuselagePanel.removeAll();
         
         int[] availSpace = TestAero.availableSpace(getAero());
         
@@ -133,9 +137,10 @@ public class CriticalView extends IView {
         }
 
         synchronized (getAero()) {
-            // Aeros have 5 locs, the 5th is "wings" which should be ignored
-            int numLocs = getAero().locations() - 1;
-            for (int location = 0; location < numLocs; location++) {
+            for (int location = 0; location < getAero().locations(); location++) {
+                if (location == Aero.LOC_WINGS) {
+                    continue;
+                }
                 Vector<String> critNames = new Vector<String>(1, 1);
                 int numWeapons = 0;
                 for (int slot = 0; slot < getAero().getNumberOfCriticals(location); 
@@ -215,12 +220,12 @@ public class CriticalView extends IView {
                                 numWeapons + "/" + availSpace[location]);
                         break;
                     case Aero.LOC_LWING:
-                        leftPanel.add(criticalSlotList);
+                        leftWingPanel.add(criticalSlotList);
                         leftSpace.setText("Weapons: " + 
                                 numWeapons + "/" + availSpace[location]);
                         break;
                     case Aero.LOC_RWING:
-                        rightPanel.add(criticalSlotList);
+                        rightWingPanel.add(criticalSlotList);
                         rightSpace.setText("Weapons: " + 
                                 numWeapons + "/" + availSpace[location]);
                         break;
@@ -229,30 +234,32 @@ public class CriticalView extends IView {
                         aftSpace.setText("Weapons: " + 
                                 numWeapons + "/" + availSpace[location]);
                         break;
+                    case Aero.LOC_FUSELAGE:
+                        fuselagePanel.add(criticalSlotList);
+                        break;
                 }
                     
                 
             }
             
-            leftPanel.add(leftSpace);
-            leftPanel.add(Box.createVerticalStrut(8));
-            rightPanel.add(rightSpace);
-            rightPanel.add(Box.createVerticalStrut(8));
+            leftWingPanel.add(leftSpace);
+            leftWingPanel.add(Box.createVerticalStrut(8));
+            rightWingPanel.add(rightSpace);
+            rightWingPanel.add(Box.createVerticalStrut(8));
             nosePanel.add(noseSpace);
             nosePanel.add(Box.createVerticalStrut(8));
             aftPanel.add(aftSpace);
             aftPanel.add(Box.createVerticalStrut(8));
             
             nosePanel.repaint();
-            leftPanel.repaint();
-            rightPanel.repaint();
+            leftWingPanel.repaint();
+            rightWingPanel.repaint();
             aftPanel.repaint();
             
             nosePanel.invalidate();
-            leftPanel.invalidate();
-            rightPanel.invalidate();
+            leftWingPanel.invalidate();
+            rightWingPanel.invalidate();
             aftPanel.invalidate();
         }
     }
-
 }

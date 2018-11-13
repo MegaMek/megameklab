@@ -72,6 +72,7 @@ import megamek.common.VTOL;
 import megamek.common.WeaponType;
 import megamek.common.weapons.artillery.ArtilleryWeapon;
 import megameklab.com.ui.EntitySource;
+import megameklab.com.ui.Aero.tabs.EquipmentTab.FormattedNumberSorter;
 import megameklab.com.util.CriticalTableModel;
 import megameklab.com.util.EquipmentTableModel;
 import megameklab.com.util.ITab;
@@ -173,6 +174,7 @@ public class EquipmentTab extends ITab implements ActionListener {
         equipmentSorter.setComparator(EquipmentTableModel.COL_DAMAGE, new WeaponDamageSorter());
         equipmentSorter.setComparator(EquipmentTableModel.COL_RANGE, new WeaponRangeSorter());
         equipmentSorter.setComparator(EquipmentTableModel.COL_COST, new FormattedNumberSorter());
+        equipmentSorter.setComparator(EquipmentTableModel.COL_TON, new FormattedNumberSorter());
         masterEquipmentTable.setRowSorter(equipmentSorter);
         ArrayList<RowSorter.SortKey> sortKeys = new ArrayList<RowSorter.SortKey>();
         sortKeys.add(new RowSorter.SortKey(EquipmentTableModel.COL_NAME, SortOrder.ASCENDING));
@@ -228,6 +230,7 @@ public class EquipmentTab extends ITab implements ActionListener {
         choiceType.setModel(typeModel);
         choiceType.setSelectedIndex(0);
         choiceType.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 filterEquipment();
             }
@@ -237,12 +240,15 @@ public class EquipmentTab extends ITab implements ActionListener {
         txtFilter.setMinimumSize(new java.awt.Dimension(200, 28));
         txtFilter.setPreferredSize(new java.awt.Dimension(200, 28));
         txtFilter.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
             public void changedUpdate(DocumentEvent e) {
                 filterEquipment();
             }
+            @Override
             public void insertUpdate(DocumentEvent e) {
                 filterEquipment();
             }
+            @Override
             public void removeUpdate(DocumentEvent e) {
                 filterEquipment();
             }
@@ -470,6 +476,7 @@ public class EquipmentTab extends ITab implements ActionListener {
         }
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
 
         if (e.getActionCommand().equals(ADD_COMMAND)) {
@@ -494,6 +501,8 @@ public class EquipmentTab extends ITab implements ActionListener {
             return;
         }
         fireTableRefresh();
+        refresh.refreshSummary();
+        refresh.refreshStatus();
     }
 
     public void updateEquipment() {
