@@ -302,6 +302,10 @@ public class StructureTab extends ITab implements MekBuildListener {
                 getMech().setArmorType(
                         EquipmentType.T_ARMOR_COMMERCIAL);
                 break;
+            case Mech.COCKPIT_QUADVEE:
+                clearCritsForCockpit(false, true);
+                getMech().addQuadVeeCockpit();
+                break;
             default:
                 clearCritsForCockpit(false, false);
                 getMech().addCockpit();
