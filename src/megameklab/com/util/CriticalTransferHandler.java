@@ -28,6 +28,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.TransferHandler;
 
+import megamek.common.AmmoType;
 import megamek.common.BattleArmor;
 import megamek.common.CriticalSlot;
 import megamek.common.Entity;
@@ -35,6 +36,7 @@ import megamek.common.MechFileParser;
 import megamek.common.Mounted;
 import megamek.common.loaders.EntityLoadingException;
 import megameklab.com.ui.EntitySource;
+import megameklab.com.ui.util.ProtomekMountList;
 
 public class CriticalTransferHandler extends TransferHandler {
 
@@ -85,20 +87,47 @@ public class CriticalTransferHandler extends TransferHandler {
             }
 
             return true;
-        }
-        if ((info.getComponent() instanceof JTable)
+        } else if (info.getComponent() instanceof ProtomekMountList) {
+            ProtomekMountList list = (ProtomekMountList) info.getComponent();
+            location = list.getMountLocation();
+            Transferable t = info.getTransferable();
+            try {
+                Mounted mount = getUnit().getEquipment(Integer.parseInt((String) t
+                        .getTransferData(DataFlavor.stringFlavor)));
+
+                if (!UnitUtil.isValidLocation(getUnit(), mount.getType(), location)) {
+                    JOptionPane.showMessageDialog(null, mount.getName() +
+                            " can't be placed in " +
+                            getUnit().getLocationName(location) + "!",
+                            "Invalid Location",
+                            JOptionPane.INFORMATION_MESSAGE);
+                    return false;
+                }
+
+                if (!UnitUtil.protomechHasRoom(list.getProtomech(), location, mount)) {
+                    JOptionPane.showMessageDialog(null, "Location Full",
+                            "Not enough room", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    changeMountStatus(mount, location, false);
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
+            return true;
+        } else if ((info.getComponent() instanceof JTable)
                 || (info.getComponent() instanceof JScrollPane)) {
             try {
-            Transferable t = info.getTransferable();
-            Mounted mount = getUnit().getEquipment(Integer.parseInt((String) t
-                    .getTransferData(DataFlavor.stringFlavor)));
-            
-            if (getUnit() instanceof BattleArmor){
-                mount.setBaMountLoc(BattleArmor.MOUNT_LOC_NONE);
-            } else {
-                UnitUtil.removeCriticals(getUnit(), mount);
-                changeMountStatus(mount, Entity.LOC_NONE, false);
-            }
+                Transferable t = info.getTransferable();
+                Mounted mount = getUnit().getEquipment(Integer.parseInt((String) t
+                        .getTransferData(DataFlavor.stringFlavor)));
+
+                if (getUnit() instanceof BattleArmor){
+                    mount.setBaMountLoc(BattleArmor.MOUNT_LOC_NONE);
+                } else {
+                    UnitUtil.removeCriticals(getUnit(), mount);
+                    changeMountStatus(mount, Entity.LOC_NONE, false);
+                }
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -139,9 +168,17 @@ public class CriticalTransferHandler extends TransferHandler {
 
     @Override
     protected Transferable createTransferable(JComponent c) {
-        JTable table = (JTable) c;
-        Mounted mount = (Mounted) ((CriticalTableModel) table.getModel()).getValueAt(table.getSelectedRow(), CriticalTableModel.EQUIPMENT);
-        return new StringSelection(Integer.toString(getUnit().getEquipmentNum(mount)));
+        if (c instanceof JTable) {
+            JTable table = (JTable) c;
+            Mounted mount = (Mounted) ((CriticalTableModel) table.getModel()).getValueAt(table.getSelectedRow(), CriticalTableModel.EQUIPMENT);
+            return new StringSelection(Integer.toString(getUnit().getEquipmentNum(mount)));
+        } else if (c instanceof ProtomekMountList) {
+            Mounted mount = ((ProtomekMountList) c).getMounted();
+            if (!UnitUtil.isFixedLocationSpreadEquipment(mount.getType())
+                    && !(mount.getType() instanceof AmmoType))
+            return new StringSelection(Integer.toString(getUnit().getEquipmentNum(mount)));
+        }
+        return null;
     }
 
     @Override
