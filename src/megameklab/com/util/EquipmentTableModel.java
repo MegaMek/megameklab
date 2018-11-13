@@ -370,7 +370,7 @@ public class EquipmentTableModel extends AbstractTableModel {
             } else if (type.getTonnage(entity) < 0.1) {
                 return String.format("%.2f kg", type.getTonnage(entity) * 1000);
             } else {
-                return type.getTonnage(entity);
+                return String.valueOf(type.getTonnage(entity));
             }
         } else if (col == COL_CRIT) {
             if (entity instanceof Tank) {

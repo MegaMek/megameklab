@@ -172,6 +172,7 @@ public class EquipmentTab extends ITab implements ActionListener {
         equipmentSorter.setComparator(EquipmentTableModel.COL_DAMAGE, new WeaponDamageSorter());
         equipmentSorter.setComparator(EquipmentTableModel.COL_RANGE, new WeaponRangeSorter());
         equipmentSorter.setComparator(EquipmentTableModel.COL_COST, new FormattedNumberSorter());
+        equipmentSorter.setComparator(EquipmentTableModel.COL_TON,  new FormattedWeightSorter());
         masterEquipmentTable.setRowSorter(equipmentSorter);
         ArrayList<RowSorter.SortKey> sortKeys = new ArrayList<RowSorter.SortKey>();
         sortKeys.add(new RowSorter.SortKey(EquipmentTableModel.COL_NAME, SortOrder.ASCENDING));
@@ -822,11 +823,11 @@ public class EquipmentTab extends ITab implements ActionListener {
      *
      */
     public class FormattedNumberSorter implements Comparator<String> {
+        DecimalFormat format = new DecimalFormat();
 
         @Override
         public int compare(String s0, String s1) {
             //lets find the weight class integer for each name
-            DecimalFormat format = new DecimalFormat();
             int l0 = 0;
             try {
                 l0 = format.parse(s0).intValue();
@@ -840,6 +841,41 @@ public class EquipmentTab extends ITab implements ActionListener {
                 e.printStackTrace();
             }
             return ((Comparable<Integer>)l0).compareTo(l1);
+        }
+    }
+    
+    /**
+     * A comparator for weights that have been formatted with DecimalFormat
+     * and may require conversion from kg to tons.
+     *
+     */
+    public class FormattedWeightSorter implements Comparator<String> {
+        DecimalFormat format = new DecimalFormat();
+
+        @Override
+        public int compare(String s0, String s1) {
+            //lets find the weight class integer for each name
+            double l0 = 0;
+            try {
+                if (s0.endsWith(" kg")) {
+                    l0 = format.parse(s0.replace(" kg", "")).doubleValue() / 1000;
+                } else {
+                    l0 = format.parse(s0).doubleValue();
+                }
+            } catch (java.text.ParseException e) {
+                e.printStackTrace();
+            }
+            double l1 = 0;
+            try {
+                if (s1.endsWith(" kg")) {
+                    l1 = format.parse(s1.replace(" kg", "")).doubleValue() / 1000;
+                } else {
+                    l1 = format.parse(s1).doubleValue();
+                }
+            } catch (java.text.ParseException e) {
+                e.printStackTrace();
+            }
+            return Double.compare(l0, l1);
         }
     }
     
