@@ -124,7 +124,7 @@ public class AerospaceBuildView extends IView implements MouseListener {
             }
         }
         for (Mounted mount : getAero().getAmmo()) {
-            if (!mount.isOneShotAmmo()) {
+            if ((mount.getLocation() == Entity.LOC_NONE) && !mount.isOneShotAmmo()) {
                 masterEquipmentList.add(mount);
             }
         }

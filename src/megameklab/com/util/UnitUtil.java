@@ -1373,9 +1373,7 @@ public class UnitUtil {
         double tonnage = 0;
 
         for (Mounted mount : unit.getAmmo()) {
-            // don't add ammo with just one shot, that's OS ammo
-            //  Unless it's a single shot ammo type, like Cruise Missiles
-            if (!mount.isOneShotAmmo()) {
+            if ((mount.getLocation() == Entity.LOC_NONE) && !mount.isOneShotAmmo()) {
                 int slots = 1;
                 if (unit.usesWeaponBays()) {
                     slots = (int) Math.ceil(mount.getUsableShotsLeft() / (double) ((AmmoType) mount.getType()).getShots());
@@ -4032,7 +4030,7 @@ public class UnitUtil {
             }
         }
         for (Mounted mount : unit.getAmmo()) {
-            if (!mount.isOneShotAmmo()) {
+            if ((mount.getLocation() == Entity.LOC_NONE) && !mount.isOneShotAmmo()) {
                 nCrits += UnitUtil.getCritsUsed(unit, mount.getType());
             }
         }
