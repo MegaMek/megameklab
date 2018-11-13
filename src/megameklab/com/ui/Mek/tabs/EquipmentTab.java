@@ -70,7 +70,6 @@ import megamek.common.QuadVee;
 import megamek.common.WeaponType;
 import megamek.common.weapons.artillery.ArtilleryWeapon;
 import megameklab.com.ui.EntitySource;
-import megameklab.com.ui.Aero.tabs.EquipmentTab.FormattedNumberSorter;
 import megameklab.com.util.CriticalTableModel;
 import megameklab.com.util.EquipmentTableModel;
 import megameklab.com.util.ITab;

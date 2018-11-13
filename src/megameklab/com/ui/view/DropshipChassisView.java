@@ -256,7 +256,7 @@ public class DropshipChassisView extends BuildView implements ActionListener, Ch
     }
     
     public void setTonnage(double tonnage) {
-        spnTonnage.setValue(new Integer((int)Math.ceil(tonnage)));
+        spnTonnage.setValue(Integer.valueOf((int)Math.ceil(tonnage)));
     }
     
     public boolean isMilitary() {
