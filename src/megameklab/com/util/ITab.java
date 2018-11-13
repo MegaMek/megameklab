@@ -25,6 +25,7 @@ import megamek.common.BattleArmor;
 import megamek.common.Infantry;
 import megamek.common.Jumpship;
 import megamek.common.Mech;
+import megamek.common.Protomech;
 import megamek.common.SmallCraft;
 import megamek.common.Tank;
 import megamek.common.VTOL;
@@ -44,6 +45,10 @@ public class ITab extends JPanel {
 
     public Mech getMech() {
         return (Mech) eSource.getEntity();
+    }
+    
+    public Protomech getProtomech() {
+        return (Protomech) eSource.getEntity();
     }
 
     public Tank getTank() {

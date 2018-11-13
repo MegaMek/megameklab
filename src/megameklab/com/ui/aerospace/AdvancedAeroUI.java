@@ -37,7 +37,7 @@ import megamek.common.verifier.TestAdvancedAerospace;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.Aero.tabs.EquipmentTab;
-import megameklab.com.ui.Aero.tabs.PreviewTab;
+import megameklab.com.ui.tabs.PreviewTab;
 import megameklab.com.ui.tabs.FluffTab;
 import megameklab.com.util.MenuBarCreator;
 

@@ -1,22 +1,20 @@
 /*
- * MegaMekLab - Copyright (C) 2008
+ * MegaMekLab - Copyright (C) 2018 - The MegaMek Team
  *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
  *
- * This program is  free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
- * for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  */
-
-package megameklab.com.ui.Mek.tabs;
+package megameklab.com.ui.tabs;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -32,6 +30,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -41,17 +41,23 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.RowFilter;
 import javax.swing.RowSorter;
 import javax.swing.SortOrder;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
@@ -59,16 +65,19 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
 
+import megamek.common.Aero;
 import megamek.common.AmmoType;
+import megamek.common.BombType;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.LocationFullException;
-import megamek.common.Mech;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
-import megamek.common.QuadVee;
+import megamek.common.Protomech;
 import megamek.common.WeaponType;
-import megamek.common.weapons.artillery.ArtilleryWeapon;
+import megamek.common.verifier.TestEntity;
+import megamek.common.weapons.tag.TAGWeapon;
+import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.util.CriticalTableModel;
 import megameklab.com.util.EquipmentTableModel;
@@ -77,35 +86,104 @@ import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 import megameklab.com.util.XTableColumnModel;
 
+/**
+ * General purpose equipment tab
+ * 
+ * @author Neoancient
+ *
+ */
 public class EquipmentTab extends ITab implements ActionListener {
+    
+    private static final long serialVersionUID = -7898648511851487701L;
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = 3978675469713289404L;
-
-    private static final int T_ENERGY    =  0;
-    private static final int T_BALLISTIC =  1;
-    private static final int T_MISSILE   =  2;
-    private static final int T_ARTILLERY =  3;
-    private static final int T_PHYSICAL  =  4;
-    private static final int T_WEAPON    =  5;
-    private static final int T_AMMO      =  6;
-    private static final int T_OTHER     =  7;
-    private static final int T_NUM       =  8;
-
+    private enum EquipmentCategory {
+        ENERGY ("Energy", (eq, en) -> {
+            return (eq instanceof WeaponType)
+                    && !((WeaponType) eq).isCapital()
+                    && (eq.hasFlag(WeaponType.F_ENERGY)
+                            || ((eq.hasFlag(WeaponType.F_PLASMA) && (((WeaponType) eq).getAmmoType() == AmmoType.T_PLASMA))));
+        }),
+        BALLISTIC ("Ballistic", (eq, en) -> {
+            return (eq instanceof WeaponType)
+                    && !((WeaponType) eq).isCapital()
+                    && eq.hasFlag(WeaponType.F_BALLISTIC);
+        }),
+        MISSILE ("Missile", (eq, en) ->  {
+            return (eq instanceof WeaponType)
+                    && !((WeaponType) eq).isCapital()
+                    && eq.hasFlag(WeaponType.F_MISSILE);
+        }),
+        ARTILLERY ("Artillery", (eq, en) -> (eq instanceof WeaponType) && eq.hasFlag(WeaponType.F_ARTILLERY)),
+        CAPITAL ("Capital",
+                (eq, en) -> (eq instanceof WeaponType) && ((WeaponType) eq).isCapital(),
+                e -> e.isLargeCraft()),
+        PHYSICAL ("Physical", (eq, en) -> UnitUtil.isPhysicalWeapon(eq),
+                e -> e.hasETypeFlag(Entity.ETYPE_MECH) || e.hasETypeFlag(Entity.ETYPE_PROTOMECH)),
+        WEAPON ("All Weapons", (eq, en) -> {
+            return ENERGY.filter(eq, en) || BALLISTIC.filter(eq, en)
+                    || MISSILE.filter(eq, en) || CAPITAL.filter(eq, en) || PHYSICAL.filter(eq, en);
+        }),
+        AMMO ("Ammo", (eq, en) -> {
+            return (eq instanceof AmmoType) && !(eq instanceof BombType)
+                    && UnitUtil.canUseAmmo(en, (AmmoType) eq, false);
+        }),
+        OTHER ("Other", (eq, en) -> {
+            return ((eq instanceof MiscType)
+                    && !UnitUtil.isPhysicalWeapon(eq)
+                    && !UnitUtil.isJumpJet(eq)
+                    && !UnitUtil.isHeatSink(eq)
+                    && !eq.hasFlag(MiscType.F_TSM)
+                    && !eq.hasFlag(MiscType.F_INDUSTRIAL_TSM)
+                    && !(eq.hasFlag(MiscType.F_MASC) 
+                            && !eq.hasSubType(MiscType.S_SUPERCHARGER))
+                    && !(en.hasETypeFlag(Entity.ETYPE_QUADVEE) && eq.hasFlag(MiscType.F_TRACKS))
+                    && !UnitUtil.isArmorOrStructure(eq)
+                    && !eq.hasFlag(MiscType.F_MAGNETIC_CLAMP)
+                    && !(eq.hasFlag(MiscType.F_PARTIAL_WING) && en.hasETypeFlag(Entity.ETYPE_PROTOMECH)))
+                    || (eq instanceof TAGWeapon);
+        });
+        
+        private final String displayName;
+        private final BiFunction<EquipmentType, Entity, Boolean> filter;
+        private final Function<Entity, Boolean> showForEntity;
+        
+        private EquipmentCategory(String displayName, BiFunction<EquipmentType, Entity, Boolean> filter) {
+            this(displayName, filter, e -> true);
+        }
+        private EquipmentCategory(String displayName,
+                BiFunction<EquipmentType, Entity, Boolean> filter,
+                Function<Entity, Boolean> showForEntity) {
+            this.displayName = displayName;
+            this.filter = filter;
+            this.showForEntity = showForEntity;
+        }
+        
+        public String getDisplayName() {
+            return displayName;
+        }
+        
+        public boolean show(Entity en) {
+            return showForEntity.apply(en);
+        }
+        
+        public boolean filter(EquipmentType eq, Entity en) {
+            return filter.apply(eq, en);
+        }
+    }
+    
 
     private RefreshListener refresh;
 
     private JButton addButton = new JButton("Add");
     private JButton removeButton = new JButton("Remove");
     private JButton removeAllButton = new JButton("Remove All");
-    private JComboBox<String> choiceType = new JComboBox<String>();
+    private JComboBox<EquipmentCategory> choiceType = new JComboBox<>();
     private JTextField txtFilter = new JTextField();
 
     private JRadioButton rbtnStats = new JRadioButton("Stats");
     private JRadioButton rbtnFluff = new JRadioButton("Fluff");
     final private JCheckBox chkShowAll = new JCheckBox("Show Unavailable");
+    private JSpinner spnAddCount = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
 
     private TableRowSorter<EquipmentTableModel> equipmentSorter;
 
@@ -120,28 +198,7 @@ public class EquipmentTab extends ITab implements ActionListener {
     private String REMOVE_COMMAND = "REMOVE";
     private String REMOVEALL_COMMAND = "REMOVEALL";
 
-    public static String getTypeName(int type) {
-        switch(type) {
-        case T_WEAPON:
-            return "All Weapons";
-        case T_ENERGY:
-            return "Energy Weapons";
-        case T_BALLISTIC:
-            return "Ballistic Weapons";
-        case T_MISSILE:
-            return "Missile Weapons";
-        case T_ARTILLERY:
-            return "Artillery Weapons";
-        case T_PHYSICAL:
-            return "Physical Weapons";
-        case T_AMMO:
-            return "Ammunition";
-        case T_OTHER:
-            return "Other Equipment";
-        default:
-            return "?";
-        }
-    }
+    private final Dimension SPINNER_SIZE = new Dimension(55, 25);
 
     public EquipmentTab(EntitySource eSource) {
         super(eSource);
@@ -174,7 +231,6 @@ public class EquipmentTab extends ITab implements ActionListener {
         equipmentSorter.setComparator(EquipmentTableModel.COL_DAMAGE, new WeaponDamageSorter());
         equipmentSorter.setComparator(EquipmentTableModel.COL_RANGE, new WeaponRangeSorter());
         equipmentSorter.setComparator(EquipmentTableModel.COL_COST, new FormattedNumberSorter());
-        equipmentSorter.setComparator(EquipmentTableModel.COL_TON, new FormattedNumberSorter());
         masterEquipmentTable.setRowSorter(equipmentSorter);
         ArrayList<RowSorter.SortKey> sortKeys = new ArrayList<RowSorter.SortKey>();
         sortKeys.add(new RowSorter.SortKey(EquipmentTableModel.COL_NAME, SortOrder.ASCENDING));
@@ -223,28 +279,30 @@ public class EquipmentTab extends ITab implements ActionListener {
 
         loadEquipmentTable();
 
-        DefaultComboBoxModel<String> typeModel = new DefaultComboBoxModel<String>();
-        for (int i = 0; i < T_NUM; i++) {
-            typeModel.addElement(getTypeName(i));
+        DefaultComboBoxModel<EquipmentCategory> typeModel = new DefaultComboBoxModel<>();
+        for (EquipmentCategory cat : EquipmentCategory.values()) {
+            if (cat.show(eSource.getEntity())) {
+                typeModel.addElement(cat);
+            }
         }
         choiceType.setModel(typeModel);
         choiceType.setSelectedIndex(0);
-        choiceType.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                filterEquipment();
-            }
-        });
+        choiceType.addActionListener(ev -> filterEquipment());
+        choiceType.setRenderer(new CategoryListCellRenderer());
 
         txtFilter.setText("");
         txtFilter.setMinimumSize(new java.awt.Dimension(200, 28));
         txtFilter.setPreferredSize(new java.awt.Dimension(200, 28));
         txtFilter.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
             public void changedUpdate(DocumentEvent e) {
                 filterEquipment();
             }
+            @Override
             public void insertUpdate(DocumentEvent e) {
                 filterEquipment();
             }
+            @Override
             public void removeUpdate(DocumentEvent e) {
                 filterEquipment();
             }
@@ -314,6 +372,27 @@ public class EquipmentTab extends ITab implements ActionListener {
         databasePanel.add(viewPanel, gbc);
 
         gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = 1;
+        gbc.insets = new Insets(2,2,2,2);
+        gbc.fill = java.awt.GridBagConstraints.NONE;
+        gbc.weightx = 0.0;
+        gbc.weighty = 0.0;
+        gbc.anchor = java.awt.GridBagConstraints.WEST;
+        databasePanel.add(new JLabel("Number to add:"), gbc);
+
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.gridwidth = 1;
+        gbc.insets = new Insets(2,2,2,2);
+        gbc.fill = java.awt.GridBagConstraints.NONE;
+        gbc.weightx = 0.0;
+        gbc.weighty = 0.0;
+        gbc.anchor = java.awt.GridBagConstraints.WEST;
+        setFieldSize(spnAddCount, SPINNER_SIZE);
+        databasePanel.add(spnAddCount, gbc);
+
+        gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 1;
         gbc.fill = java.awt.GridBagConstraints.NONE;
@@ -332,7 +411,7 @@ public class EquipmentTab extends ITab implements ActionListener {
 
         gbc.insets = new Insets(2,0,0,0);
         gbc.gridx = 0;
-        gbc.gridy = 1;
+        gbc.gridy = 2;
         gbc.gridwidth = 4;
         gbc.fill = java.awt.GridBagConstraints.BOTH;
         gbc.weightx = 1.0;
@@ -361,17 +440,17 @@ public class EquipmentTab extends ITab implements ActionListener {
 
     private void loadEquipmentTable() {
 
-        for (Mounted mount : getMech().getWeaponList()) {
+        for (Mounted mount : eSource.getEntity().getWeaponList()) {
             equipmentList.addCrit(mount);
         }
 
-        for (Mounted mount : getMech().getAmmo()) {
+        for (Mounted mount : eSource.getEntity().getAmmo()) {
             equipmentList.addCrit(mount);
         }
 
         List<EquipmentType> spreadAlreadyAdded = new ArrayList<EquipmentType>();
 
-        for (Mounted mount : getMech().getMisc()) {
+        for (Mounted mount : eSource.getEntity().getMisc()) {
             
             EquipmentType etype = mount.getType();
             if (UnitUtil.isHeatSink(mount)
@@ -381,7 +460,7 @@ public class EquipmentTab extends ITab implements ActionListener {
                     || etype.hasFlag(MiscType.F_INDUSTRIAL_TSM)
                     || (etype.hasFlag(MiscType.F_MASC) 
                             && !etype.hasSubType(MiscType.S_SUPERCHARGER))
-                    || ((getMech().getEntityType() & Entity.ETYPE_QUADVEE) == Entity.ETYPE_QUADVEE
+                    || ((eSource.getEntity().getEntityType() & Entity.ETYPE_QUADVEE) == Entity.ETYPE_QUADVEE
                         && etype.hasFlag(MiscType.F_TRACKS))
                     || UnitUtil.isArmorOrStructure(etype)) {
                 continue;
@@ -401,7 +480,6 @@ public class EquipmentTab extends ITab implements ActionListener {
 
 
     }
-
 
     private void removeHeatSinks() {
         int location = 0;
@@ -457,28 +535,95 @@ public class EquipmentTab extends ITab implements ActionListener {
         boolean success = false;
         Mounted mount = null;
         boolean isMisc = equip instanceof MiscType;
-        if (isMisc && equip.hasFlag(MiscType.F_TARGCOMP)) {
-            if (!UnitUtil.hasTargComp(getMech())) {
-                mount = UnitUtil.updateTC(getMech(), equip);
+        try {
+            if (isMisc && equip.hasFlag(MiscType.F_TARGCOMP)) {
+                if (!UnitUtil.hasTargComp(eSource.getEntity())) {
+                    mount = UnitUtil.updateTC(eSource.getEntity(), equip);
+                    success = mount != null;
+                }
+            } else if (isMisc && UnitUtil.isFixedLocationSpreadEquipment(equip)) {
+                if (eSource.getEntity().hasETypeFlag(Entity.ETYPE_MECH)) {
+                    mount = UnitUtil.createSpreadMounts(getMech(), equip);
+                } else {
+                    int location = TestEntity.getSystemWideLocation(eSource.getEntity());
+                    mount = new Mounted(eSource.getEntity(), equip);
+                    eSource.getEntity().addEquipment(mount, location, false);
+                }
                 success = mount != null;
+            } else {
+                int count = (Integer)spnAddCount.getValue();
+                if (equip instanceof AmmoType) {
+                    if (eSource.getEntity().hasETypeFlag(Entity.ETYPE_PROTOMECH)) {
+                        addProtomechAmmo(equip, count);
+                        return;
+                    } else if (eSource.getEntity().usesWeaponBays()) {
+                        addLargeCraftAmmo(equip, count);
+                        return;
+                    } else if (eSource.getEntity().isFighter()) {
+                        addFighterAmmo(equip, count);
+                        return;
+                    }
+                } else {
+                    for (int i = 0; i < count; i++) {
+                        mount = new Mounted(eSource.getEntity(), equip);
+                        if ((eSource.getEntity().isFighter()
+                                && equip instanceof MiscType) && equip.hasFlag(MiscType.F_BLUE_SHIELD)) { 
+                            getAero().addEquipment(mount, Aero.LOC_FUSELAGE, false);
+                        } else {
+                            eSource.getEntity().addEquipment(mount, Entity.LOC_NONE, false);
+                        }
+                        equipmentList.addCrit(mount);
+                    }
+                }
             }
-        } else if (isMisc && UnitUtil.isFixedLocationSpreadEquipment(equip)) {
-            mount = UnitUtil.createSpreadMounts(getMech(), equip);
-            success = mount != null;
-        } else {
-            try {
-                mount = new Mounted(getMech(), equip);
-                getMech().addEquipment(mount, Entity.LOC_NONE, false);
-                success = true;
-            } catch (LocationFullException lfe) {
-                // this can't happen, we add to Entity.LOC_NONE
-            }
+        } catch (LocationFullException ex) {
+            MegaMekLab.getLogger().error(getClass(), "addEquipment(EquipmentType)",
+                    "Location full while trying to add " + equip.getName());
+            JOptionPane.showMessageDialog(
+                    this,"Could not add " + equip.getName(),
+                    "Location Full", JOptionPane.ERROR_MESSAGE);
         }
         if (success) {
             equipmentList.addCrit(mount);
         }
     }
 
+    private void addProtomechAmmo(EquipmentType ammo, int shots) throws LocationFullException {
+        Mounted aMount = getProtomech().getAmmo().stream()
+                .filter(m -> m.getType() == ammo).findFirst().orElse(null);
+        if (null != aMount) {
+            aMount.setShotsLeft(aMount.getUsableShotsLeft() + shots);
+            return;
+        } else {
+            Mounted mount = new Mounted(getProtomech(), ammo);
+            getProtomech().addEquipment(mount, Protomech.LOC_BODY, false);
+            mount.setShotsLeft(shots);
+            equipmentList.addCrit(mount);
+        }
+    }
+    
+    private void addLargeCraftAmmo(EquipmentType ammo, int count) throws LocationFullException {
+        Mounted aMount = UnitUtil.findUnallocatedAmmo(getAero(), ammo);
+        if (null != aMount) {
+            aMount.setShotsLeft(aMount.getUsableShotsLeft() + ((AmmoType)ammo).getShots() * count);
+            return;
+        } else {
+            Mounted mount = new Mounted(getAero(), ammo);
+            mount.setShotsLeft(((AmmoType)ammo).getShots() * count);
+            getAero().addEquipment(mount, Entity.LOC_NONE, false);
+            equipmentList.addCrit(mount);
+        }
+    }
+    
+    private void addFighterAmmo(EquipmentType equip, int count) throws LocationFullException {
+        for (int i = 0; i < count; i++) {
+            Mounted mount = new Mounted(getAero(), equip);
+                getAero().addEquipment(mount, Aero.LOC_FUSELAGE, false);
+            equipmentList.addCrit(mount);
+        }
+    }
+    
+    @Override
     public void actionPerformed(ActionEvent e) {
 
         if (e.getActionCommand().equals(ADD_COMMAND)) {
@@ -519,7 +664,7 @@ public class EquipmentTab extends ITab implements ActionListener {
     }
 
     private void fireTableRefresh() {
-        equipmentList.updateUnit(getMech());
+        equipmentList.updateUnit(eSource.getEntity());
         equipmentList.refreshModel();
         if (refresh != null) {
             refresh.refreshStatus();
@@ -535,63 +680,26 @@ public class EquipmentTab extends ITab implements ActionListener {
 
     private void filterEquipment() {
         RowFilter<EquipmentTableModel, Integer> equipmentTypeFilter = null;
-        final int nType = choiceType.getSelectedIndex();
+        final EquipmentCategory nType = (EquipmentCategory) choiceType.getSelectedItem();
         equipmentTypeFilter = new RowFilter<EquipmentTableModel,Integer>() {
             @Override
             public boolean include(Entry<? extends EquipmentTableModel, ? extends Integer> entry) {
-                Mech mech = getMech();
+                Entity entity = eSource.getEntity();
                 EquipmentTableModel equipModel = entry.getModel();
                 EquipmentType etype = equipModel.getType(entry.getIdentifier());
-                WeaponType wtype = null;
-                if (etype instanceof WeaponType) {
-                    wtype = (WeaponType)etype;
-                }
-                AmmoType atype = null;
-                if (etype instanceof AmmoType) {
-                    atype = (AmmoType)etype;
-                }
-                if (UnitUtil.isHeatSink(etype, true) || UnitUtil.isJumpJet(etype)) {
+                if (!UnitUtil.isEntityEquipment(etype, entity)
+                        || !nType.filter(etype, eSource.getEntity())) {
                     return false;
                 }
-                if ((etype instanceof MiscType) && (etype.hasFlag(MiscType.F_TSM)
-                        || etype.hasFlag(MiscType.F_INDUSTRIAL_TSM)
-                        || (etype.hasFlag(MiscType.F_SCM))
-                        || (etype.hasFlag(MiscType.F_MASC) && !etype.hasSubType(MiscType.S_SUPERCHARGER)))) {
+                if (!eSource.getTechManager().isLegal(etype) && !chkShowAll.isSelected()) {
                     return false;
                 }
-                if (etype instanceof MiscType && etype.hasFlag(MiscType.F_TRACKS)) {
-                    if (getMech() instanceof QuadVee) {
-                        return false;
-                    } else if (etype.hasSubType(MiscType.S_QUADVEE_WHEELS)) {
-                        return false;
-                    }
+                if (txtFilter.getText().length() > 0) {
+                    String text = txtFilter.getText();
+                    return etype.getName().toLowerCase().contains(text.toLowerCase());
+                } else {
+                    return true;
                 }
-                if (((nType == T_OTHER) && UnitUtil.isMechEquipment(etype, mech))
-                        || (((nType == T_WEAPON) && (UnitUtil.isMechWeapon(etype, mech) || UnitUtil.isPhysicalWeapon(etype))))
-                        || ((nType == T_ENERGY) && UnitUtil.isMechWeapon(etype, mech)
-                            && (wtype != null) && (wtype.hasFlag(WeaponType.F_ENERGY)
-                            || (wtype.hasFlag(WeaponType.F_PLASMA) && (wtype.getAmmoType() == AmmoType.T_PLASMA))))
-                        || ((nType == T_BALLISTIC) && UnitUtil.isMechWeapon(etype, mech)
-                            && (wtype != null) && (wtype.hasFlag(WeaponType.F_BALLISTIC)
-                                    && (wtype.getAmmoType() != AmmoType.T_NA)))
-                        || ((nType == T_MISSILE) && UnitUtil.isMechWeapon(etype, mech)
-                            && (wtype != null) && ((wtype.hasFlag(WeaponType.F_MISSILE)
-                                    && (wtype.getAmmoType() != AmmoType.T_NA)) || (wtype.getAmmoType() == AmmoType.T_C3_REMOTE_SENSOR)))
-                        || ((nType == T_ARTILLERY) && UnitUtil.isMechWeapon(etype, mech)
-                            && (wtype != null) && (wtype instanceof ArtilleryWeapon))
-                        || ((nType == T_PHYSICAL) && UnitUtil.isPhysicalWeapon(etype))
-                        || (((nType == T_AMMO) & (atype != null)) && UnitUtil.canUseAmmo(mech, atype))) {
-                    if (!eSource.getTechManager().isLegal(etype) && !chkShowAll.isSelected()) {
-                        return false;
-                    }
-                    if (txtFilter.getText().length() > 0) {
-                        String text = txtFilter.getText();
-                        return etype.getName().toLowerCase().contains(text.toLowerCase());
-                    } else {
-                        return true;
-                    }
-                }
-                return false;
             }
         };
         equipmentSorter.setRowFilter(equipmentTypeFilter);
@@ -832,4 +940,33 @@ public class EquipmentTab extends ITab implements ActionListener {
         }
         
     };
+    
+    private static class CategoryListCellRenderer extends JLabel implements ListCellRenderer<EquipmentCategory> {
+        private static final long serialVersionUID = -6019108605730297067L;
+        
+        public CategoryListCellRenderer() {
+            setOpaque(true);
+        }
+
+        @Override
+        public Component getListCellRendererComponent(JList<? extends EquipmentCategory> list,
+                EquipmentCategory value, int index, boolean isSelected, boolean cellHasFocus) {
+            
+            if (isSelected) {
+                setBackground(list.getSelectionBackground());
+                setForeground(list.getSelectionForeground());
+            } else {
+                setBackground(list.getBackground());
+                setForeground(list.getForeground());
+            }
+            setEnabled(list.isEnabled());
+            setFont(list.getFont());
+
+            setText(value.getDisplayName());
+            
+            return this;
+        }
+    };
+
+
 }

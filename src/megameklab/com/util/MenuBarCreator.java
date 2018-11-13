@@ -59,6 +59,7 @@ import megamek.common.Jumpship;
 import megamek.common.Mech;
 import megamek.common.MechFileParser;
 import megamek.common.MechView;
+import megamek.common.Protomech;
 import megamek.common.SmallCraft;
 import megamek.common.Tank;
 import megamek.common.loaders.BLKFile;
