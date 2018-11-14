@@ -54,6 +54,7 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
     private final JTabbedPane panMain = new JTabbedPane();
     private final JPanel panColors = new JPanel(new SpringLayout());
     private final JPanel panTech = new JPanel(new GridBagLayout());
+    private final JPanel panExport = new JPanel();
     
     private final JCheckBox chkTechProgression = new JCheckBox();
     private final JCheckBox chkTechUseYear = new JCheckBox();
@@ -61,6 +62,8 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
     private final JCheckBox chkTechShowFaction = new JCheckBox();
     private final JCheckBox chkShowExtinct = new JCheckBox();
     private final JCheckBox chkUnofficialIgnoreYear = new JCheckBox();
+    
+    private final JCheckBox chkSummaryFormatTRO = new JCheckBox();
     
     //Store changes in the color configuration to write only if the user clicks save
     private final Map<String,String> colorMap = new HashMap<>();
@@ -89,9 +92,11 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
 
         panMain.addTab(resourceMap.getString("ConfigurationDialog.colorCodes.title"), panColors); //$NON-NLS-1$
         panMain.addTab(resourceMap.getString("ConfigurationDialog.techProgression.title"), panTech); //$NON-NLS-1$
+        panMain.addTab(resourceMap.getString("ConfigurationDialog.export.title"), panExport); //$NON-NLS-1$
         
         loadColorPanel();
         loadTechPanel(resourceMap);
+        loadExportPanel(resourceMap);
 
         pack();
     }
@@ -178,6 +183,13 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
         chkUnofficialIgnoreYear.setSelected(CConfig.getBooleanParam(CConfig.TECH_UNOFFICAL_NO_YEAR));
         panTech.add(chkUnofficialIgnoreYear, gbc);
     }
+    
+    private void loadExportPanel(ResourceBundle resourceMap) {
+        chkSummaryFormatTRO.setText(resourceMap.getString("ConfigurationDialog.chkSummaryFormatTRO.text"));
+        chkSummaryFormatTRO.setToolTipText(resourceMap.getString("ConfigurationDialog.chkSummaryFormatTRO.tooltip"));
+        chkSummaryFormatTRO.setSelected(CConfig.getBooleanParam(CConfig.SUMMARY_FORMAT_TRO));
+        panExport.add(chkSummaryFormatTRO);
+    }
 
     private JLabel findLabel(String name) {
         for (Component component : panColors.getComponents()) {
@@ -193,6 +205,7 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
         return null;
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
         String command = e.getActionCommand();
         if (command.equals(saveCommand)) {
@@ -232,6 +245,7 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
         CConfig.setParam(CConfig.TECH_SHOW_FACTION, String.valueOf(chkTechShowFaction.isSelected()));
         CConfig.setParam(CConfig.TECH_EXTINCT, String.valueOf(chkShowExtinct.isSelected()));
         CConfig.setParam(CConfig.TECH_UNOFFICAL_NO_YEAR, String.valueOf(chkUnofficialIgnoreYear.isSelected()));
+        CConfig.setParam(CConfig.SUMMARY_FORMAT_TRO, Boolean.toString(chkSummaryFormatTRO.isSelected()));
         CConfig.saveConfig();
     }
 
