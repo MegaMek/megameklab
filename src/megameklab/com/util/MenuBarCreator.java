@@ -407,17 +407,17 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         file.add(item);
 
         JMenu exportMenu = new JMenu("Export");
-
+        
         item = new JMenuItem("to HTML");
-        item.addActionListener(e -> jMenuExportEntityHTML_actionPerformed(e));
+        item.addActionListener(e -> exportSummary(true));
         exportMenu.add(item);
 
         item = new JMenuItem("to Text");
-        item.addActionListener(e -> jMenuExportEntityText_actionPerformed(e));
+        item.addActionListener(e -> exportSummary(false));
         exportMenu.add(item);
 
         item = new JMenuItem("to Clipboard (text)");
-        item.addActionListener(e -> jMenuExportEntityClipboard_actionPerformed(e));
+        item.addActionListener(e -> exportSummaryClipboard());
         exportMenu.add(item);
 
         file.add(exportMenu);
@@ -1142,24 +1142,30 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         JOptionPane.showMessageDialog(parentFrame, parentFrame.getEntity().getChassis() + " " + parentFrame.getEntity().getModel() + " saved to " + filePathName);
 
     }
+    
+    private String entitySummaryText(boolean html) {
+        if (CConfig.getBooleanParam(CConfig.SUMMARY_FORMAT_TRO)) {
+            TROView view = TROView.createView(parentFrame.getEntity(), html);
+            return view.processTemplate();
+        } else {
+            MechView view = new MechView(parentFrame.getEntity(), !html, false, html);
+            return view.getMechReadout();
+        }
+    }
 
-    public void jMenuExportEntityHTML_actionPerformed(ActionEvent event) {
+    public void exportSummary(boolean html) {
 
         if (UnitUtil.validateUnit(parentFrame.getEntity()).length() > 0) {
             JOptionPane.showMessageDialog(parentFrame, "Warning: exporting an invalid unit!");
         }
 
         String unitName = parentFrame.getEntity().getChassis() + " " + parentFrame.getEntity().getModel();
-        MechView mview = new MechView(parentFrame.getEntity(), false);
 
         FileDialog fDialog = new FileDialog(parentFrame, "Save As", FileDialog.SAVE);
-
         String filePathName = new File(System.getProperty("user.dir").toString()).getAbsolutePath();
-
         fDialog.setDirectory(filePathName);
-        fDialog.setFile(unitName + ".html");
+        fDialog.setFile(unitName + (html?".html" : ".txt"));
         fDialog.setLocationRelativeTo(parentFrame);
-
         fDialog.setVisible(true);
 
         if (fDialog.getFile() != null) {
@@ -1171,7 +1177,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         try {
             FileOutputStream out = new FileOutputStream(filePathName);
             PrintStream p = new PrintStream(out);
-            p.println(mview.getMechReadout());
+            p.println(entitySummaryText(html));
             p.close();
             out.close();
         } catch (Exception ex) {
@@ -1179,54 +1185,11 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         }
     }
 
-    public void jMenuExportEntityText_actionPerformed(ActionEvent event) {
-
-        if (UnitUtil.validateUnit(parentFrame.getEntity()).length() > 0) {
-            JOptionPane.showMessageDialog(parentFrame, "Warning: exporting an invalid unit!");
-        }
-
-        String unitName = parentFrame.getEntity().getChassis() + " " + parentFrame.getEntity().getModel();
-        MechView mview = new MechView(parentFrame.getEntity(), true, true, false);
-
-        FileDialog fDialog = new FileDialog(parentFrame, "Save As", FileDialog.SAVE);
-
-        String filePathName = new File(System.getProperty("user.dir").toString()).getAbsolutePath();
-
-        fDialog.setDirectory(filePathName);
-        fDialog.setFile(unitName + ".txt");
-        fDialog.setLocationRelativeTo(parentFrame);
-
-        fDialog.setVisible(true);
-
-        if (fDialog.getFile() != null) {
-            filePathName = fDialog.getDirectory() + fDialog.getFile();
-        } else {
-            return;
-        }
-
-        try {
-            FileOutputStream out = new FileOutputStream(filePathName);
-            PrintStream p = new PrintStream(out);
-            p.println(mview.getMechReadout());
-            p.close();
-            out.close();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    public void jMenuExportEntityClipboard_actionPerformed(ActionEvent event) {
-//        MechView mview = new MechView(parentFrame.getEntity(), true, true, false);
+    private void exportSummaryClipboard() {
+        final String summaryText = entitySummaryText(false);
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-//      StringSelection stringSelection = new StringSelection(mview.getMechReadout());
-//      clipboard.setContents(stringSelection, this);
-//      clipboard.setContents(stringSelection, this);
-        TROView mview = TROView.createView(parentFrame.getEntity(), false);
-        String doc = mview.processTemplate();
-        if (null != doc) {
-            StringSelection stringSelection = new StringSelection(doc);
-            clipboard.setContents(stringSelection, this);
-        }
+        StringSelection stringSelection = new StringSelection(summaryText);
+        clipboard.setContents(stringSelection, this);
     }
 
     private void loadUnit() {
