@@ -1,5 +1,7 @@
 VERSION HISTORY:
 ----------------
+v0.45.3-SNAPSHOT
+
 v0.45.2 (2018-11-18 0200 UTC)
 + Switched build system from ant to gradle.
 + Bug: Aerospace transport tab does not refresh when tech base/year/level changes.
@@ -23,7 +25,6 @@ v0.45.2 (2018-11-18 0200 UTC)
 + PR #212: Protomechs
 + PR #221: TRO and fluff [Export format defaults to TRO-style, older format available in configuration dialog.
 			Adds tab for editing unit fluff.]
-+ Fixing import issue affecting Windows machines.
 
 v0.45.1 (2018-09-03 2300 UTC)
 + Issue #178: Equipment Table getting stuck on one equipment type.
