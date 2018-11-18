@@ -14,7 +14,7 @@
  * details.
  */
 
-package megameklab.com.ui.protoMek.printing;
+package megameklab.com.ui.protomek.printing;
 
 import java.awt.Color;
 import java.awt.Font;
