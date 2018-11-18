@@ -21,6 +21,8 @@ v0.45.2-SNAPSHOT
 + Issue #215: Quadvees have issues with Quadvee cockpits and XL/XXL engines
 + iSSUE #218: Heavy Gauss Rifles on Superheavy 'Mechs Triggering Split Crit Dialog
 + PR #212: Protomechs
++ PR #221: TRO and fluff [Export format defaults to TRO-style, older format available in configuration dialog.
+			Adds tab for editing unit fluff.]
 
 v0.45.1 (2018-09-03 2300 UTC)
 + Issue #178: Equipment Table getting stuck on one equipment type.
