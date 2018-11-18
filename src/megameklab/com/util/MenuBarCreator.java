@@ -62,6 +62,7 @@ import megamek.common.Protomech;
 import megamek.common.SmallCraft;
 import megamek.common.Tank;
 import megamek.common.loaders.BLKFile;
+import megamek.common.templates.TROView;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.MegaMekLabMainUI;
 
@@ -86,19 +87,19 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         JMenuItem item = new JMenuItem();
         item.setText("About");
         item.setMnemonic(KeyEvent.VK_A);
-        item.addActionListener(ev -> jMenuHelpAbout_actionPerformed());
+        item.addActionListener(e -> jMenuHelpAbout_actionPerformed());
         help.add(item);
 
         item = new JMenuItem();
         item.setText("Record Sheet Images");
         item.setMnemonic(KeyEvent.VK_R);
-        item.addActionListener(ev -> jMenuHelpFluff_actionPerformed());
+        item.addActionListener(e -> jMenuHelpFluff_actionPerformed());
         help.add(item);
 
         item = new JMenuItem();
         item.setText("Insert Image To File");
         item.setMnemonic(KeyEvent.VK_I);
-        item.addActionListener(ev -> jMenuInsertImageFile_actionPerformed());
+        item.addActionListener(e -> jMenuInsertImageFile_actionPerformed());
         help.add(item);
 
         validate.add(loadBVMenuOptions());
@@ -122,19 +123,19 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         JMenuItem item = new JMenuItem();
         item.setText("Current Units BV Calculations");
         item.setMnemonic(KeyEvent.VK_B);
-        item.addActionListener(ev -> jMenuBVCalculations_actionPerformed());
+        item.addActionListener(e -> jMenuBVCalculations_actionPerformed());
         bv.add(item);
 
         item = new JMenuItem();
         item.setText("BV Calculations From File");
         item.setMnemonic(KeyEvent.VK_F);
-        item.addActionListener(ev -> jMenuGetUnitBVFromFile_actionPerformed());
+        item.addActionListener(e -> jMenuGetUnitBVFromFile_actionPerformed());
         bv.add(item);
 
         item = new JMenuItem();
         item.setText("BV Calculations From Cache");
         item.setMnemonic(KeyEvent.VK_C);
-        item.addActionListener(ev -> jMenuGetUnitBVFromCache_actionPerformed());
+        item.addActionListener(e -> jMenuGetUnitBVFromCache_actionPerformed());
         bv.add(item);
         return bv;
     }
@@ -144,19 +145,19 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         JMenuItem item = new JMenuItem();
         item.setText("Validate Current Unit");
         item.setMnemonic(KeyEvent.VK_V);
-        item.addActionListener(ev -> jMenuValidateUnit_actionPerformed());
+        item.addActionListener(e -> jMenuValidateUnit_actionPerformed());
         entityValidation.add(item);
 
         item = new JMenuItem();
         item.setText("Validate Unit From File");
         item.setMnemonic(KeyEvent.VK_F);
-        item.addActionListener(ev -> jMenuGetUnitValidationFromFile_actionPerformed());
+        item.addActionListener(e -> jMenuGetUnitValidationFromFile_actionPerformed());
         entityValidation.add(item);
 
         item = new JMenuItem();
         item.setText("Validate Unit From Cache");
         item.setMnemonic(KeyEvent.VK_C);
-        item.addActionListener(ev -> jMenuGetUnitValidationFromCache_actionPerformed());
+        item.addActionListener(e -> jMenuGetUnitValidationFromCache_actionPerformed());
         entityValidation.add(item);
         return entityValidation;
     }
@@ -166,19 +167,19 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         JMenuItem item = new JMenuItem();
         item.setText("Breakdown Current Unit");
         item.setMnemonic(KeyEvent.VK_V);
-        item.addActionListener(ev -> jMenuUnitCostBreakdown_actionPerformed());
+        item.addActionListener(e -> jMenuUnitCostBreakdown_actionPerformed());
         entityBreakdown.add(item);
 
         item = new JMenuItem();
         item.setText("Unit Breakdown From File");
         item.setMnemonic(KeyEvent.VK_F);
-        item.addActionListener(ev -> jMenuGetUnitBreakdownFromFile_actionPerformed());
+        item.addActionListener(e -> jMenuGetUnitBreakdownFromFile_actionPerformed());
         entityBreakdown.add(item);
 
         item = new JMenuItem();
         item.setText("Unit Breakdown From Cache");
         item.setMnemonic(KeyEvent.VK_C);
-        item.addActionListener(ev -> jMenuGetUnitBreakdownFromCache_actionPerformed());
+        item.addActionListener(e -> jMenuGetUnitBreakdownFromCache_actionPerformed());
         entityBreakdown.add(item);
         return entityBreakdown;
     }
@@ -187,17 +188,17 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         JMenu entityBreakdown = new JMenu("Unit Weight Breakdown");
         JMenuItem item = new JMenuItem();
         item.setText("Breakdown Current Unit");
-        item.addActionListener(ev -> jMenuUnitWeightBreakdown_actionPerformed());
+        item.addActionListener(e -> jMenuUnitWeightBreakdown_actionPerformed());
         entityBreakdown.add(item);
 
         item = new JMenuItem();
         item.setText("Unit Breakdown From File");
-        item.addActionListener(ev -> jMenuGetUnitWeightBreakdownFromFile_actionPerformed());
+        item.addActionListener(e -> jMenuGetUnitWeightBreakdownFromFile_actionPerformed());
         entityBreakdown.add(item);
 
         item = new JMenuItem();
         item.setText("Unit Breakdown From Cache");
-        item.addActionListener(ev -> jMenuGetUnitWeightBreakdownFromCache_actionPerformed());
+        item.addActionListener(e -> jMenuGetUnitWeightBreakdownFromCache_actionPerformed());
         entityBreakdown.add(item);
         return entityBreakdown;
     }
@@ -207,19 +208,19 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         JMenuItem item = new JMenuItem();
         item.setText("Current Unit Specs");
         item.setMnemonic(KeyEvent.VK_V);
-        item.addActionListener(ev -> jMenuUnitSpecs_actionPerformed());
+        item.addActionListener(e -> jMenuUnitSpecs_actionPerformed());
         unitSpecs.add(item);
 
         item = new JMenuItem();
         item.setText("Unit Specs From File");
         item.setMnemonic(KeyEvent.VK_F);
-        item.addActionListener(ev -> jMenuGetUnitSpecsFromFile_actionPerformed());
+        item.addActionListener(e -> jMenuGetUnitSpecsFromFile_actionPerformed());
         unitSpecs.add(item);
 
         item = new JMenuItem();
         item.setText("Unit Specs From Cache");
         item.setMnemonic(KeyEvent.VK_C);
-        item.addActionListener(ev -> jMenuGetUnitSpecsFromCache_actionPerformed());
+        item.addActionListener(e -> jMenuGetUnitSpecsFromCache_actionPerformed());
         unitSpecs.add(item);
         return unitSpecs;
     }
@@ -234,7 +235,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         item = new JMenuItem("Reset Current Unit");
         item.setMnemonic(KeyEvent.VK_R);
         item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-        item.addActionListener(this::jMenuResetEntity_actionPerformed);
+        item.addActionListener(e -> jMenuResetEntity_actionPerformed(e));
         file.add(item);
 
         JMenu unitMenu = new JMenu("Switch Unit Type");
@@ -259,7 +260,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             item.setMnemonic(KeyEvent.VK_A);
             item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A,
                     Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-            item.addActionListener(ev -> jMenuLoadAero());
+            item.addActionListener(e -> jMenuLoadAero());
             unitMenu.add(item);
         }
 
@@ -291,7 +292,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             item.setMnemonic(KeyEvent.VK_T);
             item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T,
                     Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-            item.addActionListener(ev -> jMenuLoadVehicle());
+            item.addActionListener(e -> jMenuLoadVehicle());
             unitMenu.add(item);
         }
 
@@ -301,7 +302,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             item.setMnemonic(KeyEvent.VK_B);
             item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B,
                     Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-            item.addActionListener(ev -> jMenuLoadBattleArmor());
+            item.addActionListener(e -> jMenuLoadBattleArmor());
             unitMenu.add(item);
         }
 
@@ -311,7 +312,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             item.setMnemonic(KeyEvent.VK_I);
             item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I,
                     Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-            item.addActionListener(ev -> jMenuLoadInfantry());
+            item.addActionListener(e -> jMenuLoadInfantry());
             unitMenu.add(item);
         }
         
@@ -322,7 +323,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             item.addActionListener(ev -> jMenuLoadProtomech());
             unitMenu.add(item);
         }
-        
+
         JMenu pMenu = new JMenu("Primitive/Retro");
         if (!(en instanceof Mech)
                 || !((Mech)en).isPrimitive()) {
@@ -368,7 +369,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         item.setMnemonic(KeyEvent.VK_C);
         item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U,
                 Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-        item.addActionListener(this::jMenuLoadEntity_actionPerformed);
+        item.addActionListener(e -> jMenuLoadEntity_actionPerformed(e));
         loadMenu.add(item);
 
         item = new JMenuItem();
@@ -376,7 +377,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         item.setMnemonic(KeyEvent.VK_F);
         item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F,
                 Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-        item.addActionListener(this::jMenuLoadEntityFromFile_actionPerformed);
+        item.addActionListener(e -> jMenuLoadEntityFromFile_actionPerformed(e));
         loadMenu.add(item);
 
         file.add(loadMenu);
@@ -385,7 +386,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P,
                 Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         item.setMnemonic(KeyEvent.VK_C);
-        item.addActionListener(ev -> jMenuPrintCurrentUnit());
+        item.addActionListener(e -> jMenuPrintCurrentUnit());
 
         file.add(UnitPrintManager.printMenu(parentFrame, item));
 
@@ -394,7 +395,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         item.setMnemonic(KeyEvent.VK_S);
         item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
                 Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-        item.addActionListener(this::jMenuSaveEntity_actionPerformed);
+        item.addActionListener(e -> jMenuSaveEntity_actionPerformed(e));
         file.add(item);
 
         item = new JMenuItem();
@@ -402,21 +403,21 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         item.setMnemonic(KeyEvent.VK_A);
         item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A,
                 Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-        item.addActionListener(this::jMenuSaveAsEntity_actionPerformed);
+        item.addActionListener(e -> jMenuSaveAsEntity_actionPerformed(e));
         file.add(item);
 
         JMenu exportMenu = new JMenu("Export");
-
+        
         item = new JMenuItem("to HTML");
-        item.addActionListener(this::jMenuExportEntityHTML_actionPerformed);
+        item.addActionListener(e -> exportSummary(true));
         exportMenu.add(item);
 
         item = new JMenuItem("to Text");
-        item.addActionListener(this::jMenuExportEntityText_actionPerformed);
+        item.addActionListener(e -> exportSummary(false));
         exportMenu.add(item);
 
         item = new JMenuItem("to Clipboard (text)");
-        item.addActionListener(this::jMenuExportEntityClipboard_actionPerformed);
+        item.addActionListener(e -> exportSummaryClipboard());
         exportMenu.add(item);
 
         file.add(exportMenu);
@@ -426,7 +427,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
 
         item = new JMenuItem("Configuration");
         item.setMnemonic(KeyEvent.VK_C);
-        item.addActionListener(this::jMenuConfiguration_actionPerformed);
+        item.addActionListener(e -> jMenuConfiguration_actionPerformed(e));
         file.add(item);
 
         int fileNumber = 1;
@@ -440,7 +441,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
                 item.setText(fileNumber + ". " + newFile);
             }
             item.setMnemonic(fileNumber);
-            item.addActionListener(ev -> jMenuLoadEntityFromFile_actionPerformed(1));
+            item.addActionListener(e -> jMenuLoadEntityFromFile_actionPerformed(1));
 
             file.add(item);
             fileNumber++;
@@ -455,7 +456,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
                 item.setText(fileNumber + ". " + newFile);
             }
             item.setMnemonic(fileNumber);
-            item.addActionListener(ev -> jMenuLoadEntityFromFile_actionPerformed(2));
+            item.addActionListener(e -> jMenuLoadEntityFromFile_actionPerformed(2));
 
             file.add(item);
             fileNumber++;
@@ -470,7 +471,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
                 item.setText(fileNumber + ". " + newFile);
             }
             item.setMnemonic(fileNumber);
-            item.addActionListener(ev -> jMenuLoadEntityFromFile_actionPerformed(3));
+            item.addActionListener(e -> jMenuLoadEntityFromFile_actionPerformed(3));
 
             file.add(item);
             fileNumber++;
@@ -485,7 +486,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
                 item.setText(fileNumber + ". " + newFile);
             }
             item.setMnemonic(fileNumber);
-            item.addActionListener(ev -> jMenuLoadEntityFromFile_actionPerformed(4));
+            item.addActionListener(e -> jMenuLoadEntityFromFile_actionPerformed(4));
 
             file.add(item);
             fileNumber++;
@@ -986,7 +987,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
     }
 
     private void jMenuLoadInfantry() {
-        new megameklab.com.ui.Infantry.MainUI();
+    	new megameklab.com.ui.Infantry.MainUI();
         parentFrame.dispose();
     }
 
@@ -1038,8 +1039,8 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         } else if (parentFrame.getEntity() instanceof Protomech) {
             parentFrame.createNewUnit(Entity.ETYPE_PROTOMECH);
         } else {
-            MegaMekLab.getLogger().warning(getClass(), "jMenuResetEntity_actionPerformed",
-                    "Received unknown entityType!");
+            System.out.println("util.MenuBarCreatoer: " +
+                        "Received unknown entityType!");
         }
         setVisible(true);
         reload();
@@ -1141,24 +1142,30 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         JOptionPane.showMessageDialog(parentFrame, parentFrame.getEntity().getChassis() + " " + parentFrame.getEntity().getModel() + " saved to " + filePathName);
 
     }
+    
+    private String entitySummaryText(boolean html) {
+        if (CConfig.getBooleanParam(CConfig.SUMMARY_FORMAT_TRO)) {
+            TROView view = TROView.createView(parentFrame.getEntity(), html);
+            return view.processTemplate();
+        } else {
+            MechView view = new MechView(parentFrame.getEntity(), !html, false, html);
+            return view.getMechReadout();
+        }
+    }
 
-    public void jMenuExportEntityHTML_actionPerformed(ActionEvent event) {
+    public void exportSummary(boolean html) {
 
         if (UnitUtil.validateUnit(parentFrame.getEntity()).length() > 0) {
             JOptionPane.showMessageDialog(parentFrame, "Warning: exporting an invalid unit!");
         }
 
         String unitName = parentFrame.getEntity().getChassis() + " " + parentFrame.getEntity().getModel();
-        MechView mview = new MechView(parentFrame.getEntity(), false);
 
         FileDialog fDialog = new FileDialog(parentFrame, "Save As", FileDialog.SAVE);
-
         String filePathName = new File(System.getProperty("user.dir").toString()).getAbsolutePath();
-
         fDialog.setDirectory(filePathName);
-        fDialog.setFile(unitName + ".html");
+        fDialog.setFile(unitName + (html?".html" : ".txt"));
         fDialog.setLocationRelativeTo(parentFrame);
-
         fDialog.setVisible(true);
 
         if (fDialog.getFile() != null) {
@@ -1170,7 +1177,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         try {
             FileOutputStream out = new FileOutputStream(filePathName);
             PrintStream p = new PrintStream(out);
-            p.println(mview.getMechReadout());
+            p.println(entitySummaryText(html));
             p.close();
             out.close();
         } catch (Exception ex) {
@@ -1178,46 +1185,10 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         }
     }
 
-    public void jMenuExportEntityText_actionPerformed(ActionEvent event) {
-
-        if (UnitUtil.validateUnit(parentFrame.getEntity()).length() > 0) {
-            JOptionPane.showMessageDialog(parentFrame, "Warning: exporting an invalid unit!");
-        }
-
-        String unitName = parentFrame.getEntity().getChassis() + " " + parentFrame.getEntity().getModel();
-        MechView mview = new MechView(parentFrame.getEntity(), true, true, false);
-
-        FileDialog fDialog = new FileDialog(parentFrame, "Save As", FileDialog.SAVE);
-
-        String filePathName = new File(System.getProperty("user.dir").toString()).getAbsolutePath();
-
-        fDialog.setDirectory(filePathName);
-        fDialog.setFile(unitName + ".txt");
-        fDialog.setLocationRelativeTo(parentFrame);
-
-        fDialog.setVisible(true);
-
-        if (fDialog.getFile() != null) {
-            filePathName = fDialog.getDirectory() + fDialog.getFile();
-        } else {
-            return;
-        }
-
-        try {
-            FileOutputStream out = new FileOutputStream(filePathName);
-            PrintStream p = new PrintStream(out);
-            p.println(mview.getMechReadout());
-            p.close();
-            out.close();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    public void jMenuExportEntityClipboard_actionPerformed(ActionEvent event) {
-        MechView mview = new MechView(parentFrame.getEntity(), true, true, false);
+    private void exportSummaryClipboard() {
+        final String summaryText = entitySummaryText(false);
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-        StringSelection stringSelection = new StringSelection(mview.getMechReadout());
+        StringSelection stringSelection = new StringSelection(summaryText);
         clipboard.setContents(stringSelection, this);
     }
 
@@ -1373,7 +1344,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
                     newUI = new megameklab.com.ui.Infantry.MainUI();
                 } else if (tempEntity instanceof Mech) {
                     newUI = new megameklab.com.ui.Mek.MainUI();
-                } else if (tempEntity.hasETypeFlag(Entity.ETYPE_PROTOMECH)) {
+                } else if (tempEntity instanceof Protomech) {
                     newUI = new megameklab.com.ui.protomek.ProtomekMainUI();
                 } else if ((tempEntity instanceof Tank)
                         && !(tempEntity instanceof GunEmplacement)) {
