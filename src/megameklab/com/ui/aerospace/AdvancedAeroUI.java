@@ -38,6 +38,7 @@ import megameklab.com.MegaMekLab;
 import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.Aero.tabs.EquipmentTab;
 import megameklab.com.ui.tabs.PreviewTab;
+import megameklab.com.ui.tabs.FluffTab;
 import megameklab.com.util.MenuBarCreator;
 
 /**
@@ -59,6 +60,7 @@ public class AdvancedAeroUI extends MegaMekLabMainUI {
     private PreviewTab previewTab;
     private DropshipBuildTab buildTab;
     private TransportTab transportTab;
+    private FluffTab fluffTab;
     private AdvancedAeroStatusBar statusbar;
     JPanel masterPanel = new JPanel();
     JScrollPane scroll = new JScrollPane();
@@ -198,17 +200,20 @@ public class AdvancedAeroUI extends MegaMekLabMainUI {
         statusbar = new AdvancedAeroStatusBar(this);
         equipmentTab = new EquipmentTab(this);
         buildTab = new DropshipBuildTab(this, equipmentTab);
+        fluffTab = new FluffTab(this);
         transportTab = new TransportTab(this);
         structureTab.addRefreshedListener(this);
         equipmentTab.addRefreshedListener(this);
         buildTab.addRefreshedListener(this);
         transportTab.addRefreshedListener(this);
+        fluffTab.setRefreshedListener(this);
         statusbar.addRefreshedListener(this);
 
         configPane.addTab("Structure/Armor", structureTab);
         configPane.addTab("Equipment", equipmentTab);
         configPane.addTab("Assign Criticals", buildTab);
         configPane.addTab("Transport Bays", transportTab);
+        configPane.addTab("Fluff", fluffTab);
         configPane.addTab("Preview", previewTab);
 
         masterPanel.add(configPane, BorderLayout.CENTER);

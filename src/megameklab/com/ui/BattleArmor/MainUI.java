@@ -36,6 +36,7 @@ import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.BattleArmor.tabs.BuildTab;
 import megameklab.com.ui.BattleArmor.tabs.EquipmentTab;
 import megameklab.com.ui.BattleArmor.tabs.StructureTab;
+import megameklab.com.ui.tabs.FluffTab;
 import megameklab.com.util.MenuBarCreator;
 import megameklab.com.util.UnitUtil;
 
@@ -51,6 +52,7 @@ public class MainUI extends MegaMekLabMainUI {
     private StructureTab structureTab;
     private BuildTab buildTab;
     private EquipmentTab equipTab;
+    private FluffTab fluffTab;
     private StatusBar statusbar;
     JPanel masterPanel = new JPanel();
     JScrollPane scroll = new JScrollPane();
@@ -86,16 +88,19 @@ public class MainUI extends MegaMekLabMainUI {
         masterPanel.setLayout(new BorderLayout());
         structureTab = new StructureTab(this);
         equipTab = new EquipmentTab(this);
+        fluffTab = new FluffTab(this);
 
         statusbar = new StatusBar(this);
         buildTab = new BuildTab(this);
         structureTab.addRefreshedListener(this);
         equipTab.addRefreshedListener(this);
         buildTab.addRefreshedListener(this);
+        fluffTab.setRefreshedListener(this);
 
         ConfigPane.addTab("Structure/Armor", structureTab);
         ConfigPane.addTab("Equipment", equipTab);
         ConfigPane.addTab("Assign Criticals", buildTab);
+        ConfigPane.addTab("Fluff", fluffTab);
 
         masterPanel.add(ConfigPane, BorderLayout.CENTER);
         masterPanel.add(statusbar, BorderLayout.SOUTH);
