@@ -62,13 +62,14 @@ dependencies {
     implementation "org.megamek:megamek${mmBranchTag}:${version}"
     
     implementation 'log4j:log4j:1.2.17'
-    implementation 'org.apache.xmlgraphics:batik-dom:1.9.1'
-    implementation ('org.apache.xmlgraphics:batik-bridge:1.9.1') {
+    implementation 'org.apache.xmlgraphics:batik-dom:1.10'
+    implementation 'org.apache.xmlgraphics:batik-codec:1.10'
+    implementation ('org.apache.xmlgraphics:batik-bridge:1.10') {
         // We don't need the python and javascript engine taking up space
         exclude group: 'org.python', module: 'jython'
         exclude group: 'org.mozilla', module: 'rhino'
     }
-    implementation 'org.apache.xmlgraphics:batik-svggen:1.9.1'
+    implementation 'org.apache.xmlgraphics:batik-svggen:1.10'
     // We have been using a modified version of svgSalamander, which we'll keep around until
     // the conversion to batik is complete.
     implementation files('lib/svgSalamander.jar')
