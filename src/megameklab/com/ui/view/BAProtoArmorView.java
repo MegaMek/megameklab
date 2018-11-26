@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import javax.swing.JButton;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
@@ -39,6 +40,7 @@ import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestProtomech;
 import megameklab.com.ui.util.TechComboBox;
 import megameklab.com.ui.view.listeners.BuildListener;
+import megameklab.com.util.UnitUtil;
 
 /**
  * Structure table armor panel for units that allocate armor by point instead of ton.
@@ -61,9 +63,14 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
         listeners.remove(l);
     }
     
+    private final static String CMD_MAXIMIZE  = "MAXIMIZE"; //$NON-NLS-1$
+    private final static String CMD_REMAINING = "REMAINING"; //$NON-NLS-1$
+    
     private final TechComboBox<EquipmentType> cbArmorType = new TechComboBox<>(eq -> eq.getName());
     private final SpinnerNumberModel spnArmorPointsModel = new SpinnerNumberModel(0, 0, null, 1);
     private final JSpinner spnArmorPoints = new JSpinner(spnArmorPointsModel);
+    private final JButton btnMaximize = new JButton();
+    private final JButton btnUseRemaining = new JButton();
     
     private final ITechManager techManager;
     private long etype;
@@ -100,6 +107,26 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
         spnArmorPoints.setToolTipText(resourceMap.getString("ArmorView.spnArmorPoints.tooltip")); //$NON-NLS-1$
         add(spnArmorPoints, gbc);
         spnArmorPoints.addChangeListener(this);
+
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.gridwidth = 3;
+        btnMaximize.setText(resourceMap.getString("ArmorView.btnMaximize.text")); //$NON-NLS-1$
+        btnMaximize.setActionCommand(CMD_MAXIMIZE);
+        setFieldSize(btnMaximize, controlSize);
+        btnMaximize.setToolTipText(resourceMap.getString("ArmorView.btnMaximize.tooltip")); //$NON-NLS-1$
+        add(btnMaximize, gbc);
+        btnMaximize.addActionListener(this);
+        
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.gridwidth = 3;
+        btnUseRemaining.setText(resourceMap.getString("ArmorView.btnRemaining.text")); //$NON-NLS-1$
+        btnUseRemaining.setActionCommand(CMD_REMAINING);
+        setFieldSize(btnUseRemaining, controlSize);
+        btnUseRemaining.setToolTipText(resourceMap.getString("ArmorView.btnRemaining.tooltip")); //$NON-NLS-1$
+        add(btnUseRemaining, gbc);
+        btnUseRemaining.addActionListener(this);
     }
     
     public void setFromEntity(Entity en) {
@@ -117,7 +144,8 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
             spnArmorPointsModel.setMaximum(((BattleArmor)en).getMaximumArmorPoints());
         } else if (en.hasETypeFlag(Entity.ETYPE_PROTOMECH)) {
             final int max = TestProtomech.maxArmorFactor((Protomech) en);
-            spnArmorPointsModel.setValue(Math.min(max, en.getTotalOArmor()));
+            spnArmorPointsModel.setValue(Math.min(max,
+                    (int) UnitUtil.getRawArmorPoints(en, en.getLabArmorTonnage())));
             spnArmorPointsModel.setMaximum(max);
         } else {
             spnArmorPointsModel.setValue(en.getTotalOArmor());
@@ -181,6 +209,10 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == cbArmorType) {
             listeners.forEach(l -> l.armorTypeChanged((EquipmentType)cbArmorType.getSelectedItem()));
+        } else if (CMD_MAXIMIZE.equals(e.getActionCommand())) {
+            listeners.forEach(l -> l.maximizeArmor());
+        } else if (CMD_REMAINING.equals(e.getActionCommand())) {
+            listeners.forEach(l -> l.useRemainingTonnageArmor());
         }
     }
 
