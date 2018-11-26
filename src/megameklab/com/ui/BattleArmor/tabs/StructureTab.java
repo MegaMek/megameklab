@@ -651,6 +651,7 @@ public class StructureTab extends ITab implements ActionListener, BABuildListene
         refresh.refreshSummary();
         refresh.refreshBuild();
         refresh.refreshPreview();
+        refresh.refreshStatus();
     }
 
     @Override
