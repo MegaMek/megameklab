@@ -573,10 +573,9 @@ public class ProtomekStructureTab extends ITab implements ProtomekBuildListener 
             pointsToAllocate = maxArmor;
         }
         double percent = pointsToAllocate / maxArmor;
+        final double totalIS = getProtomech().getTotalOInternal();
         for (int location = getProtomech().firstArmorIndex(); location < getProtomech().locations(); location++) {
-            double is = getProtomech().getInternal(location);
-            double allocate = Math.min(is * percent, pointsToAllocate);
-            allocate = Math.min(allocate, UnitUtil.getMaximumArmorPoints(getProtomech(), location));
+            double allocate = Math.min(UnitUtil.getMaximumArmorPoints(getProtomech(), location) * percent, pointsToAllocate);
             getProtomech().initializeArmor((int) allocate, location);
             pointsToAllocate -= (int) allocate;
         }

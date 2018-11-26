@@ -1422,6 +1422,8 @@ public class UnitUtil {
             return unit.getInternal(loc) * 2;
         } else if (unit instanceof Tank) {
             return (int) Math.floor((unit.getWeight() * 3.5) + 40);
+        } else if (unit instanceof Protomech) {
+            return TestProtomech.maxArmorFactor((Protomech) unit, loc);
         } else {
             return 0;
         }
