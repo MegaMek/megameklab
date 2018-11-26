@@ -434,6 +434,9 @@ public class ProtomekStructureTab extends ITab implements ProtomekBuildListener 
                 .filter(m -> !UnitUtil.isProtomechEquipment(m.getType(), getProtomech(), true))
                 .collect(Collectors.toList());
         toRemove.forEach(m -> UnitUtil.removeMounted(getProtomech(), m));
+        panMovement.setFromEntity(getProtomech());
+        recalculateEngineRating(panMovement.getWalk(), panChassis.getTonnage(),
+                motiveType != ProtomekChassisView.MOTIVE_TYPE_BIPED);
         refresh();
         refresh.refreshBuild();
         refresh.refreshPreview();
