@@ -484,7 +484,7 @@ public class ProtomekStructureTab extends ITab implements ProtomekBuildListener 
         currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getProtomech());
         double totalTonnage = getProtomech().getWeight();
         double remainingTonnage = TestEntity.floor(
-                totalTonnage - currentTonnage, TestEntity.Ceil.HALFTON);
+                totalTonnage - currentTonnage, TestEntity.Ceil.KILO);
 
         double maxArmor = Math.min(getProtomech().getArmorWeight() + remainingTonnage,
                 UnitUtil.getMaximumArmorTonnage(getProtomech()));

@@ -47,6 +47,8 @@ import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.SimpleTechLevel;
 import megamek.common.templates.TROView;
+import megamek.common.verifier.TestEntity;
+import megamek.common.verifier.TestBattleArmor;
 import megamek.common.verifier.TestBattleArmor.BAManipulator;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.util.CustomComboBox;
@@ -679,5 +681,30 @@ public class StructureTab extends ITab implements ActionListener, BABuildListene
         refresh.refreshBuild();
         refresh.refreshStatus();
         refresh.refreshPreview();
+    }
+    
+    @Override
+    public void maximizeArmor() {
+        armorValueChanged(getBattleArmor().getMaximumArmorPoints());
+        panArmor.removeListener(this);
+        panArmor.setFromEntity(getBattleArmor());
+        panArmor.addListener(this);
+    }
+    
+    @Override
+    public void useRemainingTonnageArmor() {
+        final TestBattleArmor testBA = (TestBattleArmor) UnitUtil.getEntityVerifier(getBattleArmor());
+        double currentTonnage = testBA.calculateWeight(BattleArmor.LOC_SQUAD);
+        currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getBattleArmor());
+        double totalTonnage = getBattleArmor().getTrooperWeight();
+        double remainingTonnage = TestEntity.floor(
+                totalTonnage - currentTonnage, TestEntity.Ceil.KILO);
+        int points = (int) UnitUtil.getRawArmorPoints(getBattleArmor(), remainingTonnage);
+        int maxArmor = Math.min(getBattleArmor().getMaximumArmorPoints(),
+                points + getBattleArmor().getOArmor(BattleArmor.LOC_TROOPER_1));
+        armorValueChanged(maxArmor);
+        panArmor.removeListener(this);
+        panArmor.setFromEntity(getBattleArmor());
+        panArmor.addListener(this);
     }
 }
