@@ -3,6 +3,9 @@ VERSION HISTORY:
 v0.45.3-SNAPSHOT
 + Issue #223: Quad Protomech engine weight
 + Bug: Missing codecs to display fluff image on record sheets.
++ Issue #228: BA VTOL and UMU movement types
++ Issue #230: Protomech Weapons
++ Issue #232: docking hardpoint limits incorrect
 
 v0.45.2 (2018-11-18 0200 UTC)
 + Switched build system from ant to gradle.
