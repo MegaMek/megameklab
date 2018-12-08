@@ -30,7 +30,4 @@ public interface BABuildListener extends BuildListener {
     void harjelChanged(boolean harjel);
     void squadSizeChanged(int squadSize);
     void enhancementChanged(EquipmentType eq, boolean selected);
-
-    void armorValueChanged(int points);
-    void armorTypeChanged(EquipmentType armor);
 }
