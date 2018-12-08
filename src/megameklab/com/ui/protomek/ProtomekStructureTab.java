@@ -487,7 +487,7 @@ public class ProtomekStructureTab extends ITab implements ProtomekBuildListener 
         currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getProtomech());
         double totalTonnage = getProtomech().getWeight();
         double remainingTonnage = TestEntity.floor(
-                totalTonnage - currentTonnage, TestEntity.Ceil.HALFTON);
+                totalTonnage - currentTonnage, TestEntity.Ceil.KILO);
 
         double maxArmor = Math.min(getProtomech().getArmorWeight() + remainingTonnage,
                 UnitUtil.getMaximumArmorTonnage(getProtomech()));
@@ -576,10 +576,9 @@ public class ProtomekStructureTab extends ITab implements ProtomekBuildListener 
             pointsToAllocate = maxArmor;
         }
         double percent = pointsToAllocate / maxArmor;
+        final double totalIS = getProtomech().getTotalOInternal();
         for (int location = getProtomech().firstArmorIndex(); location < getProtomech().locations(); location++) {
-            double is = getProtomech().getInternal(location);
-            double allocate = Math.min(is * percent, pointsToAllocate);
-            allocate = Math.min(allocate, UnitUtil.getMaximumArmorPoints(getProtomech(), location));
+            double allocate = Math.min(UnitUtil.getMaximumArmorPoints(getProtomech(), location) * percent, pointsToAllocate);
             getProtomech().initializeArmor((int) allocate, location);
             pointsToAllocate -= (int) allocate;
         }

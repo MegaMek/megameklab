@@ -1422,6 +1422,8 @@ public class UnitUtil {
             return unit.getInternal(loc) * 2;
         } else if (unit instanceof Tank) {
             return (int) Math.floor((unit.getWeight() * 3.5) + 40);
+        } else if (unit instanceof Protomech) {
+            return TestProtomech.maxArmorFactor((Protomech) unit, loc);
         } else {
             return 0;
         }
@@ -1450,6 +1452,9 @@ public class UnitUtil {
             }
             armorWeight = points / armorPerTon;
             armorWeight = Math.ceil(armorWeight * 2.0) / 2.0;
+        } else if (unit instanceof Protomech) {
+            double points = TestProtomech.maxArmorFactor((Protomech) unit);
+            return points * TestProtomech.ProtomechArmor.getArmor((Protomech) unit).getWtPerPoint();
         } else if (unit instanceof Tank) {
             double points = Math.floor((unit.getWeight() * 3.5) + 40);
             armorWeight = points / armorPerTon;
@@ -1481,8 +1486,8 @@ public class UnitUtil {
      */
     public static double getRawArmorPoints(Entity unit, double armorTons) {
         if (unit.hasETypeFlag(Entity.ETYPE_PROTOMECH)) {
-            return armorTons /
-                    EquipmentType.getProtomechArmorWeightPerPoint(unit.getArmorType(Protomech.LOC_TORSO));
+            return Math.round(armorTons /
+                    EquipmentType.getProtomechArmorWeightPerPoint(unit.getArmorType(Protomech.LOC_TORSO)));
         }
         return armorTons * UnitUtil.getArmorPointsPerTon(unit,
                 unit.getArmorType(1), unit.getArmorTechLevel(1));
