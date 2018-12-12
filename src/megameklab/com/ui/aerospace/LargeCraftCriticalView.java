@@ -107,7 +107,7 @@ public class LargeCraftCriticalView extends IView {
             if (getAero().hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)
                     && ((arc == TestSmallCraft.ARC_AFT_LEFT)
                             || (arc == TestSmallCraft.ARC_AFT_RIGHT))) {
-                arcTrees[arc] = new BayWeaponCriticalTree(arc - 3, eSource, refresh, BayWeaponCriticalTree.AFT);
+                arcTrees[arc] = new BayWeaponCriticalTree(arc - 4, eSource, refresh, BayWeaponCriticalTree.AFT);
             } else {
                 arcTrees[arc] = new BayWeaponCriticalTree(arc, eSource, refresh);
             }

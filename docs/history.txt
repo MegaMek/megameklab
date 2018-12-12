@@ -8,6 +8,7 @@ v0.45.3-SNAPSHOT
 + Issue #232: docking hardpoint limits incorrect
 + Issue #222: Protomech armor glitches
 + Issue #231: Stack Overflow Exception while saving Battle Armor
++ Issue #234: Spheroid dropship side arc equipment assigned to wrong location
 
 v0.45.2 (2018-11-18 0200 UTC)
 + Switched build system from ant to gradle.
