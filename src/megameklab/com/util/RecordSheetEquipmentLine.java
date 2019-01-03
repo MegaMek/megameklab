@@ -237,7 +237,7 @@ public class RecordSheetEquipmentLine {
             }
         } else if (eqInfo.isATM) {
             if (row == ATM_STANDARD) {
-                return "4";
+                return "15";
             } else if (row == ATM_ER) {
                 return "27";
             } else if (row == ATM_HE) {
