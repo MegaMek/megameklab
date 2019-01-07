@@ -87,7 +87,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
     private final IntRangeTextField txtManualBV = new IntRangeTextField(3);
     
     private int prevYear = 3145;
-    private int prevBV = 0;
+    private int prevBV = -1;
     
     public BasicInfoView(TechAdvancement baseTA) {
         this.baseTA = baseTA;
@@ -253,6 +253,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         refreshTechBase();
     }
     
+    @Override
     public int getTechFaction() {
         if (cbFaction.getSelectedIndex() < 0) {
             return -1;
@@ -281,11 +282,15 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
     }
 
     public int getManualBV() {
-        return txtManualBV.getIntVal();
+        return txtManualBV.getIntVal(-1);
     }
     
     public void setManualBV(int bv) {
-        txtManualBV.setIntVal(bv);
+        if (bv >= 0) {
+            txtManualBV.setIntVal(bv);
+        } else {
+            txtManualBV.setText("");
+        }
     }
     
     @Override
@@ -321,6 +326,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         refreshFaction();
     }
     
+    @Override
     public SimpleTechLevel getTechLevel() {
         if (cbTechLevel.getSelectedItem() == null) {
             return SimpleTechLevel.STANDARD;
@@ -429,7 +435,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         } else if (e.getSource() == txtManualBV) {
             try {
                 int bv = getManualBV();
-                listeners.forEach(l -> l.yearChanged(bv));
+                listeners.forEach(l -> l.manualBVChanged(bv));
             } catch (NumberFormatException ex) {
                 setManualBV(prevBV);
             }
