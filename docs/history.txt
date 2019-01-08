@@ -10,6 +10,7 @@ v0.45.3-SNAPSHOT
 + Issue #231: Stack Overflow Exception while saving Battle Armor
 + Issue #234: Spheroid dropship side arc equipment assigned to wrong location
 + Issue #240: Long range for ATM Standard incorrect on printed record sheets
++ Issue #242: Enters bad state when changing clan mech tonnage
 
 v0.45.2 (2018-11-18 0200 UTC)
 + Switched build system from ant to gradle.
