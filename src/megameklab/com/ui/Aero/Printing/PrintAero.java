@@ -276,33 +276,30 @@ public class PrintAero implements Printable {
     }
 
     private void printFrontArmor(Graphics2D g2d, int totalArmor) {
-        float[] topColumn =
-            { 302, 167 };
-        float[] pipShift =
-            { 7, 7 };
-        float maxColumns = 25;
-
-        Vector<float[]> pipPlotter = new Vector<float[]>(200);
-        for (int pos = 1; pos <= 200; pos++) {
-            // ImageHelperAero.drawAeroArmorPip(g2d, topColumn[0],
-            // topColumn[1]);
-            pipPlotter.add(new float[]
-                { topColumn[0], topColumn[1] });
-            topColumn[0] += pipShift[0];
-            if ((pos % maxColumns) == 0) {
-                topColumn[1] += pipShift[1];
-                pipShift[0] *= -1;
-                topColumn[0] += pipShift[0];
-                /*
-                 * if (pos > totalArmor - maxColumns) { topColumn[0] +=
-                 * pipShift[0] ((maxColumns - (totalArmor - pos)) / 2); } else {
-                 * topColumn[0] += pipShift[0] / 2; }
-                 */
+        // Positions pips symmetrically from the centerline to the edges, forward to aft
+        final int[] pipsPerHalfRow = { 4, 6, 13, 14, 14, 14, 14, 14, 13, 12, 9, 6 };
+        final int[] rowOffset = { 35, 42, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+        final int maxPips = Arrays.stream(pipsPerHalfRow).sum() * 2;
+        
+        float centerx = 393;
+        float ypos = 157;
+        float[] pipShift = { 7, 7 };
+        
+        // Calculate possible positions
+        List<float[]> pipPlotter = new ArrayList<>();
+        for (int row = 0; row < pipsPerHalfRow.length; row++) {
+            int xOffset = rowOffset[row];
+            for (int i = 0; i < pipsPerHalfRow[row]; i++) {
+                pipPlotter.add(new float[] { centerx + xOffset, ypos});
+                pipPlotter.add(new float[] { centerx - xOffset - pipShift[0], ypos});
+                xOffset += pipShift[0];
             }
+            ypos += pipShift[1];
         }
-
-        int pipSpace = 200 / totalArmor;
-        for (int pos = 0; pos < 200; pos += pipSpace) {
+        
+        // Spread pips out among available positions
+        int pipSpace = Math.max(1, maxPips / totalArmor);
+        for (int pos = 0; pos < maxPips; pos += pipSpace) {
             ImageHelperAero.drawAeroArmorPip(g2d, pipPlotter.get(pos)[0], pipPlotter.get(pos)[1]);
             if (--totalArmor <= 0) {
                 return;
