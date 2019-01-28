@@ -311,14 +311,21 @@ public class PrintAero implements Printable {
     }
 
     private void printRearArmor(Graphics2D g2d, int totalArmor) {
+        // Normally we would use 6 columns, but if the armor exceeds a certain amount, we add up to two additional
+        // columns
+        int maxColumns = Math.min(9, Math.max(6, totalArmor / 21 + 1));
+        // Compute the number of rows needed for the number of columns we have. For extreme armor levels,
+        // this could end up drawing pips off the bottom of the diagram, but that's preferable to silently
+        // ignoring some of the pips
+        int maxRows = Math.max(21, totalArmor / maxColumns + 1);
+        int maxPips = maxRows * maxColumns;
         float[] topColumn = new float[]
-            { 374, 303 };
+                { 393 - maxColumns * 3.5f, 303 };
         float[] pipShift = new float[]
-            { 7, 7 };
-        float maxColumns = 6;
+                { 7, 7 };
 
-        Vector<float[]> pipPlotter = new Vector<float[]>(132);
-        for (int pos = 1; pos <= 132; pos++) {
+        List<float[]> pipPlotter = new ArrayList<>();
+        for (int pos = 1; pos <= maxPips; pos++) {
             pipPlotter.add(new float[]
                 { topColumn[0], topColumn[1] });
             topColumn[0] += pipShift[0];
@@ -329,8 +336,8 @@ public class PrintAero implements Printable {
             }
         }
 
-        int pipSpace = 132 / totalArmor;
-        for (int pos = 0; pos < 132; pos += pipSpace) {
+        int pipSpace = Math.max(1, 132 / totalArmor);
+        for (int pos = 0; pos < maxPips; pos += pipSpace) {
             ImageHelperAero.drawAeroArmorPip(g2d, pipPlotter.get(pos)[0], pipPlotter.get(pos)[1]);
             if (--totalArmor <= 0) {
                 return;
@@ -339,6 +346,16 @@ public class PrintAero implements Printable {
 
     }
 
+    /**
+     * Draws the armor pips for the wings. Normally we leave some whitespace where the diagram suggests
+     * tail fins, but with very high armor levels this is needed for additional wing armor pips.
+     * 
+     * @param g2d The graphics object for the record sheet image
+     * @param totalArmor The total number of armor points for the wing
+     * @param x The x coordinate of the pip at the forward edge of the wing closest to the fuselage
+     * @param y The y coordinate of the row of pips at the forward edge of the wing
+     * @param direction The direction away from the fuselage. This is 1 for the right wing and -1 for the left.
+     */
     private void printWingArmor(Graphics2D g2d, int totalArmor, float x, float y, int direction) {
         // The number of pips for each armor row
         final int[] numPerRow = { 3, 4, 5, 6, 7, 9, 14, 15, 15, 15, 14, 14, 13, 10, 8 };
@@ -383,76 +400,6 @@ public class PrintAero implements Printable {
                 return;
             }
         }
-    }
-
-    private void printRightArmor(Graphics2D g2d, int totalArmor) {
-        float[] topColumn = new float[]
-            { 430f, 325 };
-        float[] pipShift = new float[]
-            { 6.3f, 7 };
-
-        int numberPerRow = 3;
-        int curretNumber = 0;
-        Vector<float[]> pipPlotter = new Vector<float[]>(132);
-
-        for (int pos = 1; pos < 148; pos++) {
-            pipPlotter.add(new float[]
-                { topColumn[0], topColumn[1] });
-
-            topColumn[0] += pipShift[0];
-
-            if (++curretNumber == numberPerRow) {
-                topColumn[1] += pipShift[1];
-                pipShift[0] *= -1;
-
-                curretNumber = 0;
-                if (pos == 18) {
-                    topColumn[0] += pipShift[0] * 2;
-                } else if (pos == 103) {
-                    numberPerRow = 13;
-                    topColumn[0] += pipShift[0] * 1.5;
-                } else if (pos == 116) {
-                    numberPerRow = 12;
-                    topColumn[0] += pipShift[0];
-                } else if (pos == 128) {
-                    numberPerRow = 11;
-                    topColumn[0] += pipShift[0] * 1.5;
-                } else if (pos == 139) {
-                    numberPerRow = 8;
-                    topColumn[0] += pipShift[0];
-                } else if (numberPerRow < 13) {
-                    if (numberPerRow == 7) {
-                        numberPerRow = 12;
-                        topColumn[0] += Math.abs(pipShift[0] * 4);
-                    } else if (numberPerRow == 6) {
-                        numberPerRow = 9;
-                        topColumn[0] -= pipShift[0] * 2;
-                    } else if (numberPerRow == 9) {
-                        numberPerRow = 14;
-                    } else {
-                        numberPerRow++;
-                    }
-
-                    if (pipShift[0] > 0) {
-                        topColumn[0] += pipShift[0];
-                    }
-                } else if (pipShift[0] > 0) {
-                    topColumn[0] += pipShift[0] * .8;
-                } else if (pipShift[0] < 0) {
-                    topColumn[0] += pipShift[0] * .2;
-                }
-
-            }
-        }
-
-        int pipSpace = 148 / totalArmor;
-        for (int pos = 0; pos < 148; pos += pipSpace) {
-            ImageHelperAero.drawAeroArmorPip(g2d, pipPlotter.get(pos)[0], pipPlotter.get(pos)[1]);
-            if (--totalArmor <= 0) {
-                return;
-            }
-        }
-
     }
 
     private void printStruct(Graphics2D g2d, int totalArmor) {
