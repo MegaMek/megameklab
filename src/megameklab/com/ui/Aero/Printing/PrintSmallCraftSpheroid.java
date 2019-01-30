@@ -69,7 +69,7 @@ public class PrintSmallCraftSpheroid implements Printable {
         // g2d.drawImage(ImageHelper.getRecordSheet(smallCraft), 18, 18, 558,
         // 738, Color.BLACK, null);
         try {
-            ImageHelper.loadSVGImage(new File("data/images/recordsheets/SpheroidSmallScraftTemplate.svg")).render(g2d);
+            ImageHelper.loadSVGImage(new File("data/images/recordsheets/SpheroidSmallCraftTemplate.svg")).render(g2d);
         } catch (SVGException e) {
             e.printStackTrace();
         }
