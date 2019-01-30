@@ -12,6 +12,7 @@ v0.45.3-SNAPSHOT
 + Issue #240: Long range for ATM Standard incorrect on printed record sheets
 + Issue #242: Enters bad state when changing clan mech tonnage
 + Issue #238: Aero recordsheet not printing correctly
++ Use current BT logo on record sheets.
 
 v0.45.2 (2018-11-18 0200 UTC)
 + Switched build system from ant to gradle.
