@@ -16,6 +16,7 @@ package megameklab.com.printing;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.print.PageFormat;
+import java.io.File;
 import java.text.NumberFormat;
 import java.util.Calendar;
 import java.util.Enumeration;
@@ -39,6 +40,7 @@ import megamek.common.UnitRoleHandler;
 import megamek.common.options.IOption;
 import megamek.common.options.IOptionGroup;
 import megamek.common.options.PilotOptions;
+import megameklab.com.util.ImageHelper;
 
 /**
  * Base class for printing Entity record sheets
@@ -100,6 +102,9 @@ public abstract class PrintEntity extends PrintRecordSheet {
         Element eqRect = getSVGDocument().getElementById("inventory");
         if ((null != eqRect) && (eqRect instanceof SVGRectElement)) {
             writeEquipment((SVGRectElement) eqRect);
+        }
+        if (options.showEraIcon()) {
+            drawEraIcon();
         }
         drawFluffImage();
     }
@@ -306,6 +311,28 @@ public abstract class PrintEntity extends PrintRecordSheet {
     
     protected void drawFluffImage() {
         
+    }
+    
+    private void drawEraIcon() {
+        File iconFile = null;
+        if (getEntity().getYear() < 2781) {
+            iconFile = new File("data/images/recordsheets/era_starleague.png");
+        } else if (getEntity().getYear() < 3050) {
+            iconFile = new File("data/images/recordsheets/era_sw.png");
+        } else if (getEntity().getYear() < 3061) {
+            iconFile = new File("data/images/recordsheets/era_claninvasion.png");
+        } else if (getEntity().getYear() < 3068) {
+            iconFile = new File("data/images/recordsheets/era_civilwar.png");
+        } else if (getEntity().getYear() < 3086) {
+            iconFile = new File("data/images/recordsheets/era_jihad.png");
+        } else {
+            iconFile = new File("data/images/recordsheets/era_darkage.png");
+        }
+        Element rect = getSVGDocument().getElementById("eraIcon");
+        if ((null != rect) && (rect instanceof SVGRectElement)) {
+            embedImage(iconFile,
+                    (Element) ((Node) rect).getParentNode(), getRectBBox((SVGRectElement) rect), true);
+        }
     }
     
     protected String formatWalk() {
