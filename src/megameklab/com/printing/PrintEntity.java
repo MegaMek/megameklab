@@ -60,11 +60,29 @@ public abstract class PrintEntity extends PrintRecordSheet {
             | (1 << EquipmentType.T_ARMOR_IMPACT_RESISTANT)
             | (1 << EquipmentType.T_ARMOR_BALLISTIC_REINFORCED);
     
-    protected PrintEntity(int startPage) {
-        super(startPage);
+    /**
+     * Creates an SVG object for the record sheet
+     * 
+     * @param startPage The print job page number for this sheet
+     * @param options Overrides the global options for which elements are printed 
+     */
+    protected PrintEntity(int startPage, RecordSheetOptions options) {
+        super(startPage, options);
     }
 
     protected abstract Entity getEntity();
+    
+    /**
+     * When printing from a MUL the pilot data is filled in unless the option has been disabled. This
+     * allows a series of blank record sheets to be generated without including the generated pilot data.
+     * If the crew name is "unnamed" then we are printing directly from MML or file/cache and the
+     * pilot data should not be filled in.
+     * 
+     * @return Whether the pilot data should be filled in.
+     */
+    protected boolean showPilotInfo() {
+        return options.showPilotData() && !getEntity().getCrew().getName().equalsIgnoreCase("unnamed");
+    }
     
     @Override
     protected void printImage(Graphics2D g2d, PageFormat pageFormat, int pageNum) {
@@ -124,7 +142,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
                     nameOffset = SVGLocatableSupport.getBBox(element).getWidth() - oldWidth;
                 }
             }
-            if (!getEntity().getCrew().getName().equalsIgnoreCase("unnamed")) {
+            if (showPilotInfo()) {
                 Element element = getSVGDocument().getElementById("blanksCrew" + i);
                 if (null != element) {
                     hideElement(element);
