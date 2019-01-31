@@ -90,14 +90,22 @@ public abstract class PrintRecordSheet implements Printable {
 
     public final String svgNS = SVGDOMImplementation.SVG_NAMESPACE_URI;
     private final int firstPage;
+    protected final RecordSheetOptions options;
     private Document svgDocument;
     private SVGGraphics2D svgGenerator;
     
     private Font normalFont = null;
     private Font boldFont = null;
     
-    protected PrintRecordSheet(int firstPage) {
+    /**
+     * Creates an SVG object for the record sheet
+     * 
+     * @param startPage The print job page number for this sheet
+     * @param options Overrides the global options for which elements are printed 
+     */
+    protected PrintRecordSheet(int firstPage, RecordSheetOptions options) {
         this.firstPage = firstPage;
+        this.options = options;
     }
     
     protected final Document getSVGDocument() {
@@ -144,6 +152,7 @@ public abstract class PrintRecordSheet implements Printable {
         }
     }
 
+    @Override
     public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
         final String METHOD_NAME = "print(Graphics,PageFormat,int)";
         
@@ -1172,11 +1181,9 @@ public abstract class PrintRecordSheet implements Printable {
                     "data:" + mimeType + ";base64," + Base64.getEncoder().encodeToString(bytes.toByteArray()));
             canvas.appendChild(img);
         } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
             MegaMekLab.getLogger().log(PrintRecordSheet.class, METHOD_NAME, LogLevel.ERROR,
                     "Fluff image file not found: " + imageFile.getPath());
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             MegaMekLab.getLogger().log(PrintRecordSheet.class, METHOD_NAME, LogLevel.ERROR,
                     "Error reading fluff image file: " + imageFile.getPath());
         }
