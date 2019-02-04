@@ -64,6 +64,7 @@ dependencies {
     implementation 'log4j:log4j:1.2.17'
     implementation 'org.apache.xmlgraphics:batik-dom:1.10'
     implementation 'org.apache.xmlgraphics:batik-codec:1.10'
+    implementation 'org.apache.xmlgraphics:batik-rasterizer:1.10'
     implementation ('org.apache.xmlgraphics:batik-bridge:1.10') {
         // We don't need the python and javascript engine taking up space
         exclude group: 'org.python', module: 'jython'
@@ -110,15 +111,6 @@ file. Defaulting to ${mmDir}"""
     }
 }
 
-jar {
-    archiveName = "${rootProject.name}.${extension}"
-    manifest {
-        attributes "Main-Class": mainClassName
-        attributes 'Class-Path' : project.sourceSets.main.runtimeClasspath.files
-            .findAll { it.name.endsWith(".jar") }.collect { "${lib}/${it.name}" }.join(' ')
-    }
-}
-
 task mmJar (type: Jar) {
     archiveName = "MegaMek.jar"
     from "${mmDir}/build/classes/java/main"
@@ -131,6 +123,15 @@ task mmJar (type: Jar) {
     inputs.dir "${mmDir}/build/classes/java/main"
     inputs.dir "${mmDir}/build/resources/main"
     outputs.file "${buildDir}/libs/${archiveName}"
+}
+
+jar {
+    archiveName = "${rootProject.name}.${extension}"
+    manifest {
+        attributes "Main-Class": mainClassName
+        attributes 'Class-Path' : "${lib}/${mmJar.archiveName} " + (project.sourceSets.main.runtimeClasspath.files
+            .findAll { it.name.endsWith(".jar") }.collect { "${lib}/${it.name}" }.join(' '))
+    }
 }
 
 task copyFiles(type: Copy) {
@@ -242,7 +243,9 @@ distributions {
                 include "lab*"
             }
             from(jar)
-            from(mmJar)
+            from(mmJar) {
+                into "${lib}"
+            }
             from (project.sourceSets.main.runtimeClasspath.files
                     .findAll { it.name.endsWith(".jar") && !it.name.toLowerCase().startsWith("megamek") }) {
                 into "${lib}"

@@ -16,6 +16,7 @@ package megameklab.com.printing;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.print.PageFormat;
+import java.io.File;
 import java.text.NumberFormat;
 import java.util.Calendar;
 import java.util.Enumeration;
@@ -39,6 +40,7 @@ import megamek.common.UnitRoleHandler;
 import megamek.common.options.IOption;
 import megamek.common.options.IOptionGroup;
 import megamek.common.options.PilotOptions;
+import megameklab.com.util.ImageHelper;
 
 /**
  * Base class for printing Entity record sheets
@@ -60,11 +62,29 @@ public abstract class PrintEntity extends PrintRecordSheet {
             | (1 << EquipmentType.T_ARMOR_IMPACT_RESISTANT)
             | (1 << EquipmentType.T_ARMOR_BALLISTIC_REINFORCED);
     
-    protected PrintEntity(int startPage) {
-        super(startPage);
+    /**
+     * Creates an SVG object for the record sheet
+     * 
+     * @param startPage The print job page number for this sheet
+     * @param options Overrides the global options for which elements are printed 
+     */
+    protected PrintEntity(int startPage, RecordSheetOptions options) {
+        super(startPage, options);
     }
 
     protected abstract Entity getEntity();
+    
+    /**
+     * When printing from a MUL the pilot data is filled in unless the option has been disabled. This
+     * allows a series of blank record sheets to be generated without including the generated pilot data.
+     * If the crew name is "unnamed" then we are printing directly from MML or file/cache and the
+     * pilot data should not be filled in.
+     * 
+     * @return Whether the pilot data should be filled in.
+     */
+    protected boolean showPilotInfo() {
+        return options.showPilotData() && !getEntity().getCrew().getName().equalsIgnoreCase("unnamed");
+    }
     
     @Override
     protected void printImage(Graphics2D g2d, PageFormat pageFormat, int pageNum) {
@@ -82,6 +102,9 @@ public abstract class PrintEntity extends PrintRecordSheet {
         Element eqRect = getSVGDocument().getElementById("inventory");
         if ((null != eqRect) && (eqRect instanceof SVGRectElement)) {
             writeEquipment((SVGRectElement) eqRect);
+        }
+        if (options.showEraIcon()) {
+            drawEraIcon();
         }
         drawFluffImage();
     }
@@ -124,7 +147,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
                     nameOffset = SVGLocatableSupport.getBBox(element).getWidth() - oldWidth;
                 }
             }
-            if (!getEntity().getCrew().getName().equalsIgnoreCase("unnamed")) {
+            if (showPilotInfo()) {
                 Element element = getSVGDocument().getElementById("blanksCrew" + i);
                 if (null != element) {
                     hideElement(element);
@@ -288,6 +311,28 @@ public abstract class PrintEntity extends PrintRecordSheet {
     
     protected void drawFluffImage() {
         
+    }
+    
+    private void drawEraIcon() {
+        File iconFile = null;
+        if (getEntity().getYear() < 2781) {
+            iconFile = new File("data/images/recordsheets/era_starleague.png");
+        } else if (getEntity().getYear() < 3050) {
+            iconFile = new File("data/images/recordsheets/era_sw.png");
+        } else if (getEntity().getYear() < 3061) {
+            iconFile = new File("data/images/recordsheets/era_claninvasion.png");
+        } else if (getEntity().getYear() < 3068) {
+            iconFile = new File("data/images/recordsheets/era_civilwar.png");
+        } else if (getEntity().getYear() < 3086) {
+            iconFile = new File("data/images/recordsheets/era_jihad.png");
+        } else {
+            iconFile = new File("data/images/recordsheets/era_darkage.png");
+        }
+        Element rect = getSVGDocument().getElementById("eraIcon");
+        if ((null != rect) && (rect instanceof SVGRectElement)) {
+            embedImage(iconFile,
+                    (Element) ((Node) rect).getParentNode(), getRectBBox((SVGRectElement) rect), true);
+        }
     }
     
     protected String formatWalk() {

@@ -48,6 +48,8 @@ import megameklab.com.util.RecordSheetEquipmentLine;
 import megameklab.com.util.UnitUtil;
 
 /**
+ * Lays out a record sheet for a mech
+ * 
  * @author Neoancient
  *
  */
@@ -58,11 +60,29 @@ public class PrintMech extends PrintEntity {
      */
     private final Mech mech;
     
-    public PrintMech(Mech mech, int startPage) {
-        super(startPage);
+    /**
+     * Creates an SVG object for the record sheet
+     * 
+     * @param mech The mech to print
+     * @param startPage The print job page number for this sheet
+     * @param options Overrides the global options for which elements are printed 
+     */
+    public PrintMech(Mech mech, int startPage, RecordSheetOptions options) {
+        super(startPage, options);
         this.mech = mech;
     }
     
+    /**
+     * Creates an SVG object for the record sheet using the global printing options
+     * 
+     * @param mech The mech to print
+     * @param startPage The print job page number for this sheet
+     */
+    public PrintMech(Mech mech, int startPage) {
+        this(mech, startPage, new RecordSheetOptions());
+    }
+    
+    @Override
     protected String getSVGFileName() {
         if (mech.hasETypeFlag(Entity.ETYPE_QUADVEE)) {
             return "mech_quadvee.svg";
@@ -203,7 +223,7 @@ public class PrintMech extends PrintEntity {
             }
             setTextField("mpSafeThrust", Integer.toString(lam.getJumpMP()));
             setTextField("mpMaxThrust", Integer.toString((int) Math.ceil(lam.getJumpMP() * 1.5)));
-            if (!lam.getCrew().getName().equalsIgnoreCase("unnamed") && (lam.getCrew() instanceof LAMPilot)) {
+            if (showPilotInfo() && (lam.getCrew() instanceof LAMPilot)) {
                 setTextField("asfGunnerySkill", Integer.toString(((LAMPilot) mech.getCrew()).getGunneryAero()));
                 setTextField("asfPilotingSkill", Integer.toString(((LAMPilot) mech.getCrew()).getPilotingAero()));
             } else {
@@ -389,14 +409,16 @@ public class PrintMech extends PrintEntity {
         }
         
         StringJoiner quirksList = new StringJoiner(", ");
-        Quirks quirks = mech.getQuirks();
-        for (Enumeration<IOptionGroup> optionGroups = quirks.getGroups(); optionGroups.hasMoreElements();) {
-            IOptionGroup optiongroup = optionGroups.nextElement();
-            if (quirks.count(optiongroup.getKey()) > 0) {
-                for (Enumeration<IOption> options = optiongroup.getOptions(); options.hasMoreElements();) {
-                    IOption option = options.nextElement();
-                    if (option != null && option.booleanValue()) {
-                        quirksList.add(option.getDisplayableNameWithValue());
+        if (options.showQuirks()) {
+            Quirks quirks = mech.getQuirks();
+            for (Enumeration<IOptionGroup> optionGroups = quirks.getGroups(); optionGroups.hasMoreElements();) {
+                IOptionGroup optiongroup = optionGroups.nextElement();
+                if (quirks.count(optiongroup.getKey()) > 0) {
+                    for (Enumeration<IOption> options = optiongroup.getOptions(); options.hasMoreElements();) {
+                        IOption option = options.nextElement();
+                        if (option != null && option.booleanValue()) {
+                            quirksList.add(option.getDisplayableNameWithValue());
+                        }
                     }
                 }
             }
@@ -645,6 +667,7 @@ public class PrintMech extends PrintEntity {
         }
     }
     
+    @Override
     protected String formatJump() {
         if (mech.hasUMU()) {
             return Integer.toString(mech.getActiveUMUCount());
