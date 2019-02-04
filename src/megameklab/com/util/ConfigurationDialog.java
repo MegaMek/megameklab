@@ -54,6 +54,7 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
     private final JTabbedPane panMain = new JTabbedPane();
     private final JPanel panColors = new JPanel(new SpringLayout());
     private final JPanel panTech = new JPanel(new GridBagLayout());
+    private final JPanel panPrinting = new JPanel(new GridBagLayout());
     private final JPanel panExport = new JPanel();
     
     private final JCheckBox chkTechProgression = new JCheckBox();
@@ -62,6 +63,11 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
     private final JCheckBox chkTechShowFaction = new JCheckBox();
     private final JCheckBox chkShowExtinct = new JCheckBox();
     private final JCheckBox chkUnofficialIgnoreYear = new JCheckBox();
+    
+    private final JCheckBox chkShowQuirks = new JCheckBox();
+    private final JCheckBox chkShowPilotData = new JCheckBox();
+    private final JCheckBox chkShowEraIcon = new JCheckBox();
+    private final JLabel lblFeatureLimitation = new JLabel();
     
     private final JCheckBox chkSummaryFormatTRO = new JCheckBox();
     
@@ -92,10 +98,12 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
 
         panMain.addTab(resourceMap.getString("ConfigurationDialog.colorCodes.title"), panColors); //$NON-NLS-1$
         panMain.addTab(resourceMap.getString("ConfigurationDialog.techProgression.title"), panTech); //$NON-NLS-1$
+        panMain.addTab(resourceMap.getString("ConfigurationDialog.printing.title"), panPrinting); //$NON-NLS-1$
         panMain.addTab(resourceMap.getString("ConfigurationDialog.export.title"), panExport); //$NON-NLS-1$
         
         loadColorPanel();
         loadTechPanel(resourceMap);
+        loadPrintingPanel(resourceMap);
         loadExportPanel(resourceMap);
 
         pack();
@@ -184,6 +192,35 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
         panTech.add(chkUnofficialIgnoreYear, gbc);
     }
     
+    private void loadPrintingPanel(ResourceBundle resourceMap) {
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+
+        chkShowQuirks.setText(resourceMap.getString("ConfigurationDialog.chkShowQuirks.text"));
+        chkShowQuirks.setToolTipText(resourceMap.getString("ConfigurationDialog.chkShowQuirks.tooltip"));
+        chkShowQuirks.setSelected(CConfig.getBooleanParam(CConfig.RS_SHOW_QUIRKS));
+        panPrinting.add(chkShowQuirks, gbc);
+        gbc.gridy++;
+
+        chkShowPilotData.setText(resourceMap.getString("ConfigurationDialog.chkShowPilotData.text"));
+        chkShowPilotData.setToolTipText(resourceMap.getString("ConfigurationDialog.chkShowPilotData.tooltip"));
+        chkShowPilotData.setSelected(CConfig.getBooleanParam(CConfig.RS_SHOW_PILOT_DATA));
+        panPrinting.add(chkShowPilotData, gbc);
+        gbc.gridy++;
+
+        chkShowEraIcon.setText(resourceMap.getString("ConfigurationDialog.chkShowEraIcon.text"));
+        chkShowEraIcon.setToolTipText(resourceMap.getString("ConfigurationDialog.chkShowEraIcon.tooltip"));
+        chkShowEraIcon.setSelected(CConfig.getBooleanParam(CConfig.RS_SHOW_ERA));
+        panPrinting.add(chkShowEraIcon, gbc);
+        gbc.gridy++;
+
+        // Inform user that these options are not yet limited for all units
+        lblFeatureLimitation.setText(resourceMap.getString("ConfigurationDialog.lblFeatureLimitation.text"));
+        panPrinting.add(lblFeatureLimitation, gbc);
+    }
+    
     private void loadExportPanel(ResourceBundle resourceMap) {
         chkSummaryFormatTRO.setText(resourceMap.getString("ConfigurationDialog.chkSummaryFormatTRO.text"));
         chkSummaryFormatTRO.setToolTipText(resourceMap.getString("ConfigurationDialog.chkSummaryFormatTRO.tooltip"));
@@ -245,6 +282,9 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
         CConfig.setParam(CConfig.TECH_SHOW_FACTION, String.valueOf(chkTechShowFaction.isSelected()));
         CConfig.setParam(CConfig.TECH_EXTINCT, String.valueOf(chkShowExtinct.isSelected()));
         CConfig.setParam(CConfig.TECH_UNOFFICAL_NO_YEAR, String.valueOf(chkUnofficialIgnoreYear.isSelected()));
+        CConfig.setParam(CConfig.RS_SHOW_QUIRKS, Boolean.toString(chkShowQuirks.isSelected()));
+        CConfig.setParam(CConfig.RS_SHOW_PILOT_DATA, Boolean.toString(chkShowPilotData.isSelected()));
+        CConfig.setParam(CConfig.RS_SHOW_ERA, Boolean.toString(chkShowEraIcon.isSelected()));
         CConfig.setParam(CConfig.SUMMARY_FORMAT_TRO, Boolean.toString(chkSummaryFormatTRO.isSelected()));
         CConfig.saveConfig();
     }
