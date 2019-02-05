@@ -111,10 +111,18 @@ file. Defaulting to ${mmDir}"""
     }
 }
 
-task mmJar (type: Jar) {
+task compileMM (type: GradleBuild) {
+    description = 'Compiles the MM directory for packaging in a Jar'
+    
+    buildFile = "${mmDir}/build.gradle"
+    dir = "${mmDir}"
+    tasks = [ 'compileTestJava' ]
+}
+
+task mmJar (type: Jar, dependsOn: compileMM) {
     archiveName = "MegaMek.jar"
-    from "${mmDir}/build/classes/java/main"
-    from "${mmDir}/build/resources/main"
+    from "${mmDir}/megamek/build/classes/java/main"
+    from "${mmDir}/megamek/build/resources/main"
     manifest {
         attributes "Main-Class": mainClassName
         attributes 'Class-Path' : (project.sourceSets.main.runtimeClasspath.files
