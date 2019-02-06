@@ -16,16 +16,27 @@ package megameklab.com.printing;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.print.PageFormat;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringJoiner;
 import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import org.apache.batik.anim.dom.SVGDOMImplementation;
+import org.apache.batik.dom.util.SAXDocumentFactory;
 import org.apache.batik.util.SVGConstants;
+import org.apache.batik.util.XMLResourceDescriptor;
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.w3c.dom.svg.SVGRectElement;
 
 import megamek.common.AmmoType;
@@ -43,6 +54,7 @@ import megamek.common.QuadVee;
 import megamek.common.options.IOption;
 import megamek.common.options.IOptionGroup;
 import megamek.common.options.Quirks;
+import megameklab.com.MegaMekLab;
 import megameklab.com.util.ImageHelper;
 import megameklab.com.util.RecordSheetEquipmentLine;
 import megameklab.com.util.UnitUtil;
@@ -237,6 +249,59 @@ public class PrintMech extends PrintEntity {
         }
     }
     
+    private boolean loadPipSVG(int loc, int armor) {
+        final String METHOD_NAME = "loadPipsSVG(int, int)"; //$NON-NLS-1$
+        String locAbbr = null;
+        switch(loc) {
+            case Mech.LOC_HEAD:
+                locAbbr = "Head";
+                break;
+            case Mech.LOC_RARM:
+            case Mech.LOC_LARM:
+                locAbbr = mech.getLocationAbbr(loc) + "rm";
+                break;
+            case Mech.LOC_RLEG:
+            case Mech.LOC_LLEG:
+                locAbbr = mech.getLocationAbbr(loc) + "eg";
+                break;
+            default:
+                locAbbr = mech.getLocationAbbr(loc);
+                break;
+        }
+        File f = new File(String.format("data/images/recordsheets/biped_pips/Armor_%s_%d_Humanoid.svg",
+                locAbbr, armor));
+        Document doc = null;
+        try {
+            InputStream is = new FileInputStream(f);
+            DOMImplementation impl = SVGDOMImplementation.getDOMImplementation();
+            final String parser = XMLResourceDescriptor.getXMLParserClassName();
+            SAXDocumentFactory df = new SAXDocumentFactory(impl, parser);
+            doc = df.createDocument(f.toURI().toASCIIString(), is);
+        } catch (Exception e) {
+            MegaMekLab.getLogger().error(PrintRecordSheet.class, METHOD_NAME,
+                    "Failed to open pip SVG file! Path: " + f.getName());
+            return false;
+        }
+        final Pattern pattern = Pattern.compile(".*M([\\d\\.]+),([\\d\\.]+).*");
+        if (null == doc) {
+            MegaMekLab.getLogger().error(PrintRecordSheet.class, METHOD_NAME,
+                    "Failed to open pip SVG file! Path: " + f.getName());
+            return false;
+        }
+        NodeList nl = doc.getElementsByTagName("path");
+        Element group = getSVGDocument().getElementById("gSheet");
+        for (int node = 0; node < nl.getLength(); node++) {
+            final Node wn = nl.item(node);
+            String dAttr = wn.getAttributes().getNamedItem(SVGConstants.SVG_D_ATTRIBUTE).getTextContent();
+            Matcher m = pattern.matcher(dAttr);
+            if (m.matches()) {
+                Element pip = createPip(Double.parseDouble(m.group(1)), Double.parseDouble(m.group(2)), 2, 0.5);
+                group.appendChild(pip);
+            }
+        }
+        return true;
+    }
+    
     // Mech armor and structure pips require special handling for rear armor and superheavy head armor/IS
     @Override
     protected void drawArmorStructurePips() {
@@ -246,6 +311,9 @@ public class PrintMech extends PrintEntity {
             if (mech.isSuperHeavy() && (loc == Mech.LOC_HEAD)) {
                 element = getSVGDocument().getElementById("armorPips" + mech.getLocationAbbr(loc) + "_SH");
             } else {
+                if (mech.entityIsBiped() && loadPipSVG(loc, mech.getOArmor(loc))) {
+                    continue;
+                }
                 element = getSVGDocument().getElementById("armorPips" + mech.getLocationAbbr(loc));
             }
             if (null != element) {
