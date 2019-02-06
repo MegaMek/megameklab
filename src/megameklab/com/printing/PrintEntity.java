@@ -40,7 +40,6 @@ import megamek.common.UnitRoleHandler;
 import megamek.common.options.IOption;
 import megamek.common.options.IOptionGroup;
 import megamek.common.options.PilotOptions;
-import megameklab.com.util.ImageHelper;
 
 /**
  * Base class for printing Entity record sheets
