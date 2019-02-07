@@ -1385,7 +1385,7 @@
 <text
            transform="matrix(1,0,0,-1,256.85324,632.432819)"
            style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-           id="gunnerySkill0">BattleMech</text>
+           >BattleMech</text>
 <text
            transform="matrix(1,0,0,-1,256.85324,626.2731835)"
            style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
@@ -5802,7 +5802,7 @@
        x="282.3856"
        y="120.25">Lorem Ipsum</text>
 <text
-       id="text1864"
+       id="gunnerySkill0"
        x="304.77"
        y="138.72">4</text>
 <text
@@ -5987,4 +5987,7 @@
 		H479.608z"/>
 </g>
 <rect fill="#FFFFFF" x="218" y="104" height="24" width="24" id="eraIcon" />
+<g id="gSheet" transform="matrix(0.966,0,0,0.966,10.3,0)" />
+0.99799845,0,0,-1,306,23.0338)
+
        </svg>
