@@ -5911,5 +5911,6 @@
 		H479.608z"/>
 </g>
 <rect fill="#FFFFFF" x="218" y="104" height="24" width="24" id="eraIcon" />
-<g id="gSheet"/>
+<g id="gSheet" transform="matrix(0.966,0,0,0.966,10.3,0)" />
+0.99799845,0,0,-1,306,23.0338)
 </svg>
