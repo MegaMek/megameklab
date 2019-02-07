@@ -38,6 +38,7 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.svg.SVGRectElement;
 
 import megamek.common.AmmoType;
+import megamek.common.BipedMech;
 import megamek.common.CriticalSlot;
 import megamek.common.Engine;
 import megamek.common.Entity;
@@ -334,14 +335,14 @@ public class PrintMech extends PrintEntity {
     protected void drawArmorStructurePips() {
         final String FORMAT = "( %d )";
         Element element = null;
-        boolean structComplete = mech.entityIsBiped() && loadISPips();
+        boolean structComplete = (mech instanceof BipedMech) && loadISPips();
         for (int loc = 0; loc < mech.locations(); loc++) {
             boolean frontComplete = false;
             boolean rearComplete = false;
             if (mech.isSuperHeavy() && (loc == Mech.LOC_HEAD)) {
                 element = getSVGDocument().getElementById("armorPips" + mech.getLocationAbbr(loc) + "_SH");
             } else {
-                if (mech.entityIsBiped()) {
+                if (mech instanceof BipedMech) {
                     frontComplete = loadArmorPips(loc, false);
                     rearComplete = !mech.hasRearArmor(loc) || loadArmorPips(loc, true);
                     if (frontComplete && rearComplete) {
