@@ -24,8 +24,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.StringJoiner;
 import java.util.TreeMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.batik.anim.dom.SVGDOMImplementation;
@@ -249,7 +247,7 @@ public class PrintMech extends PrintEntity {
         }
     }
     
-    private boolean loadPipSVG(int loc, int armor) {
+    private boolean loadPipSVG(int loc, boolean rear) {
         final String METHOD_NAME = "loadPipsSVG(int, int)"; //$NON-NLS-1$
         String locAbbr = null;
         switch(loc) {
@@ -268,8 +266,14 @@ public class PrintMech extends PrintEntity {
                 locAbbr = mech.getLocationAbbr(loc);
                 break;
         }
+        if (rear) {
+            locAbbr += "_R";
+        }
         File f = new File(String.format("data/images/recordsheets/biped_pips/Armor_%s_%d_Humanoid.svg",
-                locAbbr, armor));
+                locAbbr, mech.getOArmor(loc, rear)));
+        if (!f.exists()) {
+            return false;
+        }
         Document doc = null;
         try {
             InputStream is = new FileInputStream(f);
@@ -282,7 +286,6 @@ public class PrintMech extends PrintEntity {
                     "Failed to open pip SVG file! Path: " + f.getName());
             return false;
         }
-        final Pattern pattern = Pattern.compile(".*M([\\d\\.]+),([\\d\\.]+).*");
         if (null == doc) {
             MegaMekLab.getLogger().error(PrintRecordSheet.class, METHOD_NAME,
                     "Failed to open pip SVG file! Path: " + f.getName());
@@ -292,12 +295,16 @@ public class PrintMech extends PrintEntity {
         Element group = getSVGDocument().getElementById("gSheet");
         for (int node = 0; node < nl.getLength(); node++) {
             final Node wn = nl.item(node);
-            String dAttr = wn.getAttributes().getNamedItem(SVGConstants.SVG_D_ATTRIBUTE).getTextContent();
-            Matcher m = pattern.matcher(dAttr);
-            if (m.matches()) {
-                Element pip = createPip(Double.parseDouble(m.group(1)), Double.parseDouble(m.group(2)), 2, 0.5);
-                group.appendChild(pip);
+            Element path = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_PATH_TAG);
+            for (int attr = 0; attr < wn.getAttributes().getLength(); attr++) {
+                final Node wa = wn.getAttributes().item(attr);
+                path.setAttributeNS(null, wa.getNodeName(), wa.getTextContent());
             }
+            group.appendChild(path);
+        }
+        // Assumes we have a rear armor layout if we have a front layout
+        if (!rear && mech.hasRearArmor(loc)) {
+            loadPipSVG(loc, true);
         }
         return true;
     }
@@ -311,7 +318,7 @@ public class PrintMech extends PrintEntity {
             if (mech.isSuperHeavy() && (loc == Mech.LOC_HEAD)) {
                 element = getSVGDocument().getElementById("armorPips" + mech.getLocationAbbr(loc) + "_SH");
             } else {
-                if (mech.entityIsBiped() && loadPipSVG(loc, mech.getOArmor(loc))) {
+                if (mech.entityIsBiped() && loadPipSVG(loc, false)) {
                     continue;
                 }
                 element = getSVGDocument().getElementById("armorPips" + mech.getLocationAbbr(loc));
