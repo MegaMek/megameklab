@@ -27,12 +27,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.io.Writer;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,7 +49,6 @@ import org.apache.batik.bridge.UserAgentAdapter;
 import org.apache.batik.dom.util.SAXDocumentFactory;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.svggen.SVGGraphics2D;
-import org.apache.batik.svggen.SVGGraphics2DIOException;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLResourceDescriptor;
 import org.w3c.dom.DOMImplementation;
@@ -182,14 +177,16 @@ public abstract class PrintRecordSheet implements Printable {
                 printImage(g2d, pageFormat, pageIndex - firstPage);
                 GraphicsNode node = build();
                 node.paint(g2d);
+                /* Testing code that outputs the generated svg
                 try {
-                    node.paint(svgGenerator);
-                    Writer out = new PrintWriter(new FileOutputStream("out.svg"));
-                    svgGenerator.stream(out, true);
-                } catch (SVGGraphics2DIOException | FileNotFoundException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    Transformer transformer = TransformerFactory.newInstance().newTransformer();
+                    Result output = new StreamResult(new File("out.svg"));
+                    Source input = new DOMSource(svgDocument);
+                    transformer.transform(input, output);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
+                */
             }
         }
         return Printable.PAGE_EXISTS;
