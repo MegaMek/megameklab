@@ -67,6 +67,7 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
     private final JCheckBox chkShowQuirks = new JCheckBox();
     private final JCheckBox chkShowPilotData = new JCheckBox();
     private final JCheckBox chkShowEraIcon = new JCheckBox();
+    private final JCheckBox chkShowRole = new JCheckBox();
     private final JLabel lblFeatureLimitation = new JLabel();
     
     private final JCheckBox chkSummaryFormatTRO = new JCheckBox();
@@ -216,6 +217,12 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
         panPrinting.add(chkShowEraIcon, gbc);
         gbc.gridy++;
 
+        chkShowRole.setText(resourceMap.getString("ConfigurationDialog.chkShowRole.text"));
+        chkShowRole.setToolTipText(resourceMap.getString("ConfigurationDialog.chkShowRole.tooltip"));
+        chkShowRole.setSelected(CConfig.getBooleanParam(CConfig.RS_SHOW_ROLE));
+        panPrinting.add(chkShowRole, gbc);
+        gbc.gridy++;
+
         // Inform user that these options are not yet limited for all units
         lblFeatureLimitation.setText(resourceMap.getString("ConfigurationDialog.lblFeatureLimitation.text"));
         panPrinting.add(lblFeatureLimitation, gbc);
@@ -285,6 +292,7 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
         CConfig.setParam(CConfig.RS_SHOW_QUIRKS, Boolean.toString(chkShowQuirks.isSelected()));
         CConfig.setParam(CConfig.RS_SHOW_PILOT_DATA, Boolean.toString(chkShowPilotData.isSelected()));
         CConfig.setParam(CConfig.RS_SHOW_ERA, Boolean.toString(chkShowEraIcon.isSelected()));
+        CConfig.setParam(CConfig.RS_SHOW_ROLE, Boolean.toString(chkShowRole.isSelected()));
         CConfig.setParam(CConfig.SUMMARY_FORMAT_TRO, Boolean.toString(chkSummaryFormatTRO.isSelected()));
         CConfig.saveConfig();
     }
