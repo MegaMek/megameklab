@@ -349,7 +349,9 @@ public class PrintMech extends PrintEntity {
             if (mech.isSuperHeavy() && (loc == Mech.LOC_HEAD)) {
                 element = getSVGDocument().getElementById("armorPips" + mech.getLocationAbbr(loc) + "_SH");
             } else {
-                if (mech instanceof BipedMech) {
+                // For consistency, only use the canon pip layout on non-superheavies.
+                // Otherwise superheavies may get a mix of pattern types.
+                if (!mech.isSuperHeavy() && (mech instanceof BipedMech)) {
                     frontComplete = loadArmorPips(loc, false);
                     rearComplete = !mech.hasRearArmor(loc) || loadArmorPips(loc, true);
                     if (frontComplete && rearComplete) {
