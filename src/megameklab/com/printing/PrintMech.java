@@ -276,6 +276,13 @@ public class PrintMech extends PrintEntity {
             return false;
         }
         copyPipPattern(nl);
+        if (rear) {
+            Element element = getSVGDocument().getElementById("textArmor_" + mech.getLocationAbbr(loc) + "R");
+            if (null != element) {
+                element.setTextContent(String.format("( %d )", mech.getOArmor(loc, true)));
+            }
+        }
+
         return true;
     }
     
