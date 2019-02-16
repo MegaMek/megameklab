@@ -921,6 +921,7 @@ public class StructureTab extends ITab implements MekBuildListener {
             panArmorAllocation.showPatchwork(true);
             panPatchwork.setVisible(true);
         }
+        panArmor.setFromEntity(getMech());
         panArmorAllocation.setFromEntity(getMech());
         panSummary.refresh();
         refresh.refreshStatus();
@@ -1049,6 +1050,7 @@ public class StructureTab extends ITab implements MekBuildListener {
         if (panArmor.getArmorType() == EquipmentType.T_ARMOR_PATCHWORK) {
             getMech().setArmorTonnage(panArmorAllocation.getTotalArmorWeight(getMech()));
         }
+        panArmor.setFromEntity(getMech());
         panArmorAllocation.setFromEntity(getMech());
         refresh.refreshPreview();
         refresh.refreshSummary();
