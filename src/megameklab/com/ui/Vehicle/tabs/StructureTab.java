@@ -723,7 +723,7 @@ public class StructureTab extends ITab implements CVBuildListener {
 
     @Override
     public void patchworkChanged(int location, EquipmentType armor) {
-        UnitUtil.resetArmor(getAero(), location);
+        UnitUtil.resetArmor(getTank(), location);
 
         //TODO: move this construction data out of the ui
         int crits = 0;
@@ -741,26 +741,26 @@ public class StructureTab extends ITab implements CVBuildListener {
                 crits = 2;
                 break;
         }
-        if (getAero().getEmptyCriticals(location) < crits) {
+        if (getTank().getEmptyCriticals(location) < crits) {
             JOptionPane .showMessageDialog(
                     null, armor.getName()
                     + " does not fit in location "
-                    + getAero().getLocationName(location)
+                    + getTank().getLocationName(location)
                     + ". Resetting to Standard Armor in this location.",
                     "Error",
                     JOptionPane.INFORMATION_MESSAGE);
         } else {
-            getAero().setArmorType(EquipmentType.getArmorType(armor), location);
-            getAero().setArmorTechLevel(armor.getTechLevel(getTechManager().getGameYear(), armor.isClan()));
+            getTank().setArmorType(EquipmentType.getArmorType(armor), location);
+            getTank().setArmorTechLevel(armor.getTechLevel(getTechManager().getGameYear(), armor.isClan()));
             for (; crits > 0; crits--) {
                 try {
-                    getAero().addEquipment( new Mounted(getAero(), armor), location, false);
+                    getTank().addEquipment( new Mounted(getTank(), armor), location, false);
                 } catch (LocationFullException ex) {
                 }
             }
         }
         panArmor.refresh();
-        panArmorAllocation.setFromEntity(getAero());
+        panArmorAllocation.setFromEntity(getTank());
         refresh.refreshBuild();
         refresh.refreshPreview();
         refresh.refreshSummary();
