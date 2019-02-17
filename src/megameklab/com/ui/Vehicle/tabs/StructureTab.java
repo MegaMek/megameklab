@@ -304,6 +304,10 @@ public class StructureTab extends ITab implements CVBuildListener {
     public void updateTechLevel() {
         removeAllListeners();
         getTank().setTechLevel(panBasicInfo.getTechLevel().getCompoundTechLevel(panBasicInfo.useClanTechBase()));
+        if (panArmor.isPatchwork() && !getTechManager().isLegal(Entity.getPatchworkArmorAdvancement())) {
+            panArmor.setPatchwork(false);
+            armorTypeChanged(panArmor.getArmorType(), panArmor.getArmorTechConstant());
+        }
         if (getTank().hasPatchworkArmor()) {
             for (int loc = 0; loc < getTank().locations(); loc++) {
                 if (!getTechManager().isLegal(panPatchwork.getArmor(loc))) {
@@ -394,8 +398,8 @@ public class StructureTab extends ITab implements CVBuildListener {
 
     @Override
     public void armorTypeChanged(int at, int aTechLevel) {
-        UnitUtil.removeISorArmorMounts(getTank(), false);
         if (at != EquipmentType.T_ARMOR_PATCHWORK) {
+            UnitUtil.removeISorArmorMounts(getTank(), false);
             getTank().setArmorTechLevel(aTechLevel);
             getTank().setArmorType(at);
             panArmorAllocation.showPatchwork(false);
@@ -405,6 +409,7 @@ public class StructureTab extends ITab implements CVBuildListener {
             panArmorAllocation.showPatchwork(true);
             panPatchwork.setVisible(true);
         }
+        panArmor.setFromEntity(getTank(), true);
         panArmorAllocation.setFromEntity(getTank());
         panSummary.refresh();
         refresh.refreshStatus();
@@ -656,6 +661,7 @@ public class StructureTab extends ITab implements CVBuildListener {
         if (panArmor.getArmorType() == EquipmentType.T_ARMOR_PATCHWORK) {
             getTank().setArmorTonnage(panArmorAllocation.getTotalArmorWeight(getTank()));
         }
+        panArmor.setFromEntity(getTank(), true);
         panArmorAllocation.setFromEntity(getTank());
         refresh.refreshPreview();
         refresh.refreshSummary();
@@ -759,7 +765,7 @@ public class StructureTab extends ITab implements CVBuildListener {
                 }
             }
         }
-        panArmor.refresh();
+        panArmor.setFromEntity(getTank(), true);
         panArmorAllocation.setFromEntity(getTank());
         refresh.refreshBuild();
         refresh.refreshPreview();
