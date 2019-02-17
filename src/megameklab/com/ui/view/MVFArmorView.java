@@ -168,6 +168,10 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
         cbArmorType.removeActionListener(this);
         spnTonnage.removeChangeListener(this);
         chkPatchwork.removeActionListener(this);
+        String name = EquipmentType.getArmorTypeName(en.getArmorType(en.firstArmorIndex()),
+                TechConstants.isClan(en.getArmorTechLevel(en.firstArmorIndex())));
+        EquipmentType eq = EquipmentType.get(name);
+        cbArmorType.setSelectedItem(eq);
         if ((!ignoreEntityPatchwork && en.hasPatchworkArmor())
                 || (ignoreEntityPatchwork && isPatchwork())) {
             cbArmorType.setEnabled(false);
@@ -179,11 +183,7 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
             btnMaximize.setEnabled(false);
             btnUseRemaining.setEnabled(false);
         } else {
-            String name = EquipmentType.getArmorTypeName(en.getArmorType(0),
-                    TechConstants.isClan(en.getArmorTechLevel(0)));
-            EquipmentType eq = EquipmentType.get(name);
             cbArmorType.setEnabled(true);
-            cbArmorType.setSelectedItem(eq);
             tonnageModel.setValue(Math.min(UnitUtil.getMaximumArmorTonnage(en),
                     en.getLabArmorTonnage()));
             tonnageModel.setMaximum(UnitUtil.getMaximumArmorTonnage(en));
