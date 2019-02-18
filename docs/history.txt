@@ -1,6 +1,7 @@
 VERSION HISTORY:
 ----------------
 v0.45.4-SNAPSHOT
++ Fixed vehicle and aero slot calculations for patchwork armor.
 
 v0.45.3 (2019-02-12 0500 UTC)
 + Issue #223: Quad Protomech engine weight
