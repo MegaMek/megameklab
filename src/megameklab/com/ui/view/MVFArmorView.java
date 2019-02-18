@@ -97,7 +97,6 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
         gbc.gridy = 0;
         gbc.gridwidth = 2;
         setFieldSize(cbArmorType, controlSize);
-        cbArmorType.setNullValue(EquipmentType.armorNames[EquipmentType.T_ARMOR_PATCHWORK]);
         cbArmorType.setToolTipText(resourceMap.getString("ArmorView.cbArmorType.tooltip")); //$NON-NLS-1$
         add(cbArmorType, gbc);
         cbArmorType.addActionListener(this);
