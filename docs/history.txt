@@ -3,6 +3,7 @@ VERSION HISTORY:
 v0.45.4-SNAPSHOT
 + Fixed vehicle and aero slot calculations for patchwork armor.
 + Issue #202: Clan Improved Autocannon 20 has no standard ammunition
++ Issue #249: Warship Validation error
 
 v0.45.3 (2019-02-12 0500 UTC)
 + Issue #223: Quad Protomech engine weight
