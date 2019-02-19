@@ -23,6 +23,7 @@ import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
@@ -67,6 +68,7 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
     private final TechComboBox<EquipmentType> cbArmorType = new TechComboBox<>(eq -> eq.getName());
     private final SpinnerNumberModel tonnageModel = new SpinnerNumberModel(0, 0, 0, 0.5);
     private final JSpinner spnTonnage = new JSpinner(tonnageModel);
+    private final JCheckBox chkPatchwork = new JCheckBox();
     private final JButton btnMaximize = new JButton();
     private final JButton btnUseRemaining = new JButton();
     
@@ -95,7 +97,6 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
         gbc.gridy = 0;
         gbc.gridwidth = 2;
         setFieldSize(cbArmorType, controlSize);
-        cbArmorType.setNullValue(EquipmentType.armorNames[EquipmentType.T_ARMOR_PATCHWORK]);
         cbArmorType.setToolTipText(resourceMap.getString("ArmorView.cbArmorType.tooltip")); //$NON-NLS-1$
         add(cbArmorType, gbc);
         cbArmorType.addActionListener(this);
@@ -114,6 +115,15 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.gridwidth = 3;
+        chkPatchwork.setText(resourceMap.getString("ArmorView.chkPatchwork.text")); //$NON-NLS-1$
+        setFieldSize(chkPatchwork, controlSize);
+        chkPatchwork.setToolTipText(resourceMap.getString("ArmorView.chkPatchwork.tooltip")); //$NON-NLS-1$
+        add(chkPatchwork, gbc);
+        chkPatchwork.addActionListener(this);
+        
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.gridwidth = 3;
         btnMaximize.setText(resourceMap.getString("ArmorView.btnMaximize.text")); //$NON-NLS-1$
         btnMaximize.setActionCommand(CMD_MAXIMIZE);
         setFieldSize(btnMaximize, controlSize);
@@ -122,7 +132,7 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
         btnMaximize.addActionListener(this);
         
         gbc.gridx = 0;
-        gbc.gridy = 3;
+        gbc.gridy = 4;
         gbc.gridwidth = 3;
         btnUseRemaining.setText(resourceMap.getString("ArmorView.btnRemaining.text")); //$NON-NLS-1$
         btnUseRemaining.setActionCommand(CMD_REMAINING);
@@ -132,40 +142,59 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
         btnUseRemaining.addActionListener(this);
     }
     
+    /**
+     * Sets the values of all fields from the current Entity.
+     * @param en The Entity currently being edited
+     */
     public void setFromEntity(Entity en) {
+        setFromEntity(en, false);
+    }
+    
+    /**
+     * Sets the values of all fields from the current Entity, with the option of ignoring
+     * whether the {@code Entity} has patchwork armor. This is because the Entity does not
+     * report patchwork armor unless it actually has multiple armor types, and we don't want
+     * to clear the patchwork checkbox unless we're loading a new unit.
+     * 
+     * @param en The Entity being edited
+     * @param overridePatchwork Whether to ignore whether the Entity has patchwork armor.
+     */
+    public void setFromEntity(Entity en, boolean ignoreEntityPatchwork) {
         etype = en.getEntityType();
         industrial = (en instanceof Mech) && ((Mech)en).isIndustrial();
         movementMode = en.getMovementMode();
         refresh();
         cbArmorType.removeActionListener(this);
         spnTonnage.removeChangeListener(this);
-        if (en.hasPatchworkArmor()) {
-            for (int i = 0; i < cbArmorType.getModel().getSize(); i++) {
-                if (cbArmorType.getItemAt(i) == null) {
-                    cbArmorType.setSelectedIndex(i);
-                    break;
-                }
-            }
+        chkPatchwork.removeActionListener(this);
+        String name = EquipmentType.getArmorTypeName(en.getArmorType(en.firstArmorIndex()),
+                TechConstants.isClan(en.getArmorTechLevel(en.firstArmorIndex())));
+        EquipmentType eq = EquipmentType.get(name);
+        cbArmorType.setSelectedItem(eq);
+        if ((!ignoreEntityPatchwork && en.hasPatchworkArmor())
+                || (ignoreEntityPatchwork && isPatchwork())) {
+            cbArmorType.setEnabled(false);
             tonnageModel.setValue(Math.min(UnitUtil.getMaximumArmorTonnage(en),
                     en.getLabArmorTonnage()));
             spnTonnage.setEnabled(false);
+            chkPatchwork.setVisible(true);
+            chkPatchwork.setSelected(true);
             btnMaximize.setEnabled(false);
             btnUseRemaining.setEnabled(false);
         } else {
-            String name = EquipmentType.getArmorTypeName(en.getArmorType(0),
-                    TechConstants.isClan(en.getArmorTechLevel(0)));
-            EquipmentType eq = EquipmentType.get(name);
-            cbArmorType.setSelectedItem(eq);
+            cbArmorType.setEnabled(true);
             tonnageModel.setValue(Math.min(UnitUtil.getMaximumArmorTonnage(en),
                     en.getLabArmorTonnage()));
             tonnageModel.setMaximum(UnitUtil.getMaximumArmorTonnage(en));
             spnTonnage.setEnabled(true);
+            chkPatchwork.setSelected(false);
             btnMaximize.setEnabled(true);
             btnUseRemaining.setEnabled(true);
         }
         
         cbArmorType.addActionListener(this);
         spnTonnage.addChangeListener(this);
+        chkPatchwork.addActionListener(this);
     }
     
     public void refresh() {
@@ -176,7 +205,10 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
         allArmors.forEach(eq -> cbArmorType.addItem(eq));
         if (((etype & (Entity.ETYPE_SMALL_CRAFT | Entity.ETYPE_JUMPSHIP)) == 0)
                 && techManager.isLegal(Entity.getPatchworkArmorAdvancement())) {
-            cbArmorType.addItem(null);
+            chkPatchwork.setVisible(true);
+        } else {
+            chkPatchwork.setVisible(false);
+            chkPatchwork.setSelected(false);
         }
         if (null == prev) {
             cbArmorType.setSelectedIndex(cbArmorType.getModel().getSize() - 1);
@@ -190,12 +222,35 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
         cbArmorType.showTechBase(techManager.useMixedTech());
     }
     
+    /**
+     * @return The selected armor equipment
+     */
     public EquipmentType getArmor() {
         return (EquipmentType)cbArmorType.getSelectedItem();
     }
     
+    /**
+     * Enables or disables the patchwork checkbox and refreshes
+     * 
+     * @param patchwork Whether the patchwork checkbox should be enabled
+     */
+    public void setPatchwork(boolean patchwork) {
+        chkPatchwork.setSelected(patchwork);
+        refresh();
+    }
+    
+    /**
+     * @return Whether the patchwork checkbox is selected
+     */
+    public boolean isPatchwork() {
+        return chkPatchwork.isSelected();
+    }
+    
+    /**
+     * @return The armor type constant for the selected armor
+     */
     public int getArmorType() {
-        if (cbArmorType.getSelectedItem() == null) {
+        if (isPatchwork()) {
             return EquipmentType.T_ARMOR_PATCHWORK;
         } else {
             return EquipmentType.getArmorType((EquipmentType)cbArmorType.getSelectedItem());
@@ -218,13 +273,11 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
     }
 
     public int getArmorTechConstant() {
-        if (cbArmorType.getSelectedItem() == null) {
-            return Entity.getPatchworkArmorAdvancement().getTechLevel(techManager.getGameYear(),
-                    techManager.useClanTechBase());
-        } else {
-            EquipmentType armor = (EquipmentType)cbArmorType.getSelectedItem();
-            return (armor.getTechLevel(techManager.getGameYear(), armor.isClan()));
+        EquipmentType armor = (EquipmentType) cbArmorType.getSelectedItem();
+        if (null == armor) {
+            return TechConstants.T_TECH_UNKNOWN;
         }
+        return (armor.getTechLevel(techManager.getGameYear(), armor.isClan()));
     }
 
     @Override
@@ -236,8 +289,13 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == cbArmorType) {
+        if ((e.getSource() == cbArmorType)
+                || ((e.getSource() == chkPatchwork) && !isPatchwork())) {
             listeners.forEach(l -> l.armorTypeChanged(getArmorType(), getArmorTechConstant()));
+        } else if (e.getSource() == chkPatchwork) {
+            listeners.forEach(l -> l.armorTypeChanged(EquipmentType.T_ARMOR_PATCHWORK,
+                    Entity.getPatchworkArmorAdvancement().getTechLevel(techManager.getGameYear(),
+                            techManager.useClanTechBase())));
         } else if (CMD_MAXIMIZE.equals(e.getActionCommand())) {
             listeners.forEach(l -> l.maximizeArmor());
         } else if (CMD_REMAINING.equals(e.getActionCommand())) {
