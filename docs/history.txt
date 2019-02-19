@@ -4,6 +4,10 @@ v0.45.4-SNAPSHOT
 + Fixed vehicle and aero slot calculations for patchwork armor.
 + Issue #202: Clan Improved Autocannon 20 has no standard ammunition
 + Issue #249: Warship Validation error
++ Issue #247: Patchwork Armour Broken on Vehicles
++ Issue #250: Armouring Split Components Shows and Counts Incorrect Tonnage
++ Issue #254: Second Printed Vee Name in All Caps
++ Issue #252: Heat Sink pips not printing properly
 
 v0.45.3 (2019-02-12 0500 UTC)
 + Issue #223: Quad Protomech engine weight
