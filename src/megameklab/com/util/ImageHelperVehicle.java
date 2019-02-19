@@ -119,7 +119,7 @@ public class ImageHelperVehicle {
         Ellipse2D.Float circle = new Ellipse2D.Float(width, height, 6f, 6f);
         g2d.fill(circle);
         g2d.setColor(Color.white);
-        circle = new Ellipse2D.Float(width+1, height+1, 4, 4);
+        circle = new Ellipse2D.Float(width + 1, height + 1, 4, 4);
         g2d.fill(circle);
     }
 
@@ -137,14 +137,14 @@ public class ImageHelperVehicle {
 
     public static void printTankWeaponsNEquipment(Tank tank, Graphics2D g2d, float yoffset, int xoffset) {
 
-        int qtyPoint = 26+xoffset;
-        int typePoint = 38+xoffset;
-        int locPoint = 127+xoffset;
-        int damagePoint = 150+xoffset;
-        int minPoint = 167+xoffset;
-        int shtPoint = 182+xoffset;
-        int medPoint = 198+xoffset;
-        int longPoint = 213+xoffset;
+        int qtyPoint = 26 + xoffset;
+        int typePoint = 38 + xoffset;
+        int locPoint = 127 + xoffset;
+        int damagePoint = 150 + xoffset;
+        int minPoint = 167 + xoffset;
+        int shtPoint = 182 + xoffset;
+        int medPoint = 198 + xoffset;
+        int longPoint = 213 + xoffset;
         float maxHeight = 130.3f;
         float linePoint = 212f + yoffset;
 
@@ -152,7 +152,8 @@ public class ImageHelperVehicle {
 
         boolean newLineNeeded = false;
 
-        ArrayList<Hashtable<String, EquipmentInfo>> equipmentLocations = new ArrayList<Hashtable<String, EquipmentInfo>>(tank.locations());
+        ArrayList<Hashtable<String, EquipmentInfo>> equipmentLocations = new ArrayList<Hashtable<String, EquipmentInfo>>(
+                tank.locations());
 
         for (int pos = 0; pos <= tank.locations(); pos++) {
             equipmentLocations.add(pos, new Hashtable<String, EquipmentInfo>());
@@ -160,7 +161,8 @@ public class ImageHelperVehicle {
 
         for (Mounted eq : tank.getEquipment()) {
 
-            if ((eq.getType() instanceof AmmoType) || (eq.getLocation() == Entity.LOC_NONE) || (!UnitUtil.isPrintableEquipment(eq.getType(), false))) {
+            if ((eq.getType() instanceof AmmoType) || (eq.getLocation() == Entity.LOC_NONE)
+                    || (!UnitUtil.isPrintableEquipment(eq.getType(), false))) {
                 continue;
             }
 
@@ -233,19 +235,26 @@ public class ImageHelperVehicle {
                 g2d.setFont(UnitUtil.getNewFont(g2d, name, false, 75, font.getSize2D()));
 
                 if (eqi.c3Level == EquipmentInfo.C3I) {
-                    ImageHelper.printC3iName(g2d, typePoint, linePoint, font, false, tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
+                    ImageHelper.printC3iName(g2d, typePoint, linePoint, font, false,
+                            tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3EM) {
-                    ImageHelper.printC3EmName(g2d, typePoint, linePoint, font, false, tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
+                    ImageHelper.printC3EmName(g2d, typePoint, linePoint, font, false,
+                            tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3S) {
-                    ImageHelper.printC3sName(g2d, typePoint, linePoint, font, false, tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
+                    ImageHelper.printC3sName(g2d, typePoint, linePoint, font, false,
+                            tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3M) {
-                    ImageHelper.printC3mName(g2d, typePoint, linePoint, font, false, tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
+                    ImageHelper.printC3mName(g2d, typePoint, linePoint, font, false,
+                            tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3SB) {
-                    ImageHelper.printC3sbName(g2d, typePoint, linePoint, font, false, tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
+                    ImageHelper.printC3sbName(g2d, typePoint, linePoint, font, false,
+                            tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3MB) {
-                    ImageHelper.printC3mbName(g2d, typePoint, linePoint, font, false, tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
+                    ImageHelper.printC3mbName(g2d, typePoint, linePoint, font, false,
+                            tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3REMOTESENSOR) {
-                    ImageHelper.printC3RemoteSensorName(g2d, typePoint, linePoint, font, false, tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
+                    ImageHelper.printC3RemoteSensorName(g2d, typePoint, linePoint, font, false,
+                            tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
                 } else if (eqi.isMashCore) {
                     ImageHelper.printMashCore(g2d, typePoint, linePoint, font, false, tank);
                 } else if (eqi.isDroneControl) {
@@ -265,7 +274,7 @@ public class ImageHelperVehicle {
                     location += "po";
                 }
                 if (eqi.isPintleMounted) {
-                    location = location.substring(1)+"Pi";
+                    location = location.substring(1) + "Pi";
                 }
                 g2d.setFont(font);
                 g2d.drawString(location, locPoint, linePoint);
@@ -276,11 +285,16 @@ public class ImageHelperVehicle {
                         g2d.drawString("\u2014", shtPoint, linePoint);
                         g2d.drawString("\u2014", medPoint, linePoint);
                         g2d.drawString("\u2014", longPoint, linePoint);
-                        //g2d.drawLine(damagePoint, (int) linePoint - 2, damagePoint + 6, (int) linePoint - 2);
-                        //g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
-                        //g2d.drawLine(shtPoint, (int) linePoint - 2, shtPoint + 6, (int) linePoint - 2);
-                        //g2d.drawLine(medPoint, (int) linePoint - 2, medPoint + 6, (int) linePoint - 2);
-                        //g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint - 2);
+                        // g2d.drawLine(damagePoint, (int) linePoint - 2, damagePoint + 6, (int)
+                        // linePoint - 2);
+                        // g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint -
+                        // 2);
+                        // g2d.drawLine(shtPoint, (int) linePoint - 2, shtPoint + 6, (int) linePoint -
+                        // 2);
+                        // g2d.drawLine(medPoint, (int) linePoint - 2, medPoint + 6, (int) linePoint -
+                        // 2);
+                        // g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint -
+                        // 2);
                     } else if (eqi.isMML) {
                         ImageHelper.printCenterString(g2d, "[M,S,C]", font, damagePoint, linePoint);
                         linePoint += lineFeed - 1.0f;
@@ -296,7 +310,8 @@ public class ImageHelperVehicle {
                         g2d.drawString("SRM", typePoint, linePoint);
                         ImageHelper.printCenterString(g2d, "2/Msl", font, damagePoint, linePoint);
                         g2d.drawString("\u2014", minPoint, linePoint);
-                        //g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
+                        // g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint -
+                        // 2);
                         g2d.drawString("3", shtPoint, linePoint);
                         g2d.drawString("6", medPoint, linePoint);
                         g2d.drawString("9", longPoint, linePoint);
@@ -324,7 +339,8 @@ public class ImageHelperVehicle {
                         g2d.drawString("High-Explosive", typePoint, linePoint);
                         ImageHelper.printCenterString(g2d, "3/Msl", font, damagePoint, linePoint);
                         g2d.drawString("\u2014", minPoint, linePoint);
-                        //g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
+                        // g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint -
+                        // 2);
                         g2d.drawString("3", shtPoint, linePoint);
                         g2d.drawString("6", medPoint, linePoint);
                         g2d.drawString("9", longPoint, linePoint);
@@ -332,9 +348,11 @@ public class ImageHelperVehicle {
                     } else {
                         if (ImageHelper.getStringWidth(g2d, eqi.damage.trim(), font) > 22) {
                             g2d.setFont(UnitUtil.deriveFont(g2d.getFont().getSize2D() - 1));
-                            ImageHelper.printCenterString(g2d, eqi.damage.substring(0, eqi.damage.indexOf('[')), font, damagePoint, linePoint);
+                            ImageHelper.printCenterString(g2d, eqi.damage.substring(0, eqi.damage.indexOf('[')), font,
+                                    damagePoint, linePoint);
                             g2d.setFont(font);
-                            ImageHelper.printCenterString(g2d, eqi.damage.substring(eqi.damage.indexOf('[')), font, damagePoint, (linePoint + lineFeed) - 1.0f);
+                            ImageHelper.printCenterString(g2d, eqi.damage.substring(eqi.damage.indexOf('[')), font,
+                                    damagePoint, (linePoint + lineFeed) - 1.0f);
                             newLineNeeded = true;
                         } else {
                             ImageHelper.printCenterString(g2d, eqi.damage, font, damagePoint - 2, linePoint);
@@ -343,26 +361,30 @@ public class ImageHelperVehicle {
                             g2d.drawString(Integer.toString(eqi.minRange), minPoint, linePoint);
                         } else {
                             g2d.drawString("\u2014", minPoint, linePoint);
-                            //g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
+                            // g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint -
+                            // 2);
                         }
                         if (eqi.shtRange > 0) {
                             g2d.drawString(Integer.toString(eqi.shtRange), shtPoint, linePoint);
                         } else {
                             g2d.drawString("\u2014", shtPoint, linePoint);
-                            //g2d.drawLine(shtPoint, (int) linePoint - 2, shtPoint + 6, (int) linePoint - 2);
+                            // g2d.drawLine(shtPoint, (int) linePoint - 2, shtPoint + 6, (int) linePoint -
+                            // 2);
                         }
                         if (eqi.medRange > 0) {
                             g2d.drawString(Integer.toString(eqi.medRange), medPoint, linePoint);
                         } else {
                             g2d.drawString("\u2014", medPoint, linePoint);
-                            //g2d.drawLine(medPoint, (int) linePoint - 2, medPoint + 6, (int) linePoint - 2);
+                            // g2d.drawLine(medPoint, (int) linePoint - 2, medPoint + 6, (int) linePoint -
+                            // 2);
                         }
 
                         if (eqi.longRange > 0) {
                             g2d.drawString(Integer.toString(eqi.longRange), longPoint, (int) linePoint);
                         } else {
                             g2d.drawString("\u2014", longPoint, linePoint);
-                            //g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint - 2);
+                            // g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint -
+                            // 2);
                         }
                     }
                 } else {
@@ -370,14 +392,18 @@ public class ImageHelperVehicle {
                     g2d.drawString("\u2014", minPoint, linePoint);
                     g2d.drawString("\u2014", shtPoint, linePoint);
                     g2d.drawString("\u2014", medPoint, linePoint);
-                    //g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
-                    //g2d.drawLine(shtPoint, (int) linePoint - 2, shtPoint + 6, (int) linePoint - 2);
-                    //g2d.drawLine(medPoint, (int) linePoint - 2, medPoint + 6, (int) linePoint - 2);
+                    // g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint -
+                    // 2);
+                    // g2d.drawLine(shtPoint, (int) linePoint - 2, shtPoint + 6, (int) linePoint -
+                    // 2);
+                    // g2d.drawLine(medPoint, (int) linePoint - 2, medPoint + 6, (int) linePoint -
+                    // 2);
                     if (eqi.longRange > 0) {
                         g2d.drawString(Integer.toString(eqi.longRange), longPoint, (int) linePoint);
                     } else {
                         g2d.drawString("\u2014", longPoint, linePoint);
-                        //g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint - 2);
+                        // g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint -
+                        // 2);
                     }
                 }
 
@@ -432,7 +458,7 @@ public class ImageHelperVehicle {
             g2d.setFont(font);
         }
 
-        ImageHelper.printVehicleAmmo(tank, g2d, (int) yoffset==0?0:(int)yoffset-8, xoffset);
+        ImageHelper.printVehicleAmmo(tank, g2d, (int) yoffset == 0 ? 0 : (int) yoffset - 8, xoffset);
     }
 
     public static void printLargeSupportTankWeaponsNEquipment(Tank tank, Graphics2D g2d, float yoffset, float xoffset) {
@@ -451,7 +477,8 @@ public class ImageHelperVehicle {
 
         boolean newLineNeeded = false;
 
-        ArrayList<Hashtable<String, EquipmentInfo>> equipmentLocations = new ArrayList<Hashtable<String, EquipmentInfo>>(tank.locations());
+        ArrayList<Hashtable<String, EquipmentInfo>> equipmentLocations = new ArrayList<Hashtable<String, EquipmentInfo>>(
+                tank.locations());
 
         for (int pos = 0; pos <= tank.locations(); pos++) {
             equipmentLocations.add(pos, new Hashtable<String, EquipmentInfo>());
@@ -459,7 +486,8 @@ public class ImageHelperVehicle {
 
         for (Mounted eq : tank.getEquipment()) {
 
-            if ((eq.getType() instanceof AmmoType) || (eq.getLocation() == Entity.LOC_NONE) || !UnitUtil.isPrintableEquipment(eq.getType(), false)) {
+            if ((eq.getType() instanceof AmmoType) || (eq.getLocation() == Entity.LOC_NONE)
+                    || !UnitUtil.isPrintableEquipment(eq.getType(), false)) {
                 continue;
             }
 
@@ -496,7 +524,8 @@ public class ImageHelperVehicle {
         if (tank.getTransportBays().size() > 0) {
             maxHeight -= lineFeed;
         }
-        for (@SuppressWarnings("unused") Bay bay : tank.getTransportBays()) {
+        for (@SuppressWarnings("unused")
+        Bay bay : tank.getTransportBays()) {
             maxHeight -= lineFeed;
         }
 
@@ -543,19 +572,26 @@ public class ImageHelperVehicle {
                 g2d.setFont(UnitUtil.getNewFont(g2d, name, false, 65, 7.0f));
 
                 if (eqi.c3Level == EquipmentInfo.C3I) {
-                    ImageHelper.printC3iName(g2d, typePoint, linePoint, font, false, tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
+                    ImageHelper.printC3iName(g2d, typePoint, linePoint, font, false,
+                            tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3EM) {
-                    ImageHelper.printC3EmName(g2d, typePoint, linePoint, font, false, tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
+                    ImageHelper.printC3EmName(g2d, typePoint, linePoint, font, false,
+                            tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3S) {
-                    ImageHelper.printC3sName(g2d, typePoint, linePoint, font, false, tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
+                    ImageHelper.printC3sName(g2d, typePoint, linePoint, font, false,
+                            tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3M) {
-                    ImageHelper.printC3mName(g2d, typePoint, linePoint, font, false, tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
+                    ImageHelper.printC3mName(g2d, typePoint, linePoint, font, false,
+                            tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3SB) {
-                    ImageHelper.printC3sbName(g2d, typePoint, linePoint, font, false, tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
+                    ImageHelper.printC3sbName(g2d, typePoint, linePoint, font, false,
+                            tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3MB) {
-                    ImageHelper.printC3mbName(g2d, typePoint, linePoint, font, false, tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
+                    ImageHelper.printC3mbName(g2d, typePoint, linePoint, font, false,
+                            tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3REMOTESENSOR) {
-                    ImageHelper.printC3RemoteSensorName(g2d, typePoint, linePoint, font, false, tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
+                    ImageHelper.printC3RemoteSensorName(g2d, typePoint, linePoint, font, false,
+                            tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
                 } else if (eqi.isMashCore) {
                     ImageHelper.printMashCore(g2d, typePoint, linePoint, font, false, tank);
                 } else if (eqi.isDroneControl) {
@@ -571,7 +607,7 @@ public class ImageHelperVehicle {
                     location += "po";
                 }
                 if (eqi.isPintleMounted) {
-                    location = location.substring(1)+"Pi";
+                    location = location.substring(1) + "Pi";
                 }
 
                 g2d.setFont(UnitUtil.getNewFont(g2d, location, false, 18, 7));
@@ -594,7 +630,8 @@ public class ImageHelperVehicle {
                         g2d.drawString("SRM", typePoint, linePoint);
                         ImageHelper.printCenterString(g2d, "2/Msl", font, damagePoint, linePoint);
                         g2d.drawString("\u2014", minPoint, linePoint);
-                        //g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
+                        // g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint -
+                        // 2);
                         g2d.drawString("3", shtPoint, linePoint);
                         g2d.drawString("6", medPoint, linePoint);
                         g2d.drawString("9", longPoint, linePoint);
@@ -622,15 +659,18 @@ public class ImageHelperVehicle {
                         g2d.drawString("High-Explosive", typePoint, linePoint);
                         ImageHelper.printCenterString(g2d, "3/Msl", font, damagePoint, linePoint);
                         g2d.drawString("\u2014", minPoint, linePoint);
-                        //g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
+                        // g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint -
+                        // 2);
                         g2d.drawString("3", shtPoint, linePoint);
                         g2d.drawString("6", medPoint, linePoint);
                         g2d.drawString("9", longPoint, linePoint);
 
                     } else {
                         if (ImageHelper.getStringWidth(g2d, eqi.damage.trim(), font) > 22) {
-                            ImageHelper.printCenterString(g2d, eqi.damage.substring(0, eqi.damage.indexOf('[')), font, damagePoint, linePoint);
-                            ImageHelper.printCenterString(g2d, eqi.damage.substring(eqi.damage.indexOf('[')), font, damagePoint, (linePoint + lineFeed) - 1.0f);
+                            ImageHelper.printCenterString(g2d, eqi.damage.substring(0, eqi.damage.indexOf('[')), font,
+                                    damagePoint, linePoint);
+                            ImageHelper.printCenterString(g2d, eqi.damage.substring(eqi.damage.indexOf('[')), font,
+                                    damagePoint, (linePoint + lineFeed) - 1.0f);
                             newLineNeeded = true;
                         } else {
                             ImageHelper.printCenterString(g2d, eqi.damage, font, damagePoint, linePoint);
@@ -639,7 +679,8 @@ public class ImageHelperVehicle {
                             g2d.drawString(Integer.toString(eqi.minRange), minPoint, linePoint);
                         } else {
                             g2d.drawString("\u2014", minPoint, linePoint);
-                            //g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
+                            // g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint -
+                            // 2);
                         }
                         g2d.drawString(Integer.toString(eqi.shtRange), shtPoint, linePoint);
                         g2d.drawString(Integer.toString(eqi.medRange), medPoint, linePoint);
@@ -647,7 +688,8 @@ public class ImageHelperVehicle {
                             g2d.drawString(Integer.toString(eqi.longRange), longPoint, (int) linePoint);
                         } else {
                             g2d.drawString("\u2014", longPoint, linePoint);
-                            //g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint - 2);
+                            // g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint -
+                            // 2);
                         }
                     }
                 } else {
@@ -655,14 +697,18 @@ public class ImageHelperVehicle {
                     g2d.drawString("\u2014", minPoint, linePoint);
                     g2d.drawString("\u2014", shtPoint, linePoint);
                     g2d.drawString("\u2014", medPoint, linePoint);
-                    //g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
-                    //g2d.drawLine(shtPoint, (int) linePoint - 2, shtPoint + 6, (int) linePoint - 2);
-                    //g2d.drawLine(medPoint, (int) linePoint - 2, medPoint + 6, (int) linePoint - 2);
+                    // g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint -
+                    // 2);
+                    // g2d.drawLine(shtPoint, (int) linePoint - 2, shtPoint + 6, (int) linePoint -
+                    // 2);
+                    // g2d.drawLine(medPoint, (int) linePoint - 2, medPoint + 6, (int) linePoint -
+                    // 2);
                     if (eqi.longRange > 0) {
                         g2d.drawString(Integer.toString(eqi.longRange), longPoint, (int) linePoint);
                     } else {
                         g2d.drawString("\u2014", longPoint, linePoint);
-                        //g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint - 2);
+                        // g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint -
+                        // 2);
                     }
                 }
 
@@ -704,16 +750,15 @@ public class ImageHelperVehicle {
 
     }
 
-
     public static void printVTOLWeaponsNEquipment(Tank tank, Graphics2D g2d, float offsetY, float offsetX) {
-        float qtyPoint = 26+offsetX;
-        float typePoint = 38+offsetX;
-        float locPoint = 127+offsetX;
-        float damagePoint = 150+offsetX;
-        float minPoint = 166+offsetX;
-        float shtPoint = 177+offsetX;
-        float medPoint = 195+offsetX;
-        float longPoint = 211+offsetX;
+        float qtyPoint = 26 + offsetX;
+        float typePoint = 38 + offsetX;
+        float locPoint = 127 + offsetX;
+        float damagePoint = 150 + offsetX;
+        float minPoint = 166 + offsetX;
+        float shtPoint = 177 + offsetX;
+        float medPoint = 195 + offsetX;
+        float longPoint = 211 + offsetX;
         float maxHeight = 130.3f;
         float linePoint = 202f + offsetY;
 
@@ -721,7 +766,8 @@ public class ImageHelperVehicle {
 
         boolean newLineNeeded = false;
 
-        ArrayList<Hashtable<String, EquipmentInfo>> equipmentLocations = new ArrayList<Hashtable<String, EquipmentInfo>>(tank.getLocTurret() + 1);
+        ArrayList<Hashtable<String, EquipmentInfo>> equipmentLocations = new ArrayList<Hashtable<String, EquipmentInfo>>(
+                tank.getLocTurret() + 1);
 
         for (int pos = 0; pos <= tank.locations(); pos++) {
             equipmentLocations.add(pos, new Hashtable<String, EquipmentInfo>());
@@ -729,7 +775,8 @@ public class ImageHelperVehicle {
 
         for (Mounted eq : tank.getEquipment()) {
 
-            if ((eq.getType() instanceof AmmoType) || (eq.getLocation() == Entity.LOC_NONE) || !UnitUtil.isPrintableEquipment(eq.getType(), false)) {
+            if ((eq.getType() instanceof AmmoType) || (eq.getLocation() == Entity.LOC_NONE)
+                    || !UnitUtil.isPrintableEquipment(eq.getType(), false)) {
                 continue;
             }
 
@@ -802,7 +849,8 @@ public class ImageHelperVehicle {
 
             for (int eqPos = 0; eqPos < equipmentList.size(); eqPos++) {
                 EquipmentInfo eqi = equipmentList.get(eqPos);
-                if ((eqi.isMML || (eqi.name.indexOf("LRM") > -1) || (eqi.name.indexOf("SRM") > -1)) && (artemisEQ != null)) {
+                if ((eqi.isMML || (eqi.name.indexOf("LRM") > -1) || (eqi.name.indexOf("SRM") > -1))
+                        && (artemisEQ != null)) {
                     equipmentList.add(++eqPos, artemisEQ);
                 }
             }
@@ -816,19 +864,26 @@ public class ImageHelperVehicle {
                 g2d.setFont(UnitUtil.getNewFont(g2d, name, false, 65, font.getSize2D()));
 
                 if (eqi.c3Level == EquipmentInfo.C3I) {
-                    ImageHelper.printC3iName(g2d, typePoint, linePoint, font, false, tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
+                    ImageHelper.printC3iName(g2d, typePoint, linePoint, font, false,
+                            tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3EM) {
-                    ImageHelper.printC3EmName(g2d, typePoint, linePoint, font, false, tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
+                    ImageHelper.printC3EmName(g2d, typePoint, linePoint, font, false,
+                            tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3S) {
-                    ImageHelper.printC3sName(g2d, typePoint, linePoint, font, false, tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
+                    ImageHelper.printC3sName(g2d, typePoint, linePoint, font, false,
+                            tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3M) {
-                    ImageHelper.printC3mName(g2d, typePoint, linePoint, font, false, tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
+                    ImageHelper.printC3mName(g2d, typePoint, linePoint, font, false,
+                            tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3SB) {
-                    ImageHelper.printC3sbName(g2d, typePoint, linePoint, font, false, tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
+                    ImageHelper.printC3sbName(g2d, typePoint, linePoint, font, false,
+                            tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3MB) {
-                    ImageHelper.printC3mbName(g2d, typePoint, linePoint, font, false, tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
+                    ImageHelper.printC3mbName(g2d, typePoint, linePoint, font, false,
+                            tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3REMOTESENSOR) {
-                    ImageHelper.printC3RemoteSensorName(g2d, typePoint, linePoint, font, false, tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
+                    ImageHelper.printC3RemoteSensorName(g2d, typePoint, linePoint, font, false,
+                            tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
                 } else if (eqi.isMashCore) {
                     ImageHelper.printMashCore(g2d, typePoint, linePoint, font, false, tank);
                 } else if (eqi.isDroneControl) {
@@ -858,7 +913,8 @@ public class ImageHelperVehicle {
                         g2d.drawString("SRM", typePoint, linePoint);
                         ImageHelper.printCenterString(g2d, "2/Msl", font, damagePoint, linePoint);
                         g2d.drawString("\u2014", minPoint, linePoint);
-                        //g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
+                        // g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint -
+                        // 2);
                         g2d.drawString("3", shtPoint, linePoint);
                         g2d.drawString("6", medPoint, linePoint);
                         g2d.drawString("9", longPoint, linePoint);
@@ -886,17 +942,20 @@ public class ImageHelperVehicle {
                         g2d.drawString("High-Explosive", typePoint, linePoint);
                         ImageHelper.printCenterString(g2d, "3/Msl", font, damagePoint, linePoint);
                         g2d.drawString("\u2014", minPoint, linePoint);
-                        //g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
+                        // g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint -
+                        // 2);
                         g2d.drawString("3", shtPoint, linePoint);
                         g2d.drawString("6", medPoint, linePoint);
                         g2d.drawString("9", longPoint, linePoint);
 
                     } else {
                         if (ImageHelper.getStringWidth(g2d, eqi.damage.trim(), font) > 22) {
-                            ImageHelper.printCenterString(g2d, eqi.damage.substring(0, eqi.damage.indexOf('[')), font, damagePoint, linePoint);
+                            ImageHelper.printCenterString(g2d, eqi.damage.substring(0, eqi.damage.indexOf('[')), font,
+                                    damagePoint, linePoint);
                             Font smallFont = UnitUtil.deriveFont(font.getSize2D() - 1.0f);
                             g2d.setFont(smallFont);
-                            ImageHelper.printCenterString(g2d, eqi.damage.substring(eqi.damage.indexOf('[')), smallFont, damagePoint, (linePoint + lineFeed) - 1.0f);
+                            ImageHelper.printCenterString(g2d, eqi.damage.substring(eqi.damage.indexOf('[')), smallFont,
+                                    damagePoint, (linePoint + lineFeed) - 1.0f);
                             newLineNeeded = true;
                             g2d.setFont(font);
                         } else {
@@ -906,7 +965,8 @@ public class ImageHelperVehicle {
                             g2d.drawString(Integer.toString(eqi.minRange), minPoint, linePoint);
                         } else {
                             g2d.drawString("\u2014", minPoint, linePoint);
-                            //g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
+                            // g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint -
+                            // 2);
                         }
                         g2d.drawString(Integer.toString(eqi.shtRange), shtPoint, linePoint);
                         g2d.drawString(Integer.toString(eqi.medRange), medPoint, linePoint);
@@ -914,7 +974,8 @@ public class ImageHelperVehicle {
                             g2d.drawString(Integer.toString(eqi.longRange), longPoint, (int) linePoint);
                         } else {
                             g2d.drawString("\u2014", longPoint, linePoint);
-                            //g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint - 2);
+                            // g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint -
+                            // 2);
                         }
                     }
                 } else {
@@ -922,14 +983,18 @@ public class ImageHelperVehicle {
                     g2d.drawString("\u2014", minPoint, linePoint);
                     g2d.drawString("\u2014", shtPoint, linePoint);
                     g2d.drawString("\u2014", medPoint, linePoint);
-                    //g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
-                    //g2d.drawLine(shtPoint, (int) linePoint - 2, shtPoint + 6, (int) linePoint - 2);
-                    //g2d.drawLine(medPoint, (int) linePoint - 2, medPoint + 6, (int) linePoint - 2);
+                    // g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint -
+                    // 2);
+                    // g2d.drawLine(shtPoint, (int) linePoint - 2, shtPoint + 6, (int) linePoint -
+                    // 2);
+                    // g2d.drawLine(medPoint, (int) linePoint - 2, medPoint + 6, (int) linePoint -
+                    // 2);
                     if (eqi.longRange > 0) {
                         g2d.drawString(Integer.toString(eqi.longRange), longPoint, (int) linePoint);
                     } else {
                         g2d.drawString("\u2014", longPoint, linePoint);
-                        //g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint - 2);
+                        // g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint -
+                        // 2);
                     }
                 }
 
@@ -974,11 +1039,13 @@ public class ImageHelperVehicle {
         ImageHelper.printVehicleAmmo(tank, g2d, (int) offsetY, (int) offsetX);
     }
 
-    static public void printArmorPoints(Graphics2D g2d, Vector<float[]> pipPoints, float totalArmor, boolean hasModularArmor) {
+    static public void printArmorPoints(Graphics2D g2d, Vector<float[]> pipPoints, float totalArmor,
+            boolean hasModularArmor) {
         ImageHelperVehicle.printArmorPoints(g2d, pipPoints, totalArmor, 8.0f, hasModularArmor);
     }
 
-    static public void printArmorPoints(Graphics2D g2d, Vector<float[]> pipPoints, float totalArmor, float fontSize, boolean hasModularArmor) {
+    static public void printArmorPoints(Graphics2D g2d, Vector<float[]> pipPoints, float totalArmor, float fontSize,
+            boolean hasModularArmor) {
         pipPoints.trimToSize();
         float pipSpace = pipPoints.size() / totalArmor;
         if (hasModularArmor) {
@@ -990,7 +1057,8 @@ public class ImageHelperVehicle {
                 break;
             }
             currentPip = (int) pos;
-            ImageHelperVehicle.drawTankArmorPip(g2d, pipPoints.get(currentPip)[0], pipPoints.get(currentPip)[1], fontSize);
+            ImageHelperVehicle.drawTankArmorPip(g2d, pipPoints.get(currentPip)[0], pipPoints.get(currentPip)[1],
+                    fontSize);
             totalArmor--;
         }
 
@@ -1002,7 +1070,8 @@ public class ImageHelperVehicle {
         }
     }
 
-    public static Font getVehicleWeaponsNEquipmentFont(Graphics2D g2d, boolean bold, float stringHeight, ArrayList<Hashtable<String, EquipmentInfo>> equipmentLocations, float pointSize) {
+    public static Font getVehicleWeaponsNEquipmentFont(Graphics2D g2d, boolean bold, float stringHeight,
+            ArrayList<Hashtable<String, EquipmentInfo>> equipmentLocations, float pointSize) {
 
         Font font = g2d.getFont();
 
@@ -1117,7 +1186,7 @@ public class ImageHelperVehicle {
 
     public static void printLargeVehicleCargo(Tank tank, Graphics2D g2d, float pointY, float xoffset, float yoffset) {
 
-    	double troopspace = tank.getTroopCarryingSpace();
+        double troopspace = tank.getTroopCarryingSpace();
         if ((tank.getTransportBays().size() < 1) && (troopspace == 0)) {
             return;
         }
@@ -1128,7 +1197,7 @@ public class ImageHelperVehicle {
         Font font = UnitUtil.deriveFont(true, g2d.getFont().getSize2D());
 
         g2d.setFont(font);
-        g2d.drawString("Cargo: ", pointX+xoffset, pointY+yoffset);
+        g2d.drawString("Cargo: ", pointX + xoffset, pointY + yoffset);
 
         pointY += lineFeed;
 
@@ -1147,12 +1216,12 @@ public class ImageHelperVehicle {
             } else {
                 troopString += " tons)";
             }
-            g2d.drawString(troopString, pointX+xoffset, pointY+yoffset);
+            g2d.drawString(troopString, pointX + xoffset, pointY + yoffset);
             pointY += lineFeed;
         }
 
         for (Bay bay : tank.getTransportBays()) {
-            g2d.drawString(ImageHelperVehicle.getBayString(bay), pointX+xoffset, pointY+yoffset);
+            g2d.drawString(ImageHelperVehicle.getBayString(bay), pointX + xoffset, pointY + yoffset);
             pointY += lineFeed;
         }
 

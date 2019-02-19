@@ -194,7 +194,8 @@ public class EquipmentView extends IView implements ActionListener {
             boolean success = false;
             Mounted mount = null;
             try {
-                mount = getBattleArmor().addEquipment(equipmentTypes.elementAt(equipmentCombo.getSelectedIndex()), Entity.LOC_NONE, false);
+                mount = getBattleArmor().addEquipment(equipmentTypes.elementAt(equipmentCombo.getSelectedIndex()),
+                        Entity.LOC_NONE, false);
                 success = mount != null;
             } catch (LocationFullException lfe) {
                 // this can't happen, we add to Entity.LOC_NONE

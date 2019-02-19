@@ -91,7 +91,7 @@ public class EquipmentView extends IView implements ActionListener {
 
         equipmentTable.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         equipmentTable.setDoubleBuffered(true);
-        equipmentTable.setMaximumSize(new Dimension(800,500));
+        equipmentTable.setMaximumSize(new Dimension(800, 500));
         equipmentScroll.setViewportView(equipmentTable);
 
         topPanel.setLayout(new BorderLayout());
@@ -273,7 +273,6 @@ public class EquipmentView extends IView implements ActionListener {
             refresh.refreshBuild();
         }
     }
-
 
     public CriticalTableModel getEquipmentList() {
         return equipmentList;

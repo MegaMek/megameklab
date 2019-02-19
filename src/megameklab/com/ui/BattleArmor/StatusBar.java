@@ -47,27 +47,28 @@ public class StatusBar extends ITab {
 
     private JButton btnValidate = new JButton("Validate Unit");
     private JButton btnFluffImage = new JButton("Set Fluff Image");
-    
+
     private JPanel tonnagePanel = new JPanel();
     private JPanel movementPanel = new JPanel();
     private JPanel bvPanel = new JPanel();
-    
+
     private JLabel move = new JLabel();
     private JLabel bvLabel = new JLabel();
     private JLabel tons = new JLabel();
     private JLabel cost = new JLabel();
-    
-    private EntityVerifier entityVerifier = EntityVerifier.getInstance(new File(
-            "data/mechfiles/UnitVerifierOptions.xml"));
-    
+
+    private EntityVerifier entityVerifier = EntityVerifier
+            .getInstance(new File("data/mechfiles/UnitVerifierOptions.xml"));
+
     private TestBattleArmor testBA = null;
     private DecimalFormat formatter;
     private JFrame parentFrame;
 
     private RefreshListener refresh;
+
     public StatusBar(MegaMekLabMainUI parent) {
         super(parent);
-        
+
         formatter = new DecimalFormat();
         btnValidate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -79,7 +80,6 @@ public class StatusBar extends ITab {
                 getFluffImage();
             }
         });
-        
 
         setLayout(new GridBagLayout());
         this.add(movementPanel());
@@ -89,7 +89,7 @@ public class StatusBar extends ITab {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.insets = new Insets(5,2,2,30);
+        gbc.insets = new Insets(5, 2, 2, 30);
         gbc.anchor = GridBagConstraints.WEST;
         this.add(btnValidate, gbc);
         gbc.gridx = 1;
@@ -104,7 +104,7 @@ public class StatusBar extends ITab {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
         this.add(cost, gbc);
-        
+
         refresh();
     }
 
@@ -140,15 +140,13 @@ public class StatusBar extends ITab {
         int bv = getBattleArmor().calculateBattleValue();
         long currentCost = (long) Math.round(getBattleArmor().getCost(false));
 
-        testBA = new TestBattleArmor(getBattleArmor(), entityVerifier.baOption,
-                null);
+        testBA = new TestBattleArmor(getBattleArmor(), entityVerifier.baOption, null);
         currentKilos = testBA.calculateWeight(BattleArmor.LOC_SQUAD);
         currentKilos += UnitUtil.getUnallocatedAmmoTonnage(getBattleArmor());
 
-        tons.setText("Suit Weight: " + String.format("%1$.3f",currentKilos) + 
-                "/" + maxKilos);
-        tons.setToolTipText("This represents the weight of all squad-level " +
-                "equipment, it does not count individual equipment");
+        tons.setText("Suit Weight: " + String.format("%1$.3f", currentKilos) + "/" + maxKilos);
+        tons.setToolTipText(
+                "This represents the weight of all squad-level " + "equipment, it does not count individual equipment");
         if (currentKilos > maxKilos) {
             tons.setForeground(Color.red);
         } else {
@@ -163,26 +161,20 @@ public class StatusBar extends ITab {
 
         cost.setText("Squad Cost: " + formatter.format(currentCost) + " C-bills");
     }
-    
+
     private void getFluffImage() {
         // copied from structureTab
-        FileDialog fDialog = new FileDialog(getParentFrame(), "Image Path",
-                FileDialog.LOAD);
-        fDialog.setDirectory(new File(ImageHelper.fluffPath).getAbsolutePath()
-                + File.separatorChar + ImageHelper.imageMech
-                + File.separatorChar);
+        FileDialog fDialog = new FileDialog(getParentFrame(), "Image Path", FileDialog.LOAD);
+        fDialog.setDirectory(new File(ImageHelper.fluffPath).getAbsolutePath() + File.separatorChar
+                + ImageHelper.imageMech + File.separatorChar);
         fDialog.setLocationRelativeTo(this);
 
         fDialog.setVisible(true);
 
         if (fDialog.getFile() != null) {
-            String relativeFilePath = new File(fDialog.getDirectory()
-                    + fDialog.getFile()).getAbsolutePath();
-            relativeFilePath = "."
-                    + File.separatorChar
-                    + relativeFilePath
-                            .substring(new File(System.getProperty("user.dir")
-                                    .toString()).getAbsolutePath().length() + 1);
+            String relativeFilePath = new File(fDialog.getDirectory() + fDialog.getFile()).getAbsolutePath();
+            relativeFilePath = "." + File.separatorChar + relativeFilePath
+                    .substring(new File(System.getProperty("user.dir").toString()).getAbsolutePath().length() + 1);
             getAero().getFluff().setMMLImagePath(relativeFilePath);
         }
         refresh.refreshPreview();
@@ -192,7 +184,7 @@ public class StatusBar extends ITab {
     private JFrame getParentFrame() {
         return parentFrame;
     }
-    
+
     public void addRefreshedListener(RefreshListener l) {
         refresh = l;
     }

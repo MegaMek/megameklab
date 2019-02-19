@@ -103,9 +103,8 @@ public class UnitPrintQueueDialog extends JDialog implements ActionListener, Key
          * bSelectFile.setMinimumSize(newSize); bRemove.setMinimumSize(newSize);
          * bCancel.setMinimumSize(newSize); bPrint.setMinimumSize(newSize);
          *
-         * bSelectFile.setPreferredSize(newSize);
-         * bRemove.setPreferredSize(newSize); bCancel.setPreferredSize(newSize);
-         * bPrint.setPreferredSize(newSize);
+         * bSelectFile.setPreferredSize(newSize); bRemove.setPreferredSize(newSize);
+         * bCancel.setPreferredSize(newSize); bPrint.setPreferredSize(newSize);
          */
         bSelectFile.setMaximumSize(newSize);
         bRemove.setMaximumSize(newSize);

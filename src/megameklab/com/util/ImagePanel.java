@@ -26,7 +26,7 @@ import megamek.common.Entity;
 public class ImagePanel extends JPanel {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1885941921775619243L;
     private Image background;

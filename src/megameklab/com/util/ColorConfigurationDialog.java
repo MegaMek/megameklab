@@ -52,12 +52,12 @@ public final class ColorConfigurationDialog extends JDialog implements ActionLis
 
     public ColorConfigurationDialog(String title, Color color) {
 
-        //stored values.
+        // stored values.
         masterColor = color;
 
         setTitle(windowName);
 
-        //Set the tooltips and actions for dialouge buttons
+        // Set the tooltips and actions for dialouge buttons
         saveButton.setActionCommand(saveCommand);
         cancelButton.setActionCommand(cancelCommand);
 
@@ -76,25 +76,23 @@ public final class ColorConfigurationDialog extends JDialog implements ActionLis
         // Set the user's options
         Object[] options = { saveButton, cancelButton };
 
-        Dimension dim = new Dimension(100,200);
+        Dimension dim = new Dimension(100, 200);
 
         ConfigPane.setMaximumSize(dim);
 
         // Create the pane containing the buttons
-        pane = new JOptionPane(ConfigPane,JOptionPane.PLAIN_MESSAGE,JOptionPane.DEFAULT_OPTION, null, options, null);
+        pane = new JOptionPane(ConfigPane, JOptionPane.PLAIN_MESSAGE, JOptionPane.DEFAULT_OPTION, null, options, null);
 
         pane.setMaximumSize(dim);
 
-
         MasterPanel.setMaximumSize(dim);
-
 
         // Create the main dialog and set the default button
         dialog = pane.createDialog(MasterPanel, windowName);
         dialog.getRootPane().setDefaultButton(cancelButton);
 
         dialog.setMaximumSize(dim);
-        //Show the dialog and get the user's input
+        // Show the dialog and get the user's input
         dialog.setModal(true);
         dialog.pack();
         dialog.setVisible(true);
@@ -123,7 +121,6 @@ public final class ColorConfigurationDialog extends JDialog implements ActionLis
             dialog.setVisible(false);
             return;
         }
-
 
     }
 

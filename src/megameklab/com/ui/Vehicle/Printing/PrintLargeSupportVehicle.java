@@ -59,8 +59,7 @@ public class PrintLargeSupportVehicle implements Printable {
          */
     }
 
-    public int print(Graphics graphics, PageFormat pageFormat, int pageIndex)
-            throws PrinterException {
+    public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
         Graphics2D g2d = (Graphics2D) graphics;
         // f.setPaper(this.paper);
         printImage(g2d, pageFormat);
@@ -76,26 +75,30 @@ public class PrintLargeSupportVehicle implements Printable {
         try {
             if (largesupporttank instanceof SuperHeavyTank) {
                 try {
-                    ImageHelper.loadSVGImage(new File("data/images/recordsheets/SuperHeavyTankCritTable.svg")).render(g2d);
+                    ImageHelper.loadSVGImage(new File("data/images/recordsheets/SuperHeavyTankCritTable.svg"))
+                            .render(g2d);
                 } catch (SVGException e) {
                     e.printStackTrace();
                 }
             } else {
-                ImageHelper.loadSVGImage(new File("data/images/recordsheets/LargeSupportTankCritTable.svg")).render(g2d);
-                ImageHelper.loadSVGImage(new File("data/images/recordsheets/LargeSupportTankHitTable.svg")).render(g2d);            }
+                ImageHelper.loadSVGImage(new File("data/images/recordsheets/LargeSupportTankCritTable.svg"))
+                        .render(g2d);
+                ImageHelper.loadSVGImage(new File("data/images/recordsheets/LargeSupportTankHitTable.svg")).render(g2d);
+            }
             ImageHelper.loadSVGImage(new File("data/images/recordsheets/TankMotiveDmgTable.svg")).render(g2d);
             ImageHelper.loadSVGImage(new File("data/images/recordsheets/TankSheetCopyrightInfo.svg")).render(g2d);
 
             ImageHelper.loadSVGImage(new File("data/images/recordsheets/SuperHeavyBaseTemplate.svg")).render(g2d);
 
-
-
             if (largesupporttank.hasNoTurret()) {
-                ImageHelper.loadSVGImage(new File("data/images/recordsheets/SuperHeavyNoTurretTemplate.svg")).render(g2d);
+                ImageHelper.loadSVGImage(new File("data/images/recordsheets/SuperHeavyNoTurretTemplate.svg"))
+                        .render(g2d);
             } else if (largesupporttank.hasNoDualTurret()) {
-                ImageHelper.loadSVGImage(new File("data/images/recordsheets/SuperHeavySingleTurretTemplate.svg")).render(g2d);
+                ImageHelper.loadSVGImage(new File("data/images/recordsheets/SuperHeavySingleTurretTemplate.svg"))
+                        .render(g2d);
             } else {
-                ImageHelper.loadSVGImage(new File("data/images/recordsheets/SuperHeavyDualTurretTemplate.svg")).render(g2d);
+                ImageHelper.loadSVGImage(new File("data/images/recordsheets/SuperHeavyDualTurretTemplate.svg"))
+                        .render(g2d);
             }
 
         } catch (SVGException e) {
@@ -108,140 +111,100 @@ public class PrintLargeSupportVehicle implements Printable {
 
         // Armor Pips
         printFrontArmor(g2d, largesupporttank.getOArmor(Tank.LOC_FRONT), false);
-        printFrontLeftArmor(g2d,
-                largesupporttank.getOArmor(LargeSupportTank.LOC_FRONTLEFT),
-                false);
-        printFrontRightArmor(g2d,
-                largesupporttank.getOArmor(LargeSupportTank.LOC_FRONTRIGHT),
-                false);
-        printRearLeftArmor(g2d,
-                largesupporttank.getOArmor(LargeSupportTank.LOC_REARLEFT),
-                false);
-        printRearRightArmor(g2d,
-                largesupporttank.getOArmor(LargeSupportTank.LOC_REARRIGHT),
-                false);
-        printRearArmor(g2d,
-                largesupporttank.getOArmor(LargeSupportTank.LOC_REAR), false);
+        printFrontLeftArmor(g2d, largesupporttank.getOArmor(LargeSupportTank.LOC_FRONTLEFT), false);
+        printFrontRightArmor(g2d, largesupporttank.getOArmor(LargeSupportTank.LOC_FRONTRIGHT), false);
+        printRearLeftArmor(g2d, largesupporttank.getOArmor(LargeSupportTank.LOC_REARLEFT), false);
+        printRearRightArmor(g2d, largesupporttank.getOArmor(LargeSupportTank.LOC_REARRIGHT), false);
+        printRearArmor(g2d, largesupporttank.getOArmor(LargeSupportTank.LOC_REAR), false);
         if (!largesupporttank.hasNoTurret()) {
-            printTurretArmor(g2d,
-                    largesupporttank.getOArmor(LargeSupportTank.LOC_TURRET),
-                    false);
+            printTurretArmor(g2d, largesupporttank.getOArmor(LargeSupportTank.LOC_TURRET), false);
         }
         if (!largesupporttank.hasNoDualTurret()) {
-            printFrontTurretArmor(g2d,
-                    largesupporttank.getOArmor(LargeSupportTank.LOC_TURRET_2));
+            printFrontTurretArmor(g2d, largesupporttank.getOArmor(LargeSupportTank.LOC_TURRET_2));
         }
 
         // Internal Pips
-        printFrontStruct(g2d, largesupporttank.getOInternal(Tank.LOC_FRONT),
-                false);
-        printLeftFrontStruct(g2d,
-                largesupporttank.getOInternal(LargeSupportTank.LOC_FRONTLEFT),
-                false);
-        printRightFrontStruct(g2d,
-                largesupporttank.getOInternal(LargeSupportTank.LOC_REARRIGHT),
-                false);
-        printLeftRearStruct(g2d,
-                largesupporttank.getOInternal(LargeSupportTank.LOC_REARLEFT),
-                false);
-        printRightRearStruct(g2d,
-                largesupporttank.getOInternal(LargeSupportTank.LOC_REARRIGHT),
-                false);
-        printRearStruct(g2d,
-                largesupporttank.getOInternal(LargeSupportTank.LOC_REAR), false);
+        printFrontStruct(g2d, largesupporttank.getOInternal(Tank.LOC_FRONT), false);
+        printLeftFrontStruct(g2d, largesupporttank.getOInternal(LargeSupportTank.LOC_FRONTLEFT), false);
+        printRightFrontStruct(g2d, largesupporttank.getOInternal(LargeSupportTank.LOC_REARRIGHT), false);
+        printLeftRearStruct(g2d, largesupporttank.getOInternal(LargeSupportTank.LOC_REARLEFT), false);
+        printRightRearStruct(g2d, largesupporttank.getOInternal(LargeSupportTank.LOC_REARRIGHT), false);
+        printRearStruct(g2d, largesupporttank.getOInternal(LargeSupportTank.LOC_REAR), false);
         if (!largesupporttank.hasNoTurret()) {
-            printTurretStruct(g2d,
-                    largesupporttank.getOInternal(LargeSupportTank.LOC_TURRET),
-                    false);
+            printTurretStruct(g2d, largesupporttank.getOInternal(LargeSupportTank.LOC_TURRET), false);
         }
         if (!largesupporttank.hasNoDualTurret()) {
-            printFrontTurretStruct(g2d,
-                    largesupporttank
-                            .getOInternal(LargeSupportTank.LOC_TURRET_2));
+            printFrontTurretStruct(g2d, largesupporttank.getOInternal(LargeSupportTank.LOC_TURRET_2));
         }
 
         printLargeSupportTankImage(g2d);
 
-        g2d.scale(pageFormat.getImageableWidth(),
-                pageFormat.getImageableHeight());
+        g2d.scale(pageFormat.getImageableWidth(), pageFormat.getImageableHeight());
 
     }
 
     private void printLargeSupportTankData(Graphics2D g2d) {
-        String largesupportankName = largesupporttank.getChassis() + " "
-                + largesupporttank.getModel();
+        String largesupportankName = largesupporttank.getChassis() + " " + largesupporttank.getModel();
 
-        g2d.setFont(UnitUtil.getNewFont(g2d, largesupportankName, true, 180,
-                10.0f));
+        g2d.setFont(UnitUtil.getNewFont(g2d, largesupportankName, true, 180, 10.0f));
         g2d.drawString(largesupportankName, 49 + xoffset, 120 + yoffset);
 
         Font font = UnitUtil.deriveFont(true, 15.0f);
         g2d.setFont(font);
 
         if (largesupporttank instanceof LargeSupportTank) {
-            g2d.drawString("LARGE GROUND SUPPORT VEHICLE RECORD SHEET",
-                    60 + xoffset, 88 + yoffset);
+            g2d.drawString("LARGE GROUND SUPPORT VEHICLE RECORD SHEET", 60 + xoffset, 88 + yoffset);
         } else {
-            g2d.drawString("SUPER-HEAVY COMBAT VEHICLE RECORD SHEET",
-                    60 + xoffset, 88 + yoffset);
+            g2d.drawString("SUPER-HEAVY COMBAT VEHICLE RECORD SHEET", 60 + xoffset, 88 + yoffset);
         }
 
         font = UnitUtil.deriveFont(8.0f);
         g2d.setFont(font);
 
-        if ((largesupporttank.getCrew() != null)
-                && !largesupporttank.getCrew().getName()
-                        .equalsIgnoreCase("unnamed")) {
+        if ((largesupporttank.getCrew() != null) && !largesupporttank.getCrew().getName().equalsIgnoreCase("unnamed")) {
             Crew pilot = largesupporttank.getCrew();
             g2d.drawString(pilot.getName(), 270 + xoffset, 120 + yoffset);
-            g2d.drawString(String.valueOf(pilot.getGunnery()), 295 + xoffset,
-                    132 + yoffset);
-            g2d.drawString(String.valueOf(pilot.getPiloting()), 365 + xoffset,
-                    132 + yoffset);
+            g2d.drawString(String.valueOf(pilot.getGunnery()), 295 + xoffset, 132 + yoffset);
+            g2d.drawString(String.valueOf(pilot.getPiloting()), 365 + xoffset, 132 + yoffset);
         }
 
-        g2d.drawString(Integer.toString(largesupporttank.getWalkMP()),
-                79 + xoffset, 144 + yoffset);
-        if (!largesupporttank.hasWorkingMisc(MiscType.F_MASC,
-                MiscType.S_SUPERCHARGER)) {
-            g2d.drawString(Integer.toString(largesupporttank.getRunMP()),
-                    79 + xoffset, 155 + yoffset);
+        g2d.drawString(Integer.toString(largesupporttank.getWalkMP()), 79 + xoffset, 144 + yoffset);
+        if (!largesupporttank.hasWorkingMisc(MiscType.F_MASC, MiscType.S_SUPERCHARGER)) {
+            g2d.drawString(Integer.toString(largesupporttank.getRunMP()), 79 + xoffset, 155 + yoffset);
         } else {
             int mascMP = largesupporttank.getRunMP();
-            g2d.drawString(
-                    Integer.toString(largesupporttank.getRunMPwithoutMASC())
-                            + " [" + mascMP + "]", 79 + xoffset, 155 + yoffset);
+            g2d.drawString(Integer.toString(largesupporttank.getRunMPwithoutMASC()) + " [" + mascMP + "]", 79 + xoffset,
+                    155 + yoffset);
         }
 
-        g2d.drawString(largesupporttank.getMovementModeAsString(),
-                88 + xoffset, 166 + yoffset);
+        g2d.drawString(largesupporttank.getMovementModeAsString(), 88 + xoffset, 166 + yoffset);
 
         String engineName = "Fusion Engine";
 
         switch (largesupporttank.getEngine().getEngineType()) {
-            case Engine.COMBUSTION_ENGINE:
-                engineName = "I.C.E.";
-                break;
-            case Engine.LIGHT_ENGINE:
-                engineName = "Light Fusion Engine";
-                break;
-            case Engine.XL_ENGINE:
-                engineName = "XL Fusion Engine";
-                break;
-            case Engine.XXL_ENGINE:
-                engineName = "XXL Fusion Engine";
-                break;
-            case Engine.COMPACT_ENGINE:
-                engineName = "Compact Fusion Engine";
-                break;
-            case Engine.FUEL_CELL:
-                engineName = "Fuel Cell Engine";
-                break;
-            case Engine.NONE:
-                engineName = "None";
-                break;
-            default:
-                break;
+        case Engine.COMBUSTION_ENGINE:
+            engineName = "I.C.E.";
+            break;
+        case Engine.LIGHT_ENGINE:
+            engineName = "Light Fusion Engine";
+            break;
+        case Engine.XL_ENGINE:
+            engineName = "XL Fusion Engine";
+            break;
+        case Engine.XXL_ENGINE:
+            engineName = "XXL Fusion Engine";
+            break;
+        case Engine.COMPACT_ENGINE:
+            engineName = "Compact Fusion Engine";
+            break;
+        case Engine.FUEL_CELL:
+            engineName = "Fuel Cell Engine";
+            break;
+        case Engine.NONE:
+            engineName = "None";
+            break;
+        default:
+            break;
         }
 
         g2d.drawString(engineName, 79 + xoffset, 177 + yoffset);
@@ -270,49 +233,42 @@ public class PrintLargeSupportVehicle implements Printable {
 
         switch (largesupporttank.getTechLevel()) {
 
-            case TechConstants.T_INTRO_BOXSET:
-                ImageHelper.printCenterString(g2d, "(Intro)", font, startLine,
-                        nextDataLine);
-                nextDataLine += lineFeed;
-                break;
-            case TechConstants.T_IS_TW_NON_BOX:
-            case TechConstants.T_IS_TW_ALL:
-            case TechConstants.T_CLAN_TW:
-                break;
-            case TechConstants.T_IS_ADVANCED:
-            case TechConstants.T_CLAN_ADVANCED:
-                ImageHelper.printCenterString(g2d, "(Advanced)", font,
-                        startLine, nextDataLine);
-                nextDataLine += lineFeed;
-                break;
-            case TechConstants.T_IS_EXPERIMENTAL:
-            case TechConstants.T_CLAN_EXPERIMENTAL:
-                ImageHelper.printCenterString(g2d, "(Experimental)", font,
-                        startLine, nextDataLine);
-                nextDataLine += lineFeed;
-                break;
-            case TechConstants.T_IS_UNOFFICIAL:
-            case TechConstants.T_CLAN_UNOFFICIAL:
-                ImageHelper.printCenterString(g2d, "(Unofficial)", font,
-                        startLine, nextDataLine);
-                nextDataLine += lineFeed;
-                break;
+        case TechConstants.T_INTRO_BOXSET:
+            ImageHelper.printCenterString(g2d, "(Intro)", font, startLine, nextDataLine);
+            nextDataLine += lineFeed;
+            break;
+        case TechConstants.T_IS_TW_NON_BOX:
+        case TechConstants.T_IS_TW_ALL:
+        case TechConstants.T_CLAN_TW:
+            break;
+        case TechConstants.T_IS_ADVANCED:
+        case TechConstants.T_CLAN_ADVANCED:
+            ImageHelper.printCenterString(g2d, "(Advanced)", font, startLine, nextDataLine);
+            nextDataLine += lineFeed;
+            break;
+        case TechConstants.T_IS_EXPERIMENTAL:
+        case TechConstants.T_CLAN_EXPERIMENTAL:
+            ImageHelper.printCenterString(g2d, "(Experimental)", font, startLine, nextDataLine);
+            nextDataLine += lineFeed;
+            break;
+        case TechConstants.T_IS_UNOFFICIAL:
+        case TechConstants.T_CLAN_UNOFFICIAL:
+            ImageHelper.printCenterString(g2d, "(Unofficial)", font, startLine, nextDataLine);
+            nextDataLine += lineFeed;
+            break;
         }
 
-        if ((largesupporttank.getSource() != null)
-                && (largesupporttank.getSource().trim().length() > 0)) {
+        if ((largesupporttank.getSource() != null) && (largesupporttank.getSource().trim().length() > 0)) {
             String sourceFluff = "Era: ";
             font = UnitUtil.deriveFont(true, 8.0f);
             g2d.setFont(font);
 
             g2d.drawString(sourceFluff, 138 + xoffset, nextDataLine);
 
-            font = UnitUtil.getNewFont(g2d, largesupporttank.getSource(),
-                    false, 51, 8.0f);
+            font = UnitUtil.getNewFont(g2d, largesupporttank.getSource(), false, 51, 8.0f);
             g2d.setFont(font);
 
-            g2d.drawString(largesupporttank.getSource(), 177 + xoffset,
-                    nextDataLine);
+            g2d.drawString(largesupporttank.getSource(), 177 + xoffset, nextDataLine);
 
         } else {
             String yearFluff = "Year: ";
@@ -324,8 +280,7 @@ public class PrintLargeSupportVehicle implements Printable {
             font = UnitUtil.deriveFont(8.0f);
             g2d.setFont(font);
 
-            g2d.drawString(String.format("%1$s", largesupporttank.getYear()),
-                    177 + xoffset, nextDataLine);
+            g2d.drawString(String.format("%1$s", largesupporttank.getYear()), 177 + xoffset, nextDataLine);
 
         }
 
@@ -346,10 +301,8 @@ public class PrintLargeSupportVehicle implements Printable {
             g2d.drawString("BV: ", 35 + xoffset, 357 + yoffset);
             font = UnitUtil.deriveFont(false, 8);
             g2d.setFont(font);
-            g2d.drawString(
-                    String.format("%1$,d",
-                            largesupporttank.calculateBattleValue(true, true)),
-                    50 + xoffset, 357 + yoffset);
+            g2d.drawString(String.format("%1$,d", largesupporttank.calculateBattleValue(true, true)), 50 + xoffset,
+                    357 + yoffset);
         }
 
         // myFormatter = new DecimalFormat("#,###.##", unusualSymbols);
@@ -358,18 +311,13 @@ public class PrintLargeSupportVehicle implements Printable {
 
         if (UnitUtil.hasBAR(largesupporttank)) {
             font = UnitUtil.deriveFont(true, 9.0f);
-            g2d.drawString(
-                    "BAR: "
-                            + Integer.toString(UnitUtil
-                                    .getLowestBARRating(largesupporttank)),
-                    400 + xoffset, 64 + yoffset);
+            g2d.drawString("BAR: " + Integer.toString(UnitUtil.getLowestBARRating(largesupporttank)), 400 + xoffset,
+                    64 + yoffset);
         }
 
         font = UnitUtil.deriveFont(true, 6f);
         g2d.setFont(font);
-        g2d.drawString(
-                Integer.toString(Calendar.getInstance().get(Calendar.YEAR)),
-                52f, 395f + secondPageMargin);
+        g2d.drawString(Integer.toString(Calendar.getInstance().get(Calendar.YEAR)), 52f, 395f + secondPageMargin);
     }
 
     private void printArmor(Graphics2D g2d) {
@@ -380,8 +328,7 @@ public class PrintLargeSupportVehicle implements Printable {
 
         font = UnitUtil.deriveFont(true, 11.0f);
         g2d.setFont(font);
-        ImageHelper.printCenterString(g2d,
-                ImageHelperVehicle.getVehicleArmorTypeString(largesupporttank),
+        ImageHelper.printCenterString(g2d, ImageHelperVehicle.getVehicleArmorTypeString(largesupporttank),
                 g2d.getFont(), 470 + xoffset, 48 + yoffset);
         // g2d.drawString(
         // ImageHelperVehicle.getVehicleArmorTypeString(largesupporttank),
@@ -389,69 +336,46 @@ public class PrintLargeSupportVehicle implements Printable {
         font = UnitUtil.deriveFont(true, 8.0f);
         g2d.setFont(font);
 
-        g2d.drawString(
-                "("
-                        + Integer.toString(largesupporttank
-                                .getArmor(Tank.LOC_FRONT)) + ")",
-                465 + xoffset, 62 + yoffset);
+        g2d.drawString("(" + Integer.toString(largesupporttank.getArmor(Tank.LOC_FRONT)) + ")", 465 + xoffset,
+                62 + yoffset);
 
-        g2d.drawString(
-                "("
-                        + Integer.toString(largesupporttank
-                                .getArmor(LargeSupportTank.LOC_FRONTRIGHT))
-                        + ")", 550 + xoffset, 183 + yoffset);
+        g2d.drawString("(" + Integer.toString(largesupporttank.getArmor(LargeSupportTank.LOC_FRONTRIGHT)) + ")",
+                550 + xoffset, 183 + yoffset);
 
-        g2d.drawString(
-                "(" + largesupporttank.getArmor(LargeSupportTank.LOC_FRONTLEFT)
-                        + ")", 382 + xoffset, 109 + yoffset);
+        g2d.drawString("(" + largesupporttank.getArmor(LargeSupportTank.LOC_FRONTLEFT) + ")", 382 + xoffset,
+                109 + yoffset);
 
-        g2d.drawString(
-                "("
-                        + Integer.toString(largesupporttank
-                                .getArmor(LargeSupportTank.LOC_REARRIGHT))
-                        + ")", 550 + xoffset, 302 + yoffset);
+        g2d.drawString("(" + Integer.toString(largesupporttank.getArmor(LargeSupportTank.LOC_REARRIGHT)) + ")",
+                550 + xoffset, 302 + yoffset);
 
-        g2d.drawString(
-                "(" + largesupporttank.getArmor(LargeSupportTank.LOC_REARLEFT)
-                        + ")", 380 + xoffset, 228 + yoffset);
+        g2d.drawString("(" + largesupporttank.getArmor(LargeSupportTank.LOC_REARLEFT) + ")", 380 + xoffset,
+                228 + yoffset);
 
-        g2d.drawString(
-                "("
-                        + Integer.toString(largesupporttank
-                                .getArmor(LargeSupportTank.LOC_REAR)) + ")",
+        g2d.drawString("(" + Integer.toString(largesupporttank.getArmor(LargeSupportTank.LOC_REAR)) + ")",
                 465 + xoffset, 343 + yoffset);
 
         if (!largesupporttank.hasNoTurret()) {
-            g2d.drawString(
-                    "("
-                            + Integer.toString(largesupporttank
-                                    .getArmor(LargeSupportTank.LOC_TURRET))
-                            + ")", 404 + xoffset, 365 + yoffset);
+            g2d.drawString("(" + Integer.toString(largesupporttank.getArmor(LargeSupportTank.LOC_TURRET)) + ")",
+                    404 + xoffset, 365 + yoffset);
         }
         if (!largesupporttank.hasNoDualTurret()) {
-            g2d.drawString(
-                    "("
-                            + Integer.toString(largesupporttank
-                                    .getArmor(LargeSupportTank.LOC_TURRET_2))
-                            + ")", 525 + xoffset, 62 + yoffset);
+            g2d.drawString("(" + Integer.toString(largesupporttank.getArmor(LargeSupportTank.LOC_TURRET_2)) + ")",
+                    525 + xoffset, 62 + yoffset);
         }
     }
 
     private void printWeaponsNEquipment(Graphics2D g2d) {
 
-        ImageHelperVehicle.printLargeSupportTankWeaponsNEquipment(
-                largesupporttank, g2d, yoffset, xoffset);
+        ImageHelperVehicle.printLargeSupportTankWeaponsNEquipment(largesupporttank, g2d, yoffset, xoffset);
 
     }
 
-    private void printFrontArmor(Graphics2D g2d, int totalArmor,
-            boolean secondImage) {
+    private void printFrontArmor(Graphics2D g2d, int totalArmor, boolean secondImage) {
         Vector<float[]> pipPlotter = new Vector<float[]>(140, 1);
         if (!largesupporttank.hasNoDualTurret()) {
             float[] row1Start = { 432f, 84f };
             float[] row1End = { 538f, 84f };
-            int pipsFirstLine = Math.max(22,
-                    (int) (Math.ceil((double) totalArmor / 5)) + 1);
+            int pipsFirstLine = Math.max(22, (int) (Math.ceil((double) totalArmor / 5)) + 1);
             // float shiftX = (row1End[0]-row1Start[0])/pipsFirstLine;
             float fontSize = 6.5f;
             float shiftX = 5f;
@@ -473,18 +397,12 @@ public class PrintLargeSupportVehicle implements Printable {
             float[] row5End = { row4End[0] - shiftX, row4Start[1] + shiftY };
             float[] row6Start = { row5Start[0] + shiftX, row5Start[1] + shiftY };
             float[] row6End = { row5End[0] - shiftX, row5Start[1] + shiftY };
-            pipPlotter.addAll(ImageHelper.getPointsAlongLine(row1Start,
-                    row1End, pipsFirstLine));
-            pipPlotter.addAll(ImageHelper.getPointsAlongLine(row2Start,
-                    row2End, pipsFirstLine - 2));
-            pipPlotter.addAll(ImageHelper.getPointsAlongLine(row3Start,
-                    row3End, pipsFirstLine - 4));
-            pipPlotter.addAll(ImageHelper.getPointsAlongLine(row4Start,
-                    row4End, pipsFirstLine - 6));
-            pipPlotter.addAll(ImageHelper.getPointsAlongLine(row5Start,
-                    row5End, pipsFirstLine - 8));
-            pipPlotter.addAll(ImageHelper.getPointsAlongLine(row6Start,
-                    row6End, pipsFirstLine - 10));
+            pipPlotter.addAll(ImageHelper.getPointsAlongLine(row1Start, row1End, pipsFirstLine));
+            pipPlotter.addAll(ImageHelper.getPointsAlongLine(row2Start, row2End, pipsFirstLine - 2));
+            pipPlotter.addAll(ImageHelper.getPointsAlongLine(row3Start, row3End, pipsFirstLine - 4));
+            pipPlotter.addAll(ImageHelper.getPointsAlongLine(row4Start, row4End, pipsFirstLine - 6));
+            pipPlotter.addAll(ImageHelper.getPointsAlongLine(row5Start, row5End, pipsFirstLine - 8));
+            pipPlotter.addAll(ImageHelper.getPointsAlongLine(row6Start, row6End, pipsFirstLine - 10));
             printArmorPoints(g2d, pipPlotter, totalArmor, fontSize);
         } else {
             float baseX = 435f;
@@ -528,8 +446,7 @@ public class PrintLargeSupportVehicle implements Printable {
 
     }
 
-    private void printRearArmor(Graphics2D g2d, int totalArmor,
-            boolean secondImage) {
+    private void printRearArmor(Graphics2D g2d, int totalArmor, boolean secondImage) {
 
         if (!largesupporttank.hasNoDualTurret()) {
             float baseX = 444f;
@@ -546,10 +463,8 @@ public class PrintLargeSupportVehicle implements Printable {
 
                 for (int point = 0; point < pipsPerLine; point++) {
                     pipPlotter.add(new float[] { pointX, pointY });
-                    if (((lineCount == 0) && (point == 0))
-                            || ((lineCount == 1) && (point == 1))
-                            || ((lineCount == 2) && (point == 2))
-                            || ((lineCount == 3) && (point == 3))) {
+                    if (((lineCount == 0) && (point == 0)) || ((lineCount == 1) && (point == 1))
+                            || ((lineCount == 2) && (point == 2)) || ((lineCount == 3) && (point == 3))) {
                         pointX += shiftX * 13;
                     } else {
                         pointX += shiftX;
@@ -651,8 +566,7 @@ public class PrintLargeSupportVehicle implements Printable {
         }
     }
 
-    private void printTurretArmor(Graphics2D g2d, int totalArmor,
-            boolean secondImage) {
+    private void printTurretArmor(Graphics2D g2d, int totalArmor, boolean secondImage) {
 
         if (totalArmor < 1) {
             return;
@@ -753,8 +667,7 @@ public class PrintLargeSupportVehicle implements Printable {
         }
     }
 
-    private void printFrontLeftArmor(Graphics2D g2d, int totalArmor,
-            boolean secondImage) {
+    private void printFrontLeftArmor(Graphics2D g2d, int totalArmor, boolean secondImage) {
 
         if (!largesupporttank.hasNoDualTurret()) {
             if (totalArmor <= 77) {
@@ -886,8 +799,7 @@ public class PrintLargeSupportVehicle implements Printable {
 
     }
 
-    private void printRearLeftArmor(Graphics2D g2d, int totalArmor,
-            boolean secondImage) {
+    private void printRearLeftArmor(Graphics2D g2d, int totalArmor, boolean secondImage) {
 
         if (!largesupporttank.hasNoDualTurret()) {
             if (totalArmor <= 67) {
@@ -1017,8 +929,7 @@ public class PrintLargeSupportVehicle implements Printable {
 
     }
 
-    private void printFrontRightArmor(Graphics2D g2d, int totalArmor,
-            boolean secondImage) {
+    private void printFrontRightArmor(Graphics2D g2d, int totalArmor, boolean secondImage) {
 
         if (!largesupporttank.hasNoDualTurret()) {
             if (totalArmor <= 77) {
@@ -1149,8 +1060,7 @@ public class PrintLargeSupportVehicle implements Printable {
         }
     }
 
-    private void printRearRightArmor(Graphics2D g2d, int totalArmor,
-            boolean secondImage) {
+    private void printRearRightArmor(Graphics2D g2d, int totalArmor, boolean secondImage) {
         if (!largesupporttank.hasNoDualTurret()) {
             if (totalArmor <= 67) {
                 float baseX = 551f;
@@ -1278,8 +1188,7 @@ public class PrintLargeSupportVehicle implements Printable {
         }
     }
 
-    private void printFrontStruct(Graphics2D g2d, int totalArmor,
-            boolean secondImage) {
+    private void printFrontStruct(Graphics2D g2d, int totalArmor, boolean secondImage) {
         if (!largesupporttank.hasNoDualTurret()) {
             int baseX = 455;
             int baseY = 112;
@@ -1361,8 +1270,7 @@ public class PrintLargeSupportVehicle implements Printable {
         }
     }
 
-    private void printTurretStruct(Graphics2D g2d, int totalArmor,
-            boolean secondImage) {
+    private void printTurretStruct(Graphics2D g2d, int totalArmor, boolean secondImage) {
 
         if (totalArmor < 1) {
             return;
@@ -1414,8 +1322,7 @@ public class PrintLargeSupportVehicle implements Printable {
         }
     }
 
-    private void printLeftFrontStruct(Graphics2D g2d, int totalArmor,
-            boolean secondImage) {
+    private void printLeftFrontStruct(Graphics2D g2d, int totalArmor, boolean secondImage) {
 
         if (!largesupporttank.hasNoDualTurret()) {
             int baseX = 449;
@@ -1496,8 +1403,7 @@ public class PrintLargeSupportVehicle implements Printable {
 
     }
 
-    private void printLeftRearStruct(Graphics2D g2d, int totalArmor,
-            boolean secondImage) {
+    private void printLeftRearStruct(Graphics2D g2d, int totalArmor, boolean secondImage) {
         if (!largesupporttank.hasNoDualTurret()) {
             int baseX = 444;
             int baseY = 212;
@@ -1571,8 +1477,7 @@ public class PrintLargeSupportVehicle implements Printable {
         }
     }
 
-    private void printRightFrontStruct(Graphics2D g2d, int totalArmor,
-            boolean secondImage) {
+    private void printRightFrontStruct(Graphics2D g2d, int totalArmor, boolean secondImage) {
 
         if (!largesupporttank.hasNoDualTurret()) {
             int baseX = 519;
@@ -1652,8 +1557,7 @@ public class PrintLargeSupportVehicle implements Printable {
         }
     }
 
-    private void printRightRearStruct(Graphics2D g2d, int totalArmor,
-            boolean secondImage) {
+    private void printRightRearStruct(Graphics2D g2d, int totalArmor, boolean secondImage) {
         if (!largesupporttank.hasNoDualTurret()) {
             int baseX = 524;
             int baseY = 212;
@@ -1730,8 +1634,7 @@ public class PrintLargeSupportVehicle implements Printable {
         }
     }
 
-    private void printRearStruct(Graphics2D g2d, int totalArmor,
-            boolean secondImage) {
+    private void printRearStruct(Graphics2D g2d, int totalArmor, boolean secondImage) {
         if (!largesupporttank.hasNoDualTurret()) {
             int baseX = 455;
             int baseY = 287;
@@ -1825,19 +1728,16 @@ public class PrintLargeSupportVehicle implements Printable {
         }
     }
 
-    private void printArmorPoints(Graphics2D g2d, Vector<float[]> pipPoints,
-            float totalArmor) {
+    private void printArmorPoints(Graphics2D g2d, Vector<float[]> pipPoints, float totalArmor) {
         printArmorPoints(g2d, pipPoints, totalArmor, 7.5f);
     }
 
-    private void printArmorPoints(Graphics2D g2d, Vector<float[]> pipPoints,
-            float totalArmor, float fontSize) {
+    private void printArmorPoints(Graphics2D g2d, Vector<float[]> pipPoints, float totalArmor, float fontSize) {
         pipPoints.trimToSize();
         float pipSpace = pipPoints.size() / totalArmor;
         for (float pos = 0; pos < pipPoints.size(); pos += pipSpace) {
             int currentPip = (int) pos;
-            ImageHelperVehicle.drawTankArmorPip(g2d,
-                    pipPoints.get(currentPip)[0], pipPoints.get(currentPip)[1],
+            ImageHelperVehicle.drawTankArmorPip(g2d, pipPoints.get(currentPip)[0], pipPoints.get(currentPip)[1],
                     fontSize);
             if (--totalArmor <= 0) {
                 return;
@@ -1845,14 +1745,12 @@ public class PrintLargeSupportVehicle implements Printable {
         }
     }
 
-    private void printISPoints(Graphics2D g2d, Vector<int[]> pipPoints,
-            float totalArmor) {
+    private void printISPoints(Graphics2D g2d, Vector<int[]> pipPoints, float totalArmor) {
         pipPoints.trimToSize();
         float pipSpace = pipPoints.size() / totalArmor;
         for (float pos = 0; pos < pipPoints.size(); pos += pipSpace) {
             int currentPip = (int) pos;
-            ImageHelperVehicle.drawLSVISPip(g2d, pipPoints.get(currentPip)[0],
-                    pipPoints.get(currentPip)[1]);
+            ImageHelperVehicle.drawLSVISPip(g2d, pipPoints.get(currentPip)[0], pipPoints.get(currentPip)[1]);
             if (--totalArmor <= 0) {
                 return;
             }
@@ -1861,8 +1759,7 @@ public class PrintLargeSupportVehicle implements Printable {
 
     private void printLargeSupportTankImage(Graphics2D g2d) {
 
-        Image img = ImageHelper.getFluffImage(largesupporttank,
-                ImageHelper.imageVehicle);
+        Image img = ImageHelper.getFluffImage(largesupporttank, ImageHelper.imageVehicle);
         int width = Math.min(148, img.getWidth(null));
         int height = Math.min(99, img.getHeight(null));
         int drawingX = (int) (235 + xoffset + ((148 - width) / 2));

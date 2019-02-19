@@ -53,8 +53,8 @@ public class SaveMechToMTF {
 
         Writer out;
         try {
-            out = new BufferedWriter(new OutputStreamWriter(
-                    new FileOutputStream("./data/mechfiles/" + fileName), "UTF-8"));
+            out = new BufferedWriter(
+                    new OutputStreamWriter(new FileOutputStream("./data/mechfiles/" + fileName), "UTF-8"));
             try {
                 out.write(mek.getMtf());
             } catch (IOException e) {

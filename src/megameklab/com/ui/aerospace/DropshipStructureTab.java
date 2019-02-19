@@ -48,7 +48,7 @@ import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 
 /**
- * 
+ *
  * @author Neoancient
  *
  */
@@ -59,7 +59,7 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
      *
      */
     private static final long serialVersionUID = -6756011847500605874L;
-    
+
     private JPanel masterPanel;
     private BasicInfoView panInfo;
     private DropshipChassisView panChassis;
@@ -139,11 +139,11 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
         panSummary.setBorder(BorderFactory.createTitledBorder("Summary"));
         panArmorAllocation.setBorder(BorderFactory.createTitledBorder("Armor Allocation"));
     }
-    
+
     public ITechManager getTechManager() {
         return panInfo;
     }
-    
+
     /*
      * Used by MekHQ to set the tech faction for custom refits.
      */
@@ -153,7 +153,7 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
 
     public void refresh() {
         removeAllListeners();
-        
+
         panInfo.setFromEntity(getSmallCraft());
         panChassis.setFromEntity(getSmallCraft());
         panHeat.setFromAero(getSmallCraft());
@@ -162,7 +162,7 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
         panArmor.setFromEntity(getSmallCraft());
         panCrew.setFromEntity(getSmallCraft());
         panArmorAllocation.setFromEntity(getSmallCraft());
-        
+
         panSummary.refresh();
         addAllListeners();
 
@@ -218,7 +218,8 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
 
     public void refreshSummary() {
         panSummary.refresh();
-        // We're going to cheat and recalculate minimum crew values here in case the number of gunners changed.
+        // We're going to cheat and recalculate minimum crew values here in case the
+        // number of gunners changed.
         panCrew.setFromEntity(getSmallCraft());
     }
 
@@ -266,7 +267,7 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
     public void techLevelChanged(SimpleTechLevel techLevel) {
         updateTechLevel();
     }
-    
+
     @Override
     public void updateTechLevel() {
         getSmallCraft().setTechLevel(panInfo.getTechLevel().getCompoundTechLevel(panInfo.useClanTechBase()));
@@ -311,7 +312,7 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
         refresh.refreshBuild();
         refresh.refreshPreview();
     }
-    
+
     @Override
     public void armorTonnageChanged(double tonnage) {
         getSmallCraft().setArmorTonnage(Math.round(tonnage * 2) / 2.0);
@@ -329,29 +330,27 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
         panArmor.removeListener(this);
         panArmor.setFromEntity(getSmallCraft());
         panArmor.addListener(this);
-        
+
         panArmorAllocation.setFromEntity(getSmallCraft());
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
     }
-    
+
     @Override
     public void useRemainingTonnageArmor() {
-        double currentTonnage = UnitUtil.getEntityVerifier(getSmallCraft())
-                .calculateWeight();
+        double currentTonnage = UnitUtil.getEntityVerifier(getSmallCraft()).calculateWeight();
         currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getSmallCraft());
         double totalTonnage = getSmallCraft().getWeight();
-        double remainingTonnage = TestEntity.floor(
-                totalTonnage - currentTonnage, TestEntity.Ceil.HALFTON);
-        
+        double remainingTonnage = TestEntity.floor(totalTonnage - currentTonnage, TestEntity.Ceil.HALFTON);
+
         double maxArmor = Math.min(getSmallCraft().getArmorWeight() + remainingTonnage,
                 UnitUtil.getMaximumArmorTonnage(getSmallCraft()));
         getSmallCraft().setArmorTonnage(maxArmor);
         panArmor.removeListener(this);
         panArmor.setFromEntity(getSmallCraft());
         panArmor.addListener(this);
-        
+
         panArmorAllocation.setFromEntity(getSmallCraft());
         panSummary.refresh();
         refresh.refreshStatus();
@@ -394,7 +393,7 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
 
     @Override
     public void militaryChanged(boolean military) {
-        getSmallCraft().setDesignType(military? SmallCraft.MILITARY : SmallCraft.CIVILIAN);
+        getSmallCraft().setDesignType(military ? SmallCraft.MILITARY : SmallCraft.CIVILIAN);
         refresh.refreshPreview();
     }
 
@@ -415,8 +414,7 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
 
     @Override
     public void baseTypeChanged(int type) {
-        if ((DropshipChassisView.TYPE_SMALL_CRAFT == type)
-                && getSmallCraft().hasETypeFlag(Entity.ETYPE_DROPSHIP)) {
+        if ((DropshipChassisView.TYPE_SMALL_CRAFT == type) && getSmallCraft().hasETypeFlag(Entity.ETYPE_DROPSHIP)) {
             eSource.createNewUnit(Entity.ETYPE_SMALL_CRAFT, getSmallCraft());
         } else if ((DropshipChassisView.TYPE_DROPSHIP == type)
                 && !getSmallCraft().hasETypeFlag(Entity.ETYPE_DROPSHIP)) {
@@ -428,7 +426,6 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
         refresh.refreshPreview();
         refresh.refreshStatus();
     }
-
 
     @Override
     public void chassisTypeChanged(int type) {
@@ -453,7 +450,7 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
         refresh.refreshSummary();
         refresh.refreshPreview();
     }
-    
+
     @Override
     public void fuelTonnageChanged(double tonnage) {
         double fuelTons = Math.round(tonnage * 2) / 2.0;
@@ -479,27 +476,27 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
         for (int loc = 0; loc < getSmallCraft().locations(); loc++) {
             getSmallCraft().initializeArmor(0, loc);
         }
-        
+
         // divide armor among positions, with more toward the front
         int points = UnitUtil.getArmorPoints(getSmallCraft(), getSmallCraft().getLabArmorTonnage())
                 + getAero().getSI() * getAero().locations();
-        int nose = (int)Math.floor(points * 0.3);
-        int wing = (int)Math.floor(points * 0.25);
-        int aft = (int)Math.floor(points * 0.2);
+        int nose = (int) Math.floor(points * 0.3);
+        int wing = (int) Math.floor(points * 0.25);
+        int aft = (int) Math.floor(points * 0.2);
         int remainder = points - nose - wing - wing - aft;
-        
+
         // spread remainder among nose and wings
-        switch(remainder % 4) {
-            case 1:
-                nose++;
-                break;
-            case 3:
-                nose++;
-                wing++;
-                break;
-            case 2:
-                wing++;
-                break;
+        switch (remainder % 4) {
+        case 1:
+            nose++;
+            break;
+        case 3:
+            nose++;
+            wing++;
+            break;
+        case 2:
+            wing++;
+            break;
         }
         getSmallCraft().initializeArmor(nose, Aero.LOC_NOSE);
         getSmallCraft().initializeArmor(wing, Aero.LOC_LWING);
@@ -568,7 +565,7 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
         refresh.refreshStatus();
         refresh.refreshPreview();
     }
-    
+
     @Override
     public void autoAssignQuarters() {
         UnitUtil.autoAssignQuarters(getSmallCraft());
@@ -586,6 +583,5 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
         refresh.refreshStatus();
         refresh.refreshPreview();
     }
-
 
 }

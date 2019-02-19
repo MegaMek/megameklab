@@ -126,14 +126,15 @@ public class StringUtils {
                 for (int ammoIndex : bay.getBayAmmo()) {
                     Mounted ammoMount = unit.getEquipment(ammoIndex);
                     try {
-                        AmmoType aType = (AmmoType)ammoMount.getType();
-                        if ((mount.getLinked() != null) && (aType.getRackSize() == weapon.getRackSize()) && (aType.getAmmoType() == weapon.getAmmoType())) {
+                        AmmoType aType = (AmmoType) ammoMount.getType();
+                        if ((mount.getLinked() != null) && (aType.getRackSize() == weapon.getRackSize())
+                                && (aType.getAmmoType() == weapon.getAmmoType())) {
                             if (aType.hasFlag(AmmoType.F_AR10_BARRACUDA)) {
                                 barracudaAmmo += ammoMount.getUsableShotsLeft();
                             } else if (aType.hasFlag(AmmoType.F_AR10_KILLER_WHALE)) {
                                 killerwhaleAmmo += ammoMount.getUsableShotsLeft();
                             } else if (aType.hasFlag(AmmoType.F_AR10_WHITE_SHARK)) {
-                               whitesharkAmmo += ammoMount.getUsableShotsLeft();
+                                whitesharkAmmo += ammoMount.getUsableShotsLeft();
                             }
                         }
                     } catch (Exception ex) {
@@ -156,8 +157,9 @@ public class StringUtils {
                 for (int ammoIndex : bay.getBayAmmo()) {
                     Mounted ammoMount = unit.getEquipment(ammoIndex);
                     try {
-                        AmmoType aType = (AmmoType)ammoMount.getType();
-                        if ((mount.getLinked() != null) && (aType.getRackSize() == weapon.getRackSize()) && (aType.getAmmoType() == weapon.getAmmoType())) {
+                        AmmoType aType = (AmmoType) ammoMount.getType();
+                        if ((mount.getLinked() != null) && (aType.getRackSize() == weapon.getRackSize())
+                                && (aType.getAmmoType() == weapon.getAmmoType())) {
                             if (aType.hasFlag(AmmoType.F_MML_LRM)) {
                                 lrmAmmo += ammoMount.getUsableShotsLeft();
                             } else {
@@ -183,7 +185,9 @@ public class StringUtils {
                 }
                 if (weapon instanceof ScreenLauncherWeapon) {
                     info = String.format("[%1$s Screens]", totalAmmo);
-                } else if (weapon.hasFlag(WeaponType.F_BALLISTIC) || weapon.hasFlag(WeaponType.F_MISSILE) || weapon.hasFlag(WeaponType.F_ARTILLERY) || (weapon.getAtClass() == WeaponType.CLASS_CAPITAL_MISSILE)) {
+                } else if (weapon.hasFlag(WeaponType.F_BALLISTIC) || weapon.hasFlag(WeaponType.F_MISSILE)
+                        || weapon.hasFlag(WeaponType.F_ARTILLERY)
+                        || (weapon.getAtClass() == WeaponType.CLASS_CAPITAL_MISSILE)) {
                     info = String.format("[%1$s rnds]", totalAmmo);
                 }
             }
@@ -281,7 +285,8 @@ public class StringUtils {
             } else if (weapon instanceof UACWeapon) {
                 info = Integer.toString(weapon.getDamage());
                 info += "/Sht [DB,R/C]";
-            } else if ((weapon instanceof ISVehicularGrenadeLauncher) || (weapon instanceof CLVehicularGrenadeLauncher)) {
+            } else if ((weapon instanceof ISVehicularGrenadeLauncher)
+                    || (weapon instanceof CLVehicularGrenadeLauncher)) {
                 info = "[AE,OS]";
             } else {
                 if (!UnitUtil.isAMS(weapon)) {
@@ -316,22 +321,19 @@ public class StringUtils {
                 if (weapon.hasFlag(WeaponType.F_FLAMER) || weapon.hasFlag(WeaponType.F_PLASMA)) {
                     info += "H,";
                 }
-                if ((weapon instanceof MGWeapon) || (weapon instanceof BPodWeapon) ||
-                        (weapon instanceof CLERPulseLaserSmall) ||
-                        (weapon instanceof CLBAERPulseLaserSmall) ||
-                        (weapon instanceof ISXPulseLaserSmall) ||
-                        (weapon instanceof ISPulseLaserSmall) ||
-                        (weapon instanceof ISBALaserPulseSmall) || 
-                        (weapon instanceof CLPulseLaserSmall) ||
-                        (weapon instanceof CLBAPulseLaserSmall) ||
-                        (weapon instanceof CLPulseLaserMicro) ||
-                        (weapon instanceof CLBAPulseLaserMicro) ||
-                        (weapon.hasFlag(WeaponType.F_FLAMER) ||
-                        (weapon.hasFlag(WeaponType.F_BURST_FIRE)))) {
+                if ((weapon instanceof MGWeapon) || (weapon instanceof BPodWeapon)
+                        || (weapon instanceof CLERPulseLaserSmall) || (weapon instanceof CLBAERPulseLaserSmall)
+                        || (weapon instanceof ISXPulseLaserSmall) || (weapon instanceof ISPulseLaserSmall)
+                        || (weapon instanceof ISBALaserPulseSmall) || (weapon instanceof CLPulseLaserSmall)
+                        || (weapon instanceof CLBAPulseLaserSmall) || (weapon instanceof CLPulseLaserMicro)
+                        || (weapon instanceof CLBAPulseLaserMicro)
+                        || (weapon.hasFlag(WeaponType.F_FLAMER) || (weapon.hasFlag(WeaponType.F_BURST_FIRE)))) {
                     info += "AI,";
                 }
 
-                if (weapon.isExplosive(mount) && !(weapon instanceof ACWeapon) && (!(weapon instanceof PPCWeapon) || ((mount.getLinkedBy() != null) && mount.getLinkedBy().getType().hasFlag(MiscType.F_PPC_CAPACITOR)))) {
+                if (weapon.isExplosive(mount) && !(weapon instanceof ACWeapon)
+                        && (!(weapon instanceof PPCWeapon) || ((mount.getLinkedBy() != null)
+                                && mount.getLinkedBy().getType().hasFlag(MiscType.F_PPC_CAPACITOR)))) {
                     info += "X,";
                 }
 
@@ -342,8 +344,11 @@ public class StringUtils {
                 info = info.substring(0, info.length() - 1) + "]";
 
             }
-        } else if ((mount.getType() instanceof MiscType) && (mount.getType().hasFlag(MiscType.F_CLUB) || mount.getType().hasFlag(MiscType.F_HAND_WEAPON))) {
-            if (mount.getType().hasSubType(MiscType.S_VIBRO_LARGE) || mount.getType().hasSubType(MiscType.S_VIBRO_MEDIUM) || mount.getType().hasSubType(MiscType.S_VIBRO_SMALL)) {
+        } else if ((mount.getType() instanceof MiscType)
+                && (mount.getType().hasFlag(MiscType.F_CLUB) || mount.getType().hasFlag(MiscType.F_HAND_WEAPON))) {
+            if (mount.getType().hasSubType(MiscType.S_VIBRO_LARGE)
+                    || mount.getType().hasSubType(MiscType.S_VIBRO_MEDIUM)
+                    || mount.getType().hasSubType(MiscType.S_VIBRO_SMALL)) {
                 // manually set vibros to active to get correct damage
                 mount.setMode(1);
             }
@@ -452,12 +457,10 @@ public class StringUtils {
                     info += "S,";
                 }
 
-                if ((weapon instanceof MGWeapon) || (weapon instanceof BPodWeapon) ||
-                        (weapon instanceof CLERPulseLaserSmall) ||
-                        (weapon instanceof ISXPulseLaserSmall) ||
-                        (weapon instanceof ISPulseLaserSmall) ||
-                        (weapon instanceof CLPulseLaserSmall) ||
-                        (weapon instanceof CLPulseLaserMicro)) {
+                if ((weapon instanceof MGWeapon) || (weapon instanceof BPodWeapon)
+                        || (weapon instanceof CLERPulseLaserSmall) || (weapon instanceof ISXPulseLaserSmall)
+                        || (weapon instanceof ISPulseLaserSmall) || (weapon instanceof CLPulseLaserSmall)
+                        || (weapon instanceof CLPulseLaserMicro)) {
                     info += "AI,";
                 }
 
@@ -465,7 +468,9 @@ public class StringUtils {
                     info += "H,AI,";
                 }
 
-                if (weapon.isExplosive(mount) && !(weapon instanceof ACWeapon) && (!(weapon instanceof PPCWeapon) || ((mount.getLinkedBy() != null) && mount.getLinkedBy().getType().hasFlag(MiscType.F_PPC_CAPACITOR)))) {
+                if (weapon.isExplosive(mount) && !(weapon instanceof ACWeapon)
+                        && (!(weapon instanceof PPCWeapon) || ((mount.getLinkedBy() != null)
+                                && mount.getLinkedBy().getType().hasFlag(MiscType.F_PPC_CAPACITOR)))) {
                     info += "X,";
                 }
 
@@ -482,14 +487,11 @@ public class StringUtils {
         return info;
     }
 
-    public static int countOccurrences(String haystack, char needle)
-    {
+    public static int countOccurrences(String haystack, char needle) {
         int count = 0;
-        for (int i=0; i < haystack.length(); i++)
-        {
-            if (haystack.charAt(i) == needle)
-            {
-                 count++;
+        for (int i = 0; i < haystack.length(); i++) {
+            if (haystack.charAt(i) == needle) {
+                count++;
             }
         }
         return count;

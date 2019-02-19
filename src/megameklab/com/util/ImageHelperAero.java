@@ -36,10 +36,8 @@ import megamek.common.SmallCraft;
 import megamek.common.TechConstants;
 
 public class ImageHelperAero {
-    private static final String[] LOCATION_ABBRS =
-        { "N", "LW", "RW", "A", "WG", "BD" };
-    private static String[] LOCATION_ABBRS_SMALLCRAFT =
-        { "N", "LS", "RS", "A" };
+    private static final String[] LOCATION_ABBRS = { "N", "LW", "RW", "A", "WG", "BD" };
+    private static String[] LOCATION_ABBRS_SMALLCRAFT = { "N", "LS", "RS", "A" };
 
     public static String getLocationAbbrs(int pos) {
         return LOCATION_ABBRS[pos];
@@ -109,7 +107,8 @@ public class ImageHelperAero {
 
         boolean newLineNeeded = false;
 
-        ArrayList<Hashtable<String, EquipmentInfo>> equipmentLocations = new ArrayList<Hashtable<String, EquipmentInfo>>(aero.locations());
+        ArrayList<Hashtable<String, EquipmentInfo>> equipmentLocations = new ArrayList<Hashtable<String, EquipmentInfo>>(
+                aero.locations());
 
         for (int pos = 0; pos <= aero.locations(); pos++) {
             equipmentLocations.add(pos, new Hashtable<String, EquipmentInfo>());
@@ -117,7 +116,8 @@ public class ImageHelperAero {
 
         for (Mounted eq : aero.getEquipment()) {
 
-            if ((eq.isWeaponGroup() || (eq.getType() instanceof AmmoType)) || (eq.getLocation() == Entity.LOC_NONE) || !UnitUtil.isPrintableEquipment(eq.getType())) {
+            if ((eq.isWeaponGroup() || (eq.getType() instanceof AmmoType)) || (eq.getLocation() == Entity.LOC_NONE)
+                    || !UnitUtil.isPrintableEquipment(eq.getType())) {
                 continue;
             }
 
@@ -197,24 +197,32 @@ public class ImageHelperAero {
 
                 g2d.drawString(Integer.toString(eqi.count), qtyPoint, linePoint);
                 String name = eqi.name.trim() + " " + eqi.damage.trim();
-                /*if (ImageHelper.getStringWidth(g2d, name, font) > 65) {
-                    g2d.setFont(UnitUtil.getNewFont(g2d, name, false, 65, font.getSize2D()));
-                }*/
+                /*
+                 * if (ImageHelper.getStringWidth(g2d, name, font) > 65) {
+                 * g2d.setFont(UnitUtil.getNewFont(g2d, name, false, 65, font.getSize2D())); }
+                 */
 
                 if (eqi.c3Level == EquipmentInfo.C3I) {
-                    ImageHelper.printC3iName(g2d, typePoint, linePoint, font, false, aero.isMixedTech() && TechConstants.isClan(aero.getTechLevel()));
+                    ImageHelper.printC3iName(g2d, typePoint, linePoint, font, false,
+                            aero.isMixedTech() && TechConstants.isClan(aero.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3EM) {
-                    ImageHelper.printC3EmName(g2d, typePoint, linePoint, font, false, aero.isMixedTech() && TechConstants.isClan(aero.getTechLevel()));
+                    ImageHelper.printC3EmName(g2d, typePoint, linePoint, font, false,
+                            aero.isMixedTech() && TechConstants.isClan(aero.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3S) {
-                    ImageHelper.printC3sName(g2d, typePoint, linePoint, font, false, aero.isMixedTech() && TechConstants.isClan(aero.getTechLevel()));
+                    ImageHelper.printC3sName(g2d, typePoint, linePoint, font, false,
+                            aero.isMixedTech() && TechConstants.isClan(aero.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3M) {
-                    ImageHelper.printC3mName(g2d, typePoint, linePoint, font, false, aero.isMixedTech() && TechConstants.isClan(aero.getTechLevel()));
+                    ImageHelper.printC3mName(g2d, typePoint, linePoint, font, false,
+                            aero.isMixedTech() && TechConstants.isClan(aero.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3SB) {
-                    ImageHelper.printC3sbName(g2d, typePoint, linePoint, font, false, aero.isMixedTech() && TechConstants.isClan(aero.getTechLevel()));
+                    ImageHelper.printC3sbName(g2d, typePoint, linePoint, font, false,
+                            aero.isMixedTech() && TechConstants.isClan(aero.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3MB) {
-                    ImageHelper.printC3mbName(g2d, typePoint, linePoint, font, false, aero.isMixedTech() && TechConstants.isClan(aero.getTechLevel()));
+                    ImageHelper.printC3mbName(g2d, typePoint, linePoint, font, false,
+                            aero.isMixedTech() && TechConstants.isClan(aero.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3REMOTESENSOR) {
-                    ImageHelper.printC3RemoteSensorName(g2d, typePoint, linePoint, font, false, aero.isMixedTech() && TechConstants.isClan(aero.getTechLevel()));
+                    ImageHelper.printC3RemoteSensorName(g2d, typePoint, linePoint, font, false,
+                            aero.isMixedTech() && TechConstants.isClan(aero.getTechLevel()));
                 } else if (eqi.isMashCore) {
                     ImageHelper.printMashCore(g2d, typePoint, linePoint, font, false, aero);
                 } else if (eqi.isDroneControl) {
@@ -243,44 +251,49 @@ public class ImageHelperAero {
                 if (eqi.isMML) {
                     linePoint += lineFeed;
                     g2d.drawString("SRM Ammo", typePoint, linePoint);
-                    g2d.drawString(Integer.toString(eqi.shtRange * 2 ), shtPoint, (int) linePoint);
+                    g2d.drawString(Integer.toString(eqi.shtRange * 2), shtPoint, (int) linePoint);
                     g2d.drawString("\u2014", medPoint, linePoint);
                     g2d.drawString("\u2014", longPoint, linePoint);
                     g2d.drawString("\u2014", erPoint, linePoint);
-                    //g2d.drawLine(medPoint, (int) linePoint - 2, medPoint + 6, (int) linePoint - 2);
-                    //g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint - 2);
-                    //g2d.drawLine(erPoint, (int) linePoint - 2, erPoint + 6, (int) linePoint - 2);
+                    // g2d.drawLine(medPoint, (int) linePoint - 2, medPoint + 6, (int) linePoint -
+                    // 2);
+                    // g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint -
+                    // 2);
+                    // g2d.drawLine(erPoint, (int) linePoint - 2, erPoint + 6, (int) linePoint - 2);
                     linePoint += lineFeed;
                     g2d.drawString("LRM Ammo", typePoint, linePoint);
                     g2d.drawString(Integer.toString(eqi.shtRange), shtPoint, (int) linePoint);
                     g2d.drawString(Integer.toString(eqi.medRange), medPoint, (int) linePoint);
                     g2d.drawString(Integer.toString(eqi.longRange), longPoint, (int) linePoint);
                     g2d.drawString("\u2014", erPoint, linePoint);
-                    //g2d.drawLine(erPoint, (int) linePoint - 2, erPoint + 6, (int) linePoint - 2);
+                    // g2d.drawLine(erPoint, (int) linePoint - 2, erPoint + 6, (int) linePoint - 2);
                 } else if (eqi.shtRange > 0) {
                     g2d.drawString(Integer.toString(eqi.shtRange), shtPoint, (int) linePoint);
                 } else {
                     g2d.drawString("\u2014", shtPoint, linePoint);
-                    //g2d.drawLine(shtPoint, (int) linePoint - 2, shtPoint + 6, (int) linePoint - 2);
+                    // g2d.drawLine(shtPoint, (int) linePoint - 2, shtPoint + 6, (int) linePoint -
+                    // 2);
                 }
 
                 if ((eqi.medRange > 0) && !eqi.isMML) {
                     g2d.drawString(Integer.toString(eqi.medRange), medPoint, (int) linePoint);
-                } else if (!eqi.isMML){
+                } else if (!eqi.isMML) {
                     g2d.drawString("\u2014", medPoint, linePoint);
-                    //g2d.drawLine(medPoint, (int) linePoint - 2, medPoint + 6, (int) linePoint - 2);
+                    // g2d.drawLine(medPoint, (int) linePoint - 2, medPoint + 6, (int) linePoint -
+                    // 2);
                 }
                 if ((eqi.longRange > 0) && !eqi.isMML) {
                     g2d.drawString(Integer.toString(eqi.longRange), longPoint, (int) linePoint);
                 } else if (!eqi.isMML) {
                     g2d.drawString("\u2014", longPoint, linePoint);
-                    //g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint - 2);
+                    // g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint -
+                    // 2);
                 }
                 if ((eqi.erRange > 0) && !eqi.isMML) {
                     g2d.drawString(Integer.toString(eqi.erRange), erPoint, (int) linePoint);
                 } else if (!eqi.isMML) {
                     g2d.drawString("\u2014", erPoint, linePoint);
-                    //g2d.drawLine(erPoint, (int) linePoint - 2, erPoint + 6, (int) linePoint - 2);
+                    // g2d.drawLine(erPoint, (int) linePoint - 2, erPoint + 6, (int) linePoint - 2);
                 }
 
                 if (eqi.hasArtemis) {
@@ -307,7 +320,7 @@ public class ImageHelperAero {
         if (aero instanceof FixedWingSupport) {
             ImageHelperAero.printFixedWingSupportCargoChassisMod((FixedWingSupport) aero, g2d, (int) linePoint);
         } else {
-            ImageHelperAero.printCargo(aero, g2d, (int)linePoint);
+            ImageHelperAero.printCargo(aero, g2d, (int) linePoint);
         }
 
         ImageHelper.printVehicleAmmo(aero, g2d, -20, 8);
@@ -393,7 +406,8 @@ public class ImageHelperAero {
 
     }
 
-    public static Font getAeroWeaponsNEquipmentFont(Graphics2D g2d, boolean bold, float stringHeight, ArrayList<Hashtable<String, EquipmentInfo>> equipmentLocations, float pointSize) {
+    public static Font getAeroWeaponsNEquipmentFont(Graphics2D g2d, boolean bold, float stringHeight,
+            ArrayList<Hashtable<String, EquipmentInfo>> equipmentLocations, float pointSize) {
 
         Font font = g2d.getFont();
 
@@ -410,11 +424,10 @@ public class ImageHelperAero {
                 String name = String.format("%1$s %2$s", eqi.name.trim(), eqi.damage.trim());
                 weaponCount++;
                 if (eqi.isWeapon) {
-                    /*         if (eqi.isMML) {
-                                 weaponCount += 2;
-                             } else if (eqi.isATM) {
-                                 weaponCount += 3;
-                             }*/
+                    /*
+                     * if (eqi.isMML) { weaponCount += 2; } else if (eqi.isATM) { weaponCount += 3;
+                     * }
+                     */
                     if (eqi.hasArtemis || eqi.hasArtemisV || eqi.hasApollo) {
                         weaponCount++;
                     }

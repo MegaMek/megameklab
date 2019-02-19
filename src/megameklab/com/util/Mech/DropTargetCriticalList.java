@@ -60,8 +60,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
     private RefreshListener refresh;
     private boolean buildView = false;
 
-    public DropTargetCriticalList(Vector<E> vector, EntitySource eSource,
-            RefreshListener refresh, boolean buildView) {
+    public DropTargetCriticalList(Vector<E> vector, EntitySource eSource, RefreshListener refresh, boolean buildView) {
         super(vector);
         setDragEnabled(true);
         this.eSource = eSource;
@@ -76,14 +75,12 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
         changeMountStatus(eq, location, -1, rear);
     }
 
-    private void changeMountStatus(Mounted eq, int location,
-            int secondaryLocation, boolean rear) {
+    private void changeMountStatus(Mounted eq, int location, int secondaryLocation, boolean rear) {
 
-        if (getUnit() instanceof BattleArmor){
+        if (getUnit() instanceof BattleArmor) {
             eq.setBaMountLoc(location);
         } else {
-            UnitUtil.changeMountStatus(getUnit(), eq, location, secondaryLocation,
-                    rear);
+            UnitUtil.changeMountStatus(getUnit(), eq, location, secondaryLocation, rear);
         }
 
         if (refresh != null) {
@@ -126,19 +123,16 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                     changeWeaponFacing(!mount.isRearMounted());
                     return;
                 }
-                
+
                 if (mount != null && (e.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) != 0) {
                     changeOmniMounting(!mount.isOmniPodMounted());
                     return;
-                }                
-                
-                if (mount != null
-                        && !((getUnit().getEntityType() & Entity.ETYPE_QUADVEE) == Entity.ETYPE_QUADVEE
-                        && mount.getType() instanceof MiscType
-                        && mount.getType().hasFlag(MiscType.F_TRACKS))) {
+                }
+
+                if (mount != null && !((getUnit().getEntityType() & Entity.ETYPE_QUADVEE) == Entity.ETYPE_QUADVEE
+                        && mount.getType() instanceof MiscType && mount.getType().hasFlag(MiscType.F_TRACKS))) {
                     JMenuItem info;
-                    if (!UnitUtil.isFixedLocationSpreadEquipment(mount
-                            .getType())) {
+                    if (!UnitUtil.isFixedLocationSpreadEquipment(mount.getType())) {
                         popup.setAutoscrolls(true);
                         info = new JMenuItem("Remove " + mount.getName());
                         info.addActionListener(new ActionListener() {
@@ -155,19 +149,15 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                             removeMount();
                         }
                     });
-                    if (!((getUnit() instanceof BattleArmor) 
-                            && UnitUtil.isFixedLocationSpreadEquipment(mount
-                                    .getType()))){
+                    if (!((getUnit() instanceof BattleArmor)
+                            && UnitUtil.isFixedLocationSpreadEquipment(mount.getType()))) {
                         popup.add(info);
                     }
-                    
+
                     // Allow making this a sort weapon
-                    if ((mount.getType() instanceof WeaponType)
-                            && !mount.isSquadSupportWeapon()
-                            && mount.getLocation() == BattleArmor.LOC_SQUAD
-                            && (getUnit() instanceof BattleArmor)
-                            && ((BattleArmor)getUnit()).getChassisType() != 
-                                BattleArmor.CHASSIS_TYPE_QUAD){
+                    if ((mount.getType() instanceof WeaponType) && !mount.isSquadSupportWeapon()
+                            && mount.getLocation() == BattleArmor.LOC_SQUAD && (getUnit() instanceof BattleArmor)
+                            && ((BattleArmor) getUnit()).getChassisType() != BattleArmor.CHASSIS_TYPE_QUAD) {
                         info = new JMenuItem("Mount as squad support weapon");
                         info.addActionListener(new ActionListener() {
                             public void actionPerformed(ActionEvent e) {
@@ -179,27 +169,22 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                         });
                         popup.add(info);
                     }
-                    
+
                     // Adding ammo as a squad support mount is slightly different
-                    if ((mount.getType() instanceof AmmoType)
-                            && !mount.getType().hasFlag(WeaponType.F_MISSILE)
-                            && !mount.isSquadSupportWeapon()
-                            && mount.getLocation() == BattleArmor.LOC_SQUAD
+                    if ((mount.getType() instanceof AmmoType) && !mount.getType().hasFlag(WeaponType.F_MISSILE)
+                            && !mount.isSquadSupportWeapon() && mount.getLocation() == BattleArmor.LOC_SQUAD
                             && (getUnit() instanceof BattleArmor)
-                            && ((BattleArmor)getUnit()).getChassisType() != 
-                                BattleArmor.CHASSIS_TYPE_QUAD){
+                            && ((BattleArmor) getUnit()).getChassisType() != BattleArmor.CHASSIS_TYPE_QUAD) {
                         boolean enabled = false;
-                        for (Mounted weapon : getUnit().getWeaponList()){
-                            WeaponType wtype = (WeaponType)weapon.getType();
-                            if (weapon.isSquadSupportWeapon() 
-                                    && AmmoType.isAmmoValid(mount, wtype)){
+                        for (Mounted weapon : getUnit().getWeaponList()) {
+                            WeaponType wtype = (WeaponType) weapon.getType();
+                            if (weapon.isSquadSupportWeapon() && AmmoType.isAmmoValid(mount, wtype)) {
                                 enabled = true;
                             }
                         }
                         info = new JMenuItem("Mount as squad support weapon");
                         info.setEnabled(enabled);
-                        info.setToolTipText("Ammo can only be squad mounted along " +
-                                "with a weapon that uses it");
+                        info.setToolTipText("Ammo can only be squad mounted along " + "with a weapon that uses it");
                         info.addActionListener(new ActionListener() {
                             public void actionPerformed(ActionEvent e) {
                                 mount.setSquadSupportWeapon(true);
@@ -210,16 +195,16 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                         });
                         popup.add(info);
                     }
-                    
+
                     // Allow removing squad support weapon
-                    if (mount.isSquadSupportWeapon()){
+                    if (mount.isSquadSupportWeapon()) {
                         info = new JMenuItem("Remove squad support weapon mount");
                         info.addActionListener(new ActionListener() {
                             public void actionPerformed(ActionEvent e) {
                                 mount.setSquadSupportWeapon(false);
-                                // Can't have squad support weapon ammo with no 
+                                // Can't have squad support weapon ammo with no
                                 // squad support weapon
-                                for (Mounted ammo : getUnit().getAmmo()){
+                                for (Mounted ammo : getUnit().getAmmo()) {
                                     ammo.setSquadSupportWeapon(false);
                                 }
                                 if (refresh != null) {
@@ -229,10 +214,9 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                         });
                         popup.add(info);
                     }
-                    
+
                     // Right-clicked on a DWP that has an attached weapon
-                    if (mount.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK) 
-                            && mount.getLinked() != null){
+                    if (mount.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK) && mount.getLinked() != null) {
                         info = new JMenuItem("Remove attached weapon");
                         info.addActionListener(new ActionListener() {
                             public void actionPerformed(ActionEvent e) {
@@ -249,10 +233,9 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                         });
                         popup.add(info);
                     }
-                    
+
                     // Right-clicked on a AP Mount that has an attached weapon
-                    if (mount.getType().hasFlag(MiscType.F_AP_MOUNT) 
-                            && mount.getLinked() != null){
+                    if (mount.getType().hasFlag(MiscType.F_AP_MOUNT) && mount.getLinked() != null) {
                         info = new JMenuItem("Remove attached weapon");
                         info.addActionListener(new ActionListener() {
                             public void actionPerformed(ActionEvent e) {
@@ -270,35 +253,25 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                         popup.add(info);
                     }
 
-                    if ((mount.getLocation() != Mech.LOC_LARM)
-                            && (mount.getLocation() != Mech.LOC_RARM)) {
+                    if ((mount.getLocation() != Mech.LOC_LARM) && (mount.getLocation() != Mech.LOC_RARM)) {
 
                         if (mount.getType() instanceof WeaponType) {
-                            if (getUnit().hasWorkingMisc(MiscType.F_QUAD_TURRET, -1,
-                                    mount.getLocation())
-                                    || getUnit().hasWorkingMisc(
-                                            MiscType.F_SHOULDER_TURRET, -1,
-                                            mount.getLocation())
-                                    || (getUnit().hasWorkingMisc(
-                                            MiscType.F_HEAD_TURRET, -1,
-                                            Mech.LOC_CT) && (mount
-                                            .getLocation() == Mech.LOC_HEAD))) {
+                            if (getUnit().hasWorkingMisc(MiscType.F_QUAD_TURRET, -1, mount.getLocation())
+                                    || getUnit().hasWorkingMisc(MiscType.F_SHOULDER_TURRET, -1, mount.getLocation())
+                                    || (getUnit().hasWorkingMisc(MiscType.F_HEAD_TURRET, -1, Mech.LOC_CT)
+                                            && (mount.getLocation() == Mech.LOC_HEAD))) {
                                 if (!mount.isMechTurretMounted()) {
-                                    info = new JMenuItem("Mount "
-                                            + mount.getName() + " in Turret");
+                                    info = new JMenuItem("Mount " + mount.getName() + " in Turret");
                                     info.addActionListener(new ActionListener() {
-                                        public void actionPerformed(
-                                                ActionEvent e) {
+                                        public void actionPerformed(ActionEvent e) {
                                             changeTurretMount(true);
                                         }
                                     });
                                     popup.add(info);
                                 } else {
-                                    info = new JMenuItem("Remove "
-                                            + mount.getName() + " from Turret");
+                                    info = new JMenuItem("Remove " + mount.getName() + " from Turret");
                                     info.addActionListener(new ActionListener() {
-                                        public void actionPerformed(
-                                                ActionEvent e) {
+                                        public void actionPerformed(ActionEvent e) {
                                             changeTurretMount(false);
                                         }
                                     });
@@ -308,13 +281,10 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                         }
 
                         if (!(getUnit() instanceof BattleArmor)
-                                && ((mount.getType() instanceof WeaponType) || ((mount
-                                        .getType() instanceof MiscType) && mount
-                                        .getType()
-                                        .hasFlag(MiscType.F_LIFTHOIST)))) {
+                                && ((mount.getType() instanceof WeaponType) || ((mount.getType() instanceof MiscType)
+                                        && mount.getType().hasFlag(MiscType.F_LIFTHOIST)))) {
                             if (!mount.isRearMounted()) {
-                                info = new JMenuItem("Make " + mount.getName()
-                                        + " Rear Facing");
+                                info = new JMenuItem("Make " + mount.getName() + " Rear Facing");
                                 info.addActionListener(new ActionListener() {
                                     public void actionPerformed(ActionEvent e) {
                                         changeWeaponFacing(true);
@@ -322,8 +292,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                                 });
                                 popup.add(info);
                             } else {
-                                info = new JMenuItem("Make " + mount.getName()
-                                        + " Forward Facing");
+                                info = new JMenuItem("Make " + mount.getName() + " Forward Facing");
                                 info.addActionListener(new ActionListener() {
                                     public void actionPerformed(ActionEvent e) {
                                         changeWeaponFacing(false);
@@ -333,10 +302,9 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                             }
                         }
                     }
-                    
+
                     // Allow number of shots selection
-                    if ((getUnit() instanceof BattleArmor) 
-                            && mount.getType() instanceof AmmoType){
+                    if ((getUnit() instanceof BattleArmor) && mount.getType() instanceof AmmoType) {
                         AmmoType at = (AmmoType) mount.getType();
                         int maxNumShots = TestBattleArmor.NUM_SHOTS_PER_CRIT;
                         int stepSize = 1;
@@ -344,8 +312,8 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                             maxNumShots = TestBattleArmor.NUM_SHOTS_PER_CRIT_TA;
                             stepSize = 2;
                         }
-                        for (int i = at.getShots(); i <= maxNumShots; i += stepSize){
-                            if (i == mount.getBaseShotsLeft()){
+                        for (int i = at.getShots(); i <= maxNumShots; i += stepSize) {
+                            if (i == mount.getBaseShotsLeft()) {
                                 continue;
                             }
                             info = new JMenuItem("Set Shots: " + i);
@@ -361,7 +329,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                             popup.add(info);
                         }
                     }
-                    
+
                     if (getUnit().isOmni() && !mount.getType().isOmniFixedOnly()) {
                         if (mount.isOmniPodMounted()) {
                             info = new JMenuItem("Change to fixed mount");
@@ -372,7 +340,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                             info.addActionListener(ev -> changeOmniMounting(true));
                             popup.add(info);
                         }
-                        
+
                     }
 
                 }
@@ -384,8 +352,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                     if (getUnit().isOmni()) {
                         int numCrits = getUnit().getNumberOfCriticals(location);
                         for (int slot = 0; slot < numCrits; slot++) {
-                            CriticalSlot crit = getUnit().getCritical(location,
-                                    slot);
+                            CriticalSlot crit = getUnit().getCritical(location, slot);
                             if (crit == null) {
                                 continue;
                             }
@@ -393,10 +360,8 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                                 continue;
                             }
                             Mounted m = crit.getMount();
-                            if ((m.getType() instanceof GaussWeapon)
-                                    || (m.getType() instanceof ACWeapon)
-                                    || (m.getType() instanceof UACWeapon)
-                                    || (m.getType() instanceof LBXACWeapon)
+                            if ((m.getType() instanceof GaussWeapon) || (m.getType() instanceof ACWeapon)
+                                    || (m.getType() instanceof UACWeapon) || (m.getType() instanceof LBXACWeapon)
                                     || (m.getType() instanceof PPCWeapon)) {
                                 canHaveLowerArm = false;
                             }
@@ -405,9 +370,8 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
 
                     popup.addSeparator();
                     popup.setAutoscrolls(true);
-                    if (canHaveLowerArm
-                            && ((getUnit().getCritical(location, 3) == null) || (getUnit()
-                                    .getCritical(location, 3).getType() != CriticalSlot.TYPE_SYSTEM))) {
+                    if (canHaveLowerArm && ((getUnit().getCritical(location, 3) == null)
+                            || (getUnit().getCritical(location, 3).getType() != CriticalSlot.TYPE_SYSTEM))) {
                         JMenuItem info = new JMenuItem("Add Hand");
                         info.setActionCommand(Integer.toString(location));
                         info.addActionListener(new ActionListener() {
@@ -422,16 +386,14 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                         info.setActionCommand(Integer.toString(location));
                         info.addActionListener(new ActionListener() {
                             public void actionPerformed(ActionEvent e) {
-                                removeHand(Integer.parseInt(e
-                                        .getActionCommand()));
+                                removeHand(Integer.parseInt(e.getActionCommand()));
                             }
                         });
                         popup.add(info);
                     }
 
-                    if (canHaveLowerArm
-                            && ((getUnit().getCritical(location, 2) == null) || (getUnit()
-                                    .getCritical(location, 2).getType() != CriticalSlot.TYPE_SYSTEM))) {
+                    if (canHaveLowerArm && ((getUnit().getCritical(location, 2) == null)
+                            || (getUnit().getCritical(location, 2).getType() != CriticalSlot.TYPE_SYSTEM))) {
                         JMenuItem info = new JMenuItem("Add Lower Arm");
                         info.setActionCommand(Integer.toString(location));
                         info.addActionListener(new ActionListener() {
@@ -466,7 +428,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                         });
                         popup.add(info);
 
-                    } else if (!(getUnit() instanceof Mech && ((Mech)getUnit()).isSuperHeavy())) {
+                    } else if (!(getUnit() instanceof Mech && ((Mech) getUnit()).isSuperHeavy())) {
                         JMenuItem info = new JMenuItem("Add Armoring");
                         info.setActionCommand(Integer.toString(location));
                         info.addActionListener(new ActionListener() {
@@ -477,7 +439,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                         popup.add(info);
                     }
                 }
-                
+
                 if (popup.getComponentCount() > 0) {
                     popup.show(this, e.getX(), e.getY());
                 }
@@ -491,11 +453,11 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
 
     public Mounted getMounted() {
         // BattleArmor doesn't have a proper critical system like other units
-        //  so they are handled specially
-        if (getUnit() instanceof BattleArmor){
+        // so they are handled specially
+        if (getUnit() instanceof BattleArmor) {
             // The names for this list should be of the form <eq>:<slot>:<eqId>
-            String[] split = ((String)this.getSelectedValue()).split(":");
-            if (split.length > 2){
+            String[] split = ((String) this.getSelectedValue()).split(":");
+            if (split.length > 2) {
                 int eqId = Integer.parseInt(split[2]);
                 return getUnit().getEquipment(eqId);
             }
@@ -504,8 +466,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
         CriticalSlot crit = getCrit();
         Mounted mount = null;
         try {
-            if ((crit != null)
-                    && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
+            if ((crit != null) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
                 return crit.getMount();
             }
         } catch (Exception ex) {
@@ -568,10 +529,10 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
         if (mounted == null) {
             return;
         }
-        
+
         // BattleArmor doens't use the crit system, we we can just remove the
-        //  mounted and be done
-        if (getUnit() instanceof BattleArmor){
+        // mounted and be done
+        if (getUnit() instanceof BattleArmor) {
             changeMountStatus(mounted, BattleArmor.MOUNT_LOC_NONE, false);
             return;
         }
@@ -599,7 +560,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
         int location = getCritLocation();
         changeMountStatus(mount, location, rear);
     }
-    
+
     private void changeOmniMounting(boolean pod) {
         Mounted mount = getMounted();
         if (!pod || UnitUtil.canPodMount(getUnit(), mount)) {
@@ -622,9 +583,9 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
             refresh.refreshAll();
         }
     }
-    
+
     private int getCritLocation() {
-        if (getUnit() instanceof BattleArmor){
+        if (getUnit() instanceof BattleArmor) {
             String[] split = getName().split(":");
             return Integer.parseInt(split[0]);
         } else {
@@ -640,8 +601,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
             UnitUtil.removeCriticals(getUnit(), mount);
             changeMountStatus(mount, Entity.LOC_NONE, false);
         }
-        getUnit().setCritical(location, 3, new CriticalSlot(
-                CriticalSlot.TYPE_SYSTEM, Mech.ACTUATOR_HAND));
+        getUnit().setCritical(location, 3, new CriticalSlot(CriticalSlot.TYPE_SYSTEM, Mech.ACTUATOR_HAND));
         addArm(location);
     }
 
@@ -657,7 +617,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
 
     private void removeArm(int location) {
         if (getUnit() instanceof BipedMech || getUnit() instanceof TripodMech) {
-            UnitUtil.removeArm((Mech)getUnit(),location);
+            UnitUtil.removeArm((Mech) getUnit(), location);
             if (refresh != null) {
                 refresh.refreshAll();
             }
@@ -673,8 +633,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
             changeMountStatus(mount, Entity.LOC_NONE, false);
         }
 
-        getUnit().setCritical(location, 2, new CriticalSlot(
-                CriticalSlot.TYPE_SYSTEM, Mech.ACTUATOR_LOWER_ARM));
+        getUnit().setCritical(location, 2, new CriticalSlot(CriticalSlot.TYPE_SYSTEM, Mech.ACTUATOR_LOWER_ARM));
         if (refresh != null) {
             refresh.refreshAll();
         }
@@ -708,7 +667,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
             refresh.refreshAll();
         }
     }
-    
+
     public Entity getUnit() {
         return eSource.getEntity();
     }

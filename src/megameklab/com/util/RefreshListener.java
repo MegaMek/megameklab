@@ -18,19 +18,29 @@ package megameklab.com.util;
 
 import java.util.EventListener;
 
-public interface RefreshListener extends EventListener{
+public interface RefreshListener extends EventListener {
     public void refreshHeader();
+
     public void refreshStatus();
+
     public void refreshAll();
+
     public void refreshStructure();
+
     public void refreshArmor();
+
     public void refreshWeapons();
+
     public void refreshEquipment();
+
     public void refreshTransport();
+
     public void refreshBuild();
+
     public void refreshPreview();
 
     // Refreshers for just one thing on a tab
     public void refreshSummary();
+
     public void refreshEquipmentTable();
 }
