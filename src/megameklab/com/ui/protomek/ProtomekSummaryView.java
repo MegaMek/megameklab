@@ -1,5 +1,6 @@
 /*
- * MegaMekLab - Copyright (C) 2018 - The MegaMek Team
+ * MegaMekLab
+ * Copyright (C) 2018 - The MegaMek Team
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -11,6 +12,7 @@
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  */
+
 package megameklab.com.ui.protomek;
 
 import java.awt.Dimension;
@@ -38,7 +40,7 @@ import megameklab.com.util.UnitUtil;
 
 /**
  * Summary view that shows weight breakdown by category for Protomechs
- * 
+ *
  * @author Neoancient
  *
  */
@@ -57,7 +59,8 @@ public class ProtomekSummaryView extends IView {
     private JTextField txtAmmoKg = new JTextField("?");
     private JTextField txtMiscKg = new JTextField("?");
 
-    private EntityVerifier entityVerifier = EntityVerifier.getInstance(new File("data/mechfiles/UnitVerifierOptions.xml"));
+    private EntityVerifier entityVerifier = EntityVerifier
+            .getInstance(new File("data/mechfiles/UnitVerifierOptions.xml"));
 
     public ProtomekSummaryView(EntitySource eSource) {
         super(eSource);
@@ -75,8 +78,8 @@ public class ProtomekSummaryView extends IView {
         valueFields.add(txtAmmoKg);
         valueFields.add(txtMiscKg);
 
-        Dimension size = new Dimension(60,25);
-        for(JTextField field : valueFields) {
+        Dimension size = new Dimension(60, 25);
+        for (JTextField field : valueFields) {
             field.setEditable(false);
             field.setSize(size);
             field.setPreferredSize(size);
@@ -90,11 +93,11 @@ public class ProtomekSummaryView extends IView {
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
-        size = new Dimension(180,25);
+        size = new Dimension(180, 25);
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.insets = new Insets(0,0,0,5);
+        gbc.insets = new Insets(0, 0, 0, 5);
         this.add(createLabel("Category", size, SwingConstants.CENTER), gbc);
         gbc.gridy++;
         this.add(createLabel("Internal Structure:", size, SwingConstants.RIGHT), gbc);
@@ -117,10 +120,10 @@ public class ProtomekSummaryView extends IView {
         gbc.gridy++;
         this.add(createLabel("Miscellaneous:", size, SwingConstants.RIGHT), gbc);
 
-        size = new Dimension(45,25);
+        size = new Dimension(45, 25);
         gbc.gridx = 1;
         gbc.gridy = 0;
-        gbc.insets = new Insets(0,0,0,0);
+        gbc.insets = new Insets(0, 0, 0, 0);
         this.add(createLabel("Kg", size, SwingConstants.CENTER), gbc);
         gbc.gridy++;
         this.add(txtStructKg, gbc);
@@ -185,12 +188,11 @@ public class ProtomekSummaryView extends IView {
 
         for (Mounted m : getProtomech().getMisc()) {
             MiscType mt = (MiscType) m.getType();
-            if(UnitUtil.isArmorOrStructure(mt)) {
+            if (UnitUtil.isArmorOrStructure(mt)) {
                 continue;
             } else if (mt.hasFlag(MiscType.F_MASC)) {
                 weightEnhance += mt.getTonnage(getProtomech(), m.getLocation());
-            } else if (mt.hasFlag(MiscType.F_JUMP_JET)
-                    || mt.hasFlag(MiscType.F_UMU)) {
+            } else if (mt.hasFlag(MiscType.F_JUMP_JET) || mt.hasFlag(MiscType.F_UMU)) {
                 weightJJ += mt.getTonnage(getProtomech(), m.getLocation());
             }
         }

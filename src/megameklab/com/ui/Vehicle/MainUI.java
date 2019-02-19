@@ -1,7 +1,7 @@
 /*
- * MegaMekLab - Copyright (C) 2009
- *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * MegaMekLab
+ * Copyright (C) 2009 - jtighe (torren@users.sourceforge.net)
+ * Copyright (C) 2018 - The MegaMek Team
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -102,7 +102,7 @@ public class MainUI extends MegaMekLabMainUI {
         equipmentTab.addRefreshedListener(this);
         buildTab.addRefreshedListener(this);
         fluffTab.setRefreshedListener(this);
-        
+
         previewTab = new PreviewTab(this);
 
         configPane.addTab("Structure/Armor", structureTab);
@@ -151,8 +151,7 @@ public class MainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshHeader() {
-        String title = getEntity().getChassis() + " " + getEntity().getModel()
-                + ".blk";
+        String title = getEntity().getChassis() + " " + getEntity().getModel() + ".blk";
 
         if (UnitUtil.validateUnit(getEntity()).length() > 0) {
             title += "  (Invalid)";
@@ -201,9 +200,8 @@ public class MainUI extends MegaMekLabMainUI {
 
         tank.setYear(3145);
 
-        tank.setEngine(new Engine(Math.max(10, (int) getEntity().getWeight()
-                - tank.getSuspensionFactor()), Engine.NORMAL_ENGINE,
-                Engine.TANK_ENGINE));
+        tank.setEngine(new Engine(Math.max(10, (int) getEntity().getWeight() - tank.getSuspensionFactor()),
+                Engine.NORMAL_ENGINE, Engine.TANK_ENGINE));
 
         tank.autoSetInternal();
         for (int loc = 0; loc < getEntity().locations(); loc++) {
@@ -224,8 +222,7 @@ public class MainUI extends MegaMekLabMainUI {
         } else {
             tank.setChassis(oldEntity.getChassis());
             tank.setModel(oldEntity.getModel());
-            tank.setYear(Math.max(oldEntity.getYear(),
-                    tank.getConstructionTechAdvancement().getIntroductionDate()));
+            tank.setYear(Math.max(oldEntity.getYear(), tank.getConstructionTechAdvancement().getIntroductionDate()));
             tank.setSource(oldEntity.getSource());
             tank.setManualBV(oldEntity.getManualBV());
             SimpleTechLevel lvl = SimpleTechLevel.max(tank.getStaticTechLevel(),
@@ -234,7 +231,7 @@ public class MainUI extends MegaMekLabMainUI {
             tank.setMixedTech(oldEntity.isMixedTech());
             tank.setMovementMode(oldEntity.getMovementMode());
         }
-        tank.setOriginalWalkMP((tank.getEngine().getRating() + tank.getSuspensionFactor()) / (int)tank.getWeight());
+        tank.setOriginalWalkMP((tank.getEngine().getRating() + tank.getSuspensionFactor()) / (int) tank.getWeight());
     }
 
     @Override

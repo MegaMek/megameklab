@@ -1,7 +1,7 @@
 /*
- * MegaMekLab - Copyright (C) 2008
- *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * MegaMekLab
+ * Copyright (C) 2008 - jtighe (torren@users.sourceforge.net)
+ * Copyright (C) 2018 - The MegaMek Team
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -41,17 +41,17 @@ public class MegaMekLab {
 
     public static void main(String[] args) {
         final String METHOD_NAME = "main(String[])";
-        
-    	System.setProperty("apple.laf.useScreenMenuBar", "true");
-        System.setProperty("com.apple.mrj.application.apple.menu.about.name","MegaMekLab");
+
+        System.setProperty("apple.laf.useScreenMenuBar", "true");
+        System.setProperty("com.apple.mrj.application.apple.menu.about.name", "MegaMekLab");
 
         String logFileName = "./logs/megameklablog.txt";
         Locale.setDefault(Locale.US);
 
-        //Taharqa: I am not sure why this is here, so I am commenting it
-        //out for awhile because I suspect it might be responsible for the
-        //partial unit.cache problem in MHQ.
-        //new File("./data/mechfiles/units.cache").delete();
+        // Taharqa: I am not sure why this is here, so I am commenting it
+        // out for awhile because I suspect it might be responsible for the
+        // partial unit.cache problem in MHQ.
+        // new File("./data/mechfiles/units.cache").delete();
 
         boolean logs = true;
         boolean vehicle = false;
@@ -73,22 +73,22 @@ public class MegaMekLab {
 
         setupLogging(logs, logFileName);
         showInfo();
-        
+
         if (vehicle) {
             Runtime runtime = Runtime.getRuntime();
 
             getLogger().log(MegaMekLab.class, METHOD_NAME, LogLevel.INFO,
-                            "Memory Allocated [" +
-                            (runtime.maxMemory() / 1000) + "]");
+                    "Memory Allocated [" + (runtime.maxMemory() / 1000) + "]");
             // Need at least 200m to run MegaMekLab
             if (runtime.maxMemory() < 200000000) {
                 try {
-                    String[] call =
-                        { "java", "-Xmx256m", "-splash:data/images/splash/megameklabsplashvehicle.jpg", "-jar", "MegaMekLab.jar", "-vehicle" };
+                    String[] call = { "java", "-Xmx256m", "-splash:data/images/splash/megameklabsplashvehicle.jpg",
+                            "-jar", "MegaMekLab.jar", "-vehicle" };
 
                     if (!logs) {
-                        call = new String[]
-                            { "java", "-Xmx256m", "-splash:data/images/splash/megameklabsplashvehicle.jpg", "-jar", "MegaMekLab.jar", "-vehicle", "-nolog" };
+                        call = new String[] { "java", "-Xmx256m",
+                                "-splash:data/images/splash/megameklabsplashvehicle.jpg", "-jar", "MegaMekLab.jar",
+                                "-vehicle", "-nolog" };
                     }
                     runtime.exec(call);
                     System.exit(0);
@@ -102,17 +102,17 @@ public class MegaMekLab {
             Runtime runtime = Runtime.getRuntime();
 
             getLogger().log(MegaMekLab.class, METHOD_NAME, LogLevel.INFO,
-                            "Memory Allocated [" +
-                            (runtime.maxMemory() / 1000) + "]");
+                    "Memory Allocated [" + (runtime.maxMemory() / 1000) + "]");
             // Need at least 200m to run MegaMekLab
             if (runtime.maxMemory() < 200000000) {
                 try {
-                    String[] call =
-                        { "java", "-Xmx256m", "-splash:data/images/splash/megameklabsplashbattlearmor.jpg", "-jar", "MegaMekLab.jar", "-battlearmor" };
+                    String[] call = { "java", "-Xmx256m", "-splash:data/images/splash/megameklabsplashbattlearmor.jpg",
+                            "-jar", "MegaMekLab.jar", "-battlearmor" };
 
                     if (!logs) {
-                        call = new String[]
-                            { "java", "-Xmx256m", "-splash:data/images/splash/megameklabsplashbattlearmor.jpg", "-jar", "MegaMekLab.jar", "-battlearmor", "-nolog" };
+                        call = new String[] { "java", "-Xmx256m",
+                                "-splash:data/images/splash/megameklabsplashbattlearmor.jpg", "-jar", "MegaMekLab.jar",
+                                "-battlearmor", "-nolog" };
                     }
                     runtime.exec(call);
                     System.exit(0);
@@ -127,18 +127,15 @@ public class MegaMekLab {
             Runtime runtime = Runtime.getRuntime();
 
             getLogger().log(MegaMekLab.class, METHOD_NAME, LogLevel.INFO,
-                            "Memory Allocated [" +
-                            (runtime.maxMemory() / 1000) + "]");
+                    "Memory Allocated [" + (runtime.maxMemory() / 1000) + "]");
             // Need at least 200m to run MegaMekLab
             if (runtime.maxMemory() < 200000000) {
                 try {
 
-                    String[] call =
-                        { "java", "-Xmx256m", "-jar", "MegaMekLab.jar" };
+                    String[] call = { "java", "-Xmx256m", "-jar", "MegaMekLab.jar" };
 
                     if (!logs) {
-                        call = new String[]
-                            { "java", "-Xmx256m", "-jar", "MegaMekLab.jar", "-nolog" };
+                        call = new String[] { "java", "-Xmx256m", "-jar", "MegaMekLab.jar", "-nolog" };
                     }
                     runtime.exec(call);
                     System.exit(0);
@@ -151,15 +148,13 @@ public class MegaMekLab {
                 QuirksHandler.initQuirksList();
             } catch (IOException e) {
                 // File is probably missing.
-                getLogger().log(MegaMekLab.class, METHOD_NAME, LogLevel.INFO,
-                        "Could not load quirks file.");
+                getLogger().log(MegaMekLab.class, METHOD_NAME, LogLevel.INFO, "Could not load quirks file.");
             }
             new MainUI();
         }
     }
 
-    private static void setupLogging(final boolean logs,
-                                     final String logFileName) {
+    private static void setupLogging(final boolean logs, final String logFileName) {
         if (logs) {
             try {
                 File logPath = new File("./logs/");
@@ -167,12 +162,7 @@ public class MegaMekLab {
                     logPath.mkdir();
                 }
                 MegaMek.resetLogFile(logFileName);
-                PrintStream ps =
-                        new PrintStream(
-                                new BufferedOutputStream(
-                                        new FileOutputStream(logFileName,
-                                                             true),
-                                        64));
+                PrintStream ps = new PrintStream(new BufferedOutputStream(new FileOutputStream(logFileName, true), 64));
                 System.setOut(ps);
                 System.setErr(ps);
             } catch (Exception ex) {
@@ -189,17 +179,16 @@ public class MegaMekLab {
         }
         return logger;
     }
-    
+
     /**
      * Prints some information about MegaMekLab. Used in logfiles to figure out the
      * JVM and version of MegaMekLab.
      */
     private static void showInfo() {
         final String METHOD_NAME = "showInfo";
-        final long TIMESTAMP = new File(PreferenceManager
-                .getClientPreferences().getLogDirectory()
-                + File.separator
-                + "timestamp").lastModified();
+        final long TIMESTAMP = new File(
+                PreferenceManager.getClientPreferences().getLogDirectory() + File.separator + "timestamp")
+                        .lastModified();
         // echo some useful stuff
         String msg = "Starting MegaMekLab v" + VERSION + " ..."; //$NON-NLS-1$ //$NON-NLS-2$
         if (TIMESTAMP > 0) {
@@ -209,12 +198,12 @@ public class MegaMekLab {
         msg += "\n\tJava vendor " + System.getProperty("java.vendor"); //$NON-NLS-1$ //$NON-NLS-2$
         msg += "\n\tJava version " + System.getProperty("java.version"); //$NON-NLS-1$ //$NON-NLS-2$
         msg += "\n\tPlatform " //$NON-NLS-1$
-               + System.getProperty("os.name") //$NON-NLS-1$
-               + " " //$NON-NLS-1$
-               + System.getProperty("os.version") //$NON-NLS-1$
-               + " (" //$NON-NLS-1$
-               + System.getProperty("os.arch") //$NON-NLS-1$
-               + ")"; //$NON-NLS-1$
+                + System.getProperty("os.name") //$NON-NLS-1$
+                + " " //$NON-NLS-1$
+                + System.getProperty("os.version") //$NON-NLS-1$
+                + " (" //$NON-NLS-1$
+                + System.getProperty("os.arch") //$NON-NLS-1$
+                + ")"; //$NON-NLS-1$
         long maxMemory = Runtime.getRuntime().maxMemory() / 1024;
         msg += "\n\tTotal memory available to MegaMek: " + NumberFormat.getInstance().format(maxMemory) + " kB"; //$NON-NLS-1$ //$NON-NLS-2$
         getLogger().log(MegaMekLab.class, METHOD_NAME, LogLevel.INFO, msg);

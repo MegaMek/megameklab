@@ -1,5 +1,6 @@
 /*
- * MegaMekLab - Copyright (C) 2017 - The MegaMek Team
+ * MegaMekLab
+ * Copyright (C) 2017 - The MegaMek Team
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -45,67 +46,67 @@ import com.kitfox.svg.SVGElement;
 import com.kitfox.svg.SVGUniverse;
 
 /**
- * Utility to generate svg code that defines rows for armor or structure pips that will fit in a region,
- * given the svg code for the path.
- * 
+ * Utility to generate svg code that defines rows for armor or structure pips
+ * that will fit in a region, given the svg code for the path.
+ *
  * @author Neoancient
  *
  */
 public class PipLayoutHelper {
 
     static class MainFrame extends JFrame {
-        
+
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = -8470193698981242677L;
-        
+
         private JTextArea txtRegionDef = new JTextArea();
         private JTextArea txtGeneratedCode = new JTextArea();
         private JTextField txtHeight = new JTextField(6);
         private JTextField txtAngle = new JTextField(6);
         private JCheckBox chkMirror = new JCheckBox("Mirror");
         private JButton btnGenerate = new JButton("Generate");
-        
+
         public MainFrame() {
             super();
             setTitle("Pip Layout Helper");
-            
+
             initUI();
-            setSize(new Dimension(800,600));
-            
+            setSize(new Dimension(800, 600));
+
             setVisible(true);
         }
-        
+
         private void initUI() {
             Container pane = getContentPane();
             pane.setLayout(new GridBagLayout());
-            
+
             GridBagConstraints gbc = new GridBagConstraints();
             gbc.gridx = 0;
             gbc.gridy = 0;
             gbc.fill = GridBagConstraints.NONE;
             gbc.anchor = GridBagConstraints.WEST;
-            
+
             pane.add(new JLabel("Height: "), gbc);
             gbc.gridx = 1;
             gbc.gridy = 0;
             txtHeight.setText("6.15152");
             pane.add(txtHeight, gbc);
-            
+
             gbc.gridx = 0;
             gbc.gridy = 1;
             pane.add(new JLabel("Angle: "), gbc);
-            
+
             gbc.gridx = 1;
             gbc.gridy = 1;
             pane.add(txtAngle, gbc);
-            
+
             gbc.gridx = 0;
             gbc.gridy = 2;
             gbc.gridwidth = 2;
             pane.add(chkMirror, gbc);
-            
+
             gbc.gridx = 0;
             gbc.gridy = 3;
             gbc.gridwidth = 2;
@@ -123,7 +124,7 @@ public class PipLayoutHelper {
             scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
             pane.add(scroll, gbc);
             scroll.setBorder(BorderFactory.createTitledBorder("Region"));
-            
+
             gbc.gridx = 2;
             gbc.gridy = 4;
             gbc.fill = GridBagConstraints.BOTH;
@@ -133,9 +134,9 @@ public class PipLayoutHelper {
             scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
             pane.add(txtGeneratedCode, gbc);
             scroll.setBorder(BorderFactory.createTitledBorder("Generated Code"));
-            
+
         }
-        
+
         private Shape getRegionShape() {
             SVGUniverse universe = new SVGUniverse();
             String input = "<svg>" + txtRegionDef.getText() + "</svg>";
@@ -152,7 +153,7 @@ public class PipLayoutHelper {
                 return null;
             }
         }
-        
+
         private void generate() {
             Shape shape = getRegionShape();
             if (null == shape) {
@@ -165,7 +166,7 @@ public class PipLayoutHelper {
             AffineTransform at = null;
             if (txtAngle.getText().length() > 0) {
                 double angle = Double.parseDouble(txtAngle.getText()) * Math.PI / 180;
-                at = AffineTransform.getRotateInstance(- angle);
+                at = AffineTransform.getRotateInstance(-angle);
             }
             do {
                 List<Double> top = findIntersections(curY, shape.getPathIterator(at));
@@ -174,17 +175,16 @@ public class PipLayoutHelper {
                     Collections.sort(top);
                     Collections.sort(bottom);
                     double x1 = Math.max(top.get(0), bottom.get(0)) + 0.5;
-                    double x2 = Math.min(top.get(top.size() - 1) - 1.0,
-                            bottom.get(bottom.size() - 1));
-                    regions.add(String.format("<rect x=\"%f\" y=\"%f\" width=\"%f\" height=\"%f\" />",
-                            x1 - bbox.getX(), bbox.getHeight() - (curY - bbox.getY() - 0.5), x2 - x1, HEIGHT));
+                    double x2 = Math.min(top.get(top.size() - 1) - 1.0, bottom.get(bottom.size() - 1));
+                    regions.add(String.format("<rect x=\"%f\" y=\"%f\" width=\"%f\" height=\"%f\" />", x1 - bbox.getX(),
+                            bbox.getHeight() - (curY - bbox.getY() - 0.5), x2 - x1, HEIGHT));
                 }
                 curY += HEIGHT * 0.866;
             } while (curY + HEIGHT + 0.5 < bbox.getY() + bbox.getHeight());
             Collections.reverse(regions);
             txtGeneratedCode.setText(regions.stream().collect(Collectors.joining("\n")));
         }
-        
+
         private List<Double> findIntersections(double curY, PathIterator iter) {
             double[] coords = new double[6];
             double[] curPos = new double[2];
@@ -197,28 +197,28 @@ public class PipLayoutHelper {
                 double x = 0;
                 double y = 0;
                 switch (type) {
-                    case PathIterator.SEG_MOVETO:
-                        dy = curY - coords[1];
-                        curPos[0] = coords[0];
-                        curPos[1] = coords[1];
-                        iter.next();
-                        continue;
-                    case PathIterator.SEG_LINETO:
-                        x = coords[0];
-                        y = coords[1];
-                        break;
-                    case PathIterator.SEG_CUBICTO:
-                        x = coords[2];
-                        y = coords[3];
-                        break;
-                    case PathIterator.SEG_QUADTO:
-                        x = coords[4];
-                        y = coords[5];
-                        break;
-                    case PathIterator.SEG_CLOSE:
-                        x = start[0];
-                        y = start[1];
-                        break;
+                case PathIterator.SEG_MOVETO:
+                    dy = curY - coords[1];
+                    curPos[0] = coords[0];
+                    curPos[1] = coords[1];
+                    iter.next();
+                    continue;
+                case PathIterator.SEG_LINETO:
+                    x = coords[0];
+                    y = coords[1];
+                    break;
+                case PathIterator.SEG_CUBICTO:
+                    x = coords[2];
+                    y = coords[3];
+                    break;
+                case PathIterator.SEG_QUADTO:
+                    x = coords[4];
+                    y = coords[5];
+                    break;
+                case PathIterator.SEG_CLOSE:
+                    x = start[0];
+                    y = start[1];
+                    break;
                 }
                 double dy1 = curY - y;
                 if ((curPos[1] != y) && (dy * dy1 <= 0)) {
@@ -239,21 +239,21 @@ public class PipLayoutHelper {
             while (!iter.isDone()) {
                 int type = iter.currentSegment(coords);
                 switch (type) {
-                    case PathIterator.SEG_MOVETO:
-                        System.out.print("M " + coords[0] + "," + coords[1]);
-                        break;
-                    case PathIterator.SEG_LINETO:
-                        System.out.print("L " + coords[0] + "," + coords[1]);
-                        break;
-                    case PathIterator.SEG_CUBICTO:
-                        System.out.print("C " + coords[2] + "," + coords[3]);
-                        break;
-                    case PathIterator.SEG_QUADTO:
-                        System.out.print("Q " + coords[4] + "," + coords[5]);
-                        break;
-                    case PathIterator.SEG_CLOSE:
-                        System.out.print("Z");
-                        break;
+                case PathIterator.SEG_MOVETO:
+                    System.out.print("M " + coords[0] + "," + coords[1]);
+                    break;
+                case PathIterator.SEG_LINETO:
+                    System.out.print("L " + coords[0] + "," + coords[1]);
+                    break;
+                case PathIterator.SEG_CUBICTO:
+                    System.out.print("C " + coords[2] + "," + coords[3]);
+                    break;
+                case PathIterator.SEG_QUADTO:
+                    System.out.print("Q " + coords[4] + "," + coords[5]);
+                    break;
+                case PathIterator.SEG_CLOSE:
+                    System.out.print("Z");
+                    break;
                 }
                 System.out.print(" ");
                 iter.next();
@@ -262,17 +262,17 @@ public class PipLayoutHelper {
         }
 
         /**
-         * Given a y coordinate, find the corresponding x coordinate  on the given line. This does not
-         * check whether the point is actually within the bounds of the segment or whether the segment
-         * has a slope of zero.
+         * Given a y coordinate, find the corresponding x coordinate on the given line.
+         * This does not check whether the point is actually within the bounds of the
+         * segment or whether the segment has a slope of zero.
          *
-         * @return    The x coordinate of the point.
+         * @return The x coordinate of the point.
          */
         private double getLineX(double y, double x1, double y1, double x2, double y2) {
-            return x1 + (y - y1)/(y2 - y1) * (x2 - x1);
+            return x1 + (y - y1) / (y2 - y1) * (x2 - x1);
         }
     }
-    
+
     /**
      * @param args
      */

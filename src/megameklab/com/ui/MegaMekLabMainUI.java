@@ -1,7 +1,7 @@
 /*
- * MegaMekLab - Copyright (C) 2011
- *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * MegaMekLab
+ * Copyright (C) 2011 - jtighe (torren@users.sourceforge.net)
+ * Copyright (C) 2018 - The MegaMek Team
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software

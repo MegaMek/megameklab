@@ -1,7 +1,7 @@
 /*
- * MegaMekLab - Copyright (C) 2008
- *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * MegaMekLab
+ * Copyright (C) 2008 - jtighe (torren@users.sourceforge.net)
+ * Copyright (C) 2018 - The MegaMek Team
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -43,7 +43,6 @@ import megameklab.com.util.MenuBarCreator;
 
 public class MainUI extends MegaMekLabMainUI {
 
-
     /**
      *
      */
@@ -69,10 +68,8 @@ public class MainUI extends MegaMekLabMainUI {
         setTitle(getEntity().getChassis() + " " + getEntity().getModel() + ".blk");
         menubarcreator = new MenuBarCreator(this);
         setJMenuBar(menubarcreator);
-        scroll.setHorizontalScrollBarPolicy(
-                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scroll.setVerticalScrollBarPolicy(
-                ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         scroll.getVerticalScrollBar().setUnitIncrement(20);
         scroll.setViewportView(masterPanel);
         scroll.setBorder(BorderFactory.createEmptyBorder());
@@ -160,8 +157,7 @@ public class MainUI extends MegaMekLabMainUI {
         } else {
             aero.setChassis(oldEntity.getChassis());
             aero.setModel(oldEntity.getModel());
-            aero.setYear(Math.max(oldEntity.getYear(),
-                    aero.getConstructionTechAdvancement().getIntroductionDate()));
+            aero.setYear(Math.max(oldEntity.getYear(), aero.getConstructionTechAdvancement().getIntroductionDate()));
             aero.setSource(oldEntity.getSource());
             aero.setManualBV(oldEntity.getManualBV());
             SimpleTechLevel lvl = SimpleTechLevel.max(aero.getStaticTechLevel(),
@@ -227,12 +223,12 @@ public class MainUI extends MegaMekLabMainUI {
     @Override
     public void refreshWeapons() {
     }
-    
+
     @Override
     public void refreshSummary() {
         structureTab.refreshSummary();
     }
-    
+
     @Override
     public void refreshEquipmentTable() {
         equipmentTab.refreshTable();

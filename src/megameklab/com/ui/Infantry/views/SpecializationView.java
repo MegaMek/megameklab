@@ -1,7 +1,6 @@
 /*
- * MegaMekLab - Copyright (C) 2017 The MegaMek Team
- *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * MegaMekLab
+ * Copyright (C) 2017 - The MegaMek Team
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -13,6 +12,7 @@
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  */
+
 package megameklab.com.ui.Infantry.views;
 
 import java.awt.Component;
@@ -44,19 +44,22 @@ import megameklab.com.util.UnitUtil;
 import megameklab.com.util.XTableColumnModel;
 
 /**
- * View for selecting infantry specializations, including xenoplanetary conditions training (XCT).
- * 
+ * View for selecting infantry specializations, including xenoplanetary
+ * conditions training (XCT).
+ *
  * @author Neoancient
  *
  */
 public class SpecializationView extends IView implements TableModelListener {
 
     private static final long serialVersionUID = -5851020780074510576L;
-    
+
     private List<InfantryBuildListener> listeners = new CopyOnWriteArrayList<>();
+
     public void addListener(InfantryBuildListener l) {
         listeners.add(l);
     }
+
     public void removeListener(InfantryBuildListener l) {
         listeners.remove(l);
     }
@@ -64,10 +67,10 @@ public class SpecializationView extends IView implements TableModelListener {
     private final JTable table = new JTable();
     private final SpecializationModel model;
     private final TableRowSorter<SpecializationModel> sorter;
-    
+
     public SpecializationView(EntitySource eSource) {
         super(eSource);
-        
+
         model = new SpecializationModel();
         table.setModel(model);
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
@@ -87,22 +90,22 @@ public class SpecializationView extends IView implements TableModelListener {
         table.setDoubleBuffered(true);
         JScrollPane scroll = new JScrollPane();
         scroll.setViewportView(table);
-        
+
         model.addTableModelListener(this);
-        
+
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         add(scroll);
         add(Box.createHorizontalGlue());
     }
-    
+
     public void addRefreshedListener(RefreshListener l) {
         // not used
     }
-    
+
     public void refresh() {
         filterSpecializations();
     }
-    
+
     private void filterSpecializations() {
         RowFilter<SpecializationModel, Integer> filter = new RowFilter<SpecializationModel, Integer>() {
             @Override
@@ -113,8 +116,7 @@ public class SpecializationView extends IView implements TableModelListener {
                         && TestInfantry.maxSecondaryWeapons(getInfantry()) < 2) {
                     return false;
                 }
-                return (null != eSource.getTechManager())
-                        && eSource.getTechManager().isLegal(techAdvancement);
+                return (null != eSource.getTechManager()) && eSource.getTechManager().isLegal(techAdvancement);
             }
         };
         sorter.setRowFilter(filter);
@@ -124,27 +126,26 @@ public class SpecializationView extends IView implements TableModelListener {
     public void tableChanged(TableModelEvent e) {
         listeners.forEach(InfantryBuildListener::specializationsChanged);
     }
-    
+
     private class SpecializationModel extends AbstractTableModel {
-        
+
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = -4321737516108874027L;
-        
+
         // Don't include SCUBA
         private final String[][] rows = new String[Infantry.NUM_SPECIALIZATIONS - 1][];
         private final TechAdvancement[] specTAs = new TechAdvancement[Infantry.NUM_SPECIALIZATIONS];
         private final String[] tooltips = new String[Infantry.NUM_SPECIALIZATIONS - 1];
-        
+
         SpecializationModel() {
             super();
             for (int i = 0; i < rows.length; i++) {
                 int spec = 1 << i;
                 String[] fields = new String[4];
                 fields[0] = Infantry.getSpecializationName(spec);
-                if ((spec == Infantry.PARATROOPS) || (spec == Infantry.TAG_TROOPS)
-                        || (spec == Infantry.XCT)) {
+                if ((spec == Infantry.PARATROOPS) || (spec == Infantry.TAG_TROOPS) || (spec == Infantry.XCT)) {
                     fields[1] = "-";
                     fields[2] = "-";
                     fields[3] = "-";
@@ -183,7 +184,7 @@ public class SpecializationView extends IView implements TableModelListener {
                 }
             }
         }
-        
+
         TechAdvancement getTechAdvancement(int row) {
             return specTAs[row];
         }
@@ -206,7 +207,7 @@ public class SpecializationView extends IView implements TableModelListener {
                 return rows[rowIndex][columnIndex - 1];
             }
         }
-        
+
         @Override
         public Class<?> getColumnClass(int columnIndex) {
             if (columnIndex == 0) {
@@ -219,14 +220,19 @@ public class SpecializationView extends IView implements TableModelListener {
         @Override
         public String getColumnName(int column) {
             switch (column) {
-                case 1: return "Specialization";
-                case 2: return "Max Squad Size";
-                case 3: return "Max # Squads";
-                case 4: return "Max Secondary Weapons";
-                default: return "";
+            case 1:
+                return "Specialization";
+            case 2:
+                return "Max Squad Size";
+            case 3:
+                return "Max # Squads";
+            case 4:
+                return "Max Secondary Weapons";
+            default:
+                return "";
             }
         }
-        
+
         @Override
         public boolean isCellEditable(int rowIndex, int columnIndex) {
             return columnIndex == 0;
@@ -235,15 +241,14 @@ public class SpecializationView extends IView implements TableModelListener {
         @Override
         public void setValueAt(Object value, int row, int col) {
             int spec = 1 << row;
-            if ((Boolean)model.getValueAt(row, 0)) {
+            if ((Boolean) model.getValueAt(row, 0)) {
                 getInfantry().setSpecializations(getInfantry().getSpecializations() & ~spec);
             } else {
                 getInfantry().setSpecializations(getInfantry().getSpecializations() | spec);
             }
             // If we have selected a specialization that does not allow two support weapons
             // we need to remove TAG if present.
-            if ((Infantry.TAG_TROOPS != spec)
-                    && getInfantry().hasSpecialization(Infantry.TAG_TROOPS)
+            if ((Infantry.TAG_TROOPS != spec) && getInfantry().hasSpecialization(Infantry.TAG_TROOPS)
                     && TestInfantry.maxSecondaryWeapons(getInfantry()) < 2) {
                 UnitUtil.replaceMainWeapon(getInfantry(), null, true);
                 getInfantry().setSecondaryN(0);
@@ -251,7 +256,7 @@ public class SpecializationView extends IView implements TableModelListener {
             }
             fireTableCellUpdated(row, col);
         }
-        
+
         public int getColumnWidth(int c) {
             if (c == 1) {
                 return 512;
@@ -281,11 +286,9 @@ public class SpecializationView extends IView implements TableModelListener {
             private static final long serialVersionUID = 9054581142945717303L;
 
             @Override
-            public Component getTableCellRendererComponent(JTable table,
-                    Object value, boolean isSelected, boolean hasFocus, int row,
-                    int column) {
-                super.getTableCellRendererComponent(table, value, isSelected,
-                        hasFocus, row, column);
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+                    boolean hasFocus, int row, int column) {
+                super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
                 setOpaque(true);
                 // setFont(new Font("Arial", Font.PLAIN, 12));
                 int actualCol = table.convertColumnIndexToModel(column);

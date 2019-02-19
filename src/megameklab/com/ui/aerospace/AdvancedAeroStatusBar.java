@@ -1,5 +1,6 @@
 /*
- * MegaMekLab - Copyright (C) 2018 - The MegaMek Team
+ * MegaMekLab
+ * Copyright (C) 2018 - The MegaMek Team
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -11,6 +12,7 @@
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  */
+
 package megameklab.com.ui.aerospace;
 
 import java.awt.Color;
@@ -39,16 +41,16 @@ import megameklab.com.util.UnitUtil;
 
 /**
  * Status bar for Jumpships/Warships/Space Stations
- * 
+ *
  * @author Neoancient
  *
  */
 public class AdvancedAeroStatusBar extends ITab {
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = -6303444326796852470L;
-    
+
     private JButton btnValidate = new JButton("Validate Unit");
     private JButton btnFluffImage = new JButton("Set Fluff Image");
     private JLabel bvLabel = new JLabel();
@@ -56,8 +58,8 @@ public class AdvancedAeroStatusBar extends ITab {
     private JLabel remainingTons = new JLabel();
     private JLabel heatSink = new JLabel();
     private JLabel cost = new JLabel();
-    private EntityVerifier entityVerifier = EntityVerifier.getInstance(new File(
-            "data/mechfiles/UnitVerifierOptions.xml"));
+    private EntityVerifier entityVerifier = EntityVerifier
+            .getInstance(new File("data/mechfiles/UnitVerifierOptions.xml"));
     private TestAdvancedAerospace testAdvAero = null;
     private DecimalFormat formatter;
     private JFrame parentFrame;
@@ -72,12 +74,12 @@ public class AdvancedAeroStatusBar extends ITab {
         testAdvAero = new TestAdvancedAerospace(getJumpship(), entityVerifier.aeroOption, null);
         btnValidate.addActionListener(e -> UnitUtil.showValidation(getJumpship(), getParentFrame()));
         btnFluffImage.addActionListener(e -> getFluffImage());
-        //btnFluffImage.setEnabled(false);
+        // btnFluffImage.setEnabled(false);
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.insets = new Insets(5,2,2,20);
+        gbc.insets = new Insets(5, 2, 2, 20);
         gbc.anchor = GridBagConstraints.WEST;
         this.add(btnValidate, gbc);
         gbc.gridx = 1;
@@ -95,7 +97,6 @@ public class AdvancedAeroStatusBar extends ITab {
         gbc.weightx = 1.0;
         this.add(cost, gbc);
 
-
         refresh();
     }
 
@@ -106,7 +107,7 @@ public class AdvancedAeroStatusBar extends ITab {
         double currentTonnage;
         int bv = getJumpship().calculateBattleValue();
         long currentCost = (long) Math.round(getJumpship().getCost(false));
-        
+
         testAdvAero = new TestAdvancedAerospace(getJumpship(), entityVerifier.aeroOption, null);
         currentTonnage = testAdvAero.calculateWeight();
         currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getJumpship());
@@ -123,7 +124,7 @@ public class AdvancedAeroStatusBar extends ITab {
         heatSink.setVisible(getJumpship().getEntityType() == Entity.ETYPE_AERO);
 
         tons.setText("Tonnage: " + currentTonnage + "/" + tonnage);
-        tons.setToolTipText("Current Tonnage/Max Tonnage");        
+        tons.setToolTipText("Current Tonnage/Max Tonnage");
         remainingTons.setText("Remaining: " + (tonnage - currentTonnage));
         if (currentTonnage > tonnage) {
             tons.setForeground(Color.red);
@@ -132,7 +133,6 @@ public class AdvancedAeroStatusBar extends ITab {
             tons.setForeground(Color.black);
             remainingTons.setForeground(Color.black);
         }
-
 
         bvLabel.setText("BV: " + bv);
         bvLabel.setToolTipText("BV 2.0");
@@ -148,20 +148,17 @@ public class AdvancedAeroStatusBar extends ITab {
             double weaponHeat = wtype.getHeat();
 
             // only count non-damaged equipment
-            if (mounted.isMissing() || mounted.isHit() || mounted.isDestroyed()
-                    || mounted.isBreached()) {
+            if (mounted.isMissing() || mounted.isHit() || mounted.isDestroyed() || mounted.isBreached()) {
                 continue;
             }
 
             // one shot weapons count 1/4
-            if ((wtype.getAmmoType() == AmmoType.T_ROCKET_LAUNCHER)
-                    || wtype.hasFlag(WeaponType.F_ONESHOT)) {
+            if ((wtype.getAmmoType() == AmmoType.T_ROCKET_LAUNCHER) || wtype.hasFlag(WeaponType.F_ONESHOT)) {
                 weaponHeat *= 0.25;
             }
 
             // double heat for ultras
-            if ((wtype.getAmmoType() == AmmoType.T_AC_ULTRA)
-                    || (wtype.getAmmoType() == AmmoType.T_AC_ULTRA_THB)) {
+            if ((wtype.getAmmoType() == AmmoType.T_AC_ULTRA) || (wtype.getAmmoType() == AmmoType.T_AC_ULTRA_THB)) {
                 weaponHeat *= 2;
             }
 
@@ -171,8 +168,7 @@ public class AdvancedAeroStatusBar extends ITab {
             }
 
             // half heat for streaks
-            if ((wtype.getAmmoType() == AmmoType.T_SRM_STREAK)
-                    || (wtype.getAmmoType() == AmmoType.T_MRM_STREAK)
+            if ((wtype.getAmmoType() == AmmoType.T_SRM_STREAK) || (wtype.getAmmoType() == AmmoType.T_MRM_STREAK)
                     || (wtype.getAmmoType() == AmmoType.T_LRM_STREAK)) {
                 weaponHeat *= 0.5;
             }
@@ -182,24 +178,18 @@ public class AdvancedAeroStatusBar extends ITab {
     }
 
     private void getFluffImage() {
-        //copied from structureTab
-        FileDialog fDialog = new FileDialog(getParentFrame(), "Image Path",
-                FileDialog.LOAD);
-        fDialog.setDirectory(new File(ImageHelper.fluffPath).getAbsolutePath()
-                + File.separatorChar + ImageHelper.imageMech
-                + File.separatorChar);
+        // copied from structureTab
+        FileDialog fDialog = new FileDialog(getParentFrame(), "Image Path", FileDialog.LOAD);
+        fDialog.setDirectory(new File(ImageHelper.fluffPath).getAbsolutePath() + File.separatorChar
+                + ImageHelper.imageMech + File.separatorChar);
         fDialog.setLocationRelativeTo(this);
 
         fDialog.setVisible(true);
 
         if (fDialog.getFile() != null) {
-            String relativeFilePath = new File(fDialog.getDirectory()
-                    + fDialog.getFile()).getAbsolutePath();
-            relativeFilePath = "."
-                    + File.separatorChar
-                    + relativeFilePath
-                            .substring(new File(System.getProperty("user.dir")
-                                    .toString()).getAbsolutePath().length() + 1);
+            String relativeFilePath = new File(fDialog.getDirectory() + fDialog.getFile()).getAbsolutePath();
+            relativeFilePath = "." + File.separatorChar + relativeFilePath
+                    .substring(new File(System.getProperty("user.dir").toString()).getAbsolutePath().length() + 1);
             getJumpship().getFluff().setMMLImagePath(relativeFilePath);
         }
         refresh.refreshPreview();

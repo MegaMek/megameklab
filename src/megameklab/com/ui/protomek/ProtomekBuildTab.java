@@ -1,5 +1,6 @@
 /*
- * MegaMekLab - Copyright (C) 2018 - The MegaMek Team
+ * MegaMekLab
+ * Copyright (C) 2018 - The MegaMek Team
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -11,6 +12,7 @@
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  */
+
 package megameklab.com.ui.protomek;
 
 import java.awt.Dimension;
@@ -37,7 +39,7 @@ import megameklab.com.util.UnitUtil;
 
 /**
  * Tab for assigning equipment to locations
- * 
+ *
  * @author Neoancient
  *
  */

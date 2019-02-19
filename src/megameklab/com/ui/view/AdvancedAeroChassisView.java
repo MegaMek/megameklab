@@ -1,5 +1,6 @@
 /*
- * MegaMekLab - Copyright (C) 2018 - The MegaMek Team
+ * MegaMekLab
+ * Copyright (C) 2018 - The MegaMek Team
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -11,6 +12,7 @@
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  */
+
 package megameklab.com.ui.view;
 
 import java.awt.GridBagConstraints;
@@ -42,33 +44,35 @@ import megameklab.com.ui.view.listeners.AdvancedAeroBuildListener;
 
 /**
  * Structure tab chassis panel for jumpships, warships, and space stations.
- * 
+ *
  * @author Neoancient
  *
  */
 public class AdvancedAeroChassisView extends BuildView implements ActionListener, ChangeListener {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 3329873021840561899L;
-    
+
     private final List<AdvancedAeroBuildListener> listeners = new CopyOnWriteArrayList<>();
+
     public void addListener(AdvancedAeroBuildListener l) {
         listeners.add(l);
     }
+
     public void removeListener(AdvancedAeroBuildListener l) {
         listeners.remove(l);
     }
-    
-    public final static int TYPE_JUMPSHIP      = 0;
-    public final static int TYPE_WARSHIP       = 1;
-    public final static int TYPE_STATION       = 2;
-    public final static int TYPE_SUBCOMPACT    = 3;
-    
+
+    public final static int TYPE_JUMPSHIP = 0;
+    public final static int TYPE_WARSHIP = 1;
+    public final static int TYPE_STATION = 2;
+    public final static int TYPE_SUBCOMPACT = 3;
+
     private final SpinnerNumberModel spnTonnageModel = new SpinnerNumberModel(2000, 2000, null, 500);
     private final SpinnerNumberModel spnSIModel = new SpinnerNumberModel(1, 1, null, 1);
-    
+
     final private JSpinner spnTonnage = new JSpinner(spnTonnageModel);
     final private JComboBox<String> cbBaseType = new JComboBox<>();
     final private JLabel lblRange;
@@ -78,25 +82,26 @@ public class AdvancedAeroChassisView extends BuildView implements ActionListener
     final private JCheckBox chkSail = new JCheckBox();
     final private JCheckBox chkMilitary = new JCheckBox();
     final private JSpinner spnSI = new JSpinner(spnSIModel);
-    
+
     private ITechManager techManager;
     private int baseType;
     private int maxTonnage;
     private int minTonnage;
     private int stepTonnage;
     private int maxThrust;
-    
+
     public AdvancedAeroChassisView(ITechManager techManager) {
         this.techManager = techManager;
         lblRange = createLabel("", labelSize);
         initUI();
     }
-    
+
     public void initUI() {
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl()); //$NON-NLS-1$
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        cbBaseType.setModel(new DefaultComboBoxModel<>(resourceMap.getString("AdvAeroChassisView.cbBaseType.values").split(",")));
+        cbBaseType.setModel(
+                new DefaultComboBoxModel<>(resourceMap.getString("AdvAeroChassisView.cbBaseType.values").split(",")));
 
         gbc.anchor = GridBagConstraints.NORTHWEST;
 
@@ -111,7 +116,7 @@ public class AdvancedAeroChassisView extends BuildView implements ActionListener
         spnTonnage.setToolTipText(resourceMap.getString("AdvAeroChassisView.spnTonnage.tooltip")); //$NON-NLS-1$
         add(spnTonnage, gbc);
         spnTonnage.addChangeListener(this);
-        
+
         chkSail.setText(resourceMap.getString("AdvAeroChassisView.chkSail.text")); //$NON-NLS-1$
         gbc.gridx = 4;
         gbc.gridy = 0;
@@ -124,7 +129,7 @@ public class AdvancedAeroChassisView extends BuildView implements ActionListener
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridwidth = 2;
-        add(createLabel(resourceMap.getString("AdvAeroChassisView.cbBaseType.text"), labelSize),gbc); //$NON-NLS-1$
+        add(createLabel(resourceMap.getString("AdvAeroChassisView.cbBaseType.text"), labelSize), gbc); //$NON-NLS-1$
         gbc.gridx = 2;
         gbc.gridy = 1;
         gbc.gridwidth = 2;
@@ -164,11 +169,11 @@ public class AdvancedAeroChassisView extends BuildView implements ActionListener
         spnRange.setToolTipText(resourceMap.getString("AdvAeroChassisView.spnRange.tooltip")); //$NON-NLS-1$
         add(spnRange, gbc);
         spnRange.addChangeListener(this);
-        
+
         gbc.gridx = 0;
         gbc.gridy = 4;
         gbc.gridwidth = 2;
-        add(createLabel(resourceMap.getString("AdvAeroChassisView.spnSI.text"), labelSize),gbc); //$NON-NLS-1$
+        add(createLabel(resourceMap.getString("AdvAeroChassisView.spnSI.text"), labelSize), gbc); //$NON-NLS-1$
         gbc.gridx = 2;
         gbc.gridy = 4;
         gbc.gridwidth = 2;
@@ -187,22 +192,22 @@ public class AdvancedAeroChassisView extends BuildView implements ActionListener
         chkModular.addActionListener(this);
 
     }
-    
+
     public void setFromEntity(Jumpship craft) {
         switch (craft.getDriveCoreType()) {
-            case Jumpship.DRIVE_CORE_STANDARD:
-                baseType = TYPE_JUMPSHIP;
-                break;
-            case Jumpship.DRIVE_CORE_COMPACT:
-            case Jumpship.DRIVE_CORE_PRIMITIVE:
-                baseType = TYPE_WARSHIP;
-                break;
-            case Jumpship.DRIVE_CORE_SUBCOMPACT:
-                baseType = TYPE_SUBCOMPACT;
-                break;
-            case Jumpship.DRIVE_CORE_NONE:
-                baseType = TYPE_STATION;
-                break;
+        case Jumpship.DRIVE_CORE_STANDARD:
+            baseType = TYPE_JUMPSHIP;
+            break;
+        case Jumpship.DRIVE_CORE_COMPACT:
+        case Jumpship.DRIVE_CORE_PRIMITIVE:
+            baseType = TYPE_WARSHIP;
+            break;
+        case Jumpship.DRIVE_CORE_SUBCOMPACT:
+            baseType = TYPE_SUBCOMPACT;
+            break;
+        case Jumpship.DRIVE_CORE_NONE:
+            baseType = TYPE_STATION;
+            break;
         }
         maxTonnage = TestAero.getMaxTonnage(craft, techManager.getTechFaction());
         minTonnage = TestAdvancedAerospace.getMinTonnage(craft);
@@ -222,11 +227,9 @@ public class AdvancedAeroChassisView extends BuildView implements ActionListener
         chkMilitary.setSelected(craft.getDesignType() == Aero.MILITARY);
         chkMilitary.addActionListener(this);
         chkModular.removeActionListener(this);
-        chkModular.setSelected(craft.hasETypeFlag(Entity.ETYPE_SPACE_STATION)
-                && ((SpaceStation) craft).isModular());
+        chkModular.setSelected(craft.hasETypeFlag(Entity.ETYPE_SPACE_STATION) && ((SpaceStation) craft).isModular());
         chkModular.addActionListener(this);
-        
-        
+
         cbBaseType.removeActionListener(this);
         cbBaseType.setSelectedIndex(baseType);
         cbBaseType.addActionListener(this);
@@ -238,33 +241,30 @@ public class AdvancedAeroChassisView extends BuildView implements ActionListener
             spnRange.setValue(craft.getJumpRange());
             spnRange.addChangeListener(this);
         }
-        
+
         if (!techManager.isLegal(Jumpship.getJumpSailTA())) {
             chkSail.setVisible(false);
             if (craft.hasSail()) {
                 chkSail.doClick();
             }
         } else {
-            chkSail.setVisible((baseType == TYPE_STATION)
-                    || craft.isPrimitive());
+            chkSail.setVisible((baseType == TYPE_STATION) || craft.isPrimitive());
         }
         lblRange.setVisible(craft.isPrimitive());
         spnRange.setVisible(craft.isPrimitive());
     }
-    
+
     public void setAsCustomization() {
         spnTonnage.setEnabled(false);
         cbBaseType.setEnabled(false);
     }
-    
+
     public void refresh() {
         refreshTonnage();
         refreshSI();
-        chkLFBattery.setVisible((baseType != TYPE_STATION)
-                && techManager.isLegal(Jumpship.getLFBatteryTA()));
+        chkLFBattery.setVisible((baseType != TYPE_STATION) && techManager.isLegal(Jumpship.getLFBatteryTA()));
         chkMilitary.setVisible((baseType == TYPE_STATION));
-        chkModular.setVisible((baseType == TYPE_STATION)
-                && techManager.isLegal(SpaceStation.getModularTA()));
+        chkModular.setVisible((baseType == TYPE_STATION) && techManager.isLegal(SpaceStation.getModularTA()));
     }
 
     private void refreshTonnage() {
@@ -279,7 +279,7 @@ public class AdvancedAeroChassisView extends BuildView implements ActionListener
             spnTonnage.setValue(maxTonnage);
         }
     }
-    
+
     private void refreshSI() {
         int prev = spnSIModel.getNumber().intValue();
         if ((baseType == TYPE_JUMPSHIP) || (baseType == TYPE_STATION)) {
@@ -297,28 +297,28 @@ public class AdvancedAeroChassisView extends BuildView implements ActionListener
             spnSI.setEnabled(true);
         }
     }
-    
+
     public double getTonnage() {
         return spnTonnageModel.getNumber().doubleValue();
     }
-    
+
     public void setTonnage(double tonnage) {
-        spnTonnage.setValue(Integer.valueOf((int)Math.ceil(tonnage)));
+        spnTonnage.setValue(Integer.valueOf((int) Math.ceil(tonnage)));
     }
-    
+
     public boolean hasLFBattery() {
         return chkLFBattery.isSelected() && chkLFBattery.isEnabled();
     }
-    
+
     public void setLFBattery(boolean battery) {
         chkLFBattery.setSelected(battery);
     }
-    
+
     public void setMaxThrust(int maxThrust) {
         this.maxThrust = maxThrust;
         refreshSI();
     }
-    
+
     @Override
     public void stateChanged(ChangeEvent e) {
         if (e.getSource() == spnTonnage) {

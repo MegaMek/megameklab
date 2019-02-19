@@ -1,7 +1,7 @@
 /*
- * MegaMekLab - Copyright (C) 2008
- *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * MegaMekLab
+ * Copyright (C) 2008 - jtighe (torren@users.sourceforge.net)
+ * Copyright (C) 2018 - The MegaMek Team
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -30,35 +30,35 @@ import megameklab.com.util.ITab;
 
 public class PreviewTab extends ITab {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -7410436201331568734L;
+    /**
+     *
+     */
+    private static final long serialVersionUID = -7410436201331568734L;
 
     private MechViewPanel panelMekView;
     private MechViewPanel panelTROView;
 
-	public PreviewTab(EntitySource eSource) {
-	    super(eSource);
-		this.setLayout(new BorderLayout());
+    public PreviewTab(EntitySource eSource) {
+        super(eSource);
+        this.setLayout(new BorderLayout());
         JTabbedPane panPreview = new JTabbedPane();
 
         panelMekView = new MechViewPanel();
         panelMekView.setMinimumSize(new java.awt.Dimension(300, 500));
         panelMekView.setPreferredSize(new java.awt.Dimension(300, 600));
         panPreview.addTab("Summary", panelMekView);
-        
+
         panelTROView = new MechViewPanel();
         panPreview.addTab("TRO", panelTROView);
 
         add(panPreview, BorderLayout.CENTER);
         setBackground(Color.WHITE);
         refresh();
-	}
-	
-	public void refresh() {
-		boolean populateTextFields = true;
-		final Entity selectedUnit = eSource.getEntity();
+    }
+
+    public void refresh() {
+        boolean populateTextFields = true;
+        final Entity selectedUnit = eSource.getEntity();
         MechView mechView = null;
         TROView troView = null;
         try {
@@ -76,6 +76,6 @@ public class PreviewTab extends ITab {
             panelMekView.reset();
             panelTROView.reset();
         }
-	}
-	
+    }
+
 }

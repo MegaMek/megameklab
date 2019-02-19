@@ -1,7 +1,7 @@
 /*
- * MegaMekLab - Copyright (C) 2010
- *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * MegaMekLab
+ * Copyright (C) 2010 - jtighe (torren@users.sourceforge.net)
+ * Copyright (C) 2018 - The MegaMek Team
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -156,26 +156,26 @@ public class PrintWiGE implements Printable {
         String engineName = "Fusion Engine";
 
         switch (tank.getEngine().getEngineType()) {
-            case Engine.COMBUSTION_ENGINE:
-                engineName = "I.C.E.";
-                break;
-            case Engine.LIGHT_ENGINE:
-                engineName = "Light Fusion Engine";
-                break;
-            case Engine.XL_ENGINE:
-                engineName = "XL Fusion Engine";
-                break;
-            case Engine.XXL_ENGINE:
-                engineName = "XXL Fusion Engine";
-                break;
-            case Engine.COMPACT_ENGINE:
-                engineName = "Compact Fusion Engine";
-                break;
-            case Engine.FUEL_CELL:
-                engineName = "Fuel Cell Engine";
-                break;
-            default:
-                break;
+        case Engine.COMBUSTION_ENGINE:
+            engineName = "I.C.E.";
+            break;
+        case Engine.LIGHT_ENGINE:
+            engineName = "Light Fusion Engine";
+            break;
+        case Engine.XL_ENGINE:
+            engineName = "XL Fusion Engine";
+            break;
+        case Engine.XXL_ENGINE:
+            engineName = "XXL Fusion Engine";
+            break;
+        case Engine.COMPACT_ENGINE:
+            engineName = "Compact Fusion Engine";
+            break;
+        case Engine.FUEL_CELL:
+            engineName = "Fuel Cell Engine";
+            break;
+        default:
+            break;
         }
 
         g2d.drawString(engineName, 79, 177);
@@ -200,29 +200,29 @@ public class PrintWiGE implements Printable {
 
         switch (tank.getTechLevel()) {
 
-            case TechConstants.T_INTRO_BOXSET:
-                ImageHelper.printCenterString(g2d, "(Intro)", font, startLine, nextDataLine);
-                nextDataLine += lineFeed;
-                break;
-            case TechConstants.T_IS_TW_NON_BOX:
-            case TechConstants.T_IS_TW_ALL:
-            case TechConstants.T_CLAN_TW:
-                break;
-            case TechConstants.T_IS_ADVANCED:
-            case TechConstants.T_CLAN_ADVANCED:
-                ImageHelper.printCenterString(g2d, "(Advanced)", font, startLine, nextDataLine);
-                nextDataLine += lineFeed;
-                break;
-            case TechConstants.T_IS_EXPERIMENTAL:
-            case TechConstants.T_CLAN_EXPERIMENTAL:
-                ImageHelper.printCenterString(g2d, "(Experimental)", font, startLine, nextDataLine);
-                nextDataLine += lineFeed;
-                break;
-            case TechConstants.T_IS_UNOFFICIAL:
-            case TechConstants.T_CLAN_UNOFFICIAL:
-                ImageHelper.printCenterString(g2d, "(Unofficial)", font, startLine, nextDataLine);
-                nextDataLine += lineFeed;
-                break;
+        case TechConstants.T_INTRO_BOXSET:
+            ImageHelper.printCenterString(g2d, "(Intro)", font, startLine, nextDataLine);
+            nextDataLine += lineFeed;
+            break;
+        case TechConstants.T_IS_TW_NON_BOX:
+        case TechConstants.T_IS_TW_ALL:
+        case TechConstants.T_CLAN_TW:
+            break;
+        case TechConstants.T_IS_ADVANCED:
+        case TechConstants.T_CLAN_ADVANCED:
+            ImageHelper.printCenterString(g2d, "(Advanced)", font, startLine, nextDataLine);
+            nextDataLine += lineFeed;
+            break;
+        case TechConstants.T_IS_EXPERIMENTAL:
+        case TechConstants.T_CLAN_EXPERIMENTAL:
+            ImageHelper.printCenterString(g2d, "(Experimental)", font, startLine, nextDataLine);
+            nextDataLine += lineFeed;
+            break;
+        case TechConstants.T_IS_UNOFFICIAL:
+        case TechConstants.T_CLAN_UNOFFICIAL:
+            ImageHelper.printCenterString(g2d, "(Unofficial)", font, startLine, nextDataLine);
+            nextDataLine += lineFeed;
+            break;
         }
 
         String techBase = "Inner Sphere";
@@ -324,7 +324,8 @@ public class PrintWiGE implements Printable {
             g2d.drawString(Integer.toString(tank.getRunMP()), 79, 155 + secondPageMargin);
         } else {
             int mascMP = tank.getRunMP();
-            g2d.drawString(Integer.toString(tank.getRunMPwithoutMASC()) + " [" + mascMP + "]", 79, 155 + secondPageMargin);
+            g2d.drawString(Integer.toString(tank.getRunMPwithoutMASC()) + " [" + mascMP + "]", 79,
+                    155 + secondPageMargin);
         }
 
         g2d.drawString(tank2.getMovementModeAsString(), 88, 537);
@@ -332,26 +333,26 @@ public class PrintWiGE implements Printable {
         String engineName = "Fusion Engine";
 
         switch (tank2.getEngine().getEngineType()) {
-            case Engine.COMBUSTION_ENGINE:
-                engineName = "I.C.E.";
-                break;
-            case Engine.LIGHT_ENGINE:
-                engineName = "Light Fusion Engine";
-                break;
-            case Engine.XL_ENGINE:
-                engineName = "XL Fusion Engine";
-                break;
-            case Engine.XXL_ENGINE:
-                engineName = "XXL Fusion Engine";
-                break;
-            case Engine.COMPACT_ENGINE:
-                engineName = "Compact Fusion Engine";
-                break;
-            case Engine.FUEL_CELL:
-                engineName = "Fuel Cell";
-                break;
-            default:
-                break;
+        case Engine.COMBUSTION_ENGINE:
+            engineName = "I.C.E.";
+            break;
+        case Engine.LIGHT_ENGINE:
+            engineName = "Light Fusion Engine";
+            break;
+        case Engine.XL_ENGINE:
+            engineName = "XL Fusion Engine";
+            break;
+        case Engine.XXL_ENGINE:
+            engineName = "XXL Fusion Engine";
+            break;
+        case Engine.COMPACT_ENGINE:
+            engineName = "Compact Fusion Engine";
+            break;
+        case Engine.FUEL_CELL:
+            engineName = "Fuel Cell";
+            break;
+        default:
+            break;
         }
 
         g2d.drawString(engineName, 79, 548);
@@ -374,29 +375,29 @@ public class PrintWiGE implements Printable {
 
         switch (tank2.getTechLevel()) {
 
-            case TechConstants.T_INTRO_BOXSET:
-                ImageHelper.printCenterString(g2d, "(Intro)", font, startLine, nextDataLine);
-                nextDataLine += lineFeed;
-                break;
-            case TechConstants.T_IS_TW_NON_BOX:
-            case TechConstants.T_IS_TW_ALL:
-            case TechConstants.T_CLAN_TW:
-                break;
-            case TechConstants.T_IS_ADVANCED:
-            case TechConstants.T_CLAN_ADVANCED:
-                ImageHelper.printCenterString(g2d, "(Advanced)", font, startLine, nextDataLine);
-                nextDataLine += lineFeed;
-                break;
-            case TechConstants.T_IS_EXPERIMENTAL:
-            case TechConstants.T_CLAN_EXPERIMENTAL:
-                ImageHelper.printCenterString(g2d, "(Experimental)", font, startLine, nextDataLine);
-                nextDataLine += lineFeed;
-                break;
-            case TechConstants.T_IS_UNOFFICIAL:
-            case TechConstants.T_CLAN_UNOFFICIAL:
-                ImageHelper.printCenterString(g2d, "(Unofficial)", font, startLine, nextDataLine);
-                nextDataLine += lineFeed;
-                break;
+        case TechConstants.T_INTRO_BOXSET:
+            ImageHelper.printCenterString(g2d, "(Intro)", font, startLine, nextDataLine);
+            nextDataLine += lineFeed;
+            break;
+        case TechConstants.T_IS_TW_NON_BOX:
+        case TechConstants.T_IS_TW_ALL:
+        case TechConstants.T_CLAN_TW:
+            break;
+        case TechConstants.T_IS_ADVANCED:
+        case TechConstants.T_CLAN_ADVANCED:
+            ImageHelper.printCenterString(g2d, "(Advanced)", font, startLine, nextDataLine);
+            nextDataLine += lineFeed;
+            break;
+        case TechConstants.T_IS_EXPERIMENTAL:
+        case TechConstants.T_CLAN_EXPERIMENTAL:
+            ImageHelper.printCenterString(g2d, "(Experimental)", font, startLine, nextDataLine);
+            nextDataLine += lineFeed;
+            break;
+        case TechConstants.T_IS_UNOFFICIAL:
+        case TechConstants.T_CLAN_UNOFFICIAL:
+            ImageHelper.printCenterString(g2d, "(Unofficial)", font, startLine, nextDataLine);
+            nextDataLine += lineFeed;
+            break;
         }
 
         String techBase = "Inner Sphere";
@@ -476,7 +477,7 @@ public class PrintWiGE implements Printable {
         font = UnitUtil.deriveFont(true, 11.0f);
         g2d.setFont(font);
         ImageHelper.printCenterString(g2d, ImageHelperVehicle.getVehicleArmorTypeString(tank), g2d.getFont(), 478, 48);
-        //g2d.drawString(ImageHelperVehicle.getVehicleArmorTypeString(tank), 463, 48);
+        // g2d.drawString(ImageHelperVehicle.getVehicleArmorTypeString(tank), 463, 48);
         font = UnitUtil.deriveFont(true, 9.0f);
         g2d.setFont(font);
 
@@ -495,8 +496,10 @@ public class PrintWiGE implements Printable {
         if (tank2 != null) {
             font = UnitUtil.deriveFont(true, 11.0f);
             g2d.setFont(font);
-            ImageHelper.printCenterString(g2d, ImageHelperVehicle.getVehicleArmorTypeString(tank2), g2d.getFont(), 478, 48 + secondPageMargin);
-            //g2d.drawString(ImageHelperVehicle.getVehicleArmorTypeString(tank2), 463, 48 + secondPageMargin);
+            ImageHelper.printCenterString(g2d, ImageHelperVehicle.getVehicleArmorTypeString(tank2), g2d.getFont(), 478,
+                    48 + secondPageMargin);
+            // g2d.drawString(ImageHelperVehicle.getVehicleArmorTypeString(tank2), 463, 48 +
+            // secondPageMargin);
             font = UnitUtil.deriveFont(true, 9.0f);
             g2d.setFont(font);
             g2d.drawString("(" + Integer.toString(tank2.getArmor(Tank.LOC_FRONT)) + ")", 467, 60 + secondPageMargin);
@@ -508,7 +511,8 @@ public class PrintWiGE implements Printable {
             g2d.drawString("(" + Integer.toString(tank2.getArmor(Tank.LOC_REAR)) + ")", 467, 342 + secondPageMargin);
 
             if (tank2.getOInternal(Tank.LOC_TURRET) > 0) {
-                g2d.drawString("(" + Integer.toString(tank2.getArmor(Tank.LOC_TURRET)) + ")", 535, 60 + secondPageMargin);
+                g2d.drawString("(" + Integer.toString(tank2.getArmor(Tank.LOC_TURRET)) + ")", 535,
+                        60 + secondPageMargin);
             }
         }
     }
@@ -545,8 +549,7 @@ public class PrintWiGE implements Printable {
 
         for (int lineCount = 1; lineCount <= 12; lineCount++) {
             for (int point = 0; point < pipsPerLine; point++) {
-                pipPlotter.add(new float[]
-                    { pointX, pointY });
+                pipPlotter.add(new float[] { pointX, pointY });
                 pointX += shiftX;
             }
 
@@ -583,8 +586,7 @@ public class PrintWiGE implements Printable {
 
         for (int lineCount = 1; lineCount <= 5; lineCount++) {
             for (int point = 0; point < pipsPerLine; point++) {
-                pipPlotter.add(new float[]
-                    { pointX, pointY });
+                pipPlotter.add(new float[] { pointX, pointY });
                 pointX += shiftX;
             }
             if (lineCount == 1) {
@@ -628,8 +630,7 @@ public class PrintWiGE implements Printable {
 
         for (int lineCount = 1; lineCount <= 6; lineCount++) {
             for (int point = 0; point < pipsPerLine; point++) {
-                pipPlotter.add(new float[]
-                    { pointX, pointY });
+                pipPlotter.add(new float[] { pointX, pointY });
                 pointX += shiftX;
             }
 
@@ -661,8 +662,7 @@ public class PrintWiGE implements Printable {
 
         for (int lineCount = 1; lineCount <= 20; lineCount++) {
             for (int point = 0; point < pipsPerLine; point++) {
-                pipPlotter.add(new float[]
-                    { pointX, pointY });
+                pipPlotter.add(new float[] { pointX, pointY });
                 pointX += shiftX;
             }
 
@@ -715,8 +715,7 @@ public class PrintWiGE implements Printable {
 
         for (int lineCount = 1; lineCount <= 20; lineCount++) {
             for (int point = 0; point < pipsPerLine; point++) {
-                pipPlotter.add(new float[]
-                    { pointX, pointY });
+                pipPlotter.add(new float[] { pointX, pointY });
                 pointX += shiftX;
             }
 
@@ -754,12 +753,9 @@ public class PrintWiGE implements Printable {
     }
 
     private void printFrontStruct(Graphics2D g2d, int totalArmor, boolean secondImage) {
-        float[] topCenter = new float[]
-            { 472.4f, 154.4f };
-        float[] bottomCenter = new float[]
-            { 472.4f, 160.7f };
-        float[] pipShift = new float[]
-            { 7, 7 };
+        float[] topCenter = new float[] { 472.4f, 154.4f };
+        float[] bottomCenter = new float[] { 472.4f, 160.7f };
+        float[] pipShift = new float[] { 7, 7 };
 
         if (secondImage) {
             topCenter[1] += secondPageMargin;
@@ -785,12 +781,9 @@ public class PrintWiGE implements Printable {
     }
 
     private void printTurretStruct(Graphics2D g2d, int totalArmor, boolean secondImage) {
-        float[] topColumn = new float[]
-            { 472.4f, 207 };
-        float[] bottomColumn = new float[]
-            { 472.4f, 215 };
-        float[] pipShift = new float[]
-            { 7, 7 };
+        float[] topColumn = new float[] { 472.4f, 207 };
+        float[] bottomColumn = new float[] { 472.4f, 215 };
+        float[] pipShift = new float[] { 7, 7 };
 
         if (totalArmor < 1) {
             return;
@@ -820,10 +813,8 @@ public class PrintWiGE implements Printable {
     }
 
     private void printLeftStruct(Graphics2D g2d, int totalArmor, boolean secondImage) {
-        int[] column = new int[]
-            { 446, 194 };
-        int[] pipShift = new int[]
-            { 2, 7 };
+        int[] column = new int[] { 446, 194 };
+        int[] pipShift = new int[] { 2, 7 };
 
         if (secondImage) {
             column[1] += secondPageMargin;
@@ -837,10 +828,8 @@ public class PrintWiGE implements Printable {
     }
 
     private void printRightStruct(Graphics2D g2d, int totalArmor, boolean secondImage) {
-        int[] column = new int[]
-            { 496, 194 };
-        int[] pipShift = new int[]
-            { 2, 7 };
+        int[] column = new int[] { 496, 194 };
+        int[] pipShift = new int[] { 2, 7 };
 
         if (secondImage) {
             column[1] += secondPageMargin;
@@ -854,10 +843,8 @@ public class PrintWiGE implements Printable {
     }
 
     private void printRearStruct(Graphics2D g2d, int totalArmor, boolean secondImage) {
-        float[] column = new float[]
-            { 472.4f, 272 };
-        float[] pipShift = new float[]
-            { 7, 7 };
+        float[] column = new float[] { 472.4f, 272 };
+        float[] pipShift = new float[] { 7, 7 };
 
         if (secondImage) {
             column[1] += secondPageMargin;
@@ -877,15 +864,13 @@ public class PrintWiGE implements Printable {
 
     private void printArmorPoints(Graphics2D g2d, Vector<float[]> pipPoints, float totalArmor, float fontSize) {
         ImageHelperVehicle.printArmorPoints(g2d, pipPoints, totalArmor, false);
-        /*pipPoints.trimToSize();
-        float pipSpace = pipPoints.size() / totalArmor;
-        for (float pos = 0; pos < pipPoints.size(); pos += pipSpace) {
-            int currentPip = (int) pos;
-            ImageHelperVehicle.drawTankArmorPip(g2d, pipPoints.get(currentPip)[0], pipPoints.get(currentPip)[1], fontSize);
-            if (--totalArmor <= 0) {
-                return;
-            }
-        }*/
+        /*
+         * pipPoints.trimToSize(); float pipSpace = pipPoints.size() / totalArmor; for
+         * (float pos = 0; pos < pipPoints.size(); pos += pipSpace) { int currentPip =
+         * (int) pos; ImageHelperVehicle.drawTankArmorPip(g2d,
+         * pipPoints.get(currentPip)[0], pipPoints.get(currentPip)[1], fontSize); if
+         * (--totalArmor <= 0) { return; } }
+         */
     }
 
     private void printTankImage(Graphics2D g2d) {

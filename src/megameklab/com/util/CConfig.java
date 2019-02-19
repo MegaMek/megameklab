@@ -1,13 +1,13 @@
 /*
- * MegaMekLab - Copyright (C) 2008
- * 
- * Original author - jtighe (torren@users.sourceforge.net)
- * 
+ * MegaMekLab
+ * Copyright (C) 2008 - jtighe (torren@users.sourceforge.net)
+ * Copyright (C) 2018 - The MegaMek Team
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -59,19 +59,19 @@ public class CConfig {
     public static final String CONFIG_SYSTEMS_BACKGROUND = "Systems-Background";
     public static final String CONFIG_EMPTY_FOREGROUND = "Empty-Foreground";
     public static final String CONFIG_EMPTY_BACKGROUND = "Empty-Background";
-    
+
     public static final String TECH_PROGRESSION = "techProgression";
     public static final String TECH_USE_YEAR = "techUseYear";
     public static final String TECH_YEAR = "techYear";
     public static final String TECH_SHOW_FACTION = "techShowFaction";
     public static final String TECH_EXTINCT = "techShowExtinct";
     public static final String TECH_UNOFFICAL_NO_YEAR = "techUnofficialNoYear";
-    
+
     public static final String SUMMARY_FORMAT_TRO = "useTROFormat";
-    
+
     public static final String CONFIG_SAVE_LOC = "Save-Location-Default";
     public static final String CONFIG_PLAF = "lookAndFeel";
-    
+
     public static final String RS_SHOW_QUIRKS = "rs_show_quirks";
     public static final String RS_SHOW_PILOT_DATA = "rs_show_pilot_data";
     public static final String RS_SHOW_ERA = "rs_show_era";
@@ -80,11 +80,11 @@ public class CConfig {
 
     // CONSTRUCTOR
     public CConfig() {
-        
-        if(!new File(CONFIG_DIR).exists()) {
+
+        if (!new File(CONFIG_DIR).exists()) {
             new File(CONFIG_DIR).mkdir();
         }
-        
+
         config = setDefaults();
         // check to see if a config is present. if not, make one.
         if (!(new File(CONFIG_FILE).exists()) && !(new File(CONFIG_BACKUP_FILE).exists())) {
@@ -97,8 +97,8 @@ public class CConfig {
     // METHODS
     /**
      * Private method that loads hardcoded defaults. These are loaded before the
-     * players config values, adding any new configs in their default position
-     * and ensuring that no config value is even missing.
+     * players config values, adding any new configs in their default position and
+     * ensuring that no config value is even missing.
      */
     private Properties setDefaults() {
         Properties defaults = new Properties();
@@ -110,8 +110,7 @@ public class CConfig {
         defaults.setProperty("WINDOWLEFT", "0");
         defaults.setProperty("WINDOWTOP", "0");
         defaults.setProperty(CONFIG_SAVE_LOC,
-                new File(System.getProperty("user.dir").toString()
-                        + "/data/mechfiles/").getAbsolutePath());
+                new File(System.getProperty("user.dir").toString() + "/data/mechfiles/").getAbsolutePath());
         defaults.setProperty(SUMMARY_FORMAT_TRO, Boolean.toString(true));
         defaults.setProperty(RS_SHOW_QUIRKS, Boolean.toString(true));
         defaults.setProperty(RS_SHOW_ERA, Boolean.toString(true));
@@ -173,11 +172,12 @@ public class CConfig {
     }
 
     /**
-     * Get a config value, with a default value to be used if the value is not found.
-     * 
+     * Get a config value, with a default value to be used if the value is not
+     * found.
+     *
      * @param param      The key
      * @param defaultVal The value to return if the entry is not found
-     * @return           The value associated with the key
+     * @return The value associated with the key
      */
     public static String getParam(String param, String defaultVal) {
         String tparam = null;
@@ -191,12 +191,13 @@ public class CConfig {
         }
         return tparam;
     }
-    
+
     /**
      * Get a config value.
-     * 
-     * @param param      The key
-     * @return           The value associated with the key. If not found, an empty String is returned
+     *
+     * @param param The key
+     * @return The value associated with the key. If not found, an empty String is
+     *         returned
      */
     public static String getParam(String param) {
         return getParam(param, "");
@@ -221,8 +222,8 @@ public class CConfig {
     }
 
     /**
-     * Return the int value of a given config property. Return a 0 if the
-     * property is a non-number. Used mostly by the misc. mail tab checks.
+     * Return the int value of a given config property. Return a 0 if the property
+     * is a non-number. Used mostly by the misc. mail tab checks.
      */
     public static int getIntParam(String param) {
         int toReturn;
@@ -322,15 +323,18 @@ public class CConfig {
             CConfig.setParam(CConfig.CONFIG_SAVE_FILE_1, "");
         }
 
-        if (!CConfig.getParam(CConfig.CONFIG_SAVE_FILE_4).equalsIgnoreCase(CConfig.getParam(CConfig.CONFIG_SAVE_FILE_3))) {
+        if (!CConfig.getParam(CConfig.CONFIG_SAVE_FILE_4)
+                .equalsIgnoreCase(CConfig.getParam(CConfig.CONFIG_SAVE_FILE_3))) {
             CConfig.setParam(CConfig.CONFIG_SAVE_FILE_4, CConfig.getParam(CConfig.CONFIG_SAVE_FILE_3));
         }
 
-        if (!CConfig.getParam(CConfig.CONFIG_SAVE_FILE_3).equalsIgnoreCase(CConfig.getParam(CConfig.CONFIG_SAVE_FILE_2))) {
+        if (!CConfig.getParam(CConfig.CONFIG_SAVE_FILE_3)
+                .equalsIgnoreCase(CConfig.getParam(CConfig.CONFIG_SAVE_FILE_2))) {
             CConfig.setParam(CConfig.CONFIG_SAVE_FILE_3, CConfig.getParam(CConfig.CONFIG_SAVE_FILE_2));
         }
 
-        if (!CConfig.getParam(CConfig.CONFIG_SAVE_FILE_2).equalsIgnoreCase(CConfig.getParam(CConfig.CONFIG_SAVE_FILE_1))) {
+        if (!CConfig.getParam(CConfig.CONFIG_SAVE_FILE_2)
+                .equalsIgnoreCase(CConfig.getParam(CConfig.CONFIG_SAVE_FILE_1))) {
             CConfig.setParam(CConfig.CONFIG_SAVE_FILE_2, CConfig.getParam(CConfig.CONFIG_SAVE_FILE_1));
         }
 

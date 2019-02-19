@@ -1,5 +1,6 @@
 /*
- * MegaMekLab - Copyright (C) 2018 - The MegaMek Team
+ * MegaMekLab
+ * Copyright (C) 2018 - The MegaMek Team
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -11,6 +12,7 @@
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  */
+
 package megameklab.com.ui.aerospace;
 
 import java.awt.BorderLayout;
@@ -54,10 +56,10 @@ import megameklab.com.util.UnitUtil;
 public class AdvancedAeroStructureTab extends ITab implements AdvancedAeroBuildListener {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 544925067532464071L;
-    
+
     private JPanel masterPanel;
     private BasicInfoView panInfo;
     private AdvancedAeroChassisView panChassis;
@@ -142,11 +144,11 @@ public class AdvancedAeroStructureTab extends ITab implements AdvancedAeroBuildL
         panSummary.setBorder(BorderFactory.createTitledBorder("Summary"));
         panArmorAllocation.setBorder(BorderFactory.createTitledBorder("Armor Allocation"));
     }
-    
+
     public ITechManager getTechManager() {
         return panInfo;
     }
-    
+
     /*
      * Used by MekHQ to set the tech faction for custom refits.
      */
@@ -156,7 +158,7 @@ public class AdvancedAeroStructureTab extends ITab implements AdvancedAeroBuildL
 
     public void refresh() {
         removeAllListeners();
-        
+
         panInfo.setFromEntity(getJumpship());
         panChassis.setFromEntity(getJumpship());
         panHeat.setFromAero(getJumpship());
@@ -166,7 +168,7 @@ public class AdvancedAeroStructureTab extends ITab implements AdvancedAeroBuildL
         panCrew.setFromEntity(getJumpship());
         panGravDecks.setFromEntity(getJumpship());
         panArmorAllocation.setFromEntity(getJumpship());
-        
+
         panMovement.setVisible(getJumpship().hasETypeFlag(Entity.ETYPE_WARSHIP));
         panSummary.refresh();
         addAllListeners();
@@ -225,7 +227,8 @@ public class AdvancedAeroStructureTab extends ITab implements AdvancedAeroBuildL
 
     public void refreshSummary() {
         panSummary.refresh();
-        // We're going to cheat and recalculate minimum crew values here in case the number of gunners changed.
+        // We're going to cheat and recalculate minimum crew values here in case the
+        // number of gunners changed.
         panCrew.setFromEntity(getJumpship());
     }
 
@@ -273,7 +276,7 @@ public class AdvancedAeroStructureTab extends ITab implements AdvancedAeroBuildL
     public void techLevelChanged(SimpleTechLevel techLevel) {
         updateTechLevel();
     }
-    
+
     @Override
     public void updateTechLevel() {
         getJumpship().setTechLevel(panInfo.getTechLevel().getCompoundTechLevel(panInfo.useClanTechBase()));
@@ -321,7 +324,7 @@ public class AdvancedAeroStructureTab extends ITab implements AdvancedAeroBuildL
         refresh.refreshBuild();
         refresh.refreshPreview();
     }
-    
+
     @Override
     public void armorTonnageChanged(double tonnage) {
         getJumpship().setArmorTonnage(Math.round(tonnage * 2) / 2.0);
@@ -339,29 +342,27 @@ public class AdvancedAeroStructureTab extends ITab implements AdvancedAeroBuildL
         panArmor.removeListener(this);
         panArmor.setFromEntity(getJumpship());
         panArmor.addListener(this);
-        
+
         panArmorAllocation.setFromEntity(getJumpship());
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
     }
-    
+
     @Override
     public void useRemainingTonnageArmor() {
-        double currentTonnage = UnitUtil.getEntityVerifier(getJumpship())
-                .calculateWeight();
+        double currentTonnage = UnitUtil.getEntityVerifier(getJumpship()).calculateWeight();
         currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getJumpship());
         double totalTonnage = getJumpship().getWeight();
-        double remainingTonnage = TestEntity.floor(
-                totalTonnage - currentTonnage, TestEntity.Ceil.HALFTON);
-        
+        double remainingTonnage = TestEntity.floor(totalTonnage - currentTonnage, TestEntity.Ceil.HALFTON);
+
         double maxArmor = Math.min(getJumpship().getArmorWeight() + remainingTonnage,
                 UnitUtil.getMaximumArmorTonnage(getJumpship()));
         getJumpship().setArmorTonnage(maxArmor);
         panArmor.removeListener(this);
         panArmor.setFromEntity(getJumpship());
         panArmor.addListener(this);
-        
+
         panArmorAllocation.setFromEntity(getJumpship());
         panSummary.refresh();
         refresh.refreshStatus();
@@ -414,7 +415,7 @@ public class AdvancedAeroStructureTab extends ITab implements AdvancedAeroBuildL
 
     @Override
     public void militaryChanged(boolean military) {
-        getJumpship().setDesignType(military? Aero.MILITARY : Aero.CIVILIAN);
+        getJumpship().setDesignType(military ? Aero.MILITARY : Aero.CIVILIAN);
         refresh.refreshPreview();
         refresh.refreshStatus();
     }
@@ -438,38 +439,38 @@ public class AdvancedAeroStructureTab extends ITab implements AdvancedAeroBuildL
     @Override
     public void baseTypeChanged(int type) {
         switch (type) {
-            case AdvancedAeroChassisView.TYPE_JUMPSHIP:
-                if (!getJumpship().hasETypeFlag(Entity.ETYPE_WARSHIP)
-                        && !getJumpship().hasETypeFlag(Entity.ETYPE_SPACE_STATION)) {
-                    return;
-                }
-                eSource.createNewUnit(Entity.ETYPE_JUMPSHIP, getJumpship());
-                break;
-            case AdvancedAeroChassisView.TYPE_WARSHIP:
-                if (!getJumpship().hasETypeFlag(Entity.ETYPE_WARSHIP)) {
-                    eSource.createNewUnit(Entity.ETYPE_WARSHIP, getJumpship());
-                } else if (getJumpship().getDriveCoreType() == Jumpship.DRIVE_CORE_SUBCOMPACT) {
-                    getJumpship().setDriveCoreType(Jumpship.DRIVE_CORE_COMPACT);
-                } else {
-                    return;
-                }
-                break;
-            case AdvancedAeroChassisView.TYPE_SUBCOMPACT:
-                if (!getJumpship().hasETypeFlag(Entity.ETYPE_WARSHIP)) {
-                    getJumpship().setDriveCoreType(Jumpship.DRIVE_CORE_SUBCOMPACT);
-                    eSource.createNewUnit(Entity.ETYPE_WARSHIP, getJumpship());
-                } else if (getJumpship().getDriveCoreType() != Jumpship.DRIVE_CORE_SUBCOMPACT) {
-                    getJumpship().setDriveCoreType(Jumpship.DRIVE_CORE_SUBCOMPACT);
-                } else {
-                    return;
-                }
-                break;
-            case AdvancedAeroChassisView.TYPE_STATION:
-                if (getJumpship().hasETypeFlag(Entity.ETYPE_SPACE_STATION)) {
-                    return;
-                }
-                eSource.createNewUnit(Entity.ETYPE_SPACE_STATION, getJumpship());
-                break;
+        case AdvancedAeroChassisView.TYPE_JUMPSHIP:
+            if (!getJumpship().hasETypeFlag(Entity.ETYPE_WARSHIP)
+                    && !getJumpship().hasETypeFlag(Entity.ETYPE_SPACE_STATION)) {
+                return;
+            }
+            eSource.createNewUnit(Entity.ETYPE_JUMPSHIP, getJumpship());
+            break;
+        case AdvancedAeroChassisView.TYPE_WARSHIP:
+            if (!getJumpship().hasETypeFlag(Entity.ETYPE_WARSHIP)) {
+                eSource.createNewUnit(Entity.ETYPE_WARSHIP, getJumpship());
+            } else if (getJumpship().getDriveCoreType() == Jumpship.DRIVE_CORE_SUBCOMPACT) {
+                getJumpship().setDriveCoreType(Jumpship.DRIVE_CORE_COMPACT);
+            } else {
+                return;
+            }
+            break;
+        case AdvancedAeroChassisView.TYPE_SUBCOMPACT:
+            if (!getJumpship().hasETypeFlag(Entity.ETYPE_WARSHIP)) {
+                getJumpship().setDriveCoreType(Jumpship.DRIVE_CORE_SUBCOMPACT);
+                eSource.createNewUnit(Entity.ETYPE_WARSHIP, getJumpship());
+            } else if (getJumpship().getDriveCoreType() != Jumpship.DRIVE_CORE_SUBCOMPACT) {
+                getJumpship().setDriveCoreType(Jumpship.DRIVE_CORE_SUBCOMPACT);
+            } else {
+                return;
+            }
+            break;
+        case AdvancedAeroChassisView.TYPE_STATION:
+            if (getJumpship().hasETypeFlag(Entity.ETYPE_SPACE_STATION)) {
+                return;
+            }
+            eSource.createNewUnit(Entity.ETYPE_SPACE_STATION, getJumpship());
+            break;
         }
         refresh();
         refresh.refreshEquipmentTable();
@@ -477,7 +478,7 @@ public class AdvancedAeroStructureTab extends ITab implements AdvancedAeroBuildL
         refresh.refreshPreview();
         refresh.refreshStatus();
     }
-    
+
     @Override
     public void rangeChanged(int range) {
         getJumpship().setJumpRange(range);
@@ -494,7 +495,7 @@ public class AdvancedAeroStructureTab extends ITab implements AdvancedAeroBuildL
         refresh.refreshSummary();
         refresh.refreshPreview();
     }
-    
+
     @Override
     public void fuelTonnageChanged(double tonnage) {
         double fuelTons = Math.round(tonnage * 2) / 2.0;
@@ -520,27 +521,27 @@ public class AdvancedAeroStructureTab extends ITab implements AdvancedAeroBuildL
         for (int loc = 0; loc < getJumpship().locations(); loc++) {
             getJumpship().initializeArmor(0, loc);
         }
-        
+
         // divide armor among positions, with more toward the front
         int points = UnitUtil.getArmorPoints(getJumpship(), getJumpship().getLabArmorTonnage())
                 + getAero().getSI() * getAero().locations();
-        int nose = (int)Math.floor(points * 0.3);
-        int wing = (int)Math.floor(points * 0.25);
-        int aft = (int)Math.floor(points * 0.2);
+        int nose = (int) Math.floor(points * 0.3);
+        int wing = (int) Math.floor(points * 0.25);
+        int aft = (int) Math.floor(points * 0.2);
         int remainder = points - nose - wing - wing - aft;
-        
+
         // spread remainder among nose and wings
-        switch(remainder % 4) {
-            case 1:
-                nose++;
-                break;
-            case 3:
-                nose++;
-                wing++;
-                break;
-            case 2:
-                wing++;
-                break;
+        switch (remainder % 4) {
+        case 1:
+            nose++;
+            break;
+        case 3:
+            nose++;
+            wing++;
+            break;
+        case 2:
+            wing++;
+            break;
         }
         getJumpship().initializeArmor(nose, Aero.LOC_NOSE);
         getJumpship().initializeArmor(wing, Aero.LOC_LWING);
@@ -609,7 +610,7 @@ public class AdvancedAeroStructureTab extends ITab implements AdvancedAeroBuildL
         refresh.refreshStatus();
         refresh.refreshPreview();
     }
-    
+
     @Override
     public void autoAssignQuarters() {
         UnitUtil.autoAssignQuarters(getJumpship());

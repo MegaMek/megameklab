@@ -1,5 +1,6 @@
 /*
- * MegaMekLab - Copyright (C) 2018 - The MegaMek Team
+ * MegaMekLab
+ * Copyright (C) 2018 - The MegaMek Team
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -11,6 +12,7 @@
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  */
+
 package megameklab.com.ui.protomek;
 
 import java.awt.BorderLayout;
@@ -58,14 +60,14 @@ import megameklab.com.util.UnitUtil;
 
 /**
  * Structure tab for protomechs
- * 
+ *
  * @author Neoancient
  *
  */
 public class ProtomekStructureTab extends ITab implements ProtomekBuildListener {
 
     private static final long serialVersionUID = 6498316429919711881L;
-    
+
     private BasicInfoView panBasicInfo;
     private ProtomekChassisView panChassis;
     private BAProtoArmorView panArmor;
@@ -210,12 +212,13 @@ public class ProtomekStructureTab extends ITab implements ProtomekBuildListener 
     }
 
     /**
-     * Calculates required engine rating for speed and tonnage and updates engine if possible.
-     * 
-     * @param walkMP The base walk MP
-     * @param tonnage The design weight
+     * Calculates required engine rating for speed and tonnage and updates engine if
+     * possible.
+     *
+     * @param walkMP       The base walk MP
+     * @param tonnage      The design weight
      * @param quadOrGlider Whether the Protomech is a quad or glider configuration
-     * @return Whether the engine rating changed 
+     * @return Whether the engine rating changed
      */
     private boolean recalculateEngineRating(int walkMP, double tonnage, boolean quadOrGlider) {
         int rating = TestProtomech.calcEngineRating(walkMP, tonnage, quadOrGlider);
@@ -227,14 +230,15 @@ public class ProtomekStructureTab extends ITab implements ProtomekBuildListener 
         }
         return false;
     }
-    
+
     /**
-     * Creates room for installing fixed equipment in a location by removing as much non-fixed
-     * equipment as necessary (if any) until there are a sufficient number of slots.
-     * 
-     * @param loc    The location to clear
-     * @param count  The number of slots required
-     * @return       Whether enough space was freed up
+     * Creates room for installing fixed equipment in a location by removing as much
+     * non-fixed equipment as necessary (if any) until there are a sufficient number
+     * of slots.
+     *
+     * @param loc   The location to clear
+     * @param count The number of slots required
+     * @return Whether enough space was freed up
      */
     private boolean freeUpSpace(int loc, int count) {
         int maxAvail = TestProtomech.maxSlotsByLocation(loc, getProtomech());
@@ -267,8 +271,8 @@ public class ProtomekStructureTab extends ITab implements ProtomekBuildListener 
     }
 
     private void createArmorMountsAndSetArmorType(EquipmentType armor) {
-        TestProtomech.ProtomechArmor pmArmor = TestProtomech.ProtomechArmor
-                .getArmor(EquipmentType.getArmorType(armor), true);
+        TestProtomech.ProtomechArmor pmArmor = TestProtomech.ProtomechArmor.getArmor(EquipmentType.getArmorType(armor),
+                true);
         List<Mounted> armorMounts = getProtomech().getMisc().stream()
                 .filter(m -> EquipmentType.getArmorType(m.getType()) != EquipmentType.T_ARMOR_UNKNOWN)
                 .collect(Collectors.toList());
@@ -292,10 +296,8 @@ public class ProtomekStructureTab extends ITab implements ProtomekBuildListener 
                     // fall through
                 }
             }
-            JOptionPane.showMessageDialog(null,
-                    "Requires free torso slot. Resetting to Standard Armor",
-                    "Location Full",
-                    JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Requires free torso slot. Resetting to Standard Armor",
+                    "Location Full", JOptionPane.INFORMATION_MESSAGE);
             getProtomech().setArmorType(EquipmentType.T_ARMOR_STANDARD);
             getProtomech().setArmorTechLevel(TechConstants.T_ALL_CLAN);
             panArmor.setFromEntity(getProtomech());
@@ -397,35 +399,35 @@ public class ProtomekStructureTab extends ITab implements ProtomekBuildListener 
     public void typeChanged(int motiveType) {
         boolean wasQuad = getProtomech().isQuad();
         switch (motiveType) {
-            case ProtomekChassisView.MOTIVE_TYPE_BIPED:
-                getProtomech().setMovementMode(EntityMovementMode.BIPED);
-                getProtomech().setIsQuad(false);
-                getProtomech().setIsGlider(false);
-                break;
-            case ProtomekChassisView.MOTIVE_TYPE_QUAD:
-                getProtomech().setMovementMode(EntityMovementMode.QUAD);
-                getProtomech().setIsQuad(true);
-                getProtomech().setIsGlider(false);
-                getProtomech().getEquipment().stream()
-                    .filter(m -> (m.getLocation() == Protomech.LOC_LARM)
-                            || (m.getLocation() == Protomech.LOC_RARM))
+        case ProtomekChassisView.MOTIVE_TYPE_BIPED:
+            getProtomech().setMovementMode(EntityMovementMode.BIPED);
+            getProtomech().setIsQuad(false);
+            getProtomech().setIsGlider(false);
+            break;
+        case ProtomekChassisView.MOTIVE_TYPE_QUAD:
+            getProtomech().setMovementMode(EntityMovementMode.QUAD);
+            getProtomech().setIsQuad(true);
+            getProtomech().setIsGlider(false);
+            getProtomech().getEquipment().stream()
+                    .filter(m -> (m.getLocation() == Protomech.LOC_LARM) || (m.getLocation() == Protomech.LOC_RARM))
                     .forEach(m -> m.setLocation(Entity.LOC_NONE));
-                getProtomech().initializeArmor(0, Protomech.LOC_LARM);
-                getProtomech().initializeArmor(0, Protomech.LOC_RARM);
-                break;
-            case ProtomekChassisView.MOTIVE_TYPE_GLIDER:
-                getProtomech().setMovementMode(EntityMovementMode.WIGE);
-                getProtomech().setIsQuad(false);
-                getProtomech().setIsGlider(true);
-                break;
+            getProtomech().initializeArmor(0, Protomech.LOC_LARM);
+            getProtomech().initializeArmor(0, Protomech.LOC_RARM);
+            break;
+        case ProtomekChassisView.MOTIVE_TYPE_GLIDER:
+            getProtomech().setMovementMode(EntityMovementMode.WIGE);
+            getProtomech().setIsQuad(false);
+            getProtomech().setIsGlider(true);
+            break;
         }
         getProtomech().autoSetInternal();
         if (wasQuad) {
             getProtomech().autoSetInternal();
             getProtomech().initializeArmor(0, Protomech.LOC_LARM);
             getProtomech().initializeArmor(0, Protomech.LOC_RARM);
-            Optional<Mounted> qms = getProtomech().getMisc().stream().filter(m -> m.getType()
-                    .hasFlag(MiscType.F_CLUB) && m.getType().hasSubType(MiscType.S_PROTO_QMS)).findFirst();
+            Optional<Mounted> qms = getProtomech().getMisc().stream()
+                    .filter(m -> m.getType().hasFlag(MiscType.F_CLUB) && m.getType().hasSubType(MiscType.S_PROTO_QMS))
+                    .findFirst();
             if (qms.isPresent()) {
                 UnitUtil.removeMounted(getProtomech(), qms.get());
             }
@@ -456,8 +458,7 @@ public class ProtomekStructureTab extends ITab implements ProtomekBuildListener 
 
     @Override
     public void armorValueChanged(int points) {
-        double tonnage = EquipmentType.getProtomechArmorWeightPerPoint(
-                getProtomech().getArmorType(Protomech.LOC_TORSO))
+        double tonnage = EquipmentType.getProtomechArmorWeightPerPoint(getProtomech().getArmorType(Protomech.LOC_TORSO))
                 * points;
         getProtomech().setArmorTonnage(tonnage);
         panArmorAllocation.setFromEntity(getProtomech());
@@ -482,12 +483,10 @@ public class ProtomekStructureTab extends ITab implements ProtomekBuildListener 
 
     @Override
     public void useRemainingTonnageArmor() {
-        double currentTonnage = UnitUtil.getEntityVerifier(getProtomech())
-                .calculateWeight();
+        double currentTonnage = UnitUtil.getEntityVerifier(getProtomech()).calculateWeight();
         currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getProtomech());
         double totalTonnage = getProtomech().getWeight();
-        double remainingTonnage = TestEntity.floor(
-                totalTonnage - currentTonnage, TestEntity.Ceil.KILO);
+        double remainingTonnage = TestEntity.floor(totalTonnage - currentTonnage, TestEntity.Ceil.KILO);
 
         double maxArmor = Math.min(getProtomech().getArmorWeight() + remainingTonnage,
                 UnitUtil.getMaximumArmorTonnage(getProtomech()));
@@ -526,16 +525,14 @@ public class ProtomekStructureTab extends ITab implements ProtomekBuildListener 
         } else {
             getProtomech().setOriginalJumpMP(0);
         }
-        List<Mounted> jjs = getProtomech().getMisc().stream()
-                .filter(m -> m.getType() == jumpJet)
+        List<Mounted> jjs = getProtomech().getMisc().stream().filter(m -> m.getType() == jumpJet)
                 .collect(Collectors.toList());
         while (jjs.size() > jumpMP) {
             UnitUtil.removeMounted(getProtomech(), jjs.remove(jjs.size() - 1));
         }
         while (jumpMP > jjs.size()) {
             try {
-                UnitUtil.addMounted(getProtomech(), new Mounted(getProtomech(), jumpJet),
-                        Protomech.LOC_BODY, false);
+                UnitUtil.addMounted(getProtomech(), new Mounted(getProtomech(), jumpJet), Protomech.LOC_BODY, false);
             } catch (LocationFullException e) {
                 // Shouldn't be able to fill location
             }
@@ -551,10 +548,8 @@ public class ProtomekStructureTab extends ITab implements ProtomekBuildListener 
     @Override
     public void jumpTypeChanged(final EquipmentType jumpJet) {
         List<Mounted> jjs = getProtomech().getMisc().stream()
-                .filter(m -> m.getType().hasFlag(MiscType.F_JUMP_JET)
-                        || m.getType().hasFlag(MiscType.F_UMU))
-                .filter(m -> m.getType() != jumpJet)
-                .collect(Collectors.toList());
+                .filter(m -> m.getType().hasFlag(MiscType.F_JUMP_JET) || m.getType().hasFlag(MiscType.F_UMU))
+                .filter(m -> m.getType() != jumpJet).collect(Collectors.toList());
         jjs.forEach(jj -> UnitUtil.removeMounted(getProtomech(), jj));
         jumpChanged(panMovement.getJump(), jumpJet);
     }
@@ -576,9 +571,10 @@ public class ProtomekStructureTab extends ITab implements ProtomekBuildListener 
             pointsToAllocate = maxArmor;
         }
         double percent = pointsToAllocate / maxArmor;
-        final double totalIS = getProtomech().getTotalOInternal();
+        final double totalIS = getProtomech().getTotalOInternal(); // Is this being used anywhere?
         for (int location = getProtomech().firstArmorIndex(); location < getProtomech().locations(); location++) {
-            double allocate = Math.min(UnitUtil.getMaximumArmorPoints(getProtomech(), location) * percent, pointsToAllocate);
+            double allocate = Math.min(UnitUtil.getMaximumArmorPoints(getProtomech(), location) * percent,
+                    pointsToAllocate);
             getProtomech().initializeArmor((int) allocate, location);
             pointsToAllocate -= (int) allocate;
         }
@@ -593,13 +589,13 @@ public class ProtomekStructureTab extends ITab implements ProtomekBuildListener 
     /**
      * allocate any leftover points one-by-one
      *
-     * @param points
-     *            the amount of points left over
+     * @param points the amount of points left over
      */
     private void allocateLeftoverPoints(double points) {
         while (points >= 1) {
             // Assign with the priority torso, legs, head, arms, main gun (if any)
-            // If there are exactly two points left after the legs, skip the head and assign them
+            // If there are exactly two points left after the legs, skip the head and assign
+            // them
             // symmetrically to the arms
             if (!getProtomech().isQuad()) {
                 addArmorPoint(Protomech.LOC_TORSO);
@@ -640,10 +636,10 @@ public class ProtomekStructureTab extends ITab implements ProtomekBuildListener 
             }
         }
     }
-    
+
     /**
      * Convenience method for armor auto-allocation
-     * 
+     *
      * @param location
      */
     private void addArmorPoint(int location) {
@@ -676,7 +672,7 @@ public class ProtomekStructureTab extends ITab implements ProtomekBuildListener 
 
     @Override
     public void setEnhancement(EquipmentType eq, boolean selected) {
-        if (null ==  eq) {
+        if (null == eq) {
             return;
         }
         if (selected) {
@@ -688,16 +684,15 @@ public class ProtomekStructureTab extends ITab implements ProtomekBuildListener 
             Mounted m = new Mounted(getProtomech(), eq);
             try {
                 if (TestProtomech.requiresSlot(eq) && this.freeUpSpace(Protomech.LOC_TORSO, 1)) {
-                        getProtomech().addEquipment(m, Protomech.LOC_TORSO, false);
+                    getProtomech().addEquipment(m, Protomech.LOC_TORSO, false);
                 } else {
-                    getProtomech().addEquipment(m,  Protomech.LOC_BODY, false);
+                    getProtomech().addEquipment(m, Protomech.LOC_BODY, false);
                 }
             } catch (LocationFullException e) {
                 // We've already checked for enough space where there are limits
             }
         } else {
-            Optional<Mounted> mounted = getProtomech().getMisc().stream()
-                    .filter(m -> m.getType() == eq).findFirst();
+            Optional<Mounted> mounted = getProtomech().getMisc().stream().filter(m -> m.getType() == eq).findFirst();
             if (mounted.isPresent()) {
                 UnitUtil.removeMounted(getProtomech(), mounted.get());
             }

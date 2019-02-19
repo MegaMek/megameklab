@@ -1,17 +1,17 @@
 /*
- * MegaMekLab - Copyright (C) 2008
+ * MegaMekLab
+ * Copyright (C) 2008 - jtighe (torren@users.sourceforge.net)
+ * Copyright (C) 2018 - The MegaMek Team
  *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
  *
- * This program is  free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
- * for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  */
 
 package megameklab.com.ui.Infantry.views;
@@ -70,12 +70,11 @@ public class WeaponView extends IView implements ActionListener {
      */
     private static final long serialVersionUID = 3978675469713289404L;
 
-    private static final int T_ARCHAIC   =  0;
-    private static final int T_PERSONAL  =  1;
-    private static final int T_SUPPORT   =  2;
-    private static final int T_WEAPON    =  3;
-    private static final int T_NUM       =  4;
-
+    private static final int T_ARCHAIC = 0;
+    private static final int T_PERSONAL = 1;
+    private static final int T_SUPPORT = 2;
+    private static final int T_WEAPON = 3;
+    private static final int T_NUM = 4;
 
     private RefreshListener refresh;
 
@@ -98,7 +97,7 @@ public class WeaponView extends IView implements ActionListener {
     private String ADDS_COMMAND = "ADDSECONDARY";
 
     public static String getTypeName(int type) {
-        switch(type) {
+        switch (type) {
         case T_WEAPON:
             return "All Weapons";
         case T_ARCHAIC:
@@ -140,14 +139,14 @@ public class WeaponView extends IView implements ActionListener {
         masterEquipmentTable.getSelectionModel().addListSelectionListener(selectionListener);
         masterEquipmentTable.setDoubleBuffered(true);
         masterEquipmentScroll.setViewportView(masterEquipmentTable);
-        masterEquipmentScroll.setMinimumSize(new Dimension(200,200));
-        masterEquipmentScroll.setPreferredSize(new Dimension(200,200));
+        masterEquipmentScroll.setMinimumSize(new Dimension(200, 200));
+        masterEquipmentScroll.setPreferredSize(new Dimension(200, 200));
 
         Enumeration<EquipmentType> miscTypes = EquipmentType.getAllTypes();
         ArrayList<EquipmentType> allTypes = new ArrayList<EquipmentType>();
         while (miscTypes.hasMoreElements()) {
             EquipmentType eq = miscTypes.nextElement();
-            if(eq instanceof InfantryWeapon) {
+            if (eq instanceof InfantryWeapon) {
                 allTypes.add(eq);
             }
         }
@@ -173,9 +172,11 @@ public class WeaponView extends IView implements ActionListener {
             public void changedUpdate(DocumentEvent e) {
                 filterEquipment();
             }
+
             public void insertUpdate(DocumentEvent e) {
                 filterEquipment();
             }
+
             public void removeUpdate(DocumentEvent e) {
                 filterEquipment();
             }
@@ -189,17 +190,17 @@ public class WeaponView extends IView implements ActionListener {
         rbtnStats.addActionListener(ev -> setEquipmentView());
         rbtnFluff.addActionListener(ev -> setEquipmentView());
         chkShowAll.addActionListener(ev -> filterEquipment());
-        JPanel viewPanel = new JPanel(new GridLayout(0,3));
+        JPanel viewPanel = new JPanel(new GridLayout(0, 3));
         viewPanel.add(rbtnStats);
         viewPanel.add(rbtnFluff);
         viewPanel.add(chkShowAll);
         setEquipmentView();
 
-        JPanel btnPanel = new JPanel(new GridLayout(0,2));
+        JPanel btnPanel = new JPanel(new GridLayout(0, 2));
         btnPanel.add(addPrimaryButton);
         btnPanel.add(addSecondaryButton);
 
-        //layout
+        // layout
         GridBagConstraints gbc;
         gbc = new GridBagConstraints();
 
@@ -225,7 +226,7 @@ public class WeaponView extends IView implements ActionListener {
         gbc.weightx = 1.0;
         databasePanel.add(viewPanel, gbc);
 
-        gbc.insets = new Insets(2,0,0,0);
+        gbc.insets = new Insets(2, 0, 0, 0);
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.gridwidth = 3;
@@ -245,7 +246,7 @@ public class WeaponView extends IView implements ActionListener {
     public void refresh() {
         removeAllListeners();
         filterEquipment();
-        if(TestInfantry.maxSecondaryWeapons(getInfantry()) > 0) {
+        if (TestInfantry.maxSecondaryWeapons(getInfantry()) > 0) {
             addSecondaryButton.setEnabled(true);
         } else {
             addSecondaryButton.setEnabled(false);
@@ -267,12 +268,11 @@ public class WeaponView extends IView implements ActionListener {
 
     public void actionPerformed(ActionEvent e) {
 
-        if (e.getActionCommand().equals(ADDP_COMMAND) ||
-                e.getActionCommand().equals(ADDS_COMMAND)) {
+        if (e.getActionCommand().equals(ADDP_COMMAND) || e.getActionCommand().equals(ADDS_COMMAND)) {
             boolean isSecondary = e.getActionCommand().equals(ADDS_COMMAND);
             int view = masterEquipmentTable.getSelectedRow();
-            if(view < 0) {
-                //selection got filtered away
+            if (view < 0) {
+                // selection got filtered away
                 return;
             }
             int selected = masterEquipmentTable.convertRowIndexToModel(view);
@@ -295,29 +295,27 @@ public class WeaponView extends IView implements ActionListener {
     private void filterEquipment() {
         RowFilter<EquipmentTableModel, Integer> equipmentTypeFilter = null;
         final int nType = choiceType.getSelectedIndex();
-        equipmentTypeFilter = new RowFilter<EquipmentTableModel,Integer>() {
+        equipmentTypeFilter = new RowFilter<EquipmentTableModel, Integer>() {
             @Override
             public boolean include(Entry<? extends EquipmentTableModel, ? extends Integer> entry) {
                 EquipmentTableModel equipModel = entry.getModel();
                 EquipmentType etype = equipModel.getType(entry.getIdentifier());
-                if(!(etype instanceof InfantryWeapon)) {
+                if (!(etype instanceof InfantryWeapon)) {
                     return false;
                 }
-                InfantryWeapon weapon = (InfantryWeapon)etype;
-                if(getInfantry().getSquadSize() < (getInfantry().getSecondaryN() * weapon.getCrew())) {
+                InfantryWeapon weapon = (InfantryWeapon) etype;
+                if (getInfantry().getSquadSize() < (getInfantry().getSecondaryN() * weapon.getCrew())) {
                     return false;
                 }
-                if ((nType == T_WEAPON)
-                        || ((nType == T_ARCHAIC) && etype.hasFlag(WeaponType.F_INF_ARCHAIC))
-                        || ((nType == T_PERSONAL) && !etype.hasFlag(WeaponType.F_INF_ARCHAIC) && !etype.hasFlag(WeaponType.F_INF_SUPPORT))
-                        || ((nType == T_SUPPORT) && etype.hasFlag(WeaponType.F_INF_SUPPORT))
-                        ) {
-                    if (null != eSource.getTechManager()
-                            && !eSource.getTechManager().isLegal(etype)
+                if ((nType == T_WEAPON) || ((nType == T_ARCHAIC) && etype.hasFlag(WeaponType.F_INF_ARCHAIC))
+                        || ((nType == T_PERSONAL) && !etype.hasFlag(WeaponType.F_INF_ARCHAIC)
+                                && !etype.hasFlag(WeaponType.F_INF_SUPPORT))
+                        || ((nType == T_SUPPORT) && etype.hasFlag(WeaponType.F_INF_SUPPORT))) {
+                    if (null != eSource.getTechManager() && !eSource.getTechManager().isLegal(etype)
                             && !chkShowAll.isSelected()) {
                         return false;
                     }
-                    if(txtFilter.getText().length() > 0) {
+                    if (txtFilter.getText().length() > 0) {
                         String text = txtFilter.getText();
                         return etype.getName().toLowerCase().contains(text.toLowerCase());
                     } else {
@@ -331,8 +329,8 @@ public class WeaponView extends IView implements ActionListener {
     }
 
     public void setEquipmentView() {
-        XTableColumnModel columnModel = (XTableColumnModel)masterEquipmentTable.getColumnModel();
-        if(rbtnStats.isSelected()) {
+        XTableColumnModel columnModel = (XTableColumnModel) masterEquipmentTable.getColumnModel();
+        if (rbtnStats.isSelected()) {
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_NAME), true);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DAMAGE), true);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DIVISOR), false);
@@ -381,10 +379,10 @@ public class WeaponView extends IView implements ActionListener {
         }
     }
 
-
-
     /**
-     * A comparator for integers written as strings with "-" sorted to the bottom always
+     * A comparator for integers written as strings with "-" sorted to the bottom
+     * always
+     * 
      * @author Jay Lawson
      *
      */
@@ -392,17 +390,17 @@ public class WeaponView extends IView implements ActionListener {
 
         @Override
         public int compare(String s0, String s1) {
-            if(s0.equals("-") && s1.equals("-")) {
+            if (s0.equals("-") && s1.equals("-")) {
                 return 0;
-            } else if(s0.equals("-")) {
+            } else if (s0.equals("-")) {
                 return 1;
-            } else if(s1.equals("-")) {
+            } else if (s1.equals("-")) {
                 return -1;
             } else {
-                //get the numbers associated with each string
+                // get the numbers associated with each string
                 int r0 = Integer.parseInt(s0);
                 int r1 = Integer.parseInt(s1);
-                return ((Comparable<Integer>)r1).compareTo(r0);
+                return ((Comparable<Integer>) r1).compareTo(r0);
             }
         }
     }
@@ -411,19 +409,20 @@ public class WeaponView extends IView implements ActionListener {
 
         @Override
         public int compare(String s0, String s1) {
-            //get the numbers associated with each string
+            // get the numbers associated with each string
             double r1 = parseDamage(s1);
             double r0 = parseDamage(s0);
-            return ((Comparable<Double>)r1).compareTo(r0);
+            return ((Comparable<Double>) r1).compareTo(r0);
         }
 
         /**
-         * Extracts a numeric value from the damage string for use in sorting by damage. If a String
-         * contains any non-digit character, that character and anything after it is ignored. If the string
-         * starts with a non-digit character the return value is 0.
-         * 
+         * Extracts a numeric value from the damage string for use in sorting by damage.
+         * If a String contains any non-digit character, that character and anything
+         * after it is ignored. If the string starts with a non-digit character the
+         * return value is 0.
+         *
          * @param s A weapon damage string
-         * @return  The value to use for sorting.
+         * @return The value to use for sorting.
          */
         private double parseDamage(String s) {
             s = s.replaceAll("[^0-9\\.]+", "/");
@@ -440,6 +439,7 @@ public class WeaponView extends IView implements ActionListener {
 
     /**
      * A comparator for numbers that have been formatted with DecimalFormat
+     * 
      * @author Jay Lawson
      *
      */
@@ -447,7 +447,7 @@ public class WeaponView extends IView implements ActionListener {
 
         @Override
         public int compare(String s0, String s1) {
-            //lets find the weight class integer for each name
+            // lets find the weight class integer for each name
             DecimalFormat format = new DecimalFormat();
             int l0 = 0;
             try {
@@ -461,10 +461,10 @@ public class WeaponView extends IView implements ActionListener {
             } catch (java.text.ParseException e) {
                 e.printStackTrace();
             }
-            return ((Comparable<Integer>)l0).compareTo(l1);
+            return ((Comparable<Integer>) l0).compareTo(l1);
         }
     }
-    
+
     private ListSelectionListener selectionListener = new ListSelectionListener() {
 
         @Override
@@ -474,11 +474,10 @@ public class WeaponView extends IView implements ActionListener {
             if (selected >= 0) {
                 etype = masterEquipmentList.getType(masterEquipmentTable.convertRowIndexToModel(selected));
             }
-            addPrimaryButton.setEnabled((null != etype)
-                    && eSource.getTechManager().isLegal(etype)
+            addPrimaryButton.setEnabled((null != etype) && eSource.getTechManager().isLegal(etype)
                     && !etype.hasFlag(WeaponType.F_INF_SUPPORT));
             addSecondaryButton.setEnabled((null != etype) && eSource.getTechManager().isLegal(etype));
         }
-        
+
     };
 }

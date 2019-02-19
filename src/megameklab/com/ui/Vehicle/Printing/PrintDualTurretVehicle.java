@@ -1,7 +1,7 @@
 /*
- * MegaMekLab - Copyright (C) 2009
- *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * MegaMekLab
+ * Copyright (C) 2009 - jtighe (torren@users.sourceforge.net)
+ * Copyright (C) 2018 - The MegaMek Team
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -146,26 +146,26 @@ public class PrintDualTurretVehicle implements Printable {
         String engineName = "Fusion Engine";
 
         switch (tank.getEngine().getEngineType()) {
-            case Engine.COMBUSTION_ENGINE:
-                engineName = "I.C.E.";
-                break;
-            case Engine.LIGHT_ENGINE:
-                engineName = "Light Fusion Engine";
-                break;
-            case Engine.XL_ENGINE:
-                engineName = "XL Fusion Engine";
-                break;
-            case Engine.XXL_ENGINE:
-                engineName = "XXL Fusion Engine";
-                break;
-            case Engine.COMPACT_ENGINE:
-                engineName = "Compact Fusion Engine";
-                break;
-            case Engine.FUEL_CELL:
-                engineName = "Fuel Cell Engine";
-                break;
-            default:
-                break;
+        case Engine.COMBUSTION_ENGINE:
+            engineName = "I.C.E.";
+            break;
+        case Engine.LIGHT_ENGINE:
+            engineName = "Light Fusion Engine";
+            break;
+        case Engine.XL_ENGINE:
+            engineName = "XL Fusion Engine";
+            break;
+        case Engine.XXL_ENGINE:
+            engineName = "XXL Fusion Engine";
+            break;
+        case Engine.COMPACT_ENGINE:
+            engineName = "Compact Fusion Engine";
+            break;
+        case Engine.FUEL_CELL:
+            engineName = "Fuel Cell Engine";
+            break;
+        default:
+            break;
         }
 
         g2d.drawString(engineName, 79, 177);
@@ -190,29 +190,29 @@ public class PrintDualTurretVehicle implements Printable {
 
         switch (tank.getTechLevel()) {
 
-            case TechConstants.T_INTRO_BOXSET:
-                ImageHelper.printCenterString(g2d, "(Intro)", font, startLine, nextDataLine);
-                nextDataLine += lineFeed;
-                break;
-            case TechConstants.T_IS_TW_NON_BOX:
-            case TechConstants.T_IS_TW_ALL:
-            case TechConstants.T_CLAN_TW:
-                break;
-            case TechConstants.T_IS_ADVANCED:
-            case TechConstants.T_CLAN_ADVANCED:
-                ImageHelper.printCenterString(g2d, "(Advanced)", font, startLine, nextDataLine);
-                nextDataLine += lineFeed;
-                break;
-            case TechConstants.T_IS_EXPERIMENTAL:
-            case TechConstants.T_CLAN_EXPERIMENTAL:
-                ImageHelper.printCenterString(g2d, "(Experimental)", font, startLine, nextDataLine);
-                nextDataLine += lineFeed;
-                break;
-            case TechConstants.T_IS_UNOFFICIAL:
-            case TechConstants.T_CLAN_UNOFFICIAL:
-                ImageHelper.printCenterString(g2d, "(Unofficial)", font, startLine, nextDataLine);
-                nextDataLine += lineFeed;
-                break;
+        case TechConstants.T_INTRO_BOXSET:
+            ImageHelper.printCenterString(g2d, "(Intro)", font, startLine, nextDataLine);
+            nextDataLine += lineFeed;
+            break;
+        case TechConstants.T_IS_TW_NON_BOX:
+        case TechConstants.T_IS_TW_ALL:
+        case TechConstants.T_CLAN_TW:
+            break;
+        case TechConstants.T_IS_ADVANCED:
+        case TechConstants.T_CLAN_ADVANCED:
+            ImageHelper.printCenterString(g2d, "(Advanced)", font, startLine, nextDataLine);
+            nextDataLine += lineFeed;
+            break;
+        case TechConstants.T_IS_EXPERIMENTAL:
+        case TechConstants.T_CLAN_EXPERIMENTAL:
+            ImageHelper.printCenterString(g2d, "(Experimental)", font, startLine, nextDataLine);
+            nextDataLine += lineFeed;
+            break;
+        case TechConstants.T_IS_UNOFFICIAL:
+        case TechConstants.T_CLAN_UNOFFICIAL:
+            ImageHelper.printCenterString(g2d, "(Unofficial)", font, startLine, nextDataLine);
+            nextDataLine += lineFeed;
+            break;
         }
 
         String techBase = "Inner Sphere";
@@ -321,26 +321,26 @@ public class PrintDualTurretVehicle implements Printable {
         String engineName = "Fusion Engine";
 
         switch (tank2.getEngine().getEngineType()) {
-            case Engine.COMBUSTION_ENGINE:
-                engineName = "I.C.E.";
-                break;
-            case Engine.LIGHT_ENGINE:
-                engineName = "Light Fusion Engine";
-                break;
-            case Engine.XL_ENGINE:
-                engineName = "XL Fusion Engine";
-                break;
-            case Engine.XXL_ENGINE:
-                engineName = "XXL Fusion Engine";
-                break;
-            case Engine.COMPACT_ENGINE:
-                engineName = "Compact Fusion Engine";
-                break;
-            case Engine.FUEL_CELL:
-                engineName = "Fuel Cell";
-                break;
-            default:
-                break;
+        case Engine.COMBUSTION_ENGINE:
+            engineName = "I.C.E.";
+            break;
+        case Engine.LIGHT_ENGINE:
+            engineName = "Light Fusion Engine";
+            break;
+        case Engine.XL_ENGINE:
+            engineName = "XL Fusion Engine";
+            break;
+        case Engine.XXL_ENGINE:
+            engineName = "XXL Fusion Engine";
+            break;
+        case Engine.COMPACT_ENGINE:
+            engineName = "Compact Fusion Engine";
+            break;
+        case Engine.FUEL_CELL:
+            engineName = "Fuel Cell";
+            break;
+        default:
+            break;
         }
 
         g2d.drawString(engineName, 79, 548);
@@ -363,29 +363,29 @@ public class PrintDualTurretVehicle implements Printable {
 
         switch (tank2.getTechLevel()) {
 
-            case TechConstants.T_INTRO_BOXSET:
-                ImageHelper.printCenterString(g2d, "(Intro)", font, startLine, nextDataLine);
-                nextDataLine += lineFeed;
-                break;
-            case TechConstants.T_IS_TW_NON_BOX:
-            case TechConstants.T_IS_TW_ALL:
-            case TechConstants.T_CLAN_TW:
-                break;
-            case TechConstants.T_IS_ADVANCED:
-            case TechConstants.T_CLAN_ADVANCED:
-                ImageHelper.printCenterString(g2d, "(Advanced)", font, startLine, nextDataLine);
-                nextDataLine += lineFeed;
-                break;
-            case TechConstants.T_IS_EXPERIMENTAL:
-            case TechConstants.T_CLAN_EXPERIMENTAL:
-                ImageHelper.printCenterString(g2d, "(Experimental)", font, startLine, nextDataLine);
-                nextDataLine += lineFeed;
-                break;
-            case TechConstants.T_IS_UNOFFICIAL:
-            case TechConstants.T_CLAN_UNOFFICIAL:
-                ImageHelper.printCenterString(g2d, "(Unofficial)", font, startLine, nextDataLine);
-                nextDataLine += lineFeed;
-                break;
+        case TechConstants.T_INTRO_BOXSET:
+            ImageHelper.printCenterString(g2d, "(Intro)", font, startLine, nextDataLine);
+            nextDataLine += lineFeed;
+            break;
+        case TechConstants.T_IS_TW_NON_BOX:
+        case TechConstants.T_IS_TW_ALL:
+        case TechConstants.T_CLAN_TW:
+            break;
+        case TechConstants.T_IS_ADVANCED:
+        case TechConstants.T_CLAN_ADVANCED:
+            ImageHelper.printCenterString(g2d, "(Advanced)", font, startLine, nextDataLine);
+            nextDataLine += lineFeed;
+            break;
+        case TechConstants.T_IS_EXPERIMENTAL:
+        case TechConstants.T_CLAN_EXPERIMENTAL:
+            ImageHelper.printCenterString(g2d, "(Experimental)", font, startLine, nextDataLine);
+            nextDataLine += lineFeed;
+            break;
+        case TechConstants.T_IS_UNOFFICIAL:
+        case TechConstants.T_CLAN_UNOFFICIAL:
+            ImageHelper.printCenterString(g2d, "(Unofficial)", font, startLine, nextDataLine);
+            nextDataLine += lineFeed;
+            break;
         }
 
         String techBase = "Inner Sphere";
@@ -464,7 +464,7 @@ public class PrintDualTurretVehicle implements Printable {
         font = UnitUtil.deriveFont(true, 11.0f);
         g2d.setFont(font);
         ImageHelper.printCenterString(g2d, ImageHelperVehicle.getVehicleArmorTypeString(tank), font, 478, 48);
-        //g2d.drawString(ImageHelperVehicle.getVehicleArmorTypeString(tank), 463, 48);
+        // g2d.drawString(ImageHelperVehicle.getVehicleArmorTypeString(tank), 463, 48);
         font = UnitUtil.deriveFont(true, 9.0f);
         g2d.setFont(font);
 
@@ -483,8 +483,10 @@ public class PrintDualTurretVehicle implements Printable {
         if (tank2 != null) {
             font = UnitUtil.deriveFont(true, 11.0f);
             g2d.setFont(font);
-            ImageHelper.printCenterString(g2d, ImageHelperVehicle.getVehicleArmorTypeString(tank2), g2d.getFont(), 478, 48 + secondPageMargin);
-            //g2d.drawString(ImageHelperVehicle.getVehicleArmorTypeString(tank2), 463, 48 + secondPageMargin);
+            ImageHelper.printCenterString(g2d, ImageHelperVehicle.getVehicleArmorTypeString(tank2), g2d.getFont(), 478,
+                    48 + secondPageMargin);
+            // g2d.drawString(ImageHelperVehicle.getVehicleArmorTypeString(tank2), 463, 48 +
+            // secondPageMargin);
             font = UnitUtil.deriveFont(true, 9.0f);
             g2d.setFont(font);
             g2d.drawString("(" + Integer.toString(tank2.getArmor(Tank.LOC_FRONT)) + ")", 467, 64 + secondPageMargin);
@@ -496,7 +498,8 @@ public class PrintDualTurretVehicle implements Printable {
             g2d.drawString("(" + Integer.toString(tank2.getArmor(Tank.LOC_REAR)) + ")", 467, 342 + secondPageMargin);
 
             if (tank2.getOInternal(Tank.LOC_TURRET) > 0) {
-                g2d.drawString("(" + Integer.toString(tank2.getArmor(Tank.LOC_TURRET)) + ")", 455, 186 + secondPageMargin);
+                g2d.drawString("(" + Integer.toString(tank2.getArmor(Tank.LOC_TURRET)) + ")", 455,
+                        186 + secondPageMargin);
             }
         }
     }
@@ -513,27 +516,13 @@ public class PrintDualTurretVehicle implements Printable {
 
     @SuppressWarnings("unused")
     private void printExtraFrontArmor(Graphics2D g2d, int totalArmor, boolean secondImage) {
-        float[] topColumn =
-            { 442, 90 };
-        float[] middleColumn =
-            { 498, 125 };
-        float[] bottomColumn =
-            { 493, 136.2f };
-        float[] pipShift =
-            { 6, 6 };
+        float[] topColumn = { 442, 90 };
+        float[] middleColumn = { 498, 125 };
+        float[] bottomColumn = { 493, 136.2f };
+        float[] pipShift = { 6, 6 };
 
-        float[][] extraArmor =
-            {
-                { 429, 90 },
-                { 429, 97 },
-                { 518, 90 },
-                { 518, 97 },
-                { 436f, 93.5f },
-                { 436f, 100.5f },
-                { 513f, 93.5f },
-                { 513f, 100.5f },
-                { 513f, 107.5f },
-                { 436f, 107.5f } };
+        float[][] extraArmor = { { 429, 90 }, { 429, 97 }, { 518, 90 }, { 518, 97 }, { 436f, 93.5f }, { 436f, 100.5f },
+                { 513f, 93.5f }, { 513f, 100.5f }, { 513f, 107.5f }, { 436f, 107.5f } };
 
         if (secondImage) {
             topColumn[1] += secondPageMargin;
@@ -551,8 +540,7 @@ public class PrintDualTurretVehicle implements Printable {
 
         Vector<float[]> pipPlotter = new Vector<float[]>(20);
         for (int pos = 1; pos <= 72; pos++) {
-            pipPlotter.add(new float[]
-                { topColumn[0], topColumn[1] });
+            pipPlotter.add(new float[] { topColumn[0], topColumn[1] });
             topColumn[0] += pipShift[0];
             if ((pos % 12) == 0) {
                 topColumn[1] += pipShift[1];
@@ -563,8 +551,7 @@ public class PrintDualTurretVehicle implements Printable {
 
         pipShift[0] *= -1;
         for (int pos = 1; pos <= 16; pos++) {
-            pipPlotter.add(new float[]
-                { middleColumn[0], middleColumn[1] });
+            pipPlotter.add(new float[] { middleColumn[0], middleColumn[1] });
             middleColumn[0] += pipShift[0];
             if ((pos % 8) == 0) {
                 middleColumn[1] += pipShift[1];
@@ -574,8 +561,7 @@ public class PrintDualTurretVehicle implements Printable {
         }
 
         for (int pos = 1; pos <= 18; pos++) {
-            pipPlotter.add(new float[]
-                { bottomColumn[0], bottomColumn[1] });
+            pipPlotter.add(new float[] { bottomColumn[0], bottomColumn[1] });
             bottomColumn[0] += pipShift[0];
             if ((pos % 6) == 0) {
                 bottomColumn[1] += pipShift[1] - 0.5f;
@@ -585,8 +571,7 @@ public class PrintDualTurretVehicle implements Printable {
         }
 
         for (int pos = 0; pos < 10; pos++) {
-            pipPlotter.add(new float[]
-                { extraArmor[pos][0], extraArmor[pos][1] });
+            pipPlotter.add(new float[] { extraArmor[pos][0], extraArmor[pos][1] });
         }
         printArmorPoints(g2d, pipPlotter, totalArmor);
     }
@@ -611,15 +596,12 @@ public class PrintDualTurretVehicle implements Printable {
 
         Vector<float[]> pipPlotter = new Vector<float[]>(73, 1);
 
-        pipPlotter.add(new float[]
-            { 423, 65 });
-        pipPlotter.add(new float[]
-            { 531, 65 });
+        pipPlotter.add(new float[] { 423, 65 });
+        pipPlotter.add(new float[] { 531, 65 });
 
         for (int lineCount = 1; lineCount <= 9; lineCount++) {
             for (int point = 0; point < pipsPerLine; point++) {
-                pipPlotter.add(new float[]
-                    { pointX, pointY });
+                pipPlotter.add(new float[] { pointX, pointY });
                 pointX += shiftX;
             }
 
@@ -667,8 +649,7 @@ public class PrintDualTurretVehicle implements Printable {
         Vector<float[]> pipPlotter = new Vector<float[]>(64, 1);
         for (int lineCount = 1; lineCount <= 4; lineCount++) {
             for (int point = 0; point < pipsPerLine; point++) {
-                pipPlotter.add(new float[]
-                    { pointX, pointY });
+                pipPlotter.add(new float[] { pointX, pointY });
                 pointX += shiftX;
             }
 
@@ -681,14 +662,10 @@ public class PrintDualTurretVehicle implements Printable {
 
     @SuppressWarnings("unused")
     private void printExtraRearArmor(Graphics2D g2d, int totalArmor, boolean secondImage) {
-        int[] topColumn = new int[]
-            { 420, 291 };
-        int[] middleColumn = new int[]
-            { 420, 298 };
-        int[] bottomColumn = new int[]
-            { 420, 305 };
-        int[] pipShift = new int[]
-            { 5, 5 };
+        int[] topColumn = new int[] { 420, 291 };
+        int[] middleColumn = new int[] { 420, 298 };
+        int[] bottomColumn = new int[] { 420, 305 };
+        int[] pipShift = new int[] { 5, 5 };
 
         if (secondImage) {
             topColumn[1] += secondPageMargin;
@@ -700,27 +677,23 @@ public class PrintDualTurretVehicle implements Printable {
 
         Vector<float[]> pipPlotter = new Vector<float[]>(20);
         for (int pos = 1; pos <= pips; pos++) {
-            pipPlotter.add(new float[]
-                { topColumn[0], topColumn[1] });
+            pipPlotter.add(new float[] { topColumn[0], topColumn[1] });
             topColumn[0] += pipShift[0];
         }
 
         pips = 24;
         for (int pos = 1; pos <= pips; pos++) {
-            pipPlotter.add(new float[]
-                { middleColumn[0], middleColumn[1] });
+            pipPlotter.add(new float[] { middleColumn[0], middleColumn[1] });
             middleColumn[0] += pipShift[0];
         }
 
         pips = 24;
         for (int pos = 1; pos <= pips; pos++) {
-            pipPlotter.add(new float[]
-                { bottomColumn[0], bottomColumn[1] });
+            pipPlotter.add(new float[] { bottomColumn[0], bottomColumn[1] });
             bottomColumn[0] += pipShift[0];
         }
 
-        pipPlotter.add(new float[]
-            { 482, 312 });
+        pipPlotter.add(new float[] { 482, 312 });
 
         printArmorPoints(g2d, pipPlotter, totalArmor, 7.0f);
 
@@ -749,8 +722,7 @@ public class PrintDualTurretVehicle implements Printable {
 
         for (int lineCount = 1; lineCount <= 6; lineCount++) {
             for (int point = 0; point < pipsPerLine; point++) {
-                pipPlotter.add(new float[]
-                    { pointX, pointY });
+                pipPlotter.add(new float[] { pointX, pointY });
                 pointX += shiftX;
             }
             pointY += shiftY;
@@ -783,8 +755,7 @@ public class PrintDualTurretVehicle implements Printable {
 
         for (int lineCount = 1; lineCount <= 5; lineCount++) {
             for (int point = 0; point < pipsPerLine; point++) {
-                pipPlotter.add(new float[]
-                    { pointX, pointY });
+                pipPlotter.add(new float[] { pointX, pointY });
                 pointX += shiftX;
             }
 
@@ -806,12 +777,9 @@ public class PrintDualTurretVehicle implements Printable {
             return;
         }
 
-        float[] topColumn = new float[]
-            { 456.5f, 232f };
-        float[] bottomColumn = new float[]
-            { 453.5f, 238f };
-        float[] pipShift = new float[]
-            { 4.5f, 4.5f };
+        float[] topColumn = new float[] { 456.5f, 232f };
+        float[] bottomColumn = new float[] { 453.5f, 238f };
+        float[] pipShift = new float[] { 4.5f, 4.5f };
         float fontSize = 5.5f;
 
         if (secondImage) {
@@ -823,14 +791,12 @@ public class PrintDualTurretVehicle implements Printable {
 
         Vector<float[]> pipPlotter = new Vector<float[]>(20);
         for (int pos = 1; pos <= pips; pos++) {
-            pipPlotter.add(new float[]
-                { topColumn[0], topColumn[1] });
+            pipPlotter.add(new float[] { topColumn[0], topColumn[1] });
             topColumn[0] += pipShift[0];
         }
 
         for (int pos = 1; pos <= 70; pos++) {
-            pipPlotter.add(new float[]
-                { bottomColumn[0], bottomColumn[1] });
+            pipPlotter.add(new float[] { bottomColumn[0], bottomColumn[1] });
             bottomColumn[0] += pipShift[0];
             if ((pos % 11) == 0) {
                 bottomColumn[1] += pipShift[1];
@@ -864,8 +830,7 @@ public class PrintDualTurretVehicle implements Printable {
 
         for (int lineCount = 1; lineCount <= 6; lineCount++) {
             for (int point = 0; point < pipsPerLine; point++) {
-                pipPlotter.add(new float[]
-                    { pointX, pointY });
+                pipPlotter.add(new float[] { pointX, pointY });
                 pointY += shiftY;
             }
 
@@ -924,8 +889,7 @@ public class PrintDualTurretVehicle implements Printable {
 
         for (int lineCount = 1; lineCount <= 6; lineCount++) {
             for (int point = 0; point < pipsPerLine; point++) {
-                pipPlotter.add(new float[]
-                    { pointX, pointY });
+                pipPlotter.add(new float[] { pointX, pointY });
                 pointY += shiftY;
             }
 
@@ -984,8 +948,7 @@ public class PrintDualTurretVehicle implements Printable {
 
         for (int lineCount = 1; lineCount <= 2; lineCount++) {
             for (int point = 0; point < pipsPerLine; point++) {
-                pipPlotter.add(new float[]
-                    { pointX, pointY });
+                pipPlotter.add(new float[] { pointX, pointY });
                 pointX += shiftX;
             }
             pointY += shiftY;
@@ -1017,8 +980,7 @@ public class PrintDualTurretVehicle implements Printable {
 
         for (int lineCount = 1; lineCount <= 2; lineCount++) {
             for (int point = 0; point < pipsPerLine; point++) {
-                pipPlotter.add(new float[]
-                    { pointX, pointY });
+                pipPlotter.add(new float[] { pointX, pointY });
                 pointX += shiftX;
             }
             pointY += shiftY;
@@ -1050,8 +1012,7 @@ public class PrintDualTurretVehicle implements Printable {
 
         for (int lineCount = 1; lineCount <= 2; lineCount++) {
             for (int point = 0; point < pipsPerLine; point++) {
-                pipPlotter.add(new float[]
-                    { pointX, pointY });
+                pipPlotter.add(new float[] { pointX, pointY });
                 pointX += shiftX;
             }
             pointY += shiftY;
@@ -1062,10 +1023,8 @@ public class PrintDualTurretVehicle implements Printable {
     }
 
     private void printLeftStruct(Graphics2D g2d, int totalArmor, boolean secondImage) {
-        int[] column = new int[]
-            { 447, 178 };
-        int[] pipShift = new int[]
-            { 2, 7 };
+        int[] column = new int[] { 447, 178 };
+        int[] pipShift = new int[] { 2, 7 };
 
         if (secondImage) {
             column[1] += secondPageMargin;
@@ -1079,10 +1038,8 @@ public class PrintDualTurretVehicle implements Printable {
     }
 
     private void printRightStruct(Graphics2D g2d, int totalArmor, boolean secondImage) {
-        int[] column = new int[]
-            { 506, 178 };
-        int[] pipShift = new int[]
-            { 2, 7 };
+        int[] column = new int[] { 506, 178 };
+        int[] pipShift = new int[] { 2, 7 };
 
         if (secondImage) {
             column[1] += secondPageMargin;
@@ -1096,10 +1053,8 @@ public class PrintDualTurretVehicle implements Printable {
     }
 
     private void printRearStruct(Graphics2D g2d, int totalArmor, boolean secondImage) {
-        int[] column = new int[]
-            { 445, 291 };
-        int[] pipShift = new int[]
-            { 7, 7 };
+        int[] column = new int[] { 445, 291 };
+        int[] pipShift = new int[] { 7, 7 };
 
         if (secondImage) {
             column[1] += secondPageMargin;
@@ -1121,7 +1076,8 @@ public class PrintDualTurretVehicle implements Printable {
         float pipSpace = pipPoints.size() / totalArmor;
         for (float pos = 0; pos < pipPoints.size(); pos += pipSpace) {
             int currentPip = (int) pos;
-            ImageHelperVehicle.drawTankArmorPip(g2d, pipPoints.get(currentPip)[0], pipPoints.get(currentPip)[1], fontSize);
+            ImageHelperVehicle.drawTankArmorPip(g2d, pipPoints.get(currentPip)[0], pipPoints.get(currentPip)[1],
+                    fontSize);
             if (--totalArmor <= 0) {
                 return;
             }
@@ -1133,7 +1089,8 @@ public class PrintDualTurretVehicle implements Printable {
         float pipSpace = pipPoints.size() / totalArmor;
         for (float pos = 0; pos < pipPoints.size(); pos += pipSpace) {
             int currentPip = (int) pos;
-            ImageHelperVehicle.drawTankISTurretPip(g2d, (int) pipPoints.get(currentPip)[0], (int) pipPoints.get(currentPip)[1]);
+            ImageHelperVehicle.drawTankISTurretPip(g2d, (int) pipPoints.get(currentPip)[0],
+                    (int) pipPoints.get(currentPip)[1]);
             if (--totalArmor <= 0) {
                 return;
             }
@@ -1145,7 +1102,8 @@ public class PrintDualTurretVehicle implements Printable {
         float pipSpace = pipPoints.size() / totalArmor;
         for (float pos = 0; pos < pipPoints.size(); pos += pipSpace) {
             int currentPip = (int) pos;
-            ImageHelperVehicle.drawTankISPip(g2d, (int) pipPoints.get(currentPip)[0], (int) pipPoints.get(currentPip)[1]);
+            ImageHelperVehicle.drawTankISPip(g2d, (int) pipPoints.get(currentPip)[0],
+                    (int) pipPoints.get(currentPip)[1]);
             if (--totalArmor <= 0) {
                 return;
             }

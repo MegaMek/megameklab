@@ -1,5 +1,6 @@
 /*
- * MegaMekLab - Copyright (C) 2018 - The MegaMek Team
+ * MegaMekLab
+ * Copyright (C) 2018 - The MegaMek Team
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -11,6 +12,7 @@
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  */
+
 package megameklab.com.ui.util;
 
 import java.awt.Color;
@@ -57,7 +59,7 @@ public class ProtomekMountList extends JList<Mounted> {
     private final EntitySource eSource;
     private final int location;
     private RefreshListener refresh;
-    
+
     public ProtomekMountList(EntitySource eSource, RefreshListener refresh, int location) {
         this.eSource = eSource;
         this.refresh = refresh;
@@ -67,24 +69,24 @@ public class ProtomekMountList extends JList<Mounted> {
         addMouseListener(mouseListener);
         setDragEnabled(true);
         setTransferHandler(new CriticalTransferHandler(eSource, refresh));
-        
+
         setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         setFont(new Font("Arial", Font.PLAIN, 10));
         setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.BLACK.darker()));
     }
-    
+
     public Protomech getProtomech() {
         return (Protomech) eSource.getEntity();
     }
-    
+
     public int getMountLocation() {
         return location;
     }
-    
+
     public void setRefresh(RefreshListener refresh) {
         this.refresh = refresh;
     }
-    
+
     private void refresh() {
         if (null != refresh) {
             refresh.refreshEquipment();
@@ -92,7 +94,7 @@ public class ProtomekMountList extends JList<Mounted> {
             refresh.refreshBuild();
         }
     }
-    
+
     public void refreshContents() {
         MountedListModel model = new MountedListModel();
         for (Mounted m : getProtomech().getEquipment()) {
@@ -103,15 +105,14 @@ public class ProtomekMountList extends JList<Mounted> {
         setModel(model);
         setVisibleRowCount(model.getSize());
     }
-    
+
     private void removeMount(Mounted mount) {
         mount.setLocation(Entity.LOC_NONE, false);
         refresh();
     }
-    
+
     private void deleteMount(Mounted mount) {
-        if ((mount.getType() instanceof WeaponType)
-                && (mount.getType().hasFlag(WeaponType.F_ONESHOT))) {
+        if ((mount.getType() instanceof WeaponType) && (mount.getType().hasFlag(WeaponType.F_ONESHOT))) {
             Mounted ammo = mount.getLinked();
             if (null != ammo) {
                 UnitUtil.removeMounted(getProtomech(), ammo);
@@ -120,12 +121,12 @@ public class ProtomekMountList extends JList<Mounted> {
         UnitUtil.removeMounted(getProtomech(), mount);
         refresh();
     }
-    
+
     private void changeFacing(Mounted mount) {
         mount.setLocation(location, !mount.isRearMounted());
         refresh();
     }
-    
+
     private MouseListener mouseListener = new MouseAdapter() {
         @Override
         public void mousePressed(MouseEvent e) {
@@ -134,13 +135,11 @@ public class ProtomekMountList extends JList<Mounted> {
             if ((null == mount) || UnitUtil.isFixedLocationSpreadEquipment(mount.getType())) {
                 return;
             }
-            if ((mount.getType() instanceof MiscType)
-                    && (UnitUtil.isArmor(mount.getType())
-                            || mount.getType().hasFlag(MiscType.F_JUMP_JET)
-                            || mount.getType().hasFlag(MiscType.F_UMU))) {
+            if ((mount.getType() instanceof MiscType) && (UnitUtil.isArmor(mount.getType())
+                    || mount.getType().hasFlag(MiscType.F_JUMP_JET) || mount.getType().hasFlag(MiscType.F_UMU))) {
                 return;
             }
-            
+
             if (e.getButton() == MouseEvent.BUTTON2) {
                 remove(index);
             } else if (e.getButton() == MouseEvent.BUTTON3) {
@@ -151,8 +150,7 @@ public class ProtomekMountList extends JList<Mounted> {
 
                 JPopupMenu popup = new JPopupMenu();
 
-                if ((location == Protomech.LOC_TORSO)
-                        && (e.getModifiersEx() & InputEvent.ALT_DOWN_MASK) != 0) {
+                if ((location == Protomech.LOC_TORSO) && (e.getModifiersEx() & InputEvent.ALT_DOWN_MASK) != 0) {
                     changeFacing(mount);
                     return;
                 }
@@ -167,13 +165,11 @@ public class ProtomekMountList extends JList<Mounted> {
                 info = new JMenuItem("Delete " + mount.getName());
                 info.addActionListener(ev -> deleteMount(mount));
                 popup.add(info);
-                if ((location == Protomech.LOC_TORSO)
-                        && (mount.getType() instanceof WeaponType)) {
+                if ((location == Protomech.LOC_TORSO) && (mount.getType() instanceof WeaponType)) {
                     info = new JMenuItem("Change Facing");
                     info.addActionListener(ev -> changeFacing(mount));
                     popup.add(info);
                 }
-
 
                 if (popup.getComponentCount() > 0) {
                     popup.show(ProtomekMountList.this, e.getX(), e.getY());
@@ -181,7 +177,7 @@ public class ProtomekMountList extends JList<Mounted> {
             }
         }
     };
-    
+
     private static class MountedListModel extends AbstractListModel<Mounted> {
 
         private static final long serialVersionUID = 2575915653617712928L;
@@ -200,18 +196,18 @@ public class ProtomekMountList extends JList<Mounted> {
             }
             return list.get(index);
         }
-        
+
         public void add(Mounted mounted) {
             list.add(mounted);
             fireContentsChanged(this, list.size() - 1, list.size() - 1);
         }
-        
+
     }
-    
+
     private static class MountCellRenderer extends DefaultListCellRenderer {
 
         private static final long serialVersionUID = -1115364118975814321L;
-        
+
         private boolean useColor = false;
 
         public MountCellRenderer(boolean useColor) {
@@ -219,14 +215,15 @@ public class ProtomekMountList extends JList<Mounted> {
         }
 
         @Override
-        public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean hasFocus) {
+        public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
+                boolean hasFocus) {
             final JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, hasFocus);
             final ProtomekMountList lstMount = (ProtomekMountList) list;
             final Entity entity = lstMount.eSource.getEntity();
-            
-            label.setPreferredSize(new Dimension(140,15));
-            label.setMaximumSize(new Dimension(140,15));
-            label.setMinimumSize(new Dimension(140,15));
+
+            label.setPreferredSize(new Dimension(140, 15));
+            label.setMaximumSize(new Dimension(140, 15));
+            label.setMinimumSize(new Dimension(140, 15));
 
             if (null == value) {
                 if (useColor) {
@@ -252,7 +249,7 @@ public class ProtomekMountList extends JList<Mounted> {
                 if (UnitUtil.isFixedLocationSpreadEquipment(mount.getType())) {
                     label.setFont(label.getFont().deriveFont(Font.ITALIC));
                 }
-                
+
                 String name = UnitUtil.getCritName(entity, mount.getType());
                 if (mount.isRearMounted()) {
                     name += " (R)";
@@ -266,7 +263,7 @@ public class ProtomekMountList extends JList<Mounted> {
             }
 
             if ((index > 0) && (index < list.getModel().getSize())) {
-                label.setBorder( BorderFactory.createMatteBorder(1, 0, 0, 0, Color.black));
+                label.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.black));
             }
 
             return label;

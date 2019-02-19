@@ -1,5 +1,6 @@
 /*
- * MegaMekLab - Copyright (C) 2018 - The MegaMek Team
+ * MegaMekLab
+ * Copyright (C) 2018 - The MegaMek Team
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -11,6 +12,7 @@
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  */
+
 package megameklab.com.ui.aerospace;
 
 import java.awt.BorderLayout;
@@ -43,16 +45,16 @@ import megameklab.com.util.MenuBarCreator;
 
 /**
  * MainUI for Jumpships, Warship, and Space Stations
- * 
+ *
  * @author Neoancient
  *
  */
 public class AdvancedAeroUI extends MegaMekLabMainUI {
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = -91028543221939757L;
-    
+
     JTabbedPane configPane = new JTabbedPane(SwingConstants.TOP);
     JPanel contentPane;
     private AdvancedAeroStructureTab structureTab;
@@ -65,7 +67,7 @@ public class AdvancedAeroUI extends MegaMekLabMainUI {
     JPanel masterPanel = new JPanel();
     JScrollPane scroll = new JScrollPane();
     private MenuBarCreator menubarcreator;
-    
+
     public AdvancedAeroUI(boolean primitive) {
         super();
         if (!primitive) {
@@ -99,7 +101,7 @@ public class AdvancedAeroUI extends MegaMekLabMainUI {
     public void refreshEquipmentTable() {
         equipmentTab.refreshTable();
     }
-    
+
     @Override
     public void refreshTransport() {
         transportTab.refresh();
@@ -111,8 +113,7 @@ public class AdvancedAeroUI extends MegaMekLabMainUI {
             setEntity(new Jumpship());
         } else if (entitytype == Entity.ETYPE_WARSHIP) {
             setEntity(new Warship());
-            if ((null != oldUnit)
-                    && (((Jumpship) oldUnit).getDriveCoreType() == Jumpship.DRIVE_CORE_SUBCOMPACT)) {
+            if ((null != oldUnit) && (((Jumpship) oldUnit).getDriveCoreType() == Jumpship.DRIVE_CORE_SUBCOMPACT)) {
                 ((Jumpship) getEntity()).setDriveCoreType(Jumpship.DRIVE_CORE_SUBCOMPACT);
             }
         } else if (entitytype == Entity.ETYPE_SPACE_STATION) {
@@ -148,7 +149,7 @@ public class AdvancedAeroUI extends MegaMekLabMainUI {
             ship.set0SI(1);
         }
         ship.setArmorTechLevel(getEntity().getTechLevel());
-        
+
         ship.setHeatType(Aero.HEAT_SINGLE);
 
         ship.autoSetInternal();
@@ -170,8 +171,7 @@ public class AdvancedAeroUI extends MegaMekLabMainUI {
         } else {
             ship.setChassis(oldUnit.getChassis());
             ship.setModel(oldUnit.getModel());
-            ship.setYear(Math.max(oldUnit.getYear(),
-                    ship.getConstructionTechAdvancement().getIntroductionDate()));
+            ship.setYear(Math.max(oldUnit.getYear(), ship.getConstructionTechAdvancement().getIntroductionDate()));
             ship.setSource(oldUnit.getSource());
             ship.setManualBV(oldUnit.getManualBV());
             SimpleTechLevel lvl = SimpleTechLevel.max(ship.getStaticTechLevel(),

@@ -1,5 +1,6 @@
 /*
- * MegaMekLab - Copyright (C) 2017 - The MegaMek Team
+ * MegaMekLab
+ * Copyright (C) 2017 - The MegaMek Team
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -11,6 +12,7 @@
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  */
+
 package megameklab.com.printing;
 
 import java.awt.Font;
@@ -64,21 +66,22 @@ import megamek.common.logging.LogLevel;
 import megameklab.com.MegaMekLab;
 
 /**
- * Base class for rendering record sheets. This is mostly a collection of utility methods.
- * 
+ * Base class for rendering record sheets. This is mostly a collection of
+ * utility methods.
+ *
  * @author Neoancient
  *
  */
 public abstract class PrintRecordSheet implements Printable {
-    
-    final static float DEFAULT_PIP_SIZE  = 0.38f;
-    final static float FONT_SIZE_MEDIUM  = 6.76f;
-    final static float FONT_SIZE_SMALL   = 6.2f;
-    final static float FONT_SIZE_VSMALL  = 5.8f;
-    
+
+    final static float DEFAULT_PIP_SIZE = 0.38f;
+    final static float FONT_SIZE_MEDIUM = 6.76f;
+    final static float FONT_SIZE_SMALL = 6.2f;
+    final static float FONT_SIZE_VSMALL = 5.8f;
+
     enum PipType {
         CIRCLE, DIAMOND;
-        
+
         public static PipType forAT(int at) {
             if (at == EquipmentType.T_ARMOR_HARDENED) {
                 return DIAMOND;
@@ -93,39 +96,39 @@ public abstract class PrintRecordSheet implements Printable {
     protected final RecordSheetOptions options;
     private Document svgDocument;
     private SVGGraphics2D svgGenerator;
-    
+
     private Font normalFont = null;
     private Font boldFont = null;
-    
+
     /**
      * Creates an SVG object for the record sheet
-     * 
+     *
      * @param startPage The print job page number for this sheet
-     * @param options Overrides the global options for which elements are printed 
+     * @param options   Overrides the global options for which elements are printed
      */
     protected PrintRecordSheet(int firstPage, RecordSheetOptions options) {
         this.firstPage = firstPage;
         this.options = options;
     }
-    
+
     protected final Document getSVGDocument() {
         return svgDocument;
     }
-    
+
     protected final Font getNormalFont(float size) {
         if (null == normalFont) {
             loadFonts();
         }
         return normalFont.deriveFont(size);
     }
-    
+
     protected final Font getBoldFont(float size) {
         if (null == boldFont) {
             loadFonts();
         }
         return boldFont.deriveFont(size);
     }
-    
+
     private void loadFonts() {
         final String METHOD_NAME = "loadFonts()";
         String fName = "data/fonts/Eurosti.TTF";
@@ -136,7 +139,7 @@ public abstract class PrintRecordSheet implements Printable {
             is.close();
         } catch (Exception ex) {
             MegaMekLab.getLogger().log(PrintRecordSheet.class, METHOD_NAME, LogLevel.ERROR,
-                            fName + " not loaded.  Using Arial font.", ex);
+                    fName + " not loaded.  Using Arial font.", ex);
             normalFont = new Font("Arial", Font.PLAIN, 8);
         }
         fName = "data/fonts/Eurostib.TTF";
@@ -147,7 +150,7 @@ public abstract class PrintRecordSheet implements Printable {
             is.close();
         } catch (Exception ex) {
             MegaMekLab.getLogger().log(PrintRecordSheet.class, METHOD_NAME, LogLevel.ERROR,
-                            fName + " not loaded.  Using Arial font.", ex);
+                    fName + " not loaded.  Using Arial font.", ex);
             normalFont = new Font("Arial", Font.BOLD, 8);
         }
     }
@@ -155,7 +158,7 @@ public abstract class PrintRecordSheet implements Printable {
     @Override
     public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
         final String METHOD_NAME = "print(Graphics,PageFormat,int)";
-        
+
         Graphics2D g2d = (Graphics2D) graphics;
         if (null != g2d) {
             File f = new File("data/images/recordsheets/" + getSVGFileName());
@@ -181,16 +184,17 @@ public abstract class PrintRecordSheet implements Printable {
         }
         return Printable.PAGE_EXISTS;
     }
-    
+
     protected GraphicsNode build() {
         GVTBuilder builder = new GVTBuilder();
         BridgeContext ctx = new BridgeContext(new UserAgentAdapter() {
             @Override
-            // If an image can't be rendered we'll log it and return an empty document in its place
+            // If an image can't be rendered we'll log it and return an empty document in
+            // its place
             // rather than throwing an exception.
             public SVGDocument getBrokenLinkDocument(Element e, String url, String message) {
-                MegaMekLab.getLogger().log(PrintRecordSheet.class, "build()",
-                        LogLevel.WARNING, "Cannot render image: " + message);
+                MegaMekLab.getLogger().log(PrintRecordSheet.class, "build()", LogLevel.WARNING,
+                        "Cannot render image: " + message);
                 DOMImplementation impl = SVGDOMImplementation.getDOMImplementation();
                 SVGDocument doc = (SVGDocument) impl.createDocument(svgNS, "svg", null);
                 Element text = doc.createElementNS(svgNS, SVGConstants.SVG_TEXT_TAG);
@@ -209,35 +213,38 @@ public abstract class PrintRecordSheet implements Printable {
     public int getPageCount() {
         return 1;
     }
-    
+
     /**
      * Renders the sheet to the Graphics object.
-     * 
-     * @param graphics   The graphics object passed by {@link Printable#print(Graphics, PageFormat, int) print}
-     * @param pageFormat The page format passed by {@link Printable#print(Graphics, PageFormat, int) print}
-     * @param pageNum    Indicates which page of multi-page sheets to print. The first page is 0.
-     * 
+     *
+     * @param graphics   The graphics object passed by
+     *                   {@link Printable#print(Graphics, PageFormat, int) print}
+     * @param pageFormat The page format passed by
+     *                   {@link Printable#print(Graphics, PageFormat, int) print}
+     * @param pageNum    Indicates which page of multi-page sheets to print. The
+     *                   first page is 0.
+     *
      * @throws PrinterException
      */
-    protected abstract void printImage(Graphics2D g2d, PageFormat pageFormat, int pageNum)
-            throws PrinterException;
+    protected abstract void printImage(Graphics2D g2d, PageFormat pageFormat, int pageNum) throws PrinterException;
 
     protected abstract String getSVGFileName();
-    
+
     /**
      * @return The title to use for the record sheet
      */
     protected abstract String getRecordSheetTitle();
-    
+
     protected void setTextField(String id, String text) {
         setTextField(id, text, false);
     }
-    
+
     /**
-     * Sets the text content of the text element in the SVG diagram corresponding with the given id.
-     * If the element does not exist, does nothing. If the text is null, hides the element instead.
-     * Any text previously in the element is cleared.
-     *  
+     * Sets the text content of the text element in the SVG diagram corresponding
+     * with the given id. If the element does not exist, does nothing. If the text
+     * is null, hides the element instead. Any text previously in the element is
+     * cleared.
+     *
      * @param id     The String id of a text element
      * @param text   The text to set as content
      * @param unhide Sets the element visible if the text is non-null
@@ -255,41 +262,43 @@ public abstract class PrintRecordSheet implements Printable {
             }
         }
     }
-    
+
     /**
-     * Convenience method for creating a new SVG Text element and adding it to the parent.  The height of the text is
-     * returned, to aid in layout.
-     * 
-     * @param parent    The SVG element to add the text element to.
-     * @param x         The X position of the new element.
-     * @param y         The Y position of the new element.
-     * @param text      The text to display.
-     * @param fontSize  Font size of the text.
-     * @param anchor    Set the Text elements text-anchor.  Should be either start, middle, or end.
-     * @param weight    The font weight, either normal or bold.
+     * Convenience method for creating a new SVG Text element and adding it to the
+     * parent. The height of the text is returned, to aid in layout.
+     *
+     * @param parent   The SVG element to add the text element to.
+     * @param x        The X position of the new element.
+     * @param y        The Y position of the new element.
+     * @param text     The text to display.
+     * @param fontSize Font size of the text.
+     * @param anchor   Set the Text elements text-anchor. Should be either start,
+     *                 middle, or end.
+     * @param weight   The font weight, either normal or bold.
      */
-    protected double addTextElement(Element parent, double x, double y, String text,
-            float fontSize, String anchor, String weight) {
+    protected double addTextElement(Element parent, double x, double y, String text, float fontSize, String anchor,
+            String weight) {
         return addTextElement(parent, x, y, text, fontSize, anchor, weight, "#000000");
     }
-    
+
     /**
-     * Convenience method for creating a new SVG Text element and adding it to the parent.  The height of the text is
-     * returned, to aid in layout.
-     * 
-     * @param parent    The SVG element to add the text element to.
-     * @param x         The X position of the new element.
-     * @param y         The Y position of the new element.
-     * @param text      The text to display.
-     * @param fontSize  Font size of the text.
-     * @param anchor    Set the Text elements text-anchor.  Should be either start, middle, or end.
-     * @param weight    The font weight, either normal or bold.
-     * @param fill      The fill color for the text (e.g. foreground color)
-     * 
-     * @return          The width of the added text element
+     * Convenience method for creating a new SVG Text element and adding it to the
+     * parent. The height of the text is returned, to aid in layout.
+     *
+     * @param parent   The SVG element to add the text element to.
+     * @param x        The X position of the new element.
+     * @param y        The Y position of the new element.
+     * @param text     The text to display.
+     * @param fontSize Font size of the text.
+     * @param anchor   Set the Text elements text-anchor. Should be either start,
+     *                 middle, or end.
+     * @param weight   The font weight, either normal or bold.
+     * @param fill     The fill color for the text (e.g. foreground color)
+     *
+     * @return The width of the added text element
      */
-    protected double addTextElement(Element parent, double x, double y, String text,
-            float fontSize, String anchor, String weight, String fill) {
+    protected double addTextElement(Element parent, double x, double y, String text, float fontSize, String anchor,
+            String weight, String fill) {
         Element newText = svgDocument.createElementNS(svgNS, SVGConstants.SVG_TEXT_TAG);
         newText.setTextContent(text);
         newText.setAttributeNS(null, SVGConstants.SVG_X_ATTRIBUTE, String.valueOf(x));
@@ -300,51 +309,57 @@ public abstract class PrintRecordSheet implements Printable {
         newText.setAttributeNS(null, SVGConstants.SVG_TEXT_ANCHOR_ATTRIBUTE, anchor);
         newText.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, fill);
         parent.appendChild(newText);
-        
+
         return getTextLength(text, fontSize);
     }
-    
+
     /**
-     * Adds a text element to a region with limited width. If there are multiple lines, the text
-     * will be split over multiple lines, broken on a space character. The space will still be
-     * included on the next line as a small indent.
-     * 
-     * @param canvas      The parent <code>SVGElement</code> to the new <code>Text</code>.
-     * @param x           The x coordinate of the upper left corner of the text region
-     * @param y           The y coordinate of the upper left corner of the text region
-     * @param width       The allowable width of the text element.
-     * @param lineHeight  The amount to increase the y coordinate for a new line
-     * @param text        The text to add
-     * @param fontSize    The font-size attribute
-     * @param anchor      The text-anchor attribute
-     * @param weight      The font-weight attribute
-     * 
-     * @return            The number of lines of text added
+     * Adds a text element to a region with limited width. If there are multiple
+     * lines, the text will be split over multiple lines, broken on a space
+     * character. The space will still be included on the next line as a small
+     * indent.
+     *
+     * @param canvas     The parent <code>SVGElement</code> to the new
+     *                   <code>Text</code>.
+     * @param x          The x coordinate of the upper left corner of the text
+     *                   region
+     * @param y          The y coordinate of the upper left corner of the text
+     *                   region
+     * @param width      The allowable width of the text element.
+     * @param lineHeight The amount to increase the y coordinate for a new line
+     * @param text       The text to add
+     * @param fontSize   The font-size attribute
+     * @param anchor     The text-anchor attribute
+     * @param weight     The font-weight attribute
+     *
+     * @return The number of lines of text added
      */
     protected int addMultilineTextElement(Element canvas, double x, double y, double width, double lineHeight,
             String text, float fontSize, String anchor, String weight) {
-        return addMultilineTextElement(canvas, x, y, width, lineHeight,
-                text, fontSize, anchor, weight, "#000000", ' ');
+        return addMultilineTextElement(canvas, x, y, width, lineHeight, text, fontSize, anchor, weight, "#000000", ' ');
     }
-    
+
     /**
-     * Adds a text element to a region with limited width. If there are multiple lines, the text
-     * will be split over multiple lines, broken on the provided character. The line break character
-     * will be included on the next line.
-     * 
-     * @param canvas      The parent <code>SVGElement</code> to the new <code>Text</code>.
-     * @param x           The x coordinate of the upper left corner of the text region
-     * @param y           The y coordinate of the upper left corner of the text region
-     * @param width       The allowable width of the text element.
-     * @param lineHeight  The amount to increase the y coordinate for a new line
-     * @param text        The text to add
-     * @param fontSize    The font-size attribute
-     * @param anchor      The text-anchor attribute
-     * @param weight      The font-weight attribute
-     * @param fill        The fill color for the text (e.g. foreground color)
-     * @param delimiter   The character to use as an acceptable line ending
-     * 
-     * @return            The number of lines of text added
+     * Adds a text element to a region with limited width. If there are multiple
+     * lines, the text will be split over multiple lines, broken on the provided
+     * character. The line break character will be included on the next line.
+     *
+     * @param canvas     The parent <code>SVGElement</code> to the new
+     *                   <code>Text</code>.
+     * @param x          The x coordinate of the upper left corner of the text
+     *                   region
+     * @param y          The y coordinate of the upper left corner of the text
+     *                   region
+     * @param width      The allowable width of the text element.
+     * @param lineHeight The amount to increase the y coordinate for a new line
+     * @param text       The text to add
+     * @param fontSize   The font-size attribute
+     * @param anchor     The text-anchor attribute
+     * @param weight     The font-weight attribute
+     * @param fill       The fill color for the text (e.g. foreground color)
+     * @param delimiter  The character to use as an acceptable line ending
+     *
+     * @return The number of lines of text added
      */
     protected int addMultilineTextElement(Element canvas, double x, double y, double width, double lineHeight,
             String text, float fontSize, String anchor, String weight, String fill, char delimiter) {
@@ -374,33 +389,33 @@ public abstract class PrintRecordSheet implements Printable {
         }
         return lines;
     }
-    
+
     // Constants used for approximating circles with Bezier curves.
-    
+
     // Ratio of distance from end point to control point to the radius.
     private final static double CONST_C = 0.55191502449;
     // Format String for writing a curve to a path definition attribute
     private final static String FMT_CURVE = " c %f %f,%f %f,%f %f";
     private final static String FMT_LINE = " l %f %f";
-    
+
     protected Element createPip(double x, double y, double radius, double strokeWidth) {
         return createPip(x, y, radius, strokeWidth, PipType.CIRCLE);
     }
+
     /**
      * Approximates a circle using four Bezier curves.
-     * 
+     *
      * @param x      Position of left of bounding rectangle.
      * @param y      Position of top of bounding rectangle.
      * @param radius Radius of the circle
-     * @return       A Path describing the circle
+     * @return A Path describing the circle
      */
-    protected Element createPip(double x, double y, double radius, double strokeWidth,
-            PipType type) {
+    protected Element createPip(double x, double y, double radius, double strokeWidth, PipType type) {
         Element path = svgDocument.createElementNS(svgNS, SVGConstants.SVG_PATH_TAG);
         path.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, "none");
         path.setAttributeNS(null, SVGConstants.SVG_STROKE_ATTRIBUTE, "black");
         path.setAttributeNS(null, SVGConstants.SVG_STROKE_WIDTH_ATTRIBUTE, Double.toString(strokeWidth));
-        
+
         // Move to start of pip, at (1, 0)
         StringBuilder d = new StringBuilder("M").append(x + radius * 2).append(",").append(y + radius);
         if (type == PipType.DIAMOND) {
@@ -411,8 +426,9 @@ public abstract class PrintRecordSheet implements Printable {
         } else {
             // c is the length of each control line
             double c = CONST_C * radius;
-            
-            // Draw arcs anticlockwise. The coordinates are relative to the beginning of the arc.
+
+            // Draw arcs anticlockwise. The coordinates are relative to the beginning of the
+            // arc.
             d.append(String.format(FMT_CURVE, 0.0, -c, c - radius, -radius, -radius, -radius));
             d.append(String.format(FMT_CURVE, -c, 0.0, -radius, radius - c, -radius, radius));
             d.append(String.format(FMT_CURVE, 0.0, c, radius - c, radius, radius, radius));
@@ -421,44 +437,46 @@ public abstract class PrintRecordSheet implements Printable {
         path.setAttributeNS(null, SVGConstants.SVG_D_ATTRIBUTE, d.toString());
         return path;
     }
-    
+
     protected void addPips(Element group, int pipCount, boolean symmetric) {
         addPips(group, pipCount, symmetric, PipType.CIRCLE, DEFAULT_PIP_SIZE);
     }
-    
+
     protected void addPips(Element group, int pipCount, boolean symmetric, PipType pipType) {
         addPips(group, pipCount, symmetric, pipType, DEFAULT_PIP_SIZE);
     }
-    
+
     protected void addPips(Element group, int pipCount, boolean symmetric, double size) {
         addPips(group, pipCount, symmetric, PipType.CIRCLE, size);
     }
 
-    protected void addPips(Element group, int pipCount, boolean symmetric, PipType pipType,
-            double size) {
+    protected void addPips(Element group, int pipCount, boolean symmetric, PipType pipType, double size) {
         addPips(group, pipCount, symmetric, pipType, size, 0.5);
     }
-    
+
     /**
-     * Adds pips to the SVG diagram. The rows are defined in the SVG diagram with a series of <rect>
-     * elements, each of which determines the bounds of a row of pips. The spacing between pips is
-     * determined by the height of the first row. If rows overlap the pips are offset by half in the next
-     * row. 
-     * 
-     * @param group           A <g> element that has <rect> children that describe pip rows
-     * @param pipCount        The number of pips to place in the region
-     * @param symmetric       If true, the left and right sides will be mirror images (assuming the row
-     *                        bounds are symmetric). Used for regions on a unit's center line.
-     * @param size            The ratio of pip radius to the spacing between pips. 
-     * @param strokeWidth     The value to use for the stroke-width attribute when drawing the pips.
+     * Adds pips to the SVG diagram. The rows are defined in the SVG diagram with a
+     * series of <rect> elements, each of which determines the bounds of a row of
+     * pips. The spacing between pips is determined by the height of the first row.
+     * If rows overlap the pips are offset by half in the next row.
+     *
+     * @param group       A <g> element that has <rect> children that describe pip
+     *                    rows
+     * @param pipCount    The number of pips to place in the region
+     * @param symmetric   If true, the left and right sides will be mirror images
+     *                    (assuming the row bounds are symmetric). Used for regions
+     *                    on a unit's center line.
+     * @param size        The ratio of pip radius to the spacing between pips.
+     * @param strokeWidth The value to use for the stroke-width attribute when
+     *                    drawing the pips.
      */
-    protected void addPips(Element group, int pipCount, boolean symmetric, PipType pipType,
-            double size, double strokeWidth) {
-        
+    protected void addPips(Element group, int pipCount, boolean symmetric, PipType pipType, double size,
+            double strokeWidth) {
+
         if (pipCount == 0) {
             return;
         }
-        
+
         final String METHOD_NAME = "addArmorPips(SVGElement,int)";
         double spacing = 6.15152;
         double left = Double.MAX_VALUE;
@@ -490,13 +508,13 @@ public abstract class PrintRecordSheet implements Printable {
                     "No pip rows defined for region " + group.getAttribute("id"));
             return;
         }
-        
+
         Rectangle2D bounds = new Rectangle2D.Double(left, top, right - left, bottom - top);
         double aspect = bounds.getWidth() / bounds.getHeight();
         double centerLine = regions.get(0).getX() + regions.get(0).getWidth() / 2.0;
-        
+
         int maxWidth = 0;
-        
+
         Collections.sort(regions, (r1, r2) -> (int) r1.getY() - (int) r2.getY());
         // Maximum number of pips that can be displayed on each row
         int[] rowLength = null;
@@ -509,7 +527,7 @@ public abstract class PrintRecordSheet implements Printable {
             rows = rescaleRows(regions, scale);
             rowLength = new int[rows.size()];
             halfPipCount = new int[rows.size()][];
-            
+
             double prevRowBottom = 0;
             int centerPip = 0;
             spacing = rows.stream().mapToDouble(Rectangle2D::getHeight).min().orElse(spacing);
@@ -519,10 +537,10 @@ public abstract class PrintRecordSheet implements Printable {
                 int halfPipsRight = (int) ((rect.getX() + rect.getWidth() - centerLine) / (spacing / 2));
                 if ((i > 0) && (rect.getY() < prevRowBottom)) {
                     centerPip = (1 - centerPip);
-                    if (halfPipsLeft %2 != centerPip) {
+                    if (halfPipsLeft % 2 != centerPip) {
                         halfPipsLeft--;
                     }
-                    if (halfPipsRight %2 != centerPip) {
+                    if (halfPipsRight % 2 != centerPip) {
                         halfPipsRight--;
                     }
                     rowLength[i] = (halfPipsLeft + halfPipsRight) / 2;
@@ -537,15 +555,17 @@ public abstract class PrintRecordSheet implements Printable {
                 totalPips += rowLength[i];
                 prevRowBottom = rect.getY() + spacing;
             }
-            
+
             scale *= 0.9;
-        };
-        
+        }
+        ;
+
         int nRows = adjustedRows(pipCount, rows.size(), maxWidth, aspect);
-        
-        // Now we need to select the rows to use. If the total pips available in those rows is
+
+        // Now we need to select the rows to use. If the total pips available in those
+        // rows is
         // insufficient, add a row and try again.
-        
+
         int available = 0;
         int minWidth = maxWidth;
         List<Integer> useRows = new ArrayList<>();
@@ -568,8 +588,9 @@ public abstract class PrintRecordSheet implements Printable {
                 minWidth = maxWidth;
             }
         }
-        
-        // Sort the rows into the order pips should be added: longest rows first, then for rows of
+
+        // Sort the rows into the order pips should be added: longest rows first, then
+        // for rows of
         // equal length the one closest to the middle first
         final int rowCount = rows.size();
         final int[] rowSize = Arrays.copyOf(rowLength, rowLength.length);
@@ -580,22 +601,23 @@ public abstract class PrintRecordSheet implements Printable {
                 return rowSize[r2] - rowSize[r1];
             }
         });
-        
-        // Now we iterate through the rows and assign pips as many times as it takes to get all assigned.
+
+        // Now we iterate through the rows and assign pips as many times as it takes to
+        // get all assigned.
         int[] pipsByRow = new int[rows.size()];
         int remaining = pipCount;
         while (remaining > 0) {
             for (int r : useRows) {
                 if (rowLength[r] > pipsByRow[r]) {
-                    int toAdd = Math.min(remaining,
-                            Math.min(rowLength[r] / minWidth, rowLength[r] - pipsByRow[r]));
+                    int toAdd = Math.min(remaining, Math.min(rowLength[r] / minWidth, rowLength[r] - pipsByRow[r]));
                     pipsByRow[r] += toAdd;
                     remaining -= toAdd;
                 }
             }
         }
-        
-        // Locations on the unit's center line require that rows with an even width don't get assigned
+
+        // Locations on the unit's center line require that rows with an even width
+        // don't get assigned
         // an odd number of pips.
         if (symmetric) {
             // First we remove all the odd pips in even rows
@@ -606,7 +628,8 @@ public abstract class PrintRecordSheet implements Printable {
                     remaining++;
                 }
             }
-            // Now we go through all the selected rows and assign them; this time even rows can
+            // Now we go through all the selected rows and assign them; this time even rows
+            // can
             // only be assigned pips in pairs.
             int toAdd = 0;
             boolean added = false;
@@ -619,8 +642,9 @@ public abstract class PrintRecordSheet implements Printable {
                     }
                 }
             } while ((remaining > 0) && added);
-            
-            // We may still have one or more left. At this point all rows are considered available.
+
+            // We may still have one or more left. At this point all rows are considered
+            // available.
             int centerRow = rows.size() / 2;
             while (remaining > 0) {
                 for (int i = 0; i <= centerRow; i++) {
@@ -648,8 +672,10 @@ public abstract class PrintRecordSheet implements Printable {
                         }
                     }
                 }
-                // Possible gotcha: one remaining pip to allocate and the only rows with empty space have
-                // an even number of pips. In that case remove one from an odd row and assign it along
+                // Possible gotcha: one remaining pip to allocate and the only rows with empty
+                // space have
+                // an even number of pips. In that case remove one from an odd row and assign it
+                // along
                 // with the remaining pip to one of the even rows.
                 if (remaining == 1) {
                     boolean noSingle = true;
@@ -690,10 +716,12 @@ public abstract class PrintRecordSheet implements Printable {
                 }
             }
         }
-        
-        // It's likely that there's extra spacing between rows, so we're going to check whether
-        // we can increase horizontal spacing between pips to keep the approximate aspect ratio.
-        
+
+        // It's likely that there's extra spacing between rows, so we're going to check
+        // whether
+        // we can increase horizontal spacing between pips to keep the approximate
+        // aspect ratio.
+
         int firstRow = 0;
         int lastRow = rows.size() - 1;
         int r = 0;
@@ -712,8 +740,8 @@ public abstract class PrintRecordSheet implements Printable {
             }
             r--;
         }
-        double targetWidth = aspect * (rows.get(lastRow).getY() + rows.get(lastRow).getHeight()
-                - rows.get(firstRow).getY());
+        double targetWidth = aspect
+                * (rows.get(lastRow).getY() + rows.get(lastRow).getHeight() - rows.get(firstRow).getY());
         double hSpacing = targetWidth / pipsByRow[firstRow] - spacing;
         for (r = firstRow + 1; r <= lastRow; r++) {
             if (pipsByRow[r] > 0) {
@@ -723,7 +751,7 @@ public abstract class PrintRecordSheet implements Printable {
         if (hSpacing < spacing) {
             hSpacing = spacing;
         }
-        
+
         for (r = 0; r < pipsByRow.length; r++) {
             if (pipsByRow[r] > 0) {
                 double radius = rows.get(r).getHeight() * size;
@@ -755,7 +783,8 @@ public abstract class PrintRecordSheet implements Printable {
                     }
                 } else {
                     // If the location is symmetric but the middle of the current row is to the left
-                    // of the centerline, right justify. If non-symmetric, balance the extra space at the
+                    // of the centerline, right justify. If non-symmetric, balance the extra space
+                    // at the
                     // ends of the rows with any odd space going on the right margin.
                     double x = centerLine - halfPipCount[r][0] * spacing / 2.0;
                     if (symmetric && halfPipCount[r][0] > halfPipCount[r][1]) {
@@ -773,20 +802,22 @@ public abstract class PrintRecordSheet implements Printable {
             }
         }
     }
-    
+
     /**
      * Creates a new set pip row regions sized according to the scaling factor.
-     * 
+     *
      * @param list  The rectangular regions describing pip rows in the SVG diagram.
      * @param scale The scaling factor
-     * @return      A list of rectangular regions scaled according to the provided factor.
+     * @return A list of rectangular regions scaled according to the provided
+     *         factor.
      */
     private List<Rectangle2D> rescaleRows(List<Rectangle2D> rows, double scale) {
         if (rows.isEmpty() || (rows.size() == Math.floor(rows.size() * scale))) {
             return rows;
         }
         List<Rectangle2D> retVal = new ArrayList<>();
-        // We need to account for the possibility of gaps between some rows, so we split the
+        // We need to account for the possibility of gaps between some rows, so we split
+        // the
         // list into sublists of contiguous regions.
         List<List<Rectangle2D>> groups = new ArrayList<>();
         List<Rectangle2D> group = new ArrayList<>();
@@ -801,7 +832,7 @@ public abstract class PrintRecordSheet implements Printable {
         if (group.size() > 0) {
             groups.add(group);
         }
-        
+
         for (List<Rectangle2D> list : groups) {
             Rectangle2D rect = list.get(0);
             Rectangle2D rect2 = null;
@@ -809,7 +840,7 @@ public abstract class PrintRecordSheet implements Printable {
             double height = list.get(list.size() - 1).getY() + list.get(list.size() - 1).getHeight();
             double dy = scale * height / list.size();
             double rowHeight = dy / 0.866;
-            
+
             int r = 0;
             while ((r < list.size()) && (yPos + rowHeight <= height)) {
                 rect = list.get(r);
@@ -818,37 +849,37 @@ public abstract class PrintRecordSheet implements Printable {
                 } else {
                     rect2 = null;
                 }
-                
+
                 if ((rect2 == null) || (rect2.getY() > yPos)) {
-                    retVal.add(new Rectangle2D.Double(rect.getX(), yPos,
-                            rect.getWidth(), rowHeight));
+                    retVal.add(new Rectangle2D.Double(rect.getX(), yPos, rect.getWidth(), rowHeight));
                 } else {
                     double left = Math.max(rect.getX(), rect2.getX());
                     double right = Math.min(rect.getX() + rect.getWidth(), rect2.getX() + rect2.getWidth());
                     retVal.add(new Rectangle2D.Double(left, yPos, right - left, rowHeight));
                 }
-                
+
                 yPos += dy;
                 if (yPos > rect.getY() + rect.getHeight()) {
                     r++;
                 }
             }
         }
-        
+
         return retVal;
     }
-    
+
     /**
-     * Calculate how many rows to use to give the pip pattern the approximate aspect ratio of the region
-     * 
-     * @param pipCount  The number of pips to display
-     * @param maxRows   The maximum number of rows in the region
-     * @param maxWidth  The number of pips in the longest row
-     * @param aspect    The aspect ratio of the region (w/h)
-     * @return          The number of rows to use in the pattern
+     * Calculate how many rows to use to give the pip pattern the approximate aspect
+     * ratio of the region
+     *
+     * @param pipCount The number of pips to display
+     * @param maxRows  The maximum number of rows in the region
+     * @param maxWidth The number of pips in the longest row
+     * @param aspect   The aspect ratio of the region (w/h)
+     * @return The number of rows to use in the pattern
      */
     private int adjustedRows(int pipCount, int maxRows, int maxWidth, double aspect) {
-        double nRows = Math.min(pipCount,  maxRows);
+        double nRows = Math.min(pipCount, maxRows);
         double width = Math.ceil(pipCount / nRows);
         double pipAspect = width / nRows;
         double sqrAspect = aspect * aspect;
@@ -881,14 +912,16 @@ public abstract class PrintRecordSheet implements Printable {
         }
         return (int) nRows;
     }
-    
-    // Older method that was unsuitable for mechs but could work for vees and aerospace. Would need
+
+    // Older method that was unsuitable for mechs but could work for vees and
+    // aerospace. Would need
     // some updating to work with regions rather than fixed pips in the SVG.
     protected void setArmorPips(Element group, int armorVal, boolean symmetric) {
         final String METHOD_NAME = "setArmorPips(SVGElement,int)";
-        // First sort pips into rows. We can't rely on the pips to be in order, so we use
+        // First sort pips into rows. We can't rely on the pips to be in order, so we
+        // use
         // maps to allow non-sequential loading.
-        Map<Integer,Map<Integer,Element>> rowMap = new TreeMap<>();
+        Map<Integer, Map<Integer, Element>> rowMap = new TreeMap<>();
         int pipCount = 0;
         for (int i = 0; i < group.getChildNodes().getLength(); i++) {
             final Node n = group.getChildNodes().item(i);
@@ -908,18 +941,19 @@ public abstract class PrintRecordSheet implements Printable {
             }
         }
         if (pipCount < armorVal) {
-            MegaMekLab.getLogger().log(getClass(), METHOD_NAME, LogLevel.ERROR,
-                    "Armor pip group " + ((SVGElement) group).getId() + " does not contain enough pips for " + armorVal + " armor");
+            MegaMekLab.getLogger().log(getClass(), METHOD_NAME, LogLevel.ERROR, "Armor pip group "
+                    + ((SVGElement) group).getId() + " does not contain enough pips for " + armorVal + " armor");
             return;
         } else if (pipCount == armorVal) {
             // Simple case; leave as is
             return;
         }
-        // Convert map into array for easier iteration in both directions. This will also skip
+        // Convert map into array for easier iteration in both directions. This will
+        // also skip
         // over gaps in the numbering.
         Element[][] rows = new Element[rowMap.size()][];
         int row = 0;
-        for (Map<Integer,Element> r : rowMap.values()) {
+        for (Map<Integer, Element> r : rowMap.values()) {
             rows[row] = new Element[r.size()];
             int i = 0;
             for (Element e : r.values()) {
@@ -928,14 +962,15 @@ public abstract class PrintRecordSheet implements Printable {
             }
             row++;
         }
-        
+
         // Get the ratio of the number of pips to show to the total number of pips
         // and distribute the number of pips proportionally to each side
         double saturation = Math.min(1.0, (double) armorVal / pipCount);
-        
-        // Now we find the center row, which is the row that has the same number of pips above
+
+        // Now we find the center row, which is the row that has the same number of pips
+        // above
         // and below it as nearly as possible.
-        
+
         int centerRow = rows.length / 2;
         int pipsAbove = 0;
         for (int r = 0; r < rows.length; r++) {
@@ -962,7 +997,8 @@ public abstract class PrintRecordSheet implements Printable {
             showAbove -= showByRow[i];
             remaining -= rows[i].length;
         }
-        // We may have some odd ones left over due to symmetry imposed on middle pip of the row
+        // We may have some odd ones left over due to symmetry imposed on middle pip of
+        // the row
         showBelow += showAbove;
         remaining = pipCount - pipsAbove;
         for (int i = centerRow + 1; i < rows.length; i++) {
@@ -977,16 +1013,18 @@ public abstract class PrintRecordSheet implements Printable {
             showBelow -= showByRow[i];
             remaining -= rows[i].length;
         }
-        
-        // Now we need to deal with leftovers, starting in the middle and adding one or two at a time
-        // (depending on whether there are an odd or even number of pips in the row) moving out toward
+
+        // Now we need to deal with leftovers, starting in the middle and adding one or
+        // two at a time
+        // (depending on whether there are an odd or even number of pips in the row)
+        // moving out toward
         // the top and bottom and repeating until they are all placed.
-        
+
         remaining = showBelow;
         while (remaining > 0) {
             for (int i = 0; i <= centerRow; i++) {
                 row = centerRow - i;
-                int toAdd = symmetric? (2 - rows[row].length % 2) : 1;
+                int toAdd = symmetric ? (2 - rows[row].length % 2) : 1;
                 if (remaining < toAdd) {
                     continue;
                 }
@@ -999,7 +1037,7 @@ public abstract class PrintRecordSheet implements Printable {
                     if (row >= rows.length) {
                         continue;
                     }
-                    toAdd = symmetric? (2 - rows[row].length % 2) : 1;
+                    toAdd = symmetric ? (2 - rows[row].length % 2) : 1;
                     if (remaining < toAdd) {
                         continue;
                     }
@@ -1010,7 +1048,7 @@ public abstract class PrintRecordSheet implements Printable {
                 }
             }
         }
-        
+
         // Now select which pips in each row to hide
         for (row = 0; row < rows.length; row++) {
             int toHide = rows[row].length - showByRow[row];
@@ -1031,7 +1069,7 @@ public abstract class PrintRecordSheet implements Printable {
             double accum = 0.0;
             for (int i = length % 2; i < length; i += 2) {
                 accum += ratio;
-                if (accum >= 1 -saturation) {
+                if (accum >= 1 - saturation) {
                     indices.add(i);
                     accum -= 1.0;
                     toHide--;
@@ -1078,34 +1116,35 @@ public abstract class PrintRecordSheet implements Printable {
             }
         }
     }
-    
+
     protected void hideElement(String id) {
         Element element = svgDocument.getElementById(id);
         if (null != element) {
             hideElement(element, true);
         }
     }
-    
+
     protected void hideElement(String id, boolean hide) {
         Element element = svgDocument.getElementById(id);
         if (null != element) {
             hideElement(element, hide);
         }
     }
-    
+
     /**
      * Sets the visibility attribute to "hidden"
+     * 
      * @param element The element to hide
      */
     protected void hideElement(Element element) {
         hideElement(element, true);
     }
-    
+
     /**
      * Sets an element's visibility attribute
-     * 
-     * @param element  The element to hide or show
-     * @param hide     If true, visibility will be set to hidden. If false, the 
+     *
+     * @param element The element to hide or show
+     * @param hide    If true, visibility will be set to hidden. If false, the
      */
     protected void hideElement(Element element, boolean hide) {
         if (hide) {
@@ -1117,35 +1156,34 @@ public abstract class PrintRecordSheet implements Printable {
 
     /**
      * Determines the vertical space taken up by a line of text.
-     * 
-     * @param fontSize  Value of CSS font-family attribute
-     * @return          The height of the bounding box of a text element
+     *
+     * @param fontSize Value of CSS font-family attribute
+     * @return The height of the bounding box of a text element
      */
     public float getFontHeight(float fontSize) {
         Font f = getNormalFont(fontSize);
         FontMetrics fm = svgGenerator.getFontMetrics(f);
         return fm.getHeight();
     }
-    
+
     public double getTextLength(String text, float fontSize) {
         Font font = getNormalFont(fontSize);
         return font.getStringBounds(text, svgGenerator.getFontRenderContext()).getWidth();
     }
-    
+
     public static Rectangle2D getRectBBox(SVGRectElement rect) {
-        return new Rectangle2D.Float(rect.getX().getBaseVal().getValue(),
-                rect.getY().getBaseVal().getValue(),
-                rect.getWidth().getBaseVal().getValue(),
-                rect.getHeight().getBaseVal().getValue());
+        return new Rectangle2D.Float(rect.getX().getBaseVal().getValue(), rect.getY().getBaseVal().getValue(),
+                rect.getWidth().getBaseVal().getValue(), rect.getHeight().getBaseVal().getValue());
     }
-    
+
     /**
-     * Inserts an image into the SVG diagram scaled to fit into the provided bounds. 
+     * Inserts an image into the SVG diagram scaled to fit into the provided bounds.
      *
-     * @param imageFile  The file containing the image to embed.
-     * @param canvas     The parent element for the image element.
-     * @param bbox       The bounding box for the image. The image will be scaled to fit.
-     * @param center     Whether to center the image vertically and horizontally.
+     * @param imageFile The file containing the image to embed.
+     * @param canvas    The parent element for the image element.
+     * @param bbox      The bounding box for the image. The image will be scaled to
+     *                  fit.
+     * @param center    Whether to center the image vertically and horizontally.
      */
     public void embedImage(File imageFile, Element canvas, Rectangle2D bbox, boolean center) {
         final String METHOD_NAME = "addFluffImage(File,Rectangle2D)";
@@ -1160,7 +1198,7 @@ public abstract class PrintRecordSheet implements Printable {
             RenderedImage fluffImage = ImageIO.read(imageFile);
             ByteArrayOutputStream bytes = new ByteArrayOutputStream();
             ImageIO.write(fluffImage, format, bytes);
-            
+
             double width = fluffImage.getWidth();
             double height = fluffImage.getHeight();
             double scale = Math.min(bbox.getWidth() / width, bbox.getHeight() / height);
@@ -1187,6 +1225,6 @@ public abstract class PrintRecordSheet implements Printable {
             MegaMekLab.getLogger().log(PrintRecordSheet.class, METHOD_NAME, LogLevel.ERROR,
                     "Error reading fluff image file: " + imageFile.getPath());
         }
-        
+
     }
 }

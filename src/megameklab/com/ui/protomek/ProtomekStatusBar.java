@@ -1,5 +1,6 @@
 /*
- * MegaMekLab - Copyright (C) 2018 - The MegaMek Team
+ * MegaMekLab
+ * Copyright (C) 2018 - The MegaMek Team
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -11,6 +12,7 @@
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  */
+
 package megameklab.com.ui.protomek;
 
 import java.awt.Color;
@@ -35,14 +37,14 @@ import megameklab.com.util.UnitUtil;
 
 /**
  * Status bar for protomech construction
- * 
+ *
  * @author Neoancient
  *
  */
 public class ProtomekStatusBar extends ITab {
-    
+
     private static final long serialVersionUID = 451172213105975797L;
-    
+
     private JButton btnValidate = new JButton("Validate Unit");
     private JButton btnFluffImage = new JButton("Set Fluff Image");
     private JLabel crits = new JLabel();
@@ -50,7 +52,8 @@ public class ProtomekStatusBar extends ITab {
     private JLabel tons = new JLabel();
     private JLabel heatSink = new JLabel();
     private JLabel cost = new JLabel();
-    private EntityVerifier entityVerifier = EntityVerifier.getInstance(new File("data/mechfiles/UnitVerifierOptions.xml"));
+    private EntityVerifier entityVerifier = EntityVerifier
+            .getInstance(new File("data/mechfiles/UnitVerifierOptions.xml"));
     private TestProtomech testEntity = null;
     private DecimalFormat formatter;
     private JFrame parentFrame;
@@ -70,7 +73,7 @@ public class ProtomekStatusBar extends ITab {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.insets = new Insets(5,2,2,20);
+        gbc.insets = new Insets(5, 2, 2, 20);
         gbc.anchor = GridBagConstraints.WEST;
         this.add(btnValidate, gbc);
         gbc.gridx = 1;
@@ -88,7 +91,6 @@ public class ProtomekStatusBar extends ITab {
         gbc.weightx = 1.0;
         this.add(cost, gbc);
 
-
         refresh();
     }
 
@@ -100,8 +102,8 @@ public class ProtomekStatusBar extends ITab {
         for (int l = 0; l < getProtomech().locations(); l++) {
             maxCrits += TestProtomech.maxSlotsByLocation(l, getProtomech());
         }
-        long currentCrits = getProtomech().getEquipment().stream()
-                .filter(m -> TestProtomech.requiresSlot(m.getType())).count();
+        long currentCrits = getProtomech().getEquipment().stream().filter(m -> TestProtomech.requiresSlot(m.getType()))
+                .count();
         long currentCost = (long) Math.round(getProtomech().getCost(false));
 
         testEntity = new TestProtomech(getProtomech(), entityVerifier.mechOption, null);
@@ -121,8 +123,8 @@ public class ProtomekStatusBar extends ITab {
 
         cost.setText("Cost: " + formatter.format(currentCost) + " C-bills");
 
-        crits.setText("Criticals: " +  currentCrits + "/" + maxCrits);
-        if(currentCrits > maxCrits) {
+        crits.setText("Criticals: " + currentCrits + "/" + maxCrits);
+        if (currentCrits > maxCrits) {
             crits.setForeground(Color.red);
         } else {
             crits.setForeground(Color.BLACK);
@@ -131,16 +133,18 @@ public class ProtomekStatusBar extends ITab {
     }
 
     private void getFluffImage() {
-        //copied from mech StatusBar
+        // copied from mech StatusBar
         FileDialog fDialog = new FileDialog(getParentFrame(), "Image Path", FileDialog.LOAD);
-        fDialog.setDirectory(new File(ImageHelper.fluffPath).getAbsolutePath() + File.separatorChar + ImageHelper.imageMech + File.separatorChar);
+        fDialog.setDirectory(new File(ImageHelper.fluffPath).getAbsolutePath() + File.separatorChar
+                + ImageHelper.imageMech + File.separatorChar);
         fDialog.setLocationRelativeTo(this);
 
         fDialog.setVisible(true);
 
         if (fDialog.getFile() != null) {
             String relativeFilePath = new File(fDialog.getDirectory() + fDialog.getFile()).getAbsolutePath();
-            relativeFilePath = "." + File.separatorChar + relativeFilePath.substring(new File(System.getProperty("user.dir").toString()).getAbsolutePath().length() + 1);
+            relativeFilePath = "." + File.separatorChar + relativeFilePath
+                    .substring(new File(System.getProperty("user.dir").toString()).getAbsolutePath().length() + 1);
             getProtomech().getFluff().setMMLImagePath(relativeFilePath);
         }
         refresh.refreshPreview();

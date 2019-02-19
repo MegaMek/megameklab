@@ -1,5 +1,6 @@
 /*
- * MegaMekLab - Copyright (C) 2018 - The MegaMek Team
+ * MegaMekLab
+ * Copyright (C) 2018 - The MegaMek Team
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -11,6 +12,7 @@
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  */
+
 package megameklab.com.ui.protomek;
 
 import java.awt.Dimension;
@@ -44,7 +46,7 @@ import megameklab.com.util.UnitUtil;
 
 /**
  * Shows unallocated equipment that needs to be assigned to a slot.
- * 
+ *
  * @author Neoancient
  *
  */
@@ -121,7 +123,8 @@ public class ProtomekBuildView extends IView implements ActionListener, MouseLis
         // weapons and ammo
         Vector<Mounted> weaponsNAmmoList = new Vector<Mounted>(10, 1);
         for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
-            if ((masterEquipmentList.get(pos).getType() instanceof Weapon) || (masterEquipmentList.get(pos).getType() instanceof AmmoType)) {
+            if ((masterEquipmentList.get(pos).getType() instanceof Weapon)
+                    || (masterEquipmentList.get(pos).getType() instanceof AmmoType)) {
                 weaponsNAmmoList.add(masterEquipmentList.get(pos));
                 masterEquipmentList.remove(pos);
                 pos--;
@@ -134,7 +137,8 @@ public class ProtomekBuildView extends IView implements ActionListener, MouseLis
 
         // Equipment
         for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
-            if ((masterEquipmentList.get(pos).getType() instanceof MiscType) && UnitUtil.isArmor(masterEquipmentList.get(pos).getType())) {
+            if ((masterEquipmentList.get(pos).getType() instanceof MiscType)
+                    && UnitUtil.isArmor(masterEquipmentList.get(pos).getType())) {
                 equipmentList.addCrit(masterEquipmentList.get(pos));
                 masterEquipmentList.remove(pos);
                 pos--;
@@ -178,7 +182,7 @@ public class ProtomekBuildView extends IView implements ActionListener, MouseLis
     public JTable getTable() {
         return equipmentTable;
     }
-    
+
     @Override
     public void mouseClicked(MouseEvent e) {
 
@@ -204,7 +208,7 @@ public class ProtomekBuildView extends IView implements ActionListener, MouseLis
             String[] locations;
 
             locations = getProtomech().getLocationNames();
-            Mounted mount = (Mounted)equipmentTable.getModel().getValueAt(selectedRow, CriticalTableModel.EQUIPMENT);
+            Mounted mount = (Mounted) equipmentTable.getModel().getValueAt(selectedRow, CriticalTableModel.EQUIPMENT);
 
             for (int location = 0; location < getProtomech().locations(); location++) {
                 if (UnitUtil.protomechHasRoom(getProtomech(), location, mount)) {

@@ -1,7 +1,7 @@
 /*
- * MegaMekLab - Copyright (C) 2011
- *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * MegaMekLab
+ * Copyright (C) 2011 - jtighe (torren@users.sourceforge.net)
+ * Copyright (C) 2018 - The MegaMek Team
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -133,7 +133,7 @@ public class PrintNavalVehicle implements Printable {
          * printLeftStruct(g2d, sub.getOInternal(Tank.LOC_LEFT), false);
          * printRightStruct(g2d, sub.getOInternal(Tank.LOC_RIGHT), false);
          * printRearStruct(g2d, sub.getOInternal(Tank.LOC_REAR), false);
-         * 
+         *
          * printTurretStruct(g2d, sub.getOInternal(Tank.LOC_TURRET), false);
          */
         printTankImage(g2d);
