@@ -1,7 +1,7 @@
 /*
- * MegaMekLab - Copyright (C) 2009
- *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * MegaMekLab
+ * - Copyright (C) 2009 jtighe (torren@users.sourceforge.net)
+ * - Copyright (C) 2018 The MegaMek Team
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
@@ -91,7 +91,7 @@ public class EquipmentView extends IView implements ActionListener {
 
         equipmentTable.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         equipmentTable.setDoubleBuffered(true);
-        equipmentTable.setMaximumSize(new Dimension(800,500));
+        equipmentTable.setMaximumSize(new Dimension(800, 500));
         equipmentScroll.setViewportView(equipmentTable);
 
         topPanel.setLayout(new BorderLayout());
@@ -273,7 +273,6 @@ public class EquipmentView extends IView implements ActionListener {
             refresh.refreshBuild();
         }
     }
-
 
     public CriticalTableModel getEquipmentList() {
         return equipmentList;

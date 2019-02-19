@@ -1,7 +1,7 @@
 /*
- * MegaMekLab - Copyright (C) 2010
- *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * MegaMekLab
+ * - Copyright (C) 2010 jtighe (torren@users.sourceforge.net)
+ * - Copyright (C) 2018 The MegaMek Team
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -47,8 +47,7 @@ public class PrintAerodyne implements Printable {
         this.dropship = dropship;
     }
 
-    public int print(Graphics graphics, PageFormat pageFormat, int pageIndex)
-            throws PrinterException {
+    public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
         Graphics2D g2d = (Graphics2D) graphics;
         // f.setPaper(this.paper);
         printImage(g2d, pageFormat);
@@ -62,10 +61,8 @@ public class PrintAerodyne implements Printable {
 
         System.gc();
 
-        g2d.drawImage(ImageHelper.getRecordSheet(dropship), 18, 18, 558, 738,
-                Color.BLACK, null);
-        printDropshipImage(g2d,
-                ImageHelper.getFluffImage(dropship, ImageHelper.imageDropship));
+        g2d.drawImage(ImageHelper.getRecordSheet(dropship), 18, 18, 558, 738, Color.BLACK, null);
+        printDropshipImage(g2d, ImageHelper.getFluffImage(dropship, ImageHelper.imageDropship));
 
         printDropshipData(g2d);
         printArmor(g2d);
@@ -82,8 +79,7 @@ public class PrintAerodyne implements Printable {
         // Internal Pips
         printStruct(g2d, dropship.get0SI());
 
-        g2d.scale(pageFormat.getImageableWidth(),
-                pageFormat.getImageableHeight());
+        g2d.scale(pageFormat.getImageableWidth(), pageFormat.getImageableHeight());
 
     }
 
@@ -96,8 +92,7 @@ public class PrintAerodyne implements Printable {
         Font font = UnitUtil.deriveFont(8.0f);
         g2d.setFont(font);
 
-        if ((dropship.getCrew() != null)
-                && !dropship.getCrew().getName().equalsIgnoreCase("unnamed")) {
+        if ((dropship.getCrew() != null) && !dropship.getCrew().getName().equalsIgnoreCase("unnamed")) {
             Crew pilot = dropship.getCrew();
             g2d.drawString(pilot.getName(), 270, 120);
             g2d.drawString(String.valueOf(pilot.getGunnery()), 295, 132);
@@ -105,8 +100,7 @@ public class PrintAerodyne implements Printable {
         }
 
         g2d.drawString(Integer.toString(dropship.getWalkMP()), 99, 156);
-        g2d.drawString(Integer.toString(dropship.getRunMPwithoutMASC()), 99,
-                167);
+        g2d.drawString(Integer.toString(dropship.getRunMPwithoutMASC()), 99, 167);
 
         int tonnage = (int) Math.ceil(dropship.getWeight());
 
@@ -121,39 +115,34 @@ public class PrintAerodyne implements Printable {
         int lineFeed = 8;
 
         if (dropship.isPrimitive()) {
-            ImageHelper.printCenterString(g2d, "(Primitive)", font,
-                    startLine, nextDataLine);
+            ImageHelper.printCenterString(g2d, "(Primitive)", font, startLine, nextDataLine);
             nextDataLine += lineFeed;
         } else {
             switch (dropship.getTechLevel()) {
 
-                case TechConstants.T_INTRO_BOXSET:
-                    ImageHelper.printCenterString(g2d, "(Intro)", font,
-                            startLine, nextDataLine);
-                    nextDataLine += lineFeed;
-                    break;
-                case TechConstants.T_IS_TW_NON_BOX:
-                case TechConstants.T_IS_TW_ALL:
-                case TechConstants.T_CLAN_TW:
-                    break;
-                case TechConstants.T_IS_ADVANCED:
-                case TechConstants.T_CLAN_ADVANCED:
-                    ImageHelper.printCenterString(g2d, "(Advanced)", font,
-                            startLine, nextDataLine);
-                    nextDataLine += lineFeed;
-                    break;
-                case TechConstants.T_IS_EXPERIMENTAL:
-                case TechConstants.T_CLAN_EXPERIMENTAL:
-                    ImageHelper.printCenterString(g2d, "(Experimental)", font,
-                            startLine, nextDataLine);
-                    nextDataLine += lineFeed;
-                    break;
-                case TechConstants.T_IS_UNOFFICIAL:
-                case TechConstants.T_CLAN_UNOFFICIAL:
-                    ImageHelper.printCenterString(g2d, "(Unofficial)", font,
-                            startLine, nextDataLine);
-                    nextDataLine += lineFeed;
-                    break;
+            case TechConstants.T_INTRO_BOXSET:
+                ImageHelper.printCenterString(g2d, "(Intro)", font, startLine, nextDataLine);
+                nextDataLine += lineFeed;
+                break;
+            case TechConstants.T_IS_TW_NON_BOX:
+            case TechConstants.T_IS_TW_ALL:
+            case TechConstants.T_CLAN_TW:
+                break;
+            case TechConstants.T_IS_ADVANCED:
+            case TechConstants.T_CLAN_ADVANCED:
+                ImageHelper.printCenterString(g2d, "(Advanced)", font, startLine, nextDataLine);
+                nextDataLine += lineFeed;
+                break;
+            case TechConstants.T_IS_EXPERIMENTAL:
+            case TechConstants.T_CLAN_EXPERIMENTAL:
+                ImageHelper.printCenterString(g2d, "(Experimental)", font, startLine, nextDataLine);
+                nextDataLine += lineFeed;
+                break;
+            case TechConstants.T_IS_UNOFFICIAL:
+            case TechConstants.T_CLAN_UNOFFICIAL:
+                ImageHelper.printCenterString(g2d, "(Unofficial)", font, startLine, nextDataLine);
+                nextDataLine += lineFeed;
+                break;
             }
         }
 
@@ -170,16 +159,14 @@ public class PrintAerodyne implements Printable {
         }
         g2d.drawString(techBase, 177, 144.5f);
 
-        if ((dropship.getSource() != null)
-                && (dropship.getSource().trim().length() > 0)) {
+        if ((dropship.getSource() != null) && (dropship.getSource().trim().length() > 0)) {
             String sourceFluff = "Era: ";
             font = UnitUtil.deriveFont(true, 8.0f);
             g2d.setFont(font);
 
             g2d.drawString(sourceFluff, 138, nextDataLine);
 
-            font = UnitUtil.getNewFont(g2d, dropship.getSource(), false, 51,
-                    8.0f);
+            font = UnitUtil.getNewFont(g2d, dropship.getSource(), false, 51, 8.0f);
 
             g2d.setFont(font);
 
@@ -195,8 +182,7 @@ public class PrintAerodyne implements Printable {
             font = UnitUtil.deriveFont(8.0f);
             g2d.setFont(font);
 
-            g2d.drawString(String.format("%1$s", dropship.getYear()), 177,
-                    nextDataLine);
+            g2d.drawString(String.format("%1$s", dropship.getYear()), 177, nextDataLine);
 
         }
 
@@ -215,10 +201,7 @@ public class PrintAerodyne implements Printable {
             g2d.drawString("BV: ", 35, 470.2f);
             font = UnitUtil.deriveFont(false, 8);
             g2d.setFont(font);
-            g2d.drawString(
-                    String.format("%1$,d",
-                            dropship.calculateBattleValue(true, true)), 50,
-                    470.2f);
+            g2d.drawString(String.format("%1$,d", dropship.calculateBattleValue(true, true)), 50, 470.2f);
         }
 
         font = UnitUtil.deriveFont(true, 8);
@@ -229,20 +212,14 @@ public class PrintAerodyne implements Printable {
         g2d.drawString(String.format("%1$,d", dropship.getFuel()), 98, 470.2f);
 
         // Crew data
-        g2d.drawString(
-                String.format("%1$s/%2$s", dropship.getLifeBoats(),
-                        dropship.getEscapePods()), 335, 596.6f);
+        g2d.drawString(String.format("%1$s/%2$s", dropship.getLifeBoats(), dropship.getEscapePods()), 335, 596.6f);
 
         g2d.drawString(String.format("%1$s", dropship.getNCrew()), 283, 566.6f);
-        g2d.drawString(String.format("%1$s", dropship.getNPassenger()), 283,
-                576.6f);
-        g2d.drawString(String.format("%1$s", dropship.getNOtherPassenger()),
-                283, 586.6f);
+        g2d.drawString(String.format("%1$s", dropship.getNPassenger()), 283, 576.6f);
+        g2d.drawString(String.format("%1$s", dropship.getNOtherPassenger()), 283, 586.6f);
 
-        g2d.drawString(String.format("%1$s", dropship.getNMarines()), 357,
-                565.6f);
-        g2d.drawString(String.format("%1$s", dropship.getNBattleArmor()), 357,
-                585.6f);
+        g2d.drawString(String.format("%1$s", dropship.getNMarines()), 357, 565.6f);
+        g2d.drawString(String.format("%1$s", dropship.getNBattleArmor()), 357, 585.6f);
 
         // myFormatter = new DecimalFormat("#,###.##");
         // g2d.drawString(String.format("%1$,.0f C-bills",
@@ -260,21 +237,19 @@ public class PrintAerodyne implements Printable {
         Font font = UnitUtil.deriveFont(true, 9.0f);
         g2d.setFont(font);
 
-        ImageHelper.printCenterString(g2d, String.format("%1$S (%2$s)",
-                dropship.getThresh(Aero.LOC_NOSE),
-                dropship.getArmor(Aero.LOC_NOSE)), g2d.getFont(), 410, 64);
-        ImageHelper.printCenterString(g2d, String.format("%1$S (%2$s)",
-                dropship.getThresh(Aero.LOC_RWING),
-                dropship.getArmor(Aero.LOC_RWING)), g2d.getFont(), 545, 305);
-        ImageHelper.printCenterString(g2d, String.format("%1$S (%2$s)",
-                dropship.getThresh(Aero.LOC_LWING),
-                dropship.getArmor(Aero.LOC_LWING)), g2d.getFont(), 280, 305);
-        ImageHelper.printCenterString(g2d, String.format("%1$S (%2$s)",
-                dropship.getThresh(Aero.LOC_AFT),
-                dropship.getArmor(Aero.LOC_AFT)), g2d.getFont(), 410, 487);
         ImageHelper.printCenterString(g2d,
-                String.format("%1$S", dropship.get0SI()), g2d.getFont(), 441,
-                237);
+                String.format("%1$S (%2$s)", dropship.getThresh(Aero.LOC_NOSE), dropship.getArmor(Aero.LOC_NOSE)),
+                g2d.getFont(), 410, 64);
+        ImageHelper.printCenterString(g2d,
+                String.format("%1$S (%2$s)", dropship.getThresh(Aero.LOC_RWING), dropship.getArmor(Aero.LOC_RWING)),
+                g2d.getFont(), 545, 305);
+        ImageHelper.printCenterString(g2d,
+                String.format("%1$S (%2$s)", dropship.getThresh(Aero.LOC_LWING), dropship.getArmor(Aero.LOC_LWING)),
+                g2d.getFont(), 280, 305);
+        ImageHelper.printCenterString(g2d,
+                String.format("%1$S (%2$s)", dropship.getThresh(Aero.LOC_AFT), dropship.getArmor(Aero.LOC_AFT)),
+                g2d.getFont(), 410, 487);
+        ImageHelper.printCenterString(g2d, String.format("%1$S", dropship.get0SI()), g2d.getFont(), 441, 237);
 
     }
 
@@ -287,14 +262,11 @@ public class PrintAerodyne implements Printable {
 
         // Heat Sinks
         if (dropship.getHeatType() == Aero.HEAT_DOUBLE) {
-            g2d.drawString(String.format("%1$s (%2$s)",
-                    dropship.getHeatSinks(), dropship.getHeatSinks() * 2),
-                    posX, posY);
+            g2d.drawString(String.format("%1$s (%2$s)", dropship.getHeatSinks(), dropship.getHeatSinks() * 2), posX,
+                    posY);
             g2d.drawString("Double", posX, posY + 8);
         } else {
-            g2d.drawString(
-                    String.format("%1$s (%1$s)", dropship.getHeatSinks()),
-                    posX, posY);
+            g2d.drawString(String.format("%1$s (%1$s)", dropship.getHeatSinks()), posX, posY);
             g2d.drawString("Single", posX, posY + 8);
         }
 
@@ -304,25 +276,13 @@ public class PrintAerodyne implements Printable {
         Font font = UnitUtil.deriveFont(true, 8.0f);
         g2d.setFont(font);
 
-        g2d.drawString(
-                String.format("%1$s",
-                        dropship.getHeatInArc(Aero.LOC_NOSE, false)), 478, 694);
-        g2d.drawString(
-                String.format("%1$s",
-                        dropship.getHeatInArc(Aero.LOC_LWING, false)), 478, 715);
-        g2d.drawString(
-                String.format("%1$s",
-                        dropship.getHeatInArc(Aero.LOC_LWING, true)), 478, 725);
+        g2d.drawString(String.format("%1$s", dropship.getHeatInArc(Aero.LOC_NOSE, false)), 478, 694);
+        g2d.drawString(String.format("%1$s", dropship.getHeatInArc(Aero.LOC_LWING, false)), 478, 715);
+        g2d.drawString(String.format("%1$s", dropship.getHeatInArc(Aero.LOC_LWING, true)), 478, 725);
 
-        g2d.drawString(
-                String.format("%1$s",
-                        dropship.getHeatInArc(Aero.LOC_AFT, false)), 540, 694);
-        g2d.drawString(
-                String.format("%1$s",
-                        dropship.getHeatInArc(Aero.LOC_RWING, false)), 540, 715);
-        g2d.drawString(
-                String.format("%1$s",
-                        dropship.getHeatInArc(Aero.LOC_RWING, true)), 540, 725);
+        g2d.drawString(String.format("%1$s", dropship.getHeatInArc(Aero.LOC_AFT, false)), 540, 694);
+        g2d.drawString(String.format("%1$s", dropship.getHeatInArc(Aero.LOC_RWING, false)), 540, 715);
+        g2d.drawString(String.format("%1$s", dropship.getHeatInArc(Aero.LOC_RWING, true)), 540, 725);
     }
 
     private void printWeaponsNEquipment(Graphics2D g2d) {
@@ -503,8 +463,7 @@ public class PrintAerodyne implements Printable {
         }
 
         for (int pos = 0; pos < totalArmor; pos++) {
-            ImageHelperDropShip.drawDropshipISPip(g2d, pipPlotter.get(pos)[0],
-                    pipPlotter.get(pos)[1], 7, 5);
+            ImageHelperDropShip.drawDropshipISPip(g2d, pipPlotter.get(pos)[0], pipPlotter.get(pos)[1], 7, 5);
         }
     }
 

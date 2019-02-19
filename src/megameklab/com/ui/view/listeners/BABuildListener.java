@@ -18,16 +18,22 @@ import megamek.common.EquipmentType;
 
 /**
  * Listener for views used by BattleArmor.
- * 
+ *
  * @author Neoancient
  *
  */
 public interface BABuildListener extends BuildListener {
     void chassisTypeChanged(int bodyType);
+
     void weightClassChanged(int weightClass);
+
     void turretChanged(int type, int size);
+
     void exoskeletonChanged(boolean exoskeleton);
+
     void harjelChanged(boolean harjel);
+
     void squadSizeChanged(int squadSize);
+
     void enhancementChanged(EquipmentType eq, boolean selected);
 }

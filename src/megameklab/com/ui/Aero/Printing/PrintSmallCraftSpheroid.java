@@ -1,7 +1,7 @@
 /*
- * MegaMekLab - Copyright (C) 2008
- *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * MegaMekLab
+ * - Copyright (C) 2008 jtighe (torren@users.sourceforge.net)
+ * - Copyright (C) 2018 The MegaMek Team
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -51,8 +51,7 @@ public class PrintSmallCraftSpheroid implements Printable {
         this.smallCraft = smallCraft;
     }
 
-    public int print(Graphics graphics, PageFormat pageFormat, int pageIndex)
-            throws PrinterException {
+    public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
         Graphics2D g2d = (Graphics2D) graphics;
         // f.setPaper(this.paper);
         printImage(g2d, pageFormat);
@@ -74,8 +73,7 @@ public class PrintSmallCraftSpheroid implements Printable {
             e.printStackTrace();
         }
         g2d.setColor(Color.BLACK);
-        printSmallCraftSpheroidImage(g2d,
-                ImageHelper.getFluffImage(smallCraft, ImageHelper.imageAero));
+        printSmallCraftSpheroidImage(g2d, ImageHelper.getFluffImage(smallCraft, ImageHelper.imageAero));
 
         printSmallCraftSpheroidData(g2d);
         printArmor(g2d);
@@ -91,14 +89,12 @@ public class PrintSmallCraftSpheroid implements Printable {
         // Internal Pips
         printStruct(g2d, smallCraft.get0SI());
 
-        g2d.scale(pageFormat.getImageableWidth(),
-                pageFormat.getImageableHeight());
+        g2d.scale(pageFormat.getImageableWidth(), pageFormat.getImageableHeight());
 
     }
 
     private void printSmallCraftSpheroidData(Graphics2D g2d) {
-        String smallCraftName = smallCraft.getChassis() + " "
-                + smallCraft.getModel();
+        String smallCraftName = smallCraft.getChassis() + " " + smallCraft.getModel();
 
         g2d.setFont(UnitUtil.getNewFont(g2d, smallCraftName, true, 180, 10.0f));
         g2d.drawString(smallCraftName, 52, 117);
@@ -106,17 +102,20 @@ public class PrintSmallCraftSpheroid implements Printable {
         Font font = UnitUtil.deriveFont(8.0f);
         g2d.setFont(font);
 
-        //TODO: Pilot Data: Fix coords. Below coords are pasted from Mech code.
-        //if ((aero.getCrew() != null) && !aero.getCrew().getName().equalsIgnoreCase("unnamed")) {
-        //	Crew pilot = aero.getCrew();		
-		//	g2d.drawString(pilot.getName(), 270 + leftMargin, topMargin + 119);
-		//	g2d.drawString(String.valueOf(pilot.getGunnery()), 295 + leftMargin, topMargin + 132);
-		//  g2d.drawString(String.valueOf(pilot.getPiloting()), 365 + leftMargin, topMargin + 132);
-        //}
+        // TODO: Pilot Data: Fix coords. Below coords are pasted from Mech code.
+        // if ((aero.getCrew() != null) &&
+        // !aero.getCrew().getName().equalsIgnoreCase("unnamed")) {
+        // Crew pilot = aero.getCrew();
+        // g2d.drawString(pilot.getName(), 270 + leftMargin, topMargin + 119);
+        // g2d.drawString(String.valueOf(pilot.getGunnery()), 295 + leftMargin,
+        // topMargin + 132);
+        // g2d.drawString(String.valueOf(pilot.getPiloting()), 365 + leftMargin,
+        // topMargin + 132);
+        // }
         // Test strings
-		//    g2d.drawString("Test Pilot", 270 + leftMargin, topMargin + 119);
-		//	g2d.drawString("5", 295 + leftMargin, topMargin + 132);
-		//    g2d.drawString("5", 365 + leftMargin, topMargin + 132);
+        // g2d.drawString("Test Pilot", 270 + leftMargin, topMargin + 119);
+        // g2d.drawString("5", 295 + leftMargin, topMargin + 132);
+        // g2d.drawString("5", 365 + leftMargin, topMargin + 132);
 
         g2d.drawString(Integer.toString(smallCraft.getWalkMP()), 102, 142);
         g2d.drawString(Integer.toString(smallCraft.getRunMP()), 102, 152.5f);
@@ -135,33 +134,29 @@ public class PrintSmallCraftSpheroid implements Printable {
 
         switch (smallCraft.getTechLevel()) {
 
-            case TechConstants.T_INTRO_BOXSET:
-                ImageHelper.printCenterString(g2d, "(Intro)", font, startLine,
-                        nextDataLine);
-                nextDataLine += lineFeed;
-                break;
-            case TechConstants.T_IS_TW_NON_BOX:
-            case TechConstants.T_IS_TW_ALL:
-            case TechConstants.T_CLAN_TW:
-                break;
-            case TechConstants.T_IS_ADVANCED:
-            case TechConstants.T_CLAN_ADVANCED:
-                ImageHelper.printCenterString(g2d, "(Advanced)", font,
-                        startLine, nextDataLine);
-                nextDataLine += lineFeed;
-                break;
-            case TechConstants.T_IS_EXPERIMENTAL:
-            case TechConstants.T_CLAN_EXPERIMENTAL:
-                ImageHelper.printCenterString(g2d, "(Experimental)", font,
-                        startLine, nextDataLine);
-                nextDataLine += lineFeed;
-                break;
-            case TechConstants.T_IS_UNOFFICIAL:
-            case TechConstants.T_CLAN_UNOFFICIAL:
-                ImageHelper.printCenterString(g2d, "(Unofficial)", font,
-                        startLine, nextDataLine);
-                nextDataLine += lineFeed;
-                break;
+        case TechConstants.T_INTRO_BOXSET:
+            ImageHelper.printCenterString(g2d, "(Intro)", font, startLine, nextDataLine);
+            nextDataLine += lineFeed;
+            break;
+        case TechConstants.T_IS_TW_NON_BOX:
+        case TechConstants.T_IS_TW_ALL:
+        case TechConstants.T_CLAN_TW:
+            break;
+        case TechConstants.T_IS_ADVANCED:
+        case TechConstants.T_CLAN_ADVANCED:
+            ImageHelper.printCenterString(g2d, "(Advanced)", font, startLine, nextDataLine);
+            nextDataLine += lineFeed;
+            break;
+        case TechConstants.T_IS_EXPERIMENTAL:
+        case TechConstants.T_CLAN_EXPERIMENTAL:
+            ImageHelper.printCenterString(g2d, "(Experimental)", font, startLine, nextDataLine);
+            nextDataLine += lineFeed;
+            break;
+        case TechConstants.T_IS_UNOFFICIAL:
+        case TechConstants.T_CLAN_UNOFFICIAL:
+            ImageHelper.printCenterString(g2d, "(Unofficial)", font, startLine, nextDataLine);
+            nextDataLine += lineFeed;
+            break;
         }
 
         String techBase = "Inner Sphere";
@@ -177,16 +172,14 @@ public class PrintSmallCraftSpheroid implements Printable {
         }
         g2d.drawString(techBase, 185, 142.5f);
 
-        if ((smallCraft.getSource() != null)
-                && (smallCraft.getSource().trim().length() > 0)) {
+        if ((smallCraft.getSource() != null) && (smallCraft.getSource().trim().length() > 0)) {
             String sourceFluff = "Era: ";
             font = UnitUtil.deriveFont(true, 8.0f);
             g2d.setFont(font);
 
             g2d.drawString(sourceFluff, 138, nextDataLine);
 
-            font = UnitUtil.getNewFont(g2d, smallCraft.getSource(), false, 51,
-                    8.0f);
+            font = UnitUtil.getNewFont(g2d, smallCraft.getSource(), false, 51, 8.0f);
 
             g2d.setFont(font);
 
@@ -202,8 +195,7 @@ public class PrintSmallCraftSpheroid implements Printable {
             font = UnitUtil.deriveFont(8.0f);
             g2d.setFont(font);
 
-            g2d.drawString(String.format("%1$s", smallCraft.getYear()), 177,
-                    nextDataLine);
+            g2d.drawString(String.format("%1$s", smallCraft.getYear()), 177, nextDataLine);
 
         }
 
@@ -223,10 +215,7 @@ public class PrintSmallCraftSpheroid implements Printable {
             g2d.drawString("BV: ", 35, 348);
             font = UnitUtil.deriveFont(false, 8);
             g2d.setFont(font);
-            g2d.drawString(
-                    String.format("%1$,d",
-                            smallCraft.calculateBattleValue(true, true)), 50,
-                    348);
+            g2d.drawString(String.format("%1$,d", smallCraft.calculateBattleValue(true, true)), 50, 348);
         }
 
         // myFormatter = new DecimalFormat("#,###.##");
@@ -236,9 +225,7 @@ public class PrintSmallCraftSpheroid implements Printable {
 
         font = UnitUtil.deriveFont(true, 6);
         g2d.setFont(font);
-        g2d.drawString(
-                Integer.toString(Calendar.getInstance().get(Calendar.YEAR)),
-                40, 762);
+        g2d.drawString(Integer.toString(Calendar.getInstance().get(Calendar.YEAR)), 40, 762);
     }
 
     private void printArmor(Graphics2D g2d) {
@@ -247,30 +234,21 @@ public class PrintSmallCraftSpheroid implements Printable {
         Font font = UnitUtil.deriveFont(true, 9.0f);
         g2d.setFont(font);
 
-        ImageHelper.printCenterString(
-                g2d,
-                String.format("%1$S (%2$s)",
-                        smallCraft.getThresh(Aero.LOC_NOSE),
-                        smallCraft.getArmor(Aero.LOC_NOSE)), g2d.getFont(),
-                445, 92);
+        ImageHelper.printCenterString(g2d,
+                String.format("%1$S (%2$s)", smallCraft.getThresh(Aero.LOC_NOSE), smallCraft.getArmor(Aero.LOC_NOSE)),
+                g2d.getFont(), 445, 92);
 
-        ImageHelper.printCenterString(
-                g2d,
-                String.format("%1$S (%2$s)",
-                        smallCraft.getThresh(Aero.LOC_RWING),
-                        smallCraft.getArmor(Aero.LOC_RWING)), g2d.getFont(),
-                520, 412);
+        ImageHelper.printCenterString(g2d,
+                String.format("%1$S (%2$s)", smallCraft.getThresh(Aero.LOC_RWING), smallCraft.getArmor(Aero.LOC_RWING)),
+                g2d.getFont(), 520, 412);
 
-        ImageHelper.printCenterString(
-                g2d,
-                String.format("%1$S (%2$s)",
-                        smallCraft.getThresh(Aero.LOC_LWING),
-                        smallCraft.getArmor(Aero.LOC_LWING)), g2d.getFont(),
-                270, 412);
+        ImageHelper.printCenterString(g2d,
+                String.format("%1$S (%2$s)", smallCraft.getThresh(Aero.LOC_LWING), smallCraft.getArmor(Aero.LOC_LWING)),
+                g2d.getFont(), 270, 412);
 
-        ImageHelper.printCenterString(g2d, String.format("%1$S (%2$s)",
-                smallCraft.getThresh(Aero.LOC_AFT),
-                smallCraft.getArmor(Aero.LOC_AFT)), g2d.getFont(), 370, 508);
+        ImageHelper.printCenterString(g2d,
+                String.format("%1$S (%2$s)", smallCraft.getThresh(Aero.LOC_AFT), smallCraft.getArmor(Aero.LOC_AFT)),
+                g2d.getFont(), 370, 508);
 
         g2d.drawString(String.format("%1$S", smallCraft.get0SI()), 395, 269f);
     }
@@ -281,14 +259,11 @@ public class PrintSmallCraftSpheroid implements Printable {
 
         // Heat Sinks
         if (smallCraft.getHeatType() == Aero.HEAT_DOUBLE) {
-            g2d.drawString(String.format("%1$s (%2$s)",
-                    smallCraft.getHeatSinks(), smallCraft.getHeatSinks() * 2),
-                    508, 540);
+            g2d.drawString(String.format("%1$s (%2$s)", smallCraft.getHeatSinks(), smallCraft.getHeatSinks() * 2), 508,
+                    540);
             g2d.drawString("Double", 508, 546.5f);
         } else {
-            g2d.drawString(
-                    String.format("%1$s (%1$s)", smallCraft.getHeatSinks()),
-                    508, 540);
+            g2d.drawString(String.format("%1$s (%1$s)", smallCraft.getHeatSinks()), 508, 540);
             g2d.drawString("Single", 508, 546.5f);
         }
 
@@ -330,17 +305,15 @@ public class PrintSmallCraftSpheroid implements Printable {
                 pipShift[0] *= -1;
                 topColumn[0] += pipShift[0];
                 /*
-                 * if (pos > totalArmor - maxColumns) { topColumn[0] +=
-                 * pipShift[0] ((maxColumns - (totalArmor - pos)) / 2); } else {
-                 * topColumn[0] += pipShift[0] / 2; }
+                 * if (pos > totalArmor - maxColumns) { topColumn[0] += pipShift[0] ((maxColumns
+                 * - (totalArmor - pos)) / 2); } else { topColumn[0] += pipShift[0] / 2; }
                  */
             }
         }
 
         int pipSpace = 200 / totalArmor;
         for (int pos = 0; pos < 200; pos += pipSpace) {
-            ImageHelperAero.drawAeroArmorPip(g2d, pipPlotter.get(pos)[0],
-                    pipPlotter.get(pos)[1]);
+            ImageHelperAero.drawAeroArmorPip(g2d, pipPlotter.get(pos)[0], pipPlotter.get(pos)[1]);
             if (--totalArmor <= 0) {
                 return;
             }
@@ -365,8 +338,7 @@ public class PrintSmallCraftSpheroid implements Printable {
 
         int pipSpace = 132 / totalArmor;
         for (int pos = 0; pos < 132; pos += pipSpace) {
-            ImageHelperAero.drawAeroArmorPip(g2d, pipPlotter.get(pos)[0],
-                    pipPlotter.get(pos)[1]);
+            ImageHelperAero.drawAeroArmorPip(g2d, pipPlotter.get(pos)[0], pipPlotter.get(pos)[1]);
             if (--totalArmor <= 0) {
                 return;
             }
@@ -393,8 +365,7 @@ public class PrintSmallCraftSpheroid implements Printable {
 
         int pipSpace = 200 / totalArmor;
         for (int pos = 0; pos < 200; pos += pipSpace) {
-            ImageHelperAero.drawAeroArmorPip(g2d, pipPlotter.get(pos)[0],
-                    pipPlotter.get(pos)[1]);
+            ImageHelperAero.drawAeroArmorPip(g2d, pipPlotter.get(pos)[0], pipPlotter.get(pos)[1]);
             if (--totalArmor <= 0) {
                 return;
             }
@@ -419,8 +390,7 @@ public class PrintSmallCraftSpheroid implements Printable {
 
         int pipSpace = 200 / totalArmor;
         for (int pos = 0; pos < 200; pos += pipSpace) {
-            ImageHelperAero.drawAeroArmorPip(g2d, pipPlotter.get(pos)[0],
-                    pipPlotter.get(pos)[1]);
+            ImageHelperAero.drawAeroArmorPip(g2d, pipPlotter.get(pos)[0], pipPlotter.get(pos)[1]);
             if (--totalArmor <= 0) {
                 return;
             }
@@ -447,8 +417,7 @@ public class PrintSmallCraftSpheroid implements Printable {
 
         int pipSpace = (int) Math.floor(32 / totalArmor);
         for (int pos = 0; pos < 32; pos += pipSpace) {
-            ImageHelperAero.drawAeroISPip(g2d, pipPlotter.get(pos)[0],
-                    pipPlotter.get(pos)[1]);
+            ImageHelperAero.drawAeroISPip(g2d, pipPlotter.get(pos)[0], pipPlotter.get(pos)[1]);
             if (--totalArmor <= 0) {
                 return;
             }

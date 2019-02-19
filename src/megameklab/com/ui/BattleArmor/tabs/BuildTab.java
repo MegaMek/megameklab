@@ -1,7 +1,7 @@
 /*
- * MegaMekLab - Copyright (C) 2008
- *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * MegaMekLab
+ * - Copyright (C) 2008 jtighe (torren@users.sourceforge.net)
+ * - Copyright (C) 2018 The MegaMek Team
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
@@ -42,7 +42,7 @@ import megameklab.com.util.SpringLayoutHelper;
 import megameklab.com.util.UnitUtil;
 
 /**
- * A component that creates a table for building the criticals of a unit.  This
+ * A component that creates a table for building the criticals of a unit. This
  * tab shows a table of the un-allocated equipment and displays criticals for
  * the whole <code>BattleArmor</code> squad.
  *
@@ -90,8 +90,7 @@ public class BuildTab extends ITab implements ActionListener {
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
         critPanel.setLayout(new BoxLayout(critPanel, BoxLayout.Y_AXIS));
         critScrollPanel = new JScrollPane(critPanel);
-        critScrollPanel.setHorizontalScrollBarPolicy(
-                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        critScrollPanel.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         critScrollPanel.setBorder(BorderFactory.createEmptyBorder());
         critScrollPanel.setMinimumSize(new java.awt.Dimension(400, 500));
         critScrollPanel.setPreferredSize(new java.awt.Dimension(400, 500));
@@ -132,18 +131,17 @@ public class BuildTab extends ITab implements ActionListener {
     }
 
     /**
-     * Unlike other units, BattleArmor have multiple suits in the squad that
-     * have crits that can be assigned.  Different types of BattleArmor squads
-     * have different numbers of troops, so instead of one
-     * <code>CriticalView</code> we have several.  If the squad size changes,
-     * we will need to adjust the number of <code>CriticalView</code>s.  This
-     * method will create the proper number of <code>CriticalView</code>s.
+     * Unlike other units, BattleArmor have multiple suits in the squad that have
+     * crits that can be assigned. Different types of BattleArmor squads have
+     * different numbers of troops, so instead of one <code>CriticalView</code> we
+     * have several. If the squad size changes, we will need to adjust the number of
+     * <code>CriticalView</code>s. This method will create the proper number of
+     * <code>CriticalView</code>s.
      */
-    private void createCriticalViews(){
+    private void createCriticalViews() {
         critViews.clear();
-        for (int i = 0; i < (getBattleArmor()).getTroopers(); i++){
-            critViews.add(new CriticalView(eSource, i + 1, true,
-                    refresh));
+        for (int i = 0; i < (getBattleArmor()).getTroopers(); i++) {
+            critViews.add(new CriticalView(eSource, i + 1, true, refresh));
             critPanel.add(critViews.get(i));
             critPanel.add(Box.createVerticalStrut(20));
         }
@@ -153,12 +151,12 @@ public class BuildTab extends ITab implements ActionListener {
         removeAllActionListeners();
 
         // We need to have a CritView for each trooper
-        if (critViews.size() != (getBattleArmor()).getTroopers()){
+        if (critViews.size() != (getBattleArmor()).getTroopers()) {
             critPanel.removeAll();
             createCriticalViews();
         }
 
-        for (CriticalView critView : critViews){
+        for (CriticalView critView : critViews) {
             critView.refresh();
         }
         critPanel.validate();
@@ -181,8 +179,7 @@ public class BuildTab extends ITab implements ActionListener {
         // tracked explicitly
         CriticalSuit crits = new CriticalSuit(getBattleArmor());
         for (Mounted mount : buildView.getTableModel().getCrits()) {
-            for (int location = BattleArmor.MOUNT_LOC_BODY; 
-                    location < BattleArmor.MOUNT_NUM_LOCS; location++) {
+            for (int location = BattleArmor.MOUNT_LOC_BODY; location < BattleArmor.MOUNT_NUM_LOCS; location++) {
                 if (!UnitUtil.isValidLocation(getBattleArmor(), mount.getType(), location)) {
                     continue;
                 }
@@ -203,7 +200,7 @@ public class BuildTab extends ITab implements ActionListener {
 
     private void resetCrits() {
         for (Mounted mount : getBattleArmor().getEquipment()) {
-            if (UnitUtil.isFixedLocationSpreadEquipment(mount.getType())){
+            if (UnitUtil.isFixedLocationSpreadEquipment(mount.getType())) {
                 continue;
             }
             mount.setBaMountLoc(BattleArmor.MOUNT_LOC_NONE);
@@ -223,7 +220,7 @@ public class BuildTab extends ITab implements ActionListener {
 
     public void addRefreshedListener(RefreshListener l) {
         refresh = l;
-        for (CriticalView critView : critViews){
+        for (CriticalView critView : critViews) {
             critView.updateRefresh(refresh);
         }
         buildView.addRefreshedListener(refresh);

@@ -16,26 +16,27 @@ package megameklab.com.util;
 import megamek.common.Mounted;
 
 /**
- * Compiles and formats line(s) on weapons and equipment inventory section of record sheet
- * 
+ * Compiles and formats line(s) on weapons and equipment inventory section of
+ * record sheet
+ *
  * @author Neoancient
  *
  */
 public class RecordSheetEquipmentLine {
-    
+
     private EquipmentInfo eqInfo;
     private String location;
     private boolean rear;
     private boolean turret;
-    
+
     private final static String DASH = "\u2014";
 
     private final static int MML_LRM = 1;
     private final static int MML_SRM = 2;
-    
+
     private final static int ATM_STANDARD = 1;
-    private final static int ATM_ER       = 2;
-    private final static int ATM_HE       = 3;
+    private final static int ATM_ER = 2;
+    private final static int ATM_HE = 3;
 
     public RecordSheetEquipmentLine(Mounted m) {
         eqInfo = new EquipmentInfo(m.getEntity(), m);
@@ -46,12 +47,12 @@ public class RecordSheetEquipmentLine {
             eqInfo.name = eqInfo.name.replace(m.getType().getName(), m.getType().getShortName());
         }
     }
-    
+
     public String getNameField(int row, boolean mixedTech) {
         if (row == 0) {
             String name = eqInfo.name;
             if (!mixedTech) {
-                name = name.replace("[Clan]","").replace("(Clan)","").trim();
+                name = name.replace("[Clan]", "").replace("(Clan)", "").trim();
             }
             if (turret) {
                 name += " (T)";
@@ -81,7 +82,7 @@ public class RecordSheetEquipmentLine {
         }
         return "";
     }
-    
+
     public String getLocationField(int row) {
         if (row == 0) {
             return location;
@@ -89,7 +90,7 @@ public class RecordSheetEquipmentLine {
             return "";
         }
     }
-    
+
     public String getHeatField(int row) {
         if (row == 0) {
             if (eqInfo.isWeapon) {
@@ -101,12 +102,12 @@ public class RecordSheetEquipmentLine {
             return "";
         }
     }
-    
+
     public String getDamageField(int row) {
         if (eqInfo.isMML) {
             if (row == MML_LRM) {
                 return "1/Msl";
-            } else if (row == MML_SRM){
+            } else if (row == MML_SRM) {
                 return "2/Msl";
             } else {
                 return "[M,C,S]";
@@ -130,7 +131,7 @@ public class RecordSheetEquipmentLine {
         }
         return "";
     }
-    
+
     public String getMinField(int row) {
         if (eqInfo.isMML) {
             if (row == MML_LRM) {
@@ -157,7 +158,7 @@ public class RecordSheetEquipmentLine {
         }
         return "";
     }
-    
+
     public String getShortField(int row) {
         if (eqInfo.isMML) {
             if (row == MML_LRM) {
@@ -191,7 +192,7 @@ public class RecordSheetEquipmentLine {
         }
         return "";
     }
-    
+
     public String getMediumField(int row) {
         if (eqInfo.isMML) {
             if (row == MML_LRM) {
@@ -225,7 +226,7 @@ public class RecordSheetEquipmentLine {
         }
         return "";
     }
-    
+
     public String getLongField(int row) {
         if (eqInfo.isMML) {
             if (row == MML_LRM) {
@@ -259,7 +260,7 @@ public class RecordSheetEquipmentLine {
         }
         return "";
     }
-    
+
     public String getExtremeField(int row) {
         if (row == 0) {
             if (eqInfo.isWeapon) {
@@ -270,7 +271,7 @@ public class RecordSheetEquipmentLine {
         }
         return "";
     }
-    
+
     public int nRows() {
         if (eqInfo.isMML) {
             return 3;

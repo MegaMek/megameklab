@@ -1,7 +1,7 @@
 /*
- * MegaMekLab - Copyright (C) 2010
- *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * MegaMekLab
+ * - Copyright (C) 2010 jtighe (torren@users.sourceforge.net)
+ * - Copyright (C) 2018 The MegaMek Team
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -13,6 +13,7 @@
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  */
+
 package megameklab.com.util;
 
 import java.awt.Color;
@@ -80,8 +81,16 @@ public class ImageHelperProto {
             shortName = shortName.replace('(', '.').replace(')', '.').replace(".Clan.", "");
             shortName = shortName.replace("-capable", "");
             shortName += " ";
-            if ((aType.getAmmoType() == AmmoType.T_AC) || (aType.getAmmoType() == AmmoType.T_MML) || (aType.getAmmoType() == AmmoType.T_SRM) || (aType.getAmmoType() == AmmoType.T_SRM_STREAK) || (aType.getAmmoType() == AmmoType.T_SRM_TORPEDO) || (aType.getAmmoType() == AmmoType.T_LRM) || (aType.getAmmoType() == AmmoType.T_LRM_STREAK) || (aType.getAmmoType() == AmmoType.T_LRM_TORPEDO) || (aType.getAmmoType() == AmmoType.T_MML) || (aType.getAmmoType() == AmmoType.T_AC) || (aType.getAmmoType() == AmmoType.T_AC_LBX) || (aType.getAmmoType() == AmmoType.T_AC_LBX_THB) || (aType.getAmmoType() == AmmoType.T_AC_ROTARY) || (aType.getAmmoType() == AmmoType.T_AC_ULTRA) || (aType.getAmmoType() == AmmoType.T_AC_ULTRA_THB) || (aType.getAmmoType() == AmmoType.T_MRM)
-                    || (aType.getAmmoType() == AmmoType.T_MRM_STREAK) || (aType.getAmmoType() == AmmoType.T_ATM) || (aType.getAmmoType() == AmmoType.T_HAG) || (aType.getAmmoType() == AmmoType.T_EXLRM)) {
+            if ((aType.getAmmoType() == AmmoType.T_AC) || (aType.getAmmoType() == AmmoType.T_MML)
+                    || (aType.getAmmoType() == AmmoType.T_SRM) || (aType.getAmmoType() == AmmoType.T_SRM_STREAK)
+                    || (aType.getAmmoType() == AmmoType.T_SRM_TORPEDO) || (aType.getAmmoType() == AmmoType.T_LRM)
+                    || (aType.getAmmoType() == AmmoType.T_LRM_STREAK) || (aType.getAmmoType() == AmmoType.T_LRM_TORPEDO)
+                    || (aType.getAmmoType() == AmmoType.T_MML) || (aType.getAmmoType() == AmmoType.T_AC)
+                    || (aType.getAmmoType() == AmmoType.T_AC_LBX) || (aType.getAmmoType() == AmmoType.T_AC_LBX_THB)
+                    || (aType.getAmmoType() == AmmoType.T_AC_ROTARY) || (aType.getAmmoType() == AmmoType.T_AC_ULTRA)
+                    || (aType.getAmmoType() == AmmoType.T_AC_ULTRA_THB) || (aType.getAmmoType() == AmmoType.T_MRM)
+                    || (aType.getAmmoType() == AmmoType.T_MRM_STREAK) || (aType.getAmmoType() == AmmoType.T_ATM)
+                    || (aType.getAmmoType() == AmmoType.T_HAG) || (aType.getAmmoType() == AmmoType.T_EXLRM)) {
                 // shortName = shortName.replaceFirst(" ", " " +
                 // aType.getRackSize() + " ");
                 shortName = shortName.replaceFirst("  Artemis", " Artemis");
@@ -119,7 +128,8 @@ public class ImageHelperProto {
         sb.setLength(0);
         sb.append("Ammo: ");
 
-        g2d.drawString(sb.toString(), pointX, pointY - ((linecount) * ImageHelper.getStringHeight(g2d, sb.toString(), g2d.getFont())));
+        g2d.drawString(sb.toString(), pointX,
+                pointY - ((linecount) * ImageHelper.getStringHeight(g2d, sb.toString(), g2d.getFont())));
         pointX += ImageHelper.getStringWidth(g2d, sb.toString(), g2d.getFont());
         sb = new StringBuffer();
         int linesprinted = 0;
@@ -134,7 +144,8 @@ public class ImageHelperProto {
             sb.append(", ");
             if ((ImageHelper.getStringWidth(g2d, sb.toString(), g2d.getFont()) > 160) && (linesprinted < linecount)) {
                 sb.setLength(sb.length() - ((sb.length() - currentStringLength) + 2));
-                g2d.drawString(sb.toString(), pointX, pointY - ((linecount - linesprinted) * ImageHelper.getStringHeight(g2d, sb.toString(), g2d.getFont())));
+                g2d.drawString(sb.toString(), pointX, pointY - ((linecount - linesprinted)
+                        * ImageHelper.getStringHeight(g2d, sb.toString(), g2d.getFont())));
                 linesprinted++;
                 sb.setLength(0);
                 sb.append("(");
@@ -146,7 +157,8 @@ public class ImageHelperProto {
         }
         if (sb.length() > 0) {
             sb.setLength(sb.length() - 2);
-            g2d.drawString(sb.toString(), pointX, pointY - ((linecount - linesprinted) * ImageHelper.getStringHeight(g2d, sb.toString(), g2d.getFont())));
+            g2d.drawString(sb.toString(), pointX, pointY
+                    - ((linecount - linesprinted) * ImageHelper.getStringHeight(g2d, sb.toString(), g2d.getFont())));
             pointY += ImageHelper.getStringHeight(g2d, sb.toString(), g2d.getFont());
         }
     }
@@ -170,7 +182,8 @@ public class ImageHelperProto {
 
         boolean newLineNeeded = false;
 
-        ArrayList<Vector<EquipmentInfo>> equipmentLocations = new ArrayList<Vector<EquipmentInfo>>(Protomech.LOC_MAINGUN + 1);
+        ArrayList<Vector<EquipmentInfo>> equipmentLocations = new ArrayList<Vector<EquipmentInfo>>(
+                Protomech.LOC_MAINGUN + 1);
 
         for (int pos = 0; pos <= Protomech.LOC_MAINGUN; pos++) {
             equipmentLocations.add(pos, new Vector<EquipmentInfo>());
@@ -178,7 +191,8 @@ public class ImageHelperProto {
 
         for (Mounted eq : proto.getEquipment()) {
 
-            if ((eq.getType() instanceof AmmoType) || (eq.getLocation() == Entity.LOC_NONE) || !UnitUtil.isPrintableEquipment(eq.getType())) {
+            if ((eq.getType() instanceof AmmoType) || (eq.getLocation() == Entity.LOC_NONE)
+                    || !UnitUtil.isPrintableEquipment(eq.getType())) {
                 continue;
             }
 
@@ -240,19 +254,26 @@ public class ImageHelperProto {
                 g2d.setFont(UnitUtil.getNewFont(g2d, name, false, 68, 7.0f));
 
                 if (eqi.c3Level == EquipmentInfo.C3I) {
-                    ImageHelper.printC3iName(g2d, typePoint, linePoint, font, false, proto.isMixedTech() && TechConstants.isClan(proto.getTechLevel()));
+                    ImageHelper.printC3iName(g2d, typePoint, linePoint, font, false,
+                            proto.isMixedTech() && TechConstants.isClan(proto.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3EM) {
-                    ImageHelper.printC3EmName(g2d, typePoint, linePoint, font, false, proto.isMixedTech() && TechConstants.isClan(proto.getTechLevel()));
+                    ImageHelper.printC3EmName(g2d, typePoint, linePoint, font, false,
+                            proto.isMixedTech() && TechConstants.isClan(proto.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3S) {
-                    ImageHelper.printC3sName(g2d, typePoint, linePoint, font, false, proto.isMixedTech() && TechConstants.isClan(proto.getTechLevel()));
+                    ImageHelper.printC3sName(g2d, typePoint, linePoint, font, false,
+                            proto.isMixedTech() && TechConstants.isClan(proto.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3M) {
-                    ImageHelper.printC3mName(g2d, typePoint, linePoint, font, false, proto.isMixedTech() && TechConstants.isClan(proto.getTechLevel()));
+                    ImageHelper.printC3mName(g2d, typePoint, linePoint, font, false,
+                            proto.isMixedTech() && TechConstants.isClan(proto.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3SB) {
-                    ImageHelper.printC3sbName(g2d, typePoint, linePoint, font, false, proto.isMixedTech() && TechConstants.isClan(proto.getTechLevel()));
+                    ImageHelper.printC3sbName(g2d, typePoint, linePoint, font, false,
+                            proto.isMixedTech() && TechConstants.isClan(proto.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3MB) {
-                    ImageHelper.printC3mbName(g2d, typePoint, linePoint, font, false, proto.isMixedTech() && TechConstants.isClan(proto.getTechLevel()));
+                    ImageHelper.printC3mbName(g2d, typePoint, linePoint, font, false,
+                            proto.isMixedTech() && TechConstants.isClan(proto.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3REMOTESENSOR) {
-                    ImageHelper.printC3RemoteSensorName(g2d, typePoint, linePoint, font, false, proto.isMixedTech() && TechConstants.isClan(proto.getTechLevel()));
+                    ImageHelper.printC3RemoteSensorName(g2d, typePoint, linePoint, font, false,
+                            proto.isMixedTech() && TechConstants.isClan(proto.getTechLevel()));
                 } else {
                     g2d.drawString(name, typePoint, linePoint);
                 }
@@ -275,7 +296,8 @@ public class ImageHelperProto {
                         g2d.drawString("SRM", typePoint, linePoint);
                         ImageHelper.printCenterString(g2d, "2/Msl", font, damagePoint, linePoint);
                         g2d.drawString("\u2014", minPoint, linePoint);
-                        //g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
+                        // g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint -
+                        // 2);
                         g2d.drawString("3", shtPoint, linePoint);
                         g2d.drawString("6", medPoint, linePoint);
                         g2d.drawString("9", longPoint, linePoint);
@@ -303,7 +325,8 @@ public class ImageHelperProto {
                         g2d.drawString("High-Explosive", typePoint, linePoint);
                         ImageHelper.printCenterString(g2d, "3/Msl", font, damagePoint, linePoint);
                         g2d.drawString("\u2014", minPoint, linePoint);
-                        //g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
+                        // g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint -
+                        // 2);
                         g2d.drawString("3", shtPoint, linePoint);
                         g2d.drawString("6", medPoint, linePoint);
                         g2d.drawString("9", longPoint, linePoint);
@@ -312,8 +335,10 @@ public class ImageHelperProto {
                         if (ImageHelper.getStringWidth(g2d, eqi.damage.trim(), font) > 22) {
                             font = UnitUtil.deriveFont(6.0f);
                             g2d.setFont(font);
-                            ImageHelper.printCenterString(g2d, eqi.damage.substring(0, eqi.damage.indexOf('[')), font, damagePoint, linePoint);
-                            ImageHelper.printCenterString(g2d, eqi.damage.substring(eqi.damage.indexOf('[')), font, damagePoint, (linePoint + lineFeed) - 1.0f);
+                            ImageHelper.printCenterString(g2d, eqi.damage.substring(0, eqi.damage.indexOf('[')), font,
+                                    damagePoint, linePoint);
+                            ImageHelper.printCenterString(g2d, eqi.damage.substring(eqi.damage.indexOf('[')), font,
+                                    damagePoint, (linePoint + lineFeed) - 1.0f);
                             newLineNeeded = true;
                         } else {
                             ImageHelper.printCenterString(g2d, eqi.damage, font, damagePoint, linePoint);
@@ -322,7 +347,8 @@ public class ImageHelperProto {
                             g2d.drawString(Integer.toString(eqi.minRange), minPoint, linePoint);
                         } else {
                             g2d.drawString("\u2014", minPoint, linePoint);
-                            //g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
+                            // g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint -
+                            // 2);
                         }
                         g2d.drawString(Integer.toString(eqi.shtRange), shtPoint, linePoint);
                         g2d.drawString(Integer.toString(eqi.medRange), medPoint, linePoint);
@@ -330,7 +356,8 @@ public class ImageHelperProto {
                             g2d.drawString(Integer.toString(eqi.longRange), longPoint, (int) linePoint);
                         } else {
                             g2d.drawString("\u2014", longPoint, linePoint);
-                            //g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint - 2);
+                            // g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint -
+                            // 2);
                         }
                     }
                 } else {
@@ -338,14 +365,18 @@ public class ImageHelperProto {
                     g2d.drawString("\u2014", minPoint, linePoint);
                     g2d.drawString("\u2014", shtPoint, linePoint);
                     g2d.drawString("\u2014", medPoint, linePoint);
-                    //g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
-                    //g2d.drawLine(shtPoint, (int) linePoint - 2, shtPoint + 6, (int) linePoint - 2);
-                    //g2d.drawLine(medPoint, (int) linePoint - 2, medPoint + 6, (int) linePoint - 2);
+                    // g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint -
+                    // 2);
+                    // g2d.drawLine(shtPoint, (int) linePoint - 2, shtPoint + 6, (int) linePoint -
+                    // 2);
+                    // g2d.drawLine(medPoint, (int) linePoint - 2, medPoint + 6, (int) linePoint -
+                    // 2);
                     if (eqi.longRange > 0) {
                         g2d.drawString(Integer.toString(eqi.longRange), longPoint, (int) linePoint);
                     } else {
                         g2d.drawString("\u2014", longPoint, linePoint);
-                        //g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint - 2);
+                        // g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint -
+                        // 2);
                     }
                 }
 

@@ -1,7 +1,7 @@
 /*
- * MegaMekLab - Copyright (C) 2008
- *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * MegaMekLab
+ * - Copyright (C) 2008 jtighe (torren@users.sourceforge.net)
+ * - Copyright (C) 2018 The MegaMek Team
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
@@ -54,6 +54,7 @@ import megameklab.com.util.UnitUtil;
 
 /**
  * This IView shows all the equipment that's not yet been assigned a location
+ * 
  * @author beerockxs
  * @author arlith
  *
@@ -70,7 +71,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
     private JTable equipmentTable = new JTable();
     private JScrollPane equipmentScroll = new JScrollPane();
     private int engineHeatSinkCount = 0;
-    
+
     CriticalTransferHandler cth;
 
     public BuildView(EntitySource eSource, RefreshListener refresh) {
@@ -85,7 +86,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         TableColumn column = null;
         for (int i = 0; i < equipmentList.getColumnCount(); i++) {
             column = equipmentTable.getColumnModel().getColumn(i);
-            if(i == 0) {
+            if (i == 0) {
                 column.setPreferredWidth(350);
             }
             column.setCellRenderer(equipmentList.getRenderer());
@@ -104,8 +105,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
 
         setLayout(new BorderLayout());
         this.add(equipmentScroll, BorderLayout.CENTER);
-        setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createEmptyBorder(), "Unallocated Equipment", 
+        setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Unallocated Equipment",
                 TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
     }
 
@@ -117,8 +117,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         equipmentList.removeAllCrits();
         masterEquipmentList.clear();
         for (Mounted mount : getAero().getMisc()) {
-            if ((mount.getLocation() == Entity.LOC_NONE) && 
-                    !isEngineHeatSink(mount)) {
+            if ((mount.getLocation() == Entity.LOC_NONE) && !isEngineHeatSink(mount)) {
                 masterEquipmentList.add(mount);
             }
         }
@@ -157,8 +156,8 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         // weapons and ammo
         Vector<Mounted> weaponsNAmmoList = new Vector<Mounted>(10, 1);
         for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
-            if ((masterEquipmentList.get(pos).getType() instanceof Weapon) || 
-                    (masterEquipmentList.get(pos).getType() instanceof AmmoType)) {
+            if ((masterEquipmentList.get(pos).getType() instanceof Weapon)
+                    || (masterEquipmentList.get(pos).getType() instanceof AmmoType)) {
                 weaponsNAmmoList.add(masterEquipmentList.get(pos));
                 masterEquipmentList.remove(pos);
                 pos--;
@@ -171,9 +170,9 @@ public class BuildView extends IView implements ActionListener, MouseListener {
 
         // Equipment
         for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
-            if ((masterEquipmentList.get(pos).getType() instanceof MiscType) && 
-                    !UnitUtil.isArmor(masterEquipmentList.get(pos).getType()) && 
-                    !UnitUtil.isTSM(masterEquipmentList.get(pos).getType())) {
+            if ((masterEquipmentList.get(pos).getType() instanceof MiscType)
+                    && !UnitUtil.isArmor(masterEquipmentList.get(pos).getType())
+                    && !UnitUtil.isTSM(masterEquipmentList.get(pos).getType())) {
                 equipmentList.addCrit(masterEquipmentList.get(pos));
                 masterEquipmentList.remove(pos);
                 pos--;
@@ -215,11 +214,10 @@ public class BuildView extends IView implements ActionListener, MouseListener {
     }
 
     private boolean isEngineHeatSink(Mounted mount) {
-        if ((mount.getLocation() == Entity.LOC_NONE) && 
-                UnitUtil.isHeatSink(mount) && (engineHeatSinkCount > 0)) {
-            if(mount.getType().hasFlag(MiscType.F_COMPACT_HEAT_SINK) && 
-                    mount.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK)) {
-                //only single compact HS should be used for engine sinks
+        if ((mount.getLocation() == Entity.LOC_NONE) && UnitUtil.isHeatSink(mount) && (engineHeatSinkCount > 0)) {
+            if (mount.getType().hasFlag(MiscType.F_COMPACT_HEAT_SINK)
+                    && mount.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK)) {
+                // only single compact HS should be used for engine sinks
                 return false;
             }
             engineHeatSinkCount--;
@@ -277,49 +275,49 @@ public class BuildView extends IView implements ActionListener, MouseListener {
 
     @Override
     public void mousePressed(MouseEvent e) {
-        // On right-click, we want to generate menu items to add to specific 
-        //  locations, but only if those locations are make sense
+        // On right-click, we want to generate menu items to add to specific
+        // locations, but only if those locations are make sense
         if (e.getButton() == MouseEvent.BUTTON3) {
             JPopupMenu popup = new JPopupMenu();
             JMenuItem item;
 
             final int selectedRow = equipmentTable.rowAtPoint(e.getPoint());
-            Mounted eq = (Mounted)equipmentTable.getModel().getValueAt(
-                    selectedRow, CriticalTableModel.EQUIPMENT);
+            Mounted eq = (Mounted) equipmentTable.getModel().getValueAt(selectedRow, CriticalTableModel.EQUIPMENT);
 
             String[] locNames = getAero().getLocationNames();
             // A list of the valid locations we can add the selected eq to
             ArrayList<Integer> validLocs = new ArrayList<Integer>();
-            // The number of possible locations, Aeros' have LOC_WINGS and LOC_FUSELAGE, which we
-            //  want ot ignore for now, hence -2
+            // The number of possible locations, Aeros' have LOC_WINGS and LOC_FUSELAGE,
+            // which we
+            // want ot ignore for now, hence -2
             int numLocs = getAero().locations() - 2;
             // If it's a weapon, there are restrictions
             if (eq.getType() instanceof WeaponType) {
-                int[] availSpace = TestAero.availableSpace(getAero()); 
+                int[] availSpace = TestAero.availableSpace(getAero());
                 int numWeapons[] = new int[availSpace.length];
-                
-                for (Mounted m : getAero().getWeaponList()){
-                    if (m.getLocation() != Aero.LOC_NONE){
+
+                for (Mounted m : getAero().getWeaponList()) {
+                    if (m.getLocation() != Aero.LOC_NONE) {
                         numWeapons[m.getLocation()]++;
                     }
                 }
-                for (int loc = 0; loc < numLocs; loc++){
-                    if ((numWeapons[loc]+1) < availSpace[loc]){
+                for (int loc = 0; loc < numLocs; loc++) {
+                    if ((numWeapons[loc] + 1) < availSpace[loc]) {
                         validLocs.add(loc);
                     }
                 }
-            // If it's not a weapon there are no space requirements
+                // If it's not a weapon there are no space requirements
             } else {
-                for (int loc = 0; loc < numLocs; loc++){                    
-                        validLocs.add(loc);
+                for (int loc = 0; loc < numLocs; loc++) {
+                    validLocs.add(loc);
                 }
                 if (!UnitUtil.isWeaponEnhancement(eq.getType())) {
                     validLocs.add(Aero.LOC_FUSELAGE);
                 }
             }
-            
+
             // Add a menu item for each potential location
-            for (Integer location: validLocs) {
+            for (Integer location : validLocs) {
                 if (UnitUtil.isValidLocation(getAero(), eq.getType(), location)) {
                     item = new JMenuItem("Add to " + locNames[location]);
 
@@ -342,21 +340,17 @@ public class BuildView extends IView implements ActionListener, MouseListener {
 
     }
 
-    
     /**
      * When the user right-clicks on the equipment table, a context menu is
      * generated that his menu items for each possible location that is clicked.
      * When the location is clicked, this is the method that adds the selected
      * equipment to the desired location.
-     * 
+     *
      * @param location
      * @param selectedRow
      */
-    private void jMenuLoadComponent_actionPerformed(int location, 
-            int selectedRow) {
-        Mounted eq = (Mounted) 
-                equipmentTable.getModel().getValueAt(selectedRow, 
-                        CriticalTableModel.EQUIPMENT);
+    private void jMenuLoadComponent_actionPerformed(int location, int selectedRow) {
+        Mounted eq = (Mounted) equipmentTable.getModel().getValueAt(selectedRow, CriticalTableModel.EQUIPMENT);
         try {
             getAero().addEquipment(eq, location, false);
         } catch (Exception ex) {

@@ -1,7 +1,7 @@
 /*
- * MegaMekLab - Copyright (C) 2011
- *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * MegaMekLab
+ * - Copyright (C) 2011 jtighe (torren@users.sourceforge.net)
+ * - Copyright (C) 2018 The MegaMek Team
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -35,8 +35,7 @@ import megameklab.com.util.CConfig;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 
-public abstract class MegaMekLabMainUI extends JFrame implements
-        RefreshListener, EntitySource {
+public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener, EntitySource {
 
     /**
      *
@@ -52,7 +51,7 @@ public abstract class MegaMekLabMainUI extends JFrame implements
         UnitUtil.loadFonts();
         new CConfig();
         System.out.println("Starting MegaMekLab version: " + MegaMekLab.VERSION);
-        
+
         setLookAndFeel();
 
         setLocation(getLocation().x + 10, getLocation().y);
@@ -76,7 +75,7 @@ public abstract class MegaMekLabMainUI extends JFrame implements
 
     /**
      * Sets the look and feel for the application.
-     * 
+     *
      * @param plaf The look and feel to use for the application.
      */
     public void changeTheme(LookAndFeelInfo plaf) {
@@ -85,8 +84,7 @@ public abstract class MegaMekLabMainUI extends JFrame implements
                 UIManager.setLookAndFeel(plaf.getClassName());
                 SwingUtilities.updateComponentTreeUI(this);
             } catch (Exception exception) {
-                JOptionPane.showMessageDialog(this,
-                        "Can't change look and feel", "Invalid PLAF",
+                JOptionPane.showMessageDialog(this, "Can't change look and feel", "Invalid PLAF",
                         JOptionPane.ERROR_MESSAGE);
             }
 
@@ -99,15 +97,14 @@ public abstract class MegaMekLabMainUI extends JFrame implements
             UIManager.setLookAndFeel(plaf);
         } catch (Exception e) {
             MegaMekLab.getLogger().error(getClass(), "setLookAndFeel()", e);
-       }
+        }
     }
-    
+
     public void exit() {
-        String quitMsg = "Do you really want to quit MegaMekLab?"; 
-        int response = JOptionPane.showConfirmDialog(null, quitMsg,
-                "Quit?", JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE); 
-        
+        String quitMsg = "Do you really want to quit MegaMekLab?";
+        int response = JOptionPane.showConfirmDialog(null, quitMsg, "Quit?", JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE);
+
         if (response == JOptionPane.YES_OPTION) {
             CConfig.setParam("WINDOWSTATE", Integer.toString(getExtendedState()));
             // Only save position and size if not maximized or minimized.
@@ -123,7 +120,7 @@ public abstract class MegaMekLabMainUI extends JFrame implements
             System.exit(0);
         }
     }
-    
+
     public abstract void reloadTabs();
 
     public abstract void refreshAll();

@@ -41,52 +41,55 @@ import megameklab.com.ui.view.listeners.BuildListener;
 import megameklab.com.util.UnitUtil;
 
 /**
- * Panel for assigning armor type and tonnage for mechs, (combat) vehicles, and fighters.
- * 
+ * Panel for assigning armor type and tonnage for mechs, (combat) vehicles, and
+ * fighters.
+ *
  * @author Neoancient
  *
  */
 public class MVFArmorView extends BuildView implements ActionListener, ChangeListener {
-    
+
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1246552271894765543L;
 
     private final List<BuildListener> listeners = new CopyOnWriteArrayList<>();
+
     public void addListener(BuildListener l) {
         listeners.add(l);
     }
+
     public void removeListener(BuildListener l) {
         listeners.remove(l);
     }
-    
-    private final static String CMD_MAXIMIZE  = "MAXIMIZE"; //$NON-NLS-1$
+
+    private final static String CMD_MAXIMIZE = "MAXIMIZE"; //$NON-NLS-1$
     private final static String CMD_REMAINING = "REMAINING"; //$NON-NLS-1$
-    
+
     private final TechComboBox<EquipmentType> cbArmorType = new TechComboBox<>(eq -> eq.getName());
     private final SpinnerNumberModel tonnageModel = new SpinnerNumberModel(0, 0, 0, 0.5);
     private final JSpinner spnTonnage = new JSpinner(tonnageModel);
     private final JButton btnMaximize = new JButton();
     private final JButton btnUseRemaining = new JButton();
-    
+
     private final ITechManager techManager;
-    
+
     private long etype;
     private boolean industrial;
     private EntityMovementMode movementMode;
-    
+
     public MVFArmorView(ITechManager techManager) {
         this.techManager = techManager;
         initUI();
     }
-    
+
     private void initUI() {
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl()); //$NON-NLS-1$
-        
+
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        
+
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 1;
@@ -99,7 +102,7 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
         cbArmorType.setToolTipText(resourceMap.getString("ArmorView.cbArmorType.tooltip")); //$NON-NLS-1$
         add(cbArmorType, gbc);
         cbArmorType.addActionListener(this);
-        
+
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridwidth = 1;
@@ -110,7 +113,7 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
         spnTonnage.setToolTipText(resourceMap.getString("ArmorView.spnTonnage.tooltip")); //$NON-NLS-1$
         add(spnTonnage, gbc);
         spnTonnage.addChangeListener(this);
-        
+
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.gridwidth = 3;
@@ -120,7 +123,7 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
         btnMaximize.setToolTipText(resourceMap.getString("ArmorView.btnMaximize.tooltip")); //$NON-NLS-1$
         add(btnMaximize, gbc);
         btnMaximize.addActionListener(this);
-        
+
         gbc.gridx = 0;
         gbc.gridy = 3;
         gbc.gridwidth = 3;
@@ -131,10 +134,10 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
         add(btnUseRemaining, gbc);
         btnUseRemaining.addActionListener(this);
     }
-    
+
     public void setFromEntity(Entity en) {
         etype = en.getEntityType();
-        industrial = (en instanceof Mech) && ((Mech)en).isIndustrial();
+        industrial = (en instanceof Mech) && ((Mech) en).isIndustrial();
         movementMode = en.getMovementMode();
         refresh();
         cbArmorType.removeActionListener(this);
@@ -146,8 +149,7 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
                     break;
                 }
             }
-            tonnageModel.setValue(Math.min(UnitUtil.getMaximumArmorTonnage(en),
-                    en.getLabArmorTonnage()));
+            tonnageModel.setValue(Math.min(UnitUtil.getMaximumArmorTonnage(en), en.getLabArmorTonnage()));
             spnTonnage.setEnabled(false);
             btnMaximize.setEnabled(false);
             btnUseRemaining.setEnabled(false);
@@ -156,20 +158,19 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
                     TechConstants.isClan(en.getArmorTechLevel(0)));
             EquipmentType eq = EquipmentType.get(name);
             cbArmorType.setSelectedItem(eq);
-            tonnageModel.setValue(Math.min(UnitUtil.getMaximumArmorTonnage(en),
-                    en.getLabArmorTonnage()));
+            tonnageModel.setValue(Math.min(UnitUtil.getMaximumArmorTonnage(en), en.getLabArmorTonnage()));
             tonnageModel.setMaximum(UnitUtil.getMaximumArmorTonnage(en));
             spnTonnage.setEnabled(true);
             btnMaximize.setEnabled(true);
             btnUseRemaining.setEnabled(true);
         }
-        
+
         cbArmorType.addActionListener(this);
         spnTonnage.addChangeListener(this);
     }
-    
+
     public void refresh() {
-        EquipmentType prev = (EquipmentType)cbArmorType.getSelectedItem();
+        EquipmentType prev = (EquipmentType) cbArmorType.getSelectedItem();
         cbArmorType.removeActionListener(this);
         cbArmorType.removeAllItems();
         List<EquipmentType> allArmors = TestEntity.legalArmorsFor(etype, industrial, movementMode, techManager);
@@ -189,22 +190,22 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
         }
         cbArmorType.showTechBase(techManager.useMixedTech());
     }
-    
+
     public EquipmentType getArmor() {
-        return (EquipmentType)cbArmorType.getSelectedItem();
+        return (EquipmentType) cbArmorType.getSelectedItem();
     }
-    
+
     public int getArmorType() {
         if (cbArmorType.getSelectedItem() == null) {
             return EquipmentType.T_ARMOR_PATCHWORK;
         } else {
-            return EquipmentType.getArmorType((EquipmentType)cbArmorType.getSelectedItem());
+            return EquipmentType.getArmorType((EquipmentType) cbArmorType.getSelectedItem());
         }
     }
-    
+
     /**
      * Used to populate the patchwork armor dialog.
-     * 
+     *
      * @return A list of the contents of the armor type combo box.
      */
     public List<EquipmentType> getAllArmors() {
@@ -222,7 +223,7 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
             return Entity.getPatchworkArmorAdvancement().getTechLevel(techManager.getGameYear(),
                     techManager.useClanTechBase());
         } else {
-            EquipmentType armor = (EquipmentType)cbArmorType.getSelectedItem();
+            EquipmentType armor = (EquipmentType) cbArmorType.getSelectedItem();
             return (armor.getTechLevel(techManager.getGameYear(), armor.isClan()));
         }
     }
@@ -244,5 +245,5 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
             listeners.forEach(l -> l.useRemainingTonnageArmor());
         }
     }
-    
+
 }

@@ -1,13 +1,17 @@
 /*
- * MegaMekLab - Copyright (C) 2009
+ * MegaMekLab
+ * - Copyright (C) 2009 jtighe (torren@users.sourceforge.net)
+ * - Copyright (C) 2018 The MegaMek Team
  *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
  *
- * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  */
 
 package megameklab.com.util;
@@ -52,12 +56,12 @@ public final class ColorConfigurationDialog extends JDialog implements ActionLis
 
     public ColorConfigurationDialog(String title, Color color) {
 
-        //stored values.
+        // stored values.
         masterColor = color;
 
         setTitle(windowName);
 
-        //Set the tooltips and actions for dialouge buttons
+        // Set the tooltips and actions for dialouge buttons
         saveButton.setActionCommand(saveCommand);
         cancelButton.setActionCommand(cancelCommand);
 
@@ -76,25 +80,23 @@ public final class ColorConfigurationDialog extends JDialog implements ActionLis
         // Set the user's options
         Object[] options = { saveButton, cancelButton };
 
-        Dimension dim = new Dimension(100,200);
+        Dimension dim = new Dimension(100, 200);
 
         ConfigPane.setMaximumSize(dim);
 
         // Create the pane containing the buttons
-        pane = new JOptionPane(ConfigPane,JOptionPane.PLAIN_MESSAGE,JOptionPane.DEFAULT_OPTION, null, options, null);
+        pane = new JOptionPane(ConfigPane, JOptionPane.PLAIN_MESSAGE, JOptionPane.DEFAULT_OPTION, null, options, null);
 
         pane.setMaximumSize(dim);
 
-
         MasterPanel.setMaximumSize(dim);
-
 
         // Create the main dialog and set the default button
         dialog = pane.createDialog(MasterPanel, windowName);
         dialog.getRootPane().setDefaultButton(cancelButton);
 
         dialog.setMaximumSize(dim);
-        //Show the dialog and get the user's input
+        // Show the dialog and get the user's input
         dialog.setModal(true);
         dialog.pack();
         dialog.setVisible(true);
@@ -123,7 +125,6 @@ public final class ColorConfigurationDialog extends JDialog implements ActionLis
             dialog.setVisible(false);
             return;
         }
-
 
     }
 

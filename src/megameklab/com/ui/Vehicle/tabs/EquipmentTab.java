@@ -1,7 +1,7 @@
 /*
- * MegaMekLab - Copyright (C) 2008
- *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * MegaMekLab
+ * - Copyright (C) 2008 jtighe (torren@users.sourceforge.net)
+ * - Copyright (C) 2018 The MegaMek Team
  *
  * This program is  free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
@@ -86,15 +86,14 @@ public class EquipmentTab extends ITab implements ActionListener {
      */
     private static final long serialVersionUID = 3978675469713289404L;
 
-    private static final int T_ENERGY    =  0;
-    private static final int T_BALLISTIC =  1;
-    private static final int T_MISSILE   =  2;
-    private static final int T_ARTILLERY =  3;
-    private static final int T_WEAPON    =  4;
-    private static final int T_AMMO      =  5;
-    private static final int T_OTHER     =  6;
-    private static final int T_NUM       =  7;
-
+    private static final int T_ENERGY = 0;
+    private static final int T_BALLISTIC = 1;
+    private static final int T_MISSILE = 2;
+    private static final int T_ARTILLERY = 3;
+    private static final int T_WEAPON = 4;
+    private static final int T_AMMO = 5;
+    private static final int T_OTHER = 6;
+    private static final int T_NUM = 7;
 
     private RefreshListener refresh;
 
@@ -122,7 +121,7 @@ public class EquipmentTab extends ITab implements ActionListener {
     private String REMOVEALL_COMMAND = "REMOVEALL";
 
     public static String getTypeName(int type) {
-        switch(type) {
+        switch (type) {
         case T_WEAPON:
             return "All Weapons";
         case T_ENERGY:
@@ -154,7 +153,7 @@ public class EquipmentTab extends ITab implements ActionListener {
         TableColumn column = null;
         for (int i = 0; i < equipmentList.getColumnCount(); i++) {
             column = equipmentTable.getColumnModel().getColumn(i);
-            if(i == 0) {
+            if (i == 0) {
                 column.setPreferredWidth(200);
             }
             column.setCellRenderer(equipmentList.getRenderer());
@@ -198,7 +197,7 @@ public class EquipmentTab extends ITab implements ActionListener {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
-                    JTable target = (JTable)e.getSource();
+                    JTable target = (JTable) e.getSource();
                     int view = target.getSelectedRow();
                     int selected = masterEquipmentTable.convertRowIndexToModel(view);
                     EquipmentType equip = masterEquipmentList.getType(selected);
@@ -208,7 +207,8 @@ public class EquipmentTab extends ITab implements ActionListener {
             }
         });
 
-        masterEquipmentTable.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "add");
+        masterEquipmentTable.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+                .put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "add");
         masterEquipmentTable.getActionMap().put("add", new EnterAction());
 
         Enumeration<EquipmentType> miscTypes = EquipmentType.getAllTypes();
@@ -243,10 +243,12 @@ public class EquipmentTab extends ITab implements ActionListener {
             public void changedUpdate(DocumentEvent e) {
                 filterEquipment();
             }
+
             @Override
             public void insertUpdate(DocumentEvent e) {
                 filterEquipment();
             }
+
             @Override
             public void removeUpdate(DocumentEvent e) {
                 filterEquipment();
@@ -266,13 +268,13 @@ public class EquipmentTab extends ITab implements ActionListener {
         rbtnStats.addActionListener(ev -> setEquipmentView());
         rbtnFluff.addActionListener(ev -> setEquipmentView());
         chkShowAll.addActionListener(ev -> filterEquipment());
-        JPanel viewPanel = new JPanel(new GridLayout(0,3));
+        JPanel viewPanel = new JPanel(new GridLayout(0, 3));
         viewPanel.add(rbtnStats);
         viewPanel.add(rbtnFluff);
         viewPanel.add(chkShowAll);
         setEquipmentView();
 
-        //layout
+        // layout
         GridBagConstraints gbc;
         gbc = new GridBagConstraints();
 
@@ -285,7 +287,7 @@ public class EquipmentTab extends ITab implements ActionListener {
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 1;
-        gbc.insets = new Insets(2,2,2,2);
+        gbc.insets = new Insets(2, 2, 2, 2);
         gbc.fill = java.awt.GridBagConstraints.NONE;
         gbc.weightx = 0.0;
         gbc.weighty = 0.0;
@@ -333,7 +335,7 @@ public class EquipmentTab extends ITab implements ActionListener {
         gbc.anchor = java.awt.GridBagConstraints.WEST;
         loadoutPanel.add(removeAllButton, gbc);
 
-        gbc.insets = new Insets(2,0,0,0);
+        gbc.insets = new Insets(2, 0, 0, 0);
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridwidth = 4;
@@ -350,8 +352,7 @@ public class EquipmentTab extends ITab implements ActionListener {
         gbc.weighty = 1.0;
         loadoutPanel.add(equipmentScroll, gbc);
 
-        JSplitPane pane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-                new JScrollPane(loadoutPanel),
+        JSplitPane pane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new JScrollPane(loadoutPanel),
                 new JScrollPane(databasePanel));
         pane.setOneTouchExpandable(true);
         setLayout(new BorderLayout());
@@ -377,30 +378,25 @@ public class EquipmentTab extends ITab implements ActionListener {
         for (Mounted mount : getTank().getMisc()) {
 
             EquipmentType etype = mount.getType();
-            if (UnitUtil.isHeatSink(mount)
-                    || etype.hasFlag(MiscType.F_JUMP_JET)
-                    || etype.hasFlag(MiscType.F_JUMP_BOOSTER)
-                    || etype.hasFlag(MiscType.F_TSM)
+            if (UnitUtil.isHeatSink(mount) || etype.hasFlag(MiscType.F_JUMP_JET)
+                    || etype.hasFlag(MiscType.F_JUMP_BOOSTER) || etype.hasFlag(MiscType.F_TSM)
                     || etype.hasFlag(MiscType.F_INDUSTRIAL_TSM)
-                    || (etype.hasFlag(MiscType.F_MASC)
-                            && !etype.hasSubType(MiscType.S_SUPERCHARGER))
+                    || (etype.hasFlag(MiscType.F_MASC) && !etype.hasSubType(MiscType.S_SUPERCHARGER))
                     || UnitUtil.isArmorOrStructure(etype)) {
                 continue;
             }
-            //if (UnitUtil.isUnitEquipment(mount.getType(), unit) || UnitUtil.isUn) {
-                if (UnitUtil.isFixedLocationSpreadEquipment(etype)
-                        && !spreadAlreadyAdded.contains(etype)) {
-                    equipmentList.addCrit(mount);
-                    // keep track of spreadable equipment here, so it doesn't
-                    // show up multiple times in the table
-                    spreadAlreadyAdded.add(etype);
-                } else {
-                    equipmentList.addCrit(mount);
-                }
-            //}
+            // if (UnitUtil.isUnitEquipment(mount.getType(), unit) || UnitUtil.isUn) {
+            if (UnitUtil.isFixedLocationSpreadEquipment(etype) && !spreadAlreadyAdded.contains(etype)) {
+                equipmentList.addCrit(mount);
+                // keep track of spreadable equipment here, so it doesn't
+                // show up multiple times in the table
+                spreadAlreadyAdded.add(etype);
+            } else {
+                equipmentList.addCrit(mount);
+            }
+            // }
         }
     }
-
 
     private void removeHeatSinks() {
         int location = 0;
@@ -480,8 +476,8 @@ public class EquipmentTab extends ITab implements ActionListener {
 
         if (e.getActionCommand().equals(ADD_COMMAND)) {
             int view = masterEquipmentTable.getSelectedRow();
-            if(view < 0) {
-                //selection got filtered away
+            if (view < 0) {
+                // selection got filtered away
                 return;
             }
             int selected = masterEquipmentTable.convertRowIndexToModel(view);
@@ -489,7 +485,7 @@ public class EquipmentTab extends ITab implements ActionListener {
             addEquipment(equip);
         } else if (e.getActionCommand().equals(REMOVE_COMMAND)) {
             int selectedRows[] = equipmentTable.getSelectedRows();
-            for (Integer row : selectedRows){
+            for (Integer row : selectedRows) {
                 equipmentList.removeMounted(row);
             }
             equipmentList.removeCrits(selectedRows);
@@ -525,8 +521,8 @@ public class EquipmentTab extends ITab implements ActionListener {
             refresh.refreshStatus();
             refresh.refreshBuild();
             refresh.refreshPreview();
-            //FIXME: this is causing some kind of infinite loop
-            //refresh.refreshStructure();
+            // FIXME: this is causing some kind of infinite loop
+            // refresh.refreshStructure();
         }
     }
 
@@ -537,7 +533,7 @@ public class EquipmentTab extends ITab implements ActionListener {
     private void filterEquipment() {
         RowFilter<EquipmentTableModel, Integer> equipmentTypeFilter = null;
         final int nType = choiceType.getSelectedIndex();
-        equipmentTypeFilter = new RowFilter<EquipmentTableModel,Integer>() {
+        equipmentTypeFilter = new RowFilter<EquipmentTableModel, Integer>() {
             @Override
             public boolean include(Entry<? extends EquipmentTableModel, ? extends Integer> entry) {
                 Tank tank = getTank();
@@ -545,20 +541,18 @@ public class EquipmentTab extends ITab implements ActionListener {
                 EquipmentType etype = equipModel.getType(entry.getIdentifier());
                 WeaponType wtype = null;
                 if (etype instanceof WeaponType) {
-                    wtype = (WeaponType)etype;
+                    wtype = (WeaponType) etype;
                 }
                 AmmoType atype = null;
                 if (etype instanceof AmmoType) {
-                    atype = (AmmoType)etype;
+                    atype = (AmmoType) etype;
                 }
                 if (UnitUtil.isHeatSink(etype) || UnitUtil.isJumpJet(etype)) {
                     return false;
                 }
                 if ((etype instanceof MiscType)
-                        && (etype.hasFlag(MiscType.F_TSM)
-                                || etype.hasFlag(MiscType.F_INDUSTRIAL_TSM)
-                                || (etype.hasFlag(MiscType.F_MASC)
-                                        && !etype.hasSubType(MiscType.S_SUPERCHARGER)
+                        && (etype.hasFlag(MiscType.F_TSM) || etype.hasFlag(MiscType.F_INDUSTRIAL_TSM)
+                                || (etype.hasFlag(MiscType.F_MASC) && !etype.hasSubType(MiscType.S_SUPERCHARGER)
                                         && !etype.hasSubType(MiscType.S_JETBOOSTER)))) {
                     return false;
                 }
@@ -566,27 +560,23 @@ public class EquipmentTab extends ITab implements ActionListener {
                 if (etype.hasFlag(MiscType.F_ARMORED_CHASSIS)) {
                     isSupportTankEquipment = true;
                 }
-                if (isSupportTankEquipment
-                        && !((tank instanceof SupportTank)
-                                || (tank instanceof SupportVTOL))) {
+                if (isSupportTankEquipment && !((tank instanceof SupportTank) || (tank instanceof SupportVTOL))) {
                     return false;
                 }
                 if (((nType == T_OTHER) && UnitUtil.isTankEquipment(etype, tank instanceof VTOL))
                         || (((nType == T_WEAPON) && (UnitUtil.isTankWeapon(etype, tank))))
-                        || ((nType == T_ENERGY) && UnitUtil.isTankWeapon(etype, tank)
-                            && (wtype != null) && (wtype.hasFlag(WeaponType.F_ENERGY)
-                            || (wtype.hasFlag(WeaponType.F_PLASMA) && (wtype.getAmmoType() == AmmoType.T_PLASMA))))
-                        || ((nType == T_BALLISTIC) && UnitUtil.isTankWeapon(etype, tank)
-                            && (wtype != null) && (wtype.hasFlag(WeaponType.F_BALLISTIC)
-                                    && (wtype.getAmmoType() != AmmoType.T_NA)))
-                        || ((nType == T_MISSILE) && UnitUtil.isTankWeapon(etype, tank)
-                            && (wtype != null) && ((wtype.hasFlag(WeaponType.F_MISSILE)
-                                    && (wtype.getAmmoType() != AmmoType.T_NA)) || (wtype.getAmmoType() == AmmoType.T_C3_REMOTE_SENSOR)))
-                        || ((nType == T_ARTILLERY) && UnitUtil.isTankWeapon(etype, tank)
-                            && (wtype != null) && (wtype instanceof ArtilleryWeapon))
+                        || ((nType == T_ENERGY) && UnitUtil.isTankWeapon(etype, tank) && (wtype != null)
+                                && (wtype.hasFlag(WeaponType.F_ENERGY) || (wtype.hasFlag(WeaponType.F_PLASMA)
+                                        && (wtype.getAmmoType() == AmmoType.T_PLASMA))))
+                        || ((nType == T_BALLISTIC) && UnitUtil.isTankWeapon(etype, tank) && (wtype != null)
+                                && (wtype.hasFlag(WeaponType.F_BALLISTIC) && (wtype.getAmmoType() != AmmoType.T_NA)))
+                        || ((nType == T_MISSILE) && UnitUtil.isTankWeapon(etype, tank) && (wtype != null)
+                                && ((wtype.hasFlag(WeaponType.F_MISSILE) && (wtype.getAmmoType() != AmmoType.T_NA))
+                                        || (wtype.getAmmoType() == AmmoType.T_C3_REMOTE_SENSOR)))
+                        || ((nType == T_ARTILLERY) && UnitUtil.isTankWeapon(etype, tank) && (wtype != null)
+                                && (wtype instanceof ArtilleryWeapon))
                         || (((nType == T_AMMO) & (atype != null)) && UnitUtil.canUseAmmo(tank, atype))) {
-                    if (!eSource.getTechManager().isLegal(etype)
-                            && !chkShowAll.isSelected()) {
+                    if (!eSource.getTechManager().isLegal(etype) && !chkShowAll.isSelected()) {
                         return false;
                     }
                     if (txtFilter.getText().length() > 0) {
@@ -603,8 +593,8 @@ public class EquipmentTab extends ITab implements ActionListener {
     }
 
     public void setEquipmentView() {
-        XTableColumnModel columnModel = (XTableColumnModel)masterEquipmentTable.getColumnModel();
-        if(rbtnStats.isSelected()) {
+        XTableColumnModel columnModel = (XTableColumnModel) masterEquipmentTable.getColumnModel();
+        if (rbtnStats.isSelected()) {
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_NAME), true);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DAMAGE), true);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DIVISOR), false);
@@ -663,8 +653,8 @@ public class EquipmentTab extends ITab implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             int view = masterEquipmentTable.getSelectedRow();
-            if(view < 0) {
-                //selection got filtered away
+            if (view < 0) {
+                // selection got filtered away
                 return;
             }
             int selected = masterEquipmentTable.convertRowIndexToModel(view);
@@ -675,7 +665,9 @@ public class EquipmentTab extends ITab implements ActionListener {
     }
 
     /**
-     * A comparator for integers written as strings with "-" sorted to the bottom always
+     * A comparator for integers written as strings with "-" sorted to the bottom
+     * always
+     *
      * @author Jay Lawson
      *
      */
@@ -683,23 +675,25 @@ public class EquipmentTab extends ITab implements ActionListener {
 
         @Override
         public int compare(String s0, String s1) {
-            if(s0.equals("-") && s1.equals("-")) {
+            if (s0.equals("-") && s1.equals("-")) {
                 return 0;
-            } else if(s0.equals("-")) {
+            } else if (s0.equals("-")) {
                 return 1;
-            } else if(s1.equals("-")) {
+            } else if (s1.equals("-")) {
                 return -1;
             } else {
-                //get the numbers associated with each string
+                // get the numbers associated with each string
                 int r0 = Integer.parseInt(s0);
                 int r1 = Integer.parseInt(s1);
-                return ((Comparable<Integer>)r1).compareTo(r0);
+                return ((Comparable<Integer>) r1).compareTo(r0);
             }
         }
     }
 
     /**
-     * A comparator for integers written as strings with "-" sorted to the bottom always
+     * A comparator for integers written as strings with "-" sorted to the bottom
+     * always
+     *
      * @author Jay Lawson
      *
      */
@@ -707,29 +701,29 @@ public class EquipmentTab extends ITab implements ActionListener {
 
         @Override
         public int compare(String s0, String s1) {
-            if(s0.equals("-") && s1.equals("-")) {
+            if (s0.equals("-") && s1.equals("-")) {
                 return 0;
-            } else if(s0.equals("-")) {
+            } else if (s0.equals("-")) {
                 return 1;
-            } else if(s1.equals("-")) {
+            } else if (s1.equals("-")) {
                 return -1;
             } else {
-                //get the numbers associated with each string
+                // get the numbers associated with each string
                 int short0 = Integer.parseInt(s0.split("/")[0]);
                 int short1 = Integer.parseInt(s1.split("/")[0]);
                 int med0 = Integer.parseInt(s0.split("/")[1]);
                 int med1 = Integer.parseInt(s1.split("/")[1]);
                 int long0 = Integer.parseInt(s0.split("/")[2]);
                 int long1 = Integer.parseInt(s1.split("/")[2]);
-                int compare = ((Comparable<Integer>)short1).compareTo(short0);
-                if(compare != 0) {
+                int compare = ((Comparable<Integer>) short1).compareTo(short0);
+                if (compare != 0) {
                     return compare;
                 }
-                compare = ((Comparable<Integer>)med1).compareTo(med0);
-                if(compare != 0) {
+                compare = ((Comparable<Integer>) med1).compareTo(med0);
+                if (compare != 0) {
                     return compare;
                 }
-                return ((Comparable<Integer>)long1).compareTo(long0);
+                return ((Comparable<Integer>) long1).compareTo(long0);
             }
         }
     }
@@ -738,51 +732,52 @@ public class EquipmentTab extends ITab implements ActionListener {
 
         @Override
         public int compare(String s0, String s1) {
-            if(s0.equals("-") && s1.equals("-")) {
+            if (s0.equals("-") && s1.equals("-")) {
                 return 0;
-            } else if(s0.equals("-")) {
+            } else if (s0.equals("-")) {
                 return 1;
-            } else if(s1.equals("-")) {
+            } else if (s1.equals("-")) {
                 return -1;
-            } else if(s0.equals("Cluster") && s1.equals("-")) {
+            } else if (s0.equals("Cluster") && s1.equals("-")) {
                 return 1;
-            } else if(s0.equals("-") && s1.equals("Cluster")) {
+            } else if (s0.equals("-") && s1.equals("Cluster")) {
                 return -1;
-            } else if(s0.equals("Cluster") && s1.equals("Special")) {
+            } else if (s0.equals("Cluster") && s1.equals("Special")) {
                 return 1;
-            } else if(s0.equals("Special") && s1.equals("Cluster")) {
+            } else if (s0.equals("Special") && s1.equals("Cluster")) {
                 return -1;
-            } else if(s0.equals("Special") && s1.equals("-")) {
+            } else if (s0.equals("Special") && s1.equals("-")) {
                 return 1;
-            } else if(s0.equals("-") && s1.equals("Special")) {
+            } else if (s0.equals("-") && s1.equals("Special")) {
                 return -1;
-            } else if(s0.equals("Cluster") && s1.equals("Cluster")) {
+            } else if (s0.equals("Cluster") && s1.equals("Cluster")) {
                 return 0;
-            } else if(s0.equals("Cluster")) {
+            } else if (s0.equals("Cluster")) {
                 return 1;
-            } else if(s1.equals("Cluster")) {
+            } else if (s1.equals("Cluster")) {
                 return -1;
-            } else if(s0.equals("Special") && s1.equals("Special")) {
+            } else if (s0.equals("Special") && s1.equals("Special")) {
                 return 0;
-            } else if(s0.equals("Special")) {
+            } else if (s0.equals("Special")) {
                 return 1;
-            } else if(s1.equals("Special")) {
+            } else if (s1.equals("Special")) {
                 return -1;
             } else {
-                //get the numbers associated with each string
+                // get the numbers associated with each string
                 int r1 = parseDamage(s1);
                 int r0 = parseDamage(s0);
-                return ((Comparable<Integer>)r1).compareTo(r0);
+                return ((Comparable<Integer>) r1).compareTo(r0);
             }
         }
 
         /**
-         * Extracts an integer value from the damage string for use in sorting by damage. If a String
-         * contains any non-digit character, that character and anything after it is ignored. If the string
-         * starts with a non-digit character the return value is 0.
-         * 
+         * Extracts an integer value from the damage string for use in sorting by
+         * damage. If a String contains any non-digit character, that character and
+         * anything after it is ignored. If the string starts with a non-digit character
+         * the return value is 0.
+         *
          * @param s A weapon damage string
-         * @return  The value to use for sorting.
+         * @return The value to use for sorting.
          */
         private int parseDamage(String s) {
             s = s.replaceAll("[^0-9]+", "/");
@@ -799,6 +794,7 @@ public class EquipmentTab extends ITab implements ActionListener {
 
     /**
      * A comparator for numbers that have been formatted with DecimalFormat
+     *
      * @author Jay Lawson
      *
      */
@@ -806,7 +802,7 @@ public class EquipmentTab extends ITab implements ActionListener {
 
         @Override
         public int compare(String s0, String s1) {
-            //lets find the weight class integer for each name
+            // lets find the weight class integer for each name
             DecimalFormat format = new DecimalFormat();
             int l0 = 0;
             try {
@@ -820,10 +816,10 @@ public class EquipmentTab extends ITab implements ActionListener {
             } catch (java.text.ParseException e) {
                 e.printStackTrace();
             }
-            return ((Comparable<Integer>)l0).compareTo(l1);
+            return ((Comparable<Integer>) l0).compareTo(l1);
         }
     }
-    
+
     private ListSelectionListener selectionListener = new ListSelectionListener() {
 
         @Override
@@ -835,7 +831,7 @@ public class EquipmentTab extends ITab implements ActionListener {
             }
             addButton.setEnabled((null != etype) && eSource.getTechManager().isLegal(etype));
         }
-        
+
     };
 
     public void refreshTable() {

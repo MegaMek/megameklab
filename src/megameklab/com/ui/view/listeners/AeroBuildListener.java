@@ -17,18 +17,24 @@ import megamek.common.Engine;
 
 /**
  * Listener for views used by aerospace units.
- * 
+ *
  * @author Neoancient
  *
  */
 public interface AeroBuildListener extends BuildListener {
 
     void tonnageChanged(double tonnage);
+
     void omniChanged(boolean omni);
+
     void vstolChanged(boolean vstol);
+
     void fighterTypeChanged(int type);
+
     void engineChanged(Engine engine);
+
     void cockpitChanged(int cockpitType);
+
     void resetChassis();
 
 }

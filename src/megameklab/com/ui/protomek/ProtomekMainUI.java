@@ -38,7 +38,7 @@ import megameklab.com.util.MenuBarCreator;
 
 /**
  * Main UI for building protomechs
- * 
+ *
  * @author Neoancient
  *
  */
@@ -99,7 +99,7 @@ public class ProtomekMainUI extends MegaMekLabMainUI {
         configPane.addTab("Assign Criticals", buildTab);
         configPane.addTab("Preview", previewTab);
 
-        //masterPanel.add(header);
+        // masterPanel.add(header);
         masterPanel.add(configPane, BorderLayout.CENTER);
         masterPanel.add(statusbar, BorderLayout.SOUTH);
 
@@ -117,8 +117,7 @@ public class ProtomekMainUI extends MegaMekLabMainUI {
         proto.setMovementMode(EntityMovementMode.BIPED);
         proto.setTechLevel(TechConstants.T_CLAN_TW);
         proto.setOriginalWalkMP(1);
-        proto.setEngine(new Engine(TestProtomech.calcEngineRating(proto),
-                Engine.NORMAL_ENGINE, Engine.CLAN_ENGINE));
+        proto.setEngine(new Engine(TestProtomech.calcEngineRating(proto), Engine.NORMAL_ENGINE, Engine.CLAN_ENGINE));
         proto.setArmorType(EquipmentType.T_ARMOR_STANDARD);
         proto.setArmorTechLevel(getEntity().getTechLevel());
 
@@ -135,8 +134,7 @@ public class ProtomekMainUI extends MegaMekLabMainUI {
         } else {
             proto.setChassis(oldEntity.getChassis());
             proto.setModel(oldEntity.getModel());
-            proto.setYear(Math.max(oldEntity.getYear(),
-                    proto.getConstructionTechAdvancement().getIntroductionDate()));
+            proto.setYear(Math.max(oldEntity.getYear(), proto.getConstructionTechAdvancement().getIntroductionDate()));
             proto.setSource(oldEntity.getSource());
             proto.setManualBV(oldEntity.getManualBV());
             SimpleTechLevel lvl = SimpleTechLevel.max(proto.getStaticTechLevel(),
@@ -184,8 +182,7 @@ public class ProtomekMainUI extends MegaMekLabMainUI {
     @Override
     public void refreshHeader() {
 
-        String title = getEntity().getChassis() + " " + getEntity().getModel()
-                + ".blk";
+        String title = getEntity().getChassis() + " " + getEntity().getModel() + ".blk";
         setTitle(title);
 
     }
@@ -203,12 +200,12 @@ public class ProtomekMainUI extends MegaMekLabMainUI {
     @Override
     public void refreshWeapons() {
     }
-    
+
     @Override
     public void refreshSummary() {
         structureTab.refreshSummary();
     }
-    
+
     @Override
     public void refreshEquipmentTable() {
         equipmentTab.refreshTable();

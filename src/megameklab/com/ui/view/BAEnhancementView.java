@@ -33,25 +33,27 @@ import megameklab.com.ui.view.listeners.BABuildListener;
 
 /**
  * Structure tab panel for BA movement enhancements
- * 
+ *
  * @author Neoancient
  *
  */
 public class BAEnhancementView extends BuildView implements ActionListener {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 6181555446271444880L;
 
     private List<BABuildListener> listeners = new CopyOnWriteArrayList<>();
+
     public void addListener(BABuildListener l) {
         listeners.add(l);
     }
+
     public void removeListener(BABuildListener l) {
         listeners.remove(l);
     }
-    
+
     private final JCheckBox chkPartialWing = new JCheckBox();
     private final JCheckBox chkJumpBooster = new JCheckBox();
     private final JCheckBox chkMechJumpBooster = new JCheckBox();
@@ -59,20 +61,20 @@ public class BAEnhancementView extends BuildView implements ActionListener {
 
     private ITechManager techManager;
     private boolean ignoreEvents = false;
-    
+
     private final EquipmentType partialWing = EquipmentType.get("BAPartialWing");
     private final EquipmentType jumpBooster = EquipmentType.get("BAJumpBooster");
     private final EquipmentType mechJumpBooster = EquipmentType.get("BAMechanicalJumpBooster");
     private final EquipmentType myomerBooster = EquipmentType.get("BAMyomerBooster");
-    
+
     public BAEnhancementView(ITechManager techManager) {
         this.techManager = techManager;
         initUI();
     }
-    
+
     private void initUI() {
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl()); //$NON-NLS-1$
-        
+
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -82,13 +84,13 @@ public class BAEnhancementView extends BuildView implements ActionListener {
         chkPartialWing.setToolTipText(resourceMap.getString("BAEnhancementView.chkPartialWing.tooltip")); //$NON-NLS-1$
         add(chkPartialWing, gbc);
         chkPartialWing.addActionListener(this);
-        
+
         gbc.gridx++;
         chkJumpBooster.setText(resourceMap.getString("BAEnhancementView.chkJumpBooster.text"));
         chkJumpBooster.setToolTipText(resourceMap.getString("BAEnhancementView.chkJumpBooster.tooltip")); //$NON-NLS-1$
         add(chkJumpBooster, gbc);
         chkJumpBooster.addActionListener(this);
-        
+
         gbc.gridx = 0;
         gbc.gridy++;
         chkMechJumpBooster.setText(resourceMap.getString("BAEnhancementView.chkMechJumpBooster.text"));
@@ -102,12 +104,10 @@ public class BAEnhancementView extends BuildView implements ActionListener {
         add(chkMyomerBooster, gbc);
         chkMyomerBooster.addActionListener(this);
     }
-    
+
     public void setFromEntity(BattleArmor ba) {
-        if ((ba.getMovementMode() == EntityMovementMode.INF_JUMP)
-                && (ba.getOriginalJumpMP() > 0)
-                && !ba.hasWorkingMisc(MiscType.F_JUMP_BOOSTER)
-                && techManager.isLegal(partialWing)) {
+        if ((ba.getMovementMode() == EntityMovementMode.INF_JUMP) && (ba.getOriginalJumpMP() > 0)
+                && !ba.hasWorkingMisc(MiscType.F_JUMP_BOOSTER) && techManager.isLegal(partialWing)) {
             chkPartialWing.setEnabled(true);
             ignoreEvents = true;
             chkPartialWing.setSelected(ba.hasWorkingMisc(MiscType.F_PARTIAL_WING));
@@ -116,11 +116,9 @@ public class BAEnhancementView extends BuildView implements ActionListener {
             chkPartialWing.setEnabled(false);
             chkPartialWing.setSelected(false);
         }
-        
-        if ((ba.getMovementMode() == EntityMovementMode.INF_JUMP)
-                && (ba.getOriginalJumpMP() > 0)
-                && !ba.hasWorkingMisc(MiscType.F_PARTIAL_WING)
-                && techManager.isLegal(jumpBooster)) {
+
+        if ((ba.getMovementMode() == EntityMovementMode.INF_JUMP) && (ba.getOriginalJumpMP() > 0)
+                && !ba.hasWorkingMisc(MiscType.F_PARTIAL_WING) && techManager.isLegal(jumpBooster)) {
             chkJumpBooster.setEnabled(true);
             ignoreEvents = true;
             chkJumpBooster.setSelected(ba.hasWorkingMisc(MiscType.F_JUMP_BOOSTER));
@@ -129,9 +127,8 @@ public class BAEnhancementView extends BuildView implements ActionListener {
             chkJumpBooster.setEnabled(false);
             chkJumpBooster.setSelected(false);
         }
-        
-        if (techManager.isLegal(mechJumpBooster)
-                && !ba.hasWorkingMisc(MiscType.F_MASC)) {
+
+        if (techManager.isLegal(mechJumpBooster) && !ba.hasWorkingMisc(MiscType.F_MASC)) {
             chkMechJumpBooster.setEnabled(true);
             ignoreEvents = true;
             chkMechJumpBooster.setSelected(ba.hasWorkingMisc(MiscType.F_MECHANICAL_JUMP_BOOSTER));
@@ -140,9 +137,8 @@ public class BAEnhancementView extends BuildView implements ActionListener {
             chkMechJumpBooster.setEnabled(false);
             chkMechJumpBooster.setSelected(false);
         }
-        
-        if (techManager.isLegal(myomerBooster)
-                && !ba.hasWorkingMisc(MiscType.F_MECHANICAL_JUMP_BOOSTER)) {
+
+        if (techManager.isLegal(myomerBooster) && !ba.hasWorkingMisc(MiscType.F_MECHANICAL_JUMP_BOOSTER)) {
             chkMyomerBooster.setEnabled(true);
             ignoreEvents = true;
             chkMyomerBooster.setSelected(ba.hasWorkingMisc(MiscType.F_MASC));
@@ -152,7 +148,7 @@ public class BAEnhancementView extends BuildView implements ActionListener {
             chkMyomerBooster.setSelected(false);
         }
     }
-    
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (ignoreEvents) {

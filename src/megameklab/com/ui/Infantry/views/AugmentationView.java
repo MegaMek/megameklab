@@ -35,8 +35,9 @@ import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
 
 /**
- * Allows infantry to include cybernetic/prosthetic augmentation (e.g. Manei Domini).
- * 
+ * Allows infantry to include cybernetic/prosthetic augmentation (e.g. Manei
+ * Domini).
+ *
  * @author Neoancient
  *
  */
@@ -45,14 +46,14 @@ public class AugmentationView extends IView implements ActionListener {
     private static final long serialVersionUID = 5150629278688315585L;
 
     private RefreshListener refresh;
-    
+
     private HashMap<IOption, JCheckBox> options = new HashMap<>();
-    
+
     private boolean handleEvents;
-    
+
     public AugmentationView(EntitySource eSource) {
         super(eSource);
-        
+
         JPanel augPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -60,13 +61,13 @@ public class AugmentationView extends IView implements ActionListener {
         gbc.gridwidth = 1;
         gbc.anchor = GridBagConstraints.WEST;
         gbc.insets = new Insets(0, 10, 0, 10);
-        
+
         augPanel.add(new JLabel("Implant"), gbc);
         gbc.gridx = 1;
         augPanel.add(new JLabel("Description"), gbc);
-        
-        for (Enumeration<IOption> e = getInfantry().getCrew().getOptions(PilotOptions.MD_ADVANTAGES);
-                e.hasMoreElements();) {
+
+        for (Enumeration<IOption> e = getInfantry().getCrew().getOptions(PilotOptions.MD_ADVANTAGES); e
+                .hasMoreElements();) {
             final IOption opt = e.nextElement();
             gbc.gridx = 0;
             gbc.gridy++;
@@ -75,15 +76,15 @@ public class AugmentationView extends IView implements ActionListener {
             augPanel.add(chk, gbc);
             chk.addActionListener(this);
             options.put(opt, chk);
-            
+
             gbc.gridx++;
             augPanel.add(new JLabel(opt.getDescription()), gbc);
-        }        
+        }
 
         add(new JScrollPane(augPanel));
         handleEvents = true;
     }
-    
+
     public void refresh() {
         handleEvents = false;
         for (IOption opt : options.keySet()) {
@@ -103,13 +104,12 @@ public class AugmentationView extends IView implements ActionListener {
         }
         if (e.getSource() instanceof JCheckBox) {
             getInfantry().getCrew().getOptions().getOption(e.getActionCommand())
-                .setValue(((JCheckBox)e.getSource()).isSelected());
+                    .setValue(((JCheckBox) e.getSource()).isSelected());
         }
         if (refresh != null) {
             refresh.refreshStructure();
             refresh.refreshPreview();
         }
     }
-    
 
 }

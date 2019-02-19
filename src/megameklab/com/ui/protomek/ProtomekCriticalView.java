@@ -35,13 +35,13 @@ import megameklab.com.util.RefreshListener;
 
 /**
  * Displays protomech equipment by location
- * 
+ *
  * @author Neoancient
  *
  */
 public class ProtomekCriticalView extends IView {
     private static final long serialVersionUID = 1556099212988732928L;
-    
+
     private final JPanel mainGunPanel = new JPanel();
     private final JPanel torsoPanel = new JPanel();
     private final JPanel leftPanel = new JPanel();
@@ -54,14 +54,14 @@ public class ProtomekCriticalView extends IView {
     private final ProtomekMountList rightList;
     private final ProtomekMountList bodyList;
 
-    private final JLabel mainGunSpace = new JLabel("",JLabel.LEFT);
-    private final JLabel torsoSpace = new JLabel("",JLabel.LEFT);
-    private final JLabel leftSpace = new JLabel("",JLabel.LEFT);
-    private final JLabel rightSpace = new JLabel("",JLabel.LEFT);
+    private final JLabel mainGunSpace = new JLabel("", JLabel.LEFT);
+    private final JLabel torsoSpace = new JLabel("", JLabel.LEFT);
+    private final JLabel leftSpace = new JLabel("", JLabel.LEFT);
+    private final JLabel rightSpace = new JLabel("", JLabel.LEFT);
 
-    private final JLabel torsoWeight = new JLabel("",JLabel.LEFT);
-    private final JLabel leftWeight = new JLabel("",JLabel.LEFT);
-    private final JLabel rightWeight = new JLabel("",JLabel.LEFT);
+    private final JLabel torsoWeight = new JLabel("", JLabel.LEFT);
+    private final JLabel leftWeight = new JLabel("", JLabel.LEFT);
+    private final JLabel rightWeight = new JLabel("", JLabel.LEFT);
 
     public ProtomekCriticalView(EntitySource eSource, RefreshListener refresh) {
         super(eSource);
@@ -89,25 +89,23 @@ public class ProtomekCriticalView extends IView {
         gbc.gridx = 1;
         gbc.gridy = 2;
         mainPanel.add(bodyPanel, gbc);
-        
+
         gbc = new GridBagConstraints();
         gbc.anchor = GridBagConstraints.WEST;
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.gridx = 0;
 
         mainGunPanel.setLayout(new GridBagLayout());
-        mainGunPanel.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createEmptyBorder(), "Main Gun",
+        mainGunPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Main Gun",
                 TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
         mainGunList = new ProtomekMountList(eSource, refresh, Protomech.LOC_MAINGUN);
         gbc.gridy = 0;
         mainGunPanel.add(mainGunList, gbc);
         gbc.gridy++;
         mainGunPanel.add(mainGunSpace, gbc);
-        
+
         leftPanel.setLayout(new GridBagLayout());
-        leftPanel.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createEmptyBorder(), "Left Arm",
+        leftPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Left Arm",
                 TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
         leftList = new ProtomekMountList(eSource, refresh, Protomech.LOC_LARM);
         gbc.gridy = 0;
@@ -119,9 +117,8 @@ public class ProtomekCriticalView extends IView {
         gbc.gridy++;
 
         torsoPanel.setLayout(new GridBagLayout());
-        torsoPanel.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createEmptyBorder(), "Torso", TitledBorder.TOP,
-                TitledBorder.DEFAULT_POSITION));
+        torsoPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Torso",
+                TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
         torsoList = new ProtomekMountList(eSource, refresh, Protomech.LOC_TORSO);
         gbc.gridy = 0;
         torsoPanel.add(torsoList, gbc);
@@ -132,8 +129,7 @@ public class ProtomekCriticalView extends IView {
         gbc.gridy++;
 
         rightPanel.setLayout(new GridBagLayout());
-        rightPanel.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createEmptyBorder(), "Right Arm",
+        rightPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Right Arm",
                 TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
         rightList = new ProtomekMountList(eSource, refresh, Protomech.LOC_RARM);
         gbc.gridy = 0;
@@ -143,9 +139,8 @@ public class ProtomekCriticalView extends IView {
         gbc.gridy++;
         rightPanel.add(rightWeight, gbc);
 
-        bodyPanel.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createEmptyBorder(), "General", TitledBorder.TOP,
-                TitledBorder.DEFAULT_POSITION));
+        bodyPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "General",
+                TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
         bodyList = new ProtomekMountList(eSource, refresh, Protomech.LOC_BODY);
         bodyPanel.add(bodyList);
 
@@ -171,7 +166,7 @@ public class ProtomekCriticalView extends IView {
         leftList.refreshContents();
         rightList.refreshContents();
         bodyList.refreshContents();
-        
+
         Map<Integer, List<Mounted>> eqByLocation = getProtomech().getEquipment().stream()
                 .collect(Collectors.groupingBy(m -> m.getLocation()));
         for (int location = 0; location < getProtomech().locations(); location++) {
@@ -187,28 +182,28 @@ public class ProtomekCriticalView extends IView {
             }
 
             switch (location) {
-                case Protomech.LOC_TORSO:
-                    torsoSpace.setText("Slots: " + slotsUsed
-                            + "/" + TestProtomech.maxSlotsByLocation(location, getProtomech()));
-                    torsoWeight.setText(String.format("Weight: %3.0f/%3.0f", weightUsed * 1000,
-                            TestProtomech.maxWeightByLocation(location, getProtomech()) * 1000));
-                    break;
-                case Protomech.LOC_LARM:
-                    leftSpace.setText("Slots: " + slotsUsed
-                            + "/" + TestProtomech.maxSlotsByLocation(location, getProtomech()));
-                    leftWeight.setText(String.format("Weight: %3.0f/%3.0f", weightUsed * 1000,
-                            TestProtomech.maxWeightByLocation(location, getProtomech()) * 1000));
-                    break;
-                case Protomech.LOC_RARM:
-                    rightSpace.setText("Slots: " + slotsUsed
-                            + "/" + TestProtomech.maxSlotsByLocation(location, getProtomech()));
-                    rightWeight.setText(String.format("Weight: %3.0f/%3.0f", weightUsed * 1000,
-                            TestProtomech.maxWeightByLocation(location, getProtomech()) * 1000));
-                    break;
-                case Protomech.LOC_MAINGUN:
-                    mainGunSpace.setText("Slots: " + slotsUsed
-                            + "/" + TestProtomech.maxSlotsByLocation(location, getProtomech()));
-                    break;
+            case Protomech.LOC_TORSO:
+                torsoSpace.setText(
+                        "Slots: " + slotsUsed + "/" + TestProtomech.maxSlotsByLocation(location, getProtomech()));
+                torsoWeight.setText(String.format("Weight: %3.0f/%3.0f", weightUsed * 1000,
+                        TestProtomech.maxWeightByLocation(location, getProtomech()) * 1000));
+                break;
+            case Protomech.LOC_LARM:
+                leftSpace.setText(
+                        "Slots: " + slotsUsed + "/" + TestProtomech.maxSlotsByLocation(location, getProtomech()));
+                leftWeight.setText(String.format("Weight: %3.0f/%3.0f", weightUsed * 1000,
+                        TestProtomech.maxWeightByLocation(location, getProtomech()) * 1000));
+                break;
+            case Protomech.LOC_RARM:
+                rightSpace.setText(
+                        "Slots: " + slotsUsed + "/" + TestProtomech.maxSlotsByLocation(location, getProtomech()));
+                rightWeight.setText(String.format("Weight: %3.0f/%3.0f", weightUsed * 1000,
+                        TestProtomech.maxWeightByLocation(location, getProtomech()) * 1000));
+                break;
+            case Protomech.LOC_MAINGUN:
+                mainGunSpace.setText(
+                        "Slots: " + slotsUsed + "/" + TestProtomech.maxSlotsByLocation(location, getProtomech()));
+                break;
             }
         }
     }

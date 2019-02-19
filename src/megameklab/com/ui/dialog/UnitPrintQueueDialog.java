@@ -1,7 +1,7 @@
 /*
- * MegaMekLab - Copyright (C) 2010
- *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * MegaMekLab
+ * - Copyright (C) 2010 jtighe (torren@users.sourceforge.net)
+ * - Copyright (C) 2018 The MegaMek Team
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
@@ -103,9 +103,8 @@ public class UnitPrintQueueDialog extends JDialog implements ActionListener, Key
          * bSelectFile.setMinimumSize(newSize); bRemove.setMinimumSize(newSize);
          * bCancel.setMinimumSize(newSize); bPrint.setMinimumSize(newSize);
          *
-         * bSelectFile.setPreferredSize(newSize);
-         * bRemove.setPreferredSize(newSize); bCancel.setPreferredSize(newSize);
-         * bPrint.setPreferredSize(newSize);
+         * bSelectFile.setPreferredSize(newSize); bRemove.setPreferredSize(newSize);
+         * bCancel.setPreferredSize(newSize); bPrint.setPreferredSize(newSize);
          */
         bSelectFile.setMaximumSize(newSize);
         bRemove.setMaximumSize(newSize);

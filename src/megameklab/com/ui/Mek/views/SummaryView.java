@@ -1,7 +1,7 @@
 /*
- * MegaMekLab - Copyright (C) 2008
- *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * MegaMekLab
+ * - Copyright (C) 2008 jtighe (torren@users.sourceforge.net)
+ * - Copyright (C) 2018 The MegaMek Team
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
@@ -41,7 +41,7 @@ import megameklab.com.ui.EntitySource;
 import megameklab.com.util.IView;
 import megameklab.com.util.UnitUtil;
 
-public class SummaryView extends IView{
+public class SummaryView extends IView {
 
     /**
      *
@@ -81,7 +81,8 @@ public class SummaryView extends IView{
     private JTextField txtEquipAvail = new JTextField("?");
     private JTextField txtOtherAvail = new JTextField("?");
 
-    private EntityVerifier entityVerifier = EntityVerifier.getInstance(new File("data/mechfiles/UnitVerifierOptions.xml"));
+    private EntityVerifier entityVerifier = EntityVerifier
+            .getInstance(new File("data/mechfiles/UnitVerifierOptions.xml"));
 
     public SummaryView(EntitySource eSource) {
         super(eSource);
@@ -110,8 +111,8 @@ public class SummaryView extends IView{
         valueFields.add(txtEquipCrit);
         valueFields.add(txtOtherCrit);
 
-        Dimension size = new Dimension(45,25);
-        for(JTextField field : valueFields) {
+        Dimension size = new Dimension(45, 25);
+        for (JTextField field : valueFields) {
             field.setEditable(false);
             field.setSize(size);
             field.setPreferredSize(size);
@@ -133,8 +134,8 @@ public class SummaryView extends IView{
         valueFields.add(txtEquipAvail);
         valueFields.add(txtOtherAvail);
 
-        size = new Dimension(80,25);
-        for(JTextField field : valueFields) {
+        size = new Dimension(80, 25);
+        for (JTextField field : valueFields) {
             field.setEditable(false);
             field.setSize(size);
             field.setPreferredSize(size);
@@ -145,11 +146,11 @@ public class SummaryView extends IView{
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
-        size = new Dimension(120,25);
+        size = new Dimension(120, 25);
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.insets = new Insets(0,0,0,5);
+        gbc.insets = new Insets(0, 0, 0, 5);
         this.add(createLabel("Category", size, SwingConstants.CENTER), gbc);
         gbc.gridy = 1;
         this.add(createLabel("Internal Structure:", size, SwingConstants.RIGHT), gbc);
@@ -172,10 +173,10 @@ public class SummaryView extends IView{
         gbc.gridy = 10;
         this.add(createLabel("Other:", size, SwingConstants.RIGHT), gbc);
 
-        size = new Dimension(45,25);
+        size = new Dimension(45, 25);
         gbc.gridx = 1;
         gbc.gridy = 0;
-        gbc.insets = new Insets(0,0,0,0);
+        gbc.insets = new Insets(0, 0, 0, 0);
         this.add(createLabel("Ton", size, SwingConstants.CENTER), gbc);
         gbc.gridy = 1;
         this.add(txtStructTon, gbc);
@@ -222,7 +223,7 @@ public class SummaryView extends IView{
         gbc.gridy = 10;
         this.add(txtOtherCrit, gbc);
 
-        size = new Dimension(80,25);
+        size = new Dimension(80, 25);
         gbc.gridx = 3;
         gbc.gridy = 0;
         this.add(createLabel("Availability", size, SwingConstants.CENTER), gbc);
@@ -280,23 +281,24 @@ public class SummaryView extends IView{
         } else {
             txtArmorTon.setText(Double.toString(testMech.getWeightArmor()));
         }
-        txtOtherTon.setText(Double.toString(testMech.getWeightPowerAmp() + testMech.getWeightCarryingSpace() + testMech.getWeightMisc()));
-
+        txtOtherTon.setText(Double
+                .toString(testMech.getWeightPowerAmp() + testMech.getWeightCarryingSpace() + testMech.getWeightMisc()));
 
         txtGyroCrit.setText(Integer.toString(getGyroCrits()));
         txtEngineCrit.setText(Integer.toString(getEngineCrits()));
         txtCockpitCrit.setText(Integer.toString(getCockpitCrits()));
         if ((getMech().getStructureType() >= 0)
                 && (getMech().getStructureType() < EquipmentType.structureNames.length)) {
-            String structName = EquipmentType.getStructureTypeName(getMech().getStructureType(),TechConstants.isClan(getMech().getStructureTechLevel()));
+            String structName = EquipmentType.getStructureTypeName(getMech().getStructureType(),
+                    TechConstants.isClan(getMech().getStructureTechLevel()));
             txtStructCrit.setText(Integer.toString(EquipmentType.get(structName).getCriticals(getMech())));
         } else {
             txtStructCrit.setText("?");
         }
-        //FIXME: This doesn't account for patchwork armor crits.
-        if ((getMech().getArmorType(0) >= 0)
-                && (getMech().getArmorType(0) < EquipmentType.armorNames.length)) {
-            String armorName = EquipmentType.getArmorTypeName(getMech().getArmorType(0),TechConstants.isClan(getMech().getArmorTechLevel(0)));
+        // FIXME: This doesn't account for patchwork armor crits.
+        if ((getMech().getArmorType(0) >= 0) && (getMech().getArmorType(0) < EquipmentType.armorNames.length)) {
+            String armorName = EquipmentType.getArmorTypeName(getMech().getArmorType(0),
+                    TechConstants.isClan(getMech().getArmorTechLevel(0)));
             txtArmorCrit.setText(Integer.toString(EquipmentType.get(armorName).getCriticals(getMech())));
         } else {
             txtArmorCrit.setText("?");
@@ -305,19 +307,17 @@ public class SummaryView extends IView{
         runThroughEquipment(testMech);
 
         int numberSinks = UnitUtil.countActualHeatSinks(getMech());
-        numberSinks = Math.max(0, numberSinks - UnitUtil.getCriticalFreeHeatSinks(getMech(), getMech().hasCompactHeatSinks()));
+        numberSinks = Math.max(0,
+                numberSinks - UnitUtil.getCriticalFreeHeatSinks(getMech(), getMech().hasCompactHeatSinks()));
         int critSinks = numberSinks;
-        if(UnitUtil.hasClanDoubleHeatSinks(getMech())) {
+        if (UnitUtil.hasClanDoubleHeatSinks(getMech())) {
             critSinks = numberSinks * 2;
-        }
-        else if(getMech().hasDoubleHeatSinks()) {
+        } else if (getMech().hasDoubleHeatSinks()) {
             critSinks = numberSinks * 3;
-        }
-        else if(getMech().hasCompactHeatSinks()) {
-            critSinks = (critSinks/2) + (critSinks%2);
+        } else if (getMech().hasCompactHeatSinks()) {
+            critSinks = (critSinks / 2) + (critSinks % 2);
         }
         txtHeatCrit.setText(Integer.toString(critSinks));
-
 
     }
 
@@ -331,25 +331,18 @@ public class SummaryView extends IView{
 
         for (Mounted m : getMech().getMisc()) {
             MiscType mt = (MiscType) m.getType();
-            if(UnitUtil.isArmorOrStructure(mt)) {
+            if (UnitUtil.isArmorOrStructure(mt)) {
                 continue;
-            }
-            else if (mt.hasFlag(MiscType.F_TSM)
-                    || mt.hasFlag(MiscType.F_INDUSTRIAL_TSM)
+            } else if (mt.hasFlag(MiscType.F_TSM) || mt.hasFlag(MiscType.F_INDUSTRIAL_TSM)
                     || mt.hasFlag(MiscType.F_MASC)) {
                 weightEnhance += mt.getTonnage(getMech(), m.getLocation());
                 critEnhance += UnitUtil.getCritsUsed(getMech(), mt);
-            }
-            else if (mt.hasFlag(MiscType.F_JUMP_JET)
-                    || mt.hasFlag(MiscType.F_JUMP_BOOSTER)) {
+            } else if (mt.hasFlag(MiscType.F_JUMP_JET) || mt.hasFlag(MiscType.F_JUMP_BOOSTER)) {
                 weightJJ += mt.getTonnage(getMech(), m.getLocation());
                 critJJ += mt.getCriticals(getMech());
-            }
-            else if (mt.hasFlag(MiscType.F_HEAT_SINK)
-                    || mt.hasFlag(MiscType.F_DOUBLE_HEAT_SINK)) {
+            } else if (mt.hasFlag(MiscType.F_HEAT_SINK) || mt.hasFlag(MiscType.F_DOUBLE_HEAT_SINK)) {
                 continue;
-            }
-            else {
+            } else {
                 weightEquip += mt.getTonnage(getMech(), m.getLocation());
                 critEquip += mt.getCriticals(getMech());
             }
@@ -374,7 +367,7 @@ public class SummaryView extends IView{
     }
 
     private int getGyroCrits() {
-        switch(getMech().getGyroType()) {
+        switch (getMech().getGyroType()) {
         case Mech.GYRO_COMPACT:
             return 2;
         case Mech.GYRO_XL:
@@ -392,7 +385,7 @@ public class SummaryView extends IView{
     }
 
     private int getCockpitCrits() {
-        switch(getMech().getCockpitType()) {
+        switch (getMech().getCockpitType()) {
         case Mech.COCKPIT_COMMAND_CONSOLE:
             return 2;
         default:

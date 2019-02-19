@@ -1,7 +1,7 @@
 /*
- * MegaMekLab - Copyright (C) 2008
- *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * MegaMekLab
+ * - Copyright (C) 2008 jtighe (torren@users.sourceforge.net)
+ * - Copyright (C) 2018 The MegaMek Team
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -113,29 +113,29 @@ public class PrintSmallCraftAerodyne implements Printable {
 
         switch (smallCraft.getTechLevel()) {
 
-            case TechConstants.T_INTRO_BOXSET:
-                ImageHelper.printCenterString(g2d, "(Intro)", font, startLine, nextDataLine);
-                nextDataLine += lineFeed;
-                break;
-            case TechConstants.T_IS_TW_NON_BOX:
-            case TechConstants.T_IS_TW_ALL:
-            case TechConstants.T_CLAN_TW:
-                break;
-            case TechConstants.T_IS_ADVANCED:
-            case TechConstants.T_CLAN_ADVANCED:
-                ImageHelper.printCenterString(g2d, "(Advanced)", font, startLine, nextDataLine);
-                nextDataLine += lineFeed;
-                break;
-            case TechConstants.T_IS_EXPERIMENTAL:
-            case TechConstants.T_CLAN_EXPERIMENTAL:
-                ImageHelper.printCenterString(g2d, "(Experimental)", font, startLine, nextDataLine);
-                nextDataLine += lineFeed;
-                break;
-            case TechConstants.T_IS_UNOFFICIAL:
-            case TechConstants.T_CLAN_UNOFFICIAL:
-                ImageHelper.printCenterString(g2d, "(Unofficial)", font, startLine, nextDataLine);
-                nextDataLine += lineFeed;
-                break;
+        case TechConstants.T_INTRO_BOXSET:
+            ImageHelper.printCenterString(g2d, "(Intro)", font, startLine, nextDataLine);
+            nextDataLine += lineFeed;
+            break;
+        case TechConstants.T_IS_TW_NON_BOX:
+        case TechConstants.T_IS_TW_ALL:
+        case TechConstants.T_CLAN_TW:
+            break;
+        case TechConstants.T_IS_ADVANCED:
+        case TechConstants.T_CLAN_ADVANCED:
+            ImageHelper.printCenterString(g2d, "(Advanced)", font, startLine, nextDataLine);
+            nextDataLine += lineFeed;
+            break;
+        case TechConstants.T_IS_EXPERIMENTAL:
+        case TechConstants.T_CLAN_EXPERIMENTAL:
+            ImageHelper.printCenterString(g2d, "(Experimental)", font, startLine, nextDataLine);
+            nextDataLine += lineFeed;
+            break;
+        case TechConstants.T_IS_UNOFFICIAL:
+        case TechConstants.T_CLAN_UNOFFICIAL:
+            ImageHelper.printCenterString(g2d, "(Unofficial)", font, startLine, nextDataLine);
+            nextDataLine += lineFeed;
+            break;
         }
 
         String techBase = "Inner Sphere";
@@ -213,13 +213,21 @@ public class PrintSmallCraftAerodyne implements Printable {
         Font font = UnitUtil.deriveFont(true, 9.0f);
         g2d.setFont(font);
 
-        ImageHelper.printCenterString(g2d, String.format("%1$S (%2$s)", smallCraft.getThresh(Aero.LOC_NOSE), smallCraft.getArmor(Aero.LOC_NOSE)), g2d.getFont(), 442, 93);
+        ImageHelper.printCenterString(g2d,
+                String.format("%1$S (%2$s)", smallCraft.getThresh(Aero.LOC_NOSE), smallCraft.getArmor(Aero.LOC_NOSE)),
+                g2d.getFont(), 442, 93);
 
-        ImageHelper.printCenterString(g2d, String.format("%1$S (%2$s)", smallCraft.getThresh(Aero.LOC_RWING), smallCraft.getArmor(Aero.LOC_RWING)), g2d.getFont(), 517, 310);
+        ImageHelper.printCenterString(g2d,
+                String.format("%1$S (%2$s)", smallCraft.getThresh(Aero.LOC_RWING), smallCraft.getArmor(Aero.LOC_RWING)),
+                g2d.getFont(), 517, 310);
 
-        ImageHelper.printCenterString(g2d, String.format("%1$S (%2$s)", smallCraft.getThresh(Aero.LOC_LWING), smallCraft.getArmor(Aero.LOC_LWING)), g2d.getFont(), 270, 310);
+        ImageHelper.printCenterString(g2d,
+                String.format("%1$S (%2$s)", smallCraft.getThresh(Aero.LOC_LWING), smallCraft.getArmor(Aero.LOC_LWING)),
+                g2d.getFont(), 270, 310);
 
-        ImageHelper.printCenterString(g2d, String.format("%1$S (%2$s)", smallCraft.getThresh(Aero.LOC_AFT), smallCraft.getArmor(Aero.LOC_AFT)), g2d.getFont(), 447, 487);
+        ImageHelper.printCenterString(g2d,
+                String.format("%1$S (%2$s)", smallCraft.getThresh(Aero.LOC_AFT), smallCraft.getArmor(Aero.LOC_AFT)),
+                g2d.getFont(), 447, 487);
 
         g2d.drawString(String.format("%1$S", smallCraft.get0SI()), 390, 268);
     }
@@ -230,7 +238,8 @@ public class PrintSmallCraftAerodyne implements Printable {
 
         // Heat Sinks
         if (smallCraft.getHeatType() == Aero.HEAT_DOUBLE) {
-            g2d.drawString(String.format("%1$s (%2$s)", smallCraft.getHeatSinks(), smallCraft.getHeatSinks() * 2), 502, 535);
+            g2d.drawString(String.format("%1$s (%2$s)", smallCraft.getHeatSinks(), smallCraft.getHeatSinks() * 2), 502,
+                    535);
             g2d.drawString("Double", 502, 543);
         } else {
             g2d.drawString(String.format("%1$s (%1$s)", smallCraft.getHeatSinks()), 502, 535);
@@ -272,8 +281,7 @@ public class PrintSmallCraftAerodyne implements Printable {
 
         for (int lineCount = 1; lineCount <= 18; lineCount++) {
             for (int point = 0; point < pipsPerLine; point++) {
-                pipPlotter.add(new float[]
-                    { pointX, pointY });
+                pipPlotter.add(new float[] { pointX, pointY });
                 pointX += shiftX;
             }
 
@@ -306,8 +314,7 @@ public class PrintSmallCraftAerodyne implements Printable {
 
         for (int lineCount = 1; lineCount <= 20; lineCount++) {
             for (int point = 0; point < pipsPerLine; point++) {
-                pipPlotter.add(new float[]
-                    { pointX, pointY });
+                pipPlotter.add(new float[] { pointX, pointY });
                 pointX += shiftX;
             }
 
@@ -332,8 +339,7 @@ public class PrintSmallCraftAerodyne implements Printable {
 
         for (int lineCount = 1; lineCount <= 29; lineCount++) {
             for (int point = 0; point < pipsPerLine; point++) {
-                pipPlotter.add(new float[]
-                    { pointX, pointY });
+                pipPlotter.add(new float[] { pointX, pointY });
                 pointX += shiftX;
             }
 
@@ -362,8 +368,7 @@ public class PrintSmallCraftAerodyne implements Printable {
 
         for (int lineCount = 1; lineCount <= 29; lineCount++) {
             for (int point = 0; point < pipsPerLine; point++) {
-                pipPlotter.add(new float[]
-                    { pointX, pointY });
+                pipPlotter.add(new float[] { pointX, pointY });
                 pointX += shiftX;
             }
 
@@ -382,15 +387,12 @@ public class PrintSmallCraftAerodyne implements Printable {
     private void printStruct(Graphics2D g2d, int totalArmor) {
         int posY = 369;
         int posX = 269;
-        int[] topColumn = new int[]
-            { posY, posX };
-        int[] pipShift = new int[]
-            { 6, 6 };
+        int[] topColumn = new int[] { posY, posX };
+        int[] pipShift = new int[] { 6, 6 };
 
         Vector<int[]> pipPlotter = new Vector<int[]>(132);
         for (int pos = 1; pos <= 32; pos++) {
-            pipPlotter.add(new int[]
-                { topColumn[0], topColumn[1] });
+            pipPlotter.add(new int[] { topColumn[0], topColumn[1] });
             topColumn[0] += pipShift[0];
             if ((pos % 8) == 0) {
                 topColumn[1] += pipShift[1];

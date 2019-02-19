@@ -37,44 +37,46 @@ import megameklab.com.ui.view.listeners.AdvancedAeroBuildListener;
 
 /**
  * Sets number and sizes of gravity decks on advanced aerospace units.
- * 
+ *
  * @author Neoancient
  *
  */
 public class GravDeckView extends BuildView implements ActionListener, TableModelListener {
-    
+
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = -956614936951473086L;
-    
+
     private final List<AdvancedAeroBuildListener> listeners = new CopyOnWriteArrayList<>();
+
     public void addListener(AdvancedAeroBuildListener l) {
         listeners.add(l);
     }
+
     public void removeListener(AdvancedAeroBuildListener l) {
         listeners.remove(l);
     }
 
     private final static String ACTION_ADD = "ADD";
     private final static String ACTION_REMOVE = "REMOVE";
-    
+
     private final GravDeckTableModel model = new GravDeckTableModel();
     private final JTable tblGravDecks = new JTable(model);
     private final JButton btnAdd = new JButton();
     private final JButton btnRemove = new JButton();
-    
+
     private int maxDecks;
-    
+
     public GravDeckView() {
         initUI();
     }
-    
+
     private void initUI() {
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl()); //$NON-NLS-1$
         setLayout(new BorderLayout());
         add(new JScrollPane(tblGravDecks), BorderLayout.CENTER);
-        
+
         JPanel btnPanel = new JPanel();
         btnAdd.setText(resourceMap.getString("GravDeckView.btnAdd.text"));
         btnAdd.setToolTipText(resourceMap.getString("GravDeckView.btnAdd.tooltip"));
@@ -87,30 +89,29 @@ public class GravDeckView extends BuildView implements ActionListener, TableMode
         btnRemove.addActionListener(this);
         btnPanel.add(btnRemove);
         add(btnPanel, BorderLayout.NORTH);
-        
+
         model.addTableModelListener(this);
         tblGravDecks.getSelectionModel().addListSelectionListener(ev -> updateButtons());
         tblGravDecks.setPreferredScrollableViewportSize(new Dimension(400, 72));
         tblGravDecks.setToolTipText(resourceMap.getString("GravDeckView.tblGravDecks.tooltip")); //$NON-NLS-1$
     }
-    
+
     public void setFromEntity(Jumpship ship) {
         model.setData(ship.getGravDecks());
         model.setMaxSize(TestAdvancedAerospace.getMaxGravDeckDiameter(ship));
         setMaxDecks(TestAdvancedAerospace.getMaxGravDecks(ship));
     }
-    
+
     public void setMaxDecks(int max) {
         maxDecks = max;
         updateButtons();
     }
-    
+
     private void updateButtons() {
         btnAdd.setEnabled(model.getData().size() < maxDecks);
-        btnRemove.setEnabled((model.getData().size() > 0)
-                && (tblGravDecks.getSelectedRow() >= 0));
+        btnRemove.setEnabled((model.getData().size() > 0) && (tblGravDecks.getSelectedRow() >= 0));
     }
-    
+
     public void actionPerformed(ActionEvent ev) {
         if (ev.getActionCommand().equals(ACTION_ADD)) {
             model.addDeck();
@@ -129,24 +130,24 @@ public class GravDeckView extends BuildView implements ActionListener, TableMode
     }
 
     private static class GravDeckTableModel extends AbstractTableModel {
-        
+
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = 2769156811527423574L;
-        
+
         final static int COL_DIAMETER = 0;
-        final static int COL_SIZE     = 1;
-        final static int COL_TONNAGE  = 2;
-        final static int NUM_COLS     = 3;
-        
+        final static int COL_SIZE = 1;
+        final static int COL_TONNAGE = 2;
+        final static int NUM_COLS = 3;
+
         private final String[] colNames;
         private List<Integer> deckSizes = new ArrayList<>();
         private int maxSize = 250;
-        
+
         GravDeckTableModel() {
             ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl()); //$NON-NLS-1$
-            colNames = resourceMap.getString("GravDeckView.columnNames.values").split(","); //$NON-NLS-1$    
+            colNames = resourceMap.getString("GravDeckView.columnNames.values").split(","); //$NON-NLS-1$
         }
 
         void setData(List<Integer> data) {
@@ -154,20 +155,20 @@ public class GravDeckView extends BuildView implements ActionListener, TableMode
             deckSizes.addAll(data);
             fireTableDataChanged();
         }
-        
+
         List<Integer> getData() {
             return deckSizes;
         }
-        
+
         void setMaxSize(int size) {
             maxSize = size;
         }
-        
+
         void addDeck() {
             deckSizes.add(100);
             fireTableDataChanged();
         }
-        
+
         void removeDeck(int row) {
             deckSizes.remove(row);
             fireTableDataChanged();
@@ -219,27 +220,27 @@ public class GravDeckView extends BuildView implements ActionListener, TableMode
         @Override
         public Object getValueAt(int rowIndex, int columnIndex) {
             switch (columnIndex) {
-                case COL_DIAMETER:
-                    return Integer.toString(deckSizes.get(rowIndex));
-                case COL_SIZE:
-                    if (deckSizes.get(rowIndex) < Jumpship.GRAV_DECK_STANDARD_MAX) {
-                        return "Standard";
-                    } else if (deckSizes.get(rowIndex) <= Jumpship.GRAV_DECK_LARGE_MAX) {
-                        return "Large";
-                    } else {
-                        return "Huge";
-                    }
-                case COL_TONNAGE:
-                    if (deckSizes.get(rowIndex) < Jumpship.GRAV_DECK_STANDARD_MAX) {
-                        return "50";
-                    } else if (deckSizes.get(rowIndex) <= Jumpship.GRAV_DECK_LARGE_MAX) {
-                        return "100";
-                    } else {
-                        return "500";
-                    }
+            case COL_DIAMETER:
+                return Integer.toString(deckSizes.get(rowIndex));
+            case COL_SIZE:
+                if (deckSizes.get(rowIndex) < Jumpship.GRAV_DECK_STANDARD_MAX) {
+                    return "Standard";
+                } else if (deckSizes.get(rowIndex) <= Jumpship.GRAV_DECK_LARGE_MAX) {
+                    return "Large";
+                } else {
+                    return "Huge";
+                }
+            case COL_TONNAGE:
+                if (deckSizes.get(rowIndex) < Jumpship.GRAV_DECK_STANDARD_MAX) {
+                    return "50";
+                } else if (deckSizes.get(rowIndex) <= Jumpship.GRAV_DECK_LARGE_MAX) {
+                    return "100";
+                } else {
+                    return "500";
+                }
             }
             return null;
         }
-        
+
     }
 }

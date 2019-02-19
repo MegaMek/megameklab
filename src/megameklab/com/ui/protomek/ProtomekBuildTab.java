@@ -37,7 +37,7 @@ import megameklab.com.util.UnitUtil;
 
 /**
  * Tab for assigning equipment to locations
- * 
+ *
  * @author Neoancient
  *
  */

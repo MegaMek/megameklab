@@ -1,7 +1,7 @@
 /*
- * MegaMekLab - Copyright (C) 2008
- *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * MegaMekLab
+ * - Copyright (C) 2008 jtighe (torren@users.sourceforge.net)
+ * - Copyright (C) 2018 The MegaMek Team
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
@@ -72,7 +72,7 @@ public class StatusBar extends ITab {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.insets = new Insets(5,2,2,20);
+        gbc.insets = new Insets(5, 2, 2, 20);
         gbc.anchor = GridBagConstraints.WEST;
         this.add(btnValidate, gbc);
         gbc.gridx = 1;
@@ -89,7 +89,6 @@ public class StatusBar extends ITab {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
         this.add(cost, gbc);
-
 
         refresh();
     }
@@ -117,29 +116,31 @@ public class StatusBar extends ITab {
     }
 
     private void getFluffImage() {
-        //copied from structureTab
+        // copied from structureTab
         FileDialog fDialog = new FileDialog(getParentFrame(), "Image Path", FileDialog.LOAD);
-        fDialog.setDirectory(new File(ImageHelper.fluffPath).getAbsolutePath() + File.separatorChar + ImageHelper.imageMech + File.separatorChar);
+        fDialog.setDirectory(new File(ImageHelper.fluffPath).getAbsolutePath() + File.separatorChar
+                + ImageHelper.imageMech + File.separatorChar);
         /*
-         //This does not seem to be working
-        if (getMech().getFluff().getMMLImagePath().trim().length() > 0) {
-            String fullPath = new File(getMech().getFluff().getMMLImagePath()).getAbsolutePath();
-            String imageName = fullPath.substring(fullPath.lastIndexOf(File.separatorChar) + 1);
-            fullPath = fullPath.substring(0, fullPath.lastIndexOf(File.separatorChar) + 1);
-            fDialog.setDirectory(fullPath);
-            fDialog.setFile(imageName);
-        } else {
-            fDialog.setDirectory(new File(ImageHelper.fluffPath).getAbsolutePath() + File.separatorChar + ImageHelper.imageMech + File.separatorChar);
-            fDialog.setFile(getMech().getChassis() + " " + getMech().getModel() + ".png");
-        }
-        */
+         * //This does not seem to be working if
+         * (getMech().getFluff().getMMLImagePath().trim().length() > 0) { String
+         * fullPath = new
+         * File(getMech().getFluff().getMMLImagePath()).getAbsolutePath(); String
+         * imageName = fullPath.substring(fullPath.lastIndexOf(File.separatorChar) + 1);
+         * fullPath = fullPath.substring(0, fullPath.lastIndexOf(File.separatorChar) +
+         * 1); fDialog.setDirectory(fullPath); fDialog.setFile(imageName); } else {
+         * fDialog.setDirectory(new File(ImageHelper.fluffPath).getAbsolutePath() +
+         * File.separatorChar + ImageHelper.imageMech + File.separatorChar);
+         * fDialog.setFile(getMech().getChassis() + " " + getMech().getModel() +
+         * ".png"); }
+         */
         fDialog.setLocationRelativeTo(this);
 
         fDialog.setVisible(true);
 
         if (fDialog.getFile() != null) {
             String relativeFilePath = new File(fDialog.getDirectory() + fDialog.getFile()).getAbsolutePath();
-            relativeFilePath = "." + File.separatorChar + relativeFilePath.substring(new File(System.getProperty("user.dir").toString()).getAbsolutePath().length() + 1);
+            relativeFilePath = "." + File.separatorChar + relativeFilePath
+                    .substring(new File(System.getProperty("user.dir").toString()).getAbsolutePath().length() + 1);
             getInfantry().getFluff().setMMLImagePath(relativeFilePath);
         }
         refresh.refreshPreview();

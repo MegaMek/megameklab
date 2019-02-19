@@ -1,13 +1,17 @@
 /*
- * MegaMekLab - Copyright (C) 2009
+ * MegaMekLab
+ * - Copyright (C) 2009 jtighe (torren@users.sourceforge.net)
+ * - Copyright (C) 2018 The MegaMek Team
  *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
  *
- * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  */
 
 /*
@@ -51,24 +55,25 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
     }
 
     @Override
-    public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean hasFocus) {
+    public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
+            boolean hasFocus) {
         JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, hasFocus);
         this.list = list;
 
-        setPreferredSize(new Dimension(110,15));
-        setMaximumSize(new Dimension(110,15));
-        setMinimumSize(new Dimension(110,15));
+        setPreferredSize(new Dimension(110, 15));
+        setMaximumSize(new Dimension(110, 15));
+        setMinimumSize(new Dimension(110, 15));
 
-        String[] split = ((String)value).split(":");
+        String[] split = ((String) value).split(":");
         label.setText(split[0]);
 
         CriticalSlot cs;
-        if (split.length > 2){
+        if (split.length > 2) {
             int eqId = Integer.parseInt(split[2]);
             cs = new CriticalSlot(unit.getEquipment(eqId));
-        } else if (split.length > 1){
+        } else if (split.length > 1) {
             cs = getCrit(Integer.parseInt(split[1]));
-        } else if (((String)value).equals("-Empty-")){
+        } else if (((String) value).equals("-Empty-")) {
             cs = null;
         } else {
             cs = getCrit(index);
@@ -130,20 +135,18 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
                     }
                 }
                 if ((mount.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)
-                        || mount.getType().hasFlag(MiscType.F_AP_MOUNT))
-                        && mount.getLinked() != null){
+                        || mount.getType().hasFlag(MiscType.F_AP_MOUNT)) && mount.getLinked() != null) {
                     name += " (attached " + mount.getLinked().getName() + ")";
                 }
                 // If we are editing BA, we need to inform the user about how
-                //  many shots are in this Critical
-                if ((unit instanceof BattleArmor) 
-                        && (mount.getType() instanceof AmmoType)){
+                // many shots are in this Critical
+                if ((unit instanceof BattleArmor) && (mount.getType() instanceof AmmoType)) {
                     name += " (" + mount.getBaseShotsLeft() + ")";
                 }
                 String toolTipText = UnitUtil.getToolTipInfo(unit, mount);
                 if (cs.getMount2() != null) {
                     mount = cs.getMount2();
-                    name += " | "+ UnitUtil.getCritName(unit, mount.getType());
+                    name += " | " + UnitUtil.getCritName(unit, mount.getType());
                 }
                 label.setText(name);
                 label.setToolTipText(toolTipText);
@@ -154,20 +157,14 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
         }
 
         int loc = getCritLocation();
-        if ((cs != null) 
-                && UnitUtil.isLastCrit(unit, cs, index, loc) 
+        if ((cs != null) && UnitUtil.isLastCrit(unit, cs, index, loc)
                 && UnitUtil.isPreviousCritEmpty(unit, cs, index, loc)) {
-            label.setBorder(
-                    BorderFactory.createMatteBorder(1, 0, 1, 0, Color.black));
-        } else if ((cs != null) 
-                && UnitUtil.isLastCrit(unit, cs, index, loc)) {
-            label.setBorder(
-                    BorderFactory.createMatteBorder(0, 0, 1, 0, Color.black));
-        } else if ((cs != null) 
-                && UnitUtil.isPreviousCritEmpty(unit, cs, index, loc)){
-            label.setBorder(
-                    BorderFactory.createMatteBorder(1, 0, 0, 0, Color.black));
-        } 
+            label.setBorder(BorderFactory.createMatteBorder(1, 0, 1, 0, Color.black));
+        } else if ((cs != null) && UnitUtil.isLastCrit(unit, cs, index, loc)) {
+            label.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.black));
+        } else if ((cs != null) && UnitUtil.isPreviousCritEmpty(unit, cs, index, loc)) {
+            label.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.black));
+        }
 
         return label;
     }
@@ -183,7 +180,7 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
     }
 
     private int getCritLocation() {
-        if (unit instanceof BattleArmor){
+        if (unit instanceof BattleArmor) {
             String[] split = list.getName().split(":");
             return Integer.parseInt(split[0]);
         } else {

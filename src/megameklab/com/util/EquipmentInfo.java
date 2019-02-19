@@ -1,7 +1,7 @@
 /*
- * MegaMekLab - Copyright (C) 2008
- *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * MegaMekLab
+ * - Copyright (C) 2008 jtighe (torren@users.sourceforge.net)
+ * - Copyright (C) 2018 The MegaMek Team
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -13,6 +13,7 @@
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  */
+
 package megameklab.com.util;
 
 import java.math.BigInteger;
@@ -118,7 +119,6 @@ public class EquipmentInfo {
 
         damage = StringUtils.getEquipmentInfo(aero, mount);
 
-
         hasArtemis = hasLinkedEquipment(mount, MiscType.F_ARTEMIS);
         hasArtemisV = hasLinkedEquipment(mount, MiscType.F_ARTEMIS_V);
         hasApollo = hasLinkedEquipment(mount, MiscType.F_APOLLO);
@@ -178,7 +178,8 @@ public class EquipmentInfo {
             }
 
             if (mount.getSecondLocation() != -1) {
-                loc = String.format("%1$s/%2$s", aero.getLocationAbbr(mount.getLocation()), aero.getLocationAbbr(mount.getSecondLocation()));
+                loc = String.format("%1$s/%2$s", aero.getLocationAbbr(mount.getLocation()),
+                        aero.getLocationAbbr(mount.getSecondLocation()));
             }
 
         } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_C3I)) {
@@ -253,14 +254,15 @@ public class EquipmentInfo {
                 for (int ammoIndex : bay.getBayAmmo()) {
                     Mounted ammoMount = dropship.getEquipment(ammoIndex);
                     try {
-                        AmmoType aType = (AmmoType)ammoMount.getType();
-                        if ((mount.getLinked() != null) && (aType.getRackSize() == weapon.getRackSize()) && (aType.getAmmoType() == weapon.getAmmoType())) {
+                        AmmoType aType = (AmmoType) ammoMount.getType();
+                        if ((mount.getLinked() != null) && (aType.getRackSize() == weapon.getRackSize())
+                                && (aType.getAmmoType() == weapon.getAmmoType())) {
                             if (aType.hasFlag(AmmoType.F_AR10_BARRACUDA)) {
                                 barracudaAmmo += ammoMount.getUsableShotsLeft();
                             } else if (aType.hasFlag(AmmoType.F_AR10_KILLER_WHALE)) {
                                 killerwhaleAmmo += ammoMount.getUsableShotsLeft();
                             } else if (aType.hasFlag(AmmoType.F_AR10_WHITE_SHARK)) {
-                               whitesharkAmmo += ammoMount.getUsableShotsLeft();
+                                whitesharkAmmo += ammoMount.getUsableShotsLeft();
                             }
                         }
                     } catch (Exception ex) {
@@ -313,7 +315,8 @@ public class EquipmentInfo {
             }
             heat = weapon.getHeat();
             if (mount.getSecondLocation() != -1) {
-                loc = String.format("%1$s/%2$s", dropship.getLocationAbbr(mount.getLocation()), dropship.getLocationAbbr(mount.getSecondLocation()));
+                loc = String.format("%1$s/%2$s", dropship.getLocationAbbr(mount.getLocation()),
+                        dropship.getLocationAbbr(mount.getSecondLocation()));
             }
         } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_C3I)) {
             c3Level = C3I;
@@ -345,7 +348,8 @@ public class EquipmentInfo {
 
         hasApollo = hasLinkedEquipment(mount, MiscType.F_APOLLO);
         isMashCore = (mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_MASH);
-        isDroneControl = (mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_DRONE_CARRIER_CONTROL);
+        isDroneControl = (mount.getType() instanceof MiscType)
+                && mount.getType().hasFlag(MiscType.F_DRONE_CARRIER_CONTROL);
     }
 
     /**
@@ -361,7 +365,7 @@ public class EquipmentInfo {
         if (mount.isRearMounted()) {
             name += "(R)";
         }
-        if ((unit instanceof Tank) && !((Tank)unit).hasNoDualTurret()) {
+        if ((unit instanceof Tank) && !((Tank) unit).hasNoDualTurret()) {
             if (loc.equals("TU")) {
                 loc = "RT";
             }
@@ -413,7 +417,8 @@ public class EquipmentInfo {
             if (shtRange > medRange) {
                 medRange = -1;
             }
-            if ((mount.getType() instanceof ISVehicularGrenadeLauncher) || (mount.getType() instanceof CLVehicularGrenadeLauncher)) {
+            if ((mount.getType() instanceof ISVehicularGrenadeLauncher)
+                    || (mount.getType() instanceof CLVehicularGrenadeLauncher)) {
                 minRange = 0;
                 shtRange = 0;
                 medRange = 0;
@@ -422,7 +427,8 @@ public class EquipmentInfo {
 
             heat = weapon.getHeat();
             if (mount.getSecondLocation() != -1) {
-                loc = String.format("%1$s/%2$s", unit.getLocationAbbr(mount.getLocation()), unit.getLocationAbbr(mount.getSecondLocation()));
+                loc = String.format("%1$s/%2$s", unit.getLocationAbbr(mount.getLocation()),
+                        unit.getLocationAbbr(mount.getSecondLocation()));
             }
         } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_C3I)) {
             c3Level = C3I;
@@ -460,26 +466,35 @@ public class EquipmentInfo {
             shtRange = 0;
             medRange = 0;
             longRange = 1;
-        } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_CLUB) && (mount.getType().hasSubType(MiscType.S_VIBRO_LARGE) || mount.getType().hasSubType(MiscType.S_VIBRO_MEDIUM) || mount.getType().hasSubType(MiscType.S_VIBRO_SMALL))) {
+        } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_CLUB)
+                && (mount.getType().hasSubType(MiscType.S_VIBRO_LARGE)
+                        || mount.getType().hasSubType(MiscType.S_VIBRO_MEDIUM)
+                        || mount.getType().hasSubType(MiscType.S_VIBRO_SMALL))) {
             heat = unit.getActiveVibrobladeHeat(mount.getLocation(), true);
-        } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_CLUB) && (mount.getType().hasSubType(MiscType.S_SPOT_WELDER))) {
+        } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_CLUB)
+                && (mount.getType().hasSubType(MiscType.S_SPOT_WELDER))) {
             heat = 2;
         } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_PPC_CAPACITOR)) {
             heat = 5;
-        } else if ((mount.getType() instanceof MiscType) && (mount.getType().hasFlag(MiscType.F_TALON) || (mount.getType().hasFlag(MiscType.F_TRACKS)))) {
+        } else if ((mount.getType() instanceof MiscType)
+                && (mount.getType().hasFlag(MiscType.F_TALON) || (mount.getType().hasFlag(MiscType.F_TRACKS)))) {
             loc = "Legs";
         } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_PARTIAL_WING)) {
             loc = "LT/RT";
-        } else if ((mount.getType() instanceof MiscType) && (mount.getType().hasFlag(MiscType.F_VOIDSIG) || mount.getType().hasFlag(MiscType.F_CHAMELEON_SHIELD) || mount.getType().hasFlag(MiscType.F_NULLSIG) || mount.getType().hasFlag(MiscType.F_BLUE_SHIELD))) {
+        } else if ((mount.getType() instanceof MiscType) && (mount.getType().hasFlag(MiscType.F_VOIDSIG)
+                || mount.getType().hasFlag(MiscType.F_CHAMELEON_SHIELD) || mount.getType().hasFlag(MiscType.F_NULLSIG)
+                || mount.getType().hasFlag(MiscType.F_BLUE_SHIELD))) {
             loc = "*";
         }
 
-        isBAMineLayer = (mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_MINE) && mount.getType().hasFlag(MiscType.F_BA_EQUIPMENT);
+        isBAMineLayer = (mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_MINE)
+                && mount.getType().hasFlag(MiscType.F_BA_EQUIPMENT);
         hasArtemis = hasLinkedEquipment(mount, MiscType.F_ARTEMIS);
         hasArtemisV = hasLinkedEquipment(mount, MiscType.F_ARTEMIS_V);
         hasApollo = hasLinkedEquipment(mount, MiscType.F_APOLLO);
         isMashCore = (mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_MASH);
-        isDroneControl = (mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_DRONE_CARRIER_CONTROL);
+        isDroneControl = (mount.getType() instanceof MiscType)
+                && mount.getType().hasFlag(MiscType.F_DRONE_CARRIER_CONTROL);
 
     }
 
@@ -523,14 +538,14 @@ public class EquipmentInfo {
             isCompactNarc = weapon instanceof ISBACompactNarc;
             isBAPopUpMine = weapon instanceof ISBAPopUpMineLauncher;
 
-
             if (weapon.getAmmoType() == AmmoType.T_C3_REMOTE_SENSOR) {
                 c3Level = C3REMOTESENSOR;
             }
 
             if ((weapon.getAmmoType() != AmmoType.T_NA) && !weapon.hasFlag(WeaponType.F_ONESHOT)) {
                 hasAmmo = true;
-                ammoCount = UnitUtil.getBAAmmoCount(unit, weapon, mount.getLocation()) / UnitUtil.getNumberOfEquipmentLikeThis(unit, weapon);
+                ammoCount = UnitUtil.getBAAmmoCount(unit, weapon, mount.getLocation())
+                        / UnitUtil.getNumberOfEquipmentLikeThis(unit, weapon);
                 if (isBAPopUpMine) {
                     ammoCount = 1;
                 }
@@ -542,7 +557,6 @@ public class EquipmentInfo {
 
             isMML = weapon instanceof MMLWeapon;
             isATM = weapon instanceof ATMWeapon;
-
 
             shtRange = weapon.shortRange;
             medRange = weapon.mediumRange;
@@ -584,7 +598,8 @@ public class EquipmentInfo {
                     longRange = 5;
                 } else if (equipment.getInternalName().equals(Sensor.CLBALIGHT_AP)) {
                     longRange = 3;
-                } else if (equipment.getInternalName().equals(Sensor.ISIMPROVED) || equipment.getInternalName().equals(Sensor.CLIMPROVED)) {
+                } else if (equipment.getInternalName().equals(Sensor.ISIMPROVED)
+                        || equipment.getInternalName().equals(Sensor.CLIMPROVED)) {
                     longRange = 2;
                 }
             } else if (equipment.hasFlag(MiscType.F_BA_SEARCHLIGHT)) {
@@ -644,7 +659,8 @@ public class EquipmentInfo {
 
     private boolean hasLinkedEquipment(Mounted eq, BigInteger flag) {
 
-        if ((eq.getLinkedBy() != null) && (eq.getLinkedBy().getType() instanceof MiscType) && eq.getLinkedBy().getType().hasFlag(flag)) {
+        if ((eq.getLinkedBy() != null) && (eq.getLinkedBy().getType() instanceof MiscType)
+                && eq.getLinkedBy().getType().hasFlag(flag)) {
             return true;
         }
 

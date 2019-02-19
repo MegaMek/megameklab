@@ -35,21 +35,23 @@ import megameklab.com.ui.view.listeners.CVBuildListener;
 
 /**
  * Panel for combat vehicle cargo and troop space.
- * 
+ *
  * @author Neoancient
  *
  */
 public class CVTransportView extends BuildView implements ChangeListener {
-    
+
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = -3059498307570586741L;
-    
+
     List<CVBuildListener> listeners = new CopyOnWriteArrayList<>();
+
     public void addListener(CVBuildListener l) {
         listeners.add(l);
     }
+
     public void removeListener(CVBuildListener l) {
         listeners.remove(l);
     }
@@ -58,12 +60,12 @@ public class CVTransportView extends BuildView implements ChangeListener {
     private final SpinnerNumberModel spnPodTroopModel = new SpinnerNumberModel(0.0, 0.0, null, 0.5);
     private final Map<BayData, SpinnerNumberModel> fixedSpinnerModels = new HashMap<>();
     private final Map<BayData, SpinnerNumberModel> podSpinnerModels = new HashMap<>();
-    
+
     private final JSpinner spnFixedTroop = new JSpinner(spnFixedTroopModel);
     private final JSpinner spnPodTroop = new JSpinner(spnPodTroopModel);
     private final Map<BayData, JSpinner> fixedSpinners = new HashMap<>();
     private final Map<BayData, JSpinner> podSpinners = new HashMap<>();
-    
+
     // Track unit tonnage to set max allowed carrying space.
     private double tonnage;
 
@@ -71,10 +73,10 @@ public class CVTransportView extends BuildView implements ChangeListener {
         super();
         initUI();
     }
-    
+
     private void initUI() {
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl()); //$NON-NLS-1$
-        
+
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
@@ -90,17 +92,17 @@ public class CVTransportView extends BuildView implements ChangeListener {
         gbc.gridx = 0;
         gbc.gridy = 1;
         add(createLabel(resourceMap.getString("CVTransportView.lblTroopSpace.text"), labelSizeLg), gbc); //$NON-NLS-1$
-        
+
         gbc.gridx = 1;
         setFieldSize(spnFixedTroop, editorSize);
         add(spnFixedTroop, gbc);
         spnFixedTroop.addChangeListener(this);
-        
+
         gbc.gridx = 2;
         setFieldSize(spnPodTroop, editorSize);
         add(spnPodTroop, gbc);
         spnPodTroop.addChangeListener(this);
-        
+
         for (BayData bayType : BayData.values()) {
             if (!bayType.isCargoBay()) {
                 continue;
@@ -110,7 +112,7 @@ public class CVTransportView extends BuildView implements ChangeListener {
             gbc.gridx = 0;
             gbc.gridy++;
             add(createLabel(bayType.getDisplayName(), labelSizeLg), gbc);
-            
+
             gbc.gridx = 1;
             SpinnerNumberModel model = new SpinnerNumberModel(0.0, 0.0, null, 0.5);
             JSpinner spinner = new JSpinner(model);
@@ -121,7 +123,7 @@ public class CVTransportView extends BuildView implements ChangeListener {
             fixedSpinners.put(bayType, spinner);
             add(spinner, gbc);
             spinner.addChangeListener(this);
-            
+
             gbc.gridx = 2;
             model = new SpinnerNumberModel(0.0, 0.0, null, 0.5);
             spinner = new JSpinner(model);
@@ -134,7 +136,7 @@ public class CVTransportView extends BuildView implements ChangeListener {
             spinner.addChangeListener(this);
         }
     }
-    
+
     public void setFromEntity(Tank tank) {
         double troops = tank.getTroopCarryingSpace();
         double podTroops = tank.getPodMountedTroopCarryingSpace();
@@ -161,30 +163,30 @@ public class CVTransportView extends BuildView implements ChangeListener {
         }
         setOmni(tank.isOmni());
     }
-    
+
     public void setTonnage(double tonnage) {
         this.tonnage = tonnage;
         refresh();
     }
-    
+
     public void setOmni(boolean omni) {
         spnPodTroop.setEnabled(omni);
         podSpinners.values().forEach(v -> v.setEnabled(omni));
         clearPodSpace();
     }
-    
+
     public void clearPodSpace() {
         spnPodTroop.setValue(0.0);
         podSpinners.values().forEach(v -> v.setValue(0.0));
     }
-    
+
     public void refresh() {
         resetMaxSize(spnFixedTroopModel, tonnage);
         resetMaxSize(spnPodTroopModel, tonnage);
         fixedSpinnerModels.values().forEach(m -> resetMaxSize(m, tonnage));
         podSpinnerModels.values().forEach(m -> resetMaxSize(m, tonnage));
     }
-    
+
     private void resetMaxSize(SpinnerNumberModel model, double max) {
         model.setMaximum(max);
         if (model.getNumber().doubleValue() > max) {
@@ -196,8 +198,7 @@ public class CVTransportView extends BuildView implements ChangeListener {
 
     @Override
     public void stateChanged(ChangeEvent e) {
-        if ((e.getSource() == spnFixedTroop)
-                || (e.getSource() == spnPodTroop)) {
+        if ((e.getSource() == spnFixedTroop) || (e.getSource() == spnPodTroop)) {
             listeners.forEach(l -> l.troopSpaceChanged(spnFixedTroopModel.getNumber().doubleValue(),
                     spnPodTroopModel.getNumber().doubleValue()));
         } else if (e.getSource() instanceof Component) {
@@ -210,9 +211,8 @@ public class CVTransportView extends BuildView implements ChangeListener {
             }
             if (null != bayType) {
                 for (CVBuildListener l : listeners) {
-                    l.cargoSpaceChanged(bayType,
-                        fixedSpinnerModels.get(bayType).getNumber().doubleValue(),
-                        podSpinnerModels.get(bayType).getNumber().doubleValue());
+                    l.cargoSpaceChanged(bayType, fixedSpinnerModels.get(bayType).getNumber().doubleValue(),
+                            podSpinnerModels.get(bayType).getNumber().doubleValue());
                 }
             }
         }

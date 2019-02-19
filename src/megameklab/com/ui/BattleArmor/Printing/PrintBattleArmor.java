@@ -1,7 +1,7 @@
 /*
- * MegaMekLab - Copyright (C) 2009
- *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * MegaMekLab
+ * - Copyright (C) 2009 jtighe (torren@users.sourceforge.net)
+ * - Copyright (C) 2018 The MegaMek Team
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -81,9 +81,11 @@ public class PrintBattleArmor implements Printable {
         int stop = Math.min(5, battleArmorList.size() - currentPosition);
         for (int pos = 0; pos < stop; pos++) {
             battleArmor = battleArmorList.get(pos + currentPosition);
-            int squadNumber = pos+1;
+            int squadNumber = pos + 1;
             try {
-                ImageHelper.loadSVGImage(new File("data/images/recordsheets/BA/Squad"+squadNumber+"_"+battleArmor.getTroopers()+".svg")).render(g2d);
+                ImageHelper.loadSVGImage(new File(
+                        "data/images/recordsheets/BA/Squad" + squadNumber + "_" + battleArmor.getTroopers() + ".svg"))
+                        .render(g2d);
             } catch (SVGException e) {
                 e.printStackTrace();
             }
@@ -91,7 +93,8 @@ public class PrintBattleArmor implements Printable {
             printBattleArmorData(g2d, squadNumber);
             if (battleArmor.getArmor(1) > 0) {
                 try {
-                    ImageHelper.loadSVGImage(new File("data/images/recordsheets/BA/Squad"+squadNumber+"_"+battleArmor.getTroopers()+"_"+battleArmor.getArmor(1)+".svg")).render(g2d);
+                    ImageHelper.loadSVGImage(new File("data/images/recordsheets/BA/Squad" + squadNumber + "_"
+                            + battleArmor.getTroopers() + "_" + battleArmor.getArmor(1) + ".svg")).render(g2d);
                 } catch (SVGException e) {
                     e.printStackTrace();
                 }
@@ -157,11 +160,13 @@ public class PrintBattleArmor implements Printable {
             techBase = "Clan";
         }
 
-        if (!isAdvanced && ((battleArmor.getTechLevel() == TechConstants.T_IS_ADVANCED) || (battleArmor.getTechLevel() == TechConstants.T_CLAN_ADVANCED))) {
+        if (!isAdvanced && ((battleArmor.getTechLevel() == TechConstants.T_IS_ADVANCED)
+                || (battleArmor.getTechLevel() == TechConstants.T_CLAN_ADVANCED))) {
             techBase += " (Advanced)";
             isAdvanced = true;
-        } else if (!isAdvanced && ((battleArmor.getTechLevel() == TechConstants.T_IS_EXPERIMENTAL) || (battleArmor.getTechLevel() == TechConstants.T_CLAN_EXPERIMENTAL))) {
-            techBase+= " (Experimental)";
+        } else if (!isAdvanced && ((battleArmor.getTechLevel() == TechConstants.T_IS_EXPERIMENTAL)
+                || (battleArmor.getTechLevel() == TechConstants.T_CLAN_EXPERIMENTAL))) {
+            techBase += " (Experimental)";
             isAdvanced = true;
         }
         if (squadNumber == 0) {
@@ -248,12 +253,16 @@ public class PrintBattleArmor implements Printable {
             g2d.drawString("BV: ", 230, 209.5f + currentMargin);
             font = UnitUtil.deriveFont(false, 8);
             g2d.setFont(font);
-            g2d.drawString(String.format("%1$,d", battleArmor.calculateBattleValue(true, true)) + "/" + String.format("%1$,d", battleArmor.calculateBattleValue(true, true, true)), 245, 209.5f + currentMargin);
+            g2d.drawString(
+                    String.format("%1$,d", battleArmor.calculateBattleValue(true, true)) + "/"
+                            + String.format("%1$,d", battleArmor.calculateBattleValue(true, true, true)),
+                    245, 209.5f + currentMargin);
         }
         if (battleArmor.canDoMechanizedBA()) {
 
             try {
-                ImageHelper.loadSVGImage(new File("data/images/recordsheets/BA/Mechanized"+squadNumber+".svg")).render(g2d);
+                ImageHelper.loadSVGImage(new File("data/images/recordsheets/BA/Mechanized" + squadNumber + ".svg"))
+                        .render(g2d);
             } catch (SVGException e) {
                 e.printStackTrace();
             }
@@ -261,7 +270,8 @@ public class PrintBattleArmor implements Printable {
 
         if (UnitUtil.canSwarm(battleArmor)) {
             try {
-                ImageHelper.loadSVGImage(new File("data/images/recordsheets/BA/Swarm"+squadNumber+".svg")).render(g2d);
+                ImageHelper.loadSVGImage(new File("data/images/recordsheets/BA/Swarm" + squadNumber + ".svg"))
+                        .render(g2d);
             } catch (SVGException e) {
                 e.printStackTrace();
             }
@@ -269,7 +279,8 @@ public class PrintBattleArmor implements Printable {
 
         if (UnitUtil.canLegAttack(battleArmor)) {
             try {
-                ImageHelper.loadSVGImage(new File("data/images/recordsheets/BA/Leg"+squadNumber+".svg")).render(g2d);
+                ImageHelper.loadSVGImage(new File("data/images/recordsheets/BA/Leg" + squadNumber + ".svg"))
+                        .render(g2d);
             } catch (SVGException e) {
                 e.printStackTrace();
             }
@@ -277,7 +288,7 @@ public class PrintBattleArmor implements Printable {
 
         if (battleArmor.countWorkingMisc(MiscType.F_AP_MOUNT) > 0) {
             try {
-                ImageHelper.loadSVGImage(new File("data/images/recordsheets/BA/AP"+squadNumber+".svg")).render(g2d);
+                ImageHelper.loadSVGImage(new File("data/images/recordsheets/BA/AP" + squadNumber + ".svg")).render(g2d);
             } catch (SVGException e) {
                 e.printStackTrace();
             }

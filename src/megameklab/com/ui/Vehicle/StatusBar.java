@@ -1,7 +1,7 @@
 /*
- * MegaMekLab - Copyright (C) 2009
- *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * MegaMekLab
+ * - Copyright (C) 2009 jtighe (torren@users.sourceforge.net)
+ * - Copyright (C) 2018 The MegaMek Team
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
@@ -54,8 +54,8 @@ public class StatusBar extends ITab {
     private JLabel tons = new JLabel();
     private JLabel slots = new JLabel();
     private JLabel cost = new JLabel();
-    private EntityVerifier entityVerifier = EntityVerifier.getInstance(new File(
-            "data/mechfiles/UnitVerifierOptions.xml"));
+    private EntityVerifier entityVerifier = EntityVerifier
+            .getInstance(new File("data/mechfiles/UnitVerifierOptions.xml"));
     private TestTank testEntity = null;
     private DecimalFormat formatter;
     private JFrame parentFrame;
@@ -68,11 +68,9 @@ public class StatusBar extends ITab {
 
         formatter = new DecimalFormat();
         if (parent.getEntity().isSupportVehicle()) {
-            testEntity = new TestSupportVehicle((Tank) parent.getEntity(),
-                    entityVerifier.tankOption, null);
+            testEntity = new TestSupportVehicle((Tank) parent.getEntity(), entityVerifier.tankOption, null);
         } else {
-            testEntity = new TestTank((Tank) parent.getEntity(), entityVerifier.tankOption,
-                    null);
+            testEntity = new TestTank((Tank) parent.getEntity(), entityVerifier.tankOption, null);
         }
         btnValidate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -88,7 +86,7 @@ public class StatusBar extends ITab {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.insets = new Insets(5,2,2,20);
+        gbc.insets = new Insets(5, 2, 2, 20);
         gbc.anchor = GridBagConstraints.WEST;
         this.add(btnValidate, gbc);
         gbc.gridx = 1;
@@ -142,7 +140,7 @@ public class StatusBar extends ITab {
     public JPanel slotsPanel() {
         Tank tank = getTank();
         int currentSlots = tank.getTotalSlots() - tank.getFreeSlots();
-        slots.setText("Slots: "+currentSlots+"/"+tank.getTotalSlots());
+        slots.setText("Slots: " + currentSlots + "/" + tank.getTotalSlots());
         slotsPanel.add(slots);
         return slotsPanel;
     }
@@ -157,11 +155,9 @@ public class StatusBar extends ITab {
         int bv = getTank().calculateBattleValue();
 
         if (getTank().isSupportVehicle()) {
-            testEntity = new TestSupportVehicle(getTank(),
-                    entityVerifier.tankOption, null);
+            testEntity = new TestSupportVehicle(getTank(), entityVerifier.tankOption, null);
         } else {
-            testEntity = new TestTank((Tank) getTank(), entityVerifier.tankOption,
-                    null);
+            testEntity = new TestTank((Tank) getTank(), entityVerifier.tankOption, null);
         }
 
         currentTonnage = testEntity.calculateWeight();
@@ -178,7 +174,7 @@ public class StatusBar extends ITab {
         }
         Tank tank = getTank();
         int currentSlots = tank.getTotalSlots() - tank.getFreeSlots();
-        slots.setText("Slots: "+currentSlots+"/"+tank.getTotalSlots());
+        slots.setText("Slots: " + currentSlots + "/" + tank.getTotalSlots());
         if (currentSlots > tank.getTotalSlots()) {
             slots.setForeground(Color.red);
         } else {
@@ -196,29 +192,31 @@ public class StatusBar extends ITab {
     }
 
     private void getFluffImage() {
-        //copied from structureTab
+        // copied from structureTab
         FileDialog fDialog = new FileDialog(getParentFrame(), "Image Path", FileDialog.LOAD);
-        fDialog.setDirectory(new File(ImageHelper.fluffPath).getAbsolutePath() + File.separatorChar + ImageHelper.imageMech + File.separatorChar);
+        fDialog.setDirectory(new File(ImageHelper.fluffPath).getAbsolutePath() + File.separatorChar
+                + ImageHelper.imageMech + File.separatorChar);
         /*
-         //This does not seem to be working
-        if (getMech().getFluff().getMMLImagePath().trim().length() > 0) {
-            String fullPath = new File(getMech().getFluff().getMMLImagePath()).getAbsolutePath();
-            String imageName = fullPath.substring(fullPath.lastIndexOf(File.separatorChar) + 1);
-            fullPath = fullPath.substring(0, fullPath.lastIndexOf(File.separatorChar) + 1);
-            fDialog.setDirectory(fullPath);
-            fDialog.setFile(imageName);
-        } else {
-            fDialog.setDirectory(new File(ImageHelper.fluffPath).getAbsolutePath() + File.separatorChar + ImageHelper.imageMech + File.separatorChar);
-            fDialog.setFile(getMech().getChassis() + " " + getMech().getModel() + ".png");
-        }
-        */
+         * //This does not seem to be working if
+         * (getMech().getFluff().getMMLImagePath().trim().length() > 0) { String
+         * fullPath = new
+         * File(getMech().getFluff().getMMLImagePath()).getAbsolutePath(); String
+         * imageName = fullPath.substring(fullPath.lastIndexOf(File.separatorChar) + 1);
+         * fullPath = fullPath.substring(0, fullPath.lastIndexOf(File.separatorChar) +
+         * 1); fDialog.setDirectory(fullPath); fDialog.setFile(imageName); } else {
+         * fDialog.setDirectory(new File(ImageHelper.fluffPath).getAbsolutePath() +
+         * File.separatorChar + ImageHelper.imageMech + File.separatorChar);
+         * fDialog.setFile(getMech().getChassis() + " " + getMech().getModel() +
+         * ".png"); }
+         */
         fDialog.setLocationRelativeTo(this);
 
         fDialog.setVisible(true);
 
         if (fDialog.getFile() != null) {
             String relativeFilePath = new File(fDialog.getDirectory() + fDialog.getFile()).getAbsolutePath();
-            relativeFilePath = "." + File.separatorChar + relativeFilePath.substring(new File(System.getProperty("user.dir").toString()).getAbsolutePath().length() + 1);
+            relativeFilePath = "." + File.separatorChar + relativeFilePath
+                    .substring(new File(System.getProperty("user.dir").toString()).getAbsolutePath().length() + 1);
             getTank().getFluff().setMMLImagePath(relativeFilePath);
         }
         refresh.refreshPreview();

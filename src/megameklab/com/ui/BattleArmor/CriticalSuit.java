@@ -1,3 +1,18 @@
+/*
+ * MegaMekLab
+ * - Copyright (C) 2015 The MegaMek Team
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+ * for more details.
+ */
+
 package megameklab.com.ui.BattleArmor;
 
 import megamek.common.BattleArmor;
@@ -6,19 +21,19 @@ import megamek.common.MiscType;
 import megamek.common.Mounted;
 
 /**
- * Since BattleArmor is setup in a squad, the standard CriticalSlot system
- * isn't used.  For construction purposes, we keep track of criticals.  In MM,
- * for purposes and dealing with hits, the "locations" for BattleArmor must 
- * correspond to the troopers in the squad.  This means that the standard 
+ * Since BattleArmor is setup in a squad, the standard CriticalSlot system isn't
+ * used. For construction purposes, we keep track of criticals. In MM, for
+ * purposes and dealing with hits, the "locations" for BattleArmor must
+ * correspond to the troopers in the squad. This means that the standard
  * Mounted.location can't really be used, and it causes problems with the
- * criticals as well.  Since these really only matter for constructions, a 
+ * criticals as well. Since these really only matter for constructions, a
  * separate critical system is tracked in MML only for construction purposes.
  **/
 public class CriticalSuit {
-    
-    //store critical slots just like an entity
+
+    // store critical slots just like an entity
     protected CriticalSlot[][] crits; // [loc][slot]
-    
+
     BattleArmor ba;
 
     public CriticalSuit(BattleArmor ba) {
@@ -51,7 +66,7 @@ public class CriticalSuit {
 
         }
     }
-    
+
     public int locations() {
         return BattleArmor.MOUNT_NUM_LOCS;
     }
@@ -59,10 +74,10 @@ public class CriticalSuit {
     public int getNumCriticals(int loc) {
         return crits[loc].length;
     }
-    
+
     public boolean canAddMounted(int loc, Mounted m) {
         int critsToAdd;
-        if (m.getType().isSpreadable()){
+        if (m.getType().isSpreadable()) {
             critsToAdd = 1;
         } else {
             critsToAdd = m.getType().getCriticals(ba);
@@ -75,49 +90,47 @@ public class CriticalSuit {
         }
         return critsAvailable >= critsToAdd;
     }
-    
-    public void addMounted(int loc, Mounted m){
+
+    public void addMounted(int loc, Mounted m) {
         // Don't mount unmounted equipment
-        if (loc == BattleArmor.MOUNT_LOC_NONE){
+        if (loc == BattleArmor.MOUNT_LOC_NONE) {
             return;
         }
-        
+
         // AP Weapons that are mounted in an AP Mount don't take up slots
-        if (m.isAPMMounted() && m.getLinkedBy() != null 
-                && m.getLinkedBy().getType().hasFlag(MiscType.F_AP_MOUNT)){
+        if (m.isAPMMounted() && m.getLinkedBy() != null && m.getLinkedBy().getType().hasFlag(MiscType.F_AP_MOUNT)) {
             return;
         }
-        
+
         // Manipulators will always go in the last slot in its location,
-        //  as they get a special slot added for them
-        if (m.getType().hasFlag(MiscType.F_BA_MANIPULATOR)){
+        // as they get a special slot added for them
+        if (m.getType().hasFlag(MiscType.F_BA_MANIPULATOR)) {
             int slot = crits[loc].length - 1;
             crits[loc][slot] = new CriticalSlot(m);
         }
-        
+
         int critsToAdd;
-        if (m.getType().isSpreadable()){
+        if (m.getType().isSpreadable()) {
             critsToAdd = 1;
         } else {
             critsToAdd = m.getType().getCriticals(ba);
         }
-        if (critsToAdd == 0){
+        if (critsToAdd == 0) {
             return;
         }
-        for (int slot = 0; slot < getNumCriticals(loc); slot++){
-            if (crits[loc][slot] == null){
+        for (int slot = 0; slot < getNumCriticals(loc); slot++) {
+            if (crits[loc][slot] == null) {
                 crits[loc][slot] = new CriticalSlot(m);
                 critsToAdd--;
-                if (critsToAdd <= 0){
+                if (critsToAdd <= 0) {
                     break;
                 }
             }
         }
     }
-    
+
     public CriticalSlot getCritical(int loc, int slot) {
         return crits[loc][slot];
     }
-    
-    
+
 }

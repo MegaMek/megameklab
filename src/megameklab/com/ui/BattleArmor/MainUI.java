@@ -1,7 +1,7 @@
 /*
- * MegaMekLab - Copyright (C) 2010
- *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * MegaMekLab
+ * - Copyright (C) 2010 jtighe (torren@users.sourceforge.net)
+ * - Copyright (C) 2018 The MegaMek Team
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -155,7 +155,7 @@ public class MainUI extends MegaMekLabMainUI {
     public void refreshEquipment() {
         equipTab.refresh();
     }
-    
+
     @Override
     public void refreshTransport() {
         // not used for ba
@@ -194,11 +194,11 @@ public class MainUI extends MegaMekLabMainUI {
     public void refreshPreview() {
         structureTab.refreshPreview();
     }
-    
+
     @Override
     public void refreshSummary() {
     }
-    
+
     @Override
     public void refreshEquipmentTable() {
         equipTab.refreshTable();

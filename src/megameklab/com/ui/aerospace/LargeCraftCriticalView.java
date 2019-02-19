@@ -11,6 +11,7 @@
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  */
+
 package megameklab.com.ui.aerospace;
 
 import java.awt.Color;
@@ -39,26 +40,27 @@ import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
 
 /**
- * For allocating Large Craft (and small craft) weapons to critical spaces. Aft side arcs on spheroid
- * small craft and dropships are implemented as rear-mounted weapons in the left/right side locations
- * but here they are shown as separate locations both to make it less confusing to the user and for the
+ * For allocating Large Craft (and small craft) weapons to critical spaces. Aft
+ * side arcs on spheroid small craft and dropships are implemented as
+ * rear-mounted weapons in the left/right side locations but here they are shown
+ * as separate locations both to make it less confusing to the user and for the
  * need to maintain a separate count of the number of slots filled in that arc.
- * 
+ *
  * @author Neoancient
  *
  */
 public class LargeCraftCriticalView extends IView {
-    
+
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = -3093586215625228103L;
-    
-    // Maximum number of arcs for small craft/dropship; aerodyne only use four, spheroid
+
+    // Maximum number of arcs for small craft/dropship; aerodyne only use four,
+    // spheroid
     // and non-warship capital ships use 6, plus one for system-wide
     private static final int MAX_ARCS = 9;
-    
-    
+
     private JPanel nosePanel = new JPanel();
     private JPanel leftPanel = new JPanel();
     private JPanel bsLeftPanel = new JPanel();
@@ -68,11 +70,11 @@ public class LargeCraftCriticalView extends IView {
     private JPanel aftRightPanel = new JPanel();
     private JPanel aftPanel = new JPanel();
     private JPanel sysPanel = new JPanel();
-    
+
     private JPanel leftColumn = new JPanel();
     private JPanel midColumn = new JPanel();
     private JPanel rightColumn = new JPanel();
-    
+
     private BayWeaponCriticalTree arcTrees[] = new BayWeaponCriticalTree[MAX_ARCS];
     private String aerodyneArcNames[];
     private String spheroidArcNames[];
@@ -80,7 +82,6 @@ public class LargeCraftCriticalView extends IView {
     private JLabel lblSlotCount[] = new JLabel[MAX_ARCS];
     private JLabel lblSlotsPerArc[] = new JLabel[MAX_ARCS];
     private JLabel lblExtraTonnage[] = new JLabel[MAX_ARCS];
-    
 
     public LargeCraftCriticalView(EntitySource eSource, RefreshListener refresh) {
         super(eSource);
@@ -96,17 +97,16 @@ public class LargeCraftCriticalView extends IView {
         leftColumn.setLayout(new BoxLayout(leftColumn, BoxLayout.Y_AXIS));
         midColumn.setLayout(new BoxLayout(midColumn, BoxLayout.Y_AXIS));
         rightColumn.setLayout(new BoxLayout(rightColumn, BoxLayout.Y_AXIS));
-        
+
         // These locations do not have the same indices for SC/DS and JS/WS/SS
-        final int aftLeft = getAero().hasETypeFlag(Entity.ETYPE_JUMPSHIP)?
-                Jumpship.LOC_ALS : TestSmallCraft.ARC_AFT_LEFT;
-        final int aftRight = getAero().hasETypeFlag(Entity.ETYPE_JUMPSHIP)?
-                Jumpship.LOC_ARS : TestSmallCraft.ARC_AFT_RIGHT;
-        
+        final int aftLeft = getAero().hasETypeFlag(Entity.ETYPE_JUMPSHIP) ? Jumpship.LOC_ALS
+                : TestSmallCraft.ARC_AFT_LEFT;
+        final int aftRight = getAero().hasETypeFlag(Entity.ETYPE_JUMPSHIP) ? Jumpship.LOC_ARS
+                : TestSmallCraft.ARC_AFT_RIGHT;
+
         for (int arc = 0; arc < MAX_ARCS; arc++) {
             if (getAero().hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)
-                    && ((arc == TestSmallCraft.ARC_AFT_LEFT)
-                            || (arc == TestSmallCraft.ARC_AFT_RIGHT))) {
+                    && ((arc == TestSmallCraft.ARC_AFT_LEFT) || (arc == TestSmallCraft.ARC_AFT_RIGHT))) {
                 arcTrees[arc] = new BayWeaponCriticalTree(arc - 4, eSource, refresh, BayWeaponCriticalTree.AFT);
             } else {
                 arcTrees[arc] = new BayWeaponCriticalTree(arc, eSource, refresh);
@@ -130,7 +130,7 @@ public class LargeCraftCriticalView extends IView {
         midColumn.add(Box.createVerticalGlue());
         aftPanel = createArcPanel(TestSmallCraft.ARC_AFT, resourceMap);
         midColumn.add(aftPanel);
-        
+
         rightColumn.add(Box.createVerticalGlue());
         rightPanel = createArcPanel(TestSmallCraft.ARC_FWD_RIGHT, resourceMap);
         rightColumn.add(rightPanel);
@@ -144,21 +144,19 @@ public class LargeCraftCriticalView extends IView {
         mainPanel.add(midColumn);
         mainPanel.add(rightColumn);
         add(mainPanel);
-        
+
         refresh();
     }
-    
+
     private JPanel createArcPanel(int arc, ResourceBundle resourceMap) {
         return createArcPanel(arc, resourceMap, true);
     }
-    
+
     private JPanel createArcPanel(int arc, ResourceBundle resourceMap, boolean isWeaponArc) {
         JPanel arcPanel = new JPanel(new GridBagLayout());
         arcTrees[arc].setBorder(BorderFactory.createMatteBorder(0, 1, 1, 1, Color.black));
-        arcPanel.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createEmptyBorder(),
-                getAero().hasETypeFlag(Entity.ETYPE_JUMPSHIP)?
-                        capitalArcNames[arc] : spheroidArcNames[arc],
+        arcPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(),
+                getAero().hasETypeFlag(Entity.ETYPE_JUMPSHIP) ? capitalArcNames[arc] : spheroidArcNames[arc],
                 TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
 
         GridBagConstraints gbc = new GridBagConstraints();
@@ -168,7 +166,7 @@ public class LargeCraftCriticalView extends IView {
         gbc.anchor = GridBagConstraints.NORTHWEST;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         arcPanel.add(arcTrees[arc], gbc);
-        
+
         if (isWeaponArc) {
             lblSlotCount[arc] = new JLabel();
             JLabel lbl = new JLabel(resourceMap.getString("DropshipCriticalView.lblSlotCount.text")); //$NON-NLS-1$
@@ -180,7 +178,7 @@ public class LargeCraftCriticalView extends IView {
             gbc.gridx = 1;
             arcPanel.add(lblSlotCount[arc], gbc);
             lblSlotCount[arc].setToolTipText(resourceMap.getString("DropshipCriticalView.lblSlotCount.tooltip")); //$NON-NLS-1$
-            
+
             lblSlotsPerArc[arc] = new JLabel();
             lbl = new JLabel(resourceMap.getString("DropshipCriticalView.lblMaxSlots.text")); //$NON-NLS-1$
             gbc.gridx = 0;
@@ -191,7 +189,7 @@ public class LargeCraftCriticalView extends IView {
             gbc.gridx = 1;
             arcPanel.add(lblSlotsPerArc[arc], gbc);
             lblSlotsPerArc[arc].setToolTipText(resourceMap.getString("DropshipCriticalView.lblMaxSlots.tooltip")); //$NON-NLS-1$
-            
+
             gbc.gridx = 0;
             gbc.gridy++;
             gbc.gridwidth = 1;
@@ -207,7 +205,7 @@ public class LargeCraftCriticalView extends IView {
         }
         return arcPanel;
     }
-    
+
     public void addAllocationListeners(AerospaceBuildView abv) {
         for (BayWeaponCriticalTree tree : arcTrees) {
             abv.addArcView(tree);
@@ -223,22 +221,22 @@ public class LargeCraftCriticalView extends IView {
     public void refresh() {
         if (eSource.getEntity().hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)) {
             if (getSmallCraft().isSpheroid()) {
-                ((TitledBorder)leftPanel.getBorder()).setTitle(spheroidArcNames[TestSmallCraft.ARC_FWD_LEFT]);
-                ((TitledBorder)rightPanel.getBorder()).setTitle(spheroidArcNames[TestSmallCraft.ARC_FWD_RIGHT]);
+                ((TitledBorder) leftPanel.getBorder()).setTitle(spheroidArcNames[TestSmallCraft.ARC_FWD_LEFT]);
+                ((TitledBorder) rightPanel.getBorder()).setTitle(spheroidArcNames[TestSmallCraft.ARC_FWD_RIGHT]);
                 arcTrees[TestSmallCraft.ARC_FWD_LEFT].setFacing(BayWeaponCriticalTree.FORWARD);
                 arcTrees[TestSmallCraft.ARC_FWD_RIGHT].setFacing(BayWeaponCriticalTree.FORWARD);
                 aftLeftPanel.setVisible(true);
                 aftRightPanel.setVisible(true);
             } else {
-                ((TitledBorder)leftPanel.getBorder()).setTitle(aerodyneArcNames[TestSmallCraft.ARC_LWING]);
-                ((TitledBorder)rightPanel.getBorder()).setTitle(aerodyneArcNames[TestSmallCraft.ARC_RWING]);
+                ((TitledBorder) leftPanel.getBorder()).setTitle(aerodyneArcNames[TestSmallCraft.ARC_LWING]);
+                ((TitledBorder) rightPanel.getBorder()).setTitle(aerodyneArcNames[TestSmallCraft.ARC_RWING]);
                 arcTrees[TestSmallCraft.ARC_LWING].setFacing(BayWeaponCriticalTree.BOTH);
                 arcTrees[TestSmallCraft.ARC_RWING].setFacing(BayWeaponCriticalTree.BOTH);
                 aftLeftPanel.setVisible(false);
                 aftRightPanel.setVisible(false);
             }
         }
-        
+
         if (eSource.getEntity().hasETypeFlag(Entity.ETYPE_WARSHIP)) {
             bsLeftPanel.setVisible(true);
             bsRightPanel.setVisible(true);
@@ -249,7 +247,7 @@ public class LargeCraftCriticalView extends IView {
 
         double[] extra = eSource.getEntity().hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)
                 ? TestSmallCraft.extraSlotCost(getSmallCraft())
-                        : TestAdvancedAerospace.extraSlotCost(getJumpship());
+                : TestAdvancedAerospace.extraSlotCost(getJumpship());
         for (int arc = 0; arc < extra.length; arc++) {
             arcTrees[arc].rebuild();
             arcTrees[arc].repaint();
@@ -257,6 +255,6 @@ public class LargeCraftCriticalView extends IView {
             lblSlotsPerArc[arc].setText(String.valueOf(TestAero.slotsPerArc(getAero())));
             lblExtraTonnage[arc].setText(String.valueOf(extra[arc]));
         }
-        
+
     }
 }

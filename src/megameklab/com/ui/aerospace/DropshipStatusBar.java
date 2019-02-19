@@ -39,24 +39,24 @@ import megameklab.com.util.UnitUtil;
 
 /**
  * Status bar for SmallCraft and Dropships
- * 
+ *
  * @author Neoancient
  *
  */
 public class DropshipStatusBar extends ITab {
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = -6303444326796852470L;
-    
+
     private JButton btnValidate = new JButton("Validate Unit");
     private JButton btnFluffImage = new JButton("Set Fluff Image");
     private JLabel bvLabel = new JLabel();
     private JLabel tons = new JLabel();
     private JLabel heatSink = new JLabel();
     private JLabel cost = new JLabel();
-    private EntityVerifier entityVerifier = EntityVerifier.getInstance(new File(
-            "data/mechfiles/UnitVerifierOptions.xml"));
+    private EntityVerifier entityVerifier = EntityVerifier
+            .getInstance(new File("data/mechfiles/UnitVerifierOptions.xml"));
     private TestSmallCraft testSmallCraft = null;
     private DecimalFormat formatter;
     private JFrame parentFrame;
@@ -71,12 +71,12 @@ public class DropshipStatusBar extends ITab {
         testSmallCraft = new TestSmallCraft(getSmallCraft(), entityVerifier.aeroOption, null);
         btnValidate.addActionListener(e -> UnitUtil.showValidation(getSmallCraft(), getParentFrame()));
         btnFluffImage.addActionListener(e -> getFluffImage());
-        //btnFluffImage.setEnabled(false);
+        // btnFluffImage.setEnabled(false);
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.insets = new Insets(5,2,2,20);
+        gbc.insets = new Insets(5, 2, 2, 20);
         gbc.anchor = GridBagConstraints.WEST;
         this.add(btnValidate, gbc);
         gbc.gridx = 1;
@@ -91,7 +91,6 @@ public class DropshipStatusBar extends ITab {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
         this.add(cost, gbc);
-
 
         refresh();
     }
@@ -142,20 +141,17 @@ public class DropshipStatusBar extends ITab {
             double weaponHeat = wtype.getHeat();
 
             // only count non-damaged equipment
-            if (mounted.isMissing() || mounted.isHit() || mounted.isDestroyed()
-                    || mounted.isBreached()) {
+            if (mounted.isMissing() || mounted.isHit() || mounted.isDestroyed() || mounted.isBreached()) {
                 continue;
             }
 
             // one shot weapons count 1/4
-            if ((wtype.getAmmoType() == AmmoType.T_ROCKET_LAUNCHER)
-                    || wtype.hasFlag(WeaponType.F_ONESHOT)) {
+            if ((wtype.getAmmoType() == AmmoType.T_ROCKET_LAUNCHER) || wtype.hasFlag(WeaponType.F_ONESHOT)) {
                 weaponHeat *= 0.25;
             }
 
             // double heat for ultras
-            if ((wtype.getAmmoType() == AmmoType.T_AC_ULTRA)
-                    || (wtype.getAmmoType() == AmmoType.T_AC_ULTRA_THB)) {
+            if ((wtype.getAmmoType() == AmmoType.T_AC_ULTRA) || (wtype.getAmmoType() == AmmoType.T_AC_ULTRA_THB)) {
                 weaponHeat *= 2;
             }
 
@@ -165,8 +161,7 @@ public class DropshipStatusBar extends ITab {
             }
 
             // half heat for streaks
-            if ((wtype.getAmmoType() == AmmoType.T_SRM_STREAK)
-                    || (wtype.getAmmoType() == AmmoType.T_MRM_STREAK)
+            if ((wtype.getAmmoType() == AmmoType.T_SRM_STREAK) || (wtype.getAmmoType() == AmmoType.T_MRM_STREAK)
                     || (wtype.getAmmoType() == AmmoType.T_LRM_STREAK)) {
                 weaponHeat *= 0.5;
             }
@@ -176,24 +171,18 @@ public class DropshipStatusBar extends ITab {
     }
 
     private void getFluffImage() {
-        //copied from structureTab
-        FileDialog fDialog = new FileDialog(getParentFrame(), "Image Path",
-                FileDialog.LOAD);
-        fDialog.setDirectory(new File(ImageHelper.fluffPath).getAbsolutePath()
-                + File.separatorChar + ImageHelper.imageMech
-                + File.separatorChar);
+        // copied from structureTab
+        FileDialog fDialog = new FileDialog(getParentFrame(), "Image Path", FileDialog.LOAD);
+        fDialog.setDirectory(new File(ImageHelper.fluffPath).getAbsolutePath() + File.separatorChar
+                + ImageHelper.imageMech + File.separatorChar);
         fDialog.setLocationRelativeTo(this);
 
         fDialog.setVisible(true);
 
         if (fDialog.getFile() != null) {
-            String relativeFilePath = new File(fDialog.getDirectory()
-                    + fDialog.getFile()).getAbsolutePath();
-            relativeFilePath = "."
-                    + File.separatorChar
-                    + relativeFilePath
-                            .substring(new File(System.getProperty("user.dir")
-                                    .toString()).getAbsolutePath().length() + 1);
+            String relativeFilePath = new File(fDialog.getDirectory() + fDialog.getFile()).getAbsolutePath();
+            relativeFilePath = "." + File.separatorChar + relativeFilePath
+                    .substring(new File(System.getProperty("user.dir").toString()).getAbsolutePath().length() + 1);
             getSmallCraft().getFluff().setMMLImagePath(relativeFilePath);
         }
         refresh.refreshPreview();
@@ -207,6 +196,5 @@ public class DropshipStatusBar extends ITab {
     public void addRefreshedListener(RefreshListener l) {
         refresh = l;
     }
-
 
 }

@@ -1,7 +1,7 @@
 /*
- * MegaMekLab - Copyright (C) 2008
- *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * MegaMekLab
+ * - Copyright (C) 2008 jtighe (torren@users.sourceforge.net)
+ * - Copyright (C) 2018 The MegaMek Team
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -96,18 +96,20 @@ public class PrintAero implements Printable {
         Font font = UnitUtil.deriveFont(8.0f);
         g2d.setFont(font);
 
-		//TODO: Pilot Data: Fix coords. Below coords are pasted from Mech code.
-        //if ((aero.getCrew() != null) && !aero.getCrew().getName().equalsIgnoreCase("unnamed")) {
-        //	Crew pilot = aero.getCrew();		
-		//	g2d.drawString(pilot.getName(), 270 + leftMargin, topMargin + 119);
-		//	g2d.drawString(String.valueOf(pilot.getGunnery()), 295 + leftMargin, topMargin + 132);
-		//  g2d.drawString(String.valueOf(pilot.getPiloting()), 365 + leftMargin, topMargin + 132);
-        //}
+        // TODO: Pilot Data: Fix coords. Below coords are pasted from Mech code.
+        // if ((aero.getCrew() != null) &&
+        // !aero.getCrew().getName().equalsIgnoreCase("unnamed")) {
+        // Crew pilot = aero.getCrew();
+        // g2d.drawString(pilot.getName(), 270 + leftMargin, topMargin + 119);
+        // g2d.drawString(String.valueOf(pilot.getGunnery()), 295 + leftMargin,
+        // topMargin + 132);
+        // g2d.drawString(String.valueOf(pilot.getPiloting()), 365 + leftMargin,
+        // topMargin + 132);
+        // }
         // Test strings
-		//    g2d.drawString("Test Pilot", 270 + leftMargin, topMargin + 119);
-		//	g2d.drawString("5", 295 + leftMargin, topMargin + 132);
-		//    g2d.drawString("5", 365 + leftMargin, topMargin + 132);
-		
+        // g2d.drawString("Test Pilot", 270 + leftMargin, topMargin + 119);
+        // g2d.drawString("5", 295 + leftMargin, topMargin + 132);
+        // g2d.drawString("5", 365 + leftMargin, topMargin + 132);
 
         g2d.drawString(Integer.toString(aero.getWalkMP()), 99, 143);
         g2d.drawString(Integer.toString(aero.getRunMP()), 99, 154);
@@ -126,29 +128,29 @@ public class PrintAero implements Printable {
         if (!aero.isPrimitive()) {
             switch (aero.getTechLevel()) {
 
-                case TechConstants.T_INTRO_BOXSET:
-                    ImageHelper.printCenterString(g2d, "(Intro)", font, startLine, nextDataLine);
-                    nextDataLine += lineFeed;
-                    break;
-                case TechConstants.T_IS_TW_NON_BOX:
-                case TechConstants.T_IS_TW_ALL:
-                case TechConstants.T_CLAN_TW:
-                    break;
-                case TechConstants.T_IS_ADVANCED:
-                case TechConstants.T_CLAN_ADVANCED:
-                    ImageHelper.printCenterString(g2d, "(Advanced)", font, startLine, nextDataLine);
-                    nextDataLine += lineFeed;
-                    break;
-                case TechConstants.T_IS_EXPERIMENTAL:
-                case TechConstants.T_CLAN_EXPERIMENTAL:
-                    ImageHelper.printCenterString(g2d, "(Experimental)", font, startLine, nextDataLine);
-                    nextDataLine += lineFeed;
-                    break;
-                case TechConstants.T_IS_UNOFFICIAL:
-                case TechConstants.T_CLAN_UNOFFICIAL:
-                    ImageHelper.printCenterString(g2d, "(Unofficial)", font, startLine, nextDataLine);
-                    nextDataLine += lineFeed;
-                    break;
+            case TechConstants.T_INTRO_BOXSET:
+                ImageHelper.printCenterString(g2d, "(Intro)", font, startLine, nextDataLine);
+                nextDataLine += lineFeed;
+                break;
+            case TechConstants.T_IS_TW_NON_BOX:
+            case TechConstants.T_IS_TW_ALL:
+            case TechConstants.T_CLAN_TW:
+                break;
+            case TechConstants.T_IS_ADVANCED:
+            case TechConstants.T_CLAN_ADVANCED:
+                ImageHelper.printCenterString(g2d, "(Advanced)", font, startLine, nextDataLine);
+                nextDataLine += lineFeed;
+                break;
+            case TechConstants.T_IS_EXPERIMENTAL:
+            case TechConstants.T_CLAN_EXPERIMENTAL:
+                ImageHelper.printCenterString(g2d, "(Experimental)", font, startLine, nextDataLine);
+                nextDataLine += lineFeed;
+                break;
+            case TechConstants.T_IS_UNOFFICIAL:
+            case TechConstants.T_CLAN_UNOFFICIAL:
+                ImageHelper.printCenterString(g2d, "(Unofficial)", font, startLine, nextDataLine);
+                nextDataLine += lineFeed;
+                break;
             }
         } else {
             ImageHelper.printCenterString(g2d, "(Primitive)", font, startLine, nextDataLine);
@@ -229,13 +231,21 @@ public class PrintAero implements Printable {
         font = UnitUtil.deriveFont(true, 9.0f);
         g2d.setFont(font);
 
-        ImageHelper.printCenterString(g2d, String.format("%1$S (%2$s)", aero.getThresh(Aero.LOC_NOSE), aero.getArmor(Aero.LOC_NOSE)), g2d.getFont(), 300, 139);
+        ImageHelper.printCenterString(g2d,
+                String.format("%1$S (%2$s)", aero.getThresh(Aero.LOC_NOSE), aero.getArmor(Aero.LOC_NOSE)),
+                g2d.getFont(), 300, 139);
 
-        ImageHelper.printCenterString(g2d, String.format("%1$S (%2$s)", aero.getThresh(Aero.LOC_RWING), aero.getArmor(Aero.LOC_RWING)), g2d.getFont(), 495, 310);
+        ImageHelper.printCenterString(g2d,
+                String.format("%1$S (%2$s)", aero.getThresh(Aero.LOC_RWING), aero.getArmor(Aero.LOC_RWING)),
+                g2d.getFont(), 495, 310);
 
-        ImageHelper.printCenterString(g2d, String.format("%1$S (%2$s)", aero.getThresh(Aero.LOC_LWING), aero.getArmor(Aero.LOC_LWING)), g2d.getFont(), 290, 310);
+        ImageHelper.printCenterString(g2d,
+                String.format("%1$S (%2$s)", aero.getThresh(Aero.LOC_LWING), aero.getArmor(Aero.LOC_LWING)),
+                g2d.getFont(), 290, 310);
 
-        ImageHelper.printCenterString(g2d, String.format("%1$S (%2$s)", aero.getThresh(Aero.LOC_AFT), aero.getArmor(Aero.LOC_AFT)), g2d.getFont(), 398, 487);
+        ImageHelper.printCenterString(g2d,
+                String.format("%1$S (%2$s)", aero.getThresh(Aero.LOC_AFT), aero.getArmor(Aero.LOC_AFT)), g2d.getFont(),
+                398, 487);
 
         g2d.drawString(String.format("%1$S", aero.get0SI()), 390, 268);
     }
@@ -280,23 +290,23 @@ public class PrintAero implements Printable {
         final int[] pipsPerHalfRow = { 4, 6, 13, 14, 14, 14, 14, 14, 13, 12, 9, 6 };
         final int[] rowOffset = { 35, 42, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
         final int maxPips = Arrays.stream(pipsPerHalfRow).sum() * 2;
-        
+
         float centerx = 393;
         float ypos = 157;
         float[] pipShift = { 7, 7 };
-        
+
         // Calculate possible positions
         List<float[]> pipPlotter = new ArrayList<>();
         for (int row = 0; row < pipsPerHalfRow.length; row++) {
             int xOffset = rowOffset[row];
             for (int i = 0; i < pipsPerHalfRow[row]; i++) {
-                pipPlotter.add(new float[] { centerx + xOffset, ypos});
-                pipPlotter.add(new float[] { centerx - xOffset - pipShift[0], ypos});
+                pipPlotter.add(new float[] { centerx + xOffset, ypos });
+                pipPlotter.add(new float[] { centerx - xOffset - pipShift[0], ypos });
                 xOffset += pipShift[0];
             }
             ypos += pipShift[1];
         }
-        
+
         // Spread pips out among available positions
         int pipSpace = Math.max(1, maxPips / totalArmor);
         for (int pos = 0; pos < maxPips; pos += pipSpace) {
@@ -308,23 +318,23 @@ public class PrintAero implements Printable {
     }
 
     private void printRearArmor(Graphics2D g2d, int totalArmor) {
-        // Normally we would use 6 columns, but if the armor exceeds a certain amount, we add up to two additional
+        // Normally we would use 6 columns, but if the armor exceeds a certain amount,
+        // we add up to two additional
         // columns
         int maxColumns = Math.min(9, Math.max(6, totalArmor / 21 + 1));
-        // Compute the number of rows needed for the number of columns we have. For extreme armor levels,
-        // this could end up drawing pips off the bottom of the diagram, but that's preferable to silently
+        // Compute the number of rows needed for the number of columns we have. For
+        // extreme armor levels,
+        // this could end up drawing pips off the bottom of the diagram, but that's
+        // preferable to silently
         // ignoring some of the pips
         int maxRows = Math.max(21, totalArmor / maxColumns + 1);
         int maxPips = maxRows * maxColumns;
-        float[] topColumn = new float[]
-                { 393 - maxColumns * 3.5f, 303 };
-        float[] pipShift = new float[]
-                { 7, 7 };
+        float[] topColumn = new float[] { 393 - maxColumns * 3.5f, 303 };
+        float[] pipShift = new float[] { 7, 7 };
 
         List<float[]> pipPlotter = new ArrayList<>();
         for (int pos = 1; pos <= maxPips; pos++) {
-            pipPlotter.add(new float[]
-                { topColumn[0], topColumn[1] });
+            pipPlotter.add(new float[] { topColumn[0], topColumn[1] });
             topColumn[0] += pipShift[0];
             if ((pos % maxColumns) == 0) {
                 topColumn[1] += pipShift[1];
@@ -344,39 +354,43 @@ public class PrintAero implements Printable {
     }
 
     /**
-     * Draws the armor pips for the wings. Normally we leave some whitespace where the diagram suggests
-     * tail fins, but with very high armor levels this is needed for additional wing armor pips.
-     * 
-     * @param g2d The graphics object for the record sheet image
+     * Draws the armor pips for the wings. Normally we leave some whitespace where
+     * the diagram suggests tail fins, but with very high armor levels this is
+     * needed for additional wing armor pips.
+     *
+     * @param g2d        The graphics object for the record sheet image
      * @param totalArmor The total number of armor points for the wing
-     * @param x The x coordinate of the pip at the forward edge of the wing closest to the fuselage
-     * @param y The y coordinate of the row of pips at the forward edge of the wing
-     * @param direction The direction away from the fuselage. This is 1 for the right wing and -1 for the left.
+     * @param x          The x coordinate of the pip at the forward edge of the wing
+     *                   closest to the fuselage
+     * @param y          The y coordinate of the row of pips at the forward edge of
+     *                   the wing
+     * @param direction  The direction away from the fuselage. This is 1 for the
+     *                   right wing and -1 for the left.
      */
     private void printWingArmor(Graphics2D g2d, int totalArmor, float x, float y, int direction) {
         // The number of pips for each armor row
         final int[] numPerRow = { 3, 4, 5, 6, 7, 9, 14, 15, 15, 15, 14, 14, 13, 10, 8 };
         // The offset away from centerline for the start of each row
         final float[] startOffset = { 0, 0, 0, 0, 5, 5, 9.5f, 9.5f, 9.5f, 12.6f, 18.9f, 18.9f, 18.9f, 22.2f, 22.2f };
-        // Calculate the maximum number of pips for the wing space. If higher, we'll need to put some in what
+        // Calculate the maximum number of pips for the wing space. If higher, we'll
+        // need to put some in what
         // would normally be empty whitespace next to the aft section.
         int highArmorThreshold = Arrays.stream(numPerRow).sum();
-        // The number of pips for each row if we exceed the standard capacity. The offset for each row is zero.
+        // The number of pips for each row if we exceed the standard capacity. The
+        // offset for each row is zero.
         final int[] numPerRowHighArmor = { 3, 4, 5, 6, 8, 10, 15, 16, 16, 17, 17, 16, 16, 14, 11, 3, 3, 3 };
         int maxArmor = Arrays.stream(numPerRowHighArmor).sum();
-        
-        
+
         float[] topColumn = new float[] { x, y };
         float[] pipShift = new float[] { 6.3f * direction, 7 };
 
         int currentInRow = 0;
         int currentRow = 0;
-        int[] rowLength = totalArmor > highArmorThreshold? numPerRowHighArmor : numPerRow;
+        int[] rowLength = totalArmor > highArmorThreshold ? numPerRowHighArmor : numPerRow;
         List<float[]> pipPlotter = new ArrayList<>();
 
         for (int pos = 1; pos < Math.min(totalArmor, maxArmor); pos++) {
-            pipPlotter.add(new float[]
-                { topColumn[0], topColumn[1] });
+            pipPlotter.add(new float[] { topColumn[0], topColumn[1] });
             topColumn[0] += pipShift[0];
 
             if (++currentInRow == rowLength[currentRow]) {
@@ -388,9 +402,9 @@ public class PrintAero implements Printable {
                     topColumn[0] += startOffset[currentRow] * direction;
                 }
             }
-       }
+        }
 
-        int pipSpace = Math.max(1, (totalArmor > highArmorThreshold? maxArmor : highArmorThreshold) / totalArmor);
+        int pipSpace = Math.max(1, (totalArmor > highArmorThreshold ? maxArmor : highArmorThreshold) / totalArmor);
         for (int pos = 0; pos < pipPlotter.size(); pos += pipSpace) {
             ImageHelperAero.drawAeroArmorPip(g2d, pipPlotter.get(pos)[0], pipPlotter.get(pos)[1]);
             if (--totalArmor <= 0) {
@@ -402,15 +416,12 @@ public class PrintAero implements Printable {
     private void printStruct(Graphics2D g2d, int totalArmor) {
         int posY = 369;
         int posX = 269;
-        int[] topColumn = new int[]
-            { posY, posX };
-        int[] pipShift = new int[]
-            { 6, 6 };
+        int[] topColumn = new int[] { posY, posX };
+        int[] pipShift = new int[] { 6, 6 };
 
         Vector<int[]> pipPlotter = new Vector<int[]>(132);
         for (int pos = 1; pos <= 32; pos++) {
-            pipPlotter.add(new int[]
-                { topColumn[0], topColumn[1] });
+            pipPlotter.add(new int[] { topColumn[0], topColumn[1] });
             topColumn[0] += pipShift[0];
             if ((pos % 8) == 0) {
                 topColumn[1] += pipShift[1];

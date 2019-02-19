@@ -43,43 +43,46 @@ import megameklab.com.ui.view.listeners.BuildListener;
 import megameklab.com.util.UnitUtil;
 
 /**
- * Structure table armor panel for units that allocate armor by point instead of ton.
- * 
+ * Structure table armor panel for units that allocate armor by point instead of
+ * ton.
+ *
  * @author Neoancient
  *
  */
 public class BAProtoArmorView extends BuildView implements ActionListener, ChangeListener {
-    
+
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 14527455823813010L;
 
     private final List<BuildListener> listeners = new CopyOnWriteArrayList<>();
+
     public void addListener(BuildListener l) {
         listeners.add(l);
     }
+
     public void removeListener(BuildListener l) {
         listeners.remove(l);
     }
-    
-    private final static String CMD_MAXIMIZE  = "MAXIMIZE"; //$NON-NLS-1$
+
+    private final static String CMD_MAXIMIZE = "MAXIMIZE"; //$NON-NLS-1$
     private final static String CMD_REMAINING = "REMAINING"; //$NON-NLS-1$
-    
+
     private final TechComboBox<EquipmentType> cbArmorType = new TechComboBox<>(eq -> eq.getName());
     private final SpinnerNumberModel spnArmorPointsModel = new SpinnerNumberModel(0, 0, null, 1);
     private final JSpinner spnArmorPoints = new JSpinner(spnArmorPointsModel);
     private final JButton btnMaximize = new JButton();
     private final JButton btnUseRemaining = new JButton();
-    
+
     private final ITechManager techManager;
     private long etype;
-    
+
     public BAProtoArmorView(ITechManager techManager) {
         this.techManager = techManager;
         initUI();
     }
-    
+
     private void initUI() {
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl()); //$NON-NLS-1$
 
@@ -96,7 +99,7 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
         cbArmorType.setToolTipText(resourceMap.getString("ArmorView.cbArmorType.tooltip")); //$NON-NLS-1$
         add(cbArmorType, gbc);
         cbArmorType.addActionListener(this);
-        
+
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridwidth = 1;
@@ -117,7 +120,7 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
         btnMaximize.setToolTipText(resourceMap.getString("ArmorView.btnMaximize.tooltip")); //$NON-NLS-1$
         add(btnMaximize, gbc);
         btnMaximize.addActionListener(this);
-        
+
         gbc.gridx = 0;
         gbc.gridy = 3;
         gbc.gridwidth = 3;
@@ -128,46 +131,44 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
         add(btnUseRemaining, gbc);
         btnUseRemaining.addActionListener(this);
     }
-    
+
     public void setFromEntity(Entity en) {
         etype = en.getEntityType();
         refresh();
         cbArmorType.removeActionListener(this);
         spnArmorPoints.removeChangeListener(this);
-        String name = EquipmentType.getArmorTypeName(en.getArmorType(0),
-                TechConstants.isClan(en.getArmorTechLevel(0)));
+        String name = EquipmentType.getArmorTypeName(en.getArmorType(0), TechConstants.isClan(en.getArmorTechLevel(0)));
         EquipmentType eq = EquipmentType.get(name);
         cbArmorType.setSelectedItem(eq);
         if (en.hasETypeFlag(Entity.ETYPE_BATTLEARMOR)) {
-            spnArmorPointsModel.setValue(Math.min(((BattleArmor)en).getMaximumArmorPoints(),
-                    en.getOArmor(BattleArmor.LOC_TROOPER_1)));
-            spnArmorPointsModel.setMaximum(((BattleArmor)en).getMaximumArmorPoints());
+            spnArmorPointsModel.setValue(
+                    Math.min(((BattleArmor) en).getMaximumArmorPoints(), en.getOArmor(BattleArmor.LOC_TROOPER_1)));
+            spnArmorPointsModel.setMaximum(((BattleArmor) en).getMaximumArmorPoints());
         } else if (en.hasETypeFlag(Entity.ETYPE_PROTOMECH)) {
             final int max = TestProtomech.maxArmorFactor((Protomech) en);
-            spnArmorPointsModel.setValue(Math.min(max,
-                    (int) UnitUtil.getRawArmorPoints(en, en.getLabArmorTonnage())));
+            spnArmorPointsModel.setValue(Math.min(max, (int) UnitUtil.getRawArmorPoints(en, en.getLabArmorTonnage())));
             spnArmorPointsModel.setMaximum(max);
         } else {
             spnArmorPointsModel.setValue(en.getTotalOArmor());
         }
-        
+
         cbArmorType.addActionListener(this);
         spnArmorPoints.addChangeListener(this);
     }
-    
+
     public @Nullable EquipmentType getArmor() {
         return (EquipmentType) cbArmorType.getSelectedItem();
     }
-    
+
     public int getArmorPoints() {
         return spnArmorPointsModel.getNumber().intValue();
     }
-    
+
     public void refresh() {
-        EquipmentType prev = (EquipmentType)cbArmorType.getSelectedItem();
+        EquipmentType prev = (EquipmentType) cbArmorType.getSelectedItem();
         cbArmorType.removeActionListener(this);
         cbArmorType.removeAllItems();
-        
+
         BigInteger flag = BigInteger.valueOf(0);
         if ((etype & Entity.ETYPE_BATTLEARMOR) != 0) {
             flag = MiscType.F_BA_EQUIPMENT;
@@ -183,21 +184,19 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
             if (techManager.useMixedTech()) {
                 name = EquipmentType.getArmorTypeName(at, !techManager.useClanTechBase());
                 EquipmentType eq2 = EquipmentType.get(name);
-                if ((null != eq2) && (eq != eq2) && eq2.hasFlag(flag)
-                        && techManager.isLegal(eq2)) {
+                if ((null != eq2) && (eq != eq2) && eq2.hasFlag(flag) && techManager.isLegal(eq2)) {
                     cbArmorType.addItem(eq2);
                 }
             }
         }
         cbArmorType.setSelectedItem(prev);
         cbArmorType.addActionListener(this);
-        if ((cbArmorType.getSelectedIndex() < 0)
-                && (cbArmorType.getModel().getSize() > 0)) {
+        if ((cbArmorType.getSelectedIndex() < 0) && (cbArmorType.getModel().getSize() > 0)) {
             cbArmorType.setSelectedIndex(0);
         }
         cbArmorType.showTechBase(techManager.useMixedTech());
     }
-    
+
     @Override
     public void stateChanged(ChangeEvent e) {
         if (e.getSource() == spnArmorPoints) {
@@ -208,7 +207,7 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == cbArmorType) {
-            listeners.forEach(l -> l.armorTypeChanged((EquipmentType)cbArmorType.getSelectedItem()));
+            listeners.forEach(l -> l.armorTypeChanged((EquipmentType) cbArmorType.getSelectedItem()));
         } else if (CMD_MAXIMIZE.equals(e.getActionCommand())) {
             listeners.forEach(l -> l.maximizeArmor());
         } else if (CMD_REMAINING.equals(e.getActionCommand())) {

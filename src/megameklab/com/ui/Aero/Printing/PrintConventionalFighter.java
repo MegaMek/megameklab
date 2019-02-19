@@ -1,7 +1,7 @@
 /*
- * MegaMekLab - Copyright (C) 2008
- *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * MegaMekLab
+ * - Copyright (C) 2008 jtighe (torren@users.sourceforge.net)
+ * - Copyright (C) 2018 The MegaMek Team
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -121,29 +121,29 @@ public class PrintConventionalFighter implements Printable {
 
         switch (convFighter.getTechLevel()) {
 
-            case TechConstants.T_INTRO_BOXSET:
-                ImageHelper.printCenterString(g2d, "(Intro)", font, startLine, nextDataLine);
-                nextDataLine += lineFeed;
-                break;
-            case TechConstants.T_IS_TW_NON_BOX:
-            case TechConstants.T_IS_TW_ALL:
-            case TechConstants.T_CLAN_TW:
-                break;
-            case TechConstants.T_IS_ADVANCED:
-            case TechConstants.T_CLAN_ADVANCED:
-                ImageHelper.printCenterString(g2d, "(Advanced)", font, startLine, nextDataLine);
-                nextDataLine += lineFeed;
-                break;
-            case TechConstants.T_IS_EXPERIMENTAL:
-            case TechConstants.T_CLAN_EXPERIMENTAL:
-                ImageHelper.printCenterString(g2d, "(Experimental)", font, startLine, nextDataLine);
-                nextDataLine += lineFeed;
-                break;
-            case TechConstants.T_IS_UNOFFICIAL:
-            case TechConstants.T_CLAN_UNOFFICIAL:
-                ImageHelper.printCenterString(g2d, "(Unofficial)", font, startLine, nextDataLine);
-                nextDataLine += lineFeed;
-                break;
+        case TechConstants.T_INTRO_BOXSET:
+            ImageHelper.printCenterString(g2d, "(Intro)", font, startLine, nextDataLine);
+            nextDataLine += lineFeed;
+            break;
+        case TechConstants.T_IS_TW_NON_BOX:
+        case TechConstants.T_IS_TW_ALL:
+        case TechConstants.T_CLAN_TW:
+            break;
+        case TechConstants.T_IS_ADVANCED:
+        case TechConstants.T_CLAN_ADVANCED:
+            ImageHelper.printCenterString(g2d, "(Advanced)", font, startLine, nextDataLine);
+            nextDataLine += lineFeed;
+            break;
+        case TechConstants.T_IS_EXPERIMENTAL:
+        case TechConstants.T_CLAN_EXPERIMENTAL:
+            ImageHelper.printCenterString(g2d, "(Experimental)", font, startLine, nextDataLine);
+            nextDataLine += lineFeed;
+            break;
+        case TechConstants.T_IS_UNOFFICIAL:
+        case TechConstants.T_CLAN_UNOFFICIAL:
+            ImageHelper.printCenterString(g2d, "(Unofficial)", font, startLine, nextDataLine);
+            nextDataLine += lineFeed;
+            break;
         }
 
         String techBase = "Inner Sphere";
@@ -205,7 +205,6 @@ public class PrintConventionalFighter implements Printable {
             g2d.drawString(String.format("%1$,d", convFighter.calculateBattleValue(true, true)), 50, 346.2f);
         }
 
-
         // myFormatter = new DecimalFormat("#,###.##");
         // g2d.drawString(String.format("%1$,.0f C-bills",
         // convFighter.getCost(true)),
@@ -230,17 +229,24 @@ public class PrintConventionalFighter implements Printable {
         font = UnitUtil.deriveFont(true, 11.0f);
         g2d.setFont(font);
         ImageHelper.printCenterString(g2d, ImageHelperVehicle.getVehicleArmorTypeString(convFighter), font, 352, 108);
-        //g2d.drawString(ImageHelperVehicle.getVehicleArmorTypeString(convFighter), 337, 108);
+        // g2d.drawString(ImageHelperVehicle.getVehicleArmorTypeString(convFighter),
+        // 337, 108);
         font = UnitUtil.deriveFont(true, 9.0f);
         g2d.setFont(font);
 
-        ImageHelper.printCenterString(g2d, String.format("%1$S (%2$s)", convFighter.getThresh(Aero.LOC_NOSE), convFighter.getArmor(Aero.LOC_NOSE)), g2d.getFont(), 315, 162);
+        ImageHelper.printCenterString(g2d,
+                String.format("%1$S (%2$s)", convFighter.getThresh(Aero.LOC_NOSE), convFighter.getArmor(Aero.LOC_NOSE)),
+                g2d.getFont(), 315, 162);
 
-        ImageHelper.printCenterString(g2d, String.format("%1$S (%2$s)", convFighter.getThresh(Aero.LOC_RWING), convFighter.getArmor(Aero.LOC_RWING)), g2d.getFont(), 495, 333);
+        ImageHelper.printCenterString(g2d, String.format("%1$S (%2$s)", convFighter.getThresh(Aero.LOC_RWING),
+                convFighter.getArmor(Aero.LOC_RWING)), g2d.getFont(), 495, 333);
 
-        ImageHelper.printCenterString(g2d, String.format("%1$S (%2$s)", convFighter.getThresh(Aero.LOC_LWING), convFighter.getArmor(Aero.LOC_LWING)), g2d.getFont(), 290, 333);
+        ImageHelper.printCenterString(g2d, String.format("%1$S (%2$s)", convFighter.getThresh(Aero.LOC_LWING),
+                convFighter.getArmor(Aero.LOC_LWING)), g2d.getFont(), 290, 333);
 
-        ImageHelper.printCenterString(g2d, String.format("%1$S (%2$s)", convFighter.getThresh(Aero.LOC_AFT), convFighter.getArmor(Aero.LOC_AFT)), g2d.getFont(), 398, 487);
+        ImageHelper.printCenterString(g2d,
+                String.format("%1$S (%2$s)", convFighter.getThresh(Aero.LOC_AFT), convFighter.getArmor(Aero.LOC_AFT)),
+                g2d.getFont(), 398, 487);
 
         g2d.drawString(String.format("%1$S", convFighter.get0SI()), 390, 268);
 
@@ -268,8 +274,7 @@ public class PrintConventionalFighter implements Printable {
 
         for (int lineCount = 1; lineCount <= 32; lineCount++) {
             for (int point = 0; point < pipsPerLine; point++) {
-                pipPlotter.add(new float[]
-                    { pointX, pointY });
+                pipPlotter.add(new float[] { pointX, pointY });
                 pointX += shiftX;
             }
             if (lineCount == 2) {
@@ -322,8 +327,7 @@ public class PrintConventionalFighter implements Printable {
 
         for (int lineCount = 1; lineCount <= 17; lineCount++) {
             for (int point = 0; point < pipsPerLine; point++) {
-                pipPlotter.add(new float[]
-                    { pointX, pointY });
+                pipPlotter.add(new float[] { pointX, pointY });
                 pointX += shiftX;
             }
             if (lineCount == 12) {
@@ -351,8 +355,7 @@ public class PrintConventionalFighter implements Printable {
 
         for (int lineCount = 1; lineCount <= 12; lineCount++) {
             for (int point = 0; point < pipsPerLine; point++) {
-                pipPlotter.add(new float[]
-                    { pointX, pointY });
+                pipPlotter.add(new float[] { pointX, pointY });
                 pointX += shiftX;
             }
             if (lineCount < 10) {
@@ -381,8 +384,7 @@ public class PrintConventionalFighter implements Printable {
 
         for (int lineCount = 1; lineCount <= 12; lineCount++) {
             for (int point = 0; point < pipsPerLine; point++) {
-                pipPlotter.add(new float[]
-                    { pointX, pointY });
+                pipPlotter.add(new float[] { pointX, pointY });
                 pointX += shiftX;
             }
             if (lineCount < 10) {
@@ -408,8 +410,7 @@ public class PrintConventionalFighter implements Printable {
 
         for (int lineCount = 1; lineCount <= 3; lineCount++) {
             for (int point = 0; point < pipsPerLine; point++) {
-                pipPlotter.add(new float[]
-                    { pointX, pointY });
+                pipPlotter.add(new float[] { pointX, pointY });
                 pointX += shiftX;
             }
             pointY += shiftY;
@@ -434,7 +435,8 @@ public class PrintConventionalFighter implements Printable {
         float pipSpace = pipPlotter.size() / totalArmor;
         for (float pos = 0; pos < pipPlotter.size(); pos += pipSpace) {
             int currentPip = (int) pos;
-            ImageHelperAero.drawAeroISPip(g2d, (int) pipPlotter.get(currentPip)[0], (int) pipPlotter.get(currentPip)[1]);
+            ImageHelperAero.drawAeroISPip(g2d, (int) pipPlotter.get(currentPip)[0],
+                    (int) pipPlotter.get(currentPip)[1]);
             if (--totalArmor <= 0) {
                 return;
             }
@@ -447,7 +449,8 @@ public class PrintConventionalFighter implements Printable {
         float pipSpace = pipPlotter.size() / totalArmor;
         for (float pos = 0; pos < pipPlotter.size(); pos += pipSpace) {
             int currentPip = (int) pos;
-            ImageHelperAero.drawAeroArmorPip(g2d, (int) pipPlotter.get(currentPip)[0], (int) pipPlotter.get(currentPip)[1]);
+            ImageHelperAero.drawAeroArmorPip(g2d, (int) pipPlotter.get(currentPip)[0],
+                    (int) pipPlotter.get(currentPip)[1]);
             if (--totalArmor <= 0) {
                 return;
             }

@@ -41,7 +41,7 @@ import megameklab.com.util.RefreshListener;
 
 /**
  * Panel for editing unit fluff
- * 
+ *
  * @author Neoancient
  *
  */
@@ -53,7 +53,7 @@ public class FluffTab extends ITab implements FocusListener {
     private final JTextArea txtOverview = new JTextArea(4, 40);
     private final JTextArea txtDeployment = new JTextArea(4, 40);
     private final JTextArea txtHistory = new JTextArea(4, 40);
-    
+
     private final JTextField txtManufacturer = new JTextField(12);
     private final JTextField txtPrimaryFactory = new JTextField(12);
     private final JTextField txtUse = new JTextField(12);
@@ -62,24 +62,24 @@ public class FluffTab extends ITab implements FocusListener {
     private final JTextField txtHeight = new JTextField(8);
     private final Map<System, JTextField> txtCompManufacturers = new EnumMap<>(System.class);
     private final Map<System, JTextField> txtCompModels = new EnumMap<>(System.class);
-    
+
     private final JTextArea txtNotes = new JTextArea(4, 40);
-    
-    private static final String TAG_MANUFACTURER = "manufacturer"; //$NON-NLS-1
-    private static final String TAG_MODEL = "model"; //$NON-NLS-1
-    
+
+    private static final String TAG_MANUFACTURER = "manufacturer"; // $NON-NLS-1
+    private static final String TAG_MODEL = "model"; // $NON-NLS-1
+
     private RefreshListener refresh;
-    
+
     public FluffTab(EntitySource esource) {
         super(esource);
         initUi();
     }
-    
+
     // For convenience
     private EntityFluff getFluff() {
         return eSource.getEntity().getFluff();
     }
-    
+
     public void setRefreshedListener(RefreshListener l) {
         refresh = l;
     }
@@ -96,14 +96,14 @@ public class FluffTab extends ITab implements FocusListener {
                 || eSource.getEntity().hasETypeFlag(Entity.ETYPE_BATTLEARMOR)) {
             add(panRight);
         }
-        
+
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.NORTHWEST;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.insets = new Insets(5, 5, 5, 5);
-        
+
         panLeft.setLayout(new GridBagLayout());
         panLeft.add(new JLabel(resourceMap.getString("FluffTab.txtCapabilities")), gbc);
         gbc.gridy++;
@@ -114,7 +114,7 @@ public class FluffTab extends ITab implements FocusListener {
         panLeft.add(txtCapabilities, gbc);
         txtCapabilities.addFocusListener(this);
         gbc.gridy++;
-        
+
         panLeft.add(new JLabel(resourceMap.getString("FluffTab.txtOverview")), gbc);
         gbc.gridy++;
         txtOverview.setLineWrap(true);
@@ -144,7 +144,7 @@ public class FluffTab extends ITab implements FocusListener {
         panLeft.add(txtHistory, gbc);
         txtHistory.addFocusListener(this);
         gbc.gridy++;
-        
+
         panLeft.add(new JLabel(resourceMap.getString("FluffTab.txtNotes")), gbc);
         gbc.gridy++;
         txtNotes.setLineWrap(true);
@@ -154,7 +154,7 @@ public class FluffTab extends ITab implements FocusListener {
         gbc.weighty = 1.0;
         panLeft.add(txtNotes, gbc);
         txtNotes.addFocusListener(this);
-        
+
         panRight.setLayout(new GridBagLayout());
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -173,7 +173,7 @@ public class FluffTab extends ITab implements FocusListener {
         panRight.add(txtPrimaryFactory, gbc);
         txtPrimaryFactory.addFocusListener(this);
         gbc.gridy++;
-        
+
         if (eSource.getEntity().hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)
                 || eSource.getEntity().hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
             gbc.gridx = 0;
@@ -183,7 +183,7 @@ public class FluffTab extends ITab implements FocusListener {
             panRight.add(txtUse, gbc);
             txtUse.addFocusListener(this);
             gbc.gridy++;
-            
+
             gbc.gridx = 0;
             panRight.add(new JLabel(resourceMap.getString("FluffTab.txtLength")), gbc);
             gbc.gridx = 1;
@@ -191,7 +191,7 @@ public class FluffTab extends ITab implements FocusListener {
             gbc.gridx = 2;
             panRight.add(new JLabel(resourceMap.getString("FluffTab.txtHeight")), gbc);
             gbc.gridy++;
-            
+
             gbc.gridx = 0;
             txtLength.setText(getFluff().getLength());
             panRight.add(txtLength, gbc);
@@ -216,8 +216,7 @@ public class FluffTab extends ITab implements FocusListener {
         panRight.add(new JLabel(resourceMap.getString("FluffTab.Model")), gbc);
         gbc.gridy++;
         for (EntityFluff.System system : EntityFluff.System.values()) {
-            if ((system == EntityFluff.System.JUMPJET)
-                    && eSource.getEntity().hasETypeFlag(Entity.ETYPE_AERO)) {
+            if ((system == EntityFluff.System.JUMPJET) && eSource.getEntity().hasETypeFlag(Entity.ETYPE_AERO)) {
                 continue;
             }
             gbc.gridx = 0;
@@ -241,7 +240,7 @@ public class FluffTab extends ITab implements FocusListener {
         gbc.gridx = 0;
         gbc.weighty = 1.0;
         panRight.add(new JPanel(), gbc);
-        
+
     }
 
     @Override

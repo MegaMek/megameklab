@@ -35,21 +35,23 @@ import megameklab.com.ui.view.listeners.BuildListener;
 
 /**
  * Structure tab panel for aero unit fuel
- * 
+ *
  * @author Neoancient
  *
  */
 public class AeroFuelView extends BuildView implements ChangeListener {
-    
+
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = -3321986392656071192L;
 
     List<BuildListener> listeners = new CopyOnWriteArrayList<>();
+
     public void addListener(BuildListener l) {
         listeners.add(l);
     }
+
     public void removeListener(BuildListener l) {
         listeners.remove(l);
     }
@@ -62,17 +64,17 @@ public class AeroFuelView extends BuildView implements ChangeListener {
     private final JLabel lblBurnDays1G = new JLabel("", JLabel.CENTER);
     private final JLabel lblBurnDaysMax = new JLabel("", JLabel.CENTER);
     private final JPanel panBurnDays = new JPanel();
-    
+
     public AeroFuelView() {
         initUI();
     }
-    
+
     private void initUI() {
         setLayout(new GridBagLayout());
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl()); //$NON-NLS-1$
         GridBagConstraints gbc = new GridBagConstraints();
-        
-        gbc.insets = new Insets(0,0,0,0);
+
+        gbc.insets = new Insets(0, 0, 0, 0);
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 1;
@@ -83,15 +85,15 @@ public class AeroFuelView extends BuildView implements ChangeListener {
         spnFuel.setToolTipText(resourceMap.getString("AeroFuelView.spnFuel.tooltip")); //$NON-NLS-1$
         add(spnFuel, gbc);
         spnFuel.addChangeListener(this);
-        
+
         gbc.gridx = 2;
         gbc.fill = GridBagConstraints.BOTH;
         add(createLabel(resourceMap.getString("AeroFuelView.lblFuelPoints.text"), labelSize), gbc); //$NON-NLS-1$
         gbc.gridx = 3;
-        gbc.insets = new Insets(0,10,0,20);
+        gbc.insets = new Insets(0, 10, 0, 20);
         lblFuelPoints.setToolTipText(resourceMap.getString("AeroFuelView.lblFuelPoints.tooltip")); //$NON-NLS-1$
         add(lblFuelPoints, gbc);
-        gbc.insets = new Insets(0,0,0,0);
+        gbc.insets = new Insets(0, 0, 0, 0);
 
         JPanel panInfoTurns = new JPanel(new GridLayout(0, 2));
         panInfoTurns.add(new JLabel(resourceMap.getString("AeroFuelView.lblTurnsAtSafe.text")), gbc); //$NON-NLS-1$
@@ -105,7 +107,7 @@ public class AeroFuelView extends BuildView implements ChangeListener {
         gbc.gridwidth = 4;
         gbc.gridy = 1;
         gbc.fill = GridBagConstraints.BOTH;
-        gbc.insets = new Insets(10,10,10,10);
+        gbc.insets = new Insets(10, 10, 10, 10);
         add(panInfoTurns, gbc);
 
         panBurnDays.setLayout(new GridLayout(0, 2));
@@ -120,28 +122,26 @@ public class AeroFuelView extends BuildView implements ChangeListener {
         gbc.gridwidth = 4;
         gbc.gridy = 2;
         gbc.fill = GridBagConstraints.BOTH;
-        gbc.insets = new Insets(10,10,10,10);
+        gbc.insets = new Insets(10, 10, 10, 10);
         add(panInfoTurns, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 3;
         gbc.fill = GridBagConstraints.BOTH;
-        gbc.insets = new Insets(10,10,10,10);
+        gbc.insets = new Insets(10, 10, 10, 10);
         add(panBurnDays, gbc);
     }
-    
+
     public void setFromEntity(Aero aero) {
         lblFuelPoints.setText(String.valueOf(aero.getFuel()));
-        lblTurnsAtSafe.setText(String.format(
-                "%1$.2f", TestAero.calculateMaxTurnsAtSafe(aero)));
-        lblTurnsAtMax.setText(String.format(
-                "%1$.2f", TestAero.calculateMaxTurnsAtMax(aero)));
+        lblTurnsAtSafe.setText(String.format("%1$.2f", TestAero.calculateMaxTurnsAtSafe(aero)));
+        lblTurnsAtMax.setText(String.format("%1$.2f", TestAero.calculateMaxTurnsAtMax(aero)));
 
         spnFuelModel.setMaximum(aero.getWeight());
         spnFuel.removeChangeListener(this);
         spnFuel.setValue(aero.getFuelTonnage());
         spnFuel.addChangeListener(this);
-        
+
         if (aero.getStrategicFuelUse() > 0) {
             lblBurnDays1G.setText(String.format("%3.2f", TestAero.calculateDaysAt1G(aero)));
             lblBurnDaysMax.setText(String.format("%3.2f", TestAero.calculateDaysAtMax(aero)));
@@ -150,7 +150,7 @@ public class AeroFuelView extends BuildView implements ChangeListener {
             panBurnDays.setVisible(false);
         }
     }
-    
+
     @Override
     public void stateChanged(ChangeEvent e) {
         if (e.getSource() == spnFuel) {

@@ -19,21 +19,30 @@ import megamek.common.verifier.BayData;
 
 /**
  * Listener for views used by combat vehicles.
- * 
+ *
  * @author Neoancient
  *
  */
 public interface CVBuildListener extends BuildListener {
 
     void tonnageChanged(double tonnage);
+
     void omniChanged(boolean omni);
+
     void superheavyChanged(boolean superheavy);
+
     void motiveChanged(EntityMovementMode motive);
+
     void engineChanged(Engine engine);
+
     void turretChanged(int turretConfig);
+
     void turretBaseWtChanged(double turret1, double turret2);
+
     void troopSpaceChanged(double fixed, double pod);
+
     void cargoSpaceChanged(BayData bayType, double fixed, double pod);
+
     void resetChassis();
 
 }

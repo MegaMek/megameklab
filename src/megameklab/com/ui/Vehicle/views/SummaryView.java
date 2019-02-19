@@ -1,7 +1,7 @@
 /*
- * MegaMekLab - Copyright (C) 2008
- *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * MegaMekLab
+ * - Copyright (C) 2008 jtighe (torren@users.sourceforge.net)
+ * - Copyright (C) 2018 The MegaMek Team
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
@@ -41,7 +41,7 @@ import megameklab.com.ui.EntitySource;
 import megameklab.com.util.IView;
 import megameklab.com.util.UnitUtil;
 
-public class SummaryView extends IView{
+public class SummaryView extends IView {
 
     /**
      *
@@ -63,7 +63,7 @@ public class SummaryView extends IView{
 
     private JTextField txtEngineCrit = new JTextField("?");
     private JTextField txtJumpCrit = new JTextField("?");
-    private JTextField txtArmorCrit = new JTextField("?");   
+    private JTextField txtArmorCrit = new JTextField("?");
 
     private JTextField txtStructAvail = new JTextField("?");
     private JTextField txtEngineAvail = new JTextField("?");
@@ -77,11 +77,9 @@ public class SummaryView extends IView{
     private JTextField txtSponsonAvail = new JTextField("?");
     private JTextField txtPowerAmpAvail = new JTextField("?");
     private JTextField txtEquipAvail = new JTextField("?");
-    
-    
-    
 
-    private EntityVerifier entityVerifier = EntityVerifier.getInstance(new File("data/mechfiles/UnitVerifierOptions.xml"));
+    private EntityVerifier entityVerifier = EntityVerifier
+            .getInstance(new File("data/mechfiles/UnitVerifierOptions.xml"));
 
     public SummaryView(EntitySource eSource) {
         super(eSource);
@@ -99,15 +97,14 @@ public class SummaryView extends IView{
         valueFields.add(txtRearTurretTon);
         valueFields.add(txtSponsonTon);
         valueFields.add(txtPowerAmpTon);
-        valueFields.add(txtEquipTon);        
-
+        valueFields.add(txtEquipTon);
 
         valueFields.add(txtEngineCrit);
         valueFields.add(txtArmorCrit);
         valueFields.add(txtJumpCrit);
 
-        Dimension size = new Dimension(45,25);
-        for(JTextField field : valueFields) {
+        Dimension size = new Dimension(45, 25);
+        for (JTextField field : valueFields) {
             field.setEditable(false);
             field.setSize(size);
             field.setPreferredSize(size);
@@ -130,9 +127,9 @@ public class SummaryView extends IView{
         valueFields.add(txtSponsonAvail);
         valueFields.add(txtPowerAmpAvail);
         valueFields.add(txtEquipAvail);
-        
-        size = new Dimension(80,25);
-        for(JTextField field : valueFields) {
+
+        size = new Dimension(80, 25);
+        for (JTextField field : valueFields) {
             field.setEditable(false);
             field.setSize(size);
             field.setPreferredSize(size);
@@ -143,11 +140,11 @@ public class SummaryView extends IView{
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
-        size = new Dimension(120,25);
+        size = new Dimension(120, 25);
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.insets = new Insets(0,0,0,5);
+        gbc.insets = new Insets(0, 0, 0, 5);
         this.add(createLabel("Category", size, SwingConstants.CENTER), gbc);
         gbc.gridy++;
         this.add(createLabel("Internal Structure:", size, SwingConstants.RIGHT), gbc);
@@ -174,10 +171,10 @@ public class SummaryView extends IView{
         gbc.gridy++;
         this.add(createLabel("Equipment:", size, SwingConstants.RIGHT), gbc);
 
-        size = new Dimension(45,25);
+        size = new Dimension(45, 25);
         gbc.gridx = 1;
         gbc.gridy = 0;
-        gbc.insets = new Insets(0,0,0,1);
+        gbc.insets = new Insets(0, 0, 0, 1);
         this.add(createLabel("Ton", size, SwingConstants.CENTER), gbc);
         gbc.gridy++;
         this.add(txtStructTon, gbc);
@@ -242,7 +239,7 @@ public class SummaryView extends IView{
         gbc.gridy++;
         this.add(Box.createGlue(), gbc);
 
-        size = new Dimension(80,25);
+        size = new Dimension(80, 25);
         gbc.gridx = 3;
         gbc.gridy = 0;
         this.add(createLabel("Availability", size, SwingConstants.CENTER), gbc);
@@ -295,7 +292,7 @@ public class SummaryView extends IView{
         TestTank testTank = new TestTank(getTank(), entityVerifier.mechOption, null);
 
         txtStructTon.setText(Double.toString(testTank.getWeightStructure()));
-        txtEngineTon.setText(Double.toString(testTank.getWeightEngine()));        
+        txtEngineTon.setText(Double.toString(testTank.getWeightEngine()));
         txtLiftTon.setText(Double.toString(testTank.getTankWeightLifting()));
         txtControlsTon.setText(Double.toString(testTank.getWeightControls()));
         txtHeatTon.setText(Double.toString(testTank.getWeightHeatSinks()));
@@ -304,7 +301,6 @@ public class SummaryView extends IView{
         txtRearTurretTon.setText(Double.toString(testTank.getTankWeightDualTurret()));
         // Sponsons?
         txtPowerAmpTon.setText(Double.toString(testTank.getWeightPowerAmp()));
-
 
         txtEngineCrit.setText(Integer.toString(getEngineCrits()));
         txtArmorCrit.setText(Integer.toString(getArmorCrits()));
@@ -315,24 +311,21 @@ public class SummaryView extends IView{
     }
 
     private void runThroughEquipment(TestTank testTank) {
-    	double weightJJ = 0.0f;
-    	double weightEquip = 0.0f;
-    	double weightSponson = 0.0f;
+        double weightJJ = 0.0f;
+        double weightEquip = 0.0f;
+        double weightSponson = 0.0f;
 
         for (Mounted m : getTank().getMisc()) {
             MiscType mt = (MiscType) m.getType();
-            if(UnitUtil.isArmorOrStructure(mt)) {
+            if (UnitUtil.isArmorOrStructure(mt)) {
                 continue;
-            }
-            else if (mt.hasFlag(MiscType.F_SPONSON_TURRET)) {
+            } else if (mt.hasFlag(MiscType.F_SPONSON_TURRET)) {
                 weightSponson = mt.getTonnage(getTank());
             } else if (mt.hasFlag(MiscType.F_JUMP_JET)) {
                 weightJJ += mt.getTonnage(getTank(), m.getLocation());
-            } else if (mt.hasFlag(MiscType.F_HEAT_SINK)
-                    || mt.hasFlag(MiscType.F_DOUBLE_HEAT_SINK)) {
+            } else if (mt.hasFlag(MiscType.F_HEAT_SINK) || mt.hasFlag(MiscType.F_DOUBLE_HEAT_SINK)) {
                 continue;
-            }
-            else {
+            } else {
                 weightEquip += mt.getTonnage(getTank(), m.getLocation());
             }
         }
@@ -347,9 +340,9 @@ public class SummaryView extends IView{
         txtJumpTon.setText(Double.toString(weightJJ));
         txtEquipTon.setText(Double.toString(weightEquip));
         txtSponsonTon.setText(Double.toString(weightSponson));
-        
+
         if (weightJJ > 0) {
-            txtJumpCrit.setText(Integer.toString(1)); 
+            txtJumpCrit.setText(Integer.toString(1));
         } else {
             txtJumpCrit.setText(Integer.toString(0));
         }
@@ -385,41 +378,41 @@ public class SummaryView extends IView{
         }
         return usedSlots;
     }
-    
-    private int getArmorCrits() { 
+
+    private int getArmorCrits() {
         // different armor types take different amount of slots
         int usedSlots = 0;
         if (!getTank().hasPatchworkArmor()) {
             int type = getTank().getArmorType(1);
             switch (type) {
-                case EquipmentType.T_ARMOR_FERRO_FIBROUS:
-                    if (TechConstants.isClan(getTank().getArmorTechLevel(1))) {
-                        usedSlots++;
-                    } else {
-                        usedSlots += 2;
-                    }
-                    break;
-                case EquipmentType.T_ARMOR_HEAVY_FERRO:
-                    usedSlots += 3;
-                    break;
-                case EquipmentType.T_ARMOR_LIGHT_FERRO:
-                case EquipmentType.T_ARMOR_FERRO_LAMELLOR:
-                case EquipmentType.T_ARMOR_REFLECTIVE:
-                case EquipmentType.T_ARMOR_HARDENED:
+            case EquipmentType.T_ARMOR_FERRO_FIBROUS:
+                if (TechConstants.isClan(getTank().getArmorTechLevel(1))) {
                     usedSlots++;
-                    break;
-                case EquipmentType.T_ARMOR_STEALTH:
+                } else {
                     usedSlots += 2;
-                    break;
-                case EquipmentType.T_ARMOR_REACTIVE:
-                    if (TechConstants.isClan(getTank().getArmorTechLevel(1))) {
-                        usedSlots++;
-                    } else {
-                        usedSlots += 2;
-                    }
-                    break;
-                default:
-                    break;
+                }
+                break;
+            case EquipmentType.T_ARMOR_HEAVY_FERRO:
+                usedSlots += 3;
+                break;
+            case EquipmentType.T_ARMOR_LIGHT_FERRO:
+            case EquipmentType.T_ARMOR_FERRO_LAMELLOR:
+            case EquipmentType.T_ARMOR_REFLECTIVE:
+            case EquipmentType.T_ARMOR_HARDENED:
+                usedSlots++;
+                break;
+            case EquipmentType.T_ARMOR_STEALTH:
+                usedSlots += 2;
+                break;
+            case EquipmentType.T_ARMOR_REACTIVE:
+                if (TechConstants.isClan(getTank().getArmorTechLevel(1))) {
+                    usedSlots++;
+                } else {
+                    usedSlots += 2;
+                }
+                break;
+            default:
+                break;
             }
 
         }

@@ -42,17 +42,17 @@ import megameklab.com.util.MenuBarCreator;
 
 /**
  * Main UI for Dropships and Small Craft
- * 
+ *
  * @author Neoancient
  *
  */
 public class DropshipMainUI extends MegaMekLabMainUI {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = -4014312789921114515L;
-    
+
     JTabbedPane configPane = new JTabbedPane(SwingConstants.TOP);
     JPanel contentPane;
     private DropshipStructureTab structureTab;
@@ -65,7 +65,7 @@ public class DropshipMainUI extends MegaMekLabMainUI {
     JPanel masterPanel = new JPanel();
     JScrollPane scroll = new JScrollPane();
     private MenuBarCreator menubarcreator;
-    
+
     public DropshipMainUI(boolean primitive) {
         super();
         createNewUnit(Entity.ETYPE_DROPSHIP, primitive, false);
@@ -95,7 +95,7 @@ public class DropshipMainUI extends MegaMekLabMainUI {
     public void refreshEquipmentTable() {
         equipmentTab.refreshTable();
     }
-    
+
     @Override
     public void refreshTransport() {
         transportTab.refresh();
@@ -130,7 +130,7 @@ public class DropshipMainUI extends MegaMekLabMainUI {
         smallCraft.setArmorTechLevel(getEntity().getTechLevel());
         smallCraft.set0SI(3);
         smallCraft.setDesignType(SmallCraft.MILITARY);
-        
+
         smallCraft.setHeatType(Aero.HEAT_SINGLE);
 
         smallCraft.autoSetInternal();
@@ -150,8 +150,8 @@ public class DropshipMainUI extends MegaMekLabMainUI {
         } else {
             smallCraft.setChassis(oldUnit.getChassis());
             smallCraft.setModel(oldUnit.getModel());
-            smallCraft.setYear(Math.max(oldUnit.getYear(),
-                    smallCraft.getConstructionTechAdvancement().getIntroductionDate()));
+            smallCraft.setYear(
+                    Math.max(oldUnit.getYear(), smallCraft.getConstructionTechAdvancement().getIntroductionDate()));
             smallCraft.setSource(oldUnit.getSource());
             smallCraft.setManualBV(oldUnit.getManualBV());
             SimpleTechLevel lvl = SimpleTechLevel.max(smallCraft.getStaticTechLevel(),

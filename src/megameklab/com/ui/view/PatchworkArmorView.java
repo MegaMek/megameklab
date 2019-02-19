@@ -40,48 +40,48 @@ import megameklab.com.ui.util.TechComboBox;
 import megameklab.com.ui.view.listeners.BuildListener;
 
 /**
- * Displays a list of comboboxes with labels that displays the current armor type per location for
- * patchwork armor and allows it to be changed.
- * 
+ * Displays a list of comboboxes with labels that displays the current armor
+ * type per location for patchwork armor and allows it to be changed.
+ *
  * @author Neoancient
  *
  */
 public class PatchworkArmorView extends BuildView implements ActionListener {
-    
+
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = -16930846399307224L;
 
     private final List<BuildListener> listeners = new CopyOnWriteArrayList<>();
+
     public void addListener(BuildListener l) {
         listeners.add(l);
     }
+
     public void removeListener(BuildListener l) {
         listeners.remove(l);
     }
-    
+
     private final static int MAX_LOC = 10;
-    
+
     private final List<JLabel> labels = new ArrayList<>();
     private final List<TechComboBox<EquipmentType>> combos = new ArrayList<>();
-    
+
     private final ITechManager techManager;
     private boolean ignoreEvents = false;
-    
+
     public PatchworkArmorView(ITechManager techManager) {
         this.techManager = techManager;
         initUI();
     }
-    
+
     private void initUI() {
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl()); //$NON-NLS-1$
         setLayout(new GridBagLayout());
-        
-        setBorder(BorderFactory.createTitledBorder(
-                null, resourceMap.getString("ArmorAllocationView.panPatwork.title"), //$NON-NLS-1$
-                TitledBorder.TOP,
-                TitledBorder.DEFAULT_POSITION));
+
+        setBorder(BorderFactory.createTitledBorder(null, resourceMap.getString("ArmorAllocationView.panPatwork.title"), //$NON-NLS-1$
+                TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
 
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -104,15 +104,13 @@ public class PatchworkArmorView extends BuildView implements ActionListener {
             gbc.gridy++;
         }
     }
-    
+
     public void setFromEntity(Entity en) {
         List<EquipmentType> armors = TestEntity.legalArmorsFor(en.getEntityType(),
-                (en instanceof Mech) && ((Mech)en).isIndustrial(),
-                en.getMovementMode(), techManager);
+                (en instanceof Mech) && ((Mech) en).isIndustrial(), en.getMovementMode(), techManager);
         ignoreEvents = true;
         for (int loc = 0; loc < combos.size(); loc++) {
-            if ((loc < en.locations())
-                    && !((en.hasETypeFlag(Entity.ETYPE_TANK) && (loc == Tank.LOC_BODY)))
+            if ((loc < en.locations()) && !((en.hasETypeFlag(Entity.ETYPE_TANK) && (loc == Tank.LOC_BODY)))
                     && !((en.hasETypeFlag(Entity.ETYPE_AERO) && (loc == Aero.LOC_WINGS)))) {
                 labels.get(loc).setText(en.getLocationName(loc));
                 combos.get(loc).removeAllItems();
@@ -131,15 +129,15 @@ public class PatchworkArmorView extends BuildView implements ActionListener {
         }
         ignoreEvents = false;
     }
-    
+
     public EquipmentType getArmor(int location) {
-        return (EquipmentType)combos.get(location).getSelectedItem();
+        return (EquipmentType) combos.get(location).getSelectedItem();
     }
-    
+
     public void setArmorType(EquipmentType armor, int location) {
         combos.get(location).setSelectedItem(armor);
     }
-    
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (!ignoreEvents) {

@@ -1,7 +1,7 @@
 /*
- * MegaMekLab - Copyright (C) 2008
- *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * MegaMekLab
+ * - Copyright (C) 2008 jtighe (torren@users.sourceforge.net)
+ * - Copyright (C) 2018 The MegaMek Team
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -110,14 +110,14 @@ public class MainUI extends MegaMekLabMainUI {
         statusbar.addRefreshedListener(this);
 
         configPane.addTab("Structure/Armor", structureTab);
-        //ConfigPane.addTab("Armor", armorTab);
+        // ConfigPane.addTab("Armor", armorTab);
         configPane.addTab("Equipment", equipmentTab);
-        //ConfigPane.addTab("Weapons", weaponTab);
+        // ConfigPane.addTab("Weapons", weaponTab);
         configPane.addTab("Assign Criticals", buildTab);
         configPane.addTab("Fluff", fluffTab);
         configPane.addTab("Preview", previewTab);
 
-        //masterPanel.add(header);
+        // masterPanel.add(header);
         masterPanel.add(configPane, BorderLayout.CENTER);
         masterPanel.add(statusbar, BorderLayout.SOUTH);
 
@@ -127,7 +127,7 @@ public class MainUI extends MegaMekLabMainUI {
 
     @Override
     public void createNewUnit(long entityType, boolean isPrimitive, boolean isIndustrial, Entity oldEntity) {
-        
+
         int cockpit = Mech.COCKPIT_STANDARD;
         int at = EquipmentType.T_ARMOR_STANDARD;
         int st = EquipmentType.T_STRUCTURE_STANDARD;
@@ -157,7 +157,7 @@ public class MainUI extends MegaMekLabMainUI {
         } else if (entityType == Entity.ETYPE_QUADVEE) {
             setEntity(new QuadVee(Mech.GYRO_STANDARD, QuadVee.MOTIVE_TRACK));
             getEntity().setTechLevel(TechConstants.T_CLAN_ADVANCED);
-            UnitUtil.createSpreadMounts((Mech)getEntity(), EquipmentType.get("Tracks"));
+            UnitUtil.createSpreadMounts((Mech) getEntity(), EquipmentType.get("Tracks"));
             getEntity().setManualBV(-1);
         } else { // type == 0
             setEntity(new BipedMech(Mech.GYRO_STANDARD, cockpit));
@@ -167,7 +167,7 @@ public class MainUI extends MegaMekLabMainUI {
         getEntity().setWeight(25);
         if (entityType == Entity.ETYPE_LAND_AIR_MECH) {
             mech.setEngine(new Engine(75, Engine.NORMAL_ENGINE, 0));
-            UnitUtil.updateJumpJets(((Mech)getEntity()), 3, Mech.JUMP_STANDARD);
+            UnitUtil.updateJumpJets(((Mech) getEntity()), 3, Mech.JUMP_STANDARD);
         } else {
             mech.setEngine(new Engine(25, Engine.NORMAL_ENGINE, 0));
         }
@@ -201,8 +201,7 @@ public class MainUI extends MegaMekLabMainUI {
         } else {
             mech.setChassis(oldEntity.getChassis());
             mech.setModel(oldEntity.getModel());
-            mech.setYear(Math.max(oldEntity.getYear(),
-                    mech.getConstructionTechAdvancement().getIntroductionDate()));
+            mech.setYear(Math.max(oldEntity.getYear(), mech.getConstructionTechAdvancement().getIntroductionDate()));
             mech.setSource(oldEntity.getSource());
             mech.setManualBV(oldEntity.getManualBV());
             SimpleTechLevel lvl = SimpleTechLevel.max(mech.getStaticTechLevel(),
@@ -251,16 +250,11 @@ public class MainUI extends MegaMekLabMainUI {
     @Override
     public void refreshHeader() {
 
-        String title = getEntity().getChassis() + " " + getEntity().getModel()
-                + ".mtf";
-        /*  
-        if (UnitUtil.validateUnit(entity).length() > 0) {
-            title += "  (Invalid)";
-            setForeground(Color.red);
-        } else {
-            setForeground(Color.BLACK);
-        }
-        */
+        String title = getEntity().getChassis() + " " + getEntity().getModel() + ".mtf";
+        /*
+         * if (UnitUtil.validateUnit(entity).length() > 0) { title += "  (Invalid)";
+         * setForeground(Color.red); } else { setForeground(Color.BLACK); }
+         */
         setTitle(title);
 
     }
@@ -278,12 +272,12 @@ public class MainUI extends MegaMekLabMainUI {
     @Override
     public void refreshWeapons() {
     }
-    
+
     @Override
     public void refreshSummary() {
         structureTab.refreshSummary();
     }
-    
+
     @Override
     public void refreshEquipmentTable() {
         equipmentTab.refreshTable();

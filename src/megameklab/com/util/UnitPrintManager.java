@@ -1,7 +1,7 @@
 /*
- * MegaMekLab - Copyright (C) 2009
- *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * MegaMekLab
+ * - Copyright (C) 2009 jtighe (torren@users.sourceforge.net)
+ * - Copyright (C) 2018 The MegaMek Team
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -98,7 +98,7 @@ public class UnitPrintManager {
 
         viewer.setVisible(false);
         viewer.dispose();
-        if(null != entity) {
+        if (null != entity) {
             UnitPrintManager.printEntity(entity);
         }
     }
@@ -133,7 +133,7 @@ public class UnitPrintManager {
 
     public static boolean printAllUnits(Vector<Entity> loadedUnits, boolean singlePrint) {
         Book book = new Book();
-        
+
         List<Infantry> infList = new ArrayList<>();
         List<BattleArmor> baList = new ArrayList<>();
         List<Protomech> protoList = new ArrayList<>();
@@ -163,26 +163,29 @@ public class UnitPrintManager {
                 UnitUtil.removeOneShotAmmo(unit);
                 UnitUtil.expandUnitMounts((Mech) unit);
                 book.append(new PrintMech((Mech) unit, book.getNumberOfPages()), pageFormat);
-            } else if ((unit instanceof LargeSupportTank) || ((unit instanceof Tank) && (unit.getMovementMode() != EntityMovementMode.VTOL) && ((Tank)unit).isSuperHeavy())) {
+            } else if ((unit instanceof LargeSupportTank) || ((unit instanceof Tank)
+                    && (unit.getMovementMode() != EntityMovementMode.VTOL) && ((Tank) unit).isSuperHeavy())) {
                 book.append(new PrintLargeSupportVehicle((Tank) unit), pageFormat);
             } else if (unit instanceof VTOL) {
                 book.append(new PrintVTOL((VTOL) unit), pageFormat);
             } else if (unit.getMovementMode() == EntityMovementMode.WIGE) {
                 if (singlePrint) {
-                    book.append(new PrintVehicle((Tank) unit,  null), pageFormat);
+                    book.append(new PrintVehicle((Tank) unit, null), pageFormat);
                 } else if (null != wige1) {
                     book.append(new PrintVehicle(wige1, (Tank) unit), pageFormat);
                     wige1 = null;
                 } else {
                     wige1 = (Tank) unit;
                 }
-            } else if ((unit instanceof Tank) && ((unit.getMovementMode() == EntityMovementMode.NAVAL) || (unit.getMovementMode() == EntityMovementMode.SUBMARINE) || (unit.getMovementMode() == EntityMovementMode.HYDROFOIL))) {
+            } else if ((unit instanceof Tank) && ((unit.getMovementMode() == EntityMovementMode.NAVAL)
+                    || (unit.getMovementMode() == EntityMovementMode.SUBMARINE)
+                    || (unit.getMovementMode() == EntityMovementMode.HYDROFOIL))) {
                 unprintable.add(unit);
-                //book.append(new PrintNavalVehicle((Tank) unit), pageFormat);
+                // book.append(new PrintNavalVehicle((Tank) unit), pageFormat);
             } else if (unit instanceof Tank) {
                 if (!((Tank) unit).hasNoDualTurret()) {
                     if (singlePrint) {
-                        book.append(new PrintDualTurretVehicle((Tank) unit,  null), pageFormat);
+                        book.append(new PrintDualTurretVehicle((Tank) unit, null), pageFormat);
                     } else if (null != dualTurret1) {
                         book.append(new PrintDualTurretVehicle(dualTurret1, (Tank) unit), pageFormat);
                         dualTurret1 = null;
@@ -191,7 +194,7 @@ public class UnitPrintManager {
                     }
                 } else {
                     if (singlePrint) {
-                        book.append(new PrintVehicle((Tank) unit,  null), pageFormat);
+                        book.append(new PrintVehicle((Tank) unit, null), pageFormat);
                     } else if (null != tank1) {
                         book.append(new PrintVehicle(tank1, (Tank) unit), pageFormat);
                         tank1 = null;
@@ -222,33 +225,33 @@ public class UnitPrintManager {
             } else if (unit instanceof BattleArmor) {
                 baList.add((BattleArmor) unit);
                 if (singlePrint || baList.size() > 4) {
-                    book.append(new PrintBattleArmor(baList),  pageFormat);
+                    book.append(new PrintBattleArmor(baList), pageFormat);
                     baList = new ArrayList<>();
                 }
             } else if (unit instanceof Infantry) {
                 infList.add((Infantry) unit);
                 if (singlePrint || infList.size() > 3) {
-                    book.append(new PrintInfantry(infList),  pageFormat);
+                    book.append(new PrintInfantry(infList), pageFormat);
                     infList = new ArrayList<>();
                 }
             } else if (unit instanceof Protomech) {
                 protoList.add((Protomech) unit);
                 if (singlePrint || protoList.size() > 4) {
-                    book.append(new PrintProtomech(protoList),  pageFormat);
+                    book.append(new PrintProtomech(protoList), pageFormat);
                     protoList = new ArrayList<>();
                 }
             } else {
-                //TODO: show a message dialog that lists the unprintable units
+                // TODO: show a message dialog that lists the unprintable units
                 unprintable.add(unit);
             }
         }
-        
+
         if (unprintable.size() > 0) {
-            JOptionPane.showMessageDialog(null, "Printing is not currently supported for the following units:\n"
-                    + unprintable.stream().map(en -> en.getChassis() + " " + en.getModel())
-                    .collect(Collectors.joining("\n")));
+            JOptionPane.showMessageDialog(null,
+                    "Printing is not currently supported for the following units:\n" + unprintable.stream()
+                            .map(en -> en.getChassis() + " " + en.getModel()).collect(Collectors.joining("\n")));
         }
-        
+
         if (null != wige1) {
             book.append(new PrintVehicle(wige1, null), pageFormat);
         }
@@ -267,7 +270,7 @@ public class UnitPrintManager {
         if (protoList.size() > 0) {
             book.append(new PrintProtomech(protoList), pageFormat);
         }
-        
+
         masterPrintJob.setPageable(book);
         if (loadedUnits.size() > 1) {
             masterPrintJob.setJobName(loadedUnits.get(0).getShortNameRaw() + " etc");

@@ -18,19 +18,26 @@ import java.util.List;
 /**
  *
  * Listener for views used by jumpships, warships, and space stations.
- * 
+ *
  * @author Neoancient
  *
  */
 public interface AdvancedAeroBuildListener extends AeroVesselBuildListener {
 
     void tonnageChanged(double tonnage);
+
     void lfBatteryChanged(boolean battery);
+
     void modularChanged(boolean modular);
+
     void sailChanged(boolean sail);
+
     void baseTypeChanged(int type);
+
     void rangeChanged(int range);
+
     void siChanged(int si);
+
     void gravDecksChanged(List<Integer> deckSizes);
-    
+
 }

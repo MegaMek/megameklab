@@ -1,13 +1,17 @@
 /*
- * MegaMekLab - Copyright (C) 2009
+ * MegaMekLab
+ * - Copyright (C) 2009 jtighe (torren@users.sourceforge.net)
+ * - Copyright (C) 2018 The MegaMek Team
  *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
  *
- * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  */
 
 package megameklab.com.util;
@@ -56,30 +60,31 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
     private final JPanel panTech = new JPanel(new GridBagLayout());
     private final JPanel panPrinting = new JPanel(new GridBagLayout());
     private final JPanel panExport = new JPanel();
-    
+
     private final JCheckBox chkTechProgression = new JCheckBox();
     private final JCheckBox chkTechUseYear = new JCheckBox();
     private final IntRangeTextField txtTechYear = new IntRangeTextField();
     private final JCheckBox chkTechShowFaction = new JCheckBox();
     private final JCheckBox chkShowExtinct = new JCheckBox();
     private final JCheckBox chkUnofficialIgnoreYear = new JCheckBox();
-    
+
     private final JCheckBox chkShowQuirks = new JCheckBox();
     private final JCheckBox chkShowPilotData = new JCheckBox();
     private final JCheckBox chkShowEraIcon = new JCheckBox();
     private final JLabel lblFeatureLimitation = new JLabel();
-    
+
     private final JCheckBox chkSummaryFormatTRO = new JCheckBox();
-    
-    //Store changes in the color configuration to write only if the user clicks save
-    private final Map<String,String> colorMap = new HashMap<>();
+
+    // Store changes in the color configuration to write only if the user clicks
+    // save
+    private final Map<String, String> colorMap = new HashMap<>();
 
     public ConfigurationDialog(JFrame frame) {
         super(frame, true);
-        
+
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Dialogs", new EncodeControl()); //$NON-NLS-1$
         setTitle(resourceMap.getString("ConfigurationDialog.windowName.text")); //$NON-NLS-1$
-        
+
         getContentPane().setLayout(new BorderLayout());
         add(panMain, BorderLayout.CENTER);
         JPanel panButtons = new JPanel();
@@ -100,7 +105,7 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
         panMain.addTab(resourceMap.getString("ConfigurationDialog.techProgression.title"), panTech); //$NON-NLS-1$
         panMain.addTab(resourceMap.getString("ConfigurationDialog.printing.title"), panPrinting); //$NON-NLS-1$
         panMain.addTab(resourceMap.getString("ConfigurationDialog.export.title"), panExport); //$NON-NLS-1$
-        
+
         loadColorPanel();
         loadTechPanel(resourceMap);
         loadPrintingPanel(resourceMap);
@@ -135,7 +140,7 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
         baseButton.addActionListener(this);
         panColors.add(baseButton);
     }
-    
+
     private void loadTechPanel(ResourceBundle resourceMap) {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -143,14 +148,13 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
         gbc.gridwidth = 2;
         chkTechProgression.addActionListener(e -> {
             chkTechUseYear.setEnabled(chkTechProgression.isSelected());
-            txtTechYear.setEnabled(chkTechProgression.isSelected()
-                    && chkTechUseYear.isSelected());
+            txtTechYear.setEnabled(chkTechProgression.isSelected() && chkTechUseYear.isSelected());
         });
         chkTechProgression.setText(resourceMap.getString("ConfigurationDialog.chkTechProgression.text")); //$NON-NLS-1$
         chkTechProgression.setToolTipText(resourceMap.getString("ConfigurationDialog.chkTechProgression.tooltip")); //$NON-NLS-1$
         chkTechProgression.setSelected(CConfig.getBooleanParam(CConfig.TECH_PROGRESSION));
         panTech.add(chkTechProgression, gbc);
-        
+
         gbc.gridy++;
         gbc.gridwidth = 1;
         chkTechUseYear.addActionListener(e -> {
@@ -170,7 +174,7 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
         }
         txtTechYear.setText(year);
         panTech.add(txtTechYear, gbc);
-        
+
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 2;
@@ -178,20 +182,21 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
         chkTechShowFaction.setToolTipText(resourceMap.getString("ConfigurationDialog.chkTechShowFaction.tooltip")); //$NON-NLS-1$
         chkTechShowFaction.setSelected(CConfig.getBooleanParam(CConfig.TECH_SHOW_FACTION));
         panTech.add(chkTechShowFaction, gbc);
-        
+
         gbc.gridy++;
         chkShowExtinct.setText(resourceMap.getString("ConfigurationDialog.chkShowExtinct.text")); //$NON-NLS-1$
         chkShowExtinct.setToolTipText(resourceMap.getString("ConfigurationDialog.chkShowExtinct.tooltip")); //$NON-NLS-1$
         chkShowExtinct.setSelected(CConfig.getBooleanParam(CConfig.TECH_EXTINCT));
         panTech.add(chkShowExtinct, gbc);
-        
+
         gbc.gridy++;
         chkUnofficialIgnoreYear.setText(resourceMap.getString("ConfigurationDialog.chkUnofficialIgnoreYear.text")); //$NON-NLS-1$
-        chkUnofficialIgnoreYear.setToolTipText(resourceMap.getString("ConfigurationDialog.chkUnofficialIgnoreYear.tooltip")); //$NON-NLS-1$
+        chkUnofficialIgnoreYear
+                .setToolTipText(resourceMap.getString("ConfigurationDialog.chkUnofficialIgnoreYear.tooltip")); //$NON-NLS-1$
         chkUnofficialIgnoreYear.setSelected(CConfig.getBooleanParam(CConfig.TECH_UNOFFICAL_NO_YEAR));
         panTech.add(chkUnofficialIgnoreYear, gbc);
     }
-    
+
     private void loadPrintingPanel(ResourceBundle resourceMap) {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -220,7 +225,7 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
         lblFeatureLimitation.setText(resourceMap.getString("ConfigurationDialog.lblFeatureLimitation.text"));
         panPrinting.add(lblFeatureLimitation, gbc);
     }
-    
+
     private void loadExportPanel(ResourceBundle resourceMap) {
         chkSummaryFormatTRO.setText(resourceMap.getString("ConfigurationDialog.chkSummaryFormatTRO.text"));
         chkSummaryFormatTRO.setToolTipText(resourceMap.getString("ConfigurationDialog.chkSummaryFormatTRO.tooltip"));
@@ -261,10 +266,12 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
 
             ColorConfigurationDialog colorConfig;
             if (type.equals("Foreground")) {
-                colorConfig = new ColorConfigurationDialog(newButton.getName().replace("-", " "), label.getForeground());
+                colorConfig = new ColorConfigurationDialog(newButton.getName().replace("-", " "),
+                        label.getForeground());
                 label.setForeground(colorConfig.getColor());
             } else {
-                colorConfig = new ColorConfigurationDialog(newButton.getName().replace("-", " "), label.getBackground());
+                colorConfig = new ColorConfigurationDialog(newButton.getName().replace("-", " "),
+                        label.getBackground());
                 label.setBackground(colorConfig.getColor());
             }
             colorMap.put(newButton.getName(), Integer.toString(colorConfig.getColor().getRGB()));
@@ -273,9 +280,9 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
         }
 
     }
-    
+
     private void saveConfig() {
-        colorMap.forEach((k,v) -> CConfig.setParam(k, v));
+        colorMap.forEach((k, v) -> CConfig.setParam(k, v));
         CConfig.setParam(CConfig.TECH_PROGRESSION, String.valueOf(chkTechProgression.isSelected()));
         CConfig.setParam(CConfig.TECH_USE_YEAR, String.valueOf(chkTechUseYear.isSelected()));
         CConfig.setParam(CConfig.TECH_YEAR, String.valueOf(txtTechYear.getIntVal()));

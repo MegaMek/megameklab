@@ -15,20 +15,29 @@ package megameklab.com.ui.view.listeners;
 
 /**
  * Listener for views used by small craft and large craft.
- * 
+ *
  * @author Neoancient
  *
  */
 public interface AeroVesselBuildListener extends BuildListener {
 
     void militaryChanged(boolean military);
+
     void officersChanged(int nOfficers);
+
     void baseCrewChanged(int nCrew);
+
     void gunnersChanged(int nGunners);
+
     void passengersChanged(int nPassengers);
+
     void marinesChanged(int nMarines);
+
     void baMarinesChanged(int nBAMarines);
+
     void quartersChanged(int officer, int standard, int secondclass, int steerage);
+
     void autoAssignQuarters();
+
     void escapeChanged(int lifeBoats, int escapePods);
 }

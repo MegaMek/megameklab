@@ -1,7 +1,7 @@
 /*
- * MegaMekLab - Copyright (C) 2008
- *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * MegaMekLab
+ * - Copyright (C) 2008 jtighe (torren@users.sourceforge.net)
+ * - Copyright (C) 2018 The MegaMek Team
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -41,8 +41,8 @@ import megameklab.com.util.MenuBarCreator;
 public class MainUI extends MegaMekLabMainUI {
 
     /**
-	 *
-	 */
+     *
+     */
     private static final long serialVersionUID = 5338040000652349619L;
 
     StructureTab structureTab;
@@ -109,11 +109,9 @@ public class MainUI extends MegaMekLabMainUI {
         getEntity().setArmorTechLevel(TechConstants.T_IS_TW_NON_BOX);
         ((Infantry) getEntity()).setSquadN(4);
         ((Infantry) getEntity()).setSquadSize(7);
-        ((Infantry) getEntity()).setPrimaryWeapon((InfantryWeapon) EquipmentType
-                .get("InfantryAssaultRifle"));
+        ((Infantry) getEntity()).setPrimaryWeapon((InfantryWeapon) EquipmentType.get("InfantryAssaultRifle"));
         try {
-            getEntity().addEquipment(EquipmentType.get("InfantryAssaultRifle"),
-                    Infantry.LOC_INFANTRY);
+            getEntity().addEquipment(EquipmentType.get("InfantryAssaultRifle"), Infantry.LOC_INFANTRY);
         } catch (LocationFullException ex) {
         }
         getEntity().autoSetInternal();
@@ -150,8 +148,7 @@ public class MainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshHeader() {
-        String title = getEntity().getChassis() + " " + getEntity().getModel()
-                + ".blk";
+        String title = getEntity().getChassis() + " " + getEntity().getModel() + ".blk";
         setTitle(title);
 
     }

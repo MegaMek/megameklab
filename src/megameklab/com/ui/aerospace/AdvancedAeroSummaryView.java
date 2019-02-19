@@ -40,14 +40,14 @@ import megameklab.com.util.IView;
 public class AdvancedAeroSummaryView extends IView {
 
     private static final long serialVersionUID = 3332719282944878899L;
-    
+
     private JTextField txtEngineTon = new JTextField("?");
-    private JTextField txtFuelTon = new JTextField("?");   
+    private JTextField txtFuelTon = new JTextField("?");
     private JTextField txtStructureTon = new JTextField("?");
     private JTextField txtKFDriveTon = new JTextField("?");
     private JTextField txtLFBatteryTon = new JTextField("?");
     private JTextField txtSailTon = new JTextField("?");
-    private JTextField txtControlTon = new JTextField("?");   
+    private JTextField txtControlTon = new JTextField("?");
     private JTextField txtQuartersTon = new JTextField("?");
     private JTextField txtHeatTon = new JTextField("?");
     private JTextField txtArmorTon = new JTextField("?");
@@ -60,8 +60,8 @@ public class AdvancedAeroSummaryView extends IView {
     private JTextField txtLifeBoatTon = new JTextField("?");
     private JTextField txtMiscTon = new JTextField("?");
 
-    private EntityVerifier entityVerifier = EntityVerifier.getInstance(
-            new File("data/mechfiles/UnitVerifierOptions.xml"));
+    private EntityVerifier entityVerifier = EntityVerifier
+            .getInstance(new File("data/mechfiles/UnitVerifierOptions.xml"));
 
     public AdvancedAeroSummaryView(EntitySource eSource) {
         super(eSource);
@@ -69,12 +69,12 @@ public class AdvancedAeroSummaryView extends IView {
         Vector<JTextField> valueFields = new Vector<JTextField>();
 
         valueFields.add(txtEngineTon);
-        valueFields.add(txtFuelTon);   
+        valueFields.add(txtFuelTon);
         valueFields.add(txtStructureTon);
         valueFields.add(txtKFDriveTon);
         valueFields.add(txtLFBatteryTon);
         valueFields.add(txtSailTon);
-        valueFields.add(txtControlTon);   
+        valueFields.add(txtControlTon);
         valueFields.add(txtQuartersTon);
         valueFields.add(txtHeatTon);
         valueFields.add(txtArmorTon);
@@ -87,8 +87,8 @@ public class AdvancedAeroSummaryView extends IView {
         valueFields.add(txtLifeBoatTon);
         valueFields.add(txtMiscTon);
 
-        Dimension size = new Dimension(100,25);
-        for(JTextField field : valueFields) {
+        Dimension size = new Dimension(100, 25);
+        for (JTextField field : valueFields) {
             field.setEditable(false);
             field.setSize(size);
             field.setPreferredSize(size);
@@ -97,8 +97,8 @@ public class AdvancedAeroSummaryView extends IView {
             field.setHorizontalAlignment(SwingConstants.RIGHT);
         }
 
-        size = new Dimension(100,25);
-        for(JTextField field : valueFields) {
+        size = new Dimension(100, 25);
+        for (JTextField field : valueFields) {
             field.setEditable(false);
             field.setSize(size);
             field.setPreferredSize(size);
@@ -109,11 +109,11 @@ public class AdvancedAeroSummaryView extends IView {
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
-        size = new Dimension(120,25);
+        size = new Dimension(120, 25);
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.insets = new Insets(0,0,0,5);
+        gbc.insets = new Insets(0, 0, 0, 5);
         this.add(createLabel("Category", size, SwingConstants.CENTER), gbc);
         gbc.gridy = 1;
         this.add(createLabel("Transit Drive:", size, SwingConstants.RIGHT), gbc);
@@ -152,10 +152,10 @@ public class AdvancedAeroSummaryView extends IView {
         gbc.gridy = 18;
         this.add(createLabel("Misc:", size, SwingConstants.RIGHT), gbc);
 
-        size = new Dimension(45,25);
+        size = new Dimension(45, 25);
         gbc.gridx = 1;
         gbc.gridy = 0;
-        gbc.insets = new Insets(0,0,0,0);
+        gbc.insets = new Insets(0, 0, 0, 0);
         this.add(createLabel("Ton", size, SwingConstants.CENTER), gbc);
         for (JTextField field : valueFields) {
             gbc.gridy++;
@@ -182,10 +182,10 @@ public class AdvancedAeroSummaryView extends IView {
     }
 
     public void refresh() {
-        final TestAdvancedAerospace testShip = 
-                new TestAdvancedAerospace(getJumpship(), entityVerifier.aeroOption, null);
+        final TestAdvancedAerospace testShip = new TestAdvancedAerospace(getJumpship(), entityVerifier.aeroOption,
+                null);
         final NumberFormat df = DecimalFormat.getInstance();
-       
+
         txtEngineTon.setText(df.format(testShip.getWeightEngine()));
         txtFuelTon.setText(df.format(testShip.getWeightFuel()));
         txtStructureTon.setText(df.format(testShip.getWeightStructure()));
@@ -194,7 +194,7 @@ public class AdvancedAeroSummaryView extends IView {
         txtSailTon.setText(df.format(testShip.getWeightSail()));
         txtControlTon.setText(df.format(testShip.getWeightControls()));
         txtQuartersTon.setText(df.format(testShip.getWeightQuarters()));
-        txtHeatTon.setText(df.format(testShip.getWeightHeatSinks()));        
+        txtHeatTon.setText(df.format(testShip.getWeightHeatSinks()));
         txtArmorTon.setText(df.format(testShip.getWeightArmor()));
         txtWeaponsTon.setText(df.format(testShip.getWeightWeapon()));
         txtAmmoTon.setText(df.format(testShip.getWeightAmmo()));

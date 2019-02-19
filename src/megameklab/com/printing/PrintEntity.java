@@ -40,62 +40,58 @@ import megamek.common.UnitRoleHandler;
 import megamek.common.options.IOption;
 import megamek.common.options.IOptionGroup;
 import megamek.common.options.PilotOptions;
-import megameklab.com.util.ImageHelper;
 
 /**
  * Base class for printing Entity record sheets
- * 
+ *
  * @author Neoancient
  *
  */
 public abstract class PrintEntity extends PrintRecordSheet {
-    
-    // Armor types with special properties that should be identified on the record sheet
+
+    // Armor types with special properties that should be identified on the record
+    // sheet
     private static final long AT_SPECIAL = (1 << EquipmentType.T_ARMOR_REACTIVE)
-            | (1 << EquipmentType.T_ARMOR_REFLECTIVE)
-            | (1 << EquipmentType.T_ARMOR_HARDENED)
-            | (1 << EquipmentType.T_ARMOR_STEALTH)
-            | (1 << EquipmentType.T_ARMOR_FERRO_LAMELLOR)
-            | (1 << EquipmentType.T_ARMOR_STEALTH_VEHICLE)
-            | (1 << EquipmentType.T_ARMOR_ANTI_PENETRATIVE_ABLATION)
-            | (1 << EquipmentType.T_ARMOR_HEAT_DISSIPATING)
-            | (1 << EquipmentType.T_ARMOR_IMPACT_RESISTANT)
+            | (1 << EquipmentType.T_ARMOR_REFLECTIVE) | (1 << EquipmentType.T_ARMOR_HARDENED)
+            | (1 << EquipmentType.T_ARMOR_STEALTH) | (1 << EquipmentType.T_ARMOR_FERRO_LAMELLOR)
+            | (1 << EquipmentType.T_ARMOR_STEALTH_VEHICLE) | (1 << EquipmentType.T_ARMOR_ANTI_PENETRATIVE_ABLATION)
+            | (1 << EquipmentType.T_ARMOR_HEAT_DISSIPATING) | (1 << EquipmentType.T_ARMOR_IMPACT_RESISTANT)
             | (1 << EquipmentType.T_ARMOR_BALLISTIC_REINFORCED);
-    
+
     /**
      * Creates an SVG object for the record sheet
-     * 
+     *
      * @param startPage The print job page number for this sheet
-     * @param options Overrides the global options for which elements are printed 
+     * @param options   Overrides the global options for which elements are printed
      */
     protected PrintEntity(int startPage, RecordSheetOptions options) {
         super(startPage, options);
     }
 
     protected abstract Entity getEntity();
-    
+
     /**
-     * When printing from a MUL the pilot data is filled in unless the option has been disabled. This
-     * allows a series of blank record sheets to be generated without including the generated pilot data.
-     * If the crew name is "unnamed" then we are printing directly from MML or file/cache and the
-     * pilot data should not be filled in.
-     * 
+     * When printing from a MUL the pilot data is filled in unless the option has
+     * been disabled. This allows a series of blank record sheets to be generated
+     * without including the generated pilot data. If the crew name is "unnamed"
+     * then we are printing directly from MML or file/cache and the pilot data
+     * should not be filled in.
+     *
      * @return Whether the pilot data should be filled in.
      */
     protected boolean showPilotInfo() {
         return options.showPilotData() && !getEntity().getCrew().getName().equalsIgnoreCase("unnamed");
     }
-    
+
     @Override
     protected void printImage(Graphics2D g2d, PageFormat pageFormat, int pageNum) {
         Element element = null;
-        
+
         element = getSVGDocument().getElementById("tspanCopyright");
         if (null != element) {
-            element.setTextContent(String.format(element.getTextContent(),
-                    Calendar.getInstance().get(Calendar.YEAR)));
+            element.setTextContent(String.format(element.getTextContent(), Calendar.getInstance().get(Calendar.YEAR)));
         }
-        
+
         writeTextFields();
         drawArmor();
         drawStructure();
@@ -108,7 +104,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
         }
         drawFluffImage();
     }
-    
+
     protected void writeTextFields() {
         setTextField("title", getRecordSheetTitle().toUpperCase());
         setTextField("type", getEntity().getShortNameRaw());
@@ -128,15 +124,17 @@ public abstract class PrintEntity extends PrintRecordSheet {
         } else {
             setTextField("role", role.toString());
         }
-        
-        // If we need to fill in names of crew slots we will need to reposition blanks/name fields.
+
+        // If we need to fill in names of crew slots we will need to reposition
+        // blanks/name fields.
         // This will require building the graphics tree so we measure the elements.
         if (getEntity().getCrew().getCrewType() != CrewType.SINGLE) {
             build();
         }
         for (int i = 0; i < getEntity().getCrew().getSlotCount(); i++) {
             // If we have multiple named crew for the unit, change the "Name:" label to
-            // the label of the slot. This will usually require adjusting the position of the
+            // the label of the slot. This will usually require adjusting the position of
+            // the
             // name or the length of the blank.
             double nameOffset = 0;
             if (getEntity().getCrew().getSlotCount() > 1) {
@@ -168,7 +166,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
                 setTextField("pilotName" + i, getEntity().getCrew().getName(i), true);
                 setTextField("gunnerySkill" + i, Integer.toString(getEntity().getCrew().getGunnery(i)), true);
                 setTextField("pilotingSkill" + i, Integer.toString(getEntity().getCrew().getPiloting(i)), true);
-                
+
                 StringJoiner spaList = new StringJoiner(", ");
                 PilotOptions spas = getEntity().getCrew().getOptions();
                 for (Enumeration<IOptionGroup> optionGroups = spas.getGroups(); optionGroups.hasMoreElements();) {
@@ -193,12 +191,11 @@ public abstract class PrintEntity extends PrintRecordSheet {
                             fontSize = (float) bbox.getHeight() / 2.4f;
                         }
                         double lineHeight = fontSize * 1.2;
-                        addMultilineTextElement(canvas, bbox.getX(), bbox.getY() + lineHeight,
-                                bbox.getWidth(), lineHeight, spaText, fontSize, "start", "normal",
-                                "black", ' ');
+                        addMultilineTextElement(canvas, bbox.getX(), bbox.getY() + lineHeight, bbox.getWidth(),
+                                lineHeight, spaText, fontSize, "start", "normal", "black", ' ');
                     }
                 }
-    
+
             } else {
                 setTextField("pilotName" + i, null);
                 setTextField("gunnerySkill" + i, null);
@@ -214,7 +211,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
             }
         }
     }
-    
+
     protected void drawArmor() {
         if (!getEntity().hasPatchworkArmor()) {
             if ((AT_SPECIAL & (1 << getEntity().getArmorType(1))) != 0) {
@@ -240,10 +237,8 @@ public abstract class PrintEntity extends PrintRecordSheet {
                     if ((index < 0) || (getSVGDocument().getElementById(eleName + "2") == null)) {
                         setTextField("patchwork" + getEntity().getLocationAbbr(loc), atName);
                     } else {
-                        setTextField("patchwork" + getEntity().getLocationAbbr(loc),
-                                atName.substring(0, index));
-                        setTextField("patchwork" + getEntity().getLocationAbbr(loc) + "2",
-                                atName.substring(index + 1));
+                        setTextField("patchwork" + getEntity().getLocationAbbr(loc), atName.substring(0, index));
+                        setTextField("patchwork" + getEntity().getLocationAbbr(loc) + "2", atName.substring(index + 1));
                     }
                     hasSpecial = true;
                 }
@@ -281,38 +276,38 @@ public abstract class PrintEntity extends PrintRecordSheet {
             }
         }
     }
-    
+
     /**
-     * Identifies the index of the first location that can be armored. For vehicles this should be 1
-     * to skip the body.
-     * 
+     * Identifies the index of the first location that can be armored. For vehicles
+     * this should be 1 to skip the body.
+     *
      * @return The lowest location index that can be armored.
      */
     protected int firstArmorLocation() {
         return 0;
     }
-    
+
     /**
-     * Identifies which locations are on the unit's centerline and should have armor and structure
-     * pips laid out with left-right symmetry
-     * 
+     * Identifies which locations are on the unit's centerline and should have armor
+     * and structure pips laid out with left-right symmetry
+     *
      * @param loc
      * @return
      */
     protected abstract boolean isCenterlineLocation(int loc);
-    
+
     protected void drawStructure() {
-        
+
     }
-    
+
     protected void writeEquipment(SVGRectElement canvas) {
-        
+
     }
-    
+
     protected void drawFluffImage() {
-        
+
     }
-    
+
     private void drawEraIcon() {
         File iconFile = null;
         if (getEntity().getYear() < 2781) {
@@ -330,19 +325,18 @@ public abstract class PrintEntity extends PrintRecordSheet {
         }
         Element rect = getSVGDocument().getElementById("eraIcon");
         if ((null != rect) && (rect instanceof SVGRectElement)) {
-            embedImage(iconFile,
-                    (Element) ((Node) rect).getParentNode(), getRectBBox((SVGRectElement) rect), true);
+            embedImage(iconFile, (Element) ((Node) rect).getParentNode(), getRectBBox((SVGRectElement) rect), true);
         }
     }
-    
+
     protected String formatWalk() {
         return Integer.toString(getEntity().getWalkMP());
     }
-    
+
     protected String formatRun() {
         return Integer.toString(getEntity().getRunMP());
     }
-    
+
     protected String formatJump() {
         return Integer.toString(getEntity().getJumpMP());
     }
@@ -356,12 +350,12 @@ public abstract class PrintEntity extends PrintRecordSheet {
             return "Inner Sphere";
         }
     }
-    
+
     protected String formatRulesLevel() {
         return getEntity().getStaticTechLevel().toString().substring(0, 1)
                 + getEntity().getStaticTechLevel().toString().substring(1).toLowerCase();
     }
-    
+
     private static String formatEra(int year) {
         if (year < 2571) {
             return "Age of War";
@@ -385,10 +379,10 @@ public abstract class PrintEntity extends PrintRecordSheet {
             return "Dark Ages";
         }
     }
-    
+
     protected String formatCost() {
         NumberFormat nf = NumberFormat.getNumberInstance(Locale.getDefault());
         return nf.format(getEntity().getCost(true)) + " C-bills";
     }
-    
+
 }

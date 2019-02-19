@@ -1,7 +1,7 @@
 /*
- * MegaMekLab - Copyright (C) 2008
- *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * MegaMekLab
+ * - Copyright (C) 2008 jtighe (torren@users.sourceforge.net)
+ * - Copyright (C) 2018 The MegaMek Team
  *
  * This program is free  software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
@@ -61,10 +61,10 @@ public class BuildTab extends ITab implements ActionListener {
         GridBagConstraints gbc = new GridBagConstraints();
 
         critView = new CriticalView(eSource, true, refresh);
-        buildView = new BuildView(eSource,refresh);
+        buildView = new BuildView(eSource, refresh);
 
         resetButton.setMnemonic('R');
-        resetButton.setActionCommand(RESETCOMMAND);        
+        resetButton.setActionCommand(RESETCOMMAND);
         buttonPanel.add(resetButton);
 
         gbc.gridx = 0;
@@ -100,7 +100,6 @@ public class BuildTab extends ITab implements ActionListener {
         }
     }
 
-
     private void resetCrits() {
         for (Mounted mount : getAero().getEquipment()) {
             if (!UnitUtil.isFixedLocationSpreadEquipment(mount.getType())) {
@@ -111,7 +110,6 @@ public class BuildTab extends ITab implements ActionListener {
 
         refresh.refreshAll();
     }
-
 
     public void removeAllActionListeners() {
         resetButton.removeActionListener(this);

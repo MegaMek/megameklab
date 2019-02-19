@@ -11,6 +11,7 @@
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  */
+
 package megameklab.com.ui.util;
 
 import java.awt.Component;
@@ -22,42 +23,43 @@ import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 
 /**
- * Version of JComboBox that simplifies rendering custom data types by taking a toString method in its contructors.
- * 
+ * Version of JComboBox that simplifies rendering custom data types by taking a
+ * toString method in its contructors.
+ *
  * This class could use a more descriptive name.
- * 
+ *
  * @author Neoancient
  *
  */
 public class CustomComboBox<T> extends JComboBox<T> {
-    
+
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 3775138378658623671L;
-    
+
     private String nullValue = "-error-";
-    
+
     protected CustomComboBox() {
         super();
         setRenderer(new Renderer<T>(Object::toString));
     }
-    
+
     protected CustomComboBox(T[] values) {
         super(values);
         setRenderer(new Renderer<T>(Object::toString));
     }
 
-    public CustomComboBox(Function<T,String> renderer) {
+    public CustomComboBox(Function<T, String> renderer) {
         super();
         setRenderer(new Renderer<T>(renderer));
     }
-    
-    public CustomComboBox(T[] values, Function<T,String> renderer) {
+
+    public CustomComboBox(T[] values, Function<T, String> renderer) {
         super(values);
         setRenderer(new Renderer<T>(renderer));
     }
-    
+
     public void setNullValue(String val) {
         if (null != val) {
             nullValue = val;
@@ -65,17 +67,17 @@ public class CustomComboBox<T> extends JComboBox<T> {
             val = "null";
         }
     }
-    
+
     class Renderer<U> extends JLabel implements ListCellRenderer<U> {
-        
+
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = -8452049273819893561L;
-        
-        private Function<U,String> toString;
-        
-        protected Renderer(Function<U,String> toString) {
+
+        private Function<U, String> toString;
+
+        protected Renderer(Function<U, String> toString) {
             super();
             this.toString = toString;
         }
@@ -90,6 +92,6 @@ public class CustomComboBox<T> extends JComboBox<T> {
             }
             return this;
         }
-        
+
     }
 }

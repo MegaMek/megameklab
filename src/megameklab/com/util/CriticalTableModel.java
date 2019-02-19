@@ -1,17 +1,17 @@
 /*
- * MegaMekLab - Copyright (C) 2008
+ * MegaMekLab
+ * - Copyright (C) 2008 jtighe (torren@users.sourceforge.net)
+ * - Copyright (C) 2018 The MegaMek Team
  *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
  *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
- * for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  */
 
 package megameklab.com.util;
@@ -62,9 +62,9 @@ public class CriticalTableModel extends AbstractTableModel {
     private int tableType = EQUIPMENTTABLE;
     private boolean kgStandard = false;
 
-    String[] columnNames = { "Name", "Tons", "Crits"};
+    String[] columnNames = { "Name", "Tons", "Crits" };
 
-    String[] longValues = { "XXXXXXXXX", "XXXXXXXXX", "XXXXXXXXX"};
+    String[] longValues = { "XXXXXXXXX", "XXXXXXXXX", "XXXXXXXXX" };
 
     @Override
     public int getColumnCount() {
@@ -76,19 +76,17 @@ public class CriticalTableModel extends AbstractTableModel {
         kgStandard = TestEntity.usesKgStandard(unit);
 
         if (tableType == WEAPONTABLE) {
-            longValues = new String[] { "XXXXXXXXX", "XXXXXXXXX", "XXXXXXXXX",
-                    "XXXXXXXXX", "XXX" };
-            columnNames = new String[] { "Name", "Tons", "Slots", "Heat", 
-                    "Loc" };
+            longValues = new String[] { "XXXXXXXXX", "XXXXXXXXX", "XXXXXXXXX", "XXXXXXXXX", "XXX" };
+            columnNames = new String[] { "Name", "Tons", "Slots", "Heat", "Loc" };
         }
-        
+
         if (kgStandard) {
             columnNames[TONNAGE] = "Kg";
         }
         if ((unit instanceof Mech) || ((unit instanceof Tank) && ((Tank) unit).isSupportVehicle())) {
             columnNames[CRITS] = "Crits";
         }
-        
+
         this.unit = unit;
     }
 
@@ -113,9 +111,8 @@ public class CriticalTableModel extends AbstractTableModel {
         CriticalTableModel model = this;
         for (int i = 0; i < getColumnCount(); i++) {
             column = table.getColumnModel().getColumn(i);
-            comp = table.getDefaultRenderer(model.getColumnClass(i))
-                    .getTableCellRendererComponent(table, longValues[i], false,
-                            false, 0, i);
+            comp = table.getDefaultRenderer(model.getColumnClass(i)).getTableCellRendererComponent(table, longValues[i],
+                    false, false, 0, i);
             cellWidth = comp.getPreferredSize().width;
             column.setPreferredWidth(Math.max(headerWidth, cellWidth));
         }
@@ -150,18 +147,15 @@ public class CriticalTableModel extends AbstractTableModel {
             return UnitUtil.getCritName(unit, crit.getType());
         case TONNAGE:
             double tonnage;
-            if ((unit.hasETypeFlag(Entity.ETYPE_BATTLEARMOR)
-                    || unit.hasETypeFlag(Entity.ETYPE_PROTOMECH)) 
-                    && (crit.getType() instanceof AmmoType)){
-                tonnage = ((AmmoType)crit.getType()).getKgPerShot() * 
-                        crit.getBaseShotsLeft() / 1000;
-            } else if (crit.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)
-                    && crit.getLinked() != null){
+            if ((unit.hasETypeFlag(Entity.ETYPE_BATTLEARMOR) || unit.hasETypeFlag(Entity.ETYPE_PROTOMECH))
+                    && (crit.getType() instanceof AmmoType)) {
+                tonnage = ((AmmoType) crit.getType()).getKgPerShot() * crit.getBaseShotsLeft() / 1000;
+            } else if (crit.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK) && crit.getLinked() != null) {
                 tonnage = crit.getLinked().getType().getTonnage(unit) * 0.75;
             } else if (unit.usesWeaponBays() && (crit.getType() instanceof AmmoType)) {
                 // Round up to the next half ton
                 tonnage = Math.ceil((crit.getType().getTonnage(unit) * crit.getUsableShotsLeft()
-                        / ((AmmoType)crit.getType()).getShots()) * 2.0) * 0.5;
+                        / ((AmmoType) crit.getType()).getShots()) * 2.0) * 0.5;
             } else {
                 tonnage = crit.getType().getTonnage(unit);
             }
@@ -175,10 +169,10 @@ public class CriticalTableModel extends AbstractTableModel {
                 return crit.getType().getTankslots(unit);
             }
             if (unit.hasETypeFlag(Entity.ETYPE_PROTOMECH)) {
-                return TestProtomech.requiresSlot(crit.getType())? 1 : 0;
+                return TestProtomech.requiresSlot(crit.getType()) ? 1 : 0;
             }
             if (unit.usesWeaponBays() && (crit.getType() instanceof AmmoType)) {
-                return crit.getUsableShotsLeft() / ((AmmoType)crit.getType()).getShots();
+                return crit.getUsableShotsLeft() / ((AmmoType) crit.getType()).getShots();
             }
             if (tableType == BUILDTABLE) {
                 return UnitUtil.getCritsUsed(unit, crit.getType());
@@ -192,9 +186,8 @@ public class CriticalTableModel extends AbstractTableModel {
             }
             return 0;
         case LOCATION:
-            if (unit instanceof BattleArmor){
-                return BattleArmor.getBaMountLocAbbr(crit
-                        .getBaMountLoc());
+            if (unit instanceof BattleArmor) {
+                return BattleArmor.getBaMountLocAbbr(crit.getBaMountLoc());
             } else {
                 return unit.getLocationAbbr(crit.getLocation());
             }
@@ -217,13 +210,11 @@ public class CriticalTableModel extends AbstractTableModel {
         private static final long serialVersionUID = 149542030113164984L;
 
         @Override
-        public Component getTableCellRendererComponent(JTable table,
-                Object value, boolean isSelected, boolean hasFocus, int row,
-                int column) {
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+                int row, int column) {
 
-            JLabel c = (JLabel) super.getTableCellRendererComponent(table,
-                    value, isSelected, hasFocus, row, column);
-            
+            JLabel c = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
             c.setOpaque(true);
             if ((crits.size() < row) || (row < 0)) {
                 return c;
@@ -233,9 +224,9 @@ public class CriticalTableModel extends AbstractTableModel {
             }
 
             Mounted mount = sortedEquipment[row];
-            if ((unit instanceof BattleArmor) && column == NAME){
+            if ((unit instanceof BattleArmor) && column == NAME) {
                 String modifier = "";
-                if (mount.getType() instanceof AmmoType){
+                if (mount.getType() instanceof AmmoType) {
                     modifier += " (" + mount.getBaseShotsLeft() + ")";
                 }
                 if (mount.getLocation() != BattleArmor.LOC_SQUAD) {
@@ -243,20 +234,17 @@ public class CriticalTableModel extends AbstractTableModel {
                 } else {
                     modifier += " (Squad)";
                 }
-                if (mount.isDWPMounted()){
-                    modifier += " (DWP)"; 
+                if (mount.isDWPMounted()) {
+                    modifier += " (DWP)";
                 }
-                if (mount.isSquadSupportWeapon()){
-                    modifier += " (Squad Support Weapon)"; 
+                if (mount.isSquadSupportWeapon()) {
+                    modifier += " (Squad Support Weapon)";
                 }
                 if ((mount.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)
-                        || mount.getType().hasFlag(MiscType.F_AP_MOUNT))
-                        && mount.getLinked() != null){
-                    modifier += " (attached " + mount.getLinked().getName() 
-                            + ")";
+                        || mount.getType().hasFlag(MiscType.F_AP_MOUNT)) && mount.getLinked() != null) {
+                    modifier += " (attached " + mount.getLinked().getName() + ")";
                 }
-                if (mount.getType().hasFlag(WeaponType.F_INFANTRY) &&
-                        mount.getLinkedBy() == null){
+                if (mount.getType().hasFlag(WeaponType.F_INFANTRY) && mount.getLinkedBy() == null) {
                     modifier += "*";
                 }
                 c.setText(c.getText() + modifier);
@@ -291,15 +279,15 @@ public class CriticalTableModel extends AbstractTableModel {
     public void removeCrit(int location) {
         crits.removeElementAt(location);
     }
-    
+
     /**
      * Remove a collection of crits specified by the given list of indices.
-     * 
-     * @param locs  An array of indices that specifies the crits to remove
+     *
+     * @param locs An array of indices that specifies the crits to remove
      */
     public void removeCrits(int locs[]) {
         Vector<Mounted> mounts = new Vector<Mounted>(locs.length);
-        for (Integer l : locs){
+        for (Integer l : locs) {
             mounts.add(crits.elementAt(l));
         }
         crits.removeAll(mounts);
@@ -310,8 +298,7 @@ public class CriticalTableModel extends AbstractTableModel {
     }
 
     public void removeMounted(int row) {
-        UnitUtil.removeMounted(unit,
-                (Mounted) getValueAt(row, CriticalTableModel.EQUIPMENT));
+        UnitUtil.removeMounted(unit, (Mounted) getValueAt(row, CriticalTableModel.EQUIPMENT));
     }
 
     public Vector<Mounted> getCrits() {
@@ -320,12 +307,12 @@ public class CriticalTableModel extends AbstractTableModel {
 
     public int getAlignment(int col) {
         switch (col) {
-            case NAME:
-                return SwingConstants.LEFT;
-            case TONNAGE:
-                return SwingConstants.RIGHT;
-            default:
-                return SwingConstants.CENTER;
+        case NAME:
+            return SwingConstants.LEFT;
+        case TONNAGE:
+            return SwingConstants.RIGHT;
+        default:
+            return SwingConstants.CENTER;
         }
     }
 }

@@ -1,7 +1,7 @@
 /*
- * MegaMekLab - Copyright (C) 2008
- *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * MegaMekLab
+ * - Copyright (C) 2008 jtighe (torren@users.sourceforge.net)
+ * - Copyright (C) 2018 The MegaMek Team
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -64,21 +64,19 @@ public class CriticalTransferHandler extends TransferHandler {
             location = Integer.parseInt(list.getName());
             Transferable t = info.getTransferable();
             try {
-                Mounted mount = getUnit().getEquipment(Integer.parseInt((String) t
-                        .getTransferData(DataFlavor.stringFlavor)));
-                
+                Mounted mount = getUnit()
+                        .getEquipment(Integer.parseInt((String) t.getTransferData(DataFlavor.stringFlavor)));
+
                 if (!UnitUtil.isValidLocation(getUnit(), mount.getType(), location)) {
-                    JOptionPane.showMessageDialog(null, mount.getName() +
-                            " can't be placed in " +
-                            getUnit().getLocationName(location) + "!",
-                            "Invalid Location",
-                            JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(null,
+                            mount.getName() + " can't be placed in " + getUnit().getLocationName(location) + "!",
+                            "Invalid Location", JOptionPane.INFORMATION_MESSAGE);
                     return false;
                 }
-                
+
                 if (!getUnit().addCritical(location, new CriticalSlot(mount))) {
-                    JOptionPane.showMessageDialog(null, "Location Full",
-                            "Location Full", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Location Full", "Location Full",
+                            JOptionPane.INFORMATION_MESSAGE);
                 } else {
                     changeMountStatus(mount, location, false);
                 }
@@ -92,21 +90,19 @@ public class CriticalTransferHandler extends TransferHandler {
             location = list.getMountLocation();
             Transferable t = info.getTransferable();
             try {
-                Mounted mount = getUnit().getEquipment(Integer.parseInt((String) t
-                        .getTransferData(DataFlavor.stringFlavor)));
+                Mounted mount = getUnit()
+                        .getEquipment(Integer.parseInt((String) t.getTransferData(DataFlavor.stringFlavor)));
 
                 if (!UnitUtil.isValidLocation(getUnit(), mount.getType(), location)) {
-                    JOptionPane.showMessageDialog(null, mount.getName() +
-                            " can't be placed in " +
-                            getUnit().getLocationName(location) + "!",
-                            "Invalid Location",
-                            JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(null,
+                            mount.getName() + " can't be placed in " + getUnit().getLocationName(location) + "!",
+                            "Invalid Location", JOptionPane.INFORMATION_MESSAGE);
                     return false;
                 }
 
                 if (!UnitUtil.protomechHasRoom(list.getProtomech(), location, mount)) {
-                    JOptionPane.showMessageDialog(null, "Location Full",
-                            "Not enough room", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Location Full", "Not enough room",
+                            JOptionPane.INFORMATION_MESSAGE);
                 } else {
                     changeMountStatus(mount, location, false);
                 }
@@ -115,14 +111,13 @@ public class CriticalTransferHandler extends TransferHandler {
             }
 
             return true;
-        } else if ((info.getComponent() instanceof JTable)
-                || (info.getComponent() instanceof JScrollPane)) {
+        } else if ((info.getComponent() instanceof JTable) || (info.getComponent() instanceof JScrollPane)) {
             try {
                 Transferable t = info.getTransferable();
-                Mounted mount = getUnit().getEquipment(Integer.parseInt((String) t
-                        .getTransferData(DataFlavor.stringFlavor)));
+                Mounted mount = getUnit()
+                        .getEquipment(Integer.parseInt((String) t.getTransferData(DataFlavor.stringFlavor)));
 
-                if (getUnit() instanceof BattleArmor){
+                if (getUnit() instanceof BattleArmor) {
                     mount.setBaMountLoc(BattleArmor.MOUNT_LOC_NONE);
                 } else {
                     UnitUtil.removeCriticals(getUnit(), mount);
@@ -145,9 +140,8 @@ public class CriticalTransferHandler extends TransferHandler {
         // check if the dragged mounted should be transferrable
         Mounted mounted = null;
         try {
-            mounted = getUnit().getEquipment(Integer
-                    .parseInt((String) info.getTransferable().getTransferData(
-                            DataFlavor.stringFlavor)));
+            mounted = getUnit().getEquipment(
+                    Integer.parseInt((String) info.getTransferable().getTransferData(DataFlavor.stringFlavor)));
         } catch (NumberFormatException e) {
             e.printStackTrace();
         } catch (UnsupportedFlavorException e) {
@@ -170,13 +164,13 @@ public class CriticalTransferHandler extends TransferHandler {
     protected Transferable createTransferable(JComponent c) {
         if (c instanceof JTable) {
             JTable table = (JTable) c;
-            Mounted mount = (Mounted) ((CriticalTableModel) table.getModel()).getValueAt(table.getSelectedRow(), CriticalTableModel.EQUIPMENT);
+            Mounted mount = (Mounted) ((CriticalTableModel) table.getModel()).getValueAt(table.getSelectedRow(),
+                    CriticalTableModel.EQUIPMENT);
             return new StringSelection(Integer.toString(getUnit().getEquipmentNum(mount)));
         } else if (c instanceof ProtomekMountList) {
             Mounted mount = ((ProtomekMountList) c).getMounted();
-            if (!UnitUtil.isFixedLocationSpreadEquipment(mount.getType())
-                    && !(mount.getType() instanceof AmmoType))
-            return new StringSelection(Integer.toString(getUnit().getEquipmentNum(mount)));
+            if (!UnitUtil.isFixedLocationSpreadEquipment(mount.getType()) && !(mount.getType() instanceof AmmoType))
+                return new StringSelection(Integer.toString(getUnit().getEquipmentNum(mount)));
         }
         return null;
     }
@@ -185,7 +179,7 @@ public class CriticalTransferHandler extends TransferHandler {
     public int getSourceActions(JComponent c) {
         return TransferHandler.LINK;
     }
-    
+
     private void changeMountStatus(Mounted eq, int location, boolean rear) {
         changeMountStatus(eq, location, -1, rear);
     }
@@ -208,8 +202,8 @@ public class CriticalTransferHandler extends TransferHandler {
             refresh.refreshAll();
         }
     }
-    
-    public void addRefreshListener(RefreshListener r){
+
+    public void addRefreshListener(RefreshListener r) {
         refresh = r;
     }
 

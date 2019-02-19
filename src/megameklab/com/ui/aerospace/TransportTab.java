@@ -11,6 +11,7 @@
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  */
+
 package megameklab.com.ui.aerospace;
 
 import java.awt.BorderLayout;
@@ -72,17 +73,17 @@ import megameklab.com.util.UnitUtil;
 
 /**
  * Tab for adding and modifying aerospace transport bays.
- * 
+ *
  * @author Neoancient
  *
  */
 public class TransportTab extends IView implements ActionListener, ChangeListener {
-    
+
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 6288658666144030993L;
-    
+
     private final JLabel lblDockingHardpoints = new JLabel();
     private final JLabel lblMaxHardpoints = new JLabel();
     private final SpinnerNumberModel spnHardpointsModel = new SpinnerNumberModel(0, 0, null, 1);
@@ -95,17 +96,17 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
     private final JButton btnRemoveBay = new JButton();
     private final JButton btnAddBay = new JButton();
     private final JButton btnAddToCargo = new JButton();
-        
+
     private RefreshListener refresh = null;
-    
+
     public TransportTab(EntitySource eSource) {
         super(eSource);
         initUI();
     }
-    
+
     private void initUI() {
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Tabs", new EncodeControl()); //$NON-NLS-1$
-        
+
         setLayout(new BorderLayout());
         if (eSource.getEntity().hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
             JPanel panHardpoints = new JPanel();
@@ -120,7 +121,7 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
             panHardpoints.add(lblMaxHardpoints);
             lblMaxHardpoints.setToolTipText(resourceMap.getString("TransportTab.spnMaxHardpoints.tooltip")); //$NON-NLS-1$
         }
-        
+
         JPanel bayPanel = new JPanel(new GridBagLayout());
         add(bayPanel, BorderLayout.CENTER);
         GridBagConstraints gbc = new GridBagConstraints();
@@ -130,13 +131,13 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
         gbc.gridy = 0;
         gbc.gridwidth = 2;
         bayPanel.add(new JLabel(resourceMap.getString("TransportTab.lblCurrentBays.text")), gbc); //$NON-NLS-1$
-        
+
         gbc.gridy++;
         gbc.gridwidth = 1;
         bayPanel.add(new JLabel(resourceMap.getString("TransportTab.lblMaxDoors.text")), gbc); //$NON-NLS-1$
         gbc.gridx = 1;
         bayPanel.add(lblMaxDoors, gbc);
-        
+
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 1;
@@ -144,36 +145,36 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
         btnRemoveBay.setToolTipText(resourceMap.getString("TransportTab.btnRemoveBay.tooltip")); //$NON-NLS-1$
         bayPanel.add(btnRemoveBay, gbc);
         btnRemoveBay.addActionListener(this);
-        
+
         gbc.gridx = 1;
         btnAddToCargo.setText(resourceMap.getString("TransportTab.btnAddToCargo.text")); //$NON-NLS-1$
         btnAddToCargo.setToolTipText(resourceMap.getString("TransportTab.btnAddToCargo.tooltip")); //$NON-NLS-1$
         bayPanel.add(btnAddToCargo, gbc);
         btnAddToCargo.addActionListener(this);
-        
+
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 3;
         gbc.gridheight = GridBagConstraints.REMAINDER;
         bayPanel.add(new JScrollPane(tblInstalled), gbc);
-        
+
         gbc.gridx = 3;
         gbc.gridy = 0;
         gbc.gridwidth = 1;
         gbc.gridheight = 1;
         bayPanel.add(new JLabel(resourceMap.getString("TransportTab.lblAvailableBays.text")), gbc); //$NON-NLS-1$
-        
+
         gbc.gridy = 2;
         btnAddBay.setText(resourceMap.getString("TransportTab.btnAddBay.text")); //$NON-NLS-1$
         btnAddBay.setToolTipText(resourceMap.getString("TransportTab.btnAddBay.tooltip")); //$NON-NLS-1$
         bayPanel.add(btnAddBay, gbc);
         btnAddBay.addActionListener(this);
-        
+
         gbc.gridy++;
         gbc.gridwidth = 2;
         gbc.gridheight = GridBagConstraints.REMAINDER;
         bayPanel.add(new JScrollPane(tblAvailable), gbc);
-        
+
         tblInstalled.setRowHeight(24);
         TableColumn col = tblInstalled.getColumnModel().getColumn(InstalledBaysModel.COL_SIZE);
         col.setCellEditor(new SpinnerCellEditor(InstalledBaysModel.COL_SIZE));
@@ -195,9 +196,8 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
         col.setCellRenderer(renderer);
         col = tblInstalled.getColumnModel().getColumn(InstalledBaysModel.COL_FACING);
         if (getAero().hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
-            JComboBox<Integer> cb = new JComboBox<>(new Integer[] { Jumpship.LOC_NOSE,
-                    Jumpship.LOC_FLS, Jumpship.LOC_FRS,
-                    Jumpship.LOC_ALS, Jumpship.LOC_ARS, Jumpship.LOC_AFT });
+            JComboBox<Integer> cb = new JComboBox<>(new Integer[] { Jumpship.LOC_NOSE, Jumpship.LOC_FLS,
+                    Jumpship.LOC_FRS, Jumpship.LOC_ALS, Jumpship.LOC_ARS, Jumpship.LOC_AFT });
             col.setCellEditor(new DefaultCellEditor(cb));
             cb.setRenderer(new DefaultListCellRenderer() {
                 private static final long serialVersionUID = 7950275386647167332L;
@@ -212,7 +212,7 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
                     setText(getAero().getLocationName(loc));
                     return this;
                 }
-                
+
             });
             renderer = new DefaultTableCellRenderer();
             renderer.setToolTipText(resourceMap.getString("TransportTab.colFacing.tooltip"));
@@ -224,22 +224,22 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
         tblInstalled.setIntercellSpacing(new Dimension(0, 0));
         tblAvailable.setShowGrid(false);
         tblAvailable.setIntercellSpacing(new Dimension(0, 0));
-        
+
         tblInstalled.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tblInstalled.getSelectionModel().addListSelectionListener(e -> checkButtons());
         tblAvailable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tblAvailable.getSelectionModel().addListSelectionListener(e -> checkButtons());
-        
+
         tblInstalled.setDragEnabled(true);
         tblInstalled.setDropMode(DropMode.INSERT_ROWS);
         tblInstalled.setTransferHandler(new BayReorderTransferHandler());
         refresh();
     }
-    
+
     public void addRefreshedListener(RefreshListener l) {
         refresh = l;
     }
-    
+
     public void refresh() {
         if (eSource.getEntity().hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
             int max = TestAdvancedAerospace.getMaxDockingHardpoints(getJumpship());
@@ -247,7 +247,7 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
             spnHardpointsModel.setMaximum(max);
             lblMaxHardpoints.setText(Integer.toString(max));
         }
-        
+
         lblMaxDoors.setText(String.valueOf(TestAero.maxBayDoors(getAero())));
         checkButtons();
         modelInstalled.refreshBays();
@@ -258,13 +258,13 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
             refresh.refreshPreview();
         }
     }
-    
+
     private void checkButtons() {
         btnRemoveBay.setEnabled(tblInstalled.getSelectedRow() >= 0);
         btnAddBay.setEnabled(canAddSelectedBay());
         btnAddToCargo.setEnabled(UnitUtil.getEntityVerifier(getAero()).calculateWeight() < getAero().getWeight());
     }
-    
+
     private int doorsAvailable() {
         int total = TestAero.maxBayDoors(getAero());
         for (Bay bay : getAero().getTransportBays()) {
@@ -272,7 +272,7 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
         }
         return Math.max(total, 0);
     }
-    
+
     private boolean canAddSelectedBay() {
         int selected = tblAvailable.getSelectedRow();
         if (selected < 0) {
@@ -281,10 +281,10 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
         BayData bayType = modelAvailable.getBayType(tblAvailable.convertRowIndexToModel(selected));
         return (doorsAvailable() > 0) || (bayType == BayData.CARGO);
     }
-    
+
     /**
      * Removes the bay from the vessel and adjusts the crew count.
-     * 
+     *
      * @param bay
      */
     private void removeBay(Bay bay) {
@@ -294,10 +294,10 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
         }
         getAero().removeTransporter(bay);
     }
-    
+
     /**
      * Adds the bay to the vessel and adjusts the crew count.
-     * 
+     *
      * @param bay
      */
     private void addBay(Bay bay) {
@@ -307,16 +307,16 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
             getSmallCraft().setNCrew(getSmallCraft().getNCrew() + personnel);
         }
     }
-    
+
     /**
-     * Removing bays can cause undesirable gaps in bay numbers, and it would be nice to let the
-     * user order the bays. Since bay numbers are immutable we have to instantiate a new bay to
-     * alter it.
+     * Removing bays can cause undesirable gaps in bay numbers, and it would be nice
+     * to let the user order the bays. Since bay numbers are immutable we have to
+     * instantiate a new bay to alter it.
      */
     private void rebuildBays() {
         int bayNum = 1;
         List<Transporter> newTransporterList = new ArrayList<>();
-        for (Iterator<Bay> iter = modelInstalled.getBays(); iter.hasNext(); ) {
+        for (Iterator<Bay> iter = modelInstalled.getBays(); iter.hasNext();) {
             final Bay bay = iter.next();
             if (bay.getBayNumber() == bayNum) {
                 newTransporterList.add(bay);
@@ -337,7 +337,7 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
         newTransporterList.forEach(b -> getAero().addTransporter(b));
         modelInstalled.refreshBays();
     }
-    
+
     public void actionPerformed(ActionEvent ev) {
         if (ev.getSource() == btnAddBay) {
             int selected = tblAvailable.getSelectedRow();
@@ -371,8 +371,8 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
                 int selected = tblInstalled.getSelectedRow();
                 Bay bay = null;
                 int bayNum = 1;
-                if ((selected >= 0)
-                        && (modelInstalled.getBayType(tblInstalled.convertRowIndexToModel(selected)) == BayData.CARGO)) {
+                if ((selected >= 0) && (modelInstalled
+                        .getBayType(tblInstalled.convertRowIndexToModel(selected)) == BayData.CARGO)) {
                     bay = modelInstalled.getBay(tblInstalled.convertRowIndexToModel(selected));
                     size += bay.getCapacity();
                     bayNum = bay.getBayNumber();
@@ -388,7 +388,7 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
             }
         }
     }
-    
+
     @Override
     public void stateChanged(ChangeEvent ev) {
         if (ev.getSource() == spnDockingHardpoints) {
@@ -410,35 +410,37 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
             }
         }
     }
-    
+
     private class InstalledBaysModel extends AbstractTableModel {
-        
+
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = -8643492032818089043L;
-        
-        private static final int COL_NAME      = 0;
-        private static final int COL_SIZE      = 1;
-        private static final int COL_DOORS     = 2;
-        private static final int COL_TONNAGE   = 3;
+
+        private static final int COL_NAME = 0;
+        private static final int COL_SIZE = 1;
+        private static final int COL_DOORS = 2;
+        private static final int COL_TONNAGE = 3;
         private static final int COL_PERSONNEL = 4;
-        private static final int COL_FACING    = 5;
-        private static final int NUM_COLS      = 6;
-        
+        private static final int COL_FACING = 5;
+        private static final int NUM_COLS = 6;
+
         private final List<Bay> bayList = new ArrayList<>();
         private final List<BayData> bayTypeList = new ArrayList<>();
-        
+
         public void refreshBays() {
             bayList.clear();
             bayTypeList.clear();
             // Find all the bays and sort them by bay number.
-            // Entity.getTransportBays() iterates through all transports and builds a collection of
-            // Bays so we're going to save ourselves a second list instantiation and iteration by
+            // Entity.getTransportBays() iterates through all transports and builds a
+            // collection of
+            // Bays so we're going to save ourselves a second list instantiation and
+            // iteration by
             // doing it all at once here.
             List<Bay> bays = getAero().getTransports().stream()
-                    .filter(t -> (t instanceof Bay) && !((Bay) t).isQuarters())
-                    .map(t -> (Bay) t).collect(Collectors.toList());
+                    .filter(t -> (t instanceof Bay) && !((Bay) t).isQuarters()).map(t -> (Bay) t)
+                    .collect(Collectors.toList());
             Collections.sort(bays, (b1, b2) -> b1.getBayNumber() - b2.getBayNumber());
             for (Bay bay : bays) {
                 BayData bayType = BayData.getBayType(bay);
@@ -449,15 +451,15 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
             }
             fireTableDataChanged();
         }
-        
+
         public Bay getBay(int row) {
             return bayList.get(row);
         }
-        
+
         public Iterator<Bay> getBays() {
             return bayList.iterator();
         }
-        
+
         public BayData getBayType(int row) {
             return bayTypeList.get(row);
         }
@@ -465,18 +467,18 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
         @Override
         public String getColumnName(int column) {
             switch (column) {
-                case COL_NAME:
-                    return "Bay Type";
-                case COL_SIZE:
-                    return "Size";
-                case COL_DOORS:
-                    return "Doors";
-                case COL_TONNAGE:
-                    return "Tonnage";
-                case COL_PERSONNEL:
-                    return "Personnel";
-                case COL_FACING:
-                    return "Facing";
+            case COL_NAME:
+                return "Bay Type";
+            case COL_SIZE:
+                return "Size";
+            case COL_DOORS:
+                return "Doors";
+            case COL_TONNAGE:
+                return "Tonnage";
+            case COL_PERSONNEL:
+                return "Personnel";
+            case COL_FACING:
+                return "Facing";
             }
             return "";
         }
@@ -485,43 +487,42 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
         public int getRowCount() {
             return bayList.size();
         }
-        
+
         @Override
         public int getColumnCount() {
             return NUM_COLS;
         }
-        
+
         @Override
         public Object getValueAt(int rowIndex, int columnIndex) {
             switch (columnIndex) {
-                case COL_NAME:
-                    return bayTypeList.get(rowIndex).getDisplayName();
-                case COL_SIZE:
-                    if (!bayTypeList.get(rowIndex).isCargoBay()) {
-                        return (int)bayList.get(rowIndex).getUnusedSlots();
-                    }
-                    return bayList.get(rowIndex).getUnusedSlots();
-                case COL_DOORS:
-                    return bayList.get(rowIndex).getDoors();
-                case COL_PERSONNEL:
-                    if (bayList.get(rowIndex) instanceof InfantryBay) {
-                        return "*";
-                    }
-                    return bayTypeList.get(rowIndex).getPersonnel()
-                            * (int)bayList.get(rowIndex).getCapacity();
-                case COL_TONNAGE:
-                    if (!bayTypeList.get(rowIndex).isCargoBay()) {
-                        return bayList.get(rowIndex).getWeight();
-                    }
-                    return Math.ceil(bayList.get(rowIndex).getWeight() * 2.0) * 0.5;
-                case COL_FACING:
-                    if (bayTypeList.get(rowIndex).requiresFacing()) {
-                        return getAero().getLocationAbbr(bayList.get(rowIndex).getFacing());
-                    } else {
-                        return "";
-                    }
-                default:
-                    return null;
+            case COL_NAME:
+                return bayTypeList.get(rowIndex).getDisplayName();
+            case COL_SIZE:
+                if (!bayTypeList.get(rowIndex).isCargoBay()) {
+                    return (int) bayList.get(rowIndex).getUnusedSlots();
+                }
+                return bayList.get(rowIndex).getUnusedSlots();
+            case COL_DOORS:
+                return bayList.get(rowIndex).getDoors();
+            case COL_PERSONNEL:
+                if (bayList.get(rowIndex) instanceof InfantryBay) {
+                    return "*";
+                }
+                return bayTypeList.get(rowIndex).getPersonnel() * (int) bayList.get(rowIndex).getCapacity();
+            case COL_TONNAGE:
+                if (!bayTypeList.get(rowIndex).isCargoBay()) {
+                    return bayList.get(rowIndex).getWeight();
+                }
+                return Math.ceil(bayList.get(rowIndex).getWeight() * 2.0) * 0.5;
+            case COL_FACING:
+                if (bayTypeList.get(rowIndex).requiresFacing()) {
+                    return getAero().getLocationAbbr(bayList.get(rowIndex).getFacing());
+                } else {
+                    return "";
+                }
+            default:
+                return null;
             }
         }
 
@@ -554,28 +555,27 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
             rebuildBays();
             refresh();
         }
-        
+
     }
-    
+
     private class AvailableBaysModel extends AbstractTableModel {
-        
+
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = -5456813671712646392L;
-        
-        private static final int COL_NAME      = 0;
-        private static final int COL_SIZE      = 1;
+
+        private static final int COL_NAME = 0;
+        private static final int COL_SIZE = 1;
         private static final int COL_PERSONNEL = 2;
-        private static final int NUM_COLS      = 3;
-        
+        private static final int NUM_COLS = 3;
+
         private List<BayData> bayList = new ArrayList<>();
-        
+
         public void refreshBays() {
             bayList.clear();
             for (BayData bay : BayData.values()) {
-                if (eSource.getTechManager().isLegal(bay.getTechAdvancement())
-                        && bay.isLegalFor(getAero())) {
+                if (eSource.getTechManager().isLegal(bay.getTechAdvancement()) && bay.isLegalFor(getAero())) {
                     bayList.add(bay);
                 }
             }
@@ -589,12 +589,12 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
         @Override
         public String getColumnName(int column) {
             switch (column) {
-                case COL_NAME:
-                    return "Bay Type";
-                case COL_SIZE:
-                    return "Unit Weight";
-                case COL_PERSONNEL:
-                    return "Personnel";
+            case COL_NAME:
+                return "Bay Type";
+            case COL_SIZE:
+                return "Unit Weight";
+            case COL_PERSONNEL:
+                return "Personnel";
             }
             return "";
         }
@@ -613,35 +613,35 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
         public Object getValueAt(int rowIndex, int columnIndex) {
             if (rowIndex < bayList.size()) {
                 switch (columnIndex) {
-                    case COL_NAME:
-                        return bayList.get(rowIndex).getDisplayName();
-                    case COL_SIZE:
-                        if (bayList.get(rowIndex).isCargoBay() && (bayList.get(rowIndex).getWeight() > 1)) {
-                            return String.format("%.3f", bayList.get(rowIndex).getWeight());
-                        }
-                        return Double.toString(bayList.get(rowIndex).getWeight());
-                    case COL_PERSONNEL:
-                        if (bayList.get(rowIndex).getDisplayName().startsWith("Infantry")) {
-                            return "*";
-                        }
-                        return bayList.get(rowIndex).getPersonnel();
+                case COL_NAME:
+                    return bayList.get(rowIndex).getDisplayName();
+                case COL_SIZE:
+                    if (bayList.get(rowIndex).isCargoBay() && (bayList.get(rowIndex).getWeight() > 1)) {
+                        return String.format("%.3f", bayList.get(rowIndex).getWeight());
+                    }
+                    return Double.toString(bayList.get(rowIndex).getWeight());
+                case COL_PERSONNEL:
+                    if (bayList.get(rowIndex).getDisplayName().startsWith("Infantry")) {
+                        return "*";
+                    }
+                    return bayList.get(rowIndex).getPersonnel();
                 }
-            }            
+            }
             return "?";
         }
-        
+
     }
-    
+
     private class SpinnerCellEditor extends AbstractCellEditor implements TableCellEditor, ChangeListener {
-        
+
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = -5334192308060664513L;
-        
+
         private final JSpinner spinner = new JSpinner();
         private final int column;
-        
+
         SpinnerCellEditor(int column) {
             this.column = column;
             spinner.addChangeListener(this);
@@ -667,7 +667,7 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
                 addBay(newBay);
                 modelInstalled.bayList.set(row, newBay);
             } else if (column == InstalledBaysModel.COL_DOORS) {
-                modelInstalled.bayList.get(row).setDoors((Integer)getCellEditorValue());
+                modelInstalled.bayList.get(row).setDoors((Integer) getCellEditorValue());
             }
             modelInstalled.fireTableRowsUpdated(row, row);
             checkButtons();
@@ -683,15 +683,14 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
                 int column) {
             boolean isCargo = modelInstalled.bayTypeList.get(row).isCargoBay();
             if (column == InstalledBaysModel.COL_DOORS) {
-                int doors = ((Integer)modelInstalled.getValueAt(row,  column)).intValue();
-                SpinnerNumberModel model = new SpinnerNumberModel(doors,
-                        isCargo? 0 : 1, doorsAvailable() + doors, 1);
+                int doors = ((Integer) modelInstalled.getValueAt(row, column)).intValue();
+                SpinnerNumberModel model = new SpinnerNumberModel(doors, isCargo ? 0 : 1, doorsAvailable() + doors, 1);
                 spinner.removeChangeListener(this);
                 spinner.setModel(model);
                 spinner.addChangeListener(this);
                 return spinner;
             } else if (column == InstalledBaysModel.COL_SIZE) {
-                double step = isCargo? 0.5 : 1.0;
+                double step = isCargo ? 0.5 : 1.0;
                 SpinnerNumberModel model = new SpinnerNumberModel(modelInstalled.bayList.get(row).getUnusedSlots(),
                         step, null, step);
                 spinner.removeChangeListener(this);
@@ -701,13 +700,13 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
             }
             return null;
         }
-        
+
     }
-    
+
     private class BayReorderTransferHandler extends TransferHandler {
-        
+
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = -6442201464476396078L;
 
@@ -723,26 +722,26 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
             int index = dl.getRow();
             int max = modelInstalled.getRowCount();
             if (index < 0 || index > max)
-               index = max;
+                index = max;
             try {
-               Integer rowFrom = Integer.parseInt((String) support.getTransferable().getTransferData(DataFlavor.stringFlavor));
-               if (rowFrom != -1 && rowFrom != index) {
-                  modelInstalled.reorder(rowFrom, index);
-                  if (index > rowFrom)
-                     index--;
-                  target.getSelectionModel().addSelectionInterval(index, index);
-                  return true;
-               }
+                Integer rowFrom = Integer
+                        .parseInt((String) support.getTransferable().getTransferData(DataFlavor.stringFlavor));
+                if (rowFrom != -1 && rowFrom != index) {
+                    modelInstalled.reorder(rowFrom, index);
+                    if (index > rowFrom)
+                        index--;
+                    target.getSelectionModel().addSelectionInterval(index, index);
+                    return true;
+                }
             } catch (Exception e) {
-               MegaMekLab.getLogger().error(getClass(), "importData(TransferSupport)", e);
+                MegaMekLab.getLogger().error(getClass(), "importData(TransferSupport)", e);
             }
             return false;
         }
 
         @Override
         public boolean canImport(TransferSupport support) {
-            return support.isDataFlavorSupported(DataFlavor.stringFlavor)
-                    && (support.getComponent() == tblInstalled)
+            return support.isDataFlavorSupported(DataFlavor.stringFlavor) && (support.getComponent() == tblInstalled)
                     && support.isDrop();
         }
 
