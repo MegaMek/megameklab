@@ -2326,7 +2326,7 @@ public class UnitUtil {
                 && (mount.getSecondLocation() != Entity.LOC_NONE)) {
             for (int position = 0; position < unit.getNumberOfCriticals(mount
                     .getSecondLocation()); position++) {
-                CriticalSlot cs = unit.getCritical(mount.getLocation(),
+                CriticalSlot cs = unit.getCritical(mount.getSecondLocation(),
                         position);
                 if ((cs == null) || (cs.getType() == CriticalSlot.TYPE_SYSTEM)) {
                     continue;
