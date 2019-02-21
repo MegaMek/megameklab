@@ -3653,6 +3653,68 @@ public class UnitUtil {
     }
     
     /**
+     * Makes the equipment mounted in one location identical to that in another location. Any equipment
+     * previously in the target location that is does not match the source location is removed and
+     * assigned to Entity.LOC_NONE.
+     * 
+     * @param entity          The unit being modified
+     * @param fromLoc         The source location index
+     * @param toLoc           The target location index
+     * @throws LocationFullException If the target location is full
+     */
+    public static void copyLocationEquipment(Entity entity, int fromLoc, int toLoc)
+            throws LocationFullException{
+        copyLocationEquipment(entity, fromLoc, toLoc, true, true);
+    }
+    
+    /**
+     * Makes the equipment mounted in one location identical to that in another location. Any equipment
+     * previously in the target location that is does not match the source location is removed and
+     * assigned to Entity.LOC_NONE. This does not handle split location equipment.
+     * 
+     * @param entity          The unit being modified
+     * @param fromLoc         The source location index
+     * @param toLoc           The target location index
+     * @param includeForward  Whether to include forward-mounted equipment
+     * @param includeRear     Whether to include rear-mounted equipment
+     * @throws LocationFullException If the target location is full
+     */
+    public static void copyLocationEquipment(final Entity entity, final int fromLoc, final int toLoc,
+            final boolean includeForward, final boolean includeRear) throws LocationFullException {
+        /* First we remove any equipment already in the location, but keep a list of it
+         * to use as much as possible. 
+         */
+        List<Mounted> removed = new ArrayList<>();
+        for (Mounted m : entity.getEquipment()) {
+            if ((m.getLocation() == toLoc)
+                    && (m.isRearMounted() ? includeRear : includeForward)) {
+                removed.add(m);
+                UnitUtil.removeCriticals(entity, m);
+                changeMountStatus(entity, m, Entity.LOC_NONE, Entity.LOC_NONE, false);
+            }
+        }
+
+        /* Now we go through the equipment in the location to copy and add it to the other location.
+         * If there is a match in what we removed, use that. Otherwise add the equipment to the unit.
+         * To be nice and tidy we will keep the same slot order.
+         */
+        for (int slot = 0; slot < entity.getNumberOfCriticals(fromLoc); slot++) {
+            final CriticalSlot crit = entity.getCritical(fromLoc, slot);
+            if ((null != crit) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
+                Mounted toAdd = removed.stream().filter(m -> m.getType().equals(crit.getMount().getType()))
+                        .findFirst().orElse(null);
+                if (null != toAdd) {
+                    removed.remove(toAdd);
+                } else {
+                    toAdd = new Mounted(entity, crit.getMount().getType());
+                }
+                entity.addEquipment(toAdd, toLoc, crit.getMount().isRearMounted());
+                changeMountStatus(entity, toAdd, toLoc, Entity.LOC_NONE, crit.getMount().isRearMounted());
+            }
+        }
+    }
+    
+    /**
      * Checks whether the space has room for the equipment within the slot and weight limits.
      * 
      * @param location A Protomech location
