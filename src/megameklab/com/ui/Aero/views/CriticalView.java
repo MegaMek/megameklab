@@ -17,6 +17,7 @@
 package megameklab.com.ui.Aero.views;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Font;
 import java.util.Vector;
 
@@ -120,6 +121,8 @@ public class CriticalView extends IView {
         bottomPanel.add(aftPanel);
         mainPanel.add(bottomPanel);
         
+        btnCopyLW.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnCopyRW.setAlignmentX(Component.CENTER_ALIGNMENT);
         btnCopyLW.addActionListener(ev -> copyLocation(Aero.LOC_LWING, Aero.LOC_RWING));
         btnCopyRW.addActionListener(ev -> copyLocation(Aero.LOC_RWING, Aero.LOC_LWING));
 
