@@ -3700,7 +3700,8 @@ public class UnitUtil {
          */
         for (int slot = 0; slot < entity.getNumberOfCriticals(fromLoc); slot++) {
             final CriticalSlot crit = entity.getCritical(fromLoc, slot);
-            if ((null != crit) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
+            if ((null != crit) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)
+                    && (crit.getMount().isRearMounted() ? includeRear : includeForward)) {
                 Mounted toAdd = removed.stream().filter(m -> m.getType().equals(crit.getMount().getType()))
                         .findFirst().orElse(null);
                 if (null != toAdd) {

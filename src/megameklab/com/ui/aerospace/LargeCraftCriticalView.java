@@ -21,13 +21,18 @@ import java.util.ResourceBundle;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
 import megamek.common.Entity;
 import megamek.common.Jumpship;
+import megamek.common.LocationFullException;
+import megamek.common.SmallCraft;
 import megamek.common.Warship;
+import megamek.common.annotations.Nullable;
 import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestAdvancedAerospace;
 import megamek.common.verifier.TestAero;
@@ -37,6 +42,7 @@ import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.util.BayWeaponCriticalTree;
 import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
+import megameklab.com.util.UnitUtil;
 
 /**
  * For allocating Large Craft (and small craft) weapons to critical spaces. Aft side arcs on spheroid
@@ -81,9 +87,18 @@ public class LargeCraftCriticalView extends IView {
     private JLabel lblSlotsPerArc[] = new JLabel[MAX_ARCS];
     private JLabel lblExtraTonnage[] = new JLabel[MAX_ARCS];
     
+    private JButton btnCopyFLS = new JButton();
+    private JButton btnCopyFRS = new JButton();
+    private JButton btnCopyALS = new JButton();
+    private JButton btnCopyARS = new JButton();
+    private JButton btnCopyLBS = new JButton();
+    private JButton btnCopyRBS = new JButton();
+    
+    private RefreshListener refresh;
 
     public LargeCraftCriticalView(EntitySource eSource, RefreshListener refresh) {
         super(eSource);
+        this.refresh = refresh;
 
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl()); //$NON-NLS-1$
         aerodyneArcNames = resourceMap.getString("DropshipCriticalView.aerodyneArcs.values").split(","); //$NON-NLS-1$
@@ -114,29 +129,29 @@ public class LargeCraftCriticalView extends IView {
         }
 
         leftColumn.add(Box.createVerticalGlue());
-        leftPanel = createArcPanel(TestSmallCraft.ARC_FWD_LEFT, resourceMap);
+        leftPanel = createArcPanel(TestSmallCraft.ARC_FWD_LEFT, resourceMap, true, btnCopyFRS);
         leftColumn.add(leftPanel);
-        bsLeftPanel = createArcPanel(Warship.LOC_LBS, resourceMap);
+        bsLeftPanel = createArcPanel(Warship.LOC_LBS, resourceMap, true, btnCopyRBS);
         leftColumn.add(bsLeftPanel);
-        aftLeftPanel = createArcPanel(aftLeft, resourceMap);
+        aftLeftPanel = createArcPanel(aftLeft, resourceMap, true, btnCopyARS);
         leftColumn.add(aftLeftPanel);
         leftColumn.add(Box.createVerticalGlue());
 
-        nosePanel = createArcPanel(TestSmallCraft.ARC_NOSE, resourceMap);
+        nosePanel = createArcPanel(TestSmallCraft.ARC_NOSE, resourceMap, true, null);
         midColumn.add(nosePanel);
         midColumn.add(Box.createVerticalGlue());
-        sysPanel = createArcPanel(TestEntity.getSystemWideLocation(getAero()), resourceMap, false);
+        sysPanel = createArcPanel(TestEntity.getSystemWideLocation(getAero()), resourceMap, false, null);
         midColumn.add(sysPanel);
         midColumn.add(Box.createVerticalGlue());
-        aftPanel = createArcPanel(TestSmallCraft.ARC_AFT, resourceMap);
+        aftPanel = createArcPanel(TestSmallCraft.ARC_AFT, resourceMap, true, null);
         midColumn.add(aftPanel);
         
         rightColumn.add(Box.createVerticalGlue());
-        rightPanel = createArcPanel(TestSmallCraft.ARC_FWD_RIGHT, resourceMap);
+        rightPanel = createArcPanel(TestSmallCraft.ARC_FWD_RIGHT, resourceMap, true, btnCopyFLS);
         rightColumn.add(rightPanel);
-        bsRightPanel = createArcPanel(Warship.LOC_RBS, resourceMap);
+        bsRightPanel = createArcPanel(Warship.LOC_RBS, resourceMap, true, btnCopyLBS);
         rightColumn.add(bsRightPanel);
-        aftRightPanel = createArcPanel(aftRight, resourceMap);
+        aftRightPanel = createArcPanel(aftRight, resourceMap, true, btnCopyALS);
         rightColumn.add(aftRightPanel);
         rightColumn.add(Box.createVerticalGlue());
 
@@ -145,14 +160,46 @@ public class LargeCraftCriticalView extends IView {
         mainPanel.add(rightColumn);
         add(mainPanel);
         
+        btnCopyFLS.addActionListener(ev -> {
+            if (getAero() instanceof Jumpship) {
+                copyLocation(Jumpship.LOC_FLS, Jumpship.LOC_FRS);
+            } else if (getAero().isSpheroid()) {
+                copyLocation(SmallCraft.LOC_LWING, SmallCraft.LOC_RWING, true, false);
+            } else {
+                copyLocation(SmallCraft.LOC_LWING, SmallCraft.LOC_RWING, true, true);
+            }
+        });
+        btnCopyFRS.addActionListener(ev -> {
+            if (getAero() instanceof Jumpship) {
+                copyLocation(Jumpship.LOC_FRS, Jumpship.LOC_FLS);
+            } else if (getAero().isSpheroid()) {
+                copyLocation(SmallCraft.LOC_RWING, SmallCraft.LOC_LWING, true, false);
+            } else {
+                copyLocation(SmallCraft.LOC_RWING, SmallCraft.LOC_LWING, true, true);
+            }
+        });
+        btnCopyALS.addActionListener(ev -> {
+            if (getAero() instanceof Jumpship) {
+                copyLocation(Jumpship.LOC_ALS, Jumpship.LOC_ARS);
+            } else {
+                copyLocation(SmallCraft.LOC_LWING, SmallCraft.LOC_RWING, false, true);
+            }
+        });
+        btnCopyARS.addActionListener(ev -> {
+            if (getAero() instanceof Jumpship) {
+                copyLocation(Jumpship.LOC_ARS, Jumpship.LOC_ALS);
+            } else {
+                copyLocation(SmallCraft.LOC_RWING, SmallCraft.LOC_LWING, false, true);
+            }
+        });
+        btnCopyLBS.addActionListener(ev -> copyLocation(Warship.LOC_LBS, Warship.LOC_RBS));
+        btnCopyRBS.addActionListener(ev -> copyLocation(Warship.LOC_RBS, Warship.LOC_LBS));
+
         refresh();
     }
     
-    private JPanel createArcPanel(int arc, ResourceBundle resourceMap) {
-        return createArcPanel(arc, resourceMap, true);
-    }
-    
-    private JPanel createArcPanel(int arc, ResourceBundle resourceMap, boolean isWeaponArc) {
+    private JPanel createArcPanel(int arc, ResourceBundle resourceMap,
+            boolean isWeaponArc, @Nullable JButton copyButton) {
         JPanel arcPanel = new JPanel(new GridBagLayout());
         arcTrees[arc].setBorder(BorderFactory.createMatteBorder(0, 1, 1, 1, Color.black));
         arcPanel.setBorder(BorderFactory.createTitledBorder(
@@ -200,6 +247,13 @@ public class LargeCraftCriticalView extends IView {
             lblExtraTonnage[arc] = new JLabel();
             gbc.gridx = 1;
             arcPanel.add(lblExtraTonnage[arc], gbc);
+            
+            if (null != copyButton) {
+                gbc.gridx = 0;
+                gbc.gridy++;
+                gbc.gridwidth = GridBagConstraints.REMAINDER;
+                arcPanel.add(copyButton, gbc);
+            }
         } else {
             lblSlotCount[arc] = new JLabel();
             lblSlotsPerArc[arc] = new JLabel();
@@ -215,6 +269,7 @@ public class LargeCraftCriticalView extends IView {
     }
 
     public void updateRefresh(RefreshListener refresh) {
+        this.refresh = refresh;
         for (BayWeaponCriticalTree tree : arcTrees) {
             tree.updateRefresh(refresh);
         }
@@ -229,6 +284,10 @@ public class LargeCraftCriticalView extends IView {
                 arcTrees[TestSmallCraft.ARC_FWD_RIGHT].setFacing(BayWeaponCriticalTree.FORWARD);
                 aftLeftPanel.setVisible(true);
                 aftRightPanel.setVisible(true);
+                btnCopyFLS.setText("Copy from " + spheroidArcNames[TestSmallCraft.ARC_FWD_LEFT]);
+                btnCopyFRS.setText("Copy from " + spheroidArcNames[TestSmallCraft.ARC_FWD_RIGHT]);
+                btnCopyALS.setText("Copy from " + spheroidArcNames[TestSmallCraft.ARC_AFT_LEFT]);
+                btnCopyARS.setText("Copy from " + spheroidArcNames[TestSmallCraft.ARC_AFT_RIGHT]);
             } else {
                 ((TitledBorder)leftPanel.getBorder()).setTitle(aerodyneArcNames[TestSmallCraft.ARC_LWING]);
                 ((TitledBorder)rightPanel.getBorder()).setTitle(aerodyneArcNames[TestSmallCraft.ARC_RWING]);
@@ -236,6 +295,8 @@ public class LargeCraftCriticalView extends IView {
                 arcTrees[TestSmallCraft.ARC_RWING].setFacing(BayWeaponCriticalTree.BOTH);
                 aftLeftPanel.setVisible(false);
                 aftRightPanel.setVisible(false);
+                btnCopyFLS.setText("Copy from " + aerodyneArcNames[TestSmallCraft.ARC_LWING]);
+                btnCopyFRS.setText("Copy from " + aerodyneArcNames[TestSmallCraft.ARC_RWING]);
             }
         }
         
@@ -257,6 +318,21 @@ public class LargeCraftCriticalView extends IView {
             lblSlotsPerArc[arc].setText(String.valueOf(TestAero.slotsPerArc(getAero())));
             lblExtraTonnage[arc].setText(String.valueOf(extra[arc]));
         }
-        
+    }
+    
+    private void copyLocation(int from, int to) {
+        copyLocation(from, to, true, true);
+    }
+    
+    private void copyLocation(int from, int to, boolean forward, boolean rear) {
+        try {
+            UnitUtil.copyLocationEquipment(getAero(), from, to, forward, rear);
+        } catch (LocationFullException ex) {
+            JOptionPane.showMessageDialog(this, "Insufficient space", "Location Full",
+                    JOptionPane.WARNING_MESSAGE);
+        }
+        if (null != refresh) {
+            refresh.refreshAll();
+        }
     }
 }
