@@ -1199,6 +1199,12 @@ public class BayWeaponCriticalTree extends JTree {
     
     private void moveToArc(Mounted eq) {
         UnitUtil.removeCriticals(eSource.getEntity(), eq);
+        try {
+            eSource.getEntity().addEquipment(eq, location, false);
+        } catch (LocationFullException e) {
+            // We shouldn't be hitting any limits
+            e.printStackTrace();
+        }
         UnitUtil.changeMountStatus(eSource.getEntity(), eq, location,
                 Entity.LOC_NONE, (facing == AFT) || ((facing == BOTH) && eq.isRearMounted()));
     }
