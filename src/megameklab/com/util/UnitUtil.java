@@ -62,6 +62,7 @@ import megamek.common.Jumpship;
 import megamek.common.LandAirMech;
 import megamek.common.LocationFullException;
 import megamek.common.Mech;
+import megamek.common.MechFileParser;
 import megamek.common.MechView;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
@@ -74,6 +75,7 @@ import megamek.common.TripodMech;
 import megamek.common.VTOL;
 import megamek.common.WeaponType;
 import megamek.common.annotations.Nullable;
+import megamek.common.loaders.EntityLoadingException;
 import megamek.common.logging.LogLevel;
 import megamek.common.logging.MMLogger;
 import megamek.common.verifier.EntityVerifier;
@@ -99,6 +101,7 @@ import megamek.common.weapons.autocannons.UACWeapon;
 import megamek.common.weapons.battlearmor.CLBALBX;
 import megamek.common.weapons.battlearmor.CLBALightTAG;
 import megamek.common.weapons.battlearmor.ISBALightTAG;
+import megamek.common.weapons.bayweapons.BayWeapon;
 import megamek.common.weapons.capitalweapons.CapitalMissileWeapon;
 import megamek.common.weapons.defensivepods.BPodWeapon;
 import megamek.common.weapons.defensivepods.MPodWeapon;
@@ -3681,38 +3684,99 @@ public class UnitUtil {
      */
     public static void copyLocationEquipment(final Entity entity, final int fromLoc, final int toLoc,
             final boolean includeForward, final boolean includeRear) throws LocationFullException {
+        final String METHOD_NAME = "copyLocationEquipment(Entity, int, int, boolean, boolean)"; //$NON-NLS-1$
+        
         /* First we remove any equipment already in the location, but keep a list of it
          * to use as much as possible. 
          */
         List<Mounted> removed = new ArrayList<>();
-        for (Mounted m : entity.getEquipment()) {
+        // Create copy to iterate since we may be modifying it.
+        List<Mounted> mountList = new ArrayList<>(entity.getEquipment());
+        for (Mounted m : mountList) {
             if ((m.getLocation() == toLoc)
                     && (m.isRearMounted() ? includeRear : includeForward)) {
                 removed.add(m);
                 UnitUtil.removeCriticals(entity, m);
-                changeMountStatus(entity, m, Entity.LOC_NONE, Entity.LOC_NONE, false);
+                if (m.getType() instanceof BayWeapon) {
+                    removeMounted(entity, m);
+                } else {
+                    changeMountStatus(entity, m, Entity.LOC_NONE, Entity.LOC_NONE, false);
+                }
             }
         }
-
+        
         /* Now we go through the equipment in the location to copy and add it to the other location.
          * If there is a match in what we removed, use that. Otherwise add the equipment to the unit.
-         * To be nice and tidy we will keep the same slot order.
+         * If the unit uses weapon bays, we need to create them in the new location and fill them. If
+         * the unit doesn't use bays we will iterate through the crit slots to get the equipment
+         * in the same order to be nice and tidy.
          */
-        for (int slot = 0; slot < entity.getNumberOfCriticals(fromLoc); slot++) {
-            final CriticalSlot crit = entity.getCritical(fromLoc, slot);
-            if ((null != crit) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)
-                    && (crit.getMount().isRearMounted() ? includeRear : includeForward)) {
-                Mounted toAdd = removed.stream().filter(m -> m.getType().equals(crit.getMount().getType()))
-                        .findFirst().orElse(null);
-                if (null != toAdd) {
-                    removed.remove(toAdd);
-                } else {
-                    toAdd = new Mounted(entity, crit.getMount().getType());
+        if (entity.usesWeaponBays()) {
+            mountList = entity.getWeaponBayList().stream()
+                    .filter(bay -> (bay.getLocation() == fromLoc) && (bay.isRearMounted() ? includeRear : includeForward))
+                    .collect(Collectors.toList());
+            for (Mounted bay : mountList) {
+                if ((bay.getLocation() == fromLoc)
+                        && (bay.isRearMounted() ? includeRear : includeForward)) {
+                    Mounted newBay = new Mounted(entity, bay.getType());
+                    entity.addEquipment(newBay, toLoc, bay.isRearMounted());
+                    for (Integer eqNum : bay.getBayWeapons()) {
+                        Mounted toAdd = copyEquipment(entity, toLoc, entity.getEquipment(eqNum), removed);
+                        newBay.addWeaponToBay(entity.getEquipmentNum(toAdd));
+                    }
+                    for (Integer eqNum : bay.getBayAmmo()) {
+                        Mounted toAdd = copyEquipment(entity, toLoc, entity.getEquipment(eqNum), removed);
+                        newBay.addAmmoToBay(entity.getEquipmentNum(toAdd));
+                    }
                 }
-                entity.addEquipment(toAdd, toLoc, crit.getMount().isRearMounted());
-                changeMountStatus(entity, toAdd, toLoc, Entity.LOC_NONE, crit.getMount().isRearMounted());
+                // Now we copy any other equipment
+                for (Mounted m : entity.getMisc()) {
+                    if ((m.getLocation() == fromLoc)
+                            && (m.isRearMounted() ? includeRear : includeForward)) {
+                        copyEquipment(entity, toLoc, m, removed);
+                    }
+                }
+            }
+        } else {
+            for (int slot = 0; slot < entity.getNumberOfCriticals(fromLoc); slot++) {
+                final CriticalSlot crit = entity.getCritical(fromLoc, slot);
+                copyEquipment(entity, toLoc, crit.getMount(), removed);
             }
         }
+        // Link up Artemis, etc.
+        try {
+            MechFileParser.postLoadInit(entity);
+        } catch (EntityLoadingException e) {
+            MegaMekLab.getLogger().error(UnitUtil.class, METHOD_NAME, e);
+        }
+    }
+    
+    /**
+     * Used by {@link #copyLocationEquipment(Entity, int, int, boolean, boolean)} to perform the actual
+     * copy of equipment from one location to another.
+     * 
+     * @param entity The entity be processed
+     * @param toLoc  The location to copy the equipment to
+     * @param toCopy The equipment to copy
+     * @param reuse  A list of equipment to reuse if there is a copy available. If not, a new item will
+     *               be created. Note that this modifies the contents of the list by removing the equipment
+     *               mount that was reused
+     * @return       The new equipment mount created in the new location
+     * @throws LocationFullException
+     *               If there are not enough slots in the new location to add the equipment.
+     */
+    private static Mounted copyEquipment(Entity entity, int toLoc, Mounted toCopy, List<Mounted> reuse)
+            throws LocationFullException {
+        Mounted toAdd = reuse.stream().filter(m -> m.getType().equals(toCopy.getType()))
+                .findFirst().orElse(null);
+        if (null != toAdd) {
+            reuse.remove(toAdd);
+        } else {
+            toAdd = new Mounted(entity, toCopy.getType());
+        }
+        entity.addEquipment(toAdd, toLoc, toCopy.isRearMounted());
+        changeMountStatus(entity, toAdd, toLoc, Entity.LOC_NONE, toCopy.isRearMounted());
+        return toAdd;
     }
     
     /**
