@@ -3470,7 +3470,7 @@ public class UnitUtil {
                 return false;
             }
             return true;
-        } else if (unit.isFighter()) {
+        } else if ((unit instanceof Aero) && unit.isFighter()) {
             // Weapons must have a firing arc. Mostly we don't want them going into the fuselage.
             if ((eq instanceof WeaponType) || (UnitUtil.isWeaponEnhancement(eq))) {
                 return location < Aero.LOC_WINGS;
