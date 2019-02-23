@@ -3775,6 +3775,10 @@ public class UnitUtil {
         } else {
             toAdd = new Mounted(entity, toCopy.getType());
         }
+        if (toCopy.getType() instanceof AmmoType) {
+            toAdd.setAmmoCapacity(toCopy.getAmmoCapacity());
+            toAdd.setShotsLeft(toCopy.getBaseShotsLeft());
+        }
         entity.addEquipment(toAdd, toLoc, toCopy.isRearMounted());
         changeMountStatus(entity, toAdd, toLoc, Entity.LOC_NONE, toCopy.isRearMounted());
         return toAdd;
