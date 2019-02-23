@@ -130,10 +130,15 @@ public class LargeCraftCriticalView extends IView {
 
         leftColumn.add(Box.createVerticalGlue());
         leftPanel = createArcPanel(TestSmallCraft.ARC_FWD_LEFT, resourceMap, true, btnCopyFRS);
+        btnCopyFRS.setText("Copy from " + (getAero().hasETypeFlag(Entity.ETYPE_JUMPSHIP)?
+                capitalArcNames[TestSmallCraft.ARC_FWD_RIGHT] : spheroidArcNames[TestSmallCraft.ARC_FWD_RIGHT]));
         leftColumn.add(leftPanel);
         bsLeftPanel = createArcPanel(Warship.LOC_LBS, resourceMap, true, btnCopyRBS);
+        btnCopyRBS.setText("Copy from " + capitalArcNames[Warship.LOC_RBS]);
         leftColumn.add(bsLeftPanel);
         aftLeftPanel = createArcPanel(aftLeft, resourceMap, true, btnCopyARS);
+        btnCopyARS.setText("Copy from " + (getAero().hasETypeFlag(Entity.ETYPE_JUMPSHIP)?
+                capitalArcNames[aftRight] : spheroidArcNames[aftRight]));
         leftColumn.add(aftLeftPanel);
         leftColumn.add(Box.createVerticalGlue());
 
@@ -148,10 +153,15 @@ public class LargeCraftCriticalView extends IView {
         
         rightColumn.add(Box.createVerticalGlue());
         rightPanel = createArcPanel(TestSmallCraft.ARC_FWD_RIGHT, resourceMap, true, btnCopyFLS);
+        btnCopyFLS.setText("Copy from " + (getAero().hasETypeFlag(Entity.ETYPE_JUMPSHIP)?
+                capitalArcNames[TestSmallCraft.ARC_FWD_LEFT] : spheroidArcNames[TestSmallCraft.ARC_FWD_LEFT]));
         rightColumn.add(rightPanel);
         bsRightPanel = createArcPanel(Warship.LOC_RBS, resourceMap, true, btnCopyLBS);
+        btnCopyLBS.setText("Copy from " + capitalArcNames[Warship.LOC_LBS]);
         rightColumn.add(bsRightPanel);
         aftRightPanel = createArcPanel(aftRight, resourceMap, true, btnCopyALS);
+        btnCopyALS.setText("Copy from " + (getAero().hasETypeFlag(Entity.ETYPE_JUMPSHIP)?
+                capitalArcNames[aftLeft] : spheroidArcNames[aftLeft]));
         rightColumn.add(aftRightPanel);
         rightColumn.add(Box.createVerticalGlue());
 

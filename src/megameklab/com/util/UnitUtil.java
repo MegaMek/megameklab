@@ -3729,12 +3729,13 @@ public class UnitUtil {
                         newBay.addAmmoToBay(entity.getEquipmentNum(toAdd));
                     }
                 }
-                // Now we copy any other equipment
-                for (Mounted m : entity.getMisc()) {
-                    if ((m.getLocation() == fromLoc)
-                            && (m.isRearMounted() ? includeRear : includeForward)) {
-                        copyEquipment(entity, toLoc, m, removed);
-                    }
+            }
+            // Now we copy any other equipment
+            mountList = new ArrayList<>(entity.getMisc());
+            for (Mounted m : mountList) {
+                if ((m.getLocation() == fromLoc)
+                        && (m.isRearMounted() ? includeRear : includeForward)) {
+                    copyEquipment(entity, toLoc, m, removed);
                 }
             }
         } else {
