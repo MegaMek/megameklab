@@ -276,10 +276,11 @@ public class PrintAero implements Printable {
     }
 
     private void printFrontArmor(Graphics2D g2d, int totalArmor) {
-        // Positions pips symmetrically from the centerline to the edges, forward to aft
-        final int[] pipsPerHalfRow = { 4, 6, 13, 14, 14, 14, 14, 14, 13, 12, 9, 6 };
-        final int[] rowOffset = { 35, 42, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-        final int maxPips = Arrays.stream(pipsPerHalfRow).sum() * 2;
+        // The number of pips in each row, forward to aft
+        final int[] pipsPerRow = { 8, 12, 26, 28, 28, 28, 28, 28, 24, 22, 16, 12 };
+        // The number of pips to skip in the middle of the row
+        final int[] gap = { 10, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+        final int maxPips = Arrays.stream(pipsPerRow).sum();
         
         float centerx = 393;
         float ypos = 157;
@@ -287,12 +288,14 @@ public class PrintAero implements Printable {
         
         // Calculate possible positions
         List<float[]> pipPlotter = new ArrayList<>();
-        for (int row = 0; row < pipsPerHalfRow.length; row++) {
-            int xOffset = rowOffset[row];
-            for (int i = 0; i < pipsPerHalfRow[row]; i++) {
-                pipPlotter.add(new float[] { centerx + xOffset, ypos});
-                pipPlotter.add(new float[] { centerx - xOffset - pipShift[0], ypos});
-                xOffset += pipShift[0];
+        for (int row = 0; row < pipsPerRow.length; row++) {
+            float xpos = centerx - pipShift[0] * ((pipsPerRow[row] + gap[row]) / 2.0f);
+            for (int i = 0; i < pipsPerRow[row]; i++) {
+                if (i == pipsPerRow[row] / 2) {
+                    xpos += pipShift[0] * gap[row];
+                }
+                pipPlotter.add(new float[] { xpos, ypos });
+                xpos += pipShift[0];
             }
             ypos += pipShift[1];
         }
