@@ -8,6 +8,8 @@ v0.45.4-SNAPSHOT
 + Issue #250: Armouring Split Components Shows and Counts Incorrect Tonnage
 + Issue #254: Second Printed Vee Name in All Caps
 + Issue #252: Heat Sink pips not printing properly
++ Issue #260:  Some issue to allocate the components of LAM
++ Issue #261: LAM's motive type doesn't change the weight of its conversion equipment.
 
 v0.45.3 (2019-02-12 0500 UTC)
 + Issue #223: Quad Protomech engine weight
