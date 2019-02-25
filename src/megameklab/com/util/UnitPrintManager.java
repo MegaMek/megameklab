@@ -52,6 +52,7 @@ import megamek.common.EntityListFile;
 import megamek.common.EntityMovementMode;
 import megamek.common.FixedWingSupport;
 import megamek.common.Infantry;
+import megamek.common.Jumpship;
 import megamek.common.LargeSupportTank;
 import megamek.common.Mech;
 import megamek.common.MechFileParser;
@@ -59,6 +60,7 @@ import megamek.common.Protomech;
 import megamek.common.SmallCraft;
 import megamek.common.Tank;
 import megamek.common.VTOL;
+import megameklab.com.printing.PrintCapitalShip;
 import megameklab.com.printing.PrintMech;
 import megameklab.com.printing.PrintTask;
 import megameklab.com.ui.Aero.Printing.PrintAero;
@@ -199,13 +201,9 @@ public class UnitPrintManager {
                         tank1 = (Tank) unit;
                     }
                 }
-            } else if (unit.hasETypeFlag(Entity.ETYPE_AERO) {
-                if (unit instanceof Warship) {
-                    book.append(new PrintWarship((Warship) unit), pageFormat);
-                } else if (unit instanceof SpaceStation) {
-                    book.append(new PrintSpaceStation((SpaceStation) unit), pageFormat);
-                } else if (unit instanceof Jumpship) {
-                    book.append(new PrintJumpship((Jumpship) unit), pageFormat);
+            } else if (unit.hasETypeFlag(Entity.ETYPE_AERO)) {
+                if (unit instanceof Jumpship) {
+                    book.append(new PrintCapitalShip((Jumpship) unit, book.getNumberOfPages()), pageFormat);
                 } else if (unit instanceof Dropship) {
                     if (unit.getMovementMode() == EntityMovementMode.AERODYNE) {
                         book.append(new PrintAerodyne((Dropship) unit), pageFormat);
