@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Vector;
 
 import megamek.common.Aero;
+import megamek.common.Crew;
 // TODO: uncomment when print issue is fixed and pilot data is ready to position
 // import megamek.common.Crew;
 import megamek.common.TechConstants;
@@ -96,18 +97,13 @@ public class PrintAero implements Printable {
         Font font = UnitUtil.deriveFont(8.0f);
         g2d.setFont(font);
 
-		//TODO: Pilot Data: Fix coords. Below coords are pasted from Mech code.
-        //if ((aero.getCrew() != null) && !aero.getCrew().getName().equalsIgnoreCase("unnamed")) {
-        //	Crew pilot = aero.getCrew();		
-		//	g2d.drawString(pilot.getName(), 270 + leftMargin, topMargin + 119);
-		//	g2d.drawString(String.valueOf(pilot.getGunnery()), 295 + leftMargin, topMargin + 132);
-		//  g2d.drawString(String.valueOf(pilot.getPiloting()), 365 + leftMargin, topMargin + 132);
-        //}
-        // Test strings
-		//    g2d.drawString("Test Pilot", 270 + leftMargin, topMargin + 119);
-		//	g2d.drawString("5", 295 + leftMargin, topMargin + 132);
-		//    g2d.drawString("5", 365 + leftMargin, topMargin + 132);
-		
+        if ((aero.getCrew() != null)
+                && !aero.getCrew().getName().equalsIgnoreCase("unnamed")) {
+            Crew pilot = aero.getCrew();
+            g2d.drawString(pilot.getName(), 270, 524);
+            g2d.drawString(String.valueOf(pilot.getGunnery()), 295, 536);
+            g2d.drawString(String.valueOf(pilot.getPiloting()), 365, 536);
+        }
 
         g2d.drawString(Integer.toString(aero.getWalkMP()), 99, 143);
         g2d.drawString(Integer.toString(aero.getRunMP()), 99, 154);
