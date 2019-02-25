@@ -46,6 +46,7 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
+import megamek.common.Aero;
 import megamek.common.AmmoType;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
@@ -57,6 +58,7 @@ import megamek.common.WeaponType;
 import megamek.common.annotations.Nullable;
 import megamek.common.logging.LogLevel;
 import megamek.common.verifier.TestAero;
+import megamek.common.verifier.TestEntity;
 import megamek.common.weapons.bayweapons.BayWeapon;
 import megamek.common.weapons.bayweapons.PPCBayWeapon;
 import megamek.common.weapons.ppc.PPCWeapon;
@@ -566,6 +568,9 @@ public class BayWeaponCriticalTree extends JTree {
             } else if (getMounted().getType() instanceof AmmoType) {
                 name += " (" + getMounted().getBaseShotsLeft() + " shots)";
             }
+            if (!eSource.getEntity().usesWeaponBays() && getMounted().isRearMounted()) {
+                name += " (R)";
+            }
             return name;
         }
         
@@ -628,6 +633,10 @@ public class BayWeaponCriticalTree extends JTree {
                         } else {
                             av += 13.5;
                         }
+                    } else if (m.getType().hasFlag(WeaponType.F_ARTILLERY)) {
+                        // No AV since they cannot be used air-to-air, but the ground damage needs
+                        // to count against the bay limit.
+                        av += ((WeaponType) m.getType()).getRackSize();
                     } else {
                         av += ((WeaponType) m.getType()).getShortAV();
                     }
@@ -852,11 +861,18 @@ public class BayWeaponCriticalTree extends JTree {
     
     /**
      * Used by the unallocated equipment list to determine whether the arc represented by this
-     * tree is valid for aerodyne small craft and dropships.
-     * @return false for small craft/dropship aft side arcs, true for all others
+     * tree is valid for the aero unit. This filters out aft side arcs for aerodyne small
+     * craft and broadsides for non-warships.
+     * @param  The unit to check
+     * @return Whether the arc is valid for the unit.
      */
-    public boolean validForAerodyne() {
-        return facing != AFT;
+    public boolean validForUnit(Aero aero) {
+        if (aero.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)
+                && !aero.isSpheroid()
+                && (facing == AFT)) {
+            return false;
+        }
+        return location < aero.locations();
     }
 
     /**
@@ -889,6 +905,9 @@ public class BayWeaponCriticalTree extends JTree {
                 && ((eq.getType() instanceof AmmoType)
                         || UnitUtil.isWeaponEnhancement(eq.getType()))) {
             return baysFor(eq).size() > 0;
+        }
+        if (TestEntity.eqRequiresLocation(eSource.getEntity(), eq.getType())) {
+            return location != TestEntity.getSystemWideLocation(eSource.getEntity());
         }
         return true;
     }
@@ -1208,6 +1227,8 @@ public class BayWeaponCriticalTree extends JTree {
                 if (w.getType().hasFlag(WeaponType.F_PLASMA)) {
                     if (((WeaponType)w.getType()).getDamage() == WeaponType.DAMAGE_VARIABLE) {
                         av += 7;
+                    } else if (w.getType().hasFlag(WeaponType.F_ARTILLERY)) {
+                        av += ((WeaponType) w.getType()).getRackSize();
                     } else {
                         av += 13.5;
                     }
@@ -1220,7 +1241,10 @@ public class BayWeaponCriticalTree extends JTree {
                     av += 5;
                 }
             }
-            if (((WeaponType)eq.getType()).isCapital()) {
+            if (eq.getType().hasFlag(WeaponType.F_MASS_DRIVER)) {
+                // Limit is one per firing arc; the medium and heavy exceed the 70-point limit.
+                return av == 0;
+            } else if (((WeaponType)eq.getType()).isCapital()) {
                 return av + ((WeaponType)eq.getType()).getShortAV() <= 70;
             } else {
                 return av + ((WeaponType)eq.getType()).getShortAV() <= 700;
@@ -1280,6 +1304,9 @@ public class BayWeaponCriticalTree extends JTree {
      * @return    Whether the equipment can be dropped in the location
      */
     public boolean isValidDropLocation(JTree.DropLocation loc, Mounted eq) {
+        if (!canAdd(eq)) {
+            return false;
+        }
         if (!eSource.getEntity().usesWeaponBays()) {
             return true;
         }

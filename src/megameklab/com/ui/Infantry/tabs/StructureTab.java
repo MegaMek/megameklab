@@ -97,9 +97,9 @@ public class StructureTab extends ITab implements InfantryBuildListener {
         panBasicInfo = new BasicInfoView(getInfantry().getConstructionTechAdvancement());
         panPlatoonType = new PlatoonTypeView(panBasicInfo);
         panWeapons = new InfantryWeaponView(panBasicInfo);
-        weaponView = new WeaponView(eSource);
-        fieldGunView = new FieldGunView(eSource);
-        armorView = new ArmorView(eSource);
+        weaponView = new WeaponView(eSource, panBasicInfo);
+        fieldGunView = new FieldGunView(eSource, panBasicInfo);
+        armorView = new ArmorView(eSource, panBasicInfo);
         specializationView = new SpecializationView(eSource);
         augmentationView = new AugmentationView(eSource);
         setUpPanels();
@@ -340,12 +340,14 @@ public class StructureTab extends ITab implements InfantryBuildListener {
     @Override
     public void chassisChanged(String chassis) {
         getInfantry().setChassis(chassis);
+        refresh.refreshHeader();
         refresh.refreshPreview();
     }
 
     @Override
     public void modelChanged(String model) {
         getInfantry().setModel(model);
+        refresh.refreshHeader();
         refresh.refreshPreview();
     }
 
@@ -367,6 +369,11 @@ public class StructureTab extends ITab implements InfantryBuildListener {
         panWeapons.setFromEntity(getInfantry());
         updateSpecializations();
         enableTabs();
+        weaponView.refresh();
+        fieldGunView.refresh();
+        armorView.refresh();
+        specializationView.refresh();
+        augmentationView.refresh();
     }
 
     @Override
@@ -407,6 +414,7 @@ public class StructureTab extends ITab implements InfantryBuildListener {
                 && getInfantry().getMovementMode() != EntityMovementMode.WHEELED) {
             UnitUtil.replaceFieldGun(getInfantry(), null, 0);
         }
+        enableTabs();
         panPlatoonType.setFromEntity(getInfantry());
         panWeapons.setFromEntity(getInfantry());
     }

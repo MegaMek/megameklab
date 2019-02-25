@@ -38,6 +38,7 @@ import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -53,6 +54,8 @@ import javax.swing.RowSorter;
 import javax.swing.SortOrder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
 
@@ -100,7 +103,7 @@ public class EquipmentTab extends ITab implements ActionListener {
 
     private JRadioButton rbtnStats = new JRadioButton("Stats");
     private JRadioButton rbtnFluff = new JRadioButton("Fluff");
-
+    final private JCheckBox chkShowAll = new JCheckBox("Show Unavailable");
 
     private TableRowSorter<EquipmentTableModel> equipmentSorter;
 
@@ -160,7 +163,7 @@ public class EquipmentTab extends ITab implements ActionListener {
         equipmentScroll.setMinimumSize(new java.awt.Dimension(300, 200));
         equipmentScroll.setPreferredSize(new java.awt.Dimension(300, 200));
 
-        masterEquipmentList = new EquipmentTableModel(eSource.getEntity());
+        masterEquipmentList = new EquipmentTableModel(eSource.getEntity(), eSource.getTechManager());
         masterEquipmentTable.setModel(masterEquipmentList);
         masterEquipmentTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         equipmentSorter = new TableRowSorter<EquipmentTableModel>(masterEquipmentList);
@@ -169,6 +172,7 @@ public class EquipmentTab extends ITab implements ActionListener {
         equipmentSorter.setComparator(EquipmentTableModel.COL_DAMAGE, new WeaponDamageSorter());
         equipmentSorter.setComparator(EquipmentTableModel.COL_RANGE, new WeaponRangeSorter());
         equipmentSorter.setComparator(EquipmentTableModel.COL_COST, new FormattedNumberSorter());
+        equipmentSorter.setComparator(EquipmentTableModel.COL_TON,  new FormattedWeightSorter());
         masterEquipmentTable.setRowSorter(equipmentSorter);
         ArrayList<RowSorter.SortKey> sortKeys = new ArrayList<RowSorter.SortKey>();
         sortKeys.add(new RowSorter.SortKey(EquipmentTableModel.COL_NAME, SortOrder.ASCENDING));
@@ -184,7 +188,8 @@ public class EquipmentTab extends ITab implements ActionListener {
         }
         masterEquipmentTable.setIntercellSpacing(new Dimension(0, 0));
         masterEquipmentTable.setShowGrid(false);
-        masterEquipmentTable.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        masterEquipmentTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        masterEquipmentTable.getSelectionModel().addListSelectionListener(selectionListener);
         masterEquipmentTable.setDoubleBuffered(true);
         masterEquipmentScroll.setViewportView(masterEquipmentTable);
 
@@ -253,19 +258,13 @@ public class EquipmentTab extends ITab implements ActionListener {
         bgroupView.add(rbtnFluff);
 
         rbtnStats.setSelected(true);
-        rbtnStats.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                setEquipmentView();
-            }
-        });
-        rbtnFluff.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                setEquipmentView();
-            }
-        });
-        JPanel viewPanel = new JPanel(new GridLayout(0,2));
+        rbtnStats.addActionListener(ev -> setEquipmentView());
+        rbtnFluff.addActionListener(ev -> setEquipmentView());
+        chkShowAll.addActionListener(ev -> filterEquipment());
+        JPanel viewPanel = new JPanel(new GridLayout(0,3));
         viewPanel.add(rbtnStats);
         viewPanel.add(rbtnFluff);
+        viewPanel.add(chkShowAll);
         setEquipmentView();
 
         //layout
@@ -601,7 +600,8 @@ public class EquipmentTab extends ITab implements ActionListener {
                         || (((nType == T_AMMO) && (atype != null)) && UnitUtil.canUseAmmo(ba, atype))
                         || ((nType == T_AP) && UnitUtil.isBattleArmorAPWeapon(etype))) {
                     if (eSource.getTechManager() != null
-                            && !eSource.getTechManager().isLegal(etype)) {
+                            && !eSource.getTechManager().isLegal(etype)
+                            && !chkShowAll.isSelected()) {
                         return false;
                     }
                     if (txtFilter.getText().length() > 0) {
@@ -629,6 +629,7 @@ public class EquipmentTab extends ITab implements ActionListener {
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_RANGE), true);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_SHOTS), true);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TECH), true);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TLEVEL), false);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TRATING), false);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DPROTOTYPE), false);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DPRODUCTION), false);
@@ -651,6 +652,7 @@ public class EquipmentTab extends ITab implements ActionListener {
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_RANGE), false);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_SHOTS), false);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TECH), true);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TLEVEL), true);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TRATING), true);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DPROTOTYPE), true);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DPRODUCTION), true);
@@ -788,20 +790,30 @@ public class EquipmentTab extends ITab implements ActionListener {
                 return -1;
             } else {
                 //get the numbers associated with each string
-                float r1 = parseDamage(s1);
-                float r0 = parseDamage(s0);
-                return ((Comparable<Float>)r1).compareTo(r0);
+                double r1 = parseDamage(s1);
+                double r0 = parseDamage(s0);
+                return ((Comparable<Double>)r1).compareTo(r0);
             }
         }
 
-        private float parseDamage(String s) {
-            float damage = 0;
-            if(s.contains("/")) {
-                damage = Float.parseFloat(s.split("/")[0]);
-            } else {
-                damage = Float.parseFloat(s);
+        /**
+         * Extracts a numeric value from the damage string for use in sorting by damage. If a String
+         * contains any non-digit character, that character and anything after it is ignored. If the string
+         * starts with a non-digit character the return value is 0.
+         * 
+         * @param s A weapon damage string
+         * @return  The value to use for sorting.
+         */
+        private double parseDamage(String s) {
+            s = s.replaceAll("[^0-9\\.]+", "/");
+            if (s.contains("/")) {
+                s = s.substring(0, s.indexOf("/"));
             }
-            return damage;
+            if (s.length() > 0) {
+                return Double.parseDouble(s);
+            } else {
+                return 0;
+            }
         }
     }
 
@@ -811,11 +823,11 @@ public class EquipmentTab extends ITab implements ActionListener {
      *
      */
     public class FormattedNumberSorter implements Comparator<String> {
+        DecimalFormat format = new DecimalFormat();
 
         @Override
         public int compare(String s0, String s1) {
             //lets find the weight class integer for each name
-            DecimalFormat format = new DecimalFormat();
             int l0 = 0;
             try {
                 l0 = format.parse(s0).intValue();
@@ -831,6 +843,55 @@ public class EquipmentTab extends ITab implements ActionListener {
             return ((Comparable<Integer>)l0).compareTo(l1);
         }
     }
+    
+    /**
+     * A comparator for weights that have been formatted with DecimalFormat
+     * and may require conversion from kg to tons.
+     *
+     */
+    public class FormattedWeightSorter implements Comparator<String> {
+        DecimalFormat format = new DecimalFormat();
+
+        @Override
+        public int compare(String s0, String s1) {
+            //lets find the weight class integer for each name
+            double l0 = 0;
+            try {
+                if (s0.endsWith(" kg")) {
+                    l0 = format.parse(s0.replace(" kg", "")).doubleValue() / 1000;
+                } else {
+                    l0 = format.parse(s0).doubleValue();
+                }
+            } catch (java.text.ParseException e) {
+                e.printStackTrace();
+            }
+            double l1 = 0;
+            try {
+                if (s1.endsWith(" kg")) {
+                    l1 = format.parse(s1.replace(" kg", "")).doubleValue() / 1000;
+                } else {
+                    l1 = format.parse(s1).doubleValue();
+                }
+            } catch (java.text.ParseException e) {
+                e.printStackTrace();
+            }
+            return Double.compare(l0, l1);
+        }
+    }
+    
+    private ListSelectionListener selectionListener = new ListSelectionListener() {
+
+        @Override
+        public void valueChanged(ListSelectionEvent e) {
+            int selected = masterEquipmentTable.getSelectedRow();
+            EquipmentType etype = null;
+            if (selected >= 0) {
+                etype = masterEquipmentList.getType(masterEquipmentTable.convertRowIndexToModel(selected));
+            }
+            addButton.setEnabled((null != etype) && eSource.getTechManager().isLegal(etype));
+        }
+        
+    };
 
     public void refreshTable() {
         filterEquipment();

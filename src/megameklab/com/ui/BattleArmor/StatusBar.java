@@ -138,7 +138,7 @@ public class StatusBar extends ITab {
         double maxKilos = getBattleArmor().getTrooperWeight();
         double currentKilos;
         int bv = getBattleArmor().calculateBattleValue();
-        int currentCost = (int)Math.round(getBattleArmor().getCost(false));
+        long currentCost = (long) Math.round(getBattleArmor().getCost(false));
 
         testBA = new TestBattleArmor(getBattleArmor(), entityVerifier.baOption,
                 null);

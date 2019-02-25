@@ -23,12 +23,12 @@ import java.awt.event.KeyEvent;
 import java.awt.print.Book;
 import java.awt.print.PageFormat;
 import java.awt.print.Paper;
-import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
+import java.util.stream.Collectors;
 
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.standard.MediaPrintableArea;
@@ -45,7 +45,6 @@ import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.client.ui.swing.UnitSelectorDialog;
 import megamek.common.Aero;
 import megamek.common.BattleArmor;
-import megamek.common.BipedMech;
 import megamek.common.ConvFighter;
 import megamek.common.Dropship;
 import megamek.common.Entity;
@@ -53,40 +52,30 @@ import megamek.common.EntityListFile;
 import megamek.common.EntityMovementMode;
 import megamek.common.FixedWingSupport;
 import megamek.common.Infantry;
-import megamek.common.Jumpship;
 import megamek.common.LargeSupportTank;
 import megamek.common.Mech;
 import megamek.common.MechFileParser;
 import megamek.common.Protomech;
-import megamek.common.QuadMech;
 import megamek.common.SmallCraft;
-import megamek.common.SpaceStation;
 import megamek.common.Tank;
-import megamek.common.TripodMech;
 import megamek.common.VTOL;
-import megamek.common.Warship;
+import megameklab.com.printing.PrintMech;
+import megameklab.com.printing.PrintTask;
 import megameklab.com.ui.Aero.Printing.PrintAero;
 import megameklab.com.ui.Aero.Printing.PrintConventionalFighter;
 import megameklab.com.ui.Aero.Printing.PrintFixedWingSupport;
-import megameklab.com.ui.Aero.Printing.PrintJumpship;
 import megameklab.com.ui.Aero.Printing.PrintSmallCraftAerodyne;
 import megameklab.com.ui.Aero.Printing.PrintSmallCraftSpheroid;
-import megameklab.com.ui.Aero.Printing.PrintSpaceStation;
-import megameklab.com.ui.Aero.Printing.PrintWarship;
 import megameklab.com.ui.BattleArmor.Printing.PrintBattleArmor;
 import megameklab.com.ui.Dropship.Printing.PrintAerodyne;
 import megameklab.com.ui.Dropship.Printing.PrintSpheroid;
 import megameklab.com.ui.Infantry.Printing.PrintInfantry;
-import megameklab.com.ui.Mek.Printing.PrintMech;
-import megameklab.com.ui.Mek.Printing.PrintQuad;
-import megameklab.com.ui.Mek.Printing.PrintTripod;
-import megameklab.com.ui.ProtoMek.Printing.PrintProtomech;
 import megameklab.com.ui.Vehicle.Printing.PrintDualTurretVehicle;
 import megameklab.com.ui.Vehicle.Printing.PrintLargeSupportVehicle;
-import megameklab.com.ui.Vehicle.Printing.PrintNavalVehicle;
 import megameklab.com.ui.Vehicle.Printing.PrintVTOL;
 import megameklab.com.ui.Vehicle.Printing.PrintVehicle;
 import megameklab.com.ui.dialog.UnitPrintQueueDialog;
+import megameklab.com.ui.protomek.printing.PrintProtomech;
 
 public class UnitPrintManager {
 
@@ -170,20 +159,11 @@ public class UnitPrintManager {
         Tank wige1 = null;
         Tank dualTurret1 = null;
         for (Entity unit : loadedUnits) {
-            if (unit instanceof QuadMech) {
+            if (unit instanceof Mech) {
                 UnitUtil.removeOneShotAmmo(unit);
                 UnitUtil.expandUnitMounts((Mech) unit);
-                book.append(new PrintQuad((QuadMech) unit), pageFormat);
-            } else if (unit instanceof BipedMech) {
-                UnitUtil.removeOneShotAmmo(unit);
-                UnitUtil.expandUnitMounts((Mech) unit);
-                book.append(new PrintMech((BipedMech) unit), pageFormat);
-            } else if (unit instanceof TripodMech) {
-                UnitUtil.removeOneShotAmmo(unit);
-                UnitUtil.expandUnitMounts((Mech) unit);
-                book.append(new PrintTripod((TripodMech) unit), pageFormat);
-            } else if ((unit instanceof LargeSupportTank) || ((unit instanceof Tank)
-                    && (unit.getMovementMode() != EntityMovementMode.VTOL) && ((Tank) unit).isSuperHeavy())) {
+                book.append(new PrintMech((Mech) unit, book.getNumberOfPages()), pageFormat);
+            } else if ((unit instanceof LargeSupportTank) || ((unit instanceof Tank) && (unit.getMovementMode() != EntityMovementMode.VTOL) && ((Tank)unit).isSuperHeavy())) {
                 book.append(new PrintLargeSupportVehicle((Tank) unit), pageFormat);
             } else if (unit instanceof VTOL) {
                 book.append(new PrintVTOL((VTOL) unit), pageFormat);
@@ -196,10 +176,9 @@ public class UnitPrintManager {
                 } else {
                     wige1 = (Tank) unit;
                 }
-            } else if ((unit instanceof Tank) && ((unit.getMovementMode() == EntityMovementMode.NAVAL)
-                    || (unit.getMovementMode() == EntityMovementMode.SUBMARINE)
-                    || (unit.getMovementMode() == EntityMovementMode.HYDROFOIL))) {
-                book.append(new PrintNavalVehicle((Tank) unit), pageFormat);
+            } else if ((unit instanceof Tank) && ((unit.getMovementMode() == EntityMovementMode.NAVAL) || (unit.getMovementMode() == EntityMovementMode.SUBMARINE) || (unit.getMovementMode() == EntityMovementMode.HYDROFOIL))) {
+                unprintable.add(unit);
+                //book.append(new PrintNavalVehicle((Tank) unit), pageFormat);
             } else if (unit instanceof Tank) {
                 if (!((Tank) unit).hasNoDualTurret()) {
                     if (singlePrint) {
@@ -220,8 +199,14 @@ public class UnitPrintManager {
                         tank1 = (Tank) unit;
                     }
                 }
-            } else if (unit instanceof Aero) {
-                if (unit instanceof Dropship) {
+            } else if (unit.hasETypeFlag(Entity.ETYPE_AERO) {
+                if (unit instanceof Warship) {
+                    book.append(new PrintWarship((Warship) unit), pageFormat);
+                } else if (unit instanceof SpaceStation) {
+                    book.append(new PrintSpaceStation((SpaceStation) unit), pageFormat);
+                } else if (unit instanceof Jumpship) {
+                    book.append(new PrintJumpship((Jumpship) unit), pageFormat);
+                } else if (unit instanceof Dropship) {
                     if (unit.getMovementMode() == EntityMovementMode.AERODYNE) {
                         book.append(new PrintAerodyne((Dropship) unit), pageFormat);
                     } else {
@@ -237,12 +222,6 @@ public class UnitPrintManager {
                     } else {
                         book.append(new PrintSmallCraftSpheroid((SmallCraft) unit), pageFormat);
                     }
-                } else if (unit instanceof Warship) {
-                    book.append(new PrintWarship((Warship) unit, book.getNumberOfPages()), pageFormat);
-                } else if (unit instanceof Jumpship) {
-                    book.append(new PrintJumpship((Jumpship) unit), pageFormat);
-                } else if (unit instanceof SpaceStation) {
-                    book.append(new PrintSpaceStation((SpaceStation) unit), pageFormat);
                 } else {
                     book.append(new PrintAero((Aero) unit), pageFormat);
                 }
@@ -269,11 +248,18 @@ public class UnitPrintManager {
                 unprintable.add(unit);
             }
         }
-        if (null != tank1) {
-            book.append(new PrintVehicle(tank1, null), pageFormat);
+        
+        if (unprintable.size() > 0) {
+            JOptionPane.showMessageDialog(null, "Printing is not currently supported for the following units:\n"
+                    + unprintable.stream().map(en -> en.getChassis() + " " + en.getModel())
+                    .collect(Collectors.joining("\n")));
         }
+        
         if (null != wige1) {
             book.append(new PrintVehicle(wige1, null), pageFormat);
+        }
+        if (null != tank1) {
+            book.append(new PrintVehicle(tank1, null), pageFormat);
         }
         if (null != dualTurret1) {
             book.append(new PrintDualTurretVehicle(dualTurret1, null), pageFormat);
@@ -294,12 +280,9 @@ public class UnitPrintManager {
         } else if (loadedUnits.size() > 0) {
             masterPrintJob.setJobName(loadedUnits.get(0).getShortNameRaw());
         }
-        try {
-            masterPrintJob.print(aset);
-        } catch (PrinterException e) {
-            // printing cancelled
-            return false;
-        }
+
+        PrintTask task = new PrintTask(masterPrintJob, aset);
+        task.execute();
 
         return true;
     }

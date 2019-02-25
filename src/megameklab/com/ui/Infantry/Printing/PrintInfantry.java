@@ -126,10 +126,14 @@ public class PrintInfantry implements Printable {
                 		+ (pos + 1) + ".svg"));
         		infantry = infantryList.get(pos + currentPosition);
         		tspan = (Tspan)diagram.getElement(ID_PLATOON_NAME);
-        		if (infantry.getShortName().length() > 48) {
+        		String name = infantry.getChassis();
+        		if (infantry.getModel().length() > 0) {
+        		    name += " " + infantry.getModel();
+        		}
+        		if (name.length() > 48) {
         			tspan.setText(infantry.getChassis());
         		} else {
-            		tspan.setText(infantry.getShortName());
+            		tspan.setText(name);
         		}
         		((Text)tspan.getParent()).rebuild();
         		

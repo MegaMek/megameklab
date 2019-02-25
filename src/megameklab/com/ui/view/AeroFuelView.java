@@ -79,7 +79,7 @@ public class AeroFuelView extends BuildView implements ChangeListener {
         add(createLabel(resourceMap.getString("AeroFuelView.spnFuel.text"), labelSize), gbc); //$NON-NLS-1$
         gbc.gridx = 1;
         gbc.fill = GridBagConstraints.NONE;
-        setFieldSize(spnFuel, spinnerSize);
+        setFieldSize(spnFuel, spinnerSizeLg);
         spnFuel.setToolTipText(resourceMap.getString("AeroFuelView.spnFuel.tooltip")); //$NON-NLS-1$
         add(spnFuel, gbc);
         spnFuel.addChangeListener(this);

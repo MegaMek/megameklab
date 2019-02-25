@@ -39,6 +39,7 @@ import megamek.common.ITechManager;
 import megamek.common.LocationFullException;
 import megamek.common.Mounted;
 import megamek.common.SimpleTechLevel;
+import megamek.common.TechConstants;
 import megamek.common.verifier.TestAero;
 import megamek.common.verifier.TestEntity;
 import megameklab.com.ui.EntitySource;
@@ -323,7 +324,18 @@ public class StructureTab extends ITab implements AeroBuildListener {
     public void updateTechLevel() {
         removeAllListeners();
         getAero().setTechLevel(panInfo.getTechLevel().getCompoundTechLevel(panInfo.useClanTechBase()));
-        if (!getAero().hasPatchworkArmor()) {
+        if (panArmor.isPatchwork() && !getTechManager().isLegal(Entity.getPatchworkArmorAdvancement())) {
+            panArmor.setPatchwork(false);
+            armorTypeChanged(panArmor.getArmorType(), panArmor.getArmorTechConstant());
+        }
+        if (getAero().hasPatchworkArmor()) {
+            for (int loc = 0; loc < getAero().locations(); loc++) {
+                if (!getTechManager().isLegal(panPatchwork.getArmor(loc))) {
+                    getAero().setArmorType(EquipmentType.T_ARMOR_STANDARD, TechConstants.T_INTRO_BOXSET);
+                    UnitUtil.resetArmor(getAero(), loc);
+                }
+            }
+        } else if (!getTechManager().isLegal(panArmor.getArmor())) {
             UnitUtil.removeISorArmorMounts(getAero(), false);
         }
         // If we have a large engine, a drop in tech level may make it unavailable and we will need
@@ -369,8 +381,10 @@ public class StructureTab extends ITab implements AeroBuildListener {
     public void heatSinksChanged(int index, int count) {
         getAero().setHeatType(index);
         getAero().setHeatSinks(count);
-        getAero().setPodHeatSinks(Math.max(0, count
-                - panHeat.getBaseCount()));
+        if (getAero().isOmni()) {
+            getAero().setPodHeatSinks(Math.max(0, count
+                    - panHeat.getBaseCount()));
+        }
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
@@ -384,8 +398,8 @@ public class StructureTab extends ITab implements AeroBuildListener {
 
     @Override
     public void armorTypeChanged(int at, int aTechLevel) {
-        UnitUtil.removeISorArmorMounts(getAero(), false);
         if (at != EquipmentType.T_ARMOR_PATCHWORK) {
+            UnitUtil.removeISorArmorMounts(getAero(), false);
             getAero().setArmorTechLevel(aTechLevel);
             getAero().setArmorType(at);
             panArmorAllocation.showPatchwork(false);
@@ -395,6 +409,7 @@ public class StructureTab extends ITab implements AeroBuildListener {
             panArmorAllocation.showPatchwork(true);
             panPatchwork.setVisible(true);
         }
+        panArmor.setFromEntity(getAero(), true);
         panArmorAllocation.setFromEntity(getAero());
         panSummary.refresh();
         refresh.refreshStatus();
@@ -502,6 +517,9 @@ public class StructureTab extends ITab implements AeroBuildListener {
     @Override
     public void vstolChanged(boolean vstol) {
         getAero().setVSTOL(vstol);
+        refresh.refreshPreview();
+        refresh.refreshStatus();
+        refresh.refreshSummary();
     }
     
     @Override
@@ -558,9 +576,11 @@ public class StructureTab extends ITab implements AeroBuildListener {
     @Override
     public void armorPointsChanged(int location, int front, int rear) {
         getAero().initializeArmor(front, location);
+        getAero().initializeThresh(location);
         if (panArmor.getArmorType() == EquipmentType.T_ARMOR_PATCHWORK) {
             getAero().setArmorTonnage(panArmorAllocation.getTotalArmorWeight(getAero()));
         }
+        panArmor.setFromEntity(getAero(), true);
         panArmorAllocation.setFromEntity(getAero());
         refresh.refreshPreview();
         refresh.refreshSummary();
@@ -597,6 +617,7 @@ public class StructureTab extends ITab implements AeroBuildListener {
         getAero().initializeArmor(wing, Aero.LOC_LWING);
         getAero().initializeArmor(wing, Aero.LOC_RWING);
         getAero().initializeArmor(aft, Aero.LOC_AFT);
+        getAero().autoSetThresh();
 
         panArmorAllocation.setFromEntity(getAero());
         refresh.refreshPreview();

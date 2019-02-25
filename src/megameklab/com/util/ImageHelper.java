@@ -202,6 +202,51 @@ public class ImageHelper {
                 .getImage();
         return image;
     }
+    
+    /**
+     * Checks for a fluff image for the unit starting with any file explicitly associated with the
+     * unit then in the default directory for the unit type for a file consisting of the name of the
+     * unit with an image format extension.
+     * 
+     * @param unit The unit to find a fluff image for
+     * @param dir  The directory to check for a default image based on unit name
+     * @return     A file to use for the fluff image, or null if no file is found.
+     */
+    public static File getFluffFile(Entity unit, String dir) {
+        String path = new File(fluffPath).getAbsolutePath();
+        File f = null;
+        
+        if (unit.getFluff().getMMLImagePath().length() > 0) {
+            f = new File(unit.getFluff().getMMLImagePath());
+            if (f.exists()) {
+                return f;
+            }
+            f = new File(path, unit.getFluff().getMMLImagePath());
+            if (f.exists()) {
+                return f;
+            }
+        }
+
+        path = new File(path, dir).getAbsolutePath();
+        final String [] EXTENSIONS = { ".png", ".PNG", ".jpg", ".JPG", ".jpeg", ".JPEG", ".gif", ".GIF" };
+        for (String ext : EXTENSIONS) {
+            f = new File(path, unit.getShortNameRaw() + ext);
+            if (f.exists()) {
+                return f;
+            }
+        }
+        for (String ext : EXTENSIONS) {
+            f = new File(path, unit.getChassis() + ext);
+            if (f.exists()) {
+                return f;
+            }
+        }
+        f = new File(path, "hud.png");
+        if (f.exists()) {
+            return f;
+        }
+        return null;
+    }
 
     public static Image getFluffImage(String image) {
 
