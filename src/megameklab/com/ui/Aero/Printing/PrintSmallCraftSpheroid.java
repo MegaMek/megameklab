@@ -32,6 +32,7 @@ import java.util.Vector;
 import com.kitfox.svg.SVGException;
 
 import megamek.common.Aero;
+import megamek.common.Crew;
 import megamek.common.SmallCraft;
 //TODO: uncomment when print issue is fixed and pilot data is ready to position
 //import megamek.common.Crew;
@@ -51,6 +52,7 @@ public class PrintSmallCraftSpheroid implements Printable {
         this.smallCraft = smallCraft;
     }
 
+    @Override
     public int print(Graphics graphics, PageFormat pageFormat, int pageIndex)
             throws PrinterException {
         Graphics2D g2d = (Graphics2D) graphics;
@@ -106,17 +108,12 @@ public class PrintSmallCraftSpheroid implements Printable {
         Font font = UnitUtil.deriveFont(8.0f);
         g2d.setFont(font);
 
-        //TODO: Pilot Data: Fix coords. Below coords are pasted from Mech code.
-        //if ((aero.getCrew() != null) && !aero.getCrew().getName().equalsIgnoreCase("unnamed")) {
-        //	Crew pilot = aero.getCrew();		
-		//	g2d.drawString(pilot.getName(), 270 + leftMargin, topMargin + 119);
-		//	g2d.drawString(String.valueOf(pilot.getGunnery()), 295 + leftMargin, topMargin + 132);
-		//  g2d.drawString(String.valueOf(pilot.getPiloting()), 365 + leftMargin, topMargin + 132);
-        //}
-        // Test strings
-		//    g2d.drawString("Test Pilot", 270 + leftMargin, topMargin + 119);
-		//	g2d.drawString("5", 295 + leftMargin, topMargin + 132);
-		//    g2d.drawString("5", 365 + leftMargin, topMargin + 132);
+        if ((smallCraft.getCrew() != null) && !smallCraft.getCrew().getName().equalsIgnoreCase("unnamed")) {
+            Crew pilot = smallCraft.getCrew();
+            g2d.drawString(pilot.getName(), 274, 534);
+            g2d.drawString(String.valueOf(pilot.getGunnery()), 302, 547);
+            g2d.drawString(String.valueOf(pilot.getPiloting()), 373, 547);
+        }
 
         g2d.drawString(Integer.toString(smallCraft.getWalkMP()), 102, 142);
         g2d.drawString(Integer.toString(smallCraft.getRunMP()), 102, 152.5f);
