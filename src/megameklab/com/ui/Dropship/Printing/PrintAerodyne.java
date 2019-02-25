@@ -47,6 +47,7 @@ public class PrintAerodyne implements Printable {
         this.dropship = dropship;
     }
 
+    @Override
     public int print(Graphics graphics, PageFormat pageFormat, int pageIndex)
             throws PrinterException {
         Graphics2D g2d = (Graphics2D) graphics;
@@ -99,9 +100,8 @@ public class PrintAerodyne implements Printable {
         if ((dropship.getCrew() != null)
                 && !dropship.getCrew().getName().equalsIgnoreCase("unnamed")) {
             Crew pilot = dropship.getCrew();
-            g2d.drawString(pilot.getName(), 270, 120);
-            g2d.drawString(String.valueOf(pilot.getGunnery()), 295, 132);
-            g2d.drawString(String.valueOf(pilot.getPiloting()), 365, 132);
+            g2d.drawString(String.valueOf(pilot.getGunnery()), 297, 524);
+            g2d.drawString(String.valueOf(pilot.getPiloting()), 363, 524);
         }
 
         g2d.drawString(Integer.toString(dropship.getWalkMP()), 99, 156);

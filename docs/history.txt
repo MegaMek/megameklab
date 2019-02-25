@@ -1,6 +1,124 @@
 VERSION HISTORY:
 ----------------
-v0.43.5-git
+v0.45.4-SNAPSHOT
++ Fixed vehicle and aero slot calculations for patchwork armor.
++ Issue #202: Clan Improved Autocannon 20 has no standard ammunition
++ Issue #249: Warship Validation error
++ Issue #247: Patchwork Armour Broken on Vehicles
++ Issue #250: Armouring Split Components Shows and Counts Incorrect Tonnage
++ Issue #254: Second Printed Vee Name in All Caps
++ Issue #252: Heat Sink pips not printing properly
++ Issue #260:  Some issue to allocate the components of LAM
++ Issue #261: LAM's motive type doesn't change the weight of its conversion equipment.
++ Issue #7: Pilot name printing on RSs
+
+v0.45.3 (2019-02-12 0500 UTC)
++ Issue #223: Quad Protomech engine weight
++ Bug: Missing codecs to display fluff image on record sheets.
++ Issue #228: BA VTOL and UMU movement types
++ Issue #230: Protomech Weapons
++ Issue #232: docking hardpoint limits incorrect
++ Issue #222: Protomech armor glitches
++ Issue #231: Stack Overflow Exception while saving Battle Armor
++ Issue #234: Spheroid dropship side arc equipment assigned to wrong location
++ Issue #240: Long range for ATM Standard incorrect on printed record sheets
++ Issue #242: Enters bad state when changing clan mech tonnage
++ Issue #238: Aero recordsheet not printing correctly
++ Use current BT logo on record sheets.
++ Issue #237: Large amounts of weapons overtax warship creation
++ Added "Printing" tab to configuration dialog with some options to customize record sheets (mechs only for now).
+
+v0.45.2 (2018-11-18 0200 UTC)
++ Switched build system from ant to gradle.
++ Bug: Aerospace transport tab does not refresh when tech base/year/level changes.
++ Issue #195: Multiple Items of One Ammo Type Don't Add to Available Tonnage for Large Craft
++ Issue #198: Nova CEWS & heat sinks on vehicles
++ Issue #203: Inner Sphere Endo Steel is unavailable to early clan mechs
++ Issue #194: Large Aerospace Unit Tonnage Doesn't Update at Bottom of Screen
++ Issue #206: Mass Driver Ammo doesn't use up weight
++ Issue #208: MMLs don't seem to need gunners
++ Issue #207: Warship Crew Accommodation Officer Count/Quarters
++ PR #209: System-wide equipment [general location for non-weapon equipment for aerospace units and
+           ammo in fighters]
++ Issue #205: Blue Shield Particle Field Dampener (BSPFD) can't be dragged into ASF slots
++ Issue #210: Superheavy printing issue: Armor distribution wrong?
++ Issue #211: Warship Cost Breakdown shows BV calculation
++ Issue #186: Weapons & Equipment Inventory table content linespacing
++ Issue #213: Battle Armor Pop Up Mines way too heavy
++ Issue #214: Battle Armour Sorting Equipment by Weight
++ Issue #215: Quadvees have issues with Quadvee cockpits and XL/XXL engines
++ iSSUE #218: Heavy Gauss Rifles on Superheavy 'Mechs Triggering Split Crit Dialog
++ PR #212: Protomechs
++ PR #221: TRO and fluff [Export format defaults to TRO-style, older format available in configuration dialog.
+			Adds tab for editing unit fluff.]
+
+v0.45.1 (2018-09-03 2300 UTC)
++ Issue #178: Equipment Table getting stuck on one equipment type.
++ Issue #181: Cannot assign silver bullet gauss ammo to dropship
++ Issue #182: Cruise Missile Ammo on Dropships erratic allocation behavior
++ Issue #184: Vehicular Stealth Armour Requirements
++ PR #172: Advanced aerospace construction
++ Update MegaMek.jar to v0.45.1
+
+v0.45.0 (2018-08-02 0200 UTC)
++ Issue #169: Request Users Java Version Be Printed To Log File
++ Issue #32: UI elements do not allow enough area for text on Linux (Gnome 3/Fedora)
+		Added menu to allow user to select look and feel theme.
++ Issue #170: Infantry Window Title Not Updating
++ Issue #168: Changing mech type, tonnage or heat sink type causes irrecoverable error when assigning critical locations
++ Issue #142: Fixed issues with setting cockpit type when switching other mech settings
+
+v0.44.0 (2018-06-24 1900 UTC)
++ If no fluff image is found for the model, check for generic chassis image for record sheet.
++ Issue #160: Industrial Mechs ICE engine Tech Progression Wrong
++ Update MegaMek.jar to v0.44.0
+
+v0.43.11-RC5 (2018-06-04 0100 UTC)
++ Issue #156: Davy Crockett ammo issue
++ Issue #152: Mech Image not printing
++ Issue #157: Turret disappeared
++ PR #158: Infantry fixes (refresh equipment when year or tech level changes).
++ Updating Megamek.jar, updating what shows on infantry equipment table.
+
+v0.43.10-RC4 (2018-04-18 18:00 UTC)
++ Issue #147: Clan Endo-Composite is showing wrong crit slots.
++ Issue #136: 'Cargo Space' cannot be removed from canon units.
++ Update MegaMek.jar to v0.43.10-RC4
+
+v0.43.9-RC3 (2018-03-13 18:00 UTC)
++ Update MegaMek.jar to v0.43.9-RC3
+
+v0.43.8-RC2 (2018-02-11 22:40 UTC)
++ Issue #137: BA Printing doesn't print Ammo
++ Issue #138: Changing tech base or tech level resets armor points per ton to 16
++ Issue #139: Right-clicking unallocated armor slot to allocate it uses too many slots in the chosen location.
++ Issue #140: Refresh Issue For Dropships
++ Issue #141: Assign Critical Display Bug
+
+v0.43.7-RC1 (2018-01-21 22:00 UTC)
++ Issue #123: Small Craft free heatsinks
++ Issue #124: Conventional fighters with fusion engines
++ Issue #126: LAM split crit weapons erroneous warning
++ Issue #127: Combat Vehicle Internal Structure Calculation
++ Added "Show Unavailable" checkbox to equipment tab that will show equipment that is filtered out so user
+  can check intro dates and tech levels. 
++ Issue #129: Fusion Powered vehicle has no shielding
++ PR #130: Embedded fonts for mech record sheet printing.
++ Issue #132: Aero heat sinks added as pod-mounted on non-omnifighter.
+
+v0.43.6 (2017-12-22 10:00 UTC)
++ Issue #119: Mech printing issue on 0.43.5
++ Issue #120: Removing weapons or equipment does not return tonnage
++ Issue #82: Infantry PDF Print/Print Name not Changing
++ Issue #86: Aerospace Asset Armor Threshold
++ Issue #108: File | Export to Clipboard (missing elements)
++ Issue #118: Clan CASE Costs and BV Calculation
++ Issue #121: Adding VSTOL equipment to a conventional fighter does not add mass.
++ Issue #105: Auto Allocate Armor on Mechs places the last armor point on the Right Leg instead of the CT
++ Issue #122: Super-cooled myomer not removed when unselected.
++ Moved record sheet printing to a background task, returning control to the ui immediately.
+
+v0.43.5 (2017-12-17 11:00 UTC)
 + PR #81: Armor allocation view: rewrite of the armor allocation panel for mechs, vees, and fighters, with
           more convenient controls for patchwork armor. Also fixes patchwork armor weight calculations per
           TacOps errata.
@@ -15,6 +133,16 @@ v0.43.5-git
 + Issue #91: Print multiple recordsheets to the same file as multiple pages?
 + PR #110: Added XCT specialization for infantry.
 + Build and customize Small Craft and Dropships.
++ Mech printing overhaul
+  o Printing for superheavies and tripods
+  o Stats for additional crew for tripods and command consoles
+  o Unit-specific sheets for LAMs and QuadVees
+  o Move layout info into the svg files to allow for custom record sheets without need to alter code.
+  o Show quirks and SPAs on record sheet (SPAs require printing from a mul file which contains the pilot data).
++ Issue #22: Can't print Superheavy 'mechs  
++ Issue #106: LAM landing gear not placed correctly with compact engine or gyro.
++ Issue #117: VTOL Jet Booster not showing
++ Issue #116: Vehicle Grenade Launcher not being applied to mechs.
 
 v0.43.4 (2017-10-01 11:00 UTC)
 + Issue #58: Right-click > Left/Right Torso > Add to Left/Right Torso for targeting computer makes it use only one crit slot

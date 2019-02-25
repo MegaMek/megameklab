@@ -87,7 +87,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
     private final IntRangeTextField txtManualBV = new IntRangeTextField(3);
     
     private int prevYear = 3145;
-    private int prevBV = 0;
+    private int prevBV = -1;
     
     public BasicInfoView(TechAdvancement baseTA) {
         this.baseTA = baseTA;
@@ -199,11 +199,11 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
     public void setFromEntity(Entity en) {
         boolean useTP = CConfig.getBooleanParam(CConfig.TECH_PROGRESSION);
         baseTA = en.getConstructionTechAdvancement();
-        txtYear.setMinimum(baseTA.getIntroductionDate());
+        txtYear.setMinimum(Math.max(baseTA.getIntroductionDate(), ITechnology.DATE_PS));
         refreshTechBase();
         setChassis(en.getChassis());
         setModel(en.getModel());
-        setYear(en.getYear());
+        setYear(Math.max(en.getYear(), txtYear.getMinimum()));
         setSource(en.getSource());
         cbTechBase.removeActionListener(this);
         setTechBase(en.isClan(), en.isMixedTech());
@@ -253,6 +253,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         refreshTechBase();
     }
     
+    @Override
     public int getTechFaction() {
         if (cbFaction.getSelectedIndex() < 0) {
             return -1;
@@ -281,11 +282,15 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
     }
 
     public int getManualBV() {
-        return txtManualBV.getIntVal();
+        return txtManualBV.getIntVal(-1);
     }
     
     public void setManualBV(int bv) {
-        txtManualBV.setIntVal(bv);
+        if (bv >= 0) {
+            txtManualBV.setIntVal(bv);
+        } else {
+            txtManualBV.setText("");
+        }
     }
     
     @Override
@@ -321,6 +326,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         refreshFaction();
     }
     
+    @Override
     public SimpleTechLevel getTechLevel() {
         if (cbTechLevel.getSelectedItem() == null) {
             return SimpleTechLevel.STANDARD;
@@ -424,14 +430,12 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
             } finally {
                 setYear(prevYear);
             }
-        } else if (e.getSource() == txtYear) {
-            listeners.forEach(l -> l.updateTechLevel());
         } else if (e.getSource() == txtSource) {
             listeners.forEach(l -> l.sourceChanged(getSource()));
         } else if (e.getSource() == txtManualBV) {
             try {
                 int bv = getManualBV();
-                listeners.forEach(l -> l.yearChanged(bv));
+                listeners.forEach(l -> l.manualBVChanged(bv));
             } catch (NumberFormatException ex) {
                 setManualBV(prevBV);
             }

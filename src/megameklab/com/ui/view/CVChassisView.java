@@ -92,8 +92,6 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
     private final SpinnerNumberModel spnTonnageModel = new SpinnerNumberModel(20, 1, 100, 1);
     private final SpinnerNumberModel spnTurretWtModel = new SpinnerNumberModel(0.0, 0.0, null, 0.5);
     private final SpinnerNumberModel spnTurret2WtModel = new SpinnerNumberModel(0.0, 0.0, null, 0.5);
-    private final SpinnerNumberModel spnFixedTroopModel = new SpinnerNumberModel(0.0, 0.0, null, 0.5);
-    private final SpinnerNumberModel spnPodTroopModel = new SpinnerNumberModel(0.0, 0.0, null, 0.5);
     private String[] turretNames;
     private final Map<EntityMovementMode,String> motiveNames = new EnumMap<>(EntityMovementMode.class);
 
@@ -106,8 +104,6 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
     private final CustomComboBox<Integer> cbTurrets = new CustomComboBox<>(i -> turretNames[i]);
     private final JSpinner spnChassisTurretWt = new JSpinner(spnTurretWtModel);
     private final JSpinner spnChassisTurret2Wt = new JSpinner(spnTurret2WtModel);
-    private final JSpinner spnFixedTroop = new JSpinner(spnFixedTroopModel);
-    private final JSpinner spnPodTroop = new JSpinner(spnPodTroopModel);
     
     private final List<JComponent> omniComponents = new ArrayList<>();
 
@@ -220,37 +216,10 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
         omniComponents.add(lbl);
         omniComponents.add(spnChassisTurret2Wt);
         
-        gbc.gridx = 0;
-        gbc.gridy = 6;
-        gbc.gridwidth = 3;
-        add(createLabel(resourceMap.getString("CVChassisView.spnFixedTroop.text"), labelSize), gbc); //$NON-NLS-1$
-        gbc.gridx = 3;
-        gbc.gridy = 6;
-        gbc.gridwidth = 1;
-        setFieldSize(spnFixedTroop, spinnerSize);
-        spnFixedTroop.setToolTipText(resourceMap.getString("CVChassisView.spnFixedTroop.tooltip")); //$NON-NLS-1$
-        add(spnFixedTroop, gbc);
-        spnFixedTroop.addChangeListener(this);
-
-        gbc.gridx = 0;
-        gbc.gridy = 7;
-        gbc.gridwidth = 3;
-        lbl = createLabel(resourceMap.getString("CVChassisView.spnPodTroop.text"), labelSize); //$NON-NLS-1$
-        add(lbl, gbc);
-        gbc.gridx = 3;
-        gbc.gridy = 7;
-        gbc.gridwidth = 1;
-        setFieldSize(spnPodTroop, spinnerSize);
-        spnPodTroop.setToolTipText(resourceMap.getString("CVChassisView.spnPodTroop.tooltip")); //$NON-NLS-1$
-        add(spnPodTroop, gbc);
-        spnPodTroop.addChangeListener(this);
-        omniComponents.add(lbl);
-        omniComponents.add(spnPodTroop);
-        
         JButton btnResetChassis = new JButton(resourceMap.getString("CVChassisView.btnResetChassis.text")); //$NON-NLS-1$
         btnResetChassis.setActionCommand(CMD_RESET_CHASSIS);
         gbc.gridx = 1;
-        gbc.gridy = 8;
+        gbc.gridy = 6;
         gbc.gridwidth = 3;
         setFieldSize(btnResetChassis, controlSize);
         btnResetChassis.setToolTipText(resourceMap.getString("CVChassisView.btnResetChassis.tooltip")); //$NON-NLS-1$
@@ -281,11 +250,6 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
         spnTurretWtModel.setValue(Math.max(0, tank.getBaseChassisTurretWeight()));
         spnTurret2WtModel.setValue(Math.max(0, tank.getBaseChassisTurret2Weight()));
         
-        double troops = tank.getTroopCarryingSpace();
-        double podTroops = tank.getPodMountedTroopCarryingSpace();
-        spnFixedTroop.setValue(troops - podTroops);
-        spnPodTroop.setValue(podTroops);
-
         omniComponents.forEach(c -> c.setEnabled(chkOmni.isSelected()));
         spnChassisTurretWt.setEnabled(chkOmni.isSelected() && (cbTurrets.getSelectedIndex() > 0));
         spnChassisTurret2Wt.setEnabled(chkOmni.isSelected() && (cbTurrets.getSelectedIndex() > 1));
@@ -298,19 +262,6 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
         chkOmni.addActionListener(this);
         refreshEngine();
         refreshTurrets();
-        double maxWt = getTonnage();
-        spnFixedTroopModel.setMaximum(maxWt);
-        if (spnFixedTroopModel.getNumber().doubleValue() > maxWt) {
-            spnFixedTroopModel.removeChangeListener(this);
-            spnFixedTroopModel.setValue(maxWt);
-            spnFixedTroopModel.addChangeListener(this);
-        }
-        spnPodTroopModel.setMaximum(maxWt);
-        if (spnFixedTroopModel.getNumber().doubleValue() > maxWt) {
-            spnFixedTroopModel.removeChangeListener(this);
-            spnFixedTroopModel.setValue(maxWt);
-            spnFixedTroopModel.addChangeListener(this);
-        }
         
         omniComponents.forEach(c -> c.setEnabled(chkOmni.isSelected()));
         spnChassisTurretWt.setEnabled(chkOmni.isSelected() && (cbTurrets.getSelectedIndex() > 0));
@@ -440,7 +391,7 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
     public List<Engine> getAvailableEngines() {
         List<Engine> retVal = new ArrayList<>();
         boolean isMixed = techManager.useMixedTech();
-        int flags = 0;
+        int flags = Engine.TANK_ENGINE;
         if (techManager.useClanTechBase()) {
             flags |= Engine.CLAN_ENGINE;
         }
@@ -475,18 +426,30 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
     }
     
     /**
-     * Select the first engine in the list that matches engine type and flags, disregarding the large engine flag.
+     * Select the first engine in the list that matches engine type and flags, disregarding the large
+     * engine flag. If the engine type and Clan flag cannot be matched, tries to match the type without
+     * regard to the Clan flag.
+     * 
+     * @param engine  The engine to match
      */
     public void setEngine(Engine engine) {
         if (null != engine) {
             int type = engine.getEngineType();
             int clanFlag = engine.getFlags() & Engine.CLAN_ENGINE;
+            int nextBest = -1;
             for (int i = 0; i < cbEngine.getModel().getSize(); i++) {
                 final Engine e = cbEngine.getItemAt(i);
-                if ((e.getEngineType() == type) && ((e.getFlags() & Engine.CLAN_ENGINE) == clanFlag)) {
-                    cbEngine.setSelectedIndex(i);
-                    return;
+                if (e.getEngineType() == type) {
+                    if ((e.getFlags() & Engine.CLAN_ENGINE) == clanFlag) {
+                        cbEngine.setSelectedIndex(i);
+                        return;
+                    } else {
+                        nextBest = i;
+                    }
                 }
+            }
+            if (nextBest >= 0) {
+                cbEngine.setSelectedIndex(nextBest);
             }
         }
     }
@@ -503,10 +466,6 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
                 || (e.getSource() == spnChassisTurret2Wt)){
             listeners.forEach(l -> l.turretBaseWtChanged(spnTurretWtModel.getNumber().doubleValue(),
                     spnTurret2WtModel.getNumber().doubleValue()));
-        } else if ((e.getSource() == spnFixedTroop)
-                || (e.getSource() == spnPodTroop)){
-            listeners.forEach(l -> l.troopSpaceChanged(spnFixedTroopModel.getNumber().doubleValue(),
-                    spnPodTroopModel.getNumber().doubleValue()));
         }
     }
 

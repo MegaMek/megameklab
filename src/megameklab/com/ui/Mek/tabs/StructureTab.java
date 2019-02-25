@@ -206,6 +206,7 @@ public class StructureTab extends ITab implements MekBuildListener {
         getMech().clearCockpitCrits();
         getMech().clearGyroCrits();
         getMech().clearEngineCrits();
+        removeSystemCrits(LandAirMech.LAM_LANDING_GEAR, Mech.LOC_CT);
 
         int[] ctEngine = getMech().getEngine().getCenterTorsoCriticalSlots(getMech().getGyroType());
         int lastEngine = ctEngine[ctEngine.length - 1];
@@ -219,18 +220,22 @@ public class StructureTab extends ITab implements MekBuildListener {
         getMech().addEngineCrits();
         switch (getMech().getGyroType()) {
             case Mech.GYRO_COMPACT:
+                clearCritsForGyro(2);
                 getMech().addCompactGyro();
                 break;
             case Mech.GYRO_HEAVY_DUTY:
+                clearCritsForGyro(4);
                 getMech().addHeavyDutyGyro();
                 break;
             case Mech.GYRO_XL:
+                clearCritsForGyro(6);
                 getMech().addXLGyro();
                 break;
             case Mech.GYRO_NONE:
                 UnitUtil.compactCriticals(getMech(), Mech.LOC_CT);
                 break;
             default:
+                clearCritsForGyro(4);
                 getMech().addGyro();
         }
 
@@ -297,9 +302,30 @@ public class StructureTab extends ITab implements MekBuildListener {
                 getMech().setArmorType(
                         EquipmentType.T_ARMOR_COMMERCIAL);
                 break;
+            case Mech.COCKPIT_QUADVEE:
+                clearCritsForCockpit(false, true);
+                getMech().addQuadVeeCockpit();
+                break;
             default:
                 clearCritsForCockpit(false, false);
                 getMech().addCockpit();
+        }
+        // For LAMs we want to put the landing gear in the first available slot after the engine and gyro.
+        if (getMech().hasETypeFlag(Entity.ETYPE_LAND_AIR_MECH)) {
+            int lgSlot = 10;
+            for (int i = 0; i < getMech().getNumberOfCriticals(Mech.LOC_CT); i++) {
+                final CriticalSlot slot = getMech().getCritical(Mech.LOC_CT, i);
+                if ((null == slot) || (slot.getType() == CriticalSlot.TYPE_EQUIPMENT)
+                        || ((slot.getIndex() != Mech.SYSTEM_ENGINE) && (slot.getIndex() != Mech.SYSTEM_GYRO))) {
+                    lgSlot = i;
+                    break;
+                }
+            }
+            CriticalSlot crit = new CriticalSlot(CriticalSlot.TYPE_SYSTEM,
+                    LandAirMech.LAM_LANDING_GEAR);
+            getMech().removeCriticals(Mech.LOC_CT, crit);
+            clearCrit(Mech.LOC_CT, lgSlot);
+            getMech().setCritical(Mech.LOC_CT, lgSlot, crit);
         }
         refresh.refreshBuild();
     }
@@ -317,6 +343,13 @@ public class StructureTab extends ITab implements MekBuildListener {
                 continue;
             }
             clearCrit(Mech.LOC_HEAD, slot);
+        }
+    }
+    
+    private void clearCritsForGyro(int numSlots) {
+        for (int i = 3; i < 3 + numSlots; i++) {
+            clearCrit(Mech.LOC_CT, i);
+            getMech().setCritical(Mech.LOC_CT, i, null);
         }
     }
 
@@ -356,19 +389,17 @@ public class StructureTab extends ITab implements MekBuildListener {
         }
 
     }
+    
+    private void removeSystemCrits(int systemType, int loc) {
+        for (int slot = 0; slot < getMech().getNumberOfCriticals(loc); slot++) {
+            CriticalSlot cs = getMech().getCritical(loc, slot);
 
-    public void removeSystemCrits(int systemType) {
-        for (int loc = 0; loc < getMech().locations(); loc++) {
-            for (int slot = 0; slot < getMech().getNumberOfCriticals(loc); slot++) {
-                CriticalSlot cs = getMech().getCritical(loc, slot);
+            if ((cs == null) || (cs.getType() != CriticalSlot.TYPE_SYSTEM)) {
+                continue;
+            }
 
-                if ((cs == null) || (cs.getType() != CriticalSlot.TYPE_SYSTEM)) {
-                    continue;
-                }
-
-                if (cs.getIndex() == systemType) {
-                    getMech().setCritical(loc, slot, null);
-                }
+            if (cs.getIndex() == systemType) {
+                getMech().setCritical(loc, slot, null);
             }
         }
     }
@@ -581,7 +612,18 @@ public class StructureTab extends ITab implements MekBuildListener {
     public void updateTechLevel() {
         removeAllListeners();
         getMech().setTechLevel(panBasicInfo.getTechLevel().getCompoundTechLevel(panBasicInfo.useClanTechBase()));
-        if (!getMech().hasPatchworkArmor()) {
+        if (panArmor.isPatchwork() && !getTechManager().isLegal(Entity.getPatchworkArmorAdvancement())) {
+            panArmor.setPatchwork(false);
+            armorTypeChanged(panArmor.getArmorType(), panArmor.getArmorTechConstant());
+        }
+        if (getMech().hasPatchworkArmor()) {
+            for (int loc = 0; loc < getMech().locations(); loc++) {
+                if (!getTechManager().isLegal(panPatchwork.getArmor(loc))) {
+                    getMech().setArmorType(EquipmentType.T_ARMOR_STANDARD, TechConstants.T_INTRO_BOXSET);
+                    UnitUtil.resetArmor(getMech(), loc);
+                }
+            }
+        } else if (!getTechManager().isLegal(panArmor.getArmor())) {
             UnitUtil.removeISorArmorMounts(getMech(), false);
         }
         // If we have a large engine, a drop in tech level may make it unavailable and we will need
@@ -608,10 +650,11 @@ public class StructureTab extends ITab implements MekBuildListener {
         }
         panChassis.refresh();
         panHeat.refresh();
-        panArmor.refresh();
         panMovement.refresh();
+        panArmor.refresh();
         panArmorAllocation.setFromEntity(getMech());
         panPatchwork.setFromEntity(getMech());
+        refresh.refreshBuild();
         addAllListeners();
     }
 
@@ -653,6 +696,7 @@ public class StructureTab extends ITab implements MekBuildListener {
             panMovement.setFromEntity(getMech());
         }
         refresh();
+        refresh.refreshBuild();
         refresh.refreshPreview();
         refresh.refreshStatus();
     }
@@ -871,8 +915,8 @@ public class StructureTab extends ITab implements MekBuildListener {
 
     @Override
     public void armorTypeChanged(int at, int aTechLevel) {
-        UnitUtil.removeISorArmorMounts(getMech(), false);
         if (at != EquipmentType.T_ARMOR_PATCHWORK) {
+            UnitUtil.removeISorArmorMounts(getMech(), false);
             createArmorMountsAndSetArmorType(at, aTechLevel);
             panArmorAllocation.showPatchwork(false);
             panPatchwork.setVisible(false);
@@ -881,6 +925,7 @@ public class StructureTab extends ITab implements MekBuildListener {
             panArmorAllocation.showPatchwork(true);
             panPatchwork.setVisible(true);
         }
+        panArmor.setFromEntity(getMech(), true);
         panArmorAllocation.setFromEntity(getMech());
         panSummary.refresh();
         refresh.refreshStatus();
@@ -941,6 +986,7 @@ public class StructureTab extends ITab implements MekBuildListener {
         }
         getMech().setOriginalWalkMP(walkMP);
         panSummary.refresh();
+        refresh.refreshBuild();
         refresh.refreshStatus();
         refresh.refreshPreview();
         panMovement.setFromEntity(getMech());
@@ -1008,6 +1054,7 @@ public class StructureTab extends ITab implements MekBuildListener {
         if (panArmor.getArmorType() == EquipmentType.T_ARMOR_PATCHWORK) {
             getMech().setArmorTonnage(panArmorAllocation.getTotalArmorWeight(getMech()));
         }
+        panArmor.setFromEntity(getMech(), true);
         panArmorAllocation.setFromEntity(getMech());
         refresh.refreshPreview();
         refresh.refreshSummary();
@@ -1042,12 +1089,21 @@ public class StructureTab extends ITab implements MekBuildListener {
                 case Mech.LOC_CT:
                 case Mech.LOC_LT:
                 case Mech.LOC_RT:
-                    double rear = Math.floor(allocate * .25);
-                    double front = Math.ceil(allocate * .75);
-                    pointsToAllocate -= (int) rear;
-                    pointsToAllocate -= (int) front;
-                    getMech().initializeArmor((int) front, location);
-                    getMech().initializeRearArmor((int) rear, location);
+                    int rear = (int) Math.floor(allocate * .25);
+                    int front = (int) Math.ceil(allocate * .75);
+                    // Make sure rounding doesn't add an additional point to this location,
+                    // which could cause us to run out of armor before we get to the end.
+                    if (rear + front > allocate) {
+                        if (front > rear * 3) {
+                            front--;
+                        } else {
+                            rear--;
+                        }
+                    }
+                    pointsToAllocate -= rear;
+                    pointsToAllocate -= front;
+                    getMech().initializeArmor(front, location);
+                    getMech().initializeRearArmor(rear, location);
                     break;
                 default:
                     getMech().initializeArmor((int) allocate, location);

@@ -32,6 +32,7 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 
 import megamek.client.ui.swing.MechViewPanel;
@@ -45,6 +46,9 @@ import megamek.common.MechView;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.SimpleTechLevel;
+import megamek.common.templates.TROView;
+import megamek.common.verifier.TestEntity;
+import megamek.common.verifier.TestBattleArmor;
 import megamek.common.verifier.TestBattleArmor.BAManipulator;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.util.CustomComboBox;
@@ -81,6 +85,7 @@ public class StructureTab extends ITab implements ActionListener, BABuildListene
     private CustomComboBox<String> rightManipSelect = new CustomComboBox<>(s -> manipulatorDisplayName(s));
     
     private MechViewPanel panelMekView;
+    private MechViewPanel panelTROView;
     
 	public StructureTab(EntitySource eSource) {
 	    super(eSource);
@@ -92,10 +97,11 @@ public class StructureTab extends ITab implements ActionListener, BABuildListene
 	    JPanel previewPanel = new JPanel();
 	    previewPanel.setLayout(new BoxLayout(previewPanel, BoxLayout.Y_AXIS));
 	    panelMekView = new MechViewPanel(450, 480,false);
-	    //mekViewScrollPane.setMinimumSize(new java.awt.Dimension(450, 550));
-	    //mekViewScrollPane.setMaximumSize(new java.awt.Dimension(450, 550));
-	    //mekViewScrollPane.setPreferredSize(new java.awt.Dimension(450, 550));
-	    previewPanel.add(panelMekView);
+        panelTROView = new MechViewPanel(450, 480, false);
+        JTabbedPane panPreview = new JTabbedPane();
+        panPreview.addTab("Summary", panelMekView);
+        panPreview.addTab("TRO", panelTROView);
+	    previewPanel.add(panPreview);
 	    
 	    JPanel leftPanel = new JPanel();
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
@@ -389,17 +395,21 @@ public class StructureTab extends ITab implements ActionListener, BABuildListene
     public void refreshPreview(){
         boolean populateTextFields = true;
         MechView mechView = null;
+        TROView troView = null;
         try {
             mechView = new MechView(getBattleArmor(), false);
+            troView = TROView.createView(getBattleArmor(), true);
         } catch (Exception e) {
             e.printStackTrace();
             // error unit didn't load right. this is bad news.
             populateTextFields = false;
         }
         if (populateTextFields && (mechView != null)) {
-            panelMekView.setMech(getBattleArmor());
+            panelMekView.setMech(getBattleArmor(), mechView);
+            panelTROView.setMech(getBattleArmor(), troView);
         } else {
             panelMekView.reset();
+            panelTROView.reset();
         }
     }
     
@@ -641,6 +651,7 @@ public class StructureTab extends ITab implements ActionListener, BABuildListene
         refresh.refreshSummary();
         refresh.refreshBuild();
         refresh.refreshPreview();
+        refresh.refreshStatus();
     }
 
     @Override
@@ -671,5 +682,30 @@ public class StructureTab extends ITab implements ActionListener, BABuildListene
         refresh.refreshBuild();
         refresh.refreshStatus();
         refresh.refreshPreview();
+    }
+    
+    @Override
+    public void maximizeArmor() {
+        armorValueChanged(getBattleArmor().getMaximumArmorPoints());
+        panArmor.removeListener(this);
+        panArmor.setFromEntity(getBattleArmor());
+        panArmor.addListener(this);
+    }
+    
+    @Override
+    public void useRemainingTonnageArmor() {
+        final TestBattleArmor testBA = (TestBattleArmor) UnitUtil.getEntityVerifier(getBattleArmor());
+        double currentTonnage = testBA.calculateWeight(BattleArmor.LOC_SQUAD);
+        currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getBattleArmor());
+        double totalTonnage = getBattleArmor().getTrooperWeight();
+        double remainingTonnage = TestEntity.floor(
+                totalTonnage - currentTonnage, TestEntity.Ceil.KILO);
+        int points = (int) UnitUtil.getRawArmorPoints(getBattleArmor(), remainingTonnage);
+        int maxArmor = Math.min(getBattleArmor().getMaximumArmorPoints(),
+                points + getBattleArmor().getOArmor(BattleArmor.LOC_TROOPER_1));
+        armorValueChanged(maxArmor);
+        panArmor.removeListener(this);
+        panArmor.setFromEntity(getBattleArmor());
+        panArmor.addListener(this);
     }
 }

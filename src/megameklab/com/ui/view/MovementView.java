@@ -39,11 +39,13 @@ import megamek.common.ITechManager;
 import megamek.common.Mech;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
+import megamek.common.Protomech;
 import megamek.common.Tank;
 import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestBattleArmor;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestMech;
+import megamek.common.verifier.TestProtomech;
 import megameklab.com.ui.util.TechComboBox;
 import megameklab.com.ui.view.listeners.BuildListener;
 
@@ -215,6 +217,8 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
             maxJump = 0;
         } else if (en.hasETypeFlag(Entity.ETYPE_MECH)) {
             maxJump = TestMech.maxJumpMP((Mech)en);
+        } else if (en.hasETypeFlag(Entity.ETYPE_PROTOMECH)) {
+            maxJump = TestProtomech.maxJumpMP((Protomech) en);
         }
         if (en.hasETypeFlag(Entity.ETYPE_TANK)) {
             int minRating = 10 + Tank.getSuspensionFactor(en.getMovementMode(), en.getWeight());
@@ -237,6 +241,16 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
                 maxJump = TestBattleArmor.maxJumpMP((BattleArmor)en);
             }
             cbJumpType.addActionListener(this);
+        } else if (en.hasETypeFlag(Entity.ETYPE_PROTOMECH)) {
+            if (((Protomech) en).isGlider()) {
+                minWalk = TestProtomech.GLIDER_MIN_MP;
+            } else if (((Protomech) en).isQuad()) {
+                minWalk = TestProtomech.QUAD_MIN_MP;
+            } else {
+                minWalk = 1;
+            }
+        } else if (en.hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
+            minWalk = 0; // Station-keeping drive. Legal for warships, though unusual.
         }
 
         spnWalkModel.setMinimum(minWalk);
@@ -244,8 +258,7 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
         spnWalk.setValue(Math.max(minWalk, en.getOriginalWalkMP()));
         txtWalkFinal.setText(String.valueOf(en.getWalkMP()));
 
-        //getOriginalRunMPWithoutMASC() still subtracts for hardened armor, so we just do the calculation here
-        txtRunBase.setText(String.valueOf((int)Math.ceil(en.getOriginalWalkMP() * 1.5)));
+        txtRunBase.setText(String.valueOf((int)Math.ceil(((Number) spnWalk.getValue()).intValue() * 1.5)));
         txtRunFinal.setText(en.getRunMPasString());
         
         spnJump.removeChangeListener(this);

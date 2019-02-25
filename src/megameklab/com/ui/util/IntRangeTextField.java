@@ -58,18 +58,32 @@ public class IntRangeTextField extends JFormattedTextField {
         setColumns(columns);
     }
     
+    /**
+     * @return The minimum legal value
+     */
     public Integer getMinimum() {
         return minimum;
     }
     
+    /**
+     * Sets the minimum value for the field.
+     * @param min
+     */
     public void setMinimum(Integer min) {
         minimum = min;
     }
     
+    /**
+     * @return The maximum legal value
+     */
     public Integer getMaximum() {
         return maximum;
     }
     
+    /**
+     * Sets the maximum legal value
+     * @param max
+     */
     public void setMaximum(Integer max) {
         maximum = max;
     }
@@ -87,7 +101,7 @@ public class IntRangeTextField extends JFormattedTextField {
 
         @Override
         public boolean shouldYieldFocus(JComponent input) {
-            if (!super.shouldYieldFocus(input)) {
+            if (!verify(input)) {
                 int val = getIntVal();
                 if (minimum != null && val < minimum) {
                     setIntVal(minimum);
@@ -125,15 +139,32 @@ public class IntRangeTextField extends JFormattedTextField {
         }
 
     };
-
+    
+    /**
+     * Parses the text as an {@code int}.
+     * @return The {@code int} value of the text, or zero if the text is not a valid int value
+     */
     public int getIntVal() {
+        return getIntVal(0);
+    }
+
+    /**
+     * Parses the text as an {@code int}.
+     * @param defaultVal The value to return if the text cannot be parsed as an int
+     * @return The {@code int} value of the text, or the indicated default if the text is not a valid int value
+     */
+    public int getIntVal(int defaultVal) {
         try {
             return Integer.parseInt(getText());
         } catch (NumberFormatException ex) {
-            return 0;
+            return defaultVal;
         }
     }
 
+    /**
+     * Sets the text to a string representation of the provided value
+     * @param val
+     */
     public void setIntVal(int val) {
         setText(String.valueOf(val));
     }

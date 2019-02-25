@@ -33,8 +33,9 @@ import megamek.common.LocationFullException;
 import megamek.common.TechConstants;
 import megamek.common.weapons.infantry.InfantryWeapon;
 import megameklab.com.ui.MegaMekLabMainUI;
-import megameklab.com.ui.Infantry.tabs.PreviewTab;
+import megameklab.com.ui.tabs.PreviewTab;
 import megameklab.com.ui.Infantry.tabs.StructureTab;
+import megameklab.com.ui.tabs.FluffTab;
 import megameklab.com.util.MenuBarCreator;
 
 public class MainUI extends MegaMekLabMainUI {
@@ -46,6 +47,7 @@ public class MainUI extends MegaMekLabMainUI {
 
     StructureTab structureTab;
     PreviewTab previewTab;
+    FluffTab fluffTab;
     StatusBar statusbar;
     JTabbedPane ConfigPane = new JTabbedPane(SwingConstants.TOP);
     JPanel masterPanel = new JPanel();
@@ -82,11 +84,14 @@ public class MainUI extends MegaMekLabMainUI {
 
         statusbar = new StatusBar(this);
         structureTab = new StructureTab(this);
+        fluffTab = new FluffTab(this);
         previewTab = new PreviewTab(this);
 
         structureTab.addRefreshedListener(this);
+        fluffTab.setRefreshedListener(this);
 
         ConfigPane.addTab("Build", structureTab);
+        ConfigPane.addTab("Fluff", fluffTab);
         ConfigPane.addTab("Preview", previewTab);
 
         masterPanel.add(ConfigPane, BorderLayout.CENTER);
@@ -139,7 +144,15 @@ public class MainUI extends MegaMekLabMainUI {
     }
 
     @Override
+    public void refreshTransport() {
+        // not used for infantry
+    }
+
+    @Override
     public void refreshHeader() {
+        String title = getEntity().getChassis() + " " + getEntity().getModel()
+                + ".blk";
+        setTitle(title);
 
     }
 

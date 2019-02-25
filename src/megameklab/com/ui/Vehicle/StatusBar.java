@@ -167,7 +167,7 @@ public class StatusBar extends ITab {
         currentTonnage = testEntity.calculateWeight();
 
         currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getTank());
-        int currentCost = (int)Math.round(getTank().getCost(false));
+        long currentCost = (long) Math.round(getTank().getCost(false));
 
         tons.setText("Tonnage: " + currentTonnage + "/" + tonnage);
         tons.setToolTipText("Current Tonnage/Max Tonnage");

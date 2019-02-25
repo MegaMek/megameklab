@@ -217,6 +217,7 @@ public class EquipmentView extends IView implements ActionListener {
         removeAllButton.setMnemonic('L');
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
 
         if (e.getActionCommand().equals(ADD_COMMAND)) {
