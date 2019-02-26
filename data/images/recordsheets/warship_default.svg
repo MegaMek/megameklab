@@ -461,7 +461,7 @@
           <tspan
              id="tspan3603"
              y="0"
-             x="0 7.6911478 15.669609 22.509869 34.809074 38.698853 47.03093 54.180603 60.004215">CREW DATA</tspan>
+             x="0">CREW DATA</tspan>
         </text>
         <path
            id="path3605"
@@ -534,32 +534,28 @@
           <tspan
              id="tspan3631"
              y="0"
-             x="0 4.1951399 7.0823126 10.517987 15.315878">Crew:</tspan>
+             x="0">Crew:</tspan>
           <tspan
              id="tspan3633"
              y="9.9694853"
-             x="0 4.1348648 7.6850624 11.04238 14.399697 17.835373 21.439817 25.020153 28.455828 31.294781 34.652096">Passengers:</tspan>
+             x="0">Passengers:</tspan>
           <tspan
              id="tspan3635"
              y="19.932941"
-             x="0 4.3096623 6.8713498 10.475795 13.91147 16.750423">Other:</tspan>
+             x="0">Other:</tspan>
           <tspan
              id="tspan3637"
              y="31.324919"
-             x="15.69561 19.101147 20.523638 22.621208 26.056883 28.178562 32.494251 36.002258 39.552456 42.114143 45.471458 49.582214 53.313236 56.670555 59.991707 63.541904 67.134293 70.569969 72.69165 76.826515 80.334518 83.908829 87.266144 89.387825">Life Boats/Escape Pods:</tspan>
+             x="15.69561">Life Boats/Escape Pods:</tspan>
           <tspan
              id="tspan3639"
              y="1.0706991e-14"
-             x="68.484451 74.548119 78.09832 80.937271 82.359756 85.964203 89.399879 92.757195">Marines:</tspan>
+             x="68.484451">Marines:</tspan>
           <tspan
-             id="elementalsTspan"
+             id="baLabel"
              y="9.9694853"
-             x="68.484451 72.215477 73.734406 77.170082 82.739494 86.175171 89.77961 92.341301 95.891495 97.410431 100.76775"
-             transform="matrix(-1 0 0 1 171.17 0)">Elementals:</tspan>
-          <tspan
-             id="battleArmorTspan"
-             y="19.932943"
-             x="68.484451 72.800148 76.350342 78.912033 81.473717 82.992645 86.428322 88.550003 92.823502 95.71067 101.28008 104.78809 107.62704">Battle Armor:</tspan>
+             x="68.484451"
+             transform="matrix(-1 0 0 1 171.17 0)">BattleArmor:</tspan>
         </text>
         <text
            id="text3645"
@@ -853,7 +849,7 @@
           <tspan
              id="tspan3773"
              y="0"
-             x="0 4.0926824 5.7522578 9.9293251 14.134521 17.123163 21.13146 24.443579 28.360458 33.156353 37.888954 44.386616 48.528522 50.30061 52.072701 54.548 59.442341 62.754459 66.89637 69.343536 72.332184">Fighters/Small Craft:</tspan>
+             x="0">Fighters/Small Craft:</tspan>
         </text>
         <text
            id="text3775"
@@ -874,7 +870,7 @@
             <tspan
                id="tspan3781"
                y="0"
-               x="0 3.9731364 8.1150436 12.285079 16.490274 20.364962 24.570158 27.045456 32.122631 36.264538 39.253181 43.261478">Launch Rate:</tspan>
+               x="0">Launch Rate:</tspan>
           </text>
           <text
              id="text3799"
@@ -3869,28 +3865,18 @@
          y="161">0</text>
       <text
          id="dsCapacity"
-         style="word-spacing:0px;letter-spacing:0px;text-anchor:middle"
-         xml:space="preserve"
-         transform="scale(1.0236 .97692)"
-         y="176.77026"
-         x="111.80103"
-         line-height="125%">0</text>
+         style="text-anchor:middle"
+         x="114.44"
+         y="174">0</text>
       <text
          id="fighters"
-         style="word-spacing:0px;letter-spacing:0px;text-anchor:end"
-         xml:space="preserve"
-         transform="scale(1.0236 .97692)"
-         y="189.1546"
-         x="110.11"
-         line-height="125%">0</text>
+         style="text-anchor:end"
+         x="112.7085"
+         y="184.7889">0</text>
       <text
          id="smallCraft"
-         style="word-spacing:0px;letter-spacing:0px"
-         xml:space="preserve"
-         transform="scale(1.0236 .97692)"
-         y="189.58113"
-         x="119.05078"
-         line-height="125%">0</text>
+         x="121.86"
+         y="184.7889">0</text>
       <text
          id="tonnage"
          x="182.74719"
@@ -3905,12 +3891,9 @@
          y="149.09">Standard</text>
       <text
          id="launchRate"
-         style="word-spacing:0px;letter-spacing:0px;text-anchor:middle"
-         xml:space="preserve"
-         transform="scale(1.0236 .97692)"
-         y="189.99042"
-         x="195.86447"
-         line-height="125%">0</text>
+         style="text-anchor:middle"
+         x="200.49"
+         y="184.7889">0</text>
       <text
          id="flArmorText"
          style="word-spacing:0px;letter-spacing:0px"
@@ -4012,145 +3995,92 @@
          y="544">0</text>
       <text
          id="crew"
-         style="word-spacing:0px;letter-spacing:0px;text-anchor:middle"
-         xml:space="preserve"
-         transform="scale(1.0236 .97692)"
-         y="602.47357"
-         x="304.00522"
-         line-height="125%">0</text>
+         style="text-anchor:middle"
+         x="311.18"
+         y="588.568">0</text>
       <text
          id="passengers"
-         style="word-spacing:0px;letter-spacing:0px;text-anchor:middle"
-         xml:space="preserve"
-         transform="scale(1.0236 .97692)"
-         y="613.30231"
-         x="304.00522"
-         line-height="125%">0</text>
+         style="text-anchor:middle"
+         x="311.18"
+         y="599.147">0</text>
       <text
          id="other"
-         style="word-spacing:0px;letter-spacing:0px;text-anchor:middle"
-         xml:space="preserve"
-         transform="scale(1.0236 .97692)"
-         y="624.49231"
-         x="304.00522"
-         line-height="125%">0</text>
+         style="text-anchor:middle"
+         x="311.18"
+         y="610.079">0</text>
       <text
          id="marines"
-         style="word-spacing:0px;letter-spacing:0px;text-anchor:middle"
-         xml:space="preserve"
-         transform="scale(1.0236 .97692)"
-         y="602.47357"
-         x="373.35797"
-         line-height="125%">0</text>
-      <text
-         id="elementals"
-         style="word-spacing:0px;letter-spacing:0px;text-anchor:middle"
-         xml:space="preserve"
-         transform="scale(1.0236 .97692)"
-         y="612.99884"
-         x="373.35797"
-         line-height="125%">0</text>
+         style="text-anchor:middle"
+         x="382.169"
+         y="588.568">0</text>
       <text
          id="battleArmor"
-         style="word-spacing:0px;letter-spacing:0px;text-anchor:middle"
-         xml:space="preserve"
-         transform="scale(1.0236 .97692)"
-         y="623.55365"
-         x="373.35797"
-         line-height="125%">0</text>
+         style="text-anchor:middle"
+         x="382.169"
+         y="599.147">0</text>
       <text
          id="lifeBoats"
-         style="word-spacing:0px;letter-spacing:0px;text-anchor:end"
-         xml:space="preserve"
-         transform="scale(1.0236 .97692)"
-         y="635.69916"
-         x="353.67386"
-         line-height="125%">0</text>
+         style="text-anchor:end"
+         x="362.02"
+         y="621.027">0</text>
       <text
          id="escapePods"
-         style="word-spacing:0px;letter-spacing:0px"
-         xml:space="preserve"
-         transform="scale(1.0236 .97692)"
-         y="635.69916"
-         x="362.75558"
-         line-height="125%">0</text>
+         x="371.32"
+         y="621.027">0</text>
     </g>
     <text
        id="heatSinks"
-       style="word-spacing:0px;letter-spacing:0px;text-anchor:middle"
+       style="text-anchor:middle"
        font-weight="bold"
-       xml:space="preserve"
-       transform="scale(1.0236 .97692)"
-       line-height="125%"
        font-size="12.334px"
-       y="741.11499"
-       x="427.51929">0</text>
+       x="437.6087"
+       y="724.012">0</text>
     <g
        font-size="7.4001px"
        id="g919">
       <text
          id="noseHeat"
-         style="word-spacing:0px;letter-spacing:0px;text-anchor:middle"
-         xml:space="preserve"
-         transform="scale(1.0236 .97692)"
-         y="733.48926"
-         x="553.96454"
-         line-height="125%">0</text>
+         style="text-anchor:middle"
+         x="567.548"
+         y="716.5636">0</text>
       <text
          id="foreHeat"
-         style="word-spacing:0px;letter-spacing:0px;text-anchor:middle"
-         xml:space="preserve"
-         transform="scale(1.0236 .97692)"
-         y="745.77612"
-         x="554.44586"
-         line-height="125%">0 / 0</text>
+         style="text-anchor:middle"
+         x="567.548"
+         y="728.565">0 / 0</text>
       <text
          id="broadsideHeat"
-         style="word-spacing:0px;letter-spacing:0px;text-anchor:middle"
-         xml:space="preserve"
-         transform="scale(1.0236 .97692)"
-         y="756.60492"
-         x="554.44586"
-         line-height="125%">0 / 0</text>
+         style="text-anchor:middle"
+         x="567.548"
+         y="739.14">0 / 0</text>
       <text
          id="aftSidesHeat"
-         style="word-spacing:0px;letter-spacing:0px;text-anchor:middle"
-         xml:space="preserve"
-         transform="scale(1.0236 .97692)"
-         y="768.15564"
-         x="554.44586"
-         line-height="125%">0 / 0</text>
+         style="text-anchor:middle"
+         x="567.548"
+         y="750.427">0 / 0</text>
       <text
          id="aftHeat"
-         style="word-spacing:0px;letter-spacing:0px;text-anchor:middle"
-         xml:space="preserve"
-         transform="scale(1.0236 .97692)"
-         y="778.84045"
-         x="553.96454"
-         line-height="125%">0</text>
+         style="text-anchor:middle"
+         x="567.548"
+         y="760.86">0</text>
     </g>
     <text
        id="doubleHeatSinks"
-       style="word-spacing:0px;letter-spacing:0px;text-anchor:middle"
+       style="text-anchor:middle"
        font-weight="bold"
-       xml:space="preserve"
-       transform="scale(1.0236 .97692)"
-       line-height="125%"
        font-size="12.334px"
-       y="753.92499"
-       x="427.34903">(0)</text>
+       x="437.43"
+       y="736.52">(0)</text>
     <text
        id="cost"
        font-size="7.4px"
        x="44"
-       y="506.5"
-       line-height="125%">0</text>
+       y="506.5">0</text>
     <text
        id="bv"
        font-size="7.4px"
        x="168.38727"
-       y="506.5"
-       line-height="125%">0</text>
+       y="506.5">0</text>
   </g>
   <g
      fill="none"
