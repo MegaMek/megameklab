@@ -125,16 +125,10 @@
     <g
        id="g3365">
       <text
-         id="text3367"
-         font-weight="bold"
-         font-size="12.055px"
-         transform="matrix(0.998,0,0,-1,130.18,702.99)"
-         style="font-weight:bold;font-size:12.05500031px;font-family:Eurostile;fill:#231f20">
-        <tspan
-           id="tspan3369"
-           y="0"
-           x="0 13.224444 22.060833 31.005716 39.673332 49.172752 53.078606 61.685947 66.02578 74.970665 83.192245 91.968361 101.13023 110.11128 119.45399 123.79382 132.46144 141.96086 150.13422 158.34373">WARSHIP RECORD SHEET</tspan>
-      </text>
+       transform="matrix(1,0,0,-1,209,703)"
+       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:11.59090042px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="title"
+       text-anchor="middle">WARSHIP RECORD SHEET</text>
     </g>
     <g
        id="g3465">
@@ -531,7 +525,7 @@
           <tspan
              id="tspan3627"
              y="0"
-             x="0 5.1123366 9.2823725 13.487568 17.692764 21.701061 25.069437 28.480005 30.955305 35.687908 39.47821 41.137787 42.909874 44.681965">Gunnery Skill:</tspan>
+             x="0">Gunnery Skill:</tspan>
         </text>
         <text
            id="text3629"
@@ -574,9 +568,16 @@
           <tspan
              id="tspan3647"
              y="0"
-             x="0 4.8240204 6.4835963 8.2556858 12.348368 15.33701 16.996586 21.201782 25.378849 27.854149 32.58675 36.377052 38.036629 39.80872 41.580807">Piloting Skill:</tspan>
+             x="0">Piloting Skill:</tspan>
         </text>
       </g>
+      <g id="blanksCrew0"><g
+        transform="translate(304.769,251.63)"><path
+            d="M 0,0 13.689,0"
+            style="fill:none;stroke:#231f20;stroke-width:0.72399998;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" id="blankGunnerySkill" /></g><g
+        transform="translate(371.8506,251.63)"><path
+            d="M 0,0 13.689,0"
+            style="fill:none;stroke:#231f20;stroke-width:0.72399998;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" id="blankPilotingSkill" /></g></g>
       <g
          id="g3649"
          transform="translate(0 792)">
@@ -795,7 +796,7 @@
           <tspan
              id="tspan3737"
              y="0"
-             x="0 4.8642192 9.2492495 14.637865 19.791407">Type:</tspan>
+             x="0">Type:</tspan>
         </text>
         <text
            id="text3739"
@@ -804,13 +805,17 @@
           <tspan
              id="tspan3741"
              y="0"
-             x="0 5.3022032 8.670579 12.763262 16.954393 21.686996 25.892193 27.551767 31.742899 34.218197 39.112541 43.254448 47.44558 51.587486 55.462173 57.12175 60.11039 63.520958">DropShip Capacity:</tspan>
+             x="0">DropShip Capacity:</tspan>
           <tspan
              id="tspan3743"
              y="-34.098652"
-             x="0 4.1278429 8.3330383 11.701414 15.871449 19.78833 22.776972 109.72889 113.259 117.2673 121.14198 125.34718 127.82248 132.85747 136.99937 140.91624 144.92455">Thrust:Tech Base:</tspan>
+             x="0">Thrust:</tspan>
+          <tspan
+             id="tspan3743"
+             y="-34.098652"
+             x="109.72889">Tech Base:</tspan>
         </text>
-      </g>
+      </g>ru
       <g
          id="g3745"
          transform="translate(0 792)">
@@ -835,11 +840,11 @@
           <tspan
              id="tspan3755"
              y="0"
-             x="0 5.8155465 9.9574537 16.455114 20.463411">Name:</tspan>
+             x="0">Name:</tspan>
           <tspan
              id="tspan3757"
              y="-0.18986671"
-             x="109.58825 113.11836 117.21104 121.41624 125.62144 129.76334 133.94041 137.9487 140.42401">Tonnage:</tspan>
+             x="109.58825">Tonnage:</tspan>
         </text>
         <text
            id="text3771"
@@ -877,7 +882,11 @@
             <tspan
                id="tspan3801"
                y="0"
-               x="0 4.7326031 8.8745098 11.321681 15.329978 17.805277 21.933121 26.138315 29.506691 33.676727 37.593605 40.582249 43.057549">Safe Thrust:</tspan>
+               x="0">Safe Thrust:</tspan>
+            <tspan
+             y="0"
+             x="104.589">Rules Level:</tspan>
+
           </text>
           <text
              id="text3815"
@@ -885,7 +894,7 @@
             <tspan
                id="tspan3817"
                y="0"
-               x="0 7.0742927 11.2162 14.732249 16.391825 22.889486 27.059521 33.557182 36.032482 40.160324 44.36552 47.733894 51.903931 55.820808 58.809452 61.284752">Maximum Thrust:</tspan>
+               x="0">Maximum Thrust:</tspan>
           </text>
         </g>
         <text
@@ -3849,21 +3858,15 @@
        font-size="7.4001px"
        id="g884">
       <text
-         id="safeThrust"
-         style="word-spacing:0px;letter-spacing:0px;text-anchor:middle"
-         xml:space="preserve"
-         transform="scale(1.0236 .97692)"
-         y="151.41458"
-         x="111.80127"
-         line-height="125%">0</text>
+         id="mpWalk"
+         style="text-anchor:middle"
+         x="114.44"
+         y="148">0</text>
       <text
-         id="maxThrust"
-         style="word-spacing:0px;letter-spacing:0px;text-anchor:middle"
-         xml:space="preserve"
-         transform="scale(1.0236 .97692)"
-         y="165.27304"
-         x="111.80103"
-         line-height="125%">0</text>
+         id="mpRun"
+         style="text-anchor:middle"
+         x="114.44"
+         y="161">0</text>
       <text
          id="dsCapacity"
          style="word-spacing:0px;letter-spacing:0px;text-anchor:middle"
@@ -3890,20 +3893,16 @@
          line-height="125%">0</text>
       <text
          id="tonnage"
-         style="word-spacing:0px;letter-spacing:0px;text-anchor:middle"
-         xml:space="preserve"
-         transform="scale(1.0236 .97692)"
-         y="129.20509"
-         x="200.50403"
-         line-height="125%">0</text>
+         x="182.74719"
+         y="125.59">0</text>
       <text
          id="techBase"
-         style="word-spacing:0px;letter-spacing:0px"
-         xml:space="preserve"
-         transform="scale(1.0236 .97692)"
-         y="140.1122"
          x="182.74719"
-         line-height="125%">Lorem Ipsum</text>
+         y="137.34">Lorem Ipsum</text>
+      <text
+         id="rulesLevel"
+         x="182.74719"
+         y="149.09">Standard</text>
       <text
          id="launchRate"
          style="word-spacing:0px;letter-spacing:0px;text-anchor:middle"
@@ -4002,21 +4001,15 @@
        font-size="7.4001px"
        id="g906">
       <text
-         id="gunnerySkill"
-         style="word-spacing:0px;letter-spacing:0px;text-anchor:middle"
-         xml:space="preserve"
-         transform="scale(1.0236 .97692)"
-         y="556.86475"
-         x="308.09137"
+         id="gunnerySkill0"
+         style="text-anchor:middle"
+         x="315.387"
+         y="544"
          line-height="125%">0</text>
       <text
-         id="pilotingSkill"
-         style="word-spacing:0px;letter-spacing:0px;text-anchor:middle"
-         xml:space="preserve"
-         transform="scale(1.0236 .97692)"
-         y="556.86475"
-         x="378.16733"
-         line-height="125%">0</text>
+         id="pilotingSkill0"
+         x="385.53"
+         y="544">0</text>
       <text
          id="crew"
          style="word-spacing:0px;letter-spacing:0px;text-anchor:middle"
@@ -4148,21 +4141,15 @@
        x="427.34903">(0)</text>
     <text
        id="cost"
-       style="word-spacing:0px;letter-spacing:0px;text-anchor:middle"
-       xml:space="preserve"
-       transform="scale(1.0236 .97692)"
-       font-size="7.4001px"
-       y="518.39355"
-       x="82.275566"
+       font-size="7.4px"
+       x="44"
+       y="506.5"
        line-height="125%">0</text>
     <text
-       id="battlevalue"
-       style="word-spacing:0px;letter-spacing:0px;text-anchor:middle"
-       xml:space="preserve"
-       transform="scale(1.0236 .97692)"
-       font-size="7.4001px"
-       y="517.8833"
+       id="bv"
+       font-size="7.4px"
        x="168.38727"
+       y="506.5"
        line-height="125%">0</text>
   </g>
   <g
