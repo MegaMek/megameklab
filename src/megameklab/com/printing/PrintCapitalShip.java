@@ -14,37 +14,20 @@
 package megameklab.com.printing;
 
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.awt.print.PageFormat;
-import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
-import org.w3c.dom.Element;
-import org.w3c.dom.svg.SVGRectElement;
-
-import com.kitfox.svg.Rect;
-import com.kitfox.svg.SVGDiagram;
-import com.kitfox.svg.SVGElement;
-import com.kitfox.svg.SVGException;
-import com.kitfox.svg.Text;
-import com.kitfox.svg.Tspan;
-import com.kitfox.svg.animation.AnimationElement;
-
+import megamek.common.ASFBay;
+import megamek.common.Aero;
 import megamek.common.Entity;
 import megamek.common.Jumpship;
-import megamek.common.Mech;
-import megamek.common.Mounted;
+import megamek.common.SmallCraftBay;
 import megamek.common.SpaceStation;
+import megamek.common.Transporter;
 import megamek.common.UnitType;
 import megamek.common.Warship;
-import megamek.common.WeaponType;
-import megameklab.com.printing.PrintRecordSheet.PipType;
-import megameklab.com.ui.Aero.Printing.WeaponBayText;
-import megameklab.com.ui.Aero.Printing.PrintWarship.ElementType;
 import megameklab.com.ui.Aero.Printing.PrintWarship.PrintType;
-import megameklab.com.ui.Aero.Printing.PrintWarship.WarshipPrintElements;
-import megameklab.com.util.ImageHelper;
+import megameklab.com.ui.Aero.Printing.WeaponBayText;
 
 /**
  * Generates a record sheet image for jumpships, warships, and space stations.
@@ -137,5 +120,49 @@ public class PrintCapitalShip extends PrintEntity {
     @Override
     public void printImage(Graphics2D g2d, PageFormat pageFormat, int pageNum) {
         super.printImage(g2d, pageFormat, pageNum);
+    }
+    
+    @Override
+    protected void writeTextFields() {
+        super.writeTextFields();
+        int fighters = 0;
+        int smCraft = 0;
+        int ftrDoors = 0;
+        int scDoors = 0;
+        for (Transporter t : ship.getTransports()) {
+            if (t instanceof ASFBay) {
+                fighters += ((ASFBay) t).getCapacity();
+                ftrDoors += ((ASFBay) t).getDoors();
+            } else if (t instanceof SmallCraftBay) {
+                smCraft += ((SmallCraftBay) t).getCapacity();
+                scDoors += ((SmallCraftBay) t).getDoors();
+            }
+        }
+        setTextField("name", ""); // TODO: fluff name needs MM support
+        setTextField("dsCapacity", ship.getDockingCollars().size());
+        setTextField("fighters", fighters);
+        setTextField("smallCraft", smCraft);
+        setTextField("launchRate", ftrDoors + " / " + scDoors);
+        setTextField("crew", ship.getNCrew());
+        setTextField("marines", ship.getNMarines());
+        setTextField("passengers", ship.getNPassenger());
+        setTextField("baLabel", ship.isClan()? "Elementals" : "BattleArmor");
+        setTextField("battleArmor", ship.getNBattleArmor());
+        setTextField("otherOccupants", ship.getNOtherCrew());
+        setTextField("lifeBoats", ship.getLifeBoats());
+        setTextField("escapePods", ship.getEscapePods());
+        setTextField("heatSinks", ship.getHeatSinks());
+        setTextField("doubleHeatSinks", ship.getHeatType() == Aero.HEAT_DOUBLE ?
+                "(" + ship.getHeatSinks() * 2 + ")" : "");
+        setTextField("noseHeat", ship.getHeatInArc(Jumpship.LOC_NOSE, false));
+        setTextField("foreHeat", ship.getHeatInArc(Jumpship.LOC_FRS, false)
+                + " / " + ship.getHeatInArc(Jumpship.LOC_FLS, false));
+        setTextField("aftSidesHeat", ship.getHeatInArc(Jumpship.LOC_ARS, false)
+                + " / " + ship.getHeatInArc(Jumpship.LOC_ALS, false));
+        setTextField("aftHeat", ship.getHeatInArc(Jumpship.LOC_AFT, false));
+        if (ship instanceof Warship) {
+            setTextField("broadsidesHeat", ship.getHeatInArc(Warship.LOC_RBS, false)
+                    + " / " + ship.getHeatInArc(Warship.LOC_LBS, false));
+        }
     }
 }

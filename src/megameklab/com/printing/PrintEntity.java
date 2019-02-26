@@ -40,7 +40,6 @@ import megamek.common.UnitRoleHandler;
 import megamek.common.options.IOption;
 import megamek.common.options.IOptionGroup;
 import megamek.common.options.PilotOptions;
-import megameklab.com.util.ImageHelper;
 
 /**
  * Base class for printing Entity record sheets
@@ -115,12 +114,12 @@ public abstract class PrintEntity extends PrintRecordSheet {
         setTextField("mpWalk", formatWalk());
         setTextField("mpRun", formatRun());
         setTextField("mpJump", formatJump());
-        setTextField("tonnage", Integer.toString((int) getEntity().getWeight()));
+        setTextField("tonnage", NumberFormat.getInstance().format((int) getEntity().getWeight()));
         setTextField("techBase", formatTechBase());
         setTextField("rulesLevel", formatRulesLevel());
         setTextField("era", formatEra(getEntity().getYear()));
         setTextField("cost", formatCost());
-        setTextField("bv", Integer.toString(getEntity().calculateBattleValue()));
+        setTextField("bv", NumberFormat.getInstance().format(getEntity().calculateBattleValue()));
         UnitRole role = UnitRoleHandler.getRoleFor(getEntity());
         if (role == UnitRole.UNDETERMINED) {
             hideElement("lblRole", true);

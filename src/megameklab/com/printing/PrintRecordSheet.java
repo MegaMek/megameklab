@@ -229,6 +229,10 @@ public abstract class PrintRecordSheet implements Printable {
      */
     protected abstract String getRecordSheetTitle();
     
+    protected void setTextField(String id, int i) {
+        setTextField(id, String.valueOf(i));
+    }
+    
     protected void setTextField(String id, String text) {
         setTextField(id, text, false);
     }
