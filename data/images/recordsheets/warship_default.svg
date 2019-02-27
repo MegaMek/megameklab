@@ -4036,39 +4036,39 @@
     <rect
        id="armorPips_NOS"
        height="95.447998"
-       width="157.75999"
+       width="160"
        y="68.529999"
-       x="356" />
+       x="348.5" />
     <rect
        id="armorPips_FLS"
        height="140.81"
-       width="98.599"
+       width="100"
        y="148.56"
-       x="257.46" />
+       x="252" />
     <rect
        id="armorPips_ALS"
        height="140.81"
-       width="98.599"
+       width="100"
        y="311.48"
-       x="257.46" />
+       x="252" />
     <rect
        id="armorPips_FRS"
        height="140.23"
-       width="98.598999"
+       width="100"
        y="149.14999"
-       x="505" />
+       x="507" />
     <rect
        id="armorPips_ARS"
        height="141.39999"
-       width="98.598999"
+       width="100"
        y="310.89001"
-       x="505" />
+       x="507" />
     <rect
        id="armorPips_AFT"
        height="95.447998"
-       width="157.75999"
+       width="160"
        y="409.78"
-       x="356" />
+       x="348.5" />
     <rect
        id="siPips"
        height="28.89"
