@@ -564,9 +564,13 @@ public class PrintCapitalShip extends PrintEntity {
                 String nameString;
                 if (bay.weaponAmmo.containsKey(wtype)) {
                     Mounted ammo = bay.weaponAmmo.get(wtype);
-                    nameString = wtype.getName() + " (" + ammo.getBaseShotsLeft() + " rounds)";
+                    if (wtype.isCapital() && wtype.hasFlag(WeaponType.F_MISSILE)) {
+                        nameString = wtype.getShortName() + " (" + ammo.getBaseShotsLeft() + " missiles)";
+                    } else {
+                        nameString = wtype.getShortName() + " (" + ammo.getBaseShotsLeft() + " rounds)";
+                    }
                 } else {
-                    nameString = wtype.getName();
+                    nameString = wtype.getShortName();
                 }
                 if (first & numBayWeapons > 1) {
                     nameString += ",";
