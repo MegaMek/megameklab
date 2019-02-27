@@ -16,6 +16,8 @@ package megameklab.com.printing;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.print.PageFormat;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.batik.util.SVGConstants;
@@ -23,20 +25,17 @@ import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGElement;
 import org.w3c.dom.svg.SVGRectElement;
 
-import com.kitfox.svg.Rect;
-import com.kitfox.svg.SVGException;
-
 import megamek.common.ASFBay;
 import megamek.common.Aero;
 import megamek.common.Entity;
 import megamek.common.Jumpship;
+import megamek.common.Mounted;
 import megamek.common.SmallCraftBay;
 import megamek.common.SpaceStation;
 import megamek.common.Transporter;
 import megamek.common.UnitType;
 import megamek.common.Warship;
-import megameklab.com.ui.Aero.Printing.PrintWarship.PrintType;
-import megameklab.com.ui.Aero.Printing.PrintWarship.WarshipPrintElements;
+import megamek.common.WeaponType;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.Aero.Printing.WeaponBayText;
 
@@ -66,31 +65,11 @@ public class PrintCapitalShip extends PrintEntity {
      */
     private final Jumpship ship;
     
-    // These are some global variables related to equipment printing, to cut down on method signature length
-    // Column positions
-    private int nameX;
-    private int locX;
-    private int htX;
-    private int srvX;
-    private int mrvX;
-    private int lrvX;
-    private int ervX;
-    
-    // Equipment rectangle bounds
-    private int viewWidth;
-    private int viewHeight;
-    private int viewX;
-    private int viewY;
-    
-    private PrintType cargoPrintType;
-    private PrintType gravPrintType;
-
-    private int eqNormalSize;
-    private int eqHeaderSize;
-    
     private List<WeaponBayText> capitalWeapTexts;
     private List<WeaponBayText> standardWeapTexts;
-
+    private int capitalWeaponLines = 0;
+    private int standardWeaponLines = 0;
+    
     /**
      * Creates an SVG object for the record sheet
      * 
@@ -101,8 +80,64 @@ public class PrintCapitalShip extends PrintEntity {
     public PrintCapitalShip(Jumpship ship, int startPage, RecordSheetOptions options) {
         super(startPage, options);
         this.ship = ship;
+        processWeapons();
     }
     
+    private void processWeapons() {
+        List<Mounted> standardWeapons = new ArrayList<>();
+        List<Mounted> capitalWeapons = new ArrayList<>();
+        for (Mounted m : ship.getWeaponList()) {
+            WeaponType wtype = (WeaponType) m.getType();
+            if (wtype.isCapital()) {
+                capitalWeapons.add(m);
+            } else {
+                standardWeapons.add(m);
+            }
+        }
+        capitalWeapTexts = computeWeaponBayTexts(capitalWeapons);
+        standardWeapTexts = computeWeaponBayTexts(standardWeapons);
+        for (WeaponBayText wbt : capitalWeapTexts) {
+            capitalWeaponLines += wbt.weapons.size();
+        }
+        for (WeaponBayText wbt : standardWeapTexts) {
+            standardWeaponLines += wbt.weapons.size();
+        }
+    }
+    
+    /**
+     * Iterate through a list of weapons and create information about what weapons belong in what bays, how many, the
+     * bay damage, and also condense entries when possible.
+     * 
+     * @param weapons
+     * @return
+     */
+    private List<WeaponBayText> computeWeaponBayTexts(List<Mounted> weapons) {
+        // Collection info on weapons to print
+        List<WeaponBayText> weaponBayTexts = new ArrayList<>();
+        for (Mounted bay : weapons) {
+            WeaponBayText wbt = new WeaponBayText(bay.getLocation(), false);
+            for (Integer wId : bay.getBayWeapons()) {
+                Mounted weap = ship.getEquipment(wId);
+                wbt.addBayWeapon(weap);
+            }
+            // Combine or add
+            boolean combined = false;
+            for (WeaponBayText combine : weaponBayTexts) {
+                if (combine.canCombine(wbt)) {
+                    combine.combine(wbt);
+                    combined = true;
+                    break;
+                }
+            }
+            if (!combined) {
+                weaponBayTexts.add(wbt);
+            }
+        }
+        Collections.sort(weaponBayTexts);
+
+        return weaponBayTexts;
+    }
+
     /**
      * Creates an SVG object for the record sheet using the global printing options
      * 
@@ -195,20 +230,24 @@ public class PrintCapitalShip extends PrintEntity {
             setTextField("textThresholdArmor_" + getEntity().getLocationAbbr(loc),
                     String.format("%d (%d)", ship.getThresh(loc), ship.getOArmor(loc)));
         }
-        setTextField("siText", ship.get0SI());
-        setTextField("kfText", ship.getKFIntegrity());
-        setTextField("sailText", ship.getSailIntegrity());
-        setTextField("dcText", ship.getDockingCollars().size());
         drawArmorStructurePips();
     }
     
     @Override
-    protected void drawArmorStructurePips() {
+    protected void drawStructure() {
+        setTextField("siText", ship.get0SI());
+        setTextField("kfText", ship.getKFIntegrity());
+        setTextField("sailText", ship.getSailIntegrity());
+        setTextField("dcText", ship.getDockingCollars().size());
+
         printInternalRegion("siPips", ship.get0SI(), 100);
         printInternalRegion("kfPips", ship.getKFIntegrity(), 30);
         printInternalRegion("sailPips", ship.getSailIntegrity(), 10);
         printInternalRegion("dcPips", ship.getDockingCollars().size(), 10);
-
+    }
+    
+    @Override
+    protected void drawArmorStructurePips() {
         for (int loc = ship.firstArmorIndex(); loc < Jumpship.LOC_HULL; loc++) {
             final String id = "armorPips_" + ship.getLocationAbbr(loc);
             Element element = getSVGDocument().getElementById(id);
@@ -389,5 +428,212 @@ public class PrintCapitalShip extends PrintEntity {
             currY += pipHeight;
         }
         return numPips;
+    }
+    
+    @Override
+    protected void writeEquipment(SVGRectElement svgRect) {
+        int lines = capitalWeaponLines + standardWeaponLines + 6;
+        InventoryWriter iw = new InventoryWriter(svgRect, lines);
+        if (!capitalWeapTexts.isEmpty()) {
+            iw.printCapitalHeader();
+            for (WeaponBayText bay : capitalWeapTexts) {
+                iw.printWeaponBay(bay, true);
+            }
+        }
+        if (!standardWeapTexts.isEmpty()) {
+            iw.printStandardHeader();
+            for (WeaponBayText bay : standardWeapTexts) {
+                iw.printWeaponBay(bay, false);
+            }
+        }
+    }
+    
+    private class InventoryWriter {
+        Rectangle2D bbox;
+        SVGElement canvas;
+        
+        int nameX;
+        int locX;
+        int htX;
+        int srvX;
+        int mrvX;
+        int lrvX;
+        int ervX;
+        int indent;
+        
+        int currY;
+        
+        float fontSize = FONT_SIZE_MEDIUM;
+        double lineHeight = getFontHeight(fontSize) * 1.2f;
+        
+        InventoryWriter(SVGRectElement svgRect, int lines) {
+            bbox = getRectBBox(svgRect);
+            canvas = (SVGElement) svgRect.getParentNode();
+            int viewX = (int) bbox.getX();
+            int viewWidth = (int) bbox.getWidth();
+            
+            if (lineHeight * lines >= bbox.getHeight() * 0.95) {
+                fontSize = (float) Math.max(4.0, fontSize * lineHeight * lines / bbox.getHeight() * 0.95);
+                lineHeight = getFontHeight(fontSize) * 1.2f;
+            }
+            nameX = viewX;
+            locX = (int) Math.round(viewX + viewWidth * 0.50);
+            htX  = (int) Math.round(viewX + viewWidth * 0.60);
+            srvX = (int) Math.round(viewX + viewWidth * 0.68);
+            mrvX = (int) Math.round(viewX + viewWidth * 0.76);
+            lrvX = (int) Math.round(viewX + viewWidth * 0.84);
+            ervX = (int) Math.round(viewX + viewWidth * 0.92);
+            indent = (int) Math.round(viewWidth * 0.02);
+            
+            currY = (int) bbox.getY() + 10;
+        }
+        
+        void printCapitalHeader() {
+            addTextElement(canvas, nameX, currY, "Capital Scale", fontSize, "start", "bold");
+            addTextElement(canvas, srvX, currY, "(1-12)",  FONT_SIZE_SMALL, "middle", "normal");
+            addTextElement(canvas, mrvX, currY, "(13-24)", FONT_SIZE_SMALL, "middle", "normal");
+            addTextElement(canvas, lrvX, currY, "(25-40)", FONT_SIZE_SMALL, "middle", "normal");
+            addTextElement(canvas, ervX, currY, "(41-50)", FONT_SIZE_SMALL, "middle", "normal");
+            currY += lineHeight;
+    
+            // Capital Bay Line
+            addTextElement(canvas, nameX, currY, "Bay", fontSize, "start", "bold");
+            addTextElement(canvas, locX, currY, "Loc", fontSize, "middle", "bold");
+            addTextElement(canvas, htX,  currY, "Ht", fontSize, "middle", "bold");
+            addTextElement(canvas, srvX, currY, "SRV", fontSize, "middle", "bold");
+            addTextElement(canvas, mrvX, currY, "MRV", fontSize, "middle", "bold");
+            addTextElement(canvas, lrvX, currY, "LRV", fontSize, "middle", "bold");
+            addTextElement(canvas, ervX, currY, "ERV", fontSize, "middle", "bold");
+            currY += lineHeight;
+        }
+        
+        void printStandardHeader() {
+            addTextElement(canvas, nameX, currY, "Standard Scale", fontSize, "start", "bold");
+            addTextElement(canvas, srvX, currY, "(1-6)",  FONT_SIZE_SMALL, "middle", "normal");
+            addTextElement(canvas, mrvX, currY, "(7-12)", FONT_SIZE_SMALL, "middle", "normal");
+            addTextElement(canvas, lrvX, currY, "(13-20)", FONT_SIZE_SMALL, "middle", "normal");
+            addTextElement(canvas, ervX, currY, "(21-25)", FONT_SIZE_SMALL, "middle", "normal");
+            currY += lineHeight;
+    
+            addTextElement(canvas, nameX, currY, "Bay", fontSize, "start", "bold");
+            addTextElement(canvas, locX, currY, "Loc", fontSize, "middle", "bold");
+            addTextElement(canvas, htX,  currY, "Ht", fontSize, "middle", "bold");
+            addTextElement(canvas, srvX, currY, "SRV", fontSize, "middle", "bold");
+            addTextElement(canvas, mrvX, currY, "MRV", fontSize, "middle", "bold");
+            addTextElement(canvas, lrvX, currY, "LRV", fontSize, "middle", "bold");
+            addTextElement(canvas, ervX, currY, "ERV", fontSize, "middle", "bold");
+            currY += lineHeight;
+        }
+        
+        void printWeaponBay(WeaponBayText bay, boolean isCapital) {
+            boolean first = true;
+            int numBayWeapons = bay.weapons.size();
+            int bayHeat = 0;
+            double baySRV, bayMRV, bayLRV, bayERV;
+            baySRV = bayMRV = bayLRV = bayERV = 0;
+            double standardBaySRV, standardBayMRV, standardBayLRV, standardBayERV;
+            standardBaySRV = standardBayMRV = standardBayLRV = standardBayERV = 0;
+            for (WeaponType wtype : bay.weapons.keySet()) {
+                int numWeapons = bay.weapons.get(wtype);
+                bayHeat += wtype.getHeat() * numWeapons;
+                if (isCapital) {
+                    baySRV += wtype.getShortAV() * numWeapons;
+                    bayMRV += wtype.getMedAV() * numWeapons;
+                    bayLRV += wtype.getLongAV() * numWeapons;
+                    bayERV += wtype.getExtAV() * numWeapons;
+                } else {
+                    baySRV += Math.round(wtype.getShortAV() * numWeapons / 10);
+                    bayMRV += Math.round(wtype.getMedAV() * numWeapons / 10);
+                    bayLRV += Math.round(wtype.getLongAV() * numWeapons / 10);
+                    bayERV += Math.round(wtype.getExtAV() * numWeapons / 10);
+                    standardBaySRV += wtype.getShortAV() * numWeapons;
+                    standardBayMRV += wtype.getMedAV() * numWeapons;
+                    standardBayLRV += wtype.getLongAV() * numWeapons;
+                    standardBayERV += wtype.getExtAV() * numWeapons;
+                }
+            }
+
+            for (WeaponType wtype : bay.weapons.keySet()) {
+                String locString = "";
+                for (int i = 0; i < bay.loc.size(); i++) {
+                    locString += ship.getLocationAbbr(bay.loc.get(i));
+                    if (i + 1 < bay.loc.size()) {
+                        locString += "/";
+                    }
+                }
+                String nameString;
+                if (bay.weaponAmmo.containsKey(wtype)) {
+                    Mounted ammo = bay.weaponAmmo.get(wtype);
+                    nameString = wtype.getName() + " (" + ammo.getBaseShotsLeft() + " rounds)";
+                } else {
+                    nameString = wtype.getName();
+                }
+                if (first & numBayWeapons > 1) {
+                    nameString += ",";
+                }
+                addWeaponText(first, bay.weapons.get(wtype), nameString, isCapital,
+                        locString, bayHeat, new double[] { baySRV, bayMRV, bayLRV, bayERV },
+                        new double[] { standardBaySRV, standardBayMRV, standardBayLRV, standardBayERV });
+                first = false;
+            }
+        }
+        
+        void addWeaponText(boolean first, int num, String name, boolean isCapital,
+                String loc, int bayHeat, double[] capitalAV, double[] standardAV) {
+            String srvTxt, mrvTxt, lrvTxt, ervTxt;
+            String slSRV, slMRV, slLRV, slERV;
+            slSRV = slMRV = slLRV = slERV = "";
+            boolean secondLine = false;
+            if (isCapital) { // Print out capital damage for weapon total
+                srvTxt = capitalAV[0] == 0 ? "-" : (int)capitalAV[0] + "";
+                mrvTxt = capitalAV[1] == 0 ? "-" : (int)capitalAV[1] + "";
+                lrvTxt = capitalAV[2] == 0 ? "-" : (int)capitalAV[2] + "";
+                ervTxt = capitalAV[3] == 0 ? "-" : (int)capitalAV[3] + "";
+            } else { // Print out capital and standard damages
+                if (standardAV[0] >= 100 && standardAV[1] >= 100) {
+                    secondLine = true;
+                    srvTxt = capitalAV[0] == 0 ? "-" : (int)capitalAV[0] + "";
+                    mrvTxt = capitalAV[1] == 0 ? "-" : (int)capitalAV[1] + "";
+                    lrvTxt = capitalAV[2] == 0 ? "-" : (int)capitalAV[2] + "";
+                    ervTxt = capitalAV[3] == 0 ? "-" : (int)capitalAV[3] + "";
+                    slSRV =  capitalAV[0] == 0 ? "" : " (" + standardAV[0] + ")";
+                    slMRV =  capitalAV[1] == 0 ? "" : " (" + standardAV[1] + ")";
+                    slLRV =  capitalAV[2] == 0 ? "" : " (" + standardAV[2] + ")";
+                    slERV =  capitalAV[3] == 0 ? "" : " (" + standardAV[3] + ")";
+                } else {
+                    srvTxt = capitalAV[0] == 0 ? "-" : (int)capitalAV[0] + " (" + (int) standardAV[0] + ")";
+                    mrvTxt = capitalAV[1] == 0 ? "-" : (int)capitalAV[1] + " (" + (int) standardAV[1] + ")";
+                    lrvTxt = capitalAV[2] == 0 ? "-" : (int)capitalAV[2] + " (" + (int) standardAV[2] + ")";
+                    ervTxt = capitalAV[3] == 0 ? "-" : (int)capitalAV[3] + " (" + (int) standardAV[3] + ")";
+                }
+            }
+            String nameString = num + "  " + name;
+            String heatTxt;
+            int localNameX = nameX;
+            if (!first) {
+                localNameX += indent;
+                loc = "";
+                heatTxt = "";
+                srvTxt = mrvTxt = lrvTxt = ervTxt = "";
+            } else {
+                heatTxt = String.valueOf(bayHeat);
+            }
+
+            addTextElement(canvas, localNameX, currY, nameString, fontSize, "start", "normal");
+            addTextElement(canvas, locX, currY, loc,     fontSize, "middle", "normal");
+            addTextElement(canvas, htX,  currY, heatTxt, fontSize, "middle", "normal");
+            addTextElement(canvas, srvX, currY, srvTxt,  fontSize, "middle", "normal");
+            addTextElement(canvas, mrvX, currY, mrvTxt,  fontSize, "middle", "normal");
+            addTextElement(canvas, lrvX, currY, lrvTxt,  fontSize, "middle", "normal");
+            addTextElement(canvas, ervX, currY, ervTxt,  fontSize, "middle", "normal");
+            currY += lineHeight;
+            if (secondLine) {
+                addTextElement(canvas, srvX, currY, slSRV,  fontSize, "middle", "normal");
+                addTextElement(canvas, mrvX, currY, slMRV,  fontSize, "middle", "normal");
+                addTextElement(canvas, lrvX, currY, slLRV,  fontSize, "middle", "normal");
+                addTextElement(canvas, ervX, currY, slERV,  fontSize, "middle", "normal");
+                currY += lineHeight;
+            }
+        }
     }
 }

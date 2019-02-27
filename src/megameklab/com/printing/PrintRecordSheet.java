@@ -72,6 +72,7 @@ import megameklab.com.MegaMekLab;
 public abstract class PrintRecordSheet implements Printable {
     
     final static float DEFAULT_PIP_SIZE  = 0.38f;
+    final static float FONT_SIZE_LARGE   = 7.2f;
     final static float FONT_SIZE_MEDIUM  = 6.76f;
     final static float FONT_SIZE_SMALL   = 6.2f;
     final static float FONT_SIZE_VSMALL  = 5.8f;
@@ -88,7 +89,7 @@ public abstract class PrintRecordSheet implements Printable {
         }
     }
 
-    public final String svgNS = SVGDOMImplementation.SVG_NAMESPACE_URI;
+    public final static String svgNS = SVGDOMImplementation.SVG_NAMESPACE_URI;
     private final int firstPage;
     protected final RecordSheetOptions options;
     private Document svgDocument;
