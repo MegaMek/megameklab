@@ -433,6 +433,8 @@
          font-size="9.0413px"
          transform="matrix(1 0 0 -1 495.59 753.17)"
          font-family="Eurostile"
+         textLength="81.6"
+         lengthAdjust="spacingAndGlyphs"
          fill="#ffffff">
         <tspan
            id="tspan3595"
@@ -3845,16 +3847,16 @@
          id="dsCapacity"
          style="text-anchor:middle"
          x="114.44"
-         y="174">0</text>
+         y="172">0</text>
       <text
          id="fighters"
          style="text-anchor:end"
          x="112.7085"
-         y="184.7889">0</text>
+         y="186">0</text>
       <text
          id="smallCraft"
          x="121.86"
-         y="184.7889">0</text>
+         y="186">0</text>
       <text
          id="tonnage"
          x="182.74719"
@@ -3871,7 +3873,7 @@
          id="launchRate"
          style="text-anchor:middle"
          x="200.49"
-         y="184.7889">0</text>
+         y="186">0</text>
       <text
          id="textThresholdArmor_NOS"
          style="text-anchor:middle"
