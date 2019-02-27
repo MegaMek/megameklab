@@ -14,8 +14,14 @@
 package megameklab.com.printing;
 
 import java.awt.Graphics2D;
+import java.awt.geom.Rectangle2D;
 import java.awt.print.PageFormat;
 import java.util.List;
+
+import org.apache.batik.util.SVGConstants;
+import org.w3c.dom.Element;
+import org.w3c.dom.svg.SVGElement;
+import org.w3c.dom.svg.SVGRectElement;
 
 import megamek.common.ASFBay;
 import megamek.common.Aero;
@@ -27,6 +33,8 @@ import megamek.common.Transporter;
 import megamek.common.UnitType;
 import megamek.common.Warship;
 import megameklab.com.ui.Aero.Printing.PrintWarship.PrintType;
+import megameklab.com.ui.Aero.Printing.PrintWarship.WarshipPrintElements;
+import megameklab.com.MegaMekLab;
 import megameklab.com.ui.Aero.Printing.WeaponBayText;
 
 /**
@@ -38,6 +46,18 @@ import megameklab.com.ui.Aero.Printing.WeaponBayText;
  */
 public class PrintCapitalShip extends PrintEntity {
     
+    public static final double ARMOR_PIP_WIDTH = 4.5;
+    public static final double ARMOR_PIP_HEIGHT = 4.5;
+    
+    public static final double ARMOR_PIP_WIDTH_SMALL = 2.25;
+    public static final double ARMOR_PIP_HEIGHT_SMALL = 2.25;
+
+    public static final int IS_PIP_WIDTH = 3;
+    public static final int IS_PIP_HEIGHT = 3;
+
+    public static final int PIPS_PER_ROW = 10;
+    public static final int MAX_PIP_ROWS = 10;
+
     /**
      * The ship being printed
      */
@@ -173,9 +193,116 @@ public class PrintCapitalShip extends PrintEntity {
                     String.format("%d (%d)", ship.getThresh(loc), ship.getOArmor(loc)));
         }
         setTextField("siText", ship.get0SI());
+        printInternalRegion("siPips", ship.get0SI(), 100);
         setTextField("kfText", ship.getKFIntegrity());
+        printInternalRegion("kfPips", ship.getKFIntegrity(), 30);
         setTextField("sailText", ship.getSailIntegrity());
+        printInternalRegion("sailPips", ship.getSailIntegrity(), 10);
         setTextField("dcText", ship.getDockingCollars().size());
+        printInternalRegion("dcPips", ship.getDockingCollars().size(), 10);
         drawArmorStructurePips();
+    }
+
+    /**
+     * Print pips for some internal structure region.
+     *
+     * @param rectId       The id of the rectangle element that describes the outline of the region to print pips
+     * @param structure    The number of structure pips
+     * @param pipsPerBlock The maximum number of pips to draw in a single block
+     */
+    private void printInternalRegion(String rectId, int structure, int pipsPerBlock) {
+        Element element = getSVGDocument().getElementById(rectId);
+        if ((null != element) && (element instanceof SVGRectElement)) {
+            printInternalRegion((SVGRectElement) element, structure, pipsPerBlock);
+        } else {
+            MegaMekLab.getLogger().error(getClass(), "printInternalRegion(String, int, int)",
+                    "Element with " + rectId + " is not SVGRectElement");
+        }
+    }
+
+    /**
+     * Print pips for some internal structure region.
+     *
+     * @param svgRect      The rectangle that describes the outline of the region to print pips
+     * @param structure    The number of structure pips
+     * @param pipsPerBlock The maximum number of pips to draw in a single block
+     */
+    private void printInternalRegion(SVGRectElement svgRect, int structure, int pipsPerBlock) {
+        Rectangle2D bbox = getRectBBox(svgRect);
+
+        // Print in two blocks
+        if (structure > pipsPerBlock) {
+            // Block 1
+            int pips = structure / 2;
+            int startX, startY;
+            double aspectRatio = (bbox.getWidth() / bbox.getHeight());
+            if (aspectRatio >= 1) { // Landscape - 2 columns
+                startX = (int) bbox.getX() + (int) (bbox.getWidth() / 4 + 0.5) - (PIPS_PER_ROW * IS_PIP_WIDTH / 2);
+                startY = (int) bbox.getY() + IS_PIP_HEIGHT;
+            } else { // Portrait - stacked 1 atop another
+                startX = (int) bbox.getX() + (int) (bbox.getWidth() / 2 + 0.5) - (PIPS_PER_ROW * IS_PIP_WIDTH / 2);
+                startY = (int) bbox.getY() + IS_PIP_HEIGHT;
+            }
+            printPipBlock(startX, startY, (SVGElement) svgRect.getParentNode(), pips,
+                    IS_PIP_WIDTH, IS_PIP_HEIGHT, "white");
+
+            // Block 2
+            if (aspectRatio >= 1) { // Landscape - 2 columns
+                startX = (int) bbox.getX() + (int) (3 * bbox.getWidth() / 4 + 0.5) - (PIPS_PER_ROW * IS_PIP_WIDTH / 2);
+            } else { // Portrait - stacked 1 atop another
+                startY = (int) bbox.getY() + IS_PIP_HEIGHT * (pips / PIPS_PER_ROW + 1);
+            }
+            pips = (int) Math.ceil(structure / 2.0);
+            printPipBlock(startX, startY, (SVGElement) svgRect.getParentNode(), pips,
+                    IS_PIP_WIDTH, IS_PIP_HEIGHT, "white");
+        } else { // Print in one block
+            int startX = (int) bbox.getX() + (int) (bbox.getWidth() / 2 + 0.5) - (PIPS_PER_ROW * IS_PIP_WIDTH / 2);
+            int startY = (int) bbox.getY() + IS_PIP_HEIGHT;
+            printPipBlock(startX, startY, (SVGElement) svgRect.getParentNode(), structure,
+                    IS_PIP_WIDTH, IS_PIP_HEIGHT, "white");
+        }
+    }
+
+    /**
+     * Helper function to print a armor pip block. Can print up to 100 points of
+     * armor. Any unprinted armor pips are returned.
+     *
+     * @param startX
+     * @param startY
+     * @param parent
+     * @param numPips
+     * @return The Y location of the end of the block
+     * @throws SVGException
+     */
+    private int printPipBlock(double startX, double startY, SVGElement parent, int numPips, double pipWidth,
+            double pipHeight, String fillColor) {
+
+        double currX, currY;
+        currY = startY;
+        for (int row = 0; row < 10; row++) {
+            int numRowPips = Math.min(numPips, PIPS_PER_ROW);
+            // Adjust row start if it's not a complete row
+            currX = startX + ((10 - numRowPips) / 2f * pipWidth + 0.5);
+            for (int col = 0; col < numRowPips; col++) {
+                Element box = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_RECT_TAG);
+                box.setAttributeNS(null, SVGConstants.SVG_X_ATTRIBUTE, String.valueOf(currX));
+                box.setAttributeNS(null, SVGConstants.SVG_Y_ATTRIBUTE, String.valueOf(currY));
+                box.setAttributeNS(null, SVGConstants.SVG_WIDTH_ATTRIBUTE, String.valueOf(pipWidth));
+                box.setAttributeNS(null, SVGConstants.SVG_HEIGHT_ATTRIBUTE, String.valueOf(pipHeight));
+                box.setAttributeNS(null, SVGConstants.SVG_STROKE_ATTRIBUTE, String.valueOf("#000000"));
+                box.setAttributeNS(null, SVGConstants.SVG_STROKE_WIDTH_ATTRIBUTE, String.valueOf(0.5));
+                box.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, fillColor);
+                parent.appendChild(box);
+
+                currX += pipWidth;
+                numPips--;
+                // Check to see if we're done
+                if (numPips <= 0) {
+                    return 0;
+                }
+            }
+            currY += pipHeight;
+        }
+        return numPips;
     }
 }
