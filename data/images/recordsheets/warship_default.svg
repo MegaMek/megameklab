@@ -437,7 +437,7 @@
         <tspan
            id="tspan3595"
            y="0"
-           x="0 6.4102817 12.9381 22.060772 28.525301 35.05312 38.262783 45.079922 47.575321 54.012726 60.585751 67.113571 73.56002">ARMOR DIAGRAM</tspan>
+           x="0">ARMOR DIAGRAM</tspan>
       </text>
       <g
          id="g3597"
@@ -2584,14 +2584,11 @@
           <tspan
              id="tspan5481"
              y="0"
-             x="0 4.2734976 6.3710675 8.9327555 11.054435 15.59917 19.149368 24.718777 28.268974 31.84931 35.284985 37.406666 40.944809 44.549252 47.442451 50.878128 54.235443 57.83989 61.347897 62.866825">Aft Damage Threshold</tspan>
+             x="0">Aft Damage Threshold</tspan>
           <tspan
              id="tspan5483"
              y="7.2329998"
-             x="13.435298 15.532867 18.558672 22.066677 24.628365 28.178562 29.697493 31.819172 36.09267 38.979843 44.549252 48.057259 50.89621">(Total Armor)</tspan>
-          <tspan
-             id="tspan5485"
-             x="33.235634 45.941605" />
+             x="13.435298">(Total Armor)</tspan>
         </text>
         <text
            id="text5495"
@@ -2599,14 +2596,11 @@
           <tspan
              id="tspan5497"
              y="0"
-             x="0 4.9847426 8.4927473 11.850065 15.28574 17.407419 21.952154 25.502352 31.071762 34.62196 38.202293 41.63797 43.759651 47.297794 50.902237 53.795437 57.231113 60.588428 64.192879 67.700882 69.21981">Nose Damage Threshold</tspan>
+             x="0">Nose Damage Threshold</tspan>
           <tspan
              id="tspan5499"
              y="7.2329998"
-             x="16.617817 18.715387 21.741192 25.249197 27.810884 31.361082 32.880013 35.001694 39.275188 42.162361 47.731773 51.239777 54.078732">(Total Armor)</tspan>
-          <tspan
-             id="tspan5501"
-             x="38.515724 49.124126" />
+             x="16.617817">(Total Armor)</tspan>
         </text>
         <text
            id="text5511"
@@ -2616,14 +2610,11 @@
           <tspan
              id="tspan5513"
              y="-332.23584"
-             x="509.28308 513.55658 515.65417 518.21582 519.81915 524.17102 525.59351 529.17383 532.77826 535.33997 537.46167 542.00641 545.55658 551.12598 554.67621 558.25653">Aft-Right Damage</tspan>
+             x="509.28308">Aft-Right Damage</tspan>
           <tspan
              id="tspan5515"
              y="-325.00284"
-             x="500.13333 503.67148 507.27594 510.16312 513.59875 516.95612 520.56055 524.06854 525.58746 529.1618 531.28345 533.38104 536.40686 539.91486 542.47656 546.02673 547.54565 549.66736 553.94086 556.83405 562.40344 565.91144 568.75043">Threshold (Total Armor)</tspan>
-          <tspan
-             id="tspan5517"
-             x="535.50873 548.21472" />
+             x="500.13333">Threshold (Total Armor)</tspan>
         </text>
         <text
            id="text5527"
@@ -2633,14 +2624,11 @@
           <tspan
              id="tspan5529"
              y="-332.23584"
-             x="274.93768 279.21118 281.30875 283.87045 285.47375 288.8793 292.31497 294.41254 296.97424 299.09592 303.64066 307.19083 312.76025 316.31046 319.89078">Aft-Left Damage</tspan>
+             x="274.93768">Aft-Left Damage</tspan>
           <tspan
              id="tspan5531"
              y="-325.00284"
-             x="263.78079 267.31894 270.92337 273.81055 277.24622 280.60355 284.20798 287.716 289.23492 292.80923 294.93091 297.02847 300.05429 303.56229 306.12396 309.67416 311.19312 313.31479 317.58829 320.48148 326.0509 329.5589 332.39786">Threshold (Total Armor)</tspan>
-          <tspan
-             id="tspan5533"
-             x="299.15619 311.86215" />
+             x="263.78079">Threshold (Total Armor)</tspan>
         </text>
         <text
            id="text5543"
@@ -2650,14 +2638,11 @@
           <tspan
              id="tspan5545"
              y="-659.742"
-             x="507.0806 510.58859 514.09662 516.98376 520.41943 522.02277 526.37463 527.79712 531.37744 534.98187 537.54358 539.66528 544.20996 547.76019 553.32959 556.87982 560.46014">Fore-Right Damage</tspan>
+             x="507.0806">Fore-Right Damage</tspan>
           <tspan
              id="tspan5547"
              y="-652.50897"
-             x="500.13089 503.66904 507.27347 510.16064 513.59631 516.95361 520.55811 524.0661 525.58502 529.1593 531.28101 533.3786 536.40436 539.91235 542.47406 546.02429 547.54321 549.66486 553.93835 556.8316 562.401 565.909 568.74792">Threshold (Total Armor)</tspan>
-          <tspan
-             id="tspan5549"
-             x="535.50629 548.21228" />
+             x="500.13089">Threshold (Total Armor)</tspan>
         </text>
         <text
            id="text5559"
@@ -2667,15 +2652,11 @@
           <tspan
              id="tspan5561"
              y="-659.742"
-             x="272.73529 276.24329 279.75131 282.63846 286.07416 287.67746 291.08301 294.51868 296.61624 299.17792 301.29962 305.84436 309.39453 314.96396 318.51416 322.09448">Fore-Left Damage</tspan>
+             x="272.73529">Fore-Left Damage</tspan>
           <tspan
              id="tspan5563"
              y="-652.50897"
-             x="263.77841 267.31656 270.92102 273.8082 277.24387 280.60117 284.20563 287.71362 289.23254 292.80685 294.92856 297.02612 300.05191 303.55994 306.12161 309.67181 311.19073 313.31241 317.58591 320.47913 326.04852 329.55652 332.39548">Threshold (Total Armor)</tspan>
-          <tspan
-             id="tspan5565"
-             y="-645.276 -645.276 -645.276 -645.276 -645.276 -645.276 -645.276 -645.276 -645.276 -645.276 -645.276 -645.276"
-             x="284.30206 284.30206 284.30206 284.30206 284.30206 284.30206 284.30206 284.30206 284.30206 284.30206 284.30206 284.30206 299.15381 301.2514 311.8598" />
+             x="263.77841">Threshold (Total Armor)</tspan>
         </text>
       </g>
     </g>
@@ -3795,35 +3776,34 @@
            fill="#c8c7c7" />
       </g>
       <text
-         id="text37725"
          font-size="8.0367px"
-         transform="matrix(1 0 0 -1 395.6 552.82)"
+         transform="matrix(1 0 0 -1 416.685 552.82)"
          font-family="Eurostile"
          fill="#231f20">
         <tspan
-           id="tspan37727"
+           style="text-anchor:middle"
            y="0"
-           x="0 5.408699 8.824297 12.673876 17.439638 21.867861 25.283459 30.049221 33.834507 38.568123">Structural</tspan>
+           x="0">Structural</tspan>
         <tspan
-           id="tspan37729"
+           style="text-anchor:middle"
            y="8.0367002"
-           x="2.4913771 4.709506 9.5154524 12.93105 17.511969 22.285769 26.071054 27.967716 31.383314 35.281113">Integrity:</tspan>
+           x="0">Integrity:</tspan>
         <tspan
-           id="tspan37731"
+           style="text-anchor:middle"
            y="103.2716"
-           x="-5.9551945 -0.54649562 4.1871209 6.0837817 8.1090307 10.937948 13.156078 17.962025 21.377623 25.958542 30.73234 34.517628 36.414288 39.829884 43.727684">Sail Integrity:</tspan>
+           x="0">Sail Integrity:</tspan>
         <tspan
-           id="tspan37733"
+           style="text-anchor:middle"
            y="58.37859"
-           x="2.4672668 8.2135077 10.35127 15.028629 17.857548 23.917219 27.702505 29.599167 33.545185">K-F Drive</tspan>
+           x="0">K-F Drive</tspan>
         <tspan
-           id="tspan37735"
+           style="text-anchor:middle"
            y="66.415291"
-           x="2.4913771 4.709506 9.5154524 12.93105 17.511969 22.285769 26.071054 27.967716 31.383314 35.281113">Integrity:</tspan>
+           x="0">Integrity:</tspan>
         <tspan
-           id="tspan37737"
+           style="text-anchor:middle"
            y="127.47814"
-           x="-11.669289 -5.6096168 -0.93225718 3.4959645 7.8277459 9.7244072 14.530354 19.304153 22.133072 27.726616 32.403973 34.429222 36.454472 41.188087 44.973373 49.449814">Docking Collars:</tspan>
+           x="0">Docking Collars:</tspan>
       </text>
     </g>
   </g>
@@ -3895,53 +3875,35 @@
          x="200.49"
          y="184.7889">0</text>
       <text
-         id="flArmorText"
-         style="word-spacing:0px;letter-spacing:0px"
-         xml:space="preserve"
-         transform="scale(1.0236 .97692)"
-         y="144.13451"
-         x="286.25861"
-         line-height="125%">0 (0)</text>
+         id="textThresholdArmor_NOS"
+         style="text-anchor:middle"
+         x="448.26"
+         y="66.158">0 (0)</text>
       <text
-         id="noseArmorText"
-         style="word-spacing:0px;letter-spacing:0px"
-         xml:space="preserve"
-         transform="scale(1.0236 .97692)"
-         y="67.721008"
-         x="434.31021"
-         line-height="125%">0 (0)</text>
+         id="textThresholdArmor_FRS"
+         style="text-anchor:middle"
+         x="551.474"
+         y="140.809">0 (0)</text>
       <text
-         id="frArmorText"
-         style="word-spacing:0px;letter-spacing:0px"
-         xml:space="preserve"
-         transform="scale(1.0236 .97692)"
-         y="144.13451"
-         x="538.74109"
-         line-height="125%">0 (0)</text>
+         id="textThresholdArmor_FLS"
+         style="text-anchor:middle"
+         x="293.039"
+         y="140.809">0 (0)</text>
       <text
-         id="arArmorText"
-         style="word-spacing:0px;letter-spacing:0px"
-         xml:space="preserve"
-         transform="scale(1.0236 .97692)"
-         y="488.27719"
-         x="536.62598"
-         line-height="125%">0 (0)</text>
+         id="textThresholdArmor_ARS"
+         style="text-anchor:middle"
+         x="549.31"
+         y="477.01">0 (0)</text>
       <text
-         id="aftArmorText"
-         style="word-spacing:0px;letter-spacing:0px"
-         xml:space="preserve"
-         transform="scale(1.0236 .97692)"
-         y="517.20636"
-         x="520.4549"
-         line-height="125%">0 (0)</text>
+         id="textThresholdArmor_ALS"
+         style="text-anchor:middle"
+         x="296.11"
+         y="477.01">0 (0)</text>
       <text
-         id="alArmorText"
-         style="word-spacing:0px;letter-spacing:0px"
-         xml:space="preserve"
-         transform="scale(1.0236 .97692)"
-         y="488.27719"
-         x="283.34454"
-         line-height="125%">0 (0)</text>
+         id="textThresholdArmor_AFT"
+         style="text-anchor:middle"
+         x="538.85"
+         y="505.27">0 (0)</text>
     </g>
     <g
        font-size="9.8668px"
@@ -3949,36 +3911,24 @@
        id="g900">
       <text
          id="siText"
-         style="word-spacing:0px;letter-spacing:0px;text-anchor:middle"
-         xml:space="preserve"
-         transform="scale(1.0236 .97692)"
-         line-height="125%"
-         y="259.25717"
-         x="418.22305">0</text>
+         style="text-anchor:middle"
+         x="428.093"
+         y="253.27">0</text>
       <text
          id="kfText"
-         style="word-spacing:0px;letter-spacing:0px;text-anchor:middle"
-         xml:space="preserve"
-         transform="scale(1.0236 .97692)"
-         line-height="125%"
-         y="320.46405"
-         x="418.22305">0</text>
+         style="text-anchor:middle"
+         x="428.093"
+         y="313">0</text>
       <text
          id="sailText"
-         style="word-spacing:0px;letter-spacing:0px;text-anchor:middle"
-         xml:space="preserve"
-         transform="scale(1.0236 .97692)"
-         line-height="125%"
-         y="358.00424"
-         x="418.22305">0</text>
+         style="text-anchor:middle"
+         x="428.093"
+         y="349.74">0</text>
       <text
          id="dcText"
-         style="word-spacing:0px;letter-spacing:0px;text-anchor:middle"
-         xml:space="preserve"
-         transform="scale(1.0236 .97692)"
-         line-height="125%"
-         y="384.49875"
-         x="418.22305">0</text>
+         style="text-anchor:middle"
+         x="428.093"
+         y="375.62">0</text>
     </g>
     <g
        font-size="7.4001px"

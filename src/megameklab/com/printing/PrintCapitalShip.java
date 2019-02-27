@@ -165,4 +165,17 @@ public class PrintCapitalShip extends PrintEntity {
                     + " / " + ship.getHeatInArc(Warship.LOC_LBS, false));
         }
     }
+    
+    @Override
+    protected void drawArmor() {
+        for (int loc = firstArmorLocation(); loc < Jumpship.LOC_HULL; loc++) {
+            setTextField("textThresholdArmor_" + getEntity().getLocationAbbr(loc),
+                    String.format("%d (%d)", ship.getThresh(loc), ship.getOArmor(loc)));
+        }
+        setTextField("siText", ship.get0SI());
+        setTextField("kfText", ship.getKFIntegrity());
+        setTextField("sailText", ship.getSailIntegrity());
+        setTextField("dcText", ship.getDockingCollars().size());
+        drawArmorStructurePips();
+    }
 }
