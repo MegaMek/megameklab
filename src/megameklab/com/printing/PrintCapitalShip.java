@@ -295,136 +295,55 @@ public class PrintCapitalShip extends PrintEntity {
         double pipWidth = ARMOR_PIP_WIDTH;
         double pipHeight = ARMOR_PIP_HEIGHT;;
 
-        int halfBlockHeight = (int) ((MAX_PIP_ROWS * pipHeight / 2f) + 0.5);
-        int halfBlockWidth = (int) ((PIPS_PER_ROW * pipWidth / 2f) + 0.5);
+        // Size of each block include 0.5 pip margin on each side
+        double blockHeight = (MAX_PIP_ROWS + 1) * pipHeight;
+        double blockWidth = (PIPS_PER_ROW + 1) * pipWidth;
 
-        // Armor comes in blocks of 100 pips
-        int numBlocks = (int) Math.ceil(armor / 100f);
-        double aspectRatio = bbox.getWidth() / bbox.getHeight();
-        double startX, startY;
-        // If we have a large number of blocks, we need to shrinke the size
-        if (numBlocks > 6) {
-            pipWidth = ARMOR_PIP_WIDTH_SMALL;
-            pipHeight = ARMOR_PIP_HEIGHT_SMALL;
-            halfBlockHeight = (int) ((MAX_PIP_ROWS * pipHeight / 2f) + 0.5);
-            halfBlockWidth = (int) ((PIPS_PER_ROW * pipWidth / 2f) + 0.5);
-
-            // Two columns, because we have at least 7 blocks
-            int colBreak;
-            if (numBlocks < 8) {
-                colBreak = 3;
-            } else if (numBlocks < 10) {
-                colBreak = 4;
-            } else {
-                colBreak = 5;
+        int numBlocks = (int) Math.ceil((float) armor / (MAX_PIP_ROWS * PIPS_PER_ROW));
+        int rows = 1;
+        int cols = 1;
+        if (bbox.getWidth() > bbox.getHeight()) {
+            // landscape; as many columns as needed to fit everything in one or two rows
+            cols = numBlocks;
+            if (numBlocks * blockWidth > bbox.getWidth()) {
+                rows++;
+                cols = (numBlocks + 1) / 2;
             }
-            
-            if (aspectRatio >= 1) { // Landscape
-                startX = bbox.getX();
-                startY = bbox.getY() + (bbox.getHeight() * 0.25);
-            } else { // Portrait
-                startX = bbox.getX() + (bbox.getWidth() * 0.25);
-                startY = bbox.getY();    
+        } else {
+            // portrait; as many rows as needed to fit everything in one or two columns
+            rows = numBlocks;
+            if (numBlocks * blockHeight > bbox.getHeight()) {
+                cols++;
+                rows = (numBlocks + 1) / 2;
             }
-            int count = 0;
-            while (armor > 0) {
-                armor = printPipBlock(startX, startY, (SVGElement) svgRect.getParentNode(),
+        }
+        // Check the ration of the space required to space available. If either exceeds, scale both
+        // dimensions down equally to fit.
+        double ratio = Math.max(rows * blockHeight / bbox.getHeight(), cols * blockWidth / bbox.getWidth());
+        if (ratio > 1.0) {
+            pipHeight /= ratio;
+            pipWidth /= ratio;
+            blockHeight /= ratio;
+            blockWidth /= ratio;
+        }
+        // Center horizontally and vertically in the space
+        final double startX = bbox.getX() + (bbox.getWidth() - blockWidth * cols) / 2.0;
+        final double startY = bbox.getY() + (bbox.getHeight() - blockHeight * rows) / 2.0;
+        double xpos = startX;
+        double ypos = startY;
+        int remainingBlocks = numBlocks;
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                armor = printPipBlock(xpos, ypos, (SVGElement) svgRect.getParentNode(),
                         armor, pipWidth, pipHeight, "none");
-                count++;
-                if (aspectRatio >= 1) { // Landscape
-                    // Have last block in middle
-                    if ((armor <= 100) && ((numBlocks % 2) == 1)) {
-                        startY = bbox.getY() + (bbox.getHeight() * 0.25) + halfBlockHeight + pipHeight;
-                        startX += (PIPS_PER_ROW + 1) * pipWidth; 
-                    } else if (count == colBreak) { // Check for start of new column
-                        startY += (MAX_PIP_ROWS + 1) * pipHeight;
-                        startX = bbox.getX();
-                    } else {
-                        startX += (PIPS_PER_ROW + 1) * pipWidth;
-                    }
-                } else { // Portrait
-                    // Have last block in middle
-                    if ((armor <= 100) && ((numBlocks % 2) == 1)) {
-                        startX = bbox.getX() + (bbox.getWidth() * 0.25) + halfBlockWidth + pipWidth;
-                        startY += (MAX_PIP_ROWS + 1) * pipHeight;
-                    } else if (count == colBreak) { // Check for start of new column
-                        startX += (PIPS_PER_ROW + 1) * pipWidth;
-                        startY = bbox.getY();
-                    } else {
-                        startY += (MAX_PIP_ROWS + 1) * pipHeight;
-                    }
-                }
-            }            
-        } else if (numBlocks <= 3) { // Use a single column if we only have a small number blocks
-            if (aspectRatio >= 1) { // Landscape
-                if (numBlocks == 1) {
-                    startX = bbox.getX() + (bbox.getWidth() * 0.5) - halfBlockWidth;
-                } else if (numBlocks == 2) { // Center blocks if we have an even
-                                             // number
-                    startX = bbox.getX() + (bbox.getWidth() * 0.333) - halfBlockWidth;
-                } else {
-                    startX = bbox.getX();
-                }
-                startY = (int) bbox.getY() + (bbox.getHeight() / 2 + 0.5) - halfBlockHeight;
-            } else { // Portrait
-                startX = (int) bbox.getX() + (bbox.getWidth() / 2 + 0.5) - halfBlockWidth;
-                if (numBlocks == 1) {
-                    startY =  bbox.getY() + (bbox.getHeight() * 0.33) - halfBlockHeight;
-                } else if (numBlocks == 2) { // Center blocks if we have an even number
-                    startY = bbox.getY() + (bbox.getHeight() * 0.5) - halfBlockHeight;
-                } else {
-                    startY = bbox.getY();
-                }
+                remainingBlocks--;
+                xpos += blockWidth;
             }
-            while (armor > 0) {
-                armor = printPipBlock(startX, startY, (SVGElement) svgRect.getParentNode(),
-                        armor, pipWidth, pipHeight,
-                        "none");
-                if (aspectRatio >= 1) { // Landscape
-                    startX += (PIPS_PER_ROW + 1) * pipWidth;
-                } else { // Portrait
-                    startY += (MAX_PIP_ROWS + 1) * pipHeight;
-                }
-            }
-        } else { // Double column layout
-            int colBreak;
-            if (numBlocks < 6) {
-                colBreak = 2;
-            } else {
-                colBreak = 3;
-            }
-            startX = bbox.getX();
-            startY = bbox.getY();
-            int count = 0;
-            while (armor > 0) {
-                armor = printPipBlock(startX, startY, (SVGElement) svgRect.getParentNode(),
-                        armor, pipWidth, pipHeight, "none");
-                count++;
-                if (aspectRatio >= 1) { // Landscape
-                    // Have last block in middle
-                    if ((armor <= 100) && (numBlocks == 5)) {
-                        startY = bbox.getY() + (bbox.getHeight() * 0.5) - halfBlockHeight;
-                    }
-                    // Check for start of new column
-                    if (count == colBreak) {
-                        startY = bbox.getY() + (MAX_PIP_ROWS + 1) * pipHeight;
-                        startX = bbox.getX();
-                    } else {
-                        startX += (PIPS_PER_ROW + 1) * pipWidth;
-                    }
-                } else { // Portrait
-                    // Have last block in middle
-                    if ((armor <= 100) && (numBlocks == 5)) {
-                        startX = bbox.getX() + (bbox.getWidth() * 0.5) - halfBlockWidth;
-                    }
-                    // Check for start of new column
-                    if (count == colBreak) {
-                        startX = bbox.getX() + (PIPS_PER_ROW + 1) * pipWidth;
-                        startY = bbox.getY();
-                    } else {
-                        startY += (MAX_PIP_ROWS + 1) * pipHeight;
-                    }
-                }
+            xpos = startX;
+            ypos += blockWidth;
+            // Check whether the last row is a short one.
+            if (remainingBlocks < cols) {
+                xpos += blockWidth / 2.0;
             }
         }
     }
