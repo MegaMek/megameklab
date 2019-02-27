@@ -23,6 +23,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGElement;
 import org.w3c.dom.svg.SVGRectElement;
 
+import com.kitfox.svg.Rect;
+import com.kitfox.svg.SVGException;
+
 import megamek.common.ASFBay;
 import megamek.common.Aero;
 import megamek.common.Entity;
@@ -175,13 +178,13 @@ public class PrintCapitalShip extends PrintEntity {
         setTextField("doubleHeatSinks", ship.getHeatType() == Aero.HEAT_DOUBLE ?
                 "(" + ship.getHeatSinks() * 2 + ")" : "");
         setTextField("noseHeat", ship.getHeatInArc(Jumpship.LOC_NOSE, false));
-        setTextField("foreHeat", ship.getHeatInArc(Jumpship.LOC_FRS, false)
-                + " / " + ship.getHeatInArc(Jumpship.LOC_FLS, false));
-        setTextField("aftSidesHeat", ship.getHeatInArc(Jumpship.LOC_ARS, false)
-                + " / " + ship.getHeatInArc(Jumpship.LOC_ALS, false));
+        setTextField("foreHeat", ship.getHeatInArc(Jumpship.LOC_FLS, false)
+                + " / " + ship.getHeatInArc(Jumpship.LOC_FRS, false));
+        setTextField("aftSidesHeat", ship.getHeatInArc(Jumpship.LOC_ALS, false)
+                + " / " + ship.getHeatInArc(Jumpship.LOC_ARS, false));
         setTextField("aftHeat", ship.getHeatInArc(Jumpship.LOC_AFT, false));
         if (ship instanceof Warship) {
-            setTextField("broadsidesHeat", ship.getHeatInArc(Warship.LOC_RBS, false)
+            setTextField("broadsideHeat", ship.getHeatInArc(Warship.LOC_RBS, false)
                     + " / " + ship.getHeatInArc(Warship.LOC_LBS, false));
         }
     }
@@ -193,14 +196,29 @@ public class PrintCapitalShip extends PrintEntity {
                     String.format("%d (%d)", ship.getThresh(loc), ship.getOArmor(loc)));
         }
         setTextField("siText", ship.get0SI());
-        printInternalRegion("siPips", ship.get0SI(), 100);
         setTextField("kfText", ship.getKFIntegrity());
-        printInternalRegion("kfPips", ship.getKFIntegrity(), 30);
         setTextField("sailText", ship.getSailIntegrity());
-        printInternalRegion("sailPips", ship.getSailIntegrity(), 10);
         setTextField("dcText", ship.getDockingCollars().size());
-        printInternalRegion("dcPips", ship.getDockingCollars().size(), 10);
         drawArmorStructurePips();
+    }
+    
+    @Override
+    protected void drawArmorStructurePips() {
+        printInternalRegion("siPips", ship.get0SI(), 100);
+        printInternalRegion("kfPips", ship.getKFIntegrity(), 30);
+        printInternalRegion("sailPips", ship.getSailIntegrity(), 10);
+        printInternalRegion("dcPips", ship.getDockingCollars().size(), 10);
+
+        for (int loc = ship.firstArmorIndex(); loc < Jumpship.LOC_HULL; loc++) {
+            final String id = "armorPips_" + ship.getLocationAbbr(loc);
+            Element element = getSVGDocument().getElementById(id);
+            if ((null != element) && (element instanceof SVGRectElement)) {
+                printArmorRegion((SVGRectElement) element, loc, ship.getOArmor(loc));
+            } else {
+                MegaMekLab.getLogger().error(getClass(), "drawArmorStructurePips()",
+                        "No SVGRectElement found with id " + id);
+            }
+        }
     }
 
     /**
@@ -216,7 +234,7 @@ public class PrintCapitalShip extends PrintEntity {
             printInternalRegion((SVGRectElement) element, structure, pipsPerBlock);
         } else {
             MegaMekLab.getLogger().error(getClass(), "printInternalRegion(String, int, int)",
-                    "Element with " + rectId + " is not SVGRectElement");
+                    "No SVGRectElement found with id " + rectId);
         }
     }
 
@@ -260,6 +278,154 @@ public class PrintCapitalShip extends PrintEntity {
             int startY = (int) bbox.getY() + IS_PIP_HEIGHT;
             printPipBlock(startX, startY, (SVGElement) svgRect.getParentNode(), structure,
                     IS_PIP_WIDTH, IS_PIP_HEIGHT, "white");
+        }
+    }
+
+    /**
+     * Method to determine rectangle grid for armor or internal pips and draw
+     * it.
+     *
+     * @param svgRect A rectangle that outlines the border of the space for the armor block.
+     * @param loc     The location index
+     * @param armor   The amount of armor in the location
+     */
+    private void printArmorRegion(SVGRectElement svgRect, int loc, int armor) {
+        Rectangle2D bbox = getRectBBox(svgRect);
+
+        double pipWidth = ARMOR_PIP_WIDTH;
+        double pipHeight = ARMOR_PIP_HEIGHT;;
+
+        int halfBlockHeight = (int) ((MAX_PIP_ROWS * pipHeight / 2f) + 0.5);
+        int halfBlockWidth = (int) ((PIPS_PER_ROW * pipWidth / 2f) + 0.5);
+
+        // Armor comes in blocks of 100 pips
+        int numBlocks = (int) Math.ceil(armor / 100f);
+        double aspectRatio = bbox.getWidth() / bbox.getHeight();
+        double startX, startY;
+        // If we have a large number of blocks, we need to shrinke the size
+        if (numBlocks > 6) {
+            pipWidth = ARMOR_PIP_WIDTH_SMALL;
+            pipHeight = ARMOR_PIP_HEIGHT_SMALL;
+            halfBlockHeight = (int) ((MAX_PIP_ROWS * pipHeight / 2f) + 0.5);
+            halfBlockWidth = (int) ((PIPS_PER_ROW * pipWidth / 2f) + 0.5);
+
+            // Two columns, because we have at least 7 blocks
+            int colBreak;
+            if (numBlocks < 8) {
+                colBreak = 3;
+            } else if (numBlocks < 10) {
+                colBreak = 4;
+            } else {
+                colBreak = 5;
+            }
+            
+            if (aspectRatio >= 1) { // Landscape
+                startX = bbox.getX();
+                startY = bbox.getY() + (bbox.getHeight() * 0.25);
+            } else { // Portrait
+                startX = bbox.getX() + (bbox.getWidth() * 0.25);
+                startY = bbox.getY();    
+            }
+            int count = 0;
+            while (armor > 0) {
+                armor = printPipBlock(startX, startY, (SVGElement) svgRect.getParentNode(),
+                        armor, pipWidth, pipHeight, "none");
+                count++;
+                if (aspectRatio >= 1) { // Landscape
+                    // Have last block in middle
+                    if ((armor <= 100) && ((numBlocks % 2) == 1)) {
+                        startY = bbox.getY() + (bbox.getHeight() * 0.25) + halfBlockHeight + pipHeight;
+                        startX += (PIPS_PER_ROW + 1) * pipWidth; 
+                    } else if (count == colBreak) { // Check for start of new column
+                        startY += (MAX_PIP_ROWS + 1) * pipHeight;
+                        startX = bbox.getX();
+                    } else {
+                        startX += (PIPS_PER_ROW + 1) * pipWidth;
+                    }
+                } else { // Portrait
+                    // Have last block in middle
+                    if ((armor <= 100) && ((numBlocks % 2) == 1)) {
+                        startX = bbox.getX() + (bbox.getWidth() * 0.25) + halfBlockWidth + pipWidth;
+                        startY += (MAX_PIP_ROWS + 1) * pipHeight;
+                    } else if (count == colBreak) { // Check for start of new column
+                        startX += (PIPS_PER_ROW + 1) * pipWidth;
+                        startY = bbox.getY();
+                    } else {
+                        startY += (MAX_PIP_ROWS + 1) * pipHeight;
+                    }
+                }
+            }            
+        } else if (numBlocks <= 3) { // Use a single column if we only have a small number blocks
+            if (aspectRatio >= 1) { // Landscape
+                if (numBlocks == 1) {
+                    startX = bbox.getX() + (bbox.getWidth() * 0.5) - halfBlockWidth;
+                } else if (numBlocks == 2) { // Center blocks if we have an even
+                                             // number
+                    startX = bbox.getX() + (bbox.getWidth() * 0.333) - halfBlockWidth;
+                } else {
+                    startX = bbox.getX();
+                }
+                startY = (int) bbox.getY() + (bbox.getHeight() / 2 + 0.5) - halfBlockHeight;
+            } else { // Portrait
+                startX = (int) bbox.getX() + (bbox.getWidth() / 2 + 0.5) - halfBlockWidth;
+                if (numBlocks == 1) {
+                    startY =  bbox.getY() + (bbox.getHeight() * 0.33) - halfBlockHeight;
+                } else if (numBlocks == 2) { // Center blocks if we have an even number
+                    startY = bbox.getY() + (bbox.getHeight() * 0.5) - halfBlockHeight;
+                } else {
+                    startY = bbox.getY();
+                }
+            }
+            while (armor > 0) {
+                armor = printPipBlock(startX, startY, (SVGElement) svgRect.getParentNode(),
+                        armor, pipWidth, pipHeight,
+                        "none");
+                if (aspectRatio >= 1) { // Landscape
+                    startX += (PIPS_PER_ROW + 1) * pipWidth;
+                } else { // Portrait
+                    startY += (MAX_PIP_ROWS + 1) * pipHeight;
+                }
+            }
+        } else { // Double column layout
+            int colBreak;
+            if (numBlocks < 6) {
+                colBreak = 2;
+            } else {
+                colBreak = 3;
+            }
+            startX = bbox.getX();
+            startY = bbox.getY();
+            int count = 0;
+            while (armor > 0) {
+                armor = printPipBlock(startX, startY, (SVGElement) svgRect.getParentNode(),
+                        armor, pipWidth, pipHeight, "none");
+                count++;
+                if (aspectRatio >= 1) { // Landscape
+                    // Have last block in middle
+                    if ((armor <= 100) && (numBlocks == 5)) {
+                        startY = bbox.getY() + (bbox.getHeight() * 0.5) - halfBlockHeight;
+                    }
+                    // Check for start of new column
+                    if (count == colBreak) {
+                        startY = bbox.getY() + (MAX_PIP_ROWS + 1) * pipHeight;
+                        startX = bbox.getX();
+                    } else {
+                        startX += (PIPS_PER_ROW + 1) * pipWidth;
+                    }
+                } else { // Portrait
+                    // Have last block in middle
+                    if ((armor <= 100) && (numBlocks == 5)) {
+                        startX = bbox.getX() + (bbox.getWidth() * 0.5) - halfBlockWidth;
+                    }
+                    // Check for start of new column
+                    if (count == colBreak) {
+                        startX = bbox.getX() + (PIPS_PER_ROW + 1) * pipWidth;
+                        startY = bbox.getY();
+                    } else {
+                        startY += (MAX_PIP_ROWS + 1) * pipHeight;
+                    }
+                }
+            }
         }
     }
 

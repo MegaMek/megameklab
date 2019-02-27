@@ -898,13 +898,11 @@
            font-size="8.0367px"
            transform="matrix(.99811 0 0 -1 404.58 93.589)">
           <tspan
-             id="tspan3861"
              y="0"
-             x="0 6.1802225 10.761141 15.494758 18.910355 21.739273 27.147972 29.044634 33.850582 38.182362 42.658802 62.68626 68.866486 73.447403 78.181015 81.596619 84.425537 90.268211 94.849136 99.655083 104.236 108.02129 112.7549 116.1705 118.06716 122.74452 127.55047 130.37938 135.89256 140.47348 144.25876 147.08768 152.78571 156.64333">Heat Sinks:Heat Generation Per Arc</tspan>
+             x="0">Heat Sinks:</tspan>
           <tspan
-             id="tspan3863"
-             x="0"
-             y="0" />
+             y="0"
+             x="62.68626">Heat Generation Per Arc</tspan>
         </text>
         <g
            font-size="6.0275px"
@@ -4036,37 +4034,37 @@
      fill="none"
      id="g929">
     <rect
-       id="noseArmorPips"
+       id="armorPips_NOS"
        height="95.447998"
        width="157.75999"
        y="68.529999"
        x="356" />
     <rect
-       id="flArmorPips"
+       id="armorPips_FLS"
        height="140.81"
        width="98.599"
        y="148.56"
        x="257.46" />
     <rect
-       id="alArmorPips"
+       id="armorPips_ALS"
        height="140.81"
        width="98.599"
        y="311.48"
        x="257.46" />
     <rect
-       id="frArmorPips"
+       id="armorPips_FRS"
        height="140.23"
        width="98.598999"
        y="149.14999"
        x="505" />
     <rect
-       id="arArmorPips"
+       id="armorPips_ARS"
        height="141.39999"
        width="98.598999"
        y="310.89001"
        x="505" />
     <rect
-       id="aftArmorPips"
+       id="armorPips_AFT"
        height="95.447998"
        width="157.75999"
        y="409.78"
