@@ -18,15 +18,21 @@ import java.awt.geom.Rectangle2D;
 import java.awt.print.PageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGElement;
 import org.w3c.dom.svg.SVGRectElement;
 
+import com.kitfox.svg.SVGException;
+
 import megamek.common.ASFBay;
 import megamek.common.Aero;
+import megamek.common.Bay;
 import megamek.common.Entity;
 import megamek.common.Jumpship;
 import megamek.common.Mounted;
@@ -38,6 +44,7 @@ import megamek.common.Warship;
 import megamek.common.WeaponType;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.Aero.Printing.WeaponBayText;
+import megameklab.com.ui.Aero.Printing.PrintWarship.PrintType;
 
 /**
  * Generates a record sheet image for jumpships, warships, and space stations.
@@ -59,6 +66,8 @@ public class PrintCapitalShip extends PrintEntity {
 
     public static final int PIPS_PER_ROW = 10;
     public static final int MAX_PIP_ROWS = 10;
+    
+    public static final float MIN_FONT_SIZE = 5.0f;
 
     /**
      * The ship being printed
@@ -432,20 +441,25 @@ public class PrintCapitalShip extends PrintEntity {
     
     @Override
     protected void writeEquipment(SVGRectElement svgRect) {
-        int lines = capitalWeaponLines + standardWeaponLines + 6;
+        int lines = capitalWeaponLines + standardWeaponLines
+                + ship.getGravDeck() + ship.getTransportId() + 6;
         InventoryWriter iw = new InventoryWriter(svgRect, lines);
         if (!capitalWeapTexts.isEmpty()) {
             iw.printCapitalHeader();
             for (WeaponBayText bay : capitalWeapTexts) {
                 iw.printWeaponBay(bay, true);
             }
+            iw.newLine();
         }
         if (!standardWeapTexts.isEmpty()) {
             iw.printStandardHeader();
             for (WeaponBayText bay : standardWeapTexts) {
                 iw.printWeaponBay(bay, false);
             }
+            iw.newLine();
         }
+        iw.printGravDecks();
+        iw.printCargoInfo();
     }
     
     private class InventoryWriter {
@@ -473,7 +487,7 @@ public class PrintCapitalShip extends PrintEntity {
             int viewWidth = (int) bbox.getWidth();
             
             if (lineHeight * lines >= bbox.getHeight() * 0.95) {
-                fontSize = (float) Math.max(4.0, fontSize * lineHeight * lines / bbox.getHeight() * 0.95);
+                fontSize = (float) Math.max(MIN_FONT_SIZE, fontSize * bbox.getHeight() / (lineHeight * lines) * 0.95);
                 lineHeight = getFontHeight(fontSize) * 1.2f;
             }
             nameX = viewX;
@@ -488,8 +502,13 @@ public class PrintCapitalShip extends PrintEntity {
             currY = (int) bbox.getY() + 10;
         }
         
+        void newLine() {
+            currY += lineHeight;
+        }
+        
         void printCapitalHeader() {
-            addTextElement(canvas, nameX, currY, "Capital Scale", fontSize, "start", "bold");
+            int lineHeight = (int) (FONT_SIZE_MEDIUM * 1.2);
+            addTextElement(canvas, nameX, currY, "Capital Scale", FONT_SIZE_MEDIUM, "start", "bold");
             addTextElement(canvas, srvX, currY, "(1-12)",  FONT_SIZE_SMALL, "middle", "normal");
             addTextElement(canvas, mrvX, currY, "(13-24)", FONT_SIZE_SMALL, "middle", "normal");
             addTextElement(canvas, lrvX, currY, "(25-40)", FONT_SIZE_SMALL, "middle", "normal");
@@ -497,31 +516,32 @@ public class PrintCapitalShip extends PrintEntity {
             currY += lineHeight;
     
             // Capital Bay Line
-            addTextElement(canvas, nameX, currY, "Bay", fontSize, "start", "bold");
-            addTextElement(canvas, locX, currY, "Loc", fontSize, "middle", "bold");
-            addTextElement(canvas, htX,  currY, "Ht", fontSize, "middle", "bold");
-            addTextElement(canvas, srvX, currY, "SRV", fontSize, "middle", "bold");
-            addTextElement(canvas, mrvX, currY, "MRV", fontSize, "middle", "bold");
-            addTextElement(canvas, lrvX, currY, "LRV", fontSize, "middle", "bold");
-            addTextElement(canvas, ervX, currY, "ERV", fontSize, "middle", "bold");
+            addTextElement(canvas, nameX, currY, "Bay", FONT_SIZE_MEDIUM, "start", "bold");
+            addTextElement(canvas, locX, currY, "Loc", FONT_SIZE_MEDIUM, "middle", "bold");
+            addTextElement(canvas, htX,  currY, "Ht", FONT_SIZE_MEDIUM, "middle", "bold");
+            addTextElement(canvas, srvX, currY, "SRV", FONT_SIZE_MEDIUM, "middle", "bold");
+            addTextElement(canvas, mrvX, currY, "MRV", FONT_SIZE_MEDIUM, "middle", "bold");
+            addTextElement(canvas, lrvX, currY, "LRV", FONT_SIZE_MEDIUM, "middle", "bold");
+            addTextElement(canvas, ervX, currY, "ERV", FONT_SIZE_MEDIUM, "middle", "bold");
             currY += lineHeight;
         }
         
         void printStandardHeader() {
-            addTextElement(canvas, nameX, currY, "Standard Scale", fontSize, "start", "bold");
+            int lineHeight = (int) (FONT_SIZE_MEDIUM * 1.2);
+            addTextElement(canvas, nameX, currY, "Standard Scale", FONT_SIZE_MEDIUM, "start", "bold");
             addTextElement(canvas, srvX, currY, "(1-6)",  FONT_SIZE_SMALL, "middle", "normal");
             addTextElement(canvas, mrvX, currY, "(7-12)", FONT_SIZE_SMALL, "middle", "normal");
             addTextElement(canvas, lrvX, currY, "(13-20)", FONT_SIZE_SMALL, "middle", "normal");
             addTextElement(canvas, ervX, currY, "(21-25)", FONT_SIZE_SMALL, "middle", "normal");
             currY += lineHeight;
     
-            addTextElement(canvas, nameX, currY, "Bay", fontSize, "start", "bold");
-            addTextElement(canvas, locX, currY, "Loc", fontSize, "middle", "bold");
-            addTextElement(canvas, htX,  currY, "Ht", fontSize, "middle", "bold");
-            addTextElement(canvas, srvX, currY, "SRV", fontSize, "middle", "bold");
-            addTextElement(canvas, mrvX, currY, "MRV", fontSize, "middle", "bold");
-            addTextElement(canvas, lrvX, currY, "LRV", fontSize, "middle", "bold");
-            addTextElement(canvas, ervX, currY, "ERV", fontSize, "middle", "bold");
+            addTextElement(canvas, nameX, currY, "Bay", FONT_SIZE_MEDIUM, "start", "bold");
+            addTextElement(canvas, locX, currY, "Loc", FONT_SIZE_MEDIUM, "middle", "bold");
+            addTextElement(canvas, htX,  currY, "Ht", FONT_SIZE_MEDIUM, "middle", "bold");
+            addTextElement(canvas, srvX, currY, "SRV", FONT_SIZE_MEDIUM, "middle", "bold");
+            addTextElement(canvas, mrvX, currY, "MRV", FONT_SIZE_MEDIUM, "middle", "bold");
+            addTextElement(canvas, lrvX, currY, "LRV", FONT_SIZE_MEDIUM, "middle", "bold");
+            addTextElement(canvas, ervX, currY, "ERV", FONT_SIZE_MEDIUM, "middle", "bold");
             currY += lineHeight;
         }
         
@@ -636,6 +656,106 @@ public class PrintCapitalShip extends PrintEntity {
                 addTextElement(canvas, mrvX, currY, slMRV,  fontSize, "middle", "normal");
                 addTextElement(canvas, lrvX, currY, slLRV,  fontSize, "middle", "normal");
                 addTextElement(canvas, ervX, currY, slERV,  fontSize, "middle", "normal");
+                currY += lineHeight;
+            }
+        }
+        
+        /**
+         * Convenience method for printing information related to grav decks
+         * @param canvas
+         * @param currY
+         * @return
+         */
+        private void printGravDecks() {
+            if (ship.getTotalGravDeck() > 0) {
+                addTextElement(canvas, nameX, currY, "Grav Decks:", fontSize, "start", "bold");
+                currY += lineHeight;
+                int xpos = nameX;
+                int ypos = currY;
+                int count = 1;
+                for (int size : ship.getGravDecks()) {
+                    String gravString = "Grav Deck #" + count + ": " + size + "-meters";
+                    addTextElement(canvas, xpos, ypos, gravString, fontSize, "start", "normal");
+                    ypos += lineHeight;
+                    if ((count > 2) && (count == ship.getGravDecks().size() / 2)) {
+                        ypos = currY;
+                        xpos = (int) (nameX + bbox.getWidth() / 2);
+                    }
+                    count++;
+                }
+                currY += lineHeight * ((ship.getGravDecks().size() + 1) / 2 + 1);
+            }
+        }
+        
+        /**
+         * Convenience method for printing infor related to cargo & transport bays.
+         *
+         * @param canvas
+         * @param currY
+         * @return
+         * @throws SVGException
+         */
+        private void printCargoInfo() {
+            if (ship.getTransportBays().size() > 0) {
+                addTextElement(canvas, nameX, currY, "Cargo:", fontSize, "start", "bold");
+                currY += lineHeight;
+                // We can have multiple Bay instances within one conceptual bay on the ship
+                // We need to gather all bays with the same ID to print out the string
+                Map<Integer, List<Bay>> bayMap = new TreeMap<>();
+                for (Bay bay : ship.getTransportBays()) {
+                    if (bay.isQuarters()) {
+                        continue;
+                    }
+                    List<Bay> bays = bayMap.get(bay.getBayNumber());
+                    if (bays == null) {
+                        bays = new ArrayList<>();
+                        bays.add(bay);
+                        bayMap.put(bay.getBayNumber(), bays);
+                    } else {
+                        bays.add(bay);
+                    }
+                }
+                // Print each bay
+                for (Integer bayNum : bayMap.keySet()) {
+                    StringBuilder bayTypeString = new StringBuilder();
+                    StringBuilder bayCapacityString = new StringBuilder();
+                    bayCapacityString.append(" (");
+                    List<Bay> bays = bayMap.get(bayNum);
+                    // Display larger storage first
+                    java.util.Collections.sort(bays, new Comparator<Bay>(){
+
+                        @Override
+                        public int compare(Bay b1, Bay b2) {
+                            return (int)(b2.getCapacity() - b1.getCapacity());
+                        }});
+                    int doors = 0;
+                    for (int i = 0; i < bays.size(); i++) {
+                        Bay b = bays.get(i);
+                        bayTypeString.append(b.getType());
+                        if (b.getClass().getName().contains("Cargo")) {
+                            double capacity = b.getCapacity();
+                            int wholePart = (int)capacity;
+                            double fractPart = capacity - wholePart;
+                            if (fractPart == 0) {
+                                bayCapacityString.append(String.format("%1$d", wholePart));
+                            } else {
+                                bayCapacityString.append(String.format("%1$.1f", b.getCapacity()));
+                            }
+                        } else {
+                            bayCapacityString.append((int)b.getCapacity());
+                        }
+                        if (i + 1 <  bays.size()) {
+                            bayTypeString.append("/");
+                            bayCapacityString.append("/");
+                        }
+                        doors = Math.max(doors, b.getDoors());
+                    }
+                    bayCapacityString.append(")");
+                    String bayString = "Bay " + bayNum + ": " + bayTypeString
+                        + bayCapacityString + " (" + doors + (doors == 1? " Door)" : " Doors)");
+                    addTextElement(canvas, nameX, currY, bayString, fontSize, "start", "normal");
+                    currY += lineHeight;
+                }
                 currY += lineHeight;
             }
         }
