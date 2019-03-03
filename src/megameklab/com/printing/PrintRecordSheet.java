@@ -1153,7 +1153,7 @@ public abstract class PrintRecordSheet implements Printable {
      * @param center     Whether to center the image vertically and horizontally.
      */
     public void embedImage(File imageFile, Element canvas, Rectangle2D bbox, boolean center) {
-        final String METHOD_NAME = "addFluffImage(File,Rectangle2D)";
+        final String METHOD_NAME = "embedImage(File, Element, Rectangle2D, boolean)";
         if (null == imageFile) {
             return;
         }

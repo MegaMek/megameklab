@@ -25,6 +25,7 @@ import java.util.TreeMap;
 
 import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGElement;
 import org.w3c.dom.svg.SVGRectElement;
 
@@ -44,6 +45,7 @@ import megamek.common.Warship;
 import megamek.common.WeaponType;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.Aero.Printing.WeaponBayText;
+import megameklab.com.util.ImageHelper;
 
 /**
  * Generates a record sheet image for jumpships, warships, and space stations.
@@ -767,6 +769,15 @@ public class PrintCapitalShip extends PrintEntity {
                 }
                 currY += lineHeight;
             }
+        }
+    }
+
+    @Override
+    protected void drawFluffImage() {
+        Element rect = getSVGDocument().getElementById("fluffImage");
+        if ((null != rect) && (rect instanceof SVGRectElement)) {
+            embedImage(ImageHelper.getFluffFile(ship, ImageHelper.imageCapital),
+                    (Element) ((Node) rect).getParentNode(), getRectBBox((SVGRectElement) rect), true);
         }
     }
 }
