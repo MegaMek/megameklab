@@ -1123,7 +1123,7 @@ public abstract class PrintRecordSheet implements Printable {
     /**
      * Determines the vertical space taken up by a line of text.
      * 
-     * @param fontSize  Value of CSS font-family attribute
+     * @param fontSize  Value of CSS font-size attribute
      * @return          The height of the bounding box of a text element
      */
     public float getFontHeight(float fontSize) {

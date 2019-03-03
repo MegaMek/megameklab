@@ -44,7 +44,6 @@ import megamek.common.Warship;
 import megamek.common.WeaponType;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.Aero.Printing.WeaponBayText;
-import megameklab.com.ui.Aero.Printing.PrintWarship.PrintType;
 
 /**
  * Generates a record sheet image for jumpships, warships, and space stations.
@@ -68,6 +67,7 @@ public class PrintCapitalShip extends PrintEntity {
     public static final int MAX_PIP_ROWS = 10;
     
     public static final float MIN_FONT_SIZE = 5.0f;
+    public static final float LINE_SPACING = 1.2f;
 
     /**
      * The ship being printed
@@ -441,8 +441,12 @@ public class PrintCapitalShip extends PrintEntity {
     
     @Override
     protected void writeEquipment(SVGRectElement svgRect) {
-        int lines = capitalWeaponLines + standardWeaponLines
-                + ship.getGravDeck() + ship.getTransportId() + 6;
+        int lines = capitalWeaponLines + standardWeaponLines + 6;
+        if (ship.getGravDecks().size() > 0) {
+            lines += (ship.getGravDecks().size() + 1) / 2 + 2;
+        }
+        lines += ship.getTransports().stream()
+                .filter(t -> (t instanceof Bay) && !((Bay) t).isQuarters()).count();
         InventoryWriter iw = new InventoryWriter(svgRect, lines);
         if (!capitalWeapTexts.isEmpty()) {
             iw.printCapitalHeader();
@@ -466,40 +470,45 @@ public class PrintCapitalShip extends PrintEntity {
         Rectangle2D bbox;
         SVGElement canvas;
         
-        int nameX;
-        int locX;
-        int htX;
-        int srvX;
-        int mrvX;
-        int lrvX;
-        int ervX;
-        int indent;
+        double nameX;
+        double locX;
+        double htX;
+        double srvX;
+        double mrvX;
+        double lrvX;
+        double ervX;
+        double indent;
         
-        int currY;
+        double currY;
         
         float fontSize = FONT_SIZE_MEDIUM;
-        double lineHeight = getFontHeight(fontSize) * 1.2f;
+        double lineHeight = getFontHeight(fontSize) * LINE_SPACING;
         
         InventoryWriter(SVGRectElement svgRect, int lines) {
             bbox = getRectBBox(svgRect);
             canvas = (SVGElement) svgRect.getParentNode();
-            int viewX = (int) bbox.getX();
-            int viewWidth = (int) bbox.getWidth();
+            double viewX = bbox.getX();
+            double viewWidth = bbox.getWidth();
             
-            if (lineHeight * lines >= bbox.getHeight() * 0.95) {
-                fontSize = (float) Math.max(MIN_FONT_SIZE, fontSize * bbox.getHeight() / (lineHeight * lines) * 0.95);
-                lineHeight = getFontHeight(fontSize) * 1.2f;
+            /* The relationship between the font size and the height is not directly proportional, so simply scaling
+             * by the ratio of the max height to the current one is not guaranteed to give us the value we want.
+             * So we keep checking and scaling down until we get the desired value or hit the minimum, making sure
+             * that we decrease by at least 0.1f each iteration */
+            while ((fontSize > MIN_FONT_SIZE) && (lineHeight * lines >= bbox.getHeight())) {
+                float newSize = (float) Math.max(MIN_FONT_SIZE, fontSize * bbox.getHeight() / (lineHeight * lines));
+                fontSize = Math.min(newSize, fontSize - 0.1f);
+                lineHeight = getFontHeight(fontSize) * LINE_SPACING;
             }
             nameX = viewX;
-            locX = (int) Math.round(viewX + viewWidth * 0.50);
-            htX  = (int) Math.round(viewX + viewWidth * 0.60);
-            srvX = (int) Math.round(viewX + viewWidth * 0.68);
-            mrvX = (int) Math.round(viewX + viewWidth * 0.76);
-            lrvX = (int) Math.round(viewX + viewWidth * 0.84);
-            ervX = (int) Math.round(viewX + viewWidth * 0.92);
-            indent = (int) Math.round(viewWidth * 0.02);
+            locX = viewX + viewWidth * 0.50;
+            htX  = viewX + viewWidth * 0.60;
+            srvX = viewX + viewWidth * 0.68;
+            mrvX = viewX + viewWidth * 0.76;
+            lrvX = viewX + viewWidth * 0.84;
+            ervX = viewX + viewWidth * 0.92;
+            indent = viewWidth * 0.02;
             
-            currY = (int) bbox.getY() + 10;
+            currY = bbox.getY() + 10f;
         }
         
         void newLine() {
@@ -507,12 +516,12 @@ public class PrintCapitalShip extends PrintEntity {
         }
         
         void printCapitalHeader() {
-            int lineHeight = (int) (FONT_SIZE_MEDIUM * 1.2);
+            double lineHeight = FONT_SIZE_MEDIUM * LINE_SPACING;
             addTextElement(canvas, nameX, currY, "Capital Scale", FONT_SIZE_MEDIUM, "start", "bold");
-            addTextElement(canvas, srvX, currY, "(1-12)",  FONT_SIZE_SMALL, "middle", "normal");
-            addTextElement(canvas, mrvX, currY, "(13-24)", FONT_SIZE_SMALL, "middle", "normal");
-            addTextElement(canvas, lrvX, currY, "(25-40)", FONT_SIZE_SMALL, "middle", "normal");
-            addTextElement(canvas, ervX, currY, "(41-50)", FONT_SIZE_SMALL, "middle", "normal");
+            addTextElement(canvas, srvX, currY, "(1-12)",  FONT_SIZE_VSMALL, "middle", "normal");
+            addTextElement(canvas, mrvX, currY, "(13-24)", FONT_SIZE_VSMALL, "middle", "normal");
+            addTextElement(canvas, lrvX, currY, "(25-40)", FONT_SIZE_VSMALL, "middle", "normal");
+            addTextElement(canvas, ervX, currY, "(41-50)", FONT_SIZE_VSMALL, "middle", "normal");
             currY += lineHeight;
     
             // Capital Bay Line
@@ -527,12 +536,12 @@ public class PrintCapitalShip extends PrintEntity {
         }
         
         void printStandardHeader() {
-            int lineHeight = (int) (FONT_SIZE_MEDIUM * 1.2);
+            double lineHeight = FONT_SIZE_MEDIUM * LINE_SPACING;
             addTextElement(canvas, nameX, currY, "Standard Scale", FONT_SIZE_MEDIUM, "start", "bold");
-            addTextElement(canvas, srvX, currY, "(1-6)",  FONT_SIZE_SMALL, "middle", "normal");
-            addTextElement(canvas, mrvX, currY, "(7-12)", FONT_SIZE_SMALL, "middle", "normal");
-            addTextElement(canvas, lrvX, currY, "(13-20)", FONT_SIZE_SMALL, "middle", "normal");
-            addTextElement(canvas, ervX, currY, "(21-25)", FONT_SIZE_SMALL, "middle", "normal");
+            addTextElement(canvas, srvX, currY, "(1-6)",  FONT_SIZE_VSMALL, "middle", "normal");
+            addTextElement(canvas, mrvX, currY, "(7-12)", FONT_SIZE_VSMALL, "middle", "normal");
+            addTextElement(canvas, lrvX, currY, "(13-20)", FONT_SIZE_VSMALL, "middle", "normal");
+            addTextElement(canvas, ervX, currY, "(21-25)", FONT_SIZE_VSMALL, "middle", "normal");
             currY += lineHeight;
     
             addTextElement(canvas, nameX, currY, "Bay", FONT_SIZE_MEDIUM, "start", "bold");
@@ -633,7 +642,7 @@ public class PrintCapitalShip extends PrintEntity {
             }
             String nameString = num + "  " + name;
             String heatTxt;
-            int localNameX = nameX;
+            double localNameX = nameX;
             if (!first) {
                 localNameX += indent;
                 loc = "";
@@ -670,16 +679,16 @@ public class PrintCapitalShip extends PrintEntity {
             if (ship.getTotalGravDeck() > 0) {
                 addTextElement(canvas, nameX, currY, "Grav Decks:", fontSize, "start", "bold");
                 currY += lineHeight;
-                int xpos = nameX;
-                int ypos = currY;
+                double xpos = nameX;
+                double ypos = currY;
                 int count = 1;
                 for (int size : ship.getGravDecks()) {
                     String gravString = "Grav Deck #" + count + ": " + size + "-meters";
                     addTextElement(canvas, xpos, ypos, gravString, fontSize, "start", "normal");
                     ypos += lineHeight;
-                    if ((count > 2) && (count == ship.getGravDecks().size() / 2)) {
+                    if (count == ship.getGravDecks().size() / 2) {
                         ypos = currY;
-                        xpos = (int) (nameX + bbox.getWidth() / 2);
+                        xpos = nameX + bbox.getWidth() / 2.0;
                     }
                     count++;
                 }

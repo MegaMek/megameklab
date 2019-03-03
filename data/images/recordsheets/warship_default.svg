@@ -801,10 +801,6 @@
            font-size="7.0321px"
            transform="matrix(1 0 0 -1 38.571 611.86)">
           <tspan
-             id="tspan3741"
-             y="0"
-             x="0">DropShip Capacity:</tspan>
-          <tspan
              id="tspan3743"
              y="-34.098652"
              x="0">Thrust:</tspan>
@@ -813,14 +809,14 @@
              y="-34.098652"
              x="109.72889">Tech Base:</tspan>
         </text>
-      </g>ru
+      </g>
       <g
          id="g3745"
          transform="translate(0 792)">
         <path
            id="path3747"
            stroke-linejoin="round"
-           d="m32.875-200.07h205.08"
+           d="m32.875-175.07h205.08"
            stroke="#231f20"
            stroke-linecap="round"
            stroke-miterlimit="10"
@@ -844,36 +840,9 @@
              y="-0.18986671"
              x="109.58825">Tonnage:</tspan>
         </text>
-        <text
-           id="text3771"
-           font-size="7.0321px"
-           transform="matrix(1 0 0 -1 38.571 599.05)">
-          <tspan
-             id="tspan3773"
-             y="0"
-             x="0">Fighters/Small Craft:</tspan>
-        </text>
-        <text
-           id="text3775"
-           font-weight="bold"
-           font-size="8.0367px"
-           transform="matrix(1 0 0 -1 126.85 599.05)">
-          <tspan
-             id="tspan3777"
-             y="0"
-             x="0">/</tspan>
-        </text>
         <g
            font-size="7.0321px"
            id="g227">
-          <text
-             id="text3779"
-             transform="matrix(1 0 0 -1 148.3 599.05)">
-            <tspan
-               id="tspan3781"
-               y="0"
-               x="0">Launch Rate:</tspan>
-          </text>
           <text
              id="text3799"
              transform="matrix(1 0 0 -1 43.71 634.6)">
@@ -1981,7 +1950,7 @@
         <text
            id="text4387"
            font-size="9.0413px"
-           transform="matrix(1 0 0 -1 32.876 581.96)">
+           transform="matrix(1 0 0 -1 32.876 606.96)">
           <tspan
              id="tspan4389"
              y="0"
@@ -3844,20 +3813,6 @@
          x="114.44"
          y="161">0</text>
       <text
-         id="dsCapacity"
-         style="text-anchor:middle"
-         x="114.44"
-         y="172">0</text>
-      <text
-         id="fighters"
-         style="text-anchor:end"
-         x="112.7085"
-         y="186">0</text>
-      <text
-         id="smallCraft"
-         x="121.86"
-         y="186">0</text>
-      <text
          id="tonnage"
          x="182.74719"
          y="125.59">0</text>
@@ -3869,11 +3824,6 @@
          id="rulesLevel"
          x="182.74719"
          y="149.09">Standard</text>
-      <text
-         id="launchRate"
-         style="text-anchor:middle"
-         x="200.49"
-         y="186">0</text>
       <text
          id="textThresholdArmor_NOS"
          style="text-anchor:middle"
@@ -4097,9 +4047,9 @@
        x="393.62" />
     <rect
        id="inventory"
-       height="286.86"
+       height="311.86"
        width="230"
-       y="204.67"
+       y="179.67"
        x="13" />
     <rect
        id="fluffImage"
