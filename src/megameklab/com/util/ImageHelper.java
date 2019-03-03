@@ -75,6 +75,7 @@ public class ImageHelper {
     public static String imageLargeSupportVehicle = "largesupportvehicle";
     public static String imageProto = "protomech";
     public static String imageDropship = "dropship";
+    public static String imageCapital = "capitalship";
 
     public static Image armorPip = null;
 
