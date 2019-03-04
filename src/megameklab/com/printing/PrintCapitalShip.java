@@ -245,6 +245,7 @@ public class PrintCapitalShip extends PrintEntity {
                 element.setTextContent(String.format(element.getTextContent(),
                         Calendar.getInstance().get(Calendar.YEAR)));
             }
+            setTextField("title", getRecordSheetTitle().toUpperCase() + " (REVERSE)");
             setTextField("type", getEntity().getShortNameRaw());
             setTextField("name", ""); // TODO: fluff name needs MM support
             element = getSVGDocument().getElementById("inventory");
