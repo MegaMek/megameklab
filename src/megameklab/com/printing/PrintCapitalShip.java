@@ -56,6 +56,7 @@ public class PrintCapitalShip extends PrintEntity {
     
     public static final double ARMOR_PIP_WIDTH = 4.5;
     public static final double ARMOR_PIP_HEIGHT = 4.5;
+    public static final double SHADOW_OFFSET = 0.3;
     
     public static final double ARMOR_PIP_WIDTH_SMALL = 2.25;
     public static final double ARMOR_PIP_HEIGHT_SMALL = 2.25;
@@ -238,8 +239,8 @@ public class PrintCapitalShip extends PrintEntity {
     
     @Override
     public void printImage(Graphics2D g2d, PageFormat pageFormat, int pageNum) {
-        if (pageNum > getFirstPage()) {
-            Element element = getSVGDocument().getElementById("tspanCopyright");
+        if (pageNum > 0) {
+            Element element = getSVGDocument().getElementById("textCopyright");
             if (null != element) {
                 element.setTextContent(String.format(element.getTextContent(),
                         Calendar.getInstance().get(Calendar.YEAR)));
@@ -359,7 +360,7 @@ public class PrintCapitalShip extends PrintEntity {
                 startY = (int) bbox.getY() + IS_PIP_HEIGHT;
             }
             printPipBlock(startX, startY, (SVGElement) svgRect.getParentNode(), pips,
-                    IS_PIP_WIDTH, IS_PIP_HEIGHT, "white");
+                    IS_PIP_WIDTH, IS_PIP_HEIGHT, "white", false);
 
             // Block 2
             if (aspectRatio >= 1) { // Landscape - 2 columns
@@ -369,12 +370,12 @@ public class PrintCapitalShip extends PrintEntity {
             }
             pips = (int) Math.ceil(structure / 2.0);
             printPipBlock(startX, startY, (SVGElement) svgRect.getParentNode(), pips,
-                    IS_PIP_WIDTH, IS_PIP_HEIGHT, "white");
+                    IS_PIP_WIDTH, IS_PIP_HEIGHT, "white", false);
         } else { // Print in one block
             int startX = (int) bbox.getX() + (int) (bbox.getWidth() / 2 + 0.5) - (PIPS_PER_ROW * IS_PIP_WIDTH / 2);
             int startY = (int) bbox.getY() + IS_PIP_HEIGHT;
             printPipBlock(startX, startY, (SVGElement) svgRect.getParentNode(), structure,
-                    IS_PIP_WIDTH, IS_PIP_HEIGHT, "white");
+                    IS_PIP_WIDTH, IS_PIP_HEIGHT, "white", false);
         }
     }
 
@@ -432,7 +433,7 @@ public class PrintCapitalShip extends PrintEntity {
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
                 armor = printPipBlock(xpos, ypos, (SVGElement) svgRect.getParentNode(),
-                        armor, pipWidth, pipHeight, "none");
+                        armor, pipWidth, pipHeight, "#ffffff", true);
                 remainingBlocks--;
                 xpos += blockWidth;
             }
@@ -449,16 +450,18 @@ public class PrintCapitalShip extends PrintEntity {
      * Helper function to print a armor pip block. Can print up to 100 points of
      * armor. Any unprinted armor pips are returned.
      *
-     * @param startX
-     * @param startY
-     * @param parent
-     * @param numPips
+     * @param startX  The x coordinate of the top left of the block
+     * @param startY  The y coordinate of the top left of the block
+     * @param parent  The parent node of the bounding rectangle
+     * @param numPips The number of pips to print
+     * @param shadow  Whether to add a drop shadow
      * @return The Y location of the end of the block
-     * @throws SVGException
      */
     private int printPipBlock(double startX, double startY, SVGElement parent, int numPips, double pipWidth,
-            double pipHeight, String fillColor) {
+            double pipHeight, String fillColor, boolean shadow) {
 
+        final double shadowOffsetX = pipWidth * SHADOW_OFFSET;
+        final double shadowOffsetY = pipHeight * SHADOW_OFFSET;
         double currX, currY;
         currY = startY;
         for (int row = 0; row < 10; row++) {
@@ -466,15 +469,11 @@ public class PrintCapitalShip extends PrintEntity {
             // Adjust row start if it's not a complete row
             currX = startX + ((10 - numRowPips) / 2f * pipWidth + 0.5);
             for (int col = 0; col < numRowPips; col++) {
-                Element box = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_RECT_TAG);
-                box.setAttributeNS(null, SVGConstants.SVG_X_ATTRIBUTE, String.valueOf(currX));
-                box.setAttributeNS(null, SVGConstants.SVG_Y_ATTRIBUTE, String.valueOf(currY));
-                box.setAttributeNS(null, SVGConstants.SVG_WIDTH_ATTRIBUTE, String.valueOf(pipWidth));
-                box.setAttributeNS(null, SVGConstants.SVG_HEIGHT_ATTRIBUTE, String.valueOf(pipHeight));
-                box.setAttributeNS(null, SVGConstants.SVG_STROKE_ATTRIBUTE, String.valueOf("#000000"));
-                box.setAttributeNS(null, SVGConstants.SVG_STROKE_WIDTH_ATTRIBUTE, String.valueOf(0.5));
-                box.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, fillColor);
-                parent.appendChild(box);
+                if (shadow) {
+                    parent.appendChild(createPip(pipWidth, pipHeight, "#c8c7c7", currX + shadowOffsetX,
+                            currY + shadowOffsetY, false));
+                }
+                parent.appendChild(createPip(pipWidth, pipHeight, fillColor, currX, currY, true));
 
                 currX += pipWidth;
                 numPips--;
@@ -486,6 +485,21 @@ public class PrintCapitalShip extends PrintEntity {
             currY += pipHeight;
         }
         return numPips;
+    }
+
+    private Element createPip(double pipWidth, double pipHeight, String fillColor,
+            double currX, double currY, boolean stroke) {
+        Element box = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_RECT_TAG);
+        box.setAttributeNS(null, SVGConstants.SVG_X_ATTRIBUTE, String.valueOf(currX));
+        box.setAttributeNS(null, SVGConstants.SVG_Y_ATTRIBUTE, String.valueOf(currY));
+        box.setAttributeNS(null, SVGConstants.SVG_WIDTH_ATTRIBUTE, String.valueOf(pipWidth));
+        box.setAttributeNS(null, SVGConstants.SVG_HEIGHT_ATTRIBUTE, String.valueOf(pipHeight));
+        if (stroke) {
+            box.setAttributeNS(null, SVGConstants.SVG_STROKE_ATTRIBUTE, String.valueOf("#000000"));
+            box.setAttributeNS(null, SVGConstants.SVG_STROKE_WIDTH_ATTRIBUTE, String.valueOf(0.5));
+        }
+        box.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, fillColor);
+        return box;
     }
     
     @Override
