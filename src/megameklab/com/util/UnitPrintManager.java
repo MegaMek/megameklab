@@ -203,7 +203,8 @@ public class UnitPrintManager {
                 }
             } else if (unit.hasETypeFlag(Entity.ETYPE_AERO)) {
                 if (unit instanceof Jumpship) {
-                    book.append(new PrintCapitalShip((Jumpship) unit, book.getNumberOfPages()), pageFormat);
+                    PrintCapitalShip pcs = new PrintCapitalShip((Jumpship) unit, book.getNumberOfPages());
+                    book.append(pcs, pageFormat, pcs.getPageCount());
                 } else if (unit instanceof Dropship) {
                     if (unit.getMovementMode() == EntityMovementMode.AERODYNE) {
                         book.append(new PrintAerodyne((Dropship) unit), pageFormat);

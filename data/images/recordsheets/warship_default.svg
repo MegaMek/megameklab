@@ -2563,58 +2563,54 @@
         <text
            id="text5511"
            transform="scale(1,-1)"
-           y="-332.23584"
-           x="509.28308">
+           text-anchor="middle">
           <tspan
              id="tspan5513"
-             y="-332.23584"
-             x="509.28308">Aft-Right Damage</tspan>
+             x="534"
+             y="-332.23584">Aft-Right Damage</tspan>
           <tspan
              id="tspan5515"
-             y="-325.00284"
-             x="500.13333">Threshold (Total Armor)</tspan>
+             x="534"
+             y="-325.00284">Threshold (Total Armor)</tspan>
         </text>
         <text
            id="text5527"
            transform="scale(1,-1)"
-           y="-332.23584"
-           x="274.93768">
+           text-anchor="middle">
           <tspan
              id="tspan5529"
-             y="-332.23584"
-             x="274.93768">Aft-Left Damage</tspan>
+             x="299"
+             y="-332.23584">Aft-Left Damage</tspan>
           <tspan
              id="tspan5531"
-             y="-325.00284"
-             x="263.78079">Threshold (Total Armor)</tspan>
+             x="299"
+             y="-325.00284">Threshold (Total Armor)</tspan>
         </text>
         <text
            id="text5543"
            transform="scale(1,-1)"
-           y="-659.742"
-           x="507.0806">
+           text-anchor="middle">
           <tspan
              id="tspan5545"
-             y="-659.742"
-             x="507.0806">Fore-Right Damage</tspan>
+             x="534"
+             y="-659.742">Fore-Right Damage</tspan>
           <tspan
              id="tspan5547"
-             y="-652.50897"
-             x="500.13089">Threshold (Total Armor)</tspan>
+             x="534"
+             y="-652.50897">Threshold (Total Armor)</tspan>
         </text>
         <text
            id="text5559"
            transform="scale(1,-1)"
-           y="-659.742"
-           x="272.73529">
+           text-anchor="middle">
           <tspan
              id="tspan5561"
-             y="-659.742"
-             x="272.73529">Fore-Left Damage</tspan>
+             x="299"
+             y="-659.742">Fore-Left Damage</tspan>
           <tspan
              id="tspan5563"
-             y="-652.50897"
-             x="263.77841">Threshold (Total Armor)</tspan>
+             x="299"
+             y="-652.50897">Threshold (Total Armor)</tspan>
         </text>
       </g>
     </g>
@@ -3771,23 +3767,15 @@
      id="g880">
     <text
        id="type"
-       style="word-spacing:0px;letter-spacing:0px"
        font-weight="bold"
-       xml:space="preserve"
-       transform="scale(1.0236 .97692)"
-       line-height="125%"
        font-size="8.4434px"
-       y="114.81271"
-       x="40.924194"> Lorem Ipsum</text>
+       x="41.89"
+       y="112.16"> Lorem Ipsum</text>
     <text
        id="name"
-       style="word-spacing:0px;letter-spacing:0px"
-       xml:space="preserve"
-       transform="scale(1.0236 .97692)"
        font-size="6.3326px"
-       y="128.50937"
-       x="43.98209"
-       line-height="125%"> Lorem Ipsum</text>
+       x="45"
+       y="125.54"> Lorem Ipsum</text>
     <g
        font-size="7.4001px"
        id="g884">
@@ -3821,22 +3809,22 @@
       <text
          id="textThresholdArmor_FRS"
          style="text-anchor:middle"
-         x="551.474"
+         x="557"
          y="140.809">0 (0)</text>
       <text
          id="textThresholdArmor_FLS"
          style="text-anchor:middle"
-         x="293.039"
+         x="299"
          y="140.809">0 (0)</text>
       <text
          id="textThresholdArmor_ARS"
          style="text-anchor:middle"
-         x="549.31"
+         x="557"
          y="477.01">0 (0)</text>
       <text
          id="textThresholdArmor_ALS"
          style="text-anchor:middle"
-         x="296.11"
+         x="299"
          y="477.01">0 (0)</text>
       <text
          id="textThresholdArmor_AFT"
@@ -3977,27 +3965,27 @@
        x="348.5" />
     <rect
        id="armorPips_FLS"
-       height="140.81"
+       height="150"
        width="100"
-       y="148.56"
+       y="145"
        x="252" />
     <rect
        id="armorPips_ALS"
-       height="140.81"
+       height="150"
        width="100"
-       y="311.48"
+       y="300"
        x="252" />
     <rect
        id="armorPips_FRS"
-       height="140.23"
+       height="150"
        width="100"
-       y="149.14999"
+       y="145"
        x="507" />
     <rect
        id="armorPips_ARS"
-       height="141.39999"
+       height="150"
        width="100"
-       y="310.89001"
+       y="300"
        x="507" />
     <rect
        id="armorPips_AFT"

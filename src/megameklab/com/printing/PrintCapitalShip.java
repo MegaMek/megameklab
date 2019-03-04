@@ -17,6 +17,7 @@ import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.print.PageFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -31,15 +32,12 @@ import org.w3c.dom.svg.SVGRectElement;
 
 import com.kitfox.svg.SVGException;
 
-import megamek.common.ASFBay;
 import megamek.common.Aero;
 import megamek.common.Bay;
 import megamek.common.Entity;
 import megamek.common.Jumpship;
 import megamek.common.Mounted;
-import megamek.common.SmallCraftBay;
 import megamek.common.SpaceStation;
-import megamek.common.Transporter;
 import megamek.common.UnitType;
 import megamek.common.Warship;
 import megamek.common.WeaponType;
@@ -70,6 +68,7 @@ public class PrintCapitalShip extends PrintEntity {
     
     public static final float MIN_FONT_SIZE = 5.0f;
     public static final float LINE_SPACING = 1.2f;
+    public static final int MAX_SINGLE_PAGE_LINES = 42;
 
     /**
      * The ship being printed
@@ -168,9 +167,60 @@ public class PrintCapitalShip extends PrintEntity {
     protected boolean isCenterlineLocation(int loc) {
         return (loc == Jumpship.LOC_NOSE) || (loc == Jumpship.LOC_AFT);
     }
+    
+    @Override
+    public int getPageCount() {
+        return capitalWeaponBlockSize() + standardWeaponBlockSize()
+            + gravDeckBlockSize() + bayBlockSize() > MAX_SINGLE_PAGE_LINES ? 2 : 1;
+    }
+    
+    /**
+     * Calculates the amount of space required by the capital weapons block.
+     * 
+     * @return The number of lines required to list capital weapon bays,
+     * including column headers and following blank line.
+     */
+    private int capitalWeaponBlockSize() {
+        return capitalWeaponLines > 0 ? capitalWeaponLines + 3 : 0;
+    }
+
+    /**
+     * Calculates the amount of space required by the standard weapons block.
+     * 
+     * @return The number of lines required to list standard weapon bays,
+     * including column headers and following blank line.
+     */
+    private int standardWeaponBlockSize() {
+        return standardWeaponLines > 0 ? standardWeaponLines + 3 : 0;
+    }
+    
+    /**
+     * Calculates the amount of space required by the grav deck block
+     * 
+     * @return The number of lines required to list grav decks,
+     * including section title and following blank line.
+     */
+    private int gravDeckBlockSize() {
+        return ship.getGravDecks().size() > 0 ? (ship.getGravDecks().size() + 1) / 2 + 2 : 0;
+    }
+    
+    /**
+     * Calculates the amount of space required by the transport bay block
+     * 
+     * @return The number of lines required to list transport bays,
+     * including section title and following blank line.
+     */
+    private int bayBlockSize() {
+        long bays = ship.getTransports().stream()
+                .filter(t -> (t instanceof Bay) && !((Bay) t).isQuarters()).count();
+        return bays > 0 ? (int) bays + 2 : 0;
+    }
 
     @Override
-    protected String getSVGFileName() {
+    protected String getSVGFileName(int pageNumber) {
+        if (pageNumber > 0) {
+            return "advaero_reverse.svg";
+        }
         if (ship instanceof Warship) {
             return "warship_default.svg";
         } else if (ship instanceof SpaceStation) {
@@ -188,30 +238,27 @@ public class PrintCapitalShip extends PrintEntity {
     
     @Override
     public void printImage(Graphics2D g2d, PageFormat pageFormat, int pageNum) {
-        super.printImage(g2d, pageFormat, pageNum);
+        if (pageNum > getFirstPage()) {
+            Element element = getSVGDocument().getElementById("tspanCopyright");
+            if (null != element) {
+                element.setTextContent(String.format(element.getTextContent(),
+                        Calendar.getInstance().get(Calendar.YEAR)));
+            }
+            setTextField("type", getEntity().getShortNameRaw());
+            setTextField("name", ""); // TODO: fluff name needs MM support
+            element = getSVGDocument().getElementById("inventory");
+            if ((null != element) && (element instanceof SVGRectElement)) {
+                writeEquipment((SVGRectElement) element, true);
+            }
+        } else {
+            super.printImage(g2d, pageFormat, pageNum);
+        }
     }
     
     @Override
     protected void writeTextFields() {
         super.writeTextFields();
-        int fighters = 0;
-        int smCraft = 0;
-        int ftrDoors = 0;
-        int scDoors = 0;
-        for (Transporter t : ship.getTransports()) {
-            if (t instanceof ASFBay) {
-                fighters += ((ASFBay) t).getCapacity();
-                ftrDoors += ((ASFBay) t).getDoors();
-            } else if (t instanceof SmallCraftBay) {
-                smCraft += ((SmallCraftBay) t).getCapacity();
-                scDoors += ((SmallCraftBay) t).getDoors();
-            }
-        }
         setTextField("name", ""); // TODO: fluff name needs MM support
-        setTextField("dsCapacity", ship.getDockingCollars().size());
-        setTextField("fighters", fighters);
-        setTextField("smallCraft", smCraft);
-        setTextField("launchRate", ftrDoors + " / " + scDoors);
         setTextField("crew", ship.getNCrew());
         setTextField("marines", ship.getNMarines());
         setTextField("passengers", ship.getNPassenger());
@@ -443,29 +490,56 @@ public class PrintCapitalShip extends PrintEntity {
     
     @Override
     protected void writeEquipment(SVGRectElement svgRect) {
-        int lines = capitalWeaponLines + standardWeaponLines + 6;
-        if (ship.getGravDecks().size() > 0) {
-            lines += (ship.getGravDecks().size() + 1) / 2 + 2;
-        }
-        lines += ship.getTransports().stream()
-                .filter(t -> (t instanceof Bay) && !((Bay) t).isQuarters()).count();
-        InventoryWriter iw = new InventoryWriter(svgRect, lines);
-        if (!capitalWeapTexts.isEmpty()) {
-            iw.printCapitalHeader();
-            for (WeaponBayText bay : capitalWeapTexts) {
-                iw.printWeaponBay(bay, true);
+        writeEquipment(svgRect, false);
+    }
+    
+    /**
+     * Prints up to four equipment sections: capital weapons, standard scale, grav decks, and bays.
+     * If there is too much to fit on a single page, the standard scale weapons are moved to
+     * the second page (which is considered the reverse).
+     * 
+     * @param svgRect The rectangle element that provides the dimensions of the space to print
+     * @param reverse Whether this is printing on the reverse side.
+     */
+    private void writeEquipment(SVGRectElement svgRect, boolean reverse) {
+        int lines;
+        if (reverse) {
+            lines = standardWeaponLines + 2;
+        } else {
+            lines = capitalWeaponBlockSize() + gravDeckBlockSize() + bayBlockSize();
+            if (getPageCount() == 1) {
+                lines += standardWeaponBlockSize();
+            } else {
+                lines += 2;
             }
-            iw.newLine();
         }
-        if (!standardWeapTexts.isEmpty()) {
+        InventoryWriter iw = new InventoryWriter(svgRect, lines);
+        if (reverse) {
             iw.printStandardHeader();
             for (WeaponBayText bay : standardWeapTexts) {
                 iw.printWeaponBay(bay, false);
             }
             iw.newLine();
+        } else {
+            if (!capitalWeapTexts.isEmpty()) {
+                iw.printCapitalHeader();
+                for (WeaponBayText bay : capitalWeapTexts) {
+                    iw.printWeaponBay(bay, true);
+                }
+                iw.newLine();
+            }
+            if (getPageCount() > 1) {
+                iw.printReverseSideMessage();
+            } else if (!standardWeapTexts.isEmpty()) {
+                iw.printStandardHeader();
+                for (WeaponBayText bay : standardWeapTexts) {
+                    iw.printWeaponBay(bay, false);
+                }
+                iw.newLine();
+            }
+            iw.printGravDecks();
+            iw.printCargoInfo();
         }
-        iw.printGravDecks();
-        iw.printCargoInfo();
     }
     
     private class InventoryWriter {
@@ -554,6 +628,11 @@ public class PrintCapitalShip extends PrintEntity {
             addTextElement(canvas, lrvX, currY, "LRV", FONT_SIZE_MEDIUM, "middle", "bold");
             addTextElement(canvas, ervX, currY, "ERV", FONT_SIZE_MEDIUM, "middle", "bold");
             currY += lineHeight;
+        }
+        
+        void printReverseSideMessage() {
+            addTextElement(canvas, nameX, currY, "Standard Scale on Reverse", FONT_SIZE_MEDIUM, "start", "bold");
+            currY += getFontHeight(FONT_SIZE_MEDIUM) * LINE_SPACING;
         }
         
         void printWeaponBay(WeaponBayText bay, boolean isCapital) {
@@ -679,8 +758,8 @@ public class PrintCapitalShip extends PrintEntity {
          */
         private void printGravDecks() {
             if (ship.getTotalGravDeck() > 0) {
-                addTextElement(canvas, nameX, currY, "Grav Decks:", fontSize, "start", "bold");
-                currY += lineHeight;
+                addTextElement(canvas, nameX, currY, "Grav Decks:", FONT_SIZE_MEDIUM, "start", "bold");
+                currY += getFontHeight(FONT_SIZE_MEDIUM) * LINE_SPACING;
                 double xpos = nameX;
                 double ypos = currY;
                 int count = 1;
@@ -708,8 +787,8 @@ public class PrintCapitalShip extends PrintEntity {
          */
         private void printCargoInfo() {
             if (ship.getTransportBays().size() > 0) {
-                addTextElement(canvas, nameX, currY, "Cargo:", fontSize, "start", "bold");
-                currY += lineHeight;
+                addTextElement(canvas, nameX, currY, "Cargo:", FONT_SIZE_MEDIUM, "start", "bold");
+                currY += getFontHeight(FONT_SIZE_MEDIUM) * LINE_SPACING;
                 // We can have multiple Bay instances within one conceptual bay on the ship
                 // We need to gather all bays with the same ID to print out the string
                 Map<Integer, List<Bay>> bayMap = new TreeMap<>();

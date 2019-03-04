@@ -83,7 +83,7 @@ public class PrintMech extends PrintEntity {
     }
     
     @Override
-    protected String getSVGFileName() {
+    protected String getSVGFileName(int pageNumber) {
         if (mech.hasETypeFlag(Entity.ETYPE_QUADVEE)) {
             return "mech_quadvee.svg";
         } else if (mech.hasETypeFlag(Entity.ETYPE_QUAD_MECH)) {
