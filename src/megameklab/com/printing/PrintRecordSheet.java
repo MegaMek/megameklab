@@ -109,6 +109,13 @@ public abstract class PrintRecordSheet implements Printable {
         this.options = options;
     }
     
+    /**
+     * @return The page number of the first page of this record sheet within the book.
+     */
+    protected final int getFirstPage() {
+        return firstPage;
+    }
+    
     protected final Document getSVGDocument() {
         return svgDocument;
     }
@@ -159,7 +166,7 @@ public abstract class PrintRecordSheet implements Printable {
         
         Graphics2D g2d = (Graphics2D) graphics;
         if (null != g2d) {
-            File f = new File("data/images/recordsheets/" + getSVGFileName());
+            File f = new File("data/images/recordsheets/" + getSVGFileName(pageIndex - firstPage));
             svgDocument = null;
             try {
                 InputStream is = new FileInputStream(f);
@@ -172,7 +179,8 @@ public abstract class PrintRecordSheet implements Printable {
             }
             if (null == svgDocument) {
                 MegaMekLab.getLogger().error(PrintRecordSheet.class, METHOD_NAME,
-                        "Failed to open Mech SVG file! Path: data/images/recordsheets/" + getSVGFileName());
+                        "Failed to open Mech SVG file! Path: data/images/recordsheets/"
+                                + getSVGFileName(pageIndex - firstPage));
             } else {
                 svgGenerator = new SVGGraphics2D(svgDocument);
                 printImage(g2d, pageFormat, pageIndex - firstPage);
@@ -223,7 +231,11 @@ public abstract class PrintRecordSheet implements Printable {
     protected abstract void printImage(Graphics2D g2d, PageFormat pageFormat, int pageNum)
             throws PrinterException;
 
-    protected abstract String getSVGFileName();
+    /**
+     * @param pageNumber  The page number in the current record sheet, where the first page is numberd zero.
+     * @return            The file name for the current page in the record sheet image directory
+     */
+    protected abstract String getSVGFileName(int pageNumber);
     
     /**
      * @return The title to use for the record sheet
