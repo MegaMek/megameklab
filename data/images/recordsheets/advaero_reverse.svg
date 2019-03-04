@@ -55,13 +55,10 @@
      inkscape:groupmode="layer"
      inkscape:label="BattleTech 35XT026 Experimental Technical Readout Republic III (revised)"
      transform="matrix(1,0,0,-1,0,792)"><text
-       transform="matrix(0.998,0,0,-1,94.4375,706.1587)"
+       transform="matrix(0.998,0,0,-1,205,706.1587)"
        style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:12px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-       id="text22931"><tspan
-         x="0 13.164 21.972 30.888 39.492001 48.959999 52.860001 61.403999 65.736 74.652 82.800003 91.547997 100.68 109.596 118.908 123.24 131.84399 141.312 149.46001 157.608 164.75999 169.092 173.724 182.64 190.78799 199.332 207.48 216.396 225 233.14799"
-         y="0"
-         sodipodi:role="line"
-         id="tspan22933">WARSHIP RECORD SHEET (REVERSE)</tspan></text>
+       text-anchor="middle"
+       id="title">WARSHIP RECORD SHEET (REVERSE)</text>
 <g
        id="g22967"><g
          id="g22969"
@@ -75,19 +72,14 @@
              xlink:href="data:image/png;base64,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"
              id="image22977" /></g></g></g>
     <text
-       transform="matrix(0.99799845,0,0,-1,306,23.0338)"
+       transform="matrix(1,0,0,-1,306,23.0338)"
        style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.7954998px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
        text-anchor="middle"
        textLength="522"
        lengthAdjust="spacingAndGlyphs"
-       id="textCopyright">
-      <tspan
-         x="0"
-         y="0"
-         id="tspanCopyright">© %d The Topps Company, Inc. Classic BattleTech, BattleTech, ’Mech and BattleMech are trademarks of The Topps Company, Inc. All rights reserved.</tspan>
-    </text>
+       id="textCopyright">© %d The Topps Company, Inc. Classic BattleTech, BattleTech, ’Mech and BattleMech are trademarks of The Topps Company, Inc. All rights reserved.</text>
     <text
-       transform="matrix(0.99799845,0,0,-1,306,16.079)"
+       transform="matrix(1,0,0,-1,306,16.079)"
        style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.7954998px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
        text-anchor="middle"
        textLength="494"
