@@ -310,7 +310,9 @@ public class PrintCapitalShip extends PrintEntity {
         setTextField("sailText", ship.getSailIntegrity());
         setTextField("dcText", ship.getDockingCollars().size());
 
-        printInternalRegion("siPips", ship.get0SI(), 100);
+        if (ship instanceof Warship) {
+            printInternalRegion("siPips", ship.get0SI(), 100);
+        }
         printInternalRegion("kfPips", ship.getKFIntegrity(), 30);
         printInternalRegion("sailPips", ship.getSailIntegrity(), 10);
         printInternalRegion("dcPips", ship.getDockingCollars().size(), 10);

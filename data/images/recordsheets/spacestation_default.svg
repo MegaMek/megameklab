@@ -2902,9 +2902,15 @@
            x="0">Integrity:</tspan>
         <tspan
            style="text-anchor:middle"
-           y="41.1"
+           y="39.6"
            x="0">Sail Integrity:</tspan>
-      </text>          </g>  <g
+      </text><path
+       d="m 420.5,526.811 -8.862,0 0,8.859 8.862,0 0,-8.859 z"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none" /><g
+       id="g50400"
+       transform="translate(420.5,526.8114)"><path
+         d="m 0,0 -8.862,0 0,8.859 L 0,8.859 0,0 Z"
+         style="fill:none;stroke:#231f20;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" /></g></g>  <g
      font-family="Eurostile"
      fill="#000000"
      id="g880">
@@ -2978,7 +2984,7 @@
          id="sailText"
          style="text-anchor:middle"
          x="428.5"
-         y="280">0</text>
+         y="277">0</text>
     </g>
     <g
        font-size="7.4001px"
@@ -3112,29 +3118,11 @@
        y="409.78"
        x="348.5" />
     <rect
-       id="siPips"
-       height="28.89"
-       width="70.005"
-       y="253.48"
-       x="389.62" />
-    <rect
-       id="kfPips"
-       height="16.547"
-       width="70.005"
-       y="296.43"
-       x="389.62" />
-    <rect
        id="sailPips"
        height="7.899"
-       width="70.005"
-       y="338.45"
-       x="389.62" />
-    <rect
-       id="dcPips"
-       height="7.8990002"
-       width="70.004997"
-       y="369.01001"
-       x="389.62" />
+       width="70"
+       y="277.5"
+       x="393.62" />
     <rect
        id="inventory"
        height="311.86"
