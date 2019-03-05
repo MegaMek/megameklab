@@ -16,6 +16,7 @@ package megameklab.com.printing;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.print.PageFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -839,18 +840,7 @@ public class PrintCapitalShip extends PrintEntity {
                     for (int i = 0; i < bays.size(); i++) {
                         Bay b = bays.get(i);
                         bayTypeString.append(b.getType());
-                        if (b.getClass().getName().contains("Cargo")) {
-                            double capacity = b.getCapacity();
-                            int wholePart = (int)capacity;
-                            double fractPart = capacity - wholePart;
-                            if (fractPart == 0) {
-                                bayCapacityString.append(String.format("%1$d", wholePart));
-                            } else {
-                                bayCapacityString.append(String.format("%1$.1f", b.getCapacity()));
-                            }
-                        } else {
-                            bayCapacityString.append((int)b.getCapacity());
-                        }
+                        bayCapacityString.append(NumberFormat.getInstance().format(b.getCapacity()));
                         if (i + 1 <  bays.size()) {
                             bayTypeString.append("/");
                             bayCapacityString.append("/");
