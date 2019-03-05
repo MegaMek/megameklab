@@ -3048,7 +3048,13 @@
            style="text-anchor:middle"
            y="121.47814"
            x="0">Docking Collars:</tspan>
-      </text>          </g>  <g
+      </text><path
+       d="m 417,522.1 -8.862,0 0,8.859 8.862,0 0,-8.859 z"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none" /><g
+       id="g50400"
+       transform="translate(417,522.1)"><path
+         d="m 0,0 -8.862,0 0,8.859 L 0,8.859 0,0 Z"
+         style="fill:none;stroke:#231f20;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" /></g>          </g>  <g
      font-family="Eurostile"
      fill="#000000"
      id="g880">
@@ -3265,12 +3271,6 @@
        width="160"
        y="409.78"
        x="348.5" />
-    <rect
-       id="siPips"
-       height="28.89"
-       width="70.005"
-       y="253.48"
-       x="389.62" />
     <rect
        id="kfPips"
        height="16.547"
