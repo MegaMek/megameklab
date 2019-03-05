@@ -225,7 +225,7 @@ public class PrintCapitalShip extends PrintEntity {
         if (ship instanceof Warship) {
             return "warship_default.svg";
         } else if (ship instanceof SpaceStation) {
-            return "space_station_default.svg";
+            return "spacestation_default.svg";
         } else {
             return "jumpship_default.svg";
         }
@@ -868,9 +868,17 @@ public class PrintCapitalShip extends PrintEntity {
 
     @Override
     protected void drawFluffImage() {
+        String dir;
+        if (getEntity() instanceof Warship) {
+            dir = ImageHelper.imageWarship;
+        } else if (getEntity() instanceof SpaceStation) {
+            dir = ImageHelper.imageSpaceStation;
+        } else {
+            dir = ImageHelper.imageJumpship;
+        }
         Element rect = getSVGDocument().getElementById("fluffImage");
         if ((null != rect) && (rect instanceof SVGRectElement)) {
-            embedImage(ImageHelper.getFluffFile(ship, ImageHelper.imageCapital),
+            embedImage(ImageHelper.getFluffFile(ship, dir),
                     (Element) ((Node) rect).getParentNode(), getRectBBox((SVGRectElement) rect), true);
         }
     }
