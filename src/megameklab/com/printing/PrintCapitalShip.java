@@ -17,12 +17,14 @@ import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.print.PageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
@@ -54,22 +56,42 @@ import megameklab.com.util.ImageHelper;
  */
 public class PrintCapitalShip extends PrintEntity {
     
+    /** Default width for armor pip */
     public static final double ARMOR_PIP_WIDTH = 4.5;
+    /** Default height for armor pip */
     public static final double ARMOR_PIP_HEIGHT = 4.5;
+    /** Amount to offset the armor block drop shadow as a fraction of pip height/width */
     public static final double SHADOW_OFFSET = 0.3;
     
-    public static final double ARMOR_PIP_WIDTH_SMALL = 2.25;
-    public static final double ARMOR_PIP_HEIGHT_SMALL = 2.25;
-
+    /** Default width for structure pips */
     public static final int IS_PIP_WIDTH = 3;
+    /** Default height for structure pips */
     public static final int IS_PIP_HEIGHT = 3;
 
+    /** Default width of armor block in number of pips */
     public static final int PIPS_PER_ROW = 10;
+    /** Default height of armor block in number of pips */
     public static final int MAX_PIP_ROWS = 10;
     
+    /** The minimum font size to use when scaling inventory text to fit into available space */
     public static final float MIN_FONT_SIZE = 5.0f;
+    /** The amount of space between lines, as a factor of the font height determined by {@link FontMetrics} */
     public static final float LINE_SPACING = 1.2f;
+    /** The maximum number of inventory lines to print as a single page.
+      * Ideally this would be determined by the space allocated by the svg template, but we need to determine
+      * how many pages we are printing before the template is loaded so we predetermine the value.
+      */
     public static final int MAX_SINGLE_PAGE_LINES = 42;
+    
+    // Indices for arrays tracking computed block sizes and which page to print them on.
+    private static final int BLOCK_CAPITAL = 0;
+    private static final int BLOCK_STANDARD = 1;
+    private static final int BLOCK_GRAV_DECK = 2;
+    private static final int BLOCK_BAYS = 3;
+    private static final int BLOCK_QUIRKS = 4;
+    private static final int NUM_BLOCKS = 5;
+    // The order in which to move blocks to the second page
+    private static final int[] SWITCH_PAGE_ORDER = { BLOCK_STANDARD, BLOCK_GRAV_DECK, BLOCK_BAYS };
 
     /**
      * The ship being printed
@@ -78,8 +100,10 @@ public class PrintCapitalShip extends PrintEntity {
     
     private List<WeaponBayText> capitalWeapTexts;
     private List<WeaponBayText> standardWeapTexts;
-    private int capitalWeaponLines = 0;
-    private int standardWeaponLines = 0;
+    private int[] linesPerBlock = new int[NUM_BLOCKS];
+    private boolean[] blockOnReverse = new boolean[NUM_BLOCKS];
+    private List<Bay> printableBays;
+    private boolean secondPage = false;
     
     /**
      * Creates an SVG object for the record sheet
@@ -108,10 +132,38 @@ public class PrintCapitalShip extends PrintEntity {
         capitalWeapTexts = computeWeaponBayTexts(capitalWeapons);
         standardWeapTexts = computeWeaponBayTexts(standardWeapons);
         for (WeaponBayText wbt : capitalWeapTexts) {
-            capitalWeaponLines += wbt.weapons.size();
+            linesPerBlock[BLOCK_CAPITAL] += wbt.weapons.size();
         }
         for (WeaponBayText wbt : standardWeapTexts) {
-            standardWeaponLines += wbt.weapons.size();
+            linesPerBlock[BLOCK_STANDARD] += wbt.weapons.size();
+        }
+        // Add extra lines for column headers and trailing line break
+        if (linesPerBlock[BLOCK_CAPITAL] > 0) {
+            linesPerBlock[BLOCK_CAPITAL] += 3;
+        }
+        if (linesPerBlock[BLOCK_STANDARD] > 0) {
+            linesPerBlock[BLOCK_STANDARD] += 3;
+        }
+        // Add lines equal to half the grav decks (rounded up) and one each for section title and following empty line
+        if (ship.getGravDecks().size() > 0) {
+            linesPerBlock[BLOCK_GRAV_DECK] = (ship.getGravDecks().size() + 1) / 2 + 2;
+        }
+        // Add lines equal to number of transport bays and one each for section title and following empty line
+        printableBays = ship.getTransports().stream().filter(t -> t instanceof Bay)
+                .map(t -> (Bay) t).filter(b -> !b.isQuarters()).collect(Collectors.toList());
+        if (printableBays.size() > 0) {
+            linesPerBlock[BLOCK_BAYS] = printableBays.size() + 2;
+        }
+        
+        int linesOnFront = Arrays.stream(linesPerBlock).sum();
+        if (linesOnFront > MAX_SINGLE_PAGE_LINES) {
+            secondPage = true;
+            int toSwitch = 0;
+            do {
+                blockOnReverse[SWITCH_PAGE_ORDER[toSwitch]] = true;
+                linesOnFront -= linesPerBlock[SWITCH_PAGE_ORDER[toSwitch]];
+                toSwitch++;
+            } while ((linesOnFront > MAX_SINGLE_PAGE_LINES) && (toSwitch < SWITCH_PAGE_ORDER.length));
         }
     }
     
@@ -171,52 +223,9 @@ public class PrintCapitalShip extends PrintEntity {
     
     @Override
     public int getPageCount() {
-        return capitalWeaponBlockSize() + standardWeaponBlockSize()
-            + gravDeckBlockSize() + bayBlockSize() > MAX_SINGLE_PAGE_LINES ? 2 : 1;
+        return secondPage ? 2 : 1;
     }
-    
-    /**
-     * Calculates the amount of space required by the capital weapons block.
-     * 
-     * @return The number of lines required to list capital weapon bays,
-     * including column headers and following blank line.
-     */
-    private int capitalWeaponBlockSize() {
-        return capitalWeaponLines > 0 ? capitalWeaponLines + 3 : 0;
-    }
-
-    /**
-     * Calculates the amount of space required by the standard weapons block.
-     * 
-     * @return The number of lines required to list standard weapon bays,
-     * including column headers and following blank line.
-     */
-    private int standardWeaponBlockSize() {
-        return standardWeaponLines > 0 ? standardWeaponLines + 3 : 0;
-    }
-    
-    /**
-     * Calculates the amount of space required by the grav deck block
-     * 
-     * @return The number of lines required to list grav decks,
-     * including section title and following blank line.
-     */
-    private int gravDeckBlockSize() {
-        return ship.getGravDecks().size() > 0 ? (ship.getGravDecks().size() + 1) / 2 + 2 : 0;
-    }
-    
-    /**
-     * Calculates the amount of space required by the transport bay block
-     * 
-     * @return The number of lines required to list transport bays,
-     * including section title and following blank line.
-     */
-    private int bayBlockSize() {
-        long bays = ship.getTransports().stream()
-                .filter(t -> (t instanceof Bay) && !((Bay) t).isQuarters()).count();
-        return bays > 0 ? (int) bays + 2 : 0;
-    }
-
+        
     @Override
     protected String getSVGFileName(int pageNumber) {
         if (pageNumber > 0) {
@@ -517,43 +526,36 @@ public class PrintCapitalShip extends PrintEntity {
      * @param reverse Whether this is printing on the reverse side.
      */
     private void writeEquipment(SVGRectElement svgRect, boolean reverse) {
-        int lines;
-        if (reverse) {
-            lines = standardWeaponLines + 2;
-        } else {
-            lines = capitalWeaponBlockSize() + gravDeckBlockSize() + bayBlockSize();
-            if (getPageCount() == 1) {
-                lines += standardWeaponBlockSize();
-            } else {
-                lines += 2;
+        int lines = 0;
+        for (int block = 0; block < NUM_BLOCKS; block++) {
+            if (blockOnReverse[block] == reverse) {
+                lines += linesPerBlock[block];
             }
         }
         InventoryWriter iw = new InventoryWriter(svgRect, lines);
-        if (reverse) {
-            iw.printStandardHeader();
-            for (WeaponBayText bay : standardWeapTexts) {
-                iw.printWeaponBay(bay, false);
+        if ((linesPerBlock[BLOCK_CAPITAL] > 0) && (blockOnReverse[BLOCK_CAPITAL] == reverse)) {
+            iw.printCapitalHeader();
+            for (WeaponBayText bay : capitalWeapTexts) {
+                iw.printWeaponBay(bay, true);
             }
             iw.newLine();
-        } else {
-            if (!capitalWeapTexts.isEmpty()) {
-                iw.printCapitalHeader();
-                for (WeaponBayText bay : capitalWeapTexts) {
-                    iw.printWeaponBay(bay, true);
-                }
-                iw.newLine();
-            }
-            if (getPageCount() > 1) {
-                iw.printReverseSideMessage();
-            } else if (!standardWeapTexts.isEmpty()) {
+        }
+        if (linesPerBlock[BLOCK_STANDARD] > 0) {
+            if (blockOnReverse[BLOCK_STANDARD] == reverse) {
                 iw.printStandardHeader();
                 for (WeaponBayText bay : standardWeapTexts) {
                     iw.printWeaponBay(bay, false);
                 }
-                iw.newLine();
+            } else if (!reverse) {
+                iw.printReverseSideMessage();
             }
+            iw.newLine();
+        }
+        if ((linesPerBlock[BLOCK_GRAV_DECK] > 0) && (blockOnReverse[BLOCK_GRAV_DECK] == reverse)) {
             iw.printGravDecks();
-            iw.printCargoInfo();
+        }
+        if ((linesPerBlock[BLOCK_BAYS] > 0) && (blockOnReverse[BLOCK_BAYS] == reverse)) {
+            iw.printBayInfo();
         }
     }
     
@@ -800,7 +802,7 @@ public class PrintCapitalShip extends PrintEntity {
          * @return
          * @throws SVGException
          */
-        private void printCargoInfo() {
+        private void printBayInfo() {
             if (ship.getTransportBays().size() > 0) {
                 addTextElement(canvas, nameX, currY, "Cargo:", FONT_SIZE_MEDIUM, "start", "bold");
                 currY += getFontHeight(FONT_SIZE_MEDIUM) * LINE_SPACING;
