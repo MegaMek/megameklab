@@ -166,6 +166,10 @@ public class PrintCapitalShip extends PrintEntity {
         if (linesOnFront > MAX_SINGLE_PAGE_LINES) {
             secondPage = true;
             int toSwitch = 0;
+            // If there are no capital weapons, don't move standard scale to second page.
+            if (linesPerBlock[BLOCK_CAPITAL] == 0) {
+                toSwitch++;
+            }
             do {
                 blockOnReverse[SWITCH_PAGE_ORDER[toSwitch]] = true;
                 linesOnFront -= linesPerBlock[SWITCH_PAGE_ORDER[toSwitch]];
