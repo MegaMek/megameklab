@@ -175,6 +175,13 @@ public class PrintCapitalShip extends PrintEntity {
                 linesOnFront -= linesPerBlock[SWITCH_PAGE_ORDER[toSwitch]];
                 toSwitch++;
             } while ((linesOnFront > MAX_SINGLE_PAGE_LINES) && (toSwitch < SWITCH_PAGE_ORDER.length));
+            // Another tweak for situations where there are no capital weapons. If only the grav decks
+            // are moved to page two, move bays as well to prevent a second page with only one or two lines
+            if (!blockOnReverse[BLOCK_STANDARD] && !blockOnReverse[BLOCK_BAYS]
+                    && blockOnReverse[BLOCK_GRAV_DECK]) {
+                blockOnReverse[BLOCK_BAYS] = true;
+                linesOnFront -= linesPerBlock[BLOCK_BAYS];
+            }
         }
     }
     
