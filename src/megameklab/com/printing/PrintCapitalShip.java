@@ -36,6 +36,7 @@ import org.w3c.dom.svg.SVGRectElement;
 import com.kitfox.svg.SVGException;
 
 import megamek.common.Aero;
+import megamek.common.AmmoType;
 import megamek.common.Bay;
 import megamek.common.Entity;
 import megamek.common.Jumpship;
@@ -694,7 +695,9 @@ public class PrintCapitalShip extends PrintEntity {
                 String nameString;
                 if (bay.weaponAmmo.containsKey(wtype)) {
                     Mounted ammo = bay.weaponAmmo.get(wtype);
-                    if (wtype.isCapital() && wtype.hasFlag(WeaponType.F_MISSILE)) {
+                    if (wtype.getAmmoType() == AmmoType.T_AR10) {
+                        nameString = wtype.getShortName() + " (" + (int) ammo.getAmmoCapacity() + " ton capacity)";
+                    } else if (wtype.isCapital() && wtype.hasFlag(WeaponType.F_MISSILE)) {
                         nameString = wtype.getShortName() + " (" + ammo.getBaseShotsLeft() + " missiles)";
                     } else {
                         nameString = wtype.getShortName() + " (" + ammo.getBaseShotsLeft() + " rounds)";
@@ -705,9 +708,23 @@ public class PrintCapitalShip extends PrintEntity {
                 if (first & numBayWeapons > 1) {
                     nameString += ",";
                 }
-                addWeaponText(first, bay.weapons.get(wtype), nameString, isCapital,
-                        locString, bayHeat, new double[] { baySRV, bayMRV, bayLRV, bayERV },
-                        new double[] { standardBaySRV, standardBayMRV, standardBayLRV, standardBayERV });
+                if (wtype.getAmmoType() == AmmoType.T_AR10) {
+                    // Depends on missile type
+                    addTextElement(canvas, first ? nameX : nameX + indent, currY,
+                            bay.weapons.get(wtype) + " " + nameString,
+                            fontSize, "start", "normal");
+                    addTextElement(canvas, locX, currY, locString,     fontSize, "middle", "normal");
+                    addTextElement(canvas, htX,  currY, "*", fontSize, "middle", "normal");
+                    addTextElement(canvas, srvX, currY, "*",  fontSize, "middle", "normal");
+                    addTextElement(canvas, mrvX, currY, "*",  fontSize, "middle", "normal");
+                    addTextElement(canvas, lrvX, currY, "*",  fontSize, "middle", "normal");
+                    addTextElement(canvas, ervX, currY, "*",  fontSize, "middle", "normal");
+                    currY += lineHeight;
+                } else {
+                    addWeaponText(first, bay.weapons.get(wtype), nameString, isCapital,
+                            locString, bayHeat, new double[] { baySRV, bayMRV, bayLRV, bayERV },
+                            new double[] { standardBaySRV, standardBayMRV, standardBayLRV, standardBayERV });
+                }
                 first = false;
             }
         }
