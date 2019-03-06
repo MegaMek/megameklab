@@ -787,16 +787,16 @@ public class PrintCapitalShip extends PrintEntity {
             addTextElement(canvas, localNameX, currY, nameString, fontSize, "start", "normal");
             addTextElement(canvas, locX, currY, loc,     fontSize, "middle", "normal");
             addTextElement(canvas, htX,  currY, heatTxt, fontSize, "middle", "normal");
-            addTextElement(canvas, srvX, currY, srvTxt,  fontSize, "middle", "normal");
-            addTextElement(canvas, mrvX, currY, mrvTxt,  fontSize, "middle", "normal");
-            addTextElement(canvas, lrvX, currY, lrvTxt,  fontSize, "middle", "normal");
-            addTextElement(canvas, ervX, currY, ervTxt,  fontSize, "middle", "normal");
+            addTextElementToFit(canvas, srvX, currY, mrvX - srvX, srvTxt,  fontSize, "middle", "normal");
+            addTextElementToFit(canvas, mrvX, currY, lrvX - mrvX, mrvTxt,  fontSize, "middle", "normal");
+            addTextElementToFit(canvas, lrvX, currY, ervX - lrvX, lrvTxt,  fontSize, "middle", "normal");
+            addTextElementToFit(canvas, ervX, currY, bbox.getWidth() - bbox.getX(), ervTxt,  fontSize, "middle", "normal");
             currY += lineHeight;
             if (secondLine) {
-                addTextElement(canvas, srvX, currY, slSRV,  fontSize, "middle", "normal");
-                addTextElement(canvas, mrvX, currY, slMRV,  fontSize, "middle", "normal");
-                addTextElement(canvas, lrvX, currY, slLRV,  fontSize, "middle", "normal");
-                addTextElement(canvas, ervX, currY, slERV,  fontSize, "middle", "normal");
+                addTextElementToFit(canvas, srvX, currY, mrvX - srvX, srvTxt,  fontSize, "middle", "normal");
+                addTextElementToFit(canvas, mrvX, currY, lrvX - mrvX, mrvTxt,  fontSize, "middle", "normal");
+                addTextElementToFit(canvas, lrvX, currY, ervX - lrvX, lrvTxt,  fontSize, "middle", "normal");
+                addTextElementToFit(canvas, ervX, currY, bbox.getWidth() - bbox.getX(), ervTxt,  fontSize, "middle", "normal");
                 currY += lineHeight;
             }
         }

@@ -322,6 +322,58 @@ public abstract class PrintRecordSheet implements Printable {
     }
     
     /**
+     * Creates a new text element with black fill and adds it to the parent.
+     * If the text is wider than the available
+     * space, the text is compressed to fit.
+     * 
+     * @param parent    The SVG element to add the text element to.
+     * @param x         The X position of the new element.
+     * @param y         The Y position of the new element.
+     * @param width     The width of the space the text has to fit.
+     * @param text      The text to display.
+     * @param fontSize  Font size of the text.
+     * @param anchor    Set the Text elements text-anchor.  Should be either start, middle, or end.
+     * @param weight    The font weight, either normal or bold.
+     */
+    protected void addTextElementToFit(Element parent, double x, double y, double width,
+            String text, float fontSize, String anchor, String weight) {
+        addTextElementToFit(parent, x, y, width, text, fontSize, anchor, weight, "#000000");
+    }
+    
+    /**
+     * Creates a new text element and adds it to the parent. If the text is wider than the available
+     * space, the text is compressed to fit.
+     * 
+     * @param parent    The SVG element to add the text element to.
+     * @param x         The X position of the new element.
+     * @param y         The Y position of the new element.
+     * @param width     The width of the space the text has to fit.
+     * @param text      The text to display.
+     * @param fontSize  Font size of the text.
+     * @param anchor    Set the Text elements text-anchor.  Should be either start, middle, or end.
+     * @param weight    The font weight, either normal or bold.
+     * @param fill      The fill color for the text (e.g. foreground color)
+     */
+    protected void addTextElementToFit(Element parent, double x, double y, double width,
+            String text, float fontSize, String anchor, String weight, String fill) {
+        Element newText = svgDocument.createElementNS(svgNS, SVGConstants.SVG_TEXT_TAG);
+        newText.setTextContent(text);
+        newText.setAttributeNS(null, SVGConstants.SVG_X_ATTRIBUTE, String.valueOf(x));
+        newText.setAttributeNS(null, SVGConstants.SVG_Y_ATTRIBUTE, String.valueOf(y));
+        newText.setAttributeNS(null, SVGConstants.SVG_FONT_FAMILY_ATTRIBUTE, "Eurostile");
+        newText.setAttributeNS(null, SVGConstants.SVG_FONT_SIZE_ATTRIBUTE, fontSize + "px");
+        newText.setAttributeNS(null, SVGConstants.SVG_FONT_WEIGHT_ATTRIBUTE, weight);
+        newText.setAttributeNS(null, SVGConstants.SVG_TEXT_ANCHOR_ATTRIBUTE, anchor);
+        newText.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, fill);
+        if (getTextLength(text, fontSize) > width) {
+            newText.setAttributeNS(null,  SVGConstants.SVG_TEXT_LENGTH_ATTRIBUTE, String.valueOf(width));
+            newText.setAttributeNS(null, SVGConstants.SVG_LENGTH_ADJUST_ATTRIBUTE,
+                    SVGConstants.SVG_SPACING_AND_GLYPHS_VALUE);
+        }
+        parent.appendChild(newText);
+    }
+    
+    /**
      * Adds a text element to a region with limited width. If there are multiple lines, the text
      * will be split over multiple lines, broken on a space character. The space will still be
      * included on the next line as a small indent.
