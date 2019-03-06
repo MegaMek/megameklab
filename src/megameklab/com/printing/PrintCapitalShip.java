@@ -87,13 +87,14 @@ public class PrintCapitalShip extends PrintEntity {
     
     // Indices for arrays tracking computed block sizes and which page to print them on.
     private static final int BLOCK_CAPITAL = 0;
-    private static final int BLOCK_STANDARD = 1;
-    private static final int BLOCK_GRAV_DECK = 2;
-    private static final int BLOCK_BAYS = 3;
-    private static final int BLOCK_QUIRKS = 4;
-    private static final int NUM_BLOCKS = 5;
+    private static final int BLOCK_AR10_AMMO = 1;
+    private static final int BLOCK_STANDARD = 2;
+    private static final int BLOCK_GRAV_DECK = 3;
+    private static final int BLOCK_BAYS = 4;
+    private static final int BLOCK_QUIRKS = 5;
+    private static final int NUM_BLOCKS = 6;
     // The order in which to move blocks to the second page
-    private static final int[] SWITCH_PAGE_ORDER = { BLOCK_STANDARD, BLOCK_GRAV_DECK, BLOCK_BAYS };
+    private static final int[] SWITCH_PAGE_ORDER = { BLOCK_STANDARD, BLOCK_GRAV_DECK, BLOCK_BAYS, BLOCK_AR10_AMMO };
 
     /**
      * The ship being printed
@@ -145,6 +146,10 @@ public class PrintCapitalShip extends PrintEntity {
         }
         if (linesPerBlock[BLOCK_STANDARD] > 0) {
             linesPerBlock[BLOCK_STANDARD] += 3;
+        }
+        if (ship.getTotalWeaponList().stream()
+                .anyMatch(w -> ((WeaponType) w.getType()).getAmmoType() == AmmoType.T_AR10)) {
+            linesPerBlock[BLOCK_AR10_AMMO] = 5;
         }
         // Add lines equal to half the grav decks (rounded up) and one each for section title and following empty line
         if (ship.getGravDecks().size() > 0) {
@@ -544,6 +549,11 @@ public class PrintCapitalShip extends PrintEntity {
             }
             iw.newLine();
         }
+        if ((linesPerBlock[BLOCK_AR10_AMMO] > 0)
+                && (blockOnReverse[BLOCK_AR10_AMMO] == reverse)) {
+            iw.printAR10AmmoBlock();
+            iw.newLine();
+        }
         if (linesPerBlock[BLOCK_STANDARD] > 0) {
             if (blockOnReverse[BLOCK_STANDARD] == reverse) {
                 iw.printStandardHeader();
@@ -785,6 +795,33 @@ public class PrintCapitalShip extends PrintEntity {
                 addTextElement(canvas, ervX, currY, slERV,  fontSize, "middle", "normal");
                 currY += lineHeight;
             }
+        }
+        
+        void printAR10AmmoBlock() {
+            double lineHeight = FONT_SIZE_MEDIUM * LINE_SPACING;
+            addTextElement(canvas, nameX, currY, "AR10 Munitions", FONT_SIZE_MEDIUM, "start", "bold");
+            addTextElement(canvas, locX, currY, "Tons", FONT_SIZE_MEDIUM, "middle", "bold");
+            addTextElement(canvas, htX,  currY, "Ht", FONT_SIZE_MEDIUM, "middle", "bold");
+            addTextElement(canvas, srvX, currY, "SRV", FONT_SIZE_MEDIUM, "middle", "bold");
+            addTextElement(canvas, mrvX, currY, "MRV", FONT_SIZE_MEDIUM, "middle", "bold");
+            addTextElement(canvas, lrvX, currY, "LRV", FONT_SIZE_MEDIUM, "middle", "bold");
+            addTextElement(canvas, ervX, currY, "ERV", FONT_SIZE_MEDIUM, "middle", "bold");
+            currY += lineHeight;
+            
+            printAR10MissileLine("Killer Whale", 50, 20, 4);
+            printAR10MissileLine("White Shark", 40, 15, 3);
+            printAR10MissileLine("Barracuda", 30, 10, 2);
+        }
+        
+        void printAR10MissileLine(String name, int weight, int heat, int av) {
+            addTextElement(canvas, nameX, currY, name, FONT_SIZE_MEDIUM, "start", "normal");
+            addTextElement(canvas, locX, currY, String.valueOf(weight), FONT_SIZE_MEDIUM, "middle", "normal");
+            addTextElement(canvas, htX,  currY, String.valueOf(heat), FONT_SIZE_MEDIUM, "middle", "normal");
+            addTextElement(canvas, srvX, currY, String.valueOf(av), FONT_SIZE_MEDIUM, "middle", "normal");
+            addTextElement(canvas, mrvX, currY, String.valueOf(av), FONT_SIZE_MEDIUM, "middle", "normal");
+            addTextElement(canvas, lrvX, currY, String.valueOf(av), FONT_SIZE_MEDIUM, "middle", "normal");
+            addTextElement(canvas, ervX, currY, String.valueOf(av), FONT_SIZE_MEDIUM, "middle", "normal");
+            currY += lineHeight;
         }
         
         /**
