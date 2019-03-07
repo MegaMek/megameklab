@@ -91,8 +91,7 @@ public class PrintCapitalShip extends PrintEntity {
     private static final int BLOCK_STANDARD = 2;
     private static final int BLOCK_GRAV_DECK = 3;
     private static final int BLOCK_BAYS = 4;
-    private static final int BLOCK_QUIRKS = 5;
-    private static final int NUM_BLOCKS = 6;
+    private static final int NUM_BLOCKS = 5;
     // The order in which to move blocks to the second page
     private static final int[] SWITCH_PAGE_ORDER = { BLOCK_STANDARD, BLOCK_GRAV_DECK, BLOCK_BAYS, BLOCK_AR10_AMMO };
 
@@ -753,31 +752,16 @@ public class PrintCapitalShip extends PrintEntity {
         void addWeaponText(boolean first, int num, String name, boolean isCapital,
                 String loc, int bayHeat, double[] capitalAV, double[] standardAV) {
             String srvTxt, mrvTxt, lrvTxt, ervTxt;
-            String slSRV, slMRV, slLRV, slERV;
-            slSRV = slMRV = slLRV = slERV = "";
-            boolean secondLine = false;
             if (isCapital) { // Print out capital damage for weapon total
                 srvTxt = capitalAV[0] == 0 ? "-" : (int)capitalAV[0] + "";
                 mrvTxt = capitalAV[1] == 0 ? "-" : (int)capitalAV[1] + "";
                 lrvTxt = capitalAV[2] == 0 ? "-" : (int)capitalAV[2] + "";
                 ervTxt = capitalAV[3] == 0 ? "-" : (int)capitalAV[3] + "";
             } else { // Print out capital and standard damages
-                if (standardAV[0] >= 100 && standardAV[1] >= 100) {
-                    secondLine = true;
-                    srvTxt = capitalAV[0] == 0 ? "-" : (int)capitalAV[0] + "";
-                    mrvTxt = capitalAV[1] == 0 ? "-" : (int)capitalAV[1] + "";
-                    lrvTxt = capitalAV[2] == 0 ? "-" : (int)capitalAV[2] + "";
-                    ervTxt = capitalAV[3] == 0 ? "-" : (int)capitalAV[3] + "";
-                    slSRV =  capitalAV[0] == 0 ? "" : " (" + standardAV[0] + ")";
-                    slMRV =  capitalAV[1] == 0 ? "" : " (" + standardAV[1] + ")";
-                    slLRV =  capitalAV[2] == 0 ? "" : " (" + standardAV[2] + ")";
-                    slERV =  capitalAV[3] == 0 ? "" : " (" + standardAV[3] + ")";
-                } else {
-                    srvTxt = capitalAV[0] == 0 ? "-" : (int)capitalAV[0] + " (" + (int) standardAV[0] + ")";
-                    mrvTxt = capitalAV[1] == 0 ? "-" : (int)capitalAV[1] + " (" + (int) standardAV[1] + ")";
-                    lrvTxt = capitalAV[2] == 0 ? "-" : (int)capitalAV[2] + " (" + (int) standardAV[2] + ")";
-                    ervTxt = capitalAV[3] == 0 ? "-" : (int)capitalAV[3] + " (" + (int) standardAV[3] + ")";
-                }
+                srvTxt = capitalAV[0] == 0 ? "-" : (int)capitalAV[0] + " (" + (int) standardAV[0] + ")";
+                mrvTxt = capitalAV[1] == 0 ? "-" : (int)capitalAV[1] + " (" + (int) standardAV[1] + ")";
+                lrvTxt = capitalAV[2] == 0 ? "-" : (int)capitalAV[2] + " (" + (int) standardAV[2] + ")";
+                ervTxt = capitalAV[3] == 0 ? "-" : (int)capitalAV[3] + " (" + (int) standardAV[3] + ")";
             }
             String nameString = num + "  " + name;
             String heatTxt;
@@ -797,15 +781,9 @@ public class PrintCapitalShip extends PrintEntity {
             addTextElementToFit(canvas, srvX, currY, mrvX - srvX, srvTxt,  fontSize, "middle", "normal");
             addTextElementToFit(canvas, mrvX, currY, lrvX - mrvX, mrvTxt,  fontSize, "middle", "normal");
             addTextElementToFit(canvas, lrvX, currY, ervX - lrvX, lrvTxt,  fontSize, "middle", "normal");
-            addTextElementToFit(canvas, ervX, currY, bbox.getWidth() - bbox.getX(), ervTxt,  fontSize, "middle", "normal");
+            addTextElementToFit(canvas, ervX, currY, bbox.getX() + bbox.getWidth() - ervX,
+                    ervTxt,  fontSize, "middle", "normal");
             currY += lineHeight;
-            if (secondLine) {
-                addTextElementToFit(canvas, srvX, currY, mrvX - srvX, srvTxt,  fontSize, "middle", "normal");
-                addTextElementToFit(canvas, mrvX, currY, lrvX - mrvX, mrvTxt,  fontSize, "middle", "normal");
-                addTextElementToFit(canvas, lrvX, currY, ervX - lrvX, lrvTxt,  fontSize, "middle", "normal");
-                addTextElementToFit(canvas, ervX, currY, bbox.getWidth() - bbox.getX(), ervTxt,  fontSize, "middle", "normal");
-                currY += lineHeight;
-            }
         }
         
         void printAR10AmmoBlock() {
