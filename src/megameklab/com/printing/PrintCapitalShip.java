@@ -46,7 +46,6 @@ import megamek.common.UnitType;
 import megamek.common.Warship;
 import megamek.common.WeaponType;
 import megameklab.com.MegaMekLab;
-import megameklab.com.ui.Aero.Printing.WeaponBayText;
 import megameklab.com.util.ImageHelper;
 
 /**
