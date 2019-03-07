@@ -31,6 +31,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -202,6 +203,99 @@ public class ImageHelper {
                 .getImage();
         return image;
     }
+
+    public static String getRelativeFluffImagePath(String absoluteFluffImagePath) {
+        // Construct a relative path based of the directory of the currently loaded file.
+        return getRelativeFluffImagePath(absoluteFluffImagePath, CConfig.getParam(CConfig.CONFIG_LOAD_FILE_1));
+    }
+    
+    public static String getRelativeFluffImagePath(String absoluteFluffImagePath, String referenceFilePath) {
+        File file = new File(absoluteFluffImagePath);
+        
+        // Construct a relative path based on the default directory.
+        File defaultDirectory = new File(System.getProperty("user.dir").toString() + "/data/mechfiles/");
+        String relativeDefaultDirectoryFilePath = Paths.get(defaultDirectory.getAbsolutePath()).relativize(Paths.get(file.getAbsolutePath())).toString();
+        
+        // Construct a relative path based on the directory of the supplied reference file
+        // (default is the currently loaded file).
+        File referenceDirectory = new File(referenceFilePath).getParentFile();
+        
+        if (referenceDirectory == null || !referenceDirectory.exists() || !referenceDirectory.isDirectory()) {
+            return relativeDefaultDirectoryFilePath;
+        }
+        
+        String relativeReferenceDirectoryFilePath = Paths.get(referenceDirectory.getAbsolutePath()).relativize(Paths.get(file.getAbsolutePath())).toString();
+
+        // Use the shorter of the both relative paths.
+        String relativeFilePath;
+        if (relativeReferenceDirectoryFilePath.length() <= relativeDefaultDirectoryFilePath.length()) {
+            relativeFilePath = relativeReferenceDirectoryFilePath;
+        } else {
+            relativeFilePath = relativeDefaultDirectoryFilePath;
+        }
+        
+        return relativeFilePath;
+    }
+
+    public static String getAbsoluteFluffImagePath(String relativeFluffImagePath) {
+        return getAbsoluteFluffImagePath(relativeFluffImagePath, null);
+    }
+    
+    public static String getAbsoluteFluffImagePath(String relativeFluffImagePath, String referenceFilePath) {
+        File f = null;
+        
+        if (relativeFluffImagePath != null && !relativeFluffImagePath.isEmpty())
+        {
+            if (referenceFilePath != null && !referenceFilePath.isEmpty()) {
+                File referenceDirectory = new File(referenceFilePath).getAbsoluteFile().getParentFile();
+                if (referenceDirectory != null) {
+                    f = new File(referenceDirectory, relativeFluffImagePath);
+                    if (f.exists()) {
+                        return f.getAbsolutePath();
+                    }
+                }
+            }
+
+            f = new File(relativeFluffImagePath).getAbsoluteFile();
+            if (f.exists()) {
+                return f.getAbsolutePath();
+            }
+
+            File loadDirectory = new File(CConfig.getParam(CConfig.CONFIG_LOAD_FILE_1)).getAbsoluteFile().getParentFile();
+            if (loadDirectory != null) {
+                f = new File(loadDirectory, relativeFluffImagePath);
+                if (f.exists()) {
+                    return f.getAbsolutePath();
+                }
+            }
+            
+            File defaultDirectory = new File(System.getProperty("user.dir").toString() + "/data/mechfiles/").getAbsoluteFile();
+            f = new File(defaultDirectory, relativeFluffImagePath);
+            if (f.exists()) {
+                return f.getAbsolutePath();
+            }
+            
+            File path = new File(fluffPath).getAbsoluteFile();
+            f = new File(path, relativeFluffImagePath);
+            if (f.exists()) {
+                return f.getAbsolutePath();
+            }
+        }
+        
+        return "";
+    }
+    
+    public static String updateRelativeFluffImagePath(String relativeFluffImagePath, String oldReferenceFilePath, String newReferenceFilePath) {
+        String absoluteFluffImagePath = getAbsoluteFluffImagePath(relativeFluffImagePath, oldReferenceFilePath);
+        
+        if (!absoluteFluffImagePath.isEmpty() && new File(absoluteFluffImagePath).exists()) {
+            return getRelativeFluffImagePath(absoluteFluffImagePath, newReferenceFilePath);
+        }
+        
+        // If we cannot update the image path successfully, just keep the old path.
+        // The file might be copied back to the original location at some point in the future.
+        return relativeFluffImagePath;
+    }
     
     /**
      * Checks for a fluff image for the unit starting with any file explicitly associated with the
@@ -213,21 +307,18 @@ public class ImageHelper {
      * @return     A file to use for the fluff image, or null if no file is found.
      */
     public static File getFluffFile(Entity unit, String dir) {
-        String path = new File(fluffPath).getAbsolutePath();
-        File f = null;
+        File f;
         
-        if (unit.getFluff().getMMLImagePath().length() > 0) {
-            f = new File(unit.getFluff().getMMLImagePath());
-            if (f.exists()) {
-                return f;
-            }
-            f = new File(path, unit.getFluff().getMMLImagePath());
+        String absoluteFluffImagePath = getAbsoluteFluffImagePath(unit.getFluff().getMMLImagePath());
+        if (!absoluteFluffImagePath.isEmpty())
+        {
+            f = new File(absoluteFluffImagePath);
             if (f.exists()) {
                 return f;
             }
         }
-
-        path = new File(path, dir).getAbsolutePath();
+        
+        String path = new File(new File(fluffPath).getAbsolutePath(), dir).getAbsolutePath();
         final String [] EXTENSIONS = { ".png", ".PNG", ".jpg", ".JPG", ".jpeg", ".JPEG", ".gif", ".GIF" };
         for (String ext : EXTENSIONS) {
             f = new File(path, unit.getShortNameRaw() + ext);
@@ -248,7 +339,7 @@ public class ImageHelper {
         return null;
     }
 
-    public static Image getFluffImage(String image) {
+    private static Image getFluffImage(String image) {
 
         if ((image == null) || (image.trim().length() < 1)) {
             return null;
@@ -296,7 +387,7 @@ public class ImageHelper {
         return fluff;
     }
 
-    public static Image getFluffPNG(Entity unit, String path) {
+    private static Image getFluffPNG(Entity unit, String path) {
         Image fluff = null;
 
         String fluffFile = path + unit.getChassis() + " " + unit.getModel()
@@ -322,7 +413,7 @@ public class ImageHelper {
         return fluff;
     }
 
-    public static Image getFluffJPG(Entity unit, String path) {
+    private static Image getFluffJPG(Entity unit, String path) {
         Image fluff = null;
 
         String fluffFile = path + unit.getChassis() + " " + unit.getModel()
@@ -348,7 +439,7 @@ public class ImageHelper {
         return fluff;
     }
 
-    public static Image getFluffGIF(Entity unit, String path) {
+    private static Image getFluffGIF(Entity unit, String path) {
         Image fluff = null;
 
         String fluffFile = path + unit.getChassis() + " " + unit.getModel()

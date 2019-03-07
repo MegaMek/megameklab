@@ -987,7 +987,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
     }
 
     private void jMenuLoadInfantry() {
-    	new megameklab.com.ui.Infantry.MainUI();
+        new megameklab.com.ui.Infantry.MainUI();
         parentFrame.dispose();
     }
 
@@ -1119,6 +1119,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         if (fDialog.getFile() != null) {
             filePathName = fDialog.getDirectory() + fDialog.getFile();
             CConfig.setParam(CConfig.CONFIG_SAVE_LOC, fDialog.getDirectory());
+            parentFrame.getEntity().getFluff().setMMLImagePath(ImageHelper.updateRelativeFluffImagePath(parentFrame.getEntity().getFluff().getMMLImagePath(), CConfig.getParam(CConfig.CONFIG_LOAD_FILE_1), filePathName));
         } else {
             return;
         }
@@ -1135,6 +1136,8 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
                 BLKFile.encode(filePathName, parentFrame.getEntity());
             }
             CConfig.updateSaveFiles(filePathName);
+            CConfig.setParam(CConfig.CONFIG_LOAD_FILE_1, filePathName);
+            
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -1240,6 +1243,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
                 return;
             }
             parentFrame.dispose();
+            CConfig.setParam(CConfig.CONFIG_LOAD_FILE_1, "");
             UnitUtil.updateLoadedUnit(newUnit);
             newUI.setEntity(newUnit);
             newUI.reloadTabs();
@@ -1356,6 +1360,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
                     return;
                 }
                 parentFrame.dispose();
+                CConfig.setParam(CConfig.CONFIG_LOAD_FILE_1, unitFile.getAbsolutePath());
                 UnitUtil.updateLoadedUnit(tempEntity);
                 newUI.setEntity(tempEntity);
                 newUI.reloadTabs();
@@ -1363,6 +1368,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
                 newUI.refreshAll();
                 return;
             }
+            CConfig.setParam(CConfig.CONFIG_LOAD_FILE_1, unitFile.getAbsolutePath());
             parentFrame.setEntity(tempEntity);
             UnitUtil.updateLoadedUnit(parentFrame.getEntity());
 
