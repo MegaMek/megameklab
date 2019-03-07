@@ -40,6 +40,7 @@ import megamek.common.UnitRoleHandler;
 import megamek.common.options.IOption;
 import megamek.common.options.IOptionGroup;
 import megamek.common.options.PilotOptions;
+import megamek.common.options.Quirks;
 
 /**
  * Base class for printing Entity record sheets
@@ -83,6 +84,33 @@ public abstract class PrintEntity extends PrintRecordSheet {
      */
     protected boolean showPilotInfo() {
         return options.showPilotData() && !getEntity().getCrew().getName().equalsIgnoreCase("unnamed");
+    }
+    
+    /**
+     * Builds the string to display for the quirks block. Returns an empty string if quirks are
+     * disabled (or if the unit has no quirks).
+     * 
+     * @return The text to display for the unit's quirks.
+     */
+    protected String formatQuirks() {
+        if (options.showQuirks()) {
+            StringJoiner sj = new StringJoiner(", ");
+            Quirks quirks = getEntity().getQuirks();
+            for (Enumeration<IOptionGroup> optionGroups = quirks.getGroups(); optionGroups.hasMoreElements();) {
+                IOptionGroup optiongroup = optionGroups.nextElement();
+                if (quirks.count(optiongroup.getKey()) > 0) {
+                    for (Enumeration<IOption> options = optiongroup.getOptions(); options.hasMoreElements();) {
+                        IOption option = options.nextElement();
+                        if (option != null && option.booleanValue()) {
+                            sj.add(option.getDisplayableNameWithValue());
+                        }
+                    }
+                }
+            }
+            return sj.toString();
+        } else {
+            return "";
+        }
     }
     
     @Override

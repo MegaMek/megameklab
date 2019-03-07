@@ -16,10 +16,8 @@ package megameklab.com.printing;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.print.PageFormat;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.StringJoiner;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
@@ -40,9 +38,6 @@ import megamek.common.Mech;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.QuadVee;
-import megamek.common.options.IOption;
-import megamek.common.options.IOptionGroup;
-import megamek.common.options.Quirks;
 import megameklab.com.util.ImageHelper;
 import megameklab.com.util.RecordSheetEquipmentLine;
 import megameklab.com.util.UnitUtil;
@@ -408,23 +403,9 @@ public class PrintMech extends PrintEntity {
             }
         }
         
-        StringJoiner quirksList = new StringJoiner(", ");
-        if (options.showQuirks()) {
-            Quirks quirks = mech.getQuirks();
-            for (Enumeration<IOptionGroup> optionGroups = quirks.getGroups(); optionGroups.hasMoreElements();) {
-                IOptionGroup optiongroup = optionGroups.nextElement();
-                if (quirks.count(optiongroup.getKey()) > 0) {
-                    for (Enumeration<IOption> options = optiongroup.getOptions(); options.hasMoreElements();) {
-                        IOption option = options.nextElement();
-                        if (option != null && option.booleanValue()) {
-                            quirksList.add(option.getDisplayableNameWithValue());
-                        }
-                    }
-                }
-            }
-        }
+        String quirksText = formatQuirks();
 
-        if ((ammo.size() > 0) || (quirksList.length() > 0)) {
+        if ((ammo.size() > 0) || (quirksText.length() > 0)) {
             Element svgGroup = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
             canvas.appendChild(svgGroup);
             lines = 0; 
@@ -434,10 +415,10 @@ public class PrintMech extends PrintEntity {
                         .map(e -> String.format("(%s) %d", e.getKey(), e.getValue()))
                         .collect(Collectors.joining(", ")), fontSize, "start", "normal");
             }
-            if (quirksList.length() > 0) {
+            if (quirksText.length() > 0) {
                 lines += addMultilineTextElement(svgGroup, viewX + viewWidth * 0.025, lines * lineHeight,
                         viewWidth * 0.95, lineHeight,
-                        "Quirks: " + quirksList.toString(), fontSize, "start", "normal");
+                        "Quirks: " + quirksText, fontSize, "start", "normal");
             }
             svgGroup.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
                     String.format("translate(0,%f)", viewY + viewHeight - lines * lineHeight));
