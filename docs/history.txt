@@ -11,6 +11,7 @@ v0.45.4-SNAPSHOT
 + Issue #260:  Some issue to allocate the components of LAM
 + Issue #261: LAM's motive type doesn't change the weight of its conversion equipment.
 + Issue #7: Pilot name printing on RSs
++ Issue #271: Bug of interaction with Partial Wing, Improved Jump Jet and Hardened Armor
 
 v0.45.3 (2019-02-12 0500 UTC)
 + Issue #223: Quad Protomech engine weight
