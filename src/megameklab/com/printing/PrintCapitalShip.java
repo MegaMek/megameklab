@@ -35,7 +35,6 @@ import org.w3c.dom.svg.SVGRectElement;
 
 import com.kitfox.svg.SVGException;
 
-import megamek.common.Aero;
 import megamek.common.AmmoType;
 import megamek.common.Bay;
 import megamek.common.Entity;
@@ -50,20 +49,23 @@ import megameklab.com.util.ImageHelper;
 
 /**
  * Generates a record sheet image for jumpships, warships, and space stations.
- * 
+ *
  * @author arlith
  * @author Neoancient
  *
  */
 public class PrintCapitalShip extends PrintEntity {
-    
+
     /** Default width for armor pip */
     public static final double ARMOR_PIP_WIDTH = 4.5;
     /** Default height for armor pip */
     public static final double ARMOR_PIP_HEIGHT = 4.5;
-    /** Amount to offset the armor block drop shadow as a fraction of pip height/width */
+    /**
+     * Amount to offset the armor block drop shadow as a fraction of pip
+     * height/width
+     */
     public static final double SHADOW_OFFSET = 0.3;
-    
+
     /** Default width for structure pips */
     public static final int IS_PIP_WIDTH = 3;
     /** Default height for structure pips */
@@ -73,18 +75,27 @@ public class PrintCapitalShip extends PrintEntity {
     public static final int PIPS_PER_ROW = 10;
     /** Default height of armor block in number of pips */
     public static final int MAX_PIP_ROWS = 10;
-    
-    /** The minimum font size to use when scaling inventory text to fit into available space */
+
+    /**
+     * The minimum font size to use when scaling inventory text to fit into
+     * available space
+     */
     public static final float MIN_FONT_SIZE = 5.0f;
-    /** The amount of space between lines, as a factor of the font height determined by {@link FontMetrics} */
+    /**
+     * The amount of space between lines, as a factor of the font height determined
+     * by {@link java.awt.FontMetrics}
+     */
     public static final float LINE_SPACING = 1.2f;
-    /** The maximum number of inventory lines to print as a single page.
-      * Ideally this would be determined by the space allocated by the svg template, but we need to determine
-      * how many pages we are printing before the template is loaded so we predetermine the value.
-      */
+    /**
+     * The maximum number of inventory lines to print as a single page. Ideally this
+     * would be determined by the space allocated by the svg template, but we need
+     * to determine how many pages we are printing before the template is loaded so
+     * we predetermine the value.
+     */
     public static final int MAX_SINGLE_PAGE_LINES = 42;
-    
-    // Indices for arrays tracking computed block sizes and which page to print them on.
+
+    // Indices for arrays tracking computed block sizes and which page to print them
+    // on.
     private static final int BLOCK_CAPITAL = 0;
     private static final int BLOCK_AR10_AMMO = 1;
     private static final int BLOCK_STANDARD = 2;
@@ -98,27 +109,30 @@ public class PrintCapitalShip extends PrintEntity {
      * The ship being printed
      */
     private final Jumpship ship;
-    
+
     private List<WeaponBayText> capitalWeapTexts;
     private List<WeaponBayText> standardWeapTexts;
-    private int[] linesPerBlock = new int[NUM_BLOCKS];
-    private boolean[] blockOnReverse = new boolean[NUM_BLOCKS];
+    private final int[] linesPerBlock = new int[NUM_BLOCKS];
+    private final boolean[] blockOnReverse = new boolean[NUM_BLOCKS];
     private List<Bay> printableBays;
     private boolean secondPage = false;
-    
+
     /**
      * Creates an SVG object for the record sheet
-     * 
-     * @param ship The ship to print
-     * @param startPage The print job page number for this sheet
-     * @param options Overrides the global options for which elements are printed 
+     *
+     * @param ship
+     *            The ship to print
+     * @param startPage
+     *            The print job page number for this sheet
+     * @param options
+     *            Overrides the global options for which elements are printed
      */
     public PrintCapitalShip(Jumpship ship, int startPage, RecordSheetOptions options) {
         super(startPage, options);
         this.ship = ship;
         processWeapons();
     }
-    
+
     private void processWeapons() {
         List<Mounted> standardWeapons = new ArrayList<>();
         List<Mounted> capitalWeapons = new ArrayList<>();
@@ -149,17 +163,19 @@ public class PrintCapitalShip extends PrintEntity {
                 .anyMatch(w -> ((WeaponType) w.getType()).getAmmoType() == AmmoType.T_AR10)) {
             linesPerBlock[BLOCK_AR10_AMMO] = 5;
         }
-        // Add lines equal to half the grav decks (rounded up) and one each for section title and following empty line
+        // Add lines equal to half the grav decks (rounded up) and one each for section
+        // title and following empty line
         if (ship.getGravDecks().size() > 0) {
-            linesPerBlock[BLOCK_GRAV_DECK] = (ship.getGravDecks().size() + 1) / 2 + 2;
+            linesPerBlock[BLOCK_GRAV_DECK] = ((ship.getGravDecks().size() + 1) / 2) + 2;
         }
-        // Add lines equal to number of transport bays and one each for section title and following empty line
+        // Add lines equal to number of transport bays and one each for section title
+        // and following empty line
         printableBays = ship.getTransports().stream().filter(t -> t instanceof Bay)
                 .map(t -> (Bay) t).filter(b -> !b.isQuarters()).collect(Collectors.toList());
         if (printableBays.size() > 0) {
             linesPerBlock[BLOCK_BAYS] = printableBays.size() + 2;
         }
-        
+
         int linesOnFront = Arrays.stream(linesPerBlock).sum();
         if (linesOnFront > MAX_SINGLE_PAGE_LINES) {
             secondPage = true;
@@ -173,8 +189,10 @@ public class PrintCapitalShip extends PrintEntity {
                 linesOnFront -= linesPerBlock[SWITCH_PAGE_ORDER[toSwitch]];
                 toSwitch++;
             } while ((linesOnFront > MAX_SINGLE_PAGE_LINES) && (toSwitch < SWITCH_PAGE_ORDER.length));
-            // Another tweak for situations where there are no capital weapons. If only the grav decks
-            // are moved to page two, move bays as well to prevent a second page with only one or two lines
+            // Another tweak for situations where there are no capital weapons. If only the
+            // grav decks
+            // are moved to page two, move bays as well to prevent a second page with only
+            // one or two lines
             if (!blockOnReverse[BLOCK_STANDARD] && !blockOnReverse[BLOCK_BAYS]
                     && blockOnReverse[BLOCK_GRAV_DECK]) {
                 blockOnReverse[BLOCK_BAYS] = true;
@@ -182,11 +200,12 @@ public class PrintCapitalShip extends PrintEntity {
             }
         }
     }
-    
+
     /**
-     * Iterate through a list of weapons and create information about what weapons belong in what bays, how many, the
-     * bay damage, and also condense entries when possible.
-     * 
+     * Iterate through a list of weapons and create information about what weapons
+     * belong in what bays, how many, the bay damage, and also condense entries when
+     * possible.
+     *
      * @param weapons
      * @return
      */
@@ -219,9 +238,11 @@ public class PrintCapitalShip extends PrintEntity {
 
     /**
      * Creates an SVG object for the record sheet using the global printing options
-     * 
-     * @param mech The mech to print
-     * @param startPage The print job page number for this sheet
+     *
+     * @param mech
+     *            The mech to print
+     * @param startPage
+     *            The print job page number for this sheet
      */
     public PrintCapitalShip(Jumpship ship, int startPage) {
         this(ship, startPage, new RecordSheetOptions());
@@ -236,12 +257,12 @@ public class PrintCapitalShip extends PrintEntity {
     protected boolean isCenterlineLocation(int loc) {
         return (loc == Jumpship.LOC_NOSE) || (loc == Jumpship.LOC_AFT);
     }
-    
+
     @Override
     public int getPageCount() {
         return secondPage ? 2 : 1;
     }
-        
+
     @Override
     protected String getSVGFileName(int pageNumber) {
         if (pageNumber > 0) {
@@ -261,7 +282,7 @@ public class PrintCapitalShip extends PrintEntity {
         return UnitType.getTypeDisplayableName(ship.getUnitType())
                 + " Record Sheet";
     }
-    
+
     @Override
     public void printImage(Graphics2D g2d, PageFormat pageFormat, int pageNum) {
         if (pageNum > 0) {
@@ -281,7 +302,7 @@ public class PrintCapitalShip extends PrintEntity {
             super.printImage(g2d, pageFormat, pageNum);
         }
     }
-    
+
     @Override
     protected void writeTextFields() {
         super.writeTextFields();
@@ -289,14 +310,14 @@ public class PrintCapitalShip extends PrintEntity {
         setTextField("crew", ship.getNCrew());
         setTextField("marines", ship.getNMarines());
         setTextField("passengers", ship.getNPassenger());
-        setTextField("baLabel", ship.isClan()? "Elementals" : "BattleArmor");
+        setTextField("baLabel", ship.isClan() ? "Elementals" : "BattleArmor");
         setTextField("battleArmor", ship.getNBattleArmor());
         setTextField("otherOccupants", ship.getNOtherCrew());
         setTextField("lifeBoats", ship.getLifeBoats());
         setTextField("escapePods", ship.getEscapePods());
         setTextField("heatSinks", ship.getHeatSinks());
-        setTextField("doubleHeatSinks", ship.getHeatType() == Aero.HEAT_DOUBLE ?
-                "(" + ship.getHeatSinks() * 2 + ")" : "");
+        setTextField("doubleHeatSinks",
+                ship.getHeatType() == Jumpship.HEAT_DOUBLE ? "(" + (ship.getHeatSinks() * 2) + ")" : "");
         setTextField("noseHeat", ship.getHeatInArc(Jumpship.LOC_NOSE, false));
         setTextField("foreHeat", ship.getHeatInArc(Jumpship.LOC_FLS, false)
                 + " / " + ship.getHeatInArc(Jumpship.LOC_FRS, false));
@@ -308,7 +329,7 @@ public class PrintCapitalShip extends PrintEntity {
                     + " / " + ship.getHeatInArc(Warship.LOC_LBS, false));
         }
     }
-    
+
     @Override
     protected void drawArmor() {
         for (int loc = firstArmorLocation(); loc < Jumpship.LOC_HULL; loc++) {
@@ -317,7 +338,7 @@ public class PrintCapitalShip extends PrintEntity {
         }
         drawArmorStructurePips();
     }
-    
+
     @Override
     protected void drawStructure() {
         setTextField("siText", ship.get0SI());
@@ -332,7 +353,7 @@ public class PrintCapitalShip extends PrintEntity {
         printInternalRegion("sailPips", ship.getSailIntegrity(), 10);
         printInternalRegion("dcPips", ship.getDockingCollars().size(), 10);
     }
-    
+
     @Override
     protected void drawArmorStructurePips() {
         for (int loc = ship.firstArmorIndex(); loc < Jumpship.LOC_HULL; loc++) {
@@ -350,9 +371,13 @@ public class PrintCapitalShip extends PrintEntity {
     /**
      * Print pips for some internal structure region.
      *
-     * @param rectId       The id of the rectangle element that describes the outline of the region to print pips
-     * @param structure    The number of structure pips
-     * @param pipsPerBlock The maximum number of pips to draw in a single block
+     * @param rectId
+     *            The id of the rectangle element that describes the outline of the
+     *            region to print pips
+     * @param structure
+     *            The number of structure pips
+     * @param pipsPerBlock
+     *            The maximum number of pips to draw in a single block
      */
     private void printInternalRegion(String rectId, int structure, int pipsPerBlock) {
         Element element = getSVGDocument().getElementById(rectId);
@@ -367,9 +392,13 @@ public class PrintCapitalShip extends PrintEntity {
     /**
      * Print pips for some internal structure region.
      *
-     * @param svgRect      The rectangle that describes the outline of the region to print pips
-     * @param structure    The number of structure pips
-     * @param pipsPerBlock The maximum number of pips to draw in a single block
+     * @param svgRect
+     *            The rectangle that describes the outline of the region to print
+     *            pips
+     * @param structure
+     *            The number of structure pips
+     * @param pipsPerBlock
+     *            The maximum number of pips to draw in a single block
      */
     private void printInternalRegion(SVGRectElement svgRect, int structure, int pipsPerBlock) {
         Rectangle2D bbox = getRectBBox(svgRect);
@@ -381,10 +410,12 @@ public class PrintCapitalShip extends PrintEntity {
             int startX, startY;
             double aspectRatio = (bbox.getWidth() / bbox.getHeight());
             if (aspectRatio >= 1) { // Landscape - 2 columns
-                startX = (int) bbox.getX() + (int) (bbox.getWidth() / 4 + 0.5) - (PIPS_PER_ROW * IS_PIP_WIDTH / 2);
+                startX = ((int) bbox.getX() + (int) ((bbox.getWidth() / 4) + 0.5))
+                        - ((PIPS_PER_ROW * IS_PIP_WIDTH) / 2);
                 startY = (int) bbox.getY() + IS_PIP_HEIGHT;
             } else { // Portrait - stacked 1 atop another
-                startX = (int) bbox.getX() + (int) (bbox.getWidth() / 2 + 0.5) - (PIPS_PER_ROW * IS_PIP_WIDTH / 2);
+                startX = ((int) bbox.getX() + (int) ((bbox.getWidth() / 2) + 0.5))
+                        - ((PIPS_PER_ROW * IS_PIP_WIDTH) / 2);
                 startY = (int) bbox.getY() + IS_PIP_HEIGHT;
             }
             printPipBlock(startX, startY, (SVGElement) svgRect.getParentNode(), pips,
@@ -392,15 +423,17 @@ public class PrintCapitalShip extends PrintEntity {
 
             // Block 2
             if (aspectRatio >= 1) { // Landscape - 2 columns
-                startX = (int) bbox.getX() + (int) (3 * bbox.getWidth() / 4 + 0.5) - (PIPS_PER_ROW * IS_PIP_WIDTH / 2);
+                startX = ((int) bbox.getX() + (int) (((3 * bbox.getWidth()) / 4) + 0.5))
+                        - ((PIPS_PER_ROW * IS_PIP_WIDTH) / 2);
             } else { // Portrait - stacked 1 atop another
-                startY = (int) bbox.getY() + IS_PIP_HEIGHT * (pips / PIPS_PER_ROW + 1);
+                startY = (int) bbox.getY() + (IS_PIP_HEIGHT * ((pips / PIPS_PER_ROW) + 1));
             }
             pips = (int) Math.ceil(structure / 2.0);
             printPipBlock(startX, startY, (SVGElement) svgRect.getParentNode(), pips,
                     IS_PIP_WIDTH, IS_PIP_HEIGHT, "white", false);
         } else { // Print in one block
-            int startX = (int) bbox.getX() + (int) (bbox.getWidth() / 2 + 0.5) - (PIPS_PER_ROW * IS_PIP_WIDTH / 2);
+            int startX = ((int) bbox.getX() + (int) ((bbox.getWidth() / 2) + 0.5))
+                    - ((PIPS_PER_ROW * IS_PIP_WIDTH) / 2);
             int startY = (int) bbox.getY() + IS_PIP_HEIGHT;
             printPipBlock(startX, startY, (SVGElement) svgRect.getParentNode(), structure,
                     IS_PIP_WIDTH, IS_PIP_HEIGHT, "white", false);
@@ -408,18 +441,22 @@ public class PrintCapitalShip extends PrintEntity {
     }
 
     /**
-     * Method to determine rectangle grid for armor or internal pips and draw
-     * it.
+     * Method to determine rectangle grid for armor or internal pips and draw it.
      *
-     * @param svgRect A rectangle that outlines the border of the space for the armor block.
-     * @param loc     The location index
-     * @param armor   The amount of armor in the location
+     * @param svgRect
+     *            A rectangle that outlines the border of the space for the armor
+     *            block.
+     * @param loc
+     *            The location index
+     * @param armor
+     *            The amount of armor in the location
      */
     private void printArmorRegion(SVGRectElement svgRect, int loc, int armor) {
         Rectangle2D bbox = getRectBBox(svgRect);
 
         double pipWidth = ARMOR_PIP_WIDTH;
-        double pipHeight = ARMOR_PIP_HEIGHT;;
+        double pipHeight = ARMOR_PIP_HEIGHT;
+        ;
 
         // Size of each block include 0.5 pip margin on each side
         double blockHeight = (MAX_PIP_ROWS + 1) * pipHeight;
@@ -431,21 +468,22 @@ public class PrintCapitalShip extends PrintEntity {
         if (bbox.getWidth() > bbox.getHeight()) {
             // landscape; as many columns as needed to fit everything in one or two rows
             cols = numBlocks;
-            if (numBlocks * blockWidth > bbox.getWidth()) {
+            if ((numBlocks * blockWidth) > bbox.getWidth()) {
                 rows++;
                 cols = (numBlocks + 1) / 2;
             }
         } else {
             // portrait; as many rows as needed to fit everything in one or two columns
             rows = numBlocks;
-            if (numBlocks * blockHeight > bbox.getHeight()) {
+            if ((numBlocks * blockHeight) > bbox.getHeight()) {
                 cols++;
                 rows = (numBlocks + 1) / 2;
             }
         }
-        // Check the ration of the space required to space available. If either exceeds, scale both
+        // Check the ration of the space required to space available. If either exceeds,
+        // scale both
         // dimensions down equally to fit.
-        double ratio = Math.max(rows * blockHeight / bbox.getHeight(), cols * blockWidth / bbox.getWidth());
+        double ratio = Math.max((rows * blockHeight) / bbox.getHeight(), (cols * blockWidth) / bbox.getWidth());
         if (ratio > 1.0) {
             pipHeight /= ratio;
             pipWidth /= ratio;
@@ -453,8 +491,8 @@ public class PrintCapitalShip extends PrintEntity {
             blockWidth /= ratio;
         }
         // Center horizontally and vertically in the space
-        final double startX = bbox.getX() + (bbox.getWidth() - blockWidth * cols) / 2.0;
-        final double startY = bbox.getY() + (bbox.getHeight() - blockHeight * rows) / 2.0;
+        final double startX = bbox.getX() + ((bbox.getWidth() - (blockWidth * cols)) / 2.0);
+        final double startY = bbox.getY() + ((bbox.getHeight() - (blockHeight * rows)) / 2.0);
         double xpos = startX;
         double ypos = startY;
         int remainingBlocks = numBlocks;
@@ -478,11 +516,16 @@ public class PrintCapitalShip extends PrintEntity {
      * Helper function to print a armor pip block. Can print up to 100 points of
      * armor. Any unprinted armor pips are returned.
      *
-     * @param startX  The x coordinate of the top left of the block
-     * @param startY  The y coordinate of the top left of the block
-     * @param parent  The parent node of the bounding rectangle
-     * @param numPips The number of pips to print
-     * @param shadow  Whether to add a drop shadow
+     * @param startX
+     *            The x coordinate of the top left of the block
+     * @param startY
+     *            The y coordinate of the top left of the block
+     * @param parent
+     *            The parent node of the bounding rectangle
+     * @param numPips
+     *            The number of pips to print
+     * @param shadow
+     *            Whether to add a drop shadow
      * @return The Y location of the end of the block
      */
     private int printPipBlock(double startX, double startY, SVGElement parent, int numPips, double pipWidth,
@@ -495,7 +538,7 @@ public class PrintCapitalShip extends PrintEntity {
         for (int row = 0; row < 10; row++) {
             int numRowPips = Math.min(numPips, PIPS_PER_ROW);
             // Adjust row start if it's not a complete row
-            currX = startX + ((10 - numRowPips) / 2f * pipWidth + 0.5);
+            currX = startX + ((((10 - numRowPips) / 2f) * pipWidth) + 0.5);
             for (int col = 0; col < numRowPips; col++) {
                 if (shadow) {
                     parent.appendChild(createPip(pipWidth, pipHeight, "#c8c7c7", currX + shadowOffsetX,
@@ -529,19 +572,22 @@ public class PrintCapitalShip extends PrintEntity {
         box.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, fillColor);
         return box;
     }
-    
+
     @Override
     protected void writeEquipment(SVGRectElement svgRect) {
         writeEquipment(svgRect, false);
     }
-    
+
     /**
-     * Prints up to four equipment sections: capital weapons, standard scale, grav decks, and bays.
-     * If there is too much to fit on a single page, the standard scale weapons are moved to
-     * the second page (which is considered the reverse).
-     * 
-     * @param svgRect The rectangle element that provides the dimensions of the space to print
-     * @param reverse Whether this is printing on the reverse side.
+     * Prints up to four equipment sections: capital weapons, standard scale, grav
+     * decks, and bays. If there is too much to fit on a single page, the standard
+     * scale weapons are moved to the second page (which is considered the reverse).
+     *
+     * @param svgRect
+     *            The rectangle element that provides the dimensions of the space to
+     *            print
+     * @param reverse
+     *            Whether this is printing on the reverse side.
      */
     private void writeEquipment(SVGRectElement svgRect, boolean reverse) {
         int lines = 0;
@@ -581,11 +627,11 @@ public class PrintCapitalShip extends PrintEntity {
             iw.printBayInfo();
         }
     }
-    
+
     private class InventoryWriter {
         Rectangle2D bbox;
         SVGElement canvas;
-        
+
         double nameX;
         double locX;
         double htX;
@@ -594,87 +640,90 @@ public class PrintCapitalShip extends PrintEntity {
         double lrvX;
         double ervX;
         double indent;
-        
+
         double currY;
-        
+
         float fontSize = FONT_SIZE_MEDIUM;
         double lineHeight = getFontHeight(fontSize) * LINE_SPACING;
-        
+
         InventoryWriter(SVGRectElement svgRect, int lines) {
             bbox = getRectBBox(svgRect);
             canvas = (SVGElement) svgRect.getParentNode();
             double viewX = bbox.getX();
             double viewWidth = bbox.getWidth();
-            
-            /* The relationship between the font size and the height is not directly proportional, so simply scaling
-             * by the ratio of the max height to the current one is not guaranteed to give us the value we want.
-             * So we keep checking and scaling down until we get the desired value or hit the minimum, making sure
-             * that we decrease by at least 0.1f each iteration */
-            while ((fontSize > MIN_FONT_SIZE) && (lineHeight * lines >= bbox.getHeight())) {
-                float newSize = (float) Math.max(MIN_FONT_SIZE, fontSize * bbox.getHeight() / (lineHeight * lines));
+
+            /*
+             * The relationship between the font size and the height is not directly
+             * proportional, so simply scaling by the ratio of the max height to the current
+             * one is not guaranteed to give us the value we want. So we keep checking and
+             * scaling down until we get the desired value or hit the minimum, making sure
+             * that we decrease by at least 0.1f each iteration
+             */
+            while ((fontSize > MIN_FONT_SIZE) && ((lineHeight * lines) >= bbox.getHeight())) {
+                float newSize = (float) Math.max(MIN_FONT_SIZE, (fontSize * bbox.getHeight()) / (lineHeight * lines));
                 fontSize = Math.min(newSize, fontSize - 0.1f);
                 lineHeight = getFontHeight(fontSize) * LINE_SPACING;
             }
             nameX = viewX;
-            locX = viewX + viewWidth * 0.50;
-            htX  = viewX + viewWidth * 0.60;
-            srvX = viewX + viewWidth * 0.68;
-            mrvX = viewX + viewWidth * 0.76;
-            lrvX = viewX + viewWidth * 0.84;
-            ervX = viewX + viewWidth * 0.92;
+            locX = viewX + (viewWidth * 0.50);
+            htX = viewX + (viewWidth * 0.60);
+            srvX = viewX + (viewWidth * 0.68);
+            mrvX = viewX + (viewWidth * 0.76);
+            lrvX = viewX + (viewWidth * 0.84);
+            ervX = viewX + (viewWidth * 0.92);
             indent = viewWidth * 0.02;
-            
+
             currY = bbox.getY() + 10f;
         }
-        
+
         void newLine() {
             currY += lineHeight;
         }
-        
+
         void printCapitalHeader() {
             double lineHeight = FONT_SIZE_MEDIUM * LINE_SPACING;
             addTextElement(canvas, nameX, currY, "Capital Scale", FONT_SIZE_MEDIUM, "start", "bold");
-            addTextElement(canvas, srvX, currY, "(1-12)",  FONT_SIZE_VSMALL, "middle", "normal");
+            addTextElement(canvas, srvX, currY, "(1-12)", FONT_SIZE_VSMALL, "middle", "normal");
             addTextElement(canvas, mrvX, currY, "(13-24)", FONT_SIZE_VSMALL, "middle", "normal");
             addTextElement(canvas, lrvX, currY, "(25-40)", FONT_SIZE_VSMALL, "middle", "normal");
             addTextElement(canvas, ervX, currY, "(41-50)", FONT_SIZE_VSMALL, "middle", "normal");
             currY += lineHeight;
-    
+
             // Capital Bay Line
             addTextElement(canvas, nameX, currY, "Bay", FONT_SIZE_MEDIUM, "start", "bold");
             addTextElement(canvas, locX, currY, "Loc", FONT_SIZE_MEDIUM, "middle", "bold");
-            addTextElement(canvas, htX,  currY, "Ht", FONT_SIZE_MEDIUM, "middle", "bold");
+            addTextElement(canvas, htX, currY, "Ht", FONT_SIZE_MEDIUM, "middle", "bold");
             addTextElement(canvas, srvX, currY, "SRV", FONT_SIZE_MEDIUM, "middle", "bold");
             addTextElement(canvas, mrvX, currY, "MRV", FONT_SIZE_MEDIUM, "middle", "bold");
             addTextElement(canvas, lrvX, currY, "LRV", FONT_SIZE_MEDIUM, "middle", "bold");
             addTextElement(canvas, ervX, currY, "ERV", FONT_SIZE_MEDIUM, "middle", "bold");
             currY += lineHeight;
         }
-        
+
         void printStandardHeader() {
             double lineHeight = FONT_SIZE_MEDIUM * LINE_SPACING;
             addTextElement(canvas, nameX, currY, "Standard Scale", FONT_SIZE_MEDIUM, "start", "bold");
-            addTextElement(canvas, srvX, currY, "(1-6)",  FONT_SIZE_VSMALL, "middle", "normal");
+            addTextElement(canvas, srvX, currY, "(1-6)", FONT_SIZE_VSMALL, "middle", "normal");
             addTextElement(canvas, mrvX, currY, "(7-12)", FONT_SIZE_VSMALL, "middle", "normal");
             addTextElement(canvas, lrvX, currY, "(13-20)", FONT_SIZE_VSMALL, "middle", "normal");
             addTextElement(canvas, ervX, currY, "(21-25)", FONT_SIZE_VSMALL, "middle", "normal");
             currY += lineHeight;
-    
+
             addTextElement(canvas, nameX, currY, "Bay", FONT_SIZE_MEDIUM, "start", "bold");
             addTextElement(canvas, locX, currY, "Loc", FONT_SIZE_MEDIUM, "middle", "bold");
-            addTextElement(canvas, htX,  currY, "Ht", FONT_SIZE_MEDIUM, "middle", "bold");
+            addTextElement(canvas, htX, currY, "Ht", FONT_SIZE_MEDIUM, "middle", "bold");
             addTextElement(canvas, srvX, currY, "SRV", FONT_SIZE_MEDIUM, "middle", "bold");
             addTextElement(canvas, mrvX, currY, "MRV", FONT_SIZE_MEDIUM, "middle", "bold");
             addTextElement(canvas, lrvX, currY, "LRV", FONT_SIZE_MEDIUM, "middle", "bold");
             addTextElement(canvas, ervX, currY, "ERV", FONT_SIZE_MEDIUM, "middle", "bold");
             currY += lineHeight;
         }
-        
+
         void printReverseSideMessage() {
             addTextElement(canvas, nameX, currY, "Standard Scale on Reverse", FONT_SIZE_MEDIUM, "start", "bold");
             currY += getFontHeight(FONT_SIZE_MEDIUM) * LINE_SPACING;
         }
-        
+
         void printWeaponBay(WeaponBayText bay, boolean isCapital) {
             boolean first = true;
             int numBayWeapons = bay.weapons.size();
@@ -692,10 +741,10 @@ public class PrintCapitalShip extends PrintEntity {
                     bayLRV += wtype.getLongAV() * numWeapons;
                     bayERV += wtype.getExtAV() * numWeapons;
                 } else {
-                    baySRV += Math.round(wtype.getShortAV() * numWeapons / 10);
-                    bayMRV += Math.round(wtype.getMedAV() * numWeapons / 10);
-                    bayLRV += Math.round(wtype.getLongAV() * numWeapons / 10);
-                    bayERV += Math.round(wtype.getExtAV() * numWeapons / 10);
+                    baySRV += Math.round((wtype.getShortAV() * numWeapons) / 10);
+                    bayMRV += Math.round((wtype.getMedAV() * numWeapons) / 10);
+                    bayLRV += Math.round((wtype.getLongAV() * numWeapons) / 10);
+                    bayERV += Math.round((wtype.getExtAV() * numWeapons) / 10);
                     standardBaySRV += wtype.getShortAV() * numWeapons;
                     standardBayMRV += wtype.getMedAV() * numWeapons;
                     standardBayLRV += wtype.getLongAV() * numWeapons;
@@ -707,7 +756,7 @@ public class PrintCapitalShip extends PrintEntity {
                 String locString = "";
                 for (int i = 0; i < bay.loc.size(); i++) {
                     locString += ship.getLocationAbbr(bay.loc.get(i));
-                    if (i + 1 < bay.loc.size()) {
+                    if ((i + 1) < bay.loc.size()) {
                         locString += "/";
                     }
                 }
@@ -724,7 +773,7 @@ public class PrintCapitalShip extends PrintEntity {
                 } else {
                     nameString = wtype.getShortName();
                 }
-                if (first & numBayWeapons > 1) {
+                if (first & (numBayWeapons > 1)) {
                     nameString += ",";
                 }
                 if (wtype.getAmmoType() == AmmoType.T_AR10) {
@@ -732,12 +781,12 @@ public class PrintCapitalShip extends PrintEntity {
                     addTextElement(canvas, first ? nameX : nameX + indent, currY,
                             bay.weapons.get(wtype) + " " + nameString,
                             fontSize, "start", "normal");
-                    addTextElement(canvas, locX, currY, locString,     fontSize, "middle", "normal");
-                    addTextElement(canvas, htX,  currY, "*", fontSize, "middle", "normal");
-                    addTextElement(canvas, srvX, currY, "*",  fontSize, "middle", "normal");
-                    addTextElement(canvas, mrvX, currY, "*",  fontSize, "middle", "normal");
-                    addTextElement(canvas, lrvX, currY, "*",  fontSize, "middle", "normal");
-                    addTextElement(canvas, ervX, currY, "*",  fontSize, "middle", "normal");
+                    addTextElement(canvas, locX, currY, locString, fontSize, "middle", "normal");
+                    addTextElement(canvas, htX, currY, "*", fontSize, "middle", "normal");
+                    addTextElement(canvas, srvX, currY, "*", fontSize, "middle", "normal");
+                    addTextElement(canvas, mrvX, currY, "*", fontSize, "middle", "normal");
+                    addTextElement(canvas, lrvX, currY, "*", fontSize, "middle", "normal");
+                    addTextElement(canvas, ervX, currY, "*", fontSize, "middle", "normal");
                     currY += lineHeight;
                 } else {
                     addWeaponText(first, bay.weapons.get(wtype), nameString, isCapital,
@@ -747,20 +796,20 @@ public class PrintCapitalShip extends PrintEntity {
                 first = false;
             }
         }
-        
+
         void addWeaponText(boolean first, int num, String name, boolean isCapital,
                 String loc, int bayHeat, double[] capitalAV, double[] standardAV) {
             String srvTxt, mrvTxt, lrvTxt, ervTxt;
             if (isCapital) { // Print out capital damage for weapon total
-                srvTxt = capitalAV[0] == 0 ? "-" : (int)capitalAV[0] + "";
-                mrvTxt = capitalAV[1] == 0 ? "-" : (int)capitalAV[1] + "";
-                lrvTxt = capitalAV[2] == 0 ? "-" : (int)capitalAV[2] + "";
-                ervTxt = capitalAV[3] == 0 ? "-" : (int)capitalAV[3] + "";
+                srvTxt = capitalAV[0] == 0 ? "-" : (int) capitalAV[0] + "";
+                mrvTxt = capitalAV[1] == 0 ? "-" : (int) capitalAV[1] + "";
+                lrvTxt = capitalAV[2] == 0 ? "-" : (int) capitalAV[2] + "";
+                ervTxt = capitalAV[3] == 0 ? "-" : (int) capitalAV[3] + "";
             } else { // Print out capital and standard damages
-                srvTxt = capitalAV[0] == 0 ? "-" : (int)capitalAV[0] + " (" + (int) standardAV[0] + ")";
-                mrvTxt = capitalAV[1] == 0 ? "-" : (int)capitalAV[1] + " (" + (int) standardAV[1] + ")";
-                lrvTxt = capitalAV[2] == 0 ? "-" : (int)capitalAV[2] + " (" + (int) standardAV[2] + ")";
-                ervTxt = capitalAV[3] == 0 ? "-" : (int)capitalAV[3] + " (" + (int) standardAV[3] + ")";
+                srvTxt = capitalAV[0] == 0 ? "-" : (int) capitalAV[0] + " (" + (int) standardAV[0] + ")";
+                mrvTxt = capitalAV[1] == 0 ? "-" : (int) capitalAV[1] + " (" + (int) standardAV[1] + ")";
+                lrvTxt = capitalAV[2] == 0 ? "-" : (int) capitalAV[2] + " (" + (int) standardAV[2] + ")";
+                ervTxt = capitalAV[3] == 0 ? "-" : (int) capitalAV[3] + " (" + (int) standardAV[3] + ")";
             }
             String nameString = num + "  " + name;
             String heatTxt;
@@ -775,45 +824,46 @@ public class PrintCapitalShip extends PrintEntity {
             }
 
             addTextElement(canvas, localNameX, currY, nameString, fontSize, "start", "normal");
-            addTextElement(canvas, locX, currY, loc,     fontSize, "middle", "normal");
-            addTextElement(canvas, htX,  currY, heatTxt, fontSize, "middle", "normal");
-            addTextElementToFit(canvas, srvX, currY, mrvX - srvX, srvTxt,  fontSize, "middle", "normal");
-            addTextElementToFit(canvas, mrvX, currY, lrvX - mrvX, mrvTxt,  fontSize, "middle", "normal");
-            addTextElementToFit(canvas, lrvX, currY, ervX - lrvX, lrvTxt,  fontSize, "middle", "normal");
-            addTextElementToFit(canvas, ervX, currY, bbox.getX() + bbox.getWidth() - ervX,
-                    ervTxt,  fontSize, "middle", "normal");
+            addTextElement(canvas, locX, currY, loc, fontSize, "middle", "normal");
+            addTextElement(canvas, htX, currY, heatTxt, fontSize, "middle", "normal");
+            addTextElementToFit(canvas, srvX, currY, mrvX - srvX, srvTxt, fontSize, "middle", "normal");
+            addTextElementToFit(canvas, mrvX, currY, lrvX - mrvX, mrvTxt, fontSize, "middle", "normal");
+            addTextElementToFit(canvas, lrvX, currY, ervX - lrvX, lrvTxt, fontSize, "middle", "normal");
+            addTextElementToFit(canvas, ervX, currY, (bbox.getX() + bbox.getWidth()) - ervX,
+                    ervTxt, fontSize, "middle", "normal");
             currY += lineHeight;
         }
-        
+
         void printAR10AmmoBlock() {
             double lineHeight = FONT_SIZE_MEDIUM * LINE_SPACING;
             addTextElement(canvas, nameX, currY, "AR10 Munitions", FONT_SIZE_MEDIUM, "start", "bold");
             addTextElement(canvas, locX, currY, "Tons", FONT_SIZE_MEDIUM, "middle", "bold");
-            addTextElement(canvas, htX,  currY, "Ht", FONT_SIZE_MEDIUM, "middle", "bold");
+            addTextElement(canvas, htX, currY, "Ht", FONT_SIZE_MEDIUM, "middle", "bold");
             addTextElement(canvas, srvX, currY, "SRV", FONT_SIZE_MEDIUM, "middle", "bold");
             addTextElement(canvas, mrvX, currY, "MRV", FONT_SIZE_MEDIUM, "middle", "bold");
             addTextElement(canvas, lrvX, currY, "LRV", FONT_SIZE_MEDIUM, "middle", "bold");
             addTextElement(canvas, ervX, currY, "ERV", FONT_SIZE_MEDIUM, "middle", "bold");
             currY += lineHeight;
-            
+
             printAR10MissileLine("Killer Whale", 50, 20, 4);
             printAR10MissileLine("White Shark", 40, 15, 3);
             printAR10MissileLine("Barracuda", 30, 10, 2);
         }
-        
+
         void printAR10MissileLine(String name, int weight, int heat, int av) {
             addTextElement(canvas, nameX, currY, name, FONT_SIZE_MEDIUM, "start", "normal");
             addTextElement(canvas, locX, currY, String.valueOf(weight), FONT_SIZE_MEDIUM, "middle", "normal");
-            addTextElement(canvas, htX,  currY, String.valueOf(heat), FONT_SIZE_MEDIUM, "middle", "normal");
+            addTextElement(canvas, htX, currY, String.valueOf(heat), FONT_SIZE_MEDIUM, "middle", "normal");
             addTextElement(canvas, srvX, currY, String.valueOf(av), FONT_SIZE_MEDIUM, "middle", "normal");
             addTextElement(canvas, mrvX, currY, String.valueOf(av), FONT_SIZE_MEDIUM, "middle", "normal");
             addTextElement(canvas, lrvX, currY, String.valueOf(av), FONT_SIZE_MEDIUM, "middle", "normal");
             addTextElement(canvas, ervX, currY, String.valueOf(av), FONT_SIZE_MEDIUM, "middle", "normal");
             currY += lineHeight;
         }
-        
+
         /**
          * Convenience method for printing information related to grav decks
+         * 
          * @param canvas
          * @param currY
          * @return
@@ -829,16 +879,16 @@ public class PrintCapitalShip extends PrintEntity {
                     String gravString = "Grav Deck #" + count + ": " + size + "-meters";
                     addTextElement(canvas, xpos, ypos, gravString, fontSize, "start", "normal");
                     ypos += lineHeight;
-                    if (count == ship.getGravDecks().size() / 2) {
+                    if (count == (ship.getGravDecks().size() / 2)) {
                         ypos = currY;
-                        xpos = nameX + bbox.getWidth() / 2.0;
+                        xpos = nameX + (bbox.getWidth() / 2.0);
                     }
                     count++;
                 }
-                currY += lineHeight * ((ship.getGravDecks().size() + 1) / 2 + 1);
+                currY += lineHeight * (((ship.getGravDecks().size() + 1) / 2) + 1);
             }
         }
-        
+
         /**
          * Convenience method for printing infor related to cargo & transport bays.
          *
@@ -874,18 +924,19 @@ public class PrintCapitalShip extends PrintEntity {
                     bayCapacityString.append(" (");
                     List<Bay> bays = bayMap.get(bayNum);
                     // Display larger storage first
-                    java.util.Collections.sort(bays, new Comparator<Bay>(){
+                    java.util.Collections.sort(bays, new Comparator<Bay>() {
 
                         @Override
                         public int compare(Bay b1, Bay b2) {
-                            return (int)(b2.getCapacity() - b1.getCapacity());
-                        }});
+                            return (int) (b2.getCapacity() - b1.getCapacity());
+                        }
+                    });
                     int doors = 0;
                     for (int i = 0; i < bays.size(); i++) {
                         Bay b = bays.get(i);
                         bayTypeString.append(b.getType());
                         bayCapacityString.append(NumberFormat.getInstance().format(b.getCapacity()));
-                        if (i + 1 <  bays.size()) {
+                        if ((i + 1) < bays.size()) {
                             bayTypeString.append("/");
                             bayCapacityString.append("/");
                         }
@@ -893,7 +944,7 @@ public class PrintCapitalShip extends PrintEntity {
                     }
                     bayCapacityString.append(")");
                     String bayString = "Bay " + bayNum + ": " + bayTypeString
-                        + bayCapacityString + " (" + doors + (doors == 1? " Door)" : " Doors)");
+                            + bayCapacityString + " (" + doors + (doors == 1 ? " Door)" : " Doors)");
                     addTextElement(canvas, nameX, currY, bayString, fontSize, "start", "normal");
                     currY += lineHeight;
                 }
