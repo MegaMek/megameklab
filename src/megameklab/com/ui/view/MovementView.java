@@ -262,7 +262,7 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
         txtRunFinal.setText(en.getRunMPasString());
         
         spnJump.removeChangeListener(this);
-        int jump0 = en.getOriginalJumpMP();
+        int jump0 = en.getOriginalJumpMP(true);
         int jump = en.getJumpMP();
         if (0 == jump0) {
             jump0 = en.getAllUMUCount();
@@ -384,7 +384,7 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
         }
         txtWalkFinal.setToolTipText(walkTooltip.length() > 0? walkTooltip.toString() : null);
         txtRunFinal.setToolTipText(runTooltip.length() > 0? runTooltip.toString() : null);
-        txtJumpFinal.setToolTipText(jumpTooltip.length() > 0 && en.getOriginalJumpMP(true) > 0?
+        txtJumpFinal.setToolTipText(jumpTooltip.length() > 0 && en.getOriginalJumpMP(false) > 0?
                 jumpTooltip.toString() : null);
     }
     
