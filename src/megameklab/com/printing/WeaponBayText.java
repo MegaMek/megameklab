@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import megamek.common.AmmoType;
+import megamek.common.Jumpship;
 import megamek.common.Mounted;
 import megamek.common.Warship;
 import megamek.common.WeaponType;
@@ -72,7 +73,7 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
             weapons.put(wtype, weapons.get(wtype) + 1);
         } else {
             weapons.put(wtype, 1);
-            if ((wtype instanceof AmmoWeapon) && weapon.getLinked() != null) {
+            if ((wtype instanceof AmmoWeapon) && (weapon.getLinked() != null)) {
                 Mounted ammo = weapon.getLinked();
                 if (ammo.getType() instanceof AmmoType) {
                     weaponAmmo.put(wtype, ammo);
@@ -86,14 +87,14 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
      * combined. That is, if there is a weapon bay on the left side that is
      * identical to one on the right side, then those two can be combined in a
      * location like FRS/FLS. This allows weapon lists to be compacted.
-     * 
+     *
      * @param other
      * @return
      */
     public boolean canCombine(WeaponBayText other) {
         // Check for opposing sides
         boolean opposingSide = false;
-        if (loc.size() == 1 && other.loc.size() == 1) {
+        if ((loc.size() == 1) && (other.loc.size() == 1)) {
             opposingSide = checkOpposingSide(loc.get(0), other.loc.get(0));
         }
         return opposingSide && weapons.equals(other.weapons) && ammosMatch(other);
@@ -107,7 +108,7 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
      * @return
      */
     private boolean ammosMatch(WeaponBayText other) {
-        boolean rv = weaponAmmo.size() == other.weaponAmmo.size()
+        boolean rv = (weaponAmmo.size() == other.weaponAmmo.size())
                 && weaponAmmo.keySet().equals(other.weaponAmmo.keySet());
         if (rv) {
             for (WeaponType wtype : weaponAmmo.keySet()) {
@@ -119,28 +120,28 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
 
     private boolean checkOpposingSide(int loc1, int loc2) {
         boolean rv = false;
-        if (((loc1 == Warship.LOC_FLS) && (loc2 == Warship.LOC_FRS))
-                || ((loc1 == Warship.LOC_FRS) && (loc2 == Warship.LOC_FLS))) {
+        if (((loc1 == Jumpship.LOC_FLS) && (loc2 == Jumpship.LOC_FRS))
+                || ((loc1 == Jumpship.LOC_FRS) && (loc2 == Jumpship.LOC_FLS))) {
             rv = true;
-        } else if (((loc1 == Warship.LOC_ALS) && (loc2 == Warship.LOC_ARS))
-                || ((loc1 == Warship.LOC_ARS) && (loc2 == Warship.LOC_ALS))) {
+        } else if (((loc1 == Jumpship.LOC_ALS) && (loc2 == Jumpship.LOC_ARS))
+                || ((loc1 == Jumpship.LOC_ARS) && (loc2 == Jumpship.LOC_ALS))) {
             rv = true;
         } else if (((loc1 == Warship.LOC_LBS) && (loc2 == Warship.LOC_RBS))
                 || ((loc1 == Warship.LOC_RBS) && (loc2 == Warship.LOC_LBS))) {
             rv = true;
         }
-        if (allowNosAftCombine && ((loc1 == Warship.LOC_NOSE) && (loc2 == Warship.LOC_AFT))
-                || ((loc1 == Warship.LOC_AFT) && (loc2 == Warship.LOC_NOSE))) {
+        if ((allowNosAftCombine && ((loc1 == Jumpship.LOC_NOSE) && (loc2 == Jumpship.LOC_AFT)))
+                || ((loc1 == Jumpship.LOC_AFT) && (loc2 == Jumpship.LOC_NOSE))) {
             rv = true;
         }
         return rv;
     }
 
     /**
-     * Combine two WeaponBayTexts. Since they should both contain the same
-     * weapons, the only thing that needs to be updated is the locations. This
-     * should only be called if canCombine returns true for both WeaponBayTexts.
-     * 
+     * Combine two WeaponBayTexts. Since they should both contain the same weapons,
+     * the only thing that needs to be updated is the locations. This should only be
+     * called if canCombine returns true for both WeaponBayTexts.
+     *
      * @param other
      */
     public void combine(WeaponBayText other) {
@@ -167,30 +168,29 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
     }
 
     /**
-     * The display order for Warship locations is different from the numerical
-     * order of the defines, so we want to get the loc weights for sorting
-     * purposes.
+     * The display order for Warship locations is different from the numerical order
+     * of the defines, so we want to get the loc weights for sorting purposes.
      *
      * @param loc
      * @return
      */
     private int getLocWeight(int loc) {
         switch (loc) {
-            case Warship.LOC_NOSE:
+            case Jumpship.LOC_NOSE:
                 return 0;
-            case Warship.LOC_FLS:
+            case Jumpship.LOC_FLS:
                 return 1;
-            case Warship.LOC_FRS:
+            case Jumpship.LOC_FRS:
                 return 2;
             case Warship.LOC_LBS:
                 return 3;
             case Warship.LOC_RBS:
                 return 4;
-            case Warship.LOC_ALS:
+            case Jumpship.LOC_ALS:
                 return 5;
-            case Warship.LOC_ARS:
+            case Jumpship.LOC_ARS:
                 return 6;
-            case Warship.LOC_AFT:
+            case Jumpship.LOC_AFT:
             default:
                 return 7;
         }
