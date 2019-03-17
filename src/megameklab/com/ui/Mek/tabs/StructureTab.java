@@ -612,6 +612,10 @@ public class StructureTab extends ITab implements MekBuildListener {
     public void updateTechLevel() {
         removeAllListeners();
         getMech().setTechLevel(panBasicInfo.getTechLevel().getCompoundTechLevel(panBasicInfo.useClanTechBase()));
+        if (panArmor.isPatchwork() && !getTechManager().isLegal(Entity.getPatchworkArmorAdvancement())) {
+            panArmor.setPatchwork(false);
+            armorTypeChanged(panArmor.getArmorType(), panArmor.getArmorTechConstant());
+        }
         if (getMech().hasPatchworkArmor()) {
             for (int loc = 0; loc < getMech().locations(); loc++) {
                 if (!getTechManager().isLegal(panPatchwork.getArmor(loc))) {
@@ -911,8 +915,8 @@ public class StructureTab extends ITab implements MekBuildListener {
 
     @Override
     public void armorTypeChanged(int at, int aTechLevel) {
-        UnitUtil.removeISorArmorMounts(getMech(), false);
         if (at != EquipmentType.T_ARMOR_PATCHWORK) {
+            UnitUtil.removeISorArmorMounts(getMech(), false);
             createArmorMountsAndSetArmorType(at, aTechLevel);
             panArmorAllocation.showPatchwork(false);
             panPatchwork.setVisible(false);
@@ -921,6 +925,7 @@ public class StructureTab extends ITab implements MekBuildListener {
             panArmorAllocation.showPatchwork(true);
             panPatchwork.setVisible(true);
         }
+        panArmor.setFromEntity(getMech(), true);
         panArmorAllocation.setFromEntity(getMech());
         panSummary.refresh();
         refresh.refreshStatus();
@@ -1049,6 +1054,7 @@ public class StructureTab extends ITab implements MekBuildListener {
         if (panArmor.getArmorType() == EquipmentType.T_ARMOR_PATCHWORK) {
             getMech().setArmorTonnage(panArmorAllocation.getTotalArmorWeight(getMech()));
         }
+        panArmor.setFromEntity(getMech(), true);
         panArmorAllocation.setFromEntity(getMech());
         refresh.refreshPreview();
         refresh.refreshSummary();

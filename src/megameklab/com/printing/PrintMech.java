@@ -714,7 +714,7 @@ public class PrintMech extends PrintEntity {
                 size = viewHeight / rows;
             } else {
                 cols++;
-                size = viewWidth / (cols * size);
+                size *= viewWidth / (cols * size);
                 rows = (int) (viewHeight / size);
             }
         }

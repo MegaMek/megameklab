@@ -44,6 +44,7 @@ public class PrintFixedWingSupport implements Printable {
         this.fixedWingSupport = fixedWingSupport;
     }
 
+    @Override
     public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
         Graphics2D g2d = (Graphics2D) graphics;
         // f.setPaper(this.paper);
@@ -91,11 +92,12 @@ public class PrintFixedWingSupport implements Printable {
 
         font = UnitUtil.deriveFont(8.0f);
         g2d.setFont(font);
-        if ((fixedWingSupport.getCrew() != null) && !fixedWingSupport.getCrew().getName().equalsIgnoreCase("unnamed")) {
+        if ((fixedWingSupport.getCrew() != null)
+                && !fixedWingSupport.getCrew().getName().equalsIgnoreCase("unnamed")) {
             Crew pilot = fixedWingSupport.getCrew();
-            g2d.drawString(pilot.getName(), 270, 120);
-            g2d.drawString(String.valueOf(pilot.getGunnery()), 295, 132);
-            g2d.drawString(String.valueOf(pilot.getPiloting()), 365, 132);
+            g2d.drawString(pilot.getName(), 270, 524);
+            g2d.drawString(String.valueOf(pilot.getGunnery()), 295, 536);
+            g2d.drawString(String.valueOf(pilot.getPiloting()), 365, 536);
         }
 
         g2d.drawString(Integer.toString(fixedWingSupport.getWalkMP()), 99, 143);

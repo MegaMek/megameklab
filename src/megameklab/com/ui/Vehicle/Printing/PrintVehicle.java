@@ -50,6 +50,7 @@ public class PrintVehicle implements Printable {
         this.tank2 = tank2;
     }
 
+    @Override
     public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
         Graphics2D g2d = (Graphics2D) graphics;
         // f.setPaper(this.paper);
@@ -326,7 +327,7 @@ public class PrintVehicle implements Printable {
     }
 
     private void printTank2Data(Graphics2D g2d) {
-        String tankName = tank2.getChassis().toUpperCase() + " " + tank2.getModel().toUpperCase();
+        String tankName = tank2.getChassis() + " " + tank2.getModel();
 
         g2d.setFont(UnitUtil.getNewFont(g2d, tankName, true, 180, 10.0f));
         g2d.drawString(tankName, 49, 120 + secondPageMargin);
