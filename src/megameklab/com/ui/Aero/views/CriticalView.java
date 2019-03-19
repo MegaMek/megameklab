@@ -17,19 +17,23 @@
 package megameklab.com.ui.Aero.views;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Font;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.TitledBorder;
 
 import megamek.common.Aero;
 import megamek.common.CriticalSlot;
+import megamek.common.LocationFullException;
 import megamek.common.Mounted;
 import megamek.common.WeaponType;
 import megamek.common.loaders.MtfFile;
@@ -37,6 +41,7 @@ import megamek.common.verifier.TestAero;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
+import megameklab.com.util.UnitUtil;
 import megameklab.com.util.Mech.DropTargetCriticalList;
 
 public class CriticalView extends IView {
@@ -56,6 +61,9 @@ public class CriticalView extends IView {
     private JLabel leftSpace = new JLabel("",JLabel.LEFT);
     private JLabel rightSpace = new JLabel("",JLabel.LEFT);
     private JLabel aftSpace = new JLabel("",JLabel.LEFT);
+    
+    private JButton btnCopyLW = new JButton("Copy Left Wing");
+    private JButton btnCopyRW = new JButton("Copy Right Wing");
     
     private JPanel topPanel = new JPanel();
     private JPanel middlePanel = new JPanel();   
@@ -112,6 +120,11 @@ public class CriticalView extends IView {
         aftPanel.setLayout(new BoxLayout(aftPanel, BoxLayout.Y_AXIS));
         bottomPanel.add(aftPanel);
         mainPanel.add(bottomPanel);
+        
+        btnCopyLW.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnCopyRW.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnCopyLW.addActionListener(ev -> copyLocation(Aero.LOC_LWING, Aero.LOC_RWING));
+        btnCopyRW.addActionListener(ev -> copyLocation(Aero.LOC_RWING, Aero.LOC_LWING));
 
         this.add(mainPanel);
     }
@@ -243,8 +256,10 @@ public class CriticalView extends IView {
             }
             
             leftWingPanel.add(leftSpace);
+            leftWingPanel.add(btnCopyRW);
             leftWingPanel.add(Box.createVerticalStrut(8));
             rightWingPanel.add(rightSpace);
+            rightWingPanel.add(btnCopyLW);
             rightWingPanel.add(Box.createVerticalStrut(8));
             nosePanel.add(noseSpace);
             nosePanel.add(Box.createVerticalStrut(8));
@@ -261,5 +276,14 @@ public class CriticalView extends IView {
             rightWingPanel.invalidate();
             aftPanel.invalidate();
         }
+    }
+    
+    private void copyLocation(int from, int to) {
+        try {
+            UnitUtil.copyLocationEquipment(getAero(), from, to);
+        } catch (LocationFullException ex) {
+            JOptionPane.showMessageDialog(this, "Insufficient space", "Location Full", JOptionPane.WARNING_MESSAGE);
+        }
+        refresh.refreshAll();
     }
 }
