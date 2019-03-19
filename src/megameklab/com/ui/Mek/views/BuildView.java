@@ -419,7 +419,10 @@ public class BuildView extends IView implements ActionListener, MouseListener {
     private void jMenuLoadComponent_actionPerformed(int location, int selectedRow) {
         Mounted eq = (Mounted) equipmentTable.getModel().getValueAt(selectedRow, CriticalTableModel.EQUIPMENT);
         if (eq.getType().isSpreadable() || eq.isSplitable()) {
-            if (!(eq.getType() instanceof MiscType) || !eq.getType().hasFlag(MiscType.F_TARGCOMP)) {
+            if (getMech() instanceof LandAirMech) {
+                jMenuLoadSplitComponent_actionPerformed(location, Entity.LOC_NONE, eq.getType().getCriticals(getMech()),
+                        selectedRow);
+            } else if (!(eq.getType() instanceof MiscType) || !eq.getType().hasFlag(MiscType.F_TARGCOMP)) {
                 jMenuLoadSplitComponent_actionPerformed(location, Entity.LOC_NONE, 1,
                         selectedRow);
             } else {

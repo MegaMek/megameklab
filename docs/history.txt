@@ -1,6 +1,19 @@
 VERSION HISTORY:
 ----------------
-v0.45.3-SNAPSHOT
+v0.45.4-SNAPSHOT
++ Fixed vehicle and aero slot calculations for patchwork armor.
++ Issue #202: Clan Improved Autocannon 20 has no standard ammunition
++ Issue #249: Warship Validation error
++ Issue #247: Patchwork Armour Broken on Vehicles
++ Issue #250: Armouring Split Components Shows and Counts Incorrect Tonnage
++ Issue #254: Second Printed Vee Name in All Caps
++ Issue #252: Heat Sink pips not printing properly
++ Issue #260:  Some issue to allocate the components of LAM
++ Issue #261: LAM's motive type doesn't change the weight of its conversion equipment.
++ Issue #7: Pilot name printing on RSs
++ Issue #271: Bug of interaction with Partial Wing, Improved Jump Jet and Hardened Armor
+
+v0.45.3 (2019-02-12 0500 UTC)
 + Issue #223: Quad Protomech engine weight
 + Bug: Missing codecs to display fluff image on record sheets.
 + Issue #228: BA VTOL and UMU movement types
@@ -14,6 +27,7 @@ v0.45.3-SNAPSHOT
 + Issue #238: Aero recordsheet not printing correctly
 + Use current BT logo on record sheets.
 + Issue #237: Large amounts of weapons overtax warship creation
++ Added "Printing" tab to configuration dialog with some options to customize record sheets (mechs only for now).
 
 v0.45.2 (2018-11-18 0200 UTC)
 + Switched build system from ant to gradle.
