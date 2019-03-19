@@ -12,6 +12,9 @@ v0.45.4-SNAPSHOT
 + Issue #261: LAM's motive type doesn't change the weight of its conversion equipment.
 + Issue #7: Pilot name printing on RSs
 + Issue #271: Bug of interaction with Partial Wing, Improved Jump Jet and Hardened Armor
++ PR #262: Add buttons to clone aerospace side locations.
++ PR #273: Advanced aerospace record sheet printing
++ Issue #272: Modular Armor effectively prevents to put Jump Jet
 
 v0.45.3 (2019-02-12 0500 UTC)
 + Issue #223: Quad Protomech engine weight
