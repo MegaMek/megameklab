@@ -45,6 +45,7 @@ public class PrintSmallCraftAerodyne implements Printable {
 
     }
 
+    @Override
     public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
         Graphics2D g2d = (Graphics2D) graphics;
         // f.setPaper(this.paper);
@@ -91,9 +92,9 @@ public class PrintSmallCraftAerodyne implements Printable {
 
         if ((smallCraft.getCrew() != null) && !smallCraft.getCrew().getName().equalsIgnoreCase("unnamed")) {
             Crew pilot = smallCraft.getCrew();
-            g2d.drawString(pilot.getName(), 270, 120);
-            g2d.drawString(String.valueOf(pilot.getGunnery()), 295, 132);
-            g2d.drawString(String.valueOf(pilot.getPiloting()), 365, 132);
+            g2d.drawString(pilot.getName(), 270, 524);
+            g2d.drawString(String.valueOf(pilot.getGunnery()), 295, 536);
+            g2d.drawString(String.valueOf(pilot.getPiloting()), 365, 536);
         }
 
         g2d.drawString(Integer.toString(smallCraft.getWalkMP()), 99, 143);

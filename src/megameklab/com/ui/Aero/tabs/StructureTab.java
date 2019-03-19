@@ -324,6 +324,10 @@ public class StructureTab extends ITab implements AeroBuildListener {
     public void updateTechLevel() {
         removeAllListeners();
         getAero().setTechLevel(panInfo.getTechLevel().getCompoundTechLevel(panInfo.useClanTechBase()));
+        if (panArmor.isPatchwork() && !getTechManager().isLegal(Entity.getPatchworkArmorAdvancement())) {
+            panArmor.setPatchwork(false);
+            armorTypeChanged(panArmor.getArmorType(), panArmor.getArmorTechConstant());
+        }
         if (getAero().hasPatchworkArmor()) {
             for (int loc = 0; loc < getAero().locations(); loc++) {
                 if (!getTechManager().isLegal(panPatchwork.getArmor(loc))) {
@@ -394,8 +398,8 @@ public class StructureTab extends ITab implements AeroBuildListener {
 
     @Override
     public void armorTypeChanged(int at, int aTechLevel) {
-        UnitUtil.removeISorArmorMounts(getAero(), false);
         if (at != EquipmentType.T_ARMOR_PATCHWORK) {
+            UnitUtil.removeISorArmorMounts(getAero(), false);
             getAero().setArmorTechLevel(aTechLevel);
             getAero().setArmorType(at);
             panArmorAllocation.showPatchwork(false);
@@ -405,6 +409,7 @@ public class StructureTab extends ITab implements AeroBuildListener {
             panArmorAllocation.showPatchwork(true);
             panPatchwork.setVisible(true);
         }
+        panArmor.setFromEntity(getAero(), true);
         panArmorAllocation.setFromEntity(getAero());
         panSummary.refresh();
         refresh.refreshStatus();
@@ -575,6 +580,7 @@ public class StructureTab extends ITab implements AeroBuildListener {
         if (panArmor.getArmorType() == EquipmentType.T_ARMOR_PATCHWORK) {
             getAero().setArmorTonnage(panArmorAllocation.getTotalArmorWeight(getAero()));
         }
+        panArmor.setFromEntity(getAero(), true);
         panArmorAllocation.setFromEntity(getAero());
         refresh.refreshPreview();
         refresh.refreshSummary();
