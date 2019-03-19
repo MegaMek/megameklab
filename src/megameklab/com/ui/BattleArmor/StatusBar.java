@@ -183,7 +183,7 @@ public class StatusBar extends ITab {
                     + relativeFilePath
                             .substring(new File(System.getProperty("user.dir")
                                     .toString()).getAbsolutePath().length() + 1);
-            getAero().getFluff().setMMLImagePath(relativeFilePath);
+            getBattleArmor().getFluff().setMMLImagePath(relativeFilePath);
         }
         refresh.refreshPreview();
         return;
