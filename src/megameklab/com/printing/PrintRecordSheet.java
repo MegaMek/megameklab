@@ -186,6 +186,16 @@ public abstract class PrintRecordSheet implements Printable {
                 printImage(g2d, pageFormat, pageIndex - firstPage);
                 GraphicsNode node = build();
                 node.paint(g2d);
+                /* Testing code that outputs the generated svg
+                try {
+                    Transformer transformer = TransformerFactory.newInstance().newTransformer();
+                    Result output = new StreamResult(new File("out.svg"));
+                    Source input = new DOMSource(svgDocument);
+                    transformer.transform(input, output);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+                */
             }
         }
         return Printable.PAGE_EXISTS;

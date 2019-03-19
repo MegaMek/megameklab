@@ -16,17 +16,27 @@ package megameklab.com.printing;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.print.PageFormat;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import org.apache.batik.anim.dom.SVGDOMImplementation;
+import org.apache.batik.dom.util.SAXDocumentFactory;
 import org.apache.batik.util.SVGConstants;
+import org.apache.batik.util.XMLResourceDescriptor;
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.w3c.dom.svg.SVGRectElement;
 
 import megamek.common.AmmoType;
+import megamek.common.BipedMech;
 import megamek.common.CriticalSlot;
 import megamek.common.Engine;
 import megamek.common.Entity;
@@ -38,6 +48,8 @@ import megamek.common.Mech;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.QuadVee;
+import megamek.common.annotations.Nullable;
+import megameklab.com.MegaMekLab;
 import megameklab.com.util.ImageHelper;
 import megameklab.com.util.RecordSheetEquipmentLine;
 import megameklab.com.util.UnitUtil;
@@ -232,32 +244,132 @@ public class PrintMech extends PrintEntity {
         }
     }
     
+    private boolean loadArmorPips(int loc, boolean rear) {
+        String locAbbr = null;
+        switch(loc) {
+            case Mech.LOC_HEAD:
+                locAbbr = "Head";
+                break;
+            case Mech.LOC_RARM:
+            case Mech.LOC_LARM:
+                locAbbr = mech.getLocationAbbr(loc) + "rm";
+                break;
+            case Mech.LOC_RLEG:
+            case Mech.LOC_LLEG:
+                locAbbr = mech.getLocationAbbr(loc) + "eg";
+                break;
+            default:
+                locAbbr = mech.getLocationAbbr(loc);
+                break;
+        }
+        if (rear) {
+            locAbbr += "_R";
+        }
+        NodeList nl = loadPipSVG(String.format("data/images/recordsheets/biped_pips/Armor_%s_%d_Humanoid.svg",
+                locAbbr, mech.getOArmor(loc, rear)));
+        if (null == nl) {
+            return false;
+        }
+        copyPipPattern(nl);
+        if (rear) {
+            Element element = getSVGDocument().getElementById("textArmor_" + mech.getLocationAbbr(loc) + "R");
+            if (null != element) {
+                element.setTextContent(String.format("( %d )", mech.getOArmor(loc, true)));
+            }
+        }
+
+        return true;
+    }
+    
+    private boolean loadISPips() {
+        NodeList nl = loadPipSVG(String.format("data/images/recordsheets/biped_pips/BipedIS%d.svg",
+                (int) mech.getWeight()));
+        if (null == nl) {
+            return false;
+        }
+        hideElement("structurePips");
+        copyPipPattern(nl);
+        return true;
+    }
+
+    private void copyPipPattern(NodeList nl) {
+        Element group = getSVGDocument().getElementById("gSheet");
+        for (int node = 0; node < nl.getLength(); node++) {
+            final Node wn = nl.item(node);
+            Element path = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_PATH_TAG);
+            for (int attr = 0; attr < wn.getAttributes().getLength(); attr++) {
+                final Node wa = wn.getAttributes().item(attr);
+                path.setAttributeNS(null, wa.getNodeName(), wa.getTextContent());
+            }
+            group.appendChild(path);
+        }
+    }
+
+    private @Nullable NodeList loadPipSVG(String filename) {
+        final String METHOD_NAME = "loadPipsSVG(int, int)"; //$NON-NLS-1$
+        File f = new File(filename);
+        if (!f.exists()) {
+            return null;
+        }
+        Document doc = null;
+        try {
+            InputStream is = new FileInputStream(f);
+            DOMImplementation impl = SVGDOMImplementation.getDOMImplementation();
+            final String parser = XMLResourceDescriptor.getXMLParserClassName();
+            SAXDocumentFactory df = new SAXDocumentFactory(impl, parser);
+            doc = df.createDocument(f.toURI().toASCIIString(), is);
+        } catch (Exception e) {
+            MegaMekLab.getLogger().error(PrintRecordSheet.class, METHOD_NAME,
+                    "Failed to open pip SVG file! Path: " + f.getName());
+            return null;
+        }
+        if (null == doc) {
+            MegaMekLab.getLogger().error(PrintRecordSheet.class, METHOD_NAME,
+                    "Failed to open pip SVG file! Path: " + f.getName());
+            return null;
+        }
+        NodeList nl = doc.getElementsByTagName("path");
+        return nl;
+    }
+    
     // Mech armor and structure pips require special handling for rear armor and superheavy head armor/IS
     @Override
     protected void drawArmorStructurePips() {
         final String FORMAT = "( %d )";
         Element element = null;
+        boolean structComplete = (mech instanceof BipedMech) && loadISPips();
         for (int loc = 0; loc < mech.locations(); loc++) {
+            boolean frontComplete = false;
+            boolean rearComplete = false;
             if (mech.isSuperHeavy() && (loc == Mech.LOC_HEAD)) {
                 element = getSVGDocument().getElementById("armorPips" + mech.getLocationAbbr(loc) + "_SH");
             } else {
+                // For consistency, only use the canon pip layout on non-superheavies.
+                // Otherwise superheavies may get a mix of pattern types.
+                if (!mech.isSuperHeavy() && (mech instanceof BipedMech)) {
+                    frontComplete = loadArmorPips(loc, false);
+                    rearComplete = !mech.hasRearArmor(loc) || loadArmorPips(loc, true);
+                    if (frontComplete && rearComplete) {
+                        continue;
+                    }
+                }
                 element = getSVGDocument().getElementById("armorPips" + mech.getLocationAbbr(loc));
             }
-            if (null != element) {
+            if ((null != element) && !frontComplete) {
                 addPips(element, mech.getOArmor(loc),
                         (loc == Mech.LOC_HEAD) || (loc == Mech.LOC_CT) || (loc == Mech.LOC_CLEG),
                         PipType.forAT(mech.getArmorType(loc)));
                 //                        setArmorPips(element, mech.getOArmor(loc), true);
                 //                      (loc == Mech.LOC_HEAD) || (loc == Mech.LOC_CT));
             }
-            if (loc > Mech.LOC_HEAD) {
+            if ((loc > Mech.LOC_HEAD) && !structComplete) {
                 element = getSVGDocument().getElementById("isPips" + mech.getLocationAbbr(loc));
                 if (null != element) {
                     addPips(element, mech.getOInternal(loc),
                             (loc == Mech.LOC_HEAD) || (loc == Mech.LOC_CT) || (loc == Mech.LOC_CLEG));
                 }
             }
-            if (mech.hasRearArmor(loc)) {
+            if (mech.hasRearArmor(loc) && !rearComplete) {
                 element = getSVGDocument().getElementById("textArmor_" + mech.getLocationAbbr(loc) + "R");
                 if (null != element) {
                     element.setTextContent(String.format(FORMAT, mech.getOArmor(loc, true)));

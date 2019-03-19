@@ -149,7 +149,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
         setTextField("cost", formatCost());
         setTextField("bv", NumberFormat.getInstance().format(getEntity().calculateBattleValue()));
         UnitRole role = UnitRoleHandler.getRoleFor(getEntity());
-        if (role == UnitRole.UNDETERMINED) {
+        if (!options.showRole() || (role == UnitRole.UNDETERMINED)) {
             hideElement("lblRole", true);
             hideElement("role", true);
         } else {

@@ -26,11 +26,13 @@ public class RecordSheetOptions {
     private boolean quirks = true;
     private boolean pilotData = true;
     private boolean eraIcon = true;
+    private boolean role = true;
     
     public RecordSheetOptions() {
         this.quirks = CConfig.getBooleanParam(CConfig.RS_SHOW_QUIRKS);
         this.pilotData = CConfig.getBooleanParam(CConfig.RS_SHOW_PILOT_DATA);
         this.eraIcon = CConfig.getBooleanParam(CConfig.RS_SHOW_ERA);
+        this.role = CConfig.getBooleanParam(CConfig.RS_SHOW_ROLE);
     }
     
     public boolean showQuirks() {
@@ -41,6 +43,9 @@ public class RecordSheetOptions {
     }
     public boolean showPilotData() {
         return pilotData;
+    }
+    public boolean showRole() {
+        return role;
     }
     
     public void setPilotData(boolean pilotData) {
