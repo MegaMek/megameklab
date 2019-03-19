@@ -2526,14 +2526,6 @@
 <text
    transform="matrix(0.99799412,0,0,-1,51.2712,416.1781)"
    style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;-inkscape-font-specification:EurostileBold;writing-mode:lr-tb;fill:#110f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
-   id="text8023"><tspan
-     x="0 4.7754712 8.7782125 12.603227 15.555055"
-     y="0"
-     sodipodi:role="line"
-     id="tspan8025">Cost:</tspan></text>
-<text
-   transform="matrix(0.99799412,0,0,-1,154.1334,416.1776)"
-   style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;-inkscape-font-specification:EurostileBold;writing-mode:lr-tb;fill:#110f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
    id="text8073"><tspan
      x="0 4.8991084 9.6591253 11.297313"
      y="0"
@@ -4008,12 +4000,8 @@
        x="190"
        y="159.25">Lorem Ipsum</text>
 <text
-       id="cost"
-       x="69.84"
-       y="348.8224">0 C-bills</text>
-<text
        id="bv"
-       x="168.68"
+       x="65.8178"
        y="348.8224">0</text>
 <text
        id="pilotName0"
@@ -4305,5 +4293,5 @@
 	<path d="M479.608,13.623V9.206h1.422l0.854,3.013l0.845-3.013h1.426v4.417h-0.883v-3.477l-0.935,3.477h-0.915l-0.931-3.477v3.477
 		H479.608z"/>
 </g>
-<rect fill="#FFFFFF" x="218" y="104" height="24" width="24" id="eraIcon" />
+<rect fill="#FFFFFF" x="191.5" y="343.2" height="20" width="20" id="eraIcon" />
 </svg>

@@ -75,6 +75,7 @@ public class CConfig {
     public static final String RS_SHOW_QUIRKS = "rs_show_quirks";
     public static final String RS_SHOW_PILOT_DATA = "rs_show_pilot_data";
     public static final String RS_SHOW_ERA = "rs_show_era";
+    public static final String RS_SHOW_ROLE = "rs_show_role";
 
     private static Properties config;// config. player values.
 
@@ -115,6 +116,7 @@ public class CConfig {
         defaults.setProperty(SUMMARY_FORMAT_TRO, Boolean.toString(true));
         defaults.setProperty(RS_SHOW_QUIRKS, Boolean.toString(true));
         defaults.setProperty(RS_SHOW_ERA, Boolean.toString(true));
+        defaults.setProperty(RS_SHOW_ROLE, Boolean.toString(true));
         defaults.setProperty(RS_SHOW_PILOT_DATA, Boolean.toString(true));
 
         return defaults;

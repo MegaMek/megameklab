@@ -1,0 +1,33 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  SIGSEGV (0xb) at pc=0x00007f5facfbefb2, pid=2928, tid=2949
+#
+# JRE version: Java(TM) SE Runtime Environment (9.0+11) (build 9.0.4+11)
+# Java VM: Java HotSpot(TM) 64-Bit Server VM (9.0.4+11, mixed mode, tiered, compressed oops, g1 gc, linux-amd64)
+# Problematic frame:
+# C  [libjimage.so+0x3fb2]  ImageStrings::find(Endian*, char const*, int*, unsigned int)+0x42
+#
+# No core dump will be written. Core dumps have been disabled. To enable core dumping, try "ulimit -c unlimited" before starting Java again
+#
+# If you would like to submit a bug report, please visit:
+#   http://bugreport.java.com/bugreport/crash.jsp
+#
+
+---------------  S U M M A R Y ------------
+
+Command Line: -agentlib:jdwp=transport=dt_socket,suspend=y,address=localhost:45679 -Dsun.awt.disablegrab=true -Dfile.encoding=UTF-8 megameklab.com.MegaMekLab
+
+Host: Intel(R) Core(TM) i3-5010U CPU @ 2.10GHz, 4 cores, 7G, Ubuntu 16.04.5 LTS
+Time: Wed Feb  6 14:25:40 2019 CST elapsed time: 6026 seconds (0d 1h 40m 26s)
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x00007f5fa8160000):  JavaThread "Signal Dispatcher" daemon [_thread_in_vm, id=2949, stack(0x00007f5f8c14f000,0x00007f5f8c250000)]
+
+Stack: [0x00007f5f8c14f000,0x00007f5f8c250000],  sp=0x00007f5f8c24d2c0,  free space=1016k
+Native frames: (J=compiled Java code, A=aot compiled Java code, j=interpreted, Vv=VM code, C=native code)
+C  [libjimage.so+0x3fb2]  ImageStrings::find(Endian*, char const*, int*, unsigned int)+0x42
+C  [libjimage.so+0x4b8c]  ImageFileReader::find_location_index(char const*, unsigned long long*) const+0x3c
+C  [libjimage.so+0x505a]  JIMAGE_FindResource+0xba
+V  [libjvm.so+0x5aae8e]
