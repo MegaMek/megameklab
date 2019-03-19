@@ -19,6 +19,7 @@ package megameklab.com.util;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -1937,12 +1938,14 @@ public class UnitUtil {
         if ((euroFont != null) && (euroBoldFont != null)) {
             return;
         }
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 
         String fName = "./data/fonts/Eurosti.TTF";
         try {
             File fontFile = new File(fName);
             InputStream is = new FileInputStream(fontFile);
             euroFont = Font.createFont(Font.TRUETYPE_FONT, is);
+            ge.registerFont(euroFont);
             is.close();
         } catch (Exception ex) {
             getLogger().log(UnitUtil.class, METHOD_NAME, LogLevel.ERROR,
@@ -1955,6 +1958,7 @@ public class UnitUtil {
             File fontFile = new File(fName);
             InputStream is = new FileInputStream(fontFile);
             euroBoldFont = Font.createFont(Font.TRUETYPE_FONT, is);
+            ge.registerFont(euroBoldFont);
             is.close();
         } catch (Exception ex) {
             getLogger().log(UnitUtil.class, METHOD_NAME, LogLevel.ERROR,

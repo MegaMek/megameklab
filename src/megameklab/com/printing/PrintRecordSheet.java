@@ -72,6 +72,7 @@ import megameklab.com.MegaMekLab;
 public abstract class PrintRecordSheet implements Printable {
     
     final static float DEFAULT_PIP_SIZE  = 0.38f;
+    final static float FONT_SIZE_LARGE   = 7.2f;
     final static float FONT_SIZE_MEDIUM  = 6.76f;
     final static float FONT_SIZE_SMALL   = 6.2f;
     final static float FONT_SIZE_VSMALL  = 5.8f;
@@ -88,7 +89,7 @@ public abstract class PrintRecordSheet implements Printable {
         }
     }
 
-    public final String svgNS = SVGDOMImplementation.SVG_NAMESPACE_URI;
+    public final static String svgNS = SVGDOMImplementation.SVG_NAMESPACE_URI;
     private final int firstPage;
     protected final RecordSheetOptions options;
     private Document svgDocument;
@@ -106,6 +107,13 @@ public abstract class PrintRecordSheet implements Printable {
     protected PrintRecordSheet(int firstPage, RecordSheetOptions options) {
         this.firstPage = firstPage;
         this.options = options;
+    }
+    
+    /**
+     * @return The page number of the first page of this record sheet within the book.
+     */
+    protected final int getFirstPage() {
+        return firstPage;
     }
     
     protected final Document getSVGDocument() {
@@ -158,7 +166,7 @@ public abstract class PrintRecordSheet implements Printable {
         
         Graphics2D g2d = (Graphics2D) graphics;
         if (null != g2d) {
-            File f = new File("data/images/recordsheets/" + getSVGFileName());
+            File f = new File("data/images/recordsheets/" + getSVGFileName(pageIndex - firstPage));
             svgDocument = null;
             try {
                 InputStream is = new FileInputStream(f);
@@ -171,7 +179,8 @@ public abstract class PrintRecordSheet implements Printable {
             }
             if (null == svgDocument) {
                 MegaMekLab.getLogger().error(PrintRecordSheet.class, METHOD_NAME,
-                        "Failed to open Mech SVG file! Path: data/images/recordsheets/" + getSVGFileName());
+                        "Failed to open Mech SVG file! Path: data/images/recordsheets/"
+                                + getSVGFileName(pageIndex - firstPage));
             } else {
                 svgGenerator = new SVGGraphics2D(svgDocument);
                 printImage(g2d, pageFormat, pageIndex - firstPage);
@@ -222,12 +231,20 @@ public abstract class PrintRecordSheet implements Printable {
     protected abstract void printImage(Graphics2D g2d, PageFormat pageFormat, int pageNum)
             throws PrinterException;
 
-    protected abstract String getSVGFileName();
+    /**
+     * @param pageNumber  The page number in the current record sheet, where the first page is numberd zero.
+     * @return            The file name for the current page in the record sheet image directory
+     */
+    protected abstract String getSVGFileName(int pageNumber);
     
     /**
      * @return The title to use for the record sheet
      */
     protected abstract String getRecordSheetTitle();
+    
+    protected void setTextField(String id, int i) {
+        setTextField(id, String.valueOf(i));
+    }
     
     protected void setTextField(String id, String text) {
         setTextField(id, text, false);
@@ -302,6 +319,58 @@ public abstract class PrintRecordSheet implements Printable {
         parent.appendChild(newText);
         
         return getTextLength(text, fontSize);
+    }
+    
+    /**
+     * Creates a new text element with black fill and adds it to the parent.
+     * If the text is wider than the available
+     * space, the text is compressed to fit.
+     * 
+     * @param parent    The SVG element to add the text element to.
+     * @param x         The X position of the new element.
+     * @param y         The Y position of the new element.
+     * @param width     The width of the space the text has to fit.
+     * @param text      The text to display.
+     * @param fontSize  Font size of the text.
+     * @param anchor    Set the Text elements text-anchor.  Should be either start, middle, or end.
+     * @param weight    The font weight, either normal or bold.
+     */
+    protected void addTextElementToFit(Element parent, double x, double y, double width,
+            String text, float fontSize, String anchor, String weight) {
+        addTextElementToFit(parent, x, y, width, text, fontSize, anchor, weight, "#000000");
+    }
+    
+    /**
+     * Creates a new text element and adds it to the parent. If the text is wider than the available
+     * space, the text is compressed to fit.
+     * 
+     * @param parent    The SVG element to add the text element to.
+     * @param x         The X position of the new element.
+     * @param y         The Y position of the new element.
+     * @param width     The width of the space the text has to fit.
+     * @param text      The text to display.
+     * @param fontSize  Font size of the text.
+     * @param anchor    Set the Text elements text-anchor.  Should be either start, middle, or end.
+     * @param weight    The font weight, either normal or bold.
+     * @param fill      The fill color for the text (e.g. foreground color)
+     */
+    protected void addTextElementToFit(Element parent, double x, double y, double width,
+            String text, float fontSize, String anchor, String weight, String fill) {
+        Element newText = svgDocument.createElementNS(svgNS, SVGConstants.SVG_TEXT_TAG);
+        newText.setTextContent(text);
+        newText.setAttributeNS(null, SVGConstants.SVG_X_ATTRIBUTE, String.valueOf(x));
+        newText.setAttributeNS(null, SVGConstants.SVG_Y_ATTRIBUTE, String.valueOf(y));
+        newText.setAttributeNS(null, SVGConstants.SVG_FONT_FAMILY_ATTRIBUTE, "Eurostile");
+        newText.setAttributeNS(null, SVGConstants.SVG_FONT_SIZE_ATTRIBUTE, fontSize + "px");
+        newText.setAttributeNS(null, SVGConstants.SVG_FONT_WEIGHT_ATTRIBUTE, weight);
+        newText.setAttributeNS(null, SVGConstants.SVG_TEXT_ANCHOR_ATTRIBUTE, anchor);
+        newText.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, fill);
+        if (getTextLength(text, fontSize) > width) {
+            newText.setAttributeNS(null,  SVGConstants.SVG_TEXT_LENGTH_ATTRIBUTE, String.valueOf(width));
+            newText.setAttributeNS(null, SVGConstants.SVG_LENGTH_ADJUST_ATTRIBUTE,
+                    SVGConstants.SVG_SPACING_AND_GLYPHS_VALUE);
+        }
+        parent.appendChild(newText);
     }
     
     /**
@@ -1118,7 +1187,7 @@ public abstract class PrintRecordSheet implements Printable {
     /**
      * Determines the vertical space taken up by a line of text.
      * 
-     * @param fontSize  Value of CSS font-family attribute
+     * @param fontSize  Value of CSS font-size attribute
      * @return          The height of the bounding box of a text element
      */
     public float getFontHeight(float fontSize) {
@@ -1148,7 +1217,7 @@ public abstract class PrintRecordSheet implements Printable {
      * @param center     Whether to center the image vertically and horizontally.
      */
     public void embedImage(File imageFile, Element canvas, Rectangle2D bbox, boolean center) {
-        final String METHOD_NAME = "addFluffImage(File,Rectangle2D)";
+        final String METHOD_NAME = "embedImage(File, Element, Rectangle2D, boolean)";
         if (null == imageFile) {
             return;
         }

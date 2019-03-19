@@ -40,7 +40,7 @@ import megamek.common.UnitRoleHandler;
 import megamek.common.options.IOption;
 import megamek.common.options.IOptionGroup;
 import megamek.common.options.PilotOptions;
-import megameklab.com.util.ImageHelper;
+import megamek.common.options.Quirks;
 
 /**
  * Base class for printing Entity record sheets
@@ -86,6 +86,33 @@ public abstract class PrintEntity extends PrintRecordSheet {
         return options.showPilotData() && !getEntity().getCrew().getName().equalsIgnoreCase("unnamed");
     }
     
+    /**
+     * Builds the string to display for the quirks block. Returns an empty string if quirks are
+     * disabled (or if the unit has no quirks).
+     * 
+     * @return The text to display for the unit's quirks.
+     */
+    protected String formatQuirks() {
+        if (options.showQuirks()) {
+            StringJoiner sj = new StringJoiner(", ");
+            Quirks quirks = getEntity().getQuirks();
+            for (Enumeration<IOptionGroup> optionGroups = quirks.getGroups(); optionGroups.hasMoreElements();) {
+                IOptionGroup optiongroup = optionGroups.nextElement();
+                if (quirks.count(optiongroup.getKey()) > 0) {
+                    for (Enumeration<IOption> options = optiongroup.getOptions(); options.hasMoreElements();) {
+                        IOption option = options.nextElement();
+                        if (option != null && option.booleanValue()) {
+                            sj.add(option.getDisplayableNameWithValue());
+                        }
+                    }
+                }
+            }
+            return sj.toString();
+        } else {
+            return "";
+        }
+    }
+    
     @Override
     protected void printImage(Graphics2D g2d, PageFormat pageFormat, int pageNum) {
         Element element = null;
@@ -115,12 +142,12 @@ public abstract class PrintEntity extends PrintRecordSheet {
         setTextField("mpWalk", formatWalk());
         setTextField("mpRun", formatRun());
         setTextField("mpJump", formatJump());
-        setTextField("tonnage", Integer.toString((int) getEntity().getWeight()));
+        setTextField("tonnage", NumberFormat.getInstance().format((int) getEntity().getWeight()));
         setTextField("techBase", formatTechBase());
         setTextField("rulesLevel", formatRulesLevel());
         setTextField("era", formatEra(getEntity().getYear()));
         setTextField("cost", formatCost());
-        setTextField("bv", Integer.toString(getEntity().calculateBattleValue()));
+        setTextField("bv", NumberFormat.getInstance().format(getEntity().calculateBattleValue()));
         UnitRole role = UnitRoleHandler.getRoleFor(getEntity());
         if (role == UnitRole.UNDETERMINED) {
             hideElement("lblRole", true);
