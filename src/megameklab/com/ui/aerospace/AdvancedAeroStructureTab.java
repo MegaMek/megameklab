@@ -521,30 +521,43 @@ public class AdvancedAeroStructureTab extends ITab implements AdvancedAeroBuildL
             getJumpship().initializeArmor(0, loc);
         }
         
-        // divide armor among positions, with more toward the front
-        int points = UnitUtil.getArmorPoints(getJumpship(), getJumpship().getLabArmorTonnage());
-        int nose = (int)Math.floor(points * 0.3);
-        int wing = (int)Math.floor(points * 0.25);
-        int aft = (int)Math.floor(points * 0.2);
-        int remainder = points - nose - wing - wing - aft;
+        // divide armor (in excess of bonus from SI) among positions, with more toward the front
+        int bonusPerFacing = (int) Math.floor(UnitUtil.getSIBonusArmorPoints(getJumpship()) / 6.0);
+        int points = UnitUtil.getArmorPoints(getJumpship(), getJumpship().getLabArmorTonnage())
+                - bonusPerFacing * 6;
+        int nose = (int)Math.floor(points * 0.22);
+        int foresides = (int)Math.floor(points * 0.18);
+        int aftsides = (int) Math.floor(points * 0.16);
+        int aft = (int)Math.floor(points * 0.10);
+        int remainder = points - nose - foresides * 2 - aftsides * 2 - aft;
         
-        // spread remainder among nose and wings
-        switch(remainder % 4) {
+        // spread remainder among nose and fore sides
+        switch(remainder % 6) {
             case 1:
                 nose++;
                 break;
+            case 2:
+                foresides++;
+                break;
             case 3:
                 nose++;
-                wing++;
+                foresides++;
                 break;
-            case 2:
-                wing++;
+            case 4:
+                nose += 2;
+                foresides++;
+                break;
+            case 5:
+                nose += 3;
+                foresides++;
                 break;
         }
-        getJumpship().initializeArmor(nose, Aero.LOC_NOSE);
-        getJumpship().initializeArmor(wing, Aero.LOC_LWING);
-        getJumpship().initializeArmor(wing, Aero.LOC_RWING);
-        getJumpship().initializeArmor(aft, Aero.LOC_AFT);
+        getJumpship().initializeArmor(nose + bonusPerFacing, Jumpship.LOC_NOSE);
+        getJumpship().initializeArmor(foresides + bonusPerFacing, Jumpship.LOC_FRS);
+        getJumpship().initializeArmor(foresides + bonusPerFacing, Jumpship.LOC_FLS);
+        getJumpship().initializeArmor(aftsides + bonusPerFacing, Jumpship.LOC_ARS);
+        getJumpship().initializeArmor(aftsides + bonusPerFacing, Jumpship.LOC_ALS);
+        getJumpship().initializeArmor(aft + bonusPerFacing, Jumpship.LOC_AFT);
         getJumpship().autoSetThresh();
 
         panArmorAllocation.setFromEntity(getJumpship());
