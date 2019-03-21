@@ -1508,7 +1508,7 @@ public class UnitUtil {
      */
     public static double getSIBonusArmorPoints(Entity entity) {
         if (entity.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)) {
-            return ((SmallCraft)entity).getSI() * entity.locations();
+            return ((SmallCraft)entity).getSI() * (entity.locations() - 1);
         } else if (entity.hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
             double points = Math.round(((Jumpship) entity).getSI() / 10.0) * 6;
             if (((Jumpship) entity).isPrimitive()) {
