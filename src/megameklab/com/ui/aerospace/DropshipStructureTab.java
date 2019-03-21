@@ -476,6 +476,7 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
 
     @Override
     public void autoAllocateArmor() {
+        // Ignore unarmored system-wide location
         final int ARMOR_FACINGS = getSmallCraft().locations() - 1;
         for (int loc = 0; loc < ARMOR_FACINGS; loc++) {
             getSmallCraft().initializeArmor(0, loc);
