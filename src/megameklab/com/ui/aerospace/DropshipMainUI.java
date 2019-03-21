@@ -27,6 +27,7 @@ import megamek.common.Dropship;
 import megamek.common.Entity;
 import megamek.common.EntityMovementMode;
 import megamek.common.EquipmentType;
+import megamek.common.IArmorState;
 import megamek.common.ITechManager;
 import megamek.common.MechSummaryCache;
 import megamek.common.SimpleTechLevel;
@@ -135,7 +136,11 @@ public class DropshipMainUI extends MegaMekLabMainUI {
 
         smallCraft.autoSetInternal();
         for (int loc = 0; loc < getEntity().locations(); loc++) {
-            smallCraft.initializeArmor(smallCraft.get0SI(), loc);
+            if (loc == SmallCraft.LOC_HULL) {
+                smallCraft.initializeArmor(IArmorState.ARMOR_NA, loc);
+            } else {
+                smallCraft.initializeArmor(smallCraft.get0SI(), loc);
+            }
         }
 
         if (null == oldUnit) {
