@@ -517,6 +517,7 @@ public class AdvancedAeroStructureTab extends ITab implements AdvancedAeroBuildL
 
     @Override
     public void autoAllocateArmor() {
+        // ignore unarmored system-wide location
         final int ARMOR_FACINGS = getJumpship().locations() - 1;
         for (int loc = 0; loc < ARMOR_FACINGS; loc++) {
             getJumpship().initializeArmor(0, loc);
