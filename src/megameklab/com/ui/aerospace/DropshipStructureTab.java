@@ -476,12 +476,13 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
 
     @Override
     public void autoAllocateArmor() {
-        for (int loc = 0; loc < getSmallCraft().locations() - 1; loc++) {
+        final int ARMOR_FACINGS = getSmallCraft().locations() - 1;
+        for (int loc = 0; loc < ARMOR_FACINGS; loc++) {
             getSmallCraft().initializeArmor(0, loc);
         }
         
         // divide armor (in excess of bonus from SI) among positions, with more toward the front
-        int bonusPerFacing = (int) UnitUtil.getSIBonusArmorPoints(getSmallCraft()) / 4;
+        int bonusPerFacing = (int) UnitUtil.getSIBonusArmorPoints(getSmallCraft()) / ARMOR_FACINGS;
         int points = UnitUtil.getArmorPoints(getSmallCraft(), getSmallCraft().getLabArmorTonnage())
                 - bonusPerFacing * 4;
         int nose = (int)Math.floor(points * 0.3);
