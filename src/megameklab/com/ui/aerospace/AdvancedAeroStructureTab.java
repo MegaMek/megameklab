@@ -517,12 +517,13 @@ public class AdvancedAeroStructureTab extends ITab implements AdvancedAeroBuildL
 
     @Override
     public void autoAllocateArmor() {
-        for (int loc = 0; loc < getJumpship().locations() - 1; loc++) {
+        final int ARMOR_FACINGS = getJumpship().locations() - 1;
+        for (int loc = 0; loc < ARMOR_FACINGS; loc++) {
             getJumpship().initializeArmor(0, loc);
         }
         
         // divide armor (in excess of bonus from SI) among positions, with more toward the front
-        int bonusPerFacing = (int) Math.floor(UnitUtil.getSIBonusArmorPoints(getJumpship()) / 6.0);
+        int bonusPerFacing = (int) Math.floor(UnitUtil.getSIBonusArmorPoints(getJumpship()) / ARMOR_FACINGS);
         int points = UnitUtil.getArmorPoints(getJumpship(), getJumpship().getLabArmorTonnage())
                 - bonusPerFacing * 6;
         int nose = (int)Math.floor(points * 0.22);
