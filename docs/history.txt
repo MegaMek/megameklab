@@ -1,5 +1,7 @@
 VERSION HISTORY:
 ----------------
+v0.45.5-SNAPSHOT
+
 v0.45.4 (2019-03-24 1700 UTC)
 + Fixed vehicle and aero slot calculations for patchwork armor.
 + Issue #202: Clan Improved Autocannon 20 has no standard ammunition
