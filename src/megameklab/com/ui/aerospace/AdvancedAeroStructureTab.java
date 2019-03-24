@@ -31,6 +31,7 @@ import megamek.common.ITechManager;
 import megamek.common.Jumpship;
 import megamek.common.SimpleTechLevel;
 import megamek.common.SpaceStation;
+import megamek.common.Warship;
 import megamek.common.verifier.TestEntity;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.view.AdvancedAeroChassisView;
@@ -517,8 +518,9 @@ public class AdvancedAeroStructureTab extends ITab implements AdvancedAeroBuildL
 
     @Override
     public void autoAllocateArmor() {
-        // ignore unarmored system-wide location
-        final int ARMOR_FACINGS = getJumpship().locations() - 1;
+        // ignore unarmored system-wide location and warship broadsides
+        final int ARMOR_FACINGS = getJumpship() instanceof Warship ?
+                getJumpship().locations() - 3 : getJumpship().locations() - 1;
         for (int loc = 0; loc < ARMOR_FACINGS; loc++) {
             getJumpship().initializeArmor(0, loc);
         }

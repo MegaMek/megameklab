@@ -156,7 +156,7 @@ public class AdvancedAeroUI extends MegaMekLabMainUI {
         ship.initializeKFIntegrity();
         ship.initializeSailIntegrity();
         for (int loc = 0; loc < getEntity().locations(); loc++) {
-            if (loc == Jumpship.LOC_HULL) {
+            if (loc >= Jumpship.LOC_HULL) {
                 ship.initializeArmor(IArmorState.ARMOR_NA, loc);
             } else {
                 ship.initializeArmor((int) Math.round(ship.get0SI() / 10.0), loc);
