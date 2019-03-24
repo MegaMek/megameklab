@@ -476,13 +476,16 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
 
     @Override
     public void autoAllocateArmor() {
-        for (int loc = 0; loc < getSmallCraft().locations(); loc++) {
+        // Ignore unarmored system-wide location
+        final int ARMOR_FACINGS = getSmallCraft().locations() - 1;
+        for (int loc = 0; loc < ARMOR_FACINGS; loc++) {
             getSmallCraft().initializeArmor(0, loc);
         }
         
-        // divide armor among positions, with more toward the front
+        // divide armor (in excess of bonus from SI) among positions, with more toward the front
+        int bonusPerFacing = (int) UnitUtil.getSIBonusArmorPoints(getSmallCraft()) / ARMOR_FACINGS;
         int points = UnitUtil.getArmorPoints(getSmallCraft(), getSmallCraft().getLabArmorTonnage())
-                + getAero().getSI() * getAero().locations();
+                - bonusPerFacing * 4;
         int nose = (int)Math.floor(points * 0.3);
         int wing = (int)Math.floor(points * 0.25);
         int aft = (int)Math.floor(points * 0.2);
@@ -501,10 +504,10 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
                 wing++;
                 break;
         }
-        getSmallCraft().initializeArmor(nose, Aero.LOC_NOSE);
-        getSmallCraft().initializeArmor(wing, Aero.LOC_LWING);
-        getSmallCraft().initializeArmor(wing, Aero.LOC_RWING);
-        getSmallCraft().initializeArmor(aft, Aero.LOC_AFT);
+        getSmallCraft().initializeArmor(nose + bonusPerFacing, Aero.LOC_NOSE);
+        getSmallCraft().initializeArmor(wing + bonusPerFacing, Aero.LOC_LWING);
+        getSmallCraft().initializeArmor(wing + bonusPerFacing, Aero.LOC_RWING);
+        getSmallCraft().initializeArmor(aft + bonusPerFacing, Aero.LOC_AFT);
         getSmallCraft().autoSetThresh();
 
         panArmorAllocation.setFromEntity(getSmallCraft());
