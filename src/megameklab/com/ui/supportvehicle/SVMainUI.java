@@ -23,7 +23,6 @@ import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.Vehicle.StatusBar;
 import megameklab.com.ui.Vehicle.tabs.BuildTab;
 import megameklab.com.ui.Vehicle.tabs.EquipmentTab;
-import megameklab.com.ui.Vehicle.tabs.StructureTab;
 import megameklab.com.ui.tabs.FluffTab;
 import megameklab.com.ui.tabs.PreviewTab;
 import megameklab.com.util.MenuBarCreator;
@@ -37,7 +36,7 @@ import java.awt.*;
  */
 public class SVMainUI extends MegaMekLabMainUI {
     JTabbedPane configPane = new JTabbedPane(SwingConstants.TOP);
-    private StructureTab structureTab;
+    private SVStructureTab structureTab;
     private EquipmentTab equipmentTab;
     private PreviewTab previewTab;
     private BuildTab buildTab;
@@ -76,7 +75,7 @@ public class SVMainUI extends MegaMekLabMainUI {
         masterPanel.setLayout(new BorderLayout());
 
         statusbar = new StatusBar(this);
-        structureTab = new StructureTab(this);
+        structureTab = new SVStructureTab(this);
         equipmentTab = new EquipmentTab(this);
         buildTab = new BuildTab(this, equipmentTab);
         fluffTab = new FluffTab(this);
@@ -164,6 +163,7 @@ public class SVMainUI extends MegaMekLabMainUI {
         if (entityType == Entity.ETYPE_SUPPORT_VTOL) {
             setEntity(new SupportVTOL());
             getEntity().setMovementMode(EntityMovementMode.VTOL);
+            ((SupportVTOL) getEntity()).setHasNoDualTurret(true);
             ((SupportVTOL) getEntity()).setHasNoTurret(true);
         } else if (entityType == Entity.ETYPE_FIXED_WING_SUPPORT) {
             setEntity(new FixedWingSupport());
@@ -208,6 +208,7 @@ public class SVMainUI extends MegaMekLabMainUI {
             getEntity().setMovementMode(oldEntity.getMovementMode());
         }
         getEntity().setOriginalWalkMP(1);
+        getEntity().recalculateTechAdvancement();
     }
 
     @Override
