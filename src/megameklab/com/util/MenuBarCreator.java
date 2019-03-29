@@ -286,13 +286,21 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             unitMenu.add(item);
         }
 
-        if (!(parentFrame.getEntity() instanceof Tank)) {
+        if (!(parentFrame.getEntity() instanceof Tank)
+                && !parentFrame.getEntity().isSupportVehicle()) {
             item = new JMenuItem();
             item.setText("Combat Vehicle");
             item.setMnemonic(KeyEvent.VK_T);
             item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T,
                     Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
             item.addActionListener(e -> jMenuLoadVehicle());
+            unitMenu.add(item);
+        }
+
+        if (!parentFrame.getEntity().isSupportVehicle()) {
+            item = new JMenuItem();
+            item.setText("Support Vehicle");
+            item.addActionListener(e -> jMenuLoadSupportVehicle());
             unitMenu.add(item);
         }
 
@@ -941,6 +949,11 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         parentFrame.dispose();
     }
 
+    private void jMenuLoadSupportVehicle() {
+        new megameklab.com.ui.supportvehicle.SVMainUI();
+        parentFrame.dispose();
+    }
+
     private void jMenuLoadBattleArmor() {
         new megameklab.com.ui.BattleArmor.MainUI();
         parentFrame.dispose();
@@ -1213,7 +1226,9 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
 
         if (newUnit.getEntityType() != parentFrame.getEntity().getEntityType()) {
             MegaMekLabMainUI newUI = null;
-            if (newUnit.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)) {
+            if (newUnit.isSupportVehicle()) {
+                newUI = new megameklab.com.ui.supportvehicle.SVMainUI();
+            } else if (newUnit.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)) {
                 newUI = new megameklab.com.ui.aerospace.DropshipMainUI(((Aero)newUnit).isPrimitive());
             } else if (newUnit.hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
                 newUI = new megameklab.com.ui.aerospace.AdvancedAeroUI(((Aero)newUnit).isPrimitive());
@@ -1331,7 +1346,9 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
 
             if (tempEntity.getEntityType() != parentFrame.getEntity().getEntityType()) {
                 MegaMekLabMainUI newUI = null;
-                if (tempEntity.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)) {
+                if (tempEntity.isSupportVehicle()) {
+                    newUI = new megameklab.com.ui.supportvehicle.SVMainUI();
+                } else if (tempEntity.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)) {
                     newUI = new megameklab.com.ui.aerospace.DropshipMainUI(((Aero)tempEntity).isPrimitive());
                 } else if (tempEntity.hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
                     newUI = new megameklab.com.ui.aerospace.AdvancedAeroUI(((Aero)tempEntity).isPrimitive());
