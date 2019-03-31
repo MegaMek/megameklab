@@ -1,6 +1,6 @@
 /*
- * MekBuilder - unit design companion of MegaMek
- * Copyright (C) 2017 The MegaMek Team
+ * MegaMekLab
+ * Copyright (C) 2019 The MegaMek Team
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -22,9 +22,11 @@ import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.ITechManager;
 import megamek.common.SimpleTechLevel;
+import megamek.common.verifier.TestEntity;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.view.BasicInfoView;
 import megameklab.com.ui.view.MovementView;
+import megameklab.com.ui.view.SVChassisView;
 import megameklab.com.ui.view.listeners.SVBuildListener;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
@@ -40,7 +42,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
     private RefreshListener refresh = null;
     private JPanel masterPanel;
     private BasicInfoView panBasicInfo;
-    private JPanel panChassis;
+    private SVChassisView panChassis;
     private MovementView panMovement;
     private JPanel panSummary;
     private JPanel panChassisMod;
@@ -60,7 +62,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
     private void setupPanels() {
         masterPanel = new JPanel(new GridBagLayout());
         panBasicInfo = new BasicInfoView(getSV().getConstructionTechAdvancement());
-        panChassis = new JPanel();
+        panChassis = new SVChassisView(panBasicInfo);
         panMovement = new MovementView(panBasicInfo);
         panSummary = new JPanel();
         panChassisMod = new JPanel();
@@ -109,6 +111,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         removeAllListeners();
 
         panBasicInfo.setFromEntity(getSV());
+        panChassis.setFromEntity(getSV());
         panMovement.setFromEntity(getSV());
 
         addAllListeners();
@@ -120,11 +123,13 @@ public class SVStructureTab extends ITab implements SVBuildListener {
 
     private void removeAllListeners() {
         panBasicInfo.removeListener(this);
+        panChassis.removeListener(this);
         panMovement.removeListener(this);
     }
 
     private void addAllListeners() {
         panBasicInfo.addListener(this);
+        panChassis.addListener(this);
         panMovement.addListener(this);
     }
 
@@ -201,5 +206,12 @@ public class SVStructureTab extends ITab implements SVBuildListener {
 
     }
 
-
+    @Override
+    public void tonnageChanged(double tonnage) {
+        getSV().setWeight(TestEntity.ceil(tonnage, tonnage < 5 ?
+                TestEntity.Ceil.KILO : TestEntity.Ceil.HALFTON));
+        // TODO: refresh armor and summary
+        refresh.refreshStatus();
+        refresh.refreshPreview();
+    }
 }

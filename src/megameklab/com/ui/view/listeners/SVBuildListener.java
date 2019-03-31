@@ -1,6 +1,6 @@
 /*
- * MekBuilder - unit design companion of MegaMek
- * Copyright (C) 2017 The MegaMek Team
+ * MegaMekLab
+ * Copyright (C) 2019 The MegaMek Team
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -22,4 +22,5 @@ package megameklab.com.ui.view.listeners;
  * Listener for views used by support vehicle construction.
  */
 public interface SVBuildListener extends BuildListener {
+    void tonnageChanged(double tonnage);
 }
