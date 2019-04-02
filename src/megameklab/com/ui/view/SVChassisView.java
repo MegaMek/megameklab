@@ -94,7 +94,7 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.anchor = GridBagConstraints.WEST;
         add(createLabel(resourceMap.getString("SVChassisView.spnTonnage.text"), labelSize), gbc); //$NON-NLS-1$
         gbc.gridx = 1;
-        setFieldSize(spnTonnage, spinnerSize);
+        setFieldSize(spnTonnage, spinnerSizeLg);
         spnTonnage.setToolTipText(resourceMap.getString("SVChassisView.spnTonnage.tooltip")); //$NON-NLS-1$
         add(spnTonnage, gbc);
         spnTonnage.addChangeListener(this);
@@ -210,6 +210,7 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         if (e.getSource() == chkSmall) {
             spnTonnage.setModel(chkSmall.isSelected() ?
                 spnTonnageModelSmall : spnTonnageModel);
+            listeners.forEach(l -> l.tonnageChanged(getTonnage()));
         }
     }
 

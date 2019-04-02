@@ -170,18 +170,18 @@ public class SVMainUI extends MegaMekLabMainUI {
         } else if (entityType == Entity.ETYPE_LARGE_SUPPORT_TANK){
             setEntity(new LargeSupportTank());
             getEntity().setWeight(51);
-            getEntity().setMovementMode(EntityMovementMode.HOVER);
+            getEntity().setMovementMode(EntityMovementMode.WHEELED);
             ((SupportTank) getEntity()).setHasNoDualTurret(true);
         } else {
             setEntity(new SupportTank());
-            getEntity().setMovementMode(EntityMovementMode.HOVER);
+            getEntity().setMovementMode(EntityMovementMode.WHEELED);
             ((SupportTank) getEntity()).setHasNoDualTurret(true);
         }
         if (entityType != Entity.ETYPE_LARGE_SUPPORT_TANK) {
             getEntity().setWeight(20);
         }
 
-        getEntity().setEngine(new Engine(0, Engine.NORMAL_ENGINE,
+        getEntity().setEngine(new Engine(0, Engine.COMBUSTION_ENGINE,
                 Engine.SUPPORT_VEE_ENGINE));
 
         getEntity().autoSetInternal();
@@ -194,6 +194,7 @@ public class SVMainUI extends MegaMekLabMainUI {
             getEntity().setChassis("New");
             getEntity().setModel("Support Tank");
             getEntity().setYear(3145);
+            getEntity().setStructuralTechRating(ITechnology.RATING_D);
         } else {
             getEntity().setChassis(oldEntity.getChassis());
             getEntity().setModel(oldEntity.getModel());
@@ -206,6 +207,9 @@ public class SVMainUI extends MegaMekLabMainUI {
             getEntity().setTechLevel(lvl.getCompoundTechLevel(oldEntity.isClan()));
             getEntity().setMixedTech(oldEntity.isMixedTech());
             getEntity().setMovementMode(oldEntity.getMovementMode());
+            getEntity().setStructuralTechRating(oldEntity.getStructuralTechRating());
+            getEntity().setArmorTechRating(oldEntity.getArmorTechRating());
+            getEntity().setEngineTechRating(oldEntity.getEngineTechRating());
         }
         getEntity().setOriginalWalkMP(1);
         getEntity().recalculateTechAdvancement();

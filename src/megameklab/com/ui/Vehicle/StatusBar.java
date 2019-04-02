@@ -67,13 +67,8 @@ public class StatusBar extends ITab {
         parentFrame = parent;
 
         formatter = new DecimalFormat();
-        if (parent.getEntity().isSupportVehicle()) {
-            testEntity = new TestSupportVehicle((Tank) parent.getEntity(),
-                    entityVerifier.tankOption, null);
-        } else {
-            testEntity = new TestTank((Tank) parent.getEntity(), entityVerifier.tankOption,
-                    null);
-        }
+        testEntity = new TestTank((Tank) parent.getEntity(), entityVerifier.tankOption,
+                null);
         btnValidate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 UnitUtil.showValidation(getTank(), getParentFrame());
@@ -156,13 +151,8 @@ public class StatusBar extends ITab {
         double currentTonnage;
         int bv = getTank().calculateBattleValue();
 
-        if (getTank().isSupportVehicle()) {
-            testEntity = new TestSupportVehicle(getTank(),
-                    entityVerifier.tankOption, null);
-        } else {
-            testEntity = new TestTank((Tank) getTank(), entityVerifier.tankOption,
-                    null);
-        }
+        testEntity = new TestTank((Tank) getTank(), entityVerifier.tankOption,
+                null);
 
         currentTonnage = testEntity.calculateWeight();
 

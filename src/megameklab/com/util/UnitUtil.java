@@ -3372,8 +3372,9 @@ public class UnitUtil {
         } else if (unit.hasETypeFlag(Entity.ETYPE_PROTOMECH)) {
             testEntity = new TestProtomech((Protomech) unit,
                     entityVerifier.protomechOption, null);
-        } else if (unit.hasETypeFlag(Entity.ETYPE_SUPPORT_TANK)) {
-            testEntity = new TestSupportVehicle((Tank) unit,
+        } else if (unit.hasETypeFlag(Entity.ETYPE_SUPPORT_TANK)
+                || unit.hasETypeFlag(Entity.ETYPE_FIXED_WING_SUPPORT)) {
+            testEntity = new TestSupportVehicle(unit,
                     entityVerifier.tankOption, null);
         } else if (unit.hasETypeFlag(Entity.ETYPE_TANK)) {
             testEntity = new TestTank((Tank) unit,

@@ -44,7 +44,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
     private BasicInfoView panBasicInfo;
     private SVChassisView panChassis;
     private MovementView panMovement;
-    private JPanel panSummary;
+    private SVSummaryView panSummary;
     private JPanel panChassisMod;
 
     public SVStructureTab(EntitySource eSource) {
@@ -64,7 +64,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         panBasicInfo = new BasicInfoView(getSV().getConstructionTechAdvancement());
         panChassis = new SVChassisView(panBasicInfo);
         panMovement = new MovementView(panBasicInfo);
-        panSummary = new JPanel();
+        panSummary = new SVSummaryView(eSource);
         panChassisMod = new JPanel();
 
         GridBagConstraints gbc;
@@ -113,6 +113,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         panBasicInfo.setFromEntity(getSV());
         panChassis.setFromEntity(getSV());
         panMovement.setFromEntity(getSV());
+        panSummary.refresh();
 
         addAllListeners();
     }
@@ -139,7 +140,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
 
     @Override
     public void refreshSummary() {
-//        panSummary.refresh();
+        panSummary.refresh();
     }
 
     @Override
@@ -211,6 +212,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         getSV().setWeight(TestEntity.ceil(tonnage, tonnage < 5 ?
                 TestEntity.Ceil.KILO : TestEntity.Ceil.HALFTON));
         // TODO: refresh armor and summary
+        refresh.refreshSummary();
         refresh.refreshStatus();
         refresh.refreshPreview();
     }
