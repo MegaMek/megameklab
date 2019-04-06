@@ -2,6 +2,7 @@ VERSION HISTORY:
 ----------------
 v0.45.5-SNAPSHOT
 + Issue #280: Wrong rounding for Partial Wing
++ Issue #279: BA SRM Torpedo ammo fails to load
 
 v0.45.4 (2019-03-24 1700 UTC)
 + Fixed vehicle and aero slot calculations for patchwork armor.
