@@ -147,7 +147,10 @@ public abstract class PrintEntity extends PrintRecordSheet {
         setTextField("rulesLevel", formatRulesLevel());
         setTextField("era", formatEra(getEntity().getYear()));
         setTextField("cost", formatCost());
-        setTextField("bv", NumberFormat.getInstance().format(getEntity().calculateBattleValue()));
+        // If we're using a MUL to print generic sheets we also want to ignore any BV adjustments
+        // for C3 networks or pilot skills.
+        setTextField("bv", NumberFormat.getInstance().format(getEntity()
+                .calculateBattleValue(!showPilotInfo(), !showPilotInfo())));
         UnitRole role = UnitRoleHandler.getRoleFor(getEntity());
         if (!options.showRole() || (role == UnitRole.UNDETERMINED)) {
             hideElement("lblRole", true);
