@@ -180,7 +180,7 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         } else {
             chkSmall.setSelected(false);
             spnTonnage.setModel(spnTonnageModel);
-            spnTonnageModelSmall.setValue(entity.getWeight());
+            spnTonnageModel.setValue(entity.getWeight());
         }
         cbStructureTechRating.setSelectedIndex(entity.getStructuralTechRating());
         cbType.setSelectedItem(TestSupportVehicle.SVType.getVehicleType(entity));
