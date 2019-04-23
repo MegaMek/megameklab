@@ -64,11 +64,11 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
 
     private final JSpinner spnTonnage = new JSpinner(spnTonnageModel);
     private final JCheckBox chkSmall = new JCheckBox();
-    private final TechComboBox<ITechnology> cbStructureTechRating = new TechComboBox<>(ITechnology::getTechRatingName);
+    private final CustomComboBox<Integer> cbStructureTechRating = new CustomComboBox<>(ITechnology::getRatingName);
     private final CustomComboBox<TestSupportVehicle.SVType> cbType = new CustomComboBox<>(t -> typeNames.getOrDefault(t, "?"));
     private final TechComboBox<TestSupportVehicle.SVEngine> cbEngine = new TechComboBox<>(e -> e.engine.getEngineName()
             .replaceAll("^\\d+ ", ""));
-    private final TechComboBox<ITechnology> cbEngineTechRating = new TechComboBox<>(ITechnology::getTechRatingName);
+    private final CustomComboBox<Integer> cbEngineTechRating = new CustomComboBox<>(ITechnology::getRatingName);
 
     private final ITechManager techManager;
     private boolean handleEvents = true;
@@ -105,7 +105,9 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         add(chkSmall, gbc);
         chkSmall.addActionListener(this);
 
-        cbStructureTechRating.setModel(new DefaultComboBoxModel<>(TestSupportVehicle.TECH_LEVEL_TA));
+        for (int r = ITechnology.RATING_A; r <= ITechnology.RATING_F; r++) {
+            cbStructureTechRating.addItem(r);
+        }
         gbc.gridx = 0;
         gbc.gridwidth = 2;
         gbc.gridy++;
@@ -141,7 +143,9 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         add(cbEngine, gbc);
         cbEngine.addActionListener(this);
 
-        cbEngineTechRating.setModel(new DefaultComboBoxModel<>(TestSupportVehicle.TECH_LEVEL_TA));
+        for (int r = ITechnology.RATING_A; r <= ITechnology.RATING_F; r++) {
+            cbEngineTechRating.addItem(r);
+        }
         gbc.gridx = 0;
         gbc.gridwidth = 2;
         gbc.gridy++;
@@ -165,8 +169,33 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         }
     }
 
+    /**
+     * @return The currently selected support vehicle type
+     */
     public TestSupportVehicle.SVType getType() {
         return (TestSupportVehicle.SVType) cbType.getSelectedItem();
+    }
+
+    /**
+     * @return The currently selected structural tech rating, or A if none is selected.
+     */
+    public int getStructuralTechRating() {
+        if (cbStructureTechRating.getSelectedItem() != null) {
+            return (Integer) cbStructureTechRating.getSelectedItem();
+        } else {
+            return ITechnology.RATING_A;
+        }
+    }
+
+    /**
+     * @return The currently selected engine tech rating, or A if none is selected.
+     */
+    public int getEngineTechRating() {
+        if (cbEngineTechRating.getSelectedItem() != null) {
+            return (Integer) cbEngineTechRating.getSelectedItem();
+        } else {
+            return ITechnology.RATING_A;
+        }
     }
 
     public void setFromEntity(Entity entity) {
@@ -182,12 +211,43 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
             spnTonnage.setModel(spnTonnageModel);
             spnTonnageModel.setValue(entity.getWeight());
         }
-        cbStructureTechRating.setSelectedIndex(entity.getStructuralTechRating());
-        cbType.setSelectedItem(TestSupportVehicle.SVType.getVehicleType(entity));
+        cbEngine.removeAllItems();
+        for (TestSupportVehicle.SVEngine engine : TestSupportVehicle.SVEngine.values()) {
+            if (techManager.isLegal(engine)
+                    && engine.isValidFor(entity)) {
+                cbEngine.addItem(engine);
+            }
+        }
         cbEngine.setSelectedItem(TestSupportVehicle.SVEngine.getEngineType(entity.getEngine()));
-        cbEngineTechRating.setSelectedIndex(entity.getEngineTechRating());
+
+        cbStructureTechRating.removeAllItems();
+        for (int r = entity.getConstructionTechAdvancement().getTechRating(); r <= ITechnology.RATING_F; r++) {
+            if (techManager.isLegal(TestSupportVehicle.TECH_LEVEL_TA[r])) {
+                cbStructureTechRating.addItem(r);
+            }
+        }
+        cbStructureTechRating.setSelectedItem(entity.getStructuralTechRating());
+
+        cbType.setSelectedItem(TestSupportVehicle.SVType.getVehicleType(entity));
+
+        // Engine::getTechRating will return the minimum tech rating for the engine type.
+        cbEngineTechRating.removeAllItems();
+        for (int r = entity.getEngine().getTechRating(); r <= ITechnology.RATING_F; r++) {
+            if (techManager.isLegal(TestSupportVehicle.TECH_LEVEL_TA[r])) {
+                cbEngineTechRating.addItem(r);
+            }
+        }
+        cbEngineTechRating.setSelectedItem(entity.getEngineTechRating());
 
         handleEvents = true;
+        // If the previously selected items are no longer valid, select the first in the list. This
+        // is done with event handlers turned on so the Entity gets changed.
+        if (getStructuralTechRating() != entity.getStructuralTechRating()) {
+            cbStructureTechRating.setSelectedIndex(0);
+        }
+        if (getEngineTechRating() != entity.getEngineTechRating()) {
+            cbEngine.setSelectedIndex(0);
+        }
     }
 
     public void refresh() {
@@ -211,6 +271,12 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
             spnTonnage.setModel(chkSmall.isSelected() ?
                 spnTonnageModelSmall : spnTonnageModel);
             listeners.forEach(l -> l.tonnageChanged(getTonnage()));
+        } else if (e.getSource() == cbType) {
+            listeners.forEach(l -> l.typeChanged(getType()));
+        } else if (e.getSource() == cbStructureTechRating) {
+            listeners.forEach(l -> l.structuralTechRatingChanged(getStructuralTechRating()));
+        } else if (e.getSource() == cbEngineTechRating) {
+            listeners.forEach(l -> l.engineTechRatingChanged(getEngineTechRating()));
         }
     }
 

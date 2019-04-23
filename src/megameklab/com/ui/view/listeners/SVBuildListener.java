@@ -18,9 +18,14 @@
  */
 package megameklab.com.ui.view.listeners;
 
+import megamek.common.verifier.TestSupportVehicle;
+
 /**
  * Listener for views used by support vehicle construction.
  */
 public interface SVBuildListener extends BuildListener {
     void tonnageChanged(double tonnage);
+    void typeChanged(TestSupportVehicle.SVType type);
+    void structuralTechRatingChanged(int techRating);
+    void engineTechRatingChanged(int techRating);
 }

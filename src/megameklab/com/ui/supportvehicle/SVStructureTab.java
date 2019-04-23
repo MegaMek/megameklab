@@ -23,6 +23,7 @@ import megamek.common.EquipmentType;
 import megamek.common.ITechManager;
 import megamek.common.SimpleTechLevel;
 import megamek.common.verifier.TestEntity;
+import megamek.common.verifier.TestSupportVehicle;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.view.BasicInfoView;
 import megameklab.com.ui.view.MovementView;
@@ -211,8 +212,47 @@ public class SVStructureTab extends ITab implements SVBuildListener {
     public void tonnageChanged(double tonnage) {
         getSV().setWeight(TestEntity.ceil(tonnage, tonnage < 5 ?
                 TestEntity.Ceil.KILO : TestEntity.Ceil.HALFTON));
-        // TODO: refresh armor and summary
+        // TODO: refresh armor
         refresh.refreshSummary();
+        refresh.refreshStatus();
+        refresh.refreshPreview();
+    }
+
+    @Override
+    public void typeChanged(TestSupportVehicle.SVType type) {
+        TestSupportVehicle.SVType oldType = TestSupportVehicle.SVType.getVehicleType(getSV());
+        if (!oldType.equals(type)) {
+            if (type.equals(TestSupportVehicle.SVType.FIXED_WING)) {
+                eSource.createNewUnit(Entity.ETYPE_FIXED_WING_SUPPORT, getSV());
+            } else if (type.equals(TestSupportVehicle.SVType.VTOL)) {
+                eSource.createNewUnit(Entity.ETYPE_SUPPORT_VTOL);
+            } else if (oldType.equals(TestSupportVehicle.SVType.FIXED_WING)
+                    || oldType.equals(TestSupportVehicle.SVType.VTOL)) {
+                eSource.createNewUnit(Entity.ETYPE_SUPPORT_TANK, getSV());
+            }
+            getSV().setMovementMode(type.defaultMovementMode);
+            panChassis.setFromEntity(getSV());
+            panMovement.setFromEntity(getSV());
+            panSummary.refresh();
+            refresh.refreshEquipmentTable();
+            refresh.refreshStatus();
+            refresh.refreshPreview();
+            //TODO: Refresh other views
+        }
+    }
+
+    @Override
+    public void structuralTechRatingChanged(int techRating) {
+        getSV().setStructuralTechRating(techRating);
+        panSummary.refresh();
+        refresh.refreshStatus();
+        refresh.refreshPreview();
+    }
+
+    @Override
+    public void engineTechRatingChanged(int techRating) {
+        getSV().setEngineTechRating(techRating);
+        panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
     }
