@@ -28,6 +28,7 @@ import megameklab.com.ui.view.SVChassisView;
 import megameklab.com.ui.view.listeners.SVBuildListener;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
+import megameklab.com.util.UnitUtil;
 
 import javax.swing.*;
 import java.awt.*;
@@ -163,7 +164,14 @@ public class SVStructureTab extends ITab implements SVBuildListener {
 
     @Override
     public void updateTechLevel() {
-
+        if (UnitUtil.checkEquipmentByTechLevel(getTank(), panBasicInfo)) {
+            refresh.refreshEquipment();
+        } else {
+            refresh.refreshEquipmentTable();
+        }
+        panChassis.refresh();
+        panMovement.setFromEntity(getSV());
+        // TODO: Update armor tab
     }
 
     @Override
@@ -192,17 +200,41 @@ public class SVStructureTab extends ITab implements SVBuildListener {
 
     @Override
     public void walkChanged(int walkMP) {
-
+        getSV().setOriginalWalkMP(walkMP);
+        panSummary.refresh();
+        refresh.refreshStatus();
+        refresh.refreshPreview();
+        panMovement.removeListener(this);
+        panMovement.setFromEntity(getSV());
+        panMovement.addListener(this);
+        panChassis.refresh();
     }
 
     @Override
     public void jumpChanged(int jumpMP, EquipmentType jumpJet) {
-
+        if (null != jumpJet) {
+            UnitUtil.removeAllMiscMounteds(getSV(), MiscType.F_JUMP_JET);
+            getSV().setOriginalJumpMP(0);
+            for (int i = 0; i < jumpMP; i++) {
+                try {
+                    getSV().addEquipment(jumpJet, Tank.LOC_BODY);
+                } catch (LocationFullException e) {
+                    e.printStackTrace();
+                }
+            }
+            panSummary.refresh();
+            refresh.refreshBuild();
+            refresh.refreshStatus();
+            refresh.refreshPreview();
+            panMovement.removeListener(this);
+            panMovement.setFromEntity(getSV());
+            panMovement.addListener(this);
+        }
     }
 
     @Override
     public void jumpTypeChanged(EquipmentType jumpJet) {
-
+        // Only one type of JJ for vehicles
     }
 
     @Override
@@ -222,7 +254,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
             if (type.equals(TestSupportVehicle.SVType.FIXED_WING)) {
                 eSource.createNewUnit(Entity.ETYPE_FIXED_WING_SUPPORT, getSV());
             } else if (type.equals(TestSupportVehicle.SVType.VTOL)) {
-                eSource.createNewUnit(Entity.ETYPE_SUPPORT_VTOL);
+                eSource.createNewUnit(Entity.ETYPE_SUPPORT_VTOL, getSV());
             } else if (oldType.equals(TestSupportVehicle.SVType.FIXED_WING)
                     || oldType.equals(TestSupportVehicle.SVType.VTOL)) {
                 eSource.createNewUnit(Entity.ETYPE_SUPPORT_TANK, getSV());
@@ -254,7 +286,9 @@ public class SVStructureTab extends ITab implements SVBuildListener {
             getSV().setEngineTechRating(engine.getTechRating());
         }
         // The chassis view needs to refresh the available engine rating combobox
+        panChassis.removeListener(this);
         panChassis.setFromEntity(getSV());
+        panChassis.addListener(this);
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();

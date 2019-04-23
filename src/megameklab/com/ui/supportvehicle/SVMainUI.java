@@ -195,6 +195,7 @@ public class SVMainUI extends MegaMekLabMainUI {
             getEntity().setModel("Support Tank");
             getEntity().setYear(3145);
             getEntity().setStructuralTechRating(ITechnology.RATING_D);
+            getEntity().setOriginalWalkMP(1);
         } else {
             getEntity().setChassis(oldEntity.getChassis());
             getEntity().setModel(oldEntity.getModel());
@@ -210,8 +211,8 @@ public class SVMainUI extends MegaMekLabMainUI {
             getEntity().setStructuralTechRating(oldEntity.getStructuralTechRating());
             getEntity().setArmorTechRating(oldEntity.getArmorTechRating());
             getEntity().setEngineTechRating(oldEntity.getEngineTechRating());
+            getEntity().setOriginalWalkMP(oldEntity.getOriginalWalkMP());
         }
-        getEntity().setOriginalWalkMP(1);
         getEntity().recalculateTechAdvancement();
     }
 
