@@ -18,6 +18,7 @@
  */
 package megameklab.com.ui.view.listeners;
 
+import megamek.common.Engine;
 import megamek.common.verifier.TestSupportVehicle;
 
 /**
@@ -27,5 +28,6 @@ public interface SVBuildListener extends BuildListener {
     void tonnageChanged(double tonnage);
     void typeChanged(TestSupportVehicle.SVType type);
     void structuralTechRatingChanged(int techRating);
+    void engineChanged(Engine engine);
     void engineTechRatingChanged(int techRating);
 }

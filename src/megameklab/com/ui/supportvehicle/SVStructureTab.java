@@ -18,10 +18,7 @@
  */
 package megameklab.com.ui.supportvehicle;
 
-import megamek.common.Entity;
-import megamek.common.EquipmentType;
-import megamek.common.ITechManager;
-import megamek.common.SimpleTechLevel;
+import megamek.common.*;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestSupportVehicle;
 import megameklab.com.ui.EntitySource;
@@ -244,6 +241,20 @@ public class SVStructureTab extends ITab implements SVBuildListener {
     @Override
     public void structuralTechRatingChanged(int techRating) {
         getSV().setStructuralTechRating(techRating);
+        panSummary.refresh();
+        refresh.refreshStatus();
+        refresh.refreshPreview();
+    }
+
+    @Override
+    public void engineChanged(Engine engine) {
+        getSV().setEngine(engine);
+        // Make sure the engine tech rating is at least the minimum for the engine type
+        if (getSV().getEngineTechRating() < engine.getTechRating()) {
+            getSV().setEngineTechRating(engine.getTechRating());
+        }
+        // The chassis view needs to refresh the available engine rating combobox
+        panChassis.setFromEntity(getSV());
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();

@@ -179,7 +179,7 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
     /**
      * @return The currently selected structural tech rating, or A if none is selected.
      */
-    public int getStructuralTechRating() {
+    private int getStructuralTechRating() {
         if (cbStructureTechRating.getSelectedItem() != null) {
             return (Integer) cbStructureTechRating.getSelectedItem();
         } else {
@@ -190,11 +190,22 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
     /**
      * @return The currently selected engine tech rating, or A if none is selected.
      */
-    public int getEngineTechRating() {
+    private int getEngineTechRating() {
         if (cbEngineTechRating.getSelectedItem() != null) {
             return (Integer) cbEngineTechRating.getSelectedItem();
         } else {
             return ITechnology.RATING_A;
+        }
+    }
+
+    /**
+     * @return The currently selected engine type, or {@link TestSupportVehicle.SVEngine#COMBUSTION COMBUSTION} if none is selected
+     */
+    private TestSupportVehicle.SVEngine getEngineType() {
+        if (cbEngine.getSelectedItem() != null) {
+            return (TestSupportVehicle.SVEngine) cbEngine.getSelectedItem();
+        } else {
+            return TestSupportVehicle.SVEngine.COMBUSTION;
         }
     }
 
@@ -275,6 +286,8 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
             listeners.forEach(l -> l.typeChanged(getType()));
         } else if (e.getSource() == cbStructureTechRating) {
             listeners.forEach(l -> l.structuralTechRatingChanged(getStructuralTechRating()));
+        } else if (e.getSource() == cbEngine) {
+            listeners.forEach(l -> l.engineChanged(getEngineType().engine));
         } else if (e.getSource() == cbEngineTechRating) {
             listeners.forEach(l -> l.engineTechRatingChanged(getEngineTechRating()));
         }
