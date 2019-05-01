@@ -21,8 +21,10 @@ package megameklab.com.ui.supportvehicle;
 import megamek.common.*;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestSupportVehicle;
+import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.view.BasicInfoView;
+import megameklab.com.ui.view.ChassisModView;
 import megameklab.com.ui.view.MovementView;
 import megameklab.com.ui.view.SVChassisView;
 import megameklab.com.ui.view.listeners.SVBuildListener;
@@ -44,7 +46,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
     private SVChassisView panChassis;
     private MovementView panMovement;
     private SVSummaryView panSummary;
-    private JPanel panChassisMod;
+    private ChassisModView panChassisMod;
 
     public SVStructureTab(EntitySource eSource) {
         super(eSource);
@@ -64,7 +66,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         panChassis = new SVChassisView(panBasicInfo);
         panMovement = new MovementView(panBasicInfo);
         panSummary = new SVSummaryView(eSource);
-        panChassisMod = new JPanel();
+        panChassisMod = new ChassisModView(panBasicInfo);
 
         GridBagConstraints gbc;
 
@@ -112,6 +114,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         panBasicInfo.setFromEntity(getSV());
         panChassis.setFromEntity(getSV());
         panMovement.setFromEntity(getSV());
+        panChassisMod.setFromEntity(getSV());
         panSummary.refresh();
 
         addAllListeners();
@@ -125,12 +128,14 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         panBasicInfo.removeListener(this);
         panChassis.removeListener(this);
         panMovement.removeListener(this);
+        panChassisMod.removeListener(this);
     }
 
     private void addAllListeners() {
         panBasicInfo.addListener(this);
         panChassis.addListener(this);
         panMovement.addListener(this);
+        panChassisMod.addListener(this);
     }
 
     public void addRefreshedListener(RefreshListener l) {
@@ -171,6 +176,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         }
         panChassis.refresh();
         panMovement.setFromEntity(getSV());
+        panChassisMod.setFromEntity(getSV());
         // TODO: Update armor tab
     }
 
@@ -241,6 +247,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
     public void tonnageChanged(double tonnage) {
         getSV().setWeight(TestEntity.ceil(tonnage, tonnage < 5 ?
                 TestEntity.Ceil.KILO : TestEntity.Ceil.HALFTON));
+        panChassisMod.setFromEntity(getSV());
         // TODO: refresh armor
         refresh.refreshSummary();
         refresh.refreshStatus();
@@ -262,6 +269,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
             getSV().setMovementMode(type.defaultMovementMode);
             panChassis.setFromEntity(getSV());
             panMovement.setFromEntity(getSV());
+            panChassisMod.setFromEntity(getSV());
             panSummary.refresh();
             refresh.refreshEquipmentTable();
             refresh.refreshStatus();
@@ -289,6 +297,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         panChassis.removeListener(this);
         panChassis.setFromEntity(getSV());
         panChassis.addListener(this);
+        panChassisMod.setFromEntity(getSV());
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
@@ -297,6 +306,27 @@ public class SVStructureTab extends ITab implements SVBuildListener {
     @Override
     public void engineTechRatingChanged(int techRating) {
         getSV().setEngineTechRating(techRating);
+        panSummary.refresh();
+        refresh.refreshStatus();
+        refresh.refreshPreview();
+    }
+
+    @Override
+    public void setChassisMod(EquipmentType mod, boolean installed) {
+        final Mounted current = getSV().getMisc().stream().filter(m -> m.getType().equals(mod)).findFirst().orElse(null);
+        if (installed && (null == current)) {
+            try {
+                getSV().addEquipment(mod, getSV().isAero() ? FixedWingSupport.LOC_BODY : Tank.LOC_BODY);
+            } catch (LocationFullException e) {
+                // This should not be possible since chassis mods don't occupy slots
+                MegaMekLab.getLogger().error(getClass(), "setChassisMod(EquipmentType, boolean)",
+                        "LocationFullException when adding chassis mod " + mod.getName());
+            }
+        } else if (!installed && (null != current)) {
+            getSV().getMisc().remove(current);
+            getSV().getEquipment().remove(current);
+            UnitUtil.removeCriticals(getSV(), current);
+        }
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();

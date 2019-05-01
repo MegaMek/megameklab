@@ -19,15 +19,48 @@
 package megameklab.com.ui.view.listeners;
 
 import megamek.common.Engine;
+import megamek.common.EquipmentType;
 import megamek.common.verifier.TestSupportVehicle;
 
 /**
  * Listener for views used by support vehicle construction.
  */
 public interface SVBuildListener extends BuildListener {
+    /**
+     * Notify of a change in the unit tonnage
+     * @param tonnage The new tonnage
+     */
     void tonnageChanged(double tonnage);
+
+    /**
+     * Notify of a change in the support vehicle type
+     * @param type The new vehicle type
+     */
     void typeChanged(TestSupportVehicle.SVType type);
+
+    /**
+     * Notify of a change in the structural tech rating
+     * @param techRating The new tech rating. This should be one of the constants {@link megamek.common.ITechnology#RATING_A ITechnology.RATING_A}
+     *                   through {@link megamek.common.ITechnology#RATING_A ITechnology.RATING_F}
+     */
     void structuralTechRatingChanged(int techRating);
+
+    /**
+     * Notify of a change in the type of engine
+     * @param engine The new engine
+     */
     void engineChanged(Engine engine);
+    /**
+     * Notify of a change in the engine tech rating
+     * @param techRating The new tech rating. This should be one of the constants {@link megamek.common.ITechnology#RATING_A ITechnology.RATING_A}
+     *                   through {@link megamek.common.ITechnology#RATING_A ITechnology.RATING_F}
+     */
     void engineTechRatingChanged(int techRating);
+
+    /**
+     * Nofify of the addition or removal of a chassis modification
+     * @param eq        The modification to add or remove
+     * @param installed Whether the chassis mod is to be installed or removed
+     */
+    void setChassisMod(EquipmentType eq, boolean installed);
 }
