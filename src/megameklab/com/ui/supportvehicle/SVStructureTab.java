@@ -38,7 +38,7 @@ import java.awt.*;
 /**
  * Structure tab for support vehicle construction
  */
-public class SVStructureTab extends ITab implements SVBuildListener {
+class SVStructureTab extends ITab implements SVBuildListener {
 
     private RefreshListener refresh = null;
     private JPanel masterPanel;
@@ -48,7 +48,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
     private SVSummaryView panSummary;
     private ChassisModView panChassisMod;
 
-    public SVStructureTab(EntitySource eSource) {
+    SVStructureTab(EntitySource eSource) {
         super(eSource);
         setLayout(new BorderLayout());
         setupPanels();
@@ -293,6 +293,16 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         if (getSV().getEngineTechRating() < engine.getTechRating()) {
             getSV().setEngineTechRating(engine.getTechRating());
         }
+        // Fixed Wing support vehicles require the prop mod for an electric engine
+        if ((TestSupportVehicle.SVType.getVehicleType(getSV()) == TestSupportVehicle.SVType.FIXED_WING)
+                && TestSupportVehicle.SVEngine.getEngineType(engine).electric
+                && !getSV().hasMisc(MiscType.F_PROP)) {
+            setChassisMod(TestSupportVehicle.ChassisModification.PROP.equipment, true);
+        }
+        // MagLev trains cannot use the external power pickup mod.
+        if (engine.getEngineType() == Engine.MAGLEV) {
+            setChassisMod(TestSupportVehicle.ChassisModification.EXTERNAL_POWER_PICKUP.equipment, false);
+        }
         // The chassis view needs to refresh the available engine rating combobox
         panChassis.removeListener(this);
         panChassis.setFromEntity(getSV());
@@ -327,6 +337,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
             getSV().getEquipment().remove(current);
             UnitUtil.removeCriticals(getSV(), current);
         }
+        panChassisMod.refresh();
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();

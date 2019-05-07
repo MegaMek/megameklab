@@ -24,6 +24,7 @@ import megameklab.com.ui.view.listeners.SVBuildListener;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -65,13 +66,41 @@ public class ChassisModView extends BuildView implements ActionListener {
     public void setFromEntity(Entity en) {
         for (TestSupportVehicle.ChassisModification mod : checkboxMap.keySet()) {
             final JCheckBox cb = checkboxMap.get(mod);
-            if (techManager.isLegal(mod) && mod.isValidFor(en)) {
+            if (techManager.isLegal(mod) && mod.validFor(en)) {
                 cb.setVisible(true);
                 cb.setSelected(en.getMisc().stream().anyMatch(m -> m.getType().equals(mod.equipment)));
             } else {
                 cb.setVisible(false);
                 cb.setSelected(false);
                 en.removeMisc(mod.equipment.getName());
+            }
+        }
+        refresh();
+    }
+
+    /**
+     * Checks for compatibility with selected modifications and disables the checkbox for any that are
+     * not compatible.
+     */
+    public void refresh() {
+        // Build a list of all selected mods
+        List<TestSupportVehicle.ChassisModification> checked = new ArrayList<>();
+        for (Map.Entry<TestSupportVehicle.ChassisModification, JCheckBox> e : checkboxMap.entrySet()) {
+            if (e.getValue().isSelected()) {
+                checked.add(e.getKey());
+            }
+        }
+        // Enable/disable each checkbox based on compatibility with other selected mods. If the box
+        // is already selected, remove it.
+        for (Map.Entry<TestSupportVehicle.ChassisModification, JCheckBox> e : checkboxMap.entrySet()) {
+            if (checked.stream().allMatch(mod -> mod.compatibleWith(e.getKey()))) {
+                e.getValue().setEnabled(true);
+            } else {
+                if (e.getValue().isSelected()) {
+                    listeners.forEach(l -> l.setChassisMod(e.getKey().equipment, false));
+                }
+                e.getValue().setSelected(false);
+                e.getValue().setEnabled(false);
             }
         }
     }
