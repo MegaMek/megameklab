@@ -169,7 +169,7 @@ class SVStructureTab extends ITab implements SVBuildListener {
 
     @Override
     public void updateTechLevel() {
-        if (UnitUtil.checkEquipmentByTechLevel(getTank(), panBasicInfo)) {
+        if (UnitUtil.checkEquipmentByTechLevel(getSV(), panBasicInfo)) {
             refresh.refreshEquipment();
         } else {
             refresh.refreshEquipmentTable();
@@ -273,6 +273,7 @@ class SVStructureTab extends ITab implements SVBuildListener {
             panChassisMod.setFromEntity(getSV());
             panSummary.refresh();
             refresh.refreshEquipmentTable();
+            refresh.refreshBuild();
             refresh.refreshStatus();
             refresh.refreshPreview();
             //TODO: Refresh other views

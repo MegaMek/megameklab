@@ -2710,7 +2710,11 @@ public class UnitUtil {
             }
         }
 
-        return false;
+        if (eq instanceof AmmoType) {
+            return ((AmmoType) eq).canAeroUse();
+        }
+
+        return isAeroWeapon(eq, unit);
     }
     
     public static boolean isEntityEquipment(EquipmentType eq, Entity en) {
@@ -4120,7 +4124,6 @@ public class UnitUtil {
      * @return Whether the unit can make use of the ammo
      */
     public static boolean canUseAmmo(Entity unit, AmmoType atype, boolean includeOneShot) {
-        boolean match = false;
         if ((unit instanceof BattleArmor)
                 && !atype.hasFlag(AmmoType.F_BATTLEARMOR)){
             return false;
@@ -4140,11 +4143,11 @@ public class UnitUtil {
                 if ((wtype.getAmmoType() == atype.getAmmoType())
                         && (wtype.getRackSize() == atype.getRackSize())
                         && (includeOneShot || !((WeaponType) m.getType()).hasFlag(WeaponType.F_ONESHOT))) {
-                    match = true;
+                    return true;
                 }
             }
         }
-        return match;
+        return false;
     }
 
     public static int countUsedCriticals(Mech unit) {
