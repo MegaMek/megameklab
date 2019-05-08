@@ -60,9 +60,9 @@ public class BuildTab extends ITab implements ActionListener {
     private String AUTOFILLCOMMAND = "autofillbuttoncommand";
     private String RESETCOMMAND = "resetbuttoncommand";
 
-    public BuildTab(EntitySource eSource, EquipmentTab equipment) {
+    public BuildTab(EntitySource eSource, CriticalTableModel critList) {
         super(eSource);
-        this.critList = equipment.getEquipmentList();
+        this.critList = critList;
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));

@@ -1575,7 +1575,7 @@ public class UnitUtil {
      * 
      * @param en
      * @param at
-     * @param atTechLevel
+     * @param techLevel
      * @return
      */
     public static double getArmorPointsPerTon(Entity en, int at, int techLevel) {
@@ -2510,6 +2510,11 @@ public class UnitUtil {
         return UnitUtil.isMechWeapon(eq, unit);
     }
 
+    /**
+     * @deprecated Use {@link #isEntityEquipment(EquipmentType, Entity)}
+     * There are two methods that do the same thing, but this one hasn't been updated.
+     */
+    @Deprecated
     public static boolean isUnitEquipment(EquipmentType eq, Entity unit) {
         if (unit instanceof Tank) {
             return UnitUtil.isTankEquipment(eq, unit instanceof VTOL);
@@ -2713,6 +2718,8 @@ public class UnitUtil {
             return isMechEquipment(eq, (Mech) en);
         } else if (en instanceof Protomech) {
             return isProtomechEquipment(eq, (Protomech) en);
+        } else if (en.isSupportVehicle()) {
+            return isSupportVehicleEquipment(eq, en);
         } else if (en instanceof Tank) {
             return isTankEquipment(eq, (Tank) en);
         } else if (en instanceof BattleArmor) {
@@ -2827,9 +2834,7 @@ public class UnitUtil {
     
     public static boolean isTankEquipment(EquipmentType eq, Tank tank) {
         if (eq instanceof MiscType) {
-            if (tank.isSupportVehicle()) {
-                return eq.hasFlag(MiscType.F_SUPPORT_TANK_EQUIPMENT);
-            } else if (tank.hasETypeFlag(Entity.ETYPE_VTOL)){
+            if (tank.hasETypeFlag(Entity.ETYPE_VTOL)){
                 return eq.hasFlag(MiscType.F_TANK_EQUIPMENT)
                         || eq.hasFlag(MiscType.F_VTOL_EQUIPMENT);
             } else {
@@ -2896,6 +2901,22 @@ public class UnitUtil {
             return true;
         }
         return false;
+    }
+
+    public static boolean isSupportVehicleEquipment(EquipmentType eq, Entity unit) {
+        if ((eq instanceof MiscType) && !eq.hasFlag(MiscType.F_SUPPORT_TANK_EQUIPMENT)) {
+            return false;
+        } else if ((eq instanceof WeaponType)
+            && (unit.getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT)) {
+            // Small support vehicles can only mount infantry weapons
+            return (eq instanceof InfantryWeapon)
+                    && !eq.hasFlag(WeaponType.F_INF_ARCHAIC);
+        }
+        if (unit.isAero()) {
+            return isAeroEquipment(eq, (Aero) unit);
+        } else {
+            return isTankEquipment(eq, (Tank) unit);
+        }
     }
 
     public static boolean isBAEquipment(EquipmentType eq, BattleArmor ba) {
@@ -4191,7 +4212,7 @@ public class UnitUtil {
     }
 
     /**
-     * @deprecated Use {@link checkEquipmentByTechLevel(Entity,ITechManager)} instead
+     * @deprecated Use {@link #checkEquipmentByTechLevel(Entity,ITechManager)} instead
      */
     @Deprecated
     public static void checkEquipmentByTechLevel(Entity unit) {

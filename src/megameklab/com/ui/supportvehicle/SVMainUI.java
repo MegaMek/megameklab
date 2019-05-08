@@ -22,7 +22,7 @@ import megamek.common.*;
 import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.Vehicle.StatusBar;
 import megameklab.com.ui.Vehicle.tabs.BuildTab;
-import megameklab.com.ui.Vehicle.tabs.EquipmentTab;
+import megameklab.com.ui.tabs.EquipmentTab;
 import megameklab.com.ui.tabs.FluffTab;
 import megameklab.com.ui.tabs.PreviewTab;
 import megameklab.com.util.MenuBarCreator;
@@ -77,7 +77,7 @@ public class SVMainUI extends MegaMekLabMainUI {
         statusbar = new StatusBar(this);
         structureTab = new SVStructureTab(this);
         equipmentTab = new EquipmentTab(this);
-        buildTab = new BuildTab(this, equipmentTab);
+        buildTab = new BuildTab(this, equipmentTab.getEquipmentList());
         fluffTab = new FluffTab(this);
         structureTab.addRefreshedListener(this);
         equipmentTab.addRefreshedListener(this);
