@@ -18,15 +18,7 @@ package megameklab.com.util;
 
 import javax.swing.JPanel;
 
-import megamek.common.Aero;
-import megamek.common.BattleArmor;
-import megamek.common.Infantry;
-import megamek.common.Jumpship;
-import megamek.common.Mech;
-import megamek.common.Protomech;
-import megamek.common.SmallCraft;
-import megamek.common.Tank;
-import megamek.common.VTOL;
+import megamek.common.*;
 import megameklab.com.ui.EntitySource;
 
 public class IView extends JPanel {
@@ -39,6 +31,10 @@ public class IView extends JPanel {
 
     public IView(EntitySource eSource) {
         this.eSource = eSource;
+    }
+
+    public Entity getEntity() {
+        return eSource.getEntity();
     }
 
     public Mech getMech() {

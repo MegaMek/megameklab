@@ -32,7 +32,7 @@ import megamek.common.MechFileParser;
 import megamek.common.Mounted;
 import megamek.common.loaders.EntityLoadingException;
 import megameklab.com.ui.EntitySource;
-import megameklab.com.ui.Vehicle.views.BuildView;
+import megameklab.com.ui.view.UnallocatedView;
 import megameklab.com.ui.Vehicle.views.CriticalView;
 import megameklab.com.util.CriticalTableModel;
 import megameklab.com.util.ITab;
@@ -50,7 +50,7 @@ public class BuildTab extends ITab implements ActionListener {
     private RefreshListener refresh = null;
     private CriticalView critView = null;
     private CriticalTableModel critList;
-    private BuildView buildView = null;
+    private UnallocatedView unallocatedView = null;
     private JPanel buttonPanel = new JPanel();
     private JPanel mainPanel = new JPanel();
 
@@ -68,9 +68,9 @@ public class BuildTab extends ITab implements ActionListener {
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
 
         critView = new CriticalView(eSource, true, refresh);
-        buildView = new BuildView(eSource, refresh);
+        unallocatedView = new UnallocatedView(eSource, refresh);
 
-        mainPanel.add(buildView);
+        mainPanel.add(unallocatedView);
 
         autoFillButton.setMnemonic('A');
         autoFillButton.setActionCommand(AUTOFILLCOMMAND);
@@ -90,7 +90,7 @@ public class BuildTab extends ITab implements ActionListener {
         JPanel masterPanel = new JPanel(new SpringLayout());
         Dimension maxSize = new Dimension();
 
-        masterPanel.add(buildView);
+        masterPanel.add(unallocatedView);
 
         SpringLayoutHelper.setupSpringGrid(masterPanel, 1);
         maxSize.setSize(300, 5);
@@ -103,7 +103,7 @@ public class BuildTab extends ITab implements ActionListener {
     public void refresh() {
         removeAllActionListeners();
         critView.refresh();
-        buildView.refresh();
+        unallocatedView.refresh();
         addAllActionListeners();
     }
 
@@ -128,7 +128,7 @@ public class BuildTab extends ITab implements ActionListener {
 
     private void autoFillCrits() {
 
-        for (Mounted mount : buildView.getTableModel().getCrits()) {
+        for (Mounted mount : unallocatedView.getTableModel().getCrits()) {
             for (int location = 0; location < getTank().locations(); location++) {
                 try {
                     getTank().addEquipment(mount, location, false);
@@ -178,7 +178,7 @@ public class BuildTab extends ITab implements ActionListener {
     public void addRefreshedListener(RefreshListener l) {
         refresh = l;
         critView.updateRefresh(refresh);
-        buildView.addRefreshedListener(refresh);
+        unallocatedView.addRefreshedListener(refresh);
     }
 
     public void addCrit(Mounted mount) {
