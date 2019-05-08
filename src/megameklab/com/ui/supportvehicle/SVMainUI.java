@@ -34,24 +34,23 @@ import java.awt.*;
  * Main window for support vehicle construction
  */
 public class SVMainUI extends MegaMekLabMainUI {
-    JTabbedPane configPane = new JTabbedPane(SwingConstants.TOP);
+    private JTabbedPane configPane = new JTabbedPane(SwingConstants.TOP);
     private SVStructureTab structureTab;
     private EquipmentTab equipmentTab;
     private PreviewTab previewTab;
     private BuildTab buildTab;
     private FluffTab fluffTab;
     private SVStatusBar statusbar;
-    JPanel masterPanel = new JPanel();
-    JScrollPane scroll = new JScrollPane();
-    private MenuBarCreator menubarcreator;
+    private JPanel masterPanel = new JPanel();
 
     public SVMainUI() {
 
         super();
         createNewUnit(Entity.ETYPE_SUPPORT_TANK, false, false);
         setTitle(getEntity().getChassis() + " " + getEntity().getModel() + ".blk");
-        menubarcreator = new MenuBarCreator(this);
+        MenuBarCreator menubarcreator = new MenuBarCreator(this);
         setJMenuBar(menubarcreator);
+        JScrollPane scroll = new JScrollPane();
         scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         scroll.getVerticalScrollBar().setUnitIncrement(20);
