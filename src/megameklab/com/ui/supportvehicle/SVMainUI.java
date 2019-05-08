@@ -38,7 +38,7 @@ public class SVMainUI extends MegaMekLabMainUI {
     private SVStructureTab structureTab;
     private EquipmentTab equipmentTab;
     private PreviewTab previewTab;
-    private BuildTab buildTab;
+    private SVBuildTab buildTab;
     private FluffTab fluffTab;
     private SVStatusBar statusbar;
     private JPanel masterPanel = new JPanel();
@@ -75,7 +75,7 @@ public class SVMainUI extends MegaMekLabMainUI {
         statusbar = new SVStatusBar(this);
         structureTab = new SVStructureTab(this);
         equipmentTab = new EquipmentTab(this);
-        buildTab = new BuildTab(this, equipmentTab.getEquipmentList());
+        buildTab = new SVBuildTab(this, equipmentTab);
         fluffTab = new FluffTab(this);
         structureTab.addRefreshedListener(this);
         equipmentTab.addRefreshedListener(this);
