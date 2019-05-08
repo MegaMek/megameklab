@@ -20,7 +20,6 @@ package megameklab.com.ui.supportvehicle;
 
 import megamek.common.*;
 import megameklab.com.ui.MegaMekLabMainUI;
-import megameklab.com.ui.Vehicle.StatusBar;
 import megameklab.com.ui.Vehicle.tabs.BuildTab;
 import megameklab.com.ui.tabs.EquipmentTab;
 import megameklab.com.ui.tabs.FluffTab;
@@ -41,7 +40,7 @@ public class SVMainUI extends MegaMekLabMainUI {
     private PreviewTab previewTab;
     private BuildTab buildTab;
     private FluffTab fluffTab;
-    private StatusBar statusbar;
+    private SVStatusBar statusbar;
     JPanel masterPanel = new JPanel();
     JScrollPane scroll = new JScrollPane();
     private MenuBarCreator menubarcreator;
@@ -74,7 +73,7 @@ public class SVMainUI extends MegaMekLabMainUI {
 
         masterPanel.setLayout(new BorderLayout());
 
-        statusbar = new StatusBar(this);
+        statusbar = new SVStatusBar(this);
         structureTab = new SVStructureTab(this);
         equipmentTab = new EquipmentTab(this);
         buildTab = new BuildTab(this, equipmentTab.getEquipmentList());
