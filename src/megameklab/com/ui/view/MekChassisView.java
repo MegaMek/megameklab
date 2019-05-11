@@ -497,12 +497,16 @@ public class MekChassisView extends BuildView implements ActionListener, ChangeL
         } else if (isPrimitive() || isIndustrial()) {
             cbGyro.addItem(Mech.GYRO_STANDARD);
         } else {
-            for (int i = 0; i <= Mech.GYRO_NONE; i++) {
+            for (int i = 0; i < Mech.GYRO_NONE; i++) {
                 if (techManager.isLegal(Mech.getGyroTechAdvancement(i))
                         && ((i != Mech.GYRO_XL) || (getBaseTypeIndex() !=  BASE_TYPE_LAM))) {
                     cbGyro.addItem(i);
                 }
             }
+        }
+        if ((cbCockpit.getSelectedItem() != null)
+                && cbCockpit.getSelectedItem().equals(Mech.COCKPIT_INTERFACE)) {
+            cbGyro.addItem(Mech.GYRO_NONE);
         }
         cbGyro.setSelectedItem(prev);
         cbGyro.addActionListener(this);
