@@ -837,6 +837,11 @@ public class StructureTab extends ITab implements MekBuildListener {
             panChassis.addListener(this);
         } else {
             getMech().setCockpitType(cockpitType);
+            if ((cockpitType != Mech.COCKPIT_INTERFACE)
+                    && (getMech().getGyroType() == Mech.GYRO_NONE)) {
+                gyroChanged(Mech.GYRO_STANDARD);
+            }
+            panChassis.refresh(); // Changing from interface may require adding a gyro
             resetSystemCrits();
             refreshSummary();
             refresh.refreshPreview();
