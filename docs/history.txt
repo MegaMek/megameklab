@@ -5,6 +5,7 @@ v0.45.5-SNAPSHOT
 + Issue #279: BA SRM Torpedo ammo fails to load
 + Issue #281: Issue printing BV to Record Sheet
 + Issue #283: Cost Calculation issue for Warships
++ Issue #287: Cannot remove gyro from interface equipped mech
 
 v0.45.4 (2019-03-24 1700 UTC)
 + Fixed vehicle and aero slot calculations for patchwork armor.
