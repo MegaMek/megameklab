@@ -7,6 +7,10 @@ v0.45.5-SNAPSHOT
 + Issue #283: Cost Calculation issue for Warships
 + Issue #287: Cannot remove gyro from interface equipped mech
 + Issue #288: Maximum armor on a jumpship is too high
++ Issue #289: other problems allocating armor to primitive jumpships
++ Issue #290: problems with the export to clipboard (text) function
++ Issue #291: Problem with ammunition display in the text tech readout output for large spacecraft
++ Issue #292: BA Saving of IS BA ECM as wrong type
 
 v0.45.4 (2019-03-24 1700 UTC)
 + Fixed vehicle and aero slot calculations for patchwork armor.
