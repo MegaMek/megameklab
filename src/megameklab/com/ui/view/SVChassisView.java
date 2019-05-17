@@ -18,10 +18,7 @@
  */
 package megameklab.com.ui.view;
 
-import megamek.common.Entity;
-import megamek.common.EntityWeightClass;
-import megamek.common.ITechManager;
-import megamek.common.ITechnology;
+import megamek.common.*;
 import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestSupportVehicle;
 import megameklab.com.ui.util.CustomComboBox;
@@ -57,10 +54,16 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
             .filter(t -> !t.equals(TestSupportVehicle.SVType.AIRSHIP)
                     && !t.equals(TestSupportVehicle.SVType.RAIL)
                     && !t.equals(TestSupportVehicle.SVType.SATELLITE)).collect(Collectors.toList());
+    private final Map<TestSupportVehicle.SVType, String> typeNames = new EnumMap<>(TestSupportVehicle.SVType.class);
+
+    private final static TechAdvancement TA_DUAL_TURRET = Tank.getDualTurretTA();
+    private final static TechAdvancement TA_CHIN_TURRET = VTOL.getChinTurretTA();
 
     private final SpinnerNumberModel spnTonnageModel = new SpinnerNumberModel(20.0, 5.0, 300.0, 0.5);
     private final SpinnerNumberModel spnTonnageModelSmall = new SpinnerNumberModel(4000.0, 100.0, 4999.0, 1.0);
-    private final Map<TestSupportVehicle.SVType, String> typeNames = new EnumMap<>(TestSupportVehicle.SVType.class);
+    private final SpinnerNumberModel spnTurretWtModel = new SpinnerNumberModel(0.0, 0.0, null, 0.5);
+    private final SpinnerNumberModel spnTurret2WtModel = new SpinnerNumberModel(0.0, 0.0, null, 0.5);
+    private String[] turretNames;
 
     private final JSpinner spnTonnage = new JSpinner(spnTonnageModel);
     private final JCheckBox chkSmall = new JCheckBox();
@@ -69,6 +72,12 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
     private final TechComboBox<TestSupportVehicle.SVEngine> cbEngine = new TechComboBox<>(e -> e.engine.getEngineName()
             .replaceAll("^\\d+ ", ""));
     private final CustomComboBox<Integer> cbEngineTechRating = new CustomComboBox<>(ITechnology::getRatingName);
+    private final CustomComboBox<Integer> cbTurrets = new CustomComboBox<>(i -> turretNames[i]);
+    private final JSpinner spnChassisTurretWt = new JSpinner(spnTurretWtModel);
+    private final JSpinner spnChassisTurret2Wt = new JSpinner(spnTurret2WtModel);
+
+    /** List of components that should only be enabled for omnivehicles, to simplify enabling/disabling */
+    private final List<JComponent> omniComponents = new ArrayList<>();
 
     private final ITechManager techManager;
     private boolean handleEvents = true;
@@ -84,6 +93,7 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         for (TestSupportVehicle.SVType t : TestSupportVehicle.SVType.values()) {
             typeNames.put(t, resourceMap.getString("SVType." + t.toString()));
         }
+        turretNames = resourceMap.getString("CVChassisView.turrets.values").split(","); //$NON-NLS-1$
 
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -156,6 +166,50 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         cbEngineTechRating.setToolTipText(resourceMap.getString("SVChassisView.cbEngineTechRating.tooltip")); //$NON-NLS-1$
         add(cbEngineTechRating, gbc);
         cbEngineTechRating.addActionListener(this);
+
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.gridwidth = 1;
+        add(createLabel(resourceMap.getString("CVChassisView.cbTurrets.text"), labelSize), gbc); //$NON-NLS-1$
+        gbc.gridx = 1;
+        gbc.gridwidth = 2;
+        setFieldSize(cbTurrets, controlSize);
+        cbTurrets.setToolTipText(resourceMap.getString("CVChassisView.cbTurrets.tooltip")); //$NON-NLS-1$
+        add(cbTurrets, gbc);
+        cbTurrets.addActionListener(this);
+
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        add(new JLabel(resourceMap.getString("SVChassisView.lblBaseChassisTurretWeight.text")), gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.gridwidth = 1;
+        JLabel lbl = createLabel(resourceMap.getString("SVChassisView.spnTurret1Wt.text"), labelSize); //$NON-NLS-1$
+        add(lbl, gbc);
+        gbc.gridx = 1;
+        gbc.gridwidth = 2;
+        setFieldSize(spnChassisTurretWt, spinnerSize);
+        spnChassisTurretWt.setToolTipText(resourceMap.getString("CVChassisView.spnTurretWt.tooltip")); //$NON-NLS-1$
+        add(spnChassisTurretWt, gbc);
+        spnChassisTurretWt.addChangeListener(this);
+        omniComponents.add(lbl);
+        omniComponents.add(spnChassisTurretWt);
+
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.gridwidth = 1;
+        lbl = createLabel(resourceMap.getString("SVChassisView.spnTurret2Wt.text"), labelSize); //$NON-NLS-1$
+        add(lbl, gbc);
+        gbc.gridx = 1;
+        gbc.gridwidth = 2;
+        setFieldSize(spnChassisTurret2Wt, spinnerSize);
+        spnChassisTurret2Wt.setToolTipText(resourceMap.getString("CVChassisView.spnTurret2Wt.tooltip")); //$NON-NLS-1$
+        add(spnChassisTurret2Wt, gbc);
+        spnChassisTurret2Wt.addChangeListener(this);
+        omniComponents.add(lbl);
+        omniComponents.add(spnChassisTurret2Wt);
     }
 
     /**
@@ -174,6 +228,18 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
      */
     public TestSupportVehicle.SVType getType() {
         return (TestSupportVehicle.SVType) cbType.getSelectedItem();
+    }
+
+    /**
+     * Used to check eligibility for turret(s).
+     *
+     * @return Whether the vehicle is an aerospace type
+     */
+    private boolean isAeroType() {
+        final TestSupportVehicle.SVType type = getType();
+        return type == TestSupportVehicle.SVType.FIXED_WING
+                || type == TestSupportVehicle.SVType.AIRSHIP
+                || type == TestSupportVehicle.SVType.SATELLITE;
     }
 
     /**
@@ -259,10 +325,32 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         if (getEngineTechRating() != entity.getEngineTechRating()) {
             cbEngine.setSelectedIndex(0);
         }
+
+        if (entity instanceof Tank) {
+            Tank tank = (Tank) entity;
+            if (!tank.hasNoDualTurret()) {
+                cbTurrets.setSelectedItem(SVBuildListener.TURRET_DUAL);
+            } else if (!tank.hasNoTurret()) {
+                cbTurrets.setSelectedItem((tank.getMovementMode() == EntityMovementMode.VTOL) ?
+                        SVBuildListener.TURRET_CHIN : SVBuildListener.TURRET_SINGLE);
+            } else {
+                cbTurrets.setSelectedItem(SVBuildListener.TURRET_NONE);
+            }
+            spnTurretWtModel.setValue(Math.max(0, tank.getBaseChassisTurretWeight()));
+            spnTurret2WtModel.setValue(Math.max(0, tank.getBaseChassisTurret2Weight()));
+            cbTurrets.setEnabled(true);
+        } else {
+            cbTurrets.setEnabled(false);
+        }
+
+        omniComponents.forEach(c -> c.setEnabled(entity.isOmni()));
+        spnChassisTurretWt.setEnabled(!entity.isAero() && entity.isOmni() && (cbTurrets.getSelectedIndex() > 0));
+        spnChassisTurret2Wt.setEnabled(!entity.isAero() && entity.isOmni() && (cbTurrets.getSelectedIndex() > 1));
     }
 
     public void refresh() {
         refreshTonnage();
+        refreshTurrets();
     }
 
     private void refreshTonnage() {
@@ -270,6 +358,41 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         spnTonnageModel.setMaximum(max);
         if (spnTonnageModel.getNumber().doubleValue() > max) {
             spnTonnageModel.setValue(max);
+        }
+    }
+
+    private void refreshTurrets() {
+        Integer prev = (Integer) cbTurrets.getSelectedItem();
+        handleEvents = false;
+        cbTurrets.removeAllItems();
+        cbTurrets.addItem(SVBuildListener.TURRET_NONE);
+        if (TestSupportVehicle.SVType.VTOL.equals(cbType.getSelectedItem())) {
+            if (techManager.isLegal(TA_CHIN_TURRET)) {
+                cbTurrets.addItem(SVBuildListener.TURRET_CHIN);
+            }
+        } else if (!isAeroType()) {
+            cbTurrets.addItem(SVBuildListener.TURRET_SINGLE);
+            if (techManager.isLegal(TA_DUAL_TURRET)) {
+                cbTurrets.addItem(SVBuildListener.TURRET_DUAL);
+            }
+        }
+        cbTurrets.setSelectedItem(prev);
+        handleEvents = true;
+        if (cbTurrets.getSelectedIndex() < 0) {
+            cbTurrets.setSelectedIndex(0);
+        }
+        double maxWt = getTonnage();
+        spnTurretWtModel.setMaximum(maxWt);
+        if (spnTurretWtModel.getNumber().doubleValue() > maxWt) {
+            spnTurretWtModel.removeChangeListener(this);
+            spnTurretWtModel.setValue(maxWt);
+            spnTurretWtModel.addChangeListener(this);
+        }
+        spnTurret2WtModel.setMaximum(maxWt);
+        if (spnTurret2WtModel.getNumber().doubleValue() > maxWt) {
+            spnTurret2WtModel.removeChangeListener(this);
+            spnTurret2WtModel.setValue(maxWt);
+            spnTurret2WtModel.addChangeListener(this);
         }
     }
 
@@ -290,6 +413,10 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
             listeners.forEach(l -> l.engineChanged(getEngineType().engine));
         } else if (e.getSource() == cbEngineTechRating) {
             listeners.forEach(l -> l.engineTechRatingChanged(getEngineTechRating()));
+        } else if (e.getSource() == cbTurrets) {
+            if (cbTurrets.getSelectedItem() != null) {
+                listeners.forEach(l -> l.turretChanged((Integer) cbTurrets.getSelectedItem()));
+            }
         }
     }
 
@@ -300,6 +427,10 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         }
         if (e.getSource() == spnTonnage) {
             listeners.forEach(l -> l.tonnageChanged(getTonnage()));
+        } else if ((e.getSource() == spnChassisTurretWt)
+                || (e.getSource() == spnChassisTurret2Wt)){
+            listeners.forEach(l -> l.turretBaseWtChanged(spnTurretWtModel.getNumber().doubleValue(),
+                    spnTurret2WtModel.getNumber().doubleValue()));
         }
     }
 }

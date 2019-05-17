@@ -26,6 +26,12 @@ import megamek.common.verifier.TestSupportVehicle;
  * Listener for views used by support vehicle construction.
  */
 public interface SVBuildListener extends BuildListener {
+    /* Turret configuration constants */
+    int TURRET_NONE   = 0;
+    int TURRET_SINGLE = 1;
+    int TURRET_DUAL   = 2;
+    int TURRET_CHIN   = 3;
+
     /**
      * Notify of a change in the unit tonnage
      * @param tonnage The new tonnage
@@ -58,9 +64,24 @@ public interface SVBuildListener extends BuildListener {
     void engineTechRatingChanged(int techRating);
 
     /**
-     * Nofify of the addition or removal of a chassis modification
+     * Notify of the addition or removal of a chassis modification
      * @param eq        The modification to add or remove
      * @param installed Whether the chassis mod is to be installed or removed
      */
     void setChassisMod(EquipmentType eq, boolean installed);
+
+    /**
+     * Notify that the turret configuration has changed
+     *
+     * @param config The turret configuration constant from {@link megameklab.com.ui.view.SVChassisView SVChassisView}
+     */
+    void turretChanged(int config);
+
+    /**
+     * Notify of a change in the base chassis turret weight for omni vehicles
+     *
+     * @param turret1 The weight of the first turret or chin turret
+     * @param turret2 The weight of the second turret, if any
+     */
+    void turretBaseWtChanged(double turret1, double turret2);
 }

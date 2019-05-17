@@ -339,9 +339,78 @@ class SVStructureTab extends ITab implements SVBuildListener {
             getSV().getEquipment().remove(current);
             UnitUtil.removeCriticals(getSV(), current);
         }
+        if (mod.equals(TestSupportVehicle.ChassisModification.OMNI.equipment)) {
+            getSV().setOmni(installed);
+            panChassis.setFromEntity(getSV());
+        }
         panChassisMod.refresh();
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
+    }
+
+    @Override
+    public void turretChanged(int turretConfig) {
+        if (!(getSV() instanceof Tank)) {
+            return;
+        }
+        if ((turretConfig != SVBuildListener.TURRET_DUAL)
+                && !getTank().hasNoDualTurret()) {
+            removeTurret(getTank().getLocTurret2());
+            getTank().setHasNoDualTurret(true);
+            getTank().setBaseChassisTurret2Weight(-1);
+        }
+        if ((turretConfig == SVBuildListener.TURRET_NONE)
+                && !getTank().hasNoTurret()) {
+            removeTurret(getTank().getLocTurret());
+            getTank().setHasNoTurret(true);
+            getTank().setBaseChassisTurretWeight(-1);
+        }
+
+        if (getTank().hasNoTurret() && (turretConfig != SVBuildListener.TURRET_NONE)) {
+            getTank().setHasNoTurret(false);
+            getTank().autoSetInternal();
+            initTurretArmor(getTank().getLocTurret());
+        }
+        if (getTank().hasNoDualTurret() && (turretConfig == SVBuildListener.TURRET_DUAL)) {
+            getTank().setHasNoDualTurret(false);
+            getTank().autoSetInternal();
+            initTurretArmor(getTank().getLocTurret2());
+        }
+        getTank().autoSetInternal();
+        panChassis.setFromEntity(getTank());
+        //TODO: Refresh armor tab
+        refresh.refreshBuild();
+        refresh.refreshPreview();
+        refresh.refreshStatus();
+    }
+
+    @Override
+    public void turretBaseWtChanged(double turret1, double turret2) {
+        getTank().setBaseChassisTurretWeight(turret1);
+        getTank().setBaseChassisTurret2Weight(turret2);
+        panSummary.refresh();
+        refresh.refreshStatus();
+    }
+
+    private void removeTurret(int loc) {
+        for (int slot = 0; slot < getTank().getNumberOfCriticals(loc); slot++) {
+            getTank().setCritical(loc, slot, null);
+        }
+        for (Mounted mount : getTank().getEquipment()) {
+            if (mount.getLocation() == loc) {
+                UnitUtil.changeMountStatus(getTank(), mount,
+                        Entity.LOC_NONE, Entity.LOC_NONE, false);
+            }
+        }
+    }
+
+    private void initTurretArmor(int loc) {
+        getTank().initializeArmor(0, loc);
+        getTank().setArmorTechLevel(
+                getTank().getArmorTechLevel(Tank.LOC_FRONT),
+                loc);
+        getTank().setArmorType(getTank().getArmorType(Tank.LOC_FRONT),
+                loc);
     }
 }
