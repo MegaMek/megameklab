@@ -127,6 +127,7 @@ public class EquipmentTab extends ITab implements ActionListener {
                 && !(en.hasETypeFlag(Entity.ETYPE_QUADVEE) && eq.hasFlag(MiscType.F_TRACKS))
                 && !UnitUtil.isArmorOrStructure(eq)
                 && !eq.hasFlag(MiscType.F_CHASSIS_MODIFICATION)
+                && !(en.isSupportVehicle() && (eq.hasFlag(MiscType.F_BASIC_FIRECONTROL) || (eq.hasFlag(MiscType.F_ADVANCED_FIRECONTROL))))
                 && !eq.hasFlag(MiscType.F_MAGNETIC_CLAMP)
                 && !(eq.hasFlag(MiscType.F_PARTIAL_WING) && en.hasETypeFlag(Entity.ETYPE_PROTOMECH)))
                 || (eq instanceof TAGWeapon));

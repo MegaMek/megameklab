@@ -32,6 +32,11 @@ public interface SVBuildListener extends BuildListener {
     int TURRET_DUAL   = 2;
     int TURRET_CHIN   = 3;
 
+    /* Fire control constants */
+    int FIRECON_NONE     = 0;
+    int FIRECON_BASIC    = 1;
+    int FIRECON_ADVANCED = 2;
+
     /**
      * Notify of a change in the unit tonnage
      * @param tonnage The new tonnage
@@ -84,4 +89,19 @@ public interface SVBuildListener extends BuildListener {
      * @param turret2 The weight of the second turret, if any
      */
     void turretBaseWtChanged(double turret1, double turret2);
+
+    /**
+     * Notify of a change the type of fire control
+     *
+     * @param index One of the FIRECON_* constants
+     *
+     */
+    void fireConChanged(int index);
+
+    /**
+     * Notify of a change in the base chassis fire control weight for omni vehicles
+     *
+     * @param weight The new weight
+     */
+    void fireConWtChanged(double weight);
 }

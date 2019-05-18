@@ -387,8 +387,49 @@ class SVStructureTab extends ITab implements SVBuildListener {
 
     @Override
     public void turretBaseWtChanged(double turret1, double turret2) {
-        getTank().setBaseChassisTurretWeight(turret1);
-        getTank().setBaseChassisTurret2Weight(turret2);
+        if (getSV() instanceof Tank) {
+            getTank().setBaseChassisTurretWeight(turret1);
+            getTank().setBaseChassisTurret2Weight(turret2);
+            panSummary.refresh();
+            refresh.refreshStatus();
+        }
+    }
+
+    @Override
+    public void fireConChanged(int index) {
+        final Mounted current = getSV().getMisc().stream()
+                .filter(m -> m.getType().hasFlag(MiscType.F_BASIC_FIRECONTROL)
+                        || m.getType().hasFlag(MiscType.F_ADVANCED_FIRECONTROL))
+                .findFirst().orElse(null);
+        if (null != current) {
+            getSV().getMisc().remove(current);
+            getSV().getEquipment().remove(current);
+            UnitUtil.removeCriticals(getSV(), current);
+        }
+        EquipmentType eq = null;
+        if (index == SVBuildListener.FIRECON_BASIC) {
+            eq = EquipmentType.get("Basic Fire Control"); //$NON-NLS-1$
+        } else if (index == SVBuildListener.FIRECON_ADVANCED) {
+            eq = EquipmentType.get("Advanced Fire Control"); //$NON-NLS-1$
+        }
+        if (null != eq) {
+            try {
+                getSV().addEquipment(eq, getSV().isAero() ? FixedWingSupport.LOC_BODY : Tank.LOC_BODY);
+            } catch (LocationFullException e) {
+                // This should not be possible since fire control doesn't occupy slots
+                MegaMekLab.getLogger().error(getClass(), "fireConChanged(int)",
+                        "LocationFullException when adding fire control " + eq.getName());
+            }
+        }
+        panChassis.setFromEntity(getSV());
+        panSummary.refresh();
+        refresh.refreshStatus();
+        refresh.refreshPreview();
+    }
+
+    @Override
+    public void fireConWtChanged(double weight) {
+        getSV().setBaseChassisFireConWeight(weight);
         panSummary.refresh();
         refresh.refreshStatus();
     }

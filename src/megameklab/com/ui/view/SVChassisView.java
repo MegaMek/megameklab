@@ -64,6 +64,7 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
     private final SpinnerNumberModel spnTurretWtModel = new SpinnerNumberModel(0.0, 0.0, null, 0.5);
     private final SpinnerNumberModel spnTurret2WtModel = new SpinnerNumberModel(0.0, 0.0, null, 0.5);
     private String[] turretNames;
+    private final SpinnerNumberModel spnFireConWtModel = new SpinnerNumberModel(0.0, 0.0, null, 0.5);
 
     private final JSpinner spnTonnage = new JSpinner(spnTonnageModel);
     private final JCheckBox chkSmall = new JCheckBox();
@@ -75,6 +76,8 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
     private final CustomComboBox<Integer> cbTurrets = new CustomComboBox<>(i -> turretNames[i]);
     private final JSpinner spnChassisTurretWt = new JSpinner(spnTurretWtModel);
     private final JSpinner spnChassisTurret2Wt = new JSpinner(spnTurret2WtModel);
+    private final JComboBox<String> cbFireControl = new JComboBox<>();
+    private final JSpinner spnFireConWt = new JSpinner(spnFireConWtModel);
 
     /** List of components that should only be enabled for omnivehicles, to simplify enabling/disabling */
     private final List<JComponent> omniComponents = new ArrayList<>();
@@ -94,6 +97,8 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
             typeNames.put(t, resourceMap.getString("SVType." + t.toString()));
         }
         turretNames = resourceMap.getString("CVChassisView.turrets.values").split(","); //$NON-NLS-1$
+        final String[] fireConNames = resourceMap.getString("SVChassisView.fireCon.values").split(","); //$NON-NLS-1$
+        cbFireControl.setModel(new DefaultComboBoxModel<>(fireConNames));
 
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -180,6 +185,17 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
 
         gbc.gridx = 0;
         gbc.gridy++;
+        gbc.gridwidth = 1;
+        add(createLabel(resourceMap.getString("SVChassisView.cbFireCon.text"), labelSize), gbc); //$NON-NLS-1$
+        gbc.gridx = 1;
+        gbc.gridwidth = 2;
+        setFieldSize(cbFireControl, controlSize);
+        cbFireControl.setToolTipText(resourceMap.getString("SVChassisView.cbFireCon.tooltip")); // $NON-NLS-1$
+        add(cbFireControl, gbc);
+        cbFireControl.addActionListener(this);
+
+        gbc.gridx = 0;
+        gbc.gridy++;
         gbc.gridwidth = GridBagConstraints.REMAINDER;
         add(new JLabel(resourceMap.getString("SVChassisView.lblBaseChassisTurretWeight.text")), gbc);
 
@@ -210,6 +226,20 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         spnChassisTurret2Wt.addChangeListener(this);
         omniComponents.add(lbl);
         omniComponents.add(spnChassisTurret2Wt);
+
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.gridwidth = 1;
+        lbl = createLabel(resourceMap.getString("SVChassisView.spnFireConWt.text"), labelSize); //$NON-NLS-1$
+        add(lbl, gbc);
+        gbc.gridx = 1;
+        gbc.gridwidth = 2;
+        setFieldSize(spnFireConWt, spinnerSize);
+        spnFireConWt.setToolTipText(resourceMap.getString("SVChassisView.spnFireConWt.tooltip")); //$NON-NLS-1$
+        add(spnFireConWt, gbc);
+        spnFireConWt.addChangeListener(this);
+        omniComponents.add(lbl);
+        omniComponents.add(spnFireConWt);
     }
 
     /**
@@ -343,9 +373,21 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
             cbTurrets.setEnabled(false);
         }
 
+        if (entity.hasMisc(MiscType.F_ADVANCED_FIRECONTROL)) {
+            cbFireControl.setSelectedIndex(SVBuildListener.FIRECON_ADVANCED);
+        } else if (entity.hasMisc(MiscType.F_BASIC_FIRECONTROL)) {
+            cbFireControl.setSelectedIndex(SVBuildListener.FIRECON_BASIC);
+        } else {
+            cbFireControl.setSelectedIndex(SVBuildListener.FIRECON_NONE);
+        }
+        spnFireConWtModel.setValue(Math.max(0.0, entity.getBaseChassisFireConWeight()));
+
         omniComponents.forEach(c -> c.setEnabled(entity.isOmni()));
-        spnChassisTurretWt.setEnabled(!entity.isAero() && entity.isOmni() && (cbTurrets.getSelectedIndex() > 0));
-        spnChassisTurret2Wt.setEnabled(!entity.isAero() && entity.isOmni() && (cbTurrets.getSelectedIndex() > 1));
+        spnChassisTurretWt.setEnabled(!entity.isAero() && entity.isOmni()
+                && (cbTurrets.getSelectedIndex() > SVBuildListener.TURRET_NONE));
+        spnChassisTurret2Wt.setEnabled(!entity.isAero() && entity.isOmni()
+                && Integer.valueOf(SVBuildListener.TURRET_DUAL).equals(cbTurrets.getSelectedItem()));
+        spnFireConWt.setEnabled(entity.isOmni() && (cbFireControl.getSelectedIndex() > SVBuildListener.FIRECON_NONE));
     }
 
     public void refresh() {
@@ -417,6 +459,8 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
             if (cbTurrets.getSelectedItem() != null) {
                 listeners.forEach(l -> l.turretChanged((Integer) cbTurrets.getSelectedItem()));
             }
+        } else if (e.getSource() == cbFireControl) {
+            listeners.forEach(l -> l.fireConChanged(cbFireControl.getSelectedIndex()));
         }
     }
 
@@ -431,6 +475,8 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
                 || (e.getSource() == spnChassisTurret2Wt)){
             listeners.forEach(l -> l.turretBaseWtChanged(spnTurretWtModel.getNumber().doubleValue(),
                     spnTurret2WtModel.getNumber().doubleValue()));
+        } else if (e.getSource() == spnFireConWt) {
+            listeners.forEach(l -> l.fireConWtChanged(spnFireConWtModel.getNumber().doubleValue()));
         }
     }
 }
