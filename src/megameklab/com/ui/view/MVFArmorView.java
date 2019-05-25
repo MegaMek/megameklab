@@ -65,7 +65,7 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
     private final static String CMD_MAXIMIZE  = "MAXIMIZE"; //$NON-NLS-1$
     private final static String CMD_REMAINING = "REMAINING"; //$NON-NLS-1$
     
-    private final TechComboBox<EquipmentType> cbArmorType = new TechComboBox<>(eq -> eq.getName());
+    private final TechComboBox<EquipmentType> cbArmorType = new TechComboBox<>(EquipmentType::getName);
     private final SpinnerNumberModel tonnageModel = new SpinnerNumberModel(0, 0, 0, 0.5);
     private final JSpinner spnTonnage = new JSpinner(tonnageModel);
     private final JCheckBox chkPatchwork = new JCheckBox();
@@ -157,7 +157,7 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
      * to clear the patchwork checkbox unless we're loading a new unit.
      * 
      * @param en The Entity being edited
-     * @param overridePatchwork Whether to ignore whether the Entity has patchwork armor.
+     * @param ignoreEntityPatchwork Whether to ignore whether the Entity has patchwork armor.
      */
     public void setFromEntity(Entity en, boolean ignoreEntityPatchwork) {
         etype = en.getEntityType();
@@ -202,7 +202,7 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
         cbArmorType.removeActionListener(this);
         cbArmorType.removeAllItems();
         List<EquipmentType> allArmors = TestEntity.legalArmorsFor(etype, industrial, movementMode, techManager);
-        allArmors.forEach(eq -> cbArmorType.addItem(eq));
+        allArmors.forEach(cbArmorType::addItem);
         if (((etype & (Entity.ETYPE_SMALL_CRAFT | Entity.ETYPE_JUMPSHIP)) == 0)
                 && techManager.isLegal(Entity.getPatchworkArmorAdvancement())) {
             chkPatchwork.setVisible(true);
@@ -297,9 +297,9 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
                     Entity.getPatchworkArmorAdvancement().getTechLevel(techManager.getGameYear(),
                             techManager.useClanTechBase())));
         } else if (CMD_MAXIMIZE.equals(e.getActionCommand())) {
-            listeners.forEach(l -> l.maximizeArmor());
+            listeners.forEach(BuildListener::maximizeArmor);
         } else if (CMD_REMAINING.equals(e.getActionCommand())) {
-            listeners.forEach(l -> l.useRemainingTonnageArmor());
+            listeners.forEach(BuildListener::useRemainingTonnageArmor);
         }
     }
     
