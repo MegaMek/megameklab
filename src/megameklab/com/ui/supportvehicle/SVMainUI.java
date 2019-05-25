@@ -36,6 +36,7 @@ import java.awt.*;
 public class SVMainUI extends MegaMekLabMainUI {
     private JTabbedPane configPane = new JTabbedPane(SwingConstants.TOP);
     private SVStructureTab structureTab;
+    private SVArmorTab armorTab;
     private EquipmentTab equipmentTab;
     private PreviewTab previewTab;
     private SVBuildTab buildTab;
@@ -74,6 +75,7 @@ public class SVMainUI extends MegaMekLabMainUI {
 
         statusbar = new SVStatusBar(this);
         structureTab = new SVStructureTab(this);
+        armorTab = new SVArmorTab(this, structureTab.getTechManager());
         equipmentTab = new EquipmentTab(this);
         buildTab = new SVBuildTab(this, equipmentTab);
         fluffTab = new FluffTab(this);
@@ -85,6 +87,7 @@ public class SVMainUI extends MegaMekLabMainUI {
         previewTab = new PreviewTab(this);
 
         configPane.addTab("Structure/Armor", structureTab);
+        configPane.addTab("Armor", armorTab);
         configPane.addTab("Equipment", equipmentTab);
         configPane.addTab("Assign Criticals", buildTab);
         configPane.addTab("Fluff", fluffTab);
@@ -100,6 +103,7 @@ public class SVMainUI extends MegaMekLabMainUI {
     @Override
     public void refreshAll() {
         structureTab.refresh();
+        armorTab.refresh();
         equipmentTab.refresh();
         buildTab.refresh();
         statusbar.refresh();
@@ -110,7 +114,7 @@ public class SVMainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshArmor() {
-
+        armorTab.refresh();
     }
 
     @Override
