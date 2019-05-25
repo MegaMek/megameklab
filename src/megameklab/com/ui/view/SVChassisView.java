@@ -59,6 +59,8 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
     private final static TechAdvancement TA_DUAL_TURRET = Tank.getDualTurretTA();
     private final static TechAdvancement TA_CHIN_TURRET = VTOL.getChinTurretTA();
 
+    // We have separate models for small support vehicles, since they are on the kilogram standard and have different
+    // step sizes.
     private final SpinnerNumberModel spnTonnageModel = new SpinnerNumberModel(20.0, 5.0, 300.0, 0.5);
     private final SpinnerNumberModel spnTonnageModelSmall = new SpinnerNumberModel(4000.0, 100.0, 4999.0, 1.0);
     private final SpinnerNumberModel spnTurretWtModel = new SpinnerNumberModel(0.0, 0.0, null, 0.5);
@@ -83,7 +85,6 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
     private final List<JComponent> omniComponents = new ArrayList<>();
 
     private final ITechManager techManager;
-    private boolean handleEvents = true;
 
     public SVChassisView(ITechManager techManager) {
         super();
@@ -306,9 +307,9 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
     }
 
     public void setFromEntity(Entity entity) {
-        handleEvents = false;
         refresh();
 
+        spnTonnage.removeChangeListener(this);
         if (entity.getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT) {
             chkSmall.setSelected(true);
             spnTonnage.setModel(spnTonnageModelSmall);
@@ -318,6 +319,9 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
             spnTonnage.setModel(spnTonnageModel);
             spnTonnageModel.setValue(entity.getWeight());
         }
+        spnTonnage.addChangeListener(this);
+
+        cbEngine.removeActionListener(this);
         cbEngine.removeAllItems();
         for (TestSupportVehicle.SVEngine engine : TestSupportVehicle.SVEngine.values()) {
             if (techManager.isLegal(engine)
@@ -326,7 +330,9 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
             }
         }
         cbEngine.setSelectedItem(TestSupportVehicle.SVEngine.getEngineType(entity.getEngine()));
+        cbEngine.addActionListener(this);
 
+        cbStructureTechRating.removeActionListener(this);
         cbStructureTechRating.removeAllItems();
         for (int r = entity.getConstructionTechAdvancement().getTechRating(); r <= ITechnology.RATING_F; r++) {
             if (techManager.isLegal(TestSupportVehicle.TECH_LEVEL_TA[r])) {
@@ -334,10 +340,14 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
             }
         }
         cbStructureTechRating.setSelectedItem(entity.getStructuralTechRating());
+        cbStructureTechRating.addActionListener(this);
 
+        cbType.removeActionListener(this);
         cbType.setSelectedItem(TestSupportVehicle.SVType.getVehicleType(entity));
+        cbType.addActionListener(this);
 
         // Engine::getTechRating will return the minimum tech rating for the engine type.
+        cbEngineTechRating.removeActionListener(this);
         cbEngineTechRating.removeAllItems();
         for (int r = entity.getEngine().getTechRating(); r <= ITechnology.RATING_F; r++) {
             if (techManager.isLegal(TestSupportVehicle.TECH_LEVEL_TA[r])) {
@@ -345,8 +355,8 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
             }
         }
         cbEngineTechRating.setSelectedItem(entity.getEngineTechRating());
+        cbEngineTechRating.addActionListener(this);
 
-        handleEvents = true;
         // If the previously selected items are no longer valid, select the first in the list. This
         // is done with event handlers turned on so the Entity gets changed.
         if (getStructuralTechRating() != entity.getStructuralTechRating()) {
@@ -366,8 +376,20 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
             } else {
                 cbTurrets.setSelectedItem(SVBuildListener.TURRET_NONE);
             }
-            spnTurretWtModel.setValue(Math.max(0, tank.getBaseChassisTurretWeight()));
-            spnTurret2WtModel.setValue(Math.max(0, tank.getBaseChassisTurret2Weight()));
+            final double turret1 = Math.max(0, tank.getBaseChassisTurretWeight());
+            final double turret2 = Math.max(0, tank.getBaseChassisTurret2Weight());
+            if (entity.getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT) {
+                spnTurretWtModel.setStepSize(1.0);
+                spnTurretWtModel.setValue(turret1 * 1000.0);
+                spnTurret2WtModel.setStepSize(1.0);
+                spnTurret2WtModel.setValue(turret2 * 1000.0);
+            } else {
+                spnChassisTurretWt.setModel(spnTurretWtModel);
+                spnTurretWtModel.setStepSize(0.5);
+                spnTurretWtModel.setValue(turret1);
+                spnTurret2WtModel.setStepSize(0.5);
+                spnTurret2WtModel.setValue(turret2);
+            }
             cbTurrets.setEnabled(true);
         } else {
             cbTurrets.setEnabled(false);
@@ -380,7 +402,13 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         } else {
             cbFireControl.setSelectedIndex(SVBuildListener.FIRECON_NONE);
         }
-        spnFireConWtModel.setValue(Math.max(0.0, entity.getBaseChassisFireConWeight()));
+        if (entity.getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT) {
+            spnFireConWtModel.setStepSize(1.0);
+            spnFireConWt.setValue(entity.getBaseChassisFireConWeight() * 1000.0);
+        } else {
+            spnFireConWtModel.setStepSize(0.5);
+            spnFireConWtModel.setValue(entity.getBaseChassisFireConWeight());
+        }
 
         omniComponents.forEach(c -> c.setEnabled(entity.isOmni()));
         spnChassisTurretWt.setEnabled(!entity.isAero() && entity.isOmni()
@@ -405,7 +433,7 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
 
     private void refreshTurrets() {
         Integer prev = (Integer) cbTurrets.getSelectedItem();
-        handleEvents = false;
+        cbTurrets.removeActionListener(this);
         cbTurrets.removeAllItems();
         cbTurrets.addItem(SVBuildListener.TURRET_NONE);
         if (TestSupportVehicle.SVType.VTOL.equals(cbType.getSelectedItem())) {
@@ -419,11 +447,14 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
             }
         }
         cbTurrets.setSelectedItem(prev);
-        handleEvents = true;
+        cbTurrets.addActionListener(this);
         if (cbTurrets.getSelectedIndex() < 0) {
             cbTurrets.setSelectedIndex(0);
         }
         double maxWt = getTonnage();
+        if (chkSmall.isSelected()) {
+            maxWt *= 1000.0;
+        }
         spnTurretWtModel.setMaximum(maxWt);
         if (spnTurretWtModel.getNumber().doubleValue() > maxWt) {
             spnTurretWtModel.removeChangeListener(this);
@@ -438,14 +469,53 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         }
     }
 
+    /**
+     * Toggles spinners between ton and kg standard
+     */
+    private void resetWeightStandard() {
+        spnTonnage.removeChangeListener(this);
+        spnChassisTurretWt.removeChangeListener(this);
+        spnChassisTurret2Wt.removeChangeListener(this);
+        spnFireConWt.removeChangeListener(this);
+        final double turret1 = spnTurretWtModel.getNumber().doubleValue();
+        final double turret2 = spnTurret2WtModel.getNumber().doubleValue();
+        final double fireCon = spnFireConWtModel.getNumber().doubleValue();
+        if (chkSmall.isSelected()) {
+            spnTonnage.setModel(spnTonnageModelSmall);
+            spnTurretWtModel.setStepSize(1.0);
+            spnTurret2WtModel.setStepSize(1.0);
+            spnFireConWtModel.setStepSize(1.0);
+        } else {
+            spnTonnage.setModel(spnTonnageModel);
+            spnTurretWtModel.setStepSize(0.5);
+            spnTurret2WtModel.setStepSize(0.5);
+            spnFireConWtModel.setStepSize(0.5);
+        }
+        final double max = ((Number) spnTonnage.getValue()).doubleValue();
+        spnTurretWtModel.setMaximum(max);
+        spnTurret2WtModel.setMaximum(max);
+        spnFireConWtModel.setMaximum(max);
+
+        spnTonnage.addChangeListener(this);
+        spnChassisTurretWt.addChangeListener(this);
+        spnChassisTurret2Wt.addChangeListener(this);
+        spnFireConWt.addChangeListener(this);
+
+        if (chkSmall.isSelected()) {
+            spnTurretWtModel.setValue(Math.min(turret1 * 1000.0, max));
+            spnTurret2WtModel.setValue(Math.min(turret2 * 1000.0, max));
+            spnFireConWtModel.setValue(Math.min(fireCon * 1000.0, max));
+        } else {
+            spnTurretWtModel.setValue(Math.min(Math.ceil(turret1 / 500.0) / 2.0, max));
+            spnTurret2WtModel.setValue(Math.min(Math.ceil(turret2 / 500.0) / 2.0, max));
+            spnFireConWtModel.setValue(Math.min(Math.ceil(fireCon / 500.0) / 2.0, max));
+        }
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (!handleEvents) {
-            return;
-        }
         if (e.getSource() == chkSmall) {
-            spnTonnage.setModel(chkSmall.isSelected() ?
-                spnTonnageModelSmall : spnTonnageModel);
+            resetWeightStandard();
             listeners.forEach(l -> l.tonnageChanged(getTonnage()));
         } else if (e.getSource() == cbType) {
             listeners.forEach(l -> l.typeChanged(getType()));
@@ -466,9 +536,6 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
 
     @Override
     public void stateChanged(ChangeEvent e) {
-        if (!handleEvents) {
-            return;
-        }
         if (e.getSource() == spnTonnage) {
             listeners.forEach(l -> l.tonnageChanged(getTonnage()));
         } else if ((e.getSource() == spnChassisTurretWt)
