@@ -44,6 +44,7 @@ import megameklab.com.ui.view.HeatSinkView;
 import megameklab.com.ui.view.MVFArmorView;
 import megameklab.com.ui.view.MovementView;
 import megameklab.com.ui.view.listeners.AdvancedAeroBuildListener;
+import megameklab.com.ui.view.listeners.ArmorAllocationListener;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
@@ -52,7 +53,7 @@ import megameklab.com.util.UnitUtil;
  * @author Neoancient
  *
  */
-public class AdvancedAeroStructureTab extends ITab implements AdvancedAeroBuildListener {
+public class AdvancedAeroStructureTab extends ITab implements AdvancedAeroBuildListener, ArmorAllocationListener {
 
     /**
      * 

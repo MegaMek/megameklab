@@ -177,7 +177,7 @@ class SVStructureTab extends ITab implements SVBuildListener {
         panChassis.refresh();
         panMovement.setFromEntity(getSV());
         panChassisMod.setFromEntity(getSV());
-        // TODO: Update armor tab
+        refresh.refreshArmor();
     }
 
     @Override

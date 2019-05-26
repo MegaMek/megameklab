@@ -42,6 +42,7 @@ import megameklab.com.ui.view.DropshipChassisView;
 import megameklab.com.ui.view.HeatSinkView;
 import megameklab.com.ui.view.MVFArmorView;
 import megameklab.com.ui.view.MovementView;
+import megameklab.com.ui.view.listeners.ArmorAllocationListener;
 import megameklab.com.ui.view.listeners.DropshipBuildListener;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
@@ -53,7 +54,7 @@ import megameklab.com.util.UnitUtil;
  *
  */
 
-public class DropshipStructureTab extends ITab implements DropshipBuildListener {
+public class DropshipStructureTab extends ITab implements DropshipBuildListener, ArmorAllocationListener {
 
     /**
      *

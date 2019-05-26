@@ -19,8 +19,9 @@ import megamek.common.Entity;
 import megamek.common.ITechManager;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.view.ArmorAllocationView;
+import megameklab.com.ui.view.MVFArmorView;
 import megameklab.com.ui.view.PatchworkArmorView;
-import megameklab.com.ui.view.SVArmorView;
+import megameklab.com.ui.view.listeners.ArmorAllocationListener;
 import megameklab.com.util.ITab;
 
 import javax.swing.*;
@@ -28,15 +29,15 @@ import javax.swing.*;
 /**
  *
  */
-public class SVArmorTab extends ITab {
+public class SVArmorTab extends ITab implements ArmorAllocationListener {
 
-    private final SVArmorView panArmor;
+    private final MVFArmorView panArmor;
     private final ArmorAllocationView panArmorAllocation;
     private final PatchworkArmorView panPatchwork;
 
     SVArmorTab(EntitySource eSource, ITechManager techManager) {
         super(eSource);
-        panArmor = new SVArmorView(techManager);
+        panArmor = new MVFArmorView(techManager, true);
         panPatchwork = new PatchworkArmorView(techManager);
         panArmorAllocation = new ArmorAllocationView(techManager, Entity.ETYPE_TANK);
 

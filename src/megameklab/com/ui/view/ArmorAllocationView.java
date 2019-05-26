@@ -40,6 +40,7 @@ import megamek.common.SuperHeavyTank;
 import megamek.common.Tank;
 import megamek.common.VTOL;
 import megamek.common.util.EncodeControl;
+import megameklab.com.ui.view.listeners.ArmorAllocationListener;
 import megameklab.com.ui.view.listeners.BuildListener;
 import megameklab.com.util.UnitUtil;
 
@@ -59,11 +60,11 @@ public class ArmorAllocationView extends BuildView implements
      */
     private static final long serialVersionUID = 1707528067499186372L;
     
-    private final List<BuildListener> listeners = new CopyOnWriteArrayList<>();
-    public void addListener(BuildListener l) {
+    private final List<ArmorAllocationListener> listeners = new CopyOnWriteArrayList<>();
+    public void addListener(ArmorAllocationListener l) {
         listeners.add(l);
     }
-    public void removeListener(BuildListener l) {
+    public void removeListener(ArmorAllocationListener l) {
         listeners.remove(l);
     }
     
@@ -212,7 +213,7 @@ public class ArmorAllocationView extends BuildView implements
         add(Box.createVerticalStrut(18), gbc);
         gbc.gridy++;
         add(btnAutoAllocate, gbc);
-        btnAutoAllocate.addActionListener(e -> listeners.forEach(BuildListener::autoAllocateArmor));
+        btnAutoAllocate.addActionListener(e -> listeners.forEach(ArmorAllocationListener::autoAllocateArmor));
     }
     
     public void setFromEntity(Entity en) {

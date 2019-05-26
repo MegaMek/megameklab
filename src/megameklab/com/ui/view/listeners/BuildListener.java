@@ -48,21 +48,6 @@ public interface BuildListener {
     default void heatSinksChanged(EquipmentType hsType, int count) {};
     default void heatSinkBaseCountChanged(int count) {};
 
-    // For units that allocate armor by tonnage
-    default void armorTypeChanged(int at, int armorTechLevel) {};
-    default void armorTonnageChanged(double tonnage) {};
-    default void maximizeArmor() {};
-    default void useRemainingTonnageArmor() {};
-
-    // For units that allocate armor by point
-    default void armorValueChanged(int points) {};
-    default void armorTypeChanged(EquipmentType armor) {};
-
-    // For units that allocate armor to location
-    default void armorPointsChanged(int location, int front, int rear) {};
-    default void patchworkChanged(int location, EquipmentType armor) {};
-    default void autoAllocateArmor() {};
-
     // For aerospace units and support vehicles
     default void fuelTonnageChanged(double tonnage) {};
 }

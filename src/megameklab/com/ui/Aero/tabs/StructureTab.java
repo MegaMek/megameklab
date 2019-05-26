@@ -53,11 +53,12 @@ import megameklab.com.ui.view.MVFArmorView;
 import megameklab.com.ui.view.MovementView;
 import megameklab.com.ui.view.PatchworkArmorView;
 import megameklab.com.ui.view.listeners.AeroBuildListener;
+import megameklab.com.ui.view.listeners.ArmorAllocationListener;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 
-public class StructureTab extends ITab implements AeroBuildListener {
+public class StructureTab extends ITab implements AeroBuildListener, ArmorAllocationListener {
 
     /**
      *
