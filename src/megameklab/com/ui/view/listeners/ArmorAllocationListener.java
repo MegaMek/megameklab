@@ -43,6 +43,20 @@ public interface ArmorAllocationListener {
     default void armorTypeChanged(EquipmentType armor) {}
 
     /**
+     * Notifies of a change in the tech rating of support vehicle armor.
+     *
+     * @param techRating The new tech rating, using the rating constants from {@link megamek.common.ITechnology ITechnology}.
+     */
+    default void armorTechRatingChanged(int techRating) {}
+
+    /**
+     * Notifies of a change in the BAR of support vehicle armor.
+     *
+     * @param bar The new BAR
+     */
+    default void armorBARRatingChanged(int bar) {}
+
+    /**
      * Notifies of a change in armor tonnage. This is not used by units that assign armor by point.
      *
      * @param tonnage The total weight of armor on the unit.
@@ -66,7 +80,7 @@ public interface ArmorAllocationListener {
      *
      * @param points The total number of armor points on the unit.
      */
-    default void armorValueChanged(int points){}
+    default void armorFactorChanged(int points){}
 
     /**
      * Notifies of a change to the number of armor points assigned to a particular location

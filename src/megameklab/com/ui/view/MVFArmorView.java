@@ -232,6 +232,7 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
             cbArmorType.setEnabled(false);
             tonnageModel.setValue(Math.min(UnitUtil.getMaximumArmorTonnage(en),
                     en.getLabArmorTonnage()));
+            factorModel.setValue(en.getTotalOArmor());
             spnTonnage.setEnabled(false);
             chkPatchwork.setVisible(true);
             chkPatchwork.setSelected(true);
@@ -242,6 +243,8 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
             tonnageModel.setValue(Math.min(UnitUtil.getMaximumArmorTonnage(en),
                     en.getLabArmorTonnage()));
             tonnageModel.setMaximum(UnitUtil.getMaximumArmorTonnage(en));
+            factorModel.setMaximum(UnitUtil.getMaximumArmorPoints(en));
+            factorModel.setValue(Math.min(en.getTotalOArmor(), (Integer) factorModel.getMaximum()));
             spnTonnage.setEnabled(true);
             chkPatchwork.setSelected(false);
             btnMaximize.setEnabled(true);
@@ -344,10 +347,27 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
         return (armor.getTechLevel(techManager.getGameYear(), armor.isClan()));
     }
 
+    public int getTechRating() {
+        Integer selected = (Integer) cbSVTechRating.getSelectedItem();
+        if (null != selected) {
+            return selected;
+        }
+        return ITechnology.RATING_A;
+    }
+    public int getBARRating() {
+        Integer selected = (Integer) cbBARRating.getSelectedItem();
+        if (null != selected) {
+            return selected;
+        }
+        return 2;
+    }
+
     @Override
     public void stateChanged(ChangeEvent e) {
         if (e.getSource() == spnTonnage) {
             listeners.forEach(l -> l.armorTonnageChanged(tonnageModel.getNumber().doubleValue()));
+        } else if (e.getSource() == spnFactor) {
+            listeners.forEach(l -> l.armorFactorChanged(factorModel.getNumber().intValue()));
         }
     }
 
@@ -364,6 +384,10 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
             listeners.forEach(ArmorAllocationListener::maximizeArmor);
         } else if (CMD_REMAINING.equals(e.getActionCommand())) {
             listeners.forEach(ArmorAllocationListener::useRemainingTonnageArmor);
+        } else if (e.getSource() == cbSVTechRating) {
+            listeners.forEach(l -> l.armorTechRatingChanged(getTechRating()));
+        } else if (e.getSource() == cbBARRating) {
+            listeners.forEach(l -> l.armorBARRatingChanged(getBARRating()));
         }
     }
     

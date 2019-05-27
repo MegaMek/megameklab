@@ -1397,6 +1397,8 @@ public class UnitUtil {
             points = (unit.getTotalInternal() * 2) + headPoints;
         } else if (unit.hasETypeFlag(Entity.ETYPE_PROTOMECH)) {
             points = TestProtomech.maxArmorFactor((Protomech) unit);
+        } else if (unit.isSupportVehicle()) {
+            points = TestSupportVehicle.maxArmorFactor(unit);
         } else if (unit.hasETypeFlag(Entity.ETYPE_TANK)) {
             points = (int) Math.floor((unit.getWeight() * 3.5) + 40);
         } else if (unit.hasETypeFlag(Entity.ETYPE_BATTLEARMOR)) {
@@ -1422,7 +1424,12 @@ public class UnitUtil {
             }
         } else if (unit instanceof Mech) {
             return unit.getInternal(loc) * 2;
+        } else if (unit.isSupportVehicle()) {
+            return TestSupportVehicle.maxArmorFactor(unit);
         } else if (unit instanceof Tank) {
+            if ((unit instanceof VTOL) && (loc == VTOL.LOC_ROTOR)) {
+                return 2;
+            }
             return (int) Math.floor((unit.getWeight() * 3.5) + 40);
         } else if (unit instanceof Protomech) {
             return TestProtomech.maxArmorFactor((Protomech) unit, loc);
@@ -1436,7 +1443,7 @@ public class UnitUtil {
         if (unit instanceof Jumpship) {
             return TestAdvancedAerospace.maxArmorWeight((Jumpship) unit);
         }
-        
+
         double armorPerTon = 16.0 * EquipmentType.getArmorPointMultiplier(
                 unit.getArmorType(1), unit.getArmorTechLevel(1));
         double armorWeight = 0;
@@ -1457,6 +1464,15 @@ public class UnitUtil {
         } else if (unit instanceof Protomech) {
             double points = TestProtomech.maxArmorFactor((Protomech) unit);
             return points * TestProtomech.ProtomechArmor.getArmor((Protomech) unit).getWtPerPoint();
+        } else if (unit.isSupportVehicle()) {
+            // Max armor is determined by number of points.
+            double weight = TestSupportVehicle.maxArmorFactor(unit)
+                    * TestSupportVehicle.armorWeightPerPoint(unit);
+            if (unit.getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT) {
+                return TestEntity.round(weight, TestEntity.Ceil.KILO);
+            } else {
+                return TestEntity.floor(weight, TestEntity.Ceil.HALFTON);
+            }
         } else if (unit instanceof Tank) {
             double points = Math.floor((unit.getWeight() * 3.5) + 40);
             armorWeight = points / armorPerTon;

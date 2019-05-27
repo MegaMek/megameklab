@@ -456,7 +456,7 @@ public class ProtomekStructureTab extends ITab implements ProtomekBuildListener,
     }
 
     @Override
-    public void armorValueChanged(int points) {
+    public void armorFactorChanged(int points) {
         double tonnage = EquipmentType.getProtomechArmorWeightPerPoint(
                 getProtomech().getArmorType(Protomech.LOC_TORSO))
                 * points;

@@ -80,6 +80,7 @@ public class SVMainUI extends MegaMekLabMainUI {
         buildTab = new SVBuildTab(this, equipmentTab);
         fluffTab = new FluffTab(this);
         structureTab.addRefreshedListener(this);
+        armorTab.addRefreshedListener(this);
         equipmentTab.addRefreshedListener(this);
         buildTab.addRefreshedListener(this);
         fluffTab.setRefreshedListener(this);

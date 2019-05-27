@@ -40,7 +40,6 @@ import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestProtomech;
 import megameklab.com.ui.util.TechComboBox;
 import megameklab.com.ui.view.listeners.ArmorAllocationListener;
-import megameklab.com.ui.view.listeners.BuildListener;
 import megameklab.com.util.UnitUtil;
 
 /**
@@ -202,7 +201,7 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
     @Override
     public void stateChanged(ChangeEvent e) {
         if (e.getSource() == spnArmorPoints) {
-            listeners.forEach(l -> l.armorValueChanged(spnArmorPointsModel.getNumber().intValue()));
+            listeners.forEach(l -> l.armorFactorChanged(spnArmorPointsModel.getNumber().intValue()));
         }
     }
 

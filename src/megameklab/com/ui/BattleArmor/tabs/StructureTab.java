@@ -656,7 +656,7 @@ public class StructureTab extends ITab implements ActionListener, BABuildListene
     }
 
     @Override
-    public void armorValueChanged(int points) {
+    public void armorFactorChanged(int points) {
         for(int i = 0; i < getBattleArmor().locations(); i++) {
             getBattleArmor().initializeArmor(points, i);
         }
@@ -687,7 +687,7 @@ public class StructureTab extends ITab implements ActionListener, BABuildListene
     
     @Override
     public void maximizeArmor() {
-        armorValueChanged(getBattleArmor().getMaximumArmorPoints());
+        armorFactorChanged(getBattleArmor().getMaximumArmorPoints());
         panArmor.removeListener(this);
         panArmor.setFromEntity(getBattleArmor());
         panArmor.addListener(this);
@@ -704,7 +704,7 @@ public class StructureTab extends ITab implements ActionListener, BABuildListene
         int points = (int) UnitUtil.getRawArmorPoints(getBattleArmor(), remainingTonnage);
         int maxArmor = Math.min(getBattleArmor().getMaximumArmorPoints(),
                 points + getBattleArmor().getOArmor(BattleArmor.LOC_TROOPER_1));
-        armorValueChanged(maxArmor);
+        armorFactorChanged(maxArmor);
         panArmor.removeListener(this);
         panArmor.setFromEntity(getBattleArmor());
         panArmor.addListener(this);
