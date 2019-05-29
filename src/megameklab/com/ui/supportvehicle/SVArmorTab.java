@@ -125,6 +125,7 @@ public class SVArmorTab extends ITab implements ArmorAllocationListener {
     @Override
     public void armorTechRatingChanged(int techRating) {
         getEntity().setArmorTechRating(techRating);
+        panArmor.setFromEntity(getEntity());
         panArmorAllocation.setFromEntity(getEntity());
         refresh.refreshSummary();
         refresh.refreshStatus();
@@ -134,6 +135,7 @@ public class SVArmorTab extends ITab implements ArmorAllocationListener {
     @Override
     public void armorBARRatingChanged(int bar) {
         getEntity().setBARRating(bar);
+        panArmor.setFromEntity(getEntity());
         panArmorAllocation.setFromEntity(getEntity());
         refresh.refreshSummary();
         refresh.refreshStatus();

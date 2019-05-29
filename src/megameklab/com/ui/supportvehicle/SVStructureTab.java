@@ -342,6 +342,8 @@ class SVStructureTab extends ITab implements SVBuildListener {
         if (mod.equals(TestSupportVehicle.ChassisModification.OMNI.equipment)) {
             getSV().setOmni(installed);
             panChassis.setFromEntity(getSV());
+        } else if (mod.equals(TestSupportVehicle.ChassisModification.ARMORED.equipment)) {
+            refresh.refreshArmor();
         }
         panChassisMod.refresh();
         panSummary.refresh();

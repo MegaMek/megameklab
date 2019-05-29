@@ -74,6 +74,7 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
     private long etype;
     private boolean industrial;
     private EntityMovementMode movementMode;
+    private boolean svLimitedArmor;
 
     private final List<JComponent> svControlList = new ArrayList<>();
 
@@ -218,6 +219,7 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
         etype = en.getEntityType();
         industrial = (en instanceof Mech) && ((Mech)en).isIndustrial();
         movementMode = en.getMovementMode();
+        svLimitedArmor = en.isSupportVehicle() && !en.hasArmoredChassis();
         refresh();
         cbArmorType.removeActionListener(this);
         spnTonnage.removeChangeListener(this);
@@ -252,12 +254,11 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
         if (en.isSupportVehicle() && !en.hasPatchworkArmor()
                 && en.getArmorType(en.firstArmorIndex()) == EquipmentType.T_ARMOR_STANDARD) {
             svControlList.forEach(c -> c.setVisible(true));
-            boolean hasArmoredChassis = en.hasMisc(MiscType.F_ARMORED_CHASSIS);
             cbBARRating.removeActionListener(this);
             cbBARRating.removeAllItems();
             for (int bar = 2; bar <= 10; bar++) {
                 double weight = EquipmentType.getSupportVehicleArmorWeightPerPoint(bar, en.getArmorTechRating());
-                if ((weight > 0.0) && (hasArmoredChassis || (weight <= 50.0))) {
+                if ((weight > 0.0) && (!svLimitedArmor || (weight <= 0.05))) {
                     cbBARRating.addItem(bar);
                 }
             }
@@ -267,7 +268,7 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
             cbSVTechRating.setSelectedItem(en.getArmorTechRating());
             cbSVTechRating.addActionListener(this);
             if (cbBARRating.getSelectedIndex() < 0) {
-                cbBARRating.setSelectedIndex(0);
+                cbBARRating.setSelectedIndex(cbBARRating.getItemCount() - 1);
             }
         } else {
             svControlList.forEach(c -> c.setVisible(false));
@@ -282,10 +283,15 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
         EquipmentType prev = (EquipmentType)cbArmorType.getSelectedItem();
         cbArmorType.removeActionListener(this);
         cbArmorType.removeAllItems();
-        List<EquipmentType> allArmors = TestEntity.legalArmorsFor(etype, industrial, movementMode, techManager);
-        allArmors.forEach(cbArmorType::addItem);
+        if (!svLimitedArmor) {
+            List<EquipmentType> allArmors = TestEntity.legalArmorsFor(etype, industrial, movementMode, techManager);
+            allArmors.forEach(cbArmorType::addItem);
+        } else {
+            cbArmorType.addItem(EquipmentType.get(EquipmentType.getArmorTypeName(EquipmentType.T_ARMOR_STANDARD)));
+        }
         if (((etype & (Entity.ETYPE_SMALL_CRAFT | Entity.ETYPE_JUMPSHIP)) == 0)
-                && techManager.isLegal(Entity.getPatchworkArmorAdvancement())) {
+                && techManager.isLegal(Entity.getPatchworkArmorAdvancement())
+                && !svLimitedArmor) {
             chkPatchwork.setVisible(true);
         } else {
             chkPatchwork.setVisible(false);
