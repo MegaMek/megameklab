@@ -28,8 +28,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Shows current weight and space of support vehicle components.
