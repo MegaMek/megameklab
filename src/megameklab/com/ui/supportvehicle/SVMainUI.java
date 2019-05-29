@@ -20,7 +20,6 @@ package megameklab.com.ui.supportvehicle;
 
 import megamek.common.*;
 import megameklab.com.ui.MegaMekLabMainUI;
-import megameklab.com.ui.Vehicle.tabs.BuildTab;
 import megameklab.com.ui.tabs.EquipmentTab;
 import megameklab.com.ui.tabs.FluffTab;
 import megameklab.com.ui.tabs.PreviewTab;
@@ -192,6 +191,7 @@ public class SVMainUI extends MegaMekLabMainUI {
         for (int loc = 0; loc < getEntity().locations(); loc++) {
             getEntity().initializeArmor(0, loc);
         }
+        getEntity().setBARRating(2);
 
         if (null == oldEntity) {
             getEntity().setChassis("New");

@@ -29,7 +29,6 @@ import javax.swing.event.ChangeListener;
 import megamek.common.*;
 import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestEntity;
-import megamek.common.verifier.TestSupportVehicle;
 import megameklab.com.ui.util.CustomComboBox;
 import megameklab.com.ui.util.TechComboBox;
 import megameklab.com.ui.view.listeners.ArmorAllocationListener;
@@ -244,7 +243,7 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
                     en.getLabArmorTonnage()));
             tonnageModel.setMaximum(UnitUtil.getMaximumArmorTonnage(en));
             factorModel.setMaximum(UnitUtil.getMaximumArmorPoints(en));
-            factorModel.setValue(Math.min(en.getTotalOArmor(), (Integer) factorModel.getMaximum()));
+            factorModel.setValue(Math.min(en.getLabTotalArmorPoints(), (Integer) factorModel.getMaximum()));
             spnTonnage.setEnabled(true);
             chkPatchwork.setSelected(false);
             btnMaximize.setEnabled(true);
@@ -257,7 +256,7 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
             cbBARRating.removeActionListener(this);
             cbBARRating.removeAllItems();
             for (int bar = 2; bar <= 10; bar++) {
-                double weight = TestSupportVehicle.SV_ARMOR_WEIGHT[bar][en.getArmorTechRating()];
+                double weight = EquipmentType.getSupportVehicleArmorWeightPerPoint(bar, en.getArmorTechRating());
                 if ((weight > 0.0) && (hasArmoredChassis || (weight <= 50.0))) {
                     cbBARRating.addItem(bar);
                 }

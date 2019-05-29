@@ -45,7 +45,7 @@ public class SVArmorTab extends ITab implements ArmorAllocationListener {
         this.techManager = techManager;
         panArmor = new MVFArmorView(techManager, true);
         panPatchwork = new PatchworkArmorView(techManager);
-        panArmorAllocation = new ArmorAllocationView(techManager, Entity.ETYPE_TANK);
+        panArmorAllocation = new ArmorAllocationView(techManager, eSource.getEntity().getEntityType());
 
         initUI();
     }
@@ -75,7 +75,9 @@ public class SVArmorTab extends ITab implements ArmorAllocationListener {
     }
 
     private void addAllListeners() {
-
+        panArmor.addListener(this);
+        panArmorAllocation.addListener(this);
+        panPatchwork.addListener(this);
     }
 
     public void addRefreshedListener(RefreshListener l) {
@@ -140,8 +142,8 @@ public class SVArmorTab extends ITab implements ArmorAllocationListener {
 
     @Override
     public void maximizeArmor() {
-        double maxArmor = UnitUtil.getMaximumArmorTonnage(getEntity());
-        getEntity().setArmorTonnage(maxArmor);
+        double maxTonnage = UnitUtil.getMaximumArmorTonnage(getEntity());
+        getEntity().setArmorTonnage(maxTonnage);
         panArmor.removeListener(this);
         panArmor.setFromEntity(getEntity());
         panArmor.addListener(this);

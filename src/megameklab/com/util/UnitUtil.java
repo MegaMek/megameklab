@@ -1471,7 +1471,7 @@ public class UnitUtil {
             if (unit.getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT) {
                 return TestEntity.round(weight, TestEntity.Ceil.KILO);
             } else {
-                return TestEntity.floor(weight, TestEntity.Ceil.HALFTON);
+                return TestEntity.ceil(weight, TestEntity.Ceil.HALFTON);
             }
         } else if (unit instanceof Tank) {
             double points = Math.floor((unit.getWeight() * 3.5) + 40);
@@ -1506,6 +1506,8 @@ public class UnitUtil {
         if (unit.hasETypeFlag(Entity.ETYPE_PROTOMECH)) {
             return Math.round(armorTons /
                     EquipmentType.getProtomechArmorWeightPerPoint(unit.getArmorType(Protomech.LOC_TORSO)));
+        } else if (unit.isSupportVehicle()) {
+            return Math.round(armorTons / TestSupportVehicle.armorWeightPerPoint(unit));
         }
         return armorTons * UnitUtil.getArmorPointsPerTon(unit,
                 unit.getArmorType(1), unit.getArmorTechLevel(1));
@@ -3413,8 +3415,7 @@ public class UnitUtil {
         } else if (unit.hasETypeFlag(Entity.ETYPE_PROTOMECH)) {
             testEntity = new TestProtomech((Protomech) unit,
                     entityVerifier.protomechOption, null);
-        } else if (unit.hasETypeFlag(Entity.ETYPE_SUPPORT_TANK)
-                || unit.hasETypeFlag(Entity.ETYPE_FIXED_WING_SUPPORT)) {
+        } else if (unit.isSupportVehicle()) {
             testEntity = new TestSupportVehicle(unit,
                     entityVerifier.tankOption, null);
         } else if (unit.hasETypeFlag(Entity.ETYPE_TANK)) {
