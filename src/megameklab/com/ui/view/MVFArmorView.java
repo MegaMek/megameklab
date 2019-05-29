@@ -42,9 +42,6 @@ import megameklab.com.util.UnitUtil;
  */
 public class MVFArmorView extends BuildView implements ActionListener, ChangeListener {
     
-    /**
-     * 
-     */
     private static final long serialVersionUID = 1246552271894765543L;
 
     private final List<ArmorAllocationListener> listeners = new CopyOnWriteArrayList<>();
@@ -64,10 +61,10 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
     private final SpinnerNumberModel tonnageModel = new SpinnerNumberModel(0.0, 0.0, null, 0.5);
     private final SpinnerNumberModel factorModel = new SpinnerNumberModel(0, 0, null, 1);
     private final JSpinner spnTonnage = new JSpinner(tonnageModel);
-    private final JSpinner spnFactor = new JSpinner(factorModel);
     private final JCheckBox chkPatchwork = new JCheckBox();
     private final JButton btnMaximize = new JButton();
     private final JButton btnUseRemaining = new JButton();
+    private final JLabel lblArmorTonnage = createLabel("", labelSizeLg);
     
     private final ITechManager techManager;
     
@@ -147,27 +144,20 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
             svControlList.add(cbBARRating);
             cbBARRating.addActionListener(this);
 
-            gbc.gridx = 0;
-            gbc.gridy++;
-            gbc.gridwidth = 1;
-            add(createLabel(resourceMap.getString("ArmorView.spnFactor.text"), labelSizeLg), gbc); //$NON-NLS-1$
-            gbc.gridx = 1;
-            setFieldSize(spnFactor, spinnerSizeLg);
-            spnFactor.setToolTipText(resourceMap.getString("ArmorView.spnFactor.tooltip")); //$NON-NLS-1$
-            add(spnFactor, gbc);
-            spnFactor.addChangeListener(this);
+            lblArmorTonnage.setText(resourceMap.getString("ArmorView.spnFactor.text")); //$NON-NLS-1$
         } else {
-            gbc.gridx = 0;
-            gbc.gridy++;
-            gbc.gridwidth = 1;
-            add(createLabel(resourceMap.getString("ArmorView.spnTonnage.text"), labelSizeLg), gbc); //$NON-NLS-1$
-            gbc.gridx = 1;
-            setFieldSize(spnTonnage, spinnerSizeLg);
-            spnTonnage.setToolTipText(resourceMap.getString("ArmorView.spnTonnage.tooltip")); //$NON-NLS-1$
-            add(spnTonnage, gbc);
-            spnTonnage.addChangeListener(this);
+            lblArmorTonnage.setText(resourceMap.getString("ArmorView.spnTonnage.text")); //$NON-NLS-1$
         }
-        
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.gridwidth = 1;
+        add(lblArmorTonnage, gbc);
+        gbc.gridx = 1;
+        setFieldSize(spnTonnage, spinnerSizeLg);
+        spnTonnage.setToolTipText(resourceMap.getString("ArmorView.spnTonnage.tooltip")); //$NON-NLS-1$
+        add(spnTonnage, gbc);
+        spnTonnage.addChangeListener(this);
+
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 3;
@@ -273,6 +263,11 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
         } else {
             svControlList.forEach(c -> c.setVisible(false));
         }
+        if (en.getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT) {
+            spnTonnage.setModel(factorModel);
+        } else {
+            spnTonnage.setModel(tonnageModel);
+        }
 
         cbArmorType.addActionListener(this);
         spnTonnage.addChangeListener(this);
@@ -370,9 +365,11 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
     @Override
     public void stateChanged(ChangeEvent e) {
         if (e.getSource() == spnTonnage) {
-            listeners.forEach(l -> l.armorTonnageChanged(tonnageModel.getNumber().doubleValue()));
-        } else if (e.getSource() == spnFactor) {
-            listeners.forEach(l -> l.armorFactorChanged(factorModel.getNumber().intValue()));
+            if (spnTonnage.getModel() == tonnageModel) {
+                listeners.forEach(l -> l.armorTonnageChanged(tonnageModel.getNumber().doubleValue()));
+            } else {
+                listeners.forEach(l -> l.armorFactorChanged(factorModel.getNumber().intValue()));
+            }
         }
     }
 

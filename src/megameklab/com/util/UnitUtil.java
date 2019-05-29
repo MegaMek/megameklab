@@ -1507,7 +1507,7 @@ public class UnitUtil {
             return Math.round(armorTons /
                     EquipmentType.getProtomechArmorWeightPerPoint(unit.getArmorType(Protomech.LOC_TORSO)));
         } else if (unit.isSupportVehicle()) {
-            return Math.round(armorTons / TestSupportVehicle.armorWeightPerPoint(unit));
+            return Math.floor(armorTons / TestSupportVehicle.armorWeightPerPoint(unit));
         }
         return armorTons * UnitUtil.getArmorPointsPerTon(unit,
                 unit.getArmorType(1), unit.getArmorTechLevel(1));
@@ -1597,6 +1597,10 @@ public class UnitUtil {
      * @return
      */
     public static double getArmorPointsPerTon(Entity en, int at, int techLevel) {
+        if (en.isSupportVehicle() && (at == EquipmentType.T_ARMOR_STANDARD)) {
+            return 1.0 / EquipmentType.getSupportVehicleArmorWeightPerPoint(en.getBARRating(en.firstArmorIndex()),
+                    en.getArmorTechRating());
+        }
         return getArmorPointsPerTon(en, at, TechConstants.isClan(techLevel));
     }
 

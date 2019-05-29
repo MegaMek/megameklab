@@ -248,7 +248,7 @@ class SVStructureTab extends ITab implements SVBuildListener {
         getSV().setWeight(TestEntity.ceil(tonnage, tonnage < 5 ?
                 TestEntity.Ceil.KILO : TestEntity.Ceil.HALFTON));
         panChassisMod.setFromEntity(getSV());
-        // TODO: refresh armor
+        refresh.refreshArmor();
         refresh.refreshEquipmentTable();
         refresh.refreshSummary();
         refresh.refreshStatus();
