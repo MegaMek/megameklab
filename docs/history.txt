@@ -11,6 +11,7 @@ v0.45.5-SNAPSHOT
 + Issue #290: problems with the export to clipboard (text) function
 + Issue #291: Problem with ammunition display in the text tech readout output for large spacecraft
 + Issue #292: BA Saving of IS BA ECM as wrong type
++ Issue #300: Ultralight battlemech with Partial Wing only raise Jump MP by 1.
 
 v0.45.4 (2019-03-24 1700 UTC)
 + Fixed vehicle and aero slot calculations for patchwork armor.
