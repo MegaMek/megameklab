@@ -1,5 +1,18 @@
 VERSION HISTORY:
 ----------------
+v0.46.0-rc1
++ Issue #280: Wrong rounding for Partial Wing
++ Issue #279: BA SRM Torpedo ammo fails to load
++ Issue #281: Issue printing BV to Record Sheet
++ Issue #283: Cost Calculation issue for Warships
++ Issue #287: Cannot remove gyro from interface equipped mech
++ Issue #288: Maximum armor on a jumpship is too high
++ Issue #289: other problems allocating armor to primitive jumpships
++ Issue #290: problems with the export to clipboard (text) function
++ Issue #291: Problem with ammunition display in the text tech readout output for large spacecraft
++ Issue #292: BA Saving of IS BA ECM as wrong type
++ Issue #300: Ultralight battlemech with Partial Wing only raise Jump MP by 1.
+
 v0.45.4 (2019-03-24 1700 UTC)
 + Fixed vehicle and aero slot calculations for patchwork armor.
 + Issue #202: Clan Improved Autocannon 20 has no standard ammunition
