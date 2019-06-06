@@ -12,6 +12,10 @@ v0.46.0-rc1
 + Issue #291: Problem with ammunition display in the text tech readout output for large spacecraft
 + Issue #292: BA Saving of IS BA ECM as wrong type
 + Issue #300: Ultralight battlemech with Partial Wing only raise Jump MP by 1.
++ Issue #297: Improved Heavy Gauss Rifle can be mounted on the vehicle turret and can be used by the unit without fusion or fission engine.
++ Issue #301: LAM reports Walk MP same as its Jump MP
++ Issue #302: Medium Shield doesn't affect Jump MP at all
++ Issue #299: Equipment tab does not refresh when unit type changes
 
 v0.45.4 (2019-03-24 1700 UTC)
 + Fixed vehicle and aero slot calculations for patchwork armor.
