@@ -15,6 +15,7 @@ v0.45.5-SNAPSHOT
 + Issue #297: Improved Heavy Gauss Rifle can be mounted on the vehicle turret and can be used by the unit without fusion or fission engine.
 + Issue #301: LAM reports Walk MP same as its Jump MP
 + Issue #302: Medium Shield doesn't affect Jump MP at all
++ Issue #299: Equipment tab does not refresh when unit type changes
 
 v0.45.4 (2019-03-24 1700 UTC)
 + Fixed vehicle and aero slot calculations for patchwork armor.
