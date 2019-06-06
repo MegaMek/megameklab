@@ -532,6 +532,7 @@ public class StructureTab extends ITab implements AeroBuildListener {
             eSource.createNewUnit(Entity.ETYPE_CONV_FIGHTER, getAero());
         }
         refresh();
+        refresh.refreshEquipment();
         refresh.refreshBuild();
         refresh.refreshPreview();
         refresh.refreshStatus();
