@@ -475,7 +475,7 @@ public class AdvancedAeroStructureTab extends ITab implements AdvancedAeroBuildL
                 break;
         }
         refresh();
-        refresh.refreshEquipmentTable();
+        refresh.refreshEquipment();
         refresh.refreshBuild();
         refresh.refreshTransport();
         refresh.refreshPreview();

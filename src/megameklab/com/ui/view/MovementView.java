@@ -367,6 +367,8 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
             }
             if (lgShields > 0) {
                 jumpTooltip.add("No Jump (Large Shield)");
+            } else if (medShields > 0) {
+                jumpTooltip.add(String.format("-%d (Shield)", medShields));
             }
         } else if (en.hasWorkingMisc(MiscType.F_MASC)) {
             runTooltip.add("Supercharger");

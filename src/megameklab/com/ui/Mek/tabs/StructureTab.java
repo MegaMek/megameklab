@@ -773,6 +773,7 @@ public class StructureTab extends ITab implements MekBuildListener {
         }
 
         refresh();
+        refresh.refreshEquipment();
         refresh.refreshBuild();
         refresh.refreshPreview();
         refresh.refreshStatus();
