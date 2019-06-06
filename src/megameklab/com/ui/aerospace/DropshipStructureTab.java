@@ -423,7 +423,7 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
             eSource.createNewUnit(Entity.ETYPE_DROPSHIP, getSmallCraft());
         }
         refresh();
-        refresh.refreshEquipmentTable();
+        refresh.refreshEquipment();
         refresh.refreshBuild();
         refresh.refreshPreview();
         refresh.refreshStatus();
