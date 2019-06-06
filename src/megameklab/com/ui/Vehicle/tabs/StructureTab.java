@@ -508,6 +508,7 @@ public class StructureTab extends ITab implements CVBuildListener {
         panChassis.refresh();
         panSummary.refresh();
         panArmorAllocation.setFromEntity(getTank());
+        refresh.refreshEquipment();
         refresh.refreshPreview();
         refresh.refreshBuild();
         refresh.refreshStatus();
@@ -544,6 +545,7 @@ public class StructureTab extends ITab implements CVBuildListener {
         panArmorAllocation.setFromEntity(getTank());
         panPatchwork.setFromEntity(getTank());
         panSummary.refresh();
+        refresh.refreshEquipment();
         refresh.refreshBuild();
         refresh.refreshStatus();
         refresh.refreshPreview();
