@@ -667,9 +667,9 @@ public class StructureTab extends ITab implements ActionListener, BABuildListene
     public void armorTypeChanged(EquipmentType armor) {
         UnitUtil.removeISorArmorMounts(getBattleArmor(), false);
         int armorCount = armor.getCriticals(getBattleArmor());
-        getBattleArmor().setArmorType(armor.getInternalName());
         getBattleArmor().setArmorTechLevel(
                 armor.getTechLevel(getBattleArmor().getYear()));
+        getBattleArmor().setArmorType(armor.getInternalName());
 
         for (; armorCount > 0; armorCount--) {
             try {
