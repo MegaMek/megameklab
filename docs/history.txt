@@ -17,6 +17,8 @@ v0.45.5-SNAPSHOT
 + Issue #302: Medium Shield doesn't affect Jump MP at all
 + Issue #299: Equipment tab does not refresh when unit type changes
 + Issue #306: Clan Vehicular Jump Jets
++ Issue #304: Double Sponson Weight
++ Issue #305: Mixed IS techbase & Clan BA Fire Resistant
 
 v0.45.4 (2019-03-24 1700 UTC)
 + Fixed vehicle and aero slot calculations for patchwork armor.
