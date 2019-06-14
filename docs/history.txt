@@ -19,6 +19,7 @@ v0.45.5-SNAPSHOT
 + Issue #306: Clan Vehicular Jump Jets
 + Issue #304: Double Sponson Weight
 + Issue #305: Mixed IS techbase & Clan BA Fire Resistant
++ Issue #313: Bomb Bay is unavailable for LAM
 
 v0.45.4 (2019-03-24 1700 UTC)
 + Fixed vehicle and aero slot calculations for patchwork armor.
