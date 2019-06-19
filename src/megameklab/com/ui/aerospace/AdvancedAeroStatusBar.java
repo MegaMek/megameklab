@@ -178,6 +178,9 @@ public class AdvancedAeroStatusBar extends ITab {
             }
             heat += weaponHeat;
         }
+        for (Mounted m : getJumpship().getMisc()) {
+            heat += m.getType().getHeat();
+        }
         return heat;
     }
 
