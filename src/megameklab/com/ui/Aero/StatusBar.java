@@ -178,6 +178,12 @@ public class StatusBar extends ITab {
             }
             heat += weaponHeat;
         }
+        if (getAero().hasStealth()) {
+            heat += 10;
+        }
+        for (Mounted m : getAero().getMisc()) {
+            heat += m.getType().getHeat();
+        }
         return heat;
     }
 
