@@ -312,15 +312,14 @@ public class EquipmentTableModel extends AbstractTableModel {
             }
             return special;
         } else if (col == COL_HEAT) {
-            if (null != wtype) {
-                if (entity instanceof Aero) {
-                    return Integer.toString(wtype.getHeat()
-                            * Mounted.getNumShots(wtype, null, true));
-                } else {
-                    return Integer.toString(wtype.getHeat());
-                }
-            } else {
+            int heat = type.getHeat();
+            if ((null != wtype) && (entity instanceof Aero)) {
+                heat *= Mounted.getNumShots(wtype,  null,  true);
+            }
+            if (heat == 0) {
                 return "-";
+            } else {
+                return Integer.toString(heat);
             }
         } else if (col == COL_SHOTS) {
             if (null != atype) {
