@@ -19,6 +19,10 @@ v0.46.0-rc1
 + Issue #306: Clan Vehicular Jump Jets
 + Issue #304: Double Sponson Weight
 + Issue #305: Mixed IS techbase & Clan BA Fire Resistant
++ Issue #313: Bomb Bay is unavailable for LAM
++ Issue #185: Battle Armour Tube Artillery Ammo/Slot limit
++ Issue #311: Incorrect heat for Nova CEWS
++ Issue #320: Cannot add heat sinks after changing engine type
 
 v0.45.4 (2019-03-24 1700 UTC)
 + Fixed vehicle and aero slot calculations for patchwork armor.
