@@ -21,6 +21,7 @@ v0.45.5-SNAPSHOT
 + Issue #305: Mixed IS techbase & Clan BA Fire Resistant
 + Issue #313: Bomb Bay is unavailable for LAM
 + Issue #185: Battle Armour Tube Artillery Ammo/Slot limit
++ Issue #311: Incorrect heat for Nova CEWS
 
 v0.45.4 (2019-03-24 1700 UTC)
 + Fixed vehicle and aero slot calculations for patchwork armor.
