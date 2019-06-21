@@ -800,8 +800,14 @@ public class StructureTab extends ITab implements MekBuildListener {
                     .getBaseChassisHeatSinks(getMech().hasCompactHeatSinks()));
             getMech().setEngine(engine);
             resetSystemCrits();
+            // If the new engine has more weight-free heat sinks than are currently installed, add the extras.
+            int newHS = engine.getWeightFreeEngineHeatSinks() - getMech().heatSinks();
+            if (newHS > 0) {
+                UnitUtil.addHeatSinkMounts(getMech(), newHS, panHeat.getHeatSinkType());
+            }
             UnitUtil.updateAutoSinks(getMech(), getMech().hasCompactHeatSinks());
             panMovement.setFromEntity(getMech());
+            panHeat.setFromMech(getMech());
             refreshSummary();
             refresh.refreshPreview();
             refresh.refreshStatus();
