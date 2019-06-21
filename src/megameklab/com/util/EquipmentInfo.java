@@ -195,6 +195,7 @@ public class EquipmentInfo {
             } else {
                 longRange = 6;
             }
+            heat = mount.getType().getHeat();
         } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_BAP)) {
             if (mount.getType().getInternalName().equals(Sensor.BAP)) {
                 longRange = 4;
@@ -209,6 +210,8 @@ public class EquipmentInfo {
             longRange = 170;
         } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_PPC_CAPACITOR)) {
             heat = 5;
+        } else {
+            heat = mount.getType().getHeat();
         }
     }
 
@@ -311,7 +314,6 @@ public class EquipmentInfo {
             if (weapon.maxRange >= WeaponType.RANGE_EXT) {
                 erRange = (int) weapon.extAV + bonus;
             }
-            heat = weapon.getHeat();
             if (mount.getSecondLocation() != -1) {
                 loc = String.format("%1$s/%2$s", dropship.getLocationAbbr(mount.getLocation()), dropship.getLocationAbbr(mount.getSecondLocation()));
             }
@@ -342,6 +344,7 @@ public class EquipmentInfo {
             medRange = 0;
             longRange = 170;
         }
+        heat = mount.getType().getHeat();
 
         hasApollo = hasLinkedEquipment(mount, MiscType.F_APOLLO);
         isMashCore = (mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_MASH);
@@ -420,7 +423,6 @@ public class EquipmentInfo {
                 longRange = 1;
             }
 
-            heat = weapon.getHeat();
             if (mount.getSecondLocation() != -1) {
                 loc = String.format("%1$s/%2$s", unit.getLocationAbbr(mount.getLocation()), unit.getLocationAbbr(mount.getSecondLocation()));
             }
@@ -473,7 +475,7 @@ public class EquipmentInfo {
         } else if ((mount.getType() instanceof MiscType) && (mount.getType().hasFlag(MiscType.F_VOIDSIG) || mount.getType().hasFlag(MiscType.F_CHAMELEON_SHIELD) || mount.getType().hasFlag(MiscType.F_NULLSIG) || mount.getType().hasFlag(MiscType.F_BLUE_SHIELD))) {
             loc = "*";
         }
-
+        heat = mount.getType().getHeat();
         isBAMineLayer = (mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_MINE) && mount.getType().hasFlag(MiscType.F_BA_EQUIPMENT);
         hasArtemis = hasLinkedEquipment(mount, MiscType.F_ARTEMIS);
         hasArtemisV = hasLinkedEquipment(mount, MiscType.F_ARTEMIS_V);
