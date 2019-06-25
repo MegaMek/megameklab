@@ -24,7 +24,6 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
 
 import megamek.common.Entity;
@@ -37,7 +36,6 @@ import megameklab.com.ui.Vehicle.views.CriticalView;
 import megameklab.com.util.CriticalTableModel;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
-import megameklab.com.util.SpringLayoutHelper;
 import megameklab.com.util.UnitUtil;
 
 public class BuildTab extends ITab implements ActionListener {
@@ -48,11 +46,9 @@ public class BuildTab extends ITab implements ActionListener {
     private static final long serialVersionUID = -6756011847500605874L;
 
     private RefreshListener refresh = null;
-    private CriticalView critView = null;
+    private CriticalView critView;
     private CriticalTableModel critList;
-    private UnallocatedView unallocatedView = null;
-    private JPanel buttonPanel = new JPanel();
-    private JPanel mainPanel = new JPanel();
+    private UnallocatedView unallocatedView;
 
     private JButton autoFillButton = new JButton("Auto Fill");
     private JButton resetButton = new JButton("Reset");
@@ -64,11 +60,13 @@ public class BuildTab extends ITab implements ActionListener {
         super(eSource);
         this.critList = critList;
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+        JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
 
         critView = new CriticalView(eSource, true, refresh);
-        unallocatedView = new UnallocatedView(eSource, refresh);
+        unallocatedView = new UnallocatedView(eSource, () -> refresh);
 
         mainPanel.add(unallocatedView);
 
@@ -84,20 +82,6 @@ public class BuildTab extends ITab implements ActionListener {
         this.add(critView);
         this.add(mainPanel);
         refresh();
-    }
-
-    public JPanel availableCritsPanel() {
-        JPanel masterPanel = new JPanel(new SpringLayout());
-        Dimension maxSize = new Dimension();
-
-        masterPanel.add(unallocatedView);
-
-        SpringLayoutHelper.setupSpringGrid(masterPanel, 1);
-        maxSize.setSize(300, 5);
-        masterPanel.setPreferredSize(maxSize);
-        masterPanel.setMinimumSize(maxSize);
-        masterPanel.setMaximumSize(maxSize);
-        return masterPanel;
     }
 
     public void refresh() {
@@ -165,12 +149,12 @@ public class BuildTab extends ITab implements ActionListener {
         refresh.refreshAll();
     }
 
-    public void removeAllActionListeners() {
+    private void removeAllActionListeners() {
         autoFillButton.removeActionListener(this);
         resetButton.removeActionListener(this);
     }
 
-    public void addAllActionListeners() {
+    private void addAllActionListeners() {
         autoFillButton.addActionListener(this);
         resetButton.addActionListener(this);
     }
@@ -183,19 +167,6 @@ public class BuildTab extends ITab implements ActionListener {
 
     public void addCrit(Mounted mount) {
         critList.addCrit(mount);
-    }
-
-    public void refreshAll() {
-        if (refresh != null) {
-            refresh.refreshAll();
-        }
-    }
-
-    /**
-     * @return the critList
-     */
-    public CriticalTableModel getCritList() {
-        return critList;
     }
 
 }

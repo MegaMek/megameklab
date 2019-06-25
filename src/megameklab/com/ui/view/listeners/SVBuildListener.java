@@ -104,4 +104,13 @@ public interface SVBuildListener extends BuildListener {
      * @param weight The new weight
      */
     void fireConWtChanged(double weight);
+
+    /**
+     * Notify of a change in the number of crew seats
+     *
+     * @param standard  The number of standard combat crew seats
+     * @param pillion   The number of pillion seats
+     * @param ejection  The number of ejection seats
+     */
+    void setSeating(int standard, int pillion, int ejection);
 }

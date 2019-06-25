@@ -23,10 +23,7 @@ import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestSupportVehicle;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
-import megameklab.com.ui.view.BasicInfoView;
-import megameklab.com.ui.view.ChassisModView;
-import megameklab.com.ui.view.MovementView;
-import megameklab.com.ui.view.SVChassisView;
+import megameklab.com.ui.view.*;
 import megameklab.com.ui.view.listeners.SVBuildListener;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
@@ -34,11 +31,15 @@ import megameklab.com.util.UnitUtil;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Structure tab for support vehicle construction
  */
 class SVStructureTab extends ITab implements SVBuildListener {
+
+    private static final String EJECTION_SEAT_KEY = "Ejection Seat (Support Vehicle)"; //$NON-NLS-1$
 
     private RefreshListener refresh = null;
     private JPanel masterPanel;
@@ -47,6 +48,7 @@ class SVStructureTab extends ITab implements SVBuildListener {
     private MovementView panMovement;
     private SVSummaryView panSummary;
     private ChassisModView panChassisMod;
+    private SVCrewView panCrew;
 
     SVStructureTab(EntitySource eSource) {
         super(eSource);
@@ -67,6 +69,7 @@ class SVStructureTab extends ITab implements SVBuildListener {
         panMovement = new MovementView(panBasicInfo);
         panSummary = new SVSummaryView(eSource);
         panChassisMod = new ChassisModView(panBasicInfo);
+        panCrew = new SVCrewView();
 
         GridBagConstraints gbc;
 
@@ -83,10 +86,14 @@ class SVStructureTab extends ITab implements SVBuildListener {
         leftPanel.add(Box.createGlue());
 
         midPanel.add(panMovement);
+        midPanel.add(Box.createVerticalStrut(6));
         midPanel.add(panSummary);
         midPanel.add(Box.createVerticalGlue());
 
         rightPanel.add(panChassisMod);
+        rightPanel.add(Box.createVerticalStrut(6));
+        rightPanel.add(panCrew);
+        midPanel.add(Box.createVerticalGlue());
 
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -106,6 +113,7 @@ class SVStructureTab extends ITab implements SVBuildListener {
         panMovement.setBorder(BorderFactory.createTitledBorder("Movement"));
         panSummary.setBorder(BorderFactory.createTitledBorder("Summary"));
         panChassisMod.setBorder(BorderFactory.createTitledBorder("Chassis Modifications"));
+        panCrew.setBorder(BorderFactory.createTitledBorder("Crew and Quarters"));
     }
 
     public void refresh() {
@@ -115,6 +123,7 @@ class SVStructureTab extends ITab implements SVBuildListener {
         panChassis.setFromEntity(getSV());
         panMovement.setFromEntity(getSV());
         panChassisMod.setFromEntity(getSV());
+        panCrew.setFromEntity(getSV());
         panSummary.refresh();
 
         addAllListeners();
@@ -129,6 +138,7 @@ class SVStructureTab extends ITab implements SVBuildListener {
         panChassis.removeListener(this);
         panMovement.removeListener(this);
         panChassisMod.removeListener(this);
+        panCrew.removeListener(this);
     }
 
     private void addAllListeners() {
@@ -136,6 +146,7 @@ class SVStructureTab extends ITab implements SVBuildListener {
         panChassis.addListener(this);
         panMovement.addListener(this);
         panChassisMod.addListener(this);
+        panCrew.addListener(this);
     }
 
     public void addRefreshedListener(RefreshListener l) {
@@ -271,6 +282,7 @@ class SVStructureTab extends ITab implements SVBuildListener {
             panChassis.setFromEntity(getSV());
             panMovement.setFromEntity(getSV());
             panChassisMod.setFromEntity(getSV());
+            panCrew.setFromEntity(getSV());
             panSummary.refresh();
             refresh.refreshEquipmentTable();
             refresh.refreshBuild();
@@ -434,6 +446,31 @@ class SVStructureTab extends ITab implements SVBuildListener {
         getSV().setBaseChassisFireConWeight(weight);
         panSummary.refresh();
         refresh.refreshStatus();
+    }
+
+    @Override
+    public void setSeating(int standard, int pillion, int ejection) {
+        // Clear out any existing standard or pillion seating.
+        final List<Transporter> current = getSV().getTransports().stream()
+                .filter(t -> t instanceof StandardSeatCargoBay)
+                .collect(Collectors.toList());
+        for (Transporter t : current) {
+            getSV().removeTransporter(t);
+        }
+        // Create new ones as needed.
+        if (standard > 0) {
+            getSV().addTransporter(new StandardSeatCargoBay(standard));
+        }
+        if (pillion > 0) {
+            getSV().addTransporter(new PillionSeatCargoBay(pillion));
+        }
+        if (ejection > 0) {
+            getSV().addTransporter(new EjectionSeatCargoBay(ejection));
+        }
+        panCrew.setFromEntity(getSV());
+        panSummary.refresh();
+        refresh.refreshStatus();
+        refresh.refreshPreview();
     }
 
     private void removeTurret(int loc) {

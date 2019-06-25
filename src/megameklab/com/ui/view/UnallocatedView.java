@@ -22,6 +22,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Vector;
+import java.util.function.Supplier;
 
 import javax.swing.BoxLayout;
 import javax.swing.JMenuItem;
@@ -37,13 +38,11 @@ import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.weapons.Weapon;
 import megameklab.com.ui.EntitySource;
-import megameklab.com.ui.Vehicle.tabs.BuildTab;
-import megameklab.com.util.CriticalTableModel;
-import megameklab.com.util.CriticalTransferHandler;
-import megameklab.com.util.IView;
-import megameklab.com.util.RefreshListener;
-import megameklab.com.util.StringUtils;
-import megameklab.com.util.UnitUtil;
+import megameklab.com.util.*;
+
+/**
+ * View that displays unallocated equipment on the build tab.
+ */
 
 public class UnallocatedView extends IView implements ActionListener, MouseListener {
 
@@ -53,10 +52,12 @@ public class UnallocatedView extends IView implements ActionListener, MouseListe
     private Vector<Mounted> masterEquipmentList = new Vector<>(10, 1);
     private JTable equipmentTable = new JTable();
 
-    private CriticalTransferHandler cth;
+    private final CriticalTransferHandler cth;
+    private final Supplier<RefreshListener> refresh;
 
-    public UnallocatedView(EntitySource eSource, RefreshListener refresh) {
+    public UnallocatedView(EntitySource eSource, Supplier<RefreshListener> refresh) {
         super(eSource);
+        this.refresh = refresh;
 
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
@@ -64,7 +65,7 @@ public class UnallocatedView extends IView implements ActionListener, MouseListe
 
         equipmentTable.setModel(equipmentList);
         equipmentTable.setDragEnabled(true);
-        cth = new CriticalTransferHandler(eSource, refresh);
+        cth = new CriticalTransferHandler(eSource, refresh.get());
         equipmentTable.setTransferHandler(cth);
 
         equipmentList.initColumnSizes(equipmentTable);
@@ -265,7 +266,8 @@ public class UnallocatedView extends IView implements ActionListener, MouseListe
             ex.printStackTrace();
         }
 
-        // go back up to grandparent build tab and fire a full refresh.
-        ((BuildTab) getParent().getParent()).refreshAll();
+        if (refresh.get() != null) {
+            refresh.get().refreshAll();
+        }
     }
 }
