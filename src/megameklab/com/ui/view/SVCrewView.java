@@ -20,6 +20,7 @@ package megameklab.com.ui.view;
 
 import megamek.common.*;
 import megamek.common.util.EncodeControl;
+import megamek.common.verifier.TestSupportVehicle;
 import megameklab.com.ui.view.listeners.SVBuildListener;
 
 import javax.swing.*;
@@ -371,10 +372,11 @@ public class SVCrewView extends BuildView implements ChangeListener {
         txtSecondClassWeight.setText(String.valueOf(secondClassWeight));
         txtCrewQuartersWeight.setText(String.valueOf(crewQuartersWeight));
         txtSteerageWeight.setText(String.valueOf(steerageWeight));
-        txtFirstClassSlots.setText(String.valueOf((int) Math.ceil(firstClass / 5.0)));
-        txtSecondClassSlots.setText(String.valueOf((int) Math.ceil(secondClass / 20.0)));
-        txtCrewQuartersSlots.setText(String.valueOf((int) Math.ceil(crewQuarters / 20.0)));
-        txtSteerageSlots.setText(String.valueOf((int) Math.ceil(steerage / 50.0)));
+        int[] extraQuarters = TestSupportVehicle.extraCrewQuartersCount(entity);
+        txtFirstClassSlots.setText(String.valueOf((int) Math.ceil(extraQuarters[TestSupportVehicle.INDEX_FIRST_CLASS] / 5.0)));
+        txtSecondClassSlots.setText(String.valueOf((int) Math.ceil(extraQuarters[TestSupportVehicle.INDEX_SECOND_CLASS] / 20.0)));
+        txtCrewQuartersSlots.setText(String.valueOf((int) Math.ceil(extraQuarters[TestSupportVehicle.INDEX_STD_CREW] / 20.0)));
+        txtSteerageSlots.setText(String.valueOf((int) Math.ceil(extraQuarters[TestSupportVehicle.INDEX_STEERAGE] / 50.0)));
     }
 
     /**
