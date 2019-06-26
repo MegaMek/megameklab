@@ -450,7 +450,7 @@ class SVStructureTab extends ITab implements SVBuildListener {
 
     @Override
     public void setSeating(int standard, int pillion, int ejection) {
-        // Clear out any existing standard or pillion seating.
+        // Clear out any existing seating.
         final List<Transporter> current = getSV().getTransports().stream()
                 .filter(t -> t instanceof StandardSeatCargoBay)
                 .collect(Collectors.toList());
@@ -466,6 +466,37 @@ class SVStructureTab extends ITab implements SVBuildListener {
         }
         if (ejection > 0) {
             getSV().addTransporter(new EjectionSeatCargoBay(ejection));
+        }
+        panCrew.setFromEntity(getSV());
+        panSummary.refresh();
+        refresh.refreshStatus();
+        refresh.refreshPreview();
+    }
+
+    @Override
+    public void setQuarters(int firstClass, int secondClass, int crew, int steerage) {
+        // Clear out any existing standard or pillion seating.
+        final List<Transporter> current = getSV().getTransports().stream()
+                .filter(t -> (t instanceof FirstClassQuartersCargoBay)
+                    || (t instanceof SecondClassQuartersCargoBay)
+                    || (t instanceof CrewQuartersCargoBay)
+                    || (t instanceof SteerageQuartersCargoBay))
+                .collect(Collectors.toList());
+        for (Transporter t : current) {
+            getSV().removeTransporter(t);
+        }
+        // Create new ones as needed.
+        if (firstClass > 0) {
+            getSV().addTransporter(new FirstClassQuartersCargoBay(firstClass));
+        }
+        if (secondClass > 0) {
+            getSV().addTransporter(new SecondClassQuartersCargoBay(secondClass));
+        }
+        if (crew > 0) {
+            getSV().addTransporter(new CrewQuartersCargoBay(crew));
+        }
+        if (steerage > 0) {
+            getSV().addTransporter(new SteerageQuartersCargoBay(steerage));
         }
         panCrew.setFromEntity(getSV());
         panSummary.refresh();

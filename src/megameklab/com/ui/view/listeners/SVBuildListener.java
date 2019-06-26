@@ -113,4 +113,14 @@ public interface SVBuildListener extends BuildListener {
      * @param ejection  The number of ejection seats
      */
     void setSeating(int standard, int pillion, int ejection);
+
+    /**
+     * Notify of a change in the size of crew quarters
+     *
+     * @param firstClass   The crew capacity of first class/officer quarters
+     * @param secondClass  The crew capacity of second class quarters
+     * @param crew         The capacity of standard crew quarters
+     * @param steerage     The capacity of steerage class quarters
+     */
+    void setQuarters(int firstClass, int secondClass, int crew, int steerage);
 }

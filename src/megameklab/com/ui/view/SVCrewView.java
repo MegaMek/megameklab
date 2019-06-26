@@ -59,9 +59,17 @@ public class SVCrewView extends BuildView implements ChangeListener {
     private final JLabel txtEjectionWeight = new JLabel();
 
     private final JSpinner spnFirstClass = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
+    private final JLabel txtFirstClassWeight = new JLabel();
+    private final JLabel txtFirstClassSlots = new JLabel();
     private final JSpinner spnSecondClass = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
-    private final JSpinner spnCrew = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
+    private final JLabel txtSecondClassWeight = new JLabel();
+    private final JLabel txtSecondClassSlots = new JLabel();
+    private final JSpinner spnCrewQuarters = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
+    private final JLabel txtCrewQuartersWeight = new JLabel();
+    private final JLabel txtCrewQuartersSlots = new JLabel();
     private final JSpinner spnSteerage = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
+    private final JLabel txtSteerageWeight = new JLabel();
+    private final JLabel txtSteerageSlots = new JLabel();
 
     public SVCrewView() {
         initUi();
@@ -137,6 +145,7 @@ public class SVCrewView extends BuildView implements ChangeListener {
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 1;
+        gbc.anchor = GridBagConstraints.WEST;
         add(createLabel(resourceMap.getString("SVCrewView.spnStandardSeats.text"), labelSize), gbc); //$NON-NLS-1$
         gbc.gridx = 1;
         setFieldSize(spnStandardSeats, spinnerSize);
@@ -144,12 +153,14 @@ public class SVCrewView extends BuildView implements ChangeListener {
         add(spnStandardSeats, gbc);
         spnStandardSeats.addChangeListener(this);
         gbc.gridx = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
         setFieldSize(txtStdSeatWeight, spinnerSize);
         add(txtStdSeatWeight, gbc);
 
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 1;
+        gbc.anchor = GridBagConstraints.WEST;
         add(createLabel(resourceMap.getString("SVCrewView.spnPillionSeats.text"), labelSize), gbc); //$NON-NLS-1$
         gbc.gridx = 1;
         setFieldSize(spnPillionSeats, spinnerSize);
@@ -157,12 +168,14 @@ public class SVCrewView extends BuildView implements ChangeListener {
         add(spnPillionSeats, gbc);
         spnPillionSeats.addChangeListener(this);
         gbc.gridx = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
         setFieldSize(txtPillionWeight, spinnerSize);
         add(txtPillionWeight, gbc);
 
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 1;
+        gbc.anchor = GridBagConstraints.WEST;
         add(createLabel(resourceMap.getString("SVCrewView.spnEjectionSeats.text"), labelSize), gbc); //$NON-NLS-1$
         gbc.gridx = 1;
         setFieldSize(spnEjectionSeats, spinnerSize);
@@ -170,8 +183,91 @@ public class SVCrewView extends BuildView implements ChangeListener {
         add(spnEjectionSeats, gbc);
         spnEjectionSeats.addChangeListener(this);
         gbc.gridx = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
         setFieldSize(txtEjectionWeight, spinnerSize);
         add(txtEjectionWeight, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.gridwidth = 2;
+        add(createLabel(resourceMap.getString("SVCrewView.lblQuarters.text"), labelSizeLg), gbc); //$NON-NLS-1$
+        gbc.gridwidth = 1;
+        gbc.gridx = 2;
+        add(createLabel(resourceMap.getString("SVCrewView.lblQuartersWeight.text"), labelSize), gbc); //$NON-NLS-1$
+        gbc.gridx = 3;
+        add(createLabel(resourceMap.getString("SVCrewView.lblQuartersSlots.text"), labelSize), gbc); //$NON-NLS-1$
+
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.gridwidth = 1;
+        gbc.anchor = GridBagConstraints.WEST;
+        add(createLabel(resourceMap.getString("SVCrewView.spnFirstClass.text"), labelSizeLg), gbc); //$NON-NLS-1$
+        gbc.gridx = 1;
+        setFieldSize(spnFirstClass, spinnerSize);
+        spnFirstClass.setToolTipText(resourceMap.getString("SVCrewView.spnFirstClass.tooltip")); //$NON-NLS-1$
+        add(spnFirstClass, gbc);
+        spnFirstClass.addChangeListener(this);
+        gbc.gridx = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        setFieldSize(txtFirstClassWeight, spinnerSize);
+        add(txtFirstClassWeight, gbc);
+        gbc.gridx = 3;
+        setFieldSize(txtFirstClassSlots, spinnerSize);
+        add(txtFirstClassSlots, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.gridwidth = 1;
+        gbc.anchor = GridBagConstraints.WEST;
+        add(createLabel(resourceMap.getString("SVCrewView.spnSecondClass.text"), labelSizeLg), gbc); //$NON-NLS-1$
+        gbc.gridx = 1;
+        setFieldSize(spnSecondClass, spinnerSize);
+        spnSecondClass.setToolTipText(resourceMap.getString("SVCrewView.spnSecondClass.tooltip")); //$NON-NLS-1$
+        add(spnSecondClass, gbc);
+        spnSecondClass.addChangeListener(this);
+        gbc.gridx = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        setFieldSize(txtSecondClassWeight, spinnerSize);
+        add(txtSecondClassWeight, gbc);
+        gbc.gridx = 3;
+        setFieldSize(txtSecondClassSlots, spinnerSize);
+        add(txtSecondClassSlots, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.gridwidth = 1;
+        gbc.anchor = GridBagConstraints.WEST;
+        add(createLabel(resourceMap.getString("SVCrewView.spnCrewQuarters.text"), labelSizeLg), gbc); //$NON-NLS-1$
+        gbc.gridx = 1;
+        setFieldSize(spnCrewQuarters, spinnerSize);
+        spnCrewQuarters.setToolTipText(resourceMap.getString("SVCrewView.spnCrewQuarters.tooltip")); //$NON-NLS-1$
+        add(spnCrewQuarters, gbc);
+        spnCrewQuarters.addChangeListener(this);
+        gbc.gridx = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        setFieldSize(txtCrewQuartersWeight, spinnerSize);
+        add(txtCrewQuartersWeight, gbc);
+        gbc.gridx = 3;
+        setFieldSize(txtCrewQuartersSlots, spinnerSize);
+        add(txtCrewQuartersSlots, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.gridwidth = 1;
+        gbc.anchor = GridBagConstraints.WEST;
+        add(createLabel(resourceMap.getString("SVCrewView.spnSteerage.text"), labelSizeLg), gbc); //$NON-NLS-1$
+        gbc.gridx = 1;
+        setFieldSize(spnSteerage, spinnerSize);
+        spnSteerage.setToolTipText(resourceMap.getString("SVCrewView.spnSteerage.tooltip")); //$NON-NLS-1$
+        add(spnSteerage, gbc);
+        spnSteerage.addChangeListener(this);
+        gbc.gridx = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        setFieldSize(txtSteerageWeight, spinnerSize);
+        add(txtSteerageWeight, gbc);
+        gbc.gridx = 3;
+        setFieldSize(txtSteerageSlots, spinnerSize);
+        add(txtSteerageSlots, gbc);
     }
 
     public void setFromEntity(Entity entity) {
@@ -188,13 +284,33 @@ public class SVCrewView extends BuildView implements ChangeListener {
         int stdSeats = 0;
         int pillion = 0;
         int ejection = 0;
+        int firstClass = 0;
+        int secondClass = 0;
+        int crewQuarters = 0;
+        int steerage = 0;
+        double firstClassWeight = 0.0;
+        double secondClassWeight = 0.0;
+        double crewQuartersWeight = 0.0;
+        double steerageWeight = 0.0;
         for (Transporter t : entity.getTransports()) {
             if (t instanceof PillionSeatCargoBay) {
-                pillion += t.getUnused();
+                pillion += ((Bay) t).getCapacity();
             } else if (t instanceof EjectionSeatCargoBay) {
-                ejection += t.getUnused();
+                ejection += ((Bay) t).getCapacity();
             } else if (t instanceof StandardSeatCargoBay) {
-                stdSeats += t.getUnused();
+                stdSeats += ((Bay) t).getCapacity();
+            } else if (t instanceof FirstClassQuartersCargoBay) {
+                firstClass += ((Bay) t).getCapacity();
+                firstClassWeight += ((Bay) t).getWeight();
+            } else if (t instanceof SecondClassQuartersCargoBay) {
+                secondClass += ((Bay) t).getCapacity();
+                secondClassWeight += ((Bay) t).getWeight();
+            } else if (t instanceof CrewQuartersCargoBay) {
+                crewQuarters += ((Bay) t).getCapacity();
+                crewQuartersWeight += ((Bay) t).getWeight();
+            } else if (t instanceof SteerageQuartersCargoBay) {
+                steerage += ((Bay) t).getCapacity();
+                steerageWeight += ((Bay) t).getWeight();
             }
         }
         if ((entity.getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT)
@@ -207,11 +323,25 @@ public class SVCrewView extends BuildView implements ChangeListener {
         }
         spnStandardSeats.removeChangeListener(this);
         spnPillionSeats.removeChangeListener(this);
+        spnEjectionSeats.removeChangeListener(this);
+        spnFirstClass.removeChangeListener(this);
+        spnSecondClass.removeChangeListener(this);
+        spnCrewQuarters.removeChangeListener(this);
+        spnSteerage.removeChangeListener(this);
         spnStandardSeats.setValue(stdSeats);
         spnPillionSeats.setValue(pillion);
         spnEjectionSeats.setValue(ejection);
+        spnFirstClass.setValue(firstClass);
+        spnSecondClass.setValue(secondClass);
+        spnCrewQuarters.setValue(crewQuarters);
+        spnSteerage.setValue(steerage);
         spnStandardSeats.addChangeListener(this);
         spnPillionSeats.addChangeListener(this);
+        spnEjectionSeats.addChangeListener(this);
+        spnFirstClass.addChangeListener(this);
+        spnSecondClass.addChangeListener(this);
+        spnCrewQuarters.addChangeListener(this);
+        spnSteerage.addChangeListener(this);
         // If the current seating is not enough to meet minimum crew requirements, add standard combat seats
         if (stdSeats + pillion + ejection < total) {
             stdSeats  = total - pillion - ejection;
@@ -237,28 +367,26 @@ public class SVCrewView extends BuildView implements ChangeListener {
         txtStdSeatWeight.setText(String.valueOf(stdWeight * 75));
         txtPillionWeight.setText(String.valueOf(pillionWeight * 25));
         txtEjectionWeight.setText(String.valueOf(ejection * 100));
+        txtFirstClassWeight.setText(String.valueOf(firstClassWeight));
+        txtSecondClassWeight.setText(String.valueOf(secondClassWeight));
+        txtCrewQuartersWeight.setText(String.valueOf(crewQuartersWeight));
+        txtSteerageWeight.setText(String.valueOf(steerageWeight));
+        txtFirstClassSlots.setText(String.valueOf((int) Math.ceil(firstClass / 5.0)));
+        txtSecondClassSlots.setText(String.valueOf((int) Math.ceil(secondClass / 20.0)));
+        txtCrewQuartersSlots.setText(String.valueOf((int) Math.ceil(crewQuarters / 20.0)));
+        txtSteerageSlots.setText(String.valueOf((int) Math.ceil(steerage / 50.0)));
     }
 
-    private int getStandardSeats() {
-        Integer val = (Integer) spnStandardSeats.getValue();
-        if (null != val) {
-            return val;
-        } else {
-            return 0;
-        }
-    }
-
-    private int getPillionSeats() {
-        Integer val = (Integer) spnPillionSeats.getValue();
-        if (null != val) {
-            return val;
-        } else {
-            return 0;
-        }
-    }
-
-    private int getEjectionSeats() {
-        Integer val = (Integer) spnEjectionSeats.getValue();
+    /**
+     * Convenience method to get the value of a spinner for integers which returns 0 if the value
+     * is null.
+     *
+     * @param spinner A spinner for integer values
+     * @return        The spinner's value, or 0 if the value is null.
+     * @throws ClassCastException If the spinner's value is not an {@link Integer}
+     */
+    private int getSpinnerValue(JSpinner spinner) {
+        Integer val = (Integer) spinner.getValue();
         if (null != val) {
             return val;
         } else {
@@ -271,7 +399,15 @@ public class SVCrewView extends BuildView implements ChangeListener {
         if ((e.getSource() == spnStandardSeats)
                 || (e.getSource() == spnPillionSeats)
                 || (e.getSource() == spnEjectionSeats)) {
-            listeners.forEach(l -> l.setSeating(getStandardSeats(), getPillionSeats(), getEjectionSeats()));
+            listeners.forEach(l -> l.setSeating(getSpinnerValue(spnStandardSeats),
+                    getSpinnerValue(spnPillionSeats), getSpinnerValue(spnEjectionSeats)));
+        } else if ((e.getSource() == spnFirstClass)
+                || (e.getSource() == spnSecondClass)
+                || (e.getSource() == spnCrewQuarters)
+                || (e.getSource() == spnSteerage)) {
+            listeners.forEach(l -> l.setQuarters(getSpinnerValue(spnFirstClass),
+                    getSpinnerValue(spnSecondClass), getSpinnerValue(spnCrewQuarters),
+                    getSpinnerValue(spnSteerage)));
         }
     }
 }
