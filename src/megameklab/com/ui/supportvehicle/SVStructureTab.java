@@ -39,8 +39,6 @@ import java.util.stream.Collectors;
  */
 class SVStructureTab extends ITab implements SVBuildListener {
 
-    private static final String EJECTION_SEAT_KEY = "Ejection Seat (Support Vehicle)"; //$NON-NLS-1$
-
     private RefreshListener refresh = null;
     private JPanel masterPanel;
     private BasicInfoView panBasicInfo;
@@ -71,29 +69,36 @@ class SVStructureTab extends ITab implements SVBuildListener {
         panChassisMod = new ChassisModView(panBasicInfo);
         panCrew = new SVCrewView();
 
-        GridBagConstraints gbc;
-
         JPanel leftPanel = new JPanel();
         JPanel midPanel = new JPanel();
         JPanel rightPanel = new JPanel();
-        leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
-        midPanel.setLayout(new BoxLayout(midPanel, BoxLayout.Y_AXIS));
-        rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
+        leftPanel.setLayout(new GridBagLayout());
+        midPanel.setLayout(new GridBagLayout());
+        rightPanel.setLayout(new GridBagLayout());
 
-        leftPanel.add(panBasicInfo);
-        leftPanel.add(Box.createVerticalStrut(6));
-        leftPanel.add(panChassis);
-        leftPanel.add(Box.createGlue());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.gridwidth = 1;
 
-        midPanel.add(panMovement);
-        midPanel.add(Box.createVerticalStrut(6));
-        midPanel.add(panSummary);
-        midPanel.add(Box.createVerticalGlue());
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        leftPanel.add(panBasicInfo, gbc);
+        gbc.gridy++;
+        leftPanel.add(panChassis, gbc);
 
-        rightPanel.add(panChassisMod);
-        rightPanel.add(Box.createVerticalStrut(6));
-        rightPanel.add(panCrew);
-        midPanel.add(Box.createVerticalGlue());
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        midPanel.add(panMovement, gbc);
+        gbc.gridy++;
+        midPanel.add(panSummary, gbc);
+
+        gbc.gridx = 2;
+        gbc.gridy = 0;
+        rightPanel.add(panChassisMod, gbc);
+        gbc.gridy++;
+        rightPanel.add(panCrew, gbc);
 
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
