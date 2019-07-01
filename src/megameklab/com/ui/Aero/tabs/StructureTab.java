@@ -44,7 +44,7 @@ import megamek.common.verifier.TestAero;
 import megamek.common.verifier.TestEntity;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.Aero.views.SummaryView;
-import megameklab.com.ui.view.AeroFuelView;
+import megameklab.com.ui.view.FuelView;
 import megameklab.com.ui.view.ArmorAllocationView;
 import megameklab.com.ui.view.BasicInfoView;
 import megameklab.com.ui.view.FighterChassisView;
@@ -70,7 +70,7 @@ public class StructureTab extends ITab implements AeroBuildListener, ArmorAlloca
     private FighterChassisView panChassis;
     private MVFArmorView panArmor;
     private MovementView panMovement;
-    private AeroFuelView panFuel;
+    private FuelView panFuel;
     private HeatSinkView panHeat;
     private SummaryView panSummary;
     private ArmorAllocationView panArmorAllocation;
@@ -92,7 +92,7 @@ public class StructureTab extends ITab implements AeroBuildListener, ArmorAlloca
         panChassis = new FighterChassisView(panInfo);
         panArmor = new MVFArmorView(panInfo);
         panMovement = new MovementView(panInfo);
-        panFuel = new AeroFuelView();
+        panFuel = new FuelView();
         panHeat = new HeatSinkView(panInfo);
         panArmorAllocation = new ArmorAllocationView(panInfo, Entity.ETYPE_AERO);
         panPatchwork = new PatchworkArmorView(panInfo);

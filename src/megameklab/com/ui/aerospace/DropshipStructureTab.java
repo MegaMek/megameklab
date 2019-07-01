@@ -34,7 +34,7 @@ import megamek.common.SimpleTechLevel;
 import megamek.common.SmallCraft;
 import megamek.common.verifier.TestEntity;
 import megameklab.com.ui.EntitySource;
-import megameklab.com.ui.view.AeroFuelView;
+import megameklab.com.ui.view.FuelView;
 import megameklab.com.ui.view.AerospaceCrewView;
 import megameklab.com.ui.view.ArmorAllocationView;
 import megameklab.com.ui.view.BasicInfoView;
@@ -66,7 +66,7 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener,
     private DropshipChassisView panChassis;
     private MVFArmorView panArmor;
     private MovementView panMovement;
-    private AeroFuelView panFuel;
+    private FuelView panFuel;
     private HeatSinkView panHeat;
     private AerospaceCrewView panCrew;
     private DropshipSummaryView panSummary;
@@ -88,7 +88,7 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener,
         panChassis = new DropshipChassisView(panInfo);
         panArmor = new MVFArmorView(panInfo);
         panMovement = new MovementView(panInfo);
-        panFuel = new AeroFuelView();
+        panFuel = new FuelView();
         panHeat = new HeatSinkView(panInfo);
         panCrew = new AerospaceCrewView(panInfo);
         panArmorAllocation = new ArmorAllocationView(panInfo, Entity.ETYPE_AERO);

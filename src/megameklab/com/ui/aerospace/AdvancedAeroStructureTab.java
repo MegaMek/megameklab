@@ -35,7 +35,7 @@ import megamek.common.Warship;
 import megamek.common.verifier.TestEntity;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.view.AdvancedAeroChassisView;
-import megameklab.com.ui.view.AeroFuelView;
+import megameklab.com.ui.view.FuelView;
 import megameklab.com.ui.view.AerospaceCrewView;
 import megameklab.com.ui.view.ArmorAllocationView;
 import megameklab.com.ui.view.BasicInfoView;
@@ -65,7 +65,7 @@ public class AdvancedAeroStructureTab extends ITab implements AdvancedAeroBuildL
     private AdvancedAeroChassisView panChassis;
     private MVFArmorView panArmor;
     private MovementView panMovement;
-    private AeroFuelView panFuel;
+    private FuelView panFuel;
     private HeatSinkView panHeat;
     private AerospaceCrewView panCrew;
     private GravDeckView panGravDecks;
@@ -88,7 +88,7 @@ public class AdvancedAeroStructureTab extends ITab implements AdvancedAeroBuildL
         panChassis = new AdvancedAeroChassisView(panInfo);
         panArmor = new MVFArmorView(panInfo);
         panMovement = new MovementView(panInfo);
-        panFuel = new AeroFuelView();
+        panFuel = new FuelView();
         panHeat = new HeatSinkView(panInfo);
         panCrew = new AerospaceCrewView(panInfo);
         panGravDecks = new GravDeckView();

@@ -44,6 +44,7 @@ class SVStructureTab extends ITab implements SVBuildListener {
     private BasicInfoView panBasicInfo;
     private SVChassisView panChassis;
     private MovementView panMovement;
+    private FuelView panFuel;
     private SVSummaryView panSummary;
     private ChassisModView panChassisMod;
     private SVCrewView panCrew;
@@ -65,6 +66,7 @@ class SVStructureTab extends ITab implements SVBuildListener {
         panBasicInfo = new BasicInfoView(getSV().getConstructionTechAdvancement());
         panChassis = new SVChassisView(panBasicInfo);
         panMovement = new MovementView(panBasicInfo);
+        panFuel = new FuelView();
         panSummary = new SVSummaryView(eSource);
         panChassisMod = new ChassisModView(panBasicInfo);
         panCrew = new SVCrewView();
@@ -92,6 +94,8 @@ class SVStructureTab extends ITab implements SVBuildListener {
         gbc.gridy = 0;
         midPanel.add(panMovement, gbc);
         gbc.gridy++;
+        midPanel.add(panFuel, gbc);
+        gbc.gridy++;
         midPanel.add(panSummary, gbc);
 
         gbc.gridx = 2;
@@ -116,6 +120,7 @@ class SVStructureTab extends ITab implements SVBuildListener {
         panBasicInfo.setBorder(BorderFactory.createTitledBorder("Basic Information"));
         panChassis.setBorder(BorderFactory.createTitledBorder("Chassis"));
         panMovement.setBorder(BorderFactory.createTitledBorder("Movement"));
+        panFuel.setBorder(BorderFactory.createTitledBorder("Fuel"));
         panSummary.setBorder(BorderFactory.createTitledBorder("Summary"));
         panChassisMod.setBorder(BorderFactory.createTitledBorder("Chassis Modifications"));
         panCrew.setBorder(BorderFactory.createTitledBorder("Crew and Quarters"));
@@ -127,6 +132,7 @@ class SVStructureTab extends ITab implements SVBuildListener {
         panBasicInfo.setFromEntity(getSV());
         panChassis.setFromEntity(getSV());
         panMovement.setFromEntity(getSV());
+        refreshFuel();
         panChassisMod.setFromEntity(getSV());
         panCrew.setFromEntity(getSV());
         panSummary.refresh();
@@ -142,6 +148,7 @@ class SVStructureTab extends ITab implements SVBuildListener {
         panBasicInfo.removeListener(this);
         panChassis.removeListener(this);
         panMovement.removeListener(this);
+        panFuel.removeListener(this);
         panChassisMod.removeListener(this);
         panCrew.removeListener(this);
     }
@@ -150,6 +157,7 @@ class SVStructureTab extends ITab implements SVBuildListener {
         panBasicInfo.addListener(this);
         panChassis.addListener(this);
         panMovement.addListener(this);
+        panFuel.addListener(this);
         panChassisMod.addListener(this);
         panCrew.addListener(this);
     }
@@ -229,6 +237,7 @@ class SVStructureTab extends ITab implements SVBuildListener {
         panMovement.removeListener(this);
         panMovement.setFromEntity(getSV());
         panMovement.addListener(this);
+        panFuel.setFromEntity(getSV());
         panChassis.refresh();
     }
 
@@ -264,6 +273,7 @@ class SVStructureTab extends ITab implements SVBuildListener {
         getSV().setWeight(TestEntity.ceil(tonnage, tonnage < 5 ?
                 TestEntity.Ceil.KILO : TestEntity.Ceil.HALFTON));
         panChassisMod.setFromEntity(getSV());
+        panFuel.setFromEntity(getSV());
         refresh.refreshArmor();
         refresh.refreshEquipmentTable();
         refresh.refreshSummary();
@@ -286,6 +296,7 @@ class SVStructureTab extends ITab implements SVBuildListener {
             getSV().setMovementMode(type.defaultMovementMode);
             panChassis.setFromEntity(getSV());
             panMovement.setFromEntity(getSV());
+            refreshFuel();
             panChassisMod.setFromEntity(getSV());
             panCrew.setFromEntity(getSV());
             panSummary.refresh();
@@ -326,6 +337,7 @@ class SVStructureTab extends ITab implements SVBuildListener {
         panChassis.removeListener(this);
         panChassis.setFromEntity(getSV());
         panChassis.addListener(this);
+        refreshFuel();
         panChassisMod.setFromEntity(getSV());
         panSummary.refresh();
         refresh.refreshStatus();
@@ -335,6 +347,7 @@ class SVStructureTab extends ITab implements SVBuildListener {
     @Override
     public void engineTechRatingChanged(int techRating) {
         getSV().setEngineTechRating(techRating);
+        panFuel.setFromEntity(getSV());
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
@@ -362,6 +375,7 @@ class SVStructureTab extends ITab implements SVBuildListener {
         } else if (mod.equals(TestSupportVehicle.ChassisModification.ARMORED.equipment)) {
             refresh.refreshArmor();
         }
+        refreshFuel();
         panChassisMod.refresh();
         panSummary.refresh();
         refresh.refreshStatus();
@@ -528,5 +542,34 @@ class SVStructureTab extends ITab implements SVBuildListener {
                 loc);
         getTank().setArmorType(getTank().getArmorType(Tank.LOC_FRONT),
                 loc);
+    }
+
+    @Override
+    public void fuelTonnageChanged(double tonnage) {
+        double fuelTons = Math.round(tonnage * 2) / 2.0;
+        if (getSV().isAero()) {
+            getAero().setFuelTonnage(fuelTons);
+        } else {
+            getTank().setFuelTonnage(fuelTons);
+        }
+        refreshFuel();
+        panSummary.refresh();
+        refresh.refreshStatus();
+        refresh.refreshPreview();
+    }
+
+    /**
+     * Convenience method that removes the fuel if the vehicle does not require fuel mass
+     * then refreshes the fuel panel. Changes that can affect this are vehicle type, engine
+     * type, and the prop chassis mod.
+     */
+    private void refreshFuel() {
+        if ((getSV() instanceof FixedWingSupport)
+                && (((FixedWingSupport) getSV()).kgPerFuelPoint() == 0)) {
+            getAero().setFuelTonnage(0);
+        } else if ((getSV() instanceof Tank) && (getTank().fuelTonnagePer100km() == 0)) {
+            getTank().setFuelTonnage(0);
+        }
+        panFuel.setFromEntity(getSV());
     }
 }

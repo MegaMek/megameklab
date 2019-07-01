@@ -29,21 +29,20 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import megamek.common.Aero;
+import megamek.common.Entity;
+import megamek.common.FixedWingSupport;
 import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestAero;
 import megameklab.com.ui.view.listeners.BuildListener;
 
 /**
- * Structure tab panel for aero unit fuel
+ * Structure tab panel for aerospace and support vehicles.
  * 
  * @author Neoancient
  *
  */
-public class AeroFuelView extends BuildView implements ChangeListener {
+public class FuelView extends BuildView implements ChangeListener {
     
-    /**
-     * 
-     */
     private static final long serialVersionUID = -3321986392656071192L;
 
     List<BuildListener> listeners = new CopyOnWriteArrayList<>();
@@ -63,7 +62,7 @@ public class AeroFuelView extends BuildView implements ChangeListener {
     private final JLabel lblBurnDaysMax = new JLabel("", JLabel.CENTER);
     private final JPanel panBurnDays = new JPanel();
     
-    public AeroFuelView() {
+    public FuelView() {
         initUI();
     }
     
@@ -76,28 +75,28 @@ public class AeroFuelView extends BuildView implements ChangeListener {
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap.getString("AeroFuelView.spnFuel.text"), labelSize), gbc); //$NON-NLS-1$
+        add(createLabel(resourceMap.getString("FuelView.spnFuel.text"), labelSize), gbc); //$NON-NLS-1$
         gbc.gridx = 1;
         gbc.fill = GridBagConstraints.NONE;
         setFieldSize(spnFuel, spinnerSizeLg);
-        spnFuel.setToolTipText(resourceMap.getString("AeroFuelView.spnFuel.tooltip")); //$NON-NLS-1$
+        spnFuel.setToolTipText(resourceMap.getString("FuelView.spnFuel.tooltip")); //$NON-NLS-1$
         add(spnFuel, gbc);
         spnFuel.addChangeListener(this);
         
         gbc.gridx = 2;
         gbc.fill = GridBagConstraints.BOTH;
-        add(createLabel(resourceMap.getString("AeroFuelView.lblFuelPoints.text"), labelSize), gbc); //$NON-NLS-1$
+        add(createLabel(resourceMap.getString("FuelView.lblFuelPoints.text"), labelSize), gbc); //$NON-NLS-1$
         gbc.gridx = 3;
         gbc.insets = new Insets(0,10,0,20);
-        lblFuelPoints.setToolTipText(resourceMap.getString("AeroFuelView.lblFuelPoints.tooltip")); //$NON-NLS-1$
+        lblFuelPoints.setToolTipText(resourceMap.getString("FuelView.lblFuelPoints.tooltip")); //$NON-NLS-1$
         add(lblFuelPoints, gbc);
         gbc.insets = new Insets(0,0,0,0);
 
         JPanel panInfoTurns = new JPanel(new GridLayout(0, 2));
-        panInfoTurns.add(new JLabel(resourceMap.getString("AeroFuelView.lblTurnsAtSafe.text")), gbc); //$NON-NLS-1$
-        panInfoTurns.add(new JLabel(resourceMap.getString("AeroFuelView.lblTurnsAtMax.text")), gbc); //$NON-NLS-1$
-        lblTurnsAtSafe.setToolTipText(resourceMap.getString("AeroFuelView.lblTurnsAtSafe.tooltip")); //$NON-NLS-1$
-        lblTurnsAtMax.setToolTipText(resourceMap.getString("AeroFuelView.lblTurnsAtMax.tooltip")); //$NON-NLS-1$
+        panInfoTurns.add(new JLabel(resourceMap.getString("FuelView.lblTurnsAtSafe.text")), gbc); //$NON-NLS-1$
+        panInfoTurns.add(new JLabel(resourceMap.getString("FuelView.lblTurnsAtMax.text")), gbc); //$NON-NLS-1$
+        lblTurnsAtSafe.setToolTipText(resourceMap.getString("FuelView.lblTurnsAtSafe.tooltip")); //$NON-NLS-1$
+        lblTurnsAtMax.setToolTipText(resourceMap.getString("FuelView.lblTurnsAtMax.tooltip")); //$NON-NLS-1$
         panInfoTurns.add(lblTurnsAtSafe);
         panInfoTurns.add(lblTurnsAtMax);
 
@@ -109,10 +108,10 @@ public class AeroFuelView extends BuildView implements ChangeListener {
         add(panInfoTurns, gbc);
 
         panBurnDays.setLayout(new GridLayout(0, 2));
-        panBurnDays.add(new JLabel(resourceMap.getString("AeroFuelView.lblBurnDays1G.text")), gbc); //$NON-NLS-1$
-        panBurnDays.add(new JLabel(resourceMap.getString("AeroFuelView.lblBurnDaysMax.text")), gbc); //$NON-NLS-1$
-        lblBurnDays1G.setToolTipText(resourceMap.getString("AeroFuelView.lblBurnDays1G.tooltip")); //$NON-NLS-1$
-        lblBurnDaysMax.setToolTipText(resourceMap.getString("AeroFuelView.lblBurnDaysMax.tooltip")); //$NON-NLS-1$
+        panBurnDays.add(new JLabel(resourceMap.getString("FuelView.lblBurnDays1G.text")), gbc); //$NON-NLS-1$
+        panBurnDays.add(new JLabel(resourceMap.getString("FuelView.lblBurnDaysMax.text")), gbc); //$NON-NLS-1$
+        lblBurnDays1G.setToolTipText(resourceMap.getString("FuelView.lblBurnDays1G.tooltip")); //$NON-NLS-1$
+        lblBurnDaysMax.setToolTipText(resourceMap.getString("FuelView.lblBurnDaysMax.tooltip")); //$NON-NLS-1$
         panBurnDays.add(lblBurnDays1G);
         panBurnDays.add(lblBurnDaysMax);
 
@@ -129,13 +128,27 @@ public class AeroFuelView extends BuildView implements ChangeListener {
         gbc.insets = new Insets(10,10,10,10);
         add(panBurnDays, gbc);
     }
-    
-    public void setFromEntity(Aero aero) {
-        lblFuelPoints.setText(String.valueOf(aero.getFuel()));
-        lblTurnsAtSafe.setText(String.format(
-                "%1$.2f", TestAero.calculateMaxTurnsAtSafe(aero)));
-        lblTurnsAtMax.setText(String.format(
-                "%1$.2f", TestAero.calculateMaxTurnsAtMax(aero)));
+
+    public void setFromEntity(Entity entity) {
+        if (entity instanceof Aero) {
+            setFromAero((Aero) entity);
+        }
+    }
+
+    private void setFromAero(Aero aero) {
+        if ((aero instanceof FixedWingSupport) && (((FixedWingSupport) aero).kgPerFuelPoint() == 0)) {
+            lblFuelPoints.setText("N/A");
+            lblTurnsAtSafe.setText("N/A");
+            lblTurnsAtMax.setText("N/A");
+            spnFuel.setEnabled(false);
+        } else {
+            lblFuelPoints.setText(String.valueOf(aero.getFuel()));
+            lblTurnsAtSafe.setText(String.format(
+                    "%1$.2f", TestAero.calculateMaxTurnsAtSafe(aero)));
+            lblTurnsAtMax.setText(String.format(
+                    "%1$.2f", TestAero.calculateMaxTurnsAtMax(aero)));
+            spnFuel.setEnabled(true);
+        }
 
         spnFuelModel.setMaximum(aero.getWeight());
         spnFuel.removeChangeListener(this);
