@@ -224,6 +224,7 @@ public class AdvancedAeroStructureTab extends ITab implements AdvancedAeroBuildL
         panChassis.setAsCustomization();
     }
 
+    @Override
     public void refreshSummary() {
         panSummary.refresh();
         // We're going to cheat and recalculate minimum crew values here in case the number of gunners changed.
@@ -401,6 +402,7 @@ public class AdvancedAeroStructureTab extends ITab implements AdvancedAeroBuildL
         panCrew.setFromEntity(getJumpship());
         getJumpship().autoSetInternal();
         refresh();
+        refresh.refreshTransport();
         refresh.refreshPreview();
         refresh.refreshStatus();
     }
@@ -475,6 +477,7 @@ public class AdvancedAeroStructureTab extends ITab implements AdvancedAeroBuildL
         refresh();
         refresh.refreshEquipmentTable();
         refresh.refreshBuild();
+        refresh.refreshTransport();
         refresh.refreshPreview();
         refresh.refreshStatus();
     }
