@@ -33,6 +33,7 @@ import megamek.common.Entity;
 import megamek.common.FixedWingSupport;
 import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestAero;
+import megamek.common.verifier.TestEntity;
 import megameklab.com.ui.view.listeners.BuildListener;
 
 /**
@@ -53,7 +54,7 @@ public class FuelView extends BuildView implements ChangeListener {
         listeners.remove(l);
     }
 
-    private SpinnerNumberModel spnFuelModel = new SpinnerNumberModel(0.0, 0.0, null, 0.5);
+    private final SpinnerNumberModel spnFuelModel = new SpinnerNumberModel(0.0, 0.0, null, 0.5);
     private final JSpinner spnFuel = new JSpinner(spnFuelModel);
     private final JLabel lblFuelPoints = new JLabel();
     private final JLabel lblTurnsAtSafe = new JLabel("", JLabel.CENTER);
@@ -61,6 +62,8 @@ public class FuelView extends BuildView implements ChangeListener {
     private final JLabel lblBurnDays1G = new JLabel("", JLabel.CENTER);
     private final JLabel lblBurnDaysMax = new JLabel("", JLabel.CENTER);
     private final JPanel panBurnDays = new JPanel();
+
+    private boolean kgScale = false;
     
     public FuelView() {
         initUI();
@@ -129,7 +132,24 @@ public class FuelView extends BuildView implements ChangeListener {
         add(panBurnDays, gbc);
     }
 
+    private int scaleMultiplier() {
+        return kgScale ? 1000 : 1;
+    }
+
     public void setFromEntity(Entity entity) {
+        kgScale = TestEntity.usesKgStandard(entity);
+
+        spnFuel.removeChangeListener(this);
+        spnFuelModel.setMaximum(entity.getWeight() * scaleMultiplier());
+        if (!kgScale) {
+            spnFuelModel.setStepSize(0.5);
+        } else if (entity instanceof FixedWingSupport) {
+            spnFuelModel.setStepSize((double) ((FixedWingSupport) entity).kgPerFuelPoint());
+        } else {
+            spnFuelModel.setStepSize(1.0);
+        }
+        spnFuel.addChangeListener(this);
+
         if (entity instanceof Aero) {
             setFromAero((Aero) entity);
         }
@@ -150,9 +170,8 @@ public class FuelView extends BuildView implements ChangeListener {
             spnFuel.setEnabled(true);
         }
 
-        spnFuelModel.setMaximum(aero.getWeight());
         spnFuel.removeChangeListener(this);
-        spnFuel.setValue(aero.getFuelTonnage());
+        spnFuelModel.setValue(aero.getFuelTonnage() * scaleMultiplier());
         spnFuel.addChangeListener(this);
         
         if (aero.getStrategicFuelUse() > 0) {
@@ -167,7 +186,8 @@ public class FuelView extends BuildView implements ChangeListener {
     @Override
     public void stateChanged(ChangeEvent e) {
         if (e.getSource() == spnFuel) {
-            listeners.forEach(l -> l.fuelTonnageChanged(spnFuelModel.getNumber().doubleValue()));
+            listeners.forEach(l -> l.fuelTonnageChanged(spnFuelModel.getNumber()
+                    .doubleValue() / scaleMultiplier()));
         }
     }
 

@@ -546,7 +546,8 @@ class SVStructureTab extends ITab implements SVBuildListener {
 
     @Override
     public void fuelTonnageChanged(double tonnage) {
-        double fuelTons = Math.round(tonnage * 2) / 2.0;
+        double fuelTons = TestEntity.round(tonnage, TestEntity.usesKgStandard(getSV()) ?
+                TestEntity.Ceil.KILO : TestEntity.Ceil.HALFTON);
         if (getSV().isAero()) {
             getAero().setFuelTonnage(fuelTons);
         } else {
