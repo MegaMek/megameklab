@@ -41,6 +41,12 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import javax.imageio.ImageIO;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.apache.batik.anim.dom.SVGDOMImplementation;
 import org.apache.batik.bridge.BridgeContext;
@@ -177,12 +183,25 @@ public abstract class PrintRecordSheet implements Printable {
         boldFont = font.deriveFont(Font.BOLD, 8);
     }
     
+    /**
+     * Finds all text elements in the SVG document and replaces the font-family attribute.
+     * 
+     * @param doc The document to perform replacement in.
+     */
     private void subFonts(SVGDocument doc) {
         final XPathResult res = (XPathResult) ((XPathEvaluator) doc).evaluate(".//*[local-name()=\"text\"]",
                 doc.getRootElement(), null, XPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
         for (Node node = res.iterateNext(); node != null; node = res.iterateNext()) {
             if (node instanceof Element) {
-                ((Element) node).setAttributeNS(null, SVGConstants.SVG_FONT_FAMILY_ATTRIBUTE, getTypeface());
+                final Element elem = (Element) node;
+                // First we want to make sure it's not set in the style attribute, which could override
+                // the change
+                if (elem.hasAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE)) {
+                    elem.setAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE,
+                            elem.getAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE)
+                            .replaceAll("font-family:.*?;", ""));
+                }
+                elem.setAttributeNS(null, SVGConstants.SVG_FONT_FAMILY_ATTRIBUTE, getTypeface());
             }
         }
     }
@@ -214,7 +233,7 @@ public abstract class PrintRecordSheet implements Printable {
                 printImage(g2d, pageFormat, pageIndex - firstPage);
                 GraphicsNode node = build();
                 node.paint(g2d);
-                /* Testing code that outputs the generated svg
+                /* Testing code that outputs the generated svg */
                 try {
                     Transformer transformer = TransformerFactory.newInstance().newTransformer();
                     Result output = new StreamResult(new File("out.svg"));
@@ -223,7 +242,7 @@ public abstract class PrintRecordSheet implements Printable {
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
-                */
+                
             }
         }
         return Printable.PAGE_EXISTS;
