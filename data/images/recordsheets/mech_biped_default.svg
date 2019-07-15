@@ -428,14 +428,20 @@
              id="g575"><text
                transform="matrix(1,0,0,-1,256.85324,644.75209)"
                style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+               textLength="18.85"
+               lengthAdjust="spacingAndGlyphs"
                id="crewName1">Name:</text>
 <text
                transform="matrix(1,0,0,-1,256.85324,632.432819)"
                style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+               textLength="39.17"
+               lengthAdjust="spacingAndGlyphs"
                id="gunnerySkillText1">Gunnery Skill:</text>
 <text
                transform="matrix(1,0,0,-1,328.186011,632.432819)"
                style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+               textLength="36.71"
+               lengthAdjust="spacingAndGlyphs"
                id="pilotingSkillText1">Piloting Skill:</text>
 <g
                id="blanksCrew1"><g
@@ -468,10 +474,14 @@
                  fill="none" /></g><text
                transform="matrix(1,0,0,-1,296.4296,618.515)"
                style="text-anchor:end;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.7954998px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+               textLength="26.59"
+               lengthAdjust="spacingAndGlyphs"
                id="text57051">Hits Taken</text>
 <text
                transform="matrix(1,0,0,-1,296.4296,609.208)"
                style="text-anchor:end;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.7954998px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+               textLength="42.30"
+               lengthAdjust="spacingAndGlyphs"
                id="text597">Consciousness #</text>
 <g
                id="g56989"
@@ -580,11 +590,9 @@
 <text
                transform="matrix(0.9980061,0,0,-1,372.5741,608.9293)"
                style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.21589994px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-               id="text57047"><tspan
-                 x="0"
-                 y="0"
-                 sodipodi:role="line"
-                 id="tspan57049">Dead</tspan></text>
+               textLength="11.54"
+               lengthAdjust="spacingAndGlyphs"
+               id="text57047">Dead</text>
 <g
                id="g57065"
                transform="translate(301.4454,607.4851)"><path
@@ -594,22 +602,32 @@
                  inkscape:connector-curvature="0" /></g></g></g><text
            transform="matrix(1,0,0,-1,256.85324,644.75209)"
            style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           textLength="18.85"
+           lengthAdjust="spacingAndGlyphs"
            id="crewName0">Name:</text>
 <text
            transform="matrix(1,0,0,-1,256.85324,632.432819)"
            style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           textLength="39.17"
+           lengthAdjust="spacingAndGlyphs"
            id="gunnerySkillText0">Gunnery Skill:</text>
 <text
            transform="matrix(1,0,0,-1,328.186011,632.432819)"
            style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           textLength="36.72"
+           lengthAdjust="spacingAndGlyphs"
            id="pilotingSkillText0">Piloting Skill:</text>
 <text
            transform="matrix(1,0,0,-1,296.4296,618.515)"
            style="text-anchor:end;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.7954998px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           textLength="26.59"
+           lengthAdjust="spacingAndGlyphs"
            id="text635">Hits Taken</text>
 <text
            transform="matrix(1,0,0,-1,296.4296,609.208)"
            style="text-anchor:end;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.7954998px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           textLength="42.30"
+           lengthAdjust="spacingAndGlyphs"
            id="text637">Consciousness #</text>
 <g
            transform="matrix(1,0,0,-1,256.85324,605.42)"
@@ -726,11 +744,9 @@
 <text
            transform="matrix(0.9980061,0,0,-1,372.5741,608.9293)"
            style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.21589994px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-           id="text700"><tspan
-             x="0"
-             y="0"
-             sodipodi:role="line"
-             id="tspan702">Dead</tspan></text>
+           textLength="11.54"
+           lengthAdjust="spacingAndGlyphs"
+           id="text700">Dead</text>
 <g
            id="g704"
            transform="translate(301.4454,607.4851)"><path
@@ -1034,6 +1050,8 @@
              inkscape:connector-curvature="0" /></g></g></g><text
        transform="matrix(0.90000218,0,0,-1,563,372.1184)"
        style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.58809996px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           textLength="21.64"
+           lengthAdjust="spacingAndGlyphs"
        id="text56243"
        text-anchor="middle">Overflow</text>
 <path
@@ -2005,23 +2023,23 @@
        transform="matrix(0.99798858,0,0,-1,408.8137,163.9895)"
        style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text56907"><tspan
-         x="0 4.6653662"
+         x="0"
          y="0"
          sodipodi:role="line"
          id="tspan56909">30</tspan><tspan
-         x="17.829811 22.082733 26.004345 29.858343 32.333015 36.214058 40.068058 45.166153"
+         x="17.829811"
          y="-0.3110244"
          sodipodi:role="line"
          id="tspan56911">Shutdown</tspan><tspan
-         x="-4.1176925 0.9533574 4.7735486 8.6275463"
+         x="-4.1176925"
          y="-15.348378"
          sodipodi:role="line"
          id="tspan56913">Heat</tspan><tspan
-         x="-5.0710502 -1.2981888 2.5220022 5.5849166 9.4051075 10.852047"
+         x="-5.0710502"
          y="-7.5930524"
          sodipodi:role="line"
          id="tspan56915">Level*</tspan><tspan
-         x="42.522446 46.30883 48.445431 50.487373 54.307564 57.99929 60.473961"
+         x="42.522446"
          y="-7.9040766"
          sodipodi:role="line"
          id="tspan56917">Effects</tspan><tspan
@@ -2029,7 +2047,7 @@
          y="7.606575"
          sodipodi:role="line"
          id="tspan56919">28</tspan><tspan
-         x="17.829811 22.46137 28.675097 34.888824 38.742821 41.075504 44.861889 47.931564 51.805847 54.138531 56.471214 60.325211 63.388126 67.242126 68.695824 72.576866 74.909554 78.76355 82.685158 85.017845 89.683212"
+         x="17.829811"
          y="7.2955508"
          sodipodi:role="line"
          id="tspan56921">Ammo Exp. avoid on 8+</tspan><tspan
@@ -2037,7 +2055,7 @@
          y="15.206389"
          sodipodi:role="line"
          id="tspan56923">26</tspan><tspan
-         x="17.829811 22.082733 26.004345 29.858343 32.333015 36.214058 40.068058 45.166153 49.087765 51.420448 53.753132 57.607128 60.670044 64.52404 65.977737 69.858788 72.191467 76.045464 79.967079 82.299759 86.965126 91.630493"
+         x="17.829811"
          y="14.895364"
          sodipodi:role="line"
          id="tspan56925">Shutdown, avoid on 10+</tspan><tspan
@@ -2045,7 +2063,7 @@
          y="22.806202"
          sodipodi:role="line"
          id="tspan56927">25</tspan><tspan
-         x="17.829811 21.210512 25.875877 28.208561 34.733311 38.587311 41.650223 45.470413 51.684143 55.504333 59.425945 61.900616 64.233299 68.702583 72.55658 74.010284 77.9319 80.40657"
+         x="17.829811"
          y="22.495178"
          sodipodi:role="line"
          id="tspan56929">–5 Movement Points</tspan><tspan
@@ -2053,7 +2071,7 @@
          y="30.406015"
          sodipodi:role="line"
          id="tspan56931">24</tspan><tspan
-         x="17.829811 21.778469 26.443836 28.776518 35.30127 39.155266 43.036312 44.490013 47.931564 51.751755 54.740295 57.072979 59.547649 63.401649 65.734329 69.446342 70.90004 73.88858"
+         x="17.829811"
          y="30.094992"
          sodipodi:role="line"
          id="tspan56933">+4 Modifer to Fire</tspan><tspan
@@ -2061,7 +2079,7 @@
          y="38.005829"
          sodipodi:role="line"
          id="tspan56935">23</tspan><tspan
-         x="17.829811 22.46137 28.675097 34.888824 38.742821 41.075504 44.861889 47.931564 51.805847 54.138531 56.471214 60.325211 63.388126 67.242126 68.695824 72.576866 74.909554 78.76355 82.685158 85.017845 89.683212"
+         x="17.829811"
          y="37.694805"
          sodipodi:role="line"
          id="tspan56937">Ammo Exp. avoid on 6+</tspan><tspan
@@ -2069,7 +2087,7 @@
          y="45.605644"
          sodipodi:role="line"
          id="tspan56939">22</tspan><tspan
-         x="17.829811 22.082733 26.004345 29.858343 32.333015 36.214058 40.068058 45.166153 49.087765 51.420448 53.753132 57.607128 60.670044 64.52404 65.977737 69.858788 72.191467 76.045464 79.967079 82.299759 86.965126"
+         x="17.829811"
          y="45.294621"
          sodipodi:role="line"
          id="tspan56941">Shutdown, avoid on 8+</tspan><tspan
@@ -2077,7 +2095,7 @@
          y="53.205456"
          sodipodi:role="line"
          id="tspan56943">20</tspan><tspan
-         x="17.829811 21.210512 25.875877 28.208561 34.733311 38.587311 41.650223 45.470413 51.684143 55.504333 59.425945 61.900616 64.233299 68.702583 72.55658 74.010284 77.9319 80.40657"
+         x="17.829811"
          y="52.894432"
          sodipodi:role="line"
          id="tspan56945">–4 Movement Points</tspan><tspan
@@ -2085,7 +2103,7 @@
          y="60.805271"
          sodipodi:role="line"
          id="tspan56947">19</tspan><tspan
-         x="17.829811 22.46137 28.675097 34.888824 38.742821 41.075504 44.861889 47.931564 51.805847 54.138531 56.471214 60.325211 63.388126 67.242126 68.695824 72.576866 74.909554 78.76355 82.685158 85.017845 89.683212"
+         x="17.829811"
          y="60.494247"
          sodipodi:role="line"
          id="tspan56949">Ammo Exp. avoid on 4+</tspan><tspan
@@ -2093,7 +2111,7 @@
          y="68.405083"
          sodipodi:role="line"
          id="tspan56951">18</tspan><tspan
-         x="17.829811 22.082733 26.004345 29.858343 32.333015 36.214058 40.068058 45.166153 49.087765 51.420448 53.753132 57.607128 60.670044 64.52404 65.977737 69.858788 72.191467 76.045464 79.967079 82.299759 86.965126"
+         x="17.829811"
          y="68.094063"
          sodipodi:role="line"
          id="tspan56953">Shutdown, avoid on 6+</tspan><tspan
@@ -2101,7 +2119,7 @@
          y="76.004898"
          sodipodi:role="line"
          id="tspan56955">17</tspan><tspan
-         x="17.829811 21.778469 26.443836 28.776518 35.30127 39.155266 43.036312 44.490013 47.931564 51.751755 54.740295 57.072979 59.547649 63.401649 65.734329 69.446342 70.90004 73.88858"
+         x="17.829811"
          y="75.693871"
          sodipodi:role="line"
          id="tspan56957">+3 Modifer to Fire</tspan><tspan
@@ -2109,7 +2127,7 @@
          y="83.604713"
          sodipodi:role="line"
          id="tspan56959">15</tspan><tspan
-         x="17.829811 21.210512 25.875877 28.208561 34.733311 38.587311 41.650223 45.470413 51.684143 55.504333 59.425945 61.900616 64.233299 68.702583 72.55658 74.010284 77.9319 80.40657"
+         x="17.829811"
          y="83.293686"
          sodipodi:role="line"
          id="tspan56961">–3 Movement Points</tspan><tspan
@@ -2117,7 +2135,7 @@
          y="91.204529"
          sodipodi:role="line"
          id="tspan56963">14</tspan><tspan
-         x="17.829811 22.082733 26.004345 29.858343 32.333015 36.214058 40.068058 45.166153 49.087765 51.420448 53.753132 57.607128 60.670044 64.52404 65.977737 69.858788 72.191467 76.045464 79.967079 82.299759 86.965126"
+         x="17.829811"
          y="90.893501"
          sodipodi:role="line"
          id="tspan56965">Shutdown, avoid on 4+</tspan><tspan
@@ -2125,7 +2143,7 @@
          y="98.804337"
          sodipodi:role="line"
          id="tspan56967">13</tspan><tspan
-         x="17.829811 21.778469 26.443836 28.776518 35.30127 39.155266 43.036312 44.490013 47.931564 51.751755 54.740295 57.072979 59.547649 63.401649 65.734329 69.446342 70.90004 73.88858"
+         x="17.829811"
          y="98.493317"
          sodipodi:role="line"
          id="tspan56969">+2 Modifer to Fire</tspan><tspan
@@ -2133,7 +2151,7 @@
          y="106.40415"
          sodipodi:role="line"
          id="tspan56971">10</tspan><tspan
-         x="17.829811 21.210512 25.875877 28.208561 34.733311 38.587311 41.650223 45.470413 51.684143 55.504333 59.425945 61.900616 64.233299 68.702583 72.55658 74.010284 77.9319 80.40657"
+         x="17.829811"
          y="106.09313"
          sodipodi:role="line"
          id="tspan56973">–2 Movement Points</tspan><tspan
@@ -2141,7 +2159,7 @@
          y="114.00397"
          sodipodi:role="line"
          id="tspan56975"> 8</tspan><tspan
-         x="17.829811 21.778469 26.443836 28.776518 35.30127 39.155266 43.036312 44.490013 47.931564 51.751755 54.740295 57.072979 59.547649 63.401649 65.734329 69.446342 70.90004 73.88858"
+         x="17.829811"
          y="113.69294"
          sodipodi:role="line"
          id="tspan56977">+1 Modifer to Fire</tspan><tspan
@@ -2149,45 +2167,63 @@
          y="121.60378"
          sodipodi:role="line"
          id="tspan56979"> 5</tspan><tspan
-         x="17.829811 21.210512 25.875877 28.208561 34.733311 38.587311 41.650223 45.470413 51.684143 55.504333 59.425945 61.900616 64.233299 68.702583 72.55658 74.010284 77.9319 80.40657"
+         x="17.829811"
          y="121.29275"
          sodipodi:role="line"
          id="tspan56981">–1 Movement Points</tspan></text>
 <text
        transform="matrix(1,0,0,-1,43.2878,644.8024)"
        style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.65909958px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       textLength="21.40"
+       lengthAdjust="spacingAndGlyphs"
        id="lblType">Type:</text>
 <text
        transform="matrix(1,0,0,-1,48.764,633.25)"
        style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       textLength="60.32"
+       lengthAdjust="spacingAndGlyphs"
        id="lblMovementPoints">Movement Points:</text>
 <text
        transform="matrix(1,0,0,-1,48.764,622.25)"
        style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       textLength="28.65"
+       lengthAdjust="spacingAndGlyphs"
        id="lblWalking">Walking:</text>
 <text
        transform="matrix(1,0,0,-1,48.764,614)"
        style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       textLength="28.75"
+       lengthAdjust="spacingAndGlyphs"
        id="lblRunning">Running:</text>
 <text
        transform="matrix(1,0,0,-1,48.764,605.75)"
        style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       textLength="30.00"
+       lengthAdjust="spacingAndGlyphs"
        id="lblJumping">Jumping:</text>
 <text
        transform="matrix(1,0,0,-1,150.1,630.5)"
        style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       textLength="29.91"
+       lengthAdjust="spacingAndGlyphs"
        id="lblTonnage">Tonnage:</text>
 <text
        transform="matrix(1,0,0,-1,150.1,622.25)"
        style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       textLength="36.09"
+       lengthAdjust="spacingAndGlyphs"
        id="lblTechBase">Tech Base:</text>
 <text
        transform="matrix(1,0,0,-1,150.1,614)"
        style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       textLength="38.85"
+       lengthAdjust="spacingAndGlyphs"
        id="lblRulesLevel">Rules Level:</text>
 <text
        transform="matrix(1,0,0,-1,150.1,605.75)"
        style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       textLength="16.23"
+       lengthAdjust="spacingAndGlyphs"
        id="lblRole">Role:</text>
 <g
        id="g57091"
@@ -2204,19 +2240,15 @@
          inkscape:connector-curvature="0" /></g><text
        transform="matrix(0.99810196,0,0,-1,43.2878,590.82)"
        style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:8.69320011px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-       id="text57099"><tspan
-         x="0"
-         y="0"
-         sodipodi:role="line"
-         id="tspan57101">Weapons &amp; Equipment Inventory</tspan></text>
+       textLength="122.83"
+       lengthAdjust="spacingAndGlyphs"
+       id="text57099">Weapons &amp; Equipment Inventory</text>
 <text
        transform="matrix(0.99809211,0,0,-1,197.9856,590.4262)"
        style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-       id="text57103"><tspan
-         x="0 2.3529673 6.3962846 10.250282 13.630982 17.48498 21.25108"
-         y="0"
-         sodipodi:role="line"
-         id="tspan57105">(hexes)</tspan></text>
+       textLength="20.97"
+       lengthAdjust="spacingAndGlyphs"
+       id="text57103">(hexes)</text>
 <text
        transform="matrix(0.99809211,0,0,-1,216.9537,49.284)"
        style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
