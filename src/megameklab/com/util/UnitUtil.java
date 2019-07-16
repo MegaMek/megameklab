@@ -143,8 +143,8 @@ public class UnitUtil {
     public static int TECH_EXPERIMENTAL = 3;
     public static int TECH_UNOFFICAL = 4;
 
-    private static Font euroFont = null;
-    private static Font euroBoldFont = null;
+    private static Font rsFont = null;
+    private static Font rsBoldFont = null;
 
     /**
      * tells is EquipementType is an equipment that uses crits/mounted and is
@@ -1930,17 +1930,17 @@ public class UnitUtil {
     }
     
     public static void loadFonts() {
-        Font font = Font.getFont(CConfig.getParam(CConfig.RS_FONT, "Eurostile"));
+        Font font = Font.decode(CConfig.getParam(CConfig.RS_FONT, "Eurostile"));
         // If the font is not installed, use system default sans
         if (null == font) {
-            font = Font.getFont(Font.SANS_SERIF);
+            font = Font.decode(Font.SANS_SERIF);
         }
         // If that still doesn't work, get the default dialog font
         if (null == font) {
             font = Font.decode(null);
         }
-        euroFont = font.deriveFont(Font.PLAIN, 8);
-        euroBoldFont = font.deriveFont(Font.BOLD, 8);
+        rsFont = font.deriveFont(Font.PLAIN, 8);
+        rsBoldFont = font.deriveFont(Font.BOLD, 8);
     }
 
     public static Font deriveFont(float pointSize) {
@@ -1952,10 +1952,10 @@ public class UnitUtil {
         UnitUtil.loadFonts();
 
         if (boldFont) {
-            return euroBoldFont.deriveFont(pointSize);
+            return rsBoldFont.deriveFont(pointSize);
         }
 
-        return euroFont.deriveFont(pointSize);
+        return rsFont.deriveFont(pointSize);
     }
 
     public static Font getNewFont(Graphics2D g2d, String info, boolean bold,
