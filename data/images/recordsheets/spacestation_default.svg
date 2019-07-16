@@ -523,28 +523,23 @@
       </text>
       <g
          fill="#231f20"
-         font-family="Eurostile"
          id="g146">
         <text
            id="text3621"
+           font-family="Eurostile"
            font-size="6.0275px"
-           transform="matrix(1 0 0 -1 517.71 740.01)">
-          <tspan
-             id="tspan3623"
-             y="0"
-             x="0 4.1951399 7.7453375 11.337728 12.760218 15.321905 18.872103 20.391033 22.512712 26.56922 29.890373 33.440571 34.959499">Capital Scale</tspan>
-        </text>
+           transform="matrix(1 0 0 -1 534.54 740.01)"
+           text-anchor="middle">Capital Scale</text>
         <text
            id="text3625"
+           font-family="Eurostile"
            font-size="7.0321px"
-           transform="matrix(.99801 0 0 -1 254.99 251.63)">
-          <tspan
-             id="tspan3627"
-             y="0"
-             x="0">Gunnery Skill:</tspan>
-        </text>
+           textLength="40.80"
+           lengthAdjust="spacingAndGlyphs"
+           transform="matrix(.99801 0 0 -1 254.99 251.63)">Gunnery Skill:</text>
         <text
            id="text3629"
+           font-family="Eurostile"
            font-size="6.0275px"
            transform="matrix(.99801 0 0 -1 254.99 208.92)">
           <tspan
@@ -575,13 +570,11 @@
         </text>
         <text
            id="text3645"
+           font-family="Eurostile"
            font-size="7.0321px"
-           transform="matrix(.99801 0 0 -1 326.19 251.63)">
-          <tspan
-             id="tspan3647"
-             y="0"
-             x="0">Piloting Skill:</tspan>
-        </text>
+           textLength="38.25"
+           lengthAdjust="spacingAndGlyphs"
+           transform="matrix(.99801 0 0 -1 326.19 251.63)">Piloting Skill:</text>
       </g>
       <g id="blanksCrew0"><g
         transform="translate(304.769,251.63)"><path
@@ -804,20 +797,26 @@
         <text
            id="text3735"
            font-size="9.0413px"
-           transform="matrix(1 0 0 -1 32.876 670.24)">
-          <tspan
-             id="tspan3737"
-             y="0"
-             x="0">Type:</tspan>
-        </text>
+           textLength="20.02"
+           lengthAdjust="spacingAndGlyphs"
+           transform="matrix(1 0 0 -1 32.876 670.24)">Type:</text>
         <text
            id="text3739"
            font-size="7.0321px"
+           textLength="21.78"
+           lengthAdjust="spacingAndGlyphs"
            transform="matrix(1 0 0 -1 38.571 611.86)">
           <tspan
              id="tspan3743"
              y="-34.098652"
              x="0">Thrust:</tspan>
+        </text>
+        <text
+           id="lblTechBase"
+           font-size="7.0321px"
+           textLength="32.88"
+           lengthAdjust="spacingAndGlyphs"
+           transform="matrix(1 0 0 -1 38.571 611.86)">
           <tspan
              id="tspan3743"
              y="-34.098652"
@@ -842,41 +841,66 @@
          font-family="Eurostile"
          id="g218">
         <text
-           id="text3753"
+           id="lblName"
            font-size="7.0321px"
+           textLength="19.64"
+           lengthAdjust="spacingAndGlyphs"
            transform="matrix(1 0 0 -1 38.571 657.23)">
           <tspan
              id="tspan3755"
              y="0"
              x="0">Name:</tspan>
+        </text>
+        <text
+           id="lblTonnage"
+           font-size="7.0321px"
+           textLength="27.24"
+           lengthAdjust="spacingAndGlyphs"
+           transform="matrix(1 0 0 -1 38.571 657.23)">
           <tspan
              id="tspan3757"
              y="-0.18986671"
              x="109.58825">Tonnage:</tspan>
         </text>
-        <g
-           font-size="7.0321px"
-           id="g227">
           <text
-             id="text3799"
+             id="lblStationKeepingOnly"
+             font-family="Eurostile"
+             font-size="7.0321px"
+             textLength="63.00"
+             lengthAdjust="spacingAndGlyphs"
              transform="matrix(1 0 0 -1 43.71 634.6)">
             <tspan
                id="tspan3801"
                y="0"
                x="0">Station Keeping Only</tspan>
+          </text>
+          <text
+             id="lblRulesLevel"
+             font-family="Eurostile"
+             font-size="7.0321px"
+             textLength="35.39"
+             lengthAdjust="spacingAndGlyphs"
+             transform="matrix(1 0 0 -1 43.71 634.6)">
             <tspan
              y="0"
              x="104.589">Rules Level:</tspan>
-
           </text>
-        </g>
         <text
-           id="text3859"
+           id="lblHeatSinks"
            font-size="8.0367px"
+           textLength="39.20"
+           lengthAdjust="spacingAndGlyphs"
            transform="matrix(.99811 0 0 -1 404.58 93.589)">
           <tspan
              y="0"
              x="0">Heat Sinks:</tspan>
+        </text>
+        <text
+           id="lblHeatGenerationPerArc"
+           font-size="8.0367px"
+           textLength="86.04"
+           lengthAdjust="spacingAndGlyphs"
+           transform="matrix(.99811 0 0 -1 404.58 93.589)">
           <tspan
              y="0"
              x="62.68626">Heat Generation Per Arc</tspan>
@@ -978,7 +1002,7 @@
           <tspan
              id="tspan5257"
              y="0"
-             x="0 5.5372863 9.4833059 11.379967 16.057327 20.863274 22.759933 27.188156">Avionics</tspan>
+             x="0">Avionics</tspan>
         </text>
         <text
            id="text5259"
@@ -1051,7 +1075,7 @@
         <tspan
            id="tspan5285"
            y="0"
-           x="0 5.8024974 7.6991587 12.472959 17.278906">Right</tspan>
+           x="0">Right</tspan>
       </text>
       <text
          id="text5287"
@@ -1146,7 +1170,7 @@
         <tspan
            id="tspan5321"
            y="0"
-           x="0 4.5407357 9.1216545 11.918427">Left</tspan>
+           x="0">Left</tspan>
       </text>
       <text
          id="text5323"
@@ -1241,7 +1265,7 @@
         <tspan
            id="tspan5357"
            y="0"
-           x="0 4.9747171 9.7806635 14.554463 16.451124 21.257072">Engine</tspan>
+           x="0">Engine</tspan>
       </text>
       <text
          id="text5359"
@@ -1378,11 +1402,11 @@
         <tspan
            id="tspan5409"
            y="0"
-           x="0 4.7175431 9.52349 13.373069 18.138832 22.615274 26.03087 30.61179 34.397076">Thrusters</tspan>
+           x="0">Thrusters</tspan>
         <tspan
            id="tspan5411"
            y="-36.438396"
-           x="0 5.5935431 7.8116722">CIC</tspan>
+           x="0">CIC</tspan>
       </text>
       <text
          id="text5413"
@@ -1452,15 +1476,14 @@
          font-size="8.0367px"
          transform="matrix(1 0 0 -1 511.28 255.91)"
          font-family="Eurostile"
-         fill="#231f20">
-        <tspan
+         fill="#231f20">        <tspan
            id="tspan5439"
            y="0"
-           x="0 4.5407357 6.4373965 9.2341681">Life</tspan>
+           x="0">Life</tspan>
         <tspan
            id="tspan5441"
            y="9.6440401"
-           x="0 5.408699 10.174462 14.964335 19.75421 24.431568 28.281147">Support</tspan>
+           x="0">Support</tspan>
       </text>
       <text
          id="text5443"
@@ -1492,7 +1515,7 @@
         <tspan
            id="tspan5453"
            y="0"
-           x="0 5.408699 9.9896183 14.795565 19.272007 23.949366 27.734652">Sensors</tspan>
+           x="0">Sensors</tspan>
       </text>
       <text
          id="text5455"
