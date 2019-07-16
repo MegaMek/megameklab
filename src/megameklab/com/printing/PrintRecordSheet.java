@@ -39,6 +39,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.imageio.ImageIO;
 import javax.xml.transform.Result;
@@ -63,7 +65,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.svg.SVGElement;
+import org.w3c.dom.svg.SVGLocatable;
 import org.w3c.dom.svg.SVGRectElement;
+import org.w3c.dom.svg.SVGTextElement;
 import org.w3c.dom.xpath.*;
 
 import megamek.common.EquipmentType;
@@ -206,6 +210,31 @@ public abstract class PrintRecordSheet implements Printable {
         }
     }
 
+    private void printTextLength(SVGDocument doc) {
+        final Pattern stylePattern = Pattern.compile(".*font-size:(.*?)px.*");
+        final Pattern sizePattern = Pattern.compile("(.*)px.*");
+        final XPathResult res = (XPathResult) ((XPathEvaluator) doc).evaluate(".//*[local-name()=\"text\"]",
+                doc.getRootElement(), null, XPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
+        for (Node node = res.iterateNext(); node != null; node = res.iterateNext()) {
+            if (node instanceof SVGTextElement) {
+                final SVGTextElement elem = (SVGTextElement) node;
+                final String style = elem.getAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE);
+                Matcher m = stylePattern.matcher(style);
+                if (!m.matches()) {
+                    m = sizePattern.matcher(elem.getAttributeNS(null, SVGConstants.SVG_FONT_SIZE_ATTRIBUTE));
+                }
+                if (m.matches()) {
+                    final String text = elem.getTextContent();
+                    final float size = Float.parseFloat(m.group(1));
+                    final double length = getBoldTextLength(text, size);
+                    System.out.println(String.format("%s: %s: %f",
+                            elem.getAttributeNS(null, SVGConstants.SVG_ID_ATTRIBUTE),
+                            elem.getTextContent(), length));
+                }
+            }
+        }
+    }
+
     @Override
     public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
         final String METHOD_NAME = "print(Graphics,PageFormat,int)";
@@ -230,6 +259,7 @@ public abstract class PrintRecordSheet implements Printable {
             } else {
                 subFonts((SVGDocument) svgDocument);
                 svgGenerator = new SVGGraphics2D(svgDocument);
+                printTextLength((SVGDocument) svgDocument);
                 printImage(g2d, pageFormat, pageIndex - firstPage);
                 GraphicsNode node = build();
                 node.paint(g2d);
@@ -1255,6 +1285,11 @@ public abstract class PrintRecordSheet implements Printable {
     
     public double getTextLength(String text, float fontSize) {
         Font font = getNormalFont(fontSize);
+        return font.getStringBounds(text, svgGenerator.getFontRenderContext()).getWidth();
+    }
+    
+    public double getBoldTextLength(String text, float fontSize) {
+        Font font = getBoldFont(fontSize);
         return font.getStringBounds(text, svgGenerator.getFontRenderContext()).getWidth();
     }
     
