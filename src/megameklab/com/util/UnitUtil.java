@@ -19,10 +19,7 @@ package megameklab.com.util;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.GraphicsEnvironment;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -146,8 +143,8 @@ public class UnitUtil {
     public static int TECH_EXPERIMENTAL = 3;
     public static int TECH_UNOFFICAL = 4;
 
-    private static Font euroFont = null;
-    private static Font euroBoldFont = null;
+    private static Font rsFont = null;
+    private static Font rsBoldFont = null;
 
     /**
      * tells is EquipementType is an equipment that uses crits/mounted and is
@@ -1933,39 +1930,17 @@ public class UnitUtil {
     }
     
     public static void loadFonts() {
-        final String METHOD_NAME = "loadFonts()";
-
-        if ((euroFont != null) && (euroBoldFont != null)) {
-            return;
+        Font font = Font.decode(CConfig.getParam(CConfig.RS_FONT, "Eurostile"));
+        // If the font is not installed, use system default sans
+        if (null == font) {
+            font = Font.decode(Font.SANS_SERIF);
         }
-        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-
-        String fName = "./data/fonts/Eurosti.TTF";
-        try {
-            File fontFile = new File(fName);
-            InputStream is = new FileInputStream(fontFile);
-            euroFont = Font.createFont(Font.TRUETYPE_FONT, is);
-            ge.registerFont(euroFont);
-            is.close();
-        } catch (Exception ex) {
-            getLogger().log(UnitUtil.class, METHOD_NAME, LogLevel.ERROR,
-                            fName + " not loaded.  Using Arial font.", ex);
-            euroFont = new Font("Arial", Font.PLAIN, 8);
+        // If that still doesn't work, get the default dialog font
+        if (null == font) {
+            font = Font.decode(null);
         }
-
-        fName = "./data/fonts/Eurostib.TTF";
-        try {
-            File fontFile = new File(fName);
-            InputStream is = new FileInputStream(fontFile);
-            euroBoldFont = Font.createFont(Font.TRUETYPE_FONT, is);
-            ge.registerFont(euroBoldFont);
-            is.close();
-        } catch (Exception ex) {
-            getLogger().log(UnitUtil.class, METHOD_NAME, LogLevel.ERROR,
-                            fName + " not loaded.  Using Arial font.", ex);
-            euroBoldFont = new Font("Arial", Font.PLAIN, 8);
-        }
-
+        rsFont = font.deriveFont(Font.PLAIN, 8);
+        rsBoldFont = font.deriveFont(Font.BOLD, 8);
     }
 
     public static Font deriveFont(float pointSize) {
@@ -1977,10 +1952,10 @@ public class UnitUtil {
         UnitUtil.loadFonts();
 
         if (boldFont) {
-            return euroBoldFont.deriveFont(pointSize);
+            return rsBoldFont.deriveFont(pointSize);
         }
 
-        return euroFont.deriveFont(pointSize);
+        return rsFont.deriveFont(pointSize);
     }
 
     public static Font getNewFont(Graphics2D g2d, String info, boolean bold,

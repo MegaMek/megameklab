@@ -58,10 +58,13 @@ import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.svg.SVGElement;
 import org.w3c.dom.svg.SVGRectElement;
+import org.w3c.dom.xpath.XPathEvaluator;
+import org.w3c.dom.xpath.XPathResult;
 
 import megamek.common.EquipmentType;
 import megamek.common.logging.LogLevel;
 import megameklab.com.MegaMekLab;
+import megameklab.com.util.CConfig;
 
 /**
  * Base class for rendering record sheets. This is mostly a collection of utility methods.
@@ -71,6 +74,7 @@ import megameklab.com.MegaMekLab;
  */
 public abstract class PrintRecordSheet implements Printable {
     
+    final static String DEFAULT_TYPEFACE = "Eurostile";
     final static float DEFAULT_PIP_SIZE  = 0.38f;
     final static float FONT_SIZE_LARGE   = 7.2f;
     final static float FONT_SIZE_MEDIUM  = 6.76f;
@@ -97,6 +101,7 @@ public abstract class PrintRecordSheet implements Printable {
     
     private Font normalFont = null;
     private Font boldFont = null;
+    private String typeface = null;
     
     /**
      * Creates an SVG object for the record sheet
@@ -120,43 +125,79 @@ public abstract class PrintRecordSheet implements Printable {
         return svgDocument;
     }
     
+    /**
+     * @return The name of the typeface to use when printing record sheets.
+     */
+    protected final String getTypeface() {
+        if (null == typeface) {
+            assignFonts();
+        }
+        return typeface;
+    }
+
+    /**
+     * Used for measuring font metrics of a normal weight font
+     * 
+     * @param size The font size
+     * @return     A font derived from the default
+     */
     protected final Font getNormalFont(float size) {
         if (null == normalFont) {
-            loadFonts();
+            assignFonts();
         }
         return normalFont.deriveFont(size);
     }
     
+    /**
+     * Used for measuring font metrics of a bold weight font
+     * 
+     * @param size The font size
+     * @return     A font derived from the default bold
+     */
     protected final Font getBoldFont(float size) {
         if (null == boldFont) {
-            loadFonts();
+            assignFonts();
         }
         return boldFont.deriveFont(size);
     }
     
-    private void loadFonts() {
-        final String METHOD_NAME = "loadFonts()";
-        String fName = "data/fonts/Eurosti.TTF";
-        try {
-            File fontFile = new File(fName);
-            InputStream is = new FileInputStream(fontFile);
-            normalFont = Font.createFont(Font.TRUETYPE_FONT, is);
-            is.close();
-        } catch (Exception ex) {
-            MegaMekLab.getLogger().log(PrintRecordSheet.class, METHOD_NAME, LogLevel.ERROR,
-                            fName + " not loaded.  Using Arial font.", ex);
-            normalFont = new Font("Arial", Font.PLAIN, 8);
+    private void assignFonts() {
+        typeface = CConfig.getParam(CConfig.RS_FONT, DEFAULT_TYPEFACE);
+        Font font = Font.decode(typeface);
+        // If the font is not installed, use system default sans
+        if (null == font) {
+            typeface = Font.SANS_SERIF;
+            font = Font.decode(typeface);
         }
-        fName = "data/fonts/Eurostib.TTF";
-        try {
-            File fontFile = new File(fName);
-            InputStream is = new FileInputStream(fontFile);
-            boldFont = Font.createFont(Font.TRUETYPE_FONT, is);
-            is.close();
-        } catch (Exception ex) {
-            MegaMekLab.getLogger().log(PrintRecordSheet.class, METHOD_NAME, LogLevel.ERROR,
-                            fName + " not loaded.  Using Arial font.", ex);
-            normalFont = new Font("Arial", Font.BOLD, 8);
+        // If that doesn't work, get the default dialog font
+        if (null == font) {
+            font = Font.decode(null);
+            typeface = font.getName();
+        }
+        normalFont = font.deriveFont(Font.PLAIN, 8);
+        boldFont = font.deriveFont(Font.BOLD, 8);
+    }
+    
+    /**
+     * Finds all text elements in the SVG document and replaces the font-family attribute.
+     * 
+     * @param doc The document to perform replacement in.
+     */
+    private void subFonts(SVGDocument doc) {
+        final XPathResult res = (XPathResult) ((XPathEvaluator) doc).evaluate(".//*[local-name()=\"text\"]",
+                doc.getRootElement(), null, XPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
+        for (Node node = res.iterateNext(); node != null; node = res.iterateNext()) {
+            if (node instanceof Element) {
+                final Element elem = (Element) node;
+                // First we want to make sure it's not set in the style attribute, which could override
+                // the change
+                if (elem.hasAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE)) {
+                    elem.setAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE,
+                            elem.getAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE)
+                            .replaceAll("font-family:.*?;", ""));
+                }
+                elem.setAttributeNS(null, SVGConstants.SVG_FONT_FAMILY_ATTRIBUTE, getTypeface());
+            }
         }
     }
 
@@ -182,6 +223,7 @@ public abstract class PrintRecordSheet implements Printable {
                         "Failed to open Mech SVG file! Path: data/images/recordsheets/"
                                 + getSVGFileName(pageIndex - firstPage));
             } else {
+                subFonts((SVGDocument) svgDocument);
                 svgGenerator = new SVGGraphics2D(svgDocument);
                 printImage(g2d, pageFormat, pageIndex - firstPage);
                 GraphicsNode node = build();
@@ -321,7 +363,7 @@ public abstract class PrintRecordSheet implements Printable {
         newText.setTextContent(text);
         newText.setAttributeNS(null, SVGConstants.SVG_X_ATTRIBUTE, String.valueOf(x));
         newText.setAttributeNS(null, SVGConstants.SVG_Y_ATTRIBUTE, String.valueOf(y));
-        newText.setAttributeNS(null, SVGConstants.SVG_FONT_FAMILY_ATTRIBUTE, "Eurostile");
+        newText.setAttributeNS(null, SVGConstants.SVG_FONT_FAMILY_ATTRIBUTE, getTypeface());
         newText.setAttributeNS(null, SVGConstants.SVG_FONT_SIZE_ATTRIBUTE, fontSize + "px");
         newText.setAttributeNS(null, SVGConstants.SVG_FONT_WEIGHT_ATTRIBUTE, weight);
         newText.setAttributeNS(null, SVGConstants.SVG_TEXT_ANCHOR_ATTRIBUTE, anchor);
@@ -1208,6 +1250,11 @@ public abstract class PrintRecordSheet implements Printable {
     
     public double getTextLength(String text, float fontSize) {
         Font font = getNormalFont(fontSize);
+        return font.getStringBounds(text, svgGenerator.getFontRenderContext()).getWidth();
+    }
+    
+    public double getBoldTextLength(String text, float fontSize) {
+        Font font = getBoldFont(fontSize);
         return font.getStringBounds(text, svgGenerator.getFontRenderContext()).getWidth();
     }
     

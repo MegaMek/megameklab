@@ -70,12 +70,12 @@
      inkscape:label="E-CAT35006 BattleTech Interstellar Operations"
      transform="matrix(1,0,0,-1,0,765)"><text
        transform="matrix(1,0,0,-1,204,679.2897)"
-       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:11.59090042px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Bold;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:11.59090042px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="title"
        text-anchor="middle">THREE-LEGGED 'MECH RECORD SHEET</text>
 <text
        transform="matrix(0.99799845,0,0,-1,306,23.0338)"
-       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.7954998px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.7954998px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
        text-anchor="middle"
        textLength="510"
        lengthAdjust="spacingAndGlyphs"
@@ -85,7 +85,7 @@
          id="tspanCopyright">© %d The Topps Company, Inc. Classic BattleTech, BattleTech, ’Mech and BattleMech are trademarks of The Topps Company, Inc. All rights reserved.</tspan></text>
 <text
        transform="matrix(0.99799845,0,0,-1,306,16.079)"
-       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.7954998px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.7954998px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
        text-anchor="middle"
        textLength="482"
        lengthAdjust="spacingAndGlyphs"
@@ -527,12 +527,12 @@
          points="578.271,137.189 585.761,141.441      585.761,79.329 583.688,27.976 558.932,26.307 558.611,57.767 553.923,57.819 552.758,70.575 561.671,76.244 572.602,89    "
          id="polygon629" /><text
          transform="translate(571.885,34.2841)"
-         style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;-inkscape-font-specification:EurostileBold;writing-mode:lr-tb;fill:#110f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;writing-mode:lr-tb;fill:#110f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
          text-anchor="middle"
          id="text631">DC</text>
 <text
          transform="translate(579.349,90.901)"
-         style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;-inkscape-font-specification:EurostileBold;writing-mode:lr-tb;fill:#110f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;writing-mode:lr-tb;fill:#110f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
          text-anchor="middle"
          id="text633">DA</text>
 <g
@@ -600,12 +600,12 @@
          points="404.344,137.189 396.853,141.441     396.853,79.329 398.927,27.976 423.683,26.307 424.003,57.767 428.69,57.819 429.855,70.575 420.942,76.244 410.013,89   "
          id="polygon649" /><text
          transform="translate(411.434,34.2841)"
-         style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;-inkscape-font-specification:EurostileBold;writing-mode:lr-tb;fill:#110f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;writing-mode:lr-tb;fill:#110f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
          text-anchor="middle"
          id="text651">DC</text>
 <text
          transform="translate(403.302,90.901)"
-         style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;-inkscape-font-specification:EurostileBold;writing-mode:lr-tb;fill:#110f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;writing-mode:lr-tb;fill:#110f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
          text-anchor="middle"
          id="text653">DA</text>
 <g
@@ -661,30 +661,33 @@
            height="6.15152"
            id="leftShieldDCRow00" /></g></g><text
        transform="matrix(0.998099,0,0,-1,38.6722,661.5685)"
-       style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:10.6260004px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:10.6260004px;font-family:Eurostile;writing-mode:lr-tb;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
        fill="#ffffff"
        id="text3774"><tspan
-         x="0 2.5289879 13.22937 19.806864 27.20256 35.373955 39.114307 47.126308 54.000271 59.60017"
+         x="0"
          y="0"
-         sodipodi:role="line"
+         textLength="65"
+         lengthAdjust="spacingAndGlyphs"
          id="tspan3776">'MECH DATA</tspan><tspan
-         x="1.11573 8.511426 16.183397 19.116175 25.353636 28.286411 35.68211 43.215942 49.219631 52.959984 61.131378 64.064156 70.301613 74.041969 79.641869 87.175705 94.78392 100.78761"
+         x="1.11573"
          y="271.09052"
-         sodipodi:role="line"
+         textLength="105"
+         lengthAdjust="spacingAndGlyphs"
          id="tspan3778">CRITICAL HIT TABLE</tspan><tspan
-         x="365.2475 373.41888 379.9964 386.8714 393.10886 396.84921 404.86124 411.73624 417.33615"
+         x="365.2475"
          y="466.87457"
-         sodipodi:role="line"
+         textLength="54"
+         lengthAdjust="spacingAndGlyphs"
          id="tspan3780">HEAT DATA</tspan></text>
 <text
        transform="matrix(1,0,0,-1,547.4721,393.2176)"
-       style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6.76200008px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6.76200008px;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3782"><tspan
-         x="0 5.1999779 9.0543184 13.037136"
+         x="0"
          y="0"
          sodipodi:role="line"
          id="tspan3784">Heat</tspan><tspan
-         x="-0.95344198 3.597384 7.323246 11.306064 13.010088"
+         x="-0.95344198"
          y="8.1143999"
          sodipodi:role="line"
          id="tspan3786">Scale</tspan></text>
@@ -699,7 +702,7 @@
              id="path3798"
              inkscape:connector-curvature="0" /></g></g></g><text
        transform="matrix(0.9000109,0,0,-1,555.515,375.1674)"
-       style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.58850002px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.58850002px;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3800"
        text-anchor="middle">Overflow</text>
 <path
@@ -1014,7 +1017,7 @@
          id="path3988"
          inkscape:connector-curvature="0" /></g><text
        transform="matrix(1,0,0,-0.87100485,553.78767,36.9806)"
-       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.95459986px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.95459986px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text3937"><tspan
          x="0"
          y="0"
@@ -1141,16 +1144,18 @@
          id="tspan4033">16</tspan></text>
 <text
        transform="matrix(0.99799862,0,0,-1,391.8178,386.8928)"
-       style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:8.69400024px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:8.69400024px;font-family:Eurostile;writing-mode:lr-tb;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
        fill="#ffffff"
        id="text4088"><tspan
-         x="0 2.4082379 9.6068697 14.718942 20.109222 26.394983 33.593616 39.766357 44.68716 47.756142 53.615898 58.72797 65.013733 71.577705 77.637421 82.749489 89.313461 95.59922 100.9895 104.05849 110.62246 113.03069 119.20344 125.53267 131.81842 137.99117"
+         x="0"
          y="0"
-         sodipodi:role="line"
+         textLength="143"
+         lengthAdjust="spacingAndGlyphs"
          id="tspan4090">INTERNAL STRUCTURE DIAGRAM</tspan><tspan
-         x="46.686779 52.85952 59.145283 67.908836 74.133736 80.419502 83.48848 90.052452 92.460693 98.63343 104.96266 111.24842 117.42117"
+         x="46.686779"
          y="-345.87341"
-         sodipodi:role="line"
+         textLength="75"
+         lengthAdjust="spacingAndGlyphs"
          id="tspan4092">ARMOR DIAGRAM</tspan></text>
 <g
        id="g4094"><g
@@ -1733,25 +1738,25 @@
            id="path4484"
            inkscape:connector-curvature="0" /></g></g><text
        transform="matrix(0.99800355,0,0,-1,401.3929,167.0188)"
-       style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.76200008px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.76200008px;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text4486"><tspan
          x="0 4.6657801"
          y="0"
          sodipodi:role="line"
          id="tspan4488">30</tspan><tspan
-         x="17.831394 22.084692 26.006653 29.860992 32.335884 36.217274 40.071613 45.170158"
+         x="17.831394"
          y="-0.31105199"
          sodipodi:role="line"
          id="tspan4490">Shutdown</tspan><tspan
-         x="-4.1180582 0.95344198 4.773972 8.6283121"
+         x="-4.1180582"
          y="-15.34974"
          sodipodi:role="line"
          id="tspan4492">Heat</tspan><tspan
-         x="-5.0714998 -1.298304 2.5222261 5.585412 9.405942 10.85301"
+         x="-5.0714998"
          y="-7.5937262"
          sodipodi:role="line"
          id="tspan4494">Level*</tspan><tspan
-         x="42.526218 46.312939 48.44973 50.491856 54.312386 58.004436 60.479328"
+         x="42.526218"
          y="-7.904778"
          sodipodi:role="line"
          id="tspan4496">Effects</tspan><tspan
@@ -1759,7 +1764,7 @@
          y="7.6072502"
          sodipodi:role="line"
          id="tspan4498">28</tspan><tspan
-         x="17.831394 22.463364 28.677643 34.891918 38.746262 41.079151 44.865871 47.935818 51.810444 54.143333 56.476223 60.330563 63.393749 67.248093 68.70192 72.583305 74.916199 78.770538 82.692497 85.025391 89.69117"
+         x="17.831394"
          y="7.2961979"
          sodipodi:role="line"
          id="tspan4500">Ammo Exp. avoid on 8+</tspan><tspan
@@ -1767,7 +1772,7 @@
          y="15.207738"
          sodipodi:role="line"
          id="tspan4502">26</tspan><tspan
-         x="17.831394 22.084692 26.006653 29.860992 32.335884 36.217274 40.071613 45.170158 49.092121 51.425011 53.7579 57.61224 60.675426 64.529762 65.983597 69.864983 72.197876 76.052216 79.974174 82.30706 86.972847 91.638626"
+         x="17.831394"
          y="14.896686"
          sodipodi:role="line"
          id="tspan4504">Shutdown, avoid on 10+</tspan><tspan
@@ -1775,7 +1780,7 @@
          y="22.808226"
          sodipodi:role="line"
          id="tspan4506">25</tspan><tspan
-         x="17.831394 21.212395 25.878174 28.211063 34.736393 38.590733 41.653919 45.474449 51.688728 55.509258 59.431217 61.906109 64.238998 68.708679 72.563019 74.016853 77.938812 80.413704"
+         x="17.831394"
          y="22.497173"
          sodipodi:role="line"
          id="tspan4508">–5 Movement Points</tspan><tspan
@@ -1783,7 +1788,7 @@
          y="30.408714"
          sodipodi:role="line"
          id="tspan4510">24</tspan><tspan
-         x="17.831394 21.780401 26.446182 28.779072 35.304401 39.158741 43.040131 44.493961 47.935818 51.756348 54.745152 57.078041 59.552933 63.407272 65.740166 69.452499 70.906334 73.895134"
+         x="17.831394"
          y="30.097662"
          sodipodi:role="line"
          id="tspan4512">+4 Modifer to Fire</tspan><tspan
@@ -1791,7 +1796,7 @@
          y="38.009201"
          sodipodi:role="line"
          id="tspan4514">23</tspan><tspan
-         x="17.831394 22.463364 28.677643 34.891918 38.746262 41.079151 44.865871 47.935818 51.810444 54.143333 56.476223 60.330563 63.393749 67.248093 68.70192 72.583305 74.916199 78.770538 82.692497 85.025391 89.69117"
+         x="17.831394"
          y="37.698151"
          sodipodi:role="line"
          id="tspan4516">Ammo Exp. avoid on 6+</tspan><tspan
@@ -1799,7 +1804,7 @@
          y="45.609692"
          sodipodi:role="line"
          id="tspan4518">22</tspan><tspan
-         x="17.831394 22.084692 26.006653 29.860992 32.335884 36.217274 40.071613 45.170158 49.092121 51.425011 53.7579 57.61224 60.675426 64.529762 65.983597 69.864983 72.197876 76.052216 79.974174 82.30706 86.972847"
+         x="17.831394"
          y="45.298637"
          sodipodi:role="line"
          id="tspan4520">Shutdown, avoid on 8+</tspan><tspan
@@ -1807,7 +1812,7 @@
          y="53.210178"
          sodipodi:role="line"
          id="tspan4522">20</tspan><tspan
-         x="17.831394 21.212395 25.878174 28.211063 34.736393 38.590733 41.653919 45.474449 51.688728 55.509258 59.431217 61.906109 64.238998 68.708679 72.563019 74.016853 77.938812 80.413704"
+         x="17.831394"
          y="52.899124"
          sodipodi:role="line"
          id="tspan4524">–4 Movement Points</tspan><tspan
@@ -1815,7 +1820,7 @@
          y="60.810665"
          sodipodi:role="line"
          id="tspan4526">19</tspan><tspan
-         x="17.831394 22.463364 28.677643 34.891918 38.746262 41.079151 44.865871 47.935818 51.810444 54.143333 56.476223 60.330563 63.393749 67.248093 68.70192 72.583305 74.916199 78.770538 82.692497 85.025391 89.69117"
+         x="17.831394"
          y="60.499615"
          sodipodi:role="line"
          id="tspan4528">Ammo Exp. avoid on 4+</tspan><tspan
@@ -1823,7 +1828,7 @@
          y="68.411156"
          sodipodi:role="line"
          id="tspan4530">18</tspan><tspan
-         x="17.831394 22.084692 26.006653 29.860992 32.335884 36.217274 40.071613 45.170158 49.092121 51.425011 53.7579 57.61224 60.675426 64.529762 65.983597 69.864983 72.197876 76.052216 79.974174 82.30706 86.972847"
+         x="17.831394"
          y="68.100105"
          sodipodi:role="line"
          id="tspan4532">Shutdown, avoid on 6+</tspan><tspan
@@ -1831,7 +1836,7 @@
          y="76.011642"
          sodipodi:role="line"
          id="tspan4534">17</tspan><tspan
-         x="17.831394 21.780401 26.446182 28.779072 35.304401 39.158741 43.040131 44.493961 47.935818 51.756348 54.745152 57.078041 59.552933 63.407272 65.740166 69.452499 70.906334 73.895134"
+         x="17.831394"
          y="75.700592"
          sodipodi:role="line"
          id="tspan4536">+3 Modifer to Fire</tspan><tspan
@@ -1839,7 +1844,7 @@
          y="83.612129"
          sodipodi:role="line"
          id="tspan4538">15</tspan><tspan
-         x="17.831394 21.212395 25.878174 28.211063 34.736393 38.590733 41.653919 45.474449 51.688728 55.509258 59.431217 61.906109 64.238998 68.708679 72.563019 74.016853 77.938812 80.413704"
+         x="17.831394"
          y="83.301079"
          sodipodi:role="line"
          id="tspan4540">–3 Movement Points</tspan><tspan
@@ -1847,7 +1852,7 @@
          y="91.212616"
          sodipodi:role="line"
          id="tspan4542">14</tspan><tspan
-         x="17.831394 22.084692 26.006653 29.860992 32.335884 36.217274 40.071613 45.170158 49.092121 51.425011 53.7579 57.61224 60.675426 64.529762 65.983597 69.864983 72.197876 76.052216 79.974174 82.30706 86.972847"
+         x="17.831394"
          y="90.901566"
          sodipodi:role="line"
          id="tspan4544">Shutdown, avoid on 4+</tspan><tspan
@@ -1855,7 +1860,7 @@
          y="98.813103"
          sodipodi:role="line"
          id="tspan4546">13</tspan><tspan
-         x="17.831394 21.780401 26.446182 28.779072 35.304401 39.158741 43.040131 44.493961 47.935818 51.756348 54.745152 57.078041 59.552933 63.407272 65.740166 69.452499 70.906334 73.895134"
+         x="17.831394"
          y="98.502052"
          sodipodi:role="line"
          id="tspan4548">+2 Modifer to Fire</tspan><tspan
@@ -1863,7 +1868,7 @@
          y="106.41359"
          sodipodi:role="line"
          id="tspan4550">10</tspan><tspan
-         x="17.831394 21.212395 25.878174 28.211063 34.736393 38.590733 41.653919 45.474449 51.688728 55.509258 59.431217 61.906109 64.238998 68.708679 72.563019 74.016853 77.938812 80.413704"
+         x="17.831394"
          y="106.10254"
          sodipodi:role="line"
          id="tspan4552">–2 Movement Points</tspan><tspan
@@ -1871,7 +1876,7 @@
          y="114.01408"
          sodipodi:role="line"
          id="tspan4554"> 8</tspan><tspan
-         x="17.831394 21.780401 26.446182 28.779072 35.304401 39.158741 43.040131 44.493961 47.935818 51.756348 54.745152 57.078041 59.552933 63.407272 65.740166 69.452499 70.906334 73.895134"
+         x="17.831394"
          y="113.70303"
          sodipodi:role="line"
          id="tspan4556">+1 Modifer to Fire</tspan><tspan
@@ -1879,7 +1884,7 @@
          y="121.61457"
          sodipodi:role="line"
          id="tspan4558"> 5</tspan><tspan
-         x="17.831394 21.212395 25.878174 28.211063 34.736393 38.590733 41.653919 45.474449 51.688728 55.509258 59.431217 61.906109 64.238998 68.708679 72.563019 74.016853 77.938812 80.413704"
+         x="17.831394"
          y="121.30352"
          sodipodi:role="line"
          id="tspan4560">–1 Movement Points</tspan></text>
@@ -1887,41 +1892,59 @@
        transform="translate(-7.45,3.07)"
        id="g1039"><text
          transform="matrix(1,0,0,-1,43.2878,644.8024)"
-         style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.65909958px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.65909958px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         textLength="21.40"
+         lengthAdjust="spacingAndGlyphs"
          id="lblType">Type:</text>
 <text
          transform="matrix(1,0,0,-1,48.764,633.25)"
-         style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         textLength="60.32"
+         lengthAdjust="spacingAndGlyphs"
          id="lblMovementPoints">Movement Points:</text>
 <text
          transform="matrix(1,0,0,-1,48.764,622.25)"
-         style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         textLength="28.65"
+         lengthAdjust="spacingAndGlyphs"
          id="lblWalking">Walking:</text>
 <text
          transform="matrix(1,0,0,-1,48.764,614)"
-         style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         textLength="28.75"
+         lengthAdjust="spacingAndGlyphs"
          id="lblRunning">Running:</text>
 <text
          transform="matrix(1,0,0,-1,48.764,605.75)"
-         style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         textLength="30.00"
+         lengthAdjust="spacingAndGlyphs"
          id="lblJumping">Jumping:</text>
 </g><g
        transform="translate(-14.9,3.07)"
        id="g1046"><text
          transform="matrix(1,0,0,-1,150.1,630.5)"
-         style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         textLength="29.91"
+         lengthAdjust="spacingAndGlyphs"
          id="lblTonnage">Tonnage:</text>
 <text
          transform="matrix(1,0,0,-1,150.1,622.25)"
-         style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         textLength="36.09"
+         lengthAdjust="spacingAndGlyphs"
          id="lblTechBase">Tech Base:</text>
 <text
          transform="matrix(1,0,0,-1,150.1,614)"
-         style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         textLength="38.85"
+         lengthAdjust="spacingAndGlyphs"
          id="lblRulesLevel">Rules Level:</text>
 <text
          transform="matrix(1,0,0,-1,150.1,605.75)"
-         style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         textLength="16.23"
+         lengthAdjust="spacingAndGlyphs"
          id="lblRole">Role:</text>
 </g><g
        id="g4572"
@@ -1937,23 +1960,19 @@
          id="path4578"
          inkscape:connector-curvature="0" /></g><text
        transform="matrix(0.99810214,0,0,-1,35.8326,593.8888)"
-       style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:8.69400024px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
-       id="text4580"><tspan
-         x="0 9.4156017 14.371182 19.491947 24.673573 29.73348 34.932491 39.775051 42.835339 49.625351 52.685638 58.067226 63.257545 68.413086 70.464867 75.646492 83.679749 88.63533 93.834343 97.529289 100.58958 102.98912 108.18813 112.45689 117.41247 122.61148 126.30643 131.36633 135.53076"
-         y="0"
-         sodipodi:role="line"
-         id="tspan4582">Weapons &amp; Equipment Inventory</tspan></text>
+       style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:8.69400024px;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         textLength="136"
+         lengthAdjust="spacingAndGlyphs"
+       id="text4580">Weapons &amp; Equipment Inventory</text>
 <text
        transform="matrix(0.99810707,0,0,-1,190.545,593.4949)"
-       style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6.76200008px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
-       id="text4584"><tspan
-         x="0 2.3531761 6.396852 10.251192 13.632192 17.486532 21.252966"
-         y="0"
-         sodipodi:role="line"
-         id="tspan4586">(hexes)</tspan></text>
+       style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6.76200008px;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       textLength="22"
+       lengthAdjust="spacingAndGlyphs"
+       id="text4584">(hexes)</text>
 <text
        transform="matrix(0.99810559,0,0,-1,35.8326,339.166)"
-       style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:9.65999985px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:9.65999985px;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text4606"><tspan
          x="0 6.8102999 9.3798599"
          y="0"
@@ -1961,7 +1980,7 @@
          id="tspan4608">1-3</tspan></text>
 <text
        transform="matrix(0.99810559,0,0,-1,35.8326,284.9152)"
-       style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:9.65999985px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:9.65999985px;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text4624"><tspan
          x="0 6.8102999 9.3798599"
          y="0"
@@ -1969,7 +1988,7 @@
          id="tspan4626">4-6</tspan></text>
 <text
        transform="matrix(0.99810559,0,0,-1,35.8326,203.7363)"
-       style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:9.65999985px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:9.65999985px;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text4646"><tspan
          x="0 6.8102999 9.3798599"
          y="0"
@@ -1977,7 +1996,7 @@
          id="tspan4648">1-3</tspan></text>
 <text
        transform="matrix(0.99810559,0,0,-1,35.8326,149.4857)"
-       style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:9.65999985px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:9.65999985px;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text4664"><tspan
          x="0 6.8102999 9.3798599"
          y="0"
@@ -1985,7 +2004,7 @@
          id="tspan4666">4-6</tspan></text>
 <text
        transform="matrix(0.99810559,0,0,-1,267.2166,339.166)"
-       style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:9.65999985px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:9.65999985px;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text4718"><tspan
          x="0 6.8102999 9.3798599"
          y="0"
@@ -1993,7 +2012,7 @@
          id="tspan4720">1-3</tspan></text>
 <text
        transform="matrix(0.99810559,0,0,-1,267.2166,284.9152)"
-       style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:9.65999985px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:9.65999985px;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text4736"><tspan
          x="0 6.8102999 9.3798599"
          y="0"
@@ -2001,7 +2020,7 @@
          id="tspan4738">4-6</tspan></text>
 <text
        transform="matrix(0.99810559,0,0,-1,267.2166,203.7363)"
-       style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:9.65999985px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:9.65999985px;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text4754"><tspan
          x="0 6.8102999 9.3798599"
          y="0"
@@ -2009,7 +2028,7 @@
          id="tspan4756">1-3</tspan></text>
 <text
        transform="matrix(0.99810559,0,0,-1,267.2166,149.4857)"
-       style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:9.65999985px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:9.65999985px;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text4772"><tspan
          x="0 6.8102999 9.3798599"
          y="0"
@@ -2017,7 +2036,7 @@
          id="tspan4774">4-6</tspan></text>
 <text
        transform="matrix(0.99810559,0,0,-1,150.84,279.256)"
-       style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:9.65999985px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:9.65999985px;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text4820"><tspan
          x="0 6.8102999 9.3798599"
          y="0"
@@ -2025,7 +2044,7 @@
          id="tspan4822">1-3</tspan></text>
 <text
        transform="matrix(0.99810559,0,0,-1,150.84,225.0053)"
-       style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:9.65999985px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:9.65999985px;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text4838"><tspan
          x="0 6.8102999 9.3798599"
          y="0"
@@ -2041,24 +2060,29 @@
              style="fill:none;stroke:#000000;stroke-width:0.91900003;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
              id="path4894"
              inkscape:connector-curvature="0" /></g></g></g><text
-       transform="matrix(0.99799862,0,0,-1,170.1888,153.6213)"
-       style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:8.69400024px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       transform="matrix(0.99799862,0,0,-1,222.1888,153.6213)"
+       style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:8.69400024px;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       text-anchor="end"
        id="text4896"><tspan
-         x="0 4.9121099 6.9638939 9.9894056 14.944986 18.005274 23.856337 29.011877 34.193501 39.375126 44.435036 48.599461"
+         x="0"
          y="0"
-         sodipodi:role="line"
+         textLength="54"
+         lengthAdjust="spacingAndGlyphs"
          id="tspan4898">Life Support</tspan><tspan
-         x="2.0343959 7.885458 12.841038 18.040051 22.882608 27.942516 32.037392 35.097679 41.783363 43.835148 47.530098"
+         x="0"
          y="-10.580598"
-         sodipodi:role="line"
+         textLength="50"
+         lengthAdjust="spacingAndGlyphs"
          id="tspan4900">Sensor Hits</tspan><tspan
-         x="12.162906 18.483444 22.700033 26.86446 31.924368 34.984657 41.670341 43.722126 47.417076"
+         x="0"
          y="-21.343769"
-         sodipodi:role="line"
+         textLength="40.3"
+         lengthAdjust="spacingAndGlyphs"
          id="tspan4902">Gyro Hits</tspan><tspan
-         x="4.0861802 9.4677658 14.666778 19.831015 21.882797 27.08181 32.037392 35.097679 41.783363 43.835148 47.530098"
+         x="0"
          y="-32.106941"
-         sodipodi:role="line"
+         textLength="48.5"
+         lengthAdjust="spacingAndGlyphs"
          id="tspan4904">Engine Hits</tspan></text>
 <g
        id="g4906"><g
@@ -2225,7 +2249,7 @@
              id="path5018"
              inkscape:connector-curvature="0" /></g></g></g><text
        transform="matrix(0.99810707,0,0,-1,208.4078,133.224)"
-       style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6.76200008px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6.76200008px;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text5036"><tspan
          x="0 5.0985479 9.0813656 15.329454 19.312271 23.328899 27.183241"
          y="0"
@@ -2791,15 +2815,21 @@
            transform="translate(0,-102.016)"
            id="g1336"><text
              transform="matrix(1,0,0,-1,256.85324,644.75209)"
-             style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+             style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+             textLength="18.85"
+             lengthAdjust="spacingAndGlyphs"
              id="crewName2">Name:</text>
 <text
              transform="matrix(1,0,0,-1,256.85324,632.432819)"
-             style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+             style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+             textLength="39.17"
+             lengthAdjust="spacingAndGlyphs"
              id="gunnerySkillText2">Gunnery Skill:</text>
 <text
              transform="matrix(1,0,0,-1,328.186011,632.432819)"
-             style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+             style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+             textLength="36.72"
+             lengthAdjust="spacingAndGlyphs"
              id="pilotingSkillText2">Piloting Skill:</text>
 <g
              id="blanksCrew2"><g
@@ -2831,11 +2861,15 @@
                height="13.5"
                fill="none" /></g><text
              transform="matrix(1,0,0,-1,296.4296,618.515)"
-             style="text-anchor:end;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.7954998px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+             style="text-anchor:end;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.7954998px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+             textLength="26.59"
+             lengthAdjust="spacingAndGlyphs"
              id="text57051">Hits Taken</text>
 <text
              transform="matrix(1,0,0,-1,296.4296,609.208)"
-             style="text-anchor:end;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.7954998px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+             style="text-anchor:end;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.7954998px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+             textLength="42.30"
+             lengthAdjust="spacingAndGlyphs"
              id="text1358">Consciousness #</text>
 <g
              id="g56989"
@@ -2845,7 +2879,7 @@
                id="path56991"
                inkscape:connector-curvature="0" /></g><text
              transform="matrix(0.99798858,0,0,-1,305.77463,617.1442)"
-             style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+             style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
              id="text56993"><tspan
                x="0 4.7667871"
                y="0"
@@ -2863,7 +2897,7 @@
                id="path57001"
                inkscape:connector-curvature="0" /></g><text
              transform="matrix(0.99798858,0,0,-1,320.01323,617.1442)"
-             style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+             style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
              id="text57003"><tspan
                x="0 4.7667871"
                y="0"
@@ -2881,7 +2915,7 @@
                id="path57011"
                inkscape:connector-curvature="0" /></g><text
              transform="matrix(0.99798858,0,0,-1,334.25003,617.1442)"
-             style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+             style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
              id="text57013"><tspan
                x="0 4.7667871"
                y="0"
@@ -2899,7 +2933,7 @@
                id="path57021"
                inkscape:connector-curvature="0" /></g><text
              transform="matrix(0.99798858,0,0,-1,348.62223,617.1442)"
-             style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+             style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
              id="text57023"><tspan
                x="0 4.7667871"
                y="0"
@@ -2917,7 +2951,7 @@
                id="path57031"
                inkscape:connector-curvature="0" /></g><text
              transform="matrix(0.99798858,0,0,-1,362.89013,617.1442)"
-             style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+             style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
              id="text57033"><tspan
                x="0 4.7667871"
                y="0"
@@ -2935,7 +2969,7 @@
                id="path57041"
                inkscape:connector-curvature="0" /></g><text
              transform="matrix(0.99798858,0,0,-1,376.71853,617.1442)"
-             style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+             style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
              id="text57043"><tspan
                x="0 4.7667871"
                y="0"
@@ -2943,12 +2977,10 @@
                id="tspan57045">6 </tspan></text>
 <text
              transform="matrix(0.9980061,0,0,-1,372.5741,608.9293)"
-             style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.21589994px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-             id="text57047"><tspan
-               x="0"
-               y="0"
-               sodipodi:role="line"
-               id="tspan57049">Dead</tspan></text>
+             style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.21589994px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+             textLength="11.54"
+             lengthAdjust="spacingAndGlyphs"
+             id="text57047">Dead</text>
 <g
              id="g57065"
              transform="translate(301.4454,607.4851)"><path
@@ -2959,15 +2991,21 @@
          transform="translate(0,-51.008)"
          id="g1393"><text
            transform="matrix(1,0,0,-1,256.85324,644.75209)"
-           style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           textLength="18.85"
+           lengthAdjust="spacingAndGlyphs"
            id="crewName1">Name:</text>
 <text
            transform="matrix(1,0,0,-1,256.85324,632.432819)"
-           style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           textLength="39.17"
+           lengthAdjust="spacingAndGlyphs"
            id="gunnerySkillText1">Gunnery Skill:</text>
 <text
            transform="matrix(1,0,0,-1,328.186011,632.432819)"
-           style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           textLength="36.72"
+           lengthAdjust="spacingAndGlyphs"
            id="pilotingSkillText1">Piloting Skill:</text>
 <g
            id="blanksCrew1"><g
@@ -2999,11 +3037,15 @@
              height="13.5"
              fill="none" /></g><text
            transform="matrix(1,0,0,-1,296.4296,618.515)"
-           style="text-anchor:end;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.7954998px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           style="text-anchor:end;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.7954998px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           textLength="26.59"
+           lengthAdjust="spacingAndGlyphs"
            id="text1416">Hits Taken</text>
 <text
            transform="matrix(1,0,0,-1,296.4296,609.208)"
-           style="text-anchor:end;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.7954998px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           style="text-anchor:end;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.7954998px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           textLength="42.30"
+           lengthAdjust="spacingAndGlyphs"
            id="text1418">Consciousness #</text>
 <g
            id="g1420"
@@ -3013,7 +3055,7 @@
              id="path1422"
              inkscape:connector-curvature="0" /></g><text
            transform="matrix(0.99798858,0,0,-1,305.77463,617.1442)"
-           style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
            id="text1424"><tspan
              x="0 4.7667871"
              y="0"
@@ -3031,7 +3073,7 @@
              id="path1432"
              inkscape:connector-curvature="0" /></g><text
            transform="matrix(0.99798858,0,0,-1,320.01323,617.1442)"
-           style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
            id="text1434"><tspan
              x="0 4.7667871"
              y="0"
@@ -3049,7 +3091,7 @@
              id="path1442"
              inkscape:connector-curvature="0" /></g><text
            transform="matrix(0.99798858,0,0,-1,334.25003,617.1442)"
-           style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
            id="text1444"><tspan
              x="0 4.7667871"
              y="0"
@@ -3067,7 +3109,7 @@
              id="path1452"
              inkscape:connector-curvature="0" /></g><text
            transform="matrix(0.99798858,0,0,-1,348.62223,617.1442)"
-           style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
            id="text1454"><tspan
              x="0 4.7667871"
              y="0"
@@ -3085,7 +3127,7 @@
              id="path1462"
              inkscape:connector-curvature="0" /></g><text
            transform="matrix(0.99798858,0,0,-1,362.89013,617.1442)"
-           style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
            id="text1464"><tspan
              x="0 4.7667871"
              y="0"
@@ -3103,7 +3145,7 @@
              id="path1472"
              inkscape:connector-curvature="0" /></g><text
            transform="matrix(0.99798858,0,0,-1,376.71853,617.1442)"
-           style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
            id="text1474"><tspan
              x="0 4.7667871"
              y="0"
@@ -3111,12 +3153,10 @@
              id="tspan1476">6 </tspan></text>
 <text
            transform="matrix(0.9980061,0,0,-1,372.5741,608.9293)"
-           style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.21589994px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-           id="text1478"><tspan
-             x="0"
-             y="0"
-             sodipodi:role="line"
-             id="tspan1480">Dead</tspan></text>
+           style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.21589994px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           textLength="11.54"
+           lengthAdjust="spacingAndGlyphs"
+           id="text1478">Dead</text>
 <g
            id="g1482"
            transform="translate(301.4454,607.4851)"><path
@@ -3125,23 +3165,33 @@
              id="path1484"
              inkscape:connector-curvature="0" /></g></g><text
          transform="matrix(1,0,0,-1,256.85324,644.75209)"
-         style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         textLength="18.85"
+         lengthAdjust="spacingAndGlyphs"
          id="crewName0">Name:</text>
 <text
          transform="matrix(1,0,0,-1,256.85324,632.432819)"
-         style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         textLength="39.17"
+         lengthAdjust="spacingAndGlyphs"
          id="gunnerySkillText0">Gunnery Skill:</text>
 <text
          transform="matrix(1,0,0,-1,328.186011,632.432819)"
-         style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         textLength="36.72"
+         lengthAdjust="spacingAndGlyphs"
          id="pilotingSkillText0">Piloting Skill:</text>
 <text
          transform="matrix(1,0,0,-1,296.4296,618.515)"
-         style="text-anchor:end;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.7954998px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         style="text-anchor:end;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.7954998px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         textLength="26.59"
+         lengthAdjust="spacingAndGlyphs"
          id="text1489">Hits Taken</text>
 <text
          transform="matrix(1,0,0,-1,296.4296,609.208)"
-         style="text-anchor:end;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.7954998px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         style="text-anchor:end;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.7954998px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         textLength="42.30"
+         lengthAdjust="spacingAndGlyphs"
          id="text1491">Consciousness #</text>
 <g
          transform="matrix(1,0,0,-1,256.85324,605.42)"
@@ -3159,7 +3209,7 @@
            id="path1498"
            inkscape:connector-curvature="0" /></g><text
          transform="matrix(0.99798858,0,0,-1,305.77463,617.1442)"
-         style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
          id="text1500"><tspan
            x="0 4.7667871"
            y="0"
@@ -3177,7 +3227,7 @@
            id="path1508"
            inkscape:connector-curvature="0" /></g><text
          transform="matrix(0.99798858,0,0,-1,320.01323,617.1442)"
-         style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
          id="text1510"><tspan
            x="0 4.7667871"
            y="0"
@@ -3195,7 +3245,7 @@
            id="path1518"
            inkscape:connector-curvature="0" /></g><text
          transform="matrix(0.99798858,0,0,-1,334.25003,617.1442)"
-         style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
          id="text1520"><tspan
            x="0 4.7667871"
            y="0"
@@ -3213,7 +3263,7 @@
            id="path1528"
            inkscape:connector-curvature="0" /></g><text
          transform="matrix(0.99798858,0,0,-1,348.62223,617.1442)"
-         style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
          id="text1530"><tspan
            x="0 4.7667871"
            y="0"
@@ -3231,7 +3281,7 @@
            id="path1538"
            inkscape:connector-curvature="0" /></g><text
          transform="matrix(0.99798858,0,0,-1,362.89013,617.1442)"
-         style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
          id="text1540"><tspan
            x="0 4.7667871"
            y="0"
@@ -3249,7 +3299,7 @@
            id="path1548"
            inkscape:connector-curvature="0" /></g><text
          transform="matrix(0.99798858,0,0,-1,376.71853,617.1442)"
-         style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
          id="text1550"><tspan
            x="0 4.7667871"
            y="0"
@@ -3257,7 +3307,9 @@
            id="tspan1552">6 </tspan></text>
 <text
          transform="matrix(0.9980061,0,0,-1,372.5741,608.9293)"
-         style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.21589994px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.21589994px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         textLength="11.54"
+         lengthAdjust="spacingAndGlyphs"
          id="text1554"><tspan
            x="0"
            y="0"
@@ -3301,16 +3353,14 @@
          id="path3772"
          inkscape:connector-curvature="0" /></g><text
        transform="matrix(0.998099,0,0,-1,252.5789,661.5685)"
-       style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:10.6260004px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:10.6260004px;font-family:Eurostile;writing-mode:lr-tb;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
        fill="#ffffff"
-       id="text5388"><tspan
-         x="0 11.63547 19.169304 26.841276 34.513248 37.446026 45.043613 52.715588 56.455936 64.467941 71.342964 76.942863"
-         y="0"
-         sodipodi:role="line"
-         id="tspan5390">WARRIOR DATA</tspan></text>
+       textLength="81"
+       lengthAdjust="spacingAndGlyphs"
+       id="text5388">WARRIOR DATA</text>
 <text
        transform="matrix(0.99810214,0,0,-1,442.4658,375.4193)"
-       style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.796px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.796px;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text6292"><tspan
          x="0 4.3470001 7.6217399 10.92546"
          y="0"
@@ -3354,7 +3404,7 @@
          id="tspan6312">Leg</tspan></text>
 <text
        transform="matrix(0.99810214,0,0,-1,436.6827,249.459)"
-       style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.796px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.796px;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text6330"><tspan
          x="0 3.8543401 7.1290798 10.49076 12.612096 15.886836"
          y="0"
@@ -3366,7 +3416,7 @@
          id="tspan6334">Leg</tspan></text>
 <text
        transform="matrix(0.99810214,0,0,-1,516.8875,249.459)"
-       style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.796px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.796px;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text6352"><tspan
          x="0 4.0629959 5.3091359 8.6302443 11.991924"
          y="0"
@@ -3378,7 +3428,7 @@
          id="tspan6356">Leg</tspan></text>
 <text
        transform="matrix(0.99811939,0,0,-1,473.1264,721.81)"
-       style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.796px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.796px;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text8242"><tspan
          x="0 4.3470001 7.6217399 10.92546"
          y="0"
@@ -3386,7 +3436,7 @@
          id="tspan8244">Head</tspan></text>
 <text
        transform="matrix(0.99811939,0,0,-1,475.1264,721.81)"
-       style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.796px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.796px;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text1599"><tspan
          x="-25.890732 -22.036392 -18.761652 -15.399972 -13.278636 -10.003896"
          y="161.35484"
@@ -3398,7 +3448,7 @@
          id="tspan8248">Torso</tspan></text>
 <text
        transform="matrix(0.99810214,0,0,-1,507.7306,721.8104)"
-       style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.796px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.796px;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text8252"><tspan
          x="0 4.0629959 5.3091359 8.6302443 11.991924 14.11326 16.112881 18.923941 22.227659 24.789492 27.901943"
          y="0"
@@ -3418,7 +3468,7 @@
          id="tspan8264">Leg</tspan></text>
 <text
        transform="matrix(0.99810214,0,0,-1,500.1306,721.8104)"
-       style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.796px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.796px;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text1608"><tspan
          x="-57.038437 -53.184097 -49.909355 -46.547676 -44.426338 -41.1516 -38.589767 -36.590149 -33.779087 -30.475368 -27.913536 -24.801085 -21.497364 -19.497744 -15.434748 -12.160008 -8.856288"
          y="319.00604"
@@ -3438,7 +3488,7 @@
          id="tspan8282">Torso Rear</tspan></text>
 <text
        transform="matrix(0.99810214,0,0,-1,517.2006,762.3604)"
-       style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.796px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.796px;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text1614"><tspan
          x="-120.16267 -116.9285 -113.65376 -111.90337"
          y="202.89478"
@@ -3450,7 +3500,7 @@
          id="tspan8270">Leg</tspan></text>
 <text
        transform="matrix(0.99811939,0,0,-1,393.1072,588.6024)"
-       style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.796px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.796px;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text8284"><tspan
          x="0 3.2341681 6.5089078 8.2593002 10.380636 12.380256 16.350515 18.912348"
          y="0"
@@ -3458,7 +3508,7 @@
          id="tspan8286">Left Arm</tspan></text>
 <text
        transform="matrix(0.99811939,0,0,-1,397.1072,588.6024)"
-       style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.796px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.796px;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text1620"><tspan
          x="159.99858 164.06157 165.30771 168.62883 171.99051 174.11185 176.11147 180.08173 182.64355"
          y="0"
@@ -3466,7 +3516,7 @@
          id="tspan8290">Right Arm</tspan></text>
 <text
        transform="matrix(0.99811939,0,0,-1,504.8906,498.2148)"
-       style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.796px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.796px;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text8326"><tspan
          x="0 3.8543401 7.1290798 10.49076 12.612096 15.886836"
          y="0"
@@ -3577,7 +3627,7 @@
              id="path8472"
              inkscape:connector-curvature="0" /></g></g></g><text
        transform="matrix(0.99799431,0,0,-1,43.8168,419.2312)"
-       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.72800016px;font-family:Eurostile;-inkscape-font-specification:EurostileBold;writing-mode:lr-tb;fill:#010101;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.72800016px;font-family:Eurostile;writing-mode:lr-tb;fill:#010101;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text9044"><tspan
          x="0 4.8995519 9.6599998 11.298336"
          y="0"

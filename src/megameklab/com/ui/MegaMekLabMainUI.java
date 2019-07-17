@@ -49,8 +49,8 @@ public abstract class MegaMekLabMainUI extends JFrame implements
 
         EquipmentType.initializeTypes();
         MechSummaryCache.getInstance();
-        UnitUtil.loadFonts();
         new CConfig();
+        UnitUtil.loadFonts();
         System.out.println("Starting MegaMekLab version: " + MegaMekLab.VERSION);
         
         setLookAndFeel();
