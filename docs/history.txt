@@ -24,6 +24,8 @@ v0.45.5-SNAPSHOT
 + Issue #311: Incorrect heat for Nova CEWS
 + Issue #320: Cannot add heat sinks after changing engine type
 + Bug: Maximum docking hardpoints not updating when JS/WS/SS tonnage changes.
++ PR #326: Removed proprietary fonts from distribution. Users can select the font for use in record sheet printing from the
+           configuration dialog.
 
 v0.45.4 (2019-03-24 1700 UTC)
 + Fixed vehicle and aero slot calculations for patchwork armor.
