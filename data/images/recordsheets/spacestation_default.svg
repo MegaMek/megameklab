@@ -515,12 +515,9 @@
          font-size="11.05px"
          transform="matrix(1 0 0 -1 410.39 269.76)"
          font-family="Eurostile"
-         fill="#ffffff">
-        <tspan
-           id="tspan3619"
-           y="0"
-           x="0 7.6911478 15.669609 18.719547 25.20619 28.256128 35.947277 43.782082 50.025612 53.91539 62.247467 70.082268 81.199074 89.033882 97.067589">CRITICAL DAMAGE</tspan>
-      </text>
+         textLength="105"
+         lengthAdjust="spacingAndGlyphs"
+         fill="#ffffff">CRITICAL DAMAGE</text>
       <g
          fill="#231f20"
          id="g146">
@@ -762,36 +759,24 @@
              transform="matrix(.99801 0 0 -1 367.48 221.73)">
             <tspan
                id="tspan3719"
+               text-anchor="middle"
+               textLength="14"
+               lengthAdjust="spacingAndGlyphs"
                y="0"
-               x="0 1.37427 4.8702202 8.1612349 11.614992">Incp.</tspan>
+               x="7.4">Incp.</tspan>
           </text>
           <text
              id="text3721"
-             transform="matrix(.99801 0 0 -1 259.26 236.27)">
+             transform="matrix(.99801 0 0 -1 290.66 236.27)"
+             text-anchor="end">
             <tspan
                id="tspan3723"
                y="0"
-               x="0 4.6351476 6.0576377 8.6193247 11.976643 14.098323 17.124128 20.674326 23.923147 27.358822">Hits Taken</tspan>
+               x="0">Hits Taken</tspan>
             <tspan
                id="tspan3725"
                y="14.532302"
-               x="6.8592949 12.92296 16.430965 20.005272">Modi</tspan>
-          </text>
-          <text
-             id="text3727"
-             transform="matrix(.99801 0 0 -1 280.65 221.73)">
-            <tspan
-               id="tspan3729"
-               y="0"
-               x="0">ﬁ</tspan>
-          </text>
-          <text
-             id="text3731"
-             transform="matrix(.99801 0 0 -1 284.16 221.73)">
-            <tspan
-               id="tspan3733"
-               y="0"
-               x="0 3.4356749">er</tspan>
+               x="0">Modifier</tspan>
           </text>
         </g>
         <text
@@ -914,7 +899,7 @@
             <tspan
                id="tspan3871"
                y="0"
-               x="0 4.9847426 8.4927473 11.850065 15.28574">Nose:</tspan>
+               x="0">Nose:</tspan>
           </text>
           <text
              id="text3885"
@@ -922,15 +907,15 @@
             <tspan
                id="tspan3887"
                y="0"
-               x="0 3.4055376 6.8412123 8.9387827 11.50047 15.611225 19.963079 21.385571 24.965904 28.570351 31.132038 33.253719 36.761723 40.269726 43.162926 46.598602">Left/Right Fore:</tspan>
+               x="0">Left/Right Fore:</tspan>
             <tspan
                id="tspan3889"
                y="11.036352"
-               x="0 3.4055376 6.8412123 8.9387827 11.50047 15.611225 19.963079 21.385571 24.965904 28.570351 31.132038 33.253719 37.527214 39.624786 42.186474">Left/Right Aft:</tspan>
+               x="0">Left/Right Aft:</tspan>
             <tspan
                id="tspan3895"
                y="22.072704"
-               x="0 4.2734976 6.3710675 8.9327555">Aft:</tspan>
+               x="0">Aft:</tspan>
           </text>
           <text
              id="text3941"
