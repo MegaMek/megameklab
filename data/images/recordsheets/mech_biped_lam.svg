@@ -853,17 +853,24 @@
        style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:10.625px;font-family:Eurostile;writing-mode:lr-tb;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
        fill="#ffffff"
        id="text56217"><tspan
-         x="0 2.5287499 13.228125 19.805 27.200001 35.370625 39.110626 47.121876 53.99625 59.595627 214.29562 225.92999 233.46312 241.13437 248.80562 251.73813 259.33499 267.00626 270.74625 278.75751 285.63187 291.23126"
+         x="0"
          y="0"
-         sodipodi:role="line"
-         id="tspan56219">'MECH DATAWARRIOR DATA</tspan><tspan
-         x="1.115625 8.5106249 16.181875 19.114374 25.35125 28.283751 35.678749 43.211876 49.215 52.955002 61.125626 64.058128 70.294998 74.035004 79.634377 87.167503 94.775002 100.77812"
+         textLength="65"
+         lengthAdjust="spacingAndGlyphs"
+         id="tspan56219">'MECH DATA</tspan><tspan
+         x="214.3"
+         y="0"
+         textLength="81"
+         lengthAdjust="spacingAndGlyphs">WARRIOR DATA</tspan><tspan
+         x="1.115625"
          y="271.065"
-         sodipodi:role="line"
+         textLength="105"
+         lengthAdjust="spacingAndGlyphs"
          id="tspan56221">CRITICAL HIT TABLE</tspan><tspan
-         x="365.21313 373.38376 379.96063 386.83499 393.07187 396.81189 404.82312 411.69751 417.29688"
+         x="365.21313"
          y="466.83063"
-         sodipodi:role="line"
+         textLength="54"
+         lengthAdjust="spacingAndGlyphs"
          id="tspan56223">HEAT DATA</tspan></text>
 <text
        transform="matrix(1,0,0,-1,554.8791,390.1669)"
@@ -1432,9 +1439,10 @@
        style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:8.69320011px;font-family:Eurostile;writing-mode:lr-tb;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
        fill="#ffffff"
        id="text56603"><tspan
-         x="0 2.4080164 9.6059856 14.717587 20.107372 26.392555 33.590527 39.762695 44.683048 47.751747 53.610966 58.722565 65.007751 71.571114 77.63028 82.741875 89.305244 95.590424 100.98021 104.04891 110.61227 113.02029 119.19247 125.52112 131.8063 137.97847"
+         x="0"
          y="0"
-         sodipodi:role="line"
+       textLength="143"
+       lengthAdjust="spacingAndGlyphs"
          id="tspan56605">INTERNAL STRUCTURE DIAGRAM</tspan></text>
 <g
        id="g56607"><g
@@ -1852,9 +1860,10 @@
        style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:8.69320011px;font-family:Eurostile;writing-mode:lr-tb;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
        fill="#ffffff"
        id="text56903"><tspan
-         x="0 6.1721721 12.457355 21.2201 27.444433 33.729614 36.798317 43.361683 45.769699 51.941872 58.270519 64.555702 70.727875"
+         x="0"
          y="0"
-         sodipodi:role="line"
+         textLength="75"
+         lengthAdjust="spacingAndGlyphs"
          id="tspan56905">ARMOR DIAGRAM</tspan></text>
 <text
        transform="matrix(1,0,0,-1,404.1643,181.1136)"
@@ -2291,17 +2300,20 @@
        lengthAdjust="spacingAndGlyphs"
        id="text57839">Role:</text>
 <text
-       transform="matrix(0.99809765,0,0,-1,172.9651,47.9153)"
-       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
-       id="text6709"><tspan
-         x="0 5.1850181 9.2186689 15.531873 19.565523 23.63781 27.547825 29.479649 33.56739 36.820583 40.854237 44.949703 48.774719 51.189499 55.099514"
+       transform="matrix(0.99809211,0,0,-1,216.9537,49.284)"
+       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       text-anchor="middle"
+       id="text57121"><tspan
+         x="30"
          y="0"
-         sodipodi:role="line"
-         id="tspan6711">Damage Transfer</tspan><tspan
-         x="14.875052 20.06007 21.775532 25.809181 29.88147 33.134663 37.168312"
-         y="9.2727604"
-         sodipodi:role="line"
-         id="tspan6713">Diagram</tspan></text>
+         textLength="60"
+         lengthAdjust="spacingAndGlyphs"
+         id="tspan57123">Damage Transfer</tspan><tspan
+         x="28"
+         y="8.1136799"
+         textLength="28"
+         lengthAdjust="spacingAndGlyphs"
+         id="tspan57125">Diagram</tspan></text>
 <g
        id="g6715"><g
          id="g6723"
@@ -3145,36 +3157,50 @@
          transform="matrix(1,0,0,-1,228.93,182.6952)"
          style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:8.69320011px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
          text-anchor="end"
+         textLength="48.49"
+         lengthAdjust="spacingAndGlyphs"
          id="text1393">Avionics Hits</text>
 <text
          transform="matrix(1,0,0,-1,228.93,172.1152)"
          style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:8.69320011px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
          text-anchor="end"
+         textLength="42.45"
+         lengthAdjust="spacingAndGlyphs"
          id="text1395">Engine Hits</text>
 <text
          transform="matrix(1,0,0,-1,228.93,161.5352)"
          style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:8.69320011px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
          text-anchor="end"
+         textLength="35.19"
+         lengthAdjust="spacingAndGlyphs"
          id="text1397">Gyro Hits</text>
 <text
          transform="matrix(1,0,0,-1,228.93,150.9552)"
          style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:8.69320011px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
          text-anchor="end"
+         textLength="44.3"
+         lengthAdjust="spacingAndGlyphs"
          id="text1399">Sensor Hits</text>
 <text
          transform="matrix(1,0,0,-1,228.93,140.3752)"
          style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:8.69320011px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
          text-anchor="end"
+         textLength="49.57"
+         lengthAdjust="spacingAndGlyphs"
          id="text1401">Landing Gear</text>
 <text
          transform="matrix(1,0,0,-1,228.93,129.7952)"
          style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:8.69320011px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
          text-anchor="end"
+         textLength="46.13"
+         lengthAdjust="spacingAndGlyphs"
          id="text1403">Life Support</text>
 <text
          transform="matrix(1,0,0,-1,217.2,116.0432)"
          style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:8.69320011px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
          text-anchor="middle"
+         textLength="72.9"
+         lengthAdjust="spacingAndGlyphs"
          id="text1405">Structural Integrity</text>
 <g
          id="g60437"
