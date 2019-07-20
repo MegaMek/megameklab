@@ -67,6 +67,7 @@ import megamek.common.Mounted;
 import megamek.common.Protomech;
 import megamek.common.QuadMech;
 import megamek.common.SmallCraft;
+import megamek.common.SuperHeavyTank;
 import megamek.common.Tank;
 import megamek.common.TechConstants;
 import megamek.common.TripodMech;
@@ -3614,6 +3615,19 @@ public class UnitUtil {
                                 && (location != Mech.LOC_RT) && (location != Mech.LOC_LT))) {
                     return false;
                 }
+            }
+            if ((((WeaponType) eq).getAmmoType() == AmmoType.T_GAUSS_HEAVY)
+                    || ((WeaponType) eq).getAmmoType() == AmmoType.T_IGAUSS_HEAVY) {
+                if (unit instanceof Mech) {
+                    return unit.isSuperHeavy() || ((Mech) unit).locationIsTorso(location);
+                } else if (unit instanceof SuperHeavyTank) {
+                    return location == SuperHeavyTank.LOC_FRONT || location == SuperHeavyTank.LOC_REAR;
+                } else if (unit instanceof Tank) {
+                    return location == Tank.LOC_FRONT || location == Tank.LOC_REAR;
+                } else if (unit.isFighter()) {
+                    return location == Aero.LOC_NOSE || location == Aero.LOC_AFT;
+                }
+                return true;
             }
             if (unit instanceof Tank) {
             	if (location == Tank.LOC_BODY) {
