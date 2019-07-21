@@ -27,6 +27,7 @@ v0.45.5-SNAPSHOT
 + PR #326: Removed proprietary fonts from distribution. Users can select the font for use in record sheet printing from the
            configuration dialog.
 + Issue #324: Improved Heavy Gauss can be split between Arms and Torsos
++ Issue #325: Engine Free heat sink count overflows variable when changing weight on an Omni mech
 
 v0.45.4 (2019-03-24 1700 UTC)
 + Fixed vehicle and aero slot calculations for patchwork armor.
