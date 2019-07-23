@@ -8,7 +8,7 @@ plugins {
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 group = 'org.megamek'
-version = '0.45.4'
+version = '0.46.0-rc.1'
 
 sourceSets {
     main {
@@ -31,7 +31,7 @@ ext {
     mmlBranchTag = mmlBranch.equals('master')? '' : '-' + mmlBranch
     
     // Allows setting a dependency on a different MM branch.
-    mmBranch = 'master'
+    mmBranch = 'stable'
     mmBranchTag = mmBranch.equals('master')? '' : '-' + mmBranch
     
     mmDir = '../megamek'

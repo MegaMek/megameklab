@@ -1,6 +1,6 @@
 VERSION HISTORY:
 ----------------
-v0.46.0-rc1
+v0.46.0-rc.1 (2019-07-23 0300 UTC)
 + Issue #280: Wrong rounding for Partial Wing
 + Issue #279: BA SRM Torpedo ammo fails to load
 + Issue #281: Issue printing BV to Record Sheet
