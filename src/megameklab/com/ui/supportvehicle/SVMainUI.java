@@ -20,6 +20,7 @@ package megameklab.com.ui.supportvehicle;
 
 import megamek.common.*;
 import megameklab.com.ui.MegaMekLabMainUI;
+import megameklab.com.ui.tabs.TransportTab;
 import megameklab.com.ui.tabs.EquipmentTab;
 import megameklab.com.ui.tabs.FluffTab;
 import megameklab.com.ui.tabs.PreviewTab;
@@ -37,6 +38,7 @@ public class SVMainUI extends MegaMekLabMainUI {
     private SVStructureTab structureTab;
     private SVArmorTab armorTab;
     private EquipmentTab equipmentTab;
+    private TransportTab transportTab;
     private PreviewTab previewTab;
     private SVBuildTab buildTab;
     private FluffTab fluffTab;
@@ -77,11 +79,13 @@ public class SVMainUI extends MegaMekLabMainUI {
         armorTab = new SVArmorTab(this, structureTab.getTechManager());
         equipmentTab = new EquipmentTab(this);
         buildTab = new SVBuildTab(this, equipmentTab);
+        transportTab = new TransportTab(this);
         fluffTab = new FluffTab(this);
         structureTab.addRefreshedListener(this);
         armorTab.addRefreshedListener(this);
         equipmentTab.addRefreshedListener(this);
         buildTab.addRefreshedListener(this);
+        transportTab.addRefreshedListener(this);
         fluffTab.setRefreshedListener(this);
 
         previewTab = new PreviewTab(this);
@@ -90,6 +94,7 @@ public class SVMainUI extends MegaMekLabMainUI {
         configPane.addTab("Armor", armorTab);
         configPane.addTab("Equipment", equipmentTab);
         configPane.addTab("Assign Criticals", buildTab);
+        configPane.addTab("Transport", transportTab);
         configPane.addTab("Fluff", fluffTab);
         configPane.addTab("Preview", previewTab);
 
@@ -106,6 +111,7 @@ public class SVMainUI extends MegaMekLabMainUI {
         armorTab.refresh();
         equipmentTab.refresh();
         buildTab.refresh();
+        transportTab.refresh();
         statusbar.refresh();
         previewTab.refresh();
         refreshHeader();
@@ -129,7 +135,7 @@ public class SVMainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshTransport() {
-        // not used for vees
+        transportTab.refresh();
     }
 
     @Override
