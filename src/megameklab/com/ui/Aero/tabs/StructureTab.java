@@ -576,6 +576,15 @@ public class StructureTab extends ITab implements AeroBuildListener, ArmorAlloca
     }
 
     @Override
+    public void fuelCapacityChanged(int capacity) {
+        getAero().setFuel(capacity);
+        panFuel.setFromEntity(getAero());
+        panSummary.refresh();
+        refresh.refreshStatus();
+        refresh.refreshPreview();
+    }
+
+    @Override
     public void armorPointsChanged(int location, int front, int rear) {
         getAero().initializeArmor(front, location);
         getAero().initializeThresh(location);

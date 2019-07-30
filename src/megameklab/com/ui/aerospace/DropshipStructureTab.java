@@ -466,6 +466,15 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener,
     }
 
     @Override
+    public void fuelCapacityChanged(int capacity) {
+        getAero().setFuel(capacity);
+        panFuel.setFromEntity(getAero());
+        panSummary.refresh();
+        refresh.refreshStatus();
+        refresh.refreshPreview();
+    }
+
+    @Override
     public void armorPointsChanged(int location, int front, int rear) {
         getSmallCraft().initializeArmor(front, location);
         getSmallCraft().initializeThresh(location);

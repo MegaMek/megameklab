@@ -511,6 +511,15 @@ public class AdvancedAeroStructureTab extends ITab implements AdvancedAeroBuildL
     }
 
     @Override
+    public void fuelCapacityChanged(int capacity) {
+        getAero().setFuel(capacity);
+        panFuel.setFromEntity(getAero());
+        panSummary.refresh();
+        refresh.refreshStatus();
+        refresh.refreshPreview();
+    }
+
+    @Override
     public void armorPointsChanged(int location, int front, int rear) {
         getJumpship().initializeArmor(front, location);
         getJumpship().initializeThresh(location);

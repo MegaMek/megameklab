@@ -559,6 +559,28 @@ class SVStructureTab extends ITab implements SVBuildListener {
         refresh.refreshPreview();
     }
 
+    @Override
+    public void fuelCapacityChanged(int capacity) {
+        if (getEntity().isAero()) {
+            getAero().setFuel(capacity);
+        } else {
+            double tonnage = capacity * getTank().fuelTonnagePer100km() / 100.0;
+            if (TestEntity.usesKgStandard(getEntity())) {
+                tonnage = TestEntity.round(tonnage, TestEntity.Ceil.KILO);
+            } else if (tonnage > getTank().getFuelTonnage()) {
+                // Round in the same direction as the change.
+                tonnage = TestEntity.ceil(tonnage, TestEntity.Ceil.HALFTON);
+            } else {
+                tonnage = TestEntity.floor(tonnage, TestEntity.Ceil.HALFTON);
+            }
+            getTank().setFuelTonnage(tonnage);
+        }
+        panFuel.setFromEntity(getSV());
+        panSummary.refresh();
+        refresh.refreshStatus();
+        refresh.refreshPreview();
+    }
+
     /**
      * Convenience method that removes the fuel if the vehicle does not require fuel mass
      * then refreshes the fuel panel. Changes that can affect this are vehicle type, engine

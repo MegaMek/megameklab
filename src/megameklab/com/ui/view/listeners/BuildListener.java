@@ -50,4 +50,12 @@ public interface BuildListener {
 
     // For aerospace units and support vehicles
     default void fuelTonnageChanged(double tonnage) {};
+
+    /**
+     * Notify of a change in the amount of fuel. For aerospace this is number of fuel points.
+     * For ground support vehicles this is the range in km.
+     *
+     * @param capacity The number of fuel points or range as appropriate to the unit type
+     */
+    default void fuelCapacityChanged(int capacity) {};
 }
