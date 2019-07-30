@@ -39,6 +39,7 @@ import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.Aero.tabs.EquipmentTab;
 import megameklab.com.ui.tabs.PreviewTab;
 import megameklab.com.ui.tabs.FluffTab;
+import megameklab.com.ui.tabs.TransportTab;
 import megameklab.com.util.MenuBarCreator;
 
 /**
