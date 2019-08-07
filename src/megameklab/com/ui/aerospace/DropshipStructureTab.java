@@ -426,6 +426,7 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener,
         refresh();
         refresh.refreshEquipment();
         refresh.refreshBuild();
+        refresh.refreshTransport();
         refresh.refreshPreview();
         refresh.refreshStatus();
     }

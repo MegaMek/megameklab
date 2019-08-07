@@ -13,18 +13,14 @@
  */
 package megameklab.com.ui.tabs;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.swing.AbstractCellEditor;
@@ -50,16 +46,9 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 
-import megamek.common.Bay;
-import megamek.common.DockingCollar;
-import megamek.common.Entity;
-import megamek.common.InfantryBay;
-import megamek.common.Jumpship;
-import megamek.common.Transporter;
+import megamek.common.*;
 import megamek.common.util.EncodeControl;
-import megamek.common.verifier.BayData;
-import megamek.common.verifier.TestAdvancedAerospace;
-import megamek.common.verifier.TestAero;
+import megamek.common.verifier.*;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.util.IView;
@@ -80,6 +69,8 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
     private final JLabel lblMaxHardpoints = new JLabel();
     private final SpinnerNumberModel spnHardpointsModel = new SpinnerNumberModel(0, 0, null, 1);
     private final JSpinner spnDockingHardpoints = new JSpinner(spnHardpointsModel);
+    private final JSpinner spnTroopSpace = new JSpinner(new SpinnerNumberModel(0.0, 0.0, null, 0.5));
+    private final JSpinner spnPodTroopSpace = new JSpinner(new SpinnerNumberModel(0.0, 0.0, null, 0.5));
     private final JLabel lblMaxDoors = new JLabel();
     private final InstalledBaysModel modelInstalled = new InstalledBaysModel();
     private final JTable tblInstalled = new JTable(modelInstalled);
@@ -88,6 +79,7 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
     private final JButton btnRemoveBay = new JButton();
     private final JButton btnAddBay = new JButton();
     private final JButton btnAddToCargo = new JButton();
+    private final JPanel panTroopspace = new JPanel();
         
     private RefreshListener refresh = null;
     
@@ -100,7 +92,7 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Tabs", new EncodeControl()); //$NON-NLS-1$
         
         setLayout(new BorderLayout());
-        if (eSource.getEntity().hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
+        if (getEntity().hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
             JPanel panHardpoints = new JPanel();
             lblDockingHardpoints.setText(resourceMap.getString("TransportTab.spnDockingHardpoints.text")); //$NON-NLS-1$
             panHardpoints.add(lblDockingHardpoints);
@@ -109,9 +101,33 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
             spnDockingHardpoints.setPreferredSize(size);
             add(panHardpoints, BorderLayout.NORTH);
             spnDockingHardpoints.addChangeListener(this);
+            spnDockingHardpoints.setToolTipText(resourceMap.getString("TransportTab.spnDockingHardpoints.tooltip")); //$NON-NLS-1$
             panHardpoints.add(new JLabel(resourceMap.getString("TransportTab.spnMaxHardpoints.text"))); //$NON-NLS-1$
             panHardpoints.add(lblMaxHardpoints);
             lblMaxHardpoints.setToolTipText(resourceMap.getString("TransportTab.spnMaxHardpoints.tooltip")); //$NON-NLS-1$
+        } else {
+            Dimension size = new Dimension(60, 25);
+            spnTroopSpace.setPreferredSize(size);
+            spnPodTroopSpace.setPreferredSize(size);
+            panTroopspace.setLayout(new GridBagLayout());
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.gridx = 0;
+            gbc.gridy = 0;
+            panTroopspace.add(new Label(resourceMap.getString("TransportTab.spnTroopspace.text")), gbc); //$NON-NLS-1$
+            spnTroopSpace.setToolTipText(resourceMap.getString("TransportTab.spnTroopspace.tooltip")); //$NON-NLS-1$
+            gbc.gridx = 1;
+            panTroopspace.add(spnTroopSpace, gbc);
+            if (getEntity().isSupportVehicle()) {
+                gbc.gridx = 0;
+                gbc.gridy = 1;
+                panTroopspace.add(new Label(resourceMap.getString("TransportTab.spnPodTroopspace.text")), gbc); //$NON-NLS-1$
+                spnTroopSpace.setToolTipText(resourceMap.getString("TransportTab.spnPodTroopspace.tooltip")); //$NON-NLS-1$
+                gbc.gridx = 1;
+                panTroopspace.add(spnPodTroopSpace, gbc);
+                spnTroopSpace.addChangeListener(this);
+                spnPodTroopSpace.addChangeListener(this);
+            }
+            add(panTroopspace, BorderLayout.NORTH);
         }
         
         JPanel bayPanel = new JPanel(new GridBagLayout());
@@ -124,14 +140,14 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
         gbc.gridwidth = 2;
         bayPanel.add(new JLabel(resourceMap.getString("TransportTab.lblCurrentBays.text")), gbc); //$NON-NLS-1$
 
+        gbc.gridy++;
         if (getEntity().isAero()) {
-            gbc.gridy++;
             gbc.gridwidth = 1;
             bayPanel.add(new JLabel(resourceMap.getString("TransportTab.lblMaxDoors.text")), gbc); //$NON-NLS-1$
             gbc.gridx = 1;
             bayPanel.add(lblMaxDoors, gbc);
         }
-        
+
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 1;
@@ -236,7 +252,7 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
     }
     
     public void refresh() {
-        if (eSource.getEntity().hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
+        if (getEntity().hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
             int max = TestAdvancedAerospace.getMaxDockingHardpoints(getJumpship());
             spnHardpointsModel.setValue(Math.min(getJumpship().getDockingCollars().size(), max));
             spnHardpointsModel.setMaximum(max);
@@ -244,6 +260,18 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
         }
         if (getEntity().isAero()) {
             lblMaxDoors.setText(String.valueOf(TestAero.maxBayDoors(getAero())));
+        }
+        if (canMountInfantryCompartment()) {
+            panTroopspace.setVisible(true);
+            final double total = getEntity().getTroopCarryingSpace();
+            final double pod = getEntity().getPodMountedTroopCarryingSpace();
+            spnTroopSpace.setValue(total - pod);
+            spnPodTroopSpace.setValue(pod);
+            spnPodTroopSpace.setEnabled(getEntity().isOmni());
+        } else {
+            panTroopspace.setVisible(false);
+            spnTroopSpace.setValue(0.0);
+            spnPodTroopSpace.setValue(0.0);
         }
         checkButtons();
         modelInstalled.refreshBays();
@@ -253,6 +281,26 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
             refresh.refreshStatus();
             refresh.refreshPreview();
         }
+    }
+
+    /**
+     * Checks whether the current unit type can mount infantry compartments (i.e. {@code Troopspace}.
+     * Infantry compartments cannot be used by DropShips or advanced aerospace vessels (i.e. large craft)
+     * or by large naval or airship support vehicles.
+     *
+     * @return Whether the current unit can mount infantry compartments.
+     */
+    private boolean canMountInfantryCompartment() {
+        if (getEntity().isLargeCraft()) {
+            return false;
+        }
+        if ((getEntity().isSupportVehicle()
+                && (getEntity().getWeightClass() == EntityWeightClass.WEIGHT_LARGE_SUPPORT))) {
+            final TestSupportVehicle.SVType type = TestSupportVehicle.SVType.getVehicleType(getEntity());
+            return (type != TestSupportVehicle.SVType.NAVAL)
+                    && (type != TestSupportVehicle.SVType.AIRSHIP);
+        }
+        return true;
     }
     
     private void checkButtons() {
@@ -408,6 +456,27 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
                     }
                     getJumpship().addTransporter(new DockingCollar(1, num));
                 }
+            }
+            if (null != refresh) {
+                refresh.refreshStructure();
+                refresh.refreshStatus();
+                refresh.refreshPreview();
+            }
+        } else if ((ev.getSource() == spnTroopSpace)
+                || (ev.getSource() == spnPodTroopSpace)) {
+            final double fixed = (Double) spnTroopSpace.getValue();
+            final double pod = (Double) spnPodTroopSpace.getValue();
+
+            List<Transporter> toRemove = getEntity().getTransports().stream()
+                    .filter(t -> t instanceof TroopSpace).collect(Collectors.toList());
+            toRemove.forEach(t -> getEntity().removeTransporter(t));
+            double troopTons = TestEntity.round(fixed, TestEntity.Ceil.HALFTON);
+            if (troopTons > 0) {
+                getEntity().addTransporter(new TroopSpace(troopTons), false);
+            }
+            troopTons = TestEntity.round(pod, TestEntity.Ceil.HALFTON);
+            if (troopTons > 0) {
+                getEntity().addTransporter(new TroopSpace(troopTons), true);
             }
             if (null != refresh) {
                 refresh.refreshStructure();
