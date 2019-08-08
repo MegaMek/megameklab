@@ -41,13 +41,16 @@ import java.util.stream.Collectors;
  */
 public class SVChassisView extends BuildView implements ActionListener, ChangeListener {
 
-    List<SVBuildListener> listeners = new CopyOnWriteArrayList<>();
+    private final List<SVBuildListener> listeners = new CopyOnWriteArrayList<>();
     public void addListener(SVBuildListener l) {
         listeners.add(l);
     }
     public void removeListener(SVBuildListener l) {
         listeners.remove(l);
     }
+
+    private static final EquipmentType SPONSON = EquipmentType.get("ISSponsonTurret");
+    private static final EquipmentType PINTLE = EquipmentType.get("PintleTurret");
 
     /** Subset of possible types that does not include those that are not yet supported */
     private final List<TestSupportVehicle.SVType> SV_TYPES = Arrays.stream(TestSupportVehicle.SVType.values())
@@ -76,6 +79,10 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
             .replaceAll("^\\d+ ", ""));
     private final CustomComboBox<Integer> cbEngineTechRating = new CustomComboBox<>(ITechnology::getRatingName);
     private final CustomComboBox<Integer> cbTurrets = new CustomComboBox<>(i -> turretNames[i]);
+    private final JCheckBox chkSponson = new JCheckBox();
+    private final JLabel lblPintle = createLabel("", labelSize);
+    private final JCheckBox chkPintleLeft = new JCheckBox();
+    private final JCheckBox chkPintleRight = new JCheckBox();
     private final JSpinner spnChassisTurretWt = new JSpinner(spnTurretWtModel);
     private final JSpinner spnChassisTurret2Wt = new JSpinner(spnTurret2WtModel);
     private final JComboBox<String> cbFireControl = new JComboBox<>();
@@ -183,6 +190,30 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         cbTurrets.setToolTipText(resourceMap.getString("CVChassisView.cbTurrets.tooltip")); //$NON-NLS-1$
         add(cbTurrets, gbc);
         cbTurrets.addActionListener(this);
+
+        gbc.gridx = 1;
+        gbc.gridy++;
+        gbc.gridwidth = 1;
+        chkSponson.setText(resourceMap.getString("SVChassisView.chkSponson.text")); //$NON-NLS-1$
+        chkSponson.setToolTipText(resourceMap.getString("SVChassisView.chkSponson.tooltip")); //$NON-NLS-1$
+        add(chkSponson, gbc);
+        chkSponson.addActionListener(this);
+
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.gridwidth = 1;
+        lblPintle.setText(resourceMap.getString("SVChassisView.lblPintle.text")); //$NON-NLS-1$
+        add(lblPintle, gbc);
+        gbc.gridx = 1;
+        chkPintleLeft.setText(resourceMap.getString("SVChassisView.chkPintleLeft.text")); //$NON-NLS-1$
+        chkPintleLeft.setToolTipText(resourceMap.getString("SVChassisView.chkPintle.tooltip")); //$NON-NLS-1$
+        add(chkPintleLeft, gbc);
+        gbc.gridx = 2;
+        chkPintleRight.setText(resourceMap.getString("SVChassisView.chkPintleRight.text")); //$NON-NLS-1$
+        chkPintleRight.setToolTipText(resourceMap.getString("SVChassisView.chkPintle.tooltip")); //$NON-NLS-1$
+        add(chkPintleRight, gbc);
+        chkPintleLeft.addActionListener(this);
+        chkPintleRight.addActionListener(this);
 
         gbc.gridx = 0;
         gbc.gridy++;
@@ -421,6 +452,7 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
     public void refresh() {
         refreshTonnage();
         refreshTurrets();
+        refreshSideTurrets();
     }
 
     private void refreshTonnage() {
@@ -451,6 +483,7 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         if (cbTurrets.getSelectedIndex() < 0) {
             cbTurrets.setSelectedIndex(0);
         }
+
         double maxWt = getTonnage();
         if (chkSmall.isSelected()) {
             maxWt *= 1000.0;
@@ -469,10 +502,24 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         }
     }
 
+    private void refreshSideTurrets() {
+        final boolean showSponson = TestSupportVehicle.sponsonLegal((TestSupportVehicle.SVType) cbType.getSelectedItem(),
+                chkSmall.isSelected())
+                && techManager.isLegal(SPONSON);
+        final boolean showPintle = TestSupportVehicle.pintleLegal((TestSupportVehicle.SVType) cbType.getSelectedItem(),
+                chkSmall.isSelected())
+                && techManager.isLegal(PINTLE);
+        chkSponson.setVisible(showSponson);
+        lblPintle.setVisible(showPintle);
+        chkPintleLeft.setVisible(showPintle);
+        chkPintleRight.setVisible(showPintle);
+    }
+
     /**
      * Toggles spinners between ton and kg standard
      */
     private void resetWeightStandard() {
+        refreshSideTurrets();
         spnTonnage.removeChangeListener(this);
         spnChassisTurretWt.removeChangeListener(this);
         spnChassisTurret2Wt.removeChangeListener(this);
@@ -529,6 +576,14 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
             if (cbTurrets.getSelectedItem() != null) {
                 listeners.forEach(l -> l.turretChanged((Integer) cbTurrets.getSelectedItem()));
             }
+        } else if (e.getSource() == chkSponson) {
+            listeners.forEach(l -> l.sponsonTurretChanged(chkSponson.isSelected()));
+        } else if (e.getSource() == chkPintleLeft) {
+            listeners.forEach(l -> l.pintleTurretChanged(chkPintleLeft.isSelected(),
+                    Tank.LOC_LEFT));
+        } else if (e.getSource() == chkPintleRight) {
+            listeners.forEach(l -> l.pintleTurretChanged(chkPintleRight.isSelected(),
+                    Tank.LOC_RIGHT));
         } else if (e.getSource() == cbFireControl) {
             listeners.forEach(l -> l.fireConChanged(cbFireControl.getSelectedIndex()));
         }

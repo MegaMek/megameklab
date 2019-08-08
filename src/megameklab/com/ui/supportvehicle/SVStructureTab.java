@@ -32,6 +32,7 @@ import megameklab.com.util.UnitUtil;
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -48,6 +49,9 @@ class SVStructureTab extends ITab implements SVBuildListener {
     private SVSummaryView panSummary;
     private ChassisModView panChassisMod;
     private SVCrewView panCrew;
+
+    private static final EquipmentType SPONSON = EquipmentType.get("ISSponsonTurret");
+    private static final EquipmentType PINTLE = EquipmentType.get("PintleTurret");
 
     SVStructureTab(EntitySource eSource) {
         super(eSource);
@@ -193,6 +197,8 @@ class SVStructureTab extends ITab implements SVBuildListener {
 
     @Override
     public void updateTechLevel() {
+        getEntity().setTechLevel(panBasicInfo.getTechLevel()
+                .getCompoundTechLevel(panBasicInfo.useClanTechBase()));
         if (UnitUtil.checkEquipmentByTechLevel(getSV(), panBasicInfo)) {
             refresh.refreshEquipment();
         } else {
@@ -418,6 +424,66 @@ class SVStructureTab extends ITab implements SVBuildListener {
         refresh.refreshBuild();
         refresh.refreshPreview();
         refresh.refreshStatus();
+    }
+
+    @Override
+    public void sponsonTurretChanged(boolean installed) {
+        final List<Mounted> current = getSV().getMisc().stream()
+                .filter(m -> m.getType().hasFlag(MiscType.F_SPONSON_TURRET))
+                .collect(Collectors.toList());
+        if (installed && current.isEmpty()) {
+            try {
+                // superheavy FL/FR match L/R
+                getSV().addEquipment(SPONSON, Tank.LOC_LEFT);
+                getSV().addEquipment(SPONSON, Tank.LOC_RIGHT);
+            } catch (LocationFullException e) {
+                // This should not be possible since sponson turrets mods don't occupy slots
+                MegaMekLab.getLogger().error(getClass(), "sponsonTurretChanged(boolean)",
+                        "LocationFullException when adding sponson turret");
+            }
+        } else if (!installed) {
+            for (Mounted m : getEntity().getEquipment()) {
+                m.setSponsonTurretMounted(false);
+            }
+            for (Mounted sponson : current) {
+                getSV().getMisc().remove(sponson);
+                getSV().getEquipment().remove(sponson);
+                UnitUtil.removeCriticals(getSV(), sponson);
+            }
+        }
+        panSummary.refresh();
+        refresh.refreshBuild();
+        refresh.refreshStatus();
+        refresh.refreshPreview();
+    }
+
+    @Override
+    public void pintleTurretChanged(boolean installed, int loc) {
+        final Mounted current = getSV().getMisc().stream()
+                .filter(m -> m.getType().hasFlag(MiscType.F_PINTLE_TURRET) && (m.getLocation ()== loc))
+                .findFirst().orElse(null);
+        if (installed && (null == current)) {
+            try {
+                getSV().addEquipment(PINTLE, loc);
+            } catch (LocationFullException e) {
+                // This should not be possible since sponson turrets mods don't occupy slots
+                MegaMekLab.getLogger().error(getClass(), "sponsonTurretChanged(boolean)",
+                        "LocationFullException when adding sponson turret");
+            }
+        } else if (!installed && (null != current)) {
+            for (Mounted m : getEntity().getEquipment()) {
+                if (m.getLocation() == loc) {
+                    m.setPintleTurretMounted(false);
+                }
+            }
+            getSV().getMisc().remove(current);
+            getSV().getEquipment().remove(current);
+            UnitUtil.removeCriticals(getSV(), current);
+        }
+        panSummary.refresh();
+        refresh.refreshBuild();
+        refresh.refreshStatus();
+        refresh.refreshPreview();
     }
 
     @Override

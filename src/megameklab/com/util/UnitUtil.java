@@ -401,6 +401,30 @@ public class UnitUtil {
                 m.setLinkedBy(null);
             }
         }
+        if ((mount.getType() instanceof MiscType)
+            && (mount.getType().hasFlag(MiscType.F_HEAD_TURRET)
+                || mount.getType().hasFlag(MiscType.F_SHOULDER_TURRET)
+                || mount.getType().hasFlag(MiscType.F_QUAD_TURRET))) {
+            for (Mounted m : unit.getEquipment()) {
+                if (m.getLocation() == mount.getLocation()) {
+                    m.setMechTurretMounted(false);
+                }
+            }
+        }
+        if ((mount.getType() instanceof MiscType)
+                && mount.getType().hasFlag(MiscType.F_SPONSON_TURRET)) {
+            for (Mounted m : unit.getEquipment()) {
+                m.setSponsonTurretMounted(false);
+            }
+        }
+        if ((mount.getType() instanceof MiscType)
+                && mount.getType().hasFlag(MiscType.F_PINTLE_TURRET)) {
+            for (Mounted m : unit.getEquipment()) {
+                if (m.getLocation() == mount.getLocation()) {
+                    m.setPintleTurretMounted(false);
+                }
+            }
+        }
     }
 
     /**

@@ -83,6 +83,20 @@ public interface SVBuildListener extends BuildListener {
     void turretChanged(int config);
 
     /**
+     * Notify that sponson turrets have been added or removed
+     *
+     * @param installed Whether the vehicle has a pair of sponson turrets.
+     */
+    void sponsonTurretChanged(boolean installed);
+
+    /**
+     * Notify that a pintle turret has been added or removed
+     * @param installed  Whether there is a pintle turret on the left side
+     * @param loc        The location to add or remove the pintle mount
+     */
+    void pintleTurretChanged(boolean installed, int loc);
+
+    /**
      * Notify of a change in the base chassis turret weight for omni vehicles
      *
      * @param turret1 The weight of the first turret or chin turret
