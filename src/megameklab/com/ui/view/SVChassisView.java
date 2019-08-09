@@ -49,9 +49,6 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         listeners.remove(l);
     }
 
-    private static final EquipmentType SPONSON = EquipmentType.get("ISSponsonTurret");
-    private static final EquipmentType PINTLE = EquipmentType.get("PintleTurret");
-
     /** Subset of possible types that does not include those that are not yet supported */
     private final List<TestSupportVehicle.SVType> SV_TYPES = Arrays.stream(TestSupportVehicle.SVType.values())
             .filter(t -> !t.equals(TestSupportVehicle.SVType.AIRSHIP)
@@ -505,10 +502,10 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
     private void refreshSideTurrets() {
         final boolean showSponson = TestSupportVehicle.sponsonLegal((TestSupportVehicle.SVType) cbType.getSelectedItem(),
                 chkSmall.isSelected())
-                && techManager.isLegal(SPONSON);
+                && techManager.isLegal(EquipmentType.get(EquipmentTypeLookup.SPONSON_TURRET));
         final boolean showPintle = TestSupportVehicle.pintleLegal((TestSupportVehicle.SVType) cbType.getSelectedItem(),
                 chkSmall.isSelected())
-                && techManager.isLegal(PINTLE);
+                && techManager.isLegal(EquipmentType.get(EquipmentTypeLookup.PINTLE_TURRET));
         chkSponson.setVisible(showSponson);
         lblPintle.setVisible(showPintle);
         chkPintleLeft.setVisible(showPintle);

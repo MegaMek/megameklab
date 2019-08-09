@@ -32,7 +32,6 @@ import megameklab.com.util.UnitUtil;
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -49,9 +48,6 @@ class SVStructureTab extends ITab implements SVBuildListener {
     private SVSummaryView panSummary;
     private ChassisModView panChassisMod;
     private SVCrewView panCrew;
-
-    private static final EquipmentType SPONSON = EquipmentType.get("ISSponsonTurret");
-    private static final EquipmentType PINTLE = EquipmentType.get("PintleTurret");
 
     SVStructureTab(EntitySource eSource) {
         super(eSource);
@@ -291,13 +287,13 @@ class SVStructureTab extends ITab implements SVBuildListener {
     @Override
     public void typeChanged(TestSupportVehicle.SVType type) {
         TestSupportVehicle.SVType oldType = TestSupportVehicle.SVType.getVehicleType(getSV());
-        if (!oldType.equals(type)) {
+        if (!type.equals(oldType)) {
             if (type.equals(TestSupportVehicle.SVType.FIXED_WING)) {
                 eSource.createNewUnit(Entity.ETYPE_FIXED_WING_SUPPORT, getSV());
             } else if (type.equals(TestSupportVehicle.SVType.VTOL)) {
                 eSource.createNewUnit(Entity.ETYPE_SUPPORT_VTOL, getSV());
-            } else if (oldType.equals(TestSupportVehicle.SVType.FIXED_WING)
-                    || oldType.equals(TestSupportVehicle.SVType.VTOL)) {
+            } else if (TestSupportVehicle.SVType.FIXED_WING.equals(oldType)
+                    || TestSupportVehicle.SVType.VTOL.equals(oldType)) {
                 eSource.createNewUnit(Entity.ETYPE_SUPPORT_TANK, getSV());
             }
             getSV().setMovementMode(type.defaultMovementMode);
@@ -434,8 +430,8 @@ class SVStructureTab extends ITab implements SVBuildListener {
         if (installed && current.isEmpty()) {
             try {
                 // superheavy FL/FR match L/R
-                getSV().addEquipment(SPONSON, Tank.LOC_LEFT);
-                getSV().addEquipment(SPONSON, Tank.LOC_RIGHT);
+                getSV().addEquipment(EquipmentType.get(EquipmentTypeLookup.SPONSON_TURRET), Tank.LOC_LEFT);
+                getSV().addEquipment(EquipmentType.get(EquipmentTypeLookup.SPONSON_TURRET), Tank.LOC_RIGHT);
             } catch (LocationFullException e) {
                 // This should not be possible since sponson turrets mods don't occupy slots
                 MegaMekLab.getLogger().error(getClass(), "sponsonTurretChanged(boolean)",
@@ -464,7 +460,7 @@ class SVStructureTab extends ITab implements SVBuildListener {
                 .findFirst().orElse(null);
         if (installed && (null == current)) {
             try {
-                getSV().addEquipment(PINTLE, loc);
+                getSV().addEquipment(EquipmentType.get(EquipmentTypeLookup.PINTLE_TURRET), loc);
             } catch (LocationFullException e) {
                 // This should not be possible since sponson turrets mods don't occupy slots
                 MegaMekLab.getLogger().error(getClass(), "sponsonTurretChanged(boolean)",
