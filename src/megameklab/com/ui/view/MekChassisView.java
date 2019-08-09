@@ -33,18 +33,7 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import megamek.common.Engine;
-import megamek.common.Entity;
-import megamek.common.EntityWeightClass;
-import megamek.common.EquipmentType;
-import megamek.common.ITechManager;
-import megamek.common.LandAirMech;
-import megamek.common.Mech;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
-import megamek.common.QuadVee;
-import megamek.common.SimpleTechLevel;
-import megamek.common.TechConstants;
+import megamek.common.*;
 import megamek.common.util.EncodeControl;
 import megameklab.com.ui.util.CustomComboBox;
 import megameklab.com.ui.util.TechComboBox;
@@ -144,10 +133,9 @@ public class MekChassisView extends BuildView implements ActionListener, ChangeL
     };
     
     private static final String[] ENHANCEMENT_NAMES = {
-            "ISMASC", "CLMASC", "TSM", "ISSuperCooledMyomer"
+            EquipmentTypeLookup.IS_MASC, EquipmentTypeLookup.CLAN_MASC,
+            EquipmentTypeLookup.TSM, EquipmentTypeLookup.SCM
     };
-    
-    public static final EquipmentType EJECTION_SEAT = EquipmentType.get("Ejection Seat (Industrial Mech)");
     
     private final ITechManager techManager;
     private String stdMotiveTooltip;
@@ -557,7 +545,7 @@ public class MekChassisView extends BuildView implements ActionListener, ChangeL
         cbEnhancement.addItem(null);
         if (!isSuperheavy() && !isPrimitive()) {
             if (isIndustrial()) {
-                EquipmentType eq = EquipmentType.get("Industrial TSM"); //$NON-NLS-1$
+                EquipmentType eq = EquipmentType.get(EquipmentTypeLookup.ITSM); //$NON-NLS-1$
                 if (techManager.isLegal(eq)) {
                     cbEnhancement.addItem(eq);
                 }

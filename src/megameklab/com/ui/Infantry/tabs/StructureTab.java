@@ -36,12 +36,7 @@ import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
 
-import megamek.common.EntityMovementMode;
-import megamek.common.EquipmentType;
-import megamek.common.ITechManager;
-import megamek.common.Infantry;
-import megamek.common.SimpleTechLevel;
-import megamek.common.WeaponType;
+import megamek.common.*;
 import megamek.common.options.IOption;
 import megamek.common.options.PilotOptions;
 import megamek.common.weapons.infantry.InfantryWeapon;
@@ -294,7 +289,8 @@ public class StructureTab extends ITab implements InfantryBuildListener {
                 && ((getInfantry().getSecondaryN() < 2)
                         || (getInfantry().getSecondaryWeapon() == null)
                         || !getInfantry().getSecondaryWeapon().hasFlag(WeaponType.F_TAG))) {
-            UnitUtil.replaceMainWeapon(getInfantry(), (InfantryWeapon)EquipmentType.get("InfantryTAG"), true);
+            UnitUtil.replaceMainWeapon(getInfantry(),
+                    (InfantryWeapon)EquipmentType.get(EquipmentTypeLookup.INFANTRY_TAG), true);
             getInfantry().setSecondaryN(2);
         }
     }

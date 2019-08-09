@@ -43,36 +43,7 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.text.DefaultCaret;
 import javax.swing.text.html.HTMLEditorKit;
 
-import megamek.common.Aero;
-import megamek.common.AmmoType;
-import megamek.common.BattleArmor;
-import megamek.common.Bay;
-import megamek.common.BipedMech;
-import megamek.common.CriticalSlot;
-import megamek.common.Dropship;
-import megamek.common.Entity;
-import megamek.common.EntityWeightClass;
-import megamek.common.EquipmentType;
-import megamek.common.ITechManager;
-import megamek.common.ITechnology;
-import megamek.common.Infantry;
-import megamek.common.Jumpship;
-import megamek.common.LandAirMech;
-import megamek.common.LocationFullException;
-import megamek.common.Mech;
-import megamek.common.MechFileParser;
-import megamek.common.MechView;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
-import megamek.common.Protomech;
-import megamek.common.QuadMech;
-import megamek.common.SmallCraft;
-import megamek.common.SuperHeavyTank;
-import megamek.common.Tank;
-import megamek.common.TechConstants;
-import megamek.common.TripodMech;
-import megamek.common.VTOL;
-import megamek.common.WeaponType;
+import megamek.common.*;
 import megamek.common.annotations.Nullable;
 import megamek.common.loaders.EntityLoadingException;
 import megamek.common.logging.LogLevel;
@@ -869,7 +840,7 @@ public class UnitUtil {
     }
 
     public static String getHeatSinkType(String type, boolean clan) {
-        String heatSinkType = "Heat Sink";
+        String heatSinkType;
 
         if (type.startsWith("(Clan)")) {
             clan = true;
@@ -881,19 +852,19 @@ public class UnitUtil {
 
         if (clan) {
             if (type.equals("Single")) {
-                heatSinkType = "Heat Sink";
+                heatSinkType = EquipmentTypeLookup.SINGLE_HS;
             } else if (type.equals("Double")) {
-                heatSinkType = "CLDoubleHeatSink";
+                heatSinkType = EquipmentTypeLookup.CLAN_DOUBLE_HS;
             } else {
-                heatSinkType = "Laser Heat Sink";
+                heatSinkType = EquipmentTypeLookup.LASER_HS;
             }
         } else {
             if (type.equals("Single")) {
-                heatSinkType = "Heat Sink";
+                heatSinkType = EquipmentTypeLookup.SINGLE_HS;
             } else if (type.equals("Double")) {
-                heatSinkType = "ISDoubleHeatSink";
+                heatSinkType = EquipmentTypeLookup.IS_DOUBLE_HS;
             } else {
-                heatSinkType = "IS2 Compact Heat Sinks";
+                heatSinkType = EquipmentTypeLookup.COMPACT_HS_2;
             }
         }
 
@@ -983,21 +954,22 @@ public class UnitUtil {
                 || m.getType().hasFlag(MiscType.F_JUMP_BOOSTER);
     }
 
-    public static String getJumpJetType(int type, boolean clan) {
+    /**
+     *
+     * @param type The value returned by {@link Mech#getJumpType()}
+     * @return     The {@link EquipmentType} lookup key for the jump jet
+     */
+    public static String getJumpJetType(int type) {
         if (type == Mech.JUMP_IMPROVED) {
-            if (clan) {
-                return "CLImprovedJump Jet";
-            } else {
-                return "ISImprovedJump Jet";
-            }
+            return EquipmentTypeLookup.IMPROVED_JUMP_JET;
         } else if (type == Mech.JUMP_PROTOTYPE) {
-            return "ISPrototypeJumpJet";
+            return EquipmentTypeLookup.PROTOTYPE_JUMP_JET;
         } else if (type == Mech.JUMP_BOOSTER) {
-            return "Jump Booster";
+            return EquipmentTypeLookup.MECH_JUMP_BOOSTER;
         } else if (type == Mech.JUMP_PROTOTYPE_IMPROVED) {
-            return "ISPrototypeImprovedJumpJet";
+            return EquipmentTypeLookup.PROTOTYPE_IMPROVED_JJ;
         }
-        return "JumpJet";
+        return EquipmentTypeLookup.JUMP_JET;
     }
 
     /**
@@ -1054,14 +1026,13 @@ public class UnitUtil {
             UnitUtil.removeJumpJets(unit, unit.getJumpMP());
             createSpreadMounts(
                     unit,
-                    EquipmentType.get(UnitUtil.getJumpJetType(jjType,
-                            unit.isClan())));
+                    EquipmentType.get(UnitUtil.getJumpJetType(jjType)));
         } else {
             while (jjAmount > 0) {
                 try {
                     unit.addEquipment(
                             new Mounted(unit, EquipmentType.get(UnitUtil
-                                    .getJumpJetType(jjType, unit.isClan()))),
+                                    .getJumpJetType(jjType))),
                             Entity.LOC_NONE, false);
                 } catch (Exception ex) {
                     getLogger().error(UnitUtil.class, METHOD_NAME, ex);
@@ -1615,10 +1586,10 @@ public class UnitUtil {
     /**
      * Calculate the number of armor points per ton of armor for the given unit.
      * 
-     * @param en
-     * @param at
-     * @param techLevel
-     * @return
+     * @param en        The unit
+     * @param at        The armor type constant
+     * @param techLevel The {@link TechConstants} constant for the armor
+     * @return          The number of armor points per ton
      */
     public static double getArmorPointsPerTon(Entity en, int at, int techLevel) {
         if (en.isSupportVehicle() && (at == EquipmentType.T_ARMOR_STANDARD)) {
@@ -2788,8 +2759,7 @@ public class UnitUtil {
 
         if ((eq instanceof CLTAG) || (eq instanceof ISC3MBS)
                 || (eq instanceof ISC3M) || (eq instanceof ISTAG)
-                || eq.equals(EquipmentType.get("IS Coolant Pod"))
-                || eq.equals(EquipmentType.get("Clan Coolant Pod"))
+                || (eq instanceof AmmoType && ((AmmoType) eq).getAmmoType() == AmmoType.T_COOLANT_POD)
                 || (eq instanceof CLLightTAG)
                 || (eq instanceof ISAMS)
                 || (eq instanceof CLAMS)
@@ -4260,7 +4230,7 @@ public class UnitUtil {
     }
 
     /**
-     * @deprecated Use {@link #checkEquipmentByTechLevel(Entity,ITechManager)} instead
+     * @deprecated Use {@link UnitUtil#checkEquipmentByTechLevel(Entity, ITechManager)} instead
      */
     @Deprecated
     public static void checkEquipmentByTechLevel(Entity unit) {

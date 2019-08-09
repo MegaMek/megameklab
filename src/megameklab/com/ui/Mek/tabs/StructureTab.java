@@ -33,20 +33,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import megamek.common.CriticalSlot;
-import megamek.common.Engine;
-import megamek.common.Entity;
-import megamek.common.EquipmentType;
-import megamek.common.ITechManager;
-import megamek.common.LandAirMech;
-import megamek.common.LocationFullException;
-import megamek.common.Mech;
-import megamek.common.MechFileParser;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
-import megamek.common.QuadVee;
-import megamek.common.SimpleTechLevel;
-import megamek.common.TechConstants;
+import megamek.common.*;
 import megamek.common.loaders.EntityLoadingException;
 import megamek.common.verifier.TestEntity;
 import megameklab.com.ui.EntitySource;
@@ -757,10 +744,12 @@ public class StructureTab extends ITab implements MekBuildListener, ArmorAllocat
 
                         if (motiveType == QuadVee.MOTIVE_WHEEL) {
                             ((QuadVee)getMech()).setMotiveType(QuadVee.MOTIVE_WHEEL);
-                            UnitUtil.createSpreadMounts(getMech(), EquipmentType.get("Wheels"));
+                            UnitUtil.createSpreadMounts(getMech(),
+                                    EquipmentType.get(EquipmentTypeLookup.QUADVEE_WHEELS));
                         } else {
                             ((QuadVee)getMech()).setMotiveType(QuadVee.MOTIVE_TRACK);
-                            UnitUtil.createSpreadMounts(getMech(), EquipmentType.get("Tracks"));
+                            UnitUtil.createSpreadMounts(getMech(),
+                                    EquipmentType.get(EquipmentTypeLookup.MECH_TRACKS));
                         }
                     }
                 } else {
