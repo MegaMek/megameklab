@@ -23,11 +23,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.swing.JCheckBox;
 
-import megamek.common.BattleArmor;
-import megamek.common.EntityMovementMode;
-import megamek.common.EquipmentType;
-import megamek.common.ITechManager;
-import megamek.common.MiscType;
+import megamek.common.*;
 import megamek.common.util.EncodeControl;
 import megameklab.com.ui.view.listeners.BABuildListener;
 
@@ -60,11 +56,11 @@ public class BAEnhancementView extends BuildView implements ActionListener {
     private ITechManager techManager;
     private boolean ignoreEvents = false;
     
-    private final EquipmentType partialWing = EquipmentType.get("BAPartialWing");
-    private final EquipmentType jumpBooster = EquipmentType.get("BAJumpBooster");
-    private final EquipmentType mechJumpBooster = EquipmentType.get("BAMechanicalJumpBooster");
-    private final EquipmentType myomerBooster = EquipmentType.get("BAMyomerBooster");
-    
+    private final EquipmentType partialWing = EquipmentType.get(EquipmentTypeLookup.BA_PARTIAL_WING);
+    private final EquipmentType jumpBooster = EquipmentType.get(EquipmentTypeLookup.BA_JUMP_BOOSTER);
+    private final EquipmentType mechJumpBooster = EquipmentType.get(EquipmentTypeLookup.BA_MECHANICAL_JUMP_BOOSTER);
+    private final EquipmentType myomerBooster = EquipmentType.get(EquipmentTypeLookup.BA_MYOMER_BOOSTER);
+
     public BAEnhancementView(ITechManager techManager) {
         this.techManager = techManager;
         initUI();

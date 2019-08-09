@@ -25,12 +25,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 
-import megamek.common.Entity;
-import megamek.common.EquipmentType;
-import megamek.common.ITechManager;
-import megamek.common.Infantry;
-import megamek.common.LocationFullException;
-import megamek.common.TechConstants;
+import megamek.common.*;
 import megamek.common.weapons.infantry.InfantryWeapon;
 import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.tabs.PreviewTab;
@@ -112,7 +107,7 @@ public class MainUI extends MegaMekLabMainUI {
         ((Infantry) getEntity()).setPrimaryWeapon((InfantryWeapon) EquipmentType
                 .get("InfantryAssaultRifle"));
         try {
-            getEntity().addEquipment(EquipmentType.get("InfantryAssaultRifle"),
+            getEntity().addEquipment(EquipmentType.get(EquipmentTypeLookup.INFANTRY_ASSAULT_RIFLE),
                     Infantry.LOC_INFANTRY);
         } catch (LocationFullException ex) {
         }
