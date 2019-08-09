@@ -85,8 +85,7 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
     private final JComboBox<String> cbFireControl = new JComboBox<>();
     private final JSpinner spnFireConWt = new JSpinner(spnFireConWtModel);
 
-    /** List of components that should only be enabled for omnivehicles, to simplify enabling/disabling */
-    private final List<JComponent> omniComponents = new ArrayList<>();
+    private final JPanel omniPanel = new JPanel();
 
     private final ITechManager techManager;
 
@@ -223,52 +222,60 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         add(cbFireControl, gbc);
         cbFireControl.addActionListener(this);
 
+        initOmniPanel(resourceMap);
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = GridBagConstraints.REMAINDER;
-        add(new JLabel(resourceMap.getString("SVChassisView.lblBaseChassisTurretWeight.text")), gbc);
+        add(omniPanel, gbc);
+    }
+
+    private void initOmniPanel(final ResourceBundle resourceMap) {
+        omniPanel.setLayout(new GridBagLayout());
+
+        final GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.WEST;
+
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        omniPanel.add(new JLabel(resourceMap.getString("SVChassisView.lblBaseChassisTurretWeight.text")), gbc);
 
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 1;
         JLabel lbl = createLabel(resourceMap.getString("SVChassisView.spnTurret1Wt.text"), labelSize); //$NON-NLS-1$
-        add(lbl, gbc);
+        omniPanel.add(lbl, gbc);
         gbc.gridx = 1;
         gbc.gridwidth = 2;
         setFieldSize(spnChassisTurretWt, spinnerSize);
         spnChassisTurretWt.setToolTipText(resourceMap.getString("CVChassisView.spnTurretWt.tooltip")); //$NON-NLS-1$
-        add(spnChassisTurretWt, gbc);
+        omniPanel.add(spnChassisTurretWt, gbc);
         spnChassisTurretWt.addChangeListener(this);
-        omniComponents.add(lbl);
-        omniComponents.add(spnChassisTurretWt);
 
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 1;
         lbl = createLabel(resourceMap.getString("SVChassisView.spnTurret2Wt.text"), labelSize); //$NON-NLS-1$
-        add(lbl, gbc);
+        omniPanel.add(lbl, gbc);
         gbc.gridx = 1;
         gbc.gridwidth = 2;
         setFieldSize(spnChassisTurret2Wt, spinnerSize);
         spnChassisTurret2Wt.setToolTipText(resourceMap.getString("CVChassisView.spnTurret2Wt.tooltip")); //$NON-NLS-1$
-        add(spnChassisTurret2Wt, gbc);
+        omniPanel.add(spnChassisTurret2Wt, gbc);
         spnChassisTurret2Wt.addChangeListener(this);
-        omniComponents.add(lbl);
-        omniComponents.add(spnChassisTurret2Wt);
 
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 1;
         lbl = createLabel(resourceMap.getString("SVChassisView.spnFireConWt.text"), labelSize); //$NON-NLS-1$
-        add(lbl, gbc);
+        omniPanel.add(lbl, gbc);
         gbc.gridx = 1;
         gbc.gridwidth = 2;
         setFieldSize(spnFireConWt, spinnerSize);
         spnFireConWt.setToolTipText(resourceMap.getString("SVChassisView.spnFireConWt.tooltip")); //$NON-NLS-1$
-        add(spnFireConWt, gbc);
+        omniPanel.add(spnFireConWt, gbc);
         spnFireConWt.addChangeListener(this);
-        omniComponents.add(lbl);
-        omniComponents.add(spnFireConWt);
     }
 
     /**
@@ -438,7 +445,7 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
             spnFireConWtModel.setValue(entity.getBaseChassisFireConWeight());
         }
 
-        omniComponents.forEach(c -> c.setEnabled(entity.isOmni()));
+        omniPanel.setVisible(entity.isOmni());
         spnChassisTurretWt.setEnabled(!entity.isAero() && entity.isOmni()
                 && (cbTurrets.getSelectedIndex() > SVBuildListener.TURRET_NONE));
         spnChassisTurret2Wt.setEnabled(!entity.isAero() && entity.isOmni()
