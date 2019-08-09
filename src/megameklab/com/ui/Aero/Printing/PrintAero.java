@@ -24,12 +24,10 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
-import java.awt.print.PrinterException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Vector;
 
 import megamek.common.Aero;
 import megamek.common.Crew;
@@ -43,7 +41,7 @@ import megameklab.com.util.UnitUtil;
 
 public class PrintAero implements Printable {
 
-    private Aero aero = null;
+    private Aero aero;
     // TODO: uncomment when print issue is fixed and pilot data is ready to position
     // private int topMargin = 6;
     // private int leftMargin = 11;
@@ -53,7 +51,7 @@ public class PrintAero implements Printable {
     }
 
     @Override
-    public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
+    public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) {
         Graphics2D g2d = (Graphics2D) graphics;
         // f.setPaper(this.paper);
         printImage(g2d, pageFormat);
@@ -356,7 +354,7 @@ public class PrintAero implements Printable {
         // The number of pips for each armor row
         final int[] numPerRow = { 3, 4, 5, 6, 7, 9, 14, 15, 15, 15, 14, 14, 13, 10, 8 };
         // The offset away from centerline for the start of each row
-        final float[] startOffset = { 0, 0, 0, 0, 5, 5, 9.5f, 9.5f, 9.5f, 12.6f, 18.9f, 18.9f, 18.9f, 22.2f, 22.2f };
+        final float[] startOffset = { 0, 0, 0, 0, 5, 5, 9.5f, 9.5f, 9.5f, 12.6f, 18.9f, 18.9f, 18.9f, 22.2f, 22.2f};
         // Calculate the maximum number of pips for the wing space. If higher, we'll need to put some in what
         // would normally be empty whitespace next to the aft section.
         int highArmorThreshold = Arrays.stream(numPerRow).sum();
@@ -373,7 +371,7 @@ public class PrintAero implements Printable {
         int[] rowLength = totalArmor > highArmorThreshold? numPerRowHighArmor : numPerRow;
         List<float[]> pipPlotter = new ArrayList<>();
 
-        for (int pos = 1; pos < Math.min(totalArmor, maxArmor); pos++) {
+        for (int pos = 0; pos < maxArmor; pos++) {
             pipPlotter.add(new float[]
                 { topColumn[0], topColumn[1] });
             topColumn[0] += pipShift[0];
@@ -381,6 +379,10 @@ public class PrintAero implements Printable {
             if (++currentInRow == rowLength[currentRow]) {
                 currentInRow = 0;
                 currentRow++;
+                if (currentRow == rowLength.length) {
+                    // Don't need the extra pips
+                    break;
+                }
                 topColumn[0] = x;
                 topColumn[1] += pipShift[1];
                 if (totalArmor <= highArmorThreshold) {
@@ -406,7 +408,7 @@ public class PrintAero implements Printable {
         int[] pipShift = new int[]
             { 6, 6 };
 
-        Vector<int[]> pipPlotter = new Vector<int[]>(132);
+        ArrayList<int[]> pipPlotter = new ArrayList<>(132);
         for (int pos = 1; pos <= 32; pos++) {
             pipPlotter.add(new int[]
                 { topColumn[0], topColumn[1] });
