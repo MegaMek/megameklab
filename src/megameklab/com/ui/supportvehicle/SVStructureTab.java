@@ -395,13 +395,13 @@ class SVStructureTab extends ITab implements SVBuildListener {
                 && !getTank().hasNoDualTurret()) {
             removeTurret(getTank().getLocTurret2());
             getTank().setHasNoDualTurret(true);
-            getTank().setBaseChassisTurret2Weight(-1);
+            getTank().setBaseChassisTurret2Weight(Tank.BASE_CHASSIS_TURRET_WT_UNASSIGNED);
         }
         if ((turretConfig == SVBuildListener.TURRET_NONE)
                 && !getTank().hasNoTurret()) {
             removeTurret(getTank().getLocTurret());
             getTank().setHasNoTurret(true);
-            getTank().setBaseChassisTurretWeight(-1);
+            getTank().setBaseChassisTurretWeight(Tank.BASE_CHASSIS_TURRET_WT_UNASSIGNED);
         }
 
         if (getTank().hasNoTurret() && (turretConfig != SVBuildListener.TURRET_NONE)) {
@@ -416,7 +416,7 @@ class SVStructureTab extends ITab implements SVBuildListener {
         }
         getTank().autoSetInternal();
         panChassis.setFromEntity(getTank());
-        //TODO: Refresh armor tab
+        refresh.refreshArmor();
         refresh.refreshBuild();
         refresh.refreshPreview();
         refresh.refreshStatus();
@@ -447,6 +447,9 @@ class SVStructureTab extends ITab implements SVBuildListener {
                 UnitUtil.removeCriticals(getSV(), sponson);
             }
         }
+        resetSponsonPintleWeight();
+
+        panChassis.setFromEntity(getEntity());
         panSummary.refresh();
         refresh.refreshBuild();
         refresh.refreshStatus();
@@ -476,10 +479,29 @@ class SVStructureTab extends ITab implements SVBuildListener {
             getSV().getEquipment().remove(current);
             UnitUtil.removeCriticals(getSV(), current);
         }
+        resetSponsonPintleWeight();
+
+        panChassis.setFromEntity(getEntity());
         panSummary.refresh();
         refresh.refreshBuild();
         refresh.refreshStatus();
         refresh.refreshPreview();
+    }
+
+    /**
+     * Checks for the presence of sponson or pintle mounts, and if none are found
+     * resets the base chassis weight.
+     */
+    private void resetSponsonPintleWeight() {
+        if (getEntity() instanceof Tank) {
+            for (Mounted m : getEntity().getMisc()) {
+                if (m.getType().hasFlag(MiscType.F_SPONSON_TURRET)
+                        || m.getType().hasFlag(MiscType.F_PINTLE_TURRET)) {
+                    return;
+                }
+            }
+            getTank().setBaseChassisSponsonPintleWeight(Tank.BASE_CHASSIS_TURRET_WT_UNASSIGNED);
+        }
     }
 
     @Override
@@ -487,6 +509,15 @@ class SVStructureTab extends ITab implements SVBuildListener {
         if (getSV() instanceof Tank) {
             getTank().setBaseChassisTurretWeight(turret1);
             getTank().setBaseChassisTurret2Weight(turret2);
+            panSummary.refresh();
+            refresh.refreshStatus();
+        }
+    }
+
+    @Override
+    public void sponsonPintleBaseWtChanged(double turretWeight) {
+        if (getSV() instanceof Tank) {
+            getTank().setBaseChassisSponsonPintleWeight(turretWeight);
             panSummary.refresh();
             refresh.refreshStatus();
         }

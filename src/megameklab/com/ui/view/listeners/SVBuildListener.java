@@ -137,4 +137,11 @@ public interface SVBuildListener extends BuildListener {
      * @param steerage     The capacity of steerage class quarters
      */
     void setQuarters(int firstClass, int secondClass, int crew, int steerage);
+
+    /**
+     * Notify of a change in the base chassis sponson/pintle weight for omnivehicles.
+     *
+     * @param turretWeight The weight of the sponson or pintle turrets.
+     */
+    void sponsonPintleBaseWtChanged(double turretWeight);
 }

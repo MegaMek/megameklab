@@ -65,6 +65,7 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
     private final SpinnerNumberModel spnTonnageModelSmall = new SpinnerNumberModel(4000.0, 100.0, 4999.0, 1.0);
     private final SpinnerNumberModel spnTurretWtModel = new SpinnerNumberModel(0.0, 0.0, null, 0.5);
     private final SpinnerNumberModel spnTurret2WtModel = new SpinnerNumberModel(0.0, 0.0, null, 0.5);
+    private final SpinnerNumberModel spnSponsonPintleWtModel = new SpinnerNumberModel(0.0, 0.0, null, 0.5);
     private String[] turretNames;
     private final SpinnerNumberModel spnFireConWtModel = new SpinnerNumberModel(0.0, 0.0, null, 0.5);
 
@@ -82,6 +83,7 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
     private final JCheckBox chkPintleRight = new JCheckBox();
     private final JSpinner spnChassisTurretWt = new JSpinner(spnTurretWtModel);
     private final JSpinner spnChassisTurret2Wt = new JSpinner(spnTurret2WtModel);
+    private final JSpinner spnChassisSponsonPintleWt = new JSpinner(spnSponsonPintleWtModel);
     private final JComboBox<String> cbFireControl = new JComboBox<>();
     private final JSpinner spnFireConWt = new JSpinner(spnFireConWtModel);
 
@@ -248,7 +250,7 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         omniPanel.add(lbl, gbc);
         gbc.gridx = 1;
         gbc.gridwidth = 2;
-        setFieldSize(spnChassisTurretWt, spinnerSize);
+        setFieldSize(spnChassisTurretWt, spinnerSizeLg);
         spnChassisTurretWt.setToolTipText(resourceMap.getString("CVChassisView.spnTurretWt.tooltip")); //$NON-NLS-1$
         omniPanel.add(spnChassisTurretWt, gbc);
         spnChassisTurretWt.addChangeListener(this);
@@ -260,10 +262,22 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         omniPanel.add(lbl, gbc);
         gbc.gridx = 1;
         gbc.gridwidth = 2;
-        setFieldSize(spnChassisTurret2Wt, spinnerSize);
+        setFieldSize(spnChassisTurret2Wt, spinnerSizeLg);
         spnChassisTurret2Wt.setToolTipText(resourceMap.getString("CVChassisView.spnTurret2Wt.tooltip")); //$NON-NLS-1$
         omniPanel.add(spnChassisTurret2Wt, gbc);
         spnChassisTurret2Wt.addChangeListener(this);
+
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.gridwidth = 1;
+        lbl = createLabel(resourceMap.getString("SVChassisView.spnSponsonPintleWt.text"), labelSize); //$NON-NLS-1$
+        omniPanel.add(lbl, gbc);
+        gbc.gridx = 1;
+        gbc.gridwidth = 2;
+        setFieldSize(spnChassisSponsonPintleWt, spinnerSizeLg);
+        spnChassisSponsonPintleWt.setToolTipText(resourceMap.getString("SVChassisView.spnSponsonPintleWt.tooltip")); //$NON-NLS-1$
+        omniPanel.add(spnChassisSponsonPintleWt, gbc);
+        spnChassisSponsonPintleWt.addChangeListener(this);
 
         gbc.gridx = 0;
         gbc.gridy++;
@@ -272,20 +286,22 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         omniPanel.add(lbl, gbc);
         gbc.gridx = 1;
         gbc.gridwidth = 2;
-        setFieldSize(spnFireConWt, spinnerSize);
+        setFieldSize(spnFireConWt, spinnerSizeLg);
         spnFireConWt.setToolTipText(resourceMap.getString("SVChassisView.spnFireConWt.tooltip")); //$NON-NLS-1$
         omniPanel.add(spnFireConWt, gbc);
         spnFireConWt.addChangeListener(this);
     }
 
     /**
-     * @return The current weight value. Small support vees have the value converted from kg to tons.
+     * Convenience method to convert weight values to tons based on whether the small size box is checked.
+     * @param weight The weight value in either the ton or kg standard as determined by the checkbox
+     * @return       The weight in tons
      */
-    public double getTonnage() {
+    private double convertWeight(double weight) {
         if (chkSmall.isSelected()) {
-            return (double) spnTonnage.getValue() / 1000.0;
+            return weight / 1000.0;
         } else {
-            return (double) spnTonnage.getValue();
+            return weight;
         }
     }
 
@@ -413,19 +429,27 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
             }
             final double turret1 = Math.max(0, tank.getBaseChassisTurretWeight());
             final double turret2 = Math.max(0, tank.getBaseChassisTurret2Weight());
+            final double side = Math.max(0, tank.getBaseChassisSponsonPintleWeight());
             if (entity.getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT) {
                 spnTurretWtModel.setStepSize(1.0);
                 spnTurretWtModel.setValue(turret1 * 1000.0);
                 spnTurret2WtModel.setStepSize(1.0);
                 spnTurret2WtModel.setValue(turret2 * 1000.0);
+                spnSponsonPintleWtModel.setStepSize(1.0);
+                spnSponsonPintleWtModel.setValue(side * 1000.0);
             } else {
                 spnChassisTurretWt.setModel(spnTurretWtModel);
                 spnTurretWtModel.setStepSize(0.5);
                 spnTurretWtModel.setValue(turret1);
                 spnTurret2WtModel.setStepSize(0.5);
                 spnTurret2WtModel.setValue(turret2);
+                spnSponsonPintleWtModel.setStepSize(0.5);
+                spnSponsonPintleWtModel.setValue(side);
             }
             cbTurrets.setEnabled(true);
+            chkSponson.setSelected(entity.hasWorkingMisc(MiscType.F_SPONSON_TURRET));
+            chkPintleLeft.setSelected(entity.countWorkingMisc(MiscType.F_PINTLE_TURRET, SupportTank.LOC_LEFT) > 0);
+            chkPintleRight.setSelected(entity.countWorkingMisc(MiscType.F_PINTLE_TURRET, SupportTank.LOC_RIGHT) > 0);
         } else {
             cbTurrets.setEnabled(false);
         }
@@ -450,6 +474,8 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
                 && (cbTurrets.getSelectedIndex() > SVBuildListener.TURRET_NONE));
         spnChassisTurret2Wt.setEnabled(!entity.isAero() && entity.isOmni()
                 && Integer.valueOf(SVBuildListener.TURRET_DUAL).equals(cbTurrets.getSelectedItem()));
+        spnChassisSponsonPintleWt.setEnabled(!entity.isAero() && entity.isOmni()
+                && (chkSponson.isSelected() || chkPintleLeft.isSelected() || chkPintleRight.isSelected()));
         spnFireConWt.setEnabled(entity.isOmni() && (cbFireControl.getSelectedIndex() > SVBuildListener.FIRECON_NONE));
     }
 
@@ -488,21 +514,21 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
             cbTurrets.setSelectedIndex(0);
         }
 
-        double maxWt = getTonnage();
+        double maxWt = convertWeight((double) spnTonnage.getValue());
         if (chkSmall.isSelected()) {
             maxWt *= 1000.0;
         }
-        spnTurretWtModel.setMaximum(maxWt);
-        if (spnTurretWtModel.getNumber().doubleValue() > maxWt) {
-            spnTurretWtModel.removeChangeListener(this);
-            spnTurretWtModel.setValue(maxWt);
-            spnTurretWtModel.addChangeListener(this);
-        }
-        spnTurret2WtModel.setMaximum(maxWt);
-        if (spnTurret2WtModel.getNumber().doubleValue() > maxWt) {
-            spnTurret2WtModel.removeChangeListener(this);
-            spnTurret2WtModel.setValue(maxWt);
-            spnTurret2WtModel.addChangeListener(this);
+        setSpinnerMaxWeight(spnTurretWtModel, maxWt);
+        setSpinnerMaxWeight(spnTurret2WtModel, maxWt);
+        setSpinnerMaxWeight(spnSponsonPintleWtModel, maxWt);
+    }
+
+    private void setSpinnerMaxWeight(SpinnerNumberModel model, double maxWt) {
+        model.setMaximum(maxWt);
+        if (model.getNumber().doubleValue() > maxWt) {
+            model.removeChangeListener(this);
+            model.setValue(maxWt);
+            model.addChangeListener(this);
         }
     }
 
@@ -527,38 +553,51 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         spnTonnage.removeChangeListener(this);
         spnChassisTurretWt.removeChangeListener(this);
         spnChassisTurret2Wt.removeChangeListener(this);
+        spnChassisSponsonPintleWt.removeChangeListener(this);
         spnFireConWt.removeChangeListener(this);
         final double turret1 = spnTurretWtModel.getNumber().doubleValue();
         final double turret2 = spnTurret2WtModel.getNumber().doubleValue();
+        final double sideTurret = spnSponsonPintleWtModel.getNumber().doubleValue();
         final double fireCon = spnFireConWtModel.getNumber().doubleValue();
         if (chkSmall.isSelected()) {
             spnTonnage.setModel(spnTonnageModelSmall);
             spnTurretWtModel.setStepSize(1.0);
             spnTurret2WtModel.setStepSize(1.0);
+            spnSponsonPintleWtModel.setStepSize(1.0);
             spnFireConWtModel.setStepSize(1.0);
+            chkSponson.setSelected(false);
         } else {
             spnTonnage.setModel(spnTonnageModel);
             spnTurretWtModel.setStepSize(0.5);
             spnTurret2WtModel.setStepSize(0.5);
+            spnSponsonPintleWtModel.setStepSize(0.5);
             spnFireConWtModel.setStepSize(0.5);
+            chkPintleLeft.setSelected(false);
+            chkPintleRight.setSelected(false);
         }
         final double max = ((Number) spnTonnage.getValue()).doubleValue();
         spnTurretWtModel.setMaximum(max);
         spnTurret2WtModel.setMaximum(max);
+        spnSponsonPintleWtModel.setMaximum(max);
         spnFireConWtModel.setMaximum(max);
+        spnChassisSponsonPintleWt.setEnabled(chkSponson.isSelected()
+                || chkPintleLeft.isSelected() || chkPintleRight.isSelected());
 
         spnTonnage.addChangeListener(this);
         spnChassisTurretWt.addChangeListener(this);
         spnChassisTurret2Wt.addChangeListener(this);
+        spnChassisSponsonPintleWt.addChangeListener(this);
         spnFireConWt.addChangeListener(this);
 
         if (chkSmall.isSelected()) {
             spnTurretWtModel.setValue(Math.min(turret1 * 1000.0, max));
             spnTurret2WtModel.setValue(Math.min(turret2 * 1000.0, max));
+            spnSponsonPintleWtModel.setValue(Math.min(sideTurret * 1000.0, max));
             spnFireConWtModel.setValue(Math.min(fireCon * 1000.0, max));
         } else {
             spnTurretWtModel.setValue(Math.min(Math.ceil(turret1 / 500.0) / 2.0, max));
             spnTurret2WtModel.setValue(Math.min(Math.ceil(turret2 / 500.0) / 2.0, max));
+            spnSponsonPintleWtModel.setValue(Math.min(Math.ceil(sideTurret / 500.0) / 2.0, max));
             spnFireConWtModel.setValue(Math.min(Math.ceil(fireCon / 500.0) / 2.0, max));
         }
     }
@@ -567,7 +606,14 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == chkSmall) {
             resetWeightStandard();
-            listeners.forEach(l -> l.tonnageChanged(getTonnage()));
+            listeners.forEach(l -> l.tonnageChanged(convertWeight((double) spnTonnage.getValue())));
+            // Switching between small and M/L makes either sponsons or pintles invalid
+            if (chkSmall.isSelected()) {
+                listeners.forEach(l -> l.sponsonTurretChanged(false));
+            } else {
+                listeners.forEach(l -> l.pintleTurretChanged(false, Tank.LOC_LEFT));
+                listeners.forEach(l -> l.pintleTurretChanged(false, Tank.LOC_RIGHT));
+            }
         } else if (e.getSource() == cbType) {
             listeners.forEach(l -> l.typeChanged(getType()));
         } else if (e.getSource() == cbStructureTechRating) {
@@ -596,13 +642,16 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
     @Override
     public void stateChanged(ChangeEvent e) {
         if (e.getSource() == spnTonnage) {
-            listeners.forEach(l -> l.tonnageChanged(getTonnage()));
+            listeners.forEach(l -> l.tonnageChanged(convertWeight((double) spnTonnage.getValue())));
         } else if ((e.getSource() == spnChassisTurretWt)
-                || (e.getSource() == spnChassisTurret2Wt)){
-            listeners.forEach(l -> l.turretBaseWtChanged(spnTurretWtModel.getNumber().doubleValue(),
-                    spnTurret2WtModel.getNumber().doubleValue()));
+                || (e.getSource() == spnChassisTurret2Wt)) {
+            listeners.forEach(l -> l.turretBaseWtChanged(
+                    convertWeight(spnTurretWtModel.getNumber().doubleValue()),
+                    convertWeight(spnTurret2WtModel.getNumber().doubleValue())));
+        } else if (e.getSource() == spnChassisSponsonPintleWt) {
+            listeners.forEach(l -> l.sponsonPintleBaseWtChanged(convertWeight(spnSponsonPintleWtModel.getNumber().doubleValue())));
         } else if (e.getSource() == spnFireConWt) {
-            listeners.forEach(l -> l.fireConWtChanged(spnFireConWtModel.getNumber().doubleValue()));
+            listeners.forEach(l -> l.fireConWtChanged(convertWeight(spnFireConWtModel.getNumber().doubleValue())));
         }
     }
 }
