@@ -208,7 +208,7 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
             cbJumpType.addActionListener(this);
         }
         // LAMs have a minimum jump MP of 3, which implies a minimum walk
-        int minWalk = 1;
+        int minWalk = en.isTrailer()? 0 : 1;
         Integer maxWalk = null;
         int minJump = 0;
         Integer maxJump = en.getOriginalWalkMP();
