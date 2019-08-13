@@ -139,6 +139,11 @@ public interface SVBuildListener extends BuildListener {
     void setQuarters(int firstClass, int secondClass, int crew, int steerage);
 
     /**
+     * Removes all pod-mounted equipment from an omni.
+     */
+    void resetChassis();
+
+    /**
      * Notify of a change in the base chassis sponson/pintle weight for omnivehicles.
      *
      * @param turretWeight The weight of the sponson or pintle turrets.

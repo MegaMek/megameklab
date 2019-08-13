@@ -23,13 +23,7 @@ import java.io.File;
 import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Vector;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Collectors;
 
@@ -1281,6 +1275,9 @@ public class UnitUtil {
                 unit.setOriginalJumpMP(unit.getOriginalJumpMP() - 1);
             }
         }
+        List<Transporter> transporters = unit.getTransports().stream()
+                .filter(unit::isPodMountedTransport).collect(Collectors.toList());
+        transporters.forEach(unit::removeTransporter);
     }
 
     public static boolean hasTargComp(Entity unit) {

@@ -86,6 +86,7 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
     private final JSpinner spnChassisSponsonPintleWt = new JSpinner(spnSponsonPintleWtModel);
     private final JComboBox<String> cbFireControl = new JComboBox<>();
     private final JSpinner spnFireConWt = new JSpinner(spnFireConWtModel);
+    private final JButton btnResetChassis = new JButton();
 
     private final JPanel omniPanel = new JPanel();
 
@@ -290,6 +291,14 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         spnFireConWt.setToolTipText(resourceMap.getString("SVChassisView.spnFireConWt.tooltip")); //$NON-NLS-1$
         omniPanel.add(spnFireConWt, gbc);
         spnFireConWt.addChangeListener(this);
+
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        btnResetChassis.setText(resourceMap.getString("SVChassisView.btnResetChassis.text"));
+        btnResetChassis.setToolTipText(resourceMap.getString("SVChassisView.btnResetChassis.tooltip"));
+        omniPanel.add(btnResetChassis, gbc);
+        btnResetChassis.addActionListener(this);
     }
 
     /**
@@ -636,6 +645,8 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
                     Tank.LOC_RIGHT));
         } else if (e.getSource() == cbFireControl) {
             listeners.forEach(l -> l.fireConChanged(cbFireControl.getSelectedIndex()));
+        } else if (e.getSource() == btnResetChassis) {
+            listeners.forEach(SVBuildListener::resetChassis);
         }
     }
 

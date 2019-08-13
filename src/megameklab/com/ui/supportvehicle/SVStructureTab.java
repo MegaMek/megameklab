@@ -563,6 +563,12 @@ class SVStructureTab extends ITab implements SVBuildListener {
     }
 
     @Override
+    public void resetChassis() {
+        UnitUtil.resetBaseChassis(getEntity());
+        refresh.refreshAll();
+    }
+
+    @Override
     public void setSeating(int standard, int pillion, int ejection) {
         // Clear out any existing seating.
         final List<Transporter> current = getSV().getTransports().stream()
