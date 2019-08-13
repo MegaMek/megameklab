@@ -86,7 +86,6 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
     private final JSpinner spnChassisSponsonPintleWt = new JSpinner(spnSponsonPintleWtModel);
     private final JComboBox<String> cbFireControl = new JComboBox<>();
     private final JSpinner spnFireConWt = new JSpinner(spnFireConWtModel);
-    private final JButton btnResetChassis = new JButton();
 
     private final JPanel omniPanel = new JPanel();
 
@@ -125,6 +124,7 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         chkSmall.setText(resourceMap.getString("SVChassisView.chkSmall.text")); //$NON-NLS-1$
         chkSmall.setToolTipText(resourceMap.getString("SVChassisView.chkSmall.tooltip")); //$NON-NLS-1$
         add(chkSmall, gbc);
+        chkSmall.setActionCommand(ACTION_SMALL);
         chkSmall.addActionListener(this);
 
         for (int r = ITechnology.RATING_A; r <= ITechnology.RATING_F; r++) {
@@ -139,6 +139,7 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         setFieldSize(cbStructureTechRating, spinnerSize);
         cbStructureTechRating.setToolTipText(resourceMap.getString("SVChassisView.cbStructureTechRating.tooltip")); //$NON-NLS-1$
         add(cbStructureTechRating, gbc);
+        cbStructureTechRating.setActionCommand(ACTION_STRUCTURE_RATING);
         cbStructureTechRating.addActionListener(this);
 
         SV_TYPES.forEach(cbType::addItem);
@@ -151,6 +152,7 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         setFieldSize(cbType, controlSize);
         cbType.setToolTipText(resourceMap.getString("SVChassisView.cbType.tooltip")); //$NON-NLS-1$
         add(cbType, gbc);
+        cbType.setActionCommand(ACTION_TYPE);
         cbType.addActionListener(this);
 
         cbEngine.setModel(new DefaultComboBoxModel<>(TestSupportVehicle.SVEngine.values()));
@@ -163,6 +165,7 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         setFieldSize(cbEngine, controlSize);
         cbEngine.setToolTipText(resourceMap.getString("SVChassisView.cbEngine.tooltip")); //$NON-NLS-1$
         add(cbEngine, gbc);
+        cbEngine.setActionCommand(ACTION_ENGINE);
         cbEngine.addActionListener(this);
 
         for (int r = ITechnology.RATING_A; r <= ITechnology.RATING_F; r++) {
@@ -177,6 +180,7 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         setFieldSize(cbEngineTechRating, spinnerSize);
         cbEngineTechRating.setToolTipText(resourceMap.getString("SVChassisView.cbEngineTechRating.tooltip")); //$NON-NLS-1$
         add(cbEngineTechRating, gbc);
+        cbEngineTechRating.setActionCommand(ACTION_ENGINE_RATING);
         cbEngineTechRating.addActionListener(this);
 
         gbc.gridx = 0;
@@ -188,6 +192,7 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         setFieldSize(cbTurrets, controlSize);
         cbTurrets.setToolTipText(resourceMap.getString("CVChassisView.cbTurrets.tooltip")); //$NON-NLS-1$
         add(cbTurrets, gbc);
+        cbTurrets.setActionCommand(ACTION_TURRET_CONFIG);
         cbTurrets.addActionListener(this);
 
         gbc.gridx = 1;
@@ -196,6 +201,7 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         chkSponson.setText(resourceMap.getString("SVChassisView.chkSponson.text")); //$NON-NLS-1$
         chkSponson.setToolTipText(resourceMap.getString("SVChassisView.chkSponson.tooltip")); //$NON-NLS-1$
         add(chkSponson, gbc);
+        chkSponson.setActionCommand(ACTION_SPONSON);
         chkSponson.addActionListener(this);
 
         gbc.gridx = 0;
@@ -206,12 +212,14 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 1;
         chkPintleLeft.setText(resourceMap.getString("SVChassisView.chkPintleLeft.text")); //$NON-NLS-1$
         chkPintleLeft.setToolTipText(resourceMap.getString("SVChassisView.chkPintle.tooltip")); //$NON-NLS-1$
+        chkPintleLeft.setActionCommand(ACTION_PINTLE_LEFT);
         add(chkPintleLeft, gbc);
+        chkPintleLeft.addActionListener(this);
         gbc.gridx = 2;
         chkPintleRight.setText(resourceMap.getString("SVChassisView.chkPintleRight.text")); //$NON-NLS-1$
         chkPintleRight.setToolTipText(resourceMap.getString("SVChassisView.chkPintle.tooltip")); //$NON-NLS-1$
         add(chkPintleRight, gbc);
-        chkPintleLeft.addActionListener(this);
+        chkPintleLeft.setActionCommand(ACTION_PINTLE_RIGHT);
         chkPintleRight.addActionListener(this);
 
         gbc.gridx = 0;
@@ -223,6 +231,7 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         setFieldSize(cbFireControl, controlSize);
         cbFireControl.setToolTipText(resourceMap.getString("SVChassisView.cbFireCon.tooltip")); // $NON-NLS-1$
         add(cbFireControl, gbc);
+        cbFireControl.setActionCommand(ACTION_FIRE_CONTROL);
         cbFireControl.addActionListener(this);
 
         initOmniPanel(resourceMap);
@@ -295,9 +304,10 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = GridBagConstraints.REMAINDER;
-        btnResetChassis.setText(resourceMap.getString("SVChassisView.btnResetChassis.text"));
+        JButton btnResetChassis = new JButton(resourceMap.getString("SVChassisView.btnResetChassis.text"));
         btnResetChassis.setToolTipText(resourceMap.getString("SVChassisView.btnResetChassis.tooltip"));
         omniPanel.add(btnResetChassis, gbc);
+        btnResetChassis.setActionCommand(ACTION_RESET_CHASSIS);
         btnResetChassis.addActionListener(this);
     }
 
@@ -611,42 +621,66 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         }
     }
 
+    private static final String ACTION_SMALL = "small"; //$NON-NLS-1
+    private static final String ACTION_TYPE = "type"; //$NON-NLS-1
+    private static final String ACTION_STRUCTURE_RATING = "structureTechRating"; //$NON-NLS-1
+    private static final String ACTION_ENGINE = "engine"; //$NON-NLS-1
+    private static final String ACTION_ENGINE_RATING = "engineRating"; //$NON-NLS-1
+    private static final String ACTION_TURRET_CONFIG = "turretConfig"; //$NON-NLS-1
+    private static final String ACTION_SPONSON = "sponson"; //$NON-NLS-1
+    private static final String ACTION_PINTLE_LEFT = "pintleLeft"; //$NON-NLS-1
+    private static final String ACTION_PINTLE_RIGHT = "pintleRight"; //$NON-NLS-1
+    private static final String ACTION_FIRE_CONTROL = "fireControl"; //$NON-NLS-1
+    private static final String ACTION_RESET_CHASSIS = "resetChassis"; //$NON-NLS-1
+
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == chkSmall) {
-            resetWeightStandard();
-            listeners.forEach(l -> l.tonnageChanged(convertWeight((double) spnTonnage.getValue())));
-            // Switching between small and M/L makes either sponsons or pintles invalid
-            if (chkSmall.isSelected()) {
-                listeners.forEach(l -> l.sponsonTurretChanged(false));
-            } else {
-                listeners.forEach(l -> l.pintleTurretChanged(false, Tank.LOC_LEFT));
-                listeners.forEach(l -> l.pintleTurretChanged(false, Tank.LOC_RIGHT));
-            }
-        } else if (e.getSource() == cbType) {
-            listeners.forEach(l -> l.typeChanged(getType()));
-        } else if (e.getSource() == cbStructureTechRating) {
-            listeners.forEach(l -> l.structuralTechRatingChanged(getStructuralTechRating()));
-        } else if (e.getSource() == cbEngine) {
-            listeners.forEach(l -> l.engineChanged(getEngineType().engine));
-        } else if (e.getSource() == cbEngineTechRating) {
-            listeners.forEach(l -> l.engineTechRatingChanged(getEngineTechRating()));
-        } else if (e.getSource() == cbTurrets) {
-            if (cbTurrets.getSelectedItem() != null) {
-                listeners.forEach(l -> l.turretChanged((Integer) cbTurrets.getSelectedItem()));
-            }
-        } else if (e.getSource() == chkSponson) {
-            listeners.forEach(l -> l.sponsonTurretChanged(chkSponson.isSelected()));
-        } else if (e.getSource() == chkPintleLeft) {
-            listeners.forEach(l -> l.pintleTurretChanged(chkPintleLeft.isSelected(),
-                    Tank.LOC_LEFT));
-        } else if (e.getSource() == chkPintleRight) {
-            listeners.forEach(l -> l.pintleTurretChanged(chkPintleRight.isSelected(),
-                    Tank.LOC_RIGHT));
-        } else if (e.getSource() == cbFireControl) {
-            listeners.forEach(l -> l.fireConChanged(cbFireControl.getSelectedIndex()));
-        } else if (e.getSource() == btnResetChassis) {
-            listeners.forEach(SVBuildListener::resetChassis);
+        switch (e.getActionCommand()) {
+            case ACTION_SMALL:
+                resetWeightStandard();
+                listeners.forEach(l -> l.tonnageChanged(convertWeight((double) spnTonnage.getValue())));
+                // Switching between small and M/L makes either sponsons or pintles invalid
+                if (chkSmall.isSelected()) {
+                    listeners.forEach(l -> l.sponsonTurretChanged(false));
+                } else {
+                    listeners.forEach(l -> l.pintleTurretChanged(false, Tank.LOC_LEFT));
+                    listeners.forEach(l -> l.pintleTurretChanged(false, Tank.LOC_RIGHT));
+                }
+                break;
+            case ACTION_TYPE:
+                listeners.forEach(l -> l.typeChanged(getType()));
+                break;
+            case ACTION_STRUCTURE_RATING:
+                listeners.forEach(l -> l.structuralTechRatingChanged(getStructuralTechRating()));
+                break;
+            case ACTION_ENGINE:
+                listeners.forEach(l -> l.engineChanged(getEngineType().engine));
+                break;
+            case ACTION_ENGINE_RATING:
+                listeners.forEach(l -> l.engineTechRatingChanged(getEngineTechRating()));
+                break;
+            case ACTION_TURRET_CONFIG:
+                if (cbTurrets.getSelectedItem() != null) {
+                    listeners.forEach(l -> l.turretChanged((Integer) cbTurrets.getSelectedItem()));
+                }
+                break;
+            case ACTION_SPONSON:
+                listeners.forEach(l -> l.sponsonTurretChanged(chkSponson.isSelected()));
+                break;
+            case ACTION_PINTLE_LEFT:
+                listeners.forEach(l -> l.pintleTurretChanged(chkPintleLeft.isSelected(),
+                        Tank.LOC_LEFT));
+                break;
+            case ACTION_PINTLE_RIGHT:
+                listeners.forEach(l -> l.pintleTurretChanged(chkPintleRight.isSelected(),
+                        Tank.LOC_RIGHT));
+                break;
+            case ACTION_FIRE_CONTROL:
+                listeners.forEach(l -> l.fireConChanged(cbFireControl.getSelectedIndex()));
+                break;
+            case ACTION_RESET_CHASSIS:
+                listeners.forEach(SVBuildListener::resetChassis);
+                break;
         }
     }
 
