@@ -68,7 +68,13 @@ public class ChassisModView extends BuildView implements ActionListener {
             final JCheckBox cb = checkboxMap.get(mod);
             if (techManager.isLegal(mod) && mod.validFor(en)) {
                 cb.setVisible(true);
-                cb.setSelected(en.getMisc().stream().anyMatch(m -> m.getType().equals(mod.equipment)));
+                if (mod.requiredFor(en)) {
+                    cb.setSelected(true);
+                    cb.setEnabled(false);
+                } else {
+                    cb.setSelected(en.getMisc().stream().anyMatch(m -> m.getType().equals(mod.equipment)));
+                    cb.setEnabled(true);
+                }
             } else {
                 cb.setVisible(false);
                 cb.setSelected(false);
