@@ -31,16 +31,7 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import megamek.common.BattleArmor;
-import megamek.common.Entity;
-import megamek.common.EntityMovementMode;
-import megamek.common.EquipmentType;
-import megamek.common.ITechManager;
-import megamek.common.Mech;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
-import megamek.common.Protomech;
-import megamek.common.Tank;
+import megamek.common.*;
 import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestBattleArmor;
 import megamek.common.verifier.TestEntity;
@@ -80,7 +71,7 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
     private final JSpinner spnWalk = new JSpinner(spnWalkModel);
     private final JSpinner spnJump = new JSpinner(spnJumpModel);
     private final TechComboBox<EquipmentType> cbJumpType =
-                new TechComboBox<>(eq -> eq.getName().replaceAll("\\s+\\[.*?\\]",  ""));
+                new TechComboBox<>(eq -> eq.getName().replaceAll("\\s+\\[.*?]",  ""));
     
     private final JLabel lblWalk = createLabel("", labelSize);
     private final JLabel lblRun = createLabel("", labelSize);
@@ -196,7 +187,7 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
     
     public void setFromEntity(Entity en) {
         etype = en.getEntityType();
-        industrial = (en instanceof Mech) && ((Mech)en).isIndustrial();
+        industrial = (en instanceof Mech) && ((Mech) en).isIndustrial();
         refresh();
 
         Optional<EquipmentType> jj = en.getMisc().stream().map(Mounted::getType)
@@ -214,9 +205,9 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
         Integer maxJump = en.getOriginalWalkMP();
         if (cbJumpType.getModel().getSize() == 0) { // No legal jump jet tech for this unit type
             maxJump = 0;
-        } else if (en.hasETypeFlag(Entity.ETYPE_MECH)) {
+        } else if (en instanceof Mech) {
             maxJump = TestMech.maxJumpMP((Mech)en);
-        } else if (en.hasETypeFlag(Entity.ETYPE_PROTOMECH)) {
+        } else if (en instanceof Protomech) {
             maxJump = TestProtomech.maxJumpMP((Protomech) en);
         }
         if (en.hasETypeFlag(Entity.ETYPE_TANK) && !en.isSupportVehicle()) {
@@ -229,7 +220,7 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
             if ((jumpType == Mech.JUMP_IMPROVED) || (jumpType == Mech.JUMP_PROTOTYPE_IMPROVED)) {
                 minWalk = 2;
             }
-        } else if (en.hasETypeFlag(Entity.ETYPE_BATTLEARMOR)) {
+        } else if (en instanceof BattleArmor) {
             cbJumpType.removeActionListener(this);
             maxWalk = TestBattleArmor.maxWalkMP((BattleArmor)en);
             if (((BattleArmor)en).getChassisType() == BattleArmor.CHASSIS_TYPE_QUAD) {
@@ -244,7 +235,7 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
                 maxJump = TestBattleArmor.maxJumpMP((BattleArmor)en);
             }
             cbJumpType.addActionListener(this);
-        } else if (en.hasETypeFlag(Entity.ETYPE_PROTOMECH)) {
+        } else if (en instanceof Protomech) {
             if (((Protomech) en).isGlider()) {
                 minWalk = TestProtomech.GLIDER_MIN_MP;
             } else if (((Protomech) en).isQuad()) {
@@ -254,6 +245,11 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
             }
         } else if (en.hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
             minWalk = 0; // Station-keeping drive. Legal for warships, though unusual.
+        }
+        // Trailers with no engine have a max speed of zero.
+        if (en.isTrailer() && ((en.getEngine() == null)
+                    || (en.getEngine().getEngineType() == Engine.NONE))) {
+            maxWalk = 0;
         }
 
         spnWalkModel.setMinimum(minWalk);
