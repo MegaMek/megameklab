@@ -51,6 +51,7 @@ public class SVCrewView extends BuildView implements ChangeListener {
     private final JLabel txtReqOther = new JLabel();
     private final JLabel txtReqOfficers = new JLabel();
     private final JLabel txtTotalMinCrew = new JLabel();
+    private final JLabel lblSeatingHeader = new JLabel();
 
     private final JSpinner spnStandardSeats = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
     private final JLabel txtStdSeatWeight = new JLabel("", SwingConstants.CENTER);
@@ -72,6 +73,9 @@ public class SVCrewView extends BuildView implements ChangeListener {
     private final JLabel txtSteerageWeight = new JLabel("", SwingConstants.CENTER);
     private final JLabel txtSteerageSlots = new JLabel("", SwingConstants.CENTER);
 
+    private String seatingAll;
+    private String seatingExtra;
+
     public SVCrewView() {
         initUi();
     }
@@ -79,6 +83,8 @@ public class SVCrewView extends BuildView implements ChangeListener {
     private void initUi() {
         setLayout(new GridBagLayout());
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl()); //$NON-NLS-1$
+        seatingAll = resourceMap.getString("SVCrewView.lblSeatingHeader.allSeats");
+        seatingExtra = resourceMap.getString("SVCrewView.lblSeatingHeader.extraSeats");
         GridBagConstraints gbc = new GridBagConstraints();
 
         gbc.gridx = 0;
@@ -138,7 +144,7 @@ public class SVCrewView extends BuildView implements ChangeListener {
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 2;
-        add(createLabel(resourceMap.getString("SVCrewView.lblSeating.text"), labelSizeLg), gbc); //$NON-NLS-1$
+        add(createLabel(seatingExtra, labelSizeLg), gbc); //$NON-NLS-1$
         gbc.gridwidth = 1;
         gbc.gridx = 2;
         add(createLabel(resourceMap.getString("SVCrewView.lblSeatingWeight.text"), labelSize), gbc); //$NON-NLS-1$
@@ -348,29 +354,17 @@ public class SVCrewView extends BuildView implements ChangeListener {
         spnCrewQuarters.addChangeListener(this);
         spnSteerage.addChangeListener(this);
         // If the current seating is not enough to meet minimum crew requirements, add standard combat seats
-        if (stdSeats + pillion + ejection < total) {
+        if ((entity.getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT)
+                && (stdSeats + pillion + ejection < total)) {
             stdSeats  = total - pillion - ejection;
             spnStandardSeats.setValue(stdSeats);
+            lblSeatingHeader.setText(seatingAll);
+        } else {
+            lblSeatingHeader.setText(seatingExtra);
         }
 
-        int stdWeight = 0;
-        int pillionWeight = 0;
-
-        if (entity.getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT) {
-            // small support vehicles must account for the weight of all seating
-            stdWeight = stdSeats;
-            pillionWeight = pillion;
-        } else if (stdSeats + pillion + ejection > total) {
-            // med and lg need only account for extra seating. We'll charge the extra to the ejection seats
-            // first, since we always pay for their weight
-            int extra = stdSeats + pillion + ejection - total;
-            extra = Math.max(0, extra - ejection);
-            pillionWeight = Math.min(pillion, extra);
-            extra -= pillionWeight;
-            stdWeight = Math.min(stdSeats, extra);
-        }
-        txtStdSeatWeight.setText(String.valueOf(stdWeight * 75));
-        txtPillionWeight.setText(String.valueOf(pillionWeight * 25));
+        txtStdSeatWeight.setText(String.valueOf(stdSeats * 75));
+        txtPillionWeight.setText(String.valueOf(pillion * 25));
         txtEjectionWeight.setText(String.valueOf(ejection * 100));
         txtFirstClassWeight.setText(String.valueOf(firstClassWeight));
         txtSecondClassWeight.setText(String.valueOf(secondClassWeight));
