@@ -52,7 +52,6 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
     /** Subset of possible types that does not include those that are not yet supported */
     private final List<TestSupportVehicle.SVType> SV_TYPES = Arrays.stream(TestSupportVehicle.SVType.values())
             .filter(t -> !t.equals(TestSupportVehicle.SVType.AIRSHIP)
-                    && !t.equals(TestSupportVehicle.SVType.RAIL)
                     && !t.equals(TestSupportVehicle.SVType.SATELLITE)).collect(Collectors.toList());
     private final Map<TestSupportVehicle.SVType, String> typeNames = new EnumMap<>(TestSupportVehicle.SVType.class);
 

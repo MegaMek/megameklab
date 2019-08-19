@@ -273,8 +273,14 @@ class SVStructureTab extends ITab implements SVBuildListener {
 
     @Override
     public void tonnageChanged(double tonnage) {
-        getSV().setWeight(TestEntity.ceil(tonnage, tonnage < 5 ?
+        boolean wasLarge = getEntity().getWeightClass() == EntityWeightClass.WEIGHT_LARGE_SUPPORT;
+        getEntity().setWeight(TestEntity.ceil(tonnage, tonnage < 5 ?
                 TestEntity.Ceil.KILO : TestEntity.Ceil.HALFTON));
+        if (!getEntity().isAero() && !getEntity().getMovementMode().equals(EntityMovementMode.VTOL)) {
+            if ((getEntity().getWeightClass() == EntityWeightClass.WEIGHT_LARGE_SUPPORT) != wasLarge) {
+                toggleLargeSupport();
+            }
+        }
         panChassisMod.setFromEntity(getSV());
         panFuel.setFromEntity(getSV());
         refresh.refreshArmor();
@@ -282,6 +288,32 @@ class SVStructureTab extends ITab implements SVBuildListener {
         refresh.refreshSummary();
         refresh.refreshStatus();
         refresh.refreshPreview();
+    }
+
+    /**
+     * Called when changing to or from large support vee, which may require instantiating
+     * a different Entity.
+     */
+    private void toggleLargeSupport() {
+        // fixed wing/airship/satellite/VTOL do not change the number of locations
+        if (getEntity().isAero() || getEntity().getMovementMode().equals(EntityMovementMode.VTOL)) {
+            return;
+        }
+        Entity oldEntity = getEntity();
+        if (getEntity().getWeightClass() == EntityWeightClass.WEIGHT_LARGE_SUPPORT) {
+            eSource.createNewUnit(Entity.ETYPE_LARGE_SUPPORT_TANK, getEntity());
+        } else {
+            eSource.createNewUnit(Entity.ETYPE_SUPPORT_TANK, getEntity());
+        }
+        getEntity().setWeight(oldEntity.getWeight());
+        getEntity().setMovementMode(oldEntity.getMovementMode());
+        panChassis.refresh();
+        panSummary.refresh();
+        refresh.refreshArmor();
+        refresh.refreshEquipment();
+        refresh.refreshPreview();
+        refresh.refreshBuild();
+        refresh.refreshStatus();
     }
 
     @Override
