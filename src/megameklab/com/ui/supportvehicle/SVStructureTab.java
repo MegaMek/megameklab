@@ -406,8 +406,18 @@ class SVStructureTab extends ITab implements SVBuildListener {
             UnitUtil.removeCriticals(getSV(), current);
         }
         if (mod.equals(TestSupportVehicle.ChassisModification.OMNI.equipment)) {
-            getSV().setOmni(installed);
-            panChassis.setFromEntity(getSV());
+            getEntity().setOmni(installed);
+            if (!getEntity().isOmni()) {
+                getEntity().getEquipment().forEach(m -> m.setOmniPodMounted(false));
+                List<Transporter> podTransports = getEntity().getTransports().stream()
+                        .filter(t -> getEntity().isPodMountedTransport(t))
+                        .collect(Collectors.toList());
+                podTransports.forEach(t -> {
+                    getEntity().removeTransporter(t);
+                    getEntity().addTransporter(t, false);
+                });
+            }
+            panChassis.setFromEntity(getEntity());
         } else if (mod.equals(TestSupportVehicle.ChassisModification.ARMORED.equipment)) {
             refresh.refreshArmor();
         }
@@ -627,7 +637,10 @@ class SVStructureTab extends ITab implements SVBuildListener {
     }
 
     @Override
-    public void setQuarters(int firstClass, int secondClass, int crew, int steerage) {
+    public void setQuarters(int firstClass, int firstClassPod,
+                            int secondClass, int secondClassPod,
+                            int crew, int crewPod,
+                            int steerage, int steeragePod) {
         // Clear out any existing standard or pillion seating.
         final List<Transporter> current = getSV().getTransports().stream()
                 .filter(t -> (t instanceof FirstClassQuartersCargoBay)
@@ -640,16 +653,28 @@ class SVStructureTab extends ITab implements SVBuildListener {
         }
         // Create new ones as needed.
         if (firstClass > 0) {
-            getSV().addTransporter(new FirstClassQuartersCargoBay(firstClass));
+            getSV().addTransporter(new FirstClassQuartersCargoBay(firstClass), false);
+        }
+        if (firstClassPod > 0) {
+            getSV().addTransporter(new FirstClassQuartersCargoBay(firstClassPod), true);
         }
         if (secondClass > 0) {
-            getSV().addTransporter(new SecondClassQuartersCargoBay(secondClass));
+            getSV().addTransporter(new SecondClassQuartersCargoBay(secondClass), false);
+        }
+        if (secondClassPod > 0) {
+            getSV().addTransporter(new SecondClassQuartersCargoBay(secondClassPod), true);
         }
         if (crew > 0) {
-            getSV().addTransporter(new CrewQuartersCargoBay(crew));
+            getSV().addTransporter(new CrewQuartersCargoBay(crew), false);
+        }
+        if (crewPod > 0) {
+            getSV().addTransporter(new CrewQuartersCargoBay(crewPod), true);
         }
         if (steerage > 0) {
-            getSV().addTransporter(new SteerageQuartersCargoBay(steerage));
+            getSV().addTransporter(new SteerageQuartersCargoBay(steerage), false);
+        }
+        if (steeragePod > 0) {
+            getSV().addTransporter(new SteerageQuartersCargoBay(steeragePod), true);
         }
         panCrew.setFromEntity(getSV());
         panSummary.refresh();

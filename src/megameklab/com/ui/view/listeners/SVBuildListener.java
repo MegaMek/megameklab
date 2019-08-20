@@ -131,12 +131,17 @@ public interface SVBuildListener extends BuildListener {
     /**
      * Notify of a change in the size of crew quarters
      *
-     * @param firstClass   The crew capacity of first class/officer quarters
-     * @param secondClass  The crew capacity of second class quarters
-     * @param crew         The capacity of standard crew quarters
-     * @param steerage     The capacity of steerage class quarters
+     * @param firstClass      The crew capacity of fixed first class/officer quarters
+     * @param firstClassPod   The crew capacity of pod-mounted first class/officer quarters
+     * @param secondClass     The crew capacity of fixed second class quarters
+     * @param secondClassPod  The crew capacity of pod-mounted second class quarters
+     * @param crew            The capacity of fixed standard crew quarters
+     * @param crewPod         The capacity of pod-mounted standard crew quarters
+     * @param steerage        The capacity of fixed steerage class quarters
+     * @param steeragePod     The capacity of pod-mounted steerage class quarters
      */
-    void setQuarters(int firstClass, int secondClass, int crew, int steerage);
+    void setQuarters(int firstClass, int firstClassPod, int secondClass, int secondClassPod,
+                     int crew, int crewPod, int steerage, int steeragePod);
 
     /**
      * Removes all pod-mounted equipment from an omni.
