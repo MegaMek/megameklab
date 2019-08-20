@@ -180,10 +180,12 @@ public class SVMainUI extends MegaMekLabMainUI {
             getEntity().setWeight(51);
             getEntity().setMovementMode(EntityMovementMode.WHEELED);
             ((SupportTank) getEntity()).setHasNoDualTurret(true);
+            ((SupportTank) getEntity()).setHasNoTurret(true);
         } else {
             setEntity(new SupportTank());
             getEntity().setMovementMode(EntityMovementMode.WHEELED);
             ((SupportTank) getEntity()).setHasNoDualTurret(true);
+            ((SupportTank) getEntity()).setHasNoTurret(true);
         }
         if (entityType != Entity.ETYPE_LARGE_SUPPORT_TANK) {
             getEntity().setWeight(20);
