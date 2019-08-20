@@ -75,6 +75,8 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
 
     private final List<JComponent> svControlList = new ArrayList<>();
 
+    private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl()); //$NON-NLS-1$
+
     /**
      * Create the armor panel
      *
@@ -96,8 +98,6 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
     }
 
     private void initUI(boolean supportVee) {
-        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl()); //$NON-NLS-1$
-        
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
@@ -143,14 +143,12 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
             add(cbBARRating, gbc);
             svControlList.add(cbBARRating);
             cbBARRating.addActionListener(this);
-
-            lblArmorTonnage.setText(resourceMap.getString("ArmorView.spnFactor.text")); //$NON-NLS-1$
-        } else {
-            lblArmorTonnage.setText(resourceMap.getString("ArmorView.spnTonnage.text")); //$NON-NLS-1$
         }
+
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 1;
+        lblArmorTonnage.setText(resourceMap.getString("ArmorView.spnTonnage.text")); //$NON-NLS-1$
         add(lblArmorTonnage, gbc);
         gbc.gridx = 1;
         setFieldSize(spnTonnage, spinnerSizeLg);
@@ -264,8 +262,12 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
             svControlList.forEach(c -> c.setVisible(false));
         }
         if (en.getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT) {
+            lblArmorTonnage.setText(resourceMap.getString("ArmorView.spnFactor.text")); //$NON-NLS-1$
+            spnTonnage.setToolTipText(resourceMap.getString("ArmorView.spnFactor.tooltip")); //$NON-NLS-1$
             spnTonnage.setModel(factorModel);
         } else {
+            lblArmorTonnage.setText(resourceMap.getString("ArmorView.spnTonnage.text")); //$NON-NLS-1$
+            spnTonnage.setToolTipText(resourceMap.getString("ArmorView.spnTonnage.tooltip")); //$NON-NLS-1$
             spnTonnage.setModel(tonnageModel);
         }
 
