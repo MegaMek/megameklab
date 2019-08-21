@@ -17,24 +17,21 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerNumberModel;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import megamek.common.Aero;
-import megamek.common.Entity;
-import megamek.common.FixedWingSupport;
-import megamek.common.Tank;
+import megamek.common.*;
 import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestAero;
 import megamek.common.verifier.TestEntity;
+import megameklab.com.ui.util.CustomComboBox;
 import megameklab.com.ui.view.listeners.BuildListener;
 
 /**
@@ -43,7 +40,7 @@ import megameklab.com.ui.view.listeners.BuildListener;
  * @author Neoancient
  *
  */
-public class FuelView extends BuildView implements ChangeListener {
+public class FuelView extends BuildView implements ActionListener, ChangeListener {
     
     private static final long serialVersionUID = -3321986392656071192L;
 
@@ -55,6 +52,8 @@ public class FuelView extends BuildView implements ChangeListener {
         listeners.remove(l);
     }
 
+    private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl()); //$NON-NLS-1$
+
     private final SpinnerNumberModel spnFuelModel = new SpinnerNumberModel(0.0, 0.0, null, 0.5);
     private final SpinnerNumberModel spnFuelCapacityModel = new SpinnerNumberModel(0, 0, null, 1);
     private final JSpinner spnFuel = new JSpinner(spnFuelModel);
@@ -64,13 +63,13 @@ public class FuelView extends BuildView implements ChangeListener {
     private final JLabel lblTurnsAtMax = new JLabel("", JLabel.CENTER);
     private final JLabel lblBurnDays1G = new JLabel("", JLabel.CENTER);
     private final JLabel lblBurnDaysMax = new JLabel("", JLabel.CENTER);
+    private final CustomComboBox<FuelType> cbFuelType = new CustomComboBox<>(
+            new FuelType[] {FuelType.PETROCHEMICALS, FuelType.ALCOHOL, FuelType.NATURAL_GAS},
+            ft -> resourceMap.getString("FuelView.FuelType." + ft)
+    );
     private final JPanel panInfoTurns = new JPanel();
     private final JPanel panBurnDays = new JPanel();
-
-    private String fuelPointsText;
-    private String fuelRangeText;
-    private String fuelPointsTooltip;
-    private String fuelRangeTooltip;
+    private final JPanel panFuelType = new JPanel();
 
     private boolean kgScale = false;
 
@@ -80,11 +79,6 @@ public class FuelView extends BuildView implements ChangeListener {
     
     private void initUI() {
         setLayout(new GridBagLayout());
-        final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl()); //$NON-NLS-1$
-        fuelPointsText = resourceMap.getString("FuelView.lblFuelPoints.text");
-        fuelRangeText = resourceMap.getString("FuelView.lblRange.text");
-        fuelPointsTooltip = resourceMap.getString("FuelView.lblFuelPoints.tooltip");
-        fuelRangeTooltip = resourceMap.getString("FuelView.lblRange.tooltip");
         GridBagConstraints gbc = new GridBagConstraints();
         
         gbc.insets = new Insets(0,0,0,0);
@@ -104,7 +98,7 @@ public class FuelView extends BuildView implements ChangeListener {
         add(lblFuelPoints, gbc);
         gbc.gridx = 3;
         gbc.insets = new Insets(0,10,0,20);
-        spnFuelCapacity.setToolTipText(fuelPointsTooltip);
+        spnFuelCapacity.setToolTipText(resourceMap.getString("FuelView.lblFuelPoints.tooltip"));
         setFieldSize(spnFuelCapacity, spinnerSizeLg);
         add(spnFuelCapacity, gbc);
         spnFuelCapacity.addChangeListener(this);
@@ -145,6 +139,17 @@ public class FuelView extends BuildView implements ChangeListener {
         gbc.fill = GridBagConstraints.BOTH;
         gbc.insets = new Insets(10,10,10,10);
         add(panBurnDays, gbc);
+
+        panFuelType.add(createLabel(resourceMap.getString("FuelView.cbFuelType.text"), labelSize)); //$NON-NLS-1$
+        panFuelType.add(cbFuelType);
+        cbFuelType.setToolTipText(resourceMap.getString("FuelView.cbFuelType.tooltip")); //$NON-NLS-1$
+        cbFuelType.addActionListener(this);
+        gbc.gridx = 0;
+        gbc.gridwidth = 4;
+        gbc.gridy = 3;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.insets = new Insets(10,10,10,10);
+        add(panFuelType, gbc);
     }
 
     private int scaleMultiplier() {
@@ -173,8 +178,8 @@ public class FuelView extends BuildView implements ChangeListener {
     }
 
     private void setFromAero(Aero aero) {
-        lblFuelPoints.setText(fuelPointsText);
-        spnFuelCapacity.setToolTipText(fuelPointsTooltip);
+        lblFuelPoints.setText(resourceMap.getString("FuelView.lblFuelPoints.text"));
+        spnFuelCapacity.setToolTipText(resourceMap.getString("FuelView.lblFuelPoints.tooltip"));
         panInfoTurns.setVisible(true);
         if ((aero instanceof FixedWingSupport) && (((FixedWingSupport) aero).kgPerFuelPoint() == 0)) {
             lblTurnsAtSafe.setText("N/A");
@@ -209,11 +214,12 @@ public class FuelView extends BuildView implements ChangeListener {
         } else {
             panBurnDays.setVisible(false);
         }
+        panFuelType.setVisible(false);
     }
 
     private void setFromTank(Tank tank) {
-        lblFuelPoints.setText(fuelRangeText);
-        spnFuelCapacity.setToolTipText(fuelRangeTooltip);
+        lblFuelPoints.setText(resourceMap.getString("FuelView.lblRange.text"));
+        spnFuelCapacity.setToolTipText(resourceMap.getString("FuelView.lblRange.tooltip"));
         if (tank.fuelTonnagePer100km() > 0) {
             spnFuel.setEnabled(true);
             spnFuelCapacity.setEnabled(true);
@@ -230,8 +236,13 @@ public class FuelView extends BuildView implements ChangeListener {
         spnFuel.addChangeListener(this);
         spnFuelCapacity.addChangeListener(this);
 
+        cbFuelType.removeActionListener(this);
+        cbFuelType.setSelectedItem(tank.getICEFuelType());
+        cbFuelType.addActionListener(this);
+
         panInfoTurns.setVisible(false);
         panBurnDays.setVisible(false);
+        panFuelType.setVisible(tank.getEngine().getEngineType() == Engine.COMBUSTION_ENGINE);
     }
     
     @Override
@@ -241,6 +252,15 @@ public class FuelView extends BuildView implements ChangeListener {
                     .doubleValue() / scaleMultiplier()));
         } else if (e.getSource() == spnFuelCapacity) {
             listeners.forEach(l -> l.fuelCapacityChanged(spnFuelCapacityModel.getNumber().intValue()));
+        }
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == cbFuelType) {
+            if (null != cbFuelType.getSelectedItem()) {
+                listeners.forEach(l -> l.fuelTypeChanged((FuelType) cbFuelType.getSelectedItem()));
+            }
         }
     }
 }

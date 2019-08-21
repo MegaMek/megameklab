@@ -14,6 +14,7 @@
 package megameklab.com.ui.view.listeners;
 
 import megamek.common.EquipmentType;
+import megamek.common.FuelType;
 import megamek.common.SimpleTechLevel;
 
 /**
@@ -58,4 +59,11 @@ public interface BuildListener {
      * @param capacity The number of fuel points or range as appropriate to the unit type
      */
     default void fuelCapacityChanged(int capacity) {};
+
+    /**
+     * Notify of a change in ICE engine fuel type. This is only used for vehicles.
+     *
+     * @param fuelType The engine fuel type
+     */
+    default void fuelTypeChanged(FuelType fuelType) {}
 }

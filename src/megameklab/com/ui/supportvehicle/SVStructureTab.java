@@ -751,6 +751,14 @@ class SVStructureTab extends ITab implements SVBuildListener {
         refresh.refreshPreview();
     }
 
+    @Override
+    public void fuelTypeChanged(FuelType fuelType) {
+        if (getEntity() instanceof Tank) {
+            getTank().setICEFuelType(fuelType);
+        }
+        panFuel.setFromEntity(getEntity());
+    }
+
     /**
      * Convenience method that removes the fuel if the vehicle does not require fuel mass
      * then refreshes the fuel panel. Changes that can affect this are vehicle type, engine
