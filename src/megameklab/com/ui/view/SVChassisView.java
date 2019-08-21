@@ -412,6 +412,12 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         cbStructureTechRating.addActionListener(this);
 
         cbType.removeActionListener(this);
+        cbType.removeAllItems();
+        for (TestSupportVehicle.SVType type : SV_TYPES) {
+            if (techManager.isLegal(type)) {
+                cbType.addItem(type);
+            }
+        }
         cbType.setSelectedItem(TestSupportVehicle.SVType.getVehicleType(entity));
         cbType.addActionListener(this);
 

@@ -200,6 +200,9 @@ class SVStructureTab extends ITab implements SVBuildListener {
         } else {
             refresh.refreshEquipmentTable();
         }
+        if (!getTechManager().isLegal(TestSupportVehicle.SVType.getVehicleType(getEntity()))) {
+            typeChanged(TestSupportVehicle.SVType.WHEELED);
+        }
         panChassis.refresh();
         panMovement.setFromEntity(getSV());
         panChassisMod.setFromEntity(getSV());
