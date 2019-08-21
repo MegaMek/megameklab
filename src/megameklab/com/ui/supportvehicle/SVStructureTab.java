@@ -612,7 +612,9 @@ class SVStructureTab extends ITab implements SVBuildListener {
     }
 
     @Override
-    public void setSeating(int standard, int pillion, int ejection) {
+    public void setSeating(int standard, int standardPod,
+                           int pillion, int pillionPod,
+                           int ejection, int ejectionPod) {
         // Clear out any existing seating.
         final List<Transporter> current = getSV().getTransports().stream()
                 .filter(t -> t instanceof StandardSeatCargoBay)
@@ -622,13 +624,22 @@ class SVStructureTab extends ITab implements SVBuildListener {
         }
         // Create new ones as needed.
         if (standard > 0) {
-            getSV().addTransporter(new StandardSeatCargoBay(standard));
+            getSV().addTransporter(new StandardSeatCargoBay(standard), false);
+        }
+        if (standardPod > 0) {
+            getSV().addTransporter(new StandardSeatCargoBay(standardPod), true);
         }
         if (pillion > 0) {
-            getSV().addTransporter(new PillionSeatCargoBay(pillion));
+            getSV().addTransporter(new PillionSeatCargoBay(pillion), false);
+        }
+        if (pillionPod > 0) {
+            getSV().addTransporter(new PillionSeatCargoBay(pillionPod), true);
         }
         if (ejection > 0) {
-            getSV().addTransporter(new EjectionSeatCargoBay(ejection));
+            getSV().addTransporter(new EjectionSeatCargoBay(ejection), false);
+        }
+        if (ejectionPod > 0) {
+            getSV().addTransporter(new EjectionSeatCargoBay(ejectionPod), true);
         }
         panCrew.setFromEntity(getSV());
         panSummary.refresh();

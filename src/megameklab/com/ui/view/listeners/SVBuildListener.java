@@ -122,11 +122,15 @@ public interface SVBuildListener extends BuildListener {
     /**
      * Notify of a change in the number of crew seats
      *
-     * @param standard  The number of standard combat crew seats
-     * @param pillion   The number of pillion seats
-     * @param ejection  The number of ejection seats
+     * @param standard  The number of fixed standard combat crew seats
+     * @param standard  The number of pod-mounted standard combat crew seats
+     * @param pillion   The number of fixed pillion seats
+     * @param pillion   The number of pod-mounted pillion seats
+     * @param ejection  The number of fixed ejection seats
+     * @param ejection  The number of pod-mounted ejection seats
      */
-    void setSeating(int standard, int pillion, int ejection);
+    void setSeating(int standard, int standardPod, int pillion, int pillionPod,
+                    int ejection, int ejectionPod);
 
     /**
      * Notify of a change in the size of crew quarters
