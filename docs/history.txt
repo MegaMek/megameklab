@@ -1,6 +1,6 @@
 VERSION HISTORY:
 ----------------
-v0.47.0-SNAPSHOT
+v0.47.0 (2019-08-21 0300 UTC)
 + Issue #336: Quad Battlemechs are unable to allocate industrial physical weapons to their side torsos
 
 v0.46.0 (2019-08-20 1900 UTC)
