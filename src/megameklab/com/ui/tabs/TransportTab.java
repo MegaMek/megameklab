@@ -453,6 +453,10 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
         } else if (ev.getSource() == btnAddToCargo) {
             double size = getEntity().getWeight() - UnitUtil.getEntityVerifier(getEntity())
                     .calculateWeight();
+            // Testing has shown some floating-point precision errors creeping in here.
+            if (useKilogramStandard()) {
+                size = TestEntity.round(size, TestEntity.Ceil.KILO);
+            }
             if (size > 0) {
                 int selected = tblInstalled.getSelectedRow();
                 Bay bay;
@@ -634,8 +638,8 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
                     if (!bayTypeList.get(rowIndex).isCargoBay()) {
                         return (int)bayList.get(rowIndex).getUnusedSlots();
                     } else if (useKilogramStandard()) {
-                        return TestEntity.round(bayList.get(rowIndex).getUnusedSlots() * 1000.0,
-                                TestEntity.Ceil.KILO);
+                        return TestEntity.round(bayList.get(rowIndex).getUnusedSlots(),
+                                TestEntity.Ceil.KILO) * 1000.0;
                     }
                     return bayList.get(rowIndex).getUnusedSlots();
                 case COL_DOORS:
@@ -650,7 +654,7 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
                     if (!bayTypeList.get(rowIndex).isCargoBay()) {
                         return bayList.get(rowIndex).getWeight();
                     } else if (useKilogramStandard()) {
-                        return TestEntity.round(bayList.get(rowIndex).getWeight() * 1000, TestEntity.Ceil.KILO);
+                        return TestEntity.round(bayList.get(rowIndex).getWeight(), TestEntity.Ceil.KILO) * 1000.0;
                     } else {
                         return TestEntity.ceil(bayList.get(rowIndex).getWeight(), TestEntity.Ceil.HALFTON);
                     }
