@@ -27,13 +27,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.PrintStream;
 import java.util.ResourceBundle;
 
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JDialog;
-import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -44,11 +44,11 @@ import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.client.ui.swing.UnitSelectorDialog;
 import megamek.common.*;
+import megamek.common.annotations.Nullable;
 import megamek.common.loaders.BLKFile;
 import megamek.common.templates.TROView;
 import megamek.common.util.EncodeControl;
@@ -591,26 +591,10 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
     }
 
     private void jMenuGetUnitBVFromFile_actionPerformed() {
-
-        String filePathName = System.getProperty("user.dir") + "/data/mechfiles/";
-        JFileChooser f = new JFileChooser(filePathName);
-        f.setLocation(parentFrame.getLocation().x + 150, parentFrame.getLocation().y + 100);
-        f.setDialogTitle(resourceMap.getString("dialog.chooseUnit.title"));
-        f.setDialogType(JFileChooser.OPEN_DIALOG);
-        f.setMultiSelectionEnabled(false);
-
-        FileNameExtensionFilter filter = new FileNameExtensionFilter(resourceMap.getString("dialog.filter.unitFiles"),
-                "blk", "mtf", "hmp");
-
-        // Add a filter for mul files
-        f.setFileFilter(filter);
-
-        int returnVal = f.showOpenDialog(parentFrame);
-        if ((returnVal != JFileChooser.APPROVE_OPTION) || (f.getSelectedFile() == null)) {
-            // I want a file, y'know!
+        File unitFile = loadUnitFile();
+        if (unitFile == null) {
             return;
         }
-        File unitFile = f.getSelectedFile();
 
         try {
             Entity tempEntity = new MechFileParser(unitFile).getEntity();
@@ -625,59 +609,42 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
     }
 
     private void jMenuGetUnitValidationFromFile_actionPerformed() {
-
-        Entity tempEntity = null;
-        String filePathName = System.getProperty("user.dir") + "/data/mechfiles/";
-        JFileChooser f = new JFileChooser(filePathName);
-        f.setLocation(parentFrame.getLocation().x + 150, parentFrame.getLocation().y + 100);
-        f.setDialogTitle(resourceMap.getString("dialog.chooseUnit.title"));
-        f.setDialogType(JFileChooser.OPEN_DIALOG);
-        f.setMultiSelectionEnabled(false);
-
-        FileNameExtensionFilter filter = new FileNameExtensionFilter(resourceMap.getString("dialog.filter.unitFiles"),
-                "blk", "mtf", "hmp");
-
-        // Add a filter for mul files
-        f.setFileFilter(filter);
-
-        int returnVal = f.showOpenDialog(parentFrame);
-        if ((returnVal != JFileChooser.APPROVE_OPTION) || (f.getSelectedFile() == null)) {
-            // I want a file, y'know!
-            return;
-        }
-        File unitFile = f.getSelectedFile();
+        File unitFile = loadUnitFile();
+        if (unitFile == null) return;
 
         try {
-            tempEntity = new MechFileParser(unitFile).getEntity();
+            Entity tempEntity = new MechFileParser(unitFile).getEntity();
+            UnitUtil.showValidation(tempEntity, parentFrame);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(parentFrame,
                     String.format(resourceMap.getString("message.invalidUnit.format"),
                     ex.getMessage()));
-        } finally {
-            UnitUtil.showValidation(tempEntity, parentFrame);
         }
     }
 
-    private void jMenuGetUnitBreakdownFromFile_actionPerformed() {
+    private @Nullable
+    File loadUnitFile() {
         String filePathName = System.getProperty("user.dir") + "/data/mechfiles/";
-        JFileChooser f = new JFileChooser(filePathName);
-        f.setLocation(parentFrame.getLocation().x + 150, parentFrame.getLocation().y + 100);
-        f.setDialogTitle(resourceMap.getString("dialog.chooseUnit.title"));
-        f.setDialogType(JFileChooser.OPEN_DIALOG);
-        f.setMultiSelectionEnabled(false);
+        FileDialog fDialog = new FileDialog(parentFrame,
+                resourceMap.getString("dialog.chooseUnit.title"),
+                FileDialog.LOAD);
+        fDialog.setLocationRelativeTo(parentFrame);
+        fDialog.setMultipleMode(false);
+        fDialog.setDirectory(filePathName);
+        fDialog.setFilenameFilter(unitFilesFilter);
 
-        FileNameExtensionFilter filter = new FileNameExtensionFilter(resourceMap.getString("dialog.filter.unitFiles"),
-                "blk", "mtf", "hmp");
+        fDialog.setVisible(true);
+        if (fDialog.getFile() == null) {
+            return null;
+        }
+        return new File(fDialog.getDirectory(), fDialog.getFile());
+    }
 
-        // Add a filter for mul files
-        f.setFileFilter(filter);
-
-        int returnVal = f.showOpenDialog(parentFrame);
-        if ((returnVal != JFileChooser.APPROVE_OPTION) || (f.getSelectedFile() == null)) {
-            // I want a file, y'know!
+    private void jMenuGetUnitBreakdownFromFile_actionPerformed() {
+        File unitFile = loadUnitFile();
+        if (unitFile == null) {
             return;
         }
-        File unitFile = f.getSelectedFile();
 
         try {
             Entity tempEntity = new MechFileParser(unitFile).getEntity();
@@ -690,94 +657,42 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
     }
     
     private void jMenuGetUnitWeightBreakdownFromFile_actionPerformed() {
-
-        Entity tempEntity = null;
-        String filePathName = System.getProperty("user.dir") + "/data/mechfiles/";
-        JFileChooser f = new JFileChooser(filePathName);
-        f.setLocation(parentFrame.getLocation().x + 150, parentFrame.getLocation().y + 100);
-        f.setDialogTitle(resourceMap.getString("dialog.chooseUnit.title"));
-        f.setDialogType(JFileChooser.OPEN_DIALOG);
-        f.setMultiSelectionEnabled(false);
-
-        FileNameExtensionFilter filter = new FileNameExtensionFilter(resourceMap.getString("dialog.filter.unitFiles"),
-                "blk", "mtf", "hmp");
-
-        // Add a filter for mul files
-        f.setFileFilter(filter);
-
-        int returnVal = f.showOpenDialog(parentFrame);
-        if ((returnVal != JFileChooser.APPROVE_OPTION) || (f.getSelectedFile() == null)) {
-            // I want a file, y'know!
+        File unitFile = loadUnitFile();
+        if (unitFile == null) {
             return;
         }
-        File unitFile = f.getSelectedFile();
 
         try {
-            tempEntity = new MechFileParser(unitFile).getEntity();
+            Entity tempEntity = new MechFileParser(unitFile).getEntity();
+            UnitUtil.showUnitWeightBreakDown(tempEntity, parentFrame);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(parentFrame,
                     String.format(resourceMap.getString("message.invalidUnit.format"),
                             ex.getMessage()));
-        } finally {
-            UnitUtil.showUnitWeightBreakDown(tempEntity, parentFrame);
         }
     }    
 
     private void jMenuGetUnitSpecsFromFile_actionPerformed() {
-
-        Entity tempEntity = null;
-        String filePathName = System.getProperty("user.dir") + "/data/mechfiles/";
-        JFileChooser f = new JFileChooser(filePathName);
-        f.setLocation(parentFrame.getLocation().x + 150, parentFrame.getLocation().y + 100);
-        f.setDialogTitle(resourceMap.getString("dialog.chooseUnit.title"));
-        f.setDialogType(JFileChooser.OPEN_DIALOG);
-        f.setMultiSelectionEnabled(false);
-
-        FileNameExtensionFilter filter = new FileNameExtensionFilter(resourceMap.getString("dialog.filter.unitFiles"),
-                "blk", "mtf", "hmp");
-
-        // Add a filter for mul files
-        f.setFileFilter(filter);
-
-        int returnVal = f.showOpenDialog(parentFrame);
-        if ((returnVal != JFileChooser.APPROVE_OPTION) || (f.getSelectedFile() == null)) {
-            // I want a file, y'know!
+        File unitFile = loadUnitFile();
+        if (unitFile == null) {
             return;
         }
-        File unitFile = f.getSelectedFile();
 
         try {
-            tempEntity = new MechFileParser(unitFile).getEntity();
+            Entity tempEntity = new MechFileParser(unitFile).getEntity();
+            UnitUtil.showUnitSpecs(tempEntity, parentFrame);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(parentFrame,
                     String.format(resourceMap.getString("message.invalidUnit.format"),
                             ex.getMessage()));
-        } finally {
-            UnitUtil.showUnitSpecs(tempEntity, parentFrame);
         }
     }
 
     private void jMenuInsertImageFile_actionPerformed() {
-        String filePathName = System.getProperty("user.dir") + "/data/mechfiles/";
-
-        JFileChooser f = new JFileChooser(filePathName);
-        f.setLocation(parentFrame.getLocation().x + 150, parentFrame.getLocation().y + 100);
-        f.setDialogTitle(resourceMap.getString("dialog.loadUnit.title"));
-        f.setDialogType(JFileChooser.OPEN_DIALOG);
-        f.setMultiSelectionEnabled(false);
-
-        FileNameExtensionFilter filter = new FileNameExtensionFilter(resourceMap.getString("dialog.filter.unitFiles")
-                , "blk", "mtf", "hmp");
-
-        // Add a filter for mul files
-        f.setFileFilter(filter);
-
-        int returnVal = f.showOpenDialog(parentFrame);
-        if ((returnVal != JFileChooser.APPROVE_OPTION) || (f.getSelectedFile() == null)) {
-            // I want a file, y'know!
+        File unitFile = loadUnitFile();
+        if (unitFile == null) {
             return;
         }
-        File unitFile = f.getSelectedFile();
 
         try {
             Entity tempEntity = new MechFileParser(unitFile).getEntity();
@@ -1267,7 +1182,6 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
     }
 
     private void loadUnitFromFile(int fileNumber) {
-
         String filePathName = System.getProperty("user.dir") + "/data/mechfiles/";
 
         if (fileNumber > 0) {
@@ -1289,24 +1203,11 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
 
         File unitFile = new File(filePathName);
         if (!(unitFile.isFile())) {
-            JFileChooser f = new JFileChooser(filePathName);
-            f.setLocation(parentFrame.getLocation().x + 150, parentFrame.getLocation().y + 100);
-            f.setDialogTitle(resourceMap.getString("dialog.loadUnit.title"));
-            f.setDialogType(JFileChooser.OPEN_DIALOG);
-            f.setMultiSelectionEnabled(false);
-
-            FileNameExtensionFilter filter = new FileNameExtensionFilter(resourceMap.getString("dialog.filter.unitFiles"),
-                    "blk", "mtf", "hmp");
-
-            // Add a filter for mul files
-            f.setFileFilter(filter);
-
-            int returnVal = f.showOpenDialog(parentFrame);
-            if ((returnVal != JFileChooser.APPROVE_OPTION) || (f.getSelectedFile() == null)) {
+            unitFile = loadUnitFile();
+            if (unitFile == null) {
                 // I want a file, y'know!
                 return;
             }
-            unitFile = f.getSelectedFile();
         }
 
         loadUnitFromFile(unitFile);
@@ -1388,4 +1289,8 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
 
     }
 
+    private final FilenameFilter unitFilesFilter =
+            (dir, filename) -> filename.endsWith(".mtf")
+                    || filename.endsWith(".blk")
+                    || filename.endsWith(".hmp");
 }
