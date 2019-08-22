@@ -289,6 +289,7 @@ class SVStructureTab extends ITab implements SVBuildListener {
         panCrew.setFromEntity(getSV());
         refresh.refreshArmor();
         refresh.refreshEquipmentTable();
+        refresh.refreshTransport();
         refresh.refreshSummary();
         refresh.refreshStatus();
         refresh.refreshPreview();

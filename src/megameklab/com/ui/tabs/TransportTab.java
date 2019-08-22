@@ -257,6 +257,10 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
     public void addRefreshedListener(RefreshListener l) {
         refresh = l;
     }
+
+    private boolean useKilogramStandard() {
+        return getEntity().getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT;
+    }
     
     public void refresh() {
         if (getEntity().hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
@@ -296,6 +300,9 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
             refresh.refreshStatus();
             refresh.refreshPreview();
         }
+        tblInstalled.getColumnModel().getColumn(InstalledBaysModel.COL_TONNAGE)
+                .setHeaderValue(modelInstalled.getColumnName(InstalledBaysModel.COL_TONNAGE));
+        tblInstalled.getTableHeader().resizeAndRepaint();
     }
 
     /**
@@ -577,7 +584,9 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
                 case COL_DOORS:
                     return resourceMap.getString("TransportTab.colDoors.text"); //$NON-NLS-1$
                 case COL_TONNAGE:
-                    return resourceMap.getString("TransportTab.colTonnage.text"); //$NON-NLS-1$
+                    return useKilogramStandard() ?
+                            resourceMap.getString("TransportTab.colKilograms.text") : //$NON-NLS-1$
+                            resourceMap.getString("TransportTab.colTonnage.text"); //$NON-NLS-1$
                 case COL_PERSONNEL:
                     return resourceMap.getString("TransportTab.colPersonnel.text"); //$NON-NLS-1$
                 case COL_FACING:
@@ -624,6 +633,9 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
                 case COL_SIZE:
                     if (!bayTypeList.get(rowIndex).isCargoBay()) {
                         return (int)bayList.get(rowIndex).getUnusedSlots();
+                    } else if (useKilogramStandard()) {
+                        return TestEntity.round(bayList.get(rowIndex).getUnusedSlots() * 1000.0,
+                                TestEntity.Ceil.KILO);
                     }
                     return bayList.get(rowIndex).getUnusedSlots();
                 case COL_DOORS:
@@ -637,8 +649,11 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
                 case COL_TONNAGE:
                     if (!bayTypeList.get(rowIndex).isCargoBay()) {
                         return bayList.get(rowIndex).getWeight();
+                    } else if (useKilogramStandard()) {
+                        return TestEntity.round(bayList.get(rowIndex).getWeight() * 1000, TestEntity.Ceil.KILO);
+                    } else {
+                        return TestEntity.ceil(bayList.get(rowIndex).getWeight(), TestEntity.Ceil.HALFTON);
                     }
-                    return Math.ceil(bayList.get(rowIndex).getWeight() * 2.0) * 0.5;
                 case COL_FACING:
                     if (bayTypeList.get(rowIndex).requiresFacing()) {
                         return getEntity().getLocationAbbr(bayList.get(rowIndex).getFacing());
@@ -792,7 +807,11 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
             final Bay bay = modelInstalled.bayList.get(row);
             if (column == InstalledBaysModel.COL_SIZE) {
                 boolean pod = getEntity().isPodMountedTransport(bay);
-                Bay newBay = modelInstalled.bayTypeList.get(row).newBay((Double) getCellEditorValue(),
+                double size = (Double) getCellEditorValue();
+                if (useKilogramStandard()) {
+                    size /= 1000;
+                }
+                Bay newBay = modelInstalled.bayTypeList.get(row).newBay(size,
                         bay.getBayNumber());
                 newBay.setDoors(bay.getDoors());
                 removeBay(bay);
@@ -824,8 +843,13 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
                 return spinner;
             } else if (column == InstalledBaysModel.COL_SIZE) {
                 double step = isCargo? 0.5 : 1.0;
-                SpinnerNumberModel model = new SpinnerNumberModel(modelInstalled.bayList.get(row).getUnusedSlots(),
-                        step, null, step);
+                double current = modelInstalled.bayList.get(row).getUnusedSlots();
+                if (isCargo && useKilogramStandard()) {
+                    step = 1.0;
+                    current *= 1000;
+                }
+                SpinnerNumberModel model = new SpinnerNumberModel(current, step,
+                        null, step);
                 spinner.removeChangeListener(this);
                 spinner.setModel(model);
                 spinner.addChangeListener(this);
