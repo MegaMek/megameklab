@@ -28,6 +28,7 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+import java.util.ResourceBundle;
 
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBoxMenuItem;
@@ -45,24 +46,12 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import megamek.MegaMek;
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.client.ui.swing.UnitSelectorDialog;
-import megamek.common.Aero;
-import megamek.common.BattleArmor;
-import megamek.common.Entity;
-import megamek.common.FixedWingSupport;
-import megamek.common.GunEmplacement;
-import megamek.common.Infantry;
-import megamek.common.Jumpship;
-import megamek.common.Mech;
-import megamek.common.MechFileParser;
-import megamek.common.MechView;
-import megamek.common.Protomech;
-import megamek.common.SmallCraft;
-import megamek.common.Tank;
+import megamek.common.*;
 import megamek.common.loaders.BLKFile;
 import megamek.common.templates.TROView;
+import megamek.common.util.EncodeControl;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.MegaMekLabMainUI;
 
@@ -72,6 +61,8 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
     private final JMenu themeMenu;
     private final MegaMekLabMainUI parentFrame;
 
+    private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Menu", new EncodeControl());
+
     public MenuBarCreator(MegaMekLabMainUI parent) {
 
         parentFrame = parent;
@@ -80,25 +71,25 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         JMenu fileMenu = createFileMenu();
 
         JMenuItem item = new JMenuItem();
-        item.setText("About");
+        item.setText(resourceMap.getString("menu.help.about"));
         item.setMnemonic(KeyEvent.VK_A);
         item.addActionListener(e -> jMenuHelpAbout_actionPerformed());
-        JMenu help = new JMenu("Help");
+        JMenu help = new JMenu(resourceMap.getString("menu.help"));
         help.add(item);
 
         item = new JMenuItem();
-        item.setText("Record Sheet Images");
+        item.setText(resourceMap.getString("menu.help.recordSheetImages"));
         item.setMnemonic(KeyEvent.VK_R);
         item.addActionListener(e -> jMenuHelpFluff_actionPerformed());
         help.add(item);
 
         item = new JMenuItem();
-        item.setText("Insert Image To File");
+        item.setText(resourceMap.getString("menu.help.insertImage"));
         item.setMnemonic(KeyEvent.VK_I);
         item.addActionListener(e -> jMenuInsertImageFile_actionPerformed());
         help.add(item);
 
-        JMenu validate = new JMenu("Validate");
+        JMenu validate = new JMenu(resourceMap.getString("menu.validate"));
         validate.add(loadBVMenuOptions());
 
         validate.add(loadValidateMenuOptions());
@@ -116,21 +107,21 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
     }
 
     private JMenu loadBVMenuOptions() {
-        JMenu bv = new JMenu("BV Calculations");
+        JMenu bv = new JMenu(resourceMap.getString("menu.validate.bv"));
         JMenuItem item = new JMenuItem();
-        item.setText("Current Units BV Calculations");
+        item.setText(resourceMap.getString("menu.validate.bv.currentUnit"));
         item.setMnemonic(KeyEvent.VK_B);
         item.addActionListener(e -> jMenuBVCalculations_actionPerformed());
         bv.add(item);
 
         item = new JMenuItem();
-        item.setText("BV Calculations From File");
+        item.setText(resourceMap.getString("menu.validate.bv.fromFile"));
         item.setMnemonic(KeyEvent.VK_F);
         item.addActionListener(e -> jMenuGetUnitBVFromFile_actionPerformed());
         bv.add(item);
 
         item = new JMenuItem();
-        item.setText("BV Calculations From Cache");
+        item.setText(resourceMap.getString("menu.validate.bv.fromCache"));
         item.setMnemonic(KeyEvent.VK_C);
         item.addActionListener(e -> jMenuGetUnitBVFromCache_actionPerformed());
         bv.add(item);
@@ -138,21 +129,21 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
     }
 
     private JMenu loadValidateMenuOptions() {
-        JMenu entityValidation = new JMenu("Unit Validation");
+        JMenu entityValidation = new JMenu(resourceMap.getString("menu.validate"));
         JMenuItem item = new JMenuItem();
-        item.setText("Validate Current Unit");
+        item.setText(resourceMap.getString("menu.validate.currentUnit"));
         item.setMnemonic(KeyEvent.VK_V);
         item.addActionListener(e -> jMenuValidateUnit_actionPerformed());
         entityValidation.add(item);
 
         item = new JMenuItem();
-        item.setText("Validate Unit From File");
+        item.setText(resourceMap.getString("menu.validate.fromFile"));
         item.setMnemonic(KeyEvent.VK_F);
         item.addActionListener(e -> jMenuGetUnitValidationFromFile_actionPerformed());
         entityValidation.add(item);
 
         item = new JMenuItem();
-        item.setText("Validate Unit From Cache");
+        item.setText(resourceMap.getString("menu.validate.fromCache"));
         item.setMnemonic(KeyEvent.VK_C);
         item.addActionListener(e -> jMenuGetUnitValidationFromCache_actionPerformed());
         entityValidation.add(item);
@@ -160,21 +151,21 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
     }
 
     private JMenu loadUnitCostBreakdownMenuOptions() {
-        JMenu entityBreakdown = new JMenu("Unit Cost Breakdown");
+        JMenu entityBreakdown = new JMenu(resourceMap.getString("menu.validate.cost"));
         JMenuItem item = new JMenuItem();
-        item.setText("Breakdown Current Unit");
+        item.setText(resourceMap.getString("menu.validate.cost.currentUnit"));
         item.setMnemonic(KeyEvent.VK_V);
         item.addActionListener(e -> jMenuUnitCostBreakdown_actionPerformed());
         entityBreakdown.add(item);
 
         item = new JMenuItem();
-        item.setText("Unit Breakdown From File");
+        item.setText(resourceMap.getString("menu.validate.cost.fromFile"));
         item.setMnemonic(KeyEvent.VK_F);
         item.addActionListener(e -> jMenuGetUnitBreakdownFromFile_actionPerformed());
         entityBreakdown.add(item);
 
         item = new JMenuItem();
-        item.setText("Unit Breakdown From Cache");
+        item.setText(resourceMap.getString("menu.validate.cost.fromCache"));
         item.setMnemonic(KeyEvent.VK_C);
         item.addActionListener(e -> jMenuGetUnitBreakdownFromCache_actionPerformed());
         entityBreakdown.add(item);
@@ -182,40 +173,40 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
     }
     
     private JMenu loadUnitWeightBreakdownMenuOptions() {
-        JMenu entityBreakdown = new JMenu("Unit Weight Breakdown");
+        JMenu entityBreakdown = new JMenu(resourceMap.getString("menu.validate.weight"));
         JMenuItem item = new JMenuItem();
-        item.setText("Breakdown Current Unit");
+        item.setText(resourceMap.getString("menu.validate.weight.currentUnit"));
         item.addActionListener(e -> jMenuUnitWeightBreakdown_actionPerformed());
         entityBreakdown.add(item);
 
         item = new JMenuItem();
-        item.setText("Unit Breakdown From File");
+        item.setText(resourceMap.getString("menu.validate.weight.fromFile"));
         item.addActionListener(e -> jMenuGetUnitWeightBreakdownFromFile_actionPerformed());
         entityBreakdown.add(item);
 
         item = new JMenuItem();
-        item.setText("Unit Breakdown From Cache");
+        item.setText(resourceMap.getString("menu.validate.weight.fromCache"));
         item.addActionListener(e -> jMenuGetUnitWeightBreakdownFromCache_actionPerformed());
         entityBreakdown.add(item);
         return entityBreakdown;
     }
 
     private JMenu loadSpecsMenuOptions() {
-        JMenu unitSpecs = new JMenu("Unit Specs");
+        JMenu unitSpecs = new JMenu(resourceMap.getString("menu.validate.specs"));
         JMenuItem item = new JMenuItem();
-        item.setText("Current Unit Specs");
+        item.setText(resourceMap.getString("menu.validate.specs.currentUnit"));
         item.setMnemonic(KeyEvent.VK_V);
         item.addActionListener(e -> jMenuUnitSpecs_actionPerformed());
         unitSpecs.add(item);
 
         item = new JMenuItem();
-        item.setText("Unit Specs From File");
+        item.setText(resourceMap.getString("menu.validate.specs.fromFile"));
         item.setMnemonic(KeyEvent.VK_F);
         item.addActionListener(e -> jMenuGetUnitSpecsFromFile_actionPerformed());
         unitSpecs.add(item);
 
         item = new JMenuItem();
-        item.setText("Unit Specs From Cache");
+        item.setText(resourceMap.getString("menu.validate.specs.fromCache"));
         item.setMnemonic(KeyEvent.VK_C);
         item.addActionListener(e -> jMenuGetUnitSpecsFromCache_actionPerformed());
         unitSpecs.add(item);
@@ -223,23 +214,23 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
     }
 
     private JMenu createFileMenu() {
-        JMenu fileMenu = new JMenu("File");
+        JMenu fileMenu = new JMenu(resourceMap.getString("menu.file"));
 
         fileMenu.setMnemonic(KeyEvent.VK_F);
-        JMenuItem item = new JMenuItem("Reset Current Unit");
+        JMenuItem item = new JMenuItem(resourceMap.getString("menu.file.resetCurrentUnit"));
         item.setMnemonic(KeyEvent.VK_R);
         item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         item.addActionListener(this::jMenuResetEntity_actionPerformed);
         fileMenu.add(item);
 
-        JMenu unitMenu = new JMenu("Switch Unit Type");
+        JMenu unitMenu = new JMenu(resourceMap.getString("menu.file.switchUnitType"));
         unitMenu.setMnemonic(KeyEvent.VK_S);
         Entity en = parentFrame.getEntity();
 
         if (!(en instanceof Mech)
                 || ((Mech)en).isPrimitive()) {
             item = new JMenuItem();
-            item.setText("Mech");
+            item.setText(resourceMap.getString("menu.file.unitType.mech"));
             item.setMnemonic(KeyEvent.VK_M);
             item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M,
                     Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
@@ -250,7 +241,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         if (!en.isFighter()
                 || ((en instanceof Aero) && ((Aero)en).isPrimitive())) {
             item = new JMenuItem();
-            item.setText("Aero/Conv Fighter");
+            item.setText(resourceMap.getString("menu.file.unitType.fighter"));
             item.setMnemonic(KeyEvent.VK_A);
             item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A,
                     Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
@@ -261,7 +252,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         if (!(en instanceof SmallCraft)
                 || ((Aero)en).isPrimitive()) {
             item = new JMenuItem();
-            item.setText("Dropship/Small Craft");
+            item.setText(resourceMap.getString("menu.file.unitType.dropshipSmallCraft"));
             item.setMnemonic(KeyEvent.VK_D);
             item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D,
                     Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
@@ -272,7 +263,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         if (!(en instanceof Jumpship)
                 || ((Aero)en).isPrimitive()) {
             item = new JMenuItem();
-            item.setText("Jumpship/Warship/Space Station");
+            item.setText(resourceMap.getString("menu.file.unitType.advancedAero"));
             item.setMnemonic(KeyEvent.VK_J);
             item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_J,
                     Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
@@ -282,7 +273,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
 
         if (!(parentFrame.getEntity() instanceof Tank)) {
             item = new JMenuItem();
-            item.setText("Combat Vehicle");
+            item.setText(resourceMap.getString("menu.file.unitType.combatVehicle"));
             item.setMnemonic(KeyEvent.VK_T);
             item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T,
                     Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
@@ -292,7 +283,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
 
         if (!(parentFrame.getEntity() instanceof BattleArmor)) {
             item = new JMenuItem();
-            item.setText("BattleArmor");
+            item.setText(resourceMap.getString("menu.file.unitType.battleArmor"));
             item.setMnemonic(KeyEvent.VK_B);
             item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B,
                     Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
@@ -302,7 +293,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
 
         if (!(parentFrame.getEntity() instanceof Infantry) || (parentFrame.getEntity() instanceof BattleArmor)) {
             item = new JMenuItem();
-            item.setText("Infantry");
+            item.setText(resourceMap.getString("menu.file.unitType.infantry"));
             item.setMnemonic(KeyEvent.VK_I);
             item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I,
                     Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
@@ -312,17 +303,17 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         
         if (!parentFrame.getEntity().hasETypeFlag(Entity.ETYPE_PROTOMECH)) {
             item = new JMenuItem();
-            item.setText("Protomech");
+            item.setText(resourceMap.getString("menu.file.unitType.protomech"));
             item.setMnemonic(KeyEvent.VK_P);
             item.addActionListener(ev -> jMenuLoadProtomech());
             unitMenu.add(item);
         }
 
-        JMenu pMenu = new JMenu("Primitive/Retro");
+        JMenu pMenu = new JMenu(resourceMap.getString("menu.file.unitType.primitive"));
         if (!(en instanceof Mech)
                 || !((Mech)en).isPrimitive()) {
             item = new JMenuItem();
-            item.setText("Mech");
+            item.setText(resourceMap.getString("menu.file.unitType.mech"));
             item.addActionListener(e ->jMenuLoadPrimitiveMech());
             pMenu.add(item);
         }
@@ -330,7 +321,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         if (!(en.isFighter())
                 || (en instanceof Aero && !((Aero)en).isPrimitive())) {
             item = new JMenuItem();
-            item.setText("Aero");
+            item.setText(resourceMap.getString("menu.file.unitType.aero"));
             item.addActionListener(e ->jMenuLoadPrimitiveAero());
             pMenu.add(item);
         }
@@ -338,7 +329,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         if (!(en instanceof SmallCraft)
                 || !((Aero)en).isPrimitive()) {
             item = new JMenuItem();
-            item.setText("Dropship/Small Craft");
+            item.setText(resourceMap.getString("menu.file.unitType.dropshipSmallCraft"));
             item.addActionListener(e ->jMenuLoadPrimitiveDropship());
             pMenu.add(item);
         }
@@ -346,7 +337,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         if (!(en instanceof Jumpship)
                 || !((Aero)en).isPrimitive()) {
             item = new JMenuItem();
-            item.setText("Jumpship");
+            item.setText(resourceMap.getString("menu.file.unitType.jumpship"));
             item.addActionListener(e ->jMenuLoadPrimitiveJumpship());
             pMenu.add(item);
         }
@@ -355,11 +346,11 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
 
         fileMenu.add(unitMenu);
 
-        JMenu loadMenu = new JMenu("Load");
+        JMenu loadMenu = new JMenu(resourceMap.getString("menu.file.load"));
         loadMenu.setMnemonic(KeyEvent.VK_L);
         item = new JMenuItem();
 
-        item.setText("From Cache");
+        item.setText(resourceMap.getString("menu.file.load.fromCache"));
         item.setMnemonic(KeyEvent.VK_C);
         item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U,
                 Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
@@ -367,7 +358,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         loadMenu.add(item);
 
         item = new JMenuItem();
-        item.setText("From File");
+        item.setText(resourceMap.getString("menu.file.load.fromFile"));
         item.setMnemonic(KeyEvent.VK_F);
         item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F,
                 Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
@@ -376,7 +367,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
 
         fileMenu.add(loadMenu);
 
-        item = new JMenuItem("Current Unit");
+        item = new JMenuItem(resourceMap.getString("menu.file.print.currentUnit"));
         item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P,
                 Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         item.setMnemonic(KeyEvent.VK_C);
@@ -385,7 +376,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         fileMenu.add(UnitPrintManager.printMenu(parentFrame, item));
 
         item = new JMenuItem();
-        item.setText("Save");
+        item.setText(resourceMap.getString("menu.file.save"));
         item.setMnemonic(KeyEvent.VK_S);
         item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
                 Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
@@ -393,24 +384,24 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         fileMenu.add(item);
 
         item = new JMenuItem();
-        item.setText("Save As");
+        item.setText(resourceMap.getString("menu.file.saveAs"));
         item.setMnemonic(KeyEvent.VK_A);
         item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A,
                 Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         item.addActionListener(this::jMenuSaveAsEntity_actionPerformed);
         fileMenu.add(item);
 
-        JMenu exportMenu = new JMenu("Export");
+        JMenu exportMenu = new JMenu(resourceMap.getString("menu.file.export"));
         
-        item = new JMenuItem("to HTML");
+        item = new JMenuItem(resourceMap.getString("menu.file.export.toHTML"));
         item.addActionListener(e -> exportSummary(true));
         exportMenu.add(item);
 
-        item = new JMenuItem("to Text");
+        item = new JMenuItem(resourceMap.getString("menu.file.export.toText"));
         item.addActionListener(e -> exportSummary(false));
         exportMenu.add(item);
 
-        item = new JMenuItem("to Clipboard (text)");
+        item = new JMenuItem(resourceMap.getString("menu.file.export.toClipboard"));
         item.addActionListener(e -> exportSummaryClipboard());
         exportMenu.add(item);
 
@@ -418,7 +409,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         
         fileMenu.add(themeMenu);
 
-        item = new JMenuItem("Configuration");
+        item = new JMenuItem(resourceMap.getString("menu.file.configuration"));
         item.setMnemonic(KeyEvent.VK_C);
         item.addActionListener(this::jMenuConfiguration_actionPerformed);
         fileMenu.add(item);
@@ -487,7 +478,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         fileMenu.addSeparator();
 
         item = new JMenuItem();
-        item.setText("Exit");
+        item.setText(resourceMap.getString("menu.file.exit"));
         item.setMnemonic(KeyEvent.VK_X);
         item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         item.addActionListener(ev -> parentFrame.exit());
@@ -502,7 +493,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
      * @return The new menu
      */
     private JMenu createThemeMenu() {
-        JMenu menu = new JMenu("Themes");
+        JMenu menu = new JMenu(resourceMap.getString("menu.file.themes"));
         JCheckBoxMenuItem item;
         for (LookAndFeelInfo plaf : UIManager.getInstalledLookAndFeels()) {
             item = new JCheckBoxMenuItem(plaf.getName());
@@ -604,11 +595,12 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         String filePathName = System.getProperty("user.dir") + "/data/mechfiles/";
         JFileChooser f = new JFileChooser(filePathName);
         f.setLocation(parentFrame.getLocation().x + 150, parentFrame.getLocation().y + 100);
-        f.setDialogTitle("Choose Unit");
+        f.setDialogTitle(resourceMap.getString("dialog.chooseUnit.title"));
         f.setDialogType(JFileChooser.OPEN_DIALOG);
         f.setMultiSelectionEnabled(false);
 
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("Unit Files", "blk", "mtf", "hmp");
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(resourceMap.getString("dialog.filter.unitFiles"),
+                "blk", "mtf", "hmp");
 
         // Add a filter for mul files
         f.setFileFilter(filter);
@@ -626,7 +618,8 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             UnitUtil.showBVCalculations(tempEntity.getBVText(), parentFrame);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(parentFrame,
-                    String.format("Warning:Invalid unit, it might load incorrectly!\n%1$s", ex.getMessage()));
+                    String.format(resourceMap.getString("message.invalidUnit.format"),
+                            ex.getMessage()));
         }
 
     }
@@ -637,11 +630,12 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         String filePathName = System.getProperty("user.dir") + "/data/mechfiles/";
         JFileChooser f = new JFileChooser(filePathName);
         f.setLocation(parentFrame.getLocation().x + 150, parentFrame.getLocation().y + 100);
-        f.setDialogTitle("Choose Unit");
+        f.setDialogTitle(resourceMap.getString("dialog.chooseUnit.title"));
         f.setDialogType(JFileChooser.OPEN_DIALOG);
         f.setMultiSelectionEnabled(false);
 
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("Unit Files", "blk", "mtf", "hmp");
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(resourceMap.getString("dialog.filter.unitFiles"),
+                "blk", "mtf", "hmp");
 
         // Add a filter for mul files
         f.setFileFilter(filter);
@@ -656,7 +650,9 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         try {
             tempEntity = new MechFileParser(unitFile).getEntity();
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(parentFrame, String.format("Warning:Invalid unit, it might load incorrectly!\n%1$s", ex.getMessage()));
+            JOptionPane.showMessageDialog(parentFrame,
+                    String.format(resourceMap.getString("message.invalidUnit.format"),
+                    ex.getMessage()));
         } finally {
             UnitUtil.showValidation(tempEntity, parentFrame);
         }
@@ -666,11 +662,12 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         String filePathName = System.getProperty("user.dir") + "/data/mechfiles/";
         JFileChooser f = new JFileChooser(filePathName);
         f.setLocation(parentFrame.getLocation().x + 150, parentFrame.getLocation().y + 100);
-        f.setDialogTitle("Choose Unit");
+        f.setDialogTitle(resourceMap.getString("dialog.chooseUnit.title"));
         f.setDialogType(JFileChooser.OPEN_DIALOG);
         f.setMultiSelectionEnabled(false);
 
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("Unit Files", "blk", "mtf", "hmp");
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(resourceMap.getString("dialog.filter.unitFiles"),
+                "blk", "mtf", "hmp");
 
         // Add a filter for mul files
         f.setFileFilter(filter);
@@ -686,7 +683,9 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             Entity tempEntity = new MechFileParser(unitFile).getEntity();
             UnitUtil.showUnitCostBreakDown(tempEntity, parentFrame);
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(parentFrame, String.format("Warning:Invalid unit, it might load incorrectly!\n%1$s", ex.getMessage()));
+            JOptionPane.showMessageDialog(parentFrame,
+                    String.format(resourceMap.getString("message.invalidUnit.format"),
+                            ex.getMessage()));
         }
     }
     
@@ -696,11 +695,12 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         String filePathName = System.getProperty("user.dir") + "/data/mechfiles/";
         JFileChooser f = new JFileChooser(filePathName);
         f.setLocation(parentFrame.getLocation().x + 150, parentFrame.getLocation().y + 100);
-        f.setDialogTitle("Choose Unit");
+        f.setDialogTitle(resourceMap.getString("dialog.chooseUnit.title"));
         f.setDialogType(JFileChooser.OPEN_DIALOG);
         f.setMultiSelectionEnabled(false);
 
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("Unit Files", "blk", "mtf", "hmp");
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(resourceMap.getString("dialog.filter.unitFiles"),
+                "blk", "mtf", "hmp");
 
         // Add a filter for mul files
         f.setFileFilter(filter);
@@ -715,7 +715,9 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         try {
             tempEntity = new MechFileParser(unitFile).getEntity();
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(parentFrame, String.format("Warning:Invalid unit, it might load incorrectly!\n%1$s", ex.getMessage()));
+            JOptionPane.showMessageDialog(parentFrame,
+                    String.format(resourceMap.getString("message.invalidUnit.format"),
+                            ex.getMessage()));
         } finally {
             UnitUtil.showUnitWeightBreakDown(tempEntity, parentFrame);
         }
@@ -727,11 +729,12 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         String filePathName = System.getProperty("user.dir") + "/data/mechfiles/";
         JFileChooser f = new JFileChooser(filePathName);
         f.setLocation(parentFrame.getLocation().x + 150, parentFrame.getLocation().y + 100);
-        f.setDialogTitle("Choose Unit");
+        f.setDialogTitle(resourceMap.getString("dialog.chooseUnit.title"));
         f.setDialogType(JFileChooser.OPEN_DIALOG);
         f.setMultiSelectionEnabled(false);
 
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("Unit Files", "blk", "mtf", "hmp");
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(resourceMap.getString("dialog.filter.unitFiles"),
+                "blk", "mtf", "hmp");
 
         // Add a filter for mul files
         f.setFileFilter(filter);
@@ -746,7 +749,9 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         try {
             tempEntity = new MechFileParser(unitFile).getEntity();
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(parentFrame, String.format("Warning:Invalid unit, it might load incorrectly!\n%1$s", ex.getMessage()));
+            JOptionPane.showMessageDialog(parentFrame,
+                    String.format(resourceMap.getString("message.invalidUnit.format"),
+                            ex.getMessage()));
         } finally {
             UnitUtil.showUnitSpecs(tempEntity, parentFrame);
         }
@@ -757,11 +762,12 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
 
         JFileChooser f = new JFileChooser(filePathName);
         f.setLocation(parentFrame.getLocation().x + 150, parentFrame.getLocation().y + 100);
-        f.setDialogTitle("Load Mech");
+        f.setDialogTitle(resourceMap.getString("dialog.loadUnit.title"));
         f.setDialogType(JFileChooser.OPEN_DIALOG);
         f.setMultiSelectionEnabled(false);
 
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("Unit Files", "blk", "mtf", "hmp");
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(resourceMap.getString("dialog.filter.unitFiles")
+                , "blk", "mtf", "hmp");
 
         // Add a filter for mul files
         f.setFileFilter(filter);
@@ -777,10 +783,12 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             Entity tempEntity = new MechFileParser(unitFile).getEntity();
 
             if (UnitUtil.validateUnit(parentFrame.getEntity()).trim().length() > 0) {
-                JOptionPane.showMessageDialog(parentFrame, "Warning:Invalid unit, it might load incorrectly!");
+                JOptionPane.showMessageDialog(parentFrame,
+                        resourceMap.getString("message.invalidUnit.text"));
             }
 
-            FileDialog fDialog = new FileDialog(parentFrame, "Image Path", FileDialog.LOAD);
+            FileDialog fDialog = new FileDialog(parentFrame,
+                    resourceMap.getString("dialog.imagePath.title"), FileDialog.LOAD);
 
             if (parentFrame.getEntity().getFluff().getMMLImagePath().trim().length() > 0) {
                 String fullPath = new File(parentFrame.getEntity().getFluff().getMMLImagePath()).getAbsolutePath();
@@ -836,22 +844,21 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
     private void jMenuHelpAbout_actionPerformed() {
 
         // make the dialog
-        JDialog dlg = new JDialog(parentFrame, "MegaMekLab Info");
+        JDialog dlg = new JDialog(parentFrame, resourceMap.getString("menu.help.about.title"));
 
         // set up the contents
         JPanel child = new JPanel();
         child.setLayout(new BoxLayout(child, BoxLayout.Y_AXIS));
 
         // set the text up.
-        JLabel mekwars = new JLabel("MegaMekLab Version: " + MegaMekLab.VERSION);
-        JLabel version = new JLabel("MegaMek Version: " + MegaMek.VERSION);
-        JLabel license1 = new JLabel("MegaMekLab software is under GPL. See");
-        JLabel license2 = new JLabel("license.txt in ./Docs/licenses for details.");
-        JLabel license3 = new JLabel("Project Info:");
-        JLabel license4 = new JLabel("       https://github.com/MegaMek/megameklab       ");
+        JLabel version = new JLabel(String.format(resourceMap.getString("menu.help.about.version.format"),
+                MegaMekLab.VERSION));
+        JLabel license1 = new JLabel(resourceMap.getString("menu.help.about.license.1"));
+        JLabel license2 = new JLabel(resourceMap.getString("menu.help.about.license.2"));
+        JLabel license3 = new JLabel(resourceMap.getString("menu.help.about.info.1"));
+        JLabel license4 = new JLabel(resourceMap.getString("menu.help.about.info.2"));
 
         // center everything
-        mekwars.setAlignmentX(Component.CENTER_ALIGNMENT);
         version.setAlignmentX(Component.CENTER_ALIGNMENT);
         license1.setAlignmentX(Component.CENTER_ALIGNMENT);
         license2.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -860,7 +867,6 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
 
         // add to child panel
         child.add(new JLabel("\n"));
-        child.add(mekwars);
         child.add(version);
         child.add(new JLabel("\n"));
         child.add(license1);
@@ -883,7 +889,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
     private void jMenuHelpFluff_actionPerformed() {
 
         // make the dialog
-        JDialog dlg = new JDialog(parentFrame, "Image Help");
+        JDialog dlg = new JDialog(parentFrame, resourceMap.getString("menu.help.imageHelp.title"));
 
         // set up the contents
         JPanel child = new JPanel();
@@ -894,7 +900,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
 
         recordSheetImageHelp.setEditable(false);
 
-        recordSheetImageHelp.setText("To add a fluff image to a record sheet the following steps need to be taken\nPlease Note that currently only \'Mechs use fluff Images\nPlace the image you want to use in the data/images/fluff folder\nMegaMekLab will attempt to match the name of the \'Mech your are printing\nwith the images in the fluff folder.\nThe following is an example of how MegaMekLab look for the image\nExample\nYour \'Mech is called Archer ARC-7Q\nMegaMekLab would look for the following\n\nArcher ARC-7Q.jpg/png/gif\nARC-7Q.jpg/png/gif\nArcher.jpg/png/gif\nhud.png\n");
+        recordSheetImageHelp.setText(resourceMap.getString("menu.help.imageHelp.text"));
         // center everything
         recordSheetImageHelp.setAlignmentX(Component.CENTER_ALIGNMENT);
 
@@ -1020,8 +1026,9 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         } else if (parentFrame.getEntity() instanceof Protomech) {
             parentFrame.createNewUnit(Entity.ETYPE_PROTOMECH);
         } else {
-            System.out.println("util.MenuBarCreatoer: " +
-                        "Received unknown entityType!");
+            MegaMekLab.getLogger().warning(getClass(),
+            "jMenuResetEntity_actionPerformed(ActionEvent)",
+                "util.MenuBarCreator: Received unknown entityType!");
         }
         setVisible(true);
         reload();
@@ -1033,7 +1040,8 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
     private void jMenuSaveEntity_actionPerformed(ActionEvent event) {
 
         if (UnitUtil.validateUnit(parentFrame.getEntity()).length() > 0) {
-            JOptionPane.showMessageDialog(parentFrame, "Warning: Saving an invalid unit, it might load incorrectly!");
+            JOptionPane.showMessageDialog(parentFrame,
+                    resourceMap.getString("messages.invalidUnit.text"));
         }
 
         String unitName = parentFrame.getEntity().getChassis() + " " + parentFrame.getEntity().getModel();
@@ -1042,7 +1050,9 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         String filePathName = CConfig.getParam(CConfig.CONFIG_SAVE_FILE_1);
 
         if ((filePathName.trim().length() < 1) || !filePathName.contains(unitName)) {
-            FileDialog fDialog = new FileDialog(parentFrame, "Save As", FileDialog.SAVE);
+            FileDialog fDialog = new FileDialog(parentFrame,
+                    resourceMap.getString("dialog.saveAs.title"),
+                    FileDialog.SAVE);
 
             filePathName = CConfig.getParam(CConfig.CONFIG_SAVE_LOC);
 
@@ -1075,19 +1085,24 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             ex.printStackTrace();
         }
 
-        JOptionPane.showMessageDialog(parentFrame, parentFrame.getEntity().getChassis() + " " + parentFrame.getEntity().getModel() + " saved to " + filePathName);
+        JOptionPane.showMessageDialog(parentFrame,
+                String.format(resourceMap.getString("dialog.saveAs.message.format"),
+                        parentFrame.getEntity().getChassis(),
+                        parentFrame.getEntity().getModel(), filePathName));
 
     }
 
     private void jMenuSaveAsEntity_actionPerformed(ActionEvent event) {
 
         if (UnitUtil.validateUnit(parentFrame.getEntity()).length() > 0) {
-            JOptionPane.showMessageDialog(parentFrame, "Warning: Saving an invalid unit, it might load incorrectly!");
+            JOptionPane.showMessageDialog(parentFrame,
+                    resourceMap.getString("message.savingInvalidUnit.text"));
         }
 
         UnitUtil.compactCriticals(parentFrame.getEntity());
 
-        FileDialog fDialog = new FileDialog(parentFrame, "Save As", FileDialog.SAVE);
+        FileDialog fDialog = new FileDialog(parentFrame,
+                resourceMap.getString("dialog.saveAs.title"), FileDialog.SAVE);
 
         String filePathName = CConfig.getParam(CConfig.CONFIG_SAVE_LOC);
 
@@ -1120,8 +1135,10 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             ex.printStackTrace();
         }
 
-        JOptionPane.showMessageDialog(parentFrame, parentFrame.getEntity().getChassis() + " " + parentFrame.getEntity().getModel() + " saved to " + filePathName);
-
+        JOptionPane.showMessageDialog(parentFrame,
+                String.format(resourceMap.getString("dialog.saveAs.message.format"),
+                        parentFrame.getEntity().getChassis(),
+                        parentFrame.getEntity().getModel(), filePathName));
     }
     
     private String entitySummaryText(boolean html) {
@@ -1136,12 +1153,14 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
 
     private void exportSummary(boolean html) {
         if (UnitUtil.validateUnit(parentFrame.getEntity()).length() > 0) {
-            JOptionPane.showMessageDialog(parentFrame, "Warning: exporting an invalid unit!");
+            JOptionPane.showMessageDialog(parentFrame,
+                    resourceMap.getString("message.exportingInvalidUnit.text"));
         }
 
         String unitName = parentFrame.getEntity().getChassis() + " " + parentFrame.getEntity().getModel();
 
-        FileDialog fDialog = new FileDialog(parentFrame, "Save As", FileDialog.SAVE);
+        FileDialog fDialog = new FileDialog(parentFrame,
+                resourceMap.getString("dialog.saveAs.title"), FileDialog.SAVE);
         String filePathName = new File(System.getProperty("user.dir")).getAbsolutePath();
         fDialog.setDirectory(filePathName);
         fDialog.setFile(unitName + (html?".html" : ".txt"));
@@ -1161,7 +1180,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             p.close();
             out.close();
         } catch (Exception ex) {
-            ex.printStackTrace();
+            MegaMekLab.getLogger().error(getClass(), "exportSummary(boolean)", ex);
         }
     }
 
@@ -1187,7 +1206,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
 
         if (UnitUtil.validateUnit(newUnit).trim().length() > 0) {
             JOptionPane.showMessageDialog(parentFrame, String.format(
-                    "Warning:Invalid unit, it might load incorrectly!\n%1$s",
+                    resourceMap.getString("message.invalidUnit.format"),
                             UnitUtil.validateUnit(newUnit)));
         }
 
@@ -1214,9 +1233,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             }
             if (null == newUI) {
                 JOptionPane.showMessageDialog(parentFrame,
-                        "Warning: Could not create new UI, aborting unit load!"
-                        +System.lineSeparator()
-                        +"Probable cause: Unsupported unit type.");
+                        resourceMap.getString("message.abortUnitLoad.text"));
                 return;
             }
             parentFrame.dispose();
@@ -1274,11 +1291,12 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         if (!(unitFile.isFile())) {
             JFileChooser f = new JFileChooser(filePathName);
             f.setLocation(parentFrame.getLocation().x + 150, parentFrame.getLocation().y + 100);
-            f.setDialogTitle("Load Mech");
+            f.setDialogTitle(resourceMap.getString("dialog.loadUnit.title"));
             f.setDialogType(JFileChooser.OPEN_DIALOG);
             f.setMultiSelectionEnabled(false);
 
-            FileNameExtensionFilter filter = new FileNameExtensionFilter("Unit Files", "blk", "mtf", "hmp");
+            FileNameExtensionFilter filter = new FileNameExtensionFilter(resourceMap.getString("dialog.filter.unitFiles"),
+                    "blk", "mtf", "hmp");
 
             // Add a filter for mul files
             f.setFileFilter(filter);
@@ -1305,7 +1323,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
 
             if (UnitUtil.validateUnit(tempEntity).trim().length() > 0) {
                 JOptionPane.showMessageDialog(parentFrame, String.format(
-                        "Warning:Invalid unit, it might load incorrectly!\n%1$s",
+                        resourceMap.getString("message.invalidUnit.format"),
                                 UnitUtil.validateUnit(tempEntity)));
             }
 
@@ -1332,7 +1350,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
                 }
                 if (null == newUI) {
                     JOptionPane.showMessageDialog(parentFrame,
-                            "Warning: Could not create new UI, aborting unit load!");
+                            resourceMap.getString("message.abortUnitLoad.text"));
                     return;
                 }
                 parentFrame.dispose();
@@ -1349,7 +1367,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             CConfig.updateSaveFiles(unitFile.getAbsolutePath());
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(parentFrame, String.format(
-                    "Warning:Invalid unit, it might load incorrectly!\n%1$s",
+                    resourceMap.getString("message.invalidUnit.format"),
                     ex.getMessage()));
         }
         reload();
