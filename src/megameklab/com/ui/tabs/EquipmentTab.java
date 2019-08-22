@@ -130,6 +130,8 @@ public class EquipmentTab extends ITab implements ActionListener {
                 && !(en.isSupportVehicle() && (eq.hasFlag(MiscType.F_BASIC_FIRECONTROL) || (eq.hasFlag(MiscType.F_ADVANCED_FIRECONTROL))))
                 && !eq.hasFlag(MiscType.F_MAGNETIC_CLAMP)
                 && !(eq.hasFlag(MiscType.F_PARTIAL_WING) && en.hasETypeFlag(Entity.ETYPE_PROTOMECH)))
+                && !eq.hasFlag(MiscType.F_SPONSON_TURRET)
+                && !eq.hasFlag(MiscType.F_PINTLE_TURRET)
                 || (eq instanceof TAGWeapon));
         
         private final String displayName;
@@ -775,7 +777,7 @@ public class EquipmentTab extends ITab implements ActionListener {
      * @author Jay Lawson
      *
      */
-    public class WeaponIntegerSorter implements Comparator<String> {
+    public static class WeaponIntegerSorter implements Comparator<String> {
 
         @Override
         public int compare(String s0, String s1) {
@@ -799,7 +801,7 @@ public class EquipmentTab extends ITab implements ActionListener {
      * @author Jay Lawson
      *
      */
-    public class WeaponRangeSorter implements Comparator<String> {
+    public static class WeaponRangeSorter implements Comparator<String> {
 
         @Override
         public int compare(String s0, String s1) {
@@ -830,7 +832,7 @@ public class EquipmentTab extends ITab implements ActionListener {
         }
     }
 
-    public class WeaponDamageSorter implements Comparator<String> {
+    public static class WeaponDamageSorter implements Comparator<String> {
 
         @Override
         public int compare(String s0, String s1) {
@@ -890,7 +892,7 @@ public class EquipmentTab extends ITab implements ActionListener {
      * @author Jay Lawson
      *
      */
-    public class FormattedNumberSorter implements Comparator<String> {
+    public static class FormattedNumberSorter implements Comparator<String> {
 
         @Override
         public int compare(String s0, String s1) {
