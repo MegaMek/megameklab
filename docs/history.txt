@@ -1,6 +1,7 @@
 VERSION HISTORY:
 ----------------
 v0.47.1-SNAPSHOT
++ Issue #174: Replace Java-based open dialog with OS native dialog
 
 v0.47.0 (2019-08-21 0300 UTC)
 + Issue #336: Quad Battlemechs are unable to allocate industrial physical weapons to their side torsos
