@@ -2,6 +2,7 @@ VERSION HISTORY:
 ----------------
 v0.47.1-SNAPSHOT
 + Issue #174: Replace Java-based open dialog with OS native dialog
++ Issue #337: Cost Calculation / Rules: Repair Facility on Space Stations
 
 v0.47.0 (2019-08-21 0300 UTC)
 + Issue #336: Quad Battlemechs are unable to allocate industrial physical weapons to their side torsos
