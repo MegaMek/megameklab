@@ -1290,7 +1290,10 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
     }
 
     private final FilenameFilter unitFilesFilter =
-            (dir, filename) -> filename.endsWith(".mtf")
-                    || filename.endsWith(".blk")
-                    || filename.endsWith(".hmp");
+            (dir, filename) -> {
+                String fn = filename.toLowerCase();
+                return fn.endsWith(".mtf")
+                        || fn.endsWith(".blk")
+                        || fn.endsWith(".hmp");
+            };
 }
