@@ -3517,24 +3517,20 @@ public class UnitUtil {
                 return location == Protomech.LOC_BODY;
             }
         }
-        if ((eq instanceof MiscType)) {
+        if ((unit instanceof Mech) && (eq instanceof MiscType)) {
             if (((eq.hasFlag(MiscType.F_CLUB) || eq
                     .hasFlag(MiscType.F_HAND_WEAPON)))) {
-                if ((unit instanceof QuadMech)
-                        && !((QuadMech) unit).isIndustrial()) {
-                    return false;
-                }
-
-                if ((location != Mech.LOC_RARM) && (location != Mech.LOC_LARM)) {
-                    if ((unit instanceof QuadMech)
-                            && ((QuadMech) unit).isIndustrial()) {
-                        if ((location != Mech.LOC_LT)
-                                && (location != Mech.LOC_RT)) {
-                            return false;
-                        }
-                    } else {
-                        return false;
-                    }
+                if (unit.entityIsQuad()) {
+                    return ((location == Mech.LOC_LT)
+                            || (location == Mech.LOC_RT))
+                            && ((eq.getSubType() & 
+                                    (MiscType.S_DUAL_SAW | MiscType.S_PILE_DRIVER
+                                    | MiscType.S_WRECKING_BALL | MiscType.S_BACKHOE
+                                    | MiscType.S_COMBINE | MiscType.S_CHAINSAW
+                                    | MiscType.S_ROCK_CUTTER | MiscType.S_BUZZSAW
+                                    | MiscType.S_SPOT_WELDER | MiscType.S_PILE_DRIVER)) != 0);
+                } else {
+                    return (location == Mech.LOC_RARM) || (location == Mech.LOC_LARM);
                 }
             }
 

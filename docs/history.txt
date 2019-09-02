@@ -1,6 +1,18 @@
 VERSION HISTORY:
 ----------------
-v0.45.5-SNAPSHOT
+v0.47.1-SNAPSHOT
++ Issue #174: Replace Java-based open dialog with OS native dialog
++ Issue #337: Cost Calculation / Rules: Repair Facility on Space Stations
+
+v0.47.0 (2019-08-21 0300 UTC)
++ Issue #336: Quad Battlemechs are unable to allocate industrial physical weapons to their side torsos
+
+v0.46.0 (2019-08-20 1900 UTC)
+
+v0.46.0-rc.2 (2019-08-12 0100 UTC)
++ Issue #333: ASF printing - Missing armor pips
+
+v0.46.0-rc.1 (2019-07-23 0300 UTC)
 + Issue #280: Wrong rounding for Partial Wing
 + Issue #279: BA SRM Torpedo ammo fails to load
 + Issue #281: Issue printing BV to Record Sheet
@@ -28,7 +40,6 @@ v0.45.5-SNAPSHOT
            configuration dialog.
 + Issue #324: Improved Heavy Gauss can be split between Arms and Torsos
 + Issue #325: Engine Free heat sink count overflows variable when changing weight on an Omni mech
-+ Issue #333: ASF printing - Missing armor pips
 
 v0.45.4 (2019-03-24 1700 UTC)
 + Fixed vehicle and aero slot calculations for patchwork armor.
