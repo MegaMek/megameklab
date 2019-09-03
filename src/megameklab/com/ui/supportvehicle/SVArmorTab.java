@@ -185,7 +185,7 @@ public class SVArmorTab extends ITab implements ArmorAllocationListener {
 
     @Override
     public void armorTonnageChanged(double tonnage) {
-        getTank().setArmorTonnage(TestEntity.ceil(tonnage, TestEntity.Ceil.HALFTON));
+        getEntity().setArmorTonnage(TestEntity.ceil(tonnage, TestEntity.Ceil.HALFTON));
         panArmorAllocation.setFromEntity(getEntity());
         refresh.refreshSummary();
         refresh.refreshStatus();
