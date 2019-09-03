@@ -218,7 +218,7 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         chkPintleRight.setText(resourceMap.getString("SVChassisView.chkPintleRight.text")); //$NON-NLS-1$
         chkPintleRight.setToolTipText(resourceMap.getString("SVChassisView.chkPintle.tooltip")); //$NON-NLS-1$
         add(chkPintleRight, gbc);
-        chkPintleLeft.setActionCommand(ACTION_PINTLE_RIGHT);
+        chkPintleRight.setActionCommand(ACTION_PINTLE_RIGHT);
         chkPintleRight.addActionListener(this);
 
         gbc.gridx = 0;
