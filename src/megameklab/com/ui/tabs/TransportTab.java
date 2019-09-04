@@ -651,12 +651,11 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
                     return bayTypeList.get(rowIndex).getPersonnel()
                             * (int)bayList.get(rowIndex).getCapacity();
                 case COL_TONNAGE:
-                    if (!bayTypeList.get(rowIndex).isCargoBay()) {
-                        return bayList.get(rowIndex).getWeight();
-                    } else if (useKilogramStandard()) {
-                        return TestEntity.round(bayList.get(rowIndex).getWeight(), TestEntity.Ceil.KILO) * 1000.0;
+                    final double weight = TestEntity.round(bayList.get(rowIndex).getWeight(), TestEntity.Ceil.KILO);
+                    if (useKilogramStandard()) {
+                        return weight * 1000.0;
                     } else {
-                        return TestEntity.ceil(bayList.get(rowIndex).getWeight(), TestEntity.Ceil.HALFTON);
+                        return weight;
                     }
                 case COL_FACING:
                     if (bayTypeList.get(rowIndex).requiresFacing()) {
