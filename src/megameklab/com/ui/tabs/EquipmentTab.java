@@ -460,6 +460,7 @@ public class EquipmentTab extends ITab implements ActionListener {
                             && !etype.hasSubType(MiscType.S_SUPERCHARGER))
                     || ((eSource.getEntity().getEntityType() & Entity.ETYPE_QUADVEE) == Entity.ETYPE_QUADVEE
                         && etype.hasFlag(MiscType.F_TRACKS))
+                    || etype.hasFlag(MiscType.F_CHASSIS_MODIFICATION)
                     || UnitUtil.isArmorOrStructure(etype)) {
                 continue;
             }
