@@ -64,16 +64,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
 
-import megamek.common.Aero;
-import megamek.common.AmmoType;
-import megamek.common.BombType;
-import megamek.common.Entity;
-import megamek.common.EquipmentType;
-import megamek.common.LocationFullException;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
-import megamek.common.Protomech;
-import megamek.common.WeaponType;
+import megamek.common.*;
 import megamek.common.verifier.TestEntity;
 import megamek.common.weapons.tag.TAGWeapon;
 import megameklab.com.MegaMekLab;
@@ -558,21 +549,23 @@ public class EquipmentTab extends ITab implements ActionListener {
                     } else if (eSource.getEntity().usesWeaponBays()) {
                         addLargeCraftAmmo(equip, count);
                         return;
-                    } else if (eSource.getEntity().isFighter()) {
-                        addFighterAmmo(equip, count);
+                    } else if (eSource.getEntity().isAero()) {
+                        addBodyAmmo(equip, count, Aero.LOC_FUSELAGE);
+                        return;
+                    } else if (eSource.getEntity() instanceof Tank) {
+                        addBodyAmmo(equip, count, Tank.LOC_BODY);
                         return;
                     }
-                } else {
-                    for (int i = 0; i < count; i++) {
-                        mount = new Mounted(eSource.getEntity(), equip);
-                        if ((eSource.getEntity().isFighter()
-                                && equip instanceof MiscType) && equip.hasFlag(MiscType.F_BLUE_SHIELD)) { 
-                            getAero().addEquipment(mount, Aero.LOC_FUSELAGE, false);
-                        } else {
-                            eSource.getEntity().addEquipment(mount, Entity.LOC_NONE, false);
-                        }
-                        equipmentList.addCrit(mount);
+                }
+                for (int i = 0; i < count; i++) {
+                    mount = new Mounted(eSource.getEntity(), equip);
+                    if ((eSource.getEntity().isFighter()
+                            && equip instanceof MiscType) && equip.hasFlag(MiscType.F_BLUE_SHIELD)) {
+                        getAero().addEquipment(mount, Aero.LOC_FUSELAGE, false);
+                    } else {
+                        eSource.getEntity().addEquipment(mount, Entity.LOC_NONE, false);
                     }
+                    equipmentList.addCrit(mount);
                 }
             }
         } catch (LocationFullException ex) {
@@ -611,11 +604,18 @@ public class EquipmentTab extends ITab implements ActionListener {
             equipmentList.addCrit(mount);
         }
     }
-    
-    private void addFighterAmmo(EquipmentType equip, int count) throws LocationFullException {
+
+    /**
+     * Adds ammo to the correct location (body/fuselage) for aerospace and vehicles
+     * @param equip The {@link AmmoType} to add
+     * @param count The number of slots of ammo (usually tons)
+     * @param loc   The location to add it
+     * @throws LocationFullException If the location is full.
+     */
+    private void addBodyAmmo(EquipmentType equip, int count, int loc) throws LocationFullException {
         for (int i = 0; i < count; i++) {
-            Mounted mount = new Mounted(getAero(), equip);
-                getAero().addEquipment(mount, Aero.LOC_FUSELAGE, false);
+            Mounted mount = new Mounted(getEntity(), equip);
+            getEntity().addEquipment(mount, loc, false);
             equipmentList.addCrit(mount);
         }
     }
