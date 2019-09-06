@@ -343,8 +343,12 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
             return Integer.MAX_VALUE - 1;
         }
     }
-    
+
     private boolean canAddSelectedBay() {
+        // Door limits do not apply to support vehicles
+        if (getEntity().isSupportVehicle()) {
+            return true;
+        }
         int selected = tblAvailable.getSelectedRow();
         if (selected < 0) {
             return false;
