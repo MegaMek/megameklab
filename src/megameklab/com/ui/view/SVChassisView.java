@@ -402,12 +402,6 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         cbEngine.addActionListener(this);
 
         cbStructureTechRating.removeActionListener(this);
-        cbStructureTechRating.removeAllItems();
-        for (int r = entity.getConstructionTechAdvancement().getTechRating(); r <= ITechnology.RATING_F; r++) {
-            if (techManager.isLegal(TestSupportVehicle.TECH_LEVEL_TA[r])) {
-                cbStructureTechRating.addItem(r);
-            }
-        }
         cbStructureTechRating.setSelectedItem(entity.getStructuralTechRating());
         cbStructureTechRating.addActionListener(this);
 
@@ -425,9 +419,7 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         cbEngineTechRating.removeActionListener(this);
         cbEngineTechRating.removeAllItems();
         for (int r = entity.getEngine().getTechRating(); r <= ITechnology.RATING_F; r++) {
-            if (techManager.isLegal(TestSupportVehicle.TECH_LEVEL_TA[r])) {
-                cbEngineTechRating.addItem(r);
-            }
+            cbEngineTechRating.addItem(r);
         }
         cbEngineTechRating.setSelectedItem(entity.getEngineTechRating());
         cbEngineTechRating.addActionListener(this);
