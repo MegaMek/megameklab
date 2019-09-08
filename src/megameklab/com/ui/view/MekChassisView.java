@@ -517,6 +517,10 @@ public class MekChassisView extends BuildView implements ActionListener, ChangeL
         } else if (isSuperheavy()) {
             if(isIndustrial()){
                 cbCockpit.addItem(Mech.COCKPIT_SUPERHEAVY_INDUSTRIAL);
+                if (techManager.isLegal(Mech.getIndustrialAdvFireConTA())) {
+                    cbCockpit.addItem(Mech.COCKPIT_SUPERHEAVY);
+                    cbCockpit.addItem(Mech.COCKPIT_SUPERHEAVY_COMMAND_CONSOLE);
+                }
             }else{
                 cbCockpit.addItem(Mech.COCKPIT_SUPERHEAVY);
                 cbCockpit.addItem(Mech.COCKPIT_SUPERHEAVY_COMMAND_CONSOLE);
