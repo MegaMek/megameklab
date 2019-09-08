@@ -515,11 +515,18 @@ public class MekChassisView extends BuildView implements ActionListener, ChangeL
         } else if (getBaseTypeIndex() == BASE_TYPE_QUADVEE) {
             cbCockpit.addItem(Mech.COCKPIT_QUADVEE);
         } else if (isSuperheavy()) {
-            cbCockpit.addItem(isIndustrial()? Mech.COCKPIT_SUPERHEAVY_INDUSTRIAL : Mech.COCKPIT_SUPERHEAVY);
+            if(isIndustrial()){
+                cbCockpit.addItem(Mech.COCKPIT_SUPERHEAVY_INDUSTRIAL);
+                cbCockpit.addItem(Mech.COCKPIT_SUPERHEAVY_INDUSTRIAL_COMMAND_CONSOLE);
+            }else{
+                cbCockpit.addItem(Mech.COCKPIT_SUPERHEAVY);
+                cbCockpit.addItem(Mech.COCKPIT_SUPERHEAVY_COMMAND_CONSOLE);
+            }
         } else if (isPrimitive()) {
             cbCockpit.addItem(isIndustrial()? Mech.COCKPIT_PRIMITIVE_INDUSTRIAL : Mech.COCKPIT_PRIMITIVE);
         } else if (isIndustrial()) {
             cbCockpit.addItem(Mech.COCKPIT_INDUSTRIAL);
+            cbCockpit.addItem(Mech.COCKPIT_INDUSTRIAL_COMMAND_CONSOLE);
             if (techManager.isLegal(Mech.getIndustrialAdvFireConTA())) {
                 cbCockpit.addItem(Mech.COCKPIT_STANDARD);
             }
