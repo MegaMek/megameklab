@@ -304,7 +304,7 @@ public class StructureTab extends ITab implements MekBuildListener {
                 getMech().addSuperheavyCommandConsole();
                 break;
             case Mech.COCKPIT_SMALL_COMMAND_CONSOLE:
-                clearCritsForCockpit(True, true);
+                clearCritsForCockpit(true, true);
                 getMech().addSmallCommandConsole();
                 break;
             case Mech.COCKPIT_INDUSTRIAL_COMMAND_CONSOLE:
