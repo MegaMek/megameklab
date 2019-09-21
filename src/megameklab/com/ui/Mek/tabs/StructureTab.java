@@ -293,6 +293,20 @@ public class StructureTab extends ITab implements MekBuildListener {
                 clearCritsForCockpit(false, true);
                 getMech().addQuadVeeCockpit();
                 break;
+            case Mech.COCKPIT_SUPERHEAVY_INDUSTRIAL:
+                clearCritsForCockpit(false, false);
+                getMech().addSuperheavyIndustrialCockpit();
+                getMech().setArmorType(
+                        EquipmentType.T_ARMOR_INDUSTRIAL);
+                break;
+            case Mech.COCKPIT_SUPERHEAVY_COMMAND_CONSOLE:
+                clearCritsForCockpit(false, true);
+                getMech().addSuperheavyCommandConsole();
+                break;
+            case Mech.COCKPIT_SMALL_COMMAND_CONSOLE:
+                clearCritsForCockpit(true, true);
+                getMech().addSmallCommandConsole();
+                break;
             default:
                 clearCritsForCockpit(false, false);
                 getMech().addCockpit();
