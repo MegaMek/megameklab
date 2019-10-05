@@ -5,6 +5,7 @@ v0.47.1-SNAPSHOT
 + Issue #337: Cost Calculation / Rules: Repair Facility on Space Stations
 + PR #346: Allow command console with superheavy/small cockpit
 + Issue #341: Sort the database won't work well in decimal point level
++ Issue #344: Attempt to changing Protomech's armor to Electric Discharge makes the unit keep invalid when using Standard armor
 
 v0.47.0 (2019-08-21 0300 UTC)
 + Issue #336: Quad Battlemechs are unable to allocate industrial physical weapons to their side torsos
