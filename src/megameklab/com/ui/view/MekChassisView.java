@@ -128,8 +128,8 @@ public class MekChassisView extends BuildView implements ActionListener, ChangeL
     
     private static final int[] GENERAL_COCKPITS = {
             Mech.COCKPIT_STANDARD, Mech.COCKPIT_SMALL, Mech.COCKPIT_COMMAND_CONSOLE,
-            Mech.COCKPIT_TORSO_MOUNTED, Mech.COCKPIT_DUAL, Mech.COCKPIT_INTERFACE,
-            Mech.COCKPIT_VRRP
+            Mech.COCKPIT_SMALL_COMMAND_CONSOLE, Mech.COCKPIT_TORSO_MOUNTED, 
+            Mech.COCKPIT_DUAL, Mech.COCKPIT_INTERFACE, Mech.COCKPIT_VRRP
     };
     
     private static final String[] ENHANCEMENT_NAMES = {
