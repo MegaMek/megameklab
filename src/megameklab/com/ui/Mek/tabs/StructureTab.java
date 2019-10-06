@@ -497,6 +497,7 @@ public class StructureTab extends ITab implements MekBuildListener {
                         .getBaseChassisHeatSinks(getMech().hasCompactHeatSinks()));
                 getMech().setEngine(engine);
                 UnitUtil.updateAutoSinks(getMech(), getMech().hasCompactHeatSinks());
+                resetSystemCrits();
             }
         }
         return true;
