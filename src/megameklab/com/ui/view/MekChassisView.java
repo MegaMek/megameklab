@@ -690,7 +690,7 @@ public class MekChassisView extends BuildView implements ActionListener, ChangeL
         if (null == e) {
             return null;
         }
-        // Clan and flag is specific to the engine. the superheavy and large flags depend on the mech
+        // Clan flag is specific to the engine. the superheavy and large flags depend on the mech
         // and rating and may have changed since the last refresh.
         int flags = e.getFlags() & Engine.CLAN_ENGINE;
         if (getEngineRating() > 400) {
