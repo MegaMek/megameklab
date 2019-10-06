@@ -395,10 +395,10 @@ public class MekChassisView extends BuildView implements ActionListener, ChangeL
         spnTonnage.removeChangeListener(this);
         if (getBaseTypeIndex() == BASE_TYPE_LAM) {
             max = 55;
-        } else if ((getBaseTypeIndex() == BASE_TYPE_STANDARD)
-                && techManager.isLegal(Mech.getTechAdvancement(Entity.ETYPE_MECH, false, false,
-                        EntityWeightClass.WEIGHT_SUPER_HEAVY))) {
-            max = 200;;
+        } else if (((getBaseTypeIndex() == BASE_TYPE_STANDARD) || (getBaseTypeIndex() == BASE_TYPE_INDUSTRIAL))
+                && techManager.isLegal(Mech.getTechAdvancement(Entity.ETYPE_MECH, false,
+                getBaseTypeIndex() == BASE_TYPE_INDUSTRIAL, EntityWeightClass.WEIGHT_SUPER_HEAVY))) {
+            max = 200;
         }
         if (techManager.isLegal(Mech.getTechAdvancement(Entity.ETYPE_MECH, false, false,
                 EntityWeightClass.WEIGHT_ULTRA_LIGHT))) {
