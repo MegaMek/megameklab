@@ -234,6 +234,10 @@ public class StructureTab extends ITab implements MekBuildListener {
             case Mech.GYRO_NONE:
                 UnitUtil.compactCriticals(getMech(), Mech.LOC_CT);
                 break;
+            case Mech.GYRO_SUPERHEAVY:
+                clearCritsForGyro(2);
+                getMech().addGyro();
+                break;
             default:
                 clearCritsForGyro(4);
                 getMech().addGyro();
