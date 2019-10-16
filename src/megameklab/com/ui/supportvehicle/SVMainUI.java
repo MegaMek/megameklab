@@ -90,7 +90,7 @@ public class SVMainUI extends MegaMekLabMainUI {
 
         previewTab = new PreviewTab(this);
 
-        configPane.addTab("Structure/Armor", structureTab);
+        configPane.addTab("Structure", structureTab);
         configPane.addTab("Armor", armorTab);
         configPane.addTab("Equipment", equipmentTab);
         configPane.addTab("Assign Criticals", buildTab);
