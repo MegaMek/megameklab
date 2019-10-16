@@ -221,6 +221,10 @@ public class StructureTab extends ITab implements MekBuildListener {
             case Mech.GYRO_NONE:
                 UnitUtil.compactCriticals(getMech(), Mech.LOC_CT);
                 break;
+            case Mech.GYRO_SUPERHEAVY:
+                clearCritsForGyro(2);
+                getMech().addGyro();
+                break;
             default:
                 clearCritsForGyro(4);
                 getMech().addGyro();
@@ -292,6 +296,20 @@ public class StructureTab extends ITab implements MekBuildListener {
             case Mech.COCKPIT_QUADVEE:
                 clearCritsForCockpit(false, true);
                 getMech().addQuadVeeCockpit();
+                break;
+            case Mech.COCKPIT_SUPERHEAVY_INDUSTRIAL:
+                clearCritsForCockpit(false, false);
+                getMech().addSuperheavyIndustrialCockpit();
+                getMech().setArmorType(
+                        EquipmentType.T_ARMOR_INDUSTRIAL);
+                break;
+            case Mech.COCKPIT_SUPERHEAVY_COMMAND_CONSOLE:
+                clearCritsForCockpit(false, true);
+                getMech().addSuperheavyCommandConsole();
+                break;
+            case Mech.COCKPIT_SMALL_COMMAND_CONSOLE:
+                clearCritsForCockpit(true, true);
+                getMech().addSmallCommandConsole();
                 break;
             default:
                 clearCritsForCockpit(false, false);
@@ -484,6 +502,7 @@ public class StructureTab extends ITab implements MekBuildListener {
                         .getBaseChassisHeatSinks(getMech().hasCompactHeatSinks()));
                 getMech().setEngine(engine);
                 UnitUtil.updateAutoSinks(getMech(), getMech().hasCompactHeatSinks());
+                resetSystemCrits();
             }
         }
         return true;
