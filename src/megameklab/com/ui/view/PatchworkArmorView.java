@@ -37,7 +37,7 @@ import megamek.common.TechConstants;
 import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestEntity;
 import megameklab.com.ui.util.TechComboBox;
-import megameklab.com.ui.view.listeners.BuildListener;
+import megameklab.com.ui.view.listeners.ArmorAllocationListener;
 
 /**
  * Displays a list of comboboxes with labels that displays the current armor type per location for
@@ -53,11 +53,11 @@ public class PatchworkArmorView extends BuildView implements ActionListener {
      */
     private static final long serialVersionUID = -16930846399307224L;
 
-    private final List<BuildListener> listeners = new CopyOnWriteArrayList<>();
-    public void addListener(BuildListener l) {
+    private final List<ArmorAllocationListener> listeners = new CopyOnWriteArrayList<>();
+    public void addListener(ArmorAllocationListener l) {
         listeners.add(l);
     }
-    public void removeListener(BuildListener l) {
+    public void removeListener(ArmorAllocationListener l) {
         listeners.remove(l);
     }
     
@@ -90,7 +90,7 @@ public class PatchworkArmorView extends BuildView implements ActionListener {
         gbc.insets = new Insets(0, 5, 0, 5);
         for (int loc = 0; loc < MAX_LOC; loc++) {
             JLabel label = new JLabel();
-            TechComboBox<EquipmentType> combo = new TechComboBox<>(eq -> eq.getName());
+            TechComboBox<EquipmentType> combo = new TechComboBox<>(EquipmentType::getName);
             combo.setActionCommand(Integer.toString(loc));
             combo.addActionListener(this);
             labels.add(label);

@@ -29,17 +29,10 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
-import megamek.common.Aero;
-import megamek.common.Entity;
-import megamek.common.EquipmentType;
-import megamek.common.ITechManager;
-import megamek.common.Jumpship;
-import megamek.common.Mech;
-import megamek.common.Protomech;
-import megamek.common.SuperHeavyTank;
-import megamek.common.Tank;
-import megamek.common.VTOL;
+import megamek.common.*;
 import megamek.common.util.EncodeControl;
+import megamek.common.verifier.TestSupportVehicle;
+import megameklab.com.ui.view.listeners.ArmorAllocationListener;
 import megameklab.com.ui.view.listeners.BuildListener;
 import megameklab.com.util.UnitUtil;
 
@@ -54,16 +47,13 @@ import megameklab.com.util.UnitUtil;
 public class ArmorAllocationView extends BuildView implements
         ArmorLocationView.ArmorLocationListener {
     
-    /**
-     * 
-     */
     private static final long serialVersionUID = 1707528067499186372L;
     
-    private final List<BuildListener> listeners = new CopyOnWriteArrayList<>();
-    public void addListener(BuildListener l) {
+    private final List<ArmorAllocationListener> listeners = new CopyOnWriteArrayList<>();
+    public void addListener(ArmorAllocationListener l) {
         listeners.add(l);
     }
-    public void removeListener(BuildListener l) {
+    public void removeListener(ArmorAllocationListener l) {
         listeners.remove(l);
     }
     
@@ -122,11 +112,10 @@ public class ArmorAllocationView extends BuildView implements
     private final JTextField txtWasted = new JTextField();
     private final JTextField txtPointsPerTon = new JTextField();
     private final JButton btnAutoAllocate = new JButton();
-    
+    private final JLabel lblPointsPerTon = new JLabel("", SwingConstants.RIGHT);
+
+    private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl()); //$NON-NLS-1$
     private long entitytype;
-    private int armorPoints = 0;
-    private int maxArmorPoints = 0;
-    private int wastedPoints = 0;
     private boolean showPatchwork = false;
     private String tooltipFormat;
     
@@ -136,7 +125,6 @@ public class ArmorAllocationView extends BuildView implements
     }
     
     private void initUI() {
-        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl()); //$NON-NLS-1$
         tooltipFormat = resourceMap.getString("ArmorAllocationView.locationTooltip.format");
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -191,17 +179,12 @@ public class ArmorAllocationView extends BuildView implements
 
         gbc.gridx = 0;
         gbc.gridy++;
-        add(new JLabel(resourceMap.getString(
-                ((entitytype & Entity.ETYPE_PROTOMECH) == 0)?
-                        "ArmorAllocationView.txtPointsPerTon.text"
-                        : "ArmorAllocationView.txtKgPerPoint.text"), SwingConstants.RIGHT), gbc); //$NON-NLS-1$
+        lblPointsPerTon.setText(resourceMap.getString("ArmorAllocationView.txtPointsPerTon.text"));
+        add(lblPointsPerTon, gbc); //$NON-NLS-1$
         gbc.gridx = 1;
         txtPointsPerTon.setEditable(false);
         setFieldSize(txtPointsPerTon, editorSizeLg);
-        txtPointsPerTon.setToolTipText(resourceMap.getString(
-                ((entitytype & Entity.ETYPE_PROTOMECH) == 0)?
-                        "ArmorAllocationView.txtPointsPerTon.tooltip"
-                        : "ArmorAllocationView.txtKgPerPoint.tooltip"));
+        txtPointsPerTon.setToolTipText(resourceMap.getString("ArmorAllocationView.txtPointsPerTon.tooltip"));
         add(txtPointsPerTon, gbc);
 
         btnAutoAllocate.setText(resourceMap.getString("ArmorAllocationView.btnAutoAllocate.text")); //$NON-NLS-1$
@@ -212,15 +195,16 @@ public class ArmorAllocationView extends BuildView implements
         add(Box.createVerticalStrut(18), gbc);
         gbc.gridy++;
         add(btnAutoAllocate, gbc);
-        btnAutoAllocate.addActionListener(e -> listeners.forEach(BuildListener::autoAllocateArmor));
+        btnAutoAllocate.addActionListener(e -> listeners.forEach(ArmorAllocationListener::autoAllocateArmor));
     }
-    
+
     public void setFromEntity(Entity en) {
         setEntityType(en.getEntityType());
-        maxArmorPoints = UnitUtil.getMaximumArmorPoints(en);
+        int maxArmorPoints = UnitUtil.getMaximumArmorPoints(en);
         int raw = (int) (UnitUtil.getRawArmorPoints(en, en.getLabArmorTonnage())
                 + UnitUtil.getSIBonusArmorPoints(en));
         int currentPoints = en.getTotalOArmor();
+        int armorPoints = 0;
         if (showPatchwork) {
             armorPoints = currentPoints;
             raw = currentPoints;
@@ -229,7 +213,7 @@ public class ArmorAllocationView extends BuildView implements
             armorPoints = Math.min(raw, maxArmorPoints);
             btnAutoAllocate.setEnabled(true);
         }
-        wastedPoints = Math.max(0, raw - armorPoints);
+        int wastedPoints = Math.max(0, raw - armorPoints);
         for (ArmorLocationView locView : locationViews) {
             final int location = locView.getLocationIndex();
             final Integer maxArmor = UnitUtil.getMaxArmor(en,  location);
@@ -275,13 +259,22 @@ public class ArmorAllocationView extends BuildView implements
         txtWasted.setText(String.valueOf(wastedPoints));
         if (en.hasPatchworkArmor()) {
             txtPointsPerTon.setText("-"); //$NON-NLS-1$
-        } else if (en.hasETypeFlag(Entity.ETYPE_PROTOMECH)) {
+        } else if (en.getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT){
+            txtPointsPerTon.setText(String.format("%d", //$NON-NLS-1$
+                    (int) (TestSupportVehicle.armorWeightPerPoint(en) * 1000)));
+            lblPointsPerTon.setText(resourceMap.getString("ArmorAllocationView.txtKgPerPoint.text"));
+            txtPointsPerTon.setToolTipText(resourceMap.getString("ArmorAllocationView.txtKgPerPoint.tooltip"));
+        } else if (en instanceof Protomech) {
             txtPointsPerTon.setText(String.format("%d", //$NON-NLS-1$
                     (int)(EquipmentType.getProtomechArmorWeightPerPoint(en.getArmorType(Protomech.LOC_BODY))
                      * 1000)));
+            lblPointsPerTon.setText(resourceMap.getString("ArmorAllocationView.txtKgPerPoint.text"));
+            txtPointsPerTon.setToolTipText(resourceMap.getString("ArmorAllocationView.txtKgPerPoint.tooltip"));
         } else {
             txtPointsPerTon.setText(String.format("%3.2f", //$NON-NLS-1$
                     UnitUtil.getArmorPointsPerTon(en, en.getArmorType(1), en.getArmorTechLevel(1))));
+            lblPointsPerTon.setText(resourceMap.getString("ArmorAllocationView.txtPointsPerTon.text"));
+            txtPointsPerTon.setToolTipText(resourceMap.getString("ArmorAllocationView.txtPointsPerTon.tooltip"));
         }
     }
     
@@ -298,7 +291,7 @@ public class ArmorAllocationView extends BuildView implements
             layout = AERODYNE_LAYOUT;
         } else if ((entitytype & Entity.ETYPE_VTOL) != 0) {
             layout = VTOL_LAYOUT;
-        } else if ((entitytype & Entity.ETYPE_SUPER_HEAVY_TANK) != 0) {
+        } else if ((entitytype & (Entity.ETYPE_SUPER_HEAVY_TANK | Entity.ETYPE_LARGE_SUPPORT_TANK)) != 0) {
             layout = SH_TANK_LAYOUT;
         } else {
             layout = TANK_LAYOUT;

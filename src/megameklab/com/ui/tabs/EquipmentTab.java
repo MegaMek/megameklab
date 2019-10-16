@@ -60,21 +60,11 @@ import javax.swing.SortOrder;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
 
-import megamek.common.Aero;
-import megamek.common.AmmoType;
-import megamek.common.BombType;
-import megamek.common.Entity;
-import megamek.common.EquipmentType;
-import megamek.common.LocationFullException;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
-import megamek.common.Protomech;
-import megamek.common.WeaponType;
+import megamek.common.*;
 import megamek.common.verifier.TestEntity;
 import megamek.common.weapons.tag.TAGWeapon;
 import megameklab.com.MegaMekLab;
@@ -97,60 +87,52 @@ public class EquipmentTab extends ITab implements ActionListener {
     private static final long serialVersionUID = -7898648511851487701L;
 
     private enum EquipmentCategory {
-        ENERGY ("Energy", (eq, en) -> {
-            return (eq instanceof WeaponType)
-                    && !((WeaponType) eq).isCapital()
-                    && (eq.hasFlag(WeaponType.F_ENERGY)
-                            || ((eq.hasFlag(WeaponType.F_PLASMA) && (((WeaponType) eq).getAmmoType() == AmmoType.T_PLASMA))));
-        }),
-        BALLISTIC ("Ballistic", (eq, en) -> {
-            return (eq instanceof WeaponType)
-                    && !((WeaponType) eq).isCapital()
-                    && eq.hasFlag(WeaponType.F_BALLISTIC);
-        }),
-        MISSILE ("Missile", (eq, en) ->  {
-            return (eq instanceof WeaponType)
-                    && !((WeaponType) eq).isCapital()
-                    && eq.hasFlag(WeaponType.F_MISSILE);
-        }),
+        ENERGY ("Energy", (eq, en) -> (eq instanceof WeaponType)
+                && !((WeaponType) eq).isCapital()
+                && (eq.hasFlag(WeaponType.F_ENERGY)
+                        || ((eq.hasFlag(WeaponType.F_PLASMA) && (((WeaponType) eq).getAmmoType() == AmmoType.T_PLASMA))))),
+        BALLISTIC ("Ballistic", (eq, en) -> (eq instanceof WeaponType)
+                && !((WeaponType) eq).isCapital()
+                && eq.hasFlag(WeaponType.F_BALLISTIC)),
+        MISSILE ("Missile", (eq, en) -> (eq instanceof WeaponType)
+                && !((WeaponType) eq).isCapital()
+                && eq.hasFlag(WeaponType.F_MISSILE)),
         ARTILLERY ("Artillery", (eq, en) -> (eq instanceof WeaponType) && eq.hasFlag(WeaponType.F_ARTILLERY)),
         CAPITAL ("Capital",
                 (eq, en) -> (eq instanceof WeaponType) && ((WeaponType) eq).isCapital(),
-                e -> e.isLargeCraft()),
+                Entity::isLargeCraft),
         PHYSICAL ("Physical", (eq, en) -> UnitUtil.isPhysicalWeapon(eq),
                 e -> e.hasETypeFlag(Entity.ETYPE_MECH) || e.hasETypeFlag(Entity.ETYPE_PROTOMECH)),
-        WEAPON ("All Weapons", (eq, en) -> {
-            return ENERGY.filter(eq, en) || BALLISTIC.filter(eq, en)
-                    || MISSILE.filter(eq, en) || CAPITAL.filter(eq, en) || PHYSICAL.filter(eq, en);
-        }),
-        AMMO ("Ammo", (eq, en) -> {
-            return (eq instanceof AmmoType) && !(eq instanceof BombType)
-                    && UnitUtil.canUseAmmo(en, (AmmoType) eq, false);
-        }),
-        OTHER ("Other", (eq, en) -> {
-            return ((eq instanceof MiscType)
-                    && !UnitUtil.isPhysicalWeapon(eq)
-                    && !UnitUtil.isJumpJet(eq)
-                    && !UnitUtil.isHeatSink(eq)
-                    && !eq.hasFlag(MiscType.F_TSM)
-                    && !eq.hasFlag(MiscType.F_INDUSTRIAL_TSM)
-                    && !(eq.hasFlag(MiscType.F_MASC) 
-                            && !eq.hasSubType(MiscType.S_SUPERCHARGER))
-                    && !(en.hasETypeFlag(Entity.ETYPE_QUADVEE) && eq.hasFlag(MiscType.F_TRACKS))
-                    && !UnitUtil.isArmorOrStructure(eq)
-                    && !eq.hasFlag(MiscType.F_MAGNETIC_CLAMP)
-                    && !(eq.hasFlag(MiscType.F_PARTIAL_WING) && en.hasETypeFlag(Entity.ETYPE_PROTOMECH)))
-                    || (eq instanceof TAGWeapon);
-        });
+        WEAPON ("All Weapons", (eq, en) -> ENERGY.filter(eq, en) || BALLISTIC.filter(eq, en)
+                || MISSILE.filter(eq, en) || CAPITAL.filter(eq, en) || PHYSICAL.filter(eq, en)),
+        AMMO ("Ammo", (eq, en) -> (eq instanceof AmmoType) && !(eq instanceof BombType)
+                && UnitUtil.canUseAmmo(en, (AmmoType) eq, false)),
+        OTHER ("Other", (eq, en) -> ((eq instanceof MiscType)
+                && !UnitUtil.isPhysicalWeapon(eq)
+                && !UnitUtil.isJumpJet(eq)
+                && !UnitUtil.isHeatSink(eq)
+                && !eq.hasFlag(MiscType.F_TSM)
+                && !eq.hasFlag(MiscType.F_INDUSTRIAL_TSM)
+                && !(eq.hasFlag(MiscType.F_MASC)
+                        && !eq.hasSubType(MiscType.S_SUPERCHARGER))
+                && !(en.hasETypeFlag(Entity.ETYPE_QUADVEE) && eq.hasFlag(MiscType.F_TRACKS))
+                && !UnitUtil.isArmorOrStructure(eq)
+                && !eq.hasFlag(MiscType.F_CHASSIS_MODIFICATION)
+                && !(en.isSupportVehicle() && (eq.hasFlag(MiscType.F_BASIC_FIRECONTROL) || (eq.hasFlag(MiscType.F_ADVANCED_FIRECONTROL))))
+                && !eq.hasFlag(MiscType.F_MAGNETIC_CLAMP)
+                && !(eq.hasFlag(MiscType.F_PARTIAL_WING) && en.hasETypeFlag(Entity.ETYPE_PROTOMECH)))
+                && !eq.hasFlag(MiscType.F_SPONSON_TURRET)
+                && !eq.hasFlag(MiscType.F_PINTLE_TURRET)
+                || (eq instanceof TAGWeapon));
         
         private final String displayName;
         private final BiFunction<EquipmentType, Entity, Boolean> filter;
         private final Function<Entity, Boolean> showForEntity;
         
-        private EquipmentCategory(String displayName, BiFunction<EquipmentType, Entity, Boolean> filter) {
+        EquipmentCategory(String displayName, BiFunction<EquipmentType, Entity, Boolean> filter) {
             this(displayName, filter, e -> true);
         }
-        private EquipmentCategory(String displayName,
+        EquipmentCategory(String displayName,
                 BiFunction<EquipmentType, Entity, Boolean> filter,
                 Function<Entity, Boolean> showForEntity) {
             this.displayName = displayName;
@@ -181,7 +163,6 @@ public class EquipmentTab extends ITab implements ActionListener {
     private JTextField txtFilter = new JTextField();
 
     private JRadioButton rbtnStats = new JRadioButton("Stats");
-    private JRadioButton rbtnFluff = new JRadioButton("Fluff");
     final private JCheckBox chkShowAll = new JCheckBox("Show Unavailable");
     private JSpinner spnAddCount = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
 
@@ -190,15 +171,13 @@ public class EquipmentTab extends ITab implements ActionListener {
     private CriticalTableModel equipmentList;
     private EquipmentTableModel masterEquipmentList;
     private JTable masterEquipmentTable = new JTable();
-    private JScrollPane masterEquipmentScroll = new JScrollPane();
     private JTable equipmentTable = new JTable();
-    private JScrollPane equipmentScroll = new JScrollPane();
 
     private String ADD_COMMAND = "ADD";
     private String REMOVE_COMMAND = "REMOVE";
     private String REMOVEALL_COMMAND = "REMOVEALL";
 
-    private final Dimension SPINNER_SIZE = new Dimension(55, 25);
+    private static final Dimension SPINNER_SIZE = new Dimension(55, 25);
 
     public EquipmentTab(EntitySource eSource) {
         super(eSource);
@@ -209,7 +188,7 @@ public class EquipmentTab extends ITab implements ActionListener {
         equipmentTable.setShowGrid(false);
         equipmentTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         equipmentTable.setDoubleBuffered(true);
-        TableColumn column = null;
+        TableColumn column;
         for (int i = 0; i < equipmentList.getColumnCount(); i++) {
             column = equipmentTable.getColumnModel().getColumn(i);
             if(i == 0) {
@@ -218,6 +197,7 @@ public class EquipmentTab extends ITab implements ActionListener {
             column.setCellRenderer(equipmentList.getRenderer());
 
         }
+        JScrollPane equipmentScroll = new JScrollPane();
         equipmentScroll.setViewportView(equipmentTable);
         equipmentScroll.setMinimumSize(new java.awt.Dimension(300, 200));
         equipmentScroll.setPreferredSize(new java.awt.Dimension(300, 200));
@@ -225,20 +205,19 @@ public class EquipmentTab extends ITab implements ActionListener {
         masterEquipmentList = new EquipmentTableModel(eSource.getEntity(), eSource.getTechManager());
         masterEquipmentTable.setModel(masterEquipmentList);
         masterEquipmentTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-        equipmentSorter = new TableRowSorter<EquipmentTableModel>(masterEquipmentList);
+        equipmentSorter = new TableRowSorter<>(masterEquipmentList);
         equipmentSorter.setComparator(EquipmentTableModel.COL_HEAT, new WeaponIntegerSorter());
         equipmentSorter.setComparator(EquipmentTableModel.COL_MRANGE, new WeaponIntegerSorter());
         equipmentSorter.setComparator(EquipmentTableModel.COL_DAMAGE, new WeaponDamageSorter());
         equipmentSorter.setComparator(EquipmentTableModel.COL_RANGE, new WeaponRangeSorter());
         equipmentSorter.setComparator(EquipmentTableModel.COL_COST, new FormattedNumberSorter());
         masterEquipmentTable.setRowSorter(equipmentSorter);
-        ArrayList<RowSorter.SortKey> sortKeys = new ArrayList<RowSorter.SortKey>();
+        ArrayList<RowSorter.SortKey> sortKeys = new ArrayList<>();
         sortKeys.add(new RowSorter.SortKey(EquipmentTableModel.COL_NAME, SortOrder.ASCENDING));
         equipmentSorter.setSortKeys(sortKeys);
         XTableColumnModel equipColumnModel = new XTableColumnModel();
         masterEquipmentTable.setColumnModel(equipColumnModel);
         masterEquipmentTable.createDefaultColumnsFromModel();
-        column = null;
         for (int i = 0; i < EquipmentTableModel.N_COL; i++) {
             column = masterEquipmentTable.getColumnModel().getColumn(i);
             column.setPreferredWidth(masterEquipmentList.getColumnWidth(i));
@@ -247,8 +226,17 @@ public class EquipmentTab extends ITab implements ActionListener {
         masterEquipmentTable.setIntercellSpacing(new Dimension(0, 0));
         masterEquipmentTable.setShowGrid(false);
         masterEquipmentTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        ListSelectionListener selectionListener = e -> {
+            int selected = masterEquipmentTable.getSelectedRow();
+            EquipmentType etype = null;
+            if (selected >= 0) {
+                etype = masterEquipmentList.getType(masterEquipmentTable.convertRowIndexToModel(selected));
+            }
+            addButton.setEnabled((null != etype) && eSource.getTechManager().isLegal(etype));
+        };
         masterEquipmentTable.getSelectionModel().addListSelectionListener(selectionListener);
         masterEquipmentTable.setDoubleBuffered(true);
+        JScrollPane masterEquipmentScroll = new JScrollPane();
         masterEquipmentScroll.setViewportView(masterEquipmentTable);
 
         masterEquipmentTable.addMouseListener(new MouseAdapter() {
@@ -269,7 +257,7 @@ public class EquipmentTab extends ITab implements ActionListener {
         masterEquipmentTable.getActionMap().put("add", new EnterAction());
 
         Enumeration<EquipmentType> miscTypes = EquipmentType.getAllTypes();
-        ArrayList<EquipmentType> allTypes = new ArrayList<EquipmentType>();
+        ArrayList<EquipmentType> allTypes = new ArrayList<>();
         while (miscTypes.hasMoreElements()) {
             EquipmentType eq = miscTypes.nextElement();
             allTypes.add(eq);
@@ -315,6 +303,7 @@ public class EquipmentTab extends ITab implements ActionListener {
 
         ButtonGroup bgroupView = new ButtonGroup();
         bgroupView.add(rbtnStats);
+        JRadioButton rbtnFluff = new JRadioButton("Fluff");
         bgroupView.add(rbtnFluff);
 
         rbtnStats.setSelected(true);
@@ -448,7 +437,7 @@ public class EquipmentTab extends ITab implements ActionListener {
             equipmentList.addCrit(mount);
         }
 
-        List<EquipmentType> spreadAlreadyAdded = new ArrayList<EquipmentType>();
+        List<EquipmentType> spreadAlreadyAdded = new ArrayList<>();
 
         for (Mounted mount : eSource.getEntity().getMisc()) {
             
@@ -462,6 +451,7 @@ public class EquipmentTab extends ITab implements ActionListener {
                             && !etype.hasSubType(MiscType.S_SUPERCHARGER))
                     || ((eSource.getEntity().getEntityType() & Entity.ETYPE_QUADVEE) == Entity.ETYPE_QUADVEE
                         && etype.hasFlag(MiscType.F_TRACKS))
+                    || etype.hasFlag(MiscType.F_CHASSIS_MODIFICATION)
                     || UnitUtil.isArmorOrStructure(etype)) {
                 continue;
             }
@@ -559,21 +549,23 @@ public class EquipmentTab extends ITab implements ActionListener {
                     } else if (eSource.getEntity().usesWeaponBays()) {
                         addLargeCraftAmmo(equip, count);
                         return;
-                    } else if (eSource.getEntity().isFighter()) {
-                        addFighterAmmo(equip, count);
+                    } else if (eSource.getEntity().isAero()) {
+                        addBodyAmmo(equip, count, Aero.LOC_FUSELAGE);
+                        return;
+                    } else if (eSource.getEntity() instanceof Tank) {
+                        addBodyAmmo(equip, count, Tank.LOC_BODY);
                         return;
                     }
-                } else {
-                    for (int i = 0; i < count; i++) {
-                        mount = new Mounted(eSource.getEntity(), equip);
-                        if ((eSource.getEntity().isFighter()
-                                && equip instanceof MiscType) && equip.hasFlag(MiscType.F_BLUE_SHIELD)) { 
-                            getAero().addEquipment(mount, Aero.LOC_FUSELAGE, false);
-                        } else {
-                            eSource.getEntity().addEquipment(mount, Entity.LOC_NONE, false);
-                        }
-                        equipmentList.addCrit(mount);
+                }
+                for (int i = 0; i < count; i++) {
+                    mount = new Mounted(eSource.getEntity(), equip);
+                    if ((eSource.getEntity().isFighter()
+                            && equip instanceof MiscType) && equip.hasFlag(MiscType.F_BLUE_SHIELD)) {
+                        getAero().addEquipment(mount, Aero.LOC_FUSELAGE, false);
+                    } else {
+                        eSource.getEntity().addEquipment(mount, Entity.LOC_NONE, false);
                     }
+                    equipmentList.addCrit(mount);
                 }
             }
         } catch (LocationFullException ex) {
@@ -593,7 +585,6 @@ public class EquipmentTab extends ITab implements ActionListener {
                 .filter(m -> m.getType() == ammo).findFirst().orElse(null);
         if (null != aMount) {
             aMount.setShotsLeft(aMount.getUsableShotsLeft() + shots);
-            return;
         } else {
             Mounted mount = new Mounted(getProtomech(), ammo);
             getProtomech().addEquipment(mount, Protomech.LOC_BODY, false);
@@ -606,7 +597,6 @@ public class EquipmentTab extends ITab implements ActionListener {
         Mounted aMount = UnitUtil.findUnallocatedAmmo(getAero(), ammo);
         if (null != aMount) {
             aMount.setShotsLeft(aMount.getUsableShotsLeft() + ((AmmoType)ammo).getShots() * count);
-            return;
         } else {
             Mounted mount = new Mounted(getAero(), ammo);
             mount.setShotsLeft(((AmmoType)ammo).getShots() * count);
@@ -614,11 +604,18 @@ public class EquipmentTab extends ITab implements ActionListener {
             equipmentList.addCrit(mount);
         }
     }
-    
-    private void addFighterAmmo(EquipmentType equip, int count) throws LocationFullException {
+
+    /**
+     * Adds ammo to the correct location (body/fuselage) for aerospace and vehicles
+     * @param equip The {@link AmmoType} to add
+     * @param count The number of slots of ammo (usually tons)
+     * @param loc   The location to add it
+     * @throws LocationFullException If the location is full.
+     */
+    private void addBodyAmmo(EquipmentType equip, int count, int loc) throws LocationFullException {
         for (int i = 0; i < count; i++) {
-            Mounted mount = new Mounted(getAero(), equip);
-                getAero().addEquipment(mount, Aero.LOC_FUSELAGE, false);
+            Mounted mount = new Mounted(getEntity(), equip);
+            getEntity().addEquipment(mount, loc, false);
             equipmentList.addCrit(mount);
         }
     }
@@ -636,7 +633,7 @@ public class EquipmentTab extends ITab implements ActionListener {
             EquipmentType equip = masterEquipmentList.getType(selected);
             addEquipment(equip);
         } else if (e.getActionCommand().equals(REMOVE_COMMAND)) {
-            int selectedRows[] = equipmentTable.getSelectedRows();
+            int[] selectedRows = equipmentTable.getSelectedRows();
             for (Integer row : selectedRows){
                 equipmentList.removeMounted(row);
             }
@@ -649,13 +646,13 @@ public class EquipmentTab extends ITab implements ActionListener {
         fireTableRefresh();
     }
 
-    public void updateEquipment() {
+    private void updateEquipment() {
         removeHeatSinks();
         equipmentList.removeAllCrits();
         loadEquipmentTable();
     }
 
-    public void removeAllEquipment() {
+    private void removeAllEquipment() {
         removeHeatSinks();
         for (int count = 0; count < equipmentList.getRowCount(); count++) {
             equipmentList.removeMounted(count);
@@ -679,16 +676,15 @@ public class EquipmentTab extends ITab implements ActionListener {
     }
 
     private void filterEquipment() {
-        RowFilter<EquipmentTableModel, Integer> equipmentTypeFilter = null;
         final EquipmentCategory nType = (EquipmentCategory) choiceType.getSelectedItem();
-        equipmentTypeFilter = new RowFilter<EquipmentTableModel,Integer>() {
+        RowFilter<EquipmentTableModel, Integer> equipmentTypeFilter = new RowFilter<EquipmentTableModel, Integer>() {
             @Override
             public boolean include(Entry<? extends EquipmentTableModel, ? extends Integer> entry) {
                 Entity entity = eSource.getEntity();
                 EquipmentTableModel equipModel = entry.getModel();
                 EquipmentType etype = equipModel.getType(entry.getIdentifier());
                 if (!UnitUtil.isEntityEquipment(etype, entity)
-                        || !nType.filter(etype, eSource.getEntity())) {
+                        || ((nType != null) && !nType.filter(etype, eSource.getEntity()))) {
                     return false;
                 }
                 if (!eSource.getTechManager().isLegal(etype) && !chkShowAll.isSelected()) {
@@ -705,7 +701,7 @@ public class EquipmentTab extends ITab implements ActionListener {
         equipmentSorter.setRowFilter(equipmentTypeFilter);
     }
 
-    public void setEquipmentView() {
+    private void setEquipmentView() {
         XTableColumnModel columnModel = (XTableColumnModel)masterEquipmentTable.getColumnModel();
         if(rbtnStats.isSelected()) {
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_NAME), true);
@@ -782,7 +778,7 @@ public class EquipmentTab extends ITab implements ActionListener {
      * @author Jay Lawson
      *
      */
-    public class WeaponIntegerSorter implements Comparator<String> {
+    public static class WeaponIntegerSorter implements Comparator<String> {
 
         @Override
         public int compare(String s0, String s1) {
@@ -806,7 +802,7 @@ public class EquipmentTab extends ITab implements ActionListener {
      * @author Jay Lawson
      *
      */
-    public class WeaponRangeSorter implements Comparator<String> {
+    public static class WeaponRangeSorter implements Comparator<String> {
 
         @Override
         public int compare(String s0, String s1) {
@@ -837,7 +833,7 @@ public class EquipmentTab extends ITab implements ActionListener {
         }
     }
 
-    public class WeaponDamageSorter implements Comparator<String> {
+    public static class WeaponDamageSorter implements Comparator<String> {
 
         @Override
         public int compare(String s0, String s1) {
@@ -847,17 +843,9 @@ public class EquipmentTab extends ITab implements ActionListener {
                 return 1;
             } else if(s1.equals("-")) {
                 return -1;
-            } else if(s0.equals("Cluster") && s1.equals("-")) {
-                return 1;
-            } else if(s0.equals("-") && s1.equals("Cluster")) {
-                return -1;
             } else if(s0.equals("Cluster") && s1.equals("Special")) {
                 return 1;
             } else if(s0.equals("Special") && s1.equals("Cluster")) {
-                return -1;
-            } else if(s0.equals("Special") && s1.equals("-")) {
-                return 1;
-            } else if(s0.equals("-") && s1.equals("Special")) {
                 return -1;
             } else if(s0.equals("Cluster") && s1.equals("Cluster")) {
                 return 0;
@@ -905,7 +893,7 @@ public class EquipmentTab extends ITab implements ActionListener {
      * @author Jay Lawson
      *
      */
-    public class FormattedNumberSorter implements Comparator<String> {
+    public static class FormattedNumberSorter implements Comparator<String> {
 
         @Override
         public int compare(String s0, String s1) {
@@ -928,25 +916,11 @@ public class EquipmentTab extends ITab implements ActionListener {
             return Double.compare(l0, l1);
         }
     }
-    
-    private ListSelectionListener selectionListener = new ListSelectionListener() {
 
-        @Override
-        public void valueChanged(ListSelectionEvent e) {
-            int selected = masterEquipmentTable.getSelectedRow();
-            EquipmentType etype = null;
-            if (selected >= 0) {
-                etype = masterEquipmentList.getType(masterEquipmentTable.convertRowIndexToModel(selected));
-            }
-            addButton.setEnabled((null != etype) && eSource.getTechManager().isLegal(etype));
-        }
-        
-    };
-    
     private static class CategoryListCellRenderer extends JLabel implements ListCellRenderer<EquipmentCategory> {
         private static final long serialVersionUID = -6019108605730297067L;
         
-        public CategoryListCellRenderer() {
+        CategoryListCellRenderer() {
             setOpaque(true);
         }
 
@@ -968,7 +942,7 @@ public class EquipmentTab extends ITab implements ActionListener {
             
             return this;
         }
-    };
+    }
 
 
 }

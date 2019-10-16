@@ -44,7 +44,7 @@ public class CriticalTableModel extends AbstractTableModel {
      */
     private static final long serialVersionUID = 7615555055651822051L;
 
-    public Mounted[] sortedEquipment = {};
+    private Mounted[] sortedEquipment = {};
     public Vector<Mounted> crits = new Vector<Mounted>();
     public Entity unit;
 
@@ -62,9 +62,9 @@ public class CriticalTableModel extends AbstractTableModel {
     private int tableType = EQUIPMENTTABLE;
     private boolean kgStandard = false;
 
-    String[] columnNames = { "Name", "Tons", "Crits"};
+    private String[] columnNames = { "Name", "Tons", "Crits"};
 
-    String[] longValues = { "XXXXXXXXX", "XXXXXXXXX", "XXXXXXXXX"};
+    private String[] longValues = { "XXXXXXXXX", "XXXXXXXXX", "XXXXXXXXX"};
 
     @Override
     public int getColumnCount() {
@@ -85,7 +85,7 @@ public class CriticalTableModel extends AbstractTableModel {
         if (kgStandard) {
             columnNames[TONNAGE] = "Kg";
         }
-        if ((unit instanceof Mech) || ((unit instanceof Tank) && ((Tank) unit).isSupportVehicle())) {
+        if ((unit instanceof Mech) || unit.isSupportVehicle()) {
             columnNames[CRITS] = "Crits";
         }
         
@@ -106,10 +106,10 @@ public class CriticalTableModel extends AbstractTableModel {
     }
 
     public void initColumnSizes(JTable table) {
-        TableColumn column = null;
-        Component comp = null;
+        TableColumn column;
+        Component comp;
         int headerWidth = 0;
-        int cellWidth = 0;
+        int cellWidth;
         CriticalTableModel model = this;
         for (int i = 0; i < getColumnCount(); i++) {
             column = table.getColumnModel().getColumn(i);
@@ -171,6 +171,9 @@ public class CriticalTableModel extends AbstractTableModel {
                 return tonnage;
             }
         case CRITS:
+            if (unit.isSupportVehicle()) {
+                return crit.getType().getSupportVeeSlots(unit);
+            }
             if (unit instanceof Tank) {
                 return crit.getType().getTankslots(unit);
             }
@@ -297,8 +300,8 @@ public class CriticalTableModel extends AbstractTableModel {
      * 
      * @param locs  An array of indices that specifies the crits to remove
      */
-    public void removeCrits(int locs[]) {
-        Vector<Mounted> mounts = new Vector<Mounted>(locs.length);
+    public void removeCrits(int[] locs) {
+        Vector<Mounted> mounts = new Vector<>(locs.length);
         for (Integer l : locs){
             mounts.add(crits.elementAt(l));
         }
@@ -318,7 +321,7 @@ public class CriticalTableModel extends AbstractTableModel {
         return crits;
     }
 
-    public int getAlignment(int col) {
+    private int getAlignment(int col) {
         switch (col) {
             case NAME:
                 return SwingConstants.LEFT;

@@ -73,7 +73,7 @@ public class BuildTab extends ITab implements ActionListener {
 
     private JPanel buttonPanel = new JPanel();
     /**
-     * Panel that holds the <code>BuildView</code> and buttonPanel
+     * Panel that holds the <code>UnallocatedView</code> and buttonPanel
      */
     private JPanel mainPanel = new JPanel();
 

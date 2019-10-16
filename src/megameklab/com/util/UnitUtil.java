@@ -23,13 +23,7 @@ import java.io.File;
 import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Vector;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Collectors;
 
@@ -370,6 +364,30 @@ public class UnitUtil {
         for (Mounted m : unit.getEquipment()) {
             if (mount.equals(m.getLinkedBy())) {
                 m.setLinkedBy(null);
+            }
+        }
+        if ((mount.getType() instanceof MiscType)
+            && (mount.getType().hasFlag(MiscType.F_HEAD_TURRET)
+                || mount.getType().hasFlag(MiscType.F_SHOULDER_TURRET)
+                || mount.getType().hasFlag(MiscType.F_QUAD_TURRET))) {
+            for (Mounted m : unit.getEquipment()) {
+                if (m.getLocation() == mount.getLocation()) {
+                    m.setMechTurretMounted(false);
+                }
+            }
+        }
+        if ((mount.getType() instanceof MiscType)
+                && mount.getType().hasFlag(MiscType.F_SPONSON_TURRET)) {
+            for (Mounted m : unit.getEquipment()) {
+                m.setSponsonTurretMounted(false);
+            }
+        }
+        if ((mount.getType() instanceof MiscType)
+                && mount.getType().hasFlag(MiscType.F_PINTLE_TURRET)) {
+            for (Mounted m : unit.getEquipment()) {
+                if (m.getLocation() == mount.getLocation()) {
+                    m.setPintleTurretMounted(false);
+                }
             }
         }
     }
@@ -1257,6 +1275,9 @@ public class UnitUtil {
                 unit.setOriginalJumpMP(unit.getOriginalJumpMP() - 1);
             }
         }
+        List<Transporter> transporters = unit.getTransports().stream()
+                .filter(unit::isPodMountedTransport).collect(Collectors.toList());
+        transporters.forEach(unit::removeTransporter);
     }
 
     public static boolean hasTargComp(Entity unit) {
@@ -1368,6 +1389,8 @@ public class UnitUtil {
             points = (unit.getTotalInternal() * 2) + headPoints;
         } else if (unit.hasETypeFlag(Entity.ETYPE_PROTOMECH)) {
             points = TestProtomech.maxArmorFactor((Protomech) unit);
+        } else if (unit.isSupportVehicle()) {
+            points = TestSupportVehicle.maxArmorFactor(unit);
         } else if (unit.hasETypeFlag(Entity.ETYPE_TANK)) {
             points = (int) Math.floor((unit.getWeight() * 3.5) + 40);
         } else if (unit.hasETypeFlag(Entity.ETYPE_BATTLEARMOR)) {
@@ -1393,7 +1416,12 @@ public class UnitUtil {
             }
         } else if (unit instanceof Mech) {
             return unit.getInternal(loc) * 2;
+        } else if (unit.isSupportVehicle()) {
+            return TestSupportVehicle.maxArmorFactor(unit);
         } else if (unit instanceof Tank) {
+            if ((unit instanceof VTOL) && (loc == VTOL.LOC_ROTOR)) {
+                return 2;
+            }
             return (int) Math.floor((unit.getWeight() * 3.5) + 40);
         } else if (unit instanceof Protomech) {
             return TestProtomech.maxArmorFactor((Protomech) unit, loc);
@@ -1407,7 +1435,7 @@ public class UnitUtil {
         if (unit instanceof Jumpship) {
             return TestAdvancedAerospace.maxArmorWeight((Jumpship) unit);
         }
-        
+
         double armorPerTon = 16.0 * EquipmentType.getArmorPointMultiplier(
                 unit.getArmorType(1), unit.getArmorTechLevel(1));
         double armorWeight = 0;
@@ -1428,6 +1456,15 @@ public class UnitUtil {
         } else if (unit instanceof Protomech) {
             double points = TestProtomech.maxArmorFactor((Protomech) unit);
             return points * TestProtomech.ProtomechArmor.getArmor((Protomech) unit).getWtPerPoint();
+        } else if (unit.isSupportVehicle()) {
+            // Max armor is determined by number of points.
+            double weight = TestSupportVehicle.maxArmorFactor(unit)
+                    * TestSupportVehicle.armorWeightPerPoint(unit);
+            if (unit.getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT) {
+                return TestEntity.round(weight, TestEntity.Ceil.KILO);
+            } else {
+                return TestEntity.ceil(weight, TestEntity.Ceil.HALFTON);
+            }
         } else if (unit instanceof Tank) {
             double points = Math.floor((unit.getWeight() * 3.5) + 40);
             armorWeight = points / armorPerTon;
@@ -1461,6 +1498,8 @@ public class UnitUtil {
         if (unit.hasETypeFlag(Entity.ETYPE_PROTOMECH)) {
             return Math.round(armorTons /
                     EquipmentType.getProtomechArmorWeightPerPoint(unit.getArmorType(Protomech.LOC_TORSO)));
+        } else if (unit.isSupportVehicle()) {
+            return Math.floor(armorTons / TestSupportVehicle.armorWeightPerPoint(unit));
         }
         return armorTons * UnitUtil.getArmorPointsPerTon(unit,
                 unit.getArmorType(1), unit.getArmorTechLevel(1));
@@ -1550,6 +1589,10 @@ public class UnitUtil {
      * @return          The number of armor points per ton
      */
     public static double getArmorPointsPerTon(Entity en, int at, int techLevel) {
+        if (en.isSupportVehicle() && (at == EquipmentType.T_ARMOR_STANDARD)) {
+            return 1.0 / EquipmentType.getSupportVehicleArmorWeightPerPoint(en.getBARRating(en.firstArmorIndex()),
+                    en.getArmorTechRating());
+        }
         return getArmorPointsPerTon(en, at, TechConstants.isClan(techLevel));
     }
 
@@ -2481,6 +2524,11 @@ public class UnitUtil {
         return UnitUtil.isMechWeapon(eq, unit);
     }
 
+    /**
+     * @deprecated Use {@link #isEntityEquipment(EquipmentType, Entity)}
+     * There are two methods that do the same thing, but this one hasn't been updated.
+     */
+    @Deprecated
     public static boolean isUnitEquipment(EquipmentType eq, Entity unit) {
         if (unit instanceof Tank) {
             return UnitUtil.isTankEquipment(eq, unit instanceof VTOL);
@@ -2676,7 +2724,11 @@ public class UnitUtil {
             }
         }
 
-        return false;
+        if (eq instanceof AmmoType) {
+            return ((AmmoType) eq).canAeroUse();
+        }
+
+        return isAeroWeapon(eq, unit);
     }
     
     public static boolean isEntityEquipment(EquipmentType eq, Entity en) {
@@ -2684,6 +2736,8 @@ public class UnitUtil {
             return isMechEquipment(eq, (Mech) en);
         } else if (en instanceof Protomech) {
             return isProtomechEquipment(eq, (Protomech) en);
+        } else if (en.isSupportVehicle()) {
+            return isSupportVehicleEquipment(eq, en);
         } else if (en instanceof Tank) {
             return isTankEquipment(eq, (Tank) en);
         } else if (en instanceof BattleArmor) {
@@ -2797,9 +2851,7 @@ public class UnitUtil {
     
     public static boolean isTankEquipment(EquipmentType eq, Tank tank) {
         if (eq instanceof MiscType) {
-            if (tank.isSupportVehicle()) {
-                return eq.hasFlag(MiscType.F_SUPPORT_TANK_EQUIPMENT);
-            } else if (tank.hasETypeFlag(Entity.ETYPE_VTOL)){
+            if (tank.hasETypeFlag(Entity.ETYPE_VTOL)){
                 return eq.hasFlag(MiscType.F_TANK_EQUIPMENT)
                         || eq.hasFlag(MiscType.F_VTOL_EQUIPMENT);
             } else {
@@ -2866,6 +2918,22 @@ public class UnitUtil {
             return true;
         }
         return false;
+    }
+
+    public static boolean isSupportVehicleEquipment(EquipmentType eq, Entity unit) {
+        if ((eq instanceof MiscType) && !eq.hasFlag(MiscType.F_SUPPORT_TANK_EQUIPMENT)) {
+            return false;
+        } else if ((eq instanceof WeaponType)
+            && (unit.getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT)) {
+            // Small support vehicles can only mount infantry weapons
+            return (eq instanceof InfantryWeapon)
+                    && !eq.hasFlag(WeaponType.F_INF_ARCHAIC);
+        }
+        if (unit.isAero()) {
+            return isAeroEquipment(eq, (Aero) unit);
+        } else {
+            return isTankEquipment(eq, (Tank) unit);
+        }
     }
 
     public static boolean isBAEquipment(EquipmentType eq, BattleArmor ba) {
@@ -3342,8 +3410,8 @@ public class UnitUtil {
         } else if (unit.hasETypeFlag(Entity.ETYPE_PROTOMECH)) {
             testEntity = new TestProtomech((Protomech) unit,
                     entityVerifier.protomechOption, null);
-        } else if (unit.hasETypeFlag(Entity.ETYPE_SUPPORT_TANK)) {
-            testEntity = new TestSupportVehicle((Tank) unit,
+        } else if (unit.isSupportVehicle()) {
+            testEntity = new TestSupportVehicle(unit,
                     entityVerifier.tankOption, null);
         } else if (unit.hasETypeFlag(Entity.ETYPE_TANK)) {
             testEntity = new TestTank((Tank) unit,
@@ -4064,7 +4132,6 @@ public class UnitUtil {
      * @return Whether the unit can make use of the ammo
      */
     public static boolean canUseAmmo(Entity unit, AmmoType atype, boolean includeOneShot) {
-        boolean match = false;
         if ((unit instanceof BattleArmor)
                 && !atype.hasFlag(AmmoType.F_BATTLEARMOR)){
             return false;
@@ -4084,11 +4151,11 @@ public class UnitUtil {
                 if ((wtype.getAmmoType() == atype.getAmmoType())
                         && (wtype.getRackSize() == atype.getRackSize())
                         && (includeOneShot || !((WeaponType) m.getType()).hasFlag(WeaponType.F_ONESHOT))) {
-                    match = true;
+                    return true;
                 }
             }
         }
-        return match;
+        return false;
     }
 
     public static int countUsedCriticals(Mech unit) {

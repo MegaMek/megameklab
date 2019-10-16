@@ -39,7 +39,7 @@ import megamek.common.annotations.Nullable;
 import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestProtomech;
 import megameklab.com.ui.util.TechComboBox;
-import megameklab.com.ui.view.listeners.BuildListener;
+import megameklab.com.ui.view.listeners.ArmorAllocationListener;
 import megameklab.com.util.UnitUtil;
 
 /**
@@ -55,11 +55,11 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
      */
     private static final long serialVersionUID = 14527455823813010L;
 
-    private final List<BuildListener> listeners = new CopyOnWriteArrayList<>();
-    public void addListener(BuildListener l) {
+    private final List<ArmorAllocationListener> listeners = new CopyOnWriteArrayList<>();
+    public void addListener(ArmorAllocationListener l) {
         listeners.add(l);
     }
-    public void removeListener(BuildListener l) {
+    public void removeListener(ArmorAllocationListener l) {
         listeners.remove(l);
     }
     
@@ -201,7 +201,7 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
     @Override
     public void stateChanged(ChangeEvent e) {
         if (e.getSource() == spnArmorPoints) {
-            listeners.forEach(l -> l.armorValueChanged(spnArmorPointsModel.getNumber().intValue()));
+            listeners.forEach(l -> l.armorFactorChanged(spnArmorPointsModel.getNumber().intValue()));
         }
     }
 

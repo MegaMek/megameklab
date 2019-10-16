@@ -44,7 +44,7 @@ import megamek.common.verifier.TestAero;
 import megamek.common.verifier.TestEntity;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.Aero.views.SummaryView;
-import megameklab.com.ui.view.AeroFuelView;
+import megameklab.com.ui.view.FuelView;
 import megameklab.com.ui.view.ArmorAllocationView;
 import megameklab.com.ui.view.BasicInfoView;
 import megameklab.com.ui.view.FighterChassisView;
@@ -53,11 +53,12 @@ import megameklab.com.ui.view.MVFArmorView;
 import megameklab.com.ui.view.MovementView;
 import megameklab.com.ui.view.PatchworkArmorView;
 import megameklab.com.ui.view.listeners.AeroBuildListener;
+import megameklab.com.ui.view.listeners.ArmorAllocationListener;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 
-public class StructureTab extends ITab implements AeroBuildListener {
+public class StructureTab extends ITab implements AeroBuildListener, ArmorAllocationListener {
 
     /**
      *
@@ -69,7 +70,7 @@ public class StructureTab extends ITab implements AeroBuildListener {
     private FighterChassisView panChassis;
     private MVFArmorView panArmor;
     private MovementView panMovement;
-    private AeroFuelView panFuel;
+    private FuelView panFuel;
     private HeatSinkView panHeat;
     private SummaryView panSummary;
     private ArmorAllocationView panArmorAllocation;
@@ -91,7 +92,7 @@ public class StructureTab extends ITab implements AeroBuildListener {
         panChassis = new FighterChassisView(panInfo);
         panArmor = new MVFArmorView(panInfo);
         panMovement = new MovementView(panInfo);
-        panFuel = new AeroFuelView();
+        panFuel = new FuelView();
         panHeat = new HeatSinkView(panInfo);
         panArmorAllocation = new ArmorAllocationView(panInfo, Entity.ETYPE_AERO);
         panPatchwork = new PatchworkArmorView(panInfo);
@@ -568,6 +569,15 @@ public class StructureTab extends ITab implements AeroBuildListener {
     public void fuelTonnageChanged(double tonnage) {
         double fuelTons = Math.round(tonnage * 2) / 2.0;
         getAero().setFuelTonnage(fuelTons);
+        panFuel.setFromEntity(getAero());
+        panSummary.refresh();
+        refresh.refreshStatus();
+        refresh.refreshPreview();
+    }
+
+    @Override
+    public void fuelCapacityChanged(int capacity) {
+        getAero().setFuel(capacity);
         panFuel.setFromEntity(getAero());
         panSummary.refresh();
         refresh.refreshStatus();

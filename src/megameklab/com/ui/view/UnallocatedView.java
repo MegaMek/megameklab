@@ -1,5 +1,6 @@
 /*
- * MegaMekLab - Copyright (C) 2009
+ * MegaMekLab - Copyright (C) 2019
+ * The MegaMek Team
  *
  * Original author - jtighe (torren@users.sourceforge.net)
  *
@@ -14,14 +15,14 @@
  * for more details.
  */
 
-package megameklab.com.ui.Vehicle.views;
+package megameklab.com.ui.view;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.Collections;
 import java.util.Vector;
+import java.util.function.Supplier;
 
 import javax.swing.BoxLayout;
 import javax.swing.JMenuItem;
@@ -37,39 +38,34 @@ import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.weapons.Weapon;
 import megameklab.com.ui.EntitySource;
-import megameklab.com.ui.Vehicle.tabs.BuildTab;
-import megameklab.com.util.CriticalTableModel;
-import megameklab.com.util.CriticalTransferHandler;
-import megameklab.com.util.IView;
-import megameklab.com.util.RefreshListener;
-import megameklab.com.util.StringUtils;
-import megameklab.com.util.UnitUtil;
+import megameklab.com.util.*;
 
-public class BuildView extends IView implements ActionListener, MouseListener {
+/**
+ * View that displays unallocated equipment on the build tab.
+ */
 
-    /**
-     *
-     */
+public class UnallocatedView extends IView implements ActionListener, MouseListener {
+
     private static final long serialVersionUID = 799195356642563937L;
 
-    private JPanel mainPanel = new JPanel();
-
     private CriticalTableModel equipmentList;
-    private Vector<Mounted> masterEquipmentList = new Vector<Mounted>(10, 1);
+    private Vector<Mounted> masterEquipmentList = new Vector<>(10, 1);
     private JTable equipmentTable = new JTable();
-    private JScrollPane equipmentScroll = new JScrollPane();
 
-    CriticalTransferHandler cth;
+    private final CriticalTransferHandler cth;
+    private final Supplier<RefreshListener> refresh;
 
-    public BuildView(EntitySource eSource, RefreshListener refresh) {
+    public UnallocatedView(EntitySource eSource, Supplier<RefreshListener> refresh) {
         super(eSource);
+        this.refresh = refresh;
 
+        JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-        equipmentList = new CriticalTableModel(getTank(), CriticalTableModel.BUILDTABLE);
+        equipmentList = new CriticalTableModel(getEntity(), CriticalTableModel.BUILDTABLE);
 
         equipmentTable.setModel(equipmentList);
         equipmentTable.setDragEnabled(true);
-        cth = new CriticalTransferHandler(eSource, refresh);
+        cth = new CriticalTransferHandler(eSource, refresh.get());
         equipmentTable.setTransferHandler(cth);
 
         equipmentList.initColumnSizes(equipmentTable);
@@ -82,6 +78,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         // equipmentScroll.setToolTipText("");
         //equipmentScroll.setPreferredSize(new Dimension(getWidth(), getHeight()));
         equipmentTable.setDoubleBuffered(true);
+        JScrollPane equipmentScroll = new JScrollPane();
         equipmentScroll.setViewportView(equipmentTable);
         equipmentScroll.setTransferHandler(cth);
 
@@ -100,23 +97,23 @@ public class BuildView extends IView implements ActionListener, MouseListener {
     private void loadEquipmentTable() {
         equipmentList.removeAllCrits();
         masterEquipmentList.clear();
-        for (Mounted mount : getTank().getMisc()) {
+        for (Mounted mount : getEntity().getMisc()) {
             if (mount.getLocation() == Entity.LOC_NONE) {
                 masterEquipmentList.add(mount);
             }
         }
-        for (Mounted mount : getTank().getWeaponList()) {
+        for (Mounted mount : getEntity().getWeaponList()) {
             if (mount.getLocation() == Entity.LOC_NONE) {
                 masterEquipmentList.add(mount);
             }
         }
-        for (Mounted mount : getTank().getAmmo()) {
+        for (Mounted mount : getEntity().getAmmo()) {
             if ((mount.getLocation() == Entity.LOC_NONE) && !mount.isOneShotAmmo()) {
                 masterEquipmentList.add(mount);
             }
         }
 
-        Collections.sort(masterEquipmentList, StringUtils.mountedComparator());
+        masterEquipmentList.sort(StringUtils.mountedComparator());
 
         // Time to Sort
         // HeatSinks first
@@ -138,7 +135,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         }
 
         // weapons and ammo
-        Vector<Mounted> weaponsNAmmoList = new Vector<Mounted>(10, 1);
+        Vector<Mounted> weaponsNAmmoList = new Vector<>(10, 1);
         for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
             if ((masterEquipmentList.get(pos).getType() instanceof Weapon) || (masterEquipmentList.get(pos).getType() instanceof AmmoType)) {
                 weaponsNAmmoList.add(masterEquipmentList.get(pos));
@@ -146,7 +143,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
                 pos--;
             }
         }
-        Collections.sort(weaponsNAmmoList, StringUtils.mountedComparator());
+        weaponsNAmmoList.sort(StringUtils.mountedComparator());
         for (Mounted mount : weaponsNAmmoList) {
             equipmentList.addCrit(mount);
         }
@@ -179,8 +176,8 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         }
 
         // everything else
-        for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
-            equipmentList.addCrit(masterEquipmentList.get(pos));
+        for (Mounted mounted : masterEquipmentList) {
+            equipmentList.addCrit(mounted);
         }
 
     }
@@ -203,7 +200,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
     }
 
     private void fireTableRefresh() {
-        equipmentList.updateUnit(getTank());
+        equipmentList.updateUnit(getEntity());
         equipmentList.refreshModel();
         //equipmentScroll.setPreferredSize(new Dimension(getWidth() * 90 / 100, getHeight() * 90 / 100));
         //equipmentScroll.repaint();
@@ -238,18 +235,14 @@ public class BuildView extends IView implements ActionListener, MouseListener {
             Mounted mount = (Mounted)equipmentTable.getModel().getValueAt(selectedRow, CriticalTableModel.EQUIPMENT);
             String[] locations;
 
-            locations = getTank().getLocationNames();
+            locations = getEntity().getLocationNames();
 
-            for (int location = 0; location < getTank().locations(); location++) {
+            for (int location = 0; location < getEntity().locations(); location++) {
 
-            	if (UnitUtil.isValidLocation(getTank(), mount.getType(), location)) {
+            	if (UnitUtil.isValidLocation(getEntity(), mount.getType(), location)) {
             		item = new JMenuItem("Add to " + locations[location]);
                     final int loc = location;
-                    item.addActionListener(new ActionListener() {
-                        public void actionPerformed(ActionEvent e) {
-                            jMenuLoadComponent_actionPerformed(loc, selectedRow);
-                        }
-                    });
+                    item.addActionListener(e1 -> jMenuLoadComponent_actionPerformed(loc, selectedRow));
                     popup.add(item);
             	}
 
@@ -265,15 +258,16 @@ public class BuildView extends IView implements ActionListener, MouseListener {
 
     private void jMenuLoadComponent_actionPerformed(int location, int selectedRow) {
         Mounted eq = (Mounted)equipmentTable.getModel().getValueAt(selectedRow, CriticalTableModel.EQUIPMENT);
-        UnitUtil.changeMountStatus(getTank(), eq, location, -1, false);
+        UnitUtil.changeMountStatus(getEntity(), eq, location, -1, false);
 
         try {
-            getTank().addEquipment(eq, location, false);
+            getEntity().addEquipment(eq, location, false);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
 
-        // go back up to grandparent build tab and fire a full refresh.
-        ((BuildTab) getParent().getParent()).refreshAll();
+        if (refresh.get() != null) {
+            refresh.get().refreshAll();
+        }
     }
 }

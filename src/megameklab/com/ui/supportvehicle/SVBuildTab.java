@@ -1,52 +1,44 @@
 /*
- * MegaMekLab - Copyright (C) 2009
+ * MegaMekLab
+ * Copyright (C) 2019 The MegaMek Team
  *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-
-package megameklab.com.ui.Vehicle.tabs;
-
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
+package megameklab.com.ui.supportvehicle;
 
 import megamek.common.Entity;
 import megamek.common.MechFileParser;
 import megamek.common.Mounted;
 import megamek.common.loaders.EntityLoadingException;
 import megameklab.com.ui.EntitySource;
+import megameklab.com.ui.tabs.EquipmentTab;
 import megameklab.com.ui.view.UnallocatedView;
-import megameklab.com.ui.Vehicle.views.CriticalView;
-import megameklab.com.util.CriticalTableModel;
-import megameklab.com.util.ITab;
-import megameklab.com.util.RefreshListener;
-import megameklab.com.util.UnitUtil;
+import megameklab.com.util.*;
 
-public class BuildTab extends ITab implements ActionListener {
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = -6756011847500605874L;
+/**
+ * Build tab for assigning support vehicle equipment locations
+ */
+public class SVBuildTab extends ITab implements ActionListener {
 
     private RefreshListener refresh = null;
-    private CriticalView critView;
+    private SVCriticalView critView;
     private CriticalTableModel critList;
     private UnallocatedView unallocatedView;
 
@@ -56,16 +48,16 @@ public class BuildTab extends ITab implements ActionListener {
     private String AUTOFILLCOMMAND = "autofillbuttoncommand";
     private String RESETCOMMAND = "resetbuttoncommand";
 
-    public BuildTab(EntitySource eSource, CriticalTableModel critList) {
+    SVBuildTab(EntitySource eSource, EquipmentTab equipmentTab) {
         super(eSource);
-        this.critList = critList;
+        this.critList = equipmentTab.getEquipmentList();
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
 
-        critView = new CriticalView(eSource, true, refresh);
+        critView = new SVCriticalView(eSource, true, refresh);
         unallocatedView = new UnallocatedView(eSource, () -> refresh);
 
         mainPanel.add(unallocatedView);
@@ -169,4 +161,9 @@ public class BuildTab extends ITab implements ActionListener {
         critList.addCrit(mount);
     }
 
+    public void refreshAll() {
+        if (refresh != null) {
+            refresh.refreshAll();
+        }
+    }
 }

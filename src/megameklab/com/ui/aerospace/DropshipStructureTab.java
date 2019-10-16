@@ -34,7 +34,7 @@ import megamek.common.SimpleTechLevel;
 import megamek.common.SmallCraft;
 import megamek.common.verifier.TestEntity;
 import megameklab.com.ui.EntitySource;
-import megameklab.com.ui.view.AeroFuelView;
+import megameklab.com.ui.view.FuelView;
 import megameklab.com.ui.view.AerospaceCrewView;
 import megameklab.com.ui.view.ArmorAllocationView;
 import megameklab.com.ui.view.BasicInfoView;
@@ -42,6 +42,7 @@ import megameklab.com.ui.view.DropshipChassisView;
 import megameklab.com.ui.view.HeatSinkView;
 import megameklab.com.ui.view.MVFArmorView;
 import megameklab.com.ui.view.MovementView;
+import megameklab.com.ui.view.listeners.ArmorAllocationListener;
 import megameklab.com.ui.view.listeners.DropshipBuildListener;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
@@ -53,7 +54,7 @@ import megameklab.com.util.UnitUtil;
  *
  */
 
-public class DropshipStructureTab extends ITab implements DropshipBuildListener {
+public class DropshipStructureTab extends ITab implements DropshipBuildListener, ArmorAllocationListener {
 
     /**
      *
@@ -65,7 +66,7 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
     private DropshipChassisView panChassis;
     private MVFArmorView panArmor;
     private MovementView panMovement;
-    private AeroFuelView panFuel;
+    private FuelView panFuel;
     private HeatSinkView panHeat;
     private AerospaceCrewView panCrew;
     private DropshipSummaryView panSummary;
@@ -87,7 +88,7 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
         panChassis = new DropshipChassisView(panInfo);
         panArmor = new MVFArmorView(panInfo);
         panMovement = new MovementView(panInfo);
-        panFuel = new AeroFuelView();
+        panFuel = new FuelView();
         panHeat = new HeatSinkView(panInfo);
         panCrew = new AerospaceCrewView(panInfo);
         panArmorAllocation = new ArmorAllocationView(panInfo, Entity.ETYPE_AERO);
@@ -425,6 +426,7 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
         refresh();
         refresh.refreshEquipment();
         refresh.refreshBuild();
+        refresh.refreshTransport();
         refresh.refreshPreview();
         refresh.refreshStatus();
     }
@@ -459,6 +461,15 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
         double fuelTons = Math.round(tonnage * 2) / 2.0;
         getSmallCraft().setFuelTonnage(fuelTons);
         panFuel.setFromEntity(getSmallCraft());
+        panSummary.refresh();
+        refresh.refreshStatus();
+        refresh.refreshPreview();
+    }
+
+    @Override
+    public void fuelCapacityChanged(int capacity) {
+        getAero().setFuel(capacity);
+        panFuel.setFromEntity(getAero());
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();

@@ -35,7 +35,7 @@ import megamek.common.Warship;
 import megamek.common.verifier.TestEntity;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.view.AdvancedAeroChassisView;
-import megameklab.com.ui.view.AeroFuelView;
+import megameklab.com.ui.view.FuelView;
 import megameklab.com.ui.view.AerospaceCrewView;
 import megameklab.com.ui.view.ArmorAllocationView;
 import megameklab.com.ui.view.BasicInfoView;
@@ -44,6 +44,7 @@ import megameklab.com.ui.view.HeatSinkView;
 import megameklab.com.ui.view.MVFArmorView;
 import megameklab.com.ui.view.MovementView;
 import megameklab.com.ui.view.listeners.AdvancedAeroBuildListener;
+import megameklab.com.ui.view.listeners.ArmorAllocationListener;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
@@ -52,7 +53,7 @@ import megameklab.com.util.UnitUtil;
  * @author Neoancient
  *
  */
-public class AdvancedAeroStructureTab extends ITab implements AdvancedAeroBuildListener {
+public class AdvancedAeroStructureTab extends ITab implements AdvancedAeroBuildListener, ArmorAllocationListener {
 
     /**
      * 
@@ -64,7 +65,7 @@ public class AdvancedAeroStructureTab extends ITab implements AdvancedAeroBuildL
     private AdvancedAeroChassisView panChassis;
     private MVFArmorView panArmor;
     private MovementView panMovement;
-    private AeroFuelView panFuel;
+    private FuelView panFuel;
     private HeatSinkView panHeat;
     private AerospaceCrewView panCrew;
     private GravDeckView panGravDecks;
@@ -87,7 +88,7 @@ public class AdvancedAeroStructureTab extends ITab implements AdvancedAeroBuildL
         panChassis = new AdvancedAeroChassisView(panInfo);
         panArmor = new MVFArmorView(panInfo);
         panMovement = new MovementView(panInfo);
-        panFuel = new AeroFuelView();
+        panFuel = new FuelView();
         panHeat = new HeatSinkView(panInfo);
         panCrew = new AerospaceCrewView(panInfo);
         panGravDecks = new GravDeckView();
@@ -504,6 +505,15 @@ public class AdvancedAeroStructureTab extends ITab implements AdvancedAeroBuildL
         double fuelTons = Math.round(tonnage * 2) / 2.0;
         getJumpship().setFuelTonnage(fuelTons);
         panFuel.setFromEntity(getJumpship());
+        panSummary.refresh();
+        refresh.refreshStatus();
+        refresh.refreshPreview();
+    }
+
+    @Override
+    public void fuelCapacityChanged(int capacity) {
+        getAero().setFuel(capacity);
+        panFuel.setFromEntity(getAero());
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();

@@ -22,23 +22,16 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerNumberModel;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import megamek.common.Entity;
-import megamek.common.EntityMovementMode;
-import megamek.common.EquipmentType;
-import megamek.common.ITechManager;
-import megamek.common.Mech;
-import megamek.common.TechConstants;
+import megamek.common.*;
 import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestEntity;
+import megameklab.com.ui.util.CustomComboBox;
 import megameklab.com.ui.util.TechComboBox;
-import megameklab.com.ui.view.listeners.BuildListener;
+import megameklab.com.ui.view.listeners.ArmorAllocationListener;
 import megameklab.com.util.UnitUtil;
 
 /**
@@ -49,71 +42,122 @@ import megameklab.com.util.UnitUtil;
  */
 public class MVFArmorView extends BuildView implements ActionListener, ChangeListener {
     
-    /**
-     * 
-     */
     private static final long serialVersionUID = 1246552271894765543L;
 
-    private final List<BuildListener> listeners = new CopyOnWriteArrayList<>();
-    public void addListener(BuildListener l) {
+    private final List<ArmorAllocationListener> listeners = new CopyOnWriteArrayList<>();
+    public void addListener(ArmorAllocationListener l) {
         listeners.add(l);
     }
-    public void removeListener(BuildListener l) {
+    public void removeListener(ArmorAllocationListener l) {
         listeners.remove(l);
     }
     
     private final static String CMD_MAXIMIZE  = "MAXIMIZE"; //$NON-NLS-1$
     private final static String CMD_REMAINING = "REMAINING"; //$NON-NLS-1$
     
-    private final TechComboBox<EquipmentType> cbArmorType = new TechComboBox<>(eq -> eq.getName());
-    private final SpinnerNumberModel tonnageModel = new SpinnerNumberModel(0, 0, 0, 0.5);
+    private final TechComboBox<EquipmentType> cbArmorType = new TechComboBox<>(EquipmentType::getName);
+    private final CustomComboBox<Integer> cbSVTechRating = new CustomComboBox<>(ITechnology::getRatingName);
+    private final JComboBox<Integer> cbBARRating = new JComboBox<>();
+    private final SpinnerNumberModel tonnageModel = new SpinnerNumberModel(0.0, 0.0, null, 0.5);
+    private final SpinnerNumberModel factorModel = new SpinnerNumberModel(0, 0, null, 1);
     private final JSpinner spnTonnage = new JSpinner(tonnageModel);
     private final JCheckBox chkPatchwork = new JCheckBox();
     private final JButton btnMaximize = new JButton();
     private final JButton btnUseRemaining = new JButton();
+    private final JLabel lblArmorTonnage = createLabel("", labelSizeLg);
     
     private final ITechManager techManager;
     
     private long etype;
     private boolean industrial;
     private EntityMovementMode movementMode;
-    
+    private boolean svLimitedArmor;
+
+    private final List<JComponent> svControlList = new ArrayList<>();
+
+    private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl()); //$NON-NLS-1$
+
+    /**
+     * Create the armor panel
+     *
+     * @param techManager The supplier of tech level parameters
+     */
     public MVFArmorView(ITechManager techManager) {
-        this.techManager = techManager;
-        initUI();
+        this(techManager, false);
     }
-    
-    private void initUI() {
-        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl()); //$NON-NLS-1$
-        
+
+    /**
+     * Create the armor panel
+     *
+     * @param techManager The supplier of tech level parameters
+     * @param supportVee  If true, the amount of armor will be assigned by points rather than weight.
+     */
+    public MVFArmorView(ITechManager techManager, boolean supportVee) {
+        this.techManager = techManager;
+        initUI(supportVee);
+    }
+
+    private void initUI(boolean supportVee) {
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        
+
         gbc.gridx = 0;
-        gbc.gridy = 0;
+        gbc.gridy++;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap.getString("ArmorView.cbArmorType.text"), labelSize), gbc); //$NON-NLS-1$
+        add(createLabel(resourceMap.getString("ArmorView.cbArmorType.text"), labelSizeLg), gbc); //$NON-NLS-1$
         gbc.gridx = 1;
-        gbc.gridy = 0;
         gbc.gridwidth = 2;
         setFieldSize(cbArmorType, controlSize);
         cbArmorType.setToolTipText(resourceMap.getString("ArmorView.cbArmorType.tooltip")); //$NON-NLS-1$
         add(cbArmorType, gbc);
         cbArmorType.addActionListener(this);
-        
+
+        if (supportVee) {
+            for (int r = ITechnology.RATING_A; r <= ITechnology.RATING_F; r++) {
+                cbSVTechRating.addItem(r);
+            }
+            gbc.gridx = 0;
+            gbc.gridy++;
+            gbc.gridwidth = 1;
+            JLabel label = createLabel(resourceMap.getString("ArmorView.cbSVTechRating.text"), labelSizeLg); //$NON-NLS-1$
+            add(label, gbc);
+            svControlList.add(label);
+            gbc.gridx = 1;
+            gbc.gridwidth = 2;
+            setFieldSize(cbSVTechRating, controlSize);
+            cbSVTechRating.setToolTipText(resourceMap.getString("ArmorView.cbSVTechRating.tooltip")); //$NON-NLS-1$
+            add(cbSVTechRating, gbc);
+            svControlList.add(cbSVTechRating);
+            cbSVTechRating.addActionListener(this);
+
+            gbc.gridx = 0;
+            gbc.gridy++;
+            gbc.gridwidth = 1;
+            label = createLabel(resourceMap.getString("ArmorView.cbBARRating.text"), labelSizeLg); //$NON-NLS-1$
+            add(label, gbc);
+            svControlList.add(label);
+            gbc.gridx = 1;
+            gbc.gridwidth = 2;
+            setFieldSize(cbBARRating, controlSize);
+            cbBARRating.setToolTipText(resourceMap.getString("ArmorView.cbBARRating.tooltip")); //$NON-NLS-1$
+            add(cbBARRating, gbc);
+            svControlList.add(cbBARRating);
+            cbBARRating.addActionListener(this);
+        }
+
         gbc.gridx = 0;
-        gbc.gridy = 1;
+        gbc.gridy++;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap.getString("ArmorView.spnTonnage.text"), labelSize), gbc); //$NON-NLS-1$
+        lblArmorTonnage.setText(resourceMap.getString("ArmorView.spnTonnage.text")); //$NON-NLS-1$
+        add(lblArmorTonnage, gbc);
         gbc.gridx = 1;
-        gbc.gridy = 1;
         setFieldSize(spnTonnage, spinnerSizeLg);
         spnTonnage.setToolTipText(resourceMap.getString("ArmorView.spnTonnage.tooltip")); //$NON-NLS-1$
         add(spnTonnage, gbc);
         spnTonnage.addChangeListener(this);
-        
+
         gbc.gridx = 0;
-        gbc.gridy = 2;
+        gbc.gridy++;
         gbc.gridwidth = 3;
         chkPatchwork.setText(resourceMap.getString("ArmorView.chkPatchwork.text")); //$NON-NLS-1$
         setFieldSize(chkPatchwork, controlSize);
@@ -122,7 +166,7 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
         chkPatchwork.addActionListener(this);
         
         gbc.gridx = 0;
-        gbc.gridy = 3;
+        gbc.gridy++;
         gbc.gridwidth = 3;
         btnMaximize.setText(resourceMap.getString("ArmorView.btnMaximize.text")); //$NON-NLS-1$
         btnMaximize.setActionCommand(CMD_MAXIMIZE);
@@ -132,7 +176,7 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
         btnMaximize.addActionListener(this);
         
         gbc.gridx = 0;
-        gbc.gridy = 4;
+        gbc.gridy++;
         gbc.gridwidth = 3;
         btnUseRemaining.setText(resourceMap.getString("ArmorView.btnRemaining.text")); //$NON-NLS-1$
         btnUseRemaining.setActionCommand(CMD_REMAINING);
@@ -157,12 +201,13 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
      * to clear the patchwork checkbox unless we're loading a new unit.
      * 
      * @param en The Entity being edited
-     * @param overridePatchwork Whether to ignore whether the Entity has patchwork armor.
+     * @param ignoreEntityPatchwork Whether to ignore whether the Entity has patchwork armor.
      */
     public void setFromEntity(Entity en, boolean ignoreEntityPatchwork) {
         etype = en.getEntityType();
         industrial = (en instanceof Mech) && ((Mech)en).isIndustrial();
         movementMode = en.getMovementMode();
+        svLimitedArmor = en.isSupportVehicle() && !en.hasArmoredChassis();
         refresh();
         cbArmorType.removeActionListener(this);
         spnTonnage.removeChangeListener(this);
@@ -176,6 +221,7 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
             cbArmorType.setEnabled(false);
             tonnageModel.setValue(Math.min(UnitUtil.getMaximumArmorTonnage(en),
                     en.getLabArmorTonnage()));
+            factorModel.setValue(en.getTotalOArmor());
             spnTonnage.setEnabled(false);
             chkPatchwork.setVisible(true);
             chkPatchwork.setSelected(true);
@@ -186,12 +232,45 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
             tonnageModel.setValue(Math.min(UnitUtil.getMaximumArmorTonnage(en),
                     en.getLabArmorTonnage()));
             tonnageModel.setMaximum(UnitUtil.getMaximumArmorTonnage(en));
+            factorModel.setMaximum(UnitUtil.getMaximumArmorPoints(en));
+            factorModel.setValue(Math.min(en.getLabTotalArmorPoints(), (Integer) factorModel.getMaximum()));
             spnTonnage.setEnabled(true);
             chkPatchwork.setSelected(false);
             btnMaximize.setEnabled(true);
             btnUseRemaining.setEnabled(true);
         }
-        
+        if (en.isSupportVehicle() && !en.hasPatchworkArmor()
+                && en.getArmorType(en.firstArmorIndex()) == EquipmentType.T_ARMOR_STANDARD) {
+            svControlList.forEach(c -> c.setVisible(true));
+            cbBARRating.removeActionListener(this);
+            cbBARRating.removeAllItems();
+            for (int bar = 2; bar <= 10; bar++) {
+                double weight = EquipmentType.getSupportVehicleArmorWeightPerPoint(bar, en.getArmorTechRating());
+                if ((weight > 0.0) && (!svLimitedArmor || (weight <= 0.05))) {
+                    cbBARRating.addItem(bar);
+                }
+            }
+            cbBARRating.setSelectedItem(en.getBARRating(en.firstArmorIndex()));
+            cbBARRating.addActionListener(this);
+            cbSVTechRating.removeActionListener(this);
+            cbSVTechRating.setSelectedItem(en.getArmorTechRating());
+            cbSVTechRating.addActionListener(this);
+            if (cbBARRating.getSelectedIndex() < 0) {
+                cbBARRating.setSelectedIndex(cbBARRating.getItemCount() - 1);
+            }
+        } else {
+            svControlList.forEach(c -> c.setVisible(false));
+        }
+        if (en.getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT) {
+            lblArmorTonnage.setText(resourceMap.getString("ArmorView.spnFactor.text")); //$NON-NLS-1$
+            spnTonnage.setToolTipText(resourceMap.getString("ArmorView.spnFactor.tooltip")); //$NON-NLS-1$
+            spnTonnage.setModel(factorModel);
+        } else {
+            lblArmorTonnage.setText(resourceMap.getString("ArmorView.spnTonnage.text")); //$NON-NLS-1$
+            spnTonnage.setToolTipText(resourceMap.getString("ArmorView.spnTonnage.tooltip")); //$NON-NLS-1$
+            spnTonnage.setModel(tonnageModel);
+        }
+
         cbArmorType.addActionListener(this);
         spnTonnage.addChangeListener(this);
         chkPatchwork.addActionListener(this);
@@ -201,10 +280,15 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
         EquipmentType prev = (EquipmentType)cbArmorType.getSelectedItem();
         cbArmorType.removeActionListener(this);
         cbArmorType.removeAllItems();
-        List<EquipmentType> allArmors = TestEntity.legalArmorsFor(etype, industrial, movementMode, techManager);
-        allArmors.forEach(eq -> cbArmorType.addItem(eq));
+        if (!svLimitedArmor) {
+            List<EquipmentType> allArmors = TestEntity.legalArmorsFor(etype, industrial, movementMode, techManager);
+            allArmors.forEach(cbArmorType::addItem);
+        } else {
+            cbArmorType.addItem(EquipmentType.get(EquipmentType.getArmorTypeName(EquipmentType.T_ARMOR_STANDARD)));
+        }
         if (((etype & (Entity.ETYPE_SMALL_CRAFT | Entity.ETYPE_JUMPSHIP)) == 0)
-                && techManager.isLegal(Entity.getPatchworkArmorAdvancement())) {
+                && techManager.isLegal(Entity.getPatchworkArmorAdvancement())
+                && !svLimitedArmor) {
             chkPatchwork.setVisible(true);
         } else {
             chkPatchwork.setVisible(false);
@@ -257,21 +341,6 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
         }
     }
     
-    /**
-     * Used to populate the patchwork armor dialog.
-     * 
-     * @return A list of the contents of the armor type combo box.
-     */
-    public List<EquipmentType> getAllArmors() {
-        List<EquipmentType> list = new ArrayList<>();
-        for (int i = 0; i < cbArmorType.getModel().getSize(); i++) {
-            if (null != cbArmorType.getItemAt(i)) {
-                list.add(cbArmorType.getItemAt(i));
-            }
-        }
-        return list;
-    }
-
     public int getArmorTechConstant() {
         EquipmentType armor = (EquipmentType) cbArmorType.getSelectedItem();
         if (null == armor) {
@@ -280,10 +349,29 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
         return (armor.getTechLevel(techManager.getGameYear(), armor.isClan()));
     }
 
+    public int getTechRating() {
+        Integer selected = (Integer) cbSVTechRating.getSelectedItem();
+        if (null != selected) {
+            return selected;
+        }
+        return ITechnology.RATING_A;
+    }
+    public int getBARRating() {
+        Integer selected = (Integer) cbBARRating.getSelectedItem();
+        if (null != selected) {
+            return selected;
+        }
+        return 2;
+    }
+
     @Override
     public void stateChanged(ChangeEvent e) {
         if (e.getSource() == spnTonnage) {
-            listeners.forEach(l -> l.armorTonnageChanged(tonnageModel.getNumber().doubleValue()));
+            if (spnTonnage.getModel() == tonnageModel) {
+                listeners.forEach(l -> l.armorTonnageChanged(tonnageModel.getNumber().doubleValue()));
+            } else {
+                listeners.forEach(l -> l.armorFactorChanged(factorModel.getNumber().intValue()));
+            }
         }
     }
 
@@ -297,9 +385,13 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
                     Entity.getPatchworkArmorAdvancement().getTechLevel(techManager.getGameYear(),
                             techManager.useClanTechBase())));
         } else if (CMD_MAXIMIZE.equals(e.getActionCommand())) {
-            listeners.forEach(l -> l.maximizeArmor());
+            listeners.forEach(ArmorAllocationListener::maximizeArmor);
         } else if (CMD_REMAINING.equals(e.getActionCommand())) {
-            listeners.forEach(l -> l.useRemainingTonnageArmor());
+            listeners.forEach(ArmorAllocationListener::useRemainingTonnageArmor);
+        } else if (e.getSource() == cbSVTechRating) {
+            listeners.forEach(l -> l.armorTechRatingChanged(getTechRating()));
+        } else if (e.getSource() == cbBARRating) {
+            listeners.forEach(l -> l.armorBARRatingChanged(getBARRating()));
         }
     }
     

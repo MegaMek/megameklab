@@ -57,12 +57,13 @@ import megameklab.com.ui.view.BAEnhancementView;
 import megameklab.com.ui.view.BAProtoArmorView;
 import megameklab.com.ui.view.BasicInfoView;
 import megameklab.com.ui.view.MovementView;
+import megameklab.com.ui.view.listeners.ArmorAllocationListener;
 import megameklab.com.ui.view.listeners.BABuildListener;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 
-public class StructureTab extends ITab implements ActionListener, BABuildListener {
+public class StructureTab extends ITab implements ActionListener, BABuildListener, ArmorAllocationListener {
 
 	/**
 	 *
@@ -655,7 +656,7 @@ public class StructureTab extends ITab implements ActionListener, BABuildListene
     }
 
     @Override
-    public void armorValueChanged(int points) {
+    public void armorFactorChanged(int points) {
         for(int i = 0; i < getBattleArmor().locations(); i++) {
             getBattleArmor().initializeArmor(points, i);
         }
@@ -686,7 +687,7 @@ public class StructureTab extends ITab implements ActionListener, BABuildListene
     
     @Override
     public void maximizeArmor() {
-        armorValueChanged(getBattleArmor().getMaximumArmorPoints());
+        armorFactorChanged(getBattleArmor().getMaximumArmorPoints());
         panArmor.removeListener(this);
         panArmor.setFromEntity(getBattleArmor());
         panArmor.addListener(this);
@@ -703,7 +704,7 @@ public class StructureTab extends ITab implements ActionListener, BABuildListene
         int points = (int) UnitUtil.getRawArmorPoints(getBattleArmor(), remainingTonnage);
         int maxArmor = Math.min(getBattleArmor().getMaximumArmorPoints(),
                 points + getBattleArmor().getOArmor(BattleArmor.LOC_TROOPER_1));
-        armorValueChanged(maxArmor);
+        armorFactorChanged(maxArmor);
         panArmor.removeListener(this);
         panArmor.setFromEntity(getBattleArmor());
         panArmor.addListener(this);
