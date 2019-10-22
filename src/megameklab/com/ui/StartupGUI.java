@@ -30,6 +30,7 @@ import megamek.common.util.EncodeControl;
 import megamek.common.util.ImageUtil;
 import megamek.common.util.MegaMekFile;
 import megameklab.com.MegaMekLab;
+import megameklab.com.ui.dialog.LoadingDialog;
 
 /**
  *
@@ -61,6 +62,17 @@ public class StartupGUI extends javax.swing.JPanel {
         startupScreenImages.put(1441, "data/images/misc/mml_start_spooky_fhd.jpg");
         startupScreenImages.put(1921, "data/images/misc/mml_start_spooky_uhd.jpg");
     }
+    
+    /** booleans for types */
+    public final static int T_MEK    = 0;
+    public final static int T_VEE    = 1;
+    public final static int T_SVEE   = 2;
+    public final static int T_PROTO  = 3;
+    public final static int T_BA     = 4;
+    public final static int T_PBI    = 5;
+    public final static int T_AERO   = 6;
+    public final static int T_DROP   = 7;
+    public final static int T_LCRAFT = 8;
     
     public StartupGUI() {
        
@@ -120,7 +132,7 @@ public class StartupGUI extends javax.swing.JPanel {
                 SkinSpecification.UIComponents.MainMenuButton.getComp(), true);
         btnNewMek.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                newMek();
+                newUnit(T_MEK);
             }
         });
         
@@ -128,7 +140,7 @@ public class StartupGUI extends javax.swing.JPanel {
                 SkinSpecification.UIComponents.MainMenuButton.getComp(), true);
         btnNewVee.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                newVee();
+                newUnit(T_VEE);
             }
         });
         
@@ -136,7 +148,7 @@ public class StartupGUI extends javax.swing.JPanel {
                 SkinSpecification.UIComponents.MainMenuButton.getComp(), true);
         btnNewSupportVee.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                newVee();
+                newUnit(T_SVEE);
             }
         });
         
@@ -144,7 +156,7 @@ public class StartupGUI extends javax.swing.JPanel {
                 SkinSpecification.UIComponents.MainMenuButton.getComp(), true);
         btnNewBA.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                newBA();
+                newUnit(T_BA);
             }
         });
         
@@ -152,14 +164,14 @@ public class StartupGUI extends javax.swing.JPanel {
                 SkinSpecification.UIComponents.MainMenuButton.getComp(), true);
         btnNewAero.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                newAero();
+                newUnit(T_AERO);
             }
         });
         btnNewDropper = new MegamekButton(resourceMap.getString("btnNewDropper.text"), //$NON-NLS-1$
                 SkinSpecification.UIComponents.MainMenuButton.getComp(), true);
         btnNewDropper.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                newDropper();
+                newUnit(T_DROP);
             }
         });
         
@@ -167,7 +179,7 @@ public class StartupGUI extends javax.swing.JPanel {
                 SkinSpecification.UIComponents.MainMenuButton.getComp(), true);
         btnNewLargeCraft.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                newLargeCraft();
+                newUnit(T_LCRAFT);
             }
         });
         
@@ -175,7 +187,7 @@ public class StartupGUI extends javax.swing.JPanel {
                 SkinSpecification.UIComponents.MainMenuButton.getComp(), true);
         btnNewProto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                newProto();
+                newUnit(T_PROTO);
             }
         });
         
@@ -183,7 +195,7 @@ public class StartupGUI extends javax.swing.JPanel {
                 SkinSpecification.UIComponents.MainMenuButton.getComp(), true);
         btnNewPbi.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                newPBI();
+                newUnit(T_PBI);
             }
         });
         
@@ -322,43 +334,9 @@ public class StartupGUI extends javax.swing.JPanel {
         }
      }
 
-    private void newMek() {
-        new megameklab.com.ui.Mek.MainUI();
-        frame.dispose();
-    }
-    
-    private void newVee() {
-        new megameklab.com.ui.Vehicle.MainUI();
-        frame.dispose();
-    }
-    
-    private void newBA() {
-        new megameklab.com.ui.BattleArmor.MainUI();
-        frame.dispose();
-    }
-    
-    private void newAero() {
-        new megameklab.com.ui.Aero.MainUI(false);
-        frame.dispose();
-    }
-    
-    private void newDropper() {
-        new megameklab.com.ui.aerospace.DropshipMainUI(false);
-        frame.dispose();
-    }
-    
-    private void newLargeCraft() {
-        new megameklab.com.ui.aerospace.AdvancedAeroUI(false);
-        frame.dispose();
-    }
-    
-    private void newProto() {
-        new megameklab.com.ui.protomek.ProtomekMainUI();
-        frame.dispose();
-    }
-    
-    private void newPBI() {
-        new megameklab.com.ui.Infantry.MainUI();
-        frame.dispose();
+    private void newUnit(int type) {
+        frame.setVisible(false);
+        LoadingDialog ld = new LoadingDialog(frame, type);
+        ld.setVisible(true);
     }
 }
