@@ -18,11 +18,8 @@ package megameklab.com.ui.Mek;
 
 import java.awt.BorderLayout;
 
-import javax.swing.BorderFactory;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 
 import megamek.common.*;
@@ -32,7 +29,6 @@ import megameklab.com.ui.Mek.tabs.EquipmentTab;
 import megameklab.com.ui.Mek.tabs.StructureTab;
 import megameklab.com.ui.tabs.FluffTab;
 import megameklab.com.ui.tabs.PreviewTab;
-import megameklab.com.util.MenuBarCreator;
 import megameklab.com.util.UnitUtil;
 
 public class MainUI extends MegaMekLabMainUI {
@@ -50,9 +46,6 @@ public class MainUI extends MegaMekLabMainUI {
     private BuildTab buildTab;
     private FluffTab fluffTab;
     private StatusBar statusbar;
-    JPanel masterPanel = new JPanel();
-    JScrollPane scroll = new JScrollPane();
-    private MenuBarCreator menubarcreator;
 
     public MainUI() {
         this(false, false);
@@ -62,19 +55,7 @@ public class MainUI extends MegaMekLabMainUI {
         super();
         createNewUnit(Entity.ETYPE_BIPED_MECH, primitive, industrial);
         setTitle(getEntity().getChassis() + " " + getEntity().getModel() + ".mtf");
-        menubarcreator = new MenuBarCreator(this);
-        setJMenuBar(menubarcreator);
-        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scroll.getVerticalScrollBar().setUnitIncrement(20);
-        scroll.setViewportView(masterPanel);
-        scroll.setBorder(BorderFactory.createEmptyBorder());
-        this.add(scroll);
-
-        reloadTabs();
-        setVisible(true);
-        repaint();
-        refreshAll();
+        finishSetup();
     }
 
     @Override

@@ -209,7 +209,7 @@ public class StartupGUI extends javax.swing.JPanel {
         
         // Use the current monitor so we don't "overflow" computers whose primary
         // displays aren't as large as their secondary displays.
-        DisplayMode currentMonitor = frame.getGraphicsConfiguration().getDevice().getDisplayMode();        
+        DisplayMode currentMonitor = frame.getGraphicsConfiguration().getDevice().getDisplayMode();
         FontMetrics metrics = btnNewDropper.getFontMetrics(btnNewDropper.getFont());
         int width = metrics.stringWidth(btnNewDropper.getText());
         int height = metrics.getHeight();

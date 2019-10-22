@@ -40,7 +40,6 @@ import megamek.common.logging.MMLogger;
 import megamek.common.preference.PreferenceManager;
 import megamek.common.util.MegaMekFile;
 import megameklab.com.ui.StartupGUI;
-import megameklab.com.ui.Mek.MainUI;
 
 public class MegaMekLab {
     public static final String VERSION = "0.47.1-SNAPSHOT";

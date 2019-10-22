@@ -19,11 +19,8 @@ package megameklab.com.ui.BattleArmor;
 import java.awt.BorderLayout;
 import java.awt.Color;
 
-import javax.swing.BorderFactory;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 
 import megamek.common.BattleArmor;
@@ -37,7 +34,6 @@ import megameklab.com.ui.BattleArmor.tabs.BuildTab;
 import megameklab.com.ui.BattleArmor.tabs.EquipmentTab;
 import megameklab.com.ui.BattleArmor.tabs.StructureTab;
 import megameklab.com.ui.tabs.FluffTab;
-import megameklab.com.util.MenuBarCreator;
 import megameklab.com.util.UnitUtil;
 
 public class MainUI extends MegaMekLabMainUI {
@@ -54,30 +50,13 @@ public class MainUI extends MegaMekLabMainUI {
     private EquipmentTab equipTab;
     private FluffTab fluffTab;
     private StatusBar statusbar;
-    JPanel masterPanel = new JPanel();
-    JScrollPane scroll = new JScrollPane();
-    private MenuBarCreator menubarcreator;
 
     public MainUI() {
 
         super();
-        // ConfigPane.setMinimumSize(new Dimension(300, 300));
         createNewUnit(Entity.ETYPE_BATTLEARMOR);
         setTitle(getEntity().getChassis() + " " + getEntity().getModel() + ".blk");
-        menubarcreator = new MenuBarCreator(this);
-        setJMenuBar(menubarcreator);
-        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scroll.getVerticalScrollBar().setUnitIncrement(20);
-        scroll.setViewportView(masterPanel);
-        scroll.setBorder(BorderFactory.createEmptyBorder());
-        this.add(scroll);
-
-        reloadTabs();
-        setVisible(true);
-        repaint();
-        refreshAll();
-
+        finishSetup();
     }
 
     @Override
