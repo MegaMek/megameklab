@@ -22,7 +22,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 
 import megamek.common.Entity;
@@ -55,17 +54,6 @@ public class LoadingDialog extends JDialog {
         loadScreenImages.put(0, "data/images/misc/mml_load_spooky_hd.jpg");
         loadScreenImages.put(1441, "data/images/misc/mml_load_spooky_fhd.jpg");
         loadScreenImages.put(1921, "data/images/misc/mml_load_spooky_uhd.jpg");
-    }
-   
-    /**
-     * 
-     * @param frame - the frame that created this which will be disposed once loading is complete
-     * @param type - the unit type to load the mainUI from, based on the types in StartupGUI.java
-     * @param primitive - is unit primitive
-     * @param industrial - is unit industrial
-     */
-    public LoadingDialog(JFrame frame, long type, boolean primitive, boolean industrial) {
-        this(frame, type, primitive, industrial, null);
     }
     
     /**
@@ -128,7 +116,6 @@ public class LoadingDialog extends JDialog {
                 newUI = new megameklab.com.ui.Infantry.MainUI();
             } else if(type == Entity.ETYPE_AERO) {
                 newUI = new megameklab.com.ui.Aero.MainUI(primitive);
-                return null; 
             } else if(type == Entity.ETYPE_DROPSHIP) {
                 newUI = new megameklab.com.ui.aerospace.DropshipMainUI(primitive);
             } else if(type == Entity.ETYPE_JUMPSHIP) {
@@ -146,7 +133,6 @@ public class LoadingDialog extends JDialog {
                 newUI.refreshAll();
             }
             return null;
-
         }
 
         /*

@@ -34,12 +34,23 @@ import java.util.TreeMap;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 
+import megamek.client.ui.swing.UnitLoadingDialog;
+import megamek.client.ui.swing.UnitSelectorDialog;
 import megamek.client.ui.swing.widget.MegamekButton;
 import megamek.client.ui.swing.widget.SkinSpecification;
 import megamek.client.ui.swing.widget.SkinXMLHandler;
+import megamek.common.Aero;
+import megamek.common.BattleArmor;
 import megamek.common.Configuration;
 import megamek.common.Entity;
+import megamek.common.FixedWingSupport;
+import megamek.common.GunEmplacement;
+import megamek.common.Infantry;
+import megamek.common.Mech;
+import megamek.common.Protomech;
+import megamek.common.Tank;
 import megamek.common.util.EncodeControl;
 import megamek.common.util.ImageUtil;
 import megamek.common.util.MegaMekFile;
@@ -59,6 +70,7 @@ public class StartupGUI extends javax.swing.JPanel {
     Image imgSplash;
     BufferedImage backgroundIcon;
     
+    private MegamekButton btnLoadUnit;
     private MegamekButton btnNewMek;
     private MegamekButton btnNewProto;
     private MegamekButton btnNewVee;
@@ -78,6 +90,8 @@ public class StartupGUI extends javax.swing.JPanel {
         startupScreenImages.put(1921, "data/images/misc/mml_start_spooky_uhd.jpg");
     }
     
+    private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Splash", new EncodeControl());
+    
     public StartupGUI() {       
         initComponents();
     }
@@ -87,14 +101,9 @@ public class StartupGUI extends javax.swing.JPanel {
                 true);
         
         frame = new JFrame("MegaMekLab");
-
         setBackground(Color.DARK_GRAY);
-
-        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Splash", new EncodeControl()); //$NON-NLS-1$
         
         imgSplash = getToolkit().getImage(startupScreenImages.floorEntry((int)MegaMekLab.calculateMaxScreenWidth()).getValue());
-      
-        
         // wait for splash image to load completely
         MediaTracker tracker = new MediaTracker(frame);
         tracker.addImage(imgSplash, 0);
@@ -129,6 +138,14 @@ public class StartupGUI extends javax.swing.JPanel {
         if (skinSpec.fontColors.size() > 0) {
             labVersion.setForeground(skinSpec.fontColors.get(0));
         }
+        
+        btnLoadUnit = new MegamekButton(resourceMap.getString("btnLoadUnit.text"), //$NON-NLS-1$
+                SkinSpecification.UIComponents.MainMenuButton.getComp(), true);
+        btnLoadUnit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loadUnit();
+            }
+        });
         
         btnNewMek = new MegamekButton(resourceMap.getString("btnNewMek.text"), //$NON-NLS-1$
                 SkinSpecification.UIComponents.MainMenuButton.getComp(), true);
@@ -230,6 +247,8 @@ public class StartupGUI extends javax.swing.JPanel {
             minButtonDim = textDim;
         }
         
+        btnLoadUnit.setMinimumSize(minButtonDim);
+        btnLoadUnit.setPreferredSize(minButtonDim);
         btnNewMek.setMinimumSize(minButtonDim);
         btnNewMek.setPreferredSize(minButtonDim);
         btnNewVee.setMinimumSize(minButtonDim);
@@ -262,7 +281,7 @@ public class StartupGUI extends javax.swing.JPanel {
         c.fill = GridBagConstraints.NONE;
         c.weightx = 0.0; c.weighty = 0.0;
         c.gridwidth = 1;
-        c.gridheight = 11;
+        c.gridheight = 12;
         add(panTitle, c);
         // Right Column
         c.insets = new Insets(2, 2, 2, 10);
@@ -272,6 +291,8 @@ public class StartupGUI extends javax.swing.JPanel {
         c.gridheight = 1;
         c.gridx = 1; c.gridy = 0;
         add(labVersion, c);
+        c.gridy++;
+        add(btnLoadUnit, c);
         c.gridy++;
         add(btnNewMek, c);
         c.gridy++;
@@ -343,8 +364,58 @@ public class StartupGUI extends javax.swing.JPanel {
      * @param type an <code>int</code> corresponding to the unit type to construct
      */
     private void newUnit(long type) {
+        newUnit(type, false, false, null);
+    }
+    
+    private void newUnit(long type, boolean primitive, boolean industrial, Entity en) {
         frame.setVisible(false);
-        LoadingDialog ld = new LoadingDialog(frame, type, false, false);
+        LoadingDialog ld = new LoadingDialog(frame, type, primitive, industrial, en);
         ld.setVisible(true);
+    }
+    
+    private void loadUnit() {
+        UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(frame);
+        unitLoadingDialog.setVisible(true);
+        UnitSelectorDialog viewer = new UnitSelectorDialog(frame, unitLoadingDialog, true);
+
+        Entity newUnit = viewer.getChosenEntity();
+        viewer.setVisible(false);
+        viewer.dispose();
+
+        if (null == newUnit) {
+            return;
+        }
+
+        if (UnitUtil.validateUnit(newUnit).trim().length() > 0) {
+            JOptionPane.showMessageDialog(frame, String.format(
+                    resourceMap.getString("message.invalidUnit.format"),
+                            UnitUtil.validateUnit(newUnit)));
+        }
+
+        if (newUnit.isSupportVehicle()) {
+            newUnit(Entity.ETYPE_SUPPORT_TANK, false, false, newUnit);
+        } else if (newUnit.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)) {
+            newUnit(Entity.ETYPE_DROPSHIP, ((Aero)newUnit).isPrimitive(), false, newUnit);
+        } else if (newUnit.hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
+            newUnit(Entity.ETYPE_JUMPSHIP, ((Aero)newUnit).isPrimitive(), false, newUnit);
+        } else if ((newUnit instanceof Aero)
+                && !(newUnit instanceof FixedWingSupport)) {
+            newUnit(Entity.ETYPE_AERO, ((Aero)newUnit).isPrimitive(), false, newUnit);
+        } else if (newUnit instanceof BattleArmor) {
+            newUnit(Entity.ETYPE_BATTLEARMOR, false, false, newUnit);
+        } else if (newUnit instanceof Infantry) {
+            newUnit(Entity.ETYPE_INFANTRY, false, false, newUnit);
+        } else if (newUnit instanceof Mech) {
+            newUnit(Entity.ETYPE_MECH, false, false, newUnit);
+        } else if (newUnit instanceof Protomech) {
+            newUnit(Entity.ETYPE_PROTOMECH, false, false, newUnit);
+        } else if ((newUnit instanceof Tank)
+                && !(newUnit instanceof GunEmplacement)) {
+            newUnit(Entity.ETYPE_TANK, false, false, newUnit);
+        } else {
+            JOptionPane.showMessageDialog(frame,
+                    resourceMap.getString("message.abortUnitLoad.text"));
+        }
+        return;
     }
 }
