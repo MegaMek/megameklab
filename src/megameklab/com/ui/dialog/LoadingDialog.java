@@ -22,10 +22,12 @@ import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 
 import megamek.common.Entity;
 import megameklab.com.MegaMekLab;
+import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.util.UnitUtil;
 
 /**
@@ -45,6 +47,7 @@ public class LoadingDialog extends JDialog {
     long type;
     boolean primitive;
     boolean industrial;
+    Entity newUnit;
     
     /** A map of resolution widths to file names for the startup screen */
     private final TreeMap<Integer, String> loadScreenImages = new TreeMap<>();
@@ -53,7 +56,7 @@ public class LoadingDialog extends JDialog {
         loadScreenImages.put(1441, "data/images/misc/mml_load_spooky_fhd.jpg");
         loadScreenImages.put(1921, "data/images/misc/mml_load_spooky_uhd.jpg");
     }
-    
+   
     /**
      * 
      * @param frame - the frame that created this which will be disposed once loading is complete
@@ -62,9 +65,22 @@ public class LoadingDialog extends JDialog {
      * @param industrial - is unit industrial
      */
     public LoadingDialog(JFrame frame, long type, boolean primitive, boolean industrial) {
+        this(frame, type, primitive, industrial, null);
+    }
+    
+    /**
+     * 
+     * @param frame - the frame that created this which will be disposed once loading is complete
+     * @param type - the unit type to load the mainUI from, based on the types in StartupGUI.java
+     * @param primitive - is unit primitive
+     * @param industrial - is unit industrial
+     * @param en - a specific <code>Entity</code> to load in rather than default
+     */
+    public LoadingDialog(JFrame frame, long type, boolean primitive, boolean industrial, Entity en) {
         super(frame, "MML Loading"); //$NON-NLS-1$
         this.frame = frame;
         this.type = type;
+        newUnit = en;
         
         setUndecorated(true);
 
@@ -99,34 +115,38 @@ public class LoadingDialog extends JDialog {
 
         @Override
         public Void doInBackground() {
+            MegaMekLabMainUI newUI = null;
             if(type == Entity.ETYPE_TANK) {
-                new megameklab.com.ui.Vehicle.MainUI();
-                return null;
+                newUI = new megameklab.com.ui.Vehicle.MainUI();
             } else if(type == Entity.ETYPE_SUPPORT_TANK) {
-                new megameklab.com.ui.supportvehicle.SVMainUI();
-                return null;
+                newUI = new megameklab.com.ui.supportvehicle.SVMainUI();
             } else if(type == Entity.ETYPE_PROTOMECH) {
-                new megameklab.com.ui.protomek.ProtomekMainUI();
-                return null;
+                newUI = new megameklab.com.ui.protomek.ProtomekMainUI();
             } else if(type == Entity.ETYPE_BATTLEARMOR) {
-                new megameklab.com.ui.BattleArmor.MainUI();
-                return null;
+                newUI = new megameklab.com.ui.BattleArmor.MainUI();
             } else if(type == Entity.ETYPE_INFANTRY) {
-                new megameklab.com.ui.Infantry.MainUI();
-                return null;
+                newUI = new megameklab.com.ui.Infantry.MainUI();
             } else if(type == Entity.ETYPE_AERO) {
-                new megameklab.com.ui.Aero.MainUI(primitive);
+                newUI = new megameklab.com.ui.Aero.MainUI(primitive);
                 return null; 
             } else if(type == Entity.ETYPE_DROPSHIP) {
-                new megameklab.com.ui.aerospace.DropshipMainUI(primitive);
-                return null;
+                newUI = new megameklab.com.ui.aerospace.DropshipMainUI(primitive);
             } else if(type == Entity.ETYPE_JUMPSHIP) {
-                new megameklab.com.ui.aerospace.AdvancedAeroUI(primitive);
-                return null;
+                newUI = new megameklab.com.ui.aerospace.AdvancedAeroUI(primitive);
             } else {
-                new megameklab.com.ui.Mek.MainUI(primitive, industrial);
-                return null;
+                newUI = new megameklab.com.ui.Mek.MainUI(primitive, industrial);
             }
+            setVisible(false);
+            //update if we had a specific unit to load
+            if(null != newUnit) {
+                UnitUtil.updateLoadedUnit(newUnit);
+                newUI.setEntity(newUnit);
+                newUI.reloadTabs();
+                newUI.repaint();
+                newUI.refreshAll();
+            }
+            return null;
+
         }
 
         /*
@@ -134,7 +154,6 @@ public class LoadingDialog extends JDialog {
          */
         @Override
         public void done() {
-            setVisible(false);
             frame.dispose();
         }
     }
