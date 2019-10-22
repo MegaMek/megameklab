@@ -39,11 +39,13 @@ import megamek.client.ui.swing.widget.MegamekButton;
 import megamek.client.ui.swing.widget.SkinSpecification;
 import megamek.client.ui.swing.widget.SkinXMLHandler;
 import megamek.common.Configuration;
+import megamek.common.Entity;
 import megamek.common.util.EncodeControl;
 import megamek.common.util.ImageUtil;
 import megamek.common.util.MegaMekFile;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.dialog.LoadingDialog;
+import megameklab.com.util.UnitUtil;
 
 /**
  * A startup splash screen for MegaMekLab
@@ -75,17 +77,6 @@ public class StartupGUI extends javax.swing.JPanel {
         startupScreenImages.put(1441, "data/images/misc/mml_start_spooky_fhd.jpg");
         startupScreenImages.put(1921, "data/images/misc/mml_start_spooky_uhd.jpg");
     }
-    
-    /** booleans for types to determine which MainUI to use */
-    public final static int T_MEK    = 0;
-    public final static int T_VEE    = 1;
-    public final static int T_SVEE   = 2;
-    public final static int T_PROTO  = 3;
-    public final static int T_BA     = 4;
-    public final static int T_PBI    = 5;
-    public final static int T_AERO   = 6;
-    public final static int T_DROP   = 7;
-    public final static int T_LCRAFT = 8;
     
     public StartupGUI() {       
         initComponents();
@@ -143,7 +134,7 @@ public class StartupGUI extends javax.swing.JPanel {
                 SkinSpecification.UIComponents.MainMenuButton.getComp(), true);
         btnNewMek.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                newUnit(T_MEK);
+                newUnit(Entity.ETYPE_MECH);
             }
         });
         
@@ -151,7 +142,7 @@ public class StartupGUI extends javax.swing.JPanel {
                 SkinSpecification.UIComponents.MainMenuButton.getComp(), true);
         btnNewVee.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                newUnit(T_VEE);
+                newUnit(Entity.ETYPE_TANK);
             }
         });
         
@@ -159,7 +150,7 @@ public class StartupGUI extends javax.swing.JPanel {
                 SkinSpecification.UIComponents.MainMenuButton.getComp(), true);
         btnNewSupportVee.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                newUnit(T_SVEE);
+                newUnit(Entity.ETYPE_SUPPORT_TANK);
             }
         });
         
@@ -167,7 +158,7 @@ public class StartupGUI extends javax.swing.JPanel {
                 SkinSpecification.UIComponents.MainMenuButton.getComp(), true);
         btnNewBA.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                newUnit(T_BA);
+                newUnit(Entity.ETYPE_BATTLEARMOR);
             }
         });
         
@@ -175,14 +166,14 @@ public class StartupGUI extends javax.swing.JPanel {
                 SkinSpecification.UIComponents.MainMenuButton.getComp(), true);
         btnNewAero.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                newUnit(T_AERO);
+                newUnit(Entity.ETYPE_AERO);
             }
         });
         btnNewDropper = new MegamekButton(resourceMap.getString("btnNewDropper.text"), //$NON-NLS-1$
                 SkinSpecification.UIComponents.MainMenuButton.getComp(), true);
         btnNewDropper.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                newUnit(T_DROP);
+                newUnit(Entity.ETYPE_DROPSHIP);
             }
         });
         
@@ -190,7 +181,7 @@ public class StartupGUI extends javax.swing.JPanel {
                 SkinSpecification.UIComponents.MainMenuButton.getComp(), true);
         btnNewLargeCraft.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                newUnit(T_LCRAFT);
+                newUnit(Entity.ETYPE_JUMPSHIP);
             }
         });
         
@@ -198,7 +189,7 @@ public class StartupGUI extends javax.swing.JPanel {
                 SkinSpecification.UIComponents.MainMenuButton.getComp(), true);
         btnNewProto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                newUnit(T_PROTO);
+                newUnit(Entity.ETYPE_PROTOMECH);
             }
         });
         
@@ -206,7 +197,7 @@ public class StartupGUI extends javax.swing.JPanel {
                 SkinSpecification.UIComponents.MainMenuButton.getComp(), true);
         btnNewPbi.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                newUnit(T_PBI);
+                newUnit(Entity.ETYPE_INFANTRY);
             }
         });
         
@@ -351,9 +342,9 @@ public class StartupGUI extends javax.swing.JPanel {
      * given unit type and get rid of the splash screen
      * @param type an <code>int</code> corresponding to the unit type to construct
      */
-    private void newUnit(int type) {
+    private void newUnit(long type) {
         frame.setVisible(false);
-        LoadingDialog ld = new LoadingDialog(frame, type);
+        LoadingDialog ld = new LoadingDialog(frame, type, false, false);
         ld.setVisible(true);
     }
 }

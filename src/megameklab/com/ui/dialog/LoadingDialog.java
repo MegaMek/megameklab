@@ -24,8 +24,9 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingWorker;
 
+import megamek.common.Entity;
 import megameklab.com.MegaMekLab;
-import megameklab.com.ui.StartupGUI;
+import megameklab.com.util.UnitUtil;
 
 /**
  * A loading dialog to display until the mainUI has loaded.
@@ -41,7 +42,9 @@ public class LoadingDialog extends JDialog {
     
     Task task;
     JFrame frame;
-    int type;
+    long type;
+    boolean primitive;
+    boolean industrial;
     
     /** A map of resolution widths to file names for the startup screen */
     private final TreeMap<Integer, String> loadScreenImages = new TreeMap<>();
@@ -50,13 +53,15 @@ public class LoadingDialog extends JDialog {
         loadScreenImages.put(1441, "data/images/misc/mml_load_spooky_fhd.jpg");
         loadScreenImages.put(1921, "data/images/misc/mml_load_spooky_uhd.jpg");
     }
-
+    
     /**
      * 
      * @param frame - the frame that created this which will be disposed once loading is complete
      * @param type - the unit type to load the mainUI from, based on the types in StartupGUI.java
+     * @param primitive - is unit primitive
+     * @param industrial - is unit industrial
      */
-    public LoadingDialog(JFrame frame, int type) {
+    public LoadingDialog(JFrame frame, long type, boolean primitive, boolean industrial) {
         super(frame, "MML Loading"); //$NON-NLS-1$
         this.frame = frame;
         this.type = type;
@@ -94,38 +99,34 @@ public class LoadingDialog extends JDialog {
 
         @Override
         public Void doInBackground() {
-            switch(type) {
-            case StartupGUI.T_VEE:
+            if(type == Entity.ETYPE_TANK) {
                 new megameklab.com.ui.Vehicle.MainUI();
                 return null;
-            case StartupGUI.T_SVEE:
+            } else if(type == Entity.ETYPE_SUPPORT_TANK) {
                 new megameklab.com.ui.supportvehicle.SVMainUI();
                 return null;
-            case StartupGUI.T_PROTO:
+            } else if(type == Entity.ETYPE_PROTOMECH) {
                 new megameklab.com.ui.protomek.ProtomekMainUI();
                 return null;
-            case StartupGUI.T_BA:
+            } else if(type == Entity.ETYPE_BATTLEARMOR) {
                 new megameklab.com.ui.BattleArmor.MainUI();
                 return null;
-            case StartupGUI.T_PBI:
+            } else if(type == Entity.ETYPE_INFANTRY) {
                 new megameklab.com.ui.Infantry.MainUI();
                 return null;
-            case StartupGUI.T_AERO:
-                new megameklab.com.ui.Aero.MainUI(false);
+            } else if(type == Entity.ETYPE_AERO) {
+                new megameklab.com.ui.Aero.MainUI(primitive);
+                return null; 
+            } else if(type == Entity.ETYPE_DROPSHIP) {
+                new megameklab.com.ui.aerospace.DropshipMainUI(primitive);
                 return null;
-            case StartupGUI.T_DROP:
-                new megameklab.com.ui.aerospace.DropshipMainUI(false);
+            } else if(type == Entity.ETYPE_JUMPSHIP) {
+                new megameklab.com.ui.aerospace.AdvancedAeroUI(primitive);
                 return null;
-            case StartupGUI.T_LCRAFT:
-                new megameklab.com.ui.aerospace.AdvancedAeroUI(false);
+            } else {
+                new megameklab.com.ui.Mek.MainUI(primitive, industrial);
                 return null;
-            case StartupGUI.T_MEK:
-            default:
-                new megameklab.com.ui.Mek.MainUI();
-                return null;
-                
             }
-            
         }
 
         /*

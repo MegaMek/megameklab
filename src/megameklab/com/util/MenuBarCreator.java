@@ -54,6 +54,8 @@ import megamek.common.templates.TROView;
 import megamek.common.util.EncodeControl;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.MegaMekLabMainUI;
+import megameklab.com.ui.StartupGUI;
+import megameklab.com.ui.dialog.LoadingDialog;
 
 public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
 
@@ -847,68 +849,57 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
     }
 
     private void jMenuLoadVehicle() {
-        new megameklab.com.ui.Vehicle.MainUI();
-        parentFrame.dispose();
+        newUnit(Entity.ETYPE_TANK, false, false);
     }
 
     private void jMenuLoadSupportVehicle() {
-        new megameklab.com.ui.supportvehicle.SVMainUI();
-        parentFrame.dispose();
+        newUnit(Entity.ETYPE_SUPPORT_TANK, false, false);
     }
 
     private void jMenuLoadBattleArmor() {
-        new megameklab.com.ui.BattleArmor.MainUI();
-        parentFrame.dispose();
+        newUnit(Entity.ETYPE_BATTLEARMOR, false, false);
     }
 
     private void jMenuLoadMech() {
-        new megameklab.com.ui.Mek.MainUI(false, false);
-        parentFrame.dispose();
+        newUnit(Entity.ETYPE_MECH, false, false);
     }
     
     private void jMenuLoadPrimitiveMech() {
-        new megameklab.com.ui.Mek.MainUI(true, false);
-        parentFrame.dispose();
+        newUnit(Entity.ETYPE_MECH, true, false);
     }
 
     private void jMenuLoadAero() {
-        new megameklab.com.ui.Aero.MainUI(false);
-        parentFrame.dispose();
+        newUnit(Entity.ETYPE_AERO, false, false);
     }
 
     private void jMenuLoadPrimitiveAero() {
-        new megameklab.com.ui.Aero.MainUI(true);
-        parentFrame.dispose();
+        newUnit(Entity.ETYPE_AERO, true, false);
+
     }
     
     private void jMenuLoadDropship() {
-        new megameklab.com.ui.aerospace.DropshipMainUI(false);
-        parentFrame.dispose();
+        newUnit(Entity.ETYPE_DROPSHIP, false, false);
     }
 
     private void jMenuLoadPrimitiveDropship() {
-        new megameklab.com.ui.aerospace.DropshipMainUI(true);
-        parentFrame.dispose();
+        newUnit(Entity.ETYPE_DROPSHIP, true, false);
     }
     
     private void jMenuLoadAdvAero() {
-        new megameklab.com.ui.aerospace.AdvancedAeroUI(false);
-        parentFrame.dispose();
+        newUnit(Entity.ETYPE_JUMPSHIP, false, false);
     }
 
     private void jMenuLoadPrimitiveJumpship() {
-        new megameklab.com.ui.aerospace.AdvancedAeroUI(true);
-        parentFrame.dispose();
+        newUnit(Entity.ETYPE_JUMPSHIP, true, false);
     }
 
     private void jMenuLoadInfantry() {
-    	new megameklab.com.ui.Infantry.MainUI();
-        parentFrame.dispose();
+        newUnit(Entity.ETYPE_INFANTRY, false, false);
     }
 
     private void jMenuLoadProtomech() {
-        new megameklab.com.ui.protomek.ProtomekMainUI();
-        parentFrame.dispose();
+        newUnit(Entity.ETYPE_PROTOMECH, false, false);
+
     }
 
     private void jMenuPrintCurrentUnit() {
@@ -1299,6 +1290,17 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
 
     private void reload() {
         parentFrame.reloadTabs();
+    }
+    
+    /**
+     * This function will create a new mainUI frame (via the loading dialog) for the 
+     * given unit type and get rid of the existing frame
+     * @param type an <code>int</code> corresponding to the unit type to construct
+     */
+    private void newUnit(long type, boolean primitive, boolean industrial) {
+        parentFrame.setVisible(false);
+        LoadingDialog ld = new LoadingDialog(parentFrame, type, primitive, industrial);
+        ld.setVisible(true);
     }
 
     @Override
