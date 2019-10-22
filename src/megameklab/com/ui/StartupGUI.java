@@ -1,3 +1,16 @@
+/*
+ * MegaMekLab - Copyright (C) 2019 - The MegaMek Team
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ */
 package megameklab.com.ui;
 
 import java.awt.BorderLayout;
@@ -33,7 +46,7 @@ import megameklab.com.MegaMekLab;
 import megameklab.com.ui.dialog.LoadingDialog;
 
 /**
- *
+ * A startup splash screen for MegaMekLab
  * @author Taharqa
  */
 public class StartupGUI extends javax.swing.JPanel {
@@ -63,7 +76,7 @@ public class StartupGUI extends javax.swing.JPanel {
         startupScreenImages.put(1921, "data/images/misc/mml_start_spooky_uhd.jpg");
     }
     
-    /** booleans for types */
+    /** booleans for types to determine which MainUI to use */
     public final static int T_MEK    = 0;
     public final static int T_VEE    = 1;
     public final static int T_SVEE   = 2;
@@ -74,13 +87,11 @@ public class StartupGUI extends javax.swing.JPanel {
     public final static int T_DROP   = 7;
     public final static int T_LCRAFT = 8;
     
-    public StartupGUI() {
-       
+    public StartupGUI() {       
         initComponents();
     }
 
     private void initComponents() {
-
         SkinSpecification skinSpec = SkinXMLHandler.getSkin(SkinSpecification.UIComponents.MainMenuBorder.getComp(),
                 true);
         
@@ -303,6 +314,7 @@ public class StartupGUI extends javax.swing.JPanel {
         });
         frame.validate();
         frame.pack();
+        
         // Determine the location of the window
         int w = frame.getSize().width;
         int h = frame.getSize().height;
@@ -334,6 +346,11 @@ public class StartupGUI extends javax.swing.JPanel {
         }
      }
 
+    /**
+     * This function will create a new mainUI frame (via the loading dialog) for the 
+     * given unit type and get rid of the splash screen
+     * @param type an <code>int</code> corresponding to the unit type to construct
+     */
     private void newUnit(int type) {
         frame.setVisible(false);
         LoadingDialog ld = new LoadingDialog(frame, type);

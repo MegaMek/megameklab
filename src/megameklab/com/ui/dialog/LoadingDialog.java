@@ -1,22 +1,16 @@
 /*
- * MegaMek - Copyright (C) 2019 MegaMek Team
+ * MegaMekLab - Copyright (C) 2019 - The MegaMek Team
  *
- *  This program is free software; you can redistribute it and/or modify it
- *  under the terms of the GNU General Public License as published by the Free
- *  Software Foundation; either version 2 of the License, or (at your option)
- *  any later version.
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
  *
- *  This program is distributed in the hope that it will be useful, but
- *  WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- *  or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
- *  for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  */
-
-/*
- * My own version of a UnitLoadingDialog using a progress bar
- *  based on the one in MegaMek
- */
-
 package megameklab.com.ui.dialog;
 
 import java.awt.BorderLayout;
@@ -33,7 +27,11 @@ import javax.swing.SwingWorker;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.StartupGUI;
 
-
+/**
+ * A loading dialog to display until the mainUI has loaded.
+ * @author Taharqa
+ *
+ */
 public class LoadingDialog extends JDialog {
 
     /**
@@ -53,6 +51,11 @@ public class LoadingDialog extends JDialog {
         loadScreenImages.put(1921, "data/images/misc/mml_load_spooky_uhd.jpg");
     }
 
+    /**
+     * 
+     * @param frame - the frame that created this which will be disposed once loading is complete
+     * @param type - the unit type to load the mainUI from, based on the types in StartupGUI.java
+     */
     public LoadingDialog(JFrame frame, int type) {
         super(frame, "MML Loading"); //$NON-NLS-1$
         this.frame = frame;
