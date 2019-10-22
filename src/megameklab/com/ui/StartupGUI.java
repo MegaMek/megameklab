@@ -45,6 +45,7 @@ import megamek.common.Aero;
 import megamek.common.BattleArmor;
 import megamek.common.Configuration;
 import megamek.common.Entity;
+import megamek.common.EquipmentType;
 import megamek.common.FixedWingSupport;
 import megamek.common.GunEmplacement;
 import megamek.common.Infantry;
@@ -374,6 +375,7 @@ public class StartupGUI extends javax.swing.JPanel {
     }
     
     private void loadUnit() {
+        EquipmentType.initializeTypes();
         UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(frame);
         unitLoadingDialog.setVisible(true);
         UnitSelectorDialog viewer = new UnitSelectorDialog(frame, unitLoadingDialog, true);

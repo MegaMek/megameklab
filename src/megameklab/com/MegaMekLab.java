@@ -32,9 +32,7 @@ import java.util.Locale;
 
 import megamek.MegaMek;
 import megamek.common.Configuration;
-import megamek.common.QuirksHandler;
 import megamek.common.logging.DefaultMmLogger;
-import megamek.common.logging.LogConfig;
 import megamek.common.logging.LogLevel;
 import megamek.common.logging.MMLogger;
 import megamek.common.preference.PreferenceManager;
