@@ -49,7 +49,6 @@ public class SVMainUI extends MegaMekLabMainUI {
         createNewUnit(Entity.ETYPE_SUPPORT_TANK, false, false);
         setTitle(getEntity().getChassis() + " " + getEntity().getModel() + ".blk");
         finishSetup();
-        MechSummaryCache.getInstance();
     }
 
     @Override

@@ -64,7 +64,6 @@ public class MainUI extends MegaMekLabMainUI {
         createNewUnit(Entity.ETYPE_TANK, false, false);
         setTitle(getEntity().getChassis() + " " + getEntity().getModel() + ".blk");
         finishSetup();
-        MechSummaryCache.getInstance();
     }
 
     @Override

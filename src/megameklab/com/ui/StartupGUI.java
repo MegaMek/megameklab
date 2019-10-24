@@ -71,18 +71,6 @@ public class StartupGUI extends javax.swing.JPanel {
     Image imgSplash;
     BufferedImage backgroundIcon;
     
-    private MegamekButton btnLoadUnit;
-    private MegamekButton btnNewMek;
-    private MegamekButton btnNewProto;
-    private MegamekButton btnNewVee;
-    private MegamekButton btnNewSupportVee;
-    private MegamekButton btnNewAero;
-    private MegamekButton btnNewDropper;
-    private MegamekButton btnNewLargeCraft;
-    private MegamekButton btnNewBA;
-    private MegamekButton btnNewPbi;
-    private MegamekButton btnQuit;
-    
     /** A map of resolution widths to file names for the startup screen */
     private final TreeMap<Integer, String> startupScreenImages = new TreeMap<>();
     {
@@ -140,7 +128,7 @@ public class StartupGUI extends javax.swing.JPanel {
             labVersion.setForeground(skinSpec.fontColors.get(0));
         }
         
-        btnLoadUnit = new MegamekButton(resourceMap.getString("btnLoadUnit.text"), //$NON-NLS-1$
+        MegamekButton btnLoadUnit = new MegamekButton(resourceMap.getString("btnLoadUnit.text"), //$NON-NLS-1$
                 SkinSpecification.UIComponents.MainMenuButton.getComp(), true);
         btnLoadUnit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -148,7 +136,7 @@ public class StartupGUI extends javax.swing.JPanel {
             }
         });
         
-        btnNewMek = new MegamekButton(resourceMap.getString("btnNewMek.text"), //$NON-NLS-1$
+        MegamekButton btnNewMek = new MegamekButton(resourceMap.getString("btnNewMek.text"), //$NON-NLS-1$
                 SkinSpecification.UIComponents.MainMenuButton.getComp(), true);
         btnNewMek.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -156,7 +144,7 @@ public class StartupGUI extends javax.swing.JPanel {
             }
         });
         
-        btnNewVee = new MegamekButton(resourceMap.getString("btnNewVee.text"), //$NON-NLS-1$
+        MegamekButton btnNewVee = new MegamekButton(resourceMap.getString("btnNewVee.text"), //$NON-NLS-1$
                 SkinSpecification.UIComponents.MainMenuButton.getComp(), true);
         btnNewVee.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -164,7 +152,7 @@ public class StartupGUI extends javax.swing.JPanel {
             }
         });
         
-        btnNewSupportVee = new MegamekButton(resourceMap.getString("btnNewSupportVee.text"), //$NON-NLS-1$
+        MegamekButton btnNewSupportVee = new MegamekButton(resourceMap.getString("btnNewSupportVee.text"), //$NON-NLS-1$
                 SkinSpecification.UIComponents.MainMenuButton.getComp(), true);
         btnNewSupportVee.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -172,7 +160,7 @@ public class StartupGUI extends javax.swing.JPanel {
             }
         });
         
-        btnNewBA = new MegamekButton(resourceMap.getString("btnNewBA.text"), //$NON-NLS-1$
+        MegamekButton btnNewBA = new MegamekButton(resourceMap.getString("btnNewBA.text"), //$NON-NLS-1$
                 SkinSpecification.UIComponents.MainMenuButton.getComp(), true);
         btnNewBA.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -180,14 +168,14 @@ public class StartupGUI extends javax.swing.JPanel {
             }
         });
         
-        btnNewAero = new MegamekButton(resourceMap.getString("btnNewAero.text"), //$NON-NLS-1$
+        MegamekButton btnNewAero = new MegamekButton(resourceMap.getString("btnNewAero.text"), //$NON-NLS-1$
                 SkinSpecification.UIComponents.MainMenuButton.getComp(), true);
         btnNewAero.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 newUnit(Entity.ETYPE_AERO);
             }
         });
-        btnNewDropper = new MegamekButton(resourceMap.getString("btnNewDropper.text"), //$NON-NLS-1$
+        MegamekButton btnNewDropper = new MegamekButton(resourceMap.getString("btnNewDropper.text"), //$NON-NLS-1$
                 SkinSpecification.UIComponents.MainMenuButton.getComp(), true);
         btnNewDropper.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -195,7 +183,7 @@ public class StartupGUI extends javax.swing.JPanel {
             }
         });
         
-        btnNewLargeCraft = new MegamekButton(resourceMap.getString("btnNewLargeCraft.text"), //$NON-NLS-1$
+        MegamekButton btnNewLargeCraft = new MegamekButton(resourceMap.getString("btnNewLargeCraft.text"), //$NON-NLS-1$
                 SkinSpecification.UIComponents.MainMenuButton.getComp(), true);
         btnNewLargeCraft.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -203,7 +191,7 @@ public class StartupGUI extends javax.swing.JPanel {
             }
         });
         
-        btnNewProto = new MegamekButton(resourceMap.getString("btnNewProto.text"), //$NON-NLS-1$
+        MegamekButton btnNewProto = new MegamekButton(resourceMap.getString("btnNewProto.text"), //$NON-NLS-1$
                 SkinSpecification.UIComponents.MainMenuButton.getComp(), true);
         btnNewProto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -211,7 +199,7 @@ public class StartupGUI extends javax.swing.JPanel {
             }
         });
         
-        btnNewPbi = new MegamekButton(resourceMap.getString("btnNewPbi.text"), //$NON-NLS-1$
+        MegamekButton btnNewPbi = new MegamekButton(resourceMap.getString("btnNewPbi.text"), //$NON-NLS-1$
                 SkinSpecification.UIComponents.MainMenuButton.getComp(), true);
         btnNewPbi.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -219,7 +207,7 @@ public class StartupGUI extends javax.swing.JPanel {
             }
         });
         
-        btnQuit = new MegamekButton(resourceMap.getString("btnQuit.text"), //$NON-NLS-1$
+        MegamekButton btnQuit = new MegamekButton(resourceMap.getString("btnQuit.text"), //$NON-NLS-1$
                 SkinSpecification.UIComponents.MainMenuButton.getComp(), true);
         btnQuit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -414,10 +402,7 @@ public class StartupGUI extends javax.swing.JPanel {
         } else if ((newUnit instanceof Tank)
                 && !(newUnit instanceof GunEmplacement)) {
             newUnit(Entity.ETYPE_TANK, false, false, newUnit);
-        } else {
-            JOptionPane.showMessageDialog(frame,
-                    resourceMap.getString("message.abortUnitLoad.text"));
-        }
+        } 
         return;
     }
 }
