@@ -54,6 +54,7 @@ import megamek.common.templates.TROView;
 import megamek.common.util.EncodeControl;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.MegaMekLabMainUI;
+import megameklab.com.ui.dialog.LoadingDialog;
 
 public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
 
@@ -847,68 +848,57 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
     }
 
     private void jMenuLoadVehicle() {
-        new megameklab.com.ui.Vehicle.MainUI();
-        parentFrame.dispose();
+        newUnit(Entity.ETYPE_TANK, false, false, null);
     }
 
     private void jMenuLoadSupportVehicle() {
-        new megameklab.com.ui.supportvehicle.SVMainUI();
-        parentFrame.dispose();
+        newUnit(Entity.ETYPE_SUPPORT_TANK, false, false, null);
     }
 
     private void jMenuLoadBattleArmor() {
-        new megameklab.com.ui.BattleArmor.MainUI();
-        parentFrame.dispose();
+        newUnit(Entity.ETYPE_BATTLEARMOR, false, false, null);
     }
 
     private void jMenuLoadMech() {
-        new megameklab.com.ui.Mek.MainUI(false, false);
-        parentFrame.dispose();
+        newUnit(Entity.ETYPE_MECH, false, false, null);
     }
     
     private void jMenuLoadPrimitiveMech() {
-        new megameklab.com.ui.Mek.MainUI(true, false);
-        parentFrame.dispose();
+        newUnit(Entity.ETYPE_MECH, true, false, null);
     }
 
     private void jMenuLoadAero() {
-        new megameklab.com.ui.Aero.MainUI(false);
-        parentFrame.dispose();
+        newUnit(Entity.ETYPE_AERO, false, false, null);
     }
 
     private void jMenuLoadPrimitiveAero() {
-        new megameklab.com.ui.Aero.MainUI(true);
-        parentFrame.dispose();
+        newUnit(Entity.ETYPE_AERO, true, false, null);
+
     }
     
     private void jMenuLoadDropship() {
-        new megameklab.com.ui.aerospace.DropshipMainUI(false);
-        parentFrame.dispose();
+        newUnit(Entity.ETYPE_DROPSHIP, false, false, null);
     }
 
     private void jMenuLoadPrimitiveDropship() {
-        new megameklab.com.ui.aerospace.DropshipMainUI(true);
-        parentFrame.dispose();
+        newUnit(Entity.ETYPE_DROPSHIP, true, false, null);
     }
     
     private void jMenuLoadAdvAero() {
-        new megameklab.com.ui.aerospace.AdvancedAeroUI(false);
-        parentFrame.dispose();
+        newUnit(Entity.ETYPE_JUMPSHIP, false, false, null);
     }
 
     private void jMenuLoadPrimitiveJumpship() {
-        new megameklab.com.ui.aerospace.AdvancedAeroUI(true);
-        parentFrame.dispose();
+        newUnit(Entity.ETYPE_JUMPSHIP, true, false, null);
     }
 
     private void jMenuLoadInfantry() {
-    	new megameklab.com.ui.Infantry.MainUI();
-        parentFrame.dispose();
+        newUnit(Entity.ETYPE_INFANTRY, false, false, null);
     }
 
     private void jMenuLoadProtomech() {
-        new megameklab.com.ui.protomek.ProtomekMainUI();
-        parentFrame.dispose();
+        newUnit(Entity.ETYPE_PROTOMECH, false, false, null);
+
     }
 
     private void jMenuPrintCurrentUnit() {
@@ -1139,39 +1129,30 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         }
 
         if (newUnit.getEntityType() != parentFrame.getEntity().getEntityType()) {
-            MegaMekLabMainUI newUI = null;
             if (newUnit.isSupportVehicle()) {
-                newUI = new megameklab.com.ui.supportvehicle.SVMainUI();
+                newUnit(Entity.ETYPE_SUPPORT_TANK, false, false, newUnit);
             } else if (newUnit.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)) {
-                newUI = new megameklab.com.ui.aerospace.DropshipMainUI(((Aero)newUnit).isPrimitive());
+                newUnit(Entity.ETYPE_DROPSHIP, ((Aero)newUnit).isPrimitive(), false, newUnit);
             } else if (newUnit.hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
-                newUI = new megameklab.com.ui.aerospace.AdvancedAeroUI(((Aero)newUnit).isPrimitive());
-            } else if (newUnit.hasETypeFlag(Entity.ETYPE_AERO)
-                    && !newUnit.hasETypeFlag(Entity.ETYPE_FIXED_WING_SUPPORT)) {
-                newUI = new megameklab.com.ui.Aero.MainUI(((Aero)newUnit).isPrimitive());
-            } else if (newUnit.hasETypeFlag(Entity.ETYPE_BATTLEARMOR)) {
-                newUI = new megameklab.com.ui.BattleArmor.MainUI();
-            } else if (newUnit.hasETypeFlag(Entity.ETYPE_INFANTRY)) {
-                newUI = new megameklab.com.ui.Infantry.MainUI();
-            } else if (newUnit.hasETypeFlag(Entity.ETYPE_PROTOMECH)) {
-                newUI = new megameklab.com.ui.protomek.ProtomekMainUI();
-            } else if (newUnit.hasETypeFlag(Entity.ETYPE_MECH)) {
-                newUI = new megameklab.com.ui.Mek.MainUI();
-            } else if (newUnit.hasETypeFlag(Entity.ETYPE_TANK)
-                    && !newUnit.hasETypeFlag(Entity.ETYPE_GUN_EMPLACEMENT)) {
-                newUI = new megameklab.com.ui.Vehicle.MainUI();
-            }
-            if (null == newUI) {
+                newUnit(Entity.ETYPE_JUMPSHIP, ((Aero)newUnit).isPrimitive(), false, newUnit);
+            } else if ((newUnit instanceof Aero)
+                    && !(newUnit instanceof FixedWingSupport)) {
+                newUnit(Entity.ETYPE_AERO, ((Aero)newUnit).isPrimitive(), false, newUnit);
+            } else if (newUnit instanceof BattleArmor) {
+                newUnit(Entity.ETYPE_BATTLEARMOR, false, false, newUnit);
+            } else if (newUnit instanceof Infantry) {
+                newUnit(Entity.ETYPE_INFANTRY, false, false, newUnit);
+            } else if (newUnit instanceof Mech) {
+                newUnit(Entity.ETYPE_MECH, false, false, newUnit);
+            } else if (newUnit instanceof Protomech) {
+                newUnit(Entity.ETYPE_PROTOMECH, false, false, newUnit);
+            } else if ((newUnit instanceof Tank)
+                    && !(newUnit instanceof GunEmplacement)) {
+                newUnit(Entity.ETYPE_TANK, false, false, newUnit);
+            } else {
                 JOptionPane.showMessageDialog(parentFrame,
                         resourceMap.getString("message.abortUnitLoad.text"));
-                return;
             }
-            parentFrame.dispose();
-            UnitUtil.updateLoadedUnit(newUnit);
-            newUI.setEntity(newUnit);
-            newUI.reloadTabs();
-            newUI.repaint();
-            newUI.refreshAll();
             return;
         }
 
@@ -1244,39 +1225,30 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             }
 
             if (tempEntity.getEntityType() != parentFrame.getEntity().getEntityType()) {
-                MegaMekLabMainUI newUI = null;
                 if (tempEntity.isSupportVehicle()) {
-                    newUI = new megameklab.com.ui.supportvehicle.SVMainUI();
+                    newUnit(Entity.ETYPE_SUPPORT_TANK, false, false, tempEntity);
                 } else if (tempEntity.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)) {
-                    newUI = new megameklab.com.ui.aerospace.DropshipMainUI(((Aero)tempEntity).isPrimitive());
+                    newUnit(Entity.ETYPE_DROPSHIP, ((Aero)tempEntity).isPrimitive(), false, tempEntity);
                 } else if (tempEntity.hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
-                    newUI = new megameklab.com.ui.aerospace.AdvancedAeroUI(((Aero)tempEntity).isPrimitive());
+                    newUnit(Entity.ETYPE_JUMPSHIP, ((Aero)tempEntity).isPrimitive(), false, tempEntity);
                 } else if ((tempEntity instanceof Aero)
                         && !(tempEntity instanceof FixedWingSupport)) {
-                    newUI = new megameklab.com.ui.Aero.MainUI(((Aero)tempEntity).isPrimitive());
+                    newUnit(Entity.ETYPE_AERO, ((Aero)tempEntity).isPrimitive(), false, tempEntity);
                 } else if (tempEntity instanceof BattleArmor) {
-                    newUI = new megameklab.com.ui.BattleArmor.MainUI();
+                    newUnit(Entity.ETYPE_BATTLEARMOR, false, false, tempEntity);
                 } else if (tempEntity instanceof Infantry) {
-                    newUI = new megameklab.com.ui.Infantry.MainUI();
+                    newUnit(Entity.ETYPE_INFANTRY, false, false, tempEntity);
                 } else if (tempEntity instanceof Mech) {
-                    newUI = new megameklab.com.ui.Mek.MainUI();
+                    newUnit(Entity.ETYPE_MECH, false, false, tempEntity);
                 } else if (tempEntity instanceof Protomech) {
-                    newUI = new megameklab.com.ui.protomek.ProtomekMainUI();
+                    newUnit(Entity.ETYPE_PROTOMECH, false, false, tempEntity);
                 } else if ((tempEntity instanceof Tank)
                         && !(tempEntity instanceof GunEmplacement)) {
-                    newUI = new megameklab.com.ui.Vehicle.MainUI();
-                }
-                if (null == newUI) {
+                    newUnit(Entity.ETYPE_TANK, false, false, tempEntity);
+                } else {
                     JOptionPane.showMessageDialog(parentFrame,
                             resourceMap.getString("message.abortUnitLoad.text"));
-                    return;
                 }
-                parentFrame.dispose();
-                UnitUtil.updateLoadedUnit(tempEntity);
-                newUI.setEntity(tempEntity);
-                newUI.reloadTabs();
-                newUI.repaint();
-                newUI.refreshAll();
                 return;
             }
             parentFrame.setEntity(tempEntity);
@@ -1299,6 +1271,17 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
 
     private void reload() {
         parentFrame.reloadTabs();
+    }
+    
+    /**
+     * This function will create a new mainUI frame (via the loading dialog) for the 
+     * given unit type and get rid of the existing frame
+     * @param type an <code>int</code> corresponding to the unit type to construct
+     */
+    private void newUnit(long type, boolean primitive, boolean industrial, Entity en) {
+        parentFrame.setVisible(false);
+        LoadingDialog ld = new LoadingDialog(parentFrame, type, primitive, industrial, en);
+        ld.setVisible(true);
     }
 
     @Override

@@ -108,7 +108,7 @@ public class UnitUtil {
     public static int TECH_ADVANCED = 2;
     public static int TECH_EXPERIMENTAL = 3;
     public static int TECH_UNOFFICAL = 4;
-
+    
     private static Font rsFont = null;
     private static Font rsBoldFont = null;
 

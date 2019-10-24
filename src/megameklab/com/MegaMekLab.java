@@ -16,6 +16,11 @@
 
 package megameklab.com;
 
+import java.awt.Font;
+import java.awt.FontFormatException;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.awt.Rectangle;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -25,161 +30,61 @@ import java.text.NumberFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import javax.swing.UIManager;
+
 import megamek.MegaMek;
-import megamek.common.QuirksHandler;
+import megamek.common.Configuration;
 import megamek.common.logging.DefaultMmLogger;
-import megamek.common.logging.LogConfig;
 import megamek.common.logging.LogLevel;
 import megamek.common.logging.MMLogger;
 import megamek.common.preference.PreferenceManager;
-import megameklab.com.ui.Mek.MainUI;
+import megamek.common.util.MegaMekFile;
+import megameklab.com.ui.StartupGUI;
+import megameklab.com.util.CConfig;
 
 public class MegaMekLab {
     public static final String VERSION = "0.47.1-SNAPSHOT";
 
+    private static final String FILENAME_BT_CLASSIC_FONT = "btclassic/BTLogo_old.ttf"; //$NON-NLS-1$
+
     private static MMLogger logger = null;
 
     public static void main(String[] args) {
-        final String METHOD_NAME = "main(String[])";
-        
     	System.setProperty("apple.laf.useScreenMenuBar", "true");
         System.setProperty("com.apple.mrj.application.apple.menu.about.name","MegaMekLab");
-
-        String logFileName = "./logs/megameklablog.txt";
-        Locale.setDefault(Locale.US);
-
-        //Taharqa: I am not sure why this is here, so I am commenting it
-        //out for awhile because I suspect it might be responsible for the
-        //partial unit.cache problem in MHQ.
-        //new File("./data/mechfiles/units.cache").delete();
-
-        boolean logs = true;
-        boolean vehicle = false;
-        boolean battlearmor = false;
-
-        for (String arg : args) {
-            if (arg.equalsIgnoreCase("-vehicle")) {
-                vehicle = true;
-            }
-
-            if (arg.equalsIgnoreCase("-battlearmor")) {
-                battlearmor = true;
-            }
-
-            if (arg.equalsIgnoreCase("-nolog")) {
-                logs = false;
-            }
+        redirectOutput();
+        //add classic battletech font
+        try {
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            File btFontFile = new MegaMekFile(Configuration.fontsDir(), FILENAME_BT_CLASSIC_FONT).getFile();
+            Font btFont = Font.createFont(Font.TRUETYPE_FONT, btFontFile);
+            System.out.println("Loaded Font: " + btFont.getName());
+            ge.registerFont(btFont);
+        } catch (IOException | FontFormatException e) {
+            System.out.println("Error Registering BT Classic Font! Error: " + e.getMessage());
         }
-
-        setupLogging(logs, logFileName);
-        showInfo();
-        
-        if (vehicle) {
-            Runtime runtime = Runtime.getRuntime();
-
-            getLogger().log(MegaMekLab.class, METHOD_NAME, LogLevel.INFO,
-                            "Memory Allocated [" +
-                            (runtime.maxMemory() / 1000) + "]");
-            // Need at least 200m to run MegaMekLab
-            if (runtime.maxMemory() < 200000000) {
-                try {
-                    String[] call =
-                        { "java", "-Xmx256m", "-splash:data/images/splash/megameklabsplashvehicle.jpg", "-jar", "MegaMekLab.jar", "-vehicle" };
-
-                    if (!logs) {
-                        call = new String[]
-                            { "java", "-Xmx256m", "-splash:data/images/splash/megameklabsplashvehicle.jpg", "-jar", "MegaMekLab.jar", "-vehicle", "-nolog" };
-                    }
-                    runtime.exec(call);
-                    System.exit(0);
-                } catch (Exception ex) {
-                    getLogger().error(MegaMekLab.class, METHOD_NAME, ex);
-                }
-            }
-
-            new megameklab.com.ui.Vehicle.MainUI();
-        } else if (battlearmor) {
-            Runtime runtime = Runtime.getRuntime();
-
-            getLogger().log(MegaMekLab.class, METHOD_NAME, LogLevel.INFO,
-                            "Memory Allocated [" +
-                            (runtime.maxMemory() / 1000) + "]");
-            // Need at least 200m to run MegaMekLab
-            if (runtime.maxMemory() < 200000000) {
-                try {
-                    String[] call =
-                        { "java", "-Xmx256m", "-splash:data/images/splash/megameklabsplashbattlearmor.jpg", "-jar", "MegaMekLab.jar", "-battlearmor" };
-
-                    if (!logs) {
-                        call = new String[]
-                            { "java", "-Xmx256m", "-splash:data/images/splash/megameklabsplashbattlearmor.jpg", "-jar", "MegaMekLab.jar", "-battlearmor", "-nolog" };
-                    }
-                    runtime.exec(call);
-                    System.exit(0);
-                } catch (Exception ex) {
-                    getLogger().error(MegaMekLab.class, METHOD_NAME, ex);
-                }
-            }
-
-            new megameklab.com.ui.BattleArmor.MainUI();
-        } else {
-
-            Runtime runtime = Runtime.getRuntime();
-
-            getLogger().log(MegaMekLab.class, METHOD_NAME, LogLevel.INFO,
-                            "Memory Allocated [" +
-                            (runtime.maxMemory() / 1000) + "]");
-            // Need at least 200m to run MegaMekLab
-            if (runtime.maxMemory() < 200000000) {
-                try {
-
-                    String[] call =
-                        { "java", "-Xmx256m", "-jar", "MegaMekLab.jar" };
-
-                    if (!logs) {
-                        call = new String[]
-                            { "java", "-Xmx256m", "-jar", "MegaMekLab.jar", "-nolog" };
-                    }
-                    runtime.exec(call);
-                    System.exit(0);
-                } catch (Exception ex) {
-                    getLogger().error(MegaMekLab.class, METHOD_NAME, ex);
-                }
-            }
-            try {
-                // Needed for record sheet printing, and also displayed in unit preview.
-                QuirksHandler.initQuirksList();
-            } catch (IOException e) {
-                // File is probably missing.
-                getLogger().log(MegaMekLab.class, METHOD_NAME, LogLevel.INFO,
-                        "Could not load quirks file.");
-            }
-            new MainUI();
-        }
+        startup();
     }
 
-    private static void setupLogging(final boolean logs,
-                                     final String logFileName) {
-        if (logs) {
-            try {
-                File logPath = new File("./logs/");
-                if (!logPath.exists()) {
-                    logPath.mkdir();
-                }
-                MegaMek.resetLogFile(logFileName);
-                PrintStream ps =
-                        new PrintStream(
-                                new BufferedOutputStream(
-                                        new FileOutputStream(logFileName,
-                                                             true),
-                                        64));
-                System.setOut(ps);
-                System.setErr(ps);
-            } catch (Exception ex) {
-                System.err.println("Unable to redirect output");
+    private static void redirectOutput() {
+        try {
+            System.out.println("Redirecting output to megameklablog.txt"); //$NON-NLS-1$
+            File logDir = new File("logs");
+            if (!logDir.exists()) {
+                logDir.mkdir();
             }
-        } else {
-            LogConfig.getInstance().disableAll();
+            final String logFilename = "logs" + File.separator + "megameklablog.txt";
+            MegaMek.resetLogFile(logFilename);
+            PrintStream ps = new PrintStream(
+                    new BufferedOutputStream(
+                            new FileOutputStream(logFilename,
+                                                 true),
+                            64));
+            System.setOut(ps);
+            System.setErr(ps);
+        } catch (Exception e) {
+            System.err.println("Unable to redirect output to megameklablog.txt"); //$NON-NLS-1$
+            e.printStackTrace();
         }
     }
 
@@ -218,5 +123,42 @@ public class MegaMekLab {
         long maxMemory = Runtime.getRuntime().maxMemory() / 1024;
         msg += "\n\tTotal memory available to MegaMek: " + NumberFormat.getInstance().format(maxMemory) + " kB"; //$NON-NLS-1$ //$NON-NLS-2$
         getLogger().log(MegaMekLab.class, METHOD_NAME, LogLevel.INFO, msg);
+    }
+    
+    private static void startup() {
+        System.out.println("Starting MegaMekLab version: " + MegaMekLab.VERSION);
+        Locale.setDefault(Locale.US);
+        showInfo();
+        setLookAndFeel();
+        //create a start up frame and display it
+        StartupGUI sud = new StartupGUI();
+        sud.setVisible(true);
+    }
+    
+    private static void setLookAndFeel() {
+        try {
+            String plaf = CConfig.getParam(CConfig.CONFIG_PLAF, UIManager.getSystemLookAndFeelClassName());
+            UIManager.setLookAndFeel(plaf);
+        } catch (Exception e) {
+            MegaMekLab.getLogger().error(MegaMekLab.class, "setLookAndFeel()", e);
+       }
+    }
+    
+    /**
+     * Helper function that calculates the maximum screen width available locally.
+     * @return Maximum screen width.
+     */
+    public static double calculateMaxScreenWidth() {
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        GraphicsDevice[] gs = ge.getScreenDevices();
+        double maxWidth = 0;
+        for (int i = 0; i < gs.length; i++) {
+            Rectangle b = gs[i].getDefaultConfiguration().getBounds();
+            if (b.getWidth() > maxWidth) {   // Update the max size found on this monitor
+                maxWidth = b.getWidth();
+            }
+        }
+        
+        return maxWidth;
     }
 }

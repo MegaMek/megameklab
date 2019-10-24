@@ -24,7 +24,6 @@ import megameklab.com.ui.tabs.TransportTab;
 import megameklab.com.ui.tabs.EquipmentTab;
 import megameklab.com.ui.tabs.FluffTab;
 import megameklab.com.ui.tabs.PreviewTab;
-import megameklab.com.util.MenuBarCreator;
 import megameklab.com.util.UnitUtil;
 
 import javax.swing.*;
@@ -43,28 +42,13 @@ public class SVMainUI extends MegaMekLabMainUI {
     private SVBuildTab buildTab;
     private FluffTab fluffTab;
     private SVStatusBar statusbar;
-    private JPanel masterPanel = new JPanel();
 
     public SVMainUI() {
 
         super();
         createNewUnit(Entity.ETYPE_SUPPORT_TANK, false, false);
         setTitle(getEntity().getChassis() + " " + getEntity().getModel() + ".blk");
-        MenuBarCreator menubarcreator = new MenuBarCreator(this);
-        setJMenuBar(menubarcreator);
-        JScrollPane scroll = new JScrollPane();
-        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scroll.getVerticalScrollBar().setUnitIncrement(20);
-        scroll.setViewportView(masterPanel);
-        scroll.setBorder(BorderFactory.createEmptyBorder());
-        this.add(scroll);
-
-        reloadTabs();
-        setVisible(true);
-        repaint();
-        refreshAll();
-        MechSummaryCache.getInstance();
+        finishSetup();
     }
 
     @Override

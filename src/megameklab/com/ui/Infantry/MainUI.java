@@ -18,11 +18,7 @@ package megameklab.com.ui.Infantry;
 
 import java.awt.BorderLayout;
 
-import javax.swing.BorderFactory;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 
 import megamek.common.*;
@@ -31,7 +27,6 @@ import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.tabs.PreviewTab;
 import megameklab.com.ui.Infantry.tabs.StructureTab;
 import megameklab.com.ui.tabs.FluffTab;
-import megameklab.com.util.MenuBarCreator;
 
 public class MainUI extends MegaMekLabMainUI {
 
@@ -45,28 +40,13 @@ public class MainUI extends MegaMekLabMainUI {
     FluffTab fluffTab;
     StatusBar statusbar;
     JTabbedPane ConfigPane = new JTabbedPane(SwingConstants.TOP);
-    JPanel masterPanel = new JPanel();
-    JScrollPane scroll = new JScrollPane();
-    private MenuBarCreator menubarcreator;
 
     public MainUI() {
 
         super();
         createNewUnit(Entity.ETYPE_INFANTRY);
         setTitle(getEntity().getChassis() + " " + getEntity().getModel() + ".mtf");
-        menubarcreator = new MenuBarCreator(this);
-        setJMenuBar(menubarcreator);
-        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scroll.getVerticalScrollBar().setUnitIncrement(20);
-        scroll.setViewportView(masterPanel);
-        scroll.setBorder(BorderFactory.createEmptyBorder());
-        this.add(scroll);
-
-        reloadTabs();
-        setVisible(true);
-        repaint();
-        refreshAll();
+        finishSetup();
 
     }
 

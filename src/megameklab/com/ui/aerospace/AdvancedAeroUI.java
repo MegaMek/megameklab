@@ -15,11 +15,8 @@ package megameklab.com.ui.aerospace;
 
 import java.awt.BorderLayout;
 
-import javax.swing.BorderFactory;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 
 import megamek.common.Aero;
@@ -41,7 +38,6 @@ import megameklab.com.ui.Aero.tabs.EquipmentTab;
 import megameklab.com.ui.tabs.PreviewTab;
 import megameklab.com.ui.tabs.FluffTab;
 import megameklab.com.ui.tabs.TransportTab;
-import megameklab.com.util.MenuBarCreator;
 
 /**
  * MainUI for Jumpships, Warship, and Space Stations
@@ -64,9 +60,6 @@ public class AdvancedAeroUI extends MegaMekLabMainUI {
     private TransportTab transportTab;
     private FluffTab fluffTab;
     private AdvancedAeroStatusBar statusbar;
-    JPanel masterPanel = new JPanel();
-    JScrollPane scroll = new JScrollPane();
-    private MenuBarCreator menubarcreator;
     
     public AdvancedAeroUI(boolean primitive) {
         super();
@@ -76,19 +69,7 @@ public class AdvancedAeroUI extends MegaMekLabMainUI {
             createNewUnit(Entity.ETYPE_WARSHIP, true, false);
         }
         setTitle(getEntity().getChassis() + " " + getEntity().getModel() + ".blk");
-        menubarcreator = new MenuBarCreator(this);
-        setJMenuBar(menubarcreator);
-        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scroll.getVerticalScrollBar().setUnitIncrement(20);
-        scroll.setViewportView(masterPanel);
-        scroll.setBorder(BorderFactory.createEmptyBorder());
-        this.add(scroll);
-
-        reloadTabs();
-        setVisible(true);
-        repaint();
-        refreshAll();
+        finishSetup();
         MechSummaryCache.getInstance();
     }
 

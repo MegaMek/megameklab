@@ -15,11 +15,8 @@ package megameklab.com.ui.protomek;
 
 import java.awt.BorderLayout;
 
-import javax.swing.BorderFactory;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 
 import megamek.common.Engine;
@@ -53,27 +50,12 @@ public class ProtomekMainUI extends MegaMekLabMainUI {
     private PreviewTab previewTab;
     private ProtomekBuildTab buildTab;
     private ProtomekStatusBar statusbar;
-    JPanel masterPanel = new JPanel();
-    JScrollPane scroll = new JScrollPane();
-    private MenuBarCreator menubarcreator;
 
     public ProtomekMainUI() {
         super();
         createNewUnit(Entity.ETYPE_PROTOMECH);
         setTitle(getEntity().getChassis() + " " + getEntity().getModel() + ".blk");
-        menubarcreator = new MenuBarCreator(this);
-        setJMenuBar(menubarcreator);
-        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scroll.getVerticalScrollBar().setUnitIncrement(20);
-        scroll.setViewportView(masterPanel);
-        scroll.setBorder(BorderFactory.createEmptyBorder());
-        this.add(scroll);
-
-        reloadTabs();
-        setVisible(true);
-        repaint();
-        refreshAll();
+        finishSetup();
     }
 
     @Override
