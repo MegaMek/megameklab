@@ -10,6 +10,7 @@ v0.47.1-SNAPSHOT
 + Issue #352: Large engine crits not allocated correctly
 + PR #339: Support vehicle construction (includes ground, S/M naval, and fixed wing; airship, satellite, and large naval
            still require MegaMek support).
++ PR #358: Splash Screen
 
 v0.47.0 (2019-08-21 0300 UTC)
 + Issue #336: Quad Battlemechs are unable to allocate industrial physical weapons to their side torsos
