@@ -30,6 +30,8 @@ import java.text.NumberFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import javax.swing.UIManager;
+
 import megamek.MegaMek;
 import megamek.common.Configuration;
 import megamek.common.logging.DefaultMmLogger;
@@ -38,6 +40,7 @@ import megamek.common.logging.MMLogger;
 import megamek.common.preference.PreferenceManager;
 import megamek.common.util.MegaMekFile;
 import megameklab.com.ui.StartupGUI;
+import megameklab.com.util.CConfig;
 
 public class MegaMekLab {
     public static final String VERSION = "0.47.1-SNAPSHOT";
@@ -49,6 +52,8 @@ public class MegaMekLab {
     public static void main(String[] args) {
     	System.setProperty("apple.laf.useScreenMenuBar", "true");
         System.setProperty("com.apple.mrj.application.apple.menu.about.name","MegaMekLab");
+        redirectOutput();
+        //add classic battletech font
         try {
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
             File btFontFile = new MegaMekFile(Configuration.fontsDir(), FILENAME_BT_CLASSIC_FONT).getFile();
@@ -58,7 +63,6 @@ public class MegaMekLab {
         } catch (IOException | FontFormatException e) {
             System.out.println("Error Registering BT Classic Font! Error: " + e.getMessage());
         }
-        redirectOutput();
         startup();
     }
 
@@ -122,11 +126,22 @@ public class MegaMekLab {
     }
     
     private static void startup() {
+        System.out.println("Starting MegaMekLab version: " + MegaMekLab.VERSION);
         Locale.setDefault(Locale.US);
         showInfo();
+        setLookAndFeel();
         //create a start up frame and display it
         StartupGUI sud = new StartupGUI();
         sud.setVisible(true);
+    }
+    
+    private static void setLookAndFeel() {
+        try {
+            String plaf = CConfig.getParam(CConfig.CONFIG_PLAF, UIManager.getSystemLookAndFeelClassName());
+            UIManager.setLookAndFeel(plaf);
+        } catch (Exception e) {
+            MegaMekLab.getLogger().error(MegaMekLab.class, "setLookAndFeel()", e);
+       }
     }
     
     /**

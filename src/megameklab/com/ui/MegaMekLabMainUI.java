@@ -60,8 +60,6 @@ public abstract class MegaMekLabMainUI extends JFrame implements
         MechSummaryCache.getInstance();
         new CConfig();
         UnitUtil.loadFonts();
-        System.out.println("Starting MegaMekLab version: " + MegaMekLab.VERSION);        
-        setLookAndFeel();
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             @Override
@@ -137,15 +135,6 @@ public abstract class MegaMekLabMainUI extends JFrame implements
             }
 
         });
-    }
-
-    private void setLookAndFeel() {
-        try {
-            String plaf = CConfig.getParam(CConfig.CONFIG_PLAF, UIManager.getSystemLookAndFeelClassName());
-            UIManager.setLookAndFeel(plaf);
-        } catch (Exception e) {
-            MegaMekLab.getLogger().error(getClass(), "setLookAndFeel()", e);
-       }
     }
     
     public void exit() {
