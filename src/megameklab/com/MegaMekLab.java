@@ -129,12 +129,12 @@ public class MegaMekLab {
     }
     
     private static void startup() {
+        showInfo();
         Locale.setDefault(Locale.US);
         EquipmentType.initializeTypes();
         MechSummaryCache.getInstance();
         new CConfig();
         UnitUtil.loadFonts();
-        showInfo();
         setLookAndFeel();
         //create a start up frame and display it
         StartupGUI sud = new StartupGUI();
