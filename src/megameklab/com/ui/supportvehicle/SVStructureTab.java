@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
 /**
  * Structure tab for support vehicle construction
  */
-class SVStructureTab extends ITab implements SVBuildListener {
+public class SVStructureTab extends ITab implements SVBuildListener {
 
     private RefreshListener refresh = null;
     private JPanel masterPanel;
