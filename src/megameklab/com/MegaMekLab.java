@@ -34,6 +34,8 @@ import javax.swing.UIManager;
 
 import megamek.MegaMek;
 import megamek.common.Configuration;
+import megamek.common.EquipmentType;
+import megamek.common.MechSummaryCache;
 import megamek.common.logging.DefaultMmLogger;
 import megamek.common.logging.LogLevel;
 import megamek.common.logging.MMLogger;
@@ -41,6 +43,7 @@ import megamek.common.preference.PreferenceManager;
 import megamek.common.util.MegaMekFile;
 import megameklab.com.ui.StartupGUI;
 import megameklab.com.util.CConfig;
+import megameklab.com.util.UnitUtil;
 
 public class MegaMekLab {
     public static final String VERSION = "0.47.1-SNAPSHOT";
@@ -126,8 +129,11 @@ public class MegaMekLab {
     }
     
     private static void startup() {
-        System.out.println("Starting MegaMekLab version: " + MegaMekLab.VERSION);
         Locale.setDefault(Locale.US);
+        EquipmentType.initializeTypes();
+        MechSummaryCache.getInstance();
+        new CConfig();
+        UnitUtil.loadFonts();
         showInfo();
         setLookAndFeel();
         //create a start up frame and display it

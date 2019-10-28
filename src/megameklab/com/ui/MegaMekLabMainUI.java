@@ -55,11 +55,6 @@ public abstract class MegaMekLabMainUI extends JFrame implements
     protected MenuBarCreator menubarcreator;
     
     public MegaMekLabMainUI() {
-
-        EquipmentType.initializeTypes();
-        MechSummaryCache.getInstance();
-        new CConfig();
-        UnitUtil.loadFonts();
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             @Override
