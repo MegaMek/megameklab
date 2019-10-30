@@ -173,6 +173,14 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         refresh = l;
     }
 
+    /**
+     * Disables controls that cannot be changed when customizing a refit.
+     */
+    public void setAsCustomization() {
+        panBasicInfo.setAsCustomization();
+        panChassis.setAsCustomization();
+    }
+
     @Override
     public void refreshSummary() {
         panSummary.refresh();
