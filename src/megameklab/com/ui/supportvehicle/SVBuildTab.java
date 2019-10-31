@@ -48,7 +48,7 @@ public class SVBuildTab extends ITab implements ActionListener {
     private String AUTOFILLCOMMAND = "autofillbuttoncommand";
     private String RESETCOMMAND = "resetbuttoncommand";
 
-    SVBuildTab(EntitySource eSource, EquipmentTab equipmentTab) {
+    public SVBuildTab(EntitySource eSource, EquipmentTab equipmentTab) {
         super(eSource);
         this.critList = equipmentTab.getEquipmentList();
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));

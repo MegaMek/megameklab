@@ -49,7 +49,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
     private ChassisModView panChassisMod;
     private SVCrewView panCrew;
 
-    SVStructureTab(EntitySource eSource) {
+    public SVStructureTab(EntitySource eSource) {
         super(eSource);
         setLayout(new BorderLayout());
         setupPanels();
@@ -144,6 +144,13 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         return panBasicInfo;
     }
 
+    /*
+     * Used by MekHQ to set the tech faction for custom refits.
+     */
+    public void setTechFaction(int techFaction) {
+        panBasicInfo.setTechFaction(techFaction);
+    }
+
     private void removeAllListeners() {
         panBasicInfo.removeListener(this);
         panChassis.removeListener(this);
@@ -164,6 +171,14 @@ public class SVStructureTab extends ITab implements SVBuildListener {
 
     public void addRefreshedListener(RefreshListener l) {
         refresh = l;
+    }
+
+    /**
+     * Disables controls that cannot be changed when customizing a refit.
+     */
+    public void setAsCustomization() {
+        panBasicInfo.setAsCustomization();
+        panChassis.setAsCustomization();
     }
 
     @Override

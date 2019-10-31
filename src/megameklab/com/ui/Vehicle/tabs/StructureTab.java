@@ -258,7 +258,15 @@ public class StructureTab extends ITab implements CVBuildListener, ArmorAllocati
         }
         return true;
     }
-    
+
+    /**
+     * Disables controls that cannot be changed when customizing a refit.
+     */
+    public void setAsCustomization() {
+        panBasicInfo.setAsCustomization();
+        panChassis.setAsCustomization();
+    }
+
     public void refreshSummary() {
         panSummary.refresh();
     }

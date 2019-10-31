@@ -43,7 +43,7 @@ public class SVArmorTab extends ITab implements ArmorAllocationListener {
     private final PatchworkArmorView panPatchwork;
     private final ITechManager techManager;
 
-    SVArmorTab(EntitySource eSource, ITechManager techManager) {
+    public SVArmorTab(EntitySource eSource, ITechManager techManager) {
         super(eSource);
         this.techManager = techManager;
         panArmor = new MVFArmorView(techManager, true);

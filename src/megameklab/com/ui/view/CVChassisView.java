@@ -254,7 +254,15 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
         spnChassisTurretWt.setEnabled(chkOmni.isSelected() && (cbTurrets.getSelectedIndex() > 0));
         spnChassisTurret2Wt.setEnabled(chkOmni.isSelected() && (cbTurrets.getSelectedIndex() > 1));
     }
-    
+
+    /**
+     * Disables controls that cannot be changed when customizing a refit.
+     */
+    public void setAsCustomization() {
+        spnTonnage.setEnabled(false);
+        cbMotiveType.setEnabled(false);
+    }
+
     public void refresh() {
         refreshTonnage();
         chkOmni.removeActionListener(this);

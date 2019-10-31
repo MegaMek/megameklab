@@ -495,6 +495,15 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         spnFireConWt.setEnabled(entity.isOmni() && (cbFireControl.getSelectedIndex() > SVBuildListener.FIRECON_NONE));
     }
 
+    /**
+     * Disables controls that cannot be changed when customizing a refit.
+     */
+    public void setAsCustomization() {
+        spnTonnage.setEnabled(false);
+        cbType.setEnabled(false);
+        cbStructureTechRating.setEnabled(false);
+    }
+
     public void refresh() {
         refreshTonnage();
         refreshTurrets();
