@@ -35,6 +35,7 @@ import javax.swing.UIManager.LookAndFeelInfo;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.MechSummaryCache;
+import megamek.common.preference.PreferenceManager;
 import megameklab.com.MegaMekLab;
 import megameklab.com.util.CConfig;
 import megameklab.com.util.MenuBarCreator;
@@ -153,6 +154,7 @@ public abstract class MegaMekLabMainUI extends JFrame implements
             }
             CConfig.setParam(CConfig.CONFIG_PLAF, UIManager.getLookAndFeel().getClass().getName());
             CConfig.saveConfig();
+            PreferenceManager.getInstance().save();
 
             System.exit(0);
         }
