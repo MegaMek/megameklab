@@ -548,13 +548,14 @@ public class PrintMech extends PrintEntity {
         
         double rollX = viewX;
         double critX = viewX + viewWidth * 0.11;
+        double critWidth = viewX + viewWidth - critX;
         double gap = 0;
         if (mech.getNumberOfCriticals(loc) > 6) {
             gap = viewHeight * 0.05;
         }
         double lineHeight = (viewHeight - gap) / mech.getNumberOfCriticals(loc);
         double currY = viewY;
-        float fontSize = (float) lineHeight * 0.85f;
+        float fontSize = (float) Math.floor(lineHeight * 0.85f);
         
         Mounted startingMount = null;
         double startingMountY = 0;
@@ -582,7 +583,7 @@ public class PrintMech extends PrintEntity {
                             && (!crit.getMount().getType().isHittable()))) {
                 style = "standard";
                 fill = "#3f3f3f";
-                addTextElement(canvas, critX, currY, formatCritName(crit), fontSize, "start", style, fill);
+                addTextElementToFit(canvas, critX, currY, critWidth, formatCritName(crit), fontSize, "start", style, fill);
             } else if (crit.isArmored()) {
                 Element pip = createPip(critX, currY - fontSize * 0.8, fontSize * 0.4, 0.7);
                 canvas.appendChild(pip);
