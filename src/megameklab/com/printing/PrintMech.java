@@ -504,7 +504,7 @@ public class PrintMech extends PrintEntity {
                     }
                     addTextElement(canvas, locX,  currY, line.getLocationField(row), fontSize, "middle", "normal");
                     addTextElement(canvas, heatX, currY, line.getHeatField(row), fontSize, "middle", "normal");
-                    lines = Math.max(lines, addMultilineTextElement(canvas, dmgX, currY, minX - dmgX, lineHeight,
+                    lines = Math.max(lines, addMultilineTextElement(canvas, dmgX, currY, minX - dmgX - fontSize, lineHeight,
                             line.getDamageField(row), fontSize, "start", "normal"));
                     addTextElement(canvas, minX, currY, line.getMinField(row), fontSize, "middle", "normal");
                     addTextElement(canvas, shortX, currY, line.getShortField(row), fontSize, "middle", "normal");
