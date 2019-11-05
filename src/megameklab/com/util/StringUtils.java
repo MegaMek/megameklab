@@ -359,7 +359,7 @@ public class StringUtils {
         } else {
             info = "  [E]";
         }
-        return info;
+        return info.trim();
     }
 
     public static String getEquipmentInfo(Aero unit, Mounted mount) {
