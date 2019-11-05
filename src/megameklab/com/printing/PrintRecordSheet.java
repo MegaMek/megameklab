@@ -106,8 +106,8 @@ public abstract class PrintRecordSheet implements Printable {
     /**
      * Creates an SVG object for the record sheet
      * 
-     * @param startPage The print job page number for this sheet
-     * @param options Overrides the global options for which elements are printed 
+     * @param firstPage The print job page number for this sheet
+     * @param options   Overrides the global options for which elements are printed
      */
     protected PrintRecordSheet(int firstPage, RecordSheetOptions options) {
         this.firstPage = firstPage;
@@ -274,7 +274,7 @@ public abstract class PrintRecordSheet implements Printable {
     /**
      * Renders the sheet to the Graphics object.
      * 
-     * @param graphics   The graphics object passed by {@link Printable#print(Graphics, PageFormat, int) print}
+     * @param g2d        The graphics object passed by {@link Printable#print(Graphics, PageFormat, int) print}
      * @param pageFormat The page format passed by {@link Printable#print(Graphics, PageFormat, int) print}
      * @param pageNum    Indicates which page of multi-page sheets to print. The first page is 0.
      * 
@@ -326,7 +326,7 @@ public abstract class PrintRecordSheet implements Printable {
     }
     
     /**
-     * Convenience method for creating a new SVG Text element and adding it to the parent.  The height of the text is
+     * Convenience method for creating a new SVG Text element and adding it to the parent.  The width of the text is
      * returned, to aid in layout.
      * 
      * @param parent    The SVG element to add the text element to.
@@ -336,6 +336,8 @@ public abstract class PrintRecordSheet implements Printable {
      * @param fontSize  Font size of the text.
      * @param anchor    Set the Text elements text-anchor.  Should be either start, middle, or end.
      * @param weight    The font weight, either normal or bold.
+     *
+     * @return          The width of the text in the current font size
      */
     protected double addTextElement(Element parent, double x, double y, String text,
             float fontSize, String anchor, String weight) {
@@ -370,7 +372,8 @@ public abstract class PrintRecordSheet implements Printable {
         newText.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, fill);
         parent.appendChild(newText);
         
-        return getTextLength(text, fontSize);
+        return weight.equals(SVGConstants.SVG_BOLD_VALUE) ?
+                getBoldTextLength(text, fontSize) : getTextLength(text, fontSize);
     }
     
     /**
@@ -898,7 +901,7 @@ public abstract class PrintRecordSheet implements Printable {
     /**
      * Creates a new set pip row regions sized according to the scaling factor.
      * 
-     * @param list  The rectangular regions describing pip rows in the SVG diagram.
+     * @param rows  The rectangular regions describing pip rows in the SVG diagram.
      * @param scale The scaling factor
      * @return      A list of rectangular regions scaled according to the provided factor.
      */
