@@ -2980,7 +2980,7 @@
              id="path57837"
              inkscape:connector-curvature="0" /></g></g></g><text
        transform="matrix(0.99808472,0,0,-1,449.8827,372.3702)"
-       style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.7954998px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.7954998px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text58459"><tspan
          x="0 4.3466249 7.6210823 10.924518"
          y="0"
@@ -3012,7 +3012,7 @@
          id="tspan58477">Arm</tspan></text>
 <text
        transform="matrix(0.99808472,0,0,-1,534.2601,304.0652)"
-       style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.7954998px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.7954998px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text58509"><tspan
          x="0 4.0626454 5.3086782 8.6294994 11.99089"
          y="0"
@@ -3036,7 +3036,7 @@
          id="tspan58521">Leg</tspan></text>
 <text
        transform="matrix(0.99810198,0,0,-1,471.2441,718.7283)"
-       style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.7954998px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.7954998px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text60301"><tspan
          x="0 4.3466249 7.6210823 10.924518"
          y="0"
@@ -3052,7 +3052,7 @@
          id="tspan60307">Torso</tspan></text>
 <text
        transform="matrix(0.99808472,0,0,-1,511.4877,713.2522)"
-       style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.7954998px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.7954998px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text60311"><tspan
          x="0 4.0626454 5.3086782 8.6294994 11.99089 14.112042 16.11149 18.922308 22.225742 24.787354 27.899536"
          y="0"
@@ -3100,7 +3100,7 @@
          id="tspan60345">Torso Rear</tspan></text>
 <text
        transform="matrix(0.99810198,0,0,-1,400.8246,558.5549)"
-       style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.7954998px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.7954998px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text60347"><tspan
          x="0 3.2338891 6.5083466 8.2585878 10.379741 12.379188 16.349106 18.910717"
          y="0"
@@ -4665,19 +4665,19 @@
        y="159">0</text>
 <text
        id="tonnage"
-       x="190"
+       x="192"
        y="134.5">0</text>
 <text
        id="techBase"
-       x="190"
+       x="192"
        y="142.75">Inner Sphere</text>
 <text
        id="rulesLevel"
-       x="190"
+       x="192"
        y="151">Standard</text>
 <text
        id="role"
-       x="190"
+       x="192"
        y="159.25">Lorem Ipsum</text>
 <text
        id="bv"
@@ -4808,85 +4808,85 @@
          text-anchor="end"
          x="410.79"
          y="280.3" />
-<text
+    <text font-weight="bold"
          id="textArmor_HD"
          x="487.48"
          y="46.27">( 0 )</text>
-<text
+    <text font-weight="bold"
          text-anchor="middle"
          id="textArmor_CT"
          x="485.215"
          y="216.5">( 0 )</text>
-<text
+    <text font-weight="bold"
          text-anchor="middle"
          id="textArmor_CTR"
          x="485.215"
          y="275.11">( 0 )</text>
-<text
+    <text font-weight="bold"
          text-anchor="middle"
          id="textArmor_RT"
          x="514.42"
          y="59.76">( 0 )</text>
-<text
+    <text font-weight="bold"
          text-anchor="middle"
          id="textArmor_RTR"
          x="554.735"
          y="360.17">( 0 )</text>
-<text
+    <text font-weight="bold"
          text-anchor="middle"
          id="textArmor_LT"
          x="449.24"
          y="59.76">( 0 )</text>
-<text
+    <text font-weight="bold"
          text-anchor="middle"
          id="textArmor_LTR"
          x="415.575"
          y="360.17">( 0 )</text>
-<text
+    <text font-weight="bold"
          text-anchor="middle"
          id="textArmor_RA"
          x="558.76"
          y="214.52">( 0 )</text>
-<text
+    <text font-weight="bold"
          text-anchor="middle"
          id="textArmor_LA"
          x="412.94"
          y="214.52">( 0 )</text>
-<text
+    <text font-weight="bold"
          text-anchor="middle"
          id="textArmor_RL"
          x="564.925"
          y="266.9">( 0 )</text>
-<text
+    <text font-weight="bold"
          text-anchor="middle"
          id="textArmor_LL"
          x="405"
          y="266.9">( 0 )</text>
-<text
+    <text font-weight="bold"
          id="textIS_CT"
          x="468"
          y="506.86">( 0 )</text>
-<text
+    <text font-weight="bold"
          id="textIS_RT"
          x="532.30"
          y="400.84">( 0 )</text>
-<text
+    <text font-weight="bold"
          id="textIS_LT"
          x="432.02"
          y="400.84">( 0 )</text>
-<text
+    <text font-weight="bold"
          id="textIS_RA"
          x="537.33"
          y="477.51">( 0 )</text>
-<text
+    <text font-weight="bold"
          id="textIS_LA"
          x="398.3"
          y="477.51">( 0 )</text>
-<text
+    <text font-weight="bold"
          id="textIS_RL"
          x="525.53"
          y="535.60">( 0 )</text>
-<text
+    <text font-weight="bold"
          id="textIS_LL"
          x="412.84"
          y="535.60">( 0 )</text>

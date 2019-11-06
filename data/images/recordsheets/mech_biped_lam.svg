@@ -2300,16 +2300,16 @@
        lengthAdjust="spacingAndGlyphs"
        id="text57839">Role:</text>
 <text
-       transform="matrix(0.99809211,0,0,-1,216.9537,49.284)"
+       transform="matrix(0.99809211,0,0,-1,197,49.284)"
        style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.76140022px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
        text-anchor="middle"
        id="text57121"><tspan
-         x="30"
+         x="0"
          y="0"
          textLength="60"
          lengthAdjust="spacingAndGlyphs"
          id="tspan57123">Damage Transfer</tspan><tspan
-         x="28"
+         x="0"
          y="8.1136799"
          textLength="28"
          lengthAdjust="spacingAndGlyphs"
@@ -3022,7 +3022,7 @@
              id="path57713"
              inkscape:connector-curvature="0" /></g></g></g><text
        transform="matrix(0.99808472,0,0,-1,449.8827,372.3702)"
-       style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.7954998px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.7954998px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text58459"><tspan
          x="0 4.3466249 7.6210823 10.924518"
          y="0"
@@ -3054,7 +3054,7 @@
          id="tspan58477">Arm</tspan></text>
 <text
        transform="matrix(0.99808472,0,0,-1,534.2601,304.0652)"
-       style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.7954998px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.7954998px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text58509"><tspan
          x="0 4.0626454 5.3086782 8.6294994 11.99089"
          y="0"
@@ -3078,7 +3078,7 @@
          id="tspan58521">Leg</tspan></text>
 <text
        transform="matrix(0.99810198,0,0,-1,471.2441,718.7283)"
-       style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.7954998px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.7954998px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text60301"><tspan
          x="0 4.3466249 7.6210823 10.924518"
          y="0"
@@ -3094,7 +3094,7 @@
          id="tspan60307">Torso</tspan></text>
 <text
        transform="matrix(0.99808472,0,0,-1,511.4877,713.2522)"
-       style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.7954998px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.7954998px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text60311"><tspan
          x="0 4.0626454 5.3086782 8.6294994 11.99089 14.112042 16.11149 18.922308 22.225742 24.787354 27.899536"
          y="0"
@@ -3142,7 +3142,7 @@
          id="tspan60345">Torso Rear</tspan></text>
 <text
        transform="matrix(0.99810198,0,0,-1,400.8246,558.5549)"
-       style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.7954998px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.7954998px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="text60347"><tspan
          x="0 3.2338891 6.5083466 8.2585878 10.379741 12.379188 16.349106 18.910717"
          y="0"
@@ -4841,12 +4841,12 @@
 <text
        id="mpAirMechCruise"
        text-anchor="end"
-       x="178.5"
+       x="180.5"
        y="168">0</text>
 <text
        id="mpAirMechFlank"
        text-anchor="end"
-       x="178.5"
+       x="180.5"
        y="176.25">0</text>
 <text
        id="mpSafeThrust"
@@ -4860,19 +4860,19 @@
        y="176.25">0</text>
 <text
        id="tonnage"
-       x="100.6794"
+       x="87.2"
        y="131.68">0</text>
 <text
        id="techBase"
-       x="180"
+       x="182"
        y="133.65">Inner Sphere</text>
 <text
        id="rulesLevel"
-       x="180"
+       x="182"
        y="141.9">Standard</text>
 <text
        id="role"
-       x="180"
+       x="182"
        y="150.15">Lorem Ipsum</text>
 <text
        id="bv"
@@ -4910,7 +4910,7 @@
        y="593.87">10</text>
 <g
        id="armorValues"
-       style="font-size:5.7954998px"><text
+       style="font-size:5.7954998px;font-weight:bold"><text
          id="textArmor_HD"
          x="490.49"
          y="46.27">( 0 )</text>
