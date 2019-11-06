@@ -33,6 +33,7 @@ import megamek.common.TechConstants;
 import megamek.common.verifier.TestProtomech;
 import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.tabs.EquipmentTab;
+import megameklab.com.ui.tabs.FluffTab;
 import megameklab.com.ui.tabs.PreviewTab;
 import megameklab.com.util.MenuBarCreator;
 
@@ -90,13 +91,16 @@ public class ProtomekMainUI extends MegaMekLabMainUI {
         statusbar = new ProtomekStatusBar(this);
         equipmentTab = new EquipmentTab(this);
         buildTab = new ProtomekBuildTab(this, equipmentTab, this);
+        FluffTab fluffTab = new FluffTab(this);
         structureTab.addRefreshedListener(this);
         equipmentTab.addRefreshedListener(this);
         statusbar.addRefreshedListener(this);
+        fluffTab.setRefreshedListener(this);
 
         configPane.addTab("Structure/Armor", structureTab);
         configPane.addTab("Equipment", equipmentTab);
         configPane.addTab("Assign Criticals", buildTab);
+        configPane.addTab("Fluff", fluffTab);
         configPane.addTab("Preview", previewTab);
 
         //masterPanel.add(header);
