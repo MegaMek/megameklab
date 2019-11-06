@@ -46,7 +46,7 @@ import megameklab.com.util.CConfig;
 import megameklab.com.util.UnitUtil;
 
 public class MegaMekLab {
-    public static final String VERSION = "0.47.1-SNAPSHOT";
+    public static final String VERSION = "0.47.1";
 
     private static final String FILENAME_BT_CLASSIC_FONT = "btclassic/BTLogo_old.ttf"; //$NON-NLS-1$
 
