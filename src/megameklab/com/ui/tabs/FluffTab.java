@@ -19,8 +19,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.util.EnumMap;
-import java.util.Map;
 import java.util.ResourceBundle;
 
 import javax.swing.BorderFactory;
@@ -33,7 +31,6 @@ import javax.swing.border.Border;
 
 import megamek.common.Entity;
 import megamek.common.EntityFluff;
-import megamek.common.EntityFluff.System;
 import megamek.common.util.EncodeControl;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.util.ITab;
@@ -60,9 +57,7 @@ public class FluffTab extends ITab implements FocusListener {
     private final JTextField txtLength = new JTextField(8);
     private final JTextField txtWidth = new JTextField(8);
     private final JTextField txtHeight = new JTextField(8);
-    private final Map<System, JTextField> txtCompManufacturers = new EnumMap<>(System.class);
-    private final Map<System, JTextField> txtCompModels = new EnumMap<>(System.class);
-    
+
     private final JTextArea txtNotes = new JTextArea(4, 40);
     
     private static final String TAG_MANUFACTURER = "manufacturer"; //$NON-NLS-1
@@ -226,14 +221,12 @@ public class FluffTab extends ITab implements FocusListener {
             JTextField txt = new JTextField(12);
             txt.setText(getFluff().getSystemManufacturer(system));
             panRight.add(txt, gbc);
-            txtCompManufacturers.put(system, txt);
             txt.setName(system.name() + ":" + TAG_MANUFACTURER);
             txt.addFocusListener(this);
             gbc.gridx = 2;
             txt = new JTextField(12);
             txt.setText(getFluff().getSystemModel(system));
             panRight.add(txt, gbc);
-            txtCompModels.put(system, txt);
             txt.setName(system.name() + ":" + TAG_MODEL);
             txt.addFocusListener(this);
             gbc.gridy++;
