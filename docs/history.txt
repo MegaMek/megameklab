@@ -1,6 +1,8 @@
 VERSION HISTORY:
 ----------------
-v0.47.1 (2019-11-05 0300 UTC) 
+v0.47.2-SNAPSHOT
+
+v0.47.1 (2019-11-05 0300 UTC)
 + Issue #174: Replace Java-based open dialog with OS native dialog
 + Issue #337: Cost Calculation / Rules: Repair Facility on Space Stations
 + PR #346: Allow command console with superheavy/small cockpit
