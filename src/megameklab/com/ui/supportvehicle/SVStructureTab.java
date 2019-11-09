@@ -374,6 +374,11 @@ public class SVStructureTab extends ITab implements SVBuildListener {
     @Override
     public void engineChanged(Engine engine) {
         getSV().setEngine(engine);
+        // Switching between maglev and non-maglev engines changes movement mode
+        if (TestSupportVehicle.SVType.RAIL.equals(TestSupportVehicle.SVType.getVehicleType(getSV()))) {
+            getSV().setMovementMode((engine.getEngineType() == Engine.MAGLEV) ?
+                    EntityMovementMode.MAGLEV : EntityMovementMode.RAIL);
+        }
         // Make sure the engine tech rating is at least the minimum for the engine type
         if (getSV().getEngineTechRating() < engine.getTechRating()) {
             getSV().setEngineTechRating(engine.getTechRating());
@@ -439,6 +444,15 @@ public class SVStructureTab extends ITab implements SVBuildListener {
             panChassis.setFromEntity(getEntity());
         } else if (mod.equals(TestSupportVehicle.ChassisModification.ARMORED.equipment)) {
             refresh.refreshArmor();
+        }
+        if (TestSupportVehicle.SVType.NAVAL.equals(TestSupportVehicle.SVType.getVehicleType(getEntity()))) {
+            if (getEntity().hasMisc(MiscType.F_HYDROFOIL)) {
+                getEntity().setMovementMode(EntityMovementMode.HYDROFOIL);
+            } else if (getEntity().hasMisc(MiscType.F_SUBMERSIBLE)) {
+                getEntity().setMovementMode(EntityMovementMode.SUBMARINE);
+            } else {
+                getEntity().setMovementMode(EntityMovementMode.NAVAL);
+            }
         }
         refreshFuel();
         panChassisMod.refresh();
