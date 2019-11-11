@@ -22,8 +22,8 @@ import megamek.common.verifier.TestSupportVehicle;
 import megameklab.com.ui.view.listeners.SVBuildListener;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +34,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * Panel for selecting support vehicle chassis modifcations
  */
 
-public class ChassisModView extends BuildView implements ActionListener {
+public class ChassisModView extends BuildView implements ItemListener {
 
     private final List<SVBuildListener> listeners = new CopyOnWriteArrayList<>();
     public void addListener(SVBuildListener l) {
@@ -57,7 +57,7 @@ public class ChassisModView extends BuildView implements ActionListener {
         for (TestSupportVehicle.ChassisModification mod : TestSupportVehicle.ChassisModification.values()) {
             JCheckBox cb = new JCheckBox(mod.equipment.getShortName());
             cb.setActionCommand(mod.equipment.getInternalName());
-            cb.addActionListener(this);
+            cb.addItemListener(this);
             checkboxMap.put(mod, cb);
             add(cb);
         }
@@ -112,9 +112,9 @@ public class ChassisModView extends BuildView implements ActionListener {
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void itemStateChanged(ItemEvent e) {
         if (e.getSource() instanceof JCheckBox) {
-            final EquipmentType eq = EquipmentType.get(e.getActionCommand());
+            final EquipmentType eq = EquipmentType.get(((JCheckBox) e.getSource()).getActionCommand());
             if (null != eq) {
                 listeners.forEach(l -> l.setChassisMod(eq, ((JCheckBox) e.getSource()).isSelected()));
             }
