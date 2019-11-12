@@ -3734,7 +3734,9 @@ public class UnitUtil {
         } else {
             for (int slot = 0; slot < entity.getNumberOfCriticals(fromLoc); slot++) {
                 final CriticalSlot crit = entity.getCritical(fromLoc, slot);
-                copyEquipment(entity, toLoc, crit.getMount(), removed);
+                if ((null != crit) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
+                    copyEquipment(entity, toLoc, crit.getMount(), removed);
+                }
             }
         }
         // Link up Artemis, etc.
