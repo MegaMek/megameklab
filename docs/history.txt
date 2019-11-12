@@ -3,6 +3,7 @@ VERSION HISTORY:
 v0.47.2-SNAPSHOT
 + Issue #365: Protomek Tab is missing its fluff section
 + Issue #367: Rail Support Vehicle - External Power Pickup not saving
++ Issue #369: Issues with Mirroring Aero units.
 
 v0.47.1 (2019-11-05 0300 UTC)
 + Issue #174: Replace Java-based open dialog with OS native dialog
