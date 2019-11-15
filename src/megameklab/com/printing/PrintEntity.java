@@ -214,8 +214,8 @@ public abstract class PrintEntity extends PrintRecordSheet {
                     }
                 }
                 if (spaList.length() > 0) {
-                    Element rect = getSVGDocument().getElementById("spas" + getEntity().getCrew().getSlotCount());
-                    if ((null != rect) && (rect instanceof SVGRectElement)) {
+                    Element rect = getSVGDocument().getElementById("spas" + (getEntity().getCrew().getSlotCount() - 1));
+                    if (rect instanceof SVGRectElement) {
                         Rectangle2D bbox = getRectBBox((SVGRectElement) rect);
                         Element canvas = (Element) ((Node) rect).getParentNode();
                         String spaText = "Abilities: " + spaList.toString();
