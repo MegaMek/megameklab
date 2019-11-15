@@ -8,7 +8,7 @@ plugins {
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 group = 'org.megamek'
-version = '0.47.2-SNAPSHOT'
+version = '0.47.2'
 
 sourceSets {
     main {
