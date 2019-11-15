@@ -28,6 +28,7 @@ import org.apache.batik.anim.dom.SVGLocatableSupport;
 import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.svg.SVGRect;
 import org.w3c.dom.svg.SVGRectElement;
 import org.w3c.dom.svg.SVGTextContentElement;
 
@@ -124,8 +125,8 @@ public abstract class PrintEntity extends PrintRecordSheet {
         }
         
         writeTextFields();
-        drawArmor();
-        drawStructure();
+//        drawArmor();
+//        drawStructure();
         Element eqRect = getSVGDocument().getElementById("inventory");
         if ((null != eqRect) && (eqRect instanceof SVGRectElement)) {
             writeEquipment((SVGRectElement) eqRect);
@@ -236,9 +237,10 @@ public abstract class PrintEntity extends PrintRecordSheet {
                 if (nameOffset != 0) {
                     Element element = getSVGDocument().getElementById("blankCrewName" + i);
                     if (null != element) {
-                        float w = ((SVGGraphicsElement) element).getBBox().getWidth();
+                        SVGRect rect = ((SVGGraphicsElement) element).getBBox();
                         element.setAttributeNS(null, SVGConstants.SVG_D_ATTRIBUTE,
-                                String.format("M %f,0 %f,0", nameOffset, w - nameOffset));
+                                String.format("M %f,%f %f,%f", rect.getX() + nameOffset, rect.getY(),
+                                        rect.getX() + rect.getWidth(), rect.getY()));
                     }
                 }
             }

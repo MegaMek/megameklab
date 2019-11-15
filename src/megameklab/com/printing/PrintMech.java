@@ -170,7 +170,7 @@ public class PrintMech extends PrintEntity {
 
         if (mech.hasETypeFlag(Entity.ETYPE_LAND_AIR_MECH)) {
             Element si = getSVGDocument().getElementById("siPips");
-            addPips(si, mech.getOInternal(Mech.LOC_CT), true, PipType.CIRCLE, 0.38, 0.957);
+ //           addPips(si, mech.getOInternal(Mech.LOC_CT), true, PipType.CIRCLE, 0.38, 0.957);
         }
         
     }
@@ -202,6 +202,7 @@ public class PrintMech extends PrintEntity {
 
     @Override
     protected void writeTextFields() {
+        hideUnusedCrewElements();
         super.writeTextFields();
         if (mech.hasUMU()) {
             Element svgEle = getSVGDocument().getElementById("mpJumpLabel");
@@ -209,9 +210,7 @@ public class PrintMech extends PrintEntity {
                 svgEle.setTextContent("Underwater:");
             }
         }
-        hideElement("warriorDataSingle", mech.getCrew().getSlotCount() != 1);
-        hideElement("warriorDataDual", mech.getCrew().getSlotCount() != 2);
-        hideElement("warriorDataTriple", mech.getCrew().getSlotCount() != 3);
+
         setTextField("hsType", formatHeatSinkType());
         setTextField("hsCount", formatHeatSinkCount());
         
@@ -243,7 +242,25 @@ public class PrintMech extends PrintEntity {
             setTextField("lblVeeMode", ((QuadVee) mech).getMotiveTypeString() + "s");
         }
     }
-    
+
+    private void hideUnusedCrewElements() {
+        final String[] NAMES = {"Single", "Dual", "Triple"};
+        for (int i = 0; i < 3; i++) {
+            hideElement("warriorData" + NAMES[i], getEntity().getCrew().getSlotCount() != i + 1);
+            final boolean hide = i >= getEntity().getCrew().getSlotCount();
+            hideElement("crewDamage" + i, hide);
+            hideElement("pilotName" + i, hide);
+            hideElement("blankCrewName" + i, hide || showPilotInfo());
+            hideElement("crewName" + i, hide);
+            hideElement("gunnerySkill" + i, hide);
+            hideElement("blankGunnerySkill" + i, hide || showPilotInfo());
+            hideElement("gunnerySkillText" + i, hide);
+            hideElement("pilotingSkill" + i, hide);
+            hideElement("blankPilotingSkill" + i, hide || showPilotInfo());
+            hideElement("pilotingSkillText" + i, hide);
+        }
+    }
+
     private boolean loadArmorPips(int loc, boolean rear) {
         String locAbbr = null;
         switch(loc) {
