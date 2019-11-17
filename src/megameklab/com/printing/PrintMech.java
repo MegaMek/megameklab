@@ -170,7 +170,7 @@ public class PrintMech extends PrintEntity {
 
         if (mech.hasETypeFlag(Entity.ETYPE_LAND_AIR_MECH)) {
             Element si = getSVGDocument().getElementById("siPips");
- //           addPips(si, mech.getOInternal(Mech.LOC_CT), true, PipType.CIRCLE, 0.38, 0.957);
+            addPips(si, mech.getOInternal(Mech.LOC_CT), true, PipType.CIRCLE, 0.38, 0.957);
         }
         
     }
@@ -232,6 +232,8 @@ public class PrintMech extends PrintEntity {
             if (showPilotInfo() && (lam.getCrew() instanceof LAMPilot)) {
                 setTextField("asfGunnerySkill", Integer.toString(((LAMPilot) mech.getCrew()).getGunneryAero()));
                 setTextField("asfPilotingSkill", Integer.toString(((LAMPilot) mech.getCrew()).getPilotingAero()));
+                hideElement("asfBlankPilotingSkill", true);
+                hideElement("asfBlankGunnerySkill", true);
             } else {
                 hideElement("asfGunnerySkill");
                 hideElement("asfPilotingSkill");
@@ -793,7 +795,7 @@ public class PrintMech extends PrintEntity {
         } else if (mech.hasDoubleHeatSinks()) {
             return "Double Heat Sinks:";
         } else {
-            return "Heat Sinks";
+            return "Heat Sinks:";
         }
     }
     
