@@ -24,7 +24,12 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import org.apache.batik.anim.dom.SAXSVGDocumentFactory;
 import org.apache.batik.anim.dom.SVGDOMImplementation;
+import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.bridge.DocumentLoader;
+import org.apache.batik.bridge.GVTBuilder;
+import org.apache.batik.bridge.UserAgentAdapter;
 import org.apache.batik.dom.util.SAXDocumentFactory;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLResourceDescriptor;
@@ -264,7 +269,7 @@ public class PrintMech extends PrintEntity {
     }
 
     private boolean loadArmorPips(int loc, boolean rear) {
-        String locAbbr = null;
+        String locAbbr;
         switch(loc) {
             case Mech.LOC_HEAD:
                 locAbbr = "Head";
@@ -284,12 +289,6 @@ public class PrintMech extends PrintEntity {
         if (rear) {
             locAbbr += "_R";
         }
-        NodeList nl = loadPipSVG(String.format("data/images/recordsheets/biped_pips/Armor_%s_%d_Humanoid.svg",
-                locAbbr, mech.getOArmor(loc, rear)));
-        if (null == nl) {
-            return false;
-        }
-        copyPipPattern(nl);
         if (rear) {
             Element element = getSVGDocument().getElementById("textArmor_" + mech.getLocationAbbr(loc) + "R");
             if (null != element) {
@@ -297,7 +296,12 @@ public class PrintMech extends PrintEntity {
             }
         }
 
-        return true;
+        NodeList nl = loadPipSVG(String.format("data/images/recordsheets/biped_pips/Armor_%s_%d_Humanoid.svg",
+                locAbbr, mech.getOArmor(loc, rear)));
+        if (null == nl) {
+            return false;
+        }
+        return copyPipPattern(nl, "canonArmorPips");
     }
     
     private boolean loadISPips() {
@@ -307,21 +311,19 @@ public class PrintMech extends PrintEntity {
             return false;
         }
         hideElement("structurePips");
-        copyPipPattern(nl);
-        return true;
+        return copyPipPattern(nl, "canonStructurePips");
     }
 
-    private void copyPipPattern(NodeList nl) {
-        Element group = getSVGDocument().getElementById("gSheet");
+    private boolean copyPipPattern(NodeList nl, String parentName) {
+        Element parent = getSVGDocument().getElementById(parentName);
+        if (null == parent) {
+            return false;
+        }
         for (int node = 0; node < nl.getLength(); node++) {
             final Node wn = nl.item(node);
-            Element path = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_PATH_TAG);
-            for (int attr = 0; attr < wn.getAttributes().getLength(); attr++) {
-                final Node wa = wn.getAttributes().item(attr);
-                path.setAttributeNS(null, wa.getNodeName(), wa.getTextContent());
-            }
-            group.appendChild(path);
+            parent.appendChild(getSVGDocument().importNode(wn, true));
         }
+        return true;
     }
 
     private @Nullable NodeList loadPipSVG(String filename) {

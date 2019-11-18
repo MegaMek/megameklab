@@ -125,10 +125,10 @@ public abstract class PrintEntity extends PrintRecordSheet {
         }
         
         writeTextFields();
-//        drawArmor();
-//        drawStructure();
+        drawArmor();
+        drawStructure();
         Element eqRect = getSVGDocument().getElementById("inventory");
-        if ((null != eqRect) && (eqRect instanceof SVGRectElement)) {
+        if (eqRect instanceof SVGRectElement) {
             writeEquipment((SVGRectElement) eqRect);
         }
         if (options.showEraIcon()) {
