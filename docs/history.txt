@@ -1,6 +1,7 @@
 VERSION HISTORY:
 ----------------
 v0.47.3-SNAPSHOT
++ Issue #371: Capital Missile Bays wrongly grouped as Tele (also warnings on load)
 
 v0.47.2 (2019-11-15 2000 UTC)
 + Issue #365: Protomek Tab is missing its fluff section
