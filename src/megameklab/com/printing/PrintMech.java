@@ -195,10 +195,12 @@ public class PrintMech extends PrintEntity {
                 }
                 element = getSVGDocument().getElementById("shieldDC" + loc);
                 if (null != element) {
+                    hideElement(element, false);
                     addPips(element, m.getBaseDamageCapacity(), false, PipType.CIRCLE);
                 }
                 element = getSVGDocument().getElementById("shieldDA" + loc);
                 if (null != element) {
+                    hideElement(element, false);
                     addPips(element, m.getBaseDamageAbsorptionRate(), false, PipType.DIAMOND);
                 }
             }
