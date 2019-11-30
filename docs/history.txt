@@ -1,8 +1,14 @@
 VERSION HISTORY:
 ----------------
-v0.47.2-SNAPSHOT
+v0.47.3-SNAPSHOT
++ Issue #371: Capital Missile Bays wrongly grouped as Tele (also warnings on load)
++ Issue #375: Maximum armor calculation is incorrect for Warships
++ Issue #376: Can't build Primitive Jumpships
+
+v0.47.2 (2019-11-15 2000 UTC)
 + Issue #365: Protomek Tab is missing its fluff section
 + Issue #367: Rail Support Vehicle - External Power Pickup not saving
++ Issue #369: Issues with Mirroring Aero units.
 
 v0.47.1 (2019-11-05 0300 UTC)
 + Issue #174: Replace Java-based open dialog with OS native dialog

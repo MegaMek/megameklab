@@ -921,7 +921,7 @@
 <text id="text633" style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;writing-mode:lr-tb;fill:#110f0d;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="translate(579.349,90.901)" text-anchor="middle"
                                           >DA</text
                                           >
-<g fill="none" id="shieldDCRA" visibility="hidden" transform="translate(558.145,30.2841)"
+<g fill="none" id="shieldDCRA" transform="translate(558.145,30.2841)"
                                           ><rect x="5" width="23.3" y="5.3272" height="6.15152" id="rightShieldDARow00"
                                             /><rect x="5" width="23.3" y="10.6544" height="6.15152" id="rightShieldDARow01"
                                             /><rect x="5" width="23.3" y="15.9816" height="6.15152" id="rightShieldDARow02"
@@ -931,7 +931,7 @@
                                             /><rect x="3.55" width="19.8" y="37.2904" height="6.15152" id="rightShieldDARow06"
                                             /><rect x="9.67" width="15.7" y="42.6176" height="6.15152" id="rightShieldDARow07"
                                           /></g
-                                          ><g fill="none" id="shieldDARA" visibility="hidden" transform="matrix(0.063749,0.997966,-0.997966,0.063749,586.248,91.6269)"
+                                          ><g fill="none" id="shieldDARA" transform="matrix(0.063749,0.997966,-0.997966,0.063749,586.248,91.6269)"
                                           ><rect x="0" width="44" y="0" height="6.15152" id="rightShieldDCRow00"
                                           /></g
                                         ></g
@@ -944,7 +944,7 @@
 <text id="text653" style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.72730017px;font-family:Eurostile;writing-mode:lr-tb;fill:#110f0d;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="translate(403.302,90.901)" text-anchor="middle"
                                           >DA</text
                                           >
-<g fill="none" id="shieldDCLA" visibility="hidden" transform="matrix(-1,0,0,1,427.8,30.2841)"
+<g fill="none" id="shieldDCLA" transform="matrix(-1,0,0,1,427.8,30.2841)"
                                           ><rect x="5" width="23.3" y="5.3272" height="6.15152" id="leftShieldDARow00"
                                             /><rect x="5" width="23.3" y="10.6544" height="6.15152" id="leftShieldDARow01"
                                             /><rect x="5" width="23.3" y="15.9816" height="6.15152" id="leftShieldDARow02"
@@ -954,7 +954,7 @@
                                             /><rect x="3.55" width="19.8" y="37.2904" height="6.15152" id="leftShieldDARow06"
                                             /><rect x="9.67" width="15.7" y="42.6176" height="6.15152" id="leftShieldDARow07"
                                           /></g
-                                          ><g fill="none" id="shieldDALA" visibility="hidden" transform="matrix(-0.063749,0.997966,0.997966,0.063749,401.123,91.6269)"
+                                          ><g fill="none" id="shieldDALA" transform="matrix(-0.063749,0.997966,0.997966,0.063749,401.123,91.6269)"
                                           ><rect x="0" width="44" y="0" height="6.15152" id="leftShieldDCRow00"
                                           /></g
                                         ></g
@@ -1277,7 +1277,7 @@
                                       ></g
                                       >
 </g
-                                      ><g id="canonArmorPips" transform="matrix (0.868 0 0 0.868,-338.523-7.337)"
+                                      ><g id="canonArmorPips" transform="matrix (0.868 0 0 0.868,-338.523 -7.804)"
                                     /></g
                                     ><g transform="translate (36.000 389.000)"
                                     ><g
