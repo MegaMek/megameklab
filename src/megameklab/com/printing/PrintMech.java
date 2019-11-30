@@ -24,12 +24,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
-import org.apache.batik.anim.dom.SAXSVGDocumentFactory;
 import org.apache.batik.anim.dom.SVGDOMImplementation;
-import org.apache.batik.bridge.BridgeContext;
-import org.apache.batik.bridge.DocumentLoader;
-import org.apache.batik.bridge.GVTBuilder;
-import org.apache.batik.bridge.UserAgentAdapter;
 import org.apache.batik.dom.util.SAXDocumentFactory;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLResourceDescriptor;
@@ -175,7 +170,13 @@ public class PrintMech extends PrintEntity {
 
         if (mech.hasETypeFlag(Entity.ETYPE_LAND_AIR_MECH)) {
             Element si = getSVGDocument().getElementById("siPips");
-            addPips(si, mech.getOInternal(Mech.LOC_CT), true, PipType.CIRCLE, 0.38, 0.957);
+            if (si instanceof SVGRectElement) {
+                drawSIPips((SVGRectElement) si);
+//                addPips(si, mech.getOInternal(Mech.LOC_CT), true, PipType.CIRCLE, 0.3, 1.72);
+            } else {
+                MegaMekLab.getLogger().error(getClass(), "PrintImage(Graphics2D, PageFormat, int)",
+                        "Region siPips does not exist in template");
+            }
         }
         
     }
@@ -666,7 +667,7 @@ public class PrintMech extends PrintEntity {
                 + " h " + (-w)
                 + " v " + h
                 + " h " + w);
-        p.setAttributeNS(null, SVGConstants.SVG_STROKE_ATTRIBUTE, "black");
+        p.setAttributeNS(null, SVGConstants.SVG_STROKE_ATTRIBUTE, FILL_BLACK);
         p.setAttributeNS(null, SVGConstants.SVG_STROKE_WIDTH_ATTRIBUTE, "0.72");
         p.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, "none");
         canvas.appendChild(p);
@@ -682,12 +683,12 @@ public class PrintMech extends PrintEntity {
         } else {
             rect = getSVGDocument().getElementById("fluffSinglePilot");
         }
-        if ((null != rect) && (rect instanceof SVGRectElement)) {
+        if (rect instanceof SVGRectElement) {
             embedImage(ImageHelper.getFluffFile(mech, ImageHelper.imageMech),
-                    (Element) ((Node) rect).getParentNode(), getRectBBox((SVGRectElement) rect), true);
+                    (Element) rect.getParentNode(), getRectBBox((SVGRectElement) rect), true);
         }
     }
-    
+
     private void drawHeatSinkPips(SVGRectElement svgRect) {
         Rectangle2D bbox = getRectBBox(svgRect);
         Element canvas = (Element) ((Node) svgRect).getParentNode();
@@ -695,7 +696,7 @@ public class PrintMech extends PrintEntity {
         int viewHeight = (int)bbox.getHeight();
         int viewX = (int)bbox.getX();
         int viewY = (int)bbox.getY();
-        
+
         int hsCount = mech.heatSinks();
 
         // r = 3.5
@@ -704,7 +705,7 @@ public class PrintMech extends PrintEntity {
         double size = 9.66;
         int cols = (int) (viewWidth / size);
         int rows = (int) (viewHeight / size);
-        
+
         // Use 10 pips/column unless there are too many sinks for the space.
         if (hsCount <= cols * 10) {
             rows = 10;
@@ -732,7 +733,37 @@ public class PrintMech extends PrintEntity {
             canvas.appendChild(pip);
         }
     }
-    
+
+    private void drawSIPips(SVGRectElement svgRect) {
+        Rectangle2D bbox = getRectBBox(svgRect);
+        Element canvas = (Element) svgRect.getParentNode();
+        int viewWidth = (int) bbox.getWidth();
+        int viewHeight = (int) bbox.getHeight();
+        int viewX = (int)bbox.getX();
+        int viewY = (int)bbox.getY();
+
+        int si = mech.getOInternal(Mech.LOC_CT);
+
+        double size = 9.2;
+        double radius = 2.8;
+        int width = (int) (viewWidth / size);
+        double strokeWidth = 1.72;
+        int row1 = Math.min(si, width);
+        int row2 = Math.max(0, si - width);
+
+        double xpos = viewX + (viewWidth - size * row1) * 0.5 + size * 0.5 - radius;
+        double ypos = viewY + (viewHeight - size * 2) * 0.5 + size * 0.5 - radius;
+        for (int p = 0; p < si; p++) {
+            if (p == width) {
+                xpos = viewX + (viewWidth - size * row2 + size - radius * 2) * 0.5;
+                ypos += viewHeight * 0.5;
+            }
+            final Element pip = createPip(xpos, ypos, radius, strokeWidth);
+            canvas.appendChild(pip);
+            xpos += size;
+        }
+    }
+
     @Override
     protected String formatWalk() {
         if (mech.hasTSM()) {

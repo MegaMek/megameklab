@@ -41,6 +41,12 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import javax.imageio.ImageIO;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.apache.batik.anim.dom.SVGDOMImplementation;
 import org.apache.batik.bridge.BridgeContext;
@@ -80,6 +86,7 @@ public abstract class PrintRecordSheet implements Printable {
     final static float FONT_SIZE_MEDIUM  = 6.76f;
     final static float FONT_SIZE_SMALL   = 6.2f;
     final static float FONT_SIZE_VSMALL  = 5.8f;
+    final static String FILL_BLACK = "#231f20";
     
     enum PipType {
         CIRCLE, DIAMOND;
@@ -228,7 +235,7 @@ public abstract class PrintRecordSheet implements Printable {
                 printImage(g2d, pageFormat, pageIndex - firstPage);
                 GraphicsNode node = build();
                 node.paint(g2d);
-                /* Testing code that outputs the generated svg
+                /* Testing code that outputs the generated svg */
                 try {
                     Transformer transformer = TransformerFactory.newInstance().newTransformer();
                     Result output = new StreamResult(new File("out.svg"));
@@ -237,7 +244,6 @@ public abstract class PrintRecordSheet implements Printable {
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
-                */
             }
         }
         return Printable.PAGE_EXISTS;
@@ -522,7 +528,7 @@ public abstract class PrintRecordSheet implements Printable {
             PipType type) {
         Element path = svgDocument.createElementNS(svgNS, SVGConstants.SVG_PATH_TAG);
         path.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, "none");
-        path.setAttributeNS(null, SVGConstants.SVG_STROKE_ATTRIBUTE, "black");
+        path.setAttributeNS(null, SVGConstants.SVG_STROKE_ATTRIBUTE, FILL_BLACK);
         path.setAttributeNS(null, SVGConstants.SVG_STROKE_WIDTH_ATTRIBUTE, Double.toString(strokeWidth));
         
         // Move to start of pip, at (1, 0)
