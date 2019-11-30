@@ -156,7 +156,7 @@ public class PrintMech extends PrintEntity {
 
         for (int loc = 0; loc < mech.locations(); loc++) {
             Element critRect = getSVGDocument().getElementById("crits_" + mech.getLocationAbbr(loc));
-            if ((null != critRect) && (critRect instanceof SVGRectElement)) {
+            if (critRect instanceof SVGRectElement) {
                 writeLocationCriticals(loc, (SVGRectElement) critRect);
             }
         }
@@ -164,7 +164,7 @@ public class PrintMech extends PrintEntity {
         hideElement("heavyDutyGyroPip", mech.getGyroType() != Mech.GYRO_HEAVY_DUTY);
         
         Element hsRect = getSVGDocument().getElementById("heatSinkPips");
-        if ((null != hsRect) && (hsRect instanceof SVGRectElement)) {
+        if (hsRect instanceof SVGRectElement) {
             drawHeatSinkPips((SVGRectElement) hsRect);
         }
 
@@ -335,7 +335,7 @@ public class PrintMech extends PrintEntity {
         if (!f.exists()) {
             return null;
         }
-        Document doc = null;
+        Document doc;
         try {
             InputStream is = new FileInputStream(f);
             DOMImplementation impl = SVGDOMImplementation.getDOMImplementation();
@@ -352,15 +352,14 @@ public class PrintMech extends PrintEntity {
                     "Failed to open pip SVG file! Path: " + f.getName());
             return null;
         }
-        NodeList nl = doc.getElementsByTagName("path");
-        return nl;
+        return doc.getElementsByTagName("path");
     }
     
     // Mech armor and structure pips require special handling for rear armor and superheavy head armor/IS
     @Override
     protected void drawArmorStructurePips() {
         final String FORMAT = "( %d )";
-        Element element = null;
+        Element element;
         boolean structComplete = (mech instanceof BipedMech) && loadISPips();
         for (int loc = 0; loc < mech.locations(); loc++) {
             boolean frontComplete = false;
@@ -390,7 +389,7 @@ public class PrintMech extends PrintEntity {
                 element = getSVGDocument().getElementById("isPips" + mech.getLocationAbbr(loc));
                 if (null != element) {
                     addPips(element, mech.getOInternal(loc),
-                            (loc == Mech.LOC_HEAD) || (loc == Mech.LOC_CT) || (loc == Mech.LOC_CLEG));
+                            (loc == Mech.LOC_CT) || (loc == Mech.LOC_CLEG));
                 }
             }
             if (mech.hasRearArmor(loc) && !rearComplete) {
@@ -457,7 +456,7 @@ public class PrintMech extends PrintEntity {
         }
         
         Rectangle2D bbox = getRectBBox(svgRect);
-        Element canvas = (Element) ((Node) svgRect).getParentNode();
+        Element canvas = (Element) svgRect.getParentNode();
         int viewWidth = (int)bbox.getWidth();
         int viewHeight = (int)bbox.getHeight();
         int viewX = (int)bbox.getX();
@@ -564,13 +563,12 @@ public class PrintMech extends PrintEntity {
     
     private void writeLocationCriticals(int loc, SVGRectElement svgRect) {
         Rectangle2D bbox = getRectBBox(svgRect);
-        Element canvas = (Element) ((Node) svgRect).getParentNode();
+        Element canvas = (Element) svgRect.getParentNode();
         int viewWidth = (int)bbox.getWidth();
         int viewHeight = (int)bbox.getHeight();
         int viewX = (int)bbox.getX();
         int viewY = (int)bbox.getY();
-        
-        double rollX = viewX;
+
         double critX = viewX + viewWidth * 0.11;
         double critWidth = viewX + viewWidth - critX;
         double gap = 0;
@@ -598,7 +596,7 @@ public class PrintMech extends PrintEntity {
             if (slot == 6) {
                 currY += gap;
             }
-            addTextElement(canvas, rollX, currY, ((slot % 6) + 1) + ".", fontSize, "start", "bold");
+            addTextElement(canvas, viewX, currY, ((slot % 6) + 1) + ".", fontSize, "start", "bold");
             CriticalSlot crit = mech.getCritical(loc, slot);
             String style = "bold";
             String fill = "#000000";
@@ -675,7 +673,7 @@ public class PrintMech extends PrintEntity {
     
     @Override
     protected void drawFluffImage() {
-        Element rect = null;
+        Element rect;
         if (mech.getCrew().getSlotCount() == 3) {
             rect = getSVGDocument().getElementById("fluffTriplePilot");
         } else if (mech.getCrew().getSlotCount() == 2) {
@@ -691,7 +689,7 @@ public class PrintMech extends PrintEntity {
 
     private void drawHeatSinkPips(SVGRectElement svgRect) {
         Rectangle2D bbox = getRectBBox(svgRect);
-        Element canvas = (Element) ((Node) svgRect).getParentNode();
+        Element canvas = (Element) svgRect.getParentNode();
         int viewWidth = (int)bbox.getWidth();
         int viewHeight = (int)bbox.getHeight();
         int viewX = (int)bbox.getX();
@@ -895,6 +893,7 @@ public class PrintMech extends PrintEntity {
                         name = mech.getCrew().getCrewType().getRoleName(mech.getCrewForCockpitSlot(Mech.LOC_HEAD, cs));
                     }
                 }
+                assert (name != null);
                 return name.replace("Standard ", "");
             }
         } else {
