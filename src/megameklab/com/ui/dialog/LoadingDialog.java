@@ -68,6 +68,8 @@ public class LoadingDialog extends JDialog {
         super(frame, "MML Loading"); //$NON-NLS-1$
         this.frame = frame;
         this.type = type;
+        this.primitive = primitive;
+        this.industrial = industrial;
         newUnit = en;
         
         setUndecorated(true);
