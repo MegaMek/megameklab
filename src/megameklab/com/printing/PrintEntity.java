@@ -328,8 +328,8 @@ public abstract class PrintEntity extends PrintRecordSheet {
      * Identifies which locations are on the unit's centerline and should have armor and structure
      * pips laid out with left-right symmetry
      * 
-     * @param loc
-     * @return
+     * @param loc The location to check
+     * @return    Whether the location is along the unit's centerline
      */
     protected abstract boolean isCenterlineLocation(int loc);
     
@@ -361,7 +361,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
             iconFile = new File("data/images/recordsheets/era_darkage.png");
         }
         Element rect = getSVGDocument().getElementById("eraIcon");
-        if ((null != rect) && (rect instanceof SVGRectElement)) {
+        if (rect instanceof SVGRectElement) {
             embedImage(iconFile,
                     (Element) ((Node) rect).getParentNode(), getRectBBox((SVGRectElement) rect), true);
         }

@@ -13,41 +13,10 @@
  */
 package megameklab.com.printing;
 
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.geom.Rectangle2D;
-import java.awt.image.RenderedImage;
-import java.awt.print.PageFormat;
-import java.awt.print.Printable;
-import java.awt.print.PrinterException;
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-
-import javax.imageio.ImageIO;
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-
+import megamek.common.EquipmentType;
+import megamek.common.logging.LogLevel;
+import megameklab.com.MegaMekLab;
+import megameklab.com.util.CConfig;
 import org.apache.batik.anim.dom.SVGDOMImplementation;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.GVTBuilder;
@@ -67,10 +36,17 @@ import org.w3c.dom.svg.SVGRectElement;
 import org.w3c.dom.xpath.XPathEvaluator;
 import org.w3c.dom.xpath.XPathResult;
 
-import megamek.common.EquipmentType;
-import megamek.common.logging.LogLevel;
-import megameklab.com.MegaMekLab;
-import megameklab.com.util.CConfig;
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.geom.Rectangle2D;
+import java.awt.image.RenderedImage;
+import java.awt.print.PageFormat;
+import java.awt.print.Printable;
+import java.awt.print.PrinterException;
+import java.io.*;
+import java.net.URLConnection;
+import java.util.List;
+import java.util.*;
 
 /**
  * Base class for rendering record sheets. This is mostly a collection of utility methods.
@@ -235,7 +211,7 @@ public abstract class PrintRecordSheet implements Printable {
                 printImage(g2d, pageFormat, pageIndex - firstPage);
                 GraphicsNode node = build();
                 node.paint(g2d);
-                /* Testing code that outputs the generated svg */
+                /* Testing code that outputs the generated svg
                 try {
                     Transformer transformer = TransformerFactory.newInstance().newTransformer();
                     Result output = new StreamResult(new File("out.svg"));
@@ -244,6 +220,7 @@ public abstract class PrintRecordSheet implements Printable {
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
+                 */
             }
         }
         return Printable.PAGE_EXISTS;
@@ -259,7 +236,7 @@ public abstract class PrintRecordSheet implements Printable {
                 MegaMekLab.getLogger().log(PrintRecordSheet.class, "build()",
                         LogLevel.WARNING, "Cannot render image: " + message);
                 DOMImplementation impl = SVGDOMImplementation.getDOMImplementation();
-                SVGDocument doc = (SVGDocument) impl.createDocument(svgNS, "svg", null);
+                SVGDocument doc = (SVGDocument) impl.createDocument(svgNS, SVGConstants.SVG_SVG_TAG, null);
                 Element text = doc.createElementNS(svgNS, SVGConstants.SVG_TEXT_TAG);
                 text.setTextContent("?");
                 doc.getDocumentElement().appendChild(text);
@@ -347,7 +324,7 @@ public abstract class PrintRecordSheet implements Printable {
      */
     protected double addTextElement(Element parent, double x, double y, String text,
             float fontSize, String anchor, String weight) {
-        return addTextElement(parent, x, y, text, fontSize, anchor, weight, "#000000");
+        return addTextElement(parent, x, y, text, fontSize, anchor, weight, FILL_BLACK);
     }
     
     /**
@@ -398,7 +375,7 @@ public abstract class PrintRecordSheet implements Printable {
      */
     protected void addTextElementToFit(Element parent, double x, double y, double width,
             String text, float fontSize, String anchor, String weight) {
-        addTextElementToFit(parent, x, y, width, text, fontSize, anchor, weight, "#000000");
+        addTextElementToFit(parent, x, y, width, text, fontSize, anchor, weight, FILL_BLACK);
     }
     
     /**
@@ -421,7 +398,7 @@ public abstract class PrintRecordSheet implements Printable {
         newText.setTextContent(text);
         newText.setAttributeNS(null, SVGConstants.SVG_X_ATTRIBUTE, String.valueOf(x));
         newText.setAttributeNS(null, SVGConstants.SVG_Y_ATTRIBUTE, String.valueOf(y));
-        newText.setAttributeNS(null, SVGConstants.SVG_FONT_FAMILY_ATTRIBUTE, "Eurostile");
+        newText.setAttributeNS(null, SVGConstants.SVG_FONT_FAMILY_ATTRIBUTE, DEFAULT_TYPEFACE);
         newText.setAttributeNS(null, SVGConstants.SVG_FONT_SIZE_ATTRIBUTE, fontSize + "px");
         newText.setAttributeNS(null, SVGConstants.SVG_FONT_WEIGHT_ATTRIBUTE, weight);
         newText.setAttributeNS(null, SVGConstants.SVG_TEXT_ANCHOR_ATTRIBUTE, anchor);
@@ -454,7 +431,7 @@ public abstract class PrintRecordSheet implements Printable {
     protected int addMultilineTextElement(Element canvas, double x, double y, double width, double lineHeight,
             String text, float fontSize, String anchor, String weight) {
         return addMultilineTextElement(canvas, x, y, width, lineHeight,
-                text, fontSize, anchor, weight, "#000000", ' ');
+                text, fontSize, anchor, weight, FILL_BLACK, ' ');
     }
     
     /**
@@ -527,7 +504,7 @@ public abstract class PrintRecordSheet implements Printable {
     protected Element createPip(double x, double y, double radius, double strokeWidth,
             PipType type) {
         Element path = svgDocument.createElementNS(svgNS, SVGConstants.SVG_PATH_TAG);
-        path.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, "none");
+        path.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, SVGConstants.SVG_NONE_VALUE);
         path.setAttributeNS(null, SVGConstants.SVG_STROKE_ATTRIBUTE, FILL_BLACK);
         path.setAttributeNS(null, SVGConstants.SVG_STROKE_WIDTH_ATTRIBUTE, Double.toString(strokeWidth));
         
@@ -627,7 +604,7 @@ public abstract class PrintRecordSheet implements Printable {
         
         int maxWidth = 0;
         
-        Collections.sort(regions, (r1, r2) -> (int) r1.getY() - (int) r2.getY());
+        regions.sort(Comparator.comparingInt(r -> (int) r.getY()));
         // Maximum number of pips that can be displayed on each row
         int[] rowLength = null;
         int[][] halfPipCount = null;
