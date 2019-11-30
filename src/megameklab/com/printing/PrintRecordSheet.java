@@ -63,6 +63,7 @@ public abstract class PrintRecordSheet implements Printable {
     final static float FONT_SIZE_SMALL   = 6.2f;
     final static float FONT_SIZE_VSMALL  = 5.8f;
     final static String FILL_BLACK = "#231f20";
+    final static String FILL_GREY = "#3f3f3f";
     
     enum PipType {
         CIRCLE, DIAMOND;

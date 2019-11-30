@@ -172,10 +172,9 @@ public class PrintMech extends PrintEntity {
             Element si = getSVGDocument().getElementById("siPips");
             if (si instanceof SVGRectElement) {
                 drawSIPips((SVGRectElement) si);
-//                addPips(si, mech.getOInternal(Mech.LOC_CT), true, PipType.CIRCLE, 0.3, 1.72);
             } else {
                 MegaMekLab.getLogger().error(getClass(), "PrintImage(Graphics2D, PageFormat, int)",
-                        "Region siPips does not exist in template");
+                        "Region siPips does not exist in template or is not a <rect>");
             }
         }
         
@@ -196,12 +195,10 @@ public class PrintMech extends PrintEntity {
                 }
                 element = getSVGDocument().getElementById("shieldDC" + loc);
                 if (null != element) {
-                    hideElement(element, false);
                     addPips(element, m.getBaseDamageCapacity(), false, PipType.CIRCLE);
                 }
                 element = getSVGDocument().getElementById("shieldDA" + loc);
                 if (null != element) {
-                    hideElement(element, false);
                     addPips(element, m.getBaseDamageAbsorptionRate(), false, PipType.DIAMOND);
                 }
             }
@@ -352,7 +349,7 @@ public class PrintMech extends PrintEntity {
                     "Failed to open pip SVG file! Path: " + f.getName());
             return null;
         }
-        return doc.getElementsByTagName("path");
+        return doc.getElementsByTagName(SVGConstants.SVG_PATH_TAG);
     }
     
     // Mech armor and structure pips require special handling for rear armor and superheavy head armor/IS
@@ -556,7 +553,8 @@ public class PrintMech extends PrintEntity {
                         "Quirks: " + quirksText, fontSize, "start", "normal");
             }
             svgGroup.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
-                    String.format("translate(0,%f)", viewY + viewHeight - lines * lineHeight));
+                    String.format("%s(0,%f)", SVGConstants.SVG_TRANSLATE_VALUE,
+                            viewY + viewHeight - lines * lineHeight));
         }        
 
     }
@@ -586,9 +584,10 @@ public class PrintMech extends PrintEntity {
         
         double x = viewX + viewWidth * 0.075;
         x += addTextElement(canvas, x, viewY - 1, mech.getLocationName(loc),
-                fontSize * 1.25f, "start", "bold");
+                fontSize * 1.25f, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_BOLD_VALUE);
         if (mech.isClan() && UnitUtil.hasAmmo(mech, loc) && !mech.hasCASEII(loc)) {
-            addTextElement(canvas, x + fontSize / 2, viewY - 1, "(CASE)", fontSize, "start", "normal");
+            addTextElement(canvas, x + fontSize / 2, viewY - 1, "(CASE)", fontSize,
+                    SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
         }
         
         for (int slot = 0; slot < mech.getNumberOfCriticals(loc); slot++) {
@@ -598,13 +597,13 @@ public class PrintMech extends PrintEntity {
             }
             addTextElement(canvas, viewX, currY, ((slot % 6) + 1) + ".", fontSize, "start", "bold");
             CriticalSlot crit = mech.getCritical(loc, slot);
-            String style = "bold";
-            String fill = "#000000";
+            String style = SVGConstants.SVG_BOLD_VALUE;
+            String fill = FILL_BLACK;
             if ((null == crit)
                     || ((crit.getType() == CriticalSlot.TYPE_EQUIPMENT)
                             && (!crit.getMount().getType().isHittable()))) {
-                style = "standard";
-                fill = "#3f3f3f";
+                style = SVGConstants.SVG_NORMAL_VALUE;
+                fill = FILL_GREY;
                 addTextElementToFit(canvas, critX, currY, critWidth, formatCritName(crit), fontSize, "start", style, fill);
             } else if (crit.isArmored()) {
                 Element pip = createPip(critX, currY - fontSize * 0.8, fontSize * 0.4, 0.7);
@@ -632,7 +631,8 @@ public class PrintMech extends PrintEntity {
                     x += spacing;
                 }
             } else {
-                addTextElement(canvas, critX, currY, formatCritName(crit), fontSize, "start", style, fill);
+                addTextElement(canvas, critX, currY, formatCritName(crit), fontSize,
+                        SVGConstants.SVG_START_VALUE, style, fill);
             }
             Mounted m = null;
             if ((null != crit) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)
@@ -667,7 +667,7 @@ public class PrintMech extends PrintEntity {
                 + " h " + w);
         p.setAttributeNS(null, SVGConstants.SVG_STROKE_ATTRIBUTE, FILL_BLACK);
         p.setAttributeNS(null, SVGConstants.SVG_STROKE_WIDTH_ATTRIBUTE, "0.72");
-        p.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, "none");
+        p.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, SVGConstants.SVG_NONE_VALUE);
         canvas.appendChild(p);
     }
     
@@ -982,5 +982,4 @@ public class PrintMech extends PrintEntity {
         }
         buffer.trimToSize();
     }
-
 }
