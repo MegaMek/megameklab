@@ -1115,6 +1115,8 @@ public class UnitUtil {
                         || eq.hasFlag(MiscType.F_MASS)
                         || eq.hasFlag(MiscType.F_CHASSIS_MODIFICATION)
                         || eq.hasFlag(MiscType.F_MASH_EXTRA)
+                        || eq.hasFlag(MiscType.F_HITCH)
+                        || eq.hasFlag(MiscType.F_CHASSIS_MODIFICATION)
                         || eq.hasFlag(MiscType.F_DRONE_EXTRA) || eq
                             .hasFlag(MiscType.F_SPONSON_TURRET))) {
             return false;

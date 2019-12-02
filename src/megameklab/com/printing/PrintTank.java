@@ -15,6 +15,12 @@ package megameklab.com.printing;
 
 import megamek.common.*;
 
+import java.text.DecimalFormat;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.StringJoiner;
+import java.util.stream.Collectors;
+
 /**
  * Configures record sheet for ground combat and support vehicles.
  */
@@ -79,8 +85,8 @@ public class PrintTank extends PrintEntity {
     protected String getRecordSheetTitle() {
         StringBuilder sb = new StringBuilder();
         if (tank.isSupportVehicle()) {
-            sb.append(EntityWeightClass.getWeightClass(tank.getWeight(), tank))
-                    .append(" ");
+            // Only take the first word; strip "Support Vehicles"
+            sb.append(tank.getWeightClassName().replaceAll(" .*", " "));
         } else if (tank.isSuperHeavy()) {
             sb.append("SuperHeavy ");
         }
@@ -114,12 +120,35 @@ public class PrintTank extends PrintEntity {
         super.writeTextFields();
         setTextField(MOVEMENT_TYPE, tank.getMovementModeAsString());
         setTextField(ENGINE_TYPE, tank.getEngine().getEngineName()
-                .replaceAll("\\d+|\\[.*\\]", "").trim());
+                .replaceAll("\\d+|\\[.*]", "").trim());
         if (tank.getOriginalJumpMP() > 0) {
             setTextField(MP_JUMP, tank.getOriginalJumpMP());
         } else {
             hideElement(MP_JUMP, true);
             hideElement(LBL_JUMP, true);
         }
+    }
+
+    @Override
+    protected String formatFeatures() {
+        StringJoiner sj = new StringJoiner(", ");
+        for (Mounted m : tank.getMisc()) {
+            if (m.getType().hasFlag(MiscType.F_CHASSIS_MODIFICATION)) {
+                sj.add(m.getType().getShortName());
+            }
+        }
+        Map<String, Double> transport = new HashMap<>();
+        for (Transporter t : tank.getTransports()) {
+            if (t instanceof TroopSpace) {
+                transport.merge("Infantry Bay", t.getUnused(), Double::sum);
+            } else if (t instanceof Bay) {
+                transport.merge(((Bay) t).getType(), ((Bay) t).getCapacity(), Double::sum);
+            }
+        }
+        for (Map.Entry<String, Double> e : transport.entrySet()) {
+            sj.add(e.getKey() + " (" + DecimalFormat.getInstance().format(e.getValue())
+                    + ((e.getValue() == 1)? " ton)" : " tons)"));
+        }
+        return sj.toString();
     }
 }
