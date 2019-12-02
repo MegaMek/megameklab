@@ -54,7 +54,7 @@ import java.util.*;
  * @author Neoancient
  *
  */
-public abstract class PrintRecordSheet implements Printable {
+public abstract class PrintRecordSheet implements Printable, IdConstants {
     
     final static String DEFAULT_TYPEFACE = "Eurostile";
     final static float DEFAULT_PIP_SIZE  = 0.38f;
