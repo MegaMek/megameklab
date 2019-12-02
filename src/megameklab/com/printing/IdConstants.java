@@ -24,7 +24,7 @@ public interface IdConstants {
     String MP_WALK = "mpWalk";
     String MP_RUN = "mpRun";
     String MP_JUMP = "mpJump";
-    String MP_JUMP_LABEL = "mpJumpLabel";
+    String LBL_JUMP = "lblJump";
     String MP_CRUISE = "mpCruise";
     String MP_FLANK = "mpFlank";
     String MP_SAFE_THRUST = "mpSafeThrust";
@@ -34,6 +34,8 @@ public interface IdConstants {
     String MP_AIRMECH_CRUISE = "mpAirMechCruise";
     String MP_AIRMECH_FLANK = "mpAirMechFlank";
     String LBL_VEE_MODE = "lblVeeMode";
+    String MOVEMENT_TYPE = "movementType";
+    String ENGINE_TYPE = "engineType";
     String TONNAGE = "tonnage";
     String TECH_BASE = "techBase";
     String RULES_LEVEL = "rulesLevel";

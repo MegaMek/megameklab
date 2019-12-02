@@ -210,7 +210,7 @@ public class PrintMech extends PrintEntity {
         hideUnusedCrewElements();
         super.writeTextFields();
         if (mech.hasUMU()) {
-            Element svgEle = getSVGDocument().getElementById(MP_JUMP_LABEL);
+            Element svgEle = getSVGDocument().getElementById(LBL_JUMP);
             if (null != svgEle) {
                 svgEle.setTextContent("Underwater:");
             }

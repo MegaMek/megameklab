@@ -108,4 +108,18 @@ public class PrintTank extends PrintEntity {
         sb.append(" Record Sheet");
         return sb.toString();
     }
+
+    @Override
+    protected void writeTextFields() {
+        super.writeTextFields();
+        setTextField(MOVEMENT_TYPE, tank.getMovementModeAsString());
+        setTextField(ENGINE_TYPE, tank.getEngine().getEngineName()
+                .replaceAll("\\d+|\\[.*\\]", "").trim());
+        if (tank.getOriginalJumpMP() > 0) {
+            setTextField(MP_JUMP, tank.getOriginalJumpMP());
+        } else {
+            hideElement(MP_JUMP, true);
+            hideElement(LBL_JUMP, true);
+        }
+    }
 }
