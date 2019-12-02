@@ -19,10 +19,6 @@ import java.awt.print.PageFormat;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
 
 import org.apache.batik.anim.dom.SVGDOMImplementation;
 import org.apache.batik.dom.util.SAXDocumentFactory;
@@ -51,7 +47,6 @@ import megamek.common.QuadVee;
 import megamek.common.annotations.Nullable;
 import megameklab.com.MegaMekLab;
 import megameklab.com.util.ImageHelper;
-import megameklab.com.util.RecordSheetEquipmentLine;
 import megameklab.com.util.UnitUtil;
 
 /**
@@ -250,22 +245,12 @@ public class PrintMech extends PrintEntity {
         }
     }
 
-    private void hideUnusedCrewElements() {
-        final String[] NAMES = {SINGLE, DUAL, TRIPLE};
-        for (int i = 0; i < 3; i++) {
-            hideElement(WARRIOR_DATA + NAMES[i], getEntity().getCrew().getSlotCount() != i + 1);
-            final boolean hide = i >= getEntity().getCrew().getSlotCount();
-            hideElement(CREW_DAMAGE + i, hide);
-            hideElement(PILOT_NAME + i, hide);
-            hideElement(BLANK_CREW_NAME + i, hide || showPilotInfo());
-            hideElement(CREW_NAME + i, hide);
-            hideElement(GUNNERY_SKILL + i, hide);
-            hideElement(BLANK_GUNNERY_SKILL + i, hide || showPilotInfo());
-            hideElement(GUNNERY_SKILL_TEXT + i, hide);
-            hideElement(PILOTING_SKILL + i, hide);
-            hideElement(BLANK_PILOTING_SKILL + i, hide || showPilotInfo());
-            hideElement(PILOTING_SKILL_TEXT + i, hide);
-        }
+    @Override
+    protected void hideUnusedCrewElements() {
+        super.hideUnusedCrewElements();
+        hideElement(WARRIOR_DATA_SINGLE, getEntity().getCrew().getSlotCount() != 1);
+        hideElement(WARRIOR_DATA_DUAL, getEntity().getCrew().getSlotCount() != 2);
+        hideElement(WARRIOR_DATA_TRIPLE, getEntity().getCrew().getSlotCount() != 3);
     }
 
     private boolean loadArmorPips(int loc, boolean rear) {

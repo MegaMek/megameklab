@@ -169,6 +169,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
         if (getEntity().getCrew().getCrewType() != CrewType.SINGLE) {
             build();
         }
+        hideUnusedCrewElements();
         for (int i = 0; i < getEntity().getCrew().getSlotCount(); i++) {
             // If we have multiple named crew for the unit, change the "Name:" label to
             // the label of the slot. This will usually require adjusting the position of the
@@ -251,7 +252,23 @@ public abstract class PrintEntity extends PrintRecordSheet {
             }
         }
     }
-    
+
+    protected void hideUnusedCrewElements() {
+        for (int i = 0; i < 3; i++) {
+            final boolean hide = i >= getEntity().getCrew().getSlotCount();
+            hideElement(CREW_DAMAGE + i, hide);
+            hideElement(PILOT_NAME + i, hide);
+            hideElement(BLANK_CREW_NAME + i, hide || showPilotInfo());
+            hideElement(CREW_NAME + i, hide);
+            hideElement(GUNNERY_SKILL + i, hide);
+            hideElement(BLANK_GUNNERY_SKILL + i, hide || showPilotInfo());
+            hideElement(GUNNERY_SKILL_TEXT + i, hide);
+            hideElement(PILOTING_SKILL + i, hide);
+            hideElement(BLANK_PILOTING_SKILL + i, hide || showPilotInfo());
+            hideElement(PILOTING_SKILL_TEXT + i, hide);
+        }
+    }
+
     protected void drawArmor() {
         if (!getEntity().hasPatchworkArmor()) {
             if ((AT_SPECIAL & (1 << getEntity().getArmorType(1))) != 0) {

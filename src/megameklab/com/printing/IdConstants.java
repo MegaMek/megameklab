@@ -62,10 +62,9 @@ public interface IdConstants {
     String ASF_BLANK_GUNNERY_SKILL = "asfBlankGunnerySkill";
     String ASF_BLANK_PILOTING_SKILL = "asfBlankPilotingSkill";
     String SPAS = "spas";
-    String SINGLE = "Single";
-    String DUAL = "Dual";
-    String TRIPLE = "Triple";
-    String WARRIOR_DATA = "warriorData";
+    String WARRIOR_DATA_SINGLE = "warriorDataSingle";
+    String WARRIOR_DATA_DUAL = "warriorDataDual";
+    String WARRIOR_DATA_TRIPLE = "warriorDataTriple";
     String CREW_DAMAGE = "crewDamage";
 
     String FLUFF_SINGLE_PILOT = "fluffSinglePilot";
