@@ -62,6 +62,7 @@ import megamek.common.Tank;
 import megamek.common.VTOL;
 import megameklab.com.printing.PrintCapitalShip;
 import megameklab.com.printing.PrintMech;
+import megameklab.com.printing.PrintTank;
 import megameklab.com.printing.PrintTask;
 import megameklab.com.ui.Aero.Printing.PrintAero;
 import megameklab.com.ui.Aero.Printing.PrintConventionalFighter;
@@ -182,6 +183,8 @@ public class UnitPrintManager {
                 unprintable.add(unit);
                 //book.append(new PrintNavalVehicle((Tank) unit), pageFormat);
             } else if (unit instanceof Tank) {
+                book.append(new PrintTank((Tank) unit, book.getNumberOfPages()), pageFormat);
+                /*
                 if (!((Tank) unit).hasNoDualTurret()) {
                     if (singlePrint) {
                         book.append(new PrintDualTurretVehicle((Tank) unit,  null), pageFormat);
@@ -201,6 +204,7 @@ public class UnitPrintManager {
                         tank1 = (Tank) unit;
                     }
                 }
+                 */
             } else if (unit.hasETypeFlag(Entity.ETYPE_AERO)) {
                 if (unit instanceof Jumpship) {
                     PrintCapitalShip pcs = new PrintCapitalShip((Jumpship) unit, book.getNumberOfPages());
