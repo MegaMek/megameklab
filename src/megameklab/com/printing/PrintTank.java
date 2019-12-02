@@ -14,7 +14,11 @@
 package megameklab.com.printing;
 
 import megamek.common.*;
+import megameklab.com.util.ImageHelper;
+import org.w3c.dom.Element;
+import org.w3c.dom.svg.SVGRectElement;
 
+import java.io.File;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
@@ -150,5 +154,27 @@ public class PrintTank extends PrintEntity {
                     + ((e.getValue() == 1)? " ton)" : " tons)"));
         }
         return sj.toString();
+    }
+
+    @Override
+    protected void drawFluffImage() {
+        File f;
+        if (tank.getMovementMode().equals(EntityMovementMode.NAVAL)
+                || tank.getMovementMode().equals(EntityMovementMode.HYDROFOIL)
+                || tank.getMovementMode().equals(EntityMovementMode.SUBMARINE)) {
+            f = ImageHelper.getFluffFile(tank, ImageHelper.imageNaval);
+        } else if (tank instanceof LargeSupportTank) {
+            f = ImageHelper.getFluffFile(tank, ImageHelper.imageLargeSupportVehicle);
+        } else {
+            f = ImageHelper.getFluffFile(tank, ImageHelper.imageVehicle);
+        }
+        if (null != f) {
+            Element rect = getSVGDocument().getElementById(FLUFF_IMAGE);
+            if (rect instanceof SVGRectElement) {
+                embedImage(ImageHelper.getFluffFile(tank, ImageHelper.imageVehicle),
+                        (Element) rect.getParentNode(), getRectBBox((SVGRectElement) rect), true);
+            }
+            hideElement(getSVGDocument().getElementById(NOTES));
+        }
     }
 }

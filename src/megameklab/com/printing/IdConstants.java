@@ -67,9 +67,11 @@ public interface IdConstants {
     String WARRIOR_DATA_TRIPLE = "warriorDataTriple";
     String CREW_DAMAGE = "crewDamage";
 
+    String FLUFF_IMAGE = "fluffImage";
     String FLUFF_SINGLE_PILOT = "fluffSinglePilot";
     String FLUFF_DUAL_PILOT = "fluffDualPilot";
     String FLUFF_TRIPLE_PILOT = "fluffTriplePilot";
+    String NOTES = "notes";
 
     String ARMOR_TYPE = "armorType";
     String ARMOR_TYPE_2 = "armorType2";
