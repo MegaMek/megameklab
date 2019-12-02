@@ -309,7 +309,7 @@
                                       /><path fill="#ffffff" d="M 0.0,8.214 L 5.475,0.000 l 69.856,0.000 l 5.475,8.214 L 208.000,8.214 L 208.000,278.315 l -5.475,8.214 L 104.000,286.529 l -5.475,-8.214 L 7.845,278.315 l -7.845,-7.600 Z" stroke-width="1.932" stroke-linejoin="round" stroke="#231f20"
                                       /><g transform="translate (2.5,3.0)"
                                       ><path fill="#000000" d="M 0,7.500 l 4.999,-7.500 l 65.856,0 l 4.999,7.500 l -4.999,7.500 l -65.856,0 Z"
-                                        /><text x="7.993" font-size="10.600" y="11.250" text-anchor="start" fill="#ffffff" font-family="Eurostile" font-weight="bold"
+                                        /><text x="7.993" font-size="10.600" y="11.250" text-anchor="start" fill="#ffffff" font-family="Eurostile" font-weight="bold" textLength="59.869" lengthAdjust="spacingAndGlyphs"
                                         >'MECH DATA</text
                                       ></g
                                     ></g
@@ -376,7 +376,7 @@
                                       /><path fill="#ffffff" d="M 0.0,8.214 L 5.475,0.000 l 87.637,0.000 l 5.475,8.214 L 136.000,8.214 L 136.000,75.400 l -7.845,7.600 L 0.000,83.000 Z" stroke-width="1.932" stroke-linejoin="round" stroke="#231f20"
                                       /><g transform="translate (2.5,3.0)"
                                       ><path fill="#000000" d="M 0,7.500 l 4.999,-7.500 l 83.637,0 l 4.999,7.500 l -4.999,7.500 l -83.637,0 Z"
-                                        /><text x="8.801" font-size="10.600" y="11.250" text-anchor="start" fill="#ffffff" font-family="Eurostile" font-weight="bold"
+                                        /><text x="8.801" font-size="10.600" y="11.250" text-anchor="start" fill="#ffffff" font-family="Eurostile" font-weight="bold" textLength="76.034" lengthAdjust="spacingAndGlyphs"
                                         >WARRIOR DATA</text
                                       ></g
                                     ></g
@@ -388,7 +388,7 @@
                                       /><path fill="#ffffff" d="M 0.0,8.214 L 5.475,0.000 l 87.637,0.000 l 5.475,8.214 L 136.000,8.214 L 136.000,127.400 l -7.845,7.600 L 0.000,135.000 Z" stroke-width="1.932" stroke-linejoin="round" stroke="#231f20"
                                       /><g transform="translate (2.5,3.0)"
                                       ><path fill="#000000" d="M 0,7.500 l 4.999,-7.500 l 83.637,0 l 4.999,7.500 l -4.999,7.500 l -83.637,0 Z"
-                                        /><text x="8.801" font-size="10.600" y="11.250" text-anchor="start" fill="#ffffff" font-family="Eurostile" font-weight="bold"
+                                        /><text x="8.801" font-size="10.600" y="11.250" text-anchor="start" fill="#ffffff" font-family="Eurostile" font-weight="bold" textLength="76.034" lengthAdjust="spacingAndGlyphs"
                                         >WARRIOR DATA</text
                                       ></g
                                     ></g
@@ -495,7 +495,7 @@
                                   ><g transform="translate (396.000 36.000)"
                                   ><g transform="translate (48.00430113943587,0.0)"
                                     ><path fill="#000000" d="M 0,5.625 l 3.749,-5.625 l 76.493,0 l 3.749,5.625 l -3.749,5.625 l -76.493,0 Z"
-                                      /><text x="7.226" font-size="8.600" y="8.438" text-anchor="start" fill="#ffffff" font-family="Eurostile" font-weight="bold"
+                                      /><text x="7.226" font-size="8.600" y="8.438" text-anchor="start" fill="#ffffff" font-family="Eurostile" font-weight="bold" textLength="69.539" lengthAdjust="spacingAndGlyphs"
                                       >ARMOR DIAGRAM</text
                                     ></g
                                     ><g transform="matrix(1.021 0 0 1.021 5.164 3.000)"
@@ -972,7 +972,7 @@
                                             /><path fill="#ffffff" d="M 0.0,8.214 L 5.475,0.000 l 87.057,0.000 l 5.475,8.214 L 344.335,8.214 l 7.845,7.600 L 352.180,337.400 l -7.845,7.600 L 7.845,345.000 l -7.845,-7.600 Z" stroke-width="1.932" stroke-linejoin="round" stroke="#231f20"
                                             /><g transform="translate (2.5,3.0)"
                                             ><path fill="#000000" d="M 0,7.500 l 4.999,-7.500 l 83.057,0 l 4.999,7.500 l -4.999,7.500 l -83.057,0 Z"
-                                              /><text x="8.774" font-size="10.600" y="11.250" text-anchor="start" fill="#ffffff" font-family="Eurostile" font-weight="bold"
+                                              /><text x="8.774" font-size="10.600" y="11.250" text-anchor="start" fill="#ffffff" font-family="Eurostile" font-weight="bold" textLength="75.506" lengthAdjust="spacingAndGlyphs"
                                               >CRITICAL TABLE</text
                                             ></g
                                           ></g
@@ -997,21 +997,21 @@
                                           >4-6</text
                                           ><rect fill="none" x="131.393" width="86.393" id="crits_CT" height="98.100" y="94.845"
                                           /><g transform="translate (122.625 196.215)"
-                                          ><text x="55.930" font-size="8.600" y="12.000" text-anchor="end" fill="#231f20" font-family="Eurostile" font-weight="bold"
+                                          ><text x="55.930" font-size="8.600" y="12.000" text-anchor="end" fill="#231f20" font-family="Eurostile" font-weight="bold" textLength="41.995" lengthAdjust="spacingAndGlyphs"
                                             >Engine Hits</text
                                             ><path fill="none" d="M64.33019104003905,9.2 c 0.000 -1.545,-1.255 -2.800,-2.800 -2.800 c -1.545 0.000,-2.800 1.255,-2.800 2.800 c 0.000 1.545,1.255 2.800,2.800 2.800 c 1.545 0.000,2.800 -1.255,2.800 -2.800" stroke-width="1.72" stroke="#231f20"
                                             /><path fill="none" d="M73.53019104003906,9.2 c 0.000 -1.545,-1.255 -2.800,-2.800 -2.800 c -1.545 0.000,-2.800 1.255,-2.800 2.800 c 0.000 1.545,1.255 2.800,2.800 2.800 c 1.545 0.000,2.800 -1.255,2.800 -2.800" stroke-width="1.72" stroke="#231f20"
                                             /><path fill="none" d="M82.73019104003905,9.2 c 0.000 -1.545,-1.255 -2.800,-2.800 -2.800 c -1.545 0.000,-2.800 1.255,-2.800 2.800 c 0.000 1.545,1.255 2.800,2.800 2.800 c 1.545 0.000,2.800 -1.255,2.800 -2.800" stroke-width="1.72" stroke="#231f20"
-                                            /><text x="55.930" font-size="8.600" y="21.000" text-anchor="end" fill="#231f20" font-family="Eurostile" font-weight="bold"
+                                            /><text x="55.930" font-size="8.600" y="21.000" text-anchor="end" fill="#231f20" font-family="Eurostile" font-weight="bold" textLength="34.811" lengthAdjust="spacingAndGlyphs"
                                             >Gyro Hits</text
                                             ><path fill="none" d="M64.33019104003905,18.2 c 0.000 -1.545,-1.255 -2.800,-2.800 -2.800 c -1.545 0.000,-2.800 1.255,-2.800 2.800 c 0.000 1.545,1.255 2.800,2.800 2.800 c 1.545 0.000,2.800 -1.255,2.800 -2.800" stroke-width="1.72" stroke="#231f20"
                                             /><path fill="none" d="M73.53019104003906,18.2 c 0.000 -1.545,-1.255 -2.800,-2.800 -2.800 c -1.545 0.000,-2.800 1.255,-2.800 2.800 c 0.000 1.545,1.255 2.800,2.800 2.800 c 1.545 0.000,2.800 -1.255,2.800 -2.800" stroke-width="1.72" stroke="#231f20"
                                             /><path fill="none" id="heavyDutyGyroPip" d="M82.73019104003905,18.2 c 0.000 -1.545,-1.255 -2.800,-2.800 -2.800 c -1.545 0.000,-2.800 1.255,-2.800 2.800 c 0.000 1.545,1.255 2.800,2.800 2.800 c 1.545 0.000,2.800 -1.255,2.800 -2.800" stroke-width="1.72" visibility="hidden" stroke="#231f20"
-                                            /><text x="55.930" font-size="8.600" y="30.000" text-anchor="end" fill="#231f20" font-family="Eurostile" font-weight="bold"
+                                            /><text x="55.930" font-size="8.600" y="30.000" text-anchor="end" fill="#231f20" font-family="Eurostile" font-weight="bold" textLength="43.825" lengthAdjust="spacingAndGlyphs"
                                             >Sensor Hits</text
                                             ><path fill="none" d="M64.33019104003905,27.2 c 0.000 -1.545,-1.255 -2.800,-2.800 -2.800 c -1.545 0.000,-2.800 1.255,-2.800 2.800 c 0.000 1.545,1.255 2.800,2.800 2.800 c 1.545 0.000,2.800 -1.255,2.800 -2.800" stroke-width="1.72" stroke="#231f20"
                                             /><path fill="none" d="M73.53019104003906,27.2 c 0.000 -1.545,-1.255 -2.800,-2.800 -2.800 c -1.545 0.000,-2.800 1.255,-2.800 2.800 c 0.000 1.545,1.255 2.800,2.800 2.800 c 1.545 0.000,2.800 -1.255,2.800 -2.800" stroke-width="1.72" stroke="#231f20"
-                                            /><text x="55.930" font-size="8.600" y="39.000" text-anchor="end" fill="#231f20" font-family="Eurostile" font-weight="bold"
+                                            /><text x="55.930" font-size="8.600" y="39.000" text-anchor="end" fill="#231f20" font-family="Eurostile" font-weight="bold" textLength="45.633" lengthAdjust="spacingAndGlyphs"
                                             >Life Support</text
                                             ><path fill="none" d="M64.33019104003905,36.199999999999996 c 0.000 -1.545,-1.255 -2.800,-2.800 -2.800 c -1.545 0.000,-2.800 1.255,-2.800 2.800 c 0.000 1.545,1.255 2.800,2.800 2.800 c 1.545 0.000,2.800 -1.255,2.800 -2.800" stroke-width="1.72" stroke="#231f20"
                                             /><path fill="none" d="M 6.000,9.780 c 0,-3.750 3.030,-6.780 6.780,-6.780 l 72.370,0 c 3.750,0 6.780,3.030, 6.780,6.780 l 0,28.440 c 0,3.750 -3.030,6.780, -6.780,6.780 l -72.370,0 c -3.750,0 -6.780,-3.030, -6.780,-6.780Z" stroke-width="0.92" stroke-linejoin="round" stroke="#231f20"
@@ -1250,7 +1250,7 @@
                                         ><g transform="translate (396.000 386.000)"
                                         ><g transform="translate (5.883062430939773,0.0)"
                                           ><path fill="#000000" d="M 0,5.625 l 3.749,-5.625 l 140.735,0 l 3.749,5.625 l -3.749,5.625 l -140.735,0 Z"
-                                            /><text x="10.146" font-size="8.600" y="8.438" text-anchor="start" fill="#ffffff" font-family="Eurostile" font-weight="bold"
+                                            /><text x="10.146" font-size="8.600" y="8.438" text-anchor="start" fill="#ffffff" font-family="Eurostile" font-weight="bold" textLength="127.941" lengthAdjust="spacingAndGlyphs"
                                             >INTERNAL STRUCTURE DIAGRAM</text
                                           ></g
                                           ><g transform="matrix(1.017 0 0 1.017 0.917 12.250)"
@@ -1534,7 +1534,7 @@
                                                 /><path fill="#ffffff" d="M 0.0,8.214 L 5.475,0.000 l 63.500,0.000 l 5.475,8.214 L 144.155,8.214 l 7.845,7.600 L 152.000,163.900 l -7.845,7.600 L 7.845,171.500 l -7.845,-7.600 Z" stroke-width="1.932" stroke-linejoin="round" stroke="#231f20"
                                                 /><g transform="translate (2.5,3.0)"
                                                 ><path fill="#000000" d="M 0,7.500 l 4.999,-7.500 l 59.500,0 l 4.999,7.500 l -4.999,7.500 l -59.500,0 Z"
-                                                  /><text x="7.704" font-size="10.600" y="11.250" text-anchor="start" fill="#ffffff" font-family="Eurostile" font-weight="bold"
+                                                  /><text x="7.704" font-size="10.600" y="11.250" text-anchor="start" fill="#ffffff" font-family="Eurostile" font-weight="bold" textLength="54.091" lengthAdjust="spacingAndGlyphs"
                                                   >HEAT DATA</text
                                                 ></g
                                               ></g
