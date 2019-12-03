@@ -330,8 +330,12 @@ public abstract class PrintEntity extends PrintRecordSheet {
                 element = getSVGDocument().getElementById(ARMOR_PIPS + getEntity().getLocationAbbr(loc));
             }
             if (null != element) {
+                ArmorPipLayout.addPips(this, element, getEntity().getOArmor(loc),
+                        PipType.forAT(getEntity().getArmorType(loc)), 0.5);
+                /*
                 addPips(element, getEntity().getOArmor(loc), isCenterlineLocation(loc),
                         PipType.forAT(getEntity().getArmorType(loc)));
+                 */
             }
         }
     }
