@@ -28,6 +28,7 @@ import org.apache.batik.anim.dom.SVGLocatableSupport;
 import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.svg.SVGRect;
 import org.w3c.dom.svg.SVGRectElement;
 import org.w3c.dom.svg.SVGTextContentElement;
 
@@ -127,7 +128,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
         drawArmor();
         drawStructure();
         Element eqRect = getSVGDocument().getElementById("inventory");
-        if ((null != eqRect) && (eqRect instanceof SVGRectElement)) {
+        if (eqRect instanceof SVGRectElement) {
             writeEquipment((SVGRectElement) eqRect);
         }
         if (options.showEraIcon()) {
@@ -213,8 +214,8 @@ public abstract class PrintEntity extends PrintRecordSheet {
                     }
                 }
                 if (spaList.length() > 0) {
-                    Element rect = getSVGDocument().getElementById("spas" + getEntity().getCrew().getSlotCount());
-                    if ((null != rect) && (rect instanceof SVGRectElement)) {
+                    Element rect = getSVGDocument().getElementById("spas" + (getEntity().getCrew().getSlotCount() - 1));
+                    if (rect instanceof SVGRectElement) {
                         Rectangle2D bbox = getRectBBox((SVGRectElement) rect);
                         Element canvas = (Element) ((Node) rect).getParentNode();
                         String spaText = "Abilities: " + spaList.toString();
@@ -236,9 +237,10 @@ public abstract class PrintEntity extends PrintRecordSheet {
                 if (nameOffset != 0) {
                     Element element = getSVGDocument().getElementById("blankCrewName" + i);
                     if (null != element) {
-                        float w = ((SVGGraphicsElement) element).getBBox().getWidth();
+                        SVGRect rect = ((SVGGraphicsElement) element).getBBox();
                         element.setAttributeNS(null, SVGConstants.SVG_D_ATTRIBUTE,
-                                String.format("M %f,0 %f,0", nameOffset, w - nameOffset));
+                                String.format("M %f,%f %f,%f", rect.getX() + nameOffset, rect.getY(),
+                                        rect.getX() + rect.getWidth(), rect.getY()));
                     }
                 }
             }
@@ -326,8 +328,8 @@ public abstract class PrintEntity extends PrintRecordSheet {
      * Identifies which locations are on the unit's centerline and should have armor and structure
      * pips laid out with left-right symmetry
      * 
-     * @param loc
-     * @return
+     * @param loc The location to check
+     * @return    Whether the location is along the unit's centerline
      */
     protected abstract boolean isCenterlineLocation(int loc);
     
@@ -359,7 +361,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
             iconFile = new File("data/images/recordsheets/era_darkage.png");
         }
         Element rect = getSVGDocument().getElementById("eraIcon");
-        if ((null != rect) && (rect instanceof SVGRectElement)) {
+        if (rect instanceof SVGRectElement) {
             embedImage(iconFile,
                     (Element) ((Node) rect).getParentNode(), getRectBBox((SVGRectElement) rect), true);
         }
