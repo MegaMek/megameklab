@@ -131,6 +131,11 @@ public class PrintTank extends PrintEntity {
             hideElement(MP_JUMP, true);
             hideElement(LBL_JUMP, true);
         }
+        if (tank.getMovementMode().equals(EntityMovementMode.TRACKED)) {
+            hideElement(TRACKS, false);
+        } else if (tank.getMovementMode().equals(EntityMovementMode.WHEELED)) {
+            hideElement(WHEELS, false);
+        }
     }
 
     @Override

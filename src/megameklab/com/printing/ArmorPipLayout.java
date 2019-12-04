@@ -61,6 +61,35 @@ class ArmorPipLayout {
         }
     }
 
+    /**
+     * Processes the <code>rect</code> elements within a group to find the width of the region
+     * at each marked point and adds pip elements to the group layed out in a symmetric pattern.
+     *
+     * @param sheet       The record sheet being printed.
+     * @param group       The group element that contains the <code>rect</code> elements that
+     *                    mark the dimensions of the area on the armor or structure diagram.
+     * @param pipCount    The number of armor or structure pips to add
+     * @param pipType     The shape of pip to add
+     */
+    static void addPips(PrintRecordSheet sheet, Element group, int pipCount,
+                        PrintRecordSheet.PipType pipType) {
+        addPips(sheet, group, pipCount, pipType, 0.5);
+    }
+
+    /**
+     * Processes the <code>rect</code> elements within a group to find the width of the region
+     * at each marked point and adds circular pip elements to the group layed out in a symmetric
+     * pattern.
+     *
+     * @param sheet       The record sheet being printed.
+     * @param group       The group element that contains the <code>rect</code> elements that
+     *                    mark the dimensions of the area on the armor or structure diagram.
+     * @param pipCount    The number of armor or structure pips to add
+     */
+    static void addPips(PrintRecordSheet sheet, Element group, int pipCount) {
+        addPips(sheet, group, pipCount, PrintRecordSheet.PipType.CIRCLE, 0.5);
+    }
+
     private ArmorPipLayout(PrintRecordSheet sheet, Element group, int pipCount, PrintRecordSheet.PipType pipType,
                    double strokeWidth) {
         this.sheet = sheet;
