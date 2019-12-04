@@ -308,6 +308,11 @@ public abstract class PrintEntity extends PrintRecordSheet {
                 hideElement(ARMOR_TYPE, true);
             }
         }
+        if (getEntity().hasBARArmor(firstArmorLocation())) {
+            setTextField(BAR, "BAR: " + getEntity().getBARRating(firstArmorLocation()));
+        } else {
+            hideElement(BAR, true);
+        }
         final String FORMAT = "( %d )";
         for (int loc = firstArmorLocation(); loc < getEntity().locations(); loc++) {
             setTextField(TEXT_ARMOR + getEntity().getLocationAbbr(loc),
@@ -322,9 +327,9 @@ public abstract class PrintEntity extends PrintRecordSheet {
      * Add armor and structure pips for each location.
      */
     protected void drawArmorStructurePips() {
-        Element element = null;
+        Element element;
         for (int loc = firstArmorLocation(); loc < getEntity().locations(); loc++) {
-            if ((getEntity() instanceof Mech) && ((Mech) getEntity()).isSuperHeavy() && (loc == Mech.LOC_HEAD)) {
+            if ((getEntity() instanceof Mech) && getEntity().isSuperHeavy() && (loc == Mech.LOC_HEAD)) {
                 element = getSVGDocument().getElementById(ARMOR_PIPS + getEntity().getLocationAbbr(loc) + "_SH");
             } else {
                 element = getSVGDocument().getElementById(ARMOR_PIPS + getEntity().getLocationAbbr(loc));
@@ -332,10 +337,11 @@ public abstract class PrintEntity extends PrintRecordSheet {
             if (null != element) {
                 ArmorPipLayout.addPips(this, element, getEntity().getOArmor(loc),
                         PipType.forAT(getEntity().getArmorType(loc)), 0.5);
-                /*
-                addPips(element, getEntity().getOArmor(loc), isCenterlineLocation(loc),
-                        PipType.forAT(getEntity().getArmorType(loc)));
-                 */
+            }
+            element = getSVGDocument().getElementById(STRUCTURE_PIPS + getEntity().getLocationAbbr(loc));
+            if (null != element) {
+                ArmorPipLayout.addPips(this, element, getEntity().getOInternal(loc),
+                        PipType.CIRCLE, 0.5);
             }
         }
     }

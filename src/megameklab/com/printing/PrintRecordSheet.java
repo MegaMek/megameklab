@@ -476,7 +476,9 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
                 lines++;
                 return lines;
             }
-            if ((index < 0) || (getTextLength(text.substring(0, pos + index), fontSize) > width)) {
+            if ((index < 0)
+                    || ((getTextLength(text.substring(0, pos + index), fontSize) > width)
+                    && (pos > 0))) {
                 addTextElement(canvas, x, y, text.substring(0, pos), fontSize, anchor, weight, fill);
                 lines++;
                 y += lineHeight;
