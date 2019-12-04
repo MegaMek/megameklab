@@ -18,10 +18,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGRectElement;
 
 import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static megameklab.com.printing.PrintRecordSheet.DEFAULT_PIP_SIZE;
 
@@ -89,7 +88,7 @@ class ArmorPipLayout {
     }
 
     void process() {
-        int nRows = (int) Math.sqrt(pipCount / (bounds.width() / bounds.height()));
+        int nRows = (int) (Math.sqrt(pipCount / (bounds.width() / bounds.height())) * 1.2);
         int nCols = pipCount / nRows;
         while (nCols * nRows < pipCount) {
             nRows++;
@@ -149,7 +148,34 @@ class ArmorPipLayout {
                 parity = 1 - parity;
             }
         }
+        adjustCount(rows, rowCount, staggered);
         drawPips(rows, rowCount, spacing, staggered, radius);
+    }
+
+    private void adjustCount(List<Bounds> rows, List<Integer> rowCount, boolean staggered) {
+        int current = rowCount.stream().mapToInt(Integer::intValue).sum();
+        if (current == pipCount) {
+            return;
+        }
+        // Sort the indices from the most extra space to the least
+        List<Integer> indices = IntStream.range(0, rows.size()).boxed()
+                .sorted(Comparator.comparingDouble(i -> rowCount.get(i) / rows.get(i).width()))
+                .collect(Collectors.toList());
+        int row = 0;
+        int dRow = 1;
+        int dRowCount = staggered ? 2 : 1;
+        if (current > pipCount) {
+            dRowCount = -dRowCount;
+            row = indices.size() - 1;
+            dRow = -1;
+        }
+        while (current != pipCount) {
+            int index = indices.get(row % indices.size());
+            int change = Math.min(dRowCount, Math.abs(pipCount - current));
+            rowCount.set(index, rowCount.get(index) + change);
+            current += change;
+            row += dRow;
+        }
     }
 
     private void drawPips(List<Bounds> rows, List<Integer> rowCount,
@@ -170,13 +196,19 @@ class ArmorPipLayout {
         for (int r = 0; r < rows.size(); r++) {
             double xpos;
             xpos = calcRowStartX(centerX, rowCount.get(r), dx) + xPadding;
-            while (xpos < rows.get(r).left) {
+            while (xpos < rows.get(r).left
+ //                   || (rows.get(r).right - xpos + rowCount.get(r) * dx)
+ //                   - (xpos - rows.get(r).left) > dx
+            ) {
                 xpos += dx;
             }
-            while (xpos + dx * rowCount.get(r) > rows.get(r).right) {
+            while (xpos + dx * rowCount.get(r) > rows.get(r).right
+//                    || (xpos - rows.get(r).left)
+//                        - (rows.get(r).right - xpos + rowCount.get(r) * dx) > dx
+            ) {
                 xpos -= dx;
             }
-            if (xpos < rows.get(r).left) {
+            if (xpos < rows.get(r).left || rowCount.get(r) == 1) {
                 centerX = rows.get(r).centerX();
                 xpos = calcRowStartX(centerX, rowCount.get(r), dx) + xPadding;
             }
