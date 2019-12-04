@@ -89,7 +89,7 @@ class ArmorPipLayout {
     }
 
     void process() {
-        int nRows = (int) (Math.sqrt(pipCount / (bounds.width() / bounds.height())) * 1.5);
+        int nRows = (int) Math.sqrt(pipCount / (bounds.width() / bounds.height()));
         int nCols = pipCount / nRows;
         while (nCols * nRows < pipCount) {
             nRows++;
@@ -110,6 +110,8 @@ class ArmorPipLayout {
         List<Integer> rowCount = new ArrayList<>();
         // The bounds of each actual row
         List<Bounds> rows = new ArrayList<>();
+        // Expand the spacing between rows geometrically
+        spacing = Math.sqrt(spacing * nRows / bounds.height()) * bounds.height() / nRows;
         double ypos = bounds.top + (bounds.height() - spacing * nRows) / 2.0;
         for (int r = 0; r < nRows; r++) {
             Rectangle2D upper = regions.floorEntry(ypos).getValue();
@@ -144,6 +146,13 @@ class ArmorPipLayout {
         // The offset needed to center the pip in the cell.
         double xPadding = spacing * 0.5 - radius;
         double dx = staggered ? spacing * 2 : spacing;
+        // Check whether all the pips will fit within their assigned rows. If not, compress
+        // the horizontal spacing
+        for (int r = 0; r < rows.size(); r++) {
+            if (rows.get(r).width() < dx * rowCount.get(r)) {
+                dx = rows.get(r).width() / rowCount.get(r);
+            }
+        }
         for (int r = 0; r < rows.size(); r++) {
             double xpos;
             xpos = calcRowStartX(centerX, rowCount.get(r), dx) + xPadding;
