@@ -113,6 +113,13 @@ class ArmorPipLayout {
         // Expand the spacing between rows geometrically
         spacing = Math.sqrt(spacing * nRows / bounds.height()) * bounds.height() / nRows;
         double ypos = bounds.top + (bounds.height() - spacing * nRows) / 2.0;
+        // As we add or remove pips to make the count come all even or odd (or alternating for staggered)
+        // keep track of the shift and ajust up or down to keep the shift close to zero
+        int shift = 0;
+        // If staggered, toggle the parity after each row. Otherwise try to keep the same parity.
+        // We start odd for staggered so that if there is one extra pip it can be removed from
+        // the top if the bottom ends up even, rather than out of the middle.
+        int parity = staggered ? 1 : nCols % 2;
         for (int r = 0; r < nRows; r++) {
             Rectangle2D upper = regions.floorEntry(ypos).getValue();
             Map.Entry<Double, Rectangle2D> lowerEntry= regions.ceilingEntry(ypos);
@@ -121,19 +128,26 @@ class ArmorPipLayout {
                     ypos, Math.min(upper.getMaxX(), lower.getMaxX()), ypos + spacing);
             rows.add(row);
             // First we figure out how much width we have to work with on this row.
-            if (staggered) {
-                int count = (int) (nCols * (row.width() / avgWidth) * 0.5);
-                if (r % 2 == 0) {
+            int count = staggered ?
+                    (int) (nCols * (row.width() / avgWidth) * 0.5) :
+                    (int) (nCols * (row.width() / avgWidth));
+            if (count % 2 != parity) {
+                if (shift <= 0) {
                     count++;
-                    if (count * spacing * 2 > row.width()) {
-                        count -= 2;
-                    }
+                    shift--;
+                } else {
+                    count--;
+                    shift++;
                 }
-                rowCount.add(count);
-            } else {
-                rowCount.add((int) (nCols * (row.width() / avgWidth)));
+                if (count * spacing * 2 > row.width()) {
+                    count -= 2;
+                }
             }
+            rowCount.add(count);
             ypos += spacing;
+            if (staggered) {
+                parity = 1 - parity;
+            }
         }
         drawPips(rows, rowCount, spacing, staggered, radius);
     }
