@@ -177,9 +177,7 @@ class ArmorPipLayout {
         // keep track of the shift and ajust up or down to keep the shift close to zero
         int shift = 0;
         // If staggered, toggle the parity after each row. Otherwise try to keep the same parity.
-        // We start odd for staggered so that if there is one extra pip it can be removed from
-        // the top if the bottom ends up even, rather than out of the middle.
-        int parity = staggered ? 1 : nCols % 2;
+        int parity = nCols % 2;
         for (int r = 0; r < nRows; r++) {
             Rectangle2D upper = regions.floorEntry(ypos).getValue();
             Map.Entry<Double, Rectangle2D> lowerEntry= regions.ceilingEntry(ypos);
@@ -269,12 +267,18 @@ class ArmorPipLayout {
         // The offset needed to center the pip in the cell.
         double xPadding = spacing * 0.5 - radius;
         double dx = staggered ? spacing * 2 : spacing;
-        // Check whether all the pips will fit within their assigned rows. If not, compress
-        // the horizontal spacing
+        /* Find the row that takes up the largest perctage of its row. If it's over 100%,
+         * reduce the horizontal spacing to make it fit. If lower, increase the horizontal
+         * spacing by a factor of the geometric mean of the percentage and 1.0 to prevent
+         * having a cluster of pips in the center and too much blank space on the sides. */
+        double pct = 0.0;
         for (int r = 0; r < rows.size(); r++) {
-            if (rows.get(r).width() < dx * rowCount.get(r)) {
-                dx = rows.get(r).width() / rowCount.get(r);
-            }
+            pct = Math.max(pct, (dx * rowCount.get(r)) / rows.get(r).width());
+        }
+        if (pct > 1.0) {
+            dx /= pct;
+        } else {
+            dx /= Math.sqrt(pct);
         }
         for (int r = 0; r < rows.size(); r++) {
             double xpos;
