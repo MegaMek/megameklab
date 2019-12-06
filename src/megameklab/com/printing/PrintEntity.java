@@ -28,7 +28,6 @@ import org.apache.batik.anim.dom.SVGGraphicsElement;
 import org.apache.batik.anim.dom.SVGLocatableSupport;
 import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGRect;
 import org.w3c.dom.svg.SVGRectElement;
 import org.w3c.dom.svg.SVGTextContentElement;
@@ -120,7 +119,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
     
     @Override
     protected void printImage(Graphics2D g2d, PageFormat pageFormat, int pageNum) {
-        Element element = null;
+        Element element;
         
         element = getSVGDocument().getElementById(COPYRIGHT);
         if (null != element) {
@@ -222,7 +221,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
                     Element rect = getSVGDocument().getElementById(SPAS + (getEntity().getCrew().getSlotCount() - 1));
                     if (rect instanceof SVGRectElement) {
                         Rectangle2D bbox = getRectBBox((SVGRectElement) rect);
-                        Element canvas = (Element) ((Node) rect).getParentNode();
+                        Element canvas = (Element) rect.getParentNode();
                         String spaText = "Abilities: " + spaList.toString();
                         float fontSize = FONT_SIZE_MEDIUM;
                         if (getTextLength(spaText, fontSize) > bbox.getWidth()) {
@@ -270,9 +269,12 @@ public abstract class PrintEntity extends PrintRecordSheet {
     }
 
     protected void drawArmor() {
-        if (!getEntity().hasPatchworkArmor()) {
+        if (getEntity().isSupportVehicle()
+                && (getEntity().hasBARArmor(getEntity().firstArmorIndex()))) {
+            setTextField(ARMOR_TYPE, "BAR: " + getEntity().getBARRating(firstArmorLocation()));
+        } else if (!getEntity().hasPatchworkArmor()) {
             if ((AT_SPECIAL & (1 << getEntity().getArmorType(1))) != 0) {
-                String[] atName = EquipmentType.getArmorTypeName(getEntity().getArmorType(1)).split("\\-");
+                String[] atName = EquipmentType.getArmorTypeName(getEntity().getArmorType(1)).split("-");
                 setTextField(ARMOR_TYPE, atName[0]);
                 if (atName.length > 1) {
                     setTextField(ARMOR_TYPE_2, atName[1]);
@@ -307,11 +309,6 @@ public abstract class PrintEntity extends PrintRecordSheet {
             } else {
                 hideElement(ARMOR_TYPE, true);
             }
-        }
-        if (getEntity().hasBARArmor(firstArmorLocation())) {
-            setTextField(BAR, "BAR: " + getEntity().getBARRating(firstArmorLocation()));
-        } else {
-            hideElement(BAR, true);
         }
         final String FORMAT = "( %d )";
         for (int loc = firstArmorLocation(); loc < getEntity().locations(); loc++) {
@@ -523,7 +520,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
     }
     
     private void drawEraIcon() {
-        File iconFile = null;
+        File iconFile;
         if (getEntity().getYear() < 2781) {
             iconFile = new File("data/images/recordsheets/era_starleague.png");
         } else if (getEntity().getYear() < 3050) {
@@ -540,7 +537,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
         Element rect = getSVGDocument().getElementById(ERA_ICON);
         if (rect instanceof SVGRectElement) {
             embedImage(iconFile,
-                    (Element) ((Node) rect).getParentNode(), getRectBBox((SVGRectElement) rect), true);
+                    (Element) rect.getParentNode(), getRectBBox((SVGRectElement) rect), true);
         }
     }
     

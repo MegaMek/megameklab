@@ -89,7 +89,6 @@ public interface IdConstants {
     String SHIELD = "shield";
     String SHIELD_DC = "shieldDC";
     String SHIELD_DA = "shieldDA";
-    String BAR = "bar";
     String TRACKS = "tracks";
     String WHEELS = "wheels";
 

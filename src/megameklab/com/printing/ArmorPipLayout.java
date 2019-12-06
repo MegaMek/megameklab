@@ -139,9 +139,21 @@ class ArmorPipLayout {
      * Performs the calculations to lay out the pips and adds them to the document.
      */
     void process() {
-        // Use the ratio of height:width of the bounding box to derive the number of rows
-        // from the pip count, plus a bit more
-        int nRows = Math.max(1, (int) (Math.sqrt(pipCount / (bounds.width() / bounds.height())) * 1.2));
+        /* Estimate the number of rows required by finding the height of a rectangle
+         * with an area of pipCount that has the same aspect ratio as the bounding box.
+         */
+        double rowHeight = Math.sqrt(pipCount / avgWidth / bounds.height());
+        /* Experimentation has shown that areas that are especially tall and narrow
+         * need to increase this value and wide areas should decrease it. A logarithmic
+         * scale seems to work well.
+         */
+        if (bounds.width() < bounds.height()) {
+            rowHeight *= Math.log(bounds.height() / bounds.width());
+        } else {
+            rowHeight *= 1 / Math.log(bounds.width() / bounds.height());
+        }
+        int nRows = Math.max(1, (int) Math.round(rowHeight));
+
         // We don't want to allocate more rows than we have pips.
         if (nRows > pipCount) {
             nRows = pipCount;
@@ -171,8 +183,8 @@ class ArmorPipLayout {
         List<Bounds> rows = new ArrayList<>();
         // Expand the spacing between rows geometrically
         spacing = Math.sqrt(spacing * nRows / bounds.height()) * bounds.height() / nRows;
-        double ypos = bounds.top + (bounds.height() - spacing * nRows) / 2.0
-                + spacing * 0.5 - radius;
+        double ypos = Math.max(bounds.top, bounds.top + (bounds.height() - spacing * nRows) / 2.0
+                + spacing * 0.5 - radius);
         // As we add or remove pips to make the count come all even or odd (or alternating for staggered)
         // keep track of the shift and ajust up or down to keep the shift close to zero
         int shift = 0;
