@@ -118,7 +118,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
     }
     
     @Override
-    protected void printImage(Graphics2D g2d, PageFormat pageFormat, int pageNum) {
+    protected void processImage(int pageNum, PageFormat pageFormat) {
         Element element;
         
         element = getSVGDocument().getElementById(COPYRIGHT);

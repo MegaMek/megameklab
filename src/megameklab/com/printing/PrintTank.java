@@ -23,10 +23,11 @@ import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringJoiner;
-import java.util.stream.Collectors;
 
 /**
- * Configures record sheet for ground combat and support vehicles.
+ * Configures record sheet for ground combat and support vehicles. When two units are printed
+ * on a single page, this is responsible for one half of the page. Vehicles which are printed
+ * two per page should not use this class directly, but instead use {@link PrintCompositeTankSheet}
  */
 public class PrintTank extends PrintEntity {
 

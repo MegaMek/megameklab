@@ -13,7 +13,6 @@
  */
 package megameklab.com.printing;
 
-import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.print.PageFormat;
 import java.text.NumberFormat;
@@ -284,7 +283,7 @@ public class PrintCapitalShip extends PrintEntity {
     }
 
     @Override
-    public void printImage(Graphics2D g2d, PageFormat pageFormat, int pageNum) {
+    public void processImage(int pageNum, PageFormat pageFormat) {
         if (pageNum > 0) {
             Element element = getSVGDocument().getElementById("textCopyright");
             if (null != element) {
@@ -299,7 +298,7 @@ public class PrintCapitalShip extends PrintEntity {
                 writeEquipment((SVGRectElement) element, true);
             }
         } else {
-            super.printImage(g2d, pageFormat, pageNum);
+            super.processImage(pageNum, pageFormat);
         }
     }
 

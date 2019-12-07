@@ -147,10 +147,10 @@ class ArmorPipLayout {
          * need to increase this value and wide areas should decrease it. A logarithmic
          * scale seems to work well.
          */
-        if (bounds.width() < bounds.height()) {
+        if (bounds.width() <= bounds.height()) {
             rowHeight *= Math.log(bounds.height() / bounds.width());
         } else {
-            rowHeight *= 1 / Math.log(bounds.width() / bounds.height());
+            rowHeight *= 1.0 / Math.log(bounds.width() / bounds.height());
         }
         int nRows = Math.max(1, (int) Math.round(rowHeight));
 

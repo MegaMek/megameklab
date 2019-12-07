@@ -60,10 +60,7 @@ import megamek.common.Protomech;
 import megamek.common.SmallCraft;
 import megamek.common.Tank;
 import megamek.common.VTOL;
-import megameklab.com.printing.PrintCapitalShip;
-import megameklab.com.printing.PrintMech;
-import megameklab.com.printing.PrintTank;
-import megameklab.com.printing.PrintTask;
+import megameklab.com.printing.*;
 import megameklab.com.ui.Aero.Printing.PrintAero;
 import megameklab.com.ui.Aero.Printing.PrintConventionalFighter;
 import megameklab.com.ui.Aero.Printing.PrintFixedWingSupport;
@@ -183,28 +180,14 @@ public class UnitPrintManager {
                 unprintable.add(unit);
                 //book.append(new PrintNavalVehicle((Tank) unit), pageFormat);
             } else if (unit instanceof Tank) {
-                book.append(new PrintTank((Tank) unit, book.getNumberOfPages()), pageFormat);
-                /*
-                if (!((Tank) unit).hasNoDualTurret()) {
-                    if (singlePrint) {
-                        book.append(new PrintDualTurretVehicle((Tank) unit,  null), pageFormat);
-                    } else if (null != dualTurret1) {
-                        book.append(new PrintDualTurretVehicle(dualTurret1, (Tank) unit), pageFormat);
-                        dualTurret1 = null;
-                    } else {
-                        dualTurret1 = (Tank) unit;
-                    }
+                if (singlePrint) {
+                    book.append(new PrintCompositeTankSheet((Tank) unit, null, book.getNumberOfPages()), pageFormat);
+                } else if (null != tank1) {
+                    book.append(new PrintCompositeTankSheet(tank1, (Tank) unit, book.getNumberOfPages()), pageFormat);
+                    tank1 = null;
                 } else {
-                    if (singlePrint) {
-                        book.append(new PrintVehicle((Tank) unit,  null), pageFormat);
-                    } else if (null != tank1) {
-                        book.append(new PrintVehicle(tank1, (Tank) unit), pageFormat);
-                        tank1 = null;
-                    } else {
-                        tank1 = (Tank) unit;
-                    }
+                    tank1 = (Tank) unit;
                 }
-                 */
             } else if (unit.hasETypeFlag(Entity.ETYPE_AERO)) {
                 if (unit instanceof Jumpship) {
                     PrintCapitalShip pcs = new PrintCapitalShip((Jumpship) unit, book.getNumberOfPages());

@@ -191,43 +191,52 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         }
     }
 
+    Document loadTemplate(int pageIndex, PageFormat pageFormat) {
+        final String METHOD_NAME = "buildDocument()";
+
+        File f = new File("data/images/recordsheets/" + getSVGFileName(pageIndex - firstPage));
+        Document svgDocument = null;
+        try {
+            InputStream is = new FileInputStream(f);
+            DOMImplementation impl = SVGDOMImplementation.getDOMImplementation();
+            final String parser = XMLResourceDescriptor.getXMLParserClassName();
+            SAXDocumentFactory df = new SAXDocumentFactory(impl, parser);
+            svgDocument = df.createDocument(f.toURI().toASCIIString(), is);
+        } catch (Exception e) {
+            MegaMekLab.getLogger().error(PrintRecordSheet.class, METHOD_NAME, e);
+        }
+        if (null == svgDocument) {
+            MegaMekLab.getLogger().error(PrintRecordSheet.class, METHOD_NAME,
+                    "Failed to open SVG file! Path: data/images/recordsheets/"
+                            + getSVGFileName(pageIndex - firstPage));
+        }
+        return svgDocument;
+    }
+
+    void createDocument(int pageIndex, PageFormat pageFormat) {
+        svgDocument = loadTemplate(pageIndex, pageFormat);
+        subFonts((SVGDocument) svgDocument);
+        svgGenerator = new SVGGraphics2D(svgDocument);
+        processImage(pageIndex - firstPage, pageFormat);
+    }
+
     @Override
     public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
         final String METHOD_NAME = "print(Graphics,PageFormat,int)";
         
         Graphics2D g2d = (Graphics2D) graphics;
         if (null != g2d) {
-            File f = new File("data/images/recordsheets/" + getSVGFileName(pageIndex - firstPage));
-            svgDocument = null;
+            createDocument(pageIndex, pageFormat);
+            GraphicsNode node = build();
+            node.paint(g2d);
+            /* Testing code that outputs the generated svg */
             try {
-                InputStream is = new FileInputStream(f);
-                DOMImplementation impl = SVGDOMImplementation.getDOMImplementation();
-                final String parser = XMLResourceDescriptor.getXMLParserClassName();
-                SAXDocumentFactory df = new SAXDocumentFactory(impl, parser);
-                svgDocument = df.createDocument(f.toURI().toASCIIString(), is);
-            } catch (Exception e) {
-                MegaMekLab.getLogger().error(PrintRecordSheet.class, METHOD_NAME, e);
-            }
-            if (null == svgDocument) {
-                MegaMekLab.getLogger().error(PrintRecordSheet.class, METHOD_NAME,
-                        "Failed to open Mech SVG file! Path: data/images/recordsheets/"
-                                + getSVGFileName(pageIndex - firstPage));
-            } else {
-                subFonts((SVGDocument) svgDocument);
-                svgGenerator = new SVGGraphics2D(svgDocument);
-                printImage(g2d, pageFormat, pageIndex - firstPage);
-                GraphicsNode node = build();
-                node.paint(g2d);
-                /* Testing code that outputs the generated svg */
-                try {
-                    Transformer transformer = TransformerFactory.newInstance().newTransformer();
-                    Result output = new StreamResult(new File("out.svg"));
-                    Source input = new DOMSource(svgDocument);
-                    transformer.transform(input, output);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-
+                Transformer transformer = TransformerFactory.newInstance().newTransformer();
+                Result output = new StreamResult(new File("out.svg"));
+                Source input = new DOMSource(svgDocument);
+                transformer.transform(input, output);
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
         }
         return Printable.PAGE_EXISTS;
@@ -264,14 +273,9 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     /**
      * Renders the sheet to the Graphics object.
      * 
-     * @param g2d        The graphics object passed by {@link Printable#print(Graphics, PageFormat, int) print}
-     * @param pageFormat The page format passed by {@link Printable#print(Graphics, PageFormat, int) print}
      * @param pageNum    Indicates which page of multi-page sheets to print. The first page is 0.
-     * 
-     * @throws PrinterException
      */
-    protected abstract void printImage(Graphics2D g2d, PageFormat pageFormat, int pageNum)
-            throws PrinterException;
+    protected abstract void processImage(int pageNum, PageFormat pageFormat);
 
     /**
      * @param pageNumber  The page number in the current record sheet, where the first page is numberd zero.
