@@ -33,6 +33,9 @@ import java.awt.print.PageFormat;
  */
 public class PrintCompositeTankSheet extends PrintRecordSheet {
 
+    /** Space between the two half-sheets */
+    private static final double PADDING = 6.0;
+
     private final Tank tank1;
     private final Tank tank2;
 
@@ -82,7 +85,7 @@ public class PrintCompositeTankSheet extends PrintRecordSheet {
         Element g = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
         g.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
                 SVGConstants.SVG_TRANSLATE_VALUE + "(0,"
-                        + (pageFormat.getHeight() * 0.5 - height) + ")");
+                        + (pageFormat.getHeight() * 0.5 - height - PADDING) + ")");
         g.appendChild(getSVGDocument().importNode(sheet.getSVGDocument().getDocumentElement(), true));
         getSVGDocument().getDocumentElement().appendChild(g);
 
