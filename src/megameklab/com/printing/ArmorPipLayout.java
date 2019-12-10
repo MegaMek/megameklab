@@ -215,7 +215,7 @@ class ArmorPipLayout {
             }
         }
         double xSpacing = adjustCount(rows, rowCount, staggered, spacing);
-        drawPips(rows, rowCount, spacing, staggered, Math.min(radius, xSpacing * 0.4), xSpacing);
+        drawPips(rows, rowCount, staggered, Math.min(radius, xSpacing * 0.4), xSpacing);
     }
 
     /**
@@ -273,13 +273,11 @@ class ArmorPipLayout {
      *
      * @param rows      A list of bounding rectangles defining the position and width of each row
      * @param rowCount  The number of pips to place in the row with the same index
-     * @param spacing   The amount of space to put between the start of each row
      * @param staggered If true, the horizontal spacing will be double the verticle.
      * @param radius    The radius of each pip.
      */
     private void drawPips(List<Bounds> rows, List<Integer> rowCount,
-                          double spacing, boolean staggered, double radius,
-                          double xSpacing) {
+                          boolean staggered, double radius, double xSpacing) {
         double dx = staggered ? xSpacing * 2 : xSpacing;
         /* Find the row that takes up the largest perctage of its row. If it's over 100%,
          * reduce the horizontal spacing to make it fit. If lower, increase the horizontal
@@ -291,29 +289,21 @@ class ArmorPipLayout {
         }
         if (pct > 1.0) {
             dx /= pct;
-            xSpacing /= pct;
         } else {
             dx /= Math.sqrt(pct);
-            xSpacing /= Math.sqrt(pct);
         }
         // Start by centering the top row and fit subsequent rows into the same grid if possible.
         // If the rows shift in a way that the pips cannot fit within the grid, shift the center.
         double centerX = rows.get(0).centerX();
         // The offset needed to center the pip in the cell.
-        double xPadding = xSpacing * 0.5 - radius;
+        double xPadding = dx * 0.5 - radius;
         for (int r = 0; r < rows.size(); r++) {
             double xpos;
             xpos = calcRowStartX(centerX, rowCount.get(r), dx) + xPadding;
-            while (xpos < rows.get(r).left
- //                   || (rows.get(r).right - xpos + rowCount.get(r) * dx)
- //                   - (xpos - rows.get(r).left) > dx
-            ) {
+            while (xpos < rows.get(r).left) {
                 xpos += dx;
             }
-            while (xpos + dx * rowCount.get(r) > rows.get(r).right
-//                    || (xpos - rows.get(r).left)
-//                        - (rows.get(r).right - xpos + rowCount.get(r) * dx) > dx
-            ) {
+            while (xpos + dx * rowCount.get(r) > rows.get(r).right) {
                 xpos -= dx;
             }
             if (xpos < rows.get(r).left || rowCount.get(r) == 1) {
@@ -337,11 +327,7 @@ class ArmorPipLayout {
      * @return          The x coordinate of the starting pip
      */
     private double calcRowStartX(double center, int pipCount, double cellWidth) {
-        double xpos = center - cellWidth * (pipCount / 2);
-        if (pipCount % 2 == 1) {
-            xpos -= cellWidth * 0.5;
-        }
-        return xpos;
+        return center - cellWidth * (pipCount / 2.0);
     }
 
     /**
