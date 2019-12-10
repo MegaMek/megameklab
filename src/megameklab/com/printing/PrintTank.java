@@ -21,8 +21,10 @@ import org.w3c.dom.svg.SVGRectElement;
 import java.io.File;
 import java.text.DecimalFormat;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
 /**
  * Configures record sheet for ground combat and support vehicles. When two units are printed
@@ -142,10 +144,12 @@ public class PrintTank extends PrintEntity {
     @Override
     protected String formatFeatures() {
         StringJoiner sj = new StringJoiner(", ");
-        for (Mounted m : tank.getMisc()) {
-            if (m.getType().hasFlag(MiscType.F_CHASSIS_MODIFICATION)) {
-                sj.add(m.getType().getShortName());
-            }
+        List<String> chassisMods = tank.getMisc().stream().filter(m -> m.getType().hasFlag(MiscType.F_CHASSIS_MODIFICATION))
+                .map(m -> m.getType().getShortName())
+                .collect(Collectors.toList());
+        if (!chassisMods.isEmpty()) {
+            sj.add(String.join(", ", chassisMods)
+                    + (chassisMods.size() == 1 ? " Chassis Mod" : " Chassis Mods"));
         }
         Map<String, Double> transport = new HashMap<>();
         for (Transporter t : tank.getTransports()) {
