@@ -157,7 +157,6 @@ public class UnitPrintManager {
 
         Tank tank1 = null;
         Tank wige1 = null;
-        Tank dualTurret1 = null;
         for (Entity unit : loadedUnits) {
             if (unit instanceof Mech) {
                 UnitUtil.removeOneShotAmmo(unit);
@@ -245,10 +244,7 @@ public class UnitPrintManager {
             book.append(new PrintVehicle(wige1, null), pageFormat);
         }
         if (null != tank1) {
-            book.append(new PrintVehicle(tank1, null), pageFormat);
-        }
-        if (null != dualTurret1) {
-            book.append(new PrintDualTurretVehicle(dualTurret1, null), pageFormat);
+            book.append(new PrintCompositeTankSheet(tank1, null, book.getNumberOfPages()), pageFormat);
         }
         if (baList.size() > 0) {
             book.append(new PrintBattleArmor(baList), pageFormat);

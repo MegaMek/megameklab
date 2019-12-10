@@ -142,17 +142,7 @@ class ArmorPipLayout {
         /* Estimate the number of rows required by finding the height of a rectangle
          * with an area of pipCount that has the same aspect ratio as the bounding box.
          */
-        double rowHeight = Math.sqrt(pipCount / avgWidth / bounds.height());
-        /* Experimentation has shown that areas that are especially tall and narrow
-         * need to increase this value and wide areas should decrease it. A logarithmic
-         * scale seems to work well.
-         */
-        if (bounds.width() <= bounds.height()) {
-            rowHeight *= Math.log(bounds.height() / bounds.width());
-        } else {
-            rowHeight *= 1.0 / Math.log(bounds.width() / bounds.height());
-        }
-        int nRows = Math.max(1, (int) Math.round(rowHeight));
+        int nRows = Math.max(1, (int) Math.round(Math.sqrt(pipCount * bounds.height() / bounds.width())));
 
         // We don't want to allocate more rows than we have pips.
         if (nRows > pipCount) {
@@ -161,9 +151,14 @@ class ArmorPipLayout {
         // Calculate the average width of the rows in pips, but no more than the number that can
         // fit in the average row. avgHeight is the initial default cell size.
         int nCols = Math.min(pipCount / nRows, (int) (avgWidth / avgHeight));
-        // Add more rows if the initial number is not enough to hold the number of pips.
-        while ((nCols * nRows < pipCount) && (nRows <= pipCount)){
-            nRows++;
+        // If the initial number is not enough to hold the number of pips add more rows
+        // or columns, attempting to keep close to the original aspect ratio.
+        while ((nCols * nRows < pipCount) && (nRows <= pipCount)) {
+            if (avgWidth / nCols > bounds.height() / nRows) {
+                nCols++;
+            } else {
+                nRows++;
+            }
         }
         // If staggered, successive rows are offset by a half pip to allow the rows to be closer
         // together
@@ -219,8 +214,8 @@ class ArmorPipLayout {
                 parity = 1 - parity;
             }
         }
-        adjustCount(rows, rowCount, staggered);
-        drawPips(rows, rowCount, spacing, staggered, radius);
+        double xSpacing = adjustCount(rows, rowCount, staggered, spacing);
+        drawPips(rows, rowCount, spacing, staggered, Math.min(radius, xSpacing * 0.4), xSpacing);
     }
 
     /**
@@ -232,34 +227,45 @@ class ArmorPipLayout {
      * @param rowCount  The number of pips in each of the rows. This list needs to be
      *                  the same size as <code>rows</code>.
      * @param staggered If true, attempt to maintain the parity of each row.
+     * @param spacing   The spacing between rows, used as the starting spacing between
+     *                  pips in the row
+     * @return          The ratio of the horizontal to vertical spacing
      */
-    private void adjustCount(List<Bounds> rows, List<Integer> rowCount, boolean staggered) {
+    private double adjustCount(List<Bounds> rows, List<Integer> rowCount,
+                               boolean staggered, double spacing) {
         int current = rowCount.stream().mapToInt(Integer::intValue).sum();
         if (current == pipCount) {
-            return;
+            return spacing;
         }
         // Sort the indices from the most extra space to the least
         List<Integer> indices = IntStream.range(0, rows.size()).boxed()
                 .sorted(Comparator.comparingDouble(i -> rowCount.get(i) / rows.get(i).width()))
                 .collect(Collectors.toList());
         int row = 0;
-        int dRow = 1;
         int dRowCount = staggered ? 2 : 1;
         if (current > pipCount) {
+            Collections.reverse(indices);
             dRowCount = -dRowCount;
-            row = indices.size() - 1;
-            dRow = -1;
         }
-        while (current != pipCount) {
-            int index = indices.get(row % indices.size());
-            int change = Math.min(dRowCount, Math.abs(pipCount - current));
-            rowCount.set(index, rowCount.get(index) + change);
-            current += change;
-            row += dRow;
-            if (row < 0) {
-                row += indices.size();
+        int full;
+        do {
+            full = 0;
+            while ((current != pipCount) && full < rows.size()) {
+                int index = indices.get(row % indices.size());
+                int change = Math.min(dRowCount, Math.abs(pipCount - current));
+                if (spacing * (rowCount.get(index) + change) <= rows.get(index).width()) {
+                    rowCount.set(index, rowCount.get(index) + change);
+                    current += change;
+                } else {
+                    full++;
+                }
+                row++;
             }
-        }
+            if (full == rows.size()) {
+                spacing *= 0.9;
+            }
+        } while (full == rows.size());
+        return spacing;
     }
 
     /**
@@ -272,13 +278,9 @@ class ArmorPipLayout {
      * @param radius    The radius of each pip.
      */
     private void drawPips(List<Bounds> rows, List<Integer> rowCount,
-                          double spacing, boolean staggered, double radius) {
-        // Start by centering the top row and fit subsequent rows into the same grid if possible.
-        // If the rows shift in a way that the pips cannot fit within the gird, shift the center.
-        double centerX = rows.get(0).centerX();
-        // The offset needed to center the pip in the cell.
-        double xPadding = spacing * 0.5 - radius;
-        double dx = staggered ? spacing * 2 : spacing;
+                          double spacing, boolean staggered, double radius,
+                          double xSpacing) {
+        double dx = staggered ? xSpacing * 2 : xSpacing;
         /* Find the row that takes up the largest perctage of its row. If it's over 100%,
          * reduce the horizontal spacing to make it fit. If lower, increase the horizontal
          * spacing by a factor of the geometric mean of the percentage and 1.0 to prevent
@@ -289,9 +291,16 @@ class ArmorPipLayout {
         }
         if (pct > 1.0) {
             dx /= pct;
+            xSpacing /= pct;
         } else {
             dx /= Math.sqrt(pct);
+            xSpacing /= Math.sqrt(pct);
         }
+        // Start by centering the top row and fit subsequent rows into the same grid if possible.
+        // If the rows shift in a way that the pips cannot fit within the grid, shift the center.
+        double centerX = rows.get(0).centerX();
+        // The offset needed to center the pip in the cell.
+        double xPadding = xSpacing * 0.5 - radius;
         for (int r = 0; r < rows.size(); r++) {
             double xpos;
             xpos = calcRowStartX(centerX, rowCount.get(r), dx) + xPadding;
