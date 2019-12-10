@@ -383,7 +383,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
             }
             if ((m.getType() instanceof AmmoType)
                     || (m.getLocation() == Entity.LOC_NONE)
-                    || !UnitUtil.isPrintableEquipment(m.getType(), true)) {
+                    || !UnitUtil.isPrintableEquipment(m.getType(), getEntity() instanceof Mech)) {
                 continue;
             }
             if (getEntity().hasETypeFlag(Entity.ETYPE_QUADVEE)
@@ -546,7 +546,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
     }
     
     protected String formatRun() {
-        return Integer.toString(getEntity().getRunMP());
+        return getEntity().getRunMPasString();
     }
     
     protected String formatJump() {
