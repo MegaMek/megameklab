@@ -13,11 +13,13 @@
  */
 package megameklab.com.printing;
 
+import com.kitfox.svg.SVGConst;
 import megamek.common.EquipmentType;
 import megamek.common.logging.LogLevel;
 import megameklab.com.MegaMekLab;
 import megameklab.com.util.CConfig;
 import org.apache.batik.anim.dom.SVGDOMImplementation;
+import org.apache.batik.anim.dom.SVGLocatableSupport;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.GVTBuilder;
 import org.apache.batik.bridge.UserAgentAdapter;
@@ -315,6 +317,33 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
                     hideElement(element, false);
                 }
                 element.setTextContent(text);
+                /* In cases where the text may be too long for the space we will need to add the
+                 * textLength attribute to fit it into the space. We only want to set the textLength
+                 * when the text is too long so we don't stretch shorter text to fit. So we abuse the
+                 * style attribute to sneak in metadata about the max width of the space.
+                 */
+                String style = element.getAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE);
+                if (null != style) {
+                    for (String field : style.split(";")) {
+                        if (field.startsWith(MML_FIELD_WIDTH)) {
+                            try {
+                                double width = Double.parseDouble(field.substring(field.indexOf(":") + 1));
+                                build();
+                                double textWidth = SVGLocatableSupport.getBBox(element).getWidth();
+                                if (textWidth > width) {
+                                    element.setAttributeNS(null, SVGConstants.SVG_TEXT_LENGTH_ATTRIBUTE,
+                                            String.valueOf(width));
+                                    element.setAttributeNS(null, SVGConstants.SVG_LENGTH_ADJUST_ATTRIBUTE,
+                                            SVGConstants.SVG_SPACING_AND_GLYPHS_VALUE);
+                                }
+                            } catch (NumberFormatException ex) {
+                                MegaMekLab.getLogger().warning(getClass(),
+                                        "setTextField(String, String, boolean)",
+                                        "Could not parse width in field " + field);
+                            }
+                        }
+                    }
+                }
             }
         }
     }

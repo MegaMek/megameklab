@@ -17,6 +17,8 @@ package megameklab.com.printing;
  * ID attribute values in SVG templates
  */
 public interface IdConstants {
+    String MML_FIELD_WIDTH = "mml-field-width";
+
     String COPYRIGHT = "tspanCopyright";
     String TITLE = "title";
 
