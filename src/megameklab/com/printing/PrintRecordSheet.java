@@ -193,10 +193,16 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         }
     }
 
-    Document loadTemplate(int pageIndex, PageFormat pageFormat) {
-        final String METHOD_NAME = "buildDocument()";
+    /**
+     * Creates a {@link Document} from an svg image file
+     *
+     * @param filename The name of the SVG file
+     * @return         The document object
+     */
+    static Document loadSVG(String filename) {
+        final String METHOD_NAME = "loadSVG(String)";
 
-        File f = new File("data/images/recordsheets/" + getSVGFileName(pageIndex - firstPage));
+        File f = new File("data/images/recordsheets/", filename);
         Document svgDocument = null;
         try {
             InputStream is = new FileInputStream(f);
@@ -210,9 +216,22 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         if (null == svgDocument) {
             MegaMekLab.getLogger().error(PrintRecordSheet.class, METHOD_NAME,
                     "Failed to open SVG file! Path: data/images/recordsheets/"
-                            + getSVGFileName(pageIndex - firstPage));
+                            + filename);
         }
         return svgDocument;
+    }
+
+    /**
+     * Creates the base template document. This is usually loaded from a file, but
+     * some composite record sheets override this to create a document in memory
+     * which is then filled in using the individual record sheet templates.
+     *
+     * @param pageIndex   The index of this page in the print job
+     * @param pageFormat  The page format seleted by the user
+     * @return            An SVG document for one page of the print job
+     */
+    Document loadTemplate(int pageIndex, PageFormat pageFormat) {
+        return loadSVG(getSVGFileName(pageIndex - firstPage));
     }
 
     void createDocument(int pageIndex, PageFormat pageFormat) {

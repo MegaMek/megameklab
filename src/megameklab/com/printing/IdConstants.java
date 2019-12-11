@@ -19,6 +19,7 @@ package megameklab.com.printing;
 public interface IdConstants {
     String MML_FIELD_WIDTH = "mml-field-width";
 
+    String FOOTER = "footer";
     String COPYRIGHT = "tspanCopyright";
     String TITLE = "title";
 

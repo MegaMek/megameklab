@@ -20,12 +20,14 @@ package megameklab.com.printing;
 
 import megamek.common.Tank;
 import megamek.common.annotations.Nullable;
+import megameklab.com.MegaMekLab;
 import org.apache.batik.anim.dom.SVGDOMImplementation;
 import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import java.awt.print.PageFormat;
+import java.util.Calendar;
 
 /**
  * Creates a single-page record sheet for two vehicles. If only one vehicle is provided,
@@ -79,23 +81,46 @@ public class PrintCompositeTankSheet extends PrintRecordSheet {
 
     @Override
     protected void processImage(int startPage, PageFormat pageFormat) {
+        final String METHOD_NAME = "processImage(int, PageFormat)";
+
         PrintTank sheet = new PrintTank(tank1, getFirstPage(), options);
         sheet.createDocument(startPage, pageFormat);
         double height = sheet.build().getPrimitiveBounds().getHeight();
         Element g = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
         g.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
                 SVGConstants.SVG_TRANSLATE_VALUE + "(0,"
-                        + (pageFormat.getHeight() * 0.5 - height - PADDING) + ")");
+                        + (pageFormat.getHeight() * 0.5 - height) + ")");
+        sheet.hideElement(FOOTER);
         g.appendChild(getSVGDocument().importNode(sheet.getSVGDocument().getDocumentElement(), true));
         getSVGDocument().getDocumentElement().appendChild(g);
 
-        sheet = new PrintTank(tank2 == null ? tank1 : tank2, getFirstPage(), options);
-        sheet.createDocument(startPage, pageFormat);
-        g = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
-        g.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
-                SVGConstants.SVG_TRANSLATE_VALUE + "(0," + (pageFormat.getHeight() * 0.5) + ")");
-        g.appendChild(getSVGDocument().importNode(sheet.getSVGDocument().getDocumentElement(), true));
-        getSVGDocument().getDocumentElement().appendChild(g);
+        if (tank2 != null) {
+            sheet = new PrintTank(tank2, getFirstPage(), options);
+            sheet.createDocument(startPage, pageFormat);
+            g = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
+            g.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
+                    SVGConstants.SVG_TRANSLATE_VALUE + "(0," + (pageFormat.getHeight() * 0.5) + ")");
+            g.appendChild(getSVGDocument().importNode(sheet.getSVGDocument().getDocumentElement(), true));
+            getSVGDocument().getDocumentElement().appendChild(g);
+        } else {
+            String filename = "tables_tank.svg";
+            Document doc = loadSVG(filename);
+            if (null != doc) {
+                Element element = doc.getElementById(COPYRIGHT);
+                if (null != element) {
+                    element.setTextContent(String.format(element.getTextContent(),
+                            Calendar.getInstance().get(Calendar.YEAR)));
+                }
+                g = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
+                g.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
+                        SVGConstants.SVG_TRANSLATE_VALUE + "(0," + (pageFormat.getHeight() * 0.5) + ")");
+                g.appendChild(getSVGDocument().importNode(doc.getDocumentElement(), true));
+                getSVGDocument().getDocumentElement().appendChild(g);
+            } else {
+                MegaMekLab.getLogger().warning(getClass(), METHOD_NAME,
+                        "Could not load vehicle tables file " + filename);
+            }
+        }
     }
 
     @Override
