@@ -13,6 +13,9 @@
  */
 package megameklab.com.printing;
 
+import megamek.common.annotations.Nullable;
+import megameklab.com.MegaMekLab;
+import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGRectElement;
@@ -40,6 +43,11 @@ class ArmorPipLayout {
     private final double avgHeight;
     private final double avgWidth;
     private final TreeMap<Double, Rectangle2D> regions = new TreeMap<>();
+    /**
+     * Rows with gaps where pips should not be drawn will have an additional
+     * entry in this map.
+     */
+    private final Map<Double, Rectangle2D> negativeRegions = new HashMap<>();
 
     /**
      * Processes the <code>rect</code> elements within a group to find the width of the region
@@ -99,7 +107,8 @@ class ArmorPipLayout {
         this.strokeWidth = strokeWidth;
         bounds = processRegions();
         avgHeight = regions.values().stream().mapToDouble(Rectangle2D::getHeight).average().orElse(0.0);
-        avgWidth = regions.values().stream().mapToDouble(Rectangle2D::getWidth).average().orElse(0.0);
+        avgWidth = (regions.values().stream().mapToDouble(Rectangle2D::getWidth).sum()
+                - negativeRegions.values().stream().mapToDouble(Rectangle2D::getWidth).sum()) / regions.size();
     }
 
     /**
@@ -130,9 +139,58 @@ class ArmorPipLayout {
                     bottom = bbox.getY() + bbox.getHeight();
                 }
                 regions.put(bbox.getY(), bbox);
+                Rectangle2D gap = parseGap(bbox, (Element) r);
+                if (null != gap) {
+                    negativeRegions.put(bbox.getY(), gap);
+                }
             }
         }
         return new Bounds(left, top, right, bottom);
+    }
+
+    /**
+     * Checks the style attribute for a field in the format {@code mml-gap:x,y}, indicating
+     * that pips should not be placed between those coordinates.
+     *
+     * @param bbox The dimensions of the rectangle bounding box defining the pip row
+     * @param rect The SVG rect element
+     * @return     The dimensions of the section of the row to leave blank, or null if no gap
+     *             is defined or it is malformed.
+     */
+    private @Nullable Rectangle2D parseGap(Rectangle2D bbox, Element rect) {
+        final String style = rect.getAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE);
+        if (null != style) {
+            for (String field : style.split(";")) {
+                if (field.startsWith(IdConstants.MML_GAP)) {
+                    final String[] dim = field.substring(field.indexOf(":") + 1).split(",");
+                    try {
+                        if (dim.length == 2) {
+                            final double left = Double.parseDouble(dim[0]);
+                            final double right = Double.parseDouble(dim[1]);
+                            if (left < right
+                                    && left > bbox.getX()
+                                    && right < bbox.getMaxX()) {
+                                return new Rectangle2D.Double(left, bbox.getY(), right - left, bbox.getHeight());
+                            } else {
+                                MegaMekLab.getLogger().error(getClass(), "parseGap(Rectangle2D, String)",
+                                        "Gap is not contained within bounding rectangle in "
+                                                + rect.getAttributeNS(null, SVGConstants.SVG_ID_ATTRIBUTE));
+                            }
+                        } else {
+                            MegaMekLab.getLogger().error(getClass(), "parseGap(Rectangle2D, String)",
+                                    "Incorrect number of parameters to "
+                                            + IdConstants.MML_GAP + " in "
+                                            + rect.getAttributeNS(null, SVGConstants.SVG_ID_ATTRIBUTE));
+                        }
+                    } catch (NumberFormatException ex) {
+                        MegaMekLab.getLogger().error(getClass(), "parseGap(Rectangle2D, String)",
+                            "NumberFormatException parsing gap paramets in "
+                                    + rect.getAttributeNS(null, SVGConstants.SVG_ID_ATTRIBUTE));
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     /**
@@ -176,6 +234,8 @@ class ArmorPipLayout {
         List<Integer> rowCount = new ArrayList<>();
         // The bounds of each actual row
         List<Bounds> rows = new ArrayList<>();
+        // Space to be skipped
+        List<Bounds> gaps = new ArrayList<>();
         // Expand the spacing between rows geometrically
         spacing = Math.sqrt(spacing * nRows / bounds.height()) * bounds.height() / nRows;
         double ypos = Math.max(bounds.top, bounds.top + (bounds.height() - spacing * nRows) / 2.0
@@ -186,16 +246,20 @@ class ArmorPipLayout {
         // If staggered, toggle the parity after each row. Otherwise try to keep the same parity.
         int parity = nCols % 2;
         for (int r = 0; r < nRows; r++) {
-            Rectangle2D upper = regions.floorEntry(ypos).getValue();
+            Map.Entry<Double, Rectangle2D> upperEntry = regions.floorEntry(ypos);
+            Rectangle2D upper = upperEntry.getValue();
             Map.Entry<Double, Rectangle2D> lowerEntry= regions.ceilingEntry(ypos);
             Rectangle2D lower = lowerEntry == null ? upper : lowerEntry.getValue();
             Bounds row = new Bounds(Math.max(upper.getMinX(), lower.getMinX()),
                     ypos, Math.min(upper.getMaxX(), lower.getMaxX()), ypos + spacing);
             rows.add(row);
+            Bounds gap = mergeGaps(row, negativeRegions.get(upperEntry.getKey()),
+                    lowerEntry == null? null : negativeRegions.get(lowerEntry.getKey()));
+            gaps.add(gap);
             // First we figure out how much width we have to work with on this row.
             int count = staggered ?
-                    (int) (nCols * (row.width() / avgWidth) * 0.5) :
-                    (int) (nCols * (row.width() / avgWidth));
+                    (int) (nCols * ((row.width() - gap.width()) / avgWidth) * 0.5) :
+                    (int) (nCols * ((row.width() - gap.width()) / avgWidth));
             if (count % 2 != parity) {
                 if (shift <= 0) {
                     count++;
@@ -214,8 +278,35 @@ class ArmorPipLayout {
                 parity = 1 - parity;
             }
         }
-        double xSpacing = adjustCount(rows, rowCount, staggered, spacing);
-        drawPips(rows, rowCount, staggered, Math.min(radius, xSpacing * 0.4), xSpacing);
+        double xSpacing = adjustCount(rows, gaps, rowCount, staggered, spacing);
+        drawPips(rows, gaps, rowCount, staggered, Math.min(radius, xSpacing * 0.4), xSpacing);
+    }
+
+    /**
+     * Compares gaps in two adjacent rows and returns the union. If neither row has a gap,
+     * returns a bounds of zero width.
+     *
+     * @param row   The row that's being constructed.
+     * @param gap1  The gap in the upper row, if any
+     * @param gap2  The gap in the lower row, if any
+     * @return      The union between any gaps.
+     */
+    private Bounds mergeGaps(Bounds row, @Nullable Rectangle2D gap1, @Nullable Rectangle2D gap2) {
+        double left = 0.0;
+        double right = 0.0;
+        if (null == gap1 && null == gap2) {
+            return new Bounds(0.0, row.top, 0.0, row.bottom);
+        } else if (null == gap2) {
+            left = gap1.getX();
+            right = gap1.getMaxX();
+        } else if (null == gap1) {
+            left = gap2.getX();
+            right = gap2.getMaxX();
+        } else {
+            left = Math.min(gap1.getX(), gap2.getX());
+            right = Math.max(gap1.getMaxX(), gap2.getMaxX());
+        }
+        return new Bounds(Math.max(left, row.left), row.top, Math.min(right, row.right), row.bottom);
     }
 
     /**
@@ -231,7 +322,7 @@ class ArmorPipLayout {
      *                  pips in the row
      * @return          The ratio of the horizontal to vertical spacing
      */
-    private double adjustCount(List<Bounds> rows, List<Integer> rowCount,
+    private double adjustCount(List<Bounds> rows, List<Bounds> gaps, List<Integer> rowCount,
                                boolean staggered, double spacing) {
         int current = rowCount.stream().mapToInt(Integer::intValue).sum();
         if (current == pipCount) {
@@ -239,7 +330,7 @@ class ArmorPipLayout {
         }
         // Sort the indices from the most extra space to the least
         List<Integer> indices = IntStream.range(0, rows.size()).boxed()
-                .sorted(Comparator.comparingDouble(i -> rowCount.get(i) / rows.get(i).width()))
+                .sorted(Comparator.comparingDouble(i -> rowCount.get(i) / (rows.get(i).width() - gaps.get(i).width())))
                 .collect(Collectors.toList());
         int row = 0;
         int dRowCount = staggered ? 2 : 1;
@@ -253,7 +344,7 @@ class ArmorPipLayout {
             while ((current != pipCount) && full < rows.size()) {
                 int index = indices.get(row % indices.size());
                 int change = Math.min(dRowCount, Math.abs(pipCount - current));
-                if (spacing * (rowCount.get(index) + change) <= rows.get(index).width()) {
+                if (spacing * (rowCount.get(index) + change) <= rows.get(index).width() - gaps.get(index).width()) {
                     rowCount.set(index, rowCount.get(index) + change);
                     current += change;
                 } else {
@@ -276,7 +367,7 @@ class ArmorPipLayout {
      * @param staggered If true, the horizontal spacing will be double the verticle.
      * @param radius    The radius of each pip.
      */
-    private void drawPips(List<Bounds> rows, List<Integer> rowCount,
+    private void drawPips(List<Bounds> rows, List<Bounds> gaps, List<Integer> rowCount,
                           boolean staggered, double radius, double xSpacing) {
         double dx = staggered ? xSpacing * 2 : xSpacing;
         /* Find the row that takes up the largest perctage of its row. If it's over 100%,
@@ -285,7 +376,7 @@ class ArmorPipLayout {
          * having a cluster of pips in the center and too much blank space on the sides. */
         double pct = 0.0;
         for (int r = 0; r < rows.size(); r++) {
-            pct = Math.max(pct, (dx * rowCount.get(r)) / rows.get(r).width());
+            pct = Math.max(pct, (dx * rowCount.get(r)) / (rows.get(r).width() - gaps.get(r).width()));
         }
         if (pct > 1.0) {
             dx /= pct;
