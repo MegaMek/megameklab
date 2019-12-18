@@ -27,13 +27,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.border.TitledBorder;
 
-import megamek.common.Aero;
-import megamek.common.Entity;
-import megamek.common.EquipmentType;
-import megamek.common.ITechManager;
-import megamek.common.Mech;
-import megamek.common.Tank;
-import megamek.common.TechConstants;
+import megamek.common.*;
 import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestEntity;
 import megameklab.com.ui.util.TechComboBox;
@@ -113,7 +107,7 @@ public class PatchworkArmorView extends BuildView implements ActionListener {
         for (int loc = 0; loc < combos.size(); loc++) {
             if ((loc < en.locations())
                     && !((en.hasETypeFlag(Entity.ETYPE_TANK) && (loc == Tank.LOC_BODY)))
-                    && !((en.hasETypeFlag(Entity.ETYPE_AERO) && (loc == Aero.LOC_WINGS)))) {
+                    && !((en.hasETypeFlag(Entity.ETYPE_AERO) && (loc >= Aero.LOC_WINGS)))) {
                 labels.get(loc).setText(en.getLocationName(loc));
                 combos.get(loc).removeAllItems();
                 for (EquipmentType eq : armors) {
@@ -124,6 +118,7 @@ public class PatchworkArmorView extends BuildView implements ActionListener {
                 combos.get(loc).setSelectedItem(EquipmentType.get(name));
                 labels.get(loc).setVisible(true);
                 combos.get(loc).setVisible(true);
+                combos.get(loc).showTechBase(en.isMixedTech());
             } else {
                 labels.get(loc).setVisible(false);
                 combos.get(loc).setVisible(false);
