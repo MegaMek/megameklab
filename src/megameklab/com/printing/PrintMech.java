@@ -13,7 +13,6 @@
  */
 package megameklab.com.printing;
 
-import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.print.PageFormat;
 import java.io.File;
@@ -144,10 +143,10 @@ public class PrintMech extends PrintEntity {
     }
     
     @Override
-    public void printImage(Graphics2D g2d, PageFormat pageFormat, int pageNum) {
+    public void processImage(int pageNum, PageFormat pageFormat) {
         printShields();
         
-        super.printImage(g2d, pageFormat, pageNum);
+        super.processImage(pageNum, pageFormat);
 
         for (int loc = 0; loc < mech.locations(); loc++) {
             Element critRect = getSVGDocument().getElementById(CRITS + mech.getLocationAbbr(loc));
@@ -361,17 +360,24 @@ public class PrintMech extends PrintEntity {
                 element = getSVGDocument().getElementById(ARMOR_PIPS + mech.getLocationAbbr(loc));
             }
             if ((null != element) && !frontComplete) {
+                ArmorPipLayout.addPips(this, element, mech.getOArmor(loc),
+                        PipType.forAT(mech.getArmorType(loc)));
+                /*
                 addPips(element, mech.getOArmor(loc),
                         (loc == Mech.LOC_HEAD) || (loc == Mech.LOC_CT) || (loc == Mech.LOC_CLEG),
                         PipType.forAT(mech.getArmorType(loc)));
-                //                        setArmorPips(element, mech.getOArmor(loc), true);
-                //                      (loc == Mech.LOC_HEAD) || (loc == Mech.LOC_CT));
+
+                 */
             }
             if ((loc > Mech.LOC_HEAD) && !structComplete) {
                 element = getSVGDocument().getElementById(IS_PIPS + mech.getLocationAbbr(loc));
                 if (null != element) {
+                    ArmorPipLayout.addPips(this, element, mech.getOInternal(loc));
+                    /*
                     addPips(element, mech.getOInternal(loc),
                             (loc == Mech.LOC_CT) || (loc == Mech.LOC_CLEG));
+
+                     */
                 }
             }
             if (mech.hasRearArmor(loc) && !rearComplete) {
@@ -381,8 +387,13 @@ public class PrintMech extends PrintEntity {
                 }
                 element = getSVGDocument().getElementById(ARMOR_PIPS + mech.getLocationAbbr(loc) + "R");
                 if (null != element) {
+                    ArmorPipLayout.addPips(this, element, mech.getOArmor(loc, true),
+                            PipType.forAT(mech.getArmorType(loc)));
+                    /*
                     addPips(element, mech.getOArmor(loc, true), loc == Mech.LOC_CT,
                             PipType.forAT(mech.getArmorType(loc)));
+
+                     */
                 }
             }
             

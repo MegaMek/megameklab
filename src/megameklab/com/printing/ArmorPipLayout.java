@@ -338,35 +338,68 @@ class ArmorPipLayout {
         List<Integer> indices = IntStream.range(0, rows.size()).boxed()
                 .sorted(Comparator.comparingDouble(i -> rowCount.get(i) / (rows.get(i).width() - gaps.get(i).width())))
                 .collect(Collectors.toList());
+        // The number to change per row. Try to keep staggered layouts alternating in width
+        int rowDelta = staggered ? 2 : 1;
         int row = 0;
-        int dRowCount = staggered ? 2 : 1;
-        if (current > pipCount) {
-            Collections.reverse(indices);
-            dRowCount = -dRowCount;
-        }
-        int full;
+        // Running count of rows that are skipped due to being full or having the minimum number.
+        // If we go through all the rows and skip all of them, either shrink the pips or
+        // remove the minimum pip requirement then try again.
+        int skipped = 0;
+        // Keep a minimum of 1 pip per row, or 2 per split row if the parts are the same size.
+        // If this still leaves us with extra pips, remove this requirement.
+        boolean minimum = true;
         do {
-            full = 0;
-            while ((current != pipCount) && full < rows.size()) {
+            skipped = 0;
+            while ((current != pipCount) && skipped < rows.size()) {
                 int index = indices.get(row % indices.size());
-                int change;
-                if (Math.abs(pipCount - current) == 1) {
-                    change = pipCount - current;
+                // Keep the same number of pips in each half of split rows if the sizes
+                // are within a cell width
+                boolean mirror = gaps.get(index).width() > 0
+                        && Math.abs((gaps.get(index).left - rows.get(index).left)
+                            - (rows.get(index).right - gaps.get(index).right)) < spacing;
+                if (pipCount > current) {
+                    int change;
+                    if (pipCount - current == 1) {
+                        change = mirror ? 0 : 1;
+                    } else {
+                        change = mirror ? 2 : rowDelta;
+                    }
+                    if (change > 0
+                            && spacing * (rowCount.get(index) + change) <= rows.get(index).width() - gaps.get(index).width()) {
+                        rowCount.set(index, rowCount.get(index) + change);
+                        current += change;
+                    } else {
+                        skipped++;
+                    }
                 } else {
-                    change = dRowCount;
-                }
-                if (spacing * (rowCount.get(index) + change) <= rows.get(index).width() - gaps.get(index).width()) {
-                    rowCount.set(index, rowCount.get(index) + change);
-                    current += change;
-                } else {
-                    full++;
+                    int change;
+                    if (current - pipCount == 1) {
+                        change = (mirror && minimum) ? 0 : 1;
+                    } else {
+                        change = mirror ? 2 : rowDelta;
+                    }
+                    if (minimum && (rowCount.get(index) - change <= 0)) {
+                        change = 0;
+                    } else {
+                        change = Math.min(change, rowCount.get(index));
+                    }
+                    if (change > 0) {
+                        rowCount.set(index, rowCount.get(index) - change);
+                        current -= change;
+                    } else {
+                        skipped++;
+                    }
                 }
                 row++;
             }
-            if (full == rows.size()) {
-                spacing *= 0.9;
+            if (skipped == rows.size()) {
+                if (current < pipCount) {
+                    spacing *= 0.9;
+                } else {
+                    minimum = false;
+                }
             }
-        } while (full == rows.size());
+        } while (skipped == rows.size());
         return spacing;
     }
 
