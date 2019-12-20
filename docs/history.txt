@@ -5,6 +5,7 @@ v0.47.3-SNAPSHOT
 + Issue #375: Maximum armor calculation is incorrect for Warships
 + Issue #376: Can't build Primitive Jumpships
 + PR #382: Show patchwork armor tech base when unit is mixed tech.
++ Issue #384: Dropship collars rounding issues. [Errata]
 
 v0.47.2 (2019-11-15 2000 UTC)
 + Issue #365: Protomek Tab is missing its fluff section
