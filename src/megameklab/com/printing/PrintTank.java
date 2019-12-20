@@ -79,6 +79,9 @@ public class PrintTank extends PrintEntity {
 
     @Override
     protected String getSVGFileName(int pageNumber) {
+        if (tank instanceof VTOL) {
+            return tank.hasNoTurret() ? "vtol_noturret.svg" : "vtol_chinturret.svg";
+        }
         final String size = tank.isSuperHeavy() ? "superheavy" : "standard";
         if (tank.hasNoTurret()) {
             return "vehicle_noturret_" + size + ".svg";

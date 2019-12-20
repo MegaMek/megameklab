@@ -34,6 +34,9 @@ import static megameklab.com.printing.PrintRecordSheet.DEFAULT_PIP_SIZE;
  */
 class ArmorPipLayout {
 
+    /** Margin of error used for checking equality between floating point values */
+    private static final double PRECISION = 0.01;
+
     private final PrintRecordSheet sheet;
     private final Element group;
     private final int pipCount;
@@ -168,8 +171,8 @@ class ArmorPipLayout {
                             final double left = Double.parseDouble(dim[0]);
                             final double right = Double.parseDouble(dim[1]);
                             if (left < right
-                                    && left > bbox.left
-                                    && right < bbox.right) {
+                                    && left >= bbox.left - PRECISION
+                                    && right <= bbox.right + PRECISION) {
                                 return new Bounds(left, bbox.top, right, bbox.bottom);
                             } else {
                                 MegaMekLab.getLogger().error(getClass(), "parseGap(Rectangle2D, String)",
@@ -252,9 +255,14 @@ class ArmorPipLayout {
             Bounds lower = lowerEntry == null ? upper : lowerEntry.getValue();
             Bounds row = new Bounds(Math.max(upper.left, lower.left),
                     ypos, Math.min(upper.right, lower.right), ypos + spacing);
-            rows.add(row);
             Bounds gap = mergeGaps(row, negativeRegions.get(upperEntry.getKey()),
                     lowerEntry == null? null : negativeRegions.get(lowerEntry.getKey()));
+            if (gap.width() > 0 && gap.left <= row.left + PRECISION
+                    && gap.right >= row.right - PRECISION) {
+                ypos += spacing;
+                continue;
+            }
+            rows.add(row);
             gaps.add(gap);
             // First we figure out how much width we have to work with on this row.
             int count = staggered ?
@@ -297,8 +305,8 @@ class ArmorPipLayout {
      * @return      The union between any gaps.
      */
     private Bounds mergeGaps(Bounds row, @Nullable Bounds gap1, @Nullable Bounds gap2) {
-        double left = 0.0;
-        double right = 0.0;
+        double left;
+        double right;
         if (null == gap1 && null == gap2) {
             return new Bounds(0.0, row.top, 0.0, row.bottom);
         } else if (null == gap2) {
@@ -344,7 +352,7 @@ class ArmorPipLayout {
         // Running count of rows that are skipped due to being full or having the minimum number.
         // If we go through all the rows and skip all of them, either shrink the pips or
         // remove the minimum pip requirement then try again.
-        int skipped = 0;
+        int skipped;
         // Keep a minimum of 1 pip per row, or 2 per split row if the parts are the same size.
         // If this still leaves us with extra pips, remove this requirement.
         boolean minimum = true;
@@ -394,7 +402,7 @@ class ArmorPipLayout {
             }
             if (skipped == rows.size()) {
                 if (current < pipCount) {
-                    spacing *= 0.9;
+                    spacing *= 0.95;
                 } else {
                     minimum = false;
                 }
@@ -421,11 +429,15 @@ class ArmorPipLayout {
          * having a cluster of pips in the center and too much blank space on the sides. */
         double pct = 0.0;
         for (int r = 0; r < rows.size(); r++) {
-            pct = Math.max(pct, (dx * rowCount.get(r)) / (rows.get(r).width() - gaps.get(r).width()));
+            // Since we're measuring space between pips, only include those with multiple
+            // pips (per section for split)
+            if (rowCount.get(r) > ((gaps.get(r).width() > 0.0) ? 2 : 1)) {
+                pct = Math.max(pct, (dx * rowCount.get(r)) / (rows.get(r).width() - gaps.get(r).width()));
+            }
         }
         if (pct > 1.0) {
             dx /= pct;
-        } else {
+        } else if (pct > 0.0) {
             dx /= Math.sqrt(pct);
         }
         // Start by centering the top row and fit subsequent rows into the same grid if possible.

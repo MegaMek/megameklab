@@ -162,8 +162,6 @@ public class UnitPrintManager {
                 UnitUtil.removeOneShotAmmo(unit);
                 UnitUtil.expandUnitMounts((Mech) unit);
                 book.append(new PrintMech((Mech) unit, book.getNumberOfPages()), pageFormat);
-            } else if (unit instanceof VTOL) {
-                book.append(new PrintVTOL((VTOL) unit), pageFormat);
             } else if (unit.getMovementMode() == EntityMovementMode.WIGE) {
                 if (singlePrint) {
                     book.append(new PrintVehicle((Tank) unit,  null), pageFormat);
