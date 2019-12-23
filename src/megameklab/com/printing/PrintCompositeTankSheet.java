@@ -19,6 +19,7 @@
 package megameklab.com.printing;
 
 import megamek.common.Tank;
+import megamek.common.VTOL;
 import megamek.common.annotations.Nullable;
 import megameklab.com.MegaMekLab;
 import org.apache.batik.anim.dom.SVGDOMImplementation;
@@ -103,7 +104,7 @@ public class PrintCompositeTankSheet extends PrintRecordSheet {
             g.appendChild(getSVGDocument().importNode(sheet.getSVGDocument().getDocumentElement(), true));
             getSVGDocument().getDocumentElement().appendChild(g);
         } else {
-            String filename = "tables_tank.svg";
+            String filename = (tank1 instanceof VTOL)? "tables_vtol.svg" : "tables_tank.svg";
             Document doc = loadSVG(filename);
             if (null != doc) {
                 Element element = doc.getElementById(COPYRIGHT);
