@@ -6,6 +6,7 @@ v0.47.3-SNAPSHOT
 + Issue #376: Can't build Primitive Jumpships
 + PR #382: Show patchwork armor tech base when unit is mixed tech.
 + Issue #384: Dropship collars rounding issues. [Errata]
++ Issue #388: M-pods not available for Combat Vees
 
 v0.47.2 (2019-11-15 2000 UTC)
 + Issue #365: Protomek Tab is missing its fluff section
