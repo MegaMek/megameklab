@@ -34,6 +34,7 @@ import megamek.common.SuperHeavyTank;
 import megamek.common.Tank;
 import megamek.common.TechConstants;
 import megamek.common.VTOL;
+import megamek.common.verifier.TestTank;
 import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.Vehicle.tabs.BuildTab;
 import megameklab.com.ui.Vehicle.tabs.EquipmentTab;
@@ -213,6 +214,10 @@ public class MainUI extends MegaMekLabMainUI {
             tank.setTechLevel(lvl.getCompoundTechLevel(oldEntity.isClan()));
             tank.setMixedTech(oldEntity.isMixedTech());
             tank.setMovementMode(oldEntity.getMovementMode());
+            tank.setWeight(Math.min(tank.getWeight(), TestTank.maxTonnage(tank.getMovementMode(), tank.isSuperHeavy())));
+            if (tank.isSuperHeavy()) {
+                tank.setWeight(Math.max(tank.getWeight(), TestTank.maxTonnage(tank.getMovementMode(), false) + 1.0));
+            }
         }
         tank.setOriginalWalkMP((tank.getEngine().getRating() + tank.getSuspensionFactor()) / (int)tank.getWeight());
     }
