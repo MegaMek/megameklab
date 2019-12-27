@@ -15,6 +15,7 @@ package megameklab.com.printing;
 
 import com.kitfox.svg.SVGConst;
 import megamek.common.EquipmentType;
+import megamek.common.annotations.Nullable;
 import megamek.common.logging.LogLevel;
 import megameklab.com.MegaMekLab;
 import megameklab.com.util.CConfig;
@@ -222,6 +223,27 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     }
 
     /**
+     * Checks the <code>style</code> attribute of an {@link Element} for a given property and returns its
+     * value, or null if the property does not exist.
+     *
+     * @param element  The element to check the property of
+     * @param property The name of the property
+     * @return         The value of the property, or <code>null</code> if the property does not exist.
+     */
+    static @Nullable
+    String parseStyle(Element element, String property) {
+        final String style = element.getAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE);
+        if (null != style) {
+            for (String field : style.split(";")) {
+                if (field.startsWith(property + ":")) {
+                    return field.substring(field.indexOf(":") + 1);
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
      * Creates the base template document. This is usually loaded from a file, but
      * some composite record sheets override this to create a document in memory
      * which is then filled in using the individual record sheet templates.
@@ -230,15 +252,17 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      * @param pageFormat  The page format seleted by the user
      * @return            An SVG document for one page of the print job
      */
-    Document loadTemplate(int pageIndex, PageFormat pageFormat) {
+    @Nullable Document loadTemplate(int pageIndex, PageFormat pageFormat) {
         return loadSVG(getSVGFileName(pageIndex - firstPage));
     }
 
     void createDocument(int pageIndex, PageFormat pageFormat) {
         svgDocument = loadTemplate(pageIndex, pageFormat);
-        subFonts((SVGDocument) svgDocument);
-        svgGenerator = new SVGGraphics2D(svgDocument);
-        processImage(pageIndex - firstPage, pageFormat);
+        if (null != svgDocument) {
+            subFonts((SVGDocument) svgDocument);
+            svgGenerator = new SVGGraphics2D(svgDocument);
+            processImage(pageIndex - firstPage, pageFormat);
+        }
     }
 
     @Override
@@ -341,26 +365,22 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
                  * when the text is too long so we don't stretch shorter text to fit. So we abuse the
                  * style attribute to sneak in metadata about the max width of the space.
                  */
-                String style = element.getAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE);
-                if (null != style) {
-                    for (String field : style.split(";")) {
-                        if (field.startsWith(MML_FIELD_WIDTH)) {
-                            try {
-                                double width = Double.parseDouble(field.substring(field.indexOf(":") + 1));
-                                build();
-                                double textWidth = SVGLocatableSupport.getBBox(element).getWidth();
-                                if (textWidth > width) {
-                                    element.setAttributeNS(null, SVGConstants.SVG_TEXT_LENGTH_ATTRIBUTE,
-                                            String.valueOf(width));
-                                    element.setAttributeNS(null, SVGConstants.SVG_LENGTH_ADJUST_ATTRIBUTE,
-                                            SVGConstants.SVG_SPACING_AND_GLYPHS_VALUE);
-                                }
-                            } catch (NumberFormatException ex) {
-                                MegaMekLab.getLogger().warning(getClass(),
-                                        "setTextField(String, String, boolean)",
-                                        "Could not parse width in field " + field);
-                            }
+                String fieldWidth = parseStyle(element, MML_FIELD_WIDTH);
+                if (null != fieldWidth) {
+                    try {
+                        double width = Double.parseDouble(fieldWidth);
+                        build();
+                        double textWidth = SVGLocatableSupport.getBBox(element).getWidth();
+                        if (textWidth > width) {
+                            element.setAttributeNS(null, SVGConstants.SVG_TEXT_LENGTH_ATTRIBUTE,
+                                    String.valueOf(width));
+                            element.setAttributeNS(null, SVGConstants.SVG_LENGTH_ADJUST_ATTRIBUTE,
+                                    SVGConstants.SVG_SPACING_AND_GLYPHS_VALUE);
                         }
+                    } catch (NumberFormatException ex) {
+                        MegaMekLab.getLogger().warning(getClass(),
+                                "setTextField(String, String, boolean)",
+                                "Could not parse fieldWidth: " + fieldWidth);
                     }
                 }
             }

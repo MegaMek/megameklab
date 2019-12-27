@@ -18,6 +18,7 @@ import megameklab.com.MegaMekLab;
 import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.svg.SVGGElement;
 import org.w3c.dom.svg.SVGRectElement;
 
 import java.awt.geom.Rectangle2D;
@@ -39,7 +40,6 @@ class ArmorPipLayout {
 
     private final PrintRecordSheet sheet;
     private final Element group;
-    private final int pipCount;
     private final PrintRecordSheet.PipType pipType;
     private final double strokeWidth;
     private final Bounds bounds;
@@ -66,9 +66,60 @@ class ArmorPipLayout {
     static void addPips(PrintRecordSheet sheet, Element group, int pipCount,
                         PrintRecordSheet.PipType pipType, double strokeWidth) {
         if (pipCount > 0) {
-            ArmorPipLayout layout = new ArmorPipLayout(sheet, group, pipCount,
-                    pipType, strokeWidth);
-            layout.process();
+            boolean multi = false;
+            final String multiVal = PrintRecordSheet.parseStyle(group, IdConstants.MML_MULTISECTION);
+            if (null != multiVal) {
+                multi = Boolean.parseBoolean(multiVal);
+            }
+            if (multi) {
+                // If pips are to be split among multiple sections, instantiate each section and estimate the area.
+                // We will divide the pips proportionally to the area
+                List<ArmorPipLayout> sections = new ArrayList<>();
+                double area = 0.0;
+                for (int i = 0; i < group.getChildNodes().getLength(); i++) {
+                    final Node node = group.getChildNodes().item(i);
+                    if (node instanceof SVGGElement) {
+                        ArmorPipLayout section = new ArmorPipLayout(sheet, (Element) node, pipType, strokeWidth);
+                        if (!section.regions.isEmpty()) {
+                            sections.add(section);
+                            area += section.avgWidth * section.bounds.height();
+                        }
+                    }
+                }
+                List<Integer> pipCounts = new ArrayList<>();
+                int allocated = 0;
+                for (ArmorPipLayout section : sections) {
+                    int pips = (int) Math.round(pipCount * (section.avgWidth * section.bounds.height() / area));
+                    allocated += pips;
+                    pipCounts.add(pips);
+                }
+                // Deal with rounding inaccuracies by distributing remaining pips starting with the first
+                // or removing extras starting with the last.
+                int i = 0;
+                while (pipCount > allocated) {
+                    int row = i % sections.size();
+                    pipCounts.set(row, pipCounts.get(row) + 1);
+                    allocated++;
+                    i++;
+                }
+                while (pipCount < allocated) {
+                    int row = sections.size() - i % sections.size() - 1;
+                    pipCounts.set(row, pipCounts.get(row) - 1);
+                    allocated--;
+                    i++;
+                }
+                for (int s = 0; s < sections.size(); s++) {
+                    if (pipCounts.get(s) > 0) {
+                        sections.get(s).process(pipCounts.get(s));
+                    }
+                }
+            } else {
+                ArmorPipLayout layout = new ArmorPipLayout(sheet, group,
+                        pipType, strokeWidth);
+                if (!layout.regions.isEmpty()) {
+                    layout.process(pipCount);
+                }
+            }
         }
     }
 
@@ -101,11 +152,10 @@ class ArmorPipLayout {
         addPips(sheet, group, pipCount, PrintRecordSheet.PipType.CIRCLE, 0.5);
     }
 
-    private ArmorPipLayout(PrintRecordSheet sheet, Element group, int pipCount, PrintRecordSheet.PipType pipType,
+    private ArmorPipLayout(PrintRecordSheet sheet, Element group, PrintRecordSheet.PipType pipType,
                    double strokeWidth) {
         this.sheet = sheet;
         this.group = group;
-        this.pipCount = pipCount;
         this.pipType = pipType;
         this.strokeWidth = strokeWidth;
         bounds = processRegions();
@@ -161,36 +211,32 @@ class ArmorPipLayout {
      *             is defined or it is malformed.
      */
     private @Nullable Bounds parseGap(Bounds bbox, Element rect) {
-        final String style = rect.getAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE);
-        if (null != style) {
-            for (String field : style.split(";")) {
-                if (field.startsWith(IdConstants.MML_GAP)) {
-                    final String[] dim = field.substring(field.indexOf(":") + 1).split(",");
-                    try {
-                        if (dim.length == 2) {
-                            final double left = Double.parseDouble(dim[0]);
-                            final double right = Double.parseDouble(dim[1]);
-                            if (left < right
-                                    && left >= bbox.left - PRECISION
-                                    && right <= bbox.right + PRECISION) {
-                                return new Bounds(left, bbox.top, right, bbox.bottom);
-                            } else {
-                                MegaMekLab.getLogger().error(getClass(), "parseGap(Rectangle2D, String)",
-                                        "Gap is not contained within bounding rectangle in "
-                                                + rect.getAttributeNS(null, SVGConstants.SVG_ID_ATTRIBUTE));
-                            }
-                        } else {
-                            MegaMekLab.getLogger().error(getClass(), "parseGap(Rectangle2D, String)",
-                                    "Incorrect number of parameters to "
-                                            + IdConstants.MML_GAP + " in "
-                                            + rect.getAttributeNS(null, SVGConstants.SVG_ID_ATTRIBUTE));
-                        }
-                    } catch (NumberFormatException ex) {
+        final String gap = PrintRecordSheet.parseStyle(rect, IdConstants.MML_GAP);
+        if (null != gap) {
+            final String[] dim = gap.split(",");
+            try {
+                if (dim.length == 2) {
+                    final double left = Double.parseDouble(dim[0]);
+                    final double right = Double.parseDouble(dim[1]);
+                    if (left < right
+                            && left >= bbox.left - PRECISION
+                            && right <= bbox.right + PRECISION) {
+                        return new Bounds(left, bbox.top, right, bbox.bottom);
+                    } else {
                         MegaMekLab.getLogger().error(getClass(), "parseGap(Rectangle2D, String)",
-                            "NumberFormatException parsing gap paramets in "
-                                    + rect.getAttributeNS(null, SVGConstants.SVG_ID_ATTRIBUTE));
+                                "Gap is not contained within bounding rectangle in "
+                                        + rect.getAttributeNS(null, SVGConstants.SVG_ID_ATTRIBUTE));
                     }
+                } else {
+                    MegaMekLab.getLogger().error(getClass(), "parseGap(Rectangle2D, String)",
+                            "Incorrect number of parameters to "
+                                    + IdConstants.MML_GAP + " in "
+                                    + rect.getAttributeNS(null, SVGConstants.SVG_ID_ATTRIBUTE));
                 }
+            } catch (NumberFormatException ex) {
+                MegaMekLab.getLogger().error(getClass(), "parseGap(Rectangle2D, String)",
+                    "NumberFormatException parsing gap parameters in "
+                            + rect.getAttributeNS(null, SVGConstants.SVG_ID_ATTRIBUTE));
             }
         }
         return null;
@@ -198,8 +244,9 @@ class ArmorPipLayout {
 
     /**
      * Performs the calculations to lay out the pips and adds them to the document.
+     * @param pipCount The number of pips to place in the region
      */
-    void process() {
+    void process(int pipCount) {
         /* Estimate the number of rows required by finding the height of a rectangle
          * with an area of pipCount that has the same aspect ratio as the bounding box.
          */
@@ -291,7 +338,7 @@ class ArmorPipLayout {
                 parity = 1 - parity;
             }
         }
-        double xSpacing = adjustCount(rows, gaps, rowCount, staggered, spacing);
+        double xSpacing = adjustCount(pipCount, rows, gaps, rowCount, staggered, spacing);
         drawPips(rows, gaps, rowCount, staggered, Math.min(radius, xSpacing * 0.4), xSpacing);
     }
 
@@ -327,6 +374,7 @@ class ArmorPipLayout {
      * Pips are added to the rows with the most extra space and removed from rows with
      * the least extra space.
      *
+     * @param pipCount  The total number of pips
      * @param rows      A list of the bounding boxes of the selected rows
      * @param gaps      A list of the bounding boxes of any gaps to be left in the rows.
      * @param rowCount  The number of pips in each of the rows. This list needs to be
@@ -336,7 +384,7 @@ class ArmorPipLayout {
      *                  pips in the row
      * @return          The ratio of the horizontal to vertical spacing
      */
-    private double adjustCount(List<Bounds> rows, List<Bounds> gaps, List<Integer> rowCount,
+    private double adjustCount(int pipCount, List<Bounds> rows, List<Bounds> gaps, List<Integer> rowCount,
                                boolean staggered, double spacing) {
         int current = rowCount.stream().mapToInt(Integer::intValue).sum();
         if (current == pipCount) {

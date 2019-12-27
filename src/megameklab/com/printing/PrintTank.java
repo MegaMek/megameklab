@@ -100,7 +100,8 @@ public class PrintTank extends PrintEntity {
         } else {
             turret = "dualturret";
         }
-        String weight = tank.isSuperHeavy() ? "superheavy" : "standard";
+        // Superheavy VTOLs don't have extra armor sections and use the same template as standard weight
+        String weight = (tank.isSuperHeavy() && !(tank instanceof VTOL)) ? "superheavy" : "standard";
         return String.format("%s_%s_%s.svg", subtype, turret, weight);
     }
 
