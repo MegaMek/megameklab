@@ -20,10 +20,7 @@ import org.w3c.dom.svg.SVGRectElement;
 
 import java.io.File;
 import java.text.DecimalFormat;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.StringJoiner;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -79,16 +76,32 @@ public class PrintTank extends PrintEntity {
 
     @Override
     protected String getSVGFileName(int pageNumber) {
-        if (tank instanceof VTOL) {
-            return tank.hasNoTurret() ? "vtol_noturret.svg" : "vtol_chinturret.svg";
+        String subtype;
+        switch (tank.getMovementMode()) {
+            case VTOL:
+                subtype = "vtol";
+                break;
+            case NAVAL:
+            case HYDROFOIL:
+                subtype = "naval";
+                break;
+            case SUBMARINE:
+                subtype = "submarine";
+                break;
+            default:
+                subtype = "tank";
+                break;
         }
-        final String size = tank.isSuperHeavy() ? "superheavy" : "standard";
+        String turret;
         if (tank.hasNoTurret()) {
-            return "vehicle_noturret_" + size + ".svg";
+            turret = "noturret";
         } else if (tank.hasNoDualTurret()) {
-            return "vehicle_turret_" + size + ".svg";
+            turret = "turret";
+        } else {
+            turret = "dualturret";
         }
-        return "vehicle_dualturret_" + size + ".svg";
+        String weight = tank.isSuperHeavy() ? "superheavy" : "standard";
+        return String.format("%s_%s_%s.svg", subtype, turret, weight);
     }
 
     @Override
