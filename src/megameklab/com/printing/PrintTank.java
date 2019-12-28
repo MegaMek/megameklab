@@ -198,8 +198,7 @@ public class PrintTank extends PrintEntity {
         if (null != f) {
             Element rect = getSVGDocument().getElementById(FLUFF_IMAGE);
             if (rect instanceof SVGRectElement) {
-                embedImage(ImageHelper.getFluffFile(tank, ImageHelper.imageVehicle),
-                        (Element) rect.getParentNode(), getRectBBox((SVGRectElement) rect), true);
+                embedImage(f, (Element) rect.getParentNode(), getRectBBox((SVGRectElement) rect), true);
             }
             hideElement(getSVGDocument().getElementById(NOTES));
         }
