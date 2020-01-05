@@ -360,24 +360,17 @@ public class PrintMech extends PrintEntity {
                 element = getSVGDocument().getElementById(ARMOR_PIPS + mech.getLocationAbbr(loc));
             }
             if ((null != element) && !frontComplete) {
-                ArmorPipLayout.addPips(this, element, mech.getOArmor(loc),
-                        PipType.forAT(mech.getArmorType(loc)));
-                /*
                 addPips(element, mech.getOArmor(loc),
                         (loc == Mech.LOC_HEAD) || (loc == Mech.LOC_CT) || (loc == Mech.LOC_CLEG),
                         PipType.forAT(mech.getArmorType(loc)));
 
-                 */
             }
             if ((loc > Mech.LOC_HEAD) && !structComplete) {
                 element = getSVGDocument().getElementById(IS_PIPS + mech.getLocationAbbr(loc));
                 if (null != element) {
-                    ArmorPipLayout.addPips(this, element, mech.getOInternal(loc));
-                    /*
                     addPips(element, mech.getOInternal(loc),
                             (loc == Mech.LOC_CT) || (loc == Mech.LOC_CLEG));
 
-                     */
                 }
             }
             if (mech.hasRearArmor(loc) && !rearComplete) {
@@ -387,13 +380,9 @@ public class PrintMech extends PrintEntity {
                 }
                 element = getSVGDocument().getElementById(ARMOR_PIPS + mech.getLocationAbbr(loc) + "R");
                 if (null != element) {
-                    ArmorPipLayout.addPips(this, element, mech.getOArmor(loc, true),
-                            PipType.forAT(mech.getArmorType(loc)));
-                    /*
                     addPips(element, mech.getOArmor(loc, true), loc == Mech.LOC_CT,
                             PipType.forAT(mech.getArmorType(loc)));
 
-                     */
                 }
             }
             
