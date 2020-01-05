@@ -17,8 +17,7 @@
 package megameklab.com.util;
 
 import java.awt.Frame;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.print.Book;
 import java.awt.print.PageFormat;
@@ -75,7 +74,7 @@ public class UnitPrintManager {
 
     public static boolean printEntity(Entity entity) {
 
-        Vector<Entity> unitList = new Vector<Entity>();
+        Vector<Entity> unitList = new Vector<>();
 
         unitList.add(entity);
 
@@ -86,7 +85,7 @@ public class UnitPrintManager {
         UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(parent);
         UnitSelectorDialog viewer = new UnitSelectorDialog(parent, unitLoadingDialog, true);
 
-        Entity entity = null;
+        Entity entity;
 
         entity = viewer.getChosenEntity();
 
@@ -113,7 +112,7 @@ public class UnitPrintManager {
             // I want a file, y'know!
             return;
         }
-        Vector<Entity> loadedUnits = new Vector<Entity>();
+        Vector<Entity> loadedUnits;
         try {
             loadedUnits = EntityListFile.loadFrom(f.getSelectedFile());
             loadedUnits.trimToSize();
@@ -254,62 +253,38 @@ public class UnitPrintManager {
 
         item = new JMenuItem("Queue Units to Print");
         item.setMnemonic(KeyEvent.VK_Q);
-        item.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                new UnitPrintQueueDialog(parent);
-            }
-        });
+        item.addActionListener(e -> new UnitPrintQueueDialog(parent));
 
         printMenu.add(item);
         printMenu.addSeparator();
 
         item = new JMenuItem("Other Unit");
         item.setMnemonic(KeyEvent.VK_O);
-        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
-        item.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                UnitPrintManager.printSelectedUnit(parent);
-            }
-        });
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK));
+        item.addActionListener(e -> UnitPrintManager.printSelectedUnit(parent));
         printMenu.add(item);
 
         item = new JMenuItem("From File");
         item.setMnemonic(KeyEvent.VK_I);
-        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, ActionEvent.CTRL_MASK));
-        item.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                UnitPrintManager.printUnitFile(parent);
-            }
-        });
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, InputEvent.CTRL_MASK));
+        item.addActionListener(e -> UnitPrintManager.printUnitFile(parent));
         printMenu.add(item);
 
         item = new JMenuItem("From File (Single Unit Per RS)");
-        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, ActionEvent.CTRL_MASK + ActionEvent.SHIFT_MASK));
-        item.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                UnitPrintManager.printUnitFile(parent, true);
-            }
-        });
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.SHIFT_MASK | InputEvent.CTRL_MASK));
+        item.addActionListener(e -> UnitPrintManager.printUnitFile(parent, true));
         printMenu.add(item);
 
         printMenu.addSeparator();
         item = new JMenuItem("From MUL");
         item.setMnemonic(KeyEvent.VK_M);
-        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, ActionEvent.CTRL_MASK));
-        item.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                UnitPrintManager.printMuls(parent, false);
-            }
-        });
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, InputEvent.CTRL_MASK));
+        item.addActionListener(e -> UnitPrintManager.printMuls(parent, false));
         printMenu.add(item);
 
         item = new JMenuItem("From MUL (Single Unit Per RS)");
         item.setMnemonic(KeyEvent.VK_R);
-        item.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                UnitPrintManager.printMuls(parent, true);
-            }
-        });
+        item.addActionListener(e -> UnitPrintManager.printMuls(parent, true));
         printMenu.add(item);
 
         return printMenu;
@@ -338,7 +313,7 @@ public class UnitPrintManager {
     }
 
     public static void printUnitFile(JFrame parent, boolean singleUnit) {
-        String filePathName = System.getProperty("user.dir").toString() + "/data/mechfiles/";
+        String filePathName = System.getProperty("user.dir") + "/data/mechfiles/";
 
         JFileChooser f = new JFileChooser(filePathName);
         f.setLocation(parent.getLocation().x + 150, parent.getLocation().y + 100);
@@ -358,7 +333,7 @@ public class UnitPrintManager {
 
         try {
 
-            Vector<Entity> unitList = new Vector<Entity>();
+            Vector<Entity> unitList = new Vector<>();
 
             for (File entityFile : f.getSelectedFiles()) {
                 Entity tempEntity = new MechFileParser(entityFile).getEntity();
