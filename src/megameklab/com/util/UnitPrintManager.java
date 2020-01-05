@@ -53,13 +53,11 @@ import megamek.common.EntityMovementMode;
 import megamek.common.FixedWingSupport;
 import megamek.common.Infantry;
 import megamek.common.Jumpship;
-import megamek.common.LargeSupportTank;
 import megamek.common.Mech;
 import megamek.common.MechFileParser;
 import megamek.common.Protomech;
 import megamek.common.SmallCraft;
 import megamek.common.Tank;
-import megamek.common.VTOL;
 import megameklab.com.printing.*;
 import megameklab.com.ui.Aero.Printing.PrintAero;
 import megameklab.com.ui.Aero.Printing.PrintConventionalFighter;
@@ -70,10 +68,6 @@ import megameklab.com.ui.BattleArmor.Printing.PrintBattleArmor;
 import megameklab.com.ui.Dropship.Printing.PrintAerodyne;
 import megameklab.com.ui.Dropship.Printing.PrintSpheroid;
 import megameklab.com.ui.Infantry.Printing.PrintInfantry;
-import megameklab.com.ui.Vehicle.Printing.PrintDualTurretVehicle;
-import megameklab.com.ui.Vehicle.Printing.PrintLargeSupportVehicle;
-import megameklab.com.ui.Vehicle.Printing.PrintVTOL;
-import megameklab.com.ui.Vehicle.Printing.PrintVehicle;
 import megameklab.com.ui.dialog.UnitPrintQueueDialog;
 import megameklab.com.ui.protomek.printing.PrintProtomech;
 
@@ -147,8 +141,7 @@ public class UnitPrintManager {
             return true;
         }
 
-        PageFormat pageFormat = new PageFormat();
-        pageFormat = masterPrintJob.getPageFormat(null);
+        PageFormat pageFormat  = masterPrintJob.getPageFormat(null);
 
         Paper p = pageFormat.getPaper();
         p.setImageableArea(0, 0, p.getWidth(), p.getHeight());
@@ -156,21 +149,11 @@ public class UnitPrintManager {
         pageFormat.setPaper(p);
 
         Tank tank1 = null;
-        Tank wige1 = null;
         for (Entity unit : loadedUnits) {
             if (unit instanceof Mech) {
                 UnitUtil.removeOneShotAmmo(unit);
                 UnitUtil.expandUnitMounts((Mech) unit);
                 book.append(new PrintMech((Mech) unit, book.getNumberOfPages()), pageFormat);
-            } else if (unit.getMovementMode() == EntityMovementMode.WIGE) {
-                if (singlePrint) {
-                    book.append(new PrintVehicle((Tank) unit,  null), pageFormat);
-                } else if (null != wige1) {
-                    book.append(new PrintVehicle(wige1, (Tank) unit), pageFormat);
-                    wige1 = null;
-                } else {
-                    wige1 = (Tank) unit;
-                }
             } else if ((unit instanceof Tank) && ((unit.getMovementMode() == EntityMovementMode.NAVAL) || (unit.getMovementMode() == EntityMovementMode.SUBMARINE) || (unit.getMovementMode() == EntityMovementMode.HYDROFOIL))) {
                 book.append(new PrintTank((Tank) unit, book.getNumberOfPages()), pageFormat);
             } else if (unit instanceof Tank) {
@@ -235,9 +218,6 @@ public class UnitPrintManager {
                     .collect(Collectors.joining("\n")));
         }
         
-        if (null != wige1) {
-            book.append(new PrintVehicle(wige1, null), pageFormat);
-        }
         if (null != tank1) {
             book.append(new PrintCompositeTankSheet(tank1, null, book.getNumberOfPages()), pageFormat);
         }

@@ -88,8 +88,14 @@ public class PrintTank extends PrintEntity {
             case SUBMARINE:
                 subtype = "submarine";
                 break;
+            case WIGE:
+                if (!tank.isSuperHeavy()) {
+                    subtype = "wige";
+                    break;
+                }
+                //fall through
             default:
-                subtype = "tank";
+                subtype = "vehicle";
                 break;
         }
         String turret;
