@@ -257,8 +257,9 @@ public class UnitUtil {
             toReturn = 4;
         } else  if (isMisc
                 && (eq.hasFlag(MiscType.F_JUMP_BOOSTER)
-                        || eq.hasFlag(MiscType.F_TALON) || eq
-                            .hasFlag(MiscType.F_STEALTH))) {
+                        || eq.hasFlag(MiscType.F_TALON)
+                        // Stealth armor is allocated 2 slots/location in mechs, but by individual slot for BA
+                        || (eq.hasFlag(MiscType.F_STEALTH) && !(unit instanceof BattleArmor)))) {
             toReturn = 2;
         } else  if (UnitUtil.isFixedLocationSpreadEquipment(eq) || UnitUtil.isTSM(eq)
                 || UnitUtil.isArmorOrStructure(eq)) {
