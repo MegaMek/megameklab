@@ -126,7 +126,9 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         for (Mounted mount : getBattleArmor().getMisc()) {
             if ((mount.getBaMountLoc() == BattleArmor.MOUNT_LOC_NONE
                     && !mount.getType().hasFlag(MiscType.F_BA_MANIPULATOR)
-                    && !mount.getName().contains("BA Standard"))) {
+                    && mount.getType().getCriticals(getBattleArmor()) > 0
+   //                 && !mount.getName().contains("BA Standard")
+            )) {
                 masterEquipmentList.add(mount);
             }
         }
