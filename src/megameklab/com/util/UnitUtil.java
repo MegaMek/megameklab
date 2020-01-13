@@ -1500,6 +1500,12 @@ public class UnitUtil {
                     EquipmentType.getProtomechArmorWeightPerPoint(unit.getArmorType(Protomech.LOC_TORSO)));
         } else if (unit.isSupportVehicle()) {
             return Math.floor(armorTons / TestSupportVehicle.armorWeightPerPoint(unit));
+        } else if ((unit instanceof Jumpship)
+                && unit.getArmorType(unit.firstArmorIndex()) == EquipmentType.T_ARMOR_PRIMITIVE_AERO) {
+            // Because primitive jumpship armor has an extra step of rounding we have to give it special treatment.
+            // Standard armor value is computed first, rounded down, then the primitive armor mod is applied.
+            return Math.floor(Math.floor(armorTons * TestAdvancedAerospace.armorPointsPerTon((Jumpship) unit,
+                    EquipmentType.T_ARMOR_AEROSPACE, false)) * 0.66);
         }
         return armorTons * UnitUtil.getArmorPointsPerTon(unit,
                 unit.getArmorType(1), unit.getArmorTechLevel(1));
@@ -1520,7 +1526,7 @@ public class UnitUtil {
         } else if (entity.hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
             double points = Math.round(((Jumpship) entity).getSI() / 10.0) * 6;
             if (((Jumpship) entity).isPrimitive()) {
-                return points * EquipmentType.getArmorPointMultiplier(EquipmentType.T_ARMOR_PRIMITIVE_AERO);
+                return Math.floor(points * EquipmentType.getArmorPointMultiplier(EquipmentType.T_ARMOR_PRIMITIVE_AERO));
             } else {
                 return points;
             }
