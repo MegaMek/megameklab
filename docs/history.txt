@@ -9,6 +9,7 @@ v0.47.3-SNAPSHOT
 + Issue #388: M-pods not available for Combat Vees
 + Issue #390: Other Equipment tab for aerospace fighters and dropships show all equipment
 + Issue #391: BA Standard Prototype armor doesn't show Crit slots to allocate
++ Issue #386: Armor Calculation Issue with Primitive Jumpship
 
 v0.47.2 (2019-11-15 2000 UTC)
 + Issue #365: Protomek Tab is missing its fluff section
