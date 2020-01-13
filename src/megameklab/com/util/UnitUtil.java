@@ -257,9 +257,8 @@ public class UnitUtil {
             toReturn = 4;
         } else  if (isMisc
                 && (eq.hasFlag(MiscType.F_JUMP_BOOSTER)
-                        || eq.hasFlag(MiscType.F_TALON)
-                        // Stealth armor is allocated 2 slots/location in mechs, but by individual slot for BA
-                        || (eq.hasFlag(MiscType.F_STEALTH) && !(unit instanceof BattleArmor)))) {
+                        || eq.hasFlag(MiscType.F_TALON) || eq
+                            .hasFlag(MiscType.F_STEALTH))) {
             toReturn = 2;
         } else  if (UnitUtil.isFixedLocationSpreadEquipment(eq) || UnitUtil.isTSM(eq)
                 || UnitUtil.isArmorOrStructure(eq)) {
@@ -1437,7 +1436,7 @@ public class UnitUtil {
         if (unit instanceof Jumpship) {
             return TestAdvancedAerospace.maxArmorWeight((Jumpship) unit);
         }
-        
+
         double armorPerTon = 16.0 * EquipmentType.getArmorPointMultiplier(
                 unit.getArmorType(1), unit.getArmorTechLevel(1));
         double armorWeight = 0;
@@ -1511,7 +1510,7 @@ public class UnitUtil {
         } else if (entity.hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
             double points = Math.round(((Jumpship) entity).getSI() / 10.0) * 6;
             if (((Jumpship) entity).isPrimitive()) {
-                return points * EquipmentType.getArmorPointMultiplier(EquipmentType.T_ARMOR_PRIMITIVE_AERO);
+                return Math.floor(points * EquipmentType.getArmorPointMultiplier(EquipmentType.T_ARMOR_PRIMITIVE_AERO));
             } else {
                 return points;
             }
@@ -3483,21 +3482,17 @@ public class UnitUtil {
         if ((eq instanceof MiscType)) {
             if (((eq.hasFlag(MiscType.F_CLUB) || eq
                     .hasFlag(MiscType.F_HAND_WEAPON)))) {
-                if ((unit instanceof QuadMech)
-                        && !((QuadMech) unit).isIndustrial()) {
-                    return false;
-                }
-
-                if ((location != Mech.LOC_RARM) && (location != Mech.LOC_LARM)) {
-                    if ((unit instanceof QuadMech)
-                            && ((QuadMech) unit).isIndustrial()) {
-                        if ((location != Mech.LOC_LT)
-                                && (location != Mech.LOC_RT)) {
-                            return false;
-                        }
-                    } else {
-                        return false;
-                    }
+                if (unit.entityIsQuad()) {
+                    return ((location == Mech.LOC_LT)
+                            || (location == Mech.LOC_RT))
+                            && ((eq.getSubType() & 
+                                    (MiscType.S_DUAL_SAW | MiscType.S_PILE_DRIVER
+                                    | MiscType.S_WRECKING_BALL | MiscType.S_BACKHOE
+                                    | MiscType.S_COMBINE | MiscType.S_CHAINSAW
+                                    | MiscType.S_ROCK_CUTTER | MiscType.S_BUZZSAW
+                                    | MiscType.S_SPOT_WELDER | MiscType.S_PILE_DRIVER)) != 0);
+                } else {
+                    return (location == Mech.LOC_RARM) || (location == Mech.LOC_LARM);
                 }
             }
 
@@ -4101,7 +4096,6 @@ public class UnitUtil {
      * @return Whether the unit can make use of the ammo
      */
     public static boolean canUseAmmo(Entity unit, AmmoType atype, boolean includeOneShot) {
-        boolean match = false;
         if ((unit instanceof BattleArmor)
                 && !atype.hasFlag(AmmoType.F_BATTLEARMOR)){
             return false;
@@ -4121,11 +4115,11 @@ public class UnitUtil {
                 if ((wtype.getAmmoType() == atype.getAmmoType())
                         && (wtype.getRackSize() == atype.getRackSize())
                         && (includeOneShot || !((WeaponType) m.getType()).hasFlag(WeaponType.F_ONESHOT))) {
-                    match = true;
+                    return true;
                 }
             }
         }
-        return match;
+        return false;
     }
 
     public static int countUsedCriticals(Mech unit) {
@@ -4193,7 +4187,7 @@ public class UnitUtil {
     }
 
     /**
-     * @deprecated Use {@link checkEquipmentByTechLevel(Entity,ITechManager)} instead
+     * @deprecated Use {@link UnitUtil#checkEquipmentByTechLevel(Entity, ITechManager)} instead
      */
     @Deprecated
     public static void checkEquipmentByTechLevel(Entity unit) {
