@@ -255,6 +255,9 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
         spnWalkModel.setMinimum(minWalk);
         spnWalkModel.setMaximum(maxWalk);
         spnWalk.setValue(Math.max(minWalk, en.getOriginalWalkMP()));
+        if (null != maxWalk && getWalk() > maxWalk) {
+            spnWalk.setValue(maxWalk);
+        }
         txtWalkFinal.setText(String.valueOf(en.getWalkMP()));
 
         txtRunBase.setText(String.valueOf((int)Math.ceil(((Number) spnWalk.getValue()).intValue() * 1.5)));
