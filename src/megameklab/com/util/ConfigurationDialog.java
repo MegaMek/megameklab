@@ -209,6 +209,7 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
         gbc.gridy = 0;
         panPrinting.add(new JLabel(resourceMap.getString("ConfigurationDialog.cbFont.text")), gbc);
         gbc.gridx = 1;
+        cbFont.setToolTipText(resourceMap.getString("ConfigurationDialog.cbFont.tooltip")); //$NON-NLS-1$
         panPrinting.add(cbFont, gbc);
         cbFont.addActionListener(ev -> updateFont());
         
