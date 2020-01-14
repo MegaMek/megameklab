@@ -17,20 +17,10 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerNumberModel;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -74,12 +64,13 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
             EntityMovementMode.VTOL, EntityMovementMode.WIGE,
             EntityMovementMode.NAVAL, EntityMovementMode.HYDROFOIL, EntityMovementMode.SUBMARINE
     };
-    
+
     // Engines that can be used by mechs and the order they appear in the combobox
     private final static int[] ENGINE_TYPES = {
             Engine.COMBUSTION_ENGINE, Engine.NORMAL_ENGINE, Engine.XL_ENGINE, Engine.XXL_ENGINE,
             Engine.FUEL_CELL, Engine.LIGHT_ENGINE, Engine.COMPACT_ENGINE, Engine.FISSION
     };
+    private final Engine NO_ENGINE = new Engine(0, Engine.NONE, Engine.TANK_ENGINE);
 
     public final static int TURRET_NONE   = 0;
     public final static int TURRET_SINGLE = 1;
@@ -98,7 +89,9 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
     private final JSpinner spnTonnage = new JSpinner(spnTonnageModel);
     private final JCheckBox chkOmni = new JCheckBox();
     private final JCheckBox chkSuperheavy = new JCheckBox();
-    private final CustomComboBox<EntityMovementMode> cbMotiveType = new CustomComboBox<>(m -> motiveNames.get(m));
+    private final JCheckBox chkTrailer = new JCheckBox();
+    private final JCheckBox chkControlSystems = new JCheckBox();
+    private final CustomComboBox<EntityMovementMode> cbMotiveType = new CustomComboBox<>(motiveNames::get);
     private final TechComboBox<Engine> cbEngine = new TechComboBox<>(e -> e.getEngineName()
             .replaceAll("^\\d+ ", "").replace(" [Vehicle]", ""));
     private final CustomComboBox<Integer> cbTurrets = new CustomComboBox<>(i -> turretNames[i]);
@@ -109,8 +102,8 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
 
     private ITechManager techManager;
     private int engineRating;
-    private boolean isSuperheavy;
-    
+    private boolean isTrailer;
+
     public CVChassisView(ITechManager techManager) {
         super();
         this.techManager = techManager;
@@ -150,64 +143,74 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
         chkSuperheavy.setToolTipText(resourceMap.getString("CVChassisView.chkSuperheavy.tooltip")); //$NON-NLS-1$
         add(chkSuperheavy, gbc);
         chkSuperheavy.addActionListener(this);
+        gbc.gridy++;
+
+        chkTrailer.setText(resourceMap.getString("CVChassisView.chkTrailer.text")); //$NON-NLS-1$
+        gbc.gridx = 0;
+        gbc.gridwidth = 2;
+        chkTrailer.setToolTipText(resourceMap.getString("CVChassisView.chkTrailer.tooltip")); // $NON-NLS-1$
+        chkTrailer.setHorizontalAlignment(SwingConstants.RIGHT);
+        add(chkTrailer, gbc);
+        chkTrailer.addActionListener(this);
+        chkControlSystems.setText(resourceMap.getString("CVChassisView.chkControlSystems.text")); //$NON-NLS-1$
+        gbc.gridx = 2;
+        chkControlSystems.setToolTipText(resourceMap.getString("CVChassisView.chkControlSystems.tooltip")); // $NON-NLS-1$
+        add(chkControlSystems, gbc);
+        chkControlSystems.addActionListener(this);
+        gbc.gridwidth = 1;
+        gbc.gridy++;
 
         cbMotiveType.setModel(new DefaultComboBoxModel<>(MOTIVE_TYPES));
         gbc.gridx = 0;
-        gbc.gridy = 1;
         add(createLabel(resourceMap.getString("CVChassisView.cbMotiveType.text"), labelSize), gbc); //$NON-NLS-1$
         gbc.gridx = 1;
-        gbc.gridy = 1;
         gbc.gridwidth = 3;
         setFieldSize(cbMotiveType, controlSize);
         cbMotiveType.setToolTipText(resourceMap.getString("CVChassisView.cbMotiveType.tooltip")); //$NON-NLS-1$
         add(cbMotiveType, gbc);
         cbMotiveType.addActionListener(this);
+        gbc.gridy++;
 
         gbc.gridx = 0;
-        gbc.gridy = 2;
         gbc.gridwidth = 1;
         add(createLabel(resourceMap.getString("CVChassisView.cbEngine.text"), labelSize), gbc); //$NON-NLS-1$
         gbc.gridx = 1;
-        gbc.gridy = 2;
         gbc.gridwidth = 3;
         setFieldSize(cbEngine, controlSize);
         cbEngine.setToolTipText(resourceMap.getString("CVChassisView.cbEngine.tooltip")); //$NON-NLS-1$
         add(cbEngine, gbc);
         cbEngine.addActionListener(this);
+        gbc.gridy++;
 
         gbc.gridx = 0;
-        gbc.gridy = 3;
         gbc.gridwidth = 1;
         add(createLabel(resourceMap.getString("CVChassisView.cbTurrets.text"), labelSize), gbc); //$NON-NLS-1$
         gbc.gridx = 1;
-        gbc.gridy = 3;
         gbc.gridwidth = 3;
         setFieldSize(cbTurrets, controlSize);
         cbTurrets.setToolTipText(resourceMap.getString("CVChassisView.cbTurrets.tooltip")); //$NON-NLS-1$
         add(cbTurrets, gbc);
         cbTurrets.addActionListener(this);
-        
+        gbc.gridy++;
+
         gbc.gridx = 0;
-        gbc.gridy = 4;
         gbc.gridwidth = 3;
         JLabel lbl = createLabel(resourceMap.getString("CVChassisView.spnTurretWt.text"), labelSize); //$NON-NLS-1$
         add(lbl, gbc);
         gbc.gridx = 3;
-        gbc.gridy = 4;
         setFieldSize(spnChassisTurretWt, spinnerSize);
         spnChassisTurretWt.setToolTipText(resourceMap.getString("CVChassisView.spnTurretWt.tooltip")); //$NON-NLS-1$
         add(spnChassisTurretWt, gbc);
         spnChassisTurretWt.addChangeListener(this);
         omniComponents.add(lbl);
         omniComponents.add(spnChassisTurretWt);
-        
+        gbc.gridy++;
+
         gbc.gridx = 0;
-        gbc.gridy = 5;
         gbc.gridwidth = 3;
         lbl = createLabel(resourceMap.getString("CVChassisView.spnTurret2Wt.text"), labelSize); //$NON-NLS-1$
         add(lbl, gbc);
         gbc.gridx = 3;
-        gbc.gridy = 5;
         gbc.gridwidth = 1;
         setFieldSize(spnChassisTurret2Wt, spinnerSize);
         spnChassisTurret2Wt.setToolTipText(resourceMap.getString("CVChassisView.spnTurret2Wt.tooltip")); //$NON-NLS-1$
@@ -215,11 +218,11 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
         spnChassisTurret2Wt.addChangeListener(this);
         omniComponents.add(lbl);
         omniComponents.add(spnChassisTurret2Wt);
-        
+        gbc.gridy++;
+
         JButton btnResetChassis = new JButton(resourceMap.getString("CVChassisView.btnResetChassis.text")); //$NON-NLS-1$
         btnResetChassis.setActionCommand(CMD_RESET_CHASSIS);
         gbc.gridx = 1;
-        gbc.gridy = 6;
         gbc.gridwidth = 3;
         setFieldSize(btnResetChassis, controlSize);
         btnResetChassis.setToolTipText(resourceMap.getString("CVChassisView.btnResetChassis.tooltip")); //$NON-NLS-1$
@@ -230,15 +233,19 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
     
     public void setFromEntity(Tank tank) {
         engineRating = tank.hasEngine()? tank.getEngine().getRating() : 0;
-        isSuperheavy = tank.isSuperHeavy();
-        
+        isTrailer = tank.isTrailer();
         refresh();
         setTonnage(tank.getWeight());
         chkOmni.setSelected(tank.isOmni());
-        chkSuperheavy.setSelected(isSuperheavy);
+        chkSuperheavy.setSelected(tank.isSuperHeavy());
+        chkTrailer.setSelected(tank.isTrailer());
+        chkControlSystems.setSelected(!tank.hasNoControlSystems());
         cbMotiveType.setSelectedItem(tank.getMovementMode());
         setEngine(tank.getEngine());
-        
+
+        chkTrailer.setEnabled(tank.getMovementMode().equals(EntityMovementMode.WHEELED)
+                || tank.getMovementMode().equals(EntityMovementMode.TRACKED));
+        chkControlSystems.setEnabled(isTrailer);
         if (!tank.hasNoDualTurret()) {
             cbTurrets.setSelectedItem(TURRET_DUAL);
         } else if (!tank.hasNoTurret()) {
@@ -321,6 +328,9 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
         cbEngine.removeAllItems();
         for (Engine e : getAvailableEngines()) {
             cbEngine.addItem(e);
+        }
+        if (isTrailer) {
+            cbEngine.addItem(NO_ENGINE);
         }
         setEngine(prevEngine);
         cbEngine.addActionListener(this);
@@ -407,8 +417,7 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
             flags |= Engine.LARGE_ENGINE;
         }
         int altFlags = flags ^ Engine.CLAN_ENGINE;
-        int[] engineTypes = ENGINE_TYPES;
-        for (int i : engineTypes) {
+        for (int i : ENGINE_TYPES) {
             Engine e = new Engine(getEngineRating(), i, flags);
             if (e.engineValid && techManager.isLegal(e)) {
                 retVal.add(e);
@@ -423,14 +432,6 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
             }
         }
         return retVal;
-    }
-    
-    public boolean hasTurret() {
-        return cbTurrets.getSelectedIndex() > 0;
-    }
-    
-    public boolean hasDualTurret() {
-        return ((Integer)cbTurrets.getSelectedIndex()) == TURRET_DUAL;
     }
     
     /**
@@ -461,9 +462,20 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
             }
         }
     }
-    
+
+    /**
+     * The turret configuration should be one of {@link CVChassisView#TURRET_NONE TURRET_NONE},
+     * {@link CVChassisView#TURRET_SINGLE TURRET_SINGLE}, {@link CVChassisView#TURRET_DUAL TURRET_DUAL}, or
+     * {@link CVChassisView#TURRET_CHIN TURRET_CHIN}.
+     * @return The currently selected turret configuration.
+     */
     public int getTurretConfiguration() {
-        return (Integer)cbTurrets.getSelectedItem();
+        Integer config = (Integer) cbTurrets.getSelectedItem();
+        if (config == null) {
+            return TURRET_NONE; // Failsafe in case this gets called while in an indeterminate state
+        } else {
+            return config;
+        }
     }
 
     @Override
@@ -483,14 +495,18 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
             listeners.forEach(l -> l.omniChanged(chkOmni.isSelected()));
         } else if (e.getSource() == chkSuperheavy) {
             listeners.forEach(l -> l.superheavyChanged(chkSuperheavy.isSelected()));
+        } else if (e.getSource() == chkTrailer) {
+            listeners.forEach(l -> l.trailerChanged(chkTrailer.isSelected()));
+        } else if (e.getSource() == chkControlSystems) {
+            listeners.forEach(l -> l.controlSystemsChanged(chkControlSystems.isSelected()));
         } else if (e.getSource() == cbMotiveType) {
             listeners.forEach(l -> l.motiveChanged((EntityMovementMode)cbMotiveType.getSelectedItem()));
         } else if (e.getSource() == cbEngine) {
             listeners.forEach(l -> l.engineChanged((Engine)cbEngine.getSelectedItem()));
         } else if (e.getSource() == cbTurrets) {
-            listeners.forEach(l -> l.turretChanged((Integer)cbTurrets.getSelectedItem()));
+            listeners.forEach(l -> l.turretChanged(getTurretConfiguration()));
         } else if (e.getActionCommand().equals(CMD_RESET_CHASSIS)) {
-            listeners.forEach(l -> l.resetChassis());
+            listeners.forEach(CVBuildListener::resetChassis);
         }
     }
 }

@@ -367,8 +367,14 @@ public class StructureTab extends ITab implements CVBuildListener, ArmorAllocati
             panChassis.addListener(this);
             return;
         }
-        getTank().setOriginalWalkMP((getTank().getEngine().getRating() + getTank().getSuspensionFactor())
-                / (int)getTank().getWeight());
+        // Some units (e.g. hover) have a minimum engine rating, which may result in a higher MP.
+        // Trailers have a minimum of zero even if they have an engine.
+        if (getTank().isTrailer() && walkMP == 0) {
+            getTank().setOriginalWalkMP(0);
+        } else {
+            getTank().setOriginalWalkMP((getTank().getEngine().getRating() + getTank().getSuspensionFactor())
+                    / (int) getTank().getWeight());
+        }
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
@@ -524,6 +530,25 @@ public class StructureTab extends ITab implements CVBuildListener, ArmorAllocati
     }
 
     @Override
+    public void trailerChanged(boolean trailer) {
+        getTank().setTrailer(trailer);
+        panChassis.setFromEntity(getTank());
+        panMovement.setFromEntity(getTank());
+    }
+
+    @Override
+    public void controlSystemsChanged(boolean controlSystems) {
+        getTank().setHasNoControlSystems(!controlSystems);
+        if (!controlSystems) {
+            walkChanged(0);
+        }
+        panChassis.setFromEntity(getTank());
+        panSummary.refresh();
+        refresh.refreshPreview();
+        refresh.refreshStatus();
+    }
+
+    @Override
     public void motiveChanged(EntityMovementMode motive) {
         // If we are changing to or from VTOL we need a new Entity
         if ((motive == EntityMovementMode.VTOL)
@@ -544,6 +569,11 @@ public class StructureTab extends ITab implements CVBuildListener, ArmorAllocati
             return;
         }
         getTank().setMovementMode(motive);
+        if (getTank().isTrailer() && !motive.equals(EntityMovementMode.TRACKED)
+            && !motive.equals(EntityMovementMode.WHEELED)) {
+            getTank().setTrailer(false);
+            getTank().setHasNoControlSystems(false);
+        }
         panChassis.removeListener(this);
         panChassis.setFromEntity(getTank());
         panChassis.addListener(this);
@@ -566,6 +596,11 @@ public class StructureTab extends ITab implements CVBuildListener, ArmorAllocati
         panMovement.removeListener(this);
         panMovement.setFromEntity(getTank());
         panMovement.addListener(this);
+        // MP may change due to switching from large engine to type without a large equivalent
+        // or trailer removing engine
+        if (panMovement.getWalk() != getTank().getOriginalWalkMP()) {
+            walkChanged(panMovement.getWalk());
+        }
         refreshSummary();
         refresh.refreshPreview();
         refresh.refreshStatus();

@@ -210,7 +210,7 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
         } else if (en instanceof Protomech) {
             maxJump = TestProtomech.maxJumpMP((Protomech) en);
         }
-        if (en.hasETypeFlag(Entity.ETYPE_TANK) && !en.isSupportVehicle()) {
+        if (en.hasETypeFlag(Entity.ETYPE_TANK) && !en.isSupportVehicle() && !en.isTrailer()) {
             int minRating = 10 + Tank.getSuspensionFactor(en.getMovementMode(), en.getWeight());
             minWalk = Math.max(1, (int)(minRating / en.getWeight()));
         } else if (en.hasETypeFlag(Entity.ETYPE_LAND_AIR_MECH)) {
@@ -255,6 +255,9 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
         spnWalkModel.setMinimum(minWalk);
         spnWalkModel.setMaximum(maxWalk);
         spnWalk.setValue(Math.max(minWalk, en.getOriginalWalkMP()));
+        if (null != maxWalk && getWalk() > maxWalk) {
+            spnWalk.setValue(maxWalk);
+        }
         txtWalkFinal.setText(String.valueOf(en.getWalkMP()));
 
         txtRunBase.setText(String.valueOf((int)Math.ceil(((Number) spnWalk.getValue()).intValue() * 1.5)));
