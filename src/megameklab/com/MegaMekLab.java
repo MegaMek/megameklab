@@ -27,7 +27,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import javax.swing.UIManager;
@@ -40,7 +42,6 @@ import megamek.common.logging.DefaultMmLogger;
 import megamek.common.logging.LogLevel;
 import megamek.common.logging.MMLogger;
 import megamek.common.preference.PreferenceManager;
-import megamek.common.util.MegaMekFile;
 import megameklab.com.ui.StartupGUI;
 import megameklab.com.util.CConfig;
 import megameklab.com.util.UnitUtil;
@@ -48,23 +49,18 @@ import megameklab.com.util.UnitUtil;
 public class MegaMekLab {
     public static final String VERSION = "0.47.3-SNAPSHOT";
 
-    private static final String FILENAME_BT_CLASSIC_FONT = "btclassic/BTLogo_old.ttf"; //$NON-NLS-1$
-
     private static MMLogger logger = null;
 
     public static void main(String[] args) {
     	System.setProperty("apple.laf.useScreenMenuBar", "true");
         System.setProperty("com.apple.mrj.application.apple.menu.about.name","MegaMekLab");
         redirectOutput();
-        //add classic battletech font
-        try {
-            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            File btFontFile = new MegaMekFile(Configuration.fontsDir(), FILENAME_BT_CLASSIC_FONT).getFile();
-            Font btFont = Font.createFont(Font.TRUETYPE_FONT, btFontFile);
-            System.out.println("Loaded Font: " + btFont.getName());
-            ge.registerFont(btFont);
-        } catch (IOException | FontFormatException e) {
-            System.out.println("Error Registering BT Classic Font! Error: " + e.getMessage());
+        // Register any fonts in the fonts directory
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        List<Font> fontList = new ArrayList<>();
+        collectFontsFromDir(Configuration.fontsDir(), fontList);
+        for (Font font : fontList) {
+            ge.registerFont(font);
         }
         startup();
     }
@@ -88,6 +84,33 @@ public class MegaMekLab {
         } catch (Exception e) {
             System.err.println("Unable to redirect output to megameklablog.txt"); //$NON-NLS-1$
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * Recursively search a directory and attempt to create a truetype font from
+     * every file with the ttf suffix
+     *
+     * @param dir  The directory to search
+     * @param list The list to add fonts to as they are created
+     */
+    private static void collectFontsFromDir(File dir, List<Font> list) {
+        final String METHOD_NAME = "collectFontsFromDir(File, List<Font>)"; //$NON-NLS-1$
+        File[] files = dir.listFiles();
+        if (null != files) {
+            for (File f : files) {
+                if (f.isDirectory() && !f.getName().startsWith(".")) {
+                    collectFontsFromDir(f, list);
+                } else if (f.getName().toLowerCase().endsWith(".ttf")) {
+                    try {
+                        list.add(Font.createFont(Font.TRUETYPE_FONT, f));
+                    } catch (IOException | FontFormatException ex) {
+                        getLogger().warning(MegaMekLab.class, METHOD_NAME,
+                                "Error creating font from " + f);
+                        getLogger().error(MegaMekLab.class, METHOD_NAME, ex);
+                    }
+                }
+            }
         }
     }
 
@@ -158,8 +181,8 @@ public class MegaMekLab {
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         GraphicsDevice[] gs = ge.getScreenDevices();
         double maxWidth = 0;
-        for (int i = 0; i < gs.length; i++) {
-            Rectangle b = gs[i].getDefaultConfiguration().getBounds();
+        for (GraphicsDevice g : gs) {
+            Rectangle b = g.getDefaultConfiguration().getBounds();
             if (b.getWidth() > maxWidth) {   // Update the max size found on this monitor
                 maxWidth = b.getWidth();
             }
