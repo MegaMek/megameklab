@@ -367,8 +367,14 @@ public class StructureTab extends ITab implements CVBuildListener, ArmorAllocati
             panChassis.addListener(this);
             return;
         }
-        getTank().setOriginalWalkMP((getTank().getEngine().getRating() + getTank().getSuspensionFactor())
-                / (int)getTank().getWeight());
+        // Some units (e.g. hover) have a minimum engine rating, which may result in a higher MP.
+        // Trailers have a minimum of zero even if they have an engine.
+        if (getTank().isTrailer() && walkMP == 0) {
+            getTank().setOriginalWalkMP(0);
+        } else {
+            getTank().setOriginalWalkMP((getTank().getEngine().getRating() + getTank().getSuspensionFactor())
+                    / (int) getTank().getWeight());
+        }
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
