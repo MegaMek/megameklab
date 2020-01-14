@@ -20,13 +20,7 @@ import java.awt.event.ActionListener;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerNumberModel;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -96,6 +90,7 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
     private final JCheckBox chkOmni = new JCheckBox();
     private final JCheckBox chkSuperheavy = new JCheckBox();
     private final JCheckBox chkTrailer = new JCheckBox();
+    private final JCheckBox chkControlSystems = new JCheckBox();
     private final CustomComboBox<EntityMovementMode> cbMotiveType = new CustomComboBox<>(motiveNames::get);
     private final TechComboBox<Engine> cbEngine = new TechComboBox<>(e -> e.getEngineName()
             .replaceAll("^\\d+ ", "").replace(" [Vehicle]", ""));
@@ -151,10 +146,18 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridy++;
 
         chkTrailer.setText(resourceMap.getString("CVChassisView.chkTrailer.text")); //$NON-NLS-1$
-        gbc.gridx = 2;
+        gbc.gridx = 0;
+        gbc.gridwidth = 2;
         chkTrailer.setToolTipText(resourceMap.getString("CVChassisView.chkTrailer.tooltip")); // $NON-NLS-1$
+        chkTrailer.setHorizontalAlignment(SwingConstants.RIGHT);
         add(chkTrailer, gbc);
         chkTrailer.addActionListener(this);
+        chkControlSystems.setText(resourceMap.getString("CVChassisView.chkControlSystems.text")); //$NON-NLS-1$
+        gbc.gridx = 2;
+        chkControlSystems.setToolTipText(resourceMap.getString("CVChassisView.chkControlSystems.tooltip")); // $NON-NLS-1$
+        add(chkControlSystems, gbc);
+        chkControlSystems.addActionListener(this);
+        gbc.gridwidth = 1;
         gbc.gridy++;
 
         cbMotiveType.setModel(new DefaultComboBoxModel<>(MOTIVE_TYPES));
@@ -236,11 +239,13 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
         chkOmni.setSelected(tank.isOmni());
         chkSuperheavy.setSelected(tank.isSuperHeavy());
         chkTrailer.setSelected(tank.isTrailer());
+        chkControlSystems.setSelected(!tank.hasNoControlSystems());
         cbMotiveType.setSelectedItem(tank.getMovementMode());
         setEngine(tank.getEngine());
 
         chkTrailer.setEnabled(tank.getMovementMode().equals(EntityMovementMode.WHEELED)
                 || tank.getMovementMode().equals(EntityMovementMode.TRACKED));
+        chkControlSystems.setEnabled(isTrailer);
         if (!tank.hasNoDualTurret()) {
             cbTurrets.setSelectedItem(TURRET_DUAL);
         } else if (!tank.hasNoTurret()) {
@@ -492,6 +497,8 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
             listeners.forEach(l -> l.superheavyChanged(chkSuperheavy.isSelected()));
         } else if (e.getSource() == chkTrailer) {
             listeners.forEach(l -> l.trailerChanged(chkTrailer.isSelected()));
+        } else if (e.getSource() == chkControlSystems) {
+            listeners.forEach(l -> l.controlSystemsChanged(chkControlSystems.isSelected()));
         } else if (e.getSource() == cbMotiveType) {
             listeners.forEach(l -> l.motiveChanged((EntityMovementMode)cbMotiveType.getSelectedItem()));
         } else if (e.getSource() == cbEngine) {

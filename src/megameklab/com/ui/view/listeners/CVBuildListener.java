@@ -45,9 +45,15 @@ public interface CVBuildListener extends BuildListener {
 
     /**
      * Notify of a change in trailer status
-     * @param trailer Whether the vehicle is construted as a trailer
+     * @param trailer Whether the vehicle is constructed as a trailer
      */
     void trailerChanged(boolean trailer);
+
+    /**
+     * Notify of a change in whether a trailer has control systems.
+     * @param controlSystems Whether the trailer has control systems.
+     */
+    void controlSystemsChanged(boolean controlSystems);
 
     /**
      * Notify of a change in motive type. May require instantiation of a new {@link megamek.common.Entity Entity}.

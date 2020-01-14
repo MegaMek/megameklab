@@ -537,6 +537,18 @@ public class StructureTab extends ITab implements CVBuildListener, ArmorAllocati
     }
 
     @Override
+    public void controlSystemsChanged(boolean controlSystems) {
+        getTank().setHasNoControlSystems(!controlSystems);
+        if (!controlSystems) {
+            walkChanged(0);
+        }
+        panChassis.setFromEntity(getTank());
+        panSummary.refresh();
+        refresh.refreshPreview();
+        refresh.refreshStatus();
+    }
+
+    @Override
     public void motiveChanged(EntityMovementMode motive) {
         // If we are changing to or from VTOL we need a new Entity
         if ((motive == EntityMovementMode.VTOL)
@@ -560,6 +572,7 @@ public class StructureTab extends ITab implements CVBuildListener, ArmorAllocati
         if (getTank().isTrailer() && !motive.equals(EntityMovementMode.TRACKED)
             && !motive.equals(EntityMovementMode.WHEELED)) {
             getTank().setTrailer(false);
+            getTank().setHasNoControlSystems(false);
         }
         panChassis.removeListener(this);
         panChassis.setFromEntity(getTank());
