@@ -29,9 +29,26 @@ import java.util.stream.IntStream;
 import static megameklab.com.printing.PrintRecordSheet.DEFAULT_PIP_SIZE;
 
 /**
- * Utility for determining placement of armor and structure pips.
- * Assumes that the group includes a number of {@link SVGRectElement}s defining horizontal rows,
- * that the regions are continguous, and the rows themselves are contiguous.
+ * <p>Utility for determining placement of armor and structure pips. The position and shape of the space
+ * is defined by metadata in the svg document. This is used to calculate the number of rows of pips,
+ * how many to place in each row, and how far apart to space them. This class is accessed through the
+ * static method {@link ArmorPipLayout#addPips(PrintRecordSheet, Element, int, PrintRecordSheet.PipType, double) addPips}.</p>
+ *
+ *
+ * <p>The region should be a {@link SVGGElement} group containing one or more {@link SVGRectElement}s.
+ * The rect elements define horizontal bands that have their top segment fully contained within the
+ * region to define its position and shape. The average height of the elements is used as the starting
+ * size of the pips in the region, though they may be scaled down to fit. The width at any arbitrary
+ * y coordinate in the region is computed as the most restrictive of the top segments of the rect element
+ * on either side. The rects may overlap to define steeply angled sides, or may be spaced out where the
+ * sides are vertical.</p>
+ *
+ * <p>Gaps in the horizontal bands (such as to skip the cockpit on an aerospace fighter) can be indicated
+ * by a custom entry in the rect element's style attribute in the format {@code mml-gap:x1,x2},
+ * where x1 and x2 are the beginning and ending x coordinate of the gap, respectively. Non-contiguous
+ * vertical sections (such as the side armor on VTOLs) are indicated by grouping each section into
+ * its own g element and adding {@code mml-multisection:true} to the parent g
+ * element's style attribute.</p>
  */
 class ArmorPipLayout {
 
@@ -53,11 +70,11 @@ class ArmorPipLayout {
     private final Map<Double, Bounds> negativeRegions = new HashMap<>();
 
     /**
-     * Processes the <code>rect</code> elements within a group to find the width of the region
+     * Processes the rect elements within a group to find the width of the region
      * at each marked point and adds pip elements to the group layed out in a symmetric pattern.
      *
      * @param sheet       The record sheet being printed.
-     * @param group       The group element that contains the <code>rect</code> elements that
+     * @param group       The group element that contains the rect elements that
      *                    mark the dimensions of the area on the armor or structure diagram.
      * @param pipCount    The number of armor or structure pips to add
      * @param pipType     The shape of pip to add
@@ -124,11 +141,11 @@ class ArmorPipLayout {
     }
 
     /**
-     * Processes the <code>rect</code> elements within a group to find the width of the region
+     * Processes the rect elements within a group to find the width of the region
      * at each marked point and adds pip elements to the group layed out in a symmetric pattern.
      *
      * @param sheet       The record sheet being printed.
-     * @param group       The group element that contains the <code>rect</code> elements that
+     * @param group       The group element that contains the rect elements that
      *                    mark the dimensions of the area on the armor or structure diagram.
      * @param pipCount    The number of armor or structure pips to add
      * @param pipType     The shape of pip to add
@@ -139,12 +156,12 @@ class ArmorPipLayout {
     }
 
     /**
-     * Processes the <code>rect</code> elements within a group to find the width of the region
+     * Processes the rect elements within a group to find the width of the region
      * at each marked point and adds circular pip elements to the group layed out in a symmetric
      * pattern.
      *
      * @param sheet       The record sheet being printed.
-     * @param group       The group element that contains the <code>rect</code> elements that
+     * @param group       The group element that contains the rect elements that
      *                    mark the dimensions of the area on the armor or structure diagram.
      * @param pipCount    The number of armor or structure pips to add
      */
@@ -165,7 +182,7 @@ class ArmorPipLayout {
     }
 
     /**
-     * Iterates through the <code>rect</code> elements in the group, sorts them into a {@link TreeMap}
+     * Iterates through the rect elements in the group, sorts them into a {@link TreeMap}
      * keyed to the y coordinate of the top, and calculates the bounding box.
      *
      * @return The bounding box of the region
@@ -202,7 +219,7 @@ class ArmorPipLayout {
     }
 
     /**
-     * Checks the style attribute for a field in the format {@code mml-gap:x,y}, indicating
+     * Checks the style attribute for a field in the format {@code mml-gap:x1,x2}, indicating
      * that pips should not be placed between those coordinates.
      *
      * @param bbox The dimensions of the rectangle bounding box defining the pip row
@@ -269,7 +286,7 @@ class ArmorPipLayout {
             }
         }
         // If staggered, successive rows are offset by a half pip to allow the rows to be closer
-        // together
+        // together without touching
         boolean staggered = false;
         double radius = avgHeight * DEFAULT_PIP_SIZE;
         double spacing = Math.min(avgHeight, bounds.height() / nRows);
@@ -286,12 +303,12 @@ class ArmorPipLayout {
         List<Bounds> rows = new ArrayList<>();
         // Space to be skipped
         List<Bounds> gaps = new ArrayList<>();
-        // Expand the spacing between rows geometrically
+        // Expand the spacing between rows geometrically to reduce crowding in the middle of the region
         spacing = Math.sqrt(spacing * nRows / bounds.height()) * bounds.height() / nRows;
         double ypos = Math.max(bounds.top, bounds.top + (bounds.height() - spacing * nRows) / 2.0
                 + spacing * 0.5 - radius);
         // As we add or remove pips to make the count come all even or odd (or alternating for staggered)
-        // keep track of the shift and ajust up or down to keep the shift close to zero
+        // keep track of the shift and adjust up or down to keep the shift close to zero
         int shift = 0;
         // If staggered, toggle the parity after each row. Otherwise try to keep the same parity.
         int parity = nCols % 2;
@@ -371,15 +388,16 @@ class ArmorPipLayout {
 
     /**
      * Takes the rough layout and adds or removes pips to match the required number.
-     * Pips are added to the rows with the most extra space and removed from rows with
-     * the least extra space.
+     * Pips are added starting with the rows with the most extra space and removed starting with
+     * rows with the least extra space.
      *
      * @param pipCount  The total number of pips
-     * @param rows      A list of the bounding boxes of the selected rows
-     * @param gaps      A list of the bounding boxes of any gaps to be left in the rows.
+     * @param rows      A list of the bounding boxes of the generated rows
+     * @param gaps      A list of the bounding boxes of any gaps to be left in the rows. Each
+     *                  entry corresponds to the same index in {@code rows}.
      * @param rowCount  The number of pips in each of the rows. This list needs to be
      *                  the same size as {@code rows}.
-     * @param staggered If true, attempt to maintain the parity of each row.
+     * @param staggered If true, attempt to maintain the parity of each row (which should be alternating).
      * @param spacing   The spacing between rows, used as the starting spacing between
      *                  pips in the row
      * @return          The ratio of the horizontal to vertical spacing
@@ -398,8 +416,8 @@ class ArmorPipLayout {
         int rowDelta = staggered ? 2 : 1;
         int row = 0;
         // Running count of rows that are skipped due to being full or having the minimum number.
-        // If we go through all the rows and skip all of them, either shrink the pips or
-        // remove the minimum pip requirement then try again.
+        // If we go through all the rows and skip all of them, either shrink the pips (when adding) or
+        // remove the minimum pip requirement (when subtracting) then try again.
         int skipped;
         // Keep a minimum of 1 pip per row, or 2 per split row if the parts are the same size.
         // If this still leaves us with extra pips, remove this requirement.
@@ -471,7 +489,7 @@ class ArmorPipLayout {
     private void drawPips(List<Bounds> rows, List<Bounds> gaps, List<Integer> rowCount,
                           boolean staggered, double radius, double xSpacing) {
         double dx = staggered ? xSpacing * 2 : xSpacing;
-        /* Find the row that takes up the largest perctage of its row. If it's over 100%,
+        /* Find the row that takes up the largest percentage of its row. If it's over 100%,
          * reduce the horizontal spacing to make it fit. If lower, increase the horizontal
          * spacing by a factor of the geometric mean of the percentage and 1.0 to prevent
          * having a cluster of pips in the center and too much blank space on the sides. */
