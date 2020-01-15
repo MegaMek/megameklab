@@ -315,7 +315,7 @@
                                     ></g
                                     ><text x="3.000" y="28.000" fill="bold" text-anchor="start" style="font-family:Eurostile;font-size:9.670px;font-weight:bold;font-style:normal" textLength="21.401" lengthAdjust="spacingAndGlyphs"
                                     >Type:</text
-                                    ><text fill="bold" x="29.229" id="type" y="28.000" style="font-family:Eurostile;font-size:9.670px;font-weight:normal;font-style:normal;mml-field-width:175.771" text-anchor="start"
+                                    ><text fill="bold" x="29.229" id="type" y="28.000" style="font-family:Eurostile;font-size:9.670px;font-weight:normal;font-style:normal;mml-field-width:178.771" text-anchor="start"
                                     >Lorem Ipsum</text
                                     ><text fill="#231f20" x="6.000" y="38.000" style="font-family:Eurostile;font-size:7.700px;font-weight:bold;font-style:normal" text-anchor="start"
                                     >Movement Points:</text
@@ -333,19 +333,19 @@
                                     >0</text
                                     ><text x="108.500" y="38.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:7.700px;font-weight:bold;font-style:normal" textLength="29.785" lengthAdjust="spacingAndGlyphs"
                                     >Tonnage:</text
-                                    ><text fill="#231f20" x="151.040" id="tonnage" y="38.000" style="font-family:Eurostile;font-size:7.700px;font-weight:normal;font-style:normal" text-anchor="start"
+                                    ><text fill="#231f20" x="151.040" id="tonnage" y="38.000" style="font-family:Eurostile;font-size:7.700px;font-weight:normal;font-style:normal;mml-field-width:53.960" text-anchor="start"
                                     >0</text
                                     ><text x="108.500" y="47.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:7.700px;font-weight:bold;font-style:normal" textLength="35.949" lengthAdjust="spacingAndGlyphs"
                                     >Tech Base:</text
-                                    ><text fill="#231f20" x="151.040" id="techBase" y="47.000" style="font-family:Eurostile;font-size:7.700px;font-weight:normal;font-style:normal" text-anchor="start"
+                                    ><text fill="#231f20" x="151.040" id="techBase" y="47.000" style="font-family:Eurostile;font-size:7.700px;font-weight:normal;font-style:normal;mml-field-width:53.960" text-anchor="start"
                                     >Inner Sphere</text
                                     ><text x="108.500" y="56.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:7.700px;font-weight:bold;font-style:normal" textLength="38.697" lengthAdjust="spacingAndGlyphs"
                                     >Rules Level:</text
-                                    ><text fill="#231f20" x="151.040" id="rulesLevel" y="56.000" style="font-family:Eurostile;font-size:7.700px;font-weight:normal;font-style:normal" text-anchor="start"
+                                    ><text fill="#231f20" x="151.040" id="rulesLevel" y="56.000" style="font-family:Eurostile;font-size:7.700px;font-weight:normal;font-style:normal;mml-field-width:53.960" text-anchor="start"
                                     >Standard</text
                                     ><text x="108.500" y="65.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:7.700px;font-weight:bold;font-style:normal" id="labelRole" textLength="16.160" lengthAdjust="spacingAndGlyphs"
                                     >Role:</text
-                                    ><text fill="#231f20" x="151.040" id="role" y="65.000" style="font-family:Eurostile;font-size:7.700px;font-weight:normal;font-style:normal" text-anchor="start"
+                                    ><text fill="#231f20" x="151.040" id="role" y="65.000" style="font-family:Eurostile;font-size:7.700px;font-weight:normal;font-style:normal;mml-field-width:53.960" text-anchor="start"
                                     >Lorem Ipsum</text
                                     ><text x="6.000" y="65.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:7.700px;font-weight:bold;font-style:normal" textLength="54.285" lengthAdjust="spacingAndGlyphs"
                                     >Movement Type:</text
