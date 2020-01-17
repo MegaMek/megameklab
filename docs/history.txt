@@ -15,6 +15,8 @@ v0.47.3-SNAPSHOT
 + Issue #395: Crew for SV - Minimum crew calculation (errata)
 + PR #397: External fonts - On some systems the list of fonts for printing record sheets does not include all system fonts.
            Placing a font file in the data/fonts directory will make it available to MML even if the system does not.
++ PR #398: Vehicle Record Sheet Overhaul
++ Issue #42: Can't print naval vehicles
 
 v0.47.2 (2019-11-15 2000 UTC)
 + Issue #365: Protomek Tab is missing its fluff section
