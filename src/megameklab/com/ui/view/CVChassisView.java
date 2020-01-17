@@ -32,6 +32,7 @@ import megamek.common.Tank;
 import megamek.common.TechAdvancement;
 import megamek.common.VTOL;
 import megamek.common.util.EncodeControl;
+import megamek.common.verifier.TestTank;
 import megameklab.com.ui.util.CustomComboBox;
 import megameklab.com.ui.util.TechComboBox;
 import megameklab.com.ui.view.listeners.CVBuildListener;
@@ -285,31 +286,10 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
 
     private void refreshTonnage() {
         spnTonnage.removeChangeListener(this);
-        int max;
-        switch(getMovementMode()) {
-            case WHEELED:
-            case WIGE:
-                max = 80;
-                break;
-            case HOVER:
-                max = 50;
-                break;
-            case VTOL:
-                max = 30;
-                break;
-            case NAVAL:
-            case SUBMARINE:
-                max = 300;
-                break;
-            case TRACKED:
-            case HYDROFOIL:
-            default:
-                max = 100;
-        }
+        int max = (int) TestTank.maxTonnage(getMovementMode(), isSuperheavy());
         int min = 1;
         if (isSuperheavy()) {
-            min = max + 1;
-            max *= 2;
+            min = (int) TestTank.maxTonnage(getMovementMode(), false) + 1;
         }
         spnTonnageModel.setMaximum(max);
         spnTonnageModel.setMinimum(min);

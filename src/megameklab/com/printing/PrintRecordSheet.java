@@ -14,10 +14,12 @@
 package megameklab.com.printing;
 
 import megamek.common.EquipmentType;
+import megamek.common.annotations.Nullable;
 import megamek.common.logging.LogLevel;
 import megameklab.com.MegaMekLab;
 import megameklab.com.util.CConfig;
 import org.apache.batik.anim.dom.SVGDOMImplementation;
+import org.apache.batik.anim.dom.SVGLocatableSupport;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.GVTBuilder;
 import org.apache.batik.bridge.UserAgentAdapter;
@@ -31,7 +33,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGDocument;
-import org.w3c.dom.svg.SVGElement;
 import org.w3c.dom.svg.SVGRectElement;
 import org.w3c.dom.xpath.XPathEvaluator;
 import org.w3c.dom.xpath.XPathResult;
@@ -54,7 +55,7 @@ import java.util.*;
  * @author Neoancient
  *
  */
-public abstract class PrintRecordSheet implements Printable {
+public abstract class PrintRecordSheet implements Printable, IdConstants {
     
     final static String DEFAULT_TYPEFACE = "Eurostile";
     final static float DEFAULT_PIP_SIZE  = 0.38f;
@@ -185,44 +186,96 @@ public abstract class PrintRecordSheet implements Printable {
         }
     }
 
+    /**
+     * Creates a {@link Document} from an svg image file
+     *
+     * @param filename The name of the SVG file
+     * @return         The document object
+     */
+    static Document loadSVG(String filename) {
+        final String METHOD_NAME = "loadSVG(String)";
+
+        File f = new File("data/images/recordsheets/", filename);
+        Document svgDocument = null;
+        try {
+            InputStream is = new FileInputStream(f);
+            DOMImplementation impl = SVGDOMImplementation.getDOMImplementation();
+            final String parser = XMLResourceDescriptor.getXMLParserClassName();
+            SAXDocumentFactory df = new SAXDocumentFactory(impl, parser);
+            svgDocument = df.createDocument(f.toURI().toASCIIString(), is);
+        } catch (Exception e) {
+            MegaMekLab.getLogger().error(PrintRecordSheet.class, METHOD_NAME, e);
+        }
+        if (null == svgDocument) {
+            MegaMekLab.getLogger().error(PrintRecordSheet.class, METHOD_NAME,
+                    "Failed to open SVG file! Path: data/images/recordsheets/"
+                            + filename);
+        }
+        return svgDocument;
+    }
+
+    /**
+     * Checks the <code>style</code> attribute of an {@link Element} for a given property and returns its
+     * value, or null if the property does not exist.
+     *
+     * @param element  The element to check the property of
+     * @param property The name of the property
+     * @return         The value of the property, or <code>null</code> if the property does not exist.
+     */
+    static @Nullable
+    String parseStyle(Element element, String property) {
+        final String style = element.getAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE);
+        if (null != style) {
+            for (String field : style.split(";")) {
+                if (field.startsWith(property + ":")) {
+                    return field.substring(field.indexOf(":") + 1);
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Creates the base template document. This is usually loaded from a file, but
+     * some composite record sheets override this to create a document in memory
+     * which is then filled in using the individual record sheet templates.
+     *
+     * @param pageIndex   The index of this page in the print job
+     * @param pageFormat  The page format seleted by the user
+     * @return            An SVG document for one page of the print job
+     */
+    @Nullable Document loadTemplate(int pageIndex, PageFormat pageFormat) {
+        return loadSVG(getSVGFileName(pageIndex - firstPage));
+    }
+
+    void createDocument(int pageIndex, PageFormat pageFormat) {
+        svgDocument = loadTemplate(pageIndex, pageFormat);
+        if (null != svgDocument) {
+            subFonts((SVGDocument) svgDocument);
+            svgGenerator = new SVGGraphics2D(svgDocument);
+            processImage(pageIndex - firstPage, pageFormat);
+        }
+    }
+
     @Override
     public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
         final String METHOD_NAME = "print(Graphics,PageFormat,int)";
         
         Graphics2D g2d = (Graphics2D) graphics;
         if (null != g2d) {
-            File f = new File("data/images/recordsheets/" + getSVGFileName(pageIndex - firstPage));
-            svgDocument = null;
+            createDocument(pageIndex, pageFormat);
+            GraphicsNode node = build();
+            node.paint(g2d);
+            /* Testing code that outputs the generated svg
             try {
-                InputStream is = new FileInputStream(f);
-                DOMImplementation impl = SVGDOMImplementation.getDOMImplementation();
-                final String parser = XMLResourceDescriptor.getXMLParserClassName();
-                SAXDocumentFactory df = new SAXDocumentFactory(impl, parser);
-                svgDocument = df.createDocument(f.toURI().toASCIIString(), is);
-            } catch (Exception e) {
-                MegaMekLab.getLogger().error(PrintRecordSheet.class, METHOD_NAME, e);
+                Transformer transformer = TransformerFactory.newInstance().newTransformer();
+                Result output = new StreamResult(new File("out.svg"));
+                Source input = new DOMSource(svgDocument);
+                transformer.transform(input, output);
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
-            if (null == svgDocument) {
-                MegaMekLab.getLogger().error(PrintRecordSheet.class, METHOD_NAME,
-                        "Failed to open Mech SVG file! Path: data/images/recordsheets/"
-                                + getSVGFileName(pageIndex - firstPage));
-            } else {
-                subFonts((SVGDocument) svgDocument);
-                svgGenerator = new SVGGraphics2D(svgDocument);
-                printImage(g2d, pageFormat, pageIndex - firstPage);
-                GraphicsNode node = build();
-                node.paint(g2d);
-                /* Testing code that outputs the generated svg
-                try {
-                    Transformer transformer = TransformerFactory.newInstance().newTransformer();
-                    Result output = new StreamResult(new File("out.svg"));
-                    Source input = new DOMSource(svgDocument);
-                    transformer.transform(input, output);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-                 */
-            }
+             */
         }
         return Printable.PAGE_EXISTS;
     }
@@ -258,14 +311,9 @@ public abstract class PrintRecordSheet implements Printable {
     /**
      * Renders the sheet to the Graphics object.
      * 
-     * @param g2d        The graphics object passed by {@link Printable#print(Graphics, PageFormat, int) print}
-     * @param pageFormat The page format passed by {@link Printable#print(Graphics, PageFormat, int) print}
      * @param pageNum    Indicates which page of multi-page sheets to print. The first page is 0.
-     * 
-     * @throws PrinterException
      */
-    protected abstract void printImage(Graphics2D g2d, PageFormat pageFormat, int pageNum)
-            throws PrinterException;
+    protected abstract void processImage(int pageNum, PageFormat pageFormat);
 
     /**
      * @param pageNumber  The page number in the current record sheet, where the first page is numberd zero.
@@ -305,6 +353,29 @@ public abstract class PrintRecordSheet implements Printable {
                     hideElement(element, false);
                 }
                 element.setTextContent(text);
+                /* In cases where the text may be too long for the space we will need to add the
+                 * textLength attribute to fit it into the space. We only want to set the textLength
+                 * when the text is too long so we don't stretch shorter text to fit. So we abuse the
+                 * style attribute to sneak in metadata about the max width of the space.
+                 */
+                String fieldWidth = parseStyle(element, MML_FIELD_WIDTH);
+                if (null != fieldWidth) {
+                    try {
+                        double width = Double.parseDouble(fieldWidth);
+                        build();
+                        double textWidth = SVGLocatableSupport.getBBox(element).getWidth();
+                        if (textWidth > width) {
+                            element.setAttributeNS(null, SVGConstants.SVG_TEXT_LENGTH_ATTRIBUTE,
+                                    String.valueOf(width));
+                            element.setAttributeNS(null, SVGConstants.SVG_LENGTH_ADJUST_ATTRIBUTE,
+                                    SVGConstants.SVG_SPACING_AND_GLYPHS_VALUE);
+                        }
+                    } catch (NumberFormatException ex) {
+                        MegaMekLab.getLogger().warning(getClass(),
+                                "setTextField(String, String, boolean)",
+                                "Could not parse fieldWidth: " + fieldWidth);
+                    }
+                }
             }
         }
     }
@@ -470,7 +541,9 @@ public abstract class PrintRecordSheet implements Printable {
                 lines++;
                 return lines;
             }
-            if ((index < 0) || (getTextLength(text.substring(0, pos + index), fontSize) > width)) {
+            if ((index < 0)
+                    || ((getTextLength(text.substring(0, pos + index), fontSize) > width)
+                    && (pos > 0))) {
                 addTextElement(canvas, x, y, text.substring(0, pos), fontSize, anchor, weight, fill);
                 lines++;
                 y += lineHeight;
@@ -989,204 +1062,7 @@ public abstract class PrintRecordSheet implements Printable {
         }
         return (int) nRows;
     }
-    
-    // Older method that was unsuitable for mechs but could work for vees and aerospace. Would need
-    // some updating to work with regions rather than fixed pips in the SVG.
-    protected void setArmorPips(Element group, int armorVal, boolean symmetric) {
-        final String METHOD_NAME = "setArmorPips(SVGElement,int)";
-        // First sort pips into rows. We can't rely on the pips to be in order, so we use
-        // maps to allow non-sequential loading.
-        Map<Integer,Map<Integer,Element>> rowMap = new TreeMap<>();
-        int pipCount = 0;
-        for (int i = 0; i < group.getChildNodes().getLength(); i++) {
-            final Node n = group.getChildNodes().item(i);
-            if (n instanceof SVGElement) {
-                final SVGElement pip = (SVGElement) n;
-                try {
-                    int index = pip.getId().indexOf(":");
-                    String[] coords = pip.getId().substring(index + 1).split(",");
-                    int r = Integer.parseInt(coords[0]);
-                    rowMap.putIfAbsent(r, new TreeMap<>());
-                    rowMap.get(r).put(Integer.parseInt(coords[1]), pip);
-                    pipCount++;
-                } catch (Exception ex) {
-                    MegaMekLab.getLogger().log(getClass(), METHOD_NAME, LogLevel.ERROR,
-                            "Malformed id for SVG armor pip element: " + pip.getId());
-                }
-            }
-        }
-        if (pipCount < armorVal) {
-            MegaMekLab.getLogger().log(getClass(), METHOD_NAME, LogLevel.ERROR,
-                    "Armor pip group " + ((SVGElement) group).getId() + " does not contain enough pips for " + armorVal + " armor");
-            return;
-        } else if (pipCount == armorVal) {
-            // Simple case; leave as is
-            return;
-        }
-        // Convert map into array for easier iteration in both directions. This will also skip
-        // over gaps in the numbering.
-        Element[][] rows = new Element[rowMap.size()][];
-        int row = 0;
-        for (Map<Integer,Element> r : rowMap.values()) {
-            rows[row] = new Element[r.size()];
-            int i = 0;
-            for (Element e : r.values()) {
-                rows[row][i] = e;
-                i++;
-            }
-            row++;
-        }
-        
-        // Get the ratio of the number of pips to show to the total number of pips
-        // and distribute the number of pips proportionally to each side
-        double saturation = Math.min(1.0, (double) armorVal / pipCount);
-        
-        // Now we find the center row, which is the row that has the same number of pips above
-        // and below it as nearly as possible.
-        
-        int centerRow = rows.length / 2;
-        int pipsAbove = 0;
-        for (int r = 0; r < rows.length; r++) {
-            pipsAbove += rows[r].length;
-            if (pipsAbove > pipCount / 2) {
-                centerRow = r;
-                break;
-            }
-        }
-        int showAbove = (int) Math.round(pipsAbove * saturation);
-        int showBelow = armorVal - showAbove;
-        // keep a running total of the number to hide in each row
-        int[] showByRow = new int[rows.length];
-        double remaining = pipsAbove;
-        for (int i = centerRow; i >= 0; i--) {
-            showByRow[i] = (int) Math.round(rows[i].length * showAbove / remaining);
-            if (symmetric && (showByRow[i] > 0) && (showByRow[i] % 2) != (rows[i].length % 2)) {
-                if ((showByRow[i] < showAbove) && (showByRow[i] < rows[i].length)) {
-                    showByRow[i]++;
-                } else {
-                    showByRow[i]--;
-                }
-            }
-            showAbove -= showByRow[i];
-            remaining -= rows[i].length;
-        }
-        // We may have some odd ones left over due to symmetry imposed on middle pip of the row
-        showBelow += showAbove;
-        remaining = pipCount - pipsAbove;
-        for (int i = centerRow + 1; i < rows.length; i++) {
-            showByRow[i] = (int) Math.round(rows[i].length * showBelow / remaining);
-            if (symmetric && (showByRow[i] > 0) && (showByRow[i] % 2) != (rows[i].length % 2)) {
-                if ((showByRow[i] < showBelow) && (showByRow[i] < rows[i].length)) {
-                    showByRow[i]++;
-                } else {
-                    showByRow[i]--;
-                }
-            }
-            showBelow -= showByRow[i];
-            remaining -= rows[i].length;
-        }
-        
-        // Now we need to deal with leftovers, starting in the middle and adding one or two at a time
-        // (depending on whether there are an odd or even number of pips in the row) moving out toward
-        // the top and bottom and repeating until they are all placed.
-        
-        remaining = showBelow;
-        while (remaining > 0) {
-            for (int i = 0; i <= centerRow; i++) {
-                row = centerRow - i;
-                int toAdd = symmetric? (2 - rows[row].length % 2) : 1;
-                if (remaining < toAdd) {
-                    continue;
-                }
-                if (rows[row].length >= showByRow[row] + toAdd) {
-                    showByRow[row] += toAdd;
-                    remaining -= toAdd;
-                }
-                if (i > 0) {
-                    row = centerRow + i;
-                    if (row >= rows.length) {
-                        continue;
-                    }
-                    toAdd = symmetric? (2 - rows[row].length % 2) : 1;
-                    if (remaining < toAdd) {
-                        continue;
-                    }
-                    if (rows[row].length >= showByRow[row] + toAdd) {
-                        showByRow[row] += toAdd;
-                        remaining -= toAdd;
-                    }
-                }
-            }
-        }
-        
-        // Now select which pips in each row to hide
-        for (row = 0; row < rows.length; row++) {
-            int toHide = rows[row].length - showByRow[row];
-            if (toHide == 0) {
-                continue;
-            }
-            double ratio = (double) toHide / rows[row].length;
-            int length = rows[row].length;
-            if (symmetric) {
-                length /= 2;
-                if (toHide % 2 == 1) {
-                    hideElement(rows[row][length]);
-                    toHide--;
-                    ratio = (double) toHide / (rows[row].length - 1);
-                }
-            }
-            Set<Integer> indices = new HashSet<>();
-            double accum = 0.0;
-            for (int i = length % 2; i < length; i += 2) {
-                accum += ratio;
-                if (accum >= 1 -saturation) {
-                    indices.add(i);
-                    accum -= 1.0;
-                    toHide--;
-                    if (symmetric) {
-                        indices.add(rows[row].length - 1 - i);
-                        toHide--;
-                    }
-                }
-                if (toHide == 0) {
-                    break;
-                }
-            }
-            if (toHide > 0) {
-                for (int i = length - 1; i >= 0; i -= 2) {
-                    accum += ratio;
-                    if (accum >= saturation) {
-                        indices.add(i);
-                        accum -= 1.0;
-                        toHide--;
-                        if (symmetric) {
-                            indices.add(rows[row].length - 1 - i);
-                            toHide--;
-                        }
-                    }
-                    if (toHide == 0) {
-                        break;
-                    }
-                }
-            }
-            int i = 0;
-            while (toHide > 0) {
-                if (!indices.contains(i)) {
-                    indices.add(i);
-                    toHide--;
-                    if (symmetric) {
-                        indices.add(rows[row].length - 1 - i);
-                        toHide--;
-                    }
-                }
-                i++;
-            }
-            for (int index : indices) {
-                hideElement(rows[row][index]);
-            }
-        }
-    }
-    
+
     protected void hideElement(String id) {
         Element element = svgDocument.getElementById(id);
         if (null != element) {

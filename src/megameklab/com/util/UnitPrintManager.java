@@ -17,8 +17,7 @@
 package megameklab.com.util;
 
 import java.awt.Frame;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.print.Book;
 import java.awt.print.PageFormat;
@@ -53,16 +52,12 @@ import megamek.common.EntityMovementMode;
 import megamek.common.FixedWingSupport;
 import megamek.common.Infantry;
 import megamek.common.Jumpship;
-import megamek.common.LargeSupportTank;
 import megamek.common.Mech;
 import megamek.common.MechFileParser;
 import megamek.common.Protomech;
 import megamek.common.SmallCraft;
 import megamek.common.Tank;
-import megamek.common.VTOL;
-import megameklab.com.printing.PrintCapitalShip;
-import megameklab.com.printing.PrintMech;
-import megameklab.com.printing.PrintTask;
+import megameklab.com.printing.*;
 import megameklab.com.ui.Aero.Printing.PrintAero;
 import megameklab.com.ui.Aero.Printing.PrintConventionalFighter;
 import megameklab.com.ui.Aero.Printing.PrintFixedWingSupport;
@@ -72,10 +67,6 @@ import megameklab.com.ui.BattleArmor.Printing.PrintBattleArmor;
 import megameklab.com.ui.Dropship.Printing.PrintAerodyne;
 import megameklab.com.ui.Dropship.Printing.PrintSpheroid;
 import megameklab.com.ui.Infantry.Printing.PrintInfantry;
-import megameklab.com.ui.Vehicle.Printing.PrintDualTurretVehicle;
-import megameklab.com.ui.Vehicle.Printing.PrintLargeSupportVehicle;
-import megameklab.com.ui.Vehicle.Printing.PrintVTOL;
-import megameklab.com.ui.Vehicle.Printing.PrintVehicle;
 import megameklab.com.ui.dialog.UnitPrintQueueDialog;
 import megameklab.com.ui.protomek.printing.PrintProtomech;
 
@@ -83,7 +74,7 @@ public class UnitPrintManager {
 
     public static boolean printEntity(Entity entity) {
 
-        Vector<Entity> unitList = new Vector<Entity>();
+        Vector<Entity> unitList = new Vector<>();
 
         unitList.add(entity);
 
@@ -94,7 +85,7 @@ public class UnitPrintManager {
         UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(parent);
         UnitSelectorDialog viewer = new UnitSelectorDialog(parent, unitLoadingDialog, true);
 
-        Entity entity = null;
+        Entity entity;
 
         entity = viewer.getChosenEntity();
 
@@ -121,7 +112,7 @@ public class UnitPrintManager {
             // I want a file, y'know!
             return;
         }
-        Vector<Entity> loadedUnits = new Vector<Entity>();
+        Vector<Entity> loadedUnits;
         try {
             loadedUnits = EntityListFile.loadFrom(f.getSelectedFile());
             loadedUnits.trimToSize();
@@ -149,8 +140,7 @@ public class UnitPrintManager {
             return true;
         }
 
-        PageFormat pageFormat = new PageFormat();
-        pageFormat = masterPrintJob.getPageFormat(null);
+        PageFormat pageFormat  = masterPrintJob.getPageFormat(null);
 
         Paper p = pageFormat.getPaper();
         p.setImageableArea(0, 0, p.getWidth(), p.getHeight());
@@ -158,48 +148,21 @@ public class UnitPrintManager {
         pageFormat.setPaper(p);
 
         Tank tank1 = null;
-        Tank wige1 = null;
-        Tank dualTurret1 = null;
         for (Entity unit : loadedUnits) {
             if (unit instanceof Mech) {
                 UnitUtil.removeOneShotAmmo(unit);
                 UnitUtil.expandUnitMounts((Mech) unit);
                 book.append(new PrintMech((Mech) unit, book.getNumberOfPages()), pageFormat);
-            } else if ((unit instanceof LargeSupportTank) || ((unit instanceof Tank) && (unit.getMovementMode() != EntityMovementMode.VTOL) && ((Tank)unit).isSuperHeavy())) {
-                book.append(new PrintLargeSupportVehicle((Tank) unit), pageFormat);
-            } else if (unit instanceof VTOL) {
-                book.append(new PrintVTOL((VTOL) unit), pageFormat);
-            } else if (unit.getMovementMode() == EntityMovementMode.WIGE) {
-                if (singlePrint) {
-                    book.append(new PrintVehicle((Tank) unit,  null), pageFormat);
-                } else if (null != wige1) {
-                    book.append(new PrintVehicle(wige1, (Tank) unit), pageFormat);
-                    wige1 = null;
-                } else {
-                    wige1 = (Tank) unit;
-                }
             } else if ((unit instanceof Tank) && ((unit.getMovementMode() == EntityMovementMode.NAVAL) || (unit.getMovementMode() == EntityMovementMode.SUBMARINE) || (unit.getMovementMode() == EntityMovementMode.HYDROFOIL))) {
-                unprintable.add(unit);
-                //book.append(new PrintNavalVehicle((Tank) unit), pageFormat);
+                book.append(new PrintTank((Tank) unit, book.getNumberOfPages()), pageFormat);
             } else if (unit instanceof Tank) {
-                if (!((Tank) unit).hasNoDualTurret()) {
-                    if (singlePrint) {
-                        book.append(new PrintDualTurretVehicle((Tank) unit,  null), pageFormat);
-                    } else if (null != dualTurret1) {
-                        book.append(new PrintDualTurretVehicle(dualTurret1, (Tank) unit), pageFormat);
-                        dualTurret1 = null;
-                    } else {
-                        dualTurret1 = (Tank) unit;
-                    }
+                if (singlePrint) {
+                    book.append(new PrintCompositeTankSheet((Tank) unit, null, book.getNumberOfPages()), pageFormat);
+                } else if (null != tank1) {
+                    book.append(new PrintCompositeTankSheet(tank1, (Tank) unit, book.getNumberOfPages()), pageFormat);
+                    tank1 = null;
                 } else {
-                    if (singlePrint) {
-                        book.append(new PrintVehicle((Tank) unit,  null), pageFormat);
-                    } else if (null != tank1) {
-                        book.append(new PrintVehicle(tank1, (Tank) unit), pageFormat);
-                        tank1 = null;
-                    } else {
-                        tank1 = (Tank) unit;
-                    }
+                    tank1 = (Tank) unit;
                 }
             } else if (unit.hasETypeFlag(Entity.ETYPE_AERO)) {
                 if (unit instanceof Jumpship) {
@@ -254,14 +217,8 @@ public class UnitPrintManager {
                     .collect(Collectors.joining("\n")));
         }
         
-        if (null != wige1) {
-            book.append(new PrintVehicle(wige1, null), pageFormat);
-        }
         if (null != tank1) {
-            book.append(new PrintVehicle(tank1, null), pageFormat);
-        }
-        if (null != dualTurret1) {
-            book.append(new PrintDualTurretVehicle(dualTurret1, null), pageFormat);
+            book.append(new PrintCompositeTankSheet(tank1, null, book.getNumberOfPages()), pageFormat);
         }
         if (baList.size() > 0) {
             book.append(new PrintBattleArmor(baList), pageFormat);
@@ -296,62 +253,38 @@ public class UnitPrintManager {
 
         item = new JMenuItem("Queue Units to Print");
         item.setMnemonic(KeyEvent.VK_Q);
-        item.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                new UnitPrintQueueDialog(parent);
-            }
-        });
+        item.addActionListener(e -> new UnitPrintQueueDialog(parent));
 
         printMenu.add(item);
         printMenu.addSeparator();
 
         item = new JMenuItem("Other Unit");
         item.setMnemonic(KeyEvent.VK_O);
-        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
-        item.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                UnitPrintManager.printSelectedUnit(parent);
-            }
-        });
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK));
+        item.addActionListener(e -> UnitPrintManager.printSelectedUnit(parent));
         printMenu.add(item);
 
         item = new JMenuItem("From File");
         item.setMnemonic(KeyEvent.VK_I);
-        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, ActionEvent.CTRL_MASK));
-        item.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                UnitPrintManager.printUnitFile(parent);
-            }
-        });
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, InputEvent.CTRL_MASK));
+        item.addActionListener(e -> UnitPrintManager.printUnitFile(parent));
         printMenu.add(item);
 
         item = new JMenuItem("From File (Single Unit Per RS)");
-        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, ActionEvent.CTRL_MASK + ActionEvent.SHIFT_MASK));
-        item.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                UnitPrintManager.printUnitFile(parent, true);
-            }
-        });
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.SHIFT_MASK | InputEvent.CTRL_MASK));
+        item.addActionListener(e -> UnitPrintManager.printUnitFile(parent, true));
         printMenu.add(item);
 
         printMenu.addSeparator();
         item = new JMenuItem("From MUL");
         item.setMnemonic(KeyEvent.VK_M);
-        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, ActionEvent.CTRL_MASK));
-        item.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                UnitPrintManager.printMuls(parent, false);
-            }
-        });
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, InputEvent.CTRL_MASK));
+        item.addActionListener(e -> UnitPrintManager.printMuls(parent, false));
         printMenu.add(item);
 
         item = new JMenuItem("From MUL (Single Unit Per RS)");
         item.setMnemonic(KeyEvent.VK_R);
-        item.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                UnitPrintManager.printMuls(parent, true);
-            }
-        });
+        item.addActionListener(e -> UnitPrintManager.printMuls(parent, true));
         printMenu.add(item);
 
         return printMenu;
@@ -380,7 +313,7 @@ public class UnitPrintManager {
     }
 
     public static void printUnitFile(JFrame parent, boolean singleUnit) {
-        String filePathName = System.getProperty("user.dir").toString() + "/data/mechfiles/";
+        String filePathName = System.getProperty("user.dir") + "/data/mechfiles/";
 
         JFileChooser f = new JFileChooser(filePathName);
         f.setLocation(parent.getLocation().x + 150, parent.getLocation().y + 100);
@@ -400,7 +333,7 @@ public class UnitPrintManager {
 
         try {
 
-            Vector<Entity> unitList = new Vector<Entity>();
+            Vector<Entity> unitList = new Vector<>();
 
             for (File entityFile : f.getSelectedFiles()) {
                 Entity tempEntity = new MechFileParser(entityFile).getEntity();
