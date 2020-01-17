@@ -189,11 +189,13 @@ public class PrintMech extends PrintEntity {
                 }
                 element = getSVGDocument().getElementById(SHIELD_DC + loc);
                 if (null != element) {
-                    addPips(element, m.getBaseDamageCapacity(), false, PipType.CIRCLE);
+                    ArmorPipLayout.addPips(this, element, m.getBaseDamageCapacity(),
+                            PipType.CIRCLE);
                 }
                 element = getSVGDocument().getElementById(SHIELD_DA + loc);
                 if (null != element) {
-                    addPips(element, m.getBaseDamageAbsorptionRate(), false, PipType.DIAMOND);
+                    ArmorPipLayout.addPips(this, element, m.getBaseDamageAbsorptionRate(),
+                            PipType.DIAMOND);
                 }
             }
         }
@@ -360,17 +362,14 @@ public class PrintMech extends PrintEntity {
                 element = getSVGDocument().getElementById(ARMOR_PIPS + mech.getLocationAbbr(loc));
             }
             if ((null != element) && !frontComplete) {
-                addPips(element, mech.getOArmor(loc),
-                        (loc == Mech.LOC_HEAD) || (loc == Mech.LOC_CT) || (loc == Mech.LOC_CLEG),
+                ArmorPipLayout.addPips(this, element, mech.getOArmor(loc),
                         PipType.forAT(mech.getArmorType(loc)));
 
             }
             if ((loc > Mech.LOC_HEAD) && !structComplete) {
                 element = getSVGDocument().getElementById(IS_PIPS + mech.getLocationAbbr(loc));
                 if (null != element) {
-                    addPips(element, mech.getOInternal(loc),
-                            (loc == Mech.LOC_CT) || (loc == Mech.LOC_CLEG));
-
+                    ArmorPipLayout.addPips(this, element, mech.getOInternal(loc));
                 }
             }
             if (mech.hasRearArmor(loc) && !rearComplete) {
@@ -380,7 +379,7 @@ public class PrintMech extends PrintEntity {
                 }
                 element = getSVGDocument().getElementById(ARMOR_PIPS + mech.getLocationAbbr(loc) + "R");
                 if (null != element) {
-                    addPips(element, mech.getOArmor(loc, true), loc == Mech.LOC_CT,
+                    ArmorPipLayout.addPips(this, element, mech.getOArmor(loc, true),
                             PipType.forAT(mech.getArmorType(loc)));
 
                 }
