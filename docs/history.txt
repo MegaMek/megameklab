@@ -1,11 +1,21 @@
 VERSION HISTORY:
 ----------------
 v0.46.1-SNAPSHOT
++ Issue #336: Quad Battlemechs are unable to allocate industrial physical weapons to their side torsos
 + Issue #337: Cost Calculation / Rules: Repair Facility on Space Stations
 + Issue #341: Sort the database won't work well in decimal point level
 + Issue #344: Attempt to changing Protomech's armor to Electric Discharge makes the unit keep invalid when using Standard armor
 + PR #351:  Allow superheavy industrial mechs
 + Issue #352: Large engine crits not allocated correctly
++ Issue #365: Protomek Tab is missing its fluff section
++ Issue #369: Issues with Mirroring Aero units.
++ Issue #375: Maximum armor calculation is incorrect for Warships
++ Issue #384: Dropship collars rounding issues. [Errata]
++ Issue #388: M-pods not available for Combat Vees
++ Issue #390: Other Equipment tab for aerospace fighters and dropships show all equipment
++ Issue #391: BA Standard Prototype armor doesn't show Crit slots to allocate
++ Issue #386: Armor Calculation Issue with Primitive Jumpship
++ Issue #385: Dropship armor missing - Possible weight calculation issue
 
 v0.46.0 (2019-08-20 1900 UTC)
 
