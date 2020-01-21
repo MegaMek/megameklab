@@ -78,7 +78,7 @@ public class FighterChassisView extends BuildView implements ActionListener, Cha
     final private JCheckBox chkVSTOL = new JCheckBox();
     final private CustomComboBox<Integer> cbFighterType = new CustomComboBox<>(i -> fighterTypeNames[i]);
     final private TechComboBox<Engine> cbEngine = new TechComboBox<>(e -> e.getEngineName().replaceAll("^\\d+ ", ""));
-    final private CustomComboBox<Integer> cbCockpit = new CustomComboBox<>(c -> Aero.getCockpitTypeString(c));
+    final private CustomComboBox<Integer> cbCockpit = new CustomComboBox<>(Aero::getCockpitTypeString);
     final private JButton btnResetChassis = new JButton();
     
     private ITechManager techManager;
@@ -348,7 +348,7 @@ public class FighterChassisView extends BuildView implements ActionListener, Cha
     }
     
     public void setTonnage(double tonnage) {
-        spnTonnage.setValue(Integer.valueOf((int)Math.ceil(tonnage)));
+        spnTonnage.setValue((int) Math.ceil(tonnage));
     }
     
     public boolean isOmni() {
@@ -435,7 +435,7 @@ public class FighterChassisView extends BuildView implements ActionListener, Cha
         } else if (e.getSource() == cbCockpit) {
             listeners.forEach(l -> l.cockpitChanged(getCockpitType()));
         } else if (e.getSource() == btnResetChassis) {
-            listeners.forEach(l -> l.resetChassis());
+            listeners.forEach(AeroBuildListener::resetChassis);
         }
     }
 }
