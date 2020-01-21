@@ -191,7 +191,8 @@ public class FighterChassisView extends BuildView implements ActionListener, Cha
         chkOmni.removeActionListener(this);
         setOmni(aero.isOmni());
         chkOmni.addActionListener(this);
-        chkOmni.setEnabled(!aero.isPrimitive() && !conventional && techManager.isLegal(Entity.getOmniAdvancement()));
+        chkOmni.setEnabled(!aero.isPrimitive() && !conventional
+                && techManager.isLegal(Entity.getOmniAdvancement()));
         txtSI.setText(String.valueOf(aero.getSI()));
         chkVSTOL.removeActionListener(this);
         chkVSTOL.setSelected(aero.isVSTOL());
