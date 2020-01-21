@@ -181,11 +181,9 @@ public class StructureTab extends ITab implements AeroBuildListener, ArmorAlloca
 
         panSummary.refresh();
         addAllListeners();
-
     }
 
     public JLabel createLabel(String text, Dimension maxSize) {
-
         JLabel label = new JLabel(text, SwingConstants.RIGHT);
 
         setFieldSize(label, maxSize);
@@ -220,7 +218,6 @@ public class StructureTab extends ITab implements AeroBuildListener, ArmorAlloca
     }
     
     public void removeSystemCrits(int systemType) {
-
         for (int loc = 0; loc < getAero().locations(); loc++) {
             for (int slot = 0; slot < getAero().getNumberOfCriticals(loc); slot++) {
                 CriticalSlot cs = getAero().getCritical(loc, slot);
@@ -274,8 +271,7 @@ public class StructureTab extends ITab implements AeroBuildListener, ArmorAlloca
      * up any tonnage.
      */
     public void setAeroStructuralIntegrity(){
-        int si = (int)Math.max(panChassis.getTonnage() * 0.1,
-                panMovement.getWalk());
+        int si = (int)Math.max(panChassis.getTonnage() * 0.1, panMovement.getWalk());
         getAero().setSI(si);
     }
 
@@ -341,8 +337,7 @@ public class StructureTab extends ITab implements AeroBuildListener, ArmorAlloca
         }
         // If we have a large engine, a drop in tech level may make it unavailable and we will need
         // to reduce speed to a legal value.
-        if (getAero().getEngine().hasFlag(Engine.LARGE_ENGINE)
-                && panChassis.getAvailableEngines().isEmpty()) {
+        if (getAero().getEngine().hasFlag(Engine.LARGE_ENGINE) && panChassis.getAvailableEngines().isEmpty()) {
             int walk;
             if (getAero().isPrimitive()) {
                 walk = 400 / (int)(getAero().getWeight() * 1.2);
@@ -383,8 +378,7 @@ public class StructureTab extends ITab implements AeroBuildListener, ArmorAlloca
         getAero().setHeatType(index);
         getAero().setHeatSinks(count);
         if (getAero().isOmni()) {
-            getAero().setPodHeatSinks(Math.max(0, count
-                    - panHeat.getBaseCount()));
+            getAero().setPodHeatSinks(Math.max(0, count - panHeat.getBaseCount()));
         }
         panSummary.refresh();
         refresh.refreshStatus();
@@ -443,15 +437,12 @@ public class StructureTab extends ITab implements AeroBuildListener, ArmorAlloca
     
     @Override
     public void useRemainingTonnageArmor() {
-        double currentTonnage = UnitUtil.getEntityVerifier(getAero())
-                .calculateWeight();
+        double currentTonnage = UnitUtil.getEntityVerifier(getAero()).calculateWeight();
         currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getAero());
         double totalTonnage = getAero().getWeight();
-        double remainingTonnage = TestEntity.floor(
-                totalTonnage - currentTonnage, TestEntity.Ceil.HALFTON);
+        double remainingTonnage = TestEntity.floor(totalTonnage - currentTonnage, TestEntity.Ceil.HALFTON);
         
-        double maxArmor = Math.min(getAero().getArmorWeight() + remainingTonnage,
-                UnitUtil.getMaximumArmorTonnage(getAero()));
+        double maxArmor = Math.min(getAero().getArmorWeight() + remainingTonnage, UnitUtil.getMaximumArmorTonnage(getAero()));
         getAero().setArmorTonnage(maxArmor);
         panArmor.removeListener(this);
         panArmor.setFromEntity(getAero());
@@ -658,20 +649,17 @@ public class StructureTab extends ITab implements AeroBuildListener, ArmorAlloca
                 break;
         }
         if (getAero().getEmptyCriticals(location) < crits) {
-            JOptionPane .showMessageDialog(
-                    null, armor.getName()
-                    + " does not fit in location "
-                    + getAero().getLocationName(location)
-                    + ". Resetting to Standard Armor in this location.",
-                    "Error",
-                    JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane .showMessageDialog(null,
+                    String.format("%s does not fit in location %s. Resetting to Standard Armor in this location.",
+                            armor.getName(), getAero().getLocationName(location)),
+                    "Error", JOptionPane.INFORMATION_MESSAGE);
         } else {
             getAero().setArmorType(EquipmentType.getArmorType(armor), location);
             getAero().setArmorTechLevel(armor.getTechLevel(getTechManager().getGameYear(), armor.isClan()));
             for (; crits > 0; crits--) {
                 try {
                     getAero().addEquipment( new Mounted(getAero(), armor), location, false);
-                } catch (LocationFullException ex) {
+                } catch (LocationFullException ignored) {
                 }
             }
         }
@@ -682,5 +670,4 @@ public class StructureTab extends ITab implements AeroBuildListener, ArmorAlloca
         refresh.refreshSummary();
         refresh.refreshStatus();
     }
-
 }
