@@ -64,6 +64,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     final static float FONT_SIZE_VSMALL  = 5.8f;
     final static String FILL_BLACK = "#231f20";
     final static String FILL_GREY = "#3f3f3f";
+    final static String FILL_WHITE = "#ffffff";
     
     enum PipType {
         CIRCLE, DIAMOND;
@@ -577,7 +578,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     protected Element createPip(double x, double y, double radius, double strokeWidth,
             PipType type) {
         Element path = svgDocument.createElementNS(svgNS, SVGConstants.SVG_PATH_TAG);
-        path.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, SVGConstants.SVG_NONE_VALUE);
+        path.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, FILL_WHITE);
         path.setAttributeNS(null, SVGConstants.SVG_STROKE_ATTRIBUTE, FILL_BLACK);
         path.setAttributeNS(null, SVGConstants.SVG_STROKE_WIDTH_ATTRIBUTE, Double.toString(strokeWidth));
         
