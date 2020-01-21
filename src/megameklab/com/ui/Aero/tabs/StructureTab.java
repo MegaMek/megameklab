@@ -442,7 +442,8 @@ public class StructureTab extends ITab implements AeroBuildListener, ArmorAlloca
         double totalTonnage = getAero().getWeight();
         double remainingTonnage = TestEntity.floor(totalTonnage - currentTonnage, TestEntity.Ceil.HALFTON);
         
-        double maxArmor = Math.min(getAero().getArmorWeight() + remainingTonnage, UnitUtil.getMaximumArmorTonnage(getAero()));
+        double maxArmor = Math.min(getAero().getArmorWeight() + remainingTonnage,
+                UnitUtil.getMaximumArmorTonnage(getAero()));
         getAero().setArmorTonnage(maxArmor);
         panArmor.removeListener(this);
         panArmor.setFromEntity(getAero());
