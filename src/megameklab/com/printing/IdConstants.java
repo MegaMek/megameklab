@@ -83,6 +83,7 @@ public interface IdConstants {
     String PATCHWORK = "patchwork";
     String TEXT_ARMOR = "textArmor_";
     String TEXT_IS = "textIS_";
+    String TEXT_SI = "textSI";
     String ARMOR_PIPS = "armorPips";
     String IS_PIPS = "isPips";
     String IS_PIPS_HD = "isPipsHD";

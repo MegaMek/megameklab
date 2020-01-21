@@ -58,7 +58,6 @@ import megamek.common.Protomech;
 import megamek.common.SmallCraft;
 import megamek.common.Tank;
 import megameklab.com.printing.*;
-import megameklab.com.ui.Aero.Printing.PrintAero;
 import megameklab.com.ui.Aero.Printing.PrintConventionalFighter;
 import megameklab.com.ui.Aero.Printing.PrintFixedWingSupport;
 import megameklab.com.ui.Aero.Printing.PrintSmallCraftAerodyne;
@@ -185,7 +184,7 @@ public class UnitPrintManager {
                         book.append(new PrintSmallCraftSpheroid((SmallCraft) unit), pageFormat);
                     }
                 } else {
-                    book.append(new PrintAero((Aero) unit), pageFormat);
+                    book.append(new PrintAero((Aero) unit, book.getNumberOfPages()), pageFormat);
                 }
             } else if (unit instanceof BattleArmor) {
                 baList.add((BattleArmor) unit);
