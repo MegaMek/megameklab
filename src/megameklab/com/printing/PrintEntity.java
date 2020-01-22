@@ -372,10 +372,18 @@ public abstract class PrintEntity extends PrintRecordSheet {
         
     }
 
+    /**
+     * Fills in the weapons and inventory section of the record sheet.
+     *
+     * @param svgRect The bounds of the text region
+     */
     protected void writeEquipment(SVGRectElement svgRect) {
         Map<Integer, Map<RecordSheetEquipmentLine,Integer>> eqMap = new TreeMap<>();
         Map<String,Integer> ammo = new TreeMap<>();
         for (Mounted m : getEntity().getEquipment()) {
+            if (m.isWeaponGroup()) {
+                continue;
+            }
             if ((m.getType() instanceof AmmoType)
                     && (((AmmoType) m.getType()).getAmmoType() != AmmoType.T_COOLANT_POD)) {
                 if (m.getLocation() != Entity.LOC_NONE) {
@@ -402,49 +410,21 @@ public abstract class PrintEntity extends PrintRecordSheet {
             eqMap.get(m.getLocation()).merge(line, 1, Integer::sum);
         }
 
-        Rectangle2D bbox = getRectBBox(svgRect);
-        Element canvas = (Element) svgRect.getParentNode();
-        int viewWidth = (int)bbox.getWidth();
-        int viewHeight = (int)bbox.getHeight();
-        int viewX = (int)bbox.getX();
-        int viewY = (int)bbox.getY();
-
-        int qtyX = (int) Math.round(viewX + viewWidth * 0.037);
-        int nameX = (int) Math.round(viewX + viewWidth * 0.075);
-        int locX = (int) Math.round(viewX + viewWidth * 0.41);
-        int heatX = (int) Math.round(viewX + viewWidth * 0.48);
-        int dmgX = (int) Math.round(viewX + viewWidth * 0.53);
-        int minX = (int) Math.round(viewX + viewWidth * 0.75);
-        int shortX = (int) Math.round(viewX + viewWidth * 0.82);
-        int medX = (int) Math.round(viewX + viewWidth * 0.89);
-        int longX = (int) Math.round(viewX + viewWidth * 0.96);
-
-        int indent = (int) Math.round(viewWidth * 0.02);
-
-        int currY = viewY + 10;
+        final Element canvas = (Element) svgRect.getParentNode();
+        double viewX = svgRect.getBBox().getX();
+        double viewY = svgRect.getBBox().getY();
+        double viewWidth = svgRect.getBBox().getWidth();
+        double viewHeight = svgRect.getBBox().getHeight();
 
         float fontSize = FONT_SIZE_MEDIUM;
         float lineHeight = getFontHeight(fontSize) * 1.2f;
-
-        addTextElement(canvas, qtyX, currY, "Qty", fontSize, SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_BOLD_VALUE);
-        addTextElement(canvas, nameX + indent, currY, "Type", fontSize, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_BOLD_VALUE);
-        addTextElement(canvas, locX,  currY, "Loc", fontSize, SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_BOLD_VALUE);
-        if (getEntity().tracksHeat() || getEntity().isLargeCraft()) {
-            addTextElement(canvas, heatX, currY, "Ht", fontSize, SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_BOLD_VALUE);
-        }
-        addTextElement(canvas, dmgX, currY, "Dmg", fontSize, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_BOLD_VALUE);
-        addTextElement(canvas, minX, currY, "Min", fontSize, SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_BOLD_VALUE);
-        addTextElement(canvas, shortX, currY, "Sht", fontSize, SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_BOLD_VALUE);
-        addTextElement(canvas, medX, currY, "Med", fontSize, SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_BOLD_VALUE);
-        addTextElement(canvas, longX, currY, "Lng", fontSize, SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_BOLD_VALUE);
-        currY += lineHeight * 1.2;
 
         int lines = 0;
         for (Integer loc : eqMap.keySet()) {
             for (RecordSheetEquipmentLine line : eqMap.get(loc).keySet()) {
                 int rows = line.nRows();
                 if ((rows == 1) && (getTextLength(line.getNameField(0,
-                        getEntity().isMixedTech()), fontSize) > locX - nameX)) {
+                        getEntity().isMixedTech()), fontSize) > viewWidth * 0.335)) {
                     rows++;
                 }
                 lines += rows;
@@ -463,42 +443,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
             fontSize = FONT_SIZE_VSMALL;
         }
 
-        /* Print each entry in the equipment map. An entry that does not fit into the allocated space
-         * will wrap to the next line. This is tracked using the repurposed lines local variable. Some
-         * entries are already given multiple lines (such as missile launchers with Artemis), which
-         * will be handled in the inner loop. We need to compare the two to make sure we don't add
-         * extra linefeeds. This algorithm works on the assumption that presplitting values into multiple
-         * rows ensures that they will fit and not need to wrap. */
-        for (Integer loc : eqMap.keySet()) {
-            for (RecordSheetEquipmentLine line : eqMap.get(loc).keySet()) {
-                for (int row = 0; row < line.nRows(); row++) {
-                    if (row == 0) {
-                        addTextElement(canvas, qtyX, currY, Integer.toString(eqMap.get(loc).get(line)), fontSize, SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE);
-                        lines = addMultilineTextElement(canvas, nameX, currY, locX - nameX - indent, lineHeight,
-                                line.getNameField(row, getEntity().isMixedTech()), fontSize, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
-
-                    } else {
-                        lines = addMultilineTextElement(canvas, nameX + indent, currY, locX - nameX - indent, lineHeight,
-                                line.getNameField(row, getEntity().isMixedTech()), fontSize, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
-                    }
-                    addTextElement(canvas, locX,  currY, line.getLocationField(row), fontSize, SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE);
-                    if (getEntity().tracksHeat() || getEntity().isLargeCraft()) {
-                        addTextElement(canvas, heatX, currY, line.getHeatField(row), fontSize, SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE);
-                    }
-                    lines = Math.max(lines, addMultilineTextElement(canvas, dmgX, currY, minX - dmgX - fontSize, lineHeight,
-                            line.getDamageField(row), fontSize, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE));
-                    addTextElement(canvas, minX, currY, line.getMinField(row), fontSize, SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE);
-                    addTextElement(canvas, shortX, currY, line.getShortField(row), fontSize, SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE);
-                    addTextElement(canvas, medX, currY, line.getMediumField(row), fontSize, SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE);
-                    addTextElement(canvas, longX, currY, line.getLongField(row), fontSize, SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE);
-                    currY += lineHeight;
-                }
-                if (lines > line.nRows()) {
-                    currY += lineHeight * (lines - line.nRows());
-                }
-            }
-        }
-
+        writeEquipmentTable(eqMap, viewX, viewY, viewWidth, fontSize, lineHeight, canvas);
         String features = formatFeatures();
         String quirksText = formatQuirks();
 
@@ -527,11 +472,82 @@ public abstract class PrintEntity extends PrintRecordSheet {
                     String.format("%s(0,%f)", SVGConstants.SVG_TRANSLATE_VALUE,
                             viewY + viewHeight - lines * lineHeight));
         }
+    }
 
+    void writeEquipmentTable(Map<Integer, Map<RecordSheetEquipmentLine,Integer>> eqMap,
+                            double x, double y, double width,
+                            float fontSize, float lineHeight, Element canvas) {
+        double qtyX = x + width * 0.037;
+        double nameX = x + width * 0.075;
+        double locX = x + width * 0.41;
+        double heatX = x + width * 0.48;
+        double dmgX = x + width * 0.53;
+        double minX = x + width * 0.75;
+        double shortX = x + width * 0.82;
+        double medX = x + width * 0.89;
+        double longX = x + width * 0.96;
+
+        double indent = width * 0.02;
+
+        double currY = y + 10.0;
+
+        addTextElement(canvas, qtyX, currY, "Qty", fontSize, SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_BOLD_VALUE);
+        addTextElement(canvas, nameX + indent, currY, "Type", fontSize, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_BOLD_VALUE);
+        addTextElement(canvas, locX,  currY, "Loc", fontSize, SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_BOLD_VALUE);
+        if (getEntity().tracksHeat()) {
+            addTextElement(canvas, heatX, currY, "Ht", fontSize, SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_BOLD_VALUE);
+        }
+        addTextElement(canvas, dmgX, currY, "Dmg", fontSize, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_BOLD_VALUE);
+        addTextElement(canvas, minX, currY, "Min", fontSize, SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_BOLD_VALUE);
+        addTextElement(canvas, shortX, currY, "Sht", fontSize, SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_BOLD_VALUE);
+        addTextElement(canvas, medX, currY, "Med", fontSize, SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_BOLD_VALUE);
+        addTextElement(canvas, longX, currY, "Lng", fontSize, SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_BOLD_VALUE);
+        currY += lineHeight * 1.2;
+
+        /* Print each entry in the equipment map. An entry that does not fit into the allocated space
+         * will wrap to the next line. This is tracked using the repurposed lines local variable. Some
+         * entries are already given multiple lines (such as missile launchers with Artemis), which
+         * will be handled in the inner loop. We need to compare the two to make sure we don't add
+         * extra linefeeds. This algorithm works on the assumption that presplitting values into multiple
+         * rows ensures that they will fit and not need to wrap. */
+        int lines = 0;
+        for (Integer loc : eqMap.keySet()) {
+            for (RecordSheetEquipmentLine line : eqMap.get(loc).keySet()) {
+                for (int row = 0; row < line.nRows(); row++) {
+                    if (row == 0) {
+                        addTextElement(canvas, qtyX, currY, Integer.toString(eqMap.get(loc).get(line)), fontSize, SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE);
+                        lines = addMultilineTextElement(canvas, nameX, currY, locX - nameX - indent, lineHeight,
+                                line.getNameField(row, getEntity().isMixedTech()), fontSize, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
+
+                    } else {
+                        lines = addMultilineTextElement(canvas, nameX + indent, currY, locX - nameX - indent, lineHeight,
+                                line.getNameField(row, getEntity().isMixedTech()), fontSize, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
+                    }
+                    addTextElement(canvas, locX,  currY, line.getLocationField(row), fontSize, SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE);
+                    if (getEntity().tracksHeat() || getEntity().isLargeCraft()) {
+                        addTextElement(canvas, heatX, currY, line.getHeatField(row), fontSize, SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE);
+                    }
+                    lines = Math.max(lines, addMultilineTextElement(canvas, dmgX, currY, minX - dmgX - fontSize, lineHeight,
+                            line.getDamageField(row), fontSize, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE));
+                    addTextElement(canvas, minX, currY, line.getMinField(row),
+                            fontSize, SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE);
+                    addTextElement(canvas, shortX, currY, line.getShortField(row),
+                            fontSize, SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE);
+                    addTextElement(canvas, medX, currY, line.getMediumField(row),
+                            fontSize, SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE);
+                    addTextElement(canvas, longX, currY, line.getLongField(row),
+                            fontSize, SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE);
+                    currY += lineHeight;
+                }
+                if (lines > line.nRows()) {
+                    currY += lineHeight * (lines - line.nRows());
+                }
+            }
+        }
     }
 
     protected void drawFluffImage() {
-        
+
     }
     
     private void drawEraIcon() {

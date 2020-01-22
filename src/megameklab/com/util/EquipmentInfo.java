@@ -111,6 +111,7 @@ public class EquipmentInfo {
         if (mount.isRearMounted()) {
             name += "(R)";
         }
+        name += " " + StringUtils.getEquipmentInfo(aero, mount);
         loc = aero.getLocationAbbr(mount.getLocation());
         count = 1;
         techLevel = mount.getType().getTechLevel(mount.getEntity().getTechLevelYear());

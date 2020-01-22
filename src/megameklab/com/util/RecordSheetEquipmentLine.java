@@ -13,6 +13,7 @@
  */
 package megameklab.com.util;
 
+import megamek.common.Aero;
 import megamek.common.Mounted;
 
 /**
@@ -38,7 +39,11 @@ public class RecordSheetEquipmentLine {
     private final static int ATM_HE       = 3;
 
     public RecordSheetEquipmentLine(Mounted m) {
-        eqInfo = new EquipmentInfo(m.getEntity(), m);
+        if (m.getEntity().isAero()) {
+            eqInfo = new EquipmentInfo((Aero) m.getEntity(), m);
+        } else {
+            eqInfo = new EquipmentInfo(m.getEntity(), m);
+        }
         location = m.getEntity().getLocationAbbr(m.getLocation());
         rear = m.isRearMounted();
         turret = m.isMechTurretMounted();
@@ -130,7 +135,7 @@ public class RecordSheetEquipmentLine {
         }
         return "";
     }
-    
+
     public String getMinField(int row) {
         if (eqInfo.isMML) {
             if (row == MML_LRM) {
@@ -270,7 +275,39 @@ public class RecordSheetEquipmentLine {
         }
         return "";
     }
-    
+
+    public String getSRV(int row) {
+        if (row == 0) {
+            return String.valueOf(eqInfo.shtRange);
+        } else {
+            return "";
+        }
+    }
+
+    public String getMRV(int row) {
+        if (row == 0) {
+            return String.valueOf(eqInfo.medRange);
+        } else {
+            return "";
+        }
+    }
+
+    public String getLRV(int row) {
+        if (row == 0) {
+            return String.valueOf(eqInfo.longRange);
+        } else {
+            return "";
+        }
+    }
+
+    public String getERV(int row) {
+        if (row == 0) {
+            return String.valueOf(eqInfo.erRange);
+        } else {
+            return "";
+        }
+    }
+
     public int nRows() {
         if (eqInfo.isMML) {
             return 3;
