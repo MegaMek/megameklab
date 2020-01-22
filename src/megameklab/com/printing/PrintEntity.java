@@ -369,12 +369,17 @@ public abstract class PrintEntity extends PrintRecordSheet {
         
     }
 
+    /**
+     * Fills in the weapons and inventory section of the record sheet.
+     *
+     * @param svgRect The bounds of the text region
+     */
     protected void writeEquipment(SVGRectElement svgRect) {
         new InventoryWriter(this, svgRect).writeEquipment();
     }
 
     protected void drawFluffImage() {
-        
+
     }
     
     private void drawEraIcon() {
