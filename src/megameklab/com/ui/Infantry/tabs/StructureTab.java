@@ -413,6 +413,8 @@ public class StructureTab extends ITab implements InfantryBuildListener {
         enableTabs();
         panPlatoonType.setFromEntity(getInfantry());
         panWeapons.setFromEntity(getInfantry());
+        refresh.refreshPreview();
+        refresh.refreshStatus();
     }
 
     @Override
@@ -450,7 +452,7 @@ public class StructureTab extends ITab implements InfantryBuildListener {
     public void numFieldGunsChanged(final int count) {
         Optional<EquipmentType> fieldGun = getInfantry().getWeaponList()
                 .stream().filter(m -> m.getLocation() == Infantry.LOC_FIELD_GUNS)
-                .map(m -> m.getType()).filter(eq -> eq instanceof WeaponType)
+                .map(Mounted::getType).filter(eq -> eq instanceof WeaponType)
                 .findAny();
         UnitUtil.replaceFieldGun(getInfantry(), (WeaponType)fieldGun.orElse(null),
                 count);
