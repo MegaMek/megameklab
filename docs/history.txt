@@ -17,6 +17,7 @@ v0.47.3-SNAPSHOT
            Placing a font file in the data/fonts directory will make it available to MML even if the system does not.
 + PR #398: Vehicle Record Sheet Overhaul
 + Issue #42: Can't print naval vehicles
++ Issue #403: Infantry Weight doesn't Update
 
 v0.47.2 (2019-11-15 2000 UTC)
 + Issue #365: Protomek Tab is missing its fluff section
