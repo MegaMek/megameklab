@@ -1,6 +1,6 @@
 /*
- * MekBuilder - unit design companion of MegaMek
- * Copyright (C) 2017 The MegaMek Team
+ * MegaMekLab - unit design companion of MegaMek
+ * Copyright (C) 2020 The MegaMek Team
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -31,9 +31,10 @@ import java.util.stream.Collectors;
 import static megameklab.com.printing.PrintRecordSheet.svgNS;
 
 /**
- * Formats text for the record sheet's "Weapons and Equipment Inventory" section.
+ * Formats text for the record sheet's "Weapons and Equipment Inventory" section. To use, create an instance
+ * and call {@link #write(SVGRectElement)}.
  */
-class InventoryFormatter {
+public class InventoryFormatter {
 
     // Proportion of the region width to indent subsequent lines of the same equipment entry
     private static final double INDENT = 0.02;
@@ -104,7 +105,7 @@ class InventoryFormatter {
     private final String featuresText;
     private final String quirksText;
 
-    InventoryFormatter(PrintEntity sheet) {
+    public InventoryFormatter(PrintEntity sheet) {
         this.sheet = sheet;
         columnTypes = Column.colsFor(sheet.getEntity());
         colX = new double[columnTypes.length];
@@ -142,7 +143,13 @@ class InventoryFormatter {
         }
     }
 
-    void write(SVGRectElement svgRect) {
+    /**
+     * Uses the provided region to compute text size and position and inserts the text elements into the
+     * parent element of <code>svgRect</code>.
+     *
+     * @param svgRect Defines the bounds of the region for the text
+     */
+    public void write(SVGRectElement svgRect) {
         final Element canvas = (Element) svgRect.getParentNode();
         double viewWidth = svgRect.getWidth().getBaseVal().getValue();
         double viewHeight = svgRect.getHeight().getBaseVal().getValue();
