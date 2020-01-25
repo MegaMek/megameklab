@@ -19,7 +19,6 @@
 package megameklab.com.printing;
 
 import megamek.common.*;
-import megameklab.com.util.RecordSheetEquipmentLine;
 import megameklab.com.util.UnitUtil;
 import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
@@ -97,7 +96,7 @@ public class InventoryFormatter {
         }
     }
 
-    private final Map<Integer, Map<RecordSheetEquipmentLine, Integer>> eqMap = new TreeMap<>();
+    private final Map<Integer, Map<InventoryEntry, Integer>> eqMap = new TreeMap<>();
     private final Map<String, Integer> ammo = new TreeMap<>();
     private final PrintEntity sheet;
     private final Column[] columnTypes;
@@ -138,7 +137,7 @@ public class InventoryFormatter {
                 continue;
             }
             eqMap.putIfAbsent(m.getLocation(), new HashMap<>());
-            RecordSheetEquipmentLine line = new RecordSheetEquipmentLine(m);
+            InventoryEntry line = new InventoryEntry(m);
             eqMap.get(m.getLocation()).merge(line, 1, Integer::sum);
         }
     }
@@ -240,11 +239,11 @@ public class InventoryFormatter {
         }
         int lines = 0;
         for (Integer loc : eqMap.keySet()) {
-            for (RecordSheetEquipmentLine line : eqMap.get(loc).keySet()) {
+            for (InventoryEntry line : eqMap.get(loc).keySet()) {
                 int rows = line.nRows();
                 // If the name or damage field is too long to fit in the space, make sure there is a second row
                 if ((rows == 1) &&
-                        ((sheet.getTextLength(line.getNameField(0, sheet.getEntity().isMixedTech()),
+                        ((sheet.getTextLength(line.getNameField(0),
                                 fontSize) > nameWidth) ||
                             sheet.getTextLength(line.getDamageField(0), fontSize) > dmgWidth - fontSize)) {
                     rows++;
@@ -277,7 +276,7 @@ public class InventoryFormatter {
                                        double indent) {
         int lines = 0;
         for (Integer loc : eqMap.keySet()) {
-            for (RecordSheetEquipmentLine line : eqMap.get(loc).keySet()) {
+            for (InventoryEntry line : eqMap.get(loc).keySet()) {
                 for (int row = 0; row < line.nRows(); row++) {
                     for (int i = 0; i < columnTypes.length; i++) {
                         switch (columnTypes[i]) {
@@ -292,13 +291,13 @@ public class InventoryFormatter {
                                 if (row == 0) {
                                     lines = sheet.addMultilineTextElement(canvas, colX[i], ypos,
                                             colX[i + 1] - colX[i] - indent, lineHeight,
-                                            line.getNameField(row, sheet.getEntity().isMixedTech()),
-                                            fontSize, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
+                                            line.getNameField(row), fontSize, SVGConstants.SVG_START_VALUE,
+                                            SVGConstants.SVG_NORMAL_VALUE);
                                 } else {
                                     lines = sheet.addMultilineTextElement(canvas, colX[i] + indent, ypos,
                                             colX[i + 1] - colX[i] - indent, lineHeight,
-                                            line.getNameField(row, sheet.getEntity().isMixedTech()),
-                                            fontSize, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
+                                            line.getNameField(row), fontSize, SVGConstants.SVG_START_VALUE,
+                                            SVGConstants.SVG_NORMAL_VALUE);
                                 }
                                 break;
                             case LOCATION:

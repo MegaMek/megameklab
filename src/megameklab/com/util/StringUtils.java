@@ -61,13 +61,7 @@ import megamek.common.weapons.lasers.ISXPulseLaserSmall;
 import megamek.common.weapons.lrms.LRMWeapon;
 import megamek.common.weapons.lrms.StreakLRMWeapon;
 import megamek.common.weapons.mgs.MGWeapon;
-import megamek.common.weapons.missiles.ISThunderBolt10;
-import megamek.common.weapons.missiles.ISThunderBolt15;
-import megamek.common.weapons.missiles.ISThunderBolt20;
-import megamek.common.weapons.missiles.ISThunderBolt5;
-import megamek.common.weapons.missiles.MRMWeapon;
-import megamek.common.weapons.missiles.RLWeapon;
-import megamek.common.weapons.missiles.ThunderBoltWeapon;
+import megamek.common.weapons.missiles.*;
 import megamek.common.weapons.mortars.CLVehicularGrenadeLauncher;
 import megamek.common.weapons.mortars.ISVehicularGrenadeLauncher;
 import megamek.common.weapons.mortars.MekMortarWeapon;
@@ -222,7 +216,7 @@ public class StringUtils {
                 }
             } else if (weapon.hasFlag(WeaponType.F_MGA)) {
                 info = "  [T]";
-            } else if ((weapon instanceof ISC3M) || (weapon instanceof TAGWeapon)) {
+            } else if (weapon instanceof TAGWeapon) {
                 info = "  [E]";
             } else if (weapon instanceof ISC3RemoteSensorLauncher) {
                 info = "  [M,E]";
@@ -239,9 +233,9 @@ public class StringUtils {
                     info = "1/Msl [M,C]";
                 } else if (weapon instanceof ISSnubNosePPC) {
                     info = "10/8/5 [DE,V]";
-                } else if ((weapon instanceof ISBALaserVSPSmall) || (weapon instanceof ISBALaserVSPSmall)) {
+                } else if (weapon instanceof ISBALaserVSPSmall) {
                     info = "5/4/3 [P,V]";
-                } else if ((weapon instanceof ISBALaserVSPMedium) || (weapon instanceof ISBALaserVSPMedium)) {
+                } else if (weapon instanceof ISBALaserVSPMedium) {
                     info = "9/7/5 [P,V]";
                 } else if (weapon instanceof ISVariableSpeedPulseLaserLarge) {
                     info = "11/9/7 [P,V]";
@@ -395,9 +389,9 @@ public class StringUtils {
             } else if (weapon instanceof ISC3M) {
                 info = "[E]";
             } else if (weapon.getDamage() < 0) {
-                if (weapon instanceof SRMWeapon) {
-                    info = "[M,C]";
-                } else if ((weapon instanceof LRMWeapon) || (weapon instanceof MekMortarWeapon)) {
+                if ((weapon instanceof SRMWeapon) || (weapon instanceof LRMWeapon)
+                        || (weapon instanceof MekMortarWeapon) || (weapon instanceof MMLWeapon)
+                        || (weapon instanceof ATMWeapon)) {
                     info = "[M,C,S]";
                 } else if ((weapon instanceof MRMWeapon) || (weapon instanceof RLWeapon)) {
                     info = "[M,C]";

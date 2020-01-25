@@ -18,11 +18,8 @@ import java.awt.print.PageFormat;
 import java.io.File;
 import java.text.NumberFormat;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import megamek.common.*;
-import megameklab.com.util.RecordSheetEquipmentLine;
-import megameklab.com.util.UnitUtil;
 import org.apache.batik.anim.dom.SVGGraphicsElement;
 import org.apache.batik.anim.dom.SVGLocatableSupport;
 import org.apache.batik.util.SVGConstants;
