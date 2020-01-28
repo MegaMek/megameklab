@@ -623,7 +623,8 @@ public class InventoryWriter {
             switch (columnTypes[i]) {
                 case NAME:
                 case BAY:
-                    sheet.addTextElement(canvas, colX[i], currY, "Standard Scale", FONT_SIZE_MEDIUM,
+                    // Use first bay field to left-justify whether this unit uses bays or not
+                    sheet.addTextElement(canvas, bayColX[0], currY, "Standard Scale", FONT_SIZE_MEDIUM,
                             SVGConstants.SVG_START_VALUE, SVGConstants.SVG_BOLD_VALUE);
                     break;
                 case SRV:
