@@ -322,7 +322,7 @@ public class InventoryWriter {
      * @return The y coordinate of the bottom of the table
      */
     public double writeStandardBays(float fontSize, double lineHeight, double currY) {
-        currY = printAeroStandardHeader(currY);
+        currY = printAeroStandardHeader(currY, Column.BAY_COLUMNS, bayColX);
         return printEquipmentTable(standardBays, currY, fontSize, lineHeight, Column.BAY_COLUMNS, bayColX);
     }
 
@@ -410,6 +410,10 @@ public class InventoryWriter {
     }
 
     private double printColumnHeaders(double currY) {
+        return printColumnHeaders(currY, columnTypes, colX);
+    }
+
+    private double printColumnHeaders(double currY, Column[] columnTypes, double[] colX) {
         for (int i = 0; i < columnTypes.length; i++) {
             String anchor;
             if (Column.NAME.equals(columnTypes[i])
@@ -544,22 +548,26 @@ public class InventoryWriter {
                             break;
                         case SHORT:
                         case SRV:
-                            sheet.addTextElement(canvas, colX[i], ypos, line.getShortField(row), fontSize,
-                                    SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE);
+                            sheet.addTextElementToFit(canvas, colX[i], ypos, colX[i + 1] - colX[i] - 1,
+                                    line.getShortField(row), fontSize, SVGConstants.SVG_MIDDLE_VALUE,
+                                    SVGConstants.SVG_NORMAL_VALUE);
                             break;
                         case MEDIUM:
                         case MRV:
-                            sheet.addTextElement(canvas, colX[i], ypos, line.getMediumField(row), fontSize,
-                                    SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE);
+                            sheet.addTextElementToFit(canvas, colX[i], ypos, colX[i + 1] - colX[i] - 1,
+                                    line.getMediumField(row), fontSize, SVGConstants.SVG_MIDDLE_VALUE,
+                                    SVGConstants.SVG_NORMAL_VALUE);
                             break;
                         case LONG:
                         case LRV:
-                            sheet.addTextElement(canvas, colX[i], ypos, line.getLongField(row), fontSize,
-                                    SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE);
+                            sheet.addTextElementToFit(canvas, colX[i], ypos, colX[i] - colX[i - 1] - 1,
+                                    line.getLongField(row), fontSize, SVGConstants.SVG_MIDDLE_VALUE,
+                                    SVGConstants.SVG_NORMAL_VALUE);
                             break;
                         case ERV:
-                            sheet.addTextElement(canvas, colX[i], ypos, line.getExtremeField(row), fontSize,
-                                    SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE);
+                            sheet.addTextElementToFit(canvas, colX[i], ypos, colX[i] - colX[i - 1] - 1,
+                                    line.getExtremeField(row), fontSize, SVGConstants.SVG_MIDDLE_VALUE,
+                                    SVGConstants.SVG_NORMAL_VALUE);
                             break;
                     }
                 }
@@ -573,36 +581,44 @@ public class InventoryWriter {
     }
 
     private double printCapitalHeader(double currY) {
-        for (int i = 0; i < columnTypes.length; i++) {
-            switch (columnTypes[i]) {
+        for (int i = 0; i < Column.BAY_COLUMNS.length; i++) {
+            switch (Column.BAY_COLUMNS[i]) {
                 case NAME:
                 case BAY:
-                    sheet.addTextElement(canvas, colX[i], currY, "Capital Scale", FONT_SIZE_MEDIUM,
+                    sheet.addTextElement(canvas, bayColX[i], currY, "Capital Scale", FONT_SIZE_MEDIUM,
                             SVGConstants.SVG_START_VALUE, SVGConstants.SVG_BOLD_VALUE);
                     break;
                 case SRV:
-                    sheet.addTextElement(canvas, colX[i], currY, "(1-12)", FONT_SIZE_VSMALL,
-                            SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE);
+                    sheet.addTextElementToFit(canvas, bayColX[i], currY, bayColX[i + 1] - bayColX[i] - 1,
+                            "(1-12)", FONT_SIZE_VSMALL, SVGConstants.SVG_MIDDLE_VALUE,
+                            SVGConstants.SVG_NORMAL_VALUE);
                     break;
                 case MRV:
-                    sheet.addTextElement(canvas, colX[i], currY, "(13-24)", FONT_SIZE_VSMALL,
-                            SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE);
+                    sheet.addTextElementToFit(canvas, bayColX[i], currY, bayColX[i + 1] - bayColX[i] - 1,
+                            "(13-24)", FONT_SIZE_VSMALL, SVGConstants.SVG_MIDDLE_VALUE,
+                            SVGConstants.SVG_NORMAL_VALUE);
                     break;
                 case LRV:
-                    sheet.addTextElement(canvas, colX[i], currY, "(25-40)", FONT_SIZE_VSMALL,
-                            SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE);
+                    sheet.addTextElementToFit(canvas, bayColX[i], currY, bayColX[i + 1] - bayColX[i] - 1,
+                            "(25-40)", FONT_SIZE_VSMALL, SVGConstants.SVG_MIDDLE_VALUE,
+                            SVGConstants.SVG_NORMAL_VALUE);
                     break;
                 case ERV:
-                    sheet.addTextElement(canvas, colX[i], currY, "(41-50)", FONT_SIZE_VSMALL,
-                            SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE);
+                    sheet.addTextElementToFit(canvas, bayColX[i], currY, bayColX[i] - bayColX[i - 1] - 1,
+                            "(41-50)", FONT_SIZE_VSMALL, SVGConstants.SVG_MIDDLE_VALUE,
+                            SVGConstants.SVG_NORMAL_VALUE);
                     break;
             }
         }
         currY += sheet.getFontHeight(FONT_SIZE_MEDIUM) * 1.2;
-        return printColumnHeaders(currY);
+        return printColumnHeaders(currY, Column.BAY_COLUMNS, bayColX);
     }
 
     private double printAeroStandardHeader(double currY) {
+        return printAeroStandardHeader(currY, columnTypes, colX);
+    }
+
+    private double printAeroStandardHeader(double currY, Column[] columnTypes, double[] colX) {
         for (int i = 0; i < columnTypes.length; i++) {
             switch (columnTypes[i]) {
                 case NAME:
@@ -611,20 +627,24 @@ public class InventoryWriter {
                             SVGConstants.SVG_START_VALUE, SVGConstants.SVG_BOLD_VALUE);
                     break;
                 case SRV:
-                    sheet.addTextElement(canvas, colX[i], currY, "(1-6)", FONT_SIZE_VSMALL,
-                            SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE);
+                    sheet.addTextElementToFit(canvas, colX[i], currY, colX[i + 1] - colX[i] - 1,
+                            "(1-6)", FONT_SIZE_VSMALL, SVGConstants.SVG_MIDDLE_VALUE,
+                            SVGConstants.SVG_NORMAL_VALUE);
                     break;
                 case MRV:
-                    sheet.addTextElement(canvas, colX[i], currY, "(7-12)", FONT_SIZE_VSMALL,
-                            SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE);
+                    sheet.addTextElementToFit(canvas, colX[i], currY, colX[i + 1] - colX[i] - 1,
+                            "(7-12)", FONT_SIZE_VSMALL, SVGConstants.SVG_MIDDLE_VALUE,
+                            SVGConstants.SVG_NORMAL_VALUE);
                     break;
                 case LRV:
-                    sheet.addTextElement(canvas, colX[i], currY, "(13-20)", FONT_SIZE_VSMALL,
-                            SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE);
+                    sheet.addTextElementToFit(canvas, colX[i], currY, colX[i + 1] - colX[i] - 1,
+                            "(13-20)", FONT_SIZE_VSMALL, SVGConstants.SVG_MIDDLE_VALUE,
+                            SVGConstants.SVG_NORMAL_VALUE);
                     break;
                 case ERV:
-                    sheet.addTextElement(canvas, colX[i], currY, "(21-25)", FONT_SIZE_VSMALL,
-                            SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE);
+                    sheet.addTextElementToFit(canvas, colX[i], currY, colX[i] - colX[i - 1] - 1,
+                            "(21-25)", FONT_SIZE_VSMALL, SVGConstants.SVG_MIDDLE_VALUE,
+                            SVGConstants.SVG_NORMAL_VALUE);
                     break;
             }
         }
@@ -677,7 +697,7 @@ public class InventoryWriter {
      */
     public double printGravDecks(Jumpship ship, float fontSize, double lineHeight, double currY) {
         if (ship.getTotalGravDeck() > 0) {
-            double xpos = colX[0];
+            double xpos = bayColX[0];
             sheet.addTextElement(canvas, xpos, currY, "Grav Decks:",
                     FONT_SIZE_MEDIUM, SVGConstants.SVG_START_VALUE,
                     SVGConstants.SVG_BOLD_VALUE);
@@ -709,7 +729,7 @@ public class InventoryWriter {
      */
     public double printBayInfo(float fontSize, double lineHeight, double currY) {
         if (sheet.getEntity().getTransportBays().size() > 0) {
-            sheet.addTextElement(canvas, colX[0], currY, "Cargo:", FONT_SIZE_MEDIUM,
+            sheet.addTextElement(canvas, bayColX[0], currY, "Cargo:", FONT_SIZE_MEDIUM,
                     SVGConstants.SVG_START_VALUE, SVGConstants.SVG_BOLD_VALUE);
             currY += lineHeight;
             // We can have multiple Bay instances within one conceptual bay on the ship
@@ -750,7 +770,7 @@ public class InventoryWriter {
                 bayCapacityString.append(")");
                 String bayString = "Bay " + bayNum + ": " + bayTypeString
                         + bayCapacityString + " (" + doors + (doors == 1 ? " Door)" : " Doors)");
-                sheet.addTextElement(canvas, colX[0], currY, bayString, fontSize,
+                sheet.addTextElement(canvas, bayColX[0], currY, bayString, fontSize,
                         SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
                 currY += lineHeight;
             }
@@ -768,7 +788,7 @@ public class InventoryWriter {
      * @return The y coordinate of the bottom of the table
      */
     public double printReverseSideMessage(double lineHeight, double currY) {
-        sheet.addTextElement(canvas, colX[0],
+        sheet.addTextElement(canvas, bayColX[0],
                 currY, "Standard Scale on Reverse", FONT_SIZE_MEDIUM,
                 SVGConstants.SVG_START_VALUE, SVGConstants.SVG_BOLD_VALUE);
         return currY + lineHeight * 2;
