@@ -96,7 +96,7 @@ public class PrintCapitalShip extends PrintEntity {
      */
     private final Jumpship ship;
 
-    private final InventoryFormatter inventory;
+    private final InventoryWriter inventory;
     private final int[] linesPerBlock = new int[NUM_BLOCKS];
     private final boolean[] blockOnReverse = new boolean[NUM_BLOCKS];
     private boolean secondPage = false;
@@ -114,7 +114,7 @@ public class PrintCapitalShip extends PrintEntity {
     public PrintCapitalShip(Jumpship ship, int startPage, RecordSheetOptions options) {
         super(startPage, options);
         this.ship = ship;
-        inventory = new InventoryFormatter(this);
+        inventory = new InventoryWriter(this);
         distributeEquipmentBlocks();
     }
 

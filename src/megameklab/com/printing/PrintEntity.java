@@ -363,7 +363,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
     }
 
     protected void writeEquipment(SVGRectElement svgRect) {
-        new InventoryFormatter(this, svgRect).writeEquipment();
+        new InventoryWriter(this, svgRect).writeEquipment();
     }
 
     protected void drawFluffImage() {

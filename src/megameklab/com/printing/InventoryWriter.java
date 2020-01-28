@@ -32,10 +32,16 @@ import java.util.stream.Collectors;
 import static megameklab.com.printing.PrintRecordSheet.*;
 
 /**
- * Formats text for the record sheet's "Weapons and Equipment Inventory" section. To use, create an instance
- * and call {@link #writeEquipment()}.
+ * Formats text for the record sheet's "Weapons and Equipment Inventory" section. For most units,
+ * an instance is created for the sheet using {@link #InventoryWriter(PrintEntity, SVGRectElement)},
+ * then the text is added to the SVG document using {@link #writeEquipment()}. This adds the appropriate
+ * header, for the unit, equipment table, and quirks/features/ammo at the bottom of the space. Large
+ * craft can have multiple sections and should invoke the appropriate section writers, using each return value
+ * for the vertical placement of the next section. Multi-page record sheets can instantiate using
+ * {@link #InventoryWriter(PrintEntity)} to process the equipment and find the size of each section,
+ * then call {@link #setRegion(SVGRectElement)} for each page before calling the section writers.
  */
-public class InventoryFormatter {
+public class InventoryWriter {
 
     // Proportion of the region width to indent subsequent lines of the same equipment entry
     private static final double INDENT = 0.02;
@@ -122,7 +128,7 @@ public class InventoryFormatter {
      *
      * @param sheet The record sheet layout instance
      */
-    public InventoryFormatter(PrintEntity sheet) {
+    public InventoryWriter(PrintEntity sheet) {
         this.sheet = sheet;
         columnTypes = Column.colsFor(sheet.getEntity());
         colX = new double[columnTypes.length];
@@ -140,7 +146,7 @@ public class InventoryFormatter {
         }
     }
 
-    public InventoryFormatter(PrintEntity sheet, SVGRectElement svgRect) {
+    public InventoryWriter(PrintEntity sheet, SVGRectElement svgRect) {
         this(sheet);
         setRegion(svgRect);
     }
