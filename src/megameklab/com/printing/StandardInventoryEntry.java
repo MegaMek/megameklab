@@ -278,7 +278,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
     public String getShortField(int row) {
         if (mount.getEntity().isAero()) {
             if ((row == 0) && (mount.getType() instanceof WeaponType)) {
-                return String.valueOf(((WeaponType) mount.getType()).getShortAV() + aeroClusterBonus());
+                return String.valueOf((int) ((WeaponType) mount.getType()).getShortAV() + aeroClusterBonus());
             } else if (row == 0) {
                 return DASH;
             } else {
@@ -296,7 +296,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         if (mount.getEntity().isAero()) {
             if ((row == 0) && (mount.getType() instanceof WeaponType)
                     && ((WeaponType) mount.getType()).maxRange >= WeaponType.RANGE_MED) {
-                return String.valueOf(((WeaponType) mount.getType()).getMedAV() + aeroClusterBonus());
+                return String.valueOf((int) ((WeaponType) mount.getType()).getMedAV() + aeroClusterBonus());
             } else if (row == 0) {
                 return DASH;
             } else {
@@ -314,7 +314,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         if (mount.getEntity().isAero()) {
             if ((row == 0) && (mount.getType() instanceof WeaponType)
                     && ((WeaponType) mount.getType()).maxRange >= WeaponType.RANGE_LONG) {
-                return String.valueOf(((WeaponType) mount.getType()).getLongAV() + aeroClusterBonus());
+                return String.valueOf((int) ((WeaponType) mount.getType()).getLongAV() + aeroClusterBonus());
             } else if (row == 0) {
                 return DASH;
             } else {
@@ -332,7 +332,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         if (mount.getEntity().isAero()) {
             if ((row == 0) && (mount.getType() instanceof WeaponType)
                     && ((WeaponType) mount.getType()).maxRange >= WeaponType.RANGE_EXT) {
-                return String.valueOf(((WeaponType) mount.getType()).getExtAV() + aeroClusterBonus());
+                return String.valueOf((int) ((WeaponType) mount.getType()).getExtAV() + aeroClusterBonus());
             } else if (row == 0) {
                 return DASH;
             } else {
