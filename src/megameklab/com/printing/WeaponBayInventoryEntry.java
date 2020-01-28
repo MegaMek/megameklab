@@ -154,7 +154,7 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
         if (isCapital) {
             return String.valueOf((int) av);
         }
-        return ((int) av) + " (" + ((int) stdAV);
+        return ((int) av) + " (" + ((int) stdAV) + ")";
     }
 
     @Override

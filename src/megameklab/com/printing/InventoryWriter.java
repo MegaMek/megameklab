@@ -123,6 +123,7 @@ public class InventoryWriter {
     private final Column[] columnTypes;
     private final double[] colX;
     private final double[] bayColX;
+    private final String ammoText;
     private final String featuresText;
     private final String quirksText;
 
@@ -141,13 +142,19 @@ public class InventoryWriter {
         this.capitalBays = new ArrayList<>();
         this.standardBays = new ArrayList<>();
         this.ammo = new TreeMap<>();
-        featuresText = sheet.formatFeatures();
-        quirksText = sheet.formatQuirks();
         if (sheet.getEntity().usesWeaponBays()) {
             parseBays();
         } else {
             parseEquipment();
         }
+        String str = ammo.entrySet().stream()
+                .map(e -> String.format("(%s) %d", e.getKey(), e.getValue()))
+                .collect(Collectors.joining(", "));
+        ammoText = str.isEmpty() ? str : "Ammo: " + str;
+        str = sheet.formatFeatures();
+        featuresText = str.isEmpty() ? str : "Features " + str;
+        str = sheet.formatQuirks();
+        quirksText = str.isEmpty() ? str : "Quirks: " + str;
     }
 
     public InventoryWriter(PrintEntity sheet, SVGRectElement svgRect) {
@@ -383,20 +390,18 @@ public class InventoryWriter {
             lines = 0;
             if (ammo.size() > 0) {
                 lines = sheet.addMultilineTextElement(svgGroup, viewX + viewWidth * 0.025, 0, viewWidth * 0.95, lineHeight,
-                        "Ammo: " + ammo.entrySet().stream()
-                                .map(e -> String.format("(%s) %d", e.getKey(), e.getValue()))
-                                .collect(Collectors.joining(", ")), fontSize, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
+                        ammoText, fontSize, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
             }
             if (featuresText.length() > 0) {
                 lines += sheet.addMultilineTextElement(svgGroup, viewX + viewWidth * 0.025,
                         lines * lineHeight, viewWidth * 0.95, lineHeight,
-                        "Features " + featuresText, fontSize,
+                        featuresText, fontSize,
                         SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
             }
             if (quirksText.length() > 0) {
                 lines += sheet.addMultilineTextElement(svgGroup, viewX + viewWidth * 0.025, lines * lineHeight,
                         viewWidth * 0.95, lineHeight,
-                        "Quirks: " + quirksText, fontSize, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
+                        quirksText, fontSize, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
             }
             svgGroup.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
                     String.format("%s(0,%f)", SVGConstants.SVG_TRANSLATE_VALUE,
@@ -420,6 +425,15 @@ public class InventoryWriter {
         return currY + sheet.getFontHeight(FONT_SIZE_MEDIUM) * 1.2;
     }
 
+    /**
+     * Calculates the total line height at the given font size for units that have a single equipment
+     * block and possible footer, e.g. those other than large craft. Because lines breaks are inserted between
+     * words, it's possible that the number of lines may be more.
+     *
+     * @param fontSize The size of the font
+     * @param viewWidth The width of the region
+     * @return The estimated line count.
+     */
     private int calcLineCount(float fontSize, double viewWidth) {
         // The width of the name field varies depending on aero/ground or whether there is a heat column,
         // but is always the difference between the second and third.
@@ -443,9 +457,8 @@ public class InventoryWriter {
             }
             lines += rows;
         }
-        String features = sheet.formatFeatures();
-        String quirksText = sheet.formatQuirks();
-        lines += sheet.getTextLength(features, fontSize) / viewWidth;
+        lines += sheet.getTextLength(ammoText, fontSize) / viewWidth;
+        lines += sheet.getTextLength(featuresText, fontSize) / viewWidth;
         lines += sheet.getTextLength(quirksText, fontSize) / viewWidth;
         return lines;
     }
