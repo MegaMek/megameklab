@@ -30,6 +30,8 @@ import megamek.common.weapons.srms.SRMWeapon;
  */
 public interface InventoryEntry {
     String DASH = "\u2014";
+    String DAGGER = "\u2020";
+    String DOUBLE_DAGGER = "\u2021";
 
     /**
      * @return The number of rows this entry takes on the table. This does not consider text that is

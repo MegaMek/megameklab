@@ -112,6 +112,7 @@ public class InventoryWriter {
     private final List<StandardInventoryEntry> equipment;
     private final List<WeaponBayInventoryEntry> standardBays;
     private final List<WeaponBayInventoryEntry> capitalBays;
+    private final List<String> bayFootnotes;
     private final Map<String, Integer> ammo;
     private final PrintEntity sheet;
     private Element canvas;
@@ -141,6 +142,7 @@ public class InventoryWriter {
         this.equipment = new ArrayList<>();
         this.capitalBays = new ArrayList<>();
         this.standardBays = new ArrayList<>();
+        this.bayFootnotes = new ArrayList<>();
         this.ammo = new TreeMap<>();
         if (sheet.getEntity().usesWeaponBays()) {
             parseBays();
@@ -230,8 +232,24 @@ public class InventoryWriter {
             capitalBays.add(new WeaponBayInventoryEntry((Aero) sheet.getEntity(), text, true));
         }
         list = computeWeaponBayTexts(standardWeapons);
+        boolean artemisIV = false;
+        boolean artemisV = false;
+        boolean apollo = false;
         for (WeaponBayText text : list) {
-            standardBays.add(new WeaponBayInventoryEntry((Aero) sheet.getEntity(), text, false));
+            WeaponBayInventoryEntry entry = new WeaponBayInventoryEntry((Aero) sheet.getEntity(), text, false);
+            standardBays.add(entry);
+            artemisIV |= entry.hasArtemisIV();
+            artemisV |= entry.hasArtemisV();
+            apollo |= entry.hasApollo();
+        }
+        if (artemisIV) {
+            bayFootnotes.add("* w/Artemis IV");
+        }
+        if (artemisV) {
+            bayFootnotes.add(InventoryEntry.DAGGER + " w/Artemis V (-1 to hit)");
+        }
+        if (apollo) {
+            bayFootnotes.add(InventoryEntry.DOUBLE_DAGGER + " w/Apollo (ignore +1 to hit)");
         }
         for (Mounted m : sheet.getEntity().getMisc()) {
             if (UnitUtil.isPrintableEquipment(m.getType(), false)) {
@@ -293,7 +311,8 @@ public class InventoryWriter {
     }
 
     public int standardBayLines() {
-        return standardBays.stream().mapToInt(WeaponBayInventoryEntry::nRows).sum();
+        return standardBays.stream().mapToInt(WeaponBayInventoryEntry::nRows).sum()
+                + bayFootnotes.size();
     }
 
     public void writeEquipment() {
@@ -323,7 +342,13 @@ public class InventoryWriter {
      */
     public double writeStandardBays(float fontSize, double lineHeight, double currY) {
         currY = printAeroStandardHeader(currY, Column.BAY_COLUMNS, bayColX);
-        return printEquipmentTable(standardBays, currY, fontSize, lineHeight, Column.BAY_COLUMNS, bayColX);
+        currY = printEquipmentTable(standardBays, currY, fontSize, lineHeight, Column.BAY_COLUMNS, bayColX);
+        for (String note : bayFootnotes) {
+            sheet.addTextElement(canvas, bayColX[0], currY, note, fontSize,
+                    SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
+            currY += lineHeight;
+        }
+        return currY;
     }
 
     /**

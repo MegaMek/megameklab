@@ -16,6 +16,7 @@
 
 package megameklab.com.printing;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -156,6 +157,43 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
     public void combine(WeaponBayText other) {
         loc.addAll(other.loc);
         loc.sort(Comparator.comparingInt(this::getLocWeight));
+    }
+
+    /**
+     * @param flag A MiscType flag
+     * @return     The number of weapons in the entire bay linked by equipment with the given flag
+     */
+    public int countAugmentations(BigInteger flag) {
+        int count = 0;
+        for (WeaponType wtype : augmentations.keySet()) {
+            count += countAugmentations(wtype, flag);
+        }
+        return count;
+    }
+
+    /**
+     * @param wtype A type of weapon in the bay
+     * @param flag A MiscType flag
+     * @return     The number of weapons of the given type in the bay linked by equipment with the given flag
+     */
+    public int countAugmentations(WeaponType wtype, BigInteger flag) {
+        int count = 0;
+        if (augmentations.containsKey(wtype)) {
+            for (EquipmentType etype : augmentations.get(wtype).keySet()) {
+                if (etype.hasFlag(flag)) {
+                    count += augmentations.get(wtype).get(etype);
+                }
+            }
+        }
+        return count;
+    }
+
+    /**
+     * @param flag A MiscType flag
+     * @return     Whether all weapons in the bay are linked by equipment with the given flag
+     */
+    public boolean allHaveAugmentation(BigInteger flag) {
+        return countAugmentations(flag) == weapons.values().stream().mapToInt(Integer::intValue).sum();
     }
 
     /**

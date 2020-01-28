@@ -36,6 +36,9 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
     private int heat;
     private double baySRV, bayMRV, bayLRV, bayERV;
     private double standardBaySRV, standardBayMRV, standardBayLRV, standardBayERV;
+    private boolean artemisIV = false;
+    private boolean artemisV = false;
+    private boolean apollo = false;
     private List<String> weaponNames = new ArrayList<>();
     private List<String> quantities = new ArrayList<>();
 
@@ -88,6 +91,9 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
                         .mapToInt(e -> e.getValue() * 5).sum();
             }
         }
+        artemisIV = bay.countAugmentations(MiscType.F_ARTEMIS) > 0;
+        artemisV = bay.allHaveAugmentation(MiscType.F_ARTEMIS_V);
+        apollo = bay.allHaveAugmentation((MiscType.F_APOLLO));
 
         for (WeaponType wtype : bay.weapons.keySet()) {
             StringJoiner locString = new StringJoiner("/");
@@ -106,8 +112,28 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
                     nameString.append(" (").append(ammo.getBaseShotsLeft()).append(" rounds)");
                 }
             }
-            if (weaponNames.isEmpty() && bay.weapons.size() > 1) {
-                nameString.append(",");
+            int capacitors = bay.countAugmentations(wtype, MiscType.F_PPC_CAPACITOR);
+            if (capacitors == bay.weapons.get(wtype)) {
+                nameString.append(" w/Capacitor");
+            } else if (capacitors > 0) {
+                nameString.append(" w/").append(capacitors);
+                if (capacitors > 1) {
+                    nameString.append(" Capacitors");
+                } else {
+                    nameString.append(" Capacitor");
+                }
+            }
+            if (weaponNames.isEmpty()) {
+                if (artemisIV) {
+                    nameString.append("*");
+                } else if (artemisV) {
+                    nameString.append(DAGGER);
+                } else if (apollo) {
+                    nameString.append(DOUBLE_DAGGER);
+                }
+                if (bay.weapons.size() > 1) {
+                    nameString.append(",");
+                }
             }
             weaponNames.add(nameString.toString());
             quantities.add(String.valueOf(bay.weapons.get(wtype)));
@@ -208,5 +234,17 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
     @Override
     public boolean indentMultiline() {
         return true;
+    }
+
+    public boolean hasArtemisIV() {
+        return artemisIV;
+    }
+
+    public boolean hasArtemisV() {
+        return artemisV;
+    }
+
+    public boolean hasApollo() {
+        return apollo;
     }
 }
