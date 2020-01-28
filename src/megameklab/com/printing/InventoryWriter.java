@@ -70,7 +70,7 @@ public class InventoryWriter {
         LONG ("Lng", 0.96),
         SRV ("SRV", 0.68),
         MRV ("MRV", 0.76),
-        LRV ("LVR", 0.84),
+        LRV ("LRV", 0.84),
         ERV ("ERV", 0.92);
 
         final String header;
@@ -88,11 +88,8 @@ public class InventoryWriter {
         }
 
         static Column[] colsFor(Entity en) {
-            if (en.isLargeCraft()) {
-                return new Column[] {BAY, LOCATION, HEAT, SRV, MRV, LRV, ERV};
-            }
             if (en.isAero()) {
-                if (en.tracksHeat()) {
+                if (en.tracksHeat() || en.isLargeCraft()) {
                     return new Column[] {QUANTITY, NAME, LOCATION, HEAT, SRV, MRV, LRV, ERV};
                 } else {
                     return new Column[] {QUANTITY, NAME, LOCATION_NO_HEAT, SRV, MRV, LRV, ERV};
@@ -105,6 +102,11 @@ public class InventoryWriter {
                 }
             }
         }
+
+        /**
+         * Column types when printing weapon bays
+         */
+        static Column[] BAY_COLUMNS = {BAY, LOCATION, HEAT, SRV, MRV, LRV, ERV};
     }
 
     private final List<StandardInventoryEntry> equipment;
@@ -120,6 +122,7 @@ public class InventoryWriter {
     private double indent;
     private final Column[] columnTypes;
     private final double[] colX;
+    private final double[] bayColX;
     private final String featuresText;
     private final String quirksText;
 
@@ -132,6 +135,7 @@ public class InventoryWriter {
         this.sheet = sheet;
         columnTypes = Column.colsFor(sheet.getEntity());
         colX = new double[columnTypes.length];
+        bayColX = new double[Column.BAY_COLUMNS.length];
 
         this.equipment = new ArrayList<>();
         this.capitalBays = new ArrayList<>();
@@ -164,6 +168,9 @@ public class InventoryWriter {
         this.indent = viewWidth * INDENT;
         for (int i = 0; i < columnTypes.length; i++) {
             colX[i] = viewX + viewWidth * (sheet.getEntity().isAero() ? columnTypes[i].aeroX : columnTypes[i].groundX);
+        }
+        for (int i = 0; i < Column.BAY_COLUMNS.length; i++) {
+            bayColX[i] = viewX + viewWidth * Column.BAY_COLUMNS[i].aeroX;
         }
     }
 
@@ -220,12 +227,14 @@ public class InventoryWriter {
             standardBays.add(new WeaponBayInventoryEntry((Aero) sheet.getEntity(), text, false));
         }
         for (Mounted m : sheet.getEntity().getMisc()) {
-            StandardInventoryEntry entry = new StandardInventoryEntry(m);
-            StandardInventoryEntry same = equipment.stream().filter(entry::equals).findFirst().orElse(null);
-            if (null == same) {
-                equipment.add(entry);
-            } else {
-                same.incrementQty();
+            if (UnitUtil.isPrintableEquipment(m.getType(), false)) {
+                StandardInventoryEntry entry = new StandardInventoryEntry(m);
+                StandardInventoryEntry same = equipment.stream().filter(entry::equals).findFirst().orElse(null);
+                if (null == same) {
+                    equipment.add(entry);
+                } else {
+                    same.incrementQty();
+                }
             }
         }
     }
@@ -268,6 +277,10 @@ public class InventoryWriter {
         return viewY + sheet.getFontHeight(FONT_SIZE_MEDIUM) * 1.2;
     }
 
+    public int equipmentLines() {
+        return equipment.stream().mapToInt(StandardInventoryEntry::nRows).sum();
+    }
+
     public int capitalBayLines() {
         return capitalBays.stream().mapToInt(WeaponBayInventoryEntry::nRows).sum();
     }
@@ -288,6 +301,11 @@ public class InventoryWriter {
         writeFooterBlock(metrics[0], metrics[1]);
     }
 
+    public double writeStandardEquipment(float fontSize, double lineHeight, double currY) {
+        currY = printColumnHeaders(currY);
+        return printEquipmentTable(equipment, currY, fontSize, lineHeight);
+    }
+
     /**
      * Adds the text for the standard scale weapon bays.
      *
@@ -298,7 +316,7 @@ public class InventoryWriter {
      */
     public double writeStandardBays(float fontSize, double lineHeight, double currY) {
         currY = printAeroStandardHeader(currY);
-        return printEquipmentTable(standardBays, currY, fontSize, lineHeight);
+        return printEquipmentTable(standardBays, currY, fontSize, lineHeight, Column.BAY_COLUMNS, bayColX);
     }
 
     /**
@@ -311,7 +329,7 @@ public class InventoryWriter {
      */
     public double writeCapitalBays(float fontSize, double lineHeight, double currY) {
         currY = printCapitalHeader(currY);
-        return printEquipmentTable(capitalBays, currY, fontSize, lineHeight);
+        return printEquipmentTable(capitalBays, currY, fontSize, lineHeight, Column.BAY_COLUMNS, bayColX);
     }
 
     /**
@@ -447,6 +465,26 @@ public class InventoryWriter {
      */
     private double printEquipmentTable(List<? extends InventoryEntry> list,
                                        double ypos, float fontSize, double lineHeight) {
+        return printEquipmentTable(list, ypos, fontSize, lineHeight, columnTypes, colX);
+    }
+
+    /**
+     *  Adds a section to the inventory section. An entry that does not fit into the allocated space
+     *  will wrap to the next line. This is tracked using the repurposed lines local variable. Some
+     *  entries are already given multiple lines (such as missile launchers with Artemis), which
+     *  will be handled in the inner loop. We need to compare the two to make sure we don't add
+     *  extra linefeeds. This algorithm works on the assumption that presplitting values into multiple
+     *  rows ensures that they will fit and not need to wrap.
+     *
+     * @param list The list of entries for this table
+     * @param fontSize The size of font to use for printing the table
+     * @param ypos The starting y coordinate relative to the parent element
+     * @param lineHeight The amount to add to the y coordinate for each line
+     * @param columnTypes The columns to include in the table. Used for overriding when printing bays.
+     * @param colX The x coordinate of each column, corresponding to the same index in <code>columnTypes</code>
+     */
+    private double printEquipmentTable(List<? extends InventoryEntry> list,
+                                       double ypos, float fontSize, double lineHeight, Column[] columnTypes, double[] colX) {
         for (InventoryEntry line : list) {
             int lines = 0;
             for (int row = 0; row < line.nRows(); row++) {
@@ -590,15 +628,14 @@ public class InventoryWriter {
      * @return The y coordinate of the bottom of the table
      */
     public double printAR10Block(float fontSize, double lineHeight, double currY) {
-        for (int i = 0; i < columnTypes.length; i++) {
-            switch (columnTypes[i]) {
-                case NAME:
+        for (int i = 0; i < Column.BAY_COLUMNS.length; i++) {
+            switch (Column.BAY_COLUMNS[i]) {
                 case BAY:
-                    sheet.addTextElement(canvas, colX[i], currY, "AR10 Munitions", FONT_SIZE_MEDIUM,
+                    sheet.addTextElement(canvas, bayColX[i], currY, "AR10 Munitions", FONT_SIZE_MEDIUM,
                             SVGConstants.SVG_START_VALUE, SVGConstants.SVG_BOLD_VALUE);
                     break;
                 case LOCATION:
-                    sheet.addTextElement(canvas, colX[i], currY, "Tons", FONT_SIZE_MEDIUM,
+                    sheet.addTextElement(canvas, bayColX[i], currY, "Tons", FONT_SIZE_MEDIUM,
                             SVGConstants.SVG_START_VALUE, SVGConstants.SVG_BOLD_VALUE);
                     break;
                 case HEAT:
@@ -606,14 +643,14 @@ public class InventoryWriter {
                 case MRV:
                 case LRV:
                 case ERV:
-                    sheet.addTextElement(canvas, colX[i], currY, columnTypes[i].header, FONT_SIZE_MEDIUM,
+                    sheet.addTextElement(canvas, bayColX[i], currY, columnTypes[i].header, FONT_SIZE_MEDIUM,
                             SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_BOLD_VALUE);
                     break;
             }
         }
         currY += sheet.getFontHeight(FONT_SIZE_MEDIUM) * 1.2;
         currY = printEquipmentTable(Collections.singletonList(new AR10InventoryEntry()), currY,
-                fontSize, lineHeight);
+                fontSize, lineHeight, Column.BAY_COLUMNS, bayColX);
         return currY;
    }
 

@@ -87,9 +87,10 @@ public class PrintCapitalShip extends PrintEntity {
     private static final int BLOCK_STANDARD = 2;
     private static final int BLOCK_GRAV_DECK = 3;
     private static final int BLOCK_BAYS = 4;
-    private static final int NUM_BLOCKS = 5;
+    private static final int BLOCK_HULL = 5;
+    private static final int NUM_BLOCKS = 6;
     // The order in which to move blocks to the second page
-    private static final int[] SWITCH_PAGE_ORDER = { BLOCK_STANDARD, BLOCK_GRAV_DECK, BLOCK_BAYS, BLOCK_AR10_AMMO };
+    private static final int[] SWITCH_PAGE_ORDER = { BLOCK_STANDARD, BLOCK_GRAV_DECK, BLOCK_BAYS, BLOCK_HULL, BLOCK_AR10_AMMO };
 
     /**
      * The ship being printed
@@ -456,12 +457,16 @@ public class PrintCapitalShip extends PrintEntity {
     private void distributeEquipmentBlocks() {
         linesPerBlock[BLOCK_CAPITAL] = inventory.capitalBayLines();
         linesPerBlock[BLOCK_STANDARD] = inventory.standardBayLines();
+        linesPerBlock[BLOCK_HULL] = inventory.equipmentLines();
         // Add extra lines for column headers and trailing line break
         if (linesPerBlock[BLOCK_CAPITAL] > 0) {
             linesPerBlock[BLOCK_CAPITAL] += 3;
         }
         if (linesPerBlock[BLOCK_STANDARD] > 0) {
             linesPerBlock[BLOCK_STANDARD] += 3;
+        }
+        if (linesPerBlock[BLOCK_HULL] > 0) {
+            linesPerBlock[BLOCK_HULL] += 2;
         }
         if (ship.getTotalWeaponList().stream()
                 .anyMatch(w -> ((WeaponType) w.getType()).getAmmoType() == AmmoType.T_AR10)) {
@@ -556,7 +561,10 @@ public class PrintCapitalShip extends PrintEntity {
             currY = inventory.printGravDecks(ship, fontSize, lineHeight, currY);
         }
         if ((linesPerBlock[BLOCK_BAYS] > 0) && (blockOnReverse[BLOCK_BAYS] == reverse)) {
-            inventory.printBayInfo(fontSize, lineHeight, currY);
+            currY = inventory.printBayInfo(fontSize, lineHeight, currY);
+        }
+        if ((linesPerBlock[BLOCK_HULL] > 0) && (blockOnReverse[BLOCK_HULL] == reverse)) {
+            currY = inventory.writeStandardEquipment(fontSize, lineHeight, currY);
         }
     }
 
