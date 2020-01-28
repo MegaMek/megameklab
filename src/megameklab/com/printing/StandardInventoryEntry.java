@@ -45,6 +45,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
     private final boolean hasArtemisProto;
     private final boolean hasArtemisV;
     private final boolean hasApollo;
+    private final boolean hasCapacitor;
     // Saved as member fields for hash and equals
     private final String name;
     private final String location;
@@ -83,6 +84,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         hasArtemisProto = hasLinkedEquipment(m, MiscType.F_ARTEMIS_PROTO);
         hasArtemisV = hasLinkedEquipment(m, MiscType.F_ARTEMIS_V);
         hasApollo = hasLinkedEquipment(m, MiscType.F_APOLLO);
+        hasCapacitor = hasLinkedEquipment(m, MiscType.F_PPC_CAPACITOR);
         ranges = setRanges();
     }
 
@@ -188,6 +190,8 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
             return "w/Artemis V";
         } else if (hasApollo) {
             return "w/Apollo";
+        } else if (hasCapacitor) {
+            return "w/Capacitor";
         }
         return "";
     }
@@ -343,7 +347,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
             return 3;
         } else if (isATM) {
             return 4;
-        } else if (hasArtemis || hasArtemisV || hasApollo || hasArtemisProto) {
+        } else if (hasArtemis || hasArtemisV || hasApollo || hasArtemisProto || hasCapacitor) {
             return 2;
         }
         return 1;
