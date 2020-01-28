@@ -19,14 +19,9 @@
 
 package megameklab.com.printing;
 
-import megamek.common.Aero;
-import megamek.common.AmmoType;
-import megamek.common.Mounted;
-import megamek.common.WeaponType;
+import megamek.common.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringJoiner;
+import java.util.*;
 
 /**
  * Formats text for an entry for a weapon bay in the weapons and equipment inventory section of the record sheet.
@@ -62,14 +57,35 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
                 bayLRV += wtype.getLongAV() * numWeapons;
                 bayERV += wtype.getExtAV() * numWeapons;
             } else {
-                baySRV += Math.round((wtype.getShortAV() * numWeapons) / 10);
-                bayMRV += Math.round((wtype.getMedAV() * numWeapons) / 10);
-                bayLRV += Math.round((wtype.getLongAV() * numWeapons) / 10);
-                bayERV += Math.round((wtype.getExtAV() * numWeapons) / 10);
-                standardBaySRV += wtype.getShortAV() * numWeapons;
-                standardBayMRV += wtype.getMedAV() * numWeapons;
-                standardBayLRV += wtype.getLongAV() * numWeapons;
-                standardBayERV += wtype.getExtAV() * numWeapons;
+                int bonus = 0;
+                if (bay.augmentations.containsKey(wtype)) {
+                    bonus = bay.augmentations.get(wtype).entrySet().stream()
+                        .mapToInt(e -> aeroAVMod(wtype, e.getKey(), true) * e.getValue()).sum();
+                }
+                if (wtype.getShortAV() > 0) {
+                    baySRV += Math.round((wtype.getShortAV() * numWeapons + bonus) / 10);
+                    standardBaySRV += wtype.getShortAV() * numWeapons + bonus;
+                }
+                if (wtype.getMedAV() > 0) {
+                    bayMRV += Math.round((wtype.getMedAV() * numWeapons + bonus) / 10);
+                    standardBayMRV += wtype.getMedAV() * numWeapons + bonus;
+                }
+                if (wtype.getLongAV() > 0) {
+                    bayLRV += Math.round((wtype.getLongAV() * numWeapons + bonus) / 10);
+                    standardBayLRV += wtype.getLongAV() * numWeapons + bonus;
+                }
+                if (wtype.getExtAV() > 0) {
+                    bayERV += Math.round((wtype.getExtAV() * numWeapons + bonus) / 10);
+                    standardBayERV += wtype.getExtAV() * numWeapons + bonus;
+                }
+            }
+        }
+        // PPC capacitors in bays are considered alway charged
+        if (!isCapital) {
+            for (Map<EquipmentType, Integer> entry : bay.augmentations.values()) {
+                heat += entry.entrySet().stream()
+                        .filter(e -> e.getKey().hasFlag(MiscType.F_PPC_CAPACITOR))
+                        .mapToInt(e -> e.getValue() * 5).sum();
             }
         }
 

@@ -20,11 +20,9 @@
 package megameklab.com.printing;
 
 import megamek.common.*;
-import megamek.common.weapons.lrms.LRMWeapon;
 import megamek.common.weapons.missiles.ATMWeapon;
 import megamek.common.weapons.missiles.MMLWeapon;
 import megamek.common.weapons.other.ISCenturionWeaponSystem;
-import megamek.common.weapons.srms.SRMWeapon;
 import megameklab.com.util.StringUtils;
 
 import java.math.BigInteger;
@@ -256,29 +254,11 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         return ranges[row][RangeType.RANGE_MINIMUM];
     }
 
-    private int aeroClusterBonus() {
-        if (hasLinkedEquipment(mount, MiscType.F_ARTEMIS)
-                || hasLinkedEquipment(mount, MiscType.F_ARTEMIS)) {
-            if (isMML) {
-                if (((WeaponType) mount.getType()).getRackSize() >= 7) {
-                    return 2;
-                } else if (((WeaponType) mount.getType()).getRackSize() >= 7) {
-                    return 1;
-                }
-            } else if (mount.getType() instanceof LRMWeapon) {
-                return ((WeaponType) mount.getType()).getRackSize() / 5;
-            } else if (mount.getType() instanceof SRMWeapon) {
-                return 2;
-            }
-        }
-        return 0;
-    }
-
     @Override
     public String getShortField(int row) {
         if (mount.getEntity().isAero()) {
             if ((row == 0) && (mount.getType() instanceof WeaponType)) {
-                return String.valueOf((int) ((WeaponType) mount.getType()).getShortAV() + aeroClusterBonus());
+                return String.valueOf((int) ((WeaponType) mount.getType()).getShortAV() + aeroAVMod(mount));
             } else if (row == 0) {
                 return DASH;
             } else {
@@ -296,7 +276,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         if (mount.getEntity().isAero()) {
             if ((row == 0) && (mount.getType() instanceof WeaponType)
                     && ((WeaponType) mount.getType()).maxRange >= WeaponType.RANGE_MED) {
-                return String.valueOf((int) ((WeaponType) mount.getType()).getMedAV() + aeroClusterBonus());
+                return String.valueOf((int) ((WeaponType) mount.getType()).getMedAV() + aeroAVMod(mount));
             } else if (row == 0) {
                 return DASH;
             } else {
@@ -314,7 +294,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         if (mount.getEntity().isAero()) {
             if ((row == 0) && (mount.getType() instanceof WeaponType)
                     && ((WeaponType) mount.getType()).maxRange >= WeaponType.RANGE_LONG) {
-                return String.valueOf((int) ((WeaponType) mount.getType()).getLongAV() + aeroClusterBonus());
+                return String.valueOf((int) ((WeaponType) mount.getType()).getLongAV() + aeroAVMod(mount));
             } else if (row == 0) {
                 return DASH;
             } else {
@@ -332,7 +312,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         if (mount.getEntity().isAero()) {
             if ((row == 0) && (mount.getType() instanceof WeaponType)
                     && ((WeaponType) mount.getType()).maxRange >= WeaponType.RANGE_EXT) {
-                return String.valueOf((int) ((WeaponType) mount.getType()).getExtAV() + aeroClusterBonus());
+                return String.valueOf((int) ((WeaponType) mount.getType()).getExtAV() + aeroAVMod(mount));
             } else if (row == 0) {
                 return DASH;
             } else {
