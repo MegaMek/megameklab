@@ -412,6 +412,16 @@ class ArmorPipLayout {
         List<Integer> indices = IntStream.range(0, rows.size()).boxed()
                 .sorted(Comparator.comparingDouble(i -> rowCount.get(i) / (rows.get(i).width() - gaps.get(i).width())))
                 .collect(Collectors.toList());
+        // If there is a gap in the row with equal space on either side (+/- a pip width), try to keep
+        // the same number of pips on either side. If they're all mirrored and we have an odd number of
+        // pips, the last one will have to defy the symmetry.
+        List<Boolean> mirrored = new ArrayList<>();
+        for (int index = 0; index < rows.size(); index++) {
+            mirrored.add(gaps.get(index).width() > 0
+                    && Math.abs((gaps.get(index).left - rows.get(index).left)
+                    - (rows.get(index).right - gaps.get(index).right)) < spacing);
+        }
+        boolean allMirrored = mirrored.stream().allMatch(Boolean::booleanValue);
         // The number to change per row. Try to keep staggered layouts alternating in width
         int rowDelta = staggered ? 2 : 1;
         int row = 0;
@@ -427,10 +437,9 @@ class ArmorPipLayout {
             while ((current != pipCount) && skipped < rows.size()) {
                 int index = indices.get(row % indices.size());
                 // Keep the same number of pips in each half of split rows if the sizes
-                // are within a cell width
-                boolean mirror = gaps.get(index).width() > 0
-                        && Math.abs((gaps.get(index).left - rows.get(index).left)
-                            - (rows.get(index).right - gaps.get(index).right)) < spacing;
+                // are within a cell width, unless all the rows are mirrored and we're down to
+                // an odd pip.
+                boolean mirror = mirrored.get(index) && (!allMirrored || Math.abs(pipCount - current) > 1);
                 if (pipCount > current) {
                     int change;
                     if (pipCount - current == 1) {
