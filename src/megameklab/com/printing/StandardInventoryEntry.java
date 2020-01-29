@@ -88,9 +88,9 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
 
     private String[][] setRanges() {
         if (isMML) {
-            return MML_RANGE;
+            return mount.getEntity().isAero() ? mmlAV() : MML_RANGE;
         } else if (isATM) {
-            return ATM_RANGE;
+            return mount.getEntity().isAero() ? atmAV() : ATM_RANGE;
         } else if (mount.getType() instanceof ISCenturionWeaponSystem) {
             return CENTURION_RANGE;
         } else {
@@ -109,6 +109,46 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
             retVal[0] = r;
             return retVal;
         }
+    }
+
+    /**
+     * @return The AV values for each MML munition type
+     */
+    private String[][] mmlAV() {
+        String[][] retVal = new String[3][];
+        for (int i = 0; i < retVal.length; i++) {
+            retVal[i] = new String[5];
+            Arrays.fill(retVal[i], i == 0 ? "" : DASH);
+        }
+        int avMod = aeroAVMod(mount);
+        int av = (int) ((WeaponType) mount.getType()).getShortAV() + avMod;
+        retVal[MML_LRM_ROW][RangeType.RANGE_SHORT] = String.valueOf(av);
+        retVal[MML_SRM_ROW][RangeType.RANGE_SHORT] = String.valueOf(av * 2);
+        retVal[MML_LRM_ROW][RangeType.RANGE_MEDIUM] = String.valueOf(av);
+        retVal[MML_LRM_ROW][RangeType.RANGE_LONG] = String.valueOf(av);
+        return retVal;
+    }
+
+    /**
+     * For AV for various ATM munitions, see footnote on TW, p. 304.
+     * @return The AV values for each ATM munition type
+     */
+    private String[][] atmAV() {
+        String[][] retVal = new String[4][];
+        for (int i = 0; i < retVal.length; i++) {
+            retVal[i] = new String[5];
+            Arrays.fill(retVal[i], i == 0 ? "" : DASH);
+        }
+        int avMod = aeroAVMod(mount);
+        double av = ((WeaponType) mount.getType()).getShortAV() + avMod;
+        retVal[ATM_STANDARD_ROW][RangeType.RANGE_SHORT] = String.valueOf((int) av);
+        retVal[ATM_ER_ROW][RangeType.RANGE_SHORT] = String.valueOf((int) Math.ceil(av * 0.5));
+        retVal[ATM_HE_ROW][RangeType.RANGE_SHORT] = String.valueOf((int) Math.ceil(av * 1.5));
+        retVal[ATM_STANDARD_ROW][RangeType.RANGE_MEDIUM] = String.valueOf((int) av);
+        retVal[ATM_ER_ROW][RangeType.RANGE_MEDIUM] = String.valueOf((int) Math.ceil(av * 0.5));
+        retVal[ATM_ER_ROW][RangeType.RANGE_LONG] = String.valueOf((int) Math.ceil(av * 0.5));
+        retVal[ATM_ER_ROW][RangeType.RANGE_EXTREME] = String.valueOf((int) Math.ceil(av * 0.5));
+        return retVal;
     }
 
     private String formatName() {
@@ -256,7 +296,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
 
     @Override
     public String getShortField(int row) {
-        if (mount.getEntity().isAero()) {
+        if (mount.getEntity().isAero() && !isMML && !isATM) {
             if ((row == 0) && (mount.getType() instanceof WeaponType)) {
                 return String.valueOf((int) ((WeaponType) mount.getType()).getShortAV() + aeroAVMod(mount));
             } else if (row == 0) {
@@ -273,7 +313,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
 
     @Override
     public String getMediumField(int row) {
-        if (mount.getEntity().isAero()) {
+        if (mount.getEntity().isAero() && !isMML && !isATM) {
             if ((row == 0) && (mount.getType() instanceof WeaponType)
                     && ((WeaponType) mount.getType()).maxRange >= WeaponType.RANGE_MED) {
                 return String.valueOf((int) ((WeaponType) mount.getType()).getMedAV() + aeroAVMod(mount));
@@ -291,7 +331,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
 
     @Override
     public String getLongField(int row) {
-        if (mount.getEntity().isAero()) {
+        if (mount.getEntity().isAero() && !isMML && !isATM) {
             if ((row == 0) && (mount.getType() instanceof WeaponType)
                     && ((WeaponType) mount.getType()).maxRange >= WeaponType.RANGE_LONG) {
                 return String.valueOf((int) ((WeaponType) mount.getType()).getLongAV() + aeroAVMod(mount));
@@ -309,7 +349,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
 
     @Override
     public String getExtremeField(int row) {
-        if (mount.getEntity().isAero()) {
+        if (mount.getEntity().isAero() && !isMML && !isATM) {
             if ((row == 0) && (mount.getType() instanceof WeaponType)
                     && ((WeaponType) mount.getType()).maxRange >= WeaponType.RANGE_EXT) {
                 return String.valueOf((int) ((WeaponType) mount.getType()).getExtAV() + aeroAVMod(mount));
