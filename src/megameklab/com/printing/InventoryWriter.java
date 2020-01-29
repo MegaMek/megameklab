@@ -486,9 +486,9 @@ public class InventoryWriter {
             }
             lines += rows;
         }
-        lines += sheet.getTextLength(ammoText, fontSize) / viewWidth;
-        lines += sheet.getTextLength(featuresText, fontSize) / viewWidth;
-        lines += sheet.getTextLength(quirksText, fontSize) / viewWidth;
+        lines += Math.ceil(sheet.getTextLength(ammoText, fontSize) / viewWidth);
+        lines += Math.ceil(sheet.getTextLength(featuresText, fontSize) / viewWidth);
+        lines += Math.ceil(sheet.getTextLength(quirksText, fontSize) / viewWidth);
         return lines;
     }
 
