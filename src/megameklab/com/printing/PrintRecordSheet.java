@@ -38,6 +38,12 @@ import org.w3c.dom.xpath.XPathEvaluator;
 import org.w3c.dom.xpath.XPathResult;
 
 import javax.imageio.ImageIO;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.RenderedImage;
@@ -267,6 +273,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             GraphicsNode node = build();
             node.paint(g2d);
             /* Testing code that outputs the generated svg
+            */
             try {
                 Transformer transformer = TransformerFactory.newInstance().newTransformer();
                 Result output = new StreamResult(new File("out.svg"));
@@ -275,7 +282,6 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-             */
         }
         return Printable.PAGE_EXISTS;
     }
@@ -602,7 +608,42 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         path.setAttributeNS(null, SVGConstants.SVG_D_ATTRIBUTE, d.toString());
         return path;
     }
-    
+
+    /**
+     * Creates a rectangle with bezier curves on the corners
+     *
+     * @param x The x coordinate of the top left corner
+     * @param y The y coordinate of the top left corner
+     * @param width The width of the rectangle
+     * @param height The height of the rectangle
+     * @param radius The radius of the curve in the corners
+     * @param control The length from the endpoint of each curve to its control point
+     * @param strokeWidth The width of the stroke
+     * @param stroke The fill color of the stroke
+     * @return A path element
+     */
+    protected Element createRoundedRectangle(double x, double y, double width, double height,
+                                             double radius, double control, double strokeWidth,
+                                             String stroke) {
+        Element path = svgDocument.createElementNS(svgNS, SVGConstants.SVG_PATH_ATTRIBUTE);
+        path.setAttributeNS(null, SVGConstants.CSS_FILL_PROPERTY, SVGConstants.SVG_NONE_VALUE);
+        path.setAttributeNS(null, SVGConstants.CSS_STROKE_PROPERTY, stroke);
+        path.setAttributeNS(null, SVGConstants.CSS_STROKE_WIDTH_PROPERTY, String.valueOf(strokeWidth));
+        path.setAttributeNS(null, SVGConstants.CSS_STROKE_LINEJOIN_PROPERTY, SVGConstants.SVG_ROUND_VALUE);
+        StringBuilder sb = new StringBuilder("M ").append(x).append(",").append(y+radius);
+        final String CURVE_FORMAT = "c %.3f,%.3f %.3f,%.3f %.3f,%.3f";
+        sb.append(String.format(CURVE_FORMAT, 0.0, -control, radius - control, -radius, radius, -radius));
+        sb.append("h ").append(width - radius * 2);
+        sb.append(String.format(CURVE_FORMAT, control, 0.0, radius, radius - control, radius, radius));
+        sb.append("v ").append(height - radius * 2);
+        sb.append(String.format(CURVE_FORMAT, 0.0, control, control - radius, radius, -radius, radius));
+        sb.append("h ").append(-width + radius * 2);
+        sb.append(String.format(CURVE_FORMAT, -control, 0.0, -radius, control - radius, -radius, -radius));
+        sb.append("Z");
+        path.setAttributeNS(null, SVGConstants.SVG_D_ATTRIBUTE, sb.toString());
+        return path;
+    }
+
     protected void hideElement(String id) {
         Element element = svgDocument.getElementById(id);
         if (null != element) {

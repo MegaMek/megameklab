@@ -20,9 +20,11 @@ package megameklab.com.printing;
 
 import megamek.common.*;
 import megameklab.com.util.ImageHelper;
+import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGRectElement;
 
+import java.awt.geom.Rectangle2D;
 import java.awt.print.PageFormat;
 import java.io.File;
 import java.text.DecimalFormat;
@@ -125,6 +127,12 @@ public class PrintAero extends PrintEntity {
                 drawHeatSinkPips((SVGRectElement) hsRect, aero.getHeatSinks());
             }
         }
+        if (aero.isBomber()) {
+            Element storesRect = getSVGDocument().getElementById(BOMB_BOXES);
+            if (storesRect instanceof SVGRectElement) {
+                drawBombBoxes((SVGRectElement) storesRect, aero.getMaxBombPoints());
+            }
+        }
     }
 
     @Override
@@ -215,5 +223,38 @@ public class PrintAero extends PrintEntity {
         }
     }
 
-
+    private void drawBombBoxes(SVGRectElement rect, int capacity) {
+        if (capacity == 0) {
+            // Turn label invisible
+            hideElement(EXTERNAL_STORES, true);
+            return;
+        }
+        final Element canvas = (Element) rect.getParentNode();
+        final Rectangle2D bbox = getRectBBox(rect);
+        int nRows = (capacity + 4) / 5;
+        double boxWidth = bbox.getWidth() / 5.0;
+        double boxHeight = bbox.getHeight() / 4.0;
+        double ypos = bbox.getMinY() + 1.0;
+        for (int r = 0; r < nRows; r++) {
+            int cols;
+            if (r + 1 < nRows) {
+                cols = 5;
+            } else {
+                cols = capacity % 5;
+            }
+            double xpos = bbox.getCenterX() - cols * boxWidth * 0.5 + 1.0;
+            for (int c = 0; c < cols; c++) {
+                Element path = createRoundedRectangle(xpos, ypos, boxWidth - 2.0, boxHeight - 2.0,
+                        4.3, 2.375, 0.966, FILL_BLACK);
+                canvas.appendChild(path);
+                xpos +=  boxWidth;
+            }
+            ypos += boxHeight;
+        }
+        Element key = getSVGDocument().getElementById(EXTERNAL_STORES_KEY);
+        if (null != key) {
+            key.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
+                    SVGConstants.SVG_TRANSLATE_VALUE + "(0," + ypos + ")");
+        }
+    }
 }
