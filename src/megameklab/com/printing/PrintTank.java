@@ -165,7 +165,7 @@ public class PrintTank extends PrintEntity {
     }
 
     @Override
-    protected String formatFeatures() {
+    public String formatFeatures() {
         StringJoiner sj = new StringJoiner(", ");
         List<String> chassisMods = tank.getMisc().stream().filter(m -> m.getType().hasFlag(MiscType.F_CHASSIS_MODIFICATION))
                 .map(m -> m.getType().getShortName())

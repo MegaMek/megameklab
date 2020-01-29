@@ -155,7 +155,12 @@ public class PrintAero extends PrintEntity {
     }
 
     @Override
-    protected String formatFeatures() {
+    public String formatTacticalFuel() {
+        return "Fuel Points: " + aero.getOriginalFuel();
+    }
+
+    @Override
+    public String formatFeatures() {
         StringJoiner sj = new StringJoiner(", ");
         if (aero.isSupportVehicle()) {
             List<String> chassisMods = aero.getMisc().stream().filter(m -> m.getType().hasFlag(MiscType.F_CHASSIS_MODIFICATION))
