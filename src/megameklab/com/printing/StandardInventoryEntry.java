@@ -121,6 +121,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
             Arrays.fill(retVal[i], i == 0 ? "" : DASH);
         }
         int avMod = aeroAVMod(mount);
+        // The base AV is the number of missiles.
         int av = (int) ((WeaponType) mount.getType()).getShortAV() + avMod;
         retVal[MML_LRM_ROW][RangeType.RANGE_SHORT] = String.valueOf(av);
         retVal[MML_SRM_ROW][RangeType.RANGE_SHORT] = String.valueOf(av * 2);
