@@ -62,7 +62,7 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
                 bayMRV += wtype.getMedAV() * numWeapons;
                 bayLRV += wtype.getLongAV() * numWeapons;
                 bayERV += wtype.getExtAV() * numWeapons;
-            } else if (wtype instanceof ATMWeapon) {
+            } else if (wtype instanceof ATMWeapon || wtype instanceof CLIATMWeapon) {
                 // The default AVs assume standard ammo. Per footnote on TW, p. 304, the SRV is multiplied
                 // by 1.5 for HE and the long and extreme by 0.5 for ER, both rounded up.
                 double av = Math.ceil(wtype.getShortAV() * numWeapons * 0.5);

@@ -20,6 +20,7 @@
 package megameklab.com.printing;
 
 import megamek.common.*;
+import megamek.common.weapons.CLIATMWeapon;
 import megamek.common.weapons.missiles.ATMWeapon;
 import megamek.common.weapons.missiles.MMLWeapon;
 import megamek.common.weapons.other.ISCenturionWeaponSystem;
@@ -77,7 +78,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         isRear = m.isRearMounted();
         isTurret = m.isMechTurretMounted();
         isMML = m.getType() instanceof MMLWeapon;
-        isATM = m.getType() instanceof ATMWeapon;
+        isATM = m.getType() instanceof ATMWeapon || m.getType() instanceof CLIATMWeapon;
         hasArtemis = hasLinkedEquipment(m, MiscType.F_ARTEMIS);
         hasArtemisProto = hasLinkedEquipment(m, MiscType.F_ARTEMIS_PROTO);
         hasArtemisV = hasLinkedEquipment(m, MiscType.F_ARTEMIS_V);
