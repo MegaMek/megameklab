@@ -173,10 +173,6 @@ public class UnitPrintManager {
                     } else {
                         book.append(new PrintSpheroid((Dropship) unit), pageFormat);
                     }
-                } else if (unit instanceof FixedWingSupport) {
-                    book.append(new PrintFixedWingSupport((FixedWingSupport) unit), pageFormat);
-                } else if (unit instanceof ConvFighter) {
-                    book.append(new PrintConventionalFighter((ConvFighter) unit), pageFormat);
                 } else if (unit instanceof SmallCraft) {
                     if (unit.getMovementMode() == EntityMovementMode.AERODYNE) {
                         book.append(new PrintSmallCraftAerodyne((SmallCraft) unit), pageFormat);
