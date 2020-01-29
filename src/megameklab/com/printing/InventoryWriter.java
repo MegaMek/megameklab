@@ -125,6 +125,7 @@ public class InventoryWriter {
     private final double[] colX;
     private final double[] bayColX;
     private final String ammoText;
+    private final String fuelText;
     private final String featuresText;
     private final String quirksText;
 
@@ -153,6 +154,7 @@ public class InventoryWriter {
                 .map(e -> String.format("(%s) %d", e.getKey(), e.getValue()))
                 .collect(Collectors.joining(", "));
         ammoText = str.isEmpty() ? str : "Ammo: " + str;
+        fuelText = sheet.formatTacticalFuel();
         str = sheet.formatFeatures();
         featuresText = str.isEmpty() ? str : "Features " + str;
         str = sheet.formatQuirks();
@@ -409,21 +411,27 @@ public class InventoryWriter {
 
     private void writeFooterBlock(float fontSize, float lineHeight) {
         int lines;
-        if (ammo.size() + featuresText.length() + quirksText.length() > 0) {
+        if (ammo.size() + fuelText.length() + featuresText.length() + quirksText.length() > 0) {
             Element svgGroup = sheet.getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
             canvas.appendChild(svgGroup);
             lines = 0;
-            if (ammo.size() > 0) {
+            if (!ammoText.isEmpty()) {
                 lines = sheet.addMultilineTextElement(svgGroup, viewX + viewWidth * 0.025, 0, viewWidth * 0.95, lineHeight,
                         ammoText, fontSize, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
             }
-            if (featuresText.length() > 0) {
+            if (!fuelText.isEmpty()) {
+                lines += sheet.addMultilineTextElement(svgGroup, viewX + viewWidth * 0.025,
+                        lines * lineHeight, viewWidth * 0.95, lineHeight,
+                        fuelText, fontSize,
+                        SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
+            }
+            if (!featuresText.isEmpty()) {
                 lines += sheet.addMultilineTextElement(svgGroup, viewX + viewWidth * 0.025,
                         lines * lineHeight, viewWidth * 0.95, lineHeight,
                         featuresText, fontSize,
                         SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
             }
-            if (quirksText.length() > 0) {
+            if (!quirksText.isEmpty()) {
                 lines += sheet.addMultilineTextElement(svgGroup, viewX + viewWidth * 0.025, lines * lineHeight,
                         viewWidth * 0.95, lineHeight,
                         quirksText, fontSize, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
@@ -487,6 +495,7 @@ public class InventoryWriter {
             lines += rows;
         }
         lines += Math.ceil(sheet.getTextLength(ammoText, fontSize) / viewWidth);
+        lines += Math.ceil(sheet.getTextLength(fuelText, fontSize) / viewWidth);
         lines += Math.ceil(sheet.getTextLength(featuresText, fontSize) / viewWidth);
         lines += Math.ceil(sheet.getTextLength(quirksText, fontSize) / viewWidth);
         return lines;

@@ -82,7 +82,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
      *
      * @return A list of chassis mods, or an empty String if none
      */
-    protected String formatFeatures() {
+    public String formatFeatures() {
         return "";
     }
 
@@ -92,7 +92,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
      * 
      * @return The text to display for the unit's quirks.
      */
-    protected String formatQuirks() {
+    public String formatQuirks() {
         if (options.showQuirks()) {
             StringJoiner sj = new StringJoiner(", ");
             Quirks quirks = getEntity().getQuirks();
@@ -111,6 +111,17 @@ public abstract class PrintEntity extends PrintRecordSheet {
         } else {
             return "";
         }
+    }
+
+    /**
+     * Fuel block used by aerospace unit. Fuel for other units, such as non-aerospace support vehicles,
+     * is for strategic fuel use and not relevant for the record sheet.
+     *
+     * @return A string containing the amount of fuel and cost per thrust point for aerospace units,
+     *         otherwise an empty string.
+     */
+    public String formatTacticalFuel() {
+        return "";
     }
     
     @Override
