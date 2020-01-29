@@ -532,16 +532,6 @@
                                       >
     <g id="armorPipsNOS" transform="translate(139.27,30.48)"
                                         >
-      <rect x="-10.8" width="21.6" y="0" height="6.8" id="armorNOSRow00"
-                                          />
-      <rect x="-12.2" width="24.4" y="6.8" height="6.8" id="armorNOSRow01"
-                                          />
-      <rect x="-14.8" width="29.6" y="13.6" height="6.8" id="armorNOSRow02"
-                                          />
-      <rect x="-16.6" width="33.2" y="20.4" height="6.8" id="armorNOSRow03"
-                                          />
-      <rect x="-17.6" width="35.2" y="27.2" height="6.8" id="armorNOSRow04"
-                                          />
       <rect x="-18.2" width="36.4" y="34.0" height="6.8" id="armorNOSRow05"
                                           />
       <rect x="-19.6" width="39.2" y="40.8" height="6.8" id="armorNOSRow06"
