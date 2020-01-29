@@ -20,6 +20,9 @@
 package megameklab.com.printing;
 
 import megamek.common.*;
+import megamek.common.weapons.CLIATMWeapon;
+import megamek.common.weapons.missiles.ATMWeapon;
+import megamek.common.weapons.missiles.MMLWeapon;
 
 import java.util.*;
 
@@ -59,6 +62,18 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
                 bayMRV += wtype.getMedAV() * numWeapons;
                 bayLRV += wtype.getLongAV() * numWeapons;
                 bayERV += wtype.getExtAV() * numWeapons;
+            } else if (wtype instanceof ATMWeapon) {
+                // The default AVs assume standard ammo. Per footnote on TW, p. 304, the SRV is multiplied
+                // by 1.5 for HE and the long and extreme by 0.5 for ER, both rounded up.
+                double av = Math.ceil(wtype.getShortAV() * numWeapons * 0.5);
+                baySRV += Math.round(Math.ceil(av * 1.5) / 10.0);
+                bayMRV += Math.round(av / 10.0);
+                bayLRV += Math.round(Math.ceil(av * 0.5) / 10.0);
+                bayERV += Math.round(Math.ceil(av * 0.5) / 10.0);
+                standardBaySRV += Math.ceil(av * 1.5);
+                standardBayMRV += av;
+                standardBayLRV += Math.ceil(av * 0.5);
+                standardBayERV += Math.ceil(av * 0.5);
             } else {
                 int bonus = 0;
                 if (bay.augmentations.containsKey(wtype)) {
@@ -66,7 +81,11 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
                         .mapToInt(e -> aeroAVMod(wtype, e.getKey(), true) * e.getValue()).sum();
                 }
                 if (wtype.getShortAV() > 0) {
-                    baySRV += Math.round((wtype.getShortAV() * numWeapons + bonus) / 10);
+                    double av = wtype.getShortAV() * numWeapons + bonus;
+                    if (wtype instanceof MMLWeapon) {
+                        av *= 2; // SRM ammo
+                    }
+                    baySRV += Math.round(av / 10.0);
                     standardBaySRV += wtype.getShortAV() * numWeapons + bonus;
                 }
                 if (wtype.getMedAV() > 0) {
