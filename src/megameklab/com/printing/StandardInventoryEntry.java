@@ -360,6 +360,9 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
                 return "";
             }
         }
+        if (row < ranges.length) {
+            return ranges[row][RangeType.RANGE_EXTREME];
+        }
         return "";
     }
 
