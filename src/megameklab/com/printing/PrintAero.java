@@ -25,6 +25,12 @@ import org.w3c.dom.svg.SVGRectElement;
 
 import java.awt.print.PageFormat;
 import java.io.File;
+import java.text.DecimalFormat;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
 /**
  * Lays out record sheet for non-capital aerospace units
@@ -146,6 +152,33 @@ public class PrintAero extends PrintEntity {
                     String.format(FORMAT, aero.getThresh(loc), getEntity().getOArmor(loc)));
         }
         setTextField(TEXT_SI, aero.get0SI());
+    }
+
+    @Override
+    protected String formatFeatures() {
+        StringJoiner sj = new StringJoiner(", ");
+        if (aero.isSupportVehicle()) {
+            List<String> chassisMods = aero.getMisc().stream().filter(m -> m.getType().hasFlag(MiscType.F_CHASSIS_MODIFICATION))
+                    .map(m -> m.getType().getShortName())
+                    .collect(Collectors.toList());
+            if (!chassisMods.isEmpty()) {
+                sj.add(String.join(", ", chassisMods)
+                        + (chassisMods.size() == 1 ? " Chassis Mod" : " Chassis Mods"));
+            }
+        }
+        Map<String, Double> transport = new HashMap<>();
+        for (Transporter t : aero.getTransports()) {
+            if (t instanceof TroopSpace) {
+                transport.merge("Infantry Bay", t.getUnused(), Double::sum);
+            } else if (t instanceof Bay) {
+                transport.merge(((Bay) t).getType(), ((Bay) t).getCapacity(), Double::sum);
+            }
+        }
+        for (Map.Entry<String, Double> e : transport.entrySet()) {
+            sj.add(e.getKey() + " (" + DecimalFormat.getInstance().format(e.getValue())
+                    + ((e.getValue() == 1)? " ton)" : " tons)"));
+        }
+        return sj.toString();
     }
 
     @Override
