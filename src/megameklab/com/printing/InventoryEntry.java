@@ -142,10 +142,10 @@ public interface InventoryEntry {
                 return 2;
             }
         } else if (linkedBy.hasFlag(MiscType.F_ARTEMIS_PROTO) && weapon.getRackSize() == 2) {
-            // The +1 only makes a difference for SRM2
+            // The +1 cluster hit bonus only adds a missile hit for SRM2
             return 2;
-        } else if (linkedBy.hasFlag(MiscType.F_APOLLO) && weapon.getRackSize() == 2) {
-            // The -1 only makes a difference for SRM2
+        } else if (linkedBy.hasFlag(MiscType.F_APOLLO) && weapon.getRackSize() == 4) {
+            // The -1 cluster hit penalty only removes a missile hit SRM4
             return -2;
         } else if (bay && linkedBy.hasFlag(MiscType.F_PPC_CAPACITOR)) {
             // PPC capacitors in weapon bays are treated as if always charged
