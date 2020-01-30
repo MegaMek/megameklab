@@ -310,6 +310,10 @@ public class AdvancedAeroChassisView extends BuildView implements ActionListener
         return chkLFBattery.isSelected() && chkLFBattery.isEnabled();
     }
 
+    public void setLFBattery(boolean battery) {
+        chkLFBattery.setSelected(battery);
+    }
+
     public void setMaxThrust(int maxThrust) {
         this.maxThrust = maxThrust;
         refreshSI();
