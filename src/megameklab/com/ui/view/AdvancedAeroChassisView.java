@@ -303,22 +303,22 @@ public class AdvancedAeroChassisView extends BuildView implements ActionListener
     }
     
     public void setTonnage(double tonnage) {
-        spnTonnage.setValue(Integer.valueOf((int)Math.ceil(tonnage)));
+        spnTonnage.setValue((int) Math.ceil(tonnage));
     }
     
     public boolean hasLFBattery() {
         return chkLFBattery.isSelected() && chkLFBattery.isEnabled();
     }
-    
+
     public void setLFBattery(boolean battery) {
         chkLFBattery.setSelected(battery);
     }
-    
+
     public void setMaxThrust(int maxThrust) {
         this.maxThrust = maxThrust;
         refreshSI();
     }
-    
+
     @Override
     public void stateChanged(ChangeEvent e) {
         if (e.getSource() == spnTonnage) {
@@ -334,6 +334,8 @@ public class AdvancedAeroChassisView extends BuildView implements ActionListener
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == chkLFBattery) {
             listeners.forEach(l -> l.lfBatteryChanged(hasLFBattery()));
+        } else if (e.getSource() == chkMilitary) {
+            listeners.forEach(l -> l.militaryChanged(chkMilitary.isSelected()));
         } else if (e.getSource() == chkModular) {
             listeners.forEach(l -> l.modularChanged(chkModular.isSelected()));
         } else if (e.getSource() == chkSail) {
