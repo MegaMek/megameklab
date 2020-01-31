@@ -1,5 +1,5 @@
 /*
- * MegaMekLab - Copyright (C) 2008
+ * MegaMekLab - Copyright (C) 2008-2020
  *
  * Original author - jtighe (torren@users.sourceforge.net)
  *
@@ -16,18 +16,14 @@
 
 package megameklab.com.printing;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import megamek.common.AmmoType;
-import megamek.common.Jumpship;
-import megamek.common.Mounted;
-import megamek.common.Warship;
-import megamek.common.WeaponType;
+import megamek.common.*;
 import megamek.common.weapons.AmmoWeapon;
 
 /**
@@ -50,7 +46,16 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
      */
     public Map<WeaponType, Mounted> weaponAmmo = new HashMap<>();
 
-    public boolean allowNosAftCombine = true;
+    /**
+     * Track any linked equipment that affects the AV or heat. By the rules, most of them are either
+     * all or none for the entire bay (or ship), but for PPC capacitors there is no published rule
+     * I can find that the entire bay has to have them, or even all of the same type within the bay.
+     * It's easier to treat them all the same, and this will also support illegal builds that only put
+     * Artemis on some weapons, or mix Artemis types.
+     */
+    public Map<WeaponType, Map<EquipmentType, Integer>> augmentations = new HashMap<>();
+
+    public boolean allowNosAftCombine;
     /**
      * The location of the bay, or locations if multiple identical bays are
      * combined.
@@ -65,7 +70,7 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
     /**
      * Add a new weapon into this bay.
      *
-     * @param weapon
+     * @param weapon The weapon to add to the bay
      */
     public void addBayWeapon(Mounted weapon) {
         WeaponType wtype = (WeaponType) weapon.getType();
@@ -80,6 +85,10 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
                 }
             }
         }
+        if (null != weapon.getLinkedBy()) {
+            augmentations.putIfAbsent(wtype, new HashMap<>());
+            augmentations.get(wtype).merge(weapon.getLinkedBy().getType(), 1, Integer::sum);
+        }
     }
 
     /**
@@ -88,8 +97,8 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
      * identical to one on the right side, then those two can be combined in a
      * location like FRS/FLS. This allows weapon lists to be compacted.
      *
-     * @param other
-     * @return
+     * @param other The other instance
+     * @return      Whether the two bays are identical
      */
     public boolean canCombine(WeaponBayText other) {
         // Check for opposing sides
@@ -97,22 +106,23 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
         if ((loc.size() == 1) && (other.loc.size() == 1)) {
             opposingSide = checkOpposingSide(loc.get(0), other.loc.get(0));
         }
-        return opposingSide && weapons.equals(other.weapons) && ammosMatch(other);
+        return opposingSide && weapons.equals(other.weapons)
+                && ammosMatch(other) && augmentations.equals(other.augmentations);
     }
 
     /**
      * Used to compare ammos across WeaponBayTexts. Since Mounted.equals isn't
      * implemented, we can't directly use Map.equals.
      *
-     * @param other
-     * @return
+     * @param other The other bay
+     * @return      Whether the ammo types and number of shots per type match
      */
     private boolean ammosMatch(WeaponBayText other) {
         boolean rv = (weaponAmmo.size() == other.weaponAmmo.size())
                 && weaponAmmo.keySet().equals(other.weaponAmmo.keySet());
         if (rv) {
             for (WeaponType wtype : weaponAmmo.keySet()) {
-                rv |= weaponAmmo.get(wtype).getBaseShotsLeft() == other.weaponAmmo.get(wtype).getBaseShotsLeft();
+                rv &= weaponAmmo.get(wtype).getBaseShotsLeft() == other.weaponAmmo.get(wtype).getBaseShotsLeft();
             }
         }
         return rv;
@@ -142,19 +152,48 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
      * the only thing that needs to be updated is the locations. This should only be
      * called if canCombine returns true for both WeaponBayTexts.
      *
-     * @param other
+     * @param other The other bay to combine with this one
      */
     public void combine(WeaponBayText other) {
         loc.addAll(other.loc);
-        Collections.sort(loc, new Comparator<Integer>() {
+        loc.sort(Comparator.comparingInt(this::getLocWeight));
+    }
 
-            @Override
-            public int compare(Integer o1, Integer o2) {
-                int v1 = getLocWeight(o1);
-                int v2 = getLocWeight(o2);
-                return v1 - v2;
+    /**
+     * @param flag A MiscType flag
+     * @return     The number of weapons in the entire bay linked by equipment with the given flag
+     */
+    public int countAugmentations(BigInteger flag) {
+        int count = 0;
+        for (WeaponType wtype : augmentations.keySet()) {
+            count += countAugmentations(wtype, flag);
+        }
+        return count;
+    }
+
+    /**
+     * @param wtype A type of weapon in the bay
+     * @param flag A MiscType flag
+     * @return     The number of weapons of the given type in the bay linked by equipment with the given flag
+     */
+    public int countAugmentations(WeaponType wtype, BigInteger flag) {
+        int count = 0;
+        if (augmentations.containsKey(wtype)) {
+            for (EquipmentType etype : augmentations.get(wtype).keySet()) {
+                if (etype.hasFlag(flag)) {
+                    count += augmentations.get(wtype).get(etype);
+                }
             }
-        });
+        }
+        return count;
+    }
+
+    /**
+     * @param flag A MiscType flag
+     * @return     Whether all weapons in the bay are linked by equipment with the given flag
+     */
+    public boolean allHaveAugmentation(BigInteger flag) {
+        return countAugmentations(flag) == weapons.values().stream().mapToInt(Integer::intValue).sum();
     }
 
     /**
@@ -171,8 +210,8 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
      * The display order for Warship locations is different from the numerical order
      * of the defines, so we want to get the loc weights for sorting purposes.
      *
-     * @param loc
-     * @return
+     * @param loc The location index
+     * @return    The sort order for the location
      */
     private int getLocWeight(int loc) {
         switch (loc) {
