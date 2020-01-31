@@ -186,7 +186,8 @@ public class PrintAero extends PrintEntity {
         for (Transporter t : aero.getTransports()) {
             if (t instanceof TroopSpace) {
                 transport.merge("Infantry Bay", t.getUnused(), Double::sum);
-            } else if (t instanceof Bay && !((Bay) t).isQuarters()) {
+            // include carge bays for fighters and fixed wing, but small craft get a block for transport bays
+            } else if (t instanceof Bay && !((Bay) t).isQuarters() && !(aero instanceof SmallCraft)) {
                 transport.merge(((Bay) t).getType(), ((Bay) t).getCapacity(), Double::sum);
             }
         }
