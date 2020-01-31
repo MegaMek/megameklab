@@ -173,12 +173,6 @@ public class UnitPrintManager {
                     } else {
                         book.append(new PrintSpheroid((Dropship) unit), pageFormat);
                     }
-                } else if (unit instanceof SmallCraft) {
-                    if (unit.getMovementMode() == EntityMovementMode.AERODYNE) {
-                        book.append(new PrintSmallCraftAerodyne((SmallCraft) unit), pageFormat);
-                    } else {
-                        book.append(new PrintSmallCraftSpheroid((SmallCraft) unit), pageFormat);
-                    }
                 } else {
                     book.append(new PrintAero((Aero) unit, book.getNumberOfPages()), pageFormat);
                 }

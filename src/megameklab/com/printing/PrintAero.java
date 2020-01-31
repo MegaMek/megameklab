@@ -68,6 +68,9 @@ public class PrintAero extends PrintEntity {
 
     @Override
     protected String getSVGFileName(int pageNumber) {
+        if (aero instanceof SmallCraft) {
+            return "smallcraft_aerodyne_default.svg";
+        }
         if (aero instanceof ConvFighter) {
             return "fighter_conventional_default.svg";
         }
@@ -183,7 +186,7 @@ public class PrintAero extends PrintEntity {
         for (Transporter t : aero.getTransports()) {
             if (t instanceof TroopSpace) {
                 transport.merge("Infantry Bay", t.getUnused(), Double::sum);
-            } else if (t instanceof Bay) {
+            } else if (t instanceof Bay && !((Bay) t).isQuarters()) {
                 transport.merge(((Bay) t).getType(), ((Bay) t).getCapacity(), Double::sum);
             }
         }
