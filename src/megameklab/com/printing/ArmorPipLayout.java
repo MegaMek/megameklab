@@ -152,7 +152,7 @@ class ArmorPipLayout {
      */
     static void addPips(PrintRecordSheet sheet, Element group, int pipCount,
                         PrintRecordSheet.PipType pipType) {
-        addPips(sheet, group, pipCount, pipType, 0.5);
+        addPips(sheet, group, pipCount, pipType, 0.55);
     }
 
     /**
