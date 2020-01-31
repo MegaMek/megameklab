@@ -479,10 +479,8 @@ public class PrintCapitalShip extends PrintEntity {
         }
         // Add lines equal to number of transport bays and one each for section title
         // and following empty line
-        List<Bay> printableBays = ship.getTransports().stream().filter(t -> t instanceof Bay)
-                .map(t -> (Bay) t).filter(b -> !b.isQuarters()).collect(Collectors.toList());
-        if (printableBays.size() > 0) {
-            linesPerBlock[BLOCK_BAYS] = printableBays.size() + 2;
+        if (inventory.transportBayLines() > 0) {
+            linesPerBlock[BLOCK_BAYS] = inventory.transportBayLines() + 2;
         }
 
         int linesOnFront = Arrays.stream(linesPerBlock).sum();
