@@ -47,7 +47,7 @@ public interface IdConstants {
     String ERA = "era";
     String COST = "cost";
     String BV = "bv";
-    String LBL_ROLE = "lblRole";
+    String LBL_ROLE = "labelRole";
     String ROLE = "role";
     String ERA_ICON = "eraIcon";
     String INVENTORY = "inventory";
