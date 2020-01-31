@@ -19,6 +19,7 @@ v0.47.3-SNAPSHOT
 + Issue #42: Can't print naval vehicles
 + Issue #403: Infantry Weight doesn't Update
 + Issue #406: Space Station - Military Option is Selected Whenever You Switch Weight
++ Issue #315: Hull equipment on WS Record Sheet
 
 v0.47.2 (2019-11-15 2000 UTC)
 + Issue #365: Protomek Tab is missing its fluff section
