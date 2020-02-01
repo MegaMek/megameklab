@@ -1121,7 +1121,9 @@ public class UnitUtil {
                         || eq.hasFlag(MiscType.F_CHASSIS_MODIFICATION)
                         || eq.hasFlag(MiscType.F_DRONE_EXTRA) || eq
                             .hasFlag(MiscType.F_SPONSON_TURRET))
-                        || eq.hasFlag(MiscType.F_EXTERNAL_STORES_HARDPOINT)) {
+                        || eq.hasFlag(MiscType.F_EXTERNAL_STORES_HARDPOINT)
+                        || eq.hasFlag(MiscType.F_BASIC_FIRECONTROL)
+                        || eq.hasFlag(MiscType.F_ADVANCED_FIRECONTROL)) {
             return false;
         }
 
