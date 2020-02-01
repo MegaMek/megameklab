@@ -319,13 +319,13 @@
                                     >Lorem Ipsum</text
                                     ><text fill="#231f20" x="6.000" y="38.000" style="font-family:Eurostile;font-size:7.700px;font-weight:bold;font-style:normal" text-anchor="start"
                                     >Thrust:</text
-                                    ><text x="6.000" y="47.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:7.700px;font-weight:bold;font-style:normal" textLength="38.723" lengthAdjust="spacingAndGlyphs"
+                                    ><text x="9.844" y="47.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:7.700px;font-weight:bold;font-style:normal" textLength="38.723" lengthAdjust="spacingAndGlyphs"
                                     >SafeThrust:</text
-                                    ><text fill="#231f20" x="76.000" id="mpWalk" y="47.000" style="font-family:Eurostile;font-size:7.700px;font-weight:normal;font-style:normal" text-anchor="middle"
+                                    ><text fill="#231f20" x="79.844" id="mpWalk" y="47.000" style="font-family:Eurostile;font-size:7.700px;font-weight:normal;font-style:normal" text-anchor="middle"
                                     >0</text
-                                    ><text x="6.000" y="56.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:7.700px;font-weight:bold;font-style:normal" textLength="58.411" lengthAdjust="spacingAndGlyphs"
+                                    ><text x="9.844" y="56.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:7.700px;font-weight:bold;font-style:normal" textLength="58.411" lengthAdjust="spacingAndGlyphs"
                                     >Maximum Thrust:</text
-                                    ><text fill="#231f20" x="76.000" id="mpRun" y="56.000" style="font-family:Eurostile;font-size:7.700px;font-weight:normal;font-style:normal" text-anchor="middle"
+                                    ><text fill="#231f20" x="79.844" id="mpRun" y="56.000" style="font-family:Eurostile;font-size:7.700px;font-weight:normal;font-style:normal" text-anchor="middle"
                                     >0</text
                                     ><text x="108.500" y="38.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:7.700px;font-weight:bold;font-style:normal" textLength="29.785" lengthAdjust="spacingAndGlyphs"
                                     >Tonnage:</text
@@ -985,15 +985,15 @@
                                                       /></g
                                                       ><text fill="#231f20" x="67.500" y="7.000" style="font-family:Eurostile;font-size:9.350px;font-weight:bold;font-style:normal" text-anchor="middle"
                                                       >A</text
-                                                      ><text fill="#231f20" x="84.821" y="16.500" style="font-family:Eurostile;font-size:9.350px;font-weight:bold;font-style:normal" text-anchor="middle"
+                                                      ><text fill="#231f20" x="85.321" y="17.000" style="font-family:Eurostile;font-size:9.350px;font-weight:bold;font-style:normal" text-anchor="middle"
                                                       >B</text
-                                                      ><text fill="#231f20" x="84.821" y="37.500" style="font-family:Eurostile;font-size:9.350px;font-weight:bold;font-style:normal" text-anchor="middle"
+                                                      ><text fill="#231f20" x="85.321" y="38.000" style="font-family:Eurostile;font-size:9.350px;font-weight:bold;font-style:normal" text-anchor="middle"
                                                       >C</text
                                                       ><text fill="#231f20" x="67.500" y="49.000" style="font-family:Eurostile;font-size:9.350px;font-weight:bold;font-style:normal" text-anchor="middle"
                                                       >D</text
-                                                      ><text fill="#231f20" x="50.179" y="37.500" style="font-family:Eurostile;font-size:9.350px;font-weight:bold;font-style:normal" text-anchor="middle"
+                                                      ><text fill="#231f20" x="49.679" y="38.000" style="font-family:Eurostile;font-size:9.350px;font-weight:bold;font-style:normal" text-anchor="middle"
                                                       >E</text
-                                                      ><text fill="#231f20" x="50.179" y="16.500" style="font-family:Eurostile;font-size:9.350px;font-weight:bold;font-style:normal" text-anchor="middle"
+                                                      ><text fill="#231f20" x="49.679" y="17.000" style="font-family:Eurostile;font-size:9.350px;font-weight:bold;font-style:normal" text-anchor="middle"
                                                       >F</text
                                                       ><text fill="#231f20" x="22.500" y="15.500" style="font-family:Eurostile;font-size:9.350px;font-weight:bold;font-style:normal" text-anchor="middle"
                                                       >Advanced</text
@@ -1014,69 +1014,69 @@
                                                       ></g
                                                     ></g
                                                     ><g transform="translate (6.000 25.925)"
-                                                    ><text x="0.000" y="7.200" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:#231f20" textLength="22.725" lengthAdjust="spacingAndGlyphs"
+                                                    ><text x="0.000" y="8.640" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:#231f20" textLength="22.725" lengthAdjust="spacingAndGlyphs"
                                                       >Avionics</text
-                                                      ><path fill="none" d="M 59.250,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 5.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,5.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -5.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
-                                                      /><text x="63.250" y="6.000" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="4.800" lengthAdjust="spacingAndGlyphs"
+                                                      ><path fill="none" d="M 54.450,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 6.970,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,6.970 c 0,0.726 -0.589,1.315, -1.315,1.315 l -6.970,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
+                                                      /><text x="59.250" y="6.640" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="5.760" lengthAdjust="spacingAndGlyphs"
                                                       >+1</text
-                                                      ><path fill="none" d="M 70.250,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 5.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,5.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -5.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
-                                                      /><text x="74.250" y="6.000" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="4.800" lengthAdjust="spacingAndGlyphs"
+                                                      ><path fill="none" d="M 67.050,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 6.970,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,6.970 c 0,0.726 -0.589,1.315, -1.315,1.315 l -6.970,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
+                                                      /><text x="71.850" y="6.640" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="5.760" lengthAdjust="spacingAndGlyphs"
                                                       >+2</text
-                                                      ><path fill="none" d="M 81.250,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 5.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,5.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -5.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
-                                                      /><text x="85.250" y="6.000" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="4.800" lengthAdjust="spacingAndGlyphs"
+                                                      ><path fill="none" d="M 79.650,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 6.970,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,6.970 c 0,0.726 -0.589,1.315, -1.315,1.315 l -6.970,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
+                                                      /><text x="84.450" y="6.640" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="5.760" lengthAdjust="spacingAndGlyphs"
                                                       >+5</text
                                                     ></g
                                                     ><g transform="translate (105.500 25.925)"
-                                                    ><text x="0.000" y="7.200" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:#231f20" textLength="18.427" lengthAdjust="spacingAndGlyphs"
+                                                    ><text x="0.000" y="8.640" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:#231f20" textLength="18.427" lengthAdjust="spacingAndGlyphs"
                                                       >Engine</text
-                                                      ><path fill="none" d="M 59.250,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 5.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,5.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -5.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
-                                                      /><text x="63.250" y="6.000" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="3.488" lengthAdjust="spacingAndGlyphs"
+                                                      ><path fill="none" d="M 54.450,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 6.970,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,6.970 c 0,0.726 -0.589,1.315, -1.315,1.315 l -6.970,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
+                                                      /><text x="59.250" y="6.640" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="3.488" lengthAdjust="spacingAndGlyphs"
                                                       >2</text
-                                                      ><path fill="none" d="M 70.250,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 5.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,5.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -5.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
-                                                      /><text x="74.250" y="6.000" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="3.488" lengthAdjust="spacingAndGlyphs"
+                                                      ><path fill="none" d="M 67.050,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 6.970,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,6.970 c 0,0.726 -0.589,1.315, -1.315,1.315 l -6.970,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
+                                                      /><text x="71.850" y="6.640" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="3.488" lengthAdjust="spacingAndGlyphs"
                                                       >4</text
-                                                      ><path fill="none" d="M 81.250,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 5.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,5.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -5.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
-                                                      /><text x="85.250" y="6.000" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="3.716" lengthAdjust="spacingAndGlyphs"
+                                                      ><path fill="none" d="M 79.650,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 6.970,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,6.970 c 0,0.726 -0.589,1.315, -1.315,1.315 l -6.970,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
+                                                      /><text x="84.450" y="6.640" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="3.716" lengthAdjust="spacingAndGlyphs"
                                                       >D</text
                                                     ></g
                                                     ><g transform="translate (6.000 41.775)"
-                                                    ><text x="0.000" y="7.200" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:#231f20" textLength="11.104" lengthAdjust="spacingAndGlyphs"
+                                                    ><text x="0.000" y="8.640" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:#231f20" textLength="11.104" lengthAdjust="spacingAndGlyphs"
                                                       >FCS</text
-                                                      ><path fill="none" d="M 59.250,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 5.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,5.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -5.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
-                                                      /><text x="63.250" y="6.000" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="4.800" lengthAdjust="spacingAndGlyphs"
+                                                      ><path fill="none" d="M 54.450,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 6.970,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,6.970 c 0,0.726 -0.589,1.315, -1.315,1.315 l -6.970,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
+                                                      /><text x="59.250" y="6.640" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="5.760" lengthAdjust="spacingAndGlyphs"
                                                       >+2</text
-                                                      ><path fill="none" d="M 70.250,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 5.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,5.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -5.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
-                                                      /><text x="74.250" y="6.000" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="4.800" lengthAdjust="spacingAndGlyphs"
+                                                      ><path fill="none" d="M 67.050,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 6.970,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,6.970 c 0,0.726 -0.589,1.315, -1.315,1.315 l -6.970,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
+                                                      /><text x="71.850" y="6.640" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="5.760" lengthAdjust="spacingAndGlyphs"
                                                       >+4</text
-                                                      ><path fill="none" d="M 81.250,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 5.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,5.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -5.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
-                                                      /><text x="85.250" y="6.000" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="3.716" lengthAdjust="spacingAndGlyphs"
+                                                      ><path fill="none" d="M 79.650,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 6.970,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,6.970 c 0,0.726 -0.589,1.315, -1.315,1.315 l -6.970,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
+                                                      /><text x="84.450" y="6.640" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="3.716" lengthAdjust="spacingAndGlyphs"
                                                       >D</text
                                                     ></g
                                                     ><g transform="translate (105.500 41.775)"
-                                                    ><text x="0.000" y="7.200" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:#231f20" textLength="37.221" lengthAdjust="spacingAndGlyphs"
+                                                    ><text x="0.000" y="8.640" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:#231f20" textLength="37.221" lengthAdjust="spacingAndGlyphs"
                                                       >Landing Gear</text
-                                                      ><path fill="none" d="M 81.250,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 5.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,5.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -5.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
-                                                      /><text x="85.250" y="6.000" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="4.800" lengthAdjust="spacingAndGlyphs"
+                                                      ><path fill="none" d="M 79.650,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 6.970,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,6.970 c 0,0.726 -0.589,1.315, -1.315,1.315 l -6.970,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
+                                                      /><text x="84.450" y="6.640" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="5.760" lengthAdjust="spacingAndGlyphs"
                                                       >+5</text
                                                     ></g
                                                     ><g transform="translate (6.000 57.625)"
-                                                    ><text x="0.000" y="7.200" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:#231f20" textLength="23.147" lengthAdjust="spacingAndGlyphs"
+                                                    ><text x="0.000" y="8.640" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:#231f20" textLength="23.147" lengthAdjust="spacingAndGlyphs"
                                                       >Sensors</text
-                                                      ><path fill="none" d="M 59.250,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 5.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,5.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -5.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
-                                                      /><text x="63.250" y="6.000" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="4.800" lengthAdjust="spacingAndGlyphs"
+                                                      ><path fill="none" d="M 54.450,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 6.970,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,6.970 c 0,0.726 -0.589,1.315, -1.315,1.315 l -6.970,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
+                                                      /><text x="59.250" y="6.640" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="5.760" lengthAdjust="spacingAndGlyphs"
                                                       >+1</text
-                                                      ><path fill="none" d="M 70.250,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 5.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,5.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -5.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
-                                                      /><text x="74.250" y="6.000" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="4.800" lengthAdjust="spacingAndGlyphs"
+                                                      ><path fill="none" d="M 67.050,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 6.970,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,6.970 c 0,0.726 -0.589,1.315, -1.315,1.315 l -6.970,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
+                                                      /><text x="71.850" y="6.640" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="5.760" lengthAdjust="spacingAndGlyphs"
                                                       >+2</text
-                                                      ><path fill="none" d="M 81.250,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 5.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,5.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -5.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
-                                                      /><text x="85.250" y="6.000" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="4.800" lengthAdjust="spacingAndGlyphs"
+                                                      ><path fill="none" d="M 79.650,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 6.970,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,6.970 c 0,0.726 -0.589,1.315, -1.315,1.315 l -6.970,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
+                                                      /><text x="84.450" y="6.640" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="5.760" lengthAdjust="spacingAndGlyphs"
                                                       >+5</text
                                                     ></g
                                                     ><g transform="translate (105.500 57.625)"
-                                                    ><text x="0.000" y="7.200" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:#231f20" textLength="33.803" lengthAdjust="spacingAndGlyphs"
+                                                    ><text x="0.000" y="8.640" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:#231f20" textLength="33.803" lengthAdjust="spacingAndGlyphs"
                                                       >Life Support</text
-                                                      ><path fill="none" d="M 81.250,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 5.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,5.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -5.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
-                                                      /><text x="85.250" y="6.000" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="4.800" lengthAdjust="spacingAndGlyphs"
+                                                      ><path fill="none" d="M 79.650,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 6.970,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,6.970 c 0,0.726 -0.589,1.315, -1.315,1.315 l -6.970,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
+                                                      /><text x="84.450" y="6.640" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="5.760" lengthAdjust="spacingAndGlyphs"
                                                       >+2</text
                                                     ></g
                                                   ></g
