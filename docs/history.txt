@@ -1,5 +1,7 @@
 VERSION HISTORY:
 ----------------
+v0.47.4-SNAPSHOT
+
 v0.47.3 (2020-2-11 2200 UTC) 
 + Issue #371: Capital Missile Bays wrongly grouped as Tele (also warnings on load)
 + Issue #375: Maximum armor calculation is incorrect for Warships
