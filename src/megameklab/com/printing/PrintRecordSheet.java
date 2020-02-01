@@ -38,12 +38,6 @@ import org.w3c.dom.xpath.XPathEvaluator;
 import org.w3c.dom.xpath.XPathResult;
 
 import javax.imageio.ImageIO;
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.RenderedImage;
@@ -273,7 +267,6 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             GraphicsNode node = build();
             node.paint(g2d);
             /* Testing code that outputs the generated svg
-            */
             try {
                 Transformer transformer = TransformerFactory.newInstance().newTransformer();
                 Result output = new StreamResult(new File("out.svg"));
@@ -282,6 +275,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
+            */
         }
         return Printable.PAGE_EXISTS;
     }
