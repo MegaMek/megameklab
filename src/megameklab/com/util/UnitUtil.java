@@ -2312,40 +2312,51 @@ public class UnitUtil {
         return slot == lastIndex;
     }
 
-    public static void updateCritsArmoredStatus(Entity unit, Mounted mount) {
-        for (int position = 0; position < unit.getNumberOfCriticals(mount
-                .getLocation()); position++) {
-            CriticalSlot cs = unit.getCritical(mount.getLocation(), position);
+    /**
+     * Finds all the critical slots in the location containing the mount and sets or clears the
+     * armored component flag in accordance with the flag on the mount.
+     *
+     * @param unit     The unit the equipment is mounted on
+     * @param mount    The mount
+     * @param location The location to check
+     */
+    public static void updateCritsArmoredStatus(Entity unit, Mounted mount, int location) {
+        for (int position = 0; position < unit.getNumberOfCriticals(location); position++) {
+            CriticalSlot cs = unit.getCritical(location, position);
             if ((cs == null) || (cs.getType() == CriticalSlot.TYPE_SYSTEM)) {
                 continue;
             }
 
-            if ((cs.getMount() != null) && cs.getMount().equals(mount)) {
-                cs.setArmored(mount.isArmored());
-            } else if ((cs.getMount() != null)
-                    && cs.getMount().equals(mount)) {
+            if (mount.equals(cs.getMount())) {
                 cs.setArmored(mount.isArmored());
             }
-
         }
+    }
 
-        if ((mount.isSplitable() || mount.getType().isSpreadable())
-                && (mount.getSecondLocation() != Entity.LOC_NONE)) {
-            for (int position = 0; position < unit.getNumberOfCriticals(mount
-                    .getSecondLocation()); position++) {
-                CriticalSlot cs = unit.getCritical(mount.getSecondLocation(),
-                        position);
-                if ((cs == null) || (cs.getType() == CriticalSlot.TYPE_SYSTEM)) {
-                    continue;
-                }
+    /**
+     * Sets the armored component flag on all critical slots occupied by an equipment mount to
+     * be the same as the flag on the mount.
+     *
+     * @param unit  The unit the equipment is on
+     * @param mount The equipment mount
+     */
+    public static void updateCritsArmoredStatus(Entity unit, Mounted mount) {
+        /* Several types of equipment have multiple fixed locations. These
+         * are always mounted in the primary location and added to critical
+         * slots in the other location(s). Examples are partial wing (both side torsos)
+         * and mech tracks (all legs). Rather than dealing with each piece of equipment
+         * individually and risking missing one, just check everywhere.
+         */
+        if (isFixedLocationSpreadEquipment(mount.getType())) {
+            for (int loc = 0; loc < unit.locations(); loc++) {
+                updateCritsArmoredStatus(unit, mount, loc);
+            }
+        } else {
+            updateCritsArmoredStatus(unit, mount, mount.getLocation());
 
-                if ((cs.getMount() != null) && cs.getMount().equals(mount)) {
-                    cs.setArmored(mount.isArmored());
-                } else if ((cs.getMount() != null)
-                        && cs.getMount().equals(mount)) {
-                    cs.setArmored(mount.isArmored());
-                }
-
+            if ((mount.isSplitable() || mount.getType().isSpreadable())
+                    && (mount.getSecondLocation() != Entity.LOC_NONE)) {
+                updateCritsArmoredStatus(unit, mount, mount.getSecondLocation());
             }
         }
     }
