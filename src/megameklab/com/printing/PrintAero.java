@@ -69,7 +69,7 @@ public class PrintAero extends PrintEntity {
     @Override
     protected String getSVGFileName(int pageNumber) {
         if (aero instanceof SmallCraft) {
-            return "smallcraft_aerodyne_default.svg";
+            return aero.isSpheroid() ? "smallcraft_spheroid_default.svg" : "smallcraft_aerodyne_default.svg";
         }
         if (aero instanceof ConvFighter) {
             return "fighter_conventional_default.svg";
