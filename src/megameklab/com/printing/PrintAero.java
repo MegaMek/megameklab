@@ -246,7 +246,7 @@ public class PrintAero extends PrintEntity {
         double ypos = bbox.getMinY() + 1.0;
         for (int r = 0; r < nRows; r++) {
             int cols;
-            if (r + 1 < nRows) {
+            if ((r + 1 < nRows) || (capacity % 5) == 0) {
                 cols = 5;
             } else {
                 cols = capacity % 5;
