@@ -2,6 +2,17 @@ Current Maintainer:
     MegaMek GitHub Organization <https://github.com/MegaMek>
 
 Lead Developers:
+	 Carl "Neoancient" Spain
+	 NickAragua
+	 Christopher Watford
+    
+More Code:
+	Justin "Windchild" Bowen
+	
+Splash Screen
+	Florian "SpOoKy777" Mellies (https://www.deviantart.com/spooky777)
+
+MegaMekLab Developers, Emeritus
     Dylan Myers <https://github.com/Dylan-M>
     Sebastian Brocks <beerockxs@users.sourceforge.net>
     Nicholas Walczak <arlith@users.sourceforge.net>
