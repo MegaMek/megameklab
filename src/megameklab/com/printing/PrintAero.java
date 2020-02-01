@@ -182,6 +182,11 @@ public class PrintAero extends PrintEntity {
                         + (chassisMods.size() == 1 ? " Chassis Mod" : " Chassis Mods"));
             }
         }
+        if (aero.hasWorkingMisc(MiscType.F_ADVANCED_FIRECONTROL)) {
+            sj.add("Advanced Fire Control");
+        } else if (aero.hasWorkingMisc(MiscType.F_BASIC_FIRECONTROL)) {
+            sj.add("Basic Fire Control");
+        }
         Map<String, Double> transport = new HashMap<>();
         for (Transporter t : aero.getTransports()) {
             if (t instanceof TroopSpace) {
