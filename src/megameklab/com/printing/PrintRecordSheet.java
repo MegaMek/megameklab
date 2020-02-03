@@ -266,16 +266,16 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             createDocument(pageIndex, pageFormat);
             GraphicsNode node = build();
             node.paint(g2d);
-            /* Testing code that outputs the generated svg
+            /* Testing code that outputs the generated svg */
             try {
-                Transformer transformer = TransformerFactory.newInstance().newTransformer();
-                Result output = new StreamResult(new File("out.svg"));
-                Source input = new DOMSource(svgDocument);
+                javax.xml.transform.Transformer transformer = javax.xml.transform.TransformerFactory.newInstance().newTransformer();
+                javax.xml.transform.Result output = new javax.xml.transform.stream.StreamResult(new File("out.svg"));
+                javax.xml.transform.Source input = new javax.xml.transform.dom.DOMSource(svgDocument);
                 transformer.transform(input, output);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            */
+
         }
         return Printable.PAGE_EXISTS;
     }

@@ -161,11 +161,8 @@ public class UnitPrintManager {
                     PrintCapitalShip pcs = new PrintCapitalShip((Jumpship) unit, book.getNumberOfPages());
                     book.append(pcs, pageFormat, pcs.getPageCount());
                 } else if (unit instanceof Dropship) {
-                    if (unit.getMovementMode() == EntityMovementMode.AERODYNE) {
-                        book.append(new PrintAerodyne((Dropship) unit), pageFormat);
-                    } else {
-                        book.append(new PrintSpheroid((Dropship) unit), pageFormat);
-                    }
+                    PrintDropship pds = new PrintDropship((Aero) unit, book.getNumberOfPages());
+                    book.append(pds, pageFormat, pds.getPageCount());
                 } else {
                     book.append(new PrintAero((Aero) unit, book.getNumberOfPages()), pageFormat);
                 }
