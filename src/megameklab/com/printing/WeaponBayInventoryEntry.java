@@ -121,7 +121,27 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
         for (WeaponType wtype : bay.weapons.keySet()) {
             StringJoiner locString = new StringJoiner("/");
             for (int i = 0; i < bay.loc.size(); i++) {
-                locString.add(ship.getLocationAbbr(bay.loc.get(i)));
+                // Show official names of dropship side arcs. Rear-mounted wing bays
+                // are indicated by (R) appended to the name field.
+                if (ship instanceof Dropship
+                        && (bay.loc.get(i) == Dropship.LOC_LWING
+                            || bay.loc.get(i) == Dropship.LOC_RWING)) {
+                    if (ship.isSpheroid()) {
+                        if (bay.loc.get(i) == Dropship.LOC_LWING) {
+                            locString.add(bay.rear ? "ALS" : "FLS");
+                        } else {
+                            locString.add(bay.rear ? "ARS" : "FRS");
+                        }
+                    } else {
+                        if (bay.loc.get(i) == Dropship.LOC_LWING) {
+                            locString.add("LW");
+                        } else {
+                            locString.add("RW");
+                        }
+                    }
+                } else {
+                    locString.add(ship.getLocationAbbr(bay.loc.get(i)));
+                }
             }
             location = locString.toString();
             StringBuilder nameString = new StringBuilder(wtype.getShortName());
@@ -177,7 +197,9 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
 
     @Override
     public String getNameField(int row) {
-        if (row < weaponNames.size()) {
+        if (row == 0 && bay.rear && !ship.isSpheroid()) {
+            return quantities.get(row) + " " + weaponNames.get(row) + " (R)";
+        } else if (row < weaponNames.size()) {
             return quantities.get(row) + " " + weaponNames.get(row);
         }
         return "";
