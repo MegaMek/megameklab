@@ -26,6 +26,7 @@ public interface IdConstants {
     String TITLE = "title";
 
     String TYPE = "type";
+    String FLUFF_NAME = "fluffName";
     String MP_WALK = "mpWalk";
     String MP_RUN = "mpRun";
     String MP_JUMP = "mpJump";
@@ -71,6 +72,13 @@ public interface IdConstants {
     String WARRIOR_DATA_DUAL = "warriorDataDual";
     String WARRIOR_DATA_TRIPLE = "warriorDataTriple";
     String CREW_DAMAGE = "crewDamage";
+    String N_CREW = "nCrew";
+    String N_PASSENGERS = "nPassengers";
+    String N_OTHER = "nOther";
+    String N_MARINES = "nMarines";
+    String N_BATTLEARMOR = "nBattleArmor";
+    String LIFE_BOATS = "lifeBoatsEscapePods";
+    String LBL_BATTLEARMOR = "lblBattleArmor";
 
     String FLUFF_IMAGE = "fluffImage";
     String FLUFF_SINGLE_PILOT = "fluffSinglePilot";
@@ -108,4 +116,10 @@ public interface IdConstants {
     String EXTERNAL_STORES = "external_stores";
     String BOMB_BOXES = "bomb_boxes";
     String EXTERNAL_STORES_KEY = "external_stores_key";
+    String DOUBLE_HS_COUNT = "hsCountDouble";
+    String NOSE_HEAT = "noseHeat";
+    String FORE_SIDES_HEAT = "foreSidesHeat";
+    String BROADSIDES_HEAT = "broadsidesHeat";
+    String AFT_SIDES_HEAT = "aftSidesHeat";
+    String AFT_HEAT = "aftHeat";
 }

@@ -14,25 +14,13 @@
 package megameklab.com.printing;
 
 import java.awt.geom.Rectangle2D;
-import java.awt.print.PageFormat;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.List;
-import java.util.stream.Collectors;
 
+import megamek.common.*;
 import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGElement;
 import org.w3c.dom.svg.SVGRectElement;
 
-import megamek.common.AmmoType;
-import megamek.common.Bay;
-import megamek.common.Entity;
-import megamek.common.Jumpship;
-import megamek.common.SpaceStation;
-import megamek.common.UnitType;
-import megamek.common.Warship;
-import megamek.common.WeaponType;
 import megameklab.com.MegaMekLab;
 import megameklab.com.util.ImageHelper;
 
@@ -43,7 +31,7 @@ import megameklab.com.util.ImageHelper;
  * @author Neoancient
  *
  */
-public class PrintCapitalShip extends PrintEntity {
+public class PrintCapitalShip extends PrintDropship {
 
     /** Default width for armor pip */
     public static final double ARMOR_PIP_WIDTH = 4.5;
@@ -66,41 +54,9 @@ public class PrintCapitalShip extends PrintEntity {
     public static final int MAX_PIP_ROWS = 10;
 
     /**
-     * The maximum number of inventory lines to print as a single page. Ideally this
-     * would be determined by the space allocated by the svg template, but we need
-     * to determine how many pages we are printing before the template is loaded so
-     * we predetermine the value.
-     */
-    public static final int MAX_SINGLE_PAGE_LINES = 42;
-
-    /**
-     * The maximum number of lines to put on the first page if there has to be a second. This
-     * is lower than the maximum to avoid having to scale down the text too much on the first page
-     * while having empty space on the second.
-     */
-    public static final int PREFERRED_SINGLE_PAGE_LINES = 36;
-
-    // Indices for arrays tracking computed block sizes and which page to print them
-    // on.
-    private static final int BLOCK_CAPITAL = 0;
-    private static final int BLOCK_AR10_AMMO = 1;
-    private static final int BLOCK_STANDARD = 2;
-    private static final int BLOCK_GRAV_DECK = 3;
-    private static final int BLOCK_BAYS = 4;
-    private static final int BLOCK_HULL = 5;
-    private static final int NUM_BLOCKS = 6;
-    // The order in which to move blocks to the second page
-    private static final int[] SWITCH_PAGE_ORDER = { BLOCK_STANDARD, BLOCK_GRAV_DECK, BLOCK_BAYS, BLOCK_HULL, BLOCK_AR10_AMMO };
-
-    /**
      * The ship being printed
      */
     private final Jumpship ship;
-
-    private final InventoryWriter inventory;
-    private final int[] linesPerBlock = new int[NUM_BLOCKS];
-    private final boolean[] blockOnReverse = new boolean[NUM_BLOCKS];
-    private boolean secondPage = false;
 
     /**
      * Creates an SVG object for the record sheet
@@ -113,10 +69,8 @@ public class PrintCapitalShip extends PrintEntity {
      *            Overrides the global options for which elements are printed
      */
     public PrintCapitalShip(Jumpship ship, int startPage, RecordSheetOptions options) {
-        super(startPage, options);
+        super(ship, startPage, options);
         this.ship = ship;
-        inventory = new InventoryWriter(this);
-        distributeEquipmentBlocks();
     }
 
     /**
@@ -129,21 +83,6 @@ public class PrintCapitalShip extends PrintEntity {
      */
     public PrintCapitalShip(Jumpship ship, int startPage) {
         this(ship, startPage, new RecordSheetOptions());
-    }
-
-    @Override
-    protected Entity getEntity() {
-        return ship;
-    }
-
-    @Override
-    protected boolean isCenterlineLocation(int loc) {
-        return (loc == Jumpship.LOC_NOSE) || (loc == Jumpship.LOC_AFT);
-    }
-
-    @Override
-    public int getPageCount() {
-        return secondPage ? 2 : 1;
     }
 
     @Override
@@ -167,59 +106,50 @@ public class PrintCapitalShip extends PrintEntity {
     }
 
     @Override
-    public void processImage(int pageNum, PageFormat pageFormat) {
-        if (pageNum > 0) {
-            Element element = getSVGDocument().getElementById("textCopyright");
-            if (null != element) {
-                element.setTextContent(String.format(element.getTextContent(),
-                        Calendar.getInstance().get(Calendar.YEAR)));
-            }
-            setTextField("title", getRecordSheetTitle().toUpperCase() + " (REVERSE)");
-            setTextField("type", getEntity().getShortNameRaw());
-            setTextField("name", ""); // TODO: fluff name needs MM support
-            element = getSVGDocument().getElementById("inventory");
-            if (element instanceof SVGRectElement) {
-                writeEquipment((SVGRectElement) element, true);
-            }
-        } else {
-            super.processImage(pageNum, pageFormat);
-        }
-    }
-
-    @Override
-    protected void writeTextFields() {
-        super.writeTextFields();
-        setTextField("name", ""); // TODO: fluff name needs MM support
-        setTextField("crew", ship.getNCrew());
-        setTextField("marines", ship.getNMarines());
-        setTextField("passengers", ship.getNPassenger());
-        setTextField("baLabel", ship.isClan() ? "Elementals" : "BattleArmor");
-        setTextField("battleArmor", ship.getNBattleArmor());
-        setTextField("otherOccupants", ship.getNOtherCrew());
-        setTextField("lifeBoats", ship.getLifeBoats());
-        setTextField("escapePods", ship.getEscapePods());
-        setTextField("heatSinks", ship.getHeatSinks());
-        setTextField("doubleHeatSinks",
-                ship.getHeatType() == Jumpship.HEAT_DOUBLE ? "(" + (ship.getHeatSinks() * 2) + ")" : "");
-        setTextField("noseHeat", ship.getHeatInArc(Jumpship.LOC_NOSE, false));
-        setTextField("foreHeat", ship.getHeatInArc(Jumpship.LOC_FLS, false)
-                + " / " + ship.getHeatInArc(Jumpship.LOC_FRS, false));
-        setTextField("aftSidesHeat", ship.getHeatInArc(Jumpship.LOC_ALS, false)
-                + " / " + ship.getHeatInArc(Jumpship.LOC_ARS, false));
-        setTextField("aftHeat", ship.getHeatInArc(Jumpship.LOC_AFT, false));
-        if (ship instanceof Warship) {
-            setTextField("broadsideHeat", ship.getHeatInArc(Warship.LOC_RBS, false)
-                    + " / " + ship.getHeatInArc(Warship.LOC_LBS, false));
-        }
-    }
-
-    @Override
     protected void drawArmor() {
         for (int loc = firstArmorLocation(); loc < Jumpship.LOC_HULL; loc++) {
             setTextField("textThresholdArmor_" + getEntity().getLocationAbbr(loc),
                     String.format("%d (%d)", ship.getThresh(loc), ship.getOArmor(loc)));
         }
         drawArmorStructurePips();
+    }
+
+    int noseHeat() {
+        return ship.getHeatInArc(Jumpship.LOC_NOSE, false);
+    }
+
+    int foreLeftHeat() {
+        return ship.getHeatInArc(Jumpship.LOC_FLS, false);
+    }
+
+    int foreRightHeat() {
+        return ship.getHeatInArc(Jumpship.LOC_FRS, false);
+    }
+
+    int aftLeftHeat() {
+        return ship.getHeatInArc(Jumpship.LOC_ALS, false);
+    }
+
+    int aftRightHeat() {
+        return ship.getHeatInArc(Jumpship.LOC_ARS, false);
+    }
+
+    int aftHeat() {
+        return ship.getHeatInArc(Jumpship.LOC_AFT, false);
+    }
+
+    int broadsidesLeftHeat() {
+        if (ship instanceof Warship) {
+            return ship.getHeatInArc(Warship.LOC_LBS, false);
+        }
+        return 0;
+    }
+
+    int broadsidesRightHeat() {
+        if (ship instanceof Warship) {
+            return ship.getHeatInArc(Warship.LOC_RBS, false);
+        }
+        return 0;
     }
 
     @Override
@@ -452,118 +382,6 @@ public class PrintCapitalShip extends PrintEntity {
         }
         box.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, fillColor);
         return box;
-    }
-
-    private void distributeEquipmentBlocks() {
-        linesPerBlock[BLOCK_CAPITAL] = inventory.capitalBayLines();
-        linesPerBlock[BLOCK_STANDARD] = inventory.standardBayLines();
-        linesPerBlock[BLOCK_HULL] = inventory.equipmentLines();
-        // Add extra lines for column headers and trailing line break
-        if (linesPerBlock[BLOCK_CAPITAL] > 0) {
-            linesPerBlock[BLOCK_CAPITAL] += 3;
-        }
-        if (linesPerBlock[BLOCK_STANDARD] > 0) {
-            linesPerBlock[BLOCK_STANDARD] += 3;
-        }
-        if (linesPerBlock[BLOCK_HULL] > 0) {
-            linesPerBlock[BLOCK_HULL] += 2;
-        }
-        if (ship.getTotalWeaponList().stream()
-                .anyMatch(w -> ((WeaponType) w.getType()).getAmmoType() == AmmoType.T_AR10)) {
-            linesPerBlock[BLOCK_AR10_AMMO] = 5;
-        }
-        // Add lines equal to half the grav decks (rounded up) and one each for section
-        // title and following empty line
-        if (ship.getGravDecks().size() > 0) {
-            linesPerBlock[BLOCK_GRAV_DECK] = ((ship.getGravDecks().size() + 1) / 2) + 2;
-        }
-        // Add lines equal to number of transport bays and one each for section title
-        // and following empty line
-        if (inventory.transportBayLines() > 0) {
-            linesPerBlock[BLOCK_BAYS] = inventory.transportBayLines() + 2;
-        }
-
-        int linesOnFront = Arrays.stream(linesPerBlock).sum();
-        if (linesOnFront > MAX_SINGLE_PAGE_LINES) {
-            secondPage = true;
-            int toSwitch = 0;
-            // If there are no capital weapons, don't move standard scale to second page.
-            if (linesPerBlock[BLOCK_CAPITAL] == 0) {
-                toSwitch++;
-            }
-            do {
-                blockOnReverse[SWITCH_PAGE_ORDER[toSwitch]] = true;
-                linesOnFront -= linesPerBlock[SWITCH_PAGE_ORDER[toSwitch]];
-                if (SWITCH_PAGE_ORDER[toSwitch] == BLOCK_STANDARD) {
-                    linesOnFront += 2; // account for message about standard weapons on reverse
-                }
-                toSwitch++;
-            } while ((linesOnFront > PREFERRED_SINGLE_PAGE_LINES) && (toSwitch < SWITCH_PAGE_ORDER.length));
-            // Another tweak for situations where there are no capital weapons. If only the
-            // grav decks
-            // are moved to page two, move bays as well to prevent a second page with only
-            // one or two lines
-            if (!blockOnReverse[BLOCK_STANDARD] && !blockOnReverse[BLOCK_BAYS]
-                    && blockOnReverse[BLOCK_GRAV_DECK]) {
-                blockOnReverse[BLOCK_BAYS] = true;
-            }
-        }
-    }
-
-    @Override
-    protected void writeEquipment(SVGRectElement svgRect) {
-        writeEquipment(svgRect, false);
-    }
-
-    /**
-     * Prints up to four equipment sections: capital weapons, standard scale, grav
-     * decks, and bays. If there is too much to fit on a single page, the standard
-     * scale weapons are moved to the second page (which is considered the reverse).
-     *
-     * @param svgRect
-     *            The rectangle element that provides the dimensions of the space to
-     *            print
-     * @param reverse
-     *            Whether this is printing on the reverse side.
-     */
-    private void writeEquipment(SVGRectElement svgRect, boolean reverse) {
-        inventory.setRegion(svgRect);
-        int lines = 0;
-        for (int block = 0; block < NUM_BLOCKS; block++) {
-            if (blockOnReverse[block] == reverse) {
-                lines += linesPerBlock[block];
-            }
-        }
-        if (!reverse && blockOnReverse[BLOCK_STANDARD]) {
-            lines += 2;
-        }
-        float[] metrics = inventory.scaleText(lines);
-        final float fontSize = metrics[0];
-        final float lineHeight = metrics[1];
-        double currY = inventory.startingY();
-        if ((linesPerBlock[BLOCK_CAPITAL] > 0) && (blockOnReverse[BLOCK_CAPITAL] == reverse)) {
-            currY = inventory.writeCapitalBays(fontSize, lineHeight, currY) + lineHeight;
-        }
-        if ((linesPerBlock[BLOCK_AR10_AMMO] > 0)
-                && (blockOnReverse[BLOCK_AR10_AMMO] == reverse)) {
-            currY = inventory.printAR10Block(fontSize, lineHeight, currY) + lineHeight;
-        }
-        if (linesPerBlock[BLOCK_STANDARD] > 0) {
-            if (blockOnReverse[BLOCK_STANDARD] == reverse) {
-                currY = inventory.writeStandardBays(fontSize, lineHeight, currY) + lineHeight;
-            } else if (!reverse) {
-                currY = inventory.printReverseSideMessage(lineHeight, currY);
-            }
-        }
-        if ((linesPerBlock[BLOCK_GRAV_DECK] > 0) && (blockOnReverse[BLOCK_GRAV_DECK] == reverse)) {
-            currY = inventory.printGravDecks(ship, fontSize, lineHeight, currY);
-        }
-        if ((linesPerBlock[BLOCK_BAYS] > 0) && (blockOnReverse[BLOCK_BAYS] == reverse)) {
-            currY = inventory.printBayInfo(fontSize, lineHeight, currY);
-        }
-        if ((linesPerBlock[BLOCK_HULL] > 0) && (blockOnReverse[BLOCK_HULL] == reverse)) {
-            currY = inventory.writeStandardEquipment(fontSize, lineHeight, currY);
-        }
     }
 
     @Override
