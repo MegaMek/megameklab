@@ -771,7 +771,7 @@ public class InventoryWriter {
                     break;
                 case LOCATION:
                     sheet.addTextElement(canvas, bayColX[i], currY, "Tons", FONT_SIZE_MEDIUM,
-                            SVGConstants.SVG_START_VALUE, SVGConstants.SVG_BOLD_VALUE);
+                            SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_BOLD_VALUE);
                     break;
                 case HEAT:
                 case SRV:
