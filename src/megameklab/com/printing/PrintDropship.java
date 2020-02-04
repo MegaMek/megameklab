@@ -275,6 +275,28 @@ public class PrintDropship extends PrintAero {
         writeEquipment(svgRect, false);
     }
 
+    private int calcActualLines(boolean reverse, float fontSize) {
+        int lines = 0;
+        for (int block = 0; block < NUM_BLOCKS; block++) {
+            if (blockOnReverse[block] == reverse) {
+                lines += linesPerBlock[block];
+            }
+        }
+        if (!reverse && blockOnReverse[BLOCK_STANDARD]) {
+            lines += 2;
+        }
+        if (reverse == blockOnReverse[BLOCK_STANDARD] && linesPerBlock[BLOCK_STANDARD] > 0) {
+            lines += inventory.extraStandardBayLines(fontSize);
+        }
+        if (reverse == blockOnReverse[BLOCK_CAPITAL] && linesPerBlock[BLOCK_CAPITAL] > 0) {
+            lines += inventory.extraCapitalBayLines(fontSize);
+        }
+        if (reverse == blockOnReverse[BLOCK_HULL] && linesPerBlock[BLOCK_HULL] > 0) {
+            lines += inventory.extraEquipmentLines(fontSize);
+        }
+        return lines;
+    }
+
     /**
      * Prints up to four equipment sections: capital weapons, standard scale, grav
      * decks, and bays. If there is too much to fit on a single page, the standard
@@ -288,16 +310,7 @@ public class PrintDropship extends PrintAero {
      */
     private void writeEquipment(SVGRectElement svgRect, boolean reverse) {
         inventory.setRegion(svgRect);
-        int lines = 0;
-        for (int block = 0; block < NUM_BLOCKS; block++) {
-            if (blockOnReverse[block] == reverse) {
-                lines += linesPerBlock[block];
-            }
-        }
-        if (!reverse && blockOnReverse[BLOCK_STANDARD]) {
-            lines += 2;
-        }
-        float[] metrics = inventory.scaleText(lines);
+        float[] metrics = inventory.scaleText( (f, d) -> calcActualLines(reverse, f));
         final float fontSize = metrics[0];
         final float lineHeight = metrics[1];
         double currY = inventory.startingY();

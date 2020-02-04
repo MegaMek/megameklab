@@ -316,6 +316,53 @@ public class InventoryWriter {
     }
 
     /**
+     * Calculates the number of additional lines required to print the standard scale inventory block due
+     * to wrapping long names to another line.
+     *
+     * @param fontSize The font size used to print
+     * @return         The number of extra lines required by the table
+     */
+    public int extraEquipmentLines(float fontSize) {
+        return extraLines(equipment, colX, fontSize, 1);
+    }
+
+    /**
+     * Calculates the number of additional lines required to print the capital scale weapon bay block due
+     * to wrapping long names to another line.
+     *
+     * @param fontSize The font size used to print
+     * @return         The number of extra lines required by the table
+     */
+    public int extraCapitalBayLines(float fontSize) {
+        return extraLines(equipment, bayColX, fontSize, 0);
+    }
+
+    /**
+     * Calculates the number of additional lines required to print the standard scale weapon bay block due
+     * to wrapping long names to another line.
+     *
+     * @param fontSize The font size used to print
+     * @return         The number of extra lines required by the table
+     */
+    public int extraStandardBayLines(float fontSize) {
+        return extraLines(standardBays, bayColX, fontSize, 0);
+    }
+
+    private int extraLines(List<? extends InventoryEntry> list, double[] colX, float fontSize, int nameIndex) {
+        int lines = 0;
+        for (InventoryEntry entry : list) {
+            double width = colX[nameIndex + 1] - colX[nameIndex] - indent;
+            double row1Width = width - sheet.getTextLength(entry.getLocationField(0), fontSize) * 0.5;
+            for (int r = 0; r < entry.nRows(); r++) {
+                if (sheet.getTextLength(entry.getNameField(r), fontSize) >= (r == 0 ? row1Width : width)) {
+                    lines++;
+                }
+            }
+        }
+        return lines;
+    }
+
+    /**
      * @return The size of the transport bay block, not including header
      */
     public int transportBayLines() {
@@ -383,11 +430,12 @@ public class InventoryWriter {
      * Rescales text to allow space for a fixed number of lines using the entire region. Used for large
      * craft, which have a number of possible block types and may need a second page.
      *
-     * @param lines The number of lines
+     * @param calcLines A supplier for the number of lines. Since reducing the font size may allow for fewer
+     *                  lines, the supplier gives an opportunity to recalculate after each resizing.
      * @return A tuple of the new font height and line height, in that order
      */
-    public float[] scaleText(int lines) {
-        return scaleText(viewHeight, (f, d) -> lines);
+    public float[] scaleText(BiFunction<Float, Double, Integer> calcLines) {
+        return scaleText(viewHeight, calcLines);
     }
 
     /**
