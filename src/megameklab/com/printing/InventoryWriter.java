@@ -565,15 +565,18 @@ public class InventoryWriter {
                             break;
                         case NAME:
                         case BAY:
+                            // Calculate the width of the name field to determine if wrapping is required.
+                            // The following column is always location, which is centered, so we need
+                            // to subtract half the width of that field as well, plus a bit of extra space.
+                            double width = colX[i + 1] - colX[i] - indent
+                                    - sheet.getTextLength(line.getLocationField(row), fontSize) * 0.5;
                             if (row == 0) {
-                                lines = sheet.addMultilineTextElement(canvas, colX[i], ypos,
-                                        colX[i + 1] - colX[i] - indent, lineHeight,
+                                lines = sheet.addMultilineTextElement(canvas, colX[i], ypos, width, lineHeight,
                                         line.getNameField(row), fontSize, SVGConstants.SVG_START_VALUE,
                                         SVGConstants.SVG_NORMAL_VALUE);
                             } else {
                                 lines = sheet.addMultilineTextElement(canvas, line.indentMultiline() ?
-                                        colX[i] + indent : colX[i], ypos,
-                                        colX[i + 1] - colX[i] - indent, lineHeight,
+                                        colX[i] + indent : colX[i], ypos, width, lineHeight,
                                         line.getNameField(row), fontSize, SVGConstants.SVG_START_VALUE,
                                         SVGConstants.SVG_NORMAL_VALUE);
                             }
