@@ -558,7 +558,7 @@
                                       >
    <g fill="none" id="armorPips"
                                       >
-    <g id="armorPipsNOS" transform="translate(174.57,48)"
+    <g id="armorPipsNOS" transform="translate(175,48)"
                                         >
       <rect x="-27.7" width="55.4" y="0" height="6.8" id="armorNOSRow00"
                                           />
@@ -576,7 +576,7 @@
                                           />
     </g
                                           >
-    <g id="armorPipsRS" transform="translate(239,121.5)"
+    <g id="armorPipsRS" transform="translate(239.5,121.5)"
                                           >
       <rect x="0" width="18.8" y="0" height="6.8" id="armorRSRow00"
                                             />
@@ -664,7 +664,7 @@
                                             />
     </g
                                             >
-    <g id="armorPipsLS" transform="matrix(-1,0,0,1,110.62,121.5)"
+    <g id="armorPipsLS" transform="matrix(-1,0,0,1,111.12,121.5)"
                                             >
       <rect x="0" width="18.8" y="0" height="6.8" id="armorLSRow00"
                                               />
@@ -752,7 +752,7 @@
                                               />
     </g
                                               >
-    <g id="armorPipsAFT" transform="translate(174.57,297.5)"
+    <g id="armorPipsAFT" transform="translate(175,297.5)"
                                               >
       <rect x="-60" width="120" y="0" height="6.8" id="armorAFTRow00"
                                                 />
@@ -764,7 +764,7 @@
                                                 >
   <g fill="none" id="structurePips"
                                                 >
-    <g id="siPips" transform="translate(174.57,249.5)"
+    <g id="siPips" transform="translate(175,249.5)"
                                                   >
       <rect x="-54" width="108" y="0" height="6.8" id="structurePipsFR00"
                                                     />
