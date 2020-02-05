@@ -106,38 +106,36 @@ public class PrintCapitalShip extends PrintDropship {
     }
 
     @Override
-    protected void drawArmor() {
-        for (int loc = firstArmorLocation(); loc < Jumpship.LOC_HULL; loc++) {
-            setTextField("textThresholdArmor_" + getEntity().getLocationAbbr(loc),
-                    String.format("%d (%d)", ship.getThresh(loc), ship.getOArmor(loc)));
-        }
-        drawArmorStructurePips();
-    }
-
     int noseHeat() {
         return ship.getHeatInArc(Jumpship.LOC_NOSE, false);
     }
 
+    @Override
     int foreLeftHeat() {
         return ship.getHeatInArc(Jumpship.LOC_FLS, false);
     }
 
+    @Override
     int foreRightHeat() {
         return ship.getHeatInArc(Jumpship.LOC_FRS, false);
     }
 
+    @Override
     int aftLeftHeat() {
         return ship.getHeatInArc(Jumpship.LOC_ALS, false);
     }
 
+    @Override
     int aftRightHeat() {
         return ship.getHeatInArc(Jumpship.LOC_ARS, false);
     }
 
+    @Override
     int aftHeat() {
         return ship.getHeatInArc(Jumpship.LOC_AFT, false);
     }
 
+    @Override
     int broadsidesLeftHeat() {
         if (ship instanceof Warship) {
             return ship.getHeatInArc(Warship.LOC_LBS, false);
@@ -145,6 +143,7 @@ public class PrintCapitalShip extends PrintDropship {
         return 0;
     }
 
+    @Override
     int broadsidesRightHeat() {
         if (ship instanceof Warship) {
             return ship.getHeatInArc(Warship.LOC_RBS, false);
@@ -154,23 +153,22 @@ public class PrintCapitalShip extends PrintDropship {
 
     @Override
     protected void drawStructure() {
-        setTextField("siText", ship.get0SI());
-        setTextField("kfText", ship.getKFIntegrity());
-        setTextField("sailText", ship.getSailIntegrity());
-        setTextField("dcText", ship.getDockingCollars().size());
+        setTextField(TEXT_KFDRIVE, ship.getKFIntegrity());
+        setTextField(TEXT_SAIL, ship.getSailIntegrity());
+        setTextField(TEXT_DOCKING_COLLARS, ship.getDockingCollars().size());
 
         if (ship instanceof Warship) {
-            printInternalRegion("siPips", ship.get0SI(), 100);
+            printInternalRegion(SI_PIPS, ship.get0SI(), 100);
         }
-        printInternalRegion("kfPips", ship.getKFIntegrity(), 30);
-        printInternalRegion("sailPips", ship.getSailIntegrity(), 10);
-        printInternalRegion("dcPips", ship.getDockingCollars().size(), 10);
+        printInternalRegion(KF_PIPS, ship.getKFIntegrity(), 30);
+        printInternalRegion(SAIL_PIPS, ship.getSailIntegrity(), 10);
+        printInternalRegion(DC_PIPS, ship.getDockingCollars().size(), 10);
     }
 
     @Override
     protected void drawArmorStructurePips() {
         for (int loc = ship.firstArmorIndex(); loc < Jumpship.LOC_HULL; loc++) {
-            final String id = "armorPips_" + ship.getLocationAbbr(loc);
+            final String id = ARMOR_PIPS + ship.getLocationAbbr(loc);
             Element element = getSVGDocument().getElementById(id);
             if (element instanceof SVGRectElement) {
                 printArmorRegion((SVGRectElement) element, loc, ship.getOArmor(loc));
@@ -231,7 +229,7 @@ public class PrintCapitalShip extends PrintDropship {
             }
             startY = (int) bbox.getY() + IS_PIP_HEIGHT;
             printPipBlock(startX, startY, (SVGElement) svgRect.getParentNode(), pips,
-                    IS_PIP_WIDTH, IS_PIP_HEIGHT, "white", false);
+                    IS_PIP_WIDTH, IS_PIP_HEIGHT, FILL_WHITE, false);
 
             // Block 2
             if (aspectRatio >= 1) { // Landscape - 2 columns
@@ -242,13 +240,13 @@ public class PrintCapitalShip extends PrintDropship {
             }
             pips = (int) Math.ceil(structure / 2.0);
             printPipBlock(startX, startY, (SVGElement) svgRect.getParentNode(), pips,
-                    IS_PIP_WIDTH, IS_PIP_HEIGHT, "white", false);
+                    IS_PIP_WIDTH, IS_PIP_HEIGHT, FILL_WHITE, false);
         } else { // Print in one block
             int startX = ((int) bbox.getX() + (int) ((bbox.getWidth() / 2) + 0.5))
                     - ((PIPS_PER_ROW * IS_PIP_WIDTH) / 2);
             int startY = (int) bbox.getY() + IS_PIP_HEIGHT;
             printPipBlock(startX, startY, (SVGElement) svgRect.getParentNode(), structure,
-                    IS_PIP_WIDTH, IS_PIP_HEIGHT, "white", false);
+                    IS_PIP_WIDTH, IS_PIP_HEIGHT, FILL_WHITE, false);
         }
     }
 
@@ -291,7 +289,7 @@ public class PrintCapitalShip extends PrintDropship {
                 rows = (numBlocks + 1) / 2;
             }
         }
-        // Check the ration of the space required to space available. If either exceeds,
+        // Check the ratio of the space required to space available. If either exceeds,
         // scale both
         // dimensions down equally to fit.
         double ratio = Math.max((rows * blockHeight) / bbox.getHeight(), (cols * blockWidth) / bbox.getWidth());
@@ -301,9 +299,32 @@ public class PrintCapitalShip extends PrintDropship {
             blockHeight /= ratio;
             blockWidth /= ratio;
         }
-        // Center horizontally and vertically in the space
-        final double startX = bbox.getX() + ((bbox.getWidth() - (blockWidth * cols)) / 2.0);
-        final double startY = bbox.getY() + ((bbox.getHeight() - (blockHeight * rows)) / 2.0);
+        // Center on edge closest to ship outline
+        final double startX;
+        if (loc == Jumpship.LOC_FLS || loc == Jumpship.LOC_ALS) {
+            startX = bbox.getMaxX() - blockWidth * cols;
+        } else if (loc == Jumpship.LOC_FRS || loc == Jumpship.LOC_ARS) {
+            startX = bbox.getX();
+        } else {
+            startX = bbox.getX() + ((bbox.getWidth() - (blockWidth * cols - ARMOR_PIP_WIDTH)) / 2.0);
+        }
+        int leftOver = armor % (MAX_PIP_ROWS * PIPS_PER_ROW);
+        // Partial rows are automatically centered horizontally. But if we have an incomplete block
+        // that is the only one on the row, we should adjust the starting y as well.
+        double actualHeight = blockHeight * rows;
+        if (leftOver > 0 && (cols == 1 || numBlocks % cols == 1)) {
+            int missingRows = MAX_PIP_ROWS - leftOver / PIPS_PER_ROW - 1;
+            actualHeight -= ARMOR_PIP_HEIGHT * missingRows;
+        }
+        final double startY;
+        if (loc == Jumpship.LOC_NOSE) {
+            startY = bbox.getMaxY() - actualHeight;
+        } else if (loc == Jumpship.LOC_AFT) {
+            startY = bbox.getY();
+        } else {
+            startY = bbox.getY() + ((bbox.getHeight() - actualHeight) / 2.0);
+        }
+
         double xpos = startX;
         double ypos = startY;
         int remainingBlocks = numBlocks;
@@ -346,13 +367,13 @@ public class PrintCapitalShip extends PrintDropship {
         final double shadowOffsetY = pipHeight * SHADOW_OFFSET;
         double currX, currY;
         currY = startY;
-        for (int row = 0; row < 10; row++) {
+        for (int row = 0; row < MAX_PIP_ROWS; row++) {
             int numRowPips = Math.min(numPips, PIPS_PER_ROW);
             // Adjust row start if it's not a complete row
-            currX = startX + ((((10 - numRowPips) / 2f) * pipWidth) + 0.5);
+            currX = startX + ((((PIPS_PER_ROW - numRowPips) / 2f) * pipWidth) + 0.5);
             for (int col = 0; col < numRowPips; col++) {
                 if (shadow) {
-                    parent.appendChild(createPip(pipWidth, pipHeight, "#c8c7c7", currX + shadowOffsetX,
+                    parent.appendChild(createPip(pipWidth, pipHeight, FILL_GREY, currX + shadowOffsetX,
                             currY + shadowOffsetY, false));
                 }
                 parent.appendChild(createPip(pipWidth, pipHeight, fillColor, currX, currY, true));
@@ -377,7 +398,7 @@ public class PrintCapitalShip extends PrintDropship {
         box.setAttributeNS(null, SVGConstants.SVG_WIDTH_ATTRIBUTE, String.valueOf(pipWidth));
         box.setAttributeNS(null, SVGConstants.SVG_HEIGHT_ATTRIBUTE, String.valueOf(pipHeight));
         if (stroke) {
-            box.setAttributeNS(null, SVGConstants.SVG_STROKE_ATTRIBUTE, "#000000");
+            box.setAttributeNS(null, SVGConstants.SVG_STROKE_ATTRIBUTE, FILL_BLACK);
             box.setAttributeNS(null, SVGConstants.SVG_STROKE_WIDTH_ATTRIBUTE, String.valueOf(0.5));
         }
         box.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, fillColor);
@@ -394,7 +415,7 @@ public class PrintCapitalShip extends PrintDropship {
         } else {
             dir = ImageHelper.imageJumpship;
         }
-        Element rect = getSVGDocument().getElementById("fluffImage");
+        Element rect = getSVGDocument().getElementById(FLUFF_IMAGE);
         if (rect instanceof SVGRectElement) {
             embedImage(ImageHelper.getFluffFile(ship, dir),
                     (Element) rect.getParentNode(), getRectBBox((SVGRectElement) rect), true);
