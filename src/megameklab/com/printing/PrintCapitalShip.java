@@ -44,9 +44,9 @@ public class PrintCapitalShip extends PrintDropship {
     public static final double SHADOW_OFFSET = 0.3;
 
     /** Default width for structure pips */
-    public static final int IS_PIP_WIDTH = 3;
+    public static final int IS_PIP_WIDTH = 4;
     /** Default height for structure pips */
-    public static final int IS_PIP_HEIGHT = 3;
+    public static final int IS_PIP_HEIGHT = 4;
 
     /** Default width of armor block in number of pips */
     public static final int PIPS_PER_ROW = 10;
@@ -300,14 +300,7 @@ public class PrintCapitalShip extends PrintDropship {
             blockWidth /= ratio;
         }
         // Center on edge closest to ship outline
-        final double startX;
-        if (loc == Jumpship.LOC_FLS || loc == Jumpship.LOC_ALS) {
-            startX = bbox.getMaxX() - blockWidth * cols;
-        } else if (loc == Jumpship.LOC_FRS || loc == Jumpship.LOC_ARS) {
-            startX = bbox.getX();
-        } else {
-            startX = bbox.getX() + ((bbox.getWidth() - (blockWidth * cols - ARMOR_PIP_WIDTH)) / 2.0);
-        }
+        final double startX = bbox.getX() + ((bbox.getWidth() - (blockWidth * cols - ARMOR_PIP_WIDTH)) / 2.0);
         int leftOver = armor % (MAX_PIP_ROWS * PIPS_PER_ROW);
         // Partial rows are automatically centered horizontally. But if we have an incomplete block
         // that is the only one on the row, we should adjust the starting y as well.
@@ -316,14 +309,7 @@ public class PrintCapitalShip extends PrintDropship {
             int missingRows = MAX_PIP_ROWS - leftOver / PIPS_PER_ROW - 1;
             actualHeight -= ARMOR_PIP_HEIGHT * missingRows;
         }
-        final double startY;
-        if (loc == Jumpship.LOC_NOSE) {
-            startY = bbox.getMaxY() - actualHeight;
-        } else if (loc == Jumpship.LOC_AFT) {
-            startY = bbox.getY();
-        } else {
-            startY = bbox.getY() + ((bbox.getHeight() - actualHeight) / 2.0);
-        }
+        final double startY = bbox.getY() + ((bbox.getHeight() - actualHeight) / 2.0);
 
         double xpos = startX;
         double ypos = startY;
