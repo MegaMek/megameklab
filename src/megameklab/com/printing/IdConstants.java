@@ -92,6 +92,9 @@ public interface IdConstants {
     String TEXT_ARMOR = "textArmor_";
     String TEXT_IS = "textIS_";
     String TEXT_SI = "textSI";
+    String TEXT_SAIL = "textSail";
+    String TEXT_KFDRIVE = "textKFDrive";
+    String TEXT_DOCKING_COLLARS = "textDockingCollars";
     String ARMOR_PIPS = "armorPips";
     String IS_PIPS = "isPips";
     String IS_PIPS_HD = "isPipsHD";
@@ -109,6 +112,9 @@ public interface IdConstants {
     String CRITS = "crits_";
     String HEAVY_DUTY_GYRO_PIP = "heavyDutyGyroPip";
     String SI_PIPS = "siPips";
+    String KF_PIPS = "kfPips";
+    String SAIL_PIPS = "sailPips";
+    String DC_PIPS = "dcPips";
 
     String HEAT_SINK_PIPS = "heatSinkPips";
     String HS_TYPE = "hsType";
