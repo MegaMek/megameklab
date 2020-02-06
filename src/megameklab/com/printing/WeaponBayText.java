@@ -107,7 +107,9 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
      */
     public boolean canCombine(WeaponBayText other) {
         // Check for opposing sides
-        return checkOpposingSide(loc.get(0), other.loc.get(0), rear, other.rear) && weapons.equals(other.weapons)
+        return loc.size() == 1
+                && checkOpposingSide(loc.get(0), other.loc.get(0), rear, other.rear)
+                && weapons.equals(other.weapons)
                 && ammosMatch(other) && augmentations.equals(other.augmentations);
     }
 
