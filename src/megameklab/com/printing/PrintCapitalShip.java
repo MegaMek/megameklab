@@ -213,40 +213,21 @@ public class PrintCapitalShip extends PrintDropship {
      */
     private void printInternalRegion(SVGRectElement svgRect, int structure, int pipsPerBlock) {
         Rectangle2D bbox = getRectBBox(svgRect);
-
-        // Print in two blocks
+        final double blockWidth = (PIPS_PER_ROW + 1) * IS_PIP_WIDTH;
+        int pips;
+        double startX;
         if (structure > pipsPerBlock) {
-            // Block 1
-            int pips = structure / 2;
-            int startX, startY;
-            double aspectRatio = (bbox.getWidth() / bbox.getHeight());
-            if (aspectRatio >= 1) { // Landscape - 2 columns
-                startX = ((int) bbox.getX() + (int) ((bbox.getWidth() / 4) + 0.5))
-                        - ((PIPS_PER_ROW * IS_PIP_WIDTH) / 2);
-            } else { // Portrait - stacked 1 atop another
-                startX = ((int) bbox.getX() + (int) ((bbox.getWidth() / 2) + 0.5))
-                        - ((PIPS_PER_ROW * IS_PIP_WIDTH) / 2);
-            }
-            startY = (int) bbox.getY() + IS_PIP_HEIGHT;
-            printPipBlock(startX, startY, (SVGElement) svgRect.getParentNode(), pips,
-                    IS_PIP_WIDTH, IS_PIP_HEIGHT, FILL_WHITE, false);
-
-            // Block 2
-            if (aspectRatio >= 1) { // Landscape - 2 columns
-                startX = ((int) bbox.getX() + (int) (((3 * bbox.getWidth()) / 4) + 0.5))
-                        - ((PIPS_PER_ROW * IS_PIP_WIDTH) / 2);
-            } else { // Portrait - stacked 1 atop another
-                startY = (int) bbox.getY() + (IS_PIP_HEIGHT * ((pips / PIPS_PER_ROW) + 1));
-            }
-            pips = (int) Math.ceil(structure / 2.0);
-            printPipBlock(startX, startY, (SVGElement) svgRect.getParentNode(), pips,
-                    IS_PIP_WIDTH, IS_PIP_HEIGHT, FILL_WHITE, false);
-        } else { // Print in one block
-            int startX = ((int) bbox.getX() + (int) ((bbox.getWidth() / 2) + 0.5))
-                    - ((PIPS_PER_ROW * IS_PIP_WIDTH) / 2);
-            int startY = (int) bbox.getY() + IS_PIP_HEIGHT;
-            printPipBlock(startX, startY, (SVGElement) svgRect.getParentNode(), structure,
-                    IS_PIP_WIDTH, IS_PIP_HEIGHT, FILL_WHITE, false);
+            pips = structure / 2;
+            startX = bbox.getCenterX() - blockWidth + IS_PIP_WIDTH;
+        } else {
+            pips = structure;
+            startX = bbox.getCenterX() - blockWidth * 0.5;
+        }
+        printPipBlock(startX, bbox.getY(), (SVGElement) svgRect.getParentNode(), pips,
+                IS_PIP_WIDTH, IS_PIP_HEIGHT, FILL_WHITE, false);
+        if (structure > pips) {
+            printPipBlock(startX + blockWidth, bbox.getY(), (SVGElement) svgRect.getParentNode(),
+                    structure - pips, IS_PIP_WIDTH, IS_PIP_HEIGHT, FILL_WHITE, false);
         }
     }
 
