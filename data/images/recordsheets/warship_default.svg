@@ -361,8 +361,8 @@
                                   /></g
                                   ><g id="notes" transform="translate (36.000 504.000)"
                                   ><g
-                                    ><path fill="#ffffff" d="M 2.5,10.714 L 7.975,2.500 l 39.563,0.000 l 5.475,8.214 L 201.655,10.714 l 7.845,7.600 L 209.500,82.900 l -5.475,8.214 L 117.294,91.114 l -5.475,-8.214 L 10.345,82.900 l -7.845,-7.600 Z" stroke-width="5.2" stroke-linejoin="round" stroke="#c8c7c7"
-                                      /><path fill="#ffffff" d="M 0.0,8.214 L 5.475,0.000 l 39.563,0.000 l 5.475,8.214 L 200.155,8.214 l 7.845,7.600 L 208.000,81.400 l -5.475,8.214 L 114.794,89.614 l -5.475,-8.214 L 7.845,81.400 l -7.845,-7.600 Z" stroke-width="1.932" stroke-linejoin="round" stroke="#231f20"
+                                    ><path fill="#ffffff" d="M 2.5,10.714 L 7.975,2.500 l 39.563,0.000 l 5.475,8.214 L 201.655,10.714 l 7.845,7.600 L 209.500,82.900 l -5.475,8.214 L 117.447,91.114 l -5.475,-8.214 L 10.345,82.900 l -7.845,-7.600 Z" stroke-width="5.2" stroke-linejoin="round" stroke="#c8c7c7"
+                                      /><path fill="#ffffff" d="M 0.0,8.214 L 5.475,0.000 l 39.563,0.000 l 5.475,8.214 L 200.155,8.214 l 7.845,7.600 L 208.000,81.400 l -5.475,8.214 L 114.947,89.614 l -5.475,-8.214 L 7.845,81.400 l -7.845,-7.600 Z" stroke-width="1.932" stroke-linejoin="round" stroke="#231f20"
                                       /><g transform="translate (2.5,3.0)"
                                       ><path fill="#000000" d="M 0,7.500 l 4.999,-7.500 l 35.563,0 l 4.999,7.500 l -4.999,7.500 l -35.563,0 Z"
                                         /><text x="22.780" y="11.250" fill="#ffffff" text-anchor="middle" style="font-family:Eurostile;font-size:10.600px;font-weight:bold;font-style:normal" textLength="32.330" lengthAdjust="spacingAndGlyphs"
@@ -379,10 +379,12 @@
                                     ></g
                                     ><text fill="#231f20" x="280.879" y="18.250" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
                                     >Capital Scale</text
-                                    ><g transform="matrix(0.990 0 0 0.990 14.913 23.592)"
+                                    ><g transform="matrix(0.943 0 0 0.943 12.990 23.592)"
                                     >
-<g id="armor_diagram_jumpship" transform="matrix(1,0,0,-1,-250.13184,720.37232)"
-                                      ><g id="g2800" transform="translate(462.16159,548.95632)"
+<g id="armor_diagram_jumpship" transform="matrix(1,0,0,-1,-247.13184,720.37232)"
+                                      >
+<rect fill="#ffffff" x="250.13184" width="90" id="aeroCompass_spacer" y="255.372" height="50"
+                                        /><g id="g2800" transform="translate(462.16159,548.95632)"
                                         ><path style="fill:#c8c7c7;stroke:#c8c7c7;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" d="m 0,0 c -0.773,1.326 -2.117,2.287 -3.708,2.556 l -9.695,20.105 2.534,0.765 v 10.377 l -8.99,2.254 -9.304,19.3 h -8.961 c 0,1.455 -0.89,2.636 -1.994,2.636 h -7.964 c -1.101,0 -1.99,-1.181 -1.99,-2.636 h -8.961 l -9.333,-19.359 -8.753,-2.195 V 23.426 l 2.352,-0.707 -9.723,-20.163 c -2.504,-0.421 -4.41,-2.565 -4.41,-5.148 v -2.681 c -3.297,0 -5.975,-2.36 -5.975,-5.271 0,-2.912 2.678,-5.272 5.975,-5.272 v -15.818 c -3.297,0 -5.975,-2.358 -5.975,-5.27 0,-2.912 2.678,-5.273 5.975,-5.273 v -15.815 c -3.297,0 -5.975,-2.361 -5.975,-5.274 0,-2.913 2.678,-5.271 5.975,-5.271 v -15.817 c -3.297,0 -5.975,-2.36 -5.975,-5.271 0,-2.914 2.678,-5.271 5.975,-5.271 v -15.815 c -3.297,0 -5.975,-2.362 -5.975,-5.274 0,-2.911 2.678,-5.271 5.975,-5.271 v -2.682 c 0,-2.883 2.379,-5.226 5.309,-5.226 h 2.883 c -7.047,-7.236 -18.583,-19.554 -17.15,-21.357 l 2.045,-2.578 25.321,-3.94 c -0.248,-0.891 -0.261,-1.516 0.038,-1.778 l 2.518,-2.226 h 46.328 l 2.518,2.226 c 0.301,0.262 0.289,0.887 0.039,1.778 l 25.327,3.94 2.043,2.578 c 1.429,1.803 -10.099,14.121 -17.157,21.357 h 4.234 c 2.927,0 5.306,2.343 5.306,5.226 v 2.682 c 3.301,0 5.974,2.36 5.974,5.271 0,2.912 -2.673,5.274 -5.974,5.274 v 15.815 c 3.301,0 5.974,2.357 5.974,5.271 0,2.911 -2.673,5.271 -5.974,5.271 v 15.817 c 3.301,0 5.974,2.358 5.974,5.271 0,2.913 -2.673,5.274 -5.974,5.274 v 15.815 c 3.301,0 5.974,2.361 5.974,5.273 0,2.912 -2.673,5.27 -5.974,5.27 v 15.818 c 3.301,0 5.974,2.36 5.974,5.272 0,2.911 -2.673,5.271 -5.974,5.271 v 2.638 h 5.974 c 0,-1.457 2.34,-2.638 5.226,-2.638 2.888,0 5.227,1.181 5.227,2.638 v -2.638 h 4.148 V 0 Z" id="path3238"
                                         /></g
                                         ><g id="g2290" transform="translate(417.15199,598.022)"
@@ -1091,7 +1093,7 @@
                                           ><tspan x="0" id="textSI" y="19.2" font-weight="bold"
                                           >0</tspan
                                         ></text
-                                        ><text id="text2198" style="font-variant:normal;font-size:6px;font-family:Eurostile;;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="matrix(1,0,0,-1,414.344,293)" text-anchor="middle"
+                                        ><text id="text2198" style="font-weight:bold;font-size:6px;font-family:Eurostile;;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="matrix(1,0,0,-1,414.344,293)" text-anchor="middle"
                                         ><tspan x="0" y="0" id="tspan2192"
                                           >Aft Damage Threshold</tspan
                                           ><tspan x="0" y="7.1999998" id="tspan2194"
@@ -1099,7 +1101,7 @@
                                           ><tspan x="0" y="14.4" id="textArmor_AFT"
                                           > ( )</tspan
                                         ></text
-                                        ><text id="text2214" style="font-variant:normal;font-size:6px;font-family:Eurostile;;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="matrix(1,0,0,-1,435.756,716.0724)" text-anchor="middle"
+                                        ><text id="text2214" style="font-weight:bold;font-size:6px;font-family:Eurostile;;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="matrix(1,0,0,-1,435.756,716.0724)" text-anchor="middle"
                                         ><tspan x="0" y="0" id="tspan2208"
                                           >Nose Damage Threshold</tspan
                                           ><tspan x="0" y="7.1999998" id="tspan2210"
@@ -1107,7 +1109,7 @@
                                           ><tspan x="0" y="14.4" id="textArmor_NOS"
                                           > ( )</tspan
                                         ></text
-                                        ><text id="text2230" style="font-variant:normal;font-size:6px;font-family:Eurostile;;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="matrix(1,0,0,-1,532,337.5)" text-anchor="middle"
+                                        ><text id="text2230" style="font-weight:bold;font-size:6px;font-family:Eurostile;;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="matrix(1,0,0,-1,532,325)" text-anchor="middle"
                                         ><tspan x="0" y="0" id="tspan2224"
                                           >Aft-Right Damage</tspan
                                           ><tspan x="0" y="7.1999998" id="tspan2226"
@@ -1115,7 +1117,7 @@
                                           ><tspan x="0" y="14.4" id="textArmor_ARS"
                                           > ( )</tspan
                                         ></text
-                                        ><text id="text2246" style="font-variant:normal;font-size:6px;font-family:Eurostile;;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="matrix(1,0,0,-1,297.4,337.5)" text-anchor="middle"
+                                        ><text id="text2246" style="font-weight:bold;font-size:6px;font-family:Eurostile;;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="matrix(1,0,0,-1,297.4,325)" text-anchor="middle"
                                         ><tspan x="0" y="0" id="tspan2240"
                                           >Aft-Left Damage</tspan
                                           ><tspan x="0" y="7.1999998" id="tspan2242"
@@ -1123,7 +1125,7 @@
                                           ><tspan x="0" y="14.4" id="textArmor_ALS"
                                           > ( )</tspan
                                         ></text
-                                        ><text id="text2262" style="font-variant:normal;font-size:6px;font-family:Eurostile;;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="matrix(1,0,0,-1,530,659.379)" text-anchor="middle"
+                                        ><text id="text2262" style="font-weight:bold;font-size:6px;font-family:Eurostile;;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="matrix(1,0,0,-1,530,659.379)" text-anchor="middle"
                                         ><tspan x="0" y="0" id="tspan2256"
                                           >Fore-Right Damage</tspan
                                           ><tspan x="0" y="7.1999998" id="tspan2258"
@@ -1131,7 +1133,7 @@
                                           ><tspan x="0" y="14.4" id="textArmor_FRS"
                                           > ( )</tspan
                                         ></text
-                                        ><text id="text2278" style="font-variant:normal;font-size:6px;font-family:Eurostile;;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="matrix(1,0,0,-1,298.5,659.379)" text-anchor="middle"
+                                        ><text id="text2278" style="font-weight:bold;font-size:6px;font-family:Eurostile;;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="matrix(1,0,0,-1,298.5,659.379)" text-anchor="middle"
                                         ><tspan x="0" y="0" id="tspan2272"
                                           >Fore-Left Damage</tspan
                                           ><tspan x="0" y="7.1999998" id="tspan2274"
@@ -1141,7 +1143,7 @@
                                         ></text
                                       ></g
                                       >
-<g fill="none" id="armorPips" transform="matrix(0.75,0,0,0.75,163.8,-68.227997)"
+<g fill="none" id="armorPips" transform="matrix(0.75,0,0,0.75,166.8,-66.227997)"
                                       >
     <rect x="-100" width="200" y="125" height="100" id="armorPipsNOS"
                                         />
@@ -1157,7 +1159,7 @@
                                         />
 </g
                                         >
-<g fill="none" id="structurePips" transform="matrix(0.75,0,0,0.75,165,157.5)"
+<g fill="none" id="structurePips" transform="matrix(0.75,0,0,0.75,168,159.5)"
                                         >
     <rect x="-40" width="80" y="39" height="32" id="siPips"
                                           />
