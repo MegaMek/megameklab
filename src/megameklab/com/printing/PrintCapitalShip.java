@@ -194,9 +194,6 @@ public class PrintCapitalShip extends PrintDropship {
         Element element = getSVGDocument().getElementById(rectId);
         if (element instanceof SVGRectElement) {
             printInternalRegion((SVGRectElement) element, structure, pipsPerBlock);
-        } else {
-            MegaMekLab.getLogger().error(getClass(), "printInternalRegion(String, int, int)",
-                    "No SVGRectElement found with id " + rectId);
         }
     }
 
@@ -213,12 +210,12 @@ public class PrintCapitalShip extends PrintDropship {
      */
     private void printInternalRegion(SVGRectElement svgRect, int structure, int pipsPerBlock) {
         Rectangle2D bbox = getRectBBox(svgRect);
-        final double blockWidth = (PIPS_PER_ROW + 1) * IS_PIP_WIDTH;
+        final double blockWidth = PIPS_PER_ROW * IS_PIP_WIDTH;
         int pips;
         double startX;
         if (structure > pipsPerBlock) {
             pips = structure / 2;
-            startX = bbox.getCenterX() - blockWidth + IS_PIP_WIDTH;
+            startX = bbox.getCenterX() - blockWidth - IS_PIP_WIDTH * 0.5;
         } else {
             pips = structure;
             startX = bbox.getCenterX() - blockWidth * 0.5;
@@ -226,7 +223,7 @@ public class PrintCapitalShip extends PrintDropship {
         printPipBlock(startX, bbox.getY(), (SVGElement) svgRect.getParentNode(), pips,
                 IS_PIP_WIDTH, IS_PIP_HEIGHT, FILL_WHITE, false);
         if (structure > pips) {
-            printPipBlock(startX + blockWidth, bbox.getY(), (SVGElement) svgRect.getParentNode(),
+            printPipBlock(startX + blockWidth + IS_PIP_WIDTH, bbox.getY(), (SVGElement) svgRect.getParentNode(),
                     structure - pips, IS_PIP_WIDTH, IS_PIP_HEIGHT, FILL_WHITE, false);
         }
     }
@@ -340,7 +337,7 @@ public class PrintCapitalShip extends PrintDropship {
             currX = startX + ((((PIPS_PER_ROW - numRowPips) / 2f) * pipWidth) + 0.5);
             for (int col = 0; col < numRowPips; col++) {
                 if (shadow) {
-                    parent.appendChild(createPip(pipWidth, pipHeight, FILL_GREY, currX + shadowOffsetX,
+                    parent.appendChild(createPip(pipWidth, pipHeight, FILL_SHADOW, currX + shadowOffsetX,
                             currY + shadowOffsetY, false));
                 }
                 parent.appendChild(createPip(pipWidth, pipHeight, fillColor, currX, currY, true));

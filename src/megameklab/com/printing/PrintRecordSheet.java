@@ -64,6 +64,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     final static float FONT_SIZE_VSMALL  = 5.8f;
     final static String FILL_BLACK = "#231f20";
     final static String FILL_GREY = "#3f3f3f";
+    final static String FILL_SHADOW = "#c8c7c7";
     final static String FILL_WHITE = "#ffffff";
     
     enum PipType {
