@@ -384,5 +384,6 @@ public class PrintCapitalShip extends PrintDropship {
             embedImage(ImageHelper.getFluffFile(ship, dir),
                     (Element) rect.getParentNode(), getRectBBox((SVGRectElement) rect), true);
         }
+        hideElement(getSVGDocument().getElementById(NOTES));
     }
 }
