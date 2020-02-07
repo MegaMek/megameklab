@@ -15,12 +15,12 @@ package megameklab.com.printing;
 
 import megamek.common.*;
 import megameklab.com.util.ImageHelper;
+import megameklab.com.util.UnitUtil;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGRectElement;
 
 import java.awt.print.PageFormat;
-import java.util.Arrays;
-import java.util.Calendar;
+import java.util.*;
 
 /**
  * Record sheet layout for Dropships, base class for other large craft
@@ -49,10 +49,10 @@ public class PrintDropship extends PrintAero {
     private static final int BLOCK_STANDARD = 2;
     private static final int BLOCK_GRAV_DECK = 3;
     private static final int BLOCK_BAYS = 4;
-    private static final int BLOCK_HULL = 5;
+    private static final int BLOCK_FOOTER = 5;
     private static final int NUM_BLOCKS = 6;
     // The order in which to move blocks to the second page
-    private static final int[] SWITCH_PAGE_ORDER = { BLOCK_STANDARD, BLOCK_GRAV_DECK, BLOCK_BAYS, BLOCK_HULL, BLOCK_AR10_AMMO };
+    private static final int[] SWITCH_PAGE_ORDER = { BLOCK_STANDARD, BLOCK_GRAV_DECK, BLOCK_BAYS, BLOCK_FOOTER, BLOCK_AR10_AMMO };
 
     /**
      * The ship being printed
@@ -217,16 +217,16 @@ public class PrintDropship extends PrintAero {
     private void distributeEquipmentBlocks() {
         linesPerBlock[BLOCK_CAPITAL] = inventory.capitalBayLines();
         linesPerBlock[BLOCK_STANDARD] = inventory.standardBayLines();
-        linesPerBlock[BLOCK_HULL] = inventory.equipmentLines();
-        // Add extra lines for column headers and trailing line break
+        // Most units will have 1-2 lines in the footer for fuel and non-weapon equipment
+        linesPerBlock[BLOCK_FOOTER] = 2;
         if (linesPerBlock[BLOCK_CAPITAL] > 0) {
             linesPerBlock[BLOCK_CAPITAL] += 3;
         }
         if (linesPerBlock[BLOCK_STANDARD] > 0) {
             linesPerBlock[BLOCK_STANDARD] += 3;
         }
-        if (linesPerBlock[BLOCK_HULL] > 0) {
-            linesPerBlock[BLOCK_HULL] += 2;
+        if (linesPerBlock[BLOCK_FOOTER] > 0) {
+            linesPerBlock[BLOCK_FOOTER] += 2;
         }
         if (ship.getTotalWeaponList().stream()
                 .anyMatch(w -> ((WeaponType) w.getType()).getAmmoType() == AmmoType.T_AR10)) {
@@ -291,8 +291,8 @@ public class PrintDropship extends PrintAero {
         if (reverse == blockOnReverse[BLOCK_CAPITAL] && linesPerBlock[BLOCK_CAPITAL] > 0) {
             lines += inventory.extraCapitalBayLines(fontSize);
         }
-        if (reverse == blockOnReverse[BLOCK_HULL] && linesPerBlock[BLOCK_HULL] > 0) {
-            lines += inventory.extraEquipmentLines(fontSize);
+        if (reverse == blockOnReverse[BLOCK_FOOTER] && linesPerBlock[BLOCK_FOOTER] > 0) {
+            lines += inventory.footerLines(fontSize);
         }
         return lines;
     }
@@ -310,7 +310,7 @@ public class PrintDropship extends PrintAero {
      */
     private void writeEquipment(SVGRectElement svgRect, boolean reverse) {
         inventory.setRegion(svgRect);
-        float[] metrics = inventory.scaleText( (f, d) -> calcActualLines(reverse, f));
+        float[] metrics = inventory.scaleText( f -> calcActualLines(reverse, f));
         final float fontSize = metrics[0];
         final float lineHeight = metrics[1];
         double currY = inventory.startingY();
@@ -332,11 +332,51 @@ public class PrintDropship extends PrintAero {
             currY = inventory.printGravDecks((Jumpship) ship, fontSize, lineHeight, currY);
         }
         if ((linesPerBlock[BLOCK_BAYS] > 0) && (blockOnReverse[BLOCK_BAYS] == reverse)) {
-            currY = inventory.printBayInfo(fontSize, lineHeight, currY);
+            inventory.printBayInfo(fontSize, lineHeight, currY);
         }
-        if ((linesPerBlock[BLOCK_HULL] > 0) && (blockOnReverse[BLOCK_HULL] == reverse)) {
-            inventory.writeStandardEquipment(fontSize, lineHeight, currY);
+        if ((linesPerBlock[BLOCK_FOOTER] > 0) && (blockOnReverse[BLOCK_FOOTER] == reverse)) {
+            inventory.writeFooterBlock(fontSize, lineHeight);
         }
+    }
+
+    @Override
+    public String formatFeatures() {
+        StringJoiner sj = new StringJoiner(", ");
+        int mashTheaters = 0;
+        int drones = 0;
+        Map<String, Integer> eqCount = new HashMap<>();
+        for (Mounted mount : ship.getMisc()) {
+            // MASH and DCC use an additional MiscType to expand their capacity.
+            // Present them as a single piece of equipment and show size.
+            if (mount.getType().hasFlag(MiscType.F_MASH) || mount.getType().hasFlag(MiscType.F_MASH_EXTRA)) {
+                mashTheaters++;
+            } else if (mount.getType().hasFlag(MiscType.F_DRONE_CARRIER_CONTROL)
+                    || mount.getType().hasFlag(MiscType.F_DRONE_EXTRA)){
+                drones++;
+            } else if (UnitUtil.isPrintableEquipment(mount.getType())) {
+                eqCount.merge(mount.getType().getShortName(), 1, Integer::sum);
+            }
+        }
+        if (ship instanceof Jumpship && ((Jumpship) ship).hasLF()) {
+            sj.add("LF Battery");
+        }
+        for (String eq : eqCount.keySet()) {
+            if (eqCount.get(eq) > 1) {
+                sj.add(eqCount.get(eq) + "x" + eq);
+            } else {
+                sj.add(eq);
+            }
+        }
+        if (mashTheaters > 1) {
+            sj.add("MASH (" + mashTheaters + " theaters)");
+        } else if (mashTheaters == 1) {
+            sj.add("MASH");
+        }
+        if (drones > 0) {
+            sj.add("Drone Carrier Control System (" + drones
+                    + ((drones > 1) ? " drones)" : " drone)"));
+        }
+        return sj.toString();
     }
 
     @Override
