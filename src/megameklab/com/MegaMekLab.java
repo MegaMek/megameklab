@@ -38,6 +38,7 @@ import megamek.MegaMek;
 import megamek.common.Configuration;
 import megamek.common.EquipmentType;
 import megamek.common.MechSummaryCache;
+import megamek.common.QuirksHandler;
 import megamek.common.logging.DefaultMmLogger;
 import megamek.common.logging.LogLevel;
 import megamek.common.logging.MMLogger;
@@ -156,6 +157,11 @@ public class MegaMekLab {
         Locale.setDefault(Locale.US);
         EquipmentType.initializeTypes();
         MechSummaryCache.getInstance();
+        try {
+            QuirksHandler.initQuirksList();
+        } catch (IOException e) {
+            getLogger().warning(MegaMekLab.class, "startup()", "Could not load quirks");
+        }
         new CConfig();
         UnitUtil.loadFonts();
         setLookAndFeel();
