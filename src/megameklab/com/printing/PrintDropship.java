@@ -152,6 +152,7 @@ public class PrintDropship extends PrintAero {
     protected void writeTextFields() {
         super.writeTextFields();
         setTextField(FLUFF_NAME, ""); // TODO: fluff name needs MM support
+        // when fluff name is available, hide blankFluffName
         setTextField(N_CREW, ship.getNCrew());
         setTextField(N_MARINES, ship.getNMarines());
         setTextField(N_PASSENGERS, ship.getNPassenger());
@@ -217,16 +218,14 @@ public class PrintDropship extends PrintAero {
     private void distributeEquipmentBlocks() {
         linesPerBlock[BLOCK_CAPITAL] = inventory.capitalBayLines();
         linesPerBlock[BLOCK_STANDARD] = inventory.standardBayLines();
-        // Most units will have 1-2 lines in the footer for fuel and non-weapon equipment
+        // Most units will have 1-2 lines in the footer for fuel and non-weapon equipment.
+        // This is always at the bottom so we don't need to account for a following empty line.
         linesPerBlock[BLOCK_FOOTER] = 2;
         if (linesPerBlock[BLOCK_CAPITAL] > 0) {
             linesPerBlock[BLOCK_CAPITAL] += 3;
         }
         if (linesPerBlock[BLOCK_STANDARD] > 0) {
             linesPerBlock[BLOCK_STANDARD] += 3;
-        }
-        if (linesPerBlock[BLOCK_FOOTER] > 0) {
-            linesPerBlock[BLOCK_FOOTER] += 2;
         }
         if (ship.getTotalWeaponList().stream()
                 .anyMatch(w -> ((WeaponType) w.getType()).getAmmoType() == AmmoType.T_AR10)) {
