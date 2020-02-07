@@ -166,7 +166,7 @@ public class PrintAero extends PrintEntity {
 
     @Override
     public String formatTacticalFuel() {
-        return "Fuel Points: " + aero.getOriginalFuel();
+        return "Fuel Points: " + DecimalFormat.getInstance().format(aero.getOriginalFuel());
     }
 
     @Override
