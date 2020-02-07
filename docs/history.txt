@@ -4,6 +4,9 @@ v0.47.4-SNAPSHOT
 + Issue #416: Issue with Crit Splitting on the Right Torso with big Artillery cannons/Arrow IV
 + Issue #418: CASE/CASE II can be armored
 + Issue #419: Cannot see the quirks on the unit cache
++ Issue #420: Cannot make Superheavy VTOL
++ Issue #421: Clan BattleArmor using IS armor Weights
++ Issue #422: Cockpit Command Console costs 2 tons when armored.
 
 v0.47.3 (2020-2-11 2200 UTC) 
 + Issue #371: Capital Missile Bays wrongly grouped as Tele (also warnings on load)
