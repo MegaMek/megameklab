@@ -46,6 +46,7 @@ import megamek.common.TroopSpace;
 import megamek.common.VTOL;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.BayData;
+import megamek.common.verifier.TestTank;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.Vehicle.views.SummaryView;
 import megameklab.com.ui.view.ArmorAllocationView;
@@ -512,8 +513,16 @@ public class StructureTab extends ITab implements CVBuildListener, ArmorAllocati
     
     @Override
     public void superheavyChanged(boolean superheavy) {
+        // VTOLs need to have their weight increased or decreased to fit into the new weight range.
         // Non-VTOLs require creating a new Entity
-        if (getTank().getMovementMode() != EntityMovementMode.VTOL) {
+        if (EntityMovementMode.VTOL.equals(getTank().getMovementMode())) {
+            double maxStandard = TestTank.maxTonnage(getTank().getMovementMode(), false);
+            if (superheavy) {
+                getTank().setWeight(Math.max(getTank().getWeight(), maxStandard + 1.0));
+            } else {
+                getTank().setWeight(Math.min(getTank().getWeight(), maxStandard));
+            }
+        } else {
             if (superheavy) {
                 eSource.createNewUnit(Entity.ETYPE_SUPER_HEAVY_TANK, getTank());
             } else {
