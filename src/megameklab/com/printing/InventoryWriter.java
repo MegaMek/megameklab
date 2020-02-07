@@ -26,7 +26,7 @@ import org.w3c.dom.svg.SVGRectElement;
 
 import java.text.NumberFormat;
 import java.util.*;
-import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static megameklab.com.printing.PrintRecordSheet.*;
@@ -256,17 +256,6 @@ public class InventoryWriter {
         if (apollo) {
             bayFootnotes.add(InventoryEntry.DOUBLE_DAGGER + " w/Apollo (ignore +1 to hit)");
         }
-        for (Mounted m : sheet.getEntity().getMisc()) {
-            if (UnitUtil.isPrintableEquipment(m.getType(), false)) {
-                StandardInventoryEntry entry = new StandardInventoryEntry(m);
-                StandardInventoryEntry same = equipment.stream().filter(entry::equals).findFirst().orElse(null);
-                if (null == same) {
-                    equipment.add(entry);
-                } else {
-                    same.incrementQty();
-                }
-            }
-        }
     }
 
     /**
@@ -389,11 +378,6 @@ public class InventoryWriter {
         writeFooterBlock(metrics[0], metrics[1]);
     }
 
-    public double writeStandardEquipment(float fontSize, double lineHeight, double currY) {
-        currY = printColumnHeaders(currY);
-        return printEquipmentTable(equipment, currY, fontSize, lineHeight);
-    }
-
     /**
      * Adds the text for the standard scale weapon bays.
      *
@@ -434,7 +418,7 @@ public class InventoryWriter {
      *                  lines, the supplier gives an opportunity to recalculate after each resizing.
      * @return A tuple of the new font height and line height, in that order
      */
-    public float[] scaleText(BiFunction<Float, Double, Integer> calcLines) {
+    public float[] scaleText(Function<Float, Integer> calcLines) {
         return scaleText(viewHeight, calcLines);
     }
 
@@ -450,18 +434,18 @@ public class InventoryWriter {
      *                  lines, the supplier gives an opportunity to recalculate after each resizing.
      * @return A tuple of the new font height and line height, in that order
      */
-    public float[] scaleText(double height, BiFunction<Float, Double, Integer> calcLines) {
+    public float[] scaleText(double height, Function<Float, Integer> calcLines) {
         float fontSize = FONT_SIZE_MEDIUM;
         float lineHeight = sheet.getFontHeight(fontSize) * 1.2f;
 
-        int lines = calcLines.apply(fontSize, viewWidth);
+        int lines = calcLines.apply(fontSize);
         float lineSpacing = 1.2f;
         while ((fontSize > MIN_FONT_SIZE) && (lineSpacing > MIN_LINE_SPACING)
                 && ((lineHeight * lines) >= height)) {
             if (fontSize > MIN_FONT_SIZE) {
                 fontSize = Math.max(MIN_FONT_SIZE, fontSize - 0.5f);
                 // A smaller font may allow fewer lines
-                lines = calcLines.apply(fontSize, viewWidth);
+                lines = calcLines.apply(fontSize);
             } else {
                 lineSpacing -= 0.1f;
             }
@@ -470,7 +454,13 @@ public class InventoryWriter {
         return new float[] { fontSize, lineHeight };
     }
 
-    private void writeFooterBlock(float fontSize, float lineHeight) {
+    /**
+     * Displays ammo, fuel, features, and quirks as free-flowing text at the bottom of the inventory box
+     *
+     * @param fontSize   The size of the font for the text
+     * @param lineHeight The height of each line of text
+     */
+    public void writeFooterBlock(float fontSize, float lineHeight) {
         int lines;
         if (ammo.size() + fuelText.length() + featuresText.length() + quirksText.length() > 0) {
             Element svgGroup = sheet.getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
@@ -529,10 +519,9 @@ public class InventoryWriter {
      * words, it's possible that the number of lines may be more.
      *
      * @param fontSize The size of the font
-     * @param viewWidth The width of the region
      * @return The estimated line count.
      */
-    private int calcLineCount(float fontSize, double viewWidth) {
+    private int calcLineCount(float fontSize) {
         // The width of the name field varies depending on aero/ground or whether there is a heat column,
         // but is always the difference between the second and third.
         final double nameWidth = colX[2] - colX[1] - viewWidth * INDENT;
@@ -558,11 +547,15 @@ public class InventoryWriter {
         if (sheet.getEntity() instanceof SmallCraft && !transportBays.isEmpty()) {
             lines += transportBays.size() + 1; // add extra for header
         }
-        lines += Math.ceil(sheet.getTextLength(ammoText, fontSize) / viewWidth);
-        lines += Math.ceil(sheet.getTextLength(fuelText, fontSize) / viewWidth);
-        lines += Math.ceil(sheet.getTextLength(featuresText, fontSize) / viewWidth);
-        lines += Math.ceil(sheet.getTextLength(quirksText, fontSize) / viewWidth);
+        lines += footerLines(fontSize);
         return lines;
+    }
+
+    public int footerLines(float fontSize) {
+        return (int) Math.ceil(sheet.getTextLength(ammoText, fontSize) / viewWidth)
+            + (int) Math.ceil(sheet.getTextLength(fuelText, fontSize) / viewWidth)
+            + (int) Math.ceil(sheet.getTextLength(featuresText, fontSize) / viewWidth)
+            + (int) Math.ceil(sheet.getTextLength(quirksText, fontSize) / viewWidth);
     }
 
     /**
