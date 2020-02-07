@@ -2413,23 +2413,12 @@ public class UnitUtil {
     }
     
     public static boolean isArmorable(EquipmentType eq) {
-        if (UnitUtil.isArmorOrStructure(eq)) {
-            return false;
+        if (eq instanceof AmmoType) {
+            // The prohibition against armoring ammo bins presumably only applies to actual
+            // ammo bins and not equipment that we've implemented as ammo because it's explody and gets used up.
+            return ((AmmoType) eq).getAmmoType() == AmmoType.T_COOLANT_POD;
         }
-
-        if (UnitUtil.isTSM(eq)) {
-            return false;
-        }
-
-        if (eq instanceof MiscType) {
-            if (eq.hasFlag(MiscType.F_SPIKES)
-                    || eq.hasFlag(MiscType.F_REACTIVE)
-                    || eq.hasFlag(MiscType.F_MODULAR_ARMOR)
-                    || ((MiscType) eq).isShield()) {
-                return false;
-            }
-        }
-        return true;
+        return eq.isHittable();
     }
 
     /**
