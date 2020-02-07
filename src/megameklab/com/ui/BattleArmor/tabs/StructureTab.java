@@ -36,16 +36,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 
 import megamek.client.ui.swing.MechViewPanel;
-import megamek.common.BattleArmor;
-import megamek.common.CriticalSlot;
-import megamek.common.EntityMovementMode;
-import megamek.common.EquipmentType;
-import megamek.common.ITechManager;
-import megamek.common.LocationFullException;
-import megamek.common.MechView;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
-import megamek.common.SimpleTechLevel;
+import megamek.common.*;
 import megamek.common.templates.TROView;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestBattleArmor;
@@ -476,6 +467,14 @@ public class StructureTab extends ITab implements ActionListener, BABuildListene
         panMovement.refresh();
         panEnhancements.setFromEntity(getBattleArmor());
         panArmor.refresh();
+        EquipmentType armor = panArmor.getArmor();
+        // If the current armor is no longer available, switch to the current selection
+        if (EquipmentType.getArmorType(armor) != getBattleArmor().getArmorType(BattleArmor.LOC_SQUAD)
+                || (armor.getTechLevel(getBattleArmor().getYear())
+                    != getBattleArmor().getArmorTechLevel(BattleArmor.LOC_SQUAD))) {
+            armorTypeChanged(armor);
+        }
+        armorTypeChanged(panArmor.getArmor());
         addAllListeners();
     }
 
