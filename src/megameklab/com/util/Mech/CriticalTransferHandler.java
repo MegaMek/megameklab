@@ -159,7 +159,9 @@ public class CriticalTransferHandler extends TransferHandler {
                     if (!UnitUtil.isValidLocation(getUnit(), eq.getType(), Mech.LOC_RARM)) {
                         nextLocation = Mech.LOC_CT;
                     } else {
-                        JComboBox<String> combo = new JComboBox<String>();
+                        String[] locations =
+                                { "Center Torso", "Right Leg", "Right Arm" };
+                        JComboBox<String> combo = new JComboBox<>(locations);
                         JOptionPane jop = new JOptionPane(combo,
                                 JOptionPane.QUESTION_MESSAGE,
                                 JOptionPane.OK_CANCEL_OPTION);
@@ -189,7 +191,7 @@ public class CriticalTransferHandler extends TransferHandler {
                     } else {
                         String[] locations =
                             { "Center Torso", "Left Leg", "Left Arm" };
-                        JComboBox<String> combo = new JComboBox<String>(locations);
+                        JComboBox<String> combo = new JComboBox<>(locations);
                         JOptionPane jop = new JOptionPane(combo,
                                 JOptionPane.QUESTION_MESSAGE,
                                 JOptionPane.OK_CANCEL_OPTION);
