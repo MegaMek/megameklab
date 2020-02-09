@@ -286,8 +286,6 @@ public class SpecializationView extends IView implements TableModelListener {
                     int column) {
                 super.getTableCellRendererComponent(table, value, isSelected,
                         hasFocus, row, column);
-                setOpaque(true);
-                // setFont(new Font("Arial", Font.PLAIN, 12));
                 int actualCol = table.convertColumnIndexToModel(column);
                 int actualRow = table.convertRowIndexToModel(row);
                 setHorizontalAlignment(getAlignment(actualCol));

@@ -18,7 +18,6 @@ package megameklab.com.ui.Infantry.views;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -47,6 +46,7 @@ import javax.swing.RowSorter;
 import javax.swing.SortOrder;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
@@ -255,7 +255,7 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
         customView.add(armorValue, gbc);
         JFormattedTextField tf = ((JSpinner.DefaultEditor)armorValue.getEditor()).getTextField();
         tf.setEditable(false);
-        tf.setBackground(Color.white);
+        tf.setBackground(UIManager.getColor("TextField.background"));
         
         chEncumber.setText("Encumbering");
         gbc.gridx = 0;
