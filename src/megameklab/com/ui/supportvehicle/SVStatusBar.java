@@ -142,7 +142,7 @@ class SVStatusBar extends ITab {
         if (currentTonnage > tonnage) {
             tons.setForeground(Color.red);
         } else {
-            tons.setForeground(Color.black);
+            tons.setForeground(UIManager.getColor("Label.foreground"));
         }
 
         final int totalSlots = testEntity.totalSlotCount();
@@ -151,7 +151,7 @@ class SVStatusBar extends ITab {
         if (currentSlots > totalSlots) {
             slots.setForeground(Color.red);
         } else {
-            slots.setForeground(Color.black);
+            slots.setForeground(UIManager.getColor("Label.foreground"));
         }
 
         bvLabel.setText("BV: " + bv);

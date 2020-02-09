@@ -28,6 +28,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 
 import megamek.common.*;
 import megamek.common.util.EncodeControl;
@@ -252,7 +253,7 @@ public class ArmorAllocationView extends BuildView implements
         if (armorPoints != currentPoints) {
             txtUnallocated.setForeground(Color.RED);
         } else {
-            txtUnallocated.setForeground(Color.BLACK);
+            txtUnallocated.setForeground(UIManager.getColor("Label.foreground"));
         }
         txtTotal.setText(String.valueOf(armorPoints));
         txtMaxPossible.setText(String.valueOf(maxArmorPoints));

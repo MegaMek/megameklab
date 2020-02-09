@@ -28,6 +28,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.UIManager;
 
 import megamek.common.BattleArmor;
 import megamek.common.verifier.EntityVerifier;
@@ -45,37 +46,37 @@ public class StatusBar extends ITab {
      */
     private static final long serialVersionUID = -6754327753693500675L;
 
-    private JButton btnValidate = new JButton("Validate Unit");
-    private JButton btnFluffImage = new JButton("Set Fluff Image");
+    private final JButton btnValidate = new JButton("Validate Unit");
+    private final JButton btnFluffImage = new JButton("Set Fluff Image");
     
-    private JPanel tonnagePanel = new JPanel();
-    private JPanel movementPanel = new JPanel();
-    private JPanel bvPanel = new JPanel();
+    private final JPanel tonnagePanel = new JPanel();
+    private final JPanel movementPanel = new JPanel();
+    private final JPanel bvPanel = new JPanel();
     
-    private JLabel move = new JLabel();
-    private JLabel bvLabel = new JLabel();
-    private JLabel tons = new JLabel();
-    private JLabel cost = new JLabel();
+    private final JLabel move = new JLabel();
+    private final JLabel bvLabel = new JLabel();
+    private final JLabel tons = new JLabel();
+    private final JLabel cost = new JLabel();
     
-    private EntityVerifier entityVerifier = EntityVerifier.getInstance(new File(
+    private final EntityVerifier entityVerifier = EntityVerifier.getInstance(new File(
             "data/mechfiles/UnitVerifierOptions.xml"));
     
     private TestBattleArmor testBA = null;
-    private DecimalFormat formatter;
+    private final DecimalFormat formatter;
     private JFrame parentFrame;
 
     private RefreshListener refresh;
-    public StatusBar(MegaMekLabMainUI parent) {
+    public StatusBar(final MegaMekLabMainUI parent) {
         super(parent);
         
         formatter = new DecimalFormat();
         btnValidate.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            public void actionPerformed(final java.awt.event.ActionEvent evt) {
                 UnitUtil.showValidation(getBattleArmor(), getParentFrame());
             }
         });
         btnFluffImage.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            public void actionPerformed(final java.awt.event.ActionEvent evt) {
                 getFluffImage();
             }
         });
@@ -86,7 +87,7 @@ public class StatusBar extends ITab {
         this.add(bvPanel());
         this.add(tonnagePanel());
 
-        GridBagConstraints gbc = new GridBagConstraints();
+        final GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.insets = new Insets(5,2,2,30);
@@ -109,8 +110,8 @@ public class StatusBar extends ITab {
     }
 
     public JPanel movementPanel() {
-        int walk = getBattleArmor().getOriginalWalkMP();
-        int jump = getBattleArmor().getOriginalJumpMP();
+        final int walk = getBattleArmor().getOriginalWalkMP();
+        final int jump = getBattleArmor().getOriginalJumpMP();
 
         move.setText("Movement: " + walk + "/" + jump);
         movementPanel.add(move);
@@ -118,7 +119,7 @@ public class StatusBar extends ITab {
     }
 
     public JPanel bvPanel() {
-        int bv = getBattleArmor().calculateBattleValue();
+        final int bv = getBattleArmor().calculateBattleValue();
         bvLabel.setText("BV: " + bv);
         bvPanel.add(bvLabel);
 
@@ -133,12 +134,12 @@ public class StatusBar extends ITab {
 
     public void refresh() {
 
-        int walk = getBattleArmor().getOriginalWalkMP();
-        int jump = getBattleArmor().getOriginalJumpMP();
-        double maxKilos = getBattleArmor().getTrooperWeight();
+        final int walk = getBattleArmor().getOriginalWalkMP();
+        final int jump = getBattleArmor().getOriginalJumpMP();
+        final double maxKilos = getBattleArmor().getTrooperWeight();
         double currentKilos;
-        int bv = getBattleArmor().calculateBattleValue();
-        long currentCost = (long) Math.round(getBattleArmor().getCost(false));
+        final int bv = getBattleArmor().calculateBattleValue();
+        final long currentCost = (long) Math.round(getBattleArmor().getCost(false));
 
         testBA = new TestBattleArmor(getBattleArmor(), entityVerifier.baOption,
                 null);
@@ -152,7 +153,7 @@ public class StatusBar extends ITab {
         if (currentKilos > maxKilos) {
             tons.setForeground(Color.red);
         } else {
-            tons.setForeground(Color.black);
+            tons.setForeground(UIManager.getColor("Label.foreground"));
         }
 
         bvLabel.setText("BV: " + bv);
@@ -166,7 +167,7 @@ public class StatusBar extends ITab {
     
     private void getFluffImage() {
         // copied from structureTab
-        FileDialog fDialog = new FileDialog(getParentFrame(), "Image Path",
+        final FileDialog fDialog = new FileDialog(getParentFrame(), "Image Path",
                 FileDialog.LOAD);
         fDialog.setDirectory(new File(ImageHelper.fluffPath).getAbsolutePath()
                 + File.separatorChar + ImageHelper.imageMech
@@ -193,7 +194,7 @@ public class StatusBar extends ITab {
         return parentFrame;
     }
     
-    public void addRefreshedListener(RefreshListener l) {
+    public void addRefreshedListener(final RefreshListener l) {
         refresh = l;
     }
 

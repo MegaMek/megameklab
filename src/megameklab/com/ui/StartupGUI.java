@@ -14,7 +14,6 @@
 package megameklab.com.ui;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.DisplayMode;
 import java.awt.FontMetrics;
@@ -35,6 +34,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
 
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.client.ui.swing.UnitSelectorDialog;
@@ -90,7 +90,7 @@ public class StartupGUI extends javax.swing.JPanel {
                 true);
         
         frame = new JFrame("MegaMekLab");
-        setBackground(Color.DARK_GRAY);
+        setBackground(UIManager.getColor("controlHighlight"));
         
         imgSplash = getToolkit().getImage(startupScreenImages.floorEntry((int)MegaMekLab.calculateMaxScreenWidth()).getValue());
         // wait for splash image to load completely

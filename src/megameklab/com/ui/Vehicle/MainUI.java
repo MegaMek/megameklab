@@ -22,13 +22,13 @@ import java.awt.Color;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 
 import megamek.common.Engine;
 import megamek.common.Entity;
 import megamek.common.EntityMovementMode;
 import megamek.common.EquipmentType;
 import megamek.common.ITechManager;
-import megamek.common.MechSummaryCache;
 import megamek.common.SimpleTechLevel;
 import megamek.common.SuperHeavyTank;
 import megamek.common.Tank;
@@ -139,7 +139,7 @@ public class MainUI extends MegaMekLabMainUI {
             title += "  (Invalid)";
             setForeground(Color.red);
         } else {
-            setForeground(Color.BLACK);
+            setForeground(UIManager.getColor("Label.foreground"));
         }
         setTitle(title);
     }

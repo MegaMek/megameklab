@@ -27,6 +27,7 @@ import java.text.DecimalFormat;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.UIManager;
 
 import megamek.common.AmmoType;
 import megamek.common.Entity;
@@ -122,7 +123,7 @@ public class StatusBar extends ITab {
         if (totalHeat > heat) {
             heatSink.setForeground(Color.red);
         } else {
-            heatSink.setForeground(Color.black);
+            heatSink.setForeground(UIManager.getColor("Label.foreground"));
         }
         heatSink.setVisible(getAero().getEntityType() == Entity.ETYPE_AERO);
 
@@ -131,7 +132,7 @@ public class StatusBar extends ITab {
         if (currentTonnage > tonnage) {
             tons.setForeground(Color.red);
         } else {
-            tons.setForeground(Color.black);
+            tons.setForeground(UIManager.getColor("Label.foreground"));
         }
 
         bvLabel.setText("BV: " + bv);

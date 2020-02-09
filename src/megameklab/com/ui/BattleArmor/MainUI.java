@@ -22,6 +22,7 @@ import java.awt.Color;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 
 import megamek.common.BattleArmor;
 import megamek.common.Entity;
@@ -149,7 +150,7 @@ public class MainUI extends MegaMekLabMainUI {
             title += "  (Invalid)";
             setForeground(Color.red);
         } else {
-            setForeground(Color.BLACK);
+            setForeground(UIManager.getColor("Label.foreground"));
         }
         setTitle(title);
 

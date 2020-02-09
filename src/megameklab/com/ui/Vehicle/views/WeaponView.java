@@ -43,6 +43,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 
 import megamek.common.AmmoType;
 import megamek.common.Entity;
@@ -194,8 +195,8 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
             tScrollPane.getVerticalScrollBar().setUnitIncrement(20);
             tScrollPane.setPreferredSize(size);
             tScrollPane.setMaximumSize(size);
-            tScrollPane.setBackground(Color.WHITE);
-            tPanels.get(tScrollPanes.indexOf(tScrollPane)).setBackground(Color.WHITE);
+            tScrollPane.setBackground(UIManager.getColor("ScrollPane.background"));
+            tPanels.get(tScrollPanes.indexOf(tScrollPane)).setBackground(UIManager.getColor("Panel.background"));
             tScrollPane.setViewportView(tPanels.get(tScrollPanes.indexOf(tScrollPane)));
         }
 

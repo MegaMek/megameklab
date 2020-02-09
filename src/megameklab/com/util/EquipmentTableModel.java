@@ -23,6 +23,7 @@ import java.util.ArrayList;
 
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 
@@ -500,16 +501,14 @@ public class EquipmentTableModel extends AbstractTableModel {
                 int column) {
             super.getTableCellRendererComponent(table, value, isSelected,
                     hasFocus, row, column);
-            setOpaque(true);
-            // setFont(new Font("Arial", Font.PLAIN, 12));
             int actualCol = table.convertColumnIndexToModel(column);
             int actualRow = table.convertRowIndexToModel(row);
             setHorizontalAlignment(getAlignment(actualCol));
             EquipmentType etype = ((EquipmentTableModel) table.getModel()).getType(actualRow);
             if (null != techManager && !techManager.isLegal(etype)) {
-                setForeground(Color.gray);
+                setForeground(UIManager.getColor("Label.disabledForeground"));
             } else {
-                setForeground(Color.black);
+                setForeground(UIManager.getColor("Label.foreground"));
             }
             return this;
         }

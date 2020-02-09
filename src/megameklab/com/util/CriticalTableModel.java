@@ -227,7 +227,6 @@ public class CriticalTableModel extends AbstractTableModel {
             JLabel c = (JLabel) super.getTableCellRendererComponent(table,
                     value, isSelected, hasFocus, row, column);
             
-            c.setOpaque(true);
             if ((crits.size() < row) || (row < 0)) {
                 return c;
             }

@@ -164,6 +164,13 @@ public class MegaMekLab {
         }
         new CConfig();
         UnitUtil.loadFonts();
+
+        // Add additional themes
+        UIManager.installLookAndFeel("Flat Light", "com.formdev.flatlaf.FlatLightLaf");
+        UIManager.installLookAndFeel("Flat IntelliJ", "com.formdev.flatlaf.FlatIntelliJLaf");
+        UIManager.installLookAndFeel("Flat Dark", "com.formdev.flatlaf.FlatDarkLaf");
+        UIManager.installLookAndFeel("Flat Darcula", "com.formdev.flatlaf.FlatDarculaLaf");
+
         setLookAndFeel();
         //create a start up frame and display it
         StartupGUI sud = new StartupGUI();
