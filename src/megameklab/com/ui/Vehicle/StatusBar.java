@@ -28,6 +28,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.UIManager;
 
 import megamek.common.Tank;
 import megamek.common.verifier.EntityVerifier;
@@ -164,7 +165,7 @@ public class StatusBar extends ITab {
         if (currentTonnage > tonnage) {
             tons.setForeground(Color.red);
         } else {
-            tons.setForeground(Color.black);
+            tons.setForeground(UIManager.getColor("Label.foreground"));
         }
         Tank tank = getTank();
         int currentSlots = tank.getTotalSlots() - tank.getFreeSlots();
@@ -172,7 +173,7 @@ public class StatusBar extends ITab {
         if (currentSlots > tank.getTotalSlots()) {
             slots.setForeground(Color.red);
         } else {
-            slots.setForeground(Color.black);
+            slots.setForeground(UIManager.getColor("Label.foreground"));
         }
 
         bvLabel.setText("BV: " + bv);

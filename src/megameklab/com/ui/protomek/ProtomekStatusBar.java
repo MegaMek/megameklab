@@ -24,6 +24,7 @@ import java.text.DecimalFormat;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.UIManager;
 
 import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestProtomech;
@@ -113,7 +114,7 @@ public class ProtomekStatusBar extends ITab {
         if (currentTonnage > tonnage) {
             tons.setForeground(Color.red);
         } else {
-            tons.setForeground(Color.black);
+            tons.setForeground(UIManager.getColor("Label.foreground"));
         }
 
         bvLabel.setText("BV: " + bv);
@@ -125,7 +126,7 @@ public class ProtomekStatusBar extends ITab {
         if(currentCrits > maxCrits) {
             crits.setForeground(Color.red);
         } else {
-            crits.setForeground(Color.BLACK);
+            crits.setForeground(UIManager.getColor("Label.foreground"));
         }
 
     }
