@@ -920,10 +920,6 @@ public class EquipmentTab extends ITab implements ActionListener {
     private static class CategoryListCellRenderer extends JLabel implements ListCellRenderer<EquipmentCategory> {
         private static final long serialVersionUID = -6019108605730297067L;
         
-        CategoryListCellRenderer() {
-            setOpaque(true);
-        }
-
         @Override
         public Component getListCellRendererComponent(JList<? extends EquipmentCategory> list,
                 EquipmentCategory value, int index, boolean isSelected, boolean cellHasFocus) {
