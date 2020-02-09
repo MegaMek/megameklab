@@ -17,9 +17,9 @@
 package megameklab.com.ui.tabs;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 
 import javax.swing.JTabbedPane;
+import javax.swing.UIManager;
 
 import megamek.client.ui.swing.MechViewPanel;
 import megamek.common.Entity;
@@ -52,7 +52,7 @@ public class PreviewTab extends ITab {
         panPreview.addTab("TRO", panelTROView);
 
         add(panPreview, BorderLayout.CENTER);
-        setBackground(Color.WHITE);
+        setBackground(UIManager.getColor("TabbedPane.background"));
         refresh();
 	}
 	
