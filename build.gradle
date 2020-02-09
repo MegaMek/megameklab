@@ -75,9 +75,6 @@ dependencies {
     // the conversion to batik is complete.
     implementation files('lib/svgSalamander.jar')
 
-    // Light and Dark themes
-    implementation 'com.formdev:flatlaf:0.26'
-
     jarbundler 'com.ultramixer.jarbundler:jarbundler-core:3.3.0'
 }
 
