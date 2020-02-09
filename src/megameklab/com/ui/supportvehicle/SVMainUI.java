@@ -131,7 +131,7 @@ public class SVMainUI extends MegaMekLabMainUI {
             title += "  (Invalid)";
             setForeground(Color.red);
         } else {
-            setForeground(Color.BLACK);
+            setForeground(UIManager.getColor("Label.foreground"));
         }
         setTitle(title);
     }
