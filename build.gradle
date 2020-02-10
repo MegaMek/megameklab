@@ -121,15 +121,15 @@ task compileMM (type: GradleBuild) {
 
 task mmJar (type: Jar, dependsOn: compileMM) {
     archiveFileName = "MegaMek.jar"
-    from "${mmDir}/megamek/build/classes/java/main"
-    from "${mmDir}/megamek/build/resources/main"
+    from "${mmDir}/megamek/megamek/build/classes/java/main"
+    from "${mmDir}/megamek/megamek/build/resources/main"
     manifest {
         attributes "Main-Class": mainClassName
         attributes 'Class-Path' : (project.sourceSets.main.runtimeClasspath.files
             .findAll { it.name.endsWith(".jar") }.collect { "${lib}/${it.name}" }.join(' '))
     }
-    inputs.dir "${mmDir}/build/classes/java/main"
-    inputs.dir "${mmDir}/build/resources/main"
+    inputs.dir "${mmDir}/megamek/build/classes/java/main"
+    inputs.dir "${mmDir}/megamek/build/resources/main"
     outputs.file "${buildDir}/libs/${archiveFileName}"
 }
 
