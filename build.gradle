@@ -27,7 +27,7 @@ ext {
     // Work on MML or MHQ sometimes requires changes in MM as well. The maven publishing tasks use
     // these properties to append the branch name to the artifact id if the repo is not in the master
     // branch, making it available separately to the child project. 
-    mmlBranch = grgit.branch.current.name
+    mmlBranch = grgit.branch.current().name
     mmlBranchTag = mmlBranch.equals('master')? '' : '-' + mmlBranch
     
     // Allows setting a dependency on a different MM branch.
@@ -120,24 +120,24 @@ task compileMM (type: GradleBuild) {
 }
 
 task mmJar (type: Jar, dependsOn: compileMM) {
-    archiveName = "MegaMek.jar"
-    from "${mmDir}/megamek/build/classes/java/main"
-    from "${mmDir}/megamek/build/resources/main"
+    archiveFileName = "MegaMek.jar"
+    from "${mmDir}/megamek/megamek/build/classes/java/main"
+    from "${mmDir}/megamek/megamek/build/resources/main"
     manifest {
         attributes "Main-Class": mainClassName
         attributes 'Class-Path' : (project.sourceSets.main.runtimeClasspath.files
             .findAll { it.name.endsWith(".jar") }.collect { "${lib}/${it.name}" }.join(' '))
     }
-    inputs.dir "${mmDir}/build/classes/java/main"
-    inputs.dir "${mmDir}/build/resources/main"
-    outputs.file "${buildDir}/libs/${archiveName}"
+    inputs.dir "${mmDir}/megamek/build/classes/java/main"
+    inputs.dir "${mmDir}/megamek/build/resources/main"
+    outputs.file "${buildDir}/libs/${archiveFileName}"
 }
 
 jar {
-    archiveName = "${rootProject.name}.${extension}"
+    archiveFileName = "${rootProject.name}.${archiveExtension}"
     manifest {
         attributes "Main-Class": mainClassName
-        attributes 'Class-Path' : "${lib}/${mmJar.archiveName} " + (project.sourceSets.main.runtimeClasspath.files
+        attributes 'Class-Path' : "${lib}/${mmJar.archiveFileName} " + (project.sourceSets.main.runtimeClasspath.files
             .findAll { it.name.endsWith(".jar") }.collect { "${lib}/${it.name}" }.join(' '))
     }
 }
@@ -166,8 +166,8 @@ task unitFilesZip (dependsOn: setMMDir) {
     file("${mmDir}/megamek/${unitFiles}").eachDir {subDir ->
         dependsOn tasks.create("${name}${subDir.name}", Zip) {
             from subDir
-            archiveName "${subDir.name}.zip"
-            destinationDir file("${fileStagingDir}/${unitFiles}")
+            archiveFileName = "${subDir.name}.zip"
+            destinationDirectory = file("${fileStagingDir}/${unitFiles}")
         }
     }
     inputs.dir "${mmDir}/${unitFiles}"
@@ -225,7 +225,7 @@ task createOSXBundle (dependsOn: jar) {
                 mainClass: project.mainClassName,
                 stubfile: osxApplicationStub,
                 dir: osxBundleDir,
-                jar: "${jar.destinationDir}/${jar.archiveName}",
+                jar: "${jar.destinationDirectory}/${jar.archiveFileName}",
                 jvmversion: '1.8+',
                 icon: "${projectDir}/${data}/images/misc/megameklab.icns",
                 useJavaXKey: 'true',
@@ -298,10 +298,11 @@ distributions {
 }
 
 createExe {
-    description = 'Create Windows executable that wraps MM jar'
+    description = 'Create Windows executable that wraps MML jar'
     mainClassName = project.mainClassName
     icon = "${projectDir}/data/images/misc/megameklab.ico"
     def inifile = outfile.replace('.exe', '.l4j.ini')
+    jar = "${project.tasks.getByName("jar").archiveFile.get()}"
     inputs.file  jar
     outputs.file "${buildDir}/launch4j/${outfile}"
     outputs.file "${buildDir}/launch4j/${inifile}"
@@ -322,7 +323,7 @@ unixDistTar {
     description = 'Creates *nix distribution packaged as a tar ball'
     dependsOn stageFiles
     dependsOn startScripts
-    extension = 'tar.gz'
+    archiveExtension = 'tar.gz'
     compression = Compression.GZIP
 }
 
@@ -330,7 +331,7 @@ macDistTar {
     description = 'Creates mac OSX distribution'
     dependsOn stageFiles
     dependsOn createOSXBundle
-    extension = 'tar.bz2'
+    archiveExtension = 'tar.bz2'
     compression = Compression.BZIP2
 }
 
@@ -365,8 +366,8 @@ task sourceZip (type: Zip) {
         exclude "**/build/**"
         exclude "**/.*"
     }
-    archiveName "${rootProject.name.toLowerCase()}-${version}-source.zip"
-    destinationDir file(distributionDir)
+    archiveFileName = "${rootProject.name.toLowerCase()}-${archiveVersion}-source.zip"
+    destinationDirectory = file(distributionDir)
 }
 
 task sourceTar (type: Tar) {
@@ -375,9 +376,9 @@ task sourceTar (type: Tar) {
         exclude "**/build/**"
         exclude "**/.*"
     }
-    archiveName "${rootProject.name.toLowerCase()}-${version}-source.tar.gz"
+    archiveFileName = "${rootProject.name.toLowerCase()}-${archiveVersion}-source.tar.gz"
     compression = Compression.GZIP
-    destinationDir file(distributionDir)
+    destinationDirectory = file(distributionDir)
 }
 
 // The distribution plugin adds the distro packages to the assemble task, which causes the build task
@@ -392,7 +393,7 @@ task assembleDist(overwrite: true) {
     group = 'distribution'
     dependsOn unixDistTar
     dependsOn windowsDistZip
-    dependsOn macDistTar
+//    dependsOn macDistTar
 }
 
 task buildFromRepo (type: GradleBuild) {
@@ -418,13 +419,13 @@ task release (type: Copy) {
 task sourcesJar(type: Jar) {
     description = 'Creates a source archive for publication to a maven repository'
     from sourceSets.main.allJava
-    classifier = 'sources'
+    archiveClassifier = 'sources'
 }
 
 task javadocJar(type: Jar) {
     description = 'Creates a documentation archive for publication to a maven repository'
     from javadoc
-    classifier = 'javadoc'
+    archiveClassifier = 'javadoc'
 }
 
 publishing {
