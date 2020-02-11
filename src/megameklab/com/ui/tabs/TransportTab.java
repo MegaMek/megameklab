@@ -132,7 +132,7 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
             }
             add(panTroopspace, BorderLayout.NORTH);
         }
-        
+
         JPanel bayPanel = new JPanel(new GridBagLayout());
         add(bayPanel, BorderLayout.CENTER);
         GridBagConstraints gbc = new GridBagConstraints();
@@ -158,36 +158,36 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
         btnRemoveBay.setToolTipText(resourceMap.getString("TransportTab.btnRemoveBay.tooltip")); //$NON-NLS-1$
         bayPanel.add(btnRemoveBay, gbc);
         btnRemoveBay.addActionListener(this);
-        
+
         gbc.gridx = 1;
         btnAddToCargo.setText(resourceMap.getString("TransportTab.btnAddToCargo.text")); //$NON-NLS-1$
         btnAddToCargo.setToolTipText(resourceMap.getString("TransportTab.btnAddToCargo.tooltip")); //$NON-NLS-1$
         bayPanel.add(btnAddToCargo, gbc);
         btnAddToCargo.addActionListener(this);
-        
+
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 3;
         gbc.gridheight = GridBagConstraints.REMAINDER;
         bayPanel.add(new JScrollPane(tblInstalled), gbc);
-        
+
         gbc.gridx = 3;
         gbc.gridy = 0;
         gbc.gridwidth = 1;
         gbc.gridheight = 1;
         bayPanel.add(new JLabel(resourceMap.getString("TransportTab.lblAvailableBays.text")), gbc); //$NON-NLS-1$
-        
+
         gbc.gridy = 2;
         btnAddBay.setText(resourceMap.getString("TransportTab.btnAddBay.text")); //$NON-NLS-1$
         btnAddBay.setToolTipText(resourceMap.getString("TransportTab.btnAddBay.tooltip")); //$NON-NLS-1$
         bayPanel.add(btnAddBay, gbc);
         btnAddBay.addActionListener(this);
-        
+
         gbc.gridy++;
         gbc.gridwidth = 2;
         gbc.gridheight = GridBagConstraints.REMAINDER;
         bayPanel.add(new JScrollPane(tblAvailable), gbc);
-        
+
         tblInstalled.setRowHeight(24);
         TableColumn col = tblInstalled.getColumnModel().getColumn(InstalledBaysModel.COL_SIZE);
         col.setCellEditor(new SpinnerCellEditor(InstalledBaysModel.COL_SIZE));
@@ -227,7 +227,7 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
                     setText(getEntity().getLocationName(loc));
                     return this;
                 }
-                
+
             });
             renderer = new DefaultTableCellRenderer();
             renderer.setToolTipText(resourceMap.getString("TransportTab.colFacing.tooltip"));
@@ -242,18 +242,18 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
         tblInstalled.setIntercellSpacing(new Dimension(0, 0));
         tblAvailable.setShowGrid(false);
         tblAvailable.setIntercellSpacing(new Dimension(0, 0));
-        
+
         tblInstalled.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tblInstalled.getSelectionModel().addListSelectionListener(e -> checkButtons());
         tblAvailable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tblAvailable.getSelectionModel().addListSelectionListener(e -> checkButtons());
-        
+
         tblInstalled.setDragEnabled(true);
         tblInstalled.setDropMode(DropMode.INSERT_ROWS);
         tblInstalled.setTransferHandler(new BayReorderTransferHandler());
         refresh();
     }
-    
+
     public void addRefreshedListener(RefreshListener l) {
         refresh = l;
     }
@@ -261,14 +261,10 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
     private boolean useKilogramStandard() {
         return getEntity().getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT;
     }
-    
+
     public void refresh() {
-        if (getEntity().hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
-            int max = TestAdvancedAerospace.getMaxDockingHardpoints(getJumpship());
-            spnHardpointsModel.setValue(Math.min(getJumpship().getDockingCollars().size(), max));
-            spnHardpointsModel.setMaximum(max);
-            lblMaxHardpoints.setText(Integer.toString(max));
-        }
+        refreshDockingHardpoints();
+
         if (getEntity().isAero()) {
             lblMaxDoors.setText(String.valueOf(TestAero.maxBayDoors(getAero())));
         }
@@ -303,6 +299,18 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
         tblInstalled.getColumnModel().getColumn(InstalledBaysModel.COL_TONNAGE)
                 .setHeaderValue(modelInstalled.getColumnName(InstalledBaysModel.COL_TONNAGE));
         tblInstalled.getTableHeader().resizeAndRepaint();
+    }
+
+    /**
+     * This refreshes the count of docking hardpoints on the display
+     */
+    public void refreshDockingHardpoints() {
+        if (getEntity().hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
+            int max = TestAdvancedAerospace.getMaxDockingHardpoints(getJumpship());
+            spnHardpointsModel.setValue(Math.min(getJumpship().getDockingCollars().size(), max));
+            spnHardpointsModel.setMaximum(max);
+            lblMaxHardpoints.setText(Integer.toString(max));
+        }
     }
 
     /**
@@ -404,6 +412,7 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
                 BayData bayType = BayData.getBayType(bay);
                 Bay newBay = bayType.newBay(bay.getCapacity(), bayNum);
                 newBay.setDoors(bay.getDoors());
+                newBay.setFacing(bay.getFacing());
                 if (getEntity().isPodMountedTransport(bay)) {
                     podList.add(newBay);
                 } else {
@@ -506,8 +515,7 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
                 refresh.refreshStatus();
                 refresh.refreshPreview();
             }
-        } else if ((ev.getSource() == spnTroopSpace)
-                || (ev.getSource() == spnPodTroopSpace)) {
+        } else if ((ev.getSource() == spnTroopSpace) || (ev.getSource() == spnPodTroopSpace)) {
             final double fixed = (Double) spnTroopSpace.getValue();
             final double pod = (Double) spnPodTroopSpace.getValue();
 
@@ -567,7 +575,12 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
                     bayTypeList.add(bayType);
                 }
             }
+
             fireTableDataChanged();
+
+            // We need to refresh the docking hardpoint count to ensure that the count is correct
+            // following the removal of any naval repair facilities
+            refreshDockingHardpoints();
         }
         
         Bay getBay(int row) {
@@ -640,7 +653,7 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
                     return bayTypeList.get(rowIndex).getDisplayName();
                 case COL_SIZE:
                     if (!bayTypeList.get(rowIndex).isCargoBay()) {
-                        return (int)bayList.get(rowIndex).getUnusedSlots();
+                        return (int) bayList.get(rowIndex).getUnusedSlots();
                     } else if (useKilogramStandard()) {
                         return TestEntity.round(bayList.get(rowIndex).getUnusedSlots(),
                                 TestEntity.Ceil.KILO) * 1000.0;
@@ -818,14 +831,19 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
                 if (useKilogramStandard()) {
                     size /= 1000;
                 }
-                Bay newBay = modelInstalled.bayTypeList.get(row).newBay(size,
-                        bay.getBayNumber());
+                Bay newBay = modelInstalled.bayTypeList.get(row).newBay(size, bay.getBayNumber());
                 newBay.setDoors(bay.getDoors());
+                newBay.setFacing(bay.getFacing());
                 removeBay(bay);
                 addBay(newBay, pod);
                 modelInstalled.bayList.set(row, newBay);
+
+                // We need to refresh the docking hardpoint count to ensure that the count is correct
+                // following the size change of any naval repair facilities
+                refreshDockingHardpoints();
+
             } else if (column == InstalledBaysModel.COL_DOORS) {
-                modelInstalled.bayList.get(row).setDoors((Integer)getCellEditorValue());
+                modelInstalled.bayList.get(row).setDoors((Integer) getCellEditorValue());
             }
             modelInstalled.fireTableRowsUpdated(row, row);
             checkButtons();
