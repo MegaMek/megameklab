@@ -79,6 +79,8 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
     private final JSpinner spnCount = new JSpinner();
     private final JLabel lblBaseCount = new JLabel();
     private final JSpinner spnBaseCount = new JSpinner();
+    private final JLabel lblPrototypeCount = new JLabel();
+    private final JSpinner spnPrototypeCount = new JSpinner();
     private final JLabel lblCritFreeText = new JLabel();
     private final JLabel lblCritFreeCount = new JLabel();
     private final JLabel lblWeightFreeText = new JLabel();
@@ -86,11 +88,13 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
     
     private SpinnerNumberModel countModel = new SpinnerNumberModel(0, 0, null, 1);
     private SpinnerNumberModel baseCountModel = new SpinnerNumberModel(0, 0, null, 1);
+    private SpinnerNumberModel prototypeCountModel = new SpinnerNumberModel(0, 0, null, 1);
 
     private final ITechManager techManager;
     private boolean isAero;
     private boolean isPrimitive;
-    
+    private boolean hasPrototypeDoubles;
+
     public HeatSinkView(ITechManager techManager) {
         this.techManager = techManager;
         heatSinks = new ArrayList<>();
@@ -112,7 +116,6 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
         gbc.gridy = 0;
         add(createLabel(resourceMap.getString("HeatSinkView.cbHSType.text"), labelSize), gbc); //$NON-NLS-1$
         gbc.gridx = 1;
-        gbc.gridy = 0;
         gbc.gridwidth = 4;
         setFieldSize(cbHSType, controlSize);
         cbHSType.setToolTipText(resourceMap.getString("HeatSinkView.cbHSType.tooltip")); //$NON-NLS-1$
@@ -121,43 +124,49 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
         
         spnCount.setModel(countModel);
         gbc.gridx = 0;
-        gbc.gridy = 1;
+        gbc.gridy++;
         gbc.gridwidth = 1;
         add(createLabel(resourceMap.getString("HeatSinkView.spnCount.text"), labelSize), gbc); //$NON-NLS-1$
         gbc.gridx = 1;
-        gbc.gridy = 1;
         setFieldSize(spnCount.getEditor(), editorSize);
         spnCount.setToolTipText(resourceMap.getString("HeatSinkView.spnCount.tooltip")); //$NON-NLS-1$
         add(spnCount, gbc);
         spnCount.addChangeListener(this);
 
         gbc.gridx = 3;
-        gbc.gridy = 1;
         lblCritFreeText.setText(resourceMap.getString("HeatSinkView.lblCritFree.text"));
         add(lblCritFreeText, gbc);
         gbc.gridx = 4;
-        gbc.gridy = 1;
         lblCritFreeCount.setToolTipText(resourceMap.getString("HeatSinkView.lblCritFree.tooltip")); //$NON-NLS-1$
         add(lblCritFreeCount, gbc);
 
         spnBaseCount.setModel(baseCountModel);
         gbc.gridx = 0;
-        gbc.gridy = 2;
+        gbc.gridy++;
         lblBaseCount.setText(resourceMap.getString("HeatSinkView.spnBaseCount.text")); //$NON-NLS-1$
         add(lblBaseCount, gbc);
         gbc.gridx = 1;
-        gbc.gridy = 2;
         setFieldSize(spnBaseCount.getEditor(), editorSize);
         spnBaseCount.setToolTipText(resourceMap.getString("HeatSinkView.spnBaseCount.tooltip")); //$NON-NLS-1$
         add(spnBaseCount, gbc);
         spnBaseCount.addChangeListener(this);
 
+        spnPrototypeCount.setModel(prototypeCountModel);
         gbc.gridx = 0;
-        gbc.gridy = 3;
+        gbc.gridy++;
+        lblPrototypeCount.setText(resourceMap.getString("HeatSinkView.spnPrototypeCount.text")); //$NON-NLS-1$
+        add(lblPrototypeCount, gbc);
+        gbc.gridx = 1;
+        setFieldSize(spnPrototypeCount.getEditor(), editorSize);
+        spnPrototypeCount.setToolTipText(resourceMap.getString("HeatSinkView.spnPrototypeCount.tooltip")); //$NON-NLS-1$
+        add(spnPrototypeCount, gbc);
+        spnPrototypeCount.addChangeListener(this);
+
+        gbc.gridx = 0;
+        gbc.gridy++;
         lblWeightFreeText.setText(resourceMap.getString("HeatSinkView.lblWeightFree.text"));
         add(lblWeightFreeText, gbc);
         gbc.gridx = 1;
-        gbc.gridy = 3;
         lblWeightFreeCount.setToolTipText(resourceMap.getString("HeatSinkView.lblWeightFree.tooltip")); //$NON-NLS-1$
         add(lblWeightFreeCount, gbc);
 
@@ -170,15 +179,21 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
     public void setFromMech(Mech mech) {
         isAero = false;
         isPrimitive = mech.isPrimitive();
+        hasPrototypeDoubles = mech.hasWorkingMisc(MiscType.F_IS_DOUBLE_HEAT_SINK_PROTOTYPE);
         refresh();
+        // If there are prototype doubles, we want to skip any singles and select that as the base type.
         Optional<EquipmentType> hs = mech.getMisc().stream().map(Mounted::getType)
-                .filter(UnitUtil::isHeatSink).findAny();
+                .filter(et -> et.hasFlag(MiscType.F_IS_DOUBLE_HEAT_SINK_PROTOTYPE)).findAny();
+        if (!hs.isPresent()) {
+            hs = mech.getMisc().stream().map(Mounted::getType)
+                    .filter(UnitUtil::isHeatSink).findAny();
+        }
         if (hs.isPresent()) {
             cbHSType.removeActionListener(this);
             setHeatSinkType(hs.get());
             cbHSType.addActionListener(this);
         }
-        int totalSinks = mech.heatSinks(false);
+        int totalSinks = mech.heatSinks(true);
         spnCount.removeChangeListener(this);
         countModel.setValue(totalSinks);
         countModel.setMinimum(mech.getEngine().getWeightFreeEngineHeatSinks());
@@ -186,11 +201,19 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
         boolean isCompact = cbHSType.getSelectedItem() != null
                 && ((Integer)cbHSType.getSelectedItem()) == TYPE_COMPACT;
         int capacity = mech.getEngine().integralHeatSinkCapacity(isCompact);
-        spnBaseCount.setEnabled(mech.isOmni());
+        lblBaseCount.setVisible(mech.isOmni());
+        spnBaseCount.setVisible(mech.isOmni());
         spnBaseCount.removeChangeListener(this);
         baseCountModel.setMaximum(capacity);
         baseCountModel.setValue(Math.max(0, mech.getEngine().getBaseChassisHeatSinks(isCompact)));
         spnBaseCount.addChangeListener(this);
+        lblPrototypeCount.setVisible(hasPrototypeDoubles);
+        spnPrototypeCount.setVisible(hasPrototypeDoubles);
+        spnPrototypeCount.removeChangeListener(this);
+        spnPrototypeCount.setValue(totalSinks - mech.heatSinks(false));
+        prototypeCountModel.setMaximum(capacity);
+        prototypeCountModel.setMinimum(hasPrototypeDoubles ? 1 : 0);
+        spnPrototypeCount.addChangeListener(this);
         lblCritFreeCount.setText(String.valueOf(UnitUtil.getCriticalFreeHeatSinks(mech, isCompact)));
         lblWeightFreeCount.setText(String.valueOf(mech.getEngine().getWeightFreeEngineHeatSinks()));
     }
@@ -272,6 +295,17 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
     public int getBaseCount() {
         return baseCountModel.getNumber().intValue();
     }
+
+    /**
+     * @return The number of heat sinks out of the total that are single heat sinks instead of the main type.
+     */
+    public int getPrototypeCount() {
+        if (hasPrototypeDoubles) {
+            return prototypeCountModel.getNumber().intValue();
+        } else {
+            return 0;
+        }
+    }
     
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -287,6 +321,8 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
         } else if (e.getSource() == spnBaseCount) {
             listeners.forEach(l -> l.heatSinkBaseCountChanged(getBaseCount()));
             lblCritFreeCount.setText(String.valueOf(getBaseCount()));
+        } else if (e.getSource() == spnPrototypeCount) {
+            listeners.forEach(l -> l.redistributePrototypeHS(getPrototypeCount()));
         }
     }
     

@@ -16,6 +16,7 @@ package megameklab.com.ui.view.listeners;
 import megamek.common.EquipmentType;
 import megamek.common.FuelType;
 import megamek.common.SimpleTechLevel;
+import megameklab.com.ui.view.HeatSinkView;
 
 /**
  * Combined listener interface for the various subviews of the structure tab. Includes callbacks
@@ -45,8 +46,31 @@ public interface BuildListener {
      * ignore them.
      */
 
+    /**
+     * Notifies of a change in heat sink type or count for aerospace units
+     * @param index Either {@link HeatSinkView#TYPE_SINGLE} or {@link HeatSinkView#TYPE_DOUBLE_AERO}
+     * @param count The number of heat sinks
+     */
     default void heatSinksChanged(int index, int count) {};
+
+    /**
+     * Notifies of a change in heat sink type or count for mechs
+     * @param hsType        The type of heat sink
+     * @param count         The total number of heat sinks
+     */
     default void heatSinksChanged(EquipmentType hsType, int count) {};
+
+    /**
+     * Notifies of a change in the distribution between single and double heat sinks on a unit with
+     * prototype double heat sinks.
+     * @param prototype  The number of prototype double heat sinks
+     */
+    default void redistributePrototypeHS(int prototype) {};
+
+    /**
+     * Notifies of a change in the number of heat sinks that are part of the base chassis of an omni unit
+     * @param count The number of fixed heat sinks
+     */
     default void heatSinkBaseCountChanged(int count) {};
 
     // For aerospace units and support vehicles

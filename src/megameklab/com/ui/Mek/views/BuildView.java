@@ -211,8 +211,13 @@ public class BuildView extends IView implements ActionListener, MouseListener {
 
     private boolean isEngineHeatSink(Mounted mount) {
         if ((mount.getLocation() == Entity.LOC_NONE) && UnitUtil.isHeatSink(mount) && (engineHeatSinkCount > 0)) {
-            if(mount.getType().hasFlag(MiscType.F_COMPACT_HEAT_SINK) && mount.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK)) {
+            if (mount.getType().hasFlag(MiscType.F_COMPACT_HEAT_SINK)
+                    && mount.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK)) {
                 //only single compact HS should be used for engine sinks
+                return false;
+            }
+            // Prototype double heat sinks cannot be used for engine sinks
+            if (mount.getType().hasFlag(MiscType.F_IS_DOUBLE_HEAT_SINK_PROTOTYPE)) {
                 return false;
             }
             engineHeatSinkCount--;
