@@ -29,12 +29,7 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import megamek.common.Aero;
-import megamek.common.Entity;
-import megamek.common.EquipmentType;
-import megamek.common.ITechManager;
-import megamek.common.Mech;
-import megamek.common.Mounted;
+import megamek.common.*;
 import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestAero;
 import megameklab.com.ui.util.CustomComboBox;
@@ -72,14 +67,15 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
     public final static int TYPE_FREEZER     = 6;
     
     private final static String[] LOOKUP_NAMES = {
-            "Heat Sink", "ISDoubleHeatSink", "CLDoubleHeatSink", "IS1 Compact Heat Sink",
-            "CLLaser Heat Sink", "ISDoubleHeatSinkPrototype", "ISDoubleHeatSinkFreezer"
+            EquipmentTypeLookup.SINGLE_HS, EquipmentTypeLookup.IS_DOUBLE_HS,
+            EquipmentTypeLookup.CLAN_DOUBLE_HS, EquipmentTypeLookup.COMPACT_HS_1,
+            EquipmentTypeLookup.IS_DOUBLE_HS_PROTOTYPE, EquipmentTypeLookup.IS_DOUBLE_HS_FREEZER
     };
     private final List<EquipmentType> heatSinks;
     private String[] mechDisplayNames;
     private String[] aeroDisplayNames;
 
-    private final CustomComboBox<Integer> cbHSType = new CustomComboBox<>(i -> getDisplayName(i));
+    private final CustomComboBox<Integer> cbHSType = new CustomComboBox<>(this::getDisplayName);
     private final JSpinner spnCount = new JSpinner();
     private final JLabel lblBaseCount = new JLabel();
     private final JSpinner spnBaseCount = new JSpinner();
@@ -90,7 +86,7 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
     
     private SpinnerNumberModel countModel = new SpinnerNumberModel(0, 0, null, 1);
     private SpinnerNumberModel baseCountModel = new SpinnerNumberModel(0, 0, null, 1);
-    
+
     private final ITechManager techManager;
     private boolean isAero;
     private boolean isPrimitive;
@@ -176,7 +172,7 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
         isPrimitive = mech.isPrimitive();
         refresh();
         Optional<EquipmentType> hs = mech.getMisc().stream().map(Mounted::getType)
-                .filter(et -> UnitUtil.isHeatSink(et)).findAny();
+                .filter(UnitUtil::isHeatSink).findAny();
         if (hs.isPresent()) {
             cbHSType.removeActionListener(this);
             setHeatSinkType(hs.get());
@@ -250,7 +246,10 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
     }
     
     public int getHeatSinkIndex() {
-        return (Integer)cbHSType.getSelectedItem();
+        if (cbHSType.getSelectedItem() != null) {
+            return (Integer) cbHSType.getSelectedItem();
+        }
+        return 0;
     }
     
     public void setHeatSinkIndex(int index) {
