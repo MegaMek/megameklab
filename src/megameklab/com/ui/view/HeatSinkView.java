@@ -57,19 +57,22 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
         listeners.remove(l);
     }
     
-    public final static int TYPE_SINGLE      = 0;
-    public final static int TYPE_DOUBLE_IS   = 1;
-    public final static int TYPE_DOUBLE_AERO = 1; // ASFs simply use an index and don't distinguish between IS and Clan
-    public final static int TYPE_DOUBLE_CLAN = 2;
-    public final static int TYPE_COMPACT     = 3;
-    public final static int TYPE_LASER       = 4;
-    public final static int TYPE_PROTOTYPE   = 5;
-    public final static int TYPE_FREEZER     = 6;
-    
-    private final static String[] LOOKUP_NAMES = {
+    public static final int TYPE_SINGLE         = 0;
+    public static final int TYPE_DOUBLE_IS      = 1;
+    public static final int TYPE_DOUBLE_CLAN    = 2;
+    public static final int TYPE_COMPACT        = 3;
+    public static final int TYPE_LASER          = 4;
+    public static final int TYPE_PROTOTYPE      = 5;
+    public static final int TYPE_FREEZER        = 6;
+    // ASFs simply use an index and don't distinguish between IS and Clan
+    public static final int TYPE_DOUBLE_AERO    = 1;
+    public static final int TYPE_PROTOTYPE_AERO = 2;
+
+    private static final String[] LOOKUP_NAMES = {
             EquipmentTypeLookup.SINGLE_HS, EquipmentTypeLookup.IS_DOUBLE_HS,
             EquipmentTypeLookup.CLAN_DOUBLE_HS, EquipmentTypeLookup.COMPACT_HS_1,
-            EquipmentTypeLookup.IS_DOUBLE_HS_PROTOTYPE, EquipmentTypeLookup.IS_DOUBLE_HS_FREEZER
+            EquipmentTypeLookup.LASER_HS, EquipmentTypeLookup.IS_DOUBLE_HS_PROTOTYPE,
+            EquipmentTypeLookup.IS_DOUBLE_HS_FREEZER
     };
     private final List<EquipmentType> heatSinks;
     private String[] mechDisplayNames;
@@ -223,7 +226,15 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
         isPrimitive = aero.isPrimitive();
         refresh();
         cbHSType.removeActionListener(this);
-        setHeatSinkIndex(aero.getHeatType());
+        // Roundabout way to make it show "Double (Prototype)"
+        if (aero.getHeatType() == Aero.HEAT_DOUBLE
+                && !techManager.isLegal(heatSinks.get(TYPE_DOUBLE_AERO))
+                && (techManager.isLegal(heatSinks.get(TYPE_PROTOTYPE))
+                      || techManager.isLegal(heatSinks.get(TYPE_FREEZER)))) {
+            setHeatSinkIndex(TYPE_PROTOTYPE_AERO);
+        } else {
+            setHeatSinkIndex(aero.getHeatType());
+        }
         cbHSType.addActionListener(this);
         spnCount.removeChangeListener(this);
         countModel.setValue(aero.getHeatSinks());
@@ -238,6 +249,8 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
         lblWeightFreeCount.setText(String.valueOf(TestAero.weightFreeHeatSinks(aero)));
         lblBaseCount.setVisible(aero.isOmni());
         spnBaseCount.setVisible(aero.isOmni());
+        lblPrototypeCount.setVisible(false);
+        spnPrototypeCount.setVisible(false);
         lblCritFreeText.setVisible(false);
         lblCritFreeCount.setVisible(false);
     }
@@ -251,6 +264,9 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
             if (techManager.isLegal(heatSinks.get(TYPE_DOUBLE_IS))
                     || techManager.isLegal(heatSinks.get(TYPE_DOUBLE_CLAN))) {
                 cbHSType.addItem(TYPE_DOUBLE_AERO);
+            } else if (techManager.isLegal(heatSinks.get(TYPE_PROTOTYPE))
+                    || techManager.isLegal(heatSinks.get(TYPE_FREEZER))) {
+                cbHSType.addItem(TYPE_PROTOTYPE_AERO);
             }
         } else if (isPrimitive) {
             cbHSType.addItem(TYPE_SINGLE);
@@ -328,7 +344,7 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
     
     private void reportChange() {
         if (isAero) {
-            listeners.forEach(l -> l.heatSinksChanged(getHeatSinkIndex(), getCount()));
+            listeners.forEach(l -> l.heatSinksChanged(Math.min(TYPE_DOUBLE_AERO, getHeatSinkIndex()), getCount()));
         } else {
             listeners.forEach(l -> l.heatSinksChanged(getHeatSinkType(), getCount()));
         }
