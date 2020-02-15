@@ -47,8 +47,8 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
      */
     private static final long serialVersionUID = -6504846822457360057L;
 
-    private final static String saveCommand = "Save"; //$NON-NLS-1$
-    private final static String cancelCommand = "Cancel"; //$NON-NLS-1$
+    private static final String saveCommand = "Save"; //$NON-NLS-1$
+    private static final String cancelCommand = "Cancel"; //$NON-NLS-1$
 
     // BUTTONS
     private final JButton btnSave = new JButton(saveCommand);

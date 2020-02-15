@@ -48,16 +48,16 @@ public class CriticalTableModel extends AbstractTableModel {
     public Vector<Mounted> crits = new Vector<Mounted>();
     public Entity unit;
 
-    public final static int NAME = 0;
-    public final static int TONNAGE = 1;
-    public final static int CRITS = 2;
-    public final static int HEAT = 3;
-    public final static int LOCATION = 4;
-    public final static int EQUIPMENT = 5;
+    public static final int NAME = 0;
+    public static final int TONNAGE = 1;
+    public static final int CRITS = 2;
+    public static final int HEAT = 3;
+    public static final int LOCATION = 4;
+    public static final int EQUIPMENT = 5;
 
-    public final static int EQUIPMENTTABLE = 0;
-    public final static int WEAPONTABLE = 1;
-    public final static int BUILDTABLE = 2;
+    public static final int EQUIPMENTTABLE = 0;
+    public static final int WEAPONTABLE = 1;
+    public static final int BUILDTABLE = 2;
 
     private int tableType = EQUIPMENTTABLE;
     private boolean kgStandard = false;

@@ -56,8 +56,8 @@ public class GravDeckView extends BuildView implements ActionListener, TableMode
         listeners.remove(l);
     }
 
-    private final static String ACTION_ADD = "ADD";
-    private final static String ACTION_REMOVE = "REMOVE";
+    private static final String ACTION_ADD = "ADD";
+    private static final String ACTION_REMOVE = "REMOVE";
     
     private final GravDeckTableModel model = new GravDeckTableModel();
     private final JTable tblGravDecks = new JTable(model);
@@ -135,10 +135,10 @@ public class GravDeckView extends BuildView implements ActionListener, TableMode
          */
         private static final long serialVersionUID = 2769156811527423574L;
         
-        final static int COL_DIAMETER = 0;
-        final static int COL_SIZE     = 1;
-        final static int COL_TONNAGE  = 2;
-        final static int NUM_COLS     = 3;
+        static final int COL_DIAMETER = 0;
+        static final int COL_SIZE     = 1;
+        static final int COL_TONNAGE  = 2;
+        static final int NUM_COLS     = 3;
         
         private final String[] colNames;
         private List<Integer> deckSizes = new ArrayList<>();

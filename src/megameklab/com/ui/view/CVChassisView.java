@@ -58,28 +58,28 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
         listeners.remove(l);
     }
     
-    private final static String CMD_RESET_CHASSIS = "resetChassis"; //$NON-NLS-1$
+    private static final String CMD_RESET_CHASSIS = "resetChassis"; //$NON-NLS-1$
     
-    private final static EntityMovementMode[] MOTIVE_TYPES = {
+    private static final EntityMovementMode[] MOTIVE_TYPES = {
             EntityMovementMode.TRACKED, EntityMovementMode.WHEELED, EntityMovementMode.HOVER,
             EntityMovementMode.VTOL, EntityMovementMode.WIGE,
             EntityMovementMode.NAVAL, EntityMovementMode.HYDROFOIL, EntityMovementMode.SUBMARINE
     };
 
     // Engines that can be used by mechs and the order they appear in the combobox
-    private final static int[] ENGINE_TYPES = {
+    private static final int[] ENGINE_TYPES = {
             Engine.COMBUSTION_ENGINE, Engine.NORMAL_ENGINE, Engine.XL_ENGINE, Engine.XXL_ENGINE,
             Engine.FUEL_CELL, Engine.LIGHT_ENGINE, Engine.COMPACT_ENGINE, Engine.FISSION
     };
     private final Engine NO_ENGINE = new Engine(0, Engine.NONE, Engine.TANK_ENGINE);
 
-    public final static int TURRET_NONE   = 0;
-    public final static int TURRET_SINGLE = 1;
-    public final static int TURRET_DUAL   = 2;
-    public final static int TURRET_CHIN   = 3;
+    public static final int TURRET_NONE   = 0;
+    public static final int TURRET_SINGLE = 1;
+    public static final int TURRET_DUAL   = 2;
+    public static final int TURRET_CHIN   = 3;
     
-    private final static TechAdvancement TA_DUAL_TURRET = Tank.getDualTurretTA();
-    private final static TechAdvancement TA_CHIN_TURRET = VTOL.getChinTurretTA();
+    private static final TechAdvancement TA_DUAL_TURRET = Tank.getDualTurretTA();
+    private static final TechAdvancement TA_CHIN_TURRET = VTOL.getChinTurretTA();
     
     private final SpinnerNumberModel spnTonnageModel = new SpinnerNumberModel(20, 1, 100, 1);
     private final SpinnerNumberModel spnTurretWtModel = new SpinnerNumberModel(0.0, 0.0, null, 0.5);

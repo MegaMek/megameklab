@@ -75,8 +75,8 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
 
     private RefreshListener refresh = null;
     
-    private final static String CARD_TABLE = "table";
-    private final static String CARD_CUSTOM = "custom";
+    private static final String CARD_TABLE = "table";
+    private static final String CARD_CUSTOM = "custom";
     
     private JButton btnSetArmor = new JButton("Set Armor");    
     private JButton btnRemoveArmor = new JButton("Remove Armor");    

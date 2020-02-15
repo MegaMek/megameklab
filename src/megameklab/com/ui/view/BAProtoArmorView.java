@@ -63,8 +63,8 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
         listeners.remove(l);
     }
     
-    private final static String CMD_MAXIMIZE  = "MAXIMIZE"; //$NON-NLS-1$
-    private final static String CMD_REMAINING = "REMAINING"; //$NON-NLS-1$
+    private static final String CMD_MAXIMIZE  = "MAXIMIZE"; //$NON-NLS-1$
+    private static final String CMD_REMAINING = "REMAINING"; //$NON-NLS-1$
     
     private final TechComboBox<EquipmentType> cbArmorType = new TechComboBox<>(eq -> eq.getName());
     private final SpinnerNumberModel spnArmorPointsModel = new SpinnerNumberModel(0, 0, null, 1);

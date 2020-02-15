@@ -55,7 +55,7 @@ public class PatchworkArmorView extends BuildView implements ActionListener {
         listeners.remove(l);
     }
     
-    private final static int MAX_LOC = 10;
+    private static final int MAX_LOC = 10;
     
     private final List<JLabel> labels = new ArrayList<>();
     private final List<TechComboBox<EquipmentType>> combos = new ArrayList<>();

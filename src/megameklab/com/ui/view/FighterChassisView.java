@@ -61,11 +61,11 @@ public class FighterChassisView extends BuildView implements ActionListener, Cha
         listeners.remove(l);
     }
     
-    public final static int TYPE_AEROSPACE    = 0;
-    public final static int TYPE_CONVENTIONAL = 1;
+    public static final int TYPE_AEROSPACE    = 0;
+    public static final int TYPE_CONVENTIONAL = 1;
     
     // Engines that can be used by aerospace or conventional fighters and the order they appear in the combobox
-    private final static int[] ENGINE_TYPES = {
+    private static final int[] ENGINE_TYPES = {
             Engine.NORMAL_ENGINE, Engine.XL_ENGINE, Engine.XXL_ENGINE, Engine.LIGHT_ENGINE,
             Engine.COMPACT_ENGINE, Engine.FISSION, Engine.COMBUSTION_ENGINE
     };

@@ -33,9 +33,9 @@ public final class ColorConfigurationDialog extends JDialog implements ActionLis
      */
     private static final long serialVersionUID = -6504846822457360057L;
 
-    private final static String saveCommand = "Save";
-    private final static String cancelCommand = "Cancel";
-    private final static String windowName = "Color Configuration";
+    private static final String saveCommand = "Save";
+    private static final String cancelCommand = "Cancel";
+    private static final String windowName = "Color Configuration";
 
     // BUTTONS
     private final JButton saveButton = new JButton(saveCommand);

@@ -61,10 +61,10 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
         listeners.remove(l);
     }
     
-    private final static int LABEL_INDEX_MEK  = 0;
-    private final static int LABEL_INDEX_TANK = 1;
-    private final static int LABEL_INDEX_AERO = 2;
-    private final static int LABEL_INDEX_BA   = 3;
+    private static final int LABEL_INDEX_MEK  = 0;
+    private static final int LABEL_INDEX_TANK = 1;
+    private static final int LABEL_INDEX_AERO = 2;
+    private static final int LABEL_INDEX_BA   = 3;
 
     private final SpinnerNumberModel spnWalkModel = new SpinnerNumberModel(1, 1, null, 1);
     private final SpinnerNumberModel spnJumpModel = new SpinnerNumberModel(0, 0, null, 1);

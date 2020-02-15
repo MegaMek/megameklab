@@ -79,11 +79,11 @@ public class FieldGunView extends IView implements ActionListener {
 
     private static final long serialVersionUID = 1130259386466317590L;
 
-    private final static int T_ALL       = 0;
-    private final static int T_GUN       = 1;
-    private final static int T_ARTILLERY = 2;
-    private final static int T_ARTILLERY_CANNON = 3;
-    private final static int T_NUM       = 4;
+    private static final int T_ALL       = 0;
+    private static final int T_GUN       = 1;
+    private static final int T_ARTILLERY = 2;
+    private static final int T_ARTILLERY_CANNON = 3;
+    private static final int T_NUM       = 4;
 
     private RefreshListener refresh;
 

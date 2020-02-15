@@ -52,8 +52,8 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
         listeners.remove(l);
     }
     
-    private final static String CMD_MAXIMIZE  = "MAXIMIZE"; //$NON-NLS-1$
-    private final static String CMD_REMAINING = "REMAINING"; //$NON-NLS-1$
+    private static final String CMD_MAXIMIZE  = "MAXIMIZE"; //$NON-NLS-1$
+    private static final String CMD_REMAINING = "REMAINING"; //$NON-NLS-1$
     
     private final TechComboBox<EquipmentType> cbArmorType = new TechComboBox<>(EquipmentType::getName);
     private final CustomComboBox<Integer> cbSVTechRating = new CustomComboBox<>(ITechnology::getRatingName);

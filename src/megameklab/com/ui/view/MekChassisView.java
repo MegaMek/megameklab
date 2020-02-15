@@ -76,29 +76,29 @@ public class MekChassisView extends BuildView implements ActionListener, ChangeL
     public static final int MOTIVE_TYPE_QV_WHEELED     = 1;
 
     // Engines that can be used by mechs and the order they appear in the combobox
-    private final static int[] ENGINE_TYPES = {
+    private static final int[] ENGINE_TYPES = {
             Engine.NORMAL_ENGINE, Engine.XL_ENGINE, Engine.XXL_ENGINE, Engine.FUEL_CELL, Engine.LIGHT_ENGINE,
             Engine.COMPACT_ENGINE, Engine.FISSION, Engine.COMBUSTION_ENGINE
     };
     // Industrial (and primitive) mechs can use non-fusion engines under standard rules, but cannot use
     // any fusion engines other than standard.
-    private final static int[] INDUSTRIAL_ENGINE_TYPES = {
+    private static final int[] INDUSTRIAL_ENGINE_TYPES = {
             Engine.NORMAL_ENGINE, Engine.FUEL_CELL, Engine.FISSION, Engine.COMBUSTION_ENGINE
     };
     // LAMs can only use fusion engines that are contained entirely within the center torso.
-    private final static int[] LAM_ENGINE_TYPES = {
+    private static final int[] LAM_ENGINE_TYPES = {
             Engine.NORMAL_ENGINE, Engine.COMPACT_ENGINE
     };
     
     // Internal structure for non-industrial mechs
-    private final static int[] STRUCTURE_TYPES = {
+    private static final int[] STRUCTURE_TYPES = {
             EquipmentType.T_STRUCTURE_STANDARD, EquipmentType.T_STRUCTURE_ENDO_STEEL,
             EquipmentType.T_STRUCTURE_ENDO_PROTOTYPE, EquipmentType.T_STRUCTURE_REINFORCED,
             EquipmentType.T_STRUCTURE_COMPOSITE, EquipmentType.T_STRUCTURE_ENDO_COMPOSITE
     };
 
     // Internal structure for superheavy battlemechs
-    private final static int[] SUPERHEAVY_STRUCTURE_TYPES = {
+    private static final int[] SUPERHEAVY_STRUCTURE_TYPES = {
             EquipmentType.T_STRUCTURE_STANDARD, EquipmentType.T_STRUCTURE_ENDO_STEEL,
             EquipmentType.T_STRUCTURE_ENDO_COMPOSITE
     };

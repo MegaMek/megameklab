@@ -62,16 +62,16 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
         listeners.remove(l);
     }
     
-    public final static int TYPE_SINGLE      = 0;
-    public final static int TYPE_DOUBLE_IS   = 1;
-    public final static int TYPE_DOUBLE_AERO = 1; // ASFs simply use an index and don't distinguish between IS and Clan
-    public final static int TYPE_DOUBLE_CLAN = 2;
-    public final static int TYPE_COMPACT     = 3;
-    public final static int TYPE_LASER       = 4;
-    public final static int TYPE_PROTOTYPE   = 5;
-    public final static int TYPE_FREEZER     = 6;
+    public static final int TYPE_SINGLE      = 0;
+    public static final int TYPE_DOUBLE_IS   = 1;
+    public static final int TYPE_DOUBLE_AERO = 1; // ASFs simply use an index and don't distinguish between IS and Clan
+    public static final int TYPE_DOUBLE_CLAN = 2;
+    public static final int TYPE_COMPACT     = 3;
+    public static final int TYPE_LASER       = 4;
+    public static final int TYPE_PROTOTYPE   = 5;
+    public static final int TYPE_FREEZER     = 6;
     
-    private final static String[] LOOKUP_NAMES = {
+    private static final String[] LOOKUP_NAMES = {
             "Heat Sink", "ISDoubleHeatSink", "CLDoubleHeatSink", "IS1 Compact Heat Sink",
             "CLLaser Heat Sink", "ISDoubleHeatSinkPrototype", "ISDoubleHeatSinkFreezer"
     };

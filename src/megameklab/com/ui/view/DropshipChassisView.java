@@ -58,11 +58,11 @@ public class DropshipChassisView extends BuildView implements ActionListener, Ch
         listeners.remove(l);
     }
     
-    public final static int TYPE_SMALL_CRAFT    = 0;
-    public final static int TYPE_DROPSHIP       = 1;
+    public static final int TYPE_SMALL_CRAFT    = 0;
+    public static final int TYPE_DROPSHIP       = 1;
     
-    public final static int CHASSIS_AERODYNE    = 0;
-    public final static int CHASSIS_SPHEROID    = 1;
+    public static final int CHASSIS_AERODYNE    = 0;
+    public static final int CHASSIS_SPHEROID    = 1;
     
     private final SpinnerNumberModel spnTonnageModel = new SpinnerNumberModel(200, 200, null, 100);
     private final SpinnerNumberModel spnSIModel = new SpinnerNumberModel(1, 1, null, 1);

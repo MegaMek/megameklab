@@ -28,14 +28,14 @@ public class RecordSheetEquipmentLine {
     private boolean rear;
     private boolean turret;
     
-    private final static String DASH = "\u2014";
+    private static final String DASH = "\u2014";
 
-    private final static int MML_LRM = 1;
-    private final static int MML_SRM = 2;
+    private static final int MML_LRM = 1;
+    private static final int MML_SRM = 2;
     
-    private final static int ATM_STANDARD = 1;
-    private final static int ATM_ER       = 2;
-    private final static int ATM_HE       = 3;
+    private static final int ATM_STANDARD = 1;
+    private static final int ATM_ER       = 2;
+    private static final int ATM_HE       = 3;
 
     public RecordSheetEquipmentLine(Mounted m) {
         eqInfo = new EquipmentInfo(m.getEntity(), m);

@@ -61,10 +61,10 @@ public class AdvancedAeroChassisView extends BuildView implements ActionListener
         listeners.remove(l);
     }
     
-    public final static int TYPE_JUMPSHIP      = 0;
-    public final static int TYPE_WARSHIP       = 1;
-    public final static int TYPE_STATION       = 2;
-    public final static int TYPE_SUBCOMPACT    = 3;
+    public static final int TYPE_JUMPSHIP      = 0;
+    public static final int TYPE_WARSHIP       = 1;
+    public static final int TYPE_STATION       = 2;
+    public static final int TYPE_SUBCOMPACT    = 3;
     
     private final SpinnerNumberModel spnTonnageModel = new SpinnerNumberModel(2000, 2000, null, 500);
     private final SpinnerNumberModel spnSIModel = new SpinnerNumberModel(1, 1, null, 1);

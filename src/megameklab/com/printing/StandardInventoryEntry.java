@@ -53,21 +53,21 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
 
     private int quantity = 1;
 
-    private final static int MML_LRM_ROW = 1;
-    private final static int MML_SRM_ROW = 2;
+    private static final int MML_LRM_ROW = 1;
+    private static final int MML_SRM_ROW = 2;
 
-    private final static int ATM_STANDARD_ROW = 1;
-    private final static int ATM_ER_ROW = 2;
-    private final static int ATM_HE_ROW = 3;
+    private static final int ATM_STANDARD_ROW = 1;
+    private static final int ATM_ER_ROW = 2;
+    private static final int ATM_HE_ROW = 3;
 
-    private final static String[] SPHEROID_ARCS = { "NOS", "FLS", "FRS", "AFT", "HULL", "ALS", "ARS" };
-    private final static String[][] MML_RANGE = {
+    private static final String[] SPHEROID_ARCS = { "NOS", "FLS", "FRS", "AFT", "HULL", "ALS", "ARS" };
+    private static final String[][] MML_RANGE = {
             {"", "", "", "", ""}, {"6", "7", "14", "21"}, {DASH, "3", "6", "9"}
     };
-    private final static String[][] ATM_RANGE = {
+    private static final String[][] ATM_RANGE = {
             {"", "", "", "", ""}, {"4", "5", "10", "15"}, {"4", "9", "18", "27"}, {DASH, "3", "6", "9"}
     };
-    private final static String[][] CENTURION_RANGE = {
+    private static final String[][] CENTURION_RANGE = {
             {"", "6(1)", "12(2)", "18(3)"}
     };
 

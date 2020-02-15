@@ -58,9 +58,9 @@ public class BAChassisView extends BuildView implements ActionListener, ChangeLi
         listeners.remove(l);
     }
     
-    public final static int TURRET_NONE     = 0;
-    public final static int TURRET_STANDARD = 1;
-    public final static int TURRET_MODULAR  = 2;
+    public static final int TURRET_NONE     = 0;
+    public static final int TURRET_STANDARD = 1;
+    public static final int TURRET_MODULAR  = 2;
     
     private final SpinnerNumberModel spnTurretSizeModel = new SpinnerNumberModel(0, 0, 10, 1);
     private final JComboBox<String> cbChassisType = new JComboBox<>();

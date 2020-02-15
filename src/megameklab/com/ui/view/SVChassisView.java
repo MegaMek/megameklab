@@ -55,8 +55,8 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
                     && !t.equals(TestSupportVehicle.SVType.SATELLITE)).collect(Collectors.toList());
     private final Map<TestSupportVehicle.SVType, String> typeNames = new EnumMap<>(TestSupportVehicle.SVType.class);
 
-    private final static TechAdvancement TA_DUAL_TURRET = Tank.getDualTurretTA();
-    private final static TechAdvancement TA_CHIN_TURRET = VTOL.getChinTurretTA();
+    private static final TechAdvancement TA_DUAL_TURRET = Tank.getDualTurretTA();
+    private static final TechAdvancement TA_CHIN_TURRET = VTOL.getChinTurretTA();
 
     // We have separate models for small support vehicles, since they are on the kilogram standard and have different
     // step sizes.
