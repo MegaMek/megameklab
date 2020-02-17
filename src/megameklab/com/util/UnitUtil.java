@@ -2542,7 +2542,7 @@ public class UnitUtil {
     @Deprecated
     public static boolean isUnitEquipment(EquipmentType eq, Entity unit) {
         if (unit instanceof Tank) {
-            return UnitUtil.isTankEquipment(eq, unit instanceof VTOL);
+            return UnitUtil.isTankEquipment(eq, unit.getMovementMode());
         }
 
         if (unit instanceof BattleArmor) {
@@ -3022,7 +3022,7 @@ public class UnitUtil {
         return eq instanceof InfantryWeapon;
     }
 
-    public static boolean isTankEquipment(EquipmentType eq, boolean isVTOL) {
+    public static boolean isTankEquipment(EquipmentType eq, EntityMovementMode mode) {
 
         if (UnitUtil.isArmorOrStructure(eq)) {
             return false;
@@ -3046,13 +3046,13 @@ public class UnitUtil {
             return true;
         }
 
-        if ((eq instanceof MiscType) && eq.hasFlag(MiscType.F_TANK_EQUIPMENT)) {
-            return true;
-        }
-
-        if ((eq instanceof MiscType) && eq.hasFlag(MiscType.F_VTOL_EQUIPMENT)
-                && isVTOL) { // Mast Mount!
-            return true;
+        if (eq instanceof MiscType) {
+            if (eq.hasFlag(MiscType.F_FLOTATION_HULL)) {
+                // Per errata, WiGE vehicles automatically include flotation hull
+                return mode.equals(EntityMovementMode.HOVER) || mode.equals(EntityMovementMode.VTOL);
+            }
+            return eq.hasFlag(MiscType.F_TANK_EQUIPMENT)
+                    || (eq.hasFlag(MiscType.F_VTOL_EQUIPMENT) && mode.equals(EntityMovementMode.VTOL));
         }
 
         return false;

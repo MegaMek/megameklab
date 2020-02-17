@@ -563,7 +563,7 @@ public class EquipmentTab extends ITab implements ActionListener {
                                         && !etype.hasSubType(MiscType.S_JETBOOSTER)))) {
                     return false;
                 }
-                if (((nType == T_OTHER) && UnitUtil.isTankEquipment(etype, tank instanceof VTOL))
+                if (((nType == T_OTHER) && UnitUtil.isTankEquipment(etype, tank.getMovementMode()))
                         || (((nType == T_WEAPON) && (UnitUtil.isTankWeapon(etype, tank))))
                         || ((nType == T_ENERGY) && UnitUtil.isTankWeapon(etype, tank)
                             && (wtype != null) && (wtype.hasFlag(WeaponType.F_ENERGY)
