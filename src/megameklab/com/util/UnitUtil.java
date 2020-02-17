@@ -3051,6 +3051,17 @@ public class UnitUtil {
                 // Per errata, WiGE vehicles automatically include flotation hull
                 return mode.equals(EntityMovementMode.HOVER) || mode.equals(EntityMovementMode.VTOL);
             }
+            if (eq.hasFlag(MiscType.F_FULLY_AMPHIBIOUS) || eq.hasFlag(MiscType.F_LIMITED_AMPHIBIOUS)) {
+                return mode.equals(EntityMovementMode.WHEELED) || mode.equals(EntityMovementMode.TRACKED);
+            }
+            if (eq.hasFlag(MiscType.F_DUNE_BUGGY)) {
+                return mode.equals(EntityMovementMode.WHEELED);
+            }
+            if (eq.hasFlag(MiscType.F_LIFEBOAT)) {
+                return mode.equals(EntityMovementMode.NAVAL)
+                        || mode.equals(EntityMovementMode.HYDROFOIL)
+                        || mode.equals(EntityMovementMode.SUBMARINE);
+            }
             return eq.hasFlag(MiscType.F_TANK_EQUIPMENT)
                     || (eq.hasFlag(MiscType.F_VTOL_EQUIPMENT) && mode.equals(EntityMovementMode.VTOL));
         }
