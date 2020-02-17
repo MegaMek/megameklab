@@ -117,7 +117,7 @@ public class EquipmentView extends IView implements ActionListener {
         while (miscTypes.hasMoreElements()) {
             EquipmentType eq = miscTypes.nextElement();
 
-            if (UnitUtil.isUnitEquipment(eq, eSource.getEntity())) {
+            if (UnitUtil.isBAEquipment(eq, getBattleArmor())) {
                 masterEquipmentList.add(eq);
             }
         }
@@ -156,7 +156,7 @@ public class EquipmentView extends IView implements ActionListener {
             if (UnitUtil.isArmorOrStructure(mount.getType())) {
                 continue;
             }
-            if (UnitUtil.isUnitEquipment(mount.getType(), getBattleArmor())) {
+            if (UnitUtil.isBAEquipment(mount.getType(), getBattleArmor())) {
                 equipmentList.addCrit(mount);
             }
         }

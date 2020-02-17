@@ -2535,23 +2535,6 @@ public class UnitUtil {
         return UnitUtil.isMechWeapon(eq, unit);
     }
 
-    /**
-     * @deprecated Use {@link #isEntityEquipment(EquipmentType, Entity)}
-     * There are two methods that do the same thing, but this one hasn't been updated.
-     */
-    @Deprecated
-    public static boolean isUnitEquipment(EquipmentType eq, Entity unit) {
-        if (unit instanceof Tank) {
-            return UnitUtil.isTankEquipment(eq, (Tank) unit);
-        }
-
-        if (unit instanceof BattleArmor) {
-            return UnitUtil.isBattleArmorEquipment(eq);
-        }
-
-        return UnitUtil.isMechEquipment(eq, (Mech) unit);
-    }
-
     public static boolean isMechWeapon(EquipmentType eq, Entity unit) {
         if (eq instanceof InfantryWeapon) {
             return false;
@@ -2912,6 +2895,10 @@ public class UnitUtil {
                     return false;
                 }
             }
+
+            if (weapon.getAmmoType() == AmmoType.T_NAIL_RIVET_GUN) {
+                return !unit.getMovementMode().equals(EntityMovementMode.VTOL);
+            }
             return true;
         }
         return false;
@@ -3014,12 +3001,6 @@ public class UnitUtil {
             return false;
         }
 
-        // Chassis modifications should be ignored, as they will be added
-        // via checkboxes, and not shown as equipment
-        //if (eq.hasFlag(MiscType.F_CHASSIS_MODIFICATION)) {
-        //    return false;
-        //}
-
         // Display AMS as equipment (even though it's a weapon)
         if (eq.hasFlag(WeaponType.F_AMS)
                 && eq.hasFlag(WeaponType.F_TANK_WEAPON)) {
@@ -3033,26 +3014,9 @@ public class UnitUtil {
         }
 
         if (eq instanceof MiscType) {
-            final EntityMovementMode mode = tank.getMovementMode();
-            if (eq.hasFlag(MiscType.F_FLOTATION_HULL)) {
-                // Per errata, WiGE vehicles automatically include flotation hull
-                return mode.equals(EntityMovementMode.HOVER) || mode.equals(EntityMovementMode.VTOL);
-            }
-            if (eq.hasFlag(MiscType.F_FULLY_AMPHIBIOUS) || eq.hasFlag(MiscType.F_LIMITED_AMPHIBIOUS)) {
-                return mode.equals(EntityMovementMode.WHEELED) || mode.equals(EntityMovementMode.TRACKED);
-            }
-            if (eq.hasFlag(MiscType.F_DUNE_BUGGY)) {
-                return mode.equals(EntityMovementMode.WHEELED);
-            }
-            if (eq.hasFlag(MiscType.F_LIFEBOAT)) {
-                // Need to filter out atmospheric lifeboat
-                return eq.hasFlag(MiscType.F_TANK_EQUIPMENT)
-                    && (mode.equals(EntityMovementMode.NAVAL)
-                        || mode.equals(EntityMovementMode.HYDROFOIL)
-                        || mode.equals(EntityMovementMode.SUBMARINE));
-            }
-            return eq.hasFlag(MiscType.F_TANK_EQUIPMENT)
-                    || (eq.hasFlag(MiscType.F_VTOL_EQUIPMENT) && mode.equals(EntityMovementMode.VTOL));
+            return (eq.hasFlag(MiscType.F_TANK_EQUIPMENT)
+                        || (eq.hasFlag(MiscType.F_VTOL_EQUIPMENT) && (tank instanceof VTOL)))
+                    && TestTank.legalForMotiveType(eq, tank.getMovementMode());
         }
 
         return isTankWeapon(eq, tank);
