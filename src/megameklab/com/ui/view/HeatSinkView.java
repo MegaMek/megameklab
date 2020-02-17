@@ -313,7 +313,7 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
     }
 
     /**
-     * @return The number of heat sinks out of the total that are single heat sinks instead of the main type.
+     * @return The number of heat sinks out of the total that are prototype double heat sinks.
      */
     public int getPrototypeCount() {
         if (hasPrototypeDoubles) {
