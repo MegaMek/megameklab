@@ -3,6 +3,8 @@ VERSION HISTORY:
 0.47.5-SNAPSHOT
 + Issue #435: Infantry exports not going to TXT, only HTML
 + Issue #437: Disappearing DS Collars on Space Station
++ Issue #430: Spreadable equipment disappears when removed from tripod center leg
++ Issue #438: MML not tracking Single heatsink to Double(Freezer) Change
 
 v0.47.4 (2020-2-09 2200 UTC)
 + Issue #416: Issue with Crit Splitting on the Right Torso with big Artillery cannons/Arrow IV
