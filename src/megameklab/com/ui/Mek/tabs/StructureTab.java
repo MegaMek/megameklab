@@ -20,6 +20,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -36,6 +37,7 @@ import javax.swing.SwingConstants;
 import megamek.common.*;
 import megamek.common.loaders.EntityLoadingException;
 import megamek.common.verifier.TestEntity;
+import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.Mek.views.SummaryView;
 import megameklab.com.ui.view.ArmorAllocationView;
@@ -900,11 +902,6 @@ public class StructureTab extends ITab implements MekBuildListener, ArmorAllocat
     }
 
     @Override
-    public void heatSinksChanged(int index, int count) {
-        // Method for ASFs
-    }
-
-    @Override
     public void heatSinksChanged(EquipmentType hsType, int count) {
         // if we have the same type of heat sink, then we should not remove the
         // existing heat sinks
@@ -919,8 +916,14 @@ public class StructureTab extends ITab implements MekBuildListener, ArmorAllocat
         } else {
             UnitUtil.removeHeatSinks(getMech(), count);
             UnitUtil.addHeatSinkMounts(getMech(), count, hsType);
+            // If we're switching to prototype doubles, start with the assumption that the integrated sinks are singles,
+            // with a minimum of one double
+            if (hsType.hasFlag(MiscType.F_IS_DOUBLE_HEAT_SINK_PROTOTYPE)) {
+                redistributePrototypeHS(Math.max(1, count - UnitUtil.getCriticalFreeHeatSinks(getMech(), false)));
+            }
         }
         getMech().resetSinks();
+        panHeat.setFromMech(getMech());
         panSummary.refresh();
         refresh.refreshBuild();
         refresh.refreshStatus();
@@ -934,6 +937,47 @@ public class StructureTab extends ITab implements MekBuildListener, ArmorAllocat
         UnitUtil.updateAutoSinks(getMech(), panHeat.getHeatSinkType().hasFlag(MiscType.F_COMPACT_HEAT_SINK));
         refresh.refreshBuild();
         refresh.refreshStatus();
+        refresh.refreshPreview();
+    }
+
+    @Override
+    public void redistributePrototypeHS(int prototype) {
+        int netChange = prototype - getMech().countWorkingMisc(MiscType.F_IS_DOUBLE_HEAT_SINK_PROTOTYPE);
+        if (netChange < 0) {
+            List<Mounted> doubles = getMech().getMisc().stream()
+                    .filter(m -> m.getType().hasFlag(MiscType.F_IS_DOUBLE_HEAT_SINK_PROTOTYPE))
+                    .collect(Collectors.toList());
+            for (int i = 0; i < -netChange; i++) {
+                // Since we're not changing the total count, there should always be enough prototype
+                // doubles to switch over.
+                if (i >= doubles.size()) {
+                    MegaMekLab.getLogger().warning(getClass(), "redistributePrototypeHS(int)",
+                            "Not enough prototype double heat sinks to switch to single");
+                }
+                UnitUtil.removeMounted(getMech(), doubles.get(i));
+            }
+            UnitUtil.addHeatSinkMounts(getMech(), -netChange, EquipmentType.get(EquipmentTypeLookup.SINGLE_HS));
+        } else if (netChange > 0) {
+            // Find all the single heat sinks, and prioritize the ones that are already assigned critical slots
+            List<Mounted> singles = getMech().getMisc().stream()
+                    .filter(m -> UnitUtil.isHeatSink(m.getType())
+                            && !m.getType().hasFlag(MiscType.F_IS_DOUBLE_HEAT_SINK_PROTOTYPE))
+                    .sorted(Comparator.comparingInt(m -> m.getLocation() == Mech.LOC_NONE ? 1 : 0))
+                    .collect(Collectors.toList());
+            for (int i = 0; i < netChange; i++) {
+                if (i >= singles.size()) {
+                    MegaMekLab.getLogger().warning(getClass(), "redistributePrototypeHS(int)",
+                            "Not enough single heat sinks to switch to prototype double");
+                }
+                UnitUtil.removeMounted(getMech(), singles.get(i));
+            }
+            UnitUtil.addHeatSinkMounts(getMech(), netChange, panHeat.getHeatSinkType());
+        }
+        UnitUtil.updateAutoSinks(getMech(), false);
+        panSummary.refresh();
+        refresh.refreshStatus();
+        refresh.refreshSummary();
+        refresh.refreshBuild();
         refresh.refreshPreview();
     }
 

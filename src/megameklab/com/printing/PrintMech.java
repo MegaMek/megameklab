@@ -680,8 +680,9 @@ public class PrintMech extends PrintEntity {
     
     private String formatHeatSinkCount() {
         int hsCount = mech.heatSinks();
-        if (mech.hasDoubleHeatSinks()) {
-            return String.format("%d (%d)", hsCount, hsCount * 2);
+        int capacity = mech.getHeatCapacity(false, false);
+        if (hsCount != capacity) {
+            return String.format("%d (%d)", hsCount, capacity);
         } else {
             return Integer.toString(hsCount);
         }

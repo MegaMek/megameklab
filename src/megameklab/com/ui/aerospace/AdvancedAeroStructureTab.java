@@ -288,9 +288,12 @@ public class AdvancedAeroStructureTab extends ITab implements AdvancedAeroBuildL
         panChassis.setFromEntity(getJumpship());
         panArmor.refresh();
         panHeat.setFromAero(getJumpship());
+        heatSinksChanged(panHeat.getHeatSinkIndex(), panHeat.getCount());
         panArmorAllocation.setFromEntity(getJumpship());
         panSummary.refresh();
         refresh.refreshTransport();
+        refresh.refreshStatus();
+        refresh.refreshPreview();
     }
 
     @Override

@@ -361,11 +361,15 @@ public class StructureTab extends ITab implements AeroBuildListener, ArmorAlloca
         }
         panChassis.refresh();
         panHeat.refresh();
+        heatSinksChanged(panHeat.getHeatSinkIndex(), panHeat.getCount());
         panArmor.refresh();
         panMovement.refresh();
         panArmorAllocation.setFromEntity(getAero());
         panPatchwork.setFromEntity(getAero());
         addAllListeners();
+        panSummary.refresh();
+        refresh.refreshStatus();
+        refresh.refreshPreview();
     }
 
     @Override

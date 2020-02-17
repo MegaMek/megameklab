@@ -917,13 +917,14 @@ public class UnitUtil {
      */
     public static void updateAutoSinks(Mech unit, boolean compact) {
         int base = UnitUtil.getCriticalFreeHeatSinks(unit, compact);
-        Vector<Mounted> unassigned = new Vector<Mounted>();
-        Vector<Mounted> assigned = new Vector<Mounted>();
+        List<Mounted> unassigned = new ArrayList<>();
+        List<Mounted> assigned = new ArrayList<>();
         for (Mounted m : unit.getMisc()) {
             if (UnitUtil.isHeatSink(m)) {
                 if (m.getLocation() == Entity.LOC_NONE) {
                     unassigned.add(m);
-                } else {
+                } else if (!m.getType().hasFlag(MiscType.F_IS_DOUBLE_HEAT_SINK_PROTOTYPE)) {
+                    // Prototype double heat sinks can never be integrated into the engine
                     assigned.add(m);
                 }
             }
