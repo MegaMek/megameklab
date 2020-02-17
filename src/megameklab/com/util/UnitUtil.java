@@ -2542,7 +2542,7 @@ public class UnitUtil {
     @Deprecated
     public static boolean isUnitEquipment(EquipmentType eq, Entity unit) {
         if (unit instanceof Tank) {
-            return UnitUtil.isTankEquipment(eq, unit.getMovementMode());
+            return UnitUtil.isTankEquipment(eq, (Tank) unit);
         }
 
         if (unit instanceof BattleArmor) {
@@ -2860,20 +2860,6 @@ public class UnitUtil {
         return true;
     }
     
-    public static boolean isTankEquipment(EquipmentType eq, Tank tank) {
-        if (eq instanceof MiscType) {
-            if (tank.hasETypeFlag(Entity.ETYPE_VTOL)){
-                return eq.hasFlag(MiscType.F_TANK_EQUIPMENT)
-                        || eq.hasFlag(MiscType.F_VTOL_EQUIPMENT);
-            } else {
-                return eq.hasFlag(MiscType.F_TANK_EQUIPMENT);
-            } 
-        } else if (eq instanceof WeaponType) {
-            return isTankWeapon(eq, tank);
-        }
-        return true;
-    }
-
     public static boolean isTankWeapon(EquipmentType eq, Entity unit) {
         if (eq instanceof InfantryWeapon) {
             return false;
@@ -3022,7 +3008,7 @@ public class UnitUtil {
         return eq instanceof InfantryWeapon;
     }
 
-    public static boolean isTankEquipment(EquipmentType eq, EntityMovementMode mode) {
+    public static boolean isTankEquipment(EquipmentType eq, Tank tank) {
 
         if (UnitUtil.isArmorOrStructure(eq)) {
             return false;
@@ -3047,6 +3033,7 @@ public class UnitUtil {
         }
 
         if (eq instanceof MiscType) {
+            final EntityMovementMode mode = tank.getMovementMode();
             if (eq.hasFlag(MiscType.F_FLOTATION_HULL)) {
                 // Per errata, WiGE vehicles automatically include flotation hull
                 return mode.equals(EntityMovementMode.HOVER) || mode.equals(EntityMovementMode.VTOL);
@@ -3058,15 +3045,17 @@ public class UnitUtil {
                 return mode.equals(EntityMovementMode.WHEELED);
             }
             if (eq.hasFlag(MiscType.F_LIFEBOAT)) {
-                return mode.equals(EntityMovementMode.NAVAL)
+                // Need to filter out atmospheric lifeboat
+                return eq.hasFlag(MiscType.F_TANK_EQUIPMENT)
+                    && (mode.equals(EntityMovementMode.NAVAL)
                         || mode.equals(EntityMovementMode.HYDROFOIL)
-                        || mode.equals(EntityMovementMode.SUBMARINE);
+                        || mode.equals(EntityMovementMode.SUBMARINE));
             }
             return eq.hasFlag(MiscType.F_TANK_EQUIPMENT)
                     || (eq.hasFlag(MiscType.F_VTOL_EQUIPMENT) && mode.equals(EntityMovementMode.VTOL));
         }
 
-        return false;
+        return isTankWeapon(eq, tank);
     }
 
     public static boolean isBattleArmorEquipment(EquipmentType eq) {
