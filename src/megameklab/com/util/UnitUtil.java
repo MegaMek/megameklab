@@ -2896,10 +2896,7 @@ public class UnitUtil {
                 }
             }
 
-            if (weapon.getAmmoType() == AmmoType.T_NAIL_RIVET_GUN) {
-                return !unit.getMovementMode().equals(EntityMovementMode.VTOL);
-            }
-            return true;
+            return TestTank.legalForMotiveType(weapon, unit.getMovementMode());
         }
         return false;
     }
