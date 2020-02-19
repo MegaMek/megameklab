@@ -305,6 +305,7 @@ public class AdvancedAeroStructureTab extends ITab implements AdvancedAeroBuildL
     public void heatSinksChanged(int index, int count) {
         getJumpship().setHeatType(index);
         getJumpship().setHeatSinks(count);
+        getJumpship().setOHeatSinks(count);
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
