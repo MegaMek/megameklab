@@ -241,6 +241,8 @@ public class StructureTab extends ITab implements CVBuildListener, ArmorAllocati
         int rating = walkMP * (int)tonnage - Tank.getSuspensionFactor(panChassis.getMovementMode(), tonnage);
         if (rating < 10) {
             rating = 10;
+        } else {
+           rating = (int) Math.ceil(rating / 5.0) * 5;
         }
         int oldRating = getTank().getEngine().getRating();
         if (oldRating != rating) {
