@@ -8,6 +8,7 @@ VERSION HISTORY:
 + Issue #441: Battle Armor with Armored Glove and Anti Personnel Weapon Mount saves weapons as Armored Glove have the AP weapon.
 + Issue #447: Seats are free on support vehicles
 + Issue #448: Bay doors are free on support vehicles
++ Issue #451: VTOL rotors not included in Unit Cost Breakdown
 
 v0.47.4 (2020-2-09 2200 UTC)
 + Issue #416: Issue with Crit Splitting on the Right Torso with big Artillery cannons/Arrow IV
