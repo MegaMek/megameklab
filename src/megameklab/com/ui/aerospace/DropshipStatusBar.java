@@ -55,7 +55,6 @@ public class DropshipStatusBar extends ITab {
     private final JLabel invalid = new JLabel();
     private final EntityVerifier entityVerifier = EntityVerifier.getInstance(new File(
             "data/mechfiles/UnitVerifierOptions.xml"));
-    private TestSmallCraft testSmallCraft;
     private final DecimalFormat formatter;
     private final JFrame parentFrame;
 
@@ -66,7 +65,6 @@ public class DropshipStatusBar extends ITab {
         parentFrame = parent;
 
         formatter = new DecimalFormat();
-        testSmallCraft = new TestSmallCraft(getSmallCraft(), entityVerifier.aeroOption, null);
         JButton btnValidate = new JButton("Validate Unit");
         btnValidate.addActionListener(e -> UnitUtil.showValidation(getSmallCraft(), getParentFrame()));
         JButton btnFluffImage = new JButton("Set Fluff Image");
@@ -107,7 +105,7 @@ public class DropshipStatusBar extends ITab {
         int bv = getSmallCraft().calculateBattleValue();
         long currentCost = Math.round(getSmallCraft().getCost(false));
 
-        testSmallCraft = new TestSmallCraft(getSmallCraft(), entityVerifier.aeroOption, null);
+        TestSmallCraft testSmallCraft = new TestSmallCraft(getSmallCraft(), entityVerifier.aeroOption, null);
 
         currentTonnage = testSmallCraft.calculateWeight();
         currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getSmallCraft());

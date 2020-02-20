@@ -56,7 +56,6 @@ public class AdvancedAeroStatusBar extends ITab {
     private final JLabel invalid = new JLabel();
     private final EntityVerifier entityVerifier = EntityVerifier.getInstance(new File(
             "data/mechfiles/UnitVerifierOptions.xml"));
-    private TestAdvancedAerospace testAdvAero;
     private final DecimalFormat formatter;
     private final JFrame parentFrame;
 
@@ -67,7 +66,6 @@ public class AdvancedAeroStatusBar extends ITab {
         parentFrame = parent;
 
         formatter = new DecimalFormat();
-        testAdvAero = new TestAdvancedAerospace(getJumpship(), entityVerifier.aeroOption, null);
         JButton btnValidate = new JButton("Validate Unit");
         btnValidate.addActionListener(e -> UnitUtil.showValidation(getJumpship(), getParentFrame()));
         JButton btnFluffImage = new JButton("Set Fluff Image");
@@ -108,7 +106,7 @@ public class AdvancedAeroStatusBar extends ITab {
         int bv = getJumpship().calculateBattleValue();
         long currentCost = Math.round(getJumpship().getCost(false));
         
-        testAdvAero = new TestAdvancedAerospace(getJumpship(), entityVerifier.aeroOption, null);
+        TestAdvancedAerospace testAdvAero = new TestAdvancedAerospace(getJumpship(), entityVerifier.aeroOption, null);
         currentTonnage = testAdvAero.calculateWeight();
         currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getJumpship());
 
