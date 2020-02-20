@@ -959,7 +959,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
 
         if (UnitUtil.validateUnit(parentFrame.getEntity()).length() > 0) {
             JOptionPane.showMessageDialog(parentFrame,
-                    resourceMap.getString("messages.invalidUnit.text"));
+                    resourceMap.getString("message.invalidUnit.text"));
         }
 
         String unitName = parentFrame.getEntity().getChassis() + " " + parentFrame.getEntity().getModel();
