@@ -45,23 +45,20 @@ import megameklab.com.util.UnitUtil;
  *
  */
 public class AdvancedAeroStatusBar extends ITab {
-    /**
-     * 
-     */
+
     private static final long serialVersionUID = -6303444326796852470L;
-    
-    private JButton btnValidate = new JButton("Validate Unit");
-    private JButton btnFluffImage = new JButton("Set Fluff Image");
-    private JLabel bvLabel = new JLabel();
-    private JLabel tons = new JLabel();
-    private JLabel remainingTons = new JLabel();
-    private JLabel heatSink = new JLabel();
-    private JLabel cost = new JLabel();
-    private EntityVerifier entityVerifier = EntityVerifier.getInstance(new File(
+
+    private final JLabel bvLabel = new JLabel();
+    private final JLabel tons = new JLabel();
+    private final JLabel remainingTons = new JLabel();
+    private final JLabel heatSink = new JLabel();
+    private final JLabel cost = new JLabel();
+    private final JLabel invalid = new JLabel();
+    private final EntityVerifier entityVerifier = EntityVerifier.getInstance(new File(
             "data/mechfiles/UnitVerifierOptions.xml"));
-    private TestAdvancedAerospace testAdvAero = null;
-    private DecimalFormat formatter;
-    private JFrame parentFrame;
+    private TestAdvancedAerospace testAdvAero;
+    private final DecimalFormat formatter;
+    private final JFrame parentFrame;
 
     private RefreshListener refresh;
 
@@ -71,9 +68,13 @@ public class AdvancedAeroStatusBar extends ITab {
 
         formatter = new DecimalFormat();
         testAdvAero = new TestAdvancedAerospace(getJumpship(), entityVerifier.aeroOption, null);
+        JButton btnValidate = new JButton("Validate Unit");
         btnValidate.addActionListener(e -> UnitUtil.showValidation(getJumpship(), getParentFrame()));
+        JButton btnFluffImage = new JButton("Set Fluff Image");
         btnFluffImage.addActionListener(e -> getFluffImage());
-        //btnFluffImage.setEnabled(false);
+        invalid.setText("Invalid");
+        invalid.setForeground(Color.RED);
+        invalid.setVisible(false);
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -92,21 +93,20 @@ public class AdvancedAeroStatusBar extends ITab {
         gbc.gridx = 5;
         this.add(bvLabel, gbc);
         gbc.gridx = 6;
+        this.add(invalid, gbc);
+        gbc.gridx = 7;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
         this.add(cost, gbc);
-
-
         refresh();
     }
 
     public void refresh() {
-
         int heat = getJumpship().getHeatCapacity();
         double tonnage = getJumpship().getWeight();
         double currentTonnage;
         int bv = getJumpship().calculateBattleValue();
-        long currentCost = (long) Math.round(getJumpship().getCost(false));
+        long currentCost = Math.round(getJumpship().getCost(false));
         
         testAdvAero = new TestAdvancedAerospace(getJumpship(), entityVerifier.aeroOption, null);
         currentTonnage = testAdvAero.calculateWeight();
@@ -139,6 +139,9 @@ public class AdvancedAeroStatusBar extends ITab {
         bvLabel.setToolTipText("BV 2.0");
 
         cost.setText("Cost: " + formatter.format(currentCost) + " C-bills");
+        StringBuffer sb = new StringBuffer();
+        invalid.setVisible(!testAdvAero.correctEntity(sb));
+        invalid.setToolTipText(sb.toString());
     }
 
     public double calculateTotalHeat() {
@@ -202,12 +205,10 @@ public class AdvancedAeroStatusBar extends ITab {
             relativeFilePath = "."
                     + File.separatorChar
                     + relativeFilePath
-                            .substring(new File(System.getProperty("user.dir")
-                                    .toString()).getAbsolutePath().length() + 1);
+                            .substring(new File(System.getProperty("user.dir")).getAbsolutePath().length() + 1);
             getJumpship().getFluff().setMMLImagePath(relativeFilePath);
         }
         refresh.refreshPreview();
-        return;
     }
 
     private JFrame getParentFrame() {

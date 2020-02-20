@@ -45,22 +45,19 @@ import megameklab.com.util.UnitUtil;
  *
  */
 public class DropshipStatusBar extends ITab {
-    /**
-     * 
-     */
+
     private static final long serialVersionUID = -6303444326796852470L;
-    
-    private JButton btnValidate = new JButton("Validate Unit");
-    private JButton btnFluffImage = new JButton("Set Fluff Image");
-    private JLabel bvLabel = new JLabel();
-    private JLabel tons = new JLabel();
-    private JLabel heatSink = new JLabel();
-    private JLabel cost = new JLabel();
-    private EntityVerifier entityVerifier = EntityVerifier.getInstance(new File(
+
+    private final JLabel bvLabel = new JLabel();
+    private final JLabel tons = new JLabel();
+    private final JLabel heatSink = new JLabel();
+    private final JLabel cost = new JLabel();
+    private final JLabel invalid = new JLabel();
+    private final EntityVerifier entityVerifier = EntityVerifier.getInstance(new File(
             "data/mechfiles/UnitVerifierOptions.xml"));
-    private TestSmallCraft testSmallCraft = null;
-    private DecimalFormat formatter;
-    private JFrame parentFrame;
+    private TestSmallCraft testSmallCraft;
+    private final DecimalFormat formatter;
+    private final JFrame parentFrame;
 
     private RefreshListener refresh;
 
@@ -70,9 +67,13 @@ public class DropshipStatusBar extends ITab {
 
         formatter = new DecimalFormat();
         testSmallCraft = new TestSmallCraft(getSmallCraft(), entityVerifier.aeroOption, null);
+        JButton btnValidate = new JButton("Validate Unit");
         btnValidate.addActionListener(e -> UnitUtil.showValidation(getSmallCraft(), getParentFrame()));
+        JButton btnFluffImage = new JButton("Set Fluff Image");
         btnFluffImage.addActionListener(e -> getFluffImage());
-        //btnFluffImage.setEnabled(false);
+        invalid.setText("Invalid");
+        invalid.setForeground(Color.RED);
+        invalid.setVisible(false);
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -89,6 +90,8 @@ public class DropshipStatusBar extends ITab {
         gbc.gridx = 4;
         this.add(bvLabel, gbc);
         gbc.gridx = 5;
+        this.add(invalid, gbc);
+        gbc.gridx = 6;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
         this.add(cost, gbc);
@@ -98,12 +101,11 @@ public class DropshipStatusBar extends ITab {
     }
 
     public void refresh() {
-
         int heat = getSmallCraft().getHeatCapacity();
         double tonnage = getSmallCraft().getWeight();
         double currentTonnage;
         int bv = getSmallCraft().calculateBattleValue();
-        long currentCost = (long) Math.round(getSmallCraft().getCost(false));
+        long currentCost = Math.round(getSmallCraft().getCost(false));
 
         testSmallCraft = new TestSmallCraft(getSmallCraft(), entityVerifier.aeroOption, null);
 
@@ -133,6 +135,9 @@ public class DropshipStatusBar extends ITab {
         bvLabel.setToolTipText("BV 2.0");
 
         cost.setText("Cost: " + formatter.format(currentCost) + " C-bills");
+        StringBuffer sb = new StringBuffer();
+        invalid.setVisible(!testSmallCraft.correctEntity(sb));
+        invalid.setToolTipText(sb.toString());
     }
 
     public double calculateTotalHeat() {
@@ -196,12 +201,10 @@ public class DropshipStatusBar extends ITab {
             relativeFilePath = "."
                     + File.separatorChar
                     + relativeFilePath
-                            .substring(new File(System.getProperty("user.dir")
-                                    .toString()).getAbsolutePath().length() + 1);
+                            .substring(new File(System.getProperty("user.dir")).getAbsolutePath().length() + 1);
             getSmallCraft().getFluff().setMMLImagePath(relativeFilePath);
         }
         refresh.refreshPreview();
-        return;
     }
 
     private JFrame getParentFrame() {
