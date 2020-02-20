@@ -170,8 +170,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                             popup.add(info);
                         }
                     }
-                    if ((mount.getType() instanceof WeaponType)
-                            && getUnit().countWorkingMisc(MiscType.F_PINTLE_TURRET,
+                    if (getUnit().countWorkingMisc(MiscType.F_PINTLE_TURRET,
                                     mount.getLocation()) > 0) {
                         if (!mount.isPintleTurretMounted()) {
                             info = new JMenuItem("Mount " + mount.getName()
