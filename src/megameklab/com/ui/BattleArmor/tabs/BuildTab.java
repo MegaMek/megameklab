@@ -180,6 +180,13 @@ public class BuildTab extends ITab implements ActionListener {
         // BattleArmor doesn't track crits implicitly, so they need to be
         // tracked explicitly
         CriticalSuit crits = new CriticalSuit(getBattleArmor());
+        // Populate with equipment that is already installed
+        for (Mounted m : getBattleArmor().getEquipment()) {
+            if ((m.getLocation() == BattleArmor.LOC_SQUAD)
+                    && (m.getBaMountLoc() != BattleArmor.MOUNT_LOC_NONE)) {
+                crits.addMounted(m.getBaMountLoc(), m);
+            }
+        }
         for (Mounted mount : buildView.getTableModel().getCrits()) {
             for (int location = BattleArmor.MOUNT_LOC_BODY; 
                     location < BattleArmor.MOUNT_NUM_LOCS; location++) {
