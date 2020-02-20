@@ -109,7 +109,7 @@ public class EquipmentView extends IView implements ActionListener {
         while (miscTypes.hasMoreElements()) {
             EquipmentType eq = miscTypes.nextElement();
 
-            if (UnitUtil.isUnitEquipment(eq, eSource.getEntity())) {
+            if (UnitUtil.isTankEquipment(eq, getTank())) {
                 masterEquipmentList.add(eq);
             }
         }
@@ -146,7 +146,7 @@ public class EquipmentView extends IView implements ActionListener {
             if (UnitUtil.isHeatSink(mount) || UnitUtil.isArmorOrStructure(mount.getType())) {
                 continue;
             }
-            if (UnitUtil.isUnitEquipment(mount.getType(), getTank())) {
+            if (UnitUtil.isTankEquipment(mount.getType(), getTank())) {
                 equipmentList.addCrit(mount);
             }
         }

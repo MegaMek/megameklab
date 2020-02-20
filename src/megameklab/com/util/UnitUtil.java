@@ -2535,23 +2535,6 @@ public class UnitUtil {
         return UnitUtil.isMechWeapon(eq, unit);
     }
 
-    /**
-     * @deprecated Use {@link #isEntityEquipment(EquipmentType, Entity)}
-     * There are two methods that do the same thing, but this one hasn't been updated.
-     */
-    @Deprecated
-    public static boolean isUnitEquipment(EquipmentType eq, Entity unit) {
-        if (unit instanceof Tank) {
-            return UnitUtil.isTankEquipment(eq, unit instanceof VTOL);
-        }
-
-        if (unit instanceof BattleArmor) {
-            return UnitUtil.isBattleArmorEquipment(eq);
-        }
-
-        return UnitUtil.isMechEquipment(eq, (Mech) unit);
-    }
-
     public static boolean isMechWeapon(EquipmentType eq, Entity unit) {
         if (eq instanceof InfantryWeapon) {
             return false;
@@ -2860,22 +2843,12 @@ public class UnitUtil {
         return true;
     }
     
-    public static boolean isTankEquipment(EquipmentType eq, Tank tank) {
-        if (eq instanceof MiscType) {
-            if (tank.hasETypeFlag(Entity.ETYPE_VTOL)){
-                return eq.hasFlag(MiscType.F_TANK_EQUIPMENT)
-                        || eq.hasFlag(MiscType.F_VTOL_EQUIPMENT);
-            } else {
-                return eq.hasFlag(MiscType.F_TANK_EQUIPMENT);
-            } 
-        } else if (eq instanceof WeaponType) {
-            return isTankWeapon(eq, tank);
-        }
-        return true;
-    }
-
     public static boolean isTankWeapon(EquipmentType eq, Entity unit) {
         if (eq instanceof InfantryWeapon) {
+            return false;
+        }
+        // Some weapons such as TAG and C3M should show as non-weapon equipment
+        if (isTankMiscEquipment(eq, unit)) {
             return false;
         }
 
@@ -2926,7 +2899,8 @@ public class UnitUtil {
                     return false;
                 }
             }
-            return true;
+
+            return TestTank.legalForMotiveType(weapon, unit.getMovementMode());
         }
         return false;
     }
@@ -3022,17 +2996,28 @@ public class UnitUtil {
         return eq instanceof InfantryWeapon;
     }
 
-    public static boolean isTankEquipment(EquipmentType eq, boolean isVTOL) {
+    /**
+     * Tests whether equipment should be shown on the equipment tab for the unit. This is
+     * used for both combat vehicles and non-aerospace support vehicles.
+     * @param eq   The equipment to show
+     * @param tank The tank
+     * @return     Whether the equipment should show on the table
+     */
+    public static boolean isTankEquipment(EquipmentType eq, Tank tank) {
+        return isTankMiscEquipment(eq, tank) || isTankWeapon(eq, tank);
+    }
 
+    /**
+     * Tests whether equipment should be shown on the equipment tab for the unit as non-weapon
+     * equipment. This is used for both combat vehicles and non-aerospace support vehicles.
+     * @param eq   The equipment to show
+     * @param tank The tank
+     * @return     Whether the equipment should show on the table
+     */
+    public static boolean isTankMiscEquipment(EquipmentType eq, Entity tank) {
         if (UnitUtil.isArmorOrStructure(eq)) {
             return false;
         }
-
-        // Chassis modifications should be ignored, as they will be added
-        // via checkboxes, and not shown as equipment
-        //if (eq.hasFlag(MiscType.F_CHASSIS_MODIFICATION)) {
-        //    return false;
-        //}
 
         // Display AMS as equipment (even though it's a weapon)
         if (eq.hasFlag(WeaponType.F_AMS)
@@ -3046,33 +3031,19 @@ public class UnitUtil {
             return true;
         }
 
-        if ((eq instanceof MiscType) && eq.hasFlag(MiscType.F_TANK_EQUIPMENT)) {
-            return true;
+        if (eq instanceof MiscType) {
+            if (!TestTank.legalForMotiveType(eq, tank.getMovementMode())) {
+                return false;
+            }
+            if (eq.hasFlag(MiscType.F_VTOL_EQUIPMENT) && (tank instanceof VTOL)) {
+                return true;
+            }
+            if (tank.isSupportVehicle()) {
+                return eq.hasFlag(MiscType.F_SUPPORT_TANK_EQUIPMENT);
+            } else {
+                return eq.hasFlag(MiscType.F_TANK_EQUIPMENT);
+            }
         }
-
-        if ((eq instanceof MiscType) && eq.hasFlag(MiscType.F_VTOL_EQUIPMENT)
-                && isVTOL) { // Mast Mount!
-            return true;
-        }
-
-        return false;
-    }
-
-    public static boolean isBattleArmorEquipment(EquipmentType eq) {
-
-        if (UnitUtil.isArmorOrStructure(eq)) {
-            return false;
-        }
-
-        if ((eq instanceof CLBALightTAG) || (eq instanceof ISBALightTAG)) {
-            return true;
-        }
-
-        if ((eq instanceof MiscType) && eq.hasFlag(MiscType.F_BA_EQUIPMENT)) {
-            return true;
-
-        }
-
         return false;
     }
 

@@ -584,7 +584,7 @@ public class EquipmentTab extends ITab implements ActionListener {
                     return false;
                 }
                 BattleArmor ba = getBattleArmor();
-                if (((nType == T_OTHER) && UnitUtil.isUnitEquipment(etype, ba))
+                if (((nType == T_OTHER) && UnitUtil.isBAEquipment(etype, ba))
                         || (((nType == T_WEAPON) && (UnitUtil.isUnitWeapon(etype, ba))))
                         || ((nType == T_ENERGY) && UnitUtil.isUnitWeapon(etype, ba)
                             && (wtype != null) && (wtype.hasFlag(WeaponType.F_ENERGY)
