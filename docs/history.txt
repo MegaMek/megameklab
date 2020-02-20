@@ -10,6 +10,10 @@ VERSION HISTORY:
 + Issue #448: Bay doors are free on support vehicles
 + Issue #451: VTOL rotors not included in Unit Cost Breakdown
 + Issue #453: Light fluid suction system has the wrong weight
++ Issue #444: Aerospace Fighter's Preview says that reduced Heat Sink is damaged.
++ Issue #450: Trouble adding jet boosters to support VTOLs
++ Issue #452: Engine ratings on combat vehicles not automatically rounded up to a multiple of 5 for cost purposes
++ Issue #459: Cost for combat vehicle internal structure is based on unrounded values
 
 v0.47.4 (2020-2-09 2200 UTC)
 + Issue #416: Issue with Crit Splitting on the Right Torso with big Artillery cannons/Arrow IV
