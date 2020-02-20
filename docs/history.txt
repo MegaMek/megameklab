@@ -14,6 +14,10 @@ VERSION HISTORY:
 + Issue #450: Trouble adding jet boosters to support VTOLs
 + Issue #452: Engine ratings on combat vehicles not automatically rounded up to a multiple of 5 for cost purposes
 + Issue #459: Cost for combat vehicle internal structure is based on unrounded values
++ Issue #440: Combat Vehicle Chassis Mod [Flotation Hull] can be added to non hovercraft, VTOLs, WiGEs, and conventional fighters
++ Issue #443: Auto Fill on Battle Armor puts more slots than the part can sustain
++ Issue #457: Can't add Maritime Escape Pod
++ Issue #460: Cost for heavy support lasers on a support vehicle includes half a ton of power amplifiers
 
 v0.47.4 (2020-2-09 2200 UTC)
 + Issue #416: Issue with Crit Splitting on the Right Torso with big Artillery cannons/Arrow IV
