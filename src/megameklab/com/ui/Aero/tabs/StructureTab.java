@@ -380,6 +380,7 @@ public class StructureTab extends ITab implements AeroBuildListener, ArmorAlloca
     @Override
     public void heatSinksChanged(int index, int count) {
         getAero().setHeatType(index);
+        getAero().setOHeatSinks(count);
         getAero().setHeatSinks(count);
         if (getAero().isOmni()) {
             getAero().setPodHeatSinks(Math.max(0, count - panHeat.getBaseCount()));

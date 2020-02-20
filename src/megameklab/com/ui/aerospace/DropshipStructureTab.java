@@ -295,6 +295,7 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener,
     public void heatSinksChanged(int index, int count) {
         getSmallCraft().setHeatType(index);
         getSmallCraft().setHeatSinks(count);
+        getSmallCraft().setOHeatSinks(count);
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
