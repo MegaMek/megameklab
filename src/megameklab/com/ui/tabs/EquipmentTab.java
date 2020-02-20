@@ -114,7 +114,8 @@ public class EquipmentTab extends ITab implements ActionListener {
                 && !eq.hasFlag(MiscType.F_TSM)
                 && !eq.hasFlag(MiscType.F_INDUSTRIAL_TSM)
                 && !(eq.hasFlag(MiscType.F_MASC)
-                        && !eq.hasSubType(MiscType.S_SUPERCHARGER))
+                        && !eq.hasSubType(MiscType.S_SUPERCHARGER)
+                        && !eq.hasSubType(MiscType.S_JETBOOSTER))
                 && !(en.hasETypeFlag(Entity.ETYPE_QUADVEE) && eq.hasFlag(MiscType.F_TRACKS))
                 && !UnitUtil.isArmorOrStructure(eq)
                 && !eq.hasFlag(MiscType.F_CHASSIS_MODIFICATION)
@@ -124,7 +125,7 @@ public class EquipmentTab extends ITab implements ActionListener {
                 && !eq.hasFlag(MiscType.F_SPONSON_TURRET)
                 && !eq.hasFlag(MiscType.F_PINTLE_TURRET)
                 || (eq instanceof TAGWeapon));
-        
+
         private final String displayName;
         private final BiFunction<EquipmentType, Entity, Boolean> filter;
         private final Function<Entity, Boolean> showForEntity;
@@ -448,7 +449,8 @@ public class EquipmentTab extends ITab implements ActionListener {
                     || etype.hasFlag(MiscType.F_TSM)
                     || etype.hasFlag(MiscType.F_INDUSTRIAL_TSM)
                     || (etype.hasFlag(MiscType.F_MASC) 
-                            && !etype.hasSubType(MiscType.S_SUPERCHARGER))
+                            && !etype.hasSubType(MiscType.S_SUPERCHARGER)
+                            && !etype.hasSubType(MiscType.S_JETBOOSTER))
                     || ((eSource.getEntity().getEntityType() & Entity.ETYPE_QUADVEE) == Entity.ETYPE_QUADVEE
                         && etype.hasFlag(MiscType.F_TRACKS))
                     || etype.hasFlag(MiscType.F_CHASSIS_MODIFICATION)
