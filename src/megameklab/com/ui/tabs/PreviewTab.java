@@ -59,6 +59,7 @@ public class PreviewTab extends ITab {
 	public void refresh() {
 		boolean populateTextFields = true;
 		final Entity selectedUnit = eSource.getEntity();
+		selectedUnit.recalculateTechAdvancement();
         MechView mechView = null;
         TROView troView = null;
         try {
@@ -69,7 +70,7 @@ public class PreviewTab extends ITab {
             // error unit didn't load right. this is bad news.
             populateTextFields = false;
         }
-        if (populateTextFields && (mechView != null)) {
+        if (populateTextFields) {
             panelMekView.setMech(selectedUnit, mechView);
             panelTROView.setMech(selectedUnit, troView);
         } else {

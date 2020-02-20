@@ -665,6 +665,7 @@ public class StructureTab extends ITab implements MekBuildListener, ArmorAllocat
         panPatchwork.setFromEntity(getMech());
         refresh.refreshBuild();
         addAllListeners();
+        refresh.refreshPreview();
     }
 
     @Override

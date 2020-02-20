@@ -355,6 +355,7 @@ public class StructureTab extends ITab implements CVBuildListener, ArmorAllocati
         panArmorAllocation.setFromEntity(getTank());
         panPatchwork.setFromEntity(getTank());
         addAllListeners();
+        refresh.refreshPreview();
     }
 
     @Override

@@ -370,6 +370,7 @@ public class StructureTab extends ITab implements InfantryBuildListener {
         armorView.refresh();
         specializationView.refresh();
         augmentationView.refresh();
+        refresh.refreshPreview();
     }
 
     @Override

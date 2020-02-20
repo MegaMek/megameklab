@@ -476,6 +476,7 @@ public class StructureTab extends ITab implements ActionListener, BABuildListene
         }
         armorTypeChanged(panArmor.getArmor());
         addAllListeners();
+        refresh.refreshPreview();
     }
 
     @Override
