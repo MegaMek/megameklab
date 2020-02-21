@@ -70,6 +70,7 @@ import megamek.common.SupportVTOL;
 import megamek.common.Tank;
 import megamek.common.VTOL;
 import megamek.common.WeaponType;
+import megamek.common.verifier.TestTank;
 import megamek.common.weapons.artillery.ArtilleryWeapon;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
@@ -464,6 +465,8 @@ public class EquipmentTab extends ITab implements ActionListener {
                 int loc = Entity.LOC_NONE;
                 if (isMisc && equip.hasFlag(MiscType.F_MAST_MOUNT)) {
                     loc = VTOL.LOC_ROTOR;
+                } else if (TestTank.isBodyEquipment(equip)) {
+                    loc = Tank.LOC_BODY;
                 }
                 getTank().addEquipment(mount, loc, false);
                 success = true;
