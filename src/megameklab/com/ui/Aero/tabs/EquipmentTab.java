@@ -648,8 +648,8 @@ public class EquipmentTab extends ITab implements ActionListener {
                                 && (wtype != null) && (wtype.isCapital()
                                         || (wtype.getAmmoType() == AmmoType.T_SCREEN_LAUNCHER)))
                         || ((nType == T_ARTILLERY) && UnitUtil.isAeroWeapon(etype, aero)
-                                && (wtype != null) && (wtype instanceof ArtilleryWeapon))
-                        || (((nType == T_AMMO) & (atype != null)) && UnitUtil.canUseAmmo(aero, atype))) {
+                                && (wtype instanceof ArtilleryWeapon))
+                        || (((nType == T_AMMO) & (atype != null)) && UnitUtil.canUseAmmo(aero, atype, false))) {
                     if (!eSource.getTechManager().isLegal(etype) && !chkShowAll.isSelected()) {
                         return false;
                     }

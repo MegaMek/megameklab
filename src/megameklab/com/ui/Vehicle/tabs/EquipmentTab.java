@@ -575,8 +575,8 @@ public class EquipmentTab extends ITab implements ActionListener {
                             && (wtype != null) && ((wtype.hasFlag(WeaponType.F_MISSILE)
                                     && (wtype.getAmmoType() != AmmoType.T_NA)) || (wtype.getAmmoType() == AmmoType.T_C3_REMOTE_SENSOR)))
                         || ((nType == T_ARTILLERY) && UnitUtil.isTankWeapon(etype, tank)
-                            && (wtype != null) && (wtype instanceof ArtilleryWeapon))
-                        || (((nType == T_AMMO) & (atype != null)) && UnitUtil.canUseAmmo(tank, atype))) {
+                            && (wtype instanceof ArtilleryWeapon))
+                        || (((nType == T_AMMO) & (atype != null)) && UnitUtil.canUseAmmo(tank, atype, false))) {
                     if (!eSource.getTechManager().isLegal(etype)
                             && !chkShowAll.isSelected()) {
                         return false;
