@@ -19,6 +19,7 @@ VERSION HISTORY:
 + Issue #457: Can't add Maritime Escape Pod
 + Issue #460: Cost for heavy support lasers on a support vehicle includes half a ton of power amplifiers
 + Issue #456: Save menu command does nothing when unit is invalid
++ Issue #455: Spot welders aren't treated as energy weapons
 
 v0.47.4 (2020-2-09 2200 UTC)
 + Issue #416: Issue with Crit Splitting on the Right Torso with big Artillery cannons/Arrow IV
