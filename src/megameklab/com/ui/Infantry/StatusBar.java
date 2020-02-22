@@ -16,10 +16,7 @@
 
 package megameklab.com.ui.Infantry;
 
-import java.awt.FileDialog;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.awt.*;
 import java.io.File;
 import java.text.DecimalFormat;
 
@@ -35,20 +32,16 @@ import megameklab.com.util.UnitUtil;
 
 public class StatusBar extends ITab {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = -6754327753693500675L;
 
-    private JButton btnValidate = new JButton("Validate Unit");
-    private JButton btnFluffImage = new JButton("Set Fluff Image");
-    private JLabel move = new JLabel();
-    private JLabel damage = new JLabel();
-    private JLabel bvLabel = new JLabel();
-    private JLabel tons = new JLabel();
-    private JLabel cost = new JLabel();
-    private DecimalFormat formatter;
-    private JFrame parentFrame;
+    private final JLabel move = new JLabel();
+    private final JLabel damage = new JLabel();
+    private final JLabel bvLabel = new JLabel();
+    private final JLabel tons = new JLabel();
+    private final JLabel cost = new JLabel();
+    private final JLabel invalid = new JLabel();
+    private final DecimalFormat formatter;
+    private final JFrame parentFrame;
 
     private RefreshListener refresh;
 
@@ -57,17 +50,13 @@ public class StatusBar extends ITab {
         this.parentFrame = parent;
 
         formatter = new DecimalFormat();
-        btnValidate.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                UnitUtil.showValidation(getInfantry(), getParentFrame());
-            }
-        });
-        btnFluffImage.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                getFluffImage();
-            }
-        });
-
+        JButton btnValidate = new JButton("Validate Unit");
+        btnValidate.addActionListener(evt -> UnitUtil.showValidation(getInfantry(), getParentFrame()));
+        JButton btnFluffImage = new JButton("Set Fluff Image");
+        btnFluffImage.addActionListener(evt -> getFluffImage());
+        invalid.setText("Invalid");
+        invalid.setForeground(Color.RED);
+        invalid.setVisible(false);
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -86,20 +75,19 @@ public class StatusBar extends ITab {
         gbc.gridx = 5;
         this.add(bvLabel, gbc);
         gbc.gridx = 6;
+        this.add(invalid, gbc);
+        gbc.gridx = 7;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
         this.add(cost, gbc);
-
-
         refresh();
     }
 
     public void refresh() {
-
         DecimalFormat roundFormat = new DecimalFormat("#.##");
         double currentTonnage;
         int bv = getInfantry().calculateBattleValue();
-        long currentCost = (long) Math.round(getInfantry().getCost(false));
+        long currentCost = Math.round(getInfantry().getCost(false));
 
         currentTonnage = getInfantry().getWeight();
 
@@ -113,7 +101,9 @@ public class StatusBar extends ITab {
         bvLabel.setToolTipText("BV 2.0");
 
         cost.setText("Cost: " + formatter.format(currentCost) + " C-bills");
-
+        String str = UnitUtil.validateUnit(getInfantry());
+        invalid.setVisible(!str.isEmpty());
+        invalid.setToolTipText(str);
     }
 
     private void getFluffImage() {
@@ -139,11 +129,10 @@ public class StatusBar extends ITab {
 
         if (fDialog.getFile() != null) {
             String relativeFilePath = new File(fDialog.getDirectory() + fDialog.getFile()).getAbsolutePath();
-            relativeFilePath = "." + File.separatorChar + relativeFilePath.substring(new File(System.getProperty("user.dir").toString()).getAbsolutePath().length() + 1);
+            relativeFilePath = "." + File.separatorChar + relativeFilePath.substring(new File(System.getProperty("user.dir")).getAbsolutePath().length() + 1);
             getInfantry().getFluff().setMMLImagePath(relativeFilePath);
         }
         refresh.refreshPreview();
-        return;
     }
 
     private JFrame getParentFrame() {

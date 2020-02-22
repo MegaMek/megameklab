@@ -20,6 +20,14 @@ VERSION HISTORY:
 + Issue #460: Cost for heavy support lasers on a support vehicle includes half a ton of power amplifiers
 + Issue #456: Save menu command does nothing when unit is invalid
 + Issue #455: Spot welders aren't treated as energy weapons
++ Issue #480: "Vacuum protection requires fusion engine" neither true nor applicable to environmental sealing
++ Issue #461: Removed items of Aerospace Fighter are still on the equipment list
++ Issue #463: Can't mount non-weapon equipment in pintle mounts
++ Issue #466: Preview summary screen does not update era availability
++ Issue #471: Trouble telling whether a unit is valid or not
++ Issue #474: Adding/removing Environmental Sealing to/from critical slots on combat vehicles
++ Issue #479: Additional tons of ammunition for one-shot missile launchers available
++ Issue #483: VTOL Jet Booster on a combat VTOL disappears from Equipment tab once assigned a location
 
 v0.47.4 (2020-2-09 2200 UTC)
 + Issue #416: Issue with Crit Splitting on the Right Torso with big Artillery cannons/Arrow IV

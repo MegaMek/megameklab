@@ -372,6 +372,7 @@ public class ProtomekStructureTab extends ITab implements ProtomekBuildListener,
         panArmorAllocation.setFromEntity(getProtomech());
         refresh.refreshBuild();
         addAllListeners();
+        refresh.refreshPreview();
     }
 
     @Override

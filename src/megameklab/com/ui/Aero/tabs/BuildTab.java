@@ -28,6 +28,7 @@ import javax.swing.JPanel;
 
 import megamek.common.Entity;
 import megamek.common.Mounted;
+import megamek.common.verifier.TestAero;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.Aero.views.BuildView;
 import megameklab.com.ui.Aero.views.CriticalView;
@@ -103,7 +104,8 @@ public class BuildTab extends ITab implements ActionListener {
 
     private void resetCrits() {
         for (Mounted mount : getAero().getEquipment()) {
-            if (!UnitUtil.isFixedLocationSpreadEquipment(mount.getType())) {
+            if (!mount.isWeaponGroup() && TestAero.eqRequiresLocation(mount.getType(), true)
+                    && !UnitUtil.isFixedLocationSpreadEquipment(mount.getType())) {
                 UnitUtil.removeCriticals(getAero(), mount);
                 UnitUtil.changeMountStatus(getAero(), mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
             }

@@ -41,6 +41,7 @@ class SVStatusBar extends ITab {
     private final JLabel tons = new JLabel();
     private final JLabel slots = new JLabel();
     private final JLabel cost = new JLabel();
+    private final JLabel invalid = new JLabel();
     private final EntityVerifier entityVerifier = EntityVerifier.getInstance(new File(
             "data/mechfiles/UnitVerifierOptions.xml"));
     private TestSupportVehicle testEntity;
@@ -58,6 +59,9 @@ class SVStatusBar extends ITab {
         btnValidate.addActionListener(evt -> UnitUtil.showValidation(parent.getEntity(), getParentFrame()));
         JButton btnFluffImage = new JButton("Set Fluff Image");
         btnFluffImage.addActionListener(evt -> getFluffImage());
+        invalid.setText("Invalid");
+        invalid.setForeground(Color.RED);
+        invalid.setVisible(false);
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -76,10 +80,12 @@ class SVStatusBar extends ITab {
         gbc.gridx = 5;
         this.add(bvLabel, gbc);
         gbc.gridx = 6;
-        this.add(tonnageLabel());
+        this.add(tonnageLabel(), gbc);
         gbc.gridx = 7;
-        this.add(slotsPanel());
+        this.add(slotsPanel(), gbc);
         gbc.gridx = 8;
+        this.add(invalid, gbc);
+        gbc.gridx = 9;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
         this.add(cost, gbc);
@@ -161,7 +167,9 @@ class SVStatusBar extends ITab {
 
         move.setText("Movement: " + walk + "/" + run + "/" + jump);
         move.setToolTipText("Walk/Run/Jump MP");
-
+        StringBuffer sb = new StringBuffer();
+        invalid.setVisible(!testEntity.correctEntity(sb));
+        invalid.setToolTipText(sb.toString());
     }
 
     private void getFluffImage() {

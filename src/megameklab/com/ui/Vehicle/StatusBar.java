@@ -32,7 +32,6 @@ import javax.swing.UIManager;
 
 import megamek.common.Tank;
 import megamek.common.verifier.EntityVerifier;
-import megamek.common.verifier.TestSupportVehicle;
 import megamek.common.verifier.TestTank;
 import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.util.ITab;
@@ -42,24 +41,20 @@ import megameklab.com.util.UnitUtil;
 
 public class StatusBar extends ITab {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = -6754327753693500675L;
 
-    private JButton btnValidate = new JButton("Validate Unit");
-    private JButton btnFluffImage = new JButton("Set Fluff Image");
-    private JPanel slotsPanel = new JPanel();
-    private JLabel move = new JLabel();
-    private JLabel bvLabel = new JLabel();
-    private JLabel tons = new JLabel();
-    private JLabel slots = new JLabel();
-    private JLabel cost = new JLabel();
-    private EntityVerifier entityVerifier = EntityVerifier.getInstance(new File(
+    private final JPanel slotsPanel = new JPanel();
+    private final JLabel move = new JLabel();
+    private final JLabel bvLabel = new JLabel();
+    private final JLabel tons = new JLabel();
+    private final JLabel slots = new JLabel();
+    private final JLabel cost = new JLabel();
+    private final JLabel invalid = new JLabel();
+    private final EntityVerifier entityVerifier = EntityVerifier.getInstance(new File(
             "data/mechfiles/UnitVerifierOptions.xml"));
-    private TestTank testEntity = null;
-    private DecimalFormat formatter;
-    private JFrame parentFrame;
+    private TestTank testEntity;
+    private final DecimalFormat formatter;
+    private final JFrame parentFrame;
 
     private RefreshListener refresh;
 
@@ -70,16 +65,13 @@ public class StatusBar extends ITab {
         formatter = new DecimalFormat();
         testEntity = new TestTank((Tank) parent.getEntity(), entityVerifier.tankOption,
                 null);
-        btnValidate.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                UnitUtil.showValidation(getTank(), getParentFrame());
-            }
-        });
-        btnFluffImage.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                getFluffImage();
-            }
-        });
+        JButton btnValidate = new JButton("Validate Unit");
+        btnValidate.addActionListener(evt -> UnitUtil.showValidation(getTank(), getParentFrame()));
+        JButton btnFluffImage = new JButton("Set Fluff Image");
+        btnFluffImage.addActionListener(evt -> getFluffImage());
+        invalid.setText("Invalid");
+        invalid.setForeground(Color.RED);
+        invalid.setVisible(false);
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -98,14 +90,20 @@ public class StatusBar extends ITab {
         gbc.gridx = 5;
         this.add(bvLabel, gbc);
         gbc.gridx = 6;
-        this.add(tonnageLabel());
+        this.add(tonnageLabel(), gbc);
         gbc.gridx = 7;
-        this.add(slotsPanel());
+        this.add(slotsPanel(), gbc);
         gbc.gridx = 8;
+        this.add(invalid, gbc);
+        gbc.gridx = 9;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
         this.add(cost, gbc);
         refresh();
+    }
+
+    public void setRefreshListener(RefreshListener refresh) {
+        this.refresh = refresh;
     }
 
     public JLabel movementLabel() {
@@ -144,7 +142,6 @@ public class StatusBar extends ITab {
     }
 
     public void refresh() {
-
         int walk = getTank().getOriginalWalkMP();
         int run = getTank().getRunMP(true, true, false);
         int jump = getTank().getOriginalJumpMP();
@@ -152,13 +149,13 @@ public class StatusBar extends ITab {
         double currentTonnage;
         int bv = getTank().calculateBattleValue();
 
-        testEntity = new TestTank((Tank) getTank(), entityVerifier.tankOption,
+        testEntity = new TestTank(getTank(), entityVerifier.tankOption,
                 null);
 
         currentTonnage = testEntity.calculateWeight();
 
         currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getTank());
-        long currentCost = (long) Math.round(getTank().getCost(false));
+        long currentCost = Math.round(getTank().getCost(false));
 
         tons.setText("Tonnage: " + currentTonnage + "/" + tonnage);
         tons.setToolTipText("Current Tonnage/Max Tonnage");
@@ -183,7 +180,9 @@ public class StatusBar extends ITab {
 
         move.setText("Movement: " + walk + "/" + run + "/" + jump);
         move.setToolTipText("Walk/Run/Jump MP");
-
+        StringBuffer sb = new StringBuffer();
+        invalid.setVisible(!testEntity.correctEntity(sb));
+        invalid.setToolTipText(sb.toString());
     }
 
     private void getFluffImage() {
@@ -209,11 +208,13 @@ public class StatusBar extends ITab {
 
         if (fDialog.getFile() != null) {
             String relativeFilePath = new File(fDialog.getDirectory() + fDialog.getFile()).getAbsolutePath();
-            relativeFilePath = "." + File.separatorChar + relativeFilePath.substring(new File(System.getProperty("user.dir").toString()).getAbsolutePath().length() + 1);
+            relativeFilePath = "." + File.separatorChar + relativeFilePath
+                    .substring(new File(System.getProperty("user.dir")).getAbsolutePath().length() + 1);
             getTank().getFluff().setMMLImagePath(relativeFilePath);
         }
-        refresh.refreshPreview();
-        return;
+        if (refresh != null) {
+            refresh.refreshPreview();
+        }
     }
 
     private JFrame getParentFrame() {

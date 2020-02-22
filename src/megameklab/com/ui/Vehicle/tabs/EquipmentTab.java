@@ -70,6 +70,7 @@ import megamek.common.SupportVTOL;
 import megamek.common.Tank;
 import megamek.common.VTOL;
 import megamek.common.WeaponType;
+import megamek.common.verifier.TestTank;
 import megamek.common.weapons.artillery.ArtilleryWeapon;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
@@ -364,7 +365,6 @@ public class EquipmentTab extends ITab implements ActionListener {
     }
 
     private void loadEquipmentTable() {
-
         for (Mounted mount : getTank().getWeaponList()) {
             equipmentList.addCrit(mount);
         }
@@ -373,32 +373,24 @@ public class EquipmentTab extends ITab implements ActionListener {
             equipmentList.addCrit(mount);
         }
 
-        List<EquipmentType> spreadAlreadyAdded = new ArrayList<EquipmentType>();
+        List<EquipmentType> spreadAlreadyAdded = new ArrayList<>();
 
         for (Mounted mount : getTank().getMisc()) {
 
             EquipmentType etype = mount.getType();
-            if (UnitUtil.isHeatSink(mount)
-                    || etype.hasFlag(MiscType.F_JUMP_JET)
-                    || etype.hasFlag(MiscType.F_JUMP_BOOSTER)
-                    || etype.hasFlag(MiscType.F_TSM)
-                    || etype.hasFlag(MiscType.F_INDUSTRIAL_TSM)
-                    || (etype.hasFlag(MiscType.F_MASC)
-                            && !etype.hasSubType(MiscType.S_SUPERCHARGER))
+            if (etype.hasFlag(MiscType.F_JUMP_JET)
                     || UnitUtil.isArmorOrStructure(etype)) {
                 continue;
             }
-            //if (UnitUtil.isUnitEquipment(mount.getType(), unit) || UnitUtil.isUn) {
-                if (UnitUtil.isFixedLocationSpreadEquipment(etype)
-                        && !spreadAlreadyAdded.contains(etype)) {
-                    equipmentList.addCrit(mount);
-                    // keep track of spreadable equipment here, so it doesn't
-                    // show up multiple times in the table
-                    spreadAlreadyAdded.add(etype);
-                } else {
-                    equipmentList.addCrit(mount);
-                }
-            //}
+            if (UnitUtil.isFixedLocationSpreadEquipment(etype)
+                    && !spreadAlreadyAdded.contains(etype)) {
+                equipmentList.addCrit(mount);
+                // keep track of spreadable equipment here, so it doesn't
+                // show up multiple times in the table
+                spreadAlreadyAdded.add(etype);
+            } else {
+                equipmentList.addCrit(mount);
+            }
         }
     }
 
@@ -464,6 +456,8 @@ public class EquipmentTab extends ITab implements ActionListener {
                 int loc = Entity.LOC_NONE;
                 if (isMisc && equip.hasFlag(MiscType.F_MAST_MOUNT)) {
                     loc = VTOL.LOC_ROTOR;
+                } else if (TestTank.isBodyEquipment(equip)) {
+                    loc = Tank.LOC_BODY;
                 }
                 getTank().addEquipment(mount, loc, false);
                 success = true;
@@ -555,14 +549,6 @@ public class EquipmentTab extends ITab implements ActionListener {
                 if (UnitUtil.isHeatSink(etype) || UnitUtil.isJumpJet(etype)) {
                     return false;
                 }
-                if ((etype instanceof MiscType)
-                        && (etype.hasFlag(MiscType.F_TSM)
-                                || etype.hasFlag(MiscType.F_INDUSTRIAL_TSM)
-                                || (etype.hasFlag(MiscType.F_MASC)
-                                        && !etype.hasSubType(MiscType.S_SUPERCHARGER)
-                                        && !etype.hasSubType(MiscType.S_JETBOOSTER)))) {
-                    return false;
-                }
                 if (((nType == T_OTHER) && UnitUtil.isTankMiscEquipment(etype, tank))
                         || (((nType == T_WEAPON) && (UnitUtil.isTankWeapon(etype, tank))))
                         || ((nType == T_ENERGY) && UnitUtil.isTankWeapon(etype, tank)
@@ -575,8 +561,8 @@ public class EquipmentTab extends ITab implements ActionListener {
                             && (wtype != null) && ((wtype.hasFlag(WeaponType.F_MISSILE)
                                     && (wtype.getAmmoType() != AmmoType.T_NA)) || (wtype.getAmmoType() == AmmoType.T_C3_REMOTE_SENSOR)))
                         || ((nType == T_ARTILLERY) && UnitUtil.isTankWeapon(etype, tank)
-                            && (wtype != null) && (wtype instanceof ArtilleryWeapon))
-                        || (((nType == T_AMMO) & (atype != null)) && UnitUtil.canUseAmmo(tank, atype))) {
+                            && (wtype instanceof ArtilleryWeapon))
+                        || (((nType == T_AMMO) & (atype != null)) && UnitUtil.canUseAmmo(tank, atype, false))) {
                     if (!eSource.getTechManager().isLegal(etype)
                             && !chkShowAll.isSelected()) {
                         return false;

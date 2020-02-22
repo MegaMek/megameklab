@@ -43,22 +43,17 @@ import megameklab.com.util.UnitUtil;
 
 public class StatusBar extends ITab {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = -6754327753693500675L;
 
-    private JButton btnValidate = new JButton("Validate Unit");
-    private JButton btnFluffImage = new JButton("Set Fluff Image");
-    private JLabel bvLabel = new JLabel();
-    private JLabel tons = new JLabel();
-    private JLabel heatSink = new JLabel();
-    private JLabel cost = new JLabel();
-    private EntityVerifier entityVerifier = EntityVerifier.getInstance(new File(
+    private final JLabel bvLabel = new JLabel();
+    private final JLabel tons = new JLabel();
+    private final JLabel heatSink = new JLabel();
+    private final JLabel cost = new JLabel();
+    private final JLabel invalid = new JLabel();
+    private final EntityVerifier entityVerifier = EntityVerifier.getInstance(new File(
             "data/mechfiles/UnitVerifierOptions.xml"));
-    private TestAero testAero = null;
-    private DecimalFormat formatter;
-    private JFrame parentFrame;
+    private final DecimalFormat formatter;
+    private final JFrame parentFrame;
 
     private RefreshListener refresh;
 
@@ -67,18 +62,13 @@ public class StatusBar extends ITab {
         parentFrame = parent;
 
         formatter = new DecimalFormat();
-        testAero = new TestAero(getAero(), entityVerifier.aeroOption, null);
-        btnValidate.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                UnitUtil.showValidation(getAero(), getParentFrame());
-            }
-        });
-        btnFluffImage.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                getFluffImage();
-            }
-        });
-        //btnFluffImage.setEnabled(false);
+        JButton btnValidate = new JButton("Validate Unit");
+        btnValidate.addActionListener(evt -> UnitUtil.showValidation(getAero(), getParentFrame()));
+        JButton btnFluffImage = new JButton("Set Fluff Image");
+        btnFluffImage.addActionListener(evt -> getFluffImage());
+        invalid.setText("Invalid");
+        invalid.setForeground(Color.RED);
+        invalid.setVisible(false);
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -95,6 +85,8 @@ public class StatusBar extends ITab {
         gbc.gridx = 4;
         this.add(bvLabel, gbc);
         gbc.gridx = 5;
+        this.add(invalid, gbc);
+        gbc.gridx = 6;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
         this.add(cost, gbc);
@@ -104,14 +96,13 @@ public class StatusBar extends ITab {
     }
 
     public void refresh() {
-
         int heat = getAero().getHeatCapacity();
         double tonnage = getAero().getWeight();
         double currentTonnage;
         int bv = getAero().calculateBattleValue();
-        long currentCost = (long) Math.round(getAero().getCost(false));
+        long currentCost = Math.round(getAero().getCost(false));
 
-        testAero = new TestAero(getAero(), entityVerifier.aeroOption, null);
+        TestAero testAero = new TestAero(getAero(), entityVerifier.aeroOption, null);
 
         currentTonnage = testAero.calculateWeight();
         currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getAero());
@@ -139,6 +130,9 @@ public class StatusBar extends ITab {
         bvLabel.setToolTipText("BV 2.0");
 
         cost.setText("Cost: " + formatter.format(currentCost) + " C-bills");
+        StringBuffer sb = new StringBuffer();
+        invalid.setVisible(!testAero.correctEntity(sb));
+        invalid.setToolTipText(sb.toString());
     }
 
     public double calculateTotalHeat() {
@@ -205,12 +199,10 @@ public class StatusBar extends ITab {
             relativeFilePath = "."
                     + File.separatorChar
                     + relativeFilePath
-                            .substring(new File(System.getProperty("user.dir")
-                                    .toString()).getAbsolutePath().length() + 1);
+                            .substring(new File(System.getProperty("user.dir")).getAbsolutePath().length() + 1);
             getAero().getFluff().setMMLImagePath(relativeFilePath);
         }
         refresh.refreshPreview();
-        return;
     }
 
     private JFrame getParentFrame() {

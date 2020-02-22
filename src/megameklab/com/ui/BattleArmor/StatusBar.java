@@ -41,14 +41,8 @@ import megameklab.com.util.UnitUtil;
 
 public class StatusBar extends ITab {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = -6754327753693500675L;
 
-    private final JButton btnValidate = new JButton("Validate Unit");
-    private final JButton btnFluffImage = new JButton("Set Fluff Image");
-    
     private final JPanel tonnagePanel = new JPanel();
     private final JPanel movementPanel = new JPanel();
     private final JPanel bvPanel = new JPanel();
@@ -57,31 +51,24 @@ public class StatusBar extends ITab {
     private final JLabel bvLabel = new JLabel();
     private final JLabel tons = new JLabel();
     private final JLabel cost = new JLabel();
-    
+    private final JLabel invalid = new JLabel();
     private final EntityVerifier entityVerifier = EntityVerifier.getInstance(new File(
             "data/mechfiles/UnitVerifierOptions.xml"));
-    
-    private TestBattleArmor testBA = null;
     private final DecimalFormat formatter;
-    private JFrame parentFrame;
+    private final JFrame parentFrame;
 
     private RefreshListener refresh;
     public StatusBar(final MegaMekLabMainUI parent) {
         super(parent);
-        
+        parentFrame = parent;
         formatter = new DecimalFormat();
-        btnValidate.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(final java.awt.event.ActionEvent evt) {
-                UnitUtil.showValidation(getBattleArmor(), getParentFrame());
-            }
-        });
-        btnFluffImage.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(final java.awt.event.ActionEvent evt) {
-                getFluffImage();
-            }
-        });
-        
-
+        JButton btnValidate = new JButton("Validate Unit");
+        btnValidate.addActionListener(evt -> UnitUtil.showValidation(getBattleArmor(), getParentFrame()));
+        JButton btnFluffImage = new JButton("Set Fluff Image");
+        btnFluffImage.addActionListener(evt -> getFluffImage());
+        invalid.setText("Invalid");
+        invalid.setForeground(Color.RED);
+        invalid.setVisible(false);
         setLayout(new GridBagLayout());
         this.add(movementPanel());
         this.add(bvPanel());
@@ -102,6 +89,8 @@ public class StatusBar extends ITab {
         gbc.gridx = 4;
         this.add(tonnagePanel, gbc);
         gbc.gridx = 5;
+        this.add(invalid, gbc);
+        gbc.gridx = 6;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
         this.add(cost, gbc);
@@ -139,9 +128,9 @@ public class StatusBar extends ITab {
         final double maxKilos = getBattleArmor().getTrooperWeight();
         double currentKilos;
         final int bv = getBattleArmor().calculateBattleValue();
-        final long currentCost = (long) Math.round(getBattleArmor().getCost(false));
+        final long currentCost = Math.round(getBattleArmor().getCost(false));
 
-        testBA = new TestBattleArmor(getBattleArmor(), entityVerifier.baOption,
+        TestBattleArmor testBA = new TestBattleArmor(getBattleArmor(), entityVerifier.baOption,
                 null);
         currentKilos = testBA.calculateWeight(BattleArmor.LOC_SQUAD);
         currentKilos += UnitUtil.getUnallocatedAmmoTonnage(getBattleArmor());
@@ -163,6 +152,9 @@ public class StatusBar extends ITab {
         move.setToolTipText("Walk/Jump MP");
 
         cost.setText("Squad Cost: " + formatter.format(currentCost) + " C-bills");
+        StringBuffer sb = new StringBuffer();
+        invalid.setVisible(!testBA.correctEntity(sb));
+        invalid.setToolTipText(sb.toString());
     }
     
     private void getFluffImage() {
@@ -182,12 +174,10 @@ public class StatusBar extends ITab {
             relativeFilePath = "."
                     + File.separatorChar
                     + relativeFilePath
-                            .substring(new File(System.getProperty("user.dir")
-                                    .toString()).getAbsolutePath().length() + 1);
+                            .substring(new File(System.getProperty("user.dir")).getAbsolutePath().length() + 1);
             getBattleArmor().getFluff().setMMLImagePath(relativeFilePath);
         }
         refresh.refreshPreview();
-        return;
     }
 
     private JFrame getParentFrame() {

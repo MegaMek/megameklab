@@ -46,22 +46,18 @@ import megameklab.com.util.UnitUtil;
 
 public class StatusBar extends ITab {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = -6754327753693500675L;
 
-    private JButton btnValidate = new JButton("Validate Unit");
-    private JButton btnFluffImage = new JButton("Set Fluff Image");
-    private JLabel crits = new JLabel();
-    private JLabel bvLabel = new JLabel();
-    private JLabel tons = new JLabel();
-    private JLabel heatSink = new JLabel();
-    private JLabel cost = new JLabel();
-    private EntityVerifier entityVerifier = EntityVerifier.getInstance(new File("data/mechfiles/UnitVerifierOptions.xml"));
-    private TestMech testEntity = null;
-    private DecimalFormat formatter;
-    private JFrame parentFrame;
+    private final JLabel crits = new JLabel();
+    private final JLabel bvLabel = new JLabel();
+    private final JLabel tons = new JLabel();
+    private final JLabel heatSink = new JLabel();
+    private final JLabel cost = new JLabel();
+    private final JLabel invalid = new JLabel();
+    private final EntityVerifier entityVerifier = EntityVerifier.getInstance(new File("data/mechfiles/UnitVerifierOptions.xml"));
+    private TestMech testEntity;
+    private final DecimalFormat formatter;
+    private final JFrame parentFrame;
 
     private RefreshListener refresh;
 
@@ -71,17 +67,13 @@ public class StatusBar extends ITab {
 
         formatter = new DecimalFormat();
         testEntity = new TestMech(getMech(), entityVerifier.mechOption, null);
-        btnValidate.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                UnitUtil.showValidation(getMech(), getParentFrame());
-            }
-        });
-        btnFluffImage.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                getFluffImage();
-            }
-        });
-        //btnFluffImage.setEnabled(false);
+        JButton btnValidate = new JButton("Validate Unit");
+        btnValidate.addActionListener(evt -> UnitUtil.showValidation(getMech(), getParentFrame()));
+        JButton btnFluffImage = new JButton("Set Fluff Image");
+        btnFluffImage.addActionListener(evt -> getFluffImage());
+        invalid.setText("Invalid");
+        invalid.setForeground(Color.RED);
+        invalid.setVisible(false);
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -100,16 +92,15 @@ public class StatusBar extends ITab {
         gbc.gridx = 5;
         this.add(bvLabel, gbc);
         gbc.gridx = 6;
+        this.add(invalid, gbc);
+        gbc.gridx = 7;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
         this.add(cost, gbc);
-
-
         refresh();
     }
 
     public void refresh() {
-
         int heat = getMech().getHeatCapacity();
         double tonnage = getMech().getWeight();
         double currentTonnage;
@@ -123,7 +114,7 @@ public class StatusBar extends ITab {
             maxCrits = 78;
         }
         int currentCrits = UnitUtil.countUsedCriticals(getMech());
-        long currentCost = (long) Math.round(getMech().getCost(false));
+        long currentCost = Math.round(getMech().getCost(false));
 
         testEntity = new TestMech(getMech(), entityVerifier.mechOption, null);
 
@@ -159,7 +150,9 @@ public class StatusBar extends ITab {
         } else {
             crits.setForeground(UIManager.getColor("Label.foreground"));
         }
-
+        StringBuffer sb = new StringBuffer();
+        invalid.setVisible(!testEntity.correctEntity(sb));
+        invalid.setToolTipText(sb.toString());
     }
 
     public double calculateTotalHeat() {
@@ -242,11 +235,10 @@ public class StatusBar extends ITab {
 
         if (fDialog.getFile() != null) {
             String relativeFilePath = new File(fDialog.getDirectory() + fDialog.getFile()).getAbsolutePath();
-            relativeFilePath = "." + File.separatorChar + relativeFilePath.substring(new File(System.getProperty("user.dir").toString()).getAbsolutePath().length() + 1);
+            relativeFilePath = "." + File.separatorChar + relativeFilePath.substring(new File(System.getProperty("user.dir")).getAbsolutePath().length() + 1);
             getMech().getFluff().setMMLImagePath(relativeFilePath);
         }
         refresh.refreshPreview();
-        return;
     }
 
     private JFrame getParentFrame() {
