@@ -1,6 +1,5 @@
 /*
- * MekBuilder - unit design companion of MegaMek
- * Copyright (C) 2017 The MegaMek Team
+ * MegaMekLab - Copyright (C) 2020 - The MegaMek Team
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -191,7 +190,7 @@ public class PrintAero extends PrintEntity {
         for (Transporter t : aero.getTransports()) {
             if (t instanceof TroopSpace) {
                 transport.merge("Infantry Bay", t.getUnused(), Double::sum);
-            // include carge bays for fighters and fixed wing, but small craft get a block for transport bays
+            // include cargo bays for fighters and fixed wing, but small craft get a block for transport bays
             } else if (t instanceof Bay && !((Bay) t).isQuarters() && !(aero instanceof SmallCraft)) {
                 transport.merge(((Bay) t).getType(), ((Bay) t).getCapacity(), Double::sum);
             }
