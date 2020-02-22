@@ -4096,18 +4096,6 @@ public class UnitUtil {
 
     /**
      * Checks whether the unit has an weapon that uses the ammo type and the munition is legal for the
-     * type of unit. This includes one-shot launchers.
-     * 
-     * @param unit The unit
-     * @param atype The ammo
-     * @return Whether the unit can make use of the ammo
-     */
-    public static boolean canUseAmmo(Entity unit, AmmoType atype) {
-        return canUseAmmo(unit, atype, true);
-    }
-    
-    /**
-     * Checks whether the unit has an weapon that uses the ammo type and the munition is legal for the
      * type of unit.
      * 
      * @param unit The unit
