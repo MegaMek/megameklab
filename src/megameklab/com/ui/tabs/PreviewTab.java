@@ -57,9 +57,9 @@ public class PreviewTab extends ITab {
 	}
 	
 	public void refresh() {
-		boolean populateTextFields = true;
-		final Entity selectedUnit = eSource.getEntity();
-		selectedUnit.recalculateTechAdvancement();
+        boolean populateTextFields = true;
+        final Entity selectedUnit = eSource.getEntity();
+        selectedUnit.recalculateTechAdvancement();
         MechView mechView = null;
         TROView troView = null;
         try {
