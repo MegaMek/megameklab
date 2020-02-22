@@ -187,8 +187,7 @@ public class UnitUtil {
      */
     public static boolean isMASC(EquipmentType eq) {
         return (eq instanceof MiscType)
-                && (eq.hasFlag(MiscType.F_MASC) && !eq
-                        .hasSubType(MiscType.S_SUPERCHARGER));
+                && (eq.hasFlag(MiscType.F_MASC) && eq.hasSubType(MiscType.S_STANDARD));
     }
 
     /**
@@ -4233,8 +4232,15 @@ public class UnitUtil {
         }
     }
 
+    /**
+     * Checks for any equipment that is added on the equipment tab and removes any that is
+     * no longer legal for the current year/tech base/tech level
+     * @param unit         The unit to check
+     * @param techManager  The manager that handles the checking
+     * @return             Whether any changes were made
+     */
     public static boolean checkEquipmentByTechLevel(Entity unit, ITechManager techManager) {
-        Vector<Mounted> toRemove = new Vector<Mounted>();
+        List<Mounted> toRemove = new ArrayList<>();
         ITechnology acTA = Entity.getArmoredComponentTechAdvancement();
         boolean dirty = false;
         for (Mounted m : unit.getEquipment()) {
@@ -4248,10 +4254,12 @@ public class UnitUtil {
                     || UnitUtil.isHeatSink(etype) || UnitUtil.isJumpJet(etype)) {
                 continue;
             }
-            if (etype.hasFlag(MiscType.F_TSM)
+            if (etype instanceof MiscType
+                    && (etype.hasFlag(MiscType.F_TSM)
                     || etype.hasFlag(MiscType.F_INDUSTRIAL_TSM)
-                    || (etype.hasFlag(MiscType.F_MASC) && !etype.hasSubType(MiscType.S_SUPERCHARGER))
-                    || etype.hasFlag(MiscType.F_SCM)) {
+                    || (etype.hasFlag(MiscType.F_MASC)
+                        && !etype.hasSubType(MiscType.S_SUPERCHARGER) && !etype.hasSubType(MiscType.S_JETBOOSTER))
+                    || etype.hasFlag(MiscType.F_SCM))) {
                 continue;
             }
             if (!techManager.isLegal(etype)) {

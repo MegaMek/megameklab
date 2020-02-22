@@ -365,7 +365,6 @@ public class EquipmentTab extends ITab implements ActionListener {
     }
 
     private void loadEquipmentTable() {
-
         for (Mounted mount : getTank().getWeaponList()) {
             equipmentList.addCrit(mount);
         }
@@ -374,32 +373,24 @@ public class EquipmentTab extends ITab implements ActionListener {
             equipmentList.addCrit(mount);
         }
 
-        List<EquipmentType> spreadAlreadyAdded = new ArrayList<EquipmentType>();
+        List<EquipmentType> spreadAlreadyAdded = new ArrayList<>();
 
         for (Mounted mount : getTank().getMisc()) {
 
             EquipmentType etype = mount.getType();
-            if (UnitUtil.isHeatSink(mount)
-                    || etype.hasFlag(MiscType.F_JUMP_JET)
-                    || etype.hasFlag(MiscType.F_JUMP_BOOSTER)
-                    || etype.hasFlag(MiscType.F_TSM)
-                    || etype.hasFlag(MiscType.F_INDUSTRIAL_TSM)
-                    || (etype.hasFlag(MiscType.F_MASC)
-                            && !etype.hasSubType(MiscType.S_SUPERCHARGER))
+            if (etype.hasFlag(MiscType.F_JUMP_JET)
                     || UnitUtil.isArmorOrStructure(etype)) {
                 continue;
             }
-            //if (UnitUtil.isUnitEquipment(mount.getType(), unit) || UnitUtil.isUn) {
-                if (UnitUtil.isFixedLocationSpreadEquipment(etype)
-                        && !spreadAlreadyAdded.contains(etype)) {
-                    equipmentList.addCrit(mount);
-                    // keep track of spreadable equipment here, so it doesn't
-                    // show up multiple times in the table
-                    spreadAlreadyAdded.add(etype);
-                } else {
-                    equipmentList.addCrit(mount);
-                }
-            //}
+            if (UnitUtil.isFixedLocationSpreadEquipment(etype)
+                    && !spreadAlreadyAdded.contains(etype)) {
+                equipmentList.addCrit(mount);
+                // keep track of spreadable equipment here, so it doesn't
+                // show up multiple times in the table
+                spreadAlreadyAdded.add(etype);
+            } else {
+                equipmentList.addCrit(mount);
+            }
         }
     }
 
@@ -556,14 +547,6 @@ public class EquipmentTab extends ITab implements ActionListener {
                     atype = (AmmoType)etype;
                 }
                 if (UnitUtil.isHeatSink(etype) || UnitUtil.isJumpJet(etype)) {
-                    return false;
-                }
-                if ((etype instanceof MiscType)
-                        && (etype.hasFlag(MiscType.F_TSM)
-                                || etype.hasFlag(MiscType.F_INDUSTRIAL_TSM)
-                                || (etype.hasFlag(MiscType.F_MASC)
-                                        && !etype.hasSubType(MiscType.S_SUPERCHARGER)
-                                        && !etype.hasSubType(MiscType.S_JETBOOSTER)))) {
                     return false;
                 }
                 if (((nType == T_OTHER) && UnitUtil.isTankMiscEquipment(etype, tank))
