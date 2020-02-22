@@ -130,14 +130,14 @@ task mmJar (type: Jar, dependsOn: compileMM) {
     }
     inputs.dir "${mmDir}/megamek/build/classes/java/main"
     inputs.dir "${mmDir}/megamek/build/resources/main"
-    outputs.file "${buildDir}/libs/${archiveFileName}"
+    outputs.file "${buildDir}/libs/${archiveFileName.get()}"
 }
 
 jar {
-    archiveFileName = "${rootProject.name}.${archiveExtension}"
+    archiveFileName = "${rootProject.name}.${archiveExtension.get()}"
     manifest {
         attributes "Main-Class": mainClassName
-        attributes 'Class-Path' : "${lib}/${mmJar.archiveFileName} " + (project.sourceSets.main.runtimeClasspath.files
+        attributes 'Class-Path' : "${lib}/${mmJar.archiveFileName.get()} " + (project.sourceSets.main.runtimeClasspath.files
             .findAll { it.name.endsWith(".jar") }.collect { "${lib}/${it.name}" }.join(' '))
     }
 }
@@ -225,7 +225,7 @@ task createOSXBundle (dependsOn: jar) {
                 mainClass: project.mainClassName,
                 stubfile: osxApplicationStub,
                 dir: osxBundleDir,
-                jar: "${jar.destinationDirectory}/${jar.archiveFileName}",
+                jar: "${jar.destinationDirectory.get()}/${jar.archiveFileName.get()}",
                 jvmversion: '1.8+',
                 icon: "${projectDir}/${data}/images/misc/megameklab.icns",
                 useJavaXKey: 'true',
