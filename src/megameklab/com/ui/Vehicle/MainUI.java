@@ -17,12 +17,10 @@
 package megameklab.com.ui.Vehicle;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
-import javax.swing.UIManager;
 
 import megamek.common.Engine;
 import megamek.common.Entity;
@@ -41,7 +39,6 @@ import megameklab.com.ui.Vehicle.tabs.EquipmentTab;
 import megameklab.com.ui.Vehicle.tabs.StructureTab;
 import megameklab.com.ui.tabs.FluffTab;
 import megameklab.com.ui.tabs.PreviewTab;
-import megameklab.com.util.UnitUtil;
 
 public class MainUI extends MegaMekLabMainUI {
 
@@ -83,6 +80,7 @@ public class MainUI extends MegaMekLabMainUI {
         equipmentTab.addRefreshedListener(this);
         buildTab.addRefreshedListener(this);
         fluffTab.setRefreshedListener(this);
+        statusbar.setRefreshListener(this);
         
         previewTab = new PreviewTab(this);
 
@@ -132,16 +130,7 @@ public class MainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshHeader() {
-        String title = getEntity().getChassis() + " " + getEntity().getModel()
-                + ".blk";
-
-        if (UnitUtil.validateUnit(getEntity()).length() > 0) {
-            title += "  (Invalid)";
-            setForeground(Color.red);
-        } else {
-            setForeground(UIManager.getColor("Label.foreground"));
-        }
-        setTitle(title);
+        setTitle(getEntity().getChassis() + " " + getEntity().getModel() + ".blk");
     }
 
     @Override

@@ -43,18 +43,15 @@ import megameklab.com.util.UnitUtil;
 public class ProtomekStatusBar extends ITab {
     
     private static final long serialVersionUID = 451172213105975797L;
-    
-    private JButton btnValidate = new JButton("Validate Unit");
-    private JButton btnFluffImage = new JButton("Set Fluff Image");
-    private JLabel crits = new JLabel();
-    private JLabel bvLabel = new JLabel();
-    private JLabel tons = new JLabel();
-    private JLabel heatSink = new JLabel();
-    private JLabel cost = new JLabel();
-    private EntityVerifier entityVerifier = EntityVerifier.getInstance(new File("data/mechfiles/UnitVerifierOptions.xml"));
-    private TestProtomech testEntity = null;
-    private DecimalFormat formatter;
-    private JFrame parentFrame;
+
+    private final JLabel crits = new JLabel();
+    private final JLabel bvLabel = new JLabel();
+    private final JLabel tons = new JLabel();
+    private final JLabel cost = new JLabel();
+    private final JLabel invalid = new JLabel();
+    private final TestProtomech testEntity;
+    private final DecimalFormat formatter;
+    private final JFrame parentFrame;
 
     private RefreshListener refresh;
 
@@ -63,10 +60,15 @@ public class ProtomekStatusBar extends ITab {
         parentFrame = parent;
 
         formatter = new DecimalFormat();
+        EntityVerifier entityVerifier = EntityVerifier.getInstance(new File("data/mechfiles/UnitVerifierOptions.xml"));
         testEntity = new TestProtomech(getProtomech(), entityVerifier.mechOption, null);
+        JButton btnValidate = new JButton("Validate Unit");
         btnValidate.addActionListener(ev -> UnitUtil.showValidation(getProtomech(), getParentFrame()));
+        JButton btnFluffImage = new JButton("Set Fluff Image");
         btnFluffImage.addActionListener(ev -> getFluffImage());
-
+        invalid.setText("Invalid");
+        invalid.setForeground(Color.RED);
+        invalid.setVisible(false);
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -81,15 +83,16 @@ public class ProtomekStatusBar extends ITab {
         gbc.gridx = 3;
         this.add(crits, gbc);
         gbc.gridx = 4;
+        JLabel heatSink = new JLabel();
         this.add(heatSink, gbc);
         gbc.gridx = 5;
         this.add(bvLabel, gbc);
         gbc.gridx = 6;
+        this.add(invalid, gbc);
+        gbc.gridx = 7;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
         this.add(cost, gbc);
-
-
         refresh();
     }
 
@@ -103,9 +106,7 @@ public class ProtomekStatusBar extends ITab {
         }
         long currentCrits = getProtomech().getEquipment().stream()
                 .filter(m -> TestProtomech.requiresSlot(m.getType())).count();
-        long currentCost = (long) Math.round(getProtomech().getCost(false));
-
-        testEntity = new TestProtomech(getProtomech(), entityVerifier.mechOption, null);
+        long currentCost = Math.round(getProtomech().getCost(false));
 
         currentTonnage = testEntity.calculateWeight() * 1000;
 
@@ -128,7 +129,9 @@ public class ProtomekStatusBar extends ITab {
         } else {
             crits.setForeground(UIManager.getColor("Label.foreground"));
         }
-
+        StringBuffer sb = new StringBuffer();
+        invalid.setVisible(!testEntity.correctEntity(sb));
+        invalid.setToolTipText(sb.toString());
     }
 
     private void getFluffImage() {
@@ -141,11 +144,10 @@ public class ProtomekStatusBar extends ITab {
 
         if (fDialog.getFile() != null) {
             String relativeFilePath = new File(fDialog.getDirectory() + fDialog.getFile()).getAbsolutePath();
-            relativeFilePath = "." + File.separatorChar + relativeFilePath.substring(new File(System.getProperty("user.dir").toString()).getAbsolutePath().length() + 1);
+            relativeFilePath = "." + File.separatorChar + relativeFilePath.substring(new File(System.getProperty("user.dir")).getAbsolutePath().length() + 1);
             getProtomech().getFluff().setMMLImagePath(relativeFilePath);
         }
         refresh.refreshPreview();
-        return;
     }
 
     private JFrame getParentFrame() {
