@@ -165,7 +165,7 @@ public class PrintTank extends PrintEntity {
     }
 
     @Override
-    protected String formatFeatures() {
+    public String formatFeatures() {
         StringJoiner sj = new StringJoiner(", ");
         List<String> chassisMods = tank.getMisc().stream().filter(m -> m.getType().hasFlag(MiscType.F_CHASSIS_MODIFICATION))
                 .map(m -> m.getType().getShortName())
@@ -173,6 +173,11 @@ public class PrintTank extends PrintEntity {
         if (!chassisMods.isEmpty()) {
             sj.add(String.join(", ", chassisMods)
                     + (chassisMods.size() == 1 ? " Chassis Mod" : " Chassis Mods"));
+        }
+        if (tank.hasWorkingMisc(MiscType.F_ADVANCED_FIRECONTROL)) {
+            sj.add("Advanced Fire Control");
+        } else if (tank.hasWorkingMisc(MiscType.F_BASIC_FIRECONTROL)) {
+            sj.add("Basic Fire Control");
         }
         Map<String, Double> transport = new HashMap<>();
         for (Transporter t : tank.getTransports()) {

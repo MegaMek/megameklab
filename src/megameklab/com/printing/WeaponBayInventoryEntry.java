@@ -213,7 +213,7 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
         if (isAR10) {
             return "*"; // depends on missile type loaded
         }
-        if (av == 0) {
+        if (av + stdAV == 0) {
             return DASH;
         }
         if (isCapital) {

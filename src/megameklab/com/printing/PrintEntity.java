@@ -82,7 +82,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
      *
      * @return A list of chassis mods, or an empty String if none
      */
-    protected String formatFeatures() {
+    public String formatFeatures() {
         return "";
     }
 
@@ -92,7 +92,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
      * 
      * @return The text to display for the unit's quirks.
      */
-    protected String formatQuirks() {
+    public String formatQuirks() {
         if (options.showQuirks()) {
             StringJoiner sj = new StringJoiner(", ");
             Quirks quirks = getEntity().getQuirks();
@@ -111,6 +111,17 @@ public abstract class PrintEntity extends PrintRecordSheet {
         } else {
             return "";
         }
+    }
+
+    /**
+     * Fuel block used by aerospace unit. Fuel for other units, such as non-aerospace support vehicles,
+     * is for strategic fuel use and not relevant for the record sheet.
+     *
+     * @return A string containing the amount of fuel and cost per thrust point for aerospace units,
+     *         otherwise an empty string.
+     */
+    public String formatTacticalFuel() {
+        return "";
     }
     
     @Override
@@ -306,6 +317,14 @@ public abstract class PrintEntity extends PrintRecordSheet {
                 hideElement(ARMOR_TYPE, true);
             }
         }
+        writeArmorStructureTextFields();
+        drawArmorStructurePips();
+    }
+
+    /**
+     * Fills in the numeral values for armor and structure levels
+     */
+    void writeArmorStructureTextFields() {
         final String FORMAT = "( %d )";
         for (int loc = firstArmorLocation(); loc < getEntity().locations(); loc++) {
             setTextField(TEXT_ARMOR + getEntity().getLocationAbbr(loc),
@@ -313,7 +332,6 @@ public abstract class PrintEntity extends PrintRecordSheet {
             setTextField(TEXT_IS + getEntity().getLocationAbbr(loc),
                     String.format(FORMAT, getEntity().getOInternal(loc)));
         }
-        drawArmorStructurePips();
     }
 
     /**
@@ -362,12 +380,17 @@ public abstract class PrintEntity extends PrintRecordSheet {
         
     }
 
+    /**
+     * Fills in the weapons and inventory section of the record sheet.
+     *
+     * @param svgRect The bounds of the text region
+     */
     protected void writeEquipment(SVGRectElement svgRect) {
         new InventoryWriter(this, svgRect).writeEquipment();
     }
 
     protected void drawFluffImage() {
-        
+
     }
     
     private void drawEraIcon() {
@@ -391,7 +414,54 @@ public abstract class PrintEntity extends PrintRecordSheet {
                     (Element) rect.getParentNode(), getRectBBox((SVGRectElement) rect), true);
         }
     }
-    
+
+    /**
+     * @param svgRect The <rect> defining the bounds of the heat sink pip region
+     * @param hsCount The number of heat sink pips to draw
+     */
+    void drawHeatSinkPips(SVGRectElement svgRect, int hsCount) {
+        Rectangle2D bbox = getRectBBox(svgRect);
+        Element canvas = (Element) svgRect.getParentNode();
+        int viewWidth = (int)bbox.getWidth();
+        int viewHeight = (int)bbox.getHeight();
+        int viewX = (int)bbox.getX();
+        int viewY = (int)bbox.getY();
+
+        // r = 3.5
+        // spacing = 9.66
+        // stroke width = 0.9
+        double size = 9.66;
+        int cols = (int) (viewWidth / size);
+        int rows = (int) (viewHeight / size);
+
+        // Use 10 pips/column unless there are too many sinks for the space.
+        if (hsCount <= cols * 10) {
+            rows = 10;
+        }
+        // The rare unit with this many heat sinks will require us to shrink the pips
+        while (hsCount > rows * cols) {
+            // Figure out how much we will have to shrink to add another column
+            double nextCol = (cols + 1.0) / cols;
+            // First check whether we can shrink them less than what is required for a new column
+            if (cols * (int) (rows * nextCol) > hsCount) {
+                rows = (int) Math.ceil((double) hsCount / cols);
+                size = viewHeight / rows;
+            } else {
+                cols++;
+                size *= viewWidth / (cols * size);
+                rows = (int) (viewHeight / size);
+            }
+        }
+        double radius = size * 0.36;
+        double strokeWidth = 0.9;
+        for (int i = 0; i < hsCount; i++) {
+            int row = i % rows;
+            int col = i / rows;
+            Element pip = createPip(viewX + size * col, viewY + size * row, radius, strokeWidth);
+            canvas.appendChild(pip);
+        }
+    }
+
     protected String formatWalk() {
         return Integer.toString(getEntity().getWalkMP());
     }

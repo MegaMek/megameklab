@@ -47,7 +47,7 @@ public interface IdConstants {
     String ERA = "era";
     String COST = "cost";
     String BV = "bv";
-    String LBL_ROLE = "lblRole";
+    String LBL_ROLE = "labelRole";
     String ROLE = "role";
     String ERA_ICON = "eraIcon";
     String INVENTORY = "inventory";
@@ -83,6 +83,7 @@ public interface IdConstants {
     String PATCHWORK = "patchwork";
     String TEXT_ARMOR = "textArmor_";
     String TEXT_IS = "textIS_";
+    String TEXT_SI = "textSI";
     String ARMOR_PIPS = "armorPips";
     String IS_PIPS = "isPips";
     String IS_PIPS_HD = "isPipsHD";
@@ -104,4 +105,7 @@ public interface IdConstants {
     String HEAT_SINK_PIPS = "heatSinkPips";
     String HS_TYPE = "hsType";
     String HS_COUNT = "hsCount";
+    String EXTERNAL_STORES = "external_stores";
+    String BOMB_BOXES = "bomb_boxes";
+    String EXTERNAL_STORES_KEY = "external_stores_key";
 }

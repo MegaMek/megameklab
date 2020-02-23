@@ -114,6 +114,7 @@ public class InventoryWriter {
     private final List<WeaponBayInventoryEntry> capitalBays;
     private final List<String> bayFootnotes;
     private final Map<String, Integer> ammo;
+    private final List<Bay> transportBays;
     private final PrintEntity sheet;
     private Element canvas;
     private double viewX;
@@ -125,6 +126,7 @@ public class InventoryWriter {
     private final double[] colX;
     private final double[] bayColX;
     private final String ammoText;
+    private final String fuelText;
     private final String featuresText;
     private final String quirksText;
 
@@ -144,6 +146,8 @@ public class InventoryWriter {
         this.standardBays = new ArrayList<>();
         this.bayFootnotes = new ArrayList<>();
         this.ammo = new TreeMap<>();
+        this.transportBays = sheet.getEntity().getTransports().stream().filter(t -> t instanceof Bay)
+                .map(t -> (Bay) t).filter(b -> !b.isQuarters()).collect(Collectors.toList());
         if (sheet.getEntity().usesWeaponBays()) {
             parseBays();
         } else {
@@ -153,6 +157,7 @@ public class InventoryWriter {
                 .map(e -> String.format("(%s) %d", e.getKey(), e.getValue()))
                 .collect(Collectors.joining(", "));
         ammoText = str.isEmpty() ? str : "Ammo: " + str;
+        fuelText = sheet.formatTacticalFuel();
         str = sheet.formatFeatures();
         featuresText = str.isEmpty() ? str : "Features " + str;
         str = sheet.formatQuirks();
@@ -310,6 +315,13 @@ public class InventoryWriter {
         return capitalBays.stream().mapToInt(WeaponBayInventoryEntry::nRows).sum();
     }
 
+    /**
+     * @return The size of the transport bay block, not including header
+     */
+    public int transportBayLines() {
+        return transportBays.size();
+    }
+
     public int standardBayLines() {
         return standardBays.stream().mapToInt(WeaponBayInventoryEntry::nRows).sum()
                 + bayFootnotes.size();
@@ -323,7 +335,10 @@ public class InventoryWriter {
             ypos = printColumnHeaders(ypos);
         }
         float[] metrics = scaleText(viewHeight - (ypos - viewY), this::calcLineCount);
-        printEquipmentTable(equipment, ypos, metrics[0], metrics[1]);
+        ypos = printEquipmentTable(equipment, ypos, metrics[0], metrics[1]);
+        if (sheet.getEntity() instanceof SmallCraft && !transportBays.isEmpty()) {
+            printBayInfo(metrics[0], metrics[1], ypos);
+        }
         writeFooterBlock(metrics[0], metrics[1]);
     }
 
@@ -409,21 +424,27 @@ public class InventoryWriter {
 
     private void writeFooterBlock(float fontSize, float lineHeight) {
         int lines;
-        if (ammo.size() + featuresText.length() + quirksText.length() > 0) {
+        if (ammo.size() + fuelText.length() + featuresText.length() + quirksText.length() > 0) {
             Element svgGroup = sheet.getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
             canvas.appendChild(svgGroup);
             lines = 0;
-            if (ammo.size() > 0) {
+            if (!ammoText.isEmpty()) {
                 lines = sheet.addMultilineTextElement(svgGroup, viewX + viewWidth * 0.025, 0, viewWidth * 0.95, lineHeight,
                         ammoText, fontSize, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
             }
-            if (featuresText.length() > 0) {
+            if (!fuelText.isEmpty()) {
+                lines += sheet.addMultilineTextElement(svgGroup, viewX + viewWidth * 0.025,
+                        lines * lineHeight, viewWidth * 0.95, lineHeight,
+                        fuelText, fontSize,
+                        SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
+            }
+            if (!featuresText.isEmpty()) {
                 lines += sheet.addMultilineTextElement(svgGroup, viewX + viewWidth * 0.025,
                         lines * lineHeight, viewWidth * 0.95, lineHeight,
                         featuresText, fontSize,
                         SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
             }
-            if (quirksText.length() > 0) {
+            if (!quirksText.isEmpty()) {
                 lines += sheet.addMultilineTextElement(svgGroup, viewX + viewWidth * 0.025, lines * lineHeight,
                         viewWidth * 0.95, lineHeight,
                         quirksText, fontSize, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
@@ -486,7 +507,11 @@ public class InventoryWriter {
             }
             lines += rows;
         }
+        if (sheet.getEntity() instanceof SmallCraft && !transportBays.isEmpty()) {
+            lines += transportBays.size() + 1; // add extra for header
+        }
         lines += Math.ceil(sheet.getTextLength(ammoText, fontSize) / viewWidth);
+        lines += Math.ceil(sheet.getTextLength(fuelText, fontSize) / viewWidth);
         lines += Math.ceil(sheet.getTextLength(featuresText, fontSize) / viewWidth);
         lines += Math.ceil(sheet.getTextLength(quirksText, fontSize) / viewWidth);
         return lines;
@@ -746,7 +771,7 @@ public class InventoryWriter {
     }
 
     /**
-     * Convenience method for printing infor related to cargo & transport bays.
+     * Convenience method for printing information related to cargo & transport bays.
      *
      * @param fontSize The font size to use for the table rows
      * @param lineHeight The height of each table row
@@ -754,17 +779,14 @@ public class InventoryWriter {
      * @return The y coordinate of the bottom of the table
      */
     public double printBayInfo(float fontSize, double lineHeight, double currY) {
-        if (sheet.getEntity().getTransportBays().size() > 0) {
+        if (!transportBays.isEmpty()) {
             sheet.addTextElement(canvas, bayColX[0], currY, "Cargo:", FONT_SIZE_MEDIUM,
                     SVGConstants.SVG_START_VALUE, SVGConstants.SVG_BOLD_VALUE);
             currY += lineHeight;
             // We can have multiple Bay instances within one conceptual bay on the ship
             // We need to gather all bays with the same ID to print out the string
             Map<Integer, List<Bay>> bayMap = new TreeMap<>();
-            for (Bay bay : sheet.getEntity().getTransportBays()) {
-                if (bay.isQuarters()) {
-                    continue;
-                }
+            for (Bay bay : transportBays) {
                 List<Bay> bays = bayMap.get(bay.getBayNumber());
                 if (bays == null) {
                     bays = new ArrayList<>();

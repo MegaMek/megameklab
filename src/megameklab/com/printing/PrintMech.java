@@ -159,7 +159,7 @@ public class PrintMech extends PrintEntity {
         
         Element hsRect = getSVGDocument().getElementById(HEAT_SINK_PIPS);
         if (hsRect instanceof SVGRectElement) {
-            drawHeatSinkPips((SVGRectElement) hsRect);
+            drawHeatSinkPips((SVGRectElement) hsRect, mech.heatSinks());
         }
 
         if (mech.hasETypeFlag(Entity.ETYPE_LAND_AIR_MECH)) {
@@ -530,51 +530,6 @@ public class PrintMech extends PrintEntity {
         if (rect instanceof SVGRectElement) {
             embedImage(ImageHelper.getFluffFile(mech, ImageHelper.imageMech),
                     (Element) rect.getParentNode(), getRectBBox((SVGRectElement) rect), true);
-        }
-    }
-
-    private void drawHeatSinkPips(SVGRectElement svgRect) {
-        Rectangle2D bbox = getRectBBox(svgRect);
-        Element canvas = (Element) svgRect.getParentNode();
-        int viewWidth = (int)bbox.getWidth();
-        int viewHeight = (int)bbox.getHeight();
-        int viewX = (int)bbox.getX();
-        int viewY = (int)bbox.getY();
-
-        int hsCount = mech.heatSinks();
-
-        // r = 3.5
-        // spacing = 9.66
-        // stroke width = 0.9
-        double size = 9.66;
-        int cols = (int) (viewWidth / size);
-        int rows = (int) (viewHeight / size);
-
-        // Use 10 pips/column unless there are too many sinks for the space.
-        if (hsCount <= cols * 10) {
-            rows = 10;
-        }
-        // The rare unit with this many heat sinks will require us to shrink the pips
-        while (hsCount > rows * cols) {
-            // Figure out how much we will have to shrink to add another column
-            double nextCol = (cols + 1.0) / cols;
-            // First check whether we can shrink them less than what is required for a new column
-            if (cols * (int) (rows * nextCol) > hsCount) {
-                rows = (int) Math.ceil((double) hsCount / cols);
-                size = viewHeight / rows;
-            } else {
-                cols++;
-                size *= viewWidth / (cols * size);
-                rows = (int) (viewHeight / size);
-            }
-        }
-        double radius = size * 0.36;
-        double strokeWidth = 0.9;
-        for (int i = 0; i < hsCount; i++) {
-            int row = i % rows;
-            int col = i / rows;
-            Element pip = createPip(viewX + size * col, viewY + size * row, radius, strokeWidth);
-            canvas.appendChild(pip);
         }
     }
 

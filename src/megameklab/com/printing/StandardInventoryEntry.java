@@ -61,6 +61,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
     private final static int ATM_HE_ROW = 3;
 
     private final static String[] SPHEROID_ARCS = { "NOS", "FLS", "FRS", "AFT", "HULL", "ALS", "ARS" };
+    private final static String[] AERODYNE_ARCS = { "NOS", "LWG", "RWG", "AFT", "HULL" };
     private final static String[][] MML_RANGE = {
             {"", "", "", "", ""}, {"6", "7", "14", "21"}, {DASH, "3", "6", "9"}
     };
@@ -163,8 +164,9 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         if (mount.getEntity().isMixedTech() && (mount.getType().getTechBase() != ITechnology.TECH_BASE_ALL)) {
             name.append(mount.getType().isClan() ? " (Clan)" : " (IS)");
         }
-        // Small Craft/Dropships use a different location name for aft side weapons
-        if (mount.isRearMounted() && !(mount.getEntity() instanceof SmallCraft)) {
+        // Spheroid Small Craft/Dropships use a different location name for aft side weapons
+        if (mount.isRearMounted()
+                && !(mount.getEntity() instanceof SmallCraft && ((Aero) mount.getEntity()).isSpheroid())) {
             name.append(" (R)");
         }
         if (mount.isMechTurretMounted()) {
@@ -188,9 +190,12 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
                 && !((Tank) mount.getEntity()).hasNoDualTurret()) {
             return "RT";
         }
-        if (mount.getEntity() instanceof SmallCraft
-                && (((SmallCraft) mount.getEntity()).isSpheroid())) {
-            return SPHEROID_ARCS[mount.isRearMounted() ? mount.getLocation() + 4 : mount.getLocation()];
+        if (mount.getEntity() instanceof SmallCraft) {
+            if (((Aero) mount.getEntity()).isSpheroid()) {
+                return SPHEROID_ARCS[mount.isRearMounted() ? mount.getLocation() + 4 : mount.getLocation()];
+            } else {
+                return AERODYNE_ARCS[mount.getLocation()];
+            }
         }
         return mount.getEntity().getLocationAbbr(mount.getLocation());
     }
