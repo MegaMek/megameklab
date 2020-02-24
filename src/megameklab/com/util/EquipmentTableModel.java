@@ -27,17 +27,7 @@ import javax.swing.UIManager;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 
-import megamek.common.Aero;
-import megamek.common.AmmoType;
-import megamek.common.Entity;
-import megamek.common.EquipmentType;
-import megamek.common.ITechManager;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
-import megamek.common.RangeType;
-import megamek.common.Tank;
-import megamek.common.TechAdvancement;
-import megamek.common.WeaponType;
+import megamek.common.*;
 import megamek.common.verifier.TestProtomech;
 import megamek.common.weapons.autocannons.UACWeapon;
 import megamek.common.weapons.gaussrifles.HAGWeapon;
@@ -352,16 +342,23 @@ public class EquipmentTableModel extends AbstractTableModel {
                 return "-";
             }
         } else if (col == COL_TON) {
+            final double weight = type.getTonnage(entity);
             if ((atype != null) && (entity.hasETypeFlag(Entity.ETYPE_BATTLEARMOR)
                     || entity.hasETypeFlag(Entity.ETYPE_PROTOMECH))) {
                 return atype.getKgPerShot() + " kg/shot";
-            } else if (type.getTonnage(entity) < 0.1) {
-                return String.format("%.2f kg", type.getTonnage(entity) * 1000);
+            } else if (type.isVariableTonnage()) {
+                return "variable";
+            } else if (weight > 0.0 && weight < 0.1) {
+                return String.format("%.0f kg", type.getTonnage(entity) * 1000);
             } else {
-                return String.valueOf(type.getTonnage(entity));
+                return formatter.format(weight);
             }
         } else if (col == COL_CRIT) {
-            if (entity.isSupportVehicle()) {
+            if (type.isVariableCriticals()
+                    && (entity.isSupportVehicle() || (entity instanceof Mech))) {
+                // Only Mechs and support vehicles require multiple slots for equipment
+                return "variable";
+            } else if (entity.isSupportVehicle()) {
                 return type.getSupportVeeSlots(entity);
             } else if (entity instanceof Tank) {
                 return type.getTankslots(entity);
@@ -372,9 +369,15 @@ public class EquipmentTableModel extends AbstractTableModel {
         } else if (col == COL_TRATING) {
             return type.getFullRatingName(entity.isClan());
         } else if (col == COL_COST) {
+            if (type.isVariableCost()) {
+                return "variable";
+            }
             return formatter.format(type
                     .getCost(entity, false, Entity.LOC_NONE));
         } else if (col == COL_BV) {
+            if (type.isVariableBV()) {
+                return "variable";
+            }
             return type.getBV(entity);
         } else if (col == COL_DPROTOTYPE) {
             return entity.isMixedTech()? type.getTechAdvancement().getPrototypeDateName() :
