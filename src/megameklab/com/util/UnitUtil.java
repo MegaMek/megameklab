@@ -2923,13 +2923,19 @@ public class UnitUtil {
         }
     }
 
+    /**
+     * @param eq A {@link WeaponType} or {@link MiscType}
+     * @param ba The BattleArmor instance
+     * @return   Whether the BA can use the equipment
+     */
     public static boolean isBAEquipment(EquipmentType eq, BattleArmor ba) {
         if (eq instanceof MiscType) {
                 return eq.hasFlag(MiscType.F_BA_EQUIPMENT);
         } else if (eq instanceof WeaponType) {
             return isBattleArmorWeapon(eq, ba);
         }
-        return true;
+        // This leaves ammotype, which is filtered according to having a weapon that can use it
+        return false;
     }
 
     public static boolean isBattleArmorAPWeapon(EquipmentType etype){
