@@ -97,8 +97,9 @@ public class EquipmentTableModel extends AbstractTableModel {
             case COL_NAME:
                 return "Name";
             case COL_DAMAGE:
-            case COL_DIVISOR:
                 return "Damage";
+            case COL_DIVISOR:
+                return "Divisor";
             case COL_SPECIAL:
                 return "Special";
             case COL_HEAT:
