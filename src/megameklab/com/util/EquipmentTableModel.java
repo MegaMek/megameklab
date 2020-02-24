@@ -28,6 +28,7 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 
 import megamek.common.*;
+import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestProtomech;
 import megamek.common.weapons.autocannons.UACWeapon;
 import megamek.common.weapons.gaussrifles.HAGWeapon;
@@ -345,10 +346,10 @@ public class EquipmentTableModel extends AbstractTableModel {
             final double weight = type.getTonnage(entity);
             if ((atype != null) && (entity.hasETypeFlag(Entity.ETYPE_BATTLEARMOR)
                     || entity.hasETypeFlag(Entity.ETYPE_PROTOMECH))) {
-                return atype.getKgPerShot() + " kg/shot";
+                return String.format("%.2f kg/shot", atype.getKgPerShot());
             } else if (type.isVariableTonnage()) {
                 return "variable";
-            } else if (weight > 0.0 && weight < 0.1) {
+            } else if (TestEntity.usesKgStandard(entity) || ((weight > 0.0) && (weight < 0.1))) {
                 return String.format("%.0f kg", type.getTonnage(entity) * 1000);
             } else {
                 return formatter.format(weight);
