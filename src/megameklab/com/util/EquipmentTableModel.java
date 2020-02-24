@@ -16,7 +16,6 @@
 
 package megameklab.com.util;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -98,7 +97,6 @@ public class EquipmentTableModel extends AbstractTableModel {
             case COL_NAME:
                 return "Name";
             case COL_DAMAGE:
-                return "Damage";
             case COL_DIVISOR:
                 return "Damage";
             case COL_SPECIAL:
@@ -426,9 +424,10 @@ public class EquipmentTableModel extends AbstractTableModel {
             attackValue[RangeType.RANGE_LONG] = (int)wtype.getLongAV();
             attackValue[RangeType.RANGE_EXTREME] = (int)wtype.getExtAV();
             boolean allEq = true;
-            for (int i = 2; i <= wtype.maxRange && allEq; i++) {
+            for (int i = 2; i <= wtype.maxRange; i++) {
                 if (attackValue[i - 1] != attackValue[i]) {
                     allEq = false;
+                    break;
                 }                    
             }
             StringBuilder avString = new StringBuilder();
