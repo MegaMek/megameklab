@@ -63,8 +63,6 @@ import megamek.common.weapons.autocannons.HVACWeapon;
 import megamek.common.weapons.autocannons.LBXACWeapon;
 import megamek.common.weapons.autocannons.UACWeapon;
 import megamek.common.weapons.battlearmor.CLBALBX;
-import megamek.common.weapons.battlearmor.CLBALightTAG;
-import megamek.common.weapons.battlearmor.ISBALightTAG;
 import megamek.common.weapons.bayweapons.BayWeapon;
 import megamek.common.weapons.capitalweapons.CapitalMissileWeapon;
 import megamek.common.weapons.defensivepods.BPodWeapon;
@@ -2081,7 +2079,8 @@ public class UnitUtil {
     public static boolean isJumpJet(EquipmentType eq) {
         if ((eq instanceof MiscType)
                 && (eq.hasFlag(MiscType.F_JUMP_JET)
-                        || eq.hasFlag(MiscType.F_UMU))) {
+                        || eq.hasFlag(MiscType.F_UMU)
+                        || eq.hasFlag(MiscType.F_BA_VTOL))) {
             return true;
         }
 
@@ -2908,6 +2907,10 @@ public class UnitUtil {
     }
 
     public static boolean isSupportVehicleEquipment(EquipmentType eq, Entity unit) {
+        if ((unit.getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT)
+                && (eq.getTonnage(unit) >= 5.0)) {
+            return false;
+        }
         if ((eq instanceof MiscType) && !eq.hasFlag(MiscType.F_SUPPORT_TANK_EQUIPMENT)) {
             return false;
         } else if ((eq instanceof WeaponType)
