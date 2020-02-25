@@ -182,7 +182,7 @@ public class ProtomekCriticalView extends IView {
                     if (TestProtomech.requiresSlot(m.getType())) {
                         slotsUsed++;
                     }
-                    weightUsed += m.getType().getTonnage(getProtomech());
+                    weightUsed += m.getTonnage();
                 }
             }
 

@@ -188,10 +188,10 @@ public class ProtomekSummaryView extends IView {
             if(UnitUtil.isArmorOrStructure(mt)) {
                 continue;
             } else if (mt.hasFlag(MiscType.F_MASC)) {
-                weightEnhance += mt.getTonnage(getProtomech(), m.getLocation());
+                weightEnhance += m.getTonnage();
             } else if (mt.hasFlag(MiscType.F_JUMP_JET)
                     || mt.hasFlag(MiscType.F_UMU)) {
-                weightJJ += mt.getTonnage(getProtomech(), m.getLocation());
+                weightJJ += m.getTonnage();
             }
         }
         txtJumpKg.setText(format.format(weightJJ * 1000));
