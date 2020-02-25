@@ -28,9 +28,11 @@ VERSION HISTORY:
 + Issue #474: Adding/removing Environmental Sealing to/from critical slots on combat vehicles
 + Issue #479: Additional tons of ammunition for one-shot missile launchers available
 + Issue #483: VTOL Jet Booster on a combat VTOL disappears from Equipment tab once assigned a location
-+ PR #413: Aerospace record aheet overhaul, part 1 (fighters, fixed wing support, small craft)
++ PR #413: Aerospace record sheet overhaul, part 1 (fighters, fixed wing support, small craft)
++ PR #491: Aerospace record sheet overhaul, part 2 (large craft)
 + Issue #475: Adding many items on a combat vehicle also adds a trailer hitch
 + Issue #495: Some things that should't be pod-mountable are anyway
++ PR #499: Indicate when equipment stats are variable on equipment tab
 
 v0.47.4 (2020-2-09 2200 UTC)
 + Issue #416: Issue with Crit Splitting on the Right Torso with big Artillery cannons/Arrow IV
