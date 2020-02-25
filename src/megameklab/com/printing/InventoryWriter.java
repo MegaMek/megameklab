@@ -26,7 +26,7 @@ import org.w3c.dom.svg.SVGRectElement;
 
 import java.text.NumberFormat;
 import java.util.*;
-import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static megameklab.com.printing.PrintRecordSheet.*;
@@ -256,17 +256,6 @@ public class InventoryWriter {
         if (apollo) {
             bayFootnotes.add(InventoryEntry.DOUBLE_DAGGER + " w/Apollo (ignore +1 to hit)");
         }
-        for (Mounted m : sheet.getEntity().getMisc()) {
-            if (UnitUtil.isPrintableEquipment(m.getType(), false)) {
-                StandardInventoryEntry entry = new StandardInventoryEntry(m);
-                StandardInventoryEntry same = equipment.stream().filter(entry::equals).findFirst().orElse(null);
-                if (null == same) {
-                    equipment.add(entry);
-                } else {
-                    same.incrementQty();
-                }
-            }
-        }
     }
 
     /**
@@ -281,7 +270,7 @@ public class InventoryWriter {
         List<WeaponBayText> weaponBayTexts = new ArrayList<>();
         // Collection info on weapons to print
         for (Mounted bay : weapons) {
-            WeaponBayText wbt = new WeaponBayText(bay.getLocation(), false);
+            WeaponBayText wbt = new WeaponBayText(bay.getLocation(), bay.isRearMounted());
             for (Integer wId : bay.getBayWeapons()) {
                 Mounted weap = sheet.getEntity().getEquipment(wId);
                 wbt.addBayWeapon(weap);
@@ -316,6 +305,53 @@ public class InventoryWriter {
     }
 
     /**
+     * Calculates the number of additional lines required to print the standard scale inventory block due
+     * to wrapping long names to another line.
+     *
+     * @param fontSize The font size used to print
+     * @return         The number of extra lines required by the table
+     */
+    public int extraEquipmentLines(float fontSize) {
+        return extraLines(equipment, colX, fontSize, 1);
+    }
+
+    /**
+     * Calculates the number of additional lines required to print the capital scale weapon bay block due
+     * to wrapping long names to another line.
+     *
+     * @param fontSize The font size used to print
+     * @return         The number of extra lines required by the table
+     */
+    public int extraCapitalBayLines(float fontSize) {
+        return extraLines(equipment, bayColX, fontSize, 0);
+    }
+
+    /**
+     * Calculates the number of additional lines required to print the standard scale weapon bay block due
+     * to wrapping long names to another line.
+     *
+     * @param fontSize The font size used to print
+     * @return         The number of extra lines required by the table
+     */
+    public int extraStandardBayLines(float fontSize) {
+        return extraLines(standardBays, bayColX, fontSize, 0);
+    }
+
+    private int extraLines(List<? extends InventoryEntry> list, double[] colX, float fontSize, int nameIndex) {
+        int lines = 0;
+        for (InventoryEntry entry : list) {
+            double width = colX[nameIndex + 1] - colX[nameIndex] - indent;
+            double row1Width = width - sheet.getTextLength(entry.getLocationField(0), fontSize) * 0.5;
+            for (int r = 0; r < entry.nRows(); r++) {
+                if (sheet.getTextLength(entry.getNameField(r), fontSize) >= (r == 0 ? row1Width : width)) {
+                    lines++;
+                }
+            }
+        }
+        return lines;
+    }
+
+    /**
      * @return The size of the transport bay block, not including header
      */
     public int transportBayLines() {
@@ -340,11 +376,6 @@ public class InventoryWriter {
             printBayInfo(metrics[0], metrics[1], ypos);
         }
         writeFooterBlock(metrics[0], metrics[1]);
-    }
-
-    public double writeStandardEquipment(float fontSize, double lineHeight, double currY) {
-        currY = printColumnHeaders(currY);
-        return printEquipmentTable(equipment, currY, fontSize, lineHeight);
     }
 
     /**
@@ -383,11 +414,12 @@ public class InventoryWriter {
      * Rescales text to allow space for a fixed number of lines using the entire region. Used for large
      * craft, which have a number of possible block types and may need a second page.
      *
-     * @param lines The number of lines
+     * @param calcLines A supplier for the number of lines. Since reducing the font size may allow for fewer
+     *                  lines, the supplier gives an opportunity to recalculate after each resizing.
      * @return A tuple of the new font height and line height, in that order
      */
-    public float[] scaleText(int lines) {
-        return scaleText(viewHeight, (f, d) -> lines);
+    public float[] scaleText(Function<Float, Integer> calcLines) {
+        return scaleText(viewHeight, calcLines);
     }
 
     /**
@@ -402,18 +434,18 @@ public class InventoryWriter {
      *                  lines, the supplier gives an opportunity to recalculate after each resizing.
      * @return A tuple of the new font height and line height, in that order
      */
-    public float[] scaleText(double height, BiFunction<Float, Double, Integer> calcLines) {
+    public float[] scaleText(double height, Function<Float, Integer> calcLines) {
         float fontSize = FONT_SIZE_MEDIUM;
         float lineHeight = sheet.getFontHeight(fontSize) * 1.2f;
 
-        int lines = calcLines.apply(fontSize, viewWidth);
+        int lines = calcLines.apply(fontSize);
         float lineSpacing = 1.2f;
         while ((fontSize > MIN_FONT_SIZE) && (lineSpacing > MIN_LINE_SPACING)
                 && ((lineHeight * lines) >= height)) {
             if (fontSize > MIN_FONT_SIZE) {
                 fontSize = Math.max(MIN_FONT_SIZE, fontSize - 0.5f);
                 // A smaller font may allow fewer lines
-                lines = calcLines.apply(fontSize, viewWidth);
+                lines = calcLines.apply(fontSize);
             } else {
                 lineSpacing -= 0.1f;
             }
@@ -422,7 +454,13 @@ public class InventoryWriter {
         return new float[] { fontSize, lineHeight };
     }
 
-    private void writeFooterBlock(float fontSize, float lineHeight) {
+    /**
+     * Displays ammo, fuel, features, and quirks as free-flowing text at the bottom of the inventory box
+     *
+     * @param fontSize   The size of the font for the text
+     * @param lineHeight The height of each line of text
+     */
+    public void writeFooterBlock(float fontSize, float lineHeight) {
         int lines;
         if (ammo.size() + fuelText.length() + featuresText.length() + quirksText.length() > 0) {
             Element svgGroup = sheet.getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
@@ -481,10 +519,9 @@ public class InventoryWriter {
      * words, it's possible that the number of lines may be more.
      *
      * @param fontSize The size of the font
-     * @param viewWidth The width of the region
      * @return The estimated line count.
      */
-    private int calcLineCount(float fontSize, double viewWidth) {
+    private int calcLineCount(float fontSize) {
         // The width of the name field varies depending on aero/ground or whether there is a heat column,
         // but is always the difference between the second and third.
         final double nameWidth = colX[2] - colX[1] - viewWidth * INDENT;
@@ -510,11 +547,15 @@ public class InventoryWriter {
         if (sheet.getEntity() instanceof SmallCraft && !transportBays.isEmpty()) {
             lines += transportBays.size() + 1; // add extra for header
         }
-        lines += Math.ceil(sheet.getTextLength(ammoText, fontSize) / viewWidth);
-        lines += Math.ceil(sheet.getTextLength(fuelText, fontSize) / viewWidth);
-        lines += Math.ceil(sheet.getTextLength(featuresText, fontSize) / viewWidth);
-        lines += Math.ceil(sheet.getTextLength(quirksText, fontSize) / viewWidth);
+        lines += footerLines(fontSize);
         return lines;
+    }
+
+    public int footerLines(float fontSize) {
+        return (int) Math.ceil(sheet.getTextLength(ammoText, fontSize) / viewWidth)
+            + (int) Math.ceil(sheet.getTextLength(fuelText, fontSize) / viewWidth)
+            + (int) Math.ceil(sheet.getTextLength(featuresText, fontSize) / viewWidth)
+            + (int) Math.ceil(sheet.getTextLength(quirksText, fontSize) / viewWidth);
     }
 
     /**
@@ -565,15 +606,18 @@ public class InventoryWriter {
                             break;
                         case NAME:
                         case BAY:
+                            // Calculate the width of the name field to determine if wrapping is required.
+                            // The following column is always location, which is centered, so we need
+                            // to subtract half the width of that field as well, plus a bit of extra space.
+                            double width = colX[i + 1] - colX[i] - indent
+                                    - sheet.getTextLength(line.getLocationField(row), fontSize) * 0.5;
                             if (row == 0) {
-                                lines = sheet.addMultilineTextElement(canvas, colX[i], ypos,
-                                        colX[i + 1] - colX[i] - indent, lineHeight,
+                                lines = sheet.addMultilineTextElement(canvas, colX[i], ypos, width, lineHeight,
                                         line.getNameField(row), fontSize, SVGConstants.SVG_START_VALUE,
                                         SVGConstants.SVG_NORMAL_VALUE);
                             } else {
                                 lines = sheet.addMultilineTextElement(canvas, line.indentMultiline() ?
-                                        colX[i] + indent : colX[i], ypos,
-                                        colX[i + 1] - colX[i] - indent, lineHeight,
+                                        colX[i] + indent : colX[i], ypos, width, lineHeight,
                                         line.getNameField(row), fontSize, SVGConstants.SVG_START_VALUE,
                                         SVGConstants.SVG_NORMAL_VALUE);
                             }
@@ -720,7 +764,7 @@ public class InventoryWriter {
                     break;
                 case LOCATION:
                     sheet.addTextElement(canvas, bayColX[i], currY, "Tons", FONT_SIZE_MEDIUM,
-                            SVGConstants.SVG_START_VALUE, SVGConstants.SVG_BOLD_VALUE);
+                            SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_BOLD_VALUE);
                     break;
                 case HEAT:
                 case SRV:

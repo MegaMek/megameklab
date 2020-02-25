@@ -64,6 +64,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     final static float FONT_SIZE_VSMALL  = 5.8f;
     final static String FILL_BLACK = "#231f20";
     final static String FILL_GREY = "#3f3f3f";
+    final static String FILL_SHADOW = "#c8c7c7";
     final static String FILL_WHITE = "#ffffff";
     
     enum PipType {
@@ -268,14 +269,15 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             node.paint(g2d);
             /* Testing code that outputs the generated svg
             try {
-                Transformer transformer = TransformerFactory.newInstance().newTransformer();
-                Result output = new StreamResult(new File("out.svg"));
-                Source input = new DOMSource(svgDocument);
+                javax.xml.transform.Transformer transformer = javax.xml.transform.TransformerFactory.newInstance().newTransformer();
+                javax.xml.transform.Result output = new javax.xml.transform.stream.StreamResult(new File("out.svg"));
+                javax.xml.transform.Source input = new javax.xml.transform.dom.DOMSource(svgDocument);
                 transformer.transform(input, output);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            */
+             */
+
         }
         return Printable.PAGE_EXISTS;
     }

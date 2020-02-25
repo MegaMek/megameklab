@@ -39,12 +39,12 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
     /**
      * Keeps track of the distinct weapons in this bay, along with a count.
      */
-    public Map<WeaponType, Integer> weapons = new HashMap<>();
+    final Map<WeaponType, Integer> weapons = new HashMap<>();
 
     /**
      * Track the ammo for each weapontype in the bay.
      */
-    public Map<WeaponType, Mounted> weaponAmmo = new HashMap<>();
+    final Map<WeaponType, Mounted> weaponAmmo = new HashMap<>();
 
     /**
      * Track any linked equipment that affects the AV or heat. By the rules, most of them are either
@@ -53,18 +53,23 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
      * It's easier to treat them all the same, and this will also support illegal builds that only put
      * Artemis on some weapons, or mix Artemis types.
      */
-    public Map<WeaponType, Map<EquipmentType, Integer>> augmentations = new HashMap<>();
+    final Map<WeaponType, Map<EquipmentType, Integer>> augmentations = new HashMap<>();
 
-    public boolean allowNosAftCombine;
+    final boolean rear;
     /**
      * The location of the bay, or locations if multiple identical bays are
      * combined.
      */
     public List<Integer> loc = new ArrayList<>();
 
-    public WeaponBayText(int l, boolean combineNoseAftBays) {
+    /**
+     *
+     * @param l     The location index
+     * @param rear  Whether the bay is rear mounted (dropship wing/aft sides)
+     */
+    public WeaponBayText(int l, boolean rear) {
         loc.add(l);
-        allowNosAftCombine = combineNoseAftBays;
+        this.rear = rear;
     }
 
     /**
@@ -102,11 +107,9 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
      */
     public boolean canCombine(WeaponBayText other) {
         // Check for opposing sides
-        boolean opposingSide = false;
-        if ((loc.size() == 1) && (other.loc.size() == 1)) {
-            opposingSide = checkOpposingSide(loc.get(0), other.loc.get(0));
-        }
-        return opposingSide && weapons.equals(other.weapons)
+        return loc.size() == 1
+                && checkOpposingSide(loc.get(0), other.loc.get(0), rear, other.rear)
+                && weapons.equals(other.weapons)
                 && ammosMatch(other) && augmentations.equals(other.augmentations);
     }
 
@@ -128,23 +131,25 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
         return rv;
     }
 
-    private boolean checkOpposingSide(int loc1, int loc2) {
-        boolean rv = false;
-        if (((loc1 == Jumpship.LOC_FLS) && (loc2 == Jumpship.LOC_FRS))
-                || ((loc1 == Jumpship.LOC_FRS) && (loc2 == Jumpship.LOC_FLS))) {
-            rv = true;
-        } else if (((loc1 == Jumpship.LOC_ALS) && (loc2 == Jumpship.LOC_ARS))
-                || ((loc1 == Jumpship.LOC_ARS) && (loc2 == Jumpship.LOC_ALS))) {
-            rv = true;
-        } else if (((loc1 == Warship.LOC_LBS) && (loc2 == Warship.LOC_RBS))
-                || ((loc1 == Warship.LOC_RBS) && (loc2 == Warship.LOC_LBS))) {
-            rv = true;
+    private boolean checkOpposingSide(int loc1, int loc2, boolean rear1, boolean rear2) {
+        switch (loc1) {
+            // Jumpship.LOC_FLS and Jumpship.LOC_FRS are the same indices as
+            // Dropship.LOC_LWING and Dropship.LOC_RWING
+            case Jumpship.LOC_FLS:
+                return loc2 == Jumpship.LOC_FRS && rear1 == rear2;
+            case Jumpship.LOC_FRS:
+                return loc2 == Jumpship.LOC_FLS && rear1 == rear2;
+            case Jumpship.LOC_ALS:
+                return loc2 == Jumpship.LOC_ARS;
+            case Jumpship.LOC_ARS:
+                return loc2 == Jumpship.LOC_ALS;
+            case Warship.LOC_LBS:
+                return loc2 == Warship.LOC_RBS;
+            case Warship.LOC_RBS:
+                return loc2 == Warship.LOC_LBS;
+            default:
+                return false;
         }
-        if ((allowNosAftCombine && ((loc1 == Jumpship.LOC_NOSE) && (loc2 == Jumpship.LOC_AFT)))
-                || ((loc1 == Jumpship.LOC_AFT) && (loc2 == Jumpship.LOC_NOSE))) {
-            rv = true;
-        }
-        return rv;
     }
 
     /**
@@ -218,20 +223,20 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
             case Jumpship.LOC_NOSE:
                 return 0;
             case Jumpship.LOC_FLS:
-                return 1;
+                return rear ? 2 : 1;
             case Jumpship.LOC_FRS:
-                return 2;
+                return rear ? 4 : 3;
             case Warship.LOC_LBS:
-                return 3;
-            case Warship.LOC_RBS:
-                return 4;
-            case Jumpship.LOC_ALS:
                 return 5;
-            case Jumpship.LOC_ARS:
+            case Warship.LOC_RBS:
                 return 6;
+            case Jumpship.LOC_ALS:
+                return 7;
+            case Jumpship.LOC_ARS:
+                return 8;
             case Jumpship.LOC_AFT:
             default:
-                return 7;
+                return 9;
         }
     }
 
