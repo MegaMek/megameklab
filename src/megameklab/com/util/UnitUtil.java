@@ -63,8 +63,6 @@ import megamek.common.weapons.autocannons.HVACWeapon;
 import megamek.common.weapons.autocannons.LBXACWeapon;
 import megamek.common.weapons.autocannons.UACWeapon;
 import megamek.common.weapons.battlearmor.CLBALBX;
-import megamek.common.weapons.battlearmor.CLBALightTAG;
-import megamek.common.weapons.battlearmor.ISBALightTAG;
 import megamek.common.weapons.bayweapons.BayWeapon;
 import megamek.common.weapons.capitalweapons.CapitalMissileWeapon;
 import megamek.common.weapons.defensivepods.BPodWeapon;
@@ -2081,7 +2079,8 @@ public class UnitUtil {
     public static boolean isJumpJet(EquipmentType eq) {
         if ((eq instanceof MiscType)
                 && (eq.hasFlag(MiscType.F_JUMP_JET)
-                        || eq.hasFlag(MiscType.F_UMU))) {
+                        || eq.hasFlag(MiscType.F_UMU)
+                        || eq.hasFlag(MiscType.F_BA_VTOL))) {
             return true;
         }
 
@@ -2908,6 +2907,10 @@ public class UnitUtil {
     }
 
     public static boolean isSupportVehicleEquipment(EquipmentType eq, Entity unit) {
+        if ((unit.getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT)
+                && (eq.getTonnage(unit) >= 5.0)) {
+            return false;
+        }
         if ((eq instanceof MiscType) && !eq.hasFlag(MiscType.F_SUPPORT_TANK_EQUIPMENT)) {
             return false;
         } else if ((eq instanceof WeaponType)
@@ -2923,13 +2926,19 @@ public class UnitUtil {
         }
     }
 
+    /**
+     * @param eq A {@link WeaponType} or {@link MiscType}
+     * @param ba The BattleArmor instance
+     * @return   Whether the BA can use the equipment
+     */
     public static boolean isBAEquipment(EquipmentType eq, BattleArmor ba) {
         if (eq instanceof MiscType) {
                 return eq.hasFlag(MiscType.F_BA_EQUIPMENT);
         } else if (eq instanceof WeaponType) {
             return isBattleArmorWeapon(eq, ba);
         }
-        return true;
+        // This leaves ammotype, which is filtered according to having a weapon that can use it
+        return false;
     }
 
     public static boolean isBattleArmorAPWeapon(EquipmentType etype){

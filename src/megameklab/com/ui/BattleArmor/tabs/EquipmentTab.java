@@ -575,7 +575,9 @@ public class EquipmentTab extends ITab implements ActionListener {
                             || etype.hasFlag(MiscType.F_PARTIAL_WING)
                             || etype.hasFlag(MiscType.F_JUMP_BOOSTER)
                             || etype.hasFlag(MiscType.F_MECHANICAL_JUMP_BOOSTER)
-                            || etype.hasFlag(MiscType.F_MASC))){
+                            || etype.hasFlag(MiscType.F_MASC)
+                            || UnitUtil.isArmorOrStructure(etype)
+                            || UnitUtil.isJumpJet(etype))) {
                     return false;
                 }
 
@@ -584,7 +586,7 @@ public class EquipmentTab extends ITab implements ActionListener {
                     return false;
                 }
                 BattleArmor ba = getBattleArmor();
-                if (((nType == T_OTHER) && UnitUtil.isBAEquipment(etype, ba))
+                if (((nType == T_OTHER) && UnitUtil.isBAEquipment(etype, ba) && !UnitUtil.isBattleArmorWeapon(etype, ba))
                         || (((nType == T_WEAPON) && (UnitUtil.isUnitWeapon(etype, ba))))
                         || ((nType == T_ENERGY) && UnitUtil.isUnitWeapon(etype, ba)
                             && (wtype != null) && (wtype.hasFlag(WeaponType.F_ENERGY)
