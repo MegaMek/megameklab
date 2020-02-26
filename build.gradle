@@ -72,6 +72,7 @@ dependencies {
     }
     implementation 'org.apache.xmlgraphics:batik-svggen:1.10'
     implementation 'org.apache.xmlgraphics:fop:2.3'
+    implementation 'org.apache.pdfbox:pdfbox:2.0.19'
     // We have been using a modified version of svgSalamander, which we'll keep around until
     // the conversion to batik is complete.
     implementation files('lib/svgSalamander.jar')

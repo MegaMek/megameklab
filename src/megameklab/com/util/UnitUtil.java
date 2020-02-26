@@ -1773,7 +1773,7 @@ public class UnitUtil {
      * @param unit
      */
     public static void expandUnitMounts(Mech unit) {
-        for (int location = 0; location <= unit.locations(); location++) {
+        for (int location = 0; location < unit.locations(); location++) {
             for (int slot = 0; slot < unit.getNumberOfCriticals(location); slot++) {
                 CriticalSlot cs = unit.getCritical(location, slot);
                 if ((cs == null) || (cs.getType() == CriticalSlot.TYPE_SYSTEM)) {

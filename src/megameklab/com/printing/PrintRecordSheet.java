@@ -291,16 +291,12 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
                 ex.printStackTrace();
             }
              */
-            try {
-                exportPDF();
-            } catch (TranscoderException | SAXException | IOException | ConfigurationException e) {
-                e.printStackTrace();
-            }
         }
         return Printable.PAGE_EXISTS;
     }
 
-    public void exportPDF() throws TranscoderException, SAXException, IOException, ConfigurationException {
+    public InputStream exportPDF(int pageNumber, PageFormat pageFormat) throws TranscoderException, SAXException, IOException, ConfigurationException {
+        createDocument(pageNumber + firstPage, pageFormat);
         DefaultConfigurationBuilder cfgBuilder = new DefaultConfigurationBuilder();
         Configuration cfg = cfgBuilder.build(getClass().getResourceAsStream("fop-config.xml"));
         PDFTranscoder transcoder = new PDFTranscoder();
@@ -311,12 +307,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         TranscoderOutput transOutput = new TranscoderOutput(output);
         transcoder.transcode(input, transOutput);
 
-        File file = new File("out.pdf");
-        try (FileOutputStream fileOut = new FileOutputStream(file)) {
-            fileOut.write(output.toByteArray());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        return new ByteArrayInputStream(output.toByteArray());
     }
     
     protected GraphicsNode build() {

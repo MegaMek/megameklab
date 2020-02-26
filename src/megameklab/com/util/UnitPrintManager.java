@@ -24,6 +24,8 @@ import java.awt.print.PageFormat;
 import java.awt.print.Paper;
 import java.awt.print.PrinterJob;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -61,6 +63,12 @@ import megameklab.com.ui.Dropship.Printing.PrintSpheroid;
 import megameklab.com.ui.Infantry.Printing.PrintInfantry;
 import megameklab.com.ui.dialog.UnitPrintQueueDialog;
 import megameklab.com.ui.protomek.printing.PrintProtomech;
+import org.apache.avalon.framework.configuration.ConfigurationException;
+import org.apache.batik.transcoder.TranscoderException;
+import org.apache.pdfbox.io.MemoryUsageSetting;
+import org.apache.pdfbox.multipdf.PDFMergerUtility;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.xml.sax.SAXException;
 
 public class UnitPrintManager {
 
@@ -114,6 +122,123 @@ public class UnitPrintManager {
         }
 
         printAllUnits(loadedUnits, singlePrint);
+    }
+
+    public static void exportMUL(Frame parent, boolean singlePrint) {
+        JFileChooser f = new JFileChooser(System.getProperty("user.dir"));
+        f.setLocation(parent.getLocation().x + 150, parent.getLocation().y + 100);
+        f.setDialogTitle("Export from MUL");
+        f.setMultiSelectionEnabled(false);
+
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Mul Files", "mul");
+
+        // Add a filter for mul files
+        f.setFileFilter(filter);
+
+        int returnVal = f.showOpenDialog(parent);
+        if ((returnVal != JFileChooser.APPROVE_OPTION) || (f.getSelectedFile() == null)) {
+            // I want a file, y'know!
+            return;
+        }
+        Vector<Entity> loadedUnits;
+        try {
+            loadedUnits = EntityListFile.loadFrom(f.getSelectedFile());
+            loadedUnits.trimToSize();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return;
+        }
+
+        f = new JFileChooser(System.getProperty("user.dir"));
+        f.setLocation(parent.getLocation().x + 150, parent.getLocation().y + 100);
+        f.setDialogTitle("Choose export file name");
+        f.setMultiSelectionEnabled(false);
+
+        filter = new FileNameExtensionFilter("PDF files", "pdf");
+
+        // Add a filter for mul files
+        f.setFileFilter(filter);
+
+        returnVal = f.showSaveDialog(parent);
+        if ((returnVal != JFileChooser.APPROVE_OPTION) || (f.getSelectedFile() == null)) {
+            // I want a file, y'know!
+            return;
+        }
+        exportUnits(loadedUnits, f.getSelectedFile(), singlePrint);
+    }
+
+    private static List<PrintRecordSheet> createSheets(List<Entity> entities, boolean singlePrint) {
+        List<PrintRecordSheet> sheets = new ArrayList<>();
+        List<Infantry> infList = new ArrayList<>();
+        List<BattleArmor> baList = new ArrayList<>();
+        List<Protomech> protoList = new ArrayList<>();
+        List<Entity> unprintable = new ArrayList<>();
+        Tank tank1 = null;
+
+        int pageCount = 0;
+        for (Entity unit : entities) {
+            if (unit instanceof Mech) {
+                UnitUtil.removeOneShotAmmo(unit);
+                UnitUtil.expandUnitMounts((Mech) unit);
+                sheets.add(new PrintMech((Mech) unit, pageCount++));
+            } else if ((unit instanceof Tank) && ((unit.getMovementMode() == EntityMovementMode.NAVAL) || (unit.getMovementMode() == EntityMovementMode.SUBMARINE) || (unit.getMovementMode() == EntityMovementMode.HYDROFOIL))) {
+                sheets.add(new PrintTank((Tank) unit, pageCount++));
+            } else if (unit instanceof Tank) {
+                if (singlePrint) {
+                    sheets.add(new PrintCompositeTankSheet((Tank) unit, null, pageCount++));
+                } else if (null != tank1) {
+                    sheets.add(new PrintCompositeTankSheet(tank1, (Tank) unit, pageCount++));
+                    tank1 = null;
+                } else {
+                    tank1 = (Tank) unit;
+                }
+            } else if (unit.hasETypeFlag(Entity.ETYPE_AERO)) {
+                if (unit instanceof Jumpship) {
+                    PrintCapitalShip pcs = new PrintCapitalShip((Jumpship) unit, pageCount);
+                    pageCount += pcs.getPageCount();
+                    sheets.add(pcs);
+                } else if (unit instanceof Dropship) {
+                    PrintDropship pds = new PrintDropship((Aero) unit, pageCount);
+                    pageCount += pds.getPageCount();
+                    sheets.add(pds);
+                } else {
+                    sheets.add(new PrintAero((Aero) unit, pageCount));
+                }
+            } else {
+                //TODO: show a message dialog that lists the unprintable units
+                unprintable.add(unit);
+            }
+        }
+
+        if (unprintable.size() > 0) {
+            JOptionPane.showMessageDialog(null, "Exporting is not currently supported for the following units:\n"
+                    + unprintable.stream().map(en -> en.getChassis() + " " + en.getModel())
+                    .collect(Collectors.joining("\n")));
+        }
+
+        if (null != tank1) {
+            sheets.add(new PrintCompositeTankSheet(tank1, null, pageCount++));
+        }
+        return sheets;
+    }
+
+    public static boolean exportUnits(List<Entity> units, File exportFile, boolean singlePrint) {
+        List<PrintRecordSheet> sheets = createSheets(units, singlePrint);
+        PageFormat pageFormat = new PageFormat();
+        try {
+            PDFMergerUtility merger = new PDFMergerUtility();
+            merger.setDestinationFileName(exportFile.getName());
+            for (PrintRecordSheet rs : sheets) {
+                for (int i = 0; i < rs.getPageCount(); i++) {
+                    merger.addSource(rs.exportPDF(i, pageFormat));
+                }
+            }
+            merger.mergeDocuments(MemoryUsageSetting.setupTempFileOnly());
+            return true;
+        } catch (TranscoderException | SAXException | IOException | ConfigurationException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public static boolean printAllUnits(Vector<Entity> loadedUnits, boolean singlePrint) {
@@ -267,6 +392,24 @@ public class UnitPrintManager {
         printMenu.add(item);
 
         return printMenu;
+    }
+
+    public static JMenu exportMenu(final JFrame parent) {
+        JMenu exportMenu = new JMenu("Export to PDF");
+        exportMenu.setMnemonic(KeyEvent.VK_E);
+
+        JMenuItem item = new JMenuItem("From MUL");
+        item.setMnemonic(KeyEvent.VK_M);
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, InputEvent.CTRL_MASK));
+        item.addActionListener(e -> UnitPrintManager.exportMUL(parent, false));
+        exportMenu.add(item);
+
+        item = new JMenuItem("From MUL (Single Unit Per RS)");
+        item.setMnemonic(KeyEvent.VK_R);
+        item.addActionListener(e -> UnitPrintManager.exportMUL(parent, true));
+        exportMenu.add(item);
+
+        return exportMenu;
     }
 
     public static void printSelectedUnit(JFrame parent) {

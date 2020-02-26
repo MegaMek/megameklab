@@ -383,6 +383,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         item.addActionListener(e -> jMenuPrintCurrentUnit());
 
         fileMenu.add(UnitPrintManager.printMenu(parentFrame, item));
+        fileMenu.add(UnitPrintManager.exportMenu(parentFrame));
 
         item = new JMenuItem();
         item.setText(resourceMap.getString("menu.file.save"));
