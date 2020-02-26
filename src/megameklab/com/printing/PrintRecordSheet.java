@@ -18,6 +18,9 @@ import megamek.common.annotations.Nullable;
 import megamek.common.logging.LogLevel;
 import megameklab.com.MegaMekLab;
 import megameklab.com.util.CConfig;
+import org.apache.avalon.framework.configuration.Configuration;
+import org.apache.avalon.framework.configuration.ConfigurationException;
+import org.apache.avalon.framework.configuration.DefaultConfigurationBuilder;
 import org.apache.batik.anim.dom.SVGDOMImplementation;
 import org.apache.batik.anim.dom.SVGLocatableSupport;
 import org.apache.batik.bridge.BridgeContext;
@@ -34,6 +37,7 @@ import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLResourceDescriptor;
+import org.apache.fop.afp.util.AFPResourceUtil;
 import org.apache.fop.svg.PDFTranscoder;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
@@ -43,6 +47,7 @@ import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.svg.SVGRectElement;
 import org.w3c.dom.xpath.XPathEvaluator;
 import org.w3c.dom.xpath.XPathResult;
+import org.xml.sax.SAXException;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -288,19 +293,22 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
              */
             try {
                 exportPDF();
-            } catch (TranscoderException e) {
+            } catch (TranscoderException | SAXException | IOException | ConfigurationException e) {
                 e.printStackTrace();
             }
         }
         return Printable.PAGE_EXISTS;
     }
 
-    public void exportPDF() throws TranscoderException {
+    public void exportPDF() throws TranscoderException, SAXException, IOException, ConfigurationException {
+        DefaultConfigurationBuilder cfgBuilder = new DefaultConfigurationBuilder();
+        Configuration cfg = cfgBuilder.build(getClass().getResourceAsStream("fop-config.xml"));
+        PDFTranscoder transcoder = new PDFTranscoder();
+        transcoder.configure(cfg);
+        transcoder.addTranscodingHint(PDFTranscoder.KEY_AUTO_FONTS, false);
         TranscoderInput input = new TranscoderInput(getSVGDocument());
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         TranscoderOutput transOutput = new TranscoderOutput(output);
-        PDFTranscoder transcoder = new PDFTranscoder();
-        transcoder.addTranscodingHint(PDFTranscoder.KEY_AUTO_FONTS, false);
         transcoder.transcode(input, transOutput);
 
         File file = new File("out.pdf");
