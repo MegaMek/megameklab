@@ -33,6 +33,7 @@ VERSION HISTORY:
 + Issue #475: Adding many items on a combat vehicle also adds a trailer hitch
 + Issue #495: Some things that should't be pod-mountable are anyway
 + PR #499: Indicate when equipment stats are variable on equipment tab
++ Issue #493: Blue Shield PFD problems on vehicles
 
 v0.47.4 (2020-2-09 2200 UTC)
 + Issue #416: Issue with Crit Splitting on the Right Torso with big Artillery cannons/Arrow IV
