@@ -1377,7 +1377,7 @@ public class UnitUtil {
                 if (unit.usesWeaponBays()) {
                     slots = (int) Math.ceil(mount.getUsableShotsLeft() / (double) ((AmmoType) mount.getType()).getShots());
                 }
-                tonnage += slots * mount.getType().getTonnage(unit);
+                tonnage += slots * mount.getTonnage();
             }
         }
 
@@ -2154,10 +2154,10 @@ public class UnitUtil {
             sb.append(eq.getType().getCriticals(unit));
             sb.append("<br>Mass: ");
             if (TestEntity.usesKgStandard(unit)) {
-                sb.append(Math.round(eq.getType().getTonnage(unit, eq.getLocation()) * 1000));
+                sb.append(Math.round(eq.getTonnage() * 1000));
                 sb.append(" Kg");
             } else {
-                sb.append(eq.getType().getTonnage(unit, eq.getLocation()));
+                sb.append(eq.getTonnage());
                 sb.append(" tons");
             }
 
@@ -3819,14 +3819,14 @@ public class UnitUtil {
         }
         int slots = TestProtomech.maxSlotsByLocation(location, proto) - 1;
         double weight = TestProtomech.maxWeightByLocation(location, proto)
-                - mount.getType().getTonnage(proto, location);
+                - mount.getTonnage();
         if ((slots < 0) || (weight < 0)) {
             return false;
         }
         for (Mounted m : proto.getEquipment()) {
             if (m.getLocation() == location) {
                 slots--;
-                weight -= m.getType().getTonnage(proto, location);
+                weight -= m.getTonnage();
                 if ((slots < 0) || (weight < 0)) {
                     return false;
                 }
