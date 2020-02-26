@@ -25,6 +25,7 @@ import org.apache.batik.bridge.GVTBuilder;
 import org.apache.batik.bridge.UserAgentAdapter;
 import org.apache.batik.dom.util.SAXDocumentFactory;
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.svggen.SVGGeneratorContext;
 import org.apache.batik.svggen.SVGGraphics2D;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLResourceDescriptor;
@@ -253,7 +254,8 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         svgDocument = loadTemplate(pageIndex, pageFormat);
         if (null != svgDocument) {
             subFonts((SVGDocument) svgDocument);
-            svgGenerator = new SVGGraphics2D(svgDocument);
+            SVGGeneratorContext context = SVGGeneratorContext.createDefault(getSVGDocument());
+            svgGenerator = new SVGGraphics2D(context, false);
             processImage(pageIndex - firstPage, pageFormat);
         }
     }
