@@ -361,7 +361,7 @@ public class EquipmentTableModel extends AbstractTableModel {
             } else if (entity.isSupportVehicle()) {
                 return type.getSupportVeeSlots(entity);
             } else if (entity instanceof Tank) {
-                return type.getTankslots(entity);
+                return type.getTankSlots(entity);
             } else if (entity.hasETypeFlag(Entity.ETYPE_PROTOMECH)) {
                 return TestProtomech.requiresSlot(type)? 1 : 0;
             }

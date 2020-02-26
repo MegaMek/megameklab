@@ -175,7 +175,7 @@ public class CriticalTableModel extends AbstractTableModel {
                 return crit.getType().getSupportVeeSlots(unit);
             }
             if (unit instanceof Tank) {
-                return crit.getType().getTankslots(unit);
+                return crit.getType().getTankSlots(unit);
             }
             if (unit.hasETypeFlag(Entity.ETYPE_PROTOMECH)) {
                 return TestProtomech.requiresSlot(crit.getType())? 1 : 0;
