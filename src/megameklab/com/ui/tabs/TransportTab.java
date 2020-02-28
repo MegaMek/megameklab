@@ -200,6 +200,7 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
         renderer.setToolTipText(resourceMap.getString("TransportTab.colDoors.tooltip")); //$NON-NLS-1$
         col.setCellRenderer(renderer);
         col = tblInstalled.getColumnModel().getColumn(InstalledBaysModel.COL_TONNAGE);
+        col.setCellEditor(new SpinnerCellEditor(InstalledBaysModel.COL_TONNAGE));
         renderer = new DefaultTableCellRenderer();
         renderer.setToolTipText(resourceMap.getString("TransportTab.colTonnage.tooltip")); //$NON-NLS-1$
         col.setCellRenderer(renderer);
@@ -655,10 +656,9 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
                     if (!bayTypeList.get(rowIndex).isCargoBay()) {
                         return (int) bayList.get(rowIndex).getUnusedSlots();
                     } else if (useKilogramStandard()) {
-                        return TestEntity.round(bayList.get(rowIndex).getUnusedSlots(),
-                                TestEntity.Ceil.KILO) * 1000.0;
+                        return RoundWeight.nearestKg(bayList.get(rowIndex).getUnusedSlots()) * 1000.0;
                     }
-                    return bayList.get(rowIndex).getUnusedSlots();
+                    return RoundWeight.nearestKg(bayList.get(rowIndex).getUnusedSlots());
                 case COL_DOORS:
                     return bayList.get(rowIndex).getDoors();
                 case COL_PERSONNEL:
@@ -706,6 +706,8 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
             switch (columnIndex) {
                 case COL_SIZE:
                     return bayTypeList.get(rowIndex).hasVariableSize();
+                case COL_TONNAGE:
+                    return bayTypeList.get(rowIndex).isCargoBay();
                 case COL_FACING:
                     return bayTypeList.get(rowIndex).requiresFacing();
                 case COL_POD:
@@ -825,13 +827,16 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
                 return;
             }
             final Bay bay = modelInstalled.bayList.get(row);
-            if (column == InstalledBaysModel.COL_SIZE) {
+            if ((column == InstalledBaysModel.COL_SIZE) || (column == InstalledBaysModel.COL_TONNAGE)) {
                 boolean pod = getEntity().isPodMountedTransport(bay);
                 double size = (Double) getCellEditorValue();
-                if (useKilogramStandard()) {
-                    size /= 1000;
+                BayData bayType = modelInstalled.bayTypeList.get(row);
+                if ((column == InstalledBaysModel.COL_TONNAGE) && useKilogramStandard()) {
+                    size /= 1000.0;
+                } else if ((column == InstalledBaysModel.COL_SIZE) && bayType.isCargoBay()) {
+                    size *= bayType.getWeight();
                 }
-                Bay newBay = modelInstalled.bayTypeList.get(row).newBay(size, bay.getBayNumber());
+                Bay newBay = bayType.newBay(size, bay.getBayNumber());
                 newBay.setDoors(bay.getDoors());
                 newBay.setFacing(bay.getFacing());
                 removeBay(bay);
@@ -867,10 +872,16 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
                 spinner.addChangeListener(this);
                 return spinner;
             } else if (column == InstalledBaysModel.COL_SIZE) {
-                double step = isCargo? 0.5 : 1.0;
-                double current = modelInstalled.bayList.get(row).getUnusedSlots();
-                if (isCargo && useKilogramStandard()) {
-                    step = 1.0;
+                SpinnerNumberModel model = new SpinnerNumberModel(modelInstalled.bayList.get(row).getUnusedSlots(),
+                        1.0, null, 1.0);
+                spinner.removeChangeListener(this);
+                spinner.setModel(model);
+                spinner.addChangeListener(this);
+                return spinner;
+            } else if (column == InstalledBaysModel.COL_TONNAGE) {
+                double step = useKilogramStandard() ? 1.0 : 0.5;
+                double current = modelInstalled.bayList.get(row).getWeight();
+                if (useKilogramStandard()) {
                     current *= 1000;
                 }
                 SpinnerNumberModel model = new SpinnerNumberModel(current, step,
