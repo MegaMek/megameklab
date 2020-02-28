@@ -529,7 +529,8 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
             }
         } else if (!isAeroType()) {
             cbTurrets.addItem(SVBuildListener.TURRET_SINGLE);
-            if (techManager.isLegal(TA_DUAL_TURRET)) {
+            if (!TestSupportVehicle.SVType.WIGE.equals(cbType.getSelectedItem())
+                    && techManager.isLegal(TA_DUAL_TURRET)) {
                 cbTurrets.addItem(SVBuildListener.TURRET_DUAL);
             }
         }
