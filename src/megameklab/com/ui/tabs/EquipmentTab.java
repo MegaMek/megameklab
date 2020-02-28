@@ -26,6 +26,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Enumeration;
@@ -212,6 +213,7 @@ public class EquipmentTab extends ITab implements ActionListener {
         equipmentSorter.setComparator(EquipmentTableModel.COL_DAMAGE, new WeaponDamageSorter());
         equipmentSorter.setComparator(EquipmentTableModel.COL_RANGE, new WeaponRangeSorter());
         equipmentSorter.setComparator(EquipmentTableModel.COL_COST, new FormattedNumberSorter());
+        equipmentSorter.setComparator(EquipmentTableModel.COL_TON, new FormattedNumberSorter());
         masterEquipmentTable.setRowSorter(equipmentSorter);
         ArrayList<RowSorter.SortKey> sortKeys = new ArrayList<>();
         sortKeys.add(new RowSorter.SortKey(EquipmentTableModel.COL_NAME, SortOrder.ASCENDING));
@@ -896,26 +898,27 @@ public class EquipmentTab extends ITab implements ActionListener {
      *
      */
     public static class FormattedNumberSorter implements Comparator<String> {
+        private final DecimalFormat format = new DecimalFormat();
 
         @Override
         public int compare(String s0, String s1) {
-            //lets find the weight class integer for each name
-            DecimalFormat format = new DecimalFormat();
-            double l0 = 0.0;
             try {
-                l0 = format.parse(s0).doubleValue();
+                return Double.compare(parseValue(s0), parseValue(s1));
             } catch (java.text.ParseException e) {
                 MegaMekLab.getLogger().error(getClass(), "compare(String, String)",
                         "Parse error comparing " + s0 + " and " + s1, e);
+                return 0;
             }
-            double l1 = 0.0;
-            try {
-                l1 = format.parse(s1).doubleValue();
-            } catch (java.text.ParseException e) {
-                MegaMekLab.getLogger().error(getClass(), "compare(String, String)",
-                        "Parse error comparing " + s0 + " and " + s1, e);
+        }
+
+        private double parseValue(String str) throws ParseException {
+            if (str.endsWith(" kg")) {
+                return format.parse(str.replace(" kg", "")).doubleValue() * 1000;
+            } else if (str.equals(EquipmentTableModel.VARIABLE)) {
+                return 0.0;
+            } else {
+                return format.parse(str).doubleValue();
             }
-            return Double.compare(l0, l1);
         }
     }
 
