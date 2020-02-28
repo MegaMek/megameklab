@@ -3046,6 +3046,12 @@ public class UnitUtil {
             if (!TestTank.legalForMotiveType(eq, tank.getMovementMode())) {
                 return false;
             }
+            // Can't use supercharger with solar or external power pickup
+            if (eq.hasFlag(MiscType.F_MASC) && (!tank.hasEngine()
+                    || tank.getEngine().getEngineType() == Engine.SOLAR
+                    || tank.getEngine().getEngineType() == Engine.EXTERNAL)) {
+                return false;
+            }
             if (eq.hasFlag(MiscType.F_VTOL_EQUIPMENT) && (tank instanceof VTOL)) {
                 return true;
             }
