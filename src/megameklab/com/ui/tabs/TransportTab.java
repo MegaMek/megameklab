@@ -656,10 +656,9 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
                     if (!bayTypeList.get(rowIndex).isCargoBay()) {
                         return (int) bayList.get(rowIndex).getUnusedSlots();
                     } else if (useKilogramStandard()) {
-                        return TestEntity.round(bayList.get(rowIndex).getUnusedSlots(),
-                                TestEntity.Ceil.KILO) * 1000.0;
+                        return RoundWeight.nearestKg(bayList.get(rowIndex).getUnusedSlots()) * 1000.0;
                     }
-                    return bayList.get(rowIndex).getUnusedSlots();
+                    return RoundWeight.nearestKg(bayList.get(rowIndex).getUnusedSlots());
                 case COL_DOORS:
                     return bayList.get(rowIndex).getDoors();
                 case COL_PERSONNEL:
