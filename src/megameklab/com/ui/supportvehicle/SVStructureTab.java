@@ -401,6 +401,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         refreshFuel();
         panChassisMod.setFromEntity(getSV());
         panSummary.refresh();
+        refresh.refreshEquipment();
         refresh.refreshStatus();
         refresh.refreshPreview();
     }
