@@ -170,7 +170,9 @@ public class CVTransportView extends BuildView implements ChangeListener {
     public void setOmni(boolean omni) {
         spnPodTroop.setEnabled(omni);
         podSpinners.values().forEach(v -> v.setEnabled(omni));
-        clearPodSpace();
+        if (!omni) {
+            clearPodSpace();
+        }
     }
     
     public void clearPodSpace() {
