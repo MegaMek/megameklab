@@ -330,7 +330,7 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
             }
         } else {
             cbTurrets.addItem(TURRET_SINGLE);
-            if (techManager.isLegal(TA_DUAL_TURRET)) {
+            if (!EntityMovementMode.WIGE.equals(getMovementMode()) && techManager.isLegal(TA_DUAL_TURRET)) {
                 cbTurrets.addItem(TURRET_DUAL);
             }
         }
