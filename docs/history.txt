@@ -34,6 +34,12 @@ VERSION HISTORY:
 + Issue #495: Some things that should't be pod-mountable are anyway
 + PR #499: Indicate when equipment stats are variable on equipment tab
 + Issue #493: Blue Shield PFD problems on vehicles
++ Issue #489: Disappearing OmniVehicle pod-mounted cargo
++ Issue #492: Problems with cargo weights for combat vehicles under Transport section of Structure/Armor
++ Issue #497: Superchargers can be added to units that shouldn't be able to use them
++ PR #509: Set cargo bay size by weight or capacity
++ Issue #510: Restrict armored components to mechs.
++ Issue #511: No dual turrets for WiGE vehicles
 
 v0.47.4 (2020-2-09 2200 UTC)
 + Issue #416: Issue with Crit Splitting on the Right Torso with big Artillery cannons/Arrow IV
