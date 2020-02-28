@@ -29,13 +29,7 @@ import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
-import megamek.common.CriticalSlot;
-import megamek.common.Entity;
-import megamek.common.MechFileParser;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
-import megamek.common.Tank;
-import megamek.common.WeaponType;
+import megamek.common.*;
 import megamek.common.loaders.EntityLoadingException;
 import megameklab.com.ui.EntitySource;
 
@@ -205,9 +199,8 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                     }
                 }
 
-                if (UnitUtil.isArmorable(cs)
-                        && ((UnitUtil.getUnitTechType(getUnit()) == UnitUtil.TECH_EXPERIMENTAL) || (UnitUtil
-                                .getUnitTechType(getUnit()) == UnitUtil.TECH_UNOFFICAL))) {
+                if ((getUnit() instanceof Mech) && UnitUtil.isArmorable(cs)
+                        && eSource.getTechManager().isLegal(Entity.getArmoredComponentTechAdvancement())) {
                     popup.addSeparator();
                     if (cs.isArmored()) {
                         JMenuItem info = new JMenuItem("Remove Armoring");
