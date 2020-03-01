@@ -40,6 +40,8 @@ VERSION HISTORY:
 + PR #509: Set cargo bay size by weight or capacity
 + Issue #510: Restrict armored components to mechs.
 + Issue #511: No dual turrets for WiGE vehicles
++ Issue #496: SRCS on Mechs can't be assigned a location, and thus isn't saved
++ Issue #502: Protomech's equipment database is not sorted properly by weight
 
 v0.47.4 (2020-2-09 2200 UTC)
 + Issue #416: Issue with Crit Splitting on the Right Torso with big Artillery cannons/Arrow IV
