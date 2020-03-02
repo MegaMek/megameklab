@@ -825,6 +825,7 @@ public class StructureTab extends ITab implements MekBuildListener, ArmorAllocat
             panMovement.setFromEntity(getMech());
             panHeat.setFromMech(getMech());
             refreshSummary();
+            refresh.refreshEquipment();
             refresh.refreshPreview();
             refresh.refreshStatus();
         }
