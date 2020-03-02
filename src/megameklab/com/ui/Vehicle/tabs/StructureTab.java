@@ -614,7 +614,6 @@ public class StructureTab extends ITab implements CVBuildListener, ArmorAllocati
             walkChanged(panMovement.getWalk());
         }
         refreshSummary();
-        refresh.refreshEquipment();
         refresh.refreshPreview();
         refresh.refreshStatus();
     }

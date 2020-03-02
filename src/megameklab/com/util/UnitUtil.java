@@ -3052,12 +3052,6 @@ public class UnitUtil {
                     || tank.getEngine().getEngineType() == Engine.EXTERNAL)) {
                 return false;
             }
-            // External fuel tanks are only allowed on ICE and fuel cell engines
-            if (eq.hasFlag(MiscType.F_FUEL) && (!tank.hasEngine()
-                    || (tank.getEngine().getEngineType() != Engine.COMBUSTION_ENGINE
-                        && tank.getEngine().getEngineType() != Engine.FUEL_CELL))) {
-                return false;
-            }
             if (eq.hasFlag(MiscType.F_VTOL_EQUIPMENT) && (tank instanceof VTOL)) {
                 return true;
             }
