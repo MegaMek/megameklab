@@ -943,8 +943,9 @@ public class UnitUtil {
     }
 
     public static boolean isJumpJet(Mounted m) {
-        return m.getType().hasFlag(MiscType.F_JUMP_JET)
-                || m.getType().hasFlag(MiscType.F_JUMP_BOOSTER);
+        return (m.getType() instanceof MiscType) &&
+                (m.getType().hasFlag(MiscType.F_JUMP_JET)
+                || m.getType().hasFlag(MiscType.F_JUMP_BOOSTER));
     }
 
     /**
