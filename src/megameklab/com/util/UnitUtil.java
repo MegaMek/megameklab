@@ -3499,6 +3499,13 @@ public class UnitUtil {
         }
     }
 
+    /**
+     * Checks whether the equipment can be added to the location on the build tab
+     * @param unit      The Entity being designed
+     * @param eq        The equipment
+     * @param location  The location to add it
+     * @return          Whether the location is valid
+     */
     public static boolean isValidLocation(Entity unit, EquipmentType eq, int location) {
         if (unit instanceof BattleArmor) {
             // Can only be mounted in APM or armored glove; can't be added directly to location
