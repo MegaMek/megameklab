@@ -3500,6 +3500,10 @@ public class UnitUtil {
     }
 
     public static boolean isValidLocation(Entity unit, EquipmentType eq, int location) {
+        if (unit instanceof BattleArmor) {
+            // Can only be mounted in APM or armored glove; can't be added directly to location
+            return !(eq instanceof WeaponType && eq.hasFlag(WeaponType.F_INFANTRY));
+        }
         return TestEntity.isValidLocation(unit, eq, location, null);
     }
     
