@@ -3500,7 +3500,7 @@ public class UnitUtil {
     }
 
     public static boolean isValidLocation(Entity unit, EquipmentType eq, int location) {
-        return TestEntity.isValidLocation(unit, eq, location);
+        return TestEntity.isValidLocation(unit, eq, location, null);
     }
     
     /**
