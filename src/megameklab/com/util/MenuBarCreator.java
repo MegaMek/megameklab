@@ -955,6 +955,24 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         parentFrame.repaint();
     }
 
+    /**
+     * Constructs a file name for the current Entity using the chassis and model name and the
+     * correct extension for the unit type. Any character that is not legal for a Windows filename
+     * is replace by an underscore.
+     *
+     * @param entity The Entity
+     * @return       A default filename for the Entity
+     */
+    private String createUnitFilename(Entity entity) {
+        String fileName = (entity.getChassis() + entity.getModel()).trim();
+        fileName = fileName.replaceAll("[/\\\\<>:\"|?*]", "_");
+        if (entity instanceof Mech) {
+            return fileName + ".mtf";
+        } else {
+            return fileName + ".blk";
+        }
+    }
+
     private void jMenuSaveEntity_actionPerformed(ActionEvent event) {
 
         if (UnitUtil.validateUnit(parentFrame.getEntity()).length() > 0) {
@@ -962,12 +980,12 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
                     resourceMap.getString("message.invalidUnit.text"));
         }
 
-        String unitName = parentFrame.getEntity().getChassis() + " " + parentFrame.getEntity().getModel();
+        String fileName = createUnitFilename(parentFrame.getEntity());
         UnitUtil.compactCriticals(parentFrame.getEntity());
 
         String filePathName = CConfig.getParam(CConfig.CONFIG_SAVE_FILE_1);
 
-        if ((filePathName.trim().length() < 1) || !filePathName.contains(unitName)) {
+        if ((filePathName.trim().length() < 1) || !filePathName.contains(fileName)) {
             FileDialog fDialog = new FileDialog(parentFrame,
                     resourceMap.getString("dialog.saveAs.title"),
                     FileDialog.SAVE);
@@ -975,7 +993,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             filePathName = CConfig.getParam(CConfig.CONFIG_SAVE_LOC);
 
             fDialog.setDirectory(filePathName);
-            fDialog.setFile(unitName + (parentFrame.getEntity() instanceof Mech?".mtf":".blk"));
+            fDialog.setFile(fileName);
             fDialog.setLocationRelativeTo(parentFrame);
 
             fDialog.setVisible(true);
@@ -1011,7 +1029,6 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
     }
 
     private void jMenuSaveAsEntity_actionPerformed(ActionEvent event) {
-
         if (UnitUtil.validateUnit(parentFrame.getEntity()).length() > 0) {
             JOptionPane.showMessageDialog(parentFrame,
                     resourceMap.getString("message.savingInvalidUnit.text"));
@@ -1025,7 +1042,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         String filePathName = CConfig.getParam(CConfig.CONFIG_SAVE_LOC);
 
         fDialog.setDirectory(filePathName);
-        fDialog.setFile(parentFrame.getEntity().getChassis() + " " + parentFrame.getEntity().getModel() + (parentFrame.getEntity() instanceof Mech?".mtf":".blk"));
+        fDialog.setFile(createUnitFilename(parentFrame.getEntity()));
         fDialog.setLocationRelativeTo(parentFrame);
 
         fDialog.setVisible(true);
@@ -1156,13 +1173,12 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             return;
         }
 
-        CConfig.updateSaveFiles("");
         UnitUtil.updateLoadedUnit(newUnit);
 
         if (viewer.getChosenMechSummary().getSourceFile().getName().endsWith(".zip")) {
             String fileName = viewer.getChosenMechSummary().getSourceFile().getAbsolutePath();
             fileName = fileName.substring(0, fileName.lastIndexOf(File.separatorChar) + 1);
-            fileName = fileName + viewer.getChosenMechSummary().getName() + ".mtf";
+            fileName = fileName + createUnitFilename(newUnit);
             CConfig.updateSaveFiles(fileName);
         } else {
             CConfig.updateSaveFiles(viewer.getChosenMechSummary().getSourceFile().getAbsolutePath());
