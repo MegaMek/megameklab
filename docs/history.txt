@@ -45,6 +45,7 @@ VERSION HISTORY:
 + Issue #501: I can remove the base 10 heat sinks that come with an engine
 + Issue #515: External fuel tanks should be available to ICE and FC combat vehicles
 + Issue #517: Non-mech units loaded from cache sometimes save with mtf extension
++ Issue #522: Industrial 'mech Envi Sealing Cost
 
 v0.47.4 (2020-2-09 2200 UTC)
 + Issue #416: Issue with Crit Splitting on the Right Torso with big Artillery cannons/Arrow IV
