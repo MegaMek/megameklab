@@ -148,19 +148,13 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                         });
                         popup.add(info);
                     }
-
-                    info = new JMenuItem("Delete " + mount.getName());
-                    info.addActionListener(new ActionListener() {
-                        public void actionPerformed(ActionEvent e) {
-                            removeMount();
-                        }
-                    });
-                    if (!((getUnit() instanceof BattleArmor) 
-                            && UnitUtil.isFixedLocationSpreadEquipment(mount
-                                    .getType()))){
+                    if (!((getUnit() instanceof BattleArmor)
+                            && UnitUtil.isFixedLocationSpreadEquipment(mount.getType()))
+                            && !UnitUtil.isHeatSink(mount) && !UnitUtil.isJumpJet(mount)) {
+                        info = new JMenuItem("Delete " + mount.getName());
+                        info.addActionListener(ev -> removeMount());
                         popup.add(info);
                     }
-                    
                     // Allow making this a sort weapon
                     if ((mount.getType() instanceof WeaponType)
                             && !mount.isSquadSupportWeapon()

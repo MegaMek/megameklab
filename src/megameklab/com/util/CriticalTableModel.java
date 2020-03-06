@@ -157,13 +157,13 @@ public class CriticalTableModel extends AbstractTableModel {
                         crit.getBaseShotsLeft() / 1000;
             } else if (crit.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)
                     && crit.getLinked() != null){
-                tonnage = crit.getLinked().getType().getTonnage(unit) * 0.75;
+                tonnage = crit.getLinked().getTonnage() * 0.75;
             } else if (unit.usesWeaponBays() && (crit.getType() instanceof AmmoType)) {
                 // Round up to the next half ton
-                tonnage = Math.ceil((crit.getType().getTonnage(unit) * crit.getUsableShotsLeft()
-                        / ((AmmoType)crit.getType()).getShots()) * 2.0) * 0.5;
+                tonnage = Math.ceil((crit.getTonnage() * crit.getUsableShotsLeft()
+                        / ((AmmoType) crit.getType()).getShots()) * 2.0) * 0.5;
             } else {
-                tonnage = crit.getType().getTonnage(unit);
+                tonnage = crit.getTonnage();
             }
             if (kgStandard) {
                 return Math.round(tonnage * 1000);
@@ -175,7 +175,7 @@ public class CriticalTableModel extends AbstractTableModel {
                 return crit.getType().getSupportVeeSlots(unit);
             }
             if (unit instanceof Tank) {
-                return crit.getType().getTankslots(unit);
+                return crit.getType().getTankSlots(unit);
             }
             if (unit.hasETypeFlag(Entity.ETYPE_PROTOMECH)) {
                 return TestProtomech.requiresSlot(crit.getType())? 1 : 0;

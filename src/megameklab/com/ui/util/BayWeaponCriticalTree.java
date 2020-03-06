@@ -675,15 +675,15 @@ public class BayWeaponCriticalTree extends JTree {
                 medAV += wtype.getMedAV();
                 longAV += wtype.getLongAV();
                 heat += wtype.getHeat();
-                weight += wtype.getTonnage(eSource.getEntity());
+                weight += eq.getTonnage();
                 if (eq.getLinkedBy() != null) {
-                    weight += eq.getLinkedBy().getType().getTonnage(eSource.getEntity());
+                    weight += eq.getLinkedBy().getTonnage();
                 }
             }
             for (Integer aNum : getMounted().getBayAmmo()) {
                 final Mounted eq = eSource.getEntity().getEquipment(aNum);
                 final AmmoType at = (AmmoType) eq.getType();
-                weight += at.getTonnage(eSource.getEntity()) * eq.getBaseShotsLeft() / at.getShots();
+                weight += eq.getTonnage() * eq.getBaseShotsLeft() / at.getShots();
             }
             sb.append("<br/>AV: ").append(shortAV).append("/").append(medAV).append("/")
                 .append(longAV).append("<br/>Heat: ").append(heat)

@@ -33,6 +33,18 @@ VERSION HISTORY:
 + Issue #475: Adding many items on a combat vehicle also adds a trailer hitch
 + Issue #495: Some things that should't be pod-mountable are anyway
 + PR #499: Indicate when equipment stats are variable on equipment tab
++ Issue #493: Blue Shield PFD problems on vehicles
++ Issue #489: Disappearing OmniVehicle pod-mounted cargo
++ Issue #492: Problems with cargo weights for combat vehicles under Transport section of Structure/Armor
++ Issue #497: Superchargers can be added to units that shouldn't be able to use them
++ PR #509: Set cargo bay size by weight or capacity
++ Issue #510: Restrict armored components to mechs.
++ Issue #511: No dual turrets for WiGE vehicles
++ Issue #496: SRCS on Mechs can't be assigned a location, and thus isn't saved
++ Issue #502: Protomech's equipment database is not sorted properly by weight
++ Issue #501: I can remove the base 10 heat sinks that come with an engine
++ Issue #515: External fuel tanks should be available to ICE and FC combat vehicles
++ Issue #517: Non-mech units loaded from cache sometimes save with mtf extension
 
 v0.47.4 (2020-2-09 2200 UTC)
 + Issue #416: Issue with Crit Splitting on the Right Torso with big Artillery cannons/Arrow IV

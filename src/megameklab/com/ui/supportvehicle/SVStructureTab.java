@@ -390,8 +390,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
                 && !getSV().hasMisc(MiscType.F_PROP)) {
             setChassisMod(TestSupportVehicle.ChassisModification.PROP.equipment, true);
         }
-        // MagLev trains cannot use the external power pickup mod.
-        if (engine.getEngineType() == Engine.MAGLEV) {
+        if (engine.getEngineType() != Engine.EXTERNAL) {
             setChassisMod(TestSupportVehicle.ChassisModification.EXTERNAL_POWER_PICKUP.equipment, false);
         }
         // The chassis view needs to refresh the available engine rating combobox
@@ -401,6 +400,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         refreshFuel();
         panChassisMod.setFromEntity(getSV());
         panSummary.refresh();
+        refresh.refreshEquipment();
         refresh.refreshStatus();
         refresh.refreshPreview();
     }

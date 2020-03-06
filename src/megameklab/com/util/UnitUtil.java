@@ -943,8 +943,9 @@ public class UnitUtil {
     }
 
     public static boolean isJumpJet(Mounted m) {
-        return m.getType().hasFlag(MiscType.F_JUMP_JET)
-                || m.getType().hasFlag(MiscType.F_JUMP_BOOSTER);
+        return (m.getType() instanceof MiscType) &&
+                (m.getType().hasFlag(MiscType.F_JUMP_JET)
+                || m.getType().hasFlag(MiscType.F_JUMP_BOOSTER));
     }
 
     /**
@@ -1377,7 +1378,7 @@ public class UnitUtil {
                 if (unit.usesWeaponBays()) {
                     slots = (int) Math.ceil(mount.getUsableShotsLeft() / (double) ((AmmoType) mount.getType()).getShots());
                 }
-                tonnage += slots * mount.getType().getTonnage(unit);
+                tonnage += slots * mount.getTonnage();
             }
         }
 
@@ -2154,10 +2155,10 @@ public class UnitUtil {
             sb.append(eq.getType().getCriticals(unit));
             sb.append("<br>Mass: ");
             if (TestEntity.usesKgStandard(unit)) {
-                sb.append(Math.round(eq.getType().getTonnage(unit, eq.getLocation()) * 1000));
+                sb.append(Math.round(eq.getTonnage() * 1000));
                 sb.append(" Kg");
             } else {
-                sb.append(eq.getType().getTonnage(unit, eq.getLocation()));
+                sb.append(eq.getTonnage());
                 sb.append(" tons");
             }
 
@@ -2805,6 +2806,15 @@ public class UnitUtil {
                 return false;
             }
 
+            if (eq.hasFlag(MiscType.F_FUEL)) {
+                return unit.isIndustrial()
+                        && ((unit.getEngine().getEngineType() == Engine.COMBUSTION_ENGINE)
+                            || (unit.getEngine().getEngineType() == Engine.FUEL_CELL));
+            }
+            if (eq.hasFlag(MiscType.F_ENVIRONMENTAL_SEALING)) {
+                return unit.isIndustrial();
+            }
+
             if (eq.hasFlag(MiscType.F_MECH_EQUIPMENT)
                     && !eq.hasFlag(MiscType.F_CLUB)
                     && !eq.hasFlag(MiscType.F_HAND_WEAPON)
@@ -2815,6 +2825,7 @@ public class UnitUtil {
             if (eq.hasFlag(MiscType.F_IS_DOUBLE_HEAT_SINK_PROTOTYPE)) {
                 return true;
             }
+
         }
 
         return false;
@@ -3044,6 +3055,18 @@ public class UnitUtil {
 
         if (eq instanceof MiscType) {
             if (!TestTank.legalForMotiveType(eq, tank.getMovementMode())) {
+                return false;
+            }
+            // Can't use supercharger with solar or external power pickup
+            if (eq.hasFlag(MiscType.F_MASC) && (!tank.hasEngine()
+                    || tank.getEngine().getEngineType() == Engine.SOLAR
+                    || tank.getEngine().getEngineType() == Engine.EXTERNAL)) {
+                return false;
+            }
+            // External fuel tanks are only allowed on ICE and fuel cell engines
+            if (eq.hasFlag(MiscType.F_FUEL) && (!tank.hasEngine()
+                    || (tank.getEngine().getEngineType() != Engine.COMBUSTION_ENGINE
+                        && tank.getEngine().getEngineType() != Engine.FUEL_CELL))) {
                 return false;
             }
             if (eq.hasFlag(MiscType.F_VTOL_EQUIPMENT) && (tank instanceof VTOL)) {
@@ -3510,14 +3533,14 @@ public class UnitUtil {
                 return location == Protomech.LOC_BODY;
             }
         }
-        if ((unit instanceof Mech) && (eq instanceof MiscType)) {
-            if (((eq.hasFlag(MiscType.F_CLUB) || eq
-                    .hasFlag(MiscType.F_HAND_WEAPON)))) {
+        if (eq instanceof MiscType) {
+            if ((unit instanceof Mech)
+                    && ((eq.hasFlag(MiscType.F_CLUB) || eq.hasFlag(MiscType.F_HAND_WEAPON)))) {
                 if (unit.entityIsQuad()) {
                     return ((location == Mech.LOC_LT)
                             || (location == Mech.LOC_RT))
-                            && ((eq.getSubType() & 
-                                    (MiscType.S_DUAL_SAW | MiscType.S_PILE_DRIVER
+                            && ((eq.getSubType() &
+                            (MiscType.S_DUAL_SAW | MiscType.S_PILE_DRIVER
                                     | MiscType.S_WRECKING_BALL | MiscType.S_BACKHOE
                                     | MiscType.S_COMBINE | MiscType.S_CHAINSAW
                                     | MiscType.S_ROCK_CUTTER | MiscType.S_BUZZSAW
@@ -3526,12 +3549,11 @@ public class UnitUtil {
                     return (location == Mech.LOC_RARM) || (location == Mech.LOC_LARM);
                 }
             }
-
             if (eq.hasFlag(MiscType.F_ACTUATOR_ENHANCEMENT_SYSTEM)) {
                 if ((location != Mech.LOC_RARM) && (location != Mech.LOC_LARM)
                         && (location != Mech.LOC_LLEG)
                         && (location != Mech.LOC_RLEG)
-                        && ((unit instanceof TripodMech) 
+                        && ((unit instanceof TripodMech)
                                 && location != Mech.LOC_CLEG)) {
                     return false;
                 }
@@ -3554,87 +3576,91 @@ public class UnitUtil {
                         || ((location != Mech.LOC_RT) && (location != Mech.LOC_LT)))) {
                 return false;
             }
-            
+            if (eq.hasFlag(MiscType.F_FUEL) && (unit instanceof Mech)) {
+                return location == Mech.LOC_CT
+                        || location == Mech.LOC_RT
+                        || location == Mech.LOC_LT;
+            }
+
             //vehicular jump jets are auto-assigned to the body
             if (eq.hasFlag(MiscType.F_JUMP_JET) && unit instanceof Mech) {
-            	if (location == Mech.LOC_HEAD) {
-            		return false;
-            	}
-            	if (!(unit instanceof QuadMech)
-            			&& (location == Mech.LOC_LARM || location == Mech.LOC_RARM)) {
-            		return false;
-            	}
+                if (location == Mech.LOC_HEAD) {
+                    return false;
+                }
+                if (!(unit instanceof QuadMech)
+                        && (location == Mech.LOC_LARM || location == Mech.LOC_RARM)) {
+                    return false;
+                }
             }
-            
+
             if (eq.hasFlag(MiscType.F_AP_POD) && unit instanceof Mech) {
-            	if (!(unit instanceof QuadMech)
-            			&& (location == Mech.LOC_LARM || location == Mech.LOC_RARM)) {
-            		return false;
-            	}
-            	if (location != Mech.LOC_LLEG
-            			&& location != Mech.LOC_RLEG
-            			&& location != Mech.LOC_CLEG) {
-            		return false;
-            	}
+                if (!(unit instanceof QuadMech)
+                        && (location == Mech.LOC_LARM || location == Mech.LOC_RARM)) {
+                    return false;
+                }
+                if (location != Mech.LOC_LLEG
+                        && location != Mech.LOC_RLEG
+                        && location != Mech.LOC_CLEG) {
+                    return false;
+                }
             }
-            
+
             if (eq.hasFlag(MiscType.F_MODULAR_ARMOR)) {
-            	if (unit instanceof Mech && location == Mech.LOC_HEAD) {
-            		return false;
-            	}
-            	if (unit instanceof VTOL && location == VTOL.LOC_ROTOR) {
-            		return false;
-            	}
+                if (unit instanceof Mech && location == Mech.LOC_HEAD) {
+                    return false;
+                }
+                if (unit instanceof VTOL && location == VTOL.LOC_ROTOR) {
+                    return false;
+                }
             }
-            
+
             if (eq.hasFlag(MiscType.F_CASE)) {
-            	if (unit instanceof Mech
-            			&& location != Mech.LOC_LT
-            			&& location != Mech.LOC_RT
-            			&& location != Mech.LOC_CT) {
-            		return false;
-            	}
-            	if (unit instanceof Tank && location != Tank.LOC_BODY) {
-            		return false;
-            	}
+                if (unit instanceof Mech
+                        && location != Mech.LOC_LT
+                        && location != Mech.LOC_RT
+                        && location != Mech.LOC_CT) {
+                    return false;
+                }
+                if (unit instanceof Tank && location != Tank.LOC_BODY) {
+                    return false;
+                }
             }
-            
+
             if (unit.hasETypeFlag(Entity.ETYPE_TANK)) {
-            	if (location == Tank.LOC_BODY) {
-            		//Equipment which cannot be installed in the body
-            		if (eq.hasFlag(MiscType.F_HARJEL)
-            				|| eq.hasFlag(MiscType.F_LIGHT_FLUID_SUCTION_SYSTEM)) {
-            			return false;
-            		}
-            	} else {
-            		//Equipment which must be installed in the body
-            		if (eq.hasFlag(MiscType.F_CASE) || eq.hasFlag(MiscType.F_BLUE_SHIELD)) {
-            			return false;
-            		}
-            	}
-            	if (eq.hasFlag(MiscType.F_BULLDOZER) && location != Tank.LOC_FRONT) {
-            		return false;
-            	}
-            	
-            	if (unit instanceof VTOL) {
-            		/* Per Tech Manual, no equipment can be installed in the rotor, but TacOps
-            		 * allows some. This is equipment which is specifically disallowed. 
-            		 */
-            		if (location == VTOL.LOC_ROTOR) {
-            			if (eq.hasFlag(MiscType.F_HARJEL)
-            					|| eq.hasFlag(MiscType.F_MODULAR_ARMOR)
-            					|| eq.hasFlag(MiscType.F_LIGHT_FLUID_SUCTION_SYSTEM)) {
-            				return false;
-            			}
-            		} else {
-            			//Equipment which must be installed in the rotor.
-            			if (eq.hasFlag(MiscType.F_MAST_MOUNT)) {
-            				return false;
-            			}
-            		}
-            	}
+                if (location == Tank.LOC_BODY) {
+                    //Equipment which cannot be installed in the body
+                    if (eq.hasFlag(MiscType.F_HARJEL)
+                            || eq.hasFlag(MiscType.F_LIGHT_FLUID_SUCTION_SYSTEM)) {
+                        return false;
+                    }
+                } else {
+                    //Equipment which must be installed in the body
+                    if (eq.hasFlag(MiscType.F_CASE) || eq.hasFlag(MiscType.F_BLUE_SHIELD)) {
+                        return false;
+                    }
+                }
+                if (eq.hasFlag(MiscType.F_BULLDOZER) && location != Tank.LOC_FRONT) {
+                    return false;
+                }
+
+                if (unit instanceof VTOL) {
+                    /* Per Tech Manual, no equipment can be installed in the rotor, but TacOps
+                     * allows some. This is equipment which is specifically disallowed.
+                     */
+                    if (location == VTOL.LOC_ROTOR) {
+                        if (eq.hasFlag(MiscType.F_HARJEL)
+                                || eq.hasFlag(MiscType.F_MODULAR_ARMOR)
+                                || eq.hasFlag(MiscType.F_LIGHT_FLUID_SUCTION_SYSTEM)) {
+                            return false;
+                        }
+                    } else {
+                        //Equipment which must be installed in the rotor.
+                        if (eq.hasFlag(MiscType.F_MAST_MOUNT)) {
+                            return false;
+                        }
+                    }
+                }
             }
-            
         } else if (eq instanceof WeaponType) {
             if (eq.hasFlag(WeaponType.F_VGL)) {
                 if ((unit instanceof Mech)
@@ -3819,14 +3845,14 @@ public class UnitUtil {
         }
         int slots = TestProtomech.maxSlotsByLocation(location, proto) - 1;
         double weight = TestProtomech.maxWeightByLocation(location, proto)
-                - mount.getType().getTonnage(proto, location);
+                - mount.getTonnage();
         if ((slots < 0) || (weight < 0)) {
             return false;
         }
         for (Mounted m : proto.getEquipment()) {
             if (m.getLocation() == location) {
                 slots--;
-                weight -= m.getType().getTonnage(proto, location);
+                weight -= m.getTonnage();
                 if ((slots < 0) || (weight < 0)) {
                     return false;
                 }

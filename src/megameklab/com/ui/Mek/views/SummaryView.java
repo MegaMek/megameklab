@@ -337,12 +337,12 @@ public class SummaryView extends IView{
             else if (mt.hasFlag(MiscType.F_TSM)
                     || mt.hasFlag(MiscType.F_INDUSTRIAL_TSM)
                     || mt.hasFlag(MiscType.F_MASC)) {
-                weightEnhance += mt.getTonnage(getMech(), m.getLocation());
+                weightEnhance += m.getTonnage();
                 critEnhance += UnitUtil.getCritsUsed(getMech(), mt);
             }
             else if (mt.hasFlag(MiscType.F_JUMP_JET)
                     || mt.hasFlag(MiscType.F_JUMP_BOOSTER)) {
-                weightJJ += mt.getTonnage(getMech(), m.getLocation());
+                weightJJ += m.getTonnage();
                 critJJ += mt.getCriticals(getMech());
             }
             else if (mt.hasFlag(MiscType.F_HEAT_SINK)
@@ -350,19 +350,17 @@ public class SummaryView extends IView{
                 continue;
             }
             else {
-                weightEquip += mt.getTonnage(getMech(), m.getLocation());
+                weightEquip += m.getTonnage();
                 critEquip += mt.getCriticals(getMech());
             }
         }
         for (Mounted m : getMech().getWeaponList()) {
-            EquipmentType et = m.getType();
-            weightEquip += et.getTonnage(getMech());
-            critEquip += et.getCriticals(getMech());
+            weightEquip += m.getTonnage();
+            critEquip += m.getType().getCriticals(getMech());
         }
         for (Mounted m : getMech().getAmmo()) {
-            EquipmentType et = m.getType();
-            weightEquip += et.getTonnage(getMech());
-            critEquip += et.getCriticals(getMech());
+            weightEquip += m.getTonnage();
+            critEquip += m.getType().getCriticals(getMech());
         }
         txtJumpTon.setText(Double.toString(weightJJ));
         txtEnhanceTon.setText(Double.toString(weightEnhance));

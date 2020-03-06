@@ -325,24 +325,22 @@ public class SummaryView extends IView{
                 continue;
             }
             else if (mt.hasFlag(MiscType.F_SPONSON_TURRET)) {
-                weightSponson = mt.getTonnage(getTank());
+                weightSponson = m.getTonnage();
             } else if (mt.hasFlag(MiscType.F_JUMP_JET)) {
-                weightJJ += mt.getTonnage(getTank(), m.getLocation());
+                weightJJ += m.getTonnage();
             } else if (mt.hasFlag(MiscType.F_HEAT_SINK)
                     || mt.hasFlag(MiscType.F_DOUBLE_HEAT_SINK)) {
                 continue;
             }
             else {
-                weightEquip += mt.getTonnage(getTank(), m.getLocation());
+                weightEquip += m.getTonnage();
             }
         }
         for (Mounted m : getTank().getWeaponList()) {
-            EquipmentType et = m.getType();
-            weightEquip += et.getTonnage(getTank());
+            weightEquip += m.getTonnage();
         }
         for (Mounted m : getTank().getAmmo()) {
-            EquipmentType et = m.getType();
-            weightEquip += et.getTonnage(getTank());
+            weightEquip += m.getTonnage();
         }
         txtJumpTon.setText(Double.toString(weightJJ));
         txtEquipTon.setText(Double.toString(weightEquip));

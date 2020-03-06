@@ -48,6 +48,8 @@ public class EquipmentTableModel extends AbstractTableModel {
 
     private static final long serialVersionUID = -5207167419079014157L;
 
+    public final static String VARIABLE = "variable";
+
     public final static int COL_NAME = 0;
     public final static int COL_DAMAGE = 1;
     public final static int COL_DIVISOR = 2;
@@ -347,7 +349,7 @@ public class EquipmentTableModel extends AbstractTableModel {
                     || entity.hasETypeFlag(Entity.ETYPE_PROTOMECH))) {
                 return String.format("%.2f kg/shot", atype.getKgPerShot());
             } else if (type.isVariableTonnage()) {
-                return "variable";
+                return VARIABLE;
             } else if (TestEntity.usesKgStandard(entity) || ((weight > 0.0) && (weight < 0.1))) {
                 return String.format("%.0f kg", type.getTonnage(entity) * 1000);
             } else {
@@ -361,7 +363,7 @@ public class EquipmentTableModel extends AbstractTableModel {
             } else if (entity.isSupportVehicle()) {
                 return type.getSupportVeeSlots(entity);
             } else if (entity instanceof Tank) {
-                return type.getTankslots(entity);
+                return type.getTankSlots(entity);
             } else if (entity.hasETypeFlag(Entity.ETYPE_PROTOMECH)) {
                 return TestProtomech.requiresSlot(type)? 1 : 0;
             }
