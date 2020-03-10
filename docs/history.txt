@@ -46,6 +46,7 @@ VERSION HISTORY:
 + Issue #515: External fuel tanks should be available to ICE and FC combat vehicles
 + Issue #517: Non-mech units loaded from cache sometimes save with mtf extension
 + Issue #522: Industrial 'mech Envi Sealing Cost
++ Issue #525: Some support vehicle chassis modifications should require armor
 
 v0.47.4 (2020-2-09 2200 UTC)
 + Issue #416: Issue with Crit Splitting on the Right Torso with big Artillery cannons/Arrow IV
