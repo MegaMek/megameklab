@@ -152,7 +152,7 @@ public class StatusBar extends ITab {
         }
         StringBuffer sb = new StringBuffer();
         invalid.setVisible(!testEntity.correctEntity(sb));
-        invalid.setToolTipText(sb.toString());
+        invalid.setToolTipText("<html>" + sb.toString().replaceAll("\n", "<br/>") + "</html>");
     }
 
     public double calculateTotalHeat() {

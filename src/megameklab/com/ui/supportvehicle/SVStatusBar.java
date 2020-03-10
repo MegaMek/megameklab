@@ -169,7 +169,7 @@ class SVStatusBar extends ITab {
         move.setToolTipText("Walk/Run/Jump MP");
         StringBuffer sb = new StringBuffer();
         invalid.setVisible(!testEntity.correctEntity(sb));
-        invalid.setToolTipText(sb.toString());
+        invalid.setToolTipText("<html>" + sb.toString().replaceAll("\n", "<br/>") + "</html>");
     }
 
     private void getFluffImage() {
