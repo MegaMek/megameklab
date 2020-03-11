@@ -132,7 +132,7 @@ public class StatusBar extends ITab {
         cost.setText("Cost: " + formatter.format(currentCost) + " C-bills");
         StringBuffer sb = new StringBuffer();
         invalid.setVisible(!testAero.correctEntity(sb));
-        invalid.setToolTipText(sb.toString());
+        invalid.setToolTipText("<html>" + sb.toString().replaceAll("\n", "<br/>") + "</html>");
     }
 
     public double calculateTotalHeat() {

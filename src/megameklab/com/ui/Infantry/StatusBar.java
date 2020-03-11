@@ -103,7 +103,7 @@ public class StatusBar extends ITab {
         cost.setText("Cost: " + formatter.format(currentCost) + " C-bills");
         String str = UnitUtil.validateUnit(getInfantry());
         invalid.setVisible(!str.isEmpty());
-        invalid.setToolTipText(str);
+        invalid.setToolTipText("<html>" + str.replaceAll("\n", "<br/>") + "</html>");
     }
 
     private void getFluffImage() {
