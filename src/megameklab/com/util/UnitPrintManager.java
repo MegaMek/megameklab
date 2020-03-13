@@ -41,7 +41,7 @@ import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import megamek.client.ui.swing.UnitLoadingDialog;
-import megamek.client.ui.swing.UnitSelectorDialog;
+import megamek.client.ui.swing.dialog.AbstractUnitSelectorDialog;
 import megamek.common.Aero;
 import megamek.common.BattleArmor;
 import megamek.common.Dropship;
@@ -59,6 +59,7 @@ import megameklab.com.ui.BattleArmor.Printing.PrintBattleArmor;
 import megameklab.com.ui.Dropship.Printing.PrintAerodyne;
 import megameklab.com.ui.Dropship.Printing.PrintSpheroid;
 import megameklab.com.ui.Infantry.Printing.PrintInfantry;
+import megameklab.com.ui.dialog.MegaMekLabUnitSelectorDialog;
 import megameklab.com.ui.dialog.UnitPrintQueueDialog;
 import megameklab.com.ui.protomek.printing.PrintProtomech;
 
@@ -75,7 +76,7 @@ public class UnitPrintManager {
 
     public static void selectUnitToPrint(JFrame parent) {
         UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(parent);
-        UnitSelectorDialog viewer = new UnitSelectorDialog(parent, unitLoadingDialog, true);
+        MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(parent, unitLoadingDialog);
 
         Entity entity;
 
@@ -272,7 +273,7 @@ public class UnitPrintManager {
     public static void printSelectedUnit(JFrame parent) {
         UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(parent);
         unitLoadingDialog.setVisible(true);
-        UnitSelectorDialog viewer = new UnitSelectorDialog(parent, unitLoadingDialog, true);
+        MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(parent, unitLoadingDialog);
 
         viewer.setVisible(false);
         Entity entity = viewer.getChosenEntity();
