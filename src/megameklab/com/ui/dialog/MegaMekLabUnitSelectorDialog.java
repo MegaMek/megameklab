@@ -34,11 +34,7 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
     //endregion Variable Declarations
 
     public MegaMekLabUnitSelectorDialog(JFrame frame, UnitLoadingDialog unitLoadingDialog) {
-        super(frame);
-
-        this.unitLoadingDialog = unitLoadingDialog;
-        this.frame = frame;
-
+        super(frame, unitLoadingDialog);
         gameTechLevel = TechConstants.T_SIMPLE_UNOFFICIAL;
 
         initialize();
@@ -72,12 +68,6 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
         chosenEntity = getSelectedEntity();
     }
     //endregion Button Methods
-
-    @Override
-    public void setVisible(boolean visible) {
-        super.setVisible(visible);
-        filterUnits();
-    }
 
     /**
      * @return the chosenEntity
