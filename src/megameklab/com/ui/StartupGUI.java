@@ -54,7 +54,7 @@ import megamek.common.Protomech;
 import megamek.common.Tank;
 import megamek.common.util.EncodeControl;
 import megamek.common.util.ImageUtil;
-import megamek.common.util.MegaMekFile;
+import megamek.common.util.OldMegaMekFile;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.dialog.LoadingDialog;
 import megameklab.com.util.UnitUtil;
@@ -109,7 +109,7 @@ public class StartupGUI extends javax.swing.JPanel {
         
         if (skinSpec.hasBackgrounds()) {
             if (skinSpec.backgrounds.size() > 1) {
-                File file = new MegaMekFile(Configuration.widgetsDir(),
+                File file = new OldMegaMekFile(Configuration.widgetsDir(),
                         skinSpec.backgrounds.get(1)).getFile();
                 if (!file.exists()){
                     System.err.println("MainMenu Error: background icon doesn't exist: "
