@@ -56,9 +56,6 @@ import megamek.common.Protomech;
 import megamek.common.Tank;
 import megameklab.com.printing.*;
 import megameklab.com.ui.BattleArmor.Printing.PrintBattleArmor;
-import megameklab.com.ui.Dropship.Printing.PrintAerodyne;
-import megameklab.com.ui.Dropship.Printing.PrintSpheroid;
-import megameklab.com.ui.Infantry.Printing.PrintInfantry;
 import megameklab.com.ui.dialog.UnitPrintQueueDialog;
 import megameklab.com.ui.protomek.printing.PrintProtomech;
 
@@ -175,7 +172,7 @@ public class UnitPrintManager {
             } else if (unit instanceof Infantry) {
                 infList.add((Infantry) unit);
                 if (singlePrint || infList.size() > 3) {
-                    book.append(new PrintInfantry(infList),  pageFormat);
+                    book.append(new PrintSmallUnitSheet(infList, book.getNumberOfPages()),  pageFormat);
                     infList = new ArrayList<>();
                 }
             } else if (unit instanceof Protomech) {
@@ -203,7 +200,7 @@ public class UnitPrintManager {
             book.append(new PrintBattleArmor(baList), pageFormat);
         }
         if (infList.size() > 0) {
-            book.append(new PrintInfantry(infList), pageFormat);
+            book.append(new PrintSmallUnitSheet(infList, book.getNumberOfPages()), pageFormat);
         }
         if (protoList.size() > 0) {
             book.append(new PrintProtomech(protoList), pageFormat);
