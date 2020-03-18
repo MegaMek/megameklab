@@ -128,4 +128,33 @@ public interface IdConstants {
     String BROADSIDES_HEAT = "broadsidesHeat";
     String AFT_SIDES_HEAT = "aftSidesHeat";
     String AFT_HEAT = "aftHeat";
+    
+    String ARMOR_KIT = "armor_kit";
+    String ARMOR_DIVISOR = "armor_divisor";
+    String SOLDIER = "soldier_";
+    String NO_SOLDIER = "no_soldier_";
+    String DAMAGE = "damage_";
+    String RANGE_MOD = "range_mod_";
+    String UW_LABEL = "uw_range_modifier";
+    String UW_RANGE_MOD = "uw_range_mod_";
+    String FIELD_GUN_COLUMNS = "field_gun_columns";
+    String FIELD_GUN_QTY = "field_gun_qty";
+    String FIELD_GUN_TYPE = "field_gun_type";
+    String FIELD_GUN_DMG = "field_gun_dmg";
+    String FIELD_GUN_MIN_RANGE = "field_gun_min_range";
+    String FIELD_GUN_SHORT = "field_gun_short";
+    String FIELD_GUN_MED = "field_gun_med";
+    String FIELD_GUN_LONG = "field_gun_long";
+    String FIELD_GUN_AMMO = "field_gun_ammo";
+    String FIELD_GUN_CREW = "field_gun_crew";
+    String DEST_MODS = "dest_mods";
+    String SNEAK_CAMO_MODS = "sneak_camo_mods";
+    String SNEAK_IR_MODS = "sneak_ir_mods";
+    String TRANSPORT_WT = "transport_wt";
+    String MP_1 = "mp_1";
+    String MODE_1 = "movement_mode_1";
+    String MP_2 = "mp_2";
+    String MODE_2 = "movement_mode_2";
+    String MP_2_LABEL = "mp_2_label";
+    String MODE_2_LABEL = "movement_mode_2_label";
 }

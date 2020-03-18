@@ -21,6 +21,7 @@ import org.w3c.dom.Element;
 
 import java.awt.print.PageFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 
@@ -58,6 +59,11 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
     protected void processImage(int startPage, PageFormat pageFormat) {
         final String METHOD_NAME = "processImage(int, PageFormat)";
 
+        final Element element = getSVGDocument().getElementById(COPYRIGHT);
+        if (element != null) {
+            element.setTextContent(String.format(element.getTextContent(),
+                    Calendar.getInstance().get(Calendar.YEAR)));
+        }
         int count = 0;
         for (Entity entity : entities) {
             Element g = getSVGDocument().getElementById("unit_" + count);
