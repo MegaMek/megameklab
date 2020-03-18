@@ -80,6 +80,9 @@ public class PrintInfantry extends PrintEntity {
     protected void writeTextFields() {
         super.writeTextFields();
 
+        if (!infantry.canMakeAntiMekAttacks()) {
+            setTextField(PILOTING_SKILL + "0", "N/A");
+        }
         writeFieldGuns();
 
         for (int j = 1; j <= 30; j++) {
@@ -165,9 +168,6 @@ public class PrintInfantry extends PrintEntity {
         }
 
         List<String> notes = new ArrayList<>();
-        if (infantry.isMechanized() || infantry.isArmorEncumbering()) {
-            notes.add("Cannot make anti-'Mech attacks.");
-        }
         if (infantry.hasSpaceSuit()) {
             notes.add("Can operate in vacuum.");
         }

@@ -424,9 +424,9 @@
     ><text x="3.000" y="84.094" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" visibility="hidden" id="uw_range_modifier"
     >Underwater:</text
     ><g visibility="hidden" id="field_gun_columns"
-    ><text fill="#231f20" x="3.000" y="91.739" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
+    ><text fill="#231f20" x="6.000" y="91.739" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
       >Qty</text
-      ><text fill="#231f20" x="27.996" y="91.739" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="start"
+      ><text fill="#231f20" x="19.664" y="91.739" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="start"
       >Field Gun Type</text
       ><text fill="#231f20" x="82.154" y="91.739" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="start"
       >Dmg</text
@@ -442,9 +442,9 @@
       >Ammo</text
       ><text fill="#231f20" x="190.470" y="91.739" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
       >Crew</text
-      ><text fill="#231f20" x="3.000" id="field_gun_qty" y="99.384" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
+      ><text fill="#231f20" x="6.000" id="field_gun_qty" y="99.384" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
       ></text
-      ><text fill="#231f20" x="27.996" id="field_gun_type" y="99.384" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="start"
+      ><text fill="#231f20" x="19.664" id="field_gun_type" y="99.384" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="start"
       ></text
       ><text fill="#231f20" x="82.154" id="field_gun_dmg" y="99.384" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="start"
       ></text
