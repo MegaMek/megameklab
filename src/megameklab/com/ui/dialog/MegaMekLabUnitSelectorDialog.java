@@ -43,6 +43,11 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
         setVisible(true);
     }
 
+    @Override
+    public void updateOptionValues() {
+
+    }
+
     //region Button Methods
     @Override
     protected JPanel createButtonsPanel() {
