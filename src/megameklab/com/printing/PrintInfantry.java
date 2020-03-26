@@ -15,14 +15,14 @@
 package megameklab.com.printing;
 
 import megamek.common.*;
+import megamek.common.options.IOption;
 import megamek.common.weapons.artillery.ArtilleryWeapon;
 import megamek.common.weapons.infantry.InfantryWeapon;
 import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGRectElement;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Enumeration;
 import java.util.StringJoiner;
 
 /**
@@ -167,31 +167,52 @@ public class PrintInfantry extends PrintEntity {
                 break;
         }
 
-        List<String> notes = new ArrayList<>();
+        final String notes = generateNotesText(rangeWeapon);
+
+        Element rect = getSVGDocument().getElementById(NOTES);
+        if (rect instanceof SVGRectElement) {
+            final double x = ((SVGRectElement) rect).getX().getBaseVal().getValue();
+            final double y = ((SVGRectElement) rect).getY().getBaseVal().getValue();
+            final double width = ((SVGRectElement) rect).getWidth().getBaseVal().getValue();
+            final double height = ((SVGRectElement) rect).getHeight().getBaseVal().getValue();
+            float fontSize = FONT_SIZE_MEDIUM;
+            // Reduce the font size if necessary to fit the text into the space
+            while ((fontSize > 5.0) && (height < (getFontHeight(fontSize) + 1) * getTextLength(notes, fontSize) / width)) {
+                fontSize = Math.max(5f, fontSize - 1f);
+            }
+
+            addMultilineTextElement((Element) rect.getParentNode(), x, y, width, getFontHeight(fontSize),
+                    String.join("; ", notes), fontSize, SVGConstants.SVG_START_VALUE,
+                    SVGConstants.SVG_NORMAL_VALUE);
+        }
+    }
+
+    private String generateNotesText(InfantryWeapon rangeWeapon) {
+        StringJoiner sj = new StringJoiner(" ");
         if (infantry.hasSpaceSuit()) {
-            notes.add("Can operate in vacuum.");
+            sj.add("Can operate in vacuum.");
         }
         if (rangeWeapon.hasFlag(WeaponType.F_INF_BURST)) {
-            notes.add("+1D6 damage vs. conventional infantry.");
+            sj.add("+1D6 damage vs. conventional infantry.");
         }
         if (rangeWeapon.hasFlag(WeaponType.F_INF_NONPENETRATING)) {
-            notes.add("Can only damage conventional infantry.");
+            sj.add("Can only damage conventional infantry units.");
         }
         if (infantry.getPrimaryWeapon().hasFlag(WeaponType.F_INFERNO)
                 || (infantry.getSecondaryWeapon() != null
                 && infantry.getSecondaryWeapon().hasFlag(WeaponType.F_INFERNO))) {
-            notes.add("Flame-based weapon.");
+            sj.add("Flame-based weapon.");
         } else {
             for (int i = 0; i < infantry.getPrimaryWeapon().getModesCount(); i++) {
                 if (infantry.getPrimaryWeapon().getMode(i).equals("Heat")) {
-                    notes.add("Flame-based weapon.");
+                    sj.add("Flame-based weapon.");
                     break;
                 }
             }
             if (infantry.getSecondaryWeapon() != null) {
                 for (int i = 0; i < infantry.getSecondaryWeapon().getModesCount(); i++) {
                     if (infantry.getSecondaryWeapon().getMode(i).equals("Heat")) {
-                        notes.add("Flame-based weapon.");
+                        sj.add("Flame-based weapon.");
                     }
                 }
             }
@@ -199,55 +220,63 @@ public class PrintInfantry extends PrintEntity {
         if (infantry.getPrimaryWeapon().hasFlag(WeaponType.F_INF_AA)
                 || (infantry.getSecondaryWeapon() != null
                 && infantry.getSecondaryWeapon().hasFlag(WeaponType.F_INF_AA))) {
-            notes.add("Can attack airborn units.");
+            sj.add("May attack airborne targets that attack their hex.");
         }
         if (infantry.hasSpecialization(Infantry.BRIDGE_ENGINEERS)) {
-            notes.add("Bridge-building equipment");
+            sj.add("Bridge-building equipment");
         }
         if (infantry.hasSpecialization(Infantry.DEMO_ENGINEERS)) {
-            notes.add("Equipped with demolition gear");
+            sj.add("Equipped with demolition gear.");
         }
         if (infantry.hasSpecialization(Infantry.FIRE_ENGINEERS)) {
-            notes.add("Firefighting equipment");
+            sj.add("Firefighting equipment.");
         }
         if (infantry.hasSpecialization(Infantry.MINE_ENGINEERS)) {
-            notes.add("Minesweeper equipment");
+            sj.add("Minesweeper equipment");
         }
         if (infantry.hasSpecialization(Infantry.TRENCH_ENGINEERS)) {
-            notes.add("Trench/Fieldwork equipment");
+            sj.add("Trench/Fieldwork equipment");
         }
         if (infantry.hasSpecialization(Infantry.MARINES)) {
-            notes.add("No penalties for vacuum or zero-G");
+            sj.add("No penalties for vacuum or zero-G");
         }
         if (infantry.hasSpecialization(Infantry.MOUNTAIN_TROOPS)) {
-            notes.add("Mountain climbing equipment");
+            sj.add("Mountain climbing equipment. Unit can traverse 3 levels per hex. Unit is immune to the effects of Thin Atmosphere.");
         }
         if (infantry.hasSpecialization(Infantry.PARAMEDICS)) {
-            notes.add("Paramedic equipment.");
+            sj.add("Paramedic equipment.");
         }
         if (infantry.hasSpecialization(Infantry.PARATROOPS)) {
-            notes.add("Can make atmospheric drops.");
+            sj.add("May use Atmospheric Drops rules.");
         }
         if (infantry.hasSpecialization(Infantry.SENSOR_ENGINEERS)) {
-            notes.add("Surveillance and communication equipment");
+            sj.add("Surveillance and communication equipment");
         }
         if (infantry.hasSpecialization(Infantry.TAG_TROOPS)) {
-            notes.add("Equipped with TAG (Range 3/6/9)");
+            sj.add("Equipped with TAG (Range 3/6/9)");
+        }
+        if (infantry.isXCT()) {
+            sj.add("Xenoplanetary Condition-Trained");
         }
         if (infantry.hasSneakECM()) {
-            notes.add("Invisible to standard/light active probes.");
+            sj.add("Invisible to standard/light active probes.");
         }
 
-        Element rect = getSVGDocument().getElementById(NOTES);
-        if (rect instanceof SVGRectElement) {
-            final double x = ((SVGRectElement) rect).getX().getBaseVal().getValue();
-            final double y = ((SVGRectElement) rect).getY().getBaseVal().getValue();
-            final double width = ((SVGRectElement) rect).getWidth().getBaseVal().getValue();
-            final float lineHeight = getFontHeight(FONT_SIZE_MEDIUM);
+        StringJoiner enhancements = new StringJoiner(", ");
+        for (Enumeration<IOption> e = infantry.getCrew().getOptions().getOptions(); e.hasMoreElements(); ) {
+            final IOption option = e.nextElement();
+            if (option.booleanValue()) {
+                enhancements.add(option.getDisplayableName().replaceAll("\\s+\\(Not Implemented\\)", ""));
+            }
+        }
+        if (enhancements.length() > 0) {
+            sj.add("Cybernetically enhanced: " + enhancements.toString());
+        }
 
-            addMultilineTextElement((Element) rect.getParentNode(), x, y, width, lineHeight,
-                    String.join("; ", notes), FONT_SIZE_MEDIUM, SVGConstants.SVG_START_VALUE,
-                    SVGConstants.SVG_NORMAL_VALUE);
+        if (sj.length() > 0) {
+            return sj.toString();
+        } else {
+            return "None";
         }
     }
 
