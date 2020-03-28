@@ -71,9 +71,8 @@ dependencies {
         exclude group: 'org.mozilla', module: 'rhino'
     }
     implementation 'org.apache.xmlgraphics:batik-svggen:1.10'
-    // We have been using a modified version of svgSalamander, which we'll keep around until
-    // the conversion to batik is complete.
-    implementation files('lib/svgSalamander.jar')
+    // SVG library still used for protomech and BA record sheets
+    implementation 'guru.nidi.com.kitfox:svgSalamander:1.1.3'
 
     jarbundler 'com.ultramixer.jarbundler:jarbundler-core:3.3.0'
 }
