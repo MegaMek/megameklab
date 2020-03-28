@@ -89,7 +89,11 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
     @Override
     protected String getSVGFileName(int pageNumber) {
         if (entities.get(0) instanceof Infantry) {
-            return "conventional_infantry_default.svg";
+            if (entities.size() < 4) {
+                return "conventional_infantry_tables.svg";
+            } else {
+                return "conventional_infantry_default.svg";
+            }
         }
         return "";
     }
