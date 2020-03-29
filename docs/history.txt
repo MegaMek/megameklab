@@ -48,6 +48,8 @@ VERSION HISTORY:
 + Issue #522: Industrial 'mech Envi Sealing Cost
 + Issue #525: Some support vehicle chassis modifications should require armor
 + Issue #500: I can do many illegal things with industrial equipment
++ Issue #529: Problems with Omnis and armored components or things mounted in sponson turrets
++ Issue #544: Infantry Record Sheet rework
 
 v0.47.4 (2020-2-09 2200 UTC)
 + Issue #416: Issue with Crit Splitting on the Right Torso with big Artillery cannons/Arrow IV
