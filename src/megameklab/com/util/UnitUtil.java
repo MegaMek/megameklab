@@ -185,7 +185,7 @@ public class UnitUtil {
      */
     public static boolean isMASC(EquipmentType eq) {
         return (eq instanceof MiscType)
-                && (eq.hasFlag(MiscType.F_MASC) && eq.hasSubType(MiscType.S_STANDARD));
+                && (eq.hasFlag(MiscType.F_MASC) && !eq.hasSubType(MiscType.S_SUPERCHARGER));
     }
 
     /**
