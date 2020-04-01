@@ -49,7 +49,8 @@ VERSION HISTORY:
 + Issue #525: Some support vehicle chassis modifications should require armor
 + Issue #500: I can do many illegal things with industrial equipment
 + Issue #529: Problems with Omnis and armored components or things mounted in sponson turrets
-+ Issue #544: Infantry Record Sheet rework
++ PR #544: Infantry Record Sheet rework
++ Issue #545: MASC won't remove from Assign Crits if removed from Structure Armor Tab
 
 v0.47.4 (2020-2-09 2200 UTC)
 + Issue #416: Issue with Crit Splitting on the Right Torso with big Artillery cannons/Arrow IV
