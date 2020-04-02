@@ -1,5 +1,7 @@
 VERSION HISTORY:
 ----------------
+0.47.6-SNAPSHOT
+
 0.47.5 (2020-4-01 2000 UTC)
 + Issue #435: Infantry exports not going to TXT, only HTML
 + Issue #437: Disappearing DS Collars on Space Station
