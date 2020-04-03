@@ -63,10 +63,10 @@ public class InventoryWriter {
         LOCATION ("Loc", 0.41, 0.5),
         LOCATION_NO_HEAT ("Loc", 0.46, 0.55),
         HEAT ("Ht", 0.48, 0.6),
-        DAMAGE ("Dmg", 0.53),
-        MIN ("Min", 0.75),
-        SHORT ("Sht", 0.82),
-        MEDIUM ("Med", 0.89),
+        DAMAGE ("Dmg", 0.53, 0.53, 0.47),
+        MIN ("Min", 0.75, 0.75, 0.69),
+        SHORT ("Sht", 0.82, 0.82, 0.78),
+        MEDIUM ("Med", 0.89, 0.89, 0.87),
         LONG ("Lng", 0.96),
         SRV ("SRV", 0.68),
         MRV ("MRV", 0.76),
@@ -76,24 +76,42 @@ public class InventoryWriter {
         final String header;
         final double groundX;
         final double aeroX;
+        final double baX;
 
-        Column(String header, double groundX, double aeroX) {
+        Column(String header, double groundX, double aeroX, double baX) {
             this.header = header;
             this.groundX = groundX;
             this.aeroX = aeroX;
+            this.baX = baX;
+        }
+
+        Column(String header, double groundX, double aeroX) {
+            this(header, groundX, aeroX, groundX);
         }
 
         Column(String header, double x) {
-            this(header, x, x);
+            this(header, x, x, x);
+        }
+
+        double xFor(Entity en) {
+            if (en.isAero()) {
+                return aeroX;
+            } else if (en instanceof BattleArmor) {
+                return baX;
+            } else {
+                return groundX;
+            }
         }
 
         static Column[] colsFor(Entity en) {
             if (en.isAero()) {
                 if (en.tracksHeat() || en.isLargeCraft()) {
-                    return new Column[] {QUANTITY, NAME, LOCATION, HEAT, SRV, MRV, LRV, ERV};
+                    return new Column[]{QUANTITY, NAME, LOCATION, HEAT, SRV, MRV, LRV, ERV};
                 } else {
-                    return new Column[] {QUANTITY, NAME, LOCATION_NO_HEAT, SRV, MRV, LRV, ERV};
+                    return new Column[]{QUANTITY, NAME, LOCATION_NO_HEAT, SRV, MRV, LRV, ERV};
                 }
+            } else if (en instanceof BattleArmor) {
+                return new Column[]{QUANTITY, NAME, DAMAGE, MIN, SHORT, MEDIUM, LONG};
             } else {
                 if (en.tracksHeat()) {
                     return new Column[] {QUANTITY, NAME, LOCATION, HEAT, DAMAGE, MIN, SHORT, MEDIUM, LONG};
@@ -181,7 +199,7 @@ public class InventoryWriter {
         this.viewY = svgRect.getY().getBaseVal().getValue();
         this.indent = viewWidth * INDENT;
         for (int i = 0; i < columnTypes.length; i++) {
-            colX[i] = viewX + viewWidth * (sheet.getEntity().isAero() ? columnTypes[i].aeroX : columnTypes[i].groundX);
+            colX[i] = viewX + viewWidth * columnTypes[i].xFor(sheet.getEntity());
         }
         for (int i = 0; i < Column.BAY_COLUMNS.length; i++) {
             bayColX[i] = viewX + viewWidth * Column.BAY_COLUMNS[i].aeroX;
@@ -203,7 +221,7 @@ public class InventoryWriter {
             }
             if ((m.getType() instanceof AmmoType)
                     || (m.getLocation() == Entity.LOC_NONE)
-                    || !UnitUtil.isPrintableEquipment(m.getType(), sheet.getEntity() instanceof Mech)) {
+                    || !UnitUtil.isPrintableEquipment(m.getType(), sheet.getEntity())) {
                 continue;
             }
             if ((sheet.getEntity() instanceof QuadVee)
