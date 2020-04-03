@@ -15,6 +15,9 @@ package megameklab.com.printing;
 
 import megamek.common.BattleArmor;
 import megamek.common.Entity;
+import megamek.common.EquipmentType;
+import megamek.common.MiscType;
+import megameklab.com.util.UnitUtil;
 
 /**
  * Lays out a record sheet block for a single BattleArmor unit
@@ -76,6 +79,37 @@ public class PrintBattleArmor extends PrintEntity {
         super.writeTextFields();
 
         setTextField(SQUAD, "BATTLE ARMOR: " + squadName() + " " + (squadIndex + 1));
+        switch (getEntity().getMovementMode()) {
+            case INF_JUMP:
+                setTextField(MODE_2, "Jump MP:");
+                setTextField(MP_2, battleArmor.getJumpMP(true, true, true));
+                break;
+            case VTOL:
+                setTextField(MODE_2, "VTOL MP:");
+                setTextField(MP_2, battleArmor.getJumpMP(true, true, true));
+                break;
+            case INF_UMU:
+                setTextField(MODE_2, "UW MP:");
+                setTextField(MP_2, battleArmor.getActiveUMUCount());
+                break;
+            default:
+                hideElement(MODE_2, true);
+                hideElement(MP_JUMP, true);
+                break;
+        }
+        hideElement(CHECK_MECHANIZED, !battleArmor.canDoMechanizedBA());
+        hideElement(CHECK_SWARM, !UnitUtil.canSwarm(battleArmor));
+        hideElement(CHECK_LEG, !UnitUtil.canLegAttack(battleArmor));
+        hideElement(CHECK_AP, battleArmor.countWorkingMisc(MiscType.F_AP_MOUNT) == 0);
+
+        setTextField(BV, battleArmor.calculateBattleValue(true, false, false)
+            + "/" + battleArmor.calculateBattleValue(true, false, true));
+    }
+
+    @Override
+    protected void drawArmor() {
+        final String armorName = EquipmentType.getBaArmorTypeName(battleArmor.getArmorType(BattleArmor.LOC_SQUAD));
+        setTextField(ARMOR_TYPE, armorName.replace("BA ", ""));
     }
 
     private String squadName() {

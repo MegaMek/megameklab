@@ -159,4 +159,8 @@ public interface IdConstants {
     String MODE_2_LABEL = "movement_mode_2_label";
 
     String SQUAD = "squad";
+    String CHECK_MECHANIZED = "checkMechanized";
+    String CHECK_SWARM = "checkSwarm";
+    String CHECK_LEG = "checkLeg";
+    String CHECK_AP = "checkAp";
 }
