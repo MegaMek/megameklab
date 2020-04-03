@@ -19,6 +19,8 @@ import megamek.common.EquipmentType;
 import megamek.common.MiscType;
 import megameklab.com.util.UnitUtil;
 
+import java.util.StringJoiner;
+
 /**
  * Lays out a record sheet block for a single BattleArmor unit
  */
@@ -110,6 +112,26 @@ public class PrintBattleArmor extends PrintEntity {
     protected void drawArmor() {
         final String armorName = EquipmentType.getBaArmorTypeName(battleArmor.getArmorType(BattleArmor.LOC_SQUAD));
         setTextField(ARMOR_TYPE, armorName.replace("BA ", ""));
+    }
+
+    @Override
+    public String formatMiscNotes() {
+        final StringJoiner sj = new StringJoiner(" ");
+        if (battleArmor.isBurdened() && ((battleArmor.getJumpMP(false, true, true) > 0)
+                || UnitUtil.canLegAttack(battleArmor) || UnitUtil.canSwarm(battleArmor))) {
+            sj.add("Must detach missiles before jumping or swarm/leg attacks.");
+        }
+        if (battleArmor.hasDWP()) {
+            if (battleArmor.getJumpMP(true, true, true) > 0) {
+                sj.add("Must detach DWP before jumping or moving full ground speed.");
+            } else {
+                sj.add("Must detach DWP before moving full ground speed.");
+            }
+        }
+        if (battleArmor.isExoskeleton() && !battleArmor.hasWorkingMisc(MiscType.F_EXTENDED_LIFESUPPORT)) {
+            sj.add("Unsealed Exoskeleton.");
+        }
+        return sj.toString();
     }
 
     private String squadName() {

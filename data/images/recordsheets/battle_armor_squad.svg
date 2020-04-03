@@ -33,26 +33,26 @@
   >Jump MP:</text
   ><text fill="#231f20" x="125.347" id="mp_2" y="45.000" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal;mml-field-width:50.653" text-anchor="start"
   >Lorem Ipsum</text
-  ><rect fill="none" x="3.000" width="170.000" id="inventory" height="52.786" y="45.000"
-  /><text fill="#231f20" x="3.000" y="107.786" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="start"
+  ><rect fill="none" x="3.000" width="170.000" id="inventory" height="56.786" y="45.000"
+  /><text fill="#231f20" x="6.000" y="107.786" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="start"
   >Mechanized:</text
-  ><text fill="#231f20" x="63.550" y="107.786" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="start"
+  ><text fill="#231f20" x="66.550" y="107.786" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="start"
   >Swarm:</text
-  ><text fill="#231f20" x="111.990" y="107.786" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="start"
+  ><text fill="#231f20" x="114.990" y="107.786" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="start"
   >Leg:</text
-  ><text fill="#231f20" x="148.320" y="107.786" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="start"
+  ><text fill="#231f20" x="151.320" y="107.786" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="start"
   >AP:</text
-  ><path fill="none" d="M 42.597,102.701 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 5.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,5.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -5.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
-  /><text fill="#231f20" x="46.597" id="checkMechanized" y="109.386" style="font-family:Eurostile;font-size:11.590px;font-weight:bold;font-style:normal" text-anchor="middle"
+  ><path fill="none" d="M 45.597,102.701 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 5.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,5.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -5.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
+  /><text fill="#231f20" x="49.597" id="checkMechanized" y="109.386" style="font-family:Eurostile;font-size:11.590px;font-weight:bold;font-style:normal" text-anchor="middle"
   >✓</text
-  ><path fill="none" d="M 89.073,102.701 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 5.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,5.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -5.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
-  /><text fill="#231f20" x="93.073" id="checkSwarm" y="109.386" style="font-family:Eurostile;font-size:11.590px;font-weight:bold;font-style:normal" text-anchor="middle"
+  ><path fill="none" d="M 92.073,102.701 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 5.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,5.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -5.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
+  /><text fill="#231f20" x="96.073" id="checkSwarm" y="109.386" style="font-family:Eurostile;font-size:11.590px;font-weight:bold;font-style:normal" text-anchor="middle"
   >✓</text
-  ><path fill="none" d="M 127.168,102.701 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 5.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,5.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -5.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
-  /><text fill="#231f20" x="131.168" id="checkLeg" y="109.386" style="font-family:Eurostile;font-size:11.590px;font-weight:bold;font-style:normal" text-anchor="middle"
+  ><path fill="none" d="M 130.168,102.701 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 5.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,5.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -5.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
+  /><text fill="#231f20" x="134.168" id="checkLeg" y="109.386" style="font-family:Eurostile;font-size:11.590px;font-weight:bold;font-style:normal" text-anchor="middle"
   >✓</text
-  ><path fill="none" d="M 161.540,102.701 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 5.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,5.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -5.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
-  /><text fill="#231f20" x="165.540" id="checkAP" y="109.386" style="font-family:Eurostile;font-size:11.590px;font-weight:bold;font-style:normal" text-anchor="middle"
+  ><path fill="none" d="M 164.540,102.701 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 5.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,5.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -5.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
+  /><text fill="#231f20" x="168.540" id="checkAP" y="109.386" style="font-family:Eurostile;font-size:11.590px;font-weight:bold;font-style:normal" text-anchor="middle"
   >✓</text
   ><rect fill="none" x="153.000" width="20.000" id="eraIcon" height="20.000" y="10.786"
   /><g id="suit1" transform="translate (176.000 12.786)"

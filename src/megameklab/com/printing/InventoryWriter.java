@@ -146,6 +146,7 @@ public class InventoryWriter {
     private final String ammoText;
     private final String fuelText;
     private final String featuresText;
+    private final String miscNotesText;
     private final String quirksText;
 
     /**
@@ -178,6 +179,7 @@ public class InventoryWriter {
         fuelText = sheet.formatTacticalFuel();
         str = sheet.formatFeatures();
         featuresText = str.isEmpty() ? str : "Features " + str;
+        miscNotesText = sheet.formatMiscNotes();
         str = sheet.formatQuirks();
         quirksText = str.isEmpty() ? str : "Quirks: " + str;
     }
@@ -480,7 +482,7 @@ public class InventoryWriter {
      */
     public void writeFooterBlock(float fontSize, float lineHeight) {
         int lines;
-        if (ammo.size() + fuelText.length() + featuresText.length() + quirksText.length() > 0) {
+        if (ammo.size() + fuelText.length() + featuresText.length() + miscNotesText.length() + quirksText.length() > 0) {
             Element svgGroup = sheet.getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
             canvas.appendChild(svgGroup);
             lines = 0;
@@ -498,6 +500,12 @@ public class InventoryWriter {
                 lines += sheet.addMultilineTextElement(svgGroup, viewX + viewWidth * 0.025,
                         lines * lineHeight, viewWidth * 0.95, lineHeight,
                         featuresText, fontSize,
+                        SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
+            }
+            if (!miscNotesText.isEmpty()) {
+                lines += sheet.addMultilineTextElement(svgGroup, viewX + viewWidth * 0.025,
+                        lines * lineHeight, viewWidth * 0.95, lineHeight,
+                        miscNotesText, fontSize,
                         SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
             }
             if (!quirksText.isEmpty()) {
@@ -573,6 +581,7 @@ public class InventoryWriter {
         return (int) Math.ceil(sheet.getTextLength(ammoText, fontSize) / viewWidth)
             + (int) Math.ceil(sheet.getTextLength(fuelText, fontSize) / viewWidth)
             + (int) Math.ceil(sheet.getTextLength(featuresText, fontSize) / viewWidth)
+            + (int) Math.ceil(sheet.getTextLength(miscNotesText, fontSize) / viewWidth)
             + (int) Math.ceil(sheet.getTextLength(quirksText, fontSize) / viewWidth);
     }
 
