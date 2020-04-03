@@ -18,7 +18,11 @@ import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.MiscType;
 import megameklab.com.util.UnitUtil;
+import org.apache.batik.util.SVGConstants;
+import org.w3c.dom.Element;
+import org.w3c.dom.svg.SVGRectElement;
 
+import java.awt.geom.Rectangle2D;
 import java.util.StringJoiner;
 
 /**
@@ -112,6 +116,36 @@ public class PrintBattleArmor extends PrintEntity {
     protected void drawArmor() {
         final String armorName = EquipmentType.getBaArmorTypeName(battleArmor.getArmorType(BattleArmor.LOC_SQUAD));
         setTextField(ARMOR_TYPE, armorName.replace("BA ", ""));
+        for (int i = 0; i < 6; i++) {
+            if (i < battleArmor.getTroopers()) {
+                Element element = getSVGDocument().getElementById(PIPS + i);
+                if (element instanceof SVGRectElement) {
+                    Rectangle2D bbox = getRectBBox((SVGRectElement) element);
+                    Element canvas = (Element) element.getParentNode();
+                    int viewWidth = (int)bbox.getWidth();
+                    int viewHeight = (int)bbox.getHeight();
+                    int viewX = (int)bbox.getX();
+                    int viewY = (int)bbox.getY();
+                    // Extra pip for trooper
+                    final int pipCount = battleArmor.getOArmor(BattleArmor.LOC_TROOPER_1 + i) + 1;
+
+                    // Max armor for any BA unit is 18
+                    double size = viewWidth / 19.0;
+                    double radius = size * 0.36;
+                    double strokeWidth = 0.9;
+                    double y = viewY + viewHeight * 0.5 - radius;
+                    for (int p = 0; p < pipCount; p++) {
+                        Element pip = createPip(viewX + size * p, y, radius, strokeWidth);
+                        if (p == 0) {
+                            pip.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, FILL_GREY);
+                        }
+                        canvas.appendChild(pip);
+                    }
+                }
+            } else {
+                hideElement(SUIT + i, true);
+            }
+        }
     }
 
     @Override

@@ -163,4 +163,6 @@ public interface IdConstants {
     String CHECK_SWARM = "checkSwarm";
     String CHECK_LEG = "checkLeg";
     String CHECK_AP = "checkAp";
+    String SUIT = "suit";
+    String PIPS = "pips_";
 }

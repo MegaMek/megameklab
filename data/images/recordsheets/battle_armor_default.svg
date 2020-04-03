@@ -320,19 +320,19 @@
                                   /><g id="unit_4" transform="translate (36.000 611.437)"
                                   /><g transform="translate (399.000 89.185)"
                                   ><g
-                                    ><path fill="#ffffff" d="M 2.5,10.714 L 7.975,2.500 L 168.025,2.500 l 5.475,8.214 L 173.500,71.546 l -7.845,7.600 L 10.345,79.146 l -7.845,-7.600 Z" stroke-width="5.2" stroke-linejoin="round" stroke="#c8c7c7"
-                                      /><path fill="#ffffff" d="M 0.0,8.214 L 5.475,0.000 L 166.525,0.000 l 5.475,8.214 L 172.000,70.046 l -7.845,7.600 L 7.845,77.646 l -7.845,-7.600 Z" stroke-width="1.932" stroke-linejoin="round" stroke="#231f20"
+                                    ><path fill="#ffffff" d="M 2.5,10.714 L 7.975,2.500 L 168.025,2.500 l 5.475,8.214 L 173.500,71.156 l -7.845,7.600 L 10.345,78.756 l -7.845,-7.600 Z" stroke-width="5.2" stroke-linejoin="round" stroke="#c8c7c7"
+                                      /><path fill="#ffffff" d="M 0.0,8.214 L 5.475,0.000 L 166.525,0.000 l 5.475,8.214 L 172.000,69.656 l -7.845,7.600 L 7.845,77.256 l -7.845,-7.600 Z" stroke-width="1.932" stroke-linejoin="round" stroke="#231f20"
                                       /><g transform="translate (2.5,3.0)"
                                       ><path fill="#000000" d="M 0,7.500 l 4.999,-7.500 l 156.310,0 l 4.999,7.500 l -4.999,7.500 l -156.310,0 Z"
                                         /><text x="83.154" y="11.250" fill="#ffffff" text-anchor="middle" style="font-family:Eurostile;font-size:10.600px;font-weight:bold;font-style:normal" textLength="97.661" lengthAdjust="spacingAndGlyphs"
                                         >LEG ATTACKS TABLE</text
                                       ></g
                                     ></g
-                                    ><text fill="#231f20" x="50.700" y="26.521" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
+                                    ><text fill="#231f20" x="50.700" y="26.465" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
                                     >BATTLE ARMOR</text
-                                    ><text fill="#231f20" x="126.750" y="26.521" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
+                                    ><text fill="#231f20" x="126.750" y="26.465" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
                                     >BASE TO-HIT</text
-                                    ><g transform="translate (0.000 35.042)"
+                                    ><g transform="translate (0.000 34.930)"
                                     ><text text-anchor="middle" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
                                       ><tspan x="126.750" y="0.000"
                                         >MODIFIER</tspan
@@ -340,42 +340,42 @@
                                       ><text text-anchor="middle" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
                                       ><tspan x="50.700" y="0.000"
                                         >TROOPERS ACTIVE</tspan
-                                        ><tspan x="50.700" y="8.521"
+                                        ><tspan x="50.700" y="8.465"
                                         >4-6</tspan
-                                        ><tspan x="50.700" y="17.042"
+                                        ><tspan x="50.700" y="16.930"
                                         >3</tspan
-                                        ><tspan x="50.700" y="25.563"
+                                        ><tspan x="50.700" y="25.395"
                                         >2</tspan
-                                        ><tspan x="50.700" y="34.083"
+                                        ><tspan x="50.700" y="33.861"
                                         >1</tspan
                                       ></text
                                       ><text text-anchor="middle" style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
-                                      ><tspan x="126.750" y="8.521"
+                                      ><tspan x="126.750" y="8.465"
                                         >0</tspan
-                                        ><tspan x="126.750" y="17.042"
+                                        ><tspan x="126.750" y="16.930"
                                         >+2</tspan
-                                        ><tspan x="126.750" y="25.563"
+                                        ><tspan x="126.750" y="25.395"
                                         >+5</tspan
-                                        ><tspan x="126.750" y="34.083"
+                                        ><tspan x="126.750" y="33.861"
                                         >+7</tspan
                                       ></text
                                     ></g
                                   ></g
-                                  ><g transform="translate (399.000 174.831)"
+                                  ><g transform="translate (399.000 174.441)"
                                   ><g
-                                    ><path fill="#ffffff" d="M 2.5,10.714 L 7.975,2.500 L 168.025,2.500 l 5.475,8.214 L 173.500,58.370 l -7.845,7.600 L 10.345,65.970 l -7.845,-7.600 Z" stroke-width="5.2" stroke-linejoin="round" stroke="#c8c7c7"
-                                      /><path fill="#ffffff" d="M 0.0,8.214 L 5.475,0.000 L 166.525,0.000 l 5.475,8.214 L 172.000,56.870 l -7.845,7.600 L 7.845,64.470 l -7.845,-7.600 Z" stroke-width="1.932" stroke-linejoin="round" stroke="#231f20"
+                                    ><path fill="#ffffff" d="M 2.5,10.714 L 7.975,2.500 L 168.025,2.500 l 5.475,8.214 L 173.500,58.040 l -7.845,7.600 L 10.345,65.640 l -7.845,-7.600 Z" stroke-width="5.2" stroke-linejoin="round" stroke="#c8c7c7"
+                                      /><path fill="#ffffff" d="M 0.0,8.214 L 5.475,0.000 L 166.525,0.000 l 5.475,8.214 L 172.000,56.540 l -7.845,7.600 L 7.845,64.140 l -7.845,-7.600 Z" stroke-width="1.932" stroke-linejoin="round" stroke="#231f20"
                                       /><g transform="translate (2.5,3.0)"
                                       ><path fill="#000000" d="M 0,7.500 l 4.999,-7.500 l 156.310,0 l 4.999,7.500 l -4.999,7.500 l -156.310,0 Z"
                                         /><text x="83.154" y="11.250" fill="#ffffff" text-anchor="middle" style="font-family:Eurostile;font-size:10.600px;font-weight:bold;font-style:normal" textLength="119.707" lengthAdjust="spacingAndGlyphs"
                                         >SWARM ATTACKS TABLE</text
                                       ></g
                                     ></g
-                                    ><text fill="#231f20" x="50.700" y="27.294" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
+                                    ><text fill="#231f20" x="50.700" y="27.228" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
                                     >BATTLE ARMOR</text
-                                    ><text fill="#231f20" x="126.750" y="27.294" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
+                                    ><text fill="#231f20" x="126.750" y="27.228" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
                                     >BASE TO-HIT</text
-                                    ><g transform="translate (0.000 36.588)"
+                                    ><g transform="translate (0.000 36.456)"
                                     ><text text-anchor="middle" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
                                       ><tspan x="126.750" y="0.000"
                                         >MODIFIER</tspan
@@ -383,38 +383,38 @@
                                       ><text text-anchor="middle" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
                                       ><tspan x="50.700" y="0.000"
                                         >TROOPERS ACTIVE</tspan
-                                        ><tspan x="50.700" y="9.294"
+                                        ><tspan x="50.700" y="9.228"
                                         >4-6</tspan
-                                        ><tspan x="50.700" y="18.588"
+                                        ><tspan x="50.700" y="18.456"
                                         >1-3</tspan
                                       ></text
                                       ><text text-anchor="middle" style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
-                                      ><tspan x="126.750" y="9.294"
+                                      ><tspan x="126.750" y="9.228"
                                         >+2</tspan
-                                        ><tspan x="126.750" y="18.588"
+                                        ><tspan x="126.750" y="18.456"
                                         >+5</tspan
                                       ></text
                                     ></g
                                   ></g
-                                  ><g transform="translate (399.000 247.301)"
+                                  ><g transform="translate (399.000 246.581)"
                                   ><g
-                                    ><path fill="#ffffff" d="M 2.5,10.714 L 7.975,2.500 L 168.025,2.500 l 5.475,8.214 L 173.500,183.545 l -7.845,7.600 L 10.345,191.145 l -7.845,-7.600 Z" stroke-width="5.2" stroke-linejoin="round" stroke="#c8c7c7"
-                                      /><path fill="#ffffff" d="M 0.0,8.214 L 5.475,0.000 L 166.525,0.000 l 5.475,8.214 L 172.000,182.045 l -7.845,7.600 L 7.845,189.645 l -7.845,-7.600 Z" stroke-width="1.932" stroke-linejoin="round" stroke="#231f20"
+                                    ><path fill="#ffffff" d="M 2.5,10.714 L 7.975,2.500 L 168.025,2.500 l 5.475,8.214 L 173.500,182.645 l -7.845,7.600 L 10.345,190.245 l -7.845,-7.600 Z" stroke-width="5.2" stroke-linejoin="round" stroke="#c8c7c7"
+                                      /><path fill="#ffffff" d="M 0.0,8.214 L 5.475,0.000 L 166.525,0.000 l 5.475,8.214 L 172.000,181.145 l -7.845,7.600 L 7.845,188.745 l -7.845,-7.600 Z" stroke-width="1.932" stroke-linejoin="round" stroke="#231f20"
                                       /><g transform="translate (2.5,3.0)"
                                       ><path fill="#000000" d="M 0,7.500 l 4.999,-7.500 l 156.310,0 l 4.999,7.500 l -4.999,7.500 l -156.310,0 Z"
                                         /><text x="83.154" y="11.250" fill="#ffffff" text-anchor="middle" style="font-family:Eurostile;font-size:10.600px;font-weight:bold;font-style:normal" textLength="139.404" lengthAdjust="spacingAndGlyphs"
                                         >SWARM ATTACK MODIFIERS TABLE</text
                                       ></g
                                     ></g
-                                    ><text fill="#231f20" x="33.800" y="27.034" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
+                                    ><text fill="#231f20" x="33.800" y="26.987" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
                                     >ATTACKING ENEMY</text
-                                    ><text fill="#231f20" x="116.610" y="27.034" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
+                                    ><text fill="#231f20" x="116.610" y="26.987" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
                                     >FRIENDLY MECHANIZED BATTLE</text
-                                    ><text fill="#231f20" x="33.800" y="36.068" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
+                                    ><text fill="#231f20" x="33.800" y="35.973" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
                                     >BATTLE ARMOR</text
-                                    ><text fill="#231f20" x="116.610" y="36.068" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
+                                    ><text fill="#231f20" x="116.610" y="35.973" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
                                     >ARMOR TROOPERS ACTIVE</text
-                                    ><g transform="translate (0.000 45.102)"
+                                    ><g transform="translate (0.000 44.960)"
                                     ><text text-anchor="middle" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
                                       ><tspan x="74.360" y="0.000"
                                         >1</tspan
@@ -432,101 +432,101 @@
                                       ><text text-anchor="middle" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
                                       ><tspan x="33.800" y="0.000"
                                         >TROOPERS ACTIVE</tspan
-                                        ><tspan x="33.800" y="9.034"
+                                        ><tspan x="33.800" y="8.987"
                                         >6</tspan
-                                        ><tspan x="33.800" y="18.068"
+                                        ><tspan x="33.800" y="17.973"
                                         >5</tspan
-                                        ><tspan x="33.800" y="27.102"
+                                        ><tspan x="33.800" y="26.960"
                                         >4</tspan
-                                        ><tspan x="33.800" y="36.136"
+                                        ><tspan x="33.800" y="35.946"
                                         >3</tspan
-                                        ><tspan x="33.800" y="45.170"
+                                        ><tspan x="33.800" y="44.933"
                                         >2</tspan
-                                        ><tspan x="33.800" y="54.204"
+                                        ><tspan x="33.800" y="53.919"
                                         >1</tspan
                                       ></text
                                       ><text text-anchor="middle" style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
-                                      ><tspan x="74.360" y="9.034"
+                                      ><tspan x="74.360" y="8.987"
                                         >+0</tspan
-                                        ><tspan x="91.260" y="9.034"
+                                        ><tspan x="91.260" y="8.987"
                                         >+0</tspan
-                                        ><tspan x="108.160" y="9.034"
+                                        ><tspan x="108.160" y="8.987"
                                         >+0</tspan
-                                        ><tspan x="125.060" y="9.034"
+                                        ><tspan x="125.060" y="8.987"
                                         >+0</tspan
-                                        ><tspan x="141.960" y="9.034"
+                                        ><tspan x="141.960" y="8.987"
                                         >+1</tspan
-                                        ><tspan x="158.860" y="9.034"
+                                        ><tspan x="158.860" y="8.987"
                                         >+2</tspan
-                                        ><tspan x="74.360" y="18.068"
+                                        ><tspan x="74.360" y="17.973"
                                         >+0</tspan
-                                        ><tspan x="91.260" y="18.068"
+                                        ><tspan x="91.260" y="17.973"
                                         >+0</tspan
-                                        ><tspan x="108.160" y="18.068"
+                                        ><tspan x="108.160" y="17.973"
                                         >+0</tspan
-                                        ><tspan x="125.060" y="18.068"
+                                        ><tspan x="125.060" y="17.973"
                                         >+1</tspan
-                                        ><tspan x="141.960" y="18.068"
+                                        ><tspan x="141.960" y="17.973"
                                         >+2</tspan
-                                        ><tspan x="158.860" y="18.068"
+                                        ><tspan x="158.860" y="17.973"
                                         >+3</tspan
-                                        ><tspan x="74.360" y="27.102"
+                                        ><tspan x="74.360" y="26.960"
                                         >+0</tspan
-                                        ><tspan x="91.260" y="27.102"
+                                        ><tspan x="91.260" y="26.960"
                                         >+0</tspan
-                                        ><tspan x="108.160" y="27.102"
+                                        ><tspan x="108.160" y="26.960"
                                         >+1</tspan
-                                        ><tspan x="125.060" y="27.102"
+                                        ><tspan x="125.060" y="26.960"
                                         >+2</tspan
-                                        ><tspan x="141.960" y="27.102"
+                                        ><tspan x="141.960" y="26.960"
                                         >+3</tspan
-                                        ><tspan x="158.860" y="27.102"
+                                        ><tspan x="158.860" y="26.960"
                                         >+4</tspan
-                                        ><tspan x="74.360" y="36.136"
+                                        ><tspan x="74.360" y="35.946"
                                         >+0</tspan
-                                        ><tspan x="91.260" y="36.136"
+                                        ><tspan x="91.260" y="35.946"
                                         >+1</tspan
-                                        ><tspan x="108.160" y="36.136"
+                                        ><tspan x="108.160" y="35.946"
                                         >+2</tspan
-                                        ><tspan x="125.060" y="36.136"
+                                        ><tspan x="125.060" y="35.946"
                                         >+3</tspan
-                                        ><tspan x="141.960" y="36.136"
+                                        ><tspan x="141.960" y="35.946"
                                         >+4</tspan
-                                        ><tspan x="158.860" y="36.136"
+                                        ><tspan x="158.860" y="35.946"
                                         >+5</tspan
-                                        ><tspan x="74.360" y="45.170"
+                                        ><tspan x="74.360" y="44.933"
                                         >+1</tspan
-                                        ><tspan x="91.260" y="45.170"
+                                        ><tspan x="91.260" y="44.933"
                                         >+2</tspan
-                                        ><tspan x="108.160" y="45.170"
+                                        ><tspan x="108.160" y="44.933"
                                         >+3</tspan
-                                        ><tspan x="125.060" y="45.170"
+                                        ><tspan x="125.060" y="44.933"
                                         >+4</tspan
-                                        ><tspan x="141.960" y="45.170"
+                                        ><tspan x="141.960" y="44.933"
                                         >+5</tspan
-                                        ><tspan x="158.860" y="45.170"
+                                        ><tspan x="158.860" y="44.933"
                                         >+6</tspan
-                                        ><tspan x="74.360" y="54.204"
+                                        ><tspan x="74.360" y="53.919"
                                         >+2</tspan
-                                        ><tspan x="91.260" y="54.204"
+                                        ><tspan x="91.260" y="53.919"
                                         >+3</tspan
-                                        ><tspan x="108.160" y="54.204"
+                                        ><tspan x="108.160" y="53.919"
                                         >+4</tspan
-                                        ><tspan x="125.060" y="54.204"
+                                        ><tspan x="125.060" y="53.919"
                                         >+5</tspan
-                                        ><tspan x="141.960" y="54.204"
+                                        ><tspan x="141.960" y="53.919"
                                         >+6</tspan
-                                        ><tspan x="158.860" y="54.204"
+                                        ><tspan x="158.860" y="53.919"
                                         >+7</tspan
                                       ></text
                                     ></g
-                                    ><text fill="#231f20" x="6.760" y="117.373" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="start"
+                                    ><text fill="#231f20" x="6.760" y="116.852" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="start"
                                     >BATTLE ARMOR EQUIPMENT</text
-                                    ><text fill="#231f20" x="6.760" y="126.407" style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal" text-anchor="start"
+                                    ><text fill="#231f20" x="6.760" y="125.839" style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal" text-anchor="start"
                                     >Claws with magnets</text
-                                    ><text fill="#231f20" x="125.060" y="126.407" style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal" text-anchor="middle"
+                                    ><text fill="#231f20" x="125.060" y="125.839" style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal" text-anchor="middle"
                                     >-1</text
-                                    ><g transform="translate (0.000 144.475)"
+                                    ><g transform="translate (0.000 143.812)"
                                     ><text text-anchor="middle" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
                                       ><tspan x="125.060" y="0.000"
                                         ></tspan
@@ -534,42 +534,42 @@
                                       ><text text-anchor="start" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
                                       ><tspan x="6.760" y="0.000"
                                         >SITUATION*</tspan
-                                        ><tspan x="6.760" y="9.034"
+                                        ><tspan x="6.760" y="8.987"
                                         >'Mech prone</tspan
-                                        ><tspan x="6.760" y="18.068"
+                                        ><tspan x="6.760" y="17.973"
                                         >'Mech or vehicle immobile</tspan
-                                        ><tspan x="6.760" y="27.102"
+                                        ><tspan x="6.760" y="26.960"
                                         >Vehicle</tspan
                                       ></text
                                       ><text text-anchor="middle" style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
-                                      ><tspan x="125.060" y="9.034"
+                                      ><tspan x="125.060" y="8.987"
                                         >-2</tspan
-                                        ><tspan x="125.060" y="18.068"
+                                        ><tspan x="125.060" y="17.973"
                                         >-4</tspan
-                                        ><tspan x="125.060" y="27.102"
+                                        ><tspan x="125.060" y="26.960"
                                         >-2</tspan
                                       ></text
                                     ></g
-                                    ><text fill="#231f20" x="6.760" y="180.611" style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal" text-anchor="start"
+                                    ><text fill="#231f20" x="6.760" y="179.758" style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal" text-anchor="start"
                                     >*Modifiers are cumulative</text
                                   ></g
-                                  ><g transform="translate (399.000 444.945)"
+                                  ><g transform="translate (399.000 443.325)"
                                   ><g
-                                    ><path fill="#ffffff" d="M 2.5,10.714 L 7.975,2.500 L 168.025,2.500 l 5.475,8.214 L 173.500,130.839 l -7.845,7.600 L 10.345,138.439 l -7.845,-7.600 Z" stroke-width="5.2" stroke-linejoin="round" stroke="#c8c7c7"
-                                      /><path fill="#ffffff" d="M 0.0,8.214 L 5.475,0.000 L 166.525,0.000 l 5.475,8.214 L 172.000,129.339 l -7.845,7.600 L 7.845,136.939 l -7.845,-7.600 Z" stroke-width="1.932" stroke-linejoin="round" stroke="#231f20"
+                                    ><path fill="#ffffff" d="M 2.5,10.714 L 7.975,2.500 L 168.025,2.500 l 5.475,8.214 L 173.500,130.179 l -7.845,7.600 L 10.345,137.779 l -7.845,-7.600 Z" stroke-width="5.2" stroke-linejoin="round" stroke="#c8c7c7"
+                                      /><path fill="#ffffff" d="M 0.0,8.214 L 5.475,0.000 L 166.525,0.000 l 5.475,8.214 L 172.000,128.679 l -7.845,7.600 L 7.845,136.279 l -7.845,-7.600 Z" stroke-width="1.932" stroke-linejoin="round" stroke="#231f20"
                                       /><g transform="translate (2.5,3.0)"
                                       ><path fill="#000000" d="M 0,7.500 l 4.999,-7.500 l 156.310,0 l 4.999,7.500 l -4.999,7.500 l -156.310,0 Z"
                                         /><text x="83.154" y="11.250" fill="#ffffff" text-anchor="middle" style="font-family:Eurostile;font-size:10.600px;font-weight:bold;font-style:normal" textLength="137.434" lengthAdjust="spacingAndGlyphs"
                                         >SWARM ATTACKS HIT LOCATION TABLE</text
                                       ></g
                                     ></g
-                                    ><text fill="#231f20" x="13.520" y="26.496" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
+                                    ><text fill="#231f20" x="13.520" y="26.449" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
                                     >2D6</text
-                                    ><text fill="#231f20" x="67.600" y="26.496" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
+                                    ><text fill="#231f20" x="67.600" y="26.449" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
                                     >BIPEDAL/TRIPOD</text
-                                    ><text fill="#231f20" x="135.200" y="26.496" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
+                                    ><text fill="#231f20" x="135.200" y="26.449" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
                                     >QUAD</text
-                                    ><g transform="translate (0.000 34.991)"
+                                    ><g transform="translate (0.000 34.897)"
                                     ><text text-anchor="middle" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
                                       ><tspan x="67.600" y="0.000"
                                         >LOCATION</tspan
@@ -579,94 +579,94 @@
                                       ><text text-anchor="middle" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
                                       ><tspan x="13.520" y="0.000"
                                         >ROLL</tspan
-                                        ><tspan x="13.520" y="8.496"
+                                        ><tspan x="13.520" y="8.449"
                                         >2</tspan
-                                        ><tspan x="13.520" y="16.991"
+                                        ><tspan x="13.520" y="16.897"
                                         >3</tspan
-                                        ><tspan x="13.520" y="25.487"
+                                        ><tspan x="13.520" y="25.346"
                                         >4</tspan
-                                        ><tspan x="13.520" y="33.983"
+                                        ><tspan x="13.520" y="33.794"
                                         >5</tspan
-                                        ><tspan x="13.520" y="42.478"
+                                        ><tspan x="13.520" y="42.243"
                                         >6</tspan
-                                        ><tspan x="13.520" y="50.974"
+                                        ><tspan x="13.520" y="50.691"
                                         >7</tspan
-                                        ><tspan x="13.520" y="59.470"
+                                        ><tspan x="13.520" y="59.140"
                                         >8</tspan
-                                        ><tspan x="13.520" y="67.965"
+                                        ><tspan x="13.520" y="67.588"
                                         >9</tspan
-                                        ><tspan x="13.520" y="76.461"
+                                        ><tspan x="13.520" y="76.037"
                                         >10</tspan
-                                        ><tspan x="13.520" y="84.957"
+                                        ><tspan x="13.520" y="84.485"
                                         >11</tspan
-                                        ><tspan x="13.520" y="93.452"
+                                        ><tspan x="13.520" y="92.934"
                                         >12</tspan
                                       ></text
                                       ><text text-anchor="middle" style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
-                                      ><tspan x="67.600" y="8.496"
+                                      ><tspan x="67.600" y="8.449"
                                         >Head</tspan
-                                        ><tspan x="135.200" y="8.496"
+                                        ><tspan x="135.200" y="8.449"
                                         >Head</tspan
-                                        ><tspan x="67.600" y="16.991"
+                                        ><tspan x="67.600" y="16.897"
                                         >Rear Center Torso</tspan
-                                        ><tspan x="135.200" y="16.991"
+                                        ><tspan x="135.200" y="16.897"
                                         >Front Right Torso</tspan
-                                        ><tspan x="67.600" y="25.487"
+                                        ><tspan x="67.600" y="25.346"
                                         >Rear Right Torso</tspan
-                                        ><tspan x="135.200" y="25.487"
+                                        ><tspan x="135.200" y="25.346"
                                         >Rear Center Torso</tspan
-                                        ><tspan x="67.600" y="33.983"
+                                        ><tspan x="67.600" y="33.794"
                                         >Front Right Torso</tspan
-                                        ><tspan x="135.200" y="33.983"
+                                        ><tspan x="135.200" y="33.794"
                                         >Rear Right Torso</tspan
-                                        ><tspan x="67.600" y="42.478"
+                                        ><tspan x="67.600" y="42.243"
                                         >Right Arm</tspan
-                                        ><tspan x="135.200" y="42.478"
+                                        ><tspan x="135.200" y="42.243"
                                         >Front Right Torso</tspan
-                                        ><tspan x="67.600" y="50.974"
+                                        ><tspan x="67.600" y="50.691"
                                         >Front Center Torso</tspan
-                                        ><tspan x="135.200" y="50.974"
+                                        ><tspan x="135.200" y="50.691"
                                         >Front Center Torso</tspan
-                                        ><tspan x="67.600" y="59.470"
+                                        ><tspan x="67.600" y="59.140"
                                         >Left Arm</tspan
-                                        ><tspan x="135.200" y="59.470"
+                                        ><tspan x="135.200" y="59.140"
                                         >Front Left Torso</tspan
-                                        ><tspan x="67.600" y="67.965"
+                                        ><tspan x="67.600" y="67.588"
                                         >Front Left Torso</tspan
-                                        ><tspan x="135.200" y="67.965"
+                                        ><tspan x="135.200" y="67.588"
                                         >Rear Left Torso</tspan
-                                        ><tspan x="67.600" y="76.461"
+                                        ><tspan x="67.600" y="76.037"
                                         >Rear Left Torso</tspan
-                                        ><tspan x="135.200" y="76.461"
+                                        ><tspan x="135.200" y="76.037"
                                         >Rear Center Torso</tspan
-                                        ><tspan x="67.600" y="84.957"
+                                        ><tspan x="67.600" y="84.485"
                                         >Rear Center Torso</tspan
-                                        ><tspan x="135.200" y="84.957"
+                                        ><tspan x="135.200" y="84.485"
                                         >Front Left Torso</tspan
-                                        ><tspan x="67.600" y="93.452"
+                                        ><tspan x="67.600" y="92.934"
                                         >Head</tspan
-                                        ><tspan x="135.200" y="93.452"
+                                        ><tspan x="135.200" y="92.934"
                                         >Head</tspan
                                       ></text
                                     ></g
                                   ></g
-                                  ><g transform="translate (399.000 589.884)"
+                                  ><g transform="translate (399.000 587.604)"
                                   ><g
-                                    ><path fill="#ffffff" d="M 2.5,10.714 L 7.975,2.500 L 168.025,2.500 l 5.475,8.214 L 173.500,144.016 l -7.845,7.600 L 10.345,151.616 l -7.845,-7.600 Z" stroke-width="5.2" stroke-linejoin="round" stroke="#c8c7c7"
-                                      /><path fill="#ffffff" d="M 0.0,8.214 L 5.475,0.000 L 166.525,0.000 l 5.475,8.214 L 172.000,142.516 l -7.845,7.600 L 7.845,150.116 l -7.845,-7.600 Z" stroke-width="1.932" stroke-linejoin="round" stroke="#231f20"
+                                    ><path fill="#ffffff" d="M 2.5,10.714 L 7.975,2.500 L 168.025,2.500 l 5.475,8.214 L 173.500,143.296 l -7.845,7.600 L 10.345,150.896 l -7.845,-7.600 Z" stroke-width="5.2" stroke-linejoin="round" stroke="#c8c7c7"
+                                      /><path fill="#ffffff" d="M 0.0,8.214 L 5.475,0.000 L 166.525,0.000 l 5.475,8.214 L 172.000,141.796 l -7.845,7.600 L 7.845,149.396 l -7.845,-7.600 Z" stroke-width="1.932" stroke-linejoin="round" stroke="#231f20"
                                       /><g transform="translate (2.5,3.0)"
                                       ><path fill="#000000" d="M 0,7.500 l 4.999,-7.500 l 156.310,0 l 4.999,7.500 l -4.999,7.500 l -156.310,0 Z"
                                         /><text x="83.154" y="11.250" fill="#ffffff" text-anchor="middle" style="font-family:Eurostile;font-size:10.600px;font-weight:bold;font-style:normal" textLength="141.715" lengthAdjust="spacingAndGlyphs"
                                         >TRANSPORT POSITIONS TABLE</text
                                       ></g
                                     ></g
-                                    ><text fill="#231f20" x="20.280" y="24.606" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
+                                    ><text fill="#231f20" x="20.280" y="24.570" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
                                     >TROOPER</text
-                                    ><text fill="#231f20" x="76.050" y="24.606" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
+                                    ><text fill="#231f20" x="76.050" y="24.570" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
                                     >'MECH</text
-                                    ><text fill="#231f20" x="145.340" y="24.606" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
+                                    ><text fill="#231f20" x="145.340" y="24.570" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
                                     >VEHICLE</text
-                                    ><g transform="translate (0.000 31.212)"
+                                    ><g transform="translate (0.000 31.140)"
                                     ><text text-anchor="middle" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
                                       ><tspan x="76.050" y="0.000"
                                         >LOCATION</tspan
@@ -676,47 +676,47 @@
                                       ><text text-anchor="middle" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
                                       ><tspan x="20.280" y="0.000"
                                         >NUMBER</tspan
-                                        ><tspan x="20.280" y="6.606"
+                                        ><tspan x="20.280" y="6.570"
                                         >1</tspan
-                                        ><tspan x="20.280" y="13.212"
+                                        ><tspan x="20.280" y="13.140"
                                         >2</tspan
-                                        ><tspan x="20.280" y="19.817"
+                                        ><tspan x="20.280" y="19.709"
                                         >3</tspan
-                                        ><tspan x="20.280" y="26.423"
+                                        ><tspan x="20.280" y="26.279"
                                         >4</tspan
-                                        ><tspan x="20.280" y="33.029"
+                                        ><tspan x="20.280" y="32.849"
                                         >5</tspan
-                                        ><tspan x="20.280" y="39.635"
+                                        ><tspan x="20.280" y="39.419"
                                         >6</tspan
                                       ></text
                                       ><text text-anchor="middle" style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
-                                      ><tspan x="76.050" y="6.606"
+                                      ><tspan x="76.050" y="6.570"
                                         >Right Torso</tspan
-                                        ><tspan x="145.340" y="6.606"
+                                        ><tspan x="145.340" y="6.570"
                                         >Right Side</tspan
-                                        ><tspan x="76.050" y="13.212"
+                                        ><tspan x="76.050" y="13.140"
                                         >Left Torso</tspan
-                                        ><tspan x="145.340" y="13.212"
+                                        ><tspan x="145.340" y="13.140"
                                         >Right Side</tspan
-                                        ><tspan x="76.050" y="19.817"
+                                        ><tspan x="76.050" y="19.709"
                                         >Right Torso (rear)</tspan
-                                        ><tspan x="145.340" y="19.817"
+                                        ><tspan x="145.340" y="19.709"
                                         >Left Side</tspan
-                                        ><tspan x="76.050" y="26.423"
+                                        ><tspan x="76.050" y="26.279"
                                         >Left Torso (rear)</tspan
-                                        ><tspan x="145.340" y="26.423"
+                                        ><tspan x="145.340" y="26.279"
                                         >Left Side</tspan
-                                        ><tspan x="76.050" y="33.029"
+                                        ><tspan x="76.050" y="32.849"
                                         >Center Torso (rear)</tspan
-                                        ><tspan x="145.340" y="33.029"
+                                        ><tspan x="145.340" y="32.849"
                                         >Rear</tspan
-                                        ><tspan x="76.050" y="39.635"
+                                        ><tspan x="76.050" y="39.419"
                                         >Center Torso</tspan
-                                        ><tspan x="145.340" y="39.635"
+                                        ><tspan x="145.340" y="39.419"
                                         >Rear</tspan
                                       ></text
                                     ></g
-                                    ><g transform="matrix(0.838 0 0 0.838 127.715 95.954)"
+                                    ><g transform="matrix(0.838 0 0 0.838 127.715 95.414)"
                                     >
 <g id="cglLogo" transform="matrix(1,0,0,-1,-162.7947,110.0348)"
                                       ><g id="g57733" transform="translate(211.0787,105.8868)"
@@ -800,11 +800,11 @@
                                         /></g
                                       ></g
                                     ></g
-                                    ><text fill="#231f20" x="20.280" y="84.058" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
+                                    ><text fill="#231f20" x="20.280" y="83.698" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
                                     >TROOPER</text
-                                    ><text fill="#231f20" x="76.050" y="84.058" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
+                                    ><text fill="#231f20" x="76.050" y="83.698" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
                                     >LARGE SUPPORT</text
-                                    ><g transform="translate (0.000 90.664)"
+                                    ><g transform="translate (0.000 90.268)"
                                     ><text text-anchor="middle" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
                                       ><tspan x="76.050" y="0.000"
                                         >VEHICLE LOCATION*</tspan
@@ -812,35 +812,35 @@
                                       ><text text-anchor="middle" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
                                       ><tspan x="20.280" y="0.000"
                                         >NUMBER</tspan
-                                        ><tspan x="20.280" y="6.606"
+                                        ><tspan x="20.280" y="6.570"
                                         >1</tspan
-                                        ><tspan x="20.280" y="13.212"
+                                        ><tspan x="20.280" y="13.140"
                                         >2</tspan
-                                        ><tspan x="20.280" y="19.817"
+                                        ><tspan x="20.280" y="19.709"
                                         >3</tspan
-                                        ><tspan x="20.280" y="26.423"
+                                        ><tspan x="20.280" y="26.279"
                                         >4</tspan
-                                        ><tspan x="20.280" y="33.029"
+                                        ><tspan x="20.280" y="32.849"
                                         >5</tspan
-                                        ><tspan x="20.280" y="39.635"
+                                        ><tspan x="20.280" y="39.419"
                                         >6</tspan
                                       ></text
                                       ><text text-anchor="middle" style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
-                                      ><tspan x="76.050" y="6.606"
+                                      ><tspan x="76.050" y="6.570"
                                         >Right Side (Unit 1/Unit 2)</tspan
-                                        ><tspan x="76.050" y="13.212"
+                                        ><tspan x="76.050" y="13.140"
                                         >Right Side (Unit 1/Unit 2)</tspan
-                                        ><tspan x="76.050" y="19.817"
+                                        ><tspan x="76.050" y="19.709"
                                         >Left Side (Unit 1/Unit 2)</tspan
-                                        ><tspan x="76.050" y="26.423"
+                                        ><tspan x="76.050" y="26.279"
                                         >Left Side (Unit 1/Unit 2)</tspan
-                                        ><tspan x="76.050" y="33.029"
+                                        ><tspan x="76.050" y="32.849"
                                         >Rear (Unit 1/Unit 2)</tspan
-                                        ><tspan x="76.050" y="39.635"
+                                        ><tspan x="76.050" y="39.419"
                                         >Rear (Unit 1/Unit 2)</tspan
                                       ></text
                                     ></g
-                                    ><text fill="#231f20" x="6.760" y="143.510" style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal" text-anchor="start"
+                                    ><text fill="#231f20" x="6.760" y="142.826" style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal" text-anchor="start"
                                     >*Unit 1 and Unit 2 represent two battle armor units.</text
                                   ></g
                                 ></svg
