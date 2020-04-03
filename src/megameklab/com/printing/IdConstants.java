@@ -157,4 +157,6 @@ public interface IdConstants {
     String MODE_2 = "movement_mode_2";
     String MP_2_LABEL = "mp_2_label";
     String MODE_2_LABEL = "movement_mode_2_label";
+
+    String SQUAD = "squad";
 }

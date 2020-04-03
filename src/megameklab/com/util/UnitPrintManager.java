@@ -166,7 +166,7 @@ public class UnitPrintManager {
             } else if (unit instanceof BattleArmor) {
                 baList.add((BattleArmor) unit);
                 if (singlePrint || baList.size() > 4) {
-                    book.append(new PrintBattleArmor(baList),  pageFormat);
+                    book.append(new PrintSmallUnitSheet(baList, book.getNumberOfPages()),  pageFormat);
                     baList = new ArrayList<>();
                 }
             } else if (unit instanceof Infantry) {
@@ -197,7 +197,7 @@ public class UnitPrintManager {
             book.append(new PrintCompositeTankSheet(tank1, null, book.getNumberOfPages()), pageFormat);
         }
         if (baList.size() > 0) {
-            book.append(new PrintBattleArmor(baList), pageFormat);
+            book.append(new PrintSmallUnitSheet(baList, book.getNumberOfPages()), pageFormat);
         }
         if (infList.size() > 0) {
             book.append(new PrintSmallUnitSheet(infList, book.getNumberOfPages()), pageFormat);
