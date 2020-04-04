@@ -390,6 +390,7 @@ task assemble(overwrite: true) {
 task assembleDist(overwrite: true) {
     description = 'Build unix, Windows, and source packages'
     group = 'distribution'
+    dependsOn test
     dependsOn unixDistTar
     dependsOn windowsDistZip
 //    dependsOn macDistTar
