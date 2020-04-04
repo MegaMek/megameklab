@@ -1083,8 +1083,24 @@ public class UnitUtil {
      * simple method to let us know if eq should be printed on the weapons and
      * equipment section of the Record sheet.
      *
-     * @param eq
-     * @return
+     * @param eq     The equipment
+     * @param entity The Entity it's mounted on
+     * @return       Whether the equipment should be shown on the record sheet
+     */
+    public static boolean isPrintableEquipment(EquipmentType eq, Entity entity) {
+        if (entity instanceof BattleArmor) {
+            return isPrintableBAEquipment(eq);
+        }
+        return isPrintableEquipment(eq, entity instanceof Mech);
+    }
+
+    /**
+     * simple method to let us know if eq should be printed on the weapons and
+     * equipment section of the Record sheet.
+     *
+     * @param eq     The equipment
+     * @param isMech Whether the equipment is mounted on a mech
+     * @return       Whether the equipment should be shown on the record sheet
      */
     public static boolean isPrintableEquipment(EquipmentType eq, boolean isMech) {
 
@@ -1116,7 +1132,6 @@ public class UnitUtil {
                         || eq.hasFlag(MiscType.F_MASS)
                         || eq.hasFlag(MiscType.F_CHASSIS_MODIFICATION)
                         || eq.hasFlag(MiscType.F_MASH_EXTRA)
-                        || eq.hasFlag(MiscType.F_HITCH)
                         || eq.hasFlag(MiscType.F_CHASSIS_MODIFICATION)
                         || eq.hasFlag(MiscType.F_DRONE_EXTRA) || eq
                             .hasFlag(MiscType.F_SPONSON_TURRET))

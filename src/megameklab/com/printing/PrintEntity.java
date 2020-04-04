@@ -80,9 +80,18 @@ public abstract class PrintEntity extends PrintRecordSheet {
     /**
      * Space for misc equipment such as cargo space and SV chassis mods.
      *
-     * @return A list of chassis mods, or an empty String if none
+     * @return A list of misc equipment, or an empty String if none
      */
     public String formatFeatures() {
+        return "";
+    }
+
+    /**
+     * Space for various miscellaneous notes about the unit, such as restrictions.
+     *
+     * @return A list of misc notes, or an empty String if none
+     */
+    public String formatMiscNotes() {
         return "";
     }
 

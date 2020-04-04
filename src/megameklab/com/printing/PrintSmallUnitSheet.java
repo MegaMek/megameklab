@@ -14,6 +14,7 @@
 
 package megameklab.com.printing;
 
+import megamek.common.BattleArmor;
 import megamek.common.Entity;
 import megamek.common.Infantry;
 import megamek.common.UnitType;
@@ -68,7 +69,7 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
         for (Entity entity : entities) {
             Element g = getSVGDocument().getElementById("unit_" + count);
             if (g != null) {
-                PrintEntity sheet = getBlockFor(entity);
+                PrintEntity sheet = getBlockFor(entity, count);
                 sheet.createDocument(startPage, pageFormat);
                 g.appendChild(getSVGDocument().importNode(sheet.getSVGDocument()
                         .getDocumentElement(), true));
@@ -78,8 +79,10 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
         }
     }
 
-    private PrintEntity getBlockFor(Entity entity) {
-        if (entity instanceof Infantry) {
+    private PrintEntity getBlockFor(Entity entity, int index) {
+        if (entity instanceof BattleArmor) {
+            return new PrintBattleArmor((BattleArmor) entity, index, getFirstPage(), options);
+        } else if (entity instanceof Infantry) {
             return new PrintInfantry((Infantry) entity, getFirstPage(), options);
         }
         throw new IllegalArgumentException("Cannot create block for "
@@ -88,7 +91,9 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
 
     @Override
     protected String getSVGFileName(int pageNumber) {
-        if (entities.get(0) instanceof Infantry) {
+        if (entities.get(0) instanceof BattleArmor) {
+            return "battle_armor_default.svg";
+        } else if (entities.get(0) instanceof Infantry) {
             if (entities.size() < 4) {
                 return "conventional_infantry_tables.svg";
             } else {

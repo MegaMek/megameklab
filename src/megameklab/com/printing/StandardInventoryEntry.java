@@ -50,6 +50,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
     private final String location;
     private final boolean isRear;
     private final boolean isTurret;
+    private final boolean isSquadSupport;
 
     private int quantity = 1;
 
@@ -78,6 +79,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         location = formatLocation();
         isRear = m.isRearMounted();
         isTurret = m.isMechTurretMounted();
+        isSquadSupport = m.isSquadSupportWeapon();
         isMML = m.getType() instanceof MMLWeapon;
         isATM = m.getType() instanceof ATMWeapon || m.getType() instanceof CLIATMWeapon;
         hasArtemis = hasLinkedEquipment(m, MiscType.F_ARTEMIS);
@@ -177,6 +179,9 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         }
         if (mount.isPintleTurretMounted()) {
             name.append(" (P)");
+        }
+        if (mount.isSquadSupportWeapon()) {
+            name.append(" (SSW)");
         }
         if (mount.getEntity().isAero()) {
             name.append(" ").append(StringUtils.getEquipmentInfo((Aero) mount.getEntity(), mount));
@@ -287,6 +292,10 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
             return "[PD]";
         } else if (mount.getType() instanceof ISCenturionWeaponSystem) {
             return "0";
+        } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_BA_MANIPULATOR)) {
+            // TODO: Put capacity of cargo lifting manipulator here when the implementation is corrected
+            // to allow capacity to be assigned
+            return "";
         } else if (row == 0) {
             return StringUtils.getEquipmentInfo(mount.getEntity(), mount);
         }
@@ -395,13 +404,14 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         StandardInventoryEntry that = (StandardInventoryEntry) o;
         return isRear == that.isRear &&
                 isTurret == that.isTurret &&
+                isSquadSupport == that.isSquadSupport &&
                 name.equals(that.name) &&
                 location.equals(that.location);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, location, isRear, isTurret);
+        return Objects.hash(name, location, isRear, isTurret, isSquadSupport);
     }
 
     @Override
