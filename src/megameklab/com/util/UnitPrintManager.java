@@ -55,7 +55,6 @@ import megamek.common.MechFileParser;
 import megamek.common.Protomech;
 import megamek.common.Tank;
 import megameklab.com.printing.*;
-import megameklab.com.ui.BattleArmor.Printing.PrintBattleArmor;
 import megameklab.com.ui.dialog.UnitPrintQueueDialog;
 import megameklab.com.ui.protomek.printing.PrintProtomech;
 
