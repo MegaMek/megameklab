@@ -19,12 +19,12 @@
   >Gunnery Skill:</text
   ><text fill="#231f20" x="48.547" id="gunnerySkill0" y="37.000" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal" text-anchor="start"
   >Lorem Ipsum</text
-  ><path id="blankGunnerySkill0" d="M 48.547,38.000 L 132.047,38.000" stroke-width="0.720" stroke-linejoin="round" stroke="#231f20"
+  ><path id="blankGunnerySkill0" d="M 48.547,38.000 L 89.500,38.000" stroke-width="0.720" stroke-linejoin="round" stroke="#231f20"
   /><text x="92.500" y="37.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" textLength="46.014" lengthAdjust="spacingAndGlyphs"
   >Anti-'Mech Skill:</text
   ><text fill="#231f20" x="141.889" id="pilotingSkill0" y="37.000" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal" text-anchor="start"
   >Lorem Ipsum</text
-  ><path id="blankPilotingSkill0" d="M 141.889,38.000 L 225.389,38.000" stroke-width="0.720" stroke-linejoin="round" stroke="#231f20"
+  ><path id="blankPilotingSkill0" d="M 141.889,38.000 L 173.000,38.000" stroke-width="0.720" stroke-linejoin="round" stroke="#231f20"
   /><text x="6.000" y="45.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" textLength="34.689" lengthAdjust="spacingAndGlyphs"
   >Ground MP:</text
   ><text fill="#231f20" x="44.064" id="mpWalk" y="45.000" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal;mml-field-width:45.436" text-anchor="start"

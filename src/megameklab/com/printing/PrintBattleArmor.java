@@ -100,7 +100,7 @@ public class PrintBattleArmor extends PrintEntity {
                 break;
             default:
                 hideElement(MODE_2, true);
-                hideElement(MP_JUMP, true);
+                hideElement(MP_2, true);
                 break;
         }
         hideElement(CHECK_MECHANIZED, !battleArmor.canDoMechanizedBA());
