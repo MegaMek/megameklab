@@ -61,7 +61,6 @@ configurations {
 dependencies {
     implementation "org.megamek:megamek${mmBranchTag}:${version}"
     
-    implementation 'log4j:log4j:1.2.17'
     implementation 'org.apache.xmlgraphics:batik-dom:1.10'
     implementation 'org.apache.xmlgraphics:batik-codec:1.10'
     implementation 'org.apache.xmlgraphics:batik-rasterizer:1.10'
