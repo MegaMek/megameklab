@@ -292,6 +292,10 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
             return "[PD]";
         } else if (mount.getType() instanceof ISCenturionWeaponSystem) {
             return "0";
+        } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_BA_MANIPULATOR)) {
+            // TODO: Put capacity of cargo lifting manipulator here when the implementation is corrected
+            // to allow capacity to be assigned
+            return "";
         } else if (row == 0) {
             return StringUtils.getEquipmentInfo(mount.getEntity(), mount);
         }
