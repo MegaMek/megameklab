@@ -7,6 +7,9 @@ on:
   pull_request:
     branches: [ master ]
 
+env:
+  GRADLE_OPTS: "-Dscan.link.VCS=${{ github.event.pull_request.html_url }}"
+
 jobs:
   ci_cd:
     runs-on: ubuntu-latest
@@ -29,7 +32,7 @@ jobs:
     - name: Build with Gradle
       id: gradle_build
       working-directory: megameklab
-      run: ./gradlew -I .github/build-scan-init.gradle build --stacktrace --scan "-Dscan.link.VCS=${{ github.event.pull_request.html_url }}"
+      run: ./gradlew -I .github/build-scan-init.gradle build --stacktrace --scan
     - name: Upload Test Logs on Failure
       uses: actions/upload-artifact@v2-preview
       if: failure()
@@ -73,7 +76,7 @@ jobs:
       if: runner.os != 'Windows'
     - name: Test with Gradle
       working-directory: megameklab
-      run: ./gradlew test --stacktrace
+      run: ./gradlew test --stacktrace --scan
     - name: Upload Test Logs on Failure
       uses: actions/upload-artifact@v2-preview
       if: failure()
