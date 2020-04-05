@@ -4,42 +4,44 @@
 name: MegaMekLab CI with Gradle
 
 on:
-  push:
-    branches: [ master ]
   pull_request:
     branches: [ master ]
+
+env:
+  GRADLE_OPTS: "-Dscan.link.VCS=${{ github.event.pull_request.html_url }}"
 
 jobs:
   ci_cd:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+      with:
+        path: megameklab
+    - name: Checkout MegaMek
+      uses: actions/checkout@v2
+      with:
+        repository: MegaMek/megamek
+        path: megamek
     - name: Set up JDK 1.8
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
     - name: Grant execute permission for gradlew (*nix or MacOS)
+      working-directory: megameklab
       run: chmod +x gradlew
-    - name: Checkout MegaMek
-      uses: actions/checkout@v2
-      with:
-        repository: MegaMek/megamek
-        path: ./megamek
-    - name: Build settings_local.gradle and properties_local.gradle
-      run: |
-        echo "includeBuild './megamek'" >settings_local.gradle
-        echo "rootProject.ext.mmDir = './megamek'" >properties_local.gradle
     - name: Build with Gradle
       id: gradle_build
-      run: ./gradlew -I .github/build-scan-init.gradle build --stacktrace --scan "-Dscan.link.VCS=${{ github.event.pull_request.html_url }}"
+      working-directory: megameklab
+      run: ./gradlew -I .github/build-scan-init.gradle build --stacktrace --scan
     - name: Upload Test Logs on Failure
       uses: actions/upload-artifact@v2-preview
       if: failure()
       with:
         name: cd-failure-logs
-        path: build/reports/
+        path: megameklab/build/reports/
     - name: Comment on PR with Build Scan URI
       uses: thollander/actions-comment-pull-request@master
+      if: always() && steps.gradle_build.outputs.buildScanUri != ''
       with:
         message: Build scan available at ${{ steps.gradle_build.outputs.buildScanUri }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -47,7 +49,8 @@ jobs:
       uses: actions/upload-artifact@v2-preview
       with:
         name: releases
-        path: build/distributions/
+        path: megameklab/build/distributions/
+
   other_os_ci:
     runs-on: ${{ matrix.os }}
     needs: ci_cd
@@ -56,27 +59,27 @@ jobs:
         os: [windows-latest, macos-latest]
     steps:
     - uses: actions/checkout@v2
+      with:
+        path: megameklab
+    - name: Checkout MegaMek
+      uses: actions/checkout@v2
+      with:
+        repository: MegaMek/megamek
+        path: megamek
     - name: Set up JDK 1.8
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
     - name: Grant execute permission for gradlew (*nix or MacOS)
+      working-directory: megameklab
       run: chmod +x gradlew
       if: runner.os != 'Windows'
-    - name: Checkout MegaMek
-      uses: actions/checkout@v2
-      with:
-        repository: MegaMek/megamek
-        path: ./megamek
-    - name: Build settings_local.gradle and properties_local.gradle
-      run: |
-        echo "includeBuild './megamek'" >settings_local.gradle
-        echo "rootProject.ext.mmDir = './megamek'" >properties_local.gradle
     - name: Test with Gradle
-      run: ./gradlew test --stacktrace
+      working-directory: megameklab
+      run: ./gradlew test --stacktrace --scan
     - name: Upload Test Logs on Failure
       uses: actions/upload-artifact@v2-preview
       if: failure()
       with:
         name: ci-failure-logs
-        path: build/reports/
+        path: megameklab/build/reports/
