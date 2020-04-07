@@ -3,6 +3,7 @@ VERSION HISTORY:
 0.47.6-SNAPSHOT
 + Issue #553: Loading or printing LAM causes ArrayIndexOutOfBoundsException
 + PR #557: BattleArmor record sheet overhaul
++ Issue #536: Support Fixed Wing Aircraft with Propeller mod will not validate
 
 0.47.5 (2020-4-01 2000 UTC)
 + Issue #435: Infantry exports not going to TXT, only HTML
