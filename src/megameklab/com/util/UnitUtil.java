@@ -2944,6 +2944,8 @@ public class UnitUtil {
             // Small support vehicles can only mount infantry weapons
             return (eq instanceof InfantryWeapon)
                     && !eq.hasFlag(WeaponType.F_INF_ARCHAIC);
+        } else if (eq instanceof AmmoType) {
+            return true;
         }
         if (unit.isAero()) {
             return isAeroEquipment(eq, (Aero) unit);
