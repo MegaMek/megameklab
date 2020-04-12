@@ -185,7 +185,7 @@ public class UnitUtil {
      */
     public static boolean isMASC(EquipmentType eq) {
         return (eq instanceof MiscType)
-                && (eq.hasFlag(MiscType.F_MASC) && eq.hasSubType(MiscType.S_STANDARD));
+                && (eq.hasFlag(MiscType.F_MASC) && !eq.hasSubType(MiscType.S_SUPERCHARGER));
     }
 
     /**
@@ -1083,8 +1083,24 @@ public class UnitUtil {
      * simple method to let us know if eq should be printed on the weapons and
      * equipment section of the Record sheet.
      *
-     * @param eq
-     * @return
+     * @param eq     The equipment
+     * @param entity The Entity it's mounted on
+     * @return       Whether the equipment should be shown on the record sheet
+     */
+    public static boolean isPrintableEquipment(EquipmentType eq, Entity entity) {
+        if (entity instanceof BattleArmor) {
+            return isPrintableBAEquipment(eq);
+        }
+        return isPrintableEquipment(eq, entity instanceof Mech);
+    }
+
+    /**
+     * simple method to let us know if eq should be printed on the weapons and
+     * equipment section of the Record sheet.
+     *
+     * @param eq     The equipment
+     * @param isMech Whether the equipment is mounted on a mech
+     * @return       Whether the equipment should be shown on the record sheet
      */
     public static boolean isPrintableEquipment(EquipmentType eq, boolean isMech) {
 
@@ -1116,7 +1132,6 @@ public class UnitUtil {
                         || eq.hasFlag(MiscType.F_MASS)
                         || eq.hasFlag(MiscType.F_CHASSIS_MODIFICATION)
                         || eq.hasFlag(MiscType.F_MASH_EXTRA)
-                        || eq.hasFlag(MiscType.F_HITCH)
                         || eq.hasFlag(MiscType.F_CHASSIS_MODIFICATION)
                         || eq.hasFlag(MiscType.F_DRONE_EXTRA) || eq
                             .hasFlag(MiscType.F_SPONSON_TURRET))
@@ -1774,7 +1789,7 @@ public class UnitUtil {
      * @param unit
      */
     public static void expandUnitMounts(Mech unit) {
-        for (int location = 0; location <= unit.locations(); location++) {
+        for (int location = 0; location < unit.locations(); location++) {
             for (int slot = 0; slot < unit.getNumberOfCriticals(location); slot++) {
                 CriticalSlot cs = unit.getCritical(location, slot);
                 if ((cs == null) || (cs.getType() == CriticalSlot.TYPE_SYSTEM)) {
@@ -2929,6 +2944,8 @@ public class UnitUtil {
             // Small support vehicles can only mount infantry weapons
             return (eq instanceof InfantryWeapon)
                     && !eq.hasFlag(WeaponType.F_INF_ARCHAIC);
+        } else if (eq instanceof AmmoType) {
+            return true;
         }
         if (unit.isAero()) {
             return isAeroEquipment(eq, (Aero) unit);

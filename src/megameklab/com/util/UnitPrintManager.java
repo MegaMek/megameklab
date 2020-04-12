@@ -41,7 +41,6 @@ import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import megamek.client.ui.swing.UnitLoadingDialog;
-import megamek.client.ui.swing.dialog.AbstractUnitSelectorDialog;
 import megamek.common.Aero;
 import megamek.common.BattleArmor;
 import megamek.common.Dropship;
@@ -55,10 +54,6 @@ import megamek.common.MechFileParser;
 import megamek.common.Protomech;
 import megamek.common.Tank;
 import megameklab.com.printing.*;
-import megameklab.com.ui.BattleArmor.Printing.PrintBattleArmor;
-import megameklab.com.ui.Dropship.Printing.PrintAerodyne;
-import megameklab.com.ui.Dropship.Printing.PrintSpheroid;
-import megameklab.com.ui.Infantry.Printing.PrintInfantry;
 import megameklab.com.ui.dialog.MegaMekLabUnitSelectorDialog;
 import megameklab.com.ui.dialog.UnitPrintQueueDialog;
 import megameklab.com.ui.protomek.printing.PrintProtomech;
@@ -170,13 +165,13 @@ public class UnitPrintManager {
             } else if (unit instanceof BattleArmor) {
                 baList.add((BattleArmor) unit);
                 if (singlePrint || baList.size() > 4) {
-                    book.append(new PrintBattleArmor(baList),  pageFormat);
+                    book.append(new PrintSmallUnitSheet(baList, book.getNumberOfPages()),  pageFormat);
                     baList = new ArrayList<>();
                 }
             } else if (unit instanceof Infantry) {
                 infList.add((Infantry) unit);
                 if (singlePrint || infList.size() > 3) {
-                    book.append(new PrintInfantry(infList),  pageFormat);
+                    book.append(new PrintSmallUnitSheet(infList, book.getNumberOfPages()),  pageFormat);
                     infList = new ArrayList<>();
                 }
             } else if (unit instanceof Protomech) {
@@ -201,10 +196,10 @@ public class UnitPrintManager {
             book.append(new PrintCompositeTankSheet(tank1, null, book.getNumberOfPages()), pageFormat);
         }
         if (baList.size() > 0) {
-            book.append(new PrintBattleArmor(baList), pageFormat);
+            book.append(new PrintSmallUnitSheet(baList, book.getNumberOfPages()), pageFormat);
         }
         if (infList.size() > 0) {
-            book.append(new PrintInfantry(infList), pageFormat);
+            book.append(new PrintSmallUnitSheet(infList, book.getNumberOfPages()), pageFormat);
         }
         if (protoList.size() > 0) {
             book.append(new PrintProtomech(protoList), pageFormat);
