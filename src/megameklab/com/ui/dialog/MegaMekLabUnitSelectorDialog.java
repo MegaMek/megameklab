@@ -22,6 +22,7 @@ import megamek.client.ui.Messages;
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.client.ui.swing.dialog.AbstractUnitSelectorDialog;
 import megamek.common.Entity;
+import megamek.common.MechSummary;
 import megamek.common.TechConstants;
 
 import javax.swing.*;
@@ -72,6 +73,18 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
         chosenEntity = getSelectedEntity();
     }
     //endregion Button Methods
+
+    /**
+     * @return the MechSummary for the chosen mech
+     */
+    public MechSummary getChosenMechSummary() {
+        int view = tableUnits.getSelectedRow();
+        if (view < 0) {
+            // selection got filtered away
+            return null;
+        }
+        return mechs[tableUnits.convertRowIndexToModel(view)];
+    }
 
     /**
      * @return the chosenEntity
