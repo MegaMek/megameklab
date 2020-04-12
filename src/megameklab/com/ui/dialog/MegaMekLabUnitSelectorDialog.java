@@ -19,7 +19,6 @@
 package megameklab.com.ui.dialog;
 
 import megamek.client.ui.Messages;
-import megamek.client.ui.swing.ClientGUI;
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.client.ui.swing.dialog.AbstractUnitSelectorDialog;
 import megamek.common.Entity;
