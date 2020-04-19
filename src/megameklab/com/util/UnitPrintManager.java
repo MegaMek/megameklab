@@ -25,7 +25,6 @@ import java.awt.print.Paper;
 import java.awt.print.PrinterJob;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -63,7 +62,6 @@ import org.apache.avalon.framework.configuration.ConfigurationException;
 import org.apache.batik.transcoder.TranscoderException;
 import org.apache.pdfbox.io.MemoryUsageSetting;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
-import org.apache.pdfbox.pdmodel.PDDocument;
 import org.xml.sax.SAXException;
 
 public class UnitPrintManager {
@@ -199,6 +197,22 @@ public class UnitPrintManager {
                     sheets.add(pds);
                 } else {
                     sheets.add(new PrintAero((Aero) unit, pageCount));
+                }
+            } else if (unit instanceof BattleArmor) {
+                baList.add((BattleArmor) unit);
+                if (singlePrint || baList.size() > 4) {
+                    PrintRecordSheet prs = new PrintSmallUnitSheet(baList, pageCount);
+                    pageCount += prs.getPageCount();
+                    sheets.add(prs);
+                    baList = new ArrayList<>();
+                }
+            } else if (unit instanceof Infantry) {
+                infList.add((Infantry) unit);
+                if (singlePrint || infList.size() > 3) {
+                    PrintRecordSheet prs = new PrintSmallUnitSheet(infList, pageCount);
+                    pageCount += prs.getPageCount();
+                    sheets.add(prs);
+                    infList = new ArrayList<>();
                 }
             } else {
                 //TODO: show a message dialog that lists the unprintable units
