@@ -8,6 +8,7 @@ VERSION HISTORY:
 + Issue #555: Can't add Ammo to SV's
 + Issue #571: Environmental Sealing chassis mod on support vehicles requires 8 item slots
 + Issue #578: Squad Support Weapon Weight Calculations off
++ Issue #582: Large support vehicles incorrectly flag some equipment locations as invalid
 
 0.47.5 (2020-4-01 2000 UTC)
 + Issue #435: Infantry exports not going to TXT, only HTML
