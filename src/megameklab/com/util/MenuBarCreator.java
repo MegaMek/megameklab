@@ -965,7 +965,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
      * @return       A default filename for the Entity
      */
     private String createUnitFilename(Entity entity) {
-        String fileName = (entity.getChassis() + entity.getModel()).trim();
+        String fileName = (entity.getChassis() + " " + entity.getModel()).trim();
         fileName = fileName.replaceAll("[/\\\\<>:\"|?*]", "_");
         if (entity instanceof Mech) {
             return fileName + ".mtf";

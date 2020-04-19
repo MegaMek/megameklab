@@ -1,6 +1,13 @@
 VERSION HISTORY:
 ----------------
-0.47.5-SNAPSHOT
+0.47.6-SNAPSHOT
++ Issue #553: Loading or printing LAM causes ArrayIndexOutOfBoundsException
++ PR #557: BattleArmor record sheet overhaul
++ Issue #536: Support Fixed Wing Aircraft with Propeller mod will not validate
++ Issue #556: Basic saved file name does not have a space between Chassis and Model
++ Issue #555: Can't add Ammo to SV's
+
+0.47.5 (2020-4-01 2000 UTC)
 + Issue #435: Infantry exports not going to TXT, only HTML
 + Issue #437: Disappearing DS Collars on Space Station
 + Issue #430: Spreadable equipment disappears when removed from tripod center leg
@@ -45,6 +52,12 @@ VERSION HISTORY:
 + Issue #501: I can remove the base 10 heat sinks that come with an engine
 + Issue #515: External fuel tanks should be available to ICE and FC combat vehicles
 + Issue #517: Non-mech units loaded from cache sometimes save with mtf extension
++ Issue #522: Industrial 'mech Envi Sealing Cost
++ Issue #525: Some support vehicle chassis modifications should require armor
++ Issue #500: I can do many illegal things with industrial equipment
++ Issue #529: Problems with Omnis and armored components or things mounted in sponson turrets
++ PR #544: Infantry Record Sheet rework
++ Issue #545: MASC won't remove from Assign Crits if removed from Structure Armor Tab
 
 v0.47.4 (2020-2-09 2200 UTC)
 + Issue #416: Issue with Crit Splitting on the Right Torso with big Artillery cannons/Arrow IV
