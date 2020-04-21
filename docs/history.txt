@@ -10,6 +10,9 @@ VERSION HISTORY:
 + Issue #578: Squad Support Weapon Weight Calculations off
 + Issue #582: Large support vehicles incorrectly flag some equipment locations as invalid
 + Issue #581: Rotors can have more than 2 points of armor
++ Issue #550: Battle Armor bomb rack ammo critical space
++ Issue #583: Small SV Cargo weirdness
++ Issue #587: Unit transport bays can be added by half cubicle
 
 0.47.5 (2020-4-01 2000 UTC)
 + Issue #435: Infantry exports not going to TXT, only HTML
