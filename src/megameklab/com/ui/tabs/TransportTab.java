@@ -871,21 +871,19 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
                 spinner.setModel(model);
                 spinner.addChangeListener(this);
                 return spinner;
-            } else if (column == InstalledBaysModel.COL_SIZE) {
-                SpinnerNumberModel model = new SpinnerNumberModel(modelInstalled.bayList.get(row).getUnusedSlots(),
-                        1.0, null, 1.0);
-                spinner.removeChangeListener(this);
-                spinner.setModel(model);
-                spinner.addChangeListener(this);
-                return spinner;
-            } else if (column == InstalledBaysModel.COL_TONNAGE) {
-                double step = useKilogramStandard() ? 1.0 : 0.5;
-                double current = modelInstalled.bayList.get(row).getWeight();
+            } else if ((column == InstalledBaysModel.COL_SIZE)
+                    || (column == InstalledBaysModel.COL_TONNAGE)) {
+                double step = (isCargo && !useKilogramStandard()) ? 0.5 : 1.0;
+                double current;
+                if (column == InstalledBaysModel.COL_SIZE) {
+                    current = modelInstalled.bayList.get(row).getUnusedSlots();
+                } else {
+                    current = modelInstalled.bayList.get(row).getWeight();
+                }
                 if (useKilogramStandard()) {
                     current *= 1000;
                 }
-                SpinnerNumberModel model = new SpinnerNumberModel(current, step,
-                        null, step);
+                SpinnerNumberModel model = new SpinnerNumberModel(current, step, null, step);
                 spinner.removeChangeListener(this);
                 spinner.setModel(model);
                 spinner.addChangeListener(this);
