@@ -656,7 +656,7 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
                     if (!bayTypeList.get(rowIndex).isCargoBay()) {
                         return (int) bayList.get(rowIndex).getUnusedSlots();
                     } else if (useKilogramStandard()) {
-                        return RoundWeight.nearestKg(bayList.get(rowIndex).getUnusedSlots()) * 1000.0;
+                        return RoundWeight.nearestKg(bayList.get(rowIndex).getUnusedSlots() * 1000.0);
                     }
                     return RoundWeight.nearestKg(bayList.get(rowIndex).getUnusedSlots());
                 case COL_DOORS:
@@ -670,7 +670,7 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
                 case COL_TONNAGE:
                     final double weight = TestEntity.round(bayList.get(rowIndex).getWeight(), TestEntity.Ceil.KILO);
                     if (useKilogramStandard()) {
-                        return weight * 1000.0;
+                        return RoundWeight.nearestKg(weight * 1000.0);
                     } else {
                         return weight;
                     }
@@ -836,6 +836,10 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
                     size /= 1000.0;
                 } else if ((column == InstalledBaysModel.COL_SIZE) && bayType.isCargoBay()) {
                     size *= bayType.getWeight();
+                    if (useKilogramStandard()) {
+                        size /= 1000.0;
+                    }
+                    size = RoundWeight.nearestKg(size);
                 }
                 Bay newBay = bayType.newBay(size, bay.getBayNumber());
                 newBay.setDoors(bay.getDoors());
