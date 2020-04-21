@@ -1652,6 +1652,8 @@ public class UnitUtil {
             }
         } else if (entity.hasETypeFlag(Entity.ETYPE_PROTOMECH)) {
             return TestProtomech.maxArmorFactor((Protomech) entity, location);
+        } else if ((entity instanceof VTOL) && (location == VTOL.LOC_ROTOR)) {
+            return 2;
         }
         return null;
     }
