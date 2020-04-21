@@ -746,7 +746,8 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
             bayList.clear();
             for (BayData bay : BayData.values()) {
                 if (eSource.getTechManager().isLegal(bay.getTechAdvancement())
-                        && bay.isLegalFor(getEntity())) {
+                        && bay.isLegalFor(getEntity())
+                        && (!useKilogramStandard() || bay.isCargoBay())) {
                     bayList.add(bay);
                 }
             }
@@ -880,6 +881,7 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
                 } else {
                     current = modelInstalled.bayList.get(row).getWeight();
                 }
+                // We're assuming that the only bays available for kg-standard units are cargo.
                 if (useKilogramStandard()) {
                     current *= 1000;
                 }
