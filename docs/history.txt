@@ -13,6 +13,8 @@ VERSION HISTORY:
 + Issue #550: Battle Armor bomb rack ammo critical space
 + Issue #583: Small SV Cargo weirdness
 + Issue #587: Unit transport bays can be added by half cubicle
++ Issue #531: Armored motive system appears in equipment list for VTOLs and rail
++ Issue #533: BV for Swarm-I ammunition shows floating point errors
 
 0.47.5 (2020-4-01 2000 UTC)
 + Issue #435: Infantry exports not going to TXT, only HTML
