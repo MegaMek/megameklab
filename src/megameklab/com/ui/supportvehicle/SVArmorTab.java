@@ -282,6 +282,11 @@ public class SVArmorTab extends ITab implements ArmorAllocationListener {
 
         // Discount body, as it's not armored
         int numLocations = getEntity().locations() - 1;
+        // Aerospace units also have a wings location for squadrons. It's irrelevant for support
+        // vehicles, but it's still there.
+        if (getEntity().isAero()) {
+            numLocations--;
+        }
 
         // Make sure that the VTOL rotor has the 2 armor it should have
         if (getEntity() instanceof VTOL) {
@@ -300,8 +305,9 @@ public class SVArmorTab extends ITab implements ArmorAllocationListener {
         // With the percentage of total for each location, assign armor
         int allocatedPoints = 0;
         for (int location = 0; location < getEntity().locations(); location++) {
-            if ((location == body) ||
-                    ((getEntity() instanceof VTOL) && (location == VTOL.LOC_ROTOR))) {
+            if ((location == body)
+                    || ((getEntity() instanceof VTOL) && (location == VTOL.LOC_ROTOR))
+                    || ((getEntity().isAero()) && (location == FixedWingSupport.LOC_WINGS))) {
                 continue;
             }
             int armorToAllocate;
@@ -320,7 +326,6 @@ public class SVArmorTab extends ITab implements ArmorAllocationListener {
         int unallocated = pointsToAllocate - allocatedPoints;
         int currentFrontArmor = getEntity().getOArmor(front);
         getEntity().initializeArmor(currentFrontArmor + unallocated, front);
-
 
         panArmorAllocation.setFromEntity(getEntity());
         refresh.refreshPreview();
