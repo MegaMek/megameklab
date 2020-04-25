@@ -201,20 +201,6 @@ public class ArmorAllocationView extends BuildView implements
 
     public void setFromEntity(Entity en) {
         setEntityType(en.getEntityType());
-        int maxArmorPoints = UnitUtil.getMaximumArmorPoints(en);
-        int raw = (int) (UnitUtil.getRawArmorPoints(en, en.getLabArmorTonnage())
-                + UnitUtil.getSIBonusArmorPoints(en));
-        int currentPoints = en.getTotalOArmor();
-        int armorPoints = 0;
-        if (showPatchwork) {
-            armorPoints = currentPoints;
-            raw = currentPoints;
-            btnAutoAllocate.setEnabled(false);
-        } else {
-            armorPoints = Math.min(raw, maxArmorPoints);
-            btnAutoAllocate.setEnabled(true);
-        }
-        int wastedPoints = Math.max(0, raw - armorPoints);
         for (ArmorLocationView locView : locationViews) {
             final int location = locView.getLocationIndex();
             final Integer maxArmor = UnitUtil.getMaxArmor(en,  location);
@@ -248,6 +234,20 @@ public class ArmorAllocationView extends BuildView implements
                 locView.setPointsRear(0);
             }
         }
+        int maxArmorPoints = UnitUtil.getMaximumArmorPoints(en);
+        int raw = (int) (UnitUtil.getRawArmorPoints(en, en.getLabArmorTonnage())
+                + UnitUtil.getSIBonusArmorPoints(en));
+        int currentPoints = en.getTotalOArmor();
+        int armorPoints = 0;
+        if (showPatchwork) {
+            armorPoints = currentPoints;
+            raw = currentPoints;
+            btnAutoAllocate.setEnabled(false);
+        } else {
+            armorPoints = Math.min(raw, maxArmorPoints);
+            btnAutoAllocate.setEnabled(true);
+        }
+        int wastedPoints = Math.max(0, raw - armorPoints);
         txtUnallocated.setText(Integer.toString(armorPoints - currentPoints));
         txtAllocated.setText(String.valueOf(currentPoints));
         if (armorPoints != currentPoints) {

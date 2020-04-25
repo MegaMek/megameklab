@@ -15,6 +15,13 @@ VERSION HISTORY:
 + Issue #587: Unit transport bays can be added by half cubicle
 + Issue #531: Armored motive system appears in equipment list for VTOLs and rail
 + Issue #533: BV for Swarm-I ammunition shows floating point errors
++ Issue #538: Auto-allocation of armor for fixed-wing support craft loses armor points
++ Issue #539: I can't add some items to fixed-wing support units
++ Issue #540: Weight breakdown shows all weights rounded to one decimal place
++ Issue #591: Vehicular Grenade Launchers/Vehicular mine dispensers not available on aerospace craft
++ Issue #537: Formatting error in Unit Cost Breakdown for fixed-wing support units
++ Issue #541: Allocated armor is not reported correctly for DropShips/small craft after SI changes.
++ Issue #542: The Infantry Compartment field on the Transport pane is ignored for DropShips and small craft
 
 0.47.5 (2020-4-01 2000 UTC)
 + Issue #435: Infantry exports not going to TXT, only HTML
