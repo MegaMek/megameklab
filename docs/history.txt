@@ -22,6 +22,8 @@ VERSION HISTORY:
 + Issue #537: Formatting error in Unit Cost Breakdown for fixed-wing support units
 + Issue #541: Allocated armor is not reported correctly for DropShips/small craft after SI changes.
 + Issue #542: The Infantry Compartment field on the Transport pane is ignored for DropShips and small craft
++ Issue #552: Changing bay personnel can incorrectly change base and total crew on a JS/WS/station
++ Issue #559: Naval Com-Scanner Suites require no crew
 
 0.47.5 (2020-4-01 2000 UTC)
 + Issue #435: Infantry exports not going to TXT, only HTML
