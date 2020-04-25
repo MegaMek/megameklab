@@ -375,6 +375,8 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
         int personnel = bay.getPersonnel(getEntity().isClan());
         if (getEntity().hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)) {
             getSmallCraft().setNCrew(getSmallCraft().getNCrew() - personnel);
+        } else if (getEntity().hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
+            getJumpship().setNCrew(getJumpship().getNCrew() - personnel);
         }
         getEntity().removeTransporter(bay);
     }
@@ -389,6 +391,8 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
         int personnel = bay.getPersonnel(getEntity().isClan());
         if (getEntity().hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)) {
             getSmallCraft().setNCrew(getSmallCraft().getNCrew() + personnel);
+        } else if (getEntity().hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
+            getJumpship().setNCrew(getJumpship().getNCrew() + personnel);
         }
     }
     
