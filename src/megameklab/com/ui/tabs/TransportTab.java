@@ -116,14 +116,14 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
             GridBagConstraints gbc = new GridBagConstraints();
             gbc.gridx = 0;
             gbc.gridy = 0;
-            panTroopspace.add(new Label(resourceMap.getString("TransportTab.spnTroopspace.text")), gbc); //$NON-NLS-1$
+            panTroopspace.add(new JLabel(resourceMap.getString("TransportTab.spnTroopspace.text")), gbc); //$NON-NLS-1$
             spnTroopSpace.setToolTipText(resourceMap.getString("TransportTab.spnTroopspace.tooltip")); //$NON-NLS-1$
             gbc.gridx = 1;
             panTroopspace.add(spnTroopSpace, gbc);
             if (getEntity().isSupportVehicle()) {
                 gbc.gridx = 0;
                 gbc.gridy = 1;
-                panTroopspace.add(new Label(resourceMap.getString("TransportTab.spnPodTroopspace.text")), gbc); //$NON-NLS-1$
+                panTroopspace.add(new JLabel(resourceMap.getString("TransportTab.spnPodTroopspace.text")), gbc); //$NON-NLS-1$
                 spnTroopSpace.setToolTipText(resourceMap.getString("TransportTab.spnPodTroopspace.tooltip")); //$NON-NLS-1$
                 gbc.gridx = 1;
                 panTroopspace.add(spnPodTroopSpace, gbc);
