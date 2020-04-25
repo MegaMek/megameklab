@@ -118,6 +118,7 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
             gbc.gridy = 0;
             panTroopspace.add(new Label(resourceMap.getString("TransportTab.spnTroopspace.text")), gbc); //$NON-NLS-1$
             spnTroopSpace.setToolTipText(resourceMap.getString("TransportTab.spnTroopspace.tooltip")); //$NON-NLS-1$
+            spnTroopSpace.addChangeListener(this);
             gbc.gridx = 1;
             panTroopspace.add(spnTroopSpace, gbc);
             if (getEntity().isSupportVehicle()) {
@@ -127,7 +128,6 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
                 spnTroopSpace.setToolTipText(resourceMap.getString("TransportTab.spnPodTroopspace.tooltip")); //$NON-NLS-1$
                 gbc.gridx = 1;
                 panTroopspace.add(spnPodTroopSpace, gbc);
-                spnTroopSpace.addChangeListener(this);
                 spnPodTroopSpace.addChangeListener(this);
             }
             add(panTroopspace, BorderLayout.NORTH);
