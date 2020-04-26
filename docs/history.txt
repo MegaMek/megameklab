@@ -24,6 +24,7 @@ VERSION HISTORY:
 + Issue #542: The Infantry Compartment field on the Transport pane is ignored for DropShips and small craft
 + Issue #552: Changing bay personnel can incorrectly change base and total crew on a JS/WS/station
 + Issue #559: Naval Com-Scanner Suites require no crew
++ Issue #562: Fuel mass for advanced aerospace craft appears to be rounded down to the nearest whole ton
 
 0.47.5 (2020-4-01 2000 UTC)
 + Issue #435: Infantry exports not going to TXT, only HTML
