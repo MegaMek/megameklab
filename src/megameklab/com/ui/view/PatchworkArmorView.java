@@ -102,6 +102,7 @@ public class PatchworkArmorView extends BuildView implements ActionListener {
     public void setFromEntity(Entity en) {
         List<EquipmentType> armors = TestEntity.legalArmorsFor(en.getEntityType(),
                 (en instanceof Mech) && ((Mech)en).isIndustrial(),
+                en.isPrimitive(),
                 en.getMovementMode(), techManager);
         ignoreEvents = true;
         for (int loc = 0; loc < combos.size(); loc++) {

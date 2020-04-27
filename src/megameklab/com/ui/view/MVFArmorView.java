@@ -70,6 +70,7 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
     
     private long etype;
     private boolean industrial;
+    private boolean primitive;
     private EntityMovementMode movementMode;
     private boolean svLimitedArmor;
 
@@ -206,6 +207,7 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
     public void setFromEntity(Entity en, boolean ignoreEntityPatchwork) {
         etype = en.getEntityType();
         industrial = (en instanceof Mech) && ((Mech)en).isIndustrial();
+        primitive = en.isPrimitive();
         movementMode = en.getMovementMode();
         svLimitedArmor = en.isSupportVehicle() && !en.hasArmoredChassis();
         refresh();
@@ -281,7 +283,8 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
         cbArmorType.removeActionListener(this);
         cbArmorType.removeAllItems();
         if (!svLimitedArmor) {
-            List<EquipmentType> allArmors = TestEntity.legalArmorsFor(etype, industrial, movementMode, techManager);
+            List<EquipmentType> allArmors = TestEntity.legalArmorsFor(etype, industrial, primitive,
+                    movementMode, techManager);
             allArmors.forEach(cbArmorType::addItem);
         } else {
             cbArmorType.addItem(EquipmentType.get(EquipmentType.getArmorTypeName(EquipmentType.T_ARMOR_STANDARD)));
