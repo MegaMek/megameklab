@@ -28,6 +28,7 @@ VERSION HISTORY:
 + Issue #593: TRO shows incorrect ammo shot count for weapon bays
 + Issue #595: All mechs with ICE or fuel cell need power amplifiers
 + Issue #596: Combat vehicle environmental sealing takes no mass
++ Issue #598: Extraneous weapons appearing on fighter record sheet
 
 0.47.5 (2020-4-01 2000 UTC)
 + Issue #435: Infantry exports not going to TXT, only HTML
