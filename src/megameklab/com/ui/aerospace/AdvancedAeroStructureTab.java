@@ -498,6 +498,11 @@ public class AdvancedAeroStructureTab extends ITab implements AdvancedAeroBuildL
     @Override
     public void siChanged(int si) {
         getJumpship().set0SI(si);
+        panArmor.setFromEntity(getJumpship());
+        // Change in SI can reduce the maximum armor tonnage
+        if (getJumpship().getLabArmorTonnage() != panArmor.getArmorTonnage()) {
+            armorTonnageChanged(panArmor.getArmorTonnage());
+        }
         panArmorAllocation.setFromEntity(getJumpship());
         refresh.refreshStatus();
         refresh.refreshSummary();
