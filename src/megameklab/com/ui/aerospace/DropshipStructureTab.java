@@ -455,6 +455,10 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener,
     public void siChanged(int si) {
         getSmallCraft().set0SI(si);
         panArmor.setFromEntity(getSmallCraft());
+        // Change in SI can reduce the maximum armor tonnage
+        if (getSmallCraft().getLabArmorTonnage() != panArmor.getArmorTonnage()) {
+            armorTonnageChanged(panArmor.getArmorTonnage());
+        }
         panArmorAllocation.setFromEntity(getSmallCraft());
         refresh.refreshStatus();
         refresh.refreshSummary();

@@ -364,6 +364,10 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
         return 2;
     }
 
+    public double getArmorTonnage() {
+        return tonnageModel.getNumber().doubleValue();
+    }
+
     @Override
     public void stateChanged(ChangeEvent e) {
         if (e.getSource() == spnTonnage) {
