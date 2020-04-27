@@ -498,6 +498,7 @@ public class AdvancedAeroStructureTab extends ITab implements AdvancedAeroBuildL
     @Override
     public void siChanged(int si) {
         getJumpship().set0SI(si);
+        panArmor.setFromEntity(getJumpship());
         panArmorAllocation.setFromEntity(getJumpship());
         refresh.refreshStatus();
         refresh.refreshSummary();
