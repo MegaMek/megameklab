@@ -48,7 +48,7 @@ public class RecordSheetEquipmentLine {
         rear = m.isRearMounted();
         turret = m.isMechTurretMounted();
         if (eqInfo.name.length() > 20) {
-            eqInfo.name = eqInfo.name.replace(m.getType().getName(), m.getType().getShortName());
+            eqInfo.name = eqInfo.name.replace(m.getName(), m.getShortName());
         }
     }
     
