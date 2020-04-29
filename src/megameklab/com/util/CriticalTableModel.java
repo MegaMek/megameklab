@@ -17,6 +17,7 @@
 package megameklab.com.util;
 
 import java.awt.Component;
+import java.text.NumberFormat;
 import java.util.Vector;
 
 import javax.swing.JLabel;
@@ -53,7 +54,8 @@ public class CriticalTableModel extends AbstractTableModel {
     public final static int CRITS = 2;
     public final static int HEAT = 3;
     public final static int LOCATION = 4;
-    public final static int EQUIPMENT = 5;
+    public final static int SIZE = 5;
+    public final static int EQUIPMENT = 6;
 
     public final static int EQUIPMENTTABLE = 0;
     public final static int WEAPONTABLE = 1;
@@ -77,9 +79,9 @@ public class CriticalTableModel extends AbstractTableModel {
 
         if (tableType == WEAPONTABLE) {
             longValues = new String[] { "XXXXXXXXX", "XXXXXXXXX", "XXXXXXXXX",
-                    "XXXXXXXXX", "XXX" };
+                    "XXXXXXXXX", "XXX", "XXXX" };
             columnNames = new String[] { "Name", "Tons", "Slots", "Heat", 
-                    "Loc" };
+                    "Loc", "Size" };
         }
         
         if (kgStandard) {
@@ -200,6 +202,12 @@ public class CriticalTableModel extends AbstractTableModel {
                         .getBaMountLoc());
             } else {
                 return unit.getLocationAbbr(crit.getLocation());
+            }
+        case SIZE:
+            if (crit.getType().isVariableTonnage()) {
+                return NumberFormat.getInstance().format(crit.getSize());
+            } else {
+                return null;
             }
         }
         return "";
