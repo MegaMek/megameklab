@@ -160,6 +160,14 @@ public class EquipmentTab extends ITab implements ActionListener {
             column.setCellRenderer(equipmentList.getRenderer());
 
         }
+        equipmentList.addTableModelListener(ev -> {
+            if (refresh != null) {
+                refresh.refreshStatus();
+                refresh.refreshPreview();
+                refresh.refreshBuild();
+                refresh.refreshSummary();
+            }
+        });
         equipmentScroll.setViewportView(equipmentTable);
         equipmentScroll.setMinimumSize(new java.awt.Dimension(300, 200));
         equipmentScroll.setPreferredSize(new java.awt.Dimension(300, 200));

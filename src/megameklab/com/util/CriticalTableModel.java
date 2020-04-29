@@ -1,5 +1,5 @@
 /*
- * MegaMekLab - Copyright (C) 2008
+ * MegaMekLab - Copyright (C) 2008-2020 The MegaMek Team
  *
  * Original author - jtighe (torren@users.sourceforge.net)
  *
@@ -18,6 +18,8 @@ package megameklab.com.util;
 
 import java.awt.Component;
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.JLabel;
@@ -46,7 +48,7 @@ public class CriticalTableModel extends AbstractTableModel {
     private static final long serialVersionUID = 7615555055651822051L;
 
     private Mounted[] sortedEquipment = {};
-    public Vector<Mounted> crits = new Vector<Mounted>();
+    public List<Mounted> crits = new ArrayList<>();
     public Entity unit;
 
     public final static int NAME = 0;
@@ -61,8 +63,8 @@ public class CriticalTableModel extends AbstractTableModel {
     public final static int WEAPONTABLE = 1;
     public final static int BUILDTABLE = 2;
 
-    private int tableType = EQUIPMENTTABLE;
-    private boolean kgStandard = false;
+    private int tableType;
+    private boolean kgStandard;
 
     private String[] columnNames = { "Name", "Tons", "Crits"};
 
@@ -135,7 +137,8 @@ public class CriticalTableModel extends AbstractTableModel {
 
     @Override
     public boolean isCellEditable(int row, int col) {
-        return false;
+        return (col == SIZE) && (row >= 0) && (row < sortedEquipment.length)
+                && sortedEquipment[row].getType().isVariableTonnage();
     }
 
     @Override
@@ -193,7 +196,7 @@ public class CriticalTableModel extends AbstractTableModel {
             return crit;
         case HEAT:
             if (crit.getType() instanceof WeaponType) {
-                return ((WeaponType) crit.getType()).getHeat();
+                return crit.getType().getHeat();
             }
             return 0;
         case LOCATION:
@@ -211,6 +214,15 @@ public class CriticalTableModel extends AbstractTableModel {
             }
         }
         return "";
+    }
+
+    @Override
+    public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+        if ((columnIndex == SIZE) && (rowIndex >= 0) && (rowIndex < getRowCount())) {
+            Mounted crit = sortedEquipment[rowIndex];
+            crit.setSize(Double.parseDouble(aValue.toString()));
+            fireTableDataChanged();
+        }
     }
 
     public CriticalTableModel.Renderer getRenderer() {
@@ -299,7 +311,7 @@ public class CriticalTableModel extends AbstractTableModel {
     }
 
     public void removeCrit(int location) {
-        crits.removeElementAt(location);
+        crits.remove(location);
     }
     
     /**
@@ -310,13 +322,13 @@ public class CriticalTableModel extends AbstractTableModel {
     public void removeCrits(int[] locs) {
         Vector<Mounted> mounts = new Vector<>(locs.length);
         for (Integer l : locs){
-            mounts.add(crits.elementAt(l));
+            mounts.add(crits.get(l));
         }
         crits.removeAll(mounts);
     }
 
     public void removeAllCrits() {
-        crits.removeAllElements();
+        crits.clear();
     }
 
     public void removeMounted(int row) {
@@ -324,7 +336,7 @@ public class CriticalTableModel extends AbstractTableModel {
                 (Mounted) getValueAt(row, CriticalTableModel.EQUIPMENT));
     }
 
-    public Vector<Mounted> getCrits() {
+    public List<Mounted> getCrits() {
         return crits;
     }
 
