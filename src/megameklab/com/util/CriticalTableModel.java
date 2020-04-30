@@ -22,23 +22,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-import javax.swing.JLabel;
-import javax.swing.JTable;
-import javax.swing.SwingConstants;
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 
-import megamek.common.AmmoType;
-import megamek.common.BattleArmor;
-import megamek.common.Entity;
-import megamek.common.Mech;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
-import megamek.common.Tank;
-import megamek.common.WeaponType;
+import megamek.common.*;
+import megamek.common.verifier.BayData;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestProtomech;
+import megameklab.com.ui.tabs.TransportTab;
 
 public class CriticalTableModel extends AbstractTableModel {
 
@@ -303,6 +299,44 @@ public class CriticalTableModel extends AbstractTableModel {
             c.setBackground(CConfig.getBackgroundColor(equipmentType));
             c.setForeground(CConfig.getForegroundColor(equipmentType));
             return c;
+        }
+    }
+
+    /**
+     * Cell editor for the size column
+     */
+    public class SpinnerCellEditor extends AbstractCellEditor implements TableCellEditor, ChangeListener {
+
+        private static final long serialVersionUID = 1949617773287631727L;
+
+        private final JSpinner spinner = new JSpinner();
+        private int rowIndex = 0;
+
+        public SpinnerCellEditor() {
+            spinner.addChangeListener(this);
+        }
+
+        @Override
+        public Object getCellEditorValue() {
+            return spinner.getValue();
+        }
+
+        @Override
+        public void stateChanged(ChangeEvent e) {
+            setValueAt(getCellEditorValue(), rowIndex, SIZE);
+        }
+
+        @Override
+        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row,
+                                                     int column) {
+            this.rowIndex = row;
+            Mounted mounted = (Mounted) getValueAt(row, EQUIPMENT);
+            spinner.removeChangeListener(this);
+            spinner.setModel(new SpinnerNumberModel(Double.valueOf(mounted.getSize()),
+                    mounted.getType().variableStepSize(), mounted.getType().variableMaxSize(),
+                    mounted.getType().variableStepSize()));
+            spinner.addChangeListener(this);
+            return spinner;
         }
     }
 

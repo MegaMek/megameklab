@@ -160,11 +160,14 @@ public class EquipmentTab extends ITab implements ActionListener {
         equipmentTable.setShowGrid(false);
         equipmentTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         equipmentTable.setDoubleBuffered(true);
+        equipmentTable.setRowHeight((int) (equipmentTable.getRowHeight() * 1.2));
         TableColumn column = null;
         for (int i = 0; i < equipmentList.getColumnCount(); i++) {
             column = equipmentTable.getColumnModel().getColumn(i);
-            if(i == 0) {
+            if (i == CriticalTableModel.NAME) {
                 column.setPreferredWidth(200);
+            } else if (i == CriticalTableModel.SIZE) {
+                column.setCellEditor(equipmentList.new SpinnerCellEditor());
             }
             column.setCellRenderer(equipmentList.getRenderer());
 

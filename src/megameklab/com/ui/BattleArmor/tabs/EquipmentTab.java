@@ -154,8 +154,10 @@ public class EquipmentTab extends ITab implements ActionListener {
         TableColumn column = null;
         for (int i = 0; i < equipmentList.getColumnCount(); i++) {
             column = equipmentTable.getColumnModel().getColumn(i);
-            if(i == 0) {
+            if (i == CriticalTableModel.NAME) {
                 column.setPreferredWidth(200);
+            } else if (i == CriticalTableModel.SIZE) {
+                column.setCellEditor(equipmentList.new SpinnerCellEditor());
             }
             column.setCellRenderer(equipmentList.getRenderer());
 
