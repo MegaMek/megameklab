@@ -30,6 +30,7 @@ VERSION HISTORY:
 + Issue #596: Combat vehicle environmental sealing takes no mass
 + Issue #598: Extraneous weapons appearing on fighter record sheet
 + Issue #543: I can't always assign legal values for the armor tonnage on Small craft/DropShips
++ Issue #546: Dropdown menu's text turns invisible
 
 0.47.5 (2020-4-01 2000 UTC)
 + Issue #435: Infantry exports not going to TXT, only HTML
