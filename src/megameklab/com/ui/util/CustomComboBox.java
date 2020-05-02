@@ -83,6 +83,17 @@ public class CustomComboBox<T> extends JComboBox<T> {
         @Override
         public Component getListCellRendererComponent(JList<? extends U> list, U value, int index, boolean isSelected,
                 boolean cellHasFocus) {
+            setOpaque(true);
+            if (isSelected) {
+                setBackground(list.getSelectionBackground());
+                setForeground(list.getSelectionForeground());
+            } else {
+                setBackground(list.getBackground());
+                setForeground(list.getForeground());
+            }
+            setEnabled(list.isEnabled());
+            setFont(list.getFont());
+
             try {
                 setText(toString.apply(value));
             } catch (Exception ex) {
