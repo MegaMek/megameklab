@@ -928,7 +928,7 @@ public class EquipmentTab extends ITab implements ActionListener {
         @Override
         public Component getListCellRendererComponent(JList<? extends EquipmentCategory> list,
                 EquipmentCategory value, int index, boolean isSelected, boolean cellHasFocus) {
-            setOpaque(true);
+            setOpaque(list.isOpaque());
             if (isSelected) {
                 setBackground(list.getSelectionBackground());
                 setForeground(list.getSelectionForeground());
