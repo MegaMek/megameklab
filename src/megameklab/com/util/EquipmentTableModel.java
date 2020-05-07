@@ -18,7 +18,10 @@ package megameklab.com.util;
 
 import java.awt.Component;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
@@ -520,4 +523,43 @@ public class EquipmentTableModel extends AbstractTableModel {
         }
     }
 
+    /**
+     * Comparator for numeric columns. Non-numeric values such as "variable" or "special" are sorted
+     * alphabetically and placed at the end (if in descending order). Strings ending in "kg" are parsed
+     * as numbers and converted to tons.
+     */
+    public static final Comparator<Object> NUMBER_SORTER = (o1, o2) -> {
+        double d1 = -1.0;
+        double d2 = -1.0;
+        try {
+            if (o1 instanceof Number) {
+                // Simplest processing of Integer and Double
+                d1 = ((Number) o1).doubleValue();
+            } else if (o1.toString().endsWith("kg")) {
+                // Convert kg values to tons
+                d1 = Double.parseDouble(o1.toString().replace("kg", "").trim()) / 1000.0;
+            } else {
+                // Handle potentially commafied number
+                d1 = NumberFormat.getInstance().parse(o1.toString()).doubleValue();
+            }
+        } catch (NumberFormatException| ParseException ignore) {
+            // Not a representation of a number; sort alphabetically
+        }
+        try {
+            if (o2 instanceof Number) {
+                d2 = ((Number) o2).doubleValue();
+            } else if (o2.toString().endsWith("kg")) {
+                d2 = Double.parseDouble(o2.toString().replace("kg", "").trim()) / 1000.0;
+            } else {
+                d2 = NumberFormat.getInstance().parse(o2.toString()).doubleValue();
+            }
+        } catch (NumberFormatException|ParseException ignore) {
+            // Not a representation of a number; sort alphabetically
+        }
+        if ((d1 < 0) && (d2 < 0)) {
+            return o1.toString().compareToIgnoreCase(o2.toString());
+        } else {
+            return Double.compare(d1, d2);
+        }
+    };
 }

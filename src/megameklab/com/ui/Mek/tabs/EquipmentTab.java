@@ -169,13 +169,15 @@ public class EquipmentTab extends ITab implements ActionListener {
         masterEquipmentList = new EquipmentTableModel(eSource.getEntity(), eSource.getTechManager());
         masterEquipmentTable.setModel(masterEquipmentList);
         masterEquipmentTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-        equipmentSorter = new TableRowSorter<EquipmentTableModel>(masterEquipmentList);
-        equipmentSorter.setComparator(EquipmentTableModel.COL_HEAT, new WeaponIntegerSorter());
-        equipmentSorter.setComparator(EquipmentTableModel.COL_MRANGE, new WeaponIntegerSorter());
+        equipmentSorter = new TableRowSorter<>(masterEquipmentList);
+        equipmentSorter.setComparator(EquipmentTableModel.COL_HEAT, EquipmentTableModel.NUMBER_SORTER);
+        equipmentSorter.setComparator(EquipmentTableModel.COL_MRANGE, EquipmentTableModel.NUMBER_SORTER);
         equipmentSorter.setComparator(EquipmentTableModel.COL_DAMAGE, new WeaponDamageSorter());
         equipmentSorter.setComparator(EquipmentTableModel.COL_RANGE, new WeaponRangeSorter());
-        equipmentSorter.setComparator(EquipmentTableModel.COL_COST, new FormattedNumberSorter());
-        equipmentSorter.setComparator(EquipmentTableModel.COL_TON, new FormattedNumberSorter());
+        equipmentSorter.setComparator(EquipmentTableModel.COL_COST, EquipmentTableModel.NUMBER_SORTER);
+        equipmentSorter.setComparator(EquipmentTableModel.COL_BV, EquipmentTableModel.NUMBER_SORTER);
+        equipmentSorter.setComparator(EquipmentTableModel.COL_CRIT, EquipmentTableModel.NUMBER_SORTER);
+        equipmentSorter.setComparator(EquipmentTableModel.COL_TON, EquipmentTableModel.NUMBER_SORTER);
         masterEquipmentTable.setRowSorter(equipmentSorter);
         ArrayList<RowSorter.SortKey> sortKeys = new ArrayList<RowSorter.SortKey>();
         sortKeys.add(new RowSorter.SortKey(EquipmentTableModel.COL_NAME, SortOrder.ASCENDING));
@@ -793,35 +795,6 @@ public class EquipmentTab extends ITab implements ActionListener {
         }
     }
 
-    /**
-     * A comparator for numbers that have been formatted with DecimalFormat
-     * @author Jay Lawson
-     *
-     */
-    public class FormattedNumberSorter implements Comparator<String> {
-
-        @Override
-        public int compare(String s0, String s1) {
-            //lets find the weight class integer for each name
-            DecimalFormat format = new DecimalFormat();
-            double l0 = 0.0;
-            try {
-                l0 = format.parse(s0).doubleValue();
-            } catch (java.text.ParseException e) {
-                MegaMekLab.getLogger().error(getClass(), "compare(String, String)",
-                        "Parse error comparing " + s0 + " and " + s1, e);
-            }
-            double l1 = 0.0;
-            try {
-                l1 = format.parse(s1).doubleValue();
-            } catch (java.text.ParseException e) {
-                MegaMekLab.getLogger().error(getClass(), "compare(String, String)",
-                        "Parse error comparing " + s0 + " and " + s1, e);
-            }
-            return Double.compare(l0, l1);
-        }
-    }
-    
     private ListSelectionListener selectionListener = new ListSelectionListener() {
 
         @Override
