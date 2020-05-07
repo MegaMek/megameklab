@@ -1,6 +1,9 @@
 VERSION HISTORY:
 ----------------
-0.47.6-SNAPSHOT
+0.47.7-SNAPSHOT
++ Issue #614: Change the list of equipment while sort by Crit section cause error
+
+0.47.6 (2020-5-03 1715 UTC)
 + Issue #553: Loading or printing LAM causes ArrayIndexOutOfBoundsException
 + PR #557: BattleArmor record sheet overhaul
 + Issue #536: Support Fixed Wing Aircraft with Propeller mod will not validate
@@ -30,6 +33,7 @@ VERSION HISTORY:
 + Issue #596: Combat vehicle environmental sealing takes no mass
 + Issue #598: Extraneous weapons appearing on fighter record sheet
 + Issue #543: I can't always assign legal values for the armor tonnage on Small craft/DropShips
++ Issue #546: Dropdown menu's text turns invisible
 
 0.47.5 (2020-4-01 2000 UTC)
 + Issue #435: Infantry exports not going to TXT, only HTML
