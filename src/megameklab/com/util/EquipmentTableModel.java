@@ -186,7 +186,6 @@ public class EquipmentTableModel extends AbstractTableModel {
             case COL_DAMAGE:
             case COL_RANGE:
                 return RANGE_DAMAGE_SORTER;
-            case COL_DIVISOR:
             case COL_HEAT:
             case COL_MRANGE:
             case COL_TON:
