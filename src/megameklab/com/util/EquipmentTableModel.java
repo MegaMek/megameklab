@@ -562,4 +562,21 @@ public class EquipmentTableModel extends AbstractTableModel {
             return Double.compare(d1, d2);
         }
     };
+
+    /**
+     * Sorter for a series of one or more values separated by slashes. This handles weapon ranges
+     * and also deals with multiple damage values.
+     */
+    public static final Comparator<String> RANGE_DAMAGE_SORTER = (s1, s2) -> {
+        String[] r1 = s1.split("/");
+        String[] r2 = s2.split("/");
+        int retVal = 0;
+        for (int i = 0; i < Math.min(r1.length, r2.length); i++) {
+            retVal = NUMBER_SORTER.compare(r1[i], r2[i]);
+            if (retVal != 0) {
+                break;
+            }
+        }
+        return retVal;
+    };
 }
