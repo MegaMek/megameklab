@@ -27,9 +27,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -67,7 +65,6 @@ import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.WeaponType;
 import megamek.common.weapons.artillery.ArtilleryWeapon;
-import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.util.CriticalTableModel;
 import megameklab.com.util.EquipmentTableModel;
