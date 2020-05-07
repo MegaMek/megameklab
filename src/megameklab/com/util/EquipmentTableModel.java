@@ -579,7 +579,7 @@ public class EquipmentTableModel extends AbstractTableModel {
             } else {
                 d2 = NumberFormat.getInstance().parse(o2.toString()).doubleValue();
             }
-        } catch (NumberFormatException|ParseException ignore) {
+        } catch (NumberFormatException | ParseException ignored) {
             // Not a representation of a number; sort alphabetically
         }
         if ((d1 < 0) && (d2 < 0)) {
