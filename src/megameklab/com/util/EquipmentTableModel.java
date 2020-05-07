@@ -568,7 +568,7 @@ public class EquipmentTableModel extends AbstractTableModel {
                 // Handle potentially commafied number
                 d1 = NumberFormat.getInstance().parse(o1.toString()).doubleValue();
             }
-        } catch (NumberFormatException| ParseException ignore) {
+        } catch (NumberFormatException | ParseException ignored) {
             // Not a representation of a number; sort alphabetically
         }
         try {
