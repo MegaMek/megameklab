@@ -181,6 +181,33 @@ public class EquipmentTableModel extends AbstractTableModel {
         return SwingConstants.CENTER;
     }
 
+    public Comparator<?> getSorter(int col) {
+        switch(col) {
+            case COL_DAMAGE:
+            case COL_RANGE:
+                return RANGE_DAMAGE_SORTER;
+            case COL_DIVISOR:
+            case COL_HEAT:
+            case COL_MRANGE:
+            case COL_TON:
+            case COL_CRIT:
+            case COL_COST:
+            case COL_SHOTS:
+            case COL_BV:
+                return NUMBER_SORTER;
+            case COL_DPROTOTYPE:
+            case COL_DPRODUCTION:
+            case COL_DCOMMON:
+            case COL_DEXTINCT:
+            case COL_DREINTRO:
+                return Comparator.comparingInt(EquipmentTableModel::parseDate);
+            case COL_REF:
+                return REFERENCE_SORTER;
+            default:
+                return Comparator.naturalOrder();
+        }
+    }
+
     @Override
     public Class<?> getColumnClass(int c) {
         return getValueAt(0, c).getClass();
@@ -528,7 +555,7 @@ public class EquipmentTableModel extends AbstractTableModel {
      * alphabetically and placed at the end (if in descending order). Strings ending in "kg" are parsed
      * as numbers and converted to tons.
      */
-    public static final Comparator<Object> NUMBER_SORTER = (o1, o2) -> {
+    private static final Comparator<Object> NUMBER_SORTER = (o1, o2) -> {
         double d1 = -1.0;
         double d2 = -1.0;
         try {
@@ -567,7 +594,7 @@ public class EquipmentTableModel extends AbstractTableModel {
      * Sorter for a series of one or more values separated by slashes. This handles weapon ranges
      * and also deals with multiple damage values.
      */
-    public static final Comparator<String> RANGE_DAMAGE_SORTER = (s1, s2) -> {
+    private static final Comparator<String> RANGE_DAMAGE_SORTER = (s1, s2) -> {
         String[] r1 = s1.split("/");
         String[] r2 = s2.split("/");
         int retVal = 0;
@@ -579,4 +606,39 @@ public class EquipmentTableModel extends AbstractTableModel {
         }
         return retVal;
     };
+
+    /**
+     * Sorter for reference column. References give the page number then the work separated by a comma.
+     * Sorts by the work first, then the page number.
+     */
+    private static final Comparator<String> REFERENCE_SORTER = (s1, s2) -> {
+        String[] r1 = s1.split(",\\s*");
+        String[] r2 = s2.split(",\\s*");
+        if ((r1.length > 1) && (r2.length > 1) && !r1[1].equals(r2[1])) {
+            return r1[1].compareTo(r2[1]);
+        }
+        return NUMBER_SORTER.compare(r1[0], r2[0]);
+    };
+
+    /**
+     * Converts an entry in the tech advancement table to an integer year for sorting.
+     *
+     * @param date The date entry
+     * @return     The year represented
+     */
+    private static int parseDate(String date) {
+        if (date.startsWith("PS")) {
+            return 1950;
+        } else if (date.startsWith("ES")) {
+            return 2100;
+        } else if (date.equals("-")) {
+            return 0;
+        } else {
+            try {
+                return Integer.parseInt(date.replaceAll("[^0-9]", "").trim());
+            } catch (NumberFormatException ex) {
+                return 0;
+            }
+        }
+    }
 }

@@ -168,16 +168,11 @@ public class EquipmentTab extends ITab implements ActionListener {
         masterEquipmentTable.setModel(masterEquipmentList);
         masterEquipmentTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         equipmentSorter = new TableRowSorter<>(masterEquipmentList);
-        equipmentSorter.setComparator(EquipmentTableModel.COL_HEAT, EquipmentTableModel.NUMBER_SORTER);
-        equipmentSorter.setComparator(EquipmentTableModel.COL_MRANGE, EquipmentTableModel.NUMBER_SORTER);
-        equipmentSorter.setComparator(EquipmentTableModel.COL_DAMAGE, EquipmentTableModel.RANGE_DAMAGE_SORTER);
-        equipmentSorter.setComparator(EquipmentTableModel.COL_RANGE, EquipmentTableModel.RANGE_DAMAGE_SORTER);
-        equipmentSorter.setComparator(EquipmentTableModel.COL_COST, EquipmentTableModel.NUMBER_SORTER);
-        equipmentSorter.setComparator(EquipmentTableModel.COL_BV, EquipmentTableModel.NUMBER_SORTER);
-        equipmentSorter.setComparator(EquipmentTableModel.COL_CRIT, EquipmentTableModel.NUMBER_SORTER);
-        equipmentSorter.setComparator(EquipmentTableModel.COL_TON, EquipmentTableModel.NUMBER_SORTER);
+        for (int col = 0; col < EquipmentTableModel.N_COL; col++) {
+            equipmentSorter.setComparator(col, masterEquipmentList.getSorter(col));
+        }
         masterEquipmentTable.setRowSorter(equipmentSorter);
-        ArrayList<RowSorter.SortKey> sortKeys = new ArrayList<RowSorter.SortKey>();
+        ArrayList<RowSorter.SortKey> sortKeys = new ArrayList<>();
         sortKeys.add(new RowSorter.SortKey(EquipmentTableModel.COL_NAME, SortOrder.ASCENDING));
         equipmentSorter.setSortKeys(sortKeys);
         XTableColumnModel equipColumnModel = new XTableColumnModel();
