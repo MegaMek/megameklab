@@ -297,16 +297,16 @@
 </g
                                   ><text font-size="11.59px" transform="translate (216.0 96.18497778535291)" fill="#000000" text-anchor="middle" font-family="Eurostile" id="title" font-weight="bold"
                                   >RECORD SHEET</text
-                                  ><text font-size="5.7px" transform="translate (306.0 756.0)" fill="#231f20" text-anchor="middle" font-family="Eurostile" id="footer" font-weight="bold"
-                                  ><tspan lengthAdjust="spacingAndGlyphs" x="0" id="tspanCopyright" y="-7.000" textLength="513.000"
+                                  ><text font-size="5.7px" transform="translate (270.0 756.0)" fill="#231f20" text-anchor="middle" font-family="Eurostile" id="footer" font-weight="bold"
+                                  ><tspan lengthAdjust="spacingAndGlyphs" x="36.0" id="tspanCopyright" y="-7.000" textLength="513.000"
                                     >© %d The Topps Company, Inc. Classic BattleTech, BattleTech, 'Mech and BattleMech are trademarks of The Topps Company, Inc. All rights reserved.</tspan
-                                    ><tspan lengthAdjust="spacingAndGlyphs" x="0" y="0" textLength="486.000"
+                                    ><tspan lengthAdjust="spacingAndGlyphs" x="36.0" y="0" textLength="486.000"
                                     >Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of InMediaRes Production, LLC. Permission to photocopy for personal use.</tspan
                                   ></text
                                   ><g id="unitDataPanel" transform="translate (36.000,102.685)"
                                   ><g
-                                    ><path fill="#ffffff" d="M 2.5,10.714 L 7.975,2.500 l 79.324,0.000 l 5.475,8.214 L 209.500,10.714 L 209.500,279.815 l -5.475,8.214 L 106.000,288.029 l -5.475,-8.214 L 10.345,279.815 l -7.845,-7.600 Z" stroke-width="5.2" stroke-linejoin="round" stroke="#c8c7c7"
-                                      /><path fill="#ffffff" d="M 0.0,8.214 L 5.475,0.000 l 79.324,0.000 l 5.475,8.214 L 208.000,8.214 L 208.000,278.315 l -5.475,8.214 L 104.000,286.529 l -5.475,-8.214 L 7.845,278.315 l -7.845,-7.600 Z" stroke-width="1.932" stroke-linejoin="round" stroke="#231f20"
+                                    ><path fill="#ffffff" d="M 2.5,2.5 l 79.324,0.000 l 5.475,8.214 L 201.655,10.714 l 7.845,7.600 L 209.500,279.815 l -5.475,8.214 L 106.000,288.029 l -5.475,-8.214 L 10.345,279.815 l -7.845,-7.600 Z" stroke-width="5.2" stroke-linejoin="round" stroke="#c8c7c7"
+                                      /><path fill="#ffffff" d="M 0.0,0.0 l 79.324,0.000 l 5.475,8.214 L 200.155,8.214 l 7.845,7.600 L 208.000,278.315 l -5.475,8.214 L 104.000,286.529 l -5.475,-8.214 L 7.845,278.315 l -7.845,-7.600 Z" stroke-width="1.932" stroke-linejoin="round" stroke="#231f20"
                                       /><g transform="translate (2.5,3.0)"
                                       ><path fill="#000000" d="M 0,7.500 l 4.999,-7.500 l 75.324,0 l 4.999,7.500 l -4.999,7.500 l -75.324,0 Z"
                                         /><text x="42.661" y="11.250" fill="#ffffff" text-anchor="middle" style="font-family:Eurostile;font-size:10.600px;font-weight:bold;font-style:normal" textLength="68.477" lengthAdjust="spacingAndGlyphs"
@@ -394,14 +394,14 @@
                                     >0</text
                                     ><path id="blankPilotingSkill0" d="M 111.520,43.000 L 133.000,43.000" stroke-width="0.720" stroke-linejoin="round" stroke="#231f20"
                                     /><g transform="translate (3.000 58.000)"
-                                    ><text x="0.000" y="7.200" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:#231f20" textLength="44.689" lengthAdjust="spacingAndGlyphs"
+                                    ><text x="0.000" y="6.400" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:#231f20" textLength="44.689" lengthAdjust="spacingAndGlyphs"
                                       >Commander Hit</text
                                       ><path fill="none" d="M 50.200,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 5.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,5.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -5.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
                                       /><text x="54.200" y="6.000" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="4.800" lengthAdjust="spacingAndGlyphs"
                                       >+1</text
                                     ></g
                                     ><g transform="translate (71.000 58.000)"
-                                    ><text x="0.000" y="7.200" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:#231f20" textLength="26.819" lengthAdjust="spacingAndGlyphs"
+                                    ><text x="0.000" y="6.400" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:#231f20" textLength="26.819" lengthAdjust="spacingAndGlyphs"
                                       >Driver Hit</text
                                       ><path fill="none" d="M 50.200,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 5.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,5.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -5.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
                                       /><text x="54.200" y="6.000" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="4.800" lengthAdjust="spacingAndGlyphs"
@@ -423,17 +423,17 @@
                                       ></g
                                     ></g
                                     ><g transform="translate (6.000 22.960)"
-                                    ><text x="0.000" y="7.200" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:#231f20" textLength="39.254" lengthAdjust="spacingAndGlyphs"
+                                    ><text x="0.000" y="6.400" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:#231f20" textLength="39.254" lengthAdjust="spacingAndGlyphs"
                                       >Turret Locked</text
                                       ><path fill="none" d="M 63.800,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 5.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,5.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -5.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
                                     /></g
                                     ><g transform="translate (84.600 22.960)"
-                                    ><text x="0.000" y="7.200" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:#231f20" textLength="28.081" lengthAdjust="spacingAndGlyphs"
+                                    ><text x="0.000" y="6.400" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:#231f20" textLength="28.081" lengthAdjust="spacingAndGlyphs"
                                       >Engine Hit</text
                                       ><path fill="none" d="M 36.600,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 5.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,5.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -5.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
                                     /></g
                                     ><g transform="translate (6.000 32.880)"
-                                    ><text x="0.000" y="7.200" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:#231f20" textLength="32.801" lengthAdjust="spacingAndGlyphs"
+                                    ><text x="0.000" y="6.400" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:#231f20" textLength="32.801" lengthAdjust="spacingAndGlyphs"
                                       >Sensor Hits</text
                                       ><path fill="none" d="M 82.200,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 5.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,5.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -5.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
                                       /><text x="86.200" y="6.000" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="4.800" lengthAdjust="spacingAndGlyphs"
@@ -449,7 +449,7 @@
                                       >D</text
                                     ></g
                                     ><g transform="translate (6.000 42.799)"
-                                    ><text x="0.000" y="7.200" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:#231f20" textLength="54.079" lengthAdjust="spacingAndGlyphs"
+                                    ><text x="0.000" y="6.400" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:#231f20" textLength="54.079" lengthAdjust="spacingAndGlyphs"
                                       >Motive System Hits</text
                                       ><path fill="none" d="M 82.200,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 5.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,5.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -5.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
                                       /><text x="86.200" y="6.000" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="4.800" lengthAdjust="spacingAndGlyphs"
@@ -464,27 +464,27 @@
                                     ><text fill="#231f20" x="71.000" y="57.679" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal" text-anchor="middle"
                                     >Stabilizers</text
                                     ><g transform="translate (6.000 62.639)"
-                                    ><text x="0.000" y="7.200" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:#231f20" textLength="15.082" lengthAdjust="spacingAndGlyphs"
+                                    ><text x="0.000" y="6.400" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:#231f20" textLength="15.082" lengthAdjust="spacingAndGlyphs"
                                       >Front</text
                                       ><path fill="none" d="M 28.440,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 5.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,5.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -5.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
                                     /></g
                                     ><g transform="translate (47.880 62.639)"
-                                    ><text x="0.000" y="7.200" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:#231f20" textLength="10.652" lengthAdjust="spacingAndGlyphs"
+                                    ><text x="0.000" y="6.400" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:#231f20" textLength="10.652" lengthAdjust="spacingAndGlyphs"
                                       >Left</text
                                       ><path fill="none" d="M 28.440,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 5.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,5.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -5.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
                                     /></g
                                     ><g transform="translate (91.884 62.639)"
-                                    ><text x="0.000" y="7.200" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:#231f20" textLength="14.588" lengthAdjust="spacingAndGlyphs"
+                                    ><text x="0.000" y="6.400" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:#231f20" textLength="14.588" lengthAdjust="spacingAndGlyphs"
                                       >Right</text
                                       ><path fill="none" d="M 28.440,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 5.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,5.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -5.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
                                     /></g
                                     ><g transform="translate (6.000 72.559)"
-                                    ><text x="0.000" y="7.200" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:#231f20" textLength="13.727" lengthAdjust="spacingAndGlyphs"
+                                    ><text x="0.000" y="6.400" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:#231f20" textLength="13.727" lengthAdjust="spacingAndGlyphs"
                                       >Rear</text
                                       ><path fill="none" d="M 28.440,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 5.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,5.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -5.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
                                     /></g
                                     ><g transform="translate (47.880 72.559)"
-                                    ><text x="0.000" y="7.200" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:#231f20" textLength="17.867" lengthAdjust="spacingAndGlyphs"
+                                    ><text x="0.000" y="6.400" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:#231f20" textLength="17.867" lengthAdjust="spacingAndGlyphs"
                                       >Turret</text
                                       ><path fill="none" d="M 28.440,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 5.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,5.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -5.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
                                     /></g
@@ -1115,9 +1115,7 @@
                                                                   >ATTACK DIRECTION</text
                                                                   ><g transform="translate (0.000 32.000)"
                                                                   ><text text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal"
-                                                                    ><tspan x="20.800" y="0.000"
-                                                                      >2D6 ROLL</tspan
-                                                                      ><tspan x="62.400" y="0.000"
+                                                                    ><tspan x="62.400" y="0.000"
                                                                       >FRONT</tspan
                                                                       ><tspan x="114.400" y="0.000"
                                                                       >REAR</tspan
@@ -1219,21 +1217,21 @@
                                                                   ></g
                                                                   ><g transform="translate(0,115.800)"
                                                                   ><text x="6.000" y="5.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:4.800px;font-weight:normal;font-style:normal" textLength="199.000" lengthAdjust="spacingAndGlyphs"
-                                                                    >* A result of 2 or 12 (or an 8 if the attack strikes the side) may infict a critical hit on</text
+                                                                    >* A result of 2 or 12 (or an 8 if the attack strikes the side) may inflict a critical hit on</text
                                                                     ><text x="6.000" y="10.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:4.800px;font-weight:normal;font-style:normal" textLength="199.000" lengthAdjust="spacingAndGlyphs"
                                                                     >the vehicle. For each result of 2 or 12 (or 8 for side attacks), apply damage normally to</text
                                                                     ><text x="6.000" y="15.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:4.800px;font-weight:normal;font-style:normal" textLength="199.000" lengthAdjust="spacingAndGlyphs"
                                                                     >the armor in that section. The attacking player then automatically rolls once on the</text
-                                                                    ><text x="6.000" y="20.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:4.800px;font-weight:normal;font-style:normal" textLength="137.431" lengthAdjust="spacingAndGlyphs"
+                                                                    ><text x="6.000" y="20.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:4.800px;font-weight:normal;font-style:normal" textLength="138.399" lengthAdjust="spacingAndGlyphs"
                                                                     >Naval Combat Vehicle Critical Hits Table below (see Combat, p. 192, in </text
-                                                                    ><text x="143.431" y="20.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:4.800px;font-weight:normal;font-style:italic" textLength="28.690" lengthAdjust="spacingAndGlyphs"
-                                                                    >Total Warfare </text
-                                                                    ><text x="172.121" y="20.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:4.800px;font-weight:normal;font-style:normal" textLength="1.171" lengthAdjust="spacingAndGlyphs"
+                                                                    ><text x="144.399" y="20.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:4.800px;font-weight:normal;font-style:italic" textLength="30.071" lengthAdjust="spacingAndGlyphs"
+                                                                    >Total Warfare</text
+                                                                    ><text x="174.470" y="20.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:4.800px;font-weight:normal;font-style:normal" textLength="1.179" lengthAdjust="spacingAndGlyphs"
                                                                     > </text
                                                                     ><text fill="#231f20" x="6.000" y="25.000" style="font-family:Eurostile;font-size:4.800px;font-weight:normal;font-style:normal" text-anchor="start"
                                                                     >for more information).</text
                                                                     ><text x="6.000" y="30.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:4.800px;font-weight:normal;font-style:normal" textLength="199.000" lengthAdjust="spacingAndGlyphs"
-                                                                    >A result of 12 on the Naval Combat Vehicles Hit Location Table may infict critical hit</text
+                                                                    >A result of 12 on the Naval Combat Vehicles Hit Location Table may inflict critical hit</text
                                                                     ><text x="6.000" y="35.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:4.800px;font-weight:normal;font-style:normal" textLength="199.000" lengthAdjust="spacingAndGlyphs"
                                                                     >against the turret; if the vehicle has no turret, a 12 indicates the chance of a critical hit</text
                                                                     ><text fill="#231f20" x="6.000" y="40.000" style="font-family:Eurostile;font-size:4.800px;font-weight:normal;font-style:normal" text-anchor="start"
@@ -1242,11 +1240,11 @@
                                                                     >† The vehicle may suffer motive system damage even if its armor remains intact. Apply</text
                                                                     ><text x="6.000" y="50.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:4.800px;font-weight:normal;font-style:normal" textLength="199.000" lengthAdjust="spacingAndGlyphs"
                                                                     >damage normally to the armor in that section, but the attacking player also rolls once</text
-                                                                    ><text x="6.000" y="55.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:4.800px;font-weight:normal;font-style:normal" textLength="136.842" lengthAdjust="spacingAndGlyphs"
+                                                                    ><text x="6.000" y="55.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:4.800px;font-weight:normal;font-style:normal" textLength="137.825" lengthAdjust="spacingAndGlyphs"
                                                                     >on the Motive System Damage Table at right (see Combat, p. 192, in </text
-                                                                    ><text x="142.842" y="55.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:4.800px;font-weight:normal;font-style:italic" textLength="29.256" lengthAdjust="spacingAndGlyphs"
-                                                                    >Total Warfare </text
-                                                                    ><text x="172.097" y="55.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:4.800px;font-weight:normal;font-style:normal" textLength="1.194" lengthAdjust="spacingAndGlyphs"
+                                                                    ><text x="143.825" y="55.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:4.800px;font-weight:normal;font-style:italic" textLength="30.668" lengthAdjust="spacingAndGlyphs"
+                                                                    >Total Warfare</text
+                                                                    ><text x="174.494" y="55.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:4.800px;font-weight:normal;font-style:normal" textLength="1.202" lengthAdjust="spacingAndGlyphs"
                                                                     > </text
                                                                     ><text fill="#231f20" x="6.000" y="60.000" style="font-family:Eurostile;font-size:4.800px;font-weight:normal;font-style:normal" text-anchor="start"
                                                                     >for more information).</text
@@ -1291,13 +1289,13 @@
                                                                     ><tspan x="37.530" y="7.000"
                                                                       >No Effect</tspan
                                                                       ><tspan x="37.530" y="14.000"
-                                                                      >Minor damage; +1 modifer to all</tspan
+                                                                      >Minor damage; +1 modifier to all</tspan
                                                                       ><tspan x="37.530" y="21.000"
                                                                       >Driving Skill Rolls</tspan
                                                                       ><tspan x="37.530" y="28.000"
                                                                       >Moderate damage; -1 Cruising</tspan
                                                                       ><tspan x="37.530" y="35.000"
-                                                                      >MP, +2 modifer to all Driving Skill</tspan
+                                                                      >MP, +2 modifier to all Driving Skill</tspan
                                                                       ><tspan x="37.530" y="42.000"
                                                                       >Rolls</tspan
                                                                       ><tspan x="37.530" y="49.000"
@@ -1305,7 +1303,7 @@
                                                                       ><tspan x="37.530" y="56.000"
                                                                       >MP (round fractions up), +3</tspan
                                                                       ><tspan x="37.530" y="63.000"
-                                                                      >modifer to all Driving Skill Rolls</tspan
+                                                                      >modifier to all Driving Skill Rolls</tspan
                                                                       ><tspan x="37.530" y="70.000"
                                                                       >Major damage; no movement for</tspan
                                                                       ><tspan x="37.530" y="77.000"
@@ -1349,15 +1347,15 @@
                                                                   ><text x="6.000" y="162.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:3.800px;font-weight:normal;font-style:normal" textLength="130.000" lengthAdjust="spacingAndGlyphs"
                                                                   >*All movement and Driving Skill Roll penalties are cumulative. However,</text
                                                                   ><text x="6.000" y="166.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:3.800px;font-weight:normal;font-style:normal" textLength="130.000" lengthAdjust="spacingAndGlyphs"
-                                                                  >each Driving Skill Roll modifer can only be applied once. For example,</text
+                                                                  >each Driving Skill Roll modifier can only be applied once. For example,</text
                                                                   ><text x="6.000" y="170.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:3.800px;font-weight:normal;font-style:normal" textLength="130.000" lengthAdjust="spacingAndGlyphs"
-                                                                  >if a roll of 6-7 is made for a vehicle, inficting a +1 modifer, that is the</text
+                                                                  >if a roll of 6-7 is made for a vehicle, inflicting a +1 modifier, that is the</text
                                                                   ><text x="6.000" y="174.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:3.800px;font-weight:normal;font-style:normal" textLength="130.000" lengthAdjust="spacingAndGlyphs"
                                                                   >only time that particular +1 can be applied; a subsequent roll of 6-7</text
                                                                   ><text x="6.000" y="178.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:3.800px;font-weight:normal;font-style:normal" textLength="130.000" lengthAdjust="spacingAndGlyphs"
                                                                   >has no additional effect. This means the maximum Driving Skill Roll</text
                                                                   ><text x="6.000" y="182.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:3.800px;font-weight:normal;font-style:normal" textLength="130.000" lengthAdjust="spacingAndGlyphs"
-                                                                  >modifer that can be inficted from the Motive System Damage Table is</text
+                                                                  >modifier that can be inflicted from the Motive System Damage Table is</text
                                                                   ><text x="6.000" y="186.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:3.800px;font-weight:normal;font-style:normal" textLength="130.000" lengthAdjust="spacingAndGlyphs"
                                                                   >+6. If a unit’s Cruising MP is reduced to 0, it cannot move for the rest</text
                                                                   ><text x="6.000" y="190.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:3.800px;font-weight:normal;font-style:normal" textLength="130.000" lengthAdjust="spacingAndGlyphs"
@@ -1381,9 +1379,7 @@
                                                                   >LOCATION HIT</text
                                                                   ><g transform="translate (0.000 34.000)"
                                                                   ><text text-anchor="middle" style="font-family:Eurostile;font-size:7.200px;font-weight:bold;font-style:normal"
-                                                                    ><tspan x="53.250" y="0.000"
-                                                                      >2D6 ROLL</tspan
-                                                                      ><tspan x="95.850" y="0.000"
+                                                                    ><tspan x="95.850" y="0.000"
                                                                       >FRONT</tspan
                                                                       ><tspan x="159.750" y="0.000"
                                                                       >SIDE</tspan

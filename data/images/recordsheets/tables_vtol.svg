@@ -2,12 +2,10 @@
 <!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.0//EN'
           'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
 <svg contentScriptType="text/ecmascript" width="612" xmlns:xlink="http://www.w3.org/1999/xlink" zoomAndPan="magnify" contentStyleType="text/css" height="357.0" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" version="1.0"
-><text font-size="11.59px" transform="translate (216.0 13.0)" fill="#000000" text-anchor="middle" font-family="Eurostile" id="title" font-weight="bold"
-  >RECORD SHEET</text
-  ><text font-size="5.7px" transform="translate (306.0 357.0)" fill="#231f20" text-anchor="middle" font-family="Eurostile" id="footer" font-weight="bold"
-  ><tspan lengthAdjust="spacingAndGlyphs" x="0" id="tspanCopyright" y="-7.000" textLength="513.000"
+><text font-size="5.7px" transform="translate (270.0 357.0)" fill="#231f20" text-anchor="middle" font-family="Eurostile" id="footer" font-weight="bold"
+  ><tspan lengthAdjust="spacingAndGlyphs" x="36.0" id="tspanCopyright" y="-7.000" textLength="513.000"
     >© %d The Topps Company, Inc. Classic BattleTech, BattleTech, 'Mech and BattleMech are trademarks of The Topps Company, Inc. All rights reserved.</tspan
-    ><tspan lengthAdjust="spacingAndGlyphs" x="0" y="0" textLength="486.000"
+    ><tspan lengthAdjust="spacingAndGlyphs" x="36.0" y="0" textLength="486.000"
     >Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of InMediaRes Production, LLC. Permission to photocopy for personal use.</tspan
   ></text
   ><g transform="translate (36.000 3.000)"
@@ -24,9 +22,7 @@
     >ATTACK DIRECTION</text
     ><g transform="translate (0.000 32.000)"
     ><text text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal"
-      ><tspan x="29.980" y="0.000"
-        >2D6 ROLL</tspan
-        ><tspan x="89.940" y="0.000"
+      ><tspan x="89.940" y="0.000"
         >FRONT</tspan
         ><tspan x="164.890" y="0.000"
         >REAR</tspan
@@ -133,11 +129,11 @@
       >damage normally to the armor in that section. The attacking player then immediately rolls once on the VTOL Combat Vehicle</text
       ><text fill="#231f20" x="6.000" y="21.000" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" text-anchor="start"
       >Critical Hits Table, below.</text
-      ><text x="6.000" y="28.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="140.513" lengthAdjust="spacingAndGlyphs"
+      ><text x="6.000" y="28.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="141.226" lengthAdjust="spacingAndGlyphs"
       >† Damage Value / 10 (round up); see Rotor Hits, p. 197, </text
-      ><text x="146.513" y="28.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:italic" textLength="37.171" lengthAdjust="spacingAndGlyphs"
-      >Total Warfare. </text
-      ><text x="183.683" y="28.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="113.117" lengthAdjust="spacingAndGlyphs"
+      ><text x="147.226" y="28.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:italic" textLength="38.837" lengthAdjust="spacingAndGlyphs"
+      >Total Warfare.</text
+      ><text x="186.063" y="28.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="113.691" lengthAdjust="spacingAndGlyphs"
       > Additionally, damage to rotors slows down the</text
       ><text x="6.000" y="35.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="290.800" lengthAdjust="spacingAndGlyphs"
       >VTOL. Each hit reduces the VTOL’s Cruising MP by 1, meaning that the controlling player must also recalculate Flank MP;</text
@@ -293,9 +289,7 @@
     >LOCATION HIT</text
     ><g transform="translate (0.000 34.000)"
     ><text text-anchor="middle" style="font-family:Eurostile;font-size:7.200px;font-weight:bold;font-style:normal"
-      ><tspan x="53.200" y="0.000"
-        >2D6 ROLL</tspan
-        ><tspan x="111.720" y="0.000"
+      ><tspan x="111.720" y="0.000"
         >FRONT</tspan
         ><tspan x="186.200" y="0.000"
         >SIDE</tspan
