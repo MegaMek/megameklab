@@ -25,10 +25,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.text.DecimalFormat;
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.function.BiFunction;
@@ -208,12 +205,9 @@ public class EquipmentTab extends ITab implements ActionListener {
         masterEquipmentTable.setModel(masterEquipmentList);
         masterEquipmentTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         equipmentSorter = new TableRowSorter<>(masterEquipmentList);
-        equipmentSorter.setComparator(EquipmentTableModel.COL_HEAT, new WeaponIntegerSorter());
-        equipmentSorter.setComparator(EquipmentTableModel.COL_MRANGE, new WeaponIntegerSorter());
-        equipmentSorter.setComparator(EquipmentTableModel.COL_DAMAGE, new WeaponDamageSorter());
-        equipmentSorter.setComparator(EquipmentTableModel.COL_RANGE, new WeaponRangeSorter());
-        equipmentSorter.setComparator(EquipmentTableModel.COL_COST, new FormattedNumberSorter());
-        equipmentSorter.setComparator(EquipmentTableModel.COL_TON, new FormattedNumberSorter());
+        for (int col = 0; col < EquipmentTableModel.N_COL; col++) {
+            equipmentSorter.setComparator(col, masterEquipmentList.getSorter(col));
+        }
         masterEquipmentTable.setRowSorter(equipmentSorter);
         ArrayList<RowSorter.SortKey> sortKeys = new ArrayList<>();
         sortKeys.add(new RowSorter.SortKey(EquipmentTableModel.COL_NAME, SortOrder.ASCENDING));
@@ -777,158 +771,13 @@ public class EquipmentTab extends ITab implements ActionListener {
         }
     }
 
-    /**
-     * A comparator for integers written as strings with "-" sorted to the bottom always
-     * @author Jay Lawson
-     *
-     */
-    public static class WeaponIntegerSorter implements Comparator<String> {
-
-        @Override
-        public int compare(String s0, String s1) {
-            if(s0.equals("-") && s1.equals("-")) {
-                return 0;
-            } else if(s0.equals("-")) {
-                return 1;
-            } else if(s1.equals("-")) {
-                return -1;
-            } else {
-                //get the numbers associated with each string
-                int r0 = Integer.parseInt(s0);
-                int r1 = Integer.parseInt(s1);
-                return ((Comparable<Integer>)r1).compareTo(r0);
-            }
-        }
-    }
-
-    /**
-     * A comparator for integers written as strings with "-" sorted to the bottom always
-     * @author Jay Lawson
-     *
-     */
-    public static class WeaponRangeSorter implements Comparator<String> {
-
-        @Override
-        public int compare(String s0, String s1) {
-            if(s0.equals("-") && s1.equals("-")) {
-                return 0;
-            } else if(s0.equals("-")) {
-                return 1;
-            } else if(s1.equals("-")) {
-                return -1;
-            } else {
-                //get the numbers associated with each string
-                int short0 = Integer.parseInt(s0.split("/")[0]);
-                int short1 = Integer.parseInt(s1.split("/")[0]);
-                int med0 = Integer.parseInt(s0.split("/")[1]);
-                int med1 = Integer.parseInt(s1.split("/")[1]);
-                int long0 = Integer.parseInt(s0.split("/")[2]);
-                int long1 = Integer.parseInt(s1.split("/")[2]);
-                int compare = ((Comparable<Integer>)short1).compareTo(short0);
-                if(compare != 0) {
-                    return compare;
-                }
-                compare = ((Comparable<Integer>)med1).compareTo(med0);
-                if(compare != 0) {
-                    return compare;
-                }
-                return ((Comparable<Integer>)long1).compareTo(long0);
-            }
-        }
-    }
-
-    public static class WeaponDamageSorter implements Comparator<String> {
-
-        @Override
-        public int compare(String s0, String s1) {
-            if(s0.equals("-") && s1.equals("-")) {
-                return 0;
-            } else if(s0.equals("-")) {
-                return 1;
-            } else if(s1.equals("-")) {
-                return -1;
-            } else if(s0.equals("Cluster") && s1.equals("Special")) {
-                return 1;
-            } else if(s0.equals("Special") && s1.equals("Cluster")) {
-                return -1;
-            } else if(s0.equals("Cluster") && s1.equals("Cluster")) {
-                return 0;
-            } else if(s0.equals("Cluster")) {
-                return 1;
-            } else if(s1.equals("Cluster")) {
-                return -1;
-            } else if(s0.equals("Special") && s1.equals("Special")) {
-                return 0;
-            } else if(s0.equals("Special")) {
-                return 1;
-            } else if(s1.equals("Special")) {
-                return -1;
-            } else {
-                //get the numbers associated with each string
-                int r1 = parseDamage(s1);
-                int r0 = parseDamage(s0);
-                return ((Comparable<Integer>)r1).compareTo(r0);
-            }
-        }
-
-        /**
-         * Extracts an integer value from the damage string for use in sorting by damage. If a String
-         * contains any non-digit character, that character and anything after it is ignored. If the string
-         * starts with a non-digit character the return value is 0.
-         * 
-         * @param s A weapon damage string
-         * @return  The value to use for sorting.
-         */
-        private int parseDamage(String s) {
-            s = s.replaceAll("[^0-9]+", "/");
-            if (s.contains("/")) {
-                s = s.substring(0, s.indexOf("/"));
-            }
-            if (s.length() > 0) {
-                return Integer.parseInt(s);
-            } else {
-                return 0;
-            }
-        }
-    }
-
-    /**
-     * A comparator for numbers that have been formatted with DecimalFormat
-     * @author Jay Lawson
-     *
-     */
-    public static class FormattedNumberSorter implements Comparator<String> {
-        private final DecimalFormat format = new DecimalFormat();
-
-        @Override
-        public int compare(String s0, String s1) {
-            try {
-                return Double.compare(parseValue(s0), parseValue(s1));
-            } catch (java.text.ParseException e) {
-                MegaMekLab.getLogger().error(getClass(), "compare(String, String)",
-                        "Parse error comparing " + s0 + " and " + s1, e);
-                return 0;
-            }
-        }
-
-        private double parseValue(String str) throws ParseException {
-            if (str.endsWith(" kg")) {
-                return format.parse(str.replace(" kg", "")).doubleValue() * 1000;
-            } else if (str.equals(EquipmentTableModel.VARIABLE)) {
-                return 0.0;
-            } else {
-                return format.parse(str).doubleValue();
-            }
-        }
-    }
-
     private static class CategoryListCellRenderer extends JLabel implements ListCellRenderer<EquipmentCategory> {
         private static final long serialVersionUID = -6019108605730297067L;
         
         @Override
         public Component getListCellRendererComponent(JList<? extends EquipmentCategory> list,
                 EquipmentCategory value, int index, boolean isSelected, boolean cellHasFocus) {
-            
+            setOpaque(list.isOpaque());
             if (isSelected) {
                 setBackground(list.getSelectionBackground());
                 setForeground(list.getSelectionForeground());

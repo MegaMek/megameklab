@@ -210,6 +210,9 @@ public class InventoryWriter {
 
     private void parseEquipment() {
         for (Mounted m : sheet.getEntity().getEquipment()) {
+            if (m.isWeaponGroup()) {
+                continue;
+            }
             if ((m.getType() instanceof AmmoType)
                     && (((AmmoType) m.getType()).getAmmoType() != AmmoType.T_COOLANT_POD)) {
                 if (m.getLocation() != Entity.LOC_NONE) {

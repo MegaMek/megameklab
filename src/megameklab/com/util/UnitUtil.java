@@ -1652,6 +1652,8 @@ public class UnitUtil {
             }
         } else if (entity.hasETypeFlag(Entity.ETYPE_PROTOMECH)) {
             return TestProtomech.maxArmorFactor((Protomech) entity, location);
+        } else if ((entity instanceof VTOL) && (location == VTOL.LOC_ROTOR)) {
+            return 2;
         }
         return null;
     }
@@ -2634,6 +2636,11 @@ public class UnitUtil {
         if (eq instanceof InfantryWeapon) {
             return false;
         }
+        // Fixed wing, airship, and satellite vehicles use vehicle construction rules.
+        if (unit.isSupportVehicle()) {
+            return eq.hasFlag(WeaponType.F_TANK_WEAPON)
+                    && TestTank.legalForMotiveType(eq, unit.getMovementMode(), true);
+        }
 
         WeaponType weapon = (WeaponType) eq;
         
@@ -2710,7 +2717,7 @@ public class UnitUtil {
         if (UnitUtil.isArmorOrStructure(eq)) {
             return false;
         }
-        
+
         if ((eq instanceof AmmoType)
                 && (((AmmoType)eq).getAmmoType() == AmmoType.T_COOLANT_POD)) {
             return !unit.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT);
@@ -2729,7 +2736,10 @@ public class UnitUtil {
                 return eq.hasFlag(MiscType.F_SC_EQUIPMENT);
             } else if (eq.hasFlag(MiscType.F_FLOTATION_HULL)) {
                 return unit.hasETypeFlag(Entity.ETYPE_CONV_FIGHTER)
-                    && !unit.hasETypeFlag(Entity.ETYPE_FIXED_WING_SUPPORT);
+                        && !unit.hasETypeFlag(Entity.ETYPE_FIXED_WING_SUPPORT);
+            } else if (unit.isSupportVehicle()) {
+                return eq.hasFlag(MiscType.F_SUPPORT_TANK_EQUIPMENT)
+                        && TestTank.legalForMotiveType(eq, unit.getMovementMode(), true);
             } else {
                 return eq.hasFlag(MiscType.F_FIGHTER_EQUIPMENT);
             }
@@ -2927,7 +2937,7 @@ public class UnitUtil {
                 }
             }
 
-            return TestTank.legalForMotiveType(weapon, unit.getMovementMode());
+            return TestTank.legalForMotiveType(weapon, unit.getMovementMode(), unit.isSupportVehicle());
         }
         return false;
     }
@@ -3071,7 +3081,7 @@ public class UnitUtil {
         }
 
         if (eq instanceof MiscType) {
-            if (!TestTank.legalForMotiveType(eq, tank.getMovementMode())) {
+            if (!TestTank.legalForMotiveType(eq, tank.getMovementMode(), tank.isSupportVehicle())) {
                 return false;
             }
             // Can't use supercharger with solar or external power pickup

@@ -863,7 +863,7 @@ public class BayWeaponCriticalTree extends JTree {
      * Used by the unallocated equipment list to determine whether the arc represented by this
      * tree is valid for the aero unit. This filters out aft side arcs for aerodyne small
      * craft and broadsides for non-warships.
-     * @param  The unit to check
+     * @param  aero The unit to check
      * @return Whether the arc is valid for the unit.
      */
     public boolean validForUnit(Aero aero) {
@@ -992,6 +992,7 @@ public class BayWeaponCriticalTree extends JTree {
                         .filter(m -> m.getType() == eq.getType()).findFirst();
                 if (addMount.isPresent()) {
                     addMount.get().setShotsLeft(addMount.get().getBaseShotsLeft() + eq.getBaseShotsLeft());
+                    updateAmmoCapacity(addMount.get());
                     UnitUtil.removeMounted(eSource.getEntity(), eq);
                     refresh.refreshEquipment();
                     refresh.refreshBuild();
@@ -1035,17 +1036,28 @@ public class BayWeaponCriticalTree extends JTree {
         refresh.refreshStatus();
         refresh.refreshSummary();
     }
+
+    private void updateAmmoCapacity(Mounted ammoMount) {
+        // Mounted#getTonnage will give us the weight of one slot of ammo; multiply it by the number of slots
+        // to get the total capacity of the ammo bin.
+        double weight = ammoMount.getTonnage()
+                * Math.max(1, ammoMount.getBaseShotsLeft() / ((AmmoType) ammoMount.getType()).getShots());
+        ammoMount.setAmmoCapacity(weight);
+    }
     
     public void addAmmoToBay(Mounted bay, Mounted eq, int shots) {
         AmmoType at = (AmmoType)eq.getType();
         eq.setShotsLeft(eq.getBaseShotsLeft() - shots);
         if (eq.getBaseShotsLeft() <= 0) {
             UnitUtil.removeMounted(eSource.getEntity(), eq);
+        } else {
+            updateAmmoCapacity(eq);
         }
         Optional<Mounted> addMount = bay.getBayAmmo().stream().map(n -> eSource.getEntity().getEquipment(n))
                 .filter(m -> m.getType() == at).findFirst();
         if (addMount.isPresent()) {
             addMount.get().setShotsLeft(addMount.get().getBaseShotsLeft() + shots);
+            updateAmmoCapacity(addMount.get());
             refresh.refreshEquipment();
             refresh.refreshBuild();
             refresh.refreshPreview();
@@ -1085,7 +1097,7 @@ public class BayWeaponCriticalTree extends JTree {
      * Adds multiple equipment mounts to this location. Weapons and ammo will go into the first available
      * bay. Ammo that does not have a legal bay will be skipped.
      * 
-     * @param eq
+     * @param eqList The equipment to add
      */
     public void addToLocation(List<Mounted> eqList) {
         // We want to check for weapons first since they might make a new bay that creates a legal space

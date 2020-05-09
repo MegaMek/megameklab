@@ -23,9 +23,7 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Enumeration;
 
 import javax.swing.ButtonGroup;
@@ -124,11 +122,12 @@ public class FieldGunView extends IView implements ActionListener {
         masterEquipmentList = new EquipmentTableModel(eSource.getEntity(), techManager);
         masterEquipmentTable.setModel(masterEquipmentList);
         masterEquipmentTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-        equipmentSorter = new TableRowSorter<EquipmentTableModel>(masterEquipmentList);
-        equipmentSorter.setComparator(EquipmentTableModel.COL_DAMAGE, new WeaponDamageSorter());
-        equipmentSorter.setComparator(EquipmentTableModel.COL_COST, new FormattedNumberSorter());
+        equipmentSorter = new TableRowSorter<>(masterEquipmentList);
+        for (int col = 0; col < EquipmentTableModel.N_COL; col++) {
+            equipmentSorter.setComparator(col, masterEquipmentList.getSorter(col));
+        }
         masterEquipmentTable.setRowSorter(equipmentSorter);
-        ArrayList<RowSorter.SortKey> sortKeys = new ArrayList<RowSorter.SortKey>();
+        ArrayList<RowSorter.SortKey> sortKeys = new ArrayList<>();
         sortKeys.add(new RowSorter.SortKey(EquipmentTableModel.COL_NAME, SortOrder.ASCENDING));
         equipmentSorter.setSortKeys(sortKeys);
         XTableColumnModel equipColumnModel = new XTableColumnModel();
@@ -405,77 +404,6 @@ public class FieldGunView extends IView implements ActionListener {
         }
     }
 
-
-
-    /**
-     * A comparator for integers written as strings with "-" sorted to the bottom always
-     * @author Jay Lawson
-     *
-     */
-    public class WeaponIntegerSorter implements Comparator<String> {
-
-        @Override
-        public int compare(String s0, String s1) {
-            if(s0.equals("-") && s1.equals("-")) {
-                return 0;
-            } else if(s0.equals("-")) {
-                return 1;
-            } else if(s1.equals("-")) {
-                return -1;
-            } else {
-                //get the numbers associated with each string
-                int r0 = Integer.parseInt(s0);
-                int r1 = Integer.parseInt(s1);
-                return ((Comparable<Integer>)r1).compareTo(r0);
-            }
-        }
-    }
-
-    public class WeaponDamageSorter implements Comparator<String> {
-
-        @Override
-        public int compare(String s0, String s1) {
-            //get the numbers associated with each string
-            double r1 = parseDamage(s1);
-            double r0 = parseDamage(s0);
-            return ((Comparable<Double>)r1).compareTo(r0);
-        }
-
-        private double parseDamage(String s) {
-            double damage = 0;
-            damage = Double.parseDouble(s);
-            return damage;
-        }
-    }
-
-    /**
-     * A comparator for numbers that have been formatted with DecimalFormat
-     * @author Jay Lawson
-     *
-     */
-    public static class FormattedNumberSorter implements Comparator<String> {
-
-        @Override
-        public int compare(String s0, String s1) {
-            //lets find the weight class integer for each name
-            DecimalFormat format = new DecimalFormat();
-            int l0 = 0;
-            try {
-                l0 = format.parse(s0).intValue();
-            } catch (java.text.ParseException e) {
-                e.printStackTrace();
-            }
-            int l1 = 0;
-            try {
-                l1 = format.parse(s1).intValue();
-            } catch (java.text.ParseException e) {
-                e.printStackTrace();
-            }
-            return ((Comparable<Integer>)l0).compareTo(l1);
-        }
-    }
-    
-    
     private ListSelectionListener selectionListener = new ListSelectionListener() {
 
         @Override
