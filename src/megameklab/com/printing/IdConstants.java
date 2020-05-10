@@ -165,4 +165,10 @@ public interface IdConstants {
     String CHECK_AP = "checkAp";
     String SUIT = "suit";
     String PIPS = "pips_";
+
+    String PROTOMECH_INDEX = "protomechIndex";
+    String MAIN_GUN_ARMOR = "armor_MG";
+    String MAIN_GUN_SHADOW = "shadow_MG";
+    String MAIN_GUN_TEXT = "text_MG";
+    String TORSO_WEAPON = "torsoWeapon_";
 }
