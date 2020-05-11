@@ -33,11 +33,11 @@ public class PrintProtomech extends PrintEntity {
      * Creates an SVG object for the record sheet
      *
      * @param proto        The protomech to print
-     * @param unitIndex    The index of this unit on the page
      * @param startPage    The print job page number for this sheet
+     * @param unitIndex    The index of this unit on the page
      * @param options      Overrides the global options for which elements are printed
      */
-    public PrintProtomech(Protomech proto, int unitIndex, int startPage, RecordSheetOptions options) {
+    public PrintProtomech(Protomech proto, int startPage, int unitIndex, RecordSheetOptions options) {
         super(startPage, options);
         this.proto = proto;
         this.unitIndex = unitIndex;
@@ -47,10 +47,10 @@ public class PrintProtomech extends PrintEntity {
      * Creates an SVG object for the record sheet using the global printing options
      *
      * @param proto        The protomech to print
-     * @param unitIndex    The index of this unit on the page
      * @param startPage    The print job page number for this sheet
+     * @param unitIndex    The index of this unit on the page
      */
-    public PrintProtomech(Protomech proto, int unitIndex, int startPage) {
+    public PrintProtomech(Protomech proto, int startPage, int unitIndex) {
         this(proto, startPage, unitIndex, new RecordSheetOptions());
     }
 
