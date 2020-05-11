@@ -144,7 +144,7 @@ public class PrintProtomech extends PrintEntity {
                 sb.append(roll);
                 roll++;
                 if (!proto.isQuad()) {
-                    sb.append("-").append(roll + 1);
+                    sb.append("-").append(roll);
                     roll++;
                 }
                 sb.append(": ").append(weapon.getName());
