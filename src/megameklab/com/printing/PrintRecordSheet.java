@@ -567,7 +567,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     private final static String FMT_LINE = " l %f %f";
     
     protected Element createPip(double x, double y, double radius, double strokeWidth) {
-        return createPip(x, y, radius, strokeWidth, PipType.CIRCLE);
+        return createPip(x, y, radius, strokeWidth, PipType.CIRCLE, FILL_WHITE);
     }
     /**
      * Approximates a circle using four Bezier curves.
@@ -578,9 +578,9 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      * @return       A Path describing the circle
      */
     protected Element createPip(double x, double y, double radius, double strokeWidth,
-            PipType type) {
+            PipType type, String fill) {
         Element path = svgDocument.createElementNS(svgNS, SVGConstants.SVG_PATH_TAG);
-        path.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, FILL_WHITE);
+        path.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, fill);
         path.setAttributeNS(null, SVGConstants.SVG_STROKE_ATTRIBUTE, FILL_BLACK);
         path.setAttributeNS(null, SVGConstants.SVG_STROKE_WIDTH_ATTRIBUTE, Double.toString(strokeWidth));
         

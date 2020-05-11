@@ -107,4 +107,9 @@ public class PrintProtomech extends PrintEntity {
             }
         }
     }
+
+    @Override
+    String structurePipFill() {
+        return FILL_SHADOW;
+    }
 }
