@@ -26,6 +26,7 @@ public interface IdConstants {
     String TITLE = "title";
 
     String TYPE = "type";
+    String TYPE2 = "type2";
     String FLUFF_NAME = "fluffName";
     String MP_WALK = "mpWalk";
     String MP_RUN = "mpRun";

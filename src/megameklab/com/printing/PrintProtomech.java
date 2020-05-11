@@ -1,11 +1,25 @@
-/**
+/*
+ * MegaMekLab - Copyright (C) 2020 - The MegaMek Team
  *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  */
 package megameklab.com.printing;
 
 import megamek.common.Entity;
 import megamek.common.Mounted;
 import megamek.common.Protomech;
+import megameklab.com.MegaMekLab;
+import org.apache.batik.anim.dom.SVGLocatableSupport;
+import org.apache.batik.util.SVGConstants;
+import org.w3c.dom.Element;
 
 /**
  * Lays out a record sheet block for a single protomech
@@ -72,6 +86,7 @@ public class PrintProtomech extends PrintEntity {
         super.writeTextFields();
 
         setTextField(PROTOMECH_INDEX, "PROTOMECH " + (unitIndex + 1));
+        splitName();
         printTorsoCritChart();
         if (!proto.hasMainGun()) {
             hideElement(MAIN_GUN_ARMOR);
@@ -80,6 +95,43 @@ public class PrintProtomech extends PrintEntity {
         }
         if (proto.hasUMU()) {
             setTextField(LBL_JUMP, "Underwater");
+        }
+    }
+
+    /**
+     * Checks whether the unit name is too large to fit into the primary field without kerning.
+     * If so, looks for a break point and puts the remainder on a second line.
+     */
+    private void splitName() {
+        Element element = getSVGDocument().getElementById(TYPE);
+        if (null != element) {
+            String fieldWidth = parseStyle(element, MML_FIELD_WIDTH);
+            if (null != fieldWidth) {
+                try {
+                    double width = Double.parseDouble(fieldWidth);
+                    // Clear any kerning that has already been applied so we can measure the full text length
+                    element.removeAttribute(SVGConstants.SVG_TEXT_LENGTH_ATTRIBUTE);
+                    element.removeAttribute(SVGConstants.SVG_SPACING_AND_GLYPHS_VALUE);
+                    build();
+                    double textWidth = SVGLocatableSupport.getBBox(element).getWidth();
+                    if (textWidth > width) {
+                        String name = element.getTextContent();
+                        // The goal is a 2:1 split, but we start back a little to avoid just missing a break point
+                        int pos = name.indexOf(" ", (int) (name.length() * 0.6));
+                        if (pos < 0) {
+                            // If we don't find a break point, give up and assign the text again to reset the kerning
+                            setTextField(TYPE, name);
+                        } else {
+                            setTextField(TYPE, name.substring(0, pos));
+                            setTextField(TYPE2, name.substring(pos + 1));
+                        }
+                    }
+                } catch (NumberFormatException ex) {
+                    MegaMekLab.getLogger().warning(getClass(),
+                            "setTextField(String, String, boolean)",
+                            "Could not parse fieldWidth: " + fieldWidth);
+                }
+            }
         }
     }
 
