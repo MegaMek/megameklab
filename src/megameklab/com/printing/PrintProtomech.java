@@ -97,12 +97,16 @@ public class PrintProtomech extends PrintEntity {
                 }
                 sb.append(": ").append(weapon.getName());
                 setTextField(TORSO_WEAPON + i, sb.toString());
+            } else if (i == 0) {
+                setTextField(TORSO_WEAPON + i, "No Torso Weapons");
+                break;
             } else {
                 sb.append(roll);
                 if (roll < 6) {
                     sb.append("-6");
                 }
                 sb.append(": No Effect");
+                setTextField(TORSO_WEAPON + i, sb.toString());
                 break;
             }
         }
