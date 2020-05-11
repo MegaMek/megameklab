@@ -14,6 +14,7 @@
 package megameklab.com.printing;
 
 import megamek.common.Entity;
+import megamek.common.EquipmentType;
 import megamek.common.Mounted;
 import megamek.common.Protomech;
 import megameklab.com.MegaMekLab;
@@ -84,9 +85,10 @@ public class PrintProtomech extends PrintEntity {
     @Override
     protected void writeTextFields() {
         super.writeTextFields();
-
         setTextField(PROTOMECH_INDEX, "PROTOMECH " + (unitIndex + 1));
         splitName();
+        String armor = EquipmentType.getArmorTypeName(proto.getArmorType(Protomech.LOC_TORSO));
+        setTextField(ARMOR_TYPE, armor);
         printTorsoCritChart();
         if (!proto.hasMainGun()) {
             hideElement(MAIN_GUN_ARMOR);
