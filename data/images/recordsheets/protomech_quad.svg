@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.0//EN'
           'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
-<svg contentScriptType="text/ecmascript" width="612" xmlns:xlink="http://www.w3.org/1999/xlink" zoomAndPan="magnify" contentStyleType="text/css" height="165.0" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" version="1.0"
+<svg contentScriptType="text/ecmascript" width="612" xmlns:xlink="http://www.w3.org/1999/xlink" zoomAndPan="magnify" contentStyleType="text/css" height="132.0" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" version="1.0"
 ><g transform="translate (0.000 0.000)"
-  ><path fill="#ffffff" d="M 2.5,10.714 L 7.975,2.500 l 82.038,0.000 l 5.475,8.214 L 532.155,10.714 l 7.845,7.600 L 540.000,153.286 l -5.475,8.214 L 98.488,161.500 l -5.475,-8.214 L 10.345,153.286 l -7.845,-7.600 Z" stroke-width="5.2" stroke-linejoin="round" stroke="#c8c7c7"
-    /><path fill="#ffffff" d="M 0.0,8.214 L 5.475,0.000 l 82.038,0.000 l 5.475,8.214 L 529.655,8.214 l 7.845,7.600 L 537.500,151.786 l -5.475,8.214 L 95.988,160.000 l -5.475,-8.214 L 7.845,151.786 l -7.845,-7.600 Z" stroke-width="1.932" stroke-linejoin="round" stroke="#231f20"
+  ><path fill="#ffffff" d="M 2.5,10.714 L 7.975,2.500 l 82.038,0.000 l 5.475,8.214 L 532.155,10.714 l 7.845,7.600 L 540.000,120.286 l -5.475,8.214 L 98.488,128.500 l -5.475,-8.214 L 10.345,120.286 l -7.845,-7.600 Z" stroke-width="5.2" stroke-linejoin="round" stroke="#c8c7c7"
+    /><path fill="#ffffff" d="M 0.0,8.214 L 5.475,0.000 l 82.038,0.000 l 5.475,8.214 L 529.655,8.214 l 7.845,7.600 L 537.500,118.786 l -5.475,8.214 L 95.988,127.000 l -5.475,-8.214 L 7.845,118.786 l -7.845,-7.600 Z" stroke-width="1.932" stroke-linejoin="round" stroke="#231f20"
     /><g transform="translate (2.5,3.0)"
     ><path fill="#000000" d="M 0,7.500 l 4.999,-7.500 l 78.038,0 l 4.999,7.500 l -4.999,7.500 l -78.038,0 Z"
       /><text fill="#ffffff" x="7.999" id="protomechIndex" y="11.250" style="font-family:Eurostile;font-size:10.600px;font-weight:bold;font-style:normal;mml-field-width:70.944" text-anchor="start"
@@ -12,49 +12,49 @@
     ></g
   ></g
   ><g transform="translate (3.000 18.000)"
-  ><text x="3.000" y="12.423" fill="bold" text-anchor="start" style="font-family:Eurostile;font-size:7.200px;font-weight:bold;font-style:normal" textLength="15.930" lengthAdjust="spacingAndGlyphs"
+  ><text x="3.000" y="8.189" fill="bold" text-anchor="start" style="font-family:Eurostile;font-size:7.200px;font-weight:bold;font-style:normal" textLength="15.930" lengthAdjust="spacingAndGlyphs"
     >Type:</text
-    ><text fill="bold" x="22.523" id="type" y="12.423" style="font-family:Eurostile;font-size:7.200px;font-weight:normal;font-style:normal;mml-field-width:63.143" text-anchor="start"
+    ><text fill="bold" x="22.523" id="type" y="8.189" style="font-family:Eurostile;font-size:7.200px;font-weight:normal;font-style:normal;mml-field-width:63.143" text-anchor="start"
     >Lorem Ipsum</text
-    ><text fill="#231f20" x="47.333" id="type2" y="24.846" style="font-family:Eurostile;font-size:7.200px;font-weight:normal;font-style:normal;mml-field-width:41.333" text-anchor="start"
+    ><text fill="#231f20" x="47.333" id="type2" y="16.378" style="font-family:Eurostile;font-size:7.200px;font-weight:normal;font-style:normal;mml-field-width:41.333" text-anchor="start"
     ></text
-    ><text x="3.000" y="24.846" fill="bold" text-anchor="start" style="font-family:Eurostile;font-size:7.200px;font-weight:bold;font-style:normal" textLength="16.411" lengthAdjust="spacingAndGlyphs"
+    ><text x="3.000" y="16.378" fill="bold" text-anchor="start" style="font-family:Eurostile;font-size:7.200px;font-weight:bold;font-style:normal" textLength="16.411" lengthAdjust="spacingAndGlyphs"
     >Tons:</text
-    ><text fill="bold" x="23.004" id="tonnage" y="24.846" style="font-family:Eurostile;font-size:7.200px;font-weight:normal;font-style:normal;mml-field-width:18.329" text-anchor="start"
+    ><text fill="bold" x="23.004" id="tonnage" y="16.378" style="font-family:Eurostile;font-size:7.200px;font-weight:normal;font-style:normal;mml-field-width:18.329" text-anchor="start"
     >0</text
-    ><text x="3.000" y="37.269" fill="bold" text-anchor="start" style="font-family:Eurostile;font-size:7.200px;font-weight:bold;font-style:normal" id="lblRole" textLength="15.108" lengthAdjust="spacingAndGlyphs"
+    ><text x="3.000" y="24.567" fill="bold" text-anchor="start" style="font-family:Eurostile;font-size:7.200px;font-weight:bold;font-style:normal" id="lblRole" textLength="15.108" lengthAdjust="spacingAndGlyphs"
     >Role:</text
-    ><text fill="bold" x="21.702" id="role" y="37.269" style="font-family:Eurostile;font-size:7.200px;font-weight:normal;font-style:normal;mml-field-width:63.964" text-anchor="start"
+    ><text fill="bold" x="21.702" id="role" y="24.567" style="font-family:Eurostile;font-size:7.200px;font-weight:normal;font-style:normal;mml-field-width:63.964" text-anchor="start"
     >Lorem Ipsum</text
-    ><text fill="#231f20" x="3.000" y="49.692" style="font-family:Eurostile;font-size:7.200px;font-weight:bold;font-style:normal" text-anchor="start"
+    ><text fill="#231f20" x="3.000" y="32.755" style="font-family:Eurostile;font-size:7.200px;font-weight:bold;font-style:normal" text-anchor="start"
     >Movement Points:</text
-    ><text x="6.000" y="62.115" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:7.200px;font-weight:bold;font-style:normal" textLength="17.481" lengthAdjust="spacingAndGlyphs"
+    ><text x="6.000" y="40.944" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:7.200px;font-weight:bold;font-style:normal" textLength="17.481" lengthAdjust="spacingAndGlyphs"
     >Walk:</text
-    ><text fill="#231f20" x="56.000" id="mpWalk" y="62.115" style="font-family:Eurostile;font-size:7.200px;font-weight:normal;font-style:normal" text-anchor="middle"
+    ><text fill="#231f20" x="56.000" id="mpWalk" y="40.944" style="font-family:Eurostile;font-size:7.200px;font-weight:normal;font-style:normal" text-anchor="middle"
     >0</text
-    ><text x="6.000" y="70.115" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:7.200px;font-weight:bold;font-style:normal" textLength="13.761" lengthAdjust="spacingAndGlyphs"
+    ><text x="6.000" y="48.944" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:7.200px;font-weight:bold;font-style:normal" textLength="13.761" lengthAdjust="spacingAndGlyphs"
     >Run:</text
-    ><text fill="#231f20" x="56.000" id="mpRun" y="70.115" style="font-family:Eurostile;font-size:7.200px;font-weight:normal;font-style:normal" text-anchor="middle"
+    ><text fill="#231f20" x="56.000" id="mpRun" y="48.944" style="font-family:Eurostile;font-size:7.200px;font-weight:normal;font-style:normal" text-anchor="middle"
     >0</text
-    ><text x="6.000" y="78.115" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:7.200px;font-weight:bold;font-style:normal" id="textJumpMP" textLength="18.744" lengthAdjust="spacingAndGlyphs"
+    ><text x="6.000" y="56.944" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:7.200px;font-weight:bold;font-style:normal" id="textJumpMP" textLength="18.744" lengthAdjust="spacingAndGlyphs"
     >Jump:</text
-    ><text fill="#231f20" x="56.000" id="mpJump" y="78.115" style="font-family:Eurostile;font-size:7.200px;font-weight:normal;font-style:normal" text-anchor="middle"
+    ><text fill="#231f20" x="56.000" id="mpJump" y="56.944" style="font-family:Eurostile;font-size:7.200px;font-weight:normal;font-style:normal" text-anchor="middle"
     >0</text
   ></g
   ><g transform="translate (91.667 12.786)"
   ><g
-    ><path fill="#ffffff" d="M 0.0,8.214 L 5.475,0.000 L 166.858,0.000 l 5.475,8.214 L 172.333,87.789 l -7.845,7.600 L 7.845,95.389 l -7.845,-7.600 Z" stroke-width="1.932" stroke-linejoin="round" stroke="#231f20"
+    ><path fill="#ffffff" d="M 0.0,8.214 L 5.475,0.000 L 166.858,0.000 l 5.475,8.214 L 172.333,66.339 l -7.845,7.600 L 7.845,73.939 l -7.845,-7.600 Z" stroke-width="1.932" stroke-linejoin="round" stroke="#231f20"
       /><g transform="translate (2.5,3.0)"
       ><path fill="#000000" d="M 0,5.625 l 3.749,-5.625 l 153.643,0 l 3.749,5.625 l -3.749,5.625 l -153.643,0 Z"
         /><text x="80.571" y="8.438" fill="#ffffff" text-anchor="middle" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal" textLength="88.665" lengthAdjust="spacingAndGlyphs"
         >WEAPONS INVENTORY</text
       ></g
     ></g
-    ><rect fill="none" x="3.000" width="165.333" id="inventory" height="80.139" y="14.250"
+    ><rect fill="none" x="3.000" width="165.333" id="inventory" height="58.689" y="14.250"
   /></g
   ><g transform="translate (269.000 12.786)"
   ><g
-    ><path fill="#ffffff" d="M 0.0,8.214 L 5.475,0.000 L 166.858,0.000 l 5.475,8.214 L 172.333,134.614 l -7.845,7.600 L 7.845,142.214 l -7.845,-7.600 Z" stroke-width="1.932" stroke-linejoin="round" stroke="#231f20"
+    ><path fill="#ffffff" d="M 0.0,8.214 L 5.475,0.000 L 166.858,0.000 l 5.475,8.214 L 172.333,101.614 l -7.845,7.600 L 7.845,109.214 l -7.845,-7.600 Z" stroke-width="1.932" stroke-linejoin="round" stroke="#231f20"
       /><g transform="translate (2.5,3.0)"
       ><path fill="#000000" d="M 0,5.625 l 3.749,-5.625 l 153.643,0 l 3.749,5.625 l -3.749,5.625 l -153.643,0 Z"
         /><text x="80.571" y="8.438" fill="#ffffff" text-anchor="middle" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal" textLength="135.352" lengthAdjust="spacingAndGlyphs"
@@ -71,68 +71,68 @@
     >2nd HIT</text
     ><text fill="#231f20" x="137.667" y="22.650" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="start"
     >3rd HIT</text
-    ><text fill="#231f20" x="13.100" y="40.788" style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal" text-anchor="middle"
+    ><text fill="#231f20" x="13.100" y="34.396" style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal" text-anchor="middle"
     >2</text
-    ><text fill="#231f20" x="23.200" y="40.788" style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal" text-anchor="start"
+    ><text fill="#231f20" x="23.200" y="34.396" style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal" text-anchor="start"
     >Main Gun</text
-    ><path fill="#ffffff" d="M 53.500,36.503 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 4.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,4.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -4.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
-    /><text x="61.900" y="40.788" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal" textLength="39.331" lengthAdjust="spacingAndGlyphs"
+    ><path fill="#ffffff" d="M 53.500,30.111 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 4.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,4.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -4.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
+    /><text x="61.900" y="34.396" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal" textLength="39.331" lengthAdjust="spacingAndGlyphs"
     >Main Gun Destroyed</text
-    ><text fill="#231f20" x="13.100" y="58.925" style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal" text-anchor="middle"
+    ><text fill="#231f20" x="13.100" y="46.141" style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal" text-anchor="middle"
     >4,5</text
-    ><text fill="#231f20" x="13.100" y="65.925" style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal" text-anchor="middle"
+    ><text fill="#231f20" x="13.100" y="53.141" style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal" text-anchor="middle"
     >9,10</text
-    ><text fill="#231f20" x="23.200" y="58.925" style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal" text-anchor="start"
+    ><text fill="#231f20" x="23.200" y="46.141" style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal" text-anchor="start"
     >Legs</text
-    ><path fill="#ffffff" d="M 53.500,54.640 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 4.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,4.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -4.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
-    /><text x="61.900" y="58.925" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal" textLength="22.614" lengthAdjust="spacingAndGlyphs"
+    ><path fill="#ffffff" d="M 53.500,41.856 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 4.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,4.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -4.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
+    /><text x="61.900" y="46.141" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal" textLength="22.614" lengthAdjust="spacingAndGlyphs"
     >-1 Walk MP</text
-    ><path fill="#ffffff" d="M 95.583,54.640 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 4.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,4.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -4.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
-    /><text x="103.983" y="58.925" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal" textLength="27.116" lengthAdjust="spacingAndGlyphs"
+    ><path fill="#ffffff" d="M 95.583,41.856 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 4.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,4.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -4.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
+    /><text x="103.983" y="46.141" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal" textLength="27.116" lengthAdjust="spacingAndGlyphs"
     >1/2 Walk MP</text
-    ><path fill="#c8c7c7" d="M 137.667,54.640 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 4.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,4.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -4.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
-    /><text x="146.067" y="58.925" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal" textLength="17.199" lengthAdjust="spacingAndGlyphs"
+    ><path fill="#c8c7c7" d="M 137.667,41.856 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 4.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,4.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -4.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
+    /><text x="146.067" y="46.141" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal" textLength="17.199" lengthAdjust="spacingAndGlyphs"
     >No Move</text
-    ><text fill="#231f20" x="13.100" y="77.063" style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal" text-anchor="middle"
+    ><text fill="#231f20" x="13.100" y="57.887" style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal" text-anchor="middle"
     >6,7,8</text
-    ><text fill="#231f20" x="23.200" y="77.063" style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal" text-anchor="start"
+    ><text fill="#231f20" x="23.200" y="57.887" style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal" text-anchor="start"
     >Torso</text
-    ><path fill="#c8c7c7" d="M 53.500,72.778 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 4.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,4.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -4.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
-    /><text x="61.900" y="77.063" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal" textLength="26.181" lengthAdjust="spacingAndGlyphs"
+    ><path fill="#c8c7c7" d="M 53.500,53.601 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 4.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,4.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -4.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
+    /><text x="61.900" y="57.887" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal" textLength="26.181" lengthAdjust="spacingAndGlyphs"
     >-1 Jump MP*</text
-    ><path fill="#c8c7c7" d="M 95.583,72.778 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 4.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,4.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -4.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
-    /><text x="103.983" y="77.063" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal" textLength="30.683" lengthAdjust="spacingAndGlyphs"
+    ><path fill="#c8c7c7" d="M 95.583,53.601 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 4.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,4.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -4.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
+    /><text x="103.983" y="57.887" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal" textLength="30.683" lengthAdjust="spacingAndGlyphs"
     >1/2 Jump MP*</text
-    ><path fill="#231f20" d="M 137.667,72.778 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 4.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,4.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -4.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
-    /><text x="146.067" y="77.063" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal" textLength="10.908" lengthAdjust="spacingAndGlyphs"
+    ><path fill="#231f20" d="M 137.667,53.601 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 4.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,4.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -4.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
+    /><text x="146.067" y="57.887" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal" textLength="10.908" lengthAdjust="spacingAndGlyphs"
     >Proto</text
-    ><text x="146.067" y="84.063" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal" textLength="19.853" lengthAdjust="spacingAndGlyphs"
+    ><text x="146.067" y="64.887" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal" textLength="19.853" lengthAdjust="spacingAndGlyphs"
     >Destroyed</text
-    ><text fill="#231f20" x="13.100" y="95.201" style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal" text-anchor="middle"
+    ><text fill="#231f20" x="13.100" y="69.632" style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal" text-anchor="middle"
     >12</text
-    ><text fill="#231f20" x="23.200" y="95.201" style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal" text-anchor="start"
+    ><text fill="#231f20" x="23.200" y="69.632" style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal" text-anchor="start"
     >Head</text
-    ><path fill="#ffffff" d="M 53.500,90.916 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 4.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,4.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -4.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
-    /><text x="61.900" y="95.201" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal" textLength="17.547" lengthAdjust="spacingAndGlyphs"
+    ><path fill="#ffffff" d="M 53.500,65.347 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 4.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,4.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -4.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
+    /><text x="61.900" y="69.632" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal" textLength="17.547" lengthAdjust="spacingAndGlyphs"
     >+1 to Hit</text
-    ><path fill="#c8c7c7" d="M 95.583,90.916 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 4.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,4.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -4.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
-    /><text x="103.983" y="95.201" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal" textLength="17.545" lengthAdjust="spacingAndGlyphs"
+    ><path fill="#c8c7c7" d="M 95.583,65.347 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 4.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,4.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -4.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
+    /><text x="103.983" y="69.632" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal" textLength="17.545" lengthAdjust="spacingAndGlyphs"
     >+2 to Hit</text
-    ><text x="103.983" y="102.201" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal" textLength="41.563" lengthAdjust="spacingAndGlyphs"
+    ><text x="103.983" y="76.632" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal" textLength="41.563" lengthAdjust="spacingAndGlyphs"
     >No Long Range Shots</text
-    ><text fill="#231f20" x="3.000" y="120.214" style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal" text-anchor="start"
+    ><text fill="#231f20" x="3.000" y="87.214" style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal" text-anchor="start"
     >*Torso Weapon Destroyed, Roll 1D6:</text
-    ><text fill="#231f20" x="3.000" id="torsoWeapon_0" y="127.214" style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal;mml-field-width:50.500" text-anchor="start"
+    ><text fill="#231f20" x="3.000" id="torsoWeapon_0" y="94.214" style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal;mml-field-width:50.500" text-anchor="start"
     ></text
-    ><text fill="#231f20" x="58.550" id="torsoWeapon_1" y="127.214" style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal;mml-field-width:50.500" text-anchor="start"
+    ><text fill="#231f20" x="58.550" id="torsoWeapon_1" y="94.214" style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal;mml-field-width:50.500" text-anchor="start"
     ></text
-    ><text fill="#231f20" x="114.100" id="torsoWeapon_2" y="127.214" style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal;mml-field-width:50.500" text-anchor="start"
+    ><text fill="#231f20" x="114.100" id="torsoWeapon_2" y="94.214" style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal;mml-field-width:50.500" text-anchor="start"
     ></text
-    ><text fill="#231f20" x="3.000" id="torsoWeapon_3" y="134.214" style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal;mml-field-width:50.500" text-anchor="start"
+    ><text fill="#231f20" x="3.000" id="torsoWeapon_3" y="101.214" style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal;mml-field-width:50.500" text-anchor="start"
     ></text
-    ><text fill="#231f20" x="58.550" id="torsoWeapon_4" y="134.214" style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal;mml-field-width:50.500" text-anchor="start"
+    ><text fill="#231f20" x="58.550" id="torsoWeapon_4" y="101.214" style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal;mml-field-width:50.500" text-anchor="start"
     ></text
-    ><text fill="#231f20" x="114.100" id="torsoWeapon_5" y="134.214" style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal;mml-field-width:50.500" text-anchor="start"
+    ><text fill="#231f20" x="114.100" id="torsoWeapon_5" y="101.214" style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal;mml-field-width:50.500" text-anchor="start"
     ></text
   ></g
   ><g transform="translate (446.333 12.786)"
@@ -141,7 +141,7 @@
       /><text x="41.996" y="8.438" fill="#ffffff" text-anchor="middle" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal" textLength="69.539" lengthAdjust="spacingAndGlyphs"
       >ARMOR DIAGRAM</text
     ></g
-    ><g transform="matrix(1.111 0 0 1.111 0.000 12.878)"
+    ><g transform="matrix(0.850 0 0 0.850 10.407 11.250)"
     >
 <g id="armor_diagram_protomech_quad" transform="matrix(1,0,0,-1,-488.94017,690.48224)"
       ><g id="g2708" transform="translate(568.6331,594.4059)"
@@ -332,55 +332,55 @@
                                 >ARMOR DIAGRAM</text
                               ></g
                             ></g
-                            ><g transform="translate (3.000 104.961)"
+                            ><g transform="translate (3.000 83.511)"
                             ><g
-                              ><path fill="#ffffff" d="M 0.0,7.6 L 7.845,0.000 l 77.717,0.000 l 7.845,7.600 L 253.155,7.600 l 7.845,7.600 L 261.000,34.225 l -7.845,7.600 L 7.845,41.825 l -7.845,-7.600 Z" stroke-width="1.932" stroke-linejoin="round" stroke="#231f20"
+                              ><path fill="#ffffff" d="M 0.0,7.6 L 7.845,0.000 l 77.717,0.000 l 7.845,7.600 L 253.155,7.600 l 7.845,7.600 L 261.000,22.675 l -7.845,7.600 L 7.845,30.275 l -7.845,-7.600 Z" stroke-width="1.932" stroke-linejoin="round" stroke="#231f20"
                                 /><g transform="translate (2.5,3.0)"
                                 ><path fill="#000000" d="M 0,5.625 l 5.806,-5.625 l 73.717,0 l 5.806,5.625 l -5.806,5.625 l -73.717,0 Z"
                                   /><text x="42.665" y="8.438" fill="#ffffff" text-anchor="middle" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal" textLength="45.172" lengthAdjust="spacingAndGlyphs"
                                   >PILOT DATA</text
                                 ></g
                               ></g
-                              ><text fill="#231f20" x="3.000" y="23.108" style="font-family:Eurostile;font-size:7.200px;font-weight:bold;font-style:normal" text-anchor="start"
+                              ><text fill="#231f20" x="10.845" y="21.763" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="start"
                               >Name:</text
-                              ><text fill="#231f20" x="26.668" id="pilotName0" y="23.108" style="font-family:Eurostile;font-size:7.200px;font-weight:normal;font-style:normal" text-anchor="start"
+                              ><text fill="#231f20" x="33.073" id="pilotName0" y="21.763" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal" text-anchor="start"
                               >Lorem Ipsum</text
-                              ><path id="blankCrewName0" d="M 26.668,24.108 L 112.650,24.108" stroke-width="0.720" stroke-linejoin="round" stroke="#231f20"
-                              /><text x="3.000" y="31.967" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:7.200px;font-weight:bold;font-style:normal" id="gunnerySkillText0" textLength="41.711" lengthAdjust="spacingAndGlyphs"
+                              ><path id="blankCrewName0" d="M 33.073,22.763 L 112.650,22.763" stroke-width="0.720" stroke-linejoin="round" stroke="#231f20"
+                              /><text x="10.845" y="29.275" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" id="gunnerySkillText0" textLength="39.172" lengthAdjust="spacingAndGlyphs"
                               >Gunnery Skill:</text
-                              ><text fill="#231f20" x="48.304" id="gunnerySkill0" y="31.967" style="font-family:Eurostile;font-size:7.200px;font-weight:normal;font-style:normal" text-anchor="start"
+                              ><text fill="#231f20" x="53.392" id="gunnerySkill0" y="29.275" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal" text-anchor="start"
                               >0</text
-                              ><path id="blankGunnerySkill0" d="M 48.304,32.967 L 81.714,32.967" stroke-width="0.720" stroke-linejoin="round" stroke="#231f20"
+                              ><path id="blankGunnerySkill0" d="M 53.392,30.275 L 86.802,30.275" stroke-width="0.720" stroke-linejoin="round" stroke="#231f20"
                               /><g
-                              ><path fill="none" d="M 163.625,14.753 c 0,-0.560 0.455,-1.015 1.015,-1.015 l 78.495,0 c 0.560,0 1.015,0.455, 1.015,1.015 l 0,17.970 c 0,0.560 -0.455,1.015, -1.015,1.015 l -78.495,0 c -0.560,0 -1.015,-0.455, -1.015,-1.015Z" stroke-width="1.0" stroke-linejoin="round" stroke="#231f20"
-                                /><path fill="none" stroke-width="0.58" d="M 163.625,23.738 l 80.525,0 M 177.046,13.738 l 0,20.000  M 190.467,13.738 l 0,20.000  M 203.888,13.738 l 0,20.000  M 217.308,13.738 l 0,20.000  M 230.729,13.738 l 0,20.000" stroke-linecap="round" stroke-linejoin="miter" stroke="#231f20"
-                                /><text fill="#231f20" x="170.335" y="20.738" style="font-family:Eurostile;font-size:5.800px;font-weight:bold;font-style:normal" text-anchor="middle"
+                              ><path fill="none" d="M 163.625,9.978 c 0,-0.560 0.455,-1.015 1.015,-1.015 l 78.495,0 c 0.560,0 1.015,0.455, 1.015,1.015 l 0,15.970 c 0,0.560 -0.455,1.015, -1.015,1.015 l -78.495,0 c -0.560,0 -1.015,-0.455, -1.015,-1.015Z" stroke-width="1.0" stroke-linejoin="round" stroke="#231f20"
+                                /><path fill="none" stroke-width="0.58" d="M 163.625,17.963 l 80.525,0 M 177.046,8.963 l 0,18.000  M 190.467,8.963 l 0,18.000  M 203.888,8.963 l 0,18.000  M 217.308,8.963 l 0,18.000  M 230.729,8.963 l 0,18.000" stroke-linecap="round" stroke-linejoin="miter" stroke="#231f20"
+                                /><text fill="#231f20" x="170.335" y="15.963" style="font-family:Eurostile;font-size:5.800px;font-weight:bold;font-style:normal" text-anchor="middle"
                                 >1</text
-                                ><text fill="#231f20" x="170.335" y="30.738" style="font-family:Eurostile;font-size:5.800px;font-weight:bold;font-style:normal;mml-field-width:9.421" text-anchor="middle"
+                                ><text fill="#231f20" x="170.335" y="24.963" style="font-family:Eurostile;font-size:5.800px;font-weight:bold;font-style:normal;mml-field-width:9.421" text-anchor="middle"
                                 >3</text
-                                ><text fill="#231f20" x="183.756" y="20.738" style="font-family:Eurostile;font-size:5.800px;font-weight:bold;font-style:normal" text-anchor="middle"
+                                ><text fill="#231f20" x="183.756" y="15.963" style="font-family:Eurostile;font-size:5.800px;font-weight:bold;font-style:normal" text-anchor="middle"
                                 >2</text
-                                ><text fill="#231f20" x="183.756" y="30.738" style="font-family:Eurostile;font-size:5.800px;font-weight:bold;font-style:normal;mml-field-width:9.421" text-anchor="middle"
+                                ><text fill="#231f20" x="183.756" y="24.963" style="font-family:Eurostile;font-size:5.800px;font-weight:bold;font-style:normal;mml-field-width:9.421" text-anchor="middle"
                                 >5</text
-                                ><text fill="#231f20" x="197.177" y="20.738" style="font-family:Eurostile;font-size:5.800px;font-weight:bold;font-style:normal" text-anchor="middle"
+                                ><text fill="#231f20" x="197.177" y="15.963" style="font-family:Eurostile;font-size:5.800px;font-weight:bold;font-style:normal" text-anchor="middle"
                                 >3</text
-                                ><text fill="#231f20" x="197.177" y="30.738" style="font-family:Eurostile;font-size:5.800px;font-weight:bold;font-style:normal;mml-field-width:9.421" text-anchor="middle"
+                                ><text fill="#231f20" x="197.177" y="24.963" style="font-family:Eurostile;font-size:5.800px;font-weight:bold;font-style:normal;mml-field-width:9.421" text-anchor="middle"
                                 >7</text
-                                ><text fill="#231f20" x="210.598" y="20.738" style="font-family:Eurostile;font-size:5.800px;font-weight:bold;font-style:normal" text-anchor="middle"
+                                ><text fill="#231f20" x="210.598" y="15.963" style="font-family:Eurostile;font-size:5.800px;font-weight:bold;font-style:normal" text-anchor="middle"
                                 >4</text
-                                ><text fill="#231f20" x="210.598" y="30.738" style="font-family:Eurostile;font-size:5.800px;font-weight:bold;font-style:normal;mml-field-width:9.421" text-anchor="middle"
+                                ><text fill="#231f20" x="210.598" y="24.963" style="font-family:Eurostile;font-size:5.800px;font-weight:bold;font-style:normal;mml-field-width:9.421" text-anchor="middle"
                                 >10</text
-                                ><text fill="#231f20" x="224.019" y="20.738" style="font-family:Eurostile;font-size:5.800px;font-weight:bold;font-style:normal" text-anchor="middle"
+                                ><text fill="#231f20" x="224.019" y="15.963" style="font-family:Eurostile;font-size:5.800px;font-weight:bold;font-style:normal" text-anchor="middle"
                                 >5</text
-                                ><text fill="#231f20" x="224.019" y="30.738" style="font-family:Eurostile;font-size:5.800px;font-weight:bold;font-style:normal;mml-field-width:9.421" text-anchor="middle"
+                                ><text fill="#231f20" x="224.019" y="24.963" style="font-family:Eurostile;font-size:5.800px;font-weight:bold;font-style:normal;mml-field-width:9.421" text-anchor="middle"
                                 >11</text
-                                ><text fill="#231f20" x="237.440" y="20.738" style="font-family:Eurostile;font-size:5.800px;font-weight:bold;font-style:normal" text-anchor="middle"
+                                ><text fill="#231f20" x="237.440" y="15.963" style="font-family:Eurostile;font-size:5.800px;font-weight:bold;font-style:normal" text-anchor="middle"
                                 >6</text
-                                ><text x="237.440" y="30.738" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.800px;font-weight:bold;font-style:normal" textLength="9.421" lengthAdjust="spacingAndGlyphs"
+                                ><text x="237.440" y="24.963" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.800px;font-weight:bold;font-style:normal" textLength="9.421" lengthAdjust="spacingAndGlyphs"
                                 >Dead</text
-                                ><text fill="#231f20" x="160.625" y="20.738" style="font-family:Eurostile;font-size:5.200px;font-weight:bold;font-style:normal;mml-field-width:41.975" text-anchor="end"
+                                ><text fill="#231f20" x="160.625" y="15.963" style="font-family:Eurostile;font-size:5.200px;font-weight:bold;font-style:normal;mml-field-width:41.975" text-anchor="end"
                                 >Hits Taken</text
-                                ><text fill="#231f20" x="160.625" y="30.738" style="font-family:Eurostile;font-size:5.200px;font-weight:bold;font-style:normal;mml-field-width:41.975" text-anchor="end"
+                                ><text fill="#231f20" x="160.625" y="24.963" style="font-family:Eurostile;font-size:5.200px;font-weight:bold;font-style:normal;mml-field-width:41.975" text-anchor="end"
                                 >Consciousness #</text
                               ></g
                             ></g
