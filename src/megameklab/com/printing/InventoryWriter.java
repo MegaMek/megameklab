@@ -221,6 +221,11 @@ public class InventoryWriter {
                     String munition = ((AmmoType) m.getType()).getSubMunitionName().replace("(Clan) ", "");
                     shortName = shortName.replace(munition, "");
                     ammo.merge(shortName.trim(), m.getBaseShotsLeft(), Integer::sum);
+                } else if ((sheet.getEntity() instanceof Protomech)
+                        && (((AmmoType) m.getType()).getAmmoType() == AmmoType.T_IATM)) {
+                    // Bit of an ugly hack to get fusillade ammo to show up and identify as fusillade
+                    // instead of iATM3
+                    ammo.merge("Fusillade", m.getBaseShotsLeft(), Integer::sum);
                 }
                 continue;
             }
