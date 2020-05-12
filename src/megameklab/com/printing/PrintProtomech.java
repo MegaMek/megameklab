@@ -13,10 +13,7 @@
  */
 package megameklab.com.printing;
 
-import megamek.common.Entity;
-import megamek.common.EquipmentType;
-import megamek.common.Mounted;
-import megamek.common.Protomech;
+import megamek.common.*;
 import megameklab.com.MegaMekLab;
 import org.apache.batik.anim.dom.SVGLocatableSupport;
 import org.apache.batik.util.SVGConstants;
@@ -90,11 +87,6 @@ public class PrintProtomech extends PrintEntity {
         if (getEntity().hasUMU()) {
             setTextField(LBL_JUMP, "Underwater:");
             setTextField(MP_JUMP, getEntity().getAllUMUCount());
-        }
-        String armorName = EquipmentType.getArmorTypeName(proto.getArmorType(Protomech.LOC_TORSO));
-        EquipmentType armor = EquipmentType.get(armorName);
-        if (armor != null) {
-            setTextField(ARMOR_TYPE, armor.getShortName());
         }
         printTorsoCritChart();
         if (!proto.hasMainGun()) {
@@ -170,6 +162,17 @@ public class PrintProtomech extends PrintEntity {
                 setTextField(TORSO_WEAPON + i, sb.toString());
                 break;
             }
+        }
+    }
+
+    @Override
+    protected void drawArmor() {
+        super.drawArmor();
+        String armorName = EquipmentType.getArmorTypeName(proto.getArmorType(Protomech.LOC_TORSO),
+                TechConstants.isClan(proto.getArmorTechLevel(Protomech.LOC_TORSO)));
+        EquipmentType armor = EquipmentType.get(armorName);
+        if (armor != null) {
+            setTextField(ARMOR_TYPE, armor.getShortName(), true);
         }
     }
 
