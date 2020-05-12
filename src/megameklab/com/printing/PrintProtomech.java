@@ -87,8 +87,15 @@ public class PrintProtomech extends PrintEntity {
         super.writeTextFields();
         setTextField(PROTOMECH_INDEX, "PROTOMECH " + (unitIndex + 1));
         splitName();
-        String armor = EquipmentType.getArmorTypeName(proto.getArmorType(Protomech.LOC_TORSO));
-        setTextField(ARMOR_TYPE, armor);
+        if (getEntity().hasUMU()) {
+            setTextField(LBL_JUMP, "Underwater:");
+            setTextField(MP_JUMP, getEntity().getAllUMUCount());
+        }
+        String armorName = EquipmentType.getArmorTypeName(proto.getArmorType(Protomech.LOC_TORSO));
+        EquipmentType armor = EquipmentType.get(armorName);
+        if (armor != null) {
+            setTextField(ARMOR_TYPE, armor.getShortName());
+        }
         printTorsoCritChart();
         if (!proto.hasMainGun()) {
             hideElement(MAIN_GUN_ARMOR);

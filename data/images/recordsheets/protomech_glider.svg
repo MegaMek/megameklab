@@ -28,15 +28,15 @@
     >Lorem Ipsum</text
     ><text fill="#231f20" x="3.000" y="35.095" style="font-family:Eurostile;font-size:7.200px;font-weight:bold;font-style:normal" text-anchor="start"
     >Movement Points:</text
-    ><text x="5.000" y="43.869" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:7.200px;font-weight:bold;font-style:normal" textLength="24.300" lengthAdjust="spacingAndGlyphs"
+    ><text fill="#231f20" x="5.000" y="43.869" style="font-family:Eurostile;font-size:7.200px;font-weight:bold;font-style:normal" text-anchor="start"
     >Ground:</text
     ><text fill="#231f20" x="55.000" id="mpGround" y="43.869" style="font-family:Eurostile;font-size:7.200px;font-weight:normal;font-style:normal" text-anchor="middle"
     >1</text
-    ><text x="5.000" y="51.869" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:7.200px;font-weight:bold;font-style:normal" textLength="21.577" lengthAdjust="spacingAndGlyphs"
+    ><text fill="#231f20" x="5.000" y="51.869" style="font-family:Eurostile;font-size:7.200px;font-weight:bold;font-style:normal" text-anchor="start"
     >Cruise:</text
     ><text fill="#231f20" x="55.000" id="mpWalk" y="51.869" style="font-family:Eurostile;font-size:7.200px;font-weight:normal;font-style:normal" text-anchor="middle"
     >0</text
-    ><text x="5.000" y="59.869" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:7.200px;font-weight:bold;font-style:normal" id="lblJump" textLength="17.860" lengthAdjust="spacingAndGlyphs"
+    ><text fill="#231f20" x="5.000" y="59.869" style="font-family:Eurostile;font-size:7.200px;font-weight:bold;font-style:normal" text-anchor="start"
     >Flank:</text
     ><text fill="#231f20" x="55.000" id="mpRun" y="59.869" style="font-family:Eurostile;font-size:7.200px;font-weight:normal;font-style:normal" text-anchor="middle"
     >0</text

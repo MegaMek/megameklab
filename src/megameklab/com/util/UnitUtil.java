@@ -1091,7 +1091,7 @@ public class UnitUtil {
         if (entity instanceof BattleArmor) {
             return isPrintableBAEquipment(eq);
         }
-        return isPrintableEquipment(eq, entity instanceof Mech);
+        return isPrintableEquipment(eq, (entity instanceof Mech) || (entity instanceof Protomech));
     }
 
     /**
@@ -1099,10 +1099,10 @@ public class UnitUtil {
      * equipment section of the Record sheet.
      *
      * @param eq     The equipment
-     * @param isMech Whether the equipment is mounted on a mech
+     * @param isMechOrProtomech Whether the equipment is mounted on a mech or protomech
      * @return       Whether the equipment should be shown on the record sheet
      */
-    public static boolean isPrintableEquipment(EquipmentType eq, boolean isMech) {
+    public static boolean isPrintableEquipment(EquipmentType eq, boolean isMechOrProtomech) {
 
         if (UnitUtil.isArmorOrStructure(eq)) {
             return false;
@@ -1113,10 +1113,10 @@ public class UnitUtil {
             return false;
         }
 
-        if (UnitUtil.isJumpJet(eq) && isMech) {
+        if (UnitUtil.isJumpJet(eq) && isMechOrProtomech) {
             return false;
         }
-        if (!eq.isHittable() && isMech) {
+        if (!eq.isHittable() && isMechOrProtomech) {
             return false;
         }
 
@@ -1127,7 +1127,7 @@ public class UnitUtil {
                         || eq.hasFlag(MiscType.F_ARTEMIS_V)
                         || eq.hasFlag(MiscType.F_APOLLO)
                         || eq.hasFlag(MiscType.F_PPC_CAPACITOR)
-                        || (eq.hasFlag(MiscType.F_MASC) && isMech)
+                        || (eq.hasFlag(MiscType.F_MASC) && isMechOrProtomech)
                         || eq.hasFlag(MiscType.F_HARJEL)
                         || eq.hasFlag(MiscType.F_MASS)
                         || eq.hasFlag(MiscType.F_CHASSIS_MODIFICATION)
