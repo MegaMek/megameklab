@@ -31,17 +31,14 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Vector;
+import java.util.*;
 
 import javax.swing.ImageIcon;
 
 import com.kitfox.svg.SVGDiagram;
 import com.kitfox.svg.SVGUniverse;
 
+import jdk.nashorn.internal.runtime.options.Option;
 import megamek.common.Aero;
 import megamek.common.AmmoType;
 import megamek.common.BattleArmor;
@@ -1163,7 +1160,13 @@ public class ImageHelper {
 
     public static void printMashCore(Graphics2D g2d, float lineStart,
             float linePoint, Font font, boolean isArmored, Entity entity) {
-        int theaters = entity.countWorkingMisc(MiscType.F_MASH_EXTRA) + 1;
+        int theaters = 1;
+        Optional<Mounted> mash = entity.getMisc().stream()
+                .filter(m -> m.getType().hasFlag(MiscType.F_DRONE_CARRIER_CONTROL))
+                .findFirst();
+        if (mash.isPresent()) {
+            theaters = (int) mash.get().getSize();
+        }
         String theaterString = theaters > 1 ? " theaters)" : " theater)";
         String printString;
         if (isArmored) {
@@ -1179,7 +1182,13 @@ public class ImageHelper {
 
     public static void printDroneControl(Graphics2D g2d, float lineStart,
             float linePoint, Font font, boolean isArmored, Entity entity) {
-        int drones = entity.countWorkingMisc(MiscType.F_DRONE_EXTRA);
+        int drones = 1;
+        Optional<Mounted> dccs = entity.getMisc().stream()
+                .filter(m -> m.getType().hasFlag(MiscType.F_DRONE_CARRIER_CONTROL))
+                .findFirst();
+        if (dccs.isPresent()) {
+            drones = (int) dccs.get().getSize();
+        }
         String droneString = drones > 1 ? " drones)" : " drone)";
         String printString;
         if (isArmored) {
