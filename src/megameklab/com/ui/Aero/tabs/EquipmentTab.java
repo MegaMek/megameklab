@@ -157,15 +157,26 @@ public class EquipmentTab extends ITab implements ActionListener {
         equipmentTable.setShowGrid(false);
         equipmentTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         equipmentTable.setDoubleBuffered(true);
+        equipmentTable.setRowHeight((int) (equipmentTable.getRowHeight() * 1.2));
         TableColumn column = null;
         for (int i = 0; i < equipmentList.getColumnCount(); i++) {
             column = equipmentTable.getColumnModel().getColumn(i);
-            if(i == 0) {
+            if (i == CriticalTableModel.NAME) {
                 column.setPreferredWidth(200);
+            } else if (i == CriticalTableModel.SIZE) {
+                column.setCellEditor(equipmentList.new SpinnerCellEditor());
             }
             column.setCellRenderer(equipmentList.getRenderer());
 
         }
+        equipmentList.addTableModelListener(ev -> {
+            if (refresh != null) {
+                refresh.refreshStatus();
+                refresh.refreshPreview();
+                refresh.refreshBuild();
+                refresh.refreshSummary();
+            }
+        });
         equipmentScroll.setViewportView(equipmentTable);
         equipmentScroll.setMinimumSize(new java.awt.Dimension(300, 200));
         equipmentScroll.setPreferredSize(new java.awt.Dimension(300, 200));
