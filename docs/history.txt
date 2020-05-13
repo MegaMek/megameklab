@@ -4,6 +4,7 @@ VERSION HISTORY:
 + Issue #614: Change the list of equipment while sort by Crit section cause error
 + Issue #612: Overlapping Text in Vehicle Record Sheet
 + Bug: Can't assign UMU to ProtoMech
++ Issue #620: Dropshuttle bay cost calculation
 
 0.47.6 (2020-5-03 1715 UTC)
 + Issue #553: Loading or printing LAM causes ArrayIndexOutOfBoundsException
