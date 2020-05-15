@@ -105,9 +105,16 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
                 if (wtype.getMinimumRange() > 0) {
                     r[RangeType.RANGE_MINIMUM] = String.valueOf(wtype.getMinimumRange());
                 }
-                r[RangeType.RANGE_SHORT] = String.valueOf(wtype.getShortRange());
-                r[RangeType.RANGE_MEDIUM] = String.valueOf(wtype.getMediumRange());
-                r[RangeType.RANGE_LONG] = String.valueOf(wtype.getLongRange());
+                if ((wtype.getAmmoType() == AmmoType.T_LRM_TORPEDO)
+                    || (wtype.getAmmoType() == AmmoType.T_SRM_TORPEDO)) {
+                    r[RangeType.RANGE_SHORT] = String.valueOf(wtype.getWShortRange());
+                    r[RangeType.RANGE_MEDIUM] = String.valueOf(wtype.getWMediumRange());
+                    r[RangeType.RANGE_LONG] = String.valueOf(wtype.getWLongRange());
+                } else {
+                    r[RangeType.RANGE_SHORT] = String.valueOf(wtype.getShortRange());
+                    r[RangeType.RANGE_MEDIUM] = String.valueOf(wtype.getMediumRange());
+                    r[RangeType.RANGE_LONG] = String.valueOf(wtype.getLongRange());
+                }
             }
             String[][] retVal = new String[1][];
             retVal[0] = r;
