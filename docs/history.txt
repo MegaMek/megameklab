@@ -5,6 +5,8 @@ VERSION HISTORY:
 + Issue #612: Overlapping Text in Vehicle Record Sheet
 + Bug: Can't assign UMU to ProtoMech
 + Issue #620: Dropshuttle bay cost calculation
++ Issue #622: Grenade launchers break fighter record sheets
++ Issue #623: Torpedoes have a listed range of zero on record sheets
 
 0.47.6 (2020-5-03 1715 UTC)
 + Issue #553: Loading or printing LAM causes ArrayIndexOutOfBoundsException
