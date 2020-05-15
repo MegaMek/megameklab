@@ -530,19 +530,26 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     protected int addMultilineTextElement(Element canvas, double x, double y, double width, double lineHeight,
             String text, float fontSize, String anchor, String weight, String fill, char delimiter) {
         int lines = 0;
+        // The index of the character after the most recent delimiter found. Everything in text
+        // up to pos will fit in the available space.
         int pos = 0;
         while (text.length() > 0) {
+            // If the remaining text fits, add a line and exit.
             if (getTextLength(text, fontSize) <= width) {
                 addTextElement(canvas, x, y, text, fontSize, anchor, weight, fill);
                 lines++;
                 return lines;
             }
+            // Check for another delimiter after the last one; we might be able to fit more text on the line.
             int index = text.substring(pos).indexOf(delimiter);
+            // If the delimiter doesn't exist in the text, add it as is.
             if ((index < 0) && (pos == 0)) {
                 addTextElement(canvas, x, y, text, fontSize, anchor, weight, fill);
                 lines++;
                 return lines;
             }
+            // If there are no more delimiters in the text, or adding the next section after the previous
+            // delimiter that was found, add the text up to pos.
             if ((index < 0)
                     || ((getTextLength(text.substring(0, pos + index), fontSize) > width)
                     && (pos > 0))) {
@@ -551,7 +558,9 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
                 y += lineHeight;
                 text = text.substring(pos);
                 pos = 0;
-            } else if (index > 0) {
+            } else {
+                // Otherwise we know that the text up to index will fit so we update pos to the first character
+                // after the delimiter and keep checking.
                 pos += index + 1;
             }
         }
