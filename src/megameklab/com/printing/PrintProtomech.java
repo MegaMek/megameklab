@@ -19,6 +19,8 @@ import org.apache.batik.anim.dom.SVGLocatableSupport;
 import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
 
+import java.util.StringJoiner;
+
 /**
  * Lays out a record sheet block for a single protomech
  */
@@ -162,6 +164,9 @@ public class PrintProtomech extends PrintEntity {
                 setTextField(TORSO_WEAPON + i, sb.toString());
                 break;
             }
+        }
+        if (proto.hasWorkingMisc(MiscType.F_MAGNETIC_CLAMP)) {
+            hideElement(MAG_CLAMP_NOTE, false);
         }
     }
 
