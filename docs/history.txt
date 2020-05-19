@@ -7,6 +7,7 @@ VERSION HISTORY:
 + Issue #620: Dropshuttle bay cost calculation
 + Issue #622: Grenade launchers break fighter record sheets
 + Issue #623: Torpedoes have a listed range of zero on record sheets
++ Issue #627: Some Quad Protomech Maximum armor values are incorrect
 
 0.47.6 (2020-5-03 1715 UTC)
 + Issue #553: Loading or printing LAM causes ArrayIndexOutOfBoundsException
