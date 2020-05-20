@@ -96,9 +96,6 @@ public class PrintProtomech extends PrintEntity {
             hideElement(MAIN_GUN_SHADOW);
             hideElement(MAIN_GUN_TEXT);
         }
-        if (proto.hasUMU()) {
-            setTextField(LBL_JUMP, "Underwater");
-        }
     }
 
     /**
