@@ -1,5 +1,5 @@
 /*
- * MegaMekLab - Copyright (C) 2008
+ * MegaMekLab - Copyright (C) 2008-2020 The MegaMek Team
  *
  * Original author - jtighe (torren@users.sourceforge.net)
  *
@@ -16,43 +16,14 @@
 
 package megameklab.com.util;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.font.FontRenderContext;
-import java.awt.font.GlyphVector;
-import java.awt.font.TextAttribute;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Rectangle2D;
 import java.io.File;
-import java.util.*;
 
 import javax.swing.ImageIcon;
 
-import megamek.common.Aero;
-import megamek.common.AmmoType;
-import megamek.common.BattleArmor;
-import megamek.common.BipedMech;
-import megamek.common.ConvFighter;
-import megamek.common.Dropship;
 import megamek.common.Entity;
-import megamek.common.EntityMovementMode;
-import megamek.common.LandAirMech;
-import megamek.common.LargeSupportTank;
-import megamek.common.Mech;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
-import megamek.common.Protomech;
-import megamek.common.QuadMech;
-import megamek.common.SmallCraft;
-import megamek.common.Tank;
-import megamek.common.TechConstants;
-import megamek.common.VTOL;
 
 public class ImageHelper {
-    public static String recordSheetPath = "./data/images/recordsheets/";
     public static String fluffPath = "./data/images/fluff/";
     public static String imagePath = "./data/images/";
 
@@ -68,8 +39,6 @@ public class ImageHelper {
     public static String imageWarship = "warship";
     public static String imageSpaceStation = "spacestation";
 
-    public static Image armorPip = null;
-
     /**
      * Checks for a fluff image for the unit starting with any file explicitly associated with the
      * unit then in the default directory for the unit type for a file consisting of the name of the
@@ -81,7 +50,7 @@ public class ImageHelper {
      */
     public static File getFluffFile(Entity unit, String dir) {
         String path = new File(fluffPath).getAbsolutePath();
-        File f = null;
+        File f;
         
         if (unit.getFluff().getMMLImagePath().length() > 0) {
             f = new File(unit.getFluff().getMMLImagePath());
@@ -121,7 +90,7 @@ public class ImageHelper {
             return null;
         }
 
-        Image fluff = null;
+        Image fluff;
 
         String path = new File(fluffPath).getAbsolutePath()
                 + File.separatorChar + image;
@@ -138,7 +107,7 @@ public class ImageHelper {
     }
 
     public static Image getFluffImage(Entity unit, String dir) {
-        Image fluff = null;
+        Image fluff;
 
         String path = new File(fluffPath).getAbsolutePath()
                 + File.separatorChar + dir + File.separatorChar;

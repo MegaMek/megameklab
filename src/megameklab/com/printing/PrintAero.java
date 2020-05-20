@@ -116,11 +116,6 @@ public class PrintAero extends PrintEntity {
     }
 
     @Override
-    protected boolean isCenterlineLocation(int loc) {
-        return loc == Aero.LOC_NOSE || loc == Aero.LOC_AFT;
-    }
-
-    @Override
     public void processImage(int pageNum, PageFormat pageFormat) {
         super.processImage(pageNum, pageFormat);
         if (aero.tracksHeat()) {

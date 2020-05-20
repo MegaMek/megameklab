@@ -42,8 +42,8 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
     private boolean artemisIV = false;
     private boolean artemisV = false;
     private boolean apollo = false;
-    private List<String> weaponNames = new ArrayList<>();
-    private List<String> quantities = new ArrayList<>();
+    private final List<String> weaponNames = new ArrayList<>();
+    private final List<String> quantities = new ArrayList<>();
 
     public WeaponBayInventoryEntry(Aero ship, WeaponBayText bay, boolean isCapital) {
         this.ship = ship;
@@ -148,7 +148,7 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
             if (bay.weaponAmmo.containsKey(wtype)) {
                 Mounted ammo = bay.weaponAmmo.get(wtype);
                 if (wtype.getAmmoType() == AmmoType.T_AR10) {
-                    nameString.append(" (").append((int) ammo.getAmmoCapacity()).append(" ton capacity)");
+                    nameString.append(" (").append((int) ammo.getSize()).append(" ton capacity)");
                 } else if (wtype.isCapital() && wtype.hasFlag(WeaponType.F_MISSILE)) {
                     nameString.append(" (").append(ammo.getBaseShotsLeft()).append(" missiles)");
                 } else {

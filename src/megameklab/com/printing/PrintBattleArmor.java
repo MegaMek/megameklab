@@ -70,11 +70,6 @@ public class PrintBattleArmor extends PrintEntity {
     }
 
     @Override
-    protected boolean isCenterlineLocation(int loc) {
-        return false;
-    }
-
-    @Override
     protected String getRecordSheetTitle() {
         // Not used
         return "";

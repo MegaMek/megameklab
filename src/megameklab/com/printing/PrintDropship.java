@@ -99,11 +99,6 @@ public class PrintDropship extends PrintAero {
     }
 
     @Override
-    protected boolean isCenterlineLocation(int loc) {
-        return (loc == Jumpship.LOC_NOSE) || (loc == Jumpship.LOC_AFT);
-    }
-
-    @Override
     public int getPageCount() {
         return secondPage ? 2 : 1;
     }
@@ -341,8 +336,6 @@ public class PrintDropship extends PrintAero {
     @Override
     public String formatFeatures() {
         StringJoiner sj = new StringJoiner(", ");
-        int mashTheaters = 0;
-        int drones = 0;
         Map<String, Integer> eqCount = new HashMap<>();
         for (Mounted mount : ship.getMisc()) {
             if (UnitUtil.isPrintableEquipment(mount.getType())) {

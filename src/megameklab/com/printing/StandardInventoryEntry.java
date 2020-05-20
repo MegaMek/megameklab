@@ -35,7 +35,7 @@ import java.util.Objects;
  * This is for single pieces of equipment. WeaponBays should use {@link WeaponBayInventoryEntry}.
  */
 public class StandardInventoryEntry implements InventoryEntry, Comparable<StandardInventoryEntry> {
-    private Mounted mount;
+    private final Mounted mount;
 
     private final String[][] ranges;
     private final boolean isMML;
@@ -191,7 +191,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
             name.append(" (SSW)");
         }
         if (mount.getEntity().isAero()) {
-            name.append(" ").append(StringUtils.getEquipmentInfo((Aero) mount.getEntity(), mount));
+            name.append(" ").append(StringUtils.getAeroEquipmentInfo(mount));
         }
         return name.toString();
     }
