@@ -356,14 +356,21 @@ public abstract class PrintEntity extends PrintRecordSheet {
             }
             if (null != element) {
                 ArmorPipLayout.addPips(this, element, getEntity().getOArmor(loc),
-                        PipType.forAT(getEntity().getArmorType(loc)), 0.5);
+                        PipType.forAT(getEntity().getArmorType(loc)), 0.5, FILL_WHITE);
             }
             element = getSVGDocument().getElementById(STRUCTURE_PIPS + getEntity().getLocationAbbr(loc));
             if (null != element) {
                 ArmorPipLayout.addPips(this, element, getEntity().getOInternal(loc),
-                        PipType.CIRCLE, 0.5);
+                        PipType.CIRCLE, 0.5, structurePipFill());
             }
         }
+    }
+
+    /**
+     * @return The color to use in the inside of structure pips
+     */
+    String structurePipFill() {
+        return FILL_WHITE;
     }
     
     /**

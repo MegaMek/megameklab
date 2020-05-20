@@ -27,18 +27,10 @@ import java.awt.font.TextAttribute;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
 import java.util.*;
 
 import javax.swing.ImageIcon;
 
-import com.kitfox.svg.SVGDiagram;
-import com.kitfox.svg.SVGUniverse;
-
-import jdk.nashorn.internal.runtime.options.Option;
 import megamek.common.Aero;
 import megamek.common.AmmoType;
 import megamek.common.BattleArmor;
@@ -1337,15 +1329,4 @@ public class ImageHelper {
         g2d.setFont(UnitUtil.getNewFont(g2d, fuelAmount, false, 200, 7.0f));
         g2d.drawString(fuelAmount, pointX, pointY);
     }
-
-    public static SVGDiagram loadSVGImage(File file) {
-        SVGUniverse universe = new SVGUniverse(); // Can be static final ...
-        try (InputStream fileStream = new FileInputStream(file)) {
-            URI svgFile = universe.loadSVG(fileStream, file.toString());
-            return universe.getDiagram(svgFile);
-        } catch (IOException e) {
-            return null;
-        }
-    }
-
 }

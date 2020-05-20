@@ -1113,7 +1113,7 @@ public class UnitUtil {
             return false;
         }
 
-        if (UnitUtil.isJumpJet(eq) && isMech) {
+        if (UnitUtil.isJumpJet(eq)) {
             return false;
         }
         if (!eq.isHittable() && isMech) {
