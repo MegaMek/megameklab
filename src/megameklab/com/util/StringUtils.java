@@ -88,16 +88,6 @@ public class StringUtils {
         };
     }
 
-    public static Comparator<? super EquipmentInfo> equipmentInfoComparator() {
-        return new Comparator<EquipmentInfo>() {
-            public int compare(EquipmentInfo eq1, EquipmentInfo eq2) {
-                String s1 = eq1.name.toLowerCase();
-                String s2 = eq2.name.toLowerCase();
-                return s1.compareTo(s2);
-            }
-        };
-    }
-
     public static Comparator<Mounted> mountedComparator() {
         return new Comparator<Mounted>() {
             public int compare(Mounted m1, Mounted m2) {
