@@ -150,16 +150,6 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     private void assignFonts() {
         typeface = CConfig.getParam(CConfig.RS_FONT, DEFAULT_TYPEFACE);
         Font font = Font.decode(typeface);
-        // If the font is not installed, use system default sans
-        if (null == font) {
-            typeface = Font.SANS_SERIF;
-            font = Font.decode(typeface);
-        }
-        // If that doesn't work, get the default dialog font
-        if (null == font) {
-            font = Font.decode(null);
-            typeface = font.getName();
-        }
         normalFont = font.deriveFont(Font.PLAIN, 8);
         boldFont = font.deriveFont(Font.BOLD, 8);
     }

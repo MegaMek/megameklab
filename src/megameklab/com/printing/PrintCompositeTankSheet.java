@@ -35,9 +35,6 @@ import java.util.Calendar;
  */
 public class PrintCompositeTankSheet extends PrintRecordSheet {
 
-    /** Space between the two half-sheets */
-    private static final double PADDING = 6.0;
-
     private final Tank tank1;
     private final Tank tank2;
 

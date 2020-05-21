@@ -19,8 +19,6 @@ import org.apache.batik.anim.dom.SVGLocatableSupport;
 import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
 
-import java.util.StringJoiner;
-
 /**
  * Lays out a record sheet block for a single protomech
  */
@@ -68,11 +66,6 @@ public class PrintProtomech extends PrintEntity {
     @Override
     protected Entity getEntity() {
         return proto;
-    }
-
-    @Override
-    protected boolean isCenterlineLocation(int loc) {
-        return false;
     }
 
     @Override

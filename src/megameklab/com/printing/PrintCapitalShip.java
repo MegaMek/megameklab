@@ -171,7 +171,7 @@ public class PrintCapitalShip extends PrintDropship {
             final String id = ARMOR_PIPS + ship.getLocationAbbr(loc);
             Element element = getSVGDocument().getElementById(id);
             if (element instanceof SVGRectElement) {
-                printArmorRegion((SVGRectElement) element, loc, ship.getOArmor(loc));
+                printArmorRegion((SVGRectElement) element, ship.getOArmor(loc));
             } else {
                 MegaMekLab.getLogger().error(getClass(), "drawArmorStructurePips()",
                         "No SVGRectElement found with id " + id);
@@ -234,12 +234,10 @@ public class PrintCapitalShip extends PrintDropship {
      * @param svgRect
      *            A rectangle that outlines the border of the space for the armor
      *            block.
-     * @param loc
-     *            The location index
      * @param armor
      *            The amount of armor in the location
      */
-    private void printArmorRegion(SVGRectElement svgRect, int loc, int armor) {
+    private void printArmorRegion(SVGRectElement svgRect, int armor) {
         Rectangle2D bbox = getRectBBox(svgRect);
 
         double pipWidth = ARMOR_PIP_WIDTH;

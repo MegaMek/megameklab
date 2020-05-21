@@ -1999,18 +1999,6 @@ public class UnitUtil {
         return rsFont.deriveFont(pointSize);
     }
 
-    public static Font getNewFont(Graphics2D g2d, String info, boolean bold,
-            int stringWidth, float pointSize) {
-        Font font = UnitUtil.deriveFont(bold, pointSize);
-
-        while ((ImageHelper.getStringWidth(g2d, info, font) > stringWidth)
-                && (pointSize > 0)) {
-            pointSize -= .1;
-            font = UnitUtil.deriveFont(bold, pointSize);
-        }
-        return font;
-    }
-
     public static void removeOneShotAmmo(Entity unit) {
         ArrayList<Mounted> ammoList = new ArrayList<Mounted>();
 

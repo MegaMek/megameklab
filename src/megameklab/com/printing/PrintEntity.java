@@ -383,15 +383,6 @@ public abstract class PrintEntity extends PrintRecordSheet {
         return 0;
     }
     
-    /**
-     * Identifies which locations are on the unit's centerline and should have armor and structure
-     * pips laid out with left-right symmetry
-     * 
-     * @param loc The location to check
-     * @return    Whether the location is along the unit's centerline
-     */
-    protected abstract boolean isCenterlineLocation(int loc);
-    
     protected void drawStructure() {
         
     }
@@ -461,7 +452,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
             // First check whether we can shrink them less than what is required for a new column
             if (cols * (int) (rows * nextCol) > hsCount) {
                 rows = (int) Math.ceil((double) hsCount / cols);
-                size = viewHeight / rows;
+                size = (double) viewHeight / rows;
             } else {
                 cols++;
                 size *= viewWidth / (cols * size);

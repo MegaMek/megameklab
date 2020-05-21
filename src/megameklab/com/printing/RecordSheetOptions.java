@@ -23,10 +23,10 @@ import megameklab.com.util.CConfig;
  */
 public class RecordSheetOptions {
     
-    private boolean quirks = true;
-    private boolean pilotData = true;
-    private boolean eraIcon = true;
-    private boolean role = true;
+    private boolean quirks;
+    private boolean pilotData;
+    private boolean eraIcon;
+    private boolean role;
     
     public RecordSheetOptions() {
         this.quirks = CConfig.getBooleanParam(CConfig.RS_SHOW_QUIRKS);
