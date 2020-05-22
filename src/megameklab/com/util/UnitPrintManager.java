@@ -270,11 +270,6 @@ public class UnitPrintManager {
     public static boolean printAllUnits(Vector<Entity> loadedUnits, boolean singlePrint) {
         Book book = new Book();
         
-        List<Infantry> infList = new ArrayList<>();
-        List<BattleArmor> baList = new ArrayList<>();
-        List<Protomech> protoList = new ArrayList<>();
-        List<Entity> unprintable = new ArrayList<>();
-
         HashPrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
         aset.add(MediaSizeName.NA_LETTER);
         aset.add(new MediaPrintableArea(0, 0, 8.5f, 11, MediaPrintableArea.INCH));
@@ -290,76 +285,11 @@ public class UnitPrintManager {
 
         pageFormat.setPaper(p);
 
-        Tank tank1 = null;
-        for (Entity unit : loadedUnits) {
-            if (unit instanceof Mech) {
-                UnitUtil.removeOneShotAmmo(unit);
-                UnitUtil.expandUnitMounts((Mech) unit);
-                book.append(new PrintMech((Mech) unit, book.getNumberOfPages()), pageFormat);
-            } else if ((unit instanceof Tank) && ((unit.getMovementMode() == EntityMovementMode.NAVAL) || (unit.getMovementMode() == EntityMovementMode.SUBMARINE) || (unit.getMovementMode() == EntityMovementMode.HYDROFOIL))) {
-                book.append(new PrintTank((Tank) unit, book.getNumberOfPages()), pageFormat);
-            } else if (unit instanceof Tank) {
-                if (singlePrint) {
-                    book.append(new PrintCompositeTankSheet((Tank) unit, null, book.getNumberOfPages()), pageFormat);
-                } else if (null != tank1) {
-                    book.append(new PrintCompositeTankSheet(tank1, (Tank) unit, book.getNumberOfPages()), pageFormat);
-                    tank1 = null;
-                } else {
-                    tank1 = (Tank) unit;
-                }
-            } else if (unit.hasETypeFlag(Entity.ETYPE_AERO)) {
-                if (unit instanceof Jumpship) {
-                    PrintCapitalShip pcs = new PrintCapitalShip((Jumpship) unit, book.getNumberOfPages());
-                    book.append(pcs, pageFormat, pcs.getPageCount());
-                } else if (unit instanceof Dropship) {
-                    PrintDropship pds = new PrintDropship((Aero) unit, book.getNumberOfPages());
-                    book.append(pds, pageFormat, pds.getPageCount());
-                } else {
-                    book.append(new PrintAero((Aero) unit, book.getNumberOfPages()), pageFormat);
-                }
-            } else if (unit instanceof BattleArmor) {
-                baList.add((BattleArmor) unit);
-                if (singlePrint || baList.size() > 4) {
-                    book.append(new PrintSmallUnitSheet(baList, book.getNumberOfPages()),  pageFormat);
-                    baList = new ArrayList<>();
-                }
-            } else if (unit instanceof Infantry) {
-                infList.add((Infantry) unit);
-                if (singlePrint || infList.size() > 3) {
-                    book.append(new PrintSmallUnitSheet(infList, book.getNumberOfPages()),  pageFormat);
-                    infList = new ArrayList<>();
-                }
-            } else if (unit instanceof Protomech) {
-                protoList.add((Protomech) unit);
-                if (singlePrint || protoList.size() > 4) {
-                    book.append(new PrintSmallUnitSheet(protoList, book.getNumberOfPages()),  pageFormat);
-                    protoList = new ArrayList<>();
-                }
-            } else {
-                //TODO: show a message dialog that lists the unprintable units
-                unprintable.add(unit);
-            }
+        List<PrintRecordSheet> sheets = createSheets(loadedUnits, singlePrint);
+        for (PrintRecordSheet sheet : sheets) {
+            book.append(sheet, pageFormat);
         }
-        
-        if (unprintable.size() > 0) {
-            JOptionPane.showMessageDialog(null, "Printing is not currently supported for the following units:\n"
-                    + unprintable.stream().map(en -> en.getChassis() + " " + en.getModel())
-                    .collect(Collectors.joining("\n")));
-        }
-        
-        if (null != tank1) {
-            book.append(new PrintCompositeTankSheet(tank1, null, book.getNumberOfPages()), pageFormat);
-        }
-        if (baList.size() > 0) {
-            book.append(new PrintSmallUnitSheet(baList, book.getNumberOfPages()), pageFormat);
-        }
-        if (infList.size() > 0) {
-            book.append(new PrintSmallUnitSheet(infList, book.getNumberOfPages()), pageFormat);
-        }
-        if (protoList.size() > 0) {
-            book.append(new PrintSmallUnitSheet(protoList, book.getNumberOfPages()), pageFormat);
-        }
-        
+
         masterPrintJob.setPageable(book);
         if (loadedUnits.size() > 1) {
             masterPrintJob.setJobName(loadedUnits.get(0).getShortNameRaw() + " etc");
