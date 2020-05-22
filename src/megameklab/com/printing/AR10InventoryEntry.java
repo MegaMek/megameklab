@@ -18,9 +18,6 @@
  */
 package megameklab.com.printing;
 
-import java.util.Collections;
-import java.util.List;
-
 /**
  * Provides fields for the AR10 missile data table.
  */

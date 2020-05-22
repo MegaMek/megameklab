@@ -14,10 +14,7 @@
 
 package megameklab.com.printing;
 
-import megamek.common.BattleArmor;
-import megamek.common.Entity;
-import megamek.common.Infantry;
-import megamek.common.UnitType;
+import megamek.common.*;
 import org.w3c.dom.Element;
 
 import java.awt.print.PageFormat;
@@ -84,6 +81,8 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
             return new PrintBattleArmor((BattleArmor) entity, index, getFirstPage(), options);
         } else if (entity instanceof Infantry) {
             return new PrintInfantry((Infantry) entity, getFirstPage(), options);
+        } else if (entity instanceof Protomech) {
+            return new PrintProtomech((Protomech) entity, getFirstPage(), index, options);
         }
         throw new IllegalArgumentException("Cannot create block for "
                 + UnitType.getTypeDisplayableName(entity.getUnitType()));
@@ -99,6 +98,8 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
             } else {
                 return "conventional_infantry_default.svg";
             }
+        } else if (entities.get(0) instanceof Protomech) {
+            return "protomech_default.svg";
         }
         return "";
     }

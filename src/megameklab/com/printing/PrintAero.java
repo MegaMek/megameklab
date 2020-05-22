@@ -116,11 +116,6 @@ public class PrintAero extends PrintEntity {
     }
 
     @Override
-    protected boolean isCenterlineLocation(int loc) {
-        return loc == Aero.LOC_NOSE || loc == Aero.LOC_AFT;
-    }
-
-    @Override
     public void processImage(int pageNum, PageFormat pageFormat) {
         super.processImage(pageNum, pageFormat);
         if (aero.tracksHeat()) {
@@ -150,7 +145,7 @@ public class PrintAero extends PrintEntity {
         Element element = getSVGDocument().getElementById(SI_PIPS);
         if (null != element) {
             ArmorPipLayout.addPips(this, element, aero.get0SI(),
-                    PipType.CIRCLE, 0.5);
+                    PipType.CIRCLE, 0.5, FILL_WHITE);
         }
     }
 
@@ -172,6 +167,10 @@ public class PrintAero extends PrintEntity {
     @Override
     public String formatFeatures() {
         StringJoiner sj = new StringJoiner(", ");
+        if ((aero.getCockpitType() != Aero.COCKPIT_STANDARD)
+                && (aero.getCockpitType() != Aero.COCKPIT_PRIMITIVE)) {
+            sj.add(aero.getCockpitTypeString());
+        }
         if (aero.isSupportVehicle()) {
             List<String> chassisMods = aero.getMisc().stream().filter(m -> m.getType().hasFlag(MiscType.F_CHASSIS_MODIFICATION))
                     .map(m -> m.getType().getShortName())

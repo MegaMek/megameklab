@@ -356,14 +356,21 @@ public abstract class PrintEntity extends PrintRecordSheet {
             }
             if (null != element) {
                 ArmorPipLayout.addPips(this, element, getEntity().getOArmor(loc),
-                        PipType.forAT(getEntity().getArmorType(loc)), 0.5);
+                        PipType.forAT(getEntity().getArmorType(loc)), 0.5, FILL_WHITE);
             }
             element = getSVGDocument().getElementById(STRUCTURE_PIPS + getEntity().getLocationAbbr(loc));
             if (null != element) {
                 ArmorPipLayout.addPips(this, element, getEntity().getOInternal(loc),
-                        PipType.CIRCLE, 0.5);
+                        PipType.CIRCLE, 0.5, structurePipFill());
             }
         }
+    }
+
+    /**
+     * @return The color to use in the inside of structure pips
+     */
+    String structurePipFill() {
+        return FILL_WHITE;
     }
     
     /**
@@ -375,15 +382,6 @@ public abstract class PrintEntity extends PrintRecordSheet {
     protected int firstArmorLocation() {
         return 0;
     }
-    
-    /**
-     * Identifies which locations are on the unit's centerline and should have armor and structure
-     * pips laid out with left-right symmetry
-     * 
-     * @param loc The location to check
-     * @return    Whether the location is along the unit's centerline
-     */
-    protected abstract boolean isCenterlineLocation(int loc);
     
     protected void drawStructure() {
         
@@ -454,7 +452,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
             // First check whether we can shrink them less than what is required for a new column
             if (cols * (int) (rows * nextCol) > hsCount) {
                 rows = (int) Math.ceil((double) hsCount / cols);
-                size = viewHeight / rows;
+                size = (double) viewHeight / rows;
             } else {
                 cols++;
                 size *= viewWidth / (cols * size);

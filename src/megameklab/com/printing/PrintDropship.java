@@ -99,11 +99,6 @@ public class PrintDropship extends PrintAero {
     }
 
     @Override
-    protected boolean isCenterlineLocation(int loc) {
-        return (loc == Jumpship.LOC_NOSE) || (loc == Jumpship.LOC_AFT);
-    }
-
-    @Override
     public int getPageCount() {
         return secondPage ? 2 : 1;
     }
@@ -341,19 +336,10 @@ public class PrintDropship extends PrintAero {
     @Override
     public String formatFeatures() {
         StringJoiner sj = new StringJoiner(", ");
-        int mashTheaters = 0;
-        int drones = 0;
         Map<String, Integer> eqCount = new HashMap<>();
         for (Mounted mount : ship.getMisc()) {
-            // MASH and DCC use an additional MiscType to expand their capacity.
-            // Present them as a single piece of equipment and show size.
-            if (mount.getType().hasFlag(MiscType.F_MASH) || mount.getType().hasFlag(MiscType.F_MASH_EXTRA)) {
-                mashTheaters++;
-            } else if (mount.getType().hasFlag(MiscType.F_DRONE_CARRIER_CONTROL)
-                    || mount.getType().hasFlag(MiscType.F_DRONE_EXTRA)){
-                drones++;
-            } else if (UnitUtil.isPrintableEquipment(mount.getType())) {
-                eqCount.merge(mount.getType().getShortName(), 1, Integer::sum);
+            if (UnitUtil.isPrintableEquipment(mount.getType())) {
+                eqCount.merge(mount.getShortName(), 1, Integer::sum);
             }
         }
         if (ship instanceof Jumpship && ((Jumpship) ship).hasLF()) {
@@ -365,15 +351,6 @@ public class PrintDropship extends PrintAero {
             } else {
                 sj.add(eq);
             }
-        }
-        if (mashTheaters > 1) {
-            sj.add("MASH (" + mashTheaters + " theaters)");
-        } else if (mashTheaters == 1) {
-            sj.add("MASH");
-        }
-        if (drones > 0) {
-            sj.add("Drone Carrier Control System (" + drones
-                    + ((drones > 1) ? " drones)" : " drone)"));
         }
         return sj.toString();
     }

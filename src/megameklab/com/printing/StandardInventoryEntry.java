@@ -35,7 +35,7 @@ import java.util.Objects;
  * This is for single pieces of equipment. WeaponBays should use {@link WeaponBayInventoryEntry}.
  */
 public class StandardInventoryEntry implements InventoryEntry, Comparable<StandardInventoryEntry> {
-    private Mounted mount;
+    private final Mounted mount;
 
     private final String[][] ranges;
     private final boolean isMML;
@@ -105,9 +105,16 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
                 if (wtype.getMinimumRange() > 0) {
                     r[RangeType.RANGE_MINIMUM] = String.valueOf(wtype.getMinimumRange());
                 }
-                r[RangeType.RANGE_SHORT] = String.valueOf(wtype.getShortRange());
-                r[RangeType.RANGE_MEDIUM] = String.valueOf(wtype.getMediumRange());
-                r[RangeType.RANGE_LONG] = String.valueOf(wtype.getLongRange());
+                if ((wtype.getAmmoType() == AmmoType.T_LRM_TORPEDO)
+                    || (wtype.getAmmoType() == AmmoType.T_SRM_TORPEDO)) {
+                    r[RangeType.RANGE_SHORT] = String.valueOf(wtype.getWShortRange());
+                    r[RangeType.RANGE_MEDIUM] = String.valueOf(wtype.getWMediumRange());
+                    r[RangeType.RANGE_LONG] = String.valueOf(wtype.getWLongRange());
+                } else {
+                    r[RangeType.RANGE_SHORT] = String.valueOf(wtype.getShortRange());
+                    r[RangeType.RANGE_MEDIUM] = String.valueOf(wtype.getMediumRange());
+                    r[RangeType.RANGE_LONG] = String.valueOf(wtype.getLongRange());
+                }
             }
             String[][] retVal = new String[1][];
             retVal[0] = r;
@@ -157,9 +164,9 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
     }
 
     private String formatName() {
-        String eqName = mount.getType().getName();
+        String eqName = mount.getName();
         if (eqName.length() > 20) {
-            eqName = mount.getType().getShortName();
+            eqName = mount.getShortName();
         }
         // Remove trailing IS or Clan tag in brackets or parentheses, including possible leading space
         StringBuilder name = new StringBuilder(eqName.replaceAll(" ?[\\[(](Clan|IS)[])]", ""));
@@ -184,7 +191,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
             name.append(" (SSW)");
         }
         if (mount.getEntity().isAero()) {
-            name.append(" ").append(StringUtils.getEquipmentInfo((Aero) mount.getEntity(), mount));
+            name.append(" ").append(StringUtils.getAeroEquipmentInfo(mount));
         }
         return name.toString();
     }

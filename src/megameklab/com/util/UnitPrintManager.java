@@ -57,7 +57,6 @@ import megamek.common.Protomech;
 import megamek.common.Tank;
 import megameklab.com.printing.*;
 import megameklab.com.ui.dialog.UnitPrintQueueDialog;
-import megameklab.com.ui.protomek.printing.PrintProtomech;
 import org.apache.avalon.framework.configuration.ConfigurationException;
 import org.apache.batik.transcoder.TranscoderException;
 import org.apache.pdfbox.io.MemoryUsageSetting;
@@ -214,6 +213,14 @@ public class UnitPrintManager {
                     sheets.add(prs);
                     infList = new ArrayList<>();
                 }
+            } else if (unit instanceof Protomech) {
+                protoList.add((Protomech) unit);
+                if (singlePrint || infList.size() > 3) {
+                    PrintRecordSheet prs = new PrintSmallUnitSheet(protoList, pageCount);
+                    pageCount += prs.getPageCount();
+                    sheets.add(prs);
+                    protoList = new ArrayList<>();
+                }
             } else {
                 //TODO: show a message dialog that lists the unprintable units
                 unprintable.add(unit);
@@ -228,6 +235,15 @@ public class UnitPrintManager {
 
         if (null != tank1) {
             sheets.add(new PrintCompositeTankSheet(tank1, null, pageCount++));
+        }
+        if (baList.size() > 0) {
+            sheets.add(new PrintSmallUnitSheet(baList, pageCount++));
+        }
+        if (infList.size() > 0) {
+            sheets.add(new PrintSmallUnitSheet(infList, pageCount++));
+        }
+        if (protoList.size() > 0) {
+            sheets.add(new PrintSmallUnitSheet(protoList, pageCount));
         }
         return sheets;
     }
@@ -316,7 +332,7 @@ public class UnitPrintManager {
             } else if (unit instanceof Protomech) {
                 protoList.add((Protomech) unit);
                 if (singlePrint || protoList.size() > 4) {
-                    book.append(new PrintProtomech(protoList),  pageFormat);
+                    book.append(new PrintSmallUnitSheet(protoList, book.getNumberOfPages()),  pageFormat);
                     protoList = new ArrayList<>();
                 }
             } else {
@@ -341,7 +357,7 @@ public class UnitPrintManager {
             book.append(new PrintSmallUnitSheet(infList, book.getNumberOfPages()), pageFormat);
         }
         if (protoList.size() > 0) {
-            book.append(new PrintProtomech(protoList), pageFormat);
+            book.append(new PrintSmallUnitSheet(protoList, book.getNumberOfPages()), pageFormat);
         }
         
         masterPrintJob.setPageable(book);

@@ -26,6 +26,7 @@ public interface IdConstants {
     String TITLE = "title";
 
     String TYPE = "type";
+    String TYPE2 = "type2";
     String FLUFF_NAME = "fluffName";
     String MP_WALK = "mpWalk";
     String MP_RUN = "mpRun";
@@ -165,4 +166,11 @@ public interface IdConstants {
     String CHECK_AP = "checkAp";
     String SUIT = "suit";
     String PIPS = "pips_";
+
+    String PROTOMECH_INDEX = "protomechIndex";
+    String MAIN_GUN_ARMOR = "armor_MG";
+    String MAIN_GUN_SHADOW = "shadow_MG";
+    String MAIN_GUN_TEXT = "text_MG";
+    String TORSO_WEAPON = "torsoWeapon_";
+    String MAG_CLAMP_NOTE = "magClampNote";
 }

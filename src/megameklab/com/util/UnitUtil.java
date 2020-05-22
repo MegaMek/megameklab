@@ -1113,7 +1113,7 @@ public class UnitUtil {
             return false;
         }
 
-        if (UnitUtil.isJumpJet(eq) && isMech) {
+        if (UnitUtil.isJumpJet(eq)) {
             return false;
         }
         if (!eq.isHittable() && isMech) {
@@ -1131,10 +1131,7 @@ public class UnitUtil {
                         || eq.hasFlag(MiscType.F_HARJEL)
                         || eq.hasFlag(MiscType.F_MASS)
                         || eq.hasFlag(MiscType.F_CHASSIS_MODIFICATION)
-                        || eq.hasFlag(MiscType.F_MASH_EXTRA)
-                        || eq.hasFlag(MiscType.F_CHASSIS_MODIFICATION)
-                        || eq.hasFlag(MiscType.F_DRONE_EXTRA) || eq
-                            .hasFlag(MiscType.F_SPONSON_TURRET))
+                        || eq.hasFlag(MiscType.F_SPONSON_TURRET))
                         || eq.hasFlag(MiscType.F_EXTERNAL_STORES_HARDPOINT)
                         || eq.hasFlag(MiscType.F_BASIC_FIRECONTROL)
                         || eq.hasFlag(MiscType.F_ADVANCED_FIRECONTROL)) {
@@ -2000,18 +1997,6 @@ public class UnitUtil {
         }
 
         return rsFont.deriveFont(pointSize);
-    }
-
-    public static Font getNewFont(Graphics2D g2d, String info, boolean bold,
-            int stringWidth, float pointSize) {
-        Font font = UnitUtil.deriveFont(bold, pointSize);
-
-        while ((ImageHelper.getStringWidth(g2d, info, font) > stringWidth)
-                && (pointSize > 0)) {
-            pointSize -= .1;
-            font = UnitUtil.deriveFont(bold, pointSize);
-        }
-        return font;
     }
 
     public static void removeOneShotAmmo(Entity unit) {

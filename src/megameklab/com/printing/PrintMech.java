@@ -398,13 +398,6 @@ public class PrintMech extends PrintEntity {
         }
     }
     
-    @Override
-    protected boolean isCenterlineLocation(int loc) {
-        return (loc == Mech.LOC_HEAD)
-                || (loc == Mech.LOC_CT)
-                || (loc == Mech.LOC_CLEG);
-    }
-    
     private void writeLocationCriticals(int loc, SVGRectElement svgRect) {
         Rectangle2D bbox = getRectBBox(svgRect);
         Element canvas = (Element) svgRect.getParentNode();
