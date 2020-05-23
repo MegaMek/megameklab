@@ -133,10 +133,11 @@ public class UnitUtil {
                         || eq.hasFlag(MiscType.F_BLUE_SHIELD)
                         || eq.hasFlag(MiscType.F_MAST_MOUNT)
                         || eq.hasFlag(MiscType.F_SCM)
+                        || (eq.hasFlag(MiscType.F_RAM_PLATE)
                         || (eq.hasFlag(MiscType.F_JUMP_JET) && eq.hasFlag(MiscType.F_PROTOMECH_EQUIPMENT))
                         || (eq.hasFlag(MiscType.F_UMU) && eq.hasFlag(MiscType.F_PROTOMECH_EQUIPMENT))
                         || (eq.hasFlag(MiscType.F_MAGNETIC_CLAMP) && eq.hasFlag(MiscType.F_PROTOMECH_EQUIPMENT))
-                        || (eq.hasFlag(MiscType.F_MASC) && eq.hasFlag(MiscType.F_PROTOMECH_EQUIPMENT)));
+                        || (eq.hasFlag(MiscType.F_MASC) && eq.hasFlag(MiscType.F_PROTOMECH_EQUIPMENT))));
     }
 
     /**
@@ -1885,6 +1886,12 @@ public class UnitUtil {
                 locations.add(Mech.LOC_LT);
                 locations.add(Mech.LOC_RT);
                 blocks = 2;
+            } else if (equip.hasFlag(MiscType.F_RAM_PLATE)) {
+                // one block in each torso
+                locations.add(Mech.LOC_LT);
+                locations.add(Mech.LOC_RT);
+                locations.add(Mech.LOC_CT);
+                blocks = 3;
             } else if ((equip.hasFlag(MiscType.F_VOIDSIG)
                     || equip.hasFlag(MiscType.F_NULLSIG) || equip
                         .hasFlag(MiscType.F_BLUE_SHIELD))) {
