@@ -622,25 +622,22 @@ public class UnitUtil {
     }
 
     /**
-     * Checks if EquipmentType is a Mech Physical weapon
+     * Checks if EquipmentType is a Mech Physical weapon.
      *
-     * @param eq
-     * @return
+     * @param eq The equipment to check
+     * @return   Whether the equipment is a physical weapon
      */
     public static boolean isPhysicalWeapon(EquipmentType eq) {
-
-        if ((eq instanceof MiscType)
-                && ((eq.hasFlag(MiscType.F_CLUB)
-                        || eq.hasFlag(MiscType.F_HAND_WEAPON) || eq
-                            .hasFlag(MiscType.F_TALON)))) {
-            if (eq.hasFlag(MiscType.F_CLUB)
-                    && ((eq.hasSubType(MiscType.S_CLUB) || eq
-                            .hasSubType(MiscType.S_TREE_CLUB)))) {
-                return false;
-            }
-            return true;
+        if (!(eq instanceof MiscType)) {
+            return false;
         }
-        return false;
+        if (eq.hasFlag(MiscType.F_CLUB)) {
+            // We don't want makeshift clubs picked up on the battlefield showing up as construction options
+            return !eq.hasSubType(MiscType.S_CLUB | MiscType.S_TREE_CLUB);
+        }
+        return eq.hasFlag(MiscType.F_HAND_WEAPON)
+                || eq.hasFlag(MiscType.F_TALON)
+                || eq.hasFlag(MiscType.F_RAM_PLATE);
     }
 
     /**
