@@ -16,7 +16,7 @@
 
 package megameklab.com.util;
 
-import java.awt.Frame;
+import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.print.Book;
@@ -25,9 +25,8 @@ import java.awt.print.Paper;
 import java.awt.print.PrinterJob;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Vector;
 import java.util.stream.Collectors;
 
 import javax.print.attribute.HashPrintRequestAttributeSet;
@@ -55,7 +54,9 @@ import megamek.common.Mech;
 import megamek.common.MechFileParser;
 import megamek.common.Protomech;
 import megamek.common.Tank;
+import megamek.common.util.EncodeControl;
 import megameklab.com.printing.*;
+import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.dialog.UnitPrintQueueDialog;
 import org.apache.avalon.framework.configuration.ConfigurationException;
 import org.apache.batik.transcoder.TranscoderException;
@@ -65,12 +66,10 @@ import org.xml.sax.SAXException;
 
 public class UnitPrintManager {
 
+    private static final ResourceBundle menuResources = ResourceBundle.getBundle("megameklab.resources.Menu", new EncodeControl());
+
     public static boolean printEntity(Entity entity) {
-
-        Vector<Entity> unitList = new Vector<>();
-
-        unitList.add(entity);
-
+        List<Entity> unitList = Collections.singletonList(entity);
         return printAllUnits(unitList, false);
     }
 
@@ -267,7 +266,7 @@ public class UnitPrintManager {
         }
     }
 
-    public static boolean printAllUnits(Vector<Entity> loadedUnits, boolean singlePrint) {
+    public static boolean printAllUnits(List<Entity> loadedUnits, boolean singlePrint) {
         Book book = new Book();
         
         HashPrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
@@ -303,46 +302,51 @@ public class UnitPrintManager {
         return true;
     }
 
-    public static JMenu printMenu(final JFrame parent, JMenuItem item) {
-        JMenu printMenu = new JMenu("Print");
+    public static JMenu printMenu(final MegaMekLabMainUI parent) {
+        JMenu printMenu = new JMenu(menuResources.getString("menu.file.print"));
         printMenu.setMnemonic(KeyEvent.VK_P);
 
+        JMenuItem item = new JMenuItem(menuResources.getString("menu.file.print.currentUnit"));
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P,
+                Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+        item.setMnemonic(KeyEvent.VK_C);
+        item.addActionListener(e -> printEntity(parent.getEntity()));
         printMenu.add(item);
 
         printMenu.addSeparator();
 
-        item = new JMenuItem("Queue Units to Print");
+        item = new JMenuItem(menuResources.getString("menu.file.print.queueUnits"));
         item.setMnemonic(KeyEvent.VK_Q);
         item.addActionListener(e -> new UnitPrintQueueDialog(parent));
 
         printMenu.add(item);
         printMenu.addSeparator();
 
-        item = new JMenuItem("Other Unit");
+        item = new JMenuItem(menuResources.getString("menu.file.print.otherUnit"));
         item.setMnemonic(KeyEvent.VK_O);
         item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK));
         item.addActionListener(e -> UnitPrintManager.printSelectedUnit(parent));
         printMenu.add(item);
 
-        item = new JMenuItem("From File");
+        item = new JMenuItem(menuResources.getString("menu.file.print.fromFile"));
         item.setMnemonic(KeyEvent.VK_I);
         item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, InputEvent.CTRL_MASK));
         item.addActionListener(e -> UnitPrintManager.printUnitFile(parent));
         printMenu.add(item);
 
-        item = new JMenuItem("From File (Single Unit Per RS)");
+        item = new JMenuItem(menuResources.getString("menu.file.print.fromFileSingle"));
         item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.SHIFT_MASK | InputEvent.CTRL_MASK));
         item.addActionListener(e -> UnitPrintManager.printUnitFile(parent, true));
         printMenu.add(item);
 
         printMenu.addSeparator();
-        item = new JMenuItem("From MUL");
+        item = new JMenuItem(menuResources.getString("menu.file.print.fromMUL"));
         item.setMnemonic(KeyEvent.VK_M);
         item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, InputEvent.CTRL_MASK));
         item.addActionListener(e -> UnitPrintManager.printMuls(parent, false));
         printMenu.add(item);
 
-        item = new JMenuItem("From MUL (Single Unit Per RS)");
+        item = new JMenuItem(menuResources.getString("menu.file.print.fromMULSingle"));
         item.setMnemonic(KeyEvent.VK_R);
         item.addActionListener(e -> UnitPrintManager.printMuls(parent, true));
         printMenu.add(item);
@@ -351,16 +355,16 @@ public class UnitPrintManager {
     }
 
     public static JMenu exportMenu(final JFrame parent) {
-        JMenu exportMenu = new JMenu("Export to PDF");
+        JMenu exportMenu = new JMenu(menuResources.getString("menu.file.exportPDF"));
         exportMenu.setMnemonic(KeyEvent.VK_E);
 
-        JMenuItem item = new JMenuItem("From MUL");
+        JMenuItem item = new JMenuItem(menuResources.getString("menu.file.print.fromMUL"));
         item.setMnemonic(KeyEvent.VK_M);
         item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, InputEvent.CTRL_MASK));
         item.addActionListener(e -> UnitPrintManager.exportMUL(parent, false));
         exportMenu.add(item);
 
-        item = new JMenuItem("From MUL (Single Unit Per RS)");
+        item = new JMenuItem(menuResources.getString("menu.file.print.fromMULSingle"));
         item.setMnemonic(KeyEvent.VK_R);
         item.addActionListener(e -> UnitPrintManager.exportMUL(parent, true));
         exportMenu.add(item);

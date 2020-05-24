@@ -376,13 +376,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
 
         fileMenu.add(loadMenu);
 
-        item = new JMenuItem(resourceMap.getString("menu.file.print.currentUnit"));
-        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P,
-                Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-        item.setMnemonic(KeyEvent.VK_C);
-        item.addActionListener(e -> jMenuPrintCurrentUnit());
-
-        fileMenu.add(UnitPrintManager.printMenu(parentFrame, item));
+        fileMenu.add(UnitPrintManager.printMenu(parentFrame));
         fileMenu.add(UnitPrintManager.exportMenu(parentFrame));
 
         item = new JMenuItem();
@@ -900,10 +894,6 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
     private void jMenuLoadProtomech() {
         newUnit(Entity.ETYPE_PROTOMECH, false, false, null);
 
-    }
-
-    private void jMenuPrintCurrentUnit() {
-        UnitPrintManager.printEntity(parentFrame.getEntity());
     }
 
     private void jMenuLoadEntity_actionPerformed(ActionEvent event) {
