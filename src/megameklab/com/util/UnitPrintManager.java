@@ -82,22 +82,7 @@ public class UnitPrintManager {
         }
     }
 
-    public static void selectUnitToPrint(JFrame parent) {
-        UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(parent);
-        UnitSelectorDialog viewer = new UnitSelectorDialog(parent, unitLoadingDialog, true);
-
-        Entity entity;
-
-        entity = viewer.getChosenEntity();
-
-        viewer.setVisible(false);
-        viewer.dispose();
-        if (null != entity) {
-            UnitPrintManager.printEntity(entity);
-        }
-    }
-
-    public static void printMuls(Frame parent, boolean singlePrint) {
+    public static void printMUL(Frame parent, boolean singlePrint) {
         JFileChooser f = new JFileChooser(System.getProperty("user.dir"));
         f.setLocation(parent.getLocation().x + 150, parent.getLocation().y + 100);
         f.setDialogTitle("Print From MUL");
@@ -156,7 +141,7 @@ public class UnitPrintManager {
         }
     }
 
-    private static File getExportFile(Frame parent) {
+    public static File getExportFile(Frame parent) {
         return getExportFile(parent, "");
     }
 
@@ -341,7 +326,7 @@ public class UnitPrintManager {
         printMenu.addSeparator();
         item = new JMenuItem(menuResources.getString("menu.file.print.queueUnits"));
         item.setMnemonic(KeyEvent.VK_Q);
-        item.addActionListener(e -> new UnitPrintQueueDialog(parent));
+        item.addActionListener(e -> new UnitPrintQueueDialog(parent, false));
 
         printMenu.add(item);
         printMenu.addSeparator();
@@ -349,30 +334,30 @@ public class UnitPrintManager {
         item = new JMenuItem(menuResources.getString("menu.file.print.otherUnit"));
         item.setMnemonic(KeyEvent.VK_O);
         item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK));
-        item.addActionListener(e -> UnitPrintManager.printSelectedUnit(parent));
+        item.addActionListener(e -> UnitPrintManager.printSelectedUnit(parent, false));
         printMenu.add(item);
 
         item = new JMenuItem(menuResources.getString("menu.file.print.fromFile"));
         item.setMnemonic(KeyEvent.VK_I);
         item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, InputEvent.CTRL_MASK));
-        item.addActionListener(e -> UnitPrintManager.printUnitFile(parent));
+        item.addActionListener(e -> UnitPrintManager.printUnitFile(parent, false, false));
         printMenu.add(item);
 
         item = new JMenuItem(menuResources.getString("menu.file.print.fromFileSingle"));
         item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.SHIFT_MASK | InputEvent.CTRL_MASK));
-        item.addActionListener(e -> UnitPrintManager.printUnitFile(parent, true));
+        item.addActionListener(e -> UnitPrintManager.printUnitFile(parent, true, false));
         printMenu.add(item);
 
         printMenu.addSeparator();
         item = new JMenuItem(menuResources.getString("menu.file.print.fromMUL"));
         item.setMnemonic(KeyEvent.VK_M);
         item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, InputEvent.CTRL_MASK));
-        item.addActionListener(e -> UnitPrintManager.printMuls(parent, false));
+        item.addActionListener(e -> UnitPrintManager.printMUL(parent, false));
         printMenu.add(item);
 
         item = new JMenuItem(menuResources.getString("menu.file.print.fromMULSingle"));
         item.setMnemonic(KeyEvent.VK_R);
-        item.addActionListener(e -> UnitPrintManager.printMuls(parent, true));
+        item.addActionListener(e -> UnitPrintManager.printMUL(parent, true));
         printMenu.add(item);
 
         return printMenu;
@@ -384,6 +369,23 @@ public class UnitPrintManager {
 
         JMenuItem item = new JMenuItem(menuResources.getString("menu.file.print.currentUnit"));
         item.addActionListener(e -> exportEntity(parent.getEntity(), parent));
+        exportMenu.add(item);
+
+        exportMenu.addSeparator();
+        item = new JMenuItem(menuResources.getString("menu.file.print.queueUnits"));
+        item.addActionListener(e -> new UnitPrintQueueDialog(parent, true));
+        exportMenu.add(item);
+
+        item = new JMenuItem(menuResources.getString("menu.file.print.otherUnit"));
+        item.addActionListener(e -> UnitPrintManager.printSelectedUnit(parent, true));
+        exportMenu.add(item);
+
+        item = new JMenuItem(menuResources.getString("menu.file.print.fromFile"));
+        item.addActionListener(e -> UnitPrintManager.printUnitFile(parent, false, true));
+        exportMenu.add(item);
+
+        item = new JMenuItem(menuResources.getString("menu.file.print.fromFileSingle"));
+        item.addActionListener(e -> UnitPrintManager.printUnitFile(parent, true, true));
         exportMenu.add(item);
 
         exportMenu.addSeparator();
@@ -399,7 +401,7 @@ public class UnitPrintManager {
         return exportMenu;
     }
 
-    public static void printSelectedUnit(JFrame parent) {
+    public static void printSelectedUnit(JFrame parent, boolean pdf) {
         UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(parent);
         unitLoadingDialog.setVisible(true);
         UnitSelectorDialog viewer = new UnitSelectorDialog(parent, unitLoadingDialog, true);
@@ -408,7 +410,7 @@ public class UnitPrintManager {
         Entity entity = viewer.getChosenEntity();
 
         if (entity != null) {
-            boolean printed = UnitPrintManager.printEntity(entity);
+            boolean printed = pdf ? exportEntity(entity, parent) : printEntity(entity);
             viewer.dispose();
 
             if (!printed) {
@@ -417,11 +419,7 @@ public class UnitPrintManager {
         }
     }
 
-    public static void printUnitFile(JFrame parent) {
-        printUnitFile(parent, false);
-    }
-
-    public static void printUnitFile(JFrame parent, boolean singleUnit) {
+    public static void printUnitFile(JFrame parent, boolean singleUnit, boolean pdf) {
         String filePathName = System.getProperty("user.dir") + "/data/mechfiles/";
 
         JFileChooser f = new JFileChooser(filePathName);
@@ -441,14 +439,20 @@ public class UnitPrintManager {
         }
 
         try {
-
-            Vector<Entity> unitList = new Vector<>();
+            List<Entity> unitList = new ArrayList<>();
 
             for (File entityFile : f.getSelectedFiles()) {
                 Entity tempEntity = new MechFileParser(entityFile).getEntity();
                 unitList.add(tempEntity);
             }
-            printAllUnits(unitList, singleUnit);
+            if (pdf) {
+                File exportFile = getExportFile(parent);
+                if (exportFile != null) {
+                    exportUnits(unitList, exportFile, singleUnit);
+                }
+            } else {
+                printAllUnits(unitList, singleUnit);
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
