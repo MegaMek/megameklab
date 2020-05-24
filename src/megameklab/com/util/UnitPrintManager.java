@@ -141,6 +141,16 @@ public class UnitPrintManager {
             return;
         }
 
+        File exportFile = getExportFile(parent);
+        if (exportFile != null) {
+            exportUnits(loadedUnits, exportFile, singlePrint);
+        }
+    }
+
+    private static File getExportFile(Frame parent) {
+        JFileChooser f;
+        FileNameExtensionFilter filter;
+        int returnVal;
         f = new JFileChooser(System.getProperty("user.dir"));
         f.setLocation(parent.getLocation().x + 150, parent.getLocation().y + 100);
         f.setDialogTitle("Choose export file name");
@@ -152,11 +162,11 @@ public class UnitPrintManager {
         f.setFileFilter(filter);
 
         returnVal = f.showSaveDialog(parent);
-        if ((returnVal != JFileChooser.APPROVE_OPTION) || (f.getSelectedFile() == null)) {
+        if (returnVal != JFileChooser.APPROVE_OPTION) {
             // I want a file, y'know!
-            return;
+            return null;
         }
-        exportUnits(loadedUnits, f.getSelectedFile(), singlePrint);
+        return f.getSelectedFile();
     }
 
     private static List<PrintRecordSheet> createSheets(List<Entity> entities, boolean singlePrint) {
@@ -354,13 +364,11 @@ public class UnitPrintManager {
         return printMenu;
     }
 
-    public static JMenu exportMenu(final JFrame parent) {
+    public static JMenu exportMenu(final MegaMekLabMainUI parent) {
         JMenu exportMenu = new JMenu(menuResources.getString("menu.file.exportPDF"));
         exportMenu.setMnemonic(KeyEvent.VK_E);
 
         JMenuItem item = new JMenuItem(menuResources.getString("menu.file.print.fromMUL"));
-        item.setMnemonic(KeyEvent.VK_M);
-        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, InputEvent.CTRL_MASK));
         item.addActionListener(e -> UnitPrintManager.exportMUL(parent, false));
         exportMenu.add(item);
 
