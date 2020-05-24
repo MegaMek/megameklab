@@ -55,6 +55,7 @@ import megamek.common.MechFileParser;
 import megamek.common.Protomech;
 import megamek.common.Tank;
 import megamek.common.util.EncodeControl;
+import megameklab.com.MegaMekLab;
 import megameklab.com.printing.*;
 import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.dialog.UnitPrintQueueDialog;
@@ -271,7 +272,8 @@ public class UnitPrintManager {
             merger.mergeDocuments(MemoryUsageSetting.setupTempFileOnly());
             return true;
         } catch (TranscoderException | SAXException | IOException | ConfigurationException e) {
-            e.printStackTrace();
+            MegaMekLab.getLogger().error(UnitPrintManager.class,
+                    "exportUnits(List<Entity>, File, boolean)", e);
             return false;
         }
     }
