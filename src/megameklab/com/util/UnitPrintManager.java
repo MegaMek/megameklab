@@ -73,6 +73,15 @@ public class UnitPrintManager {
         return printAllUnits(unitList, false);
     }
 
+    public static boolean exportEntity(Entity entity, JFrame parent) {
+        File exportFile = getExportFile(parent, entity.getShortNameRaw() + ".pdf");
+        if (exportFile != null) {
+            return exportUnits(Collections.singletonList(entity), exportFile, false);
+        } else {
+            return false;
+        }
+    }
+
     public static void selectUnitToPrint(JFrame parent) {
         UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(parent);
         UnitSelectorDialog viewer = new UnitSelectorDialog(parent, unitLoadingDialog, true);
@@ -83,7 +92,7 @@ public class UnitPrintManager {
 
         viewer.setVisible(false);
         viewer.dispose();
-        if(null != entity) {
+        if (null != entity) {
             UnitPrintManager.printEntity(entity);
         }
     }
@@ -148,6 +157,10 @@ public class UnitPrintManager {
     }
 
     private static File getExportFile(Frame parent) {
+        return getExportFile(parent, "");
+    }
+
+    private static File getExportFile(Frame parent, String suggestedFileName) {
         JFileChooser f;
         FileNameExtensionFilter filter;
         int returnVal;
@@ -155,7 +168,9 @@ public class UnitPrintManager {
         f.setLocation(parent.getLocation().x + 150, parent.getLocation().y + 100);
         f.setDialogTitle("Choose export file name");
         f.setMultiSelectionEnabled(false);
-
+        if (!suggestedFileName.isEmpty()) {
+            f.setSelectedFile(new File(suggestedFileName));
+        }
         filter = new FileNameExtensionFilter("PDF files", "pdf");
 
         // Add a filter for mul files
@@ -324,7 +339,6 @@ public class UnitPrintManager {
         printMenu.add(item);
 
         printMenu.addSeparator();
-
         item = new JMenuItem(menuResources.getString("menu.file.print.queueUnits"));
         item.setMnemonic(KeyEvent.VK_Q);
         item.addActionListener(e -> new UnitPrintQueueDialog(parent));
@@ -368,7 +382,12 @@ public class UnitPrintManager {
         JMenu exportMenu = new JMenu(menuResources.getString("menu.file.exportPDF"));
         exportMenu.setMnemonic(KeyEvent.VK_E);
 
-        JMenuItem item = new JMenuItem(menuResources.getString("menu.file.print.fromMUL"));
+        JMenuItem item = new JMenuItem(menuResources.getString("menu.file.print.currentUnit"));
+        item.addActionListener(e -> exportEntity(parent.getEntity(), parent));
+        exportMenu.add(item);
+
+        exportMenu.addSeparator();
+        item = new JMenuItem(menuResources.getString("menu.file.print.fromMUL"));
         item.addActionListener(e -> UnitPrintManager.exportMUL(parent, false));
         exportMenu.add(item);
 
