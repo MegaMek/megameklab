@@ -262,7 +262,7 @@ public class UnitPrintManager {
         PageFormat pageFormat = new PageFormat();
         try {
             PDFMergerUtility merger = new PDFMergerUtility();
-            merger.setDestinationFileName(exportFile.getName());
+            merger.setDestinationFileName(exportFile.getAbsolutePath());
             for (PrintRecordSheet rs : sheets) {
                 for (int i = 0; i < rs.getPageCount(); i++) {
                     merger.addSource(rs.exportPDF(i, pageFormat));
