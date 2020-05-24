@@ -2780,7 +2780,7 @@ public class UnitUtil {
             if (eq.hasFlag(MiscType.F_BOMB_BAY) && !(unit instanceof LandAirMech)) {
                 return false;
             }
-            if (eq.hasFlag(MiscType.F_QUAD_TURRET)
+            if ((eq.hasFlag(MiscType.F_QUAD_TURRET) || eq.hasFlag(MiscType.F_RAM_PLATE))
                     && !(unit instanceof QuadMech)) {
                 return false;
             }
