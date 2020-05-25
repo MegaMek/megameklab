@@ -10,6 +10,8 @@ VERSION HISTORY:
 + Issue #627: Some Quad Protomech Maximum armor values are incorrect
 + PR #629: Protomech record sheet overhaul (can now print quads, gliders, and ultraheavies)
 + Issue #625: Command Consoles do not appear on aerospace fighter record sheets.
++ PR #632: Export record sheet directly to PDF
++ Issue #342: Incomplete queued print
 
 0.47.6 (2020-5-03 1715 UTC)
 + Issue #553: Loading or printing LAM causes ArrayIndexOutOfBoundsException
