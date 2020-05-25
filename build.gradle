@@ -70,6 +70,8 @@ dependencies {
         exclude group: 'org.mozilla', module: 'rhino'
     }
     implementation 'org.apache.xmlgraphics:batik-svggen:1.10'
+    implementation 'org.apache.xmlgraphics:fop:2.3'
+    implementation 'org.apache.pdfbox:pdfbox:2.0.19'
 
     jarbundler 'com.ultramixer.jarbundler:jarbundler-core:3.3.0'
 }
