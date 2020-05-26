@@ -42,9 +42,6 @@ import megameklab.com.ui.util.IntRangeTextField;
 
 public final class ConfigurationDialog extends JDialog implements ActionListener {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = -6504846822457360057L;
 
     private final static String saveCommand = "Save"; //$NON-NLS-1$
@@ -69,8 +66,7 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
     private final JCheckBox chkShowEraIcon = new JCheckBox();
     private final JCheckBox chkShowRole = new JCheckBox();
     private final JCheckBox chkHeatProfile = new JCheckBox();
-    private final JLabel lblFeatureLimitation = new JLabel();
-    
+
     private final JCheckBox chkSummaryFormatTRO = new JCheckBox();
     
     //Store changes in the color configuration to write only if the user clicks save
@@ -248,9 +244,6 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
         chkHeatProfile.setToolTipText(resourceMap.getString("ConfigurationDialog.chkHeatProfile.tooltip"));
         chkHeatProfile.setSelected(CConfig.getBooleanParam(CConfig.RS_HEAT_PROFILE));
         panPrinting.add(chkHeatProfile, gbc);
-        gbc.gridy++;
-
-        panPrinting.add(lblFeatureLimitation, gbc);
     }
     
     private void loadExportPanel(ResourceBundle resourceMap) {
