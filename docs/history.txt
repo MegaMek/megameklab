@@ -13,6 +13,7 @@ VERSION HISTORY:
 + PR #632: Export record sheet directly to PDF
 + Issue #342: Incomplete queued print
 + PR #634: Option to show total heat and dissipation on record sheet
++ PR #635: Option to print TacOps expanded heat scale on record sheet
 
 0.47.6 (2020-5-03 1715 UTC)
 + Issue #553: Loading or printing LAM causes ArrayIndexOutOfBoundsException
