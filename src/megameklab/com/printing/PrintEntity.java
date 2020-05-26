@@ -456,7 +456,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
         // r = 3.5
         // spacing = 9.66
         // stroke width = 0.9
-        double size = 9.66;
+        double size = Math.min(9.66, viewHeight / 10);
         int cols = (int) (viewWidth / size);
         int rows = (int) (viewHeight / size);
 
@@ -490,7 +490,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
 
     void drawHeatSinkPipsLandscape(Element canvas, int hsCount, double viewX, double viewY,
                                    double viewWidth, double viewHeight) {
-        double size = 9.66;
+        double size = Math.min(9.66, viewWidth / 10);
         int cols = (int) (viewWidth / size);
         int rows = (int) (viewHeight / size);
 

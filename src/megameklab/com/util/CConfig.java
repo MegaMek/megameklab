@@ -78,6 +78,7 @@ public class CConfig {
     public static final String RS_SHOW_ERA = "rs_show_era";
     public static final String RS_SHOW_ROLE = "rs_show_role";
     public static final String RS_HEAT_PROFILE = "rs_heat_profile";
+    public static final String RS_TAC_OPS_HEAT = "rs_tac_ops_heat";
 
     private static Properties config;// config. player values.
 

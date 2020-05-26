@@ -66,6 +66,7 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
     private final JCheckBox chkShowEraIcon = new JCheckBox();
     private final JCheckBox chkShowRole = new JCheckBox();
     private final JCheckBox chkHeatProfile = new JCheckBox();
+    private final JCheckBox chkTacOpsHeat = new JCheckBox();
 
     private final JCheckBox chkSummaryFormatTRO = new JCheckBox();
     
@@ -244,6 +245,12 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
         chkHeatProfile.setToolTipText(resourceMap.getString("ConfigurationDialog.chkHeatProfile.tooltip"));
         chkHeatProfile.setSelected(CConfig.getBooleanParam(CConfig.RS_HEAT_PROFILE));
         panPrinting.add(chkHeatProfile, gbc);
+        gbc.gridy++;
+
+        chkTacOpsHeat.setText(resourceMap.getString("ConfigurationDialog.chkTacOpsHeat.text"));
+        chkTacOpsHeat.setToolTipText(resourceMap.getString("ConfigurationDialog.chkTacOpsHeat.tooltip"));
+        chkTacOpsHeat.setSelected(CConfig.getBooleanParam(CConfig.RS_TAC_OPS_HEAT));
+        panPrinting.add(chkTacOpsHeat, gbc);
     }
     
     private void loadExportPanel(ResourceBundle resourceMap) {
@@ -314,6 +321,7 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
         CConfig.setParam(CConfig.RS_SHOW_ERA, Boolean.toString(chkShowEraIcon.isSelected()));
         CConfig.setParam(CConfig.RS_SHOW_ROLE, Boolean.toString(chkShowRole.isSelected()));
         CConfig.setParam(CConfig.RS_HEAT_PROFILE, Boolean.toString(chkHeatProfile.isSelected()));
+        CConfig.setParam(CConfig.RS_TAC_OPS_HEAT, Boolean.toString(chkTacOpsHeat.isSelected()));
         CConfig.setParam(CConfig.SUMMARY_FORMAT_TRO, Boolean.toString(chkSummaryFormatTRO.isSelected()));
         CConfig.saveConfig();
     }
