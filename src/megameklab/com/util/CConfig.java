@@ -212,16 +212,6 @@ public class CConfig {
     }
 
     /**
-     * See if a paramater is enabled (YES, TRUE or ON).
-     */
-    public static boolean isParam(String param) {
-        String tparam = CConfig.getParam(param);
-        return (tparam.equalsIgnoreCase("YES")
-            || tparam.equalsIgnoreCase("TRUE")
-                || tparam.equalsIgnoreCase("ON"));
-    }
-
-    /**
      * Return the int value of a given config property. Return a 0 if the
      * property is a non-number. Used mostly by the misc. mail tab checks.
      */
