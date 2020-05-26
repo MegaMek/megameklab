@@ -492,7 +492,8 @@ public class PrintMech extends PrintEntity {
                 endingMountY = currY;
             }
         }
-        if ((null != startingMount) && (mech.getNumberOfCriticals(startingMount.getType(), loc) > 1)) {
+        // Check whether we need to add a bracket for the last piece of equipment.
+        if ((null != startingMount) && (mech.getNumberOfCriticals(loc) - startingSlotIndex > 1)) {
             connectSlots(canvas, critX - 1, startingMountY, connWidth, endingMountY - startingMountY);
         }
     }
