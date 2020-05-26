@@ -444,15 +444,19 @@ public abstract class PrintEntity extends PrintRecordSheet {
     void drawHeatSinkPips(SVGRectElement svgRect, int hsCount) {
         Rectangle2D bbox = getRectBBox(svgRect);
         Element canvas = (Element) svgRect.getParentNode();
-        int viewWidth = (int)bbox.getWidth();
-        int viewHeight = (int)bbox.getHeight();
-        int viewX = (int)bbox.getX();
-        int viewY = (int)bbox.getY();
+        double viewWidth = bbox.getWidth();
+        double viewHeight = bbox.getHeight();
+        double viewX = bbox.getX();
+        double viewY = bbox.getY();
+        if (viewWidth > viewHeight) {
+            drawHeatSinkPipsLandscape(canvas, hsCount, viewX, viewY, viewWidth, viewHeight);
+            return;
+        }
 
         // r = 3.5
         // spacing = 9.66
         // stroke width = 0.9
-        double size = 9.66;
+        double size = Math.min(9.66, viewHeight / 10);
         int cols = (int) (viewWidth / size);
         int rows = (int) (viewHeight / size);
 
@@ -479,6 +483,40 @@ public abstract class PrintEntity extends PrintRecordSheet {
         for (int i = 0; i < hsCount; i++) {
             int row = i % rows;
             int col = i / rows;
+            Element pip = createPip(viewX + size * col, viewY + size * row, radius, strokeWidth);
+            canvas.appendChild(pip);
+        }
+    }
+
+    void drawHeatSinkPipsLandscape(Element canvas, int hsCount, double viewX, double viewY,
+                                   double viewWidth, double viewHeight) {
+        double size = Math.min(9.66, viewWidth / 10);
+        int cols = (int) (viewWidth / size);
+        int rows = (int) (viewHeight / size);
+
+        // Use 10 pips/row unless there are too many sinks for the space.
+        if (hsCount <= rows * 10) {
+            cols = 10;
+        }
+        // The rare unit with this many heat sinks will require us to shrink the pips
+        while (hsCount > cols * rows) {
+            // Figure out how much we will have to shrink to add another column
+            double nextCol = (rows + 1.0) / rows;
+            // First check whether we can shrink them less than what is required for a new column
+            if (rows * (int) (cols * nextCol) > hsCount) {
+                cols = (int) Math.ceil((double) hsCount / rows);
+                size = viewHeight / cols;
+            } else {
+                rows++;
+                size *= viewWidth / (rows * size);
+                cols = (int) (viewHeight / size);
+            }
+        }
+        double radius = size * 0.36;
+        double strokeWidth = 0.9;
+        for (int i = 0; i < hsCount; i++) {
+            int col = i % cols;
+            int row = i / cols;
             Element pip = createPip(viewX + size * col, viewY + size * row, radius, strokeWidth);
             canvas.appendChild(pip);
         }

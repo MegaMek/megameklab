@@ -28,6 +28,7 @@ public class RecordSheetOptions {
     private boolean eraIcon;
     private boolean role;
     private boolean heatProfile;
+    private boolean tacOpsHeat;
     
     public RecordSheetOptions() {
         this.quirks = CConfig.getBooleanParam(CConfig.RS_SHOW_QUIRKS);
@@ -35,6 +36,7 @@ public class RecordSheetOptions {
         this.eraIcon = CConfig.getBooleanParam(CConfig.RS_SHOW_ERA);
         this.role = CConfig.getBooleanParam(CConfig.RS_SHOW_ROLE);
         this.heatProfile = CConfig.getBooleanParam(CConfig.RS_HEAT_PROFILE);
+        this.tacOpsHeat = CConfig.getBooleanParam(CConfig.RS_TAC_OPS_HEAT);
     }
     
     public boolean showQuirks() {
@@ -60,6 +62,10 @@ public class RecordSheetOptions {
     public boolean showEraIcon() {
         return eraIcon;
     }
+
+    public boolean useTacOpsHeat() {
+        return tacOpsHeat;
+    }
     
     public void setEraIcon(boolean eraIcon) {
         this.eraIcon = eraIcon;
@@ -71,6 +77,10 @@ public class RecordSheetOptions {
 
     public void setHeatProfile(boolean heatProfile) {
         this.heatProfile = heatProfile;
+    }
+
+    public void setTacOpsHeat(boolean tacOpsHeat) {
+        this.tacOpsHeat = tacOpsHeat;
     }
 
 }

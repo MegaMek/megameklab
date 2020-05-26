@@ -85,16 +85,22 @@ public class PrintMech extends PrintEntity {
     
     @Override
     protected String getSVGFileName(int pageNumber) {
+        String base;
         if (mech.hasETypeFlag(Entity.ETYPE_QUADVEE)) {
-            return "mech_quadvee.svg";
+            base = "mech_quadvee";
         } else if (mech.hasETypeFlag(Entity.ETYPE_QUAD_MECH)) {
-            return "mech_quad_default.svg";
+            base = "mech_quad";
         } else if (mech.hasETypeFlag(Entity.ETYPE_TRIPOD_MECH)) {
-            return "mech_tripod_default.svg";
+            base = "mech_tripod";
         } else if (mech.hasETypeFlag(Entity.ETYPE_LAND_AIR_MECH)) {
-            return "mech_biped_lam.svg";
+            base = "mech_lam";
         } else {
-            return "mech_biped_default.svg";
+            base = "mech_biped";
+        }
+        if (options.useTacOpsHeat()) {
+            return base + "_toheat.svg";
+        } else {
+            return base + "_default.svg";
         }
     }
     
