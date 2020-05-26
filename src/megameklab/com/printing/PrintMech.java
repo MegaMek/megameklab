@@ -417,6 +417,7 @@ public class PrintMech extends PrintEntity {
         float fontSize = (float) Math.floor(lineHeight * 0.85f);
         
         Mounted startingMount = null;
+        int startingSlotIndex = 0;
         double startingMountY = 0;
         double endingMountY = 0;
         double connWidth = viewWidth * 0.02;
@@ -475,15 +476,15 @@ public class PrintMech extends PrintEntity {
             }
             Mounted m = null;
             if ((null != crit) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)
-                    && (crit.getMount().getType().isHittable())
-                    && (crit.getMount().getType().getCriticals(mech) > (mech.isSuperHeavy()? 2 : 1))) {
+                    && (crit.getMount().getType().isHittable())) {
                 m = crit.getMount();
             }
-            if ((startingMount != null) && (startingMount != m)) {
+            if ((startingMount != null) && (startingMount != m) && (slot - startingSlotIndex > 1)) {
                 connectSlots(canvas, critX - 1, startingMountY, connWidth, endingMountY - startingMountY);
             }
             if (m != startingMount) {
                 startingMount = m;
+                startingSlotIndex = slot;
                 if (null != m) {
                     startingMountY = currY - lineHeight * 0.6;
                 }
@@ -491,7 +492,8 @@ public class PrintMech extends PrintEntity {
                 endingMountY = currY;
             }
         }
-        if ((null != startingMount) && (mech.getNumberOfCriticals(startingMount.getType(), loc) > 1)) {
+        // Check whether we need to add a bracket for the last piece of equipment.
+        if ((null != startingMount) && (mech.getNumberOfCriticals(loc) - startingSlotIndex > 1)) {
             connectSlots(canvas, critX - 1, startingMountY, connWidth, endingMountY - startingMountY);
         }
     }
