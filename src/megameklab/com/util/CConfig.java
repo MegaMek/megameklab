@@ -77,6 +77,7 @@ public class CConfig {
     public static final String RS_SHOW_PILOT_DATA = "rs_show_pilot_data";
     public static final String RS_SHOW_ERA = "rs_show_era";
     public static final String RS_SHOW_ROLE = "rs_show_role";
+    public static final String RS_HEAT_PROFILE = "rs_heat_profile";
 
     private static Properties config;// config. player values.
 
@@ -112,7 +113,7 @@ public class CConfig {
         defaults.setProperty("WINDOWLEFT", "0");
         defaults.setProperty("WINDOWTOP", "0");
         defaults.setProperty(CONFIG_SAVE_LOC,
-                new File(System.getProperty("user.dir").toString()
+                new File(System.getProperty("user.dir")
                         + "/data/mechfiles/").getAbsolutePath());
         defaults.setProperty(SUMMARY_FORMAT_TRO, Boolean.toString(true));
         defaults.setProperty(RS_SHOW_QUIRKS, Boolean.toString(true));
@@ -183,12 +184,10 @@ public class CConfig {
      * @return           The value associated with the key
      */
     public static String getParam(String param, String defaultVal) {
-        String tparam = null;
-
         if (param.endsWith(":")) {
             param = param.substring(0, param.lastIndexOf(":"));
         }
-        tparam = config.getProperty(param);
+        String tparam = config.getProperty(param);
         if (tparam == null) {
             tparam = defaultVal;
         }
@@ -217,10 +216,9 @@ public class CConfig {
      */
     public static boolean isParam(String param) {
         String tparam = CConfig.getParam(param);
-        if (tparam.equalsIgnoreCase("YES") || tparam.equalsIgnoreCase("TRUE") || tparam.equalsIgnoreCase("ON")) {
-            return true;
-        }
-        return false;
+        return (tparam.equalsIgnoreCase("YES")
+            || tparam.equalsIgnoreCase("TRUE")
+                || tparam.equalsIgnoreCase("ON"));
     }
 
     /**
@@ -263,7 +261,7 @@ public class CConfig {
             config.store(ps, "Client Config Backup");
             fos.close();
             ps.close();
-        } catch (FileNotFoundException fnfe) {
+        } catch (FileNotFoundException ignored) {
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -275,7 +273,7 @@ public class CConfig {
             config.store(ps, "Client Config");
             fos.close();
             ps.close();
-        } catch (FileNotFoundException fnfe) {
+        } catch (FileNotFoundException ignored) {
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -284,11 +282,9 @@ public class CConfig {
 
     public static Color getForegroundColor(String fieldName) {
         Color masterColor = Color.black;
-
         try {
             masterColor = Color.getColor("", Integer.parseInt(CConfig.getParam(fieldName + CConfig.CONFIG_FOREGROUND)));
-        } catch (Exception ex) {
-
+        } catch (Exception ignored) {
         }
         return masterColor;
     }
@@ -298,7 +294,7 @@ public class CConfig {
 
         try {
             masterColor = Color.getColor("", Integer.parseInt(CConfig.getParam(fieldName + CConfig.CONFIG_BACKGROUND)));
-        } catch (Exception ex) {
+        } catch (Exception ignored) {
 
         }
         return masterColor;
