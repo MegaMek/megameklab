@@ -42,20 +42,11 @@ import megameklab.com.ui.util.IntRangeTextField;
 
 public final class ConfigurationDialog extends JDialog implements ActionListener {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = -6504846822457360057L;
 
     private final static String saveCommand = "Save"; //$NON-NLS-1$
     private final static String cancelCommand = "Cancel"; //$NON-NLS-1$
 
-    // BUTTONS
-    private final JButton btnSave = new JButton(saveCommand);
-    private final JButton btnCancel = new JButton(cancelCommand);
-    private JButton baseButton;
-
-    private final JTabbedPane panMain = new JTabbedPane();
     private final JPanel panColors = new JPanel(new SpringLayout());
     private final JPanel panTech = new JPanel(new GridBagLayout());
     private final JPanel panPrinting = new JPanel(new GridBagLayout());
@@ -74,8 +65,8 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
     private final JCheckBox chkShowPilotData = new JCheckBox();
     private final JCheckBox chkShowEraIcon = new JCheckBox();
     private final JCheckBox chkShowRole = new JCheckBox();
-    private final JLabel lblFeatureLimitation = new JLabel();
-    
+    private final JCheckBox chkHeatProfile = new JCheckBox();
+
     private final JCheckBox chkSummaryFormatTRO = new JCheckBox();
     
     //Store changes in the color configuration to write only if the user clicks save
@@ -88,19 +79,23 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
         setTitle(resourceMap.getString("ConfigurationDialog.windowName.text")); //$NON-NLS-1$
         
         getContentPane().setLayout(new BorderLayout());
+        JTabbedPane panMain = new JTabbedPane();
         add(panMain, BorderLayout.CENTER);
         JPanel panButtons = new JPanel();
-        btnSave.setText(resourceMap.getString("ConfigurationDialog.btnSave.text")); //$NON-NLS-1$
-        btnSave.setToolTipText(resourceMap.getString("ConfigurationDialog.btnSave.tooltip")); //$NON-NLS-1$
-        btnSave.setActionCommand(saveCommand);
-        btnSave.addActionListener(this);
-        panButtons.add(btnSave);
+        // BUTTONS
+        JButton button = new JButton(saveCommand);
+        button.setText(resourceMap.getString("ConfigurationDialog.btnSave.text")); //$NON-NLS-1$
+        button.setToolTipText(resourceMap.getString("ConfigurationDialog.btnSave.tooltip")); //$NON-NLS-1$
+        button.setActionCommand(saveCommand);
+        button.addActionListener(this);
+        panButtons.add(button);
 
-        btnCancel.setText(resourceMap.getString("ConfigurationDialog.btnCancel.text")); //$NON-NLS-1$
-        btnCancel.setToolTipText(resourceMap.getString("ConfigurationDialog.btnCancel.tooltip")); //$NON-NLS-1$
-        btnCancel.setActionCommand(cancelCommand);
-        btnCancel.addActionListener(this);
-        panButtons.add(btnCancel);
+        button = new JButton(cancelCommand);
+        button.setText(resourceMap.getString("ConfigurationDialog.btnCancel.text")); //$NON-NLS-1$
+        button.setToolTipText(resourceMap.getString("ConfigurationDialog.btnCancel.tooltip")); //$NON-NLS-1$
+        button.setActionCommand(cancelCommand);
+        button.addActionListener(this);
+        panButtons.add(button);
         add(panButtons, BorderLayout.SOUTH);
 
         panMain.addTab(resourceMap.getString("ConfigurationDialog.colorCodes.title"), panColors); //$NON-NLS-1$
@@ -133,7 +128,7 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
         baseLabel.setForeground(CConfig.getForegroundColor(fieldName));
 
         panColors.add(baseLabel);
-        baseButton = new JButton("Foreground");
+        JButton baseButton = new JButton("Foreground");
         baseButton.setName(fieldName + CConfig.CONFIG_FOREGROUND);
         baseButton.addActionListener(this);
         panColors.add(baseButton);
@@ -160,9 +155,7 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
         
         gbc.gridy++;
         gbc.gridwidth = 1;
-        chkTechUseYear.addActionListener(e -> {
-            txtTechYear.setEnabled(chkTechUseYear.isSelected());
-        });
+        chkTechUseYear.addActionListener(e -> txtTechYear.setEnabled(chkTechUseYear.isSelected()));
         chkTechUseYear.setText(resourceMap.getString("ConfigurationDialog.chkTechYear.text")); //$NON-NLS-1$
         chkTechUseYear.setToolTipText(resourceMap.getString("ConfigurationDialog.chkTechYear.tooltip")); //$NON-NLS-1$
         chkTechUseYear.setSelected(CConfig.getBooleanParam(CConfig.TECH_USE_YEAR));
@@ -247,9 +240,10 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
         panPrinting.add(chkShowRole, gbc);
         gbc.gridy++;
 
-        // Inform user that these options are not yet limited for all units
-        lblFeatureLimitation.setText(resourceMap.getString("ConfigurationDialog.lblFeatureLimitation.text"));
-        panPrinting.add(lblFeatureLimitation, gbc);
+        chkHeatProfile.setText(resourceMap.getString("ConfigurationDialog.chkHeatProfile.text"));
+        chkHeatProfile.setToolTipText(resourceMap.getString("ConfigurationDialog.chkHeatProfile.tooltip"));
+        chkHeatProfile.setSelected(CConfig.getBooleanParam(CConfig.RS_HEAT_PROFILE));
+        panPrinting.add(chkHeatProfile, gbc);
     }
     
     private void loadExportPanel(ResourceBundle resourceMap) {
@@ -306,7 +300,7 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
     }
     
     private void saveConfig() {
-        colorMap.forEach((k,v) -> CConfig.setParam(k, v));
+        colorMap.forEach(CConfig::setParam);
         CConfig.setParam(CConfig.TECH_PROGRESSION, String.valueOf(chkTechProgression.isSelected()));
         CConfig.setParam(CConfig.TECH_USE_YEAR, String.valueOf(chkTechUseYear.isSelected()));
         CConfig.setParam(CConfig.TECH_YEAR, String.valueOf(txtTechYear.getIntVal()));
@@ -319,6 +313,7 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
         CConfig.setParam(CConfig.RS_SHOW_PILOT_DATA, Boolean.toString(chkShowPilotData.isSelected()));
         CConfig.setParam(CConfig.RS_SHOW_ERA, Boolean.toString(chkShowEraIcon.isSelected()));
         CConfig.setParam(CConfig.RS_SHOW_ROLE, Boolean.toString(chkShowRole.isSelected()));
+        CConfig.setParam(CConfig.RS_HEAT_PROFILE, Boolean.toString(chkHeatProfile.isSelected()));
         CConfig.setParam(CConfig.SUMMARY_FORMAT_TRO, Boolean.toString(chkSummaryFormatTRO.isSelected()));
         CConfig.saveConfig();
     }

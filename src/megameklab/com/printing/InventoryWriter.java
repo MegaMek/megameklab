@@ -388,6 +388,10 @@ public class InventoryWriter {
         if (sheet.getEntity() instanceof SmallCraft && !transportBays.isEmpty()) {
             printBayInfo(metrics[0], metrics[1], ypos);
         }
+        if (sheet.showHeatProfile()) {
+            sheet.addTextElement(canvas, viewX + viewWidth * 0.025, ypos, sheet.heatProfileText(),
+                    FONT_SIZE_MEDIUM, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
+        }
         writeFooterBlock(metrics[0], metrics[1]);
     }
 
@@ -567,6 +571,9 @@ public class InventoryWriter {
             lines += transportBays.size() + 1; // add extra for header
         }
         lines += footerLines(fontSize);
+        if (sheet.showHeatProfile()) {
+            lines++;
+        }
         return lines;
     }
 

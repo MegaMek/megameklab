@@ -27,12 +27,14 @@ public class RecordSheetOptions {
     private boolean pilotData;
     private boolean eraIcon;
     private boolean role;
+    private boolean heatProfile;
     
     public RecordSheetOptions() {
         this.quirks = CConfig.getBooleanParam(CConfig.RS_SHOW_QUIRKS);
         this.pilotData = CConfig.getBooleanParam(CConfig.RS_SHOW_PILOT_DATA);
         this.eraIcon = CConfig.getBooleanParam(CConfig.RS_SHOW_ERA);
         this.role = CConfig.getBooleanParam(CConfig.RS_SHOW_ROLE);
+        this.heatProfile = CConfig.getBooleanParam(CConfig.RS_HEAT_PROFILE);
     }
     
     public boolean showQuirks() {
@@ -47,6 +49,9 @@ public class RecordSheetOptions {
     public boolean showRole() {
         return role;
     }
+    public boolean showHeatProfile() {
+        return heatProfile;
+    }
     
     public void setPilotData(boolean pilotData) {
         this.pilotData = pilotData;
@@ -58,6 +63,14 @@ public class RecordSheetOptions {
     
     public void setEraIcon(boolean eraIcon) {
         this.eraIcon = eraIcon;
+    }
+
+    public void setRole(boolean role) {
+        this.role = role;
+    }
+
+    public void setHeatProfile(boolean heatProfile) {
+        this.heatProfile = heatProfile;
     }
 
 }

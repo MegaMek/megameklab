@@ -78,6 +78,21 @@ public abstract class PrintEntity extends PrintRecordSheet {
     }
 
     /**
+     * @return Whether the total weapon heat and dissipation should be shown on the record sheet
+     */
+    protected boolean showHeatProfile() {
+        return getEntity().tracksHeat() && options.showHeatProfile();
+    }
+
+    /**
+     * @return A String showing the total weapon heat and dissipation.
+     */
+    protected String heatProfileText() {
+        int heat = getEntity().getEquipment().stream().mapToInt(m -> m.getType().getHeat()).sum();
+        return "Total Heat (Dissipation): " + heat + " (" + getEntity().getHeatCapacity() + ")";
+    }
+
+    /**
      * Space for misc equipment such as cargo space and SV chassis mods.
      *
      * @return A list of misc equipment, or an empty String if none
