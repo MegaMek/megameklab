@@ -18,6 +18,9 @@ import megamek.common.annotations.Nullable;
 import megamek.common.logging.LogLevel;
 import megameklab.com.MegaMekLab;
 import megameklab.com.util.CConfig;
+import org.apache.avalon.framework.configuration.Configuration;
+import org.apache.avalon.framework.configuration.ConfigurationException;
+import org.apache.avalon.framework.configuration.DefaultConfigurationBuilder;
 import org.apache.batik.anim.dom.SVGDOMImplementation;
 import org.apache.batik.anim.dom.SVGLocatableSupport;
 import org.apache.batik.bridge.BridgeContext;
@@ -25,9 +28,14 @@ import org.apache.batik.bridge.GVTBuilder;
 import org.apache.batik.bridge.UserAgentAdapter;
 import org.apache.batik.dom.util.SAXDocumentFactory;
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.svggen.SVGGeneratorContext;
 import org.apache.batik.svggen.SVGGraphics2D;
+import org.apache.batik.transcoder.TranscoderException;
+import org.apache.batik.transcoder.TranscoderInput;
+import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLResourceDescriptor;
+import org.apache.fop.svg.PDFTranscoder;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -36,6 +44,7 @@ import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.svg.SVGRectElement;
 import org.w3c.dom.xpath.XPathEvaluator;
 import org.w3c.dom.xpath.XPathResult;
+import org.xml.sax.SAXException;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -243,7 +252,8 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         svgDocument = loadTemplate(pageIndex, pageFormat);
         if (null != svgDocument) {
             subFonts((SVGDocument) svgDocument);
-            svgGenerator = new SVGGraphics2D(svgDocument);
+            SVGGeneratorContext context = SVGGeneratorContext.createDefault(getSVGDocument());
+            svgGenerator = new SVGGraphics2D(context, false);
             processImage(pageIndex - firstPage, pageFormat);
         }
     }
@@ -267,9 +277,23 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
                 ex.printStackTrace();
             }
              */
-
         }
         return Printable.PAGE_EXISTS;
+    }
+
+    public InputStream exportPDF(int pageNumber, PageFormat pageFormat) throws TranscoderException, SAXException, IOException, ConfigurationException {
+        createDocument(pageNumber + firstPage, pageFormat);
+        DefaultConfigurationBuilder cfgBuilder = new DefaultConfigurationBuilder();
+        Configuration cfg = cfgBuilder.build(getClass().getResourceAsStream("fop-config.xml"));
+        PDFTranscoder transcoder = new PDFTranscoder();
+        transcoder.configure(cfg);
+        transcoder.addTranscodingHint(PDFTranscoder.KEY_AUTO_FONTS, false);
+        TranscoderInput input = new TranscoderInput(getSVGDocument());
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        TranscoderOutput transOutput = new TranscoderOutput(output);
+        transcoder.transcode(input, transOutput);
+
+        return new ByteArrayInputStream(output.toByteArray());
     }
     
     protected GraphicsNode build() {
