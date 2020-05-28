@@ -85,8 +85,8 @@ public class PrintCompositeTankSheet extends PrintRecordSheet {
         double height = sheet.build().getPrimitiveBounds().getHeight();
         Element g = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
         g.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
-                SVGConstants.SVG_TRANSLATE_VALUE + "(0,"
-                        + (pageFormat.getHeight() * 0.5 - height) + ")");
+                String.format("%s(0 %f)", SVGConstants.SVG_TRANSLATE_VALUE,
+                        pageFormat.getImageableHeight() * 0.5 - height));
         sheet.hideElement(FOOTER);
         g.appendChild(getSVGDocument().importNode(sheet.getSVGDocument().getDocumentElement(), true));
         getSVGDocument().getDocumentElement().appendChild(g);
@@ -96,12 +96,13 @@ public class PrintCompositeTankSheet extends PrintRecordSheet {
             sheet.createDocument(startPage, pageFormat);
             g = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
             g.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
-                    SVGConstants.SVG_TRANSLATE_VALUE + "(0," + (pageFormat.getHeight() * 0.5) + ")");
+                    String.format("%s(0 %f)", SVGConstants.SVG_TRANSLATE_VALUE,
+                            pageFormat.getImageableHeight() * 0.5));
             g.appendChild(getSVGDocument().importNode(sheet.getSVGDocument().getDocumentElement(), true));
             getSVGDocument().getDocumentElement().appendChild(g);
         } else {
             String filename = (tank1 instanceof VTOL)? "tables_vtol.svg" : "tables_tank.svg";
-            Document doc = loadSVG(filename);
+            Document doc = loadSVG(getSVGDirectoryName(), filename);
             if (null != doc) {
                 Element element = doc.getElementById(COPYRIGHT);
                 if (null != element) {

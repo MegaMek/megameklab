@@ -52,7 +52,6 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.RenderedImage;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
-import java.awt.print.PrinterException;
 import java.io.*;
 import java.net.URLConnection;
 import java.util.*;
@@ -192,10 +191,10 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      * @param filename The name of the SVG file
      * @return         The document object
      */
-    static Document loadSVG(String filename) {
+    static Document loadSVG(String dirName, String filename) {
         final String METHOD_NAME = "loadSVG(String)";
 
-        File f = new File("data/images/recordsheets/", filename);
+        File f = new File(dirName, filename);
         Document svgDocument = null;
         try {
             InputStream is = new FileInputStream(f);
@@ -245,21 +244,35 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      * @return            An SVG document for one page of the print job
      */
     @Nullable Document loadTemplate(int pageIndex, PageFormat pageFormat) {
-        return loadSVG(getSVGFileName(pageIndex - firstPage));
+        return loadSVG(getSVGDirectoryName(),
+                getSVGFileName(pageIndex - firstPage));
     }
 
     void createDocument(int pageIndex, PageFormat pageFormat) {
-        svgDocument = loadTemplate(pageIndex, pageFormat);
-        if (null != svgDocument) {
-            subFonts((SVGDocument) svgDocument);
-            SVGGeneratorContext context = SVGGeneratorContext.createDefault(getSVGDocument());
+        Document document = loadTemplate(pageIndex, pageFormat);
+        if (null != document) {
+            subFonts((SVGDocument) document);
+            SVGGeneratorContext context = SVGGeneratorContext.createDefault(document);
             svgGenerator = new SVGGraphics2D(context, false);
+            double ratio = Math.min(pageFormat.getImageableWidth() / (options.getPaperSize().pxWidth - 36),
+                    pageFormat.getPaper().getImageableHeight() / (options.getPaperSize().pxHeight - 36));
+            DOMImplementation domImpl = SVGDOMImplementation.getDOMImplementation();
+            svgDocument = domImpl.createDocument(svgNS, SVGConstants.SVG_SVG_TAG, null);
+            Element svgRoot = svgDocument.getDocumentElement();
+            svgRoot.setAttributeNS(null, SVGConstants.SVG_WIDTH_ATTRIBUTE, String.valueOf(pageFormat.getWidth()));
+            svgRoot.setAttributeNS(null, SVGConstants.SVG_HEIGHT_ATTRIBUTE, String.valueOf(pageFormat.getHeight()));
+            Element g = svgDocument.createElementNS(svgNS, SVGConstants.SVG_G_TAG);
+            g.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
+                    String.format("%s(%f 0 0 %f %f %f)", SVGConstants.SVG_MATRIX_VALUE,
+                            ratio, ratio, pageFormat.getImageableX(), pageFormat.getImageableY()));
+            g.appendChild(getSVGDocument().importNode(document.getDocumentElement(), true));
+            svgDocument.getDocumentElement().appendChild(g);
             processImage(pageIndex - firstPage, pageFormat);
         }
     }
 
     @Override
-    public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
+    public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) {
         final String METHOD_NAME = "print(Graphics,PageFormat,int)";
         
         Graphics2D g2d = (Graphics2D) graphics;
@@ -267,7 +280,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             createDocument(pageIndex, pageFormat);
             GraphicsNode node = build();
             node.paint(g2d);
-            /* Testing code that outputs the generated svg
+            /* Testing code that outputs the generated svg */
             try {
                 javax.xml.transform.Transformer transformer = javax.xml.transform.TransformerFactory.newInstance().newTransformer();
                 javax.xml.transform.Result output = new javax.xml.transform.stream.StreamResult(new File("out.svg"));
@@ -276,7 +289,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-             */
+            /* */
         }
         return Printable.PAGE_EXISTS;
     }
@@ -330,6 +343,10 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      * @param pageNum    Indicates which page of multi-page sheets to print. The first page is 0.
      */
     protected abstract void processImage(int pageNum, PageFormat pageFormat);
+
+    String getSVGDirectoryName() {
+        return "data/images/recordsheets/" + options.getPaperSize().dirName;
+    }
 
     /**
      * @param pageNumber  The page number in the current record sheet, where the first page is numberd zero.
