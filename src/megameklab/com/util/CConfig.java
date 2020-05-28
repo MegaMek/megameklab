@@ -71,7 +71,9 @@ public class CConfig {
     
     public static final String CONFIG_SAVE_LOC = "Save-Location-Default";
     public static final String CONFIG_PLAF = "lookAndFeel";
-    
+
+    public static final String RS_PAPER_SIZE = "rs_paper_size";
+    public static final String RS_COLOR = "rs_color";
     public static final String RS_FONT = "rs_font";
     public static final String RS_SHOW_QUIRKS = "rs_show_quirks";
     public static final String RS_SHOW_PILOT_DATA = "rs_show_pilot_data";
@@ -117,6 +119,7 @@ public class CConfig {
                 new File(System.getProperty("user.dir")
                         + "/data/mechfiles/").getAbsolutePath());
         defaults.setProperty(SUMMARY_FORMAT_TRO, Boolean.toString(true));
+        defaults.setProperty(RS_COLOR, Boolean.toString(true));
         defaults.setProperty(RS_SHOW_QUIRKS, Boolean.toString(true));
         defaults.setProperty(RS_SHOW_ERA, Boolean.toString(true));
         defaults.setProperty(RS_SHOW_ROLE, Boolean.toString(true));

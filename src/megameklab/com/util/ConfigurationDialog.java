@@ -38,6 +38,7 @@ import javax.swing.SpringLayout;
 
 import megamek.common.ITechnology;
 import megamek.common.util.EncodeControl;
+import megameklab.com.printing.PaperSize;
 import megameklab.com.ui.util.IntRangeTextField;
 
 public final class ConfigurationDialog extends JDialog implements ActionListener {
@@ -58,7 +59,9 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
     private final JCheckBox chkTechShowFaction = new JCheckBox();
     private final JCheckBox chkShowExtinct = new JCheckBox();
     private final JCheckBox chkUnofficialIgnoreYear = new JCheckBox();
-    
+
+    private final JComboBox<String> cbPaper = new JComboBox<>();
+    private final JCheckBox chkColor = new JCheckBox();
     private final JComboBox<String> cbFont = new JComboBox<>();
     private final JTextArea txtFontDisplay = new JTextArea();
     private final JCheckBox chkShowQuirks = new JCheckBox();
@@ -195,12 +198,30 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
     
     private void loadPrintingPanel(ResourceBundle resourceMap) {
         GridBagConstraints gbc = new GridBagConstraints();
+
+        for (PaperSize paper : PaperSize.values()) {
+            cbPaper.addItem(paper.displayName);
+        }
+        String paper = CConfig.getParam(CConfig.RS_PAPER_SIZE, PaperSize.US_LETTER.name());
+        try {
+            cbPaper.setSelectedItem(PaperSize.valueOf(paper).displayName);
+        } catch (Exception ex) {
+            cbPaper.setSelectedItem(PaperSize.US_LETTER.displayName);
+        }
+        gbc.gridx = 0;
+        gbc.gridy++;
+        panPrinting.add(new JLabel(resourceMap.getString("ConfigurationDialog.cbPaper.text")));
+        gbc.gridx = 1;
+        cbPaper.setToolTipText(resourceMap.getString("ConfigurationDialog.chkShowQuirks.tooltip"));
+        panPrinting.add(cbPaper, gbc);
+        gbc.gridy++;
+
         for (String family : GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames()) {
             cbFont.addItem(family);
         }
         cbFont.setSelectedItem(UnitUtil.deriveFont(8).getFamily());
         gbc.gridx = 0;
-        gbc.gridy = 0;
+        gbc.gridy++;
         panPrinting.add(new JLabel(resourceMap.getString("ConfigurationDialog.cbFont.text")), gbc);
         gbc.gridx = 1;
         cbFont.setToolTipText(resourceMap.getString("ConfigurationDialog.cbFont.tooltip")); //$NON-NLS-1$
@@ -214,7 +235,15 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
         txtFontDisplay.setText(resourceMap.getString("ConfigurationDialog.txtFontDisplay.text"));
         updateFont();
         panPrinting.add(txtFontDisplay, gbc);
-        
+
+        gbc.gridx = 0;
+        gbc.gridy++;
+        chkColor.setText(resourceMap.getString("ConfigurationDialog.chkColor.text"));
+        chkColor.setToolTipText(resourceMap.getString("ConfigurationDialog.chkColor.tooltip"));
+        chkColor.setSelected(CConfig.getBooleanParam(CConfig.RS_COLOR));
+        panPrinting.add(chkColor, gbc);
+        gbc.gridy++;
+
         gbc.gridx = 0;
         gbc.gridy++;
         chkShowQuirks.setText(resourceMap.getString("ConfigurationDialog.chkShowQuirks.text"));
@@ -314,8 +343,10 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
         CConfig.setParam(CConfig.TECH_SHOW_FACTION, String.valueOf(chkTechShowFaction.isSelected()));
         CConfig.setParam(CConfig.TECH_EXTINCT, String.valueOf(chkShowExtinct.isSelected()));
         CConfig.setParam(CConfig.TECH_UNOFFICAL_NO_YEAR, String.valueOf(chkUnofficialIgnoreYear.isSelected()));
+        CConfig.setParam(CConfig.RS_PAPER_SIZE, PaperSize.values()[cbPaper.getSelectedIndex()].toString());
         CConfig.setParam(CConfig.RS_FONT, (String) cbFont.getSelectedItem());
         UnitUtil.loadFonts();
+        CConfig.setParam(CConfig.RS_COLOR, Boolean.toString(chkColor.isSelected()));
         CConfig.setParam(CConfig.RS_SHOW_QUIRKS, Boolean.toString(chkShowQuirks.isSelected()));
         CConfig.setParam(CConfig.RS_SHOW_PILOT_DATA, Boolean.toString(chkShowPilotData.isSelected()));
         CConfig.setParam(CConfig.RS_SHOW_ERA, Boolean.toString(chkShowEraIcon.isSelected()));
