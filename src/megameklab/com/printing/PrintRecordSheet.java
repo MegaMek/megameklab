@@ -26,6 +26,8 @@ import org.apache.batik.anim.dom.SVGLocatableSupport;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.GVTBuilder;
 import org.apache.batik.bridge.UserAgentAdapter;
+import org.apache.batik.css.engine.CSSStylableElement;
+import org.apache.batik.css.engine.StyleMap;
 import org.apache.batik.dom.util.SAXDocumentFactory;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.svggen.SVGGeneratorContext;
@@ -185,6 +187,24 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         }
     }
 
+    private void subColorElements() {
+        Element element = svgDocument.getElementById(RS_TEMPLATE);
+        if (element != null) {
+            String style = element.getAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE);
+            if (style != null) {
+                for (String field : style.split(";")) {
+                    if (field.startsWith(MML_COLOR_ELEMENTS + ":")) {
+                        String[] ids = field.substring(field.indexOf(":") + 1).split(",");
+                        for (String id : ids) {
+                            hideElement(id + "Color", !options.useColor());
+                            hideElement(id + "BW", options.useColor());
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     /**
      * Creates a {@link Document} from an svg image file
      *
@@ -249,24 +269,24 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     }
 
     void createDocument(int pageIndex, PageFormat pageFormat) {
-        Document document = loadTemplate(pageIndex, pageFormat);
-        if (null != document) {
-            subFonts((SVGDocument) document);
-            SVGGeneratorContext context = SVGGeneratorContext.createDefault(document);
+        svgDocument = loadTemplate(pageIndex, pageFormat);
+        if (null != svgDocument) {
+            subFonts((SVGDocument) svgDocument);
+            subColorElements();
+            SVGGeneratorContext context = SVGGeneratorContext.createDefault(svgDocument);
             svgGenerator = new SVGGraphics2D(context, false);
             double ratio = Math.min(pageFormat.getImageableWidth() / (options.getPaperSize().pxWidth - 36),
                     pageFormat.getPaper().getImageableHeight() / (options.getPaperSize().pxHeight - 36));
             DOMImplementation domImpl = SVGDOMImplementation.getDOMImplementation();
-            svgDocument = domImpl.createDocument(svgNS, SVGConstants.SVG_SVG_TAG, null);
             Element svgRoot = svgDocument.getDocumentElement();
             svgRoot.setAttributeNS(null, SVGConstants.SVG_WIDTH_ATTRIBUTE, String.valueOf(pageFormat.getWidth()));
             svgRoot.setAttributeNS(null, SVGConstants.SVG_HEIGHT_ATTRIBUTE, String.valueOf(pageFormat.getHeight()));
-            Element g = svgDocument.createElementNS(svgNS, SVGConstants.SVG_G_TAG);
-            g.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
-                    String.format("%s(%f 0 0 %f %f %f)", SVGConstants.SVG_MATRIX_VALUE,
-                            ratio, ratio, pageFormat.getImageableX(), pageFormat.getImageableY()));
-            g.appendChild(getSVGDocument().importNode(document.getDocumentElement(), true));
-            svgDocument.getDocumentElement().appendChild(g);
+            Element g = svgDocument.getElementById(RS_TEMPLATE);
+            if (g != null) {
+                g.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
+                        String.format("%s(%f 0 0 %f %f %f)", SVGConstants.SVG_MATRIX_VALUE,
+                                ratio, ratio, pageFormat.getImageableX(), pageFormat.getImageableY()));
+            }
             processImage(pageIndex - firstPage, pageFormat);
         }
     }
