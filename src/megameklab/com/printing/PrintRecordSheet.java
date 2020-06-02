@@ -26,8 +26,6 @@ import org.apache.batik.anim.dom.SVGLocatableSupport;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.GVTBuilder;
 import org.apache.batik.bridge.UserAgentAdapter;
-import org.apache.batik.css.engine.CSSStylableElement;
-import org.apache.batik.css.engine.StyleMap;
 import org.apache.batik.dom.util.SAXDocumentFactory;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.svggen.SVGGeneratorContext;
@@ -212,7 +210,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      * @return         The document object
      */
     static Document loadSVG(String dirName, String filename) {
-        final String METHOD_NAME = "loadSVG(String)";
+        final String METHOD_NAME = "loadSVG(String, String)";
 
         File f = new File(dirName, filename);
         Document svgDocument = null;
