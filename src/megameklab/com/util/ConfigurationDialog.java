@@ -212,7 +212,7 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
         gbc.gridy++;
         panPrinting.add(new JLabel(resourceMap.getString("ConfigurationDialog.cbPaper.text")));
         gbc.gridx = 1;
-        cbPaper.setToolTipText(resourceMap.getString("ConfigurationDialog.chkShowQuirks.tooltip"));
+        cbPaper.setToolTipText(resourceMap.getString("ConfigurationDialog.cbPaper.tooltip"));
         panPrinting.add(cbPaper, gbc);
         gbc.gridy++;
 
