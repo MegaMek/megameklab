@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.standard.Chromaticity;
+import javax.print.attribute.standard.ColorSupported;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -301,7 +302,6 @@ public class UnitPrintManager {
         HashPrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
         aset.add(options.getPaperSize().sizeName);
         aset.add(options.getPaperSize().printableArea);
-        aset.add(options.useColor() ? Chromaticity.COLOR : Chromaticity.MONOCHROME);
         PrinterJob masterPrintJob = PrinterJob.getPrinterJob();
         if (!masterPrintJob.printDialog(aset)) {
             return;
