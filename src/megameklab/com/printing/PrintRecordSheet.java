@@ -277,7 +277,6 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             svgGenerator = new SVGGraphics2D(context, false);
             double ratio = Math.min(pageFormat.getImageableWidth() / (options.getPaperSize().pxWidth - 36),
                     pageFormat.getPaper().getImageableHeight() / (options.getPaperSize().pxHeight - 36));
-            DOMImplementation domImpl = SVGDOMImplementation.getDOMImplementation();
             Element svgRoot = svgDocument.getDocumentElement();
             svgRoot.setAttributeNS(null, SVGConstants.SVG_WIDTH_ATTRIBUTE, String.valueOf(pageFormat.getWidth()));
             svgRoot.setAttributeNS(null, SVGConstants.SVG_HEIGHT_ATTRIBUTE, String.valueOf(pageFormat.getHeight()));
@@ -300,7 +299,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             createDocument(pageIndex, pageFormat);
             GraphicsNode node = build();
             node.paint(g2d);
-            /* Testing code that outputs the generated svg */
+            /* Testing code that outputs the generated svg
             try {
                 javax.xml.transform.Transformer transformer = javax.xml.transform.TransformerFactory.newInstance().newTransformer();
                 javax.xml.transform.Result output = new javax.xml.transform.stream.StreamResult(new File("out.svg"));
@@ -309,7 +308,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            /* */
+            */
         }
         return Printable.PAGE_EXISTS;
     }
