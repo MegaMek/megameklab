@@ -783,7 +783,7 @@
                                                                       >†This equals the number of conventional infantry troopers hit and eliminated, regardless of armor protection.</text
                                                                       ><text x="6.000" y="120.422" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="259.500" lengthAdjust="spacingAndGlyphs"
                                                                       >Attacks by non-infantry weapons against mechanized infantry double the number of troopers eliminated;</text
-                                                                      ><text fill="#231f20" x="6.000" y="127.422" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" text-anchor="start"
+                                                                      ><text fill="#231f20" x="6.000" y="127.422" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal;mml-field-width:11121.209" text-anchor="start"
                                                                       >round fractions up.</text
                                                                       ><text x="6.000" y="134.422" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="192.375" lengthAdjust="spacingAndGlyphs"
                                                                       >‡Each Heat-Effect Weapon has specific damage against conventional infantry,</text

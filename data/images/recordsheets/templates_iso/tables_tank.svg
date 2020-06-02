@@ -136,7 +136,7 @@
         > for more information).</text
         ><text x="6.000" y="28.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="301.630" lengthAdjust="spacingAndGlyphs"
         >A result of 12 on the Ground Combat Vehicles Hit Location Table may inflict critical hit against the turret; if the vehicle has</text
-        ><text fill="#231f20" x="6.000" y="35.000" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" text-anchor="start"
+        ><text fill="#231f20" x="6.000" y="35.000" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal;mml-field-width:67827.500" text-anchor="start"
         >no turret, a 12 indicates the chance of a critical hit on the side corresponding to the attack direction.</text
         ><text x="6.000" y="42.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="301.630" lengthAdjust="spacingAndGlyphs"
         >† The vehicle may suffer motive system damage even if its armor remains intact. Apply damage normally to the armor in</text
@@ -148,7 +148,7 @@
         > for more information).</text
         ><text x="6.000" y="63.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="301.630" lengthAdjust="spacingAndGlyphs"
         >§ Side hits strike the side as indicated by the attack direction. For example, if an attack hits the right side, all Side results</text
-        ><text fill="#231f20" x="6.000" y="70.000" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" text-anchor="start"
+        ><text fill="#231f20" x="6.000" y="70.000" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal;mml-field-width:69736.813" text-anchor="start"
         >strike the right side armor. If the vehicle has no turret, a turret hit strikes the armor on the side attacked.</text
       ></g
     ></g
@@ -262,7 +262,7 @@
       >immobile target modifier would not apply for the second unit. However, the -4 modifier would</text
       ><text x="6.000" y="181.500" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:4.800px;font-weight:normal;font-style:normal" textLength="220.370" lengthAdjust="spacingAndGlyphs"
       >take effect during the Physical Attack Phase. If a hover vehicle is rendered immobile while</text
-      ><text fill="#231f20" x="6.000" y="186.500" style="font-family:Eurostile;font-size:4.800px;font-weight:normal;font-style:normal" text-anchor="start"
+      ><text fill="#231f20" x="6.000" y="186.500" style="font-family:Eurostile;font-size:4.800px;font-weight:normal;font-style:normal;mml-field-width:21594.053" text-anchor="start"
       >over a Depth 1 or deeper water hex, it sinks and is destroyed.</text
     ></g
     ><g transform="translate (0.000 245.400)"
