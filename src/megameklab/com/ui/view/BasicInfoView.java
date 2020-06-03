@@ -48,12 +48,9 @@ import megameklab.com.util.CConfig;
  */
 public class BasicInfoView extends BuildView implements ITechManager, ActionListener, FocusListener {
     
-    /**
-     * 
-     */
     private static final long serialVersionUID = -6831478201489228066L;
 
-    private List<BuildListener> listeners = new CopyOnWriteArrayList<>();
+    private final List<BuildListener> listeners = new CopyOnWriteArrayList<>();
     public void addListener(BuildListener l) {
         if (null != l) {
             listeners.add(l);
@@ -255,10 +252,14 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
     
     @Override
     public int getTechFaction() {
-        if (cbFaction.getSelectedIndex() < 0) {
-            return -1;
+        if (!CConfig.getBooleanParam(CConfig.TECH_SHOW_FACTION)) {
+            return ITechnology.F_NONE;
         }
-        return (Integer)cbFaction.getSelectedItem();
+        Integer retVal = (Integer) cbFaction.getSelectedItem();
+        if (retVal == null) {
+            return ITechnology.F_NONE;
+        }
+        return retVal;
     }
     
     public void setTechFaction(int techFaction) {
@@ -298,7 +299,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         if (getTechIntroYear() < CLAN_START) {
             return false;
         } else {
-            Integer selected = (Integer)cbTechBase.getSelectedItem();
+            Integer selected = (Integer) cbTechBase.getSelectedItem();
             return ((null != selected)
                     && ((selected == TECH_BASE_CLAN) || (selected == TECH_BASE_CLAN_MIXED)));
         }
@@ -309,7 +310,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         if (getTechIntroYear() < CLAN_START) {
             return false;
         }
-        Integer selected = (Integer)cbTechBase.getSelectedItem();
+        Integer selected = (Integer) cbTechBase.getSelectedItem();
         return ((null != selected)
                 && ((selected == TECH_BASE_IS_MIXED) || (selected == TECH_BASE_CLAN_MIXED)));
     }
@@ -339,19 +340,29 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
     }
     
     private void refreshTechBase() {
-        Integer prev = (Integer)cbTechBase.getSelectedItem();
+        Integer prev = (Integer) cbTechBase.getSelectedItem();
         cbTechBase.removeActionListener(this);
         cbTechBase.removeAllItems();
-        if (baseTA.getTechBase() != ITechnology.TECH_BASE_CLAN) {
+        // IS is available to anything that doesn't require a Clan tech base (e.g. QuadVee, ProtoMech).
+        // Clan is available to anything that doesn't require an IS tech base, is built after the Clans
+        // are formed, and not built by an IS faction before the Clan invasion.
+        final boolean clanFaction = (getTechFaction() >= ITechnology.F_CLAN) || (getTechFaction() < 0);
+        final boolean sphereAvailable = baseTA.getTechBase() != TECH_BASE_CLAN;
+        final boolean clanAvailable = (getTechIntroYear() >= CLAN_START)
+                && (baseTA.getTechBase() != ITechnology.TECH_BASE_IS)
+                && (clanFaction || (getTechIntroYear() >= IS_MIXED_START));
+        final boolean mixedTechAvailable = (getTechIntroYear() >= IS_MIXED_START)
+                || ((getTechIntroYear() >= CLAN_MIXED_START) && clanFaction);
+        if (sphereAvailable) {
             cbTechBase.addItem(TECH_BASE_IS);
         }
-        if ((getTechIntroYear() >= CLAN_START) && (baseTA.getTechBase() != ITechnology.TECH_BASE_IS)) {
+        if (clanAvailable) {
             cbTechBase.addItem(TECH_BASE_CLAN);
         }
-        if ((getTechIntroYear() >= IS_MIXED_START) && (baseTA.getTechBase() != ITechnology.TECH_BASE_CLAN)) {
+        if (sphereAvailable && mixedTechAvailable) {
             cbTechBase.addItem(TECH_BASE_IS_MIXED);
         }
-        if ((getTechIntroYear() >= CLAN_MIXED_START) && (baseTA.getTechBase() != ITechnology.TECH_BASE_IS)) {
+        if (clanAvailable && mixedTechAvailable) {
             cbTechBase.addItem(TECH_BASE_CLAN_MIXED);
         }
         if (null != prev) {
@@ -388,11 +399,10 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
     }
     
     private void refreshFaction() {
-        
         if (CConfig.getBooleanParam(CConfig.TECH_SHOW_FACTION)) {
             cbFaction.removeActionListener(this);
-            Integer prevFaction = (Integer)cbFaction.getSelectedItem();
-            cbFaction.refresh(getTechIntroYear(), useClanTechBase());
+            Integer prevFaction = (Integer) cbFaction.getSelectedItem();
+            cbFaction.refresh(getTechIntroYear());
             cbFaction.setSelectedItem(prevFaction);
             cbFaction.addActionListener(this);
             if (cbFaction.getSelectedIndex() < 0) {
@@ -426,7 +436,8 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
                 int year = Math.max(getTechIntroYear(), baseTA.getIntroductionDate(useClanTechBase()));
                 listeners.forEach(l -> l.yearChanged(year));
                 prevYear = year;
-            } catch (NumberFormatException ex) {
+            } catch (NumberFormatException ignored) {
+                // If text is not a legal integer value, reset to the previous value
             } finally {
                 setYear(prevYear);
             }
@@ -440,20 +451,21 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
                 setManualBV(prevBV);
             }
         }
-        listeners.forEach(l -> l.refreshSummary());
+        listeners.forEach(BuildListener::refreshSummary);
     }
     
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == cbFaction) {
-            listeners.forEach(l -> l.updateTechLevel());
+            listeners.forEach(BuildListener::updateTechLevel);
+            refreshTechBase();
         } else if (e.getSource() == cbTechBase) {
             listeners.forEach(l -> l.techBaseChanged(useClanTechBase(), useMixedTech()));
             refreshTechLevel();
         } else if (e.getSource() == cbTechLevel) {
             listeners.forEach(l -> l.techLevelChanged(getTechLevel()));
         }
-        listeners.forEach(l -> l.refreshSummary());
+        listeners.forEach(BuildListener::refreshSummary);
     }
     
     @Override
