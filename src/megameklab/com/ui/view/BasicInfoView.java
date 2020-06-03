@@ -252,8 +252,12 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
     
     @Override
     public int getTechFaction() {
-        if (cbFaction.getSelectedIndex() < 0) {
-            return -1;
+        if (!CConfig.getBooleanParam(CConfig.TECH_SHOW_FACTION)) {
+            return ITechnology.F_NONE;
+        }
+        Integer retVal = (Integer) cbFaction.getSelectedItem();
+        if (retVal == null) {
+            return ITechnology.F_NONE;
         }
         return retVal;
     }
