@@ -17,6 +17,9 @@ package megameklab.com.printing;
  * ID attribute values in SVG templates
  */
 public interface IdConstants {
+    String RS_TEMPLATE = "rs_template";
+
+    String MML_COLOR_ELEMENTS = "mml-color-elements";
     String MML_FIELD_WIDTH = "mml-field-width";
     String MML_GAP = "mml-gap";
     String MML_MULTISECTION = "mml-multisection";

@@ -15,6 +15,8 @@ package megameklab.com.printing;
 
 import megameklab.com.util.CConfig;
 
+import java.awt.print.Paper;
+
 /**
  * A set of options for controlling what is displayed on the record sheet
  * 
@@ -22,15 +24,24 @@ import megameklab.com.util.CConfig;
  *
  */
 public class RecordSheetOptions {
-    
+
+    private PaperSize paperSize;
+    private boolean color;
     private boolean quirks;
     private boolean pilotData;
     private boolean eraIcon;
     private boolean role;
     private boolean heatProfile;
     private boolean tacOpsHeat;
-    
+
     public RecordSheetOptions() {
+        String paper = CConfig.getParam(CConfig.RS_PAPER_SIZE, PaperSize.US_LETTER.name());
+        try {
+            this.paperSize = PaperSize.valueOf(paper);
+        } catch (Exception ex) {
+            this.paperSize = PaperSize.US_LETTER;
+        }
+        this.color = CConfig.getBooleanParam(CConfig.RS_COLOR);
         this.quirks = CConfig.getBooleanParam(CConfig.RS_SHOW_QUIRKS);
         this.pilotData = CConfig.getBooleanParam(CConfig.RS_SHOW_PILOT_DATA);
         this.eraIcon = CConfig.getBooleanParam(CConfig.RS_SHOW_ERA);
@@ -38,7 +49,15 @@ public class RecordSheetOptions {
         this.heatProfile = CConfig.getBooleanParam(CConfig.RS_HEAT_PROFILE);
         this.tacOpsHeat = CConfig.getBooleanParam(CConfig.RS_TAC_OPS_HEAT);
     }
-    
+
+    public PaperSize getPaperSize() {
+        return paperSize;
+    }
+
+    public boolean useColor() {
+        return color;
+    }
+
     public boolean showQuirks() {
         return quirks;
     }
@@ -65,6 +84,14 @@ public class RecordSheetOptions {
 
     public boolean useTacOpsHeat() {
         return tacOpsHeat;
+    }
+
+    public void setPaperSize(PaperSize paperSize) {
+        this.paperSize = paperSize;
+    }
+
+    public void setColor(boolean color) {
+        this.color = color;
     }
     
     public void setEraIcon(boolean eraIcon) {

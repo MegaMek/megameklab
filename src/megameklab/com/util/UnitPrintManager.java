@@ -21,7 +21,6 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.print.Book;
 import java.awt.print.PageFormat;
-import java.awt.print.Paper;
 import java.awt.print.PrinterJob;
 import java.io.File;
 import java.io.IOException;
@@ -30,8 +29,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.print.attribute.HashPrintRequestAttributeSet;
-import javax.print.attribute.standard.MediaPrintableArea;
-import javax.print.attribute.standard.MediaSizeName;
+import javax.print.attribute.standard.DialogTypeSelection;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -69,17 +67,15 @@ public class UnitPrintManager {
 
     private static final ResourceBundle menuResources = ResourceBundle.getBundle("megameklab.resources.Menu", new EncodeControl());
 
-    public static boolean printEntity(Entity entity) {
+    public static void printEntity(Entity entity) {
         List<Entity> unitList = Collections.singletonList(entity);
-        return printAllUnits(unitList, false);
+        printAllUnits(unitList, false);
     }
 
-    public static boolean exportEntity(Entity entity, JFrame parent) {
+    public static void exportEntity(Entity entity, JFrame parent) {
         File exportFile = getExportFile(parent, entity.getShortNameRaw() + ".pdf");
         if (exportFile != null) {
-            return exportUnits(Collections.singletonList(entity), exportFile, false);
-        } else {
-            return false;
+            exportUnits(Collections.singletonList(entity), exportFile, false);
         }
     }
 
@@ -170,7 +166,8 @@ public class UnitPrintManager {
         return f.getSelectedFile();
     }
 
-    private static List<PrintRecordSheet> createSheets(List<Entity> entities, boolean singlePrint) {
+    private static List<PrintRecordSheet> createSheets(List<Entity> entities, boolean singlePrint,
+                                                       RecordSheetOptions options) {
         List<PrintRecordSheet> sheets = new ArrayList<>();
         List<Infantry> infList = new ArrayList<>();
         List<BattleArmor> baList = new ArrayList<>();
@@ -183,34 +180,34 @@ public class UnitPrintManager {
             if (unit instanceof Mech) {
                 UnitUtil.removeOneShotAmmo(unit);
                 UnitUtil.expandUnitMounts((Mech) unit);
-                sheets.add(new PrintMech((Mech) unit, pageCount++));
+                sheets.add(new PrintMech((Mech) unit, pageCount++, options));
             } else if ((unit instanceof Tank) && ((unit.getMovementMode() == EntityMovementMode.NAVAL) || (unit.getMovementMode() == EntityMovementMode.SUBMARINE) || (unit.getMovementMode() == EntityMovementMode.HYDROFOIL))) {
-                sheets.add(new PrintTank((Tank) unit, pageCount++));
+                sheets.add(new PrintTank((Tank) unit, pageCount++, options));
             } else if (unit instanceof Tank) {
                 if (singlePrint) {
-                    sheets.add(new PrintCompositeTankSheet((Tank) unit, null, pageCount++));
+                    sheets.add(new PrintCompositeTankSheet((Tank) unit, null, pageCount++, options));
                 } else if (null != tank1) {
-                    sheets.add(new PrintCompositeTankSheet(tank1, (Tank) unit, pageCount++));
+                    sheets.add(new PrintCompositeTankSheet(tank1, (Tank) unit, pageCount++, options));
                     tank1 = null;
                 } else {
                     tank1 = (Tank) unit;
                 }
             } else if (unit.hasETypeFlag(Entity.ETYPE_AERO)) {
                 if (unit instanceof Jumpship) {
-                    PrintCapitalShip pcs = new PrintCapitalShip((Jumpship) unit, pageCount);
+                    PrintCapitalShip pcs = new PrintCapitalShip((Jumpship) unit, pageCount, options);
                     pageCount += pcs.getPageCount();
                     sheets.add(pcs);
                 } else if (unit instanceof Dropship) {
-                    PrintDropship pds = new PrintDropship((Aero) unit, pageCount);
+                    PrintDropship pds = new PrintDropship((Aero) unit, pageCount, options);
                     pageCount += pds.getPageCount();
                     sheets.add(pds);
                 } else {
-                    sheets.add(new PrintAero((Aero) unit, pageCount));
+                    sheets.add(new PrintAero((Aero) unit, pageCount, options));
                 }
             } else if (unit instanceof BattleArmor) {
                 baList.add((BattleArmor) unit);
                 if (singlePrint || baList.size() > 4) {
-                    PrintRecordSheet prs = new PrintSmallUnitSheet(baList, pageCount);
+                    PrintRecordSheet prs = new PrintSmallUnitSheet(baList, pageCount, options);
                     pageCount += prs.getPageCount();
                     sheets.add(prs);
                     baList = new ArrayList<>();
@@ -218,7 +215,7 @@ public class UnitPrintManager {
             } else if (unit instanceof Infantry) {
                 infList.add((Infantry) unit);
                 if (singlePrint || infList.size() > 3) {
-                    PrintRecordSheet prs = new PrintSmallUnitSheet(infList, pageCount);
+                    PrintRecordSheet prs = new PrintSmallUnitSheet(infList, pageCount, options);
                     pageCount += prs.getPageCount();
                     sheets.add(prs);
                     infList = new ArrayList<>();
@@ -226,7 +223,7 @@ public class UnitPrintManager {
             } else if (unit instanceof Protomech) {
                 protoList.add((Protomech) unit);
                 if (singlePrint || infList.size() > 3) {
-                    PrintRecordSheet prs = new PrintSmallUnitSheet(protoList, pageCount);
+                    PrintRecordSheet prs = new PrintSmallUnitSheet(protoList, pageCount, options);
                     pageCount += prs.getPageCount();
                     sheets.add(prs);
                     protoList = new ArrayList<>();
@@ -258,9 +255,11 @@ public class UnitPrintManager {
         return sheets;
     }
 
-    public static boolean exportUnits(List<Entity> units, File exportFile, boolean singlePrint) {
-        List<PrintRecordSheet> sheets = createSheets(units, singlePrint);
+    public static void exportUnits(List<Entity> units, File exportFile, boolean singlePrint) {
+        RecordSheetOptions options = new RecordSheetOptions();
+        List<PrintRecordSheet> sheets = createSheets(units, singlePrint, options);
         PageFormat pageFormat = new PageFormat();
+        pageFormat.setPaper(options.getPaperSize().createPaper());
         try {
             PDFMergerUtility merger = new PDFMergerUtility();
             merger.setDestinationFileName(exportFile.getAbsolutePath());
@@ -270,33 +269,47 @@ public class UnitPrintManager {
                 }
             }
             merger.mergeDocuments(MemoryUsageSetting.setupTempFileOnly());
-            return true;
         } catch (TranscoderException | SAXException | IOException | ConfigurationException e) {
             MegaMekLab.getLogger().error(UnitPrintManager.class,
                     "exportUnits(List<Entity>, File, boolean)", e);
-            return false;
         }
     }
 
-    public static boolean printAllUnits(List<Entity> loadedUnits, boolean singlePrint) {
+    /**
+     * Creates and runs a print job using the default record sheet options
+     *
+     * @param loadedUnits The units to print
+     * @param singlePrint Whether to limit each record sheet to a single unit
+     */
+    public static void printAllUnits(List<Entity> loadedUnits, boolean singlePrint) {
+        printAllUnits(loadedUnits, singlePrint, new RecordSheetOptions());
+    }
+
+    /**
+     * Creates and runs a print job using the provided record sheet options
+     *
+     * @param loadedUnits The units to print
+     * @param singlePrint Whether to limit each record sheet to a single unit
+     * @param options     The options to use for this print job
+     */
+    public static void printAllUnits(List<Entity> loadedUnits, boolean singlePrint,
+                                        RecordSheetOptions options) {
         Book book = new Book();
         
         HashPrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
-        aset.add(MediaSizeName.NA_LETTER);
-        aset.add(new MediaPrintableArea(0, 0, 8.5f, 11, MediaPrintableArea.INCH));
+        aset.add(options.getPaperSize().sizeName);
+        aset.add(options.getPaperSize().printableArea);
+        aset.add(DialogTypeSelection.NATIVE);
         PrinterJob masterPrintJob = PrinterJob.getPrinterJob();
         if (!masterPrintJob.printDialog(aset)) {
-            return true;
+            return;
         }
 
-        PageFormat pageFormat  = masterPrintJob.getPageFormat(null);
-
-        Paper p = pageFormat.getPaper();
-        p.setImageableArea(0, 0, p.getWidth(), p.getHeight());
-
-        pageFormat.setPaper(p);
-
-        List<PrintRecordSheet> sheets = createSheets(loadedUnits, singlePrint);
+        PageFormat pageFormat  = masterPrintJob.getPageFormat(aset);
+        // If something besides letter and A4 is selected, use the template that's closest to the aspect
+        // ratio of the paper size.
+        options.setPaperSize(PaperSize.closestToAspect(pageFormat.getWidth(), pageFormat.getHeight()));
+        List<PrintRecordSheet> sheets = createSheets(loadedUnits, singlePrint, options);
         for (PrintRecordSheet sheet : sheets) {
             book.append(sheet, pageFormat);
         }
@@ -310,8 +323,6 @@ public class UnitPrintManager {
 
         PrintTask task = new PrintTask(masterPrintJob, aset);
         task.execute();
-
-        return true;
     }
 
     public static JMenu printMenu(final MegaMekLabMainUI parent) {
@@ -412,12 +423,12 @@ public class UnitPrintManager {
         Entity entity = viewer.getChosenEntity();
 
         if (entity != null) {
-            boolean printed = pdf ? exportEntity(entity, parent) : printEntity(entity);
-            viewer.dispose();
-
-            if (!printed) {
-                JOptionPane.showMessageDialog(parent, "Unable to print that unit type!");
+            if (pdf) {
+                exportEntity(entity, parent);
+            } else {
+                printEntity(entity);
             }
+            viewer.dispose();
         }
     }
 
