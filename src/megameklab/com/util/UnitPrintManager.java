@@ -259,7 +259,6 @@ public class UnitPrintManager {
         RecordSheetOptions options = new RecordSheetOptions();
         List<PrintRecordSheet> sheets = createSheets(units, singlePrint, options);
         PageFormat pageFormat = new PageFormat();
-        // getPaper() returns a clone
         pageFormat.setPaper(options.getPaperSize().createPaper());
         try {
             PDFMergerUtility merger = new PDFMergerUtility();
