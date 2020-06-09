@@ -343,7 +343,7 @@ public class SummaryView extends IView{
             else if (mt.hasFlag(MiscType.F_JUMP_JET)
                     || mt.hasFlag(MiscType.F_JUMP_BOOSTER)) {
                 weightJJ += m.getTonnage();
-                critJJ += mt.getCriticals(getMech());
+                critJJ += m.getCriticals();
             }
             else if (mt.hasFlag(MiscType.F_HEAT_SINK)
                     || mt.hasFlag(MiscType.F_DOUBLE_HEAT_SINK)) {
@@ -351,16 +351,16 @@ public class SummaryView extends IView{
             }
             else {
                 weightEquip += m.getTonnage();
-                critEquip += mt.getCriticals(getMech());
+                critEquip += m.getCriticals();
             }
         }
         for (Mounted m : getMech().getWeaponList()) {
             weightEquip += m.getTonnage();
-            critEquip += m.getType().getCriticals(getMech());
+            critEquip += m.getCriticals();
         }
         for (Mounted m : getMech().getAmmo()) {
             weightEquip += m.getTonnage();
-            critEquip += m.getType().getCriticals(getMech());
+            critEquip += m.getCriticals();
         }
         txtJumpTon.setText(Double.toString(weightJJ));
         txtEnhanceTon.setText(Double.toString(weightEnhance));

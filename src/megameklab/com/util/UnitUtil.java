@@ -2150,11 +2150,11 @@ public class UnitUtil {
             double infDamage = ((InfantryWeapon) eq.getType())
                     .getInfantryDamage();
             sb.append(infDamage);
-            sb.append("<br>Range Class: "
-                    + ((InfantryWeapon) eq.getType()).getInfantryRange());
+            sb.append("<br>Range Class: ");
+            sb.append(((InfantryWeapon) eq.getType()).getInfantryRange());
         } else {
             sb.append("<br>Crits: ");
-            sb.append(eq.getType().getCriticals(unit));
+            sb.append(eq.getCriticals());
             sb.append("<br>Mass: ");
             if (TestEntity.usesKgStandard(unit)) {
                 sb.append(Math.round(eq.getTonnage() * 1000));

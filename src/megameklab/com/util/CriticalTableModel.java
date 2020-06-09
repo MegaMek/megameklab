@@ -187,7 +187,7 @@ public class CriticalTableModel extends AbstractTableModel {
             if (tableType == BUILDTABLE) {
                 return UnitUtil.getCritsUsed(unit, crit.getType());
             }
-            return crit.getType().getCriticals(unit);
+            return crit.getCriticals();
         case EQUIPMENT:
             return crit;
         case HEAT:
