@@ -216,7 +216,11 @@ public class CriticalTableModel extends AbstractTableModel {
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
         if ((columnIndex == SIZE) && (rowIndex >= 0) && (rowIndex < getRowCount())) {
             Mounted crit = sortedEquipment[rowIndex];
-            crit.setSize(Double.parseDouble(aValue.toString()));
+            double newSize = Double.parseDouble(aValue.toString());
+            if (crit.getSize() == newSize) {
+                return;
+            }
+            UnitUtil.resizeMount(crit, newSize);
             fireTableDataChanged();
         }
     }
