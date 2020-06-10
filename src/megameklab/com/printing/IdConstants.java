@@ -89,6 +89,7 @@ public interface IdConstants {
     String FLUFF_DUAL_PILOT = "fluffDualPilot";
     String FLUFF_TRIPLE_PILOT = "fluffTriplePilot";
     String NOTES = "notes";
+    String DEFAULT_FLUFF_IMAGE = "defaultFluffImage";
 
     String ARMOR_TYPE = "armorType";
     String ARMOR_TYPE_2 = "armorType2";

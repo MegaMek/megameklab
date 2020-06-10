@@ -15,9 +15,12 @@
 package megameklab.com.printing;
 
 import megamek.common.*;
+import megameklab.com.util.ImageHelper;
 import org.w3c.dom.Element;
+import org.w3c.dom.svg.SVGRectElement;
 
 import java.awt.print.PageFormat;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -74,6 +77,7 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
             }
             count++;
         }
+        drawFluffImage();
     }
 
     private PrintEntity getBlockFor(Entity entity, int index) {
@@ -108,5 +112,30 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
     protected String getRecordSheetTitle() {
         // Not used by composite sheet
         return "";
+    }
+
+    private void drawFluffImage() {
+        if (entities.size() > 1) {
+            for (int i = 1; i < entities.size(); i++) {
+                if (!entities.get(i).getChassis().equals(entities.get(0).getChassis())) {
+                    return;
+                }
+            }
+        }
+        File f = null;
+        if (entities.get(0) instanceof BattleArmor) {
+            f = ImageHelper.getFluffFile(entities.get(0), ImageHelper.imageBattleArmor);
+        } else if (entities.get(0) instanceof Infantry) {
+            f = ImageHelper.getFluffFile(entities.get(0), ImageHelper.imageInfantry);
+        } else if (entities.get(0) instanceof Protomech) {
+            f = ImageHelper.getFluffFile(entities.get(0), ImageHelper.imageProto);
+        }
+        if (f != null) {
+            Element rect = getSVGDocument().getElementById(FLUFF_IMAGE);
+            if (rect instanceof SVGRectElement) {
+                embedImage(f, (Element) rect.getParentNode(), getRectBBox((SVGRectElement) rect), true);
+                hideElement(DEFAULT_FLUFF_IMAGE, true);
+            }
+        }
     }
 }
