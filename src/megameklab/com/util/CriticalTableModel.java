@@ -217,6 +217,11 @@ public class CriticalTableModel extends AbstractTableModel {
         if ((columnIndex == SIZE) && (rowIndex >= 0) && (rowIndex < getRowCount())) {
             Mounted crit = sortedEquipment[rowIndex];
             double newSize = Double.parseDouble(aValue.toString());
+            double step = crit.getType().variableStepSize();
+            newSize = Math.max(Math.floor(newSize / step) * step, step);
+            if ((crit.getType().variableMaxSize() != null) && (newSize > crit.getType().variableMaxSize())) {
+                newSize = crit.getType().variableMaxSize();
+            }
             if (crit.getSize() == newSize) {
                 return;
             }
