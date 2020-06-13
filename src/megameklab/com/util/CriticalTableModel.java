@@ -134,7 +134,7 @@ public class CriticalTableModel extends AbstractTableModel {
     @Override
     public boolean isCellEditable(int row, int col) {
         return (col == SIZE) && (row >= 0) && (row < sortedEquipment.length)
-                && sortedEquipment[row].getType().isVariableTonnage();
+                && sortedEquipment[row].getType().isVariableSize();
     }
 
     @Override
