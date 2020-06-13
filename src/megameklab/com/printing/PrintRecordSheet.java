@@ -297,7 +297,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             createDocument(pageIndex, pageFormat);
             GraphicsNode node = build();
             node.paint(g2d);
-            /* Testing code that outputs the generated svg
+            /* Testing code that outputs the generated svg */
             try {
                 javax.xml.transform.Transformer transformer = javax.xml.transform.TransformerFactory.newInstance().newTransformer();
                 javax.xml.transform.Result output = new javax.xml.transform.stream.StreamResult(new File("out.svg"));
@@ -306,7 +306,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            */
+            /* */
         }
         return Printable.PAGE_EXISTS;
     }
@@ -359,7 +359,13 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      * 
      * @param pageNum    Indicates which page of multi-page sheets to print. The first page is 0.
      */
-    protected abstract void processImage(int pageNum, PageFormat pageFormat);
+    protected void processImage(int pageNum, PageFormat pageFormat) {
+        Element element = getSVGDocument().getElementById(COPYRIGHT);
+        if (null != element) {
+            element.setTextContent(String.format(element.getTextContent(),
+                    Calendar.getInstance().get(Calendar.YEAR)));
+        }
+    }
 
     String getSVGDirectoryName() {
         return "data/images/recordsheets/" + options.getPaperSize().dirName;
