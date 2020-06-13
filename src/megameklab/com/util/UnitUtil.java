@@ -3984,9 +3984,12 @@ public class UnitUtil {
                 WeaponType wtype = (WeaponType) m.getType();
                 if ((wtype.getAmmoType() == atype.getAmmoType())
                         && (wtype.getRackSize() == atype.getRackSize())
-                        && (includeOneShot || !((WeaponType) m.getType()).hasFlag(WeaponType.F_ONESHOT))) {
+                        && (includeOneShot || !m.getType().hasFlag(WeaponType.F_ONESHOT))) {
                     return true;
                 }
+            } else if ((atype instanceof SmallWeaponAmmoType)
+                    && ((SmallWeaponAmmoType) atype).isAmmoFor(m.getType())){
+                return true;
             }
         }
         return false;
