@@ -30,6 +30,7 @@ public class ImageHelper {
     public static String imageMech = "mech";
     public static String imageAero = "aero";
     public static String imageBattleArmor = "BattleArmor";
+    public static String imageInfantry = "infantry";
     public static String imageVehicle = "vehicle";
     public static String imageNaval = "naval";
     public static String imageLargeSupportVehicle = "largesupportvehicle";
