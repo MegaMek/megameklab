@@ -607,14 +607,14 @@
                                                                           >'MECH DATA</text
                                                                         ></g
                                                                       ></g
-                                                                      ><text x="3.000" y="28.000" fill="bold" text-anchor="start" style="font-family:Eurostile;font-size:9.670px;font-weight:bold;font-style:normal" textLength="21.401" lengthAdjust="spacingAndGlyphs"
+                                                                      ><text x="3.000" y="28.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:9.670px;font-weight:bold;font-style:normal" textLength="21.401" lengthAdjust="spacingAndGlyphs"
                                                                       >Type:</text
-                                                                      ><text fill="bold" x="29.229" id="type" y="28.000" style="font-family:Eurostile;font-size:9.670px;font-weight:normal;font-style:normal;mml-field-width:180.371" text-anchor="start"
+                                                                      ><text fill="#231f20" x="29.229" id="type" y="28.000" style="font-family:Eurostile;font-size:9.670px;font-weight:normal;font-style:normal;mml-field-width:180.371" text-anchor="start"
                                                                       >Lorem Ipsum</text
-                                                                      ><text x="6.000" y="38.000" fill="bold" text-anchor="start" style="font-family:Eurostile;font-size:7.700px;font-weight:bold;font-style:normal" textLength="29.785" lengthAdjust="spacingAndGlyphs"
+                                                                      ><text x="6.000" y="38.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:7.700px;font-weight:bold;font-style:normal" textLength="29.785" lengthAdjust="spacingAndGlyphs"
                                                                       >Tonnage:</text
-                                                                      ><text fill="bold" x="39.629" id="tonnage" y="38.000" style="font-family:Eurostile;font-size:7.700px;font-weight:normal;font-style:normal" text-anchor="start"
-                                                                      >#231f20</text
+                                                                      ><text fill="#231f20" x="39.629" id="tonnage" y="38.000" style="font-family:Eurostile;font-size:7.700px;font-weight:normal;font-style:normal" text-anchor="start"
+                                                                      >Lorem Ipsum</text
                                                                       ><text x="112.300" y="38.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:7.700px;font-weight:bold;font-style:normal" textLength="35.949" lengthAdjust="spacingAndGlyphs"
                                                                       >Tech Base:</text
                                                                       ><text fill="#231f20" x="154.840" id="techBase" y="38.000" style="font-family:Eurostile;font-size:7.700px;font-weight:normal;font-style:normal" text-anchor="start"

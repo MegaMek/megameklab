@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.0//EN'
           'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
-<svg contentScriptType="text/ecmascript" width="576.0" xmlns:xlink="http://www.w3.org/1999/xlink" zoomAndPan="magnify" contentStyleType="text/css" height="393.0" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" version="1.0"
+<svg contentScriptType="text/ecmascript" width="576.0" xmlns:xlink="http://www.w3.org/1999/xlink" zoomAndPan="magnify" contentStyleType="text/css" height="375.0" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" version="1.0"
 ><g style="mml-color-elements:" id="rs_template"
-  ><text font-size="5.7px" transform="translate (288.0 393.0)" fill="#231f20" text-anchor="middle" font-family="Eurostile" id="footer" font-weight="bold"
+  ><text font-size="5.7px" transform="translate (288.0 375.0)" fill="#231f20" text-anchor="middle" font-family="Eurostile" id="footer" font-weight="bold"
     ><tspan lengthAdjust="spacingAndGlyphs" x="0.0" id="tspanCopyright" y="-7.000" textLength="547.200"
       >© %d The Topps Company, Inc. Classic BattleTech, BattleTech, 'Mech and BattleMech are trademarks of The Topps Company, Inc. All rights reserved.</tspan
       ><tspan lengthAdjust="spacingAndGlyphs" x="0.0" y="0" textLength="518.400"
@@ -11,8 +11,8 @@
     ></text
     ><g transform="translate (0.000 3.000)"
     ><g
-      ><path fill="#ffffff" d="M 2.5,10.714 L 7.975,2.500 L 319.345,2.500 l 5.475,8.214 L 324.820,213.300 l -7.845,7.600 L 10.345,220.900 l -7.845,-7.600 Z" stroke-width="5.2" stroke-linejoin="round" stroke="#c8c7c7"
-        /><path fill="#ffffff" d="M 0.0,8.214 L 5.475,0.000 L 317.845,0.000 l 5.475,8.214 L 323.320,211.800 l -7.845,7.600 L 7.845,219.400 l -7.845,-7.600 Z" stroke-width="1.932" stroke-linejoin="round" stroke="#231f20"
+      ><path fill="#ffffff" d="M 2.5,10.714 L 7.975,2.500 L 319.345,2.500 l 5.475,8.214 L 324.820,202.500 l -7.845,7.600 L 10.345,210.100 l -7.845,-7.600 Z" stroke-width="5.2" stroke-linejoin="round" stroke="#c8c7c7"
+        /><path fill="#ffffff" d="M 0.0,8.214 L 5.475,0.000 L 317.845,0.000 l 5.475,8.214 L 323.320,201.000 l -7.845,7.600 L 7.845,208.600 l -7.845,-7.600 Z" stroke-width="1.932" stroke-linejoin="round" stroke="#231f20"
         /><g transform="translate (2.5,3.0)"
         ><path fill="#000000" d="M 0,7.500 l 4.999,-7.500 h 307.630 l 4.999,7.500 l -4.999,7.500 h -307.630 Z"
           /><text x="158.814" y="11.250" fill="#ffffff" text-anchor="middle" style="font-family:Eurostile;font-size:10.600px;font-weight:bold;font-style:normal" textLength="180.295" lengthAdjust="spacingAndGlyphs"
@@ -123,7 +123,7 @@
           >Rotors (critical)*†</tspan
         ></text
       ></g
-      ><g transform="translate(0,136.400)"
+      ><g transform="translate(0,125.600)"
       ><text x="6.000" y="7.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="311.320" lengthAdjust="spacingAndGlyphs"
         >*A result of 2 or 12 (or an 8 if the attack strikes the side) may inflict a critical hit on the VTOL. For each such attack, apply</text
         ><text x="6.000" y="14.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="311.320" lengthAdjust="spacingAndGlyphs"
@@ -152,98 +152,98 @@
     ></g
     ><g transform="translate (331.320 3.000)"
     ><g
-      ><path fill="#ffffff" d="M 2.5,10.714 L 7.975,2.500 L 235.705,2.500 l 5.475,8.214 L 241.180,120.540 l -7.845,7.600 L 10.345,128.140 l -7.845,-7.600 Z" stroke-width="5.2" stroke-linejoin="round" stroke="#c8c7c7"
-        /><path fill="#ffffff" d="M 0.0,8.214 L 5.475,0.000 L 234.205,0.000 l 5.475,8.214 L 239.680,119.040 l -7.845,7.600 L 7.845,126.640 l -7.845,-7.600 Z" stroke-width="1.932" stroke-linejoin="round" stroke="#231f20"
+      ><path fill="#ffffff" d="M 2.5,10.714 L 7.975,2.500 L 235.705,2.500 l 5.475,8.214 L 241.180,114.060 l -7.845,7.600 L 10.345,121.660 l -7.845,-7.600 Z" stroke-width="5.2" stroke-linejoin="round" stroke="#c8c7c7"
+        /><path fill="#ffffff" d="M 0.0,8.214 L 5.475,0.000 L 234.205,0.000 l 5.475,8.214 L 239.680,112.560 l -7.845,7.600 L 7.845,120.160 l -7.845,-7.600 Z" stroke-width="1.932" stroke-linejoin="round" stroke="#231f20"
         /><g transform="translate (2.5,3.0)"
         ><path fill="#000000" d="M 0,7.500 l 4.999,-7.500 h 223.990 l 4.999,7.500 l -4.999,7.500 h -223.990 Z"
           /><text x="116.994" y="11.250" fill="#ffffff" text-anchor="middle" style="font-family:Eurostile;font-size:10.600px;font-weight:bold;font-style:normal" textLength="115.026" lengthAdjust="spacingAndGlyphs"
           >VTOL ELEVATION TRACK</text
         ></g
       ></g
-      ><path fill="none" d="M 4.500,30.179 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 228.050,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,29.962 c 0,0.726 -0.589,1.315, -1.315,1.315 l -228.050,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="1.0" stroke-linejoin="round" stroke="#231f20"
-      /><path fill="none" stroke-width="0.58" d="M 4.500,45.160 h230.680 M 50.636,28.864 v32.592  M 62.639,28.864 v32.592  M 74.642,28.864 v32.592  M 86.645,28.864 v32.592  M 98.648,28.864 v32.592  M 110.651,28.864 v32.592  M 122.654,28.864 v32.592  M 134.657,28.864 v32.592  M 146.659,28.864 v32.592  M 158.662,28.864 v32.592  M 170.665,28.864 v32.592  M 182.668,28.864 v32.592  M 194.671,28.864 v32.592  M 206.674,28.864 v32.592  M 218.677,28.864 v32.592" stroke-linecap="round" stroke-linejoin="miter" stroke="#231f20"
-      /><text fill="#231f20" x="7.500" y="40.160" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="start"
+      ><path fill="none" d="M 4.500,29.531 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 228.050,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,28.018 c 0,0.726 -0.589,1.315, -1.315,1.315 l -228.050,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="1.0" stroke-linejoin="round" stroke="#231f20"
+      /><path fill="none" stroke-width="0.58" d="M 4.500,43.540 h230.680 M 50.636,28.216 v30.648  M 62.639,28.216 v30.648  M 74.642,28.216 v30.648  M 86.645,28.216 v30.648  M 98.648,28.216 v30.648  M 110.651,28.216 v30.648  M 122.654,28.216 v30.648  M 134.657,28.216 v30.648  M 146.659,28.216 v30.648  M 158.662,28.216 v30.648  M 170.665,28.216 v30.648  M 182.668,28.216 v30.648  M 194.671,28.216 v30.648  M 206.674,28.216 v30.648  M 218.677,28.216 v30.648" stroke-linecap="round" stroke-linejoin="miter" stroke="#231f20"
+      /><text fill="#231f20" x="7.500" y="38.540" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="start"
       >Turn</text
-      ><text fill="#231f20" x="7.500" y="56.456" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="start"
+      ><text fill="#231f20" x="7.500" y="53.864" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="start"
       >Elevation</text
-      ><text fill="#231f20" x="56.637" y="40.160" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
+      ><text fill="#231f20" x="56.637" y="38.540" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
       >1</text
-      ><text fill="#231f20" x="68.640" y="40.160" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
+      ><text fill="#231f20" x="68.640" y="38.540" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
       >2</text
-      ><text fill="#231f20" x="80.643" y="40.160" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
+      ><text fill="#231f20" x="80.643" y="38.540" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
       >3</text
-      ><text fill="#231f20" x="92.646" y="40.160" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
+      ><text fill="#231f20" x="92.646" y="38.540" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
       >4</text
-      ><text fill="#231f20" x="104.649" y="40.160" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
+      ><text fill="#231f20" x="104.649" y="38.540" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
       >5</text
-      ><text fill="#231f20" x="116.652" y="40.160" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
+      ><text fill="#231f20" x="116.652" y="38.540" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
       >6</text
-      ><text fill="#231f20" x="128.655" y="40.160" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
+      ><text fill="#231f20" x="128.655" y="38.540" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
       >7</text
-      ><text fill="#231f20" x="140.658" y="40.160" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
+      ><text fill="#231f20" x="140.658" y="38.540" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
       >8</text
-      ><text fill="#231f20" x="152.661" y="40.160" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
+      ><text fill="#231f20" x="152.661" y="38.540" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
       >9</text
-      ><text fill="#231f20" x="164.664" y="40.160" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
+      ><text fill="#231f20" x="164.664" y="38.540" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
       >10</text
-      ><text fill="#231f20" x="176.667" y="40.160" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
+      ><text fill="#231f20" x="176.667" y="38.540" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
       >11</text
-      ><text fill="#231f20" x="188.670" y="40.160" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
+      ><text fill="#231f20" x="188.670" y="38.540" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
       >12</text
-      ><text fill="#231f20" x="200.673" y="40.160" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
+      ><text fill="#231f20" x="200.673" y="38.540" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
       >13</text
-      ><text fill="#231f20" x="212.676" y="40.160" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
+      ><text fill="#231f20" x="212.676" y="38.540" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
       >14</text
-      ><text fill="#231f20" x="224.679" y="40.160" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
+      ><text fill="#231f20" x="224.679" y="38.540" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
       >15</text
-      ><path fill="none" d="M 4.500,79.067 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 228.050,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,29.962 c 0,0.726 -0.589,1.315, -1.315,1.315 l -228.050,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="1.0" stroke-linejoin="round" stroke="#231f20"
-      /><path fill="none" stroke-width="0.58" d="M 4.500,94.048 h230.680 M 50.636,77.752 v32.592  M 62.639,77.752 v32.592  M 74.642,77.752 v32.592  M 86.645,77.752 v32.592  M 98.648,77.752 v32.592  M 110.651,77.752 v32.592  M 122.654,77.752 v32.592  M 134.657,77.752 v32.592  M 146.659,77.752 v32.592  M 158.662,77.752 v32.592  M 170.665,77.752 v32.592  M 182.668,77.752 v32.592  M 194.671,77.752 v32.592  M 206.674,77.752 v32.592  M 218.677,77.752 v32.592" stroke-linecap="round" stroke-linejoin="miter" stroke="#231f20"
-      /><text fill="#231f20" x="7.500" y="89.048" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="start"
+      ><path fill="none" d="M 4.500,75.503 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 228.050,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,28.018 c 0,0.726 -0.589,1.315, -1.315,1.315 l -228.050,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="1.0" stroke-linejoin="round" stroke="#231f20"
+      /><path fill="none" stroke-width="0.58" d="M 4.500,89.512 h230.680 M 50.636,74.188 v30.648  M 62.639,74.188 v30.648  M 74.642,74.188 v30.648  M 86.645,74.188 v30.648  M 98.648,74.188 v30.648  M 110.651,74.188 v30.648  M 122.654,74.188 v30.648  M 134.657,74.188 v30.648  M 146.659,74.188 v30.648  M 158.662,74.188 v30.648  M 170.665,74.188 v30.648  M 182.668,74.188 v30.648  M 194.671,74.188 v30.648  M 206.674,74.188 v30.648  M 218.677,74.188 v30.648" stroke-linecap="round" stroke-linejoin="miter" stroke="#231f20"
+      /><text fill="#231f20" x="7.500" y="84.512" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="start"
       >Turn</text
-      ><text fill="#231f20" x="7.500" y="105.344" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="start"
+      ><text fill="#231f20" x="7.500" y="99.836" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="start"
       >Elevation</text
-      ><text fill="#231f20" x="56.637" y="89.048" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
+      ><text fill="#231f20" x="56.637" y="84.512" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
       >16</text
-      ><text fill="#231f20" x="68.640" y="89.048" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
+      ><text fill="#231f20" x="68.640" y="84.512" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
       >17</text
-      ><text fill="#231f20" x="80.643" y="89.048" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
+      ><text fill="#231f20" x="80.643" y="84.512" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
       >18</text
-      ><text fill="#231f20" x="92.646" y="89.048" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
+      ><text fill="#231f20" x="92.646" y="84.512" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
       >19</text
-      ><text fill="#231f20" x="104.649" y="89.048" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
+      ><text fill="#231f20" x="104.649" y="84.512" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
       >20</text
-      ><text fill="#231f20" x="116.652" y="89.048" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
+      ><text fill="#231f20" x="116.652" y="84.512" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
       >21</text
-      ><text fill="#231f20" x="128.655" y="89.048" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
+      ><text fill="#231f20" x="128.655" y="84.512" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
       >22</text
-      ><text fill="#231f20" x="140.658" y="89.048" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
+      ><text fill="#231f20" x="140.658" y="84.512" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
       >23</text
-      ><text fill="#231f20" x="152.661" y="89.048" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
+      ><text fill="#231f20" x="152.661" y="84.512" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
       >24</text
-      ><text fill="#231f20" x="164.664" y="89.048" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
+      ><text fill="#231f20" x="164.664" y="84.512" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
       >25</text
-      ><text fill="#231f20" x="176.667" y="89.048" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
+      ><text fill="#231f20" x="176.667" y="84.512" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
       >26</text
-      ><text fill="#231f20" x="188.670" y="89.048" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
+      ><text fill="#231f20" x="188.670" y="84.512" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
       >27</text
-      ><text fill="#231f20" x="200.673" y="89.048" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
+      ><text fill="#231f20" x="200.673" y="84.512" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
       >28</text
-      ><text fill="#231f20" x="212.676" y="89.048" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
+      ><text fill="#231f20" x="212.676" y="84.512" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
       >29</text
-      ><text fill="#231f20" x="224.679" y="89.048" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
+      ><text fill="#231f20" x="224.679" y="84.512" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="middle"
       >30</text
     ></g
-    ><g transform="translate (331.320 134.640)"
+    ><g transform="translate (331.320 128.160)"
     ><g
-      ><path fill="#ffffff" d="M 2.5,10.714 L 7.975,2.500 L 235.705,2.500 l 5.475,8.214 L 241.180,78.660 l -7.845,7.600 L 10.345,86.260 l -7.845,-7.600 Z" stroke-width="5.2" stroke-linejoin="round" stroke="#c8c7c7"
-        /><path fill="#ffffff" d="M 0.0,8.214 L 5.475,0.000 L 234.205,0.000 l 5.475,8.214 L 239.680,77.160 l -7.845,7.600 L 7.845,84.760 l -7.845,-7.600 Z" stroke-width="1.932" stroke-linejoin="round" stroke="#231f20"
+      ><path fill="#ffffff" d="M 2.5,10.714 L 7.975,2.500 L 235.705,2.500 l 5.475,8.214 L 241.180,74.340 l -7.845,7.600 L 10.345,81.940 l -7.845,-7.600 Z" stroke-width="5.2" stroke-linejoin="round" stroke="#c8c7c7"
+        /><path fill="#ffffff" d="M 0.0,8.214 L 5.475,0.000 L 234.205,0.000 l 5.475,8.214 L 239.680,72.840 l -7.845,7.600 L 7.845,80.440 l -7.845,-7.600 Z" stroke-width="1.932" stroke-linejoin="round" stroke="#231f20"
         /><g transform="translate (2.5,3.0)"
         ><path fill="#000000" d="M 0,7.500 l 4.999,-7.500 h 223.990 l 4.999,7.500 l -4.999,7.500 h -223.990 Z"
           /><text x="116.994" y="11.250" fill="#ffffff" text-anchor="middle" style="font-family:Eurostile;font-size:10.600px;font-weight:bold;font-style:normal" textLength="203.386" lengthAdjust="spacingAndGlyphs"
           >PHYSICAL ATTACKS AGAINST VTOLS TABLE</text
         ></g
       ></g
-      ><g transform="translate (3.000 33.880)"
+      ><g transform="translate (3.000 31.720)"
       ><text text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal"
         ><tspan x="165.676" y="0.000"
           >TYPES OF PHYSICAL ATTACKS ALLOWED</tspan
@@ -276,10 +276,10 @@
         ></text
       ></g
     ></g
-    ><g transform="translate (0.000 230.400)"
+    ><g transform="translate (0.000 219.600)"
     ><g
-      ><path fill="#ffffff" d="M 2.5,10.714 L 7.975,2.500 L 567.025,2.500 l 5.475,8.214 L 572.500,137.500 l -7.845,7.600 L 10.345,145.100 l -7.845,-7.600 Z" stroke-width="5.2" stroke-linejoin="round" stroke="#c8c7c7"
-        /><path fill="#ffffff" d="M 0.0,8.214 L 5.475,0.000 L 565.525,0.000 l 5.475,8.214 L 571.000,136.000 l -7.845,7.600 L 7.845,143.600 l -7.845,-7.600 Z" stroke-width="1.932" stroke-linejoin="round" stroke="#231f20"
+      ><path fill="#ffffff" d="M 2.5,10.714 L 7.975,2.500 L 567.025,2.500 l 5.475,8.214 L 572.500,130.300 l -7.845,7.600 L 10.345,137.900 l -7.845,-7.600 Z" stroke-width="5.2" stroke-linejoin="round" stroke="#c8c7c7"
+        /><path fill="#ffffff" d="M 0.0,8.214 L 5.475,0.000 L 565.525,0.000 l 5.475,8.214 L 571.000,128.800 l -7.845,7.600 L 7.845,136.400 l -7.845,-7.600 Z" stroke-width="1.932" stroke-linejoin="round" stroke="#231f20"
         /><g transform="translate (2.5,3.0)"
         ><path fill="#000000" d="M 0,7.500 l 4.999,-7.500 h 555.310 l 4.999,7.500 l -4.999,7.500 h -555.310 Z"
           /><text x="282.654" y="11.250" fill="#ffffff" text-anchor="middle" style="font-family:Eurostile;font-size:10.600px;font-weight:bold;font-style:normal" textLength="213.815" lengthAdjust="spacingAndGlyphs"

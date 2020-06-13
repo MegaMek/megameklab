@@ -607,9 +607,9 @@
                                                                           >DROPSHIP DATA</text
                                                                         ></g
                                                                       ></g
-                                                                      ><text x="6.000" y="28.000" fill="bold" text-anchor="start" style="font-family:Eurostile;font-size:9.670px;font-weight:bold;font-style:normal" textLength="21.401" lengthAdjust="spacingAndGlyphs"
+                                                                      ><text x="6.000" y="28.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:9.670px;font-weight:bold;font-style:normal" textLength="21.401" lengthAdjust="spacingAndGlyphs"
                                                                       >Type:</text
-                                                                      ><text fill="bold" x="32.229" id="type" y="28.000" style="font-family:Eurostile;font-size:9.670px;font-weight:normal;font-style:normal;mml-field-width:187.171" text-anchor="start"
+                                                                      ><text fill="#231f20" x="32.229" id="type" y="28.000" style="font-family:Eurostile;font-size:9.670px;font-weight:normal;font-style:normal;mml-field-width:187.171" text-anchor="start"
                                                                       >Lorem Ipsum</text
                                                                       ><text x="6.000" y="38.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:7.700px;font-weight:bold;font-style:normal" textLength="21.471" lengthAdjust="spacingAndGlyphs"
                                                                       >Name:</text
@@ -1277,7 +1277,7 @@
                                                                                         ></g
                                                                                       ></g
                                                                                       ><g transform="translate (6.000 26.743)"
-                                                                                      ><text x="0.000" y="9.600" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:#231f20" textLength="23.968" lengthAdjust="spacingAndGlyphs"
+                                                                                      ><text x="0.000" y="9.600" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" textLength="23.968" lengthAdjust="spacingAndGlyphs"
                                                                                         >Avionics</text
                                                                                         ><path fill="none" d="M 56.460,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 9.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,9.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -9.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
                                                                                         /><text x="62.460" y="7.600" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="6.979" lengthAdjust="spacingAndGlyphs"
@@ -1290,14 +1290,14 @@
                                                                                         >+5</text
                                                                                       ></g
                                                                                       ><g transform="translate (115.140 26.743)"
-                                                                                      ><text x="0.000" y="9.600" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:#231f20" textLength="38.516" lengthAdjust="spacingAndGlyphs"
+                                                                                      ><text x="0.000" y="9.600" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" textLength="38.516" lengthAdjust="spacingAndGlyphs"
                                                                                         >Landing Gear</text
                                                                                         ><path fill="none" d="M 47.300,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 9.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,9.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -9.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
                                                                                         /><text x="53.300" y="7.600" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="6.976" lengthAdjust="spacingAndGlyphs"
                                                                                         >+5</text
                                                                                       ></g
                                                                                       ><g transform="translate (6.000 44.229)"
-                                                                                      ><text x="0.000" y="9.600" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:#231f20" textLength="11.714" lengthAdjust="spacingAndGlyphs"
+                                                                                      ><text x="0.000" y="9.600" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" textLength="11.714" lengthAdjust="spacingAndGlyphs"
                                                                                         >FCS</text
                                                                                         ><path fill="none" d="M 56.460,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 9.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,9.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -9.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
                                                                                         /><text x="62.460" y="7.600" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="3.488" lengthAdjust="spacingAndGlyphs"
@@ -1310,14 +1310,14 @@
                                                                                         >D</text
                                                                                       ></g
                                                                                       ><g transform="translate (115.140 44.229)"
-                                                                                      ><text x="0.000" y="9.600" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:#231f20" textLength="35.843" lengthAdjust="spacingAndGlyphs"
+                                                                                      ><text x="0.000" y="9.600" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" textLength="35.843" lengthAdjust="spacingAndGlyphs"
                                                                                         >Life Support</text
                                                                                         ><path fill="none" d="M 47.300,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 9.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,9.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -9.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
                                                                                         /><text x="53.300" y="7.600" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="6.976" lengthAdjust="spacingAndGlyphs"
                                                                                         >+2</text
                                                                                       ></g
                                                                                       ><g transform="translate (6.000 61.716)"
-                                                                                      ><text x="0.000" y="9.600" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:#231f20" textLength="24.053" lengthAdjust="spacingAndGlyphs"
+                                                                                      ><text x="0.000" y="9.600" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" textLength="24.053" lengthAdjust="spacingAndGlyphs"
                                                                                         >Sensors</text
                                                                                         ><path fill="none" d="M 56.460,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 9.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,9.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -9.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
                                                                                         /><text x="62.460" y="7.600" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="6.979" lengthAdjust="spacingAndGlyphs"
@@ -1330,7 +1330,7 @@
                                                                                         >+5</text
                                                                                       ></g
                                                                                       ><g transform="translate (115.140 61.716)"
-                                                                                      ><text x="0.000" y="9.600" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:#231f20" textLength="27.827" lengthAdjust="spacingAndGlyphs"
+                                                                                      ><text x="0.000" y="9.600" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" textLength="27.827" lengthAdjust="spacingAndGlyphs"
                                                                                         >K-F Boom</text
                                                                                         ><path fill="none" d="M 47.300,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 9.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,9.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -9.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
                                                                                         /><text x="53.300" y="7.600" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="3.716" lengthAdjust="spacingAndGlyphs"
@@ -1339,14 +1339,14 @@
                                                                                       ><text fill="#231f20" x="6.000" y="90.002" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" text-anchor="start"
                                                                                       >Thrusters</text
                                                                                       ><g transform="translate (115.140 79.202)"
-                                                                                      ><text x="0.000" y="9.600" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:#231f20" textLength="41.930" lengthAdjust="spacingAndGlyphs"
+                                                                                      ><text x="0.000" y="9.600" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" textLength="41.930" lengthAdjust="spacingAndGlyphs"
                                                                                         >Docking Collar</text
                                                                                         ><path fill="none" d="M 47.300,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 9.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,9.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -9.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
                                                                                         /><text x="53.300" y="7.600" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="3.716" lengthAdjust="spacingAndGlyphs"
                                                                                         >D</text
                                                                                       ></g
                                                                                       ><g transform="translate (18.000 96.688)"
-                                                                                      ><text x="0.000" y="9.600" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:#231f20" textLength="11.499" lengthAdjust="spacingAndGlyphs"
+                                                                                      ><text x="0.000" y="9.600" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" textLength="11.499" lengthAdjust="spacingAndGlyphs"
                                                                                         >Left</text
                                                                                         ><path fill="none" d="M 44.460,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 9.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,9.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -9.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
                                                                                         /><text x="50.460" y="7.600" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="6.979" lengthAdjust="spacingAndGlyphs"
@@ -1362,7 +1362,7 @@
                                                                                         >D</text
                                                                                       ></g
                                                                                       ><g transform="translate (18.000 114.174)"
-                                                                                      ><text x="0.000" y="9.600" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:#231f20" textLength="15.570" lengthAdjust="spacingAndGlyphs"
+                                                                                      ><text x="0.000" y="9.600" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" textLength="15.570" lengthAdjust="spacingAndGlyphs"
                                                                                         >Right</text
                                                                                         ><path fill="none" d="M 44.460,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 9.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,9.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -9.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
                                                                                         /><text x="50.460" y="7.600" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="6.979" lengthAdjust="spacingAndGlyphs"
@@ -1378,7 +1378,7 @@
                                                                                         >D</text
                                                                                       ></g
                                                                                       ><g transform="translate (6.000 131.661)"
-                                                                                      ><text x="0.000" y="9.600" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:#231f20" textLength="19.278" lengthAdjust="spacingAndGlyphs"
+                                                                                      ><text x="0.000" y="9.600" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" textLength="19.278" lengthAdjust="spacingAndGlyphs"
                                                                                         >Engine</text
                                                                                         ><path fill="none" d="M 56.460,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 9.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,9.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -9.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z" stroke-width="0.96" stroke-linejoin="round" stroke="#231f20"
                                                                                         /><text x="62.460" y="7.600" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="4.671" lengthAdjust="spacingAndGlyphs"
