@@ -150,14 +150,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
     
     @Override
     protected void processImage(int pageNum, PageFormat pageFormat) {
-        Element element;
-        
-        element = getSVGDocument().getElementById(COPYRIGHT);
-        if (null != element) {
-            element.setTextContent(String.format(element.getTextContent(),
-                    Calendar.getInstance().get(Calendar.YEAR)));
-        }
-        
+        super.processImage(pageNum, pageFormat);
         writeTextFields();
         drawArmor();
         drawStructure();
