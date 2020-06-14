@@ -171,8 +171,15 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         if (eqName.length() > 20) {
             eqName = mount.getShortName();
         }
-        // Remove trailing IS or Clan tag in brackets or parentheses, including possible leading space
-        StringBuilder name = new StringBuilder(eqName.replaceAll(" ?[\\[(](Clan|IS)[])]", ""));
+        // If this is not a mixed tech unit, remove trailing IS or Clan tag in brackets or parentheses,
+        // including possible leading space. For mixed tech units this is presumably needed to remove
+        // ambiguity.
+        if (!mount.getEntity().isMixedTech()) {
+            eqName = eqName.replaceAll(" ?[\\[(](Clan|IS)[])]", "");
+        }
+        StringBuilder name = new StringBuilder(eqName);
+        // For mixed tech units, we want to append the tech base if there is ambiguity
+        // and it isn't already part of the name.
         if (showTechBase()) {
             name.append(mount.getType().isClan() ? " (Clan)" : " (IS)");
         }
@@ -201,7 +208,8 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
 
     /**
      * Determines whether we should indicate whether the equipment is IS or Clan for
-     * units with a mixed tech base. Only specify when there might be some confusion.
+     * units with a mixed tech base. Only specify when there is another piece of equipment
+     * with the same name but different tech base.
      *
      * @return Whether the tech base should be shown for the equipment
      */
@@ -216,7 +224,8 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         final Enumeration<EquipmentType> e = EquipmentType.getAllTypes();
         while (e.hasMoreElements()) {
             final EquipmentType et = e.nextElement();
-            if (!et.equals(mount.getType()) && et.getName().equals(mount.getType().getName())) {
+            if ((et.getTechBase() != mount.getType().getTechBase())
+                    && et.getName().equals(mount.getType().getName())) {
                 showMixedTechBase.put(mount.getType(), true);
                 showMixedTechBase.put(et, true);
                 return true;
