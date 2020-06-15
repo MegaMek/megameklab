@@ -1219,6 +1219,52 @@ public class UnitUtil {
         eq.setSecondLocation(secondaryLocation, rear);
         eq.setSplit(secondaryLocation > -1);
     }
+
+    public static void resizeMount(Mounted mount, double newSize) {
+        mount.setSize(newSize);
+        if (mount.getLocation() == Entity.LOC_NONE) {
+            return;
+        }
+        final Entity entity = mount.getEntity();
+        final int loc = mount.getLocation();
+        int start = -1;
+        for (int slot = 0; slot < entity.getNumberOfCriticals(loc); slot++) {
+            CriticalSlot crit = entity.getCritical(loc, slot);
+            if ((crit != null) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)
+                    && crit.getMount().equals(mount)) {
+                start = slot;
+                break;
+            }
+        }
+        removeCriticals(entity, mount);
+        compactCriticals(entity, loc);
+        if ((start < 0) || (entity.getEmptyCriticals(loc) < mount.getCriticals())) {
+            changeMountStatus(entity, mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
+            try {
+                MechFileParser.postLoadInit(entity);
+            } catch (EntityLoadingException ignored) {
+                // We're not actually loading an Entity; we're fixing linked equipment
+            }
+        } else {
+            // If the number of criticals increases, we may need to shift existing criticals
+            // to make room. Since we checked for sufficient space and compacted the existing
+            // criticals we can be assured of not overrunning the array.
+            List<CriticalSlot> toAdd = new ArrayList<>();
+            for (int i = 0; i < mount.getCriticals(); i++) {
+                toAdd.add(new CriticalSlot(mount));
+            }
+            int slot = start;
+            while (!toAdd.isEmpty()) {
+                CriticalSlot cs = entity.getCritical(loc, slot);
+                if (cs != null) {
+                    toAdd.add(cs);
+                }
+                entity.setCritical(loc, slot, toAdd.get(0));
+                toAdd.remove(0);
+                slot++;
+            }
+        }
+    }
     
     /**
      * Find unallocated ammo of the same type. Used by large aerospace units when removing ammo
@@ -2150,11 +2196,11 @@ public class UnitUtil {
             double infDamage = ((InfantryWeapon) eq.getType())
                     .getInfantryDamage();
             sb.append(infDamage);
-            sb.append("<br>Range Class: "
-                    + ((InfantryWeapon) eq.getType()).getInfantryRange());
+            sb.append("<br>Range Class: ");
+            sb.append(((InfantryWeapon) eq.getType()).getInfantryRange());
         } else {
             sb.append("<br>Crits: ");
-            sb.append(eq.getType().getCriticals(unit));
+            sb.append(eq.getCriticals());
             sb.append("<br>Mass: ");
             if (TestEntity.usesKgStandard(unit)) {
                 sb.append(Math.round(eq.getTonnage() * 1000));

@@ -116,7 +116,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         masterEquipmentList.clear();
         engineHeatSinkCount = UnitUtil.getCriticalFreeHeatSinks(getMech(), getMech().hasCompactHeatSinks());
         for (Mounted mount : getMech().getMisc()) {
-            if ((mount.getLocation() == Entity.LOC_NONE) && !isEngineHeatSink(mount) && !(mount.getType().getCriticals(getMech()) == 0)) {
+            if ((mount.getLocation() == Entity.LOC_NONE) && !isEngineHeatSink(mount) && !(mount.getCriticals() == 0)) {
                 masterEquipmentList.add(mount);
             }
         }
@@ -433,7 +433,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         Mounted eq = (Mounted) equipmentTable.getModel().getValueAt(selectedRow, CriticalTableModel.EQUIPMENT);
         if (eq.getType().isSpreadable() || eq.isSplitable()) {
             if (getMech() instanceof LandAirMech) {
-                jMenuLoadSplitComponent_actionPerformed(location, Entity.LOC_NONE, eq.getType().getCriticals(getMech()),
+                jMenuLoadSplitComponent_actionPerformed(location, Entity.LOC_NONE, eq.getCriticals(),
                         selectedRow);
             } else if (!(eq.getType() instanceof MiscType) || !eq.getType().hasFlag(MiscType.F_TARGCOMP)) {
                 jMenuLoadSplitComponent_actionPerformed(location, Entity.LOC_NONE, 1,
@@ -442,7 +442,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
                 // Targetting computer is flagged as spreadable so the slots will be added one at a time when loaded,
                 // since we don't have a way of indicating the number of slots until we know all the weapons. But
                 // it's not really splittable, so we need to put add all the slots at once.
-                jMenuLoadSplitComponent_actionPerformed(location, Entity.LOC_NONE, eq.getType().getCriticals(getMech()),
+                jMenuLoadSplitComponent_actionPerformed(location, Entity.LOC_NONE, eq.getCriticals(),
                         selectedRow);
             }
             return;
