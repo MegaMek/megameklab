@@ -16,6 +16,8 @@ VERSION HISTORY:
 + PR #635: Option to print TacOps expanded heat scale on record sheet
 + PR #639: New printing options: page size and color/monochrome
 + PR #640: Early Clans and IS tech
++ PR #610: Edit size of variable sized equipment on the equipment tab
++ PR #649: Record sheet inventory text overlap
 
 0.47.6 (2020-5-03 1715 UTC)
 + Issue #553: Loading or printing LAM causes ArrayIndexOutOfBoundsException
