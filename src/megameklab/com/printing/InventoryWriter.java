@@ -621,8 +621,8 @@ public class InventoryWriter {
     private double printEquipmentTable(List<? extends InventoryEntry> list,
                                        double ypos, float fontSize, double lineHeight, Column[] columnTypes, double[] colX) {
         for (InventoryEntry line : list) {
-            int lines = 0;
             for (int row = 0; row < line.nRows(); row++) {
+                int lines = 1;
                 for (int i = 0; i < columnTypes.length; i++) {
                     switch (columnTypes[i]) {
                         case QUANTITY:
@@ -692,10 +692,7 @@ public class InventoryWriter {
                             break;
                     }
                 }
-                ypos += lineHeight;
-            }
-            if (lines > line.nRows()) {
-                ypos += lineHeight * (lines - line.nRows());
+                ypos += lineHeight * lines;
             }
         }
         return ypos;
