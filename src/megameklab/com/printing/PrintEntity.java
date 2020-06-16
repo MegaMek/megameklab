@@ -538,8 +538,14 @@ public abstract class PrintEntity extends PrintRecordSheet {
     }
     
     protected String formatRulesLevel() {
-        return getEntity().getStaticTechLevel().toString().substring(0, 1)
-                + getEntity().getStaticTechLevel().toString().substring(1).toLowerCase();
+        SimpleTechLevel level;
+        if (options.useEraBaseProgression()) {
+            level = getEntity().getSimpleLevel(getEntity().getYear(), getEntity().isClan());
+        } else {
+            level = getEntity().getStaticTechLevel();
+        }
+        return level.toString().substring(0, 1)
+                + level.toString().substring(1).toLowerCase();
     }
     
     private static String formatEra(int year) {

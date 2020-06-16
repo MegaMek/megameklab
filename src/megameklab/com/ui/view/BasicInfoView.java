@@ -380,13 +380,27 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         SimpleTechLevel prev = getTechLevel();
         cbTechLevel.removeActionListener(this);
         cbTechLevel.removeAllItems();
-        if (!useClanTechBase() && !useMixedTech() && SimpleTechLevel.INTRO.ordinal() >= baseTA.getStaticTechLevel().ordinal()) {
+        SimpleTechLevel baseLevel;
+        if (CConfig.getBooleanParam(CConfig.TECH_PROGRESSION)) {
+            baseLevel = baseTA.getSimpleLevel(getGameYear());
+            if (useMixedTech() && (baseLevel.ordinal() <
+                    Entity.getMixedTechAdvancement().getSimpleLevel(getGameYear()).ordinal())) {
+                baseLevel = Entity.getMixedTechAdvancement().getSimpleLevel(getGameYear());
+            }
+        } else {
+            baseLevel = baseTA.getStaticTechLevel();
+            if (useMixedTech()
+                    && (baseLevel.ordinal() < Entity.getMixedTechAdvancement().getStaticTechLevel().ordinal())) {
+                baseLevel = Entity.getMixedTechAdvancement().getStaticTechLevel();
+            }
+        }
+        if (!useClanTechBase() && SimpleTechLevel.INTRO.ordinal() >= baseLevel.ordinal()) {
             cbTechLevel.addItem(SimpleTechLevel.INTRO);
         }
-        if (!useMixedTech() && SimpleTechLevel.STANDARD.ordinal() >= baseTA.getStaticTechLevel().ordinal()) {
+        if (SimpleTechLevel.STANDARD.ordinal() >= baseLevel.ordinal()) {
             cbTechLevel.addItem(SimpleTechLevel.STANDARD);
         }
-        if (SimpleTechLevel.ADVANCED.ordinal() >= baseTA.getStaticTechLevel().ordinal()) {
+        if (SimpleTechLevel.ADVANCED.ordinal() >= baseLevel.ordinal()) {
             cbTechLevel.addItem(SimpleTechLevel.ADVANCED);
         }
         cbTechLevel.addItem(SimpleTechLevel.EXPERIMENTAL);
