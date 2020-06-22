@@ -19,6 +19,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 
+import megameklab.com.printing.reference.MekHitLocation;
+import megameklab.com.printing.reference.ReferenceTable;
 import org.apache.batik.anim.dom.SVGDOMImplementation;
 import org.apache.batik.dom.util.SAXDocumentFactory;
 import org.apache.batik.util.SVGConstants;
@@ -144,7 +146,7 @@ public class PrintMech extends PrintEntity {
     }
     
     @Override
-    protected Entity getEntity() {
+    public Entity getEntity() {
         return mech;
     }
     
@@ -784,5 +786,15 @@ public class PrintMech extends PrintEntity {
             buffer.setLength(buffer.length() - 1);
         }
         buffer.trimToSize();
+    }
+
+    @Override
+    protected void addReferenceCharts(PageFormat pageFormat) {
+        final double colX = pageFormat.getImageableX() + pageFormat.getImageableWidth() * 0.8 + 3.0;
+        MekHitLocation hitLoc = new MekHitLocation(this);
+        Element e = hitLoc.createTable(colX,
+                pageFormat.getImageableY(), pageFormat.getImageableWidth() * 0.2,
+                pageFormat.getImageableHeight() * 0.2);
+        getSVGDocument().getDocumentElement().appendChild(e);
     }
 }

@@ -81,6 +81,7 @@ public class CConfig {
     public static final String RS_SHOW_ROLE = "rs_show_role";
     public static final String RS_HEAT_PROFILE = "rs_heat_profile";
     public static final String RS_TAC_OPS_HEAT = "rs_tac_ops_heat";
+    public static final String RS_REFERENCE = "rs_reference";
 
     private static Properties config;// config. player values.
 
@@ -124,6 +125,7 @@ public class CConfig {
         defaults.setProperty(RS_SHOW_ERA, Boolean.toString(true));
         defaults.setProperty(RS_SHOW_ROLE, Boolean.toString(true));
         defaults.setProperty(RS_SHOW_PILOT_DATA, Boolean.toString(true));
+        defaults.setProperty(RS_REFERENCE, Boolean.toString(true));
 
         return defaults;
     }

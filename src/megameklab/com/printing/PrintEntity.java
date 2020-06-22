@@ -162,6 +162,9 @@ public abstract class PrintEntity extends PrintRecordSheet {
             drawEraIcon();
         }
         drawFluffImage();
+        if (options.showReferenceCharts()) {
+            addReferenceCharts(pageFormat);
+        }
     }
     
     protected void writeTextFields() {
@@ -405,6 +408,10 @@ public abstract class PrintEntity extends PrintRecordSheet {
     }
 
     protected void drawFluffImage() {
+
+    }
+
+    protected void addReferenceCharts(PageFormat pageFormat) {
 
     }
     

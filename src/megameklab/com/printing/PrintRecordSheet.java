@@ -63,17 +63,17 @@ import java.util.*;
  *
  */
 public abstract class PrintRecordSheet implements Printable, IdConstants {
-    
-    final static String DEFAULT_TYPEFACE = "Eurostile";
-    final static float DEFAULT_PIP_SIZE  = 0.38f;
-    final static float FONT_SIZE_LARGE   = 7.2f;
-    final static float FONT_SIZE_MEDIUM  = 6.76f;
-    final static float FONT_SIZE_SMALL   = 6.2f;
-    final static float FONT_SIZE_VSMALL  = 5.8f;
-    final static String FILL_BLACK = "#231f20";
-    final static String FILL_GREY = "#3f3f3f";
-    final static String FILL_SHADOW = "#c8c7c7";
-    final static String FILL_WHITE = "#ffffff";
+
+    public final static String DEFAULT_TYPEFACE = "Eurostile";
+    public final static float DEFAULT_PIP_SIZE  = 0.38f;
+    public final static float FONT_SIZE_LARGE   = 7.2f;
+    public final static float FONT_SIZE_MEDIUM  = 6.76f;
+    public final static float FONT_SIZE_SMALL   = 6.2f;
+    public final static float FONT_SIZE_VSMALL  = 5.8f;
+    public final static String FILL_BLACK = "#231f20";
+    public final static String FILL_GREY = "#3f3f3f";
+    public final static String FILL_SHADOW = "#c8c7c7";
+    public final static String FILL_WHITE = "#ffffff";
     
     enum PipType {
         CIRCLE, DIAMOND;
@@ -115,7 +115,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         return firstPage;
     }
     
-    protected final Document getSVGDocument() {
+    public final Document getSVGDocument() {
         return svgDocument;
     }
     
@@ -275,6 +275,9 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             svgGenerator = new SVGGraphics2D(context, false);
             double ratio = Math.min(pageFormat.getImageableWidth() / (options.getPaperSize().pxWidth - 36),
                     pageFormat.getPaper().getImageableHeight() / (options.getPaperSize().pxHeight - 36));
+            if (options.showReferenceCharts()) {
+                ratio *= 0.8;
+            }
             Element svgRoot = svgDocument.getDocumentElement();
             svgRoot.setAttributeNS(null, SVGConstants.SVG_WIDTH_ATTRIBUTE, String.valueOf(pageFormat.getWidth()));
             svgRoot.setAttributeNS(null, SVGConstants.SVG_HEIGHT_ATTRIBUTE, String.valueOf(pageFormat.getHeight()));
@@ -297,7 +300,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             createDocument(pageIndex, pageFormat);
             GraphicsNode node = build();
             node.paint(g2d);
-            /* Testing code that outputs the generated svg
+            /* Testing code that outputs the generated svg */
             try {
                 javax.xml.transform.Transformer transformer = javax.xml.transform.TransformerFactory.newInstance().newTransformer();
                 javax.xml.transform.Result output = new javax.xml.transform.stream.StreamResult(new File("out.svg"));
@@ -306,7 +309,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            */
+            /* */
         }
         return Printable.PAGE_EXISTS;
     }

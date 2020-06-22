@@ -11,12 +11,11 @@
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  */
-package megameklab.com.printing;
+package megameklab.com.printing.reference;
 
+import megameklab.com.printing.PrintRecordSheet;
 import megameklab.com.util.CConfig;
-import org.apache.batik.svggen.SVGConvolveOp;
 import org.apache.batik.util.SVGConstants;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import java.util.*;
@@ -30,12 +29,12 @@ public class ReferenceTable {
 
     private static final double bevelX = 7.845;
     private static final double bevelY = 7.6;
-    private static final float FONT_SIZE_LABEL = 10.6f;
-    private static final double STROKE_WIDTH = 1.932;
+    private static final float FONT_SIZE_LABEL = PrintRecordSheet.FONT_SIZE_MEDIUM;
+    private static final double STROKE_WIDTH = 1.547;
 
-    private boolean firstColumnBold = true;
+    private boolean firstColumnBold = false;
     private String anchor = SVGConstants.SVG_MIDDLE_VALUE;
-    private String firstColAnchor = null;
+    private String firstColAnchor = "";
 
     private final PrintRecordSheet sheet;
     private final String title;
@@ -43,12 +42,15 @@ public class ReferenceTable {
     private final List<List<String>> data;
     private final List<Double> colOffsets;
 
-    public ReferenceTable(PrintRecordSheet sheet, String title, List<Double> colOffsets) {
+    public ReferenceTable(PrintRecordSheet sheet, String title, double... colOffsets) {
         this.title = title;
         this.sheet = sheet;
-        this.colOffsets = new ArrayList<>(colOffsets);
+        this.colOffsets = new ArrayList<>();
         this.headers = new ArrayList<>();
         this.data = new ArrayList<>();
+        for (double offset : colOffsets) {
+            this.colOffsets.add(offset);
+        }
     }
 
     public void setHeaders(List<String> headers) {
@@ -78,10 +80,26 @@ public class ReferenceTable {
         this.firstColAnchor = anchor;
     }
 
+    public int lineCount() {
+        int count = lineCount(headers);
+        for (List<String> row : data) {
+            count += lineCount(row);
+        }
+        return count;
+    }
+
+    private int lineCount(List<String> row) {
+        int count = 0;
+        for (String cell : row) {
+            count = Math.max(count, cell.split("\\n").length);
+        }
+        return count;
+    }
+
     public Element createTable(double x, double y, double width, double height) {
         final Element g = sheet.getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
         g.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
-                String.format("%s(%f %f", SVGConstants.SVG_TRANSLATE_VALUE, x, y));
+                String.format("%s(%f %f)", SVGConstants.SVG_TRANSLATE_VALUE, x, y));
         double labelWidth = width - bevelX * 2 - 5.0f;
         final Element label = createLabel(2.5f, 3.0f, title, labelWidth);
         final Element shadow = createCellBorder(2.5, 2.5, width - 6.0, height - 6.0,
@@ -90,10 +108,10 @@ public class ReferenceTable {
                 PrintRecordSheet.FILL_BLACK);
         g.appendChild(shadow);
         g.appendChild(border);
-        g.appendChild(label);
-        final Element table = createTableBody(x + 3.0, y + 3.0 + sheet.getFontHeight(FONT_SIZE_LABEL) * 2,
+        final Element table = createTableBody(3.0, 3.0 + sheet.getFontHeight(FONT_SIZE_LABEL) * 2,
                 width - 8.0, height - 8.0, PrintRecordSheet.FONT_SIZE_VSMALL);
         g.appendChild(table);
+        g.appendChild(label);
         return g;
     }
 
@@ -102,24 +120,22 @@ public class ReferenceTable {
         final double textWidth = sheet.getBoldTextLength(title, FONT_SIZE_LABEL);
         final double rectMargin = textWidth * 0.05f;
         final double taperWidth = textHeight * bevelX / bevelY;
-        final double rectWidth = textWidth + rectMargin * 2;
-        final double xpos = x - taperWidth - rectWidth * 0.5f;
         final Element g = sheet.getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
         g.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
-                String.format("%s(%f %f", SVGConstants.SVG_TRANSLATE_VALUE, xpos, y));
+                String.format("%s(%f %f)", SVGConstants.SVG_TRANSLATE_VALUE, x, y));
         final Element background = sheet.getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_PATH_TAG);
         background.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, PrintRecordSheet.FILL_BLACK);
         background.setAttributeNS(null, SVGConstants.SVG_D_ATTRIBUTE,
                 String.format("M %f,%f l %f,%f h %f l %f,%f l %f,%f h %f Z",
-                        0.0, textHeight, taperWidth, -textHeight, rectWidth,
-                        taperWidth, textHeight, -taperWidth, textHeight, -rectWidth));
+                        0.0, textHeight, taperWidth, -textHeight, labelWidth,
+                        taperWidth, textHeight, -taperWidth, textHeight, -labelWidth));
         g.appendChild(background);
 
-        final Element text = createTextElement(taperWidth + rectWidth * 0.5,
+        final Element text = createTextElement(taperWidth + labelWidth * 0.5,
                 textHeight * 1.5, title, FONT_SIZE_LABEL, SVGConstants.SVG_BOLD_VALUE,
                 SVGConstants.SVG_NORMAL_VALUE, PrintRecordSheet.FILL_WHITE,
                 SVGConstants.SVG_MIDDLE_VALUE, false,
-                rectWidth - rectMargin * 2);
+                labelWidth - rectMargin * 2);
         g.appendChild(text);
 
         return g;
@@ -143,9 +159,6 @@ public class ReferenceTable {
             t.setAttributeNS(null, SVGConstants.SVG_LENGTH_ADJUST_ATTRIBUTE, SVGConstants.SVG_SPACING_AND_GLYPHS_VALUE);
             t.setAttributeNS(null, SVGConstants.SVG_TEXT_LENGTH_ATTRIBUTE,
                     String.valueOf(textLength));
-        } else if (width != null) {
-            t.setAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE,
-                    "$style;mml-field-width:${width.truncate()}");
         }
         t.setTextContent(text);
 
@@ -180,74 +193,83 @@ public class ReferenceTable {
                 String.format("M %f,%f l %f,%f h %f l %f,%f v %f l %f,%f h %f l %f,%f Z",
                         x, y + bevelY, bevelX, -bevelY, width - bevelX * 2,
                         bevelX, bevelY, height - bevelY * 2, -bevelX, bevelY,
-                        -width * bevelX * 2, -bevelX, -bevelY));
+                        -(width - bevelX * 2), -bevelX, -bevelY));
 
         return path;
     }
 
     private Element createTableBody(double x, double y, double width, double height, float fontSize) {
-        final double useLineHeight = sheet.getFontHeight(fontSize);
+        final double useLineHeight = height / (lineCount() + 1);
+        final double headerHeight = Math.min(useLineHeight, sheet.getFontHeight(fontSize));
         double ypos = 0.0;
         final Element g = sheet.getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
         g.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
                 String.format("%s(%f %f)", SVGConstants.SVG_TRANSLATE_VALUE, x, y));
         if (!headers.isEmpty()) {
             Element text = sheet.getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_TEXT_TAG);
+            text.setAttributeNS(null, SVGConstants.SVG_X_ATTRIBUTE, "0");
+            text.setAttributeNS(null, SVGConstants.SVG_Y_ATTRIBUTE, "0");
+            text.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, PrintRecordSheet.FILL_BLACK);
             text.setAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE,
                     formatStyle(fontSize, SVGConstants.SVG_BOLD_VALUE));
             text.setAttributeNS(null, SVGConstants.SVG_TEXT_ANCHOR_ATTRIBUTE, anchor);
-            for (int i = 0; i < headers.size(); i++) {
-                if ((i > 0) || !(firstColumnBold || (firstColAnchor != null))) {
-                    text.appendChild(createTspan(width * colOffsets.get(i), ypos, headers.get(i)));
+            int lineCount = lineCount(headers);
+            for (int col = 0; col < headers.size(); col++) {
+                if ((col > 0) || !(firstColumnBold || (!firstColAnchor.isEmpty()))) {
+                    String[] lines = headers.get(col).split("\\n");
+                    double useY = ypos + headerHeight * (lineCount - lines.length);
+                    for (String line : lines) {
+                        g.appendChild(createTextElement(width * colOffsets.get(col), useY,
+                                line, fontSize, SVGConstants.SVG_BOLD_VALUE, SVGConstants.SVG_NORMAL_VALUE,
+                                PrintRecordSheet.FILL_BLACK, anchor, false, null));
+                        useY += headerHeight;
+                    }
                 }
             }
             g.appendChild(text);
-            ypos += useLineHeight;
+            ypos += useLineHeight + headerHeight * (lineCount - 1);
         }
         final List<Double> rowYPos = new ArrayList<>();
-        final Element text = sheet.getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_TEXT_TAG);
-        text.setAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE, formatStyle(fontSize));
-        text.setAttributeNS(null, SVGConstants.SVG_TEXT_ANCHOR_ATTRIBUTE, anchor);
         for (List<String> row : data) {
             rowYPos.add(ypos);
-            int lineCount = 0;
             for (int c = 0; c < row.size(); c++) {
-                if ((firstColumnBold || firstColAnchor != null) && c == 0) {
+                if ((firstColumnBold || !firstColAnchor.isEmpty()) && c == 0) {
                     continue;
                 }
-                String[] lines = row.get(c).split("\n");
+                String[] lines = row.get(c).split("\\n");
                 for (int l = 0; l < lines.length; l++) {
-                    text.appendChild(createTspan(width * colOffsets.get(c),
-                            ypos + useLineHeight * l, lines[l]));
+                    g.appendChild(createTextElement(width * colOffsets.get(c), ypos + useLineHeight * l,
+                            lines[l], fontSize, SVGConstants.SVG_NORMAL_VALUE, SVGConstants.SVG_NORMAL_VALUE,
+                            PrintRecordSheet.FILL_BLACK, anchor, false, null));
                 }
-                lineCount = Integer.max(lineCount, lines.length);
             }
-            ypos += useLineHeight * lineCount;
+            ypos += useLineHeight * lineCount(row);
         }
-        if (firstColumnBold || (firstColAnchor != null)) {
+        if (firstColumnBold || !firstColAnchor.isEmpty()) {
             double colX = width * colOffsets.get(0);
-            Element colText = sheet.getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_TEXT_TAG);
-            colText.setAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE,
-                    formatStyle(fontSize, SVGConstants.SVG_BOLD_VALUE));
-            colText.setAttributeNS(null, SVGConstants.SVG_TEXT_ANCHOR_ATTRIBUTE,
-                    (firstColAnchor != null) ? firstColAnchor : anchor);
-            if (!headers.isEmpty() && (firstColAnchor != null)) {
-                colText.appendChild(createTspan(colX, rowYPos.get(0) - useLineHeight, headers.get(0)));
+            if (!headers.isEmpty() && !firstColAnchor.isEmpty()) {
+                String[] lines = headers.get(0).split("\\n");
+                double startY = rowYPos.get(0) - useLineHeight;
+                startY -= headerHeight * (lineCount(headers) - lines.length);
+                for (String line : lines) {
+                    g.appendChild(createTextElement(colX, startY, line, fontSize,
+                            SVGConstants.SVG_BOLD_VALUE, SVGConstants.SVG_NORMAL_VALUE,
+                            PrintRecordSheet.FILL_BLACK, firstColAnchor.isEmpty() ? anchor : firstColAnchor, false, null));
+                    startY += headerHeight;
+                }
+                g.appendChild(createTextElement(colX, rowYPos.get(0) - useLineHeight, headers.get(0),
+                        fontSize, SVGConstants.SVG_BOLD_VALUE, SVGConstants.SVG_NORMAL_VALUE,
+                        PrintRecordSheet.FILL_BLACK, firstColAnchor.isEmpty() ? anchor : firstColAnchor, false, null));
             }
             for (int r = 0; r < data.size(); r++) {
-                colText.appendChild(createTspan(colX, rowYPos.get(r), data.get(r).get(0)));
+                String[] lines = data.get(r).get(0).split("\n");
+                for (String line : lines) {
+                    g.appendChild(createTextElement(colX, rowYPos.get(r), line, fontSize,
+                            SVGConstants.SVG_BOLD_VALUE, SVGConstants.SVG_NORMAL_VALUE,
+                            PrintRecordSheet.FILL_BLACK, firstColAnchor.isEmpty() ? anchor : firstColAnchor, false, null));
+                }
             }
-            g.appendChild(colText);
         }
-        g.appendChild(text);
         return g;
-    }
-
-    private Element createTspan(double x, double y, String text) {
-        Element tspan = sheet.getSVGDocument().createElementNS(null, SVGConstants.SVG_TSPAN_TAG);
-        tspan.setAttributeNS(null, SVGConstants.SVG_X_ATTRIBUTE, String.valueOf(x));
-        tspan.setAttributeNS(null, SVGConstants.SVG_Y_ATTRIBUTE, String.valueOf(y));
-        tspan.setTextContent(text);
-        return tspan;
     }
 }
