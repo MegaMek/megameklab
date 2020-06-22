@@ -1,0 +1,253 @@
+/*
+ * MegaMekLab - Copyright (C) 2020 - The MegaMek Team
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ */
+package megameklab.com.printing;
+
+import megameklab.com.util.CConfig;
+import org.apache.batik.svggen.SVGConvolveOp;
+import org.apache.batik.util.SVGConstants;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import java.util.*;
+
+import static megameklab.com.printing.PrintRecordSheet.svgNS;
+
+/**
+ * Handles generation of quick reference tables for record sheets
+ */
+public class ReferenceTable {
+
+    private static final double bevelX = 7.845;
+    private static final double bevelY = 7.6;
+    private static final float FONT_SIZE_LABEL = 10.6f;
+    private static final double STROKE_WIDTH = 1.932;
+
+    private boolean firstColumnBold = true;
+    private String anchor = SVGConstants.SVG_MIDDLE_VALUE;
+    private String firstColAnchor = null;
+
+    private final PrintRecordSheet sheet;
+    private final String title;
+    private final List<String> headers;
+    private final List<List<String>> data;
+    private final List<Double> colOffsets;
+
+    public ReferenceTable(PrintRecordSheet sheet, String title, List<Double> colOffsets) {
+        this.title = title;
+        this.sheet = sheet;
+        this.colOffsets = new ArrayList<>(colOffsets);
+        this.headers = new ArrayList<>();
+        this.data = new ArrayList<>();
+    }
+
+    public void setHeaders(List<String> headers) {
+        if (headers.size() != colOffsets.size()) {
+            throw new IllegalArgumentException("Column headers must match size of column offsets list");
+        }
+        this.headers.clear();
+        this.headers.addAll(headers);
+    }
+
+    public void addRow(List<String> row) {
+        if (row.size() != colOffsets.size()) {
+            throw new IllegalArgumentException("Row size must match size of column offsets list");
+        }
+        data.add(new ArrayList<>(row));
+    }
+
+    public void setAnchor(String anchor) {
+        this.anchor = anchor;
+    }
+
+    public void setFirstColumnBold(boolean bold) {
+        firstColumnBold = bold;
+    }
+
+    public void setFirstColAnchor(String anchor) {
+        this.firstColAnchor = anchor;
+    }
+
+    public Element createTable(double x, double y, double width, double height) {
+        final Element g = sheet.getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
+        g.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
+                String.format("%s(%f %f", SVGConstants.SVG_TRANSLATE_VALUE, x, y));
+        double labelWidth = width - bevelX * 2 - 5.0f;
+        final Element label = createLabel(2.5f, 3.0f, title, labelWidth);
+        final Element shadow = createCellBorder(2.5, 2.5, width - 6.0, height - 6.0,
+                PrintRecordSheet.FILL_SHADOW);
+        final Element border = createCellBorder(0.0, 0.0, width - 5.0, height - 5.0,
+                PrintRecordSheet.FILL_BLACK);
+        g.appendChild(shadow);
+        g.appendChild(border);
+        g.appendChild(label);
+        final Element table = createTableBody(x + 3.0, y + 3.0 + sheet.getFontHeight(FONT_SIZE_LABEL) * 2,
+                width - 8.0, height - 8.0, PrintRecordSheet.FONT_SIZE_VSMALL);
+        g.appendChild(table);
+        return g;
+    }
+
+    private Element createLabel(double x, double y, String title, double labelWidth) {
+        final double textHeight = sheet.getFontHeight(FONT_SIZE_LABEL) * 0.625f;
+        final double textWidth = sheet.getBoldTextLength(title, FONT_SIZE_LABEL);
+        final double rectMargin = textWidth * 0.05f;
+        final double taperWidth = textHeight * bevelX / bevelY;
+        final double rectWidth = textWidth + rectMargin * 2;
+        final double xpos = x - taperWidth - rectWidth * 0.5f;
+        final Element g = sheet.getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
+        g.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
+                String.format("%s(%f %f", SVGConstants.SVG_TRANSLATE_VALUE, xpos, y));
+        final Element background = sheet.getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_PATH_TAG);
+        background.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, PrintRecordSheet.FILL_BLACK);
+        background.setAttributeNS(null, SVGConstants.SVG_D_ATTRIBUTE,
+                String.format("M %f,%f l %f,%f h %f l %f,%f l %f,%f h %f Z",
+                        0.0, textHeight, taperWidth, -textHeight, rectWidth,
+                        taperWidth, textHeight, -taperWidth, textHeight, -rectWidth));
+        g.appendChild(background);
+
+        final Element text = createTextElement(taperWidth + rectWidth * 0.5,
+                textHeight * 1.5, title, FONT_SIZE_LABEL, SVGConstants.SVG_BOLD_VALUE,
+                SVGConstants.SVG_NORMAL_VALUE, PrintRecordSheet.FILL_WHITE,
+                SVGConstants.SVG_MIDDLE_VALUE, false,
+                rectWidth - rectMargin * 2);
+        g.appendChild(text);
+
+        return g;
+    }
+
+    private Element createTextElement(double x, double y, String text, float fontSize,
+                                      String fontWeight, String fontStyle, String fill, String anchor,
+                                      boolean fixedWidth, Double width) {
+        final Element t = sheet.getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_TEXT_TAG);
+        t.setAttributeNS(null, SVGConstants.SVG_X_ATTRIBUTE, String.valueOf(x));
+        t.setAttributeNS(null, SVGConstants.SVG_Y_ATTRIBUTE, String.valueOf(y));
+        t.setAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE, formatStyle(fontSize, fontWeight, fontStyle));
+        t.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, fill);
+        t.setAttributeNS(null, SVGConstants.SVG_TEXT_ANCHOR_ATTRIBUTE, anchor);
+        double textLength = fontWeight.equals(SVGConstants.SVG_BOLD_VALUE) ?
+                sheet.getBoldTextLength(text, fontSize) : sheet.getTextLength(text, fontSize);
+        if (fixedWidth || ((width != null) && (textLength > width))) {
+            if (width != null && (textLength > width)) {
+                textLength = width;
+            }
+            t.setAttributeNS(null, SVGConstants.SVG_LENGTH_ADJUST_ATTRIBUTE, SVGConstants.SVG_SPACING_AND_GLYPHS_VALUE);
+            t.setAttributeNS(null, SVGConstants.SVG_TEXT_LENGTH_ATTRIBUTE,
+                    String.valueOf(textLength));
+        } else if (width != null) {
+            t.setAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE,
+                    "$style;mml-field-width:${width.truncate()}");
+        }
+        t.setTextContent(text);
+
+        return t;
+    }
+
+    private String formatStyle(float fontSize) {
+        return formatStyle(fontSize, SVGConstants.SVG_NORMAL_VALUE, SVGConstants.SVG_NORMAL_VALUE);
+    }
+
+    private String formatStyle(float fontSize, String fontWeight) {
+        return formatStyle(fontSize, fontWeight, SVGConstants.SVG_NORMAL_VALUE);
+    }
+
+    private String formatStyle(float fontSize, String fontWeight, String fontStyle) {
+        final StringJoiner sj = new StringJoiner(";");
+        sj.add(SVGConstants.CSS_FONT_FAMILY_PROPERTY + ":"
+                + CConfig.getParam(CConfig.RS_FONT, PrintRecordSheet.DEFAULT_TYPEFACE));
+        sj.add(SVGConstants.CSS_FONT_SIZE_PROPERTY + ":" + fontSize + "px");
+        sj.add(SVGConstants.CSS_FONT_WEIGHT_PROPERTY + ":" + fontWeight);
+        sj.add(SVGConstants.CSS_FONT_STYLE_PROPERTY + ":" + fontStyle);
+        return sj.toString();
+    }
+
+    private Element createCellBorder(double x, double y, double width, double height, String stroke) {
+        final Element path = sheet.getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_PATH_TAG);
+        path.setAttributeNS(null, SVGConstants.CSS_FILL_PROPERTY, PrintRecordSheet.FILL_WHITE);
+        path.setAttributeNS(null, SVGConstants.CSS_STROKE_PROPERTY, stroke);
+        path.setAttributeNS(null, SVGConstants.CSS_STROKE_WIDTH_PROPERTY, String.valueOf(STROKE_WIDTH));
+        path.setAttributeNS(null, SVGConstants.CSS_STROKE_LINEJOIN_PROPERTY, SVGConstants.SVG_ROUND_VALUE);
+        path.setAttributeNS(null, SVGConstants.SVG_D_ATTRIBUTE,
+                String.format("M %f,%f l %f,%f h %f l %f,%f v %f l %f,%f h %f l %f,%f Z",
+                        x, y + bevelY, bevelX, -bevelY, width - bevelX * 2,
+                        bevelX, bevelY, height - bevelY * 2, -bevelX, bevelY,
+                        -width * bevelX * 2, -bevelX, -bevelY));
+
+        return path;
+    }
+
+    private Element createTableBody(double x, double y, double width, double height, float fontSize) {
+        final double useLineHeight = sheet.getFontHeight(fontSize);
+        double ypos = 0.0;
+        final Element g = sheet.getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
+        g.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
+                String.format("%s(%f %f)", SVGConstants.SVG_TRANSLATE_VALUE, x, y));
+        if (!headers.isEmpty()) {
+            Element text = sheet.getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_TEXT_TAG);
+            text.setAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE,
+                    formatStyle(fontSize, SVGConstants.SVG_BOLD_VALUE));
+            text.setAttributeNS(null, SVGConstants.SVG_TEXT_ANCHOR_ATTRIBUTE, anchor);
+            for (int i = 0; i < headers.size(); i++) {
+                if ((i > 0) || !(firstColumnBold || (firstColAnchor != null))) {
+                    text.appendChild(createTspan(width * colOffsets.get(i), ypos, headers.get(i)));
+                }
+            }
+            g.appendChild(text);
+            ypos += useLineHeight;
+        }
+        final List<Double> rowYPos = new ArrayList<>();
+        final Element text = sheet.getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_TEXT_TAG);
+        text.setAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE, formatStyle(fontSize));
+        text.setAttributeNS(null, SVGConstants.SVG_TEXT_ANCHOR_ATTRIBUTE, anchor);
+        for (List<String> row : data) {
+            rowYPos.add(ypos);
+            int lineCount = 0;
+            for (int c = 0; c < row.size(); c++) {
+                if ((firstColumnBold || firstColAnchor != null) && c == 0) {
+                    continue;
+                }
+                String[] lines = row.get(c).split("\n");
+                for (int l = 0; l < lines.length; l++) {
+                    text.appendChild(createTspan(width * colOffsets.get(c),
+                            ypos + useLineHeight * l, lines[l]));
+                }
+                lineCount = Integer.max(lineCount, lines.length);
+            }
+            ypos += useLineHeight * lineCount;
+        }
+        if (firstColumnBold || (firstColAnchor != null)) {
+            double colX = width * colOffsets.get(0);
+            Element colText = sheet.getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_TEXT_TAG);
+            colText.setAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE,
+                    formatStyle(fontSize, SVGConstants.SVG_BOLD_VALUE));
+            colText.setAttributeNS(null, SVGConstants.SVG_TEXT_ANCHOR_ATTRIBUTE,
+                    (firstColAnchor != null) ? firstColAnchor : anchor);
+            if (!headers.isEmpty() && (firstColAnchor != null)) {
+                colText.appendChild(createTspan(colX, rowYPos.get(0) - useLineHeight, headers.get(0)));
+            }
+            for (int r = 0; r < data.size(); r++) {
+                colText.appendChild(createTspan(colX, rowYPos.get(r), data.get(r).get(0)));
+            }
+            g.appendChild(colText);
+        }
+        g.appendChild(text);
+        return g;
+    }
+
+    private Element createTspan(double x, double y, String text) {
+        Element tspan = sheet.getSVGDocument().createElementNS(null, SVGConstants.SVG_TSPAN_TAG);
+        tspan.setAttributeNS(null, SVGConstants.SVG_X_ATTRIBUTE, String.valueOf(x));
+        tspan.setAttributeNS(null, SVGConstants.SVG_Y_ATTRIBUTE, String.valueOf(y));
+        tspan.setTextContent(text);
+        return tspan;
+    }
+}
