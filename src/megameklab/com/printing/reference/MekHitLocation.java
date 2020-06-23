@@ -49,6 +49,7 @@ public class MekHitLocation extends ReferenceTable {
         addRow(Arrays.asList("10", "RA", "LA", "LA"));
         addRow(Arrays.asList("11", "RL", "LA", "LL"));
         addRow(Arrays.asList("12", "HD", "HD", "HD"));
+        addNote("*A result of 2 may inflict a critical hit.");
     }
 
     private void addQuadRows() {
@@ -63,19 +64,22 @@ public class MekHitLocation extends ReferenceTable {
         addRow(Arrays.asList("10", "RFL", "LFL", "LFL"));
         addRow(Arrays.asList("11", "RRL", "LFL", "LRL"));
         addRow(Arrays.asList("12", "HD", "HD", "HD"));
+        addNote("*A result of 2 may inflict a critical hit.");
     }
 
     private void addTripodRows() {
         addRow(Arrays.asList("2*", "LT(C)", "CT(C)", "RT(C)"));
-        addRow(Arrays.asList("3", "†", "RA", "†"));
+        addRow(Arrays.asList("3", "Leg (+1)†", "RA", "Leg (-1)†"));
         addRow(Arrays.asList("4", "LA", "RA", "RA"));
-        addRow(Arrays.asList("5", "LA", "†", "RA"));
-        addRow(Arrays.asList("6", "†", "RT", "†"));
+        addRow(Arrays.asList("5", "LA", "Leg†", "RA"));
+        addRow(Arrays.asList("6", "Leg (+1)†", "RT", "Leg (-1)†"));
         addRow(Arrays.asList("7", "LT", "CT", "RT"));
         addRow(Arrays.asList("8", "CT", "LT", "CT"));
-        addRow(Arrays.asList("9", "RT", "†", "LT"));
+        addRow(Arrays.asList("9", "RT", "Leg†", "LT"));
         addRow(Arrays.asList("10", "RA", "LA", "LA"));
-        addRow(Arrays.asList("11", "†", "LA", "†"));
+        addRow(Arrays.asList("11", "Leg (+1)†", "LA", "Leg (-1)†"));
         addRow(Arrays.asList("12", "HD", "HD", "HD"));
+        addNote("*A result of 2 may inflict a critical hit.");
+        addNote("†Roll 1d6 and apply modifier:\n 0-2: RL, 3-4: CL, 5-7: LL");
     }
 }

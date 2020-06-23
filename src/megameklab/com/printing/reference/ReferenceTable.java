@@ -31,6 +31,7 @@ public class ReferenceTable {
     private static final double bevelY = 7.6;
     private static final float FONT_SIZE_LABEL = PrintRecordSheet.FONT_SIZE_MEDIUM;
     private static final double STROKE_WIDTH = 1.547;
+    private static final double PADDING = 3.0;
 
     private boolean firstColumnBold = false;
     private String anchor = SVGConstants.SVG_MIDDLE_VALUE;
@@ -41,6 +42,7 @@ public class ReferenceTable {
     private final List<String> headers;
     private final List<List<String>> data;
     private final List<Double> colOffsets;
+    private final List<String> notes;
 
     public ReferenceTable(PrintRecordSheet sheet, String title, double... colOffsets) {
         this.title = title;
@@ -48,6 +50,7 @@ public class ReferenceTable {
         this.colOffsets = new ArrayList<>();
         this.headers = new ArrayList<>();
         this.data = new ArrayList<>();
+        this.notes = new ArrayList<>();
         for (double offset : colOffsets) {
             this.colOffsets.add(offset);
         }
@@ -80,10 +83,17 @@ public class ReferenceTable {
         this.firstColAnchor = anchor;
     }
 
+    public void addNote(String note) {
+        notes.add(note);
+    }
+
     public int lineCount() {
         int count = lineCount(headers);
         for (List<String> row : data) {
             count += lineCount(row);
+        }
+        for (String note : notes) {
+            count += note.split("\\n").length;
         }
         return count;
     }
@@ -108,10 +118,10 @@ public class ReferenceTable {
                 PrintRecordSheet.FILL_BLACK);
         g.appendChild(shadow);
         g.appendChild(border);
+        g.appendChild(label);
         final Element table = createTableBody(3.0, 3.0 + sheet.getFontHeight(FONT_SIZE_LABEL) * 2,
                 width - 8.0, height - 8.0, PrintRecordSheet.FONT_SIZE_VSMALL);
         g.appendChild(table);
-        g.appendChild(label);
         return g;
     }
 
@@ -269,6 +279,17 @@ public class ReferenceTable {
                             PrintRecordSheet.FILL_BLACK, firstColAnchor.isEmpty() ? anchor : firstColAnchor, false, null));
                 }
             }
+        }
+        for (String note : notes) {
+            String[] lines = note.split("\\n");
+            for (String line : lines) {
+                g.appendChild(createTextElement(PADDING, ypos, line, fontSize,
+                        SVGConstants.SVG_NORMAL_VALUE, SVGConstants.SVG_NORMAL_VALUE,
+                        PrintRecordSheet.FILL_BLACK, SVGConstants.SVG_START_VALUE,
+                        false, width - PADDING));
+                ypos += headerHeight;
+            }
+            ypos += useLineHeight - headerHeight;
         }
         return g;
     }
