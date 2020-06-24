@@ -27,8 +27,8 @@ import static megameklab.com.printing.PrintRecordSheet.svgNS;
  */
 public class ReferenceTable {
 
-    private static final double bevelX = 7.845;
-    private static final double bevelY = 7.6;
+    private static final double bevelX = 5.475;
+    private static final double bevelY = 8.214;
     private static final float FONT_SIZE_LABEL = PrintRecordSheet.FONT_SIZE_MEDIUM;
     private static final double STROKE_WIDTH = 1.547;
     private static final double PADDING = 3.0;
@@ -120,7 +120,7 @@ public class ReferenceTable {
                 String.format("%s(%f %f)", SVGConstants.SVG_TRANSLATE_VALUE, x, y));
         double labelWidth = width - bevelX * 2 - 5.0f;
         final Element label = createLabel(2.5f, 3.0f, title, labelWidth);
-        final Element shadow = createCellBorder(2.5, 2.5, width - 6.0, height - 6.0,
+        final Element shadow = createCellBorder(2.0, 2.0, width - 6.0, height - 6.0,
                 PrintRecordSheet.FILL_SHADOW);
         final Element border = createCellBorder(0.0, 0.0, width - 5.0, height - 5.0,
                 PrintRecordSheet.FILL_BLACK);
@@ -128,7 +128,7 @@ public class ReferenceTable {
         g.appendChild(border);
         g.appendChild(label);
         final Element table = createTableBody(3.0, 3.0 + sheet.getFontHeight(FONT_SIZE_LABEL) * 2,
-                width - 8.0, height - 8.0, PrintRecordSheet.FONT_SIZE_VSMALL);
+                width - 8.0, height - 12.0, PrintRecordSheet.FONT_SIZE_VSMALL);
         g.appendChild(table);
         return g;
     }
