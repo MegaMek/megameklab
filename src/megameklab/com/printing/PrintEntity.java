@@ -422,7 +422,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
 
         double ypos = pageFormat.getImageableY();
         for (ReferenceTable table : rightSide) {
-            double height = pageFormat.getImageableHeight() * 0.5 * table.lineCount() / lines;
+            double height = pageFormat.getImageableHeight() * table.lineCount() / lines;
             getSVGDocument().getDocumentElement().appendChild(
                     table.createTable(pageFormat.getImageableX() + pageFormat.getImageableWidth() * 0.8 + 3.0,
                             ypos, pageFormat.getImageableWidth() * 0.2, height));

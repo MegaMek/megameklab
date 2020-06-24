@@ -285,10 +285,13 @@ public class ReferenceTable {
             }
             for (int r = 0; r < data.size(); r++) {
                 String[] lines = data.get(r).get(0).split("\n");
+                double y2 = rowYPos.get(r);
                 for (String line : lines) {
-                    g.appendChild(createTextElement(colX, rowYPos.get(r), line, fontSize,
-                            SVGConstants.SVG_BOLD_VALUE, SVGConstants.SVG_NORMAL_VALUE,
-                            PrintRecordSheet.FILL_BLACK, firstColAnchor.isEmpty() ? anchor : firstColAnchor, false, null));
+                    g.appendChild(createTextElement(colX, y2, line, fontSize,
+                            firstColumnBold ? SVGConstants.SVG_BOLD_VALUE : SVGConstants.SVG_NORMAL_VALUE,
+                            SVGConstants.SVG_NORMAL_VALUE, PrintRecordSheet.FILL_BLACK,
+                            firstColAnchor.isEmpty() ? anchor : firstColAnchor, false, null));
+                    y2 += lineHeight;
                 }
             }
         }
