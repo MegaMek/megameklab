@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import megameklab.com.printing.reference.MekFallTable;
 import megameklab.com.printing.reference.MekHitLocation;
 import megameklab.com.printing.reference.ReferenceTable;
 import megameklab.com.printing.reference.MekVeeToHitMods;
@@ -796,6 +797,7 @@ public class PrintMech extends PrintEntity {
         List<ReferenceTable> list = new ArrayList<>();
         list.add(new MekHitLocation(this));
         list.add(new MekVeeToHitMods(this));
+        list.add(new MekFallTable(this));
         return list;
     }
 }
