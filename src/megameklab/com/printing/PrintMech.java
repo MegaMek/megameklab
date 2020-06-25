@@ -797,6 +797,10 @@ public class PrintMech extends PrintEntity {
         list.add(new PunchLocation(this));
         list.add(new KickLocation(this));
         list.add(new MekFallTable(this));
+        ClusterHitsTable table = new ClusterHitsTable(this);
+        if (table.required()) {
+            list.add(table);
+        }
         return list;
     }
 }

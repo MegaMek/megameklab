@@ -48,7 +48,7 @@ public class ReferenceTable {
         return 15 + sheet.getFontHeight(FONT_SIZE_LABEL) * 2;
     }
 
-    public ReferenceTable(PrintRecordSheet sheet, String title, double... colOffsets) {
+    public ReferenceTable(PrintRecordSheet sheet, String title) {
         this.title = title;
         this.sheet = sheet;
         this.colOffsets = new ArrayList<>();
@@ -57,9 +57,18 @@ public class ReferenceTable {
         this.notes = new ArrayList<>();
         this.anchor = new HashMap<>();
         this.fontWeight = new HashMap<>();
+    }
+
+    public ReferenceTable(PrintRecordSheet sheet, String title, double... colOffsets) {
+        this(sheet, title);
         for (double offset : colOffsets) {
             this.colOffsets.add(offset);
         }
+    }
+
+    protected void setColOffsets(Collection<Double> offsets) {
+        colOffsets.clear();
+        colOffsets.addAll(offsets);
     }
 
     public void setHeaders(String... items) {
