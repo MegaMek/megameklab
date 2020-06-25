@@ -26,7 +26,8 @@ public class MekVeeToHitMods extends ReferenceTable {
     public MekVeeToHitMods(PrintEntity sheet) {
         super(sheet, "TO-HIT MODIFIERS", 0.02, 0.08, 0.8);
         this.entity = sheet.getEntity();
-        setAnchor(SVGConstants.SVG_START_VALUE);
+        setColumnAnchor(0, SVGConstants.SVG_START_VALUE);
+        setColumnAnchor(1, SVGConstants.SVG_START_VALUE);
         if (entity instanceof Mech) {
             addMekAttackerMods();
         } else if (entity instanceof Tank) {

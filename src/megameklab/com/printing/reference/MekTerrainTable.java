@@ -23,7 +23,7 @@ public class MekTerrainTable extends ReferenceTable {
 
     public MekTerrainTable(PrintMech sheet, boolean advancedTerrain) {
         super(sheet, "TERRAIN", 0.1, 0.8);
-        setFirstColAnchor(SVGConstants.SVG_START_VALUE);
+        setColumnAnchor(0, SVGConstants.SVG_START_VALUE);
         if (advancedTerrain) {
             addRow("Clear, Planted Fields,\nTundra, Sand", "+0");
         } else {

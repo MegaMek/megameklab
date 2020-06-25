@@ -33,9 +33,7 @@ public class ReferenceTable {
     private static final double STROKE_WIDTH = 1.6;
     private static final double PADDING = 3.0;
 
-    private boolean firstColumnBold = false;
-    private String anchor = SVGConstants.SVG_MIDDLE_VALUE;
-    private String firstColAnchor = "";
+    private String defaultAnchor = SVGConstants.SVG_MIDDLE_VALUE;
 
     private final PrintRecordSheet sheet;
     private final String title;
@@ -43,6 +41,8 @@ public class ReferenceTable {
     private final List<List<String>> data;
     private final List<Double> colOffsets;
     private final List<String> notes;
+    private final Map<Integer, String> anchor;
+    private final Map<Integer, String> fontWeight;
 
     public static double getMargins(PrintRecordSheet sheet) {
         return 15 + sheet.getFontHeight(FONT_SIZE_LABEL) * 2;
@@ -55,6 +55,8 @@ public class ReferenceTable {
         this.headers = new ArrayList<>();
         this.data = new ArrayList<>();
         this.notes = new ArrayList<>();
+        this.anchor = new HashMap<>();
+        this.fontWeight = new HashMap<>();
         for (double offset : colOffsets) {
             this.colOffsets.add(offset);
         }
@@ -83,16 +85,16 @@ public class ReferenceTable {
         data.add(new ArrayList<>(row));
     }
 
-    public void setAnchor(String anchor) {
-        this.anchor = anchor;
+    public void setDefaultAnchor(String defaultAnchor) {
+        this.defaultAnchor = defaultAnchor;
     }
 
-    public void setFirstColumnBold(boolean bold) {
-        firstColumnBold = bold;
+    public void setColumnAnchor(int column, String anchor) {
+        this.anchor.put(column, anchor);
     }
 
-    public void setFirstColAnchor(String anchor) {
-        this.firstColAnchor = anchor;
+    public void setColumnWeight(int column, String weight) {
+        fontWeight.put(column, weight);
     }
 
     public void addNote(String note) {
@@ -238,66 +240,33 @@ public class ReferenceTable {
             text.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, PrintRecordSheet.FILL_BLACK);
             text.setAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE,
                     formatStyle(fontSize, SVGConstants.SVG_BOLD_VALUE));
-            text.setAttributeNS(null, SVGConstants.SVG_TEXT_ANCHOR_ATTRIBUTE, anchor);
+            text.setAttributeNS(null, SVGConstants.SVG_TEXT_ANCHOR_ATTRIBUTE, defaultAnchor);
             int lineCount = lineCount(headers);
             for (int col = 0; col < headers.size(); col++) {
-                if ((col > 0) || !(firstColumnBold || (!firstColAnchor.isEmpty()))) {
-                    String[] lines = headers.get(col).split("\\n");
-                    double useY = ypos + lineHeight * (lineCount - lines.length);
-                    for (String line : lines) {
-                        g.appendChild(createTextElement(width * colOffsets.get(col), useY,
-                                line, fontSize, SVGConstants.SVG_BOLD_VALUE, SVGConstants.SVG_NORMAL_VALUE,
-                                PrintRecordSheet.FILL_BLACK, anchor, false, null));
-                        useY += lineHeight;
-                    }
+                String[] lines = headers.get(col).split("\\n");
+                double useY = ypos + lineHeight * (lineCount - lines.length);
+                for (String line : lines) {
+                    g.appendChild(createTextElement(width * colOffsets.get(col), useY,
+                            line, fontSize, SVGConstants.SVG_BOLD_VALUE, SVGConstants.SVG_NORMAL_VALUE,
+                            PrintRecordSheet.FILL_BLACK, anchor.getOrDefault(col, defaultAnchor),
+                            false, null));
+                    useY += lineHeight;
                 }
             }
             g.appendChild(text);
             ypos += rowSpacing + lineHeight * (lineCount - 1);
         }
-        final List<Double> rowYPos = new ArrayList<>();
         for (List<String> row : data) {
-            rowYPos.add(ypos);
             for (int c = 0; c < row.size(); c++) {
-                if ((firstColumnBold || !firstColAnchor.isEmpty()) && c == 0) {
-                    continue;
-                }
                 String[] lines = row.get(c).split("\\n");
                 for (int l = 0; l < lines.length; l++) {
                     g.appendChild(createTextElement(width * colOffsets.get(c), ypos + rowSpacing * l,
-                            lines[l], fontSize, SVGConstants.SVG_NORMAL_VALUE, SVGConstants.SVG_NORMAL_VALUE,
-                            PrintRecordSheet.FILL_BLACK, anchor, false, null));
+                            lines[l], fontSize, fontWeight.getOrDefault(c, SVGConstants.SVG_NORMAL_VALUE),
+                            SVGConstants.SVG_NORMAL_VALUE, PrintRecordSheet.FILL_BLACK,
+                            anchor.getOrDefault(c, defaultAnchor), false, null));
                 }
             }
             ypos += rowSpacing * lineCount(row);
-        }
-        if (firstColumnBold || !firstColAnchor.isEmpty()) {
-            double colX = width * colOffsets.get(0);
-            if (!headers.isEmpty() && !firstColAnchor.isEmpty()) {
-                String[] lines = headers.get(0).split("\\n");
-                double startY = rowYPos.get(0) - rowSpacing;
-                startY -= lineHeight * (lineCount(headers) - lines.length);
-                for (String line : lines) {
-                    g.appendChild(createTextElement(colX, startY, line, fontSize,
-                            SVGConstants.SVG_BOLD_VALUE, SVGConstants.SVG_NORMAL_VALUE,
-                            PrintRecordSheet.FILL_BLACK, firstColAnchor.isEmpty() ? anchor : firstColAnchor, false, null));
-                    startY += lineHeight;
-                }
-                g.appendChild(createTextElement(colX, rowYPos.get(0) - rowSpacing, headers.get(0),
-                        fontSize, SVGConstants.SVG_BOLD_VALUE, SVGConstants.SVG_NORMAL_VALUE,
-                        PrintRecordSheet.FILL_BLACK, firstColAnchor.isEmpty() ? anchor : firstColAnchor, false, null));
-            }
-            for (int r = 0; r < data.size(); r++) {
-                String[] lines = data.get(r).get(0).split("\n");
-                double y2 = rowYPos.get(r);
-                for (String line : lines) {
-                    g.appendChild(createTextElement(colX, y2, line, fontSize,
-                            firstColumnBold ? SVGConstants.SVG_BOLD_VALUE : SVGConstants.SVG_NORMAL_VALUE,
-                            SVGConstants.SVG_NORMAL_VALUE, PrintRecordSheet.FILL_BLACK,
-                            firstColAnchor.isEmpty() ? anchor : firstColAnchor, false, null));
-                    y2 += lineHeight;
-                }
-            }
         }
         for (String note : notes) {
             String[] lines = note.split("\\n");
