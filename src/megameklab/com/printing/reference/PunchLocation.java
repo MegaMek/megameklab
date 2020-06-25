@@ -31,7 +31,7 @@ public class PunchLocation extends ReferenceTable {
         }
     }
 
-    private void addQuadRows() {
+    private void addBipedRows() {
         addRow("1", "LT", "LA", "RT");
         addRow("2", "LT", "LT", "RT");
         addRow("3", "CT", "CT", "CT");
@@ -40,7 +40,7 @@ public class PunchLocation extends ReferenceTable {
         addRow("6", "HD", "HD", "HD");
     }
 
-    private void addBipedRows() {
+    private void addQuadRows() {
         addRow("1", "LT", "LFL/LRL", "RT");
         addRow("2", "LT", "LT", "RT");
         addRow("3", "CT", "CT", "CT");

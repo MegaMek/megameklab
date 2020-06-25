@@ -31,12 +31,12 @@ public class KickLocation extends ReferenceTable {
         }
     }
 
-    private void addQuadRows() {
+    private void addBipedRows() {
         addRow("1-3", "LL", "RL", "RL");
         addRow("4-6", "LL", "LL", "RL");
     }
 
-    private void addBipedRows() {
+    private void addQuadRows() {
         addRow("1-3", "LFL", "RFL/RRL", "RFL");
         addRow("4-6", "LRL", "LFL/LRL", "RRL");
     }
