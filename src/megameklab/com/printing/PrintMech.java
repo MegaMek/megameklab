@@ -794,6 +794,7 @@ public class PrintMech extends PrintEntity {
         List<ReferenceTable> list = new ArrayList<>();
         list.add(new MekHitLocation(this));
         list.add(new MekVeeToHitMods(this));
+        list.add(new PhysicalAttacks(this));
         list.add(new PunchLocation(this));
         list.add(new KickLocation(this));
         list.add(new MekFallTable(this));
