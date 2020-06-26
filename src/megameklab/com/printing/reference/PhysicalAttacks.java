@@ -28,8 +28,22 @@ public class PhysicalAttacks extends ReferenceTable {
         super(sheet, "PHYSICAL ATTACKS", 0.05, 0.5, 0.8);
         setHeaders("Attack", "To-Hit", "Damage");
         setColumnAnchor(0, SVGConstants.SVG_START_VALUE);
+        int kickDamage = (int) Math.floor(sheet.getEntity().getWeight() / 5.0);
+        int dfaDamage = (int) Math.floor(sheet.getEntity().getWeight() / 10.0) * 3;
+        if (sheet.getEntity().hasWorkingMisc(MiscType.F_TALON)) {
+            kickDamage = (int) Math.floor(kickDamage * 1.5);
+            dfaDamage = (int) Math.floor(dfaDamage * 1.5);
+        }
+        boolean hasTorsoSpikes = false;
+        for (Mounted mounted : sheet.getEntity().getMisc()) {
+            if (mounted.getType().hasFlag(MiscType.F_SPIKES)
+                    && ((Mech) sheet.getEntity()).locationIsTorso(mounted.getLocation())) {
+                hasTorsoSpikes = true;
+                break;
+            }
+        }
         addPunchAttacks(sheet.getEntity());
-        addRow("Kick", "-2", String.format("%.0f", Math.floor(sheet.getEntity().getWeight() / 5.0)));
+        addRow("Kick", "-2", String.valueOf(kickDamage));
         if (!(sheet.getEntity() instanceof QuadMech)) {
             addRow("Push", "-1", "—");
         }
@@ -37,10 +51,14 @@ public class PhysicalAttacks extends ReferenceTable {
                && sheet.getEntity().hasSystem(Mech.ACTUATOR_HAND, Mech.LOC_RARM)) {
             addRow("Club", "-1", String.format("%.0f", Math.floor(sheet.getEntity().getWeight() / 5.0)));
         }
-        addRow("Charge", "+0*", String.format("%.0f/hex", Math.floor(sheet.getEntity().getWeight() / 10.0)));
-        addRow("DFA", "+0*", String.format("%.0f/hex", Math.floor(sheet.getEntity().getWeight() / 10.0)));
-        addNote("*Modified by target piloting skill");
+        addRow("Charge", "+0*", String.format(hasTorsoSpikes ? "%.0f/hex†" : "%.0f/hex",
+                Math.floor(sheet.getEntity().getWeight() / 10.0)));
+        addRow("DFA", "+0*", String.valueOf(dfaDamage));
         addPhysicalWeapon(sheet.getEntity());
+        addNote("*Modified by target piloting skill");
+        if (hasTorsoSpikes) {
+            addNote("†+2/each torso location with spikes");
+        }
     }
 
     private void addPunchAttacks(Entity entity) {
