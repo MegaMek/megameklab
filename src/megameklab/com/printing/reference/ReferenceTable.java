@@ -14,7 +14,6 @@
 package megameklab.com.printing.reference;
 
 import megameklab.com.printing.PrintRecordSheet;
-import megameklab.com.util.CConfig;
 import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
 
@@ -23,20 +22,12 @@ import java.util.*;
 import static megameklab.com.printing.PrintRecordSheet.svgNS;
 
 /**
- * Handles generation of quick reference tables for record sheets
+ * Base class for reference tables that format contents into a grid, with optional footnotes
  */
-public class ReferenceTable {
-
-    private static final double bevelX = 5.475;
-    private static final double bevelY = 8.214;
-    private static final float FONT_SIZE_LABEL = PrintRecordSheet.FONT_SIZE_MEDIUM;
-    private static final double STROKE_WIDTH = 1.6;
-    private static final double PADDING = 3.0;
+public class ReferenceTable extends ReferenceTableBase {
 
     private String defaultAnchor = SVGConstants.SVG_MIDDLE_VALUE;
 
-    private final PrintRecordSheet sheet;
-    private final String title;
     private final List<String> headers;
     private final List<List<String>> data;
     private final List<Double> colOffsets;
@@ -44,13 +35,8 @@ public class ReferenceTable {
     private final Map<Integer, String> anchor;
     private final Map<Integer, String> fontWeight;
 
-    public static double getMargins(PrintRecordSheet sheet) {
-        return 15 + sheet.getFontHeight(FONT_SIZE_LABEL) * 2;
-    }
-
     public ReferenceTable(PrintRecordSheet sheet, String title) {
-        this.title = title;
-        this.sheet = sheet;
+        super(sheet, title);
         this.colOffsets = new ArrayList<>();
         this.headers = new ArrayList<>();
         this.data = new ArrayList<>();
@@ -129,109 +115,8 @@ public class ReferenceTable {
         return count;
     }
 
-    public Element createTable(double x, double y, double width, double height) {
-        final Element g = sheet.getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
-        g.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
-                String.format("%s(%f %f)", SVGConstants.SVG_TRANSLATE_VALUE, x, y));
-        double labelWidth = width - bevelX * 2 - 6.0f;
-        final Element label = createLabel(2.5f, 3.0f, title, labelWidth);
-        final Element shadow = createCellBorder(2.0, 2.0, width - 6.0, height - 6.0,
-                PrintRecordSheet.FILL_SHADOW);
-        final Element border = createCellBorder(0.0, 0.0, width - 5.0, height - 5.0,
-                PrintRecordSheet.FILL_BLACK);
-        g.appendChild(shadow);
-        g.appendChild(border);
-        g.appendChild(label);
-        final Element table = createTableBody(3.0, PADDING * 1.5 + sheet.getFontHeight(FONT_SIZE_LABEL) * 2,
-                width - 8.0, height - 9.0, PrintRecordSheet.FONT_SIZE_VSMALL);
-        g.appendChild(table);
-        return g;
-    }
-
-    private Element createLabel(double x, double y, String title, double labelWidth) {
-        final double textHeight = sheet.getFontHeight(FONT_SIZE_LABEL) * 0.625f;
-        final double textWidth = sheet.getBoldTextLength(title, FONT_SIZE_LABEL);
-        final double rectMargin = textWidth * 0.05f;
-        final double taperWidth = textHeight * bevelX / bevelY;
-        final Element g = sheet.getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
-        g.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
-                String.format("%s(%f %f)", SVGConstants.SVG_TRANSLATE_VALUE, x, y));
-        final Element background = sheet.getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_PATH_TAG);
-        background.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, PrintRecordSheet.FILL_BLACK);
-        background.setAttributeNS(null, SVGConstants.SVG_D_ATTRIBUTE,
-                String.format("M %f,%f l %f,%f h %f l %f,%f l %f,%f h %f Z",
-                        0.0, textHeight, taperWidth, -textHeight, labelWidth,
-                        taperWidth, textHeight, -taperWidth, textHeight, -labelWidth));
-        g.appendChild(background);
-
-        final Element text = createTextElement(taperWidth + labelWidth * 0.5,
-                textHeight * 1.5, title, FONT_SIZE_LABEL, SVGConstants.SVG_BOLD_VALUE,
-                SVGConstants.SVG_NORMAL_VALUE, PrintRecordSheet.FILL_WHITE,
-                SVGConstants.SVG_MIDDLE_VALUE, false,
-                labelWidth - rectMargin * 2);
-        g.appendChild(text);
-
-        return g;
-    }
-
-    private Element createTextElement(double x, double y, String text, float fontSize,
-                                      String fontWeight, String fontStyle, String fill, String anchor,
-                                      boolean fixedWidth, Double width) {
-        final Element t = sheet.getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_TEXT_TAG);
-        t.setAttributeNS(null, SVGConstants.SVG_X_ATTRIBUTE, String.valueOf(x));
-        t.setAttributeNS(null, SVGConstants.SVG_Y_ATTRIBUTE, String.valueOf(y));
-        t.setAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE, formatStyle(fontSize, fontWeight, fontStyle));
-        t.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, fill);
-        t.setAttributeNS(null, SVGConstants.SVG_TEXT_ANCHOR_ATTRIBUTE, anchor);
-        double textLength = fontWeight.equals(SVGConstants.SVG_BOLD_VALUE) ?
-                sheet.getBoldTextLength(text, fontSize) : sheet.getTextLength(text, fontSize);
-        if (fixedWidth || ((width != null) && (textLength > width))) {
-            if (width != null && (textLength > width)) {
-                textLength = width;
-            }
-            t.setAttributeNS(null, SVGConstants.SVG_LENGTH_ADJUST_ATTRIBUTE, SVGConstants.SVG_SPACING_AND_GLYPHS_VALUE);
-            t.setAttributeNS(null, SVGConstants.SVG_TEXT_LENGTH_ATTRIBUTE,
-                    String.valueOf(textLength));
-        }
-        t.setTextContent(text);
-
-        return t;
-    }
-
-    private String formatStyle(float fontSize) {
-        return formatStyle(fontSize, SVGConstants.SVG_NORMAL_VALUE, SVGConstants.SVG_NORMAL_VALUE);
-    }
-
-    private String formatStyle(float fontSize, String fontWeight) {
-        return formatStyle(fontSize, fontWeight, SVGConstants.SVG_NORMAL_VALUE);
-    }
-
-    private String formatStyle(float fontSize, String fontWeight, String fontStyle) {
-        final StringJoiner sj = new StringJoiner(";");
-        sj.add(SVGConstants.CSS_FONT_FAMILY_PROPERTY + ":"
-                + CConfig.getParam(CConfig.RS_FONT, PrintRecordSheet.DEFAULT_TYPEFACE));
-        sj.add(SVGConstants.CSS_FONT_SIZE_PROPERTY + ":" + fontSize + "px");
-        sj.add(SVGConstants.CSS_FONT_WEIGHT_PROPERTY + ":" + fontWeight);
-        sj.add(SVGConstants.CSS_FONT_STYLE_PROPERTY + ":" + fontStyle);
-        return sj.toString();
-    }
-
-    private Element createCellBorder(double x, double y, double width, double height, String stroke) {
-        final Element path = sheet.getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_PATH_TAG);
-        path.setAttributeNS(null, SVGConstants.CSS_FILL_PROPERTY, PrintRecordSheet.FILL_WHITE);
-        path.setAttributeNS(null, SVGConstants.CSS_STROKE_PROPERTY, stroke);
-        path.setAttributeNS(null, SVGConstants.CSS_STROKE_WIDTH_PROPERTY, String.valueOf(STROKE_WIDTH));
-        path.setAttributeNS(null, SVGConstants.CSS_STROKE_LINEJOIN_PROPERTY, SVGConstants.SVG_ROUND_VALUE);
-        path.setAttributeNS(null, SVGConstants.SVG_D_ATTRIBUTE,
-                String.format("M %f,%f l %f,%f h %f l %f,%f v %f l %f,%f h %f l %f,%f Z",
-                        x, y + bevelY, bevelX, -bevelY, width - bevelX * 2,
-                        bevelX, bevelY, height - bevelY * 2, -bevelX, bevelY,
-                        -(width - bevelX * 2), -bevelX, -bevelY));
-
-        return path;
-    }
-
-    private Element createTableBody(double x, double y, double width, double height, float fontSize) {
+    @Override
+    protected Element createTableBody(double x, double y, double width, double height, float fontSize) {
         double rowSpacing = height / (lineCount() + 2);
         double lineHeight = sheet.getFontHeight(fontSize);
         while ((fontSize >= 5.0f) && (rowSpacing < lineHeight)) {
@@ -256,7 +141,7 @@ public class ReferenceTable {
                 double useY = ypos + lineHeight * (lineCount - lines.length);
                 for (String line : lines) {
                     g.appendChild(createTextElement(width * colOffsets.get(col), useY,
-                            line, fontSize, SVGConstants.SVG_BOLD_VALUE, SVGConstants.SVG_NORMAL_VALUE,
+                            line, fontSize, SVGConstants.SVG_BOLD_VALUE,
                             PrintRecordSheet.FILL_BLACK, anchor.getOrDefault(col, defaultAnchor),
                             false, null));
                     useY += lineHeight;
@@ -271,8 +156,7 @@ public class ReferenceTable {
                 for (int l = 0; l < lines.length; l++) {
                     g.appendChild(createTextElement(width * colOffsets.get(c), ypos + rowSpacing * l,
                             lines[l], fontSize, fontWeight.getOrDefault(c, SVGConstants.SVG_NORMAL_VALUE),
-                            SVGConstants.SVG_NORMAL_VALUE, PrintRecordSheet.FILL_BLACK,
-                            anchor.getOrDefault(c, defaultAnchor), false, null));
+                            PrintRecordSheet.FILL_BLACK, anchor.getOrDefault(c, defaultAnchor), false, null));
                 }
             }
             ypos += rowSpacing * lineCount(row);
@@ -282,8 +166,7 @@ public class ReferenceTable {
             for (String line : lines) {
                 g.appendChild(createTextElement(PADDING, ypos, line, fontSize,
                         SVGConstants.SVG_NORMAL_VALUE, SVGConstants.SVG_NORMAL_VALUE,
-                        PrintRecordSheet.FILL_BLACK, SVGConstants.SVG_START_VALUE,
-                        false, width - PADDING));
+                        PrintRecordSheet.FILL_BLACK, false, width - PADDING));
                 ypos += lineHeight;
             }
             ypos += rowSpacing - lineHeight;

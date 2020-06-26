@@ -804,4 +804,13 @@ public class PrintMech extends PrintEntity {
         }
         return list;
     }
+
+    @Override
+    protected void addReferenceCharts(PageFormat pageFormat) {
+        super.addReferenceCharts(pageFormat);
+        GroundMovementRecord table = new GroundMovementRecord(this);
+        getSVGDocument().getDocumentElement().appendChild(table.createTable(pageFormat.getImageableX(),
+                pageFormat.getImageableY() + pageFormat.getImageableHeight() * 0.8 + 3.0,
+                pageFormat.getImageableWidth() * 0.8, pageFormat.getImageableHeight() * 0.2 - 3.0));
+    }
 }
