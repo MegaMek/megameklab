@@ -143,7 +143,7 @@ public class ReferenceTable {
         g.appendChild(border);
         g.appendChild(label);
         final Element table = createTableBody(3.0, PADDING * 1.5 + sheet.getFontHeight(FONT_SIZE_LABEL) * 2,
-                width - 8.0, height - 6.0, PrintRecordSheet.FONT_SIZE_VSMALL);
+                width - 8.0, height - 9.0, PrintRecordSheet.FONT_SIZE_VSMALL);
         g.appendChild(table);
         return g;
     }
