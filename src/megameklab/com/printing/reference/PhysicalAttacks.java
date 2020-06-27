@@ -53,7 +53,9 @@ public class PhysicalAttacks extends ReferenceTable {
         }
         addRow("Charge", "+0*", String.format(hasTorsoSpikes ? "%.0f/hex†" : "%.0f/hex",
                 Math.floor(sheet.getEntity().getWeight() / 10.0)));
-        addRow("DFA", "+0*", String.valueOf(dfaDamage));
+        if (sheet.getEntity().getOriginalJumpMP() > 0) {
+            addRow("DFA", "+0*", String.valueOf(dfaDamage));
+        }
         addPhysicalWeapon(sheet.getEntity());
         addNote("*Modified by target piloting skill");
         if (hasTorsoSpikes) {
