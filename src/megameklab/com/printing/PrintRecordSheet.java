@@ -74,6 +74,8 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     public final static String FILL_GREY = "#3f3f3f";
     public final static String FILL_SHADOW = "#c8c7c7";
     public final static String FILL_WHITE = "#ffffff";
+    /** Scale factor for record sheets with reference tables */
+    public final static double TABLE_RATIO = 0.8;
     
     enum PipType {
         CIRCLE, DIAMOND;
@@ -276,7 +278,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             double ratio = Math.min(pageFormat.getImageableWidth() / (options.getPaperSize().pxWidth - 36),
                     pageFormat.getPaper().getImageableHeight() / (options.getPaperSize().pxHeight - 36));
             if (options.showReferenceCharts()) {
-                ratio *= 0.8;
+                ratio *= TABLE_RATIO;
             }
             Element svgRoot = svgDocument.getDocumentElement();
             svgRoot.setAttributeNS(null, SVGConstants.SVG_WIDTH_ATTRIBUTE, String.valueOf(pageFormat.getWidth()));
