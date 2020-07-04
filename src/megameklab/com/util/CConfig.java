@@ -125,7 +125,6 @@ public class CConfig {
         defaults.setProperty(RS_SHOW_ERA, Boolean.toString(true));
         defaults.setProperty(RS_SHOW_ROLE, Boolean.toString(true));
         defaults.setProperty(RS_SHOW_PILOT_DATA, Boolean.toString(true));
-        defaults.setProperty(RS_REFERENCE, Boolean.toString(true));
 
         return defaults;
     }
