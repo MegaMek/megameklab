@@ -25,8 +25,8 @@ import org.apache.batik.util.SVGConstants;
 public class PhysicalAttacks extends ReferenceTable {
 
     public PhysicalAttacks(PrintMech sheet) {
-        super(sheet, "PHYSICAL ATTACKS", 0.05, 0.5, 0.8);
-        setHeaders("Attack", "To-Hit", "Damage");
+        super(sheet, 0.05, 0.5, 0.8);
+        setHeaders(bundle.getString("attack"), bundle.getString("toHit"), bundle.getString("damage"));
         setColumnAnchor(0, SVGConstants.SVG_START_VALUE);
         int kickDamage = (int) Math.floor(sheet.getEntity().getWeight() / 5.0);
         int dfaDamage = (int) Math.floor(sheet.getEntity().getWeight() / 10.0) * 3;
@@ -43,23 +43,24 @@ public class PhysicalAttacks extends ReferenceTable {
             }
         }
         addPunchAttacks(sheet.getEntity());
-        addRow("Kick", "-2", String.valueOf(kickDamage));
+        addRow(bundle.getString("kick"), "-2", String.valueOf(kickDamage));
         if (!(sheet.getEntity() instanceof QuadMech)) {
-            addRow("Push", "-1", "—");
+            addRow(bundle.getString("push"), "-1", "—");
         }
         if (sheet.getEntity().hasSystem(Mech.ACTUATOR_HAND, Mech.LOC_LARM)
                && sheet.getEntity().hasSystem(Mech.ACTUATOR_HAND, Mech.LOC_RARM)) {
-            addRow("Club", "-1", String.format("%.0f", Math.floor(sheet.getEntity().getWeight() / 5.0)));
+            addRow(bundle.getString("club"), "-1", String.format("%.0f", Math.floor(sheet.getEntity().getWeight() / 5.0)));
         }
-        addRow("Charge", "+0*", String.format(hasTorsoSpikes ? "%.0f/hex†" : "%.0f/hex",
-                Math.floor(sheet.getEntity().getWeight() / 10.0)));
+        addRow(bundle.getString("charge"), "+0*", String.format(hasTorsoSpikes ?
+                        "%.0f/%s†" : "%.0f/%s",
+                Math.floor(sheet.getEntity().getWeight() / 10.0), bundle.getString("hex")));
         if (sheet.getEntity().getOriginalJumpMP() > 0) {
-            addRow("DFA", "+0*", String.valueOf(dfaDamage));
+            addRow(bundle.getString("dfa"), "+0*", String.valueOf(dfaDamage));
         }
         addPhysicalWeapon(sheet.getEntity());
-        addNote("*Modified by target piloting skill");
+        addNote(bundle.getString("pilotingModNote"));
         if (hasTorsoSpikes) {
-            addNote("†+2/each torso location with spikes");
+            addNote(bundle.getString("spikesNote"));
         }
     }
 
@@ -68,10 +69,10 @@ public class PhysicalAttacks extends ReferenceTable {
         int right = countActuators(entity, Mech.LOC_RARM);
         int baseDamage = (int) Math.floor(entity.getWeight() / 10.0);
         if (left == right) {
-            addPunchAttack("Punch", left, baseDamage);
+            addPunchAttack(bundle.getString("punch"), left, baseDamage);
         } else {
-            addPunchAttack("Punch (LA)", left, baseDamage);
-            addPunchAttack("Punch (RA)", right, baseDamage);
+            addPunchAttack(bundle.getString("punch") + " (LA)", left, baseDamage);
+            addPunchAttack(bundle.getString("punch") + " (RA)", right, baseDamage);
         }
     }
 

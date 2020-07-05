@@ -22,13 +22,12 @@ import java.util.*;
  * Table showing the relevant columns of the cluster hits table
  */
 public class ClusterHitsTable extends ReferenceTable {
-
     private final Set<Integer> clusterSizes = new TreeSet<>();
     private boolean hasATM;
     private boolean hasHAG;
 
     public ClusterHitsTable(PrintEntity sheet) {
-        super(sheet, "CLUSTER HITS");
+        super(sheet);
         calculateClusterSizes(sheet.getEntity());
         if (!clusterSizes.isEmpty()) {
             List<Double> offsets = new ArrayList<>();
@@ -38,7 +37,7 @@ public class ClusterHitsTable extends ReferenceTable {
             }
             setColOffsets(offsets);
             List<String> headers = new ArrayList<>();
-            headers.add("Die Roll\n(2D6)");
+            headers.add(bundle.getString("dieRoll2d6"));
             for (int size : clusterSizes) {
                 headers.add(String.valueOf(size));
             }
@@ -112,17 +111,17 @@ public class ClusterHitsTable extends ReferenceTable {
 
     private void addNotes(Entity entity) {
         if (hasATM || entity.hasWorkingMisc(MiscType.F_ARTEMIS)) {
-            addNote("Artemis IV FCS: +2");
+            addNote(bundle.getString("artemisIV.note"));
         } else if (entity.hasWorkingMisc(MiscType.F_ARTEMIS_V)) {
-            addNote("Artemis V FCS: +3");
+            addNote(bundle.getString("artemisV.note"));
         } else if (entity.hasWorkingMisc(MiscType.F_ARTEMIS_PROTO)) {
-            addNote("Prototype Artemis FCS: +1");
+            addNote(bundle.getString("artemisProto.note"));
         }
         if (entity.hasWorkingMisc(MiscType.F_APOLLO)) {
-            addNote("MRM \"Apollo\" FCS: -1");
+            addNote(bundle.getString("apollo.note"));
         }
         if (hasHAG) {
-            addNote("HAG: short range +2, long range -2");
+            addNote(bundle.getString("hag.note"));
         }
     }
 

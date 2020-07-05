@@ -24,7 +24,7 @@ public class MekVeeToHitMods extends ReferenceTable {
     private final Entity entity;
 
     public MekVeeToHitMods(PrintEntity sheet) {
-        super(sheet, "TO-HIT MODIFIERS", 0.02, 0.08, 0.8);
+        super(sheet, 0.02, 0.08, 0.8);
         this.entity = sheet.getEntity();
         setColumnAnchor(0, SVGConstants.SVG_START_VALUE);
         setColumnAnchor(1, SVGConstants.SVG_START_VALUE);
@@ -41,74 +41,74 @@ public class MekVeeToHitMods extends ReferenceTable {
     }
 
     private void addMekAttackerMods() {
-        addRow("Attacker", "", "");
-        addRow("", "Stationary", "+0");
-        addRow("", "Walked", "+1");
-        addRow("", "Ran", "+2");
+        addRow(bundle.getString("attacker"), "", "");
+        addRow("", bundle.getString("stationary"), "+0");
+        addRow("", bundle.getString("walked"), "+1");
+        addRow("", bundle.getString("ran"), "+2");
         if (entity.getOriginalJumpMP() > 0) {
-            addRow("", "Jumped", "+3");
+            addRow("", bundle.getString("jumped"), "+3");
         }
         if (!(entity instanceof QuadMech)) {
-            addRow("", "Prone", "+2");
+            addRow("", bundle.getString("prone"), "+2");
         }
-        addRow("", "Skidding", "+1");
+        addRow("", bundle.getString("skidding"), "+1");
         if (((Mech) entity).getCockpitType() == Mech.COCKPIT_PRIMITIVE_INDUSTRIAL) {
-            addRow("", "Weapons (No fire control)", "+2");
+            addRow("", bundle.getString("noFireCon"), "+2");
         } else if ((((Mech) entity).getCockpitType() == Mech.COCKPIT_PRIMITIVE)
                 || (((Mech) entity).getCockpitType() == Mech.COCKPIT_INDUSTRIAL)
                 || (((Mech) entity).getCockpitType() == Mech.COCKPIT_SUPERHEAVY_INDUSTRIAL)) {
-            addRow("", "Weapons (Basic fire control)", "+1");
+            addRow("", bundle.getString("basicFireCon"), "+1");
         }
     }
 
     private void addVeeAttackerMods() {
-        addRow("Attacker", "", "");
-        addRow("", "Stationary", "+0");
-        addRow("", "Cruised", "+1");
-        addRow("", "Flanked", "+2");
+        addRow(bundle.getString("attacker"), "", "");
+        addRow("", bundle.getString("stationary"), "+0");
+        addRow("", bundle.getString("cruised"), "+1");
+        addRow("", bundle.getString("flanked"), "+2");
         if (entity.getOriginalJumpMP() > 0) {
-            addRow("", "Jumped", "+3");
+            addRow("", bundle.getString("jumped"), "+3");
         }
-        addRow("", "Skidding", "+1");
+        addRow("", bundle.getString("skidding"), "+1");
         if (entity.isSupportVehicle() && !entity.hasWorkingMisc(MiscType.F_ADVANCED_FIRECONTROL)) {
             if (entity.hasWorkingMisc(MiscType.F_BASIC_FIRECONTROL)) {
-                addRow("", "Weapons (Basic fire control)", "+1");
+                addRow("", bundle.getString("basicFireCon"), "+1");
             } else {
-                addRow("", "Weapons (No fire control)", "+2");
+                addRow("", bundle.getString("noFireCon"), "+2");
             }
         }
     }
 
     private void addTerrainMods() {
-        addRow("Terrain", "", "");
-        addRow("", "Light Woods", "+1/hex");
-        addRow("", "Heavy Woods", "+2/hex");
-        addRow("", "Partial Cover", "+1");
+        addRow(bundle.getString("terrain"), "", "");
+        addRow("", bundle.getString("lightWoods"), "+1/hex");
+        addRow("", bundle.getString("heavyWoods"), "+2/hex");
+        addRow("", bundle.getString("partialCover"), "+1");
     }
 
     private void addTargetMods() {
-        addRow("Target", "", "");
-        addRow("", "Prone (adjacent hex)", "-2");
-        addRow("", "Prone (other hex)", "+1");
-        addRow("", "Immobile", "-4");
-        addRow("", "Skidding", "-2");
-        addRow("", "Moved 0-2 hexes", "0");
-        addRow("", "Moved 3-4 hexes", "+1");
-        addRow("", "Moved 5-6 hexes", "+2");
-        addRow("", "Moved 7-9 hexes", "+3");
-        addRow("", "Moved 10-17 hexes", "+4");
-        addRow("", "Moved 18-24 hexes", "+5");
-        addRow("", "Moved 25+ hexes", "+6");
-        addRow("", "Jumped", "+1");
+        addRow(bundle.getString("target"), "", "");
+        addRow("", bundle.getString("proneAdjacent"), "-2");
+        addRow("", bundle.getString("proneOther"), "+1");
+        addRow("", bundle.getString("immobile"), "-4");
+        addRow("", bundle.getString("skidding"), "-2");
+        addRow("", String.format(bundle.getString("movedRange"), 0, 2), "0");
+        addRow("", String.format(bundle.getString("movedRange"), 3, 4), "+1");
+        addRow("", String.format(bundle.getString("movedRange"), 5, 6), "+2");
+        addRow("", String.format(bundle.getString("movedRange"), 7, 9), "+3");
+        addRow("", String.format(bundle.getString("movedRange"), 10, 17), "+4");
+        addRow("", String.format(bundle.getString("movedRange"), 18, 24), "+5");
+        addRow("", String.format(bundle.getString("movedFinal"), 25), "+6");
+        addRow("", bundle.getString("jumped"), "+1");
         if (!(entity instanceof Infantry)) {
-            addRow("", "BattleArmor unit", "+1");
+            addRow("", bundle.getString("baTarget"), "+1");
         }
     }
 
     private void addDamageMods() {
-        addRow("Damage", "", "");
-        addRow("", "Sensor hit", "+2");
-        addRow("", "Shoulder hit", "+4");
-        addRow("", "Arm actuator", "+1");
+        addRow(bundle.getString("damage"), "", "");
+        addRow("", bundle.getString("sensorHit"), "+2");
+        addRow("", bundle.getString("shoulderHit"), "+4");
+        addRow("", bundle.getString("armActuator"), "+1");
     }
 }

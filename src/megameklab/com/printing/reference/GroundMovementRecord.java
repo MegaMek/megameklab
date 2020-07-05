@@ -13,13 +13,11 @@
  */
 package megameklab.com.printing.reference;
 
-import megamek.common.util.EncodeControl;
 import megameklab.com.printing.PrintEntity;
 import megameklab.com.printing.PrintRecordSheet;
 import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
 
-import java.util.ResourceBundle;
 import java.util.StringJoiner;
 
 import static megameklab.com.printing.PrintRecordSheet.svgNS;
@@ -28,12 +26,8 @@ import static megameklab.com.printing.PrintRecordSheet.svgNS;
  * Generates a table for tracking movement of ground units for each turn
  */
 public class GroundMovementRecord extends ReferenceTableBase {
-
-    final private ResourceBundle bundle = ResourceBundle.getBundle(getClass().getName(),
-            new EncodeControl());
-
     public GroundMovementRecord(PrintEntity sheet) {
-        super(sheet, "MOVEMENT RECORD");
+        super(sheet);
     }
 
     @Override

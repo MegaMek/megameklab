@@ -13,6 +13,7 @@
  */
 package megameklab.com.printing.reference;
 
+import megamek.common.util.EncodeControl;
 import megameklab.com.printing.PrintRecordSheet;
 import megameklab.com.util.CConfig;
 import org.apache.batik.util.SVGConstants;
@@ -32,16 +33,23 @@ abstract public class ReferenceTableBase {
     private static final double STROKE_WIDTH = 1.6;
     static final double PADDING = 3.0;
 
+    protected final ResourceBundle bundle = ResourceBundle.getBundle(getClass().getName(),
+            new EncodeControl());
     final PrintRecordSheet sheet;
-    private final String title;
 
     public static double getMargins(PrintRecordSheet sheet) {
         return 15 + sheet.getFontHeight(FONT_SIZE_LABEL) * 2;
     }
 
-    public ReferenceTableBase(PrintRecordSheet sheet, String title) {
-        this.title = title;
+    public ReferenceTableBase(PrintRecordSheet sheet) {
         this.sheet = sheet;
+    }
+
+    /**
+     * @return The text for the title bar
+     */
+    protected final String getTitle() {
+        return bundle.getString("title");
     }
 
     public Element createTable(double x, double y, double width, double height) {
@@ -49,7 +57,7 @@ abstract public class ReferenceTableBase {
         g.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
                 String.format("%s(%f %f)", SVGConstants.SVG_TRANSLATE_VALUE, x, y));
         double labelWidth = width - bevelX * 2 - 6.0f;
-        final Element label = createLabel(2.5f, 3.0f, title, labelWidth);
+        final Element label = createLabel(2.5f, 3.0f, getTitle(), labelWidth);
         final Element shadow = createCellBorder(2.0, 2.0, width - 6.0, height - 6.0,
                 PrintRecordSheet.FILL_SHADOW);
         final Element border = createCellBorder(0.0, 0.0, width - 5.0, height - 5.0,

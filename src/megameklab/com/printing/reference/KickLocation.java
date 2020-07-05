@@ -14,6 +14,7 @@
 package megameklab.com.printing.reference;
 
 import megamek.common.QuadMech;
+import megamek.common.TripodMech;
 import megameklab.com.printing.PrintMech;
 
 /**
@@ -22,10 +23,13 @@ import megameklab.com.printing.PrintMech;
 public class KickLocation extends ReferenceTable {
 
     public KickLocation(PrintMech sheet) {
-        super(sheet, "KICK LOCATION TABLE", 0.1, 0.35, 0.6, 0.85);
-        setHeaders("Die Roll", "LS", "F/R", "RS");
+        super(sheet, 0.1, 0.35, 0.6, 0.85);
+        setHeaders(bundle.getString("dieRoll1d6"), bundle.getString("leftSide"),
+                bundle.getString("frontRear"), bundle.getString("rightSide"));
         if (sheet.getEntity() instanceof QuadMech) {
             addQuadRows();
+        } else if (sheet.getEntity() instanceof TripodMech) {
+            addTripodRows();
         } else {
             addBipedRows();
         }
@@ -39,5 +43,14 @@ public class KickLocation extends ReferenceTable {
     private void addQuadRows() {
         addRow("1-3", "LFL", "RFL/RRL", "RFL");
         addRow("4-6", "LRL", "LFL/LRL", "RRL");
+    }
+
+    private void addTripodRows() {
+        addRow("1", "LL", "LL", "LL");
+        addRow("2", "LL", "LL", "CL");
+        addRow("3", "LL", "CL", "CL");
+        addRow("4", "CL", "CL", "RL");
+        addRow("5", "CL", "RL", "RL");
+        addRow("6", "RL", "RL", "RL");
     }
 }

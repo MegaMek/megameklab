@@ -21,13 +21,14 @@ import megameklab.com.printing.PrintMech;
 public class MekFallTable extends ReferenceTable {
 
     public MekFallTable(PrintMech sheet) {
-        super(sheet, "FACING AFTER FALL", 0.1, 0.45, 0.8);
-        setHeaders("Die Roll\n(1D6)", "New Facing", "Hit Location");
-        addRow("1", "Same Direction", "Front");
-        addRow("2", "1 Hexside Right", "Right Side");
-        addRow("3", "2 Hexsides Right", "Right Side");
-        addRow("4", "Opposite Direction", "Rear");
-        addRow("5", "2 Hexsides Left", "Left Side");
-        addRow("6", "1 Hexside Left", "Left Side");
+        super(sheet, 0.1, 0.45, 0.8);
+        setHeaders(bundle.getString("dieRoll1d6"), bundle.getString("newFacing"),
+                bundle.getString("hitLocation"));
+        addRow("1", bundle.getString("sameDirection"), bundle.getString("front"));
+        addRow("2", bundle.getString("1Right"), bundle.getString("rightSide"));
+        addRow("3", bundle.getString("2Right"), bundle.getString("rightSide"));
+        addRow("4", bundle.getString("opposite"), bundle.getString("rear"));
+        addRow("5", bundle.getString("2Left"), bundle.getString("leftSide"));
+        addRow("6", bundle.getString("1Left"), bundle.getString("leftSide"));
     }
 }

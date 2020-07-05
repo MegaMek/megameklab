@@ -22,8 +22,9 @@ import megameklab.com.printing.PrintMech;
 public class PunchLocation extends ReferenceTable {
 
     public PunchLocation(PrintMech sheet) {
-        super(sheet, "PUNCH LOCATION TABLE", 0.1, 0.35, 0.6, 0.85);
-        setHeaders("Die Roll", "LS", "F/R", "RS");
+        super(sheet, 0.1, 0.35, 0.6, 0.85);
+        setHeaders(bundle.getString("dieRoll1d6"), bundle.getString("leftSide"),
+                bundle.getString("frontRear"), bundle.getString("rightSide"));
         if (sheet.getEntity() instanceof QuadMech) {
             addQuadRows();
         } else {

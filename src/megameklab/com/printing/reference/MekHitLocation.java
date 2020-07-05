@@ -17,16 +17,15 @@ import megamek.common.QuadMech;
 import megamek.common.TripodMech;
 import megameklab.com.printing.PrintMech;
 
-import java.util.Arrays;
-
 /**
  * Hit locations table for Meks
  */
 public class MekHitLocation extends ReferenceTable {
 
     public MekHitLocation(PrintMech sheet) {
-        super(sheet, "HIT LOCATION TABLE", 0.1, 0.35, 0.6, 0.85);
-        setHeaders("Die Roll\n(2D6)", "LS", "F/R", "RS");
+        super(sheet, 0.1, 0.35, 0.6, 0.85);
+        setHeaders(bundle.getString("dieRoll2d6"), bundle.getString("leftSide"),
+                bundle.getString("frontRear"), bundle.getString("rightSide"));
         if (sheet.getEntity() instanceof TripodMech) {
             addTripodRows();
         } else if (sheet.getEntity() instanceof QuadMech) {
@@ -48,7 +47,7 @@ public class MekHitLocation extends ReferenceTable {
         addRow("10", "RA", "LA", "LA");
         addRow("11", "RL", "LA", "LL");
         addRow("12", "HD", "HD", "HD");
-        addNote("*A result of 2 may inflict a critical hit.");
+        addNote(bundle.getString("tacNote"));
     }
 
     private void addQuadRows() {
@@ -63,7 +62,7 @@ public class MekHitLocation extends ReferenceTable {
         addRow("10", "RFL", "LFL", "LFL");
         addRow("11", "RRL", "LFL", "LRL");
         addRow("12", "HD", "HD", "HD");
-        addNote("*A result of 2 may inflict a critical hit.");
+        addNote(bundle.getString("tacNote"));
     }
 
     private void addTripodRows() {
@@ -78,7 +77,7 @@ public class MekHitLocation extends ReferenceTable {
         addRow("10", "RA", "LA", "LA");
         addRow("11", "Leg (+1)†", "LA", "Leg (-1)†");
         addRow("12", "HD", "HD", "HD");
-        addNote("*A result of 2 may inflict a critical hit.");
-        addNote("†Roll 1d6 and apply modifier:\n 0-2: RL, 3-4: CL, 5-7: LL");
+        addNote(bundle.getString("tacNote"));
+        addNote(bundle.getString("tripodLegNote"));
     }
 }

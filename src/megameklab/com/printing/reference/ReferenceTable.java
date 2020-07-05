@@ -24,7 +24,7 @@ import static megameklab.com.printing.PrintRecordSheet.svgNS;
 /**
  * Base class for reference tables that format contents into a grid, with optional footnotes
  */
-public class ReferenceTable extends ReferenceTableBase {
+public abstract class ReferenceTable extends ReferenceTableBase {
 
     private String defaultAnchor = SVGConstants.SVG_MIDDLE_VALUE;
 
@@ -35,8 +35,8 @@ public class ReferenceTable extends ReferenceTableBase {
     private final Map<Integer, String> anchor;
     private final Map<Integer, String> fontWeight;
 
-    public ReferenceTable(PrintRecordSheet sheet, String title) {
-        super(sheet, title);
+    public ReferenceTable(PrintRecordSheet sheet) {
+        super(sheet);
         this.colOffsets = new ArrayList<>();
         this.headers = new ArrayList<>();
         this.data = new ArrayList<>();
@@ -45,8 +45,8 @@ public class ReferenceTable extends ReferenceTableBase {
         this.fontWeight = new HashMap<>();
     }
 
-    public ReferenceTable(PrintRecordSheet sheet, String title, double... colOffsets) {
-        this(sheet, title);
+    public ReferenceTable(PrintRecordSheet sheet, double... colOffsets) {
+        this(sheet);
         for (double offset : colOffsets) {
             this.colOffsets.add(offset);
         }
