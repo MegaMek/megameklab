@@ -163,7 +163,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
             drawEraIcon();
         }
         drawFluffImage();
-        if (options.showReferenceCharts()) {
+        if (includeReferenceCharts()) {
             addReferenceCharts(pageFormat);
         }
     }

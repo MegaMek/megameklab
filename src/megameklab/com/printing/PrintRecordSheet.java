@@ -277,7 +277,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             svgGenerator = new SVGGraphics2D(context, false);
             double ratio = Math.min(pageFormat.getImageableWidth() / (options.getPaperSize().pxWidth - 36),
                     pageFormat.getPaper().getImageableHeight() / (options.getPaperSize().pxHeight - 36));
-            if (options.showReferenceCharts()) {
+            if (includeReferenceCharts()) {
                 ratio *= TABLE_RATIO;
             }
             Element svgRoot = svgDocument.getDocumentElement();
@@ -821,6 +821,16 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             MegaMekLab.getLogger().log(PrintRecordSheet.class, METHOD_NAME, LogLevel.ERROR,
                     "Error reading fluff image file: " + imageFile.getPath());
         }
-        
+    }
+
+    /**
+     * Used to determine whether to scale the record sheet to make room for charts. This
+     * depends both on whether the option is selected and on whether the sheet supports
+     * reference charts.
+     *
+     * @return Whether to include reference tables
+     */
+    protected boolean includeReferenceCharts() {
+        return false;
     }
 }

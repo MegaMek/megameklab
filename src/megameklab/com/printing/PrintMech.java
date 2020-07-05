@@ -790,6 +790,11 @@ public class PrintMech extends PrintEntity {
     }
 
     @Override
+    protected boolean includeReferenceCharts() {
+        return options.showReferenceCharts();
+    }
+
+    @Override
     protected List<ReferenceTable> getRightSideReferenceTables() {
         List<ReferenceTable> list = new ArrayList<>();
         list.add(new MekHitLocation(this));
