@@ -20,6 +20,7 @@ import java.text.NumberFormat;
 import java.util.*;
 
 import megamek.common.*;
+import megameklab.com.printing.reference.ReferenceTable;
 import org.apache.batik.anim.dom.SVGGraphicsElement;
 import org.apache.batik.anim.dom.SVGLocatableSupport;
 import org.apache.batik.util.SVGConstants;
@@ -63,7 +64,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
         super(startPage, options);
     }
 
-    protected abstract Entity getEntity();
+    public abstract Entity getEntity();
     
     /**
      * When printing from a MUL the pilot data is filled in unless the option has been disabled. This
@@ -162,6 +163,9 @@ public abstract class PrintEntity extends PrintRecordSheet {
             drawEraIcon();
         }
         drawFluffImage();
+        if (includeReferenceCharts()) {
+            addReferenceCharts(pageFormat);
+        }
     }
     
     protected void writeTextFields() {
@@ -406,6 +410,26 @@ public abstract class PrintEntity extends PrintRecordSheet {
 
     protected void drawFluffImage() {
 
+    }
+
+    List<ReferenceTable> getRightSideReferenceTables() {
+        return Collections.emptyList();
+    }
+
+    protected void addReferenceCharts(PageFormat pageFormat) {
+        List<ReferenceTable> rightSide = getRightSideReferenceTables();
+        double lines = rightSide.stream().mapToDouble(ReferenceTable::lineCount).sum();
+
+        double ypos = pageFormat.getImageableY();
+        double margin = ReferenceTable.getMargins(this);
+        for (ReferenceTable table : rightSide) {
+            double height = (pageFormat.getImageableHeight() - margin * rightSide.size())
+                    * table.lineCount() / lines + margin;
+            getSVGDocument().getDocumentElement().appendChild(
+                    table.createTable(pageFormat.getImageableX() + pageFormat.getImageableWidth() * 0.8 + 3.0,
+                            ypos, pageFormat.getImageableWidth() * 0.2, height));
+            ypos += height;
+        }
     }
     
     private void drawEraIcon() {

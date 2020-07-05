@@ -64,7 +64,7 @@ public class PrintProtomech extends PrintEntity {
     }
 
     @Override
-    protected Entity getEntity() {
+    public Entity getEntity() {
         return proto;
     }
 

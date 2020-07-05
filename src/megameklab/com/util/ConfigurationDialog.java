@@ -64,6 +64,7 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
     private final JCheckBox chkColor = new JCheckBox();
     private final JComboBox<String> cbFont = new JComboBox<>();
     private final JTextArea txtFontDisplay = new JTextArea();
+    private final JCheckBox chkShowReferenceTables = new JCheckBox();
     private final JCheckBox chkShowQuirks = new JCheckBox();
     private final JCheckBox chkShowPilotData = new JCheckBox();
     private final JCheckBox chkShowEraIcon = new JCheckBox();
@@ -246,6 +247,14 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
 
         gbc.gridx = 0;
         gbc.gridy++;
+        chkShowReferenceTables.setText(resourceMap.getString("ConfigurationDialog.chkShowReferenceTables.text"));
+        chkShowReferenceTables.setToolTipText(resourceMap.getString("ConfigurationDialog.chkShowReferenceTables.tooltip"));
+        chkShowReferenceTables.setSelected(CConfig.getBooleanParam(CConfig.RS_REFERENCE));
+        panPrinting.add(chkShowReferenceTables, gbc);
+        gbc.gridy++;
+
+        gbc.gridx = 0;
+        gbc.gridy++;
         chkShowQuirks.setText(resourceMap.getString("ConfigurationDialog.chkShowQuirks.text"));
         chkShowQuirks.setToolTipText(resourceMap.getString("ConfigurationDialog.chkShowQuirks.tooltip"));
         chkShowQuirks.setSelected(CConfig.getBooleanParam(CConfig.RS_SHOW_QUIRKS));
@@ -347,6 +356,7 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
         CConfig.setParam(CConfig.RS_FONT, (String) cbFont.getSelectedItem());
         UnitUtil.loadFonts();
         CConfig.setParam(CConfig.RS_COLOR, Boolean.toString(chkColor.isSelected()));
+        CConfig.setParam(CConfig.RS_REFERENCE, Boolean.toString(chkShowReferenceTables.isSelected()));
         CConfig.setParam(CConfig.RS_SHOW_QUIRKS, Boolean.toString(chkShowQuirks.isSelected()));
         CConfig.setParam(CConfig.RS_SHOW_PILOT_DATA, Boolean.toString(chkShowPilotData.isSelected()));
         CConfig.setParam(CConfig.RS_SHOW_ERA, Boolean.toString(chkShowEraIcon.isSelected()));

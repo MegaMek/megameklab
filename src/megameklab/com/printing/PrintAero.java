@@ -111,7 +111,7 @@ public class PrintAero extends PrintEntity {
     }
 
     @Override
-    protected Entity getEntity() {
+    public Entity getEntity() {
         return aero;
     }
 

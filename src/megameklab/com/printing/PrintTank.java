@@ -58,7 +58,7 @@ public class PrintTank extends PrintEntity {
     }
 
     @Override
-    protected Entity getEntity() {
+    public Entity getEntity() {
         return tank;
     }
 

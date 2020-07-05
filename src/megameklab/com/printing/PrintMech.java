@@ -18,7 +18,10 @@ import java.awt.print.PageFormat;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
+import megameklab.com.printing.reference.*;
 import org.apache.batik.anim.dom.SVGDOMImplementation;
 import org.apache.batik.dom.util.SAXDocumentFactory;
 import org.apache.batik.util.SVGConstants;
@@ -144,7 +147,7 @@ public class PrintMech extends PrintEntity {
     }
     
     @Override
-    protected Entity getEntity() {
+    public Entity getEntity() {
         return mech;
     }
     
@@ -784,5 +787,35 @@ public class PrintMech extends PrintEntity {
             buffer.setLength(buffer.length() - 1);
         }
         buffer.trimToSize();
+    }
+
+    @Override
+    protected boolean includeReferenceCharts() {
+        return options.showReferenceCharts();
+    }
+
+    @Override
+    protected List<ReferenceTable> getRightSideReferenceTables() {
+        List<ReferenceTable> list = new ArrayList<>();
+        list.add(new MekHitLocation(this));
+        list.add(new MekVeeToHitMods(this));
+        list.add(new PhysicalAttacks(this));
+        list.add(new PunchLocation(this));
+        list.add(new KickLocation(this));
+        list.add(new MekFallTable(this));
+        ClusterHitsTable table = new ClusterHitsTable(this);
+        if (table.required()) {
+            list.add(table);
+        }
+        return list;
+    }
+
+    @Override
+    protected void addReferenceCharts(PageFormat pageFormat) {
+        super.addReferenceCharts(pageFormat);
+        GroundMovementRecord table = new GroundMovementRecord(this);
+        getSVGDocument().getDocumentElement().appendChild(table.createTable(pageFormat.getImageableX(),
+                pageFormat.getImageableY() + pageFormat.getImageableHeight() * TABLE_RATIO + 3.0,
+                pageFormat.getImageableWidth() * TABLE_RATIO, pageFormat.getImageableHeight() * 0.2 - 3.0));
     }
 }

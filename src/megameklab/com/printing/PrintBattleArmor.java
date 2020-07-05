@@ -65,7 +65,7 @@ public class PrintBattleArmor extends PrintEntity {
 
 
     @Override
-    protected Entity getEntity() {
+    public Entity getEntity() {
         return battleArmor;
     }
 
