@@ -18,6 +18,9 @@ import megamek.common.annotations.Nullable;
 import megamek.common.logging.LogLevel;
 import megameklab.com.MegaMekLab;
 import megameklab.com.util.CConfig;
+import org.apache.avalon.framework.configuration.Configuration;
+import org.apache.avalon.framework.configuration.ConfigurationException;
+import org.apache.avalon.framework.configuration.DefaultConfigurationBuilder;
 import org.apache.batik.anim.dom.SVGDOMImplementation;
 import org.apache.batik.anim.dom.SVGLocatableSupport;
 import org.apache.batik.bridge.BridgeContext;
@@ -25,9 +28,14 @@ import org.apache.batik.bridge.GVTBuilder;
 import org.apache.batik.bridge.UserAgentAdapter;
 import org.apache.batik.dom.util.SAXDocumentFactory;
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.svggen.SVGGeneratorContext;
 import org.apache.batik.svggen.SVGGraphics2D;
+import org.apache.batik.transcoder.TranscoderException;
+import org.apache.batik.transcoder.TranscoderInput;
+import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLResourceDescriptor;
+import org.apache.fop.svg.PDFTranscoder;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -36,6 +44,7 @@ import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.svg.SVGRectElement;
 import org.w3c.dom.xpath.XPathEvaluator;
 import org.w3c.dom.xpath.XPathResult;
+import org.xml.sax.SAXException;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -43,7 +52,6 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.RenderedImage;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
-import java.awt.print.PrinterException;
 import java.io.*;
 import java.net.URLConnection;
 import java.util.*;
@@ -55,17 +63,19 @@ import java.util.*;
  *
  */
 public abstract class PrintRecordSheet implements Printable, IdConstants {
-    
-    final static String DEFAULT_TYPEFACE = "Eurostile";
-    final static float DEFAULT_PIP_SIZE  = 0.38f;
-    final static float FONT_SIZE_LARGE   = 7.2f;
-    final static float FONT_SIZE_MEDIUM  = 6.76f;
-    final static float FONT_SIZE_SMALL   = 6.2f;
-    final static float FONT_SIZE_VSMALL  = 5.8f;
-    final static String FILL_BLACK = "#231f20";
-    final static String FILL_GREY = "#3f3f3f";
-    final static String FILL_SHADOW = "#c8c7c7";
-    final static String FILL_WHITE = "#ffffff";
+
+    public final static String DEFAULT_TYPEFACE = "Eurostile";
+    public final static float DEFAULT_PIP_SIZE  = 0.38f;
+    public final static float FONT_SIZE_LARGE   = 7.2f;
+    public final static float FONT_SIZE_MEDIUM  = 6.76f;
+    public final static float FONT_SIZE_SMALL   = 6.2f;
+    public final static float FONT_SIZE_VSMALL  = 5.8f;
+    public final static String FILL_BLACK = "#231f20";
+    public final static String FILL_GREY = "#3f3f3f";
+    public final static String FILL_SHADOW = "#c8c7c7";
+    public final static String FILL_WHITE = "#ffffff";
+    /** Scale factor for record sheets with reference tables */
+    public final static double TABLE_RATIO = 0.8;
     
     enum PipType {
         CIRCLE, DIAMOND;
@@ -107,7 +117,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         return firstPage;
     }
     
-    protected final Document getSVGDocument() {
+    public final Document getSVGDocument() {
         return svgDocument;
     }
     
@@ -150,16 +160,6 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     private void assignFonts() {
         typeface = CConfig.getParam(CConfig.RS_FONT, DEFAULT_TYPEFACE);
         Font font = Font.decode(typeface);
-        // If the font is not installed, use system default sans
-        if (null == font) {
-            typeface = Font.SANS_SERIF;
-            font = Font.decode(typeface);
-        }
-        // If that doesn't work, get the default dialog font
-        if (null == font) {
-            font = Font.decode(null);
-            typeface = font.getName();
-        }
         normalFont = font.deriveFont(Font.PLAIN, 8);
         boldFont = font.deriveFont(Font.BOLD, 8);
     }
@@ -187,16 +187,34 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         }
     }
 
+    private void subColorElements() {
+        Element element = svgDocument.getElementById(RS_TEMPLATE);
+        if (element != null) {
+            String style = element.getAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE);
+            if (style != null) {
+                for (String field : style.split(";")) {
+                    if (field.startsWith(MML_COLOR_ELEMENTS + ":")) {
+                        String[] ids = field.substring(field.indexOf(":") + 1).split(",");
+                        for (String id : ids) {
+                            hideElement(id + "Color", !options.useColor());
+                            hideElement(id + "BW", options.useColor());
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     /**
      * Creates a {@link Document} from an svg image file
      *
      * @param filename The name of the SVG file
      * @return         The document object
      */
-    static Document loadSVG(String filename) {
-        final String METHOD_NAME = "loadSVG(String)";
+    static Document loadSVG(String dirName, String filename) {
+        final String METHOD_NAME = "loadSVG(String, String)";
 
-        File f = new File("data/images/recordsheets/", filename);
+        File f = new File(dirName, filename);
         Document svgDocument = null;
         try {
             InputStream is = new FileInputStream(f);
@@ -246,20 +264,37 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      * @return            An SVG document for one page of the print job
      */
     @Nullable Document loadTemplate(int pageIndex, PageFormat pageFormat) {
-        return loadSVG(getSVGFileName(pageIndex - firstPage));
+        return loadSVG(getSVGDirectoryName(),
+                getSVGFileName(pageIndex - firstPage));
     }
 
     void createDocument(int pageIndex, PageFormat pageFormat) {
         svgDocument = loadTemplate(pageIndex, pageFormat);
         if (null != svgDocument) {
             subFonts((SVGDocument) svgDocument);
-            svgGenerator = new SVGGraphics2D(svgDocument);
+            subColorElements();
+            SVGGeneratorContext context = SVGGeneratorContext.createDefault(svgDocument);
+            svgGenerator = new SVGGraphics2D(context, false);
+            double ratio = Math.min(pageFormat.getImageableWidth() / (options.getPaperSize().pxWidth - 36),
+                    pageFormat.getPaper().getImageableHeight() / (options.getPaperSize().pxHeight - 36));
+            if (includeReferenceCharts()) {
+                ratio *= TABLE_RATIO;
+            }
+            Element svgRoot = svgDocument.getDocumentElement();
+            svgRoot.setAttributeNS(null, SVGConstants.SVG_WIDTH_ATTRIBUTE, String.valueOf(pageFormat.getWidth()));
+            svgRoot.setAttributeNS(null, SVGConstants.SVG_HEIGHT_ATTRIBUTE, String.valueOf(pageFormat.getHeight()));
+            Element g = svgDocument.getElementById(RS_TEMPLATE);
+            if (g != null) {
+                g.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
+                        String.format("%s(%f 0 0 %f %f %f)", SVGConstants.SVG_MATRIX_VALUE,
+                                ratio, ratio, pageFormat.getImageableX(), pageFormat.getImageableY()));
+            }
             processImage(pageIndex - firstPage, pageFormat);
         }
     }
 
     @Override
-    public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
+    public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) {
         final String METHOD_NAME = "print(Graphics,PageFormat,int)";
         
         Graphics2D g2d = (Graphics2D) graphics;
@@ -276,10 +311,24 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-             */
-
+            */
         }
         return Printable.PAGE_EXISTS;
+    }
+
+    public InputStream exportPDF(int pageNumber, PageFormat pageFormat) throws TranscoderException, SAXException, IOException, ConfigurationException {
+        createDocument(pageNumber + firstPage, pageFormat);
+        DefaultConfigurationBuilder cfgBuilder = new DefaultConfigurationBuilder();
+        Configuration cfg = cfgBuilder.build(getClass().getResourceAsStream("fop-config.xml"));
+        PDFTranscoder transcoder = new PDFTranscoder();
+        transcoder.configure(cfg);
+        transcoder.addTranscodingHint(PDFTranscoder.KEY_AUTO_FONTS, false);
+        TranscoderInput input = new TranscoderInput(getSVGDocument());
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        TranscoderOutput transOutput = new TranscoderOutput(output);
+        transcoder.transcode(input, transOutput);
+
+        return new ByteArrayInputStream(output.toByteArray());
     }
     
     protected GraphicsNode build() {
@@ -315,7 +364,17 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      * 
      * @param pageNum    Indicates which page of multi-page sheets to print. The first page is 0.
      */
-    protected abstract void processImage(int pageNum, PageFormat pageFormat);
+    protected void processImage(int pageNum, PageFormat pageFormat) {
+        Element element = getSVGDocument().getElementById(COPYRIGHT);
+        if (null != element) {
+            element.setTextContent(String.format(element.getTextContent(),
+                    Calendar.getInstance().get(Calendar.YEAR)));
+        }
+    }
+
+    String getSVGDirectoryName() {
+        return "data/images/recordsheets/" + options.getPaperSize().dirName;
+    }
 
     /**
      * @param pageNumber  The page number in the current record sheet, where the first page is numberd zero.
@@ -530,19 +589,26 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     protected int addMultilineTextElement(Element canvas, double x, double y, double width, double lineHeight,
             String text, float fontSize, String anchor, String weight, String fill, char delimiter) {
         int lines = 0;
+        // The index of the character after the most recent delimiter found. Everything in text
+        // up to pos will fit in the available space.
         int pos = 0;
         while (text.length() > 0) {
+            // If the remaining text fits, add a line and exit.
             if (getTextLength(text, fontSize) <= width) {
                 addTextElement(canvas, x, y, text, fontSize, anchor, weight, fill);
                 lines++;
                 return lines;
             }
+            // Check for another delimiter after the last one; we might be able to fit more text on the line.
             int index = text.substring(pos).indexOf(delimiter);
+            // If the delimiter doesn't exist in the text, add it as is.
             if ((index < 0) && (pos == 0)) {
                 addTextElement(canvas, x, y, text, fontSize, anchor, weight, fill);
                 lines++;
                 return lines;
             }
+            // If there are no more delimiters in the text, or adding the next section after the previous
+            // delimiter that was found, add the text up to pos.
             if ((index < 0)
                     || ((getTextLength(text.substring(0, pos + index), fontSize) > width)
                     && (pos > 0))) {
@@ -551,7 +617,9 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
                 y += lineHeight;
                 text = text.substring(pos);
                 pos = 0;
-            } else if (index > 0) {
+            } else {
+                // Otherwise we know that the text up to index will fit so we update pos to the first character
+                // after the delimiter and keep checking.
                 pos += index + 1;
             }
         }
@@ -567,7 +635,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     private final static String FMT_LINE = " l %f %f";
     
     protected Element createPip(double x, double y, double radius, double strokeWidth) {
-        return createPip(x, y, radius, strokeWidth, PipType.CIRCLE);
+        return createPip(x, y, radius, strokeWidth, PipType.CIRCLE, FILL_WHITE);
     }
     /**
      * Approximates a circle using four Bezier curves.
@@ -578,9 +646,9 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      * @return       A Path describing the circle
      */
     protected Element createPip(double x, double y, double radius, double strokeWidth,
-            PipType type) {
+            PipType type, String fill) {
         Element path = svgDocument.createElementNS(svgNS, SVGConstants.SVG_PATH_TAG);
-        path.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, FILL_WHITE);
+        path.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, fill);
         path.setAttributeNS(null, SVGConstants.SVG_STROKE_ATTRIBUTE, FILL_BLACK);
         path.setAttributeNS(null, SVGConstants.SVG_STROKE_WIDTH_ATTRIBUTE, Double.toString(strokeWidth));
         
@@ -753,6 +821,16 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             MegaMekLab.getLogger().log(PrintRecordSheet.class, METHOD_NAME, LogLevel.ERROR,
                     "Error reading fluff image file: " + imageFile.getPath());
         }
-        
+    }
+
+    /**
+     * Used to determine whether to scale the record sheet to make room for charts. This
+     * depends both on whether the option is selected and on whether the sheet supports
+     * reference charts.
+     *
+     * @return Whether to include reference tables
+     */
+    protected boolean includeReferenceCharts() {
+        return false;
     }
 }

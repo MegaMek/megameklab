@@ -1,5 +1,5 @@
 /*
- * MegaMekLab - Copyright (C) 2008
+ * MegaMekLab - Copyright (C) 2008-2020 The MegaMek Team
  *
  * Original author - jtighe (torren@users.sourceforge.net)
  *
@@ -17,25 +17,24 @@
 package megameklab.com.util;
 
 import java.awt.Component;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
-import javax.swing.JLabel;
-import javax.swing.JTable;
-import javax.swing.SwingConstants;
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 
-import megamek.common.AmmoType;
-import megamek.common.BattleArmor;
-import megamek.common.Entity;
-import megamek.common.Mech;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
-import megamek.common.Tank;
-import megamek.common.WeaponType;
+import megamek.common.*;
+import megamek.common.verifier.BayData;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestProtomech;
+import megameklab.com.ui.tabs.TransportTab;
 
 public class CriticalTableModel extends AbstractTableModel {
 
@@ -45,7 +44,7 @@ public class CriticalTableModel extends AbstractTableModel {
     private static final long serialVersionUID = 7615555055651822051L;
 
     private Mounted[] sortedEquipment = {};
-    public Vector<Mounted> crits = new Vector<Mounted>();
+    public List<Mounted> crits = new ArrayList<>();
     public Entity unit;
 
     public final static int NAME = 0;
@@ -53,14 +52,15 @@ public class CriticalTableModel extends AbstractTableModel {
     public final static int CRITS = 2;
     public final static int HEAT = 3;
     public final static int LOCATION = 4;
-    public final static int EQUIPMENT = 5;
+    public final static int SIZE = 5;
+    public final static int EQUIPMENT = 6;
 
     public final static int EQUIPMENTTABLE = 0;
     public final static int WEAPONTABLE = 1;
     public final static int BUILDTABLE = 2;
 
-    private int tableType = EQUIPMENTTABLE;
-    private boolean kgStandard = false;
+    private int tableType;
+    private boolean kgStandard;
 
     private String[] columnNames = { "Name", "Tons", "Crits"};
 
@@ -77,9 +77,9 @@ public class CriticalTableModel extends AbstractTableModel {
 
         if (tableType == WEAPONTABLE) {
             longValues = new String[] { "XXXXXXXXX", "XXXXXXXXX", "XXXXXXXXX",
-                    "XXXXXXXXX", "XXX" };
+                    "XXXXXXXXX", "XXX", "XXXX" };
             columnNames = new String[] { "Name", "Tons", "Slots", "Heat", 
-                    "Loc" };
+                    "Loc", "Size" };
         }
         
         if (kgStandard) {
@@ -133,7 +133,8 @@ public class CriticalTableModel extends AbstractTableModel {
 
     @Override
     public boolean isCellEditable(int row, int col) {
-        return false;
+        return (col == SIZE) && (row >= 0) && (row < sortedEquipment.length)
+                && sortedEquipment[row].getType().isVariableSize();
     }
 
     @Override
@@ -186,12 +187,12 @@ public class CriticalTableModel extends AbstractTableModel {
             if (tableType == BUILDTABLE) {
                 return UnitUtil.getCritsUsed(unit, crit.getType());
             }
-            return crit.getType().getCriticals(unit);
+            return crit.getCriticals();
         case EQUIPMENT:
             return crit;
         case HEAT:
             if (crit.getType() instanceof WeaponType) {
-                return ((WeaponType) crit.getType()).getHeat();
+                return crit.getType().getHeat();
             }
             return 0;
         case LOCATION:
@@ -201,8 +202,32 @@ public class CriticalTableModel extends AbstractTableModel {
             } else {
                 return unit.getLocationAbbr(crit.getLocation());
             }
+        case SIZE:
+            if (crit.getType().isVariableTonnage()) {
+                return NumberFormat.getInstance().format(crit.getSize());
+            } else {
+                return null;
+            }
         }
         return "";
+    }
+
+    @Override
+    public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+        if ((columnIndex == SIZE) && (rowIndex >= 0) && (rowIndex < getRowCount())) {
+            Mounted crit = sortedEquipment[rowIndex];
+            double newSize = Double.parseDouble(aValue.toString());
+            double step = crit.getType().variableStepSize();
+            newSize = Math.max(Math.floor(newSize / step) * step, step);
+            if ((crit.getType().variableMaxSize() != null) && (newSize > crit.getType().variableMaxSize())) {
+                newSize = crit.getType().variableMaxSize();
+            }
+            if (crit.getSize() == newSize) {
+                return;
+            }
+            UnitUtil.resizeMount(crit, newSize);
+            fireTableDataChanged();
+        }
     }
 
     public CriticalTableModel.Renderer getRenderer() {
@@ -286,12 +311,50 @@ public class CriticalTableModel extends AbstractTableModel {
         }
     }
 
+    /**
+     * Cell editor for the size column
+     */
+    public class SpinnerCellEditor extends AbstractCellEditor implements TableCellEditor, ChangeListener {
+
+        private static final long serialVersionUID = 1949617773287631727L;
+
+        private final JSpinner spinner = new JSpinner();
+        private int rowIndex = 0;
+
+        public SpinnerCellEditor() {
+            spinner.addChangeListener(this);
+        }
+
+        @Override
+        public Object getCellEditorValue() {
+            return spinner.getValue();
+        }
+
+        @Override
+        public void stateChanged(ChangeEvent e) {
+            setValueAt(getCellEditorValue(), rowIndex, SIZE);
+        }
+
+        @Override
+        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row,
+                                                     int column) {
+            this.rowIndex = row;
+            Mounted mounted = (Mounted) getValueAt(row, EQUIPMENT);
+            spinner.removeChangeListener(this);
+            spinner.setModel(new SpinnerNumberModel(Double.valueOf(mounted.getSize()),
+                    mounted.getType().variableStepSize(), mounted.getType().variableMaxSize(),
+                    mounted.getType().variableStepSize()));
+            spinner.addChangeListener(this);
+            return spinner;
+        }
+    }
+
     public void addCrit(Mounted mount) {
         crits.add(mount);
     }
 
     public void removeCrit(int location) {
-        crits.removeElementAt(location);
+        crits.remove(location);
     }
     
     /**
@@ -302,13 +365,13 @@ public class CriticalTableModel extends AbstractTableModel {
     public void removeCrits(int[] locs) {
         Vector<Mounted> mounts = new Vector<>(locs.length);
         for (Integer l : locs){
-            mounts.add(crits.elementAt(l));
+            mounts.add(crits.get(l));
         }
         crits.removeAll(mounts);
     }
 
     public void removeAllCrits() {
-        crits.removeAllElements();
+        crits.clear();
     }
 
     public void removeMounted(int row) {
@@ -316,7 +379,7 @@ public class CriticalTableModel extends AbstractTableModel {
                 (Mounted) getValueAt(row, CriticalTableModel.EQUIPMENT));
     }
 
-    public Vector<Mounted> getCrits() {
+    public List<Mounted> getCrits() {
         return crits;
     }
 

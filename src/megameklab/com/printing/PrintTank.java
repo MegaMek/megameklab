@@ -58,20 +58,8 @@ public class PrintTank extends PrintEntity {
     }
 
     @Override
-    protected Entity getEntity() {
+    public Entity getEntity() {
         return tank;
-    }
-
-    @Override
-    protected boolean isCenterlineLocation(int loc) {
-        if (tank.isSuperHeavy()) {
-            return loc == SuperHeavyTank.LOC_FRONT
-                    || loc == SuperHeavyTank.LOC_BODY
-                    || loc == SuperHeavyTank.LOC_REAR;
-        }
-        return loc == Tank.LOC_FRONT
-                || loc == Tank.LOC_BODY
-                || loc == Tank.LOC_REAR;
     }
 
     @Override

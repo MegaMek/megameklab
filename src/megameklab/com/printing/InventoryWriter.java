@@ -210,6 +210,9 @@ public class InventoryWriter {
 
     private void parseEquipment() {
         for (Mounted m : sheet.getEntity().getEquipment()) {
+            if (m.isWeaponGroup()) {
+                continue;
+            }
             if ((m.getType() instanceof AmmoType)
                     && (((AmmoType) m.getType()).getAmmoType() != AmmoType.T_COOLANT_POD)) {
                 if (m.getLocation() != Entity.LOC_NONE) {
@@ -218,6 +221,11 @@ public class InventoryWriter {
                     String munition = ((AmmoType) m.getType()).getSubMunitionName().replace("(Clan) ", "");
                     shortName = shortName.replace(munition, "");
                     ammo.merge(shortName.trim(), m.getBaseShotsLeft(), Integer::sum);
+                } else if ((sheet.getEntity() instanceof Protomech)
+                        && (((AmmoType) m.getType()).getAmmoType() == AmmoType.T_IATM)) {
+                    // Bit of an ugly hack to get fusillade ammo to show up and identify as fusillade
+                    // instead of iATM3
+                    ammo.merge("Fusillade", m.getBaseShotsLeft(), Integer::sum);
                 }
                 continue;
             }
@@ -316,23 +324,8 @@ public class InventoryWriter {
         return viewY + sheet.getFontHeight(FONT_SIZE_MEDIUM) * 1.2;
     }
 
-    public int equipmentLines() {
-        return equipment.stream().mapToInt(StandardInventoryEntry::nRows).sum();
-    }
-
     public int capitalBayLines() {
         return capitalBays.stream().mapToInt(WeaponBayInventoryEntry::nRows).sum();
-    }
-
-    /**
-     * Calculates the number of additional lines required to print the standard scale inventory block due
-     * to wrapping long names to another line.
-     *
-     * @param fontSize The font size used to print
-     * @return         The number of extra lines required by the table
-     */
-    public int extraEquipmentLines(float fontSize) {
-        return extraLines(equipment, colX, fontSize, 1);
     }
 
     /**
@@ -394,6 +387,10 @@ public class InventoryWriter {
         ypos = printEquipmentTable(equipment, ypos, metrics[0], metrics[1]);
         if (sheet.getEntity() instanceof SmallCraft && !transportBays.isEmpty()) {
             printBayInfo(metrics[0], metrics[1], ypos);
+        }
+        if (sheet.showHeatProfile()) {
+            sheet.addTextElement(canvas, viewX + viewWidth * 0.025, ypos, sheet.heatProfileText(),
+                    FONT_SIZE_MEDIUM, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
         }
         writeFooterBlock(metrics[0], metrics[1]);
     }
@@ -574,6 +571,9 @@ public class InventoryWriter {
             lines += transportBays.size() + 1; // add extra for header
         }
         lines += footerLines(fontSize);
+        if (sheet.showHeatProfile()) {
+            lines++;
+        }
         return lines;
     }
 
@@ -621,8 +621,8 @@ public class InventoryWriter {
     private double printEquipmentTable(List<? extends InventoryEntry> list,
                                        double ypos, float fontSize, double lineHeight, Column[] columnTypes, double[] colX) {
         for (InventoryEntry line : list) {
-            int lines = 0;
             for (int row = 0; row < line.nRows(); row++) {
+                int lines = 1;
                 for (int i = 0; i < columnTypes.length; i++) {
                     switch (columnTypes[i]) {
                         case QUANTITY:
@@ -692,10 +692,7 @@ public class InventoryWriter {
                             break;
                     }
                 }
-                ypos += lineHeight;
-            }
-            if (lines > line.nRows()) {
-                ypos += lineHeight * (lines - line.nRows());
+                ypos += lineHeight * lines;
             }
         }
         return ypos;
@@ -836,7 +833,7 @@ public class InventoryWriter {
                 }
                 count++;
             }
-            currY += lineHeight * (((ship.getGravDecks().size() + 1) / 2) + 1);
+            currY += lineHeight * (((double) ((ship.getGravDecks().size() + 1) / 2)) + 1);
         }
         return currY;
     }

@@ -1,11 +1,60 @@
 VERSION HISTORY:
 ----------------
-0.47.6-SNAPSHOT
+0.47.8-SNAPSHOT
++ Issue #611: [Errata] Naval Repair Facilities should use 2 docking collars no matter their capacity
+
+0.47.7 (2020-06-22 2330 UTC)
++ Issue #614: Change the list of equipment while sort by Crit section cause error
++ Issue #612: Overlapping Text in Vehicle Record Sheet
++ Bug: Can't assign UMU to ProtoMech
++ Issue #620: Dropshuttle bay cost calculation
++ Issue #622: Grenade launchers break fighter record sheets
++ Issue #623: Torpedoes have a listed range of zero on record sheets
++ Issue #627: Some Quad Protomech Maximum armor values are incorrect
++ PR #629: Protomech record sheet overhaul (can now print quads, gliders, and ultraheavies)
++ Issue #625: Command Consoles do not appear on aerospace fighter record sheets.
++ PR #632: Export record sheet directly to PDF
++ Issue #342: Incomplete queued print
++ PR #634: Option to show total heat and dissipation on record sheet
++ PR #635: Option to print TacOps expanded heat scale on record sheet
++ PR #639: New printing options: page size and color/monochrome
++ PR #640: Early Clans and IS tech
++ PR #610: Edit size of variable sized equipment on the equipment tab
++ PR #649: Record sheet inventory text overlap
++ Issue #656: Mounting artillery on a DropShip leads to the wrong date for Availability in Preview
++ PR #664: Quick reference tables for mech record sheets
+
+0.47.6 (2020-5-03 1715 UTC)
 + Issue #553: Loading or printing LAM causes ArrayIndexOutOfBoundsException
 + PR #557: BattleArmor record sheet overhaul
 + Issue #536: Support Fixed Wing Aircraft with Propeller mod will not validate
 + Issue #556: Basic saved file name does not have a space between Chassis and Model
 + Issue #555: Can't add Ammo to SV's
++ Issue #571: Environmental Sealing chassis mod on support vehicles requires 8 item slots
++ Issue #578: Squad Support Weapon Weight Calculations off
++ Issue #582: Large support vehicles incorrectly flag some equipment locations as invalid
++ Issue #581: Rotors can have more than 2 points of armor
++ Issue #550: Battle Armor bomb rack ammo critical space
++ Issue #583: Small SV Cargo weirdness
++ Issue #587: Unit transport bays can be added by half cubicle
++ Issue #531: Armored motive system appears in equipment list for VTOLs and rail
++ Issue #533: BV for Swarm-I ammunition shows floating point errors
++ Issue #538: Auto-allocation of armor for fixed-wing support craft loses armor points
++ Issue #539: I can't add some items to fixed-wing support units
++ Issue #540: Weight breakdown shows all weights rounded to one decimal place
++ Issue #591: Vehicular Grenade Launchers/Vehicular mine dispensers not available on aerospace craft
++ Issue #537: Formatting error in Unit Cost Breakdown for fixed-wing support units
++ Issue #541: Allocated armor is not reported correctly for DropShips/small craft after SI changes.
++ Issue #542: The Infantry Compartment field on the Transport pane is ignored for DropShips and small craft
++ Issue #552: Changing bay personnel can incorrectly change base and total crew on a JS/WS/station
++ Issue #559: Naval Com-Scanner Suites require no crew
++ Issue #562: Fuel mass for advanced aerospace craft appears to be rounded down to the nearest whole ton
++ Issue #593: TRO shows incorrect ammo shot count for weapon bays
++ Issue #595: All mechs with ICE or fuel cell need power amplifiers
++ Issue #596: Combat vehicle environmental sealing takes no mass
++ Issue #598: Extraneous weapons appearing on fighter record sheet
++ Issue #543: I can't always assign legal values for the armor tonnage on Small craft/DropShips
++ Issue #546: Dropdown menu's text turns invisible
 
 0.47.5 (2020-4-01 2000 UTC)
 + Issue #435: Infantry exports not going to TXT, only HTML

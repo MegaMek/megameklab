@@ -18,9 +18,6 @@ package megameklab.com.util;
 
 import java.util.Comparator;
 
-import megamek.common.Aero;
-import megamek.common.AmmoType;
-import megamek.common.Dropship;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.Mech;
@@ -42,7 +39,6 @@ import megamek.common.weapons.battlearmor.ISBALaserPulseSmall;
 import megamek.common.weapons.battlearmor.ISBALaserVSPMedium;
 import megamek.common.weapons.battlearmor.ISBALaserVSPSmall;
 import megamek.common.weapons.battlearmor.ISBAPopUpMineLauncher;
-import megamek.common.weapons.capitalweapons.ScreenLauncherWeapon;
 import megamek.common.weapons.defensivepods.BPodWeapon;
 import megamek.common.weapons.flamers.FlamerWeapon;
 import megamek.common.weapons.gaussrifles.HAGWeapon;
@@ -79,111 +75,19 @@ import megamek.common.weapons.tag.TAGWeapon;
 public class StringUtils {
 
     public static Comparator<? super EquipmentType> equipmentTypeComparator() {
-        return new Comparator<EquipmentType>() {
-            public int compare(EquipmentType eq1, EquipmentType eq2) {
-                String s1 = eq1.getName().toLowerCase();
-                String s2 = eq2.getName().toLowerCase();
-                return s1.compareTo(s2);
-            }
-        };
-    }
-
-    public static Comparator<? super EquipmentInfo> equipmentInfoComparator() {
-        return new Comparator<EquipmentInfo>() {
-            public int compare(EquipmentInfo eq1, EquipmentInfo eq2) {
-                String s1 = eq1.name.toLowerCase();
-                String s2 = eq2.name.toLowerCase();
-                return s1.compareTo(s2);
-            }
+        return (Comparator<EquipmentType>) (eq1, eq2) -> {
+            String s1 = eq1.getName().toLowerCase();
+            String s2 = eq2.getName().toLowerCase();
+            return s1.compareTo(s2);
         };
     }
 
     public static Comparator<Mounted> mountedComparator() {
-        return new Comparator<Mounted>() {
-            public int compare(Mounted m1, Mounted m2) {
-                String s1 = m1.getName().toLowerCase();
-                String s2 = m2.getName().toLowerCase();
-                return s1.compareTo(s2);
-            }
+        return (m1, m2) -> {
+            String s1 = m1.getName().toLowerCase();
+            String s2 = m2.getName().toLowerCase();
+            return s1.compareTo(s2);
         };
-    }
-
-    public static String getEquipmentInfo(Dropship unit, Mounted mount, Mounted bay) {
-        String info = "";
-
-        if (mount.getType() instanceof WeaponType) {
-            WeaponType weapon = (WeaponType) mount.getType();
-            if (weapon.getAmmoType() == AmmoType.T_AR10) {
-                int barracudaAmmo = 0;
-                int killerwhaleAmmo = 0;
-                int whitesharkAmmo = 0;
-                for (int ammoIndex : bay.getBayAmmo()) {
-                    Mounted ammoMount = unit.getEquipment(ammoIndex);
-                    try {
-                        AmmoType aType = (AmmoType)ammoMount.getType();
-                        if ((mount.getLinked() != null) && (aType.getRackSize() == weapon.getRackSize()) && (aType.getAmmoType() == weapon.getAmmoType())) {
-                            if (aType.hasFlag(AmmoType.F_AR10_BARRACUDA)) {
-                                barracudaAmmo += ammoMount.getUsableShotsLeft();
-                            } else if (aType.hasFlag(AmmoType.F_AR10_KILLER_WHALE)) {
-                                killerwhaleAmmo += ammoMount.getUsableShotsLeft();
-                            } else if (aType.hasFlag(AmmoType.F_AR10_WHITE_SHARK)) {
-                               whitesharkAmmo += ammoMount.getUsableShotsLeft();
-                            }
-                        }
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
-                }
-                info = "";
-                if (barracudaAmmo > 0) {
-                    info += String.format("[%1$s Barracuda misl]", barracudaAmmo);
-                }
-                if (killerwhaleAmmo > 0) {
-                    info += String.format("[%1$s Killer Whale misl]", killerwhaleAmmo);
-                }
-                if (whitesharkAmmo > 0) {
-                    info += String.format("[%1$s White Shark misl]", whitesharkAmmo);
-                }
-            } else if (weapon.getAmmoType() == AmmoType.T_MML) {
-                int lrmAmmo = 0;
-                int srmAmmo = 0;
-                for (int ammoIndex : bay.getBayAmmo()) {
-                    Mounted ammoMount = unit.getEquipment(ammoIndex);
-                    try {
-                        AmmoType aType = (AmmoType)ammoMount.getType();
-                        if ((mount.getLinked() != null) && (aType.getRackSize() == weapon.getRackSize()) && (aType.getAmmoType() == weapon.getAmmoType())) {
-                            if (aType.hasFlag(AmmoType.F_MML_LRM)) {
-                                lrmAmmo += ammoMount.getUsableShotsLeft();
-                            } else {
-                                srmAmmo += ammoMount.getUsableShotsLeft();
-                            }
-                        }
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
-                }
-                info = String.format("[%1$s LRM rnds][%2$s SRM rnds]", lrmAmmo, srmAmmo);
-            } else {
-                int totalAmmo = 0;
-                for (int ammoIndex : bay.getBayAmmo()) {
-                    Mounted ammoMount = unit.getEquipment(ammoIndex);
-                    try {
-                        if ((mount.getLinked() != null) && (ammoMount.getType() == mount.getLinked().getType())) {
-                            totalAmmo += ammoMount.getUsableShotsLeft();
-                        }
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
-                }
-                if (weapon instanceof ScreenLauncherWeapon) {
-                    info = String.format("[%1$s Screens]", totalAmmo);
-                } else if (weapon.hasFlag(WeaponType.F_BALLISTIC) || weapon.hasFlag(WeaponType.F_MISSILE) || weapon.hasFlag(WeaponType.F_ARTILLERY) || (weapon.getAtClass() == WeaponType.CLASS_CAPITAL_MISSILE)) {
-                    info = String.format("[%1$s rnds]", totalAmmo);
-                }
-            }
-        }
-        return info;
-
     }
 
     public static String getEquipmentInfo(Entity unit, Mounted mount) {
@@ -356,8 +260,8 @@ public class StringUtils {
         return info.trim();
     }
 
-    public static String getEquipmentInfo(Aero unit, Mounted mount) {
-        String info = "";
+    public static String getAeroEquipmentInfo(Mounted mount) {
+        String info;
 
         if (mount.getType() instanceof WeaponType) {
             WeaponType weapon = (WeaponType) mount.getType();
@@ -475,18 +379,4 @@ public class StringUtils {
         }
         return info;
     }
-
-    public static int countOccurrences(String haystack, char needle)
-    {
-        int count = 0;
-        for (int i=0; i < haystack.length(); i++)
-        {
-            if (haystack.charAt(i) == needle)
-            {
-                 count++;
-            }
-        }
-        return count;
-    }
-
 }

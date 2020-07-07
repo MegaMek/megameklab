@@ -63,6 +63,8 @@ public class FuelView extends BuildView implements ActionListener, ChangeListene
     private final JLabel lblTurnsAtMax = new JLabel("", JLabel.CENTER);
     private final JLabel lblBurnDays1G = new JLabel("", JLabel.CENTER);
     private final JLabel lblBurnDaysMax = new JLabel("", JLabel.CENTER);
+    private final JLabel lblBurnDays1GText = new JLabel();
+    private final JLabel lblBurnDaysMaxText = new JLabel();
     private final CustomComboBox<FuelType> cbFuelType = new CustomComboBox<>(
             new FuelType[] {FuelType.PETROCHEMICALS, FuelType.ALCOHOL, FuelType.NATURAL_GAS},
             ft -> resourceMap.getString("FuelView.FuelType." + ft)
@@ -120,8 +122,10 @@ public class FuelView extends BuildView implements ActionListener, ChangeListene
         add(panInfoTurns, gbc);
 
         panBurnDays.setLayout(new GridLayout(0, 2));
-        panBurnDays.add(new JLabel(resourceMap.getString("FuelView.lblBurnDays1G.text")), gbc); //$NON-NLS-1$
-        panBurnDays.add(new JLabel(resourceMap.getString("FuelView.lblBurnDaysMax.text")), gbc); //$NON-NLS-1$
+        lblBurnDays1GText.setText(resourceMap.getString("FuelView.lblBurnDays1G.text")); //$NON-NLS-1$
+        panBurnDays.add(lblBurnDays1GText, gbc);
+        lblBurnDaysMaxText.setText(resourceMap.getString("FuelView.lblBurnDaysMax.text")); //$NON-NLS-1$
+        panBurnDays.add(lblBurnDaysMaxText, gbc);
         lblBurnDays1G.setToolTipText(resourceMap.getString("FuelView.lblBurnDays1G.tooltip")); //$NON-NLS-1$
         lblBurnDaysMax.setToolTipText(resourceMap.getString("FuelView.lblBurnDaysMax.tooltip")); //$NON-NLS-1$
         panBurnDays.add(lblBurnDays1G);
@@ -211,6 +215,15 @@ public class FuelView extends BuildView implements ActionListener, ChangeListene
             lblBurnDays1G.setText(String.format("%3.2f", TestAero.calculateDaysAt1G(aero)));
             lblBurnDaysMax.setText(String.format("%3.2f", TestAero.calculateDaysAtMax(aero)));
             panBurnDays.setVisible(true);
+            if ((aero instanceof Jumpship) && !(aero instanceof Warship)) {
+                lblBurnDays1GText.setText(resourceMap.getString("FuelView.lblBurnDaysStationKeeping.text")); //$NON-NLS-1$
+                lblBurnDaysMaxText.setVisible(false);
+                lblBurnDaysMax.setVisible(false);
+            } else {
+                lblBurnDays1GText.setText(resourceMap.getString("FuelView.lblBurnDays1G.text")); //$NON-NLS-1$
+                lblBurnDaysMaxText.setVisible(true);
+                lblBurnDaysMax.setVisible(true);
+            }
         } else {
             panBurnDays.setVisible(false);
         }

@@ -22,6 +22,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -53,26 +55,26 @@ public class UnitPrintQueueDialog extends JDialog implements ActionListener, Key
      */
     private static final long serialVersionUID = 4812586858732825464L;
 
-    JList<String> unitList = new JList<String>();
+    JList<String> unitList = new JList<>();
     JScrollPane listScrollPane;
 
-    private JButton bCancel = new JButton("Close");
-    private JButton bPrint = new JButton("Print");
-    private JButton bSelectFile = new JButton("Select From File");
-    private JButton bSelectCache = new JButton("Select From Cache");
-    private JButton bRemove = new JButton("Remove");
-    private JCheckBox chSinglePrint = new JCheckBox("Print Single");
-    private JFrame clientgui;
+    private final JButton bCancel = new JButton("Close");
+    private final JButton bPrint = new JButton("Print");
+    private final JButton bSelectFile = new JButton("Select From File");
+    private final JButton bSelectCache = new JButton("Select From Cache");
+    private final JButton bRemove = new JButton("Remove");
+    private final JCheckBox chSinglePrint = new JCheckBox("Print Single");
+    private final JFrame clientgui;
 
-    private JPanel buttonPanel = new JPanel();
+    private final List<Entity> units = new ArrayList<>();
+    final boolean pdf;
 
-    private Vector<Entity> units = new Vector<Entity>();
-
-    public UnitPrintQueueDialog(JFrame frame) {
+    public UnitPrintQueueDialog(JFrame frame, boolean pdf) {
 
         super(frame, "Unit Print Queue", true);
 
         clientgui = frame;
+        this.pdf = pdf;
 
         // construct a model and list
         JPanel masterPanel = new JPanel();
@@ -85,6 +87,7 @@ public class UnitPrintQueueDialog extends JDialog implements ActionListener, Key
         // listScrollPane.setViewportView(masterPanel);
         listScrollPane.setBorder(BorderFactory.createEmptyBorder());
 
+        JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
         buttonPanel.add(chSinglePrint);
         buttonPanel.add(bSelectCache);
@@ -148,7 +151,14 @@ public class UnitPrintQueueDialog extends JDialog implements ActionListener, Key
         }
 
         if (ae.getSource() == bPrint) {
-            UnitPrintManager.printAllUnits(units, chSinglePrint.isSelected());
+            if (pdf) {
+                File exportFile = UnitPrintManager.getExportFile(clientgui);
+                if (exportFile != null) {
+                    UnitPrintManager.exportUnits(units, exportFile, chSinglePrint.isSelected());
+                }
+            } else {
+                UnitPrintManager.printAllUnits(units, chSinglePrint.isSelected());
+            }
             dispose();
         }
 
@@ -220,9 +230,8 @@ public class UnitPrintQueueDialog extends JDialog implements ActionListener, Key
     }
 
     private void refresh() {
-
         unitList.removeAll();
-        Vector<String> unitNameList = new Vector<String>();
+        Vector<String> unitNameList = new Vector<>();
 
         for (Entity ent : units) {
             unitNameList.add(String.format("%1$s %2$s", ent.getChassis(), ent.getModel()).trim());
@@ -257,5 +266,4 @@ public class UnitPrintQueueDialog extends JDialog implements ActionListener, Key
 
     public void windowOpened(java.awt.event.WindowEvent windowEvent) {
     }
-
 }

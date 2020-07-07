@@ -20,6 +20,7 @@ import java.text.NumberFormat;
 import java.util.*;
 
 import megamek.common.*;
+import megameklab.com.printing.reference.ReferenceTable;
 import org.apache.batik.anim.dom.SVGGraphicsElement;
 import org.apache.batik.anim.dom.SVGLocatableSupport;
 import org.apache.batik.util.SVGConstants;
@@ -63,7 +64,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
         super(startPage, options);
     }
 
-    protected abstract Entity getEntity();
+    public abstract Entity getEntity();
     
     /**
      * When printing from a MUL the pilot data is filled in unless the option has been disabled. This
@@ -75,6 +76,21 @@ public abstract class PrintEntity extends PrintRecordSheet {
      */
     protected boolean showPilotInfo() {
         return options.showPilotData() && !getEntity().getCrew().getName().equalsIgnoreCase("unnamed");
+    }
+
+    /**
+     * @return Whether the total weapon heat and dissipation should be shown on the record sheet
+     */
+    protected boolean showHeatProfile() {
+        return getEntity().tracksHeat() && options.showHeatProfile();
+    }
+
+    /**
+     * @return A String showing the total weapon heat and dissipation.
+     */
+    protected String heatProfileText() {
+        int heat = getEntity().getEquipment().stream().mapToInt(m -> m.getType().getHeat()).sum();
+        return "Total Heat (Dissipation): " + heat + " (" + getEntity().getHeatCapacity() + ")";
     }
 
     /**
@@ -135,14 +151,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
     
     @Override
     protected void processImage(int pageNum, PageFormat pageFormat) {
-        Element element;
-        
-        element = getSVGDocument().getElementById(COPYRIGHT);
-        if (null != element) {
-            element.setTextContent(String.format(element.getTextContent(),
-                    Calendar.getInstance().get(Calendar.YEAR)));
-        }
-        
+        super.processImage(pageNum, pageFormat);
         writeTextFields();
         drawArmor();
         drawStructure();
@@ -154,6 +163,9 @@ public abstract class PrintEntity extends PrintRecordSheet {
             drawEraIcon();
         }
         drawFluffImage();
+        if (includeReferenceCharts()) {
+            addReferenceCharts(pageFormat);
+        }
     }
     
     protected void writeTextFields() {
@@ -356,14 +368,21 @@ public abstract class PrintEntity extends PrintRecordSheet {
             }
             if (null != element) {
                 ArmorPipLayout.addPips(this, element, getEntity().getOArmor(loc),
-                        PipType.forAT(getEntity().getArmorType(loc)), 0.5);
+                        PipType.forAT(getEntity().getArmorType(loc)), 0.5, FILL_WHITE);
             }
             element = getSVGDocument().getElementById(STRUCTURE_PIPS + getEntity().getLocationAbbr(loc));
             if (null != element) {
                 ArmorPipLayout.addPips(this, element, getEntity().getOInternal(loc),
-                        PipType.CIRCLE, 0.5);
+                        PipType.CIRCLE, 0.5, structurePipFill());
             }
         }
+    }
+
+    /**
+     * @return The color to use in the inside of structure pips
+     */
+    String structurePipFill() {
+        return FILL_WHITE;
     }
     
     /**
@@ -375,15 +394,6 @@ public abstract class PrintEntity extends PrintRecordSheet {
     protected int firstArmorLocation() {
         return 0;
     }
-    
-    /**
-     * Identifies which locations are on the unit's centerline and should have armor and structure
-     * pips laid out with left-right symmetry
-     * 
-     * @param loc The location to check
-     * @return    Whether the location is along the unit's centerline
-     */
-    protected abstract boolean isCenterlineLocation(int loc);
     
     protected void drawStructure() {
         
@@ -400,6 +410,26 @@ public abstract class PrintEntity extends PrintRecordSheet {
 
     protected void drawFluffImage() {
 
+    }
+
+    List<ReferenceTable> getRightSideReferenceTables() {
+        return Collections.emptyList();
+    }
+
+    protected void addReferenceCharts(PageFormat pageFormat) {
+        List<ReferenceTable> rightSide = getRightSideReferenceTables();
+        double lines = rightSide.stream().mapToDouble(ReferenceTable::lineCount).sum();
+
+        double ypos = pageFormat.getImageableY();
+        double margin = ReferenceTable.getMargins(this);
+        for (ReferenceTable table : rightSide) {
+            double height = (pageFormat.getImageableHeight() - margin * rightSide.size())
+                    * table.lineCount() / lines + margin;
+            getSVGDocument().getDocumentElement().appendChild(
+                    table.createTable(pageFormat.getImageableX() + pageFormat.getImageableWidth() * 0.8 + 3.0,
+                            ypos, pageFormat.getImageableWidth() * 0.2, height));
+            ypos += height;
+        }
     }
     
     private void drawEraIcon() {
@@ -431,15 +461,19 @@ public abstract class PrintEntity extends PrintRecordSheet {
     void drawHeatSinkPips(SVGRectElement svgRect, int hsCount) {
         Rectangle2D bbox = getRectBBox(svgRect);
         Element canvas = (Element) svgRect.getParentNode();
-        int viewWidth = (int)bbox.getWidth();
-        int viewHeight = (int)bbox.getHeight();
-        int viewX = (int)bbox.getX();
-        int viewY = (int)bbox.getY();
+        double viewWidth = bbox.getWidth();
+        double viewHeight = bbox.getHeight();
+        double viewX = bbox.getX();
+        double viewY = bbox.getY();
+        if (viewWidth > viewHeight) {
+            drawHeatSinkPipsLandscape(canvas, hsCount, viewX, viewY, viewWidth, viewHeight);
+            return;
+        }
 
         // r = 3.5
         // spacing = 9.66
         // stroke width = 0.9
-        double size = 9.66;
+        double size = Math.min(9.66, viewHeight / 10);
         int cols = (int) (viewWidth / size);
         int rows = (int) (viewHeight / size);
 
@@ -454,7 +488,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
             // First check whether we can shrink them less than what is required for a new column
             if (cols * (int) (rows * nextCol) > hsCount) {
                 rows = (int) Math.ceil((double) hsCount / cols);
-                size = viewHeight / rows;
+                size = (double) viewHeight / rows;
             } else {
                 cols++;
                 size *= viewWidth / (cols * size);
@@ -466,6 +500,40 @@ public abstract class PrintEntity extends PrintRecordSheet {
         for (int i = 0; i < hsCount; i++) {
             int row = i % rows;
             int col = i / rows;
+            Element pip = createPip(viewX + size * col, viewY + size * row, radius, strokeWidth);
+            canvas.appendChild(pip);
+        }
+    }
+
+    void drawHeatSinkPipsLandscape(Element canvas, int hsCount, double viewX, double viewY,
+                                   double viewWidth, double viewHeight) {
+        double size = Math.min(9.66, viewWidth / 10);
+        int cols = (int) (viewWidth / size);
+        int rows = (int) (viewHeight / size);
+
+        // Use 10 pips/row unless there are too many sinks for the space.
+        if (hsCount <= rows * 10) {
+            cols = 10;
+        }
+        // The rare unit with this many heat sinks will require us to shrink the pips
+        while (hsCount > cols * rows) {
+            // Figure out how much we will have to shrink to add another column
+            double nextCol = (rows + 1.0) / rows;
+            // First check whether we can shrink them less than what is required for a new column
+            if (rows * (int) (cols * nextCol) > hsCount) {
+                cols = (int) Math.ceil((double) hsCount / rows);
+                size = viewHeight / cols;
+            } else {
+                rows++;
+                size *= viewWidth / (rows * size);
+                cols = (int) (viewHeight / size);
+            }
+        }
+        double radius = size * 0.36;
+        double strokeWidth = 0.9;
+        for (int i = 0; i < hsCount; i++) {
+            int col = i % cols;
+            int row = i / cols;
             Element pip = createPip(viewX + size * col, viewY + size * row, radius, strokeWidth);
             canvas.appendChild(pip);
         }
@@ -494,8 +562,14 @@ public abstract class PrintEntity extends PrintRecordSheet {
     }
     
     protected String formatRulesLevel() {
-        return getEntity().getStaticTechLevel().toString().substring(0, 1)
-                + getEntity().getStaticTechLevel().toString().substring(1).toLowerCase();
+        SimpleTechLevel level;
+        if (options.useEraBaseProgression()) {
+            level = getEntity().getSimpleLevel(getEntity().getYear(), getEntity().isClan());
+        } else {
+            level = getEntity().getStaticTechLevel();
+        }
+        return level.toString().substring(0, 1)
+                + level.toString().substring(1).toLowerCase();
     }
     
     private static String formatEra(int year) {

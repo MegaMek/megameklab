@@ -32,7 +32,7 @@ import static megameklab.com.printing.PrintRecordSheet.DEFAULT_PIP_SIZE;
  * <p>Utility for determining placement of armor and structure pips. The position and shape of the space
  * is defined by metadata in the svg document. This is used to calculate the number of rows of pips,
  * how many to place in each row, and how far apart to space them. This class is accessed through the
- * static method {@link ArmorPipLayout#addPips(PrintRecordSheet, Element, int, PrintRecordSheet.PipType, double) addPips}.</p>
+ * static method {@link ArmorPipLayout#addPips(PrintRecordSheet, Element, int, PrintRecordSheet.PipType, double, String) addPips}.</p>
  *
  *
  * <p>The region should be a {@link SVGGElement} group containing one or more {@link SVGRectElement}s.
@@ -59,6 +59,7 @@ class ArmorPipLayout {
     private final Element group;
     private final PrintRecordSheet.PipType pipType;
     private final double strokeWidth;
+    private final String fill;
     private final Bounds bounds;
     private final double avgHeight;
     private final double avgWidth;
@@ -79,9 +80,10 @@ class ArmorPipLayout {
      * @param pipCount    The number of armor or structure pips to add
      * @param pipType     The shape of pip to add
      * @param strokeWidth The width of the pip outline stroke
+     * @param fill        The color to use for the inside of the pip
      */
     static void addPips(PrintRecordSheet sheet, Element group, int pipCount,
-                        PrintRecordSheet.PipType pipType, double strokeWidth) {
+                        PrintRecordSheet.PipType pipType, double strokeWidth, String fill) {
         if (pipCount > 0) {
             boolean multi = false;
             final String multiVal = PrintRecordSheet.parseStyle(group, IdConstants.MML_MULTISECTION);
@@ -96,7 +98,7 @@ class ArmorPipLayout {
                 for (int i = 0; i < group.getChildNodes().getLength(); i++) {
                     final Node node = group.getChildNodes().item(i);
                     if (node instanceof SVGGElement) {
-                        ArmorPipLayout section = new ArmorPipLayout(sheet, (Element) node, pipType, strokeWidth);
+                        ArmorPipLayout section = new ArmorPipLayout(sheet, (Element) node, pipType, strokeWidth, fill);
                         if (!section.regions.isEmpty()) {
                             sections.add(section);
                             area += section.avgWidth * section.bounds.height();
@@ -132,7 +134,7 @@ class ArmorPipLayout {
                 }
             } else {
                 ArmorPipLayout layout = new ArmorPipLayout(sheet, group,
-                        pipType, strokeWidth);
+                        pipType, strokeWidth, fill);
                 if (!layout.regions.isEmpty()) {
                     layout.process(pipCount);
                 }
@@ -152,7 +154,7 @@ class ArmorPipLayout {
      */
     static void addPips(PrintRecordSheet sheet, Element group, int pipCount,
                         PrintRecordSheet.PipType pipType) {
-        addPips(sheet, group, pipCount, pipType, 0.55);
+        addPips(sheet, group, pipCount, pipType, 0.55, PrintRecordSheet.FILL_WHITE);
     }
 
     /**
@@ -166,15 +168,17 @@ class ArmorPipLayout {
      * @param pipCount    The number of armor or structure pips to add
      */
     static void addPips(PrintRecordSheet sheet, Element group, int pipCount) {
-        addPips(sheet, group, pipCount, PrintRecordSheet.PipType.CIRCLE, 0.5);
+        addPips(sheet, group, pipCount, PrintRecordSheet.PipType.CIRCLE, 0.5,
+                PrintRecordSheet.FILL_WHITE);
     }
 
     private ArmorPipLayout(PrintRecordSheet sheet, Element group, PrintRecordSheet.PipType pipType,
-                   double strokeWidth) {
+                   double strokeWidth, String fill) {
         this.sheet = sheet;
         this.group = group;
         this.pipType = pipType;
         this.strokeWidth = strokeWidth;
+        this.fill = fill;
         bounds = processRegions();
         avgHeight = regions.values().stream().mapToDouble(Bounds::height).average().orElse(0.0);
         avgWidth = (regions.values().stream().mapToDouble(Bounds::width).sum()
@@ -548,7 +552,7 @@ class ArmorPipLayout {
             xpos = calcRowStartX(centerX, count, dx) + xPadding;
         }
         for (int i = 0; i < count; i++) {
-            Element pip = sheet.createPip(xpos, row.top, radius, strokeWidth, pipType);
+            Element pip = sheet.createPip(xpos, row.top, radius, strokeWidth, pipType, fill);
             group.appendChild(pip);
             xpos += dx;
         }

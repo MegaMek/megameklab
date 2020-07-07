@@ -1113,7 +1113,7 @@ public class UnitUtil {
             return false;
         }
 
-        if (UnitUtil.isJumpJet(eq) && isMech) {
+        if (UnitUtil.isJumpJet(eq)) {
             return false;
         }
         if (!eq.isHittable() && isMech) {
@@ -1131,10 +1131,7 @@ public class UnitUtil {
                         || eq.hasFlag(MiscType.F_HARJEL)
                         || eq.hasFlag(MiscType.F_MASS)
                         || eq.hasFlag(MiscType.F_CHASSIS_MODIFICATION)
-                        || eq.hasFlag(MiscType.F_MASH_EXTRA)
-                        || eq.hasFlag(MiscType.F_CHASSIS_MODIFICATION)
-                        || eq.hasFlag(MiscType.F_DRONE_EXTRA) || eq
-                            .hasFlag(MiscType.F_SPONSON_TURRET))
+                        || eq.hasFlag(MiscType.F_SPONSON_TURRET))
                         || eq.hasFlag(MiscType.F_EXTERNAL_STORES_HARDPOINT)
                         || eq.hasFlag(MiscType.F_BASIC_FIRECONTROL)
                         || eq.hasFlag(MiscType.F_ADVANCED_FIRECONTROL)) {
@@ -1221,6 +1218,52 @@ public class UnitUtil {
         eq.setLocation(location, rear);
         eq.setSecondLocation(secondaryLocation, rear);
         eq.setSplit(secondaryLocation > -1);
+    }
+
+    public static void resizeMount(Mounted mount, double newSize) {
+        mount.setSize(newSize);
+        if (mount.getLocation() == Entity.LOC_NONE) {
+            return;
+        }
+        final Entity entity = mount.getEntity();
+        final int loc = mount.getLocation();
+        int start = -1;
+        for (int slot = 0; slot < entity.getNumberOfCriticals(loc); slot++) {
+            CriticalSlot crit = entity.getCritical(loc, slot);
+            if ((crit != null) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)
+                    && crit.getMount().equals(mount)) {
+                start = slot;
+                break;
+            }
+        }
+        removeCriticals(entity, mount);
+        compactCriticals(entity, loc);
+        if ((start < 0) || (entity.getEmptyCriticals(loc) < mount.getCriticals())) {
+            changeMountStatus(entity, mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
+            try {
+                MechFileParser.postLoadInit(entity);
+            } catch (EntityLoadingException ignored) {
+                // We're not actually loading an Entity; we're fixing linked equipment
+            }
+        } else {
+            // If the number of criticals increases, we may need to shift existing criticals
+            // to make room. Since we checked for sufficient space and compacted the existing
+            // criticals we can be assured of not overrunning the array.
+            List<CriticalSlot> toAdd = new ArrayList<>();
+            for (int i = 0; i < mount.getCriticals(); i++) {
+                toAdd.add(new CriticalSlot(mount));
+            }
+            int slot = start;
+            while (!toAdd.isEmpty()) {
+                CriticalSlot cs = entity.getCritical(loc, slot);
+                if (cs != null) {
+                    toAdd.add(cs);
+                }
+                entity.setCritical(loc, slot, toAdd.get(0));
+                toAdd.remove(0);
+                slot++;
+            }
+        }
     }
     
     /**
@@ -1652,6 +1695,8 @@ public class UnitUtil {
             }
         } else if (entity.hasETypeFlag(Entity.ETYPE_PROTOMECH)) {
             return TestProtomech.maxArmorFactor((Protomech) entity, location);
+        } else if ((entity instanceof VTOL) && (location == VTOL.LOC_ROTOR)) {
+            return 2;
         }
         return null;
     }
@@ -2000,18 +2045,6 @@ public class UnitUtil {
         return rsFont.deriveFont(pointSize);
     }
 
-    public static Font getNewFont(Graphics2D g2d, String info, boolean bold,
-            int stringWidth, float pointSize) {
-        Font font = UnitUtil.deriveFont(bold, pointSize);
-
-        while ((ImageHelper.getStringWidth(g2d, info, font) > stringWidth)
-                && (pointSize > 0)) {
-            pointSize -= .1;
-            font = UnitUtil.deriveFont(bold, pointSize);
-        }
-        return font;
-    }
-
     public static void removeOneShotAmmo(Entity unit) {
         ArrayList<Mounted> ammoList = new ArrayList<Mounted>();
 
@@ -2163,11 +2196,11 @@ public class UnitUtil {
             double infDamage = ((InfantryWeapon) eq.getType())
                     .getInfantryDamage();
             sb.append(infDamage);
-            sb.append("<br>Range Class: "
-                    + ((InfantryWeapon) eq.getType()).getInfantryRange());
+            sb.append("<br>Range Class: ");
+            sb.append(((InfantryWeapon) eq.getType()).getInfantryRange());
         } else {
             sb.append("<br>Crits: ");
-            sb.append(eq.getType().getCriticals(unit));
+            sb.append(eq.getCriticals());
             sb.append("<br>Mass: ");
             if (TestEntity.usesKgStandard(unit)) {
                 sb.append(Math.round(eq.getTonnage() * 1000));
@@ -2634,6 +2667,11 @@ public class UnitUtil {
         if (eq instanceof InfantryWeapon) {
             return false;
         }
+        // Fixed wing, airship, and satellite vehicles use vehicle construction rules.
+        if (unit.isSupportVehicle()) {
+            return eq.hasFlag(WeaponType.F_TANK_WEAPON)
+                    && TestTank.legalForMotiveType(eq, unit.getMovementMode(), true);
+        }
 
         WeaponType weapon = (WeaponType) eq;
         
@@ -2710,7 +2748,7 @@ public class UnitUtil {
         if (UnitUtil.isArmorOrStructure(eq)) {
             return false;
         }
-        
+
         if ((eq instanceof AmmoType)
                 && (((AmmoType)eq).getAmmoType() == AmmoType.T_COOLANT_POD)) {
             return !unit.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT);
@@ -2729,7 +2767,10 @@ public class UnitUtil {
                 return eq.hasFlag(MiscType.F_SC_EQUIPMENT);
             } else if (eq.hasFlag(MiscType.F_FLOTATION_HULL)) {
                 return unit.hasETypeFlag(Entity.ETYPE_CONV_FIGHTER)
-                    && !unit.hasETypeFlag(Entity.ETYPE_FIXED_WING_SUPPORT);
+                        && !unit.hasETypeFlag(Entity.ETYPE_FIXED_WING_SUPPORT);
+            } else if (unit.isSupportVehicle()) {
+                return eq.hasFlag(MiscType.F_SUPPORT_TANK_EQUIPMENT)
+                        && TestTank.legalForMotiveType(eq, unit.getMovementMode(), true);
             } else {
                 return eq.hasFlag(MiscType.F_FIGHTER_EQUIPMENT);
             }
@@ -2927,7 +2968,7 @@ public class UnitUtil {
                 }
             }
 
-            return TestTank.legalForMotiveType(weapon, unit.getMovementMode());
+            return TestTank.legalForMotiveType(weapon, unit.getMovementMode(), unit.isSupportVehicle());
         }
         return false;
     }
@@ -3071,7 +3112,7 @@ public class UnitUtil {
         }
 
         if (eq instanceof MiscType) {
-            if (!TestTank.legalForMotiveType(eq, tank.getMovementMode())) {
+            if (!TestTank.legalForMotiveType(eq, tank.getMovementMode(), tank.isSupportVehicle())) {
                 return false;
             }
             // Can't use supercharger with solar or external power pickup

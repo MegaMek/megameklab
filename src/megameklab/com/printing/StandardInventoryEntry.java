@@ -27,15 +27,18 @@ import megamek.common.weapons.other.ISCenturionWeaponSystem;
 import megameklab.com.util.StringUtils;
 
 import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Formats text for an entry in the weapons and equipment inventory section of the record sheet.
  * This is for single pieces of equipment. WeaponBays should use {@link WeaponBayInventoryEntry}.
  */
 public class StandardInventoryEntry implements InventoryEntry, Comparable<StandardInventoryEntry> {
-    private Mounted mount;
+    // Cache for whether equipment on a mixed tech unit needs to state explicitly whether
+    // it's IS or Clan
+    private static final Map<EquipmentType, Boolean> showMixedTechBase = new HashMap<>();
+
+    private final Mounted mount;
 
     private final String[][] ranges;
     private final boolean isMML;
@@ -105,9 +108,16 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
                 if (wtype.getMinimumRange() > 0) {
                     r[RangeType.RANGE_MINIMUM] = String.valueOf(wtype.getMinimumRange());
                 }
-                r[RangeType.RANGE_SHORT] = String.valueOf(wtype.getShortRange());
-                r[RangeType.RANGE_MEDIUM] = String.valueOf(wtype.getMediumRange());
-                r[RangeType.RANGE_LONG] = String.valueOf(wtype.getLongRange());
+                if ((wtype.getAmmoType() == AmmoType.T_LRM_TORPEDO)
+                    || (wtype.getAmmoType() == AmmoType.T_SRM_TORPEDO)) {
+                    r[RangeType.RANGE_SHORT] = String.valueOf(wtype.getWShortRange());
+                    r[RangeType.RANGE_MEDIUM] = String.valueOf(wtype.getWMediumRange());
+                    r[RangeType.RANGE_LONG] = String.valueOf(wtype.getWLongRange());
+                } else {
+                    r[RangeType.RANGE_SHORT] = String.valueOf(wtype.getShortRange());
+                    r[RangeType.RANGE_MEDIUM] = String.valueOf(wtype.getMediumRange());
+                    r[RangeType.RANGE_LONG] = String.valueOf(wtype.getLongRange());
+                }
             }
             String[][] retVal = new String[1][];
             retVal[0] = r;
@@ -157,13 +167,20 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
     }
 
     private String formatName() {
-        String eqName = mount.getType().getName();
+        String eqName = mount.getName();
         if (eqName.length() > 20) {
-            eqName = mount.getType().getShortName();
+            eqName = mount.getShortName();
         }
-        // Remove trailing IS or Clan tag in brackets or parentheses, including possible leading space
-        StringBuilder name = new StringBuilder(eqName.replaceAll(" ?[\\[(](Clan|IS)[])]", ""));
-        if (mount.getEntity().isMixedTech() && (mount.getType().getTechBase() != ITechnology.TECH_BASE_ALL)) {
+        // If this is not a mixed tech unit, remove trailing IS or Clan tag in brackets or parentheses,
+        // including possible leading space. For mixed tech units this is presumably needed to remove
+        // ambiguity.
+        if (!mount.getEntity().isMixedTech()) {
+            eqName = eqName.replaceAll(" ?[\\[(](Clan|IS)[])]", "");
+        }
+        StringBuilder name = new StringBuilder(eqName);
+        // For mixed tech units, we want to append the tech base if there is ambiguity
+        // and it isn't already part of the name.
+        if (showTechBase()) {
             name.append(mount.getType().isClan() ? " (Clan)" : " (IS)");
         }
         // Spheroid Small Craft/Dropships use a different location name for aft side weapons
@@ -184,9 +201,38 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
             name.append(" (SSW)");
         }
         if (mount.getEntity().isAero()) {
-            name.append(" ").append(StringUtils.getEquipmentInfo((Aero) mount.getEntity(), mount));
+            name.append(" ").append(StringUtils.getAeroEquipmentInfo(mount));
         }
         return name.toString();
+    }
+
+    /**
+     * Determines whether we should indicate whether the equipment is IS or Clan for
+     * units with a mixed tech base. Only specify when there is another piece of equipment
+     * with the same name but different tech base.
+     *
+     * @return Whether the tech base should be shown for the equipment
+     */
+    private boolean showTechBase() {
+        if (!mount.getEntity().isMixedTech()
+                || (mount.getType().getTechBase() == ITechnology.TECH_BASE_ALL)) {
+            return false;
+        }
+        if (showMixedTechBase.containsKey(mount.getType())) {
+            return showMixedTechBase.get(mount.getType());
+        }
+        final Enumeration<EquipmentType> e = EquipmentType.getAllTypes();
+        while (e.hasMoreElements()) {
+            final EquipmentType et = e.nextElement();
+            if ((et.getTechBase() != mount.getType().getTechBase())
+                    && et.getName().equals(mount.getType().getName())) {
+                showMixedTechBase.put(mount.getType(), true);
+                showMixedTechBase.put(et, true);
+                return true;
+            }
+        }
+        showMixedTechBase.put(mount.getType(), false);
+        return false;
     }
 
     private String formatLocation() {

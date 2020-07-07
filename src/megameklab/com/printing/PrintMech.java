@@ -18,7 +18,10 @@ import java.awt.print.PageFormat;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
+import megameklab.com.printing.reference.*;
 import org.apache.batik.anim.dom.SVGDOMImplementation;
 import org.apache.batik.dom.util.SAXDocumentFactory;
 import org.apache.batik.util.SVGConstants;
@@ -85,16 +88,22 @@ public class PrintMech extends PrintEntity {
     
     @Override
     protected String getSVGFileName(int pageNumber) {
+        String base;
         if (mech.hasETypeFlag(Entity.ETYPE_QUADVEE)) {
-            return "mech_quadvee.svg";
+            base = "mech_quadvee";
         } else if (mech.hasETypeFlag(Entity.ETYPE_QUAD_MECH)) {
-            return "mech_quad_default.svg";
+            base = "mech_quad";
         } else if (mech.hasETypeFlag(Entity.ETYPE_TRIPOD_MECH)) {
-            return "mech_tripod_default.svg";
+            base = "mech_tripod";
         } else if (mech.hasETypeFlag(Entity.ETYPE_LAND_AIR_MECH)) {
-            return "mech_biped_lam.svg";
+            base = "mech_lam";
         } else {
-            return "mech_biped_default.svg";
+            base = "mech_biped";
+        }
+        if (options.useTacOpsHeat()) {
+            return base + "_toheat.svg";
+        } else {
+            return base + "_default.svg";
         }
     }
     
@@ -138,7 +147,7 @@ public class PrintMech extends PrintEntity {
     }
     
     @Override
-    protected Entity getEntity() {
+    public Entity getEntity() {
         return mech;
     }
     
@@ -398,13 +407,6 @@ public class PrintMech extends PrintEntity {
         }
     }
     
-    @Override
-    protected boolean isCenterlineLocation(int loc) {
-        return (loc == Mech.LOC_HEAD)
-                || (loc == Mech.LOC_CT)
-                || (loc == Mech.LOC_CLEG);
-    }
-    
     private void writeLocationCriticals(int loc, SVGRectElement svgRect) {
         Rectangle2D bbox = getRectBBox(svgRect);
         Element canvas = (Element) svgRect.getParentNode();
@@ -424,6 +426,7 @@ public class PrintMech extends PrintEntity {
         float fontSize = (float) Math.floor(lineHeight * 0.85f);
         
         Mounted startingMount = null;
+        int startingSlotIndex = 0;
         double startingMountY = 0;
         double endingMountY = 0;
         double connWidth = viewWidth * 0.02;
@@ -482,15 +485,15 @@ public class PrintMech extends PrintEntity {
             }
             Mounted m = null;
             if ((null != crit) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)
-                    && (crit.getMount().getType().isHittable())
-                    && (crit.getMount().getType().getCriticals(mech) > (mech.isSuperHeavy()? 2 : 1))) {
+                    && (crit.getMount().getType().isHittable())) {
                 m = crit.getMount();
             }
-            if ((startingMount != null) && (startingMount != m)) {
+            if ((startingMount != null) && (startingMount != m) && (slot - startingSlotIndex > 1)) {
                 connectSlots(canvas, critX - 1, startingMountY, connWidth, endingMountY - startingMountY);
             }
             if (m != startingMount) {
                 startingMount = m;
+                startingSlotIndex = slot;
                 if (null != m) {
                     startingMountY = currY - lineHeight * 0.6;
                 }
@@ -498,7 +501,8 @@ public class PrintMech extends PrintEntity {
                 endingMountY = currY;
             }
         }
-        if ((null != startingMount) && (mech.getNumberOfCriticals(startingMount.getType(), loc) > 1)) {
+        // Check whether we need to add a bracket for the last piece of equipment.
+        if ((null != startingMount) && (mech.getNumberOfCriticals(loc) - startingSlotIndex > 1)) {
             connectSlots(canvas, critX - 1, startingMountY, connWidth, endingMountY - startingMountY);
         }
     }
@@ -783,5 +787,35 @@ public class PrintMech extends PrintEntity {
             buffer.setLength(buffer.length() - 1);
         }
         buffer.trimToSize();
+    }
+
+    @Override
+    protected boolean includeReferenceCharts() {
+        return options.showReferenceCharts();
+    }
+
+    @Override
+    protected List<ReferenceTable> getRightSideReferenceTables() {
+        List<ReferenceTable> list = new ArrayList<>();
+        list.add(new MekHitLocation(this));
+        list.add(new MekVeeToHitMods(this));
+        list.add(new PhysicalAttacks(this));
+        list.add(new PunchLocation(this));
+        list.add(new KickLocation(this));
+        list.add(new MekFallTable(this));
+        ClusterHitsTable table = new ClusterHitsTable(this);
+        if (table.required()) {
+            list.add(table);
+        }
+        return list;
+    }
+
+    @Override
+    protected void addReferenceCharts(PageFormat pageFormat) {
+        super.addReferenceCharts(pageFormat);
+        GroundMovementRecord table = new GroundMovementRecord(this);
+        getSVGDocument().getDocumentElement().appendChild(table.createTable(pageFormat.getImageableX(),
+                pageFormat.getImageableY() + pageFormat.getImageableHeight() * TABLE_RATIO + 3.0,
+                pageFormat.getImageableWidth() * TABLE_RATIO, pageFormat.getImageableHeight() * 0.2 - 3.0));
     }
 }

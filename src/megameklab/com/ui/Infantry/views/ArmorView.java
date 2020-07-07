@@ -25,7 +25,6 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Enumeration;
 
 import javax.swing.ButtonGroup;
@@ -105,11 +104,12 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
         masterEquipmentList = new EquipmentTableModel(eSource.getEntity(), techManager);
         masterEquipmentTable.setModel(masterEquipmentList);
         masterEquipmentTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-        equipmentSorter = new TableRowSorter<EquipmentTableModel>(masterEquipmentList);
-        equipmentSorter.setComparator(EquipmentTableModel.COL_DIVISOR, new DamageDivisorSorter());
-        equipmentSorter.setComparator(EquipmentTableModel.COL_COST, new WeaponView.FormattedNumberSorter());
+        equipmentSorter = new TableRowSorter<>(masterEquipmentList);
+        for (int col = 0; col < EquipmentTableModel.N_COL; col++) {
+            equipmentSorter.setComparator(col, masterEquipmentList.getSorter(col));
+        }
         masterEquipmentTable.setRowSorter(equipmentSorter);
-        ArrayList<RowSorter.SortKey> sortKeys = new ArrayList<RowSorter.SortKey>();
+        ArrayList<RowSorter.SortKey> sortKeys = new ArrayList<>();
         sortKeys.add(new RowSorter.SortKey(EquipmentTableModel.COL_NAME, SortOrder.ASCENDING));
         equipmentSorter.setSortKeys(sortKeys);
         XTableColumnModel equipColumnModel = new XTableColumnModel();
@@ -514,47 +514,6 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
     private boolean hasArmor() {
         return getInfantry().getArmorKit() != null
                 || !getInfantry().getArmorDesc().equals("1.0");
-    }
-    
-    /**
-     * A comparator for damage divisor that sorts by numeric value first, then considers an appended
-     * "E" (indicating encumbering).
-     * 
-     * @author Neoancient
-     *
-     */
-    public static class DamageDivisorSorter implements Comparator<String> {
-
-        @Override
-        public int compare(String s1, String s2) {
-            double d1 = 0;
-            try {
-                if (s1.endsWith("E")) {
-                    d1 = Double.parseDouble(s1.replace("E", "")) - 0.1;
-                } else {
-                    d1 = Double.parseDouble(s1.replace("E", ""));
-                }
-            } catch (NumberFormatException ex) {
-                ex.printStackTrace();
-            }
-            double d2 = 0;
-            try {
-                if (s2.endsWith("E")) {
-                    d2 = Double.parseDouble(s2.replace("E", "")) - 0.1;
-                } else {
-                    d2 = Double.parseDouble(s2.replace("E", ""));
-                }
-            } catch (NumberFormatException ex) {
-                ex.printStackTrace();
-            }
-            if (d1 > d2) {
-                return -1;
-            } else if (d1 < d2) {
-                return 1;
-            } else {
-                return 0;
-            }
-        }
     }
     
     private ListSelectionListener selectionListener = new ListSelectionListener() {

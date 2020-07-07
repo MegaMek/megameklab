@@ -61,13 +61,8 @@ public class PrintInfantry extends PrintEntity {
 
 
     @Override
-    protected Entity getEntity() {
+    public Entity getEntity() {
         return infantry;
-    }
-
-    @Override
-    protected boolean isCenterlineLocation(int loc) {
-        return false;
     }
 
     @Override

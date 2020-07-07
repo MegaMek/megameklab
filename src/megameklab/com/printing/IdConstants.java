@@ -17,6 +17,9 @@ package megameklab.com.printing;
  * ID attribute values in SVG templates
  */
 public interface IdConstants {
+    String RS_TEMPLATE = "rs_template";
+
+    String MML_COLOR_ELEMENTS = "mml-color-elements";
     String MML_FIELD_WIDTH = "mml-field-width";
     String MML_GAP = "mml-gap";
     String MML_MULTISECTION = "mml-multisection";
@@ -26,6 +29,7 @@ public interface IdConstants {
     String TITLE = "title";
 
     String TYPE = "type";
+    String TYPE2 = "type2";
     String FLUFF_NAME = "fluffName";
     String MP_WALK = "mpWalk";
     String MP_RUN = "mpRun";
@@ -85,6 +89,7 @@ public interface IdConstants {
     String FLUFF_DUAL_PILOT = "fluffDualPilot";
     String FLUFF_TRIPLE_PILOT = "fluffTriplePilot";
     String NOTES = "notes";
+    String DEFAULT_FLUFF_IMAGE = "defaultFluffImage";
 
     String ARMOR_TYPE = "armorType";
     String ARMOR_TYPE_2 = "armorType2";
@@ -165,4 +170,11 @@ public interface IdConstants {
     String CHECK_AP = "checkAp";
     String SUIT = "suit";
     String PIPS = "pips_";
+
+    String PROTOMECH_INDEX = "protomechIndex";
+    String MAIN_GUN_ARMOR = "armor_MG";
+    String MAIN_GUN_SHADOW = "shadow_MG";
+    String MAIN_GUN_TEXT = "text_MG";
+    String TORSO_WEAPON = "torsoWeapon_";
+    String MAG_CLAMP_NOTE = "magClampNote";
 }
