@@ -2,6 +2,8 @@ VERSION HISTORY:
 ----------------
 0.47.8-SNAPSHOT
 + Issue #611: [Errata] Naval Repair Facilities should use 2 docking collars no matter their capacity
++ Issue #636: TRO summary does not show armored components
++ Issue #644: Weight-Free Heat Sinks of Small Craft and Dropship is not changed when change the shape
 
 0.47.7 (2020-06-22 2330 UTC)
 + Issue #614: Change the list of equipment while sort by Crit section cause error
