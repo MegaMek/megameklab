@@ -280,17 +280,6 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
         }
 
         UnitUtil.compactCriticals(getUnit());
-
-        // Check linkings after you remove everything.
-        try {
-            MechFileParser.postLoadInit(getUnit());
-        } catch (EntityLoadingException ele) {
-            // do nothing.
-        } catch (Exception ex) {
-
-            ex.printStackTrace();
-        }
-
     }
 
     private void changeWeaponFacing(boolean rear) {
@@ -339,22 +328,13 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
         if (cs != null) {
             if (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) {
                 Mounted mount = getMounted();
+                assert mount != null;
                 mount.setArmored(!cs.isArmored());
                 UnitUtil.updateCritsArmoredStatus(getUnit(), mount);
             } else {
                 cs.setArmored(!cs.isArmored());
                 UnitUtil.updateCritsArmoredStatus(getUnit(), cs, getCritLocation());
             }
-        }
-
-        // Check linkings after you remove everything.
-        try {
-            MechFileParser.postLoadInit(getUnit());
-        } catch (EntityLoadingException ele) {
-            // do nothing.
-        } catch (Exception ex) {
-
-            ex.printStackTrace();
         }
 
         if (refresh != null) {

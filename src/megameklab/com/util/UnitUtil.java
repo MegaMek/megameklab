@@ -1228,6 +1228,14 @@ public class UnitUtil {
         eq.setLocation(location, rear);
         eq.setSecondLocation(secondaryLocation, rear);
         eq.setSplit(secondaryLocation > -1);
+        // If we're adding it to a location on the unit, check equipment linkages
+        if (location > Entity.LOC_NONE) {
+            try {
+                MechFileParser.postLoadInit(unit);
+            } catch (EntityLoadingException ignored) {
+                // Exception thrown for not having equipment to link to yet, which is acceptable here
+            }
+        }
     }
 
     public static void resizeMount(Mounted mount, double newSize) {
@@ -1250,11 +1258,6 @@ public class UnitUtil {
         compactCriticals(entity, loc);
         if ((start < 0) || (entity.getEmptyCriticals(loc) < mount.getCriticals())) {
             changeMountStatus(entity, mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
-            try {
-                MechFileParser.postLoadInit(entity);
-            } catch (EntityLoadingException ignored) {
-                // We're not actually loading an Entity; we're fixing linked equipment
-            }
         } else {
             // If the number of criticals increases, we may need to shift existing criticals
             // to make room. Since we checked for sufficient space and compacted the existing

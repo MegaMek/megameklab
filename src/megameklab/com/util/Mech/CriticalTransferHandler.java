@@ -565,16 +565,6 @@ public class CriticalTransferHandler extends TransferHandler {
 
         UnitUtil.changeMountStatus(getUnit(), eq, location, secondaryLocation, rear);
 
-        // Check linkings after you remove everything.
-        try {
-            MechFileParser.postLoadInit(getUnit());
-        } catch (EntityLoadingException ele) {
-            // do nothing.
-        } catch (Exception ex) {
-
-            ex.printStackTrace();
-        }
-
         if (refresh != null) {
             refresh.refreshAll();
         }
