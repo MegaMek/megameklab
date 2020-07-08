@@ -1207,17 +1207,35 @@ public class UnitUtil {
      * it's located (ie, BAMountLocation isn't affected).  BattleArmor should
      * change this outside of this method.
      *
-     * @param unit
-     * @param eq
-     * @param location
-     * @param secondaryLocation
-     * @param rear
+     * @param unit               The unit being modified
+     * @param eq                 The equipment mount to move
+     * @param location           The location to move the mount to
+     * @param secondaryLocation  The secondary location for split equipment, otherwise {@link Entity#LOC_NONE Entity.LOC_NONE}
+     * @param rear               Whether to mount with a rear facing
      */
     public static void changeMountStatus(Entity unit, Mounted eq, int location,
             int secondaryLocation, boolean rear) {
+        if (location != eq.getLocation()) {
+            if (eq.getLinked() != null) {
+                eq.getLinked().setLinkedBy(null);
+                eq.setLinked(null);
+            }
+            if (eq.getLinkedBy() != null) {
+                eq.getLinkedBy().setLinked(null);
+                eq.setLinkedBy(null);
+            }
+        }
         eq.setLocation(location, rear);
         eq.setSecondLocation(secondaryLocation, rear);
         eq.setSplit(secondaryLocation > -1);
+        // If we're adding it to a location on the unit, check equipment linkages
+        if (location > Entity.LOC_NONE) {
+            try {
+                MechFileParser.postLoadInit(unit);
+            } catch (EntityLoadingException ignored) {
+                // Exception thrown for not having equipment to link to yet, which is acceptable here
+            }
+        }
     }
 
     public static void resizeMount(Mounted mount, double newSize) {
@@ -1240,11 +1258,6 @@ public class UnitUtil {
         compactCriticals(entity, loc);
         if ((start < 0) || (entity.getEmptyCriticals(loc) < mount.getCriticals())) {
             changeMountStatus(entity, mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
-            try {
-                MechFileParser.postLoadInit(entity);
-            } catch (EntityLoadingException ignored) {
-                // We're not actually loading an Entity; we're fixing linked equipment
-            }
         } else {
             // If the number of criticals increases, we may need to shift existing criticals
             // to make room. Since we checked for sufficient space and compacted the existing

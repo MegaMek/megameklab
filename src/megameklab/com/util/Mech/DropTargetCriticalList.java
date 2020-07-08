@@ -688,16 +688,6 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
             }
         }
 
-        // Check linkings after you remove everything.
-        try {
-            MechFileParser.postLoadInit(getUnit());
-        } catch (EntityLoadingException ele) {
-            // do nothing.
-        } catch (Exception ex) {
-
-            ex.printStackTrace();
-        }
-
         if (refresh != null) {
             refresh.refreshAll();
         }
