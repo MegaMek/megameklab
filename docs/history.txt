@@ -4,6 +4,8 @@ VERSION HISTORY:
 + Issue #611: [Errata] Naval Repair Facilities should use 2 docking collars no matter their capacity
 + Issue #636: TRO summary does not show armored components
 + Issue #644: Weight-Free Heat Sinks of Small Craft and Dropship is not changed when change the shape
++ Issue #642: Removed weapons of Aerospace Fighter's ammunition is still available
++ Issue #645: Unequal BV calculation when adding CASE (II)
 
 0.47.7 (2020-06-22 2330 UTC)
 + Issue #614: Change the list of equipment while sort by Crit section cause error
