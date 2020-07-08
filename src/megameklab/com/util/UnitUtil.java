@@ -2567,6 +2567,10 @@ public class UnitUtil {
                 unit.setArmorType(EquipmentType.T_ARMOR_PRIMITIVE_FIGHTER);
             }
         }
+        List<Mounted> weaponGroups = new ArrayList<>(unit.getWeaponGroupList());
+        for (Mounted group : weaponGroups) {
+            UnitUtil.removeMounted(unit, group);
+        }
     }
 
     public static boolean isUnitWeapon(EquipmentType eq, Entity unit) {
