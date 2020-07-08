@@ -1207,14 +1207,24 @@ public class UnitUtil {
      * it's located (ie, BAMountLocation isn't affected).  BattleArmor should
      * change this outside of this method.
      *
-     * @param unit
-     * @param eq
-     * @param location
-     * @param secondaryLocation
-     * @param rear
+     * @param unit               The unit being modified
+     * @param eq                 The equipment mount to move
+     * @param location           The location to move the mount to
+     * @param secondaryLocation  The secondary location for split equipment, otherwise {@link Entity#LOC_NONE Entity.LOC_NONE}
+     * @param rear               Whether to mount with a rear facing
      */
     public static void changeMountStatus(Entity unit, Mounted eq, int location,
             int secondaryLocation, boolean rear) {
+        if (location != eq.getLocation()) {
+            if (eq.getLinked() != null) {
+                eq.getLinked().setLinkedBy(null);
+                eq.setLinked(null);
+            }
+            if (eq.getLinkedBy() != null) {
+                eq.getLinkedBy().setLinked(null);
+                eq.setLinkedBy(null);
+            }
+        }
         eq.setLocation(location, rear);
         eq.setSecondLocation(secondaryLocation, rear);
         eq.setSplit(secondaryLocation > -1);
