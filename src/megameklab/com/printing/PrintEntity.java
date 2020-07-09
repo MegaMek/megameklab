@@ -52,7 +52,8 @@ public abstract class PrintEntity extends PrintRecordSheet {
             | (1 << EquipmentType.T_ARMOR_ANTI_PENETRATIVE_ABLATION)
             | (1 << EquipmentType.T_ARMOR_HEAT_DISSIPATING)
             | (1 << EquipmentType.T_ARMOR_IMPACT_RESISTANT)
-            | (1 << EquipmentType.T_ARMOR_BALLISTIC_REINFORCED);
+            | (1 << EquipmentType.T_ARMOR_BALLISTIC_REINFORCED)
+            | (1 << EquipmentType.T_ARMOR_COMMERCIAL);
     
     /**
      * Creates an SVG object for the record sheet
@@ -298,14 +299,17 @@ public abstract class PrintEntity extends PrintRecordSheet {
 
     protected void drawArmor() {
         if (getEntity().isSupportVehicle()
-                && (getEntity().hasBARArmor(getEntity().firstArmorIndex()))) {
+                && (getEntity().hasBARArmor(firstArmorLocation()))) {
             setTextField(ARMOR_TYPE, "BAR: " + getEntity().getBARRating(firstArmorLocation()));
         } else if (!getEntity().hasPatchworkArmor()) {
-            if ((AT_SPECIAL & (1 << getEntity().getArmorType(1))) != 0) {
-                String[] atName = EquipmentType.getArmorTypeName(getEntity().getArmorType(1)).split("-");
+            final int at = getEntity().getArmorType(firstArmorLocation());
+            if ((AT_SPECIAL & (1 << at)) != 0) {
+                String[] atName = EquipmentType.getArmorTypeName(at).split("-");
                 setTextField(ARMOR_TYPE, atName[0]);
                 if (atName.length > 1) {
                     setTextField(ARMOR_TYPE_2, atName[1]);
+                } else if (getEntity().hasBARArmor(firstArmorLocation())) {
+                    setTextField(ARMOR_TYPE_2, "BAR: " + getEntity().getBARRating(firstArmorLocation()));
                 }
             } else {
                 hideElement(ARMOR_TYPE, true);
