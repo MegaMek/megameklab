@@ -8,6 +8,7 @@ VERSION HISTORY:
 + Issue #645: Unequal BV calculation when adding CASE (II)
 + Issue #647: Quarters, infantry bay, and Life Support cost calculations are wrong on large craft
 + Issue #654: Base Tech of the ammunition of Thumper Artillery is changed to Clans if change the unit to Mixed Inner Sphere
++ Issue #655: Mass Drivers use more slots than shown
 
 0.47.7 (2020-06-22 2330 UTC)
 + Issue #614: Change the list of equipment while sort by Crit section cause error
