@@ -65,10 +65,10 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
     private static final int IS_MIXED_START = TA_MIXED_TECH.getIntroductionDate(false);
     private static final int CLAN_MIXED_START = TA_MIXED_TECH.getIntroductionDate(true);
     
-    private static final int TECH_BASE_IS           = 0;
-    private static final int TECH_BASE_CLAN         = 1;
-    private static final int TECH_BASE_IS_MIXED     = 2;
-    private static final int TECH_BASE_CLAN_MIXED   = 3;
+    private static final int BASE_IS = 0;
+    private static final int BASE_CLAN = 1;
+    private static final int BASE_IS_MIXED = 2;
+    private static final int BASE_CLAN_MIXED = 3;
     
     private String[] techBaseNames;
     private TechAdvancement baseTA;
@@ -301,7 +301,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         } else {
             Integer selected = (Integer) cbTechBase.getSelectedItem();
             return ((null != selected)
-                    && ((selected == TECH_BASE_CLAN) || (selected == TECH_BASE_CLAN_MIXED)));
+                    && ((selected == BASE_CLAN) || (selected == BASE_CLAN_MIXED)));
         }
     }
     
@@ -312,7 +312,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         }
         Integer selected = (Integer) cbTechBase.getSelectedItem();
         return ((null != selected)
-                && ((selected == TECH_BASE_IS_MIXED) || (selected == TECH_BASE_CLAN_MIXED)));
+                && ((selected == BASE_IS_MIXED) || (selected == BASE_CLAN_MIXED)));
     }
     
     public void setTechBase(boolean clan, boolean mixed) {
@@ -354,16 +354,16 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         final boolean mixedTechAvailable = (getTechIntroYear() >= IS_MIXED_START)
                 || ((getTechIntroYear() >= CLAN_MIXED_START) && clanFaction);
         if (sphereAvailable) {
-            cbTechBase.addItem(TECH_BASE_IS);
+            cbTechBase.addItem(BASE_IS);
         }
         if (clanAvailable) {
-            cbTechBase.addItem(TECH_BASE_CLAN);
+            cbTechBase.addItem(BASE_CLAN);
         }
         if (sphereAvailable && mixedTechAvailable) {
-            cbTechBase.addItem(TECH_BASE_IS_MIXED);
+            cbTechBase.addItem(BASE_IS_MIXED);
         }
         if (clanAvailable && mixedTechAvailable) {
-            cbTechBase.addItem(TECH_BASE_CLAN_MIXED);
+            cbTechBase.addItem(BASE_CLAN_MIXED);
         }
         if (null != prev) {
             cbTechBase.setSelectedItem(prev);
