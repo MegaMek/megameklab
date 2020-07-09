@@ -347,7 +347,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         // Clan is available to anything that doesn't require an IS tech base, is built after the Clans
         // are formed, and not built by an IS faction before the Clan invasion.
         final boolean clanFaction = (getTechFaction() >= ITechnology.F_CLAN) || (getTechFaction() < 0);
-        final boolean sphereAvailable = baseTA.getTechBase() != TECH_BASE_CLAN;
+        final boolean sphereAvailable = baseTA.getTechBase() != ITechnology.TECH_BASE_CLAN;
         final boolean clanAvailable = (getTechIntroYear() >= CLAN_START)
                 && (baseTA.getTechBase() != ITechnology.TECH_BASE_IS)
                 && (clanFaction || (getTechIntroYear() >= IS_MIXED_START));
