@@ -137,19 +137,33 @@ public class BayWeaponCriticalTree extends JTree {
         model.setRoot(root);
         setRootVisible(root.getChildCount() == 0);
     }
+
+    private int slotCount(Mounted bay) {
+        int count = 0;
+        for (int eqNum : bay.getBayWeapons()) {
+            final Mounted mount = eSource.getEntity().getEquipment(eqNum);
+            if ((mount.getType() instanceof WeaponType)
+                    && (mount.getType().hasFlag(WeaponType.F_MASS_DRIVER))) {
+                count += 10;
+            } else {
+                count++;
+            }
+        }
+        return count;
+    }
     
     /**
      * @return The number of weapon slots required by equipment allocated to this arc.
      */
     public int getSlotCount() {
         int count = 0;
-        for (Enumeration<?> e = ((MutableTreeNode)model.getRoot()).children(); e.hasMoreElements(); ) {
+        for (Enumeration<?> e = ((MutableTreeNode) model.getRoot()).children(); e.hasMoreElements(); ) {
             final Object node = e.nextElement();
             if (node instanceof BayNode) {
-                count += ((BayNode)node).getMounted().getBayWeapons().size();
+                count += slotCount(((BayNode) node).getMounted());
             } else if ((node instanceof EquipmentNode)
                     && (TestAero.usesWeaponSlot(eSource.getEntity(),
-                            ((EquipmentNode)node).getMounted().getType()))) {
+                            ((EquipmentNode) node).getMounted().getType()))) {
                 count++;
             }
         }
