@@ -314,6 +314,33 @@ public class StructureTab extends ITab implements MekBuildListener, ArmorAllocat
                 clearCritsForCockpit(true, true);
                 getMech().addSmallCommandConsole();
                 break;
+            case Mech.COCKPIT_TORSO_MOUNTED_INDUSTRIAL:
+                if (lastEngine + 2 < getMech().getNumberOfCriticals(Mech.LOC_CT)) {
+                    clearCrit(Mech.LOC_CT, lastEngine + 1);
+                    clearCrit(Mech.LOC_CT, lastEngine + 2);
+                }
+                clearCrit(Mech.LOC_HEAD, 0);
+                clearCrit(Mech.LOC_HEAD, 1);
+                if (getMech().getEmptyCriticals(Mech.LOC_LT) < 1) {
+                    for (int i = 0; i < getMech().getNumberOfCriticals(Mech.LOC_LT); i++) {
+                        if (getMech().getCritical(Mech.LOC_LT, i) != null
+                                && getMech().getCritical(Mech.LOC_LT, i).getType() == CriticalSlot.TYPE_EQUIPMENT) {
+                            clearCrit(Mech.LOC_LT, i);
+                            break;
+                        }
+                    }
+                }
+                if (getMech().getEmptyCriticals(Mech.LOC_RT) < 1) {
+                    for (int i = 0; i < getMech().getNumberOfCriticals(Mech.LOC_RT); i++) {
+                        if (getMech().getCritical(Mech.LOC_RT, i) != null
+                                && getMech().getCritical(Mech.LOC_RT, i).getType() == CriticalSlot.TYPE_EQUIPMENT) {
+                            clearCrit(Mech.LOC_RT, i);
+                            break;
+                        }
+                    }
+                }
+                getMech().addTorsoMountedIndustrialCockpit();
+                break;
             default:
                 clearCritsForCockpit(false, false);
                 getMech().addCockpit();
