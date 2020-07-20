@@ -11,6 +11,7 @@ VERSION HISTORY:
 + Issue #655: Mass Drivers use more slots than shown
 + PR #673: Indicate commercial armor on mech record sheet
 + Issue #657: Tripod/Super Heavy Tech base show -Error-
++ Issue #659: Jumping MP not updated if Improved Jump Jets are removed as a result of changing the production year of a Mek
 
 0.47.7 (2020-06-22 2330 UTC)
 + Issue #614: Change the list of equipment while sort by Crit section cause error
