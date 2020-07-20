@@ -876,7 +876,7 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
             if (column == InstalledBaysModel.COL_DOORS) {
                 int doors = (Integer) modelInstalled.getValueAt(row, column);
                 SpinnerNumberModel model = new SpinnerNumberModel(doors,
-                        (isCargo || isInfantry)? 0 : 1,
+                        (isCargo || isInfantry) ? 0 : 1,
                         doorsAvailable() + doors, 1);
                 spinner.removeChangeListener(this);
                 spinner.setModel(model);
