@@ -12,6 +12,8 @@ VERSION HISTORY:
 + PR #673: Indicate commercial armor on mech record sheet
 + Issue #657: Tripod/Super Heavy Tech base show -Error-
 + Issue #659: Jumping MP not updated if Improved Jump Jets are removed as a result of changing the production year of a Mek
++ Issue #661: Cannot create bays with 0 doors (except plain Cargo) on large aerospace units
++ Issue #662: Loading Combat Vehicle with Vehicular Stealth Armor always make a new section named Vehicular Stealth
 
 0.47.7 (2020-06-22 2330 UTC)
 + Issue #614: Change the list of equipment while sort by Crit section cause error
