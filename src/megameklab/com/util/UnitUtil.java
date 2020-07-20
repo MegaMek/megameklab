@@ -127,8 +127,9 @@ public class UnitUtil {
                         || eq.hasFlag(MiscType.F_ENVIRONMENTAL_SEALING)
                         || eq.hasFlag(MiscType.F_TRACKS)
                         || eq.hasFlag(MiscType.F_TALON)
-                        || (eq.hasFlag(MiscType.F_STEALTH) && eq
-                                .hasFlag(MiscType.F_MECH_EQUIPMENT))
+                        || (eq.hasFlag(MiscType.F_STEALTH)
+                            && (eq.hasFlag(MiscType.F_MECH_EQUIPMENT)
+                                || eq.hasFlag(MiscType.F_TANK_EQUIPMENT)))
                         || eq.hasFlag(MiscType.F_CHAMELEON_SHIELD)
                         || eq.hasFlag(MiscType.F_BLUE_SHIELD)
                         || eq.hasFlag(MiscType.F_MAST_MOUNT)
