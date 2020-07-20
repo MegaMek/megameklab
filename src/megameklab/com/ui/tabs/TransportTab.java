@@ -84,7 +84,7 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
     private TableColumn podColumn;
 
     private RefreshListener refresh = null;
-    
+
     public TransportTab(EntitySource eSource) {
         super(eSource);
         initUI();
@@ -363,7 +363,7 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
             return false;
         }
         BayData bayType = modelAvailable.getBayType(tblAvailable.convertRowIndexToModel(selected));
-        return (doorsAvailable() > 0) || (bayType == BayData.CARGO);
+        return (doorsAvailable() > 0) || bayType.isCargoBay() || bayType.isInfantryBay();
     }
     
     /**
@@ -542,7 +542,7 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
             }
         }
     }
-    
+
     private class InstalledBaysModel extends AbstractTableModel {
         
         private static final long serialVersionUID = -8643492032818089043L;
@@ -744,7 +744,7 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
         private static final int COL_PERSONNEL = 2;
         private static final int NUM_COLS      = 3;
         
-        private List<BayData> bayList = new ArrayList<>();
+        private final List<BayData> bayList = new ArrayList<>();
         
         void refreshBays() {
             bayList.clear();
@@ -872,10 +872,12 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
         public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row,
                 int column) {
             boolean isCargo = modelInstalled.bayTypeList.get(row).isCargoBay();
+            boolean isInfantry = modelInstalled.bayTypeList.get(row).isInfantryBay();
             if (column == InstalledBaysModel.COL_DOORS) {
                 int doors = (Integer) modelInstalled.getValueAt(row, column);
                 SpinnerNumberModel model = new SpinnerNumberModel(doors,
-                        isCargo? 0 : 1, doorsAvailable() + doors, 1);
+                        (isCargo || isInfantry) ? 0 : 1,
+                        doorsAvailable() + doors, 1);
                 spinner.removeChangeListener(this);
                 spinner.setModel(model);
                 spinner.addChangeListener(this);
