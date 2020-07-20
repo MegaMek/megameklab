@@ -419,6 +419,7 @@ public class StructureTab extends ITab implements CVBuildListener, ArmorAllocati
     public void armorTypeChanged(int at, int aTechLevel) {
         if (at != EquipmentType.T_ARMOR_PATCHWORK) {
             UnitUtil.removeISorArmorMounts(getTank(), false);
+            UnitUtil.compactCriticals(getTank());
             getTank().setArmorTechLevel(aTechLevel);
             getTank().setArmorType(at);
             panArmorAllocation.showPatchwork(false);
