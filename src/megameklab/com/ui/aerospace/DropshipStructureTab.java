@@ -24,14 +24,12 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
 import megamek.common.Aero;
-import megamek.common.CriticalSlot;
 import megamek.common.Dropship;
 import megamek.common.Entity;
 import megamek.common.EntityMovementMode;
 import megamek.common.EquipmentType;
 import megamek.common.ITechManager;
 import megamek.common.SimpleTechLevel;
-import megamek.common.SmallCraft;
 import megamek.common.verifier.TestEntity;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.view.FuelView;
@@ -94,7 +92,7 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener,
         panArmorAllocation = new ArmorAllocationView(panInfo, Entity.ETYPE_AERO);
         panSummary = new DropshipSummaryView(eSource);
 
-        GridBagConstraints gbc = new GridBagConstraints();
+        GridBagConstraints gbc;
 
         JPanel leftPanel = new JPanel();
         JPanel midPanel = new JPanel();
@@ -167,23 +165,6 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener,
         panSummary.refresh();
         addAllListeners();
 
-    }
-
-    public void removeSystemCrits(int systemType) {
-
-        for (int loc = 0; loc < getSmallCraft().locations(); loc++) {
-            for (int slot = 0; slot < getSmallCraft().getNumberOfCriticals(loc); slot++) {
-                CriticalSlot cs = getSmallCraft().getCritical(loc, slot);
-
-                if ((cs == null) || (cs.getType() != CriticalSlot.TYPE_SYSTEM)) {
-                    continue;
-                }
-
-                if (cs.getIndex() == systemType) {
-                    getSmallCraft().setCritical(loc, slot, null);
-                }
-            }
-        }
     }
 
     public void removeAllListeners() {
@@ -399,7 +380,11 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener,
 
     @Override
     public void militaryChanged(boolean military) {
-        getSmallCraft().setDesignType(military? SmallCraft.MILITARY : SmallCraft.CIVILIAN);
+        getSmallCraft().setDesignType(military ? Aero.MILITARY : Aero.CIVILIAN);
+        panHeat.setFromAero(getSmallCraft());
+        panFuel.setFromEntity(getSmallCraft());
+        panSummary.refresh();
+        refresh.refreshStatus();
         refresh.refreshPreview();
     }
 

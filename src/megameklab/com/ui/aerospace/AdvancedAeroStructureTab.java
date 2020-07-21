@@ -24,7 +24,6 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
 import megamek.common.Aero;
-import megamek.common.CriticalSlot;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.ITechManager;
@@ -95,7 +94,7 @@ public class AdvancedAeroStructureTab extends ITab implements AdvancedAeroBuildL
         panArmorAllocation = new ArmorAllocationView(panInfo, Entity.ETYPE_AERO);
         panSummary = new AdvancedAeroSummaryView(eSource);
 
-        GridBagConstraints gbc = new GridBagConstraints();
+        GridBagConstraints gbc;
 
         JPanel leftPanel = new JPanel();
         JPanel midPanel = new JPanel();
@@ -173,23 +172,6 @@ public class AdvancedAeroStructureTab extends ITab implements AdvancedAeroBuildL
         panSummary.refresh();
         addAllListeners();
 
-    }
-
-    public void removeSystemCrits(int systemType) {
-
-        for (int loc = 0; loc < getJumpship().locations(); loc++) {
-            for (int slot = 0; slot < getJumpship().getNumberOfCriticals(loc); slot++) {
-                CriticalSlot cs = getJumpship().getCritical(loc, slot);
-
-                if ((cs == null) || (cs.getType() != CriticalSlot.TYPE_SYSTEM)) {
-                    continue;
-                }
-
-                if (cs.getIndex() == systemType) {
-                    getJumpship().setCritical(loc, slot, null);
-                }
-            }
-        }
     }
 
     public void removeAllListeners() {
@@ -422,9 +404,12 @@ public class AdvancedAeroStructureTab extends ITab implements AdvancedAeroBuildL
 
     @Override
     public void militaryChanged(boolean military) {
-        getJumpship().setDesignType(military? Aero.MILITARY : Aero.CIVILIAN);
-        refresh.refreshPreview();
+        getJumpship().setDesignType(military ? Aero.MILITARY : Aero.CIVILIAN);
+        panHeat.setFromAero(getSmallCraft());
+        panFuel.setFromEntity(getSmallCraft());
+        panSummary.refresh();
         refresh.refreshStatus();
+        refresh.refreshPreview();
     }
 
     @Override
