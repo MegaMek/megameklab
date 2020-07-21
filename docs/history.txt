@@ -16,6 +16,7 @@ VERSION HISTORY:
 + Issue #662: Loading Combat Vehicle with Vehicular Stealth Armor always make a new section named Vehicular Stealth
 + Issue #668: Aft Right weapons arc on spheroid DropShips does not properly display extra fire control tonnage
 + Issue #670: Changing DropShip engine from military to civilian does not update displayed information
++ Issue #677: Electronic Warfare equipment (ECM, Beagle, etc) ranges missing from RS
 
 0.47.7 (2020-06-22 2330 UTC)
 + Issue #614: Change the list of equipment while sort by Crit section cause error
