@@ -31,7 +31,6 @@ import megamek.common.EntityMovementMode;
 import megamek.common.EquipmentType;
 import megamek.common.ITechManager;
 import megamek.common.SimpleTechLevel;
-import megamek.common.SmallCraft;
 import megamek.common.verifier.TestEntity;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.view.FuelView;
@@ -399,7 +398,11 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener,
 
     @Override
     public void militaryChanged(boolean military) {
-        getSmallCraft().setDesignType(military? SmallCraft.MILITARY : SmallCraft.CIVILIAN);
+        getSmallCraft().setDesignType(military ? Aero.MILITARY : Aero.CIVILIAN);
+        panHeat.setFromAero(getSmallCraft());
+        panFuel.setFromEntity(getSmallCraft());
+        panSummary.refresh();
+        refresh.refreshStatus();
         refresh.refreshPreview();
     }
 

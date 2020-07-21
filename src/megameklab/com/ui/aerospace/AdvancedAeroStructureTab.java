@@ -422,9 +422,12 @@ public class AdvancedAeroStructureTab extends ITab implements AdvancedAeroBuildL
 
     @Override
     public void militaryChanged(boolean military) {
-        getJumpship().setDesignType(military? Aero.MILITARY : Aero.CIVILIAN);
-        refresh.refreshPreview();
+        getJumpship().setDesignType(military ? Aero.MILITARY : Aero.CIVILIAN);
+        panHeat.setFromAero(getSmallCraft());
+        panFuel.setFromEntity(getSmallCraft());
+        panSummary.refresh();
         refresh.refreshStatus();
+        refresh.refreshPreview();
     }
 
     @Override
