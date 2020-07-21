@@ -140,6 +140,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         } else if (mount.getType().hasFlag(MiscType.F_SINGLE_HEX_ECM)) {
             return "0";
         } else if (mount.getType().hasFlag(MiscType.F_ECM)) {
+            // Guardian ECM, Clan ECM, non-BA Angel ECM
             return "6";
         } else if (mount.getType().hasFlag(MiscType.F_BLOODHOUND)) {
             return "8";
