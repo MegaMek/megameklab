@@ -118,10 +118,43 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
                     r[RangeType.RANGE_MEDIUM] = String.valueOf(wtype.getMediumRange());
                     r[RangeType.RANGE_LONG] = String.valueOf(wtype.getLongRange());
                 }
+            } else if ((mount.getType() instanceof MiscType)
+                    && (mount.getType().hasFlag(MiscType.F_ECM) || mount.getType().hasFlag(MiscType.F_BAP))) {
+                r[RangeType.RANGE_SHORT] = DASH;
+                r[RangeType.RANGE_MEDIUM] = DASH;
+                r[RangeType.RANGE_LONG] = ewMaxRange();
             }
             String[][] retVal = new String[1][];
             retVal[0] = r;
             return retVal;
+        }
+    }
+
+    private String ewMaxRange() {
+        if (mount.getType().hasFlag(MiscType.F_ANGEL_ECM) && mount.getType().hasFlag(MiscType.F_BA_EQUIPMENT)) {
+            return "2";
+        } else if (mount.getType().hasFlag(MiscType.F_EW_EQUIPMENT)
+                || mount.getType().hasFlag(MiscType.F_WATCHDOG)
+                || mount.getType().hasFlag(MiscType.F_NOVA)) {
+            return "3";
+        } else if (mount.getType().hasFlag(MiscType.F_SINGLE_HEX_ECM)) {
+            return "0";
+        } else if (mount.getType().hasFlag(MiscType.F_ECM)) {
+            // Guardian ECM, Clan ECM, non-BA Angel ECM
+            return "6";
+        } else if (mount.getType().hasFlag(MiscType.F_BLOODHOUND)) {
+            return "8";
+        } else if (mount.getType().getInternalName().equals(Sensor.LIGHT_AP)
+                || mount.getType().getInternalName().equals(Sensor.ISBALIGHT_AP)
+                || mount.getType().getInternalName().equals(Sensor.CLBALIGHT_AP)) {
+            return "3";
+        } else if (mount.getType().getInternalName().equals(Sensor.ISIMPROVED)
+                || mount.getType().getInternalName().equals(Sensor.CLIMPROVED)) {
+            return "2";
+        } else if (mount.getType().isClan()) {
+            return "5"; // Clan active probe
+        } else {
+            return "4"; // Beagle active probe
         }
     }
 
