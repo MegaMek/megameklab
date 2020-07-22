@@ -61,7 +61,9 @@ import megamek.common.verifier.TestAero;
 import megamek.common.verifier.TestEntity;
 import megamek.common.weapons.bayweapons.BayWeapon;
 import megamek.common.weapons.bayweapons.PPCBayWeapon;
+import megamek.common.weapons.lrms.LRMWeapon;
 import megamek.common.weapons.ppc.PPCWeapon;
+import megamek.common.weapons.srms.SRMWeapon;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.util.CConfig;
@@ -592,15 +594,16 @@ public class BayWeaponCriticalTree extends JTree {
             StringBuilder sb = new StringBuilder("<html>");
             sb.append(toString());
             if (getMounted().getType() instanceof WeaponType) {
-                final WeaponType wtype = (WeaponType)getMounted().getType();
-                sb.append("<br/>AV: ").append(wtype.getShortAV()).append("/")
-                    .append(wtype.getMedAV()).append("/").append(wtype.getLongAV());
+                final WeaponType wtype = (WeaponType) getMounted().getType();
+                final int bonus = avMod(getMounted());
+                sb.append("<br/>AV: ").append(wtype.getShortAV() + bonus).append("/")
+                    .append(wtype.getMedAV() + bonus).append("/")
+                    .append(wtype.getLongAV() + bonus);
                 sb.append("<br/>Heat: ").append(wtype.getHeat());
             }
             sb.append("</html>");
             return sb.toString();
         }
-        
     }
     
     /**
@@ -655,9 +658,8 @@ public class BayWeaponCriticalTree extends JTree {
                         av += ((WeaponType) m.getType()).getShortAV();
                     }
                     // Capacitors in bays are always considered charged.
-                    if ((m.getLinkedBy() != null)
-                            && (m.getLinkedBy().getType().hasFlag(MiscType.F_PPC_CAPACITOR))) {
-                        av += 5;
+                    if (m.getLinkedBy() != null) {
+                        av += avMod((WeaponType) m.getType(), m.getLinkedBy().getType());
                     }
                 }
             }
@@ -685,9 +687,10 @@ public class BayWeaponCriticalTree extends JTree {
             for (Integer wNum : getMounted().getBayWeapons()) {
                 final Mounted eq = eSource.getEntity().getEquipment(wNum);
                 final WeaponType wtype = (WeaponType) eq.getType();
-                shortAV += wtype.getShortAV();
-                medAV += wtype.getMedAV();
-                longAV += wtype.getLongAV();
+                final int bonus = avMod(eq);
+                shortAV += wtype.getShortAV() + bonus;
+                medAV += wtype.getMedAV() + bonus;
+                longAV += wtype.getLongAV() + bonus;
                 heat += wtype.getHeat();
                 weight += eq.getTonnage();
                 if (eq.getLinkedBy() != null) {
@@ -705,7 +708,41 @@ public class BayWeaponCriticalTree extends JTree {
             return sb.toString();
         }
     }
-    
+
+    private int avMod(Mounted weaponMount) {
+        if ((weaponMount.getType() instanceof WeaponType)
+                && (weaponMount.getLinkedBy() != null)) {
+            return avMod((WeaponType) weaponMount.getType(), weaponMount.getLinkedBy().getType());
+        } else {
+            return 0;
+        }
+    }
+
+    private int avMod(WeaponType weapon, EquipmentType linkedBy) {
+        if (linkedBy.hasFlag(MiscType.F_ARTEMIS)
+                || linkedBy.hasFlag(MiscType.F_ARTEMIS_V)) {
+            // The 9 and 10 rows of the cluster hits table is only different in the 3 column
+            if (weapon.getAtClass() == WeaponType.CLASS_MML) {
+                if (weapon.getRackSize() >= 7) {
+                    return 2;
+                } else if ((weapon.getRackSize() >= 5) || linkedBy.hasFlag(MiscType.F_ARTEMIS_V)) {
+                    return 1;
+                }
+            } else if (weapon instanceof LRMWeapon) {
+                return weapon.getRackSize() / 5;
+            } else if (weapon instanceof SRMWeapon) {
+                return 2;
+            }
+        } else if (linkedBy.hasFlag(MiscType.F_ARTEMIS_PROTO) && weapon.getRackSize() == 2) {
+            // The +1 cluster hit bonus only adds a missile hit for SRM2
+            return 2;
+        } else if (linkedBy.hasFlag(MiscType.F_PPC_CAPACITOR)) {
+            // PPC capacitors in weapon bays are treated as if always charged
+            return 5;
+        }
+        return 0;
+    }
+
     /**
      * Sets node name and text/background colors.
      */
