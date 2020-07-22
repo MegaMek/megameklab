@@ -1296,27 +1296,22 @@ public class BayWeaponCriticalTree extends JTree {
                 if (w.getType().hasFlag(WeaponType.F_PLASMA)) {
                     if (((WeaponType)w.getType()).getDamage() == WeaponType.DAMAGE_VARIABLE) {
                         av += 7;
-                    } else if (w.getType().hasFlag(WeaponType.F_ARTILLERY)) {
-                        av += ((WeaponType) w.getType()).getRackSize();
                     } else {
                         av += 13.5;
                     }
+                } else if (w.getType().hasFlag(WeaponType.F_ARTILLERY)) {
+                    av += ((WeaponType) w.getType()).getRackSize();
                 } else {
-                    av += ((WeaponType) w.getType()).getShortAV();
-                }
-                // Capacitors in bays are always considered charged.
-                if ((w.getLinkedBy() != null)
-                        && (w.getLinkedBy().getType().hasFlag(MiscType.F_PPC_CAPACITOR))) {
-                    av += 5;
+                    av += ((WeaponType) w.getType()).getShortAV() + avMod(w);
                 }
             }
             if (eq.getType().hasFlag(WeaponType.F_MASS_DRIVER)) {
                 // Limit is one per firing arc; the medium and heavy exceed the 70-point limit.
                 return av == 0;
-            } else if (((WeaponType)eq.getType()).isCapital()) {
-                return av + ((WeaponType)eq.getType()).getShortAV() <= 70;
+            } else if (((WeaponType) eq.getType()).isCapital()) {
+                return av + ((WeaponType) eq.getType()).getShortAV() <= 70;
             } else {
-                return av + ((WeaponType)eq.getType()).getShortAV() <= 700;
+                return av + ((WeaponType) eq.getType()).getShortAV() + avMod(eq) <= 700;
             }
         } else if (eq.getType() instanceof AmmoType) {
             for (int eqNum : bay.getBayWeapons()) {
