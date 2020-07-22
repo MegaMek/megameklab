@@ -18,6 +18,7 @@ VERSION HISTORY:
 + Issue #670: Changing DropShip engine from military to civilian does not update displayed information
 + Issue #677: Electronic Warfare equipment (ECM, Beagle, etc) ranges missing from RS
 + Issue #681: StringIndexOutOfBoundsException errors, possibly a problem loading Mission Equipment Storage
++ Issue #682: Equipment from older version of MML failing to load
 
 0.47.7 (2020-06-22 2330 UTC)
 + Issue #614: Change the list of equipment while sort by Crit section cause error
