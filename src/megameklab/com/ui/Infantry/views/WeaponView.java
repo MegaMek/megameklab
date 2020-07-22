@@ -244,11 +244,7 @@ public class WeaponView extends IView implements ActionListener {
     public void refresh() {
         removeAllListeners();
         filterEquipment();
-        if(TestInfantry.maxSecondaryWeapons(getInfantry()) > 0) {
-            addSecondaryButton.setEnabled(true);
-        } else {
-            addSecondaryButton.setEnabled(false);
-        }
+        addSecondaryButton.setEnabled(TestInfantry.maxSecondaryWeapons(getInfantry()) > 0);
         addAllListeners();
     }
 
@@ -281,7 +277,7 @@ public class WeaponView extends IView implements ActionListener {
                 if (equip.hasFlag(WeaponType.F_TAG)) {
                     getInfantry().setSpecializations(getInfantry().getSpecializations() | Infantry.TAG_TROOPS);
                     getInfantry().setSecondaryN(2);
-                } else if (getInfantry().getSecondaryN() == 0) {
+                } else if (isSecondary && (getInfantry().getSecondaryN() == 0)) {
                     getInfantry().setSecondaryN(1);
                 }
             }
@@ -392,7 +388,9 @@ public class WeaponView extends IView implements ActionListener {
             addPrimaryButton.setEnabled((null != etype)
                     && eSource.getTechManager().isLegal(etype)
                     && !etype.hasFlag(WeaponType.F_INF_SUPPORT));
-            addSecondaryButton.setEnabled((null != etype) && eSource.getTechManager().isLegal(etype));
+            addSecondaryButton.setEnabled((null != etype)
+                    && eSource.getTechManager().isLegal(etype)
+                    && (TestInfantry.maxSecondaryWeapons(getInfantry()) > 0));
         }
         
     };
