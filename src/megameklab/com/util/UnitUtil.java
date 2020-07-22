@@ -18,7 +18,6 @@ package megameklab.com.util;
 
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Graphics2D;
 import java.io.File;
 import java.math.BigInteger;
 import java.text.DecimalFormat;
@@ -4311,7 +4310,7 @@ public class UnitUtil {
         unit.setSneakCamo(false);
         unit.setSneakECM(false);
         unit.setSneakIR(false);
-        unit.setDamageDivisor(1.0);
+        unit.setArmorDamageDivisor(1.0);
     }
 
     public static void removeOmniArmActuators(Mech mech) {
