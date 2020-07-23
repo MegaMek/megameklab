@@ -359,7 +359,7 @@ public class PrintInfantry extends PrintEntity {
                 setTextField(ARMOR_KIT, "Sneak(" + sj.toString() + ")");
             }
         }
-        setTextField(ARMOR_DIVISOR, infantry.getDamageDivisor()
+        setTextField(ARMOR_DIVISOR, infantry.calcDamageDivisor()
                 + (infantry.isArmorEncumbering()? "E" : ""));
         if (infantry.hasDEST()) {
             hideElement(DEST_MODS, false);
