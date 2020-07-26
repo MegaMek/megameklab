@@ -41,7 +41,6 @@ import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import megamek.client.ui.swing.UnitLoadingDialog;
-import megamek.client.ui.swing.UnitSelectorDialog;
 import megamek.common.Entity;
 import megamek.common.MechFileParser;
 import megameklab.com.util.UnitPrintManager;
@@ -166,7 +165,7 @@ public class UnitPrintQueueDialog extends JDialog implements ActionListener, Key
         if (ae.getSource().equals(bSelectCache)) {
             UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(clientgui);
             unitLoadingDialog.setVisible(true);
-            UnitSelectorDialog viewer = new UnitSelectorDialog(clientgui, unitLoadingDialog, true);
+            MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(clientgui, unitLoadingDialog);
 
             viewer.setVisible(false);
             Entity entity = viewer.getChosenEntity();
@@ -267,5 +266,4 @@ public class UnitPrintQueueDialog extends JDialog implements ActionListener, Key
 
     public void windowOpened(java.awt.event.WindowEvent windowEvent) {
     }
-
 }
