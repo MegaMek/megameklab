@@ -71,6 +71,10 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
     @Override
     protected void select(boolean close) {
         chosenEntity = getSelectedEntity();
+        
+        if (close) {
+            setVisible(false);
+        }
     }
     //endregion Button Methods
 
