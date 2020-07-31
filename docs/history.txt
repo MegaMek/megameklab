@@ -22,6 +22,7 @@ VERSION HISTORY:
 + Issue #679: LRM/SRM bays on large aerospace units do not reflect damage increase from Artemis IV
 + Issue #695: Specialized Infantry, No Secondary Weapons error with no 2nd weapons 
 + Issue #705: External engine type in Rail Support Vehicle causes load failure
++ Issue #703: Printing issues for HMG and VSP
 
 0.47.7 (2020-06-22 2330 UTC)
 + Issue #614: Change the list of equipment while sort by Crit section cause error
