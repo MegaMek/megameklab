@@ -83,7 +83,7 @@ public class StringUtils {
         if (mount.getType() instanceof WeaponType) {
             WeaponType weapon = (WeaponType) mount.getType();
             if (weapon instanceof InfantryWeapon) {
-                info = Integer.toString(weapon.getDamage());
+                info = Integer.toString((int) Math.round(((InfantryWeapon) weapon).getInfantryDamage()));
                 if (weapon.hasFlag(WeaponType.F_BALLISTIC)) {
                     info += " (B)";
                 } else if (weapon.hasFlag(WeaponType.F_ENERGY)) {
