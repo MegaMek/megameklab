@@ -109,14 +109,22 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
                     r[RangeType.RANGE_MINIMUM] = String.valueOf(wtype.getMinimumRange());
                 }
                 if ((wtype.getAmmoType() == AmmoType.T_LRM_TORPEDO)
-                    || (wtype.getAmmoType() == AmmoType.T_SRM_TORPEDO)) {
+                        || (wtype.getAmmoType() == AmmoType.T_SRM_TORPEDO)) {
                     r[RangeType.RANGE_SHORT] = String.valueOf(wtype.getWShortRange());
-                    r[RangeType.RANGE_MEDIUM] = String.valueOf(wtype.getWMediumRange());
-                    r[RangeType.RANGE_LONG] = String.valueOf(wtype.getWLongRange());
+                    if (wtype.getWMediumRange() > wtype.getWShortRange()) {
+                        r[RangeType.RANGE_MEDIUM] = String.valueOf(wtype.getWMediumRange());
+                    }
+                    if (wtype.getWLongRange() > wtype.getWMediumRange()) {
+                        r[RangeType.RANGE_LONG] = String.valueOf(wtype.getWLongRange());
+                    }
                 } else {
                     r[RangeType.RANGE_SHORT] = String.valueOf(wtype.getShortRange());
-                    r[RangeType.RANGE_MEDIUM] = String.valueOf(wtype.getMediumRange());
-                    r[RangeType.RANGE_LONG] = String.valueOf(wtype.getLongRange());
+                    if (wtype.getMediumRange() > wtype.getShortRange()) {
+                        r[RangeType.RANGE_MEDIUM] = String.valueOf(wtype.getMediumRange());
+                    }
+                    if (wtype.getLongRange() > wtype.getMediumRange()) {
+                        r[RangeType.RANGE_LONG] = String.valueOf(wtype.getLongRange());
+                    }
                 }
             } else if ((mount.getType() instanceof MiscType)
                     && (mount.getType().hasFlag(MiscType.F_ECM) || mount.getType().hasFlag(MiscType.F_BAP))) {
