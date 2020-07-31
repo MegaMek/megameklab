@@ -21,6 +21,7 @@ package megameklab.com.printing;
 
 import megamek.common.*;
 import megamek.common.weapons.CLIATMWeapon;
+import megamek.common.weapons.infantry.InfantryWeapon;
 import megamek.common.weapons.missiles.ATMWeapon;
 import megamek.common.weapons.missiles.MMLWeapon;
 import megamek.common.weapons.other.ISCenturionWeaponSystem;
@@ -103,20 +104,35 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         } else {
             String[] r = new String[4];
             Arrays.fill(r, DASH);
-            if (mount.getType() instanceof WeaponType) {
+            if (mount.getType() instanceof InfantryWeapon) {
+                final InfantryWeapon weapon = (InfantryWeapon) mount.getType();
+                r[RangeType.RANGE_SHORT] = String.valueOf(weapon.getInfantryRange());
+                if (weapon.getInfantryRange() > 0) {
+                    r[RangeType.RANGE_MEDIUM] = String.valueOf(weapon.getInfantryRange() * 2);
+                    r[RangeType.RANGE_LONG] = String.valueOf(weapon.getInfantryRange() * 3);
+                }
+            } else if (mount.getType() instanceof WeaponType) {
                 final WeaponType wtype = (WeaponType) mount.getType();
                 if (wtype.getMinimumRange() > 0) {
                     r[RangeType.RANGE_MINIMUM] = String.valueOf(wtype.getMinimumRange());
                 }
                 if ((wtype.getAmmoType() == AmmoType.T_LRM_TORPEDO)
-                    || (wtype.getAmmoType() == AmmoType.T_SRM_TORPEDO)) {
+                        || (wtype.getAmmoType() == AmmoType.T_SRM_TORPEDO)) {
                     r[RangeType.RANGE_SHORT] = String.valueOf(wtype.getWShortRange());
-                    r[RangeType.RANGE_MEDIUM] = String.valueOf(wtype.getWMediumRange());
-                    r[RangeType.RANGE_LONG] = String.valueOf(wtype.getWLongRange());
+                    if (wtype.getWMediumRange() > wtype.getWShortRange()) {
+                        r[RangeType.RANGE_MEDIUM] = String.valueOf(wtype.getWMediumRange());
+                    }
+                    if (wtype.getWLongRange() > wtype.getWMediumRange()) {
+                        r[RangeType.RANGE_LONG] = String.valueOf(wtype.getWLongRange());
+                    }
                 } else {
                     r[RangeType.RANGE_SHORT] = String.valueOf(wtype.getShortRange());
-                    r[RangeType.RANGE_MEDIUM] = String.valueOf(wtype.getMediumRange());
-                    r[RangeType.RANGE_LONG] = String.valueOf(wtype.getLongRange());
+                    if (wtype.getMediumRange() > wtype.getShortRange()) {
+                        r[RangeType.RANGE_MEDIUM] = String.valueOf(wtype.getMediumRange());
+                    }
+                    if (wtype.getLongRange() > wtype.getMediumRange()) {
+                        r[RangeType.RANGE_LONG] = String.valueOf(wtype.getLongRange());
+                    }
                 }
             } else if ((mount.getType() instanceof MiscType)
                     && (mount.getType().hasFlag(MiscType.F_ECM) || mount.getType().hasFlag(MiscType.F_BAP))) {
