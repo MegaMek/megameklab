@@ -232,10 +232,10 @@ public class PrintMech extends PrintEntity {
                 setTextField(MP_AIRMECH_CRUISE, "\u2014");
                 setTextField(MP_AIRMECH_FLANK, "\u2014");
             } else {
-                setTextField(MP_AIRMECH_WALK, Integer.toString(lam.getAirMechWalkMP()));
-                setTextField(MP_AIRMECH_RUN, Integer.toString(lam.getAirMechRunMP()));
-                setTextField(MP_AIRMECH_CRUISE, Integer.toString(lam.getAirMechCruiseMP()));
-                setTextField(MP_AIRMECH_FLANK, Integer.toString(lam.getAirMechFlankMP()));
+                setTextField(MP_AIRMECH_WALK, formatMovement(lam.getAirMechWalkMP()));
+                setTextField(MP_AIRMECH_RUN, formatMovement(lam.getAirMechWalkMP() * 1.5));
+                setTextField(MP_AIRMECH_CRUISE, formatMovement(lam.getAirMechCruiseMP()));
+                setTextField(MP_AIRMECH_FLANK, formatMovement(lam.getAirMechCruiseMP() * 1.5));
             }
             setTextField(MP_SAFE_THRUST, Integer.toString(lam.getJumpMP()));
             setTextField(MP_MAX_THRUST, Integer.toString((int) Math.ceil(lam.getJumpMP() * 1.5)));
@@ -249,7 +249,7 @@ public class PrintMech extends PrintEntity {
                 hideElement(ASF_PILOTING_SKILL);
             }
         } else if (mech instanceof QuadVee) {
-            setTextField(MP_CRUISE, Integer.toString(((QuadVee) mech).getCruiseMP(false, false, false)));
+            setTextField(MP_CRUISE, formatMovement(((QuadVee) mech).getCruiseMP(false, false, false)));
             setTextField(MP_FLANK, formatQuadVeeFlank());
             setTextField(LBL_VEE_MODE, ((QuadVee) mech).getMotiveTypeString() + "s");
         }
@@ -570,60 +570,56 @@ public class PrintMech extends PrintEntity {
     @Override
     protected String formatWalk() {
         if (mech.hasTSM()) {
-            return mech.getWalkMP() + " [" + (mech.getWalkMP() + 1) + "]";
+            return formatMovement(mech.getWalkMP(), mech.getWalkMP() + 1);
         } else {
-            return Integer.toString(mech.getWalkMP());
+            return super.formatWalk();
         }
     }
-    
+
     @Override
     protected String formatRun() {
-        int mp = mech.getWalkMP();
+        double baseRun = mech.getWalkMP();
+        double fullRun = baseRun;
+        baseRun *= 1.5;
         if (mech.hasTSM()) {
-            mp++;
+            fullRun++;
         }
         if ((mech.getMASC() != null) && (mech.getSuperCharger() != null)) {
-            mp = (int) Math.ceil(mp * 2.5);
+            fullRun = (int) Math.ceil(fullRun * 2.5);
         } else if ((mech.getMASC() != null) || (mech.getSuperCharger() != null)) {
-            mp *= 2;
+            fullRun *= 2;
         } else {
-            mp = (int) Math.ceil(mp * 1.5);
+            fullRun *= 1.5;
         }
         if (mech.hasMPReducingHardenedArmor()) {
-            mp--;
+            baseRun--;
+            fullRun--;
         }
-        if (mp > mech.getRunMPwithoutMASC()) {
-            return mech.getRunMPwithoutMASC() + " [" + mp + "]";
-        } else {
-            return Integer.toString(mech.getRunMP());
-        }
+        return formatMovement(baseRun, fullRun);
     }
     
     private String formatQuadVeeFlank() {
-        int mp = ((QuadVee) mech).getCruiseMP(false, false, false);
-        int noSupercharger = (int) Math.ceil(mp * 1.5);
+        double baseFlank = ((QuadVee) mech).getCruiseMP(false, false, false);
+        baseFlank *= 1.5;
+        double fullFlank;
         if (mech.getSuperCharger() != null) {
-            mp *= 2;
+            fullFlank = baseFlank * 2;
         } else {
-            mp = noSupercharger;
+            fullFlank = baseFlank;
         }
         if (mech.hasMPReducingHardenedArmor()) {
-            mp--;
-            noSupercharger--;
+            baseFlank--;
+            fullFlank--;
         }
-        if (mp > noSupercharger) {
-            return noSupercharger + " [" + mp + "]";
-        } else {
-            return Integer.toString(mp);
-        }
+        return formatMovement(baseFlank, fullFlank);
     }
     
     @Override
     protected String formatJump() {
         if (mech.hasUMU()) {
-            return Integer.toString(mech.getActiveUMUCount());
+            return formatMovement(mech.getActiveUMUCount());
         } else {
-            return Integer.toString(mech.getJumpMP());
+            return super.formatJump();
         }
     }
 

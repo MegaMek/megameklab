@@ -21,6 +21,7 @@ import java.util.*;
 
 import megamek.common.*;
 import megameklab.com.printing.reference.ReferenceTable;
+import megameklab.com.util.CConfig;
 import org.apache.batik.anim.dom.SVGGraphicsElement;
 import org.apache.batik.anim.dom.SVGLocatableSupport;
 import org.apache.batik.util.SVGConstants;
@@ -543,16 +544,54 @@ public abstract class PrintEntity extends PrintRecordSheet {
         }
     }
 
+    /**
+     * Applies the current scale to a movement point value and adds the units indicator.
+     * If the units are hexes, the value is rounded up.
+     *
+     * @param mp The movement points
+     * @return   The formatted movement string
+     */
+    protected String formatMovement(double mp) {
+        if (CConfig.RSScale.HEXES.toString().equals(CConfig.getParam(CConfig.RS_SCALE_UNITS))) {
+            mp = Math.ceil(mp);
+        }
+        return CConfig.formatScale(mp, true);
+    }
+
+    /**
+     * Applies the current scale to a pair of movement point values, puts the second in brackets,
+     * and adds the units indicator. This is used for cases when equipment may give a temporary
+     * boost to MP, such as MASC.
+     * If the units are hexes, the value is rounded up.
+     *
+     * @param baseMP The base movement points
+     * @param fullMP The full movement points
+     * @return   The formatted movement string
+     */
+    protected String formatMovement(double baseMP, double fullMP) {
+        if (CConfig.RSScale.HEXES.toString().equals(CConfig.getParam(CConfig.RS_SCALE_UNITS))) {
+            baseMP = Math.ceil(baseMP);
+            fullMP = Math.ceil(fullMP);
+        }
+        if (fullMP > baseMP) {
+            return NumberFormat.getInstance().format(baseMP) + " ["
+                    + NumberFormat.getInstance().format(fullMP) + "] "
+                    + CConfig.RSScale.valueOf(CConfig.getParam(CConfig.RS_SCALE_UNITS)).abbreviation;
+        } else {
+            return CConfig.formatScale(baseMP, true);
+        }
+    }
+
     protected String formatWalk() {
-        return Integer.toString(getEntity().getWalkMP());
+        return formatMovement(getEntity().getWalkMP());
     }
     
     protected String formatRun() {
-        return getEntity().getRunMPasString();
+        return formatMovement(getEntity().getWalkMP() * 1.5);
     }
     
     protected String formatJump() {
-        return Integer.toString(getEntity().getJumpMP());
+        return formatMovement(getEntity().getJumpMP());
     }
 
     protected String formatTechBase() {

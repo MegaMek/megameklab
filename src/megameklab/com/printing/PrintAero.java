@@ -264,4 +264,14 @@ public class PrintAero extends PrintEntity {
                     SVGConstants.SVG_TRANSLATE_VALUE + "(0," + ypos + ")");
         }
     }
+
+    @Override
+    protected String formatWalk() {
+        return Integer.toString(getEntity().getWalkMP());
+    }
+
+    @Override
+    protected String formatRun() {
+        return Integer.toString(getEntity().getRunMP());
+    }
 }
