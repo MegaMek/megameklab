@@ -337,7 +337,7 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
         String command = e.getActionCommand();
         if (command.equals(saveCommand)) {
             try {
-                Double.parseDouble(txtScale.getText());
+                Integer.parseInt(txtScale.getText());
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(this,
                         ResourceBundle.getBundle("megameklab.resources.Dialogs", new EncodeControl())

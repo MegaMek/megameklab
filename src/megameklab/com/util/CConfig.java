@@ -239,17 +239,33 @@ public class CConfig {
     }
 
     /**
-     * Return the int value of a given config property. Return a 0 if the
-     * property is a non-number. Used mostly by the misc. mail tab checks.
+     * Return the int value of a given config property. Return the provided default value if the
+     * property is a non-number.
+     *
+     * @param param      The parameter name
+     * @param defaultVal The value to return if the property does not exist or is not a valid string
+     *                   representation of the integer
+     * @return The integer value of the property
      */
-    public static int getIntParam(String param) {
+    public static int getIntParam(String param, int defaultVal) {
         int toReturn;
         try {
             toReturn = Integer.parseInt(CConfig.getParam(param));
         } catch (Exception ex) {
-            return 0;
+            return defaultVal;
         }
         return toReturn;
+    }
+
+    /**
+     * Return the int value of a given config property. Return a 0 if the
+     * property is a non-number.
+     *
+     * @param param  The parameter name
+     * @return       The integer value of the property
+     */
+    public static int getIntParam(String param) {
+        return getIntParam(param, 0);
     }
 
     /**
@@ -362,15 +378,11 @@ public class CConfig {
      * @return          A String representation of the scaled value
      */
     public static String formatScale(double val, boolean showUnits) {
-        String retVal;
-        try {
-            retVal = NumberFormat.getInstance().format((val * Double.parseDouble(getParam(RS_SCALE_FACTOR))));
-        } catch (NumberFormatException ex) {
-            retVal = NumberFormat.getInstance().format(val);
-        }
+        int retVal = (int) Math.round(val * getIntParam(RS_SCALE_FACTOR, 1));
         if (showUnits) {
-            retVal += RSScale.valueOf(getParam(RS_SCALE_UNITS)).abbreviation;
+            return retVal + RSScale.valueOf(getParam(RS_SCALE_UNITS)).abbreviation;
+        } else {
+            return Integer.toString(retVal);
         }
-        return retVal;
     }
 }

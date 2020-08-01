@@ -556,9 +556,6 @@ public abstract class PrintEntity extends PrintRecordSheet {
      * @return   The formatted movement string
      */
     protected String formatMovement(double mp) {
-        if (CConfig.RSScale.HEXES.toString().equals(CConfig.getParam(CConfig.RS_SCALE_UNITS))) {
-            mp = Math.ceil(mp);
-        }
         return CConfig.formatScale(mp, true);
     }
 
@@ -573,10 +570,6 @@ public abstract class PrintEntity extends PrintRecordSheet {
      * @return   The formatted movement string
      */
     protected String formatMovement(double baseMP, double fullMP) {
-        if (CConfig.RSScale.HEXES.toString().equals(CConfig.getParam(CConfig.RS_SCALE_UNITS))) {
-            baseMP = Math.ceil(baseMP);
-            fullMP = Math.ceil(fullMP);
-        }
         if (fullMP > baseMP) {
             return NumberFormat.getInstance().format(baseMP) + " ["
                     + NumberFormat.getInstance().format(fullMP) + "] "
