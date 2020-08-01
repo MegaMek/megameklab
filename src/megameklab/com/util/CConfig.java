@@ -23,12 +23,30 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.text.NumberFormat;
 import java.util.Properties;
 
 /**
  * Class for Client's configuration.
  */
 public class CConfig {
+
+    /**
+     * Scale to use when printing record sheets
+     */
+    public enum RSScale {
+        HEXES("hexes", ""),
+        INCHES("inches", "\""),
+        CENTIMETERS("centimeters", "cm");
+
+        public final String fullName;
+        public final String abbreviation;
+
+        RSScale(String fullName, String abbreviation) {
+            this.fullName = fullName;
+            this.abbreviation = abbreviation;
+        }
+    }
 
     // VARIABLES
     public static final String CONFIG_DIR = "./mmconf";
@@ -82,6 +100,8 @@ public class CConfig {
     public static final String RS_HEAT_PROFILE = "rs_heat_profile";
     public static final String RS_TAC_OPS_HEAT = "rs_tac_ops_heat";
     public static final String RS_REFERENCE = "rs_reference";
+    public static final String RS_SCALE_FACTOR = "rs_scale_factor";
+    public static final String RS_SCALE_UNITS = "rs_scale_units";
 
     private static Properties config;// config. player values.
 
@@ -125,6 +145,8 @@ public class CConfig {
         defaults.setProperty(RS_SHOW_ERA, Boolean.toString(true));
         defaults.setProperty(RS_SHOW_ROLE, Boolean.toString(true));
         defaults.setProperty(RS_SHOW_PILOT_DATA, Boolean.toString(true));
+        defaults.setProperty(RS_SCALE_FACTOR, "1");
+        defaults.setProperty(RS_SCALE_UNITS, RSScale.HEXES.toString());
 
         return defaults;
     }
@@ -330,5 +352,25 @@ public class CConfig {
 
         CConfig.setParam(CConfig.CONFIG_SAVE_FILE_1, newFile);
         CConfig.saveConfig();
+    }
+
+    /**
+     * Applies the scale factor to a value and optionally adds the unit abbreviation
+     *
+     * @param val       The base distance (standard hexes)
+     * @param showUnits Whether to append the unit abbreviation
+     * @return          A String representation of the scaled value
+     */
+    public static String formatScale(double val, boolean showUnits) {
+        String retVal;
+        try {
+            retVal = NumberFormat.getInstance().format((val * Double.parseDouble(getParam(RS_SCALE_FACTOR))));
+        } catch (NumberFormatException ex) {
+            retVal = NumberFormat.getInstance().format(val);
+        }
+        if (showUnits) {
+            retVal += RSScale.valueOf(getParam(RS_SCALE_UNITS)).abbreviation;
+        }
+        return retVal;
     }
 }
