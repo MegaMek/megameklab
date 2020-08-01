@@ -37,7 +37,7 @@ public class CConfig {
     public enum RSScale {
         HEXES("hexes", ""),
         INCHES("inches", "\""),
-        CENTIMETERS("centimeters", "cm");
+        CENTIMETERS("centimeters", " cm");
 
         public final String fullName;
         public final String abbreviation;
