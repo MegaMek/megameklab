@@ -177,4 +177,5 @@ public interface IdConstants {
     String MAIN_GUN_TEXT = "text_MG";
     String TORSO_WEAPON = "torsoWeapon_";
     String MAG_CLAMP_NOTE = "magClampNote";
+    String MP_GROUND = "mpGround";
 }

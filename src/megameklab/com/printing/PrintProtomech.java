@@ -79,9 +79,12 @@ public class PrintProtomech extends PrintEntity {
         super.writeTextFields();
         setTextField(PROTOMECH_INDEX, "PROTOMECH " + (unitIndex + 1));
         splitName();
+        if (proto.isGlider()) {
+            setTextField(MP_GROUND, formatMovement(1));
+        }
         if (getEntity().hasUMU()) {
             setTextField(LBL_JUMP, "Underwater:");
-            setTextField(MP_JUMP, getEntity().getAllUMUCount());
+            setTextField(MP_JUMP, formatMovement(getEntity().getAllUMUCount()));
         }
         printTorsoCritChart();
         if (!proto.hasMainGun()) {
