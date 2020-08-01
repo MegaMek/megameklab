@@ -336,12 +336,16 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
     public void actionPerformed(ActionEvent e) {
         String command = e.getActionCommand();
         if (command.equals(saveCommand)) {
+            int scale;
             try {
-                Integer.parseInt(txtScale.getText());
+                scale = Integer.parseInt(txtScale.getText());
             } catch (NumberFormatException ex) {
+                scale = 0;
+            }
+            if (scale <= 0) {
                 JOptionPane.showMessageDialog(this,
                         ResourceBundle.getBundle("megameklab.resources.Dialogs", new EncodeControl())
-                    .getString("ConfigurationDialog.scaleFormatError"));
+                                .getString("ConfigurationDialog.scaleFormatError"));
                 return;
             }
             saveConfig();
