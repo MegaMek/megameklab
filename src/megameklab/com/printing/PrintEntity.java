@@ -411,9 +411,8 @@ public abstract class PrintEntity extends PrintRecordSheet {
      */
     protected void writeEquipment(SVGRectElement svgRect) {
         new InventoryWriter(this, svgRect).writeEquipment();
-        if (!CConfig.RSScale.HEXES.toString().equals(CConfig.getParam(CConfig.RS_SCALE_UNITS))) {
-            setTextField(UNIT_SCALE,
-                    "(" + CConfig.RSScale.valueOf(CConfig.getParam(CConfig.RS_SCALE_UNITS)).fullName + ")");
+        if (!CConfig.scaleUnits().equals(CConfig.RSScale.HEXES)) {
+            setTextField(UNIT_SCALE, "(" + CConfig.scaleUnits().fullName + ")");
         }
     }
 
@@ -573,7 +572,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
         if (fullMP > baseMP) {
             return NumberFormat.getInstance().format(baseMP) + " ["
                     + NumberFormat.getInstance().format(fullMP) + "] "
-                    + CConfig.RSScale.valueOf(CConfig.getParam(CConfig.RS_SCALE_UNITS)).abbreviation;
+                    + CConfig.scaleUnits().abbreviation;
         } else {
             return CConfig.formatScale(baseMP, true);
         }

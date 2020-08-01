@@ -292,7 +292,7 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
         for (CConfig.RSScale val : CConfig.RSScale.values()) {
             cbRSScale.addItem(val.fullName);
         }
-        cbRSScale.setSelectedIndex(CConfig.RSScale.valueOf(CConfig.getParam(CConfig.RS_SCALE_UNITS)).ordinal());
+        cbRSScale.setSelectedIndex(CConfig.scaleUnits().ordinal());
         txtScale.setText(CConfig.getParam(CConfig.RS_SCALE_FACTOR));
         cbRSScale.setToolTipText(resourceMap.getString("ConfigurationDialog.cbRSScale.tooltip"));
         gbc.gridx = 1;

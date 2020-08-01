@@ -46,6 +46,19 @@ public class CConfig {
             this.fullName = fullName;
             this.abbreviation = abbreviation;
         }
+
+        /**
+         * Used for display name when space is limited. If the full name is longer than six characters
+         * the abbreviation is used.
+         * @return A short name for display
+         */
+        public String shortName() {
+            if (fullName.length() > 6) {
+                return abbreviation.trim();
+            } else {
+                return fullName;
+            }
+        }
     }
 
     // VARIABLES
@@ -368,6 +381,13 @@ public class CConfig {
 
         CConfig.setParam(CConfig.CONFIG_SAVE_FILE_1, newFile);
         CConfig.saveConfig();
+    }
+
+    /**
+     * @return The currently selected scale units for record sheet printing
+     */
+    public static RSScale scaleUnits() {
+        return RSScale.valueOf(getParam(RS_SCALE_UNITS));
     }
 
     /**
