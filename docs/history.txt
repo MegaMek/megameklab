@@ -24,6 +24,7 @@ VERSION HISTORY:
 + Issue #705: External engine type in Rail Support Vehicle causes load failure
 + Issue #703: Printing issues for HMG and VSP
 + Issue #708: Heavy Vibro-Claw causes NPE
++ PR #709: Record sheet option: support for tabletop miniatures scale
 
 0.47.7 (2020-06-22 2330 UTC)
 + Issue #614: Change the list of equipment while sort by Crit section cause error
