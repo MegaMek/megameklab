@@ -83,15 +83,15 @@ public class PrintBattleArmor extends PrintEntity {
         switch (getEntity().getMovementMode()) {
             case INF_JUMP:
                 setTextField(MODE_2, "Jump MP:");
-                setTextField(MP_2, battleArmor.getJumpMP(true, true, true));
+                setTextField(MP_2, formatMovement(battleArmor.getJumpMP(true, true, true)));
                 break;
             case VTOL:
                 setTextField(MODE_2, "VTOL MP:");
-                setTextField(MP_2, battleArmor.getJumpMP(true, true, true));
+                setTextField(MP_2, formatMovement(battleArmor.getJumpMP(true, true, true)));
                 break;
             case INF_UMU:
                 setTextField(MODE_2, "UW MP:");
-                setTextField(MP_2, battleArmor.getActiveUMUCount());
+                setTextField(MP_2, formatMovement(battleArmor.getActiveUMUCount()));
                 break;
             default:
                 hideElement(MODE_2, true);

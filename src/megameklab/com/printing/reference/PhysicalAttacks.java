@@ -16,6 +16,7 @@ package megameklab.com.printing.reference;
 import megamek.common.*;
 import megamek.common.actions.ClubAttackAction;
 import megameklab.com.printing.PrintMech;
+import megameklab.com.util.CConfig;
 import megameklab.com.util.StringUtils;
 import org.apache.batik.util.SVGConstants;
 
@@ -53,7 +54,10 @@ public class PhysicalAttacks extends ReferenceTable {
         }
         addRow(bundle.getString("charge"), "+0*", String.format(hasTorsoSpikes ?
                         "%.0f/%s†" : "%.0f/%s",
-                Math.floor(sheet.getEntity().getWeight() / 10.0), bundle.getString("hex")));
+                Math.floor(sheet.getEntity().getWeight() / 10.0),
+                CConfig.scaleUnits().equals(CConfig.RSScale.HEXES) ?
+                        bundle.getString("hex") :
+                        CConfig.getIntParam(CConfig.RS_SCALE_FACTOR) + CConfig.scaleUnits().abbreviation));
         if (sheet.getEntity().getOriginalJumpMP() > 0) {
             addRow(bundle.getString("dfa"), "+0*", String.valueOf(dfaDamage));
         }

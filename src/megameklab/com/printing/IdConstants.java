@@ -27,6 +27,7 @@ public interface IdConstants {
     String FOOTER = "footer";
     String COPYRIGHT = "tspanCopyright";
     String TITLE = "title";
+    String UNIT_SCALE = "unitScale";
 
     String TYPE = "type";
     String TYPE2 = "type2";
@@ -170,6 +171,8 @@ public interface IdConstants {
     String CHECK_AP = "checkAp";
     String SUIT = "suit";
     String PIPS = "pips_";
+    String RANGE_IN_HEXES = "rangeInHexes";
+    String RANGE = "range_";
 
     String PROTOMECH_INDEX = "protomechIndex";
     String MAIN_GUN_ARMOR = "armor_MG";
@@ -177,4 +180,5 @@ public interface IdConstants {
     String MAIN_GUN_TEXT = "text_MG";
     String TORSO_WEAPON = "torsoWeapon_";
     String MAG_CLAMP_NOTE = "magClampNote";
+    String MP_GROUND = "mpGround";
 }

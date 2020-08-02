@@ -25,16 +25,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
-import javax.swing.SpringLayout;
+import javax.swing.*;
 
 import megamek.common.ITechnology;
 import megamek.common.util.EncodeControl;
@@ -71,6 +62,8 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
     private final JCheckBox chkShowRole = new JCheckBox();
     private final JCheckBox chkHeatProfile = new JCheckBox();
     private final JCheckBox chkTacOpsHeat = new JCheckBox();
+    private final JComboBox<String> cbRSScale = new JComboBox<>();
+    private final JTextField txtScale = new JTextField(3);
 
     private final JCheckBox chkSummaryFormatTRO = new JCheckBox();
     
@@ -213,6 +206,7 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
         gbc.gridy++;
         panPrinting.add(new JLabel(resourceMap.getString("ConfigurationDialog.cbPaper.text")));
         gbc.gridx = 1;
+        gbc.gridwidth = 2;
         cbPaper.setToolTipText(resourceMap.getString("ConfigurationDialog.cbPaper.tooltip"));
         panPrinting.add(cbPaper, gbc);
         gbc.gridy++;
@@ -222,14 +216,16 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
         }
         cbFont.setSelectedItem(UnitUtil.deriveFont(8).getFamily());
         gbc.gridx = 0;
+        gbc.gridwidth = 1;
         gbc.gridy++;
         panPrinting.add(new JLabel(resourceMap.getString("ConfigurationDialog.cbFont.text")), gbc);
         gbc.gridx = 1;
+        gbc.gridwidth = 2;
         cbFont.setToolTipText(resourceMap.getString("ConfigurationDialog.cbFont.tooltip")); //$NON-NLS-1$
         panPrinting.add(cbFont, gbc);
         cbFont.addActionListener(ev -> updateFont());
         
-        gbc.gridwidth = 2;
+        gbc.gridwidth = 3;
         gbc.gridx = 0;
         gbc.gridy++;
         txtFontDisplay.setEditable(false);
@@ -254,7 +250,6 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
         gbc.gridy++;
 
         gbc.gridx = 0;
-        gbc.gridy++;
         chkShowQuirks.setText(resourceMap.getString("ConfigurationDialog.chkShowQuirks.text"));
         chkShowQuirks.setToolTipText(resourceMap.getString("ConfigurationDialog.chkShowQuirks.tooltip"));
         chkShowQuirks.setSelected(CConfig.getBooleanParam(CConfig.RS_SHOW_QUIRKS));
@@ -289,6 +284,31 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
         chkTacOpsHeat.setToolTipText(resourceMap.getString("ConfigurationDialog.chkTacOpsHeat.tooltip"));
         chkTacOpsHeat.setSelected(CConfig.getBooleanParam(CConfig.RS_TAC_OPS_HEAT));
         panPrinting.add(chkTacOpsHeat, gbc);
+        gbc.gridy++;
+
+        gbc.gridx = 0;
+        gbc.gridwidth = 1;
+        panPrinting.add(new JLabel(resourceMap.getString("ConfigurationDialog.cbRSScale.label")), gbc);
+        for (CConfig.RSScale val : CConfig.RSScale.values()) {
+            cbRSScale.addItem(val.fullName);
+        }
+        cbRSScale.setSelectedIndex(CConfig.scaleUnits().ordinal());
+        txtScale.setText(CConfig.getParam(CConfig.RS_SCALE_FACTOR));
+        cbRSScale.setToolTipText(resourceMap.getString("ConfigurationDialog.cbRSScale.tooltip"));
+        gbc.gridx = 1;
+        panPrinting.add(txtScale, gbc);
+        cbRSScale.setToolTipText(resourceMap.getString("ConfigurationDialog.txtScale.tooltip"));
+        gbc.gridx = 2;
+        panPrinting.add(cbRSScale, gbc);
+        cbRSScale.addActionListener(ev -> {
+            if (CConfig.RSScale.INCHES.fullName.equals(cbRSScale.getSelectedItem())) {
+                txtScale.setText("2");
+            } else if (CConfig.RSScale.CENTIMETERS.fullName.equals(cbRSScale.getSelectedItem())) {
+                txtScale.setText("5");
+            } else {
+                txtScale.setText("1");
+            }
+        });
     }
     
     private void loadExportPanel(ResourceBundle resourceMap) {
@@ -316,6 +336,18 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
     public void actionPerformed(ActionEvent e) {
         String command = e.getActionCommand();
         if (command.equals(saveCommand)) {
+            int scale;
+            try {
+                scale = Integer.parseInt(txtScale.getText());
+            } catch (NumberFormatException ex) {
+                scale = 0;
+            }
+            if (scale <= 0) {
+                JOptionPane.showMessageDialog(this,
+                        ResourceBundle.getBundle("megameklab.resources.Dialogs", new EncodeControl())
+                                .getString("ConfigurationDialog.scaleFormatError"));
+                return;
+            }
             saveConfig();
             setVisible(false);
         } else if (command.equals(cancelCommand)) {
@@ -363,6 +395,8 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
         CConfig.setParam(CConfig.RS_SHOW_ROLE, Boolean.toString(chkShowRole.isSelected()));
         CConfig.setParam(CConfig.RS_HEAT_PROFILE, Boolean.toString(chkHeatProfile.isSelected()));
         CConfig.setParam(CConfig.RS_TAC_OPS_HEAT, Boolean.toString(chkTacOpsHeat.isSelected()));
+        CConfig.setParam(CConfig.RS_SCALE_UNITS, CConfig.RSScale.values()[cbRSScale.getSelectedIndex()].toString());
+        CConfig.setParam(CConfig.RS_SCALE_FACTOR, txtScale.getText());
         CConfig.setParam(CConfig.SUMMARY_FORMAT_TRO, Boolean.toString(chkSummaryFormatTRO.isSelected()));
         CConfig.saveConfig();
     }

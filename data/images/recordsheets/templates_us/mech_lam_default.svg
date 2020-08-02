@@ -674,7 +674,7 @@
                                                                       ><path d="M 3.000,87.000 L 219.400,87.000" stroke-width="1.932" stroke-linejoin="round" stroke="#000000"
                                                                       /><text x="3.000" y="97.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal" textLength="121.508" lengthAdjust="spacingAndGlyphs"
                                                                       >Weapons &amp; Equipment Inventory</text
-                                                                      ><text x="171.132" y="97.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal" textLength="19.920" lengthAdjust="spacingAndGlyphs"
+                                                                      ><text fill="#231f20" x="171.132" id="unitScale" y="97.000" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal" text-anchor="start"
                                                                       >(hexes)</text
                                                                       ><rect fill="none" x="3.000" width="216.400" id="inventory" height="176.143" y="97.000"
                                                                       /><path d="M 3.000,275.143 L 219.400,275.143" stroke-width="1.932" stroke-linejoin="round" stroke="#000000"

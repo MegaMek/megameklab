@@ -18,6 +18,7 @@ import megamek.common.*;
 import megamek.common.options.IOption;
 import megamek.common.weapons.artillery.ArtilleryWeapon;
 import megamek.common.weapons.infantry.InfantryWeapon;
+import megameklab.com.util.CConfig;
 import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGRectElement;
@@ -108,7 +109,7 @@ public class PrintInfantry extends PrintEntity {
 
         switch(infantry.getMovementMode()) {
             case INF_JUMP:
-                setTextField(MP_1, infantry.getJumpMP(false));
+                setTextField(MP_1, formatMovement(infantry.getJumpMP(false)));
                 setTextField(MODE_1, "Jump");
                 setTextField(MP_2, formatGroundMP(), true);
                 setTextField(MODE_2, "Ground", true);
@@ -140,7 +141,7 @@ public class PrintInfantry extends PrintEntity {
                 setTextField(MODE_1, "Mechanized Wheeled");
                 break;
             case VTOL:
-                setTextField(MP_1, infantry.getJumpMP(false));
+                setTextField(MP_1, formatMovement(infantry.getJumpMP(false)));
                 if (infantry.hasMicrolite()) {
                     setTextField(MODE_1, "VTOL (Microlite)");
                 } else {
@@ -148,11 +149,11 @@ public class PrintInfantry extends PrintEntity {
                 }
                 break;
             case SUBMARINE:
-                setTextField(MP_1, infantry.getActiveUMUCount());
+                setTextField(MP_1, formatMovement(infantry.getActiveUMUCount()));
                 setTextField(MODE_1, "Mechanized SCUBA");
                 break;
             case INF_MOTORIZED:
-                setTextField(MP_1, infantry.getWalkMP(true, true, false));
+                setTextField(MP_1, formatMovement(infantry.getWalkMP(true, true, false)));
                 setTextField(MODE_1, "Motorized");
                 break;
             case INF_LEG:
@@ -179,6 +180,16 @@ public class PrintInfantry extends PrintEntity {
             addMultilineTextElement((Element) rect.getParentNode(), x, y, width, getFontHeight(fontSize),
                     String.join("; ", notes), fontSize, SVGConstants.SVG_START_VALUE,
                     SVGConstants.SVG_NORMAL_VALUE);
+        }
+        Element element = getSVGDocument().getElementById(RANGE_IN_HEXES);
+        if (element != null) {
+            element.setTextContent(element.getTextContent().replace("HEXES",
+                    CConfig.getParam(CConfig.RS_SCALE_UNITS)));
+        }
+        if (CConfig.getIntParam(CConfig.RS_SCALE_FACTOR) != 1) {
+            for (int r = 0; r <= 21; r++) {
+                setTextField(RANGE + r, CConfig.formatScale(r, false));
+            }
         }
     }
 
@@ -429,7 +440,7 @@ public class PrintInfantry extends PrintEntity {
         if (walk == 0) {
             return "0*";
         } else {
-            return String.valueOf(walk);
+            return formatMovement(walk);
         }
     }
 }
