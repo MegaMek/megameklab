@@ -1,5 +1,7 @@
 VERSION HISTORY:
 ----------------
+0.47.9-SNAPSHOT
+
 0.47.8 (2020-08-02 2300 UTC)
 + PR #664: Quick reference tables for mech record sheets
 + Issue #611: [Errata] Naval Repair Facilities should use 2 docking collars no matter their capacity
