@@ -1,6 +1,7 @@
 VERSION HISTORY:
 ----------------
-0.47.8-SNAPSHOT
+0.47.8 (2020-08-02 2300 UTC)
++ PR #664: Quick reference tables for mech record sheets
 + Issue #611: [Errata] Naval Repair Facilities should use 2 docking collars no matter their capacity
 + Issue #636: TRO summary does not show armored components
 + Issue #644: Weight-Free Heat Sinks of Small Craft and Dropship is not changed when change the shape
@@ -45,7 +46,7 @@ VERSION HISTORY:
 + PR #610: Edit size of variable sized equipment on the equipment tab
 + PR #649: Record sheet inventory text overlap
 + Issue #656: Mounting artillery on a DropShip leads to the wrong date for Availability in Preview
-+ PR #664: Quick reference tables for mech record sheets
+
 
 0.47.6 (2020-5-03 1715 UTC)
 + Issue #553: Loading or printing LAM causes ArrayIndexOutOfBoundsException
