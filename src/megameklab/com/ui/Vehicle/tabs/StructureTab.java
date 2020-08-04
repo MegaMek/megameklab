@@ -64,9 +64,6 @@ import megameklab.com.util.UnitUtil;
 
 public class StructureTab extends ITab implements CVBuildListener, ArmorAllocationListener {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = -6756011847500605874L;
 
     private RefreshListener refresh = null;
@@ -113,8 +110,6 @@ public class StructureTab extends ITab implements CVBuildListener, ArmorAllocati
         panArmorAllocation.setFromEntity(getTank());
         panPatchwork.setFromEntity(getTank());
         panTransport.setFromEntity(getTank());
-
-        gbc = new GridBagConstraints();
 
         JPanel leftPanel = new JPanel();
         JPanel midPanel = new JPanel();
@@ -621,6 +616,14 @@ public class StructureTab extends ITab implements CVBuildListener, ArmorAllocati
     }
 
     @Override
+    public void extraSeatsChanged(int seats) {
+        getTank().setExtraCrewSeats(seats);
+        refresh.refreshPreview();
+        refresh.refreshStatus();
+        refresh.refreshSummary();
+    }
+
+    @Override
     public void turretChanged(int turretConfig) {
         if ((turretConfig != CVChassisView.TURRET_DUAL)
                 && !getTank().hasNoDualTurret()) {
@@ -763,7 +766,7 @@ public class StructureTab extends ITab implements CVBuildListener, ArmorAllocati
             if ((getTank().hasETypeFlag(Entity.ETYPE_VTOL)) && (location == VTOL.LOC_ROTOR)) {
                 continue;
             }
-            int armorToAllocate = 0;
+            int armorToAllocate;
             if (location == Tank.LOC_FRONT) {
                 armorToAllocate = (int)(pointsToAllocate * frontPercent);
             } else if (location == rear) {
@@ -821,7 +824,7 @@ public class StructureTab extends ITab implements CVBuildListener, ArmorAllocati
             for (; crits > 0; crits--) {
                 try {
                     getTank().addEquipment( new Mounted(getTank(), armor), location, false);
-                } catch (LocationFullException ex) {
+                } catch (LocationFullException ignored) {
                 }
             }
         }
