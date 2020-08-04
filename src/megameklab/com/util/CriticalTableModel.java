@@ -185,7 +185,7 @@ public class CriticalTableModel extends AbstractTableModel {
                 return crit.getUsableShotsLeft() / ((AmmoType)crit.getType()).getShots();
             }
             if (tableType == BUILDTABLE) {
-                return UnitUtil.getCritsUsed(unit, crit.getType());
+                return UnitUtil.getCritsUsed(crit);
             }
             return crit.getCriticals();
         case EQUIPMENT:
