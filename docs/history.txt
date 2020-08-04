@@ -1,6 +1,35 @@
 VERSION HISTORY:
 ----------------
-0.47.7-SNAPSHOT
+0.47.9-SNAPSHOT
+
+0.47.8 (2020-08-02 2300 UTC)
++ PR #664: Quick reference tables for mech record sheets
++ Issue #611: [Errata] Naval Repair Facilities should use 2 docking collars no matter their capacity
++ Issue #636: TRO summary does not show armored components
++ Issue #644: Weight-Free Heat Sinks of Small Craft and Dropship is not changed when change the shape
++ Issue #642: Removed weapons of Aerospace Fighter's ammunition is still available
++ Issue #645: Unequal BV calculation when adding CASE (II)
++ Issue #647: Quarters, infantry bay, and Life Support cost calculations are wrong on large craft
++ Issue #654: Base Tech of the ammunition of Thumper Artillery is changed to Clans if change the unit to Mixed Inner Sphere
++ Issue #655: Mass Drivers use more slots than shown
++ PR #673: Indicate commercial armor on mech record sheet
++ Issue #657: Tripod/Super Heavy Tech base show -Error-
++ Issue #659: Jumping MP not updated if Improved Jump Jets are removed as a result of changing the production year of a Mek
++ Issue #661: Cannot create bays with 0 doors (except plain Cargo) on large aerospace units
++ Issue #662: Loading Combat Vehicle with Vehicular Stealth Armor always make a new section named Vehicular Stealth
++ Issue #668: Aft Right weapons arc on spheroid DropShips does not properly display extra fire control tonnage
++ Issue #670: Changing DropShip engine from military to civilian does not update displayed information
++ Issue #677: Electronic Warfare equipment (ECM, Beagle, etc) ranges missing from RS
++ Issue #681: StringIndexOutOfBoundsException errors, possibly a problem loading Mission Equipment Storage
++ Issue #682: Equipment from older version of MML failing to load
++ Issue #679: LRM/SRM bays on large aerospace units do not reflect damage increase from Artemis IV
++ Issue #695: Specialized Infantry, No Secondary Weapons error with no 2nd weapons 
++ Issue #705: External engine type in Rail Support Vehicle causes load failure
++ Issue #703: Printing issues for HMG and VSP
++ Issue #708: Heavy Vibro-Claw causes NPE
++ PR #709: Record sheet option: support for tabletop miniatures scale
+
+0.47.7 (2020-06-22 2330 UTC)
 + Issue #614: Change the list of equipment while sort by Crit section cause error
 + Issue #612: Overlapping Text in Vehicle Record Sheet
 + Bug: Can't assign UMU to ProtoMech
@@ -14,6 +43,12 @@ VERSION HISTORY:
 + Issue #342: Incomplete queued print
 + PR #634: Option to show total heat and dissipation on record sheet
 + PR #635: Option to print TacOps expanded heat scale on record sheet
++ PR #639: New printing options: page size and color/monochrome
++ PR #640: Early Clans and IS tech
++ PR #610: Edit size of variable sized equipment on the equipment tab
++ PR #649: Record sheet inventory text overlap
++ Issue #656: Mounting artillery on a DropShip leads to the wrong date for Availability in Preview
+
 
 0.47.6 (2020-5-03 1715 UTC)
 + Issue #553: Loading or printing LAM causes ArrayIndexOutOfBoundsException

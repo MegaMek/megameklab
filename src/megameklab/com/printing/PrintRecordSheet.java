@@ -52,7 +52,6 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.RenderedImage;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
-import java.awt.print.PrinterException;
 import java.io.*;
 import java.net.URLConnection;
 import java.util.*;
@@ -64,17 +63,19 @@ import java.util.*;
  *
  */
 public abstract class PrintRecordSheet implements Printable, IdConstants {
-    
-    final static String DEFAULT_TYPEFACE = "Eurostile";
-    final static float DEFAULT_PIP_SIZE  = 0.38f;
-    final static float FONT_SIZE_LARGE   = 7.2f;
-    final static float FONT_SIZE_MEDIUM  = 6.76f;
-    final static float FONT_SIZE_SMALL   = 6.2f;
-    final static float FONT_SIZE_VSMALL  = 5.8f;
-    final static String FILL_BLACK = "#231f20";
-    final static String FILL_GREY = "#3f3f3f";
-    final static String FILL_SHADOW = "#c8c7c7";
-    final static String FILL_WHITE = "#ffffff";
+
+    public final static String DEFAULT_TYPEFACE = "Eurostile";
+    public final static float DEFAULT_PIP_SIZE  = 0.38f;
+    public final static float FONT_SIZE_LARGE   = 7.2f;
+    public final static float FONT_SIZE_MEDIUM  = 6.76f;
+    public final static float FONT_SIZE_SMALL   = 6.2f;
+    public final static float FONT_SIZE_VSMALL  = 5.8f;
+    public final static String FILL_BLACK = "#231f20";
+    public final static String FILL_GREY = "#3f3f3f";
+    public final static String FILL_SHADOW = "#c8c7c7";
+    public final static String FILL_WHITE = "#ffffff";
+    /** Scale factor for record sheets with reference tables */
+    public final static double TABLE_RATIO = 0.8;
     
     enum PipType {
         CIRCLE, DIAMOND;
@@ -116,7 +117,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         return firstPage;
     }
     
-    protected final Document getSVGDocument() {
+    public final Document getSVGDocument() {
         return svgDocument;
     }
     
@@ -186,16 +187,34 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         }
     }
 
+    private void subColorElements() {
+        Element element = svgDocument.getElementById(RS_TEMPLATE);
+        if (element != null) {
+            String style = element.getAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE);
+            if (style != null) {
+                for (String field : style.split(";")) {
+                    if (field.startsWith(MML_COLOR_ELEMENTS + ":")) {
+                        String[] ids = field.substring(field.indexOf(":") + 1).split(",");
+                        for (String id : ids) {
+                            hideElement(id + "Color", !options.useColor());
+                            hideElement(id + "BW", options.useColor());
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     /**
      * Creates a {@link Document} from an svg image file
      *
      * @param filename The name of the SVG file
      * @return         The document object
      */
-    static Document loadSVG(String filename) {
-        final String METHOD_NAME = "loadSVG(String)";
+    static Document loadSVG(String dirName, String filename) {
+        final String METHOD_NAME = "loadSVG(String, String)";
 
-        File f = new File("data/images/recordsheets/", filename);
+        File f = new File(dirName, filename);
         Document svgDocument = null;
         try {
             InputStream is = new FileInputStream(f);
@@ -245,21 +264,37 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      * @return            An SVG document for one page of the print job
      */
     @Nullable Document loadTemplate(int pageIndex, PageFormat pageFormat) {
-        return loadSVG(getSVGFileName(pageIndex - firstPage));
+        return loadSVG(getSVGDirectoryName(),
+                getSVGFileName(pageIndex - firstPage));
     }
 
     void createDocument(int pageIndex, PageFormat pageFormat) {
         svgDocument = loadTemplate(pageIndex, pageFormat);
         if (null != svgDocument) {
             subFonts((SVGDocument) svgDocument);
-            SVGGeneratorContext context = SVGGeneratorContext.createDefault(getSVGDocument());
+            subColorElements();
+            SVGGeneratorContext context = SVGGeneratorContext.createDefault(svgDocument);
             svgGenerator = new SVGGraphics2D(context, false);
+            double ratio = Math.min(pageFormat.getImageableWidth() / (options.getPaperSize().pxWidth - 36),
+                    pageFormat.getPaper().getImageableHeight() / (options.getPaperSize().pxHeight - 36));
+            if (includeReferenceCharts()) {
+                ratio *= TABLE_RATIO;
+            }
+            Element svgRoot = svgDocument.getDocumentElement();
+            svgRoot.setAttributeNS(null, SVGConstants.SVG_WIDTH_ATTRIBUTE, String.valueOf(pageFormat.getWidth()));
+            svgRoot.setAttributeNS(null, SVGConstants.SVG_HEIGHT_ATTRIBUTE, String.valueOf(pageFormat.getHeight()));
+            Element g = svgDocument.getElementById(RS_TEMPLATE);
+            if (g != null) {
+                g.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
+                        String.format("%s(%f 0 0 %f %f %f)", SVGConstants.SVG_MATRIX_VALUE,
+                                ratio, ratio, pageFormat.getImageableX(), pageFormat.getImageableY()));
+            }
             processImage(pageIndex - firstPage, pageFormat);
         }
     }
 
     @Override
-    public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
+    public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) {
         final String METHOD_NAME = "print(Graphics,PageFormat,int)";
         
         Graphics2D g2d = (Graphics2D) graphics;
@@ -276,7 +311,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-             */
+            */
         }
         return Printable.PAGE_EXISTS;
     }
@@ -329,7 +364,17 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      * 
      * @param pageNum    Indicates which page of multi-page sheets to print. The first page is 0.
      */
-    protected abstract void processImage(int pageNum, PageFormat pageFormat);
+    protected void processImage(int pageNum, PageFormat pageFormat) {
+        Element element = getSVGDocument().getElementById(COPYRIGHT);
+        if (null != element) {
+            element.setTextContent(String.format(element.getTextContent(),
+                    Calendar.getInstance().get(Calendar.YEAR)));
+        }
+    }
+
+    String getSVGDirectoryName() {
+        return "data/images/recordsheets/" + options.getPaperSize().dirName;
+    }
 
     /**
      * @param pageNumber  The page number in the current record sheet, where the first page is numberd zero.
@@ -776,6 +821,16 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             MegaMekLab.getLogger().log(PrintRecordSheet.class, METHOD_NAME, LogLevel.ERROR,
                     "Error reading fluff image file: " + imageFile.getPath());
         }
-        
+    }
+
+    /**
+     * Used to determine whether to scale the record sheet to make room for charts. This
+     * depends both on whether the option is selected and on whether the sheet supports
+     * reference charts.
+     *
+     * @return Whether to include reference tables
+     */
+    protected boolean includeReferenceCharts() {
+        return false;
     }
 }

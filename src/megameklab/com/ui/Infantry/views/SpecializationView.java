@@ -248,6 +248,11 @@ public class SpecializationView extends IView implements TableModelListener {
                 UnitUtil.replaceMainWeapon(getInfantry(), null, true);
                 getInfantry().setSecondaryN(0);
                 getInfantry().setSpecializations(getInfantry().getSpecializations() & ~Infantry.TAG_TROOPS);
+            } else if (TestInfantry.maxSecondaryWeapons(getInfantry()) > getInfantry().getSecondaryN()) {
+                getInfantry().setSecondaryN(TestInfantry.maxSecondaryWeapons(getInfantry()));
+                if (getInfantry().getSecondaryN() == 0) {
+                    UnitUtil.replaceMainWeapon(getInfantry(), null, true);
+                }
             }
             fireTableCellUpdated(row, col);
         }

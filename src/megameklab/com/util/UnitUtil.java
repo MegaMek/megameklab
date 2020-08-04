@@ -18,7 +18,6 @@ package megameklab.com.util;
 
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Graphics2D;
 import java.io.File;
 import java.math.BigInteger;
 import java.text.DecimalFormat;
@@ -127,8 +126,9 @@ public class UnitUtil {
                         || eq.hasFlag(MiscType.F_ENVIRONMENTAL_SEALING)
                         || eq.hasFlag(MiscType.F_TRACKS)
                         || eq.hasFlag(MiscType.F_TALON)
-                        || (eq.hasFlag(MiscType.F_STEALTH) && eq
-                                .hasFlag(MiscType.F_MECH_EQUIPMENT))
+                        || (eq.hasFlag(MiscType.F_STEALTH)
+                            && (eq.hasFlag(MiscType.F_MECH_EQUIPMENT)
+                                || eq.hasFlag(MiscType.F_TANK_EQUIPMENT)))
                         || eq.hasFlag(MiscType.F_CHAMELEON_SHIELD)
                         || eq.hasFlag(MiscType.F_BLUE_SHIELD)
                         || eq.hasFlag(MiscType.F_MAST_MOUNT)
@@ -1205,17 +1205,76 @@ public class UnitUtil {
      * it's located (ie, BAMountLocation isn't affected).  BattleArmor should
      * change this outside of this method.
      *
-     * @param unit
-     * @param eq
-     * @param location
-     * @param secondaryLocation
-     * @param rear
+     * @param unit               The unit being modified
+     * @param eq                 The equipment mount to move
+     * @param location           The location to move the mount to
+     * @param secondaryLocation  The secondary location for split equipment, otherwise {@link Entity#LOC_NONE Entity.LOC_NONE}
+     * @param rear               Whether to mount with a rear facing
      */
     public static void changeMountStatus(Entity unit, Mounted eq, int location,
             int secondaryLocation, boolean rear) {
+        if (location != eq.getLocation()) {
+            if (eq.getLinked() != null) {
+                eq.getLinked().setLinkedBy(null);
+                eq.setLinked(null);
+            }
+            if (eq.getLinkedBy() != null) {
+                eq.getLinkedBy().setLinked(null);
+                eq.setLinkedBy(null);
+            }
+        }
         eq.setLocation(location, rear);
         eq.setSecondLocation(secondaryLocation, rear);
         eq.setSplit(secondaryLocation > -1);
+        // If we're adding it to a location on the unit, check equipment linkages
+        if (location > Entity.LOC_NONE) {
+            try {
+                MechFileParser.postLoadInit(unit);
+            } catch (EntityLoadingException ignored) {
+                // Exception thrown for not having equipment to link to yet, which is acceptable here
+            }
+        }
+    }
+
+    public static void resizeMount(Mounted mount, double newSize) {
+        mount.setSize(newSize);
+        if (mount.getLocation() == Entity.LOC_NONE) {
+            return;
+        }
+        final Entity entity = mount.getEntity();
+        final int loc = mount.getLocation();
+        int start = -1;
+        for (int slot = 0; slot < entity.getNumberOfCriticals(loc); slot++) {
+            CriticalSlot crit = entity.getCritical(loc, slot);
+            if ((crit != null) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)
+                    && crit.getMount().equals(mount)) {
+                start = slot;
+                break;
+            }
+        }
+        removeCriticals(entity, mount);
+        compactCriticals(entity, loc);
+        if ((start < 0) || (entity.getEmptyCriticals(loc) < mount.getCriticals())) {
+            changeMountStatus(entity, mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
+        } else {
+            // If the number of criticals increases, we may need to shift existing criticals
+            // to make room. Since we checked for sufficient space and compacted the existing
+            // criticals we can be assured of not overrunning the array.
+            List<CriticalSlot> toAdd = new ArrayList<>();
+            for (int i = 0; i < mount.getCriticals(); i++) {
+                toAdd.add(new CriticalSlot(mount));
+            }
+            int slot = start;
+            while (!toAdd.isEmpty()) {
+                CriticalSlot cs = entity.getCritical(loc, slot);
+                if (cs != null) {
+                    toAdd.add(cs);
+                }
+                entity.setCritical(loc, slot, toAdd.get(0));
+                toAdd.remove(0);
+                slot++;
+            }
+        }
     }
     
     /**
@@ -2154,11 +2213,11 @@ public class UnitUtil {
             double infDamage = ((InfantryWeapon) eq.getType())
                     .getInfantryDamage();
             sb.append(infDamage);
-            sb.append("<br>Range Class: "
-                    + ((InfantryWeapon) eq.getType()).getInfantryRange());
+            sb.append("<br>Range Class: ");
+            sb.append(((InfantryWeapon) eq.getType()).getInfantryRange());
         } else {
             sb.append("<br>Crits: ");
-            sb.append(eq.getType().getCriticals(unit));
+            sb.append(eq.getCriticals());
             sb.append("<br>Mass: ");
             if (TestEntity.usesKgStandard(unit)) {
                 sb.append(Math.round(eq.getTonnage() * 1000));
@@ -2524,6 +2583,10 @@ public class UnitUtil {
             if (unit.getArmorType(Aero.LOC_NOSE) == EquipmentType.T_ARMOR_PRIMITIVE) {
                 unit.setArmorType(EquipmentType.T_ARMOR_PRIMITIVE_FIGHTER);
             }
+        }
+        List<Mounted> weaponGroups = new ArrayList<>(unit.getWeaponGroupList());
+        for (Mounted group : weaponGroups) {
+            UnitUtil.removeMounted(unit, group);
         }
     }
 
@@ -4251,7 +4314,7 @@ public class UnitUtil {
         unit.setSneakCamo(false);
         unit.setSneakECM(false);
         unit.setSneakIR(false);
-        unit.setDamageDivisor(1.0);
+        unit.setArmorDamageDivisor(1.0);
     }
 
     public static void removeOmniArmActuators(Mech mech) {

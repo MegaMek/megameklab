@@ -21,20 +21,25 @@ package megameklab.com.printing;
 
 import megamek.common.*;
 import megamek.common.weapons.CLIATMWeapon;
+import megamek.common.weapons.infantry.InfantryWeapon;
 import megamek.common.weapons.missiles.ATMWeapon;
 import megamek.common.weapons.missiles.MMLWeapon;
 import megamek.common.weapons.other.ISCenturionWeaponSystem;
+import megameklab.com.util.CConfig;
 import megameklab.com.util.StringUtils;
 
 import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Formats text for an entry in the weapons and equipment inventory section of the record sheet.
  * This is for single pieces of equipment. WeaponBays should use {@link WeaponBayInventoryEntry}.
  */
 public class StandardInventoryEntry implements InventoryEntry, Comparable<StandardInventoryEntry> {
+    // Cache for whether equipment on a mixed tech unit needs to state explicitly whether
+    // it's IS or Clan
+    private static final Map<EquipmentType, Boolean> showMixedTechBase = new HashMap<>();
+
     private final Mounted mount;
 
     private final String[][] ranges;
@@ -64,14 +69,29 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
     private final static String[] SPHEROID_ARCS = { "NOS", "FLS", "FRS", "AFT", "HULL", "ALS", "ARS" };
     private final static String[] AERODYNE_ARCS = { "NOS", "LWG", "RWG", "AFT", "HULL" };
     private final static String[][] MML_RANGE = {
-            {"", "", "", "", ""}, {"6", "7", "14", "21"}, {DASH, "3", "6", "9"}
+            {"", "", "", "", ""}, formatRange(6, 7, 14, 21), formatRange(0, 3, 6, 9)
     };
     private final static String[][] ATM_RANGE = {
-            {"", "", "", "", ""}, {"4", "5", "10", "15"}, {"4", "9", "18", "27"}, {DASH, "3", "6", "9"}
+            {"", "", "", "", ""}, formatRange(4, 5, 10, 15),
+            formatRange(4, 9, 18, 27), formatRange(0, 3, 6, 9)
     };
     private final static String[][] CENTURION_RANGE = {
-            {"", "6(1)", "12(2)", "18(3)"}
+            {"", formatCenturion(6, 1), formatCenturion(12, 2), formatCenturion(18, 3)}
     };
+
+    private static String[] formatRange(int min, int sht, int med, int lng) {
+        return new String[] {
+                (min > 0) ? CConfig.formatScale(min, false) : DASH,
+                CConfig.formatScale(sht, false),
+                CConfig.formatScale(med, false),
+                CConfig.formatScale(lng, false),
+        };
+    }
+
+    private static String formatCenturion(int susceptible, int resistant) {
+        return String.format("%s(%s)", CConfig.formatScale(susceptible, false),
+                CConfig.formatScale(resistant, false));
+    }
 
     public StandardInventoryEntry(Mounted m) {
         this.mount = m;
@@ -100,25 +120,73 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         } else {
             String[] r = new String[4];
             Arrays.fill(r, DASH);
-            if (mount.getType() instanceof WeaponType) {
+            if (mount.getType() instanceof InfantryWeapon) {
+                final InfantryWeapon weapon = (InfantryWeapon) mount.getType();
+                r[RangeType.RANGE_SHORT] = CConfig.formatScale(weapon.getInfantryRange(), false);
+                if (weapon.getInfantryRange() > 0) {
+                    r[RangeType.RANGE_MEDIUM] = CConfig.formatScale(weapon.getInfantryRange() * 2, false);
+                    r[RangeType.RANGE_LONG] = CConfig.formatScale(weapon.getInfantryRange() * 3, false);
+                }
+            } else if (mount.getType() instanceof WeaponType) {
                 final WeaponType wtype = (WeaponType) mount.getType();
                 if (wtype.getMinimumRange() > 0) {
-                    r[RangeType.RANGE_MINIMUM] = String.valueOf(wtype.getMinimumRange());
+                    r[RangeType.RANGE_MINIMUM] = CConfig.formatScale(wtype.getMinimumRange(), false);
                 }
                 if ((wtype.getAmmoType() == AmmoType.T_LRM_TORPEDO)
-                    || (wtype.getAmmoType() == AmmoType.T_SRM_TORPEDO)) {
-                    r[RangeType.RANGE_SHORT] = String.valueOf(wtype.getWShortRange());
-                    r[RangeType.RANGE_MEDIUM] = String.valueOf(wtype.getWMediumRange());
-                    r[RangeType.RANGE_LONG] = String.valueOf(wtype.getWLongRange());
+                        || (wtype.getAmmoType() == AmmoType.T_SRM_TORPEDO)) {
+                    r[RangeType.RANGE_SHORT] = CConfig.formatScale(wtype.getWShortRange(), false);
+                    if (wtype.getWMediumRange() > wtype.getWShortRange()) {
+                        r[RangeType.RANGE_MEDIUM] = CConfig.formatScale(wtype.getWMediumRange(), false);
+                    }
+                    if (wtype.getWLongRange() > wtype.getWMediumRange()) {
+                        r[RangeType.RANGE_LONG] = CConfig.formatScale(wtype.getWLongRange(), false);
+                    }
                 } else {
-                    r[RangeType.RANGE_SHORT] = String.valueOf(wtype.getShortRange());
-                    r[RangeType.RANGE_MEDIUM] = String.valueOf(wtype.getMediumRange());
-                    r[RangeType.RANGE_LONG] = String.valueOf(wtype.getLongRange());
+                    r[RangeType.RANGE_SHORT] = CConfig.formatScale(wtype.getShortRange(), false);
+                    if (wtype.getMediumRange() > wtype.getShortRange()) {
+                        r[RangeType.RANGE_MEDIUM] = CConfig.formatScale(wtype.getMediumRange(), false);
+                    }
+                    if (wtype.getLongRange() > wtype.getMediumRange()) {
+                        r[RangeType.RANGE_LONG] = CConfig.formatScale(wtype.getLongRange(), false);
+                    }
                 }
+            } else if ((mount.getType() instanceof MiscType)
+                    && (mount.getType().hasFlag(MiscType.F_ECM) || mount.getType().hasFlag(MiscType.F_BAP))) {
+                r[RangeType.RANGE_SHORT] = DASH;
+                r[RangeType.RANGE_MEDIUM] = DASH;
+                r[RangeType.RANGE_LONG] = ewMaxRange();
             }
             String[][] retVal = new String[1][];
             retVal[0] = r;
             return retVal;
+        }
+    }
+
+    private String ewMaxRange() {
+        if (mount.getType().hasFlag(MiscType.F_ANGEL_ECM) && mount.getType().hasFlag(MiscType.F_BA_EQUIPMENT)) {
+            return "2";
+        } else if (mount.getType().hasFlag(MiscType.F_EW_EQUIPMENT)
+                || mount.getType().hasFlag(MiscType.F_WATCHDOG)
+                || mount.getType().hasFlag(MiscType.F_NOVA)) {
+            return CConfig.formatScale(3, false);
+        } else if (mount.getType().hasFlag(MiscType.F_SINGLE_HEX_ECM)) {
+            return "0";
+        } else if (mount.getType().hasFlag(MiscType.F_ECM)) {
+            // Guardian ECM, Clan ECM, non-BA Angel ECM
+            return CConfig.formatScale(6, false);
+        } else if (mount.getType().hasFlag(MiscType.F_BLOODHOUND)) {
+            return CConfig.formatScale(8, false);
+        } else if (mount.getType().getInternalName().equals(Sensor.LIGHT_AP)
+                || mount.getType().getInternalName().equals(Sensor.ISBALIGHT_AP)
+                || mount.getType().getInternalName().equals(Sensor.CLBALIGHT_AP)) {
+            return CConfig.formatScale(3, false);
+        } else if (mount.getType().getInternalName().equals(Sensor.ISIMPROVED)
+                || mount.getType().getInternalName().equals(Sensor.CLIMPROVED)) {
+            return CConfig.formatScale(2, false);
+        } else if (mount.getType().isClan()) {
+            return CConfig.formatScale(5, false); // Clan active probe
+        } else {
+            return CConfig.formatScale(3, false); // Beagle active probe
         }
     }
 
@@ -168,9 +236,16 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         if (eqName.length() > 20) {
             eqName = mount.getShortName();
         }
-        // Remove trailing IS or Clan tag in brackets or parentheses, including possible leading space
-        StringBuilder name = new StringBuilder(eqName.replaceAll(" ?[\\[(](Clan|IS)[])]", ""));
-        if (mount.getEntity().isMixedTech() && (mount.getType().getTechBase() != ITechnology.TECH_BASE_ALL)) {
+        // If this is not a mixed tech unit, remove trailing IS or Clan tag in brackets or parentheses,
+        // including possible leading space. For mixed tech units this is presumably needed to remove
+        // ambiguity.
+        if (!mount.getEntity().isMixedTech()) {
+            eqName = eqName.replaceAll(" ?[\\[(](Clan|IS)[])]", "");
+        }
+        StringBuilder name = new StringBuilder(eqName);
+        // For mixed tech units, we want to append the tech base if there is ambiguity
+        // and it isn't already part of the name.
+        if (showTechBase()) {
             name.append(mount.getType().isClan() ? " (Clan)" : " (IS)");
         }
         // Spheroid Small Craft/Dropships use a different location name for aft side weapons
@@ -194,6 +269,35 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
             name.append(" ").append(StringUtils.getAeroEquipmentInfo(mount));
         }
         return name.toString();
+    }
+
+    /**
+     * Determines whether we should indicate whether the equipment is IS or Clan for
+     * units with a mixed tech base. Only specify when there is another piece of equipment
+     * with the same name but different tech base.
+     *
+     * @return Whether the tech base should be shown for the equipment
+     */
+    private boolean showTechBase() {
+        if (!mount.getEntity().isMixedTech()
+                || (mount.getType().getTechBase() == ITechnology.TECH_BASE_ALL)) {
+            return false;
+        }
+        if (showMixedTechBase.containsKey(mount.getType())) {
+            return showMixedTechBase.get(mount.getType());
+        }
+        final Enumeration<EquipmentType> e = EquipmentType.getAllTypes();
+        while (e.hasMoreElements()) {
+            final EquipmentType et = e.nextElement();
+            if ((et.getTechBase() != mount.getType().getTechBase())
+                    && et.getName().equals(mount.getType().getName())) {
+                showMixedTechBase.put(mount.getType(), true);
+                showMixedTechBase.put(et, true);
+                return true;
+            }
+        }
+        showMixedTechBase.put(mount.getType(), false);
+        return false;
     }
 
     private String formatLocation() {

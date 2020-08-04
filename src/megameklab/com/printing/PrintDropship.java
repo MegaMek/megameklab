@@ -94,7 +94,7 @@ public class PrintDropship extends PrintAero {
     }
 
     @Override
-    protected Entity getEntity() {
+    public Entity getEntity() {
         return ship;
     }
 

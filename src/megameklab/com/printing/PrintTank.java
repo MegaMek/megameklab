@@ -58,7 +58,7 @@ public class PrintTank extends PrintEntity {
     }
 
     @Override
-    protected Entity getEntity() {
+    public Entity getEntity() {
         return tank;
     }
 
@@ -140,7 +140,7 @@ public class PrintTank extends PrintEntity {
         setTextField(ENGINE_TYPE, tank.getEngine().getEngineName()
                 .replaceAll("\\d+|\\[.*]", "").trim());
         if (tank.getOriginalJumpMP() > 0) {
-            setTextField(MP_JUMP, tank.getOriginalJumpMP());
+            setTextField(MP_JUMP, formatJump());
         } else {
             hideElement(MP_JUMP, true);
             hideElement(LBL_JUMP, true);

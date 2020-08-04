@@ -111,7 +111,7 @@ public class PrintAero extends PrintEntity {
     }
 
     @Override
-    protected Entity getEntity() {
+    public Entity getEntity() {
         return aero;
     }
 
@@ -263,5 +263,15 @@ public class PrintAero extends PrintEntity {
             key.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
                     SVGConstants.SVG_TRANSLATE_VALUE + "(0," + ypos + ")");
         }
+    }
+
+    @Override
+    protected String formatWalk() {
+        return Integer.toString(getEntity().getWalkMP());
+    }
+
+    @Override
+    protected String formatRun() {
+        return Integer.toString(getEntity().getRunMP());
     }
 }
