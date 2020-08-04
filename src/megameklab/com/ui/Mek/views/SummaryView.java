@@ -338,7 +338,7 @@ public class SummaryView extends IView{
                     || mt.hasFlag(MiscType.F_INDUSTRIAL_TSM)
                     || mt.hasFlag(MiscType.F_MASC)) {
                 weightEnhance += m.getTonnage();
-                critEnhance += UnitUtil.getCritsUsed(getMech(), mt);
+                critEnhance += UnitUtil.getCritsUsed(m);
             }
             else if (mt.hasFlag(MiscType.F_JUMP_JET)
                     || mt.hasFlag(MiscType.F_JUMP_BOOSTER)) {

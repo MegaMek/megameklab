@@ -189,17 +189,16 @@ public class UnitUtil {
     }
 
     /**
-     * Returns the number of crits used by EquipmentType eq, 1 if armor or
-     * structure EquipmentType
+     * Returns the number of crits used by EquipmentType for each placement. For
+     * most equipment this is the same as the total slots, but some spreadable
+     * equipment is allocated a single slot at a time, or split between multiple
+     * locations.
      *
-     * @param unit
-     * @param eq
-     * @return
+     * @param mount The equipment mount
+     * @return      The number of slots per allocation
      */
-    public static int getCritsUsed(Entity unit, EquipmentType eq) {
-
-        boolean isMisc = eq instanceof MiscType;
-        double toReturn = eq.getCriticals(unit);
+    public static int getCritsUsed(Mounted mount) {
+        double toReturn = mount.getCriticals();
 
         //if it's 0, we can return now (e.g. standard armor or IS, we don't
         //want that to count as 1 later on
@@ -207,30 +206,23 @@ public class UnitUtil {
             return 0;
         }
 
-        if (isMisc
-                && eq.hasFlag(MiscType.F_PARTIAL_WING)
-                && TechConstants
-                        .isClan(eq.getTechLevel(unit.getTechLevelYear()))) {
-            toReturn = 3;
-        } else if (isMisc
-                && eq.hasFlag(MiscType.F_PARTIAL_WING)
-                && !TechConstants.isClan(eq.getTechLevel(unit
-                        .getTechLevelYear()))) {
-            toReturn = 4;
-        } else  if (isMisc
+        final EquipmentType eq = mount.getType();
+        if ((eq instanceof MiscType) && eq.hasFlag(MiscType.F_PARTIAL_WING)) {
+            toReturn = eq.isClan() ? 3 : 4;
+        } else  if ((eq instanceof MiscType)
                 && (eq.hasFlag(MiscType.F_JUMP_BOOSTER)
                         || eq.hasFlag(MiscType.F_TALON)
                         // Stealth armor is allocated 2 slots/location in mechs, but by individual slot for BA
-                        || (eq.hasFlag(MiscType.F_STEALTH) && !(unit instanceof BattleArmor)))) {
+                        || (eq.hasFlag(MiscType.F_STEALTH) && !(mount.getEntity() instanceof BattleArmor)))) {
             toReturn = 2;
         } else  if (UnitUtil.isFixedLocationSpreadEquipment(eq) || UnitUtil.isTSM(eq)
                 || UnitUtil.isArmorOrStructure(eq)) {
             toReturn = 1;
         }
-        if ((unit instanceof Mech) && ((Mech) unit).isSuperHeavy()) {
+        if ((mount.getEntity() instanceof Mech) && mount.getEntity().isSuperHeavy()) {
             toReturn = Math.ceil(toReturn/2.0);
         }
-        return (int)toReturn;
+        return (int) toReturn;
     }
 
     /**
@@ -1974,7 +1966,7 @@ public class UnitUtil {
         Mounted mount = new Mounted(unit, equip);
         for (; blocks > 0; blocks--) {
             // how many crits per block?
-            int crits = UnitUtil.getCritsUsed(unit, equip);
+            int crits = UnitUtil.getCritsUsed(mount);
             for (int i = 0; i < crits; i++) {
                 try {
                     if (firstBlock || (locations.get(0) == Entity.LOC_NONE)) {
@@ -4081,17 +4073,17 @@ public class UnitUtil {
                 }
             }
             if ((mount.getLocation() == Entity.LOC_NONE)) {
-                nCrits += UnitUtil.getCritsUsed(unit, mount.getType());
+                nCrits += UnitUtil.getCritsUsed(mount);
             }
         }
         for (Mounted mount : unit.getWeaponList()) {
             if (mount.getLocation() == Entity.LOC_NONE) {
-                nCrits += UnitUtil.getCritsUsed(unit, mount.getType());
+                nCrits += UnitUtil.getCritsUsed(mount);
             }
         }
         for (Mounted mount : unit.getAmmo()) {
             if ((mount.getLocation() == Entity.LOC_NONE) && !mount.isOneShotAmmo()) {
-                nCrits += UnitUtil.getCritsUsed(unit, mount.getType());
+                nCrits += UnitUtil.getCritsUsed(mount);
             }
         }
         return nCrits;
