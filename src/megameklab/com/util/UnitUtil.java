@@ -380,6 +380,7 @@ public class UnitUtil {
                 }
             }
         }
+        unit.recalculateTechAdvancement();
     }
 
     /**
