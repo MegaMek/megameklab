@@ -1207,7 +1207,7 @@ public class UnitUtil {
      */
     public static void changeMountStatus(Entity unit, Mounted eq, int location,
             int secondaryLocation, boolean rear) {
-        if (location != eq.getLocation()) {
+        if ((location != eq.getLocation() && !eq.isOneShot())) {
             if (eq.getLinked() != null) {
                 eq.getLinked().setLinkedBy(null);
                 eq.setLinked(null);
