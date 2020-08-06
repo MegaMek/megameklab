@@ -507,6 +507,16 @@ public class StructureTab extends ITab implements ActionListener, BABuildListene
 
     @Override
     public void jumpTypeChanged(EquipmentType jumpJet) {
+        UnitUtil.removeAllMiscMounteds(getBattleArmor(), MiscType.F_JUMP_JET);
+        UnitUtil.removeAllMiscMounteds(getBattleArmor(), MiscType.F_BA_VTOL);
+        UnitUtil.removeAllMiscMounteds(getBattleArmor(), MiscType.F_UMU);
+        if (jumpJet != null) {
+            try {
+                getBattleArmor().addEquipment(jumpJet, BattleArmor.LOC_NONE);
+            } catch (LocationFullException ignored) {
+                // not when we're adding to LOC_NONE
+            }
+        }
         if ((null == jumpJet) || (getBattleArmor().getOriginalJumpMP() == 0)) {
             getBattleArmor().setMovementMode(EntityMovementMode.INF_LEG);
         } else if (jumpJet.hasFlag(MiscType.F_JUMP_JET)) {
