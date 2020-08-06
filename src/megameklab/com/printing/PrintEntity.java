@@ -570,8 +570,8 @@ public abstract class PrintEntity extends PrintRecordSheet {
      */
     protected String formatMovement(double baseMP, double fullMP) {
         if (fullMP > baseMP) {
-            return NumberFormat.getInstance().format(baseMP) + " ["
-                    + NumberFormat.getInstance().format(fullMP) + "] "
+            return CConfig.formatScale(baseMP, false) + " ["
+                    + CConfig.formatScale(fullMP, false) + "] "
                     + CConfig.scaleUnits().abbreviation;
         } else {
             return CConfig.formatScale(baseMP, true);
