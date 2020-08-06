@@ -6,6 +6,7 @@ VERSION HISTORY:
 + Issue #658: ARTS Transport Bays
 + Issue #710: Clan Battle Armor VTOL system appears to have a tech rating of E
 + Issue #719: Troublesome one shot ammunition popping up
++ Issue #720: Mech running speed rounding error on certain exported record sheets
 
 0.47.8 (2020-08-02 2300 UTC)
 + PR #664: Quick reference tables for mech record sheets
