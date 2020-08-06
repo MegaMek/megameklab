@@ -5,6 +5,7 @@ VERSION HISTORY:
 + Issue #699: Critical slots for cargo incorrectly displayed in Unallocated Equipment list
 + Issue #658: ARTS Transport Bays
 + Issue #710: Clan Battle Armor VTOL system appears to have a tech rating of E
++ Issue #719: Troublesome one shot ammunition popping up
 
 0.47.8 (2020-08-02 2300 UTC)
 + PR #664: Quick reference tables for mech record sheets
