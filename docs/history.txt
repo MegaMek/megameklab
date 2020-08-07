@@ -8,6 +8,7 @@ VERSION HISTORY:
 + Issue #719: Troublesome one shot ammunition popping up
 + Issue #720: Mech running speed rounding error on certain exported record sheets
 + Issue #713: Support vehicle tech rating in Preview does not reflect structure, engine, or armor tech ratings
++ Issue #714: Battle Armor Missile Ammo not refreshing for TRO Entry
 
 0.47.8 (2020-08-02 2300 UTC)
 + PR #664: Quick reference tables for mech record sheets
