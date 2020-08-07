@@ -1,6 +1,6 @@
 VERSION HISTORY:
 ----------------
-0.47.9-SNAPSHOT
+0.47.9 (2020-08-07 1830 UTC)
 + Issue #693: RFE Combat Crew Seating
 + Issue #699: Critical slots for cargo incorrectly displayed in Unallocated Equipment list
 + Issue #658: ARTS Transport Bays
