@@ -20,6 +20,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import megameklab.com.printing.reference.*;
 import org.apache.batik.anim.dom.SVGDOMImplementation;
@@ -686,7 +687,11 @@ public class PrintMech extends PrintEntity {
                         || ((cs.getIndex() >= Mech.ACTUATOR_UPPER_LEG) && (cs.getIndex() <= Mech.ACTUATOR_FOOT))) {
                     name += " Actuator";
                 } else if (cs.getIndex() == Mech.SYSTEM_COCKPIT) {
-                    if (mech.getCockpitType() == Mech.COCKPIT_COMMAND_CONSOLE) {
+                    Optional<Mounted> robotics = mech.getMisc().stream()
+                            .filter(m -> m.getType().hasFlag(MiscType.F_SRCS)).findAny();
+                    if (robotics.isPresent()) {
+                        name = robotics.get().getType().getShortName();
+                    } else if (mech.getCockpitType() == Mech.COCKPIT_COMMAND_CONSOLE) {
                         if (mech.getCrewForCockpitSlot(Mech.LOC_HEAD, cs) == 0) {
                             name = EquipmentMessages.getString("SystemType.Cockpit.COCKPIT_STANDARD");
                         }
