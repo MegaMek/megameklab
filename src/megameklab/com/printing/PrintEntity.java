@@ -19,6 +19,7 @@ import java.io.File;
 import java.text.NumberFormat;
 import java.util.*;
 
+import megamek.client.generator.RandomNameGenerator;
 import megamek.common.*;
 import megameklab.com.printing.reference.ReferenceTable;
 import megameklab.com.util.CConfig;
@@ -77,7 +78,8 @@ public abstract class PrintEntity extends PrintRecordSheet {
      * @return Whether the pilot data should be filled in.
      */
     protected boolean showPilotInfo() {
-        return options.showPilotData() && !getEntity().getCrew().getName().equalsIgnoreCase("unnamed");
+        return options.showPilotData()
+                && !getEntity().getCrew().getName().startsWith(RandomNameGenerator.UNNAMED);
     }
 
     /**
