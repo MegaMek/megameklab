@@ -686,7 +686,10 @@ public class PrintMech extends PrintEntity {
                         || ((cs.getIndex() >= Mech.ACTUATOR_UPPER_LEG) && (cs.getIndex() <= Mech.ACTUATOR_FOOT))) {
                     name += " Actuator";
                 } else if (cs.getIndex() == Mech.SYSTEM_COCKPIT) {
-                    if (mech.getCockpitType() == Mech.COCKPIT_COMMAND_CONSOLE) {
+                    if (mech.hasWorkingMisc(MiscType.F_SRCS)) {
+                        name = mech.getMisc().stream().filter(m -> m.getType().hasFlag(MiscType.F_SRCS))
+                                .map(m -> m.getType().getShortName()).findAny().orElse("SRCS");
+                    } else if (mech.getCockpitType() == Mech.COCKPIT_COMMAND_CONSOLE) {
                         if (mech.getCrewForCockpitSlot(Mech.LOC_HEAD, cs) == 0) {
                             name = EquipmentMessages.getString("SystemType.Cockpit.COCKPIT_STANDARD");
                         }
