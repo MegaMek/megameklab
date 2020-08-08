@@ -53,7 +53,7 @@ import megamek.common.Protomech;
 import megamek.common.Tank;
 import megamek.common.util.EncodeControl;
 import megamek.common.util.ImageUtil;
-import megamek.common.util.MegaMekFile;
+import megamek.common.util.fileUtils.MegaMekFile;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.dialog.LoadingDialog;
 import megameklab.com.ui.dialog.MegaMekLabUnitSelectorDialog;
