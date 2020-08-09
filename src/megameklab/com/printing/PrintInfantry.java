@@ -16,6 +16,7 @@ package megameklab.com.printing;
 
 import megamek.common.*;
 import megamek.common.options.IOption;
+import megamek.common.weapons.artillery.ArtilleryCannonWeapon;
 import megamek.common.weapons.artillery.ArtilleryWeapon;
 import megamek.common.weapons.infantry.InfantryWeapon;
 import megameklab.com.util.CConfig;
@@ -312,6 +313,8 @@ public class PrintInfantry extends PrintEntity {
          */
         if (gun instanceof ArtilleryWeapon) {
             setTextField(FIELD_GUN_DMG, gun.getRackSize() + " [AE,S,F]");
+        } else if (gun instanceof ArtilleryCannonWeapon) {
+            setTextField(FIELD_GUN_DMG, gun.getRackSize() + " [DB,AE]");
         } else {
             StringBuilder sb = new StringBuilder(Integer.toString(gun.getDamage()));
             switch (gun.getAmmoType()) {
