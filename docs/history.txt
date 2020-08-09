@@ -1,6 +1,10 @@
 VERSION HISTORY:
 ----------------
 0.47.10-SNAPSHOT
++ Issue #700: Heat display for IndustrialMechs does not update after changing engine types
++ Issue #722: VSTOL equipment does not appear on fighter record sheets
++ Issue #723: LAMs add pilot data even if none is specified
++ Issue #725: Artillery cannons and infantry record sheets
 
 0.47.9 (2020-08-07 1830 UTC)
 + Issue #693: RFE Combat Crew Seating
