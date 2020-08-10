@@ -5,6 +5,10 @@ VERSION HISTORY:
 + Issue #722: VSTOL equipment does not appear on fighter record sheets
 + Issue #723: LAMs add pilot data even if none is specified
 + Issue #725: Artillery cannons and infantry record sheets
++ Issue #712: Bug Small craft validation passed with electronics not assigned to a slot
++ Issue #724: Batch exporting to pdf does not add file extension
++ Issue #737: Speed modifier for supercharger on vehicle sheet
++ Issue #738: infantry flamers not marked as flame based
 
 0.47.9 (2020-08-07 1830 UTC)
 + Issue #693: RFE Combat Crew Seating
