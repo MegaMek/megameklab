@@ -615,11 +615,11 @@
                                                                       >Movement Points:</text
                                                                       ><text x="6.000" y="47.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:7.700px;font-weight:bold;font-style:normal" textLength="29.020" lengthAdjust="spacingAndGlyphs"
                                                                       >Cruising:</text
-                                                                      ><text fill="#231f20" x="46.000" id="mpWalk" y="47.000" style="font-family:Eurostile;font-size:7.700px;font-weight:normal;font-style:normal" text-anchor="middle"
+                                                                      ><text fill="#231f20" x="56.000" id="mpWalk" y="47.000" style="font-family:Eurostile;font-size:7.700px;font-weight:normal;font-style:normal" text-anchor="middle"
                                                                       >0</text
                                                                       ><text x="6.000" y="56.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:7.700px;font-weight:bold;font-style:normal" textLength="28.937" lengthAdjust="spacingAndGlyphs"
                                                                       >Flanking:</text
-                                                                      ><text fill="#231f20" x="46.000" id="mpRun" y="56.000" style="font-family:Eurostile;font-size:7.700px;font-weight:normal;font-style:normal" text-anchor="middle"
+                                                                      ><text fill="#231f20" x="56.000" id="mpRun" y="56.000" style="font-family:Eurostile;font-size:7.700px;font-weight:normal;font-style:normal" text-anchor="middle"
                                                                       >0</text
                                                                       ><text x="56.150" y="56.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:7.700px;font-weight:bold;font-style:normal" id="lblJump" textLength="29.883" lengthAdjust="spacingAndGlyphs"
                                                                       >Jumping:</text
