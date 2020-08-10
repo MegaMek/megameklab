@@ -59,6 +59,7 @@ import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.dialog.UnitPrintQueueDialog;
 import org.apache.avalon.framework.configuration.ConfigurationException;
 import org.apache.batik.transcoder.TranscoderException;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.pdfbox.io.MemoryUsageSetting;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.xml.sax.SAXException;
@@ -123,16 +124,17 @@ public class UnitPrintManager {
             // I want a file, y'know!
             return;
         }
+        File mulFile = f.getSelectedFile();
         Vector<Entity> loadedUnits;
         try {
-            loadedUnits = EntityListFile.loadFrom(f.getSelectedFile());
+            loadedUnits = EntityListFile.loadFrom(mulFile);
             loadedUnits.trimToSize();
         } catch (Exception ex) {
             ex.printStackTrace();
             return;
         }
 
-        File exportFile = getExportFile(parent);
+        File exportFile = getExportFile(parent, FilenameUtils.removeExtension(mulFile.getPath()) + ".pdf");
         if (exportFile != null) {
             exportUnits(loadedUnits, exportFile, singlePrint);
         }
