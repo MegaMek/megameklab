@@ -27,6 +27,8 @@ import org.w3c.dom.svg.SVGRectElement;
 import java.util.Enumeration;
 import java.util.StringJoiner;
 
+import static megameklab.com.printing.InventoryEntry.DASH;
+
 /**
  * Lays out a record sheet block for a single infantry unit
  */
@@ -335,7 +337,7 @@ public class PrintInfantry extends PrintEntity {
         if (gun.getMinimumRange() > 0) {
             setTextField(FIELD_GUN_MIN_RANGE, gun.getMinimumRange());
         } else {
-            setTextField(FIELD_GUN_MIN_RANGE, "—");
+            setTextField(FIELD_GUN_MIN_RANGE, DASH);
         }
         setTextField(FIELD_GUN_SHORT, gun.getShortRange());
         setTextField(FIELD_GUN_MED, gun.getMediumRange());
@@ -409,7 +411,7 @@ public class PrintInfantry extends PrintEntity {
         }
 
         if (range >= mods.length) {
-            return "—";
+            return DASH;
         }
         int mod = mods[range];
         if (range == 0) {
