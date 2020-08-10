@@ -204,24 +204,10 @@ public class PrintInfantry extends PrintEntity {
         if (rangeWeapon.hasFlag(WeaponType.F_INF_NONPENETRATING)) {
             sj.add("Can only damage conventional infantry units.");
         }
-        if (infantry.getPrimaryWeapon().hasFlag(WeaponType.F_INFERNO)
-                || (infantry.getSecondaryWeapon() != null
-                && infantry.getSecondaryWeapon().hasFlag(WeaponType.F_INFERNO))) {
+        if (isFlameBased(infantry.getPrimaryWeapon())
+                || ((infantry.getSecondaryWeapon() != null)
+                    && isFlameBased(infantry.getSecondaryWeapon()))) {
             sj.add("Flame-based weapon.");
-        } else {
-            for (int i = 0; i < infantry.getPrimaryWeapon().getModesCount(); i++) {
-                if (infantry.getPrimaryWeapon().getMode(i).equals("Heat")) {
-                    sj.add("Flame-based weapon.");
-                    break;
-                }
-            }
-            if (infantry.getSecondaryWeapon() != null) {
-                for (int i = 0; i < infantry.getSecondaryWeapon().getModesCount(); i++) {
-                    if (infantry.getSecondaryWeapon().getMode(i).equals("Heat")) {
-                        sj.add("Flame-based weapon.");
-                    }
-                }
-            }
         }
         if (infantry.getPrimaryWeapon().hasFlag(WeaponType.F_INF_AA)
                 || (infantry.getSecondaryWeapon() != null
@@ -284,6 +270,13 @@ public class PrintInfantry extends PrintEntity {
         } else {
             return "None";
         }
+    }
+
+    private boolean isFlameBased(WeaponType type) {
+        return (type.hasFlag(WeaponType.F_PLASMA)
+                || type.hasFlag(WeaponType.F_INCENDIARY_NEEDLES)
+                || type.hasFlag(WeaponType.F_INFERNO)
+                || type.hasFlag(WeaponType.F_FLAMER));
     }
 
     private void writeFieldGuns() {
