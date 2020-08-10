@@ -315,19 +315,21 @@ public class PrintInfantry extends PrintEntity {
             switch (gun.getAmmoType()) {
                 case AmmoType.T_AC_ULTRA:
                 case AmmoType.T_AC_ULTRA_THB:
-                    sb.append("/Sht, R2 [DB,R/S/C]");
+                    sb.append("/Sht, R2");
+                    setTextField(FIELD_GUN_DMG_2, "[DB,R/S/C]");
                     break;
                 case AmmoType.T_AC_ROTARY:
-                    sb.append("/Sht, R6 [DB,R/S/C]");
+                    sb.append("/Sht, R6");
+                    setTextField(FIELD_GUN_DMG_2, "[DB,R/S/C]");
                     break;
                 case AmmoType.T_AC:
                 case AmmoType.T_AC_PRIMITIVE:
                 case AmmoType.T_LAC:
-                    sb.append(" [DB,C/S/F]");
+                    setTextField(FIELD_GUN_DMG_2, "[DB,C/S/F]");
                     break;
                 case AmmoType.T_AC_LBX:
                 case AmmoType.T_AC_LBX_THB:
-                    sb.append(" [DB,C/F]");
+                    setTextField(FIELD_GUN_DMG_2, "[DB,C/F]");
                     break;
                 default:
                     sb.append(" [DB]");
