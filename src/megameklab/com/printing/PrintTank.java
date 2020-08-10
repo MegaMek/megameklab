@@ -153,6 +153,15 @@ public class PrintTank extends PrintEntity {
     }
 
     @Override
+    protected String formatRun() {
+        if (tank.hasWorkingMisc(MiscType.F_MASC)) {
+            return formatMovement(tank.getWalkMP() * 1.5, tank.getWalkMP() * 2);
+        } else {
+            return formatMovement(tank.getWalkMP() * 1.5);
+        }
+    }
+
+    @Override
     public String formatFeatures() {
         StringJoiner sj = new StringJoiner(", ");
         List<String> chassisMods = tank.getMisc().stream().filter(m -> m.getType().hasFlag(MiscType.F_CHASSIS_MODIFICATION))
