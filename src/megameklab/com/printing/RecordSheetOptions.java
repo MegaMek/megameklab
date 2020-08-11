@@ -15,8 +15,6 @@ package megameklab.com.printing;
 
 import megameklab.com.util.CConfig;
 
-import java.awt.print.Paper;
-
 /**
  * A set of options for controlling what is displayed on the record sheet
  * 
@@ -33,6 +31,8 @@ public class RecordSheetOptions {
     private boolean role;
     private boolean heatProfile;
     private boolean tacOpsHeat;
+    private boolean eraBasedProgression;
+    private boolean referenceCharts;
 
     public RecordSheetOptions() {
         String paper = CConfig.getParam(CConfig.RS_PAPER_SIZE, PaperSize.US_LETTER.name());
@@ -48,6 +48,8 @@ public class RecordSheetOptions {
         this.role = CConfig.getBooleanParam(CConfig.RS_SHOW_ROLE);
         this.heatProfile = CConfig.getBooleanParam(CConfig.RS_HEAT_PROFILE);
         this.tacOpsHeat = CConfig.getBooleanParam(CConfig.RS_TAC_OPS_HEAT);
+        this.eraBasedProgression = CConfig.getBooleanParam(CConfig.TECH_PROGRESSION);
+        this.referenceCharts = CConfig.getBooleanParam(CConfig.RS_REFERENCE);
     }
 
     public PaperSize getPaperSize() {
@@ -86,6 +88,14 @@ public class RecordSheetOptions {
         return tacOpsHeat;
     }
 
+    public boolean useEraBaseProgression() {
+        return eraBasedProgression;
+    }
+
+    public boolean showReferenceCharts() {
+        return referenceCharts;
+    }
+
     public void setPaperSize(PaperSize paperSize) {
         this.paperSize = paperSize;
     }
@@ -110,4 +120,11 @@ public class RecordSheetOptions {
         this.tacOpsHeat = tacOpsHeat;
     }
 
+    public void setEraBasedProgression(boolean eraBased) {
+        eraBasedProgression = eraBased;
+    }
+
+    public void setReferenceCharts(boolean charts) {
+        this.referenceCharts = charts;
+    }
 }

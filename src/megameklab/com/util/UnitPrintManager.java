@@ -39,7 +39,6 @@ import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import megamek.client.ui.swing.UnitLoadingDialog;
-import megamek.client.ui.swing.UnitSelectorDialog;
 import megamek.common.Aero;
 import megamek.common.BattleArmor;
 import megamek.common.Dropship;
@@ -55,10 +54,12 @@ import megamek.common.Tank;
 import megamek.common.util.EncodeControl;
 import megameklab.com.MegaMekLab;
 import megameklab.com.printing.*;
+import megameklab.com.ui.dialog.MegaMekLabUnitSelectorDialog;
 import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.dialog.UnitPrintQueueDialog;
 import org.apache.avalon.framework.configuration.ConfigurationException;
 import org.apache.batik.transcoder.TranscoderException;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.pdfbox.io.MemoryUsageSetting;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.xml.sax.SAXException;
@@ -123,16 +124,17 @@ public class UnitPrintManager {
             // I want a file, y'know!
             return;
         }
+        File mulFile = f.getSelectedFile();
         Vector<Entity> loadedUnits;
         try {
-            loadedUnits = EntityListFile.loadFrom(f.getSelectedFile());
+            loadedUnits = EntityListFile.loadFrom(mulFile);
             loadedUnits.trimToSize();
         } catch (Exception ex) {
             ex.printStackTrace();
             return;
         }
 
-        File exportFile = getExportFile(parent);
+        File exportFile = getExportFile(parent, FilenameUtils.removeExtension(mulFile.getPath()) + ".pdf");
         if (exportFile != null) {
             exportUnits(loadedUnits, exportFile, singlePrint);
         }
@@ -417,7 +419,7 @@ public class UnitPrintManager {
     public static void printSelectedUnit(JFrame parent, boolean pdf) {
         UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(parent);
         unitLoadingDialog.setVisible(true);
-        UnitSelectorDialog viewer = new UnitSelectorDialog(parent, unitLoadingDialog, true);
+        MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(parent, unitLoadingDialog);
 
         viewer.setVisible(false);
         Entity entity = viewer.getChosenEntity();

@@ -65,7 +65,7 @@ public class CriticalSuit {
         if (m.getType().isSpreadable()){
             critsToAdd = 1;
         } else {
-            critsToAdd = m.getType().getCriticals(ba);
+            critsToAdd = m.getCriticals();
         }
         int critsAvailable = 0;
         for (int c = 0; c < getNumCriticals(loc); c++) {
@@ -99,7 +99,7 @@ public class CriticalSuit {
         if (m.getType().isSpreadable()){
             critsToAdd = 1;
         } else {
-            critsToAdd = m.getType().getCriticals(ba);
+            critsToAdd = m.getCriticals();
         }
         if (critsToAdd == 0){
             return;

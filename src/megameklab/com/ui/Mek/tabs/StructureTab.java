@@ -659,12 +659,12 @@ public class StructureTab extends ITab implements MekBuildListener, ArmorAllocat
         }
         panChassis.refresh();
         panHeat.refresh();
-        panMovement.refresh();
         panArmor.refresh();
         panArmorAllocation.setFromEntity(getMech());
         panPatchwork.setFromEntity(getMech());
         refresh.refreshBuild();
         addAllListeners();
+        panMovement.refresh();
         refresh.refreshPreview();
     }
 
@@ -822,6 +822,7 @@ public class StructureTab extends ITab implements MekBuildListener, ArmorAllocat
                 UnitUtil.addHeatSinkMounts(getMech(), newHS, panHeat.getHeatSinkType());
             }
             UnitUtil.updateAutoSinks(getMech(), getMech().hasCompactHeatSinks());
+            getMech().resetSinks();
             panMovement.setFromEntity(getMech());
             panHeat.setFromMech(getMech());
             refreshSummary();

@@ -18,7 +18,11 @@ import java.awt.print.PageFormat;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
+import megameklab.com.printing.reference.*;
 import org.apache.batik.anim.dom.SVGDOMImplementation;
 import org.apache.batik.dom.util.SAXDocumentFactory;
 import org.apache.batik.util.SVGConstants;
@@ -144,7 +148,7 @@ public class PrintMech extends PrintEntity {
     }
     
     @Override
-    protected Entity getEntity() {
+    public Entity getEntity() {
         return mech;
     }
     
@@ -229,10 +233,10 @@ public class PrintMech extends PrintEntity {
                 setTextField(MP_AIRMECH_CRUISE, "\u2014");
                 setTextField(MP_AIRMECH_FLANK, "\u2014");
             } else {
-                setTextField(MP_AIRMECH_WALK, Integer.toString(lam.getAirMechWalkMP()));
-                setTextField(MP_AIRMECH_RUN, Integer.toString(lam.getAirMechRunMP()));
-                setTextField(MP_AIRMECH_CRUISE, Integer.toString(lam.getAirMechCruiseMP()));
-                setTextField(MP_AIRMECH_FLANK, Integer.toString(lam.getAirMechFlankMP()));
+                setTextField(MP_AIRMECH_WALK, formatMovement(lam.getAirMechWalkMP()));
+                setTextField(MP_AIRMECH_RUN, formatMovement(lam.getAirMechWalkMP() * 1.5));
+                setTextField(MP_AIRMECH_CRUISE, formatMovement(lam.getAirMechCruiseMP()));
+                setTextField(MP_AIRMECH_FLANK, formatMovement(lam.getAirMechCruiseMP() * 1.5));
             }
             setTextField(MP_SAFE_THRUST, Integer.toString(lam.getJumpMP()));
             setTextField(MP_MAX_THRUST, Integer.toString((int) Math.ceil(lam.getJumpMP() * 1.5)));
@@ -246,7 +250,7 @@ public class PrintMech extends PrintEntity {
                 hideElement(ASF_PILOTING_SKILL);
             }
         } else if (mech instanceof QuadVee) {
-            setTextField(MP_CRUISE, Integer.toString(((QuadVee) mech).getCruiseMP(false, false, false)));
+            setTextField(MP_CRUISE, formatMovement(((QuadVee) mech).getCruiseMP(false, false, false)));
             setTextField(MP_FLANK, formatQuadVeeFlank());
             setTextField(LBL_VEE_MODE, ((QuadVee) mech).getMotiveTypeString() + "s");
         }
@@ -567,60 +571,56 @@ public class PrintMech extends PrintEntity {
     @Override
     protected String formatWalk() {
         if (mech.hasTSM()) {
-            return mech.getWalkMP() + " [" + (mech.getWalkMP() + 1) + "]";
+            return formatMovement(mech.getWalkMP(), mech.getWalkMP() + 1);
         } else {
-            return Integer.toString(mech.getWalkMP());
+            return super.formatWalk();
         }
     }
-    
+
     @Override
     protected String formatRun() {
-        int mp = mech.getWalkMP();
+        double baseRun = mech.getWalkMP();
+        double fullRun = baseRun;
+        baseRun *= 1.5;
         if (mech.hasTSM()) {
-            mp++;
+            fullRun++;
         }
         if ((mech.getMASC() != null) && (mech.getSuperCharger() != null)) {
-            mp = (int) Math.ceil(mp * 2.5);
+            fullRun = (int) Math.ceil(fullRun * 2.5);
         } else if ((mech.getMASC() != null) || (mech.getSuperCharger() != null)) {
-            mp *= 2;
+            fullRun *= 2;
         } else {
-            mp = (int) Math.ceil(mp * 1.5);
+            fullRun *= 1.5;
         }
         if (mech.hasMPReducingHardenedArmor()) {
-            mp--;
+            baseRun--;
+            fullRun--;
         }
-        if (mp > mech.getRunMPwithoutMASC()) {
-            return mech.getRunMPwithoutMASC() + " [" + mp + "]";
-        } else {
-            return Integer.toString(mech.getRunMP());
-        }
+        return formatMovement(baseRun, fullRun);
     }
     
     private String formatQuadVeeFlank() {
-        int mp = ((QuadVee) mech).getCruiseMP(false, false, false);
-        int noSupercharger = (int) Math.ceil(mp * 1.5);
+        double baseFlank = ((QuadVee) mech).getCruiseMP(false, false, false);
+        baseFlank *= 1.5;
+        double fullFlank;
         if (mech.getSuperCharger() != null) {
-            mp *= 2;
+            fullFlank = baseFlank * 2;
         } else {
-            mp = noSupercharger;
+            fullFlank = baseFlank;
         }
         if (mech.hasMPReducingHardenedArmor()) {
-            mp--;
-            noSupercharger--;
+            baseFlank--;
+            fullFlank--;
         }
-        if (mp > noSupercharger) {
-            return noSupercharger + " [" + mp + "]";
-        } else {
-            return Integer.toString(mp);
-        }
+        return formatMovement(baseFlank, fullFlank);
     }
     
     @Override
     protected String formatJump() {
         if (mech.hasUMU()) {
-            return Integer.toString(mech.getActiveUMUCount());
+            return formatMovement(mech.getActiveUMUCount());
         } else {
-            return Integer.toString(mech.getJumpMP());
+            return super.formatJump();
         }
     }
 
@@ -687,7 +687,11 @@ public class PrintMech extends PrintEntity {
                         || ((cs.getIndex() >= Mech.ACTUATOR_UPPER_LEG) && (cs.getIndex() <= Mech.ACTUATOR_FOOT))) {
                     name += " Actuator";
                 } else if (cs.getIndex() == Mech.SYSTEM_COCKPIT) {
-                    if (mech.getCockpitType() == Mech.COCKPIT_COMMAND_CONSOLE) {
+                    Optional<Mounted> robotics = mech.getMisc().stream()
+                            .filter(m -> m.getType().hasFlag(MiscType.F_SRCS)).findAny();
+                    if (robotics.isPresent()) {
+                        name = robotics.get().getType().getShortName();
+                    } else if (mech.getCockpitType() == Mech.COCKPIT_COMMAND_CONSOLE) {
                         if (mech.getCrewForCockpitSlot(Mech.LOC_HEAD, cs) == 0) {
                             name = EquipmentMessages.getString("SystemType.Cockpit.COCKPIT_STANDARD");
                         }
@@ -784,5 +788,35 @@ public class PrintMech extends PrintEntity {
             buffer.setLength(buffer.length() - 1);
         }
         buffer.trimToSize();
+    }
+
+    @Override
+    protected boolean includeReferenceCharts() {
+        return options.showReferenceCharts();
+    }
+
+    @Override
+    protected List<ReferenceTable> getRightSideReferenceTables() {
+        List<ReferenceTable> list = new ArrayList<>();
+        list.add(new MekHitLocation(this));
+        list.add(new MekVeeToHitMods(this));
+        list.add(new PhysicalAttacks(this));
+        list.add(new PunchLocation(this));
+        list.add(new KickLocation(this));
+        list.add(new MekFallTable(this));
+        ClusterHitsTable table = new ClusterHitsTable(this);
+        if (table.required()) {
+            list.add(table);
+        }
+        return list;
+    }
+
+    @Override
+    protected void addReferenceCharts(PageFormat pageFormat) {
+        super.addReferenceCharts(pageFormat);
+        GroundMovementRecord table = new GroundMovementRecord(this);
+        getSVGDocument().getDocumentElement().appendChild(table.createTable(pageFormat.getImageableX(),
+                pageFormat.getImageableY() + pageFormat.getImageableHeight() * TABLE_RATIO + 3.0,
+                pageFormat.getImageableWidth() * TABLE_RATIO, pageFormat.getImageableHeight() * 0.2 - 3.0));
     }
 }

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.0//EN'
           'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
-<svg contentScriptType="text/ecmascript" width="559.0" xmlns:xlink="http://www.w3.org/1999/xlink" zoomAndPan="magnify" contentStyleType="text/css" height="418.0" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" version="1.0"
+<svg contentScriptType="text/ecmascript" width="559.0" xmlns:xlink="http://www.w3.org/1999/xlink" zoomAndPan="magnify" contentStyleType="text/css" height="400.0" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" version="1.0"
 ><g style="mml-color-elements:" id="rs_template"
-  ><text font-size="5.7px" transform="translate (279.5 418.0)" fill="#231f20" text-anchor="middle" font-family="Eurostile" id="footer" font-weight="bold"
+  ><text font-size="5.7px" transform="translate (279.5 400.0)" fill="#231f20" text-anchor="middle" font-family="Eurostile" id="footer" font-weight="bold"
     ><tspan lengthAdjust="spacingAndGlyphs" x="0.0" id="tspanCopyright" y="-7.000" textLength="531.050"
       >© %d The Topps Company, Inc. Classic BattleTech, BattleTech, 'Mech and BattleMech are trademarks of The Topps Company, Inc. All rights reserved.</tspan
       ><tspan lengthAdjust="spacingAndGlyphs" x="0.0" y="0" textLength="503.100"
@@ -11,8 +11,8 @@
     ></text
     ><g transform="translate (0.000 3.000)"
     ><g
-      ><path fill="#ffffff" d="M 2.5,10.714 L 7.975,2.500 L 309.655,2.500 l 5.475,8.214 L 315.130,228.300 l -7.845,7.600 L 10.345,235.900 l -7.845,-7.600 Z" stroke-width="5.2" stroke-linejoin="round" stroke="#c8c7c7"
-        /><path fill="#ffffff" d="M 0.0,8.214 L 5.475,0.000 L 308.155,0.000 l 5.475,8.214 L 313.630,226.800 l -7.845,7.600 L 7.845,234.400 l -7.845,-7.600 Z" stroke-width="1.932" stroke-linejoin="round" stroke="#231f20"
+      ><path fill="#ffffff" d="M 2.5,10.714 L 7.975,2.500 L 309.655,2.500 l 5.475,8.214 L 315.130,217.500 l -7.845,7.600 L 10.345,225.100 l -7.845,-7.600 Z" stroke-width="5.2" stroke-linejoin="round" stroke="#c8c7c7"
+        /><path fill="#ffffff" d="M 0.0,8.214 L 5.475,0.000 L 308.155,0.000 l 5.475,8.214 L 313.630,216.000 l -7.845,7.600 L 7.845,223.600 l -7.845,-7.600 Z" stroke-width="1.932" stroke-linejoin="round" stroke="#231f20"
         /><g transform="translate (2.5,3.0)"
         ><path fill="#000000" d="M 0,7.500 l 4.999,-7.500 h 297.940 l 4.999,7.500 l -4.999,7.500 h -297.940 Z"
           /><text x="153.969" y="11.250" fill="#ffffff" text-anchor="middle" style="font-family:Eurostile;font-size:10.600px;font-weight:bold;font-style:normal" textLength="198.545" lengthAdjust="spacingAndGlyphs"
@@ -123,7 +123,7 @@
           >Turret (critical)</tspan
         ></text
       ></g
-      ><g transform="translate(0,151.400)"
+      ><g transform="translate(0,140.600)"
       ><text x="6.000" y="7.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="301.630" lengthAdjust="spacingAndGlyphs"
         >* A result of 2 or 12 (or an 8 if the attack strikes the side) may inflict a critical hit on the vehicle. For each result of 2 or</text
         ><text x="6.000" y="14.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="301.630" lengthAdjust="spacingAndGlyphs"
@@ -154,8 +154,8 @@
     ></g
     ><g transform="translate (321.630 3.000)"
     ><g
-      ><path fill="#ffffff" d="M 2.5,10.714 L 7.975,2.500 L 228.395,2.500 l 5.475,8.214 L 233.870,228.300 l -7.845,7.600 L 10.345,235.900 l -7.845,-7.600 Z" stroke-width="5.2" stroke-linejoin="round" stroke="#c8c7c7"
-        /><path fill="#ffffff" d="M 0.0,8.214 L 5.475,0.000 L 226.895,0.000 l 5.475,8.214 L 232.370,226.800 l -7.845,7.600 L 7.845,234.400 l -7.845,-7.600 Z" stroke-width="1.932" stroke-linejoin="round" stroke="#231f20"
+      ><path fill="#ffffff" d="M 2.5,10.714 L 7.975,2.500 L 228.395,2.500 l 5.475,8.214 L 233.870,217.500 l -7.845,7.600 L 10.345,225.100 l -7.845,-7.600 Z" stroke-width="5.2" stroke-linejoin="round" stroke="#c8c7c7"
+        /><path fill="#ffffff" d="M 0.0,8.214 L 5.475,0.000 L 226.895,0.000 l 5.475,8.214 L 232.370,216.000 l -7.845,7.600 L 7.845,223.600 l -7.845,-7.600 Z" stroke-width="1.932" stroke-linejoin="round" stroke="#231f20"
         /><g transform="translate (2.5,3.0)"
         ><path fill="#000000" d="M 0,7.500 l 4.999,-7.500 h 216.680 l 4.999,7.500 l -4.999,7.500 h -216.680 Z"
           /><text x="113.339" y="11.250" fill="#ffffff" text-anchor="middle" style="font-family:Eurostile;font-size:10.600px;font-weight:bold;font-style:normal" textLength="157.417" lengthAdjust="spacingAndGlyphs"
@@ -265,10 +265,10 @@
       ><text fill="#231f20" x="6.000" y="186.500" style="font-family:Eurostile;font-size:4.800px;font-weight:normal;font-style:normal;mml-field-width:21594.053" text-anchor="start"
       >over a Depth 1 or deeper water hex, it sinks and is destroyed.</text
     ></g
-    ><g transform="translate (0.000 245.400)"
+    ><g transform="translate (0.000 234.600)"
     ><g
-      ><path fill="#ffffff" d="M 2.5,10.714 L 7.975,2.500 L 550.025,2.500 l 5.475,8.214 L 555.500,147.500 l -7.845,7.600 L 10.345,155.100 l -7.845,-7.600 Z" stroke-width="5.2" stroke-linejoin="round" stroke="#c8c7c7"
-        /><path fill="#ffffff" d="M 0.0,8.214 L 5.475,0.000 L 548.525,0.000 l 5.475,8.214 L 554.000,146.000 l -7.845,7.600 L 7.845,153.600 l -7.845,-7.600 Z" stroke-width="1.932" stroke-linejoin="round" stroke="#231f20"
+      ><path fill="#ffffff" d="M 2.5,10.714 L 7.975,2.500 L 550.025,2.500 l 5.475,8.214 L 555.500,140.300 l -7.845,7.600 L 10.345,147.900 l -7.845,-7.600 Z" stroke-width="5.2" stroke-linejoin="round" stroke="#c8c7c7"
+        /><path fill="#ffffff" d="M 0.0,8.214 L 5.475,0.000 L 548.525,0.000 l 5.475,8.214 L 554.000,138.800 l -7.845,7.600 L 7.845,146.400 l -7.845,-7.600 Z" stroke-width="1.932" stroke-linejoin="round" stroke="#231f20"
         /><g transform="translate (2.5,3.0)"
         ><path fill="#000000" d="M 0,7.500 l 4.999,-7.500 h 538.310 l 4.999,7.500 l -4.999,7.500 h -538.310 Z"
           /><text x="274.154" y="11.250" fill="#ffffff" text-anchor="middle" style="font-family:Eurostile;font-size:10.600px;font-weight:bold;font-style:normal" textLength="213.991" lengthAdjust="spacingAndGlyphs"

@@ -344,12 +344,11 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                             }
                             info = new JMenuItem("Set Shots: " + i);
                             final int shots = i;
-                            info.addActionListener(new ActionListener() {
-                                public void actionPerformed(ActionEvent e) {
-                                    mount.setShotsLeft(shots);
-                                    if (refresh != null) {
-                                        refresh.refreshAll();
-                                    }
+                            info.addActionListener(e1 -> {
+                                mount.setOriginalShots(shots);
+                                mount.setShotsLeft(shots);
+                                if (refresh != null) {
+                                    refresh.refreshAll();
                                 }
                             });
                             popup.add(info);
@@ -686,16 +685,6 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                 cs.setArmored(!cs.isArmored());
                 UnitUtil.updateCritsArmoredStatus(getUnit(), cs, getCritLocation());
             }
-        }
-
-        // Check linkings after you remove everything.
-        try {
-            MechFileParser.postLoadInit(getUnit());
-        } catch (EntityLoadingException ele) {
-            // do nothing.
-        } catch (Exception ex) {
-
-            ex.printStackTrace();
         }
 
         if (refresh != null) {

@@ -134,7 +134,7 @@ public class CriticalTableModel extends AbstractTableModel {
     @Override
     public boolean isCellEditable(int row, int col) {
         return (col == SIZE) && (row >= 0) && (row < sortedEquipment.length)
-                && sortedEquipment[row].getType().isVariableTonnage();
+                && sortedEquipment[row].getType().isVariableSize();
     }
 
     @Override
@@ -185,9 +185,9 @@ public class CriticalTableModel extends AbstractTableModel {
                 return crit.getUsableShotsLeft() / ((AmmoType)crit.getType()).getShots();
             }
             if (tableType == BUILDTABLE) {
-                return UnitUtil.getCritsUsed(unit, crit.getType());
+                return UnitUtil.getCritsUsed(crit);
             }
-            return crit.getType().getCriticals(unit);
+            return crit.getCriticals();
         case EQUIPMENT:
             return crit;
         case HEAT:
@@ -216,7 +216,16 @@ public class CriticalTableModel extends AbstractTableModel {
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
         if ((columnIndex == SIZE) && (rowIndex >= 0) && (rowIndex < getRowCount())) {
             Mounted crit = sortedEquipment[rowIndex];
-            crit.setSize(Double.parseDouble(aValue.toString()));
+            double newSize = Double.parseDouble(aValue.toString());
+            double step = crit.getType().variableStepSize();
+            newSize = Math.max(Math.floor(newSize / step) * step, step);
+            if ((crit.getType().variableMaxSize() != null) && (newSize > crit.getType().variableMaxSize())) {
+                newSize = crit.getType().variableMaxSize();
+            }
+            if (crit.getSize() == newSize) {
+                return;
+            }
+            UnitUtil.resizeMount(crit, newSize);
             fireTableDataChanged();
         }
     }

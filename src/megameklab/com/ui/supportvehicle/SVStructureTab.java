@@ -367,6 +367,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
     @Override
     public void structuralTechRatingChanged(int techRating) {
         getSV().setStructuralTechRating(techRating);
+        getSV().recalculateTechAdvancement();
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
@@ -383,6 +384,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         // Make sure the engine tech rating is at least the minimum for the engine type
         if (getSV().getEngineTechRating() < engine.getTechRating()) {
             getSV().setEngineTechRating(engine.getTechRating());
+            getSV().recalculateTechAdvancement();
         }
         // Fixed Wing support vehicles require the prop mod for an electric engine
         if ((TestSupportVehicle.SVType.getVehicleType(getSV()) == TestSupportVehicle.SVType.FIXED_WING)
@@ -408,6 +410,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
     @Override
     public void engineTechRatingChanged(int techRating) {
         getSV().setEngineTechRating(techRating);
+        getSV().recalculateTechAdvancement();
         panFuel.setFromEntity(getSV());
         panSummary.refresh();
         refresh.refreshStatus();

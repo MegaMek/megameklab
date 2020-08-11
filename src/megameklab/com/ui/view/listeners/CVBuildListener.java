@@ -103,4 +103,10 @@ public interface CVBuildListener extends BuildListener {
      * it to the base chassis.
      */
     void resetChassis();
+
+    /**
+     * Notify of a change in the number of extra combat seats.
+     * @param seats The number of extra seats
+     */
+    void extraSeatsChanged(int seats);
 }

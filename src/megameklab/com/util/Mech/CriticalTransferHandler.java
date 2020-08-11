@@ -111,7 +111,7 @@ public class CriticalTransferHandler extends TransferHandler {
                 }
             }
             if (!(getUnit() instanceof BattleArmor)){
-                for (int i = startSlot; i < (startSlot+UnitUtil.getCritsUsed(getUnit(), mounted.getType())); i++) {
+                for (int i = startSlot; i < (startSlot+UnitUtil.getCritsUsed(mounted)); i++) {
                     getUnit().setCritical(loc, i, null);
                 }
             }
@@ -139,7 +139,7 @@ public class CriticalTransferHandler extends TransferHandler {
      */
     private boolean addEquipmentMech(Mech mech, Mounted eq, int slotNumber)
             throws LocationFullException{
-        int totalCrits = UnitUtil.getCritsUsed(getUnit(), eq.getType());
+        int totalCrits = UnitUtil.getCritsUsed(eq);
         // How much space we have in the selected location
         int primaryLocSpace = 
                 UnitUtil.getContiguousNumberOfCrits(getUnit(), location, slotNumber);
@@ -564,16 +564,6 @@ public class CriticalTransferHandler extends TransferHandler {
     private void changeMountStatus(Mounted eq, int location, int secondaryLocation, boolean rear) {
 
         UnitUtil.changeMountStatus(getUnit(), eq, location, secondaryLocation, rear);
-
-        // Check linkings after you remove everything.
-        try {
-            MechFileParser.postLoadInit(getUnit());
-        } catch (EntityLoadingException ele) {
-            // do nothing.
-        } catch (Exception ex) {
-
-            ex.printStackTrace();
-        }
 
         if (refresh != null) {
             refresh.refreshAll();

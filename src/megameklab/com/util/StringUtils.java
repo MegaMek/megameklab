@@ -18,12 +18,7 @@ package megameklab.com.util;
 
 import java.util.Comparator;
 
-import megamek.common.Entity;
-import megamek.common.EquipmentType;
-import megamek.common.Mech;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
-import megamek.common.WeaponType;
+import megamek.common.*;
 import megamek.common.actions.ClubAttackAction;
 import megamek.common.actions.KickAttackAction;
 import megamek.common.weapons.artillery.ArtilleryCannonWeapon;
@@ -45,15 +40,7 @@ import megamek.common.weapons.gaussrifles.HAGWeapon;
 import megamek.common.weapons.gaussrifles.ISHGaussRifle;
 import megamek.common.weapons.gaussrifles.ISSilverBulletGauss;
 import megamek.common.weapons.infantry.InfantryWeapon;
-import megamek.common.weapons.lasers.CLERPulseLaserSmall;
-import megamek.common.weapons.lasers.CLPulseLaserMicro;
-import megamek.common.weapons.lasers.CLPulseLaserSmall;
-import megamek.common.weapons.lasers.ISBombastLaser;
-import megamek.common.weapons.lasers.ISPulseLaserSmall;
-import megamek.common.weapons.lasers.ISVariableSpeedPulseLaserLarge;
-import megamek.common.weapons.lasers.ISVariableSpeedPulseLaserMedium;
-import megamek.common.weapons.lasers.ISVariableSpeedPulseLaserSmall;
-import megamek.common.weapons.lasers.ISXPulseLaserSmall;
+import megamek.common.weapons.lasers.*;
 import megamek.common.weapons.lrms.LRMWeapon;
 import megamek.common.weapons.lrms.StreakLRMWeapon;
 import megamek.common.weapons.mgs.MGWeapon;
@@ -96,7 +83,7 @@ public class StringUtils {
         if (mount.getType() instanceof WeaponType) {
             WeaponType weapon = (WeaponType) mount.getType();
             if (weapon instanceof InfantryWeapon) {
-                info = Integer.toString(weapon.getDamage());
+                info = Integer.toString((int) Math.round(((InfantryWeapon) weapon).getInfantryDamage()));
                 if (weapon.hasFlag(WeaponType.F_BALLISTIC)) {
                     info += " (B)";
                 } else if (weapon.hasFlag(WeaponType.F_ENERGY)) {
@@ -137,12 +124,11 @@ public class StringUtils {
                     info = "1/Msl [M,C]";
                 } else if (weapon instanceof ISSnubNosePPC) {
                     info = "10/8/5 [DE,V]";
-                } else if (weapon instanceof ISBALaserVSPSmall) {
-                    info = "5/4/3 [P,V]";
-                } else if (weapon instanceof ISBALaserVSPMedium) {
-                    info = "9/7/5 [P,V]";
-                } else if (weapon instanceof ISVariableSpeedPulseLaserLarge) {
-                    info = "11/9/7 [P,V]";
+                } else if (weapon instanceof VariableSpeedPulseLaserWeapon) {
+                    info = String.format("%d/%d/%d [P,V]",
+                            weapon.getDamage(weapon.getShortRange()),
+                            weapon.getDamage(weapon.getMediumRange()),
+                            weapon.getDamage(weapon.getLongRange()));
                 } else if (weapon instanceof ISHGaussRifle) {
                     info = "25/20/10 [DB,X]";
                 } else if (weapon instanceof ISPlasmaRifle) {

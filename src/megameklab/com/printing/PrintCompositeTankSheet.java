@@ -20,14 +20,12 @@ package megameklab.com.printing;
 import megamek.common.Tank;
 import megamek.common.VTOL;
 import megamek.common.annotations.Nullable;
-import megameklab.com.MegaMekLab;
 import org.apache.batik.anim.dom.SVGDOMImplementation;
 import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import java.awt.print.PageFormat;
-import java.util.Calendar;
 
 /**
  * Creates a single-page record sheet for two vehicles. If only one vehicle is provided,
@@ -78,9 +76,7 @@ public class PrintCompositeTankSheet extends PrintRecordSheet {
 
     @Override
     protected void processImage(int startPage, PageFormat pageFormat) {
-        final String METHOD_NAME = "processImage(int, PageFormat)";
-
-        PrintTank sheet = new PrintTank(tank1, getFirstPage(), options);
+        PrintRecordSheet sheet = new PrintTank(tank1, getFirstPage(), options);
         sheet.createDocument(startPage, pageFormat);
         Element g = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
         g.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
@@ -91,34 +87,18 @@ public class PrintCompositeTankSheet extends PrintRecordSheet {
 
         if (tank2 != null) {
             sheet = new PrintTank(tank2, getFirstPage(), options);
-            sheet.createDocument(startPage, pageFormat);
-            g = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
-            g.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
-                    String.format("%s(0 %f)", SVGConstants.SVG_TRANSLATE_VALUE,
-                            pageFormat.getImageableHeight() * 0.5));
-            g.appendChild(getSVGDocument().importNode(sheet.getSVGDocument().getDocumentElement(), true));
-            getSVGDocument().getDocumentElement().appendChild(g);
+        } else if (tank1 instanceof VTOL) {
+            sheet = new VTOLTables(options);
         } else {
-            String filename = (tank1 instanceof VTOL)? "tables_vtol.svg" : "tables_tank.svg";
-            Document doc = loadSVG(getSVGDirectoryName(), filename);
-            if (null != doc) {
-                Element element = doc.getElementById(COPYRIGHT);
-                if (null != element) {
-                    element.setTextContent(String.format(element.getTextContent(),
-                            Calendar.getInstance().get(Calendar.YEAR)));
-                }
-                g = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
-                g.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
-                        String.format("%s(%f %f)", SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
-                                pageFormat.getImageableX(),
-                                pageFormat.getImageableY() + pageFormat.getHeight() * 0.5));
-                g.appendChild(getSVGDocument().importNode(doc.getDocumentElement(), true));
-                getSVGDocument().getDocumentElement().appendChild(g);
-            } else {
-                MegaMekLab.getLogger().warning(getClass(), METHOD_NAME,
-                        "Could not load vehicle tables file " + filename);
-            }
+            sheet = new TankTables(options);
         }
+        sheet.createDocument(startPage, pageFormat);
+        g = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
+        g.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
+                String.format("%s(0 %f)", SVGConstants.SVG_TRANSLATE_VALUE,
+                        pageFormat.getImageableHeight() * 0.5));
+        g.appendChild(getSVGDocument().importNode(sheet.getSVGDocument().getDocumentElement(), true));
+        getSVGDocument().getDocumentElement().appendChild(g);
     }
 
     @Override
@@ -131,5 +111,39 @@ public class PrintCompositeTankSheet extends PrintRecordSheet {
     protected String getRecordSheetTitle() {
         // Not used by composite sheet
         return "";
+    }
+
+    private static class TankTables extends PrintRecordSheet {
+
+        TankTables(RecordSheetOptions options) {
+            super(0, options);
+        }
+
+        @Override
+        protected String getSVGFileName(int pageNumber) {
+            return "tables_tank.svg";
+        }
+
+        @Override
+        protected String getRecordSheetTitle() {
+            return "";
+        }
+    }
+
+    private static class VTOLTables extends PrintRecordSheet {
+
+        VTOLTables(RecordSheetOptions options) {
+            super(0, options);
+        }
+
+        @Override
+        protected String getSVGFileName(int pageNumber) {
+            return "tables_vtol.svg";
+        }
+
+        @Override
+        protected String getRecordSheetTitle() {
+            return "";
+        }
     }
 }

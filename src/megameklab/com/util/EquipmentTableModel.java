@@ -287,7 +287,8 @@ public class EquipmentTableModel extends AbstractTableModel {
                 }
                 if (type.hasFlag(WeaponType.F_PLASMA)
                         || type.hasFlag(WeaponType.F_INCENDIARY_NEEDLES)
-                        || type.hasFlag(WeaponType.F_INFERNO)) {
+                        || type.hasFlag(WeaponType.F_INFERNO)
+                        || type.hasFlag(WeaponType.F_FLAMER)) {
                     special += "F";
                 }
             }

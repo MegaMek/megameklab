@@ -111,7 +111,7 @@ public class PrintAero extends PrintEntity {
     }
 
     @Override
-    protected Entity getEntity() {
+    public Entity getEntity() {
         return aero;
     }
 
@@ -179,6 +179,8 @@ public class PrintAero extends PrintEntity {
                 sj.add(String.join(", ", chassisMods)
                         + (chassisMods.size() == 1 ? " Chassis Mod" : " Chassis Mods"));
             }
+        } else if ((aero instanceof ConvFighter) && aero.isVSTOL()) {
+            sj.add("VSTOL Equipment");
         }
         if (aero.hasWorkingMisc(MiscType.F_ADVANCED_FIRECONTROL)) {
             sj.add("Advanced Fire Control");
@@ -263,5 +265,15 @@ public class PrintAero extends PrintEntity {
             key.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
                     SVGConstants.SVG_TRANSLATE_VALUE + "(0," + ypos + ")");
         }
+    }
+
+    @Override
+    protected String formatWalk() {
+        return Integer.toString(getEntity().getWalkMP());
+    }
+
+    @Override
+    protected String formatRun() {
+        return Integer.toString(getEntity().getRunMP());
     }
 }

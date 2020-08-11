@@ -16,8 +16,10 @@ package megameklab.com.printing;
 
 import megamek.common.*;
 import megamek.common.options.IOption;
+import megamek.common.weapons.artillery.ArtilleryCannonWeapon;
 import megamek.common.weapons.artillery.ArtilleryWeapon;
 import megamek.common.weapons.infantry.InfantryWeapon;
+import megameklab.com.util.CConfig;
 import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGRectElement;
@@ -61,7 +63,7 @@ public class PrintInfantry extends PrintEntity {
 
 
     @Override
-    protected Entity getEntity() {
+    public Entity getEntity() {
         return infantry;
     }
 
@@ -108,7 +110,7 @@ public class PrintInfantry extends PrintEntity {
 
         switch(infantry.getMovementMode()) {
             case INF_JUMP:
-                setTextField(MP_1, infantry.getJumpMP(false));
+                setTextField(MP_1, formatMovement(infantry.getJumpMP(false)));
                 setTextField(MODE_1, "Jump");
                 setTextField(MP_2, formatGroundMP(), true);
                 setTextField(MODE_2, "Ground", true);
@@ -140,7 +142,7 @@ public class PrintInfantry extends PrintEntity {
                 setTextField(MODE_1, "Mechanized Wheeled");
                 break;
             case VTOL:
-                setTextField(MP_1, infantry.getJumpMP(false));
+                setTextField(MP_1, formatMovement(infantry.getJumpMP(false)));
                 if (infantry.hasMicrolite()) {
                     setTextField(MODE_1, "VTOL (Microlite)");
                 } else {
@@ -148,11 +150,11 @@ public class PrintInfantry extends PrintEntity {
                 }
                 break;
             case SUBMARINE:
-                setTextField(MP_1, infantry.getActiveUMUCount());
+                setTextField(MP_1, formatMovement(infantry.getActiveUMUCount()));
                 setTextField(MODE_1, "Mechanized SCUBA");
                 break;
             case INF_MOTORIZED:
-                setTextField(MP_1, infantry.getWalkMP(true, true, false));
+                setTextField(MP_1, formatMovement(infantry.getWalkMP(true, true, false)));
                 setTextField(MODE_1, "Motorized");
                 break;
             case INF_LEG:
@@ -180,6 +182,16 @@ public class PrintInfantry extends PrintEntity {
                     String.join("; ", notes), fontSize, SVGConstants.SVG_START_VALUE,
                     SVGConstants.SVG_NORMAL_VALUE);
         }
+        Element element = getSVGDocument().getElementById(RANGE_IN_HEXES);
+        if (element != null) {
+            element.setTextContent(element.getTextContent().replace("HEXES",
+                    CConfig.getParam(CConfig.RS_SCALE_UNITS)));
+        }
+        if (CConfig.getIntParam(CConfig.RS_SCALE_FACTOR) != 1) {
+            for (int r = 0; r <= 21; r++) {
+                setTextField(RANGE + r, CConfig.formatScale(r, false));
+            }
+        }
     }
 
     private String generateNotesText(InfantryWeapon rangeWeapon) {
@@ -193,24 +205,10 @@ public class PrintInfantry extends PrintEntity {
         if (rangeWeapon.hasFlag(WeaponType.F_INF_NONPENETRATING)) {
             sj.add("Can only damage conventional infantry units.");
         }
-        if (infantry.getPrimaryWeapon().hasFlag(WeaponType.F_INFERNO)
-                || (infantry.getSecondaryWeapon() != null
-                && infantry.getSecondaryWeapon().hasFlag(WeaponType.F_INFERNO))) {
+        if (isFlameBased(infantry.getPrimaryWeapon())
+                || ((infantry.getSecondaryWeapon() != null)
+                    && isFlameBased(infantry.getSecondaryWeapon()))) {
             sj.add("Flame-based weapon.");
-        } else {
-            for (int i = 0; i < infantry.getPrimaryWeapon().getModesCount(); i++) {
-                if (infantry.getPrimaryWeapon().getMode(i).equals("Heat")) {
-                    sj.add("Flame-based weapon.");
-                    break;
-                }
-            }
-            if (infantry.getSecondaryWeapon() != null) {
-                for (int i = 0; i < infantry.getSecondaryWeapon().getModesCount(); i++) {
-                    if (infantry.getSecondaryWeapon().getMode(i).equals("Heat")) {
-                        sj.add("Flame-based weapon.");
-                    }
-                }
-            }
         }
         if (infantry.getPrimaryWeapon().hasFlag(WeaponType.F_INF_AA)
                 || (infantry.getSecondaryWeapon() != null
@@ -275,6 +273,13 @@ public class PrintInfantry extends PrintEntity {
         }
     }
 
+    private boolean isFlameBased(WeaponType type) {
+        return (type.hasFlag(WeaponType.F_PLASMA)
+                || type.hasFlag(WeaponType.F_INCENDIARY_NEEDLES)
+                || type.hasFlag(WeaponType.F_INFERNO)
+                || type.hasFlag(WeaponType.F_FLAMER));
+    }
+
     private void writeFieldGuns() {
         int numGuns = 0;
         int numShots = 0;
@@ -301,6 +306,8 @@ public class PrintInfantry extends PrintEntity {
          */
         if (gun instanceof ArtilleryWeapon) {
             setTextField(FIELD_GUN_DMG, gun.getRackSize() + " [AE,S,F]");
+        } else if (gun instanceof ArtilleryCannonWeapon) {
+            setTextField(FIELD_GUN_DMG, gun.getRackSize() + " [DB,AE]");
         } else {
             StringBuilder sb = new StringBuilder(Integer.toString(gun.getDamage()));
             switch (gun.getAmmoType()) {
@@ -359,7 +366,7 @@ public class PrintInfantry extends PrintEntity {
                 setTextField(ARMOR_KIT, "Sneak(" + sj.toString() + ")");
             }
         }
-        setTextField(ARMOR_DIVISOR, infantry.getDamageDivisor()
+        setTextField(ARMOR_DIVISOR, infantry.calcDamageDivisor()
                 + (infantry.isArmorEncumbering()? "E" : ""));
         if (infantry.hasDEST()) {
             hideElement(DEST_MODS, false);
@@ -429,7 +436,7 @@ public class PrintInfantry extends PrintEntity {
         if (walk == 0) {
             return "0*";
         } else {
-            return String.valueOf(walk);
+            return formatMovement(walk);
         }
     }
 }

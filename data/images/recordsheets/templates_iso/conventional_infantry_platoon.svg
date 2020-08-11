@@ -284,137 +284,137 @@
       /><image x="424.207" y="9.400" width="12.593" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:actuate="onLoad" id="soldier_1" height="33.080" preserveAspectRatio="xMidYMid meet" xlink:show="embed" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABEAAAAgCAYAAAD0S5PyAAAABHNCSVQICAgIfAhkiAAAAvJJREFUSImdlV1IU2EYx/9nJ0ebF8JGCX5tfpAmmThKI0HMtAvBuhDKjEzLVldpfiBhZk0hvBWzpSYROjVUmh+oC1LU0ITEhdqFOlteqPOr5lXngKeL5Ztneze1Bw487//5n995zjnPeQ8EN1FUUCikpaa6K4sCNLFOryd5pU73f5Dsm1midfnjMo+QI3CKmupqjAwPI0wdTLTz8fHONlFInAWr9YeL6W1z0+EgWbeyUFb+hKxztVps2+1oaW6GIAj7Q4oeFqC3uwcVz3QAgAf5eTBPTcFisUDCsmior6dCGOEvPj7uHFZXVz22DQBfZ2cgl8tdO1lfW8PWz619AQAgk8not1Oh04H7zR0IwjAMHdLb3XMgwPOqKqou+TY7eyAAAISGhZHc/sv+DxIeESEyyuVyBAUFAQCCQ0IAAN7e3nhUWorAwEB8MJkQdTISyUlJ0Ne+xJ2cHMfb2TudzlFYXIzEC4kwm82orXkBViLB0tISqX/6PO6AvGlsRKWuggpRqVSwWq0uOsMwmFu0OHJBEASO41CQl4/+vj63HSkUCpyJPYtavd6lJgEAqVSK+bk56skpl1IAADEaDUz9A1QPGfuVlRWqYXRkFADgHxCAi8nJVA8Z+8gT4eA4+sB5eXmB53nMf1/03IlzGNpaSc7zPHVSXSA8z4sKsXFxorW7bUAEYVmWiGlXLgMATkVFuT2RCuk0GokoO+r4Ut93dx0OsrGxTsR3bW1U8/T0tGeIu1AolSS/mp5O9ZDdfnNzE2MTE6h7pYePjw8x1L9uwOnoaDAMg8kvk/Qr7f47hj4OCqEqNTl2417uXSFUpRY6OzoE08CA55/Xzs4OAdzIuC4y7er3tVoqhDyTocFB0l1Ti0HUbfbtHACA73Ff6t0QyMyeJ79tt4tMC/MLAIDl5WUqhD2mVD7NvJaB8bFxIhaXlIhMfn5+6Ghvx6LFApttDTabTTSIki6jEVKpFOpgx+7mH+DvcqUYjYbkrQYDEhISRPU/YkUFJc1xbRsAAAAASUVORK5CYII="
       /><text fill="#231f20" x="3.000" y="70.988" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" text-anchor="start"
       >*Damage is always applied in 2-point Damage Value groupings</text
-      ><text fill="#231f20" x="218.900" y="70.988" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="start"
+      ><text fill="#231f20" x="218.900" id="rangeInHexes" y="70.988" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="start"
       >RANGE IN HEXES (TO-HIT MODIFIER)</text
       ><text fill="#231f20" x="3.000" y="79.861" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="start"
       >Range:</text
-      ><text fill="#231f20" x="63.452" y="79.861" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
+      ><text fill="#231f20" x="63.452" id="range_0" y="79.861" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
       >0</text
       ><text fill="#231f20" x="63.452" id="range_mod_0" y="88.735" style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal" text-anchor="middle"
       >–</text
       ><text x="63.452" y="97.608" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal" visibility="hidden" id="uw_range_mod_0"
       >–</text
-      ><text fill="#231f20" x="80.724" y="79.861" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
+      ><text fill="#231f20" x="80.724" id="range_1" y="79.861" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
       >1</text
       ><text fill="#231f20" x="80.724" id="range_mod_1" y="88.735" style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal" text-anchor="middle"
       >–</text
       ><text x="80.724" y="97.608" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal" visibility="hidden" id="uw_range_mod_1"
       >–</text
-      ><text fill="#231f20" x="97.996" y="79.861" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
+      ><text fill="#231f20" x="97.996" id="range_2" y="79.861" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
       >2</text
       ><text fill="#231f20" x="97.996" id="range_mod_2" y="88.735" style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal" text-anchor="middle"
       >–</text
       ><text x="97.996" y="97.608" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal" visibility="hidden" id="uw_range_mod_2"
       >–</text
-      ><text fill="#231f20" x="115.268" y="79.861" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
+      ><text fill="#231f20" x="115.268" id="range_3" y="79.861" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
       >3</text
       ><text fill="#231f20" x="115.268" id="range_mod_3" y="88.735" style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal" text-anchor="middle"
       >–</text
       ><text x="115.268" y="97.608" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal" visibility="hidden" id="uw_range_mod_3"
       >–</text
-      ><text fill="#231f20" x="132.540" y="79.861" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
+      ><text fill="#231f20" x="132.540" id="range_4" y="79.861" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
       >4</text
       ><text fill="#231f20" x="132.540" id="range_mod_4" y="88.735" style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal" text-anchor="middle"
       >–</text
       ><text x="132.540" y="97.608" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal" visibility="hidden" id="uw_range_mod_4"
       >–</text
-      ><text fill="#231f20" x="149.812" y="79.861" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
+      ><text fill="#231f20" x="149.812" id="range_5" y="79.861" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
       >5</text
       ><text fill="#231f20" x="149.812" id="range_mod_5" y="88.735" style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal" text-anchor="middle"
       >–</text
       ><text x="149.812" y="97.608" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal" visibility="hidden" id="uw_range_mod_5"
       >–</text
-      ><text fill="#231f20" x="167.084" y="79.861" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
+      ><text fill="#231f20" x="167.084" id="range_6" y="79.861" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
       >6</text
       ><text fill="#231f20" x="167.084" id="range_mod_6" y="88.735" style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal" text-anchor="middle"
       >–</text
       ><text x="167.084" y="97.608" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal" visibility="hidden" id="uw_range_mod_6"
       >–</text
-      ><text fill="#231f20" x="184.356" y="79.861" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
+      ><text fill="#231f20" x="184.356" id="range_7" y="79.861" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
       >7</text
       ><text fill="#231f20" x="184.356" id="range_mod_7" y="88.735" style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal" text-anchor="middle"
       >–</text
       ><text x="184.356" y="97.608" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal" visibility="hidden" id="uw_range_mod_7"
       >–</text
-      ><text fill="#231f20" x="201.628" y="79.861" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
+      ><text fill="#231f20" x="201.628" id="range_8" y="79.861" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
       >8</text
       ><text fill="#231f20" x="201.628" id="range_mod_8" y="88.735" style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal" text-anchor="middle"
       >–</text
       ><text x="201.628" y="97.608" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal" visibility="hidden" id="uw_range_mod_8"
       >–</text
-      ><text fill="#231f20" x="218.900" y="79.861" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
+      ><text fill="#231f20" x="218.900" id="range_9" y="79.861" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
       >9</text
       ><text fill="#231f20" x="218.900" id="range_mod_9" y="88.735" style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal" text-anchor="middle"
       >–</text
       ><text x="218.900" y="97.608" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal" visibility="hidden" id="uw_range_mod_9"
       >–</text
-      ><text fill="#231f20" x="236.172" y="79.861" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
+      ><text fill="#231f20" x="236.172" id="range_10" y="79.861" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
       >10</text
       ><text fill="#231f20" x="236.172" id="range_mod_10" y="88.735" style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal" text-anchor="middle"
       >–</text
       ><text x="236.172" y="97.608" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal" visibility="hidden" id="uw_range_mod_10"
       >–</text
-      ><text fill="#231f20" x="253.444" y="79.861" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
+      ><text fill="#231f20" x="253.444" id="range_11" y="79.861" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
       >11</text
       ><text fill="#231f20" x="253.444" id="range_mod_11" y="88.735" style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal" text-anchor="middle"
       >–</text
       ><text x="253.444" y="97.608" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal" visibility="hidden" id="uw_range_mod_11"
       >–</text
-      ><text fill="#231f20" x="270.716" y="79.861" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
+      ><text fill="#231f20" x="270.716" id="range_12" y="79.861" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
       >12</text
       ><text fill="#231f20" x="270.716" id="range_mod_12" y="88.735" style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal" text-anchor="middle"
       >–</text
       ><text x="270.716" y="97.608" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal" visibility="hidden" id="uw_range_mod_12"
       >–</text
-      ><text fill="#231f20" x="287.988" y="79.861" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
+      ><text fill="#231f20" x="287.988" id="range_13" y="79.861" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
       >13</text
       ><text fill="#231f20" x="287.988" id="range_mod_13" y="88.735" style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal" text-anchor="middle"
       >–</text
       ><text x="287.988" y="97.608" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal" visibility="hidden" id="uw_range_mod_13"
       >–</text
-      ><text fill="#231f20" x="305.260" y="79.861" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
+      ><text fill="#231f20" x="305.260" id="range_14" y="79.861" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
       >14</text
       ><text fill="#231f20" x="305.260" id="range_mod_14" y="88.735" style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal" text-anchor="middle"
       >–</text
       ><text x="305.260" y="97.608" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal" visibility="hidden" id="uw_range_mod_14"
       >–</text
-      ><text fill="#231f20" x="322.532" y="79.861" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
+      ><text fill="#231f20" x="322.532" id="range_15" y="79.861" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
       >15</text
       ><text fill="#231f20" x="322.532" id="range_mod_15" y="88.735" style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal" text-anchor="middle"
       >–</text
       ><text x="322.532" y="97.608" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal" visibility="hidden" id="uw_range_mod_15"
       >–</text
-      ><text fill="#231f20" x="339.804" y="79.861" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
+      ><text fill="#231f20" x="339.804" id="range_16" y="79.861" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
       >16</text
       ><text fill="#231f20" x="339.804" id="range_mod_16" y="88.735" style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal" text-anchor="middle"
       >–</text
       ><text x="339.804" y="97.608" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal" visibility="hidden" id="uw_range_mod_16"
       >–</text
-      ><text fill="#231f20" x="357.076" y="79.861" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
+      ><text fill="#231f20" x="357.076" id="range_17" y="79.861" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
       >17</text
       ><text fill="#231f20" x="357.076" id="range_mod_17" y="88.735" style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal" text-anchor="middle"
       >–</text
       ><text x="357.076" y="97.608" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal" visibility="hidden" id="uw_range_mod_17"
       >–</text
-      ><text fill="#231f20" x="374.348" y="79.861" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
+      ><text fill="#231f20" x="374.348" id="range_18" y="79.861" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
       >18</text
       ><text fill="#231f20" x="374.348" id="range_mod_18" y="88.735" style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal" text-anchor="middle"
       >–</text
       ><text x="374.348" y="97.608" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal" visibility="hidden" id="uw_range_mod_18"
       >–</text
-      ><text fill="#231f20" x="391.620" y="79.861" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
+      ><text fill="#231f20" x="391.620" id="range_19" y="79.861" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
       >19</text
       ><text fill="#231f20" x="391.620" id="range_mod_19" y="88.735" style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal" text-anchor="middle"
       >–</text
       ><text x="391.620" y="97.608" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal" visibility="hidden" id="uw_range_mod_19"
       >–</text
-      ><text fill="#231f20" x="408.892" y="79.861" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
+      ><text fill="#231f20" x="408.892" id="range_20" y="79.861" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
       >20</text
       ><text fill="#231f20" x="408.892" id="range_mod_20" y="88.735" style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal" text-anchor="middle"
       >–</text
       ><text x="408.892" y="97.608" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal" visibility="hidden" id="uw_range_mod_20"
       >–</text
-      ><text fill="#231f20" x="426.164" y="79.861" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
+      ><text fill="#231f20" x="426.164" id="range_21" y="79.861" style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal" text-anchor="middle"
       >21</text
       ><text fill="#231f20" x="426.164" id="range_mod_21" y="88.735" style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal" text-anchor="middle"
       >–</text

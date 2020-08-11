@@ -361,11 +361,11 @@
                               />
     </g
                               >
-    <g id="structurePipsT" transform="translate(42.335,41.38)"
+    <g id="structurePipsT" transform="translate(42.335,42.78)"
                               >
-      <rect x="-13.9" width="27.8" y="0" height="2.6" id="structureTRow00"
+      <rect x="-13" width="26" y="0" height="2.6" id="structureTRow00"
                                 />
-      <rect x="-10.7" width="21.4" y="2.6" height="2.6" id="structureTRow01"
+      <rect x="-9.1" width="18.2" y="2.6" height="2.6" id="structureTRow01"
                                 />
     </g
                                 >
@@ -425,7 +425,7 @@
                                         >Name:</text
                                         ><text fill="#231f20" x="32.073" id="pilotName0" y="23.068" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal" text-anchor="start"
                                         >Lorem Ipsum</text
-                                        ><path id="blankCrewName0" d="M 32.073,24.068 L 130.750,24.068" stroke-width="0.720" stroke-linejoin="round" stroke="#231f20"
+                                        ><path id="blankCrewName0" d="M 32.073,24.068 L 131.178,24.068" stroke-width="0.720" stroke-linejoin="round" stroke="#231f20"
                                         /><text x="9.845" y="34.091" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" id="gunnerySkillText0" textLength="39.172" lengthAdjust="spacingAndGlyphs"
                                         >Gunnery Skill:</text
                                         ><text fill="#231f20" x="52.392" id="gunnerySkill0" y="34.091" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal" text-anchor="start"

@@ -19,7 +19,10 @@ import java.io.File;
 import java.text.NumberFormat;
 import java.util.*;
 
+import megamek.client.generator.RandomNameGenerator;
 import megamek.common.*;
+import megameklab.com.printing.reference.ReferenceTable;
+import megameklab.com.util.CConfig;
 import org.apache.batik.anim.dom.SVGGraphicsElement;
 import org.apache.batik.anim.dom.SVGLocatableSupport;
 import org.apache.batik.util.SVGConstants;
@@ -51,7 +54,8 @@ public abstract class PrintEntity extends PrintRecordSheet {
             | (1 << EquipmentType.T_ARMOR_ANTI_PENETRATIVE_ABLATION)
             | (1 << EquipmentType.T_ARMOR_HEAT_DISSIPATING)
             | (1 << EquipmentType.T_ARMOR_IMPACT_RESISTANT)
-            | (1 << EquipmentType.T_ARMOR_BALLISTIC_REINFORCED);
+            | (1 << EquipmentType.T_ARMOR_BALLISTIC_REINFORCED)
+            | (1 << EquipmentType.T_ARMOR_COMMERCIAL);
     
     /**
      * Creates an SVG object for the record sheet
@@ -63,7 +67,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
         super(startPage, options);
     }
 
-    protected abstract Entity getEntity();
+    public abstract Entity getEntity();
     
     /**
      * When printing from a MUL the pilot data is filled in unless the option has been disabled. This
@@ -74,7 +78,8 @@ public abstract class PrintEntity extends PrintRecordSheet {
      * @return Whether the pilot data should be filled in.
      */
     protected boolean showPilotInfo() {
-        return options.showPilotData() && !getEntity().getCrew().getName().equalsIgnoreCase("unnamed");
+        return options.showPilotData()
+                && !getEntity().getCrew().getName().startsWith(RandomNameGenerator.UNNAMED);
     }
 
     /**
@@ -150,14 +155,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
     
     @Override
     protected void processImage(int pageNum, PageFormat pageFormat) {
-        Element element;
-        
-        element = getSVGDocument().getElementById(COPYRIGHT);
-        if (null != element) {
-            element.setTextContent(String.format(element.getTextContent(),
-                    Calendar.getInstance().get(Calendar.YEAR)));
-        }
-        
+        super.processImage(pageNum, pageFormat);
         writeTextFields();
         drawArmor();
         drawStructure();
@@ -169,6 +167,9 @@ public abstract class PrintEntity extends PrintRecordSheet {
             drawEraIcon();
         }
         drawFluffImage();
+        if (includeReferenceCharts()) {
+            addReferenceCharts(pageFormat);
+        }
     }
     
     protected void writeTextFields() {
@@ -301,14 +302,17 @@ public abstract class PrintEntity extends PrintRecordSheet {
 
     protected void drawArmor() {
         if (getEntity().isSupportVehicle()
-                && (getEntity().hasBARArmor(getEntity().firstArmorIndex()))) {
+                && (getEntity().hasBARArmor(firstArmorLocation()))) {
             setTextField(ARMOR_TYPE, "BAR: " + getEntity().getBARRating(firstArmorLocation()));
         } else if (!getEntity().hasPatchworkArmor()) {
-            if ((AT_SPECIAL & (1 << getEntity().getArmorType(1))) != 0) {
-                String[] atName = EquipmentType.getArmorTypeName(getEntity().getArmorType(1)).split("-");
+            final int at = getEntity().getArmorType(firstArmorLocation());
+            if ((AT_SPECIAL & (1 << at)) != 0) {
+                String[] atName = EquipmentType.getArmorTypeName(at).split("-");
                 setTextField(ARMOR_TYPE, atName[0]);
                 if (atName.length > 1) {
                     setTextField(ARMOR_TYPE_2, atName[1]);
+                } else if (getEntity().hasBARArmor(firstArmorLocation())) {
+                    setTextField(ARMOR_TYPE_2, "BAR: " + getEntity().getBARRating(firstArmorLocation()));
                 }
             } else {
                 hideElement(ARMOR_TYPE, true);
@@ -409,10 +413,33 @@ public abstract class PrintEntity extends PrintRecordSheet {
      */
     protected void writeEquipment(SVGRectElement svgRect) {
         new InventoryWriter(this, svgRect).writeEquipment();
+        if (!CConfig.scaleUnits().equals(CConfig.RSScale.HEXES)) {
+            setTextField(UNIT_SCALE, "(" + CConfig.scaleUnits().fullName + ")");
+        }
     }
 
     protected void drawFluffImage() {
 
+    }
+
+    List<ReferenceTable> getRightSideReferenceTables() {
+        return Collections.emptyList();
+    }
+
+    protected void addReferenceCharts(PageFormat pageFormat) {
+        List<ReferenceTable> rightSide = getRightSideReferenceTables();
+        double lines = rightSide.stream().mapToDouble(ReferenceTable::lineCount).sum();
+
+        double ypos = pageFormat.getImageableY();
+        double margin = ReferenceTable.getMargins(this);
+        for (ReferenceTable table : rightSide) {
+            double height = (pageFormat.getImageableHeight() - margin * rightSide.size())
+                    * table.lineCount() / lines + margin;
+            getSVGDocument().getDocumentElement().appendChild(
+                    table.createTable(pageFormat.getImageableX() + pageFormat.getImageableWidth() * 0.8 + 3.0,
+                            ypos, pageFormat.getImageableWidth() * 0.2, height));
+            ypos += height;
+        }
     }
     
     private void drawEraIcon() {
@@ -522,16 +549,47 @@ public abstract class PrintEntity extends PrintRecordSheet {
         }
     }
 
+    /**
+     * Applies the current scale to a movement point value and adds the units indicator.
+     * If the units are hexes, the value is rounded up.
+     *
+     * @param mp The movement points
+     * @return   The formatted movement string
+     */
+    protected String formatMovement(double mp) {
+        return CConfig.formatScale(mp, true);
+    }
+
+    /**
+     * Applies the current scale to a pair of movement point values, puts the second in brackets,
+     * and adds the units indicator. This is used for cases when equipment may give a temporary
+     * boost to MP, such as MASC.
+     * If the units are hexes, the value is rounded up.
+     *
+     * @param baseMP The base movement points
+     * @param fullMP The full movement points
+     * @return   The formatted movement string
+     */
+    protected String formatMovement(double baseMP, double fullMP) {
+        if (fullMP > baseMP) {
+            return CConfig.formatScale(baseMP, false) + " ["
+                    + CConfig.formatScale(fullMP, false) + "] "
+                    + CConfig.scaleUnits().abbreviation;
+        } else {
+            return CConfig.formatScale(baseMP, true);
+        }
+    }
+
     protected String formatWalk() {
-        return Integer.toString(getEntity().getWalkMP());
+        return formatMovement(getEntity().getWalkMP());
     }
     
     protected String formatRun() {
-        return getEntity().getRunMPasString();
+        return formatMovement(getEntity().getWalkMP() * 1.5);
     }
     
     protected String formatJump() {
-        return Integer.toString(getEntity().getJumpMP());
+        return formatMovement(getEntity().getJumpMP());
     }
 
     protected String formatTechBase() {
@@ -545,8 +603,14 @@ public abstract class PrintEntity extends PrintRecordSheet {
     }
     
     protected String formatRulesLevel() {
-        return getEntity().getStaticTechLevel().toString().substring(0, 1)
-                + getEntity().getStaticTechLevel().toString().substring(1).toLowerCase();
+        SimpleTechLevel level;
+        if (options.useEraBaseProgression()) {
+            level = getEntity().getSimpleLevel(getEntity().getYear(), getEntity().isClan());
+        } else {
+            level = getEntity().getStaticTechLevel();
+        }
+        return level.toString().substring(0, 1)
+                + level.toString().substring(1).toLowerCase();
     }
     
     private static String formatEra(int year) {
