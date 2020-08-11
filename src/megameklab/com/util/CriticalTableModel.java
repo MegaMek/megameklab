@@ -31,16 +31,11 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 
 import megamek.common.*;
-import megamek.common.verifier.BayData;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestProtomech;
-import megameklab.com.ui.tabs.TransportTab;
 
 public class CriticalTableModel extends AbstractTableModel {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 7615555055651822051L;
 
     private Mounted[] sortedEquipment = {};
@@ -59,7 +54,7 @@ public class CriticalTableModel extends AbstractTableModel {
     public final static int WEAPONTABLE = 1;
     public final static int BUILDTABLE = 2;
 
-    private int tableType;
+    private final int tableType;
     private boolean kgStandard;
 
     private String[] columnNames = { "Name", "Tons", "Crits"};
@@ -78,13 +73,10 @@ public class CriticalTableModel extends AbstractTableModel {
         if (tableType == WEAPONTABLE) {
             longValues = new String[] { "XXXXXXXXX", "XXXXXXXXX", "XXXXXXXXX",
                     "XXXXXXXXX", "XXX", "XXXX" };
-            columnNames = new String[] { "Name", "Tons", "Slots", "Heat", 
+            columnNames = new String[] { "Name", "Tons", "Slots", "Heat",
                     "Loc", "Size" };
         }
         
-        if (kgStandard) {
-            columnNames[TONNAGE] = "Kg";
-        }
         if ((unit instanceof Mech) || unit.isSupportVehicle()) {
             columnNames[CRITS] = "Crits";
         }
@@ -101,6 +93,11 @@ public class CriticalTableModel extends AbstractTableModel {
         sortedEquipment = new Mounted[] {};
         if (crits.size() > 0) {
             sortedEquipment = crits.toArray(sortedEquipment);
+        }
+        // Support vehicle may switch between kg and ton standards. Other units will be constant
+        if (kgStandard != (unit.getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT)) {
+            kgStandard = !kgStandard;
+            fireTableStructureChanged();
         }
         fireTableDataChanged();
     }
@@ -128,7 +125,11 @@ public class CriticalTableModel extends AbstractTableModel {
 
     @Override
     public String getColumnName(int col) {
-        return (columnNames[col]);
+        if ((col == TONNAGE) && kgStandard) {
+            return "Kg";
+        } else {
+            return (columnNames[col]);
+        }
     }
 
     @Override
