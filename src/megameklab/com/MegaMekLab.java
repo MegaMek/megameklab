@@ -27,6 +27,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.text.NumberFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -137,7 +138,7 @@ public class MegaMekLab {
         if (TIMESTAMP > 0) {
             msg += "\n\tCompiled on " + new Date(TIMESTAMP).toString(); //$NON-NLS-1$
         }
-        msg += "\n\tToday is " + new Date().toString(); //$NON-NLS-1$
+        msg += "\n\tToday is " + LocalDate.now().toString();
         msg += "\n\tJava vendor " + System.getProperty("java.vendor"); //$NON-NLS-1$ //$NON-NLS-2$
         msg += "\n\tJava version " + System.getProperty("java.version"); //$NON-NLS-1$ //$NON-NLS-2$
         msg += "\n\tPlatform " //$NON-NLS-1$
