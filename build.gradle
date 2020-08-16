@@ -52,6 +52,9 @@ repositories {
         url 'https://github.com/MegaMek/mavenrepo/raw/master'
     }
     jcenter()
+    maven {
+        url 'https://jitpack.io'
+    }
 }
 
 configurations {
