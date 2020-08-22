@@ -20,6 +20,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGRectElement;
 
 import java.awt.print.PageFormat;
+import java.time.LocalDate;
 import java.util.*;
 
 /**
@@ -128,8 +129,7 @@ public class PrintDropship extends PrintAero {
         if (pageNum > 0) {
             Element element = getSVGDocument().getElementById(COPYRIGHT);
             if (null != element) {
-                element.setTextContent(String.format(element.getTextContent(),
-                        Calendar.getInstance().get(Calendar.YEAR)));
+                element.setTextContent(String.format(element.getTextContent(), LocalDate.now().getYear()));
             }
             setTextField(TITLE, getRecordSheetTitle().toUpperCase() + " (REVERSE)");
             setTextField(TYPE, getEntity().getShortNameRaw());

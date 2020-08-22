@@ -54,6 +54,7 @@ import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.io.*;
 import java.net.URLConnection;
+import java.time.LocalDate;
 import java.util.*;
 
 /**
@@ -367,8 +368,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     protected void processImage(int pageNum, PageFormat pageFormat) {
         Element element = getSVGDocument().getElementById(COPYRIGHT);
         if (null != element) {
-            element.setTextContent(String.format(element.getTextContent(),
-                    Calendar.getInstance().get(Calendar.YEAR)));
+            element.setTextContent(String.format(element.getTextContent(), LocalDate.now().getYear()));
         }
     }
 
