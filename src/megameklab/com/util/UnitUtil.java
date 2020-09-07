@@ -1440,7 +1440,8 @@ public class UnitUtil {
         double tonnage = 0;
 
         for (Mounted mount : unit.getAmmo()) {
-            if ((mount.getLocation() == Entity.LOC_NONE) && !mount.isOneShotAmmo()) {
+            if ((mount.getLocation() == Entity.LOC_NONE) && !mount.isOneShotAmmo()
+                    && (((AmmoType) mount.getType()).getAmmoType() != AmmoType.T_INFANTRY)) {
                 int slots = 1;
                 if (unit.usesWeaponBays()) {
                     slots = (int) Math.ceil(mount.getUsableShotsLeft() / (double) ((AmmoType) mount.getType()).getShots());
