@@ -2056,7 +2056,7 @@ public class UnitUtil {
     }
 
     public static void removeOneShotAmmo(Entity unit) {
-        ArrayList<Mounted> ammoList = new ArrayList<Mounted>();
+        ArrayList<Mounted> ammoList = new ArrayList<>();
 
         for (Mounted mount : unit.getAmmo()) {
             if (mount.getLocation() == Entity.LOC_NONE) {
@@ -2519,6 +2519,7 @@ public class UnitUtil {
                 }
             }
         }
+        UnitUtil.removeOneShotAmmo(unit);
 
         if (unit instanceof Mech) {
             UnitUtil.updateLoadedMech((Mech) unit);
@@ -2528,7 +2529,6 @@ public class UnitUtil {
     }
 
     public static void updateLoadedMech(Mech unit) {
-        UnitUtil.removeOneShotAmmo(unit);
         UnitUtil.removeClanCase(unit);
         UnitUtil.expandUnitMounts(unit);
         UnitUtil.checkArmor(unit);
