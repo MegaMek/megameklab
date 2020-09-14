@@ -27,6 +27,8 @@ import org.w3c.dom.svg.SVGRectElement;
 import java.util.Enumeration;
 import java.util.StringJoiner;
 
+import static megameklab.com.printing.InventoryEntry.DASH;
+
 /**
  * Lays out a record sheet block for a single infantry unit
  */
@@ -313,19 +315,21 @@ public class PrintInfantry extends PrintEntity {
             switch (gun.getAmmoType()) {
                 case AmmoType.T_AC_ULTRA:
                 case AmmoType.T_AC_ULTRA_THB:
-                    sb.append("/Sht, R2 [DB,R/S/C]");
+                    sb.append("/Sht, R2");
+                    setTextField(FIELD_GUN_DMG_2, "[DB,R/S/C]");
                     break;
                 case AmmoType.T_AC_ROTARY:
-                    sb.append("/Sht, R6 [DB,R/S/C]");
+                    sb.append("/Sht, R6");
+                    setTextField(FIELD_GUN_DMG_2, "[DB,R/S/C]");
                     break;
                 case AmmoType.T_AC:
                 case AmmoType.T_AC_PRIMITIVE:
                 case AmmoType.T_LAC:
-                    sb.append(" [DB,C/S/F]");
+                    setTextField(FIELD_GUN_DMG_2, "[DB,C/S/F]");
                     break;
                 case AmmoType.T_AC_LBX:
                 case AmmoType.T_AC_LBX_THB:
-                    sb.append(" [DB,C/F]");
+                    setTextField(FIELD_GUN_DMG_2, "[DB,C/F]");
                     break;
                 default:
                     sb.append(" [DB]");
@@ -335,7 +339,7 @@ public class PrintInfantry extends PrintEntity {
         if (gun.getMinimumRange() > 0) {
             setTextField(FIELD_GUN_MIN_RANGE, gun.getMinimumRange());
         } else {
-            setTextField(FIELD_GUN_MIN_RANGE, "—");
+            setTextField(FIELD_GUN_MIN_RANGE, DASH);
         }
         setTextField(FIELD_GUN_SHORT, gun.getShortRange());
         setTextField(FIELD_GUN_MED, gun.getMediumRange());
@@ -409,7 +413,7 @@ public class PrintInfantry extends PrintEntity {
         }
 
         if (range >= mods.length) {
-            return "—";
+            return DASH;
         }
         int mod = mods[range];
         if (range == 0) {
