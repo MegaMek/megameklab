@@ -10,6 +10,7 @@ VERSION HISTORY:
 + Issue #737: Speed modifier for supercharger on vehicle sheet
 + Issue #738: infantry flamers not marked as flame based
 + Issue #739: Tripods introduction date inaccurate
++ Issue #740: Oddball characters appearing on infantry record sheet
 
 0.47.9 (2020-08-07 1830 UTC)
 + Issue #693: RFE Combat Crew Seating
