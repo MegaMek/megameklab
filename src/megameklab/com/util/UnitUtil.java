@@ -1237,37 +1237,40 @@ public class UnitUtil {
             return;
         }
         final Entity entity = mount.getEntity();
-        final int loc = mount.getLocation();
-        int start = -1;
-        for (int slot = 0; slot < entity.getNumberOfCriticals(loc); slot++) {
-            CriticalSlot crit = entity.getCritical(loc, slot);
-            if ((crit != null) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)
-                    && crit.getMount().equals(mount)) {
-                start = slot;
-                break;
-            }
-        }
-        removeCriticals(entity, mount);
-        compactCriticals(entity, loc);
-        if ((start < 0) || (entity.getEmptyCriticals(loc) < mount.getCriticals())) {
-            changeMountStatus(entity, mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
-        } else {
-            // If the number of criticals increases, we may need to shift existing criticals
-            // to make room. Since we checked for sufficient space and compacted the existing
-            // criticals we can be assured of not overrunning the array.
-            List<CriticalSlot> toAdd = new ArrayList<>();
-            for (int i = 0; i < mount.getCriticals(); i++) {
-                toAdd.add(new CriticalSlot(mount));
-            }
-            int slot = start;
-            while (!toAdd.isEmpty()) {
-                CriticalSlot cs = entity.getCritical(loc, slot);
-                if (cs != null) {
-                    toAdd.add(cs);
+        // Mechs may need to shift the crits around to make room if the equipment grows
+        if (entity instanceof Mech) {
+            final int loc = mount.getLocation();
+            int start = -1;
+            for (int slot = 0; slot < entity.getNumberOfCriticals(loc); slot++) {
+                CriticalSlot crit = entity.getCritical(loc, slot);
+                if ((crit != null) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)
+                        && crit.getMount().equals(mount)) {
+                    start = slot;
+                    break;
                 }
-                entity.setCritical(loc, slot, toAdd.get(0));
-                toAdd.remove(0);
-                slot++;
+            }
+            removeCriticals(entity, mount);
+            compactCriticals(entity, loc);
+            if ((start < 0) || (entity.getEmptyCriticals(loc) < mount.getCriticals())) {
+                changeMountStatus(entity, mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
+            } else {
+                // If the number of criticals increases, we may need to shift existing criticals
+                // to make room. Since we checked for sufficient space and compacted the existing
+                // criticals we can be assured of not overrunning the array.
+                List<CriticalSlot> toAdd = new ArrayList<>();
+                for (int i = 0; i < mount.getCriticals(); i++) {
+                    toAdd.add(new CriticalSlot(mount));
+                }
+                int slot = start;
+                while (!toAdd.isEmpty()) {
+                    CriticalSlot cs = entity.getCritical(loc, slot);
+                    if (cs != null) {
+                        toAdd.add(cs);
+                    }
+                    entity.setCritical(loc, slot, toAdd.get(0));
+                    toAdd.remove(0);
+                    slot++;
+                }
             }
         }
     }
@@ -1437,7 +1440,8 @@ public class UnitUtil {
         double tonnage = 0;
 
         for (Mounted mount : unit.getAmmo()) {
-            if ((mount.getLocation() == Entity.LOC_NONE) && !mount.isOneShotAmmo()) {
+            if ((mount.getLocation() == Entity.LOC_NONE) && !mount.isOneShotAmmo()
+                    && (((AmmoType) mount.getType()).getAmmoType() != AmmoType.T_INFANTRY)) {
                 int slots = 1;
                 if (unit.usesWeaponBays()) {
                     slots = (int) Math.ceil(mount.getUsableShotsLeft() / (double) ((AmmoType) mount.getType()).getShots());
@@ -2052,7 +2056,7 @@ public class UnitUtil {
     }
 
     public static void removeOneShotAmmo(Entity unit) {
-        ArrayList<Mounted> ammoList = new ArrayList<Mounted>();
+        ArrayList<Mounted> ammoList = new ArrayList<>();
 
         for (Mounted mount : unit.getAmmo()) {
             if (mount.getLocation() == Entity.LOC_NONE) {
@@ -2515,6 +2519,7 @@ public class UnitUtil {
                 }
             }
         }
+        UnitUtil.removeOneShotAmmo(unit);
 
         if (unit instanceof Mech) {
             UnitUtil.updateLoadedMech((Mech) unit);
@@ -2524,7 +2529,6 @@ public class UnitUtil {
     }
 
     public static void updateLoadedMech(Mech unit) {
-        UnitUtil.removeOneShotAmmo(unit);
         UnitUtil.removeClanCase(unit);
         UnitUtil.expandUnitMounts(unit);
         UnitUtil.checkArmor(unit);
@@ -4040,9 +4044,12 @@ public class UnitUtil {
                 WeaponType wtype = (WeaponType) m.getType();
                 if ((wtype.getAmmoType() == atype.getAmmoType())
                         && (wtype.getRackSize() == atype.getRackSize())
-                        && (includeOneShot || !((WeaponType) m.getType()).hasFlag(WeaponType.F_ONESHOT))) {
+                        && (includeOneShot || !m.getType().hasFlag(WeaponType.F_ONESHOT))) {
                     return true;
                 }
+            } else if ((atype instanceof SmallWeaponAmmoType)
+                    && ((SmallWeaponAmmoType) atype).isAmmoFor(m.getType())){
+                return true;
             }
         }
         return false;

@@ -104,7 +104,8 @@ public class EquipmentTab extends ITab implements ActionListener {
         WEAPON ("All Weapons", (eq, en) -> ENERGY.filter(eq, en) || BALLISTIC.filter(eq, en)
                 || MISSILE.filter(eq, en) || CAPITAL.filter(eq, en) || PHYSICAL.filter(eq, en)),
         AMMO ("Ammo", (eq, en) -> (eq instanceof AmmoType) && !(eq instanceof BombType)
-                && UnitUtil.canUseAmmo(en, (AmmoType) eq, false)),
+                && UnitUtil.canUseAmmo(en, (AmmoType) eq, false),
+                e -> e.getWeightClass() != EntityWeightClass.WEIGHT_SMALL_SUPPORT),
         OTHER ("Other", (eq, en) -> ((eq instanceof MiscType)
                 && !UnitUtil.isPhysicalWeapon(eq)
                 && !UnitUtil.isJumpJet(eq)
