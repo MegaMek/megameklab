@@ -1,5 +1,7 @@
 VERSION HISTORY:
 ----------------
+0.47.11-SNAPSHOT
+
 0.47.10 (2020-09-20 2100 UTC)
 + Issue #700: Heat display for IndustrialMechs does not update after changing engine types
 + Issue #722: VSTOL equipment does not appear on fighter record sheets
