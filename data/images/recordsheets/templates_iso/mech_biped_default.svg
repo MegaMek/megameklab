@@ -2012,7 +2012,7 @@
     <text x="412.84" y="535.60" id="textIS_LL" font-weight="bold"
                                                                               >( 0 )</text
                                                                               >
-    <text x="473.3" y="549.3" id="structureType" style="mml-field-width=45" font-weight="bold" text-anchor="middle"
+    <text x="473.3" font-size="6.76" y="549.3" text-anchor="middle" style="mml-field-width=45" id="structureType" font-weight="bold"
                                                                               >Standard</text
                                                                             ></g
                                                                             ><g id="structurePips"
