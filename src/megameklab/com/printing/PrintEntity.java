@@ -198,7 +198,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
         setTextField(MP_JUMP, formatJump());
         if (getEntity().getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT) {
             setTextField(TONNAGE, NumberFormat.getInstance()
-                    .format((int) getEntity().getWeight() * 1000) + " kg");
+                    .format((int) (getEntity().getWeight() * 1000)) + " kg");
         } else {
             setTextField(TONNAGE, NumberFormat.getInstance().format((int) getEntity().getWeight()));
         }
