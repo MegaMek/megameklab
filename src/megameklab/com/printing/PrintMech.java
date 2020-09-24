@@ -165,7 +165,7 @@ public class PrintMech extends PrintEntity {
             if (si instanceof SVGRectElement) {
                 drawSIPips((SVGRectElement) si);
             } else {
-                MegaMekLab.getLogger().error(getClass(),
+                MegaMekLab.getLogger().error(this,
                         "Region siPips does not exist in template or is not a <rect>");
             }
         }
