@@ -16,6 +16,7 @@ package megameklab.com.printing;
 import java.awt.geom.Rectangle2D;
 import java.awt.print.PageFormat;
 import java.io.File;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.*;
 
@@ -151,6 +152,23 @@ public abstract class PrintEntity extends PrintRecordSheet {
      */
     public String formatTacticalFuel() {
         return "";
+    }
+
+    /**
+     * Converts a weight to a String, either in kg or tons as appropriate to the Entity,
+     * labeled with the measurement unit.
+     * @param weight The weight in tons
+     * @return       The formatted weight with units
+     */
+    String formatWeight(double weight) {
+        if ((getEntity() instanceof BattleArmor)
+                || (getEntity() instanceof Protomech)
+                || getEntity().getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT) {
+            return DecimalFormat.getInstance().format(weight * 1000) + " kg";
+        } else {
+            return DecimalFormat.getInstance().format(weight)
+                    + ((weight == 1)? " ton)" : " tons");
+        }
     }
     
     @Override

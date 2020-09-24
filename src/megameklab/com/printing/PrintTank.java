@@ -188,21 +188,13 @@ public class PrintTank extends PrintEntity {
             }
         }
         for (Map.Entry<String, Integer> e : seating.entrySet()) {
-            sj.add(e.getValue() + " " + e.getKey());
+            sj.add(e.getValue() + " " + ((e.getValue() == 1) ?
+                    e.getKey().replace("Seats", "Seat") : e.getKey()));
         }
         for (Map.Entry<String, Double> e : transport.entrySet()) {
             sj.add(e.getKey() + " (" + formatWeight(e.getValue()) + ")");
         }
         return sj.toString();
-    }
-
-    private String formatWeight(double weight) {
-        if (getEntity().getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT) {
-            return DecimalFormat.getInstance().format(weight * 1000) + " kg";
-        } else {
-            return DecimalFormat.getInstance().format(weight)
-                    + ((weight == 1)? " ton)" : " tons");
-        }
     }
 
     @Override
