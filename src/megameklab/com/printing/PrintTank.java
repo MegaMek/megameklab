@@ -177,18 +177,32 @@ public class PrintTank extends PrintEntity {
             sj.add("Basic Fire Control");
         }
         Map<String, Double> transport = new HashMap<>();
+        Map<String, Integer> seating = new HashMap<>();
         for (Transporter t : tank.getTransports()) {
             if (t instanceof TroopSpace) {
                 transport.merge("Infantry Bay", t.getUnused(), Double::sum);
+            } else if (t instanceof StandardSeatCargoBay) {
+                seating.merge(((Bay) t).getType(), (int) ((Bay) t).getCapacity(), Integer::sum);
             } else if (t instanceof Bay) {
                 transport.merge(((Bay) t).getType(), ((Bay) t).getCapacity(), Double::sum);
             }
         }
+        for (Map.Entry<String, Integer> e : seating.entrySet()) {
+            sj.add(e.getValue() + " " + e.getKey());
+        }
         for (Map.Entry<String, Double> e : transport.entrySet()) {
-            sj.add(e.getKey() + " (" + DecimalFormat.getInstance().format(e.getValue())
-                    + ((e.getValue() == 1)? " ton)" : " tons)"));
+            sj.add(e.getKey() + " (" + formatWeight(e.getValue()) + ")");
         }
         return sj.toString();
+    }
+
+    private String formatWeight(double weight) {
+        if (getEntity().getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT) {
+            return DecimalFormat.getInstance().format(weight * 1000) + " kg";
+        } else {
+            return DecimalFormat.getInstance().format(weight)
+                    + ((weight == 1)? " ton)" : " tons");
+        }
     }
 
     @Override
