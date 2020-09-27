@@ -2,6 +2,9 @@ VERSION HISTORY:
 ----------------
 0.47.11-SNAPSHOT
 + Issue #768: Patchwork armor error
++ Issue #749: Tag for special internal structure missing on Record Sheets
++ Issue #726: Small support vehicle record sheet shows weight in tons
++ Issue #756: Seating/Quarters absent from Fixed Wing Support Vehicle record sheet
 
 0.47.10 (2020-09-20 2100 UTC)
 + Issue #700: Heat display for IndustrialMechs does not update after changing engine types
