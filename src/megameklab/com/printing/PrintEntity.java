@@ -167,7 +167,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
             return DecimalFormat.getInstance().format(weight * 1000) + " kg";
         } else {
             return DecimalFormat.getInstance().format(weight)
-                    + ((weight == 1)? " ton)" : " tons");
+                    + ((weight == 1) ? " ton)" : " tons");
         }
     }
     
