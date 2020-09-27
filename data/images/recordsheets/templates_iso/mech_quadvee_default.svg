@@ -1899,6 +1899,9 @@
 <text x="408.81" y="526.15" id="textIS_RLL" font-weight="bold" text-anchor="middle"
                                                                                     >( 0 )</text
                                                                                     >
+    <text x="471.5" y="550" id="structureType" style="mml-field-width=45" font-weight="bold" text-anchor="middle"
+                                                                                    >Standard</text
+                                                                                    >
 </g
                                                                                   ></g
                                                                                 ></g

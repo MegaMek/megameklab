@@ -94,6 +94,7 @@ public interface IdConstants {
 
     String ARMOR_TYPE = "armorType";
     String ARMOR_TYPE_2 = "armorType2";
+    String STRUCTURE_TYPE = "structureType";
     String PATCHWORK = "patchwork";
     String TEXT_ARMOR = "textArmor_";
     String TEXT_IS = "textIS_";

@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import megamek.common.*;
 import megameklab.com.printing.reference.*;
 import org.apache.batik.anim.dom.SVGDOMImplementation;
 import org.apache.batik.dom.util.SAXDocumentFactory;
@@ -34,19 +35,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.svg.SVGRectElement;
 
-import megamek.common.AmmoType;
-import megamek.common.BipedMech;
-import megamek.common.CriticalSlot;
-import megamek.common.Engine;
-import megamek.common.Entity;
-import megamek.common.EquipmentMessages;
-import megamek.common.ITechnology;
-import megamek.common.LAMPilot;
-import megamek.common.LandAirMech;
-import megamek.common.Mech;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
-import megamek.common.QuadVee;
 import megamek.common.annotations.Nullable;
 import megameklab.com.MegaMekLab;
 import megameklab.com.util.ImageHelper;
@@ -59,7 +47,7 @@ import megameklab.com.util.UnitUtil;
  *
  */
 public class PrintMech extends PrintEntity {
-    
+
     /**
      * The current mech being printed.
      */
@@ -177,7 +165,7 @@ public class PrintMech extends PrintEntity {
             if (si instanceof SVGRectElement) {
                 drawSIPips((SVGRectElement) si);
             } else {
-                MegaMekLab.getLogger().error(getClass(), "PrintImage(Graphics2D, PageFormat, int)",
+                MegaMekLab.getLogger().error(this,
                         "Region siPips does not exist in template or is not a <rect>");
             }
         }
@@ -264,6 +252,16 @@ public class PrintMech extends PrintEntity {
         hideElement(WARRIOR_DATA_TRIPLE, getEntity().getCrew().getSlotCount() != 3);
     }
 
+    @Override
+    protected void drawStructure() {
+        if (mech.hasCompositeStructure() || mech.hasReinforcedStructure()) {
+            String isName = EquipmentType.getStructureTypeName(mech.getStructureType());
+            setTextField(STRUCTURE_TYPE, isName);
+        } else {
+            hideElement(STRUCTURE_TYPE, true);
+        }
+    }
+
     private boolean loadArmorPips(int loc, boolean rear) {
         String locAbbr;
         switch(loc) {
@@ -323,7 +321,6 @@ public class PrintMech extends PrintEntity {
     }
 
     private @Nullable NodeList loadPipSVG(String filename) {
-        final String METHOD_NAME = "loadPipsSVG(int, int)"; //$NON-NLS-1$
         File f = new File(filename);
         if (!f.exists()) {
             return null;
@@ -336,12 +333,12 @@ public class PrintMech extends PrintEntity {
             SAXDocumentFactory df = new SAXDocumentFactory(impl, parser);
             doc = df.createDocument(f.toURI().toASCIIString(), is);
         } catch (Exception e) {
-            MegaMekLab.getLogger().error(PrintRecordSheet.class, METHOD_NAME,
+            MegaMekLab.getLogger().error(PrintRecordSheet.class,
                     "Failed to open pip SVG file! Path: " + f.getName());
             return null;
         }
         if (null == doc) {
-            MegaMekLab.getLogger().error(PrintRecordSheet.class, METHOD_NAME,
+            MegaMekLab.getLogger().error(PrintRecordSheet.class,
                     "Failed to open pip SVG file! Path: " + f.getName());
             return null;
         }

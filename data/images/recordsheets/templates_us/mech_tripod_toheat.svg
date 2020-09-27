@@ -2064,7 +2064,7 @@
                                                                           /><text x="74.117" y="8.438" fill="#ffffff" text-anchor="middle" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal" textLength="127.941" lengthAdjust="spacingAndGlyphs"
                                                                           >INTERNAL STRUCTURE DIAGRAM</text
                                                                         ></g
-                                                                        ><g transform="matrix(1.024 0 0 1.024 8.718 12.250)"
+                                                                        ><g transform="matrix(0.981 0 0 0.981 12.017 12.250)"
                                                                         >
 <g id="internal_diagram_tripod" transform="matrix(1,0,0,-1,-390.22409,379.2819)"
                                                                           ><g id="g3654" transform="translate(477.6598,215.3208)"
@@ -2371,12 +2371,15 @@
 <text x="446.22" y="535.60" id="textIS_CL" font-weight="bold" text-anchor="middle"
                                                                                 >( 0 )</text
                                                                                 >
+    <text x="496.04" font-size="6.76" y="564.26" text-anchor="middle" style="mml-field-width=45" id="structureType" font-weight="bold"
+                                                                                >Standard</text
+                                                                                >
 </g
                                                                               ></g
                                                                             ></g
                                                                             >
 </g
-                                                                            ><g id="canonStructurePips" transform="matrix (0.990 0 0 0.990 -387.422,-386.085)"
+                                                                            ><g id="canonStructurePips" transform="matrix (0.947 0 0 0.947 -367.215,-365.407)"
                                                                           /></g
                                                                           ><g transform="translate (384.000 553.500)"
                                                                           ><g
