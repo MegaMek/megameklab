@@ -17,6 +17,7 @@ import java.awt.BorderLayout;
 import java.awt.Image;
 import java.awt.MediaTracker;
 import java.util.TreeMap;
+import java.util.concurrent.ExecutionException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
@@ -142,7 +143,20 @@ public class LoadingDialog extends JDialog {
          */
         @Override
         public void done() {
-            frame.dispose();
+            boolean interrupted = false;
+            try {
+                get();
+            } catch (ExecutionException ex) {
+                MegaMekLab.getLogger().error(this, ex.getCause());
+            } catch (InterruptedException ex) {
+                interrupted = true;
+            } finally {
+                frame.dispose();
+                // Propogate interruption
+                if (interrupted) {
+                    Thread.currentThread().interrupt();
+                }
+            }
         }
     }
 }
