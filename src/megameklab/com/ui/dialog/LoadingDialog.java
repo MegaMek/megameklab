@@ -106,29 +106,29 @@ public class LoadingDialog extends JDialog {
 
         @Override
         public Void doInBackground() {
-            MegaMekLabMainUI newUI = null;
-            if(type == Entity.ETYPE_TANK) {
+            MegaMekLabMainUI newUI;
+            if (type == Entity.ETYPE_TANK) {
                 newUI = new megameklab.com.ui.Vehicle.MainUI();
-            } else if(type == Entity.ETYPE_SUPPORT_TANK) {
+            } else if (type == Entity.ETYPE_SUPPORT_TANK) {
                 newUI = new megameklab.com.ui.supportvehicle.SVMainUI();
-            } else if(type == Entity.ETYPE_PROTOMECH) {
+            } else if (type == Entity.ETYPE_PROTOMECH) {
                 newUI = new megameklab.com.ui.protomek.ProtomekMainUI();
-            } else if(type == Entity.ETYPE_BATTLEARMOR) {
+            } else if (type == Entity.ETYPE_BATTLEARMOR) {
                 newUI = new megameklab.com.ui.BattleArmor.MainUI();
-            } else if(type == Entity.ETYPE_INFANTRY) {
+            } else if (type == Entity.ETYPE_INFANTRY) {
                 newUI = new megameklab.com.ui.Infantry.MainUI();
-            } else if(type == Entity.ETYPE_AERO) {
+            } else if (type == Entity.ETYPE_AERO) {
                 newUI = new megameklab.com.ui.Aero.MainUI(primitive);
-            } else if(type == Entity.ETYPE_DROPSHIP) {
+            } else if (type == Entity.ETYPE_DROPSHIP) {
                 newUI = new megameklab.com.ui.aerospace.DropshipMainUI(primitive);
-            } else if(type == Entity.ETYPE_JUMPSHIP) {
+            } else if (type == Entity.ETYPE_JUMPSHIP) {
                 newUI = new megameklab.com.ui.aerospace.AdvancedAeroUI(primitive);
             } else {
                 newUI = new megameklab.com.ui.Mek.MainUI(primitive, industrial);
             }
             setVisible(false);
             //update if we had a specific unit to load
-            if(null != newUnit) {
+            if (null != newUnit) {
                 UnitUtil.updateLoadedUnit(newUnit);
                 newUI.setEntity(newUnit);
                 newUI.reloadTabs();
