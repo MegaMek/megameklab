@@ -528,6 +528,9 @@ public class EquipmentTab extends ITab implements ActionListener {
                             getAero().addEquipment(mount, Entity.LOC_NONE, false);
                         }
                         equipmentList.addCrit(mount);
+                        if ((equip instanceof WeaponType) && equip.hasFlag(WeaponType.F_ONESHOT)) {
+                            UnitUtil.removeOneShotAmmo(eSource.getEntity());
+                        }
                     }
                 } catch (LocationFullException lfe) {
                     // Shouldn't happen when adding to LOC_NONE
