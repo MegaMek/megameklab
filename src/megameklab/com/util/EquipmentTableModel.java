@@ -341,7 +341,7 @@ public class EquipmentTableModel extends AbstractTableModel {
         } else if (col == COL_RANGE) {
             if (null != wtype) {
                 if (entity instanceof Aero) {
-                    switch (wtype.maxRange) {
+                    switch (wtype.getMaxRange(null)) {
                         case RangeType.RANGE_SHORT:
                             return "Short";
                         case RangeType.RANGE_MEDIUM:
@@ -452,10 +452,10 @@ public class EquipmentTableModel extends AbstractTableModel {
         // Aeros should print AV instead
         if (isAero) {
             int[] attackValue = new int[RangeType.RANGE_EXTREME + 1];
-            attackValue[RangeType.RANGE_SHORT] = (int)wtype.getShortAV();
-            attackValue[RangeType.RANGE_MEDIUM] = (int)wtype.getMedAV();
-            attackValue[RangeType.RANGE_LONG] = (int)wtype.getLongAV();
-            attackValue[RangeType.RANGE_EXTREME] = (int)wtype.getExtAV();
+            attackValue[RangeType.RANGE_SHORT] = wtype.getRoundShortAV();
+            attackValue[RangeType.RANGE_MEDIUM] = wtype.getRoundMedAV();
+            attackValue[RangeType.RANGE_LONG] = wtype.getRoundLongAV();
+            attackValue[RangeType.RANGE_EXTREME] = wtype.getRoundExtAV();
             boolean allEq = true;
             for (int i = 2; i <= wtype.maxRange; i++) {
                 if (attackValue[i - 1] != attackValue[i]) {
