@@ -462,6 +462,9 @@ public class EquipmentTab extends ITab implements ActionListener {
                     loc = Tank.LOC_BODY;
                 }
                 getTank().addEquipment(mount, loc, false);
+                if ((equip instanceof WeaponType) && equip.hasFlag(WeaponType.F_ONESHOT)) {
+                    UnitUtil.removeOneShotAmmo(eSource.getEntity());
+                }
                 success = true;
             } catch (LocationFullException lfe) {
                 // this can't happen, we add to Entity.LOC_NONE

@@ -575,6 +575,10 @@ public class EquipmentTab extends ITab implements ActionListener {
                         eSource.getEntity().addEquipment(mount, Entity.LOC_NONE, false);
                     }
                     equipmentList.addCrit(mount);
+                    if ((equip instanceof WeaponType) && (equip.hasFlag(WeaponType.F_ONESHOT)
+                            || (((WeaponType) equip).getAmmoType() == AmmoType.T_INFANTRY))) {
+                        UnitUtil.removeOneShotAmmo(eSource.getEntity());
+                    }
                 }
             }
         } catch (LocationFullException ex) {
