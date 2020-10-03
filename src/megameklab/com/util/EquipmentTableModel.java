@@ -457,7 +457,7 @@ public class EquipmentTableModel extends AbstractTableModel {
             attackValue[RangeType.RANGE_LONG] = wtype.getRoundLongAV();
             attackValue[RangeType.RANGE_EXTREME] = wtype.getRoundExtAV();
             boolean allEq = true;
-            for (int i = 2; i <= wtype.maxRange; i++) {
+            for (int i = 2; i <= wtype.getMaxRange(null); i++) {
                 if (attackValue[i - 1] != attackValue[i]) {
                     allEq = false;
                     break;
@@ -466,7 +466,7 @@ public class EquipmentTableModel extends AbstractTableModel {
             StringBuilder avString = new StringBuilder();
             avString.append(attackValue[RangeType.RANGE_SHORT]);
             if (!allEq) {
-                for (int i = 2; i <= wtype.maxRange; i++) {
+                for (int i = 2; i <= wtype.getMaxRange(null); i++) {
                     avString.append('/').append(attackValue[i]);
                 }
             }
