@@ -268,6 +268,11 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         if (mount.getEntity().isAero()) {
             name.append(" ").append(StringUtils.getAeroEquipmentInfo(mount));
         }
+        if (mount.getEntity().isSupportVehicle() && mount.getType() instanceof InfantryWeapon) {
+            name.append(" [")
+                    .append((int) mount.getSize() * ((InfantryWeapon) mount.getType()).getShots())
+                    .append(" shots]");
+        }
         return name.toString();
     }
 
