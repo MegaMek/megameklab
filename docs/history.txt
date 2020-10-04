@@ -7,6 +7,7 @@ VERSION HISTORY:
 + Issue #756: Seating/Quarters absent from Fixed Wing Support Vehicle record sheet
 + Issue #767: Small fixed wing support vehicles with weapons invalid on load
 + PR #786: Small fixed wing SV corrections
++ Issue #754: Coolant pods hard to find in Aerospace Fighter UI
 
 0.47.10 (2020-09-20 2100 UTC)
 + Issue #700: Heat display for IndustrialMechs does not update after changing engine types
