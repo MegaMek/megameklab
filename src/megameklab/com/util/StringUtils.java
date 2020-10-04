@@ -31,8 +31,6 @@ import megamek.common.weapons.battlearmor.CLBALBX;
 import megamek.common.weapons.battlearmor.CLBAPulseLaserMicro;
 import megamek.common.weapons.battlearmor.CLBAPulseLaserSmall;
 import megamek.common.weapons.battlearmor.ISBALaserPulseSmall;
-import megamek.common.weapons.battlearmor.ISBALaserVSPMedium;
-import megamek.common.weapons.battlearmor.ISBALaserVSPSmall;
 import megamek.common.weapons.battlearmor.ISBAPopUpMineLauncher;
 import megamek.common.weapons.defensivepods.BPodWeapon;
 import megamek.common.weapons.flamers.FlamerWeapon;
@@ -252,7 +250,7 @@ public class StringUtils {
         if (mount.getType() instanceof WeaponType) {
             WeaponType weapon = (WeaponType) mount.getType();
             if (weapon instanceof InfantryWeapon) {
-                info = Integer.toString(weapon.getDamage());
+                info = "";
                 if (weapon.hasFlag(WeaponType.F_BALLISTIC)) {
                     info += " (B)";
                 } else if (weapon.hasFlag(WeaponType.F_ENERGY)) {
