@@ -2974,7 +2974,8 @@ public class UnitUtil {
 
     public static boolean isSupportVehicleEquipment(EquipmentType eq, Entity unit) {
         if ((unit.getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT)
-                && (eq.getTonnage(unit) >= 5.0)) {
+                && ((eq.getTonnage(unit) >= 5.0)
+                || (eq instanceof MiscType) && eq.hasFlag(MiscType.F_HEAVY_EQUIPMENT))) {
             return false;
         }
         if ((eq instanceof MiscType) && !eq.hasFlag(MiscType.F_SUPPORT_TANK_EQUIPMENT)) {
