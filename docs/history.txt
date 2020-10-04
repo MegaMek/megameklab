@@ -1,6 +1,6 @@
 VERSION HISTORY:
 ----------------
-0.47.11-SNAPSHOT
+0.47.11 (2020-10-04 2100 UTC)
 + Issue #768: Patchwork armor error
 + Issue #749: Tag for special internal structure missing on Record Sheets
 + Issue #726: Small support vehicle record sheet shows weight in tons
