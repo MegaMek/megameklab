@@ -641,7 +641,7 @@ public class EquipmentTab extends ITab implements ActionListener {
                 Aero aero = getAero();
                 if (((nType == T_OTHER) && UnitUtil.isAeroEquipment(etype, getAero())
                             && !UnitUtil.isAeroWeapon(etype, getAero())
-                            && (null == atype))
+                            && ((null == atype) || (getAero().tracksHeat() && (atype.getAmmoType() == AmmoType.T_COOLANT_POD))))
                         || (((nType == T_WEAPON) && UnitUtil.isAeroWeapon(etype, aero) && !(etype instanceof BayWeapon)))
                         || ((nType == T_ENERGY) && UnitUtil.isAeroWeapon(etype, aero)
                             && (wtype != null) && (wtype.hasFlag(WeaponType.F_ENERGY)
