@@ -46,6 +46,7 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
+import megamek.MegaMek;
 import megamek.common.Aero;
 import megamek.common.AmmoType;
 import megamek.common.Entity;
@@ -81,7 +82,7 @@ import megameklab.com.util.UnitUtil;
 public class BayWeaponCriticalTree extends JTree {
     
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = -223615170732243552L;
     // Spheroids show only forward or only aft on the side arcs
@@ -686,15 +687,27 @@ public class BayWeaponCriticalTree extends JTree {
             double weight = 0;
             for (Integer wNum : getMounted().getBayWeapons()) {
                 final Mounted eq = eSource.getEntity().getEquipment(wNum);
-                final WeaponType wtype = (WeaponType) eq.getType();
-                final int bonus = avMod(eq);
-                shortAV += wtype.getShortAV() + bonus;
-                medAV += wtype.getMedAV() + bonus;
-                longAV += wtype.getLongAV() + bonus;
-                heat += wtype.getHeat();
-                weight += eq.getTonnage();
-                if (eq.getLinkedBy() != null) {
-                    weight += eq.getLinkedBy().getTonnage();
+                if (eq.getType() instanceof WeaponType) {
+                    final WeaponType wtype = (WeaponType) eq.getType();
+                    final int bonus = avMod(eq);
+                    shortAV += wtype.getShortAV() + bonus;
+                    medAV += wtype.getMedAV() + bonus;
+                    longAV += wtype.getLongAV() + bonus;
+                    heat += wtype.getHeat();
+                    weight += eq.getTonnage();
+                    if (eq.getLinkedBy() != null) {
+                        weight += eq.getLinkedBy().getTonnage();
+                    }
+                } else {
+                    // Debugging code. Show which equipment has a weapon index and a list of all the
+                    // equipment with indices.
+                    StringBuilder msg = new StringBuilder("Found non-weapon with bay weapon index ");
+                    msg.append(wNum).append(" in ").append(getMounted().getName()).append(".\nEquipment list:");
+                    for (int i = 0; i < eSource.getEntity().getEquipment().size(); i++) {
+                        msg.append(i).append(": ").append(eSource.getEntity().getEquipment().get(i).getName());
+                        msg.append("\n");
+                    }
+                    MegaMekLab.getLogger().info(msg.toString());
                 }
             }
             for (Integer aNum : getMounted().getBayAmmo()) {
