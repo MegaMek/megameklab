@@ -1595,17 +1595,16 @@ public class UnitUtil {
      *               is usually divided evenly among armor facings.
      */
     public static double getSIBonusArmorPoints(Entity entity) {
+        double points = 0.0;
         if (entity.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)) {
-            return ((SmallCraft)entity).getSI() * (entity.locations() - 1);
+            points = ((SmallCraft)entity).getSI() * (entity.locations() - 1);
         } else if (entity.hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
-            double points = Math.round(((Jumpship) entity).getSI() / 10.0) * 6;
-            if (((Jumpship) entity).isPrimitive()) {
-                return Math.floor(points * EquipmentType.getArmorPointMultiplier(EquipmentType.T_ARMOR_PRIMITIVE_AERO));
-            } else {
-                return points;
-            }
+            points = Math.round(((Jumpship) entity).getSI() / 10.0) * 6;
+        }
+        if (entity.isPrimitive()) {
+            return points * EquipmentType.getArmorPointMultiplier(EquipmentType.T_ARMOR_PRIMITIVE_AERO);
         } else {
-            return 0;
+            return points;
         }
     }
 
