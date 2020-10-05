@@ -40,6 +40,7 @@ import megamek.common.weapons.gaussrifles.ISSilverBulletGauss;
 import megamek.common.weapons.infantry.InfantryWeapon;
 import megamek.common.weapons.lasers.*;
 import megamek.common.weapons.lrms.LRMWeapon;
+import megamek.common.weapons.lrms.LRTWeapon;
 import megamek.common.weapons.lrms.StreakLRMWeapon;
 import megamek.common.weapons.mgs.MGWeapon;
 import megamek.common.weapons.missiles.*;
@@ -53,7 +54,9 @@ import megamek.common.weapons.ppc.CLPlasmaCannon;
 import megamek.common.weapons.ppc.ISPlasmaRifle;
 import megamek.common.weapons.ppc.ISSnubNosePPC;
 import megamek.common.weapons.ppc.PPCWeapon;
+import megamek.common.weapons.prototypes.PrototypeRLWeapon;
 import megamek.common.weapons.srms.SRMWeapon;
+import megamek.common.weapons.srms.SRTWeapon;
 import megamek.common.weapons.srms.StreakSRMWeapon;
 import megamek.common.weapons.tag.TAGWeapon;
 
@@ -112,13 +115,15 @@ public class StringUtils {
             } else if (weapon.getDamage() < 0) {
                 if (weapon instanceof StreakSRMWeapon) {
                     info = "2/Msl [M,C]";
-                } else if ((weapon instanceof SRMWeapon) || (weapon instanceof MekMortarWeapon)) {
+                } else if ((weapon instanceof SRMWeapon) || (weapon instanceof MekMortarWeapon)
+                        || (weapon instanceof SRTWeapon)) {
                     info = "2/Msl [M,C,S]";
                 } else if ((weapon instanceof StreakLRMWeapon)) {
                     info = "1/Msl [M,C]";
-                } else if ((weapon instanceof LRMWeapon)) {
+                } else if ((weapon instanceof LRMWeapon) || (weapon instanceof LRTWeapon)) {
                     info = "1/Msl [M,C,S]";
-                } else if ((weapon instanceof MRMWeapon) || (weapon instanceof RLWeapon)) {
+                } else if ((weapon instanceof MRMWeapon) || (weapon instanceof RLWeapon)
+                        || (weapon instanceof PrototypeRLWeapon)) {
                     info = "1/Msl [M,C]";
                 } else if (weapon instanceof ISSnubNosePPC) {
                     info = "10/8/5 [DE,V]";
