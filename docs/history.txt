@@ -2,6 +2,7 @@ VERSION HISTORY:
 ----------------
 0.47.12-SNAPSHOT
 + Issue #761: Cost of communications equipment does not reflect size
++ Issue #758: Damage notation for torpedoes and prototype rockets incorrect
 
 0.47.11 (2020-10-04 2100 UTC)
 + Issue #768: Patchwork armor error
