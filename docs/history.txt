@@ -7,6 +7,7 @@ VERSION HISTORY:
 + Issue #763: Cost for cargo bays on vehicles is incorrect
 + Issue #765: Really early dropships and small craft not allowed
 + Issue #773: Superheavy industrialmechs fail validation
++ Issue #793: Industrialmechs with DHS loaded as SHS
 
 0.47.11 (2020-10-04 2100 UTC)
 + Issue #768: Patchwork armor error
