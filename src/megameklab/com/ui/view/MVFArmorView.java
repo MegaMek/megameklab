@@ -297,13 +297,16 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
             chkPatchwork.setVisible(false);
             chkPatchwork.setSelected(false);
         }
-        if (null == prev) {
+        if ((null == prev) && (cbArmorType.getModel().getSize() > 0)) {
             cbArmorType.setSelectedIndex(cbArmorType.getModel().getSize() - 1);
         } else {
             cbArmorType.setSelectedItem(prev);
         }
         cbArmorType.addActionListener(this);
-        if ((null != prev) && (cbArmorType.getSelectedIndex() < 0)) {
+        /* If there was a type previously set and nothing is selected, the previous choice
+         * is not in the list. Select the first in the list after the listener is restored
+         * to make sure the Entity is updated. */
+        if ((null != prev) && (cbArmorType.getSelectedIndex() < 0) && (cbArmorType.getModel().getSize() > 0)) {
             cbArmorType.setSelectedIndex(0);
         }
         cbArmorType.showTechBase(techManager.useMixedTech());
