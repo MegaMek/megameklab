@@ -237,6 +237,8 @@ public class DropshipChassisView extends BuildView implements ActionListener, Ch
             } else {
                 chkKFBoom.setSelected(false);
                 chkKFBoom.setEnabled(false);
+                // ActionListener does not respond to setSelected.
+                listeners.forEach(l -> l.kfBoomChanged(chkKFBoom.isSelected()));
             }
         } else {
             chkKFBoom.setVisible(false);
