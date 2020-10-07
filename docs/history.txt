@@ -8,6 +8,7 @@ VERSION HISTORY:
 + Issue #765: Really early dropships and small craft not allowed
 + Issue #773: Superheavy industrialmechs fail validation
 + Issue #793: Industrialmechs with DHS loaded as SHS
++ Issue #770: Status message about unallocated heat sinks is confusing
 
 0.47.11 (2020-10-04 2100 UTC)
 + Issue #768: Patchwork armor error
