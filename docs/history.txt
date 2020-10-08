@@ -9,6 +9,7 @@ VERSION HISTORY:
 + Issue #773: Superheavy industrialmechs fail validation
 + Issue #793: Industrialmechs with DHS loaded as SHS
 + Issue #770: Status message about unallocated heat sinks is confusing
++ Issue #775: Quarters on large aerospace craft again have a c-bill cost, but other bays do not 
 + Issue #777: Direct Neural Interface blanks out Summary and TRO
 
 0.47.11 (2020-10-04 2100 UTC)
