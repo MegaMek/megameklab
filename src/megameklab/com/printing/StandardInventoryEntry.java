@@ -268,6 +268,11 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         if (mount.getEntity().isAero()) {
             name.append(" ").append(StringUtils.getAeroEquipmentInfo(mount));
         }
+        if (mount.getEntity().isSupportVehicle() && mount.getType() instanceof InfantryWeapon) {
+            name.append(" [")
+                    .append((int) mount.getSize() * ((InfantryWeapon) mount.getType()).getShots())
+                    .append(" shots]");
+        }
         return name.toString();
     }
 
@@ -425,7 +430,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
     public String getShortField(int row) {
         if (mount.getEntity().isAero() && !isMML && !isATM) {
             if ((row == 0) && (mount.getType() instanceof WeaponType)) {
-                return String.valueOf((int) ((WeaponType) mount.getType()).getShortAV() + aeroAVMod(mount));
+                return String.valueOf(((WeaponType) mount.getType()).getRoundShortAV() + aeroAVMod(mount));
             } else if (row == 0) {
                 return DASH;
             } else {
@@ -442,8 +447,8 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
     public String getMediumField(int row) {
         if (mount.getEntity().isAero() && !isMML && !isATM) {
             if ((row == 0) && (mount.getType() instanceof WeaponType)
-                    && ((WeaponType) mount.getType()).maxRange >= WeaponType.RANGE_MED) {
-                return String.valueOf((int) ((WeaponType) mount.getType()).getMedAV() + aeroAVMod(mount));
+                    && ((WeaponType) mount.getType()).getMaxRange(mount) >= WeaponType.RANGE_MED) {
+                return String.valueOf(((WeaponType) mount.getType()).getRoundMedAV() + aeroAVMod(mount));
             } else if (row == 0) {
                 return DASH;
             } else {
@@ -460,8 +465,8 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
     public String getLongField(int row) {
         if (mount.getEntity().isAero() && !isMML && !isATM) {
             if ((row == 0) && (mount.getType() instanceof WeaponType)
-                    && ((WeaponType) mount.getType()).maxRange >= WeaponType.RANGE_LONG) {
-                return String.valueOf((int) ((WeaponType) mount.getType()).getLongAV() + aeroAVMod(mount));
+                    && ((WeaponType) mount.getType()).getMaxRange(mount) >= WeaponType.RANGE_LONG) {
+                return String.valueOf(((WeaponType) mount.getType()).getRoundLongAV() + aeroAVMod(mount));
             } else if (row == 0) {
                 return DASH;
             } else {
@@ -478,8 +483,8 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
     public String getExtremeField(int row) {
         if (mount.getEntity().isAero() && !isMML && !isATM) {
             if ((row == 0) && (mount.getType() instanceof WeaponType)
-                    && ((WeaponType) mount.getType()).maxRange >= WeaponType.RANGE_EXT) {
-                return String.valueOf((int) ((WeaponType) mount.getType()).getExtAV() + aeroAVMod(mount));
+                    && ((WeaponType) mount.getType()).getMaxRange(mount) >= WeaponType.RANGE_EXT) {
+                return String.valueOf(((WeaponType) mount.getType()).getRoundExtAV() + aeroAVMod(mount));
             } else if (row == 0) {
                 return DASH;
             } else {

@@ -1,6 +1,51 @@
 VERSION HISTORY:
 ----------------
-0.47.9-SNAPSHOT
+0.47.12-SNAPSHOT
++ Issue #761: Cost of communications equipment does not reflect size
++ Issue #758: Damage notation for torpedoes and prototype rockets incorrect
++ Issue #762: No cost for heat sinks and power amplifier for spot welders on ICE vehicles
++ Issue #763: Cost for cargo bays on vehicles is incorrect
++ Issue #765: Really early dropships and small craft not allowed
++ Issue #773: Superheavy industrialmechs fail validation
++ Issue #793: Industrialmechs with DHS loaded as SHS
++ Issue #770: Status message about unallocated heat sinks is confusing
++ Issue #775: Quarters on large aerospace craft again have a c-bill cost, but other bays do not 
++ Issue #777: Direct Neural Interface blanks out Summary and TRO
++ Issue #784: Sub-Cap Ammo weight discrepancy
+
+0.47.11 (2020-10-04 2100 UTC)
++ Issue #768: Patchwork armor error
++ Issue #749: Tag for special internal structure missing on Record Sheets
++ Issue #726: Small support vehicle record sheet shows weight in tons
++ Issue #756: Seating/Quarters absent from Fixed Wing Support Vehicle record sheet
++ Issue #767: Small fixed wing support vehicles with weapons invalid on load
++ PR #786: Small fixed wing SV corrections
++ Issue #754: Coolant pods hard to find in Aerospace Fighter UI
++ Issue #752: Saving loading Issue with Primitive armor on Dropship
+
+0.47.10 (2020-09-20 2100 UTC)
++ Issue #700: Heat display for IndustrialMechs does not update after changing engine types
++ Issue #722: VSTOL equipment does not appear on fighter record sheets
++ Issue #723: LAMs add pilot data even if none is specified
++ Issue #725: Artillery cannons and infantry record sheets
++ Issue #712: Bug Small craft validation passed with electronics not assigned to a slot
++ Issue #724: Batch exporting to pdf does not add file extension
++ Issue #737: Speed modifier for supercharger on vehicle sheet
++ Issue #738: infantry flamers not marked as flame based
++ Issue #739: Tripods introduction date inaccurate
++ Issue #740: Oddball characters appearing on infantry record sheet
++ PR #760: Edit small SV ammo capacity
+
+0.47.9 (2020-08-07 1830 UTC)
++ Issue #693: RFE Combat Crew Seating
++ Issue #699: Critical slots for cargo incorrectly displayed in Unallocated Equipment list
++ Issue #658: ARTS Transport Bays
++ Issue #710: Clan Battle Armor VTOL system appears to have a tech rating of E
++ Issue #719: Troublesome one shot ammunition popping up
++ Issue #720: Mech running speed rounding error on certain exported record sheets
++ Issue #713: Support vehicle tech rating in Preview does not reflect structure, engine, or armor tech ratings
++ Issue #714: Battle Armor Missile Ammo not refreshing for TRO Entry
++ Issue #721: Smart robotic control system not appearing on mech record sheet
 
 0.47.8 (2020-08-02 2300 UTC)
 + PR #664: Quick reference tables for mech record sheets

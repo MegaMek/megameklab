@@ -153,6 +153,15 @@ public class PrintTank extends PrintEntity {
     }
 
     @Override
+    protected String formatRun() {
+        if (tank.hasWorkingMisc(MiscType.F_MASC)) {
+            return formatMovement(tank.getWalkMP() * 1.5, tank.getWalkMP() * 2);
+        } else {
+            return formatMovement(tank.getWalkMP() * 1.5);
+        }
+    }
+
+    @Override
     public String formatFeatures() {
         StringJoiner sj = new StringJoiner(", ");
         List<String> chassisMods = tank.getMisc().stream().filter(m -> m.getType().hasFlag(MiscType.F_CHASSIS_MODIFICATION))
@@ -168,16 +177,22 @@ public class PrintTank extends PrintEntity {
             sj.add("Basic Fire Control");
         }
         Map<String, Double> transport = new HashMap<>();
+        Map<String, Integer> seating = new HashMap<>();
         for (Transporter t : tank.getTransports()) {
             if (t instanceof TroopSpace) {
                 transport.merge("Infantry Bay", t.getUnused(), Double::sum);
+            } else if (t instanceof StandardSeatCargoBay) {
+                seating.merge(((Bay) t).getType(), (int) ((Bay) t).getCapacity(), Integer::sum);
             } else if (t instanceof Bay) {
                 transport.merge(((Bay) t).getType(), ((Bay) t).getCapacity(), Double::sum);
             }
         }
+        for (Map.Entry<String, Integer> e : seating.entrySet()) {
+            sj.add(e.getValue() + " " + ((e.getValue() == 1) ?
+                    e.getKey().replace("Seats", "Seat") : e.getKey()));
+        }
         for (Map.Entry<String, Double> e : transport.entrySet()) {
-            sj.add(e.getKey() + " (" + DecimalFormat.getInstance().format(e.getValue())
-                    + ((e.getValue() == 1)? " ton)" : " tons)"));
+            sj.add(e.getKey() + " (" + formatWeight(e.getValue()) + ")");
         }
         return sj.toString();
     }

@@ -528,6 +528,9 @@ public class EquipmentTab extends ITab implements ActionListener {
                             getAero().addEquipment(mount, Entity.LOC_NONE, false);
                         }
                         equipmentList.addCrit(mount);
+                        if ((equip instanceof WeaponType) && equip.hasFlag(WeaponType.F_ONESHOT)) {
+                            UnitUtil.removeOneShotAmmo(eSource.getEntity());
+                        }
                     }
                 } catch (LocationFullException lfe) {
                     // Shouldn't happen when adding to LOC_NONE
@@ -638,7 +641,7 @@ public class EquipmentTab extends ITab implements ActionListener {
                 Aero aero = getAero();
                 if (((nType == T_OTHER) && UnitUtil.isAeroEquipment(etype, getAero())
                             && !UnitUtil.isAeroWeapon(etype, getAero())
-                            && (null == atype))
+                            && ((null == atype) || (getAero().tracksHeat() && (atype.getAmmoType() == AmmoType.T_COOLANT_POD))))
                         || (((nType == T_WEAPON) && UnitUtil.isAeroWeapon(etype, aero) && !(etype instanceof BayWeapon)))
                         || ((nType == T_ENERGY) && UnitUtil.isAeroWeapon(etype, aero)
                             && (wtype != null) && (wtype.hasFlag(WeaponType.F_ENERGY)

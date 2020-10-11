@@ -94,6 +94,7 @@ public interface IdConstants {
 
     String ARMOR_TYPE = "armorType";
     String ARMOR_TYPE_2 = "armorType2";
+    String STRUCTURE_TYPE = "structureType";
     String PATCHWORK = "patchwork";
     String TEXT_ARMOR = "textArmor_";
     String TEXT_IS = "textIS_";
@@ -147,6 +148,7 @@ public interface IdConstants {
     String FIELD_GUN_QTY = "field_gun_qty";
     String FIELD_GUN_TYPE = "field_gun_type";
     String FIELD_GUN_DMG = "field_gun_dmg";
+    String FIELD_GUN_DMG_2 = "field_gun_dmg_2";
     String FIELD_GUN_MIN_RANGE = "field_gun_min_range";
     String FIELD_GUN_SHORT = "field_gun_short";
     String FIELD_GUN_MED = "field_gun_med";

@@ -238,7 +238,7 @@ public class ArmorAllocationView extends BuildView implements
         int raw = (int) (UnitUtil.getRawArmorPoints(en, en.getLabArmorTonnage())
                 + UnitUtil.getSIBonusArmorPoints(en));
         int currentPoints = en.getTotalOArmor();
-        int armorPoints = 0;
+        int armorPoints;
         if (showPatchwork) {
             armorPoints = currentPoints;
             raw = currentPoints;

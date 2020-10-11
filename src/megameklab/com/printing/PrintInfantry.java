@@ -16,6 +16,7 @@ package megameklab.com.printing;
 
 import megamek.common.*;
 import megamek.common.options.IOption;
+import megamek.common.weapons.artillery.ArtilleryCannonWeapon;
 import megamek.common.weapons.artillery.ArtilleryWeapon;
 import megamek.common.weapons.infantry.InfantryWeapon;
 import megameklab.com.util.CConfig;
@@ -25,6 +26,8 @@ import org.w3c.dom.svg.SVGRectElement;
 
 import java.util.Enumeration;
 import java.util.StringJoiner;
+
+import static megameklab.com.printing.InventoryEntry.DASH;
 
 /**
  * Lays out a record sheet block for a single infantry unit
@@ -204,24 +207,10 @@ public class PrintInfantry extends PrintEntity {
         if (rangeWeapon.hasFlag(WeaponType.F_INF_NONPENETRATING)) {
             sj.add("Can only damage conventional infantry units.");
         }
-        if (infantry.getPrimaryWeapon().hasFlag(WeaponType.F_INFERNO)
-                || (infantry.getSecondaryWeapon() != null
-                && infantry.getSecondaryWeapon().hasFlag(WeaponType.F_INFERNO))) {
+        if (isFlameBased(infantry.getPrimaryWeapon())
+                || ((infantry.getSecondaryWeapon() != null)
+                    && isFlameBased(infantry.getSecondaryWeapon()))) {
             sj.add("Flame-based weapon.");
-        } else {
-            for (int i = 0; i < infantry.getPrimaryWeapon().getModesCount(); i++) {
-                if (infantry.getPrimaryWeapon().getMode(i).equals("Heat")) {
-                    sj.add("Flame-based weapon.");
-                    break;
-                }
-            }
-            if (infantry.getSecondaryWeapon() != null) {
-                for (int i = 0; i < infantry.getSecondaryWeapon().getModesCount(); i++) {
-                    if (infantry.getSecondaryWeapon().getMode(i).equals("Heat")) {
-                        sj.add("Flame-based weapon.");
-                    }
-                }
-            }
         }
         if (infantry.getPrimaryWeapon().hasFlag(WeaponType.F_INF_AA)
                 || (infantry.getSecondaryWeapon() != null
@@ -286,6 +275,13 @@ public class PrintInfantry extends PrintEntity {
         }
     }
 
+    private boolean isFlameBased(WeaponType type) {
+        return (type.hasFlag(WeaponType.F_PLASMA)
+                || type.hasFlag(WeaponType.F_INCENDIARY_NEEDLES)
+                || type.hasFlag(WeaponType.F_INFERNO)
+                || type.hasFlag(WeaponType.F_FLAMER));
+    }
+
     private void writeFieldGuns() {
         int numGuns = 0;
         int numShots = 0;
@@ -312,24 +308,28 @@ public class PrintInfantry extends PrintEntity {
          */
         if (gun instanceof ArtilleryWeapon) {
             setTextField(FIELD_GUN_DMG, gun.getRackSize() + " [AE,S,F]");
+        } else if (gun instanceof ArtilleryCannonWeapon) {
+            setTextField(FIELD_GUN_DMG, gun.getRackSize() + " [DB,AE]");
         } else {
             StringBuilder sb = new StringBuilder(Integer.toString(gun.getDamage()));
             switch (gun.getAmmoType()) {
                 case AmmoType.T_AC_ULTRA:
                 case AmmoType.T_AC_ULTRA_THB:
-                    sb.append("/Sht, R2 [DB,R/S/C]");
+                    sb.append("/Sht, R2");
+                    setTextField(FIELD_GUN_DMG_2, "[DB,R/S/C]");
                     break;
                 case AmmoType.T_AC_ROTARY:
-                    sb.append("/Sht, R6 [DB,R/S/C]");
+                    sb.append("/Sht, R6");
+                    setTextField(FIELD_GUN_DMG_2, "[DB,R/S/C]");
                     break;
                 case AmmoType.T_AC:
                 case AmmoType.T_AC_PRIMITIVE:
                 case AmmoType.T_LAC:
-                    sb.append(" [DB,C/S/F]");
+                    setTextField(FIELD_GUN_DMG_2, "[DB,C/S/F]");
                     break;
                 case AmmoType.T_AC_LBX:
                 case AmmoType.T_AC_LBX_THB:
-                    sb.append(" [DB,C/F]");
+                    setTextField(FIELD_GUN_DMG_2, "[DB,C/F]");
                     break;
                 default:
                     sb.append(" [DB]");
@@ -339,7 +339,7 @@ public class PrintInfantry extends PrintEntity {
         if (gun.getMinimumRange() > 0) {
             setTextField(FIELD_GUN_MIN_RANGE, gun.getMinimumRange());
         } else {
-            setTextField(FIELD_GUN_MIN_RANGE, "—");
+            setTextField(FIELD_GUN_MIN_RANGE, DASH);
         }
         setTextField(FIELD_GUN_SHORT, gun.getShortRange());
         setTextField(FIELD_GUN_MED, gun.getMediumRange());
@@ -413,7 +413,7 @@ public class PrintInfantry extends PrintEntity {
         }
 
         if (range >= mods.length) {
-            return "—";
+            return DASH;
         }
         int mod = mods[range];
         if (range == 0) {

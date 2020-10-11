@@ -16,9 +16,11 @@ package megameklab.com.printing;
 import java.awt.geom.Rectangle2D;
 import java.awt.print.PageFormat;
 import java.io.File;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.*;
 
+import megamek.client.generator.RandomNameGenerator;
 import megamek.common.*;
 import megameklab.com.printing.reference.ReferenceTable;
 import megameklab.com.util.CConfig;
@@ -77,7 +79,8 @@ public abstract class PrintEntity extends PrintRecordSheet {
      * @return Whether the pilot data should be filled in.
      */
     protected boolean showPilotInfo() {
-        return options.showPilotData() && !getEntity().getCrew().getName().equalsIgnoreCase("unnamed");
+        return options.showPilotData()
+                && !getEntity().getCrew().getName().startsWith(RandomNameGenerator.UNNAMED);
     }
 
     /**
@@ -150,6 +153,23 @@ public abstract class PrintEntity extends PrintRecordSheet {
     public String formatTacticalFuel() {
         return "";
     }
+
+    /**
+     * Converts a weight to a String, either in kg or tons as appropriate to the Entity,
+     * labeled with the measurement unit.
+     * @param weight The weight in tons
+     * @return       The formatted weight with units
+     */
+    String formatWeight(double weight) {
+        if ((getEntity() instanceof BattleArmor)
+                || (getEntity() instanceof Protomech)
+                || getEntity().getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT) {
+            return DecimalFormat.getInstance().format(weight * 1000) + " kg";
+        } else {
+            return DecimalFormat.getInstance().format(weight)
+                    + ((weight == 1) ? " ton)" : " tons");
+        }
+    }
     
     @Override
     protected void processImage(int pageNum, PageFormat pageFormat) {
@@ -176,7 +196,12 @@ public abstract class PrintEntity extends PrintRecordSheet {
         setTextField(MP_WALK, formatWalk());
         setTextField(MP_RUN, formatRun());
         setTextField(MP_JUMP, formatJump());
-        setTextField(TONNAGE, NumberFormat.getInstance().format((int) getEntity().getWeight()));
+        if (getEntity().getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT) {
+            setTextField(TONNAGE, NumberFormat.getInstance()
+                    .format((int) (getEntity().getWeight() * 1000)) + " kg");
+        } else {
+            setTextField(TONNAGE, NumberFormat.getInstance().format((int) getEntity().getWeight()));
+        }
         setTextField(TECH_BASE, formatTechBase());
         setTextField(RULES_LEVEL, formatRulesLevel());
         setTextField(ERA, formatEra(getEntity().getYear()));
@@ -570,8 +595,8 @@ public abstract class PrintEntity extends PrintRecordSheet {
      */
     protected String formatMovement(double baseMP, double fullMP) {
         if (fullMP > baseMP) {
-            return NumberFormat.getInstance().format(baseMP) + " ["
-                    + NumberFormat.getInstance().format(fullMP) + "] "
+            return CConfig.formatScale(baseMP, false) + " ["
+                    + CConfig.formatScale(fullMP, false) + "] "
                     + CConfig.scaleUnits().abbreviation;
         } else {
             return CConfig.formatScale(baseMP, true);

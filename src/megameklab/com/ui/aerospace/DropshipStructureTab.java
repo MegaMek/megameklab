@@ -398,6 +398,7 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener,
             } else {
                 ((Dropship) getSmallCraft()).setCollarType(Dropship.COLLAR_STANDARD);
             }
+            getEntity().recalculateTechAdvancement();
         }
         refresh.refreshSummary();
         refresh.refreshPreview();
