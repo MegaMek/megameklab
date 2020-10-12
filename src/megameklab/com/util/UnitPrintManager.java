@@ -224,7 +224,7 @@ public class UnitPrintManager {
                 }
             } else if (unit instanceof Protomech) {
                 protoList.add((Protomech) unit);
-                if (singlePrint || infList.size() > 3) {
+                if (singlePrint || protoList.size() > 3) {
                     PrintRecordSheet prs = new PrintSmallUnitSheet(protoList, pageCount, options);
                     pageCount += prs.getPageCount();
                     sheets.add(prs);
@@ -275,8 +275,7 @@ public class UnitPrintManager {
             }
             merger.mergeDocuments(MemoryUsageSetting.setupTempFileOnly());
         } catch (TranscoderException | SAXException | IOException | ConfigurationException e) {
-            MegaMekLab.getLogger().error(UnitPrintManager.class,
-                    "exportUnits(List<Entity>, File, boolean)", e);
+            MegaMekLab.getLogger().error(e);
         }
     }
 
