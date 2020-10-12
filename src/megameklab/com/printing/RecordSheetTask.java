@@ -18,11 +18,13 @@ import java.awt.print.PageFormat;
 import java.awt.print.PrinterJob;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.concurrent.ExecutionException;
 
 import javax.print.attribute.PrintRequestAttributeSet;
 import javax.swing.*;
 
+import megamek.common.util.EncodeControl;
 import megameklab.com.MegaMekLab;
 import org.apache.pdfbox.io.MemoryUsageSetting;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
@@ -144,7 +146,9 @@ public abstract class RecordSheetTask extends SwingWorker<Void, Integer> {
 
         @Override
         protected String popupLabel() {
-            return "Printing";
+            ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Dialogs",
+                    new EncodeControl());
+            return resourceMap.getString("RecordSheetTask.printing");
         }
 
         @Override
@@ -166,7 +170,9 @@ public abstract class RecordSheetTask extends SwingWorker<Void, Integer> {
 
         @Override
         protected String popupLabel() {
-            return "Exporting";
+            ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Dialogs",
+                    new EncodeControl());
+            return resourceMap.getString("RecordSheetTask.exporting");
         }
 
         @Override
