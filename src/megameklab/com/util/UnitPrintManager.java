@@ -265,10 +265,13 @@ public class UnitPrintManager {
         try {
             PDFMergerUtility merger = new PDFMergerUtility();
             merger.setDestinationFileName(exportFile.getAbsolutePath());
-            for (PrintRecordSheet rs : sheets) {
+            Iterator<PrintRecordSheet> iter = sheets.iterator();
+            while (iter.hasNext()) {
+                final PrintRecordSheet rs = iter.next();
                 for (int i = 0; i < rs.getPageCount(); i++) {
                     merger.addSource(rs.exportPDF(i, pageFormat));
                 }
+                iter.remove();
             }
             merger.mergeDocuments(MemoryUsageSetting.setupTempFileOnly());
         } catch (TranscoderException | SAXException | IOException | ConfigurationException e) {
