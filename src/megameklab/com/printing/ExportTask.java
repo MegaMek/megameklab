@@ -13,7 +13,6 @@
  */
 package megameklab.com.printing;
 
-import megamek.common.Entity;
 import megameklab.com.MegaMekLab;
 import org.apache.avalon.framework.configuration.ConfigurationException;
 import org.apache.batik.transcoder.TranscoderException;
@@ -36,11 +35,14 @@ public class ExportTask extends SwingWorker<Void, Integer> {
     private final List<PrintRecordSheet> sheets;
     private final PageFormat pageFormat;
     private final String fileName;
+    private final ProgressPopup popup;
 
     public ExportTask(List<PrintRecordSheet> sheets, PageFormat pageFormat, String fileName) {
         this.sheets = sheets;
         this.pageFormat = pageFormat;
         this.fileName = fileName;
+        popup = new ProgressPopup(sheets.size());
+        popup.setVisible(true);
     }
 
     @Override
@@ -49,11 +51,13 @@ public class ExportTask extends SwingWorker<Void, Integer> {
             PDFMergerUtility merger = new PDFMergerUtility();
             merger.setDestinationFileName(fileName);
             Iterator<PrintRecordSheet> iter = sheets.iterator();
+            int count = 0;
             while (iter.hasNext()) {
                 final PrintRecordSheet rs = iter.next();
                 for (int i = 0; i < rs.getPageCount(); i++) {
                     merger.addSource(rs.exportPDF(i, pageFormat));
                 }
+                publish(count++);
                 iter.remove();
             }
             merger.mergeDocuments(MemoryUsageSetting.setupTempFileOnly());
@@ -63,6 +67,12 @@ public class ExportTask extends SwingWorker<Void, Integer> {
         return null;
     }
 
+    @Override
+    protected void process(List<Integer> chunks) {
+        if (!chunks.isEmpty()) {
+            popup.progressBar.setValue(chunks.get(chunks.size() - 1));
+        }
+    }
 
     @Override
     protected void done() {
@@ -72,6 +82,25 @@ public class ExportTask extends SwingWorker<Void, Integer> {
             MegaMekLab.getLogger().error(e.getCause());
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
+        } finally {
+            popup.setVisible(false);
+        }
+    }
+
+    private static class ProgressPopup extends JFrame {
+        private final JProgressBar progressBar = new JProgressBar();
+
+        ProgressPopup(int maximum) {
+            progressBar.setIndeterminate(false);
+            progressBar.setMaximum(maximum);
+            progressBar.setStringPainted(true);
+
+            JPanel panel = new JPanel();
+            panel.add(new JLabel("Exporting"));
+            panel.add(progressBar);
+            getContentPane().add(panel);
+            pack();
+            setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         }
     }
 }
