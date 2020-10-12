@@ -66,9 +66,10 @@ public abstract class RecordSheetTask extends SwingWorker<Void, Integer> {
     }
 
     /**
-     * Creates a task for rendering a list of record sheets as a print job
+     * Creates a task for rendering a list of record sheets as a print job.
      *
-     * @param sheets     The sheets to render
+     * @param sheets     The sheets to render. The contents are removed as each sheet is
+     *                   processed to avoid running out of memory on large jobs.
      * @param pageFormat The page format
      * @param pathName   The path to the PDF output file
      * @return           A {@link SwingWorker} task
