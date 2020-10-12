@@ -262,21 +262,8 @@ public class UnitPrintManager {
         List<PrintRecordSheet> sheets = createSheets(units, singlePrint, options);
         PageFormat pageFormat = new PageFormat();
         pageFormat.setPaper(options.getPaperSize().createPaper());
-        try {
-            PDFMergerUtility merger = new PDFMergerUtility();
-            merger.setDestinationFileName(exportFile.getAbsolutePath());
-            Iterator<PrintRecordSheet> iter = sheets.iterator();
-            while (iter.hasNext()) {
-                final PrintRecordSheet rs = iter.next();
-                for (int i = 0; i < rs.getPageCount(); i++) {
-                    merger.addSource(rs.exportPDF(i, pageFormat));
-                }
-                iter.remove();
-            }
-            merger.mergeDocuments(MemoryUsageSetting.setupTempFileOnly());
-        } catch (TranscoderException | SAXException | IOException | ConfigurationException e) {
-            MegaMekLab.getLogger().error(e);
-        }
+        ExportTask task = new ExportTask(sheets, pageFormat, exportFile.getAbsolutePath());
+        task.execute();
     }
 
     /**
