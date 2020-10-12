@@ -56,6 +56,7 @@ import java.io.*;
 import java.net.URLConnection;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.function.Consumer;
 
 /**
  * Base class for rendering record sheets. This is mostly a collection of utility methods.
@@ -95,6 +96,8 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     protected final RecordSheetOptions options;
     private Document svgDocument;
     private SVGGraphics2D svgGenerator;
+    // Used to update progress bar
+    private Consumer<Integer> callback;
     
     private Font normalFont = null;
     private Font boldFont = null;
@@ -120,6 +123,16 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     
     public final Document getSVGDocument() {
         return svgDocument;
+    }
+
+    /**
+     * Provides a callback function that can be used to provide updates on printing progress.
+     * As each page is rendered, the callback is invoked with the page number.
+     *
+     * @param callback The function to call with the current page number.
+     */
+    public void setCallback(Consumer<Integer> callback) {
+        this.callback = callback;
     }
     
     /**
@@ -314,6 +327,9 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             }
             */
         }
+        if (callback != null) {
+            callback.accept(pageIndex);
+        }
         return Printable.PAGE_EXISTS;
     }
 
@@ -329,6 +345,9 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         TranscoderOutput transOutput = new TranscoderOutput(output);
         transcoder.transcode(input, transOutput);
 
+        if (callback != null) {
+            callback.accept(pageNumber + firstPage);
+        }
         return new ByteArrayInputStream(output.toByteArray());
     }
     
