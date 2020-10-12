@@ -55,6 +55,7 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
     private final JCheckBox chkColor = new JCheckBox();
     private final JComboBox<String> cbFont = new JComboBox<>();
     private final JTextArea txtFontDisplay = new JTextArea();
+    private final JCheckBox chkProgressBar = new JCheckBox();
     private final JCheckBox chkShowReferenceTables = new JCheckBox();
     private final JCheckBox chkShowQuirks = new JCheckBox();
     private final JCheckBox chkShowPilotData = new JCheckBox();
@@ -235,6 +236,12 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
 
         gbc.gridx = 0;
         gbc.gridy++;
+        chkProgressBar.setText(resourceMap.getString("ConfigurationDialog.chkProgressBar.text"));
+        chkProgressBar.setToolTipText(resourceMap.getString("ConfigurationDialog.chkProgressBar.tooltip"));
+        chkProgressBar.setSelected(CConfig.getBooleanParam(CConfig.RS_PROGRESS_BAR));
+        panPrinting.add(chkProgressBar, gbc);
+        gbc.gridy++;
+
         chkColor.setText(resourceMap.getString("ConfigurationDialog.chkColor.text"));
         chkColor.setToolTipText(resourceMap.getString("ConfigurationDialog.chkColor.tooltip"));
         chkColor.setSelected(CConfig.getBooleanParam(CConfig.RS_COLOR));
@@ -387,6 +394,7 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
         CConfig.setParam(CConfig.RS_PAPER_SIZE, PaperSize.values()[cbPaper.getSelectedIndex()].toString());
         CConfig.setParam(CConfig.RS_FONT, (String) cbFont.getSelectedItem());
         UnitUtil.loadFonts();
+        CConfig.setParam(CConfig.RS_PROGRESS_BAR, String.valueOf(chkProgressBar.isSelected()));
         CConfig.setParam(CConfig.RS_COLOR, Boolean.toString(chkColor.isSelected()));
         CConfig.setParam(CConfig.RS_REFERENCE, Boolean.toString(chkShowReferenceTables.isSelected()));
         CConfig.setParam(CConfig.RS_SHOW_QUIRKS, Boolean.toString(chkShowQuirks.isSelected()));

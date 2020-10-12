@@ -255,7 +255,7 @@ public class UnitPrintManager {
         PageFormat pageFormat = new PageFormat();
         pageFormat.setPaper(options.getPaperSize().createPaper());
         RecordSheetTask task = RecordSheetTask.createExportTask(sheets, pageFormat, exportFile.getAbsolutePath());
-        task.execute(true);
+        task.execute(CConfig.getBooleanParam(CConfig.RS_PROGRESS_BAR));
     }
 
     /**
@@ -299,7 +299,7 @@ public class UnitPrintManager {
         }
 
         RecordSheetTask task = RecordSheetTask.createPrintTask(sheets, masterPrintJob, aset, pageFormat);
-        task.execute(true);
+        task.execute(CConfig.getBooleanParam(CConfig.RS_PROGRESS_BAR));
     }
 
     public static JMenu printMenu(final MegaMekLabMainUI parent) {

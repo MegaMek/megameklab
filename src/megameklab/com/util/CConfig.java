@@ -23,7 +23,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.text.NumberFormat;
 import java.util.Properties;
 
 /**
@@ -106,6 +105,7 @@ public class CConfig {
     public static final String RS_PAPER_SIZE = "rs_paper_size";
     public static final String RS_COLOR = "rs_color";
     public static final String RS_FONT = "rs_font";
+    public static final String RS_PROGRESS_BAR = "rs_progress_bar";
     public static final String RS_SHOW_QUIRKS = "rs_show_quirks";
     public static final String RS_SHOW_PILOT_DATA = "rs_show_pilot_data";
     public static final String RS_SHOW_ERA = "rs_show_era";
@@ -153,6 +153,7 @@ public class CConfig {
                 new File(System.getProperty("user.dir")
                         + "/data/mechfiles/").getAbsolutePath());
         defaults.setProperty(SUMMARY_FORMAT_TRO, Boolean.toString(true));
+        defaults.setProperty(RS_PROGRESS_BAR, Boolean.toString(true));
         defaults.setProperty(RS_COLOR, Boolean.toString(true));
         defaults.setProperty(RS_SHOW_QUIRKS, Boolean.toString(true));
         defaults.setProperty(RS_SHOW_ERA, Boolean.toString(true));
