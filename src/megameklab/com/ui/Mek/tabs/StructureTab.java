@@ -335,6 +335,14 @@ public class StructureTab extends ITab implements MekBuildListener, ArmorAllocat
             clearCrit(Mech.LOC_CT, lgSlot);
             getMech().setCritical(Mech.LOC_CT, lgSlot, crit);
         }
+        // Replace any fixed spreadable equipment
+        for (Mounted mount : getMech().getMisc()) {
+            if ((mount.getLocation() == Entity.LOC_NONE)
+                    && UnitUtil.isFixedLocationSpreadEquipment(mount.getType())) {
+                UnitUtil.removeMounted(getMech(), mount);
+                UnitUtil.createSpreadMounts(getMech(), mount.getType());
+            }
+        }
         refresh.refreshBuild();
     }
 
