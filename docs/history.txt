@@ -12,6 +12,8 @@ VERSION HISTORY:
 + Issue #775: Quarters on large aerospace craft again have a c-bill cost, but other bays do not 
 + Issue #777: Direct Neural Interface blanks out Summary and TRO
 + Issue #784: Sub-Cap Ammo weight discrepancy
++ PR #801: Printing progress bar and memory use improvement
++ Issue #342: Incomplete queued print
 
 0.47.11 (2020-10-04 2100 UTC)
 + Issue #768: Patchwork armor error
