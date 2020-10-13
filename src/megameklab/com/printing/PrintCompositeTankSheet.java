@@ -17,6 +17,7 @@
  */
 package megameklab.com.printing;
 
+import megamek.common.Entity;
 import megamek.common.Tank;
 import megamek.common.VTOL;
 import megamek.common.annotations.Nullable;
@@ -26,6 +27,7 @@ import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import java.awt.print.PageFormat;
+import java.util.stream.Collectors;
 
 /**
  * Creates a single-page record sheet for two vehicles. If only one vehicle is provided,
@@ -62,6 +64,15 @@ public class PrintCompositeTankSheet extends PrintRecordSheet {
      */
     public PrintCompositeTankSheet(Tank tank1, @Nullable Tank tank2, int startPage) {
         this(tank1, tank2, startPage, new RecordSheetOptions());
+    }
+
+    @Override
+    public String getSheetName() {
+        String name = tank1.getShortNameRaw();
+        if ((tank2 != null) && !tank2.getShortNameRaw().equals(tank1.getShortNameRaw())) {
+            name += tank2.getShortNameRaw();
+        }
+        return name;
     }
 
     @Override
@@ -128,6 +139,11 @@ public class PrintCompositeTankSheet extends PrintRecordSheet {
         protected String getRecordSheetTitle() {
             return "";
         }
+
+        @Override
+        public String getSheetName() {
+            return "";
+        }
     }
 
     private static class VTOLTables extends PrintRecordSheet {
@@ -143,6 +159,11 @@ public class PrintCompositeTankSheet extends PrintRecordSheet {
 
         @Override
         protected String getRecordSheetTitle() {
+            return "";
+        }
+
+        @Override
+        public String getSheetName() {
             return "";
         }
     }

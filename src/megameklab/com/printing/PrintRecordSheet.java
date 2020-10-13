@@ -405,6 +405,11 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      * @return The title to use for the record sheet
      */
     protected abstract String getRecordSheetTitle();
+
+    /**
+     * @return The title of the page that would be shown in a table of contents
+     */
+    public abstract String getSheetName();
     
     protected void setTextField(String id, int i) {
         setTextField(id, String.valueOf(i));

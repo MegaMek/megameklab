@@ -14,6 +14,7 @@
 package megameklab.com.printing;
 
 import java.awt.print.*;
+import java.io.File;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 
@@ -24,6 +25,9 @@ import megamek.common.util.EncodeControl;
 import megameklab.com.MegaMekLab;
 import org.apache.pdfbox.io.MemoryUsageSetting;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDDocumentOutline;
+import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlineItem;
 
 /**
  * Renders one or more record sheets as a background task. The task is created using
@@ -175,15 +179,29 @@ public abstract class RecordSheetTask extends SwingWorker<Void, Integer> {
         public Void doInBackground() throws Exception {
             PDFMergerUtility merger = new PDFMergerUtility();
             merger.setDestinationFileName(fileName);
+            Map<Integer, String> pageNames = new HashMap<>();
             Iterator<PrintRecordSheet> iter = sheets.iterator();
             while (iter.hasNext()) {
                 final PrintRecordSheet rs = iter.next();
+                pageNames.put(rs.getFirstPage(), rs.getSheetName());
                 for (int i = 0; i < rs.getPageCount(); i++) {
                     merger.addSource(rs.exportPDF(i, pageFormat));
                 }
                 iter.remove();
             }
             merger.mergeDocuments(MemoryUsageSetting.setupTempFileOnly());
+
+            PDDocument doc = PDDocument.load(new File(fileName));
+            PDDocumentOutline outline = new PDDocumentOutline();
+            doc.getDocumentCatalog().setDocumentOutline(outline);
+            for (int pageNum : pageNames.keySet()) {
+                PDOutlineItem bookmark = new PDOutlineItem();
+                bookmark.setDestination(doc.getPage(pageNum));
+                bookmark.setTitle(pageNames.get(pageNum));
+                outline.addLast(bookmark);
+            }
+            outline.openNode();
+            doc.save(new File(fileName));
             return null;
         }
     }
