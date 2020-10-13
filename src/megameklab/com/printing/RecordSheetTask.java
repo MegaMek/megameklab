@@ -191,7 +191,9 @@ public abstract class RecordSheetTask extends SwingWorker<Void, Integer> {
             }
             merger.mergeDocuments(MemoryUsageSetting.setupTempFileOnly());
 
-            PDDocument doc = PDDocument.load(new File(fileName));
+            // Load newly created document, add an outline, then write back to the file.
+            File file = new File(fileName);
+            PDDocument doc = PDDocument.load(file);
             PDDocumentOutline outline = new PDDocumentOutline();
             doc.getDocumentCatalog().setDocumentOutline(outline);
             for (Map.Entry<Integer, List<String>> entry : bookmarkNames.entrySet()) {
@@ -203,7 +205,7 @@ public abstract class RecordSheetTask extends SwingWorker<Void, Integer> {
                 }
             }
             outline.openNode();
-            doc.save(new File(fileName));
+            doc.save(file);
             return null;
         }
     }
