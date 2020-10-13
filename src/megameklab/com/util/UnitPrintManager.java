@@ -19,11 +19,9 @@ package megameklab.com.util;
 import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-import java.awt.print.Book;
 import java.awt.print.PageFormat;
 import java.awt.print.PrinterJob;
 import java.io.File;
-import java.io.IOException;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -52,17 +50,11 @@ import megamek.common.MechFileParser;
 import megamek.common.Protomech;
 import megamek.common.Tank;
 import megamek.common.util.EncodeControl;
-import megameklab.com.MegaMekLab;
 import megameklab.com.printing.*;
 import megameklab.com.ui.dialog.MegaMekLabUnitSelectorDialog;
 import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.dialog.UnitPrintQueueDialog;
-import org.apache.avalon.framework.configuration.ConfigurationException;
-import org.apache.batik.transcoder.TranscoderException;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.pdfbox.io.MemoryUsageSetting;
-import org.apache.pdfbox.multipdf.PDFMergerUtility;
-import org.xml.sax.SAXException;
 
 public class UnitPrintManager {
 
@@ -224,7 +216,7 @@ public class UnitPrintManager {
                 }
             } else if (unit instanceof Protomech) {
                 protoList.add((Protomech) unit);
-                if (singlePrint || infList.size() > 3) {
+                if (singlePrint || protoList.size() > 3) {
                     PrintRecordSheet prs = new PrintSmallUnitSheet(protoList, pageCount, options);
                     pageCount += prs.getPageCount();
                     sheets.add(prs);
@@ -262,19 +254,8 @@ public class UnitPrintManager {
         List<PrintRecordSheet> sheets = createSheets(units, singlePrint, options);
         PageFormat pageFormat = new PageFormat();
         pageFormat.setPaper(options.getPaperSize().createPaper());
-        try {
-            PDFMergerUtility merger = new PDFMergerUtility();
-            merger.setDestinationFileName(exportFile.getAbsolutePath());
-            for (PrintRecordSheet rs : sheets) {
-                for (int i = 0; i < rs.getPageCount(); i++) {
-                    merger.addSource(rs.exportPDF(i, pageFormat));
-                }
-            }
-            merger.mergeDocuments(MemoryUsageSetting.setupTempFileOnly());
-        } catch (TranscoderException | SAXException | IOException | ConfigurationException e) {
-            MegaMekLab.getLogger().error(UnitPrintManager.class,
-                    "exportUnits(List<Entity>, File, boolean)", e);
-        }
+        RecordSheetTask task = RecordSheetTask.createExportTask(sheets, pageFormat, exportFile.getAbsolutePath());
+        task.execute(CConfig.getBooleanParam(CConfig.RS_PROGRESS_BAR));
     }
 
     /**
@@ -296,8 +277,6 @@ public class UnitPrintManager {
      */
     public static void printAllUnits(List<Entity> loadedUnits, boolean singlePrint,
                                         RecordSheetOptions options) {
-        Book book = new Book();
-        
         HashPrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
         aset.add(options.getPaperSize().sizeName);
         aset.add(options.getPaperSize().printableArea);
@@ -312,19 +291,15 @@ public class UnitPrintManager {
         // ratio of the paper size.
         options.setPaperSize(PaperSize.closestToAspect(pageFormat.getWidth(), pageFormat.getHeight()));
         List<PrintRecordSheet> sheets = createSheets(loadedUnits, singlePrint, options);
-        for (PrintRecordSheet sheet : sheets) {
-            book.append(sheet, pageFormat);
-        }
 
-        masterPrintJob.setPageable(book);
         if (loadedUnits.size() > 1) {
             masterPrintJob.setJobName(loadedUnits.get(0).getShortNameRaw() + " etc");
         } else if (loadedUnits.size() > 0) {
             masterPrintJob.setJobName(loadedUnits.get(0).getShortNameRaw());
         }
 
-        PrintTask task = new PrintTask(masterPrintJob, aset);
-        task.execute();
+        RecordSheetTask task = RecordSheetTask.createPrintTask(sheets, masterPrintJob, aset, pageFormat);
+        task.execute(CConfig.getBooleanParam(CConfig.RS_PROGRESS_BAR));
     }
 
     public static JMenu printMenu(final MegaMekLabMainUI parent) {
