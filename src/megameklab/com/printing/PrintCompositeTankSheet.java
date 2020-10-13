@@ -17,7 +17,6 @@
  */
 package megameklab.com.printing;
 
-import megamek.common.Entity;
 import megamek.common.Tank;
 import megamek.common.VTOL;
 import megamek.common.annotations.Nullable;
@@ -27,7 +26,9 @@ import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import java.awt.print.PageFormat;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Creates a single-page record sheet for two vehicles. If only one vehicle is provided,
@@ -67,12 +68,13 @@ public class PrintCompositeTankSheet extends PrintRecordSheet {
     }
 
     @Override
-    public String getSheetName() {
-        String name = tank1.getShortNameRaw();
+    public List<String> getBookmarkNames() {
+        List<String> retVal = new ArrayList<>();
+        retVal.add(tank1.getShortNameRaw());
         if ((tank2 != null) && !tank2.getShortNameRaw().equals(tank1.getShortNameRaw())) {
-            name += tank2.getShortNameRaw();
+            retVal.add(tank2.getShortNameRaw());
         }
-        return name;
+        return retVal;
     }
 
     @Override
@@ -141,8 +143,8 @@ public class PrintCompositeTankSheet extends PrintRecordSheet {
         }
 
         @Override
-        public String getSheetName() {
-            return "";
+        public List<String> getBookmarkNames() {
+            return Collections.emptyList();
         }
     }
 
@@ -163,8 +165,8 @@ public class PrintCompositeTankSheet extends PrintRecordSheet {
         }
 
         @Override
-        public String getSheetName() {
-            return "";
+        public List<String> getBookmarkNames() {
+            return Collections.emptyList();
         }
     }
 }

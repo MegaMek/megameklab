@@ -71,8 +71,8 @@ public abstract class PrintEntity extends PrintRecordSheet {
     public abstract Entity getEntity();
 
     @Override
-    public String getSheetName() {
-        return getEntity().getShortNameRaw();
+    public List<String> getBookmarkNames() {
+        return Collections.singletonList(getEntity().getShortNameRaw());
     }
     
     /**

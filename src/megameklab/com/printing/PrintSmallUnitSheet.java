@@ -58,8 +58,8 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
     }
 
     @Override
-    public String getSheetName() {
-        return entities.stream().map(Entity::getShortNameRaw).distinct().collect(Collectors.joining(", "));
+    public List<String> getBookmarkNames() {
+        return entities.stream().map(Entity::getShortNameRaw).distinct().collect(Collectors.toList());
     }
 
     @Override

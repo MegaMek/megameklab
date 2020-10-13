@@ -179,11 +179,11 @@ public abstract class RecordSheetTask extends SwingWorker<Void, Integer> {
         public Void doInBackground() throws Exception {
             PDFMergerUtility merger = new PDFMergerUtility();
             merger.setDestinationFileName(fileName);
-            Map<Integer, String> pageNames = new HashMap<>();
+            Map<Integer, List<String>> bookmarkNames = new HashMap<>();
             Iterator<PrintRecordSheet> iter = sheets.iterator();
             while (iter.hasNext()) {
                 final PrintRecordSheet rs = iter.next();
-                pageNames.put(rs.getFirstPage(), rs.getSheetName());
+                bookmarkNames.put(rs.getFirstPage(), rs.getBookmarkNames());
                 for (int i = 0; i < rs.getPageCount(); i++) {
                     merger.addSource(rs.exportPDF(i, pageFormat));
                 }
@@ -194,11 +194,13 @@ public abstract class RecordSheetTask extends SwingWorker<Void, Integer> {
             PDDocument doc = PDDocument.load(new File(fileName));
             PDDocumentOutline outline = new PDDocumentOutline();
             doc.getDocumentCatalog().setDocumentOutline(outline);
-            for (int pageNum : pageNames.keySet()) {
-                PDOutlineItem bookmark = new PDOutlineItem();
-                bookmark.setDestination(doc.getPage(pageNum));
-                bookmark.setTitle(pageNames.get(pageNum));
-                outline.addLast(bookmark);
+            for (Map.Entry<Integer, List<String>> entry : bookmarkNames.entrySet()) {
+                for (String name : entry.getValue()) {
+                    PDOutlineItem bookmark = new PDOutlineItem();
+                    bookmark.setDestination(doc.getPage(entry.getKey()));
+                    bookmark.setTitle(name);
+                    outline.addLast(bookmark);
+                }
             }
             outline.openNode();
             doc.save(new File(fileName));
