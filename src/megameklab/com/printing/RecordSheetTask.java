@@ -13,12 +13,8 @@
  */
 package megameklab.com.printing;
 
-import java.awt.print.Book;
-import java.awt.print.PageFormat;
-import java.awt.print.PrinterJob;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.awt.print.*;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 import javax.print.attribute.PrintRequestAttributeSet;
@@ -54,7 +50,8 @@ public abstract class RecordSheetTask extends SwingWorker<Void, Integer> {
     /**
      * Creates a task for rendering a list of record sheets as a print job
      *
-     * @param sheets     The sheets to render
+     * @param sheets     The sheets to render The contents are removed as each sheet is
+     *                   processed to avoid running out of memory on large jobs.
      * @param job        The print job
      * @param aset       A set of attributes to use for printing
      * @param pageFormat The page format
@@ -138,10 +135,8 @@ public abstract class RecordSheetTask extends SwingWorker<Void, Integer> {
             this.job = job;
             this.aset = aset;
 
-            Book book = new Book();
-            for (PrintRecordSheet sheet : sheets) {
-                book.append(sheet, pageFormat);
-            }
+            RSBook book = new RSBook(sheets, pageFormat);
+            sheets.clear();
             job.setPageable(book);
         }
 
@@ -190,6 +185,43 @@ public abstract class RecordSheetTask extends SwingWorker<Void, Integer> {
             }
             merger.mergeDocuments(MemoryUsageSetting.setupTempFileOnly());
             return null;
+        }
+    }
+
+    /**
+     * Implementation of Pageable thar removes the record sheet objects as they are processed
+     * (when the next one is accessed) to conserve memory.
+     */
+    private static class RSBook implements Pageable {
+        private final TreeMap<Integer, PrintRecordSheet> pages = new TreeMap<>();
+        private final PageFormat pageFormat;
+
+        RSBook(List<PrintRecordSheet> sheets, PageFormat pageFormat) {
+            this.pageFormat = pageFormat;
+            for (PrintRecordSheet rs : sheets) {
+                for (int p = rs.getFirstPage(); p < rs.getFirstPage() + rs.getPageCount(); p++) {
+                    pages.put(p, rs);
+                }
+            }
+        }
+
+        @Override
+        public int getNumberOfPages() {
+            return pages.values().stream().mapToInt(PrintRecordSheet::getPageCount).sum();
+        }
+
+        @Override
+        public PageFormat getPageFormat(int pageIndex) throws IndexOutOfBoundsException {
+            return pageFormat;
+        }
+
+        @Override
+        public Printable getPrintable(int pageIndex) throws IndexOutOfBoundsException {
+            PrintRecordSheet rs = pages.get(pageIndex);
+            while (pages.firstKey() < rs.getFirstPage()) {
+                pages.remove(pages.firstKey());
+            }
+            return rs;
         }
     }
 }
