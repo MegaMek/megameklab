@@ -133,10 +133,11 @@ public class UnitUtil {
                         || eq.hasFlag(MiscType.F_BLUE_SHIELD)
                         || eq.hasFlag(MiscType.F_MAST_MOUNT)
                         || eq.hasFlag(MiscType.F_SCM)
+                        || (eq.hasFlag(MiscType.F_RAM_PLATE)
                         || (eq.hasFlag(MiscType.F_JUMP_JET) && eq.hasFlag(MiscType.F_PROTOMECH_EQUIPMENT))
                         || (eq.hasFlag(MiscType.F_UMU) && eq.hasFlag(MiscType.F_PROTOMECH_EQUIPMENT))
                         || (eq.hasFlag(MiscType.F_MAGNETIC_CLAMP) && eq.hasFlag(MiscType.F_PROTOMECH_EQUIPMENT))
-                        || (eq.hasFlag(MiscType.F_MASC) && eq.hasFlag(MiscType.F_PROTOMECH_EQUIPMENT)));
+                        || (eq.hasFlag(MiscType.F_MASC) && eq.hasFlag(MiscType.F_PROTOMECH_EQUIPMENT))));
     }
 
     /**
@@ -615,25 +616,22 @@ public class UnitUtil {
     }
 
     /**
-     * Checks if EquipmentType is a Mech Physical weapon
+     * Checks if EquipmentType is a Mech Physical weapon.
      *
-     * @param eq
-     * @return
+     * @param eq The equipment to check
+     * @return   Whether the equipment is a physical weapon
      */
     public static boolean isPhysicalWeapon(EquipmentType eq) {
-
-        if ((eq instanceof MiscType)
-                && ((eq.hasFlag(MiscType.F_CLUB)
-                        || eq.hasFlag(MiscType.F_HAND_WEAPON) || eq
-                            .hasFlag(MiscType.F_TALON)))) {
-            if (eq.hasFlag(MiscType.F_CLUB)
-                    && ((eq.hasSubType(MiscType.S_CLUB) || eq
-                            .hasSubType(MiscType.S_TREE_CLUB)))) {
-                return false;
-            }
-            return true;
+        if (!(eq instanceof MiscType)) {
+            return false;
         }
-        return false;
+        if (eq.hasFlag(MiscType.F_CLUB)) {
+            // We don't want makeshift clubs picked up on the battlefield showing up as construction options
+            return !eq.hasSubType(MiscType.S_CLUB | MiscType.S_TREE_CLUB);
+        }
+        return eq.hasFlag(MiscType.F_HAND_WEAPON)
+                || eq.hasFlag(MiscType.F_TALON)
+                || eq.hasFlag(MiscType.F_RAM_PLATE);
     }
 
     /**
@@ -1943,6 +1941,12 @@ public class UnitUtil {
                 locations.add(Mech.LOC_LT);
                 locations.add(Mech.LOC_RT);
                 blocks = 2;
+            } else if (equip.hasFlag(MiscType.F_RAM_PLATE)) {
+                // one block in each torso
+                locations.add(Mech.LOC_LT);
+                locations.add(Mech.LOC_RT);
+                locations.add(Mech.LOC_CT);
+                blocks = 3;
             } else if ((equip.hasFlag(MiscType.F_VOIDSIG)
                     || equip.hasFlag(MiscType.F_NULLSIG) || equip
                         .hasFlag(MiscType.F_BLUE_SHIELD))) {
@@ -2820,7 +2824,7 @@ public class UnitUtil {
             if (eq.hasFlag(MiscType.F_BOMB_BAY) && !(unit instanceof LandAirMech)) {
                 return false;
             }
-            if (eq.hasFlag(MiscType.F_QUAD_TURRET)
+            if ((eq.hasFlag(MiscType.F_QUAD_TURRET) || eq.hasFlag(MiscType.F_RAM_PLATE))
                     && !(unit instanceof QuadMech)) {
                 return false;
             }

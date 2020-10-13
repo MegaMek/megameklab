@@ -209,7 +209,7 @@ public abstract class RecordSheetTask extends SwingWorker<Void, Integer> {
     }
 
     /**
-     * Implementation of Pageable thar removes the record sheet objects as they are processed
+     * Implementation of Pageable that removes the record sheet objects as they are processed
      * (when the next one is accessed) to conserve memory.
      */
     private static class RSBook implements Pageable {
