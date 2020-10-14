@@ -14,6 +14,7 @@ VERSION HISTORY:
 + Issue #784: Sub-Cap Ammo weight discrepancy
 + PR #801: Printing progress bar and memory use improvement
 + Issue #342: Incomplete queued print
++ PR #803: Add an outline to PDF output
 
 0.47.11 (2020-10-04 2100 UTC)
 + Issue #768: Patchwork armor error
