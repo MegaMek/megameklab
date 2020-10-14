@@ -25,6 +25,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Lays out a record sheet for infantry, BA, or protomechs
@@ -54,6 +55,11 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
      */
     public PrintSmallUnitSheet(Collection<? extends Entity> entities, int startPage) {
         this(entities, startPage, new RecordSheetOptions());
+    }
+
+    @Override
+    public List<String> getBookmarkNames() {
+        return entities.stream().map(Entity::getShortNameRaw).distinct().collect(Collectors.toList());
     }
 
     @Override

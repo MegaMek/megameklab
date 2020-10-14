@@ -69,6 +69,11 @@ public abstract class PrintEntity extends PrintRecordSheet {
     }
 
     public abstract Entity getEntity();
+
+    @Override
+    public List<String> getBookmarkNames() {
+        return Collections.singletonList(getEntity().getShortNameRaw());
+    }
     
     /**
      * When printing from a MUL the pilot data is filled in unless the option has been disabled. This

@@ -56,6 +56,7 @@ import java.io.*;
 import java.net.URLConnection;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -405,6 +406,13 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      * @return The title to use for the record sheet
      */
     protected abstract String getRecordSheetTitle();
+
+    /**
+     * Used to build an outline of a PDF document
+     *
+     * @return Names of outline entries
+     */
+    public abstract List<String> getBookmarkNames();
     
     protected void setTextField(String id, int i) {
         setTextField(id, String.valueOf(i));

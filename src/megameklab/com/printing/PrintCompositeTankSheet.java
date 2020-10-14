@@ -26,6 +26,9 @@ import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import java.awt.print.PageFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Creates a single-page record sheet for two vehicles. If only one vehicle is provided,
@@ -62,6 +65,16 @@ public class PrintCompositeTankSheet extends PrintRecordSheet {
      */
     public PrintCompositeTankSheet(Tank tank1, @Nullable Tank tank2, int startPage) {
         this(tank1, tank2, startPage, new RecordSheetOptions());
+    }
+
+    @Override
+    public List<String> getBookmarkNames() {
+        List<String> retVal = new ArrayList<>();
+        retVal.add(tank1.getShortNameRaw());
+        if ((tank2 != null) && !tank2.getShortNameRaw().equals(tank1.getShortNameRaw())) {
+            retVal.add(tank2.getShortNameRaw());
+        }
+        return retVal;
     }
 
     @Override
@@ -128,6 +141,11 @@ public class PrintCompositeTankSheet extends PrintRecordSheet {
         protected String getRecordSheetTitle() {
             return "";
         }
+
+        @Override
+        public List<String> getBookmarkNames() {
+            return Collections.emptyList();
+        }
     }
 
     private static class VTOLTables extends PrintRecordSheet {
@@ -144,6 +162,11 @@ public class PrintCompositeTankSheet extends PrintRecordSheet {
         @Override
         protected String getRecordSheetTitle() {
             return "";
+        }
+
+        @Override
+        public List<String> getBookmarkNames() {
+            return Collections.emptyList();
         }
     }
 }
