@@ -206,6 +206,7 @@ public abstract class RecordSheetTask extends SwingWorker<Void, Integer> {
             }
             outline.openNode();
             doc.save(file);
+            doc.close();
             return null;
         }
     }
