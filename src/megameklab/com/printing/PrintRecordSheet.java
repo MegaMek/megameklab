@@ -344,8 +344,8 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         TranscoderInput input = new TranscoderInput(getSVGDocument());
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         TranscoderOutput transOutput = new TranscoderOutput(output);
-        transcoder.addTranscodingHint(PDFTranscoder.KEY_HEIGHT, (float) (pageFormat.getHeight() / 0.75));
-        transcoder.addTranscodingHint(PDFTranscoder.KEY_WIDTH, (float) (pageFormat.getWidth() / 0.75));
+        // The default for the transcoder is 96 dpi, but the source document is 72 dpi.
+        transcoder.addTranscodingHint(PDFTranscoder.KEY_PIXEL_UNIT_TO_MILLIMETER, 0.352778f);
         transcoder.transcode(input, transOutput);
 
         if (callback != null) {
