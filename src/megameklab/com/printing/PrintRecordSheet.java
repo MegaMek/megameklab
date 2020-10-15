@@ -344,6 +344,8 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         TranscoderInput input = new TranscoderInput(getSVGDocument());
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         TranscoderOutput transOutput = new TranscoderOutput(output);
+        transcoder.addTranscodingHint(PDFTranscoder.KEY_HEIGHT, (float) (pageFormat.getHeight() / 0.75));
+        transcoder.addTranscodingHint(PDFTranscoder.KEY_WIDTH, (float) (pageFormat.getWidth() / 0.75));
         transcoder.transcode(input, transOutput);
 
         if (callback != null) {
