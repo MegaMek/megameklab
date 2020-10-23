@@ -21,10 +21,11 @@ import org.w3c.dom.svg.SVGRectElement;
 
 import java.awt.print.PageFormat;
 import java.io.File;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Lays out a record sheet for infantry, BA, or protomechs
@@ -57,13 +58,15 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
     }
 
     @Override
-    protected void processImage(int startPage, PageFormat pageFormat) {
-        final String METHOD_NAME = "processImage(int, PageFormat)";
+    public List<String> getBookmarkNames() {
+        return entities.stream().map(Entity::getShortNameRaw).distinct().collect(Collectors.toList());
+    }
 
+    @Override
+    protected void processImage(int startPage, PageFormat pageFormat) {
         final Element element = getSVGDocument().getElementById(COPYRIGHT);
         if (element != null) {
-            element.setTextContent(String.format(element.getTextContent(),
-                    Calendar.getInstance().get(Calendar.YEAR)));
+            element.setTextContent(String.format(element.getTextContent(), LocalDate.now().getYear()));
         }
         int count = 0;
         for (Entity entity : entities) {
@@ -71,8 +74,7 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
             if (g != null) {
                 PrintEntity sheet = getBlockFor(entity, count);
                 sheet.createDocument(startPage, pageFormat);
-                g.appendChild(getSVGDocument().importNode(sheet.getSVGDocument()
-                        .getDocumentElement(), true));
+                g.appendChild(getSVGDocument().importNode(sheet.getSVGDocument().getDocumentElement(), true));
                 getSVGDocument().getDocumentElement().appendChild(g);
             }
             count++;

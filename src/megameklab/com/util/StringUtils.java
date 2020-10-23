@@ -18,12 +18,7 @@ package megameklab.com.util;
 
 import java.util.Comparator;
 
-import megamek.common.Entity;
-import megamek.common.EquipmentType;
-import megamek.common.Mech;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
-import megamek.common.WeaponType;
+import megamek.common.*;
 import megamek.common.actions.ClubAttackAction;
 import megamek.common.actions.KickAttackAction;
 import megamek.common.weapons.artillery.ArtilleryCannonWeapon;
@@ -36,8 +31,6 @@ import megamek.common.weapons.battlearmor.CLBALBX;
 import megamek.common.weapons.battlearmor.CLBAPulseLaserMicro;
 import megamek.common.weapons.battlearmor.CLBAPulseLaserSmall;
 import megamek.common.weapons.battlearmor.ISBALaserPulseSmall;
-import megamek.common.weapons.battlearmor.ISBALaserVSPMedium;
-import megamek.common.weapons.battlearmor.ISBALaserVSPSmall;
 import megamek.common.weapons.battlearmor.ISBAPopUpMineLauncher;
 import megamek.common.weapons.defensivepods.BPodWeapon;
 import megamek.common.weapons.flamers.FlamerWeapon;
@@ -45,16 +38,9 @@ import megamek.common.weapons.gaussrifles.HAGWeapon;
 import megamek.common.weapons.gaussrifles.ISHGaussRifle;
 import megamek.common.weapons.gaussrifles.ISSilverBulletGauss;
 import megamek.common.weapons.infantry.InfantryWeapon;
-import megamek.common.weapons.lasers.CLERPulseLaserSmall;
-import megamek.common.weapons.lasers.CLPulseLaserMicro;
-import megamek.common.weapons.lasers.CLPulseLaserSmall;
-import megamek.common.weapons.lasers.ISBombastLaser;
-import megamek.common.weapons.lasers.ISPulseLaserSmall;
-import megamek.common.weapons.lasers.ISVariableSpeedPulseLaserLarge;
-import megamek.common.weapons.lasers.ISVariableSpeedPulseLaserMedium;
-import megamek.common.weapons.lasers.ISVariableSpeedPulseLaserSmall;
-import megamek.common.weapons.lasers.ISXPulseLaserSmall;
+import megamek.common.weapons.lasers.*;
 import megamek.common.weapons.lrms.LRMWeapon;
+import megamek.common.weapons.lrms.LRTWeapon;
 import megamek.common.weapons.lrms.StreakLRMWeapon;
 import megamek.common.weapons.mgs.MGWeapon;
 import megamek.common.weapons.missiles.*;
@@ -68,7 +54,9 @@ import megamek.common.weapons.ppc.CLPlasmaCannon;
 import megamek.common.weapons.ppc.ISPlasmaRifle;
 import megamek.common.weapons.ppc.ISSnubNosePPC;
 import megamek.common.weapons.ppc.PPCWeapon;
+import megamek.common.weapons.prototypes.PrototypeRLWeapon;
 import megamek.common.weapons.srms.SRMWeapon;
+import megamek.common.weapons.srms.SRTWeapon;
 import megamek.common.weapons.srms.StreakSRMWeapon;
 import megamek.common.weapons.tag.TAGWeapon;
 
@@ -96,7 +84,7 @@ public class StringUtils {
         if (mount.getType() instanceof WeaponType) {
             WeaponType weapon = (WeaponType) mount.getType();
             if (weapon instanceof InfantryWeapon) {
-                info = Integer.toString(weapon.getDamage());
+                info = Integer.toString((int) Math.round(((InfantryWeapon) weapon).getInfantryDamage()));
                 if (weapon.hasFlag(WeaponType.F_BALLISTIC)) {
                     info += " (B)";
                 } else if (weapon.hasFlag(WeaponType.F_ENERGY)) {
@@ -127,22 +115,23 @@ public class StringUtils {
             } else if (weapon.getDamage() < 0) {
                 if (weapon instanceof StreakSRMWeapon) {
                     info = "2/Msl [M,C]";
-                } else if ((weapon instanceof SRMWeapon) || (weapon instanceof MekMortarWeapon)) {
+                } else if ((weapon instanceof SRMWeapon) || (weapon instanceof MekMortarWeapon)
+                        || (weapon instanceof SRTWeapon)) {
                     info = "2/Msl [M,C,S]";
                 } else if ((weapon instanceof StreakLRMWeapon)) {
                     info = "1/Msl [M,C]";
-                } else if ((weapon instanceof LRMWeapon)) {
+                } else if ((weapon instanceof LRMWeapon) || (weapon instanceof LRTWeapon)) {
                     info = "1/Msl [M,C,S]";
-                } else if ((weapon instanceof MRMWeapon) || (weapon instanceof RLWeapon)) {
+                } else if ((weapon instanceof MRMWeapon) || (weapon instanceof RLWeapon)
+                        || (weapon instanceof PrototypeRLWeapon)) {
                     info = "1/Msl [M,C]";
                 } else if (weapon instanceof ISSnubNosePPC) {
                     info = "10/8/5 [DE,V]";
-                } else if (weapon instanceof ISBALaserVSPSmall) {
-                    info = "5/4/3 [P,V]";
-                } else if (weapon instanceof ISBALaserVSPMedium) {
-                    info = "9/7/5 [P,V]";
-                } else if (weapon instanceof ISVariableSpeedPulseLaserLarge) {
-                    info = "11/9/7 [P,V]";
+                } else if (weapon instanceof VariableSpeedPulseLaserWeapon) {
+                    info = String.format("%d/%d/%d [P,V]",
+                            weapon.getDamage(weapon.getShortRange()),
+                            weapon.getDamage(weapon.getMediumRange()),
+                            weapon.getDamage(weapon.getLongRange()));
                 } else if (weapon instanceof ISHGaussRifle) {
                     info = "25/20/10 [DB,X]";
                 } else if (weapon instanceof ISPlasmaRifle) {
@@ -266,7 +255,7 @@ public class StringUtils {
         if (mount.getType() instanceof WeaponType) {
             WeaponType weapon = (WeaponType) mount.getType();
             if (weapon instanceof InfantryWeapon) {
-                info = Integer.toString(weapon.getDamage());
+                info = "";
                 if (weapon.hasFlag(WeaponType.F_BALLISTIC)) {
                     info += " (B)";
                 } else if (weapon.hasFlag(WeaponType.F_ENERGY)) {

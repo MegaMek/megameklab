@@ -45,9 +45,6 @@ import megameklab.com.ui.view.listeners.CVBuildListener;
  */
 public class CVChassisView extends BuildView implements ActionListener, ChangeListener {
     
-    /**
-     * 
-     */
     private static final long serialVersionUID = -5860627963911641227L;
 
     List<CVBuildListener> listeners = new CopyOnWriteArrayList<>();
@@ -98,10 +95,11 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
     private final CustomComboBox<Integer> cbTurrets = new CustomComboBox<>(i -> turretNames[i]);
     private final JSpinner spnChassisTurretWt = new JSpinner(spnTurretWtModel);
     private final JSpinner spnChassisTurret2Wt = new JSpinner(spnTurret2WtModel);
+    private final JSpinner spnExtraSeats = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
     
     private final List<JComponent> omniComponents = new ArrayList<>();
 
-    private ITechManager techManager;
+    private final ITechManager techManager;
     private int engineRating;
     private boolean isTrailer;
 
@@ -184,6 +182,17 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridy++;
 
         gbc.gridx = 0;
+        gbc.gridwidth = 2;
+        add(createLabel(resourceMap.getString("CVChassisView.spnExtraSeats.text"), labelSize), gbc);
+        gbc.gridx = 2;
+        gbc.gridwidth = 2;
+        setFieldSize(spnExtraSeats, spinnerSize);
+        spnExtraSeats.setToolTipText("CVChassisView.spnExtraSeats.tooltip");
+        add(spnExtraSeats, gbc);
+        spnExtraSeats.addChangeListener(this);
+        gbc.gridy++;
+
+        gbc.gridx = 0;
         gbc.gridwidth = 1;
         add(createLabel(resourceMap.getString("CVChassisView.cbTurrets.text"), labelSize), gbc); //$NON-NLS-1$
         gbc.gridx = 1;
@@ -247,6 +256,7 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
         chkTrailer.setEnabled(tank.getMovementMode().equals(EntityMovementMode.WHEELED)
                 || tank.getMovementMode().equals(EntityMovementMode.TRACKED));
         chkControlSystems.setEnabled(isTrailer);
+        spnExtraSeats.setValue(tank.getExtraCrewSeats());
         if (!tank.hasNoDualTurret()) {
             cbTurrets.setSelectedItem(TURRET_DUAL);
         } else if (!tank.hasNoTurret()) {
@@ -466,6 +476,8 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
                 || (e.getSource() == spnChassisTurret2Wt)){
             listeners.forEach(l -> l.turretBaseWtChanged(spnTurretWtModel.getNumber().doubleValue(),
                     spnTurret2WtModel.getNumber().doubleValue()));
+        } else if (e.getSource() == spnExtraSeats) {
+            listeners.forEach(l -> l.extraSeatsChanged((int) spnExtraSeats.getValue()));
         }
     }
 

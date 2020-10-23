@@ -109,37 +109,30 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                 CriticalSlot cs = getCrit();
 
                 Mounted mount = getMounted();
-                if ((e.getModifiersEx() & InputEvent.ALT_DOWN_MASK) != 0) {
-                    changeWeaponFacing(!mount.isRearMounted());
-                    return;
-                }
-
-                if ((e.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) != 0) {
-                    changeOmniMounting(!mount.isOmniPodMounted());
-                    return;
-                }                
-                
                 if (mount != null) {
+                    if ((e.getModifiersEx() & InputEvent.ALT_DOWN_MASK) != 0) {
+                        changeWeaponFacing(!mount.isRearMounted());
+                        return;
+                    }
+
+                    if ((e.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) != 0) {
+                        changeOmniMounting(!mount.isOmniPodMounted());
+                        return;
+                    }
+
                     popup.setAutoscrolls(true);
                     JMenuItem info;
-                    if (!UnitUtil.isFixedLocationSpreadEquipment(mount
-                            .getType())) {
+                    if (!UnitUtil.isFixedLocationSpreadEquipment(mount.getType())) {
                         info = new JMenuItem("Remove " + mount.getName());
-                        info.addActionListener(new ActionListener() {
-                            public void actionPerformed(ActionEvent e) {
-                                removeCrit();
-                            }
-                        });
+                        info.addActionListener(ev -> removeCrit());
                         popup.add(info);
                     }
 
-                    info = new JMenuItem("Delete " + mount.getName());
-                    info.addActionListener(new ActionListener() {
-                        public void actionPerformed(ActionEvent e) {
-                            removeMount();
-                        }
-                    });
-                    popup.add(info);
+                    if (!UnitUtil.isArmorOrStructure(mount.getType())) {
+                        info = new JMenuItem("Delete " + mount.getName());
+                        info.addActionListener(ev -> removeMount());
+                        popup.add(info);
+                    }
                     if (getUnit().hasWorkingMisc(MiscType.F_SPONSON_TURRET)
                             && ((mount.getLocation() == Tank.LOC_LEFT) || (mount
                                     .getLocation() == Tank.LOC_RIGHT))) {

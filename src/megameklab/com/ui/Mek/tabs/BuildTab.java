@@ -122,7 +122,7 @@ public class BuildTab extends ITab implements ActionListener {
                 }
 
                 int continuousNumberOfCrits = UnitUtil.getHighestContinuousNumberOfCrits(getMech(), location);
-                int critsUsed = UnitUtil.getCritsUsed(getMech(), mount.getType());
+                int critsUsed = UnitUtil.getCritsUsed(mount);
                 if (continuousNumberOfCrits < critsUsed) {
                     continue;
                 }

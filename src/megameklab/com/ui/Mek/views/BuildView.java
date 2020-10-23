@@ -280,9 +280,9 @@ public class BuildView extends IView implements ActionListener, MouseListener {
             JMenuItem item;
 
             final int selectedRow = equipmentTable.rowAtPoint(e.getPoint());
-            Mounted eq = (Mounted)equipmentTable.getModel().getValueAt(selectedRow, CriticalTableModel.EQUIPMENT);
+            Mounted eq = (Mounted) equipmentTable.getModel().getValueAt(selectedRow, CriticalTableModel.EQUIPMENT);
 
-            final int totalCrits = UnitUtil.getCritsUsed(getMech(), eq.getType());
+            final int totalCrits = UnitUtil.getCritsUsed(eq);
             String[] locations = getMech().getLocationNames();
             String[] abbrLocations = getMech().getLocationAbbrs();
 
@@ -400,8 +400,8 @@ public class BuildView extends IView implements ActionListener, MouseListener {
     }
 
     private void jMenuLoadSplitComponent_actionPerformed(int location, int secondaryLocation, int primarySlots, int selectedRow) {
-        Mounted eq = (Mounted)equipmentTable.getModel().getValueAt(selectedRow, CriticalTableModel.EQUIPMENT);
-        int crits = UnitUtil.getCritsUsed(getMech(), eq.getType());
+        Mounted eq = (Mounted) equipmentTable.getModel().getValueAt(selectedRow, CriticalTableModel.EQUIPMENT);
+        int crits = UnitUtil.getCritsUsed(eq);
         int openSlots = Math.min(primarySlots, UnitUtil.getHighestContinuousNumberOfCrits(getMech(), location));
         eq.setSecondLocation(secondaryLocation);
 

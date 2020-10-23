@@ -46,7 +46,6 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
 import megamek.client.ui.swing.UnitLoadingDialog;
-import megamek.client.ui.swing.UnitSelectorDialog;
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
 import megamek.common.loaders.BLKFile;
@@ -55,6 +54,7 @@ import megamek.common.util.EncodeControl;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.dialog.LoadingDialog;
+import megameklab.com.ui.dialog.MegaMekLabUnitSelectorDialog;
 
 public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
 
@@ -531,7 +531,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
     private void jMenuGetUnitBVFromCache_actionPerformed() {
         UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(parentFrame);
         unitLoadingDialog.setVisible(true);
-        UnitSelectorDialog viewer = new UnitSelectorDialog(parentFrame, unitLoadingDialog, true);
+        MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(parentFrame, unitLoadingDialog);
 
         Entity tempEntity = viewer.getChosenEntity();
         if(null == tempEntity) {
@@ -545,7 +545,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
     private void jMenuGetUnitValidationFromCache_actionPerformed() {
         UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(parentFrame);
         unitLoadingDialog.setVisible(true);
-        UnitSelectorDialog viewer = new UnitSelectorDialog(parentFrame, unitLoadingDialog, true);
+        MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(parentFrame, unitLoadingDialog);
 
         Entity tempEntity = viewer.getChosenEntity();
         if(null == tempEntity) {
@@ -558,7 +558,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
     private void jMenuGetUnitSpecsFromCache_actionPerformed() {
         UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(parentFrame);
         unitLoadingDialog.setVisible(true);
-        UnitSelectorDialog viewer = new UnitSelectorDialog(parentFrame, unitLoadingDialog, true);
+        MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(parentFrame, unitLoadingDialog);
 
         Entity tempEntity = viewer.getChosenEntity();
         if(null == tempEntity) {
@@ -571,7 +571,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
     private void jMenuGetUnitBreakdownFromCache_actionPerformed() {
         UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(parentFrame);
         unitLoadingDialog.setVisible(true);
-        UnitSelectorDialog viewer = new UnitSelectorDialog(parentFrame, unitLoadingDialog, true);
+        MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(parentFrame, unitLoadingDialog);
 
         Entity tempEntity = viewer.getChosenEntity();
         if(null == tempEntity) {
@@ -584,7 +584,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
     private void jMenuGetUnitWeightBreakdownFromCache_actionPerformed() {
         UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(parentFrame);
         unitLoadingDialog.setVisible(true);
-        UnitSelectorDialog viewer = new UnitSelectorDialog(parentFrame, unitLoadingDialog, true);
+        MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(parentFrame, unitLoadingDialog);
 
         Entity tempEntity = viewer.getChosenEntity();
         if(null == tempEntity) {
@@ -915,19 +915,19 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         if (en instanceof Tank) {
             parentFrame.createNewUnit(Entity.ETYPE_TANK);
         } else if (en instanceof Mech) {
-            parentFrame.createNewUnit(Entity.ETYPE_BIPED_MECH, ((Mech)en).isPrimitive(), ((Mech)en).isIndustrial());
+            parentFrame.createNewUnit(Entity.ETYPE_BIPED_MECH, en.isPrimitive(), ((Mech)en).isIndustrial());
         } else if (en.hasETypeFlag(Entity.ETYPE_DROPSHIP)) {
-            parentFrame.createNewUnit(Entity.ETYPE_DROPSHIP);
+            parentFrame.createNewUnit(Entity.ETYPE_DROPSHIP, en.isPrimitive());
         } else if (en.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)) {
-            parentFrame.createNewUnit(Entity.ETYPE_SMALL_CRAFT, ((Aero)en).isPrimitive());
+            parentFrame.createNewUnit(Entity.ETYPE_SMALL_CRAFT, en.isPrimitive());
         } else if (en.hasETypeFlag(Entity.ETYPE_SPACE_STATION)) {
             parentFrame.createNewUnit(Entity.ETYPE_SPACE_STATION);
         } else if (en.hasETypeFlag(Entity.ETYPE_WARSHIP)) {
-            parentFrame.createNewUnit(Entity.ETYPE_WARSHIP, ((Aero)en).isPrimitive());
+            parentFrame.createNewUnit(Entity.ETYPE_WARSHIP, en.isPrimitive());
         } else if (en.hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
             parentFrame.createNewUnit(Entity.ETYPE_JUMPSHIP);
         } else if (parentFrame.getEntity() instanceof Aero) {
-            parentFrame.createNewUnit(Entity.ETYPE_AERO, ((Aero)en).isPrimitive());
+            parentFrame.createNewUnit(Entity.ETYPE_AERO, en.isPrimitive());
         } else if (parentFrame.getEntity() instanceof BattleArmor) {
             parentFrame.createNewUnit(Entity.ETYPE_BATTLEARMOR);
         } else if (parentFrame.getEntity() instanceof Infantry) {
@@ -1120,7 +1120,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
     private void loadUnit() {
         UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(parentFrame);
         unitLoadingDialog.setVisible(true);
-        UnitSelectorDialog viewer = new UnitSelectorDialog(parentFrame, unitLoadingDialog, true);
+        MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(parentFrame, unitLoadingDialog);
 
         Entity newUnit = viewer.getChosenEntity();
         viewer.setVisible(false);

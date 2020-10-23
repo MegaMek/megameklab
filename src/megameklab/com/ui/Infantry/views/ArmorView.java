@@ -309,7 +309,7 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
 
     public void refresh() {
         removeAllListeners();
-        armorValue.setValue((double)getInfantry().getDamageDivisor());
+        armorValue.setValue((double)getInfantry().getArmorDamageDivisor());
         chEncumber.setSelected(getInfantry().isArmorEncumbering());
         chSpaceSuit.setSelected(getInfantry().hasSpaceSuit());
         chDEST.setSelected(getInfantry().hasDEST());
@@ -359,7 +359,7 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
             }
         } else if (arg0.getSource().equals(btnRemoveArmor)) {
             getInfantry().setArmorKit(null);
-            getInfantry().setDamageDivisor(1.0);
+            getInfantry().setArmorDamageDivisor(1.0);
             getInfantry().setArmorEncumbering(false);
             getInfantry().setSpaceSuit(false);
             getInfantry().setDEST(false);
@@ -417,7 +417,7 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
     public void stateChanged(ChangeEvent e) {
         JSpinner field = (JSpinner) e.getSource();
         double value = (Double) field.getModel().getValue();      
-        getInfantry().setDamageDivisor(value);
+        getInfantry().setArmorDamageDivisor(value);
         if (refresh != null) {
             refresh.refreshStructure();
             refresh.refreshStatus();

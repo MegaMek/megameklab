@@ -71,10 +71,10 @@ public enum PaperSize {
     /**
      * Creates a {@link Paper} instance with the provided margins. Units are in 1/72 inches.
      *
-     * @param left The left margin
-     * @param left The right margin
-     * @param left The top margin
-     * @param left The bottom margin
+     * @param left   The left margin
+     * @param right  The right margin
+     * @param top    The top margin
+     * @param bottom The bottom margin
      * @return A Paper for use with a {@link java.awt.print.PageFormat PageFormat}
      */
     public Paper createPaper(int left, int top, int right, int bottom) {

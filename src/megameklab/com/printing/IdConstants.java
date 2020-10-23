@@ -27,6 +27,7 @@ public interface IdConstants {
     String FOOTER = "footer";
     String COPYRIGHT = "tspanCopyright";
     String TITLE = "title";
+    String UNIT_SCALE = "unitScale";
 
     String TYPE = "type";
     String TYPE2 = "type2";
@@ -93,6 +94,7 @@ public interface IdConstants {
 
     String ARMOR_TYPE = "armorType";
     String ARMOR_TYPE_2 = "armorType2";
+    String STRUCTURE_TYPE = "structureType";
     String PATCHWORK = "patchwork";
     String TEXT_ARMOR = "textArmor_";
     String TEXT_IS = "textIS_";
@@ -146,6 +148,7 @@ public interface IdConstants {
     String FIELD_GUN_QTY = "field_gun_qty";
     String FIELD_GUN_TYPE = "field_gun_type";
     String FIELD_GUN_DMG = "field_gun_dmg";
+    String FIELD_GUN_DMG_2 = "field_gun_dmg_2";
     String FIELD_GUN_MIN_RANGE = "field_gun_min_range";
     String FIELD_GUN_SHORT = "field_gun_short";
     String FIELD_GUN_MED = "field_gun_med";
@@ -170,6 +173,8 @@ public interface IdConstants {
     String CHECK_AP = "checkAp";
     String SUIT = "suit";
     String PIPS = "pips_";
+    String RANGE_IN_HEXES = "rangeInHexes";
+    String RANGE = "range_";
 
     String PROTOMECH_INDEX = "protomechIndex";
     String MAIN_GUN_ARMOR = "armor_MG";
@@ -177,4 +182,5 @@ public interface IdConstants {
     String MAIN_GUN_TEXT = "text_MG";
     String TORSO_WEAPON = "torsoWeapon_";
     String MAG_CLAMP_NOTE = "magClampNote";
+    String MP_GROUND = "mpGround";
 }

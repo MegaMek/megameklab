@@ -644,7 +644,7 @@
                                                                       ><path d="M 3.000,69.000 L 219.400,69.000" stroke-width="1.932" stroke-linejoin="round" stroke="#000000"
                                                                       /><text x="3.000" y="79.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal" textLength="121.508" lengthAdjust="spacingAndGlyphs"
                                                                       >Weapons &amp; Equipment Inventory</text
-                                                                      ><text x="171.132" y="79.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal" textLength="19.920" lengthAdjust="spacingAndGlyphs"
+                                                                      ><text fill="#231f20" x="171.132" id="unitScale" y="79.000" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal" text-anchor="start"
                                                                       >(hexes)</text
                                                                       ><rect fill="none" x="3.000" width="216.400" id="inventory" height="194.143" y="79.000"
                                                                       /><path d="M 3.000,275.143 L 219.400,275.143" stroke-width="1.932" stroke-linejoin="round" stroke="#000000"
@@ -2064,7 +2064,7 @@
                                                                           /><text x="74.117" y="8.438" fill="#ffffff" text-anchor="middle" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal" textLength="127.941" lengthAdjust="spacingAndGlyphs"
                                                                           >INTERNAL STRUCTURE DIAGRAM</text
                                                                         ></g
-                                                                        ><g transform="matrix(1.024 0 0 1.024 8.718 12.250)"
+                                                                        ><g transform="matrix(0.981 0 0 0.981 12.017 12.250)"
                                                                         >
 <g id="internal_diagram_tripod" transform="matrix(1,0,0,-1,-390.22409,379.2819)"
                                                                           ><g id="g3654" transform="translate(477.6598,215.3208)"
@@ -2371,12 +2371,15 @@
 <text x="446.22" y="535.60" id="textIS_CL" font-weight="bold" text-anchor="middle"
                                                                                 >( 0 )</text
                                                                                 >
+    <text x="496.04" font-size="6.76" y="564.26" text-anchor="middle" style="mml-field-width=45" id="structureType" font-weight="bold"
+                                                                                >Standard</text
+                                                                                >
 </g
                                                                               ></g
                                                                             ></g
                                                                             >
 </g
-                                                                            ><g id="canonStructurePips" transform="matrix (0.990 0 0 0.990 -387.422,-386.085)"
+                                                                            ><g id="canonStructurePips" transform="matrix (0.947 0 0 0.947 -367.215,-365.407)"
                                                                           /></g
                                                                           ><g transform="translate (384.000 553.500)"
                                                                           ><g

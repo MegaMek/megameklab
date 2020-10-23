@@ -15,6 +15,7 @@ package megameklab.com.printing.reference;
 
 import megamek.common.*;
 import megameklab.com.printing.PrintEntity;
+import megameklab.com.util.CConfig;
 import org.apache.batik.util.SVGConstants;
 
 /**
@@ -22,6 +23,9 @@ import org.apache.batik.util.SVGConstants;
  */
 public class MekVeeToHitMods extends ReferenceTable {
     private final Entity entity;
+
+    /** The beginning of each range of hex counts for target movement mods */
+    private static final int[] TARGET_MOVEMENT_RANGES = {0, 3, 5, 7, 10, 18, 25};
 
     public MekVeeToHitMods(PrintEntity sheet) {
         super(sheet, 0.02, 0.08, 0.8);
@@ -81,24 +85,41 @@ public class MekVeeToHitMods extends ReferenceTable {
 
     private void addTerrainMods() {
         addRow(bundle.getString("terrain"), "", "");
-        addRow("", bundle.getString("lightWoods"), "+1/hex");
-        addRow("", bundle.getString("heavyWoods"), "+2/hex");
+        String hexName;
+        if (CConfig.scaleUnits().equals(CConfig.RSScale.HEXES)) {
+            hexName = "hex";
+        } else {
+            hexName = CConfig.getIntParam(CConfig.RS_SCALE_FACTOR)
+                    + CConfig.scaleUnits().abbreviation;
+        }
+        addRow("", bundle.getString("lightWoods"), "+1/" + hexName);
+        addRow("", bundle.getString("heavyWoods"), "+2/" + hexName);
         addRow("", bundle.getString("partialCover"), "+1");
     }
 
     private void addTargetMods() {
         addRow(bundle.getString("target"), "", "");
-        addRow("", bundle.getString("proneAdjacent"), "-2");
+        if (CConfig.scaleUnits().equals(CConfig.RSScale.HEXES)) {
+            addRow("", bundle.getString("proneAdjacent"), "-2");
+        } else {
+            addRow("", bundle.getString("proneBasesToBase"), "-2");
+        }
         addRow("", bundle.getString("proneOther"), "+1");
         addRow("", bundle.getString("immobile"), "-4");
         addRow("", bundle.getString("skidding"), "-2");
-        addRow("", String.format(bundle.getString("movedRange"), 0, 2), "0");
-        addRow("", String.format(bundle.getString("movedRange"), 3, 4), "+1");
-        addRow("", String.format(bundle.getString("movedRange"), 5, 6), "+2");
-        addRow("", String.format(bundle.getString("movedRange"), 7, 9), "+3");
-        addRow("", String.format(bundle.getString("movedRange"), 10, 17), "+4");
-        addRow("", String.format(bundle.getString("movedRange"), 18, 24), "+5");
-        addRow("", String.format(bundle.getString("movedFinal"), 25), "+6");
+
+        final int scale = CConfig.getIntParam(CConfig.RS_SCALE_FACTOR);
+        final String units = CConfig.scaleUnits().shortName();
+        for (int i = 0; i < TARGET_MOVEMENT_RANGES.length; i++) {
+            if (i < TARGET_MOVEMENT_RANGES.length - 1) {
+                addRow("", String.format(bundle.getString("movedRange"),
+                        TARGET_MOVEMENT_RANGES[i] * scale, TARGET_MOVEMENT_RANGES[i + 1] * scale - 1,
+                        units), String.format("%+d", i));
+            } else {
+                addRow("", String.format(bundle.getString("movedFinal"),
+                        TARGET_MOVEMENT_RANGES[i] * scale, units), String.format("%+d", i));
+            }
+        }
         addRow("", bundle.getString("jumped"), "+1");
         if (!(entity instanceof Infantry)) {
             addRow("", bundle.getString("baTarget"), "+1");

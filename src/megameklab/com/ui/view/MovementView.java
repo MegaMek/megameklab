@@ -17,10 +17,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
-import java.util.StringJoiner;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.swing.JLabel;
@@ -326,7 +323,7 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
     
     public void refresh() {
         if (cbJumpType.isVisible()) {
-            EquipmentType prev = (EquipmentType)cbJumpType.getSelectedItem();
+            EquipmentType prev = (EquipmentType) cbJumpType.getSelectedItem();
             cbJumpType.removeActionListener(this);
             cbJumpType.removeAllItems();
             for (EquipmentType eq : TestEntity.validJumpJets(etype, industrial)) {
@@ -339,7 +336,8 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
             if (cbJumpType.getModel().getSize() > 0) {
                 spnJump.setEnabled(true);
                 cbJumpType.setEnabled(true);
-                if ((cbJumpType.getSelectedIndex() < 0)) {
+                if ((cbJumpType.getSelectedIndex() < 0)
+                        || !Objects.equals(cbJumpType.getSelectedItem(), prev)) {
                     cbJumpType.setSelectedIndex(0);
                 }
             } else {

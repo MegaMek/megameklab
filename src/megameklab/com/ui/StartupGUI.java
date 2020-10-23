@@ -37,7 +37,6 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
 import megamek.client.ui.swing.UnitLoadingDialog;
-import megamek.client.ui.swing.UnitSelectorDialog;
 import megamek.client.ui.swing.widget.MegamekButton;
 import megamek.client.ui.swing.widget.SkinSpecification;
 import megamek.client.ui.swing.widget.SkinXMLHandler;
@@ -54,9 +53,10 @@ import megamek.common.Protomech;
 import megamek.common.Tank;
 import megamek.common.util.EncodeControl;
 import megamek.common.util.ImageUtil;
-import megamek.common.util.MegaMekFile;
+import megamek.common.util.fileUtils.MegaMekFile;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.dialog.LoadingDialog;
+import megameklab.com.ui.dialog.MegaMekLabUnitSelectorDialog;
 import megameklab.com.util.UnitUtil;
 
 /**
@@ -366,7 +366,7 @@ public class StartupGUI extends javax.swing.JPanel {
         EquipmentType.initializeTypes();
         UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(frame);
         unitLoadingDialog.setVisible(true);
-        UnitSelectorDialog viewer = new UnitSelectorDialog(frame, unitLoadingDialog, true);
+        MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(frame, unitLoadingDialog);
 
         Entity newUnit = viewer.getChosenEntity();
         viewer.setVisible(false);

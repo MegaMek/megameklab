@@ -400,6 +400,7 @@ public class StructureTab extends ITab implements AeroBuildListener, ArmorAlloca
     public void armorTypeChanged(int at, int aTechLevel) {
         if (at != EquipmentType.T_ARMOR_PATCHWORK) {
             UnitUtil.removeISorArmorMounts(getAero(), false);
+            UnitUtil.compactCriticals(getAero());
             getAero().setArmorTechLevel(aTechLevel);
             getAero().setArmorType(at);
             panArmorAllocation.showPatchwork(false);

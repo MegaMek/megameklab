@@ -362,6 +362,14 @@ public class StructureTab extends ITab implements MekBuildListener, ArmorAllocat
             clearCrit(Mech.LOC_CT, lgSlot);
             getMech().setCritical(Mech.LOC_CT, lgSlot, crit);
         }
+        // Replace any fixed spreadable equipment
+        for (Mounted mount : getMech().getMisc()) {
+            if ((mount.getLocation() == Entity.LOC_NONE)
+                    && UnitUtil.isFixedLocationSpreadEquipment(mount.getType())) {
+                UnitUtil.removeMounted(getMech(), mount);
+                UnitUtil.createSpreadMounts(getMech(), mount.getType());
+            }
+        }
         refresh.refreshBuild();
     }
 
@@ -686,12 +694,12 @@ public class StructureTab extends ITab implements MekBuildListener, ArmorAllocat
         }
         panChassis.refresh();
         panHeat.refresh();
-        panMovement.refresh();
         panArmor.refresh();
         panArmorAllocation.setFromEntity(getMech());
         panPatchwork.setFromEntity(getMech());
         refresh.refreshBuild();
         addAllListeners();
+        panMovement.refresh();
         refresh.refreshPreview();
     }
 
@@ -849,6 +857,7 @@ public class StructureTab extends ITab implements MekBuildListener, ArmorAllocat
                 UnitUtil.addHeatSinkMounts(getMech(), newHS, panHeat.getHeatSinkType());
             }
             UnitUtil.updateAutoSinks(getMech(), getMech().hasCompactHeatSinks());
+            getMech().resetSinks();
             panMovement.setFromEntity(getMech());
             panHeat.setFromMech(getMech());
             refreshSummary();

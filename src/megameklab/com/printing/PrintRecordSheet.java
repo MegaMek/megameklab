@@ -54,7 +54,10 @@ import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.io.*;
 import java.net.URLConnection;
+import java.time.LocalDate;
 import java.util.*;
+import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * Base class for rendering record sheets. This is mostly a collection of utility methods.
@@ -94,6 +97,8 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     protected final RecordSheetOptions options;
     private Document svgDocument;
     private SVGGraphics2D svgGenerator;
+    // Used to update progress bar
+    private Consumer<Integer> callback;
     
     private Font normalFont = null;
     private Font boldFont = null;
@@ -119,6 +124,16 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     
     public final Document getSVGDocument() {
         return svgDocument;
+    }
+
+    /**
+     * Provides a callback function that can be used to provide updates on printing progress.
+     * As each page is rendered, the callback is invoked with the page number.
+     *
+     * @param callback The function to call with the current page number.
+     */
+    public void setCallback(Consumer<Integer> callback) {
+        this.callback = callback;
     }
     
     /**
@@ -313,6 +328,9 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             }
             */
         }
+        if (callback != null) {
+            callback.accept(pageIndex);
+        }
         return Printable.PAGE_EXISTS;
     }
 
@@ -326,8 +344,13 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         TranscoderInput input = new TranscoderInput(getSVGDocument());
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         TranscoderOutput transOutput = new TranscoderOutput(output);
+        // The default for the transcoder is 96 dpi, but the source document is 72 dpi.
+        transcoder.addTranscodingHint(PDFTranscoder.KEY_PIXEL_UNIT_TO_MILLIMETER, 0.352778f);
         transcoder.transcode(input, transOutput);
 
+        if (callback != null) {
+            callback.accept(pageNumber + firstPage);
+        }
         return new ByteArrayInputStream(output.toByteArray());
     }
     
@@ -367,8 +390,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     protected void processImage(int pageNum, PageFormat pageFormat) {
         Element element = getSVGDocument().getElementById(COPYRIGHT);
         if (null != element) {
-            element.setTextContent(String.format(element.getTextContent(),
-                    Calendar.getInstance().get(Calendar.YEAR)));
+            element.setTextContent(String.format(element.getTextContent(), LocalDate.now().getYear()));
         }
     }
 
@@ -386,6 +408,13 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      * @return The title to use for the record sheet
      */
     protected abstract String getRecordSheetTitle();
+
+    /**
+     * Used to build an outline of a PDF document
+     *
+     * @return Names of outline entries
+     */
+    public abstract List<String> getBookmarkNames();
     
     protected void setTextField(String id, int i) {
         setTextField(id, String.valueOf(i));

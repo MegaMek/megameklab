@@ -21,9 +21,11 @@ package megameklab.com.printing;
 
 import megamek.common.*;
 import megamek.common.weapons.CLIATMWeapon;
+import megamek.common.weapons.infantry.InfantryWeapon;
 import megamek.common.weapons.missiles.ATMWeapon;
 import megamek.common.weapons.missiles.MMLWeapon;
 import megamek.common.weapons.other.ISCenturionWeaponSystem;
+import megameklab.com.util.CConfig;
 import megameklab.com.util.StringUtils;
 
 import java.math.BigInteger;
@@ -67,14 +69,29 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
     private final static String[] SPHEROID_ARCS = { "NOS", "FLS", "FRS", "AFT", "HULL", "ALS", "ARS" };
     private final static String[] AERODYNE_ARCS = { "NOS", "LWG", "RWG", "AFT", "HULL" };
     private final static String[][] MML_RANGE = {
-            {"", "", "", "", ""}, {"6", "7", "14", "21"}, {DASH, "3", "6", "9"}
+            {"", "", "", "", ""}, formatRange(6, 7, 14, 21), formatRange(0, 3, 6, 9)
     };
     private final static String[][] ATM_RANGE = {
-            {"", "", "", "", ""}, {"4", "5", "10", "15"}, {"4", "9", "18", "27"}, {DASH, "3", "6", "9"}
+            {"", "", "", "", ""}, formatRange(4, 5, 10, 15),
+            formatRange(4, 9, 18, 27), formatRange(0, 3, 6, 9)
     };
     private final static String[][] CENTURION_RANGE = {
-            {"", "6(1)", "12(2)", "18(3)"}
+            {"", formatCenturion(6, 1), formatCenturion(12, 2), formatCenturion(18, 3)}
     };
+
+    private static String[] formatRange(int min, int sht, int med, int lng) {
+        return new String[] {
+                (min > 0) ? CConfig.formatScale(min, false) : DASH,
+                CConfig.formatScale(sht, false),
+                CConfig.formatScale(med, false),
+                CConfig.formatScale(lng, false),
+        };
+    }
+
+    private static String formatCenturion(int susceptible, int resistant) {
+        return String.format("%s(%s)", CConfig.formatScale(susceptible, false),
+                CConfig.formatScale(resistant, false));
+    }
 
     public StandardInventoryEntry(Mounted m) {
         this.mount = m;
@@ -103,25 +120,73 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         } else {
             String[] r = new String[4];
             Arrays.fill(r, DASH);
-            if (mount.getType() instanceof WeaponType) {
+            if (mount.getType() instanceof InfantryWeapon) {
+                final InfantryWeapon weapon = (InfantryWeapon) mount.getType();
+                r[RangeType.RANGE_SHORT] = CConfig.formatScale(weapon.getInfantryRange(), false);
+                if (weapon.getInfantryRange() > 0) {
+                    r[RangeType.RANGE_MEDIUM] = CConfig.formatScale(weapon.getInfantryRange() * 2, false);
+                    r[RangeType.RANGE_LONG] = CConfig.formatScale(weapon.getInfantryRange() * 3, false);
+                }
+            } else if (mount.getType() instanceof WeaponType) {
                 final WeaponType wtype = (WeaponType) mount.getType();
                 if (wtype.getMinimumRange() > 0) {
-                    r[RangeType.RANGE_MINIMUM] = String.valueOf(wtype.getMinimumRange());
+                    r[RangeType.RANGE_MINIMUM] = CConfig.formatScale(wtype.getMinimumRange(), false);
                 }
                 if ((wtype.getAmmoType() == AmmoType.T_LRM_TORPEDO)
-                    || (wtype.getAmmoType() == AmmoType.T_SRM_TORPEDO)) {
-                    r[RangeType.RANGE_SHORT] = String.valueOf(wtype.getWShortRange());
-                    r[RangeType.RANGE_MEDIUM] = String.valueOf(wtype.getWMediumRange());
-                    r[RangeType.RANGE_LONG] = String.valueOf(wtype.getWLongRange());
+                        || (wtype.getAmmoType() == AmmoType.T_SRM_TORPEDO)) {
+                    r[RangeType.RANGE_SHORT] = CConfig.formatScale(wtype.getWShortRange(), false);
+                    if (wtype.getWMediumRange() > wtype.getWShortRange()) {
+                        r[RangeType.RANGE_MEDIUM] = CConfig.formatScale(wtype.getWMediumRange(), false);
+                    }
+                    if (wtype.getWLongRange() > wtype.getWMediumRange()) {
+                        r[RangeType.RANGE_LONG] = CConfig.formatScale(wtype.getWLongRange(), false);
+                    }
                 } else {
-                    r[RangeType.RANGE_SHORT] = String.valueOf(wtype.getShortRange());
-                    r[RangeType.RANGE_MEDIUM] = String.valueOf(wtype.getMediumRange());
-                    r[RangeType.RANGE_LONG] = String.valueOf(wtype.getLongRange());
+                    r[RangeType.RANGE_SHORT] = CConfig.formatScale(wtype.getShortRange(), false);
+                    if (wtype.getMediumRange() > wtype.getShortRange()) {
+                        r[RangeType.RANGE_MEDIUM] = CConfig.formatScale(wtype.getMediumRange(), false);
+                    }
+                    if (wtype.getLongRange() > wtype.getMediumRange()) {
+                        r[RangeType.RANGE_LONG] = CConfig.formatScale(wtype.getLongRange(), false);
+                    }
                 }
+            } else if ((mount.getType() instanceof MiscType)
+                    && (mount.getType().hasFlag(MiscType.F_ECM) || mount.getType().hasFlag(MiscType.F_BAP))) {
+                r[RangeType.RANGE_SHORT] = DASH;
+                r[RangeType.RANGE_MEDIUM] = DASH;
+                r[RangeType.RANGE_LONG] = ewMaxRange();
             }
             String[][] retVal = new String[1][];
             retVal[0] = r;
             return retVal;
+        }
+    }
+
+    private String ewMaxRange() {
+        if (mount.getType().hasFlag(MiscType.F_ANGEL_ECM) && mount.getType().hasFlag(MiscType.F_BA_EQUIPMENT)) {
+            return "2";
+        } else if (mount.getType().hasFlag(MiscType.F_EW_EQUIPMENT)
+                || mount.getType().hasFlag(MiscType.F_WATCHDOG)
+                || mount.getType().hasFlag(MiscType.F_NOVA)) {
+            return CConfig.formatScale(3, false);
+        } else if (mount.getType().hasFlag(MiscType.F_SINGLE_HEX_ECM)) {
+            return "0";
+        } else if (mount.getType().hasFlag(MiscType.F_ECM)) {
+            // Guardian ECM, Clan ECM, non-BA Angel ECM
+            return CConfig.formatScale(6, false);
+        } else if (mount.getType().hasFlag(MiscType.F_BLOODHOUND)) {
+            return CConfig.formatScale(8, false);
+        } else if (mount.getType().getInternalName().equals(Sensor.LIGHT_AP)
+                || mount.getType().getInternalName().equals(Sensor.ISBALIGHT_AP)
+                || mount.getType().getInternalName().equals(Sensor.CLBALIGHT_AP)) {
+            return CConfig.formatScale(3, false);
+        } else if (mount.getType().getInternalName().equals(Sensor.ISIMPROVED)
+                || mount.getType().getInternalName().equals(Sensor.CLIMPROVED)) {
+            return CConfig.formatScale(2, false);
+        } else if (mount.getType().isClan()) {
+            return CConfig.formatScale(5, false); // Clan active probe
+        } else {
+            return CConfig.formatScale(3, false); // Beagle active probe
         }
     }
 
@@ -202,6 +267,11 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         }
         if (mount.getEntity().isAero()) {
             name.append(" ").append(StringUtils.getAeroEquipmentInfo(mount));
+        }
+        if (mount.getEntity().isSupportVehicle() && mount.getType() instanceof InfantryWeapon) {
+            name.append(" [")
+                    .append((int) mount.getSize() * ((InfantryWeapon) mount.getType()).getShots())
+                    .append(" shots]");
         }
         return name.toString();
     }
@@ -360,7 +430,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
     public String getShortField(int row) {
         if (mount.getEntity().isAero() && !isMML && !isATM) {
             if ((row == 0) && (mount.getType() instanceof WeaponType)) {
-                return String.valueOf((int) ((WeaponType) mount.getType()).getShortAV() + aeroAVMod(mount));
+                return String.valueOf(((WeaponType) mount.getType()).getRoundShortAV() + aeroAVMod(mount));
             } else if (row == 0) {
                 return DASH;
             } else {
@@ -377,8 +447,8 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
     public String getMediumField(int row) {
         if (mount.getEntity().isAero() && !isMML && !isATM) {
             if ((row == 0) && (mount.getType() instanceof WeaponType)
-                    && ((WeaponType) mount.getType()).maxRange >= WeaponType.RANGE_MED) {
-                return String.valueOf((int) ((WeaponType) mount.getType()).getMedAV() + aeroAVMod(mount));
+                    && ((WeaponType) mount.getType()).getMaxRange(mount) >= WeaponType.RANGE_MED) {
+                return String.valueOf(((WeaponType) mount.getType()).getRoundMedAV() + aeroAVMod(mount));
             } else if (row == 0) {
                 return DASH;
             } else {
@@ -395,8 +465,8 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
     public String getLongField(int row) {
         if (mount.getEntity().isAero() && !isMML && !isATM) {
             if ((row == 0) && (mount.getType() instanceof WeaponType)
-                    && ((WeaponType) mount.getType()).maxRange >= WeaponType.RANGE_LONG) {
-                return String.valueOf((int) ((WeaponType) mount.getType()).getLongAV() + aeroAVMod(mount));
+                    && ((WeaponType) mount.getType()).getMaxRange(mount) >= WeaponType.RANGE_LONG) {
+                return String.valueOf(((WeaponType) mount.getType()).getRoundLongAV() + aeroAVMod(mount));
             } else if (row == 0) {
                 return DASH;
             } else {
@@ -413,8 +483,8 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
     public String getExtremeField(int row) {
         if (mount.getEntity().isAero() && !isMML && !isATM) {
             if ((row == 0) && (mount.getType() instanceof WeaponType)
-                    && ((WeaponType) mount.getType()).maxRange >= WeaponType.RANGE_EXT) {
-                return String.valueOf((int) ((WeaponType) mount.getType()).getExtAV() + aeroAVMod(mount));
+                    && ((WeaponType) mount.getType()).getMaxRange(mount) >= WeaponType.RANGE_EXT) {
+                return String.valueOf(((WeaponType) mount.getType()).getRoundExtAV() + aeroAVMod(mount));
             } else if (row == 0) {
                 return DASH;
             } else {

@@ -20,7 +20,9 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import megamek.common.*;
 import megameklab.com.printing.reference.*;
 import org.apache.batik.anim.dom.SVGDOMImplementation;
 import org.apache.batik.dom.util.SAXDocumentFactory;
@@ -33,19 +35,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.svg.SVGRectElement;
 
-import megamek.common.AmmoType;
-import megamek.common.BipedMech;
-import megamek.common.CriticalSlot;
-import megamek.common.Engine;
-import megamek.common.Entity;
-import megamek.common.EquipmentMessages;
-import megamek.common.ITechnology;
-import megamek.common.LAMPilot;
-import megamek.common.LandAirMech;
-import megamek.common.Mech;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
-import megamek.common.QuadVee;
 import megamek.common.annotations.Nullable;
 import megameklab.com.MegaMekLab;
 import megameklab.com.util.ImageHelper;
@@ -58,7 +47,7 @@ import megameklab.com.util.UnitUtil;
  *
  */
 public class PrintMech extends PrintEntity {
-    
+
     /**
      * The current mech being printed.
      */
@@ -176,7 +165,7 @@ public class PrintMech extends PrintEntity {
             if (si instanceof SVGRectElement) {
                 drawSIPips((SVGRectElement) si);
             } else {
-                MegaMekLab.getLogger().error(getClass(), "PrintImage(Graphics2D, PageFormat, int)",
+                MegaMekLab.getLogger().error(this,
                         "Region siPips does not exist in template or is not a <rect>");
             }
         }
@@ -232,10 +221,10 @@ public class PrintMech extends PrintEntity {
                 setTextField(MP_AIRMECH_CRUISE, "\u2014");
                 setTextField(MP_AIRMECH_FLANK, "\u2014");
             } else {
-                setTextField(MP_AIRMECH_WALK, Integer.toString(lam.getAirMechWalkMP()));
-                setTextField(MP_AIRMECH_RUN, Integer.toString(lam.getAirMechRunMP()));
-                setTextField(MP_AIRMECH_CRUISE, Integer.toString(lam.getAirMechCruiseMP()));
-                setTextField(MP_AIRMECH_FLANK, Integer.toString(lam.getAirMechFlankMP()));
+                setTextField(MP_AIRMECH_WALK, formatMovement(lam.getAirMechWalkMP()));
+                setTextField(MP_AIRMECH_RUN, formatMovement(lam.getAirMechWalkMP() * 1.5));
+                setTextField(MP_AIRMECH_CRUISE, formatMovement(lam.getAirMechCruiseMP()));
+                setTextField(MP_AIRMECH_FLANK, formatMovement(lam.getAirMechCruiseMP() * 1.5));
             }
             setTextField(MP_SAFE_THRUST, Integer.toString(lam.getJumpMP()));
             setTextField(MP_MAX_THRUST, Integer.toString((int) Math.ceil(lam.getJumpMP() * 1.5)));
@@ -249,7 +238,7 @@ public class PrintMech extends PrintEntity {
                 hideElement(ASF_PILOTING_SKILL);
             }
         } else if (mech instanceof QuadVee) {
-            setTextField(MP_CRUISE, Integer.toString(((QuadVee) mech).getCruiseMP(false, false, false)));
+            setTextField(MP_CRUISE, formatMovement(((QuadVee) mech).getCruiseMP(false, false, false)));
             setTextField(MP_FLANK, formatQuadVeeFlank());
             setTextField(LBL_VEE_MODE, ((QuadVee) mech).getMotiveTypeString() + "s");
         }
@@ -261,6 +250,16 @@ public class PrintMech extends PrintEntity {
         hideElement(WARRIOR_DATA_SINGLE, getEntity().getCrew().getSlotCount() != 1);
         hideElement(WARRIOR_DATA_DUAL, getEntity().getCrew().getSlotCount() != 2);
         hideElement(WARRIOR_DATA_TRIPLE, getEntity().getCrew().getSlotCount() != 3);
+    }
+
+    @Override
+    protected void drawStructure() {
+        if (mech.hasCompositeStructure() || mech.hasReinforcedStructure()) {
+            String isName = EquipmentType.getStructureTypeName(mech.getStructureType());
+            setTextField(STRUCTURE_TYPE, isName);
+        } else {
+            hideElement(STRUCTURE_TYPE, true);
+        }
     }
 
     private boolean loadArmorPips(int loc, boolean rear) {
@@ -322,7 +321,6 @@ public class PrintMech extends PrintEntity {
     }
 
     private @Nullable NodeList loadPipSVG(String filename) {
-        final String METHOD_NAME = "loadPipsSVG(int, int)"; //$NON-NLS-1$
         File f = new File(filename);
         if (!f.exists()) {
             return null;
@@ -335,12 +333,12 @@ public class PrintMech extends PrintEntity {
             SAXDocumentFactory df = new SAXDocumentFactory(impl, parser);
             doc = df.createDocument(f.toURI().toASCIIString(), is);
         } catch (Exception e) {
-            MegaMekLab.getLogger().error(PrintRecordSheet.class, METHOD_NAME,
+            MegaMekLab.getLogger().error(PrintRecordSheet.class,
                     "Failed to open pip SVG file! Path: " + f.getName());
             return null;
         }
         if (null == doc) {
-            MegaMekLab.getLogger().error(PrintRecordSheet.class, METHOD_NAME,
+            MegaMekLab.getLogger().error(PrintRecordSheet.class,
                     "Failed to open pip SVG file! Path: " + f.getName());
             return null;
         }
@@ -570,60 +568,56 @@ public class PrintMech extends PrintEntity {
     @Override
     protected String formatWalk() {
         if (mech.hasTSM()) {
-            return mech.getWalkMP() + " [" + (mech.getWalkMP() + 1) + "]";
+            return formatMovement(mech.getWalkMP(), mech.getWalkMP() + 1);
         } else {
-            return Integer.toString(mech.getWalkMP());
+            return super.formatWalk();
         }
     }
-    
+
     @Override
     protected String formatRun() {
-        int mp = mech.getWalkMP();
+        double baseRun = mech.getWalkMP();
+        double fullRun = baseRun;
+        baseRun *= 1.5;
         if (mech.hasTSM()) {
-            mp++;
+            fullRun++;
         }
         if ((mech.getMASC() != null) && (mech.getSuperCharger() != null)) {
-            mp = (int) Math.ceil(mp * 2.5);
+            fullRun = (int) Math.ceil(fullRun * 2.5);
         } else if ((mech.getMASC() != null) || (mech.getSuperCharger() != null)) {
-            mp *= 2;
+            fullRun *= 2;
         } else {
-            mp = (int) Math.ceil(mp * 1.5);
+            fullRun *= 1.5;
         }
         if (mech.hasMPReducingHardenedArmor()) {
-            mp--;
+            baseRun--;
+            fullRun--;
         }
-        if (mp > mech.getRunMPwithoutMASC()) {
-            return mech.getRunMPwithoutMASC() + " [" + mp + "]";
-        } else {
-            return Integer.toString(mech.getRunMP());
-        }
+        return formatMovement(baseRun, fullRun);
     }
     
     private String formatQuadVeeFlank() {
-        int mp = ((QuadVee) mech).getCruiseMP(false, false, false);
-        int noSupercharger = (int) Math.ceil(mp * 1.5);
+        double baseFlank = ((QuadVee) mech).getCruiseMP(false, false, false);
+        baseFlank *= 1.5;
+        double fullFlank;
         if (mech.getSuperCharger() != null) {
-            mp *= 2;
+            fullFlank = baseFlank * 2;
         } else {
-            mp = noSupercharger;
+            fullFlank = baseFlank;
         }
         if (mech.hasMPReducingHardenedArmor()) {
-            mp--;
-            noSupercharger--;
+            baseFlank--;
+            fullFlank--;
         }
-        if (mp > noSupercharger) {
-            return noSupercharger + " [" + mp + "]";
-        } else {
-            return Integer.toString(mp);
-        }
+        return formatMovement(baseFlank, fullFlank);
     }
     
     @Override
     protected String formatJump() {
         if (mech.hasUMU()) {
-            return Integer.toString(mech.getActiveUMUCount());
+            return formatMovement(mech.getActiveUMUCount());
         } else {
-            return Integer.toString(mech.getJumpMP());
+            return super.formatJump();
         }
     }
 
@@ -690,7 +684,11 @@ public class PrintMech extends PrintEntity {
                         || ((cs.getIndex() >= Mech.ACTUATOR_UPPER_LEG) && (cs.getIndex() <= Mech.ACTUATOR_FOOT))) {
                     name += " Actuator";
                 } else if (cs.getIndex() == Mech.SYSTEM_COCKPIT) {
-                    if (mech.getCockpitType() == Mech.COCKPIT_COMMAND_CONSOLE) {
+                    Optional<Mounted> robotics = mech.getMisc().stream()
+                            .filter(m -> m.getType().hasFlag(MiscType.F_SRCS)).findAny();
+                    if (robotics.isPresent()) {
+                        name = robotics.get().getType().getShortName();
+                    } else if (mech.getCockpitType() == Mech.COCKPIT_COMMAND_CONSOLE) {
                         if (mech.getCrewForCockpitSlot(Mech.LOC_HEAD, cs) == 0) {
                             name = EquipmentMessages.getString("SystemType.Cockpit.COCKPIT_STANDARD");
                         }

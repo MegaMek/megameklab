@@ -16,11 +16,14 @@ package megameklab.com.printing;
 import java.awt.geom.Rectangle2D;
 import java.awt.print.PageFormat;
 import java.io.File;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.*;
 
+import megamek.client.generator.RandomNameGenerator;
 import megamek.common.*;
 import megameklab.com.printing.reference.ReferenceTable;
+import megameklab.com.util.CConfig;
 import org.apache.batik.anim.dom.SVGGraphicsElement;
 import org.apache.batik.anim.dom.SVGLocatableSupport;
 import org.apache.batik.util.SVGConstants;
@@ -66,6 +69,11 @@ public abstract class PrintEntity extends PrintRecordSheet {
     }
 
     public abstract Entity getEntity();
+
+    @Override
+    public List<String> getBookmarkNames() {
+        return Collections.singletonList(getEntity().getShortNameRaw());
+    }
     
     /**
      * When printing from a MUL the pilot data is filled in unless the option has been disabled. This
@@ -76,7 +84,8 @@ public abstract class PrintEntity extends PrintRecordSheet {
      * @return Whether the pilot data should be filled in.
      */
     protected boolean showPilotInfo() {
-        return options.showPilotData() && !getEntity().getCrew().getName().equalsIgnoreCase("unnamed");
+        return options.showPilotData()
+                && !getEntity().getCrew().getName().startsWith(RandomNameGenerator.UNNAMED);
     }
 
     /**
@@ -149,6 +158,23 @@ public abstract class PrintEntity extends PrintRecordSheet {
     public String formatTacticalFuel() {
         return "";
     }
+
+    /**
+     * Converts a weight to a String, either in kg or tons as appropriate to the Entity,
+     * labeled with the measurement unit.
+     * @param weight The weight in tons
+     * @return       The formatted weight with units
+     */
+    String formatWeight(double weight) {
+        if ((getEntity() instanceof BattleArmor)
+                || (getEntity() instanceof Protomech)
+                || getEntity().getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT) {
+            return DecimalFormat.getInstance().format(weight * 1000) + " kg";
+        } else {
+            return DecimalFormat.getInstance().format(weight)
+                    + ((weight == 1) ? " ton)" : " tons");
+        }
+    }
     
     @Override
     protected void processImage(int pageNum, PageFormat pageFormat) {
@@ -175,7 +201,12 @@ public abstract class PrintEntity extends PrintRecordSheet {
         setTextField(MP_WALK, formatWalk());
         setTextField(MP_RUN, formatRun());
         setTextField(MP_JUMP, formatJump());
-        setTextField(TONNAGE, NumberFormat.getInstance().format((int) getEntity().getWeight()));
+        if (getEntity().getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT) {
+            setTextField(TONNAGE, NumberFormat.getInstance()
+                    .format((int) (getEntity().getWeight() * 1000)) + " kg");
+        } else {
+            setTextField(TONNAGE, NumberFormat.getInstance().format((int) getEntity().getWeight()));
+        }
         setTextField(TECH_BASE, formatTechBase());
         setTextField(RULES_LEVEL, formatRulesLevel());
         setTextField(ERA, formatEra(getEntity().getYear()));
@@ -410,6 +441,9 @@ public abstract class PrintEntity extends PrintRecordSheet {
      */
     protected void writeEquipment(SVGRectElement svgRect) {
         new InventoryWriter(this, svgRect).writeEquipment();
+        if (!CConfig.scaleUnits().equals(CConfig.RSScale.HEXES)) {
+            setTextField(UNIT_SCALE, "(" + CConfig.scaleUnits().fullName + ")");
+        }
     }
 
     protected void drawFluffImage() {
@@ -543,16 +577,47 @@ public abstract class PrintEntity extends PrintRecordSheet {
         }
     }
 
+    /**
+     * Applies the current scale to a movement point value and adds the units indicator.
+     * If the units are hexes, the value is rounded up.
+     *
+     * @param mp The movement points
+     * @return   The formatted movement string
+     */
+    protected String formatMovement(double mp) {
+        return CConfig.formatScale(mp, true);
+    }
+
+    /**
+     * Applies the current scale to a pair of movement point values, puts the second in brackets,
+     * and adds the units indicator. This is used for cases when equipment may give a temporary
+     * boost to MP, such as MASC.
+     * If the units are hexes, the value is rounded up.
+     *
+     * @param baseMP The base movement points
+     * @param fullMP The full movement points
+     * @return   The formatted movement string
+     */
+    protected String formatMovement(double baseMP, double fullMP) {
+        if (fullMP > baseMP) {
+            return CConfig.formatScale(baseMP, false) + " ["
+                    + CConfig.formatScale(fullMP, false) + "] "
+                    + CConfig.scaleUnits().abbreviation;
+        } else {
+            return CConfig.formatScale(baseMP, true);
+        }
+    }
+
     protected String formatWalk() {
-        return Integer.toString(getEntity().getWalkMP());
+        return formatMovement(getEntity().getWalkMP());
     }
     
     protected String formatRun() {
-        return getEntity().getRunMPasString();
+        return formatMovement(getEntity().getWalkMP() * 1.5);
     }
     
     protected String formatJump() {
-        return Integer.toString(getEntity().getJumpMP());
+        return formatMovement(getEntity().getJumpMP());
     }
 
     protected String formatTechBase() {
