@@ -280,7 +280,7 @@ public class UnitPrintManager {
         HashPrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
         aset.add(options.getPaperSize().sizeName);
         aset.add(options.getPaperSize().printableArea);
-        aset.add(DialogTypeSelection.NATIVE);
+        aset.add(DialogTypeSelection.COMMON);
         PrinterJob masterPrintJob = PrinterJob.getPrinterJob();
         if (!masterPrintJob.printDialog(aset)) {
             return;
