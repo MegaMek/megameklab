@@ -91,12 +91,9 @@ public class PrintCompositeTankSheet extends PrintRecordSheet {
     protected void processImage(int startPage, PageFormat pageFormat) {
         PrintRecordSheet sheet = new PrintTank(tank1, getFirstPage(), options);
         sheet.createDocument(startPage, pageFormat);
-        Element g = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
-        g.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
-                String.format("%s(0 %f)", SVGConstants.SVG_TRANSLATE_VALUE, pageFormat.getImageableY()));
         sheet.hideElement(FOOTER);
-        g.appendChild(getSVGDocument().importNode(sheet.getSVGDocument().getDocumentElement(), true));
-        getSVGDocument().getDocumentElement().appendChild(g);
+        getSVGDocument().getDocumentElement().appendChild(getSVGDocument()
+                .importNode(sheet.getSVGDocument().getDocumentElement(), true));
 
         if (tank2 != null) {
             sheet = new PrintTank(tank2, getFirstPage(), options);
@@ -106,7 +103,7 @@ public class PrintCompositeTankSheet extends PrintRecordSheet {
             sheet = new TankTables(options);
         }
         sheet.createDocument(startPage, pageFormat);
-        g = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
+        Element g = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
         g.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
                 String.format("%s(0 %f)", SVGConstants.SVG_TRANSLATE_VALUE,
                         pageFormat.getImageableHeight() * 0.5));
