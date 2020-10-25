@@ -37,6 +37,11 @@ public class MovementCost extends ReferenceTable {
         } else if (entity.getMovementMode().equals(EntityMovementMode.VTOL)
                 || entity.getMovementMode().equals(EntityMovementMode.WIGE)) {
             addAerialMods();
+        } else if (entity.getMovementMode().equals(EntityMovementMode.RAIL)
+                || entity.getMovementMode().equals(EntityMovementMode.MAGLEV)) {
+            addRailMods();
+            addNote(bundle.getString("rail.note.1"));
+            addNote(bundle.getString("rail.note.2"));
         } else {
             addGroundMods();
         }
@@ -166,5 +171,19 @@ public class MovementCost extends ReferenceTable {
             addRow("", bundle.getString("liftOff"), "", "5");
             addRow("", bundle.getString("maintainAltitude"), "", "+2");
         }
+    }
+
+    private void addRailMods() {
+        addRow(bundle.getString("costToEnterAnyHex"), "", "", "1");
+        addRow(bundle.getString("maximumChange"), "", "",
+                entity.isSuperHeavy() ? "+/- 1 MP" : "+/- 2 MP");
+        addRow(bundle.getString("trailerWeight"), "", "", bundle.getString("mpReduction"));
+        addRow("", bundle.getString("lteHalfTractor"), "", bundle.getString("none"));
+        addRow("", bundle.getString("lte2xTractor"), "", bundle.getString("lowerOf"));
+        addRow("", "", "", bundle.getString("minusThreeOrThird"));
+        addRow("", bundle.getString("lte4xTractor"), "", "-1/2 MP");
+        addRow("", bundle.getString("lte5xTractor"), "", "-2/3 MP");
+        addRow("", bundle.getString("gt5xTractor"), "", bundle.getString("prohibited"));
+        addRow("", bundle.getString("minimum"), "", "2 MP");
     }
 }
