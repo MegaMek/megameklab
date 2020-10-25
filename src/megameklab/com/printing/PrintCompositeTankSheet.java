@@ -91,7 +91,9 @@ public class PrintCompositeTankSheet extends PrintRecordSheet {
     @Override
     protected void processImage(int startPage, PageFormat pageFormat) {
         double ratio = includeReferenceCharts() ? TABLE_RATIO : 1.0;
-        PrintRecordSheet sheet = new PrintTank(tank1, getFirstPage(), options);
+        RecordSheetOptions subOptions = new RecordSheetOptions(options);
+        subOptions.setReferenceCharts(false);
+        PrintRecordSheet sheet = new PrintTank(tank1, getFirstPage(), subOptions);
         sheet.createDocument(startPage, pageFormat);
         Element g = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
         g.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
@@ -102,7 +104,7 @@ public class PrintCompositeTankSheet extends PrintRecordSheet {
         getSVGDocument().getDocumentElement().appendChild(g);
 
         if (tank2 != null) {
-            sheet = new PrintTank(tank2, getFirstPage(), options);
+            sheet = new PrintTank(tank2, getFirstPage(), subOptions);
         } else if (tank1 instanceof VTOL) {
             sheet = new VTOLTables(options);
         } else {
@@ -185,6 +187,7 @@ public class PrintCompositeTankSheet extends PrintRecordSheet {
     protected List<ReferenceTable> getRightSideReferenceTables() {
         List<ReferenceTable> list = new ArrayList<>();
         list.add(new MekVeeToHitMods(this, tank1));
+        list.add(new MovementCost(this, tank1));
         ClusterHitsTable table = new ClusterHitsTable(this, tank1);
         if (table.required()) {
             list.add(table);

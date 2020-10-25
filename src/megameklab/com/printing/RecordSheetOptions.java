@@ -52,6 +52,19 @@ public class RecordSheetOptions {
         this.referenceCharts = CConfig.getBooleanParam(CConfig.RS_REFERENCE);
     }
 
+    public RecordSheetOptions(RecordSheetOptions options) {
+        paperSize = options.paperSize;
+        color = options.color;
+        quirks = options.quirks;
+        pilotData = options.pilotData;
+        eraIcon = options.eraIcon;
+        role = options.role;
+        heatProfile = options.heatProfile;
+        tacOpsHeat = options.tacOpsHeat;
+        eraBasedProgression = options.eraBasedProgression;
+        referenceCharts = options.referenceCharts;
+    }
+
     public PaperSize getPaperSize() {
         return paperSize;
     }
