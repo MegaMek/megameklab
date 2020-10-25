@@ -26,7 +26,7 @@ import static megameklab.com.printing.PrintRecordSheet.svgNS;
  * Generates a table for tracking movement of ground units for each turn
  */
 public class GroundMovementRecord extends ReferenceTableBase {
-    public GroundMovementRecord(PrintEntity sheet) {
+    public GroundMovementRecord(PrintRecordSheet sheet) {
         super(sheet);
     }
 

@@ -450,26 +450,6 @@ public abstract class PrintEntity extends PrintRecordSheet {
 
     }
 
-    List<ReferenceTable> getRightSideReferenceTables() {
-        return Collections.emptyList();
-    }
-
-    protected void addReferenceCharts(PageFormat pageFormat) {
-        List<ReferenceTable> rightSide = getRightSideReferenceTables();
-        double lines = rightSide.stream().mapToDouble(ReferenceTable::lineCount).sum();
-
-        double ypos = pageFormat.getImageableY();
-        double margin = ReferenceTable.getMargins(this);
-        for (ReferenceTable table : rightSide) {
-            double height = (pageFormat.getImageableHeight() - margin * rightSide.size())
-                    * table.lineCount() / lines + margin;
-            getSVGDocument().getDocumentElement().appendChild(
-                    table.createTable(pageFormat.getImageableX() + pageFormat.getImageableWidth() * 0.8 + 3.0,
-                            ypos, pageFormat.getImageableWidth() * 0.2, height));
-            ypos += height;
-        }
-    }
-    
     private void drawEraIcon() {
         File iconFile;
         if (getEntity().getYear() < 2781) {

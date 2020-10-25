@@ -15,6 +15,7 @@ package megameklab.com.printing.reference;
 
 import megamek.common.*;
 import megameklab.com.printing.PrintEntity;
+import megameklab.com.printing.PrintRecordSheet;
 import megameklab.com.util.CConfig;
 import org.apache.batik.util.SVGConstants;
 
@@ -28,8 +29,12 @@ public class MekVeeToHitMods extends ReferenceTable {
     private static final int[] TARGET_MOVEMENT_RANGES = {0, 3, 5, 7, 10, 18, 25};
 
     public MekVeeToHitMods(PrintEntity sheet) {
+        this(sheet, sheet.getEntity());
+    }
+
+    public MekVeeToHitMods(PrintRecordSheet sheet, Entity entity) {
         super(sheet, 0.02, 0.08, 0.8);
-        this.entity = sheet.getEntity();
+        this.entity = entity;
         setColumnAnchor(0, SVGConstants.SVG_START_VALUE);
         setColumnAnchor(1, SVGConstants.SVG_START_VALUE);
         if (entity instanceof Mech) {
