@@ -165,8 +165,7 @@ public class PrintMech extends PrintEntity {
             if (si instanceof SVGRectElement) {
                 drawSIPips((SVGRectElement) si);
             } else {
-                MegaMekLab.getLogger().error(this,
-                        "Region siPips does not exist in template or is not a <rect>");
+                MegaMekLab.getLogger().error("Region siPips does not exist in template or is not a <rect>");
             }
         }
         
@@ -333,13 +332,11 @@ public class PrintMech extends PrintEntity {
             SAXDocumentFactory df = new SAXDocumentFactory(impl, parser);
             doc = df.createDocument(f.toURI().toASCIIString(), is);
         } catch (Exception e) {
-            MegaMekLab.getLogger().error(PrintRecordSheet.class,
-                    "Failed to open pip SVG file! Path: " + f.getName());
+            MegaMekLab.getLogger().error("Failed to open pip SVG file! Path: " + f.getName());
             return null;
         }
         if (null == doc) {
-            MegaMekLab.getLogger().error(PrintRecordSheet.class,
-                    "Failed to open pip SVG file! Path: " + f.getName());
+            MegaMekLab.getLogger().error("Failed to open pip SVG file! Path: " + f.getName());
             return null;
         }
         return doc.getElementsByTagName(SVGConstants.SVG_PATH_TAG);
