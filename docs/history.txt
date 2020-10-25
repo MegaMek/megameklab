@@ -16,6 +16,9 @@ VERSION HISTORY:
 + Issue #342: Incomplete queued print
 + PR #803: Add an outline to PDF output
 + Issue #802: Record Sheets printing small for layout
++ Issue #807:TAG (Light, Man-Portable) is misclassified
++ Issue #746: Weird margins on printing
++ Issue #665: Formatting Issue when printing vehicles or battle armor
 
 0.47.11 (2020-10-04 2100 UTC)
 + Issue #768: Patchwork armor error

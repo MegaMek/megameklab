@@ -94,11 +94,11 @@ public class PrintCompositeTankSheet extends PrintRecordSheet {
         RecordSheetOptions subOptions = new RecordSheetOptions(options);
         subOptions.setReferenceCharts(false);
         PrintRecordSheet sheet = new PrintTank(tank1, getFirstPage(), subOptions);
-        sheet.createDocument(startPage, pageFormat);
+        sheet.createDocument(startPage, pageFormat, false);
         Element g = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
         g.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
-                String.format("%s(%f 0 0 %f 0 %f)", SVGConstants.SVG_MATRIX_VALUE,
-                        ratio, ratio, pageFormat.getImageableY()));
+                String.format("%s(%f 0 0 %f %f %f)", SVGConstants.SVG_MATRIX_VALUE,
+                        ratio, ratio, pageFormat.getImageableX(), pageFormat.getImageableY()));
         sheet.hideElement(FOOTER);
         g.appendChild(getSVGDocument().importNode(sheet.getSVGDocument().getDocumentElement(), true));
         getSVGDocument().getDocumentElement().appendChild(g);
@@ -110,11 +110,11 @@ public class PrintCompositeTankSheet extends PrintRecordSheet {
         } else {
             sheet = new TankTables(options);
         }
-        sheet.createDocument(startPage, pageFormat);
+        sheet.createDocument(startPage, pageFormat, false);
         g = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
         g.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
-                String.format("%s(%f 0 0 %f 0 %f)", SVGConstants.SVG_MATRIX_VALUE,
-                        ratio, ratio, pageFormat.getImageableHeight() * 0.5 * ratio));
+                String.format("%s(%f 0 0 %f %f %f)", SVGConstants.SVG_MATRIX_VALUE,
+                        ratio, ratio, pageFormat.getImageableX(), pageFormat.getImageableHeight() * 0.5 * ratio));
         g.appendChild(getSVGDocument().importNode(sheet.getSVGDocument().getDocumentElement(), true));
         getSVGDocument().getDocumentElement().appendChild(g);
         if (includeReferenceCharts()) {
