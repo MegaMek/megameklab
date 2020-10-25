@@ -188,6 +188,7 @@ public class PrintCompositeTankSheet extends PrintRecordSheet {
         List<ReferenceTable> list = new ArrayList<>();
         list.add(new MekVeeToHitMods(this, tank1));
         list.add(new MovementCost(this, tank1));
+        list.add(new DrivingSkillRollMods(this, tank1));
         ClusterHitsTable table = new ClusterHitsTable(this, tank1);
         if (table.required()) {
             list.add(table);
