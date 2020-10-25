@@ -26,8 +26,12 @@ import static megameklab.com.printing.PrintRecordSheet.svgNS;
  * Generates a table for tracking movement of ground units for each turn
  */
 public class GroundMovementRecord extends ReferenceTableBase {
-    public GroundMovementRecord(PrintRecordSheet sheet) {
+
+    private final boolean showHeat;
+
+    public GroundMovementRecord(PrintRecordSheet sheet, boolean showHeat) {
         super(sheet);
+        this.showHeat = showHeat;
     }
 
     @Override
@@ -49,7 +53,8 @@ public class GroundMovementRecord extends ReferenceTableBase {
         double colOffset = x + width * 0.2;
         double colWidth = (width - colOffset) / (toTurn - fromTurn + 1);
         StringJoiner path = new StringJoiner(" ");
-        for (int i = 0; i <= 4; i++) {
+        int rows = showHeat ? 4 : 3;
+        for (int i = 0; i <= rows; i++) {
             path.add(String.format("M %f,%f h %f", x, y + height * 0.2 * i, width));
         }
         for (int i = 0; i <= toTurn - fromTurn; i++) {
@@ -74,8 +79,10 @@ public class GroundMovementRecord extends ReferenceTableBase {
                 fontSize, SVGConstants.SVG_BOLD_VALUE));
         parent.appendChild(createTextElement(x + PADDING, height * 0.6 + startY, bundle.getString("hexesMoved"),
                 fontSize, SVGConstants.SVG_BOLD_VALUE));
-        parent.appendChild(createTextElement(x + PADDING, height * 0.8 + startY, bundle.getString("heat"),
-                fontSize, SVGConstants.SVG_BOLD_VALUE));
+        if (showHeat) {
+            parent.appendChild(createTextElement(x + PADDING, height * 0.8 + startY, bundle.getString("heat"),
+                    fontSize, SVGConstants.SVG_BOLD_VALUE));
+        }
         for (int i = 0; i <= toTurn - fromTurn; i++) {
             parent.appendChild(createTextElement(startX + i * colWidth, startY, String.valueOf(fromTurn + i), fontSize,
                     SVGConstants.SVG_BOLD_VALUE, PrintRecordSheet.FILL_BLACK, SVGConstants.SVG_MIDDLE_VALUE,
