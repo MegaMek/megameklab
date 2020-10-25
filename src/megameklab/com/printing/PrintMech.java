@@ -772,14 +772,14 @@ public class PrintMech extends PrintEntity {
             buffer.setLength(buffer.length() - 5);
             buffer.trimToSize();
         }
-        
+/*
         String submunitionName = ammo.getSubMunitionName().replace("(Clan) ", "");
         int index = buffer.indexOf(submunitionName);
         if (index >= 0) {
             buffer.delete(index, index + submunitionName.length());
             buffer.trimToSize();
         }
-
+*/
         // Trim trailing spaces.
         while (buffer.charAt(buffer.length() - 1) == ' ') {
             buffer.setLength(buffer.length() - 1);
