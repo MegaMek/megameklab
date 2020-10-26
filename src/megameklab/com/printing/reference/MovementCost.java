@@ -63,10 +63,10 @@ public class MovementCost extends ReferenceTable {
         if (entity.isSupportVehicle() && !entity.hasMisc(MiscType.F_OFF_ROAD)) {
             addRow("", bundle.getString("clear"), "", "+1");
         } else {
-            addRow("", bundle.getString("clear"), "", "0");
+            addRow("", bundle.getString("clear"), "", "+0");
         }
-        addRow("", bundle.getString("paved"), "", "0");
-        addRow("", bundle.getString("road"), "", "0");
+        addRow("", bundle.getString("paved"), "", "+0");
+        addRow("", bundle.getString("road"), "", "+0");
         if (entity.getMovementMode().equals(EntityMovementMode.WHEELED)) {
             addRow("", bundle.getString("rough"), "", bundle.getString("prohibited"));
         } else {
@@ -87,18 +87,18 @@ public class MovementCost extends ReferenceTable {
         }
         if (entity.getMovementMode().equals(EntityMovementMode.HOVER)
                 || entity.getMovementMode().equals(EntityMovementMode.WIGE)) {
-            addRow("", bundle.getString("water"), "", "0");
+            addRow("", bundle.getString("water"), "", "+0");
         } else if (entity.hasMisc(MiscType.F_AMPHIBIOUS) || entity.hasMisc(MiscType.F_LIMITED_AMPHIBIOUS)) {
             addRow("", bundle.getString("water"), "", "");
-            addRow("", "", bundle.getString("depth0"), "0");
+            addRow("", "", bundle.getString("depth0"), "+0");
             addRow("", "", bundle.getString("depth1plus"), "+1");
         } else if (entity instanceof Tank) {
             addRow("", bundle.getString("water"), "", "");
-            addRow("", "", bundle.getString("depth0"), "0");
+            addRow("", "", bundle.getString("depth0"), "+0");
             addRow("", "", bundle.getString("depth1plus"), bundle.getString("prohibited"));
         } else {
             addRow("", bundle.getString("water"), "", "");
-            addRow("", "", bundle.getString("depth0"), "0");
+            addRow("", "", bundle.getString("depth0"), "+0");
             addRow("", "", bundle.getString("depth1"), "+1");
             addRow("", "", bundle.getString("depth2plus"), "+3");
         }
@@ -163,9 +163,9 @@ public class MovementCost extends ReferenceTable {
             addRow(bundle.getString("levelChangeUpOrDown"), "", "", bundle.getString("1PerLevel"));
         } else if (entity.getMovementMode().equals(EntityMovementMode.WIGE)) {
             addRow(bundle.getString("levelChange"), "", "", "");
-            addRow("", bundle.getString("up1level"), "", "0");
+            addRow("", bundle.getString("up1level"), "", "+0");
             addRow("", bundle.getString("up2plusLevels"), "", bundle.getString("prohibited"));
-            addRow("", bundle.getString("down1plusLevels"), "", "0");
+            addRow("", bundle.getString("down1plusLevels"), "", "+0");
         }
         addRow(bundle.getString("additionalMovementActions"), "", "", "");
         addRow("", bundle.getString("facingChange"), "", bundle.getString("1perHexside"));
