@@ -17,6 +17,7 @@
  */
 package megameklab.com.printing;
 
+import megamek.common.EntityMovementMode;
 import megamek.common.Tank;
 import megamek.common.VTOL;
 import megamek.common.annotations.Nullable;
@@ -188,7 +189,12 @@ public class PrintCompositeTankSheet extends PrintRecordSheet {
         List<ReferenceTable> list = new ArrayList<>();
         list.add(new MekVeeToHitMods(this, tank1));
         list.add(new MovementCost(this, tank1));
-        list.add(new DrivingSkillRollMods(this, tank1));
+        if (!tank1.getMovementMode().equals(EntityMovementMode.RAIL)
+                && !tank1.getMovementMode().equals(EntityMovementMode.MAGLEV)) {
+            list.add(new DrivingSkillRollMods(this, tank1));
+        } else {
+            list.add(new NotesTable(this, 12));
+        }
         ClusterHitsTable table = new ClusterHitsTable(this, tank1);
         if (table.required()) {
             list.add(table);
