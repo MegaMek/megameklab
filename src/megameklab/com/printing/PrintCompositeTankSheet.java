@@ -115,7 +115,8 @@ public class PrintCompositeTankSheet extends PrintRecordSheet {
         g = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
         g.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
                 String.format("%s(%f 0 0 %f %f %f)", SVGConstants.SVG_MATRIX_VALUE,
-                        ratio, ratio, pageFormat.getImageableX(), pageFormat.getImageableHeight() * 0.5 * ratio));
+                        ratio, ratio, pageFormat.getImageableX(),
+                        (pageFormat.getImageableY() + pageFormat.getImageableHeight()) * 0.5 * ratio));
         g.appendChild(getSVGDocument().importNode(sheet.getSVGDocument().getDocumentElement(), true));
         getSVGDocument().getDocumentElement().appendChild(g);
         if (includeReferenceCharts()) {
