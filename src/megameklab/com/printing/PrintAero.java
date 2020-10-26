@@ -18,6 +18,7 @@
 package megameklab.com.printing;
 
 import megamek.common.*;
+import megameklab.com.printing.reference.*;
 import megameklab.com.util.ImageHelper;
 import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
@@ -27,10 +28,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.print.PageFormat;
 import java.io.File;
 import java.text.DecimalFormat;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.StringJoiner;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -281,5 +279,25 @@ public class PrintAero extends PrintEntity {
     @Override
     protected String formatRun() {
         return Integer.toString(getEntity().getRunMP());
+    }
+
+    @Override
+    protected boolean includeReferenceCharts() {
+        return options.showReferenceCharts();
+    }
+
+    @Override
+    protected List<ReferenceTable> getRightSideReferenceTables() {
+        List<ReferenceTable> list = new ArrayList<>();
+        return list;
+    }
+
+    @Override
+    protected void addReferenceCharts(PageFormat pageFormat) {
+        super.addReferenceCharts(pageFormat);
+        AeroHitLocation table = new AeroHitLocation(this);
+        getSVGDocument().getDocumentElement().appendChild(table.createTable(pageFormat.getImageableX(),
+                pageFormat.getImageableY() + pageFormat.getImageableHeight() * TABLE_RATIO + 3.0,
+                pageFormat.getImageableWidth() * 0.5, pageFormat.getImageableHeight() * 0.2 - 3.0));
     }
 }
