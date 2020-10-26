@@ -18,6 +18,8 @@ import megameklab.com.printing.PrintEntity;
 import megameklab.com.printing.PrintRecordSheet;
 import org.apache.batik.util.SVGConstants;
 
+import java.text.NumberFormat;
+
 /**
  * General table for movement costs
  */
@@ -177,13 +179,25 @@ public class MovementCost extends ReferenceTable {
         addRow(bundle.getString("costToEnterAnyHex"), "", "", "1");
         addRow(bundle.getString("maximumChange"), "", "",
                 entity.isSuperHeavy() ? "+/- 1 MP" : "+/- 2 MP");
-        addRow(bundle.getString("trailerWeight"), "", "", bundle.getString("mpReduction"));
-        addRow("", bundle.getString("lteHalfTractor"), "", bundle.getString("none"));
-        addRow("", bundle.getString("lte2xTractor"), "", bundle.getString("lowerOf"));
-        addRow("", "", "", bundle.getString("minusThreeOrThird"));
-        addRow("", bundle.getString("lte4xTractor"), "", "-1/2 MP");
-        addRow("", bundle.getString("lte5xTractor"), "", "-2/3 MP");
-        addRow("", bundle.getString("gt5xTractor"), "", bundle.getString("prohibited"));
-        addRow("", bundle.getString("minimum"), "", "2 MP");
+        if (entity.isTractor()) {
+            addRow(bundle.getString("trailerWeight"), "", "", bundle.getString("cruiseMP"));
+            addRow("", "<=" + formatWeightThreshold(0.5), "", String.valueOf(entity.getWalkMP()));
+            addRow("", "<=" + formatWeightThreshold(2.0), "",
+                    String.valueOf(Math.max(2, entity.getWalkMP() - Math.min(3, entity.getWalkMP() * 2 / 3))));
+            addRow("", "<=" + formatWeightThreshold(4.0), "",
+                    String.valueOf(Math.max(2, entity.getWalkMP() - entity.getWalkMP() / 2)));
+            addRow("", "<=" + formatWeightThreshold(5.0), "",
+                    String.valueOf(Math.max(2, entity.getWalkMP() - entity.getWalkMP() / 3)));
+            addRow("", ">" + formatWeightThreshold(5.0), "", bundle.getString("prohibited"));
+        }
+    }
+
+    private String formatWeightThreshold(double multiplier) {
+        if (entity.getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT) {
+            return NumberFormat.getNumberInstance().format((int) (entity.getWeight() * 1000 * multiplier))
+                    + " kg";
+        } else {
+            return NumberFormat.getNumberInstance().format(entity.getWeight() * multiplier) + " tons";
+        }
     }
 }
