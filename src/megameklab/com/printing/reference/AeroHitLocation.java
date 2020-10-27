@@ -13,6 +13,7 @@
  */
 package megameklab.com.printing.reference;
 
+import megamek.common.Jumpship;
 import megamek.common.SmallCraft;
 import megameklab.com.printing.PrintAero;
 
@@ -20,16 +21,24 @@ import megameklab.com.printing.PrintAero;
  *
  */
 public class AeroHitLocation extends ReferenceTable {
+    private final static double[] capitalOffsets = {0.1, 0.3, 0.55, 0.8};
+    private final static double[] standardOffsets = {0.1, 0.3, 0.5, 0.7, 0.9};
 
     public AeroHitLocation(PrintAero sheet) {
-        super(sheet, 0.1, 0.3, 0.5, 0.7, 0.9);
-        setHeaders(bundle.getString("dieRoll2d6"), bundle.getString("nose"),
-                bundle.getString("side"), bundle.getString("aft"),
-                bundle.getString("aboveBelow"));
-        if (sheet.getEntity() instanceof SmallCraft) {
-            addSCDSRows();
+        super(sheet, (sheet.getEntity() instanceof Jumpship) ? capitalOffsets : standardOffsets);
+        if (sheet.getEntity() instanceof Jumpship) {
+            setHeaders(bundle.getString("dieRoll2d6"), bundle.getString("nose"),
+                    bundle.getString("side"), bundle.getString("aft"));
+            addAdvancedAeroRows();
         } else {
-            addFighterRows();
+            setHeaders(bundle.getString("dieRoll2d6"), bundle.getString("nose"),
+                    bundle.getString("side"), bundle.getString("aft"),
+                    bundle.getString("aboveBelow"));
+            if (sheet.getEntity() instanceof SmallCraft) {
+                addSCDSRows();
+            } else {
+                addFighterRows();
+            }
         }
     }
 
@@ -78,6 +87,42 @@ public class AeroHitLocation extends ReferenceTable {
                 bundle.getString("aft") + "/" + bundle.getString("fuel"),
                 bundle.getString("aft") + "/" + bundle.getString("weapon"),
                 bundle.getString("aft") + "/" + bundle.getString("weapon"));
+    }
+
+    private void addAdvancedAeroRows() {
+        addRow("2", bundle.getString("nose") + "/" + bundle.getString("lifeSupport"),
+                bundle.getString("aft") + "/" + bundle.getString("fuel"),
+                bundle.getString("nose") + "/" + bundle.getString("avionics"));
+        addRow("3", bundle.getString("nose") + "/" + bundle.getString("control"),
+                bundle.getString("aft") + "/" + bundle.getString("avionics"),
+                bundle.getString("frontSide") + "/" + bundle.getString("sensors"));
+        addRow("4", bundle.getString("foreRight") + "/" + bundle.getString("weapon"),
+                bundle.getString("aftRight") + "/" + bundle.getString("weapon"),
+                bundle.getString("frontSide") + "/" + bundle.getString("frontSideWeapon"));
+        addRow("5", bundle.getString("foreRight") + "/" + bundle.getString("thruster"),
+                bundle.getString("aftRight") + "/" + bundle.getString("thruster"),
+                bundle.getString("frontSide") + "/" + bundle.getString("dockingCollar"));
+        addRow("6", bundle.getString("nose") + "/" + bundle.getString("cic"),
+                bundle.getString("aft") + "/" + bundle.getString("engine"),
+                bundle.getString("frontSide") + "/" + bundle.getString("kfDrive"));
+        addRow("7", bundle.getString("nose") + "/" + bundle.getString("weapon"),
+                bundle.getString("aft") + "/" + bundle.getString("weapon"),
+                bundle.getString("aftSide") + "/" + bundle.getString("broadsideWeapon"));
+        addRow("8", bundle.getString("nose") + "/" + bundle.getString("sensors"),
+                bundle.getString("aft") + "/" + bundle.getString("engine"),
+                bundle.getString("aftSide") + "/" + bundle.getString("gravDeck"));
+        addRow("9", bundle.getString("foreLeft") + "/" + bundle.getString("thruster"),
+                bundle.getString("aftLeft") + "/" + bundle.getString("thruster"),
+                bundle.getString("aftSide") + "/" + bundle.getString("door"));
+        addRow("10", bundle.getString("foreLeft") + "/" + bundle.getString("weapon"),
+                bundle.getString("aftLeft") + "/" + bundle.getString("weapon"),
+                bundle.getString("aftSide") + "/" + bundle.getString("aftSideWeapon"));
+        addRow("11", bundle.getString("nose") + "/" + bundle.getString("crew"),
+                bundle.getString("aft") + "/" + bundle.getString("control"),
+                bundle.getString("aft") + "/" + bundle.getString("cargo"));
+        addRow("12", bundle.getString("nose") + "/" + bundle.getString("kfDrive"),
+                bundle.getString("aft") + "/" + bundle.getString("kfDrive"),
+                bundle.getString("aft") + "/" + bundle.getString("engine"));
     }
 
     private void addFighterRows() {
