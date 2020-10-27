@@ -19,6 +19,7 @@ VERSION HISTORY:
 + Issue #807:TAG (Light, Man-Portable) is misclassified
 + Issue #746: Weird margins on printing
 + Issue #665: Formatting Issue when printing vehicles or battle armor
++ PR #810: Show munition type on record sheet 
 
 0.47.11 (2020-10-04 2100 UTC)
 + Issue #768: Patchwork armor error
