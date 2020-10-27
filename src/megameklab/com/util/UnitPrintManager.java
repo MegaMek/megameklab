@@ -196,7 +196,7 @@ public class UnitPrintManager {
                     pageCount += pds.getPageCount();
                     sheets.add(pds);
                 } else {
-                    sheets.add(new PrintAero((Aero) unit, pageCount, options));
+                    sheets.add(new PrintAero((Aero) unit, pageCount++, options));
                 }
             } else if (unit instanceof BattleArmor) {
                 baList.add((BattleArmor) unit);
