@@ -289,6 +289,7 @@ public class PrintAero extends PrintEntity {
     @Override
     protected List<ReferenceTable> getRightSideReferenceTables() {
         List<ReferenceTable> list = new ArrayList<>();
+        list.add(new AeroToHitMods(this));
         return list;
     }
 
