@@ -291,6 +291,9 @@ public class PrintAero extends PrintEntity {
         List<ReferenceTable> list = new ArrayList<>();
         list.add(new AeroToHitMods(this));
         list.add(new ControlRollTable(this));
+        if (aero.isFighter() || ((aero instanceof SmallCraft) && !aero.isSpheroid())) {
+            list.add(new StraightMovementTable(this));
+        }
         return list;
     }
 
