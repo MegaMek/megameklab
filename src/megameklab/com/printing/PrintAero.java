@@ -303,9 +303,23 @@ public class PrintAero extends PrintEntity {
     @Override
     protected void addReferenceCharts(PageFormat pageFormat) {
         super.addReferenceCharts(pageFormat);
-        AeroHitLocation table = new AeroHitLocation(this);
-        getSVGDocument().getDocumentElement().appendChild(table.createTable(pageFormat.getImageableX(),
-                pageFormat.getImageableY() + pageFormat.getImageableHeight() * TABLE_RATIO + 3.0,
-                pageFormat.getImageableWidth() * 0.5, pageFormat.getImageableHeight() * 0.2 - 3.0));
+        ReferenceTable table = new AeroHitLocation(this);
+        if ((getEntity() instanceof Jumpship)
+                || (getEntity().getMovementMode().equals(EntityMovementMode.STATION_KEEPING))) {
+            getSVGDocument().getDocumentElement().appendChild(table.createTable(pageFormat.getImageableX(),
+                    pageFormat.getImageableY() + pageFormat.getImageableHeight() * TABLE_RATIO + 3.0,
+                    pageFormat.getImageableWidth() * TABLE_RATIO, pageFormat.getImageableHeight() * 0.2 - 3.0));
+        } else {
+            double x = pageFormat.getImageableX();
+            getSVGDocument().getDocumentElement().appendChild(table.createTable(x,
+                    pageFormat.getImageableY() + pageFormat.getImageableHeight() * TABLE_RATIO + 3.0,
+                    pageFormat.getImageableWidth() * 0.5 - 3.0, pageFormat.getImageableHeight() * 0.2 - 3.0));
+            x += pageFormat.getImageableWidth() * 0.5;
+            table = new AirToGroundAttackTable(this);
+            getSVGDocument().getDocumentElement().appendChild(table.createTable(x,
+                    pageFormat.getImageableY() + pageFormat.getImageableHeight() * TABLE_RATIO + 3.0,
+                    pageFormat.getImageableWidth() * (TABLE_RATIO - 0.5),
+                    pageFormat.getImageableHeight() * 0.2 - 3.0));
+        }
     }
 }
