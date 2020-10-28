@@ -89,6 +89,10 @@ public class AeroToHitMods extends ReferenceTable {
         }
         addRow("", bundle.getString("sensorsHit"), "+1" + bundle.getString("perHit"));
         addRow("", bundle.getString("sensorsDestroyed"), "+5");
-        addRow("", bundle.getString("attackerEvading"), bundle.getString("variable"));
+        if (entity.isLargeCraft()) {
+            addRow("", bundle.getString("attackerEvading"), "+2");
+        } else if (!entity.getMovementMode().equals(EntityMovementMode.AIRSHIP)) {
+            addRow("", bundle.getString("attackerEvading"), bundle.getString("prohibited"));
+        }
     }
 }
