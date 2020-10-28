@@ -294,6 +294,9 @@ public class PrintAero extends PrintEntity {
         if (aero.isFighter() || ((aero instanceof SmallCraft) && !aero.isSpheroid())) {
             list.add(new StraightMovementTable(this));
         }
+        if (!(aero instanceof ConvFighter) && !(aero instanceof SpaceStation)) {
+            list.add(new ChangingFacingCostTable(this));
+        }
         return list;
     }
 
