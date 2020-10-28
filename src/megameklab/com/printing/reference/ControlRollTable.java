@@ -72,14 +72,18 @@ public class ControlRollTable extends ReferenceTable {
         }
         addRow("", bundle.getString("avionicsDamage"), "", "+1" + bundle.getString("perHit"));
         addRow("", bundle.getString("lifeSupportDamage"), "", "+1" + bundle.getString("perHit"));
-        if (!spaceOnly) {
-            addRow("", bundle.getString("atmosphericOperations"), "", "+2");
-        }
         if (entity.getWalkMP() > 0) {
             addRow("", bundle.getString("aboveSafeThrust"), "", "+1");
-            if (!spaceOnly) {
-                addRow("", bundle.getString("above2xSafeThrust"), "", "+1" + bundle.getString("perPoint"));
+        }
+        if (!spaceOnly) {
+            // Combining +2 atmospheric mod with the unit type adjustment
+            if (entity instanceof Dropship) {
+                addRow("", bundle.getString("atmosphericOperations"), "", ((Dropship) entity).isSpheroid() ? "+3" : "+2");
+            } else {
+                addRow("", bundle.getString("atmosphericOperations"), "", "+1");
             }
+            addRow("", "", bundle.getString("per20points"), "+1");
+            addRow("", "", bundle.getString("above2xSafeThrust"), "+1" + bundle.getString("perPoint"));
         }
     }
 }
