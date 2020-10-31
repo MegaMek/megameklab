@@ -218,8 +218,6 @@ public class InventoryWriter {
                 if (m.getLocation() != Entity.LOC_NONE) {
                     String shortName = m.getType().getShortName().replace("Ammo", "");
                     shortName = shortName.replace("(Clan)", "");
-                    String munition = ((AmmoType) m.getType()).getSubMunitionName().replace("(Clan) ", "");
-                    shortName = shortName.replace(munition, "");
                     ammo.merge(shortName.trim(), m.getBaseShotsLeft(), Integer::sum);
                 } else if ((sheet.getEntity() instanceof Protomech)
                         && (((AmmoType) m.getType()).getAmmoType() == AmmoType.T_IATM)) {
