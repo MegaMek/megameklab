@@ -297,6 +297,10 @@ public class PrintAero extends PrintEntity {
         if (!(aero instanceof ConvFighter) && !(aero instanceof SpaceStation)) {
             list.add(new ChangingFacingCostTable(this));
         }
+        // This goes at the bottom for other units
+        if (aero instanceof Warship) {
+            list.add(new RandomMovementTable(this, true));
+        }
         return list;
     }
 
@@ -311,15 +315,21 @@ public class PrintAero extends PrintEntity {
                     pageFormat.getImageableWidth() * TABLE_RATIO, pageFormat.getImageableHeight() * 0.2 - 3.0));
         } else {
             double x = pageFormat.getImageableX();
+            double height = pageFormat.getImageableHeight() * (1 - TABLE_RATIO);
             getSVGDocument().getDocumentElement().appendChild(table.createTable(x,
                     pageFormat.getImageableY() + pageFormat.getImageableHeight() * TABLE_RATIO + 3.0,
-                    pageFormat.getImageableWidth() * 0.5 - 3.0, pageFormat.getImageableHeight() * 0.2 - 3.0));
+                    pageFormat.getImageableWidth() * 0.5 - 3.0, height - 3.0));
             x += pageFormat.getImageableWidth() * 0.5;
             table = new AirToGroundAttackTable(this);
             getSVGDocument().getDocumentElement().appendChild(table.createTable(x,
                     pageFormat.getImageableY() + pageFormat.getImageableHeight() * TABLE_RATIO + 3.0,
                     pageFormat.getImageableWidth() * (TABLE_RATIO - 0.5),
-                    pageFormat.getImageableHeight() * 0.2 - 3.0));
+                    height * 0.5 - 3.0));
+            table = new RandomMovementTable(this, false);
+            getSVGDocument().getDocumentElement().appendChild(table.createTable(x,
+                    pageFormat.getImageableY() + pageFormat.getImageableHeight() * TABLE_RATIO + 3.0 + height * 0.5,
+                    pageFormat.getImageableWidth() * (TABLE_RATIO - 0.5),
+                    height * 0.5 - 3.0));
         }
     }
 }
