@@ -19,7 +19,10 @@ VERSION HISTORY:
 + Issue #807:TAG (Light, Man-Portable) is misclassified
 + Issue #746: Weird margins on printing
 + Issue #665: Formatting Issue when printing vehicles or battle armor
-+ PR #810: Show munition type on record sheet 
++ PR #810: Show munition type on record sheet
++ Issue #812: Super-heavy trailer not possible (Combat Vehicles)
++ PR #812: Add optional reference tables for vehicle record sheets
++ PR #818: Optional reference tables for aerospace record sheets
 
 0.47.11 (2020-10-04 2100 UTC)
 + Issue #768: Patchwork armor error
