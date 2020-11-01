@@ -318,6 +318,10 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
                 return AERODYNE_ARCS[mount.getLocation()];
             }
         }
+        if (mount.getSecondLocation() != Entity.LOC_NONE) {
+            return mount.getEntity().getLocationAbbr(mount.getLocation())
+                    + "/" + mount.getEntity().getLocationAbbr(mount.getSecondLocation());
+        }
         return mount.getEntity().getLocationAbbr(mount.getLocation());
     }
 
