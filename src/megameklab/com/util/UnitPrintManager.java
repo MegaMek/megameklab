@@ -178,7 +178,7 @@ public class UnitPrintManager {
             } else if ((unit instanceof Tank) && ((unit.getMovementMode() == EntityMovementMode.NAVAL) || (unit.getMovementMode() == EntityMovementMode.SUBMARINE) || (unit.getMovementMode() == EntityMovementMode.HYDROFOIL))) {
                 sheets.add(new PrintTank((Tank) unit, pageCount++, options));
             } else if (unit instanceof Tank) {
-                if (singlePrint) {
+                if (singlePrint || options.showReferenceCharts()) {
                     sheets.add(new PrintCompositeTankSheet((Tank) unit, null, pageCount++, options));
                 } else if (null != tank1) {
                     sheets.add(new PrintCompositeTankSheet(tank1, (Tank) unit, pageCount++, options));

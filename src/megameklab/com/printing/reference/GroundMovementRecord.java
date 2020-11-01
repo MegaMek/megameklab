@@ -13,7 +13,6 @@
  */
 package megameklab.com.printing.reference;
 
-import megameklab.com.printing.PrintEntity;
 import megameklab.com.printing.PrintRecordSheet;
 import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
@@ -26,8 +25,12 @@ import static megameklab.com.printing.PrintRecordSheet.svgNS;
  * Generates a table for tracking movement of ground units for each turn
  */
 public class GroundMovementRecord extends ReferenceTableBase {
-    public GroundMovementRecord(PrintEntity sheet) {
+
+    private final boolean showHeat;
+
+    public GroundMovementRecord(PrintRecordSheet sheet, boolean showHeat) {
         super(sheet);
+        this.showHeat = showHeat;
     }
 
     @Override
@@ -49,8 +52,9 @@ public class GroundMovementRecord extends ReferenceTableBase {
         double colOffset = x + width * 0.2;
         double colWidth = (width - colOffset) / (toTurn - fromTurn + 1);
         StringJoiner path = new StringJoiner(" ");
-        for (int i = 0; i <= 4; i++) {
-            path.add(String.format("M %f,%f h %f", x, y + height * 0.2 * i, width));
+        int rows = showHeat ? 4 : 3;
+        for (int i = 0; i <= rows; i++) {
+            path.add(String.format("M %f,%f h %f", x, y + height / rows * i, width));
         }
         for (int i = 0; i <= toTurn - fromTurn; i++) {
             path.add(String.format("M %f,%f v %f", colOffset + i * colWidth, y, height));
@@ -68,14 +72,16 @@ public class GroundMovementRecord extends ReferenceTableBase {
         double startY = y + (height - sheet.getFontHeight(fontSize)) * 0.5 - 1 - height * 0.2;
         parent.appendChild(createTextElement(x + PADDING, startY, bundle.getString("turnNum"),
                 fontSize, SVGConstants.SVG_BOLD_VALUE));
-        parent.appendChild(createTextElement(x + PADDING, height * 0.2 + startY, bundle.getString("hexFacing"),
+        parent.appendChild(createTextElement(x + PADDING, height / rows + startY, bundle.getString("hexFacing"),
                 fontSize, SVGConstants.SVG_BOLD_VALUE));
-        parent.appendChild(createTextElement(x + PADDING, height * 0.4 + startY, bundle.getString("moveMode"),
+        parent.appendChild(createTextElement(x + PADDING, height * 2.0 / rows + startY, bundle.getString("moveMode"),
                 fontSize, SVGConstants.SVG_BOLD_VALUE));
-        parent.appendChild(createTextElement(x + PADDING, height * 0.6 + startY, bundle.getString("hexesMoved"),
+        parent.appendChild(createTextElement(x + PADDING, height * 3.0 * rows + startY, bundle.getString("hexesMoved"),
                 fontSize, SVGConstants.SVG_BOLD_VALUE));
-        parent.appendChild(createTextElement(x + PADDING, height * 0.8 + startY, bundle.getString("heat"),
-                fontSize, SVGConstants.SVG_BOLD_VALUE));
+        if (showHeat) {
+            parent.appendChild(createTextElement(x + PADDING, height * 4.0 * rows + startY, bundle.getString("heat"),
+                    fontSize, SVGConstants.SVG_BOLD_VALUE));
+        }
         for (int i = 0; i <= toTurn - fromTurn; i++) {
             parent.appendChild(createTextElement(startX + i * colWidth, startY, String.valueOf(fromTurn + i), fontSize,
                     SVGConstants.SVG_BOLD_VALUE, PrintRecordSheet.FILL_BLACK, SVGConstants.SVG_MIDDLE_VALUE,

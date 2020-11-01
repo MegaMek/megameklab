@@ -15,6 +15,7 @@ package megameklab.com.printing.reference;
 
 import megamek.common.*;
 import megameklab.com.printing.PrintEntity;
+import megameklab.com.printing.PrintRecordSheet;
 
 import java.util.*;
 
@@ -27,8 +28,12 @@ public class ClusterHitsTable extends ReferenceTable {
     private boolean hasHAG;
 
     public ClusterHitsTable(PrintEntity sheet) {
+        this(sheet, sheet.getEntity());
+    }
+
+    public ClusterHitsTable(PrintRecordSheet sheet, Entity entity) {
         super(sheet);
-        calculateClusterSizes(sheet.getEntity());
+        calculateClusterSizes(entity);
         if (!clusterSizes.isEmpty()) {
             List<Double> offsets = new ArrayList<>();
             double spacing = 0.9 / (clusterSizes.size() + 1);
@@ -43,7 +48,7 @@ public class ClusterHitsTable extends ReferenceTable {
             }
             setHeaders(headers);
             addRows();
-            addNotes(sheet.getEntity());
+            addNotes(entity);
         }
     }
 

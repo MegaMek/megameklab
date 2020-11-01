@@ -17,9 +17,11 @@
  */
 package megameklab.com.printing;
 
+import megamek.common.EntityMovementMode;
 import megamek.common.Tank;
 import megamek.common.VTOL;
 import megamek.common.annotations.Nullable;
+import megameklab.com.printing.reference.*;
 import org.apache.batik.anim.dom.SVGDOMImplementation;
 import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.DOMImplementation;
@@ -89,19 +91,21 @@ public class PrintCompositeTankSheet extends PrintRecordSheet {
 
     @Override
     protected void processImage(int startPage, PageFormat pageFormat) {
-        PrintRecordSheet sheet = new PrintTank(tank1, getFirstPage(), options);
+        double ratio = includeReferenceCharts() ? TABLE_RATIO : 1.0;
+        RecordSheetOptions subOptions = new RecordSheetOptions(options);
+        subOptions.setReferenceCharts(false);
+        PrintRecordSheet sheet = new PrintTank(tank1, getFirstPage(), subOptions);
         sheet.createDocument(startPage, pageFormat, false);
         Element g = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
         g.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
-                String.format("%s(%f %f)", SVGConstants.SVG_TRANSLATE_VALUE,
-                        pageFormat.getImageableX(),
-                        pageFormat.getImageableY()));
+                String.format("%s(%f 0 0 %f %f %f)", SVGConstants.SVG_MATRIX_VALUE,
+                        ratio, ratio, pageFormat.getImageableX(), pageFormat.getImageableY()));
         sheet.hideElement(FOOTER);
         g.appendChild(getSVGDocument().importNode(sheet.getSVGDocument().getDocumentElement(), true));
         getSVGDocument().getDocumentElement().appendChild(g);
 
         if (tank2 != null) {
-            sheet = new PrintTank(tank2, getFirstPage(), options);
+            sheet = new PrintTank(tank2, getFirstPage(), subOptions);
         } else if (tank1 instanceof VTOL) {
             sheet = new VTOLTables(options);
         } else {
@@ -110,11 +114,14 @@ public class PrintCompositeTankSheet extends PrintRecordSheet {
         sheet.createDocument(startPage, pageFormat, false);
         g = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
         g.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
-                String.format("%s(%f %f)", SVGConstants.SVG_TRANSLATE_VALUE,
-                        pageFormat.getImageableX(),
-                        pageFormat.getImageableHeight() * 0.5 + pageFormat.getImageableY()));
+                String.format("%s(%f 0 0 %f %f %f)", SVGConstants.SVG_MATRIX_VALUE,
+                        ratio, ratio, pageFormat.getImageableX(),
+                        pageFormat.getImageableY() + pageFormat.getImageableHeight() * 0.5 * ratio));
         g.appendChild(getSVGDocument().importNode(sheet.getSVGDocument().getDocumentElement(), true));
         getSVGDocument().getDocumentElement().appendChild(g);
+        if (includeReferenceCharts()) {
+            addReferenceCharts(pageFormat);
+        }
     }
 
     @Override
@@ -171,5 +178,37 @@ public class PrintCompositeTankSheet extends PrintRecordSheet {
         public List<String> getBookmarkNames() {
             return Collections.emptyList();
         }
+    }
+
+    @Override
+    protected boolean includeReferenceCharts() {
+        return options.showReferenceCharts();
+    }
+
+    @Override
+    protected List<ReferenceTable> getRightSideReferenceTables() {
+        List<ReferenceTable> list = new ArrayList<>();
+        list.add(new MekVeeToHitMods(this, tank1));
+        list.add(new MovementCost(this, tank1));
+        if (!tank1.getMovementMode().equals(EntityMovementMode.RAIL)
+                && !tank1.getMovementMode().equals(EntityMovementMode.MAGLEV)) {
+            list.add(new DrivingSkillRollMods(this, tank1));
+        } else {
+            list.add(new NotesTable(this, 12));
+        }
+        ClusterHitsTable table = new ClusterHitsTable(this, tank1);
+        if (table.required()) {
+            list.add(table);
+        }
+        return list;
+    }
+
+    @Override
+    protected void addReferenceCharts(PageFormat pageFormat) {
+        super.addReferenceCharts(pageFormat);
+        GroundMovementRecord table = new GroundMovementRecord(this, false);
+        getSVGDocument().getDocumentElement().appendChild(table.createTable(pageFormat.getImageableX(),
+                pageFormat.getImageableY() + pageFormat.getImageableHeight() * TABLE_RATIO + 3.0,
+                pageFormat.getImageableWidth() * TABLE_RATIO, pageFormat.getImageableHeight() * 0.2 - 3.0));
     }
 }

@@ -17,6 +17,7 @@ import megamek.common.EquipmentType;
 import megamek.common.annotations.Nullable;
 import megamek.common.logging.LogLevel;
 import megameklab.com.MegaMekLab;
+import megameklab.com.printing.reference.ReferenceTable;
 import megameklab.com.util.CConfig;
 import org.apache.avalon.framework.configuration.Configuration;
 import org.apache.avalon.framework.configuration.ConfigurationException;
@@ -867,5 +868,25 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      */
     protected boolean includeReferenceCharts() {
         return false;
+    }
+
+    protected List<ReferenceTable> getRightSideReferenceTables() {
+        return Collections.emptyList();
+    }
+
+    protected void addReferenceCharts(PageFormat pageFormat) {
+        List<ReferenceTable> rightSide = getRightSideReferenceTables();
+        double lines = rightSide.stream().mapToDouble(ReferenceTable::lineCount).sum();
+
+        double ypos = pageFormat.getImageableY();
+        double margin = ReferenceTable.getMargins(this);
+        for (ReferenceTable table : rightSide) {
+            double height = (pageFormat.getImageableHeight() - margin * rightSide.size())
+                    * table.lineCount() / lines + margin;
+            getSVGDocument().getDocumentElement().appendChild(
+                    table.createTable(pageFormat.getImageableX() + pageFormat.getImageableWidth() * 0.8 + 3.0,
+                            ypos, pageFormat.getImageableWidth() * 0.2, height));
+            ypos += height;
+        }
     }
 }
