@@ -293,7 +293,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             svgGenerator = new SVGGraphics2D(context, false);
             double ratio = Math.min(pageFormat.getImageableWidth() / (options.getPaperSize().pxWidth - 36),
                     pageFormat.getPaper().getImageableHeight() / (options.getPaperSize().pxHeight - 36));
-            if (includeReferenceCharts()) {
+            if ((pageIndex == firstPage) && includeReferenceCharts()) {
                 ratio *= TABLE_RATIO;
             }
             Element svgRoot = svgDocument.getDocumentElement();

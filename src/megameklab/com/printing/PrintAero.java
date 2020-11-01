@@ -18,6 +18,7 @@
 package megameklab.com.printing;
 
 import megamek.common.*;
+import megameklab.com.printing.reference.*;
 import megameklab.com.util.ImageHelper;
 import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
@@ -27,10 +28,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.print.PageFormat;
 import java.io.File;
 import java.text.DecimalFormat;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.StringJoiner;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -281,5 +279,57 @@ public class PrintAero extends PrintEntity {
     @Override
     protected String formatRun() {
         return Integer.toString(getEntity().getRunMP());
+    }
+
+    @Override
+    protected boolean includeReferenceCharts() {
+        return options.showReferenceCharts();
+    }
+
+    @Override
+    protected List<ReferenceTable> getRightSideReferenceTables() {
+        List<ReferenceTable> list = new ArrayList<>();
+        list.add(new AeroToHitMods(this));
+        list.add(new ControlRollTable(this));
+        if (aero.isFighter() || ((aero instanceof SmallCraft) && !aero.isSpheroid())) {
+            list.add(new StraightMovementTable(this));
+        }
+        if (!(aero instanceof ConvFighter) && !(aero instanceof SpaceStation)) {
+            list.add(new ChangingFacingCostTable(this));
+        }
+        // This goes at the bottom for other units
+        if (aero instanceof Warship) {
+            list.add(new RandomMovementTable(this, true));
+        }
+        return list;
+    }
+
+    @Override
+    protected void addReferenceCharts(PageFormat pageFormat) {
+        super.addReferenceCharts(pageFormat);
+        ReferenceTable table = new AeroHitLocation(this);
+        if ((getEntity() instanceof Jumpship)
+                || (getEntity().getMovementMode().equals(EntityMovementMode.STATION_KEEPING))) {
+            getSVGDocument().getDocumentElement().appendChild(table.createTable(pageFormat.getImageableX(),
+                    pageFormat.getImageableY() + pageFormat.getImageableHeight() * TABLE_RATIO + 3.0,
+                    pageFormat.getImageableWidth() * TABLE_RATIO, pageFormat.getImageableHeight() * 0.2 - 3.0));
+        } else {
+            double x = pageFormat.getImageableX();
+            double height = pageFormat.getImageableHeight() * (1 - TABLE_RATIO);
+            getSVGDocument().getDocumentElement().appendChild(table.createTable(x,
+                    pageFormat.getImageableY() + pageFormat.getImageableHeight() * TABLE_RATIO + 3.0,
+                    pageFormat.getImageableWidth() * 0.5 - 3.0, height - 3.0));
+            x += pageFormat.getImageableWidth() * 0.5;
+            table = new AirToGroundAttackTable(this);
+            getSVGDocument().getDocumentElement().appendChild(table.createTable(x,
+                    pageFormat.getImageableY() + pageFormat.getImageableHeight() * TABLE_RATIO + 3.0,
+                    pageFormat.getImageableWidth() * (TABLE_RATIO - 0.5),
+                    height * 0.5 - 3.0));
+            table = new RandomMovementTable(this, false);
+            getSVGDocument().getDocumentElement().appendChild(table.createTable(x,
+                    pageFormat.getImageableY() + pageFormat.getImageableHeight() * TABLE_RATIO + 3.0 + height * 0.5,
+                    pageFormat.getImageableWidth() * (TABLE_RATIO - 0.5),
+                    height * 0.5 - 3.0));
+        }
     }
 }
