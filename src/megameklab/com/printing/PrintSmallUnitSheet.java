@@ -155,7 +155,7 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
         list.add(new MekVeeToHitMods(this, entities.get(0)));
         list.add(new MovementCost(this, entities.get(0)));
         ClusterHitsTable table = new ClusterHitsTable(this, entities);
-        if (table.required()) {
+        if (table.required() && table.columnCount() <= 10) {
             list.add(table);
         }
         return list;
@@ -164,7 +164,15 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
     @Override
     protected void addReferenceCharts(PageFormat pageFormat) {
         super.addReferenceCharts(pageFormat);
-        GroundMovementRecord table = new GroundMovementRecord(this, false);
+        ClusterHitsTable clusterTable = new ClusterHitsTable(this, entities);
+        if (clusterTable.columnCount() > 10) {
+            printBottomTable(clusterTable, pageFormat);
+        } else {
+            printBottomTable(new GroundMovementRecord(this, false), pageFormat);
+        }
+    }
+
+    private void printBottomTable(ReferenceTableBase table, PageFormat pageFormat) {
         getSVGDocument().getDocumentElement().appendChild(table.createTable(pageFormat.getImageableX(),
                 pageFormat.getImageableY() + pageFormat.getImageableHeight() * TABLE_RATIO + 3.0,
                 pageFormat.getImageableWidth() * TABLE_RATIO, pageFormat.getImageableHeight() * 0.2 - 3.0));

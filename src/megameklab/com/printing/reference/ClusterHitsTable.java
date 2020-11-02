@@ -158,4 +158,8 @@ public class ClusterHitsTable extends ReferenceTable {
     public boolean required() {
         return !clusterSizes.isEmpty();
     }
+
+    public int columnCount() {
+        return clusterSizes.size();
+    }
 }

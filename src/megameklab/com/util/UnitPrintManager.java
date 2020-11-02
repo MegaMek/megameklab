@@ -216,7 +216,7 @@ public class UnitPrintManager {
                 }
             } else if (unit instanceof Protomech) {
                 protoList.add((Protomech) unit);
-                if (singlePrint || protoList.size() > 3) {
+                if (singlePrint || protoList.size() > 4) {
                     PrintRecordSheet prs = new PrintSmallUnitSheet(protoList, pageCount, options);
                     pageCount += prs.getPageCount();
                     sheets.add(prs);
