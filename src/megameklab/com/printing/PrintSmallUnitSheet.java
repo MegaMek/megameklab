@@ -15,6 +15,7 @@
 package megameklab.com.printing;
 
 import megamek.common.*;
+import megameklab.com.printing.reference.*;
 import megameklab.com.util.ImageHelper;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGRectElement;
@@ -79,6 +80,9 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
             count++;
         }
         drawFluffImage();
+        if (includeReferenceCharts()) {
+            addReferenceCharts(pageFormat);
+        }
     }
 
     private PrintEntity getBlockFor(Entity entity, int index) {
@@ -138,5 +142,31 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
                 hideElement(DEFAULT_FLUFF_IMAGE, true);
             }
         }
+    }
+
+    @Override
+    protected boolean includeReferenceCharts() {
+        return options.showReferenceCharts();
+    }
+
+    @Override
+    protected List<ReferenceTable> getRightSideReferenceTables() {
+        List<ReferenceTable> list = new ArrayList<>();
+        list.add(new MekVeeToHitMods(this, entities.get(0)));
+        list.add(new MovementCost(this, entities.get(0)));
+        ClusterHitsTable table = new ClusterHitsTable(this, entities);
+        if (table.required()) {
+            list.add(table);
+        }
+        return list;
+    }
+
+    @Override
+    protected void addReferenceCharts(PageFormat pageFormat) {
+        super.addReferenceCharts(pageFormat);
+        GroundMovementRecord table = new GroundMovementRecord(this, false);
+        getSVGDocument().getDocumentElement().appendChild(table.createTable(pageFormat.getImageableX(),
+                pageFormat.getImageableY() + pageFormat.getImageableHeight() * TABLE_RATIO + 3.0,
+                pageFormat.getImageableWidth() * TABLE_RATIO, pageFormat.getImageableHeight() * 0.2 - 3.0));
     }
 }

@@ -14,6 +14,7 @@
 package megameklab.com.printing.reference;
 
 import megamek.common.*;
+import megamek.common.weapons.missiles.MissileWeapon;
 import megameklab.com.printing.PrintEntity;
 import megameklab.com.printing.PrintRecordSheet;
 
@@ -34,6 +35,18 @@ public class ClusterHitsTable extends ReferenceTable {
     public ClusterHitsTable(PrintRecordSheet sheet, Entity entity) {
         super(sheet);
         calculateClusterSizes(entity);
+        addTable(entity);
+    }
+
+    public ClusterHitsTable(PrintRecordSheet sheet, List<Entity> entities) {
+        super(sheet);
+        for (Entity en : entities) {
+            calculateClusterSizes(en);
+        }
+        addTable(entities.get(0));
+    }
+
+    private void addTable(Entity entity) {
         if (!clusterSizes.isEmpty()) {
             List<Double> offsets = new ArrayList<>();
             double spacing = 0.9 / (clusterSizes.size() + 1);
@@ -53,6 +66,20 @@ public class ClusterHitsTable extends ReferenceTable {
     }
 
     private void calculateClusterSizes(Entity entity) {
+        if (entity instanceof Infantry) {
+            int size = ((Infantry) entity).getShootingStrength();
+            for (int i = 2; i <= size; i++) {
+                clusterSizes.add(i);
+            }
+            if (entity instanceof BattleArmor) {
+                for (Mounted mounted : entity.getIndividualWeaponList()) {
+                    if (mounted.getType() instanceof MissileWeapon) {
+                        clusterSizes.add(Math.min(40, size * ((MissileWeapon) mounted.getType()).getRackSize()));
+                    }
+                }
+            }
+            return;
+        }
         for (Mounted mounted : entity.getIndividualWeaponList()) {
             if (mounted.getType() instanceof WeaponType) {
                 final WeaponType weapon = (WeaponType) mounted.getType();
@@ -94,11 +121,6 @@ public class ClusterHitsTable extends ReferenceTable {
                         clusterSizes.add(2);
                         break;
                 }
-            }
-        }
-        if (entity instanceof BattleArmor) {
-            for (int i = 2; i <= ((BattleArmor) entity).getTroopers(); i++) {
-                clusterSizes.add(i);
             }
         }
     }
