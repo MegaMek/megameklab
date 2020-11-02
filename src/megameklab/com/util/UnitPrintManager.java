@@ -208,7 +208,7 @@ public class UnitPrintManager {
                 }
             } else if (unit instanceof Infantry) {
                 infList.add((Infantry) unit);
-                if (singlePrint || infList.size() > 3) {
+                if (singlePrint || infList.size() > (options.showReferenceCharts() ? 2 : 3)) {
                     PrintRecordSheet prs = new PrintSmallUnitSheet(infList, pageCount, options);
                     pageCount += prs.getPageCount();
                     sheets.add(prs);
