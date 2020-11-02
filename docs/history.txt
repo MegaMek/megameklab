@@ -23,6 +23,7 @@ VERSION HISTORY:
 + Issue #812: Super-heavy trailer not possible (Combat Vehicles)
 + PR #812: Add optional reference tables for vehicle record sheets
 + PR #818: Optional reference tables for aerospace record sheets
++ Issue #816: Split equipment not printing second location on RS Weapon and Equipment Inventory
 
 0.47.11 (2020-10-04 2100 UTC)
 + Issue #768: Patchwork armor error
