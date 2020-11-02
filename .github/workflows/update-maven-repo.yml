@@ -34,7 +34,7 @@ jobs:
     # Create the actual maven repo bits with Gradle
     - name: Publish Maven Repo with Gradle
       working-directory: megameklab
-      run: ./gradlew publishPublishMMLibraryPublicationToMavenRepository
+      run: ./gradlew publishPublishMMLibraryPublicationToMavenRepository --stacktrace
     
     # Get the current Maven repo contents
     - name: Checkout Maven Repo
