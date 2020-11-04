@@ -152,7 +152,7 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
     @Override
     protected List<ReferenceTable> getRightSideReferenceTables() {
         List<ReferenceTable> list = new ArrayList<>();
-        list.add(new MekVeeToHitMods(this, entities.get(0)));
+        list.add(new GroundToHitMods(this, entities.get(0)));
         list.add(new MovementCost(this, entities));
         ClusterHitsTable table = new ClusterHitsTable(this, entities);
         if (table.required() && table.columnCount() <= 10) {

@@ -21,7 +21,6 @@ import org.w3c.dom.svg.SVGRectElement;
 
 import java.awt.print.PageFormat;
 import java.io.File;
-import java.text.DecimalFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -228,7 +227,7 @@ public class PrintTank extends PrintEntity {
     @Override
     protected List<ReferenceTable> getRightSideReferenceTables() {
         List<ReferenceTable> list = new ArrayList<>();
-        list.add(new MekVeeToHitMods(this));
+        list.add(new GroundToHitMods(this));
         list.add(new MovementCost(this));
         ClusterHitsTable table = new ClusterHitsTable(this);
         if (table.required()) {

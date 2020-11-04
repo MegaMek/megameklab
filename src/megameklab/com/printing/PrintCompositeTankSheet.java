@@ -188,7 +188,7 @@ public class PrintCompositeTankSheet extends PrintRecordSheet {
     @Override
     protected List<ReferenceTable> getRightSideReferenceTables() {
         List<ReferenceTable> list = new ArrayList<>();
-        list.add(new MekVeeToHitMods(this, tank1));
+        list.add(new GroundToHitMods(this, tank1));
         list.add(new MovementCost(this, tank1));
         if (!tank1.getMovementMode().equals(EntityMovementMode.RAIL)
                 && !tank1.getMovementMode().equals(EntityMovementMode.MAGLEV)) {
