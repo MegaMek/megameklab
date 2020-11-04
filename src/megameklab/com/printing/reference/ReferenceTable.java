@@ -74,9 +74,6 @@ public abstract class ReferenceTable extends ReferenceTableBase {
     }
 
     public void addRow(List<String> row) {
-        if (row.size() != colOffsets.size()) {
-            throw new IllegalArgumentException("Row size must match size of column offsets list");
-        }
         data.add(new ArrayList<>(row));
     }
 
@@ -152,6 +149,9 @@ public abstract class ReferenceTable extends ReferenceTableBase {
         }
         for (List<String> row : data) {
             for (int c = 0; c < row.size(); c++) {
+                if (c == colOffsets.size()) {
+                    break;
+                }
                 String[] lines = row.get(c).split("\\n");
                 for (int l = 0; l < lines.length; l++) {
                     g.appendChild(createTextElement(width * colOffsets.get(c), ypos + rowSpacing * l,
