@@ -27,10 +27,12 @@ import static megameklab.com.printing.PrintRecordSheet.svgNS;
 public class GroundMovementRecord extends ReferenceTableBase {
 
     private final boolean showHeat;
+    private final boolean showFacing;
 
-    public GroundMovementRecord(PrintRecordSheet sheet, boolean showHeat) {
+    public GroundMovementRecord(PrintRecordSheet sheet, boolean showHeat, boolean showFacing) {
         super(sheet);
         this.showHeat = showHeat;
+        this.showFacing = showFacing;
     }
 
     @Override
@@ -72,7 +74,8 @@ public class GroundMovementRecord extends ReferenceTableBase {
         double startY = y + (height - sheet.getFontHeight(fontSize)) * 0.5 - 1 - height * 0.2;
         parent.appendChild(createTextElement(x + PADDING, startY, bundle.getString("turnNum"),
                 fontSize, SVGConstants.SVG_BOLD_VALUE));
-        parent.appendChild(createTextElement(x + PADDING, height / rows + startY, bundle.getString("hexFacing"),
+        parent.appendChild(createTextElement(x + PADDING, height / rows + startY,
+                bundle.getString(showFacing ? "hexFacing" : "hex"),
                 fontSize, SVGConstants.SVG_BOLD_VALUE));
         parent.appendChild(createTextElement(x + PADDING, height * 2.0 / rows + startY, bundle.getString("moveMode"),
                 fontSize, SVGConstants.SVG_BOLD_VALUE));

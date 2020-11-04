@@ -171,7 +171,8 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
         if (clusterTable.columnCount() > 10) {
             printBottomTable(clusterTable, pageFormat);
         } else {
-            printBottomTable(new GroundMovementRecord(this, false), pageFormat);
+            printBottomTable(new GroundMovementRecord(this, false,
+                            entities.get(0) instanceof Protomech), pageFormat);
         }
     }
 
