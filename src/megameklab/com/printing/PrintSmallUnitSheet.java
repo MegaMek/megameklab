@@ -154,6 +154,9 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
         List<ReferenceTable> list = new ArrayList<>();
         list.add(new GroundToHitMods(this, entities.get(0)));
         list.add(new MovementCost(this, entities));
+        if (entities.get(0) instanceof Protomech) {
+            list.add(new ProtomekSpecialHitLocation(this));
+        }
         ClusterHitsTable table = new ClusterHitsTable(this, entities);
         if (table.required() && table.columnCount() <= 10) {
             list.add(table);
