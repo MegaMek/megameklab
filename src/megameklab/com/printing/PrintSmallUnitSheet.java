@@ -156,6 +156,8 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
         list.add(new MovementCost(this, entities));
         if (entities.get(0) instanceof Protomech) {
             list.add(new ProtomekSpecialHitLocation(this));
+        } else if (entities.get(0).isConventionalInfantry()) {
+            list.add(new AntiMekAttackTable(this));
         }
         ClusterHitsTable table = new ClusterHitsTable(this, entities);
         if (table.required() && table.columnCount() <= 10) {
