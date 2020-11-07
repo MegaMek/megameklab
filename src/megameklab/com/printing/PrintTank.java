@@ -21,7 +21,6 @@ import org.w3c.dom.svg.SVGRectElement;
 
 import java.awt.print.PageFormat;
 import java.io.File;
-import java.text.DecimalFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -228,7 +227,7 @@ public class PrintTank extends PrintEntity {
     @Override
     protected List<ReferenceTable> getRightSideReferenceTables() {
         List<ReferenceTable> list = new ArrayList<>();
-        list.add(new MekVeeToHitMods(this));
+        list.add(new GroundToHitMods(this));
         list.add(new MovementCost(this));
         ClusterHitsTable table = new ClusterHitsTable(this);
         if (table.required()) {
@@ -240,7 +239,7 @@ public class PrintTank extends PrintEntity {
     @Override
     protected void addReferenceCharts(PageFormat pageFormat) {
         super.addReferenceCharts(pageFormat);
-        GroundMovementRecord table = new GroundMovementRecord(this, false);
+        GroundMovementRecord table = new GroundMovementRecord(this, false, true);
         getSVGDocument().getDocumentElement().appendChild(table.createTable(pageFormat.getImageableX(),
                 pageFormat.getImageableY() + pageFormat.getImageableHeight() * TABLE_RATIO + 3.0,
                 pageFormat.getImageableWidth() * TABLE_RATIO, pageFormat.getImageableHeight() * 0.2 - 3.0));

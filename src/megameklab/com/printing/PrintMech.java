@@ -785,7 +785,7 @@ public class PrintMech extends PrintEntity {
     protected List<ReferenceTable> getRightSideReferenceTables() {
         List<ReferenceTable> list = new ArrayList<>();
         list.add(new MekHitLocation(this));
-        list.add(new MekVeeToHitMods(this));
+        list.add(new GroundToHitMods(this));
         list.add(new PhysicalAttacks(this));
         list.add(new PunchLocation(this));
         list.add(new KickLocation(this));
@@ -800,7 +800,7 @@ public class PrintMech extends PrintEntity {
     @Override
     protected void addReferenceCharts(PageFormat pageFormat) {
         super.addReferenceCharts(pageFormat);
-        GroundMovementRecord table = new GroundMovementRecord(this, true);
+        GroundMovementRecord table = new GroundMovementRecord(this, true, true);
         getSVGDocument().getDocumentElement().appendChild(table.createTable(pageFormat.getImageableX(),
                 pageFormat.getImageableY() + pageFormat.getImageableHeight() * TABLE_RATIO + 3.0,
                 pageFormat.getImageableWidth() * TABLE_RATIO, pageFormat.getImageableHeight() * 0.2 - 3.0));

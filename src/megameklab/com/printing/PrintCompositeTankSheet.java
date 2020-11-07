@@ -188,7 +188,7 @@ public class PrintCompositeTankSheet extends PrintRecordSheet {
     @Override
     protected List<ReferenceTable> getRightSideReferenceTables() {
         List<ReferenceTable> list = new ArrayList<>();
-        list.add(new MekVeeToHitMods(this, tank1));
+        list.add(new GroundToHitMods(this, tank1));
         list.add(new MovementCost(this, tank1));
         if (!tank1.getMovementMode().equals(EntityMovementMode.RAIL)
                 && !tank1.getMovementMode().equals(EntityMovementMode.MAGLEV)) {
@@ -206,7 +206,7 @@ public class PrintCompositeTankSheet extends PrintRecordSheet {
     @Override
     protected void addReferenceCharts(PageFormat pageFormat) {
         super.addReferenceCharts(pageFormat);
-        GroundMovementRecord table = new GroundMovementRecord(this, false);
+        GroundMovementRecord table = new GroundMovementRecord(this, false, true);
         getSVGDocument().getDocumentElement().appendChild(table.createTable(pageFormat.getImageableX(),
                 pageFormat.getImageableY() + pageFormat.getImageableHeight() * TABLE_RATIO + 3.0,
                 pageFormat.getImageableWidth() * TABLE_RATIO, pageFormat.getImageableHeight() * 0.2 - 3.0));

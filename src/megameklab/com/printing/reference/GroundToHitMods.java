@@ -22,17 +22,17 @@ import org.apache.batik.util.SVGConstants;
 /**
  * To-Hit modifiers for all Meks and vehicles
  */
-public class MekVeeToHitMods extends ReferenceTable {
+public class GroundToHitMods extends ReferenceTable {
     private final Entity entity;
 
     /** The beginning of each range of hex counts for target movement mods */
     private static final int[] TARGET_MOVEMENT_RANGES = {0, 3, 5, 7, 10, 18, 25};
 
-    public MekVeeToHitMods(PrintEntity sheet) {
+    public GroundToHitMods(PrintEntity sheet) {
         this(sheet, sheet.getEntity());
     }
 
-    public MekVeeToHitMods(PrintRecordSheet sheet, Entity entity) {
+    public GroundToHitMods(PrintRecordSheet sheet, Entity entity) {
         super(sheet, 0.02, 0.08, 0.8);
         this.entity = entity;
         setColumnAnchor(0, SVGConstants.SVG_START_VALUE);
@@ -129,6 +129,13 @@ public class MekVeeToHitMods extends ReferenceTable {
         if (!(entity instanceof Infantry)) {
             addRow("", bundle.getString("baTarget"), "+1");
         }
+        if (entity instanceof BattleArmor) {
+            addRow("", bundle.getString("secondaryTarget"), "+1");
+        } else if (!(entity instanceof Infantry)) {
+            addRow("", bundle.getString("secondaryTargetFront"), "+1");
+            addRow("", bundle.getString("secondaryTargetSideRear"), "+2");
+        }
+        addRow("", bundle.getString("largeTarget"), "-1");
     }
 
     private void addDamageMods() {
