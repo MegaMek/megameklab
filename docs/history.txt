@@ -1,6 +1,6 @@
 VERSION HISTORY:
 ----------------
-0.47.12-SNAPSHOT
+0.47.12 (2020-11-08 2230 UTC) 
 + Issue #761: Cost of communications equipment does not reflect size
 + Issue #758: Damage notation for torpedoes and prototype rockets incorrect
 + Issue #762: No cost for heat sinks and power amplifier for spot welders on ICE vehicles
