@@ -1,5 +1,7 @@
 VERSION HISTORY:
 ----------------
+0.47.13-SNAPSHOT
+
 0.47.12 (2020-11-08 2230 UTC) 
 + Issue #761: Cost of communications equipment does not reflect size
 + Issue #758: Damage notation for torpedoes and prototype rockets incorrect
