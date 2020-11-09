@@ -1,6 +1,8 @@
 VERSION HISTORY:
 ----------------
 0.47.13-SNAPSHOT
++ Issue #821: Primitive Armor on large spacecraft errors
++ Issue #823: Primitive dropship engine and control mass by year not applied correctly
 
 0.47.12 (2020-11-08 2230 UTC) 
 + Issue #761: Cost of communications equipment does not reflect size
