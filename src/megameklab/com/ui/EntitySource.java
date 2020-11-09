@@ -13,7 +13,7 @@ import megamek.common.ITechManager;
  */
 public interface EntitySource {
 
-    public Entity getEntity();
+    Entity getEntity();
 
     /**
      * Replace the current Entity with a new one of the indicated type
@@ -56,8 +56,8 @@ public interface EntitySource {
      * @param oldUnit       If not null, the basic information (name, year, source, tech level, manual bv)
      *                      will be copied from the old unit.
      */
-    default void createNewUnit(long entitytype, Entity oldEntity) {
-        createNewUnit(entitytype, false, false, oldEntity);
+    default void createNewUnit(long entitytype, Entity oldUnit) {
+        createNewUnit(entitytype, oldUnit.isPrimitive(), false, oldUnit);
     }
     
     /**
