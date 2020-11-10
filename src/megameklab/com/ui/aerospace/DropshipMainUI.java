@@ -15,7 +15,6 @@ package megameklab.com.ui.aerospace;
 
 import java.awt.BorderLayout;
 
-import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 
@@ -30,7 +29,6 @@ import megamek.common.MechSummaryCache;
 import megamek.common.SimpleTechLevel;
 import megamek.common.SmallCraft;
 import megamek.common.TechConstants;
-import megamek.common.logging.LogLevel;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.Aero.tabs.EquipmentTab;
@@ -52,13 +50,11 @@ public class DropshipMainUI extends MegaMekLabMainUI {
     private static final long serialVersionUID = -4014312789921114515L;
     
     JTabbedPane configPane = new JTabbedPane(SwingConstants.TOP);
-    JPanel contentPane;
     private DropshipStructureTab structureTab;
     private EquipmentTab equipmentTab;
     private PreviewTab previewTab;
     private DropshipBuildTab buildTab;
     private TransportTab transportTab;
-    private FluffTab fluffTab;
     private DropshipStatusBar statusbar;
     
     public DropshipMainUI(boolean primitive) {
@@ -93,8 +89,7 @@ public class DropshipMainUI extends MegaMekLabMainUI {
             setEntity(new Dropship());
             getEntity().setTechLevel(TechConstants.T_IS_TW_NON_BOX);
         } else {
-            MegaMekLab.getLogger().log(DropshipMainUI.class, "createNewUnit(long)", LogLevel.ERROR,
-                    "Received incorrect entityType!");
+            MegaMekLab.getLogger().error("Received incorrect entityType!");
             return;
         }
 
@@ -171,7 +166,7 @@ public class DropshipMainUI extends MegaMekLabMainUI {
         equipmentTab = new EquipmentTab(this);
         buildTab = new DropshipBuildTab(this, equipmentTab);
         transportTab = new TransportTab(this);
-        fluffTab = new FluffTab(this);
+        FluffTab fluffTab = new FluffTab(this);
         structureTab.addRefreshedListener(this);
         equipmentTab.addRefreshedListener(this);
         buildTab.addRefreshedListener(this);
