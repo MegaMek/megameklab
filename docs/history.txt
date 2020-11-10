@@ -1,6 +1,8 @@
 VERSION HISTORY:
 ----------------
 0.47.14-SNAPSHOT
++ Issue #822: Primitive small craft still restricted to 2345 or later
++ Issue #824: Rocket launchers and large craft
 
 0.47.13 (2020-11-09 1600 UTC) 
 + Issue #821: Primitive Armor on large spacecraft errors
