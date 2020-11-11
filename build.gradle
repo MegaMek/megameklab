@@ -243,7 +243,7 @@ task createOSXBundle (dependsOn: jar) {
 distributions {
     // Creates tasks which package distribution with MM jar and startup script in root directory
     unix {
-        baseName = rootProject.name.toLowerCase()
+        distributionBaseName = rootProject.name.toLowerCase()
         contents {
             from (fileStagingDir) {
                 exclude '**/history.txt'
@@ -264,7 +264,7 @@ distributions {
     }
     // Creates tasks which package distribution with MM jar wrapped in Windows executable
     windows {
-        baseName = 'megameklab-windows'
+        distributionBaseName = 'megameklab-windows'
         contents {
             from ("${buildDir}/launch4j") {
                 include '*.exe'
@@ -282,7 +282,7 @@ distributions {
         }
     }
     mac {
-        baseName = 'megameklab-mac'
+        distributionBaseName = 'megameklab-mac'
         contents {
             from osxBundleDir
             from fileStagingDir
