@@ -1,5 +1,7 @@
 VERSION HISTORY:
 ----------------
+0.47.15-SNAPSHOT
+
 0.47.14 (2020-11-15 1930 UTC)
 + Issue #822: Primitive small craft still restricted to 2345 or later
 + Issue #824: Rocket launchers and large craft
