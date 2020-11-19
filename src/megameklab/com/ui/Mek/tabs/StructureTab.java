@@ -1085,7 +1085,7 @@ public class StructureTab extends ITab implements MekBuildListener, ArmorAllocat
             getMech().setOriginalJumpMP(0);
         }
         List<Mounted> jjs = getMech().getMisc().stream()
-                .filter(m -> m.getType() == jumpJet)
+                .filter(m -> jumpJet.equals(m.getType()))
                 .collect(Collectors.toList());
         if (jumpJet.hasFlag(MiscType.F_JUMP_BOOSTER)) {
             if (!getMech().hasWorkingMisc(MiscType.F_JUMP_BOOSTER)) {
@@ -1118,7 +1118,7 @@ public class StructureTab extends ITab implements MekBuildListener, ArmorAllocat
                 .filter(m -> m.getType().hasFlag(MiscType.F_JUMP_JET)
                         || m.getType().hasFlag(MiscType.F_UMU)
                         || m.getType().hasFlag(MiscType.F_JUMP_BOOSTER))
-                .filter(m -> m.getType() != jumpJet)
+                .filter(m -> !jumpJet.equals(m.getType()))
                 .collect(Collectors.toList());
         jjs.forEach(jj -> UnitUtil.removeMounted(getMech(), jj));
         jumpChanged(panMovement.getJump(), jumpJet);

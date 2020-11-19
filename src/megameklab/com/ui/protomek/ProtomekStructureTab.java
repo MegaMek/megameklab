@@ -529,7 +529,7 @@ public class ProtomekStructureTab extends ITab implements ProtomekBuildListener,
             getProtomech().setOriginalJumpMP(0);
         }
         List<Mounted> jjs = getProtomech().getMisc().stream()
-                .filter(m -> m.getType() == jumpJet)
+                .filter(m -> jumpJet.equals(m.getType()))
                 .collect(Collectors.toList());
         while (jjs.size() > jumpMP) {
             UnitUtil.removeMounted(getProtomech(), jjs.remove(jjs.size() - 1));
@@ -555,7 +555,7 @@ public class ProtomekStructureTab extends ITab implements ProtomekBuildListener,
         List<Mounted> jjs = getProtomech().getMisc().stream()
                 .filter(m -> m.getType().hasFlag(MiscType.F_JUMP_JET)
                         || m.getType().hasFlag(MiscType.F_UMU))
-                .filter(m -> m.getType() != jumpJet)
+                .filter(m -> !jumpJet.equals(m.getType()))
                 .collect(Collectors.toList());
         jjs.forEach(jj -> UnitUtil.removeMounted(getProtomech(), jj));
         jumpChanged(panMovement.getJump(), jumpJet);
@@ -678,12 +678,12 @@ public class ProtomekStructureTab extends ITab implements ProtomekBuildListener,
 
     @Override
     public void setEnhancement(EquipmentType eq, boolean selected) {
-        if (null ==  eq) {
+        if (null == eq) {
             return;
         }
         if (selected) {
             for (Mounted m : getProtomech().getMisc()) {
-                if (m.getType() == eq) {
+                if (eq.equals(m.getType())) {
                     return;
                 }
             }
@@ -699,7 +699,7 @@ public class ProtomekStructureTab extends ITab implements ProtomekBuildListener,
             }
         } else {
             Optional<Mounted> mounted = getProtomech().getMisc().stream()
-                    .filter(m -> m.getType() == eq).findFirst();
+                    .filter(m -> eq.equals(m.getType())).findFirst();
             if (mounted.isPresent()) {
                 UnitUtil.removeMounted(getProtomech(), mounted.get());
             }

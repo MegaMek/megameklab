@@ -1284,7 +1284,7 @@ public class UnitUtil {
     public static Mounted findUnallocatedAmmo(Entity unit, EquipmentType at) {
         for (Mounted m : unit.getAmmo()) {
             if ((m.getLocation() == Entity.LOC_NONE)
-                    && (m.getType() == at)
+                    && at.equals(m.getType())
                     && ((m.getLinkedBy() == null)
                             || !m.getLinkedBy().getType().hasFlag(WeaponType.F_ONESHOT))) {
                 return m;

@@ -338,12 +338,12 @@ public class BayWeaponCriticalTree extends JTree {
      * @param shots The number of shots to remove.
      */
     private void removeAmmo(final Mounted ammo, int shots) {
-        AmmoType at = (AmmoType)ammo.getType();
+        AmmoType at = (AmmoType) ammo.getType();
         ammo.setShotsLeft(ammo.getBaseShotsLeft() - shots);
         Mounted unallocated = UnitUtil.findUnallocatedAmmo(eSource.getEntity(), at);
         for (Mounted m : eSource.getEntity().getAmmo()) {
             if ((m.getLocation() == Entity.LOC_NONE)
-                    && (m.getType() == at)) {
+                    && at.equals(m.getType())) {
                 unallocated = m;
                 break;
             }
@@ -1053,7 +1053,7 @@ public class BayWeaponCriticalTree extends JTree {
             // there.
             if (eq.getType() instanceof AmmoType) {
                 Optional<Mounted> addMount = bay.getBayAmmo().stream().map(n -> eSource.getEntity().getEquipment(n))
-                        .filter(m -> m.getType() == eq.getType()).findFirst();
+                        .filter(m -> eq.getType().equals(m.getType())).findFirst();
                 if (addMount.isPresent()) {
                     addMount.get().setShotsLeft(addMount.get().getBaseShotsLeft() + eq.getBaseShotsLeft());
                     updateAmmoCapacity(addMount.get());
@@ -1110,7 +1110,7 @@ public class BayWeaponCriticalTree extends JTree {
     }
     
     public void addAmmoToBay(Mounted bay, Mounted eq, int shots) {
-        AmmoType at = (AmmoType)eq.getType();
+        AmmoType at = (AmmoType) eq.getType();
         eq.setShotsLeft(eq.getBaseShotsLeft() - shots);
         if (eq.getBaseShotsLeft() <= 0) {
             UnitUtil.removeMounted(eSource.getEntity(), eq);
@@ -1118,7 +1118,7 @@ public class BayWeaponCriticalTree extends JTree {
             updateAmmoCapacity(eq);
         }
         Optional<Mounted> addMount = bay.getBayAmmo().stream().map(n -> eSource.getEntity().getEquipment(n))
-                .filter(m -> m.getType() == at).findFirst();
+                .filter(m -> at.equals(m.getType())).findFirst();
         if (addMount.isPresent()) {
             addMount.get().setShotsLeft(addMount.get().getBaseShotsLeft() + shots);
             updateAmmoCapacity(addMount.get());

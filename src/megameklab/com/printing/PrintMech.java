@@ -733,7 +733,7 @@ public class PrintMech extends PrintEntity {
                 critName.append(shots);
             } else if ((cs.getMount2() != null)
                     && (m.getType() instanceof MiscType) && (m.getType().hasFlag(MiscType.F_HEAT_SINK))
-                    && (m.getType() == cs.getMount2().getType())) {
+                    && (m.getType().equals(cs.getMount2().getType()))) {
                 critName.insert(0, "2 ").append("s");
             } else if ((cs.getMount2() != null)
                     && (m.getType() instanceof MiscType) && (m.getType().hasFlag(MiscType.F_COMPACT_HEAT_SINK))
