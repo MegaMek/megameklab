@@ -595,7 +595,7 @@ public class EquipmentTab extends ITab implements ActionListener {
 
     private void addProtomechAmmo(EquipmentType ammo, int shots) throws LocationFullException {
         Mounted aMount = getProtomech().getAmmo().stream()
-                .filter(m -> m.getType() == ammo).findFirst().orElse(null);
+                .filter(m -> ammo.equals(m.getType())).findFirst().orElse(null);
         if (null != aMount) {
             aMount.setShotsLeft(aMount.getUsableShotsLeft() + shots);
         } else {
