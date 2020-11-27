@@ -2,6 +2,7 @@ VERSION HISTORY:
 ----------------
 0.47.15-SNAPSHOT
 + PR #832: Switch to EquipmentType::equals for AmmoType, etc
++ Issue #830: Older primitive small craft get more fuel than newer ones
 
 0.47.14 (2020-11-15 1930 UTC)
 + Issue #822: Primitive small craft still restricted to 2345 or later
