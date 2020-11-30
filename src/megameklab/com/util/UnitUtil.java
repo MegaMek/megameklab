@@ -2507,12 +2507,29 @@ public class UnitUtil {
                 }
             }
         }
+
+        // Removing equipment for construction purposes can shift the equipment indices.
+        // We need to be able to update bay weapon and ammo indices. This includes
+        // weapon bays and machine gun arrays.
+        List<Mounted> oldEquipmentList = new ArrayList<>(unit.getEquipment());
         UnitUtil.removeOneShotAmmo(unit);
 
         if (unit instanceof Mech) {
             UnitUtil.updateLoadedMech((Mech) unit);
         } else if (unit instanceof Aero) {
             UnitUtil.updateLoadedAero((Aero) unit);
+        }
+        // Replace bay weapon and ammo equipment numbers with the current index by looking
+        // up the old index in the old list
+        for (Mounted mounted : unit.getEquipment()) {
+            for (int i = 0; i < mounted.getBayWeapons().size(); i++) {
+                int eqNum = mounted.getBayWeapons().get(i);
+                mounted.getBayWeapons().set(i, unit.getEquipmentNum(oldEquipmentList.get(eqNum)));
+            }
+            for (int i = 0; i < mounted.getBayAmmo().size(); i++) {
+                int eqNum = mounted.getBayAmmo().get(i);
+                mounted.getBayAmmo().set(i, unit.getEquipmentNum(oldEquipmentList.get(eqNum)));
+            }
         }
     }
 
