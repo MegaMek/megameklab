@@ -94,7 +94,7 @@ class SVStatusBar extends ITab {
 
     private JLabel movementLabel() {
         int walk = eSource.getEntity().getOriginalWalkMP();
-        int run = eSource.getEntity().getRunMP(false, true, false);
+        int run = eSource.getEntity().getRunMP(false, true, false, true);
         int jump = eSource.getEntity().getOriginalJumpMP();
 
         move.setText("Movement: " + walk + "/" + run + "/" + jump);
@@ -129,7 +129,7 @@ class SVStatusBar extends ITab {
 
     public void refresh() {
         int walk = eSource.getEntity().getOriginalWalkMP();
-        int run = eSource.getEntity().getRunMP(true, true, false);
+        int run = eSource.getEntity().getRunMP(false, true, false, true);
         int jump = eSource.getEntity().getOriginalJumpMP();
         double tonnage = eSource.getEntity().getWeight();
         double currentTonnage;

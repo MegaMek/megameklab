@@ -108,7 +108,7 @@ public class StatusBar extends ITab {
 
     public JLabel movementLabel() {
         int walk = getTank().getOriginalWalkMP();
-        int run = getTank().getRunMP(false, true, false);
+        int run = getTank().getRunMP(false, true, false, true);
         int jump = getTank().getOriginalJumpMP();
 
         move.setText("Movement: " + walk + "/" + run + "/" + jump);
@@ -143,7 +143,7 @@ public class StatusBar extends ITab {
 
     public void refresh() {
         int walk = getTank().getOriginalWalkMP();
-        int run = getTank().getRunMP(true, true, false);
+        int run = getTank().getRunMP(false, true, false, true);
         int jump = getTank().getOriginalJumpMP();
         double tonnage = getTank().getWeight();
         double currentTonnage;

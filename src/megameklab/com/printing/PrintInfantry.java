@@ -156,7 +156,7 @@ public class PrintInfantry extends PrintEntity {
                 setTextField(MODE_1, "Mechanized SCUBA");
                 break;
             case INF_MOTORIZED:
-                setTextField(MP_1, formatMovement(infantry.getWalkMP(true, true, false)));
+                setTextField(MP_1, formatMovement(infantry.getWalkMP(true, true, false, true)));
                 setTextField(MODE_1, "Motorized");
                 break;
             case INF_LEG:
@@ -436,7 +436,7 @@ public class PrintInfantry extends PrintEntity {
     }
 
     private String formatGroundMP() {
-        int walk = infantry.getWalkMP(true, true, false);
+        int walk = infantry.getWalkMP(true, true, false, true);
         if (walk == 0) {
             return "0*";
         } else {
