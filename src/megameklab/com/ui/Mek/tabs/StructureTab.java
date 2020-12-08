@@ -1360,6 +1360,9 @@ public class StructureTab extends ITab implements MekBuildListener, ArmorAllocat
                 }
                 break;
         }
+        if (getMech().isSuperHeavy()) {
+            crits = (crits + 1) / 2;
+        }
         if (getMech().getEmptyCriticals(location) < crits) {
             JOptionPane .showMessageDialog(
                     null, armor.getName()
