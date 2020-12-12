@@ -5,6 +5,8 @@ VERSION HISTORY:
 + Issue #830: Older primitive small craft get more fuel than newer ones
 + Issue #840: Patchwork Armor on VTOL rotor incorrectly flagged as invalid
 + Issue #841: Superheavy patchwork armor crits
++ Issue #842: Double heatsinks incorrectly switching between Clan and IS versions
++ Issue #844: Talons not handled correctly for superheavies or tripods
 
 0.47.14 (2020-11-15 1930 UTC)
 + Issue #822: Primitive small craft still restricted to 2345 or later
