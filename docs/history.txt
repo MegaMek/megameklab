@@ -1,5 +1,7 @@
 VERSION HISTORY:
 ----------------
+0.47.16 (RC2)-SNAPSHOT
+
 0.47.15 (RC1) (2020-12-14 2330 UTC)
 + PR #832: Switch to EquipmentType::equals for AmmoType, etc
 + Issue #830: Older primitive small craft get more fuel than newer ones
