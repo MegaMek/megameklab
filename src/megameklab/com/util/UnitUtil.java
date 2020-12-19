@@ -423,6 +423,9 @@ public class UnitUtil {
             boolean rearMounted) throws LocationFullException {
         unit.addEquipment(mounted, loc, rearMounted);
         mounted.setOmniPodMounted(canPodMount(unit, mounted));
+        if (mounted.getType().isExplosive(mounted, true) && (unit instanceof Mech) && unit.isClan()) {
+            ((Mech) unit).addClanCase();
+        }
     }
 
     /**
@@ -1226,6 +1229,9 @@ public class UnitUtil {
             } catch (EntityLoadingException ignored) {
                 // Exception thrown for not having equipment to link to yet, which is acceptable here
             }
+        }
+        if (eq.getType().isExplosive(eq, true) && (unit instanceof Mech) && unit.isClan()) {
+            ((Mech) unit).addClanCase();
         }
     }
 
