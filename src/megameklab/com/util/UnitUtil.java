@@ -2534,7 +2534,6 @@ public class UnitUtil {
     }
 
     public static void updateLoadedMech(Mech unit) {
-        UnitUtil.removeClanCase(unit);
         UnitUtil.expandUnitMounts(unit);
         UnitUtil.checkArmor(unit);
     }
