@@ -698,6 +698,11 @@ public class StructureTab extends ITab implements MekBuildListener, ArmorAllocat
                     UnitUtil.changeMountStatus(getMech(), mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
                 }
             }
+            if (tonnage > 100) {
+                getMech().setGyroType(Mech.GYRO_SUPERHEAVY);
+            } else {
+                getMech().setGyroType(Mech.GYRO_STANDARD);
+            }
         }
         getMech().setWeight(tonnage);
         // Force recalculation of walk MP. Set from chassis panel in case superheavy flag changed
