@@ -210,26 +210,26 @@ public class StructureTab extends ITab implements MekBuildListener, ArmorAllocat
         getMech().addEngineCrits();
         switch (getMech().getGyroType()) {
             case Mech.GYRO_COMPACT:
-                clearCritsForGyro(2);
+                clearCritsForGyro(3,2);
                 getMech().addCompactGyro();
                 break;
             case Mech.GYRO_HEAVY_DUTY:
-                clearCritsForGyro(4);
+                clearCritsForGyro(3,4);
                 getMech().addHeavyDutyGyro();
                 break;
             case Mech.GYRO_XL:
-                clearCritsForGyro(6);
+                clearCritsForGyro(3,6);
                 getMech().addXLGyro();
                 break;
             case Mech.GYRO_NONE:
                 UnitUtil.compactCriticals(getMech(), Mech.LOC_CT);
                 break;
             case Mech.GYRO_SUPERHEAVY:
-                clearCritsForGyro(2);
-                getMech().addGyro();
+                clearCritsForGyro(lastEngine + 1, 2);
+                getMech().addSuperheavyGyro();
                 break;
             default:
-                clearCritsForGyro(4);
+                clearCritsForGyro(3,4);
                 getMech().addGyro();
         }
 
@@ -362,8 +362,8 @@ public class StructureTab extends ITab implements MekBuildListener, ArmorAllocat
         }
     }
     
-    private void clearCritsForGyro(int numSlots) {
-        for (int i = 3; i < 3 + numSlots; i++) {
+    private void clearCritsForGyro(int first, int numSlots) {
+        for (int i = first; i < first + numSlots; i++) {
             clearCrit(Mech.LOC_CT, i);
             getMech().setCritical(Mech.LOC_CT, i, null);
         }
@@ -697,6 +697,11 @@ public class StructureTab extends ITab implements MekBuildListener, ArmorAllocat
                     UnitUtil.removeCriticals(getMech(), mount);
                     UnitUtil.changeMountStatus(getMech(), mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
                 }
+            }
+            if (tonnage > 100) {
+                getMech().setGyroType(Mech.GYRO_SUPERHEAVY);
+            } else {
+                getMech().setGyroType(Mech.GYRO_STANDARD);
             }
         }
         getMech().setWeight(tonnage);
