@@ -102,6 +102,7 @@ public class CConfig {
     public static final String CONFIG_SAVE_LOC = "Save-Location-Default";
     public static final String CONFIG_PLAF = "lookAndFeel";
 
+    public static final String RS_DATA_LOC = "rs_data_loc";
     public static final String RS_PAPER_SIZE = "rs_paper_size";
     public static final String RS_COLOR = "rs_color";
     public static final String RS_FONT = "rs_font";
@@ -115,6 +116,8 @@ public class CConfig {
     public static final String RS_REFERENCE = "rs_reference";
     public static final String RS_SCALE_FACTOR = "rs_scale_factor";
     public static final String RS_SCALE_UNITS = "rs_scale_units";
+
+    public static final String FLUFF_DATA_LOC = "fluff_data_loc";
 
     /**
      * Player configuration values.
@@ -140,6 +143,7 @@ public class CConfig {
                 new File(System.getProperty("user.dir")
                         + "/data/mechfiles/").getAbsolutePath());
         defaults.setProperty(SUMMARY_FORMAT_TRO, Boolean.toString(true));
+        defaults.setProperty(RS_DATA_LOC, "data/images/recordsheets");
         defaults.setProperty(RS_PROGRESS_BAR, Boolean.toString(true));
         defaults.setProperty(RS_COLOR, Boolean.toString(true));
         defaults.setProperty(RS_SHOW_QUIRKS, Boolean.toString(true));
@@ -148,6 +152,7 @@ public class CConfig {
         defaults.setProperty(RS_SHOW_PILOT_DATA, Boolean.toString(true));
         defaults.setProperty(RS_SCALE_FACTOR, "1");
         defaults.setProperty(RS_SCALE_UNITS, RSScale.HEXES.toString());
+        defaults.setProperty(FLUFF_DATA_LOC, "data/images/fluff");
 
         return defaults;
     }
@@ -408,5 +413,19 @@ public class CConfig {
         } else {
             return Integer.toString(retVal);
         }
+    }
+
+    /**
+     * Gets the path on disk to the record sheets.
+     */
+    public static String getRecordSheetsPath() {
+        return getParam(RS_DATA_LOC);
+    }
+
+    /**
+     * Gets the path on disk to the fluff images.
+     */
+    public static String getFluffImagesPath() {
+        return getParam(FLUFF_DATA_LOC);
     }
 }
