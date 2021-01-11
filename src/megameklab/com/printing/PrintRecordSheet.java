@@ -402,7 +402,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     }
 
     String getSVGDirectoryName() {
-        return "data/images/recordsheets/" + options.getPaperSize().dirName;
+        return new File(CConfig.getRecordSheetsPath(), options.getPaperSize().dirName).getPath();
     }
 
     /**

@@ -37,6 +37,7 @@ import org.w3c.dom.svg.SVGRectElement;
 
 import megamek.common.annotations.Nullable;
 import megameklab.com.MegaMekLab;
+import megameklab.com.util.CConfig;
 import megameklab.com.util.ImageHelper;
 import megameklab.com.util.UnitUtil;
 
@@ -289,7 +290,7 @@ public class PrintMech extends PrintEntity {
             }
         }
 
-        NodeList nl = loadPipSVG(String.format("data/images/recordsheets/biped_pips/Armor_%s_%d_Humanoid.svg",
+        NodeList nl = loadPipSVG(String.format("biped_pips/Armor_%s_%d_Humanoid.svg",
                 locAbbr, mech.getOArmor(loc, rear)));
         if (null == nl) {
             return false;
@@ -298,7 +299,7 @@ public class PrintMech extends PrintEntity {
     }
     
     private boolean loadISPips() {
-        NodeList nl = loadPipSVG(String.format("data/images/recordsheets/biped_pips/BipedIS%d.svg",
+        NodeList nl = loadPipSVG(String.format("biped_pips/BipedIS%d.svg",
                 (int) mech.getWeight()));
         if (null == nl) {
             return false;
@@ -320,7 +321,7 @@ public class PrintMech extends PrintEntity {
     }
 
     private @Nullable NodeList loadPipSVG(String filename) {
-        File f = new File(filename);
+        File f = new File(CConfig.getRecordSheetsPath(), filename);
         if (!f.exists()) {
             return null;
         }

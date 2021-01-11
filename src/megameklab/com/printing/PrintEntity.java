@@ -453,17 +453,17 @@ public abstract class PrintEntity extends PrintRecordSheet {
     private void drawEraIcon() {
         File iconFile;
         if (getEntity().getYear() < 2781) {
-            iconFile = new File("data/images/recordsheets/era_starleague.png");
+            iconFile = new File(CConfig.getRecordSheetsPath(), "era_starleague.png");
         } else if (getEntity().getYear() < 3050) {
-            iconFile = new File("data/images/recordsheets/era_sw.png");
+            iconFile = new File(CConfig.getRecordSheetsPath(), "era_sw.png");
         } else if (getEntity().getYear() < 3061) {
-            iconFile = new File("data/images/recordsheets/era_claninvasion.png");
+            iconFile = new File(CConfig.getRecordSheetsPath(), "era_claninvasion.png");
         } else if (getEntity().getYear() < 3068) {
-            iconFile = new File("data/images/recordsheets/era_civilwar.png");
+            iconFile = new File(CConfig.getRecordSheetsPath(), "era_civilwar.png");
         } else if (getEntity().getYear() < 3086) {
-            iconFile = new File("data/images/recordsheets/era_jihad.png");
+            iconFile = new File(CConfig.getRecordSheetsPath(), "era_jihad.png");
         } else {
-            iconFile = new File("data/images/recordsheets/era_darkage.png");
+            iconFile = new File(CConfig.getRecordSheetsPath(), "era_darkage.png");
         }
         Element rect = getSVGDocument().getElementById(ERA_ICON);
         if (rect instanceof SVGRectElement) {
