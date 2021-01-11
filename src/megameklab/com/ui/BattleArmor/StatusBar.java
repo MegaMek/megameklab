@@ -34,6 +34,7 @@ import megamek.common.BattleArmor;
 import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestBattleArmor;
 import megameklab.com.ui.MegaMekLabMainUI;
+import megameklab.com.util.CConfig;
 import megameklab.com.util.ITab;
 import megameklab.com.util.ImageHelper;
 import megameklab.com.util.RefreshListener;
@@ -161,7 +162,7 @@ public class StatusBar extends ITab {
         // copied from structureTab
         final FileDialog fDialog = new FileDialog(getParentFrame(), "Image Path",
                 FileDialog.LOAD);
-        fDialog.setDirectory(new File(ImageHelper.fluffPath).getAbsolutePath()
+        fDialog.setDirectory(new File(CConfig.getFluffImagesPath()).getAbsolutePath()
                 + File.separatorChar + ImageHelper.imageMech
                 + File.separatorChar);
         fDialog.setLocationRelativeTo(this);

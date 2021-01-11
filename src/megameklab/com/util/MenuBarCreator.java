@@ -716,7 +716,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
                 fDialog.setDirectory(fullPath);
                 fDialog.setFile(imageName);
             } else {
-                fDialog.setDirectory(new File(ImageHelper.fluffPath).getAbsolutePath() + File.separatorChar + "mech" + File.separatorChar);
+                fDialog.setDirectory(new File(CConfig.getFluffImagesPath()).getAbsolutePath() + File.separatorChar + "mech" + File.separatorChar);
                 fDialog.setFile(parentFrame.getEntity().getChassis() + " " + parentFrame.getEntity().getModel() + ".png");
             }
 

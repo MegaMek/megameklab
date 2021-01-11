@@ -33,6 +33,7 @@ import megamek.common.WeaponType;
 import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestAdvancedAerospace;
 import megameklab.com.ui.MegaMekLabMainUI;
+import megameklab.com.util.CConfig;
 import megameklab.com.util.ITab;
 import megameklab.com.util.ImageHelper;
 import megameklab.com.util.RefreshListener;
@@ -190,7 +191,7 @@ public class AdvancedAeroStatusBar extends ITab {
         //copied from structureTab
         FileDialog fDialog = new FileDialog(getParentFrame(), "Image Path",
                 FileDialog.LOAD);
-        fDialog.setDirectory(new File(ImageHelper.fluffPath).getAbsolutePath()
+        fDialog.setDirectory(new File(CConfig.getFluffImagesPath()).getAbsolutePath()
                 + File.separatorChar + ImageHelper.imageMech
                 + File.separatorChar);
         fDialog.setLocationRelativeTo(this);
