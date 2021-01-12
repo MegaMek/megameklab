@@ -39,12 +39,12 @@ import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlin
 public abstract class RecordSheetTask extends SwingWorker<Void, Integer> {
     
     private final ProgressPopup popup;
-    protected final List<PrintRecordSheet> sheets;
+    protected final RecordSheetBook book;
 
-    private RecordSheetTask(List<PrintRecordSheet> sheets) {
-        this.sheets = sheets;
+    private RecordSheetTask(RecordSheetBook book) {
+        this.book = book;
         int pages = 0;
-        for (PrintRecordSheet sheet : sheets) {
+        for (PrintRecordSheet sheet : book.getSheets()) {
             sheet.setCallback(this::publish);
             pages += sheet.getPageCount();
         }
@@ -61,9 +61,9 @@ public abstract class RecordSheetTask extends SwingWorker<Void, Integer> {
      * @param pageFormat The page format
      * @return           A {@link SwingWorker} task
      */
-    public static RecordSheetTask createPrintTask(List<PrintRecordSheet> sheets, PrinterJob job,
+    public static RecordSheetTask createPrintTask(RecordSheetBook book, PrinterJob job,
                                                   PrintRequestAttributeSet aset, PageFormat pageFormat) {
-        return new PrintTask(sheets, job, aset, pageFormat);
+        return new PrintTask(book, job, aset, pageFormat);
     }
 
     /**
@@ -75,9 +75,9 @@ public abstract class RecordSheetTask extends SwingWorker<Void, Integer> {
      * @param pathName   The path to the PDF output file
      * @return           A {@link SwingWorker} task
      */
-    public static RecordSheetTask createExportTask(List<PrintRecordSheet> sheets, PageFormat pageFormat,
+    public static RecordSheetTask createExportTask(RecordSheetBook book, PageFormat pageFormat,
                                                    String pathName) {
-        return new ExportTask(sheets, pageFormat, pathName);
+        return new ExportTask(book, pageFormat, pathName);
     }
 
     /**
@@ -133,15 +133,14 @@ public abstract class RecordSheetTask extends SwingWorker<Void, Integer> {
         private final PrinterJob job;
         private final PrintRequestAttributeSet aset;
 
-        public PrintTask(List<PrintRecordSheet> sheets, PrinterJob job, PrintRequestAttributeSet aset,
+        public PrintTask(RecordSheetBook book, PrinterJob job, PrintRequestAttributeSet aset,
                          PageFormat pageFormat) {
-            super(sheets);
+            super(book);
             this.job = job;
             this.aset = aset;
 
-            RSBook book = new RSBook(sheets, pageFormat);
-            sheets.clear();
-            job.setPageable(book);
+            PageableRecordSheetBook pageableRSBook = new PageableRecordSheetBook(book, pageFormat);
+            job.setPageable(pageableRSBook);
         }
 
         @Override
@@ -162,8 +161,8 @@ public abstract class RecordSheetTask extends SwingWorker<Void, Integer> {
         private final PageFormat pageFormat;
         private final String fileName;
 
-        public ExportTask(List<PrintRecordSheet> sheets, PageFormat pageFormat, String fileName) {
-            super(sheets);
+        public ExportTask(RecordSheetBook book, PageFormat pageFormat, String fileName) {
+            super(book);
             this.pageFormat = pageFormat;
             this.fileName = fileName;
         }
@@ -180,14 +179,12 @@ public abstract class RecordSheetTask extends SwingWorker<Void, Integer> {
             PDFMergerUtility merger = new PDFMergerUtility();
             merger.setDestinationFileName(fileName);
             Map<Integer, List<String>> bookmarkNames = new HashMap<>();
-            Iterator<PrintRecordSheet> iter = sheets.iterator();
-            while (iter.hasNext()) {
-                final PrintRecordSheet rs = iter.next();
+            List<PrintRecordSheet> sheets = book.getSheets();
+            for (PrintRecordSheet rs : sheets) {
                 bookmarkNames.put(rs.getFirstPage(), rs.getBookmarkNames());
                 for (int i = 0; i < rs.getPageCount(); i++) {
                     merger.addSource(rs.exportPDF(i, pageFormat));
                 }
-                iter.remove();
             }
             merger.mergeDocuments(MemoryUsageSetting.setupTempFileOnly());
 
@@ -215,13 +212,13 @@ public abstract class RecordSheetTask extends SwingWorker<Void, Integer> {
      * Implementation of Pageable that removes the record sheet objects as they are processed
      * (when the next one is accessed) to conserve memory.
      */
-    private static class RSBook implements Pageable {
+    private static class PageableRecordSheetBook implements Pageable {
         private final TreeMap<Integer, PrintRecordSheet> pages = new TreeMap<>();
         private final PageFormat pageFormat;
 
-        RSBook(List<PrintRecordSheet> sheets, PageFormat pageFormat) {
+        PageableRecordSheetBook(RecordSheetBook book, PageFormat pageFormat) {
             this.pageFormat = pageFormat;
-            for (PrintRecordSheet rs : sheets) {
+            for (PrintRecordSheet rs : book.getSheets()) {
                 for (int p = rs.getFirstPage(); p < rs.getFirstPage() + rs.getPageCount(); p++) {
                     pages.put(p, rs);
                 }
