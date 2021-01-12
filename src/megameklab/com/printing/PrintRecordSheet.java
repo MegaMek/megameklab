@@ -342,9 +342,13 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     }
 
     public InputStream exportPDF(int pageNumber, PageFormat pageFormat) throws TranscoderException, SAXException, IOException, ConfigurationException {
-        createDocument(pageNumber + firstPage, pageFormat, true);
         DefaultConfigurationBuilder cfgBuilder = new DefaultConfigurationBuilder();
         Configuration cfg = cfgBuilder.build(getClass().getResourceAsStream("fop-config.xml"));
+        return exportPDF(pageNumber, pageFormat, cfg);
+    }
+
+    public InputStream exportPDF(int pageNumber, PageFormat pageFormat, Configuration cfg) throws TranscoderException, SAXException, IOException, ConfigurationException {
+        createDocument(pageNumber + firstPage, pageFormat, true);
         PDFTranscoder transcoder = new PDFTranscoder();
         transcoder.configure(cfg);
         transcoder.addTranscodingHint(PDFTranscoder.KEY_AUTO_FONTS, false);
