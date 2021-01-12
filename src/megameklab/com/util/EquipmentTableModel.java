@@ -503,8 +503,12 @@ public class EquipmentTableModel extends AbstractTableModel {
                             return "0";
                     }
                 } else if ((wtype instanceof ATMWeapon) 
-                        ||(wtype.getAmmoType() == AmmoType.T_SRM)  
-                        || (wtype.getAmmoType() == AmmoType.T_SRM_STREAK)) {
+                        ||(wtype.getAmmoType() == AmmoType.T_SRM)
+                        || (wtype.getAmmoType() == AmmoType.T_SRM_STREAK)
+                        || (wtype.getAmmoType() == AmmoType.T_SRM_ADVANCED)
+                        || (wtype.getAmmoType() == AmmoType.T_SRM_IMP)
+                        || (wtype.getAmmoType() == AmmoType.T_SRM_PRIMITIVE)
+                        || (wtype.getAmmoType() == AmmoType.T_SRM_TORPEDO)) {
                     dmg = 2;
                 } else {
                     dmg = 1;
