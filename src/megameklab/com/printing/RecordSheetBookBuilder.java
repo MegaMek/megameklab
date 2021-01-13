@@ -28,7 +28,7 @@ public class RecordSheetBookBuilder {
     }
 
     public RecordSheetBookBuilder addEntities(Collection<Entity> entities) {
-        entities.addAll(entities);
+        this.entities.addAll(entities);
         return this;
     }
 
