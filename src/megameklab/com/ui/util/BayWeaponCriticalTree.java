@@ -46,7 +46,6 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
-import megamek.MegaMek;
 import megamek.common.Aero;
 import megamek.common.AmmoType;
 import megamek.common.Entity;
@@ -1029,8 +1028,10 @@ public class BayWeaponCriticalTree extends JTree {
                     final WeaponType wtype = (WeaponType)weapon.getType();
                     if ((weapon.getLinkedBy() == null)
                             && ((wtype.getAmmoType() == AmmoType.T_LRM)
-                                    || (wtype.getAmmoType() == AmmoType.T_SRM)
-                                    || (wtype.getAmmoType() == AmmoType.T_MML)
+                                || (wtype.getAmmoType() == AmmoType.T_SRM)
+                                || (wtype.getAmmoType() == AmmoType.T_MML)
+                                || (wtype.getAmmoType() == AmmoType.T_LRM_IMP)
+                                || (wtype.getAmmoType() == AmmoType.T_SRM_IMP)
                                 || (wtype.getAmmoType() == AmmoType.T_NLRM))) {
                         moveToArc(eq);
                         eq.setLinked(weapon);
@@ -1343,8 +1344,10 @@ public class BayWeaponCriticalTree extends JTree {
                 final WeaponType wtype = (WeaponType) weapon.getType();
                 if ((weapon.getLinkedBy() == null)
                     && ((wtype.getAmmoType() == AmmoType.T_LRM)
-                            || (wtype.getAmmoType() == AmmoType.T_SRM)
-                            || (wtype.getAmmoType() == AmmoType.T_MML)
+                        || (wtype.getAmmoType() == AmmoType.T_SRM)
+                        || (wtype.getAmmoType() == AmmoType.T_MML)
+                        || (wtype.getAmmoType() == AmmoType.T_LRM_IMP)
+                        || (wtype.getAmmoType() == AmmoType.T_SRM_IMP)
                         || (wtype.getAmmoType() == AmmoType.T_NLRM))) {
                     return true;
                 }
