@@ -4,6 +4,7 @@ VERSION HISTORY:
 + Issue #861: Advanced SRM wrong damage/missile
 + Issue #860: Aero missiles available to tanks
 + Issue #866: Cannot assign Artemis IV or V to Improved missiles on dropships
++ Issue #872: Incorrect loaded design validation for clan LFC warship armor
 
 0.47.16 (RC2) (2021-01-05 1700 UTC)
 + Issue #845: Compact engine and gyro not adjacent on superheavies
