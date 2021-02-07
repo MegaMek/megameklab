@@ -123,7 +123,9 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
 
                 final Mounted mount = getMounted();
                 if ((e.getModifiersEx() & InputEvent.ALT_DOWN_MASK) != 0) {
-                    changeWeaponFacing(!mount.isRearMounted());
+                    if (canRearMount(mount)) {
+                        changeWeaponFacing(!mount.isRearMounted());
+                    }
                     return;
                 }
                 
