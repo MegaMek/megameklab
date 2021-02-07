@@ -301,11 +301,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                             }
                         }
 
-                        if (!(getUnit() instanceof BattleArmor)
-                                && ((mount.getType() instanceof WeaponType) || ((mount
-                                        .getType() instanceof MiscType) && mount
-                                        .getType()
-                                        .hasFlag(MiscType.F_LIFTHOIST)))) {
+                        if (!(getUnit() instanceof BattleArmor) && canRearMount(mount)) {
                             if (!mount.isRearMounted()) {
                                 info = new JMenuItem("Make " + mount.getName()
                                         + " Rear Facing");
@@ -592,7 +588,20 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
         int location = getCritLocation();
         changeMountStatus(mount, location, rear);
     }
-    
+
+    private boolean canRearMount(Mounted mount) {
+        if (mount.getType() instanceof MiscType) {
+            if (mount.getType().hasFlag(MiscType.F_MODULAR_ARMOR)) {
+                return (mount.getEntity() instanceof Mech)
+                        && ((Mech) mount.getEntity()).locationIsTorso(mount.getLocation());
+            } else {
+                return mount.getType().hasFlag(MiscType.F_LIFTHOIST);
+            }
+        } else {
+            return mount.getType() instanceof WeaponType;
+        }
+    }
+
     private void changeOmniMounting(boolean pod) {
         Mounted mount = getMounted();
         if (!pod || UnitUtil.canPodMount(getUnit(), mount)) {
