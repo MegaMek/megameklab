@@ -597,7 +597,9 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                 return (mount.getEntity() instanceof Mech)
                         && ((Mech) mount.getEntity()).locationIsTorso(mount.getLocation());
             } else {
-                return mount.getType().hasFlag(MiscType.F_LIFTHOIST);
+                return mount.getType().hasFlag(MiscType.F_LIFTHOIST)
+                        || mount.getType().hasFlag(MiscType.F_SPRAYER)
+                        || mount.getType().hasFlag(MiscType.F_LIGHT_FLUID_SUCTION_SYSTEM);
             }
         } else {
             return mount.getType() instanceof WeaponType;
