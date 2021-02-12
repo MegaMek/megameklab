@@ -303,7 +303,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                             }
                         }
 
-                        if (!(getUnit() instanceof BattleArmor) && canRearMount(mount)) {
+                        if (canRearMount(mount)) {
                             if (!mount.isRearMounted()) {
                                 info = new JMenuItem("Make " + mount.getName()
                                         + " Rear Facing");
@@ -592,6 +592,9 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
     }
 
     private boolean canRearMount(Mounted mount) {
+        if (mount.getEntity() instanceof BattleArmor) {
+            return false;
+        }
         if (mount.getType() instanceof MiscType) {
             if (mount.getType().hasFlag(MiscType.F_MODULAR_ARMOR)) {
                 return (mount.getEntity() instanceof Mech)
