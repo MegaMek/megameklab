@@ -1347,12 +1347,16 @@ public class StructureTab extends ITab implements MekBuildListener, ArmorAllocat
         switch (EquipmentType.getArmorType(armor)) {
             case EquipmentType.T_ARMOR_STEALTH:
             case EquipmentType.T_ARMOR_FERRO_LAMELLOR:
+            case EquipmentType.T_ARMOR_BALLISTIC_REINFORCED:
+            case EquipmentType.T_ARMOR_IMPACT_RESISTANT:
                 crits = 2;
                 break;
             case EquipmentType.T_ARMOR_HEAVY_FERRO:
                 crits = 3;
                 break;
             case EquipmentType.T_ARMOR_LIGHT_FERRO:
+            case EquipmentType.T_ARMOR_ANTI_PENETRATIVE_ABLATION:
+            case EquipmentType.T_ARMOR_HEAT_DISSIPATING:
                 crits = 1;
                 break;
             case EquipmentType.T_ARMOR_FERRO_FIBROUS:
