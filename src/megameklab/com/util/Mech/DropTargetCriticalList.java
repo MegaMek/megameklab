@@ -123,7 +123,9 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
 
                 final Mounted mount = getMounted();
                 if ((e.getModifiersEx() & InputEvent.ALT_DOWN_MASK) != 0) {
-                    changeWeaponFacing(!mount.isRearMounted());
+                    if (canRearMount(mount)) {
+                        changeWeaponFacing(!mount.isRearMounted());
+                    }
                     return;
                 }
                 
@@ -301,11 +303,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                             }
                         }
 
-                        if (!(getUnit() instanceof BattleArmor)
-                                && ((mount.getType() instanceof WeaponType) || ((mount
-                                        .getType() instanceof MiscType) && mount
-                                        .getType()
-                                        .hasFlag(MiscType.F_LIFTHOIST)))) {
+                        if (canRearMount(mount)) {
                             if (!mount.isRearMounted()) {
                                 info = new JMenuItem("Make " + mount.getName()
                                         + " Rear Facing");
@@ -592,7 +590,25 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
         int location = getCritLocation();
         changeMountStatus(mount, location, rear);
     }
-    
+
+    private boolean canRearMount(Mounted mount) {
+        if (mount.getEntity() instanceof BattleArmor) {
+            return false;
+        }
+        if (mount.getType() instanceof MiscType) {
+            if (mount.getType().hasFlag(MiscType.F_MODULAR_ARMOR)) {
+                return (mount.getEntity() instanceof Mech)
+                        && ((Mech) mount.getEntity()).locationIsTorso(mount.getLocation());
+            } else {
+                return mount.getType().hasFlag(MiscType.F_LIFTHOIST)
+                        || mount.getType().hasFlag(MiscType.F_SPRAYER)
+                        || mount.getType().hasFlag(MiscType.F_LIGHT_FLUID_SUCTION_SYSTEM);
+            }
+        } else {
+            return mount.getType() instanceof WeaponType;
+        }
+    }
+
     private void changeOmniMounting(boolean pod) {
         Mounted mount = getMounted();
         if (!pod || UnitUtil.canPodMount(getUnit(), mount)) {
