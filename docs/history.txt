@@ -1,6 +1,6 @@
 VERSION HISTORY:
 ----------------
-0.47.18 (RC4)-SNAPSHOT
+0.48.0 (Stable) - (2021-03-05 1530 UTC)
 
 0.47.17 (RC3) (2021-02-075 2015 UTC)
 + Issue #861: Advanced SRM wrong damage/missile
@@ -275,7 +275,7 @@ v0.47.1 (2019-11-05 0300 UTC)
 v0.47.0 (2019-08-21 0300 UTC)
 + Issue #336: Quad Battlemechs are unable to allocate industrial physical weapons to their side torsos
 
-v0.46.0 (2019-08-20 1900 UTC)
+v0.46.0 (Stable) (2019-08-20 1900 UTC)
 
 v0.46.0-rc.2 (2019-08-12 0100 UTC)
 + Issue #333: ASF printing - Missing armor pips
