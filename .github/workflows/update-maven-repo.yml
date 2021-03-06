@@ -21,6 +21,22 @@ jobs:
     - uses: actions/checkout@v2
       with:
         path: megameklab
+        
+    # Grab the MM repo too
+    - uses: actions/checkout@v2
+      with:
+        repository: MegaMek/megamek
+        path: megamek
+
+    #
+    # Setup composite build for MML
+    #
+    # see: https://github.com/MegaMek/megamek/wiki/Working-With-Gradle
+    #
+    - name: Setup Composite Build for MML
+      working-directory: megameklab
+      run: |
+        echo "includeBuild '../megamek'" >settings_local.gradle
 
     # Do the standard JDK + Gradle work
     - name: Set up JDK 1.8
