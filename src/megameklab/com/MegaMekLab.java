@@ -163,7 +163,7 @@ public class MegaMekLab {
         } catch (IOException e) {
             getLogger().warning(MegaMekLab.class, "startup()", "Could not load quirks");
         }
-        new CConfig();
+        CConfig.load();
         UnitUtil.loadFonts();
 
         // Add additional themes
