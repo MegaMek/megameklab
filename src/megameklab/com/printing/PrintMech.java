@@ -175,8 +175,7 @@ public class PrintMech extends PrintEntity {
         for (Mounted m : mech.getMisc()) {
             if (((MiscType) m.getType()).isShield()) {
                 String loc = mech.getLocationAbbr(m.getLocation());
-                Element element;
-                element = getSVGDocument().getElementById(ARMOR_DIAGRAM + loc);
+                Element element = getSVGDocument().getElementById(ARMOR_DIAGRAM + loc);
                 if (null != element) {
                     hideElement(element, true);
                 }
@@ -186,12 +185,12 @@ public class PrintMech extends PrintEntity {
                 }
                 element = getSVGDocument().getElementById(SHIELD_DC + loc);
                 if (null != element) {
-                    ArmorPipLayout.addPips(this, element, m.getBaseDamageCapacity(),
+                    ArmorPipLayout.addPips(this, element, m.getCurrentDamageCapacity(mech, m.getLocation()),
                             PipType.CIRCLE);
                 }
                 element = getSVGDocument().getElementById(SHIELD_DA + loc);
                 if (null != element) {
-                    ArmorPipLayout.addPips(this, element, m.getBaseDamageAbsorptionRate(),
+                    ArmorPipLayout.addPips(this, element, m.getDamageAbsorption(mech, m.getLocation()),
                             PipType.DIAMOND);
                 }
             }
