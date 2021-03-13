@@ -36,13 +36,13 @@ public abstract class RecordSheetTask extends SwingWorker<Void, Integer> {
     protected final RecordSheetBook book;
 
     private RecordSheetTask(RecordSheetBook book) {
-        this.book = book;
-        int pages = 0;
-        for (PrintRecordSheet sheet : book.getSheets()) {
+        this.book = Objects.requireNonNull(book);
+
+        book.forEachSheet(sheet -> {
             sheet.setCallback(this::publish);
-            pages += sheet.getPageCount();
-        }
-        popup = new ProgressPopup(pages, popupLabel());
+        });
+
+        popup = new ProgressPopup(book.getPageCount(), popupLabel());
     }
 
     /**
@@ -186,7 +186,7 @@ public abstract class RecordSheetTask extends SwingWorker<Void, Integer> {
 
         PageableRecordSheetBook(RecordSheetBook book, PageFormat pageFormat) {
             this.pageFormat = pageFormat;
-            for (PrintRecordSheet rs : book.getSheets()) {
+            for (PrintRecordSheet rs : book.takeSheets()) {
                 for (int p = rs.getFirstPage(); p < rs.getFirstPage() + rs.getPageCount(); p++) {
                     pages.put(p, rs);
                 }

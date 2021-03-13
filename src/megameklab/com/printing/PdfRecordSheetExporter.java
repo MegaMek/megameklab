@@ -4,6 +4,7 @@ import java.awt.print.PageFormat;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -21,19 +22,41 @@ import org.xml.sax.SAXException;
 
 import megamek.common.annotations.Nullable;
 
+/**
+ * Exports {@link RecordSheetBook} instances to a PDF.
+ */
 public class PdfRecordSheetExporter {
     private final MemoryUsageSetting memoryUsageSetting;
     private final Configuration cfg;
 
+    /**
+     * Creates a new exporter using temp files for memory management.
+     */
     public PdfRecordSheetExporter() {
         this(MemoryUsageSetting.setupTempFileOnly(), null);
     }
 
+    /**
+     * Creates a new exporter using the supplied memory usage settings and optional configuration.
+     * @param memoryUsageSetting The {@link MemoryUsageSetting} to use when exporting the PDF.
+     * @param cfg The {@link Configuration} to use when exporting the PDF, or {@code null} if the
+     *            default configuration should be used.
+     */
     public PdfRecordSheetExporter(MemoryUsageSetting memoryUsageSetting, @Nullable Configuration cfg) {
         this.memoryUsageSetting = Objects.requireNonNull(memoryUsageSetting);
         this.cfg = cfg;
     }
 
+    /**
+     * Exports a {@link RecordSheetBook} to a PDF.
+     * @param book The {@link RecordSheetBook} to export.
+     * @param pageFormat The {@link PageFormat} to use with the resulting PDF.
+     * @param fileName The file name to save the resulting PDF.
+     * @throws IOException
+     * @throws ConfigurationException
+     * @throws TranscoderException
+     * @throws SAXException
+     */
     public void exportToFile(RecordSheetBook book, PageFormat pageFormat, String fileName)
             throws IOException, ConfigurationException, TranscoderException, SAXException {
         PDFMergerUtility merger = new PDFMergerUtility();
@@ -68,24 +91,30 @@ public class PdfRecordSheetExporter {
     private void addSheetsToPdf(PDFMergerUtility merger, RecordSheetBook book, PageFormat pageFormat, 
             Map<Integer, List<String>> bookmarkNames)
             throws TranscoderException, SAXException, IOException, ConfigurationException {
-        List<PrintRecordSheet> sheets = book.getSheets();
-        for (PrintRecordSheet rs : sheets) {
+        Iterator<PrintRecordSheet> sheets = book.takeSheets().iterator();
+        Configuration configuration = getOrCreateConfiguration();
+        while (sheets.hasNext()) {
+            PrintRecordSheet rs = sheets.next();
+            
+            // Ensure we do not hold onto the PrintRecordSheet instance any longer than necessary
+            sheets.remove();
+
             bookmarkNames.put(rs.getFirstPage(), rs.getBookmarkNames());
             for (int i = 0; i < rs.getPageCount(); i++) {
-                merger.addSource(rs.exportPDF(i, pageFormat, getOrCreateConfiguration(rs)));
+                merger.addSource(rs.exportPDF(i, pageFormat, configuration));
             }
         }
 
         merger.mergeDocuments(memoryUsageSetting);
     }
 
-    private Configuration getOrCreateConfiguration(PrintRecordSheet sheet)
+    private Configuration getOrCreateConfiguration()
             throws ConfigurationException, SAXException, IOException {
         if (cfg != null) {
             return cfg;
         } else {
             DefaultConfigurationBuilder cfgBuilder = new DefaultConfigurationBuilder();
-            return cfgBuilder.build(sheet.getClass().getResourceAsStream("fop-config.xml"));
+            return cfgBuilder.build(getClass().getResourceAsStream("fop-config.xml"));
         }
     }
 }
