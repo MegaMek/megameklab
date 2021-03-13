@@ -36,9 +36,18 @@ import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import megamek.common.Aero;
+import megamek.common.BattleArmor;
+import megamek.common.Dropship;
 import megamek.common.Entity;
 import megamek.common.EntityListFile;
+import megamek.common.EntityMovementMode;
+import megamek.common.Infantry;
+import megamek.common.Jumpship;
+import megamek.common.Mech;
 import megamek.common.MechFileParser;
+import megamek.common.Protomech;
+import megamek.common.Tank;
 import megamek.common.util.EncodeControl;
 import megameklab.com.printing.*;
 import megameklab.com.ui.dialog.MegaMekLabUnitSelectorDialog;
