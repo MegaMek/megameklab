@@ -39,6 +39,7 @@ import megamek.common.WeaponType;
 import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestMech;
 import megameklab.com.ui.MegaMekLabMainUI;
+import megameklab.com.util.CConfig;
 import megameklab.com.util.ITab;
 import megameklab.com.util.ImageHelper;
 import megameklab.com.util.RefreshListener;
@@ -215,7 +216,7 @@ public class StatusBar extends ITab {
     private void getFluffImage() {
         //copied from structureTab
         FileDialog fDialog = new FileDialog(getParentFrame(), "Image Path", FileDialog.LOAD);
-        fDialog.setDirectory(new File(ImageHelper.fluffPath).getAbsolutePath() + File.separatorChar + ImageHelper.imageMech + File.separatorChar);
+        fDialog.setDirectory(new File(CConfig.getFluffImagesPath()).getAbsolutePath() + File.separatorChar + ImageHelper.imageMech + File.separatorChar);
         /*
          //This does not seem to be working
         if (getMech().getFluff().getMMLImagePath().trim().length() > 0) {
@@ -225,7 +226,7 @@ public class StatusBar extends ITab {
             fDialog.setDirectory(fullPath);
             fDialog.setFile(imageName);
         } else {
-            fDialog.setDirectory(new File(ImageHelper.fluffPath).getAbsolutePath() + File.separatorChar + ImageHelper.imageMech + File.separatorChar);
+            fDialog.setDirectory(new File(CConfig.getFluffImagesPath()).getAbsolutePath() + File.separatorChar + ImageHelper.imageMech + File.separatorChar);
             fDialog.setFile(getMech().getChassis() + " " + getMech().getModel() + ".png");
         }
         */

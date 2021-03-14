@@ -19,9 +19,9 @@ import megamek.common.logging.LogLevel;
 import megameklab.com.MegaMekLab;
 import megameklab.com.printing.reference.ReferenceTable;
 import megameklab.com.util.CConfig;
-import org.apache.avalon.framework.configuration.Configuration;
-import org.apache.avalon.framework.configuration.ConfigurationException;
-import org.apache.avalon.framework.configuration.DefaultConfigurationBuilder;
+import org.apache.fop.configuration.Configuration;
+import org.apache.fop.configuration.ConfigurationException;
+import org.apache.fop.configuration.DefaultConfigurationBuilder;
 import org.apache.batik.anim.dom.SVGDOMImplementation;
 import org.apache.batik.anim.dom.SVGLocatableSupport;
 import org.apache.batik.bridge.BridgeContext;
@@ -342,9 +342,13 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     }
 
     public InputStream exportPDF(int pageNumber, PageFormat pageFormat) throws TranscoderException, SAXException, IOException, ConfigurationException {
-        createDocument(pageNumber + firstPage, pageFormat, true);
         DefaultConfigurationBuilder cfgBuilder = new DefaultConfigurationBuilder();
         Configuration cfg = cfgBuilder.build(getClass().getResourceAsStream("fop-config.xml"));
+        return exportPDF(pageNumber, pageFormat, cfg);
+    }
+
+    public InputStream exportPDF(int pageNumber, PageFormat pageFormat, Configuration cfg) throws TranscoderException, SAXException, IOException, ConfigurationException {
+        createDocument(pageNumber + firstPage, pageFormat, true);
         PDFTranscoder transcoder = new PDFTranscoder();
         transcoder.configure(cfg);
         transcoder.addTranscodingHint(PDFTranscoder.KEY_AUTO_FONTS, false);
@@ -402,7 +406,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     }
 
     String getSVGDirectoryName() {
-        return "data/images/recordsheets/" + options.getPaperSize().dirName;
+        return new File(CConfig.getRecordSheetsPath(), options.getPaperSize().dirName).getPath();
     }
 
     /**
