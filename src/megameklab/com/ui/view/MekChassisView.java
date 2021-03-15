@@ -125,13 +125,17 @@ public class MekChassisView extends BuildView implements ActionListener, ChangeL
     
     private boolean primitive = false;
     private int engineRating = 20;
-    
+
     private static final int[] GENERAL_COCKPITS = {
             Mech.COCKPIT_STANDARD, Mech.COCKPIT_SMALL, Mech.COCKPIT_COMMAND_CONSOLE,
-            Mech.COCKPIT_SMALL_COMMAND_CONSOLE, Mech.COCKPIT_TORSO_MOUNTED, 
+            Mech.COCKPIT_SMALL_COMMAND_CONSOLE, Mech.COCKPIT_TORSO_MOUNTED,
             Mech.COCKPIT_DUAL, Mech.COCKPIT_INTERFACE, Mech.COCKPIT_VRRP
     };
-    
+
+    private static final int[] INDUSTRIAL_COCKPITS = {
+            Mech.COCKPIT_INDUSTRIAL, Mech.COCKPIT_COMMAND_CONSOLE, Mech.COCKPIT_TORSO_MOUNTED
+    };
+
     private static final String[] ENHANCEMENT_NAMES = {
             EquipmentTypeLookup.IS_MASC, EquipmentTypeLookup.CLAN_MASC,
             EquipmentTypeLookup.TSM, EquipmentTypeLookup.SCM
@@ -515,23 +519,19 @@ public class MekChassisView extends BuildView implements ActionListener, ChangeL
         } else if (getBaseTypeIndex() == BASE_TYPE_QUADVEE) {
             cbCockpit.addItem(Mech.COCKPIT_QUADVEE);
         } else if (isSuperheavy()) {
-            if(isIndustrial()){
+            if (isIndustrial()){
                 cbCockpit.addItem(Mech.COCKPIT_SUPERHEAVY_INDUSTRIAL);
-                if (techManager.isLegal(Mech.getIndustrialAdvFireConTA())) {
-                    cbCockpit.addItem(Mech.COCKPIT_SUPERHEAVY);
-                    cbCockpit.addItem(Mech.COCKPIT_SUPERHEAVY_COMMAND_CONSOLE);
-                }
-            }else{
+            } else {
                 cbCockpit.addItem(Mech.COCKPIT_SUPERHEAVY);
                 cbCockpit.addItem(Mech.COCKPIT_SUPERHEAVY_COMMAND_CONSOLE);
             }
         } else if (isPrimitive()) {
-            cbCockpit.addItem(isIndustrial()? Mech.COCKPIT_PRIMITIVE_INDUSTRIAL : Mech.COCKPIT_PRIMITIVE);
+            cbCockpit.addItem(isIndustrial() ? Mech.COCKPIT_PRIMITIVE_INDUSTRIAL : Mech.COCKPIT_PRIMITIVE);
         } else if (isIndustrial()) {
-            cbCockpit.addItem(Mech.COCKPIT_INDUSTRIAL);
-            if (techManager.isLegal(Mech.getIndustrialAdvFireConTA())) {
-                cbCockpit.addItem(Mech.COCKPIT_STANDARD);
-                cbCockpit.addItem(Mech.COCKPIT_COMMAND_CONSOLE);
+            for (int cockpitType : INDUSTRIAL_COCKPITS) {
+                if (techManager.isLegal(Mech.getCockpitTechAdvancement(cockpitType))) {
+                    cbCockpit.addItem(cockpitType);
+                }
             }
         } else {
             for (int cockpitType : GENERAL_COCKPITS) {
