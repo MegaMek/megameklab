@@ -300,7 +300,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             unitMenu.add(item);
         }
 
-        if (!(parentFrame.getEntity() instanceof Infantry) || (parentFrame.getEntity() instanceof BattleArmor)) {
+        if (!parentFrame.getEntity().isConventionalInfantry()) {
             item = new JMenuItem();
             item.setText(resourceMap.getString("menu.file.unitType.infantry"));
             item.setMnemonic(KeyEvent.VK_I);
