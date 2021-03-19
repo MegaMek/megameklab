@@ -4,6 +4,7 @@ VERSION HISTORY:
 + PR #859: Allow MML config to be loaded in memory only
 + PR #892: Account for missing actuators in shield pips
 + PR #894: Change source and target compatibility to Java 11
++ Issue #638: Industrial Mechs should be able to use Torso Mounted Cockpits
 
 0.48.0 (Stable) - (2021-03-05 1530 UTC)
 
