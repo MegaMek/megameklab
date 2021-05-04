@@ -272,7 +272,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
                 try {
                     getSV().addEquipment(jumpJet, Tank.LOC_BODY);
                 } catch (LocationFullException e) {
-                    e.printStackTrace();
+                    MegaMekLab.getLogger().error(e);
                 }
             }
             panSummary.refresh();
@@ -425,8 +425,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
                 getSV().addEquipment(mod, getSV().isAero() ? FixedWingSupport.LOC_BODY : Tank.LOC_BODY);
             } catch (LocationFullException e) {
                 // This should not be possible since chassis mods don't occupy slots
-                MegaMekLab.getLogger().error(getClass(), "setChassisMod(EquipmentType, boolean)",
-                        "LocationFullException when adding chassis mod " + mod.getName());
+                MegaMekLab.getLogger().error("LocationFullException when adding chassis mod " + mod.getName());
             }
         } else if (!installed && (null != current)) {
             getSV().getMisc().remove(current);
@@ -514,8 +513,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
                 getSV().addEquipment(EquipmentType.get(EquipmentTypeLookup.SPONSON_TURRET), Tank.LOC_RIGHT);
             } catch (LocationFullException e) {
                 // This should not be possible since sponson turrets mods don't occupy slots
-                MegaMekLab.getLogger().error(getClass(), "sponsonTurretChanged(boolean)",
-                        "LocationFullException when adding sponson turret");
+                MegaMekLab.getLogger().error("LocationFullException when adding sponson turret");
             }
         } else if (!installed) {
             for (Mounted m : getEntity().getEquipment()) {
@@ -546,8 +544,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
                 getSV().addEquipment(EquipmentType.get(EquipmentTypeLookup.PINTLE_TURRET), loc);
             } catch (LocationFullException e) {
                 // This should not be possible since sponson turrets mods don't occupy slots
-                MegaMekLab.getLogger().error(getClass(), "sponsonTurretChanged(boolean)",
-                        "LocationFullException when adding sponson turret");
+                MegaMekLab.getLogger().error("LocationFullException when adding sponson turret");
             }
         } else if (!installed && (null != current)) {
             for (Mounted m : getEntity().getEquipment()) {
@@ -625,8 +622,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
                 getSV().addEquipment(eq, getSV().isAero() ? FixedWingSupport.LOC_BODY : Tank.LOC_BODY);
             } catch (LocationFullException e) {
                 // This should not be possible since fire control doesn't occupy slots
-                MegaMekLab.getLogger().error(getClass(), "fireConChanged(int)",
-                        "LocationFullException when adding fire control " + eq.getName());
+                MegaMekLab.getLogger().error("LocationFullException when adding fire control " + eq.getName());
             }
         }
         panChassis.setFromEntity(getSV());

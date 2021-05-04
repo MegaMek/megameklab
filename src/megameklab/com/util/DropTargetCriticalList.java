@@ -31,6 +31,7 @@ import javax.swing.JPopupMenu;
 
 import megamek.common.*;
 import megamek.common.loaders.EntityLoadingException;
+import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
 
 public class DropTargetCriticalList<E> extends JList<E> implements MouseListener {
@@ -236,7 +237,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                 return crit.getMount();
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            MegaMekLab.getLogger().error(ex);
         }
 
         return mount;
@@ -351,8 +352,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
         } catch (EntityLoadingException ele) {
             // do nothing.
         } catch (Exception ex) {
-
-            ex.printStackTrace();
+            MegaMekLab.getLogger().error(ex);
         }
         if (refresh != null) {
             refresh.refreshAll();

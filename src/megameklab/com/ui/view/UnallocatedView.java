@@ -37,6 +37,7 @@ import megamek.common.Entity;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.weapons.Weapon;
+import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.util.*;
 
@@ -263,7 +264,7 @@ public class UnallocatedView extends IView implements ActionListener, MouseListe
         try {
             getEntity().addEquipment(eq, location, false);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            MegaMekLab.getLogger().error(ex);
         }
 
         if (refresh.get() != null) {

@@ -123,9 +123,7 @@ public class PrintProtomech extends PrintEntity {
                         }
                     }
                 } catch (NumberFormatException ex) {
-                    MegaMekLab.getLogger().warning(getClass(),
-                            "setTextField(String, String, boolean)",
-                            "Could not parse fieldWidth: " + fieldWidth);
+                    MegaMekLab.getLogger().warning("Could not parse fieldWidth: " + fieldWidth);
                 }
             }
         }

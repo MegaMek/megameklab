@@ -628,7 +628,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
 
     private @Nullable
     File loadUnitFile() {
-        String filePathName = System.getProperty("user.dir") + "/data/mechfiles/";
+        String filePathName = System.getProperty("user.dir") + "/data/mechfiles/"; // TODO : remove inline file path
         FileDialog fDialog = new FileDialog(parentFrame,
                 resourceMap.getString("dialog.chooseUnit.title"),
                 FileDialog.LOAD);
@@ -731,7 +731,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
                 BLKFile.encode(unitFile.getAbsolutePath(), tempEntity);
             }
         } catch (Exception ex) {
-            MegaMekLab.getLogger().error(getClass(), "jMenuInsertImageFile_actionPerformed()", ex);
+            MegaMekLab.getLogger().error(ex);
         }
     }
 
@@ -935,9 +935,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         } else if (parentFrame.getEntity() instanceof Protomech) {
             parentFrame.createNewUnit(Entity.ETYPE_PROTOMECH);
         } else {
-            MegaMekLab.getLogger().warning(getClass(),
-            "jMenuResetEntity_actionPerformed(ActionEvent)",
-                "util.MenuBarCreator: Received unknown entityType!");
+            MegaMekLab.getLogger().warning("Received unknown entityType!");
         }
         setVisible(true);
         reload();
@@ -1009,7 +1007,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             }
             CConfig.updateSaveFiles(filePathName);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            MegaMekLab.getLogger().error(ex);
         }
 
         JOptionPane.showMessageDialog(parentFrame,
@@ -1058,7 +1056,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             }
             CConfig.updateSaveFiles(filePathName);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            MegaMekLab.getLogger().error(ex);
         }
 
         JOptionPane.showMessageDialog(parentFrame,
@@ -1106,7 +1104,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             p.close();
             out.close();
         } catch (Exception ex) {
-            MegaMekLab.getLogger().error(getClass(), "exportSummary(boolean)", ex);
+            MegaMekLab.getLogger().error(ex);
         }
     }
 

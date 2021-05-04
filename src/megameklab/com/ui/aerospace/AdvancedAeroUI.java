@@ -30,7 +30,6 @@ import megamek.common.SimpleTechLevel;
 import megamek.common.SpaceStation;
 import megamek.common.TechConstants;
 import megamek.common.Warship;
-import megamek.common.logging.LogLevel;
 import megamek.common.verifier.TestAdvancedAerospace;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.MegaMekLabMainUI;
@@ -43,12 +42,8 @@ import megameklab.com.ui.tabs.TransportTab;
  * MainUI for Jumpships, Warship, and Space Stations
  * 
  * @author Neoancient
- *
  */
 public class AdvancedAeroUI extends MegaMekLabMainUI {
-    /**
-     * 
-     */
     private static final long serialVersionUID = -91028543221939757L;
     
     JTabbedPane configPane = new JTabbedPane(SwingConstants.TOP);
@@ -101,8 +96,7 @@ public class AdvancedAeroUI extends MegaMekLabMainUI {
         } else if (entitytype == Entity.ETYPE_SPACE_STATION) {
             setEntity(new SpaceStation());
         } else {
-            MegaMekLab.getLogger().log(AdvancedAeroUI.class, "createNewUnit(long)", LogLevel.ERROR,
-                    "Received incorrect entityType!");
+            MegaMekLab.getLogger().error("Received incorrect entityType!");
             return;
         }
         getEntity().setTechLevel(TechConstants.T_IS_ADVANCED);

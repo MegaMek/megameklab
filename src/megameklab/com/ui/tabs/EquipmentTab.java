@@ -492,7 +492,7 @@ public class EquipmentTab extends ITab implements ActionListener {
                 } catch (ArrayIndexOutOfBoundsException aioobe) {
                     return;
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    MegaMekLab.getLogger().error(ex);
                 }
             } else {
                 location++;
@@ -582,8 +582,7 @@ public class EquipmentTab extends ITab implements ActionListener {
                 }
             }
         } catch (LocationFullException ex) {
-            MegaMekLab.getLogger().error(getClass(), "addEquipment(EquipmentType)",
-                    "Location full while trying to add " + equip.getName());
+            MegaMekLab.getLogger().error("Location full while trying to add " + equip.getName());
             JOptionPane.showMessageDialog(
                     this,"Could not add " + equip.getName(),
                     "Location Full", JOptionPane.ERROR_MESSAGE);
