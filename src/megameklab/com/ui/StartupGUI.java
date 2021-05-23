@@ -36,7 +36,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
-import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.client.ui.swing.widget.MegamekButton;
 import megamek.client.ui.swing.widget.SkinSpecification;
 import megamek.client.ui.swing.widget.SkinXMLHandler;
@@ -364,14 +363,8 @@ public class StartupGUI extends javax.swing.JPanel {
     
     private void loadUnit() {
         EquipmentType.initializeTypes();
-        UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(frame);
-        unitLoadingDialog.setVisible(true);
-        MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(frame, unitLoadingDialog);
 
-        Entity newUnit = viewer.getChosenEntity();
-        viewer.setVisible(false);
-        viewer.dispose();
-
+        Entity newUnit = MegaMekLabUnitSelectorDialog.showDialog(frame);
         if (null == newUnit) {
             return;
         }

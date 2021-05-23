@@ -36,7 +36,6 @@ import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.common.Aero;
 import megamek.common.BattleArmor;
 import megamek.common.Dropship;
@@ -392,20 +391,13 @@ public class UnitPrintManager {
     }
 
     public static void printSelectedUnit(JFrame parent, boolean pdf) {
-        UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(parent);
-        unitLoadingDialog.setVisible(true);
-        MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(parent, unitLoadingDialog);
-
-        viewer.setVisible(false);
-        Entity entity = viewer.getChosenEntity();
-
+        Entity entity = MegaMekLabUnitSelectorDialog.showDialog(parent);
         if (entity != null) {
             if (pdf) {
                 exportEntity(entity, parent);
             } else {
                 printEntity(entity);
             }
-            viewer.dispose();
         }
     }
 
