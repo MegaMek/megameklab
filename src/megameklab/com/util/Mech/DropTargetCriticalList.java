@@ -45,6 +45,7 @@ import megamek.common.weapons.autocannons.LBXACWeapon;
 import megamek.common.weapons.autocannons.UACWeapon;
 import megamek.common.weapons.gaussrifles.GaussWeapon;
 import megamek.common.weapons.ppc.PPCWeapon;
+import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.util.CritListCellRenderer;
 import megameklab.com.util.RefreshListener;
@@ -483,9 +484,9 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
     public Mounted getMounted() {
         // BattleArmor doesn't have a proper critical system like other units
         //  so they are handled specially
-        if (getUnit() instanceof BattleArmor){
+        if (getUnit() instanceof BattleArmor) {
             // The names for this list should be of the form <eq>:<slot>:<eqId>
-            String[] split = ((String)this.getSelectedValue()).split(":");
+            String[] split = ((String) this.getSelectedValue()).split(":");
             if (split.length > 2){
                 int eqId = Integer.parseInt(split[2]);
                 return getUnit().getEquipment(eqId);
@@ -500,7 +501,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                 return crit.getMount();
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            MegaMekLab.getLogger().error(ex);
         }
 
         return mount;
@@ -542,8 +543,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
         } catch (EntityLoadingException ele) {
             // do nothing.
         } catch (Exception ex) {
-
-            ex.printStackTrace();
+            MegaMekLab.getLogger().error(ex);
         }
 
         if (refresh != null) {
@@ -562,7 +562,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
         
         // BattleArmor doens't use the crit system, we we can just remove the
         //  mounted and be done
-        if (getUnit() instanceof BattleArmor){
+        if (getUnit() instanceof BattleArmor) {
             changeMountStatus(mounted, BattleArmor.MOUNT_LOC_NONE, false);
             return;
         }
@@ -575,8 +575,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
         } catch (EntityLoadingException ele) {
             // do nothing.
         } catch (Exception ex) {
-
-            ex.printStackTrace();
+            MegaMekLab.getLogger().error(ex);
         }
 
         if ((crit != null) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)) {

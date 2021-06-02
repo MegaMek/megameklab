@@ -43,6 +43,7 @@ import megamek.common.Mounted;
 import megamek.common.WeaponType;
 import megamek.common.verifier.TestAero;
 import megamek.common.weapons.Weapon;
+import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.Aero.tabs.BuildTab;
 import megameklab.com.util.CriticalTableModel;
@@ -360,7 +361,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         try {
             getAero().addEquipment(eq, location, false);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            MegaMekLab.getLogger().error(ex);
         }
         UnitUtil.changeMountStatus(getAero(), eq, location, -1, false);
 

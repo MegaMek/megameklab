@@ -30,6 +30,7 @@ import megamek.common.EquipmentType;
 import megamek.common.ITechManager;
 import megamek.common.SimpleTechLevel;
 import megamek.common.TechConstants;
+import megameklab.com.MegaMekLab;
 import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.Aero.tabs.BuildTab;
 import megameklab.com.ui.Aero.tabs.EquipmentTab;
@@ -107,7 +108,7 @@ public class MainUI extends MegaMekLabMainUI {
             setEntity(new ConvFighter());
             getEntity().setTechLevel(TechConstants.T_IS_TW_NON_BOX);
         } else {
-            System.out.println("Aero.MainUI: Received incorrect entityType!");
+            MegaMekLab.getLogger().error("Received incorrect entityType!");
             return;
         }
 

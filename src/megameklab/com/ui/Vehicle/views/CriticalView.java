@@ -32,6 +32,7 @@ import megamek.common.SuperHeavyTank;
 import megamek.common.Tank;
 import megamek.common.VTOL;
 import megamek.common.loaders.MtfFile;
+import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.util.DropTargetCriticalList;
 import megameklab.com.util.IView;
@@ -217,7 +218,7 @@ public class CriticalView extends IView {
                             critNames.add(critName.toString());
 
                         } catch (Exception ex) {
-                            ex.printStackTrace();
+                            MegaMekLab.getLogger().error(ex);
                         }
                     }
                 }

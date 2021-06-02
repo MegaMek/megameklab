@@ -41,6 +41,7 @@ import megamek.common.templates.TROView;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestBattleArmor;
 import megamek.common.verifier.TestBattleArmor.BAManipulator;
+import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.util.CustomComboBox;
 import megameklab.com.ui.view.BAChassisView;
@@ -264,21 +265,21 @@ public class StructureTab extends ITab implements ActionListener, BABuildListene
         if (e.getSource() instanceof JComboBox) {
             @SuppressWarnings("unchecked")
             JComboBox<String> combo = (JComboBox<String>) e.getSource();
-            if (combo.equals(leftManipSelect)){
+            if (combo.equals(leftManipSelect)) {
                 // If the BA already had a manipulator here, we'll need to
                 //  remove it
                 Mounted leftManip = getBattleArmor().getLeftManipulator();
                 BAManipulator manipType;
-                if (leftManip != null){
+                if (leftManip != null) {
                     UnitUtil.removeMounted(getBattleArmor(), leftManip);
                     manipType = BAManipulator.getManipulator(
                             leftManip.getType().getInternalName());
                     // If this manipulator was mounted as a pair, 
                     //   remove the paired manipulator
-                    if (manipType.pairMounted){
+                    if (manipType.pairMounted) {
                         Mounted rightManip = 
                                 getBattleArmor().getRightManipulator();
-                        if (rightManip != null){
+                        if (rightManip != null) {
                             UnitUtil.removeMounted(getBattleArmor(), rightManip);
                             rightManipSelect.setSelectedIndex(0);
                         }
@@ -286,7 +287,7 @@ public class StructureTab extends ITab implements ActionListener, BABuildListene
                 }
                 
                 // If we selected something other than "None", mount it
-                if (leftManipSelect.getSelectedIndex() != 0){
+                if (leftManipSelect.getSelectedIndex() != 0) {
                     String manipName = 
                             (String)leftManipSelect.getSelectedItem();
                     manipType = BAManipulator.getManipulator(manipName);
@@ -302,30 +303,30 @@ public class StructureTab extends ITab implements ActionListener, BABuildListene
                                 leftManip.getType().getInternalName());
                         // If this manipulator was mounted as a pair, 
                         //   remove the paired manipulator
-                        if (manipType.pairMounted){
+                        if (manipType.pairMounted) {
                             Mounted rightManip = new Mounted(getBattleArmor(), et);
                             rightManip.setBaMountLoc(
                                     BattleArmor.MOUNT_LOC_RARM);
                             getBattleArmor().addEquipment(rightManip,
                                     BattleArmor.LOC_SQUAD, false);
                         }
-                    } catch (LocationFullException ex){
+                    } catch (LocationFullException ex) {
                         // This shouldn't happen
-                        ex.printStackTrace();
+                        MegaMekLab.getLogger().error(ex);
                     }
                 }
-            } else if (combo.equals(rightManipSelect)){
+            } else if (combo.equals(rightManipSelect)) {
                 // If the BA already had a manipulator here, we'll need to
                 //  remove it
                 Mounted rightManip = getBattleArmor().getRightManipulator();
                 BAManipulator manipType;
-                if (rightManip != null){
+                if (rightManip != null) {
                     UnitUtil.removeMounted(getBattleArmor(), rightManip);
                     manipType = BAManipulator.getManipulator(
                             rightManip.getType().getInternalName());
                     // If this manipulator was mounted as a pair, 
                     //   remove the paired manipulator
-                    if (manipType.pairMounted){
+                    if (manipType.pairMounted) {
                         Mounted leftManip = 
                                 getBattleArmor().getLeftManipulator();
                         if (leftManip != null){
@@ -336,7 +337,7 @@ public class StructureTab extends ITab implements ActionListener, BABuildListene
                 }
                 
                 // If we selected something other than "None", mount it
-                if (rightManipSelect.getSelectedIndex() != 0){
+                if (rightManipSelect.getSelectedIndex() != 0) {
                     String manipName = 
                             (String)rightManipSelect.getSelectedItem();
                     manipType = BAManipulator.getManipulator(manipName);
@@ -352,16 +353,16 @@ public class StructureTab extends ITab implements ActionListener, BABuildListene
                                 rightManip.getType().getInternalName());
                         // If this manipulator was mounted as a pair, 
                         //   remove the paired manipulator
-                        if (manipType.pairMounted){
+                        if (manipType.pairMounted) {
                             Mounted leftManip = new Mounted(getBattleArmor(), et);
                             leftManip.setBaMountLoc(
                                     BattleArmor.MOUNT_LOC_LARM);
                             getBattleArmor().addEquipment(leftManip,
                                     BattleArmor.LOC_SQUAD, false);
                         }
-                    } catch (LocationFullException ex){
+                    } catch (LocationFullException ex) {
                         // This shouldn't happen
-                        ex.printStackTrace();
+                        MegaMekLab.getLogger().error(ex);
                     }
                 }
             }
@@ -392,7 +393,7 @@ public class StructureTab extends ITab implements ActionListener, BABuildListene
             mechView = new MechView(getBattleArmor(), false);
             troView = TROView.createView(getBattleArmor(), true);
         } catch (Exception e) {
-            e.printStackTrace();
+            MegaMekLab.getLogger().error(e);
             // error unit didn't load right. this is bad news.
             populateTextFields = false;
         }
@@ -648,9 +649,9 @@ public class StructureTab extends ITab implements ActionListener, BABuildListene
                     getBattleArmor().addEquipment(newMount,
                             BattleArmor.LOC_SQUAD, false);
                 }
-            } catch (LocationFullException exc) {
+            } catch (LocationFullException e) {
                 // Shouldn't happen with BA
-                exc.printStackTrace();
+                MegaMekLab.getLogger().error(e);
             }
         } else {
             List<Mounted> mounts = getBattleArmor().getMisc().stream()
@@ -669,7 +670,7 @@ public class StructureTab extends ITab implements ActionListener, BABuildListene
 
     @Override
     public void armorFactorChanged(int points) {
-        for(int i = 0; i < getBattleArmor().locations(); i++) {
+        for (int i = 0; i < getBattleArmor().locations(); i++) {
             getBattleArmor().initializeArmor(points, i);
         }
         refresh.refreshStatus();
@@ -689,7 +690,7 @@ public class StructureTab extends ITab implements ActionListener, BABuildListene
                 getBattleArmor().addEquipment(new Mounted(getBattleArmor(), armor),
                         BattleArmor.LOC_SQUAD, false);
             } catch (Exception ex) {
-                ex.printStackTrace();
+                MegaMekLab.getLogger().error(ex);
             }
         }
         refresh.refreshBuild();

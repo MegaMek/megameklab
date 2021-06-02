@@ -16,27 +16,21 @@
 
 package megameklab.com.util;
 
+import megamek.common.AmmoType;
+import megamek.common.BattleArmor;
+import megamek.common.CriticalSlot;
+import megamek.common.Entity;
+import megamek.common.Mounted;
+import megameklab.com.MegaMekLab;
+import megameklab.com.ui.EntitySource;
+import megameklab.com.ui.util.ProtomekMountList;
+
+import javax.swing.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
-
-import javax.swing.JComponent;
-import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.TransferHandler;
-
-import megamek.common.AmmoType;
-import megamek.common.BattleArmor;
-import megamek.common.CriticalSlot;
-import megamek.common.Entity;
-import megamek.common.MechFileParser;
-import megamek.common.Mounted;
-import megamek.common.loaders.EntityLoadingException;
-import megameklab.com.ui.EntitySource;
-import megameklab.com.ui.util.ProtomekMountList;
 
 public class CriticalTransferHandler extends TransferHandler {
 
@@ -83,7 +77,7 @@ public class CriticalTransferHandler extends TransferHandler {
                     changeMountStatus(mount, location, false);
                 }
             } catch (Exception ex) {
-                ex.printStackTrace();
+                MegaMekLab.getLogger().error(ex);
             }
 
             return true;
@@ -111,7 +105,7 @@ public class CriticalTransferHandler extends TransferHandler {
                     changeMountStatus(mount, location, false);
                 }
             } catch (Exception ex) {
-                ex.printStackTrace();
+                MegaMekLab.getLogger().error(ex);
             }
 
             return true;
@@ -122,14 +116,14 @@ public class CriticalTransferHandler extends TransferHandler {
                 Mounted mount = getUnit().getEquipment(Integer.parseInt((String) t
                         .getTransferData(DataFlavor.stringFlavor)));
 
-                if (getUnit() instanceof BattleArmor){
+                if (getUnit() instanceof BattleArmor) {
                     mount.setBaMountLoc(BattleArmor.MOUNT_LOC_NONE);
                 } else {
                     UnitUtil.removeCriticals(getUnit(), mount);
                     changeMountStatus(mount, Entity.LOC_NONE, false);
                 }
             } catch (Exception ex) {
-                ex.printStackTrace();
+                MegaMekLab.getLogger().error(ex);
             }
             return true;
         }
@@ -148,12 +142,8 @@ public class CriticalTransferHandler extends TransferHandler {
             mounted = getUnit().getEquipment(Integer
                     .parseInt((String) info.getTransferable().getTransferData(
                             DataFlavor.stringFlavor)));
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-        } catch (UnsupportedFlavorException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (NumberFormatException | UnsupportedFlavorException | IOException e) {
+            MegaMekLab.getLogger().error(e);
         }
         // not actually dragged a Mounted? not transferable
         if (mounted == null) {

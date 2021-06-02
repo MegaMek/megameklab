@@ -409,7 +409,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
                 return "[M,C,S]";
             }
         } else if (mount.getType() instanceof WeaponType && mount.getType().hasFlag(WeaponType.F_AMS)) {
-            return "[PD]";
+            return "[PB]";
         } else if (mount.getType() instanceof ISCenturionWeaponSystem) {
             return "0";
         } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_BA_MANIPULATOR)) {

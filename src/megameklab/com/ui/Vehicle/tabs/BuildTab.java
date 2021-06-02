@@ -13,7 +13,6 @@
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  */
-
 package megameklab.com.ui.Vehicle.tabs;
 
 import java.awt.Dimension;
@@ -30,6 +29,7 @@ import megamek.common.Entity;
 import megamek.common.MechFileParser;
 import megamek.common.Mounted;
 import megamek.common.loaders.EntityLoadingException;
+import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.view.UnallocatedView;
 import megameklab.com.ui.Vehicle.views.CriticalView;
@@ -119,7 +119,7 @@ public class BuildTab extends ITab implements ActionListener {
                     UnitUtil.changeMountStatus(getTank(), mount, location, Entity.LOC_NONE, false);
                     break;
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    MegaMekLab.getLogger().error(ex);
                 }
             }
         }
@@ -142,8 +142,7 @@ public class BuildTab extends ITab implements ActionListener {
         } catch (EntityLoadingException ele) {
             // do nothing.
         } catch (Exception ex) {
-
-            ex.printStackTrace();
+            MegaMekLab.getLogger().error(ex);
         }
 
         refresh.refreshAll();
@@ -168,5 +167,4 @@ public class BuildTab extends ITab implements ActionListener {
     public void addCrit(Mounted mount) {
         critList.addCrit(mount);
     }
-
 }

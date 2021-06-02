@@ -50,6 +50,7 @@ import megamek.common.MechFileParser;
 import megamek.common.Protomech;
 import megamek.common.Tank;
 import megamek.common.util.EncodeControl;
+import megameklab.com.MegaMekLab;
 import megameklab.com.printing.*;
 import megameklab.com.ui.dialog.MegaMekLabUnitSelectorDialog;
 import megameklab.com.ui.MegaMekLabMainUI;
@@ -93,7 +94,7 @@ public class UnitPrintManager {
             loadedUnits = EntityListFile.loadFrom(f.getSelectedFile());
             loadedUnits.trimToSize();
         } catch (Exception ex) {
-            ex.printStackTrace();
+            MegaMekLab.getLogger().error(ex);
             return;
         }
 
@@ -122,7 +123,7 @@ public class UnitPrintManager {
             loadedUnits = EntityListFile.loadFrom(mulFile);
             loadedUnits.trimToSize();
         } catch (Exception ex) {
-            ex.printStackTrace();
+            MegaMekLab.getLogger().error(ex);
             return;
         }
 
@@ -410,7 +411,7 @@ public class UnitPrintManager {
     }
 
     public static void printUnitFile(JFrame parent, boolean singleUnit, boolean pdf) {
-        String filePathName = System.getProperty("user.dir") + "/data/mechfiles/";
+        String filePathName = System.getProperty("user.dir") + "/data/mechfiles/"; // TODO : Remove inline file path
 
         JFileChooser f = new JFileChooser(filePathName);
         f.setLocation(parent.getLocation().x + 150, parent.getLocation().y + 100);
@@ -444,7 +445,7 @@ public class UnitPrintManager {
                 printAllUnits(unitList, singleUnit);
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            MegaMekLab.getLogger().error(ex);
         }
     }
 }

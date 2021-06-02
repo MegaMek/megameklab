@@ -56,7 +56,6 @@ import megamek.common.Mounted;
 import megamek.common.SmallCraft;
 import megamek.common.WeaponType;
 import megamek.common.annotations.Nullable;
-import megamek.common.logging.LogLevel;
 import megamek.common.verifier.TestAero;
 import megamek.common.verifier.TestEntity;
 import megamek.common.weapons.bayweapons.BayWeapon;
@@ -76,13 +75,8 @@ import megameklab.com.util.UnitUtil;
  * from their locations.
  * 
  * @author Neoancient
- *
  */
 public class BayWeaponCriticalTree extends JTree {
-    
-    /**
-     *
-     */
     private static final long serialVersionUID = -223615170732243552L;
     // Spheroids show only forward or only aft on the side arcs
     public static final int FORWARD = 0; // No rear-mounting allowed (nose, aft, spheroid forward side arcs
@@ -1090,9 +1084,8 @@ public class BayWeaponCriticalTree extends JTree {
                     bay.addAmmoToBay(eSource.getEntity().getEquipmentNum(eq));
                 }
             } else {
-                MegaMekLab.getLogger().log(BayWeaponCriticalTree.class, "addToBay(Mounted,Mounted)",    //$NON-NLS-1$
-                        LogLevel.DEBUG, bay.getName() + "[" + eSource.getEntity().getEquipmentNum(bay)  //$NON-NLS-1$
-                        + "] not found in " + getLocationName());                                       //$NON-NLS-1$
+                MegaMekLab.getLogger().debug(bay.getName() + "[" + eSource.getEntity().getEquipmentNum(bay)
+                        + "] not found in " + getLocationName());
             }
         }
         refresh.refreshEquipment();
@@ -1280,7 +1273,7 @@ public class BayWeaponCriticalTree extends JTree {
             eSource.getEntity().addEquipment(eq, location, false);
         } catch (LocationFullException e) {
             // We shouldn't be hitting any limits
-            e.printStackTrace();
+            MegaMekLab.getLogger().error(e);
         }
         UnitUtil.changeMountStatus(eSource.getEntity(), eq, location,
                 Entity.LOC_NONE, (facing == AFT) || ((facing == BOTH) && eq.isRearMounted()));

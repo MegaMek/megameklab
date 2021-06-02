@@ -180,7 +180,7 @@ public class StringUtils {
                     info += "DB,";
                 }
                 if (UnitUtil.isAMS(weapon) || (weapon.hasFlag(WeaponType.F_B_POD))) {
-                    info += "PD,";
+                    info += "PB,";
                 } else if (weapon.hasFlag(WeaponType.F_PULSE)) {
                     info += "P,";
                 } else if (weapon.hasFlag(WeaponType.F_ENERGY) || weapon.hasFlag(WeaponType.F_PLASMA)) {
@@ -240,7 +240,7 @@ public class StringUtils {
                 info = Integer.toString(ClubAttackAction.getDamageFor(unit, mount, false, false));
             }
         } else if ((mount.getType() instanceof MiscType) && (mount.getType().hasFlag(MiscType.F_AP_POD))) {
-            info = "[PD,OS,AI]";
+            info = "[PB,OS,AI]";
         } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_TALON)) {
             info = Integer.toString(KickAttackAction.getDamageFor(unit, Mech.LOC_LLEG, false));
         } else {
@@ -324,7 +324,7 @@ public class StringUtils {
                     info += "DB,";
                 }
                 if (UnitUtil.isAMS(weapon) || (weapon instanceof BPodWeapon)) {
-                    info += "PD,";
+                    info += "PB,";
                 } else if (weapon.hasFlag(WeaponType.F_PULSE)) {
                     info += "P,";
                 } else if (weapon.hasFlag(WeaponType.F_ENERGY)) {

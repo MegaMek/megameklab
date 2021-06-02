@@ -20,6 +20,7 @@ package megameklab.com.ui.supportvehicle;
 
 import megamek.common.*;
 import megamek.common.loaders.MtfFile;
+import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.util.DropTargetCriticalList;
 import megameklab.com.util.IView;
@@ -131,7 +132,7 @@ public class SVCriticalView extends IView {
         this.remove(fullTurretPanel);
 
         if (getEntity() instanceof VTOL) {
-            if (getVTOL().hasNoTurret()){
+            if (getVTOL().hasNoTurret()) {
                 turretPanel.setBorder(BorderFactory.createTitledBorder(
                         BorderFactory.createEmptyBorder(), "Rotor",
                         TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
@@ -204,7 +205,7 @@ public class SVCriticalView extends IView {
                             critNames.add(critName.toString());
 
                         } catch (Exception ex) {
-                            ex.printStackTrace();
+                            MegaMekLab.getLogger().error(ex);
                         }
                     }
                 }

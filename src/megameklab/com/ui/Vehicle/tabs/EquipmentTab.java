@@ -120,23 +120,23 @@ public class EquipmentTab extends ITab implements ActionListener {
     private String REMOVEALL_COMMAND = "REMOVEALL";
 
     public static String getTypeName(int type) {
-        switch(type) {
-        case T_WEAPON:
-            return "All Weapons";
-        case T_ENERGY:
-            return "Energy Weapons";
-        case T_BALLISTIC:
-            return "Ballistic Weapons";
-        case T_MISSILE:
-            return "Missile Weapons";
-        case T_ARTILLERY:
-            return "Artillery Weapons";
-        case T_AMMO:
-            return "Ammunition";
-        case T_OTHER:
-            return "Other Equipment";
-        default:
-            return "?";
+        switch (type) {
+            case T_WEAPON:
+                return "All Weapons";
+            case T_ENERGY:
+                return "Energy Weapons";
+            case T_BALLISTIC:
+                return "Ballistic Weapons";
+            case T_MISSILE:
+                return "Missile Weapons";
+            case T_ARTILLERY:
+                return "Artillery Weapons";
+            case T_AMMO:
+                return "Ammunition";
+            case T_OTHER:
+                return "Other Equipment";
+            default:
+                return "?";
         }
     }
 
@@ -645,7 +645,7 @@ public class EquipmentTab extends ITab implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             int view = masterEquipmentTable.getSelectedRow();
-            if(view < 0) {
+            if (view < 0) {
                 //selection got filtered away
                 return;
             }
