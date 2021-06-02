@@ -379,12 +379,12 @@ public class EquipmentTab extends ITab implements ActionListener {
         List<EquipmentType> spreadAlreadyAdded = new ArrayList<>();
 
         for (Mounted mount : getTank().getMisc()) {
-
             EquipmentType etype = mount.getType();
             if (etype.hasFlag(MiscType.F_JUMP_JET)
                     || UnitUtil.isArmorOrStructure(etype)) {
                 continue;
             }
+
             if (UnitUtil.isFixedLocationSpreadEquipment(etype)
                     && !spreadAlreadyAdded.contains(etype)) {
                 equipmentList.addCrit(mount);
@@ -397,20 +397,18 @@ public class EquipmentTab extends ITab implements ActionListener {
         }
     }
 
-
     private void removeHeatSinks() {
-        int location = 0;
-        for (; location < equipmentList.getRowCount();) {
-
+        for (int location = 0; location < equipmentList.getRowCount(); ) {
             Mounted mount = (Mounted) equipmentList.getValueAt(location, CriticalTableModel.EQUIPMENT);
             EquipmentType eq = mount.getType();
             if ((eq instanceof MiscType) && (UnitUtil.isHeatSink(mount))) {
                 try {
                     equipmentList.removeCrit(location);
-                } catch (ArrayIndexOutOfBoundsException aioobe) {
+                } catch (IndexOutOfBoundsException ignored) {
                     return;
-                } catch (Exception ex) {
-                    MegaMekLab.getLogger().error(ex);
+                } catch (Exception e) {
+                    MegaMekLab.getLogger().error(e);
+                    return;
                 }
             } else {
                 location++;
