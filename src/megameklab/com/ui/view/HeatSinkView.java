@@ -214,7 +214,7 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
         spnPrototypeCount.setVisible(hasPrototypeDoubles);
         spnPrototypeCount.removeChangeListener(this);
         spnPrototypeCount.setValue(totalSinks - mech.heatSinks(false));
-        prototypeCountModel.setMaximum(capacity);
+        prototypeCountModel.setMaximum(totalSinks);
         prototypeCountModel.setMinimum(hasPrototypeDoubles ? 1 : 0);
         spnPrototypeCount.addChangeListener(this);
         lblCritFreeCount.setText(String.valueOf(UnitUtil.getCriticalFreeHeatSinks(mech, isCompact)));
