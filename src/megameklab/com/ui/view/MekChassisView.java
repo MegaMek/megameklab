@@ -587,9 +587,11 @@ public class MekChassisView extends BuildView implements ActionListener, ChangeL
     
     private void refreshFullHeadEject() {
         chkFullHeadEject.removeActionListener(this);
-        chkFullHeadEject.setEnabled((getCockpitType() != Mech.COCKPIT_TORSO_MOUNTED)
-                && (getCockpitType() != Mech.COCKPIT_VRRP)
-                && (getCockpitType() != Mech.COCKPIT_COMMAND_CONSOLE)
+        final Integer cockpitType = (Integer) cbCockpit.getSelectedItem();
+        chkFullHeadEject.setEnabled((cockpitType != null)
+                && (cockpitType != Mech.COCKPIT_TORSO_MOUNTED)
+                && (cockpitType != Mech.COCKPIT_VRRP)
+                && (cockpitType != Mech.COCKPIT_COMMAND_CONSOLE)
                 && techManager.isLegal(Mech.getFullHeadEjectAdvancement()));
         chkFullHeadEject.addActionListener(this);
     }
