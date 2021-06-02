@@ -44,6 +44,7 @@ import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.WeaponType;
 import megamek.common.weapons.Weapon;
+import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.Mek.tabs.BuildTab;
 import megameklab.com.util.CriticalTableModel;
@@ -409,7 +410,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
             try {
                 UnitUtil.addMounted(getMech(), eq, location, false);
             } catch (Exception ex) {
-                ex.printStackTrace();
+                MegaMekLab.getLogger().error(ex);
             }
         }
 
@@ -418,7 +419,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
             try {
                 UnitUtil.addMounted(getMech(), eq, secondaryLocation, false);
             } catch (Exception ex) {
-                ex.printStackTrace();
+                MegaMekLab.getLogger().error(ex);
             }
         }
 
@@ -491,7 +492,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
                 UnitUtil.addMounted(getMech(), eq, location, false);
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            MegaMekLab.getLogger().error(ex);
         }
         UnitUtil.changeMountStatus(getMech(), eq, location, -1, false);
 

@@ -36,6 +36,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
+import megamek.MegaMek;
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.client.ui.swing.widget.MegamekButton;
 import megamek.client.ui.swing.widget.SkinSpecification;
@@ -111,9 +112,8 @@ public class StartupGUI extends javax.swing.JPanel {
             if (skinSpec.backgrounds.size() > 1) {
                 File file = new MegaMekFile(Configuration.widgetsDir(),
                         skinSpec.backgrounds.get(1)).getFile();
-                if (!file.exists()){
-                    System.err.println("MainMenu Error: background icon doesn't exist: "
-                            + file.getAbsolutePath());
+                if (!file.exists()) {
+                    MegaMek.getLogger().error("Background icon doesn't exist: " + file.getAbsolutePath());
                 } else {
                     backgroundIcon = (BufferedImage) ImageUtil.loadImageFromFile(file.toString());
                 }

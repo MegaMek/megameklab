@@ -173,8 +173,7 @@ public class PrintCapitalShip extends PrintDropship {
             if (element instanceof SVGRectElement) {
                 printArmorRegion((SVGRectElement) element, ship.getOArmor(loc));
             } else {
-                MegaMekLab.getLogger().error(getClass(), "drawArmorStructurePips()",
-                        "No SVGRectElement found with id " + id);
+                MegaMekLab.getLogger().error("No SVGRectElement found with id " + id);
             }
         }
     }

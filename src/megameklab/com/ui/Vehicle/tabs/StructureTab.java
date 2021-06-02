@@ -47,6 +47,7 @@ import megamek.common.VTOL;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.BayData;
 import megamek.common.verifier.TestTank;
+import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.Vehicle.views.SummaryView;
 import megameklab.com.ui.view.ArmorAllocationView;
@@ -392,7 +393,7 @@ public class StructureTab extends ITab implements CVBuildListener, ArmorAllocati
                 try {
                     getTank().addEquipment(jumpJet, Tank.LOC_BODY);
                 } catch (LocationFullException e) {
-                    e.printStackTrace();
+                    MegaMekLab.getLogger().error(e);
                 }
             }
             panSummary.refresh();

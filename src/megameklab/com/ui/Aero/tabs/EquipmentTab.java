@@ -71,6 +71,7 @@ import megamek.common.Mounted;
 import megamek.common.WeaponType;
 import megamek.common.weapons.artillery.ArtilleryWeapon;
 import megamek.common.weapons.bayweapons.BayWeapon;
+import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.util.CriticalTableModel;
 import megameklab.com.util.EquipmentTableModel;
@@ -126,25 +127,25 @@ public class EquipmentTab extends ITab implements ActionListener {
     private final Dimension SPINNER_SIZE = new Dimension(55, 25);
 
     public static String getTypeName(int type) {
-        switch(type) {
-        case T_WEAPON:
-            return "All Weapons";
-        case T_ENERGY:
-            return "Energy Weapons";
-        case T_BALLISTIC:
-            return "Ballistic Weapons";
-        case T_MISSILE:
-            return "Missile Weapons";
-        case T_ARTILLERY:
-            return "Artillery Weapons";
-        case T_CAPITAL:
-            return "Capital Weapons";
-        case T_AMMO:
-            return "Ammunition";
-        case T_OTHER:
-            return "Other Equipment";
-        default:
-            return "?";
+        switch (type) {
+            case T_WEAPON:
+                return "All Weapons";
+            case T_ENERGY:
+                return "Energy Weapons";
+            case T_BALLISTIC:
+                return "Ballistic Weapons";
+            case T_MISSILE:
+                return "Missile Weapons";
+            case T_ARTILLERY:
+                return "Artillery Weapons";
+            case T_CAPITAL:
+                return "Capital Weapons";
+            case T_AMMO:
+                return "Ammunition";
+            case T_OTHER:
+                return "Other Equipment";
+            default:
+                return "?";
         }
     }
 
@@ -456,7 +457,7 @@ public class EquipmentTab extends ITab implements ActionListener {
                 } catch (ArrayIndexOutOfBoundsException aioobe) {
                     return;
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    MegaMekLab.getLogger().error(ex);
                 }
             } else {
                 location++;

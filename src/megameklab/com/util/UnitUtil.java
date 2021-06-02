@@ -39,8 +39,6 @@ import javax.swing.text.html.HTMLEditorKit;
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
 import megamek.common.loaders.EntityLoadingException;
-import megamek.common.logging.LogLevel;
-import megamek.common.logging.MMLogger;
 import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestAdvancedAerospace;
 import megamek.common.verifier.TestAero;
@@ -646,8 +644,6 @@ public class UnitUtil {
      * @param unit
      */
     public static void removeHeatSinks(Mech unit, int number) {
-        final String METHOD_NAME = "removeHeatSinks(Mech, int)";
-        
         Vector<Mounted> toRemove = new Vector<Mounted>();
         int base = UnitUtil.getCriticalFreeHeatSinks(unit,
                 unit.hasCompactHeatSinks());
@@ -715,7 +711,7 @@ public class UnitUtil {
                             new Mounted(unit, EquipmentType
                                     .get("IS1 Compact Heat Sink")), loc, false);
                 } catch (Exception ex) {
-                    getLogger().error(UnitUtil.class, METHOD_NAME, ex);
+                    MegaMekLab.getLogger().error(ex);
                 }
             }
 
@@ -741,8 +737,6 @@ public class UnitUtil {
      * @param sinkType
      */
     public static void addHeatSinkMounts(Mech unit, int hsAmount, EquipmentType sinkType) {
-        final String METHOD_NAME = "addHeatSinkMounts(Mech, int, String)";
-
         if (sinkType.hasFlag(MiscType.F_COMPACT_HEAT_SINK)) {
             UnitUtil.addCompactHeatSinkMounts(unit, hsAmount);
         } else {
@@ -751,15 +745,14 @@ public class UnitUtil {
                     unit.addEquipment(new Mounted(unit, sinkType),
                             Entity.LOC_NONE, false);
                 } catch (Exception ex) {
-                    getLogger().error(UnitUtil.class, METHOD_NAME, ex);
+                    MegaMekLab.getLogger().error(ex);
                 }
             }
         }
     }
 
     public static void addCompactHeatSinkMounts(Mech unit, int hsAmount) {
-        final String METHOD_NAME = "addCompactHeatSinkMounts(Mech, int)";
-        
+
         // first we need to figure out how many single compacts we need to add
         // for the engine, if any
         int currentSinks = UnitUtil.countActualHeatSinks(unit);
@@ -776,7 +769,7 @@ public class UnitUtil {
                                     .get("IS1 Compact Heat Sink")),
                             Entity.LOC_NONE, false);
                 } catch (Exception ex) {
-                    getLogger().error(UnitUtil.class, METHOD_NAME, ex);
+                    MegaMekLab.getLogger().error(ex);
                 }
             } else {
                 int loc = singleCompact.getLocation();
@@ -788,7 +781,7 @@ public class UnitUtil {
                                     .getHeatSinkType("Compact", unit.isClan()))),
                             loc, false);
                 } catch (Exception ex) {
-                    getLogger().error(UnitUtil.class, METHOD_NAME, ex);
+                    MegaMekLab.getLogger().error(ex);
                 }
             }
             restHS -= 1;
@@ -799,7 +792,7 @@ public class UnitUtil {
                                 .getHeatSinkType("Compact", unit.isClan()))),
                         Entity.LOC_NONE, false);
             } catch (Exception ex) {
-                getLogger().error(UnitUtil.class, METHOD_NAME, ex);
+                MegaMekLab.getLogger().error(ex);
             }
         }
     }
@@ -989,8 +982,6 @@ public class UnitUtil {
      * @param jjType
      */
     public static void updateJumpJets(Mech unit, int jjAmount, int jjType) {
-        final String METHOD_NAME = "updateJumpJets(Mech, int, int)";
-        
         unit.setOriginalJumpMP(jjAmount);
         int ctype = unit.getJumpType();
         if (jjType == ctype) {
@@ -1023,7 +1014,7 @@ public class UnitUtil {
                                     .getJumpJetType(jjType))),
                             Entity.LOC_NONE, false);
                 } catch (Exception ex) {
-                    getLogger().error(UnitUtil.class, METHOD_NAME, ex);
+                    MegaMekLab.getLogger().error(ex);
                 }
                 jjAmount--;
             }
@@ -1881,8 +1872,6 @@ public class UnitUtil {
      * @return
      */
     public static Mounted createSpreadMounts(Mech unit, EquipmentType equip) {
-        final String METHOD_NAME = "createSpreadMounts(Mech, EquipmentType)";
-        
         // how many non-spreadable contiguous blocks of crits?
         int blocks = 0;
         boolean isMisc = equip instanceof MiscType;
@@ -2018,7 +2007,7 @@ public class UnitUtil {
                         }
                     }
                 } catch (LocationFullException lfe) {
-                    getLogger().error(UnitUtil.class, METHOD_NAME, lfe);
+                    MegaMekLab.getLogger().error(lfe);
                     JOptionPane.showMessageDialog(
                             null,
                             lfe.getMessage(),
@@ -3196,7 +3185,6 @@ public class UnitUtil {
     }
 
     public static int getShieldDamageAbsorption(Mech mech, int location) {
-        final String METHOD_NAME = "getShieldDamageAbsorption(Mech, int)";
         for (int slot = 0; slot < mech.getNumberOfCriticals(location); slot++) {
             CriticalSlot cs = mech.getCritical(location, slot);
 
@@ -3211,8 +3199,7 @@ public class UnitUtil {
             Mounted m = cs.getMount();
 
             if (m == null) {
-                getLogger().log(UnitUtil.class, METHOD_NAME, LogLevel.ERROR,
-                                "Null Mount index: " + cs.getIndex());
+                MegaMekLab.getLogger().error("Null Mount index: " + cs.getIndex());
                 m = cs.getMount();
             }
 
@@ -3226,7 +3213,6 @@ public class UnitUtil {
     }
 
     public static int getShieldDamageCapacity(Mech mech, int location) {
-        final String METHOD_NAME = "getShieldDamageCapacity(Mech, int)";
         for (int slot = 0; slot < mech.getNumberOfCriticals(location); slot++) {
             CriticalSlot cs = mech.getCritical(location, slot);
 
@@ -3241,8 +3227,7 @@ public class UnitUtil {
             Mounted m = cs.getMount();
 
             if (m == null) {
-                getLogger().log(UnitUtil.class, METHOD_NAME, LogLevel.ERROR,
-                                "Null Mount index: " + cs.getIndex());
+                MegaMekLab.getLogger().error("Null Mount index: " + cs.getIndex());
                 m = cs.getMount();
             }
 
@@ -3626,9 +3611,8 @@ public class UnitUtil {
      */
     public static void copyLocationEquipment(final Entity entity, final int fromLoc, final int toLoc,
             final boolean includeForward, final boolean includeRear) throws LocationFullException {
-        final String METHOD_NAME = "copyLocationEquipment(Entity, int, int, boolean, boolean)"; //$NON-NLS-1$
-        
-        /* First we remove any equipment already in the location, but keep a list of it
+        /*
+         * First we remove any equipment already in the location, but keep a list of it
          * to use as much as possible. 
          */
         List<Mounted> removed = new ArrayList<>();
@@ -3647,7 +3631,8 @@ public class UnitUtil {
             }
         }
         
-        /* Now we go through the equipment in the location to copy and add it to the other location.
+        /*
+         * Now we go through the equipment in the location to copy and add it to the other location.
          * If there is a match in what we removed, use that. Otherwise add the equipment to the unit.
          * If the unit uses weapon bays, we need to create them in the new location and fill them. If
          * the unit doesn't use bays we will iterate through the crit slots to get the equipment
@@ -3692,7 +3677,7 @@ public class UnitUtil {
         try {
             MechFileParser.postLoadInit(entity);
         } catch (EntityLoadingException e) {
-            MegaMekLab.getLogger().error(UnitUtil.class, METHOD_NAME, e);
+            MegaMekLab.getLogger().error(e);
         }
     }
     
@@ -3785,7 +3770,6 @@ public class UnitUtil {
         unitSpecs.append(mechView.getMechReadoutLoadout());
         unitSpecs.append("</body></html>");
 
-        // System.err.println(unitSpecs.toString());
         JEditorPane textPane = new JEditorPane("text/html", "");
         JScrollPane scroll = new JScrollPane();
 
@@ -4301,10 +4285,10 @@ public class UnitUtil {
                     if (ammo.isPresent()) {
                         unit.addEquipment(ammo.get(), Infantry.LOC_FIELD_GUNS);
                     } else {
-                        System.err.println("Could not find ammo for field gun " + fieldGun.getName());
+                        MegaMekLab.getLogger().error("Could not find ammo for field gun " + fieldGun.getName());
                     }
                 } catch (LocationFullException ex) {
-                    ex.printStackTrace();
+                    MegaMekLab.getLogger().error(ex);
                 }
             }                
         }
@@ -4472,9 +4456,5 @@ public class UnitUtil {
         int secondClass = aero.getNPassenger() - firstClass - steeragePsgr;
         
         assignQuarters(aero, officer + firstClass, standardCrew, secondClass, steerageCrew + steeragePsgr);
-    }
-
-    public static MMLogger getLogger() {
-        return MegaMekLab.getLogger();
     }
 }

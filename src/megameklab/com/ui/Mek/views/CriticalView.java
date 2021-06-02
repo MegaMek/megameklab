@@ -33,6 +33,7 @@ import megamek.common.Mech;
 import megamek.common.Mounted;
 import megamek.common.QuadMech;
 import megamek.common.loaders.MtfFile;
+import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
@@ -210,7 +211,7 @@ public class CriticalView extends IView {
                             critNames.add(critName.toString());
 
                         } catch (Exception ex) {
-                            ex.printStackTrace();
+                            MegaMekLab.getLogger().error(ex);
                         }
                     }
                 }
