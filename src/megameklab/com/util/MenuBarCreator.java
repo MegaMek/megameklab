@@ -532,14 +532,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(parentFrame);
         unitLoadingDialog.setVisible(true);
         MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(parentFrame, unitLoadingDialog);
-
-        Entity tempEntity = viewer.getChosenEntity();
-        if(null == tempEntity) {
-            return;
-        }
-        tempEntity.calculateBattleValue(true, true);
-        UnitUtil.showBVCalculations(tempEntity.getBVText(), parentFrame);
-
+        UnitUtil.showBVCalculations(parentFrame, viewer.getChosenEntity());
     }
 
     private void jMenuGetUnitValidationFromCache_actionPerformed() {
@@ -572,13 +565,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(parentFrame);
         unitLoadingDialog.setVisible(true);
         MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(parentFrame, unitLoadingDialog);
-
-        Entity tempEntity = viewer.getChosenEntity();
-        if(null == tempEntity) {
-            return;
-        }
-        UnitUtil.showUnitCostBreakDown(tempEntity, parentFrame);
-
+        UnitUtil.showUnitCostBreakDown(parentFrame, viewer.getChosenEntity());
     }
     
     private void jMenuGetUnitWeightBreakdownFromCache_actionPerformed() {
@@ -587,11 +574,10 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(parentFrame, unitLoadingDialog);
 
         Entity tempEntity = viewer.getChosenEntity();
-        if(null == tempEntity) {
+        if (null == tempEntity) {
             return;
         }
         UnitUtil.showUnitWeightBreakDown(tempEntity, parentFrame);
-
     }
 
     private void jMenuGetUnitBVFromFile_actionPerformed() {
@@ -601,9 +587,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         }
 
         try {
-            Entity tempEntity = new MechFileParser(unitFile).getEntity();
-            tempEntity.calculateBattleValue(true, true);
-            UnitUtil.showBVCalculations(tempEntity.getBVText(), parentFrame);
+            UnitUtil.showBVCalculations(parentFrame, new MechFileParser(unitFile).getEntity());
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(parentFrame,
                     String.format(resourceMap.getString("message.invalidUnit.format"),
@@ -651,8 +635,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         }
 
         try {
-            Entity tempEntity = new MechFileParser(unitFile).getEntity();
-            UnitUtil.showUnitCostBreakDown(tempEntity, parentFrame);
+            UnitUtil.showUnitCostBreakDown(parentFrame, new MechFileParser(unitFile).getEntity());
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(parentFrame,
                     String.format(resourceMap.getString("message.invalidUnit.format"),
@@ -735,15 +718,12 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         }
     }
 
-    // Show BV Calculations
-
     private void jMenuBVCalculations_actionPerformed() {
-        parentFrame.getEntity().calculateBattleValue(true, true);
-        UnitUtil.showBVCalculations(parentFrame.getEntity().getBVText(), parentFrame);
+        UnitUtil.showBVCalculations(parentFrame, parentFrame.getEntity());
     }
 
     private void jMenuUnitCostBreakdown_actionPerformed() {
-        UnitUtil.showUnitCostBreakDown(parentFrame.getEntity(), parentFrame);
+        UnitUtil.showUnitCostBreakDown(parentFrame, parentFrame.getEntity());
     }
     
     private void jMenuUnitWeightBreakdown_actionPerformed() {

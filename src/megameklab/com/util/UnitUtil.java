@@ -36,6 +36,7 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.text.DefaultCaret;
 import javax.swing.text.html.HTMLEditorKit;
 
+import megamek.client.ui.dialogs.BVDisplayDialog;
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
 import megamek.common.loaders.EntityLoadingException;
@@ -3813,52 +3814,18 @@ public class UnitUtil {
         try {
             textPane.setSelectionStart(0);
             textPane.setSelectionEnd(0);
-        } catch (Exception ex) {
-        }
+        } catch (Exception ignored) {
 
+        }
     }
 
-    public static void showUnitCostBreakDown(Entity unit, JFrame frame) {
-        HTMLEditorKit kit = new HTMLEditorKit();
-        unit.calculateBattleValue(true, true);
-
-        unit.getCost(true);
-
-        JEditorPane textPane = new JEditorPane("text/html", "");
-        JScrollPane scroll = new JScrollPane();
-
-        textPane.setEditable(false);
-        textPane.setCaret(new DefaultCaret());
-        textPane.setEditorKit(kit);
-
-        scroll.setViewportView(textPane);
-        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scroll.getVerticalScrollBar().setUnitIncrement(20);
-
-        textPane.setText(unit.getBVText());
-
-        scroll.setVisible(true);
-
-        JDialog jdialog = new JDialog();
-
-        jdialog.add(scroll);
-        Dimension size = new Dimension(CConfig.getIntParam("WINDOWWIDTH") / 2,
-                CConfig.getIntParam("WINDOWHEIGHT"));
-
-        jdialog.setPreferredSize(size);
-        jdialog.setMinimumSize(size);
-        scroll.setPreferredSize(size);
-        scroll.setMinimumSize(size);
-
-        jdialog.setLocationRelativeTo(frame);
-        jdialog.setVisible(true);
-
-        try {
-            textPane.setSelectionStart(0);
-            textPane.setSelectionEnd(0);
-        } catch (Exception ex) {
+    public static void showUnitCostBreakDown(final JFrame frame, final @Nullable Entity entity) {
+        if (entity == null) {
+            return;
         }
+        entity.calculateBattleValue(true, true);
+        entity.getCost(true);
+        new BVDisplayDialog(frame, entity).setVisible(true);
     }
 
     public static void showUnitWeightBreakDown(Entity unit, JFrame frame) {
@@ -3895,120 +3862,17 @@ public class UnitUtil {
         try {
             textPane.setSelectionStart(0);
             textPane.setSelectionEnd(0);
-        } catch (Exception ex) {
-        }
+        } catch (Exception ignored) {
 
+        }
     }
 
-    public static void showBVCalculations(String bvText, JFrame frame) {
-        HTMLEditorKit kit = new HTMLEditorKit();
-
-        JEditorPane textPane = new JEditorPane("text/html", "");
-        JScrollPane scroll = new JScrollPane();
-
-        textPane.setEditable(false);
-        textPane.setCaret(new DefaultCaret());
-        textPane.setEditorKit(kit);
-
-        scroll.setViewportView(textPane);
-        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scroll.getVerticalScrollBar().setUnitIncrement(20);
-
-        textPane.setText(bvText);
-
-        scroll.setVisible(true);
-
-        JDialog jdialog = new JDialog();
-
-        jdialog.add(scroll);
-        Dimension size = new Dimension(
-                (int) (CConfig.getIntParam("WINDOWWIDTH") / 1.5),
-                CConfig.getIntParam("WINDOWHEIGHT"));
-
-        jdialog.setPreferredSize(size);
-        jdialog.setMinimumSize(size);
-        scroll.setPreferredSize(size);
-        scroll.setMinimumSize(size);
-        // text.setPreferredSize(size);
-
-        jdialog.setLocationRelativeTo(frame);
-        jdialog.setVisible(true);
-
-        try {
-            textPane.setSelectionStart(0);
-            textPane.setSelectionEnd(0);
-        } catch (Exception ex) {
+    public static void showBVCalculations(final JFrame frame, final @Nullable Entity entity) {
+        if (entity == null) {
+            return;
         }
-
-    }
-
-    public static boolean hasBAR(Entity unit) {
-
-        for (int loc = 0; loc < unit.locations(); loc++) {
-            if (unit.hasBARArmor(loc)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public static int getLowestBARRating(Entity unit) {
-        int bar = 10;
-
-        for (int loc = 0; loc < unit.locations(); loc++) {
-            if (unit.getBARRating(loc) < bar) {
-                bar = unit.getBARRating(loc);
-            }
-        }
-        return bar;
-    }
-
-    public static String getArmorString(Mech mech, int loc) {
-        if (!mech.hasPatchworkArmor()) {
-            return "";
-        }
-        StringBuilder sb = new StringBuilder("");
-        switch (mech.getArmorType(loc)) {
-            case EquipmentType.T_ARMOR_REFLECTIVE:
-                sb.append("LR");
-                break;
-            case EquipmentType.T_ARMOR_HARDENED:
-                sb.append("HD");
-                break;
-            case EquipmentType.T_ARMOR_LIGHT_FERRO:
-                sb.append("LF");
-                break;
-            case EquipmentType.T_ARMOR_HEAVY_FERRO:
-                sb.append("HF");
-                break;
-            case EquipmentType.T_ARMOR_FERRO_FIBROUS:
-            case EquipmentType.T_ARMOR_FERRO_FIBROUS_PROTO:
-                sb.append("FF");
-                break;
-            case EquipmentType.T_ARMOR_STEALTH:
-                sb.append("SA");
-                break;
-            case EquipmentType.T_ARMOR_INDUSTRIAL:
-                sb.append("IN");
-                break;
-            case EquipmentType.T_ARMOR_COMMERCIAL:
-                sb.append("CO");
-                break;
-            case EquipmentType.T_ARMOR_FERRO_LAMELLOR:
-                sb.append("FL");
-                break;
-            case EquipmentType.T_ARMOR_REACTIVE:
-                sb.append("RE");
-                break;
-            default:
-                return "";
-        }
-        if (mech.hasBARArmor(loc)) {
-            sb.append(" B" + mech.getBARRating(loc));
-        }
-        return sb.toString();
+        entity.calculateBattleValue(true, true);
+        new BVDisplayDialog(frame, entity).setVisible(true);
     }
 
     /**
