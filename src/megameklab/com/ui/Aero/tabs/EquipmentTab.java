@@ -416,7 +416,6 @@ public class EquipmentTab extends ITab implements ActionListener {
         List<EquipmentType> spreadAlreadyAdded = new ArrayList<EquipmentType>();
 
         for (Mounted mount : getAero().getMisc()) {
-
             EquipmentType etype = mount.getType();
             if (UnitUtil.isHeatSink(mount)
                     || etype.hasFlag(MiscType.F_JUMP_JET)
@@ -428,36 +427,31 @@ public class EquipmentTab extends ITab implements ActionListener {
                     || UnitUtil.isArmorOrStructure(etype)) {
                 continue;
             }
-            //if (UnitUtil.isUnitEquipment(mount.getType(), unit) || UnitUtil.isUn) {
-                if (UnitUtil.isFixedLocationSpreadEquipment(etype) 
-                        && !spreadAlreadyAdded.contains(etype)) {
-                    equipmentList.addCrit(mount);
-                    // keep track of spreadable equipment here, so it doesn't
-                    // show up multiple times in the table
-                    spreadAlreadyAdded.add(etype);
-                } else {
-                    equipmentList.addCrit(mount);
-                }
-            //}
+
+            if (UnitUtil.isFixedLocationSpreadEquipment(etype)
+                    && !spreadAlreadyAdded.contains(etype)) {
+                equipmentList.addCrit(mount);
+                // keep track of spreadable equipment here, so it doesn't
+                // show up multiple times in the table
+                spreadAlreadyAdded.add(etype);
+            } else {
+                equipmentList.addCrit(mount);
+            }
         }
-
-
     }
 
-
     private void removeHeatSinks() {
-        int location = 0;
-        for (; location < equipmentList.getRowCount();) {
-
+        for (int location = 0; location < equipmentList.getRowCount(); ) {
             Mounted mount = (Mounted) equipmentList.getValueAt(location, CriticalTableModel.EQUIPMENT);
             EquipmentType eq = mount.getType();
             if ((eq instanceof MiscType) && (UnitUtil.isHeatSink(mount))) {
                 try {
                     equipmentList.removeCrit(location);
-                } catch (ArrayIndexOutOfBoundsException aioobe) {
+                } catch (IndexOutOfBoundsException ignored) {
                     return;
-                } catch (Exception ex) {
-                    MegaMekLab.getLogger().error(ex);
+                } catch (Exception e) {
+                    MegaMekLab.getLogger().error(e);
+                    return;
                 }
             } else {
                 location++;
