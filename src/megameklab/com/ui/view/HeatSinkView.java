@@ -89,9 +89,9 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
     private final JLabel lblWeightFreeText = new JLabel();
     private final JLabel lblWeightFreeCount = new JLabel();
     
-    private SpinnerNumberModel countModel = new SpinnerNumberModel(0, 0, null, 1);
-    private SpinnerNumberModel baseCountModel = new SpinnerNumberModel(0, 0, null, 1);
-    private SpinnerNumberModel prototypeCountModel = new SpinnerNumberModel(0, 0, null, 1);
+    private final SpinnerNumberModel countModel = new SpinnerNumberModel(0, 0, null, 1);
+    private final SpinnerNumberModel baseCountModel = new SpinnerNumberModel(0, 0, null, 1);
+    private final SpinnerNumberModel prototypeCountModel = new SpinnerNumberModel(0, 0, null, 1);
 
     private final ITechManager techManager;
     private boolean isAero;
@@ -187,7 +187,7 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
         // If there are prototype doubles, we want to skip any singles and select that as the base type.
         Optional<EquipmentType> hs = mech.getMisc().stream().map(Mounted::getType)
                 .filter(et -> et.hasFlag(MiscType.F_IS_DOUBLE_HEAT_SINK_PROTOTYPE)).findAny();
-        if (!hs.isPresent()) {
+        if (hs.isEmpty()) {
             hs = mech.getMisc().stream().map(Mounted::getType)
                     .filter(UnitUtil::isHeatSink).findAny();
         }
