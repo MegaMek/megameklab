@@ -552,17 +552,11 @@ public class EquipmentTab extends ITab implements ActionListener {
                 Mech mech = getMech();
                 EquipmentTableModel equipModel = entry.getModel();
                 EquipmentType etype = equipModel.getType(entry.getIdentifier());
-                WeaponType wtype = null;
-                if (etype instanceof WeaponType) {
-                    wtype = (WeaponType)etype;
-                }
-                AmmoType atype = null;
-                if (etype instanceof AmmoType) {
-                    atype = (AmmoType)etype;
-                }
                 if (UnitUtil.isHeatSink(etype) || UnitUtil.isJumpJet(etype)) {
                     return false;
                 }
+                WeaponType wtype = (etype instanceof WeaponType) ? (WeaponType) etype : null;
+                AmmoType atype = (etype instanceof AmmoType) ? (AmmoType) etype : null;
                 if ((etype instanceof MiscType) && (etype.hasFlag(MiscType.F_TSM)
                         || etype.hasFlag(MiscType.F_INDUSTRIAL_TSM)
                         || (etype.hasFlag(MiscType.F_SCM))
