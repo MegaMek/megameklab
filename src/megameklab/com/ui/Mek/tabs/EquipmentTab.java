@@ -540,25 +540,19 @@ public class EquipmentTab extends ITab implements ActionListener {
     }
 
     private void filterEquipment() {
-        RowFilter<EquipmentTableModel, Integer> equipmentTypeFilter = null;
+        RowFilter<EquipmentTableModel, Integer> equipmentTypeFilter;
         final int nType = choiceType.getSelectedIndex();
-        equipmentTypeFilter = new RowFilter<EquipmentTableModel,Integer>() {
+        equipmentTypeFilter = new RowFilter<>() {
             @Override
             public boolean include(Entry<? extends EquipmentTableModel, ? extends Integer> entry) {
                 Mech mech = getMech();
                 EquipmentTableModel equipModel = entry.getModel();
                 EquipmentType etype = equipModel.getType(entry.getIdentifier());
-                WeaponType wtype = null;
-                if (etype instanceof WeaponType) {
-                    wtype = (WeaponType)etype;
-                }
-                AmmoType atype = null;
-                if (etype instanceof AmmoType) {
-                    atype = (AmmoType)etype;
-                }
-                if (UnitUtil.isHeatSink(etype, true) || UnitUtil.isJumpJet(etype)) {
+                if (UnitUtil.isHeatSink(etype) || UnitUtil.isJumpJet(etype)) {
                     return false;
                 }
+                WeaponType wtype = (etype instanceof WeaponType) ? (WeaponType) etype : null;
+                AmmoType atype = (etype instanceof AmmoType) ? (AmmoType) etype : null;
                 if ((etype instanceof MiscType) && (etype.hasFlag(MiscType.F_TSM)
                         || etype.hasFlag(MiscType.F_INDUSTRIAL_TSM)
                         || (etype.hasFlag(MiscType.F_SCM))
