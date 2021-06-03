@@ -3,6 +3,7 @@ VERSION HISTORY:
 0.49.2-SNAPSHOT
 + Issue #912: Changing AMS, A-Pod, and B-Pod display text from PD to PB
 + Issue #905: Preventing Full Head Ejection NPE
++ PR #917: Remove prototype heatsinks from equipment tab
 
 0.49.1 (2021-05-23 1630 UTC)
 
