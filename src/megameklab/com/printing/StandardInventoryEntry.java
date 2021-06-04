@@ -30,6 +30,7 @@ import megameklab.com.util.StringUtils;
 
 import java.math.BigInteger;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Formats text for an entry in the weapons and equipment inventory section of the record sheet.
@@ -318,11 +319,32 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
                 return AERODYNE_ARCS[mount.getLocation()];
             }
         }
-        if (mount.getSecondLocation() != Entity.LOC_NONE) {
-            return mount.getEntity().getLocationAbbr(mount.getLocation())
-                    + "/" + mount.getEntity().getLocationAbbr(mount.getSecondLocation());
+        List<Integer> locations = mount.allLocations();
+        if (locations.size() > 2) {
+            return (mount.getEntity() instanceof Mech) ? formatMechLocations(locations) : "*";
+        } else {
+            return locations.stream().sorted().map(l -> mount.getEntity().getLocationAbbr(l))
+                    .collect(Collectors.joining("/"));
         }
-        return mount.getEntity().getLocationAbbr(mount.getLocation());
+    }
+
+    /**
+     * Handles some special conditions where equipment occupying three or more locations can be
+     * abbreviated to conserve space.
+     *
+     * @param locations The list of locations the equipment occupies
+     * @return The abbreviated location string
+     */
+    private String formatMechLocations(List<Integer> locations) {
+        if (locations.stream().allMatch(l -> mount.getEntity().locationIsLeg(l))) {
+            if ((mount.getEntity().entityIsQuad() && (locations.size() == 4))
+                   || ((mount.getEntity() instanceof TripodMech) && (locations.size() == 3))) {
+                return "Legs";
+            }
+        } else if (locations.stream().allMatch(l -> ((Mech) mount.getEntity()).locationIsTorso(l))) {
+            return "R/L/CT";
+        }
+        return "*";
     }
 
     @Override
