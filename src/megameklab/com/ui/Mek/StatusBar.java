@@ -131,7 +131,7 @@ public class StatusBar extends ITab {
             heatSink.setForeground(UIManager.getColor("Label.foreground"));
         }
 
-        tons.setText("Tonnage: " + currentTonnage + "/" + tonnage);
+        tons.setText(String.format("Tonnage: %.1f/%.1f (%.1f Remaining)", currentTonnage, tonnage, tonnage - currentTonnage));
         tons.setToolTipText("Current Tonnage/Max Tonnage");
         if (currentTonnage > tonnage) {
             tons.setForeground(Color.red);
