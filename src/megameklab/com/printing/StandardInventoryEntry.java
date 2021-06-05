@@ -27,6 +27,7 @@ import megamek.common.weapons.missiles.MMLWeapon;
 import megamek.common.weapons.other.ISCenturionWeaponSystem;
 import megameklab.com.util.CConfig;
 import megameklab.com.util.StringUtils;
+import megameklab.com.util.UnitUtil;
 
 import java.math.BigInteger;
 import java.util.*;
@@ -319,13 +320,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
                 return AERODYNE_ARCS[mount.getLocation()];
             }
         }
-        List<Integer> locations = mount.allLocations();
-        if (locations.size() > 2) {
-            return (mount.getEntity() instanceof Mech) ? formatMechLocations(locations) : "*";
-        } else {
-            return locations.stream().sorted().map(l -> mount.getEntity().getLocationAbbr(l))
-                    .collect(Collectors.joining("/"));
-        }
+        return mount.getEntity().joinLocationAbbr(mount.allLocations(), 2);
     }
 
     /**
