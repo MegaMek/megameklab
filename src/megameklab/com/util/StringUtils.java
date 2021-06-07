@@ -181,7 +181,7 @@ public class StringUtils {
                 }
                 if (UnitUtil.isAMS(weapon) || (weapon.hasFlag(WeaponType.F_B_POD))) {
                     info += "PB,";
-                } else if (weapon.hasFlag(WeaponType.F_PULSE)) {
+                } else if (weapon.hasFlag(WeaponType.F_PULSE) || (weapon instanceof ReengineeredLaserWeapon)) {
                     info += "P,";
                 } else if (weapon.hasFlag(WeaponType.F_ENERGY) || weapon.hasFlag(WeaponType.F_PLASMA)) {
                     info += "DE,";
