@@ -6,6 +6,7 @@ VERSION HISTORY:
 + PR #917: Remove prototype heatsinks from equipment tab
 + PR #918: Show unused tonnage in the status bar
 + PR #919: Show multiple equipment locations on the record sheet
++ Issue #870: Wrong aerospace fighter speed in clipboard export
 
 0.49.1 (2021-05-23 1630 UTC)
 
