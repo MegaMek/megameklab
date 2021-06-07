@@ -188,7 +188,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         } else if (mount.getType().isClan()) {
             return CConfig.formatScale(5, false); // Clan active probe
         } else {
-            return CConfig.formatScale(3, false); // Beagle active probe
+            return CConfig.formatScale(4, false); // Beagle active probe
         }
     }
 
