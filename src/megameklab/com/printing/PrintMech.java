@@ -210,6 +210,9 @@ public class PrintMech extends PrintEntity {
 
         setTextField(HS_TYPE, formatHeatSinkType());
         setTextField(HS_COUNT, formatHeatSinkCount());
+        if (mech.hasWorkingMisc(MiscType.F_PARTIAL_WING)) {
+            hideElement(PARTIAL_WING_BONUS, false);
+        }
         
         if (mech instanceof LandAirMech) {
             LandAirMech lam = (LandAirMech) mech;
@@ -629,7 +632,7 @@ public class PrintMech extends PrintEntity {
     
     private String formatHeatSinkCount() {
         int hsCount = mech.heatSinks();
-        int capacity = mech.getHeatCapacity(false, false);
+        int capacity = mech.getHeatCapacity(true, false);
         if (hsCount != capacity) {
             return String.format("%d (%d)", hsCount, capacity);
         } else {
