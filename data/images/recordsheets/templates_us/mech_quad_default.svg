@@ -1879,6 +1879,8 @@
                                                                                   >Heat Sinks:</text
                                                                                   ><text fill="#231f20" x="152.000" id="hsCount" y="31.000" style="font-family:Eurostile;font-size:8.440px;font-weight:normal;font-style:normal" text-anchor="end"
                                                                                   >10</text
+                                                                                  ><text x="152.000" y="38.000" fill="#231f20" text-anchor="end" style="font-family:Eurostile;font-size:5.800px;font-weight:normal;font-style:normal" visibility="hidden" id="partialWingBonus" textLength="41.646" lengthAdjust="spacingAndGlyphs"
+                                                                                  >(Partial Wing +3)</text
                                                                                   ><rect fill="none" x="128.000" width="30.000" id="heatSinkPips" height="120.500" y="42.000"
                                                                                 /></g
                                                                                 ><g transform="translate (556.000 368.000)"
