@@ -566,7 +566,7 @@ public class PrintMech extends PrintEntity {
 
     @Override
     protected String formatWalk() {
-        if (mech.hasTSM()) {
+        if (mech.hasTSM(false)) {
             return formatMovement(mech.getWalkMP(), mech.getWalkMP() + 1);
         } else {
             return super.formatWalk();
@@ -578,7 +578,7 @@ public class PrintMech extends PrintEntity {
         double baseRun = mech.getWalkMP();
         double fullRun = baseRun;
         baseRun *= 1.5;
-        if (mech.hasTSM()) {
+        if (mech.hasTSM(false)) {
             fullRun++;
         }
         if ((mech.getMASC() != null) && (mech.getSuperCharger() != null)) {

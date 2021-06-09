@@ -138,7 +138,7 @@ public class MekChassisView extends BuildView implements ActionListener, ChangeL
 
     private static final String[] ENHANCEMENT_NAMES = {
             EquipmentTypeLookup.IS_MASC, EquipmentTypeLookup.CLAN_MASC,
-            EquipmentTypeLookup.TSM, EquipmentTypeLookup.SCM
+            EquipmentTypeLookup.TSM, EquipmentTypeLookup.P_TSM, EquipmentTypeLookup.SCM
     };
     
     private final ITechManager techManager;
