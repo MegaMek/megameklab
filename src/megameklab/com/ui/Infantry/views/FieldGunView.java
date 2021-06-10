@@ -54,7 +54,6 @@ import megamek.common.WeaponType;
 import megamek.common.weapons.artillery.ArtilleryCannonWeapon;
 import megamek.common.weapons.artillery.ArtilleryWeapon;
 import megamek.common.weapons.autocannons.ACWeapon;
-import megamek.common.weapons.autocannons.HVACWeapon;
 import megamek.common.weapons.autocannons.LBXACWeapon;
 import megamek.common.weapons.autocannons.RACWeapon;
 import megamek.common.weapons.autocannons.RifleWeapon;
@@ -162,7 +161,7 @@ public class FieldGunView extends IView implements ActionListener {
                     || ((WeaponType)eq).isCapital()) {
                 continue;
             }
-            if ((eq instanceof ACWeapon && !(eq instanceof HVACWeapon))
+            if (eq instanceof ACWeapon
                     || eq instanceof RACWeapon
                     || eq instanceof UACWeapon
                     || eq instanceof RifleWeapon
