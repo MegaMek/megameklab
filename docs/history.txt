@@ -12,6 +12,7 @@ VERSION HISTORY:
 + Issue #885: Heat Sink/Laser Insulator Interaction on Vehicles
 + Issue #886: Prototype Triple Strength Myomer
 + Issue #884: Reengineered laser damage type
++ PR #926: Enable infantry field guns to use HVACs, if you wanted to do that for some reason
 
 0.49.1 (2021-05-23 1630 UTC)
 
