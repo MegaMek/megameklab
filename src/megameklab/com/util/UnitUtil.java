@@ -766,9 +766,8 @@ public class UnitUtil {
         if ((restHS % 2) == 1) {
             if (null == singleCompact) {
                 try {
-                    unit.addEquipment(new Mounted(unit, EquipmentType
-                                    .get("IS1 Compact Heat Sink")),
-                            Entity.LOC_NONE, false);
+                    unit.addEquipment(new Mounted(unit, EquipmentType.get(EquipmentTypeLookup.COMPACT_HS_1)),
+                        Entity.LOC_NONE, false);
                 } catch (Exception ex) {
                     MegaMekLab.getLogger().error(ex);
                 }
@@ -777,10 +776,8 @@ public class UnitUtil {
                 // remove singleCompact mount and replace with a double
                 UnitUtil.removeMounted(unit, singleCompact);
                 try {
-                    addMounted(unit,
-                            new Mounted(unit, EquipmentType.get(UnitUtil
-                                    .getHeatSinkType("Compact", unit.isClan()))),
-                            loc, false);
+                    addMounted(unit,new Mounted(unit, EquipmentType.get(EquipmentTypeLookup.COMPACT_HS_2)),
+                        loc, false);
                 } catch (Exception ex) {
                     MegaMekLab.getLogger().error(ex);
                 }
@@ -789,9 +786,8 @@ public class UnitUtil {
         }
         for (; restHS > 0; restHS -= 2) {
             try {
-                unit.addEquipment(new Mounted(unit, EquipmentType.get(UnitUtil
-                                .getHeatSinkType("Compact", unit.isClan()))),
-                        Entity.LOC_NONE, false);
+                unit.addEquipment(new Mounted(unit, EquipmentType.get(EquipmentTypeLookup.COMPACT_HS_2)),
+                    Entity.LOC_NONE, false);
             } catch (Exception ex) {
                 MegaMekLab.getLogger().error(ex);
             }
