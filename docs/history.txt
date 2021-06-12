@@ -13,6 +13,7 @@ VERSION HISTORY:
 + Issue #886: Prototype Triple Strength Myomer
 + Issue #884: Reengineered laser damage type
 + PR #926: Enable infantry field guns to use HVACs, if you wanted to do that for some reason
++ Issue #888: Artemis IV Validation 
 
 0.49.1 (2021-05-23 1630 UTC)
 
