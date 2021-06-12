@@ -897,6 +897,10 @@ public class UnitUtil {
      * @param unit
      */
     public static void updateAutoSinks(Mech unit, boolean compact) {
+        if (compact) {
+            updateCompactHeatSinks(unit);
+            return;
+        }
         int base = UnitUtil.getCriticalFreeHeatSinks(unit, compact);
         List<Mounted> unassigned = new ArrayList<>();
         List<Mounted> assigned = new ArrayList<>();
@@ -924,6 +928,115 @@ public class UnitUtil {
         }
         // There may be more crit-free heatsinks, but if the 'mech doesn't
         // have that many heatsinks, the additional space is unused.
+    }
+
+    /**
+     * Adjusts compact heat sinks to fulfill engine capacity. This is more complex than other heat sink
+     * types because the engine heat sinks always have one per mount, and those outside the engine
+     * are paired in a slot with one single if there are an odd number.
+     *
+     * @param mech The mech to adjust heat sinks for
+     */
+    public static void updateCompactHeatSinks(Mech mech) {
+        int base = UnitUtil.getCriticalFreeHeatSinks(mech, true);
+        List<Mounted> unallocatedSingle = new ArrayList<>();
+        List<Mounted> unallocatedPair = new ArrayList<>();
+        List<Mounted> allocatedSingle = new ArrayList<>();
+        List<Mounted> allocatedPair = new ArrayList<>();
+        for (Mounted m : mech.getMisc()) {
+            if (UnitUtil.isHeatSink(m)) {
+                if (m.getLocation() == Entity.LOC_NONE) {
+                    if (m.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK)) {
+                        unallocatedPair.add(m);
+                    } else {
+                        unallocatedSingle.add(m);
+                    }
+                } else {
+                    if (m.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK)) {
+                        allocatedPair.add(m);
+                    } else {
+                        allocatedSingle.add(m);
+                    }
+                }
+            }
+        }
+
+        int needed = base - unallocatedSingle.size();
+        int toAdd = 0;
+        // If there are more single heat sinks than there is space for in the engine remove them so they
+        // can be paired up
+        if (needed < 0) {
+            int count = removeCompactHeatSinks(-needed, mech, unallocatedSingle);
+            needed += count;
+            toAdd += count;
+        }
+        // If we have more space in the engine, start by splitting unallocated double heat sinks
+        if (needed > 0) {
+            int count = removeCompactHeatSinks(needed, mech, unallocatedPair);
+            needed -= count;
+            toAdd += count;
+        }
+        // Next we pull a single out of its location, if any
+        if (needed > 0) {
+            int count = removeCompactHeatSinks(needed, mech, allocatedSingle);
+            needed -= count;
+            toAdd += count;
+        }
+        // Finally we remove as many paired heat sinks as we need to fill the engine
+        if (needed > 0) {
+            toAdd += removeCompactHeatSinks(needed, mech, allocatedPair);
+        }
+        // Now we add heat sinks back
+        try {
+            // First we add as many single heat sinks to LOC_NONE as we need to fill the engine
+            int engineAdd = Math.min(toAdd, base - unallocatedSingle.size());
+            for (int i = 0; i < engineAdd; i++) {
+                mech.addEquipment(EquipmentType.get(EquipmentTypeLookup.COMPACT_HS_1), Entity.LOC_NONE);
+                toAdd--;
+            }
+            // If we have an odd number to add and there is a single already allocated, remove it and pair them.
+            // Unallocated singles in excess of engine capacity have already been removed.
+            if (((toAdd & 1) == 1) && !allocatedSingle.isEmpty()) {
+                UnitUtil.removeMounted(mech, allocatedSingle.remove(0));
+                mech.addEquipment(EquipmentType.get(EquipmentTypeLookup.COMPACT_HS_2), Entity.LOC_NONE);
+                toAdd--;
+            }
+            // If we still have an odd number, add one single.
+            if ((toAdd & 1) == 1) {
+                mech.addEquipment(EquipmentType.get(EquipmentTypeLookup.COMPACT_HS_1), Entity.LOC_NONE);
+                toAdd--;
+            }
+            // Add the remainder as unallocated pairs
+            for (int i = 0; i < toAdd; i += 2) {
+                mech.addEquipment(EquipmentType.get(EquipmentTypeLookup.COMPACT_HS_2), Entity.LOC_NONE);
+            }
+        } catch (LocationFullException ignored) {
+            // We're added to LOC_NONE
+        }
+    }
+
+    /**
+     * Called by {@link #updateCompactHeatSinks(Mech)} to remove heat sinks up to a certain number.
+     * The actual number removed could be higher if count is odd and we're removing pairs, or
+     * lower if there aren't enough in the list.
+     *
+     * @param count  The number of heat sinks to remove
+     * @param mech   The mech to remove heat sinks from
+     * @param hsList The list of heat sinks available for removal
+     * @return       The actual number removed
+     */
+    private static int removeCompactHeatSinks(int count, Mech mech, List<Mounted> hsList) {
+        int removed = 0;
+        for (Iterator<Mounted> iter = hsList.iterator(); iter.hasNext(); ) {
+            Mounted m = iter.next();
+            UnitUtil.removeMounted(mech, m);
+            removed += m.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK) ? 2 : 1;
+            iter.remove();
+            if (removed >= count) {
+                break;
+            }
+        }
+        return removed;
     }
 
     public static boolean isJumpJet(Mounted m) {
