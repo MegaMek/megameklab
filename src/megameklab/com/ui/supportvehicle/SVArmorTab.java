@@ -231,9 +231,11 @@ public class SVArmorTab extends ITab implements ArmorAllocationListener {
             case EquipmentType.T_ARMOR_FERRO_LAMELLOR:
             case EquipmentType.T_ARMOR_REFLECTIVE:
             case EquipmentType.T_ARMOR_REACTIVE:
+            case EquipmentType.T_ARMOR_ANTI_PENETRATIVE_ABLATION:
                 crits = 1;
                 break;
             case EquipmentType.T_ARMOR_HEAVY_FERRO:
+            case EquipmentType.T_ARMOR_BALLISTIC_REINFORCED:
                 crits = 2;
                 break;
         }

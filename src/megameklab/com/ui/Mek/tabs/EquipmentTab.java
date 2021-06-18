@@ -57,6 +57,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
 
+import megamek.MegaMek;
 import megamek.common.AmmoType;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
@@ -67,6 +68,7 @@ import megamek.common.Mounted;
 import megamek.common.QuadVee;
 import megamek.common.WeaponType;
 import megamek.common.weapons.artillery.ArtilleryWeapon;
+import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.util.CriticalTableModel;
 import megameklab.com.util.EquipmentTableModel;
@@ -119,25 +121,25 @@ public class EquipmentTab extends ITab implements ActionListener {
     private String REMOVEALL_COMMAND = "REMOVEALL";
 
     public static String getTypeName(int type) {
-        switch(type) {
-        case T_WEAPON:
-            return "All Weapons";
-        case T_ENERGY:
-            return "Energy Weapons";
-        case T_BALLISTIC:
-            return "Ballistic Weapons";
-        case T_MISSILE:
-            return "Missile Weapons";
-        case T_ARTILLERY:
-            return "Artillery Weapons";
-        case T_PHYSICAL:
-            return "Physical Weapons";
-        case T_AMMO:
-            return "Ammunition";
-        case T_OTHER:
-            return "Other Equipment";
-        default:
-            return "?";
+        switch (type) {
+            case T_WEAPON:
+                return "All Weapons";
+            case T_ENERGY:
+                return "Energy Weapons";
+            case T_BALLISTIC:
+                return "Ballistic Weapons";
+            case T_MISSILE:
+                return "Missile Weapons";
+            case T_ARTILLERY:
+                return "Artillery Weapons";
+            case T_PHYSICAL:
+                return "Physical Weapons";
+            case T_AMMO:
+                return "Ammunition";
+            case T_OTHER:
+                return "Other Equipment";
+            default:
+                return "?";
         }
     }
 
@@ -388,39 +390,35 @@ public class EquipmentTab extends ITab implements ActionListener {
                             && !etype.hasSubType(MiscType.S_SUPERCHARGER))
                     || ((getMech().getEntityType() & Entity.ETYPE_QUADVEE) == Entity.ETYPE_QUADVEE
                         && etype.hasFlag(MiscType.F_TRACKS))
-                    || UnitUtil.isArmorOrStructure(etype)) {
+                    || UnitUtil.isArmorOrStructure(etype)
+                    || (etype.hasFlag(MiscType.F_CASE) && etype.isClan())) {
                 continue;
             }
-            //if (UnitUtil.isUnitEquipment(mount.getType(), unit) || UnitUtil.isUn) {
-                if (UnitUtil.isFixedLocationSpreadEquipment(etype) 
-                        && !spreadAlreadyAdded.contains(etype)) {
-                    equipmentList.addCrit(mount);
-                    // keep track of spreadable equipment here, so it doesn't
-                    // show up multiple times in the table
-                    spreadAlreadyAdded.add(etype);
-                } else {
-                    equipmentList.addCrit(mount);
-                }
-            //}
+
+            if (UnitUtil.isFixedLocationSpreadEquipment(etype)
+                    && !spreadAlreadyAdded.contains(etype)) {
+                equipmentList.addCrit(mount);
+                // keep track of spreadable equipment here, so it doesn't
+                // show up multiple times in the table
+                spreadAlreadyAdded.add(etype);
+            } else {
+                equipmentList.addCrit(mount);
+            }
         }
-
-
     }
 
-
     private void removeHeatSinks() {
-        int location = 0;
-        for (; location < equipmentList.getRowCount();) {
-
+        for (int location = 0; location < equipmentList.getRowCount(); ) {
             Mounted mount = (Mounted) equipmentList.getValueAt(location, CriticalTableModel.EQUIPMENT);
             EquipmentType eq = mount.getType();
             if ((eq instanceof MiscType) && (UnitUtil.isHeatSink(mount))) {
                 try {
                     equipmentList.removeCrit(location);
-                } catch (ArrayIndexOutOfBoundsException aioobe) {
+                } catch (IndexOutOfBoundsException ignored) {
                     return;
-                } catch (Exception ex) {
-                    ex.printStackTrace();
+                } catch (Exception e) {
+                    MegaMekLab.getLogger().error(e);
+                    return;
                 }
             } else {
                 location++;
@@ -542,25 +540,19 @@ public class EquipmentTab extends ITab implements ActionListener {
     }
 
     private void filterEquipment() {
-        RowFilter<EquipmentTableModel, Integer> equipmentTypeFilter = null;
+        RowFilter<EquipmentTableModel, Integer> equipmentTypeFilter;
         final int nType = choiceType.getSelectedIndex();
-        equipmentTypeFilter = new RowFilter<EquipmentTableModel,Integer>() {
+        equipmentTypeFilter = new RowFilter<>() {
             @Override
             public boolean include(Entry<? extends EquipmentTableModel, ? extends Integer> entry) {
                 Mech mech = getMech();
                 EquipmentTableModel equipModel = entry.getModel();
                 EquipmentType etype = equipModel.getType(entry.getIdentifier());
-                WeaponType wtype = null;
-                if (etype instanceof WeaponType) {
-                    wtype = (WeaponType)etype;
-                }
-                AmmoType atype = null;
-                if (etype instanceof AmmoType) {
-                    atype = (AmmoType)etype;
-                }
-                if (UnitUtil.isHeatSink(etype, true) || UnitUtil.isJumpJet(etype)) {
+                if (UnitUtil.isHeatSink(etype) || UnitUtil.isJumpJet(etype)) {
                     return false;
                 }
+                WeaponType wtype = (etype instanceof WeaponType) ? (WeaponType) etype : null;
+                AmmoType atype = (etype instanceof AmmoType) ? (AmmoType) etype : null;
                 if ((etype instanceof MiscType) && (etype.hasFlag(MiscType.F_TSM)
                         || etype.hasFlag(MiscType.F_INDUSTRIAL_TSM)
                         || (etype.hasFlag(MiscType.F_SCM))

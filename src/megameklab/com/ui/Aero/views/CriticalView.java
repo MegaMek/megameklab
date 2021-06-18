@@ -38,6 +38,7 @@ import megamek.common.Mounted;
 import megamek.common.WeaponType;
 import megamek.common.loaders.MtfFile;
 import megamek.common.verifier.TestAero;
+import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
@@ -141,11 +142,10 @@ public class CriticalView extends IView {
         fuselagePanel.removeAll();
         
         int[] availSpace = TestAero.availableSpace(getAero());
-        
-        if (availSpace == null){
-            // Shouldn't happen, since we only allow valid armor types to be
-            //  selected...
-            System.err.println("Error in CriticalView: Invalid armor type!");
+
+        if (availSpace == null) {
+            // Shouldn't happen, since we only allow valid armor types to be selected...
+            MegaMekLab.getLogger().error("Invalid armour type!");
             return;
         }
 
@@ -204,7 +204,7 @@ public class CriticalView extends IView {
                             critNames.add(critName.toString());
 
                         } catch (Exception ex) {
-                            ex.printStackTrace();
+                            MegaMekLab.getLogger().error(ex);
                         }
                     }
                 }

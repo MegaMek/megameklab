@@ -210,26 +210,26 @@ public class StructureTab extends ITab implements MekBuildListener, ArmorAllocat
         getMech().addEngineCrits();
         switch (getMech().getGyroType()) {
             case Mech.GYRO_COMPACT:
-                clearCritsForGyro(2);
+                clearCritsForGyro(3,2);
                 getMech().addCompactGyro();
                 break;
             case Mech.GYRO_HEAVY_DUTY:
-                clearCritsForGyro(4);
+                clearCritsForGyro(3,4);
                 getMech().addHeavyDutyGyro();
                 break;
             case Mech.GYRO_XL:
-                clearCritsForGyro(6);
+                clearCritsForGyro(3,6);
                 getMech().addXLGyro();
                 break;
             case Mech.GYRO_NONE:
                 UnitUtil.compactCriticals(getMech(), Mech.LOC_CT);
                 break;
             case Mech.GYRO_SUPERHEAVY:
-                clearCritsForGyro(2);
-                getMech().addGyro();
+                clearCritsForGyro(lastEngine + 1, 2);
+                getMech().addSuperheavyGyro();
                 break;
             default:
-                clearCritsForGyro(4);
+                clearCritsForGyro(3,4);
                 getMech().addGyro();
         }
 
@@ -362,8 +362,8 @@ public class StructureTab extends ITab implements MekBuildListener, ArmorAllocat
         }
     }
     
-    private void clearCritsForGyro(int numSlots) {
-        for (int i = 3; i < 3 + numSlots; i++) {
+    private void clearCritsForGyro(int first, int numSlots) {
+        for (int i = first; i < first + numSlots; i++) {
             clearCrit(Mech.LOC_CT, i);
             getMech().setCritical(Mech.LOC_CT, i, null);
         }
@@ -392,7 +392,7 @@ public class StructureTab extends ITab implements MekBuildListener, ArmorAllocat
         } catch (EntityLoadingException ele) {
             // do nothing.
         } catch (Exception ex) {
-            ex.printStackTrace();
+            MegaMekLab.getLogger().error(ex);
         }
 
         if ((crit != null) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
@@ -477,7 +477,7 @@ public class StructureTab extends ITab implements MekBuildListener, ArmorAllocat
                         new Mounted(getMech(), structure),
                         Entity.LOC_NONE, false);
             } catch (Exception ex) {
-                ex.printStackTrace();
+                MegaMekLab.getLogger().error(ex);
             }
         }
     }
@@ -487,9 +487,9 @@ public class StructureTab extends ITab implements MekBuildListener, ArmorAllocat
      * @return true if the new engine is legal for rating, space, and tech level
      */
     private boolean recalculateEngineRating(int walkMP, double tonnage) {
-        int rating = walkMP * (int)tonnage;
+        int rating = walkMP * (int) tonnage;
         if (getMech().isPrimitive()) {
-            rating = (int)Math.ceil((rating * 1.2) / 5.0) * 5; 
+            rating = (int) Math.ceil((rating * 1.2) / 5.0) * 5;
         }
         int oldRating = getMech().getEngine().getRating();
         if (oldRating != rating) {
@@ -697,6 +697,11 @@ public class StructureTab extends ITab implements MekBuildListener, ArmorAllocat
                     UnitUtil.removeCriticals(getMech(), mount);
                     UnitUtil.changeMountStatus(getMech(), mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
                 }
+            }
+            if (tonnage > 100) {
+                getMech().setGyroType(Mech.GYRO_SUPERHEAVY);
+            } else {
+                getMech().setGyroType(Mech.GYRO_STANDARD);
             }
         }
         getMech().setWeight(tonnage);
@@ -962,8 +967,7 @@ public class StructureTab extends ITab implements MekBuildListener, ArmorAllocat
                 // Since we're not changing the total count, there should always be enough prototype
                 // doubles to switch over.
                 if (i >= doubles.size()) {
-                    MegaMekLab.getLogger().warning(getClass(), "redistributePrototypeHS(int)",
-                            "Not enough prototype double heat sinks to switch to single");
+                    MegaMekLab.getLogger().warning("Not enough prototype double heat sinks to switch to single");
                 }
                 UnitUtil.removeMounted(getMech(), doubles.get(i));
             }
@@ -977,8 +981,7 @@ public class StructureTab extends ITab implements MekBuildListener, ArmorAllocat
                     .collect(Collectors.toList());
             for (int i = 0; i < netChange; i++) {
                 if (i >= singles.size()) {
-                    MegaMekLab.getLogger().warning(getClass(), "redistributePrototypeHS(int)",
-                            "Not enough single heat sinks to switch to prototype double");
+                    MegaMekLab.getLogger().warning("Not enough single heat sinks to switch to prototype double");
                 }
                 UnitUtil.removeMounted(getMech(), singles.get(i));
             }
@@ -1085,7 +1088,7 @@ public class StructureTab extends ITab implements MekBuildListener, ArmorAllocat
             getMech().setOriginalJumpMP(0);
         }
         List<Mounted> jjs = getMech().getMisc().stream()
-                .filter(m -> m.getType() == jumpJet)
+                .filter(m -> jumpJet.equals(m.getType()))
                 .collect(Collectors.toList());
         if (jumpJet.hasFlag(MiscType.F_JUMP_BOOSTER)) {
             if (!getMech().hasWorkingMisc(MiscType.F_JUMP_BOOSTER)) {
@@ -1118,7 +1121,7 @@ public class StructureTab extends ITab implements MekBuildListener, ArmorAllocat
                 .filter(m -> m.getType().hasFlag(MiscType.F_JUMP_JET)
                         || m.getType().hasFlag(MiscType.F_UMU)
                         || m.getType().hasFlag(MiscType.F_JUMP_BOOSTER))
-                .filter(m -> m.getType() != jumpJet)
+                .filter(m -> !jumpJet.equals(m.getType()))
                 .collect(Collectors.toList());
         jjs.forEach(jj -> UnitUtil.removeMounted(getMech(), jj));
         jumpChanged(panMovement.getJump(), jumpJet);
@@ -1342,12 +1345,16 @@ public class StructureTab extends ITab implements MekBuildListener, ArmorAllocat
         switch (EquipmentType.getArmorType(armor)) {
             case EquipmentType.T_ARMOR_STEALTH:
             case EquipmentType.T_ARMOR_FERRO_LAMELLOR:
+            case EquipmentType.T_ARMOR_BALLISTIC_REINFORCED:
+            case EquipmentType.T_ARMOR_IMPACT_RESISTANT:
                 crits = 2;
                 break;
             case EquipmentType.T_ARMOR_HEAVY_FERRO:
                 crits = 3;
                 break;
             case EquipmentType.T_ARMOR_LIGHT_FERRO:
+            case EquipmentType.T_ARMOR_ANTI_PENETRATIVE_ABLATION:
+            case EquipmentType.T_ARMOR_HEAT_DISSIPATING:
                 crits = 1;
                 break;
             case EquipmentType.T_ARMOR_FERRO_FIBROUS:
@@ -1359,6 +1366,9 @@ public class StructureTab extends ITab implements MekBuildListener, ArmorAllocat
                     crits = 2;
                 }
                 break;
+        }
+        if (getMech().isSuperHeavy()) {
+            crits = (crits + 1) / 2;
         }
         if (getMech().getEmptyCriticals(location) < crits) {
             JOptionPane .showMessageDialog(
@@ -1374,7 +1384,8 @@ public class StructureTab extends ITab implements MekBuildListener, ArmorAllocat
             for (; crits > 0; crits--) {
                 try {
                     getMech().addEquipment( new Mounted(getMech(), armor), location, false);
-                } catch (LocationFullException ex) {
+                } catch (LocationFullException ignored) {
+
                 }
             }
         }

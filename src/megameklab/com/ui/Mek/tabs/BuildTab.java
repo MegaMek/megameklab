@@ -13,7 +13,6 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-
 package megameklab.com.ui.Mek.tabs;
 
 import java.awt.GridBagConstraints;
@@ -28,6 +27,7 @@ import javax.swing.JPanel;
 import megamek.common.Entity;
 import megamek.common.Mech;
 import megamek.common.Mounted;
+import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.Mek.views.BuildView;
 import megameklab.com.ui.Mek.views.CriticalView;
@@ -143,9 +143,8 @@ public class BuildTab extends ITab implements ActionListener {
                     UnitUtil.changeMountStatus(getMech(), mount, location, Entity.LOC_NONE, false);
                     break;
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    MegaMekLab.getLogger().error(ex);
                 }
-
             }
         }
         refresh.refreshAll();

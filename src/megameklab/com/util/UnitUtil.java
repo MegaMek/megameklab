@@ -36,11 +36,10 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.text.DefaultCaret;
 import javax.swing.text.html.HTMLEditorKit;
 
+import megamek.client.ui.dialogs.BVDisplayDialog;
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
 import megamek.common.loaders.EntityLoadingException;
-import megamek.common.logging.LogLevel;
-import megamek.common.logging.MMLogger;
 import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestAdvancedAerospace;
 import megamek.common.verifier.TestAero;
@@ -423,6 +422,9 @@ public class UnitUtil {
             boolean rearMounted) throws LocationFullException {
         unit.addEquipment(mounted, loc, rearMounted);
         mounted.setOmniPodMounted(canPodMount(unit, mounted));
+        if (mounted.getType().isExplosive(mounted, true) && (unit instanceof Mech) && unit.isClan()) {
+            ((Mech) unit).addClanCase();
+        }
     }
 
     /**
@@ -643,8 +645,6 @@ public class UnitUtil {
      * @param unit
      */
     public static void removeHeatSinks(Mech unit, int number) {
-        final String METHOD_NAME = "removeHeatSinks(Mech, int)";
-        
         Vector<Mounted> toRemove = new Vector<Mounted>();
         int base = UnitUtil.getCriticalFreeHeatSinks(unit,
                 unit.hasCompactHeatSinks());
@@ -712,7 +712,7 @@ public class UnitUtil {
                             new Mounted(unit, EquipmentType
                                     .get("IS1 Compact Heat Sink")), loc, false);
                 } catch (Exception ex) {
-                    getLogger().error(UnitUtil.class, METHOD_NAME, ex);
+                    MegaMekLab.getLogger().error(ex);
                 }
             }
 
@@ -738,8 +738,6 @@ public class UnitUtil {
      * @param sinkType
      */
     public static void addHeatSinkMounts(Mech unit, int hsAmount, EquipmentType sinkType) {
-        final String METHOD_NAME = "addHeatSinkMounts(Mech, int, String)";
-
         if (sinkType.hasFlag(MiscType.F_COMPACT_HEAT_SINK)) {
             UnitUtil.addCompactHeatSinkMounts(unit, hsAmount);
         } else {
@@ -748,15 +746,14 @@ public class UnitUtil {
                     unit.addEquipment(new Mounted(unit, sinkType),
                             Entity.LOC_NONE, false);
                 } catch (Exception ex) {
-                    getLogger().error(UnitUtil.class, METHOD_NAME, ex);
+                    MegaMekLab.getLogger().error(ex);
                 }
             }
         }
     }
 
     public static void addCompactHeatSinkMounts(Mech unit, int hsAmount) {
-        final String METHOD_NAME = "addCompactHeatSinkMounts(Mech, int)";
-        
+
         // first we need to figure out how many single compacts we need to add
         // for the engine, if any
         int currentSinks = UnitUtil.countActualHeatSinks(unit);
@@ -769,34 +766,30 @@ public class UnitUtil {
         if ((restHS % 2) == 1) {
             if (null == singleCompact) {
                 try {
-                    unit.addEquipment(new Mounted(unit, EquipmentType
-                                    .get("IS1 Compact Heat Sink")),
-                            Entity.LOC_NONE, false);
+                    unit.addEquipment(new Mounted(unit, EquipmentType.get(EquipmentTypeLookup.COMPACT_HS_1)),
+                        Entity.LOC_NONE, false);
                 } catch (Exception ex) {
-                    getLogger().error(UnitUtil.class, METHOD_NAME, ex);
+                    MegaMekLab.getLogger().error(ex);
                 }
             } else {
                 int loc = singleCompact.getLocation();
                 // remove singleCompact mount and replace with a double
                 UnitUtil.removeMounted(unit, singleCompact);
                 try {
-                    addMounted(unit,
-                            new Mounted(unit, EquipmentType.get(UnitUtil
-                                    .getHeatSinkType("Compact", unit.isClan()))),
-                            loc, false);
+                    addMounted(unit,new Mounted(unit, EquipmentType.get(EquipmentTypeLookup.COMPACT_HS_2)),
+                        loc, false);
                 } catch (Exception ex) {
-                    getLogger().error(UnitUtil.class, METHOD_NAME, ex);
+                    MegaMekLab.getLogger().error(ex);
                 }
             }
             restHS -= 1;
         }
         for (; restHS > 0; restHS -= 2) {
             try {
-                unit.addEquipment(new Mounted(unit, EquipmentType.get(UnitUtil
-                                .getHeatSinkType("Compact", unit.isClan()))),
-                        Entity.LOC_NONE, false);
+                unit.addEquipment(new Mounted(unit, EquipmentType.get(EquipmentTypeLookup.COMPACT_HS_2)),
+                    Entity.LOC_NONE, false);
             } catch (Exception ex) {
-                getLogger().error(UnitUtil.class, METHOD_NAME, ex);
+                MegaMekLab.getLogger().error(ex);
             }
         }
     }
@@ -904,6 +897,10 @@ public class UnitUtil {
      * @param unit
      */
     public static void updateAutoSinks(Mech unit, boolean compact) {
+        if (compact) {
+            updateCompactHeatSinks(unit);
+            return;
+        }
         int base = UnitUtil.getCriticalFreeHeatSinks(unit, compact);
         List<Mounted> unassigned = new ArrayList<>();
         List<Mounted> assigned = new ArrayList<>();
@@ -931,6 +928,115 @@ public class UnitUtil {
         }
         // There may be more crit-free heatsinks, but if the 'mech doesn't
         // have that many heatsinks, the additional space is unused.
+    }
+
+    /**
+     * Adjusts compact heat sinks to fulfill engine capacity. This is more complex than other heat sink
+     * types because the engine heat sinks always have one per mount, and those outside the engine
+     * are paired in a slot with one single if there are an odd number.
+     *
+     * @param mech The mech to adjust heat sinks for
+     */
+    public static void updateCompactHeatSinks(Mech mech) {
+        int base = UnitUtil.getCriticalFreeHeatSinks(mech, true);
+        List<Mounted> unallocatedSingle = new ArrayList<>();
+        List<Mounted> unallocatedPair = new ArrayList<>();
+        List<Mounted> allocatedSingle = new ArrayList<>();
+        List<Mounted> allocatedPair = new ArrayList<>();
+        for (Mounted m : mech.getMisc()) {
+            if (UnitUtil.isHeatSink(m)) {
+                if (m.getLocation() == Entity.LOC_NONE) {
+                    if (m.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK)) {
+                        unallocatedPair.add(m);
+                    } else {
+                        unallocatedSingle.add(m);
+                    }
+                } else {
+                    if (m.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK)) {
+                        allocatedPair.add(m);
+                    } else {
+                        allocatedSingle.add(m);
+                    }
+                }
+            }
+        }
+
+        int needed = base - unallocatedSingle.size();
+        int toAdd = 0;
+        // If there are more single heat sinks than there is space for in the engine remove them so they
+        // can be paired up
+        if (needed < 0) {
+            int count = removeCompactHeatSinks(-needed, mech, unallocatedSingle);
+            needed += count;
+            toAdd += count;
+        }
+        // If we have more space in the engine, start by splitting unallocated double heat sinks
+        if (needed > 0) {
+            int count = removeCompactHeatSinks(needed, mech, unallocatedPair);
+            needed -= count;
+            toAdd += count;
+        }
+        // Next we pull a single out of its location, if any
+        if (needed > 0) {
+            int count = removeCompactHeatSinks(needed, mech, allocatedSingle);
+            needed -= count;
+            toAdd += count;
+        }
+        // Finally we remove as many paired heat sinks as we need to fill the engine
+        if (needed > 0) {
+            toAdd += removeCompactHeatSinks(needed, mech, allocatedPair);
+        }
+        // Now we add heat sinks back
+        try {
+            // First we add as many single heat sinks to LOC_NONE as we need to fill the engine
+            int engineAdd = Math.min(toAdd, base - unallocatedSingle.size());
+            for (int i = 0; i < engineAdd; i++) {
+                mech.addEquipment(EquipmentType.get(EquipmentTypeLookup.COMPACT_HS_1), Entity.LOC_NONE);
+                toAdd--;
+            }
+            // If we have an odd number to add and there is a single already allocated, remove it and pair them.
+            // Unallocated singles in excess of engine capacity have already been removed.
+            if (((toAdd & 1) == 1) && !allocatedSingle.isEmpty()) {
+                UnitUtil.removeMounted(mech, allocatedSingle.remove(0));
+                mech.addEquipment(EquipmentType.get(EquipmentTypeLookup.COMPACT_HS_2), Entity.LOC_NONE);
+                toAdd--;
+            }
+            // If we still have an odd number, add one single.
+            if ((toAdd & 1) == 1) {
+                mech.addEquipment(EquipmentType.get(EquipmentTypeLookup.COMPACT_HS_1), Entity.LOC_NONE);
+                toAdd--;
+            }
+            // Add the remainder as unallocated pairs
+            for (int i = 0; i < toAdd; i += 2) {
+                mech.addEquipment(EquipmentType.get(EquipmentTypeLookup.COMPACT_HS_2), Entity.LOC_NONE);
+            }
+        } catch (LocationFullException ignored) {
+            // We're added to LOC_NONE
+        }
+    }
+
+    /**
+     * Called by {@link #updateCompactHeatSinks(Mech)} to remove heat sinks up to a certain number.
+     * The actual number removed could be higher if count is odd and we're removing pairs, or
+     * lower if there aren't enough in the list.
+     *
+     * @param count  The number of heat sinks to remove
+     * @param mech   The mech to remove heat sinks from
+     * @param hsList The list of heat sinks available for removal
+     * @return       The actual number removed
+     */
+    private static int removeCompactHeatSinks(int count, Mech mech, List<Mounted> hsList) {
+        int removed = 0;
+        for (Iterator<Mounted> iter = hsList.iterator(); iter.hasNext(); ) {
+            Mounted m = iter.next();
+            UnitUtil.removeMounted(mech, m);
+            removed += m.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK) ? 2 : 1;
+            iter.remove();
+            if (removed >= count) {
+                break;
+            }
+        }
+        return removed;
     }
 
     public static boolean isJumpJet(Mounted m) {
@@ -986,8 +1092,6 @@ public class UnitUtil {
      * @param jjType
      */
     public static void updateJumpJets(Mech unit, int jjAmount, int jjType) {
-        final String METHOD_NAME = "updateJumpJets(Mech, int, int)";
-        
         unit.setOriginalJumpMP(jjAmount);
         int ctype = unit.getJumpType();
         if (jjType == ctype) {
@@ -1020,7 +1124,7 @@ public class UnitUtil {
                                     .getJumpJetType(jjType))),
                             Entity.LOC_NONE, false);
                 } catch (Exception ex) {
-                    getLogger().error(UnitUtil.class, METHOD_NAME, ex);
+                    MegaMekLab.getLogger().error(ex);
                 }
                 jjAmount--;
             }
@@ -1227,6 +1331,9 @@ public class UnitUtil {
                 // Exception thrown for not having equipment to link to yet, which is acceptable here
             }
         }
+        if (eq.getType().isExplosive(eq, true) && (unit instanceof Mech) && unit.isClan()) {
+            ((Mech) unit).addClanCase();
+        }
     }
 
     public static void resizeMount(Mounted mount, double newSize) {
@@ -1284,7 +1391,7 @@ public class UnitUtil {
     public static Mounted findUnallocatedAmmo(Entity unit, EquipmentType at) {
         for (Mounted m : unit.getAmmo()) {
             if ((m.getLocation() == Entity.LOC_NONE)
-                    && (m.getType() == at)
+                    && at.equals(m.getType())
                     && ((m.getLinkedBy() == null)
                             || !m.getLinkedBy().getType().hasFlag(WeaponType.F_ONESHOT))) {
                 return m;
@@ -1875,8 +1982,6 @@ public class UnitUtil {
      * @return
      */
     public static Mounted createSpreadMounts(Mech unit, EquipmentType equip) {
-        final String METHOD_NAME = "createSpreadMounts(Mech, EquipmentType)";
-        
         // how many non-spreadable contiguous blocks of crits?
         int blocks = 0;
         boolean isMisc = equip instanceof MiscType;
@@ -2012,7 +2117,7 @@ public class UnitUtil {
                         }
                     }
                 } catch (LocationFullException lfe) {
-                    getLogger().error(UnitUtil.class, METHOD_NAME, lfe);
+                    MegaMekLab.getLogger().error(lfe);
                     JOptionPane.showMessageDialog(
                             null,
                             lfe.getMessage(),
@@ -2507,6 +2612,11 @@ public class UnitUtil {
                 }
             }
         }
+
+        // Removing equipment for construction purposes can shift the equipment indices.
+        // We need to be able to update bay weapon and ammo indices. This includes
+        // weapon bays and machine gun arrays.
+        List<Mounted> oldEquipmentList = new ArrayList<>(unit.getEquipment());
         UnitUtil.removeOneShotAmmo(unit);
 
         if (unit instanceof Mech) {
@@ -2514,10 +2624,21 @@ public class UnitUtil {
         } else if (unit instanceof Aero) {
             UnitUtil.updateLoadedAero((Aero) unit);
         }
+        // Replace bay weapon and ammo equipment numbers with the current index by looking
+        // up the old index in the old list
+        for (Mounted mounted : unit.getEquipment()) {
+            for (int i = 0; i < mounted.getBayWeapons().size(); i++) {
+                int eqNum = mounted.getBayWeapons().get(i);
+                mounted.getBayWeapons().set(i, unit.getEquipmentNum(oldEquipmentList.get(eqNum)));
+            }
+            for (int i = 0; i < mounted.getBayAmmo().size(); i++) {
+                int eqNum = mounted.getBayAmmo().get(i);
+                mounted.getBayAmmo().set(i, unit.getEquipmentNum(oldEquipmentList.get(eqNum)));
+            }
+        }
     }
 
     public static void updateLoadedMech(Mech unit) {
-        UnitUtil.removeClanCase(unit);
         UnitUtil.expandUnitMounts(unit);
         UnitUtil.checkArmor(unit);
     }
@@ -3174,7 +3295,6 @@ public class UnitUtil {
     }
 
     public static int getShieldDamageAbsorption(Mech mech, int location) {
-        final String METHOD_NAME = "getShieldDamageAbsorption(Mech, int)";
         for (int slot = 0; slot < mech.getNumberOfCriticals(location); slot++) {
             CriticalSlot cs = mech.getCritical(location, slot);
 
@@ -3189,8 +3309,7 @@ public class UnitUtil {
             Mounted m = cs.getMount();
 
             if (m == null) {
-                getLogger().log(UnitUtil.class, METHOD_NAME, LogLevel.ERROR,
-                                "Null Mount index: " + cs.getIndex());
+                MegaMekLab.getLogger().error("Null Mount index: " + cs.getIndex());
                 m = cs.getMount();
             }
 
@@ -3204,7 +3323,6 @@ public class UnitUtil {
     }
 
     public static int getShieldDamageCapacity(Mech mech, int location) {
-        final String METHOD_NAME = "getShieldDamageCapacity(Mech, int)";
         for (int slot = 0; slot < mech.getNumberOfCriticals(location); slot++) {
             CriticalSlot cs = mech.getCritical(location, slot);
 
@@ -3219,8 +3337,7 @@ public class UnitUtil {
             Mounted m = cs.getMount();
 
             if (m == null) {
-                getLogger().log(UnitUtil.class, METHOD_NAME, LogLevel.ERROR,
-                                "Null Mount index: " + cs.getIndex());
+                MegaMekLab.getLogger().error("Null Mount index: " + cs.getIndex());
                 m = cs.getMount();
             }
 
@@ -3604,9 +3721,8 @@ public class UnitUtil {
      */
     public static void copyLocationEquipment(final Entity entity, final int fromLoc, final int toLoc,
             final boolean includeForward, final boolean includeRear) throws LocationFullException {
-        final String METHOD_NAME = "copyLocationEquipment(Entity, int, int, boolean, boolean)"; //$NON-NLS-1$
-        
-        /* First we remove any equipment already in the location, but keep a list of it
+        /*
+         * First we remove any equipment already in the location, but keep a list of it
          * to use as much as possible. 
          */
         List<Mounted> removed = new ArrayList<>();
@@ -3625,7 +3741,8 @@ public class UnitUtil {
             }
         }
         
-        /* Now we go through the equipment in the location to copy and add it to the other location.
+        /*
+         * Now we go through the equipment in the location to copy and add it to the other location.
          * If there is a match in what we removed, use that. Otherwise add the equipment to the unit.
          * If the unit uses weapon bays, we need to create them in the new location and fill them. If
          * the unit doesn't use bays we will iterate through the crit slots to get the equipment
@@ -3670,7 +3787,7 @@ public class UnitUtil {
         try {
             MechFileParser.postLoadInit(entity);
         } catch (EntityLoadingException e) {
-            MegaMekLab.getLogger().error(UnitUtil.class, METHOD_NAME, e);
+            MegaMekLab.getLogger().error(e);
         }
     }
     
@@ -3763,7 +3880,6 @@ public class UnitUtil {
         unitSpecs.append(mechView.getMechReadoutLoadout());
         unitSpecs.append("</body></html>");
 
-        // System.err.println(unitSpecs.toString());
         JEditorPane textPane = new JEditorPane("text/html", "");
         JScrollPane scroll = new JScrollPane();
 
@@ -3807,52 +3923,18 @@ public class UnitUtil {
         try {
             textPane.setSelectionStart(0);
             textPane.setSelectionEnd(0);
-        } catch (Exception ex) {
-        }
+        } catch (Exception ignored) {
 
+        }
     }
 
-    public static void showUnitCostBreakDown(Entity unit, JFrame frame) {
-        HTMLEditorKit kit = new HTMLEditorKit();
-        unit.calculateBattleValue(true, true);
-
-        unit.getCost(true);
-
-        JEditorPane textPane = new JEditorPane("text/html", "");
-        JScrollPane scroll = new JScrollPane();
-
-        textPane.setEditable(false);
-        textPane.setCaret(new DefaultCaret());
-        textPane.setEditorKit(kit);
-
-        scroll.setViewportView(textPane);
-        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scroll.getVerticalScrollBar().setUnitIncrement(20);
-
-        textPane.setText(unit.getBVText());
-
-        scroll.setVisible(true);
-
-        JDialog jdialog = new JDialog();
-
-        jdialog.add(scroll);
-        Dimension size = new Dimension(CConfig.getIntParam("WINDOWWIDTH") / 2,
-                CConfig.getIntParam("WINDOWHEIGHT"));
-
-        jdialog.setPreferredSize(size);
-        jdialog.setMinimumSize(size);
-        scroll.setPreferredSize(size);
-        scroll.setMinimumSize(size);
-
-        jdialog.setLocationRelativeTo(frame);
-        jdialog.setVisible(true);
-
-        try {
-            textPane.setSelectionStart(0);
-            textPane.setSelectionEnd(0);
-        } catch (Exception ex) {
+    public static void showUnitCostBreakDown(final JFrame frame, final @Nullable Entity entity) {
+        if (entity == null) {
+            return;
         }
+        entity.calculateBattleValue(true, true);
+        entity.getCost(true);
+        new BVDisplayDialog(frame, entity).setVisible(true);
     }
 
     public static void showUnitWeightBreakDown(Entity unit, JFrame frame) {
@@ -3889,120 +3971,17 @@ public class UnitUtil {
         try {
             textPane.setSelectionStart(0);
             textPane.setSelectionEnd(0);
-        } catch (Exception ex) {
-        }
+        } catch (Exception ignored) {
 
+        }
     }
 
-    public static void showBVCalculations(String bvText, JFrame frame) {
-        HTMLEditorKit kit = new HTMLEditorKit();
-
-        JEditorPane textPane = new JEditorPane("text/html", "");
-        JScrollPane scroll = new JScrollPane();
-
-        textPane.setEditable(false);
-        textPane.setCaret(new DefaultCaret());
-        textPane.setEditorKit(kit);
-
-        scroll.setViewportView(textPane);
-        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scroll.getVerticalScrollBar().setUnitIncrement(20);
-
-        textPane.setText(bvText);
-
-        scroll.setVisible(true);
-
-        JDialog jdialog = new JDialog();
-
-        jdialog.add(scroll);
-        Dimension size = new Dimension(
-                (int) (CConfig.getIntParam("WINDOWWIDTH") / 1.5),
-                CConfig.getIntParam("WINDOWHEIGHT"));
-
-        jdialog.setPreferredSize(size);
-        jdialog.setMinimumSize(size);
-        scroll.setPreferredSize(size);
-        scroll.setMinimumSize(size);
-        // text.setPreferredSize(size);
-
-        jdialog.setLocationRelativeTo(frame);
-        jdialog.setVisible(true);
-
-        try {
-            textPane.setSelectionStart(0);
-            textPane.setSelectionEnd(0);
-        } catch (Exception ex) {
+    public static void showBVCalculations(final JFrame frame, final @Nullable Entity entity) {
+        if (entity == null) {
+            return;
         }
-
-    }
-
-    public static boolean hasBAR(Entity unit) {
-
-        for (int loc = 0; loc < unit.locations(); loc++) {
-            if (unit.hasBARArmor(loc)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public static int getLowestBARRating(Entity unit) {
-        int bar = 10;
-
-        for (int loc = 0; loc < unit.locations(); loc++) {
-            if (unit.getBARRating(loc) < bar) {
-                bar = unit.getBARRating(loc);
-            }
-        }
-        return bar;
-    }
-
-    public static String getArmorString(Mech mech, int loc) {
-        if (!mech.hasPatchworkArmor()) {
-            return "";
-        }
-        StringBuilder sb = new StringBuilder("");
-        switch (mech.getArmorType(loc)) {
-            case EquipmentType.T_ARMOR_REFLECTIVE:
-                sb.append("LR");
-                break;
-            case EquipmentType.T_ARMOR_HARDENED:
-                sb.append("HD");
-                break;
-            case EquipmentType.T_ARMOR_LIGHT_FERRO:
-                sb.append("LF");
-                break;
-            case EquipmentType.T_ARMOR_HEAVY_FERRO:
-                sb.append("HF");
-                break;
-            case EquipmentType.T_ARMOR_FERRO_FIBROUS:
-            case EquipmentType.T_ARMOR_FERRO_FIBROUS_PROTO:
-                sb.append("FF");
-                break;
-            case EquipmentType.T_ARMOR_STEALTH:
-                sb.append("SA");
-                break;
-            case EquipmentType.T_ARMOR_INDUSTRIAL:
-                sb.append("IN");
-                break;
-            case EquipmentType.T_ARMOR_COMMERCIAL:
-                sb.append("CO");
-                break;
-            case EquipmentType.T_ARMOR_FERRO_LAMELLOR:
-                sb.append("FL");
-                break;
-            case EquipmentType.T_ARMOR_REACTIVE:
-                sb.append("RE");
-                break;
-            default:
-                return "";
-        }
-        if (mech.hasBARArmor(loc)) {
-            sb.append(" B" + mech.getBARRating(loc));
-        }
-        return sb.toString();
+        entity.calculateBattleValue(true, true);
+        new BVDisplayDialog(frame, entity).setVisible(true);
     }
 
     /**
@@ -4279,10 +4258,10 @@ public class UnitUtil {
                     if (ammo.isPresent()) {
                         unit.addEquipment(ammo.get(), Infantry.LOC_FIELD_GUNS);
                     } else {
-                        System.err.println("Could not find ammo for field gun " + fieldGun.getName());
+                        MegaMekLab.getLogger().error("Could not find ammo for field gun " + fieldGun.getName());
                     }
                 } catch (LocationFullException ex) {
-                    ex.printStackTrace();
+                    MegaMekLab.getLogger().error(ex);
                 }
             }                
         }
@@ -4450,9 +4429,5 @@ public class UnitUtil {
         int secondClass = aero.getNPassenger() - firstClass - steeragePsgr;
         
         assignQuarters(aero, officer + firstClass, standardCrew, secondClass, steerageCrew + steeragePsgr);
-    }
-
-    public static MMLogger getLogger() {
-        return MegaMekLab.getLogger();
     }
 }

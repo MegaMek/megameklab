@@ -46,7 +46,6 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
-import megamek.MegaMek;
 import megamek.common.Aero;
 import megamek.common.AmmoType;
 import megamek.common.Entity;
@@ -57,7 +56,6 @@ import megamek.common.Mounted;
 import megamek.common.SmallCraft;
 import megamek.common.WeaponType;
 import megamek.common.annotations.Nullable;
-import megamek.common.logging.LogLevel;
 import megamek.common.verifier.TestAero;
 import megamek.common.verifier.TestEntity;
 import megamek.common.weapons.bayweapons.BayWeapon;
@@ -77,13 +75,8 @@ import megameklab.com.util.UnitUtil;
  * from their locations.
  * 
  * @author Neoancient
- *
  */
 public class BayWeaponCriticalTree extends JTree {
-    
-    /**
-     *
-     */
     private static final long serialVersionUID = -223615170732243552L;
     // Spheroids show only forward or only aft on the side arcs
     public static final int FORWARD = 0; // No rear-mounting allowed (nose, aft, spheroid forward side arcs
@@ -338,12 +331,12 @@ public class BayWeaponCriticalTree extends JTree {
      * @param shots The number of shots to remove.
      */
     private void removeAmmo(final Mounted ammo, int shots) {
-        AmmoType at = (AmmoType)ammo.getType();
+        AmmoType at = (AmmoType) ammo.getType();
         ammo.setShotsLeft(ammo.getBaseShotsLeft() - shots);
         Mounted unallocated = UnitUtil.findUnallocatedAmmo(eSource.getEntity(), at);
         for (Mounted m : eSource.getEntity().getAmmo()) {
             if ((m.getLocation() == Entity.LOC_NONE)
-                    && (m.getType() == at)) {
+                    && at.equals(m.getType())) {
                 unallocated = m;
                 break;
             }
@@ -1029,8 +1022,10 @@ public class BayWeaponCriticalTree extends JTree {
                     final WeaponType wtype = (WeaponType)weapon.getType();
                     if ((weapon.getLinkedBy() == null)
                             && ((wtype.getAmmoType() == AmmoType.T_LRM)
-                                    || (wtype.getAmmoType() == AmmoType.T_SRM)
-                                    || (wtype.getAmmoType() == AmmoType.T_MML)
+                                || (wtype.getAmmoType() == AmmoType.T_SRM)
+                                || (wtype.getAmmoType() == AmmoType.T_MML)
+                                || (wtype.getAmmoType() == AmmoType.T_LRM_IMP)
+                                || (wtype.getAmmoType() == AmmoType.T_SRM_IMP)
                                 || (wtype.getAmmoType() == AmmoType.T_NLRM))) {
                         moveToArc(eq);
                         eq.setLinked(weapon);
@@ -1053,7 +1048,7 @@ public class BayWeaponCriticalTree extends JTree {
             // there.
             if (eq.getType() instanceof AmmoType) {
                 Optional<Mounted> addMount = bay.getBayAmmo().stream().map(n -> eSource.getEntity().getEquipment(n))
-                        .filter(m -> m.getType() == eq.getType()).findFirst();
+                        .filter(m -> eq.getType().equals(m.getType())).findFirst();
                 if (addMount.isPresent()) {
                     addMount.get().setShotsLeft(addMount.get().getBaseShotsLeft() + eq.getBaseShotsLeft());
                     updateAmmoCapacity(addMount.get());
@@ -1089,9 +1084,8 @@ public class BayWeaponCriticalTree extends JTree {
                     bay.addAmmoToBay(eSource.getEntity().getEquipmentNum(eq));
                 }
             } else {
-                MegaMekLab.getLogger().log(BayWeaponCriticalTree.class, "addToBay(Mounted,Mounted)",    //$NON-NLS-1$
-                        LogLevel.DEBUG, bay.getName() + "[" + eSource.getEntity().getEquipmentNum(bay)  //$NON-NLS-1$
-                        + "] not found in " + getLocationName());                                       //$NON-NLS-1$
+                MegaMekLab.getLogger().debug(bay.getName() + "[" + eSource.getEntity().getEquipmentNum(bay)
+                        + "] not found in " + getLocationName());
             }
         }
         refresh.refreshEquipment();
@@ -1110,7 +1104,7 @@ public class BayWeaponCriticalTree extends JTree {
     }
     
     public void addAmmoToBay(Mounted bay, Mounted eq, int shots) {
-        AmmoType at = (AmmoType)eq.getType();
+        AmmoType at = (AmmoType) eq.getType();
         eq.setShotsLeft(eq.getBaseShotsLeft() - shots);
         if (eq.getBaseShotsLeft() <= 0) {
             UnitUtil.removeMounted(eSource.getEntity(), eq);
@@ -1118,7 +1112,7 @@ public class BayWeaponCriticalTree extends JTree {
             updateAmmoCapacity(eq);
         }
         Optional<Mounted> addMount = bay.getBayAmmo().stream().map(n -> eSource.getEntity().getEquipment(n))
-                .filter(m -> m.getType() == at).findFirst();
+                .filter(m -> at.equals(m.getType())).findFirst();
         if (addMount.isPresent()) {
             addMount.get().setShotsLeft(addMount.get().getBaseShotsLeft() + shots);
             updateAmmoCapacity(addMount.get());
@@ -1279,7 +1273,7 @@ public class BayWeaponCriticalTree extends JTree {
             eSource.getEntity().addEquipment(eq, location, false);
         } catch (LocationFullException e) {
             // We shouldn't be hitting any limits
-            e.printStackTrace();
+            MegaMekLab.getLogger().error(e);
         }
         UnitUtil.changeMountStatus(eSource.getEntity(), eq, location,
                 Entity.LOC_NONE, (facing == AFT) || ((facing == BOTH) && eq.isRearMounted()));
@@ -1343,8 +1337,10 @@ public class BayWeaponCriticalTree extends JTree {
                 final WeaponType wtype = (WeaponType) weapon.getType();
                 if ((weapon.getLinkedBy() == null)
                     && ((wtype.getAmmoType() == AmmoType.T_LRM)
-                            || (wtype.getAmmoType() == AmmoType.T_SRM)
-                            || (wtype.getAmmoType() == AmmoType.T_MML)
+                        || (wtype.getAmmoType() == AmmoType.T_SRM)
+                        || (wtype.getAmmoType() == AmmoType.T_MML)
+                        || (wtype.getAmmoType() == AmmoType.T_LRM_IMP)
+                        || (wtype.getAmmoType() == AmmoType.T_SRM_IMP)
                         || (wtype.getAmmoType() == AmmoType.T_NLRM))) {
                     return true;
                 }

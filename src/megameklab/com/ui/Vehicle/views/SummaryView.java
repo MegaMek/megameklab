@@ -391,6 +391,7 @@ public class SummaryView extends IView{
             int type = getTank().getArmorType(1);
             switch (type) {
                 case EquipmentType.T_ARMOR_FERRO_FIBROUS:
+                case EquipmentType.T_ARMOR_REACTIVE:
                     if (TechConstants.isClan(getTank().getArmorTechLevel(1))) {
                         usedSlots++;
                     } else {
@@ -404,17 +405,12 @@ public class SummaryView extends IView{
                 case EquipmentType.T_ARMOR_FERRO_LAMELLOR:
                 case EquipmentType.T_ARMOR_REFLECTIVE:
                 case EquipmentType.T_ARMOR_HARDENED:
+                case EquipmentType.T_ARMOR_ANTI_PENETRATIVE_ABLATION:
+                case EquipmentType.T_ARMOR_BALLISTIC_REINFORCED:
                     usedSlots++;
                     break;
                 case EquipmentType.T_ARMOR_STEALTH:
                     usedSlots += 2;
-                    break;
-                case EquipmentType.T_ARMOR_REACTIVE:
-                    if (TechConstants.isClan(getTank().getArmorTechLevel(1))) {
-                        usedSlots++;
-                    } else {
-                        usedSlots += 2;
-                    }
                     break;
                 default:
                     break;

@@ -43,6 +43,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.common.Entity;
 import megamek.common.MechFileParser;
+import megameklab.com.MegaMekLab;
 import megameklab.com.util.UnitPrintManager;
 
 /*
@@ -198,7 +199,7 @@ public class UnitPrintQueueDialog extends JDialog implements ActionListener, Key
                     Entity tempEntity = new MechFileParser(entityFile).getEntity();
                     units.add(tempEntity);
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    MegaMekLab.getLogger().error(ex);
                 }
             }
             refresh();

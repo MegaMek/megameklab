@@ -18,6 +18,7 @@
  */
 package megameklab.com.ui.supportvehicle;
 
+import megamek.common.EntityWeightClass;
 import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestSupportVehicle;
 import megameklab.com.ui.MegaMekLabMainUI;
@@ -143,7 +144,12 @@ class SVStatusBar extends ITab {
         currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(eSource.getEntity());
         long currentCost = Math.round(eSource.getEntity().getCost(false));
 
-        tons.setText("Tonnage: " + currentTonnage + "/" + tonnage);
+        if (eSource.getEntity().getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT) {
+            tons.setText(String.format("Tonnage: %.0f/%.0f (%.0f Remaining)",
+                    currentTonnage * 1000, tonnage * 1000, (tonnage - currentTonnage) * 1000));
+        } else {
+            tons.setText(String.format("Tonnage: %.1f/%.1f (%.1f Remaining)", currentTonnage, tonnage, tonnage - currentTonnage));
+        }
         tons.setToolTipText("Current Tonnage/Max Tonnage");
         if (currentTonnage > tonnage) {
             tons.setForeground(Color.red);

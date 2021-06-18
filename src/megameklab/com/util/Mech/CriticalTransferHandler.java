@@ -16,19 +16,6 @@
 
 package megameklab.com.util.Mech;
 
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.StringSelection;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.io.IOException;
-
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JOptionPane;
-import javax.swing.JTable;
-import javax.swing.TransferHandler;
-
 import megamek.common.Aero;
 import megamek.common.AmmoType;
 import megamek.common.BattleArmor;
@@ -38,18 +25,24 @@ import megamek.common.EquipmentType;
 import megamek.common.LandAirMech;
 import megamek.common.LocationFullException;
 import megamek.common.Mech;
-import megamek.common.MechFileParser;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.WeaponType;
-import megamek.common.loaders.EntityLoadingException;
 import megamek.common.verifier.TestAero;
 import megamek.common.verifier.TestBattleArmor;
 import megamek.common.weapons.infantry.InfantryWeapon;
+import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.util.CriticalTableModel;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
+
+import javax.swing.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.io.IOException;
 
 public class CriticalTransferHandler extends TransferHandler {
 
@@ -74,12 +67,8 @@ public class CriticalTransferHandler extends TransferHandler {
         Mounted mounted = null;
         try {
             mounted = getUnit().getEquipment(Integer.parseInt((String) data.getTransferData(DataFlavor.stringFlavor)));
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-        } catch (UnsupportedFlavorException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (NumberFormatException | UnsupportedFlavorException | IOException e) {
+            MegaMekLab.getLogger().error(e);
         }
         if ((source instanceof DropTargetCriticalList)
                 && (mounted.getLocation() != Entity.LOC_NONE)) {
@@ -477,7 +466,7 @@ public class CriticalTransferHandler extends TransferHandler {
                         "Location Full", JOptionPane.INFORMATION_MESSAGE);
                 return false;
             } catch (Exception ex) {
-                ex.printStackTrace();
+                MegaMekLab.getLogger().error(ex);
             }
             return true;
         }
@@ -502,12 +491,8 @@ public class CriticalTransferHandler extends TransferHandler {
             mounted = getUnit().getEquipment(Integer
                     .parseInt((String) info.getTransferable().getTransferData(
                             DataFlavor.stringFlavor)));
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-        } catch (UnsupportedFlavorException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (NumberFormatException | UnsupportedFlavorException | IOException e) {
+            MegaMekLab.getLogger().error(e);
         }
         // not actually dragged a Mounted? not transferable
         if (mounted == null) {

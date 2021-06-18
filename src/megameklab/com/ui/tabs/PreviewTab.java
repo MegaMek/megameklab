@@ -25,6 +25,7 @@ import megamek.client.ui.swing.MechViewPanel;
 import megamek.common.Entity;
 import megamek.common.MechView;
 import megamek.common.templates.TROView;
+import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.util.ITab;
 
@@ -66,7 +67,7 @@ public class PreviewTab extends ITab {
             mechView = new MechView(selectedUnit, false);
             troView = TROView.createView(selectedUnit, true);
         } catch (Exception e) {
-            e.printStackTrace();
+            MegaMekLab.getLogger().error(e);
             // error unit didn't load right. this is bad news.
             populateTextFields = false;
         }

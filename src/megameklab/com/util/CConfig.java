@@ -16,6 +16,8 @@
 
 package megameklab.com.util;
 
+import megameklab.com.MegaMekLab;
+
 import java.awt.Color;
 import java.io.File;
 import java.io.FileInputStream;
@@ -116,23 +118,10 @@ public class CConfig {
     public static final String RS_SCALE_FACTOR = "rs_scale_factor";
     public static final String RS_SCALE_UNITS = "rs_scale_units";
 
-    private static Properties config;// config. player values.
-
-    // CONSTRUCTOR
-    public CConfig() {
-        
-        if(!new File(CONFIG_DIR).exists()) {
-            new File(CONFIG_DIR).mkdir();
-        }
-        
-        config = setDefaults();
-        // check to see if a config is present. if not, make one.
-        if (!(new File(CONFIG_FILE).exists()) && !(new File(CONFIG_BACKUP_FILE).exists())) {
-            createConfig();
-        }
-
-        CConfig.loadConfigFile();
-    }
+    /**
+     * Player configuration values.
+     */
+    private static Properties config = getDefaults();
 
     // METHODS
     /**
@@ -140,7 +129,7 @@ public class CConfig {
      * players config values, adding any new configs in their default position
      * and ensuring that no config value is even missing.
      */
-    private Properties setDefaults() {
+    private static Properties getDefaults() {
         Properties defaults = new Properties();
 
         // Window Locations
@@ -166,6 +155,15 @@ public class CConfig {
     }
 
     /**
+     * Loads the MegaMekLab configuration.
+     */
+    public static void load() {
+        ensureConfigFileExists();
+
+        loadConfigFile();
+    }
+
+    /**
      * Loads the Config file.
      */
     public static void loadConfigFile() {
@@ -180,7 +178,7 @@ public class CConfig {
                         config.load(backupStream);
                         backupStream.close();
                     } catch (Exception ex) {
-                        ex.printStackTrace();
+                        MegaMekLab.getLogger().error(ex);
                     }
 
                 } else {
@@ -197,23 +195,30 @@ public class CConfig {
                 config.load(fis);
                 fis.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                MegaMekLab.getLogger().error(ex);
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            MegaMekLab.getLogger().error(ex);
         }
     }
+    
+    /**
+     * Creates a new Config file, and directories, if it is missing.
+     */
+    public static void ensureConfigFileExists() {
+        // check to see if a config is present. if not, make one.
+        if (!(new File(CONFIG_FILE).exists()) && !(new File(CONFIG_BACKUP_FILE).exists())) {
+            if (!new File(CONFIG_DIR).exists()) {
+                new File(CONFIG_DIR).mkdir();
+            }
 
-    // Creates a new config file
-    public void createConfig() {
-        try {
-            FileOutputStream fos = new FileOutputStream(CONFIG_FILE);
-            PrintStream ps = new PrintStream(fos);
-
-            ps.close();
-            fos.close();
-        } catch (Exception ex) {
-            System.exit(0);
+            try (FileOutputStream fos = new FileOutputStream(CONFIG_FILE);
+                PrintStream ps = new PrintStream(fos)) {
+                ps.close();
+                fos.close();
+            } catch (Exception ex) {
+                System.exit(0);
+            }
         }
     }
 
@@ -311,7 +316,7 @@ public class CConfig {
         } catch (FileNotFoundException ignored) {
 
         } catch (Exception ex) {
-            ex.printStackTrace();
+            MegaMekLab.getLogger().error(ex);
             return;
         }
         try {
@@ -323,7 +328,7 @@ public class CConfig {
         } catch (FileNotFoundException ignored) {
 
         } catch (Exception ex) {
-            ex.printStackTrace();
+            MegaMekLab.getLogger().error(ex);
         }
     }
 
