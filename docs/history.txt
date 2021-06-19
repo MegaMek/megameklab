@@ -16,6 +16,7 @@ VERSION HISTORY:
 + Issue #888: Artemis IV Validation
 + Issue #890: Mixed Tech QuaddVee Compact Heat Sinks multiple problems
 + Issue #897: Additional peculiar entry for Clan Machine-Gun Ammo
++ Bug: IS MASC not filtered out with Clan tech base
 
 0.49.1 (2021-05-23 1630 UTC)
 
