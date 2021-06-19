@@ -4006,6 +4006,9 @@ public class UnitUtil {
                 && !atype.canAeroUse()) {
             return false;
         }
+        if (atype.hasFlag(AmmoType.F_PROTOMECH) && !(unit instanceof Protomech)) {
+            return false;
+        }
 
         for (Mounted m : unit.getTotalWeaponList()) {
             if (m.getType() instanceof AmmoWeapon) {
