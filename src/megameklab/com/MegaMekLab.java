@@ -43,7 +43,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class MegaMekLab {
-    public static final String VERSION = "0.49.2-SNAPSHOT";
+    public static final String VERSION = "0.49.2";
 
     private static MMLogger logger = null;
 
