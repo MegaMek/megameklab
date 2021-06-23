@@ -13,7 +13,6 @@
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  */
-
 package megameklab.com.util;
 
 import java.awt.*;
@@ -41,10 +40,10 @@ import megamek.common.Aero;
 import megamek.common.BattleArmor;
 import megamek.common.Dropship;
 import megamek.common.Entity;
-import megamek.common.EntityListFile;
 import megamek.common.EntityMovementMode;
 import megamek.common.Infantry;
 import megamek.common.Jumpship;
+import megamek.common.MULParser;
 import megamek.common.Mech;
 import megamek.common.MechFileParser;
 import megamek.common.Protomech;
@@ -91,10 +90,10 @@ public class UnitPrintManager {
         }
         Vector<Entity> loadedUnits;
         try {
-            loadedUnits = EntityListFile.loadFrom(f.getSelectedFile());
+            loadedUnits = new MULParser(f.getSelectedFile(), null).getEntities();
             loadedUnits.trimToSize();
-        } catch (Exception ex) {
-            MegaMekLab.getLogger().error(ex);
+        } catch (Exception e) {
+            MegaMekLab.getLogger().error(e);
             return;
         }
 
@@ -118,12 +117,12 @@ public class UnitPrintManager {
             return;
         }
         File mulFile = f.getSelectedFile();
-        Vector<Entity> loadedUnits;
+        final Vector<Entity> loadedUnits;
         try {
-            loadedUnits = EntityListFile.loadFrom(mulFile);
+            loadedUnits = new MULParser(mulFile, null).getEntities();
             loadedUnits.trimToSize();
-        } catch (Exception ex) {
-            MegaMekLab.getLogger().error(ex);
+        } catch (Exception e) {
+            MegaMekLab.getLogger().error(e);
             return;
         }
 
