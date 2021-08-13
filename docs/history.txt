@@ -1,6 +1,7 @@
 VERSION HISTORY:
 ----------------
 0.49.3-SNAPSHOT
++ Issue #898: Heavy-Duty Pile Driver and arm actuators
 
 0.49.2 (2021-06-19 2330 UTC)
 + Issue #912: Changing AMS, A-Pod, and B-Pod display text from PD to PB
