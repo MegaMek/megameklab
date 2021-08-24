@@ -110,10 +110,10 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
     }
     
     private void initUI() {
-        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl()); //$NON-NLS-1$
-        turretNames = resourceMap.getString("CVChassisView.turrets.values").split(","); //$NON-NLS-1$
+        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl());
+        turretNames = resourceMap.getString("CVChassisView.turrets.values").split(",");
         for (EntityMovementMode m : MOTIVE_TYPES) {
-            motiveNames.put(m, resourceMap.getString("MovementMode." + m.toString()));
+            motiveNames.put(m, m.toString());
         }
         
         setLayout(new GridBagLayout());
@@ -123,11 +123,11 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridy = 0;
         gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.WEST;
-        add(createLabel(resourceMap.getString("CVChassisView.spnTonnage.text"), labelSize), gbc); //$NON-NLS-1$
+        add(createLabel(resourceMap.getString("CVChassisView.spnTonnage.text"), labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 0;
         setFieldSize(spnTonnage, spinnerSize);
-        spnTonnage.setToolTipText(resourceMap.getString("CVChassisView.spnTonnage.tooltip")); //$NON-NLS-1$
+        spnTonnage.setToolTipText(resourceMap.getString("CVChassisView.spnTonnage.tooltip"));
         add(spnTonnage, gbc);
         spnTonnage.addChangeListener(this);
         
