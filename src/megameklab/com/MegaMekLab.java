@@ -43,8 +43,6 @@ import java.util.List;
 import java.util.Locale;
 
 public class MegaMekLab {
-    public static final String VERSION = "0.49.4-SNAPSHOT";
-
     private static MMLogger logger = null;
 
     public static void main(String[] args) {
@@ -123,7 +121,7 @@ public class MegaMekLab {
                 + File.separator
                 + "timestamp").lastModified();
         // echo some useful stuff
-        String msg = "Starting MegaMekLab v" + VERSION + " ..."; //$NON-NLS-1$ //$NON-NLS-2$
+        String msg = "Starting MegaMekLab v" + MMLConstants.VERSION + " ..."; //$NON-NLS-1$ //$NON-NLS-2$
         if (TIMESTAMP > 0) {
             msg += "\n\tCompiled on " + new Date(TIMESTAMP).toString(); //$NON-NLS-1$
         }
