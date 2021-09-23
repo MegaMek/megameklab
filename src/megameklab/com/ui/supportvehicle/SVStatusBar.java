@@ -22,6 +22,7 @@ import megamek.common.EntityWeightClass;
 import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestSupportVehicle;
 import megameklab.com.ui.MegaMekLabMainUI;
+import megameklab.com.util.CConfig;
 import megameklab.com.util.ITab;
 import megameklab.com.util.ImageHelper;
 import megameklab.com.util.UnitUtil;
@@ -181,7 +182,7 @@ class SVStatusBar extends ITab {
     private void getFluffImage() {
         //copied from structureTab
         FileDialog fDialog = new FileDialog(getParentFrame(), "Image Path", FileDialog.LOAD);
-        fDialog.setDirectory(new File(ImageHelper.fluffPath).getAbsolutePath() + File.separatorChar + ImageHelper.imageMech + File.separatorChar);
+        fDialog.setDirectory(new File(CConfig.getFluffImagesPath()).getAbsolutePath() + File.separatorChar + ImageHelper.imageMech + File.separatorChar);
         fDialog.setLocationRelativeTo(this);
 
         fDialog.setVisible(true);

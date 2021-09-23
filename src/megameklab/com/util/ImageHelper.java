@@ -24,9 +24,6 @@ import javax.swing.ImageIcon;
 import megamek.common.Entity;
 
 public class ImageHelper {
-    public static String fluffPath = "./data/images/fluff/";
-    public static String imagePath = "./data/images/";
-
     public static String imageMech = "mech";
     public static String imageAero = "aero";
     public static String imageBattleArmor = "BattleArmor";
@@ -50,7 +47,7 @@ public class ImageHelper {
      * @return     A file to use for the fluff image, or null if no file is found.
      */
     public static File getFluffFile(Entity unit, String dir) {
-        String path = new File(fluffPath).getAbsolutePath();
+        String path = new File(CConfig.getFluffImagesPath()).getAbsolutePath();
         File f;
         
         if (unit.getFluff().getMMLImagePath().length() > 0) {
@@ -93,7 +90,7 @@ public class ImageHelper {
 
         Image fluff;
 
-        String path = new File(fluffPath).getAbsolutePath()
+        String path = new File(CConfig.getFluffImagesPath()).getAbsolutePath()
                 + File.separatorChar + image;
 
         if (!(new File(path).exists())) {
@@ -110,7 +107,7 @@ public class ImageHelper {
     public static Image getFluffImage(Entity unit, String dir) {
         Image fluff;
 
-        String path = new File(fluffPath).getAbsolutePath()
+        String path = new File(CConfig.getFluffImagesPath()).getAbsolutePath()
                 + File.separatorChar + dir + File.separatorChar;
 
         fluff = ImageHelper.getFluffImage(unit.getFluff().getMMLImagePath());
