@@ -201,7 +201,8 @@ public class PrintInfantry extends PrintEntity {
         if (infantry.hasSpaceSuit()) {
             sj.add("Can operate in vacuum.");
         }
-        if (rangeWeapon.hasFlag(WeaponType.F_INF_BURST)) {
+        if (rangeWeapon.hasFlag(WeaponType.F_INF_BURST) ||
+               infantry.primaryWeaponDamageCapped()) {
             sj.add("+1D6 damage vs. conventional infantry.");
         }
         if (rangeWeapon.hasFlag(WeaponType.F_INF_NONPENETRATING)) {
