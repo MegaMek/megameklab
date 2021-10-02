@@ -51,6 +51,7 @@ import megamek.common.annotations.Nullable;
 import megamek.common.loaders.BLKFile;
 import megamek.common.templates.TROView;
 import megamek.common.util.EncodeControl;
+import megameklab.com.MMLConstants;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.dialog.LoadingDialog;
@@ -751,7 +752,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
 
         // set the text up.
         JLabel version = new JLabel(String.format(resourceMap.getString("menu.help.about.version.format"),
-                MegaMekLab.VERSION));
+                MMLConstants.VERSION));
         JLabel license1 = new JLabel(resourceMap.getString("menu.help.about.license.1"));
         JLabel license2 = new JLabel(resourceMap.getString("menu.help.about.license.2"));
         JLabel license3 = new JLabel(resourceMap.getString("menu.help.about.info.1"));

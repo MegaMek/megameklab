@@ -55,6 +55,7 @@ import megamek.common.Tank;
 import megamek.common.util.EncodeControl;
 import megamek.common.util.ImageUtil;
 import megamek.common.util.fileUtils.MegaMekFile;
+import megameklab.com.MMLConstants;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.dialog.LoadingDialog;
 import megameklab.com.ui.dialog.MegaMekLabUnitSelectorDialog;
@@ -122,7 +123,7 @@ public class StartupGUI extends javax.swing.JPanel {
             backgroundIcon = null;
         }
         
-        JLabel labVersion = new JLabel(resourceMap.getString("version.text") + MegaMekLab.VERSION, JLabel.CENTER); //$NON-NLS-1$
+        JLabel labVersion = new JLabel(resourceMap.getString("version.text") + MMLConstants.VERSION, JLabel.CENTER); //$NON-NLS-1$
         labVersion.setPreferredSize(new Dimension(250,15));
         if (skinSpec.fontColors.size() > 0) {
             labVersion.setForeground(skinSpec.fontColors.get(0));
