@@ -37,13 +37,8 @@ import megamek.common.WeaponType;
 public class CritListCellRenderer extends DefaultListCellRenderer {
 
     private JList<?> list = null;
-    private Entity unit = null;
-    private boolean useColor = false;
-
-    /**
-     *
-     */
-    private static final long serialVersionUID = 1599368063832366744L;
+    private final Entity unit;
+    private final boolean useColor;
 
     public CritListCellRenderer(Entity unit, boolean useColor) {
         this.unit = unit;
@@ -61,14 +56,15 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
 
         String[] split = ((String)value).split(":");
         label.setText(split[0]);
+        label.setToolTipText(null);
 
         CriticalSlot cs;
-        if (split.length > 2){
+        if (split.length > 2) {
             int eqId = Integer.parseInt(split[2]);
             cs = new CriticalSlot(unit.getEquipment(eqId));
-        } else if (split.length > 1){
+        } else if (split.length > 1) {
             cs = getCrit(Integer.parseInt(split[1]));
-        } else if (((String)value).equals("-Empty-")){
+        } else if (value.equals("-Empty-")) {
             cs = null;
         } else {
             cs = getCrit(index);
@@ -89,7 +85,6 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
                 Mounted mount = cs.getMount();
 
                 if (useColor) {
-
                     if (mount.getType() instanceof WeaponType) {
                         label.setBackground(CConfig.getBackgroundColor(CConfig.CONFIG_WEAPONS));
                         label.setForeground(CConfig.getForegroundColor(CConfig.CONFIG_WEAPONS));
@@ -134,13 +129,16 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
                         && mount.getLinked() != null){
                     name += " (attached " + mount.getLinked().getName() + ")";
                 }
-                // If we are editing BA, we need to inform the user about how
-                //  many shots are in this Critical
-                if ((unit instanceof BattleArmor) 
-                        && (mount.getType() instanceof AmmoType)){
+                // For ammo on BA, show the number of shots
+                if ((unit instanceof BattleArmor) && (mount.getType() instanceof AmmoType)) {
                     name += " (" + mount.getBaseShotsLeft() + ")";
                 }
                 String toolTipText = UnitUtil.getToolTipInfo(unit, mount);
+                // distinguish tooltips of equal adjacent one-slot equipment (e.g. ammo) to make the tip renew itself
+                // when crossing from one such slot to the next (avoids them feeling like a single equipment)
+                if (mount.getCriticals() == 1) {
+                    toolTipText += " ".repeat(index);
+                }
                 if (cs.getMount2() != null) {
                     mount = cs.getMount2();
                     name += " | "+ UnitUtil.getCritName(unit, mount.getType());
@@ -157,16 +155,11 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
         if ((cs != null) 
                 && UnitUtil.isLastCrit(unit, cs, index, loc) 
                 && UnitUtil.isPreviousCritEmpty(unit, cs, index, loc)) {
-            label.setBorder(
-                    BorderFactory.createMatteBorder(1, 0, 1, 0, Color.black));
-        } else if ((cs != null) 
-                && UnitUtil.isLastCrit(unit, cs, index, loc)) {
-            label.setBorder(
-                    BorderFactory.createMatteBorder(0, 0, 1, 0, Color.black));
-        } else if ((cs != null) 
-                && UnitUtil.isPreviousCritEmpty(unit, cs, index, loc)){
-            label.setBorder(
-                    BorderFactory.createMatteBorder(1, 0, 0, 0, Color.black));
+            label.setBorder(BorderFactory.createMatteBorder(1, 0, 1, 0, Color.black));
+        } else if ((cs != null) && UnitUtil.isLastCrit(unit, cs, index, loc)) {
+            label.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.black));
+        } else if ((cs != null) && UnitUtil.isPreviousCritEmpty(unit, cs, index, loc)){
+            label.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.black));
         } 
 
         return label;
@@ -178,7 +171,6 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
         if ((slot >= 0) && (slot < unit.getNumberOfCriticals(location))) {
             crit = unit.getCritical(location, slot);
         }
-
         return crit;
     }
 
