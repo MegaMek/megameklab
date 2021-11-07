@@ -177,7 +177,7 @@ public class InventoryWriter {
                 .collect(Collectors.joining(", "));
         String ammoPrefix = "Ammo: ";
         if (sheet.getEntity().hasWorkingMisc(MiscType.F_CASE)
-                && (sheet.getEntity().getEntityType() & Entity.ETYPE_MECH) == 0) {
+                && ((sheet.getEntity().getEntityType() & Entity.ETYPE_MECH) == 0)) {
             ammoPrefix = "Ammo (CASE): ";
         }
         ammoText = str.isEmpty() ? str : ammoPrefix + str;
