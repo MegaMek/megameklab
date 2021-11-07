@@ -1,6 +1,8 @@
 VERSION HISTORY:
 ----------------
 0.49.6-SNAPSHOT
++ Issue #908: Corrections to the Aero reference tables
++ Issue #943: Add CASE info to ammo on non-Mech Record Sheets
 
 0.49.5 (2021-11-06 1800 UTC)
 
