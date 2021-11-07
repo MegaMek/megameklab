@@ -76,6 +76,7 @@ import megamek.common.weapons.lrms.LRMWeapon;
 import megamek.common.weapons.lrms.LRTWeapon;
 import megamek.common.weapons.lrms.StreakLRMWeapon;
 import megamek.common.weapons.mgs.MGWeapon;
+import megamek.common.weapons.missiles.MMLWeapon;
 import megamek.common.weapons.missiles.MRMWeapon;
 import megamek.common.weapons.missiles.RLWeapon;
 import megamek.common.weapons.missiles.ThunderBoltWeapon;
@@ -2358,7 +2359,7 @@ public class UnitUtil {
     private static String getWeaponDamageInfo(WeaponType wType) {
         if (wType.getDamage() == WeaponType.DAMAGE_BY_CLUSTERTABLE) {
             int perMissile = 1;
-            if ((wType instanceof SRMWeapon) || (wType instanceof SRTWeapon)) {
+            if ((wType instanceof SRMWeapon) || (wType instanceof SRTWeapon) ||(wType instanceof MMLWeapon)) {
                 perMissile = 2;
             }
             return Integer.toString(wType.getRackSize() * perMissile);
