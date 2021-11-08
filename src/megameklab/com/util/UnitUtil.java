@@ -2288,7 +2288,7 @@ public class UnitUtil {
         sb.append(eq.getName());
         if (eq.getType() instanceof AmmoType) {
             sb.append(" (" + eq.getBaseShotsLeft() + " shot");
-            sb.append(eq.getBaseShotsLeft() == 1 ? ")" : "s)");
+            sb.append((eq.getBaseShotsLeft() == 1) ? ")" : "s)");
         }
         if ((eq.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)
                 || eq.getType().hasFlag(MiscType.F_AP_MOUNT))
@@ -2322,7 +2322,7 @@ public class UnitUtil {
                 sb.append("<br>Heat: ");
                 sb.append(eq.getType().getHeat());
                 sb.append("<br>Maximum Damage: ");
-                sb.append(getWeaponDamageInfo((WeaponType)eq.getType()));
+                sb.append(getWeaponDamageInfo((WeaponType) eq.getType()));
             }
         }
         sb.append("<Br>Cost: ");
@@ -2373,8 +2373,8 @@ public class UnitUtil {
             int damage = wType.getDamage();
             if (wType.getAmmoType() == AmmoType.T_AC_ROTARY) {
                 damage *= 6;
-            } else if (wType.getAmmoType() == AmmoType.T_AC_ULTRA
-                    || wType.getAmmoType() == AmmoType.T_AC_ULTRA_THB) {
+            } else if ((wType.getAmmoType() == AmmoType.T_AC_ULTRA)
+                    || (wType.getAmmoType() == AmmoType.T_AC_ULTRA_THB)) {
                 damage *= 2;
             }
             return Integer.toString(damage);
@@ -2455,10 +2455,7 @@ public class UnitUtil {
 
         } else {
             CriticalSlot nextCrit = unit.getCritical(location, slot + 1);
-            if (nextCrit == null) {
-                return true;
-            } else return (nextCrit.getMount() == null) || !nextCrit.getMount().equals(cs.getMount());
-
+            return (nextCrit == null) || (nextCrit.getMount() == null) || !nextCrit.getMount().equals(cs.getMount());
         }
 
         return slot == lastIndex;

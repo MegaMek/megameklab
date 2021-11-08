@@ -158,7 +158,7 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
             label.setBorder(BorderFactory.createMatteBorder(1, 0, 1, 0, Color.black));
         } else if ((cs != null) && UnitUtil.isLastCrit(unit, cs, index, loc)) {
             label.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.black));
-        } else if ((cs != null) && UnitUtil.isPreviousCritEmpty(unit, cs, index, loc)){
+        } else if ((cs != null) && UnitUtil.isPreviousCritEmpty(unit, cs, index, loc)) {
             label.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.black));
         } 
 
