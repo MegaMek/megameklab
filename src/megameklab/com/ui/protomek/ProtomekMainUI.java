@@ -15,8 +15,7 @@ package megameklab.com.ui.protomek;
 
 import java.awt.BorderLayout;
 
-import javax.swing.JTabbedPane;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 
 import megamek.common.Engine;
 import megamek.common.Entity;
@@ -31,6 +30,7 @@ import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.tabs.EquipmentTab;
 import megameklab.com.ui.tabs.FluffTab;
 import megameklab.com.ui.tabs.PreviewTab;
+import megameklab.com.ui.util.TabScrollPane;
 
 /**
  * Main UI for building protomechs
@@ -77,10 +77,10 @@ public class ProtomekMainUI extends MegaMekLabMainUI {
         statusbar.addRefreshedListener(this);
         fluffTab.setRefreshedListener(this);
 
-        configPane.addTab("Structure/Armor", structureTab);
-        configPane.addTab("Equipment", equipmentTab);
-        configPane.addTab("Assign Criticals", buildTab);
-        configPane.addTab("Fluff", fluffTab);
+        configPane.addTab("Structure/Armor", new TabScrollPane(structureTab));
+        configPane.addTab("Equipment", new TabScrollPane(equipmentTab));
+        configPane.addTab("Assign Criticals", new TabScrollPane(buildTab));
+        configPane.addTab("Fluff", new TabScrollPane(fluffTab));
         configPane.addTab("Preview", previewTab);
 
         //masterPanel.add(header);
