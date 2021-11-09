@@ -24,6 +24,7 @@ import megameklab.com.ui.tabs.TransportTab;
 import megameklab.com.ui.tabs.EquipmentTab;
 import megameklab.com.ui.tabs.FluffTab;
 import megameklab.com.ui.tabs.PreviewTab;
+import megameklab.com.ui.util.TabScrollPane;
 import megameklab.com.util.UnitUtil;
 
 import javax.swing.*;
@@ -33,7 +34,7 @@ import java.awt.*;
  * Main window for support vehicle construction
  */
 public class SVMainUI extends MegaMekLabMainUI {
-    private JTabbedPane configPane = new JTabbedPane(SwingConstants.TOP);
+    private final JTabbedPane configPane = new JTabbedPane(SwingConstants.TOP);
     private SVStructureTab structureTab;
     private SVArmorTab armorTab;
     private EquipmentTab equipmentTab;
@@ -44,7 +45,6 @@ public class SVMainUI extends MegaMekLabMainUI {
     private SVStatusBar statusbar;
 
     public SVMainUI() {
-
         super();
         createNewUnit(Entity.ETYPE_SUPPORT_TANK, false, false);
         setTitle(getEntity().getChassis() + " " + getEntity().getModel() + ".blk");
@@ -53,10 +53,8 @@ public class SVMainUI extends MegaMekLabMainUI {
 
     @Override
     public void reloadTabs() {
-        masterPanel.removeAll();
         configPane.removeAll();
-
-        masterPanel.setLayout(new BorderLayout());
+        getContentPane().removeAll();
 
         statusbar = new SVStatusBar(this);
         structureTab = new SVStructureTab(this);
@@ -74,19 +72,19 @@ public class SVMainUI extends MegaMekLabMainUI {
 
         previewTab = new PreviewTab(this);
 
-        configPane.addTab("Structure", structureTab);
-        configPane.addTab("Armor", armorTab);
-        configPane.addTab("Equipment", equipmentTab);
-        configPane.addTab("Assign Criticals", buildTab);
-        configPane.addTab("Transport", transportTab);
-        configPane.addTab("Fluff", fluffTab);
+        configPane.addTab("Structure", new TabScrollPane(structureTab));
+        configPane.addTab("Armor", new TabScrollPane(armorTab));
+        configPane.addTab("Equipment", new TabScrollPane(equipmentTab));
+        configPane.addTab("Assign Criticals", new TabScrollPane(buildTab));
+        configPane.addTab("Transport", new TabScrollPane(transportTab));
+        configPane.addTab("Fluff", new TabScrollPane(fluffTab));
         configPane.addTab("Preview", previewTab);
 
-        masterPanel.add(configPane, BorderLayout.CENTER);
-        masterPanel.add(statusbar, BorderLayout.SOUTH);
+        add(configPane, BorderLayout.CENTER);
+        add(statusbar, BorderLayout.SOUTH);
 
         refreshHeader();
-        this.repaint();
+        validate();
     }
 
     @Override
@@ -99,7 +97,7 @@ public class SVMainUI extends MegaMekLabMainUI {
         statusbar.refresh();
         previewTab.refresh();
         refreshHeader();
-        repaint();
+//        repaint();
     }
 
     @Override

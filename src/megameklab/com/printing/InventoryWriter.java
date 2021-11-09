@@ -175,7 +175,12 @@ public class InventoryWriter {
         String str = ammo.entrySet().stream()
                 .map(e -> String.format("(%s) %d", e.getKey(), e.getValue()))
                 .collect(Collectors.joining(", "));
-        ammoText = str.isEmpty() ? str : "Ammo: " + str;
+        String ammoPrefix = "Ammo: ";
+        if (sheet.getEntity().hasWorkingMisc(MiscType.F_CASE)
+                && ((sheet.getEntity().getEntityType() & Entity.ETYPE_MECH) == 0)) {
+            ammoPrefix = "Ammo (CASE): ";
+        }
+        ammoText = str.isEmpty() ? str : ammoPrefix + str;
         fuelText = sheet.formatTacticalFuel();
         str = sheet.formatFeatures();
         featuresText = str.isEmpty() ? str : "Features " + str;

@@ -44,8 +44,8 @@ public class AeroToHitMods extends ReferenceTable {
 
         addRow(bundle.getString("targetInterveningConditions"), "", "");
         addRow("", bundle.getString("attackAgainstAft"), "+0");
-        addRow("", bundle.getString("attackAgainstSide"), "+1");
-        addRow("", bundle.getString("attackAgainstNose"), "+2");
+        addRow("", bundle.getString("attackAgainstSide"), "+2");
+        addRow("", bundle.getString("attackAgainstNose"), "+1");
         if (!spaceOnly) {
             addRow("", bundle.getString("flyingAtNOE"),
                     (entity.isOmni() && !entity.isSupportVehicle()) ? "+1" : "+2");

@@ -37,6 +37,7 @@ import megameklab.com.ui.Aero.tabs.EquipmentTab;
 import megameklab.com.ui.tabs.PreviewTab;
 import megameklab.com.ui.tabs.FluffTab;
 import megameklab.com.ui.tabs.TransportTab;
+import megameklab.com.ui.util.TabScrollPane;
 
 /**
  * MainUI for Jumpships, Warship, and Space Stations
@@ -47,7 +48,6 @@ public class AdvancedAeroUI extends MegaMekLabMainUI {
     private static final long serialVersionUID = -91028543221939757L;
     
     JTabbedPane configPane = new JTabbedPane(SwingConstants.TOP);
-    JPanel contentPane;
     private AdvancedAeroStructureTab structureTab;
     private EquipmentTab equipmentTab;
     private PreviewTab previewTab;
@@ -169,15 +169,11 @@ public class AdvancedAeroUI extends MegaMekLabMainUI {
 
     @Override
     public void reloadTabs() {
-        masterPanel.removeAll();
         configPane.removeAll();
-
-        masterPanel.setLayout(new BorderLayout());
+        getContentPane().removeAll();
 
         structureTab = new AdvancedAeroStructureTab(this);
-
         previewTab = new PreviewTab(this);
-
         statusbar = new AdvancedAeroStatusBar(this);
         equipmentTab = new EquipmentTab(this);
         buildTab = new DropshipBuildTab(this, equipmentTab);
@@ -190,18 +186,18 @@ public class AdvancedAeroUI extends MegaMekLabMainUI {
         fluffTab.setRefreshedListener(this);
         statusbar.addRefreshedListener(this);
 
-        configPane.addTab("Structure/Armor", structureTab);
-        configPane.addTab("Equipment", equipmentTab);
-        configPane.addTab("Assign Criticals", buildTab);
-        configPane.addTab("Transport Bays", transportTab);
-        configPane.addTab("Fluff", fluffTab);
+        configPane.addTab("Structure/Armor", new TabScrollPane(structureTab));
+        configPane.addTab("Equipment", new TabScrollPane(equipmentTab));
+        configPane.addTab("Assign Criticals", new TabScrollPane(buildTab));
+        configPane.addTab("Transport Bays", new TabScrollPane(transportTab));
+        configPane.addTab("Fluff", new TabScrollPane(fluffTab));
         configPane.addTab("Preview", previewTab);
 
-        masterPanel.add(configPane, BorderLayout.CENTER);
-        masterPanel.add(statusbar, BorderLayout.SOUTH);
+        add(configPane, BorderLayout.CENTER);
+        add(statusbar, BorderLayout.SOUTH);
 
         refreshHeader();
-        this.repaint();
+        validate();
     }
 
     @Override

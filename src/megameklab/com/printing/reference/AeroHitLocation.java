@@ -28,11 +28,11 @@ public class AeroHitLocation extends ReferenceTable {
         super(sheet, (sheet.getEntity() instanceof Jumpship) ? capitalOffsets : standardOffsets);
         if (sheet.getEntity() instanceof Jumpship) {
             setHeaders(bundle.getString("dieRoll2d6"), bundle.getString("nose"),
-                    bundle.getString("side"), bundle.getString("aft"));
+                    bundle.getString("aft"), bundle.getString("side"));
             addAdvancedAeroRows();
         } else {
             setHeaders(bundle.getString("dieRoll2d6"), bundle.getString("nose"),
-                    bundle.getString("side"), bundle.getString("aft"),
+                    bundle.getString("aft"), bundle.getString("side"),
                     bundle.getString("aboveBelow"));
             if (sheet.getEntity() instanceof SmallCraft) {
                 addSCDSRows();
