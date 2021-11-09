@@ -17,12 +17,10 @@
 package megameklab.com.ui.BattleArmor;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
-import javax.swing.UIManager;
 
 import megamek.common.BattleArmor;
 import megamek.common.Entity;
@@ -35,17 +33,11 @@ import megameklab.com.ui.BattleArmor.tabs.BuildTab;
 import megameklab.com.ui.BattleArmor.tabs.EquipmentTab;
 import megameklab.com.ui.BattleArmor.tabs.StructureTab;
 import megameklab.com.ui.tabs.FluffTab;
-import megameklab.com.util.UnitUtil;
+import megameklab.com.ui.util.TabScrollPane;
 
 public class MainUI extends MegaMekLabMainUI {
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = -5836932822468918198L;
-
-    JTabbedPane ConfigPane = new JTabbedPane(SwingConstants.TOP);
-    JPanel contentPane;
+    JTabbedPane configPane = new JTabbedPane(SwingConstants.TOP);
     private StructureTab structureTab;
     private BuildTab buildTab;
     private EquipmentTab equipTab;
@@ -62,10 +54,9 @@ public class MainUI extends MegaMekLabMainUI {
 
     @Override
     public void reloadTabs() {
-        masterPanel.removeAll();
-        ConfigPane.removeAll();
+        configPane.removeAll();
+        getContentPane().removeAll();
 
-        masterPanel.setLayout(new BorderLayout());
         structureTab = new StructureTab(this);
         equipTab = new EquipmentTab(this);
         fluffTab = new FluffTab(this);
@@ -77,16 +68,16 @@ public class MainUI extends MegaMekLabMainUI {
         buildTab.addRefreshedListener(this);
         fluffTab.setRefreshedListener(this);
 
-        ConfigPane.addTab("Structure/Armor", structureTab);
-        ConfigPane.addTab("Equipment", equipTab);
-        ConfigPane.addTab("Assign Criticals", buildTab);
-        ConfigPane.addTab("Fluff", fluffTab);
+        configPane.addTab("Structure/Armor", new TabScrollPane(structureTab));
+        configPane.addTab("Equipment", new TabScrollPane(equipTab));
+        configPane.addTab("Assign Criticals", new TabScrollPane(buildTab));
+        configPane.addTab("Fluff", new TabScrollPane(fluffTab));
 
-        masterPanel.add(ConfigPane, BorderLayout.CENTER);
-        masterPanel.add(statusbar, BorderLayout.SOUTH);
+        add(configPane, BorderLayout.CENTER);
+        add(statusbar, BorderLayout.SOUTH);
 
         refreshHeader();
-        this.repaint();
+        validate();
     }
 
     @Override

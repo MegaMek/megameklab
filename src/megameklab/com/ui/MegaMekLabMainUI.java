@@ -31,8 +31,6 @@ import java.awt.event.WindowEvent;
 public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener, EntitySource {
 
     private Entity entity = null;
-    protected JPanel masterPanel = new JPanel();
-    protected JScrollPane scroll = new JScrollPane();
     protected MenuBarCreator menubarcreator;
     
     public MegaMekLabMainUI() {
@@ -50,11 +48,9 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
     protected void finishSetup() {
         menubarcreator = new MenuBarCreator(this);
         setJMenuBar(menubarcreator);
-        add(masterPanel);
         reloadTabs();
         setSizeAndLocation();
         setVisible(true);
-        repaint();
         refreshAll();
     }
     

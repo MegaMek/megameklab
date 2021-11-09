@@ -35,6 +35,7 @@ import megameklab.com.ui.Aero.tabs.EquipmentTab;
 import megameklab.com.ui.tabs.PreviewTab;
 import megameklab.com.ui.tabs.FluffTab;
 import megameklab.com.ui.tabs.TransportTab;
+import megameklab.com.ui.util.TabScrollPane;
 
 /**
  * Main UI for Dropships and Small Craft
@@ -44,11 +45,6 @@ import megameklab.com.ui.tabs.TransportTab;
  */
 public class DropshipMainUI extends MegaMekLabMainUI {
 
-    /**
-     * 
-     */
-    private static final long serialVersionUID = -4014312789921114515L;
-    
     JTabbedPane configPane = new JTabbedPane(SwingConstants.TOP);
     private DropshipStructureTab structureTab;
     private EquipmentTab equipmentTab;
@@ -153,10 +149,8 @@ public class DropshipMainUI extends MegaMekLabMainUI {
 
     @Override
     public void reloadTabs() {
-        masterPanel.removeAll();
         configPane.removeAll();
-
-        masterPanel.setLayout(new BorderLayout());
+        getContentPane().removeAll();
 
         structureTab = new DropshipStructureTab(this);
 
@@ -174,18 +168,18 @@ public class DropshipMainUI extends MegaMekLabMainUI {
         statusbar.addRefreshedListener(this);
         fluffTab.setRefreshedListener(this);
 
-        configPane.addTab("Structure/Armor", structureTab);
-        configPane.addTab("Equipment", equipmentTab);
-        configPane.addTab("Assign Criticals", buildTab);
-        configPane.addTab("Transport Bays", transportTab);
-        configPane.addTab("Fluff", fluffTab);
+        configPane.addTab("Structure/Armor", new TabScrollPane(structureTab));
+        configPane.addTab("Equipment", new TabScrollPane(equipmentTab));
+        configPane.addTab("Assign Criticals", new TabScrollPane(buildTab));
+        configPane.addTab("Transport Bays", new TabScrollPane(transportTab));
+        configPane.addTab("Fluff", new TabScrollPane(fluffTab));
         configPane.addTab("Preview", previewTab);
 
-        masterPanel.add(configPane, BorderLayout.CENTER);
-        masterPanel.add(statusbar, BorderLayout.SOUTH);
+        add(configPane, BorderLayout.CENTER);
+        add(statusbar, BorderLayout.SOUTH);
 
         refreshHeader();
-        this.repaint();
+        validate();
     }
 
     @Override

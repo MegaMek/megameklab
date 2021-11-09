@@ -27,35 +27,27 @@ import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.tabs.PreviewTab;
 import megameklab.com.ui.Infantry.tabs.StructureTab;
 import megameklab.com.ui.tabs.FluffTab;
+import megameklab.com.ui.util.TabScrollPane;
 
 public class MainUI extends MegaMekLabMainUI {
-
-    /**
-	 *
-	 */
-    private static final long serialVersionUID = 5338040000652349619L;
 
     StructureTab structureTab;
     PreviewTab previewTab;
     FluffTab fluffTab;
     StatusBar statusbar;
-    JTabbedPane ConfigPane = new JTabbedPane(SwingConstants.TOP);
+    JTabbedPane configPane = new JTabbedPane(SwingConstants.TOP);
 
     public MainUI() {
-
         super();
         createNewUnit(Entity.ETYPE_INFANTRY);
         setTitle(getEntity().getChassis() + " " + getEntity().getModel() + ".mtf");
         finishSetup();
-
     }
 
     @Override
     public void reloadTabs() {
-        masterPanel.removeAll();
-        ConfigPane.removeAll();
-
-        masterPanel.setLayout(new BorderLayout());
+        configPane.removeAll();
+        getContentPane().removeAll();
 
         statusbar = new StatusBar(this);
         structureTab = new StructureTab(this);
@@ -65,15 +57,15 @@ public class MainUI extends MegaMekLabMainUI {
         structureTab.addRefreshedListener(this);
         fluffTab.setRefreshedListener(this);
 
-        ConfigPane.addTab("Build", structureTab);
-        ConfigPane.addTab("Fluff", fluffTab);
-        ConfigPane.addTab("Preview", previewTab);
+        configPane.addTab("Build", new TabScrollPane(structureTab));
+        configPane.addTab("Fluff", new TabScrollPane(fluffTab));
+        configPane.addTab("Preview", previewTab);
 
-        masterPanel.add(ConfigPane, BorderLayout.CENTER);
-        masterPanel.add(statusbar, BorderLayout.SOUTH);
+        add(configPane, BorderLayout.CENTER);
+        add(statusbar, BorderLayout.SOUTH);
 
         refreshHeader();
-        this.repaint();
+        validate();
     }
 
     @Override
