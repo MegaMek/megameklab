@@ -76,6 +76,7 @@ import megamek.common.weapons.lrms.LRMWeapon;
 import megamek.common.weapons.lrms.LRTWeapon;
 import megamek.common.weapons.lrms.StreakLRMWeapon;
 import megamek.common.weapons.mgs.MGWeapon;
+import megamek.common.weapons.missiles.MMLWeapon;
 import megamek.common.weapons.missiles.MRMWeapon;
 import megamek.common.weapons.missiles.RLWeapon;
 import megamek.common.weapons.missiles.ThunderBoltWeapon;
@@ -2285,6 +2286,10 @@ public class UnitUtil {
         DecimalFormat myFormatter = new DecimalFormat("#,##0", unusualSymbols);
         StringBuilder sb = new StringBuilder("<HTML>");
         sb.append(eq.getName());
+        if (eq.getType() instanceof AmmoType) {
+            sb.append(" (" + eq.getBaseShotsLeft() + " shot");
+            sb.append((eq.getBaseShotsLeft() == 1) ? ")" : "s)");
+        }
         if ((eq.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)
                 || eq.getType().hasFlag(MiscType.F_AP_MOUNT))
                 && (eq.getLinked() != null)){
@@ -2315,7 +2320,9 @@ public class UnitUtil {
 
             if (eq.getType() instanceof WeaponType) {
                 sb.append("<br>Heat: ");
-                sb.append(((WeaponType) eq.getType()).getHeat());
+                sb.append(eq.getType().getHeat());
+                sb.append("<br>Maximum Damage: ");
+                sb.append(getWeaponDamageInfo((WeaponType) eq.getType()));
             }
         }
         sb.append("<Br>Cost: ");
@@ -2346,6 +2353,32 @@ public class UnitUtil {
 
         sb.append("</html>");
         return sb.toString();
+    }
+
+
+    private static String getWeaponDamageInfo(WeaponType wType) {
+        if (wType.getDamage() == WeaponType.DAMAGE_BY_CLUSTERTABLE) {
+            int perMissile = 1;
+            if ((wType instanceof SRMWeapon) || (wType instanceof SRTWeapon) ||(wType instanceof MMLWeapon)) {
+                perMissile = 2;
+            }
+            return Integer.toString(wType.getRackSize() * perMissile);
+        } else if (wType.getDamage() == WeaponType.DAMAGE_VARIABLE) {
+            return Integer.toString(wType.getDamage(1));
+        } else if (wType.getDamage() == WeaponType.DAMAGE_SPECIAL) {
+            return "Special";
+        } else if (wType.getDamage() == WeaponType.DAMAGE_ARTILLERY) {
+            return Integer.toString(wType.getRackSize());
+        } else {
+            int damage = wType.getDamage();
+            if (wType.getAmmoType() == AmmoType.T_AC_ROTARY) {
+                damage *= 6;
+            } else if ((wType.getAmmoType() == AmmoType.T_AC_ULTRA)
+                    || (wType.getAmmoType() == AmmoType.T_AC_ULTRA_THB)) {
+                damage *= 2;
+            }
+            return Integer.toString(damage);
+        }
     }
 
     /**
@@ -2383,17 +2416,14 @@ public class UnitUtil {
         return true;
     }
 
-    public static boolean isLastCrit(Entity unit, CriticalSlot cs, int slot,
-            int location) {
+    public static boolean isLastCrit(Entity unit, CriticalSlot cs, int slot, int location) {
         if (unit instanceof Mech) {
             return UnitUtil.isLastMechCrit((Mech) unit, cs, slot, location);
         }
         return true;
     }
 
-    public static boolean isLastMechCrit(Mech unit, CriticalSlot cs, int slot,
-            int location) {
-
+    public static boolean isLastMechCrit(Mech unit, CriticalSlot cs, int slot, int location) {
         if (cs == null) {
             return true;
         }
@@ -2425,42 +2455,7 @@ public class UnitUtil {
 
         } else {
             CriticalSlot nextCrit = unit.getCritical(location, slot + 1);
-            if (nextCrit == null) {
-                return true;
-            } else if ((nextCrit.getMount() == null)
-                    || !nextCrit.getMount().equals(cs.getMount())) {
-                return true;
-            } else {
-                return false;
-            }
-
-            /*
-             * Mounted originalMount = cs.getMount(); Mounted testMount = null;
-             *
-             * if (originalMount == null) { originalMount =
-             * cs.getMount(); }
-             *
-             * if (originalMount == null) { return true; }
-             *
-             * int numberOfCrits = slot -
-             * (originalMount.getType().getCriticals(unit) - 1);
-             *
-             * if (numberOfCrits < 0) { return false; } for (int position =
-             * slot; position >= numberOfCrits; position--) { CriticalSlot crit
-             * = unit.getCritical(location, position);
-             *
-             * if ((crit == null) || (crit.getType() !=
-             * CriticalSlot.TYPE_EQUIPMENT)) { return false; }
-             *
-             * if ((testMount = crit.getMount()) == null) { testMount =
-             * crit.getMount(); }
-             *
-             * if (testMount == null) { return false; }
-             *
-             * if (!testMount.equals(originalMount)) { return false; }
-             *
-             * } return true;
-             */
+            return (nextCrit == null) || (nextCrit.getMount() == null) || !nextCrit.getMount().equals(cs.getMount());
         }
 
         return slot == lastIndex;
