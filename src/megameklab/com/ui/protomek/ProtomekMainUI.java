@@ -15,8 +15,7 @@ package megameklab.com.ui.protomek;
 
 import java.awt.BorderLayout;
 
-import javax.swing.JTabbedPane;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 
 import megamek.common.Engine;
 import megamek.common.Entity;
@@ -31,6 +30,7 @@ import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.tabs.EquipmentTab;
 import megameklab.com.ui.tabs.FluffTab;
 import megameklab.com.ui.tabs.PreviewTab;
+import megameklab.com.ui.util.TabScrollPane;
 
 /**
  * Main UI for building protomechs
@@ -42,7 +42,7 @@ public class ProtomekMainUI extends MegaMekLabMainUI {
 
     private static final long serialVersionUID = 8103672350822665207L;
 
-    private JTabbedPane configPane = new JTabbedPane(SwingConstants.TOP);
+    private final JTabbedPane configPane = new JTabbedPane(SwingConstants.TOP);
 
     private ProtomekStructureTab structureTab;
     private EquipmentTab equipmentTab;
@@ -59,15 +59,11 @@ public class ProtomekMainUI extends MegaMekLabMainUI {
 
     @Override
     public void reloadTabs() {
-        masterPanel.removeAll();
         configPane.removeAll();
-
-        masterPanel.setLayout(new BorderLayout());
+        getContentPane().removeAll();
 
         structureTab = new ProtomekStructureTab(this);
-
         previewTab = new PreviewTab(this);
-
         statusbar = new ProtomekStatusBar(this);
         equipmentTab = new EquipmentTab(this);
         buildTab = new ProtomekBuildTab(this, equipmentTab, this);
@@ -77,18 +73,17 @@ public class ProtomekMainUI extends MegaMekLabMainUI {
         statusbar.addRefreshedListener(this);
         fluffTab.setRefreshedListener(this);
 
-        configPane.addTab("Structure/Armor", structureTab);
-        configPane.addTab("Equipment", equipmentTab);
-        configPane.addTab("Assign Criticals", buildTab);
-        configPane.addTab("Fluff", fluffTab);
+        configPane.addTab("Structure/Armor", new TabScrollPane(structureTab));
+        configPane.addTab("Equipment", new TabScrollPane(equipmentTab));
+        configPane.addTab("Assign Criticals", new TabScrollPane(buildTab));
+        configPane.addTab("Fluff", new TabScrollPane(fluffTab));
         configPane.addTab("Preview", previewTab);
 
-        //masterPanel.add(header);
-        masterPanel.add(configPane, BorderLayout.CENTER);
-        masterPanel.add(statusbar, BorderLayout.SOUTH);
+        add(configPane, BorderLayout.CENTER);
+        add(statusbar, BorderLayout.SOUTH);
 
         refreshHeader();
-        this.repaint();
+        validate();
     }
 
     @Override
@@ -101,8 +96,7 @@ public class ProtomekMainUI extends MegaMekLabMainUI {
         proto.setMovementMode(EntityMovementMode.BIPED);
         proto.setTechLevel(TechConstants.T_CLAN_TW);
         proto.setOriginalWalkMP(1);
-        proto.setEngine(new Engine(TestProtomech.calcEngineRating(proto),
-                Engine.NORMAL_ENGINE, Engine.CLAN_ENGINE));
+        proto.setEngine(new Engine(TestProtomech.calcEngineRating(proto), Engine.NORMAL_ENGINE, Engine.CLAN_ENGINE));
         proto.setArmorType(EquipmentType.T_ARMOR_STANDARD);
         proto.setArmorTechLevel(getEntity().getTechLevel());
 
@@ -119,8 +113,7 @@ public class ProtomekMainUI extends MegaMekLabMainUI {
         } else {
             proto.setChassis(oldEntity.getChassis());
             proto.setModel(oldEntity.getModel());
-            proto.setYear(Math.max(oldEntity.getYear(),
-                    proto.getConstructionTechAdvancement().getIntroductionDate()));
+            proto.setYear(Math.max(oldEntity.getYear(), proto.getConstructionTechAdvancement().getIntroductionDate()));
             proto.setSource(oldEntity.getSource());
             proto.setManualBV(oldEntity.getManualBV());
             SimpleTechLevel lvl = SimpleTechLevel.max(proto.getStaticTechLevel(),
@@ -141,8 +134,7 @@ public class ProtomekMainUI extends MegaMekLabMainUI {
     }
 
     @Override
-    public void refreshArmor() {
-    }
+    public void refreshArmor() { }
 
     @Override
     public void refreshBuild() {
@@ -162,16 +154,12 @@ public class ProtomekMainUI extends MegaMekLabMainUI {
     @Override
     public void refreshPreview() {
         previewTab.refresh();
-
     }
 
     @Override
     public void refreshHeader() {
-
-        String title = getEntity().getChassis() + " " + getEntity().getModel()
-                + ".blk";
+        String title = getEntity().getChassis() + " " + getEntity().getModel() + ".blk";
         setTitle(title);
-
     }
 
     @Override
