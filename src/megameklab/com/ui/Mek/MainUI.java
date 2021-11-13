@@ -72,7 +72,7 @@ public class MainUI extends MegaMekLabMainUI {
 
         configPane.addTab("Structure/Armor", new TabScrollPane(structureTab));
         //ConfigPane.addTab("Armor", armorTab);
-        configPane.addTab("Equipment", new TabScrollPane(equipmentTab));
+        configPane.addTab("Equipment", equipmentTab);
         //ConfigPane.addTab("Weapons", weaponTab);
         configPane.addTab("Assign Criticals", new TabScrollPane(buildTab));
         configPane.addTab("Fluff", new TabScrollPane(fluffTab));
