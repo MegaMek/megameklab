@@ -74,7 +74,7 @@ public class SVMainUI extends MegaMekLabMainUI {
 
         configPane.addTab("Structure", new TabScrollPane(structureTab));
         configPane.addTab("Armor", new TabScrollPane(armorTab));
-        configPane.addTab("Equipment", new TabScrollPane(equipmentTab));
+        configPane.addTab("Equipment", equipmentTab);
         configPane.addTab("Assign Criticals", new TabScrollPane(buildTab));
         configPane.addTab("Transport", new TabScrollPane(transportTab));
         configPane.addTab("Fluff", new TabScrollPane(fluffTab));
