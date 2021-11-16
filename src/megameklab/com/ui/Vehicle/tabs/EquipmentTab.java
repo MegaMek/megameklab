@@ -169,8 +169,6 @@ public class EquipmentTab extends ITab implements ActionListener {
             }
         });
         equipmentScroll.setViewportView(equipmentTable);
-        equipmentScroll.setMinimumSize(new java.awt.Dimension(300, 200));
-        equipmentScroll.setPreferredSize(new java.awt.Dimension(300, 200));
 
         masterEquipmentList = new EquipmentTableModel(getTank(), eSource.getTechManager());
         masterEquipmentTable.setModel(masterEquipmentList);
@@ -241,8 +239,6 @@ public class EquipmentTab extends ITab implements ActionListener {
         });
 
         txtFilter.setText("");
-        txtFilter.setMinimumSize(new java.awt.Dimension(200, 28));
-        txtFilter.setPreferredSize(new java.awt.Dimension(200, 28));
         txtFilter.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void changedUpdate(DocumentEvent e) {
@@ -282,7 +278,15 @@ public class EquipmentTab extends ITab implements ActionListener {
         gbc = new GridBagConstraints();
 
         JPanel loadoutPanel = new JPanel(new GridBagLayout());
-        JPanel databasePanel = new JPanel(new GridBagLayout());
+        JPanel databasePanel = new JPanel(new GridBagLayout())
+        {
+            @Override
+            // Allow downsizing the database with the Splitpane for small screen sizes
+            public Dimension getMinimumSize() {
+                Dimension prefSize = super.getPreferredSize();
+                return new Dimension(prefSize.width / 2, prefSize.height);
+            }
+        };
 
         loadoutPanel.setBorder(BorderFactory.createTitledBorder("Current Loadout"));
         databasePanel.setBorder(BorderFactory.createTitledBorder("Equipment Database"));
@@ -355,9 +359,7 @@ public class EquipmentTab extends ITab implements ActionListener {
         gbc.weighty = 1.0;
         loadoutPanel.add(equipmentScroll, gbc);
 
-        JSplitPane pane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-                new JScrollPane(loadoutPanel),
-                new JScrollPane(databasePanel));
+        JSplitPane pane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, loadoutPanel, databasePanel);
         pane.setOneTouchExpandable(true);
         setLayout(new BorderLayout());
         add(pane, BorderLayout.CENTER);

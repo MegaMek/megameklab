@@ -76,7 +76,7 @@ public class MainUI extends MegaMekLabMainUI {
         statusbar.addRefreshedListener(this);
 
         configPane.addTab("Structure/Armor", new TabScrollPane(structureTab));
-        configPane.addTab("Equipment", new TabScrollPane(equipmentTab));
+        configPane.addTab("Equipment", equipmentTab);
         configPane.addTab("Assign Criticals", new TabScrollPane(buildTab));
         configPane.addTab("Fluff", new TabScrollPane(fluffTab));
         configPane.addTab("Preview", previewTab);

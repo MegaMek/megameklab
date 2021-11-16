@@ -15,20 +15,11 @@ package megameklab.com.ui.util;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.StringJoiner;
-import java.util.Vector;
+import java.util.*;
 
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
-import javax.swing.plaf.ColorUIResource;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
@@ -81,7 +72,11 @@ public class BayWeaponCriticalTree extends JTree {
     private final EntitySource eSource;
     private final DefaultTreeModel model;
     private RefreshListener refresh;
-    
+
+    /** Stores a unique transient ID for each Bay to allow restoring the expanded state when the loadout changes. */
+    private final Map<Mounted, Integer> bayIdMap = new HashMap<>();
+    private int bayIdCounter;
+
     public BayWeaponCriticalTree(int location, EntitySource eSource, RefreshListener refresh) {
         this(location, eSource, refresh, FORWARD);
     }
@@ -133,10 +128,12 @@ public class BayWeaponCriticalTree extends JTree {
     }
     
     public void rebuild() {
+        List<Integer> expandedBays = getExpandedBayIds();
         setBackground(CConfig.getBackgroundColor(CConfig.CONFIG_WEAPONS));
         TreeNode root = initRoot();
         model.setRoot(root);
         setRootVisible(root.getChildCount() == 0);
+        restoreExpandedBays(expandedBays);
     }
 
     private int slotCount(Mounted bay) {
@@ -428,7 +425,7 @@ public class BayWeaponCriticalTree extends JTree {
         refresh.refreshStatus();
         refresh.refreshSummary();
     }
-    
+
     /**
      * Node class used directly for individual mounts and serves as the base class for weapon
      * and ammo bays. Provides display name and color to the renderer.
@@ -580,6 +577,7 @@ public class BayWeaponCriticalTree extends JTree {
 
         BayNode(Mounted object) {
             super(object);
+            bayIdMap.computeIfAbsent(object, m -> bayIdCounter++);
         }
         
         public boolean isCapital() {
@@ -1480,5 +1478,37 @@ public class BayWeaponCriticalTree extends JTree {
         refresh.refreshPreview();
         refresh.refreshStatus();
         refresh.refreshSummary();
+    }
+
+    private void restoreExpandedBays(List<Integer> expandedBayIds) {
+        TreeNode root = (TreeNode) model.getRoot();
+        if ((root == null) || (expandedBayIds == null)) {
+            return;
+        }
+        for (int n = 0; n < model.getChildCount(root); n++) {
+            Object node = model.getChild(root, n);
+            if (node instanceof BayNode) {
+                if (expandedBayIds.contains(bayIdMap.get(((BayNode) node).getMounted()))) {
+                    Object[] pathObjs = new Object[2];
+                    pathObjs[0] = root;
+                    pathObjs[1] = node;
+                    expandPath(new TreePath(pathObjs));
+                }
+            }
+        }
+    }
+
+    private List<Integer> getExpandedBayIds() {
+        List<Integer> result = new ArrayList<>();
+        for (int i = 0; i < getRowCount(); i++) {
+            TreePath currPath = getPathForRow(i);
+            if (isExpanded(currPath)) {
+                Object entry = currPath.getLastPathComponent();
+                if (entry instanceof BayNode) {
+                    result.add(bayIdMap.get(((BayNode) entry).getMounted()));
+                }
+            }
+        }
+        return result;
     }
 }
