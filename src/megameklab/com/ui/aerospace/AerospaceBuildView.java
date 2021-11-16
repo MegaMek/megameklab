@@ -97,7 +97,7 @@ public class AerospaceBuildView extends IView implements MouseListener {
 
         equipmentTable.addMouseListener(this);
 
-        setLayout(new GridLayout(1,1));
+        setLayout(new GridLayout(1, 1));
         this.add(equipmentScroll, BorderLayout.CENTER);
         setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createEmptyBorder(), "Unallocated Equipment", 

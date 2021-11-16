@@ -773,7 +773,7 @@ public class BayWeaponCriticalTree extends JTree {
             Dimension pref = super.getPreferredSize();
             // Make the Bays wider to prevent the tree from changing size upon opening a bay
             // Keep a minimum height to avoid empty sections from having no height
-            return new Dimension((node != null) && node.isLeaf() ? 250 : 270, Math.max(25, pref.height + 5));
+            return new Dimension((((node != null) && node.isLeaf()) ? 250 : 270), Math.max(25, pref.height + 5));
         }
     };
 
