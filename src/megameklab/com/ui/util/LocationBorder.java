@@ -1,14 +1,33 @@
+/*
+ * MegaMekLab - Copyright (C) 2017 - The MegaMek Team
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ */
 package megameklab.com.ui.util;
 
 import javax.swing.border.AbstractBorder;
 import java.awt.*;
 import java.awt.geom.Path2D;
 
+/**
+ * A Java Swing Border with slightly curved top and bottom lines. Used as a frame
+ * for the Large Aerospace crit locations.
+ *
+ * @author Simon (Juliez)
+ */
 public class LocationBorder extends AbstractBorder {
 
-    private final static int cl = 40;
-    private final static int hcl = 10;
-    private final static int hch = 5;
+    private final static float CL = 40;
+    private final static float HCL = 10;
+    private final static float HCH = 5;
 
     /** Thickness of the border. */
     protected float thickness;
@@ -23,8 +42,9 @@ public class LocationBorder extends AbstractBorder {
 
     @Override
     public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
-        if ((this.thickness > 0) && (g instanceof Graphics2D)) {
+        if ((thickness > 0) && (lineColor != null) && (width > 0) && (height > 0) && (g instanceof Graphics2D)) {
             Graphics2D g2d = (Graphics2D) g;
+            
             Color oldColor = g2d.getColor();
             Stroke oldStroke = g2d.getStroke();
             
@@ -37,14 +57,25 @@ public class LocationBorder extends AbstractBorder {
             float xw = x + width - thickness;
             float yc = y + thickness;
             float yh = y + height - thickness;
-            line.moveTo(xc, yc + hch);
-            line.curveTo(xc + hcl, yc, xc + hcl, yc, xc + cl, yc);
-            line.lineTo(xw - cl, yc);
-            line.curveTo(xw - hcl, yc, xw - hcl, yc, xw, yc + hch);
-            line.lineTo(xw, yh - hch);
-            line.curveTo(xw - hcl, yh, xw - hcl, yh, xw - cl, yh);
-            line.lineTo(xc + cl, yh);
-            line.curveTo(xc + hcl, yh, xc + hcl, yh, xc, yh - hch);
+            
+            if (width < 2 * CL) {
+                float hcl = 0.5f * HCL / CL * width;
+                line.moveTo(xc, yc + HCH);
+                line.curveTo(xc + hcl, yc, xc + hcl, yc, width / 2.0d, yc);
+                line.curveTo(xw - hcl, yc, xw - hcl, yc, xw, yc + HCH);
+                line.lineTo(xw, yh - HCH);
+                line.curveTo(xw - hcl, yh, xw - hcl, yh, width / 2.0d, yh);
+                line.curveTo(xc + hcl, yh, xc + hcl, yh, xc, yh - HCH);
+            } else {
+                line.moveTo(xc, yc + HCH);
+                line.curveTo(xc + HCL, yc, xc + HCL, yc, xc + CL, yc);
+                line.lineTo(xw - CL, yc);
+                line.curveTo(xw - HCL, yc, xw - HCL, yc, xw, yc + HCH);
+                line.lineTo(xw, yh - HCH);
+                line.curveTo(xw - HCL, yh, xw - HCL, yh, xw - CL, yh);
+                line.lineTo(xc + CL, yh);
+                line.curveTo(xc + HCL, yh, xc + HCL, yh, xc, yh - HCH);
+            }
             line.closePath();
             g2d.draw(line);
 
@@ -55,7 +86,8 @@ public class LocationBorder extends AbstractBorder {
 
     @Override
     public Insets getBorderInsets(Component c, Insets insets) {
-        insets.set(5, (int) (2 * thickness), 5, (int) (2 * thickness));
+        insets.set((int) (HCH + 1.5 * thickness), (int) (3 + 1.5 * thickness),
+                (int) (HCH + 1.5 * thickness), (int) (3 + 1.5 * thickness));
         return insets;
     }
 
