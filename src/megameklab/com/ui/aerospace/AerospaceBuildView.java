@@ -13,8 +13,7 @@
  */
 package megameklab.com.ui.aerospace;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -94,13 +93,11 @@ public class AerospaceBuildView extends IView implements MouseListener {
         equipmentTable.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         equipmentTable.setDoubleBuffered(true);
         equipmentScroll.setViewportView(equipmentTable);
-        equipmentScroll.setMinimumSize(new java.awt.Dimension(400, 400));
-        equipmentScroll.setPreferredSize(new java.awt.Dimension(400, 400));
         equipmentScroll.setTransferHandler(cth);
 
         equipmentTable.addMouseListener(this);
 
-        setLayout(new BorderLayout());
+        setLayout(new GridLayout(1, 1));
         this.add(equipmentScroll, BorderLayout.CENTER);
         setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createEmptyBorder(), "Unallocated Equipment", 
