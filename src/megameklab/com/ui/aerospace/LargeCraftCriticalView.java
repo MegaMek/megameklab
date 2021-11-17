@@ -212,7 +212,7 @@ public class LargeCraftCriticalView extends IView {
     private JPanel createArcPanel(int arc, ResourceBundle resourceMap,
             boolean isWeaponArc, @Nullable JButton copyButton) {
         JPanel arcPanel = new JPanel(new GridBagLayout());
-        arcTrees[arc].setBorder(BorderFactory.createMatteBorder(0, 1, 1, 1, Color.black));
+        arcTrees[arc].setBorder(BorderFactory.createLineBorder(Color.BLACK));
         String arcTitle = getAero().hasETypeFlag(Entity.ETYPE_JUMPSHIP) ? capitalArcNames[arc] : spheroidArcNames[arc];
         arcPanel.setBorder(BorderFactory.createTitledBorder(
                 new LocationBorder(Color.BLACK, 2f),
