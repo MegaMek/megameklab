@@ -52,6 +52,8 @@ import megameklab.com.util.CConfig;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 
+import static megameklab.com.ui.util.AeroBayTransferHandler.EMTPYSLOT;
+
 /**
  * Variant of DropTargetCriticalList for aerospace units that groups weapons into bays. Also
  * includes support for treating spheroid small craft and dropships firing arcs separately
@@ -1444,7 +1446,7 @@ public class BayWeaponCriticalTree extends JTree {
             }
             return sj.toString();
         } else {
-            return "-1"; //$NON-NLS-1$
+            return EMTPYSLOT;
         }
     }
     
