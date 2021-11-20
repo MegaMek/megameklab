@@ -87,10 +87,9 @@ public class BayWeaponCriticalTree extends JTree {
         this.facing = facing;
         this.eSource = eSource;
         this.refresh = refresh;
-        
+
         model = new DefaultTreeModel(initRoot());
         setModel(model);
-        rebuild();
 
         // Remove lines and icons as far as possible (depends on LaF)
         setShowsRootHandles(false);
@@ -114,6 +113,7 @@ public class BayWeaponCriticalTree extends JTree {
         setDragEnabled(true);
         setTransferHandler(cth);
         ToolTipManager.sharedInstance().registerComponent(this);
+        setBorder(BorderFactory.createLineBorder(Color.BLACK));
     }
 
     /**
@@ -168,7 +168,7 @@ public class BayWeaponCriticalTree extends JTree {
         }
         return count;
     }
-    
+
     /**
      * Runs through all equipment mounted on the vessel and adds nodes for the ones that match this
      * tree's location and facing.
@@ -221,7 +221,7 @@ public class BayWeaponCriticalTree extends JTree {
     /**
      * Removes the bay node and all subnodes.
      * Removes all equipment in this bay by assigning it to LOC_NONE and deletes the bay itself.
-     * @param bayNode
+     * @param bayNode The bay node to remove
      */
     private void removeBay(final EquipmentNode bayNode) {
         removeBay(bayNode, true, true);
@@ -556,7 +556,7 @@ public class BayWeaponCriticalTree extends JTree {
 
         public String getTooltip() {
             StringBuilder sb = new StringBuilder("<html>");
-            sb.append(toString());
+            sb.append(this);
             if (getMounted().getType() instanceof WeaponType) {
                 final WeaponType wtype = (WeaponType) getMounted().getType();
                 final int bonus = avMod(getMounted());
@@ -643,7 +643,7 @@ public class BayWeaponCriticalTree extends JTree {
         
         public String getTooltip() {
             StringBuilder sb = new StringBuilder("<html>");
-            sb.append(toString());
+            sb.append(this);
             double shortAV = 0;
             double medAV = 0;
             double longAV = 0;
@@ -752,12 +752,13 @@ public class BayWeaponCriticalTree extends JTree {
                         setBorder(compound);
                     }
                 } else  {
-                    setText(" " + getText());
                     if (row != 0) {
                         setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.BLACK));
                     }
                 }
+                setText(" " + getText());
             } else {
+                node = null;
                 setText("-Empty-");
                 setToolTipText(null);
                 setHorizontalAlignment(JLabel.CENTER);
@@ -772,9 +773,16 @@ public class BayWeaponCriticalTree extends JTree {
             Dimension pref = super.getPreferredSize();
             // Make the Bays wider to prevent the tree from changing size upon opening a bay
             // Keep a minimum height to avoid empty sections from having no height
-            return new Dimension((((node != null) && node.isLeaf()) ? 250 : 270), Math.max(25, pref.height + 5));
+            int width = (!eSource.getEntity().usesWeaponBays() || ((node != null) && node.isLeaf())) ? 250 : 270;
+            return new Dimension(width, Math.max(25, pref.height + 5));
         }
     };
+
+    @Override
+    public Dimension getMinimumSize() {
+        // Prevents layout problems with empty locations
+        return super.getPreferredSize();
+    }
 
     /**
      * Displays popup menu
@@ -880,7 +888,7 @@ public class BayWeaponCriticalTree extends JTree {
             if (location == SmallCraft.LOC_LWING) {
                 if (facing == FORWARD) {
                     return "Forward Left";
-                } else if (facing == AFT){
+                } else if (facing == AFT) {
                     return "Aft Left";
                 } else {
                     return "Left Wing";
@@ -888,7 +896,7 @@ public class BayWeaponCriticalTree extends JTree {
             } else if (location == SmallCraft.LOC_RWING) {
                 if (facing == FORWARD) {
                     return "Forward Right";
-                } else if (facing == AFT){
+                } else if (facing == AFT) {
                     return "Aft Right";
                 } else {
                     return "Right Wing";
@@ -982,8 +990,8 @@ public class BayWeaponCriticalTree extends JTree {
      * Adds an equipment mount to a bay. Changes the equipment mount's location and updates the bay's
      * weapon or ammo list if necessary.
      * 
-     * @param bay
-     * @param eq
+     * @param bay The receiving weapon bay
+     * @param eq The equipment to add to the bay
      */
     public void addToBay(@Nullable Mounted bay, Mounted eq) {
         // Check that we have a bay
@@ -1115,7 +1123,7 @@ public class BayWeaponCriticalTree extends JTree {
 
     /**
      * Adds equipment to a location without a bay.
-     * @param eq
+     * @param eq The equipment to add to the location of this tree
      */
     public void addToLocation(Mounted eq) {
         moveToArc(eq);
@@ -1171,8 +1179,8 @@ public class BayWeaponCriticalTree extends JTree {
     /**
      * Called by the transfer handler when equipment is dropped on this location.
      *  
-     * @param eq
-     * @param path
+     * @param eq The equipment dropped on this location 
+     * @param path The tree node under the drop point
      */
     public void addToArc(Mounted eq, TreePath path) {
         if ((null == path) || !(path.getLastPathComponent() instanceof EquipmentNode)) {
@@ -1216,7 +1224,7 @@ public class BayWeaponCriticalTree extends JTree {
 
     /**
      * Moves a bay and all its contents from another location
-     * @param bay
+     * @param bay The bay to move in
      */
     public void addBay(Mounted bay) {
         // First move the bay here
@@ -1267,9 +1275,8 @@ public class BayWeaponCriticalTree extends JTree {
      * that can use the ammo. For weapon enhancements this is determined by the presence of a weapon
      * that can use the enhancement that doesn't already have one.
      * 
-     * @param bay
-     * @param eq
-     * @return
+     * @param bay The target bay
+     * @param eq The equipment to test
      */
     private boolean canTakeEquipment(Mounted bay, Mounted eq) {
         if (eq.getType() instanceof WeaponType) {
@@ -1444,7 +1451,7 @@ public class BayWeaponCriticalTree extends JTree {
             }
             return sj.toString();
         } else {
-            return "-1"; //$NON-NLS-1$
+            return "-1"; 
         }
     }
     
