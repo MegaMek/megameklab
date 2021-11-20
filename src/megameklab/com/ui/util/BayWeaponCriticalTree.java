@@ -52,6 +52,8 @@ import megameklab.com.util.CConfig;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 
+import static megameklab.com.ui.util.AeroBayTransferHandler.EMTPYSLOT;
+
 /**
  * Variant of DropTargetCriticalList for aerospace units that groups weapons into bays. Also
  * includes support for treating spheroid small craft and dropships firing arcs separately
@@ -1179,7 +1181,7 @@ public class BayWeaponCriticalTree extends JTree {
     /**
      * Called by the transfer handler when equipment is dropped on this location.
      *  
-     * @param eq The equipment dropped on this location 
+     * @param eq The equipment dropped on this location
      * @param path The tree node under the drop point
      */
     public void addToArc(Mounted eq, TreePath path) {
@@ -1451,7 +1453,7 @@ public class BayWeaponCriticalTree extends JTree {
             }
             return sj.toString();
         } else {
-            return "-1"; 
+            return EMTPYSLOT;
         }
     }
     
