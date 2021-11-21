@@ -207,10 +207,7 @@ public class EquipmentTab extends ITab implements ActionListener {
                 refresh.refreshSummary();
             }
         });
-        JScrollPane equipmentScroll = new JScrollPane();
-        equipmentScroll.setViewportView(equipmentTable);
-        equipmentScroll.setMinimumSize(new java.awt.Dimension(300, 200));
-        equipmentScroll.setPreferredSize(new java.awt.Dimension(300, 200));
+        JScrollPane equipmentScroll = new JScrollPane(equipmentTable);
 
         masterEquipmentList = new EquipmentTableModel(eSource.getEntity(), eSource.getTechManager());
         masterEquipmentTable.setModel(masterEquipmentList);
@@ -287,8 +284,6 @@ public class EquipmentTab extends ITab implements ActionListener {
         choiceType.setRenderer(new CategoryListCellRenderer());
 
         txtFilter.setText("");
-        txtFilter.setMinimumSize(new java.awt.Dimension(200, 28));
-        txtFilter.setPreferredSize(new java.awt.Dimension(200, 28));
         txtFilter.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void changedUpdate(DocumentEvent e) {
@@ -329,7 +324,14 @@ public class EquipmentTab extends ITab implements ActionListener {
         gbc = new GridBagConstraints();
 
         JPanel loadoutPanel = new JPanel(new GridBagLayout());
-        JPanel databasePanel = new JPanel(new GridBagLayout());
+        JPanel databasePanel = new JPanel(new GridBagLayout()) {
+            @Override
+            // Allow downsizing the database with the Splitpane for small screen sizes
+            public Dimension getMinimumSize() {
+                Dimension prefSize = super.getPreferredSize();
+                return new Dimension(prefSize.width / 2, prefSize.height);
+            }
+        };
 
         loadoutPanel.setBorder(BorderFactory.createTitledBorder("Current Loadout"));
         databasePanel.setBorder(BorderFactory.createTitledBorder("Equipment Database"));
@@ -423,9 +425,7 @@ public class EquipmentTab extends ITab implements ActionListener {
         gbc.weighty = 1.0;
         loadoutPanel.add(equipmentScroll, gbc);
 
-        JSplitPane pane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-                new JScrollPane(loadoutPanel),
-                new JScrollPane(databasePanel));
+        JSplitPane pane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, loadoutPanel, databasePanel);
         pane.setOneTouchExpandable(true);
         setLayout(new BorderLayout());
         add(pane, BorderLayout.CENTER);
@@ -464,35 +464,31 @@ public class EquipmentTab extends ITab implements ActionListener {
                     || UnitUtil.isArmorOrStructure(etype)) {
                 continue;
             }
-            //if (UnitUtil.isUnitEquipment(mount.getType(), unit) || UnitUtil.isUn) {
-                if (UnitUtil.isFixedLocationSpreadEquipment(etype) 
-                        && !spreadAlreadyAdded.contains(etype)) {
-                    equipmentList.addCrit(mount);
-                    // keep track of spreadable equipment here, so it doesn't
-                    // show up multiple times in the table
-                    spreadAlreadyAdded.add(etype);
-                } else {
-                    equipmentList.addCrit(mount);
-                }
-            //}
+
+            if (UnitUtil.isFixedLocationSpreadEquipment(etype)
+                    && !spreadAlreadyAdded.contains(etype)) {
+                equipmentList.addCrit(mount);
+                // keep track of spreadable equipment here, so it doesn't
+                // show up multiple times in the table
+                spreadAlreadyAdded.add(etype);
+            } else {
+                equipmentList.addCrit(mount);
+            }
         }
-
-
     }
 
     private void removeHeatSinks() {
-        int location = 0;
-        for (; location < equipmentList.getRowCount();) {
-
+        for (int location = 0; location < equipmentList.getRowCount(); ) {
             Mounted mount = (Mounted) equipmentList.getValueAt(location, CriticalTableModel.EQUIPMENT);
             EquipmentType eq = mount.getType();
             if ((eq instanceof MiscType) && (UnitUtil.isHeatSink(mount))) {
                 try {
                     equipmentList.removeCrit(location);
-                } catch (ArrayIndexOutOfBoundsException aioobe) {
+                } catch (IndexOutOfBoundsException ignored) {
                     return;
-                } catch (Exception ex) {
-                    ex.printStackTrace();
+                } catch (Exception e) {
+                    MegaMekLab.getLogger().error(e);
+                    return;
                 }
             } else {
                 location++;
@@ -582,8 +578,7 @@ public class EquipmentTab extends ITab implements ActionListener {
                 }
             }
         } catch (LocationFullException ex) {
-            MegaMekLab.getLogger().error(getClass(), "addEquipment(EquipmentType)",
-                    "Location full while trying to add " + equip.getName());
+            MegaMekLab.getLogger().error("Location full while trying to add " + equip.getName());
             JOptionPane.showMessageDialog(
                     this,"Could not add " + equip.getName(),
                     "Location Full", JOptionPane.ERROR_MESSAGE);

@@ -110,7 +110,7 @@ public class ProtomekStatusBar extends ITab {
 
         currentTonnage = testEntity.calculateWeight() * 1000;
 
-        tons.setText("Mass: " + currentTonnage + "/" + tonnage);
+        tons.setText(String.format("Tonnage: %,.0f/%,.0f (%,.0f Remaining)", currentTonnage, tonnage, tonnage - currentTonnage));
         tons.setToolTipText("Current Tonnage/Max Tonnage");
         if (currentTonnage > tonnage) {
             tons.setForeground(Color.red);

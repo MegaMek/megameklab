@@ -392,7 +392,7 @@ public class StructureTab extends ITab implements MekBuildListener, ArmorAllocat
         } catch (EntityLoadingException ele) {
             // do nothing.
         } catch (Exception ex) {
-            ex.printStackTrace();
+            MegaMekLab.getLogger().error(ex);
         }
 
         if ((crit != null) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
@@ -477,7 +477,7 @@ public class StructureTab extends ITab implements MekBuildListener, ArmorAllocat
                         new Mounted(getMech(), structure),
                         Entity.LOC_NONE, false);
             } catch (Exception ex) {
-                ex.printStackTrace();
+                MegaMekLab.getLogger().error(ex);
             }
         }
     }
@@ -487,9 +487,9 @@ public class StructureTab extends ITab implements MekBuildListener, ArmorAllocat
      * @return true if the new engine is legal for rating, space, and tech level
      */
     private boolean recalculateEngineRating(int walkMP, double tonnage) {
-        int rating = walkMP * (int)tonnage;
+        int rating = walkMP * (int) tonnage;
         if (getMech().isPrimitive()) {
-            rating = (int)Math.ceil((rating * 1.2) / 5.0) * 5; 
+            rating = (int) Math.ceil((rating * 1.2) / 5.0) * 5;
         }
         int oldRating = getMech().getEngine().getRating();
         if (oldRating != rating) {
@@ -967,8 +967,7 @@ public class StructureTab extends ITab implements MekBuildListener, ArmorAllocat
                 // Since we're not changing the total count, there should always be enough prototype
                 // doubles to switch over.
                 if (i >= doubles.size()) {
-                    MegaMekLab.getLogger().warning(getClass(), "redistributePrototypeHS(int)",
-                            "Not enough prototype double heat sinks to switch to single");
+                    MegaMekLab.getLogger().warning("Not enough prototype double heat sinks to switch to single");
                 }
                 UnitUtil.removeMounted(getMech(), doubles.get(i));
             }
@@ -982,8 +981,7 @@ public class StructureTab extends ITab implements MekBuildListener, ArmorAllocat
                     .collect(Collectors.toList());
             for (int i = 0; i < netChange; i++) {
                 if (i >= singles.size()) {
-                    MegaMekLab.getLogger().warning(getClass(), "redistributePrototypeHS(int)",
-                            "Not enough single heat sinks to switch to prototype double");
+                    MegaMekLab.getLogger().warning("Not enough single heat sinks to switch to prototype double");
                 }
                 UnitUtil.removeMounted(getMech(), singles.get(i));
             }
@@ -1347,12 +1345,16 @@ public class StructureTab extends ITab implements MekBuildListener, ArmorAllocat
         switch (EquipmentType.getArmorType(armor)) {
             case EquipmentType.T_ARMOR_STEALTH:
             case EquipmentType.T_ARMOR_FERRO_LAMELLOR:
+            case EquipmentType.T_ARMOR_BALLISTIC_REINFORCED:
+            case EquipmentType.T_ARMOR_IMPACT_RESISTANT:
                 crits = 2;
                 break;
             case EquipmentType.T_ARMOR_HEAVY_FERRO:
                 crits = 3;
                 break;
             case EquipmentType.T_ARMOR_LIGHT_FERRO:
+            case EquipmentType.T_ARMOR_ANTI_PENETRATIVE_ABLATION:
+            case EquipmentType.T_ARMOR_HEAT_DISSIPATING:
                 crits = 1;
                 break;
             case EquipmentType.T_ARMOR_FERRO_FIBROUS:
@@ -1382,7 +1384,8 @@ public class StructureTab extends ITab implements MekBuildListener, ArmorAllocat
             for (; crits > 0; crits--) {
                 try {
                     getMech().addEquipment( new Mounted(getMech(), armor), location, false);
-                } catch (LocationFullException ex) {
+                } catch (LocationFullException ignored) {
+
                 }
             }
         }

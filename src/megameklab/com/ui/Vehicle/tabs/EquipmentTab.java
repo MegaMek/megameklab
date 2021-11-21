@@ -68,6 +68,7 @@ import megamek.common.VTOL;
 import megamek.common.WeaponType;
 import megamek.common.verifier.TestTank;
 import megamek.common.weapons.artillery.ArtilleryWeapon;
+import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.util.CriticalTableModel;
 import megameklab.com.util.EquipmentTableModel;
@@ -119,23 +120,23 @@ public class EquipmentTab extends ITab implements ActionListener {
     private String REMOVEALL_COMMAND = "REMOVEALL";
 
     public static String getTypeName(int type) {
-        switch(type) {
-        case T_WEAPON:
-            return "All Weapons";
-        case T_ENERGY:
-            return "Energy Weapons";
-        case T_BALLISTIC:
-            return "Ballistic Weapons";
-        case T_MISSILE:
-            return "Missile Weapons";
-        case T_ARTILLERY:
-            return "Artillery Weapons";
-        case T_AMMO:
-            return "Ammunition";
-        case T_OTHER:
-            return "Other Equipment";
-        default:
-            return "?";
+        switch (type) {
+            case T_WEAPON:
+                return "All Weapons";
+            case T_ENERGY:
+                return "Energy Weapons";
+            case T_BALLISTIC:
+                return "Ballistic Weapons";
+            case T_MISSILE:
+                return "Missile Weapons";
+            case T_ARTILLERY:
+                return "Artillery Weapons";
+            case T_AMMO:
+                return "Ammunition";
+            case T_OTHER:
+                return "Other Equipment";
+            default:
+                return "?";
         }
     }
 
@@ -168,8 +169,6 @@ public class EquipmentTab extends ITab implements ActionListener {
             }
         });
         equipmentScroll.setViewportView(equipmentTable);
-        equipmentScroll.setMinimumSize(new java.awt.Dimension(300, 200));
-        equipmentScroll.setPreferredSize(new java.awt.Dimension(300, 200));
 
         masterEquipmentList = new EquipmentTableModel(getTank(), eSource.getTechManager());
         masterEquipmentTable.setModel(masterEquipmentList);
@@ -240,8 +239,6 @@ public class EquipmentTab extends ITab implements ActionListener {
         });
 
         txtFilter.setText("");
-        txtFilter.setMinimumSize(new java.awt.Dimension(200, 28));
-        txtFilter.setPreferredSize(new java.awt.Dimension(200, 28));
         txtFilter.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void changedUpdate(DocumentEvent e) {
@@ -281,7 +278,15 @@ public class EquipmentTab extends ITab implements ActionListener {
         gbc = new GridBagConstraints();
 
         JPanel loadoutPanel = new JPanel(new GridBagLayout());
-        JPanel databasePanel = new JPanel(new GridBagLayout());
+        JPanel databasePanel = new JPanel(new GridBagLayout())
+        {
+            @Override
+            // Allow downsizing the database with the Splitpane for small screen sizes
+            public Dimension getMinimumSize() {
+                Dimension prefSize = super.getPreferredSize();
+                return new Dimension(prefSize.width / 2, prefSize.height);
+            }
+        };
 
         loadoutPanel.setBorder(BorderFactory.createTitledBorder("Current Loadout"));
         databasePanel.setBorder(BorderFactory.createTitledBorder("Equipment Database"));
@@ -354,9 +359,7 @@ public class EquipmentTab extends ITab implements ActionListener {
         gbc.weighty = 1.0;
         loadoutPanel.add(equipmentScroll, gbc);
 
-        JSplitPane pane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-                new JScrollPane(loadoutPanel),
-                new JScrollPane(databasePanel));
+        JSplitPane pane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, loadoutPanel, databasePanel);
         pane.setOneTouchExpandable(true);
         setLayout(new BorderLayout());
         add(pane, BorderLayout.CENTER);
@@ -378,12 +381,12 @@ public class EquipmentTab extends ITab implements ActionListener {
         List<EquipmentType> spreadAlreadyAdded = new ArrayList<>();
 
         for (Mounted mount : getTank().getMisc()) {
-
             EquipmentType etype = mount.getType();
             if (etype.hasFlag(MiscType.F_JUMP_JET)
                     || UnitUtil.isArmorOrStructure(etype)) {
                 continue;
             }
+
             if (UnitUtil.isFixedLocationSpreadEquipment(etype)
                     && !spreadAlreadyAdded.contains(etype)) {
                 equipmentList.addCrit(mount);
@@ -396,20 +399,18 @@ public class EquipmentTab extends ITab implements ActionListener {
         }
     }
 
-
     private void removeHeatSinks() {
-        int location = 0;
-        for (; location < equipmentList.getRowCount();) {
-
+        for (int location = 0; location < equipmentList.getRowCount(); ) {
             Mounted mount = (Mounted) equipmentList.getValueAt(location, CriticalTableModel.EQUIPMENT);
             EquipmentType eq = mount.getType();
             if ((eq instanceof MiscType) && (UnitUtil.isHeatSink(mount))) {
                 try {
                     equipmentList.removeCrit(location);
-                } catch (ArrayIndexOutOfBoundsException aioobe) {
+                } catch (IndexOutOfBoundsException ignored) {
                     return;
-                } catch (Exception ex) {
-                    ex.printStackTrace();
+                } catch (Exception e) {
+                    MegaMekLab.getLogger().error(e);
+                    return;
                 }
             } else {
                 location++;
@@ -646,7 +647,7 @@ public class EquipmentTab extends ITab implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             int view = masterEquipmentTable.getSelectedRow();
-            if(view < 0) {
+            if (view < 0) {
                 //selection got filtered away
                 return;
             }

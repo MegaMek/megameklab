@@ -121,7 +121,7 @@ public class DropshipStatusBar extends ITab {
         }
         heatSink.setVisible(getSmallCraft().getEntityType() == Entity.ETYPE_AERO);
 
-        tons.setText("Tonnage: " + currentTonnage + "/" + tonnage);
+        tons.setText(String.format("Tonnage: %,.1f/%,.1f (%,.1f Remaining)", currentTonnage, tonnage, tonnage - currentTonnage));
         tons.setToolTipText("Current Tonnage/Max Tonnage");
         if (currentTonnage > tonnage) {
             tons.setForeground(Color.red);

@@ -13,31 +13,14 @@
  */
 package megameklab.com.ui.util;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Rectangle;
-import java.awt.event.InputEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashSet;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.*;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.StringJoiner;
-import java.util.Vector;
 
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-import javax.swing.JTree;
-import javax.swing.ToolTipManager;
+import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
@@ -46,7 +29,6 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
-import megamek.MegaMek;
 import megamek.common.Aero;
 import megamek.common.AmmoType;
 import megamek.common.Entity;
@@ -57,7 +39,6 @@ import megamek.common.Mounted;
 import megamek.common.SmallCraft;
 import megamek.common.WeaponType;
 import megamek.common.annotations.Nullable;
-import megamek.common.logging.LogLevel;
 import megamek.common.verifier.TestAero;
 import megamek.common.verifier.TestEntity;
 import megamek.common.weapons.bayweapons.BayWeapon;
@@ -77,13 +58,8 @@ import megameklab.com.util.UnitUtil;
  * from their locations.
  * 
  * @author Neoancient
- *
  */
 public class BayWeaponCriticalTree extends JTree {
-    
-    /**
-     *
-     */
     private static final long serialVersionUID = -223615170732243552L;
     // Spheroids show only forward or only aft on the side arcs
     public static final int FORWARD = 0; // No rear-mounting allowed (nose, aft, spheroid forward side arcs
@@ -97,7 +73,11 @@ public class BayWeaponCriticalTree extends JTree {
     private final EntitySource eSource;
     private final DefaultTreeModel model;
     private RefreshListener refresh;
-    
+
+    /** Stores a unique transient ID for each Bay to allow restoring the expanded state when the loadout changes. */
+    private final Map<Mounted, Integer> bayIdMap = new HashMap<>();
+    private int bayIdCounter;
+
     public BayWeaponCriticalTree(int location, EntitySource eSource, RefreshListener refresh) {
         this(location, eSource, refresh, FORWARD);
     }
@@ -108,11 +88,24 @@ public class BayWeaponCriticalTree extends JTree {
         this.eSource = eSource;
         this.refresh = refresh;
         
-        setMinimumSize(new Dimension(110,15));
-        TreeNode root = initRoot();
-        setRootVisible(root.getChildCount() == 0);
-        model = new DefaultTreeModel(root);
+        model = new DefaultTreeModel(initRoot());
         setModel(model);
+        rebuild();
+
+        // Remove lines and icons as far as possible (depends on LaF)
+        setShowsRootHandles(false);
+        putClientProperty("JTree.lineStyle", "None");
+        renderer.setLeafIcon(null);
+        renderer.setClosedIcon(null);
+        renderer.setOpenIcon(null);
+
+        addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusLost(FocusEvent e) {
+                clearSelection();
+            }
+        });
+
         setCellRenderer(renderer);
         addMouseListener(mouseListener);
         getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
@@ -122,7 +115,7 @@ public class BayWeaponCriticalTree extends JTree {
         setTransferHandler(cth);
         ToolTipManager.sharedInstance().registerComponent(this);
     }
-    
+
     /**
      * Sets whether this arc should show only forward-mounted, rear-mounted, or both
      * @param facing Either FORWARD, AFT, or BOTH
@@ -136,9 +129,12 @@ public class BayWeaponCriticalTree extends JTree {
     }
     
     public void rebuild() {
+        List<Integer> expandedBays = getExpandedBayIds();
+        setBackground(CConfig.getBackgroundColor(CConfig.CONFIG_WEAPONS));
         TreeNode root = initRoot();
         model.setRoot(root);
         setRootVisible(root.getChildCount() == 0);
+        restoreExpandedBays(expandedBays);
     }
 
     private int slotCount(Mounted bay) {
@@ -430,41 +426,7 @@ public class BayWeaponCriticalTree extends JTree {
         refresh.refreshStatus();
         refresh.refreshSummary();
     }
-    
-    /**
-     * Adds lines to separate the entries to resemble the other build allocation views.
-     */
-    @Override
-    public void paintComponent(Graphics g) {
-        //FIXME: This is supposed to draw the background color across the width of the tree
-        for (int i = 0; i < getRowCount(); i++) {
-            Object node = getPathForRow(i).getLastPathComponent();
-            if (node instanceof EquipmentNode) {
-                g.setColor(((EquipmentNode) node).getBackgroundColor());
-                final Rectangle r = getRowBounds(i);
-                g.fillRect(0, r.y, getWidth(), r.height);
-            }
-        }
-        // draw the selection color across the width
-        for (int i: getSelectionRows()) {
-            Rectangle r = getRowBounds(i);
-            g.setColor(renderer.getBackgroundSelectionColor());
-            g.fillRect(0, r.y, getWidth(), r.height);
-        }
-        super.paintComponent(g);
-        // Draw a separating line above top level nodes
-        for (int i = 0; i < getRowCount(); i++) {
-            Object node = getPathForRow(i).getLastPathComponent();
-            if ((node == model.getRoot()) || ((EquipmentNode)node).getParent() == model.getRoot()) {
-                g.setColor(Color.black);
-            } else {
-                g.setColor(Color.lightGray);
-            }
-            final Rectangle r = getRowBounds(i);
-            g.drawLine(0, r.y, getWidth(), r.y);
-        }
-    }
-    
+
     /**
      * Node class used directly for individual mounts and serves as the base class for weapon
      * and ammo bays. Provides display name and color to the renderer.
@@ -566,6 +528,7 @@ public class BayWeaponCriticalTree extends JTree {
                 return CConfig.getBackgroundColor(CConfig.CONFIG_EQUIPMENT);
             }
         }
+
         public Color getForegroundColor() {
             if (getMounted().getType() instanceof WeaponType) {
                 return CConfig.getForegroundColor(CConfig.CONFIG_WEAPONS);
@@ -590,7 +553,7 @@ public class BayWeaponCriticalTree extends JTree {
             }
             return name;
         }
-        
+
         public String getTooltip() {
             StringBuilder sb = new StringBuilder("<html>");
             sb.append(toString());
@@ -615,6 +578,7 @@ public class BayWeaponCriticalTree extends JTree {
 
         BayNode(Mounted object) {
             super(object);
+            bayIdMap.computeIfAbsent(object, m -> bayIdCounter++);
         }
         
         public boolean isCapital() {
@@ -759,46 +723,57 @@ public class BayWeaponCriticalTree extends JTree {
     /**
      * Sets node name and text/background colors.
      */
-    private DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer() {
+    private final DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer() {
 
-        /**
-         * 
-         */
-        private static final long serialVersionUID = 718540539581341886L;
-        
-        @Override
-        public void setTextNonSelectionColor(Color c) {
-            // we want the renderer to set the color based on component type
-        }
+        private EquipmentNode node;
 
-
-        @Override
-        public void setBackgroundNonSelectionColor(Color c) {
-            // we want the renderer to set the color based on component type
-        }
-        
         @Override
         public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded,
                 boolean leaf, int row, boolean hasFocus) {
-            JLabel label = (JLabel) super.getTreeCellRendererComponent(tree, value, sel, expanded,
-                    leaf, row, hasFocus);
-            if (!(value instanceof EquipmentNode)) {
-                label.setText("-Empty-");
-                return label;
-            }
-            EquipmentNode node = (EquipmentNode)value;
-            label.setToolTipText(node.getTooltip());
+            super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
+            setOpaque(true);
+            setBorder(null);
+            if (value instanceof EquipmentNode) {
+                node = (EquipmentNode) value;
+                setToolTipText(node.getTooltip());
+                setHorizontalAlignment(JLabel.LEFT);
+                setForeground(node.getForegroundColor());
+                if (sel) {
+                    setBackground(new Color(UIManager.getColor("Tree.selectionBackground").getRGB()));
+                } else {
+                    setBackground(node.getBackgroundColor());
+                }
 
-            setPreferredSize(new Dimension(180, 15));
-            setMaximumSize(new Dimension(180, 15));
-            setMinimumSize(new Dimension(180, 15));
-            
-            label.setBackground(node.getBackgroundColor());
-            label.setForeground(node.getForegroundColor());
-            
-            return label;
+                if (node.isLeaf()) {
+                    if (node.getParent() != null && node != node.getParent().getChildAt(node.getParent().getChildCount() - 1)) {
+                        Border dashed = BorderFactory.createDashedBorder(Color.BLACK, 5, 5);
+                        Border empty = BorderFactory.createEmptyBorder(-1, -1, 0, -1);
+                        Border compound = new CompoundBorder(empty, dashed);
+                        setBorder(compound);
+                    }
+                } else  {
+                    setText(" " + getText());
+                    if (row != 0) {
+                        setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.BLACK));
+                    }
+                }
+            } else {
+                setText("-Empty-");
+                setToolTipText(null);
+                setHorizontalAlignment(JLabel.CENTER);
+                setForeground(CConfig.getForegroundColor(CConfig.CONFIG_EMPTY));
+                setBackground(CConfig.getBackgroundColor(CConfig.CONFIG_EMPTY));
+            }
+            return this;
         }
-        
+
+        @Override
+        public Dimension getPreferredSize() {
+            Dimension pref = super.getPreferredSize();
+            // Make the Bays wider to prevent the tree from changing size upon opening a bay
+            // Keep a minimum height to avoid empty sections from having no height
+            return new Dimension((((node != null) && node.isLeaf()) ? 250 : 270), Math.max(25, pref.height + 5));
+        }
     };
 
     /**
@@ -1029,8 +1004,10 @@ public class BayWeaponCriticalTree extends JTree {
                     final WeaponType wtype = (WeaponType)weapon.getType();
                     if ((weapon.getLinkedBy() == null)
                             && ((wtype.getAmmoType() == AmmoType.T_LRM)
-                                    || (wtype.getAmmoType() == AmmoType.T_SRM)
-                                    || (wtype.getAmmoType() == AmmoType.T_MML)
+                                || (wtype.getAmmoType() == AmmoType.T_SRM)
+                                || (wtype.getAmmoType() == AmmoType.T_MML)
+                                || (wtype.getAmmoType() == AmmoType.T_LRM_IMP)
+                                || (wtype.getAmmoType() == AmmoType.T_SRM_IMP)
                                 || (wtype.getAmmoType() == AmmoType.T_NLRM))) {
                         moveToArc(eq);
                         eq.setLinked(weapon);
@@ -1089,9 +1066,8 @@ public class BayWeaponCriticalTree extends JTree {
                     bay.addAmmoToBay(eSource.getEntity().getEquipmentNum(eq));
                 }
             } else {
-                MegaMekLab.getLogger().log(BayWeaponCriticalTree.class, "addToBay(Mounted,Mounted)",    //$NON-NLS-1$
-                        LogLevel.DEBUG, bay.getName() + "[" + eSource.getEntity().getEquipmentNum(bay)  //$NON-NLS-1$
-                        + "] not found in " + getLocationName());                                       //$NON-NLS-1$
+                MegaMekLab.getLogger().debug(bay.getName() + "[" + eSource.getEntity().getEquipmentNum(bay)
+                        + "] not found in " + getLocationName());
             }
         }
         refresh.refreshEquipment();
@@ -1279,7 +1255,7 @@ public class BayWeaponCriticalTree extends JTree {
             eSource.getEntity().addEquipment(eq, location, false);
         } catch (LocationFullException e) {
             // We shouldn't be hitting any limits
-            e.printStackTrace();
+            MegaMekLab.getLogger().error(e);
         }
         UnitUtil.changeMountStatus(eSource.getEntity(), eq, location,
                 Entity.LOC_NONE, (facing == AFT) || ((facing == BOTH) && eq.isRearMounted()));
@@ -1343,8 +1319,10 @@ public class BayWeaponCriticalTree extends JTree {
                 final WeaponType wtype = (WeaponType) weapon.getType();
                 if ((weapon.getLinkedBy() == null)
                     && ((wtype.getAmmoType() == AmmoType.T_LRM)
-                            || (wtype.getAmmoType() == AmmoType.T_SRM)
-                            || (wtype.getAmmoType() == AmmoType.T_MML)
+                        || (wtype.getAmmoType() == AmmoType.T_SRM)
+                        || (wtype.getAmmoType() == AmmoType.T_MML)
+                        || (wtype.getAmmoType() == AmmoType.T_LRM_IMP)
+                        || (wtype.getAmmoType() == AmmoType.T_SRM_IMP)
                         || (wtype.getAmmoType() == AmmoType.T_NLRM))) {
                     return true;
                 }
@@ -1501,5 +1479,37 @@ public class BayWeaponCriticalTree extends JTree {
         refresh.refreshPreview();
         refresh.refreshStatus();
         refresh.refreshSummary();
+    }
+
+    private void restoreExpandedBays(List<Integer> expandedBayIds) {
+        TreeNode root = (TreeNode) model.getRoot();
+        if ((root == null) || (expandedBayIds == null)) {
+            return;
+        }
+        for (int n = 0; n < model.getChildCount(root); n++) {
+            Object node = model.getChild(root, n);
+            if (node instanceof BayNode) {
+                if (expandedBayIds.contains(bayIdMap.get(((BayNode) node).getMounted()))) {
+                    Object[] pathObjs = new Object[2];
+                    pathObjs[0] = root;
+                    pathObjs[1] = node;
+                    expandPath(new TreePath(pathObjs));
+                }
+            }
+        }
+    }
+
+    private List<Integer> getExpandedBayIds() {
+        List<Integer> result = new ArrayList<>();
+        for (int i = 0; i < getRowCount(); i++) {
+            TreePath currPath = getPathForRow(i);
+            if (isExpanded(currPath)) {
+                Object entry = currPath.getLastPathComponent();
+                if (entry instanceof BayNode) {
+                    result.add(bayIdMap.get(((BayNode) entry).getMounted()));
+                }
+            }
+        }
+        return result;
     }
 }

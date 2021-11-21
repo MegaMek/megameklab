@@ -51,6 +51,7 @@ import megamek.common.annotations.Nullable;
 import megamek.common.loaders.BLKFile;
 import megamek.common.templates.TROView;
 import megamek.common.util.EncodeControl;
+import megameklab.com.MMLConstants;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.dialog.LoadingDialog;
@@ -300,7 +301,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             unitMenu.add(item);
         }
 
-        if (!(parentFrame.getEntity() instanceof Infantry) || (parentFrame.getEntity() instanceof BattleArmor)) {
+        if (!parentFrame.getEntity().isConventionalInfantry()) {
             item = new JMenuItem();
             item.setText(resourceMap.getString("menu.file.unitType.infantry"));
             item.setMnemonic(KeyEvent.VK_I);
@@ -532,14 +533,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(parentFrame);
         unitLoadingDialog.setVisible(true);
         MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(parentFrame, unitLoadingDialog);
-
-        Entity tempEntity = viewer.getChosenEntity();
-        if(null == tempEntity) {
-            return;
-        }
-        tempEntity.calculateBattleValue(true, true);
-        UnitUtil.showBVCalculations(tempEntity.getBVText(), parentFrame);
-
+        UnitUtil.showBVCalculations(parentFrame, viewer.getChosenEntity());
     }
 
     private void jMenuGetUnitValidationFromCache_actionPerformed() {
@@ -572,13 +566,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(parentFrame);
         unitLoadingDialog.setVisible(true);
         MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(parentFrame, unitLoadingDialog);
-
-        Entity tempEntity = viewer.getChosenEntity();
-        if(null == tempEntity) {
-            return;
-        }
-        UnitUtil.showUnitCostBreakDown(tempEntity, parentFrame);
-
+        UnitUtil.showUnitCostBreakDown(parentFrame, viewer.getChosenEntity());
     }
     
     private void jMenuGetUnitWeightBreakdownFromCache_actionPerformed() {
@@ -587,11 +575,10 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(parentFrame, unitLoadingDialog);
 
         Entity tempEntity = viewer.getChosenEntity();
-        if(null == tempEntity) {
+        if (null == tempEntity) {
             return;
         }
         UnitUtil.showUnitWeightBreakDown(tempEntity, parentFrame);
-
     }
 
     private void jMenuGetUnitBVFromFile_actionPerformed() {
@@ -601,9 +588,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         }
 
         try {
-            Entity tempEntity = new MechFileParser(unitFile).getEntity();
-            tempEntity.calculateBattleValue(true, true);
-            UnitUtil.showBVCalculations(tempEntity.getBVText(), parentFrame);
+            UnitUtil.showBVCalculations(parentFrame, new MechFileParser(unitFile).getEntity());
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(parentFrame,
                     String.format(resourceMap.getString("message.invalidUnit.format"),
@@ -628,7 +613,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
 
     private @Nullable
     File loadUnitFile() {
-        String filePathName = System.getProperty("user.dir") + "/data/mechfiles/";
+        String filePathName = System.getProperty("user.dir") + "/data/mechfiles/"; // TODO : remove inline file path
         FileDialog fDialog = new FileDialog(parentFrame,
                 resourceMap.getString("dialog.chooseUnit.title"),
                 FileDialog.LOAD);
@@ -651,8 +636,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         }
 
         try {
-            Entity tempEntity = new MechFileParser(unitFile).getEntity();
-            UnitUtil.showUnitCostBreakDown(tempEntity, parentFrame);
+            UnitUtil.showUnitCostBreakDown(parentFrame, new MechFileParser(unitFile).getEntity());
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(parentFrame,
                     String.format(resourceMap.getString("message.invalidUnit.format"),
@@ -731,19 +715,16 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
                 BLKFile.encode(unitFile.getAbsolutePath(), tempEntity);
             }
         } catch (Exception ex) {
-            MegaMekLab.getLogger().error(getClass(), "jMenuInsertImageFile_actionPerformed()", ex);
+            MegaMekLab.getLogger().error(ex);
         }
     }
 
-    // Show BV Calculations
-
     private void jMenuBVCalculations_actionPerformed() {
-        parentFrame.getEntity().calculateBattleValue(true, true);
-        UnitUtil.showBVCalculations(parentFrame.getEntity().getBVText(), parentFrame);
+        UnitUtil.showBVCalculations(parentFrame, parentFrame.getEntity());
     }
 
     private void jMenuUnitCostBreakdown_actionPerformed() {
-        UnitUtil.showUnitCostBreakDown(parentFrame.getEntity(), parentFrame);
+        UnitUtil.showUnitCostBreakDown(parentFrame, parentFrame.getEntity());
     }
     
     private void jMenuUnitWeightBreakdown_actionPerformed() {
@@ -771,7 +752,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
 
         // set the text up.
         JLabel version = new JLabel(String.format(resourceMap.getString("menu.help.about.version.format"),
-                MegaMekLab.VERSION));
+                MMLConstants.VERSION));
         JLabel license1 = new JLabel(resourceMap.getString("menu.help.about.license.1"));
         JLabel license2 = new JLabel(resourceMap.getString("menu.help.about.license.2"));
         JLabel license3 = new JLabel(resourceMap.getString("menu.help.about.info.1"));
@@ -935,9 +916,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         } else if (parentFrame.getEntity() instanceof Protomech) {
             parentFrame.createNewUnit(Entity.ETYPE_PROTOMECH);
         } else {
-            MegaMekLab.getLogger().warning(getClass(),
-            "jMenuResetEntity_actionPerformed(ActionEvent)",
-                "util.MenuBarCreator: Received unknown entityType!");
+            MegaMekLab.getLogger().warning("Received unknown entityType!");
         }
         setVisible(true);
         reload();
@@ -1009,7 +988,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             }
             CConfig.updateSaveFiles(filePathName);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            MegaMekLab.getLogger().error(ex);
         }
 
         JOptionPane.showMessageDialog(parentFrame,
@@ -1058,7 +1037,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             }
             CConfig.updateSaveFiles(filePathName);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            MegaMekLab.getLogger().error(ex);
         }
 
         JOptionPane.showMessageDialog(parentFrame,
@@ -1106,7 +1085,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             p.close();
             out.close();
         } catch (Exception ex) {
-            MegaMekLab.getLogger().error(getClass(), "exportSummary(boolean)", ex);
+            MegaMekLab.getLogger().error(ex);
         }
     }
 

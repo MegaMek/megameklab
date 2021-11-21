@@ -22,6 +22,7 @@ import megamek.common.Entity;
 import megamek.common.MechFileParser;
 import megamek.common.Mounted;
 import megamek.common.loaders.EntityLoadingException;
+import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.tabs.EquipmentTab;
 import megameklab.com.ui.view.UnallocatedView;
@@ -111,7 +112,7 @@ public class SVBuildTab extends ITab implements ActionListener {
                     UnitUtil.changeMountStatus(getTank(), mount, location, Entity.LOC_NONE, false);
                     break;
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    MegaMekLab.getLogger().error(ex);
                 }
             }
         }
@@ -134,8 +135,7 @@ public class SVBuildTab extends ITab implements ActionListener {
         } catch (EntityLoadingException ele) {
             // do nothing.
         } catch (Exception ex) {
-
-            ex.printStackTrace();
+            MegaMekLab.getLogger().error(ex);
         }
 
         refresh.refreshAll();

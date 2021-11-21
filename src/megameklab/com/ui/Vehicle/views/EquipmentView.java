@@ -37,6 +37,7 @@ import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
+import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.util.CriticalTableModel;
 import megameklab.com.util.EquipmentListCellKeySelectionManager;
@@ -176,7 +177,7 @@ public class EquipmentView extends IView implements ActionListener {
                 } catch (ArrayIndexOutOfBoundsException aioobe) {
                     return;
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    MegaMekLab.getLogger().error(ex);
                 }
             } else {
                 location++;
@@ -233,7 +234,7 @@ public class EquipmentView extends IView implements ActionListener {
                 try {
                     mount = getTank().addEquipment(equip, Entity.LOC_NONE, false);
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    MegaMekLab.getLogger().error(ex);
                 }
             }
             equipmentList.addCrit(mount);

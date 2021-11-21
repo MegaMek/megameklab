@@ -175,8 +175,7 @@ public class PrintMech extends PrintEntity {
         for (Mounted m : mech.getMisc()) {
             if (((MiscType) m.getType()).isShield()) {
                 String loc = mech.getLocationAbbr(m.getLocation());
-                Element element;
-                element = getSVGDocument().getElementById(ARMOR_DIAGRAM + loc);
+                Element element = getSVGDocument().getElementById(ARMOR_DIAGRAM + loc);
                 if (null != element) {
                     hideElement(element, true);
                 }
@@ -186,12 +185,12 @@ public class PrintMech extends PrintEntity {
                 }
                 element = getSVGDocument().getElementById(SHIELD_DC + loc);
                 if (null != element) {
-                    ArmorPipLayout.addPips(this, element, m.getBaseDamageCapacity(),
+                    ArmorPipLayout.addPips(this, element, m.getCurrentDamageCapacity(mech, m.getLocation()),
                             PipType.CIRCLE);
                 }
                 element = getSVGDocument().getElementById(SHIELD_DA + loc);
                 if (null != element) {
-                    ArmorPipLayout.addPips(this, element, m.getBaseDamageAbsorptionRate(),
+                    ArmorPipLayout.addPips(this, element, m.getDamageAbsorption(mech, m.getLocation()),
                             PipType.DIAMOND);
                 }
             }
@@ -211,6 +210,9 @@ public class PrintMech extends PrintEntity {
 
         setTextField(HS_TYPE, formatHeatSinkType());
         setTextField(HS_COUNT, formatHeatSinkCount());
+        if (mech.hasWorkingMisc(MiscType.F_PARTIAL_WING)) {
+            hideElement(PARTIAL_WING_BONUS, false);
+        }
         
         if (mech instanceof LandAirMech) {
             LandAirMech lam = (LandAirMech) mech;
@@ -564,7 +566,7 @@ public class PrintMech extends PrintEntity {
 
     @Override
     protected String formatWalk() {
-        if (mech.hasTSM()) {
+        if (mech.hasTSM(false)) {
             return formatMovement(mech.getWalkMP(), mech.getWalkMP() + 1);
         } else {
             return super.formatWalk();
@@ -576,7 +578,7 @@ public class PrintMech extends PrintEntity {
         double baseRun = mech.getWalkMP();
         double fullRun = baseRun;
         baseRun *= 1.5;
-        if (mech.hasTSM()) {
+        if (mech.hasTSM(false)) {
             fullRun++;
         }
         if ((mech.getMASC() != null) && (mech.getSuperCharger() != null)) {
@@ -630,7 +632,7 @@ public class PrintMech extends PrintEntity {
     
     private String formatHeatSinkCount() {
         int hsCount = mech.heatSinks();
-        int capacity = mech.getHeatCapacity(false, false);
+        int capacity = mech.getHeatCapacity(true, false);
         if (hsCount != capacity) {
             return String.format("%d (%d)", hsCount, capacity);
         } else {

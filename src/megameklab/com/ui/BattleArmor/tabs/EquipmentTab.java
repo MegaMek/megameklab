@@ -65,6 +65,7 @@ import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.WeaponType;
 import megamek.common.weapons.artillery.ArtilleryWeapon;
+import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.util.CriticalTableModel;
 import megameklab.com.util.EquipmentTableModel;
@@ -239,8 +240,6 @@ public class EquipmentTab extends ITab implements ActionListener {
         });
 
         txtFilter.setText("");
-        txtFilter.setMinimumSize(new java.awt.Dimension(200, 28));
-        txtFilter.setPreferredSize(new java.awt.Dimension(200, 28));
         txtFilter.getDocument().addDocumentListener(new DocumentListener() {
             public void changedUpdate(DocumentEvent e) {
                 filterEquipment();
@@ -277,7 +276,14 @@ public class EquipmentTab extends ITab implements ActionListener {
         gbc = new GridBagConstraints();
 
         JPanel loadoutPanel = new JPanel(new GridBagLayout());
-        JPanel databasePanel = new JPanel(new GridBagLayout());
+        JPanel databasePanel = new JPanel(new GridBagLayout()) {
+            @Override
+            // Allow downsizing the database with the Splitpane for small screen sizes
+            public Dimension getMinimumSize() {
+                Dimension prefSize = super.getPreferredSize();
+                return new Dimension(prefSize.width / 2, prefSize.height);
+            }
+        };
 
         loadoutPanel.setBorder(BorderFactory.createTitledBorder("Current Loadout"));
         databasePanel.setBorder(BorderFactory.createTitledBorder("Equipment Database"));
@@ -350,9 +356,7 @@ public class EquipmentTab extends ITab implements ActionListener {
         gbc.weighty = 1.0;
         loadoutPanel.add(equipmentScroll, gbc);
 
-        JSplitPane pane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-                new JScrollPane(loadoutPanel),
-                new JScrollPane(databasePanel));
+        JSplitPane pane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, loadoutPanel, databasePanel);
         pane.setOneTouchExpandable(true);
         setLayout(new BorderLayout());
         add(pane, BorderLayout.CENTER);
@@ -396,36 +400,31 @@ public class EquipmentTab extends ITab implements ActionListener {
                     || UnitUtil.isArmorOrStructure(etype)) {
                 continue;
             }
-            //if (UnitUtil.isUnitEquipment(mount.getType(), unit) || UnitUtil.isUn) {
-                if (UnitUtil.isFixedLocationSpreadEquipment(etype)
-                        && !spreadAlreadyAdded.contains(etype)) {
-                    equipmentList.addCrit(mount);
-                    // keep track of spreadable equipment here, so it doesn't
-                    // show up multiple times in the table
-                    spreadAlreadyAdded.add(etype);
-                } else {
-                    equipmentList.addCrit(mount);
-                }
-            //}
+
+            if (UnitUtil.isFixedLocationSpreadEquipment(etype)
+                    && !spreadAlreadyAdded.contains(etype)) {
+                equipmentList.addCrit(mount);
+                // keep track of spreadable equipment here, so it doesn't
+                // show up multiple times in the table
+                spreadAlreadyAdded.add(etype);
+            } else {
+                equipmentList.addCrit(mount);
+            }
         }
-
-
     }
 
-
     private void removeHeatSinks() {
-        int location = 0;
-        for (; location < equipmentList.getRowCount();) {
-
+        for (int location = 0; location < equipmentList.getRowCount(); ) {
             Mounted mount = (Mounted) equipmentList.getValueAt(location, CriticalTableModel.EQUIPMENT);
             EquipmentType eq = mount.getType();
             if ((eq instanceof MiscType) && (UnitUtil.isHeatSink(mount))) {
                 try {
                     equipmentList.removeCrit(location);
-                } catch (ArrayIndexOutOfBoundsException aioobe) {
+                } catch (IndexOutOfBoundsException ignored) {
                     return;
-                } catch (Exception ex) {
-                    ex.printStackTrace();
+                } catch (Exception e) {
+                    MegaMekLab.getLogger().error(e);
+                    return;
                 }
             } else {
                 location++;

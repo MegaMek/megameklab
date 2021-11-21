@@ -15,7 +15,6 @@ package megameklab.com.printing;
 
 import megamek.common.EquipmentType;
 import megamek.common.annotations.Nullable;
-import megamek.common.logging.LogLevel;
 import megameklab.com.MegaMekLab;
 import megameklab.com.printing.reference.ReferenceTable;
 import megameklab.com.util.CConfig;
@@ -64,7 +63,6 @@ import java.util.function.Consumer;
  * Base class for rendering record sheets. This is mostly a collection of utility methods.
  * 
  * @author Neoancient
- *
  */
 public abstract class PrintRecordSheet implements Printable, IdConstants {
 
@@ -228,8 +226,6 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      * @return         The document object
      */
     static Document loadSVG(String dirName, String filename) {
-        final String METHOD_NAME = "loadSVG(String, String)";
-
         File f = new File(dirName, filename);
         Document svgDocument = null;
         try {
@@ -239,12 +235,10 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             SAXDocumentFactory df = new SAXDocumentFactory(impl, parser);
             svgDocument = df.createDocument(f.toURI().toASCIIString(), is);
         } catch (Exception e) {
-            MegaMekLab.getLogger().error(PrintRecordSheet.class, METHOD_NAME, e);
+            MegaMekLab.getLogger().error(e);
         }
         if (null == svgDocument) {
-            MegaMekLab.getLogger().error(PrintRecordSheet.class, METHOD_NAME,
-                    "Failed to open SVG file! Path: data/images/recordsheets/"
-                            + filename);
+            MegaMekLab.getLogger().error("Failed to open SVG file! Path: data/images/recordsheets/" + filename);
         }
         return svgDocument;
     }
@@ -317,8 +311,6 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
 
     @Override
     public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) {
-        final String METHOD_NAME = "print(Graphics,PageFormat,int)";
-        
         Graphics2D g2d = (Graphics2D) graphics;
         if (null != g2d) {
             createDocument(pageIndex, pageFormat, true);
@@ -331,7 +323,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
                 javax.xml.transform.Source input = new javax.xml.transform.dom.DOMSource(svgDocument);
                 transformer.transform(input, output);
             } catch (Exception ex) {
-                ex.printStackTrace();
+                MegaMekLab.getLogger.error(ex);
             }
             */
         }
@@ -368,8 +360,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             // If an image can't be rendered we'll log it and return an empty document in its place
             // rather than throwing an exception.
             public SVGDocument getBrokenLinkDocument(Element e, String url, String message) {
-                MegaMekLab.getLogger().log(PrintRecordSheet.class, "build()",
-                        LogLevel.WARNING, "Cannot render image: " + message);
+                MegaMekLab.getLogger().warning("Cannot render image: " + message);
                 DOMImplementation impl = SVGDOMImplementation.getDOMImplementation();
                 SVGDocument doc = (SVGDocument) impl.createDocument(svgNS, SVGConstants.SVG_SVG_TAG, null);
                 Element text = doc.createElementNS(svgNS, SVGConstants.SVG_TEXT_TAG);
@@ -468,9 +459,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
                                     SVGConstants.SVG_SPACING_AND_GLYPHS_VALUE);
                         }
                     } catch (NumberFormatException ex) {
-                        MegaMekLab.getLogger().warning(getClass(),
-                                "setTextField(String, String, boolean)",
-                                "Could not parse fieldWidth: " + fieldWidth);
+                        MegaMekLab.getLogger().warning("Could not parse fieldWidth: " + fieldWidth);
                     }
                 }
             }
@@ -818,7 +807,6 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      * @param center     Whether to center the image vertically and horizontally.
      */
     public void embedImage(File imageFile, Element canvas, Rectangle2D bbox, boolean center) {
-        final String METHOD_NAME = "embedImage(File, Element, Rectangle2D, boolean)";
         if (null == imageFile) {
             return;
         }
@@ -851,11 +839,9 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
                     "data:" + mimeType + ";base64," + Base64.getEncoder().encodeToString(bytes.toByteArray()));
             canvas.appendChild(img);
         } catch (FileNotFoundException e) {
-            MegaMekLab.getLogger().log(PrintRecordSheet.class, METHOD_NAME, LogLevel.ERROR,
-                    "Fluff image file not found: " + imageFile.getPath());
+            MegaMekLab.getLogger().error("Fluff image file not found: " + imageFile.getPath());
         } catch (IOException e) {
-            MegaMekLab.getLogger().log(PrintRecordSheet.class, METHOD_NAME, LogLevel.ERROR,
-                    "Error reading fluff image file: " + imageFile.getPath());
+            MegaMekLab.getLogger().error("Error reading fluff image file: " + imageFile.getPath());
         }
     }
 

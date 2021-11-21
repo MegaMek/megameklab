@@ -16,11 +16,20 @@
 
 package megameklab.com;
 
-import java.awt.Font;
-import java.awt.FontFormatException;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
-import java.awt.Rectangle;
+import megamek.MegaMek;
+import megamek.common.Configuration;
+import megamek.common.EquipmentType;
+import megamek.common.MechSummaryCache;
+import megamek.common.QuirksHandler;
+import megamek.common.logging.DefaultMmLogger;
+import megamek.common.logging.MMLogger;
+import megamek.common.preference.PreferenceManager;
+import megameklab.com.ui.StartupGUI;
+import megameklab.com.util.CConfig;
+import megameklab.com.util.UnitUtil;
+
+import javax.swing.*;
+import java.awt.*;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -33,24 +42,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import javax.swing.UIManager;
-
-import megamek.MegaMek;
-import megamek.common.Configuration;
-import megamek.common.EquipmentType;
-import megamek.common.MechSummaryCache;
-import megamek.common.QuirksHandler;
-import megamek.common.logging.DefaultMmLogger;
-import megamek.common.logging.LogLevel;
-import megamek.common.logging.MMLogger;
-import megamek.common.preference.PreferenceManager;
-import megameklab.com.ui.StartupGUI;
-import megameklab.com.util.CConfig;
-import megameklab.com.util.UnitUtil;
-
 public class MegaMekLab {
-    public static final String VERSION = "0.47.17-SNAPSHOT";
-
     private static MMLogger logger = null;
 
     public static void main(String[] args) {
@@ -69,7 +61,7 @@ public class MegaMekLab {
 
     private static void redirectOutput() {
         try {
-            System.out.println("Redirecting output to megameklablog.txt"); //$NON-NLS-1$
+            System.out.println("Redirecting output to megameklablog.txt");
             File logDir = new File("logs");
             if (!logDir.exists()) {
                 logDir.mkdir();
@@ -84,8 +76,7 @@ public class MegaMekLab {
             System.setOut(ps);
             System.setErr(ps);
         } catch (Exception e) {
-            System.err.println("Unable to redirect output to megameklablog.txt"); //$NON-NLS-1$
-            e.printStackTrace();
+            getLogger().error("Unable to redirect output to megameklablog.txt", e);
         }
     }
 
@@ -97,7 +88,6 @@ public class MegaMekLab {
      * @param list The list to add fonts to as they are created
      */
     private static void collectFontsFromDir(File dir, List<Font> list) {
-        final String METHOD_NAME = "collectFontsFromDir(File, List<Font>)"; //$NON-NLS-1$
         File[] files = dir.listFiles();
         if (null != files) {
             for (File f : files) {
@@ -107,9 +97,7 @@ public class MegaMekLab {
                     try {
                         list.add(Font.createFont(Font.TRUETYPE_FONT, f));
                     } catch (IOException | FontFormatException ex) {
-                        getLogger().warning(MegaMekLab.class, METHOD_NAME,
-                                "Error creating font from " + f);
-                        getLogger().error(MegaMekLab.class, METHOD_NAME, ex);
+                        getLogger().error("Error creating font from " + f, ex);
                     }
                 }
             }
@@ -128,13 +116,12 @@ public class MegaMekLab {
      * JVM and version of MegaMekLab.
      */
     private static void showInfo() {
-        final String METHOD_NAME = "showInfo";
         final long TIMESTAMP = new File(PreferenceManager
                 .getClientPreferences().getLogDirectory()
                 + File.separator
                 + "timestamp").lastModified();
         // echo some useful stuff
-        String msg = "Starting MegaMekLab v" + VERSION + " ..."; //$NON-NLS-1$ //$NON-NLS-2$
+        String msg = "Starting MegaMekLab v" + MMLConstants.VERSION + " ..."; //$NON-NLS-1$ //$NON-NLS-2$
         if (TIMESTAMP > 0) {
             msg += "\n\tCompiled on " + new Date(TIMESTAMP).toString(); //$NON-NLS-1$
         }
@@ -150,7 +137,7 @@ public class MegaMekLab {
                + ")"; //$NON-NLS-1$
         long maxMemory = Runtime.getRuntime().maxMemory() / 1024;
         msg += "\n\tTotal memory available to MegaMek: " + NumberFormat.getInstance().format(maxMemory) + " kB"; //$NON-NLS-1$ //$NON-NLS-2$
-        getLogger().log(MegaMekLab.class, METHOD_NAME, LogLevel.INFO, msg);
+        getLogger().info(msg);
     }
     
     private static void startup() {
@@ -161,9 +148,9 @@ public class MegaMekLab {
         try {
             QuirksHandler.initQuirksList();
         } catch (IOException e) {
-            getLogger().warning(MegaMekLab.class, "startup()", "Could not load quirks");
+            getLogger().warning("Could not load quirks");
         }
-        new CConfig();
+        CConfig.load();
         UnitUtil.loadFonts();
 
         // Add additional themes
@@ -183,7 +170,7 @@ public class MegaMekLab {
             String plaf = CConfig.getParam(CConfig.CONFIG_PLAF, UIManager.getSystemLookAndFeelClassName());
             UIManager.setLookAndFeel(plaf);
         } catch (Exception e) {
-            MegaMekLab.getLogger().error(MegaMekLab.class, "setLookAndFeel()", e);
+            getLogger().error(e);
        }
     }
     

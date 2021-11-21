@@ -933,7 +933,7 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
                   return true;
                }
             } catch (Exception e) {
-               MegaMekLab.getLogger().error(getClass(), "importData(TransferSupport)", e);
+               MegaMekLab.getLogger().error(e);
             }
             return false;
         }

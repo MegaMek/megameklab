@@ -125,7 +125,7 @@ public class StatusBar extends ITab {
 
         final int walk = getBattleArmor().getOriginalWalkMP();
         final int jump = getBattleArmor().getOriginalJumpMP();
-        final double maxKilos = getBattleArmor().getTrooperWeight();
+        final double maxKilos = getBattleArmor().getTrooperWeight() * 1000;
         double currentKilos;
         final int bv = getBattleArmor().calculateBattleValue();
         final long currentCost = Math.round(getBattleArmor().getCost(false));
@@ -134,9 +134,9 @@ public class StatusBar extends ITab {
                 null);
         currentKilos = testBA.calculateWeight(BattleArmor.LOC_SQUAD);
         currentKilos += UnitUtil.getUnallocatedAmmoTonnage(getBattleArmor());
+        currentKilos *= 1000;
 
-        tons.setText("Suit Weight: " + String.format("%1$.3f",currentKilos) + 
-                "/" + maxKilos);
+        tons.setText(String.format("Suit Weight: %,.0f/%,.0f (%,.0f Remaining)", currentKilos, maxKilos, maxKilos - currentKilos));
         tons.setToolTipText("This represents the weight of all squad-level " +
                 "equipment, it does not count individual equipment");
         if (currentKilos > maxKilos) {

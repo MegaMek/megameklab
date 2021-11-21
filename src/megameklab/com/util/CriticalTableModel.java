@@ -39,8 +39,7 @@ public class CriticalTableModel extends AbstractTableModel {
 
     private static final long serialVersionUID = 7615555055651822051L;
 
-    private Mounted[] sortedEquipment = {};
-    public List<Mounted> crits = new ArrayList<>();
+    private final List<Mounted> crits = new ArrayList<>();
     public Entity unit;
 
     public final static int NAME = 0;
@@ -91,11 +90,6 @@ public class CriticalTableModel extends AbstractTableModel {
     }
 
     public void refreshModel() {
-        // do a resort
-        sortedEquipment = new Mounted[] {};
-        if (crits.size() > 0) {
-            sortedEquipment = crits.toArray(sortedEquipment);
-        }
         // Support vehicle may switch between kg and ton standards. Other units will be constant
         if (kgStandard != (unit.getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT)) {
             kgStandard = !kgStandard;
@@ -122,7 +116,7 @@ public class CriticalTableModel extends AbstractTableModel {
 
     @Override
     public int getRowCount() {
-        return sortedEquipment.length;
+        return crits.size();
     }
 
     @Override
@@ -139,9 +133,9 @@ public class CriticalTableModel extends AbstractTableModel {
     @Override
     public boolean isCellEditable(int row, int col) {
         if (col == SIZE) {
-            return (row >= 0) && (row < sortedEquipment.length)
-                    && (sortedEquipment[row].getType().isVariableSize()
-                    || (sortedEquipment[row].getType() instanceof InfantryWeapon));
+            return (row >= 0) && (row < crits.size())
+                    && (crits.get(row).getType().isVariableSize()
+                    || (crits.get(row).getType() instanceof InfantryWeapon));
         } else {
             return false;
         }
@@ -152,10 +146,10 @@ public class CriticalTableModel extends AbstractTableModel {
         if (row < 0) {
             return "";
         }
-        if (row >= sortedEquipment.length) {
+        if (row >= crits.size()) {
             return "";
         }
-        Mounted crit = sortedEquipment[row];
+        Mounted crit = crits.get(row);
         switch (col) {
             case NAME:
                 return UnitUtil.getCritName(unit, crit.getType());
@@ -210,7 +204,7 @@ public class CriticalTableModel extends AbstractTableModel {
                     return BattleArmor.getBaMountLocAbbr(crit
                             .getBaMountLoc());
                 } else {
-                    return unit.getLocationAbbr(crit.getLocation());
+                    return unit.joinLocationAbbr(crit.allLocations(), 2);
                 }
             case SIZE:
                 if (crit.getType().isVariableSize()) {
@@ -227,7 +221,7 @@ public class CriticalTableModel extends AbstractTableModel {
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
         if ((rowIndex >= 0) && (rowIndex < getRowCount()) && (columnIndex == SIZE)) {
-            Mounted crit = sortedEquipment[rowIndex];
+            Mounted crit = crits.get(rowIndex);
             if (crit.getType().isVariableSize()) {
                 double newSize = Double.parseDouble(aValue.toString());
                 double step = crit.getType().variableStepSize();
@@ -279,7 +273,7 @@ public class CriticalTableModel extends AbstractTableModel {
                 c.setText(table.getModel().getValueAt(row, column).toString());
             }
 
-            Mounted mount = sortedEquipment[row];
+            Mounted mount = crits.get(row);
             if ((unit instanceof BattleArmor) && column == NAME){
                 String modifier = "";
                 if (mount.getType() instanceof AmmoType){

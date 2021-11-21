@@ -29,17 +29,12 @@ import megameklab.com.ui.Mek.tabs.EquipmentTab;
 import megameklab.com.ui.Mek.tabs.StructureTab;
 import megameklab.com.ui.tabs.FluffTab;
 import megameklab.com.ui.tabs.PreviewTab;
+import megameklab.com.ui.util.TabScrollPane;
 import megameklab.com.util.UnitUtil;
 
 public class MainUI extends MegaMekLabMainUI {
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = -5836932822468918198L;
-
     JTabbedPane configPane = new JTabbedPane(SwingConstants.TOP);
-    JPanel contentPane;
     private StructureTab structureTab;
     private EquipmentTab equipmentTab;
     private PreviewTab previewTab;
@@ -60,15 +55,11 @@ public class MainUI extends MegaMekLabMainUI {
 
     @Override
     public void reloadTabs() {
-        masterPanel.removeAll();
         configPane.removeAll();
-
-        masterPanel.setLayout(new BorderLayout());
+        getContentPane().removeAll();
 
         structureTab = new StructureTab(this);
-
         previewTab = new PreviewTab(this);
-
         statusbar = new StatusBar(this);
         equipmentTab = new EquipmentTab(this);
         buildTab = new BuildTab(this, equipmentTab);
@@ -79,20 +70,19 @@ public class MainUI extends MegaMekLabMainUI {
         fluffTab.setRefreshedListener(this);
         statusbar.addRefreshedListener(this);
 
-        configPane.addTab("Structure/Armor", structureTab);
+        configPane.addTab("Structure/Armor", new TabScrollPane(structureTab));
         //ConfigPane.addTab("Armor", armorTab);
         configPane.addTab("Equipment", equipmentTab);
         //ConfigPane.addTab("Weapons", weaponTab);
-        configPane.addTab("Assign Criticals", buildTab);
-        configPane.addTab("Fluff", fluffTab);
+        configPane.addTab("Assign Criticals", new TabScrollPane(buildTab));
+        configPane.addTab("Fluff", new TabScrollPane(fluffTab));
         configPane.addTab("Preview", previewTab);
 
-        //masterPanel.add(header);
-        masterPanel.add(configPane, BorderLayout.CENTER);
-        masterPanel.add(statusbar, BorderLayout.SOUTH);
+        add(configPane, BorderLayout.CENTER);
+        add(statusbar, BorderLayout.SOUTH);
 
         refreshHeader();
-        this.repaint();
+        validate();
     }
 
     @Override

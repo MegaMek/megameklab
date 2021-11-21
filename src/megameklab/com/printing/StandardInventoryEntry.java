@@ -27,9 +27,11 @@ import megamek.common.weapons.missiles.MMLWeapon;
 import megamek.common.weapons.other.ISCenturionWeaponSystem;
 import megameklab.com.util.CConfig;
 import megameklab.com.util.StringUtils;
+import megameklab.com.util.UnitUtil;
 
 import java.math.BigInteger;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Formats text for an entry in the weapons and equipment inventory section of the record sheet.
@@ -186,7 +188,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         } else if (mount.getType().isClan()) {
             return CConfig.formatScale(5, false); // Clan active probe
         } else {
-            return CConfig.formatScale(3, false); // Beagle active probe
+            return CConfig.formatScale(4, false); // Beagle active probe
         }
     }
 
@@ -318,11 +320,26 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
                 return AERODYNE_ARCS[mount.getLocation()];
             }
         }
-        if (mount.getSecondLocation() != Entity.LOC_NONE) {
-            return mount.getEntity().getLocationAbbr(mount.getLocation())
-                    + "/" + mount.getEntity().getLocationAbbr(mount.getSecondLocation());
+        return mount.getEntity().joinLocationAbbr(mount.allLocations(), 2);
+    }
+
+    /**
+     * Handles some special conditions where equipment occupying three or more locations can be
+     * abbreviated to conserve space.
+     *
+     * @param locations The list of locations the equipment occupies
+     * @return The abbreviated location string
+     */
+    private String formatMechLocations(List<Integer> locations) {
+        if (locations.stream().allMatch(l -> mount.getEntity().locationIsLeg(l))) {
+            if ((mount.getEntity().entityIsQuad() && (locations.size() == 4))
+                   || ((mount.getEntity() instanceof TripodMech) && (locations.size() == 3))) {
+                return "Legs";
+            }
+        } else if (locations.stream().allMatch(l -> ((Mech) mount.getEntity()).locationIsTorso(l))) {
+            return "R/L/CT";
         }
-        return mount.getEntity().getLocationAbbr(mount.getLocation());
+        return "*";
     }
 
     @Override
@@ -409,7 +426,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
                 return "[M,C,S]";
             }
         } else if (mount.getType() instanceof WeaponType && mount.getType().hasFlag(WeaponType.F_AMS)) {
-            return "[PD]";
+            return "[PB]";
         } else if (mount.getType() instanceof ISCenturionWeaponSystem) {
             return "0";
         } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_BA_MANIPULATOR)) {

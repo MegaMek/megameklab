@@ -107,11 +107,11 @@ public class MekChassisView extends BuildView implements ActionListener, ChangeL
     final private JSpinner spnTonnage = new JSpinner(tonnageModel);
     final private JCheckBox chkOmni = new JCheckBox("Omni");
     final private JComboBox<String> cbBaseType = new JComboBox<>();
-    final private JComboBox<String> cbMotiveType = new JComboBox<String>();
+    final private JComboBox<String> cbMotiveType = new JComboBox<>();
     final private TechComboBox<EquipmentType> cbStructure = new TechComboBox<>(EquipmentType::getName);
     final private TechComboBox<Engine> cbEngine = new TechComboBox<>(e -> e.getEngineName().replaceAll("^\\d+ ", ""));
-    final private CustomComboBox<Integer> cbGyro = new CustomComboBox<>(g -> Mech.getGyroTypeShortString(g));
-    final private CustomComboBox<Integer> cbCockpit = new CustomComboBox<>(c -> Mech.getCockpitTypeString(c));
+    final private CustomComboBox<Integer> cbGyro = new CustomComboBox<>(Mech::getGyroTypeShortString);
+    final private CustomComboBox<Integer> cbCockpit = new CustomComboBox<>(Mech::getCockpitTypeString);
     final private TechComboBox<EquipmentType> cbEnhancement = new TechComboBox<>(EquipmentType::getName);
     final private JCheckBox chkFullHeadEject = new JCheckBox();
     final private JButton btnResetChassis = new JButton();
@@ -125,16 +125,20 @@ public class MekChassisView extends BuildView implements ActionListener, ChangeL
     
     private boolean primitive = false;
     private int engineRating = 20;
-    
+
     private static final int[] GENERAL_COCKPITS = {
             Mech.COCKPIT_STANDARD, Mech.COCKPIT_SMALL, Mech.COCKPIT_COMMAND_CONSOLE,
-            Mech.COCKPIT_SMALL_COMMAND_CONSOLE, Mech.COCKPIT_TORSO_MOUNTED, 
+            Mech.COCKPIT_SMALL_COMMAND_CONSOLE, Mech.COCKPIT_TORSO_MOUNTED,
             Mech.COCKPIT_DUAL, Mech.COCKPIT_INTERFACE, Mech.COCKPIT_VRRP
     };
-    
+
+    private static final int[] INDUSTRIAL_COCKPITS = {
+            Mech.COCKPIT_INDUSTRIAL, Mech.COCKPIT_COMMAND_CONSOLE, Mech.COCKPIT_TORSO_MOUNTED
+    };
+
     private static final String[] ENHANCEMENT_NAMES = {
             EquipmentTypeLookup.IS_MASC, EquipmentTypeLookup.CLAN_MASC,
-            EquipmentTypeLookup.TSM, EquipmentTypeLookup.SCM
+            EquipmentTypeLookup.TSM, EquipmentTypeLookup.P_TSM, EquipmentTypeLookup.SCM
     };
     
     private final ITechManager techManager;
@@ -300,15 +304,15 @@ public class MekChassisView extends BuildView implements ActionListener, ChangeL
             chkOmni.setEnabled(false);
             setBaseTypeIndex(BASE_TYPE_LAM);
             cbMotiveType.setModel(lamTypesModel);
-            setMotiveTypeIndex(((LandAirMech)mech).getLAMType());
+            setMotiveTypeIndex(((LandAirMech) mech).getLAMType());
             cbMotiveType.setToolTipText(lamMotiveTooltip);
         } else if (mech instanceof QuadVee) {
             setBaseTypeIndex(BASE_TYPE_QUADVEE);
             cbMotiveType.setModel(qvTypesModel);
-            setMotiveTypeIndex(((QuadVee)mech).getMotiveType());
+            setMotiveTypeIndex(((QuadVee) mech).getMotiveType());
             cbMotiveType.setToolTipText(qvMotiveTooltip);
         } else {
-            setBaseTypeIndex(mech.isIndustrial()? BASE_TYPE_INDUSTRIAL : BASE_TYPE_STANDARD);
+            setBaseTypeIndex(mech.isIndustrial() ? BASE_TYPE_INDUSTRIAL : BASE_TYPE_STANDARD);
             if (primitive) {
                 cbMotiveType.setModel(primitiveMotiveTypesModel);
             } else {
@@ -418,7 +422,7 @@ public class MekChassisView extends BuildView implements ActionListener, ChangeL
         boolean isMixed = techManager.useMixedTech();
         boolean isClan = techManager.useClanTechBase();
         cbStructure.removeActionListener(this);
-        EquipmentType prevStructure = (EquipmentType)cbStructure.getSelectedItem();
+        EquipmentType prevStructure = (EquipmentType) cbStructure.getSelectedItem();
         cbStructure.removeAllItems();
         cbStructure.showTechBase(isMixed);
         // Primitive/retro can only use standard/industrial structure. Industrial can only use industrial
@@ -478,7 +482,7 @@ public class MekChassisView extends BuildView implements ActionListener, ChangeL
     
     private void refreshGyro() {
         cbGyro.removeActionListener(this);
-        Integer prev = (Integer)cbGyro.getSelectedItem();
+        Integer prev = (Integer) cbGyro.getSelectedItem();
         cbGyro.removeAllItems();
         if (isSuperheavy()) {
             cbGyro.addItem(Mech.GYRO_SUPERHEAVY);
@@ -505,7 +509,7 @@ public class MekChassisView extends BuildView implements ActionListener, ChangeL
     
     private void refreshCockpit() {
         cbCockpit.removeActionListener(this);
-        Integer prev = (Integer)cbCockpit.getSelectedItem();
+        Integer prev = (Integer) cbCockpit.getSelectedItem();
         cbCockpit.removeAllItems();
         if ((getBaseTypeIndex() == BASE_TYPE_STANDARD) && (getMotiveTypeIndex() == MOTIVE_TYPE_TRIPOD)) {
             cbCockpit.addItem(isSuperheavy()? Mech.COCKPIT_SUPERHEAVY_TRIPOD : Mech.COCKPIT_TRIPOD);
@@ -515,23 +519,28 @@ public class MekChassisView extends BuildView implements ActionListener, ChangeL
         } else if (getBaseTypeIndex() == BASE_TYPE_QUADVEE) {
             cbCockpit.addItem(Mech.COCKPIT_QUADVEE);
         } else if (isSuperheavy()) {
-            if(isIndustrial()){
+            if (isIndustrial()){
                 cbCockpit.addItem(Mech.COCKPIT_SUPERHEAVY_INDUSTRIAL);
-                if (techManager.isLegal(Mech.getIndustrialAdvFireConTA())) {
-                    cbCockpit.addItem(Mech.COCKPIT_SUPERHEAVY);
-                    cbCockpit.addItem(Mech.COCKPIT_SUPERHEAVY_COMMAND_CONSOLE);
-                }
-            }else{
-                cbCockpit.addItem(Mech.COCKPIT_SUPERHEAVY);
+            }
+            cbCockpit.addItem(Mech.COCKPIT_SUPERHEAVY);
+            if (techManager.isLegal(Mech.getCockpitTechAdvancement(Mech.COCKPIT_SUPERHEAVY_COMMAND_CONSOLE))) {
                 cbCockpit.addItem(Mech.COCKPIT_SUPERHEAVY_COMMAND_CONSOLE);
             }
         } else if (isPrimitive()) {
-            cbCockpit.addItem(isIndustrial()? Mech.COCKPIT_PRIMITIVE_INDUSTRIAL : Mech.COCKPIT_PRIMITIVE);
+            if (isIndustrial()) {
+                cbCockpit.addItem(Mech.COCKPIT_PRIMITIVE_INDUSTRIAL);
+                // If the date is late enough, include primitive cockpit with advanced fire control
+                if (techManager.isLegal(Mech.getCockpitTechAdvancement(Mech.COCKPIT_PRIMITIVE))) {
+                    cbCockpit.addItem(Mech.COCKPIT_PRIMITIVE);
+                }
+            } else {
+                cbCockpit.addItem(Mech.COCKPIT_PRIMITIVE);
+            }
         } else if (isIndustrial()) {
-            cbCockpit.addItem(Mech.COCKPIT_INDUSTRIAL);
-            if (techManager.isLegal(Mech.getIndustrialAdvFireConTA())) {
-                cbCockpit.addItem(Mech.COCKPIT_STANDARD);
-                cbCockpit.addItem(Mech.COCKPIT_COMMAND_CONSOLE);
+            for (int cockpitType : INDUSTRIAL_COCKPITS) {
+                if (techManager.isLegal(Mech.getCockpitTechAdvancement(cockpitType))) {
+                    cbCockpit.addItem(cockpitType);
+                }
             }
         } else {
             for (int cockpitType : GENERAL_COCKPITS) {
@@ -550,7 +559,7 @@ public class MekChassisView extends BuildView implements ActionListener, ChangeL
     
     private void refreshEnhancement() {
         cbEnhancement.removeActionListener(this);
-        EquipmentType prev = (EquipmentType)cbEnhancement.getSelectedItem();
+        EquipmentType prev = (EquipmentType) cbEnhancement.getSelectedItem();
         cbEnhancement.removeAllItems();
         cbEnhancement.addItem(null);
         if (!isSuperheavy() && !isPrimitive()) {
@@ -578,9 +587,11 @@ public class MekChassisView extends BuildView implements ActionListener, ChangeL
     
     private void refreshFullHeadEject() {
         chkFullHeadEject.removeActionListener(this);
-        chkFullHeadEject.setEnabled((getCockpitType() != Mech.COCKPIT_TORSO_MOUNTED)
-                && (getCockpitType() != Mech.COCKPIT_VRRP)
-                && (getCockpitType() != Mech.COCKPIT_COMMAND_CONSOLE)
+        final Integer cockpitType = (Integer) cbCockpit.getSelectedItem();
+        chkFullHeadEject.setEnabled((cockpitType != null)
+                && (cockpitType != Mech.COCKPIT_TORSO_MOUNTED)
+                && (cockpitType != Mech.COCKPIT_VRRP)
+                && (cockpitType != Mech.COCKPIT_COMMAND_CONSOLE)
                 && techManager.isLegal(Mech.getFullHeadEjectAdvancement()));
         chkFullHeadEject.addActionListener(this);
     }
@@ -629,7 +640,7 @@ public class MekChassisView extends BuildView implements ActionListener, ChangeL
     }
     
     public void setTonnage(double tonnage) {
-        spnTonnage.setValue(Integer.valueOf((int)Math.ceil(tonnage)));
+        spnTonnage.setValue((int) Math.ceil(tonnage));
     }
     
     public boolean isOmni() {
@@ -730,7 +741,7 @@ public class MekChassisView extends BuildView implements ActionListener, ChangeL
     }
     
     public int getGyroType() {
-        return (Integer)cbGyro.getSelectedItem();
+        return (Integer) cbGyro.getSelectedItem();
     }
     
     public void setGyroType(int gyro) {
@@ -738,7 +749,7 @@ public class MekChassisView extends BuildView implements ActionListener, ChangeL
     }
 
     public int getCockpitType() {
-        return (Integer)cbCockpit.getSelectedItem();
+        return (Integer) cbCockpit.getSelectedItem();
     }
     
     public void setCockpitType(int cockpit) {

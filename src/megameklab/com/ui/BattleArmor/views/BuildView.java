@@ -44,6 +44,7 @@ import megamek.common.WeaponType;
 import megamek.common.verifier.TestBattleArmor;
 import megamek.common.weapons.Weapon;
 import megamek.common.weapons.infantry.InfantryWeapon;
+import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.BattleArmor.tabs.BuildTab;
 import megameklab.com.util.CriticalTableModel;
@@ -619,7 +620,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         try {
             eq.setBaMountLoc(location);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            MegaMekLab.getLogger().error(ex);
         }
         
         UnitUtil.changeMountStatus(getBattleArmor(), eq, BattleArmor.LOC_SQUAD, -1, false);
@@ -627,5 +628,4 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         // go back up to grandparent build tab and fire a full refresh.
         ((BuildTab) getParent().getParent()).refreshAll();
     }
-
 }

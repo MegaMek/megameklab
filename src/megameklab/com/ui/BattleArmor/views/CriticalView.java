@@ -42,6 +42,7 @@ import megamek.common.loaders.MtfFile;
 import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestBattleArmor;
 import megamek.common.weapons.infantry.InfantryWeapon;
+import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.BattleArmor.CriticalSuit;
 import megameklab.com.util.IView;
@@ -179,21 +180,21 @@ public class CriticalView extends IView {
         int [] numAPWeapons = new int[BattleArmor.MOUNT_NUM_LOCS];
         int [] numAMWeapons = new int[BattleArmor.MOUNT_NUM_LOCS];
          
-        for (Mounted m : getBattleArmor().getEquipment()){
+        for (Mounted m : getBattleArmor().getEquipment()) {
             if (m.getLocation() == BattleArmor.LOC_SQUAD 
-                    || m.getLocation() == trooper){
+                    || m.getLocation() == trooper) {
                 critSuit.addMounted(m.getBaMountLoc(), m);
                 // Weapons mounted in a quad turret count against the body limits
                 int useLoc = m.getBaMountLoc();
                 if (useLoc == BattleArmor.MOUNT_LOC_TURRET) {
                     useLoc = BattleArmor.MOUNT_LOC_BODY;
                 }
-                if (useLoc != BattleArmor.MOUNT_LOC_NONE){
+                if (useLoc != BattleArmor.MOUNT_LOC_NONE) {
                     if ((m.getType() instanceof WeaponType) 
-                            && !(m.getType() instanceof InfantryWeapon)){
+                            && !(m.getType() instanceof InfantryWeapon)) {
                         numAMWeapons[useLoc]++;
                     }
-                    if (m.getType().hasFlag(MiscType.F_AP_MOUNT)){
+                    if (m.getType().hasFlag(MiscType.F_AP_MOUNT)) {
                         numAPWeapons[useLoc]++;  
                     }
                 }
@@ -232,7 +233,7 @@ public class CriticalView extends IView {
                                     + getBattleArmor().getEquipmentNum(m));
                             critNames.add(critName.toString());
                         } catch (Exception ex) {
-                            ex.printStackTrace();
+                            MegaMekLab.getLogger().error(ex);
                         }
                     }
                 }
@@ -268,19 +269,19 @@ public class CriticalView extends IView {
             
             String amTxt[] = new String[BattleArmor.MOUNT_NUM_LOCS];
             String apTxt[] = new String[BattleArmor.MOUNT_NUM_LOCS];
-            for (int loc = 0; loc < BattleArmor.MOUNT_NUM_LOCS; loc++){
+            for (int loc = 0; loc < BattleArmor.MOUNT_NUM_LOCS; loc++) {
                 amTxt[loc] = "AM Wpn: " + numAMWeapons[loc] + "/"
                         + getBattleArmor().getNumAllowedAntiMechWeapons(loc);
                 apTxt[loc] = "AP Wpn: " + numAPWeapons[loc] + "/"
                         + getBattleArmor().getNumAllowedAntiPersonnelWeapons(
                                 loc, trooper);
                 if (numAMWeapons[loc] 
-                        > getBattleArmor().getNumAllowedAntiMechWeapons(loc)){
+                        > getBattleArmor().getNumAllowedAntiMechWeapons(loc)) {
                     amTxt[loc] = "<html><font color='C00000'>" + amTxt[loc] 
                             + "</font></html>";  
                 }
                 if (numAPWeapons[loc]
-                        > getBattleArmor().getNumAllowedAntiMechWeapons(loc)){
+                        > getBattleArmor().getNumAllowedAntiMechWeapons(loc)) {
                     apTxt[loc] = "<html><font color='C00000'>" + apTxt[loc] 
                             + "</font></html>";
                 }
@@ -299,7 +300,7 @@ public class CriticalView extends IView {
 
             // Hide the arm panels if we are a quad
             if (getBattleArmor().getChassisType() == 
-                    BattleArmor.CHASSIS_TYPE_QUAD){
+                    BattleArmor.CHASSIS_TYPE_QUAD) {
                 leftPanel.setVisible(false);
                 rightPanel.setVisible(false);
                 turretPanel.setVisible(getBattleArmor().getTurretCapacity() > 0);
@@ -318,7 +319,7 @@ public class CriticalView extends IView {
                     + String.format("%1$.3f", testBA.calculateWeight(trooper))
                     + "/" + getBattleArmor().getTrooperWeight();
             if (testBA.calculateWeight(trooper) 
-                    > getBattleArmor().getTrooperWeight()){
+                    > getBattleArmor().getTrooperWeight()) {
                 weightTxt = "<html><font color='C00000'>" + weightTxt 
                         + "</font></html>";
             }

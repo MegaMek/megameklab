@@ -16,43 +16,21 @@
 
 package megameklab.com.ui;
 
-import java.awt.Dimension;
-import java.awt.DisplayMode;
-import java.awt.Frame;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-
-import javax.swing.BorderFactory;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UIManager.LookAndFeelInfo;
-
 import megamek.common.Entity;
-import megamek.common.EquipmentType;
-import megamek.common.MechSummaryCache;
 import megamek.common.preference.PreferenceManager;
-import megameklab.com.MegaMekLab;
 import megameklab.com.util.CConfig;
 import megameklab.com.util.MenuBarCreator;
 import megameklab.com.util.RefreshListener;
-import megameklab.com.util.UnitUtil;
 
-public abstract class MegaMekLabMainUI extends JFrame implements
-        RefreshListener, EntitySource {
+import javax.swing.*;
+import javax.swing.UIManager.LookAndFeelInfo;
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = 3971760390511127766L;
+public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener, EntitySource {
 
     private Entity entity = null;
-    protected JPanel masterPanel = new JPanel();
-    protected JScrollPane scroll = new JScrollPane();
     protected MenuBarCreator menubarcreator;
     
     public MegaMekLabMainUI() {
@@ -68,26 +46,11 @@ public abstract class MegaMekLabMainUI extends JFrame implements
     }
 
     protected void finishSetup() {
-        
-        /* menu bar */
         menubarcreator = new MenuBarCreator(this);
         setJMenuBar(menubarcreator);
-        
-        /* scroll bar */
-        scroll.setHorizontalScrollBarPolicy(
-                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scroll.setVerticalScrollBarPolicy(
-                ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scroll.getVerticalScrollBar().setUnitIncrement(20);
-        scroll.setViewportView(masterPanel);
-        scroll.setBorder(BorderFactory.createEmptyBorder());
-        this.add(scroll);
-
-        /* load tabs, resize and make visible */
         reloadTabs();
         setSizeAndLocation();
         setVisible(true);
-        repaint();
         refreshAll();
     }
     

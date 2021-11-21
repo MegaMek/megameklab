@@ -36,6 +36,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
+import megamek.MegaMek;
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.client.ui.swing.widget.MegamekButton;
 import megamek.client.ui.swing.widget.SkinSpecification;
@@ -54,6 +55,7 @@ import megamek.common.Tank;
 import megamek.common.util.EncodeControl;
 import megamek.common.util.ImageUtil;
 import megamek.common.util.fileUtils.MegaMekFile;
+import megameklab.com.MMLConstants;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.dialog.LoadingDialog;
 import megameklab.com.ui.dialog.MegaMekLabUnitSelectorDialog;
@@ -111,9 +113,8 @@ public class StartupGUI extends javax.swing.JPanel {
             if (skinSpec.backgrounds.size() > 1) {
                 File file = new MegaMekFile(Configuration.widgetsDir(),
                         skinSpec.backgrounds.get(1)).getFile();
-                if (!file.exists()){
-                    System.err.println("MainMenu Error: background icon doesn't exist: "
-                            + file.getAbsolutePath());
+                if (!file.exists()) {
+                    MegaMek.getLogger().error("Background icon doesn't exist: " + file.getAbsolutePath());
                 } else {
                     backgroundIcon = (BufferedImage) ImageUtil.loadImageFromFile(file.toString());
                 }
@@ -122,7 +123,7 @@ public class StartupGUI extends javax.swing.JPanel {
             backgroundIcon = null;
         }
         
-        JLabel labVersion = new JLabel(resourceMap.getString("version.text") + MegaMekLab.VERSION, JLabel.CENTER); //$NON-NLS-1$
+        JLabel labVersion = new JLabel(resourceMap.getString("version.text") + MMLConstants.VERSION, JLabel.CENTER); //$NON-NLS-1$
         labVersion.setPreferredSize(new Dimension(250,15));
         if (skinSpec.fontColors.size() > 0) {
             labVersion.setForeground(skinSpec.fontColors.get(0));

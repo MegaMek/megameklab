@@ -33,7 +33,6 @@ import megameklab.com.util.UnitUtil;
 /**
  * A loading dialog to display until the mainUI has loaded.
  * @author Taharqa
- *
  */
 public class LoadingDialog extends JDialog {
 
@@ -147,7 +146,7 @@ public class LoadingDialog extends JDialog {
             try {
                 get();
             } catch (ExecutionException ex) {
-                MegaMekLab.getLogger().error(this, ex.getCause());
+                MegaMekLab.getLogger().error(ex);
             } catch (InterruptedException ex) {
                 interrupted = true;
             } finally {

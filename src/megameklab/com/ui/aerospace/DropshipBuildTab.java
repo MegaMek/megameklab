@@ -13,15 +13,10 @@
  */
 package megameklab.com.ui.aerospace;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JPanel;
+import javax.swing.*;
 
 import megamek.common.Entity;
 import megamek.common.Mounted;
@@ -56,35 +51,28 @@ public class DropshipBuildTab extends ITab implements ActionListener {
 
     public DropshipBuildTab(EntitySource eSource, EquipmentTab equipment) {
         super(eSource);
-        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-        mainPanel.setLayout(new GridBagLayout());
+        setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
-
-        GridBagConstraints gbc = new GridBagConstraints();
 
         buildView = new AerospaceBuildView(eSource,refresh);
         critView = new LargeCraftCriticalView(eSource, refresh);
         critView.addAllocationListeners(buildView);
 
         resetButton.setMnemonic('R');
-        resetButton.setActionCommand(RESETCOMMAND);        
+        resetButton.setActionCommand(RESETCOMMAND);
         buttonPanel.add(resetButton);
 
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.fill = GridBagConstraints.VERTICAL;
-        gbc.anchor = GridBagConstraints.NORTHWEST;
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
-        mainPanel.add(buildView, gbc);
-        gbc.gridy = 1;
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.weighty = 0.0;
-        mainPanel.add(buttonPanel, gbc);
-        this.add(Box.createHorizontalStrut(100));
-        this.add(critView);
-        this.add(Box.createHorizontalStrut(200));
-        this.add(mainPanel);
+        buildView.setAlignmentX(JComponent.LEFT_ALIGNMENT);
+        buttonPanel.setAlignmentX(JComponent.LEFT_ALIGNMENT);
+        mainPanel.add(buildView);
+        mainPanel.add(buttonPanel);
+
+        add(Box.createHorizontalGlue());
+        add(critView);
+        add(Box.createHorizontalGlue());
+        add(mainPanel);
+        add(Box.createHorizontalGlue());
         refresh();
     }
 

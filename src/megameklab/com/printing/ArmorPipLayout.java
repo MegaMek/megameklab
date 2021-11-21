@@ -244,20 +244,16 @@ class ArmorPipLayout {
                             && right <= bbox.right + PRECISION) {
                         return new Bounds(left, bbox.top, right, bbox.bottom);
                     } else {
-                        MegaMekLab.getLogger().error(getClass(), "parseGap(Rectangle2D, String)",
-                                "Gap is not contained within bounding rectangle in "
-                                        + rect.getAttributeNS(null, SVGConstants.SVG_ID_ATTRIBUTE));
+                        MegaMekLab.getLogger().error("Gap is not contained within bounding rectangle in "
+                                + rect.getAttributeNS(null, SVGConstants.SVG_ID_ATTRIBUTE));
                     }
                 } else {
-                    MegaMekLab.getLogger().error(getClass(), "parseGap(Rectangle2D, String)",
-                            "Incorrect number of parameters to "
-                                    + IdConstants.MML_GAP + " in "
-                                    + rect.getAttributeNS(null, SVGConstants.SVG_ID_ATTRIBUTE));
+                    MegaMekLab.getLogger().error("Incorrect number of parameters to " + IdConstants.MML_GAP
+                            + " in " + rect.getAttributeNS(null, SVGConstants.SVG_ID_ATTRIBUTE));
                 }
             } catch (NumberFormatException ex) {
-                MegaMekLab.getLogger().error(getClass(), "parseGap(Rectangle2D, String)",
-                    "NumberFormatException parsing gap parameters in "
-                            + rect.getAttributeNS(null, SVGConstants.SVG_ID_ATTRIBUTE));
+                MegaMekLab.getLogger().error("NumberFormatException parsing gap parameters in "
+                        + rect.getAttributeNS(null, SVGConstants.SVG_ID_ATTRIBUTE));
             }
         }
         return null;

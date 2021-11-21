@@ -30,23 +30,18 @@ import megamek.common.EquipmentType;
 import megamek.common.ITechManager;
 import megamek.common.SimpleTechLevel;
 import megamek.common.TechConstants;
+import megameklab.com.MegaMekLab;
 import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.Aero.tabs.BuildTab;
 import megameklab.com.ui.Aero.tabs.EquipmentTab;
 import megameklab.com.ui.Aero.tabs.StructureTab;
 import megameklab.com.ui.tabs.FluffTab;
 import megameklab.com.ui.tabs.PreviewTab;
+import megameklab.com.ui.util.TabScrollPane;
 
 public class MainUI extends MegaMekLabMainUI {
 
-
-    /**
-     *
-     */
-    private static final long serialVersionUID = -2117599432007026106L;
-
     JTabbedPane configPane = new JTabbedPane(SwingConstants.TOP);
-    JPanel contentPane;
 
     private StructureTab structureTab;
     private EquipmentTab equipmentTab;
@@ -65,15 +60,11 @@ public class MainUI extends MegaMekLabMainUI {
 
     @Override
     public void reloadTabs() {
-        masterPanel.removeAll();
         configPane.removeAll();
-
-        masterPanel.setLayout(new BorderLayout());
+        getContentPane().removeAll();
 
         structureTab = new StructureTab(this);
-
         previewTab = new PreviewTab(this);
-
         statusbar = new StatusBar(this);
         equipmentTab = new EquipmentTab(this);
         buildTab = new BuildTab(this, equipmentTab);
@@ -84,17 +75,17 @@ public class MainUI extends MegaMekLabMainUI {
         fluffTab.setRefreshedListener(this);
         statusbar.addRefreshedListener(this);
 
-        configPane.addTab("Structure/Armor", structureTab);
+        configPane.addTab("Structure/Armor", new TabScrollPane(structureTab));
         configPane.addTab("Equipment", equipmentTab);
-        configPane.addTab("Assign Criticals", buildTab);
-        configPane.addTab("Fluff", fluffTab);
+        configPane.addTab("Assign Criticals", new TabScrollPane(buildTab));
+        configPane.addTab("Fluff", new TabScrollPane(fluffTab));
         configPane.addTab("Preview", previewTab);
 
-        masterPanel.add(configPane, BorderLayout.CENTER);
-        masterPanel.add(statusbar, BorderLayout.SOUTH);
+        add(configPane, BorderLayout.CENTER);
+        add(statusbar, BorderLayout.SOUTH);
 
         refreshHeader();
-        this.repaint();
+        validate();
     }
 
     @Override
@@ -107,7 +98,7 @@ public class MainUI extends MegaMekLabMainUI {
             setEntity(new ConvFighter());
             getEntity().setTechLevel(TechConstants.T_IS_TW_NON_BOX);
         } else {
-            System.out.println("Aero.MainUI: Received incorrect entityType!");
+            MegaMekLab.getLogger().error("Received incorrect entityType!");
             return;
         }
 

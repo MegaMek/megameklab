@@ -126,6 +126,7 @@ public interface IdConstants {
     String HEAT_SINK_PIPS = "heatSinkPips";
     String HS_TYPE = "hsType";
     String HS_COUNT = "hsCount";
+    String PARTIAL_WING_BONUS = "partialWingBonus";
     String EXTERNAL_STORES = "external_stores";
     String BOMB_BOXES = "bomb_boxes";
     String EXTERNAL_STORES_KEY = "external_stores_key";
