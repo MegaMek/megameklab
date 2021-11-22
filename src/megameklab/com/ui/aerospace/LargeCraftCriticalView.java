@@ -191,6 +191,7 @@ public class LargeCraftCriticalView extends IView {
         lblSlotCount[arc].setToolTipText(resourceMap.getString("DropshipCriticalView.lblSlotCount.tooltip"));
         lblExtraTonnage[arc] = new JLabel();
         lblExtraTonnage[arc].setAlignmentX(JComponent.CENTER_ALIGNMENT);
+        lblExtraTonnage[arc].setToolTipText(resourceMap.getString("DropshipCriticalView.lblExtraWeight.tooltip"));
 
         if (isWeaponArc) {
             arcPanel.add(lblSlotCount[arc]);
@@ -221,7 +222,7 @@ public class LargeCraftCriticalView extends IView {
         if (isSmallCraft()) {
             if (getSmallCraft().isSpheroid()) {
                 ((TitledBorder) fwdLeftPanel.getBorder()).setTitle(spheroidArcNames[TestSmallCraft.ARC_FWD_LEFT]);
-                ((TitledBorder)rightPanel.getBorder()).setTitle(spheroidArcNames[TestSmallCraft.ARC_FWD_RIGHT]);
+                ((TitledBorder) rightPanel.getBorder()).setTitle(spheroidArcNames[TestSmallCraft.ARC_FWD_RIGHT]);
                 arcTrees[TestSmallCraft.ARC_FWD_LEFT].setFacing(BayWeaponCriticalTree.FORWARD);
                 arcTrees[TestSmallCraft.ARC_FWD_RIGHT].setFacing(BayWeaponCriticalTree.FORWARD);
                 aftLeftPanel.setVisible(true);
@@ -232,7 +233,7 @@ public class LargeCraftCriticalView extends IView {
                 btnCopyARS.setText("Copy from " + spheroidArcNames[TestSmallCraft.ARC_AFT_RIGHT]);
             } else {
                 ((TitledBorder) fwdLeftPanel.getBorder()).setTitle(aerodyneArcNames[TestSmallCraft.ARC_LWING]);
-                ((TitledBorder)rightPanel.getBorder()).setTitle(aerodyneArcNames[TestSmallCraft.ARC_RWING]);
+                ((TitledBorder) rightPanel.getBorder()).setTitle(aerodyneArcNames[TestSmallCraft.ARC_RWING]);
                 arcTrees[TestSmallCraft.ARC_LWING].setFacing(BayWeaponCriticalTree.BOTH);
                 arcTrees[TestSmallCraft.ARC_RWING].setFacing(BayWeaponCriticalTree.BOTH);
                 aftLeftPanel.setVisible(false);
@@ -254,7 +255,7 @@ public class LargeCraftCriticalView extends IView {
                     + " " + arcTrees[arc].getSlotCount() + " / " + TestAero.slotsPerArc(getAero()));
 
             lblExtraTonnage[arc].setText(resourceMap.getString("DropshipCriticalView.lblExtraWeight.text")
-                    + " " + extra[arc]);
+                    + " " + (extra[arc] > 0 ? extra[arc] : "--"));
             lblExtraTonnage[arc].setForeground(extra[arc] > 0 ? null : UIUtil.uiGray());
         }
     }
