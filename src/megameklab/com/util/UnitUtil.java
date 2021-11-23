@@ -3720,21 +3720,20 @@ public class UnitUtil {
          * First we remove any equipment already in the location, but keep a list of it
          * to use as much as possible. 
          */
-        List<Mounted> removed = new ArrayList<>();
-        // Create copy to iterate since we may be modifying it.
-        List<Mounted> mountList = new ArrayList<>(entity.getEquipment());
-        for (Mounted m : mountList) {
-            if ((m.getLocation() == toLoc)
-                    && (m.isRearMounted() ? includeRear : includeForward)) {
-                removed.add(m);
-                UnitUtil.removeCriticals(entity, m);
-                if (m.getType() instanceof BayWeapon) {
-                    removeMounted(entity, m);
-                } else {
-                    changeMountStatus(entity, m, Entity.LOC_NONE, Entity.LOC_NONE, false);
-                }
-            }
-        }
+        List<Mounted> removed = entity.getEquipment().stream()
+                .filter(m -> m.getLocation() == toLoc)
+                .filter(m -> m.isRearMounted() ? includeRear : includeForward)
+                .collect(Collectors.toList());
+
+        removed.stream().forEach(m -> UnitUtil.removeCriticals(entity, m));
+
+        removed.stream()
+                .filter(m -> !(m.getType() instanceof BayWeapon))
+                .forEach(m-> changeMountStatus(entity, m, Entity.LOC_NONE, Entity.LOC_NONE, false));
+
+        removed.stream()
+                .filter(m -> (m.getType() instanceof BayWeapon))
+                .forEach(m -> removeMounted(entity, m));
         
         /*
          * Now we go through the equipment in the location to copy and add it to the other location.
@@ -3744,10 +3743,10 @@ public class UnitUtil {
          * in the same order to be nice and tidy.
          */
         if (entity.usesWeaponBays()) {
-            mountList = entity.getWeaponBayList().stream()
+            List<Mounted> bayList = entity.getWeaponBayList().stream()
                     .filter(bay -> (bay.getLocation() == fromLoc) && (bay.isRearMounted() ? includeRear : includeForward))
                     .collect(Collectors.toList());
-            for (Mounted bay : mountList) {
+            for (Mounted bay : bayList) {
                 if ((bay.getLocation() == fromLoc)
                         && (bay.isRearMounted() ? includeRear : includeForward)) {
                     Mounted newBay = new Mounted(entity, bay.getType());
@@ -3763,8 +3762,8 @@ public class UnitUtil {
                 }
             }
             // Now we copy any other equipment
-            mountList = new ArrayList<>(entity.getMisc());
-            for (Mounted m : mountList) {
+            bayList = new ArrayList<>(entity.getMisc());
+            for (Mounted m : bayList) {
                 if ((m.getLocation() == fromLoc)
                         && (m.isRearMounted() ? includeRear : includeForward)) {
                     copyEquipment(entity, toLoc, m, removed);
@@ -4427,5 +4426,16 @@ public class UnitUtil {
         int secondClass = aero.getNPassenger() - firstClass - steeragePsgr;
         
         assignQuarters(aero, officer + firstClass, standardCrew, secondClass, steerageCrew + steeragePsgr);
+    }
+
+    /**
+     * Removes all empty Weapon Bays from the given entity. May be called and has no effect
+     * for entities that do not use weapon bays.
+     */
+    public static void removeEmptyBays(Entity entity) {
+        List<Mounted> emptyBays = entity.getWeaponBayList().stream()
+                .filter(bay -> bay.getBayWeapons().isEmpty())
+                .collect(Collectors.toList());
+        emptyBays.forEach(bay -> UnitUtil.removeMounted(entity, bay));
     }
 }

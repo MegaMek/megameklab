@@ -53,6 +53,8 @@ public class AeroBayTransferHandler extends TransferHandler {
     private static final long serialVersionUID = 2534394664060762469L;
     
     private EntitySource eSource;
+
+    public static final String EMTPYSLOT = "EmptySlot";
     
     /* Aliases for local usage.
      * When moving ammo, the default is to move a single ton (or whatever the atomic value is) at a time.
@@ -194,6 +196,9 @@ public class AeroBayTransferHandler extends TransferHandler {
         List<Mounted> mounted = new ArrayList<>();
         try {
             String str = (String) support.getTransferable().getTransferData(DataFlavor.stringFlavor);
+            if (str.equals(EMTPYSLOT)) {
+                return false;
+            }
             if (str.contains(":")) {
                 str = str.substring(0, str.indexOf(":"));
             }
