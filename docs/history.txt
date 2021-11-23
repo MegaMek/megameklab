@@ -8,6 +8,7 @@ VERSION HISTORY:
 + PR #961: Preserve expanded state of Large Aero Weapon Bays
 + PR #960, 963: Large Aero Crit Visual Improvements
 + PR #864: Update to Apache FOP 2.5: Modern Font Support Improvements
++ PR #966: Large Craft Weight-Free Slot and Additional Tonnage Visual Improvements
 
 0.49.5 (2021-11-06 1800 UTC)
 
