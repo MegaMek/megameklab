@@ -553,14 +553,10 @@ public class EquipmentTab extends ITab implements ActionListener {
                 equipmentList.removeMounted(row);
             }
             equipmentList.removeCrits(selectedRows);
-            if (getAero().usesWeaponBays()) {
-                removeEmptyBays();
-            }
+            UnitUtil.removeEmptyBays(getAero());
         } else if (e.getActionCommand().equals(REMOVEALL_COMMAND)) {
             removeAllEquipment();
-            if (getAero().usesWeaponBays()) {
-                removeEmptyBays();
-            }
+            UnitUtil.removeEmptyBays(getAero());
         } else {
             return;
         }
@@ -581,14 +577,6 @@ public class EquipmentTab extends ITab implements ActionListener {
         equipmentList.removeAllCrits();
     }
     
-    private void removeEmptyBays() {
-        List<Mounted> emptyBays = getAero().getWeaponBayList().stream()
-                .filter(bay -> bay.getBayWeapons().isEmpty()).collect(Collectors.toList());
-        for (Mounted bay : emptyBays) {
-            UnitUtil.removeMounted(getAero(), bay);
-        }
-    }
-
     private void fireTableRefresh() {
         equipmentList.updateUnit(getAero());
         equipmentList.refreshModel();

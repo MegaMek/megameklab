@@ -1187,6 +1187,7 @@ public class BayWeaponCriticalTree extends JTree {
     public void addToArc(Mounted eq, TreePath path) {
         if ((null == path) || !(path.getLastPathComponent() instanceof EquipmentNode)) {
             addToBay(null, eq);
+            return;
         }
         EquipmentNode node = (EquipmentNode)path.getLastPathComponent();
         if (node instanceof BayNode) {
