@@ -4427,4 +4427,15 @@ public class UnitUtil {
         
         assignQuarters(aero, officer + firstClass, standardCrew, secondClass, steerageCrew + steeragePsgr);
     }
+
+    /**
+     * Removes all empty Weapon Bays from the given entity. May be called and has no effect
+     * for entities that do not use weapon bays.
+     */
+    public static void removeEmptyBays(Entity entity) {
+        List<Mounted> emptyBays = entity.getWeaponBayList().stream()
+                .filter(bay -> bay.getBayWeapons().isEmpty())
+                .collect(Collectors.toList());
+        emptyBays.forEach(bay -> UnitUtil.removeMounted(entity, bay));
+    }
 }
