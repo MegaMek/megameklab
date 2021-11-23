@@ -72,4 +72,25 @@ public class IView extends JPanel {
     public Infantry getInfantry() {
     	return (Infantry) eSource.getEntity();
     }
+
+    /**
+     * Returns true if the entity has the Small Craft type flag (no instanceof check).
+     * This includes DropShips.
+     */
+    public boolean isSmallCraft() {
+        return getEntity().hasETypeFlag(Entity.ETYPE_SMALL_CRAFT);
+    }
+
+    /**
+     * Returns true if the entity has the JumpShip type flag (no instanceof check).
+     * This includes WarShips and Space Stations.
+     */
+    public boolean isJumpShip() {
+        return getEntity().hasETypeFlag(Entity.ETYPE_JUMPSHIP);
+    }
+
+    /** Returns true if the entity has the WarShip type flag (no instanceof check). */
+    public boolean isWarShip() {
+        return getEntity().hasETypeFlag(Entity.ETYPE_WARSHIP);
+    }
 }
