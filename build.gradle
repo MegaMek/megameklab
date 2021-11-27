@@ -78,7 +78,7 @@ dependencies {
         // We don't need this proprietary module
         exclude group: 'com.sun.media', module: 'jai-codec'
     }
-    implementation 'org.apache.pdfbox:pdfbox:2.0.22'
+    implementation 'org.apache.pdfbox:pdfbox:2.0.24'
 }
 
 mainClassName = 'megameklab.com.MegaMekLab'
