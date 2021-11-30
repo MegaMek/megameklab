@@ -10,6 +10,8 @@ VERSION HISTORY:
 + PR #864: Update to Apache FOP 2.5: Modern Font Support Improvements
 + PR #966: Large Craft Weight-Free Slot and Additional Tonnage Visual Improvements
 + PR #967: Large Aero Crit View Bug Fixes
++ PR #969: Updating Apache XML Graphic dependencies: FOP to 2.6, Batik to 1.14
++ PR #970: Updating PDF Box to 2.0.24
 
 0.49.5 (2021-11-06 1800 UTC)
 
