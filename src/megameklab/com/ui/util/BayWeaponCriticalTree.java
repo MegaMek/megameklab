@@ -13,31 +13,14 @@
  */
 package megameklab.com.ui.util;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Rectangle;
-import java.awt.event.InputEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashSet;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.*;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.StringJoiner;
-import java.util.Vector;
 
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-import javax.swing.JTree;
-import javax.swing.ToolTipManager;
+import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
@@ -69,6 +52,8 @@ import megameklab.com.util.CConfig;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 
+import static megameklab.com.ui.util.AeroBayTransferHandler.EMTPYSLOT;
+
 /**
  * Variant of DropTargetCriticalList for aerospace units that groups weapons into bays. Also
  * includes support for treating spheroid small craft and dropships firing arcs separately
@@ -90,7 +75,11 @@ public class BayWeaponCriticalTree extends JTree {
     private final EntitySource eSource;
     private final DefaultTreeModel model;
     private RefreshListener refresh;
-    
+
+    /** Stores a unique transient ID for each Bay to allow restoring the expanded state when the loadout changes. */
+    private final Map<Mounted, Integer> bayIdMap = new HashMap<>();
+    private int bayIdCounter;
+
     public BayWeaponCriticalTree(int location, EntitySource eSource, RefreshListener refresh) {
         this(location, eSource, refresh, FORWARD);
     }
@@ -100,12 +89,24 @@ public class BayWeaponCriticalTree extends JTree {
         this.facing = facing;
         this.eSource = eSource;
         this.refresh = refresh;
-        
-        setMinimumSize(new Dimension(110,15));
-        TreeNode root = initRoot();
-        setRootVisible(root.getChildCount() == 0);
-        model = new DefaultTreeModel(root);
+
+        model = new DefaultTreeModel(initRoot());
         setModel(model);
+
+        // Remove lines and icons as far as possible (depends on LaF)
+        setShowsRootHandles(false);
+        putClientProperty("JTree.lineStyle", "None");
+        renderer.setLeafIcon(null);
+        renderer.setClosedIcon(null);
+        renderer.setOpenIcon(null);
+
+        addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusLost(FocusEvent e) {
+                clearSelection();
+            }
+        });
+
         setCellRenderer(renderer);
         addMouseListener(mouseListener);
         getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
@@ -114,8 +115,9 @@ public class BayWeaponCriticalTree extends JTree {
         setDragEnabled(true);
         setTransferHandler(cth);
         ToolTipManager.sharedInstance().registerComponent(this);
+        setBorder(BorderFactory.createLineBorder(Color.BLACK));
     }
-    
+
     /**
      * Sets whether this arc should show only forward-mounted, rear-mounted, or both
      * @param facing Either FORWARD, AFT, or BOTH
@@ -129,9 +131,12 @@ public class BayWeaponCriticalTree extends JTree {
     }
     
     public void rebuild() {
+        List<Integer> expandedBays = getExpandedBayIds();
+        setBackground(CConfig.getBackgroundColor(CConfig.CONFIG_WEAPONS));
         TreeNode root = initRoot();
         model.setRoot(root);
         setRootVisible(root.getChildCount() == 0);
+        restoreExpandedBays(expandedBays);
     }
 
     private int slotCount(Mounted bay) {
@@ -165,7 +170,7 @@ public class BayWeaponCriticalTree extends JTree {
         }
         return count;
     }
-    
+
     /**
      * Runs through all equipment mounted on the vessel and adds nodes for the ones that match this
      * tree's location and facing.
@@ -218,7 +223,7 @@ public class BayWeaponCriticalTree extends JTree {
     /**
      * Removes the bay node and all subnodes.
      * Removes all equipment in this bay by assigning it to LOC_NONE and deletes the bay itself.
-     * @param bayNode
+     * @param bayNode The bay node to remove
      */
     private void removeBay(final EquipmentNode bayNode) {
         removeBay(bayNode, true, true);
@@ -423,41 +428,7 @@ public class BayWeaponCriticalTree extends JTree {
         refresh.refreshStatus();
         refresh.refreshSummary();
     }
-    
-    /**
-     * Adds lines to separate the entries to resemble the other build allocation views.
-     */
-    @Override
-    public void paintComponent(Graphics g) {
-        //FIXME: This is supposed to draw the background color across the width of the tree
-        for (int i = 0; i < getRowCount(); i++) {
-            Object node = getPathForRow(i).getLastPathComponent();
-            if (node instanceof EquipmentNode) {
-                g.setColor(((EquipmentNode) node).getBackgroundColor());
-                final Rectangle r = getRowBounds(i);
-                g.fillRect(0, r.y, getWidth(), r.height);
-            }
-        }
-        // draw the selection color across the width
-        for (int i: getSelectionRows()) {
-            Rectangle r = getRowBounds(i);
-            g.setColor(renderer.getBackgroundSelectionColor());
-            g.fillRect(0, r.y, getWidth(), r.height);
-        }
-        super.paintComponent(g);
-        // Draw a separating line above top level nodes
-        for (int i = 0; i < getRowCount(); i++) {
-            Object node = getPathForRow(i).getLastPathComponent();
-            if ((node == model.getRoot()) || ((EquipmentNode)node).getParent() == model.getRoot()) {
-                g.setColor(Color.black);
-            } else {
-                g.setColor(Color.lightGray);
-            }
-            final Rectangle r = getRowBounds(i);
-            g.drawLine(0, r.y, getWidth(), r.y);
-        }
-    }
-    
+
     /**
      * Node class used directly for individual mounts and serves as the base class for weapon
      * and ammo bays. Provides display name and color to the renderer.
@@ -559,6 +530,7 @@ public class BayWeaponCriticalTree extends JTree {
                 return CConfig.getBackgroundColor(CConfig.CONFIG_EQUIPMENT);
             }
         }
+
         public Color getForegroundColor() {
             if (getMounted().getType() instanceof WeaponType) {
                 return CConfig.getForegroundColor(CConfig.CONFIG_WEAPONS);
@@ -583,10 +555,10 @@ public class BayWeaponCriticalTree extends JTree {
             }
             return name;
         }
-        
+
         public String getTooltip() {
             StringBuilder sb = new StringBuilder("<html>");
-            sb.append(toString());
+            sb.append(this);
             if (getMounted().getType() instanceof WeaponType) {
                 final WeaponType wtype = (WeaponType) getMounted().getType();
                 final int bonus = avMod(getMounted());
@@ -608,6 +580,7 @@ public class BayWeaponCriticalTree extends JTree {
 
         BayNode(Mounted object) {
             super(object);
+            bayIdMap.computeIfAbsent(object, m -> bayIdCounter++);
         }
         
         public boolean isCapital() {
@@ -672,7 +645,7 @@ public class BayWeaponCriticalTree extends JTree {
         
         public String getTooltip() {
             StringBuilder sb = new StringBuilder("<html>");
-            sb.append(toString());
+            sb.append(this);
             double shortAV = 0;
             double medAV = 0;
             double longAV = 0;
@@ -752,47 +725,66 @@ public class BayWeaponCriticalTree extends JTree {
     /**
      * Sets node name and text/background colors.
      */
-    private DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer() {
+    private final DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer() {
 
-        /**
-         * 
-         */
-        private static final long serialVersionUID = 718540539581341886L;
-        
-        @Override
-        public void setTextNonSelectionColor(Color c) {
-            // we want the renderer to set the color based on component type
-        }
+        private EquipmentNode node;
 
-
-        @Override
-        public void setBackgroundNonSelectionColor(Color c) {
-            // we want the renderer to set the color based on component type
-        }
-        
         @Override
         public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded,
                 boolean leaf, int row, boolean hasFocus) {
-            JLabel label = (JLabel) super.getTreeCellRendererComponent(tree, value, sel, expanded,
-                    leaf, row, hasFocus);
-            if (!(value instanceof EquipmentNode)) {
-                label.setText("-Empty-");
-                return label;
-            }
-            EquipmentNode node = (EquipmentNode)value;
-            label.setToolTipText(node.getTooltip());
+            super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
+            setOpaque(true);
+            setBorder(null);
+            if (value instanceof EquipmentNode) {
+                node = (EquipmentNode) value;
+                setToolTipText(node.getTooltip());
+                setHorizontalAlignment(JLabel.LEFT);
+                setForeground(node.getForegroundColor());
+                if (sel) {
+                    setBackground(new Color(UIManager.getColor("Tree.selectionBackground").getRGB()));
+                } else {
+                    setBackground(node.getBackgroundColor());
+                }
 
-            setPreferredSize(new Dimension(180, 15));
-            setMaximumSize(new Dimension(180, 15));
-            setMinimumSize(new Dimension(180, 15));
-            
-            label.setBackground(node.getBackgroundColor());
-            label.setForeground(node.getForegroundColor());
-            
-            return label;
+                if (node.isLeaf()) {
+                    if (node.getParent() != null && node != node.getParent().getChildAt(node.getParent().getChildCount() - 1)) {
+                        Border dashed = BorderFactory.createDashedBorder(Color.BLACK, 5, 5);
+                        Border empty = BorderFactory.createEmptyBorder(-1, -1, 0, -1);
+                        Border compound = new CompoundBorder(empty, dashed);
+                        setBorder(compound);
+                    }
+                } else  {
+                    if (row != 0) {
+                        setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.BLACK));
+                    }
+                }
+                setText(" " + getText());
+            } else {
+                node = null;
+                setText("-Empty-");
+                setToolTipText(null);
+                setHorizontalAlignment(JLabel.CENTER);
+                setForeground(CConfig.getForegroundColor(CConfig.CONFIG_EMPTY));
+                setBackground(CConfig.getBackgroundColor(CConfig.CONFIG_EMPTY));
+            }
+            return this;
         }
-        
+
+        @Override
+        public Dimension getPreferredSize() {
+            Dimension pref = super.getPreferredSize();
+            // Make the Bays wider to prevent the tree from changing size upon opening a bay
+            // Keep a minimum height to avoid empty sections from having no height
+            int width = (!eSource.getEntity().usesWeaponBays() || ((node != null) && node.isLeaf())) ? 250 : 270;
+            return new Dimension(width, Math.max(25, pref.height + 5));
+        }
     };
+
+    @Override
+    public Dimension getMinimumSize() {
+        // Prevents layout problems with empty locations
+        return super.getPreferredSize();
+    }
 
     /**
      * Displays popup menu
@@ -898,7 +890,7 @@ public class BayWeaponCriticalTree extends JTree {
             if (location == SmallCraft.LOC_LWING) {
                 if (facing == FORWARD) {
                     return "Forward Left";
-                } else if (facing == AFT){
+                } else if (facing == AFT) {
                     return "Aft Left";
                 } else {
                     return "Left Wing";
@@ -906,7 +898,7 @@ public class BayWeaponCriticalTree extends JTree {
             } else if (location == SmallCraft.LOC_RWING) {
                 if (facing == FORWARD) {
                     return "Forward Right";
-                } else if (facing == AFT){
+                } else if (facing == AFT) {
                     return "Aft Right";
                 } else {
                     return "Right Wing";
@@ -1000,8 +992,8 @@ public class BayWeaponCriticalTree extends JTree {
      * Adds an equipment mount to a bay. Changes the equipment mount's location and updates the bay's
      * weapon or ammo list if necessary.
      * 
-     * @param bay
-     * @param eq
+     * @param bay The receiving weapon bay
+     * @param eq The equipment to add to the bay
      */
     public void addToBay(@Nullable Mounted bay, Mounted eq) {
         // Check that we have a bay
@@ -1133,7 +1125,7 @@ public class BayWeaponCriticalTree extends JTree {
 
     /**
      * Adds equipment to a location without a bay.
-     * @param eq
+     * @param eq The equipment to add to the location of this tree
      */
     public void addToLocation(Mounted eq) {
         moveToArc(eq);
@@ -1189,12 +1181,13 @@ public class BayWeaponCriticalTree extends JTree {
     /**
      * Called by the transfer handler when equipment is dropped on this location.
      *  
-     * @param eq
-     * @param path
+     * @param eq The equipment dropped on this location
+     * @param path The tree node under the drop point
      */
     public void addToArc(Mounted eq, TreePath path) {
         if ((null == path) || !(path.getLastPathComponent() instanceof EquipmentNode)) {
             addToBay(null, eq);
+            return;
         }
         EquipmentNode node = (EquipmentNode)path.getLastPathComponent();
         if (node instanceof BayNode) {
@@ -1234,7 +1227,7 @@ public class BayWeaponCriticalTree extends JTree {
 
     /**
      * Moves a bay and all its contents from another location
-     * @param bay
+     * @param bay The bay to move in
      */
     public void addBay(Mounted bay) {
         // First move the bay here
@@ -1285,9 +1278,8 @@ public class BayWeaponCriticalTree extends JTree {
      * that can use the ammo. For weapon enhancements this is determined by the presence of a weapon
      * that can use the enhancement that doesn't already have one.
      * 
-     * @param bay
-     * @param eq
-     * @return
+     * @param bay The target bay
+     * @param eq The equipment to test
      */
     private boolean canTakeEquipment(Mounted bay, Mounted eq) {
         if (eq.getType() instanceof WeaponType) {
@@ -1462,7 +1454,7 @@ public class BayWeaponCriticalTree extends JTree {
             }
             return sj.toString();
         } else {
-            return "-1"; //$NON-NLS-1$
+            return EMTPYSLOT;
         }
     }
     
@@ -1497,5 +1489,37 @@ public class BayWeaponCriticalTree extends JTree {
         refresh.refreshPreview();
         refresh.refreshStatus();
         refresh.refreshSummary();
+    }
+
+    private void restoreExpandedBays(List<Integer> expandedBayIds) {
+        TreeNode root = (TreeNode) model.getRoot();
+        if ((root == null) || (expandedBayIds == null)) {
+            return;
+        }
+        for (int n = 0; n < model.getChildCount(root); n++) {
+            Object node = model.getChild(root, n);
+            if (node instanceof BayNode) {
+                if (expandedBayIds.contains(bayIdMap.get(((BayNode) node).getMounted()))) {
+                    Object[] pathObjs = new Object[2];
+                    pathObjs[0] = root;
+                    pathObjs[1] = node;
+                    expandPath(new TreePath(pathObjs));
+                }
+            }
+        }
+    }
+
+    private List<Integer> getExpandedBayIds() {
+        List<Integer> result = new ArrayList<>();
+        for (int i = 0; i < getRowCount(); i++) {
+            TreePath currPath = getPathForRow(i);
+            if (isExpanded(currPath)) {
+                Object entry = currPath.getLastPathComponent();
+                if (entry instanceof BayNode) {
+                    result.add(bayIdMap.get(((BayNode) entry).getMounted()));
+                }
+            }
+        }
+        return result;
     }
 }

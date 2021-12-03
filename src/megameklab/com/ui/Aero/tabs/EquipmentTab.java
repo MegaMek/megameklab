@@ -179,8 +179,6 @@ public class EquipmentTab extends ITab implements ActionListener {
             }
         });
         equipmentScroll.setViewportView(equipmentTable);
-        equipmentScroll.setMinimumSize(new java.awt.Dimension(300, 200));
-        equipmentScroll.setPreferredSize(new java.awt.Dimension(300, 200));
 
         masterEquipmentList = new EquipmentTableModel(eSource.getEntity(), eSource.getTechManager());
         masterEquipmentTable.setModel(masterEquipmentList);
@@ -251,8 +249,6 @@ public class EquipmentTab extends ITab implements ActionListener {
         });
 
         txtFilter.setText("");
-        txtFilter.setMinimumSize(new java.awt.Dimension(200, 28));
-        txtFilter.setPreferredSize(new java.awt.Dimension(200, 28));
         txtFilter.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void changedUpdate(DocumentEvent e) {
@@ -292,7 +288,14 @@ public class EquipmentTab extends ITab implements ActionListener {
         gbc = new GridBagConstraints();
 
         JPanel loadoutPanel = new JPanel(new GridBagLayout());
-        JPanel databasePanel = new JPanel(new GridBagLayout());
+        JPanel databasePanel = new JPanel(new GridBagLayout()) {
+            @Override
+            // Allow downsizing the database with the Splitpane for small screen sizes
+            public Dimension getMinimumSize() {
+                Dimension prefSize = super.getPreferredSize();
+                return new Dimension(prefSize.width / 2, prefSize.height);
+            }
+        };
 
         loadoutPanel.setBorder(BorderFactory.createTitledBorder("Current Loadout"));
         databasePanel.setBorder(BorderFactory.createTitledBorder("Equipment Database"));
@@ -386,9 +389,7 @@ public class EquipmentTab extends ITab implements ActionListener {
         gbc.weighty = 1.0;
         loadoutPanel.add(equipmentScroll, gbc);
 
-        JSplitPane pane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-                new JScrollPane(loadoutPanel),
-                new JScrollPane(databasePanel));
+        JSplitPane pane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, loadoutPanel, databasePanel);
         pane.setOneTouchExpandable(true);
         setLayout(new BorderLayout());
         add(pane, BorderLayout.CENTER);
@@ -552,14 +553,10 @@ public class EquipmentTab extends ITab implements ActionListener {
                 equipmentList.removeMounted(row);
             }
             equipmentList.removeCrits(selectedRows);
-            if (getAero().usesWeaponBays()) {
-                removeEmptyBays();
-            }
+            UnitUtil.removeEmptyBays(getAero());
         } else if (e.getActionCommand().equals(REMOVEALL_COMMAND)) {
             removeAllEquipment();
-            if (getAero().usesWeaponBays()) {
-                removeEmptyBays();
-            }
+            UnitUtil.removeEmptyBays(getAero());
         } else {
             return;
         }
@@ -580,14 +577,6 @@ public class EquipmentTab extends ITab implements ActionListener {
         equipmentList.removeAllCrits();
     }
     
-    private void removeEmptyBays() {
-        List<Mounted> emptyBays = getAero().getWeaponBayList().stream()
-                .filter(bay -> bay.getBayWeapons().isEmpty()).collect(Collectors.toList());
-        for (Mounted bay : emptyBays) {
-            UnitUtil.removeMounted(getAero(), bay);
-        }
-    }
-
     private void fireTableRefresh() {
         equipmentList.updateUnit(getAero());
         equipmentList.refreshModel();

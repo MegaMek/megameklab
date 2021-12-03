@@ -59,26 +59,26 @@ repositories {
 
 configurations {
     jarbundler
-
     all*.exclude group: 'xml-apis', module: 'xml-apis'
 }
 
 dependencies {
     implementation "org.megamek:megamek${mmBranchTag}:${version}"
     
-    implementation 'org.apache.xmlgraphics:batik-dom:1.10'
-    implementation 'org.apache.xmlgraphics:batik-codec:1.10'
-    implementation 'org.apache.xmlgraphics:batik-rasterizer:1.10'
-    implementation ('org.apache.xmlgraphics:batik-bridge:1.10') {
+    implementation 'org.apache.xmlgraphics:batik-dom:1.13'
+    implementation 'org.apache.xmlgraphics:batik-codec:1.13'
+    implementation 'org.apache.xmlgraphics:batik-rasterizer:1.13'
+    implementation ('org.apache.xmlgraphics:batik-bridge:1.13') {
         // We don't need the python and javascript engine taking up space
         exclude group: 'org.python', module: 'jython'
         exclude group: 'org.mozilla', module: 'rhino'
     }
-    implementation 'org.apache.xmlgraphics:batik-svggen:1.10'
-    implementation 'org.apache.xmlgraphics:fop:2.3'
-    implementation 'org.apache.pdfbox:pdfbox:2.0.19'
-
-    jarbundler 'com.ultramixer.jarbundler:jarbundler-core:3.3.0'
+    implementation 'org.apache.xmlgraphics:batik-svggen:1.13'
+    implementation ('org.apache.xmlgraphics:fop:2.5') {
+        // We don't need this proprietary module
+        exclude group: 'com.sun.media', module: 'jai-codec'
+    }
+    implementation 'org.apache.pdfbox:pdfbox:2.0.22'
 }
 
 mainClassName = 'megameklab.com.MegaMekLab'
@@ -98,8 +98,6 @@ ext {
     mavenPublishDir = "${buildDir}/mavenrepo"
     scriptsDir = "${projectDir}/scripts"
     scriptTemplate = "${scriptsDir}/startScriptTemplate.txt"
-    osxApplicationStub = "${scriptsDir}/universalJavaApplicationStub"
-    osxBundleDir = "${buildDir}/osxBundle"
 }
 
 task setMMDir {
@@ -118,6 +116,7 @@ task compileMM (type: GradleBuild) {
     description = 'Compiles the MM directory for packaging in a Jar'
     
     buildFile = "${mmDir}/build.gradle"
+    buildName = "mml-compile-mm"
     dir = "${mmDir}"
     tasks = [ 'compileTestJava' ]
 }
@@ -210,42 +209,10 @@ task createStartScripts (type: CreateStartScripts) {
     }
 }
 
-task createOSXBundle (dependsOn: jar) {
-    ext.appName = 'MegaMekLab'
-    // The jar directory is hard coded into jarbundler and has no public accessor
-    ext.jarSubdir = "${appName}.app/Contents/Resources/Java"
-    doLast {
-        mkdir osxBundleDir
-        ant.taskdef(name: 'jarbundler',
-            classname: 'com.ultramixer.jarbundler.JarBundler',
-            classpath: configurations.jarbundler.asPath)
-        ant.jarbundler (
-                name: ext.appName,
-                shortName: 'MegaMekLab',
-                build: rootProject.version,
-                version: rootProject.version.replace('-SNAPSHOT', ''),
-                bundleid: 'org.megamek.MegaMekLab',
-                mainClass: project.mainClassName,
-                stubfile: osxApplicationStub,
-                dir: osxBundleDir,
-                jar: "${jar.destinationDirectory.get()}/${jar.archiveFileName.get()}",
-                jvmversion: '1.8+',
-                icon: "${projectDir}/${data}/images/misc/megameklab.icns",
-                useJavaXKey: 'true',
-                workingdirectory: '$APP_PACKAGE/../',
-                extraclasspath: files(project.sourceSets.main.runtimeClasspath.files)
-                    .filter { it.name.endsWith(".jar") }.collect { '$JAVAROOT/lib/' + it.name}.join(","),
-                vmoptions: '-Xmx1024m') {
-            javaproperty (name: 'apple.awt.brushMetal', value: 'true')
-            javaproperty (name: 'apple.laf.useScreenMenuBar', value: 'true')
-        }
-    }
-}
-
 distributions {
     // Creates tasks which package distribution with MM jar and startup script in root directory
     unix {
-        baseName = rootProject.name.toLowerCase()
+        distributionBaseName = rootProject.name.toLowerCase()
         contents {
             from (fileStagingDir) {
                 exclude '**/history.txt'
@@ -266,7 +233,7 @@ distributions {
     }
     // Creates tasks which package distribution with MM jar wrapped in Windows executable
     windows {
-        baseName = 'megameklab-windows'
+        distributionBaseName = 'megameklab-windows'
         contents {
             from ("${buildDir}/launch4j") {
                 include '*.exe'
@@ -279,21 +246,6 @@ distributions {
             }
             from (mmJar) {
                 into "${lib}"
-            }
-            duplicatesStrategy = 'exclude'
-        }
-    }
-    mac {
-        baseName = 'megameklab-mac'
-        contents {
-            from osxBundleDir
-            from fileStagingDir
-            from (mmJar) {
-                into "${createOSXBundle.jarSubdir}/${lib}" 
-            }
-            from (project.sourceSets.main.runtimeClasspath.files
-                    .findAll { it.name.endsWith(".jar") && !it.name.toLowerCase().startsWith("megamek") }) {
-                into "${createOSXBundle.jarSubdir}/${lib}" 
             }
             duplicatesStrategy = 'exclude'
         }
@@ -328,14 +280,6 @@ unixDistTar {
     dependsOn startScripts
     archiveExtension = 'tar.gz'
     compression = Compression.GZIP
-}
-
-macDistTar {
-    description = 'Creates mac OSX distribution'
-    dependsOn stageFiles
-    dependsOn createOSXBundle
-    archiveExtension = 'tar.bz2'
-    compression = Compression.BZIP2
 }
 
 // The repository can only be cloned into an empty directory so we need to delete anything left over
@@ -397,7 +341,6 @@ task assembleDist(overwrite: true) {
     dependsOn test
     dependsOn unixDistTar
     dependsOn windowsDistZip
-//    dependsOn macDistTar
 }
 
 task buildFromRepo (type: GradleBuild) {
@@ -407,6 +350,7 @@ task buildFromRepo (type: GradleBuild) {
     dependsOn cloneMMRepo
     
     buildFile = "${repoDir}/build.gradle"
+    buildName = "mml-repo-mm"
     dir = "${repoDir}"
     tasks = [ 'assembleDist' ]
 }
