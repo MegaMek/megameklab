@@ -209,10 +209,7 @@ public class CriticalView extends IView {
             }
             weightLabel.setText(weightTxt);
 
-            leftArmPanel.validate();
-            leftArmPanel.validate();
-            rightArmPanel.validate();
-            turretPanel.validate();
+            validate();
         }
     }
     

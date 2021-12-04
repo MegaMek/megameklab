@@ -99,12 +99,6 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
         return new Dimension(width, height);
     }
 
-    @Override
-    public Dimension getMaximumSize() {
-        Dimension pref = getPreferredSize();
-        return new Dimension(pref.width * 2, pref.height);
-    }
-
     private CriticalSlot getCrit(int slot) {
         int location = getCritLocation();
         CriticalSlot crit = null;
