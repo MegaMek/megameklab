@@ -64,7 +64,7 @@ public class BuildTab extends ITab implements ActionListener {
 
         GridBagConstraints gbc = new GridBagConstraints();
 
-        critView = new CriticalView(eSource, true, refresh);
+        critView = new CriticalView(eSource, refresh);
         buildView = new BuildView(eSource, refresh);
 
         autoFillButton.setMnemonic('A');

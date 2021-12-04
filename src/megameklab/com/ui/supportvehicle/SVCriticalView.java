@@ -1,6 +1,6 @@
 /*
  * MegaMekLab
- * Copyright (C) 2019 The MegaMek Team
+ * Copyright (C) 2019, 2021 The MegaMek Team
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,100 +18,107 @@
  */
 package megameklab.com.ui.supportvehicle;
 
+import megamek.client.ui.swing.util.UIUtil;
 import megamek.common.*;
-import megamek.common.loaders.MtfFile;
-import megameklab.com.MegaMekLab;
+import megamek.common.annotations.Nullable;
 import megameklab.com.ui.EntitySource;
+import megameklab.com.ui.util.CritCellUtil;
 import megameklab.com.util.DropTargetCriticalList;
 import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
 
 import javax.swing.*;
-import javax.swing.border.TitledBorder;
 import java.awt.*;
+import java.util.Map;
 import java.util.Vector;
 
 /**
+ * The Crit Slots view for a Support Vehicle (all motive types)
  *
+ * @author neoancient
+ * @author Simon (Juliez)
  */
 public class SVCriticalView extends IView {
 
-    private JPanel leftPanel = new JPanel();
-    private JPanel rightPanel = new JPanel();
-    private JPanel frontPanel = new JPanel();
-    private JPanel rearPanel = new JPanel();
-    private JPanel bodyPanel = new JPanel();
-    private JPanel turretPanel = new JPanel();
-    private JPanel dualTurretPanel = new JPanel();
-
-    private JPanel rearLeftPanel = new JPanel();
-    private JPanel rearRightPanel = new JPanel();
-
-    private JPanel middlePanel2 = new JPanel();
-    private JPanel fullTurretPanel = new JPanel();
+    private final JPanel leftPanel = new JPanel();
+    private final JPanel rightPanel = new JPanel();
+    private final JPanel frontPanel = new JPanel();
+    private final JPanel rearPanel = new JPanel();
+    private final JPanel bodyPanel = new JPanel();
+    private final JPanel rearLeftPanel = new JPanel();
+    private final JPanel rearRightPanel = new JPanel();
+    private final JPanel middlePanel2 = new JPanel();
+    private final JPanel turretPanel = new UIUtil.FixedYPanel();
+    private final JPanel dualTurretPanel = new UIUtil.FixedYPanel();
+    private final JPanel rotorPanel = new UIUtil.FixedYPanel();
     private RefreshListener refresh;
 
-    private boolean showEmpty;
+    private final Map<Integer, JComponent> aeroLocations = Map.of(FixedWingSupport.LOC_NOSE, frontPanel, FixedWingSupport.LOC_LWING, leftPanel,
+            FixedWingSupport.LOC_RWING, rightPanel, FixedWingSupport.LOC_BODY, bodyPanel, FixedWingSupport.LOC_AFT, rearPanel);
 
-    SVCriticalView(EntitySource eSource, boolean showEmpty, RefreshListener refresh) {
+    private final Map<Integer, JComponent> vtolLocations = Map.of(Tank.LOC_FRONT, frontPanel, Tank.LOC_LEFT, leftPanel,
+            Tank.LOC_RIGHT, rightPanel, Tank.LOC_BODY, bodyPanel, Tank.LOC_REAR, rearPanel, VTOL.LOC_ROTOR, rotorPanel,
+            VTOL.LOC_TURRET, turretPanel);
+
+    private final Map<Integer, JComponent> tankLocations = Map.of(Tank.LOC_FRONT, frontPanel, Tank.LOC_LEFT, leftPanel,
+            Tank.LOC_RIGHT, rightPanel, Tank.LOC_BODY, bodyPanel, Tank.LOC_REAR, rearPanel, Tank.LOC_TURRET, turretPanel,
+            Tank.LOC_TURRET_2, dualTurretPanel);
+
+    private final Map<Integer, JComponent> superHvyLocations = Map.of(Tank.LOC_FRONT, frontPanel,
+            SuperHeavyTank.LOC_FRONTLEFT, leftPanel, SuperHeavyTank.LOC_FRONTRIGHT, rightPanel,
+            Tank.LOC_BODY, bodyPanel, SuperHeavyTank.LOC_REAR, rearPanel, SuperHeavyTank.LOC_TURRET, turretPanel,
+            SuperHeavyTank.LOC_TURRET_2, dualTurretPanel,
+            SuperHeavyTank.LOC_REARLEFT, rearLeftPanel, SuperHeavyTank.LOC_REARRIGHT, rearRightPanel);
+
+    SVCriticalView(EntitySource eSource, RefreshListener refresh) {
         super(eSource);
-        this.showEmpty = showEmpty;
         this.refresh = refresh;
 
-        JPanel mainPanel = new JPanel();
+        frontPanel.setBorder(CritCellUtil.locationBorderNoLine("Front"));
+        leftPanel.setBorder(CritCellUtil.locationBorderNoLine("Left Side"));
+        bodyPanel.setBorder(CritCellUtil.locationBorderNoLine("Body"));
+        rightPanel.setBorder(CritCellUtil.locationBorderNoLine("Right Side"));
+        rearLeftPanel.setBorder(CritCellUtil.locationBorderNoLine("Rear Left Side"));
+        rearRightPanel.setBorder(CritCellUtil.locationBorderNoLine("Rear Right Side"));
+        rearPanel.setBorder(CritCellUtil.locationBorderNoLine("Rear"));
+        rotorPanel.setBorder(CritCellUtil.locationBorderNoLine("Rotor"));
+        dualTurretPanel.setBorder(CritCellUtil.locationBorderNoLine("Front Turret"));
 
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-
-        JPanel topPanel = new JPanel();
-        topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
-        JPanel middlePanel = new JPanel();
-        middlePanel.setLayout(new BoxLayout(middlePanel, BoxLayout.X_AXIS));
-        middlePanel2.setLayout(new BoxLayout(middlePanel2, BoxLayout.X_AXIS));
-        JPanel bottomPanel = new JPanel();
-        bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.X_AXIS));
-        fullTurretPanel.setLayout(new BoxLayout(fullTurretPanel, BoxLayout.Y_AXIS));
-
+        Box topPanel = Box.createVerticalBox();
         topPanel.add(frontPanel);
-        topPanel.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createEmptyBorder(), "Front", TitledBorder.TOP,
-                TitledBorder.DEFAULT_POSITION));
-        mainPanel.add(topPanel);
 
+        Box middlePanel = Box.createHorizontalBox();
         middlePanel.add(leftPanel);
-        leftPanel.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createEmptyBorder(), "Left Side",
-                TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
         middlePanel.add(bodyPanel);
-        bodyPanel.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createEmptyBorder(), "Body", TitledBorder.TOP,
-                TitledBorder.DEFAULT_POSITION));
         middlePanel.add(rightPanel);
-        rightPanel.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createEmptyBorder(), "Right Side",
-                TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
-        mainPanel.add(middlePanel);
+        middlePanel.setBorder(BorderFactory.createEmptyBorder(8, 0, 0, 0));
 
         middlePanel2.add(rearLeftPanel);
-        rearLeftPanel.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createEmptyBorder(), "Rear Left Side",
-                TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
         middlePanel2.add(new JPanel());
         middlePanel2.add(rearRightPanel);
-        rearRightPanel.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createEmptyBorder(), "Rear Right Side",
-                TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
-        mainPanel.add(middlePanel2);
+        middlePanel2.setBorder(BorderFactory.createEmptyBorder(8, 0, 0, 0));
 
-        middlePanel2.setVisible(getEntity().isSuperHeavy() && !(getEntity() instanceof VTOL));
-
-        rearPanel.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createEmptyBorder(), "Rear", TitledBorder.TOP,
-                TitledBorder.DEFAULT_POSITION));
+        Box bottomPanel = Box.createHorizontalBox();
         bottomPanel.add(rearPanel);
-        mainPanel.add(bottomPanel);
+        bottomPanel.setBorder(BorderFactory.createEmptyBorder(8, 0, 0, 0));
 
-        this.add(mainPanel);
+        Box chassisPanel = Box.createVerticalBox();
+        chassisPanel.add(topPanel);
+        chassisPanel.add(middlePanel);
+        chassisPanel.add(middlePanel2);
+        chassisPanel.add(bottomPanel);
 
+        Box fullTurretPanel = Box.createVerticalBox();
+        fullTurretPanel.add(dualTurretPanel);
+        fullTurretPanel.add(Box.createVerticalStrut(10));
+        fullTurretPanel.add(turretPanel);
+        fullTurretPanel.add(Box.createVerticalStrut(10));
+        fullTurretPanel.add(rotorPanel);
+
+        Box mainPanel = Box.createHorizontalBox();
+        mainPanel.add(chassisPanel);
+        mainPanel.add(fullTurretPanel);
+        add(mainPanel);
     }
 
     public void updateRefresh(RefreshListener refresh) {
@@ -126,208 +133,84 @@ public class SVCriticalView extends IView {
         rearPanel.removeAll();
         turretPanel.removeAll();
         dualTurretPanel.removeAll();
-        fullTurretPanel.removeAll();
         rearLeftPanel.removeAll();
         rearRightPanel.removeAll();
-        this.remove(fullTurretPanel);
+        rotorPanel.removeAll();
 
-        if (getEntity() instanceof VTOL) {
-            if (getVTOL().hasNoTurret()) {
-                turretPanel.setBorder(BorderFactory.createTitledBorder(
-                        BorderFactory.createEmptyBorder(), "Rotor",
-                        TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
-                fullTurretPanel.add(turretPanel);
-                this.add(fullTurretPanel);
-            } else {
-                dualTurretPanel.setBorder(BorderFactory.createTitledBorder(
-                        BorderFactory.createEmptyBorder(), "Turret",
-                        TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
-                fullTurretPanel.add(dualTurretPanel);
-                turretPanel.setBorder(BorderFactory.createTitledBorder(
-                        BorderFactory.createEmptyBorder(), "Rotor",
-                        TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
-                fullTurretPanel.add(turretPanel);
-                this.add(fullTurretPanel);
-            }
-        } else if (getEntity() instanceof Tank) {
-            if (!getTank().hasNoDualTurret()) {
-                dualTurretPanel.setBorder(BorderFactory.createTitledBorder(
-                        BorderFactory.createEmptyBorder(), "Front Turret",
-                        TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
-                fullTurretPanel.add(dualTurretPanel);
-                turretPanel.setBorder(BorderFactory.createTitledBorder(
-                        BorderFactory.createEmptyBorder(), "Rear Turret",
-                        TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
-                fullTurretPanel.add(turretPanel);
-                this.add(fullTurretPanel);
-            } else if (!getTank().hasNoTurret()) {
-                turretPanel.setBorder(BorderFactory.createTitledBorder(
-                        BorderFactory.createEmptyBorder(), "Turret",
-                        TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
-                fullTurretPanel.add(turretPanel);
-                this.add(fullTurretPanel);
-            }
+        rotorPanel.setVisible(isVTOL());
+        turretPanel.setVisible((getEntity() instanceof Tank) && !getTank().hasNoTurret());
+        dualTurretPanel.setVisible((getEntity() instanceof Tank) && !getTank().hasNoDualTurret());
+        middlePanel2.setVisible((getEntity() instanceof Tank) && getTank().isSuperHeavy() && !isVTOL());
+        if ((getEntity() instanceof Tank) && getTank().hasNoDualTurret()) {
+            turretPanel.setBorder(CritCellUtil.locationBorderNoLine("Turret"));
+        } else {
+            turretPanel.setBorder(CritCellUtil.locationBorderNoLine("Rear Turret"));
         }
 
         synchronized (getEntity()) {
+            System.out.println(getEntity().locations());
             for (int location = 0; location < getEntity().locations(); location++) {
-                // JPanel locationPanel = new JPanel();
                 Vector<String> critNames = new Vector<>(1, 1);
 
                 for (int slot = 0; slot < getEntity().getNumberOfCriticals(location); slot++) {
                     CriticalSlot cs = getEntity().getCritical(location, slot);
                     if (cs == null) {
                         continue;
-                    } else if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
+                    }
+                    if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
                         critNames.add(getMech().getSystemName(cs.getIndex()));
                     } else if (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) {
-                        try {
-                            Mounted m = cs.getMount();
-                            // Critical didn't get removed. Remove it now.
-                            if (m == null) {
-                                getEntity().setCritical(location, slot, null);
-                                continue;
-                            }
-                            StringBuilder critName = new StringBuilder(m.getName());
-                            if (critName.length() > 25) {
-                                critName.setLength(25);
-                                critName.append("...");
-                            }
-                            if (m.isRearMounted()) {
-                                critName.append(" (R)");
-                            }
-                            if (m.isSponsonTurretMounted()) {
-                                critName.append(" (ST)");
-                            }
-                            if (m.isPintleTurretMounted()) {
-                                critName.append(" (PT)");
-                            }
-                            critNames.add(critName.toString());
-
-                        } catch (Exception ex) {
-                            MegaMekLab.getLogger().error(ex);
+                        Mounted m = cs.getMount();
+                        // Critical didn't get removed. Remove it now.
+                        if (m == null) {
+                            getEntity().setCritical(location, slot, null);
+                            continue;
                         }
+                        StringBuilder critName = new StringBuilder(m.getName());
+                        if (critName.length() > 25) {
+                            critName.setLength(25);
+                            critName.append("...");
+                        }
+                        if (m.isRearMounted()) {
+                            critName.append(" (R)");
+                        }
+                        if (m.isSponsonTurretMounted()) {
+                            critName.append(" (ST)");
+                        }
+                        if (m.isPintleTurretMounted()) {
+                            critName.append(" (PT)");
+                        }
+                        critNames.add(critName.toString());
                     }
                 }
 
                 if (critNames.size() == 0) {
-                    critNames.add(MtfFile.EMPTY);
+                    critNames.add(CritCellUtil.EMPTYCELLTEXT);
                 }
-                DropTargetCriticalList<String> criticalSlotList = new DropTargetCriticalList<>(critNames, eSource, refresh, showEmpty);
+                DropTargetCriticalList<String> criticalSlotList =
+                        new DropTargetCriticalList<>(critNames, eSource, refresh, true);
                 criticalSlotList.setVisibleRowCount(critNames.size());
                 criticalSlotList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-                criticalSlotList.setFont(new Font("Arial", Font.PLAIN, 10));
-                criticalSlotList.setName(Integer.toString(location));
-                criticalSlotList.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.BLACK.darker()));
-                if (getEntity().isAero()) {
-                    switch (location) {
-                        case FixedWingSupport.LOC_NOSE:
-                            frontPanel.add(criticalSlotList);
-                            break;
-                        case FixedWingSupport.LOC_LWING:
-                            leftPanel.add(criticalSlotList);
-                            break;
-                        case FixedWingSupport.LOC_RWING:
-                            rightPanel.add(criticalSlotList);
-                            break;
-                        case FixedWingSupport.LOC_BODY:
-                            bodyPanel.add(criticalSlotList);
-                            break;
-                        case FixedWingSupport.LOC_AFT:
-                            rearPanel.add(criticalSlotList);
-                            break;
-                    }
-                } else if (!(getEntity()).isSuperHeavy()) {
-                    switch (location) {
-                        case Tank.LOC_FRONT:
-                            frontPanel.add(criticalSlotList);
-                            break;
-                        case Tank.LOC_LEFT:
-                            leftPanel.add(criticalSlotList);
-                            break;
-                        case Tank.LOC_RIGHT:
-                            rightPanel.add(criticalSlotList);
-                            break;
-                        case Tank.LOC_BODY:
-                            bodyPanel.add(criticalSlotList);
-                            break;
-                        case Tank.LOC_REAR:
-                            rearPanel.add(criticalSlotList);
-                            break;
-                        case Tank.LOC_TURRET:
-                            turretPanel.add(criticalSlotList);
-                            break;
-                        case Tank.LOC_TURRET_2:
-                            dualTurretPanel.add(criticalSlotList);
-                            break;
-                    }
-                } else if (getEntity() instanceof VTOL) {
-                    switch (location) {
-                        case Tank.LOC_FRONT:
-                            frontPanel.add(criticalSlotList);
-                            break;
-                        case Tank.LOC_LEFT:
-                            leftPanel.add(criticalSlotList);
-                            break;
-                        case Tank.LOC_RIGHT:
-                            rightPanel.add(criticalSlotList);
-                            break;
-                        case Tank.LOC_BODY:
-                            bodyPanel.add(criticalSlotList);
-                            break;
-                        case Tank.LOC_REAR:
-                            rearPanel.add(criticalSlotList);
-                            break;
-                        case VTOL.LOC_ROTOR:
-                            turretPanel.add(criticalSlotList);
-                            break;
-                        case VTOL.LOC_TURRET:
-                            dualTurretPanel.add(criticalSlotList);
-                            break;
-                    }
-                } else {
-                    switch (location) {
-                        case Tank.LOC_FRONT:
-                            frontPanel.add(criticalSlotList);
-                            break;
-                        case SuperHeavyTank.LOC_FRONTLEFT:
-                            leftPanel.add(criticalSlotList);
-                            break;
-                        case SuperHeavyTank.LOC_FRONTRIGHT:
-                            rightPanel.add(criticalSlotList);
-                            break;
-                        case SuperHeavyTank.LOC_REARLEFT:
-                            rearLeftPanel.add(criticalSlotList);
-                            break;
-                        case SuperHeavyTank.LOC_REARRIGHT:
-                            rearRightPanel.add(criticalSlotList);
-                            break;
-                        case Tank.LOC_BODY:
-                            bodyPanel.add(criticalSlotList);
-                            break;
-                        case SuperHeavyTank.LOC_REAR:
-                            rearPanel.add(criticalSlotList);
-                            break;
-                        case SuperHeavyTank.LOC_TURRET:
-                            turretPanel.add(criticalSlotList);
-                            break;
-                        case SuperHeavyTank.LOC_TURRET_2:
-                            dualTurretPanel.add(criticalSlotList);
-                            break;
-                    }
+                criticalSlotList.setName(location + "");
+                criticalSlotList.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+                if (panelForLocation(location) != null) {
+                    panelForLocation(location).add(criticalSlotList);
                 }
             }
-            middlePanel2.setVisible(getEntity().isSuperHeavy() && !(getEntity() instanceof VTOL));
-            frontPanel.repaint();
-            bodyPanel.repaint();
-            leftPanel.repaint();
-            rightPanel.repaint();
-            rearLeftPanel.repaint();
-            rearRightPanel.repaint();
-            rearPanel.repaint();
-            turretPanel.repaint();
-            dualTurretPanel.repaint();
-
+            validate();
         }
     }
+
+    private @Nullable JComponent panelForLocation(int location) {
+        if (getEntity().isAero()) {
+            return aeroLocations.get(location);
+        } else if (isVTOL()) {
+            return vtolLocations.get(location);
+        } else if (getTank().isSuperHeavy()) {
+            return superHvyLocations.get(location);
+        } else {
+            return tankLocations.get(location);
+        }
+    }
+
 }

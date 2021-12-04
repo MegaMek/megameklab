@@ -1,5 +1,6 @@
 /*
  * MegaMekLab - Copyright (C) 2018 - The MegaMek Team
+ * Copyright (c) 2021 - The MegaMek Team. All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -13,40 +14,31 @@
  */
 package megameklab.com.ui.protomek;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import javax.swing.BorderFactory;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.border.TitledBorder;
-
 import megamek.common.Mounted;
 import megamek.common.Protomech;
 import megamek.common.verifier.TestProtomech;
 import megameklab.com.ui.EntitySource;
+import megameklab.com.ui.util.CritCellUtil;
 import megameklab.com.ui.util.ProtomekMountList;
 import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
 
+import javax.swing.*;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 /**
- * Displays protomech equipment by location
- * 
- * @author Neoancient
+ * The Crit Slots view for a ProtoMek
  *
+ * @author neoancient
+ * @author Simon (Juliez)
  */
 public class ProtomekCriticalView extends IView {
-    private static final long serialVersionUID = 1556099212988732928L;
-    
-    private final JPanel mainGunPanel = new JPanel();
-    private final JPanel torsoPanel = new JPanel();
-    private final JPanel leftPanel = new JPanel();
-    private final JPanel rightPanel = new JPanel();
-    private final JPanel bodyPanel = new JPanel();
+
+    private final Box mainGunPanel = Box.createVerticalBox();
+    private final Box leftArmPanel = Box.createVerticalBox();
+    private final Box rightArmPanel = Box.createVerticalBox();
 
     private final ProtomekMountList mainGunList;
     private final ProtomekMountList torsoList;
@@ -54,103 +46,70 @@ public class ProtomekCriticalView extends IView {
     private final ProtomekMountList rightList;
     private final ProtomekMountList bodyList;
 
-    private final JLabel mainGunSpace = new JLabel("",JLabel.LEFT);
-    private final JLabel torsoSpace = new JLabel("",JLabel.LEFT);
-    private final JLabel leftSpace = new JLabel("",JLabel.LEFT);
-    private final JLabel rightSpace = new JLabel("",JLabel.LEFT);
+    private final JLabel mainGunSpace = new JLabel();
+    private final JLabel torsoSpace = new JLabel();
+    private final JLabel leftSpace = new JLabel();
+    private final JLabel rightSpace = new JLabel();
 
-    private final JLabel torsoWeight = new JLabel("",JLabel.LEFT);
-    private final JLabel leftWeight = new JLabel("",JLabel.LEFT);
-    private final JLabel rightWeight = new JLabel("",JLabel.LEFT);
+    private final JLabel torsoWeight = new JLabel();
+    private final JLabel leftWeight = new JLabel();
+    private final JLabel rightWeight = new JLabel();
 
     public ProtomekCriticalView(EntitySource eSource, RefreshListener refresh) {
         super(eSource);
 
-        JPanel mainPanel = new JPanel();
+        Box mainPanel = Box.createHorizontalBox();
+        Box leftPanel = Box.createVerticalBox();
+        Box middlePanel = Box.createVerticalBox();
+        Box rightPanel = Box.createVerticalBox();
 
-        mainPanel.setLayout(new GridBagLayout());
+        mainGunSpace.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+        torsoSpace.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+        leftSpace.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+        rightSpace.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+        torsoWeight.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+        leftWeight.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+        rightWeight.setAlignmentX(JComponent.CENTER_ALIGNMENT);
 
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.anchor = GridBagConstraints.CENTER;
-        gbc.insets = new Insets(10, 10, 10, 10);
-        gbc.gridx = 1;
-        gbc.gridy = 0;
-        mainPanel.add(mainGunPanel, gbc);
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        mainPanel.add(leftPanel, gbc);
-        gbc.gridx = 1;
-        gbc.gridy = 1;
-        mainPanel.add(torsoPanel, gbc);
-        gbc.gridx = 2;
-        gbc.gridy = 1;
-        mainPanel.add(rightPanel, gbc);
-        gbc.gridx = 1;
-        gbc.gridy = 2;
-        mainPanel.add(bodyPanel, gbc);
-        
-        gbc = new GridBagConstraints();
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.insets = new Insets(5, 5, 5, 5);
-        gbc.gridx = 0;
-
-        mainGunPanel.setLayout(new GridBagLayout());
-        mainGunPanel.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createEmptyBorder(), "Main Gun",
-                TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
+        mainGunPanel.setBorder(CritCellUtil.locationBorder("Main Gun"));
         mainGunList = new ProtomekMountList(eSource, refresh, Protomech.LOC_MAINGUN);
-        gbc.gridy = 0;
-        mainGunPanel.add(mainGunList, gbc);
-        gbc.gridy++;
-        mainGunPanel.add(mainGunSpace, gbc);
+        mainGunPanel.add(mainGunList);
+        mainGunPanel.add(mainGunSpace);
         
-        leftPanel.setLayout(new GridBagLayout());
-        leftPanel.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createEmptyBorder(), "Left Arm",
-                TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
+        leftArmPanel.setBorder(CritCellUtil.locationBorder("Left Arm"));
         leftList = new ProtomekMountList(eSource, refresh, Protomech.LOC_LARM);
-        gbc.gridy = 0;
-        leftPanel.add(leftList, gbc);
-        gbc.gridy++;
-        leftPanel.add(leftSpace, gbc);
-        gbc.gridy++;
-        leftPanel.add(leftWeight, gbc);
-        gbc.gridy++;
+        leftArmPanel.add(leftList);
+        leftArmPanel.add(leftSpace);
+        leftArmPanel.add(leftWeight);
 
-        torsoPanel.setLayout(new GridBagLayout());
-        torsoPanel.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createEmptyBorder(), "Torso", TitledBorder.TOP,
-                TitledBorder.DEFAULT_POSITION));
+        Box torsoPanel = Box.createVerticalBox();
+        torsoPanel.setBorder(CritCellUtil.locationBorder("Torso"));
         torsoList = new ProtomekMountList(eSource, refresh, Protomech.LOC_TORSO);
-        gbc.gridy = 0;
-        torsoPanel.add(torsoList, gbc);
-        gbc.gridy++;
-        torsoPanel.add(torsoSpace, gbc);
-        gbc.gridy++;
-        torsoPanel.add(torsoWeight, gbc);
-        gbc.gridy++;
+        torsoPanel.add(torsoList);
+        torsoPanel.add(torsoSpace);
+        torsoPanel.add(torsoWeight);
 
-        rightPanel.setLayout(new GridBagLayout());
-        rightPanel.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createEmptyBorder(), "Right Arm",
-                TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
+        rightArmPanel.setBorder(CritCellUtil.locationBorder("Right Arm"));
         rightList = new ProtomekMountList(eSource, refresh, Protomech.LOC_RARM);
-        gbc.gridy = 0;
-        rightPanel.add(rightList, gbc);
-        gbc.gridy++;
-        rightPanel.add(rightSpace, gbc);
-        gbc.gridy++;
-        rightPanel.add(rightWeight, gbc);
+        rightArmPanel.add(rightList);
+        rightArmPanel.add(rightSpace);
+        rightArmPanel.add(rightWeight);
 
-        bodyPanel.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createEmptyBorder(), "General", TitledBorder.TOP,
-                TitledBorder.DEFAULT_POSITION));
+        Box bodyPanel = Box.createVerticalBox();
+        bodyPanel.setBorder(CritCellUtil.locationBorder("General"));
         bodyList = new ProtomekMountList(eSource, refresh, Protomech.LOC_BODY);
         bodyPanel.add(bodyList);
 
-        this.add(mainPanel);
+        leftPanel.add(leftArmPanel);
+        middlePanel.add(mainGunPanel);
+        middlePanel.add(torsoPanel);
+        middlePanel.add(bodyPanel);
+        rightPanel.add(rightArmPanel);
 
+        mainPanel.add(leftPanel);
+        mainPanel.add(middlePanel);
+        mainPanel.add(rightPanel);
+        add(mainPanel);
     }
 
     public void updateRefresh(RefreshListener refresh) {
@@ -163,8 +122,8 @@ public class ProtomekCriticalView extends IView {
 
     public void refresh() {
         mainGunPanel.setVisible(getProtomech().hasMainGun());
-        leftPanel.setVisible(!getProtomech().isQuad());
-        rightPanel.setVisible(!getProtomech().isQuad());
+        leftArmPanel.setVisible(!getProtomech().isQuad());
+        rightArmPanel.setVisible(!getProtomech().isQuad());
 
         mainGunList.refreshContents();
         torsoList.refreshContents();
@@ -173,7 +132,7 @@ public class ProtomekCriticalView extends IView {
         bodyList.refreshContents();
         
         Map<Integer, List<Mounted>> eqByLocation = getProtomech().getEquipment().stream()
-                .collect(Collectors.groupingBy(m -> m.getLocation()));
+                .collect(Collectors.groupingBy(Mounted::getLocation));
         for (int location = 0; location < getProtomech().locations(); location++) {
             int slotsUsed = 0;
             double weightUsed = 0.0;

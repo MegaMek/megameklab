@@ -1046,6 +1046,10 @@ public class UnitUtil {
                 || m.getType().hasFlag(MiscType.F_JUMP_BOOSTER));
     }
 
+    public static boolean isUmu(Mounted m) {
+        return (m.getType() instanceof MiscType) && (m.getType().hasFlag(MiscType.F_UMU));
+    }
+
     /**
      *
      * @param type The value returned by {@link Mech#getJumpType()}
@@ -2258,22 +2262,17 @@ public class UnitUtil {
         return ammoCount;
     }
 
+    /** Returns the name of the given equipment with (IS) or (Clan) added for mixed tech units when appropriate.  */
     public static String getCritName(Entity unit, EquipmentType eq) {
         String name = eq.getName();
         if (unit.isMixedTech()
                 && (eq.getTechLevel(unit.getTechLevelYear()) != TechConstants.T_ALLOWED_ALL)
                 && (eq.getTechLevel(unit.getTechLevelYear()) != TechConstants.T_TECH_UNKNOWN)) {
 
-            if (unit.isClan()
-                    && !TechConstants.isClan(eq.getTechLevel(unit
-                            .getTechLevelYear()))) {
-                name = name + " (IS)";
-            }
-
-            if (!unit.isClan()
-                    && TechConstants.isClan(eq.getTechLevel(unit
-                            .getTechLevelYear()))) {
-                name = name + " (Clan)";
+            if (unit.isClan() && !TechConstants.isClan(eq.getTechLevel(unit.getTechLevelYear()))) {
+                name += " (IS)";
+            } else if (!unit.isClan() && TechConstants.isClan(eq.getTechLevel(unit.getTechLevelYear()))) {
+                name += " (Clan)";
             }
         }
         return name;
@@ -4438,4 +4437,31 @@ public class UnitUtil {
                 .collect(Collectors.toList());
         emptyBays.forEach(bay -> UnitUtil.removeMounted(entity, bay));
     }
+
+
+    public static void addProtomechAmmo(Protomech entity, EquipmentType ammo, int shots) throws LocationFullException {
+        Mounted aMount = entity.getAmmo().stream()
+                .filter(m -> ammo.equals(m.getType())).findFirst().orElse(null);
+        if (null != aMount) {
+            aMount.setShotsLeft(aMount.getUsableShotsLeft() + shots);
+        } else {
+            Mounted mount = new Mounted(entity, ammo);
+            entity.addEquipment(mount, Protomech.LOC_BODY, false);
+            mount.setShotsLeft(shots);
+        }
+    }
+
+    public static void reduceProtomechAmmo(Protomech entity, EquipmentType ammo, int shots) {
+        Mounted aMount = entity.getAmmo().stream()
+                .filter(m -> ammo.equals(m.getType())).findFirst().orElse(null);
+        if (aMount != null) {
+            if (aMount.getUsableShotsLeft() <= shots) {
+                removeMounted(entity, aMount);
+            } else {
+                aMount.setShotsLeft(aMount.getUsableShotsLeft() - shots);
+            }
+        }
+    }
+
+
 }

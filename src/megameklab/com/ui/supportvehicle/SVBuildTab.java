@@ -58,7 +58,7 @@ public class SVBuildTab extends ITab implements ActionListener {
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
 
-        critView = new SVCriticalView(eSource, true, refresh);
+        critView = new SVCriticalView(eSource, refresh);
         unallocatedView = new UnallocatedView(eSource, () -> refresh);
 
         mainPanel.add(unallocatedView);

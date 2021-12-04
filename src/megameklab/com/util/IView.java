@@ -93,4 +93,12 @@ public class IView extends JPanel {
     public boolean isWarShip() {
         return getEntity().hasETypeFlag(Entity.ETYPE_WARSHIP);
     }
+
+    /**
+     * Returns true if the entity is a VTOL Combat Vehicle. This is an instanceof check and includes
+     * Support VTOLs but not VTOL type Infantry.
+     * */
+    public boolean isVTOL() {
+        return getEntity() instanceof VTOL;
+    }
 }

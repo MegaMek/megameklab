@@ -61,7 +61,7 @@ public class BuildTab extends ITab implements ActionListener {
 
         GridBagConstraints gbc = new GridBagConstraints();
 
-        critView = new CriticalView(eSource, true, refresh);
+        critView = new CriticalView(eSource, refresh);
         buildView = new BuildView(eSource,refresh);
 
         resetButton.setMnemonic('R');
@@ -79,9 +79,7 @@ public class BuildTab extends ITab implements ActionListener {
         gbc.fill = GridBagConstraints.NONE;
         gbc.weighty = 0.0;
         mainPanel.add(buttonPanel, gbc);
-        this.add(Box.createHorizontalStrut(100));
         this.add(critView);
-        this.add(Box.createHorizontalStrut(200));
         this.add(mainPanel);
         refresh();
     }
