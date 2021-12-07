@@ -66,7 +66,7 @@ public class CriticalView extends IView {
         Box rightPanel = Box.createVerticalBox();
 
         mainPanel.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createMatteBorder(2, 0, 0, 0, CritCellUtil.CRITCELL_BORDERCOLOR),
+                BorderFactory.createMatteBorder(2, 0, 0, 0, CritCellUtil.CRITCELL_BORDER_COLOR),
                 " Trooper " + trooper + " ",
                 TitledBorder.TOP,
                 TitledBorder.DEFAULT_POSITION));
@@ -104,7 +104,7 @@ public class CriticalView extends IView {
         int[] numAMWeapons = new int[BattleArmor.MOUNT_NUM_LOCS];
          
         for (Mounted m : getBattleArmor().getEquipment()) {
-            if (m.getLocation() == BattleArmor.LOC_SQUAD || m.getLocation() == trooper) {
+            if ((m.getLocation() == BattleArmor.LOC_SQUAD) || (m.getLocation() == trooper)) {
                 critSuit.addMounted(m.getBaMountLoc(), m);
                 // Weapons mounted in a quad turret count against the body limits
                 int useLoc = m.getBaMountLoc();
@@ -129,13 +129,13 @@ public class CriticalView extends IView {
                     CriticalSlot cs = critSuit.getCritical(location, slot);
                     if (cs == null) {
                         if (showEmpty) {
-                            critNames.add(CritCellUtil.EMPTYCELLTEXT);
+                            critNames.add(CritCellUtil.EMPTY_CRITCELL_TEXT);
                         }
                     } else if (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) {
                         Mounted m = cs.getMount();
                         if (m == null) {
                             if (showEmpty) {
-                                critNames.add(CritCellUtil.EMPTYCELLTEXT);
+                                critNames.add(CritCellUtil.EMPTY_CRITCELL_TEXT);
                             }
                         } else {
                             critNames.add(m.getName() + ":" + slot + ":" + getBattleArmor().getEquipmentNum(m));
@@ -149,7 +149,7 @@ public class CriticalView extends IView {
                 criticalSlotList.setAlignmentX(JComponent.CENTER_ALIGNMENT);
                 criticalSlotList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
                 criticalSlotList.setName(location + ":" + trooper);
-                criticalSlotList.setBorder(BorderFactory.createLineBorder(CritCellUtil.CRITCELL_BORDERCOLOR));
+                criticalSlotList.setBorder(BorderFactory.createLineBorder(CritCellUtil.CRITCELL_BORDER_COLOR));
                 
                 switch (location) {
                     case BattleArmor.MOUNT_LOC_LARM:

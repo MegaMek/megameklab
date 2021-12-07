@@ -742,14 +742,14 @@ public class BayWeaponCriticalTree extends JTree {
 
                 if (node.isLeaf()) {
                     if (node.getParent() != null && node != node.getParent().getChildAt(node.getParent().getChildCount() - 1)) {
-                        Border dashed = BorderFactory.createDashedBorder(CritCellUtil.CRITCELL_BORDERCOLOR, 5, 5);
+                        Border dashed = BorderFactory.createDashedBorder(CritCellUtil.CRITCELL_BORDER_COLOR, 5, 5);
                         Border empty = BorderFactory.createEmptyBorder(-1, -1, 0, -1);
                         Border compound = new CompoundBorder(empty, dashed);
                         setBorder(compound);
                     }
                 } else  {
                     if (row != 0) {
-                        setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, CritCellUtil.CRITCELL_BORDERCOLOR));
+                        setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, CritCellUtil.CRITCELL_BORDER_COLOR));
                     }
                 }
             } else {
@@ -764,7 +764,7 @@ public class BayWeaponCriticalTree extends JTree {
             // Keep a minimum height to avoid empty sections from having no height
             int width = CritCellUtil.CRITCELL_WIDTH;
             width += (!eSource.getEntity().usesWeaponBays() || ((node != null) && node.isLeaf())) ? 0 : 20;
-            int height = Math.max(CRITCELL_MINHEIGHT, super.getPreferredSize().height + CRITCELL_ADDHEIGHT);
+            int height = Math.max(CRITCELL_MIN_HEIGHT, super.getPreferredSize().height + CRITCELL_ADD_HEIGHT);
             return new Dimension(width, height);
         }
     };

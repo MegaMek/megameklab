@@ -13,9 +13,9 @@
  */
 package megameklab.com.ui.util;
 
+import megamek.MegaMek;
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
-import megamek.common.verifier.TestProtomech;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.util.CriticalTransferHandler;
 import megameklab.com.util.RefreshListener;
@@ -32,7 +32,7 @@ import java.util.List;
 import static megameklab.com.ui.util.CritCellUtil.*;
 
 /**
- * The location crit block for Protomeks
+ * The location crit block for ProtoMeks
  *
  * @author Neoancient
  * @author Simon (Juliez)
@@ -123,9 +123,9 @@ public class ProtomekMountList extends JList<Mounted> {
             if (SwingUtilities.isLeftMouseButton(e)) {
                 if (e.isControlDown() && (mounted.getType() instanceof AmmoType)) {
                     try {
-                        UnitUtil.addProtomechAmmo(getProtomech(), mounted.getType(), 1);
+                        UnitUtil.addProtoMechAmmo(getProtomech(), mounted.getType(), 1);
                     } catch (LocationFullException ex) {
-                        ex.printStackTrace();
+                        MegaMek.getLogger().error(ex);
                     }
                     refresh();
                     return;
@@ -139,7 +139,7 @@ public class ProtomekMountList extends JList<Mounted> {
                 }
                 if (e.isControlDown()) {
                     if ((mounted.getType() instanceof AmmoType)) {
-                        UnitUtil.reduceProtomechAmmo(getProtomech(), mounted.getType(), 1);
+                        UnitUtil.reduceProtoMechAmmo(getProtomech(), mounted.getType(), 1);
                     } else {
                         removeMount(mounted);
                     }
@@ -182,7 +182,7 @@ public class ProtomekMountList extends JList<Mounted> {
         }
     };
 
-    private class MountedListModel extends AbstractListModel<Mounted> {
+    private static class MountedListModel extends AbstractListModel<Mounted> {
 
         private final List<Mounted> list = new ArrayList<>();
 
@@ -217,7 +217,7 @@ public class ProtomekMountList extends JList<Mounted> {
 
         @Override
         public Dimension getPreferredSize() {
-            int height = Math.max(CRITCELL_MINHEIGHT, super.getPreferredSize().height + CRITCELL_ADDHEIGHT);
+            int height = Math.max(CRITCELL_MIN_HEIGHT, super.getPreferredSize().height + CRITCELL_ADD_HEIGHT);
             return new Dimension(CRITCELL_WIDTH, height);
         }
     }

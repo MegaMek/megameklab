@@ -17,24 +17,37 @@ public final class CritCellUtil {
     public static final int CRITCELL_WIDTH = 250;
 
     /** The width of Crit Cells for Meks; their layout has 5 columns */
-    public static final int CRITCELL_MEKWIDTH = (int) (0.6 * CRITCELL_WIDTH);
+    public static final int CRITCELL_MEK_WIDTH = (int) (0.6 * CRITCELL_WIDTH);
 
     /** The width of Crit Cells for Vehicles; their layout has 4 columns */
-    public static final int CRITCELL_VEHWIDTH = (int) (0.8 * CRITCELL_WIDTH);
+    public static final int CRITCELL_VEH_WIDTH = (int) (0.8 * CRITCELL_WIDTH);
 
-    public static final int CRITCELL_ADDHEIGHT = 5;
-    public static final int CRITCELL_MINHEIGHT = 25;
-    public static final Color CRITCELL_BORDERCOLOR = Color.BLACK;
-    public static final String EMPTYCELLTEXT = "- Empty -";
+    /** The height added to the text height of Crit Cells (padding) */
+    public static final int CRITCELL_ADD_HEIGHT = 5;
 
+    /** The minimum height of Crit Cells (safeguard for empty blocks) */
+    public static final int CRITCELL_MIN_HEIGHT = 25;
+    public static final Color CRITCELL_BORDER_COLOR = Color.BLACK;
+    public static final String EMPTY_CRITCELL_TEXT = "- Empty -";
+
+    /**
+     * Returns a titled border using the given string as title placed centered atop the
+     * Component and using a {@link LocationBorder} as a border. To be used for crit
+     * location blocks, especially when they have additional information ("Slots: 0/2")
+     * above or below the crits to group them visually.
+     */
     public static Border locationBorder(String title) {
         return BorderFactory.createTitledBorder(
-                new LocationBorder(CRITCELL_BORDERCOLOR, 2f),
+                new LocationBorder(CRITCELL_BORDER_COLOR, 2f),
                 " " + title + " ",
                 TitledBorder.TOP,
                 TitledBorder.DEFAULT_POSITION);
     }
 
+    /**
+     * Returns a titled but otherwise empty border using the given string as title
+     * placed centered atop the Component.
+     */
     public static Border locationBorderNoLine(String title) {
         return BorderFactory.createTitledBorder(
                 BorderFactory.createEmptyBorder(),
@@ -43,6 +56,11 @@ public final class CritCellUtil {
                 TitledBorder.DEFAULT_POSITION);
     }
 
+    /**
+     * Applies crit cell formatting to the given JLabel cell, which is assumed to display
+     * the given mounted in the given entity at the given crit cell index.
+     * The JLabel cell should be a ListCellRenderer or TreeCellRenderer return value.
+     */
     public static void formatCell(JLabel cell, @Nullable Mounted mounted, boolean useColor,
                                   Entity entity, int index) {
         if (useColor) {
@@ -62,7 +80,7 @@ public final class CritCellUtil {
         }
 
         if (mounted == null) {
-            cell.setText(" " + EMPTYCELLTEXT);
+            cell.setText(" " + EMPTY_CRITCELL_TEXT);
             cell.setToolTipText(null);
         } else {
             String name = UnitUtil.getCritName(entity, mounted.getType());

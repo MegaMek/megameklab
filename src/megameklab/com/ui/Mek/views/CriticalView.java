@@ -129,7 +129,7 @@ public class CriticalView extends IView {
                 for (int slot = 0; slot < getMech().getNumberOfCriticals(location); slot++) {
                     CriticalSlot cs = getMech().getCritical(location, slot);
                     if (cs == null) {
-                        critNames.add(CritCellUtil.EMPTYCELLTEXT);
+                        critNames.add(CritCellUtil.EMPTY_CRITCELL_TEXT);
                     } else if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
                         critNames.add(getMech().getSystemName(cs.getIndex()));
                     } else if (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) {
@@ -137,7 +137,7 @@ public class CriticalView extends IView {
                         if (m == null) {
                             // Critical didn't get removed. Remove it now.
                             getMech().setCritical(location, slot, null);
-                            critNames.add(CritCellUtil.EMPTYCELLTEXT);
+                            critNames.add(CritCellUtil.EMPTY_CRITCELL_TEXT);
                         } else {
                             StringBuilder critName = new StringBuilder(m.getName());
                             if (m.isRearMounted()) {
@@ -156,7 +156,7 @@ public class CriticalView extends IView {
                 criticalSlotList.setVisibleRowCount(critNames.size());
                 criticalSlotList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
                 criticalSlotList.setName(location + "");
-                criticalSlotList.setBorder(BorderFactory.createLineBorder(CritCellUtil.CRITCELL_BORDERCOLOR));
+                criticalSlotList.setBorder(BorderFactory.createLineBorder(CritCellUtil.CRITCELL_BORDER_COLOR));
                 if (mekPanels.containsKey(location)) {
                     mekPanels.get(location).add(criticalSlotList);
                 }

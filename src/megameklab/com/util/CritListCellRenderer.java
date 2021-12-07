@@ -80,11 +80,11 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
         if ((cs != null) 
                 && UnitUtil.isLastCrit(unit, cs, index, loc) 
                 && UnitUtil.isPreviousCritEmpty(unit, cs, index, loc)) {
-            setBorder(BorderFactory.createMatteBorder(1, 0, 1, 0, CritCellUtil.CRITCELL_BORDERCOLOR));
+            setBorder(BorderFactory.createMatteBorder(1, 0, 1, 0, CritCellUtil.CRITCELL_BORDER_COLOR));
         } else if ((cs != null) && UnitUtil.isLastCrit(unit, cs, index, loc)) {
-            setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, CritCellUtil.CRITCELL_BORDERCOLOR));
+            setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, CritCellUtil.CRITCELL_BORDER_COLOR));
         } else if ((cs != null) && UnitUtil.isPreviousCritEmpty(unit, cs, index, loc)) {
-            setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, CritCellUtil.CRITCELL_BORDERCOLOR));
+            setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, CritCellUtil.CRITCELL_BORDER_COLOR));
         } 
 
         return this;
@@ -93,9 +93,9 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
     @Override
     public Dimension getPreferredSize() {
         int width = CRITCELL_WIDTH;
-        width = (unit instanceof Mech) ? CRITCELL_MEKWIDTH : width;
-        width = (unit instanceof Tank) ? CRITCELL_VEHWIDTH : width;
-        int height = Math.max(CRITCELL_MINHEIGHT, super.getPreferredSize().height + CRITCELL_ADDHEIGHT);
+        width = (unit instanceof Mech) ? CRITCELL_MEK_WIDTH : width;
+        width = (unit instanceof Tank) ? CRITCELL_VEH_WIDTH : width;
+        int height = Math.max(CRITCELL_MIN_HEIGHT, super.getPreferredSize().height + CRITCELL_ADD_HEIGHT);
         return new Dimension(width, height);
     }
 

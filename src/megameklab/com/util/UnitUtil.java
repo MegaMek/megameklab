@@ -4438,8 +4438,8 @@ public class UnitUtil {
         emptyBays.forEach(bay -> UnitUtil.removeMounted(entity, bay));
     }
 
-
-    public static void addProtomechAmmo(Protomech entity, EquipmentType ammo, int shots) throws LocationFullException {
+    /** Adds the given number of shots to the already present given ammo on the given ProtoMek. */
+    public static void addProtoMechAmmo(Protomech entity, EquipmentType ammo, int shots) throws LocationFullException {
         Mounted aMount = entity.getAmmo().stream()
                 .filter(m -> ammo.equals(m.getType())).findFirst().orElse(null);
         if (null != aMount) {
@@ -4451,7 +4451,11 @@ public class UnitUtil {
         }
     }
 
-    public static void reduceProtomechAmmo(Protomech entity, EquipmentType ammo, int shots) {
+    /**
+     * Subtracts the given number of shots from the given ammo on the given ProtoMek.
+     * May remove the entire Mounted from the ProtoMek.
+     */
+    public static void reduceProtoMechAmmo(Protomech entity, EquipmentType ammo, int shots) {
         Mounted aMount = entity.getAmmo().stream()
                 .filter(m -> ammo.equals(m.getType())).findFirst().orElse(null);
         if (aMount != null) {
