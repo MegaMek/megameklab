@@ -1,5 +1,6 @@
 /*
  * MegaMekLab - Copyright (C) 2017 - The MegaMek Team
+ * Copyright (c) 2021 - The MegaMek Team. All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -14,7 +15,10 @@
 package megameklab.com.ui.aerospace;
 
 import megamek.client.ui.swing.util.UIUtil;
-import megamek.common.*;
+import megamek.common.Jumpship;
+import megamek.common.LocationFullException;
+import megamek.common.SmallCraft;
+import megamek.common.Warship;
 import megamek.common.annotations.Nullable;
 import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestAdvancedAerospace;
@@ -23,24 +27,23 @@ import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestSmallCraft;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.util.BayWeaponCriticalTree;
-import megameklab.com.ui.util.LocationBorder;
+import megameklab.com.ui.util.CritCellUtil;
 import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
-import java.awt.*;
 import java.util.ResourceBundle;
 
 /**
- * For allocating Large Craft (and Small Craft) weapons to critical spaces. Aft side arcs on spheroid
- * small craft and dropships are implemented as rear-mounted weapons in the left/right side locations
- * but here they are shown as separate locations both to make it less confusing to the user and for the
- * need to maintain a separate count of the number of slots filled in that arc.
+ * The Crit Slots view for Large Craft (including Small Craft)
+ * Aft side arcs on spheroid small craft and dropships are implemented as rear-mounted weapons in the
+ * left/right side locations but here they are shown as separate locations both to make it less confusing
+ * to the user and for the need to maintain a separate count of the number of slots filled in that arc.
  * 
  * @author Neoancient
- *
+ * @author Simon (Juliez)
  */
 public class LargeCraftCriticalView extends IView {
 
@@ -178,12 +181,7 @@ public class LargeCraftCriticalView extends IView {
     private JComponent createArcPanel(int arc, ResourceBundle resourceMap, boolean isWeaponArc, @Nullable JButton copyButton) {
         Box arcPanel = Box.createVerticalBox();
         String arcTitle = isJumpShip() ? capitalArcNames[arc] : spheroidArcNames[arc];
-        arcPanel.setBorder(BorderFactory.createTitledBorder(
-                new LocationBorder(Color.BLACK, 2f),
-                " " + arcTitle + " ",
-                TitledBorder.TOP,
-                TitledBorder.DEFAULT_POSITION));
-
+        arcPanel.setBorder(CritCellUtil.locationBorder(arcTitle));
         arcPanel.add(arcTrees[arc]);
 
         lblSlotCount[arc] = new JLabel();

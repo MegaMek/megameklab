@@ -16,30 +16,18 @@
 
 package megameklab.com.ui.BattleArmor.tabs;
 
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.SpringLayout;
-
 import megamek.common.BattleArmor;
 import megamek.common.Mounted;
-import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.BattleArmor.CriticalSuit;
 import megameklab.com.ui.BattleArmor.views.BuildView;
 import megameklab.com.ui.BattleArmor.views.CriticalView;
+import megameklab.com.ui.EntitySource;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
-import megameklab.com.util.SpringLayoutHelper;
 import megameklab.com.util.UnitUtil;
+
+import javax.swing.*;
+import java.util.ArrayList;
 
 /**
  * A component that creates a table for building the criticals of a unit.  This
@@ -50,85 +38,38 @@ import megameklab.com.util.UnitUtil;
  * @author arlith
  *
  */
-public class BuildTab extends ITab implements ActionListener {
-
-    /**
-     *
-     */
-    private static final long serialVersionUID = -6756011847500605874L;
+public class BuildTab extends ITab {
 
     private RefreshListener refresh = null;
-    private ArrayList<CriticalView> critViews = new ArrayList<CriticalView>();
-    private BuildView buildView = null;
+    private final ArrayList<CriticalView> critViews = new ArrayList<>();
+    private final BuildView buildView;
 
-    private JScrollPane critScrollPanel;
-
-    /**
-     * Panel for displaying the critical trees for each trooper in the squad.
-     */
-    private JPanel critPanel = new JPanel();
-    /**
-     * Panel that displays autoFill and reset buttons.
-     */
-
-    private JPanel buttonPanel = new JPanel();
-    /**
-     * Panel that holds the <code>UnallocatedView</code> and buttonPanel
-     */
-    private JPanel mainPanel = new JPanel();
-
-    private JButton autoFillButton = new JButton("Auto Fill");
-    private JButton resetButton = new JButton("Reset");
-
-    private String AUTOFILLCOMMAND = "autofillbuttoncommand";
-    private String RESETCOMMAND = "resetbuttoncommand";
+    /** Panel for displaying the critical trees for each trooper in the squad. */
+    private final Box critPanel = Box.createVerticalBox();
 
     public BuildTab(EntitySource eSource) {
         super(eSource);
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
-        critPanel.setLayout(new BoxLayout(critPanel, BoxLayout.Y_AXIS));
-        critScrollPanel = new JScrollPane(critPanel);
-        critScrollPanel.setHorizontalScrollBarPolicy(
-                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        critScrollPanel.setBorder(BorderFactory.createEmptyBorder());
-        critScrollPanel.setMinimumSize(new java.awt.Dimension(400, 500));
-        critScrollPanel.setPreferredSize(new java.awt.Dimension(400, 500));
-        critScrollPanel.getVerticalScrollBar().setUnitIncrement(20);
-
         createCriticalViews();
-
         buildView = new BuildView(eSource);
 
-        mainPanel.add(buildView);
-
+        JButton autoFillButton = new JButton("Auto Fill");
         autoFillButton.setMnemonic('A');
-        autoFillButton.setActionCommand(AUTOFILLCOMMAND);
+        autoFillButton.addActionListener(ev -> autoFillCrits());
+        JButton resetButton = new JButton("Reset");
         resetButton.setMnemonic('R');
-        resetButton.setActionCommand(RESETCOMMAND);
+        resetButton.addActionListener(ev -> resetCrits());
+
+        JPanel buttonPanel = new JPanel();
         buttonPanel.add(autoFillButton);
         buttonPanel.add(resetButton);
 
+        Box mainPanel = Box.createVerticalBox();
+        mainPanel.add(buildView);
         mainPanel.add(buttonPanel);
-
-        this.add(critScrollPanel);
-        this.add(mainPanel);
+        add(critPanel);
+        add(mainPanel);
         refresh();
-    }
-
-    public JPanel availableCritsPanel() {
-        JPanel masterPanel = new JPanel(new SpringLayout());
-        Dimension maxSize = new Dimension();
-
-        masterPanel.add(buildView);
-
-        SpringLayoutHelper.setupSpringGrid(masterPanel, 1);
-        maxSize.setSize(300, 5);
-        masterPanel.setPreferredSize(maxSize);
-        masterPanel.setMinimumSize(maxSize);
-        masterPanel.setMaximumSize(maxSize);
-        return masterPanel;
     }
 
     /**
@@ -139,46 +80,30 @@ public class BuildTab extends ITab implements ActionListener {
      * we will need to adjust the number of <code>CriticalView</code>s.  This
      * method will create the proper number of <code>CriticalView</code>s.
      */
-    private void createCriticalViews(){
+    private void createCriticalViews() {
         critViews.clear();
-        for (int i = 0; i < (getBattleArmor()).getTroopers(); i++){
-            critViews.add(new CriticalView(eSource, i + 1, true,
-                    refresh));
+        for (int i = 0; i < (getBattleArmor()).getTroopers(); i++) {
+            critViews.add(new CriticalView(eSource, i + 1, true, refresh));
             critPanel.add(critViews.get(i));
             critPanel.add(Box.createVerticalStrut(20));
         }
     }
 
     public void refresh() {
-        removeAllActionListeners();
-
         // We need to have a CritView for each trooper
-        if (critViews.size() != (getBattleArmor()).getTroopers()){
+        if (critViews.size() != (getBattleArmor()).getTroopers()) {
             critPanel.removeAll();
             createCriticalViews();
         }
-
-        for (CriticalView critView : critViews){
+        for (CriticalView critView : critViews) {
             critView.refresh();
         }
         critPanel.validate();
-
         buildView.refresh();
-
-        addAllActionListeners();
-    }
-
-    public void actionPerformed(ActionEvent e) {
-        if (e.getActionCommand().equals(AUTOFILLCOMMAND)) {
-            autoFillCrits();
-        } else if (e.getActionCommand().equals(RESETCOMMAND)) {
-            resetCrits();
-        }
     }
 
     private void autoFillCrits() {
-        // BattleArmor doesn't track crits implicitly, so they need to be
-        // tracked explicitly
+        // BattleArmor doesn't track crits implicitly, so they need to be tracked explicitly
         CriticalSuit crits = new CriticalSuit(getBattleArmor());
         // Populate with equipment that is already installed
         for (Mounted m : getBattleArmor().getEquipment()) {
@@ -205,34 +130,22 @@ public class BuildTab extends ITab implements ActionListener {
                 }
             }
         }
-        refresh.refreshAll();
+        refreshAll();
     }
 
     private void resetCrits() {
         for (Mounted mount : getBattleArmor().getEquipment()) {
-            if (UnitUtil.isFixedLocationSpreadEquipment(mount.getType())){
+            if (UnitUtil.isFixedLocationSpreadEquipment(mount.getType())) {
                 continue;
             }
             mount.setBaMountLoc(BattleArmor.MOUNT_LOC_NONE);
         }
-        refresh.refreshAll();
-    }
-
-    public void removeAllActionListeners() {
-        autoFillButton.removeActionListener(this);
-        resetButton.removeActionListener(this);
-    }
-
-    public void addAllActionListeners() {
-        autoFillButton.addActionListener(this);
-        resetButton.addActionListener(this);
+        refreshAll();
     }
 
     public void addRefreshedListener(RefreshListener l) {
         refresh = l;
-        for (CriticalView critView : critViews){
-            critView.updateRefresh(refresh);
-        }
+        critViews.forEach(v -> v.updateRefresh(refresh));
         buildView.addRefreshedListener(refresh);
     }
 

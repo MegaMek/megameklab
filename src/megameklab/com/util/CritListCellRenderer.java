@@ -16,23 +16,13 @@
 
 package megameklab.com.util;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Font;
+import megamek.common.*;
+import megameklab.com.ui.util.CritCellUtil;
 
-import javax.swing.BorderFactory;
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.JLabel;
-import javax.swing.JList;
+import javax.swing.*;
+import java.awt.*;
 
-import megamek.common.AmmoType;
-import megamek.common.BattleArmor;
-import megamek.common.CriticalSlot;
-import megamek.common.Entity;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
-import megamek.common.WeaponType;
+import static megameklab.com.ui.util.CritCellUtil.*;
 
 public class CritListCellRenderer extends DefaultListCellRenderer {
 
@@ -47,16 +37,12 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
 
     @Override
     public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean hasFocus) {
-        JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, hasFocus);
+        super.getListCellRendererComponent(list, value, index, isSelected, hasFocus);
         this.list = list;
 
-        setPreferredSize(new Dimension(110,15));
-        setMaximumSize(new Dimension(110,15));
-        setMinimumSize(new Dimension(110,15));
-
         String[] split = ((String)value).split(":");
-        label.setText(split[0]);
-        label.setToolTipText(null);
+        setText(split[0]);
+        setToolTipText(null);
 
         CriticalSlot cs;
         if (split.length > 2) {
@@ -71,98 +57,46 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
         }
 
         if (cs != null) {
-
             if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
                 if (useColor) {
-                    label.setBackground(CConfig.getBackgroundColor(CConfig.CONFIG_SYSTEMS));
-                    label.setForeground(CConfig.getForegroundColor(CConfig.CONFIG_SYSTEMS));
+                    setBackground(CConfig.getBackgroundColor(CConfig.CONFIG_SYSTEMS));
+                    setForeground(CConfig.getForegroundColor(CConfig.CONFIG_SYSTEMS));
                 }
                 if (cs.isArmored()) {
-                    label.setText(label.getText() + " (A)");
+                    setText(getText() + " (A)");
                 }
+                setText(" " + getText());
             } else if (cs.getMount() != null) {
-
-                Mounted mount = cs.getMount();
-
-                if (useColor) {
-                    if (mount.getType() instanceof WeaponType) {
-                        label.setBackground(CConfig.getBackgroundColor(CConfig.CONFIG_WEAPONS));
-                        label.setForeground(CConfig.getForegroundColor(CConfig.CONFIG_WEAPONS));
-                    } else if (mount.getType() instanceof AmmoType) {
-                        label.setBackground(CConfig.getBackgroundColor(CConfig.CONFIG_AMMO));
-                        label.setForeground(CConfig.getForegroundColor(CConfig.CONFIG_AMMO));
-                    } else {
-                        label.setBackground(CConfig.getBackgroundColor(CConfig.CONFIG_EQUIPMENT));
-                        label.setForeground(CConfig.getForegroundColor(CConfig.CONFIG_EQUIPMENT));
-                    }
-                }
-                String name = UnitUtil.getCritName(unit, mount.getType());
-
-                if (mount.isRearMounted()) {
-                    name += " (R)";
-                }
-                if (mount.isArmored()) {
-                    name += " (A)";
-                }
-                if (mount.isMechTurretMounted()) {
-                    name += " (T)";
-                }
-                if (mount.isSponsonTurretMounted()) {
-                    name += " (ST)";
-                }
-                if (mount.isPintleTurretMounted()) {
-                    name += " (PT)";
-                }
-                if (mount.isDWPMounted()) {
-                    name += " (DWP)";
-                }
-                if (unit.isOmni() && !mount.getType().isOmniFixedOnly()) {
-                    if (mount.isOmniPodMounted()) {
-                        name += " (Pod)";
-                    } else {
-                        name += " (Fixed)";
-                        label.setFont(label.getFont().deriveFont(Font.ITALIC));
-                    }
-                }
-                if ((mount.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)
-                        || mount.getType().hasFlag(MiscType.F_AP_MOUNT))
-                        && mount.getLinked() != null){
-                    name += " (attached " + mount.getLinked().getName() + ")";
-                }
-                // For ammo on BA, show the number of shots
-                if ((unit instanceof BattleArmor) && (mount.getType() instanceof AmmoType)) {
-                    name += " (" + mount.getBaseShotsLeft() + ")";
-                }
-                String toolTipText = UnitUtil.getToolTipInfo(unit, mount);
-                // distinguish tooltips of equal adjacent one-slot equipment (e.g. ammo) to make the tip renew itself
-                // when crossing from one such slot to the next (avoids them feeling like a single equipment)
-                if (mount.getCriticals() == 1) {
-                    toolTipText += " ".repeat(index);
-                }
+                CritCellUtil.formatCell(this, cs.getMount(), useColor, unit, index);
                 if (cs.getMount2() != null) {
-                    mount = cs.getMount2();
-                    name += " | "+ UnitUtil.getCritName(unit, mount.getType());
+                    setText(getText() + " | " + UnitUtil.getCritName(unit, cs.getMount2().getType()));
                 }
-                label.setText(name);
-                label.setToolTipText(toolTipText);
             }
-        } else if (useColor) {
-            label.setBackground(CConfig.getBackgroundColor(CConfig.CONFIG_EMPTY));
-            label.setForeground(CConfig.getForegroundColor(CConfig.CONFIG_EMPTY));
+        } else {
+            CritCellUtil.formatCell(this, null, useColor, unit, index);
         }
 
         int loc = getCritLocation();
         if ((cs != null) 
                 && UnitUtil.isLastCrit(unit, cs, index, loc) 
                 && UnitUtil.isPreviousCritEmpty(unit, cs, index, loc)) {
-            label.setBorder(BorderFactory.createMatteBorder(1, 0, 1, 0, Color.black));
+            setBorder(BorderFactory.createMatteBorder(1, 0, 1, 0, CritCellUtil.CRITCELL_BORDER_COLOR));
         } else if ((cs != null) && UnitUtil.isLastCrit(unit, cs, index, loc)) {
-            label.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.black));
+            setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, CritCellUtil.CRITCELL_BORDER_COLOR));
         } else if ((cs != null) && UnitUtil.isPreviousCritEmpty(unit, cs, index, loc)) {
-            label.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.black));
+            setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, CritCellUtil.CRITCELL_BORDER_COLOR));
         } 
 
-        return label;
+        return this;
+    }
+
+    @Override
+    public Dimension getPreferredSize() {
+        int width = CRITCELL_WIDTH;
+        width = (unit instanceof Mech) ? CRITCELL_MEK_WIDTH : width;
+        width = (unit instanceof Tank) ? CRITCELL_VEH_WIDTH : width;
+        int height = Math.max(CRITCELL_MIN_HEIGHT, super.getPreferredSize().height + CRITCELL_ADD_HEIGHT);
+        return new Dimension(width, height);
     }
 
     private CriticalSlot getCrit(int slot) {

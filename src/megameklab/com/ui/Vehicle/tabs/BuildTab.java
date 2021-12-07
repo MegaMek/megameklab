@@ -65,7 +65,7 @@ public class BuildTab extends ITab implements ActionListener {
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
 
-        critView = new CriticalView(eSource, true, refresh);
+        critView = new CriticalView(eSource, refresh);
         unallocatedView = new UnallocatedView(eSource, () -> refresh);
 
         mainPanel.add(unallocatedView);
