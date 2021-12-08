@@ -50,7 +50,7 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
             cs = new CriticalSlot(unit.getEquipment(eqId));
         } else if (split.length > 1) {
             cs = getCrit(Integer.parseInt(split[1]));
-        } else if (value.equals("-Empty-")) {
+        } else if (value.equals(EMPTY_CRITCELL_TEXT)) {
             cs = null;
         } else {
             cs = getCrit(index);
