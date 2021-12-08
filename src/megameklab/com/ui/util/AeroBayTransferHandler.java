@@ -36,7 +36,6 @@ import megamek.common.WeaponType;
 import megamek.common.weapons.bayweapons.BayWeapon;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
-import megameklab.com.util.CriticalTableModel;
 import megameklab.com.util.UnitUtil;
 
 /**

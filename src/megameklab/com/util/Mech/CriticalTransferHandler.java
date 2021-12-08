@@ -33,7 +33,7 @@ import megamek.common.verifier.TestBattleArmor;
 import megamek.common.weapons.infantry.InfantryWeapon;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
-import megameklab.com.util.CriticalTableModel;
+import megameklab.com.ui.util.CriticalTableModel;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 
@@ -326,9 +326,6 @@ public class CriticalTransferHandler extends TransferHandler {
 
     /**
      *
-     * @param ba
-     * @param m
-     * @return
      */
     private boolean addEquipmentBA(BattleArmor ba, Mounted newMount, int trooper) {
         if (TestBattleArmor.isMountLegal(ba, newMount, location, trooper)){

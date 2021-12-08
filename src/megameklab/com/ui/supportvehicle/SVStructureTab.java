@@ -25,7 +25,7 @@ import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.view.*;
 import megameklab.com.ui.view.listeners.SVBuildListener;
-import megameklab.com.util.ITab;
+import megameklab.com.ui.util.ITab;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 
@@ -46,7 +46,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
     private MovementView panMovement;
     private FuelView panFuel;
     private SVSummaryView panSummary;
-    private ChassisModView panChassisMod;
+    private SVChassisModView panChassisMod;
     private SVCrewView panCrew;
 
     public SVStructureTab(EntitySource eSource) {
@@ -68,7 +68,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         panMovement = new MovementView(panBasicInfo);
         panFuel = new FuelView();
         panSummary = new SVSummaryView(eSource);
-        panChassisMod = new ChassisModView(panBasicInfo);
+        panChassisMod = new SVChassisModView(panBasicInfo);
         panCrew = new SVCrewView();
 
         JPanel leftPanel = new JPanel();

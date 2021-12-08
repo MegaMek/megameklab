@@ -16,7 +16,7 @@ package megameklab.com.ui.view.listeners;
 import megamek.common.Engine;
 import megamek.common.EntityMovementMode;
 import megamek.common.verifier.BayData;
-import megameklab.com.ui.view.CVChassisView;
+import megameklab.com.ui.combatvehicle.CVChassisView;
 
 /**
  * Listener for views used by combat vehicles.

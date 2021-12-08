@@ -22,7 +22,7 @@ import megamek.common.EntityWeightClass;
 import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestSupportVehicle;
 import megameklab.com.ui.EntitySource;
-import megameklab.com.util.IView;
+import megameklab.com.ui.util.IView;
 
 import javax.swing.*;
 import java.awt.*;

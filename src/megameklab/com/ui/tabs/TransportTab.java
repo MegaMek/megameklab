@@ -51,7 +51,7 @@ import megamek.common.util.EncodeControl;
 import megamek.common.verifier.*;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
-import megameklab.com.util.IView;
+import megameklab.com.ui.util.IView;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 

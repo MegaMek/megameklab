@@ -21,6 +21,7 @@ package megameklab.com.ui.view.listeners;
 import megamek.common.Engine;
 import megamek.common.EquipmentType;
 import megamek.common.verifier.TestSupportVehicle;
+import megameklab.com.ui.supportvehicle.SVChassisView;
 
 /**
  * Listener for views used by support vehicle construction.
@@ -78,7 +79,7 @@ public interface SVBuildListener extends BuildListener {
     /**
      * Notify that the turret configuration has changed
      *
-     * @param config The turret configuration constant from {@link megameklab.com.ui.view.SVChassisView SVChassisView}
+     * @param config The turret configuration constant from {@link SVChassisView SVChassisView}
      */
     void turretChanged(int config);
 

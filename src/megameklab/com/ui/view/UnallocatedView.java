@@ -39,6 +39,9 @@ import megamek.common.Mounted;
 import megamek.common.weapons.Weapon;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
+import megameklab.com.ui.util.CriticalTableModel;
+import megameklab.com.ui.util.CriticalTransferHandler;
+import megameklab.com.ui.util.IView;
 import megameklab.com.util.*;
 
 /**

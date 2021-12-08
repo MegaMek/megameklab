@@ -26,7 +26,7 @@ import megameklab.com.ui.view.ArmorAllocationView;
 import megameklab.com.ui.view.MVFArmorView;
 import megameklab.com.ui.view.PatchworkArmorView;
 import megameklab.com.ui.view.listeners.ArmorAllocationListener;
-import megameklab.com.util.ITab;
+import megameklab.com.ui.util.ITab;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 

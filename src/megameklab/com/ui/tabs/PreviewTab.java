@@ -27,7 +27,7 @@ import megamek.common.MechView;
 import megamek.common.templates.TROView;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
-import megameklab.com.util.ITab;
+import megameklab.com.ui.util.ITab;
 
 public class PreviewTab extends ITab {
 

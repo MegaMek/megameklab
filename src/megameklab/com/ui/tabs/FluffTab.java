@@ -33,7 +33,7 @@ import megamek.common.Entity;
 import megamek.common.EntityFluff;
 import megamek.common.util.EncodeControl;
 import megameklab.com.ui.EntitySource;
-import megameklab.com.util.ITab;
+import megameklab.com.ui.util.ITab;
 import megameklab.com.util.RefreshListener;
 
 /**

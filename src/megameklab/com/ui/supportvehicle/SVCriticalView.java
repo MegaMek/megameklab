@@ -23,8 +23,8 @@ import megamek.common.*;
 import megamek.common.annotations.Nullable;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.util.CritCellUtil;
-import megameklab.com.util.DropTargetCriticalList;
-import megameklab.com.util.IView;
+import megameklab.com.ui.util.DropTargetCriticalList;
+import megameklab.com.ui.util.IView;
 import megameklab.com.util.RefreshListener;
 
 import javax.swing.*;
