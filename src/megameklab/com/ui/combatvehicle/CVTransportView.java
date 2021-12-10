@@ -31,8 +31,8 @@ import megamek.common.Bay;
 import megamek.common.Tank;
 import megamek.common.util.EncodeControl;
 import megamek.common.verifier.BayData;
-import megameklab.com.ui.view.BuildView;
-import megameklab.com.ui.view.listeners.CVBuildListener;
+import megameklab.com.ui.generalunit.BuildView;
+import megameklab.com.ui.listeners.CVBuildListener;
 
 /**
  * Panel for combat vehicle cargo and troop space.

@@ -38,8 +38,8 @@ import megamek.common.ITechManager;
 import megamek.common.util.EncodeControl;
 import megameklab.com.ui.util.CustomComboBox;
 import megameklab.com.ui.util.TechComboBox;
-import megameklab.com.ui.view.BuildView;
-import megameklab.com.ui.view.listeners.AeroBuildListener;
+import megameklab.com.ui.generalunit.BuildView;
+import megameklab.com.ui.listeners.AeroBuildListener;
 
 /**
  * Structure tab chassis panel for aerospace and conventional fighters.

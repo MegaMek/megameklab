@@ -45,7 +45,7 @@ import megameklab.com.ui.util.AeroBayTransferHandler;
 import megameklab.com.ui.util.BayWeaponCriticalTree;
 import megameklab.com.ui.util.CriticalTableModel;
 import megameklab.com.ui.util.IView;
-import megameklab.com.util.RefreshListener;
+import megameklab.com.ui.util.RefreshListener;
 import megameklab.com.util.StringUtils;
 
 /**

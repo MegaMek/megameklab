@@ -35,8 +35,8 @@ import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestTank;
 import megameklab.com.ui.util.CustomComboBox;
 import megameklab.com.ui.util.TechComboBox;
-import megameklab.com.ui.view.BuildView;
-import megameklab.com.ui.view.listeners.CVBuildListener;
+import megameklab.com.ui.generalunit.BuildView;
+import megameklab.com.ui.listeners.CVBuildListener;
 
 /**
  * Chassis panel for combat vehicles

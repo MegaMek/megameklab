@@ -48,7 +48,7 @@ import megamek.common.weapons.ppc.PPCWeapon;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.util.CritListCellRenderer;
-import megameklab.com.util.RefreshListener;
+import megameklab.com.ui.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 
 public class DropTargetCriticalList<E> extends JList<E> implements MouseListener {

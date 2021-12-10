@@ -35,7 +35,7 @@ import megamek.common.verifier.TestSmallCraft;
 import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.util.ITab;
 import megameklab.com.util.ImageHelper;
-import megameklab.com.util.RefreshListener;
+import megameklab.com.ui.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 
 /**

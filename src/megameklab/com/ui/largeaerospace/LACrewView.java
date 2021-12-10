@@ -35,8 +35,8 @@ import megamek.common.EntityWeightClass;
 import megamek.common.ITechManager;
 import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestAero;
-import megameklab.com.ui.view.BuildView;
-import megameklab.com.ui.view.listeners.AeroVesselBuildListener;
+import megameklab.com.ui.generalunit.BuildView;
+import megameklab.com.ui.listeners.AeroVesselBuildListener;
 
 /**
  * Structure tab panel for setting crew levels and quarters, as well as life boats and escape pods.

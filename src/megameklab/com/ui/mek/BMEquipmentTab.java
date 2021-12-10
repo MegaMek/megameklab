@@ -72,7 +72,7 @@ import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.util.CriticalTableModel;
 import megameklab.com.ui.util.EquipmentTableModel;
 import megameklab.com.ui.util.ITab;
-import megameklab.com.util.RefreshListener;
+import megameklab.com.ui.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 import megameklab.com.ui.util.XTableColumnModel;
 

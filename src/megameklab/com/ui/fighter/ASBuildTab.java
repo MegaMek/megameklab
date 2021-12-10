@@ -30,7 +30,7 @@ import megamek.common.Mounted;
 import megamek.common.verifier.TestAero;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.util.ITab;
-import megameklab.com.util.RefreshListener;
+import megameklab.com.ui.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 
 public class ASBuildTab extends ITab implements ActionListener {

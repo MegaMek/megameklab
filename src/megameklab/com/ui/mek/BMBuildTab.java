@@ -30,7 +30,7 @@ import megamek.common.Mounted;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.util.ITab;
-import megameklab.com.util.RefreshListener;
+import megameklab.com.ui.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 
 public class BMBuildTab extends ITab implements ActionListener {

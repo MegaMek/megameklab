@@ -35,8 +35,8 @@ import megamek.common.Protomech;
 import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestProtomech;
 import megameklab.com.ui.util.CustomComboBox;
-import megameklab.com.ui.view.BuildView;
-import megameklab.com.ui.view.listeners.ProtomekBuildListener;
+import megameklab.com.ui.generalunit.BuildView;
+import megameklab.com.ui.listeners.ProtomekBuildListener;
 
 /**
  * Construction options and systems for Protomechs.

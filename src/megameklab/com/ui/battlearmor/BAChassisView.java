@@ -35,8 +35,8 @@ import megamek.common.EntityWeightClass;
 import megamek.common.ITechManager;
 import megamek.common.util.EncodeControl;
 import megameklab.com.ui.util.CustomComboBox;
-import megameklab.com.ui.view.BuildView;
-import megameklab.com.ui.view.listeners.BABuildListener;
+import megameklab.com.ui.generalunit.BuildView;
+import megameklab.com.ui.listeners.BABuildListener;
 
 /**
  * Structure tab chassis view for BattleArmor

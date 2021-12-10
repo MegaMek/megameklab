@@ -27,7 +27,7 @@ import javax.swing.JLabel;
 import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.util.ITab;
 import megameklab.com.util.ImageHelper;
-import megameklab.com.util.RefreshListener;
+import megameklab.com.ui.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 
 public class CIStatusBar extends ITab {

@@ -12,7 +12,7 @@
  * for more details.
  */
 
-package megameklab.com.ui.view.listeners;
+package megameklab.com.ui.listeners;
 
 import megamek.common.EquipmentType;
 

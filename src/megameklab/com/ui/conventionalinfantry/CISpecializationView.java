@@ -37,9 +37,9 @@ import megamek.common.Infantry;
 import megamek.common.TechAdvancement;
 import megamek.common.verifier.TestInfantry;
 import megameklab.com.ui.EntitySource;
-import megameklab.com.ui.view.listeners.InfantryBuildListener;
+import megameklab.com.ui.listeners.InfantryBuildListener;
 import megameklab.com.ui.util.IView;
-import megameklab.com.util.RefreshListener;
+import megameklab.com.ui.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 import megameklab.com.ui.util.XTableColumnModel;
 

@@ -19,8 +19,8 @@ import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.ITechManager;
 import megamek.common.verifier.TestSupportVehicle;
-import megameklab.com.ui.view.BuildView;
-import megameklab.com.ui.view.listeners.SVBuildListener;
+import megameklab.com.ui.generalunit.BuildView;
+import megameklab.com.ui.listeners.SVBuildListener;
 
 import javax.swing.*;
 import java.awt.event.ItemEvent;

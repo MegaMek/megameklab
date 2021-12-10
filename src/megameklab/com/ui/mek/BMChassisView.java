@@ -37,8 +37,8 @@ import megamek.common.*;
 import megamek.common.util.EncodeControl;
 import megameklab.com.ui.util.CustomComboBox;
 import megameklab.com.ui.util.TechComboBox;
-import megameklab.com.ui.view.BuildView;
-import megameklab.com.ui.view.listeners.MekBuildListener;
+import megameklab.com.ui.generalunit.BuildView;
+import megameklab.com.ui.listeners.MekBuildListener;
 
 /**
  * Construction options and systems for Meks.

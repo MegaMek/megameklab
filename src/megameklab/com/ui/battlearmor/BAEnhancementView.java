@@ -25,8 +25,8 @@ import javax.swing.JCheckBox;
 
 import megamek.common.*;
 import megamek.common.util.EncodeControl;
-import megameklab.com.ui.view.BuildView;
-import megameklab.com.ui.view.listeners.BABuildListener;
+import megameklab.com.ui.generalunit.BuildView;
+import megameklab.com.ui.listeners.BABuildListener;
 
 /**
  * Structure tab panel for BA movement enhancements

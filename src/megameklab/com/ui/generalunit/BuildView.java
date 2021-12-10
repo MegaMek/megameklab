@@ -12,7 +12,7 @@
  * details.
  */
 
-package megameklab.com.ui.view;
+package megameklab.com.ui.generalunit;
 
 import java.awt.Dimension;
 

@@ -21,8 +21,8 @@ package megameklab.com.ui.supportvehicle;
 import megamek.common.*;
 import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestSupportVehicle;
-import megameklab.com.ui.view.BuildView;
-import megameklab.com.ui.view.listeners.SVBuildListener;
+import megameklab.com.ui.generalunit.BuildView;
+import megameklab.com.ui.listeners.SVBuildListener;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;

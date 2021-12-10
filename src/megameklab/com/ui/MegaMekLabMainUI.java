@@ -19,7 +19,7 @@ package megameklab.com.ui;
 import megamek.common.Entity;
 import megamek.common.preference.PreferenceManager;
 import megameklab.com.util.CConfig;
-import megameklab.com.util.RefreshListener;
+import megameklab.com.ui.util.RefreshListener;
 
 import javax.swing.*;
 import javax.swing.UIManager.LookAndFeelInfo;

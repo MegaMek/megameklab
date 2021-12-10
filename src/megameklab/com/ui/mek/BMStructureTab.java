@@ -39,16 +39,11 @@ import megamek.common.loaders.EntityLoadingException;
 import megamek.common.verifier.TestEntity;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
-import megameklab.com.ui.view.ArmorAllocationView;
-import megameklab.com.ui.view.BasicInfoView;
-import megameklab.com.ui.view.HeatSinkView;
-import megameklab.com.ui.view.MVFArmorView;
-import megameklab.com.ui.view.MovementView;
-import megameklab.com.ui.view.PatchworkArmorView;
-import megameklab.com.ui.view.listeners.ArmorAllocationListener;
-import megameklab.com.ui.view.listeners.MekBuildListener;
+import megameklab.com.ui.generalunit.*;
+import megameklab.com.ui.listeners.ArmorAllocationListener;
+import megameklab.com.ui.listeners.MekBuildListener;
 import megameklab.com.ui.util.ITab;
-import megameklab.com.util.RefreshListener;
+import megameklab.com.ui.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 
 public class BMStructureTab extends ITab implements MekBuildListener, ArmorAllocationListener {

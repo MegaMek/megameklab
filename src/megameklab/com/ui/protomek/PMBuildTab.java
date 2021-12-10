@@ -28,10 +28,10 @@ import megamek.common.Entity;
 import megamek.common.Mounted;
 import megamek.common.verifier.TestProtomech;
 import megameklab.com.ui.EntitySource;
-import megameklab.com.ui.tabs.EquipmentTab;
+import megameklab.com.ui.generalunit.EquipmentTab;
 import megameklab.com.ui.util.CriticalTableModel;
 import megameklab.com.ui.util.ITab;
-import megameklab.com.util.RefreshListener;
+import megameklab.com.ui.util.RefreshListener;
 import megameklab.com.ui.util.SpringLayoutHelper;
 import megameklab.com.util.UnitUtil;
 

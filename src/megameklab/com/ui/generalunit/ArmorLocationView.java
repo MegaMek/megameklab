@@ -11,7 +11,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package megameklab.com.ui.view;
+package megameklab.com.ui.generalunit;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;

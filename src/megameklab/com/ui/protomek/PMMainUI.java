@@ -27,9 +27,9 @@ import megamek.common.SimpleTechLevel;
 import megamek.common.TechConstants;
 import megamek.common.verifier.TestProtomech;
 import megameklab.com.ui.MegaMekLabMainUI;
-import megameklab.com.ui.tabs.EquipmentTab;
-import megameklab.com.ui.tabs.FluffTab;
-import megameklab.com.ui.tabs.PreviewTab;
+import megameklab.com.ui.generalunit.EquipmentTab;
+import megameklab.com.ui.generalunit.FluffTab;
+import megameklab.com.ui.generalunit.PreviewTab;
 import megameklab.com.ui.util.TabScrollPane;
 
 /**

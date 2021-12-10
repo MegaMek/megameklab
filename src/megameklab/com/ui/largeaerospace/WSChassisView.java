@@ -38,8 +38,8 @@ import megamek.common.SpaceStation;
 import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestAdvancedAerospace;
 import megamek.common.verifier.TestAero;
-import megameklab.com.ui.view.BuildView;
-import megameklab.com.ui.view.listeners.AdvancedAeroBuildListener;
+import megameklab.com.ui.generalunit.BuildView;
+import megameklab.com.ui.listeners.AdvancedAeroBuildListener;
 
 /**
  * Structure tab chassis panel for jumpships, warships, and space stations.

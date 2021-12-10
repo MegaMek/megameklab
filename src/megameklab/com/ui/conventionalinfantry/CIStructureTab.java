@@ -41,10 +41,10 @@ import megamek.common.options.IOption;
 import megamek.common.options.PilotOptions;
 import megamek.common.weapons.infantry.InfantryWeapon;
 import megameklab.com.ui.EntitySource;
-import megameklab.com.ui.view.BasicInfoView;
-import megameklab.com.ui.view.listeners.InfantryBuildListener;
+import megameklab.com.ui.generalunit.BasicInfoView;
+import megameklab.com.ui.listeners.InfantryBuildListener;
 import megameklab.com.ui.util.ITab;
-import megameklab.com.util.RefreshListener;
+import megameklab.com.ui.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 
 public class CIStructureTab extends ITab implements InfantryBuildListener {

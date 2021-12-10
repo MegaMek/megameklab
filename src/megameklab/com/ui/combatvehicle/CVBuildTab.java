@@ -31,10 +31,10 @@ import megamek.common.Mounted;
 import megamek.common.loaders.EntityLoadingException;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
-import megameklab.com.ui.view.UnallocatedView;
+import megameklab.com.ui.generalunit.UnallocatedView;
 import megameklab.com.ui.util.CriticalTableModel;
 import megameklab.com.ui.util.ITab;
-import megameklab.com.util.RefreshListener;
+import megameklab.com.ui.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 
 public class CVBuildTab extends ITab implements ActionListener {

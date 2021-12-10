@@ -23,10 +23,12 @@ import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestSupportVehicle;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
-import megameklab.com.ui.view.*;
-import megameklab.com.ui.view.listeners.SVBuildListener;
+import megameklab.com.ui.generalunit.BasicInfoView;
+import megameklab.com.ui.generalunit.FuelView;
+import megameklab.com.ui.generalunit.MovementView;
+import megameklab.com.ui.listeners.SVBuildListener;
 import megameklab.com.ui.util.ITab;
-import megameklab.com.util.RefreshListener;
+import megameklab.com.ui.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 
 import javax.swing.*;

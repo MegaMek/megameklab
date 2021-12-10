@@ -33,7 +33,6 @@ import megamek.common.*;
 import megamek.common.loaders.EntityLoadingException;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
-import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 
 public class DropTargetCriticalList<E> extends JList<E> implements MouseListener {

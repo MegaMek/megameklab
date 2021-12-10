@@ -46,14 +46,14 @@ import megamek.common.TechConstants;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestProtomech;
 import megameklab.com.ui.EntitySource;
-import megameklab.com.ui.view.ArmorAllocationView;
-import megameklab.com.ui.view.BAProtoArmorView;
-import megameklab.com.ui.view.BasicInfoView;
-import megameklab.com.ui.view.MovementView;
-import megameklab.com.ui.view.listeners.ArmorAllocationListener;
-import megameklab.com.ui.view.listeners.ProtomekBuildListener;
+import megameklab.com.ui.generalunit.ArmorAllocationView;
+import megameklab.com.ui.generalunit.BAProtoArmorView;
+import megameklab.com.ui.generalunit.BasicInfoView;
+import megameklab.com.ui.generalunit.MovementView;
+import megameklab.com.ui.listeners.ArmorAllocationListener;
+import megameklab.com.ui.listeners.ProtomekBuildListener;
 import megameklab.com.ui.util.ITab;
-import megameklab.com.util.RefreshListener;
+import megameklab.com.ui.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 
 /**

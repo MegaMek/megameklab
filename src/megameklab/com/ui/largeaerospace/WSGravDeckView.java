@@ -33,8 +33,8 @@ import javax.swing.table.AbstractTableModel;
 import megamek.common.Jumpship;
 import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestAdvancedAerospace;
-import megameklab.com.ui.view.BuildView;
-import megameklab.com.ui.view.listeners.AdvancedAeroBuildListener;
+import megameklab.com.ui.generalunit.BuildView;
+import megameklab.com.ui.listeners.AdvancedAeroBuildListener;
 
 /**
  * Sets number and sizes of gravity decks on advanced aerospace units.

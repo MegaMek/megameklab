@@ -15,7 +15,7 @@
  * for more details.
  */
 
-package megameklab.com.ui.view;
+package megameklab.com.ui.generalunit;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -42,6 +42,7 @@ import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.util.CriticalTableModel;
 import megameklab.com.ui.util.CriticalTransferHandler;
 import megameklab.com.ui.util.IView;
+import megameklab.com.ui.util.RefreshListener;
 import megameklab.com.util.*;
 
 /**

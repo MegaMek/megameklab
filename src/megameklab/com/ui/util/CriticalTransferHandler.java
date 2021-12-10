@@ -23,7 +23,6 @@ import megamek.common.Entity;
 import megamek.common.Mounted;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
-import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 
 import javax.swing.*;

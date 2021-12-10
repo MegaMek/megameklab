@@ -35,8 +35,8 @@ import megamek.common.ITechManager;
 import megamek.common.SmallCraft;
 import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestAero;
-import megameklab.com.ui.view.BuildView;
-import megameklab.com.ui.view.listeners.DropshipBuildListener;
+import megameklab.com.ui.generalunit.BuildView;
+import megameklab.com.ui.listeners.DropshipBuildListener;
 
 /**
  * Structure tab chassis panel for small craft and dropships.

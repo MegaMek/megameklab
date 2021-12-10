@@ -11,24 +11,27 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package megameklab.com.ui.view.listeners;
+package megameklab.com.ui.listeners;
 
 import megamek.common.Engine;
+import megamek.common.EquipmentType;
 
 /**
- * Listener for views used by aerospace units.
+ * Listener for views used by Meks.
  * 
  * @author Neoancient
  *
  */
-public interface AeroBuildListener extends BuildListener {
-
+public interface MekBuildListener extends BuildListener {
     void tonnageChanged(double tonnage);
     void omniChanged(boolean omni);
-    void vstolChanged(boolean vstol);
-    void fighterTypeChanged(int type);
+    void typeChanged(int baseType, int motiveType, long etype);
+    void structureChanged(EquipmentType structure);
     void engineChanged(Engine engine);
+    void gyroChanged(int gyroType);
     void cockpitChanged(int cockpitType);
+    void enhancementChanged(EquipmentType enhancement);
+    void fullHeadEjectChanged(boolean eject);
     void resetChassis();
 
 }

@@ -11,7 +11,7 @@
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  */
-package megameklab.com.ui.tabs;
+package megameklab.com.ui.generalunit;
 
 import java.awt.Color;
 import java.awt.GridBagConstraints;
@@ -34,7 +34,7 @@ import megamek.common.EntityFluff;
 import megamek.common.util.EncodeControl;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.util.ITab;
-import megameklab.com.util.RefreshListener;
+import megameklab.com.ui.util.RefreshListener;
 
 /**
  * Panel for editing unit fluff

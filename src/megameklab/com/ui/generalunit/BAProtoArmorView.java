@@ -11,7 +11,7 @@
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  */
-package megameklab.com.ui.view;
+package megameklab.com.ui.generalunit;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -39,7 +39,7 @@ import megamek.common.annotations.Nullable;
 import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestProtomech;
 import megameklab.com.ui.util.TechComboBox;
-import megameklab.com.ui.view.listeners.ArmorAllocationListener;
+import megameklab.com.ui.listeners.ArmorAllocationListener;
 import megameklab.com.util.UnitUtil;
 
 /**

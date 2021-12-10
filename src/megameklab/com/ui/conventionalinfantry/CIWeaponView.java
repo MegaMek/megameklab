@@ -40,8 +40,8 @@ import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestInfantry;
 import megamek.common.weapons.artillery.ArtilleryCannonWeapon;
 import megamek.common.weapons.artillery.ArtilleryWeapon;
-import megameklab.com.ui.view.BuildView;
-import megameklab.com.ui.view.listeners.InfantryBuildListener;
+import megameklab.com.ui.generalunit.BuildView;
+import megameklab.com.ui.listeners.InfantryBuildListener;
 import megameklab.com.util.UnitUtil;
 
 /**

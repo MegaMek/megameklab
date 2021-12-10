@@ -33,8 +33,8 @@ import megamek.common.TechConstants;
 import megamek.common.VTOL;
 import megamek.common.verifier.TestTank;
 import megameklab.com.ui.MegaMekLabMainUI;
-import megameklab.com.ui.tabs.FluffTab;
-import megameklab.com.ui.tabs.PreviewTab;
+import megameklab.com.ui.generalunit.FluffTab;
+import megameklab.com.ui.generalunit.PreviewTab;
 import megameklab.com.ui.util.TabScrollPane;
 
 public class CVMainUI extends MegaMekLabMainUI {

@@ -43,7 +43,7 @@ import megameklab.com.ui.util.CriticalTableModel;
 import megameklab.com.ui.util.EquipmentListCellKeySelectionManager;
 import megameklab.com.ui.util.EquipmentListCellRenderer;
 import megameklab.com.ui.util.IView;
-import megameklab.com.util.RefreshListener;
+import megameklab.com.ui.util.RefreshListener;
 import megameklab.com.util.StringUtils;
 import megameklab.com.util.UnitUtil;
 

@@ -34,8 +34,8 @@ import megamek.common.Infantry;
 import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestInfantry;
 import megameklab.com.ui.util.CustomComboBox;
-import megameklab.com.ui.view.BuildView;
-import megameklab.com.ui.view.listeners.InfantryBuildListener;
+import megameklab.com.ui.generalunit.BuildView;
+import megameklab.com.ui.listeners.InfantryBuildListener;
 
 /**
  * Infantry structure tab panel for selecting platoon movement type and number/size of squads.

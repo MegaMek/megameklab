@@ -34,7 +34,7 @@ import megamek.common.weapons.infantry.InfantryWeapon;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.util.CriticalTableModel;
-import megameklab.com.util.RefreshListener;
+import megameklab.com.ui.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 
 import javax.swing.*;

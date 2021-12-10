@@ -11,12 +11,11 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package megameklab.com.ui.view.listeners;
+package megameklab.com.ui.listeners;
 
 import megamek.common.EquipmentType;
 import megamek.common.FuelType;
 import megamek.common.SimpleTechLevel;
-import megameklab.com.ui.view.HeatSinkView;
 
 /**
  * Combined listener interface for the various subviews of the structure tab. Includes callbacks
@@ -48,7 +47,8 @@ public interface BuildListener {
 
     /**
      * Notifies of a change in heat sink type or count for aerospace units
-     * @param index Either {@link HeatSinkView#TYPE_SINGLE} or {@link HeatSinkView#TYPE_DOUBLE_AERO}
+     * @param index Either {@link megameklab.com.ui.generalunit.HeatSinkView#TYPE_SINGLE} or
+     * {@link megameklab.com.ui.generalunit.HeatSinkView#TYPE_DOUBLE_AERO}
      * @param count The number of heat sinks
      */
     default void heatSinksChanged(int index, int count) {};

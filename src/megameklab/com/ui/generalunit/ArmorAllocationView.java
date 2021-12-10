@@ -11,7 +11,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package megameklab.com.ui.view;
+package megameklab.com.ui.generalunit;
 
 import java.awt.Color;
 import java.awt.GridBagConstraints;
@@ -33,8 +33,7 @@ import javax.swing.UIManager;
 import megamek.common.*;
 import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestSupportVehicle;
-import megameklab.com.ui.view.listeners.ArmorAllocationListener;
-import megameklab.com.ui.view.listeners.BuildListener;
+import megameklab.com.ui.listeners.ArmorAllocationListener;
 import megameklab.com.util.UnitUtil;
 
 /**

@@ -49,15 +49,11 @@ import megamek.common.verifier.BayData;
 import megamek.common.verifier.TestTank;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
-import megameklab.com.ui.view.ArmorAllocationView;
-import megameklab.com.ui.view.BasicInfoView;
-import megameklab.com.ui.view.MVFArmorView;
-import megameklab.com.ui.view.MovementView;
-import megameklab.com.ui.view.PatchworkArmorView;
-import megameklab.com.ui.view.listeners.ArmorAllocationListener;
-import megameklab.com.ui.view.listeners.CVBuildListener;
+import megameklab.com.ui.generalunit.*;
+import megameklab.com.ui.listeners.ArmorAllocationListener;
+import megameklab.com.ui.listeners.CVBuildListener;
 import megameklab.com.ui.util.ITab;
-import megameklab.com.util.RefreshListener;
+import megameklab.com.ui.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 
 public class CVStructureTab extends ITab implements CVBuildListener, ArmorAllocationListener {

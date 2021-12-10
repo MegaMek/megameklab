@@ -1,7 +1,7 @@
 /**
  * 
  */
-package megameklab.com.ui.view.listeners;
+package megameklab.com.ui.listeners;
 
 /**
  * Listener for views used by aerospace units.

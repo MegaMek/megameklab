@@ -14,7 +14,7 @@
  * details.
  */
 
-package megameklab.com.ui.tabs;
+package megameklab.com.ui.generalunit;
 
 import java.awt.BorderLayout;
 

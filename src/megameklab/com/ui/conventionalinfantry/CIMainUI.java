@@ -24,8 +24,8 @@ import javax.swing.SwingConstants;
 import megamek.common.*;
 import megamek.common.weapons.infantry.InfantryWeapon;
 import megameklab.com.ui.MegaMekLabMainUI;
-import megameklab.com.ui.tabs.PreviewTab;
-import megameklab.com.ui.tabs.FluffTab;
+import megameklab.com.ui.generalunit.PreviewTab;
+import megameklab.com.ui.generalunit.FluffTab;
 import megameklab.com.ui.util.TabScrollPane;
 
 public class CIMainUI extends MegaMekLabMainUI {

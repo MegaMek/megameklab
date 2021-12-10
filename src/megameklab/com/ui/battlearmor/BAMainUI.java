@@ -28,7 +28,7 @@ import megamek.common.EquipmentType;
 import megamek.common.ITechManager;
 import megamek.common.TechConstants;
 import megameklab.com.ui.MegaMekLabMainUI;
-import megameklab.com.ui.tabs.FluffTab;
+import megameklab.com.ui.generalunit.FluffTab;
 import megameklab.com.ui.util.TabScrollPane;
 
 public class BAMainUI extends MegaMekLabMainUI {

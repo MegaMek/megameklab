@@ -32,7 +32,7 @@ import megamek.common.options.IOption;
 import megamek.common.options.PilotOptions;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.util.IView;
-import megameklab.com.util.RefreshListener;
+import megameklab.com.ui.util.RefreshListener;
 
 /**
  * Allows infantry to include cybernetic/prosthetic augmentation (e.g. Manei Domini).

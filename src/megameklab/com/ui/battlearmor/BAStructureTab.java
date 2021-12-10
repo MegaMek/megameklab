@@ -43,14 +43,14 @@ import megamek.common.verifier.TestBattleArmor;
 import megamek.common.verifier.TestBattleArmor.BAManipulator;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
+import megameklab.com.ui.generalunit.BAProtoArmorView;
+import megameklab.com.ui.generalunit.MovementView;
 import megameklab.com.ui.util.CustomComboBox;
-import megameklab.com.ui.view.BAProtoArmorView;
-import megameklab.com.ui.view.BasicInfoView;
-import megameklab.com.ui.view.MovementView;
-import megameklab.com.ui.view.listeners.ArmorAllocationListener;
-import megameklab.com.ui.view.listeners.BABuildListener;
+import megameklab.com.ui.generalunit.BasicInfoView;
+import megameklab.com.ui.listeners.ArmorAllocationListener;
+import megameklab.com.ui.listeners.BABuildListener;
 import megameklab.com.ui.util.ITab;
-import megameklab.com.util.RefreshListener;
+import megameklab.com.ui.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 
 public class BAStructureTab extends ITab implements ActionListener, BABuildListener, ArmorAllocationListener {
