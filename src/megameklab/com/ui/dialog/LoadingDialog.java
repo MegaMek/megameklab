@@ -28,12 +28,12 @@ import javax.swing.SwingWorker;
 import megamek.common.Entity;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.MegaMekLabMainUI;
-import megameklab.com.ui.largeaerospace.DSMainUI;
-import megameklab.com.ui.largeaerospace.WSMainUI;
+import megameklab.com.ui.largeaero.DSMainUI;
+import megameklab.com.ui.largeaero.WSMainUI;
 import megameklab.com.ui.battlearmor.BAMainUI;
-import megameklab.com.ui.combatvehicle.CVMainUI;
-import megameklab.com.ui.conventionalinfantry.CIMainUI;
-import megameklab.com.ui.fighter.ASMainUI;
+import megameklab.com.ui.combatveh.CVMainUI;
+import megameklab.com.ui.convinfantry.CIMainUI;
+import megameklab.com.ui.fighteraero.ASMainUI;
 import megameklab.com.ui.mek.BMMainUI;
 import megameklab.com.ui.protomek.PMMainUI;
 import megameklab.com.util.UnitUtil;
@@ -117,7 +117,7 @@ public class LoadingDialog extends JDialog {
             if (type == Entity.ETYPE_TANK) {
                 newUI = new CVMainUI();
             } else if (type == Entity.ETYPE_SUPPORT_TANK) {
-                newUI = new megameklab.com.ui.supportvehicle.SVMainUI();
+                newUI = new megameklab.com.ui.supportveh.SVMainUI();
             } else if (type == Entity.ETYPE_PROTOMECH) {
                 newUI = new PMMainUI();
             } else if (type == Entity.ETYPE_BATTLEARMOR) {
