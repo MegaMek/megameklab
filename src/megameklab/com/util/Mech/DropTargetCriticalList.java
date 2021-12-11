@@ -13,31 +13,9 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-
 package megameklab.com.util.Mech;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.util.Vector;
-
-import javax.swing.JList;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-
-import megamek.common.AmmoType;
-import megamek.common.BattleArmor;
-import megamek.common.BipedMech;
-import megamek.common.CriticalSlot;
-import megamek.common.Entity;
-import megamek.common.Mech;
-import megamek.common.MechFileParser;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
-import megamek.common.TripodMech;
-import megamek.common.WeaponType;
+import megamek.common.*;
 import megamek.common.loaders.EntityLoadingException;
 import megamek.common.verifier.TestBattleArmor;
 import megamek.common.weapons.autocannons.ACWeapon;
@@ -45,17 +23,17 @@ import megamek.common.weapons.autocannons.LBXACWeapon;
 import megamek.common.weapons.autocannons.UACWeapon;
 import megamek.common.weapons.gaussrifles.GaussWeapon;
 import megamek.common.weapons.ppc.PPCWeapon;
-import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.util.CritListCellRenderer;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
+import org.apache.logging.log4j.LogManager;
+
+import javax.swing.*;
+import java.awt.event.*;
+import java.util.Vector;
 
 public class DropTargetCriticalList<E> extends JList<E> implements MouseListener {
-
-    /**
-     *
-     */
     private static final long serialVersionUID = 6847511182922982125L;
     private EntitySource eSource;
     private RefreshListener refresh;
@@ -501,7 +479,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                 return crit.getMount();
             }
         } catch (Exception ex) {
-            MegaMekLab.getLogger().error(ex);
+            LogManager.getLogger().error(ex);
         }
 
         return mount;
@@ -543,7 +521,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
         } catch (EntityLoadingException ele) {
             // do nothing.
         } catch (Exception ex) {
-            MegaMekLab.getLogger().error(ex);
+            LogManager.getLogger().error(ex);
         }
 
         if (refresh != null) {
@@ -575,7 +553,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
         } catch (EntityLoadingException ele) {
             // do nothing.
         } catch (Exception ex) {
-            MegaMekLab.getLogger().error(ex);
+            LogManager.getLogger().error(ex);
         }
 
         if ((crit != null) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)) {

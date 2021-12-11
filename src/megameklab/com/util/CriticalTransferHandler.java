@@ -13,17 +13,12 @@
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  */
-
 package megameklab.com.util;
 
-import megamek.common.AmmoType;
-import megamek.common.BattleArmor;
-import megamek.common.CriticalSlot;
-import megamek.common.Entity;
-import megamek.common.Mounted;
-import megameklab.com.MegaMekLab;
+import megamek.common.*;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.util.ProtomekMountList;
+import org.apache.logging.log4j.LogManager;
 
 import javax.swing.*;
 import java.awt.datatransfer.DataFlavor;
@@ -33,10 +28,6 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 
 public class CriticalTransferHandler extends TransferHandler {
-
-    /**
-     *
-     */
     private static final long serialVersionUID = -5215375829853683877L;
     private EntitySource eSource;
     private int location;
@@ -77,7 +68,7 @@ public class CriticalTransferHandler extends TransferHandler {
                     changeMountStatus(mount, location, false);
                 }
             } catch (Exception ex) {
-                MegaMekLab.getLogger().error(ex);
+                LogManager.getLogger().error(ex);
             }
 
             return true;
@@ -105,7 +96,7 @@ public class CriticalTransferHandler extends TransferHandler {
                     changeMountStatus(mount, location, false);
                 }
             } catch (Exception ex) {
-                MegaMekLab.getLogger().error(ex);
+                LogManager.getLogger().error(ex);
             }
 
             return true;
@@ -123,7 +114,7 @@ public class CriticalTransferHandler extends TransferHandler {
                     changeMountStatus(mount, Entity.LOC_NONE, false);
                 }
             } catch (Exception ex) {
-                MegaMekLab.getLogger().error(ex);
+                LogManager.getLogger().error(ex);
             }
             return true;
         }
@@ -143,7 +134,7 @@ public class CriticalTransferHandler extends TransferHandler {
                     .parseInt((String) info.getTransferable().getTransferData(
                             DataFlavor.stringFlavor)));
         } catch (NumberFormatException | UnsupportedFlavorException | IOException e) {
-            MegaMekLab.getLogger().error(e);
+            LogManager.getLogger().error(e);
         }
         // not actually dragged a Mounted? not transferable
         if (mounted == null) {

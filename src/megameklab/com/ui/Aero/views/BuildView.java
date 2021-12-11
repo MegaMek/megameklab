@@ -13,11 +13,20 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-
 package megameklab.com.ui.Aero.views;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
+import megamek.common.*;
+import megamek.common.verifier.TestAero;
+import megamek.common.weapons.Weapon;
+import megameklab.com.ui.Aero.tabs.BuildTab;
+import megameklab.com.ui.EntitySource;
+import megameklab.com.util.*;
+import org.apache.logging.log4j.LogManager;
+
+import javax.swing.*;
+import javax.swing.border.TitledBorder;
+import javax.swing.table.TableColumn;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -26,44 +35,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Vector;
 
-import javax.swing.BorderFactory;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
-import javax.swing.border.TitledBorder;
-import javax.swing.table.TableColumn;
-
-import megamek.common.Aero;
-import megamek.common.AmmoType;
-import megamek.common.Entity;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
-import megamek.common.WeaponType;
-import megamek.common.verifier.TestAero;
-import megamek.common.weapons.Weapon;
-import megameklab.com.MegaMekLab;
-import megameklab.com.ui.EntitySource;
-import megameklab.com.ui.Aero.tabs.BuildTab;
-import megameklab.com.util.CriticalTableModel;
-import megameklab.com.util.CriticalTransferHandler;
-import megameklab.com.util.IView;
-import megameklab.com.util.RefreshListener;
-import megameklab.com.util.StringUtils;
-import megameklab.com.util.UnitUtil;
-
 /**
  * This IView shows all the equipment that's not yet been assigned a location
  * @author beerockxs
  * @author arlith
- *
  */
 public class BuildView extends IView implements ActionListener, MouseListener {
-
-    /**
-     *
-     */
     private static final long serialVersionUID = 799195356642563937L;
 
     private CriticalTableModel equipmentList;
@@ -361,7 +338,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         try {
             getAero().addEquipment(eq, location, false);
         } catch (Exception ex) {
-            MegaMekLab.getLogger().error(ex);
+            LogManager.getLogger().error(ex);
         }
         UnitUtil.changeMountStatus(getAero(), eq, location, -1, false);
 

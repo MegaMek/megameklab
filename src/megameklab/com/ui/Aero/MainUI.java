@@ -13,31 +13,20 @@
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  */
-
 package megameklab.com.ui.Aero;
 
-import java.awt.BorderLayout;
-
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
-import javax.swing.SwingConstants;
-
-import megamek.common.Aero;
-import megamek.common.ConvFighter;
-import megamek.common.Engine;
-import megamek.common.Entity;
-import megamek.common.EquipmentType;
-import megamek.common.ITechManager;
-import megamek.common.SimpleTechLevel;
-import megamek.common.TechConstants;
-import megameklab.com.MegaMekLab;
-import megameklab.com.ui.MegaMekLabMainUI;
+import megamek.common.*;
 import megameklab.com.ui.Aero.tabs.BuildTab;
 import megameklab.com.ui.Aero.tabs.EquipmentTab;
 import megameklab.com.ui.Aero.tabs.StructureTab;
+import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.tabs.FluffTab;
 import megameklab.com.ui.tabs.PreviewTab;
 import megameklab.com.ui.util.TabScrollPane;
+import org.apache.logging.log4j.LogManager;
+
+import javax.swing.*;
+import java.awt.*;
 
 public class MainUI extends MegaMekLabMainUI {
 
@@ -98,7 +87,7 @@ public class MainUI extends MegaMekLabMainUI {
             setEntity(new ConvFighter());
             getEntity().setTechLevel(TechConstants.T_IS_TW_NON_BOX);
         } else {
-            MegaMekLab.getLogger().error("Received incorrect entityType!");
+            LogManager.getLogger().error("Received incorrect entityType!");
             return;
         }
 

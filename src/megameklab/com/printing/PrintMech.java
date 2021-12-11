@@ -13,6 +13,20 @@
  */
 package megameklab.com.printing;
 
+import megamek.common.Entity;
+import megamek.common.*;
+import megamek.common.annotations.Nullable;
+import megameklab.com.printing.reference.*;
+import megameklab.com.util.ImageHelper;
+import megameklab.com.util.UnitUtil;
+import org.apache.batik.anim.dom.SVGDOMImplementation;
+import org.apache.batik.dom.util.SAXDocumentFactory;
+import org.apache.batik.util.SVGConstants;
+import org.apache.batik.util.XMLResourceDescriptor;
+import org.apache.logging.log4j.LogManager;
+import org.w3c.dom.*;
+import org.w3c.dom.svg.SVGRectElement;
+
 import java.awt.geom.Rectangle2D;
 import java.awt.print.PageFormat;
 import java.io.File;
@@ -22,34 +36,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import megamek.common.*;
-import megameklab.com.printing.reference.*;
-import org.apache.batik.anim.dom.SVGDOMImplementation;
-import org.apache.batik.dom.util.SAXDocumentFactory;
-import org.apache.batik.util.SVGConstants;
-import org.apache.batik.util.XMLResourceDescriptor;
-import org.w3c.dom.DOMImplementation;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.svg.SVGRectElement;
-
-import megamek.common.annotations.Nullable;
-import megameklab.com.MegaMekLab;
-import megameklab.com.util.ImageHelper;
-import megameklab.com.util.UnitUtil;
-
 /**
- * Lays out a record sheet for a mech
+ * Lays out a record sheet for a Mek
  * 
  * @author Neoancient
- *
  */
 public class PrintMech extends PrintEntity {
 
     /**
-     * The current mech being printed.
+     * The current Mek being printed.
      */
     private final Mech mech;
     
@@ -165,7 +160,7 @@ public class PrintMech extends PrintEntity {
             if (si instanceof SVGRectElement) {
                 drawSIPips((SVGRectElement) si);
             } else {
-                MegaMekLab.getLogger().error("Region siPips does not exist in template or is not a <rect>");
+                LogManager.getLogger().error("Region siPips does not exist in template or is not a <rect>");
             }
         }
         
@@ -334,11 +329,11 @@ public class PrintMech extends PrintEntity {
             SAXDocumentFactory df = new SAXDocumentFactory(impl, parser);
             doc = df.createDocument(f.toURI().toASCIIString(), is);
         } catch (Exception e) {
-            MegaMekLab.getLogger().error("Failed to open pip SVG file! Path: " + f.getName());
+            LogManager.getLogger().error("Failed to open pip SVG file! Path: " + f.getName());
             return null;
         }
         if (null == doc) {
-            MegaMekLab.getLogger().error("Failed to open pip SVG file! Path: " + f.getName());
+            LogManager.getLogger().error("Failed to open pip SVG file! Path: " + f.getName());
             return null;
         }
         return doc.getElementsByTagName(SVGConstants.SVG_PATH_TAG);

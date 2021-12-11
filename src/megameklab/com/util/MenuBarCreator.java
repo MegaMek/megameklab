@@ -13,12 +13,23 @@
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  */
-
 package megameklab.com.util;
 
-import java.awt.Component;
-import java.awt.FileDialog;
-import java.awt.Toolkit;
+import megamek.client.ui.swing.UnitLoadingDialog;
+import megamek.common.*;
+import megamek.common.annotations.Nullable;
+import megamek.common.loaders.BLKFile;
+import megamek.common.templates.TROView;
+import megamek.common.util.EncodeControl;
+import megameklab.com.MMLConstants;
+import megameklab.com.ui.MegaMekLabMainUI;
+import megameklab.com.ui.dialog.LoadingDialog;
+import megameklab.com.ui.dialog.MegaMekLabUnitSelectorDialog;
+import org.apache.logging.log4j.LogManager;
+
+import javax.swing.*;
+import javax.swing.UIManager.LookAndFeelInfo;
+import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.StringSelection;
@@ -30,32 +41,6 @@ import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.PrintStream;
 import java.util.ResourceBundle;
-
-import javax.swing.BoxLayout;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.KeyStroke;
-import javax.swing.UIManager;
-import javax.swing.UIManager.LookAndFeelInfo;
-
-import megamek.client.ui.swing.UnitLoadingDialog;
-import megamek.common.*;
-import megamek.common.annotations.Nullable;
-import megamek.common.loaders.BLKFile;
-import megamek.common.templates.TROView;
-import megamek.common.util.EncodeControl;
-import megameklab.com.MMLConstants;
-import megameklab.com.MegaMekLab;
-import megameklab.com.ui.MegaMekLabMainUI;
-import megameklab.com.ui.dialog.LoadingDialog;
-import megameklab.com.ui.dialog.MegaMekLabUnitSelectorDialog;
 
 public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
 
@@ -715,7 +700,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
                 BLKFile.encode(unitFile.getAbsolutePath(), tempEntity);
             }
         } catch (Exception ex) {
-            MegaMekLab.getLogger().error(ex);
+            LogManager.getLogger().error(ex);
         }
     }
 
@@ -916,7 +901,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         } else if (parentFrame.getEntity() instanceof Protomech) {
             parentFrame.createNewUnit(Entity.ETYPE_PROTOMECH);
         } else {
-            MegaMekLab.getLogger().warning("Received unknown entityType!");
+            LogManager.getLogger().warn("Received unknown entityType!");
         }
         setVisible(true);
         reload();
@@ -988,7 +973,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             }
             CConfig.updateSaveFiles(filePathName);
         } catch (Exception ex) {
-            MegaMekLab.getLogger().error(ex);
+            LogManager.getLogger().error(ex);
         }
 
         JOptionPane.showMessageDialog(parentFrame,
@@ -1037,7 +1022,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             }
             CConfig.updateSaveFiles(filePathName);
         } catch (Exception ex) {
-            MegaMekLab.getLogger().error(ex);
+            LogManager.getLogger().error(ex);
         }
 
         JOptionPane.showMessageDialog(parentFrame,
@@ -1085,7 +1070,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             p.close();
             out.close();
         } catch (Exception ex) {
-            MegaMekLab.getLogger().error(ex);
+            LogManager.getLogger().error(ex);
         }
     }
 

@@ -13,9 +13,20 @@
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  */
-
 package megameklab.com.ui.BattleArmor.views;
 
+import megamek.common.*;
+import megamek.common.verifier.TestBattleArmor;
+import megamek.common.weapons.Weapon;
+import megamek.common.weapons.infantry.InfantryWeapon;
+import megameklab.com.ui.BattleArmor.tabs.BuildTab;
+import megameklab.com.ui.EntitySource;
+import megameklab.com.util.*;
+import org.apache.logging.log4j.LogManager;
+
+import javax.swing.*;
+import javax.swing.border.TitledBorder;
+import javax.swing.table.TableColumn;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -24,55 +35,20 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Vector;
 
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
-import javax.swing.border.TitledBorder;
-import javax.swing.table.TableColumn;
-
-import megamek.common.AmmoType;
-import megamek.common.BattleArmor;
-import megamek.common.EquipmentType;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
-import megamek.common.WeaponType;
-import megamek.common.verifier.TestBattleArmor;
-import megamek.common.weapons.Weapon;
-import megamek.common.weapons.infantry.InfantryWeapon;
-import megameklab.com.MegaMekLab;
-import megameklab.com.ui.EntitySource;
-import megameklab.com.ui.BattleArmor.tabs.BuildTab;
-import megameklab.com.util.CriticalTableModel;
-import megameklab.com.util.CriticalTransferHandler;
-import megameklab.com.util.IView;
-import megameklab.com.util.RefreshListener;
-import megameklab.com.util.StringUtils;
-import megameklab.com.util.UnitUtil;
-
 /**
- * A component that display a table listing all of the unallocated equipment
+ * A component that display a table listing all the unallocated equipment
  * for the squad and allows dragging of the equipment to criticals to mount it.
  * 
  * @author Taharqa
  * @author arlith
- *
  */
 public class BuildView extends IView implements ActionListener, MouseListener {
-
-    /**
-     *
-     */
     private static final long serialVersionUID = 799195356642563937L;
 
     private JPanel mainPanel = new JPanel();
 
     private CriticalTableModel equipmentList;
-    private Vector<Mounted> masterEquipmentList = new Vector<Mounted>(10, 1);
+    private Vector<Mounted> masterEquipmentList = new Vector<>(10, 1);
     private JTable equipmentTable = new JTable();
     private JScrollPane equipmentScroll = new JScrollPane();
 
@@ -620,7 +596,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         try {
             eq.setBaMountLoc(location);
         } catch (Exception ex) {
-            MegaMekLab.getLogger().error(ex);
+            LogManager.getLogger().error(ex);
         }
         
         UnitUtil.changeMountStatus(getBattleArmor(), eq, BattleArmor.LOC_SQUAD, -1, false);

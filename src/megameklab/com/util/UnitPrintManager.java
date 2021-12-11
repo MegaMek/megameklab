@@ -13,49 +13,31 @@
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  */
-
 package megameklab.com.util;
 
+import megamek.client.ui.swing.UnitLoadingDialog;
+import megamek.common.*;
+import megamek.common.util.EncodeControl;
+import megameklab.com.printing.*;
+import megameklab.com.ui.MegaMekLabMainUI;
+import megameklab.com.ui.dialog.MegaMekLabUnitSelectorDialog;
+import megameklab.com.ui.dialog.UnitPrintQueueDialog;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.logging.log4j.LogManager;
+
+import javax.print.attribute.HashPrintRequestAttributeSet;
+import javax.print.attribute.standard.DialogTypeSelection;
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.print.PageFormat;
 import java.awt.print.PrinterJob;
 import java.io.File;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
-
-import javax.print.attribute.HashPrintRequestAttributeSet;
-import javax.print.attribute.standard.DialogTypeSelection;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.KeyStroke;
-import javax.swing.filechooser.FileNameExtensionFilter;
-
-import megamek.client.ui.swing.UnitLoadingDialog;
-import megamek.common.Aero;
-import megamek.common.BattleArmor;
-import megamek.common.Dropship;
-import megamek.common.Entity;
-import megamek.common.EntityListFile;
-import megamek.common.EntityMovementMode;
-import megamek.common.Infantry;
-import megamek.common.Jumpship;
-import megamek.common.Mech;
-import megamek.common.MechFileParser;
-import megamek.common.Protomech;
-import megamek.common.Tank;
-import megamek.common.util.EncodeControl;
-import megameklab.com.MegaMekLab;
-import megameklab.com.printing.*;
-import megameklab.com.ui.dialog.MegaMekLabUnitSelectorDialog;
-import megameklab.com.ui.MegaMekLabMainUI;
-import megameklab.com.ui.dialog.UnitPrintQueueDialog;
-import org.apache.commons.io.FilenameUtils;
 
 public class UnitPrintManager {
 
@@ -94,7 +76,7 @@ public class UnitPrintManager {
             loadedUnits = EntityListFile.loadFrom(f.getSelectedFile());
             loadedUnits.trimToSize();
         } catch (Exception ex) {
-            MegaMekLab.getLogger().error(ex);
+            LogManager.getLogger().error(ex);
             return;
         }
 
@@ -123,7 +105,7 @@ public class UnitPrintManager {
             loadedUnits = EntityListFile.loadFrom(mulFile);
             loadedUnits.trimToSize();
         } catch (Exception ex) {
-            MegaMekLab.getLogger().error(ex);
+            LogManager.getLogger().error(ex);
             return;
         }
 
@@ -445,7 +427,7 @@ public class UnitPrintManager {
                 printAllUnits(unitList, singleUnit);
             }
         } catch (Exception ex) {
-            MegaMekLab.getLogger().error(ex);
+            LogManager.getLogger().error(ex);
         }
     }
 }

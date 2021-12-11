@@ -15,31 +15,23 @@
  */
 package megameklab.com.ui.Mek.tabs;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JPanel;
-
 import megamek.common.Entity;
 import megamek.common.Mech;
 import megamek.common.Mounted;
-import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.Mek.views.BuildView;
 import megameklab.com.ui.Mek.views.CriticalView;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
+import org.apache.logging.log4j.LogManager;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class BuildTab extends ITab implements ActionListener {
-
-    /**
-     *
-     */
     private static final long serialVersionUID = -6756011847500605874L;
 
     private RefreshListener refresh = null;
@@ -143,7 +135,7 @@ public class BuildTab extends ITab implements ActionListener {
                     UnitUtil.changeMountStatus(getMech(), mount, location, Entity.LOC_NONE, false);
                     break;
                 } catch (Exception ex) {
-                    MegaMekLab.getLogger().error(ex);
+                    LogManager.getLogger().error(ex);
                 }
             }
         }

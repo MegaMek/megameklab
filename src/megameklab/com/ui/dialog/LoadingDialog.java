@@ -13,32 +13,22 @@
  */
 package megameklab.com.ui.dialog;
 
-import java.awt.BorderLayout;
-import java.awt.Image;
-import java.awt.MediaTracker;
-import java.util.TreeMap;
-import java.util.concurrent.ExecutionException;
-
-import javax.swing.ImageIcon;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.SwingWorker;
-
 import megamek.common.Entity;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.util.UnitUtil;
+import org.apache.logging.log4j.LogManager;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.TreeMap;
+import java.util.concurrent.ExecutionException;
 
 /**
  * A loading dialog to display until the mainUI has loaded.
  * @author Taharqa
  */
 public class LoadingDialog extends JDialog {
-
-    /**
-     *
-     */
     private static final long serialVersionUID = -3454307876761238915L;
     
     Task task;
@@ -146,7 +136,7 @@ public class LoadingDialog extends JDialog {
             try {
                 get();
             } catch (ExecutionException ex) {
-                MegaMekLab.getLogger().error(ex);
+                LogManager.getLogger().error(ex);
             } catch (InterruptedException ex) {
                 interrupted = true;
             } finally {
