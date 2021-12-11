@@ -148,7 +148,7 @@ public class MegaMekLab {
         try {
             QuirksHandler.initQuirksList();
         } catch (Exception e) {
-            getLogger().warning("Could not load quirks");
+            MegaMekLab.getLogger().warning("Could not load quirks");
         }
         CConfig.load();
         UnitUtil.loadFonts();
