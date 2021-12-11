@@ -147,8 +147,8 @@ public class MegaMekLab {
         MechSummaryCache.getInstance();
         try {
             QuirksHandler.initQuirksList();
-        } catch (IOException e) {
-            getLogger().warning("Could not load quirks");
+        } catch (Exception e) {
+            MegaMekLab.getLogger().warning("Could not load quirks");
         }
         CConfig.load();
         UnitUtil.loadFonts();
