@@ -31,7 +31,7 @@ import megamek.common.SmallCraft;
 import megamek.common.TechConstants;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.MegaMekLabMainUI;
-import megameklab.com.ui.fighteraero.ASEquipmentTab;
+import megameklab.com.ui.generalunit.AeroEquipmentTab;
 import megameklab.com.ui.generalunit.PreviewTab;
 import megameklab.com.ui.generalunit.FluffTab;
 import megameklab.com.ui.generalunit.TransportTab;
@@ -47,9 +47,9 @@ public class DSMainUI extends MegaMekLabMainUI {
 
     JTabbedPane configPane = new JTabbedPane(SwingConstants.TOP);
     private DSStructureTab structureTab;
-    private ASEquipmentTab equipmentTab;
+    private AeroEquipmentTab equipmentTab;
     private PreviewTab previewTab;
-    private DSBuildTab buildTab;
+    private LABuildTab buildTab;
     private TransportTab transportTab;
     private DSStatusBar statusbar;
     
@@ -157,8 +157,8 @@ public class DSMainUI extends MegaMekLabMainUI {
         previewTab = new PreviewTab(this);
 
         statusbar = new DSStatusBar(this);
-        equipmentTab = new ASEquipmentTab(this);
-        buildTab = new DSBuildTab(this, equipmentTab);
+        equipmentTab = new AeroEquipmentTab(this);
+        buildTab = new LABuildTab(this, equipmentTab);
         transportTab = new TransportTab(this);
         FluffTab fluffTab = new FluffTab(this);
         structureTab.addRefreshedListener(this);

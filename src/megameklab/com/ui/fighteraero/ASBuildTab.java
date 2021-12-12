@@ -29,6 +29,7 @@ import megamek.common.Entity;
 import megamek.common.Mounted;
 import megamek.common.verifier.TestAero;
 import megameklab.com.ui.EntitySource;
+import megameklab.com.ui.generalunit.AeroEquipmentTab;
 import megameklab.com.ui.util.ITab;
 import megameklab.com.ui.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
@@ -50,7 +51,7 @@ public class ASBuildTab extends ITab implements ActionListener {
 
     private String RESETCOMMAND = "resetbuttoncommand";
 
-    public ASBuildTab(EntitySource eSource, ASEquipmentTab equipment) {
+    public ASBuildTab(EntitySource eSource, AeroEquipmentTab equipment) {
         super(eSource);
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         mainPanel.setLayout(new GridBagLayout());

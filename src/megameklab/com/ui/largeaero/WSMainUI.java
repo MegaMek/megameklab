@@ -32,7 +32,7 @@ import megamek.common.Warship;
 import megamek.common.verifier.TestAdvancedAerospace;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.MegaMekLabMainUI;
-import megameklab.com.ui.fighteraero.ASEquipmentTab;
+import megameklab.com.ui.generalunit.AeroEquipmentTab;
 import megameklab.com.ui.generalunit.PreviewTab;
 import megameklab.com.ui.generalunit.FluffTab;
 import megameklab.com.ui.generalunit.TransportTab;
@@ -48,9 +48,9 @@ public class WSMainUI extends MegaMekLabMainUI {
     
     JTabbedPane configPane = new JTabbedPane(SwingConstants.TOP);
     private WSStructureTab structureTab;
-    private ASEquipmentTab equipmentTab;
+    private AeroEquipmentTab equipmentTab;
     private PreviewTab previewTab;
-    private DSBuildTab buildTab;
+    private LABuildTab buildTab;
     private TransportTab transportTab;
     private FluffTab fluffTab;
     private WSStatusBar statusbar;
@@ -174,8 +174,8 @@ public class WSMainUI extends MegaMekLabMainUI {
         structureTab = new WSStructureTab(this);
         previewTab = new PreviewTab(this);
         statusbar = new WSStatusBar(this);
-        equipmentTab = new ASEquipmentTab(this);
-        buildTab = new DSBuildTab(this, equipmentTab);
+        equipmentTab = new AeroEquipmentTab(this);
+        buildTab = new LABuildTab(this, equipmentTab);
         fluffTab = new FluffTab(this);
         transportTab = new TransportTab(this);
         structureTab.addRefreshedListener(this);

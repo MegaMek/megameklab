@@ -14,7 +14,7 @@
  * for more details.
  */
 
-package megameklab.com.ui.fighteraero;
+package megameklab.com.ui.generalunit;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -79,7 +79,7 @@ import megameklab.com.ui.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 import megameklab.com.ui.util.XTableColumnModel;
 
-public class ASEquipmentTab extends ITab implements ActionListener {
+public class AeroEquipmentTab extends ITab implements ActionListener {
 
     /**
      *
@@ -148,7 +148,7 @@ public class ASEquipmentTab extends ITab implements ActionListener {
         }
     }
 
-    public ASEquipmentTab(EntitySource eSource) {
+    public AeroEquipmentTab(EntitySource eSource) {
         super(eSource);
 
         equipmentList = new CriticalTableModel(eSource.getEntity(), CriticalTableModel.WEAPONTABLE);

@@ -31,6 +31,7 @@ import megamek.common.SimpleTechLevel;
 import megamek.common.TechConstants;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.MegaMekLabMainUI;
+import megameklab.com.ui.generalunit.AeroEquipmentTab;
 import megameklab.com.ui.generalunit.FluffTab;
 import megameklab.com.ui.generalunit.PreviewTab;
 import megameklab.com.ui.util.TabScrollPane;
@@ -40,7 +41,7 @@ public class ASMainUI extends MegaMekLabMainUI {
     JTabbedPane configPane = new JTabbedPane(SwingConstants.TOP);
 
     private ASStructureTab structureTab;
-    private ASEquipmentTab equipmentTab;
+    private AeroEquipmentTab equipmentTab;
     private PreviewTab previewTab;
     private ASBuildTab buildTab;
     private FluffTab fluffTab;
@@ -62,7 +63,7 @@ public class ASMainUI extends MegaMekLabMainUI {
         structureTab = new ASStructureTab(this);
         previewTab = new PreviewTab(this);
         statusbar = new ASStatusBar(this);
-        equipmentTab = new ASEquipmentTab(this);
+        equipmentTab = new AeroEquipmentTab(this);
         buildTab = new ASBuildTab(this, equipmentTab);
         fluffTab = new FluffTab(this);
         structureTab.addRefreshedListener(this);

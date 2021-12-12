@@ -21,7 +21,7 @@ import javax.swing.*;
 import megamek.common.Entity;
 import megamek.common.Mounted;
 import megameklab.com.ui.EntitySource;
-import megameklab.com.ui.fighteraero.ASEquipmentTab;
+import megameklab.com.ui.generalunit.AeroEquipmentTab;
 import megameklab.com.ui.util.ITab;
 import megameklab.com.ui.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
@@ -32,7 +32,7 @@ import megameklab.com.util.UnitUtil;
  * @author Neoancient
  *
  */
-public class DSBuildTab extends ITab implements ActionListener {
+public class LABuildTab extends ITab implements ActionListener {
 
     /**
      * 
@@ -49,7 +49,7 @@ public class DSBuildTab extends ITab implements ActionListener {
 
     private String RESETCOMMAND = "resetbuttoncommand";
 
-    public DSBuildTab(EntitySource eSource, ASEquipmentTab equipment) {
+    public LABuildTab(EntitySource eSource, AeroEquipmentTab equipment) {
         super(eSource);
         setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
