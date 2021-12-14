@@ -12,26 +12,24 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-
-
 package megameklab.com.ui.fighteraero;
 
 import megamek.common.*;
 import megamek.common.verifier.TestAero;
-import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.util.CritCellUtil;
 import megameklab.com.ui.util.IView;
 import megameklab.com.util.Mech.DropTargetCriticalList;
 import megameklab.com.ui.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
+import org.apache.logging.log4j.LogManager;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.Vector;
 
 /**
- * The Crit Slots view for a Fighter (Aerospacce and Conventional)
+ * The Crit Slots view for a Fighter (Aerospace and Conventional)
  *
  * Original author - jtighe (torren@users.sourceforge.net)
  * @author arlith
@@ -108,7 +106,7 @@ public class ASCriticalView extends IView {
 
         if (availSpace == null) {
             // Shouldn't happen, since we only allow valid armor types to be selected...
-            MegaMekLab.getLogger().error("Invalid armour type!");
+            LogManager.getLogger().error("Invalid armour type!");
             return;
         }
 

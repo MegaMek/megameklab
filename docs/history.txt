@@ -13,6 +13,7 @@ VERSION HISTORY:
 + PR #969: Updating Apache XML Graphic dependencies: FOP to 2.6, Batik to 1.14
 + PR #970: Updating PDF Box to 2.0.24
 + PR #971: Crit Cell and Tooltip Improvements
++ PR #977: Log4j2 2.15.0 Swapover From Log4j1 1.2.17
 
 0.49.5 (2021-11-06 1800 UTC)
 

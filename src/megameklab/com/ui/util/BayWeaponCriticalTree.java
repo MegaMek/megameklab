@@ -13,31 +13,7 @@
  */
 package megameklab.com.ui.util;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
-import java.util.List;
-
-import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.border.CompoundBorder;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeCellRenderer;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.MutableTreeNode;
-import javax.swing.tree.TreeNode;
-import javax.swing.tree.TreePath;
-import javax.swing.tree.TreeSelectionModel;
-
-import megamek.common.Aero;
-import megamek.common.AmmoType;
-import megamek.common.Entity;
-import megamek.common.EquipmentType;
-import megamek.common.LocationFullException;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
-import megamek.common.SmallCraft;
-import megamek.common.WeaponType;
+import megamek.common.*;
 import megamek.common.annotations.Nullable;
 import megamek.common.verifier.TestAero;
 import megamek.common.verifier.TestEntity;
@@ -46,13 +22,23 @@ import megamek.common.weapons.bayweapons.PPCBayWeapon;
 import megamek.common.weapons.lrms.LRMWeapon;
 import megamek.common.weapons.ppc.PPCWeapon;
 import megamek.common.weapons.srms.SRMWeapon;
-import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.util.CConfig;
 import megameklab.com.util.UnitUtil;
+import org.apache.logging.log4j.LogManager;
+
+import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
+import javax.swing.tree.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.List;
+import java.util.*;
 
 import static megameklab.com.ui.util.AeroBayTransferHandler.EMTPYSLOT;
-import static megameklab.com.ui.util.CritCellUtil.*;
+import static megameklab.com.ui.util.CritCellUtil.CRITCELL_ADD_HEIGHT;
+import static megameklab.com.ui.util.CritCellUtil.CRITCELL_MIN_HEIGHT;
 
 /**
  * Variant of DropTargetCriticalList for aerospace units that groups weapons into bays. Also
@@ -673,7 +659,7 @@ public class BayWeaponCriticalTree extends JTree {
                         msg.append(i).append(": ").append(eSource.getEntity().getEquipment().get(i).getName());
                         msg.append("\n");
                     }
-                    MegaMekLab.getLogger().info(msg.toString());
+                    LogManager.getLogger().info(msg.toString());
                 }
             }
             for (Integer aNum : getMounted().getBayAmmo()) {
@@ -1064,7 +1050,7 @@ public class BayWeaponCriticalTree extends JTree {
                     bay.addAmmoToBay(eSource.getEntity().getEquipmentNum(eq));
                 }
             } else {
-                MegaMekLab.getLogger().debug(bay.getName() + "[" + eSource.getEntity().getEquipmentNum(bay)
+                LogManager.getLogger().debug(bay.getName() + "[" + eSource.getEntity().getEquipmentNum(bay)
                         + "] not found in " + getLocationName());
             }
         }
@@ -1254,7 +1240,7 @@ public class BayWeaponCriticalTree extends JTree {
             eSource.getEntity().addEquipment(eq, location, false);
         } catch (LocationFullException e) {
             // We shouldn't be hitting any limits
-            MegaMekLab.getLogger().error(e);
+            LogManager.getLogger().error(e);
         }
         UnitUtil.changeMountStatus(eSource.getEntity(), eq, location,
                 Entity.LOC_NONE, (facing == AFT) || ((facing == BOTH) && eq.isRearMounted()));

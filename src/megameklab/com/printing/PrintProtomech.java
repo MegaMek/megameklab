@@ -14,13 +14,13 @@
 package megameklab.com.printing;
 
 import megamek.common.*;
-import megameklab.com.MegaMekLab;
 import org.apache.batik.anim.dom.SVGLocatableSupport;
 import org.apache.batik.util.SVGConstants;
+import org.apache.logging.log4j.LogManager;
 import org.w3c.dom.Element;
 
 /**
- * Lays out a record sheet block for a single protomech
+ * Lays out a record sheet block for a single ProtoMek
  */
 public class PrintProtomech extends PrintEntity {
 
@@ -123,7 +123,7 @@ public class PrintProtomech extends PrintEntity {
                         }
                     }
                 } catch (NumberFormatException ex) {
-                    MegaMekLab.getLogger().warning("Could not parse fieldWidth: " + fieldWidth);
+                    LogManager.getLogger().warn("Could not parse fieldWidth: " + fieldWidth);
                 }
             }
         }

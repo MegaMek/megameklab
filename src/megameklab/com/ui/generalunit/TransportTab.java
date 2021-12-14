@@ -13,53 +13,36 @@
  */
 package megameklab.com.ui.generalunit;
 
-import java.awt.*;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.StringSelection;
-import java.awt.datatransfer.Transferable;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.*;
-import java.util.List;
-import java.util.stream.Collectors;
+import megamek.common.*;
+import megamek.common.util.EncodeControl;
+import megamek.common.verifier.*;
+import megameklab.com.ui.EntitySource;
+import megameklab.com.ui.util.IView;
+import megameklab.com.ui.util.RefreshListener;
+import megameklab.com.util.UnitUtil;
+import org.apache.logging.log4j.LogManager;
 
-import javax.swing.AbstractCellEditor;
-import javax.swing.DefaultCellEditor;
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.DropMode;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSpinner;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.TransferHandler;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
-
-import megamek.common.*;
-import megamek.common.util.EncodeControl;
-import megamek.common.verifier.*;
-import megameklab.com.MegaMekLab;
-import megameklab.com.ui.EntitySource;
-import megameklab.com.ui.util.IView;
-import megameklab.com.ui.util.RefreshListener;
-import megameklab.com.util.UnitUtil;
+import java.awt.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Tab for adding and modifying aerospace and support vee transport bays.
  * 
  * @author Neoancient
- *
  */
 public class TransportTab extends IView implements ActionListener, ChangeListener {
     
@@ -933,7 +916,7 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
                   return true;
                }
             } catch (Exception e) {
-               MegaMekLab.getLogger().error(e);
+               LogManager.getLogger().error(e);
             }
             return false;
         }

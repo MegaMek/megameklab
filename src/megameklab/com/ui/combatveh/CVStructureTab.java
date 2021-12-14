@@ -13,41 +13,12 @@
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  */
-
 package megameklab.com.ui.combatveh;
 
-import java.awt.BorderLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-
-import megamek.common.Bay;
-import megamek.common.Engine;
-import megamek.common.Entity;
-import megamek.common.EntityMovementMode;
-import megamek.common.EquipmentType;
-import megamek.common.ITechManager;
-import megamek.common.LocationFullException;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
-import megamek.common.SimpleTechLevel;
-import megamek.common.SuperHeavyTank;
-import megamek.common.Tank;
-import megamek.common.TechConstants;
-import megamek.common.Transporter;
-import megamek.common.TroopSpace;
-import megamek.common.VTOL;
-import megamek.common.verifier.TestEntity;
+import megamek.common.*;
 import megamek.common.verifier.BayData;
+import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestTank;
-import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.generalunit.*;
 import megameklab.com.ui.listeners.ArmorAllocationListener;
@@ -55,6 +26,12 @@ import megameklab.com.ui.listeners.CVBuildListener;
 import megameklab.com.ui.util.ITab;
 import megameklab.com.ui.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
+import org.apache.logging.log4j.LogManager;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class CVStructureTab extends ITab implements CVBuildListener, ArmorAllocationListener {
 
@@ -386,7 +363,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
                 try {
                     getTank().addEquipment(jumpJet, Tank.LOC_BODY);
                 } catch (LocationFullException e) {
-                    MegaMekLab.getLogger().error(e);
+                    LogManager.getLogger().error(e);
                 }
             }
             panSummary.refresh();

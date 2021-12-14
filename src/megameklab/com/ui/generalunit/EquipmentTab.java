@@ -13,72 +13,32 @@
  */
 package megameklab.com.ui.generalunit;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import megamek.common.*;
+import megamek.common.verifier.TestEntity;
+import megamek.common.weapons.tag.TAGWeapon;
+import megameklab.com.ui.EntitySource;
+import megameklab.com.ui.util.*;
+import megameklab.com.util.UnitUtil;
+import org.apache.logging.log4j.LogManager;
+
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableRowSorter;
+import java.awt.*;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
-import javax.swing.ButtonGroup;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
-import javax.swing.JSpinner;
-import javax.swing.JSplitPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.KeyStroke;
-import javax.swing.ListCellRenderer;
-import javax.swing.ListSelectionModel;
-import javax.swing.RowFilter;
-import javax.swing.RowSorter;
-import javax.swing.SortOrder;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableRowSorter;
-
-import megamek.common.*;
-import megamek.common.verifier.TestEntity;
-import megamek.common.weapons.tag.TAGWeapon;
-import megameklab.com.MegaMekLab;
-import megameklab.com.ui.EntitySource;
-import megameklab.com.ui.util.CriticalTableModel;
-import megameklab.com.ui.util.EquipmentTableModel;
-import megameklab.com.ui.util.ITab;
-import megameklab.com.ui.util.RefreshListener;
-import megameklab.com.util.UnitUtil;
-import megameklab.com.ui.util.XTableColumnModel;
-
 /**
  * General purpose equipment tab
  * 
  * @author Neoancient
- *
  */
 public class EquipmentTab extends ITab implements ActionListener {
     
@@ -487,7 +447,7 @@ public class EquipmentTab extends ITab implements ActionListener {
                 } catch (IndexOutOfBoundsException ignored) {
                     return;
                 } catch (Exception e) {
-                    MegaMekLab.getLogger().error(e);
+                    LogManager.getLogger().error(e);
                     return;
                 }
             } else {
@@ -578,7 +538,7 @@ public class EquipmentTab extends ITab implements ActionListener {
                 }
             }
         } catch (LocationFullException ex) {
-            MegaMekLab.getLogger().error("Location full while trying to add " + equip.getName());
+            LogManager.getLogger().error("Location full while trying to add " + equip.getName());
             JOptionPane.showMessageDialog(
                     this,"Could not add " + equip.getName(),
                     "Location Full", JOptionPane.ERROR_MESSAGE);

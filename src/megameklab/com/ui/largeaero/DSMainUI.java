@@ -13,35 +13,22 @@
  */
 package megameklab.com.ui.largeaero;
 
-import java.awt.BorderLayout;
-
-import javax.swing.JTabbedPane;
-import javax.swing.SwingConstants;
-
-import megamek.common.Aero;
-import megamek.common.Dropship;
-import megamek.common.Entity;
-import megamek.common.EntityMovementMode;
-import megamek.common.EquipmentType;
-import megamek.common.IArmorState;
-import megamek.common.ITechManager;
-import megamek.common.MechSummaryCache;
-import megamek.common.SimpleTechLevel;
-import megamek.common.SmallCraft;
-import megamek.common.TechConstants;
-import megameklab.com.MegaMekLab;
+import megamek.common.*;
 import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.generalunit.AeroEquipmentTab;
-import megameklab.com.ui.generalunit.PreviewTab;
 import megameklab.com.ui.generalunit.FluffTab;
+import megameklab.com.ui.generalunit.PreviewTab;
 import megameklab.com.ui.generalunit.TransportTab;
 import megameklab.com.ui.util.TabScrollPane;
+import org.apache.logging.log4j.LogManager;
+
+import javax.swing.*;
+import java.awt.*;
 
 /**
- * Main UI for Dropships and Small Craft
+ * Main UI for DropShips and Small Craft
  * 
  * @author Neoancient
- *
  */
 public class DSMainUI extends MegaMekLabMainUI {
 
@@ -85,7 +72,7 @@ public class DSMainUI extends MegaMekLabMainUI {
             setEntity(new Dropship());
             getEntity().setTechLevel(TechConstants.T_IS_TW_NON_BOX);
         } else {
-            MegaMekLab.getLogger().error("Received incorrect entityType!");
+            LogManager.getLogger().error("Received incorrect entityType!");
             return;
         }
 

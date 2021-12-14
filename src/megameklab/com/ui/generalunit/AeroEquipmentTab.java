@@ -13,77 +13,30 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-
 package megameklab.com.ui.generalunit;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
+import megamek.common.*;
+import megamek.common.weapons.artillery.ArtilleryWeapon;
+import megamek.common.weapons.bayweapons.BayWeapon;
+import megameklab.com.ui.EntitySource;
+import megameklab.com.ui.util.*;
+import megameklab.com.util.UnitUtil;
+import org.apache.logging.log4j.LogManager;
 
-import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
-import javax.swing.ButtonGroup;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
-import javax.swing.JSpinner;
-import javax.swing.JSplitPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.KeyStroke;
-import javax.swing.ListSelectionModel;
-import javax.swing.RowFilter;
-import javax.swing.RowSorter;
-import javax.swing.SortOrder;
-import javax.swing.SpinnerNumberModel;
+import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
-
-import megamek.common.Aero;
-import megamek.common.AmmoType;
-import megamek.common.Entity;
-import megamek.common.EquipmentType;
-import megamek.common.LocationFullException;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
-import megamek.common.WeaponType;
-import megamek.common.weapons.artillery.ArtilleryWeapon;
-import megamek.common.weapons.bayweapons.BayWeapon;
-import megameklab.com.MegaMekLab;
-import megameklab.com.ui.EntitySource;
-import megameklab.com.ui.util.CriticalTableModel;
-import megameklab.com.ui.util.EquipmentTableModel;
-import megameklab.com.ui.util.ITab;
-import megameklab.com.ui.util.RefreshListener;
-import megameklab.com.util.UnitUtil;
-import megameklab.com.ui.util.XTableColumnModel;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
 
 public class AeroEquipmentTab extends ITab implements ActionListener {
-
-    /**
-     *
-     */
     private static final long serialVersionUID = 3978675469713289404L;
 
     private static final int T_ENERGY    =  0;
@@ -102,7 +55,7 @@ public class AeroEquipmentTab extends ITab implements ActionListener {
     private JButton addButton = new JButton("Add");
     private JButton removeButton = new JButton("Remove");
     private JButton removeAllButton = new JButton("Remove All");
-    private JComboBox<String> choiceType = new JComboBox<String>();
+    private JComboBox<String> choiceType = new JComboBox<>();
     private JTextField txtFilter = new JTextField();
 
     private JRadioButton rbtnStats = new JRadioButton("Stats");
@@ -450,7 +403,7 @@ public class AeroEquipmentTab extends ITab implements ActionListener {
                 } catch (IndexOutOfBoundsException ignored) {
                     return;
                 } catch (Exception e) {
-                    MegaMekLab.getLogger().error(e);
+                    LogManager.getLogger().error(e);
                     return;
                 }
             } else {

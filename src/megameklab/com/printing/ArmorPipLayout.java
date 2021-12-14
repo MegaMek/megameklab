@@ -14,8 +14,8 @@
 package megameklab.com.printing;
 
 import megamek.common.annotations.Nullable;
-import megameklab.com.MegaMekLab;
 import org.apache.batik.util.SVGConstants;
+import org.apache.logging.log4j.LogManager;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGGElement;
@@ -244,15 +244,15 @@ class ArmorPipLayout {
                             && right <= bbox.right + PRECISION) {
                         return new Bounds(left, bbox.top, right, bbox.bottom);
                     } else {
-                        MegaMekLab.getLogger().error("Gap is not contained within bounding rectangle in "
+                        LogManager.getLogger().error("Gap is not contained within bounding rectangle in "
                                 + rect.getAttributeNS(null, SVGConstants.SVG_ID_ATTRIBUTE));
                     }
                 } else {
-                    MegaMekLab.getLogger().error("Incorrect number of parameters to " + IdConstants.MML_GAP
+                    LogManager.getLogger().error("Incorrect number of parameters to " + IdConstants.MML_GAP
                             + " in " + rect.getAttributeNS(null, SVGConstants.SVG_ID_ATTRIBUTE));
                 }
             } catch (NumberFormatException ex) {
-                MegaMekLab.getLogger().error("NumberFormatException parsing gap parameters in "
+                LogManager.getLogger().error("NumberFormatException parsing gap parameters in "
                         + rect.getAttributeNS(null, SVGConstants.SVG_ID_ATTRIBUTE));
             }
         }

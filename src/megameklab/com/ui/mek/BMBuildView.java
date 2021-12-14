@@ -13,38 +13,10 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-
 package megameklab.com.ui.mek;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.util.Collections;
-import java.util.Vector;
-
-import javax.swing.BorderFactory;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
-import javax.swing.border.TitledBorder;
-import javax.swing.table.TableColumn;
-
-import megamek.common.AmmoType;
-import megamek.common.Entity;
-import megamek.common.LandAirMech;
-import megamek.common.Mech;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
-import megamek.common.WeaponType;
+import megamek.common.*;
 import megamek.common.weapons.Weapon;
-import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.util.CriticalTableModel;
 import megameklab.com.ui.util.CriticalTransferHandler;
@@ -52,21 +24,28 @@ import megameklab.com.ui.util.IView;
 import megameklab.com.ui.util.RefreshListener;
 import megameklab.com.util.StringUtils;
 import megameklab.com.util.UnitUtil;
+import org.apache.logging.log4j.LogManager;
+
+import javax.swing.*;
+import javax.swing.border.TitledBorder;
+import javax.swing.table.TableColumn;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.Collections;
+import java.util.Vector;
 
 /**
  * This IView shows all the equipment that's not yet been assigned a location
  * @author beerockxs
- *
  */
 public class BMBuildView extends IView implements ActionListener, MouseListener {
-
-    /**
-     *
-     */
     private static final long serialVersionUID = 799195356642563937L;
 
     private CriticalTableModel equipmentList;
-    private Vector<Mounted> masterEquipmentList = new Vector<Mounted>(10, 1);
+    private Vector<Mounted> masterEquipmentList = new Vector<>(10, 1);
     private JTable equipmentTable = new JTable();
     private JScrollPane equipmentScroll = new JScrollPane();
     private int engineHeatSinkCount = 0;
@@ -409,7 +388,7 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
             try {
                 UnitUtil.addMounted(getMech(), eq, location, false);
             } catch (Exception ex) {
-                MegaMekLab.getLogger().error(ex);
+                LogManager.getLogger().error(ex);
             }
         }
 
@@ -418,7 +397,7 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
             try {
                 UnitUtil.addMounted(getMech(), eq, secondaryLocation, false);
             } catch (Exception ex) {
-                MegaMekLab.getLogger().error(ex);
+                LogManager.getLogger().error(ex);
             }
         }
 
@@ -491,7 +470,7 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
                 UnitUtil.addMounted(getMech(), eq, location, false);
             }
         } catch (Exception ex) {
-            MegaMekLab.getLogger().error(ex);
+            LogManager.getLogger().error(ex);
         }
         UnitUtil.changeMountStatus(getMech(), eq, location, -1, false);
 

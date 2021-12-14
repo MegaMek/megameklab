@@ -13,33 +13,21 @@
  */
 package megameklab.com.ui.largeaero;
 
-import java.awt.BorderLayout;
-
-import javax.swing.JTabbedPane;
-import javax.swing.SwingConstants;
-
-import megamek.common.Aero;
-import megamek.common.Entity;
-import megamek.common.EquipmentType;
-import megamek.common.IArmorState;
-import megamek.common.ITechManager;
-import megamek.common.Jumpship;
-import megamek.common.MechSummaryCache;
-import megamek.common.SimpleTechLevel;
-import megamek.common.SpaceStation;
-import megamek.common.TechConstants;
-import megamek.common.Warship;
+import megamek.common.*;
 import megamek.common.verifier.TestAdvancedAerospace;
-import megameklab.com.MegaMekLab;
 import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.generalunit.AeroEquipmentTab;
-import megameklab.com.ui.generalunit.PreviewTab;
 import megameklab.com.ui.generalunit.FluffTab;
+import megameklab.com.ui.generalunit.PreviewTab;
 import megameklab.com.ui.generalunit.TransportTab;
 import megameklab.com.ui.util.TabScrollPane;
+import org.apache.logging.log4j.LogManager;
+
+import javax.swing.*;
+import java.awt.*;
 
 /**
- * MainUI for Jumpships, Warship, and Space Stations
+ * MainUI for JumpShips, WarShips, and Space Stations
  * 
  * @author Neoancient
  */
@@ -95,7 +83,7 @@ public class WSMainUI extends MegaMekLabMainUI {
         } else if (entitytype == Entity.ETYPE_SPACE_STATION) {
             setEntity(new SpaceStation());
         } else {
-            MegaMekLab.getLogger().error("Received incorrect entityType!");
+            LogManager.getLogger().error("Received incorrect entityType!");
             return;
         }
         getEntity().setTechLevel(TechConstants.T_IS_ADVANCED);

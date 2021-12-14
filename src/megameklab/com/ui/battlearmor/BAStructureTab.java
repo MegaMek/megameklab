@@ -13,51 +13,34 @@
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  */
-
 package megameklab.com.ui.battlearmor;
 
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import megamek.client.ui.swing.MechViewPanel;
+import megamek.common.*;
+import megamek.common.templates.TROView;
+import megamek.common.verifier.TestBattleArmor;
+import megamek.common.verifier.TestBattleArmor.BAManipulator;
+import megamek.common.verifier.TestEntity;
+import megameklab.com.ui.EntitySource;
+import megameklab.com.ui.generalunit.BAProtoArmorView;
+import megameklab.com.ui.generalunit.BasicInfoView;
+import megameklab.com.ui.generalunit.MovementView;
+import megameklab.com.ui.listeners.ArmorAllocationListener;
+import megameklab.com.ui.listeners.BABuildListener;
+import megameklab.com.ui.util.CustomComboBox;
+import megameklab.com.ui.util.ITab;
+import megameklab.com.ui.util.RefreshListener;
+import megameklab.com.util.UnitUtil;
+import org.apache.logging.log4j.LogManager;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
-import javax.swing.SwingConstants;
-
-import megamek.client.ui.swing.MechViewPanel;
-import megamek.common.*;
-import megamek.common.templates.TROView;
-import megamek.common.verifier.TestEntity;
-import megamek.common.verifier.TestBattleArmor;
-import megamek.common.verifier.TestBattleArmor.BAManipulator;
-import megameklab.com.MegaMekLab;
-import megameklab.com.ui.EntitySource;
-import megameklab.com.ui.generalunit.BAProtoArmorView;
-import megameklab.com.ui.generalunit.MovementView;
-import megameklab.com.ui.util.CustomComboBox;
-import megameklab.com.ui.generalunit.BasicInfoView;
-import megameklab.com.ui.listeners.ArmorAllocationListener;
-import megameklab.com.ui.listeners.BABuildListener;
-import megameklab.com.ui.util.ITab;
-import megameklab.com.ui.util.RefreshListener;
-import megameklab.com.util.UnitUtil;
-
 public class BAStructureTab extends ITab implements ActionListener, BABuildListener, ArmorAllocationListener {
-
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = -7985608549543235815L;
 
     private RefreshListener refresh;
@@ -72,8 +55,8 @@ public class BAStructureTab extends ITab implements ActionListener, BABuildListe
     private BAEnhancementView panEnhancements;
     
     // Manipulator Panel
-    private CustomComboBox<String> leftManipSelect = new CustomComboBox<>(s -> manipulatorDisplayName(s));
-    private CustomComboBox<String> rightManipSelect = new CustomComboBox<>(s -> manipulatorDisplayName(s));
+    private CustomComboBox<String> leftManipSelect = new CustomComboBox<>(this::manipulatorDisplayName);
+    private CustomComboBox<String> rightManipSelect = new CustomComboBox<>(this::manipulatorDisplayName);
     
     private MechViewPanel panelMekView;
     private MechViewPanel panelTROView;
@@ -310,7 +293,7 @@ public class BAStructureTab extends ITab implements ActionListener, BABuildListe
                         }
                     } catch (LocationFullException ex) {
                         // This shouldn't happen
-                        MegaMekLab.getLogger().error(ex);
+                        LogManager.getLogger().error(ex);
                     }
                 }
             } else if (combo.equals(rightManipSelect)) {
@@ -360,7 +343,7 @@ public class BAStructureTab extends ITab implements ActionListener, BABuildListe
                         }
                     } catch (LocationFullException ex) {
                         // This shouldn't happen
-                        MegaMekLab.getLogger().error(ex);
+                        LogManager.getLogger().error(ex);
                     }
                 }
             }
@@ -391,7 +374,7 @@ public class BAStructureTab extends ITab implements ActionListener, BABuildListe
             mechView = new MechView(getBattleArmor(), false);
             troView = TROView.createView(getBattleArmor(), true);
         } catch (Exception e) {
-            MegaMekLab.getLogger().error(e);
+            LogManager.getLogger().error(e);
             // error unit didn't load right. this is bad news.
             populateTextFields = false;
         }
@@ -649,7 +632,7 @@ public class BAStructureTab extends ITab implements ActionListener, BABuildListe
                 }
             } catch (LocationFullException e) {
                 // Shouldn't happen with BA
-                MegaMekLab.getLogger().error(e);
+                LogManager.getLogger().error(e);
             }
         } else {
             List<Mounted> mounts = getBattleArmor().getMisc().stream()
@@ -688,7 +671,7 @@ public class BAStructureTab extends ITab implements ActionListener, BABuildListe
                 getBattleArmor().addEquipment(new Mounted(getBattleArmor(), armor),
                         BattleArmor.LOC_SQUAD, false);
             } catch (Exception ex) {
-                MegaMekLab.getLogger().error(ex);
+                LogManager.getLogger().error(ex);
             }
         }
         refresh.refreshBuild();

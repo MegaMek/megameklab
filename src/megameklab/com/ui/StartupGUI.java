@@ -13,45 +13,11 @@
  */
 package megameklab.com.ui;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.DisplayMode;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Image;
-import java.awt.Insets;
-import java.awt.MediaTracker;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.util.ResourceBundle;
-import java.util.TreeMap;
-
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.UIManager;
-
-import megamek.MegaMek;
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.client.ui.swing.widget.MegamekButton;
 import megamek.client.ui.swing.widget.SkinSpecification;
 import megamek.client.ui.swing.widget.SkinXMLHandler;
-import megamek.common.Aero;
-import megamek.common.BattleArmor;
-import megamek.common.Configuration;
-import megamek.common.Entity;
-import megamek.common.EquipmentType;
-import megamek.common.FixedWingSupport;
-import megamek.common.GunEmplacement;
-import megamek.common.Infantry;
-import megamek.common.Mech;
-import megamek.common.Protomech;
-import megamek.common.Tank;
+import megamek.common.*;
 import megamek.common.util.EncodeControl;
 import megamek.common.util.ImageUtil;
 import megamek.common.util.fileUtils.MegaMekFile;
@@ -60,14 +26,22 @@ import megameklab.com.MegaMekLab;
 import megameklab.com.ui.dialog.LoadingDialog;
 import megameklab.com.ui.dialog.MegaMekLabUnitSelectorDialog;
 import megameklab.com.util.UnitUtil;
+import org.apache.logging.log4j.LogManager;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.util.ResourceBundle;
+import java.util.TreeMap;
 
 /**
  * A startup splash screen for MegaMekLab
  * @author Taharqa
  */
 public class StartupGUI extends javax.swing.JPanel {
-
-    
     private static final long serialVersionUID = 8376874926997734492L;
     JFrame frame;
     Image imgSplash;
@@ -114,7 +88,7 @@ public class StartupGUI extends javax.swing.JPanel {
                 File file = new MegaMekFile(Configuration.widgetsDir(),
                         skinSpec.backgrounds.get(1)).getFile();
                 if (!file.exists()) {
-                    MegaMek.getLogger().error("Background icon doesn't exist: " + file.getAbsolutePath());
+                    LogManager.getLogger().error("Background icon doesn't exist: " + file.getAbsolutePath());
                 } else {
                     backgroundIcon = (BufferedImage) ImageUtil.loadImageFromFile(file.toString());
                 }

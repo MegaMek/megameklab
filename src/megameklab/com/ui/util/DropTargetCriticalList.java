@@ -13,40 +13,28 @@
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  */
-
 package megameklab.com.ui.util;
-
-import java.awt.dnd.DropTargetDragEvent;
-import java.awt.dnd.DropTargetEvent;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.util.Vector;
-
-import javax.swing.JList;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
 
 import megamek.common.*;
 import megamek.common.loaders.EntityLoadingException;
-import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.util.UnitUtil;
+import org.apache.logging.log4j.LogManager;
+
+import javax.swing.*;
+import java.awt.dnd.DropTargetDragEvent;
+import java.awt.dnd.DropTargetEvent;
+import java.awt.event.*;
+import java.util.Vector;
 
 public class DropTargetCriticalList<E> extends JList<E> implements MouseListener {
-
-    /**
-     *
-     */
     private static final long serialVersionUID = 6847511182922982125L;
     private EntitySource eSource;
     private RefreshListener refresh;
     private boolean buildView = false;
 
-    public DropTargetCriticalList(Vector<E> vector, EntitySource eSource,
-            RefreshListener refresh, boolean buildView) {
+    public DropTargetCriticalList(Vector<E> vector, EntitySource eSource, RefreshListener refresh,
+                                  boolean buildView) {
         super(vector);
         this.eSource = eSource;
         this.refresh = refresh;
@@ -69,9 +57,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
         changeMountStatus(eq, location, -1, rear);
     }
 
-    private void changeMountStatus(Mounted eq, int location,
-            int secondaryLocation, boolean rear) {
-
+    private void changeMountStatus(Mounted eq, int location, int secondaryLocation, boolean rear) {
         UnitUtil.changeMountStatus(getUnit(), eq, location, secondaryLocation, rear);
 
         if (refresh != null) {
@@ -161,22 +147,12 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                     if (getUnit().countWorkingMisc(MiscType.F_PINTLE_TURRET,
                                     mount.getLocation()) > 0) {
                         if (!mount.isPintleTurretMounted()) {
-                            info = new JMenuItem("Mount " + mount.getName()
-                                    + " in Pintle Turret");
-                            info.addActionListener(new ActionListener() {
-                                public void actionPerformed(ActionEvent e) {
-                                    changePintleTurretMount(true);
-                                }
-                            });
+                            info = new JMenuItem("Mount " + mount.getName() + " in Pintle Turret");
+                            info.addActionListener(evt -> changePintleTurretMount(true));
                             popup.add(info);
                         } else {
-                            info = new JMenuItem("Remove " + mount.getName()
-                                    + " from Pintle Turret");
-                            info.addActionListener(new ActionListener() {
-                                public void actionPerformed(ActionEvent e) {
-                                    changePintleTurretMount(false);
-                                }
-                            });
+                            info = new JMenuItem("Remove " + mount.getName() + " from Pintle Turret");
+                            info.addActionListener(evt -> changePintleTurretMount(false));
                             popup.add(info);
                         }
                     }
@@ -200,21 +176,13 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                     if (cs.isArmored()) {
                         JMenuItem info = new JMenuItem("Remove Armoring");
                         info.setActionCommand(Integer.toString(location));
-                        info.addActionListener(new ActionListener() {
-                            public void actionPerformed(ActionEvent e) {
-                                changeArmoring();
-                            }
-                        });
+                        info.addActionListener(evt -> changeArmoring());
                         popup.add(info);
 
                     } else {
                         JMenuItem info = new JMenuItem("Add Armoring");
                         info.setActionCommand(Integer.toString(location));
-                        info.addActionListener(new ActionListener() {
-                            public void actionPerformed(ActionEvent e) {
-                                changeArmoring();
-                            }
-                        });
+                        info.addActionListener(evt -> changeArmoring());
                         popup.add(info);
                     }
                 }
@@ -238,7 +206,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                 return crit.getMount();
             }
         } catch (Exception ex) {
-            MegaMekLab.getLogger().error(ex);
+            LogManager.getLogger().error(ex);
         }
 
         return mount;
@@ -353,7 +321,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
         } catch (EntityLoadingException ele) {
             // do nothing.
         } catch (Exception ex) {
-            MegaMekLab.getLogger().error(ex);
+            LogManager.getLogger().error(ex);
         }
         if (refresh != null) {
             refresh.refreshAll();

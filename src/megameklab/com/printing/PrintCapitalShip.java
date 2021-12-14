@@ -13,23 +13,24 @@
  */
 package megameklab.com.printing;
 
-import java.awt.geom.Rectangle2D;
-
-import megamek.common.*;
+import megamek.common.Jumpship;
+import megamek.common.SpaceStation;
+import megamek.common.UnitType;
+import megamek.common.Warship;
+import megameklab.com.util.ImageHelper;
 import org.apache.batik.util.SVGConstants;
+import org.apache.logging.log4j.LogManager;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGElement;
 import org.w3c.dom.svg.SVGRectElement;
 
-import megameklab.com.MegaMekLab;
-import megameklab.com.util.ImageHelper;
+import java.awt.geom.Rectangle2D;
 
 /**
- * Generates a record sheet image for jumpships, warships, and space stations.
+ * Generates a record sheet image for JumpShips, WarShips, and space stations.
  *
  * @author arlith
  * @author Neoancient
- *
  */
 public class PrintCapitalShip extends PrintDropship {
 
@@ -173,7 +174,7 @@ public class PrintCapitalShip extends PrintDropship {
             if (element instanceof SVGRectElement) {
                 printArmorRegion((SVGRectElement) element, ship.getOArmor(loc));
             } else {
-                MegaMekLab.getLogger().error("No SVGRectElement found with id " + id);
+                LogManager.getLogger().error("No SVGRectElement found with id " + id);
             }
         }
     }

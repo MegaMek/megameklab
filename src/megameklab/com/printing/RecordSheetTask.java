@@ -13,21 +13,23 @@
  */
 package megameklab.com.printing;
 
-import java.awt.print.*;
-import java.io.File;
-import java.util.*;
-import java.util.concurrent.ExecutionException;
-
-import javax.print.attribute.PrintRequestAttributeSet;
-import javax.swing.*;
-
 import megamek.common.util.EncodeControl;
-import megameklab.com.MegaMekLab;
+import org.apache.logging.log4j.LogManager;
 import org.apache.pdfbox.io.MemoryUsageSetting;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDDocumentOutline;
 import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlineItem;
+
+import javax.print.attribute.PrintRequestAttributeSet;
+import javax.swing.*;
+import java.awt.print.PageFormat;
+import java.awt.print.Pageable;
+import java.awt.print.Printable;
+import java.awt.print.PrinterJob;
+import java.io.File;
+import java.util.*;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Renders one or more record sheets as a background task. The task is created using
@@ -103,7 +105,7 @@ public abstract class RecordSheetTask extends SwingWorker<Void, Integer> {
         try {
             get();
         } catch (ExecutionException e) {
-            MegaMekLab.getLogger().error(e.getCause());
+            LogManager.getLogger().error(e.getCause());
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         } finally {

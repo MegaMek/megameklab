@@ -14,41 +14,33 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-
 package megameklab.com.ui.generalunit;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.util.Vector;
-import java.util.function.Supplier;
-
-import javax.swing.BoxLayout;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
 
 import megamek.common.AmmoType;
 import megamek.common.Entity;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.weapons.Weapon;
-import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.util.CriticalTableModel;
 import megameklab.com.ui.util.CriticalTransferHandler;
 import megameklab.com.ui.util.IView;
 import megameklab.com.ui.util.RefreshListener;
 import megameklab.com.util.*;
+import org.apache.logging.log4j.LogManager;
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.Vector;
+import java.util.function.Supplier;
 
 /**
  * View that displays unallocated equipment on the build tab.
  */
-
 public class UnallocatedView extends IView implements ActionListener, MouseListener {
 
     private static final long serialVersionUID = 799195356642563937L;
@@ -268,7 +260,7 @@ public class UnallocatedView extends IView implements ActionListener, MouseListe
         try {
             getEntity().addEquipment(eq, location, false);
         } catch (Exception ex) {
-            MegaMekLab.getLogger().error(ex);
+            LogManager.getLogger().error(ex);
         }
 
         if (refresh.get() != null) {
