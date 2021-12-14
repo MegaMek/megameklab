@@ -13,50 +13,29 @@
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  */
-
 package megameklab.com.ui.Mek.tabs;
-
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
 
 import megamek.common.*;
 import megamek.common.loaders.EntityLoadingException;
 import megamek.common.verifier.TestEntity;
-import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.Mek.views.SummaryView;
-import megameklab.com.ui.view.ArmorAllocationView;
-import megameklab.com.ui.view.BasicInfoView;
-import megameklab.com.ui.view.HeatSinkView;
-import megameklab.com.ui.view.MVFArmorView;
-import megameklab.com.ui.view.MekChassisView;
-import megameklab.com.ui.view.MovementView;
-import megameklab.com.ui.view.PatchworkArmorView;
+import megameklab.com.ui.view.*;
 import megameklab.com.ui.view.listeners.ArmorAllocationListener;
 import megameklab.com.ui.view.listeners.MekBuildListener;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
+import org.apache.logging.log4j.LogManager;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class StructureTab extends ITab implements MekBuildListener, ArmorAllocationListener {
-    /**
-     *
-     */
     private static final long serialVersionUID = -6756011847500605874L;
 
     private BasicInfoView panBasicInfo;
@@ -392,7 +371,7 @@ public class StructureTab extends ITab implements MekBuildListener, ArmorAllocat
         } catch (EntityLoadingException ele) {
             // do nothing.
         } catch (Exception ex) {
-            MegaMekLab.getLogger().error(ex);
+            LogManager.getLogger().error(ex);
         }
 
         if ((crit != null) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
@@ -477,7 +456,7 @@ public class StructureTab extends ITab implements MekBuildListener, ArmorAllocat
                         new Mounted(getMech(), structure),
                         Entity.LOC_NONE, false);
             } catch (Exception ex) {
-                MegaMekLab.getLogger().error(ex);
+                LogManager.getLogger().error(ex);
             }
         }
     }
@@ -967,7 +946,7 @@ public class StructureTab extends ITab implements MekBuildListener, ArmorAllocat
                 // Since we're not changing the total count, there should always be enough prototype
                 // doubles to switch over.
                 if (i >= doubles.size()) {
-                    MegaMekLab.getLogger().warning("Not enough prototype double heat sinks to switch to single");
+                    LogManager.getLogger().warn("Not enough prototype double heat sinks to switch to single");
                 }
                 UnitUtil.removeMounted(getMech(), doubles.get(i));
             }
@@ -981,7 +960,7 @@ public class StructureTab extends ITab implements MekBuildListener, ArmorAllocat
                     .collect(Collectors.toList());
             for (int i = 0; i < netChange; i++) {
                 if (i >= singles.size()) {
-                    MegaMekLab.getLogger().warning("Not enough single heat sinks to switch to prototype double");
+                    LogManager.getLogger().warn("Not enough single heat sinks to switch to prototype double");
                 }
                 UnitUtil.removeMounted(getMech(), singles.get(i));
             }

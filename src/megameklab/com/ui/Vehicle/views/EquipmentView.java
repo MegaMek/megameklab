@@ -13,45 +13,25 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-
 package megameklab.com.ui.Vehicle.views;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
+import megamek.common.Entity;
+import megamek.common.EquipmentType;
+import megamek.common.MiscType;
+import megamek.common.Mounted;
+import megameklab.com.ui.EntitySource;
+import megameklab.com.util.*;
+import org.apache.logging.log4j.LogManager;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Vector;
 
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
-
-import megamek.common.Entity;
-import megamek.common.EquipmentType;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
-import megameklab.com.MegaMekLab;
-import megameklab.com.ui.EntitySource;
-import megameklab.com.util.CriticalTableModel;
-import megameklab.com.util.EquipmentListCellKeySelectionManager;
-import megameklab.com.util.EquipmentListCellRenderer;
-import megameklab.com.util.IView;
-import megameklab.com.util.RefreshListener;
-import megameklab.com.util.StringUtils;
-import megameklab.com.util.UnitUtil;
-
 public class EquipmentView extends IView implements ActionListener {
-
-    /**
-     *
-     */
     private static final long serialVersionUID = 799195356642563937L;
 
     private RefreshListener refresh;
@@ -177,7 +157,7 @@ public class EquipmentView extends IView implements ActionListener {
                 } catch (ArrayIndexOutOfBoundsException aioobe) {
                     return;
                 } catch (Exception ex) {
-                    MegaMekLab.getLogger().error(ex);
+                    LogManager.getLogger().error(ex);
                 }
             } else {
                 location++;
@@ -234,7 +214,7 @@ public class EquipmentView extends IView implements ActionListener {
                 try {
                     mount = getTank().addEquipment(equip, Entity.LOC_NONE, false);
                 } catch (Exception ex) {
-                    MegaMekLab.getLogger().error(ex);
+                    LogManager.getLogger().error(ex);
                 }
             }
             equipmentList.addCrit(mount);

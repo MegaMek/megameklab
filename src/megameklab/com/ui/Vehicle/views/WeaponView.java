@@ -13,60 +13,21 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-
 package megameklab.com.ui.Vehicle.views;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Vector;
-
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.SpringLayout;
-import javax.swing.SwingConstants;
-import javax.swing.UIManager;
-
-import megamek.common.AmmoType;
-import megamek.common.Entity;
-import megamek.common.EquipmentType;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
-import megamek.common.WeaponType;
+import megamek.common.*;
 import megamek.common.weapons.artillery.ArtilleryWeapon;
-import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
-import megameklab.com.util.CriticalTableModel;
-import megameklab.com.util.IView;
-import megameklab.com.util.RefreshListener;
-import megameklab.com.util.SpringLayoutHelper;
-import megameklab.com.util.StringUtils;
-import megameklab.com.util.UnitUtil;
-import megameklab.com.util.WeaponListCellRenderer;
+import megameklab.com.util.*;
+import org.apache.logging.log4j.LogManager;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.List;
+import java.util.*;
 
 public class WeaponView extends IView implements ActionListener, MouseListener, KeyListener {
-
-    /**
-     *
-     */
     private static final long serialVersionUID = 799195356642563937L;
     private RefreshListener refresh;
 
@@ -489,7 +450,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
                     }
                 }
             } catch (Exception ex) {
-                MegaMekLab.getLogger().error(ex);
+                LogManager.getLogger().error(ex);
             }
         } else if (e.getActionCommand().equals(LASERAMMOADD_COMMAND) && (subLaserAmmoList.size() > 0)) {
             try {
@@ -500,7 +461,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
                     }
                 }
             } catch (Exception ex) {
-                MegaMekLab.getLogger().error(ex);
+                LogManager.getLogger().error(ex);
             }
         } else if (e.getActionCommand().equals(MISSILEWEAPONADD_COMMAND)) {
             try {
@@ -518,7 +479,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
                     }
                 }
             } catch (Exception ex) {
-                MegaMekLab.getLogger().error(ex);
+                LogManager.getLogger().error(ex);
             }
         } else if (e.getActionCommand().equals(MISSILEAMMOADD_COMMAND)) {
             try {
@@ -529,7 +490,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
                     }
                 }
             } catch (Exception ex) {
-                MegaMekLab.getLogger().error(ex);
+                LogManager.getLogger().error(ex);
             }
         } else if (e.getActionCommand().equals(BALLISTICWEAPONADD_COMMAND)) {
             try {
@@ -546,7 +507,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
                     }
                 }
             } catch (Exception ex) {
-                MegaMekLab.getLogger().error(ex);
+                LogManager.getLogger().error(ex);
             }
         } else if (e.getActionCommand().equals(BALLISTICAMMOADD_COMMAND)) {
             try {
@@ -557,7 +518,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
                     }
                 }
             } catch (Exception ex) {
-                MegaMekLab.getLogger().error(ex);
+                LogManager.getLogger().error(ex);
             }
         } else if (e.getActionCommand().equals(ARTILLERYWEAPONADD_COMMAND)) {
             try {
@@ -568,7 +529,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
                     }
                 }
             } catch (Exception ex) {
-                MegaMekLab.getLogger().error(ex);
+                LogManager.getLogger().error(ex);
             }
         } else if (e.getActionCommand().equals(ARTILLERYAMMOADD_COMMAND)) {
             try {
@@ -579,7 +540,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
                     }
                 }
             } catch (Exception ex) {
-                MegaMekLab.getLogger().error(ex);
+                LogManager.getLogger().error(ex);
             }
         } else if (e.getActionCommand().equals(REMOVE_COMMAND)) {
 

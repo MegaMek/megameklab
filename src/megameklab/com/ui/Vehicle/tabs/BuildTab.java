@@ -15,34 +15,25 @@
  */
 package megameklab.com.ui.Vehicle.tabs;
 
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-
 import megamek.common.Entity;
 import megamek.common.MechFileParser;
 import megamek.common.Mounted;
 import megamek.common.loaders.EntityLoadingException;
-import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
-import megameklab.com.ui.view.UnallocatedView;
 import megameklab.com.ui.Vehicle.views.CriticalView;
+import megameklab.com.ui.view.UnallocatedView;
 import megameklab.com.util.CriticalTableModel;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
+import org.apache.logging.log4j.LogManager;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class BuildTab extends ITab implements ActionListener {
-
-    /**
-     *
-     */
     private static final long serialVersionUID = -6756011847500605874L;
 
     private RefreshListener refresh = null;
@@ -119,7 +110,7 @@ public class BuildTab extends ITab implements ActionListener {
                     UnitUtil.changeMountStatus(getTank(), mount, location, Entity.LOC_NONE, false);
                     break;
                 } catch (Exception ex) {
-                    MegaMekLab.getLogger().error(ex);
+                    LogManager.getLogger().error(ex);
                 }
             }
         }
@@ -142,7 +133,7 @@ public class BuildTab extends ITab implements ActionListener {
         } catch (EntityLoadingException ele) {
             // do nothing.
         } catch (Exception ex) {
-            MegaMekLab.getLogger().error(ex);
+            LogManager.getLogger().error(ex);
         }
 
         refresh.refreshAll();

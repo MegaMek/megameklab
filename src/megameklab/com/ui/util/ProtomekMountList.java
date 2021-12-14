@@ -20,6 +20,7 @@ import megameklab.com.ui.EntitySource;
 import megameklab.com.util.CriticalTransferHandler;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
+import org.apache.logging.log4j.LogManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -125,7 +126,7 @@ public class ProtomekMountList extends JList<Mounted> {
                     try {
                         UnitUtil.addProtoMechAmmo(getProtomech(), mounted.getType(), 1);
                     } catch (LocationFullException ex) {
-                        MegaMek.getLogger().error(ex);
+                        LogManager.getLogger().error(ex);
                     }
                     refresh();
                     return;

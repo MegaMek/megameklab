@@ -13,27 +13,20 @@
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  */
-
 package megameklab.com.ui.tabs;
-
-import java.awt.BorderLayout;
-
-import javax.swing.JTabbedPane;
-import javax.swing.UIManager;
 
 import megamek.client.ui.swing.MechViewPanel;
 import megamek.common.Entity;
 import megamek.common.MechView;
 import megamek.common.templates.TROView;
-import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.util.ITab;
+import org.apache.logging.log4j.LogManager;
+
+import javax.swing.*;
+import java.awt.*;
 
 public class PreviewTab extends ITab {
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -7410436201331568734L;
 
     private MechViewPanel panelMekView;
@@ -67,7 +60,7 @@ public class PreviewTab extends ITab {
             mechView = new MechView(selectedUnit, false);
             troView = TROView.createView(selectedUnit, true);
         } catch (Exception e) {
-            MegaMekLab.getLogger().error(e);
+            LogManager.getLogger().error(e);
             // error unit didn't load right. this is bad news.
             populateTextFields = false;
         }

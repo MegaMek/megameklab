@@ -13,53 +13,32 @@
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  */
-
 package megameklab.com.ui.BattleArmor.tabs;
-
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
-import javax.swing.SwingConstants;
 
 import megamek.client.ui.swing.MechViewPanel;
 import megamek.common.*;
 import megamek.common.templates.TROView;
-import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestBattleArmor;
 import megamek.common.verifier.TestBattleArmor.BAManipulator;
-import megameklab.com.MegaMekLab;
+import megamek.common.verifier.TestEntity;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.util.CustomComboBox;
-import megameklab.com.ui.view.BAChassisView;
-import megameklab.com.ui.view.BAEnhancementView;
-import megameklab.com.ui.view.BAProtoArmorView;
-import megameklab.com.ui.view.BasicInfoView;
-import megameklab.com.ui.view.MovementView;
+import megameklab.com.ui.view.*;
 import megameklab.com.ui.view.listeners.ArmorAllocationListener;
 import megameklab.com.ui.view.listeners.BABuildListener;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
+import org.apache.logging.log4j.LogManager;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class StructureTab extends ITab implements ActionListener, BABuildListener, ArmorAllocationListener {
-
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = -7985608549543235815L;
 
     private RefreshListener refresh;
@@ -312,7 +291,7 @@ public class StructureTab extends ITab implements ActionListener, BABuildListene
                         }
                     } catch (LocationFullException ex) {
                         // This shouldn't happen
-                        MegaMekLab.getLogger().error(ex);
+                        LogManager.getLogger().error(ex);
                     }
                 }
             } else if (combo.equals(rightManipSelect)) {
@@ -362,7 +341,7 @@ public class StructureTab extends ITab implements ActionListener, BABuildListene
                         }
                     } catch (LocationFullException ex) {
                         // This shouldn't happen
-                        MegaMekLab.getLogger().error(ex);
+                        LogManager.getLogger().error(ex);
                     }
                 }
             }
@@ -393,7 +372,7 @@ public class StructureTab extends ITab implements ActionListener, BABuildListene
             mechView = new MechView(getBattleArmor(), false);
             troView = TROView.createView(getBattleArmor(), true);
         } catch (Exception e) {
-            MegaMekLab.getLogger().error(e);
+            LogManager.getLogger().error(e);
             // error unit didn't load right. this is bad news.
             populateTextFields = false;
         }
@@ -651,7 +630,7 @@ public class StructureTab extends ITab implements ActionListener, BABuildListene
                 }
             } catch (LocationFullException e) {
                 // Shouldn't happen with BA
-                MegaMekLab.getLogger().error(e);
+                LogManager.getLogger().error(e);
             }
         } else {
             List<Mounted> mounts = getBattleArmor().getMisc().stream()
@@ -690,7 +669,7 @@ public class StructureTab extends ITab implements ActionListener, BABuildListene
                 getBattleArmor().addEquipment(new Mounted(getBattleArmor(), armor),
                         BattleArmor.LOC_SQUAD, false);
             } catch (Exception ex) {
-                MegaMekLab.getLogger().error(ex);
+                LogManager.getLogger().error(ex);
             }
         }
         refresh.refreshBuild();

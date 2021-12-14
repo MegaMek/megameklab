@@ -13,10 +13,17 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-
 package megameklab.com.ui.dialog;
 
-import java.awt.Dimension;
+import megamek.client.ui.swing.UnitLoadingDialog;
+import megamek.common.Entity;
+import megamek.common.MechFileParser;
+import megameklab.com.util.UnitPrintManager;
+import org.apache.logging.log4j.LogManager;
+
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -26,34 +33,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JDialog;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.WindowConstants;
-import javax.swing.filechooser.FileNameExtensionFilter;
-
-import megamek.client.ui.swing.UnitLoadingDialog;
-import megamek.common.Entity;
-import megamek.common.MechFileParser;
-import megameklab.com.MegaMekLab;
-import megameklab.com.util.UnitPrintManager;
-
-/*
+/**
  * Allows a user to Select Multiple units to print
  */
 public class UnitPrintQueueDialog extends JDialog implements ActionListener, KeyListener {
-
-    /**
-     *
-     */
     private static final long serialVersionUID = 4812586858732825464L;
 
     JList<String> unitList = new JList<>();
@@ -199,7 +182,7 @@ public class UnitPrintQueueDialog extends JDialog implements ActionListener, Key
                     Entity tempEntity = new MechFileParser(entityFile).getEntity();
                     units.add(tempEntity);
                 } catch (Exception ex) {
-                    MegaMekLab.getLogger().error(ex);
+                    LogManager.getLogger().error(ex);
                 }
             }
             refresh();
