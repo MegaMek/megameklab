@@ -8,9 +8,6 @@
         <Console name="Console">
             <PatternLayout pattern="${layout}" />
         </Console>
-        <File name="MegaMekLog" fileName="logs/megamek.log" append="false">
-            <PatternLayout pattern="${layout}"/>
-        </File>
         <File name="MegaMekLabLog" fileName="logs/megameklab.log" append="false">
             <PatternLayout pattern="${layout}"/>
         </File>
