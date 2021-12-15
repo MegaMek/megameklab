@@ -102,12 +102,6 @@ public class BAASBMCriticalTransferHandler extends TransferHandler {
         }
     }
 
-    /**
-     *
-     * @param mech
-     * @param eq
-     * @return
-     */
     private boolean addEquipmentMech(Mech mech, Mounted eq, int slotNumber)
             throws LocationFullException{
         int totalCrits = UnitUtil.getCritsUsed(eq);
@@ -323,11 +317,6 @@ public class BAASBMCriticalTransferHandler extends TransferHandler {
         }
     }
 
-    /**
-     *
-     * @param aero
-     * @return
-     */
     private boolean addEquipmentAero(Aero aero, Mounted eq)
             throws LocationFullException{
         if (eq.getType() instanceof WeaponType){
