@@ -19,7 +19,7 @@ import megamek.common.*;
 import megamek.common.loaders.EntityLoadingException;
 import megamek.common.verifier.TestEntity;
 import megameklab.com.ui.EntitySource;
-import megameklab.com.ui.generalunit.*;
+import megameklab.com.ui.generalUnit.*;
 import megameklab.com.ui.listeners.ArmorAllocationListener;
 import megameklab.com.ui.listeners.MekBuildListener;
 import megameklab.com.ui.util.ITab;

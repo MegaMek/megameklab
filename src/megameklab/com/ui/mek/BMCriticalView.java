@@ -19,7 +19,7 @@ import megamek.common.*;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.util.CritCellUtil;
 import megameklab.com.ui.util.IView;
-import megameklab.com.util.Mech.DropTargetCriticalList;
+import megameklab.com.ui.util.BAASBMDropTargetCriticalList;
 import megameklab.com.ui.util.RefreshListener;
 
 import javax.swing.*;
@@ -151,7 +151,7 @@ public class BMCriticalView extends IView {
                     }
                 }
 
-                DropTargetCriticalList<String> criticalSlotList = new DropTargetCriticalList<>(
+                BAASBMDropTargetCriticalList<String> criticalSlotList = new BAASBMDropTargetCriticalList<>(
                         critNames, eSource, refresh, true);
                 criticalSlotList.setVisibleRowCount(critNames.size());
                 criticalSlotList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);

@@ -23,8 +23,8 @@ import javax.swing.SwingConstants;
 
 import megamek.common.*;
 import megameklab.com.ui.MegaMekLabMainUI;
-import megameklab.com.ui.generalunit.FluffTab;
-import megameklab.com.ui.generalunit.PreviewTab;
+import megameklab.com.ui.generalUnit.FluffTab;
+import megameklab.com.ui.generalUnit.PreviewTab;
 import megameklab.com.ui.util.TabScrollPane;
 import megameklab.com.util.UnitUtil;
 

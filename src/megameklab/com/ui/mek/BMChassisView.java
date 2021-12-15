@@ -37,7 +37,7 @@ import megamek.common.*;
 import megamek.common.util.EncodeControl;
 import megameklab.com.ui.util.CustomComboBox;
 import megameklab.com.ui.util.TechComboBox;
-import megameklab.com.ui.generalunit.BuildView;
+import megameklab.com.ui.generalUnit.BuildView;
 import megameklab.com.ui.listeners.MekBuildListener;
 
 /**

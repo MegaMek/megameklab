@@ -16,14 +16,14 @@ package megameklab.com.ui.dialog;
 import megamek.common.Entity;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.MegaMekLabMainUI;
-import megameklab.com.ui.largeaero.DSMainUI;
-import megameklab.com.ui.largeaero.WSMainUI;
-import megameklab.com.ui.battlearmor.BAMainUI;
-import megameklab.com.ui.combatveh.CVMainUI;
-import megameklab.com.ui.convinfantry.CIMainUI;
-import megameklab.com.ui.fighteraero.ASMainUI;
+import megameklab.com.ui.largeAero.DSMainUI;
+import megameklab.com.ui.largeAero.WSMainUI;
+import megameklab.com.ui.battleArmor.BAMainUI;
+import megameklab.com.ui.combatVeh.CVMainUI;
+import megameklab.com.ui.convInfantry.CIMainUI;
+import megameklab.com.ui.fighterAero.ASMainUI;
 import megameklab.com.ui.mek.BMMainUI;
-import megameklab.com.ui.protomek.PMMainUI;
+import megameklab.com.ui.protoMek.PMMainUI;
 import megameklab.com.util.UnitUtil;
 import org.apache.logging.log4j.LogManager;
 
@@ -107,7 +107,7 @@ public class LoadingDialog extends JDialog {
             if (type == Entity.ETYPE_TANK) {
                 newUI = new CVMainUI();
             } else if (type == Entity.ETYPE_SUPPORT_TANK) {
-                newUI = new megameklab.com.ui.supportveh.SVMainUI();
+                newUI = new megameklab.com.ui.supportVeh.SVMainUI();
             } else if (type == Entity.ETYPE_PROTOMECH) {
                 newUI = new PMMainUI();
             } else if (type == Entity.ETYPE_BATTLEARMOR) {

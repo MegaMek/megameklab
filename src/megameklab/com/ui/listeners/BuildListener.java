@@ -47,8 +47,8 @@ public interface BuildListener {
 
     /**
      * Notifies of a change in heat sink type or count for aerospace units
-     * @param index Either {@link megameklab.com.ui.generalunit.HeatSinkView#TYPE_SINGLE} or
-     * {@link megameklab.com.ui.generalunit.HeatSinkView#TYPE_DOUBLE_AERO}
+     * @param index Either {@link megameklab.com.ui.generalUnit.HeatSinkView#TYPE_SINGLE} or
+     * {@link megameklab.com.ui.generalUnit.HeatSinkView#TYPE_DOUBLE_AERO}
      * @param count The number of heat sinks
      */
     default void heatSinksChanged(int index, int count) {};
