@@ -324,7 +324,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
                 javax.xml.transform.Source input = new javax.xml.transform.dom.DOMSource(svgDocument);
                 transformer.transform(input, output);
             } catch (Exception ex) {
-                MegaMekLab.getLogger.error(ex);
+                LogManager.getLogger.error(ex);
             }
             */
         }

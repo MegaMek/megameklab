@@ -16,6 +16,14 @@ package megameklab.com.ui.dialog;
 import megamek.common.Entity;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.MegaMekLabMainUI;
+import megameklab.com.ui.largeAero.DSMainUI;
+import megameklab.com.ui.largeAero.WSMainUI;
+import megameklab.com.ui.battleArmor.BAMainUI;
+import megameklab.com.ui.combatVeh.CVMainUI;
+import megameklab.com.ui.convInfantry.CIMainUI;
+import megameklab.com.ui.fighterAero.ASMainUI;
+import megameklab.com.ui.mek.BMMainUI;
+import megameklab.com.ui.protoMek.PMMainUI;
 import megameklab.com.util.UnitUtil;
 import org.apache.logging.log4j.LogManager;
 
@@ -97,23 +105,23 @@ public class LoadingDialog extends JDialog {
         public Void doInBackground() {
             MegaMekLabMainUI newUI;
             if (type == Entity.ETYPE_TANK) {
-                newUI = new megameklab.com.ui.Vehicle.MainUI();
+                newUI = new CVMainUI();
             } else if (type == Entity.ETYPE_SUPPORT_TANK) {
-                newUI = new megameklab.com.ui.supportvehicle.SVMainUI();
+                newUI = new megameklab.com.ui.supportVeh.SVMainUI();
             } else if (type == Entity.ETYPE_PROTOMECH) {
-                newUI = new megameklab.com.ui.protomek.ProtomekMainUI();
+                newUI = new PMMainUI();
             } else if (type == Entity.ETYPE_BATTLEARMOR) {
-                newUI = new megameklab.com.ui.BattleArmor.MainUI();
+                newUI = new BAMainUI();
             } else if (type == Entity.ETYPE_INFANTRY) {
-                newUI = new megameklab.com.ui.Infantry.MainUI();
+                newUI = new CIMainUI();
             } else if (type == Entity.ETYPE_AERO) {
-                newUI = new megameklab.com.ui.Aero.MainUI(primitive);
+                newUI = new ASMainUI(primitive);
             } else if (type == Entity.ETYPE_DROPSHIP) {
-                newUI = new megameklab.com.ui.aerospace.DropshipMainUI(primitive);
+                newUI = new DSMainUI(primitive);
             } else if (type == Entity.ETYPE_JUMPSHIP) {
-                newUI = new megameklab.com.ui.aerospace.AdvancedAeroUI(primitive);
+                newUI = new WSMainUI(primitive);
             } else {
-                newUI = new megameklab.com.ui.Mek.MainUI(primitive, industrial);
+                newUI = new BMMainUI(primitive, industrial);
             }
             setVisible(false);
             //update if we had a specific unit to load

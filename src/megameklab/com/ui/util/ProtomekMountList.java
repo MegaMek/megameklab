@@ -17,8 +17,6 @@ import megamek.MegaMek;
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
 import megameklab.com.ui.EntitySource;
-import megameklab.com.util.CriticalTransferHandler;
-import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 import org.apache.logging.log4j.LogManager;
 

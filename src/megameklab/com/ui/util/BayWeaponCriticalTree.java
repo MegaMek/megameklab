@@ -24,7 +24,6 @@ import megamek.common.weapons.ppc.PPCWeapon;
 import megamek.common.weapons.srms.SRMWeapon;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.util.CConfig;
-import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 import org.apache.logging.log4j.LogManager;
 

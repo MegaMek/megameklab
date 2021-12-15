@@ -16,7 +16,6 @@ package megameklab.com.ui.util;
 import megamek.common.*;
 import megamek.common.weapons.bayweapons.BayWeapon;
 import megameklab.com.ui.EntitySource;
-import megameklab.com.util.CriticalTableModel;
 import megameklab.com.util.UnitUtil;
 import org.apache.logging.log4j.LogManager;
 
