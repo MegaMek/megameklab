@@ -104,6 +104,7 @@ public class BMStatusBar extends ITab {
         int heat = getMech().getHeatCapacity();
         double tonnage = getMech().getWeight();
         double currentTonnage;
+        getMech().getWeaponList().forEach(System.out::println);
         int bv = getMech().calculateBattleValue();
         int maxCrits;
         if (getMech() instanceof TripodMech) {

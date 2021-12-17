@@ -63,7 +63,7 @@ public class CVMainUI extends MegaMekLabMainUI {
         statusbar = new CVStatusBar(this);
         structureTab = new CVStructureTab(this);
         equipmentTab = new CVEquipmentTab(this);
-        buildTab = new CVBuildTab(this, equipmentTab.getEquipmentList());
+        buildTab = new CVBuildTab(this);
         fluffTab = new FluffTab(this);
         structureTab.addRefreshedListener(this);
         equipmentTab.addRefreshedListener(this);

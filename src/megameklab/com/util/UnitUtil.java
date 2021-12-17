@@ -2030,8 +2030,8 @@ public class UnitUtil {
                 locations.add(Mech.LOC_CT);
                 blocks = 3;
             } else if ((equip.hasFlag(MiscType.F_VOIDSIG)
-                    || equip.hasFlag(MiscType.F_NULLSIG) || equip
-                        .hasFlag(MiscType.F_BLUE_SHIELD))) {
+                    || equip.hasFlag(MiscType.F_NULLSIG)
+                    || equip.hasFlag(MiscType.F_BLUE_SHIELD))) {
                 // Need to account for the center leg
                 if (unit instanceof TripodMech){
                     blocks++;
@@ -2066,14 +2066,10 @@ public class UnitUtil {
                             firstBlock = false;
                         }
                         if (locations.get(0) == Entity.LOC_NONE) {
-                            // only user-placable spread stuff gets location
-                            // none
-                            // for those, we need to create a mount for each
-                            // crit,
-                            // otherwise we can't correctly let the user place
-                            // them
-                            // luckily, that only affects TSM, so BV works out
-                            // correctly
+                            // only user-placable spread stuff gets location none
+                            // for those, we need to create a mount for each crit,
+                            // otherwise we can't correctly let the user place them
+                            // luckily, that only affects TSM, so BV works out correctly
                             mount = new Mounted(unit, equip);
                         }
                     } else {
@@ -2085,8 +2081,7 @@ public class UnitUtil {
                                     "No room for equipment",
                                     mount.getName()
                                             + " does not fit into "
-                                            + unit.getLocationName(locations
-                                                    .get(0)),
+                                            + unit.getLocationName(locations.get(0)),
                                     JOptionPane.INFORMATION_MESSAGE);
                             unit.getMisc().remove(mount);
                             unit.getEquipment().remove(mount);
