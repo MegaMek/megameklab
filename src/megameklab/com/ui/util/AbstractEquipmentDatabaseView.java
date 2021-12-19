@@ -158,7 +158,6 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
         textFilterPanel.add(cancelTextFilter);
         textFilterPanel.add(tableModeButton);
 
-
         result.add(typeFilterPanel);
         result.add(specialFilterPanel);
         result.add(textFilterPanel);
