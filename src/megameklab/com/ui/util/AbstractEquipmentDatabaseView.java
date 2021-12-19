@@ -29,7 +29,7 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
     protected RefreshListener refresh;
 
     private final EquipmentTableModel masterEquipmentModel;
-    protected  TableRowSorter<EquipmentTableModel> equipmentSorter;
+    protected final TableRowSorter<EquipmentTableModel> equipmentSorter;
     private final EquipmentDatabaseTable masterEquipmentTable;
 
     private final AddAction addAction = new AddAction();
@@ -135,6 +135,9 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
         }
         if (getUsedButtons().contains(Toggles.ARTILLERY)) {
             typeFilterPanel.add(showArtilleryButton);
+        }
+        if (getUsedButtons().contains(Toggles.PHYSICAL)) {
+            typeFilterPanel.add(showPhysicalButton);
         }
         if (getUsedButtons().contains(Toggles.AMMO)) {
             typeFilterPanel.add(showAmmoButton);
@@ -243,6 +246,7 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
             }
         };
         equipmentSorter.setRowFilter(equipmentTypeFilter);
+        equipmentSorter.sort();
     }
 
     protected abstract boolean shouldShow(EquipmentType eType);

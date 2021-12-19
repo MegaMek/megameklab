@@ -23,6 +23,7 @@ import megameklab.com.ui.generalUnit.AbstractEquipmentTab;
 import megameklab.com.ui.util.AbstractEquipmentDatabaseView;
 import megameklab.com.util.UnitUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -41,30 +42,17 @@ public class BMEquipmentTab extends AbstractEquipmentTab {
     }
 
     @Override
-    protected List<Mounted> getLoadout() {
-        List<Mounted> result = getMech().getWeaponList();
-        result.addAll(getMech().getAmmo());
-        result.addAll(getMech().getMisc().stream().filter(this::showInLoadout).collect(toList()));
-
-//        List<EquipmentType> spreadAlreadyAdded = new ArrayList<>();
-//        for (Mounted mount : getMech().getMisc()) {
-//            EquipmentType etype = mount.getType();
-//            if (hideInLoadout(mount)) {
-//                continue;
-//            }
-//            if (UnitUtil.isFixedLocationSpreadEquipment(etype) && !spreadAlreadyAdded.contains(etype)) {
-//                // keep spreadable equipment from showing up multiple times in the table
-//                // TODO: This doesnt keep it from showing up, right?? Dec21
-//                spreadAlreadyAdded.add(etype);
-//            }
-//            result.add(mount);
-//        }
-        return result;
+    protected AbstractEquipmentDatabaseView getEquipmentDatabaseView() {
+        return new BMEquipmentDatabaseView(eSource);
     }
 
     @Override
-    protected AbstractEquipmentDatabaseView getEquipmentDatabaseView() {
-        return new BMEquipmentDatabaseView(eSource);
+    protected List<Mounted> getLoadout() {
+        List<Mounted> result = new ArrayList<>();
+        result.addAll(getMech().getWeaponList());
+        result.addAll(getMech().getAmmo());
+        result.addAll(getMech().getMisc().stream().filter(this::showInLoadout).collect(toList()));
+        return result;
     }
 
     private boolean showInLoadout(Mounted mount) {

@@ -24,6 +24,7 @@ import megameklab.com.ui.convInfantry.CIMainUI;
 import megameklab.com.ui.fighterAero.ASMainUI;
 import megameklab.com.ui.mek.BMMainUI;
 import megameklab.com.ui.protoMek.PMMainUI;
+import megameklab.com.ui.supportVeh.SVMainUI;
 import megameklab.com.util.UnitUtil;
 import org.apache.logging.log4j.LogManager;
 
@@ -107,7 +108,7 @@ public class LoadingDialog extends JDialog {
             if (type == Entity.ETYPE_TANK) {
                 newUI = new CVMainUI();
             } else if (type == Entity.ETYPE_SUPPORT_TANK) {
-                newUI = new megameklab.com.ui.supportVeh.SVMainUI();
+                newUI = new SVMainUI();
             } else if (type == Entity.ETYPE_PROTOMECH) {
                 newUI = new PMMainUI();
             } else if (type == Entity.ETYPE_BATTLEARMOR) {

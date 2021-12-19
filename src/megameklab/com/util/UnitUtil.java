@@ -1934,8 +1934,8 @@ public class UnitUtil {
                 Mounted mount = cs.getMount();
 
                 if (!UnitUtil.isFixedLocationSpreadEquipment(mount.getType())
-                        && (UnitUtil.isTSM(mount.getType()) || UnitUtil
-                                .isArmorOrStructure(mount.getType()))) {
+                        && (UnitUtil.isTSM(mount.getType())
+                        || UnitUtil.isArmorOrStructure(mount.getType()))) {
                     Mounted newMount = new Mounted(unit, mount.getType());
                     newMount.setLocation(location, mount.isRearMounted());
                     newMount.setArmored(mount.isArmored());

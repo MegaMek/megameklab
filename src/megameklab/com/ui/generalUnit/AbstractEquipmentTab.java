@@ -146,6 +146,7 @@ public abstract class AbstractEquipmentTab extends ITab {
     private void fireTableRefresh() {
         loadoutModel.updateUnit(getEntity());
         loadoutModel.refreshModel();
+        refreshTable();
         refreshOtherTabs();
     }
 

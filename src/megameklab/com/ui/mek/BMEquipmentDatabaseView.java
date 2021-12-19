@@ -64,40 +64,6 @@ public class BMEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
             }
         }
     }
-//
-//    // Preserving the method as it was before swapping out this DatabaseView (Dec21)
-//    // The equipmentList.addCrit(mount) call seems unnecessary, but I may be wrong
-////        private void addEquipment(EquipmentType equip) {
-////        boolean success = false;
-////        Mounted mount = null;
-////        boolean isMisc = equip instanceof MiscType;
-////        if (isMisc && equip.hasFlag(MiscType.F_TARGCOMP)) {
-////            if (!UnitUtil.hasTargComp(getMech())) {
-////                mount = UnitUtil.updateTC(getMech(), equip);
-////                success = mount != null;
-////            }
-////        } else if (isMisc && UnitUtil.isFixedLocationSpreadEquipment(equip)) {
-////            mount = UnitUtil.createSpreadMounts(getMech(), equip);
-////            success = mount != null;
-////        } else {
-////            try {
-////                mount = new Mounted(getMech(), equip);
-////                getMech().addEquipment(mount, Entity.LOC_NONE, false);
-////                if ((equip instanceof WeaponType) && equip.hasFlag(WeaponType.F_ONESHOT)) {
-////                    UnitUtil.removeOneShotAmmo(eSource.getEntity());
-////                }
-////                success = true;
-////            } catch (LocationFullException lfe) {
-////                // this can't happen, we add to Entity.LOC_NONE
-////            }
-////        }
-////        if (success) {
-////            equipmentList.addCrit(mount);
-////        }
-////    }
-
-
-
 
     @Override
     protected boolean shouldShow(EquipmentType eType) {

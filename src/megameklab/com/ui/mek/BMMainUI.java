@@ -58,7 +58,7 @@ public class BMMainUI extends MegaMekLabMainUI {
         previewTab = new PreviewTab(this);
         statusbar = new BMStatusBar(this);
         equipmentTab = new BMEquipmentTab(this);
-        buildTab = new BMBuildTab(this, equipmentTab);
+        buildTab = new BMBuildTab(this);
         fluffTab = new FluffTab(this);
         structureTab.addRefreshedListener(this);
         equipmentTab.addRefreshedListener(this);
