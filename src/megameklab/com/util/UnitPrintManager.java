@@ -73,7 +73,7 @@ public class UnitPrintManager {
         }
         Vector<Entity> loadedUnits;
         try {
-            loadedUnits = EntityListFile.loadFrom(f.getSelectedFile());
+            loadedUnits = new MULParser(f.getSelectedFile(), null).getEntities();
             loadedUnits.trimToSize();
         } catch (Exception ex) {
             LogManager.getLogger().error("", ex);
@@ -100,9 +100,9 @@ public class UnitPrintManager {
             return;
         }
         File mulFile = f.getSelectedFile();
-        Vector<Entity> loadedUnits;
+        final Vector<Entity> loadedUnits;
         try {
-            loadedUnits = EntityListFile.loadFrom(mulFile);
+            loadedUnits = new MULParser(mulFile, null).getEntities();
             loadedUnits.trimToSize();
         } catch (Exception ex) {
             LogManager.getLogger().error("", ex);
