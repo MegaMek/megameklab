@@ -23,6 +23,7 @@ import javax.swing.SwingConstants;
 
 import megamek.common.*;
 import megameklab.com.ui.MegaMekLabMainUI;
+import megameklab.com.ui.generalUnit.AbstractEquipmentTab;
 import megameklab.com.ui.generalUnit.FluffTab;
 import megameklab.com.ui.generalUnit.PreviewTab;
 import megameklab.com.ui.util.TabScrollPane;
@@ -32,7 +33,7 @@ public class BMMainUI extends MegaMekLabMainUI {
 
     JTabbedPane configPane = new JTabbedPane(SwingConstants.TOP);
     private BMStructureTab structureTab;
-    private BMEquipmentTab equipmentTab;
+    private AbstractEquipmentTab equipmentTab;
     private PreviewTab previewTab;
     private BMBuildTab buildTab;
     private FluffTab fluffTab;

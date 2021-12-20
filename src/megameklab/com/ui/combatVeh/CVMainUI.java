@@ -33,6 +33,7 @@ import megamek.common.TechConstants;
 import megamek.common.VTOL;
 import megamek.common.verifier.TestTank;
 import megameklab.com.ui.MegaMekLabMainUI;
+import megameklab.com.ui.generalUnit.AbstractEquipmentTab;
 import megameklab.com.ui.generalUnit.FluffTab;
 import megameklab.com.ui.generalUnit.PreviewTab;
 import megameklab.com.ui.util.TabScrollPane;
@@ -41,14 +42,13 @@ public class CVMainUI extends MegaMekLabMainUI {
 
     JTabbedPane configPane = new JTabbedPane(SwingConstants.TOP);
     private CVStructureTab structureTab;
-    private CVEquipmentTab equipmentTab;
+    private AbstractEquipmentTab equipmentTab;
     private PreviewTab previewTab;
     private CVBuildTab buildTab;
     private FluffTab fluffTab;
     private CVStatusBar statusbar;
 
     public CVMainUI() {
-
         super();
         createNewUnit(Entity.ETYPE_TANK, false, false);
         setTitle(getEntity().getChassis() + " " + getEntity().getModel() + ".blk");

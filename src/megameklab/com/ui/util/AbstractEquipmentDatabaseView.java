@@ -1,8 +1,9 @@
 package megameklab.com.ui.util;
 
 import megamek.client.ui.swing.GUIPreferences;
-import megamek.common.EquipmentType;
+import megamek.common.*;
 import megameklab.com.ui.EntitySource;
+import megameklab.com.util.UnitUtil;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -16,15 +17,22 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.EnumSet;
+import java.util.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import static megameklab.com.ui.util.EquipmentDatabaseCategory.*;
+
+/**
+ * A base class for creating an equipment database table that shows all equipment available to the
+ * unit and by default includes filters such as an "Energy Weapon" toggle.
+ * In addition to the abstract methods, implementing classes may override
+ * getUsedButtons() to control the shown filter buttons,
+ * shouldShow() to control the equipment filtering when the standard filters are not used,
+ * updateVisibleColumns() to control the shown columns. updateVisibleColumns() may make use
+ * of boolean tableMode which is toggled by the "Switch Table Mode" button.
+ */
 public abstract class AbstractEquipmentDatabaseView extends IView {
-
-    public enum Toggles { ENERGY, MISSILE, BALLISTIC, ARTILLERY, PHYSICAL, AMMO, OTHER, PROTOTYPE,
-    ONE_SHOT, TORPEDOES, UNAVAILABLE, TABLE_MODE }
 
     protected RefreshListener refresh;
 
@@ -54,7 +62,7 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
     private final List<JToggleButton> filterToggles = List.of(showEnergyButton, showBallisticButton, showMissileButton,
             showArtilleryButton, showPhysicalButton, showAmmoButton, showOtherButton);
 
-    public AbstractEquipmentDatabaseView(EntitySource eSource) {
+    protected AbstractEquipmentDatabaseView(EntitySource eSource) {
         super(eSource);
 
         masterEquipmentModel = new EquipmentTableModel(eSource.getEntity(), eSource.getTechManager());
@@ -79,7 +87,7 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
-                    addSelectedEquipment(e);
+                    addSelectedEquipment();
                 }
             }
         });
@@ -90,6 +98,31 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
         setLayout(new BorderLayout());
         add(buttonPanel(), BorderLayout.PAGE_START);
         add(new JScrollPane(masterEquipmentTable), BorderLayout.CENTER);
+    }
+
+    /**
+     * Sets the visible table columns for this equipment view. The available columns are
+     * from {@link EquipmentTableModel}. The method setColumnsVisible() may be used which
+     * takes a List of Columns and a visibility value.
+     */
+    protected abstract void updateVisibleColumns();
+
+    /**
+     * Adds the given equipment to the entity. Implementing classes must provide a method that
+     * covers all entities that could be coupled to their view unless the add button is hidden.
+     */
+    protected abstract void addEquipment(EquipmentType equip);
+
+    /**
+     * Returns the filter toggles and buttons to be used in this Equipment Database View.
+     * By default, this method returns the standard buttons suitable for the entity as defined in
+     * EquipmentDatabaseCategory. It may be overridden, e.g. to hide all filter buttons by
+     * returning an empty EnumSet.
+     */
+    protected Set<EquipmentDatabaseCategory> getUsedButtons() {
+        return Arrays.stream(EquipmentDatabaseCategory.values())
+                .filter(category -> category.show(getEntity()))
+                .collect(Collectors.toSet());
     }
 
     private JComponent buttonPanel() {
@@ -124,25 +157,25 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
 
         var typeFilterPanel = new JPanel(new WrapLayout(FlowLayout.LEFT));
         typeFilterPanel.add(new JLabel("Show: "));
-        if (getUsedButtons().contains(Toggles.ENERGY)) {
+        if (getUsedButtons().contains(ENERGY)) {
             typeFilterPanel.add(showEnergyButton);
         }
-        if (getUsedButtons().contains(Toggles.BALLISTIC)) {
+        if (getUsedButtons().contains(BALLISTIC)) {
             typeFilterPanel.add(showBallisticButton);
         }
-        if (getUsedButtons().contains(Toggles.MISSILE)) {
+        if (getUsedButtons().contains(MISSILE)) {
             typeFilterPanel.add(showMissileButton);
         }
-        if (getUsedButtons().contains(Toggles.ARTILLERY)) {
+        if (getUsedButtons().contains(ARTILLERY)) {
             typeFilterPanel.add(showArtilleryButton);
         }
-        if (getUsedButtons().contains(Toggles.PHYSICAL)) {
+        if (getUsedButtons().contains(PHYSICAL)) {
             typeFilterPanel.add(showPhysicalButton);
         }
-        if (getUsedButtons().contains(Toggles.AMMO)) {
+        if (getUsedButtons().contains(AMMO)) {
             typeFilterPanel.add(showAmmoButton);
         }
-        if (getUsedButtons().contains(Toggles.OTHER)) {
+        if (getUsedButtons().contains(OTHER)) {
             typeFilterPanel.add(showOtherButton);
         }
         typeFilterPanel.add(showAllButton);
@@ -168,7 +201,7 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
         return result;
     }
 
-    private void addSelectedEquipment(AWTEvent e) {
+    private void addSelectedEquipment() {
         int selectedRow = masterEquipmentTable.getSelectedRow();
         if (selectedRow >= 0) {
             int selected = masterEquipmentTable.convertRowIndexToModel(selectedRow);
@@ -177,8 +210,6 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
             fireTableRefresh();
         }
     }
-
-    protected abstract void addEquipment(EquipmentType equip);
 
     public void setRefresh(RefreshListener newRefresh) {
         refresh = newRefresh;
@@ -224,7 +255,6 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
     }
 
     private final ListSelectionListener selectionListener = new ListSelectionListener() {
-
         @Override
         public void valueChanged(ListSelectionEvent e) {
             int selected = masterEquipmentTable.getSelectedRow();
@@ -249,9 +279,49 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
         equipmentSorter.sort();
     }
 
-    protected abstract boolean shouldShow(EquipmentType eType);
+    protected boolean shouldShow(EquipmentType equipment) {
+        return isEquipmentForEntity(equipment)
+                && includedByFilters(equipment)
+                && !hiddenEquipment(equipment)
+                && (eSource.getTechManager().isLegal(equipment) || !hideUnavailButton.isSelected())
+                && allowedByTextFilter(equipment);
+    }
 
-    protected abstract void updateVisibleColumns();
+    private boolean allowedByTextFilter(EquipmentType equipment) {
+        return txtFilter.getText().isBlank()
+                || equipment.getName().toLowerCase().contains(txtFilter.getText().toLowerCase());
+    }
+
+    private boolean isEquipmentForEntity(EquipmentType equipment) {
+        if (equipment instanceof AmmoType) {
+            // Only ammo for equipped weapons is listed, therefore no need to filter by unit type
+            return true;
+        }
+        if (getEntity() instanceof Mech) {
+            // FIXME: This is handled differently in UnitUtil: MekEquipment does not include weapons
+            return UnitUtil.isMechEquipment(equipment, (Mech) getEntity())
+                    || UnitUtil.isMechWeapon(equipment, getEntity())
+                    || UnitUtil.isPhysicalWeapon(equipment);
+        } else {
+            return UnitUtil.isEntityEquipment(equipment, getEntity());
+        }
+    }
+
+    private boolean includedByFilters(EquipmentType equipment) {
+        return (showEnergyButton.isSelected() && EquipmentDatabaseCategory.ENERGY.filter(equipment, getEntity()))
+                || (showMissileButton.isSelected() && EquipmentDatabaseCategory.MISSILE.filter(equipment, getEntity()))
+                || (showBallisticButton.isSelected() && EquipmentDatabaseCategory.BALLISTIC.filter(equipment, getEntity()))
+                || (showArtilleryButton.isSelected() && EquipmentDatabaseCategory.ARTILLERY.filter(equipment, getEntity()))
+                || (showPhysicalButton.isSelected() && EquipmentDatabaseCategory.PHYSICAL.filter(equipment, getEntity()))
+                || (showAmmoButton.isSelected() && EquipmentDatabaseCategory.AMMO.filter(equipment, getEntity()))
+                || (showOtherButton.isSelected() && EquipmentDatabaseCategory.OTHER.filter(equipment, getEntity()));
+    }
+
+    private boolean hiddenEquipment(EquipmentType equipment) {
+        return ((hideProtoButton.isSelected()) && EquipmentDatabaseCategory.PROTOTYPE.filter(equipment, getEntity()))
+                || ((hideOneShotButton.isSelected()) && EquipmentDatabaseCategory.ONE_SHOT.filter(equipment, getEntity()))
+                || ((hideTorpedoButton.isSelected()) && EquipmentDatabaseCategory.TORPEDO.filter(equipment, getEntity()));
+    }
 
     protected void setColumnsVisible(List<Integer> columns, boolean visible) {
         XTableColumnModel columnModel = (XTableColumnModel) masterEquipmentTable.getColumnModel();
@@ -266,7 +336,7 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            addSelectedEquipment(e);
+            addSelectedEquipment();
         }
     }
 
@@ -282,8 +352,6 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
             createDefaultColumnsFromModel();
         }
     }
-
-    protected abstract EnumSet<Toggles> getUsedButtons();
 
 }
 

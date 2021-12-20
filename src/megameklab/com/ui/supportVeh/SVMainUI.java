@@ -20,10 +20,7 @@ package megameklab.com.ui.supportVeh;
 
 import megamek.common.*;
 import megameklab.com.ui.MegaMekLabMainUI;
-import megameklab.com.ui.generalUnit.TransportTab;
-import megameklab.com.ui.generalUnit.EquipmentTab;
-import megameklab.com.ui.generalUnit.FluffTab;
-import megameklab.com.ui.generalUnit.PreviewTab;
+import megameklab.com.ui.generalUnit.*;
 import megameklab.com.ui.util.TabScrollPane;
 
 import javax.swing.*;
@@ -36,7 +33,7 @@ public class SVMainUI extends MegaMekLabMainUI {
     private final JTabbedPane configPane = new JTabbedPane(SwingConstants.TOP);
     private SVStructureTab structureTab;
     private SVArmorTab armorTab;
-    private EquipmentTab equipmentTab;
+    private AbstractEquipmentTab equipmentTab;
     private TransportTab transportTab;
     private PreviewTab previewTab;
     private SVBuildTab buildTab;
@@ -58,8 +55,8 @@ public class SVMainUI extends MegaMekLabMainUI {
         statusbar = new SVStatusBar(this);
         structureTab = new SVStructureTab(this);
         armorTab = new SVArmorTab(this, structureTab.getTechManager());
-        equipmentTab = new EquipmentTab(this);
-        buildTab = new SVBuildTab(this, equipmentTab);
+        equipmentTab = new SVEquipmentTab(this);
+        buildTab = new SVBuildTab(this);
         transportTab = new TransportTab(this);
         fluffTab = new FluffTab(this);
         structureTab.addRefreshedListener(this);

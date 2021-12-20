@@ -43,7 +43,6 @@ public class SVBuildTab extends ITab implements ActionListener {
 
     private RefreshListener refresh = null;
     private SVCriticalView critView;
-    private CriticalTableModel critList;
     private UnallocatedView unallocatedView;
 
     private JButton autoFillButton = new JButton("Auto Fill");
@@ -52,9 +51,8 @@ public class SVBuildTab extends ITab implements ActionListener {
     private String AUTOFILLCOMMAND = "autofillbuttoncommand";
     private String RESETCOMMAND = "resetbuttoncommand";
 
-    public SVBuildTab(EntitySource eSource, EquipmentTab equipmentTab) {
+    public SVBuildTab(EntitySource eSource) {
         super(eSource);
-        this.critList = equipmentTab.getEquipmentList();
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
@@ -158,10 +156,6 @@ public class SVBuildTab extends ITab implements ActionListener {
         refresh = l;
         critView.updateRefresh(refresh);
         unallocatedView.addRefreshedListener(refresh);
-    }
-
-    public void addCrit(Mounted mount) {
-        critList.addCrit(mount);
     }
 
     public void refreshAll() {

@@ -651,8 +651,11 @@ public class EquipmentTab extends ITab implements ActionListener {
                 Entity entity = eSource.getEntity();
                 EquipmentTableModel equipModel = entry.getModel();
                 EquipmentType etype = equipModel.getType(entry.getIdentifier());
+                System.out.println(etype + " checked");
+                System.out.println(UnitUtil.isEntityEquipment(etype, entity));
                 if (!UnitUtil.isEntityEquipment(etype, entity)
                         || ((nType != null) && !nType.filter(etype, eSource.getEntity()))) {
+                    System.out.println("Hidden");
                     return false;
                 }
                 if (!eSource.getTechManager().isLegal(etype) && !chkShowAll.isSelected()) {

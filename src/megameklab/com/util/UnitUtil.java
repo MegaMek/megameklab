@@ -2884,6 +2884,16 @@ public class UnitUtil {
         return true;
     }
 
+    /**
+     * Returns true if the given Equipment is available as equipment to the given Mek.
+     * Only valid to use for MiscTypes, not WeaponTypes nor AmmoTypes, also physical
+     * weapons return false despite being MiscType.
+     *
+     * @param eq The tested equipment
+     * @param unit The Mek unit
+     * @return true if the equipment is usable by the Mek
+     */
+    // TODO: Make this behave like the other isXYZEquipment
     public static boolean isMechEquipment(EquipmentType eq, Mech unit) {
 
         if (UnitUtil.isArmorOrStructure(eq)) {
@@ -3057,6 +3067,14 @@ public class UnitUtil {
         return false;
     }
 
+    /**
+     * Returns true if the given Equipment is available as equipment to the given Support
+     * Vehicle. Includes WeaponTypes, AmmoTypes and MiscTypes.
+     *
+     * @param eq The tested equipment
+     * @param unit The support vehicles. May be an Aero or Tank subtype
+     * @return true if the equipment is usable by the entity
+     */
     public static boolean isSupportVehicleEquipment(EquipmentType eq, Entity unit) {
         if ((unit.getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT)
                 && ((eq.getTonnage(unit) >= 5.0)
