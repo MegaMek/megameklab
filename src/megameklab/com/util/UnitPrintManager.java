@@ -76,7 +76,7 @@ public class UnitPrintManager {
             loadedUnits = EntityListFile.loadFrom(f.getSelectedFile());
             loadedUnits.trimToSize();
         } catch (Exception ex) {
-            LogManager.getLogger().error(ex);
+            LogManager.getLogger().error("", ex);
             return;
         }
 
@@ -105,7 +105,7 @@ public class UnitPrintManager {
             loadedUnits = EntityListFile.loadFrom(mulFile);
             loadedUnits.trimToSize();
         } catch (Exception ex) {
-            LogManager.getLogger().error(ex);
+            LogManager.getLogger().error("", ex);
             return;
         }
 
@@ -427,7 +427,7 @@ public class UnitPrintManager {
                 printAllUnits(unitList, singleUnit);
             }
         } catch (Exception ex) {
-            LogManager.getLogger().error(ex);
+            LogManager.getLogger().error("", ex);
         }
     }
 }

@@ -916,7 +916,7 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
                   return true;
                }
             } catch (Exception e) {
-               LogManager.getLogger().error(e);
+               LogManager.getLogger().error("", e);
             }
             return false;
         }

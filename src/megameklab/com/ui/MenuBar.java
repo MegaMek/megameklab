@@ -703,7 +703,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
                 BLKFile.encode(unitFile.getAbsolutePath(), tempEntity);
             }
         } catch (Exception ex) {
-            LogManager.getLogger().error(ex);
+            LogManager.getLogger().error("", ex);
         }
     }
 
@@ -976,7 +976,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             }
             CConfig.updateSaveFiles(filePathName);
         } catch (Exception ex) {
-            LogManager.getLogger().error(ex);
+            LogManager.getLogger().error("", ex);
         }
 
         JOptionPane.showMessageDialog(parentFrame,
@@ -1025,7 +1025,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             }
             CConfig.updateSaveFiles(filePathName);
         } catch (Exception ex) {
-            LogManager.getLogger().error(ex);
+            LogManager.getLogger().error("", ex);
         }
 
         JOptionPane.showMessageDialog(parentFrame,
@@ -1073,7 +1073,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             p.close();
             out.close();
         } catch (Exception ex) {
-            LogManager.getLogger().error(ex);
+            LogManager.getLogger().error("", ex);
         }
     }
 

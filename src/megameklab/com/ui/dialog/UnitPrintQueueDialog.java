@@ -182,7 +182,7 @@ public class UnitPrintQueueDialog extends JDialog implements ActionListener, Key
                     Entity tempEntity = new MechFileParser(entityFile).getEntity();
                     units.add(tempEntity);
                 } catch (Exception ex) {
-                    LogManager.getLogger().error(ex);
+                    LogManager.getLogger().error("", ex);
                 }
             }
             refresh();

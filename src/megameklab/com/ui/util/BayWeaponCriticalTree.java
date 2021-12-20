@@ -1240,7 +1240,7 @@ public class BayWeaponCriticalTree extends JTree {
             eSource.getEntity().addEquipment(eq, location, false);
         } catch (LocationFullException e) {
             // We shouldn't be hitting any limits
-            LogManager.getLogger().error(e);
+            LogManager.getLogger().error("", e);
         }
         UnitUtil.changeMountStatus(eSource.getEntity(), eq, location,
                 Entity.LOC_NONE, (facing == AFT) || ((facing == BOTH) && eq.isRearMounted()));

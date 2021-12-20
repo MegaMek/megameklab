@@ -60,7 +60,7 @@ public class PreviewTab extends ITab {
             mechView = new MechView(selectedUnit, false);
             troView = TROView.createView(selectedUnit, true);
         } catch (Exception e) {
-            LogManager.getLogger().error(e);
+            LogManager.getLogger().error("", e);
             // error unit didn't load right. this is bad news.
             populateTextFields = false;
         }

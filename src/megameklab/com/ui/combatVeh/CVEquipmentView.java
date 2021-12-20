@@ -159,7 +159,7 @@ public class CVEquipmentView extends IView implements ActionListener {
                 } catch (ArrayIndexOutOfBoundsException aioobe) {
                     return;
                 } catch (Exception ex) {
-                    LogManager.getLogger().error(ex);
+                    LogManager.getLogger().error("", ex);
                 }
             } else {
                 location++;
@@ -216,7 +216,7 @@ public class CVEquipmentView extends IView implements ActionListener {
                 try {
                     mount = getTank().addEquipment(equip, Entity.LOC_NONE, false);
                 } catch (Exception ex) {
-                    LogManager.getLogger().error(ex);
+                    LogManager.getLogger().error("", ex);
                 }
             }
             equipmentList.addCrit(mount);

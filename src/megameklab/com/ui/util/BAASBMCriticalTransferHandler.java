@@ -50,7 +50,7 @@ public class BAASBMCriticalTransferHandler extends TransferHandler {
         try {
             mounted = getUnit().getEquipment(Integer.parseInt((String) data.getTransferData(DataFlavor.stringFlavor)));
         } catch (NumberFormatException | UnsupportedFlavorException | IOException e) {
-            LogManager.getLogger().error(e);
+            LogManager.getLogger().error("", e);
         }
         if ((source instanceof BAASBMDropTargetCriticalList)
                 && (mounted.getLocation() != Entity.LOC_NONE)) {
@@ -434,7 +434,7 @@ public class BAASBMCriticalTransferHandler extends TransferHandler {
                         "Location Full", JOptionPane.INFORMATION_MESSAGE);
                 return false;
             } catch (Exception ex) {
-                LogManager.getLogger().error(ex);
+                LogManager.getLogger().error("", ex);
             }
             return true;
         }
@@ -460,7 +460,7 @@ public class BAASBMCriticalTransferHandler extends TransferHandler {
                     .parseInt((String) info.getTransferable().getTransferData(
                             DataFlavor.stringFlavor)));
         } catch (NumberFormatException | UnsupportedFlavorException | IOException e) {
-            LogManager.getLogger().error(e);
+            LogManager.getLogger().error("", e);
         }
         // not actually dragged a Mounted? not transferable
         if (mounted == null) {

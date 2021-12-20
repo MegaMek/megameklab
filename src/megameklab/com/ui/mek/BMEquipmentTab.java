@@ -373,7 +373,7 @@ public class BMEquipmentTab extends ITab implements ActionListener {
                 } catch (IndexOutOfBoundsException ignored) {
                     return;
                 } catch (Exception e) {
-                    LogManager.getLogger().error(e);
+                    LogManager.getLogger().error("", e);
                     return;
                 }
             } else {

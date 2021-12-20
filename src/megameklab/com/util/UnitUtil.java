@@ -685,7 +685,7 @@ public class UnitUtil {
                             new Mounted(unit, EquipmentType
                                     .get("IS1 Compact Heat Sink")), loc, false);
                 } catch (Exception ex) {
-                    LogManager.getLogger().error(ex);
+                    LogManager.getLogger().error("", ex);
                 }
             }
 
@@ -719,7 +719,7 @@ public class UnitUtil {
                     unit.addEquipment(new Mounted(unit, sinkType),
                             Entity.LOC_NONE, false);
                 } catch (Exception ex) {
-                    LogManager.getLogger().error(ex);
+                    LogManager.getLogger().error("", ex);
                 }
             }
         }
@@ -742,7 +742,7 @@ public class UnitUtil {
                     unit.addEquipment(new Mounted(unit, EquipmentType.get(EquipmentTypeLookup.COMPACT_HS_1)),
                         Entity.LOC_NONE, false);
                 } catch (Exception ex) {
-                    LogManager.getLogger().error(ex);
+                    LogManager.getLogger().error("", ex);
                 }
             } else {
                 int loc = singleCompact.getLocation();
@@ -752,7 +752,7 @@ public class UnitUtil {
                     addMounted(unit,new Mounted(unit, EquipmentType.get(EquipmentTypeLookup.COMPACT_HS_2)),
                         loc, false);
                 } catch (Exception ex) {
-                    LogManager.getLogger().error(ex);
+                    LogManager.getLogger().error("", ex);
                 }
             }
             restHS -= 1;
@@ -762,7 +762,7 @@ public class UnitUtil {
                 unit.addEquipment(new Mounted(unit, EquipmentType.get(EquipmentTypeLookup.COMPACT_HS_2)),
                     Entity.LOC_NONE, false);
             } catch (Exception ex) {
-                LogManager.getLogger().error(ex);
+                LogManager.getLogger().error("", ex);
             }
         }
     }
@@ -1101,7 +1101,7 @@ public class UnitUtil {
                                     .getJumpJetType(jjType))),
                             Entity.LOC_NONE, false);
                 } catch (Exception ex) {
-                    LogManager.getLogger().error(ex);
+                    LogManager.getLogger().error("", ex);
                 }
                 jjAmount--;
             }
@@ -3752,7 +3752,7 @@ public class UnitUtil {
         try {
             MechFileParser.postLoadInit(entity);
         } catch (EntityLoadingException e) {
-            LogManager.getLogger().error(e);
+            LogManager.getLogger().error("", e);
         }
     }
     
@@ -4229,7 +4229,7 @@ public class UnitUtil {
                         LogManager.getLogger().error("Could not find ammo for field gun " + fieldGun.getName());
                     }
                 } catch (LocationFullException ex) {
-                    LogManager.getLogger().error(ex);
+                    LogManager.getLogger().error("", ex);
                 }
             }                
         }

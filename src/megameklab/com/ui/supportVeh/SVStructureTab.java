@@ -274,7 +274,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
                 try {
                     getSV().addEquipment(jumpJet, Tank.LOC_BODY);
                 } catch (LocationFullException e) {
-                    LogManager.getLogger().error(e);
+                    LogManager.getLogger().error("", e);
                 }
             }
             panSummary.refresh();
