@@ -52,9 +52,8 @@ import megamek.common.weapons.ppc.PPCWeapon;
 import megamek.common.weapons.srms.SRMWeapon;
 import megamek.common.weapons.srms.SRTWeapon;
 import megamek.common.weapons.srms.StreakSRMWeapon;
+import megamek.common.weapons.tag.*;
 import megamek.common.weapons.tag.CLLightTAG;
-import megamek.common.weapons.tag.CLTAG;
-import megamek.common.weapons.tag.ISTAG;
 import org.apache.logging.log4j.LogManager;
 
 import javax.swing.*;

@@ -13,10 +13,7 @@
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  */
-
 package megameklab.com.util;
-
-import java.util.Comparator;
 
 import megamek.common.*;
 import megamek.common.actions.ClubAttackAction;
@@ -26,12 +23,7 @@ import megamek.common.weapons.artillery.ArtilleryWeapon;
 import megamek.common.weapons.autocannons.ACWeapon;
 import megamek.common.weapons.autocannons.LBXACWeapon;
 import megamek.common.weapons.autocannons.UACWeapon;
-import megamek.common.weapons.battlearmor.CLBAERPulseLaserSmall;
-import megamek.common.weapons.battlearmor.CLBALBX;
-import megamek.common.weapons.battlearmor.CLBAPulseLaserMicro;
-import megamek.common.weapons.battlearmor.CLBAPulseLaserSmall;
-import megamek.common.weapons.battlearmor.ISBALaserPulseSmall;
-import megamek.common.weapons.battlearmor.ISBAPopUpMineLauncher;
+import megamek.common.weapons.battlearmor.*;
 import megamek.common.weapons.defensivepods.BPodWeapon;
 import megamek.common.weapons.flamers.FlamerWeapon;
 import megamek.common.weapons.gaussrifles.HAGWeapon;
@@ -47,7 +39,6 @@ import megamek.common.weapons.missiles.*;
 import megamek.common.weapons.mortars.CLVehicularGrenadeLauncher;
 import megamek.common.weapons.mortars.ISVehicularGrenadeLauncher;
 import megamek.common.weapons.mortars.MekMortarWeapon;
-import megamek.common.weapons.other.ISC3M;
 import megamek.common.weapons.other.ISC3RemoteSensorLauncher;
 import megamek.common.weapons.other.NarcWeapon;
 import megamek.common.weapons.ppc.CLPlasmaCannon;
@@ -58,7 +49,10 @@ import megamek.common.weapons.prototypes.PrototypeRLWeapon;
 import megamek.common.weapons.srms.SRMWeapon;
 import megamek.common.weapons.srms.SRTWeapon;
 import megamek.common.weapons.srms.StreakSRMWeapon;
+import megamek.common.weapons.tag.ISC3M;
 import megamek.common.weapons.tag.TAGWeapon;
+
+import java.util.Comparator;
 
 public class StringUtils {
 
