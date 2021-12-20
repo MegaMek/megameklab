@@ -19,8 +19,7 @@ package megameklab.com.ui;
 import megamek.common.Entity;
 import megamek.common.preference.PreferenceManager;
 import megameklab.com.util.CConfig;
-import megameklab.com.util.MenuBarCreator;
-import megameklab.com.util.RefreshListener;
+import megameklab.com.ui.util.RefreshListener;
 
 import javax.swing.*;
 import javax.swing.UIManager.LookAndFeelInfo;
@@ -31,7 +30,7 @@ import java.awt.event.WindowEvent;
 public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener, EntitySource {
 
     private Entity entity = null;
-    protected MenuBarCreator menubarcreator;
+    protected MenuBar menubarcreator;
     
     public MegaMekLabMainUI() {
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -46,7 +45,7 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
     }
 
     protected void finishSetup() {
-        menubarcreator = new MenuBarCreator(this);
+        menubarcreator = new MenuBar(this);
         setJMenuBar(menubarcreator);
         reloadTabs();
         setSizeAndLocation();

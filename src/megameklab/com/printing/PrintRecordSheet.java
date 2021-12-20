@@ -15,12 +15,8 @@ package megameklab.com.printing;
 
 import megamek.common.EquipmentType;
 import megamek.common.annotations.Nullable;
-import megameklab.com.MegaMekLab;
 import megameklab.com.printing.reference.ReferenceTable;
 import megameklab.com.util.CConfig;
-import org.apache.fop.configuration.Configuration;
-import org.apache.fop.configuration.ConfigurationException;
-import org.apache.fop.configuration.DefaultConfigurationBuilder;
 import org.apache.batik.anim.dom.SVGDOMImplementation;
 import org.apache.batik.anim.dom.SVGLocatableSupport;
 import org.apache.batik.bridge.BridgeContext;
@@ -35,7 +31,11 @@ import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLResourceDescriptor;
+import org.apache.fop.configuration.Configuration;
+import org.apache.fop.configuration.ConfigurationException;
+import org.apache.fop.configuration.DefaultConfigurationBuilder;
 import org.apache.fop.svg.PDFTranscoder;
+import org.apache.logging.log4j.LogManager;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -55,7 +55,8 @@ import java.awt.print.Printable;
 import java.io.*;
 import java.net.URLConnection;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.Base64;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -235,10 +236,10 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             SAXDocumentFactory df = new SAXDocumentFactory(impl, parser);
             svgDocument = df.createDocument(f.toURI().toASCIIString(), is);
         } catch (Exception e) {
-            MegaMekLab.getLogger().error(e);
+            LogManager.getLogger().error(e);
         }
         if (null == svgDocument) {
-            MegaMekLab.getLogger().error("Failed to open SVG file! Path: data/images/recordsheets/" + filename);
+            LogManager.getLogger().error("Failed to open SVG file! Path: data/images/recordsheets/" + filename);
         }
         return svgDocument;
     }
@@ -323,7 +324,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
                 javax.xml.transform.Source input = new javax.xml.transform.dom.DOMSource(svgDocument);
                 transformer.transform(input, output);
             } catch (Exception ex) {
-                MegaMekLab.getLogger.error(ex);
+                LogManager.getLogger.error(ex);
             }
             */
         }
@@ -360,7 +361,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             // If an image can't be rendered we'll log it and return an empty document in its place
             // rather than throwing an exception.
             public SVGDocument getBrokenLinkDocument(Element e, String url, String message) {
-                MegaMekLab.getLogger().warning("Cannot render image: " + message);
+                LogManager.getLogger().warn("Cannot render image: " + message);
                 DOMImplementation impl = SVGDOMImplementation.getDOMImplementation();
                 SVGDocument doc = (SVGDocument) impl.createDocument(svgNS, SVGConstants.SVG_SVG_TAG, null);
                 Element text = doc.createElementNS(svgNS, SVGConstants.SVG_TEXT_TAG);
@@ -459,7 +460,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
                                     SVGConstants.SVG_SPACING_AND_GLYPHS_VALUE);
                         }
                     } catch (NumberFormatException ex) {
-                        MegaMekLab.getLogger().warning("Could not parse fieldWidth: " + fieldWidth);
+                        LogManager.getLogger().warn("Could not parse fieldWidth: " + fieldWidth);
                     }
                 }
             }
@@ -839,9 +840,9 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
                     "data:" + mimeType + ";base64," + Base64.getEncoder().encodeToString(bytes.toByteArray()));
             canvas.appendChild(img);
         } catch (FileNotFoundException e) {
-            MegaMekLab.getLogger().error("Fluff image file not found: " + imageFile.getPath());
+            LogManager.getLogger().error("Fluff image file not found: " + imageFile.getPath());
         } catch (IOException e) {
-            MegaMekLab.getLogger().error("Error reading fluff image file: " + imageFile.getPath());
+            LogManager.getLogger().error("Error reading fluff image file: " + imageFile.getPath());
         }
     }
 

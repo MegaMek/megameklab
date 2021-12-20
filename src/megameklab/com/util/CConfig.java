@@ -13,18 +13,12 @@
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  */
-
 package megameklab.com.util;
 
-import megameklab.com.MegaMekLab;
+import org.apache.logging.log4j.LogManager;
 
-import java.awt.Color;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
+import java.awt.*;
+import java.io.*;
 import java.util.Properties;
 
 /**
@@ -178,7 +172,7 @@ public class CConfig {
                         config.load(backupStream);
                         backupStream.close();
                     } catch (Exception ex) {
-                        MegaMekLab.getLogger().error(ex);
+                        LogManager.getLogger().error(ex);
                     }
 
                 } else {
@@ -195,10 +189,10 @@ public class CConfig {
                 config.load(fis);
                 fis.close();
             } catch (Exception ex) {
-                MegaMekLab.getLogger().error(ex);
+                LogManager.getLogger().error(ex);
             }
         } catch (Exception ex) {
-            MegaMekLab.getLogger().error(ex);
+            LogManager.getLogger().error(ex);
         }
     }
     
@@ -316,7 +310,7 @@ public class CConfig {
         } catch (FileNotFoundException ignored) {
 
         } catch (Exception ex) {
-            MegaMekLab.getLogger().error(ex);
+            LogManager.getLogger().error(ex);
             return;
         }
         try {
@@ -328,7 +322,7 @@ public class CConfig {
         } catch (FileNotFoundException ignored) {
 
         } catch (Exception ex) {
-            MegaMekLab.getLogger().error(ex);
+            LogManager.getLogger().error(ex);
         }
     }
 

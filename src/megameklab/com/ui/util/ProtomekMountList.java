@@ -13,46 +13,30 @@
  */
 package megameklab.com.ui.util;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.event.InputEvent;
+import megamek.MegaMek;
+import megamek.common.*;
+import megamek.common.annotations.Nullable;
+import megameklab.com.ui.EntitySource;
+import megameklab.com.util.UnitUtil;
+import org.apache.logging.log4j.LogManager;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.AbstractListModel;
-import javax.swing.BorderFactory;
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-import javax.swing.ListSelectionModel;
-
-import megamek.common.AmmoType;
-import megamek.common.Entity;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
-import megamek.common.Protomech;
-import megamek.common.WeaponType;
-import megamek.common.annotations.Nullable;
-import megameklab.com.ui.EntitySource;
-import megameklab.com.util.CConfig;
-import megameklab.com.util.CriticalTransferHandler;
-import megameklab.com.util.RefreshListener;
-import megameklab.com.util.UnitUtil;
+import static megameklab.com.ui.util.CritCellUtil.*;
 
 /**
- * @author Neoancient
+ * The location crit block for ProtoMeks
  *
+ * @author Neoancient
+ * @author Simon (Juliez)
  */
 public class ProtomekMountList extends JList<Mounted> {
-
-    private static final long serialVersionUID = -2051124199120063905L;
 
     private final EntitySource eSource;
     private final int location;
@@ -63,14 +47,12 @@ public class ProtomekMountList extends JList<Mounted> {
         this.refresh = refresh;
         this.location = location;
         refreshContents();
-        setCellRenderer(new MountCellRenderer(true));
+        setCellRenderer(new MountCellRenderer());
         addMouseListener(mouseListener);
         setDragEnabled(true);
         setTransferHandler(new CriticalTransferHandler(eSource, refresh));
-        
         setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        setFont(new Font("Arial", Font.PLAIN, 10));
-        setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.BLACK.darker()));
+        setBorder(BorderFactory.createLineBorder(Color.BLACK));
     }
     
     public Protomech getProtomech() {
@@ -95,11 +77,7 @@ public class ProtomekMountList extends JList<Mounted> {
     
     public void refreshContents() {
         MountedListModel model = new MountedListModel();
-        for (Mounted m : getProtomech().getEquipment()) {
-            if (m.getLocation() == location) {
-                model.add(m);
-            }
-        }
+        getProtomech().getEquipment().stream().filter(m -> m.getLocation() == location).forEach(model::add);
         setModel(model);
         setVisibleRowCount(model.getSize());
     }
@@ -110,8 +88,7 @@ public class ProtomekMountList extends JList<Mounted> {
     }
     
     private void deleteMount(Mounted mount) {
-        if ((mount.getType() instanceof WeaponType)
-                && (mount.getType().hasFlag(WeaponType.F_ONESHOT))) {
+        if (mount.isOneShotWeapon()) {
             Mounted ammo = mount.getLinked();
             if (null != ammo) {
                 UnitUtil.removeMounted(getProtomech(), ammo);
@@ -126,67 +103,87 @@ public class ProtomekMountList extends JList<Mounted> {
         refresh();
     }
     
-    private MouseListener mouseListener = new MouseAdapter() {
+    private final MouseListener mouseListener = new MouseAdapter() {
         @Override
         public void mousePressed(MouseEvent e) {
-            final int index = locationToIndex(e.getPoint());
-            final Mounted mount = getModel().getElementAt(index);
-            if ((null == mount) || UnitUtil.isFixedLocationSpreadEquipment(mount.getType())) {
-                return;
-            }
-            if ((mount.getType() instanceof MiscType)
-                    && (UnitUtil.isArmor(mount.getType())
-                            || mount.getType().hasFlag(MiscType.F_JUMP_JET)
-                            || mount.getType().hasFlag(MiscType.F_UMU))) {
-                return;
-            }
-            
-            if (e.getButton() == MouseEvent.BUTTON2) {
-                remove(index);
-            } else if (e.getButton() == MouseEvent.BUTTON3) {
-                if ((e.getModifiersEx() & InputEvent.CTRL_DOWN_MASK) != 0) {
-                    remove(index);
-                    return;
-                }
-
-                JPopupMenu popup = new JPopupMenu();
-
-                if ((location == Protomech.LOC_TORSO)
-                        && (e.getModifiersEx() & InputEvent.ALT_DOWN_MASK) != 0) {
-                    changeFacing(mount);
-                    return;
-                }
-
-                JMenuItem info;
-
-                if (!(mount.getType() instanceof AmmoType)) {
-                    info = new JMenuItem("Remove " + mount.getName());
-                    info.addActionListener(ev -> removeMount(mount));
-                    popup.add(info);
-                }
-                info = new JMenuItem("Delete " + mount.getName());
-                info.addActionListener(ev -> deleteMount(mount));
-                popup.add(info);
-                if ((location == Protomech.LOC_TORSO)
-                        && (mount.getType() instanceof WeaponType)) {
-                    info = new JMenuItem("Change Facing");
-                    info.addActionListener(ev -> changeFacing(mount));
-                    popup.add(info);
-                }
-
-
-                if (popup.getComponentCount() > 0) {
-                    popup.show(ProtomekMountList.this, e.getX(), e.getY());
-                }
+            final Mounted mounted = getModel().getElementAt(locationToIndex(e.getPoint()));
+            if (e.isPopupTrigger() && isChangeable(mounted)) {
+                showPopup(e, mounted);
             }
         }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            final Mounted mounted = getModel().getElementAt(locationToIndex(e.getPoint()));
+            if (!isChangeable(mounted)) {
+                return;
+            }
+
+            if (SwingUtilities.isLeftMouseButton(e)) {
+                if (e.isControlDown() && (mounted.getType() instanceof AmmoType)) {
+                    try {
+                        UnitUtil.addProtoMechAmmo(getProtomech(), mounted.getType(), 1);
+                    } catch (LocationFullException ex) {
+                        LogManager.getLogger().error(ex);
+                    }
+                    refresh();
+                    return;
+                }
+            }
+
+            if (SwingUtilities.isRightMouseButton(e)) {
+                if (e.isAltDown() && isTorso()) {
+                    changeFacing(mounted);
+                    return;
+                }
+                if (e.isControlDown()) {
+                    if ((mounted.getType() instanceof AmmoType)) {
+                        UnitUtil.reduceProtoMechAmmo(getProtomech(), mounted.getType(), 1);
+                    } else {
+                        removeMount(mounted);
+                    }
+                    refresh();
+                    return;
+                }
+            }
+
+            if (e.isPopupTrigger()) {
+                showPopup(e, mounted);
+            }
+        }
+
+        private boolean isChangeable(@Nullable Mounted mounted) {
+            return (mounted != null)
+                    && !UnitUtil.isFixedLocationSpreadEquipment(mounted.getType())
+                    && !UnitUtil.isArmor(mounted.getType());
+        }
+
+        private void showPopup(MouseEvent e, Mounted mounted) {
+            JPopupMenu popup = new JPopupMenu();
+            JMenuItem menuItem;
+            if (!(mounted.getType() instanceof AmmoType)) {
+                menuItem = new JMenuItem("Remove " + mounted.getName());
+                menuItem.addActionListener(ev -> removeMount(mounted));
+                popup.add(menuItem);
+            }
+
+            menuItem = new JMenuItem("Delete " + mounted.getName());
+            menuItem.addActionListener(ev -> deleteMount(mounted));
+            popup.add(menuItem);
+
+            if (isTorso() && (mounted.getType() instanceof WeaponType)) {
+                menuItem = new JMenuItem("Change Facing");
+                menuItem.addActionListener(ev -> changeFacing(mounted));
+                popup.add(menuItem);
+            }
+
+            popup.show(ProtomekMountList.this, e.getX(), e.getY());
+        }
     };
-    
+
     private static class MountedListModel extends AbstractListModel<Mounted> {
 
-        private static final long serialVersionUID = 2575915653617712928L;
-
-        private List<Mounted> list = new ArrayList<>();
+        private final List<Mounted> list = new ArrayList<>();
 
         @Override
         public int getSize() {
@@ -195,88 +192,41 @@ public class ProtomekMountList extends JList<Mounted> {
 
         @Override
         public Mounted getElementAt(int index) {
-            if (index >= list.size()) {
-                return null;
-            }
-            return list.get(index);
+            return (index >= list.size()) ? null : list.get(index);
         }
         
         public void add(Mounted mounted) {
             list.add(mounted);
             fireContentsChanged(this, list.size() - 1, list.size() - 1);
         }
-        
     }
     
     private static class MountCellRenderer extends DefaultListCellRenderer {
 
-        private static final long serialVersionUID = -1115364118975814321L;
-        
-        private boolean useColor = false;
-
-        public MountCellRenderer(boolean useColor) {
-            this.useColor = useColor;
+        @Override
+        public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean hasFocus) {
+            final ProtomekMountList lstMount = (ProtomekMountList) list;
+            final Entity entity = lstMount.eSource.getEntity();
+            CritCellUtil.formatCell(this, (Mounted) value, true, entity, index);
+            if ((index > 0) && (index < list.getModel().getSize())) {
+                setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.black));
+            }
+            return this;
         }
 
         @Override
-        public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean hasFocus) {
-            final JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, hasFocus);
-            final ProtomekMountList lstMount = (ProtomekMountList) list;
-            final Entity entity = lstMount.eSource.getEntity();
-            
-            label.setPreferredSize(new Dimension(140,15));
-            label.setMaximumSize(new Dimension(140,15));
-            label.setMinimumSize(new Dimension(140,15));
-
-            if (null == value) {
-                if (useColor) {
-                    label.setBackground(CConfig.getBackgroundColor(CConfig.CONFIG_EMPTY));
-                    label.setForeground(CConfig.getForegroundColor(CConfig.CONFIG_EMPTY));
-                }
-                label.setText("-Empty-");
-            } else {
-                final Mounted mount = (Mounted) value;
-
-                if (useColor) {
-                    if (mount.getType() instanceof WeaponType) {
-                        label.setBackground(CConfig.getBackgroundColor(CConfig.CONFIG_WEAPONS));
-                        label.setForeground(CConfig.getForegroundColor(CConfig.CONFIG_WEAPONS));
-                    } else if (mount.getType() instanceof AmmoType) {
-                        label.setBackground(CConfig.getBackgroundColor(CConfig.CONFIG_AMMO));
-                        label.setForeground(CConfig.getForegroundColor(CConfig.CONFIG_AMMO));
-                    } else {
-                        label.setBackground(CConfig.getBackgroundColor(CConfig.CONFIG_EQUIPMENT));
-                        label.setForeground(CConfig.getForegroundColor(CConfig.CONFIG_EQUIPMENT));
-                    }
-                }
-                if (UnitUtil.isFixedLocationSpreadEquipment(mount.getType())) {
-                    label.setFont(label.getFont().deriveFont(Font.ITALIC));
-                }
-                
-                String name = UnitUtil.getCritName(entity, mount.getType());
-                if (mount.isRearMounted()) {
-                    name += " (R)";
-                }
-                if (mount.getType() instanceof AmmoType) {
-                    name += " (" + mount.getBaseShotsLeft() + ")";
-                }
-                String toolTipText = UnitUtil.getToolTipInfo(entity, mount);
-                label.setText(name);
-                label.setToolTipText(toolTipText);
-            }
-
-            if ((index > 0) && (index < list.getModel().getSize())) {
-                label.setBorder( BorderFactory.createMatteBorder(1, 0, 0, 0, Color.black));
-            }
-
-            return label;
+        public Dimension getPreferredSize() {
+            int height = Math.max(CRITCELL_MIN_HEIGHT, super.getPreferredSize().height + CRITCELL_ADD_HEIGHT);
+            return new Dimension(CRITCELL_WIDTH, height);
         }
     }
 
-    /**
-     * @return The selected item, or null if nothing is selected.
-     */
+    /** Returns the selected item, or null if nothing is selected. */
     public @Nullable Mounted getMounted() {
         return getSelectedValue();
+    }
+
+    private boolean isTorso() {
+        return location == Protomech.LOC_TORSO;
     }
 }

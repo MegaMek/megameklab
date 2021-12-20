@@ -13,49 +13,14 @@
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  */
-
 package megameklab.com.util;
-
-import java.awt.Dimension;
-import java.awt.Font;
-import java.io.File;
-import java.math.BigInteger;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.util.*;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.stream.Collectors;
-
-import javax.swing.JDialog;
-import javax.swing.JEditorPane;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
-import javax.swing.JTextPane;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.text.DefaultCaret;
-import javax.swing.text.html.HTMLEditorKit;
 
 import megamek.client.ui.dialogs.BVDisplayDialog;
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
 import megamek.common.loaders.EntityLoadingException;
-import megamek.common.verifier.EntityVerifier;
-import megamek.common.verifier.TestAdvancedAerospace;
-import megamek.common.verifier.TestAero;
-import megamek.common.verifier.TestBattleArmor;
-import megamek.common.verifier.TestEntity;
-import megamek.common.verifier.TestInfantry;
-import megamek.common.verifier.TestMech;
-import megamek.common.verifier.TestProtomech;
-import megamek.common.verifier.TestSmallCraft;
-import megamek.common.verifier.TestSupportVehicle;
-import megamek.common.verifier.TestTank;
-import megamek.common.weapons.AmmoWeapon;
-import megamek.common.weapons.LegAttack;
-import megamek.common.weapons.StopSwarmAttack;
-import megamek.common.weapons.SwarmAttack;
-import megamek.common.weapons.SwarmWeaponAttack;
+import megamek.common.verifier.*;
+import megamek.common.weapons.*;
 import megamek.common.weapons.autocannons.ACWeapon;
 import megamek.common.weapons.autocannons.HVACWeapon;
 import megamek.common.weapons.autocannons.LBXACWeapon;
@@ -80,13 +45,7 @@ import megamek.common.weapons.missiles.MMLWeapon;
 import megamek.common.weapons.missiles.MRMWeapon;
 import megamek.common.weapons.missiles.RLWeapon;
 import megamek.common.weapons.missiles.ThunderBoltWeapon;
-import megamek.common.weapons.other.CLAMS;
-import megamek.common.weapons.other.CLLaserAMS;
-import megamek.common.weapons.other.ISAMS;
-import megamek.common.weapons.other.ISAPDS;
-import megamek.common.weapons.other.ISC3M;
-import megamek.common.weapons.other.ISC3MBS;
-import megamek.common.weapons.other.ISLaserAMS;
+import megamek.common.weapons.other.*;
 import megamek.common.weapons.ppc.CLPlasmaCannon;
 import megamek.common.weapons.ppc.ISPlasmaRifle;
 import megamek.common.weapons.ppc.PPCWeapon;
@@ -96,7 +55,20 @@ import megamek.common.weapons.srms.StreakSRMWeapon;
 import megamek.common.weapons.tag.CLLightTAG;
 import megamek.common.weapons.tag.CLTAG;
 import megamek.common.weapons.tag.ISTAG;
-import megameklab.com.MegaMekLab;
+import org.apache.logging.log4j.LogManager;
+
+import javax.swing.*;
+import javax.swing.text.DefaultCaret;
+import javax.swing.text.html.HTMLEditorKit;
+import java.awt.*;
+import java.io.File;
+import java.math.BigInteger;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.List;
+import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.stream.Collectors;
 
 public class UnitUtil {
 
@@ -713,7 +685,7 @@ public class UnitUtil {
                             new Mounted(unit, EquipmentType
                                     .get("IS1 Compact Heat Sink")), loc, false);
                 } catch (Exception ex) {
-                    MegaMekLab.getLogger().error(ex);
+                    LogManager.getLogger().error(ex);
                 }
             }
 
@@ -747,7 +719,7 @@ public class UnitUtil {
                     unit.addEquipment(new Mounted(unit, sinkType),
                             Entity.LOC_NONE, false);
                 } catch (Exception ex) {
-                    MegaMekLab.getLogger().error(ex);
+                    LogManager.getLogger().error(ex);
                 }
             }
         }
@@ -770,7 +742,7 @@ public class UnitUtil {
                     unit.addEquipment(new Mounted(unit, EquipmentType.get(EquipmentTypeLookup.COMPACT_HS_1)),
                         Entity.LOC_NONE, false);
                 } catch (Exception ex) {
-                    MegaMekLab.getLogger().error(ex);
+                    LogManager.getLogger().error(ex);
                 }
             } else {
                 int loc = singleCompact.getLocation();
@@ -780,7 +752,7 @@ public class UnitUtil {
                     addMounted(unit,new Mounted(unit, EquipmentType.get(EquipmentTypeLookup.COMPACT_HS_2)),
                         loc, false);
                 } catch (Exception ex) {
-                    MegaMekLab.getLogger().error(ex);
+                    LogManager.getLogger().error(ex);
                 }
             }
             restHS -= 1;
@@ -790,7 +762,7 @@ public class UnitUtil {
                 unit.addEquipment(new Mounted(unit, EquipmentType.get(EquipmentTypeLookup.COMPACT_HS_2)),
                     Entity.LOC_NONE, false);
             } catch (Exception ex) {
-                MegaMekLab.getLogger().error(ex);
+                LogManager.getLogger().error(ex);
             }
         }
     }
@@ -1046,6 +1018,10 @@ public class UnitUtil {
                 || m.getType().hasFlag(MiscType.F_JUMP_BOOSTER));
     }
 
+    public static boolean isUmu(Mounted m) {
+        return (m.getType() instanceof MiscType) && (m.getType().hasFlag(MiscType.F_UMU));
+    }
+
     /**
      *
      * @param type The value returned by {@link Mech#getJumpType()}
@@ -1125,7 +1101,7 @@ public class UnitUtil {
                                     .getJumpJetType(jjType))),
                             Entity.LOC_NONE, false);
                 } catch (Exception ex) {
-                    MegaMekLab.getLogger().error(ex);
+                    LogManager.getLogger().error(ex);
                 }
                 jjAmount--;
             }
@@ -2118,7 +2094,7 @@ public class UnitUtil {
                         }
                     }
                 } catch (LocationFullException lfe) {
-                    MegaMekLab.getLogger().error(lfe);
+                    LogManager.getLogger().error(lfe);
                     JOptionPane.showMessageDialog(
                             null,
                             lfe.getMessage(),
@@ -2258,22 +2234,17 @@ public class UnitUtil {
         return ammoCount;
     }
 
+    /** Returns the name of the given equipment with (IS) or (Clan) added for mixed tech units when appropriate.  */
     public static String getCritName(Entity unit, EquipmentType eq) {
         String name = eq.getName();
         if (unit.isMixedTech()
                 && (eq.getTechLevel(unit.getTechLevelYear()) != TechConstants.T_ALLOWED_ALL)
                 && (eq.getTechLevel(unit.getTechLevelYear()) != TechConstants.T_TECH_UNKNOWN)) {
 
-            if (unit.isClan()
-                    && !TechConstants.isClan(eq.getTechLevel(unit
-                            .getTechLevelYear()))) {
-                name = name + " (IS)";
-            }
-
-            if (!unit.isClan()
-                    && TechConstants.isClan(eq.getTechLevel(unit
-                            .getTechLevelYear()))) {
-                name = name + " (Clan)";
+            if (unit.isClan() && !TechConstants.isClan(eq.getTechLevel(unit.getTechLevelYear()))) {
+                name += " (IS)";
+            } else if (!unit.isClan() && TechConstants.isClan(eq.getTechLevel(unit.getTechLevelYear()))) {
+                name += " (Clan)";
             }
         }
         return name;
@@ -3304,7 +3275,7 @@ public class UnitUtil {
             Mounted m = cs.getMount();
 
             if (m == null) {
-                MegaMekLab.getLogger().error("Null Mount index: " + cs.getIndex());
+                LogManager.getLogger().error("Null Mount index: " + cs.getIndex());
                 m = cs.getMount();
             }
 
@@ -3332,7 +3303,7 @@ public class UnitUtil {
             Mounted m = cs.getMount();
 
             if (m == null) {
-                MegaMekLab.getLogger().error("Null Mount index: " + cs.getIndex());
+                LogManager.getLogger().error("Null Mount index: " + cs.getIndex());
                 m = cs.getMount();
             }
 
@@ -3781,7 +3752,7 @@ public class UnitUtil {
         try {
             MechFileParser.postLoadInit(entity);
         } catch (EntityLoadingException e) {
-            MegaMekLab.getLogger().error(e);
+            LogManager.getLogger().error(e);
         }
     }
     
@@ -4255,10 +4226,10 @@ public class UnitUtil {
                     if (ammo.isPresent()) {
                         unit.addEquipment(ammo.get(), Infantry.LOC_FIELD_GUNS);
                     } else {
-                        MegaMekLab.getLogger().error("Could not find ammo for field gun " + fieldGun.getName());
+                        LogManager.getLogger().error("Could not find ammo for field gun " + fieldGun.getName());
                     }
                 } catch (LocationFullException ex) {
-                    MegaMekLab.getLogger().error(ex);
+                    LogManager.getLogger().error(ex);
                 }
             }                
         }
@@ -4438,4 +4409,35 @@ public class UnitUtil {
                 .collect(Collectors.toList());
         emptyBays.forEach(bay -> UnitUtil.removeMounted(entity, bay));
     }
+
+    /** Adds the given number of shots to the already present given ammo on the given ProtoMek. */
+    public static void addProtoMechAmmo(Protomech entity, EquipmentType ammo, int shots) throws LocationFullException {
+        Mounted aMount = entity.getAmmo().stream()
+                .filter(m -> ammo.equals(m.getType())).findFirst().orElse(null);
+        if (null != aMount) {
+            aMount.setShotsLeft(aMount.getUsableShotsLeft() + shots);
+        } else {
+            Mounted mount = new Mounted(entity, ammo);
+            entity.addEquipment(mount, Protomech.LOC_BODY, false);
+            mount.setShotsLeft(shots);
+        }
+    }
+
+    /**
+     * Subtracts the given number of shots from the given ammo on the given ProtoMek.
+     * May remove the entire Mounted from the ProtoMek.
+     */
+    public static void reduceProtoMechAmmo(Protomech entity, EquipmentType ammo, int shots) {
+        Mounted aMount = entity.getAmmo().stream()
+                .filter(m -> ammo.equals(m.getType())).findFirst().orElse(null);
+        if (aMount != null) {
+            if (aMount.getUsableShotsLeft() <= shots) {
+                removeMounted(entity, aMount);
+            } else {
+                aMount.setShotsLeft(aMount.getUsableShotsLeft() - shots);
+            }
+        }
+    }
+
+
 }

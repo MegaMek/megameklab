@@ -13,6 +13,13 @@
  */
 package megameklab.com.ui.util;
 
+import megamek.common.*;
+import megamek.common.weapons.bayweapons.BayWeapon;
+import megameklab.com.ui.EntitySource;
+import megameklab.com.util.UnitUtil;
+import org.apache.logging.log4j.LogManager;
+
+import javax.swing.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
@@ -23,22 +30,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.StringJoiner;
 
-import javax.swing.JComponent;
-import javax.swing.JTable;
-import javax.swing.JTree;
-import javax.swing.TransferHandler;
-
-import megamek.common.AmmoType;
-import megamek.common.Entity;
-import megamek.common.LocationFullException;
-import megamek.common.Mounted;
-import megamek.common.WeaponType;
-import megamek.common.weapons.bayweapons.BayWeapon;
-import megameklab.com.MegaMekLab;
-import megameklab.com.ui.EntitySource;
-import megameklab.com.util.CriticalTableModel;
-import megameklab.com.util.UnitUtil;
-
 /**
  * Handles drag-and-drop for aerospace units that use weapon bays. Most of the work of adding, removing,
  * and changing equipment locations is done by the JTree for the weapon arc.
@@ -46,10 +37,6 @@ import megameklab.com.util.UnitUtil;
  * @author Neoancient
  */
 public class AeroBayTransferHandler extends TransferHandler {
-    
-    /**
-     * 
-     */
     private static final long serialVersionUID = 2534394664060762469L;
     
     private EntitySource eSource;
@@ -87,7 +74,7 @@ public class AeroBayTransferHandler extends TransferHandler {
                 }
             }
         } catch (Exception ex) {
-            MegaMekLab.getLogger().error(ex);
+            LogManager.getLogger().error(ex);
             return false;
         }
         if (eqList.isEmpty()) {
@@ -139,7 +126,7 @@ public class AeroBayTransferHandler extends TransferHandler {
                                 m.setShotsLeft(mount.getUsableShotsLeft());
                             }
                         } catch (LocationFullException e) {
-                            MegaMekLab.getLogger().error(e);
+                            LogManager.getLogger().error(e);
                         }
                     }
                 } else {
@@ -206,7 +193,7 @@ public class AeroBayTransferHandler extends TransferHandler {
                 mounted.add(eSource.getEntity().getEquipment(Integer.parseInt(field)));
             }
         } catch (NumberFormatException | UnsupportedFlavorException | IOException e) {
-            MegaMekLab.getLogger().error(e);
+            LogManager.getLogger().error(e);
         }
 
         // not actually dragged a Mounted? not transferable
@@ -254,7 +241,7 @@ public class AeroBayTransferHandler extends TransferHandler {
                 ((BayWeaponCriticalTree)source).removeExported((String)data.getTransferData(DataFlavor.stringFlavor),
                         action);
             } catch (Exception ex) {
-                MegaMekLab.getLogger().error(ex);
+                LogManager.getLogger().error(ex);
             }
         }
     }
