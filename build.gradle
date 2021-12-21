@@ -215,6 +215,9 @@ distributions {
     unix {
         distributionBaseName = rootProject.name.toLowerCase()
         contents {
+            from ("${mmDir}/megamek/mmconf/log4j2.xml") {
+                exclude 'log4j2.xml'
+            }
             from (fileStagingDir) {
                 exclude '**/history.txt'
             }
