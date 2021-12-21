@@ -480,7 +480,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
                 return crit.getMount();
             }
         } catch (Exception ex) {
-            LogManager.getLogger().error(ex);
+            LogManager.getLogger().error("", ex);
         }
 
         return mount;
@@ -522,7 +522,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
         } catch (EntityLoadingException ele) {
             // do nothing.
         } catch (Exception ex) {
-            LogManager.getLogger().error(ex);
+            LogManager.getLogger().error("", ex);
         }
 
         if (refresh != null) {
@@ -554,7 +554,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
         } catch (EntityLoadingException ele) {
             // do nothing.
         } catch (Exception ex) {
-            LogManager.getLogger().error(ex);
+            LogManager.getLogger().error("", ex);
         }
 
         if ((crit != null) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)) {

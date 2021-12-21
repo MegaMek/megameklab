@@ -260,7 +260,7 @@ public class UnallocatedView extends IView implements ActionListener, MouseListe
         try {
             getEntity().addEquipment(eq, location, false);
         } catch (Exception ex) {
-            LogManager.getLogger().error(ex);
+            LogManager.getLogger().error("", ex);
         }
 
         if (refresh.get() != null) {

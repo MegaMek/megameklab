@@ -144,7 +144,7 @@ public class LoadingDialog extends JDialog {
             try {
                 get();
             } catch (ExecutionException ex) {
-                LogManager.getLogger().error(ex);
+                LogManager.getLogger().error("", ex);
             } catch (InterruptedException ex) {
                 interrupted = true;
             } finally {

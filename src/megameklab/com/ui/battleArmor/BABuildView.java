@@ -600,7 +600,7 @@ public class BABuildView extends IView implements ActionListener, MouseListener 
         try {
             eq.setBaMountLoc(location);
         } catch (Exception ex) {
-            LogManager.getLogger().error(ex);
+            LogManager.getLogger().error("", ex);
         }
         
         UnitUtil.changeMountStatus(getBattleArmor(), eq, BattleArmor.LOC_SQUAD, -1, false);

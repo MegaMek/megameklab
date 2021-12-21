@@ -293,7 +293,7 @@ public class BAStructureTab extends ITab implements ActionListener, BABuildListe
                         }
                     } catch (LocationFullException ex) {
                         // This shouldn't happen
-                        LogManager.getLogger().error(ex);
+                        LogManager.getLogger().error("", ex);
                     }
                 }
             } else if (combo.equals(rightManipSelect)) {
@@ -343,7 +343,7 @@ public class BAStructureTab extends ITab implements ActionListener, BABuildListe
                         }
                     } catch (LocationFullException ex) {
                         // This shouldn't happen
-                        LogManager.getLogger().error(ex);
+                        LogManager.getLogger().error("", ex);
                     }
                 }
             }
@@ -374,7 +374,7 @@ public class BAStructureTab extends ITab implements ActionListener, BABuildListe
             mechView = new MechView(getBattleArmor(), false);
             troView = TROView.createView(getBattleArmor(), true);
         } catch (Exception e) {
-            LogManager.getLogger().error(e);
+            LogManager.getLogger().error("", e);
             // error unit didn't load right. this is bad news.
             populateTextFields = false;
         }
@@ -632,7 +632,7 @@ public class BAStructureTab extends ITab implements ActionListener, BABuildListe
                 }
             } catch (LocationFullException e) {
                 // Shouldn't happen with BA
-                LogManager.getLogger().error(e);
+                LogManager.getLogger().error("", e);
             }
         } else {
             List<Mounted> mounts = getBattleArmor().getMisc().stream()
@@ -671,7 +671,7 @@ public class BAStructureTab extends ITab implements ActionListener, BABuildListe
                 getBattleArmor().addEquipment(new Mounted(getBattleArmor(), armor),
                         BattleArmor.LOC_SQUAD, false);
             } catch (Exception ex) {
-                LogManager.getLogger().error(ex);
+                LogManager.getLogger().error("", ex);
             }
         }
         refresh.refreshBuild();

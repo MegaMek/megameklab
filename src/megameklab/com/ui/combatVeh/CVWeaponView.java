@@ -452,7 +452,7 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
                     }
                 }
             } catch (Exception ex) {
-                LogManager.getLogger().error(ex);
+                LogManager.getLogger().error("", ex);
             }
         } else if (e.getActionCommand().equals(LASERAMMOADD_COMMAND) && (subLaserAmmoList.size() > 0)) {
             try {
@@ -463,7 +463,7 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
                     }
                 }
             } catch (Exception ex) {
-                LogManager.getLogger().error(ex);
+                LogManager.getLogger().error("", ex);
             }
         } else if (e.getActionCommand().equals(MISSILEWEAPONADD_COMMAND)) {
             try {
@@ -481,7 +481,7 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
                     }
                 }
             } catch (Exception ex) {
-                LogManager.getLogger().error(ex);
+                LogManager.getLogger().error("", ex);
             }
         } else if (e.getActionCommand().equals(MISSILEAMMOADD_COMMAND)) {
             try {
@@ -492,7 +492,7 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
                     }
                 }
             } catch (Exception ex) {
-                LogManager.getLogger().error(ex);
+                LogManager.getLogger().error("", ex);
             }
         } else if (e.getActionCommand().equals(BALLISTICWEAPONADD_COMMAND)) {
             try {
@@ -509,7 +509,7 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
                     }
                 }
             } catch (Exception ex) {
-                LogManager.getLogger().error(ex);
+                LogManager.getLogger().error("", ex);
             }
         } else if (e.getActionCommand().equals(BALLISTICAMMOADD_COMMAND)) {
             try {
@@ -520,7 +520,7 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
                     }
                 }
             } catch (Exception ex) {
-                LogManager.getLogger().error(ex);
+                LogManager.getLogger().error("", ex);
             }
         } else if (e.getActionCommand().equals(ARTILLERYWEAPONADD_COMMAND)) {
             try {
@@ -531,7 +531,7 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
                     }
                 }
             } catch (Exception ex) {
-                LogManager.getLogger().error(ex);
+                LogManager.getLogger().error("", ex);
             }
         } else if (e.getActionCommand().equals(ARTILLERYAMMOADD_COMMAND)) {
             try {
@@ -542,7 +542,7 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
                     }
                 }
             } catch (Exception ex) {
-                LogManager.getLogger().error(ex);
+                LogManager.getLogger().error("", ex);
             }
         } else if (e.getActionCommand().equals(REMOVE_COMMAND)) {
 

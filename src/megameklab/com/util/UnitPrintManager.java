@@ -427,7 +427,7 @@ public class UnitPrintManager {
                 printAllUnits(unitList, singleUnit);
             }
         } catch (Exception ex) {
-            LogManager.getLogger().error(ex);
+            LogManager.getLogger().error("", ex);
         }
     }
 }

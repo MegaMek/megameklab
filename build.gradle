@@ -215,6 +215,9 @@ distributions {
     unix {
         distributionBaseName = rootProject.name.toLowerCase()
         contents {
+            from ("${mmDir}/megamek/mmconf/log4j2.xml") {
+                exclude 'log4j2.xml'
+            }
             from (fileStagingDir) {
                 exclude '**/history.txt'
             }
@@ -236,6 +239,9 @@ distributions {
     windows {
         distributionBaseName = 'megameklab-windows'
         contents {
+            from ("${mmDir}/megamek/mmconf/log4j2.xml") {
+                exclude 'log4j2.xml'
+            }
             from ("${buildDir}/launch4j") {
                 include '*.exe'
                 include '*.ini'

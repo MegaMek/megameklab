@@ -74,7 +74,7 @@ public class AeroBayTransferHandler extends TransferHandler {
                 }
             }
         } catch (Exception ex) {
-            LogManager.getLogger().error(ex);
+            LogManager.getLogger().error("", ex);
             return false;
         }
         if (eqList.isEmpty()) {
@@ -126,7 +126,7 @@ public class AeroBayTransferHandler extends TransferHandler {
                                 m.setShotsLeft(mount.getUsableShotsLeft());
                             }
                         } catch (LocationFullException e) {
-                            LogManager.getLogger().error(e);
+                            LogManager.getLogger().error("", e);
                         }
                     }
                 } else {
@@ -193,7 +193,7 @@ public class AeroBayTransferHandler extends TransferHandler {
                 mounted.add(eSource.getEntity().getEquipment(Integer.parseInt(field)));
             }
         } catch (NumberFormatException | UnsupportedFlavorException | IOException e) {
-            LogManager.getLogger().error(e);
+            LogManager.getLogger().error("", e);
         }
 
         // not actually dragged a Mounted? not transferable
@@ -241,7 +241,7 @@ public class AeroBayTransferHandler extends TransferHandler {
                 ((BayWeaponCriticalTree)source).removeExported((String)data.getTransferData(DataFlavor.stringFlavor),
                         action);
             } catch (Exception ex) {
-                LogManager.getLogger().error(ex);
+                LogManager.getLogger().error("", ex);
             }
         }
     }

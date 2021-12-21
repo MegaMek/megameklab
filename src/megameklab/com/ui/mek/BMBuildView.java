@@ -388,7 +388,7 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
             try {
                 UnitUtil.addMounted(getMech(), eq, location, false);
             } catch (Exception ex) {
-                LogManager.getLogger().error(ex);
+                LogManager.getLogger().error("", ex);
             }
         }
 
@@ -397,7 +397,7 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
             try {
                 UnitUtil.addMounted(getMech(), eq, secondaryLocation, false);
             } catch (Exception ex) {
-                LogManager.getLogger().error(ex);
+                LogManager.getLogger().error("", ex);
             }
         }
 
@@ -470,7 +470,7 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
                 UnitUtil.addMounted(getMech(), eq, location, false);
             }
         } catch (Exception ex) {
-            LogManager.getLogger().error(ex);
+            LogManager.getLogger().error("", ex);
         }
         UnitUtil.changeMountStatus(getMech(), eq, location, -1, false);
 

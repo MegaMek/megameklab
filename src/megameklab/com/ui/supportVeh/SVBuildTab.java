@@ -115,7 +115,7 @@ public class SVBuildTab extends ITab implements ActionListener {
                     UnitUtil.changeMountStatus(getTank(), mount, location, Entity.LOC_NONE, false);
                     break;
                 } catch (Exception ex) {
-                    LogManager.getLogger().error(ex);
+                    LogManager.getLogger().error("", ex);
                 }
             }
         }
@@ -138,7 +138,7 @@ public class SVBuildTab extends ITab implements ActionListener {
         } catch (EntityLoadingException ele) {
             // do nothing.
         } catch (Exception ex) {
-            LogManager.getLogger().error(ex);
+            LogManager.getLogger().error("", ex);
         }
 
         refresh.refreshAll();
