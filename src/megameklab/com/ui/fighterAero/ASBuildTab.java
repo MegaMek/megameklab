@@ -51,7 +51,7 @@ public class ASBuildTab extends ITab implements ActionListener {
 
     private String RESETCOMMAND = "resetbuttoncommand";
 
-    public ASBuildTab(EntitySource eSource, AeroEquipmentTab equipment) {
+    public ASBuildTab(EntitySource eSource) {
         super(eSource);
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         mainPanel.setLayout(new GridBagLayout());

@@ -59,6 +59,7 @@ public abstract class AbstractEquipmentTab extends ITab {
         removeAllButton.addActionListener(this::removeAllEquipment);
 
         equipDatabase = getEquipmentDatabaseView();
+        equipDatabase.refreshTable();
 
         JPanel databasePanel = new JPanel(new GridLayout(1, 1)) {
             @Override

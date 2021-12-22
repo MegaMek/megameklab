@@ -23,10 +23,6 @@ import megameklab.com.ui.EntitySource;
 
 public class IView extends JPanel {
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = -6741722012756653309L;
     protected EntitySource eSource;
 
     public IView(EntitySource eSource) {
@@ -41,7 +37,7 @@ public class IView extends JPanel {
         return (Mech) eSource.getEntity();
     }
     
-    public Protomech getProtomech() {
+    public Protomech getProtoMek() {
         return (Protomech) eSource.getEntity();
     }
 

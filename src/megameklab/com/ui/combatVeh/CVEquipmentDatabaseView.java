@@ -37,7 +37,6 @@ class CVEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
 
     CVEquipmentDatabaseView(EntitySource eSource) {
         super(eSource);
-        updateVisibleColumns();
     }
 
     @Override

@@ -43,12 +43,9 @@ import megameklab.com.util.UnitUtil;
  */
 public class PMBuildTab extends ITab implements ActionListener {
 
-    private static final long serialVersionUID = -1408764780198728574L;
-
-    private RefreshListener refresh = null;
-    private PMCriticalView critView = null;
-    private CriticalTableModel critList;
-    private PMBuildView buildView = null;
+    private RefreshListener refresh;
+    private PMCriticalView critView;
+    private PMBuildView buildView;
     private JPanel buttonPanel = new JPanel();
     private JPanel mainPanel = new JPanel();
 
@@ -58,10 +55,9 @@ public class PMBuildTab extends ITab implements ActionListener {
     private String AUTOFILLCOMMAND = "autofillbuttoncommand";
     private String RESETCOMMAND = "resetbuttoncommand";
 
-    public PMBuildTab(EntitySource eSource, EquipmentTab equipment, RefreshListener refresh) {
+    public PMBuildTab(EntitySource eSource, RefreshListener refresh) {
         super(eSource);
         this.refresh = refresh;
-        this.critList = equipment.getEquipmentList();
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
@@ -165,21 +161,10 @@ public class PMBuildTab extends ITab implements ActionListener {
         buildView.addRefreshedListener(refresh);
     }
 
-    public void addCrit(Mounted mount) {
-        critList.addCrit(mount);
-    }
-
     public void refreshAll() {
         if (refresh != null) {
             refresh.refreshAll();
         }
-    }
-
-    /**
-     * @return the critList
-     */
-    public CriticalTableModel getCritList() {
-        return critList;
     }
 
 }

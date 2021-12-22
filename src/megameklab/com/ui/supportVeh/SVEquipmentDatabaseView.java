@@ -27,10 +27,6 @@ import static megameklab.com.ui.util.EquipmentTableModel.*;
 
 public class SVEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
 
-    private final List<Integer> allColumns = List.of(COL_NAME, COL_DAMAGE, COL_DIVISOR, COL_SPECIAL, COL_HEAT,
-            COL_MRANGE, COL_RANGE, COL_SHOTS, COL_TECH, COL_TLEVEL, COL_TRATING, COL_DPROTOTYPE, COL_DPRODUCTION,
-            COL_DCOMMON, COL_DEXTINCT, COL_DREINTRO, COL_COST, COL_CREW, COL_BV, COL_TON, COL_CRIT, COL_REF);
-
     private final List<Integer> fluffColumns = List.of(COL_NAME, COL_TECH, COL_TLEVEL, COL_TRATING, COL_DPROTOTYPE,
             COL_DPRODUCTION, COL_DCOMMON, COL_DEXTINCT, COL_DREINTRO, COL_COST, COL_REF);
 
@@ -39,12 +35,11 @@ public class SVEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
 
     public SVEquipmentDatabaseView(EntitySource eSource) {
         super(eSource);
-        updateVisibleColumns();
     }
 
     @Override
     protected void addEquipment(EquipmentType equip) {
-        //TODO: This contains code for ProtoMeks. Clear up
+        //TODO: This contains code for Large Craft. Not sure if needed for SV
         Mounted mount;
         boolean isMisc = equip instanceof MiscType;
         try {
@@ -53,21 +48,13 @@ public class SVEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
                     UnitUtil.updateTC(eSource.getEntity(), equip);
                 }
             } else if (isMisc && UnitUtil.isFixedLocationSpreadEquipment(equip)) {
-                if (eSource.getEntity().hasETypeFlag(Entity.ETYPE_MECH)) {
-                    UnitUtil.createSpreadMounts(getMech(), equip);
-                } else {
                     int location = TestEntity.getSystemWideLocation(eSource.getEntity());
                     mount = new Mounted(eSource.getEntity(), equip);
                     eSource.getEntity().addEquipment(mount, location, false);
-                }
             } else {
-//                int count = (Integer)spnAddCount.getValue();
                 int count = 1;
                 if (equip instanceof AmmoType) {
-                    if (eSource.getEntity().hasETypeFlag(Entity.ETYPE_PROTOMECH)) {
-                        addProtomechAmmo(equip, count);
-                        return;
-                    } else if (eSource.getEntity().usesWeaponBays()) {
+                    if (eSource.getEntity().usesWeaponBays()) {
                         addLargeCraftAmmo(equip, count);
                         return;
                     } else if (eSource.getEntity().isAero()) {
@@ -100,18 +87,6 @@ public class SVEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
         }
     }
 
-    private void addProtomechAmmo(EquipmentType ammo, int shots) throws LocationFullException {
-        Mounted aMount = getProtomech().getAmmo().stream()
-                .filter(m -> ammo.equals(m.getType())).findFirst().orElse(null);
-        if (null != aMount) {
-            aMount.setShotsLeft(aMount.getUsableShotsLeft() + shots);
-        } else {
-            Mounted mount = new Mounted(getProtomech(), ammo);
-            getProtomech().addEquipment(mount, Protomech.LOC_BODY, false);
-            mount.setShotsLeft(shots);
-        }
-    }
-
     private void addLargeCraftAmmo(EquipmentType ammo, int count) throws LocationFullException {
         Mounted aMount = UnitUtil.findUnallocatedAmmo(getAero(), ammo);
         if (null != aMount) {
@@ -134,7 +109,6 @@ public class SVEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
         for (int i = 0; i < count; i++) {
             Mounted mount = new Mounted(getEntity(), equip);
             getEntity().addEquipment(mount, loc, false);
-//            equipmentList.addCrit(mount);
         }
     }
 

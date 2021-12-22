@@ -1,3 +1,17 @@
+/*
+ * MegaMekLab
+ * Copyright (c) 2021 - The MegaMek Team. All Rights Reserved.
+ *
+ * This program is  free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+ * for more details.
+ */
 package megameklab.com.ui.util;
 
 import megamek.common.*;
@@ -9,6 +23,12 @@ import java.util.function.Function;
 import static megamek.common.WeaponType.*;
 import static megamek.common.MiscType.*;
 
+/**
+ * Equipment categories used for filtering the equipment database and deciding which filters to show.
+ *
+ * @author Neoancient
+ * @author Simon (Juliez) (Additions)
+ */
 public enum EquipmentDatabaseCategory {
 
     ENERGY ("Energy",
@@ -23,7 +43,9 @@ public enum EquipmentDatabaseCategory {
             (eq, en) -> (eq instanceof WeaponType) && !((WeaponType) eq).isCapital() && eq.hasFlag(F_MISSILE)),
 
     ARTILLERY ("Artillery",
-            (eq, en) -> (eq instanceof WeaponType) && eq.hasFlag(F_ARTILLERY)),
+            (eq, en) -> (eq instanceof WeaponType) && eq.hasFlag(F_ARTILLERY),
+            e -> !(e instanceof Protomech)
+                    && (!(e instanceof Infantry) || (e instanceof BattleArmor))),
 
     CAPITAL ("Capital",
             (eq, en) -> (eq instanceof WeaponType) && ((WeaponType) eq).isCapital(),
@@ -31,16 +53,20 @@ public enum EquipmentDatabaseCategory {
 
     PHYSICAL ("Physical",
             (eq, en) -> UnitUtil.isPhysicalWeapon(eq),
-            e -> e.hasETypeFlag(Entity.ETYPE_MECH) || e.hasETypeFlag(Entity.ETYPE_PROTOMECH)),
+            e -> e.hasETypeFlag(Entity.ETYPE_MECH)),
 
     WEAPON ("All Weapons",
-            (eq, en) -> ENERGY.filter(eq, en) || BALLISTIC.filter(eq, en)
-            || MISSILE.filter(eq, en) || CAPITAL.filter(eq, en) || PHYSICAL.filter(eq, en)),
+            (eq, en) -> ENERGY.passesFilter(eq, en) || BALLISTIC.passesFilter(eq, en)
+            || MISSILE.passesFilter(eq, en) || CAPITAL.passesFilter(eq, en) || PHYSICAL.passesFilter(eq, en)),
 
     AMMO ("Ammo",
             (eq, en) -> (eq instanceof AmmoType) && !(eq instanceof BombType)
             && UnitUtil.canUseAmmo(en, (AmmoType) eq, false),
             e -> e.getWeightClass() != EntityWeightClass.WEIGHT_SMALL_SUPPORT),
+
+    AP ("Anti-Personnel",
+            (eq, en) -> UnitUtil.isBattleArmorAPWeapon(eq),
+            e -> e instanceof BattleArmor),
 
     OTHER ("Other",
             (eq, en) -> ((eq instanceof MiscType)
@@ -63,7 +89,8 @@ public enum EquipmentDatabaseCategory {
             || (eq instanceof TAGWeapon)),
 
     PROTOTYPE ("Prototype",
-            (eq, en) -> (eq instanceof WeaponType) && eq.hasFlag(WeaponType.F_PROTOTYPE)),
+            (eq, en) -> (eq instanceof WeaponType) && eq.hasFlag(WeaponType.F_PROTOTYPE),
+            e -> !(e instanceof BattleArmor)),
 
     ONE_SHOT ("One-Shot",
             (eq, en) -> (eq instanceof WeaponType) && eq.hasFlag(WeaponType.F_ONESHOT)),
@@ -71,7 +98,8 @@ public enum EquipmentDatabaseCategory {
     TORPEDO ("Torpedoes",
             (eq, en) -> (eq instanceof WeaponType)
                     && (((WeaponType) eq).getAmmoType() == AmmoType.T_LRM_TORPEDO
-                    || ((WeaponType) eq).getAmmoType() == AmmoType.T_SRM_TORPEDO)),
+                    || ((WeaponType) eq).getAmmoType() == AmmoType.T_SRM_TORPEDO),
+            e -> !(e instanceof BattleArmor) && !(e instanceof Aero)),
 
     UNAVAILABLE ("Unavailable")
             // TODO: Provide MM.ITechManager.isLegal in static form
@@ -101,11 +129,11 @@ public enum EquipmentDatabaseCategory {
         return displayName;
     }
 
-    public boolean show(Entity en) {
+    public boolean showFilterFor(Entity en) {
         return showForEntity.apply(en);
     }
 
-    public boolean filter(EquipmentType eq, Entity en) {
+    public boolean passesFilter(EquipmentType eq, Entity en) {
         return filter.apply(eq, en);
     }
 }

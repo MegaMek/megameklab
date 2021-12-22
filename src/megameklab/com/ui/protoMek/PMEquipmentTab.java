@@ -1,6 +1,5 @@
 /*
  * MegaMekLab
- * Copyright (c) 2008
  * Copyright (c) 2021 - The MegaMek Team. All Rights Reserved.
  *
  * This program is  free software; you can redistribute it and/or modify it
@@ -13,12 +12,14 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package megameklab.com.ui.battleArmor;
+package megameklab.com.ui.protoMek;
 
-import megamek.common.*;
+import megamek.common.EquipmentType;
+import megamek.common.MiscType;
+import megamek.common.Mounted;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.generalUnit.AbstractEquipmentTab;
-import megameklab.com.ui.util.*;
+import megameklab.com.ui.util.AbstractEquipmentDatabaseView;
 import megameklab.com.util.UnitUtil;
 
 import java.util.ArrayList;
@@ -27,44 +28,33 @@ import java.util.List;
 import static java.util.stream.Collectors.toList;
 
 /*
- * The Equipment Tab for BattleArmor units showing the equipment database and the current loadout list.
+ * The Equipment Tab for ProtoMek units showing the equipment database and the current loadout list.
  *
- * Original author - jtighe (torren@users.sourceforge.net)
- * @author Lawson
  * @author Simon (Juliez)
  */
-public class BAEquipmentTab extends AbstractEquipmentTab {
+public class PMEquipmentTab extends AbstractEquipmentTab {
 
-    public BAEquipmentTab(EntitySource eSource) {
+    public PMEquipmentTab(EntitySource eSource) {
         super(eSource);
     }
 
     @Override
     protected AbstractEquipmentDatabaseView getEquipmentDatabaseView() {
-        return new BAEquipmentDatabaseView(eSource);
+        return new PMEquipmentDatabaseView(eSource);
     }
 
     @Override
     protected List<Mounted> getLoadout() {
         List<Mounted> result = new ArrayList<>();
-        result.addAll(getEntity().getWeaponList().stream().filter(this::showWeaponInLoadout).collect(toList()));
-        result.addAll(getEntity().getAmmo().stream().filter(this::showAmmoInLoadout).collect(toList()));
-        result.addAll(getEntity().getMisc().stream().filter(this::showMiscInLoadout).collect(toList()));
+        result.addAll(getEntity().getWeaponList());
+        result.addAll(getEntity().getAmmo());
+        result.addAll(getEntity().getMisc().stream().filter(this::showInLoadout).collect(toList()));
         return result;
     }
 
-    private boolean showWeaponInLoadout(Mounted mount) {
-        return UnitUtil.isBattleArmorWeapon(mount.getType(), getBattleArmor())
-                || UnitUtil.isBattleArmorAPWeapon(mount.getType());
-    }
-
-    private boolean showAmmoInLoadout(Mounted mount) {
-        return (mount.getLinkedBy() == null) || !mount.getLinkedBy().isOneShot();
-    }
-
-    private boolean showMiscInLoadout(Mounted mount) {
+    private boolean showInLoadout(Mounted mount) {
         EquipmentType etype = mount.getType();
-        //TODO: Clean up: Not all of these may be relevant for BA
+        //TODO: Clean up: Not all of these may be relevant for PM
         return !(UnitUtil.isHeatSink(mount)
                 || etype.hasFlag(MiscType.F_JUMP_JET)
                 || etype.hasFlag(MiscType.F_JUMP_BOOSTER)

@@ -27,6 +27,7 @@ import megamek.common.SimpleTechLevel;
 import megamek.common.TechConstants;
 import megamek.common.verifier.TestProtomech;
 import megameklab.com.ui.MegaMekLabMainUI;
+import megameklab.com.ui.generalUnit.AbstractEquipmentTab;
 import megameklab.com.ui.generalUnit.EquipmentTab;
 import megameklab.com.ui.generalUnit.FluffTab;
 import megameklab.com.ui.generalUnit.PreviewTab;
@@ -45,7 +46,7 @@ public class PMMainUI extends MegaMekLabMainUI {
     private final JTabbedPane configPane = new JTabbedPane(SwingConstants.TOP);
 
     private PMStructureTab structureTab;
-    private EquipmentTab equipmentTab;
+    private AbstractEquipmentTab equipmentTab;
     private PreviewTab previewTab;
     private PMBuildTab buildTab;
     private PMStatusBar statusbar;
@@ -65,8 +66,8 @@ public class PMMainUI extends MegaMekLabMainUI {
         structureTab = new PMStructureTab(this);
         previewTab = new PreviewTab(this);
         statusbar = new PMStatusBar(this);
-        equipmentTab = new EquipmentTab(this);
-        buildTab = new PMBuildTab(this, equipmentTab, this);
+        equipmentTab = new PMEquipmentTab(this);
+        buildTab = new PMBuildTab(this, this);
         FluffTab fluffTab = new FluffTab(this);
         structureTab.addRefreshedListener(this);
         equipmentTab.addRefreshedListener(this);

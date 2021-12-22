@@ -17,6 +17,7 @@ package megameklab.com.ui.fighterAero;
 
 import megamek.common.*;
 import megameklab.com.ui.MegaMekLabMainUI;
+import megameklab.com.ui.generalUnit.AbstractEquipmentTab;
 import megameklab.com.ui.generalUnit.AeroEquipmentTab;
 import megameklab.com.ui.generalUnit.FluffTab;
 import megameklab.com.ui.generalUnit.PreviewTab;
@@ -31,7 +32,7 @@ public class ASMainUI extends MegaMekLabMainUI {
     JTabbedPane configPane = new JTabbedPane(SwingConstants.TOP);
 
     private ASStructureTab structureTab;
-    private AeroEquipmentTab equipmentTab;
+    private AbstractEquipmentTab equipmentTab;
     private PreviewTab previewTab;
     private ASBuildTab buildTab;
     private FluffTab fluffTab;
@@ -53,8 +54,8 @@ public class ASMainUI extends MegaMekLabMainUI {
         structureTab = new ASStructureTab(this);
         previewTab = new PreviewTab(this);
         statusbar = new ASStatusBar(this);
-        equipmentTab = new AeroEquipmentTab(this);
-        buildTab = new ASBuildTab(this, equipmentTab);
+        equipmentTab = new ASEquipmentTab(this);
+        buildTab = new ASBuildTab(this);
         fluffTab = new FluffTab(this);
         structureTab.addRefreshedListener(this);
         equipmentTab.addRefreshedListener(this);

@@ -164,7 +164,7 @@ public class PMSummaryView extends IView {
 
     public void refresh() {
         final NumberFormat format = DecimalFormat.getInstance();
-        final TestProtomech testProto = new TestProtomech(getProtomech(), entityVerifier.mechOption, null);
+        final TestProtomech testProto = new TestProtomech(getProtoMek(), entityVerifier.mechOption, null);
 
         txtEngineKg.setText(format.format(testProto.getWeightEngine() * 1000));
         txtControlKg.setText(format.format(testProto.getWeightControls() * 1000));
@@ -183,7 +183,7 @@ public class PMSummaryView extends IView {
         double weightJJ = 0.0f;
         double weightEnhance = 0.0f;
 
-        for (Mounted m : getProtomech().getMisc()) {
+        for (Mounted m : getProtoMek().getMisc()) {
             MiscType mt = (MiscType) m.getType();
             if(UnitUtil.isArmorOrStructure(mt)) {
                 continue;

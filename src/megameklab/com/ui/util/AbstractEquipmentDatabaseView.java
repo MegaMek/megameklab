@@ -1,3 +1,17 @@
+/*
+ * MegaMekLab
+ * Copyright (c) 2021 - The MegaMek Team. All Rights Reserved.
+ *
+ * This program is  free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+ * for more details.
+ */
 package megameklab.com.ui.util;
 
 import megamek.client.ui.swing.GUIPreferences;
@@ -22,6 +36,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static megameklab.com.ui.util.EquipmentDatabaseCategory.*;
+import static megameklab.com.ui.util.EquipmentTableModel.*;
+import static megameklab.com.ui.util.EquipmentTableModel.COL_REF;
 
 /**
  * A base class for creating an equipment database table that shows all equipment available to the
@@ -42,18 +58,18 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
 
     private final AddAction addAction = new AddAction();
     private final JButton addButton = new JButton(addAction);
-    protected final JToggleButton showEnergyButton = new JToggleButton("Energy", true);
-    protected final JToggleButton showBallisticButton = new JToggleButton("Ballistic", true);
-    protected final JToggleButton showMissileButton = new JToggleButton("Missile", true);
-    protected final JToggleButton showArtilleryButton = new JToggleButton("Artillery", false);
-    protected final JToggleButton showPhysicalButton = new JToggleButton("Physical", false);
-    protected final JToggleButton showAmmoButton = new JToggleButton("Ammo");
-    protected final JToggleButton showOtherButton = new JToggleButton("Other");
+    protected final JToggleButton showEnergyButton = new JToggleButton(ENERGY.getDisplayName(), true);
+    protected final JToggleButton showBallisticButton = new JToggleButton(BALLISTIC.getDisplayName(), true);
+    protected final JToggleButton showMissileButton = new JToggleButton(MISSILE.getDisplayName(), true);
+    protected final JToggleButton showArtilleryButton = new JToggleButton(ARTILLERY.getDisplayName());
+    protected final JToggleButton showPhysicalButton = new JToggleButton(PHYSICAL.getDisplayName());
+    protected final JToggleButton showAmmoButton = new JToggleButton(AMMO.getDisplayName());
+    protected final JToggleButton showOtherButton = new JToggleButton(OTHER.getDisplayName());
 
-    protected final JToggleButton hideProtoButton = new JToggleButton("Prototype");
-    protected final JToggleButton hideOneShotButton = new JToggleButton("One Shot");
-    protected final JToggleButton hideTorpedoButton = new JToggleButton("Torpedoes");
-    protected final JToggleButton hideUnavailButton = new JToggleButton("Unavailable", true);
+    protected final JToggleButton hideProtoButton = new JToggleButton(PROTOTYPE.getDisplayName());
+    protected final JToggleButton hideOneShotButton = new JToggleButton(ONE_SHOT.getDisplayName());
+    protected final JToggleButton hideTorpedoButton = new JToggleButton(TORPEDO.getDisplayName());
+    protected final JToggleButton hideUnavailButton = new JToggleButton(UNAVAILABLE.getDisplayName(), true);
 
     protected final JTextField txtFilter = new JTextField("", 15);
     private final JButton tableModeButton = new JButton("Switch Table Columns");
@@ -61,6 +77,10 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
 
     private final List<JToggleButton> filterToggles = List.of(showEnergyButton, showBallisticButton, showMissileButton,
             showArtilleryButton, showPhysicalButton, showAmmoButton, showOtherButton);
+
+    protected final List<Integer> allColumns = List.of(COL_NAME, COL_DAMAGE, COL_DIVISOR, COL_SPECIAL, COL_HEAT,
+            COL_MRANGE, COL_RANGE, COL_SHOTS, COL_TECH, COL_TLEVEL, COL_TRATING, COL_DPROTOTYPE, COL_DPRODUCTION,
+            COL_DCOMMON, COL_DEXTINCT, COL_DREINTRO, COL_COST, COL_CREW, COL_BV, COL_TON, COL_CRIT, COL_REF);
 
     protected AbstractEquipmentDatabaseView(EntitySource eSource) {
         super(eSource);
@@ -121,7 +141,7 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
      */
     protected Set<EquipmentDatabaseCategory> getUsedButtons() {
         return Arrays.stream(EquipmentDatabaseCategory.values())
-                .filter(category -> category.show(getEntity()))
+                .filter(category -> category.showFilterFor(getEntity()))
                 .collect(Collectors.toSet());
     }
 
@@ -182,10 +202,18 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
 
         var specialFilterPanel = new JPanel(new WrapLayout(FlowLayout.LEFT));
         specialFilterPanel.add(new JLabel("Hide: "));
-        specialFilterPanel.add(hideProtoButton);
-        specialFilterPanel.add(hideOneShotButton);
-        specialFilterPanel.add(hideTorpedoButton);
-        specialFilterPanel.add(hideUnavailButton);
+        if (getUsedButtons().contains(PROTOTYPE)) {
+            specialFilterPanel.add(hideProtoButton);
+        }
+        if (getUsedButtons().contains(ONE_SHOT)) {
+            specialFilterPanel.add(hideOneShotButton);
+        }
+        if (getUsedButtons().contains(TORPEDO)) {
+            specialFilterPanel.add(hideTorpedoButton);
+        }
+        if (getUsedButtons().contains(UNAVAILABLE)) {
+            specialFilterPanel.add(hideUnavailButton);
+        }
 
         var textFilterPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         textFilterPanel.add(addButton);
@@ -216,6 +244,7 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
     }
 
     public void refreshTable() {
+        updateVisibleColumns();
         equipmentSorter.sort();
     }
 
@@ -308,19 +337,19 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
     }
 
     private boolean includedByFilters(EquipmentType equipment) {
-        return (showEnergyButton.isSelected() && EquipmentDatabaseCategory.ENERGY.filter(equipment, getEntity()))
-                || (showMissileButton.isSelected() && EquipmentDatabaseCategory.MISSILE.filter(equipment, getEntity()))
-                || (showBallisticButton.isSelected() && EquipmentDatabaseCategory.BALLISTIC.filter(equipment, getEntity()))
-                || (showArtilleryButton.isSelected() && EquipmentDatabaseCategory.ARTILLERY.filter(equipment, getEntity()))
-                || (showPhysicalButton.isSelected() && EquipmentDatabaseCategory.PHYSICAL.filter(equipment, getEntity()))
-                || (showAmmoButton.isSelected() && EquipmentDatabaseCategory.AMMO.filter(equipment, getEntity()))
-                || (showOtherButton.isSelected() && EquipmentDatabaseCategory.OTHER.filter(equipment, getEntity()));
+        return (showEnergyButton.isSelected() && EquipmentDatabaseCategory.ENERGY.passesFilter(equipment, getEntity()))
+                || (showMissileButton.isSelected() && EquipmentDatabaseCategory.MISSILE.passesFilter(equipment, getEntity()))
+                || (showBallisticButton.isSelected() && EquipmentDatabaseCategory.BALLISTIC.passesFilter(equipment, getEntity()))
+                || (showArtilleryButton.isSelected() && EquipmentDatabaseCategory.ARTILLERY.passesFilter(equipment, getEntity()))
+                || (showPhysicalButton.isSelected() && EquipmentDatabaseCategory.PHYSICAL.passesFilter(equipment, getEntity()))
+                || (showAmmoButton.isSelected() && EquipmentDatabaseCategory.AMMO.passesFilter(equipment, getEntity()))
+                || (showOtherButton.isSelected() && EquipmentDatabaseCategory.OTHER.passesFilter(equipment, getEntity()));
     }
 
     private boolean hiddenEquipment(EquipmentType equipment) {
-        return ((hideProtoButton.isSelected()) && EquipmentDatabaseCategory.PROTOTYPE.filter(equipment, getEntity()))
-                || ((hideOneShotButton.isSelected()) && EquipmentDatabaseCategory.ONE_SHOT.filter(equipment, getEntity()))
-                || ((hideTorpedoButton.isSelected()) && EquipmentDatabaseCategory.TORPEDO.filter(equipment, getEntity()));
+        return ((hideProtoButton.isSelected()) && EquipmentDatabaseCategory.PROTOTYPE.passesFilter(equipment, getEntity()))
+                || ((hideOneShotButton.isSelected()) && EquipmentDatabaseCategory.ONE_SHOT.passesFilter(equipment, getEntity()))
+                || ((hideTorpedoButton.isSelected()) && EquipmentDatabaseCategory.TORPEDO.passesFilter(equipment, getEntity()));
     }
 
     protected void setColumnsVisible(List<Integer> columns, boolean visible) {
