@@ -133,7 +133,7 @@ public class BMBuildTab extends ITab implements ActionListener {
                     UnitUtil.changeMountStatus(getMech(), mount, location, Entity.LOC_NONE, false);
                     break;
                 } catch (Exception ex) {
-                    LogManager.getLogger().error(ex);
+                    LogManager.getLogger().error("", ex);
                 }
             }
         }

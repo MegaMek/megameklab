@@ -371,7 +371,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         } catch (EntityLoadingException ele) {
             // do nothing.
         } catch (Exception ex) {
-            LogManager.getLogger().error(ex);
+            LogManager.getLogger().error("", ex);
         }
 
         if ((crit != null) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
@@ -456,7 +456,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
                         new Mounted(getMech(), structure),
                         Entity.LOC_NONE, false);
             } catch (Exception ex) {
-                LogManager.getLogger().error(ex);
+                LogManager.getLogger().error("", ex);
             }
         }
     }

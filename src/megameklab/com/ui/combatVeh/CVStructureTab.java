@@ -363,7 +363,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
                 try {
                     getTank().addEquipment(jumpJet, Tank.LOC_BODY);
                 } catch (LocationFullException e) {
-                    LogManager.getLogger().error(e);
+                    LogManager.getLogger().error("", e);
                 }
             }
             panSummary.refresh();

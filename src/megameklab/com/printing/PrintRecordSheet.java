@@ -236,7 +236,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             SAXDocumentFactory df = new SAXDocumentFactory(impl, parser);
             svgDocument = df.createDocument(f.toURI().toASCIIString(), is);
         } catch (Exception e) {
-            LogManager.getLogger().error(e);
+            LogManager.getLogger().error("", e);
         }
         if (null == svgDocument) {
             LogManager.getLogger().error("Failed to open SVG file! Path: data/images/recordsheets/" + filename);

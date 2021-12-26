@@ -68,7 +68,7 @@ public class CriticalTransferHandler extends TransferHandler {
                     changeMountStatus(mount, location, false);
                 }
             } catch (Exception ex) {
-                LogManager.getLogger().error(ex);
+                LogManager.getLogger().error("", ex);
             }
 
             return true;
@@ -96,7 +96,7 @@ public class CriticalTransferHandler extends TransferHandler {
                     changeMountStatus(mount, location, false);
                 }
             } catch (Exception ex) {
-                LogManager.getLogger().error(ex);
+                LogManager.getLogger().error("", ex);
             }
 
             return true;
@@ -114,7 +114,7 @@ public class CriticalTransferHandler extends TransferHandler {
                     changeMountStatus(mount, Entity.LOC_NONE, false);
                 }
             } catch (Exception ex) {
-                LogManager.getLogger().error(ex);
+                LogManager.getLogger().error("", ex);
             }
             return true;
         }
@@ -134,7 +134,7 @@ public class CriticalTransferHandler extends TransferHandler {
                     .parseInt((String) info.getTransferable().getTransferData(
                             DataFlavor.stringFlavor)));
         } catch (NumberFormatException | UnsupportedFlavorException | IOException e) {
-            LogManager.getLogger().error(e);
+            LogManager.getLogger().error("", e);
         }
         // not actually dragged a Mounted? not transferable
         if (mounted == null) {

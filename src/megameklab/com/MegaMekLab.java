@@ -148,7 +148,7 @@ public class MegaMekLab {
             String plaf = CConfig.getParam(CConfig.CONFIG_PLAF, UIManager.getSystemLookAndFeelClassName());
             UIManager.setLookAndFeel(plaf);
         } catch (Exception e) {
-            LogManager.getLogger().error(e);
+            LogManager.getLogger().error("", e);
        }
     }
     

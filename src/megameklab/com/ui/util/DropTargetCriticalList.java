@@ -206,7 +206,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                 return crit.getMount();
             }
         } catch (Exception ex) {
-            LogManager.getLogger().error(ex);
+            LogManager.getLogger().error("", ex);
         }
 
         return mount;
@@ -321,7 +321,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
         } catch (EntityLoadingException ele) {
             // do nothing.
         } catch (Exception ex) {
-            LogManager.getLogger().error(ex);
+            LogManager.getLogger().error("", ex);
         }
         if (refresh != null) {
             refresh.refreshAll();

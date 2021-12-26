@@ -172,7 +172,7 @@ public class CConfig {
                         config.load(backupStream);
                         backupStream.close();
                     } catch (Exception ex) {
-                        LogManager.getLogger().error(ex);
+                        LogManager.getLogger().error("", ex);
                     }
 
                 } else {
@@ -189,10 +189,10 @@ public class CConfig {
                 config.load(fis);
                 fis.close();
             } catch (Exception ex) {
-                LogManager.getLogger().error(ex);
+                LogManager.getLogger().error("", ex);
             }
         } catch (Exception ex) {
-            LogManager.getLogger().error(ex);
+            LogManager.getLogger().error("", ex);
         }
     }
     
@@ -310,7 +310,7 @@ public class CConfig {
         } catch (FileNotFoundException ignored) {
 
         } catch (Exception ex) {
-            LogManager.getLogger().error(ex);
+            LogManager.getLogger().error("", ex);
             return;
         }
         try {
@@ -322,7 +322,7 @@ public class CConfig {
         } catch (FileNotFoundException ignored) {
 
         } catch (Exception ex) {
-            LogManager.getLogger().error(ex);
+            LogManager.getLogger().error("", ex);
         }
     }
 

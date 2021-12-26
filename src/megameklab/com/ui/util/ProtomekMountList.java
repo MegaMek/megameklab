@@ -124,7 +124,7 @@ public class ProtomekMountList extends JList<Mounted> {
                     try {
                         UnitUtil.addProtoMechAmmo(getProtomech(), mounted.getType(), 1);
                     } catch (LocationFullException ex) {
-                        LogManager.getLogger().error(ex);
+                        LogManager.getLogger().error("", ex);
                     }
                     refresh();
                     return;

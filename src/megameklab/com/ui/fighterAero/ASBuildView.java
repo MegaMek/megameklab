@@ -342,7 +342,7 @@ public class ASBuildView extends IView implements ActionListener, MouseListener 
         try {
             getAero().addEquipment(eq, location, false);
         } catch (Exception ex) {
-            LogManager.getLogger().error(ex);
+            LogManager.getLogger().error("", ex);
         }
         UnitUtil.changeMountStatus(getAero(), eq, location, -1, false);
 
