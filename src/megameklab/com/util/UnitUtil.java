@@ -3113,9 +3113,9 @@ public class UnitUtil {
         return false;
     }
 
-    public static boolean isBattleArmorAPWeapon(EquipmentType etype){
+    public static boolean isBattleArmorAPWeapon(EquipmentType etype) {
         InfantryWeapon infWeap = null;
-        if ((etype == null) || !(etype instanceof InfantryWeapon)){
+        if ((etype == null) || !(etype instanceof InfantryWeapon)) {
             return false;
         } else {
             infWeap = (InfantryWeapon)etype;

@@ -37,7 +37,6 @@ import java.util.stream.Collectors;
 
 import static megameklab.com.ui.util.EquipmentDatabaseCategory.*;
 import static megameklab.com.ui.util.EquipmentTableModel.*;
-import static megameklab.com.ui.util.EquipmentTableModel.COL_REF;
 
 /**
  * A base class for creating an equipment database table that shows all equipment available to the
@@ -69,6 +68,7 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
     protected final JToggleButton hideProtoButton = new JToggleButton(PROTOTYPE.getDisplayName());
     protected final JToggleButton hideOneShotButton = new JToggleButton(ONE_SHOT.getDisplayName());
     protected final JToggleButton hideTorpedoButton = new JToggleButton(TORPEDO.getDisplayName());
+    protected final JToggleButton hideAPButton = new JToggleButton(AP.getDisplayName());
     protected final JToggleButton hideUnavailButton = new JToggleButton(UNAVAILABLE.getDisplayName(), true);
 
     protected final JTextField txtFilter = new JTextField("", 15);
@@ -211,6 +211,9 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
         if (getUsedButtons().contains(TORPEDO)) {
             specialFilterPanel.add(hideTorpedoButton);
         }
+        if (getUsedButtons().contains(AP)) {
+            specialFilterPanel.add(hideAPButton);
+        }
         if (getUsedButtons().contains(UNAVAILABLE)) {
             specialFilterPanel.add(hideUnavailButton);
         }
@@ -331,6 +334,10 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
             return UnitUtil.isMechEquipment(equipment, (Mech) getEntity())
                     || UnitUtil.isMechWeapon(equipment, getEntity())
                     || UnitUtil.isPhysicalWeapon(equipment);
+        } else if (getEntity() instanceof BattleArmor) {
+            // FIXME: This is handled differently in UnitUtil: BAAPWeapons not BAEquipment
+            return UnitUtil.isBAEquipment(equipment, getBattleArmor())
+                    || UnitUtil.isBattleArmorAPWeapon(equipment);
         } else {
             return UnitUtil.isEntityEquipment(equipment, getEntity());
         }
@@ -347,9 +354,10 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
     }
 
     private boolean hiddenEquipment(EquipmentType equipment) {
-        return ((hideProtoButton.isSelected()) && EquipmentDatabaseCategory.PROTOTYPE.passesFilter(equipment, getEntity()))
-                || ((hideOneShotButton.isSelected()) && EquipmentDatabaseCategory.ONE_SHOT.passesFilter(equipment, getEntity()))
-                || ((hideTorpedoButton.isSelected()) && EquipmentDatabaseCategory.TORPEDO.passesFilter(equipment, getEntity()));
+        return (hideProtoButton.isSelected() && EquipmentDatabaseCategory.PROTOTYPE.passesFilter(equipment, getEntity()))
+                || (hideOneShotButton.isSelected() && EquipmentDatabaseCategory.ONE_SHOT.passesFilter(equipment, getEntity()))
+                || (hideTorpedoButton.isSelected() && EquipmentDatabaseCategory.TORPEDO.passesFilter(equipment, getEntity()))
+                || (hideAPButton.isSelected() && EquipmentDatabaseCategory.AP.passesFilter(equipment, getEntity()));
     }
 
     protected void setColumnsVisible(List<Integer> columns, boolean visible) {

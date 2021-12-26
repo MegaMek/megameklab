@@ -48,7 +48,6 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
     private Vector<Mounted> masterEquipmentList = new Vector<>(10, 1);
     private JTable equipmentTable = new JTable();
     private JScrollPane equipmentScroll = new JScrollPane();
-    private BMSmallEquipmentDatabaseView smallEquip;
     private int engineHeatSinkCount = 0;
     
     CriticalTransferHandler cth;
@@ -84,14 +83,11 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
 
         setLayout(new BorderLayout());
         this.add(equipmentScroll, BorderLayout.CENTER);
-        smallEquip = new BMSmallEquipmentDatabaseView(eSource);
-        add(smallEquip, BorderLayout.LINE_END);
         setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Unallocated Equipment", TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
     }
 
     public void addRefreshedListener(RefreshListener l) {
         cth.addRefreshListener(l);
-        smallEquip.setRefresh(l);
     }
 
     private void loadEquipmentTable() {

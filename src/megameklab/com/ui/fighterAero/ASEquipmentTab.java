@@ -1,13 +1,23 @@
+/*
+ * Copyright (c) 2021 - The MegaMek Team. All Rights Reserved.
+ *
+ * This program is  free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+ * for more details.
+ */
 package megameklab.com.ui.fighterAero;
 
-import megamek.common.EquipmentType;
-import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.weapons.bayweapons.BayWeapon;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.generalUnit.AbstractEquipmentTab;
 import megameklab.com.ui.util.AbstractEquipmentDatabaseView;
-import megameklab.com.util.UnitUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,29 +45,7 @@ public class ASEquipmentTab extends AbstractEquipmentTab {
 
     @Override
     protected List<Mounted> getLoadout() {
-        List<Mounted> result = new ArrayList<>();
-        result.addAll(getEntity().getWeaponList().stream().filter(this::showWeaponInLoadout).collect(toList()));
-        result.addAll(getEntity().getAmmo());
-        result.addAll(getEntity().getMisc().stream().filter(this::showMiscInLoadout).collect(toList()));
-        return result;
-    }
-
-    private boolean showWeaponInLoadout(Mounted mount) {
-        //TODO: Needed for Fighters?
-        return !(mount.getType() instanceof BayWeapon) && !mount.isWeaponGroup();
-    }
-
-    private boolean showMiscInLoadout(Mounted mount) {
-        //TODO: All necessary for fighters?
-        EquipmentType etype = mount.getType();
-        return !(UnitUtil.isHeatSink(mount)
-                || etype.hasFlag(MiscType.F_JUMP_JET)
-                || etype.hasFlag(MiscType.F_JUMP_BOOSTER)
-                || etype.hasFlag(MiscType.F_TSM)
-                || etype.hasFlag(MiscType.F_INDUSTRIAL_TSM)
-                || etype.hasFlag(MiscType.F_MASC)
-                || (etype.hasFlag(MiscType.F_MASC) && !etype.hasSubType(MiscType.S_SUPERCHARGER))
-                || UnitUtil.isArmorOrStructure(etype));
+        return new ArrayList<>(getEntity().getEquipment());
     }
 
 }
