@@ -15,10 +15,7 @@ package megameklab.com.ui.largeAero;
 
 import megamek.common.*;
 import megameklab.com.ui.MegaMekLabMainUI;
-import megameklab.com.ui.generalUnit.AeroEquipmentTab;
-import megameklab.com.ui.generalUnit.FluffTab;
-import megameklab.com.ui.generalUnit.PreviewTab;
-import megameklab.com.ui.generalUnit.TransportTab;
+import megameklab.com.ui.generalUnit.*;
 import megameklab.com.ui.util.TabScrollPane;
 import org.apache.logging.log4j.LogManager;
 
@@ -34,7 +31,7 @@ public class DSMainUI extends MegaMekLabMainUI {
 
     JTabbedPane configPane = new JTabbedPane(SwingConstants.TOP);
     private DSStructureTab structureTab;
-    private AeroEquipmentTab equipmentTab;
+    private AbstractEquipmentTab equipmentTab;
     private PreviewTab previewTab;
     private LABuildTab buildTab;
     private TransportTab transportTab;
@@ -144,8 +141,8 @@ public class DSMainUI extends MegaMekLabMainUI {
         previewTab = new PreviewTab(this);
 
         statusbar = new DSStatusBar(this);
-        equipmentTab = new AeroEquipmentTab(this);
-        buildTab = new LABuildTab(this, equipmentTab);
+        equipmentTab = new LAEquipmentTab(this);
+        buildTab = new LABuildTab(this);
         transportTab = new TransportTab(this);
         FluffTab fluffTab = new FluffTab(this);
         structureTab.addRefreshedListener(this);

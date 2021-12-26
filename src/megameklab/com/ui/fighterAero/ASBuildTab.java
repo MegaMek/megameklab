@@ -16,23 +16,18 @@
 
 package megameklab.com.ui.fighterAero;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JPanel;
-
 import megamek.common.Entity;
 import megamek.common.Mounted;
 import megamek.common.verifier.TestAero;
 import megameklab.com.ui.EntitySource;
-import megameklab.com.ui.generalUnit.AeroEquipmentTab;
 import megameklab.com.ui.util.ITab;
 import megameklab.com.ui.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class ASBuildTab extends ITab implements ActionListener {
 

@@ -18,7 +18,6 @@ package megameklab.com.ui.fighterAero;
 import megamek.common.*;
 import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.generalUnit.AbstractEquipmentTab;
-import megameklab.com.ui.generalUnit.AeroEquipmentTab;
 import megameklab.com.ui.generalUnit.FluffTab;
 import megameklab.com.ui.generalUnit.PreviewTab;
 import megameklab.com.ui.util.TabScrollPane;

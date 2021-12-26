@@ -13,18 +13,16 @@
  */
 package megameklab.com.ui.largeAero;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.*;
-
 import megamek.common.Entity;
 import megamek.common.Mounted;
 import megameklab.com.ui.EntitySource;
-import megameklab.com.ui.generalUnit.AeroEquipmentTab;
 import megameklab.com.ui.util.ITab;
 import megameklab.com.ui.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * Build tab for Small Craft and Dropships
@@ -49,7 +47,7 @@ public class LABuildTab extends ITab implements ActionListener {
 
     private String RESETCOMMAND = "resetbuttoncommand";
 
-    public LABuildTab(EntitySource eSource, AeroEquipmentTab equipment) {
+    public LABuildTab(EntitySource eSource) {
         super(eSource);
         setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));

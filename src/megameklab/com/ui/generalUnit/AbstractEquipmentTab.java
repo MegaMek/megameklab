@@ -1,3 +1,16 @@
+/*
+ * Copyright (c) 2008, 2021 - The MegaMek Team. All Rights Reserved.
+ *
+ * This program is  free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+ * for more details.
+ */
 package megameklab.com.ui.generalUnit;
 
 import megamek.client.ui.swing.util.UIUtil;
@@ -18,6 +31,19 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.List;
 
+/*
+ * The base class for Equipment Tabs for all unit types. It shows the equipment database and the
+ * current loadout list.
+ * The loadout list is obtained through the abstract method getLoadout() and may be either the full
+ * equipment of the unit or filtered somehow so that equipment controlled in the Structure tab cannot
+ * be removed in the Equipment Tab.
+ * An EquipmentDatabaseView must be provided through the abstract method getEquipmentDatabaseView.
+ *
+ * @author Simon (Juliez)
+ * Original author - jtighe (torren@users.sourceforge.net)
+ * Original author arlith
+ * Original author neoancient
+ */
 public abstract class AbstractEquipmentTab extends ITab {
 
     private RefreshListener refresh;
