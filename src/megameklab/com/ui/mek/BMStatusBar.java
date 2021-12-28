@@ -16,19 +16,13 @@
 
 package megameklab.com.ui.mek;
 
-import java.awt.Color;
-import java.awt.FileDialog;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.awt.*;
 import java.io.File;
 import java.text.DecimalFormat;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.UIManager;
+import javax.swing.*;
 
+import megamek.client.ui.baseComponents.AbstractDialog;
 import megamek.common.AmmoType;
 import megamek.common.Engine;
 import megamek.common.Mech;
@@ -39,14 +33,13 @@ import megamek.common.WeaponType;
 import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestMech;
 import megameklab.com.ui.MegaMekLabMainUI;
+import megameklab.com.ui.util.AbstractEquipmentDatabaseView;
 import megameklab.com.ui.util.ITab;
 import megameklab.com.util.ImageHelper;
 import megameklab.com.ui.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 
 public class BMStatusBar extends ITab {
-
-    private static final long serialVersionUID = -6754327753693500675L;
 
     private final JLabel crits = new JLabel();
     private final JLabel bvLabel = new JLabel();
@@ -61,12 +54,14 @@ public class BMStatusBar extends ITab {
 
     private RefreshListener refresh;
 
-    public BMStatusBar(MegaMekLabMainUI parent) {
+    public BMStatusBar(BMMainUI parent) {
         super(parent);
         parentFrame = parent;
 
         formatter = new DecimalFormat();
         testEntity = new TestMech(getMech(), entityVerifier.mechOption, null);
+        JButton showEquipmentDatabase = new JButton("Show Equipment Database");
+        showEquipmentDatabase.addActionListener(evt -> parent.getFloatingEquipmentDatabase().setVisible(true));
         JButton btnValidate = new JButton("Validate Unit");
         btnValidate.addActionListener(evt -> UnitUtil.showValidation(getMech(), getParentFrame()));
         JButton btnFluffImage = new JButton("Set Fluff Image");
@@ -80,7 +75,7 @@ public class BMStatusBar extends ITab {
         gbc.gridy = 0;
         gbc.insets = new Insets(5,2,2,20);
         gbc.anchor = GridBagConstraints.WEST;
-        this.add(btnValidate, gbc);
+        this.add(showEquipmentDatabase, gbc);
         gbc.gridx = 1;
         this.add(btnFluffImage, gbc);
         gbc.gridx = 2;
@@ -245,8 +240,8 @@ public class BMStatusBar extends ITab {
         return parentFrame;
     }
 
-    public void addRefreshedListener(RefreshListener l) {
-        refresh = l;
+    public void addRefreshedListener(RefreshListener refreshListener) {
+        refresh = refreshListener;
     }
 
 }

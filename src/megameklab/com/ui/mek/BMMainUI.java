@@ -18,14 +18,15 @@ package megameklab.com.ui.mek;
 
 import java.awt.BorderLayout;
 
-import javax.swing.JTabbedPane;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 
 import megamek.common.*;
 import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.generalUnit.AbstractEquipmentTab;
 import megameklab.com.ui.generalUnit.FluffTab;
 import megameklab.com.ui.generalUnit.PreviewTab;
+import megameklab.com.ui.util.AbstractEquipmentDatabaseView;
+import megameklab.com.ui.util.RefreshListener;
 import megameklab.com.ui.util.TabScrollPane;
 import megameklab.com.util.UnitUtil;
 
@@ -34,6 +35,7 @@ public class BMMainUI extends MegaMekLabMainUI {
     JTabbedPane configPane = new JTabbedPane(SwingConstants.TOP);
     private BMStructureTab structureTab;
     private AbstractEquipmentTab equipmentTab;
+    private EquipDB floatingEquipmentDatabase;
     private PreviewTab previewTab;
     private BMBuildTab buildTab;
     private FluffTab fluffTab;
@@ -68,12 +70,13 @@ public class BMMainUI extends MegaMekLabMainUI {
         statusbar.addRefreshedListener(this);
 
         configPane.addTab("Structure/Armor", new TabScrollPane(structureTab));
-        //ConfigPane.addTab("Armor", armorTab);
         configPane.addTab("Equipment", equipmentTab);
-        //ConfigPane.addTab("Weapons", weaponTab);
         configPane.addTab("Assign Criticals", new TabScrollPane(buildTab));
         configPane.addTab("Fluff", new TabScrollPane(fluffTab));
         configPane.addTab("Preview", previewTab);
+
+        floatingEquipmentDatabase = new EquipDB();
+        floatingEquipmentDatabase.setRefresh(this);
 
         add(configPane, BorderLayout.CENTER);
         add(statusbar, BorderLayout.SOUTH);
@@ -177,6 +180,7 @@ public class BMMainUI extends MegaMekLabMainUI {
         equipmentTab.refresh();
         buildTab.refresh();
         previewTab.refresh();
+        floatingEquipmentDatabase.refresh();
     }
 
     @Override
@@ -236,6 +240,7 @@ public class BMMainUI extends MegaMekLabMainUI {
     @Override
     public void refreshEquipmentTable() {
         equipmentTab.refreshTable();
+        floatingEquipmentDatabase.refresh();
     }
 
     @Override
@@ -243,4 +248,28 @@ public class BMMainUI extends MegaMekLabMainUI {
         return structureTab.getTechManager();
     }
 
+    JDialog getFloatingEquipmentDatabase() {
+        return floatingEquipmentDatabase;
+    }
+
+    private class EquipDB extends JDialog {
+
+        private final AbstractEquipmentDatabaseView equipmentDatabase;
+
+        protected EquipDB() {
+            equipmentDatabase = new BMSmallEquipmentDatabaseView(BMMainUI.this);
+            add(equipmentDatabase, BorderLayout.CENTER);
+            pack();
+            equipmentDatabase.refreshTable();
+        }
+
+        private void setRefresh(RefreshListener refresh) {
+            equipmentDatabase.setRefresh(refresh);
+        }
+
+        private void refresh() {
+            equipmentDatabase.refreshTable();
+        }
+
+    }
 }

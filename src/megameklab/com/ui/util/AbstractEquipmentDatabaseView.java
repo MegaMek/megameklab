@@ -179,6 +179,13 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
         return true;
     }
 
+    /**
+     * When this returns true, the "Switch Table Columns" button is shown. By default, this method returns true.
+     */
+    protected boolean useSwitchTableColumns() {
+        return true;
+    }
+
     private JComponent buttonPanel() {
         Box result = Box.createVerticalBox();
 
@@ -271,12 +278,13 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
             textFilterPanel.add(new JLabel("Text Filter: "));
             textFilterPanel.add(txtFilter);
             textFilterPanel.add(cancelTextFilter);
+        }
+        if (useSwitchTableColumns()) {
             textFilterPanel.add(tableModeButton);
         }
-
         result.add(typeFilterPanel);
         result.add(specialFilterPanel);
-        if (useAddButton() || useAddMultipleButton() || useTextFilter()) {
+        if (useAddButton() || useAddMultipleButton() || useTextFilter() || useSwitchTableColumns()) {
             result.add(textFilterPanel);
         }
 

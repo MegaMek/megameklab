@@ -8,8 +8,7 @@ import static megameklab.com.ui.util.EquipmentTableModel.*;
 
 public class BMSmallEquipmentDatabaseView extends BMEquipmentDatabaseView {
 
-    private final List<Integer> columns = List.of(COL_NAME, COL_DAMAGE, COL_HEAT, COL_MRANGE, COL_RANGE,
-            COL_TECH, COL_TON);
+    private final List<Integer> columns = List.of(COL_NAME, COL_HEAT, COL_CRIT, COL_TECH, COL_TON);
 
     BMSmallEquipmentDatabaseView(EntitySource eSource) {
         super(eSource);
@@ -19,5 +18,10 @@ public class BMSmallEquipmentDatabaseView extends BMEquipmentDatabaseView {
     protected void updateVisibleColumns() {
         setColumnsVisible(allColumns, false);
         setColumnsVisible(columns, true);
+    }
+
+    @Override
+    protected boolean useSwitchTableColumns() {
+        return false;
     }
 }
