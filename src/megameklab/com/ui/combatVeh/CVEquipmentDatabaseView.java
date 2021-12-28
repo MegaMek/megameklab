@@ -40,7 +40,7 @@ class CVEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
     }
 
     @Override
-    protected void addEquipment(EquipmentType equip) {
+    protected void addEquipment(EquipmentType equip, int count) {
         Mounted mount;
         boolean isMisc = equip instanceof MiscType;
         if (isMisc && equip.hasFlag(MiscType.F_TARGCOMP)) {

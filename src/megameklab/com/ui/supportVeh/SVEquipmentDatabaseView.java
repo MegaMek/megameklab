@@ -38,7 +38,7 @@ public class SVEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
     }
 
     @Override
-    protected void addEquipment(EquipmentType equip) {
+    protected void addEquipment(EquipmentType equip, int count) {
         //TODO: This contains code for Large Craft. Not sure if needed for SV
         Mounted mount;
         boolean isMisc = equip instanceof MiscType;
@@ -52,7 +52,6 @@ public class SVEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
                     mount = new Mounted(eSource.getEntity(), equip);
                     eSource.getEntity().addEquipment(mount, location, false);
             } else {
-                int count = 1;
                 if (equip instanceof AmmoType) {
                     if (eSource.getEntity().usesWeaponBays()) {
                         addLargeCraftAmmo(equip, count);

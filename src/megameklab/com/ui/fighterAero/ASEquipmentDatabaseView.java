@@ -1,7 +1,6 @@
 package megameklab.com.ui.fighterAero;
 
 import megamek.common.*;
-import megamek.common.weapons.bayweapons.BayWeapon;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.util.AbstractEquipmentDatabaseView;
 import megameklab.com.util.UnitUtil;
@@ -23,24 +22,7 @@ public class ASEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
     }
 
     @Override
-    protected boolean shouldShow(EquipmentType equipment) {
-        //TODO: necessary?
-        if (equipment instanceof WeaponType) {
-            WeaponType weapon = (WeaponType) equipment;
-            if (weapon instanceof BayWeapon) {
-                return false;
-            }
-        }
-        if ((equipment instanceof MiscType) && (equipment.hasFlag(MiscType.F_TSM)
-                || equipment.hasFlag(MiscType.F_INDUSTRIAL_TSM)
-                || (equipment.hasFlag(MiscType.F_MASC) && !equipment.hasSubType(MiscType.S_SUPERCHARGER)))) {
-            return false;
-        }
-        return super.shouldShow(equipment);
-    }
-
-    @Override
-    protected void addEquipment(EquipmentType equip) {
+    protected void addEquipment(EquipmentType equip, int count) {
         if ((equip instanceof MiscType) && equip.hasFlag(MiscType.F_TARGCOMP)) {
             if (!UnitUtil.hasTargComp(getAero())) {
                 UnitUtil.updateTC(getAero(), equip);

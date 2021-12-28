@@ -25,7 +25,7 @@ public class PMEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
     }
 
     @Override
-    protected void addEquipment(EquipmentType equip) {
+    protected void addEquipment(EquipmentType equip, int count) {
         try {
             if ((equip instanceof MiscType) && UnitUtil.isFixedLocationSpreadEquipment(equip)) {
                 int location = TestEntity.getSystemWideLocation(eSource.getEntity());

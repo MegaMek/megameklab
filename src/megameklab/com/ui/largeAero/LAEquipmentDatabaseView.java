@@ -41,7 +41,7 @@ public class LAEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
     }
 
     @Override
-    protected void addEquipment(EquipmentType equip) {
+    protected void addEquipment(EquipmentType equip, int count) {
         Mounted mount;
         boolean isMisc = equip instanceof MiscType;
         if (isMisc && equip.hasFlag(MiscType.F_TARGCOMP)) {
@@ -49,7 +49,6 @@ public class LAEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
                 UnitUtil.updateTC(getAero(), equip);
             }
         } else {
-            int count = 1;
             if (equip instanceof AmmoType) {
                 Mounted aMount = UnitUtil.findUnallocatedAmmo(getAero(), equip);
                 if (null != aMount) {
@@ -77,6 +76,11 @@ public class LAEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
                 }
             }
         }
+    }
+
+    @Override
+    protected boolean useAddMultipleButton() {
+        return true;
     }
 
     @Override

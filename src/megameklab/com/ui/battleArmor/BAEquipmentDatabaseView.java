@@ -22,7 +22,7 @@ public class BAEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
     }
 
     @Override
-    protected void addEquipment(EquipmentType equip) {
+    protected void addEquipment(EquipmentType equip, int count) {
         if ((equip instanceof MiscType) && equip.hasFlag(MiscType.F_TARGCOMP)) {
             if (!UnitUtil.hasTargComp(getBattleArmor())) {
                 UnitUtil.updateTC(getBattleArmor(), equip);

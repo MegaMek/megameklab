@@ -57,6 +57,9 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
 
     private final AddAction addAction = new AddAction();
     private final JButton addButton = new JButton(addAction);
+    private final JButton addMultipleButton = new JButton();
+    private final SpinnerNumberModel addMultipleModel = new SpinnerNumberModel(5, 2, null, 1);
+    private final JSpinner addMultipleCount = new JSpinner(addMultipleModel);
     protected final JToggleButton showEnergyButton = new JToggleButton(ENERGY.getDisplayName(), true);
     protected final JToggleButton showBallisticButton = new JToggleButton(BALLISTIC.getDisplayName(), true);
     protected final JToggleButton showMissileButton = new JToggleButton(MISSILE.getDisplayName(), true);
@@ -83,6 +86,8 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
             COL_MRANGE, COL_RANGE, COL_SHOTS, COL_TECH, COL_TLEVEL, COL_TRATING, COL_DPROTOTYPE, COL_DPRODUCTION,
             COL_DCOMMON, COL_DEXTINCT, COL_DREINTRO, COL_COST, COL_CREW, COL_BV, COL_TON, COL_CRIT, COL_REF);
 
+    private static final String ADD_TEXT = "  << Add ";
+
     protected AbstractEquipmentDatabaseView(EntitySource eSource) {
         super(eSource);
 
@@ -108,7 +113,7 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
-                    addSelectedEquipment();
+                    addSelectedEquipment(1);
                 }
             }
         });
@@ -129,21 +134,49 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
     protected abstract void updateVisibleColumns();
 
     /**
-     * Adds the given equipment to the entity. Implementing classes must provide a method that
-     * covers all entities that could be coupled to their view unless the add button is hidden.
+     * Adds the given equipment to the entity a number of times equal to count.
+     * When the "Add Multiple" button is not used, count will always be 1. The
+     * "Add Multiple" button is only available when useAddMultiple() is overridden
+     * to return true.
+     * Implementing classes must provide a method that covers all entities that could
+     * be coupled to their view unless all add buttons are hidden.
      */
-    protected abstract void addEquipment(EquipmentType equip);
+    protected abstract void addEquipment(EquipmentType equip, int count);
 
     /**
      * Returns the filter toggles and buttons to be used in this Equipment Database View.
      * By default, this method returns the standard buttons suitable for the entity as defined in
      * EquipmentDatabaseCategory. It may be overridden, e.g. to hide all filter buttons by
-     * returning an empty EnumSet.
+     * returning an empty Set.
      */
     protected Set<EquipmentDatabaseCategory> getUsedButtons() {
         return Arrays.stream(EquipmentDatabaseCategory.values())
                 .filter(category -> category.showFilterFor(getEntity()))
                 .collect(Collectors.toSet());
+    }
+
+    /**
+     * When this returns true, the Add Multiple button is used. This button together with a count
+     * JSpinner allows adding multiples of equipment at once. By default, this method returns false.
+     */
+    protected boolean useAddMultipleButton() {
+        return false;
+    }
+
+    /**
+     * When this returns true, the "Add" button is shown. By default, this method returns true.
+     * When it is overridden to return false, the "Add" button is hidden but adding equipment is
+     * still possible by pressing Enter in the table.
+     */
+    protected boolean useAddButton() {
+        return true;
+    }
+
+    /**
+     * When this returns true, the Text Filter textfield is shown. By default, this method returns true.
+     */
+    protected boolean useTextFilter() {
+        return true;
     }
 
     private JComponent buttonPanel() {
@@ -158,22 +191,6 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
         hideTorpedoButton.addItemListener(e -> equipmentSorter.sort());
         hideUnavailButton.addItemListener(e -> equipmentSorter.sort());
 
-        addButton.setMnemonic('A');
-
-        txtFilter.getDocument().addDocumentListener(new DocumentListener() {
-            public void changedUpdate(DocumentEvent e) {
-                equipmentSorter.sort();
-            }
-            public void insertUpdate(DocumentEvent e) {
-                equipmentSorter.sort();
-            }
-            public void removeUpdate(DocumentEvent e) {
-                equipmentSorter.sort();
-            }
-        });
-        var cancelTextFilter = new JButton("X");
-        cancelTextFilter.setForeground(GUIPreferences.getInstance().getWarningColor());
-        cancelTextFilter.addActionListener(e -> txtFilter.setText(""));
         tableModeButton.addActionListener(this::switchTableMode);
 
         var typeFilterPanel = new JPanel(new WrapLayout(FlowLayout.LEFT));
@@ -223,25 +240,56 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
         }
 
         var textFilterPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        textFilterPanel.add(addButton);
-        textFilterPanel.add(new JLabel("Text Filter: "));
-        textFilterPanel.add(txtFilter);
-        textFilterPanel.add(cancelTextFilter);
-        textFilterPanel.add(tableModeButton);
+        if (useAddButton()) {
+            addButton.setMnemonic('A');
+            textFilterPanel.add(addButton);
+        }
+        if (useAddMultipleButton()) {
+            addMultipleButton.addActionListener(e -> addSelectedEquipment((int) addMultipleCount.getValue()));
+            addMultipleCount.addChangeListener(e -> addMultipleButton.setText(ADD_TEXT + addMultipleCount.getValue()));
+            addMultipleButton.setText(ADD_TEXT + addMultipleCount.getValue());
+            textFilterPanel.add(new JLabel(" - "));
+            textFilterPanel.add(addMultipleButton);
+            textFilterPanel.add(addMultipleCount);
+            textFilterPanel.add(new JLabel(" - "));
+        }
+        if (useTextFilter()) {
+            txtFilter.getDocument().addDocumentListener(new DocumentListener() {
+                public void changedUpdate(DocumentEvent e) {
+                    equipmentSorter.sort();
+                }
+                public void insertUpdate(DocumentEvent e) {
+                    equipmentSorter.sort();
+                }
+                public void removeUpdate(DocumentEvent e) {
+                    equipmentSorter.sort();
+                }
+            });
+            var cancelTextFilter = new JButton("X");
+            cancelTextFilter.setForeground(GUIPreferences.getInstance().getWarningColor());
+            cancelTextFilter.addActionListener(e -> txtFilter.setText(""));
+            textFilterPanel.add(new JLabel("Text Filter: "));
+            textFilterPanel.add(txtFilter);
+            textFilterPanel.add(cancelTextFilter);
+            textFilterPanel.add(tableModeButton);
+        }
 
         result.add(typeFilterPanel);
         result.add(specialFilterPanel);
-        result.add(textFilterPanel);
+        if (useAddButton() || useAddMultipleButton() || useTextFilter()) {
+            result.add(textFilterPanel);
+        }
 
         return result;
     }
 
-    private void addSelectedEquipment() {
+    private void addSelectedEquipment(int count) {
+        assert count >= 1;
         int selectedRow = masterEquipmentTable.getSelectedRow();
         if (selectedRow >= 0) {
             int selected = masterEquipmentTable.convertRowIndexToModel(selectedRow);
             EquipmentType equip = masterEquipmentModel.getType(selected);
-            addEquipment(equip);
+            addEquipment(equip, count);
             fireTableRefresh();
         }
     }
@@ -325,8 +373,11 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
     }
 
     private boolean allowedByTextFilter(EquipmentType equipment) {
+        String lowerCaseSearchString = txtFilter.getText().toLowerCase();
         return txtFilter.getText().isBlank()
-                || equipment.getName().toLowerCase().contains(txtFilter.getText().toLowerCase());
+                || equipment.getName().toLowerCase().contains(lowerCaseSearchString)
+                || EquipmentTableModel.getTechBaseAsString(equipment).toLowerCase().contains(lowerCaseSearchString)
+                || equipment.getRulesRefs().toLowerCase().contains(lowerCaseSearchString);
     }
 
     private boolean isEquipmentForEntity(EquipmentType equipment) {
@@ -335,12 +386,12 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
             return true;
         }
         if (getEntity() instanceof Mech) {
-            // FIXME: This is handled differently in UnitUtil: MekEquipment does not include weapons
+            // FIXME: This is handled strangely in UnitUtil: MekEquipment does not include weapons
             return UnitUtil.isMechEquipment(equipment, (Mech) getEntity())
                     || UnitUtil.isMechWeapon(equipment, getEntity())
                     || UnitUtil.isPhysicalWeapon(equipment);
         } else if (getEntity() instanceof BattleArmor) {
-            // FIXME: This is handled differently in UnitUtil: BAAPWeapons not BAEquipment
+            // FIXME: This is handled strangely in UnitUtil: BAAPWeapons are not BAEquipment
             return UnitUtil.isBAEquipment(equipment, getBattleArmor())
                     || UnitUtil.isBattleArmorAPWeapon(equipment);
         } else {
@@ -372,17 +423,17 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
     }
 
     private class AddAction extends AbstractAction {
-
         AddAction() {
-            super("  << Add  ");
+            super(ADD_TEXT);
         }
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            addSelectedEquipment();
+            addSelectedEquipment(1);
         }
     }
 
+    /** A specialized table used for the equipment database.*/
     private static class EquipmentDatabaseTable extends JTable {
 
         private EquipmentDatabaseTable(EquipmentTableModel dm) {

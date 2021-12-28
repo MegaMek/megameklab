@@ -436,18 +436,29 @@ public class EquipmentTableModel extends AbstractTableModel {
                 return type.getStaticTechLevel().toString();
             }
         } else if (col == COL_TECH) {
-            switch(type.getTechBase()) {
+            return getTechBaseAsString(type);
+        } else if (col == COL_REF) {
+            return type.getRulesRefs();
+        }
+        return "?";
+    }
+
+    /**
+     * Returns a String representation of the Tech Base of the given equipment, i.e.
+     * "All", "IS" or "Clan" - or "Unknown" if the Tech Base is not one of the standard values.
+     * @param equipment The equipment in question; must not be null
+     */
+    public static String getTechBaseAsString(EquipmentType equipment) {
+        switch(equipment.getTechBase()) {
             case TechAdvancement.TECH_BASE_ALL:
                 return "All";
             case TechAdvancement.TECH_BASE_IS:
                 return "IS";
             case TechAdvancement.TECH_BASE_CLAN:
                 return "Clan";
-            }
-        } else if (col == COL_REF) {
-            return type.getRulesRefs();
+            default:
+                return "Unknown";
         }
-        return "?";
     }
 
     private static String getDamageString(WeaponType wtype, boolean isAero) {
