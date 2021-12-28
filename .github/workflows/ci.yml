@@ -127,7 +127,6 @@ jobs:
     # NB: Due to a GitHub Actions limitation we won't know what the filename is in order to display it somewhere.
     - name: Upload Nix/Mac Releases
       uses: actions/upload-artifact@v2.2.4
-      if: always() && matrix.os == 'ubuntu-latest'
       with:
         name: release-nix-mac-${{ matrix.java-distribution }}-jdk${{ matrix.java-version }}
         path: megameklab/build/distributions/*.tar
@@ -137,7 +136,6 @@ jobs:
     # NB: Due to a GitHub Actions limitation we won't know what the filename is in order to display it somewhere.
     - name: Upload Windows Release
       uses: actions/upload-artifact@v2.2.4
-      if: always() && matrix.os == 'windows-latest'
       with:
         name: release-win-${{ matrix.java-distribution }}-jdk${{ matrix.java-version }}
         path: megameklab/build/distributions/*.zip
