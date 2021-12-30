@@ -13,29 +13,26 @@
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  */
-
 package megameklab.com.ui.mek;
-
-import java.awt.BorderLayout;
-
-import javax.swing.*;
 
 import megamek.common.*;
 import megameklab.com.ui.MegaMekLabMainUI;
+import megameklab.com.ui.dialog.FloatingEquipmentDatabaseDialog;
 import megameklab.com.ui.generalUnit.AbstractEquipmentTab;
 import megameklab.com.ui.generalUnit.FluffTab;
 import megameklab.com.ui.generalUnit.PreviewTab;
-import megameklab.com.ui.util.AbstractEquipmentDatabaseView;
-import megameklab.com.ui.util.RefreshListener;
 import megameklab.com.ui.util.TabScrollPane;
 import megameklab.com.util.UnitUtil;
+
+import javax.swing.*;
+import java.awt.*;
 
 public class BMMainUI extends MegaMekLabMainUI {
 
     JTabbedPane configPane = new JTabbedPane(SwingConstants.TOP);
     private BMStructureTab structureTab;
     private AbstractEquipmentTab equipmentTab;
-    private EquipDB floatingEquipmentDatabase;
+    private FloatingEquipmentDatabaseDialog floatingEquipmentDatabase;
     private PreviewTab previewTab;
     private BMBuildTab buildTab;
     private FluffTab fluffTab;
@@ -75,7 +72,7 @@ public class BMMainUI extends MegaMekLabMainUI {
         configPane.addTab("Fluff", new TabScrollPane(fluffTab));
         configPane.addTab("Preview", previewTab);
 
-        floatingEquipmentDatabase = new EquipDB();
+        floatingEquipmentDatabase = new FloatingEquipmentDatabaseDialog(this, new BMSmallEquipmentDatabaseView(this));
         floatingEquipmentDatabase.setRefresh(this);
 
         add(configPane, BorderLayout.CENTER);
@@ -87,7 +84,6 @@ public class BMMainUI extends MegaMekLabMainUI {
 
     @Override
     public void createNewUnit(long entityType, boolean isPrimitive, boolean isIndustrial, Entity oldEntity) {
-        
         int cockpit = Mech.COCKPIT_STANDARD;
         int at = EquipmentType.T_ARMOR_STANDARD;
         int st = EquipmentType.T_STRUCTURE_STANDARD;
@@ -170,7 +166,6 @@ public class BMMainUI extends MegaMekLabMainUI {
             mech.setTechLevel(lvl.getCompoundTechLevel(oldEntity.isClan()));
             mech.setMixedTech(oldEntity.isMixedTech());
         }
-
     }
 
     @Override
@@ -195,13 +190,10 @@ public class BMMainUI extends MegaMekLabMainUI {
     @Override
     public void refreshEquipment() {
         equipmentTab.refresh();
-
     }
 
     @Override
-    public void refreshTransport() {
-        // not used for mechs
-    }
+    public void refreshTransport() { }
 
     @Override
     public void refreshPreview() {
@@ -211,11 +203,8 @@ public class BMMainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshHeader() {
-
-        String title = getEntity().getChassis() + " " + getEntity().getModel()
-                + ".mtf";
+        String title = getEntity().getChassis() + " " + getEntity().getModel() + ".mtf";
         setTitle(title);
-
     }
 
     @Override
@@ -229,8 +218,7 @@ public class BMMainUI extends MegaMekLabMainUI {
     }
 
     @Override
-    public void refreshWeapons() {
-    }
+    public void refreshWeapons() { }
     
     @Override
     public void refreshSummary() {
@@ -252,24 +240,4 @@ public class BMMainUI extends MegaMekLabMainUI {
         return floatingEquipmentDatabase;
     }
 
-    private class EquipDB extends JDialog {
-
-        private final AbstractEquipmentDatabaseView equipmentDatabase;
-
-        protected EquipDB() {
-            equipmentDatabase = new BMSmallEquipmentDatabaseView(BMMainUI.this);
-            add(equipmentDatabase, BorderLayout.CENTER);
-            pack();
-            equipmentDatabase.refreshTable();
-        }
-
-        private void setRefresh(RefreshListener refresh) {
-            equipmentDatabase.setRefresh(refresh);
-        }
-
-        private void refresh() {
-            equipmentDatabase.refreshTable();
-        }
-
-    }
 }
