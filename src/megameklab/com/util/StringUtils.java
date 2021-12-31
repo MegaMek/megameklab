@@ -311,6 +311,8 @@ public class StringUtils {
                 }
             } else if (weapon instanceof UACWeapon) {
                 info = "[DB,R/C]";
+            } else if (weapon instanceof TAGWeapon) {
+                return "";
             } else {
                 info = " [";
 
