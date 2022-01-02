@@ -387,7 +387,8 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
 
     @Override
     public void manualBVChanged(int manualBV) {
-        getMech().setManualBV(manualBV);
+        UnitUtil.setManualBV(manualBV, getEntity());
+        refresh.refreshStatus();
     }
 
     @Override

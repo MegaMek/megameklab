@@ -4438,5 +4438,15 @@ public class UnitUtil {
         }
     }
 
+    /**
+     * Updates the manual BV value of the given entity. When manualBV is 0 or less,
+     * the entity is set to not use a manual BV value and the manual BV is set to -1.
+     * @param manualBV A manual BV value; values less than 1 remove the manual BV from the entity.
+     */
+    public static void setManualBV(int manualBV, Entity entity) {
+        entity.setManualBV((manualBV > 0) ? manualBV : -1);
+        entity.setUseManualBV(manualBV > 0);
+    }
+
 
 }

@@ -463,7 +463,8 @@ public class BAStructureTab extends ITab implements ActionListener, BABuildListe
 
     @Override
     public void manualBVChanged(int manualBV) {
-        getBattleArmor().setManualBV(manualBV);
+        UnitUtil.setManualBV(manualBV, getEntity());
+        refresh.refreshStatus();
     }
 
     @Override

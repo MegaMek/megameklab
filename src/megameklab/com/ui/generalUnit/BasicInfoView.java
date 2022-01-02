@@ -48,8 +48,6 @@ import megameklab.com.util.CConfig;
  */
 public class BasicInfoView extends BuildView implements ITechManager, ActionListener, FocusListener {
     
-    private static final long serialVersionUID = -6831478201489228066L;
-
     private final List<BuildListener> listeners = new CopyOnWriteArrayList<>();
     public void addListener(BuildListener l) {
         if (null != l) {
@@ -84,8 +82,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
     private final IntRangeTextField txtManualBV = new IntRangeTextField(3);
     
     private int prevYear = 3145;
-    private int prevBV = -1;
-    
+
     public BasicInfoView(TechAdvancement baseTA) {
         this.baseTA = baseTA;
         initUI();
@@ -282,6 +279,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         txtSource.setText(source);
     }
 
+    /** Returns the entered manual BV value or -1 if it can't be parsed. */
     public int getManualBV() {
         return txtManualBV.getIntVal(-1);
     }
@@ -434,8 +432,6 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
     public void focusGained(FocusEvent e) {
         if (e.getSource().equals(txtYear)) {
             prevYear = getTechIntroYear();
-        } else if (e.getSource().equals(txtManualBV)) {
-            prevBV = getManualBV();
         }
     }
     
@@ -458,12 +454,9 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         } else if (e.getSource() == txtSource) {
             listeners.forEach(l -> l.sourceChanged(getSource()));
         } else if (e.getSource() == txtManualBV) {
-            try {
-                int bv = getManualBV();
-                listeners.forEach(l -> l.manualBVChanged(bv));
-            } catch (NumberFormatException ex) {
-                setManualBV(prevBV);
-            }
+            int manualBv = getManualBV();
+            txtManualBV.setText((manualBv > 0) ? String.valueOf(manualBv) : "");
+            listeners.forEach(l -> l.manualBVChanged(manualBv));
         }
         listeners.forEach(BuildListener::refreshSummary);
     }
