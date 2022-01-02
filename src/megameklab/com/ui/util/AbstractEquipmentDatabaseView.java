@@ -15,15 +15,15 @@
 package megameklab.com.ui.util;
 
 import megamek.client.ui.swing.GUIPreferences;
-import megamek.common.*;
+import megamek.common.AmmoType;
+import megamek.common.BattleArmor;
+import megamek.common.EquipmentType;
+import megamek.common.Mech;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.util.UnitUtil;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
+import javax.swing.event.*;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
@@ -31,8 +31,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static megameklab.com.ui.util.EquipmentDatabaseCategory.*;
@@ -246,7 +246,7 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
             specialFilterPanel.add(hideUnavailButton);
         }
 
-        var textFilterPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        var textFilterPanel = new JPanel(new WrapLayout(FlowLayout.LEFT));
         if (useAddButton()) {
             addButton.setMnemonic('A');
             textFilterPanel.add(addButton);
@@ -447,11 +447,28 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
         private EquipmentDatabaseTable(EquipmentTableModel dm) {
             super(dm, new XTableColumnModel());
             setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-            setIntercellSpacing(new Dimension(0, 0));
+            setIntercellSpacing(new Dimension(2, 0));
             setShowGrid(false);
             setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
             setDoubleBuffered(true);
             createDefaultColumnsFromModel();
+        }
+
+        @Override
+        public void tableChanged(TableModelEvent e) {
+            super.tableChanged(e);
+            updateRowHeights();
+        }
+
+        /** Sets all the row heights to the correct value. JTables don't do this automatically. */
+        private void updateRowHeights() {
+            if (getRowCount() >= 1) {
+                Component comp = prepareRenderer(getCellRenderer(0, 0), 0, 0);
+                int rowHeight = comp.getPreferredSize().height;
+                for (int row = 0; row < getRowCount(); row++) {
+                    setRowHeight(row, rowHeight);
+                }
+            }
         }
     }
 

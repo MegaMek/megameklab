@@ -32,11 +32,11 @@ public class BMMainUI extends MegaMekLabMainUI {
     JTabbedPane configPane = new JTabbedPane(SwingConstants.TOP);
     private BMStructureTab structureTab;
     private AbstractEquipmentTab equipmentTab;
-    private FloatingEquipmentDatabaseDialog floatingEquipmentDatabase;
     private PreviewTab previewTab;
     private BMBuildTab buildTab;
     private FluffTab fluffTab;
     private BMStatusBar statusbar;
+    private FloatingEquipmentDatabaseDialog floatingEquipmentDatabase;
 
     public BMMainUI() {
         this(false, false);
@@ -72,11 +72,14 @@ public class BMMainUI extends MegaMekLabMainUI {
         configPane.addTab("Fluff", new TabScrollPane(fluffTab));
         configPane.addTab("Preview", previewTab);
 
-        floatingEquipmentDatabase = new FloatingEquipmentDatabaseDialog(this, new BMSmallEquipmentDatabaseView(this));
-        floatingEquipmentDatabase.setRefresh(this);
-
         add(configPane, BorderLayout.CENTER);
         add(statusbar, BorderLayout.SOUTH);
+
+        if (floatingEquipmentDatabase != null) {
+            floatingEquipmentDatabase.setVisible(false);
+        }
+        floatingEquipmentDatabase = new FloatingEquipmentDatabaseDialog(this, new BMSmallEquipmentDatabaseView(this));
+        floatingEquipmentDatabase.setRefresh(this);
 
         refreshHeader();
         validate();
@@ -198,7 +201,6 @@ public class BMMainUI extends MegaMekLabMainUI {
     @Override
     public void refreshPreview() {
         previewTab.refresh();
-
     }
 
     @Override
@@ -236,8 +238,16 @@ public class BMMainUI extends MegaMekLabMainUI {
         return structureTab.getTechManager();
     }
 
-    JDialog getFloatingEquipmentDatabase() {
+    public JDialog getFloatingEquipmentDatabase() {
         return floatingEquipmentDatabase;
+    }
+
+    @Override
+    public void setVisible(boolean b) {
+        super.setVisible(b);
+        if (!b && floatingEquipmentDatabase != null) {
+            floatingEquipmentDatabase.setVisible(false);
+        }
     }
 
 }

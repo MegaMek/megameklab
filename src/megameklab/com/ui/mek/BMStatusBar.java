@@ -13,31 +13,22 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-
 package megameklab.com.ui.mek;
 
+import megamek.client.ui.swing.GUIPreferences;
+import megamek.common.*;
+import megamek.common.verifier.EntityVerifier;
+import megamek.common.verifier.TestMech;
+import megameklab.com.ui.util.ITab;
+import megameklab.com.ui.util.RefreshListener;
+import megameklab.com.ui.util.WrapLayout;
+import megameklab.com.util.ImageHelper;
+import megameklab.com.util.UnitUtil;
+
+import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.text.DecimalFormat;
-
-import javax.swing.*;
-
-import megamek.client.ui.baseComponents.AbstractDialog;
-import megamek.common.AmmoType;
-import megamek.common.Engine;
-import megamek.common.Mech;
-import megamek.common.Mounted;
-import megamek.common.QuadMech;
-import megamek.common.TripodMech;
-import megamek.common.WeaponType;
-import megamek.common.verifier.EntityVerifier;
-import megamek.common.verifier.TestMech;
-import megameklab.com.ui.MegaMekLabMainUI;
-import megameklab.com.ui.util.AbstractEquipmentDatabaseView;
-import megameklab.com.ui.util.ITab;
-import megameklab.com.util.ImageHelper;
-import megameklab.com.ui.util.RefreshListener;
-import megameklab.com.util.UnitUtil;
 
 public class BMStatusBar extends ITab {
 
@@ -69,29 +60,17 @@ public class BMStatusBar extends ITab {
         invalid.setText("Invalid");
         invalid.setForeground(Color.RED);
         invalid.setVisible(false);
-        setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.insets = new Insets(5,2,2,20);
-        gbc.anchor = GridBagConstraints.WEST;
-        this.add(showEquipmentDatabase, gbc);
-        gbc.gridx = 1;
-        this.add(btnFluffImage, gbc);
-        gbc.gridx = 2;
-        this.add(tons, gbc);
-        gbc.gridx = 3;
-        this.add(crits, gbc);
-        gbc.gridx = 4;
-        this.add(heatSink, gbc);
-        gbc.gridx = 5;
-        this.add(bvLabel, gbc);
-        gbc.gridx = 6;
-        this.add(invalid, gbc);
-        gbc.gridx = 7;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 1.0;
-        this.add(cost, gbc);
+
+        setLayout(new WrapLayout(FlowLayout.LEFT, 22, 5));
+        add(showEquipmentDatabase);
+        add(btnValidate);
+        add(btnFluffImage);
+        add(tons);
+        add(crits);
+        add(heatSink);
+        add(bvLabel);
+        add(invalid);
+        add(cost);
         refresh();
     }
 
@@ -117,34 +96,21 @@ public class BMStatusBar extends ITab {
         currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getMech());
 
         double totalHeat = calculateTotalHeat();
+        heatSink.setText("Heat: " + totalHeat + " / " + heat);
+        heatSink.setToolTipText("Total Heat Generated / Total Heat Dissipated");
 
-        heatSink.setText("Heat: " + totalHeat + "/" + heat);
-        heatSink.setToolTipText("Total Heat Generated/Total Heat Dissipated");
-        if (totalHeat > heat) {
-            heatSink.setForeground(Color.red);
-        } else {
-            heatSink.setForeground(UIManager.getColor("Label.foreground"));
-        }
-
-        tons.setText(String.format("Tonnage: %.1f/%.1f (%.1f Remaining)", currentTonnage, tonnage, tonnage - currentTonnage));
+        tons.setText(String.format("Tonnage: %.1f / %.0f (%.1f Remaining)", currentTonnage, tonnage, tonnage - currentTonnage));
         tons.setToolTipText("Current Tonnage/Max Tonnage");
-        if (currentTonnage > tonnage) {
-            tons.setForeground(Color.red);
-        } else {
-            tons.setForeground(UIManager.getColor("Label.foreground"));
-        }
+        tons.setForeground(currentTonnage > tonnage ? GUIPreferences.getInstance().getWarningColor() : null);
 
         bvLabel.setText("BV: " + bv);
         bvLabel.setToolTipText("BV 2.0");
 
         cost.setText("Cost: " + formatter.format(currentCost) + " C-bills");
 
-        crits.setText("Criticals: " +  currentCrits + "/" + maxCrits);
-        if(currentCrits > maxCrits) {
-            crits.setForeground(Color.red);
-        } else {
-            crits.setForeground(UIManager.getColor("Label.foreground"));
-        }
+        crits.setText("Criticals: " +  currentCrits + " / " + maxCrits);
+        crits.setForeground(currentCrits > maxCrits ? GUIPreferences.getInstance().getWarningColor() : null);
+
         StringBuffer sb = new StringBuffer();
         invalid.setVisible(!testEntity.correctEntity(sb));
         invalid.setToolTipText("<html>" + sb.toString().replaceAll("\n", "<br/>") + "</html>");
@@ -208,26 +174,10 @@ public class BMStatusBar extends ITab {
     }
 
     private void getFluffImage() {
-        //copied from structureTab
         FileDialog fDialog = new FileDialog(getParentFrame(), "Image Path", FileDialog.LOAD);
         fDialog.setDirectory(new File(ImageHelper.fluffPath).getAbsolutePath() + File.separatorChar + ImageHelper.imageMech + File.separatorChar);
-        /*
-         //This does not seem to be working
-        if (getMech().getFluff().getMMLImagePath().trim().length() > 0) {
-            String fullPath = new File(getMech().getFluff().getMMLImagePath()).getAbsolutePath();
-            String imageName = fullPath.substring(fullPath.lastIndexOf(File.separatorChar) + 1);
-            fullPath = fullPath.substring(0, fullPath.lastIndexOf(File.separatorChar) + 1);
-            fDialog.setDirectory(fullPath);
-            fDialog.setFile(imageName);
-        } else {
-            fDialog.setDirectory(new File(ImageHelper.fluffPath).getAbsolutePath() + File.separatorChar + ImageHelper.imageMech + File.separatorChar);
-            fDialog.setFile(getMech().getChassis() + " " + getMech().getModel() + ".png");
-        }
-        */
         fDialog.setLocationRelativeTo(this);
-
         fDialog.setVisible(true);
-
         if (fDialog.getFile() != null) {
             String relativeFilePath = new File(fDialog.getDirectory() + fDialog.getFile()).getAbsolutePath();
             relativeFilePath = "." + File.separatorChar + relativeFilePath.substring(new File(System.getProperty("user.dir")).getAbsolutePath().length() + 1);

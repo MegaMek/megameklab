@@ -10,7 +10,7 @@ public class BMSmallEquipmentDatabaseView extends BMEquipmentDatabaseView {
 
     private final List<Integer> columns = List.of(COL_NAME, COL_HEAT, COL_CRIT, COL_TECH, COL_TON);
 
-    BMSmallEquipmentDatabaseView(EntitySource eSource) {
+    public BMSmallEquipmentDatabaseView(EntitySource eSource) {
         super(eSource);
     }
 
