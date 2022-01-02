@@ -657,7 +657,9 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
 
     @Override
     public void manualBVChanged(int manualBV) {
-        getMech().setManualBV(manualBV);
+        getEntity().setManualBV(manualBV);
+        getEntity().setUseManualBV(manualBV > 0);
+        refresh.refreshStatus();
     }
 
     @Override

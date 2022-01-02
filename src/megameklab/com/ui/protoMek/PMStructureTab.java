@@ -376,7 +376,9 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
 
     @Override
     public void manualBVChanged(int manualBV) {
-        getProtomech().setManualBV(manualBV);
+        getEntity().setManualBV(manualBV);
+        getEntity().setUseManualBV(manualBV > 0);
+        refresh.refreshStatus();
     }
 
     @Override

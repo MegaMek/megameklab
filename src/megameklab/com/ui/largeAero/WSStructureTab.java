@@ -272,7 +272,9 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
 
     @Override
     public void manualBVChanged(int manualBV) {
-        getJumpship().setManualBV(manualBV);
+        getEntity().setManualBV(manualBV);
+        getEntity().setUseManualBV(manualBV > 0);
+        refresh.refreshStatus();
     }
 
     @Override
