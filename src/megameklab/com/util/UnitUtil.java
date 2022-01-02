@@ -4444,7 +4444,7 @@ public class UnitUtil {
      * @param manualBV A manual BV value; values less than 1 remove the manual BV from the entity.
      */
     public static void setManualBV(int manualBV, Entity entity) {
-        entity.setManualBV(manualBV > 0 ? manualBV : -1);
+        entity.setManualBV((manualBV > 0) ? manualBV : -1);
         entity.setUseManualBV(manualBV > 0);
     }
 
