@@ -279,6 +279,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         txtSource.setText(source);
     }
 
+    /** Returns the entered manual BV value or -1 if it can't be parsed. */
     public int getManualBV() {
         return txtManualBV.getIntVal(-1);
     }
@@ -454,7 +455,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
             listeners.forEach(l -> l.sourceChanged(getSource()));
         } else if (e.getSource() == txtManualBV) {
             int manualBv = getManualBV();
-            txtManualBV.setText((manualBv < 1) ? "" : String.valueOf(manualBv));
+            txtManualBV.setText((manualBv > 0) ? String.valueOf(manualBv) : "");
             listeners.forEach(l -> l.manualBVChanged(manualBv));
         }
         listeners.forEach(BuildListener::refreshSummary);

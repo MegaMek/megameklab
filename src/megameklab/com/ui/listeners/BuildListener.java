@@ -34,6 +34,12 @@ public interface BuildListener {
     void sourceChanged(String source);
     void techBaseChanged(boolean clan, boolean mixed);
     void techLevelChanged(SimpleTechLevel techLevel);
+
+    /**
+     * Notifies of a change of the manually entered BV. When manualBV is 0 or less, the unit
+     * should be set to not use a manual BV value and the manual BV set to -1.
+     * @param manualBV The entered manual BV; may be invalid (0 or less)
+     */
     void manualBVChanged(int manualBV);
 
     void walkChanged(int walkMP);
