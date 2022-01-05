@@ -13,27 +13,17 @@
  */
 package megameklab.com.ui.protoMek;
 
-import java.awt.BorderLayout;
-
-import javax.swing.*;
-
-import megamek.common.Engine;
-import megamek.common.Entity;
-import megamek.common.EntityMovementMode;
-import megamek.common.EquipmentType;
-import megamek.common.ITechManager;
-import megamek.common.Protomech;
-import megamek.common.SimpleTechLevel;
-import megamek.common.TechConstants;
+import megamek.common.*;
 import megamek.common.verifier.TestProtomech;
 import megameklab.com.ui.MegaMekLabMainUI;
-import megameklab.com.ui.combatVeh.CVFloatingEquipmentDatabaseView;
 import megameklab.com.ui.dialog.FloatingEquipmentDatabaseDialog;
 import megameklab.com.ui.generalUnit.AbstractEquipmentTab;
-import megameklab.com.ui.generalUnit.EquipmentTab;
 import megameklab.com.ui.generalUnit.FluffTab;
 import megameklab.com.ui.generalUnit.PreviewTab;
 import megameklab.com.ui.util.TabScrollPane;
+
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * Main UI for building protomechs

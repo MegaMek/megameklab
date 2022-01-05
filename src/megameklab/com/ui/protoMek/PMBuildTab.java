@@ -13,27 +13,19 @@
  */
 package megameklab.com.ui.protoMek;
 
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SpringLayout;
-import javax.swing.SwingConstants;
-
 import megamek.common.Entity;
 import megamek.common.Mounted;
 import megamek.common.verifier.TestProtomech;
 import megameklab.com.ui.EntitySource;
-import megameklab.com.ui.generalUnit.EquipmentTab;
-import megameklab.com.ui.util.CriticalTableModel;
 import megameklab.com.ui.util.ITab;
 import megameklab.com.ui.util.RefreshListener;
 import megameklab.com.ui.util.SpringLayoutHelper;
 import megameklab.com.util.UnitUtil;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * Tab for assigning equipment to locations
