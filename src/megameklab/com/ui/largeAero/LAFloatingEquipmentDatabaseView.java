@@ -1,4 +1,4 @@
-package megameklab.com.ui.mek;
+package megameklab.com.ui.largeAero;
 
 import megameklab.com.ui.EntitySource;
 
@@ -6,11 +6,11 @@ import java.util.List;
 
 import static megameklab.com.ui.util.EquipmentTableModel.*;
 
-public class BMSmallEquipmentDatabaseView extends BMEquipmentDatabaseView {
+public class LAFloatingEquipmentDatabaseView extends LAEquipmentDatabaseView {
 
-    private final List<Integer> columns = List.of(COL_NAME, COL_HEAT, COL_CRIT, COL_TECH, COL_TON);
+    private final List<Integer> columns = List.of(COL_NAME, COL_HEAT, COL_TECH, COL_TON);
 
-    public BMSmallEquipmentDatabaseView(EntitySource eSource) {
+    public LAFloatingEquipmentDatabaseView(EntitySource eSource) {
         super(eSource);
     }
 

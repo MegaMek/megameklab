@@ -29,7 +29,7 @@ class BMEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
             COL_DPRODUCTION, COL_DCOMMON, COL_DEXTINCT, COL_DREINTRO, COL_COST);
 
     private final List<Integer> statsColumns = List.of(COL_NAME, COL_DAMAGE, COL_HEAT, COL_MRANGE, COL_RANGE,
-            COL_SHOTS, COL_TECH, COL_BV, COL_TON, COL_REF);
+            COL_SHOTS, COL_TECH, COL_BV, COL_TON, COL_CRIT, COL_REF);
 
     BMEquipmentDatabaseView(EntitySource eSource) {
         super(eSource);

@@ -18,8 +18,7 @@ package megameklab.com.ui.battleArmor;
 
 import java.awt.BorderLayout;
 
-import javax.swing.JTabbedPane;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 
 import megamek.common.BattleArmor;
 import megamek.common.Entity;
@@ -28,6 +27,8 @@ import megamek.common.EquipmentType;
 import megamek.common.ITechManager;
 import megamek.common.TechConstants;
 import megameklab.com.ui.MegaMekLabMainUI;
+import megameklab.com.ui.combatVeh.CVFloatingEquipmentDatabaseView;
+import megameklab.com.ui.dialog.FloatingEquipmentDatabaseDialog;
 import megameklab.com.ui.generalUnit.FluffTab;
 import megameklab.com.ui.util.TabScrollPane;
 
@@ -39,6 +40,7 @@ public class BAMainUI extends MegaMekLabMainUI {
     private BAEquipmentTab equipTab;
     private FluffTab fluffTab;
     private BAStatusBar statusbar;
+    private FloatingEquipmentDatabaseDialog floatingEquipmentDatabase;
 
     public BAMainUI() {
 
@@ -72,6 +74,12 @@ public class BAMainUI extends MegaMekLabMainUI {
         add(configPane, BorderLayout.CENTER);
         add(statusbar, BorderLayout.SOUTH);
 
+        if (floatingEquipmentDatabase != null) {
+            floatingEquipmentDatabase.setVisible(false);
+        }
+        floatingEquipmentDatabase = new FloatingEquipmentDatabaseDialog(this, new BAFloatingEquipmentDatabaseView(this));
+        floatingEquipmentDatabase.setRefresh(this);
+
         refreshHeader();
         validate();
     }
@@ -99,13 +107,13 @@ public class BAMainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshAll() {
-
         statusbar.refresh();
         structureTab.refresh();
         refreshEquipment();
         refreshBuild();
         refreshPreview();
         refreshHeader();
+        floatingEquipmentDatabase.refresh();
     }
 
     @Override
@@ -159,6 +167,7 @@ public class BAMainUI extends MegaMekLabMainUI {
     @Override
     public void refreshEquipmentTable() {
         equipTab.refreshTable();
+        floatingEquipmentDatabase.refresh();
     }
 
     @Override
@@ -167,6 +176,18 @@ public class BAMainUI extends MegaMekLabMainUI {
             return structureTab.getTechManager();
         }
         return null;
+    }
+
+    public JDialog getFloatingEquipmentDatabase() {
+        return floatingEquipmentDatabase;
+    }
+
+    @Override
+    public void setVisible(boolean b) {
+        super.setVisible(b);
+        if (!b && floatingEquipmentDatabase != null) {
+            floatingEquipmentDatabase.setVisible(false);
+        }
     }
 
 }

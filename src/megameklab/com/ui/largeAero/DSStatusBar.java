@@ -13,30 +13,22 @@
  */
 package megameklab.com.ui.largeAero;
 
-import java.awt.Color;
-import java.awt.FileDialog;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.io.File;
-import java.text.DecimalFormat;
-
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.UIManager;
-
 import megamek.common.AmmoType;
 import megamek.common.Entity;
 import megamek.common.Mounted;
 import megamek.common.WeaponType;
 import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestSmallCraft;
-import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.util.ITab;
-import megameklab.com.util.ImageHelper;
 import megameklab.com.ui.util.RefreshListener;
+import megameklab.com.ui.util.WrapLayout;
+import megameklab.com.util.ImageHelper;
 import megameklab.com.util.UnitUtil;
+
+import javax.swing.*;
+import java.awt.*;
+import java.io.File;
+import java.text.DecimalFormat;
 
 /**
  * Status bar for SmallCraft and Dropships
@@ -45,8 +37,6 @@ import megameklab.com.util.UnitUtil;
  *
  */
 public class DSStatusBar extends ITab {
-
-    private static final long serialVersionUID = -6303444326796852470L;
 
     private final JLabel bvLabel = new JLabel();
     private final JLabel tons = new JLabel();
@@ -60,11 +50,13 @@ public class DSStatusBar extends ITab {
 
     private RefreshListener refresh;
 
-    public DSStatusBar(MegaMekLabMainUI parent) {
+    public DSStatusBar(DSMainUI parent) {
         super(parent);
         parentFrame = parent;
 
         formatter = new DecimalFormat();
+        JButton showEquipmentDatabase = new JButton("Show Equipment Database");
+        showEquipmentDatabase.addActionListener(evt -> parent.getFloatingEquipmentDatabase().setVisible(true));
         JButton btnValidate = new JButton("Validate Unit");
         btnValidate.addActionListener(e -> UnitUtil.showValidation(getSmallCraft(), getParentFrame()));
         JButton btnFluffImage = new JButton("Set Fluff Image");
@@ -72,29 +64,16 @@ public class DSStatusBar extends ITab {
         invalid.setText("Invalid");
         invalid.setForeground(Color.RED);
         invalid.setVisible(false);
-        setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.insets = new Insets(5,2,2,20);
-        gbc.anchor = GridBagConstraints.WEST;
-        this.add(btnValidate, gbc);
-        gbc.gridx = 1;
-        this.add(btnFluffImage, gbc);
-        gbc.gridx = 2;
-        this.add(tons, gbc);
-        gbc.gridx = 3;
-        this.add(heatSink, gbc);
-        gbc.gridx = 4;
-        this.add(bvLabel, gbc);
-        gbc.gridx = 5;
-        this.add(invalid, gbc);
-        gbc.gridx = 6;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 1.0;
-        this.add(cost, gbc);
 
-
+        setLayout(new WrapLayout(FlowLayout.LEFT, 22, 5));
+        add(showEquipmentDatabase);
+        add(btnValidate);
+        add(btnFluffImage);
+        add(tons);
+        add(heatSink);
+        add(bvLabel);
+        add(invalid);
+        add(cost);
         refresh();
     }
 

@@ -23,6 +23,7 @@ import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestSupportVehicle;
 import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.util.ITab;
+import megameklab.com.ui.util.WrapLayout;
 import megameklab.com.util.ImageHelper;
 import megameklab.com.util.UnitUtil;
 
@@ -49,13 +50,15 @@ class SVStatusBar extends ITab {
     private final DecimalFormat formatter;
     private final MegaMekLabMainUI mainUI;
 
-    SVStatusBar(MegaMekLabMainUI parent) {
+    SVStatusBar(SVMainUI parent) {
         super(parent);
         mainUI = parent;
 
         formatter = new DecimalFormat();
         testEntity = new TestSupportVehicle(parent.getEntity(), entityVerifier.tankOption,
                 null);
+        JButton showEquipmentDatabase = new JButton("Show Equipment Database");
+        showEquipmentDatabase.addActionListener(evt -> parent.getFloatingEquipmentDatabase().setVisible(true));
         JButton btnValidate = new JButton("Validate Unit");
         btnValidate.addActionListener(evt -> UnitUtil.showValidation(parent.getEntity(), getParentFrame()));
         JButton btnFluffImage = new JButton("Set Fluff Image");
@@ -63,33 +66,19 @@ class SVStatusBar extends ITab {
         invalid.setText("Invalid");
         invalid.setForeground(Color.RED);
         invalid.setVisible(false);
-        setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.insets = new Insets(5,2,2,20);
-        gbc.anchor = GridBagConstraints.WEST;
-        this.add(btnValidate, gbc);
-        gbc.gridx = 1;
-        this.add(btnFluffImage, gbc);
-        gbc.gridx = 2;
-        this.add(tons, gbc);
-        gbc.gridx = 3;
-        this.add(movementLabel(), gbc);
-        gbc.gridx = 4;
-        this.add(bvLabel(), gbc);
-        gbc.gridx = 5;
-        this.add(bvLabel, gbc);
-        gbc.gridx = 6;
-        this.add(tonnageLabel(), gbc);
-        gbc.gridx = 7;
-        this.add(slotsPanel(), gbc);
-        gbc.gridx = 8;
-        this.add(invalid, gbc);
-        gbc.gridx = 9;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 1.0;
-        this.add(cost, gbc);
+
+        setLayout(new WrapLayout(FlowLayout.LEFT, 22, 5));
+        add(showEquipmentDatabase);
+        add(btnValidate);
+        add(btnFluffImage);
+        add(tons);
+        add(movementLabel());
+        add(bvLabel());
+        add(bvLabel);
+        add(tonnageLabel());
+        add(slotsPanel());
+        add(invalid);
+        add(cost);
         refresh();
     }
 

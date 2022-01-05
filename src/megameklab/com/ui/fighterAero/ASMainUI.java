@@ -17,6 +17,8 @@ package megameklab.com.ui.fighterAero;
 
 import megamek.common.*;
 import megameklab.com.ui.MegaMekLabMainUI;
+import megameklab.com.ui.combatVeh.CVFloatingEquipmentDatabaseView;
+import megameklab.com.ui.dialog.FloatingEquipmentDatabaseDialog;
 import megameklab.com.ui.generalUnit.AbstractEquipmentTab;
 import megameklab.com.ui.generalUnit.FluffTab;
 import megameklab.com.ui.generalUnit.PreviewTab;
@@ -36,6 +38,7 @@ public class ASMainUI extends MegaMekLabMainUI {
     private ASBuildTab buildTab;
     private FluffTab fluffTab;
     private ASStatusBar statusbar;
+    private FloatingEquipmentDatabaseDialog floatingEquipmentDatabase;
 
     public ASMainUI(boolean primitive) {
 
@@ -70,6 +73,12 @@ public class ASMainUI extends MegaMekLabMainUI {
 
         add(configPane, BorderLayout.CENTER);
         add(statusbar, BorderLayout.SOUTH);
+
+        if (floatingEquipmentDatabase != null) {
+            floatingEquipmentDatabase.setVisible(false);
+        }
+        floatingEquipmentDatabase = new FloatingEquipmentDatabaseDialog(this, new ASFloatingEquipmentDatabaseView(this));
+        floatingEquipmentDatabase.setRefresh(this);
 
         refreshHeader();
         validate();
@@ -135,6 +144,7 @@ public class ASMainUI extends MegaMekLabMainUI {
         equipmentTab.refresh();
         buildTab.refresh();
         previewTab.refresh();
+        floatingEquipmentDatabase.refresh();
     }
 
     @Override
@@ -193,11 +203,24 @@ public class ASMainUI extends MegaMekLabMainUI {
     @Override
     public void refreshEquipmentTable() {
         equipmentTab.refreshTable();
+        floatingEquipmentDatabase.refresh();
     }
 
     @Override
     public ITechManager getTechManager() {
         return structureTab.getTechManager();
+    }
+
+    public JDialog getFloatingEquipmentDatabase() {
+        return floatingEquipmentDatabase;
+    }
+
+    @Override
+    public void setVisible(boolean b) {
+        super.setVisible(b);
+        if (!b && floatingEquipmentDatabase != null) {
+            floatingEquipmentDatabase.setVisible(false);
+        }
     }
 
 }

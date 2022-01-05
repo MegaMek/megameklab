@@ -18,8 +18,7 @@ package megameklab.com.ui.combatVeh;
 
 import java.awt.BorderLayout;
 
-import javax.swing.JTabbedPane;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 
 import megamek.common.Engine;
 import megamek.common.Entity;
@@ -33,9 +32,11 @@ import megamek.common.TechConstants;
 import megamek.common.VTOL;
 import megamek.common.verifier.TestTank;
 import megameklab.com.ui.MegaMekLabMainUI;
+import megameklab.com.ui.dialog.FloatingEquipmentDatabaseDialog;
 import megameklab.com.ui.generalUnit.AbstractEquipmentTab;
 import megameklab.com.ui.generalUnit.FluffTab;
 import megameklab.com.ui.generalUnit.PreviewTab;
+import megameklab.com.ui.mek.BMFloatingEquipmentDatabaseView;
 import megameklab.com.ui.util.TabScrollPane;
 
 public class CVMainUI extends MegaMekLabMainUI {
@@ -47,6 +48,7 @@ public class CVMainUI extends MegaMekLabMainUI {
     private CVBuildTab buildTab;
     private FluffTab fluffTab;
     private CVStatusBar statusbar;
+    private FloatingEquipmentDatabaseDialog floatingEquipmentDatabase;
 
     public CVMainUI() {
         super();
@@ -82,6 +84,12 @@ public class CVMainUI extends MegaMekLabMainUI {
         add(configPane, BorderLayout.CENTER);
         add(statusbar, BorderLayout.SOUTH);
 
+        if (floatingEquipmentDatabase != null) {
+            floatingEquipmentDatabase.setVisible(false);
+        }
+        floatingEquipmentDatabase = new FloatingEquipmentDatabaseDialog(this, new CVFloatingEquipmentDatabaseView(this));
+        floatingEquipmentDatabase.setRefresh(this);
+
         refreshHeader();
         validate();
     }
@@ -93,6 +101,7 @@ public class CVMainUI extends MegaMekLabMainUI {
         buildTab.refresh();
         statusbar.refresh();
         previewTab.refresh();
+        floatingEquipmentDatabase.refresh();
         refreshHeader();
         repaint();
     }
@@ -213,11 +222,24 @@ public class CVMainUI extends MegaMekLabMainUI {
     @Override
     public void refreshEquipmentTable() {
         equipmentTab.refreshTable();
+        floatingEquipmentDatabase.refresh();
     }
 
     @Override
     public ITechManager getTechManager() {
         return structureTab.getTechManager();
+    }
+
+    public JDialog getFloatingEquipmentDatabase() {
+        return floatingEquipmentDatabase;
+    }
+
+    @Override
+    public void setVisible(boolean b) {
+        super.setVisible(b);
+        if (!b && floatingEquipmentDatabase != null) {
+            floatingEquipmentDatabase.setVisible(false);
+        }
     }
 
 }

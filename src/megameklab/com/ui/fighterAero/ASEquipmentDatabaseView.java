@@ -12,7 +12,7 @@ import static megameklab.com.ui.util.EquipmentTableModel.*;
 public class ASEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
 
     private final List<Integer> fluffColumns = List.of(COL_NAME, COL_TECH, COL_TLEVEL, COL_TRATING, COL_DPROTOTYPE,
-            COL_DPRODUCTION, COL_DCOMMON, COL_DEXTINCT, COL_DREINTRO, COL_COST, COL_REF);
+            COL_DPRODUCTION, COL_DCOMMON, COL_DEXTINCT, COL_DREINTRO, COL_COST);
 
     private final List<Integer> statsColumns = List.of(COL_NAME, COL_DAMAGE, COL_HEAT, COL_RANGE,
             COL_SHOTS, COL_TECH, COL_BV, COL_TON, COL_REF);
@@ -30,12 +30,13 @@ public class ASEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
         } else {
             try {
                 Mounted mount = new Mounted(getAero(), equip);
-                getAero().addEquipment(mount, Aero.LOC_FUSELAGE, false);
+                int location = (equip instanceof AmmoType) ? Aero.LOC_FUSELAGE : Aero.LOC_NONE;
+                getAero().addEquipment(mount, location, false);
                 if ((equip instanceof WeaponType) && equip.hasFlag(WeaponType.F_ONESHOT)) {
-                    UnitUtil.removeOneShotAmmo(eSource.getEntity());
+                    UnitUtil.removeOneShotAmmo(getAero());
                 }
-            } catch (LocationFullException lfe) {
-                // Shouldn't happen when adding to LOC_FUSELAGE
+            } catch (LocationFullException ignored) {
+                // location maximum is currently checked in menus and dragndrop
             }
         }
     }

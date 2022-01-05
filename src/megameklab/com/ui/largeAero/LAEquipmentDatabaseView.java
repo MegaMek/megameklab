@@ -26,7 +26,7 @@ import static megameklab.com.ui.util.EquipmentTableModel.*;
 public class LAEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
 
     private final List<Integer> fluffColumns = List.of(COL_NAME, COL_TECH, COL_TLEVEL, COL_TRATING, COL_DPROTOTYPE,
-            COL_DPRODUCTION, COL_DCOMMON, COL_DEXTINCT, COL_DREINTRO, COL_COST, COL_REF);
+            COL_DPRODUCTION, COL_DCOMMON, COL_DEXTINCT, COL_DREINTRO, COL_COST);
 
     private final List<Integer> statsColumns = List.of(COL_NAME, COL_DAMAGE, COL_HEAT, COL_RANGE,
             COL_SHOTS, COL_TECH, COL_BV, COL_TON, COL_REF);

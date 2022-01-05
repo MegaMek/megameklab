@@ -16,6 +16,9 @@ public class FloatingEquipmentDatabaseDialog extends AbstractMMLDialog {
         this.equipmentDatabase = equipmentDatabase;
         equipmentDatabase.setBorder(new EmptyBorder(8,8,8,8));
         equipmentDatabase.refreshTable();
+        setAutoRequestFocus(false);
+        setFocusable(false);
+        setFocusableWindowState(false);
         initialize();
     }
 

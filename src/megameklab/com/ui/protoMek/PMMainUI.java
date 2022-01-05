@@ -27,6 +27,8 @@ import megamek.common.SimpleTechLevel;
 import megamek.common.TechConstants;
 import megamek.common.verifier.TestProtomech;
 import megameklab.com.ui.MegaMekLabMainUI;
+import megameklab.com.ui.combatVeh.CVFloatingEquipmentDatabaseView;
+import megameklab.com.ui.dialog.FloatingEquipmentDatabaseDialog;
 import megameklab.com.ui.generalUnit.AbstractEquipmentTab;
 import megameklab.com.ui.generalUnit.EquipmentTab;
 import megameklab.com.ui.generalUnit.FluffTab;
@@ -50,6 +52,7 @@ public class PMMainUI extends MegaMekLabMainUI {
     private PreviewTab previewTab;
     private PMBuildTab buildTab;
     private PMStatusBar statusbar;
+    private FloatingEquipmentDatabaseDialog floatingEquipmentDatabase;
 
     public PMMainUI() {
         super();
@@ -82,6 +85,12 @@ public class PMMainUI extends MegaMekLabMainUI {
 
         add(configPane, BorderLayout.CENTER);
         add(statusbar, BorderLayout.SOUTH);
+
+        if (floatingEquipmentDatabase != null) {
+            floatingEquipmentDatabase.setVisible(false);
+        }
+        floatingEquipmentDatabase = new FloatingEquipmentDatabaseDialog(this, new PMFloatingEquipmentDatabaseView(this));
+        floatingEquipmentDatabase.setRefresh(this);
 
         refreshHeader();
         validate();
@@ -132,6 +141,7 @@ public class PMMainUI extends MegaMekLabMainUI {
         equipmentTab.refresh();
         buildTab.refresh();
         previewTab.refresh();
+        floatingEquipmentDatabase.refresh();
     }
 
     @Override
@@ -185,6 +195,7 @@ public class PMMainUI extends MegaMekLabMainUI {
     @Override
     public void refreshEquipmentTable() {
         equipmentTab.refreshTable();
+        floatingEquipmentDatabase.refresh();
     }
 
     @Override
@@ -192,4 +203,15 @@ public class PMMainUI extends MegaMekLabMainUI {
         return structureTab.getTechManager();
     }
 
+    public JDialog getFloatingEquipmentDatabase() {
+        return floatingEquipmentDatabase;
+    }
+
+    @Override
+    public void setVisible(boolean b) {
+        super.setVisible(b);
+        if (!b && floatingEquipmentDatabase != null) {
+            floatingEquipmentDatabase.setVisible(false);
+        }
+    }
 }

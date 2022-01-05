@@ -78,7 +78,7 @@ public class BMMainUI extends MegaMekLabMainUI {
         if (floatingEquipmentDatabase != null) {
             floatingEquipmentDatabase.setVisible(false);
         }
-        floatingEquipmentDatabase = new FloatingEquipmentDatabaseDialog(this, new BMSmallEquipmentDatabaseView(this));
+        floatingEquipmentDatabase = new FloatingEquipmentDatabaseDialog(this, new BMFloatingEquipmentDatabaseView(this));
         floatingEquipmentDatabase.setRefresh(this);
 
         refreshHeader();

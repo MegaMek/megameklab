@@ -16,32 +16,24 @@
 
 package megameklab.com.ui.combatVeh;
 
-import java.awt.Color;
-import java.awt.FileDialog;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.io.File;
-import java.text.DecimalFormat;
-
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.UIManager;
-
 import megamek.common.Tank;
 import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestTank;
-import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.util.ITab;
-import megameklab.com.util.ImageHelper;
 import megameklab.com.ui.util.RefreshListener;
+import megameklab.com.ui.util.WrapLayout;
+import megameklab.com.util.ImageHelper;
 import megameklab.com.util.UnitUtil;
 
-public class CVStatusBar extends ITab {
+import javax.swing.*;
+import java.awt.*;
+import java.io.File;
+import java.text.DecimalFormat;
 
-    private static final long serialVersionUID = -6754327753693500675L;
+/**
+ * The Status Bar for Combat Vehicles
+ */
+public class CVStatusBar extends ITab {
 
     private final JPanel slotsPanel = new JPanel();
     private final JLabel move = new JLabel();
@@ -58,13 +50,15 @@ public class CVStatusBar extends ITab {
 
     private RefreshListener refresh;
 
-    public CVStatusBar(MegaMekLabMainUI parent) {
+    public CVStatusBar(CVMainUI parent) {
         super(parent);
         parentFrame = parent;
 
         formatter = new DecimalFormat();
         testEntity = new TestTank((Tank) parent.getEntity(), entityVerifier.tankOption,
                 null);
+        JButton showEquipmentDatabase = new JButton("Show Equipment Database");
+        showEquipmentDatabase.addActionListener(evt -> parent.getFloatingEquipmentDatabase().setVisible(true));
         JButton btnValidate = new JButton("Validate Unit");
         btnValidate.addActionListener(evt -> UnitUtil.showValidation(getTank(), getParentFrame()));
         JButton btnFluffImage = new JButton("Set Fluff Image");
@@ -72,33 +66,19 @@ public class CVStatusBar extends ITab {
         invalid.setText("Invalid");
         invalid.setForeground(Color.RED);
         invalid.setVisible(false);
-        setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.insets = new Insets(5,2,2,20);
-        gbc.anchor = GridBagConstraints.WEST;
-        this.add(btnValidate, gbc);
-        gbc.gridx = 1;
-        this.add(btnFluffImage, gbc);
-        gbc.gridx = 2;
-        this.add(tons, gbc);
-        gbc.gridx = 3;
-        this.add(movementLabel(), gbc);
-        gbc.gridx = 4;
-        this.add(bvLabel(), gbc);
-        gbc.gridx = 5;
-        this.add(bvLabel, gbc);
-        gbc.gridx = 6;
-        this.add(tonnageLabel(), gbc);
-        gbc.gridx = 7;
-        this.add(slotsPanel(), gbc);
-        gbc.gridx = 8;
-        this.add(invalid, gbc);
-        gbc.gridx = 9;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 1.0;
-        this.add(cost, gbc);
+
+        setLayout(new WrapLayout(FlowLayout.LEFT, 22, 5));
+        add(showEquipmentDatabase);
+        add(btnValidate);
+        add(btnFluffImage);
+        add(tons);
+        add(movementLabel());
+        add(bvLabel());
+        add(bvLabel);
+        add(tonnageLabel());
+        add(slotsPanel());
+        add(invalid);
+        add(cost);
         refresh();
     }
 
@@ -186,26 +166,10 @@ public class CVStatusBar extends ITab {
     }
 
     private void getFluffImage() {
-        //copied from structureTab
         FileDialog fDialog = new FileDialog(getParentFrame(), "Image Path", FileDialog.LOAD);
         fDialog.setDirectory(new File(ImageHelper.fluffPath).getAbsolutePath() + File.separatorChar + ImageHelper.imageMech + File.separatorChar);
-        /*
-         //This does not seem to be working
-        if (getMech().getFluff().getMMLImagePath().trim().length() > 0) {
-            String fullPath = new File(getMech().getFluff().getMMLImagePath()).getAbsolutePath();
-            String imageName = fullPath.substring(fullPath.lastIndexOf(File.separatorChar) + 1);
-            fullPath = fullPath.substring(0, fullPath.lastIndexOf(File.separatorChar) + 1);
-            fDialog.setDirectory(fullPath);
-            fDialog.setFile(imageName);
-        } else {
-            fDialog.setDirectory(new File(ImageHelper.fluffPath).getAbsolutePath() + File.separatorChar + ImageHelper.imageMech + File.separatorChar);
-            fDialog.setFile(getMech().getChassis() + " " + getMech().getModel() + ".png");
-        }
-        */
         fDialog.setLocationRelativeTo(this);
-
         fDialog.setVisible(true);
-
         if (fDialog.getFile() != null) {
             String relativeFilePath = new File(fDialog.getDirectory() + fDialog.getFile()).getAbsolutePath();
             relativeFilePath = "." + File.separatorChar + relativeFilePath

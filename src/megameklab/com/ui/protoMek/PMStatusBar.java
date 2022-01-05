@@ -13,26 +13,18 @@
  */
 package megameklab.com.ui.protoMek;
 
-import java.awt.Color;
-import java.awt.FileDialog;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.io.File;
-import java.text.DecimalFormat;
-
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.UIManager;
-
 import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestProtomech;
-import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.util.ITab;
-import megameklab.com.util.ImageHelper;
 import megameklab.com.ui.util.RefreshListener;
+import megameklab.com.ui.util.WrapLayout;
+import megameklab.com.util.ImageHelper;
 import megameklab.com.util.UnitUtil;
+
+import javax.swing.*;
+import java.awt.*;
+import java.io.File;
+import java.text.DecimalFormat;
 
 /**
  * Status bar for protomech construction
@@ -42,8 +34,6 @@ import megameklab.com.util.UnitUtil;
  */
 public class PMStatusBar extends ITab {
     
-    private static final long serialVersionUID = 451172213105975797L;
-
     private final JLabel crits = new JLabel();
     private final JLabel bvLabel = new JLabel();
     private final JLabel tons = new JLabel();
@@ -55,13 +45,15 @@ public class PMStatusBar extends ITab {
 
     private RefreshListener refresh;
 
-    public PMStatusBar(MegaMekLabMainUI parent) {
+    public PMStatusBar(PMMainUI parent) {
         super(parent);
         parentFrame = parent;
 
         formatter = new DecimalFormat();
         EntityVerifier entityVerifier = EntityVerifier.getInstance(new File("data/mechfiles/UnitVerifierOptions.xml"));
         testEntity = new TestProtomech(getProtomech(), entityVerifier.mechOption, null);
+        JButton showEquipmentDatabase = new JButton("Show Equipment Database");
+        showEquipmentDatabase.addActionListener(evt -> parent.getFloatingEquipmentDatabase().setVisible(true));
         JButton btnValidate = new JButton("Validate Unit");
         btnValidate.addActionListener(ev -> UnitUtil.showValidation(getProtomech(), getParentFrame()));
         JButton btnFluffImage = new JButton("Set Fluff Image");
@@ -69,30 +61,16 @@ public class PMStatusBar extends ITab {
         invalid.setText("Invalid");
         invalid.setForeground(Color.RED);
         invalid.setVisible(false);
-        setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.insets = new Insets(5,2,2,20);
-        gbc.anchor = GridBagConstraints.WEST;
-        this.add(btnValidate, gbc);
-        gbc.gridx = 1;
-        this.add(btnFluffImage, gbc);
-        gbc.gridx = 2;
-        this.add(tons, gbc);
-        gbc.gridx = 3;
-        this.add(crits, gbc);
-        gbc.gridx = 4;
-        JLabel heatSink = new JLabel();
-        this.add(heatSink, gbc);
-        gbc.gridx = 5;
-        this.add(bvLabel, gbc);
-        gbc.gridx = 6;
-        this.add(invalid, gbc);
-        gbc.gridx = 7;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 1.0;
-        this.add(cost, gbc);
+
+        setLayout(new WrapLayout(FlowLayout.LEFT, 22, 5));
+        add(showEquipmentDatabase);
+        add(btnValidate);
+        add(btnFluffImage);
+        add(tons);
+        add(crits);
+        add(bvLabel);
+        add(invalid);
+        add(cost);
         refresh();
     }
 

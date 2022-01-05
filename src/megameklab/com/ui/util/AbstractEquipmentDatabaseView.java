@@ -27,10 +27,7 @@ import javax.swing.event.*;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.util.List;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -201,6 +198,14 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
         tableModeButton.addActionListener(this::switchTableMode);
 
         var typeFilterPanel = new JPanel(new WrapLayout(FlowLayout.LEFT));
+        // The following listener deals with resizing problems of WrapLayout
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                typeFilterPanel.invalidate();
+                super.componentResized(e);
+            }
+        });
         typeFilterPanel.add(new JLabel("Show: "));
         if (getUsedButtons().contains(ENERGY)) {
             typeFilterPanel.add(showEnergyButton);
