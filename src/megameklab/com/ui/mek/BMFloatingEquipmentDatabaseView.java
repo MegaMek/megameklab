@@ -16,10 +16,14 @@ package megameklab.com.ui.mek;
 
 import megameklab.com.ui.EntitySource;
 
+import java.util.Collection;
 import java.util.List;
-
 import static megameklab.com.ui.util.EquipmentTableModel.*;
 
+/**
+ * An Equipment Database for Meks.
+ * This table shows only few columns and is suitable for use in a detached dialog.
+ */
 public class BMFloatingEquipmentDatabaseView extends BMEquipmentDatabaseView {
 
     private final List<Integer> columns = List.of(COL_NAME, COL_HEAT, COL_CRIT, COL_TECH, COL_TON);
@@ -29,13 +33,17 @@ public class BMFloatingEquipmentDatabaseView extends BMEquipmentDatabaseView {
     }
 
     @Override
-    protected void updateVisibleColumns() {
-        setColumnsVisible(allColumns, false);
-        setColumnsVisible(columns, true);
+    protected Collection<Integer> getVisibleTableColumns(boolean tableMode) {
+        return columns;
     }
 
     @Override
     protected boolean useSwitchTableColumns() {
+        return false;
+    }
+
+    @Override
+    protected boolean useTextFilter() {
         return false;
     }
 }

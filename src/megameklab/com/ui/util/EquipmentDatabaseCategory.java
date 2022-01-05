@@ -18,6 +18,9 @@ import megamek.common.*;
 import megamek.common.weapons.tag.TAGWeapon;
 import megameklab.com.util.UnitUtil;
 
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import static megamek.common.WeaponType.*;
@@ -55,18 +58,10 @@ public enum EquipmentDatabaseCategory {
             (eq, en) -> UnitUtil.isPhysicalWeapon(eq),
             e -> e.hasETypeFlag(Entity.ETYPE_MECH)),
 
-    WEAPON ("All Weapons",
-            (eq, en) -> ENERGY.passesFilter(eq, en) || BALLISTIC.passesFilter(eq, en)
-            || MISSILE.passesFilter(eq, en) || CAPITAL.passesFilter(eq, en) || PHYSICAL.passesFilter(eq, en)),
-
     AMMO ("Ammo",
             (eq, en) -> (eq instanceof AmmoType) && !(eq instanceof BombType)
             && UnitUtil.canUseAmmo(en, (AmmoType) eq, false),
             e -> e.getWeightClass() != EntityWeightClass.WEIGHT_SMALL_SUPPORT),
-
-    AP ("Anti-Personnel",
-            (eq, en) -> UnitUtil.isBattleArmorAPWeapon(eq),
-            e -> e instanceof BattleArmor),
 
     OTHER ("Other",
             (eq, en) -> ((eq instanceof MiscType)
@@ -88,6 +83,10 @@ public enum EquipmentDatabaseCategory {
             && !eq.hasFlag(F_PINTLE_TURRET)
             || (eq instanceof TAGWeapon)),
 
+    AP ("Anti-Personnel",
+            (eq, en) -> UnitUtil.isBattleArmorAPWeapon(eq),
+            e -> e instanceof BattleArmor),
+
     PROTOTYPE ("Prototype",
             (eq, en) -> (eq instanceof WeaponType) && eq.hasFlag(WeaponType.F_PROTOTYPE),
             e -> !(e instanceof BattleArmor)),
@@ -104,6 +103,12 @@ public enum EquipmentDatabaseCategory {
     UNAVAILABLE ("Unavailable")
             // TODO: Provide MM.ITechManager.isLegal in static form
     ;
+
+    private final static Set<EquipmentDatabaseCategory> showFilters = EnumSet.of(ENERGY, BALLISTIC, MISSILE,
+            ARTILLERY, CAPITAL, PHYSICAL, AMMO, OTHER);
+
+    private final static Set<EquipmentDatabaseCategory> hideFilters = EnumSet.of(PROTOTYPE, AP,
+            ONE_SHOT, UNAVAILABLE);
 
     private final String displayName;
     private final BiFunction<EquipmentType, Entity, Boolean> filter;
@@ -135,5 +140,15 @@ public enum EquipmentDatabaseCategory {
 
     public boolean passesFilter(EquipmentType eq, Entity en) {
         return filter.apply(eq, en);
+    }
+
+    /** Returns a Set of the filters that should act as "Show..." filters. */
+    public static Set<EquipmentDatabaseCategory> getShowFilters() {
+        return Collections.unmodifiableSet(showFilters);
+    }
+
+    /** Returns a Set of the filters that should act as "Hide..." filters. */
+    public static Set<EquipmentDatabaseCategory> getHideFilters() {
+        return Collections.unmodifiableSet(hideFilters);
     }
 }

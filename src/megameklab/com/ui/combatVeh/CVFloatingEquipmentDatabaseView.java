@@ -16,10 +16,14 @@ package megameklab.com.ui.combatVeh;
 
 import megameklab.com.ui.EntitySource;
 
+import java.util.Collection;
 import java.util.List;
-
 import static megameklab.com.ui.util.EquipmentTableModel.*;
 
+/**
+ * An Equipment Database for Combat Vehicles.
+ * This table shows only few columns and is suitable for use in a detached dialog.
+ */
 public class CVFloatingEquipmentDatabaseView extends CVEquipmentDatabaseView {
 
     private final List<Integer> columns = List.of(COL_NAME, COL_HEAT, COL_TECH, COL_TON);
@@ -29,13 +33,17 @@ public class CVFloatingEquipmentDatabaseView extends CVEquipmentDatabaseView {
     }
 
     @Override
-    protected void updateVisibleColumns() {
-        setColumnsVisible(allColumns, false);
-        setColumnsVisible(columns, true);
+    protected Collection<Integer> getVisibleTableColumns(boolean tableMode) {
+        return columns;
     }
 
     @Override
     protected boolean useSwitchTableColumns() {
+        return false;
+    }
+
+    @Override
+    protected boolean useTextFilter() {
         return false;
     }
 }

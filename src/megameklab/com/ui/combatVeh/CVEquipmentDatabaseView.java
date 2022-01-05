@@ -19,10 +19,15 @@ import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.util.AbstractEquipmentDatabaseView;
 import megameklab.com.util.UnitUtil;
 
+import java.util.Collection;
 import java.util.List;
 
 import static megameklab.com.ui.util.EquipmentTableModel.*;
 
+/**
+ * An Equipment Database for Combat Vehicles. This table shows many columns
+ * and is suitable for use in the Equipment Tab.
+ */
 class CVEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
 
     private final List<Integer> fluffColumns = List.of(COL_NAME, COL_TECH, COL_TLEVEL, COL_TRATING, COL_DPROTOTYPE,
@@ -63,9 +68,8 @@ class CVEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
     }
 
     @Override
-    protected void updateVisibleColumns() {
-        setColumnsVisible(allColumns, false);
-        setColumnsVisible(tableMode ? statsColumns : fluffColumns, true);
+    protected Collection<Integer> getVisibleTableColumns(boolean tableMode) {
+        return tableMode ? statsColumns : fluffColumns;
     }
 
 }

@@ -20,7 +20,6 @@ import megamek.common.Mounted;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.generalUnit.AbstractEquipmentTab;
 import megameklab.com.ui.util.AbstractEquipmentDatabaseView;
-import megameklab.com.util.UnitUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,15 +53,11 @@ public class PMEquipmentTab extends AbstractEquipmentTab {
 
     private boolean showInLoadout(Mounted mount) {
         EquipmentType etype = mount.getType();
-        //TODO: Clean up: Not all of these may be relevant for PM
-        return !(UnitUtil.isHeatSink(mount)
-                || etype.hasFlag(MiscType.F_JUMP_JET)
-                || etype.hasFlag(MiscType.F_JUMP_BOOSTER)
-                || etype.hasFlag(MiscType.F_TSM)
-                || etype.hasFlag(MiscType.F_INDUSTRIAL_TSM)
+        return !( etype.hasFlag(MiscType.F_JUMP_JET)
                 || etype.hasFlag(MiscType.F_MASC)
-                || etype.hasFlag(MiscType.F_CHASSIS_MODIFICATION)
-                || UnitUtil.isArmorOrStructure(etype));
+                || etype.hasFlag(MiscType.F_PARTIAL_WING)
+                || etype.hasFlag(MiscType.F_MAGNETIC_CLAMP)
+                || etype.hasFlag(MiscType.F_UMU));
     }
 
 }

@@ -33,7 +33,7 @@ import java.io.File;
 import java.text.DecimalFormat;
 
 /**
- * Status bar for support vehicle construction option. Largely copied from combat vehicle status bar
+ * The Status Bar for Support Vehicles
  */
 class SVStatusBar extends ITab {
 

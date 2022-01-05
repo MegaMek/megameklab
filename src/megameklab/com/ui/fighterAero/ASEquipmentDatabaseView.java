@@ -1,3 +1,17 @@
+/*
+ * MegaMekLab
+ * Copyright (c) 2022 - The MegaMek Team. All Rights Reserved.
+ *
+ * This program is  free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+ * for more details.
+ */
 package megameklab.com.ui.fighterAero;
 
 import megamek.common.*;
@@ -5,10 +19,15 @@ import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.util.AbstractEquipmentDatabaseView;
 import megameklab.com.util.UnitUtil;
 
+import java.util.Collection;
 import java.util.List;
 
 import static megameklab.com.ui.util.EquipmentTableModel.*;
 
+/**
+ * An Equipment Database for Aerospace and Conventional Fighters. This table shows many columns
+ * and is suitable for use in the Equipment Tab.
+ */
 public class ASEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
 
     private final List<Integer> fluffColumns = List.of(COL_NAME, COL_TECH, COL_TLEVEL, COL_TRATING, COL_DPROTOTYPE,
@@ -42,9 +61,8 @@ public class ASEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
     }
 
     @Override
-    protected void updateVisibleColumns() {
-        setColumnsVisible(allColumns, false);
-        setColumnsVisible(tableMode ? statsColumns : fluffColumns, true);
+    protected Collection<Integer> getVisibleTableColumns(boolean tableMode) {
+        return tableMode ? statsColumns : fluffColumns;
     }
 
 }

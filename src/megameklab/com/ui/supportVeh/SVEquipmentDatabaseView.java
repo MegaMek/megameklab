@@ -21,10 +21,15 @@ import megameklab.com.util.UnitUtil;
 import org.apache.logging.log4j.LogManager;
 
 import javax.swing.*;
+import java.util.Collection;
 import java.util.List;
 
 import static megameklab.com.ui.util.EquipmentTableModel.*;
 
+/**
+ * An Equipment Database for Support Vehicles. This table shows many columns
+ * and is suitable for use in the Equipment Tab.
+ */
 public class SVEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
 
     private final List<Integer> fluffColumns = List.of(COL_NAME, COL_TECH, COL_TLEVEL, COL_TRATING, COL_DPROTOTYPE,
@@ -112,9 +117,8 @@ public class SVEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
     }
 
     @Override
-    protected void updateVisibleColumns() {
-        setColumnsVisible(allColumns, false);
-        setColumnsVisible(tableMode ? statsColumns : fluffColumns, true);
+    protected Collection<Integer> getVisibleTableColumns(boolean tableMode) {
+        return tableMode ? statsColumns : fluffColumns;
     }
 
 
