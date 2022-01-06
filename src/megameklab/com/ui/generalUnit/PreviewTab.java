@@ -27,28 +27,35 @@ import javax.swing.*;
 import java.awt.*;
 
 public class PreviewTab extends ITab {
-	private static final long serialVersionUID = -7410436201331568734L;
 
-    private MechViewPanel panelMekView;
-    private MechViewPanel panelTROView;
+    private final MechViewPanel panelMekView;
+    private final MechViewPanel panelTROView;
+    private final LoadoutFluffView fluffView;
 
 	public PreviewTab(EntitySource eSource) {
 	    super(eSource);
-		this.setLayout(new BorderLayout());
+		setLayout(new BorderLayout());
         JTabbedPane panPreview = new JTabbedPane();
-
         panelMekView = new MechViewPanel();
-        panelMekView.setMinimumSize(new java.awt.Dimension(300, 500));
-        panelMekView.setPreferredSize(new java.awt.Dimension(300, 600));
         panPreview.addTab("Summary", panelMekView);
-        
         panelTROView = new MechViewPanel();
         panPreview.addTab("TRO", panelTROView);
-
-        add(panPreview, BorderLayout.CENTER);
-        setBackground(UIManager.getColor("TabbedPane.background"));
+        fluffView = new LoadoutFluffView(eSource);
+        add(panPreview, BorderLayout.LINE_START);
+        add(setupFluffOverview(), BorderLayout.CENTER);
         refresh();
 	}
+
+    private Component setupFluffOverview() {
+        Box fluffOverview = Box.createVerticalBox();
+        fluffOverview.add(Box.createVerticalStrut(8));
+        fluffOverview.add(new JLabel("Fluff Overview of the Unit's Equipment"));
+        fluffOverview.add(Box.createVerticalStrut(8));
+        fluffOverview.add(fluffView);
+
+
+        return fluffOverview;
+    }
 	
 	public void refresh() {
         boolean populateTextFields = true;
@@ -71,6 +78,7 @@ public class PreviewTab extends ITab {
             panelMekView.reset();
             panelTROView.reset();
         }
+        fluffView.refreshTable();
 	}
 	
 }

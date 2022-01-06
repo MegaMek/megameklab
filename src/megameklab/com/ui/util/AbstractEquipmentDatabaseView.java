@@ -180,11 +180,14 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
     }
 
     /**
-     * When this returns true, the "Add" button is shown. By default, this method returns true.
-     * When it is overridden to return false, the "Add" button is hidden but adding equipment is
-     * still possible by pressing Enter in the table.
+     * This method may be overridden to control behaviour. By default, it returns true.<BR>
+     * When it returns true, the "Add" button is shown and adding Equipment with the Enter key
+     * is possible.<BR>
+     * When this returns false, adding equipment to the unit is generally disabled and
+     * none of the "Add" buttons is shown. In this case (only), the addEquipment() method
+     * can be given an empty method body.
      */
-    protected boolean useAddButton() {
+    protected boolean allowAdd() {
         return true;
     }
 
@@ -210,7 +213,7 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
         if (!Collections.disjoint(getUsedButtons(), EquipmentDatabaseCategory.getHideFilters())) {
             buttonPanel.add(getHideFilterPanel());
         }
-        if (useAddButton() || useAddMultipleButton() || useTextFilter() || useSwitchTableColumns()) {
+        if (allowAdd() || useTextFilter() || useSwitchTableColumns()) {
             buttonPanel.add(getMiscPanel());
         }
         return buttonPanel;
@@ -299,18 +302,18 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
      */
     private Component getMiscPanel() {
         var miscPanel = new JPanel(new WrapLayout(FlowLayout.LEFT));
-        if (useAddButton()) {
+        if (allowAdd()) {
             addButton.setMnemonic('A');
             miscPanel.add(addButton);
-        }
-        if (useAddMultipleButton()) {
-            addMultipleButton.addActionListener(e -> addSelectedEquipment((int) addMultipleCount.getValue()));
-            addMultipleCount.addChangeListener(e -> addMultipleButton.setText(ADD_TEXT + addMultipleCount.getValue()));
-            addMultipleButton.setText(ADD_TEXT + addMultipleCount.getValue());
-            miscPanel.add(new JLabel(" - "));
-            miscPanel.add(addMultipleButton);
-            miscPanel.add(addMultipleCount);
-            miscPanel.add(new JLabel(" - "));
+            if (useAddMultipleButton()) {
+                addMultipleButton.addActionListener(e -> addSelectedEquipment((int) addMultipleCount.getValue()));
+                addMultipleCount.addChangeListener(e -> addMultipleButton.setText(ADD_TEXT + addMultipleCount.getValue()));
+                addMultipleButton.setText(ADD_TEXT + addMultipleCount.getValue());
+                miscPanel.add(new JLabel(" - "));
+                miscPanel.add(addMultipleButton);
+                miscPanel.add(addMultipleCount);
+                miscPanel.add(new JLabel(" - "));
+            }
         }
         if (useTextFilter()) {
             txtFilter.getDocument().addDocumentListener(new DocumentListener() {
@@ -348,7 +351,7 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
      */
     private void addSelectedEquipment(int count) {
         assert count >= 1;
-        if (masterEquipmentTable.getSelectedRowCount() >= 1) {
+        if (allowAdd() && masterEquipmentTable.getSelectedRowCount() >= 1) {
             int selected = masterEquipmentTable.convertRowIndexToModel(masterEquipmentTable.getSelectedRow());
             EquipmentType equip = masterEquipmentModel.getType(selected);
             if (canLegallyBeAddedToUnit(equip)) {
