@@ -21,6 +21,7 @@ import megameklab.com.util.CConfig;
 import megameklab.com.util.UnitUtil;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 import static megameklab.com.ui.util.CritCellUtil.*;
@@ -86,7 +87,9 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
             setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, CritCellUtil.CRITCELL_BORDER_COLOR));
         } else if ((cs != null) && UnitUtil.isPreviousCritEmpty(unit, cs, index, loc)) {
             setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, CritCellUtil.CRITCELL_BORDER_COLOR));
-        } 
+        } else {
+            setBorder(new EmptyBorder(0, 0, 0, 0));
+        }
 
         return this;
     }

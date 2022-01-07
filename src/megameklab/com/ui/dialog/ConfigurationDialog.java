@@ -118,6 +118,7 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
         addFields(CConfig.CONFIG_EQUIPMENT);
         addFields(CConfig.CONFIG_AMMO);
         addFields(CConfig.CONFIG_SYSTEMS);
+        addFields(CConfig.CONFIG_NONHITTABLE);
         addFields(CConfig.CONFIG_EMPTY);
         SpringLayoutHelper.setupSpringGrid(panColors, 3);
     }

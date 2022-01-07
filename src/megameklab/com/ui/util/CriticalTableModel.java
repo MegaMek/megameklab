@@ -316,11 +316,14 @@ public class CriticalTableModel extends AbstractTableModel {
 
             String equipmentType = CConfig.CONFIG_EQUIPMENT;
 
-            if (mount.getType() instanceof WeaponType) {
+            if (!mount.getType().isHittable()) {
+                equipmentType = CConfig.CONFIG_NONHITTABLE;
+            } else if (mount.getType() instanceof WeaponType) {
                 equipmentType = CConfig.CONFIG_WEAPONS;
             } else if (mount.getType() instanceof AmmoType) {
                 equipmentType = CConfig.CONFIG_AMMO;
             }
+
             c.setBackground(CConfig.getBackgroundColor(equipmentType));
             c.setForeground(CConfig.getForegroundColor(equipmentType));
             return c;
