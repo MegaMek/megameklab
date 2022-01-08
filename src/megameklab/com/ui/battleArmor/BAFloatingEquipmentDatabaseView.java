@@ -24,7 +24,7 @@ import static megameklab.com.ui.util.EquipmentTableModel.*;
  * An Equipment Database for BattleArmor.
  * This table shows only few columns and is suitable for use in a detached dialog.
  */
-public class BAFloatingEquipmentDatabaseView extends BAEquipmentDatabaseView {
+class BAFloatingEquipmentDatabaseView extends BAEquipmentDatabaseView {
 
     private final List<Integer> columns = List.of(COL_NAME, COL_HEAT, COL_TECH, COL_TON, COL_CRIT);
 

@@ -29,7 +29,7 @@ import static megameklab.com.ui.util.EquipmentTableModel.*;
  * SmallCraft and others)
  * This table shows many columns and is suitable for use in the Equipment Tab.
  */
-public class LAEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
+class LAEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
 
     private final List<Integer> fluffColumns = List.of(COL_NAME, COL_TECH, COL_TLEVEL, COL_TRATING, COL_DPROTOTYPE,
             COL_DPRODUCTION, COL_DCOMMON, COL_DEXTINCT, COL_DREINTRO, COL_COST);

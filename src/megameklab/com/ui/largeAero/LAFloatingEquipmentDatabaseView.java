@@ -25,7 +25,7 @@ import static megameklab.com.ui.util.EquipmentTableModel.*;
  * SmallCraft and others).
  * This table shows only few columns and is suitable for use in a detached dialog.
  */
-public class LAFloatingEquipmentDatabaseView extends LAEquipmentDatabaseView {
+class LAFloatingEquipmentDatabaseView extends LAEquipmentDatabaseView {
 
     private final List<Integer> columns = List.of(COL_NAME, COL_HEAT, COL_TECH, COL_TON);
 

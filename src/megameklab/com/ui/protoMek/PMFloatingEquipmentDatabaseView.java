@@ -24,7 +24,7 @@ import static megameklab.com.ui.util.EquipmentTableModel.*;
  * An Equipment Database for ProtoMeks.
  * This table shows only few columns and is suitable for use in a detached dialog.
  */
-public class PMFloatingEquipmentDatabaseView extends PMEquipmentDatabaseView {
+class PMFloatingEquipmentDatabaseView extends PMEquipmentDatabaseView {
 
     private final List<Integer> columns = List.of(COL_NAME, COL_HEAT, COL_TECH, COL_TON);
 

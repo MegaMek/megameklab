@@ -16,28 +16,17 @@
 
 package megameklab.com.ui.combatVeh;
 
-import java.awt.BorderLayout;
-
-import javax.swing.*;
-
-import megamek.common.Engine;
-import megamek.common.Entity;
-import megamek.common.EntityMovementMode;
-import megamek.common.EquipmentType;
-import megamek.common.ITechManager;
-import megamek.common.SimpleTechLevel;
-import megamek.common.SuperHeavyTank;
-import megamek.common.Tank;
-import megamek.common.TechConstants;
-import megamek.common.VTOL;
+import megamek.common.*;
 import megamek.common.verifier.TestTank;
 import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.dialog.FloatingEquipmentDatabaseDialog;
 import megameklab.com.ui.generalUnit.AbstractEquipmentTab;
 import megameklab.com.ui.generalUnit.FluffTab;
 import megameklab.com.ui.generalUnit.PreviewTab;
-import megameklab.com.ui.mek.BMFloatingEquipmentDatabaseView;
 import megameklab.com.ui.util.TabScrollPane;
+
+import javax.swing.*;
+import java.awt.*;
 
 public class CVMainUI extends MegaMekLabMainUI {
 

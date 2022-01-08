@@ -15,6 +15,7 @@
 package megameklab.com.ui.util;
 
 import megamek.client.ui.swing.GUIPreferences;
+import megamek.client.ui.swing.util.UIUtil;
 import megamek.common.AmmoType;
 import megamek.common.BattleArmor;
 import megamek.common.EquipmentType;
@@ -25,6 +26,7 @@ import megameklab.com.util.UnitUtil;
 import org.apache.logging.log4j.LogManager;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.*;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
@@ -42,8 +44,7 @@ import static megameklab.com.ui.util.EquipmentDatabaseCategory.*;
  * In addition to the abstract methods, implementing classes may override
  * getUsedButtons() to control the shown filter buttons,
  * shouldShow() to control the equipment filtering when the standard filters are not used, and
- * updateVisibleColumns() to control the shown columns. updateVisibleColumns() may make use
- * of boolean tableMode which is toggled by the "Switch Table Mode" button.
+ * getVisibleTableColumns() to control the shown columns.
  */
 public abstract class AbstractEquipmentDatabaseView extends IView {
 
@@ -75,7 +76,7 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
 
     protected final JTextField txtFilter = new JTextField("", 15);
     private final JButton tableModeButton = new JButton("Switch Table Columns");
-    protected boolean tableMode = true;
+    private boolean tableMode = true;
 
     private final List<JToggleButton> filterToggles = List.of(showEnergyButton, showBallisticButton, showMissileButton,
             showArtilleryButton, showPhysicalButton, showCapitalButton, showAmmoButton, showOtherButton);
@@ -84,10 +85,8 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
 
     protected AbstractEquipmentDatabaseView(EntitySource eSource) {
         super(eSource);
-
         masterEquipmentModel = new EquipmentTableModel(eSource.getEntity(), eSource.getTechManager());
         masterEquipmentTable = new EquipmentDatabaseTable(masterEquipmentModel);
-        masterEquipmentTable.getSelectionModel().addListSelectionListener(selectionListener);
         masterEquipmentTable.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "add");
         masterEquipmentTable.getActionMap().put("add", addAction);
 
@@ -102,7 +101,27 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
         sortKeys.add(new RowSorter.SortKey(EquipmentTableModel.COL_NAME, SortOrder.ASCENDING));
         equipmentSorter.setSortKeys(sortKeys);
         masterEquipmentTable.setRowSorter(equipmentSorter);
+        masterEquipmentModel.setData(Collections.list(EquipmentType.getAllTypes()));
+        setupRowFilter();
 
+        setLayout(new BorderLayout());
+        add(setupControlPanel(), BorderLayout.PAGE_START);
+        add(new JScrollPane(masterEquipmentTable), BorderLayout.CENTER);
+        addListeners();
+    }
+
+    private void addListeners() {
+        // Enable the Add and Add Multiple buttons depending on availability of the selected equipment
+        masterEquipmentTable.getSelectionModel().addListSelectionListener(e -> {
+            int selected = masterEquipmentTable.getSelectedRow();
+            EquipmentType etype = null;
+            if (selected >= 0) {
+                etype = masterEquipmentModel.getType(masterEquipmentTable.convertRowIndexToModel(selected));
+            }
+            addButton.setEnabled(canLegallyBeAddedToUnit(etype));
+            addMultipleButton.setEnabled(canLegallyBeAddedToUnit(etype));
+        });
+        // Double-clicking adds the clicked equipment
         masterEquipmentTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -111,13 +130,6 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
                 }
             }
         });
-
-        masterEquipmentModel.setData(Collections.list(EquipmentType.getAllTypes()));
-        setupRowFilter();
-
-        setLayout(new BorderLayout());
-        add(buttonPanel(), BorderLayout.PAGE_START);
-        add(new JScrollPane(masterEquipmentTable), BorderLayout.CENTER);
     }
 
     /**
@@ -180,9 +192,9 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
     }
 
     /**
-     * This method may be overridden to control behaviour. By default, it returns true.<BR>
-     * When it returns true, the "Add" button is shown and adding Equipment with the Enter key
-     * is possible.<BR>
+     * This method may be overridden to disallow adding equipment from this database view.
+     * By default, it returns true. When it returns true, the "Add" button is shown and
+     * adding Equipment with the Enter key is possible.
      * When this returns false, adding equipment to the unit is generally disabled and
      * none of the "Add" buttons is shown. In this case (only), the addEquipment() method
      * can be given an empty method body.
@@ -205,30 +217,35 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
         return true;
     }
 
-    private JComponent buttonPanel() {
+    /** Creates the control panel with the filters and buttons. */
+    private JComponent setupControlPanel() {
         Box buttonPanel = Box.createVerticalBox();
         if (!Collections.disjoint(getUsedButtons(), EquipmentDatabaseCategory.getShowFilters())) {
-            buttonPanel.add(getTypeFilterPanel());
+            buttonPanel.add(setupTypeFilterPanel());
+            buttonPanel.add(Box.createVerticalStrut(4));
         }
         if (!Collections.disjoint(getUsedButtons(), EquipmentDatabaseCategory.getHideFilters())) {
-            buttonPanel.add(getHideFilterPanel());
+            buttonPanel.add(setupHideFilterPanel());
+            buttonPanel.add(Box.createVerticalStrut(4));
         }
         if (allowAdd() || useTextFilter() || useSwitchTableColumns()) {
-            buttonPanel.add(getMiscPanel());
+            buttonPanel.add(setupMiscPanel());
         }
+        buttonPanel.setBorder(new EmptyBorder(5, 2, 5, 2));
         return buttonPanel;
     }
 
     /**
      * Constructs and returns the Panel containing the "Show:" filter toggles.
      */
-    private Component getTypeFilterPanel() {
-        var typeFilterPanel = new JPanel(new WrapLayout(FlowLayout.LEFT));
+    private Component setupTypeFilterPanel() {
+        var buttonPanel = new JPanel(new WrapLayout(FlowLayout.LEFT));
+        buttonPanel.setOpaque(false);
         // The following listener deals with resizing problems of WrapLayout
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
-                typeFilterPanel.invalidate();
+                buttonPanel.invalidate();
                 super.componentResized(e);
             }
         });
@@ -237,62 +254,86 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
         showAllButton.addActionListener(this::showAllEquipmentTypes);
         filterToggles.forEach(b -> b.addActionListener(this::filterToggleHandler));
 
-        typeFilterPanel.add(new JLabel("Show: "));
         if (getUsedButtons().contains(ENERGY)) {
-            typeFilterPanel.add(showEnergyButton);
+            buttonPanel.add(showEnergyButton);
         }
         if (getUsedButtons().contains(BALLISTIC)) {
-            typeFilterPanel.add(showBallisticButton);
+            buttonPanel.add(showBallisticButton);
         }
         if (getUsedButtons().contains(MISSILE)) {
-            typeFilterPanel.add(showMissileButton);
+            buttonPanel.add(showMissileButton);
         }
         if (getUsedButtons().contains(ARTILLERY)) {
-            typeFilterPanel.add(showArtilleryButton);
+            buttonPanel.add(showArtilleryButton);
         }
         if (getUsedButtons().contains(PHYSICAL)) {
-            typeFilterPanel.add(showPhysicalButton);
+            buttonPanel.add(showPhysicalButton);
         }
         if (getUsedButtons().contains(CAPITAL)) {
-            typeFilterPanel.add(showCapitalButton);
+            buttonPanel.add(showCapitalButton);
         }
         if (getUsedButtons().contains(AMMO)) {
-            typeFilterPanel.add(showAmmoButton);
+            buttonPanel.add(showAmmoButton);
         }
         if (getUsedButtons().contains(OTHER)) {
-            typeFilterPanel.add(showOtherButton);
+            buttonPanel.add(showOtherButton);
         }
-        typeFilterPanel.add(showAllButton);
+        buttonPanel.add(showAllButton);
+
+        var showLabel = new JLabel("Show: ");
+        showLabel.setToolTipText("Ctrl-Click a filter to select only that filter.");
+
+        var typeFilterPanel = Box.createHorizontalBox();
+        typeFilterPanel.add(showLabel);
+        typeFilterPanel.add(buttonPanel);
+        typeFilterPanel.setBackground(UIUtil.alternateTableBGColor());
+        typeFilterPanel.setOpaque(true);
+        typeFilterPanel.setBorder(new EmptyBorder(0, 8, 0, 8));
         return typeFilterPanel;
     }
 
     /**
      * Constructs and returns the Panel containing "Hide:" filter toggles
      */
-    private Component getHideFilterPanel() {
-        var hideFilterPanel = new JPanel(new WrapLayout(FlowLayout.LEFT));
-        hideFilterPanel.add(new JLabel("Hide: "));
+    private Component setupHideFilterPanel() {
+        var buttonPanel = new JPanel(new WrapLayout(FlowLayout.LEFT));
+        buttonPanel.setOpaque(false);
+        // The following listener deals with resizing problems of WrapLayout
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                buttonPanel.invalidate();
+                super.componentResized(e);
+            }
+        });
 
         if (getUsedButtons().contains(PROTOTYPE)) {
-            hideFilterPanel.add(hideProtoButton);
+            buttonPanel.add(hideProtoButton);
             hideProtoButton.addItemListener(e -> equipmentSorter.sort());
         }
         if (getUsedButtons().contains(ONE_SHOT)) {
-            hideFilterPanel.add(hideOneShotButton);
+            buttonPanel.add(hideOneShotButton);
             hideOneShotButton.addItemListener(e -> equipmentSorter.sort());
         }
         if (getUsedButtons().contains(TORPEDO)) {
-            hideFilterPanel.add(hideTorpedoButton);
+            buttonPanel.add(hideTorpedoButton);
             hideTorpedoButton.addItemListener(e -> equipmentSorter.sort());
         }
         if (getUsedButtons().contains(AP)) {
-            hideFilterPanel.add(hideAPButton);
+            buttonPanel.add(hideAPButton);
             hideAPButton.addItemListener(e -> equipmentSorter.sort());
         }
         if (getUsedButtons().contains(UNAVAILABLE)) {
-            hideFilterPanel.add(hideUnavailButton);
+            buttonPanel.add(hideUnavailButton);
             hideUnavailButton.addItemListener(e -> equipmentSorter.sort());
         }
+
+        var hideFilterPanel = Box.createHorizontalBox();
+        hideFilterPanel.add(new JLabel("Hide: "));
+        hideFilterPanel.add(buttonPanel);
+        hideFilterPanel.setBackground(UIUtil.alternateTableBGColor());
+        hideFilterPanel.setOpaque(true);
+        hideFilterPanel.setBorder(new EmptyBorder(0, 8, 0, 8));
         return hideFilterPanel;
     }
 
@@ -300,19 +341,20 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
      * Constructs and returns the Panel containing the Add buttons, the Text Filter and
      * the Table Mode button.
      */
-    private Component getMiscPanel() {
+    private Component setupMiscPanel() {
         var miscPanel = new JPanel(new WrapLayout(FlowLayout.LEFT));
         if (allowAdd()) {
             addButton.setMnemonic('A');
+            addButton.setEnabled(false);
             miscPanel.add(addButton);
+            miscPanel.add(Box.createHorizontalStrut(15));
             if (useAddMultipleButton()) {
                 addMultipleButton.addActionListener(e -> addSelectedEquipment((int) addMultipleCount.getValue()));
                 addMultipleCount.addChangeListener(e -> addMultipleButton.setText(ADD_TEXT + addMultipleCount.getValue()));
                 addMultipleButton.setText(ADD_TEXT + addMultipleCount.getValue());
-                miscPanel.add(new JLabel(" - "));
                 miscPanel.add(addMultipleButton);
                 miscPanel.add(addMultipleCount);
-                miscPanel.add(new JLabel(" - "));
+                miscPanel.add(Box.createHorizontalStrut(15));
             }
         }
         if (useTextFilter()) {
@@ -333,21 +375,21 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
             miscPanel.add(new JLabel("Text Filter: "));
             miscPanel.add(txtFilter);
             miscPanel.add(cancelTextFilter);
+            miscPanel.add(Box.createHorizontalStrut(15));
         }
         if (useSwitchTableColumns()) {
             miscPanel.add(tableModeButton);
             tableModeButton.addActionListener(this::switchTableMode);
         }
+        miscPanel.setBackground(UIUtil.alternateTableBGColor());
+        miscPanel.setOpaque(true);
+        miscPanel.setBorder(new EmptyBorder(0, 8, 0, 8));
         return miscPanel;
     }
 
-
-
-
-
     /**
      * Called from the Add and Add Multiple buttons and the {@link AddAction} (when pressing Enter)
-     * to add equipment to the unit.
+     * to add equipment to the unit. Forwards to the overridable addEquipment() method.
      */
     private void addSelectedEquipment(int count) {
         assert count >= 1;
@@ -412,24 +454,6 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
         equipmentSorter.sort();
     }
 
-    /**
-     * Disables/Enables the Add and Add Multiple buttons depending on availability of the
-     * selected equipment.
-     */
-
-    private final ListSelectionListener selectionListener = new ListSelectionListener() {
-        @Override
-        public void valueChanged(ListSelectionEvent e) {
-            int selected = masterEquipmentTable.getSelectedRow();
-            EquipmentType etype = null;
-            if (selected >= 0) {
-                etype = masterEquipmentModel.getType(masterEquipmentTable.convertRowIndexToModel(selected));
-            }
-            addButton.setEnabled(canLegallyBeAddedToUnit(etype));
-            addMultipleButton.setEnabled(canLegallyBeAddedToUnit(etype));
-        }
-    };
-
     /** Returns true when the given equipment is available to be added to the unit. */
     private boolean canLegallyBeAddedToUnit(@Nullable EquipmentType equipment) {
         return (equipment != null) && eSource.getTechManager().isLegal(equipment);
@@ -452,7 +476,11 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
      * Returns true when the given equipment should show up in the database table. This method
      * checks if the equipment is available to the unit type at all and if the filter toggles
      * and text filter show or hide it.
-     * This may be overridden to exclude or include equipment based on other evaluations.
+     * This may be overridden to exclude or include equipment based on other evaluations. For example,
+     * by returning true only for equipment that is part of the unit an inventory can be created
+     * although this inventory will not show the equipment counts. Another option is to reduce
+     * the shown equipment to a predefined warehouse content such as an MHQ Campaign inventory,
+     * although here also, an equipment count is (currently) not supported.
      * @param equipment The equipment type to be shown or hidden
      * @return True when the equipment should be shown, false otherwise
      */
@@ -470,11 +498,16 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
      * ref table columns are checked against the text filter.
      */
     private boolean allowedByTextFilter(EquipmentType equipment) {
+        XTableColumnModel columnModel = (XTableColumnModel) masterEquipmentTable.getColumnModel();
+        boolean techVisible = columnModel.isColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TECH));
+        boolean rulesVisible = columnModel.isColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_REF));
+        String techSearchString = EquipmentTableModel.getTechBaseAsString(equipment).toLowerCase();
+        String rulesSearchString = equipment.getRulesRefs().toLowerCase();
         String lowerCaseSearchString = txtFilter.getText().toLowerCase();
         return txtFilter.getText().isBlank()
                 || equipment.getName().toLowerCase().contains(lowerCaseSearchString)
-                || EquipmentTableModel.getTechBaseAsString(equipment).toLowerCase().contains(lowerCaseSearchString)
-                || equipment.getRulesRefs().toLowerCase().contains(lowerCaseSearchString);
+                || (techVisible && techSearchString.contains(lowerCaseSearchString))
+                || (rulesVisible && rulesSearchString.contains(lowerCaseSearchString));
     }
 
     /**

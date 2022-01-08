@@ -20,9 +20,11 @@ package megameklab.com.ui.supportVeh;
 
 import megamek.common.*;
 import megameklab.com.ui.MegaMekLabMainUI;
-import megameklab.com.ui.combatVeh.CVFloatingEquipmentDatabaseView;
 import megameklab.com.ui.dialog.FloatingEquipmentDatabaseDialog;
-import megameklab.com.ui.generalUnit.*;
+import megameklab.com.ui.generalUnit.AbstractEquipmentTab;
+import megameklab.com.ui.generalUnit.FluffTab;
+import megameklab.com.ui.generalUnit.PreviewTab;
+import megameklab.com.ui.generalUnit.TransportTab;
 import megameklab.com.ui.util.TabScrollPane;
 
 import javax.swing.*;

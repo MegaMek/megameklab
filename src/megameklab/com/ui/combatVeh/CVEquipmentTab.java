@@ -34,7 +34,7 @@ import static java.util.stream.Collectors.toList;
  * @author Taharqa
  * @author Simon (Juliez)
  */
-public class CVEquipmentTab extends AbstractEquipmentTab {
+class CVEquipmentTab extends AbstractEquipmentTab {
 
     public CVEquipmentTab(EntitySource eSource) {
         super(eSource);

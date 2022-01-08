@@ -17,7 +17,6 @@ package megameklab.com.ui.fighterAero;
 
 import megamek.common.*;
 import megameklab.com.ui.MegaMekLabMainUI;
-import megameklab.com.ui.combatVeh.CVFloatingEquipmentDatabaseView;
 import megameklab.com.ui.dialog.FloatingEquipmentDatabaseDialog;
 import megameklab.com.ui.generalUnit.AbstractEquipmentTab;
 import megameklab.com.ui.generalUnit.FluffTab;

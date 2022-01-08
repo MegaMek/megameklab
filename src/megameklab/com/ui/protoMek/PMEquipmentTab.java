@@ -31,7 +31,7 @@ import static java.util.stream.Collectors.toList;
  *
  * @author Simon (Juliez)
  */
-public class PMEquipmentTab extends AbstractEquipmentTab {
+class PMEquipmentTab extends AbstractEquipmentTab {
 
     public PMEquipmentTab(EntitySource eSource) {
         super(eSource);

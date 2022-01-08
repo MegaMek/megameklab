@@ -30,7 +30,6 @@ public class PreviewTab extends ITab {
 
     private final MechViewPanel panelMekView;
     private final MechViewPanel panelTROView;
-    private final LoadoutFluffView fluffView;
 
 	public PreviewTab(EntitySource eSource) {
 	    super(eSource);
@@ -40,23 +39,10 @@ public class PreviewTab extends ITab {
         panPreview.addTab("Summary", panelMekView);
         panelTROView = new MechViewPanel();
         panPreview.addTab("TRO", panelTROView);
-        fluffView = new LoadoutFluffView(eSource);
-        add(panPreview, BorderLayout.LINE_START);
-        add(setupFluffOverview(), BorderLayout.CENTER);
+        add(panPreview, BorderLayout.CENTER);
         refresh();
 	}
 
-    private Component setupFluffOverview() {
-        Box fluffOverview = Box.createVerticalBox();
-        fluffOverview.add(Box.createVerticalStrut(8));
-        fluffOverview.add(new JLabel("Fluff Overview of the Unit's Equipment"));
-        fluffOverview.add(Box.createVerticalStrut(8));
-        fluffOverview.add(fluffView);
-
-
-        return fluffOverview;
-    }
-	
 	public void refresh() {
         boolean populateTextFields = true;
         final Entity selectedUnit = eSource.getEntity();
@@ -78,7 +64,6 @@ public class PreviewTab extends ITab {
             panelMekView.reset();
             panelTROView.reset();
         }
-        fluffView.refreshTable();
 	}
 	
 }

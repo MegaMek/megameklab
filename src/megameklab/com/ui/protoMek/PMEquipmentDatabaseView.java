@@ -31,7 +31,7 @@ import static megameklab.com.ui.util.EquipmentTableModel.*;
  * An Equipment Database for ProtoMeks. This table shows many columns
  * and is suitable for use in the Equipment Tab.
  */
-public class PMEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
+class PMEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
 
     private final List<Integer> fluffColumns = List.of(COL_NAME, COL_TECH, COL_TLEVEL, COL_TRATING, COL_DPROTOTYPE,
             COL_DPRODUCTION, COL_DCOMMON, COL_DEXTINCT, COL_DREINTRO, COL_COST);

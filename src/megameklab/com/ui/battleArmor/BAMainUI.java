@@ -16,21 +16,14 @@
 
 package megameklab.com.ui.battleArmor;
 
-import java.awt.BorderLayout;
-
-import javax.swing.*;
-
-import megamek.common.BattleArmor;
-import megamek.common.Entity;
-import megamek.common.EntityWeightClass;
-import megamek.common.EquipmentType;
-import megamek.common.ITechManager;
-import megamek.common.TechConstants;
+import megamek.common.*;
 import megameklab.com.ui.MegaMekLabMainUI;
-import megameklab.com.ui.combatVeh.CVFloatingEquipmentDatabaseView;
 import megameklab.com.ui.dialog.FloatingEquipmentDatabaseDialog;
 import megameklab.com.ui.generalUnit.FluffTab;
 import megameklab.com.ui.util.TabScrollPane;
+
+import javax.swing.*;
+import java.awt.*;
 
 public class BAMainUI extends MegaMekLabMainUI {
 
