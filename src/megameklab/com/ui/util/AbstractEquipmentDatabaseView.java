@@ -22,6 +22,7 @@ import megamek.common.EquipmentType;
 import megamek.common.Mech;
 import megamek.common.annotations.Nullable;
 import megameklab.com.ui.EntitySource;
+import megameklab.com.util.CConfig;
 import megameklab.com.util.UnitUtil;
 import org.apache.logging.log4j.LogManager;
 
@@ -220,6 +221,7 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
     /** Creates the control panel with the filters and buttons. */
     private JComponent setupControlPanel() {
         Box buttonPanel = Box.createVerticalBox();
+
         if (!Collections.disjoint(getUsedButtons(), EquipmentDatabaseCategory.getShowFilters())) {
             buttonPanel.add(setupTypeFilterPanel());
             buttonPanel.add(Box.createVerticalStrut(4));
@@ -233,6 +235,30 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
         }
         buttonPanel.setBorder(new EmptyBorder(5, 2, 5, 2));
         return buttonPanel;
+    }
+
+    /**
+     * Creates a small info panel ("Ctrl-Click selects only that equipment"). Has a dismiss
+     * button that will prevent it from being shown again.
+     */
+    private JComponent setupUserInfoPanel() {
+        Box userInfoPanel = Box.createHorizontalBox();
+        JButton gotItButton = new JButton("Got it!");
+        gotItButton.setForeground(UIUtil.uiYellow());
+        gotItButton.addActionListener(e -> {
+                    userInfoPanel.setVisible(false);
+                    CConfig.setParam(CConfig.NAG_EQUIPMENT_CTRLCLICK, Boolean.toString(false));
+                }
+        );
+        var userInfoText = new JLabel("Note: Ctrl-Click a filter to select only that equipment type.");
+        userInfoText.setForeground(UIUtil.uiYellow());
+        userInfoPanel.add(userInfoText);
+        userInfoPanel.add(Box.createHorizontalStrut(15));
+        userInfoPanel.add(gotItButton);
+        userInfoPanel.add(Box.createHorizontalGlue());
+        userInfoPanel.setOpaque(true);
+        userInfoPanel.setBorder(new EmptyBorder(5, 5, 1, 5));
+        return userInfoPanel;
     }
 
     /**
@@ -280,12 +306,15 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
         }
         buttonPanel.add(showAllButton);
 
-        var showLabel = new JLabel("Show: ");
-        showLabel.setToolTipText("Ctrl-Click a filter to select only that filter.");
+        var buttonAndInfoPanel = Box.createVerticalBox();
+        if (CConfig.getBooleanParam(CConfig.NAG_EQUIPMENT_CTRLCLICK)) {
+            buttonAndInfoPanel.add(setupUserInfoPanel());
+        }
+        buttonAndInfoPanel.add(buttonPanel);
 
         var typeFilterPanel = Box.createHorizontalBox();
-        typeFilterPanel.add(showLabel);
-        typeFilterPanel.add(buttonPanel);
+        typeFilterPanel.add(new JLabel("Show: "));
+        typeFilterPanel.add(buttonAndInfoPanel);
         typeFilterPanel.setBackground(UIUtil.alternateTableBGColor());
         typeFilterPanel.setOpaque(true);
         typeFilterPanel.setBorder(new EmptyBorder(0, 8, 0, 8));
