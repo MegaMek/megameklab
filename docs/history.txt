@@ -1,6 +1,12 @@
 VERSION HISTORY:
 ----------------
-0.49.6-SNAPSHOT
+0.49.7-SNAPSHOT
++ Issue #901: Fixing Manual BV
++ PR #995: Adding ilClan era image to record sheets, correcting era dates
++ PR #993: Logging: Default Global Exception Handler and Standardized Legacy Logging
++ PR #997: Adding Config Colour for Unhittable Crit Slots (Endo, etc.)
+
+0.49.6 (2021-12-31 2200 UTC)
 + Issue #908: Corrections to the Aero reference tables
 + Issue #943: Add CASE info to ammo on non-Mech Record Sheets
 + Issues #646, #953: Show Ammo Shots and Weapon Maximum Damage in tooltips
@@ -14,7 +20,8 @@ VERSION HISTORY:
 + PR #970: Updating PDF Box to 2.0.24
 + PR #971: Crit Cell and Tooltip Improvements
 + PR #977: Log4j2 2.15.0 Swapover From Log4j1 1.2.17
-+ PR #980: Log4j2 2.17.0 Update
++ PR #980: Log4j2 2.17.1 Update
++ Issue #986: Fixing Hanging Bracket on Aerospace TAG Equipment
 
 0.49.5 (2021-11-06 1800 UTC)
 

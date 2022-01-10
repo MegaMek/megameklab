@@ -326,7 +326,8 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
 
     @Override
     public void manualBVChanged(int manualBV) {
-        getTank().setManualBV(manualBV);
+        UnitUtil.setManualBV(manualBV, getEntity());
+        refresh.refreshStatus();
     }
 
     @Override

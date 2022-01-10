@@ -67,6 +67,9 @@ public final class CritCellUtil {
             if (mounted == null) {
                 cell.setBackground(CConfig.getBackgroundColor(CConfig.CONFIG_EMPTY));
                 cell.setForeground(CConfig.getForegroundColor(CConfig.CONFIG_EMPTY));
+            } else if (!mounted.getType().isHittable()) {
+                cell.setBackground(CConfig.getBackgroundColor(CConfig.CONFIG_NONHITTABLE));
+                cell.setForeground(CConfig.getForegroundColor(CConfig.CONFIG_NONHITTABLE));
             } else if (mounted.getType() instanceof WeaponType) {
                 cell.setBackground(CConfig.getBackgroundColor(CConfig.CONFIG_WEAPONS));
                 cell.setForeground(CConfig.getForegroundColor(CConfig.CONFIG_WEAPONS));

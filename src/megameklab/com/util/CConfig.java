@@ -66,6 +66,7 @@ public class CConfig {
     public static final String CONFIG_EQUIPMENT = "Equipment";
     public static final String CONFIG_SYSTEMS = "Systems";
     public static final String CONFIG_EMPTY = "Empty";
+    public static final String CONFIG_NONHITTABLE = "Nonhittable";
 
     public static final String CONFIG_SAVE_FILE_1 = "Save_File_One";
     public static final String CONFIG_SAVE_FILE_2 = "Save_File_Two";
@@ -75,17 +76,6 @@ public class CConfig {
     public static final String CONFIG_FOREGROUND = "-Foreground";
     public static final String CONFIG_BACKGROUND = "-Background";
 
-    public static final String CONFIG_WEAPONS_FOREGROUND = "Weapons-Foreground";
-    public static final String CONFIG_WEAPONS_BACKGROUND = "Weapons-Background";
-    public static final String CONFIG_AMMO_FOREGROUND = "Ammo-Foreground";
-    public static final String CONFIG_AMMO_BACKGROUND = "Ammo-Background";
-    public static final String CONFIG_EQUIPMENT_FOREGROUND = "Equipment-Foreground";
-    public static final String CONFIG_EQUIPMENT_BACKGROUND = "Equipment-Background";
-    public static final String CONFIG_SYSTEMS_FOREGROUND = "Systems-Foreground";
-    public static final String CONFIG_SYSTEMS_BACKGROUND = "Systems-Background";
-    public static final String CONFIG_EMPTY_FOREGROUND = "Empty-Foreground";
-    public static final String CONFIG_EMPTY_BACKGROUND = "Empty-Background";
-    
     public static final String TECH_PROGRESSION = "techProgression";
     public static final String TECH_USE_YEAR = "techUseYear";
     public static final String TECH_YEAR = "techYear";

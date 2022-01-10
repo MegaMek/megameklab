@@ -249,7 +249,8 @@ public class SVStructureTab extends ITab implements SVBuildListener {
 
     @Override
     public void manualBVChanged(int manualBV) {
-        getSV().setManualBV(manualBV);
+        UnitUtil.setManualBV(manualBV, getEntity());
+        refresh.refreshStatus();
     }
 
     @Override

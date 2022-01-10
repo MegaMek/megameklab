@@ -34,6 +34,12 @@ public interface BuildListener {
     void sourceChanged(String source);
     void techBaseChanged(boolean clan, boolean mixed);
     void techLevelChanged(SimpleTechLevel techLevel);
+
+    /**
+     * Notifies of a change of the manually entered BV. When manualBV is 0 or less, the unit
+     * should be set to not use a manual BV value and the manual BV set to -1.
+     * @param manualBV The entered manual BV; may be invalid (0 or less)
+     */
     void manualBVChanged(int manualBV);
 
     void walkChanged(int walkMP);
@@ -51,30 +57,30 @@ public interface BuildListener {
      * {@link megameklab.com.ui.generalUnit.HeatSinkView#TYPE_DOUBLE_AERO}
      * @param count The number of heat sinks
      */
-    default void heatSinksChanged(int index, int count) {};
+    default void heatSinksChanged(int index, int count) {}
 
     /**
      * Notifies of a change in heat sink type or count for mechs
      * @param hsType        The type of heat sink
      * @param count         The total number of heat sinks
      */
-    default void heatSinksChanged(EquipmentType hsType, int count) {};
+    default void heatSinksChanged(EquipmentType hsType, int count) {}
 
     /**
      * Notifies of a change in the distribution between single and double heat sinks on a unit with
      * prototype double heat sinks.
      * @param prototype  The number of prototype double heat sinks
      */
-    default void redistributePrototypeHS(int prototype) {};
+    default void redistributePrototypeHS(int prototype) {}
 
     /**
      * Notifies of a change in the number of heat sinks that are part of the base chassis of an omni unit
      * @param count The number of fixed heat sinks
      */
-    default void heatSinkBaseCountChanged(int count) {};
+    default void heatSinkBaseCountChanged(int count) {}
 
     // For aerospace units and support vehicles
-    default void fuelTonnageChanged(double tonnage) {};
+    default void fuelTonnageChanged(double tonnage) {}
 
     /**
      * Notify of a change in the amount of fuel. For aerospace this is number of fuel points.
@@ -82,7 +88,7 @@ public interface BuildListener {
      *
      * @param capacity The number of fuel points or range as appropriate to the unit type
      */
-    default void fuelCapacityChanged(int capacity) {};
+    default void fuelCapacityChanged(int capacity) {}
 
     /**
      * Notify of a change in ICE engine fuel type. This is only used for vehicles.

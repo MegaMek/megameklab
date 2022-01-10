@@ -1,5 +1,6 @@
 /*
- * MegaMekLab - Copyright (C) 2008
+ * MegaMekLab
+ * Copyright (c) 2008-2022 - The MegaMek Team. All Rights Reserved.
  *
  * Original author - jtighe (torren@users.sourceforge.net)
  *
@@ -29,7 +30,8 @@ import org.apache.logging.log4j.LogManager;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -42,39 +44,35 @@ public class MegaMekLab {
     public static final String PREFERENCES_FILE = "mmconf/mml.preferences";
     private static MMPreferences preferences = null;
 
-    public static void main(String[] args) {
+    public static void main(String... args) {
+        // First, create a global default exception handler
+        Thread.setDefaultUncaughtExceptionHandler((thread, t) -> {
+            LogManager.getLogger().error("Uncaught Exception Detected", t);
+            final String name = t.getClass().getName();
+            JOptionPane.showMessageDialog(null,
+                    String.format("Uncaught %s detected. Please open up an issue containing all logs and the current unit file at https://github.com/MegaMek/megameklab/issues", name),
+                    "Uncaught " + name, JOptionPane.ERROR_MESSAGE);
+        });
+
+        // Second, let's handle logging
+        MegaMek.showInfo();
+        showInfo();
+        MegaMek.handleLegacyLogging();
+
+        // Third, let's set some default properties
     	System.setProperty("apple.laf.useScreenMenuBar", "true");
         System.setProperty("com.apple.mrj.application.apple.menu.about.name","MegaMekLab");
-        redirectOutput();
-        // Register any fonts in the fonts directory
+
+        // Fourth, register any fonts in the fonts directory
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         List<Font> fontList = new ArrayList<>();
         collectFontsFromDir(Configuration.fontsDir(), fontList);
         for (Font font : fontList) {
             ge.registerFont(font);
         }
-        startup();
-    }
 
-    private static void redirectOutput() {
-        try {
-            System.out.println("Redirecting output to megameklablog.txt");
-            File logDir = new File("logs");
-            if (!logDir.exists()) {
-                logDir.mkdir();
-            }
-            final String logFilename = "logs" + File.separator + "megameklablog.txt";
-            MegaMek.resetLogFile(logFilename);
-            PrintStream ps = new PrintStream(
-                    new BufferedOutputStream(
-                            new FileOutputStream(logFilename,
-                                                 true),
-                            64));
-            System.setOut(ps);
-            System.setErr(ps);
-        } catch (Exception e) {
-            LogManager.getLogger().error("Unable to redirect output to megameklablog.txt", e);
-        }
+        // Finally, let's handle startup
+        startup();
     }
 
     /**
@@ -124,7 +122,6 @@ public class MegaMekLab {
     }
     
     private static void startup() {
-        showInfo();
         Locale.setDefault(Locale.US);
         EquipmentType.initializeTypes();
         MechSummaryCache.getInstance();
@@ -182,7 +179,6 @@ public class MegaMekLab {
         if (preferences == null) {
             preferences = new MMPreferences();
         }
-
         return preferences;
     }
 }

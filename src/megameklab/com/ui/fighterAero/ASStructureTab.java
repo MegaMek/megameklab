@@ -366,7 +366,8 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
 
     @Override
     public void manualBVChanged(int manualBV) {
-        getAero().setManualBV(manualBV);
+        UnitUtil.setManualBV(manualBV, getEntity());
+        refresh.refreshStatus();
     }
 
     @Override
