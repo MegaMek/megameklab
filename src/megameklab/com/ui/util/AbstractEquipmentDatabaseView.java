@@ -382,6 +382,7 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
                 addMultipleButton.addActionListener(e -> addSelectedEquipment((int) addMultipleCount.getValue()));
                 addMultipleCount.addChangeListener(e -> addMultipleButton.setText(ADD_TEXT + addMultipleCount.getValue()));
                 addMultipleButton.setText(ADD_TEXT + addMultipleCount.getValue());
+                addMultipleButton.setEnabled(false);
                 miscPanel.add(addMultipleButton);
                 miscPanel.add(addMultipleCount);
                 miscPanel.add(Box.createHorizontalStrut(15));
