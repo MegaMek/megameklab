@@ -176,7 +176,8 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
      * Returns the filter toggles and buttons to be used in this Equipment Database View.
      * By default, this method returns the standard buttons suitable for the entity as defined in
      * EquipmentDatabaseCategory. It may be overridden, e.g. to hide all filter buttons by
-     * returning an empty Set.
+     * returning an empty Set. When doing this, shouldShow() should be overridden to prevent
+     * the equipment being filtered by the state of the unavailable buttons.
      */
     protected Set<EquipmentDatabaseCategory> getUsedButtons() {
         return Arrays.stream(EquipmentDatabaseCategory.values())
