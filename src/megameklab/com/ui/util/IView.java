@@ -70,7 +70,7 @@ public class IView extends JPanel {
     }
 
     public Infantry getInfantry() {
-    	return (Infantry) eSource.getEntity();
+        return (Infantry) eSource.getEntity();
     }
 
     /**

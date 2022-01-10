@@ -55,7 +55,7 @@ public class MegaMekLab {
         MegaMek.handleLegacyLogging();
 
         // Third, let's set some default properties
-    	System.setProperty("apple.laf.useScreenMenuBar", "true");
+        System.setProperty("apple.laf.useScreenMenuBar", "true");
         System.setProperty("com.apple.mrj.application.apple.menu.about.name","MegaMekLab");
 
         // Fourth, register any fonts in the fonts directory

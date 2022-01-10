@@ -236,12 +236,12 @@ public class UnallocatedView extends IView implements ActionListener, MouseListe
 
             for (int location = 0; location < getEntity().locations(); location++) {
 
-            	if (UnitUtil.isValidLocation(getEntity(), mount.getType(), location)) {
-            		item = new JMenuItem("Add to " + locations[location]);
+                if (UnitUtil.isValidLocation(getEntity(), mount.getType(), location)) {
+                    item = new JMenuItem("Add to " + locations[location]);
                     final int loc = location;
                     item.addActionListener(e1 -> jMenuLoadComponent_actionPerformed(loc, selectedRow));
                     popup.add(item);
-            	}
+                }
 
             }
 

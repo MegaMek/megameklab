@@ -363,7 +363,7 @@ public class BABuildView extends IView implements ActionListener, MouseListener 
                 item = new JMenuItem("Mount as squad support weapon");
                 item.setEnabled(enabled);
                 item.setToolTipText("Ammo can only be squad mounted along " +
-                		"with a weapon that uses it");
+                        "with a weapon that uses it");
                 item.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
                         eq.setSquadSupportWeapon(true);
@@ -463,7 +463,7 @@ public class BABuildView extends IView implements ActionListener, MouseListener 
                             + locName
                             + ")");
                     item.setToolTipText("Ammo can only be mounted in a DWP " +
-                    		"with a valid weapon.");
+                            "with a valid weapon.");
                     item.setEnabled(enabled);
                     item.addActionListener(new ActionListener() {
                         public void actionPerformed(ActionEvent e) {
