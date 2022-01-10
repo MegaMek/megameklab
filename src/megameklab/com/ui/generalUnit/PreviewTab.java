@@ -27,14 +27,14 @@ import javax.swing.*;
 import java.awt.*;
 
 public class PreviewTab extends ITab {
-	private static final long serialVersionUID = -7410436201331568734L;
+    private static final long serialVersionUID = -7410436201331568734L;
 
     private MechViewPanel panelMekView;
     private MechViewPanel panelTROView;
 
-	public PreviewTab(EntitySource eSource) {
-	    super(eSource);
-		this.setLayout(new BorderLayout());
+    public PreviewTab(EntitySource eSource) {
+        super(eSource);
+        this.setLayout(new BorderLayout());
         JTabbedPane panPreview = new JTabbedPane();
 
         panelMekView = new MechViewPanel();
@@ -48,9 +48,9 @@ public class PreviewTab extends ITab {
         add(panPreview, BorderLayout.CENTER);
         setBackground(UIManager.getColor("TabbedPane.background"));
         refresh();
-	}
-	
-	public void refresh() {
+    }
+
+    public void refresh() {
         boolean populateTextFields = true;
         final Entity selectedUnit = eSource.getEntity();
         selectedUnit.recalculateTechAdvancement();
@@ -71,6 +71,6 @@ public class PreviewTab extends ITab {
             panelMekView.reset();
             panelTROView.reset();
         }
-	}
-	
+    }
+
 }

@@ -401,8 +401,8 @@ public class PrintInfantry extends PrintEntity {
      * @param range - the range to the target.
      * @param weapon - the primary weapon if there are no more than one secondary, otherwise secondary
      * @param otherWeapon - secondary weapon if there is exactly one, otherwise null. This is used
-     * 							to account for point blank or encumbering penalties when the secondary
-     * 							weapon is not the basis for range mods.
+     *                    to account for point-blank or encumbering penalties when the secondary
+     *                    weapon is not the basis for range mods.
      * @param underwater - whether the base range should be halved for underwater use by SCUBA platoons.
      * @return - the range mod as a formatted String.
      */

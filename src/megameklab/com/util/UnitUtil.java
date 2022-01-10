@@ -1072,8 +1072,8 @@ public class UnitUtil {
         int ctype = unit.getJumpType();
         if (jjType == ctype) {
             int currentJJ = (int)unit.getMisc().stream().filter(m -> m.getType()
-            		.hasFlag(MiscType.F_JUMP_JET))
-            		.count();
+                    .hasFlag(MiscType.F_JUMP_JET))
+                    .count();
             if (jjAmount < currentJJ) {
                 UnitUtil.removeJumpJets(unit, currentJJ - jjAmount);
                 return;
@@ -3138,18 +3138,18 @@ public class UnitUtil {
             if (weapon.hasFlag(WeaponType.F_ENERGY)
                     || (weapon.hasFlag(WeaponType.F_PLASMA) && (weapon
                             .getAmmoType() == AmmoType.T_PLASMA))) {
-            	return true;
+                return true;
             }
 
             if (weapon.hasFlag(WeaponType.F_ENERGY) && (weapon.hasFlag(WeaponType.F_PLASMA))
-            		&& (weapon.hasFlag(WeaponType.F_BA_WEAPON)))  {
-            	return true;
+                    && (weapon.hasFlag(WeaponType.F_BA_WEAPON)))  {
+                return true;
             }
 
             if (weapon.hasFlag(WeaponType.F_ENERGY)
                         && weapon.hasFlag(WeaponType.F_PLASMA)
                         && (weapon.getAmmoType() == AmmoType.T_NA))
-                		{
+                        {
                     return false;
                 }
 
