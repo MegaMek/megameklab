@@ -69,28 +69,15 @@ class BAEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
         if (equipment.hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK) && !getBattleArmor().canMountDWP()) {
             return false;
         }
+        if ((equipment instanceof MiscType)
+                && (equipment.hasFlag(MiscType.F_BA_MANIPULATOR)
+                || equipment.hasFlag(MiscType.F_PARTIAL_WING)
+                || equipment.hasFlag(MiscType.F_JUMP_BOOSTER)
+                || equipment.hasFlag(MiscType.F_MECHANICAL_JUMP_BOOSTER)
+                || UnitUtil.isJumpJet(equipment))) {
+            return false;
+        }
         return super.shouldShow(equipment);
-//        if ((etype instanceof MiscType)
-//                        && (etype.hasFlag(MiscType.F_TSM)
-//                                || etype.hasFlag(MiscType.F_INDUSTRIAL_TSM)
-//                                || (etype.hasFlag(MiscType.F_MASC)
-//                                        && !etype.hasSubType(
-//                                                MiscType.S_SUPERCHARGER)))) {
-//                    return false;
-//                }
-//
-//                // Don't show equipment that is added via the StructureTab
-//                if ((etype instanceof MiscType )
-//                        && (etype.hasFlag(MiscType.F_BA_MANIPULATOR)
-//                            || etype.hasFlag(MiscType.F_PARTIAL_WING)
-//                            || etype.hasFlag(MiscType.F_JUMP_BOOSTER)
-//                            || etype.hasFlag(MiscType.F_MECHANICAL_JUMP_BOOSTER)
-//                            || etype.hasFlag(MiscType.F_MASC)
-//                            || UnitUtil.isArmorOrStructure(etype)
-//                            || UnitUtil.isJumpJet(etype))) {
-//                    return false;
-//                }
-//
     }
 
     @Override

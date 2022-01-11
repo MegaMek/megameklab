@@ -64,14 +64,12 @@ class BAEquipmentTab extends AbstractEquipmentTab {
 
     private boolean showMiscInLoadout(Mounted mount) {
         EquipmentType etype = mount.getType();
-        //TODO: Clean up: Not all of these may be relevant for BA
-        return !(UnitUtil.isHeatSink(mount)
-                || etype.hasFlag(MiscType.F_JUMP_JET)
+        return !(etype.hasFlag(MiscType.F_JUMP_JET)
                 || etype.hasFlag(MiscType.F_JUMP_BOOSTER)
-                || etype.hasFlag(MiscType.F_TSM)
-                || etype.hasFlag(MiscType.F_INDUSTRIAL_TSM)
+                || etype.hasFlag(MiscType.F_MECHANICAL_JUMP_BOOSTER)
                 || etype.hasFlag(MiscType.F_MASC)
-                || etype.hasFlag(MiscType.F_CHASSIS_MODIFICATION)
+                || etype.hasFlag(MiscType.F_BA_MANIPULATOR)
+                || etype.hasFlag(MiscType.F_PARTIAL_WING)
                 || UnitUtil.isArmorOrStructure(etype));
     }
 

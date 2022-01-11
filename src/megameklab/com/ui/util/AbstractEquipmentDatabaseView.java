@@ -474,14 +474,7 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
      * Called from the Show All button to activate all type filter toggles.
      */
     private void showAllEquipmentTypes(ActionEvent e) {
-        showEnergyButton.setSelected(true);
-        showBallisticButton.setSelected(true);
-        showMissileButton.setSelected(true);
-        showArtilleryButton.setSelected(true);
-        showAmmoButton.setSelected(true);
-        showPhysicalButton.setSelected(true);
-        showCapitalButton.setSelected(true);
-        showOtherButton.setSelected(true);
+        filterToggles.forEach(t -> t.setSelected(true));
         equipmentSorter.sort();
     }
 
