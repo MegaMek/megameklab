@@ -162,6 +162,15 @@ public class PrintProtomech extends PrintEntity {
     }
 
     @Override
+    protected String formatRun() {
+        if (proto.getMASC() != null) {
+            return formatMovement(1.5 * proto.getWalkMP(), 2 * proto.getWalkMP());
+        } else {
+            return formatMovement(1.5 * proto.getWalkMP());
+        }
+    }
+
+    @Override
     protected void drawArmor() {
         super.drawArmor();
         String armorName = EquipmentType.getArmorTypeName(proto.getArmorType(Protomech.LOC_TORSO),
