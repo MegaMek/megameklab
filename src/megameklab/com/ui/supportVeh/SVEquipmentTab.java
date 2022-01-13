@@ -45,27 +45,22 @@ class SVEquipmentTab extends AbstractEquipmentTab {
     }
 
     @Override
-    protected List<Mounted> getLoadout() {
-        List<Mounted> result = new ArrayList<>();
-        result.addAll(getEntity().getWeaponList());
-        result.addAll(getEntity().getAmmo());
-        result.addAll(getEntity().getMisc().stream().filter(this::showInLoadout).collect(toList()));
-        return result;
-    }
-
-    private boolean showInLoadout(Mounted mount) {
+    protected boolean showInLoadout(Mounted mount) {
         EquipmentType etype = mount.getType();
-        return !(UnitUtil.isHeatSink(mount)
-                || etype.hasFlag(MiscType.F_JUMP_JET)
-                || etype.hasFlag(MiscType.F_JUMP_BOOSTER)
-                || etype.hasFlag(MiscType.F_TSM)
-                || etype.hasFlag(MiscType.F_INDUSTRIAL_TSM)
-                || (etype.hasFlag(MiscType.F_MASC)
-                && !etype.hasSubType(MiscType.S_SUPERCHARGER)
-                && !etype.hasSubType(MiscType.S_JETBOOSTER))
-                || (((eSource.getEntity().getEntityType() & Entity.ETYPE_QUADVEE) == Entity.ETYPE_QUADVEE)
-                && etype.hasFlag(MiscType.F_TRACKS))
-                || etype.hasFlag(MiscType.F_CHASSIS_MODIFICATION)
-                || UnitUtil.isArmorOrStructure(etype));
+        return !(etype instanceof MiscType) ||
+                !(UnitUtil.isHeatSink(mount)
+                        || etype.hasFlag(MiscType.F_JUMP_JET)
+                        || etype.hasFlag(MiscType.F_JUMP_BOOSTER)
+                        || etype.hasFlag(MiscType.F_TSM)
+                        || etype.hasFlag(MiscType.F_INDUSTRIAL_TSM)
+                        || (etype.hasFlag(MiscType.F_MASC)
+                        && !etype.hasSubType(MiscType.S_SUPERCHARGER)
+                        && !etype.hasSubType(MiscType.S_JETBOOSTER))
+                        || (((eSource.getEntity().getEntityType() & Entity.ETYPE_QUADVEE) == Entity.ETYPE_QUADVEE)
+                        && etype.hasFlag(MiscType.F_TRACKS))
+                        || etype.hasFlag(MiscType.F_CHASSIS_MODIFICATION)
+                        || etype.hasFlag(MiscType.F_ADVANCED_FIRECONTROL)
+                        || etype.hasFlag(MiscType.F_BASIC_FIRECONTROL)
+                        || UnitUtil.isArmorOrStructure(etype));
     }
 }

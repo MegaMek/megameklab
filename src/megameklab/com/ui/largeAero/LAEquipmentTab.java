@@ -44,11 +44,7 @@ class LAEquipmentTab extends AbstractEquipmentTab {
     }
 
     @Override
-    protected List<Mounted> getLoadout() {
-        return getAero().getEquipment().stream().filter(this::showInLoadout).collect(toList());
-    }
-
-    private boolean showInLoadout(Mounted mount) {
+    protected boolean showInLoadout(Mounted mount) {
         return !(mount.getType() instanceof BayWeapon) && !mount.isWeaponGroup();
     }
 }

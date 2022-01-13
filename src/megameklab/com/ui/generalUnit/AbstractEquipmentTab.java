@@ -29,7 +29,10 @@ import javax.swing.*;
 import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * The base class for Equipment Tabs for all unit types. It shows the equipment database and the
@@ -118,7 +121,22 @@ public abstract class AbstractEquipmentTab extends ITab {
         equipDatabase.setRefresh(refresh);
     }
 
-    protected abstract List<Mounted> getLoadout();
+    private List<Mounted> getLoadout() {
+        return getEntity().getEquipment().stream().filter(this::showInLoadout).collect(toList());
+    }
+
+    /**
+     * This method is called for all of a unit's equipment to determine if it is to be shown
+     * in the loadout view. It may be overridden to hide some equipment in the Equipment Tab's
+     * loadout view to prevent it from being removed here. Use to hide equipment that is
+     * controlled from the Structure Tab.
+     * By default, this method returns true.
+     * @param mount the mounted to be checked
+     * @return true when the given mounted may be shown in the loadout view
+     */
+    protected boolean showInLoadout(Mounted mount) {
+        return true;
+    }
 
     protected abstract AbstractEquipmentDatabaseView getEquipmentDatabaseView();
 

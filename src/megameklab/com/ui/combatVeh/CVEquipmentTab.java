@@ -46,17 +46,10 @@ class CVEquipmentTab extends AbstractEquipmentTab {
     }
 
     @Override
-    protected List<Mounted> getLoadout() {
-        List<Mounted> loadout = new ArrayList<>();
-        loadout.addAll(getTank().getWeaponList());
-        loadout.addAll(getTank().getAmmo());
-        loadout.addAll(getTank().getMisc().stream().filter(this::showInLoadout).collect(toList()));
-        return loadout;
-    }
-
-    private boolean showInLoadout(Mounted mount) {
+    protected boolean showInLoadout(Mounted mount) {
         EquipmentType etype = mount.getType();
-        return !etype.hasFlag(MiscType.F_JUMP_JET) && !UnitUtil.isArmorOrStructure(etype);
+        return !(etype instanceof MiscType) ||
+                (!etype.hasFlag(MiscType.F_JUMP_JET) && !UnitUtil.isArmorOrStructure(etype));
     }
 
 }

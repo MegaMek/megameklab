@@ -44,9 +44,4 @@ class ASEquipmentTab extends AbstractEquipmentTab {
         return new ASEquipmentDatabaseView(eSource);
     }
 
-    @Override
-    protected List<Mounted> getLoadout() {
-        return new ArrayList<>(getEntity().getEquipment());
-    }
-
 }

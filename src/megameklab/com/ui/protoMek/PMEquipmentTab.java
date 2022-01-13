@@ -43,21 +43,14 @@ class PMEquipmentTab extends AbstractEquipmentTab {
     }
 
     @Override
-    protected List<Mounted> getLoadout() {
-        List<Mounted> result = new ArrayList<>();
-        result.addAll(getEntity().getWeaponList());
-        result.addAll(getEntity().getAmmo());
-        result.addAll(getEntity().getMisc().stream().filter(this::showInLoadout).collect(toList()));
-        return result;
-    }
-
-    private boolean showInLoadout(Mounted mount) {
+    protected boolean showInLoadout(Mounted mount) {
         EquipmentType etype = mount.getType();
-        return !( etype.hasFlag(MiscType.F_JUMP_JET)
-                || etype.hasFlag(MiscType.F_MASC)
-                || etype.hasFlag(MiscType.F_PARTIAL_WING)
-                || etype.hasFlag(MiscType.F_MAGNETIC_CLAMP)
-                || etype.hasFlag(MiscType.F_UMU));
+        return !(etype instanceof MiscType) ||
+                !(etype.hasFlag(MiscType.F_JUMP_JET)
+                        || etype.hasFlag(MiscType.F_MASC)
+                        || etype.hasFlag(MiscType.F_PARTIAL_WING)
+                        || etype.hasFlag(MiscType.F_MAGNETIC_CLAMP)
+                        || etype.hasFlag(MiscType.F_UMU));
     }
 
 }

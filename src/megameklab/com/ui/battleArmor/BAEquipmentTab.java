@@ -45,12 +45,11 @@ class BAEquipmentTab extends AbstractEquipmentTab {
     }
 
     @Override
-    protected List<Mounted> getLoadout() {
-        List<Mounted> result = new ArrayList<>();
-        result.addAll(getEntity().getWeaponList().stream().filter(this::showWeaponInLoadout).collect(toList()));
-        result.addAll(getEntity().getAmmo().stream().filter(this::showAmmoInLoadout).collect(toList()));
-        result.addAll(getEntity().getMisc().stream().filter(this::showMiscInLoadout).collect(toList()));
-        return result;
+    protected boolean showInLoadout(Mounted mount) {
+        EquipmentType eType = mount.getType();
+        return ((eType instanceof WeaponType) && showWeaponInLoadout(mount))
+                || ((eType instanceof AmmoType) && showAmmoInLoadout(mount))
+                || ((eType instanceof MiscType) && showMiscInLoadout(mount));
     }
 
     private boolean showWeaponInLoadout(Mounted mount) {
@@ -64,7 +63,8 @@ class BAEquipmentTab extends AbstractEquipmentTab {
 
     private boolean showMiscInLoadout(Mounted mount) {
         EquipmentType etype = mount.getType();
-        return !(etype.hasFlag(MiscType.F_JUMP_JET)
+        return !(etype instanceof MiscType) ||
+                !(etype.hasFlag(MiscType.F_JUMP_JET)
                 || etype.hasFlag(MiscType.F_JUMP_BOOSTER)
                 || etype.hasFlag(MiscType.F_MECHANICAL_JUMP_BOOSTER)
                 || etype.hasFlag(MiscType.F_MASC)

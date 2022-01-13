@@ -47,17 +47,10 @@ class BMEquipmentTab extends AbstractEquipmentTab {
     }
 
     @Override
-    protected List<Mounted> getLoadout() {
-        List<Mounted> result = new ArrayList<>();
-        result.addAll(getMech().getWeaponList());
-        result.addAll(getMech().getAmmo());
-        result.addAll(getMech().getMisc().stream().filter(this::showInLoadout).collect(toList()));
-        return result;
-    }
-
-    private boolean showInLoadout(Mounted mount) {
+    protected boolean showInLoadout(Mounted mount) {
         EquipmentType etype = mount.getType();
-        return !(UnitUtil.isHeatSink(mount)
+        return !(etype instanceof MiscType) ||
+                !(UnitUtil.isHeatSink(mount)
                 || etype.hasFlag(MiscType.F_JUMP_JET)
                 || etype.hasFlag(MiscType.F_JUMP_BOOSTER)
                 || etype.hasFlag(MiscType.F_TSM)
