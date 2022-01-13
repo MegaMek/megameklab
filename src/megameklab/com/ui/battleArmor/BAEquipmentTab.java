@@ -26,10 +26,10 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 
-/*
+/**
  * The Equipment Tab for BattleArmor units showing the equipment database and the current loadout list.
  *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * @author jtighe (torren@users.sourceforge.net)
  * @author Lawson
  * @author Simon (Juliez)
  */

@@ -26,7 +26,7 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 
-/*
+/**
  * The Equipment Tab for ProtoMek units showing the equipment database and the current loadout list.
  *
  * @author Simon (Juliez)

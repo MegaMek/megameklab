@@ -41,7 +41,7 @@ public class PreviewTab extends ITab {
         panPreview.addTab("TRO", panelTROView);
         add(panPreview, BorderLayout.CENTER);
         refresh();
-	}
+    }
 
 	public void refresh() {
         boolean populateTextFields = true;

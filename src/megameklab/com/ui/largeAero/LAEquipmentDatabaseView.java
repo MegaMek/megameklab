@@ -58,13 +58,13 @@ class LAEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
             if (equip instanceof AmmoType) {
                 Mounted aMount = UnitUtil.findUnallocatedAmmo(getAero(), equip);
                 if (null != aMount) {
-                    aMount.setShotsLeft(aMount.getUsableShotsLeft() + ((AmmoType)equip).getShots() * count);
+                    aMount.setShotsLeft(aMount.getUsableShotsLeft() + ((AmmoType) equip).getShots() * count);
                 } else {
                     mount = new Mounted(getAero(), equip);
-                    mount.setShotsLeft(((AmmoType)equip).getShots() * count);
+                    mount.setShotsLeft(((AmmoType) equip).getShots() * count);
                     try {
                         getAero().addEquipment(mount, Entity.LOC_NONE, false);
-                    } catch (LocationFullException lfe) {
+                    } catch (LocationFullException ignored) {
                         // this can't happen, we add to Entity.LOC_NONE
                     }
                 }
@@ -77,7 +77,7 @@ class LAEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
                             UnitUtil.removeOneShotAmmo(eSource.getEntity());
                         }
                     }
-                } catch (LocationFullException lfe) {
+                } catch (LocationFullException ignored) {
                     // Shouldn't happen when adding to LOC_NONE
                 }
             }

@@ -61,7 +61,7 @@ class CVEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
                 if ((equip instanceof WeaponType) && equip.hasFlag(WeaponType.F_ONESHOT)) {
                     UnitUtil.removeOneShotAmmo(eSource.getEntity());
                 }
-            } catch (LocationFullException lfe) {
+            } catch (LocationFullException ignored) {
                 // this can't happen, we add to Entity.LOC_NONE
             }
         }

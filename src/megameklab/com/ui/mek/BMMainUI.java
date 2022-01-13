@@ -205,8 +205,7 @@ public class BMMainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshHeader() {
-        String title = getEntity().getChassis() + " " + getEntity().getModel() + ".mtf";
-        setTitle(title);
+        setTitle(getEntity().getChassis() + " " + getEntity().getModel() + ".mtf");
     }
 
     @Override
@@ -245,7 +244,7 @@ public class BMMainUI extends MegaMekLabMainUI {
     @Override
     public void setVisible(boolean b) {
         super.setVisible(b);
-        if (!b && floatingEquipmentDatabase != null) {
+        if (!b && (floatingEquipmentDatabase != null)) {
             floatingEquipmentDatabase.setVisible(false);
         }
     }

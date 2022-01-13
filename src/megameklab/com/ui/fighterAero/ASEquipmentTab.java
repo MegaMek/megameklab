@@ -24,11 +24,11 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 
-/*
+/**
  * The Equipment Tab for Aerospace and Conventional Fighters showing the equipment
  * database and the current loadout list.
  *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * @author jtighe (torren@users.sourceforge.net)
  * @author arlith
  * @author neoancient
  * @author Simon (Juliez)

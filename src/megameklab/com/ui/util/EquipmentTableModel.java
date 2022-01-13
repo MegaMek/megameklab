@@ -564,7 +564,7 @@ public class EquipmentTableModel extends AbstractTableModel {
                 setForeground(UIManager.getColor("Label.foreground"));
             }
             if (!isSelected) {
-                setBackground((row % 2 != 0) ? alternateTableBGColor() : table.getBackground());
+                setBackground(((row % 2) != 0) ? alternateTableBGColor() : table.getBackground());
             }
             return this;
         }

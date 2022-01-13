@@ -235,7 +235,7 @@ public class SVMainUI extends MegaMekLabMainUI {
     @Override
     public void setVisible(boolean b) {
         super.setVisible(b);
-        if (!b && floatingEquipmentDatabase != null) {
+        if (!b && (floatingEquipmentDatabase != null)) {
             floatingEquipmentDatabase.setVisible(false);
         }
     }

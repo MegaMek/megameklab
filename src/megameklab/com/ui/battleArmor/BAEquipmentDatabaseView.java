@@ -58,7 +58,7 @@ class BAEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
                     mount.setBaMountLoc(BattleArmor.MOUNT_LOC_NONE);
                     getBattleArmor().addEquipment(mount, BattleArmor.LOC_SQUAD,false);
                 }
-            } catch (LocationFullException lfe) {
+            } catch (LocationFullException ignored) {
                 // this can't happen, we add to Entity.LOC_NONE
             }
         }

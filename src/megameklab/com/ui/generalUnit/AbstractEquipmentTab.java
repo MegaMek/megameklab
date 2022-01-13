@@ -31,7 +31,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.List;
 
-/*
+/**
  * The base class for Equipment Tabs for all unit types. It shows the equipment database and the
  * current loadout list.
  * The loadout list is obtained through the abstract method getLoadout() and may be either the full
@@ -39,10 +39,10 @@ import java.util.List;
  * be removed in the Equipment Tab.
  * An EquipmentDatabaseView must be provided through the abstract method getEquipmentDatabaseView.
  *
+ * @author jtighe (torren@users.sourceforge.net)
+ * @author arlith
+ * @author neoancient
  * @author Simon (Juliez)
- * Original author - jtighe (torren@users.sourceforge.net)
- * Original author arlith
- * Original author neoancient
  */
 public abstract class AbstractEquipmentTab extends ITab {
 
@@ -131,8 +131,8 @@ public abstract class AbstractEquipmentTab extends ITab {
                     loadoutModel.removeCrit(location);
                 } catch (IndexOutOfBoundsException ignored) {
                     return;
-                } catch (Exception e) {
-                    LogManager.getLogger().error(e);
+                } catch (Exception ex) {
+                    LogManager.getLogger().error("", ex);
                     return;
                 }
             } else {
@@ -143,7 +143,7 @@ public abstract class AbstractEquipmentTab extends ITab {
 
     private void removeSelectedEquipment(ActionEvent e) {
         int[] selectedRows = loadoutTable.getSelectedRows();
-        for (Integer row : selectedRows){
+        for (Integer row : selectedRows) {
             loadoutModel.removeMounted(row);
         }
         loadoutModel.removeCrits(selectedRows);

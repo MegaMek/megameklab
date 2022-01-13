@@ -65,7 +65,7 @@ class PMEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
         } catch (LocationFullException ex) {
             LogManager.getLogger().error("Location full while trying to add " + equip.getName());
             JOptionPane.showMessageDialog(
-                    this,"Could not add " + equip.getName(),
+                    this, "Could not add " + equip.getName(),
                     "Location Full", JOptionPane.ERROR_MESSAGE);
         }
     }

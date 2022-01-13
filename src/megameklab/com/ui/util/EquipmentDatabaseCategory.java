@@ -123,8 +123,8 @@ public enum EquipmentDatabaseCategory {
     }
 
     EquipmentDatabaseCategory(String displayName,
-                      BiFunction<EquipmentType, Entity, Boolean> filter,
-                      Function<Entity, Boolean> showForEntity) {
+                              BiFunction<EquipmentType, Entity, Boolean> filter,
+                              Function<Entity, Boolean> showForEntity) {
         this.displayName = displayName;
         this.filter = filter;
         this.showForEntity = showForEntity;

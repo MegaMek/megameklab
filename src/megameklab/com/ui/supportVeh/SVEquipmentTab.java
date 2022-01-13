@@ -28,7 +28,7 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 
-/*
+/**
  * The Equipment Tab for Support Vehicles units showing the equipment database and the current loadout list.
  *
  * @author Simon (Juliez)
@@ -63,7 +63,7 @@ class SVEquipmentTab extends AbstractEquipmentTab {
                 || (etype.hasFlag(MiscType.F_MASC)
                 && !etype.hasSubType(MiscType.S_SUPERCHARGER)
                 && !etype.hasSubType(MiscType.S_JETBOOSTER))
-                || ((eSource.getEntity().getEntityType() & Entity.ETYPE_QUADVEE) == Entity.ETYPE_QUADVEE
+                || (((eSource.getEntity().getEntityType() & Entity.ETYPE_QUADVEE) == Entity.ETYPE_QUADVEE)
                 && etype.hasFlag(MiscType.F_TRACKS))
                 || etype.hasFlag(MiscType.F_CHASSIS_MODIFICATION)
                 || UnitUtil.isArmorOrStructure(etype));
