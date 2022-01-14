@@ -35,7 +35,7 @@ import static java.util.stream.Collectors.toList;
  * @author Taharqa
  * @author Simon (Juliez)
  */
-class BMEquipmentTab extends AbstractEquipmentTab {
+public class BMEquipmentTab extends AbstractEquipmentTab {
 
     public BMEquipmentTab(EntitySource eSource) {
         super(eSource);

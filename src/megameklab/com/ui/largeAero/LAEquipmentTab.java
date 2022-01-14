@@ -32,7 +32,7 @@ import static java.util.stream.Collectors.toList;
  * @author neoancient
  * @author Simon (Juliez)
  */
-class LAEquipmentTab extends AbstractEquipmentTab {
+public class LAEquipmentTab extends AbstractEquipmentTab {
 
     public LAEquipmentTab(EntitySource eSource) {
         super(eSource);

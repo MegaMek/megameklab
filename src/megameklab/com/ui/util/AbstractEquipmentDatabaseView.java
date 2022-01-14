@@ -249,6 +249,7 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
         gotItButton.addActionListener(e -> {
                     userInfoPanel.setVisible(false);
                     CConfig.setParam(CConfig.NAG_EQUIPMENT_CTRLCLICK, Boolean.toString(false));
+                    CConfig.saveConfig();
                 }
         );
         var userInfoText = new JLabel("Note: Ctrl-Click a filter to select only that equipment type.");
