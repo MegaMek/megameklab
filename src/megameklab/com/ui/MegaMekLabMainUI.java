@@ -16,8 +16,10 @@
 
 package megameklab.com.ui;
 
+import megamek.MegaMek;
 import megamek.common.Entity;
 import megamek.common.preference.PreferenceManager;
+import megameklab.com.MegaMekLab;
 import megameklab.com.util.CConfig;
 import megameklab.com.ui.util.RefreshListener;
 
@@ -103,21 +105,12 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
         
         if (response == JOptionPane.YES_OPTION) {
             CConfig.setParam("WINDOWSTATE", Integer.toString(getExtendedState()));
-            // Only save position and size if not maximized or minimized.
-            if (getExtendedState() == Frame.NORMAL) {
-                /*
-                 * Not saving this anymore because this is set always to the center of
-                 * screen and big enough to fit all the components for a given MainUI
-                CConfig.setParam("WINDOWHEIGHT", Integer.toString(getHeight()));
-                CConfig.setParam("WINDOWWIDTH", Integer.toString(getWidth()));
-                CConfig.setParam("WINDOWLEFT", Integer.toString(getX()));
-                CConfig.setParam("WINDOWTOP", Integer.toString(getY()));
-                */
-            }
             CConfig.setParam(CConfig.CONFIG_PLAF, UIManager.getLookAndFeel().getClass().getName());
             CConfig.saveConfig();
             PreferenceManager.getInstance().save();
 
+            MegaMek.getPreferences().saveToFile(MegaMek.PREFERENCES_FILE);
+            MegaMekLab.getPreferences().saveToFile(MegaMekLab.PREFERENCES_FILE);
             System.exit(0);
         }
     }

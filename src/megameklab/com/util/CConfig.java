@@ -102,6 +102,8 @@ public class CConfig {
     public static final String RS_SCALE_FACTOR = "rs_scale_factor";
     public static final String RS_SCALE_UNITS = "rs_scale_units";
 
+    public static final String NAG_EQUIPMENT_CTRLCLICK = "nag_equipment_ctrlclick";
+
     /**
      * Player configuration values.
      */
@@ -134,6 +136,7 @@ public class CConfig {
         defaults.setProperty(RS_SHOW_PILOT_DATA, Boolean.toString(true));
         defaults.setProperty(RS_SCALE_FACTOR, "1");
         defaults.setProperty(RS_SCALE_UNITS, RSScale.HEXES.toString());
+        defaults.setProperty(NAG_EQUIPMENT_CTRLCLICK, Boolean.toString(true));
 
         return defaults;
     }

@@ -17,6 +17,7 @@
 package megameklab.com;
 
 import megamek.MegaMek;
+import megamek.client.ui.preferences.MMPreferences;
 import megamek.common.Configuration;
 import megamek.common.EquipmentType;
 import megamek.common.MechSummaryCache;
@@ -39,6 +40,10 @@ import java.util.List;
 import java.util.Locale;
 
 public class MegaMekLab {
+
+    public static final String PREFERENCES_FILE = "mmconf/mml.preferences";
+    private static MMPreferences preferences = null;
+
     public static void main(String... args) {
         // First, create a global default exception handler
         Thread.setDefaultUncaughtExceptionHandler((thread, t) -> {
@@ -128,6 +133,9 @@ public class MegaMekLab {
         CConfig.load();
         UnitUtil.loadFonts();
 
+        MegaMek.getPreferences().loadFromFile(MegaMek.PREFERENCES_FILE);
+        getPreferences().loadFromFile(PREFERENCES_FILE);
+
         // Add additional themes
         UIManager.installLookAndFeel("Flat Light", "com.formdev.flatlaf.FlatLightLaf");
         UIManager.installLookAndFeel("Flat IntelliJ", "com.formdev.flatlaf.FlatIntelliJLaf");
@@ -165,5 +173,12 @@ public class MegaMekLab {
         }
         
         return maxWidth;
+    }
+
+    public static MMPreferences getPreferences() {
+        if (preferences == null) {
+            preferences = new MMPreferences();
+        }
+        return preferences;
     }
 }

@@ -29,24 +29,18 @@ import java.awt.*;
 public class PreviewTab extends ITab {
     private static final long serialVersionUID = -7410436201331568734L;
 
-    private MechViewPanel panelMekView;
-    private MechViewPanel panelTROView;
+    private final MechViewPanel panelMekView;
+    private final MechViewPanel panelTROView;
 
     public PreviewTab(EntitySource eSource) {
         super(eSource);
         this.setLayout(new BorderLayout());
         JTabbedPane panPreview = new JTabbedPane();
-
         panelMekView = new MechViewPanel();
-        panelMekView.setMinimumSize(new java.awt.Dimension(300, 500));
-        panelMekView.setPreferredSize(new java.awt.Dimension(300, 600));
         panPreview.addTab("Summary", panelMekView);
-        
         panelTROView = new MechViewPanel();
         panPreview.addTab("TRO", panelTROView);
-
         add(panPreview, BorderLayout.CENTER);
-        setBackground(UIManager.getColor("TabbedPane.background"));
         refresh();
     }
 

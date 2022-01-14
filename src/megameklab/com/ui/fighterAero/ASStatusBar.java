@@ -13,14 +13,9 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-
 package megameklab.com.ui.fighterAero;
 
-import java.awt.Color;
-import java.awt.FileDialog;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.awt.*;
 import java.io.File;
 import java.text.DecimalFormat;
 
@@ -37,13 +32,12 @@ import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestAero;
 import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.util.ITab;
+import megameklab.com.ui.util.WrapLayout;
 import megameklab.com.util.ImageHelper;
 import megameklab.com.ui.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 
 public class ASStatusBar extends ITab {
-
-    private static final long serialVersionUID = -6754327753693500675L;
 
     private final JLabel bvLabel = new JLabel();
     private final JLabel tons = new JLabel();
@@ -57,11 +51,13 @@ public class ASStatusBar extends ITab {
 
     private RefreshListener refresh;
 
-    public ASStatusBar(MegaMekLabMainUI parent) {
+    public ASStatusBar(ASMainUI parent) {
         super(parent);
         parentFrame = parent;
 
         formatter = new DecimalFormat();
+        JButton showEquipmentDatabase = new JButton("Show Equipment Database");
+        showEquipmentDatabase.addActionListener(evt -> parent.getFloatingEquipmentDatabase().setVisible(true));
         JButton btnValidate = new JButton("Validate Unit");
         btnValidate.addActionListener(evt -> UnitUtil.showValidation(getAero(), getParentFrame()));
         JButton btnFluffImage = new JButton("Set Fluff Image");
@@ -69,29 +65,16 @@ public class ASStatusBar extends ITab {
         invalid.setText("Invalid");
         invalid.setForeground(Color.RED);
         invalid.setVisible(false);
-        setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.insets = new Insets(5,2,2,20);
-        gbc.anchor = GridBagConstraints.WEST;
-        this.add(btnValidate, gbc);
-        gbc.gridx = 1;
-        this.add(btnFluffImage, gbc);
-        gbc.gridx = 2;
-        this.add(tons, gbc);
-        gbc.gridx = 3;
-        this.add(heatSink, gbc);
-        gbc.gridx = 4;
-        this.add(bvLabel, gbc);
-        gbc.gridx = 5;
-        this.add(invalid, gbc);
-        gbc.gridx = 6;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 1.0;
-        this.add(cost, gbc);
 
-
+        setLayout(new WrapLayout(FlowLayout.LEFT, 22, 5));
+        add(showEquipmentDatabase);
+        add(btnValidate);
+        add(btnFluffImage);
+        add(tons);
+        add(heatSink);
+        add(bvLabel);
+        add(invalid);
+        add(cost);
         refresh();
     }
 
@@ -183,16 +166,13 @@ public class ASStatusBar extends ITab {
     }
 
     private void getFluffImage() {
-        //copied from structureTab
         FileDialog fDialog = new FileDialog(getParentFrame(), "Image Path",
                 FileDialog.LOAD);
         fDialog.setDirectory(new File(ImageHelper.fluffPath).getAbsolutePath()
                 + File.separatorChar + ImageHelper.imageMech
                 + File.separatorChar);
         fDialog.setLocationRelativeTo(this);
-
         fDialog.setVisible(true);
-
         if (fDialog.getFile() != null) {
             String relativeFilePath = new File(fDialog.getDirectory()
                     + fDialog.getFile()).getAbsolutePath();
