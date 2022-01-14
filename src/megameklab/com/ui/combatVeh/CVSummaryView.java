@@ -315,9 +315,9 @@ public class CVSummaryView extends IView{
     }
 
     private void runThroughEquipment(TestTank testTank) {
-    	double weightJJ = 0.0f;
-    	double weightEquip = 0.0f;
-    	double weightSponson = 0.0f;
+        double weightJJ = 0.0f;
+        double weightEquip = 0.0f;
+        double weightSponson = 0.0f;
 
         for (Mounted m : getTank().getMisc()) {
             MiscType mt = (MiscType) m.getType();

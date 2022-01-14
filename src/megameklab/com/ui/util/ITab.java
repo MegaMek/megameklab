@@ -24,10 +24,6 @@ import megamek.common.*;
 import megameklab.com.ui.EntitySource;
 
 public class ITab extends JPanel {
-
-    /**
-     * 
-     */
     private static final long serialVersionUID = -5771036622436158024L;
     protected EntitySource eSource;
 
@@ -70,7 +66,7 @@ public class ITab extends JPanel {
     }
     
     public Infantry getInfantry() {
-    	return (Infantry) eSource.getEntity();
+        return (Infantry) eSource.getEntity();
     }
 
     protected void setFieldSize(JComponent box, Dimension maxSize) {
@@ -78,5 +74,4 @@ public class ITab extends JPanel {
         box.setMaximumSize(maxSize);
         box.setMinimumSize(maxSize);
     }
-
 }
