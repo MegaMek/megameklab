@@ -65,7 +65,7 @@ public class PMBuildView extends IView implements ActionListener, MouseListener 
         super(eSource);
 
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-        equipmentList = new CriticalTableModel(getProtomech(), CriticalTableModel.BUILDTABLE);
+        equipmentList = new CriticalTableModel(getProtoMek(), CriticalTableModel.BUILDTABLE);
 
         equipmentTable.setModel(equipmentList);
         equipmentTable.setDragEnabled(true);
@@ -99,17 +99,17 @@ public class PMBuildView extends IView implements ActionListener, MouseListener 
     private void loadEquipmentTable() {
         equipmentList.removeAllCrits();
         masterEquipmentList.clear();
-        for (Mounted mount : getProtomech().getMisc()) {
+        for (Mounted mount : getProtoMek().getMisc()) {
             if (mount.getLocation() == Entity.LOC_NONE) {
                 masterEquipmentList.add(mount);
             }
         }
-        for (Mounted mount : getProtomech().getWeaponList()) {
+        for (Mounted mount : getProtoMek().getWeaponList()) {
             if (mount.getLocation() == Entity.LOC_NONE) {
                 masterEquipmentList.add(mount);
             }
         }
-        for (Mounted mount : getProtomech().getAmmo()) {
+        for (Mounted mount : getProtoMek().getAmmo()) {
             if ((mount.getLocation() == Entity.LOC_NONE) && !mount.isOneShotAmmo()) {
                 masterEquipmentList.add(mount);
             }
@@ -167,7 +167,7 @@ public class PMBuildView extends IView implements ActionListener, MouseListener 
     }
 
     private void fireTableRefresh() {
-        equipmentList.updateUnit(getProtomech());
+        equipmentList.updateUnit(getProtoMek());
         equipmentList.refreshModel();
     }
 
@@ -203,11 +203,11 @@ public class PMBuildView extends IView implements ActionListener, MouseListener 
             final int selectedRow = equipmentTable.rowAtPoint(e.getPoint());
             String[] locations;
 
-            locations = getProtomech().getLocationNames();
+            locations = getProtoMek().getLocationNames();
             Mounted mount = (Mounted)equipmentTable.getModel().getValueAt(selectedRow, CriticalTableModel.EQUIPMENT);
 
-            for (int location = 0; location < getProtomech().locations(); location++) {
-                if (UnitUtil.protomechHasRoom(getProtomech(), location, mount)) {
+            for (int location = 0; location < getProtoMek().locations(); location++) {
+                if (UnitUtil.protomechHasRoom(getProtoMek(), location, mount)) {
                     item = new JMenuItem("Add to " + locations[location]);
                     final int loc = location;
                     item.addActionListener(ev -> addToLocation(loc, mount));
@@ -225,7 +225,7 @@ public class PMBuildView extends IView implements ActionListener, MouseListener 
     }
 
     private void addToLocation(int location, Mounted mount) {
-        UnitUtil.changeMountStatus(getProtomech(), mount, location, -1, false);
+        UnitUtil.changeMountStatus(getProtoMek(), mount, location, -1, false);
 
         // go back up to grandparent build tab and fire a full refresh.
         ((PMBuildTab) getParent().getParent()).refreshAll();

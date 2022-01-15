@@ -20,10 +20,11 @@ package megameklab.com.ui.supportVeh;
 
 import megamek.common.*;
 import megameklab.com.ui.MegaMekLabMainUI;
-import megameklab.com.ui.generalUnit.TransportTab;
-import megameklab.com.ui.generalUnit.EquipmentTab;
+import megameklab.com.ui.dialog.FloatingEquipmentDatabaseDialog;
+import megameklab.com.ui.generalUnit.AbstractEquipmentTab;
 import megameklab.com.ui.generalUnit.FluffTab;
 import megameklab.com.ui.generalUnit.PreviewTab;
+import megameklab.com.ui.generalUnit.TransportTab;
 import megameklab.com.ui.util.TabScrollPane;
 
 import javax.swing.*;
@@ -36,12 +37,13 @@ public class SVMainUI extends MegaMekLabMainUI {
     private final JTabbedPane configPane = new JTabbedPane(SwingConstants.TOP);
     private SVStructureTab structureTab;
     private SVArmorTab armorTab;
-    private EquipmentTab equipmentTab;
+    private AbstractEquipmentTab equipmentTab;
     private TransportTab transportTab;
     private PreviewTab previewTab;
     private SVBuildTab buildTab;
     private FluffTab fluffTab;
     private SVStatusBar statusbar;
+    private FloatingEquipmentDatabaseDialog floatingEquipmentDatabase;
 
     public SVMainUI() {
         super();
@@ -58,8 +60,8 @@ public class SVMainUI extends MegaMekLabMainUI {
         statusbar = new SVStatusBar(this);
         structureTab = new SVStructureTab(this);
         armorTab = new SVArmorTab(this, structureTab.getTechManager());
-        equipmentTab = new EquipmentTab(this);
-        buildTab = new SVBuildTab(this, equipmentTab);
+        equipmentTab = new SVEquipmentTab(this);
+        buildTab = new SVBuildTab(this);
         transportTab = new TransportTab(this);
         fluffTab = new FluffTab(this);
         structureTab.addRefreshedListener(this);
@@ -82,6 +84,12 @@ public class SVMainUI extends MegaMekLabMainUI {
         add(configPane, BorderLayout.CENTER);
         add(statusbar, BorderLayout.SOUTH);
 
+        if (floatingEquipmentDatabase != null) {
+            floatingEquipmentDatabase.setVisible(false);
+        }
+        floatingEquipmentDatabase = new FloatingEquipmentDatabaseDialog(this, new SVFloatingEquipmentDatabaseView(this));
+        floatingEquipmentDatabase.setRefresh(this);
+
         refreshHeader();
         validate();
     }
@@ -95,8 +103,8 @@ public class SVMainUI extends MegaMekLabMainUI {
         transportTab.refresh();
         statusbar.refresh();
         previewTab.refresh();
+        floatingEquipmentDatabase.refresh();
         refreshHeader();
-//        repaint();
     }
 
     @Override
@@ -212,10 +220,23 @@ public class SVMainUI extends MegaMekLabMainUI {
     @Override
     public void refreshEquipmentTable() {
         equipmentTab.refreshTable();
+        floatingEquipmentDatabase.refresh();
     }
 
     @Override
     public ITechManager getTechManager() {
         return structureTab.getTechManager();
+    }
+
+    public JDialog getFloatingEquipmentDatabase() {
+        return floatingEquipmentDatabase;
+    }
+
+    @Override
+    public void setVisible(boolean b) {
+        super.setVisible(b);
+        if (!b && (floatingEquipmentDatabase != null)) {
+            floatingEquipmentDatabase.setVisible(false);
+        }
     }
 }

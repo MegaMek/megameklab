@@ -13,24 +13,17 @@
  */
 package megameklab.com.ui.protoMek;
 
-import java.awt.BorderLayout;
-
-import javax.swing.*;
-
-import megamek.common.Engine;
-import megamek.common.Entity;
-import megamek.common.EntityMovementMode;
-import megamek.common.EquipmentType;
-import megamek.common.ITechManager;
-import megamek.common.Protomech;
-import megamek.common.SimpleTechLevel;
-import megamek.common.TechConstants;
+import megamek.common.*;
 import megamek.common.verifier.TestProtomech;
 import megameklab.com.ui.MegaMekLabMainUI;
-import megameklab.com.ui.generalUnit.EquipmentTab;
+import megameklab.com.ui.dialog.FloatingEquipmentDatabaseDialog;
+import megameklab.com.ui.generalUnit.AbstractEquipmentTab;
 import megameklab.com.ui.generalUnit.FluffTab;
 import megameklab.com.ui.generalUnit.PreviewTab;
 import megameklab.com.ui.util.TabScrollPane;
+
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * Main UI for building protomechs
@@ -45,10 +38,11 @@ public class PMMainUI extends MegaMekLabMainUI {
     private final JTabbedPane configPane = new JTabbedPane(SwingConstants.TOP);
 
     private PMStructureTab structureTab;
-    private EquipmentTab equipmentTab;
+    private AbstractEquipmentTab equipmentTab;
     private PreviewTab previewTab;
     private PMBuildTab buildTab;
     private PMStatusBar statusbar;
+    private FloatingEquipmentDatabaseDialog floatingEquipmentDatabase;
 
     public PMMainUI() {
         super();
@@ -65,8 +59,8 @@ public class PMMainUI extends MegaMekLabMainUI {
         structureTab = new PMStructureTab(this);
         previewTab = new PreviewTab(this);
         statusbar = new PMStatusBar(this);
-        equipmentTab = new EquipmentTab(this);
-        buildTab = new PMBuildTab(this, equipmentTab, this);
+        equipmentTab = new PMEquipmentTab(this);
+        buildTab = new PMBuildTab(this, this);
         FluffTab fluffTab = new FluffTab(this);
         structureTab.addRefreshedListener(this);
         equipmentTab.addRefreshedListener(this);
@@ -81,6 +75,12 @@ public class PMMainUI extends MegaMekLabMainUI {
 
         add(configPane, BorderLayout.CENTER);
         add(statusbar, BorderLayout.SOUTH);
+
+        if (floatingEquipmentDatabase != null) {
+            floatingEquipmentDatabase.setVisible(false);
+        }
+        floatingEquipmentDatabase = new FloatingEquipmentDatabaseDialog(this, new PMFloatingEquipmentDatabaseView(this));
+        floatingEquipmentDatabase.setRefresh(this);
 
         refreshHeader();
         validate();
@@ -131,6 +131,7 @@ public class PMMainUI extends MegaMekLabMainUI {
         equipmentTab.refresh();
         buildTab.refresh();
         previewTab.refresh();
+        floatingEquipmentDatabase.refresh();
     }
 
     @Override
@@ -184,6 +185,7 @@ public class PMMainUI extends MegaMekLabMainUI {
     @Override
     public void refreshEquipmentTable() {
         equipmentTab.refreshTable();
+        floatingEquipmentDatabase.refresh();
     }
 
     @Override
@@ -191,4 +193,15 @@ public class PMMainUI extends MegaMekLabMainUI {
         return structureTab.getTechManager();
     }
 
+    public JDialog getFloatingEquipmentDatabase() {
+        return floatingEquipmentDatabase;
+    }
+
+    @Override
+    public void setVisible(boolean b) {
+        super.setVisible(b);
+        if (!b && (floatingEquipmentDatabase != null)) {
+            floatingEquipmentDatabase.setVisible(false);
+        }
+    }
 }

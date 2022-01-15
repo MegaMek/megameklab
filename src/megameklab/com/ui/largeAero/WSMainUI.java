@@ -16,7 +16,8 @@ package megameklab.com.ui.largeAero;
 import megamek.common.*;
 import megamek.common.verifier.TestAdvancedAerospace;
 import megameklab.com.ui.MegaMekLabMainUI;
-import megameklab.com.ui.generalUnit.AeroEquipmentTab;
+import megameklab.com.ui.dialog.FloatingEquipmentDatabaseDialog;
+import megameklab.com.ui.generalUnit.AbstractEquipmentTab;
 import megameklab.com.ui.generalUnit.FluffTab;
 import megameklab.com.ui.generalUnit.PreviewTab;
 import megameklab.com.ui.generalUnit.TransportTab;
@@ -36,12 +37,13 @@ public class WSMainUI extends MegaMekLabMainUI {
     
     JTabbedPane configPane = new JTabbedPane(SwingConstants.TOP);
     private WSStructureTab structureTab;
-    private AeroEquipmentTab equipmentTab;
+    private AbstractEquipmentTab equipmentTab;
     private PreviewTab previewTab;
     private LABuildTab buildTab;
     private TransportTab transportTab;
     private FluffTab fluffTab;
     private WSStatusBar statusbar;
+    private FloatingEquipmentDatabaseDialog floatingEquipmentDatabase;
     
     public WSMainUI(boolean primitive) {
         super();
@@ -63,6 +65,7 @@ public class WSMainUI extends MegaMekLabMainUI {
     @Override
     public void refreshEquipmentTable() {
         equipmentTab.refreshTable();
+        floatingEquipmentDatabase.refresh();
     }
     
     @Override
@@ -162,8 +165,8 @@ public class WSMainUI extends MegaMekLabMainUI {
         structureTab = new WSStructureTab(this);
         previewTab = new PreviewTab(this);
         statusbar = new WSStatusBar(this);
-        equipmentTab = new AeroEquipmentTab(this);
-        buildTab = new LABuildTab(this, equipmentTab);
+        equipmentTab = new LAEquipmentTab(this);
+        buildTab = new LABuildTab(this);
         fluffTab = new FluffTab(this);
         transportTab = new TransportTab(this);
         structureTab.addRefreshedListener(this);
@@ -183,6 +186,12 @@ public class WSMainUI extends MegaMekLabMainUI {
         add(configPane, BorderLayout.CENTER);
         add(statusbar, BorderLayout.SOUTH);
 
+        if (floatingEquipmentDatabase != null) {
+            floatingEquipmentDatabase.setVisible(false);
+        }
+        floatingEquipmentDatabase = new FloatingEquipmentDatabaseDialog(this, new LAFloatingEquipmentDatabaseView(this));
+        floatingEquipmentDatabase.setRefresh(this);
+
         refreshHeader();
         validate();
     }
@@ -194,6 +203,7 @@ public class WSMainUI extends MegaMekLabMainUI {
         equipmentTab.refresh();
         buildTab.refresh();
         previewTab.refresh();
+        floatingEquipmentDatabase.refresh();
     }
 
     @Override
@@ -235,4 +245,15 @@ public class WSMainUI extends MegaMekLabMainUI {
         previewTab.refresh();
     }
 
+    public JDialog getFloatingEquipmentDatabase() {
+        return floatingEquipmentDatabase;
+    }
+
+    @Override
+    public void setVisible(boolean b) {
+        super.setVisible(b);
+        if (!b && (floatingEquipmentDatabase != null)) {
+            floatingEquipmentDatabase.setVisible(false);
+        }
+    }
 }

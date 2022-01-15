@@ -1933,8 +1933,8 @@ public class UnitUtil {
                 Mounted mount = cs.getMount();
 
                 if (!UnitUtil.isFixedLocationSpreadEquipment(mount.getType())
-                        && (UnitUtil.isTSM(mount.getType()) || UnitUtil
-                                .isArmorOrStructure(mount.getType()))) {
+                        && (UnitUtil.isTSM(mount.getType())
+                        || UnitUtil.isArmorOrStructure(mount.getType()))) {
                     Mounted newMount = new Mounted(unit, mount.getType());
                     newMount.setLocation(location, mount.isRearMounted());
                     newMount.setArmored(mount.isArmored());
@@ -2029,8 +2029,8 @@ public class UnitUtil {
                 locations.add(Mech.LOC_CT);
                 blocks = 3;
             } else if ((equip.hasFlag(MiscType.F_VOIDSIG)
-                    || equip.hasFlag(MiscType.F_NULLSIG) || equip
-                        .hasFlag(MiscType.F_BLUE_SHIELD))) {
+                    || equip.hasFlag(MiscType.F_NULLSIG)
+                    || equip.hasFlag(MiscType.F_BLUE_SHIELD))) {
                 // Need to account for the center leg
                 if (unit instanceof TripodMech){
                     blocks++;
@@ -2065,14 +2065,10 @@ public class UnitUtil {
                             firstBlock = false;
                         }
                         if (locations.get(0) == Entity.LOC_NONE) {
-                            // only user-placable spread stuff gets location
-                            // none
-                            // for those, we need to create a mount for each
-                            // crit,
-                            // otherwise we can't correctly let the user place
-                            // them
-                            // luckily, that only affects TSM, so BV works out
-                            // correctly
+                            // only user-placable spread stuff gets location none
+                            // for those, we need to create a mount for each crit,
+                            // otherwise we can't correctly let the user place them
+                            // luckily, that only affects TSM, so BV works out correctly
                             mount = new Mounted(unit, equip);
                         }
                     } else {
@@ -2084,8 +2080,7 @@ public class UnitUtil {
                                     "No room for equipment",
                                     mount.getName()
                                             + " does not fit into "
-                                            + unit.getLocationName(locations
-                                                    .get(0)),
+                                            + unit.getLocationName(locations.get(0)),
                                     JOptionPane.INFORMATION_MESSAGE);
                             unit.getMisc().remove(mount);
                             unit.getEquipment().remove(mount);
@@ -2888,14 +2883,24 @@ public class UnitUtil {
         return true;
     }
 
+    /**
+     * Returns true if the given Equipment is available as equipment to the given Mek.
+     * Only valid to use for MiscTypes, not WeaponTypes nor AmmoTypes, also physical
+     * weapons return false despite being MiscType.
+     *
+     * @param eq The tested equipment
+     * @param unit The Mek unit
+     * @return true if the equipment is usable by the Mek
+     */
+    // TODO: Make this behave like the other isXYZEquipment
     public static boolean isMechEquipment(EquipmentType eq, Mech unit) {
 
         if (UnitUtil.isArmorOrStructure(eq)) {
             return false;
         }
 
-        if ((eq instanceof CLTAG) || (eq instanceof ISC3MBS)
-                || (eq instanceof ISC3M) || (eq instanceof ISTAG)
+        if ((eq instanceof CLTAG) || (eq instanceof megamek.common.weapons.tag.ISC3MBS)
+                || (eq instanceof megamek.common.weapons.tag.ISC3M) || (eq instanceof ISTAG)
                 || (eq instanceof AmmoType && ((AmmoType) eq).getAmmoType() == AmmoType.T_COOLANT_POD)
                 || (eq instanceof CLLightTAG)
                 || (eq instanceof ISAMS)
@@ -3061,6 +3066,14 @@ public class UnitUtil {
         return false;
     }
 
+    /**
+     * Returns true if the given Equipment is available as equipment to the given Support
+     * Vehicle. Includes WeaponTypes, AmmoTypes and MiscTypes.
+     *
+     * @param eq The tested equipment
+     * @param unit The support vehicles. May be an Aero or Tank subtype
+     * @return true if the equipment is usable by the entity
+     */
     public static boolean isSupportVehicleEquipment(EquipmentType eq, Entity unit) {
         if ((unit.getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT)
                 && ((eq.getTonnage(unit) >= 5.0)
@@ -3099,9 +3112,9 @@ public class UnitUtil {
         return false;
     }
 
-    public static boolean isBattleArmorAPWeapon(EquipmentType etype){
+    public static boolean isBattleArmorAPWeapon(EquipmentType etype) {
         InfantryWeapon infWeap = null;
-        if ((etype == null) || !(etype instanceof InfantryWeapon)){
+        if ((etype == null) || !(etype instanceof InfantryWeapon)) {
             return false;
         } else {
             infWeap = (InfantryWeapon)etype;
@@ -3194,8 +3207,8 @@ public class UnitUtil {
             return true;
         }
 
-        if ((eq instanceof CLTAG) || (eq instanceof ISC3M)
-                || (eq instanceof ISC3MBS)
+        if ((eq instanceof CLTAG) || (eq instanceof megamek.common.weapons.tag.ISC3M)
+                || (eq instanceof megamek.common.weapons.tag.ISC3MBS)
                 || (eq instanceof ISTAG) || (eq instanceof CLLightTAG)) {
             return true;
         }

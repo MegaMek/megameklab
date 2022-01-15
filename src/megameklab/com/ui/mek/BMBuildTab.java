@@ -46,7 +46,7 @@ public class BMBuildTab extends ITab implements ActionListener {
     private String RESETCOMMAND = "resetbuttoncommand";
     private String COMPACTCOMMAND = "compactbuttoncommand";
 
-    public BMBuildTab(EntitySource eSource, BMEquipmentTab equipment) {
+    public BMBuildTab(EntitySource eSource) {
         super(eSource);
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         mainPanel.setLayout(new GridBagLayout());

@@ -16,32 +16,21 @@
 
 package megameklab.com.ui.battleArmor;
 
-import java.awt.Color;
-import java.awt.FileDialog;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.io.File;
-import java.text.DecimalFormat;
-
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.UIManager;
-
 import megamek.common.BattleArmor;
 import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestBattleArmor;
-import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.util.ITab;
-import megameklab.com.util.ImageHelper;
 import megameklab.com.ui.util.RefreshListener;
+import megameklab.com.ui.util.WrapLayout;
+import megameklab.com.util.ImageHelper;
 import megameklab.com.util.UnitUtil;
 
-public class BAStatusBar extends ITab {
+import javax.swing.*;
+import java.awt.*;
+import java.io.File;
+import java.text.DecimalFormat;
 
-    private static final long serialVersionUID = -6754327753693500675L;
+public class BAStatusBar extends ITab {
 
     private final JPanel tonnagePanel = new JPanel();
     private final JPanel movementPanel = new JPanel();
@@ -58,10 +47,12 @@ public class BAStatusBar extends ITab {
     private final JFrame parentFrame;
 
     private RefreshListener refresh;
-    public BAStatusBar(final MegaMekLabMainUI parent) {
+    public BAStatusBar(final BAMainUI parent) {
         super(parent);
         parentFrame = parent;
         formatter = new DecimalFormat();
+        JButton showEquipmentDatabase = new JButton("Show Equipment Database");
+        showEquipmentDatabase.addActionListener(evt -> parent.getFloatingEquipmentDatabase().setVisible(true));
         JButton btnValidate = new JButton("Validate Unit");
         btnValidate.addActionListener(evt -> UnitUtil.showValidation(getBattleArmor(), getParentFrame()));
         JButton btnFluffImage = new JButton("Set Fluff Image");
@@ -69,32 +60,16 @@ public class BAStatusBar extends ITab {
         invalid.setText("Invalid");
         invalid.setForeground(Color.RED);
         invalid.setVisible(false);
-        setLayout(new GridBagLayout());
-        this.add(movementPanel());
-        this.add(bvPanel());
-        this.add(tonnagePanel());
 
-        final GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.insets = new Insets(5,2,2,30);
-        gbc.anchor = GridBagConstraints.WEST;
-        this.add(btnValidate, gbc);
-        gbc.gridx = 1;
-        this.add(btnFluffImage, gbc);
-        gbc.gridx = 2;
-        this.add(movementPanel, gbc);
-        gbc.gridx = 3;
-        this.add(bvPanel, gbc);
-        gbc.gridx = 4;
-        this.add(tonnagePanel, gbc);
-        gbc.gridx = 5;
-        this.add(invalid, gbc);
-        gbc.gridx = 6;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 1.0;
-        this.add(cost, gbc);
-        
+        setLayout(new WrapLayout(FlowLayout.LEFT, 22, 5));
+        add(showEquipmentDatabase);
+        add(btnValidate);
+        add(btnFluffImage);
+        add(movementPanel());
+        add(bvPanel());
+        add(tonnagePanel());
+        add(invalid);
+        add(cost);
         refresh();
     }
 

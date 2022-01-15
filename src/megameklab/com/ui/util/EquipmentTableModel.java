@@ -16,7 +16,7 @@
 
 package megameklab.com.ui.util;
 
-import java.awt.Component;
+import java.awt.*;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -26,6 +26,7 @@ import java.util.Comparator;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
+import javax.swing.border.EmptyBorder;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 
@@ -42,6 +43,8 @@ import megamek.common.weapons.mortars.MekMortarWeapon;
 import megameklab.com.util.CConfig;
 import megameklab.com.util.UnitUtil;
 
+import static megamek.client.ui.swing.util.UIUtil.alternateTableBGColor;
+
 /**
  * this model was not being used by anything, so I totally redid so that it can
  * be used as the model for the equipment tab. It will be a sortable, filterable
@@ -51,8 +54,7 @@ import megameklab.com.util.UnitUtil;
  */
 public class EquipmentTableModel extends AbstractTableModel {
 
-    private static final long serialVersionUID = -5207167419079014157L;
-
+    public final static int ROW_HEIGHT_PADDING = 6;
     public final static String VARIABLE = "variable";
 
     public final static int COL_NAME = 0;
@@ -80,7 +82,7 @@ public class EquipmentTableModel extends AbstractTableModel {
     public final static int N_COL = 22;
 
     private ArrayList<EquipmentType> data = new ArrayList<>();
-    private Entity entity;
+    private final Entity entity;
     final private ITechManager techManager;
 
     public EquipmentTableModel(Entity e, ITechManager techManager) {
@@ -116,7 +118,7 @@ public class EquipmentTableModel extends AbstractTableModel {
             case COL_RANGE:
                 return "Range";
             case COL_TON:
-                return "Ton";
+                return "Weight";
             case COL_CRIT:
                 if (entity instanceof Tank) {
                     return "Slots";
@@ -436,18 +438,29 @@ public class EquipmentTableModel extends AbstractTableModel {
                 return type.getStaticTechLevel().toString();
             }
         } else if (col == COL_TECH) {
-            switch(type.getTechBase()) {
+            return getTechBaseAsString(type);
+        } else if (col == COL_REF) {
+            return type.getRulesRefs();
+        }
+        return "?";
+    }
+
+    /**
+     * Returns a String representation of the Tech Base of the given equipment, i.e.
+     * "All", "IS" or "Clan" - or "Unknown" if the Tech Base is not one of the standard values.
+     * @param equipment The equipment in question; must not be null
+     */
+    public static String getTechBaseAsString(EquipmentType equipment) {
+        switch(equipment.getTechBase()) {
             case TechAdvancement.TECH_BASE_ALL:
                 return "All";
             case TechAdvancement.TECH_BASE_IS:
                 return "IS";
             case TechAdvancement.TECH_BASE_CLAN:
                 return "Clan";
-            }
-        } else if (col == COL_REF) {
-            return type.getRulesRefs();
+            default:
+                return "Unknown";
         }
-        return "?";
     }
 
     private static String getDamageString(WeaponType wtype, boolean isAero) {
@@ -535,8 +548,6 @@ public class EquipmentTableModel extends AbstractTableModel {
 
     public class Renderer extends DefaultTableCellRenderer {
 
-        private static final long serialVersionUID = 9054581142945717303L;
-
         @Override
         public Component getTableCellRendererComponent(JTable table,
                 Object value, boolean isSelected, boolean hasFocus, int row,
@@ -552,7 +563,16 @@ public class EquipmentTableModel extends AbstractTableModel {
             } else {
                 setForeground(UIManager.getColor("Label.foreground"));
             }
+            if (!isSelected) {
+                setBackground(((row % 2) != 0) ? alternateTableBGColor() : table.getBackground());
+            }
             return this;
+        }
+
+        @Override
+        public Dimension getPreferredSize() {
+            Dimension superPreferredSize = super.getPreferredSize();
+            return new Dimension(superPreferredSize.width, superPreferredSize.height + ROW_HEIGHT_PADDING);
         }
     }
 

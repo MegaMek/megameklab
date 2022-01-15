@@ -6,6 +6,7 @@ VERSION HISTORY:
 + PR #993: Logging: Default Global Exception Handler and Standardized Legacy Logging
 + PR #997: Adding Config Colour for Unhittable Crit Slots (Endo, etc.)
 + Issue #1001: Add ProtoMek Myomer Booster Run MP to RS
++ Issue #295, #408: Equipment View
 
 0.49.6 (2021-12-31 2200 UTC)
 + Issue #908: Corrections to the Aero reference tables
