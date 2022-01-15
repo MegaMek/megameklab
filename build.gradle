@@ -80,6 +80,7 @@ dependencies {
         exclude group: 'com.sun.media', module: 'jai-codec'
     }
     implementation 'org.apache.pdfbox:pdfbox:2.0.24'
+    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:2.3.2'
 }
 
 mainClassName = 'megameklab.com.MegaMekLab'
