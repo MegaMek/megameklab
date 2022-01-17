@@ -248,7 +248,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         // For mixed tech units, we want to append the tech base if there is ambiguity
         // and it isn't already part of the name.
         if (showTechBase()) {
-            name.append(mount.getType().isClan() ? " (Clan)" : " (IS)");
+            name.append(mount.getType().isClan() ? " (C)" : " (IS)");
         }
         // Spheroid Small Craft/Dropships use a different location name for aft side weapons
         if (mount.isRearMounted()
