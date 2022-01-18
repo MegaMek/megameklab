@@ -55,6 +55,7 @@ import megamek.common.weapons.srms.StreakSRMWeapon;
 import megamek.common.weapons.tag.*;
 import megamek.common.weapons.tag.CLLightTAG;
 import org.apache.logging.log4j.LogManager;
+import megamek.common.weapons.c3.*;
 
 import javax.swing.*;
 import javax.swing.text.DefaultCaret;
@@ -2899,8 +2900,8 @@ public class UnitUtil {
             return false;
         }
 
-        if ((eq instanceof CLTAG) || (eq instanceof megamek.common.weapons.tag.ISC3MBS)
-                || (eq instanceof megamek.common.weapons.tag.ISC3M) || (eq instanceof ISTAG)
+        if ((eq instanceof CLTAG) || (eq instanceof ISC3MBS)
+                || (eq instanceof ISC3M) || (eq instanceof ISTAG)
                 || (eq instanceof AmmoType && ((AmmoType) eq).getAmmoType() == AmmoType.T_COOLANT_POD)
                 || (eq instanceof CLLightTAG)
                 || (eq instanceof ISAMS)
@@ -3207,8 +3208,8 @@ public class UnitUtil {
             return true;
         }
 
-        if ((eq instanceof CLTAG) || (eq instanceof megamek.common.weapons.tag.ISC3M)
-                || (eq instanceof megamek.common.weapons.tag.ISC3MBS)
+        if ((eq instanceof CLTAG) || (eq instanceof ISC3M)
+                || (eq instanceof ISC3MBS)
                 || (eq instanceof ISTAG) || (eq instanceof CLLightTAG)) {
             return true;
         }
