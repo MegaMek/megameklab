@@ -16,20 +16,6 @@
 
 package megameklab.com.ui.util;
 
-import java.awt.*;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Comparator;
-
-import javax.swing.JTable;
-import javax.swing.SwingConstants;
-import javax.swing.UIManager;
-import javax.swing.border.EmptyBorder;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.DefaultTableCellRenderer;
-
 import megamek.common.*;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestProtomech;
@@ -42,6 +28,16 @@ import megamek.common.weapons.missiles.ThunderBoltWeapon;
 import megamek.common.weapons.mortars.MekMortarWeapon;
 import megameklab.com.util.CConfig;
 import megameklab.com.util.UnitUtil;
+
+import javax.swing.*;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
+import java.awt.*;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Comparator;
 
 import static megamek.client.ui.swing.util.UIUtil.alternateTableBGColor;
 
@@ -257,7 +253,7 @@ public class EquipmentTableModel extends AbstractTableModel {
         DecimalFormat formatter = new DecimalFormat();
 
         if (col == COL_NAME) {
-            return UnitUtil.trimInfantryWeaponNames(type.getName());
+            return type.getSortingName();
         } else if (col == COL_DAMAGE) {
             if (null != wtype) {
                 return getDamageString(wtype, entity instanceof Aero);
@@ -552,12 +548,16 @@ public class EquipmentTableModel extends AbstractTableModel {
         public Component getTableCellRendererComponent(JTable table,
                 Object value, boolean isSelected, boolean hasFocus, int row,
                 int column) {
-            super.getTableCellRendererComponent(table, value, isSelected,
-                    hasFocus, row, column);
             int actualCol = table.convertColumnIndexToModel(column);
             int actualRow = table.convertRowIndexToModel(row);
-            setHorizontalAlignment(getAlignment(actualCol));
             EquipmentType etype = ((EquipmentTableModel) table.getModel()).getType(actualRow);
+            if (column == COL_NAME) {
+                // Reinstate the real name, as the value will be the sorting-optimized name
+                value = UnitUtil.trimInfantryWeaponNames(etype.getName());
+            }
+            super.getTableCellRendererComponent(table, value, isSelected,
+                    hasFocus, row, column);
+            setHorizontalAlignment(getAlignment(actualCol));
             if (null != techManager && !techManager.isLegal(etype)) {
                 setForeground(UIManager.getColor("Label.disabledForeground"));
             } else {
