@@ -1,8 +1,8 @@
 plugins {
     id 'application'
     id 'maven-publish'
-    id 'edu.sc.seis.launch4j' version '2.4.4'
-    id 'org.ajoberstar.grgit' version '2.3.0'
+    id 'edu.sc.seis.launch4j' version '2.5.1'
+    id 'org.ajoberstar.grgit' version '4.1.1'
 }
 
 sourceCompatibility = 11
@@ -65,22 +65,22 @@ configurations {
 dependencies {
     implementation "org.megamek:megamek${mmBranchTag}:${version}"
 
+    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:2.3.2'
     implementation 'org.apache.logging.log4j:log4j-core:2.17.1'
-    implementation 'org.apache.xmlgraphics:batik-dom:1.14'
-    implementation 'org.apache.xmlgraphics:batik-codec:1.14'
-    implementation 'org.apache.xmlgraphics:batik-rasterizer:1.14'
+    implementation 'org.apache.pdfbox:pdfbox:2.0.24'
     implementation ('org.apache.xmlgraphics:batik-bridge:1.14') {
         // We don't need the python and javascript engine taking up space
         exclude group: 'org.python', module: 'jython'
         exclude group: 'org.mozilla', module: 'rhino'
     }
+    implementation 'org.apache.xmlgraphics:batik-codec:1.14'
+    implementation 'org.apache.xmlgraphics:batik-dom:1.14'
+    implementation 'org.apache.xmlgraphics:batik-rasterizer:1.14'
     implementation 'org.apache.xmlgraphics:batik-svggen:1.14'
     implementation ('org.apache.xmlgraphics:fop:2.6') {
         // We don't need this proprietary module
         exclude group: 'com.sun.media', module: 'jai-codec'
     }
-    implementation 'org.apache.pdfbox:pdfbox:2.0.24'
-    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:2.3.2'
 }
 
 mainClassName = 'megameklab.com.MegaMekLab'

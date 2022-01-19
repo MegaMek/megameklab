@@ -15,7 +15,14 @@
  */
 package megameklab.com.util;
 
-import megamek.common.*;
+import java.util.Comparator;
+
+import megamek.common.Entity;
+import megamek.common.EquipmentType;
+import megamek.common.Mech;
+import megamek.common.MiscType;
+import megamek.common.Mounted;
+import megamek.common.WeaponType;
 import megamek.common.actions.ClubAttackAction;
 import megamek.common.actions.KickAttackAction;
 import megamek.common.weapons.artillery.ArtilleryCannonWeapon;
@@ -23,21 +30,41 @@ import megamek.common.weapons.artillery.ArtilleryWeapon;
 import megamek.common.weapons.autocannons.ACWeapon;
 import megamek.common.weapons.autocannons.LBXACWeapon;
 import megamek.common.weapons.autocannons.UACWeapon;
-import megamek.common.weapons.battlearmor.*;
-import megamek.common.weapons.c3.ISC3M;
-import megamek.common.weapons.c3.ISC3RemoteSensorLauncher;
+import megamek.common.weapons.battlearmor.CLBAERPulseLaserSmall;
+import megamek.common.weapons.battlearmor.CLBALBX;
+import megamek.common.weapons.battlearmor.CLBAPulseLaserMicro;
+import megamek.common.weapons.battlearmor.CLBAPulseLaserSmall;
+import megamek.common.weapons.battlearmor.ISBALaserPulseSmall;
+import megamek.common.weapons.battlearmor.ISBAPopUpMineLauncher;
 import megamek.common.weapons.defensivepods.BPodWeapon;
 import megamek.common.weapons.flamers.FlamerWeapon;
 import megamek.common.weapons.gaussrifles.HAGWeapon;
 import megamek.common.weapons.gaussrifles.ISHGaussRifle;
 import megamek.common.weapons.gaussrifles.ISSilverBulletGauss;
 import megamek.common.weapons.infantry.InfantryWeapon;
-import megamek.common.weapons.lasers.*;
+import megamek.common.weapons.lasers.CLERPulseLaserSmall;
+import megamek.common.weapons.lasers.CLPulseLaserMicro;
+import megamek.common.weapons.lasers.CLPulseLaserSmall;
+import megamek.common.weapons.lasers.ISBombastLaser;
+import megamek.common.weapons.lasers.ISPulseLaserSmall;
+import megamek.common.weapons.lasers.ISVariableSpeedPulseLaserLarge;
+import megamek.common.weapons.lasers.ISVariableSpeedPulseLaserMedium;
+import megamek.common.weapons.lasers.ISVariableSpeedPulseLaserSmall;
+import megamek.common.weapons.lasers.ISXPulseLaserSmall;
+import megamek.common.weapons.lasers.VariableSpeedPulseLaserWeapon;
 import megamek.common.weapons.lrms.LRMWeapon;
 import megamek.common.weapons.lrms.LRTWeapon;
 import megamek.common.weapons.lrms.StreakLRMWeapon;
 import megamek.common.weapons.mgs.MGWeapon;
-import megamek.common.weapons.missiles.*;
+import megamek.common.weapons.missiles.ATMWeapon;
+import megamek.common.weapons.missiles.ISThunderBolt10;
+import megamek.common.weapons.missiles.ISThunderBolt15;
+import megamek.common.weapons.missiles.ISThunderBolt20;
+import megamek.common.weapons.missiles.ISThunderBolt5;
+import megamek.common.weapons.missiles.MMLWeapon;
+import megamek.common.weapons.missiles.MRMWeapon;
+import megamek.common.weapons.missiles.RLWeapon;
+import megamek.common.weapons.missiles.ThunderBoltWeapon;
 import megamek.common.weapons.mortars.CLVehicularGrenadeLauncher;
 import megamek.common.weapons.mortars.ISVehicularGrenadeLauncher;
 import megamek.common.weapons.mortars.MekMortarWeapon;
@@ -50,9 +77,9 @@ import megamek.common.weapons.prototypes.PrototypeRLWeapon;
 import megamek.common.weapons.srms.SRMWeapon;
 import megamek.common.weapons.srms.SRTWeapon;
 import megamek.common.weapons.srms.StreakSRMWeapon;
+import megamek.common.weapons.c3.ISC3M;
+import megamek.common.weapons.c3.ISC3RemoteSensorLauncher;
 import megamek.common.weapons.tag.TAGWeapon;
-
-import java.util.Comparator;
 
 public class StringUtils {
 

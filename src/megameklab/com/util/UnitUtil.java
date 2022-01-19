@@ -57,6 +57,7 @@ import megamek.common.weapons.srms.StreakSRMWeapon;
 import megamek.common.weapons.tag.*;
 import megamek.common.weapons.tag.CLLightTAG;
 import org.apache.logging.log4j.LogManager;
+import megamek.common.weapons.c3.*;
 
 import javax.swing.*;
 import javax.swing.text.DefaultCaret;
