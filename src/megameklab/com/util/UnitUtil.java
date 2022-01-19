@@ -27,6 +27,8 @@ import megamek.common.weapons.autocannons.LBXACWeapon;
 import megamek.common.weapons.autocannons.UACWeapon;
 import megamek.common.weapons.battlearmor.CLBALBX;
 import megamek.common.weapons.bayweapons.BayWeapon;
+import megamek.common.weapons.c3.ISC3M;
+import megamek.common.weapons.c3.ISC3MBS;
 import megamek.common.weapons.capitalweapons.CapitalMissileWeapon;
 import megamek.common.weapons.defensivepods.BPodWeapon;
 import megamek.common.weapons.defensivepods.MPodWeapon;
@@ -2899,8 +2901,8 @@ public class UnitUtil {
             return false;
         }
 
-        if ((eq instanceof CLTAG) || (eq instanceof megamek.common.weapons.tag.ISC3MBS)
-                || (eq instanceof megamek.common.weapons.tag.ISC3M) || (eq instanceof ISTAG)
+        if ((eq instanceof CLTAG) || (eq instanceof ISC3MBS)
+                || (eq instanceof ISC3M) || (eq instanceof ISTAG)
                 || (eq instanceof AmmoType && ((AmmoType) eq).getAmmoType() == AmmoType.T_COOLANT_POD)
                 || (eq instanceof CLLightTAG)
                 || (eq instanceof ISAMS)
@@ -3207,8 +3209,8 @@ public class UnitUtil {
             return true;
         }
 
-        if ((eq instanceof CLTAG) || (eq instanceof megamek.common.weapons.tag.ISC3M)
-                || (eq instanceof megamek.common.weapons.tag.ISC3MBS)
+        if ((eq instanceof CLTAG) || (eq instanceof ISC3M)
+                || (eq instanceof ISC3MBS)
                 || (eq instanceof ISTAG) || (eq instanceof CLLightTAG)) {
             return true;
         }
