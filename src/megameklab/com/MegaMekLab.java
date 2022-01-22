@@ -17,7 +17,7 @@
 package megameklab.com;
 
 import megamek.MegaMek;
-import megamek.client.ui.preferences.MMPreferences;
+import megamek.client.ui.preferences.SuitePreferences;
 import megamek.common.Configuration;
 import megamek.common.EquipmentType;
 import megamek.common.MechSummaryCache;
@@ -40,7 +40,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class MegaMekLab {
-    private static final MMPreferences mmlPreferences = new MMPreferences();
+    private static final SuitePreferences mmlPreferences = new SuitePreferences();
     private static final MMLOptions mmlOptions = new MMLOptions();
 
     public static void main(String... args) {
@@ -177,7 +177,7 @@ public class MegaMekLab {
         return maxWidth;
     }
 
-    public static MMPreferences getMMLPreferences() {
+    public static SuitePreferences getMMLPreferences() {
         return mmlPreferences;
     }
 
