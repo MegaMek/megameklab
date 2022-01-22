@@ -40,9 +40,8 @@ import java.util.List;
 import java.util.Locale;
 
 public class MegaMekLab {
-
-    public static final String PREFERENCES_FILE = "mmconf/mml.preferences";
-    private static MMPreferences preferences = null;
+    private static final MMPreferences mmlPreferences = new MMPreferences();
+    private static final MMLOptions mmlOptions = new MMLOptions();
 
     public static void main(String... args) {
         // First, create a global default exception handler
@@ -122,7 +121,6 @@ public class MegaMekLab {
     }
     
     private static void startup() {
-        Locale.setDefault(Locale.US);
         EquipmentType.initializeTypes();
         MechSummaryCache.getInstance();
         try {
@@ -133,8 +131,11 @@ public class MegaMekLab {
         CConfig.load();
         UnitUtil.loadFonts();
 
-        MegaMek.getPreferences().loadFromFile(MegaMek.PREFERENCES_FILE);
-        getPreferences().loadFromFile(PREFERENCES_FILE);
+        MegaMek.getMMPreferences().loadFromFile(MMLConstants.MM_PREFERENCES_FILE);
+        getMMLPreferences().loadFromFile(MMLConstants.MML_PREFERENCES_FILE);
+
+        // TODO : Individual localizations
+        Locale.setDefault(getMMLOptions().getLocale());
 
         // Add additional themes
         UIManager.installLookAndFeel("Flat Light", "com.formdev.flatlaf.FlatLightLaf");
@@ -143,7 +144,8 @@ public class MegaMekLab {
         UIManager.installLookAndFeel("Flat Darcula", "com.formdev.flatlaf.FlatDarculaLaf");
 
         setLookAndFeel();
-        //create a start up frame and display it
+
+        // Create a startup frame and display it
         StartupGUI sud = new StartupGUI();
         sud.setVisible(true);
     }
@@ -167,7 +169,7 @@ public class MegaMekLab {
         double maxWidth = 0;
         for (GraphicsDevice g : gs) {
             Rectangle b = g.getDefaultConfiguration().getBounds();
-            if (b.getWidth() > maxWidth) {   // Update the max size found on this monitor
+            if (b.getWidth() > maxWidth) { // Update the max size found on this monitor
                 maxWidth = b.getWidth();
             }
         }
@@ -175,10 +177,11 @@ public class MegaMekLab {
         return maxWidth;
     }
 
-    public static MMPreferences getPreferences() {
-        if (preferences == null) {
-            preferences = new MMPreferences();
-        }
-        return preferences;
+    public static MMPreferences getMMLPreferences() {
+        return mmlPreferences;
+    }
+
+    public static MMLOptions getMMLOptions() {
+        return mmlOptions;
     }
 }

@@ -109,8 +109,8 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
             CConfig.saveConfig();
             PreferenceManager.getInstance().save();
 
-            MegaMek.getPreferences().saveToFile(MegaMek.PREFERENCES_FILE);
-            MegaMekLab.getPreferences().saveToFile(MegaMekLab.PREFERENCES_FILE);
+            MegaMek.getMMPreferences().saveToFile(MegaMek.PREFERENCES_FILE);
+            MegaMekLab.getMMLPreferences().saveToFile(MegaMekLab.PREFERENCES_FILE);
             System.exit(0);
         }
     }
