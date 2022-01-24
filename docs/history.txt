@@ -11,6 +11,7 @@ VERSION HISTORY:
 + Issue #991 - Text Overlap Issue - Record Sheets
 + Issue: Fixes C3 issue in StringUtil/UnitUtil as part of MegaMek C3 consolidation.
 + PR #1009: Improved Equipment Sorting
++ PR #1014: SuiteOptions: Naming standardization and finishing initial setup
 
 0.49.6 (2021-12-31 2200 UTC)
 + Issue #908: Corrections to the Aero reference tables
