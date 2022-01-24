@@ -19,6 +19,7 @@ package megameklab.com.ui;
 import megamek.MegaMek;
 import megamek.common.Entity;
 import megamek.common.preference.PreferenceManager;
+import megameklab.com.MMLConstants;
 import megameklab.com.MegaMekLab;
 import megameklab.com.util.CConfig;
 import megameklab.com.ui.util.RefreshListener;
@@ -109,8 +110,8 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
             CConfig.saveConfig();
             PreferenceManager.getInstance().save();
 
-            MegaMek.getPreferences().saveToFile(MegaMek.PREFERENCES_FILE);
-            MegaMekLab.getPreferences().saveToFile(MegaMekLab.PREFERENCES_FILE);
+            MegaMek.getMMPreferences().saveToFile(MMLConstants.MM_PREFERENCES_FILE);
+            MegaMekLab.getMMLPreferences().saveToFile(MMLConstants.MML_PREFERENCES_FILE);
             System.exit(0);
         }
     }

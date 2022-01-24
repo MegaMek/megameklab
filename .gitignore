@@ -15,6 +15,7 @@ timestamp
 /properties_local.gradle
 .idea/
 .vscode/
+/mmconf/*.preferences
 
 # Data Files
 data/fonts/

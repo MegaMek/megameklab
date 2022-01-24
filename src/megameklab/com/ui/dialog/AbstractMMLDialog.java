@@ -59,6 +59,6 @@ public abstract class AbstractMMLDialog extends AbstractDialog {
      */
     @Override
     protected void setPreferences() {
-        setPreferences(MegaMekLab.getPreferences().forClass(getClass()));
+        setPreferences(MegaMekLab.getMMLPreferences().forClass(getClass()));
     }
 }
