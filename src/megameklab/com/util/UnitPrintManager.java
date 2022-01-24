@@ -21,7 +21,7 @@ import megamek.common.util.EncodeControl;
 import megameklab.com.printing.*;
 import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.dialog.MegaMekLabUnitSelectorDialog;
-import megameklab.com.ui.dialog.UnitPrintQueueDialog;
+import megameklab.com.ui.dialog.PrintQueueDialog;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
 
@@ -299,7 +299,7 @@ public class UnitPrintManager {
         printMenu.addSeparator();
         item = new JMenuItem(menuResources.getString("menu.file.print.queueUnits"));
         item.setMnemonic(KeyEvent.VK_Q);
-        item.addActionListener(e -> new UnitPrintQueueDialog(parent, false));
+        item.addActionListener(e -> new PrintQueueDialog(parent, false));
 
         printMenu.add(item);
         printMenu.addSeparator();
@@ -346,7 +346,7 @@ public class UnitPrintManager {
 
         exportMenu.addSeparator();
         item = new JMenuItem(menuResources.getString("menu.file.print.queueUnits"));
-        item.addActionListener(e -> new UnitPrintQueueDialog(parent, true));
+        item.addActionListener(e -> new PrintQueueDialog(parent, true).setVisible(true));
         exportMenu.add(item);
 
         item = new JMenuItem(menuResources.getString("menu.file.print.otherUnit"));

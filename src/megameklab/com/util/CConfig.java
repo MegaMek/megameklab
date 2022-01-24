@@ -61,12 +61,12 @@ public class CConfig {
     public static final String CONFIG_FILE = "./mmconf/megameklab.properties";
     public static final String CONFIG_BACKUP_FILE = "./mmconf/megameklab.properties.bak";
 
-    public static final String CONFIG_WEAPONS = "Weapons";
-    public static final String CONFIG_AMMO = "Ammo";
-    public static final String CONFIG_EQUIPMENT = "Equipment";
-    public static final String CONFIG_SYSTEMS = "Systems";
-    public static final String CONFIG_EMPTY = "Empty";
-    public static final String CONFIG_NONHITTABLE = "Nonhittable";
+    public static final String COLOR_WEAPONS = "Weapons";
+    public static final String COLOR_AMMO = "Ammo";
+    public static final String COLOR_EQUIPMENT = "Equipment";
+    public static final String COLOR_SYSTEMS = "Systems";
+    public static final String COLOR_EMPTY = "Empty";
+    public static final String COLOR_NONHITTABLE = "Nonhittable";
 
     public static final String CONFIG_SAVE_FILE_1 = "Save_File_One";
     public static final String CONFIG_SAVE_FILE_2 = "Save_File_Two";

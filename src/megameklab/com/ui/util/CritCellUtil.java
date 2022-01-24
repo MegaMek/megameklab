@@ -65,20 +65,20 @@ public final class CritCellUtil {
                                   Entity entity, int index) {
         if (useColor) {
             if (mounted == null) {
-                cell.setBackground(CConfig.getBackgroundColor(CConfig.CONFIG_EMPTY));
-                cell.setForeground(CConfig.getForegroundColor(CConfig.CONFIG_EMPTY));
+                cell.setBackground(CConfig.getBackgroundColor(CConfig.COLOR_EMPTY));
+                cell.setForeground(CConfig.getForegroundColor(CConfig.COLOR_EMPTY));
             } else if (!mounted.getType().isHittable()) {
-                cell.setBackground(CConfig.getBackgroundColor(CConfig.CONFIG_NONHITTABLE));
-                cell.setForeground(CConfig.getForegroundColor(CConfig.CONFIG_NONHITTABLE));
+                cell.setBackground(CConfig.getBackgroundColor(CConfig.COLOR_NONHITTABLE));
+                cell.setForeground(CConfig.getForegroundColor(CConfig.COLOR_NONHITTABLE));
             } else if (mounted.getType() instanceof WeaponType) {
-                cell.setBackground(CConfig.getBackgroundColor(CConfig.CONFIG_WEAPONS));
-                cell.setForeground(CConfig.getForegroundColor(CConfig.CONFIG_WEAPONS));
+                cell.setBackground(CConfig.getBackgroundColor(CConfig.COLOR_WEAPONS));
+                cell.setForeground(CConfig.getForegroundColor(CConfig.COLOR_WEAPONS));
             } else if (mounted.getType() instanceof AmmoType) {
-                cell.setBackground(CConfig.getBackgroundColor(CConfig.CONFIG_AMMO));
-                cell.setForeground(CConfig.getForegroundColor(CConfig.CONFIG_AMMO));
+                cell.setBackground(CConfig.getBackgroundColor(CConfig.COLOR_AMMO));
+                cell.setForeground(CConfig.getForegroundColor(CConfig.COLOR_AMMO));
             } else {
-                cell.setBackground(CConfig.getBackgroundColor(CConfig.CONFIG_EQUIPMENT));
-                cell.setForeground(CConfig.getForegroundColor(CConfig.CONFIG_EQUIPMENT));
+                cell.setBackground(CConfig.getBackgroundColor(CConfig.COLOR_EQUIPMENT));
+                cell.setForeground(CConfig.getForegroundColor(CConfig.COLOR_EQUIPMENT));
             }
         }
 

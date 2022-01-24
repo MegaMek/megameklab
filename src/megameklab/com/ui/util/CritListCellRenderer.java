@@ -61,8 +61,8 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
         if (cs != null) {
             if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
                 if (useColor) {
-                    setBackground(CConfig.getBackgroundColor(CConfig.CONFIG_SYSTEMS));
-                    setForeground(CConfig.getForegroundColor(CConfig.CONFIG_SYSTEMS));
+                    setBackground(CConfig.getBackgroundColor(CConfig.COLOR_SYSTEMS));
+                    setForeground(CConfig.getForegroundColor(CConfig.COLOR_SYSTEMS));
                 }
                 if (cs.isArmored()) {
                     setText(getText() + " (A)");
