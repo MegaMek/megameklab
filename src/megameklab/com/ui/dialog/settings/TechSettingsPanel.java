@@ -31,6 +31,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+/**
+ * A panel allowing to change MML's Tech Level preferences
+ */
 public class TechSettingsPanel extends JPanel {
 
     private final JCheckBox chkTechProgression = new JCheckBox();

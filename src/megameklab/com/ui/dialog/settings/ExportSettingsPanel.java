@@ -32,6 +32,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+/**
+ * A panel allowing to change MML's export (record sheet and clipboard) preferences
+ */
 class ExportSettingsPanel extends JPanel {
 
     private final JComboBox<String> cbPaper = new JComboBox<>();

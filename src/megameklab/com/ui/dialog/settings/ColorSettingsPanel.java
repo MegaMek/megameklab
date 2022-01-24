@@ -28,6 +28,9 @@ import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * A panel allowing to change MML's color preferences
+ */
 public class ColorSettingsPanel extends JPanel {
 
     private final JPanel gridPanel = new JPanel(new SpringLayout());

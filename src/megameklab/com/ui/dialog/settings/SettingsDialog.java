@@ -25,6 +25,9 @@ import megameklab.com.util.CConfig;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * This is MML's general preferences dialog with color, record sheet and other settings.
+ */
 public class SettingsDialog extends AbstractMMLButtonDialog {
 
     private final ColorSettingsPanel colorPreferences = new ColorSettingsPanel();
@@ -59,10 +62,6 @@ public class SettingsDialog extends AbstractMMLButtonDialog {
 
     @Override
     protected void okAction() {
-        saveConfig();
-    }
-
-    private void saveConfig() {
         colorPreferences.getAllColors().forEach(CConfig::setParam);
         techSettings.getTechSettings().forEach(CConfig::setParam);
         exportSettingsPanel.getRecordSheetSettings().forEach(CConfig::setParam);
