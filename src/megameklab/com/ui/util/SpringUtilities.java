@@ -64,7 +64,7 @@ public class SpringUtilities {
         try {
             layout = (SpringLayout)parent.getLayout();
         } catch (ClassCastException exc) {
-            LogManager.getLogger().error(exc);
+            LogManager.getLogger().error("", exc);
             return;
         }
 
@@ -167,7 +167,7 @@ public class SpringUtilities {
         try {
             layout = (SpringLayout)parent.getLayout();
         } catch (ClassCastException exc) {
-            LogManager.getLogger().error(exc);
+            LogManager.getLogger().error("", exc);
             return;
         }
 
