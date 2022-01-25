@@ -13,6 +13,7 @@ VERSION HISTORY:
 + PR #1009: Improved Equipment Sorting
 + PR #1014: SuiteOptions: Naming standardization and finishing initial setup
 + Issue: Removing references to deleted ammos(Streak MRMs, Hawk SRM, Phoenix LRMs)
++ Issues #984, #1015: Improved MML Settings Dialog and Unit Print Queue Dialog, Print Multiple Cached Units, Fixing No MUL Pilot Data for BA
 
 0.49.6 (2021-12-31 2200 UTC)
 + Issue #908: Corrections to the Aero reference tables
