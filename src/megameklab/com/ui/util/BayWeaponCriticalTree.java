@@ -118,7 +118,7 @@ public class BayWeaponCriticalTree extends JTree {
     
     public void rebuild() {
         List<Integer> expandedBays = getExpandedBayIds();
-        setBackground(CConfig.getBackgroundColor(CConfig.CONFIG_WEAPONS));
+        setBackground(CConfig.getBackgroundColor(CConfig.COLOR_WEAPONS));
         TreeNode root = initRoot();
         model.setRoot(root);
         setRootVisible(root.getChildCount() == 0);
@@ -509,21 +509,21 @@ public class BayWeaponCriticalTree extends JTree {
         
         public Color getBackgroundColor() {
             if (getMounted().getType() instanceof WeaponType) {
-                return CConfig.getBackgroundColor(CConfig.CONFIG_WEAPONS);
+                return CConfig.getBackgroundColor(CConfig.COLOR_WEAPONS);
             } else if (getMounted().getType() instanceof AmmoType) {
-                return CConfig.getBackgroundColor(CConfig.CONFIG_AMMO);
+                return CConfig.getBackgroundColor(CConfig.COLOR_AMMO);
             } else {
-                return CConfig.getBackgroundColor(CConfig.CONFIG_EQUIPMENT);
+                return CConfig.getBackgroundColor(CConfig.COLOR_EQUIPMENT);
             }
         }
 
         public Color getForegroundColor() {
             if (getMounted().getType() instanceof WeaponType) {
-                return CConfig.getForegroundColor(CConfig.CONFIG_WEAPONS);
+                return CConfig.getForegroundColor(CConfig.COLOR_WEAPONS);
             } else if (getMounted().getType() instanceof AmmoType) {
-                return CConfig.getForegroundColor(CConfig.CONFIG_AMMO);
+                return CConfig.getForegroundColor(CConfig.COLOR_AMMO);
             } else {
-                return CConfig.getForegroundColor(CConfig.CONFIG_EQUIPMENT);
+                return CConfig.getForegroundColor(CConfig.COLOR_EQUIPMENT);
             }
         }
         
@@ -580,12 +580,12 @@ public class BayWeaponCriticalTree extends JTree {
 
         @Override
         public Color getBackgroundColor() {
-            return CConfig.getBackgroundColor(CConfig.CONFIG_WEAPONS);
+            return CConfig.getBackgroundColor(CConfig.COLOR_WEAPONS);
         }
 
         @Override
         public Color getForegroundColor() {
-            return CConfig.getForegroundColor(CConfig.CONFIG_WEAPONS);
+            return CConfig.getForegroundColor(CConfig.COLOR_WEAPONS);
         }
         
         @Override

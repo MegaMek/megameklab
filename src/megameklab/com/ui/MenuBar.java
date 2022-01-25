@@ -22,9 +22,9 @@ import megamek.common.loaders.BLKFile;
 import megamek.common.templates.TROView;
 import megamek.common.util.EncodeControl;
 import megameklab.com.MMLConstants;
-import megameklab.com.ui.dialog.ConfigurationDialog;
 import megameklab.com.ui.dialog.LoadingDialog;
 import megameklab.com.ui.dialog.MegaMekLabUnitSelectorDialog;
+import megameklab.com.ui.dialog.settings.SettingsDialog;
 import megameklab.com.util.CConfig;
 import megameklab.com.util.ImageHelper;
 import megameklab.com.util.UnitPrintManager;
@@ -39,12 +39,15 @@ import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.PrintStream;
 import java.util.ResourceBundle;
+
+import static java.awt.event.KeyEvent.VK_C;
 
 public class MenuBar extends JMenuBar implements ClipboardOwner {
     private static final long serialVersionUID = -3998342610654551481L;
@@ -396,6 +399,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
 
         item = new JMenuItem(resourceMap.getString("menu.file.export.toClipboard"));
         item.addActionListener(e -> exportSummaryClipboard());
+        item.setAccelerator(KeyStroke.getKeyStroke(VK_C, InputEvent.CTRL_DOWN_MASK));
         exportMenu.add(item);
 
         fileMenu.add(exportMenu);
@@ -405,6 +409,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         item = new JMenuItem(resourceMap.getString("menu.file.configuration"));
         item.setMnemonic(KeyEvent.VK_C);
         item.addActionListener(this::jMenuConfiguration_actionPerformed);
+        item.setAccelerator(KeyStroke.getKeyStroke(VK_C, InputEvent.ALT_DOWN_MASK));
         fileMenu.add(item);
 
         int fileNumber = 1;
@@ -807,7 +812,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     }
 
     private void jMenuConfiguration_actionPerformed(ActionEvent event) {
-        new ConfigurationDialog(parentFrame).setVisible(true);
+        new SettingsDialog(parentFrame).setVisible(true);
         parentFrame.refreshAll();
     }
 

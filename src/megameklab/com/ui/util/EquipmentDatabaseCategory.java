@@ -78,9 +78,9 @@ public enum EquipmentDatabaseCategory {
             && !eq.hasFlag(F_CHASSIS_MODIFICATION)
             && !(en.isSupportVehicle() && (eq.hasFlag(F_BASIC_FIRECONTROL) || (eq.hasFlag(F_ADVANCED_FIRECONTROL))))
             && !eq.hasFlag(F_MAGNETIC_CLAMP)
-            && !(eq.hasFlag(F_PARTIAL_WING) && en.hasETypeFlag(Entity.ETYPE_PROTOMECH)))
+            && !(eq.hasFlag(F_PARTIAL_WING) && en.hasETypeFlag(Entity.ETYPE_PROTOMECH))
             && !eq.hasFlag(F_SPONSON_TURRET)
-            && !eq.hasFlag(F_PINTLE_TURRET)
+            && !eq.hasFlag(F_PINTLE_TURRET))
             || (eq instanceof TAGWeapon)),
 
     AP ("Anti-Personnel",

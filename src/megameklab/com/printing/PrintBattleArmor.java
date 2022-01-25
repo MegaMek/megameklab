@@ -103,8 +103,8 @@ public class PrintBattleArmor extends PrintEntity {
         hideElement(CHECK_LEG, !UnitUtil.canLegAttack(battleArmor));
         hideElement(CHECK_AP, battleArmor.countWorkingMisc(MiscType.F_AP_MOUNT) == 0);
 
-        setTextField(BV, battleArmor.calculateBattleValue(true, false, false)
-            + "/" + battleArmor.calculateBattleValue(true, false, true));
+        setTextField(BV, battleArmor.calculateBattleValue(true, !showPilotInfo(), false)
+            + "/" + battleArmor.calculateBattleValue(true, !showPilotInfo(), true));
     }
 
     @Override
