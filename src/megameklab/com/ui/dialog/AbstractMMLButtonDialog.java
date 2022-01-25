@@ -73,6 +73,6 @@ public abstract class AbstractMMLButtonDialog extends AbstractButtonDialog {
      */
     @Override
     protected void setPreferences() {
-        setPreferences(MegaMekLab.getPreferences().forClass(getClass()));
+        setPreferences(MegaMekLab.getMMLPreferences().forClass(getClass()));
     }
 }
