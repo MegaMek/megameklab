@@ -109,5 +109,4 @@ public class TechSettingsPanel extends JPanel {
         techSettings.put(CConfig.TECH_UNOFFICAL_NO_YEAR, String.valueOf(chkUnofficialIgnoreYear.isSelected()));
         return techSettings;
     }
-
 }

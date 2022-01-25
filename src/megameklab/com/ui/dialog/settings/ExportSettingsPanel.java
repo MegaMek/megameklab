@@ -201,6 +201,4 @@ class ExportSettingsPanel extends JPanel {
             return 1;
         }
     }
-
-
 }

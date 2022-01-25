@@ -31,6 +31,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -65,12 +66,12 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
     @Override
     protected Container createCenterPane() {
         addFromCacheButton.addActionListener(e -> selectFromCache());
-        addFromCacheButton.setMnemonic('a');
+        addFromCacheButton.setMnemonic(KeyEvent.VK_A);
         addFromFileButton.addActionListener(e -> selectFromFile());
-        addFromFileButton.setMnemonic('f');
+        addFromFileButton.setMnemonic(KeyEvent.VK_F);
         removeButton.addActionListener(e -> removeSelectedUnits());
         removeButton.setEnabled(false);
-        removeButton.setMnemonic('r');
+        removeButton.setMnemonic(KeyEvent.VK_R);
         oneUnitPerSheetCheck.setAlignmentX(JComponent.CENTER_ALIGNMENT);
         oneUnitPerSheetCheck.setToolTipText("When unchecked, the record sheets for some unit types may be printed on the same page. " +
                 "Note that the result may depend on whether reference tables are printed. This can be changed in the Settings.");
@@ -104,12 +105,12 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
     @Override
     protected JPanel createButtonPanel() {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        var printButton = new MMButton("printButton", resources.getString("PrintQueueDialog.Print.text"),
-                resources.getString("PrintQueueDialog.Print.toolTipText"), this::okButtonActionPerformed);
-        printButton.setMnemonic('p');
+        var printButton = new MMButton("printButton", resources, "PrintQueueDialog.Print.text",
+                "PrintQueueDialog.Print.toolTipText", this::okButtonActionPerformed);
+        printButton.setMnemonic(KeyEvent.VK_P);
         panel.add(printButton);
-        panel.add(new MMButton("cancelButton", resources.getString("PrintQueueDialog.Cancel.text"),
-                resources.getString("PrintQueueDialog.Cancel.toolTipText"), this::cancelActionPerformed));
+        panel.add(new MMButton("cancelButton", resources, "PrintQueueDialog.Cancel.text",
+                "PrintQueueDialog.Cancel.toolTipText", this::cancelActionPerformed));
         getRootPane().setDefaultButton(printButton);
         return panel;
     }
@@ -221,5 +222,4 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
             return new Dimension(getPreferredSize().width, getPreferredSize().height);
         }
     }
-
 }

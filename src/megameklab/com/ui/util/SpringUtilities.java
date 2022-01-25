@@ -30,6 +30,8 @@
  */
 package megameklab.com.ui.util;
 
+import org.apache.logging.log4j.LogManager;
+
 import javax.swing.*;
 import javax.swing.SpringLayout;
 import java.awt.*;
@@ -39,15 +41,6 @@ import java.awt.*;
  * creating form- or grid-style layouts with SpringLayout.
  */
 public class SpringUtilities {
-    /**
-     * A debugging utility that prints to stdout the component's
-     * minimum, preferred, and maximum sizes.
-     */
-    public static void printSizes(Component c) {
-        System.out.println("minimumSize = " + c.getMinimumSize());
-        System.out.println("preferredSize = " + c.getPreferredSize());
-        System.out.println("maximumSize = " + c.getMaximumSize());
-    }
 
     /**
      * Aligns the first <code>rows</code> * <code>cols</code>
@@ -71,7 +64,7 @@ public class SpringUtilities {
         try {
             layout = (SpringLayout)parent.getLayout();
         } catch (ClassCastException exc) {
-            System.err.println("The first argument to makeGrid must use SpringLayout.");
+            LogManager.getLogger().error(exc);
             return;
         }
 
@@ -174,7 +167,7 @@ public class SpringUtilities {
         try {
             layout = (SpringLayout)parent.getLayout();
         } catch (ClassCastException exc) {
-            System.err.println("The first argument to makeCompactGrid must use SpringLayout.");
+            LogManager.getLogger().error(exc);
             return;
         }
 

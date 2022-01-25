@@ -129,7 +129,6 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
         } else if (entityPickCallback != null) {
             entityPickCallback.accept(chosenEntity);
         }
-
     }
     //endregion Button Methods
 
