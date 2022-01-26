@@ -426,8 +426,10 @@ public class PrintMech extends PrintEntity {
         double x = viewX + viewWidth * 0.075;
         x += addTextElement(canvas, x, viewY - 1, mech.getLocationName(loc),
                 fontSize * 1.25f, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_BOLD_VALUE);
-        if (mech.isClan() && UnitUtil.hasAmmo(mech, loc) && !mech.hasCASEII(loc)) {
-            addTextElement(canvas, x + fontSize / 2, viewY - 1, "(CASE)", fontSize,
+        if ((mech.isClan() && UnitUtil.hasAmmo(mech, loc))
+                || (!mech.isClan() && (mech.hasCASEII(loc) || mech.locationHasCase(loc)))) {
+            String text = "(CASE" + (mech.hasCASEII(loc) ? " II)" : ")");
+            addTextElement(canvas, x + fontSize / 2, viewY - 1, text, fontSize,
                     SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
         }
         
