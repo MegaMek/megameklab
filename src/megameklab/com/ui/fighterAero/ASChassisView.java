@@ -312,8 +312,7 @@ public class ASChassisView extends BuildView implements ActionListener, ChangeLi
 
     private boolean validCFEngine(Engine engine) {
         return conventional && ((engine.getEngineType() == Engine.NORMAL_ENGINE)
-                || (engine.getEngineType() == Engine.COMBUSTION_ENGINE)
-                || (engine.getEngineType() == Engine.XXL_ENGINE));
+                || (engine.getEngineType() == Engine.COMBUSTION_ENGINE));
     }
 
     private boolean validASFEngine(Engine engine) {
