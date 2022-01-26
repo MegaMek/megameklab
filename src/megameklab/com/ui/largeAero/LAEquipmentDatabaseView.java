@@ -72,6 +72,7 @@ class LAEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
                 try {
                     for (int i = 0; i < count; i++) {
                         mount = new Mounted(getAero(), equip);
+                        UnitUtil.setVariableSizeMiscTypeMinimumSize(mount);
                         getAero().addEquipment(mount, Entity.LOC_NONE, false);
                         if ((equip instanceof WeaponType) && equip.hasFlag(WeaponType.F_ONESHOT)) {
                             UnitUtil.removeOneShotAmmo(eSource.getEntity());

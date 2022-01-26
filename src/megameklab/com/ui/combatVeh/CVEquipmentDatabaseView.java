@@ -51,6 +51,7 @@ class CVEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
         } else {
             try {
                 mount = new Mounted(getTank(), equip);
+                UnitUtil.setVariableSizeMiscTypeMinimumSize(mount);
                 int loc = Entity.LOC_NONE;
                 if (isMisc && equip.hasFlag(MiscType.F_MAST_MOUNT)) {
                     loc = VTOL.LOC_ROTOR;

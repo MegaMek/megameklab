@@ -294,23 +294,29 @@ public class ASChassisView extends BuildView implements ActionListener, ChangeLi
             flags |= Engine.LARGE_ENGINE;
         }
         int altFlags = flags ^ Engine.CLAN_ENGINE;
-        // Non-superheavies can use non-fusion engines under experimental rules
         for (int i : ENGINE_TYPES) {
             Engine e = new Engine(getEngineRating(), i, flags);
-            if (e.engineValid && (e.isFusion() || conventional)
-                    && techManager.isLegal(e)) {
+            if (e.engineValid && techManager.isLegal(e) && (validCFEngine(e) || validASFEngine(e))) {
                 retVal.add(e);
             }
             // Only add the opposite tech base if the engine is different.
             if (isMixed && e.getSideTorsoCriticalSlots().length > 0) {
                 e = new Engine(getEngineRating(), i, altFlags);
-                if (e.engineValid && (e.isFusion() || conventional)
-                        && techManager.isLegal(e)) {
+                if (e.engineValid && techManager.isLegal(e) && (validCFEngine(e) || validASFEngine(e))) {
                     retVal.add(e);
                 }
             }
         }
         return retVal;
+    }
+
+    private boolean validCFEngine(Engine engine) {
+        return conventional && ((engine.getEngineType() == Engine.NORMAL_ENGINE)
+                || (engine.getEngineType() == Engine.COMBUSTION_ENGINE));
+    }
+
+    private boolean validASFEngine(Engine engine) {
+        return !conventional && engine.isFusion();
     }
     
     private void refreshCockpit() {
