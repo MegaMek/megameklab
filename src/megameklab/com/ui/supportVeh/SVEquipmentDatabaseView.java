@@ -71,6 +71,7 @@ class SVEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
                 }
                 for (int i = 0; i < count; i++) {
                     mount = new Mounted(eSource.getEntity(), equip);
+                    UnitUtil.setVariableSizeMiscTypeMinimumSize(mount);
                     if ((eSource.getEntity().isFighter()
                             && (equip instanceof MiscType)) && equip.hasFlag(MiscType.F_BLUE_SHIELD)) {
                         getAero().addEquipment(mount, Aero.LOC_FUSELAGE, false);

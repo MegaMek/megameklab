@@ -4464,5 +4464,15 @@ public class UnitUtil {
         entity.setUseManualBV(manualBV > 0);
     }
 
+    /**
+     * For MiscTypes of variable size such as Ladders this sets the size to the minimum
+     * size which is equal to the step size (20m for Ladders, 0.5t for Cargo space and the like).
+     */
+    public static void setVariableSizeMiscTypeMinimumSize(Mounted mounted) {
+        if ((mounted.getType() instanceof MiscType) && mounted.getType().isVariableSize()) {
+            mounted.setSize(mounted.getType().variableStepSize());
+        }
+    }
+
 
 }
