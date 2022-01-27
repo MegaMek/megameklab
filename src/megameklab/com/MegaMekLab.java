@@ -31,8 +31,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.text.NumberFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -52,9 +50,8 @@ public class MegaMekLab {
         });
 
         // Second, let's handle logging
-        MegaMek.showInfo(MMLConstants.PROJECT_NAME);
-        showInfo(MMLConstants.PROJECT_NAME);
-        MegaMek.handleLegacyLogging();
+        MegaMek.initializeLogging(MMLConstants.PROJECT_NAME);
+        MegaMekLab.initializeLogging(MMLConstants.PROJECT_NAME);
 
         // Third, let's set some default properties
         System.setProperty("apple.laf.useScreenMenuBar", "true");
@@ -96,22 +93,16 @@ public class MegaMekLab {
         }
     }
 
+    public static void initializeLogging(final String originProject) {
+        LogManager.getLogger().info(getUnderlyingInformation(originProject));
+    }
+
     /**
-     * Prints some information about MegaMekLab. Used in log files to figure out the JVM and version
-     * of MegaMekLab.
-     * @param originProject the project launching MegaMekLab
+     * @param originProject the project that launched MegaMekLab
+     * @return the underlying information for this launch of MegaMekLab
      */
-    public static void showInfo(final String originProject) {
-        String msg = "Starting MegaMekLab v" + MMLConstants.VERSION;
-        msg += "\n\tToday is " + LocalDate.now()
-                + "\n\tOrigin Project: " + originProject
-                + "\n\tJava Vendor: " + System.getProperty("java.vendor")
-                + "\n\tJava Version: " + System.getProperty("java.version")
-                + "\n\tPlatform: " + System.getProperty("os.name") + " " + System.getProperty("os.version")
-                + " (" + System.getProperty("os.arch") + ")"
-                + "\n\tTotal memory available to MegaMek: "
-                + NumberFormat.getInstance().format(Runtime.getRuntime().maxMemory()) + " GB";
-        LogManager.getLogger().info(msg);
+    public static String getUnderlyingInformation(final String originProject) {
+        return MegaMek.getUnderlyingInformation(originProject, MMLConstants.PROJECT_NAME);
     }
     
     private static void startup() {

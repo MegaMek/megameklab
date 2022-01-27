@@ -2,7 +2,6 @@
 /logs/
 /.settings/
 /classes
-timestamp
 /*.ps
 /MegaMekLab.jar
 .DS_Store
