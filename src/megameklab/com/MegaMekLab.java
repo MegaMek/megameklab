@@ -22,7 +22,6 @@ import megamek.common.Configuration;
 import megamek.common.EquipmentType;
 import megamek.common.MechSummaryCache;
 import megamek.common.QuirksHandler;
-import megamek.common.preference.PreferenceManager;
 import megameklab.com.ui.StartupGUI;
 import megameklab.com.util.CConfig;
 import megameklab.com.util.UnitUtil;
@@ -35,7 +34,6 @@ import java.io.IOException;
 import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -104,13 +102,7 @@ public class MegaMekLab {
      * @param originProject the project launching MegaMekLab
      */
     public static void showInfo(final String originProject) {
-        final long TIMESTAMP = new File(PreferenceManager.getClientPreferences().getLogDirectory()
-                + File.separator + "timestamp").lastModified();
-        // echo some useful stuff
         String msg = "Starting MegaMekLab v" + MMLConstants.VERSION;
-        if (TIMESTAMP > 0) {
-            msg += "\n\tCompiled on " + new Date(TIMESTAMP);
-        }
         msg += "\n\tToday is " + LocalDate.now()
                 + "\n\tOrigin Project: " + originProject
                 + "\n\tJava Vendor: " + System.getProperty("java.vendor")
