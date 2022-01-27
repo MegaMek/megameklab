@@ -54,8 +54,8 @@ public class MegaMekLab {
         });
 
         // Second, let's handle logging
-        MegaMek.showInfo();
-        showInfo();
+        MegaMek.showInfo(MMLConstants.PROJECT_NAME);
+        showInfo(MMLConstants.PROJECT_NAME);
         MegaMek.handleLegacyLogging();
 
         // Third, let's set some default properties
@@ -99,10 +99,11 @@ public class MegaMekLab {
     }
 
     /**
-     * Prints some information about MegaMekLab. Used in logfiles to figure out the
-     * JVM and version of MegaMekLab.
+     * Prints some information about MegaMekLab. Used in log files to figure out the JVM and version
+     * of MegaMekLab.
+     * @param originProject the project launching MegaMekLab
      */
-    public static void showInfo() {
+    public static void showInfo(final String originProject) {
         final long TIMESTAMP = new File(PreferenceManager.getClientPreferences().getLogDirectory()
                 + File.separator + "timestamp").lastModified();
         // echo some useful stuff
@@ -111,6 +112,7 @@ public class MegaMekLab {
             msg += "\n\tCompiled on " + new Date(TIMESTAMP);
         }
         msg += "\n\tToday is " + LocalDate.now()
+                + "\n\tOrigin Project: " + originProject
                 + "\n\tJava Vendor: " + System.getProperty("java.vendor")
                 + "\n\tJava Version: " + System.getProperty("java.version")
                 + "\n\tPlatform: " + System.getProperty("os.name") + " " + System.getProperty("os.version")
