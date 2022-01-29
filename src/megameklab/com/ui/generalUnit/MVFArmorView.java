@@ -38,12 +38,8 @@ import megameklab.com.util.UnitUtil;
  * Panel for assigning armor type and tonnage for mechs, (combat) vehicles, and fighters.
  * 
  * @author Neoancient
- *
  */
 public class MVFArmorView extends BuildView implements ActionListener, ChangeListener {
-    
-    private static final long serialVersionUID = 1246552271894765543L;
-
     private final List<ArmorAllocationListener> listeners = new CopyOnWriteArrayList<>();
     public void addListener(ArmorAllocationListener l) {
         listeners.add(l);

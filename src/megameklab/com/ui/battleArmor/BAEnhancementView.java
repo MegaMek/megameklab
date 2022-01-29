@@ -32,15 +32,8 @@ import megameklab.com.ui.listeners.BABuildListener;
  * Structure tab panel for BA movement enhancements
  * 
  * @author Neoancient
- *
  */
 public class BAEnhancementView extends BuildView implements ActionListener {
-
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 6181555446271444880L;
-
     private List<BABuildListener> listeners = new CopyOnWriteArrayList<>();
     public void addListener(BABuildListener l) {
         listeners.add(l);

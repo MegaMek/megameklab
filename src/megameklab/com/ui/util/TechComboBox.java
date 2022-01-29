@@ -22,15 +22,8 @@ import megamek.common.ITechnology;
  * Has a boolean flag that can toggle prefixing "Clan" or "IS" to the equipment name.
  * 
  * @author Neoancient
- *
  */
 public class TechComboBox<T extends ITechnology> extends CustomComboBox<T> {
-    
-    /**
-     * 
-     */
-    private static final long serialVersionUID = -4155090672011004423L;
-    
     private boolean showTechBase = false;
 
     public TechComboBox(Function<T,String> toString) {

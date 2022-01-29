@@ -35,12 +35,8 @@ import megameklab.com.ui.util.IView;
 
 /**
  * @author Neoancient
- *
  */
 public class WSSummaryView extends IView {
-
-    private static final long serialVersionUID = 3332719282944878899L;
-    
     private JTextField txtEngineTon = new JTextField("?");
     private JTextField txtFuelTon = new JTextField("?");   
     private JTextField txtStructureTon = new JTextField("?");

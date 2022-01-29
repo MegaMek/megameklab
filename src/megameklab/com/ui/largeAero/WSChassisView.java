@@ -45,15 +45,8 @@ import megameklab.com.ui.listeners.AdvancedAeroBuildListener;
  * Structure tab chassis panel for jumpships, warships, and space stations.
  * 
  * @author Neoancient
- *
  */
 public class WSChassisView extends BuildView implements ActionListener, ChangeListener {
-
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 3329873021840561899L;
-    
     private final List<AdvancedAeroBuildListener> listeners = new CopyOnWriteArrayList<>();
     public void addListener(AdvancedAeroBuildListener l) {
         listeners.add(l);

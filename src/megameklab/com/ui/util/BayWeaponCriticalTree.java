@@ -48,7 +48,6 @@ import static megameklab.com.ui.util.CritCellUtil.CRITCELL_MIN_HEIGHT;
  * @author Neoancient
  */
 public class BayWeaponCriticalTree extends JTree {
-    private static final long serialVersionUID = -223615170732243552L;
     // Spheroids show only forward or only aft on the side arcs
     public static final int FORWARD = 0; // No rear-mounting allowed (nose, aft, spheroid forward side arcs
     public static final int BOTH    = 1; // Can be mounted forward or rear (aerodyne wing arcs)

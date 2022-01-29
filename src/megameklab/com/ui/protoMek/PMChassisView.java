@@ -45,9 +45,6 @@ import megameklab.com.ui.listeners.ProtomekBuildListener;
  *
  */
 public class PMChassisView extends BuildView implements ActionListener, ChangeListener {
-
-    private static final long serialVersionUID = -5064588356330519374L;
-    
     List<ProtomekBuildListener> listeners = new CopyOnWriteArrayList<>();
     public void addListener(ProtomekBuildListener l) {
         listeners.add(l);

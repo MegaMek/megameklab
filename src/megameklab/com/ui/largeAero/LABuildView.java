@@ -52,14 +52,8 @@ import megameklab.com.util.StringUtils;
  * Shows unallocated equipment and presents menus options for adding equipment to bays.
  * 
  * @author Neoancient
- *
  */
 public class LABuildView extends IView implements MouseListener {
-    /**
-     *
-     */
-    private static final long serialVersionUID = 799195356642563937L;
-
     private final List<BayWeaponCriticalTree> arcViews = new CopyOnWriteArrayList<>();
     public void addArcView(BayWeaponCriticalTree l) {
         arcViews.add(l);

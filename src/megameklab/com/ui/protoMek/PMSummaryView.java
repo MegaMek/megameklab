@@ -40,12 +40,8 @@ import megameklab.com.util.UnitUtil;
  * Summary view that shows weight breakdown by category for Protomechs
  * 
  * @author Neoancient
- *
  */
 public class PMSummaryView extends IView {
-
-    private static final long serialVersionUID = 1179176259189704858L;
-
     private JTextField txtStructKg = new JTextField("?");
     private JTextField txtEngineKg = new JTextField("?");
     private JTextField txtControlKg = new JTextField("?");

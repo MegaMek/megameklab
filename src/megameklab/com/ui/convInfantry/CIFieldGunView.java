@@ -70,12 +70,8 @@ import megameklab.com.ui.util.XTableColumnModel;
  * Shows options for infantry field guns/field artillery
  * 
  * @author Neoancient
- *
  */
 public class CIFieldGunView extends IView implements ActionListener {
-
-    private static final long serialVersionUID = 1130259386466317590L;
-
     private final static int T_ALL       = 0;
     private final static int T_GUN       = 1;
     private final static int T_ARTILLERY = 2;
@@ -88,7 +84,7 @@ public class CIFieldGunView extends IView implements ActionListener {
     private JButton btnRemoveGun = new JButton("Remove Field Gun");
     final private JCheckBox chkShowAll = new JCheckBox("Show Unavailable");
 
-    private JComboBox<String> choiceType = new JComboBox<String>();
+    private JComboBox<String> choiceType = new JComboBox<>();
     private JTextField txtFilter = new JTextField();
 
     private JRadioButton rbtnStats = new JRadioButton("Stats");

@@ -23,15 +23,8 @@ import megameklab.com.ui.util.IView;
 
 /**
  * @author Neoancient
- *
  */
 public class DSSummaryView extends IView {
-
-    /**
-     * 
-     */
-    private static final long serialVersionUID = -5445051117935554280L;
-    
     private JTextField txtStructTon = new JTextField("?");
     private JTextField txtEngineTon = new JTextField("?");   
     private JTextField txtFuelTon = new JTextField("?");

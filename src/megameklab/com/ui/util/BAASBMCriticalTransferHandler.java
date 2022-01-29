@@ -31,7 +31,6 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 
 public class BAASBMCriticalTransferHandler extends TransferHandler {
-    private static final long serialVersionUID = -5215375829853683877L;
     private EntitySource eSource;
     private int location = -1;
     private RefreshListener refresh;

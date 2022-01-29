@@ -42,8 +42,6 @@ import java.util.Vector;
  * @author beerockxs
  */
 public class BMBuildView extends IView implements ActionListener, MouseListener {
-    private static final long serialVersionUID = 799195356642563937L;
-
     private CriticalTableModel equipmentList;
     private Vector<Mounted> masterEquipmentList = new Vector<>(10, 1);
     private JTable equipmentTable = new JTable();

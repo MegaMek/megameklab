@@ -9,58 +9,49 @@
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
  * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-
 package megameklab.com.ui.util;
-
-import java.io.Serializable;
-
-import javax.swing.ComboBoxModel;
-import javax.swing.JComboBox.KeySelectionManager;
 
 import megamek.common.EquipmentType;
 
-public class EquipmentListCellKeySelectionManager implements KeySelectionManager, Serializable {
-    /**
-     *
-     */
-    private static final long serialVersionUID = -3544837608256080482L;
+import javax.swing.*;
+import javax.swing.JComboBox.KeySelectionManager;
 
-    public int selectionForKey(char aKey,@SuppressWarnings("rawtypes") ComboBoxModel aModel) {
-        int i,c;
+public class EquipmentListCellKeySelectionManager implements KeySelectionManager {
+    @Override
+    public int selectionForKey(char aKey, ComboBoxModel aModel) {
+        int i, c;
         int currentSelection = -1;
         Object selectedItem = aModel.getSelectedItem();
-        if ( selectedItem != null ) {
+        if (selectedItem != null) {
             String selectedText = ((EquipmentType) selectedItem).getName();
             String v;
             String pattern;
 
-
-            for ( i=0,c=aModel.getSize();i<c;i++ ) {
-                if ( selectedText.equals(((EquipmentType)aModel.getElementAt(i)).getName())) {
-                    currentSelection  =  i;
+            for (i = 0, c = aModel.getSize(); i < c; i++) {
+                if (selectedText.equals(((EquipmentType) aModel.getElementAt(i)).getName())) {
+                    currentSelection = i;
                     break;
                 }
             }
 
-
             pattern = ("" + aKey).toLowerCase();
             aKey = pattern.charAt(0);
 
-            for ( i = ++currentSelection, c = aModel.getSize() ; i < c ; i++ ) {
+            for (i = ++currentSelection, c = aModel.getSize(); i < c ; i++) {
                 Object elem = aModel.getElementAt(i);
                 if ((elem != null) && (elem.toString() != null)) {
                     v = ((EquipmentType) elem).getName().toLowerCase();
-                    if ( (v.length() > 0) && (v.charAt(0) == aKey) ) {
+                    if ((v.length() > 0) && (v.charAt(0) == aKey)) {
                         return i;
                     }
                 }
             }
 
-            for ( i = 0 ; i < currentSelection ; i ++ ) {
+            for (i = 0; i < currentSelection; i ++) {
                 Object elem = aModel.getElementAt(i);
                 if ((elem != null) && (elem.toString() != null)) {
                     v = ((EquipmentType) elem).getName().toLowerCase();
-                    if ( (v.length() > 0) && (v.charAt(0) == aKey) ) {
+                    if ((v.length() > 0) && (v.charAt(0) == aKey)) {
                         return i;
                     }
                 }
@@ -68,6 +59,4 @@ public class EquipmentListCellKeySelectionManager implements KeySelectionManager
         }
         return -1;
     }
-
-
 }

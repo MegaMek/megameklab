@@ -47,12 +47,8 @@ import megameklab.com.ui.util.XTableColumnModel;
  * View for selecting infantry specializations, including xenoplanetary conditions training (XCT).
  * 
  * @author Neoancient
- *
  */
 public class CISpecializationView extends IView implements TableModelListener {
-
-    private static final long serialVersionUID = -5851020780074510576L;
-    
     private List<InfantryBuildListener> listeners = new CopyOnWriteArrayList<>();
     public void addListener(InfantryBuildListener l) {
         listeners.add(l);
@@ -126,12 +122,6 @@ public class CISpecializationView extends IView implements TableModelListener {
     }
     
     private class SpecializationModel extends AbstractTableModel {
-        
-        /**
-         * 
-         */
-        private static final long serialVersionUID = -4321737516108874027L;
-        
         // Don't include SCUBA
         private final String[][] rows = new String[Infantry.NUM_SPECIALIZATIONS - 1][];
         private final TechAdvancement[] specTAs = new TechAdvancement[Infantry.NUM_SPECIALIZATIONS];
@@ -282,9 +272,6 @@ public class CISpecializationView extends IView implements TableModelListener {
         }
 
         public class Renderer extends DefaultTableCellRenderer {
-
-            private static final long serialVersionUID = 9054581142945717303L;
-
             @Override
             public Component getTableCellRendererComponent(JTable table,
                     Object value, boolean isSelected, boolean hasFocus, int row,

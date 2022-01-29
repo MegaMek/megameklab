@@ -30,8 +30,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class BMBuildTab extends ITab implements ActionListener {
-    private static final long serialVersionUID = -6756011847500605874L;
-
     private RefreshListener refresh = null;
     private BMCriticalView critView = null;
     private BMBuildView buildView = null;

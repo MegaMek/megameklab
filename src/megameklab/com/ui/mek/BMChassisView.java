@@ -44,15 +44,8 @@ import megameklab.com.ui.listeners.MekBuildListener;
  * Construction options and systems for Meks.
  * 
  * @author Neoancient
- *
  */
 public class BMChassisView extends BuildView implements ActionListener, ChangeListener {
-    
-    /**
-     * 
-     */
-    private static final long serialVersionUID = -2620071922845931509L;
-
     List<MekBuildListener> listeners = new CopyOnWriteArrayList<>();
     public void addListener(MekBuildListener l) {
         listeners.add(l);

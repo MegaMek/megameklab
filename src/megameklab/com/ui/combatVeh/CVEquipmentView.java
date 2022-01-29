@@ -34,8 +34,6 @@ import java.util.Enumeration;
 import java.util.Vector;
 
 public class CVEquipmentView extends IView implements ActionListener {
-    private static final long serialVersionUID = 799195356642563937L;
-
     private RefreshListener refresh;
 
     private JPanel topPanel = new JPanel();
@@ -46,9 +44,9 @@ public class CVEquipmentView extends IView implements ActionListener {
     private JButton removeButton = new JButton("Remove");
     private JButton removeAllButton = new JButton("Remove All");
 
-    private JComboBox<EquipmentType> equipmentCombo = new JComboBox<EquipmentType>();
+    private JComboBox<EquipmentType> equipmentCombo = new JComboBox<>();
     private CriticalTableModel equipmentList;
-    private Vector<EquipmentType> masterEquipmentList = new Vector<EquipmentType>(10, 1);
+    private Vector<EquipmentType> masterEquipmentList = new Vector<>(10, 1);
     private JTable equipmentTable = new JTable();
     private JScrollPane equipmentScroll = new JScrollPane();
     private Vector<EquipmentType> equipmentTypes;

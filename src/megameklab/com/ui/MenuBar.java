@@ -1,7 +1,6 @@
 /*
- * MegaMekLab - Copyright (C) 2011-2019 The MegaMek Team
- *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * MegaMekLab
+ * Copyright (c) 2011-2022 - The MegaMek Team. All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -49,8 +48,10 @@ import java.util.ResourceBundle;
 
 import static java.awt.event.KeyEvent.VK_C;
 
+/**
+ * @author jtighe (torren@users.sourceforge.net)
+ */
 public class MenuBar extends JMenuBar implements ClipboardOwner {
-    private static final long serialVersionUID = -3998342610654551481L;
     private final JMenu themeMenu;
     private final MegaMekLabMainUI parentFrame;
 

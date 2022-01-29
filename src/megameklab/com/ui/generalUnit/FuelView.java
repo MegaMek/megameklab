@@ -38,12 +38,8 @@ import megameklab.com.ui.listeners.BuildListener;
  * Structure tab panel for aerospace and support vehicles.
  * 
  * @author Neoancient
- *
  */
 public class FuelView extends BuildView implements ActionListener, ChangeListener {
-    
-    private static final long serialVersionUID = -3321986392656071192L;
-
     private final List<BuildListener> listeners = new CopyOnWriteArrayList<>();
     public void addListener(BuildListener l) {
         listeners.add(l);

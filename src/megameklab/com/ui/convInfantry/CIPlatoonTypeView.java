@@ -41,15 +41,8 @@ import megameklab.com.ui.listeners.InfantryBuildListener;
  * Infantry structure tab panel for selecting platoon movement type and number/size of squads.
  * 
  * @author Neoancient
- *
  */
 public class CIPlatoonTypeView extends BuildView implements ActionListener, ChangeListener {
-    
-    /**
-     * 
-     */
-    private static final long serialVersionUID = -7227731728613831387L;
-    
     List<InfantryBuildListener> listeners = new CopyOnWriteArrayList<>();
     public void addListener(InfantryBuildListener l) {
         listeners.add(l);

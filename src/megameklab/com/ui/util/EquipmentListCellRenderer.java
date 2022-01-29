@@ -9,11 +9,6 @@
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
  * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-
-/*
- * Thanks to Lost in space of the Solaris Sunk Works Project for the code snippet and idea.
- */
-
 package megameklab.com.ui.util;
 
 import java.awt.Component;
@@ -26,13 +21,10 @@ import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.TechConstants;
 
+/*
+ * Thanks to Lost in space of the Solaris Sunk Works Project for the code snippet and idea.
+ */
 public class EquipmentListCellRenderer extends DefaultListCellRenderer {
-
-    /**
-     *
-     */
-    private static final long serialVersionUID = 3787675734141978289L;
-
     private Entity unit;
 
     public EquipmentListCellRenderer(Entity unit) {
@@ -41,8 +33,7 @@ public class EquipmentListCellRenderer extends DefaultListCellRenderer {
 
     @Override
     public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-
-        JLabel label = (JLabel)super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+        JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
         StringBuffer text = new StringBuffer();
         EquipmentType etype = (EquipmentType) value;
         text.append(etype.getName());
@@ -55,5 +46,4 @@ public class EquipmentListCellRenderer extends DefaultListCellRenderer {
         label.setText(text.toString());
         return label;
     }
-
 }

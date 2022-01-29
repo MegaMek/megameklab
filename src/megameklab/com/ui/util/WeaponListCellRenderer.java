@@ -13,7 +13,6 @@
 /*
  * Thanks to Lost in space of the Solaris Sunk Works Project for the code snippet and idea.
  */
-
 package megameklab.com.ui.util;
 
 import java.awt.Component;
@@ -28,13 +27,7 @@ import megamek.common.Mounted;
 import megameklab.com.util.UnitUtil;
 
 public class WeaponListCellRenderer extends DefaultListCellRenderer {
-
     private Entity unit = null;
-
-    /**
-     *
-     */
-    private static final long serialVersionUID = 1599368063832366744L;
 
     public WeaponListCellRenderer(Entity unit) {
         this.unit = unit;

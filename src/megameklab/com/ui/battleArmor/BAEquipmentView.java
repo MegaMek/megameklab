@@ -1,7 +1,6 @@
 /*
- * MegaMekLab - Copyright (C) 2008
- *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * MegaMekLab
+ * Copyright (c) 2008-2022 - The MegaMek Team. All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
@@ -13,46 +12,29 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-
 package megameklab.com.ui.battleArmor;
-
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.Vector;
-
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
 
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.LocationFullException;
 import megamek.common.Mounted;
 import megameklab.com.ui.EntitySource;
-import megameklab.com.ui.util.CriticalTableModel;
-import megameklab.com.ui.util.EquipmentListCellKeySelectionManager;
-import megameklab.com.ui.util.EquipmentListCellRenderer;
-import megameklab.com.ui.util.IView;
-import megameklab.com.ui.util.RefreshListener;
+import megameklab.com.ui.util.*;
 import megameklab.com.util.StringUtils;
 import megameklab.com.util.UnitUtil;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.Vector;
+
+/**
+ * @author jtighe (torren@users.sourceforge.net)
+ */
 public class BAEquipmentView extends IView implements ActionListener {
-
-    /**
-     *
-     */
-    private static final long serialVersionUID = 799195356642563937L;
-
     @SuppressWarnings("unused")
     private RefreshListener refresh;
 
@@ -65,9 +47,9 @@ public class BAEquipmentView extends IView implements ActionListener {
     private JButton removeButton = new JButton("Remove");
     private JButton removeAllButton = new JButton("Remove All");
 
-    private JComboBox<EquipmentType> equipmentCombo = new JComboBox<EquipmentType>();
+    private JComboBox<EquipmentType> equipmentCombo = new JComboBox<>();
     private CriticalTableModel equipmentList;
-    private Vector<EquipmentType> masterEquipmentList = new Vector<EquipmentType>(10, 1);
+    private Vector<EquipmentType> masterEquipmentList = new Vector<>(10, 1);
     private JTable equipmentTable = new JTable();
     private JScrollPane equipmentScroll = new JScrollPane();
     private Vector<EquipmentType> equipmentTypes;
