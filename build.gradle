@@ -185,7 +185,6 @@ task stageFiles {
     dependsOn unitFilesZip
     doLast {
         mkdir "${fileStagingDir}/${logDir}"
-        ant.touch(file: "${fileStagingDir}/${logDir}/timestamp")
     }
 }
 

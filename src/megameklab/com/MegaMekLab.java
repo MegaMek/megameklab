@@ -22,7 +22,6 @@ import megamek.common.Configuration;
 import megamek.common.EquipmentType;
 import megamek.common.MechSummaryCache;
 import megamek.common.QuirksHandler;
-import megamek.common.preference.PreferenceManager;
 import megameklab.com.ui.StartupGUI;
 import megameklab.com.util.CConfig;
 import megameklab.com.util.UnitUtil;
@@ -32,10 +31,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.text.NumberFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -54,9 +50,8 @@ public class MegaMekLab {
         });
 
         // Second, let's handle logging
-        MegaMek.showInfo();
-        showInfo();
-        MegaMek.handleLegacyLogging();
+        MegaMek.initializeLogging(MMLConstants.PROJECT_NAME);
+        MegaMekLab.initializeLogging(MMLConstants.PROJECT_NAME);
 
         // Third, let's set some default properties
         System.setProperty("apple.laf.useScreenMenuBar", "true");
@@ -98,26 +93,16 @@ public class MegaMekLab {
         }
     }
 
+    public static void initializeLogging(final String originProject) {
+        LogManager.getLogger().info(getUnderlyingInformation(originProject));
+    }
+
     /**
-     * Prints some information about MegaMekLab. Used in logfiles to figure out the
-     * JVM and version of MegaMekLab.
+     * @param originProject the project that launched MegaMekLab
+     * @return the underlying information for this launch of MegaMekLab
      */
-    public static void showInfo() {
-        final long TIMESTAMP = new File(PreferenceManager.getClientPreferences().getLogDirectory()
-                + File.separator + "timestamp").lastModified();
-        // echo some useful stuff
-        String msg = "Starting MegaMekLab v" + MMLConstants.VERSION;
-        if (TIMESTAMP > 0) {
-            msg += "\n\tCompiled on " + new Date(TIMESTAMP);
-        }
-        msg += "\n\tToday is " + LocalDate.now()
-                + "\n\tJava Vendor: " + System.getProperty("java.vendor")
-                + "\n\tJava Version: " + System.getProperty("java.version")
-                + "\n\tPlatform: " + System.getProperty("os.name") + " " + System.getProperty("os.version")
-                + " (" + System.getProperty("os.arch") + ")"
-                + "\n\tTotal memory available to MegaMek: "
-                + NumberFormat.getInstance().format(Runtime.getRuntime().maxMemory()) + " GB";
-        LogManager.getLogger().info(msg);
+    public static String getUnderlyingInformation(final String originProject) {
+        return MegaMek.getUnderlyingInformation(originProject, MMLConstants.PROJECT_NAME);
     }
     
     private static void startup() {

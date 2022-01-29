@@ -25,6 +25,7 @@ import megamek.SuiteConstants;
  */
 public final class MMLConstants extends SuiteConstants {
     //region General Constants
+    public static final String PROJECT_NAME = "MegaMekLab";
     //endregion General Constants
 
     //region GUI Constants
