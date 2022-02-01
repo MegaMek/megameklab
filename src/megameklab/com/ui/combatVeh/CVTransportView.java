@@ -38,15 +38,8 @@ import megameklab.com.ui.listeners.CVBuildListener;
  * Panel for combat vehicle cargo and troop space.
  * 
  * @author Neoancient
- *
  */
 public class CVTransportView extends BuildView implements ChangeListener {
-    
-    /**
-     * 
-     */
-    private static final long serialVersionUID = -3059498307570586741L;
-    
     List<CVBuildListener> listeners = new CopyOnWriteArrayList<>();
     public void addListener(CVBuildListener l) {
         listeners.add(l);

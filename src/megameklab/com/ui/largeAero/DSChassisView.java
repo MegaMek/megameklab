@@ -42,15 +42,8 @@ import megameklab.com.ui.listeners.DropshipBuildListener;
  * Structure tab chassis panel for small craft and dropships.
  * 
  * @author Neoancient
- *
  */
 public class DSChassisView extends BuildView implements ActionListener, ChangeListener {
-    
-    /**
-     * 
-     */
-    private static final long serialVersionUID = -7590755198054703571L;
-    
     private final List<DropshipBuildListener> listeners = new CopyOnWriteArrayList<>();
     public void addListener(DropshipBuildListener l) {
         listeners.add(l);

@@ -60,12 +60,8 @@ import megameklab.com.util.UnitUtil;
  * Structure tab for protomechs
  * 
  * @author Neoancient
- *
  */
 public class PMStructureTab extends ITab implements ProtomekBuildListener, ArmorAllocationListener {
-
-    private static final long serialVersionUID = 6498316429919711881L;
-    
     private BasicInfoView panBasicInfo;
     private PMChassisView panChassis;
     private BAProtoArmorView panArmor;

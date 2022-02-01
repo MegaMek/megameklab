@@ -1,7 +1,6 @@
 /*
- * MegaMekLab - Copyright (C) 2008
- *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * MegaMekLab
+ * Copyright (C) 2008-2022 - The MegaMek Team. All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -40,9 +39,10 @@ import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * @author jtighe (torren@users.sourceforge.net)
+ */
 public class BAStructureTab extends ITab implements ActionListener, BABuildListener, ArmorAllocationListener {
-    private static final long serialVersionUID = -7985608549543235815L;
-
     private RefreshListener refresh;
 
     Dimension labelSize = new Dimension(110, 25);

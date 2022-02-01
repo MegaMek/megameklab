@@ -40,15 +40,8 @@ import megameklab.com.ui.listeners.AdvancedAeroBuildListener;
  * Sets number and sizes of gravity decks on advanced aerospace units.
  * 
  * @author Neoancient
- *
  */
 public class WSGravDeckView extends BuildView implements ActionListener, TableModelListener {
-    
-    /**
-     * 
-     */
-    private static final long serialVersionUID = -956614936951473086L;
-    
     private final List<AdvancedAeroBuildListener> listeners = new CopyOnWriteArrayList<>();
     public void addListener(AdvancedAeroBuildListener l) {
         listeners.add(l);
@@ -130,12 +123,6 @@ public class WSGravDeckView extends BuildView implements ActionListener, TableMo
     }
 
     private static class GravDeckTableModel extends AbstractTableModel {
-        
-        /**
-         * 
-         */
-        private static final long serialVersionUID = 2769156811527423574L;
-        
         final static int COL_DIAMETER = 0;
         final static int COL_SIZE     = 1;
         final static int COL_TONNAGE  = 2;

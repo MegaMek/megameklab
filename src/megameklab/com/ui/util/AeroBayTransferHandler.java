@@ -37,8 +37,6 @@ import java.util.StringJoiner;
  * @author Neoancient
  */
 public class AeroBayTransferHandler extends TransferHandler {
-    private static final long serialVersionUID = 2534394664060762469L;
-    
     private EntitySource eSource;
 
     public static final String EMTPYSLOT = "EmptySlot";

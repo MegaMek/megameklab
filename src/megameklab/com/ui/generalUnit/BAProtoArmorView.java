@@ -46,15 +46,8 @@ import megameklab.com.util.UnitUtil;
  * Structure table armor panel for units that allocate armor by point instead of ton.
  * 
  * @author Neoancient
- *
  */
 public class BAProtoArmorView extends BuildView implements ActionListener, ChangeListener {
-    
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 14527455823813010L;
-
     private final List<ArmorAllocationListener> listeners = new CopyOnWriteArrayList<>();
     public void addListener(ArmorAllocationListener l) {
         listeners.add(l);

@@ -1,5 +1,6 @@
 /*
- * MegaMekLab - Copyright (C) 2019 - The MegaMek Team
+ * MegaMekLab
+ * Copyright (c) 2019-2022 - The MegaMek Team. All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -41,8 +42,7 @@ import java.util.TreeMap;
  * A startup splash screen for MegaMekLab
  * @author Taharqa
  */
-public class StartupGUI extends javax.swing.JPanel {
-    private static final long serialVersionUID = 8376874926997734492L;
+public class StartupGUI extends JPanel {
     JFrame frame;
     Image imgSplash;
     BufferedImage backgroundIcon;

@@ -35,7 +35,6 @@ import java.awt.event.*;
 import java.util.Vector;
 
 public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseListener {
-    private static final long serialVersionUID = 6847511182922982125L;
     private EntitySource eSource;
     private RefreshListener refresh;
     private boolean buildView = false;

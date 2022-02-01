@@ -1,5 +1,6 @@
 /*
- * MegaMekLab - Copyright (C) 2017 - The MegaMek Team
+ * MegaMekLab
+ * Copyright (c) 2017-2022 - The MegaMek Team. All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -42,15 +43,8 @@ import megameklab.com.ui.listeners.BABuildListener;
  * Structure tab chassis view for BattleArmor
  * 
  * @author Neoancient
- *
  */
 public class BAChassisView extends BuildView implements ActionListener, ChangeListener {
-    
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 2230418263440532689L;
-
     private final List<BABuildListener> listeners = new CopyOnWriteArrayList<>();
     public void addListener(BABuildListener l) {
         listeners.add(l);
@@ -65,7 +59,7 @@ public class BAChassisView extends BuildView implements ActionListener, ChangeLi
     
     private final SpinnerNumberModel spnTurretSizeModel = new SpinnerNumberModel(0, 0, 10, 1);
     private final JComboBox<String> cbChassisType = new JComboBox<>();
-    private final CustomComboBox<Integer> cbWeightClass = new CustomComboBox<>(i -> EntityWeightClass.getClassName(i));
+    private final CustomComboBox<Integer> cbWeightClass = new CustomComboBox<>(EntityWeightClass::getClassName);
     private final JCheckBox chkExoskeleton = new JCheckBox();
     private final JCheckBox chkHarjel = new JCheckBox();
     private final JSpinner spnSquadSize = new JSpinner(new SpinnerNumberModel(4, 4, 6, 1));

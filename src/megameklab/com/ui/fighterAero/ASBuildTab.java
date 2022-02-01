@@ -30,12 +30,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class ASBuildTab extends ITab implements ActionListener {
-
-    /**
-     *
-     */
-    private static final long serialVersionUID = -6756011847500605874L;
-
     private RefreshListener refresh = null;
     private ASCriticalView critView = null;
     private ASBuildView buildView = null;

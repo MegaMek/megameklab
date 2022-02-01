@@ -42,15 +42,8 @@ import megameklab.com.util.UnitUtil;
 
 /**
  * @author Neoancient
- *
  */
 public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, ArmorAllocationListener {
-
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 544925067532464071L;
-    
     private JPanel masterPanel;
     private BasicInfoView panInfo;
     private WSChassisView panChassis;

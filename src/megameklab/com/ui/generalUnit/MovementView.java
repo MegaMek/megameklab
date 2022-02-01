@@ -41,15 +41,8 @@ import megameklab.com.ui.listeners.BuildListener;
  * Controls for setting a unit's speed
  * 
  * @author Neoancient
- *
  */
 public class MovementView extends BuildView implements ActionListener, ChangeListener {
-    
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 9047797409742756926L;
-
     private final List<BuildListener> listeners = new CopyOnWriteArrayList<>();
     public void addListener(BuildListener l) {
         listeners.add(l);

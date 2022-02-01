@@ -36,8 +36,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class BMStructureTab extends ITab implements MekBuildListener, ArmorAllocationListener {
-    private static final long serialVersionUID = -6756011847500605874L;
-
     private BasicInfoView panBasicInfo;
     private BMChassisView panChassis;
     private MVFArmorView panArmor;

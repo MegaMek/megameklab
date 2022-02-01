@@ -11,7 +11,6 @@
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  */
-
 package megameklab.com.ui.generalUnit;
 
 import java.awt.Dimension;
@@ -25,15 +24,8 @@ import javax.swing.SwingConstants;
  * Base class that has some common layout methods for main ui component views.
  * 
  * @author Neoancient
- *
  */
 public abstract class BuildView extends JPanel {
-    
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 8823653930022761924L;
-    
     final protected Dimension labelSize = new Dimension(110, 25);
     final protected Dimension labelSizeLg = new Dimension(180, 25);
     final protected Dimension controlSize = new Dimension(180, 25);

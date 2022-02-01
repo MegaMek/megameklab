@@ -27,15 +27,8 @@ import javax.swing.ListCellRenderer;
  * This class could use a more descriptive name.
  * 
  * @author Neoancient
- *
  */
 public class CustomComboBox<T> extends JComboBox<T> {
-    
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 3775138378658623671L;
-    
     private String nullValue = "-error-";
     
     protected CustomComboBox() {
@@ -67,12 +60,6 @@ public class CustomComboBox<T> extends JComboBox<T> {
     }
     
     class Renderer<U> extends JLabel implements ListCellRenderer<U> {
-        
-        /**
-         * 
-         */
-        private static final long serialVersionUID = -8452049273819893561L;
-        
         private Function<U,String> toString;
         
         protected Renderer(Function<U,String> toString) {

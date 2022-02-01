@@ -24,7 +24,6 @@ import megamek.common.*;
 import megameklab.com.ui.EntitySource;
 
 public class ITab extends JPanel {
-    private static final long serialVersionUID = -5771036622436158024L;
     protected EntitySource eSource;
 
     public ITab(EntitySource eSource) {

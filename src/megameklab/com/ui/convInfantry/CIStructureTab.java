@@ -13,7 +13,6 @@
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  */
-
 package megameklab.com.ui.convInfantry;
 
 import java.awt.Dimension;
@@ -48,12 +47,6 @@ import megameklab.com.ui.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 
 public class CIStructureTab extends ITab implements InfantryBuildListener {
-
-    /**
-     *
-     */
-    private static final long serialVersionUID = -7985608549543235815L;
-
     private RefreshListener refresh;
 
     public static final int T_INFANTRY_WEAPONS = 0;

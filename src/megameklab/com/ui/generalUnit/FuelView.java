@@ -35,8 +35,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * 
  * @author Neoancient
  */
-public class FuelView extends JPanel implements ActionListener, ChangeListener {
-    
+public class FuelView extends BuildView implements ActionListener, ChangeListener {
     private final List<BuildListener> listeners = new CopyOnWriteArrayList<>();
     public void addListener(BuildListener l) {
         listeners.add(l);
@@ -45,7 +44,7 @@ public class FuelView extends JPanel implements ActionListener, ChangeListener {
         listeners.remove(l);
     }
 
-    private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl()); 
+    private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl());
 
     private final SpinnerNumberModel spnFuelModel = new SpinnerNumberModel(0.0, 0.0, null, 0.5);
     private final SpinnerNumberModel spnFuelCapacityModel = new SpinnerNumberModel(0, 0, null, 1);
@@ -184,11 +183,11 @@ public class FuelView extends JPanel implements ActionListener, ChangeListener {
             lblBurnDaysMax.setText(String.format("%3.2f", TestAero.calculateDaysAtMax(aero)));
             panBurnDays.setVisible(true);
             if ((aero instanceof Jumpship) && !(aero instanceof Warship)) {
-                lblBurnDays1GText.setText(resourceMap.getString("FuelView.lblBurnDaysStationKeeping.text")); 
+                lblBurnDays1GText.setText(resourceMap.getString("FuelView.lblBurnDaysStationKeeping.text"));
                 lblBurnDaysMaxText.setVisible(false);
                 lblBurnDaysMax.setVisible(false);
             } else {
-                lblBurnDays1GText.setText(resourceMap.getString("FuelView.lblBurnDays1G.text")); 
+                lblBurnDays1GText.setText(resourceMap.getString("FuelView.lblBurnDays1G.text"));
                 lblBurnDaysMaxText.setVisible(true);
                 lblBurnDaysMax.setVisible(true);
             }

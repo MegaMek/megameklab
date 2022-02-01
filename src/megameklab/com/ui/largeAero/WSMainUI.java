@@ -33,8 +33,6 @@ import java.awt.*;
  * @author Neoancient
  */
 public class WSMainUI extends MegaMekLabMainUI {
-    private static final long serialVersionUID = -91028543221939757L;
-    
     JTabbedPane configPane = new JTabbedPane(SwingConstants.TOP);
     private WSStructureTab structureTab;
     private AbstractEquipmentTab equipmentTab;
