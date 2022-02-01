@@ -105,6 +105,8 @@ public abstract class RecordSheetTask extends SwingWorker<Void, Integer> {
         try {
             get();
         } catch (ExecutionException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(),
+                    "A problem has occurred", JOptionPane.ERROR_MESSAGE);
             LogManager.getLogger().error("", e);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
