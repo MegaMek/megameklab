@@ -25,16 +25,9 @@ import megamek.common.ITechnology;
  * ITechnology faction constant.
  * 
  * @author Neoancient
- *
  */
 public class FactionComboBox extends CustomComboBox<Integer> {
-
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 4722914142736815170L;
-    
-    private final Map<Integer,String> displayNames = new HashMap<>();
+    private final Map<Integer, String> displayNames = new HashMap<>();
     
     public FactionComboBox() {
         super();

@@ -38,12 +38,8 @@ import megameklab.com.ui.util.RefreshListener;
  * Allows infantry to include cybernetic/prosthetic augmentation (e.g. Manei Domini).
  * 
  * @author Neoancient
- *
  */
 public class CIAugmentationView extends IView implements ActionListener {
-
-    private static final long serialVersionUID = 5150629278688315585L;
-
     private RefreshListener refresh;
     
     private HashMap<IOption, JCheckBox> options = new HashMap<>();

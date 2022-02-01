@@ -40,12 +40,8 @@ import megameklab.com.ui.util.RefreshListener;
  * Panel for editing unit fluff
  * 
  * @author Neoancient
- *
  */
 public class FluffTab extends ITab implements FocusListener {
-
-    private static final long serialVersionUID = 5203904989540243537L;
-
     private final JTextArea txtCapabilities = new JTextArea(4, 40);
     private final JTextArea txtOverview = new JTextArea(4, 40);
     private final JTextArea txtDeployment = new JTextArea(4, 40);

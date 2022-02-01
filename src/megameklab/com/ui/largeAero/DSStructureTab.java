@@ -11,7 +11,6 @@
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  */
-
 package megameklab.com.ui.largeAero;
 
 import java.awt.BorderLayout;
@@ -40,18 +39,9 @@ import megameklab.com.ui.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 
 /**
- * 
  * @author Neoancient
- *
  */
-
 public class DSStructureTab extends ITab implements DropshipBuildListener, ArmorAllocationListener {
-
-    /**
-     *
-     */
-    private static final long serialVersionUID = -6756011847500605874L;
-    
     private JPanel masterPanel;
     private BasicInfoView panInfo;
     private DSChassisView panChassis;

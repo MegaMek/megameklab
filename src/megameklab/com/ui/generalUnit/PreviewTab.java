@@ -27,8 +27,6 @@ import javax.swing.*;
 import java.awt.*;
 
 public class PreviewTab extends ITab {
-    private static final long serialVersionUID = -7410436201331568734L;
-
     private final MechViewPanel panelMekView;
     private final MechViewPanel panelTROView;
 

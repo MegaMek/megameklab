@@ -49,15 +49,8 @@ import megameklab.com.util.UnitUtil;
  * controls are for changing the number of secondary weapons and field guns.
  * 
  * @author Neoancient
- *
  */
 public class CIWeaponView extends BuildView implements ActionListener {
-    
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 6150492212690074504L;
-
     private List<InfantryBuildListener> listeners = new CopyOnWriteArrayList<>();
     public void addListener(InfantryBuildListener l) {
         listeners.add(l);

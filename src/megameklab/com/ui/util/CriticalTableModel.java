@@ -13,7 +13,6 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-
 package megameklab.com.ui.util;
 
 import java.awt.Component;
@@ -38,9 +37,6 @@ import megameklab.com.util.CConfig;
 import megameklab.com.util.UnitUtil;
 
 public class CriticalTableModel extends AbstractTableModel {
-
-    private static final long serialVersionUID = 7615555055651822051L;
-
     private final List<Mounted> crits = new ArrayList<>();
     public Entity unit;
 
@@ -257,9 +253,6 @@ public class CriticalTableModel extends AbstractTableModel {
      * Rendered cannot be static because it uses parent data structs.
      */
     private class Renderer extends DefaultTableCellRenderer {
-
-        private static final long serialVersionUID = 149542030113164984L;
-
         @Override
         public Component getTableCellRendererComponent(JTable table,
                 Object value, boolean isSelected, boolean hasFocus, int row,
@@ -334,9 +327,6 @@ public class CriticalTableModel extends AbstractTableModel {
      * Cell editor for the size column
      */
     public class SpinnerCellEditor extends AbstractCellEditor implements TableCellEditor, ChangeListener {
-
-        private static final long serialVersionUID = 1949617773287631727L;
-
         private final JSpinner spinner = new JSpinner();
         private int rowIndex = 0;
 

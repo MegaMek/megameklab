@@ -42,12 +42,8 @@ import megameklab.com.ui.listeners.CVBuildListener;
  * Chassis panel for combat vehicles
  * 
  * @author Neoancient
- *
  */
 public class CVChassisView extends BuildView implements ActionListener, ChangeListener {
-    
-    private static final long serialVersionUID = -5860627963911641227L;
-
     List<CVBuildListener> listeners = new CopyOnWriteArrayList<>();
     public void addListener(CVBuildListener l) {
         listeners.add(l);
@@ -56,7 +52,7 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
         listeners.remove(l);
     }
     
-    private final static String CMD_RESET_CHASSIS = "resetChassis"; //$NON-NLS-1$
+    private final static String CMD_RESET_CHASSIS = "resetChassis";
     
     private final static EntityMovementMode[] MOTIVE_TYPES = {
             EntityMovementMode.TRACKED, EntityMovementMode.WHEELED, EntityMovementMode.HOVER,

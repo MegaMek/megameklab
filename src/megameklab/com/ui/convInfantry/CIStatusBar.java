@@ -13,7 +13,6 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-
 package megameklab.com.ui.convInfantry;
 
 import java.awt.*;
@@ -31,9 +30,6 @@ import megameklab.com.ui.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 
 public class CIStatusBar extends ITab {
-
-    private static final long serialVersionUID = -6754327753693500675L;
-
     private final JLabel move = new JLabel();
     private final JLabel damage = new JLabel();
     private final JLabel bvLabel = new JLabel();

@@ -42,16 +42,8 @@ import megameklab.com.ui.listeners.AeroVesselBuildListener;
  * Structure tab panel for setting crew levels and quarters, as well as life boats and escape pods.
  * 
  * @author Neoancient
- *
  */
-
 public class LACrewView extends BuildView implements ActionListener, ChangeListener {
-    
-    /**
-     * 
-     */
-    private static final long serialVersionUID = -5340962405770541772L;
-    
     private List<AeroVesselBuildListener> listeners = new CopyOnWriteArrayList<>();
     public void addListener(AeroVesselBuildListener l) {
         listeners.add(l);

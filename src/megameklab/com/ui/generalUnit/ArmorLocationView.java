@@ -35,15 +35,8 @@ import megamek.common.util.EncodeControl;
  * and can be used to set the armor type for units with patchwork armor.
  * 
  * @author Neoancient
- *
  */
 public class ArmorLocationView extends BuildView implements ChangeListener {
-    
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 6663440021651827007L;
-
     public interface ArmorLocationListener {
         void armorPointsChanged(int location, int front, int rear);
     }

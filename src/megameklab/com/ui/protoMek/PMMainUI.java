@@ -29,12 +29,8 @@ import java.awt.*;
  * Main UI for building protomechs
  * 
  * @author Neoancient
- *
  */
 public class PMMainUI extends MegaMekLabMainUI {
-
-    private static final long serialVersionUID = 8103672350822665207L;
-
     private final JTabbedPane configPane = new JTabbedPane(SwingConstants.TOP);
 
     private PMStructureTab structureTab;

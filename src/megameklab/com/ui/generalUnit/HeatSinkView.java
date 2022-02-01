@@ -40,15 +40,8 @@ import megameklab.com.util.UnitUtil;
  * Controls for selecting type and number of heat sinks for mechs and asfs.
  * 
  * @author Neoancient
- *
  */
 public class HeatSinkView extends BuildView implements ActionListener, ChangeListener {
-    
-    /**
-     * 
-     */
-    private static final long serialVersionUID = -3310994380270514088L;
-
     private final List<BuildListener> listeners = new CopyOnWriteArrayList<>();
     public void addListener(BuildListener l) {
         listeners.add(l);

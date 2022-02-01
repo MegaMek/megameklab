@@ -38,15 +38,8 @@ import megameklab.com.ui.listeners.ArmorAllocationListener;
  * patchwork armor and allows it to be changed.
  * 
  * @author Neoancient
- *
  */
 public class PatchworkArmorView extends BuildView implements ActionListener {
-    
-    /**
-     * 
-     */
-    private static final long serialVersionUID = -16930846399307224L;
-
     private final List<ArmorAllocationListener> listeners = new CopyOnWriteArrayList<>();
     public void addListener(ArmorAllocationListener l) {
         listeners.add(l);

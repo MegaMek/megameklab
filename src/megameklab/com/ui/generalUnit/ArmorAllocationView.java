@@ -33,6 +33,7 @@ import javax.swing.UIManager;
 import megamek.common.*;
 import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestSupportVehicle;
+import megameklab.com.ui.generalUnit.ArmorLocationView.ArmorLocationListener;
 import megameklab.com.ui.listeners.ArmorAllocationListener;
 import megameklab.com.util.UnitUtil;
 
@@ -42,13 +43,8 @@ import megameklab.com.util.UnitUtil;
  * the position on the unit and tracking the total amount of armor allocated.
  * 
  * @author Neoancient
- *
  */
-public class ArmorAllocationView extends BuildView implements
-        ArmorLocationView.ArmorLocationListener {
-    
-    private static final long serialVersionUID = 1707528067499186372L;
-    
+public class ArmorAllocationView extends BuildView implements ArmorLocationListener {
     private final List<ArmorAllocationListener> listeners = new CopyOnWriteArrayList<>();
     public void addListener(ArmorAllocationListener l) {
         listeners.add(l);

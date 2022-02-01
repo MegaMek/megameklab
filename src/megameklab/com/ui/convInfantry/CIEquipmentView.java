@@ -13,7 +13,6 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-
 package megameklab.com.ui.convInfantry;
 
 import java.awt.BorderLayout;
@@ -62,24 +61,17 @@ import megameklab.com.util.UnitUtil;
 import megameklab.com.ui.util.XTableColumnModel;
 
 public class CIEquipmentView extends IView implements ActionListener {
-
-    /**
-     *
-     */
-    private static final long serialVersionUID = 3978675469713289404L;
-
     private static final int T_ARCHAIC   =  0;
     private static final int T_PERSONAL  =  1;
     private static final int T_SUPPORT   =  2;
     private static final int T_WEAPON    =  3;
     private static final int T_NUM       =  4;
 
-
     private RefreshListener refresh;
 
     private JButton addPrimaryButton = new JButton("Add Primary");
     private JButton addSecondaryButton = new JButton("Add Secondary");
-    private JComboBox<String> choiceType = new JComboBox<String>();
+    private JComboBox<String> choiceType = new JComboBox<>();
     private JTextField txtFilter = new JTextField();
 
     private JRadioButton rbtnStats = new JRadioButton("Stats");

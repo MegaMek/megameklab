@@ -45,15 +45,8 @@ import megameklab.com.ui.listeners.AeroBuildListener;
  * Structure tab chassis panel for aerospace and conventional fighters.
  * 
  * @author Neoancient
- *
  */
 public class ASChassisView extends BuildView implements ActionListener, ChangeListener {
-    
-    /**
-     * 
-     */
-    private static final long serialVersionUID = -1129246135285707937L;
-
     private final List<AeroBuildListener> listeners = new CopyOnWriteArrayList<>();
     public void addListener(AeroBuildListener l) {
         listeners.add(l);

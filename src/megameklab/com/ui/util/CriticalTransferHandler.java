@@ -28,7 +28,6 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 
 public class CriticalTransferHandler extends TransferHandler {
-    private static final long serialVersionUID = -5215375829853683877L;
     private EntitySource eSource;
     private int location;
     private RefreshListener refresh;

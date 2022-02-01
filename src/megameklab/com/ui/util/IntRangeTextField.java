@@ -30,15 +30,8 @@ import javax.swing.text.NumberFormatter;
  * allowing the focus to be released.
  * 
  * @author Neoancient
- *
  */
 public class IntRangeTextField extends JFormattedTextField {
-
-    /**
-     * 
-     */
-    private static final long serialVersionUID = -6477694991883737040L;
-    
     private Integer minimum = null;
     private Integer maximum = null;
 
@@ -49,7 +42,7 @@ public class IntRangeTextField extends JFormattedTextField {
         setFormatter(new NumberFormatter(format));
         setInputVerifier(inputVerifier);
         if (getDocument() instanceof AbstractDocument) {
-            ((AbstractDocument)getDocument()).setDocumentFilter(docFilter);
+            ((AbstractDocument) getDocument()).setDocumentFilter(docFilter);
         }
     }
 

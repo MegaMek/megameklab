@@ -45,9 +45,6 @@ import java.util.stream.Collectors;
  * @author Neoancient
  */
 public class TransportTab extends IView implements ActionListener, ChangeListener {
-    
-    private static final long serialVersionUID = 6288658666144030993L;
-    
     private final JLabel lblDockingHardpoints = new JLabel();
     private final JLabel lblMaxHardpoints = new JLabel();
     private final SpinnerNumberModel spnHardpointsModel = new SpinnerNumberModel(0, 0, null, 1);
@@ -75,7 +72,7 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
     
     private void initUI() {
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Tabs",
-                new EncodeControl()); //$NON-NLS-1$
+                new EncodeControl());
 
         setLayout(new BorderLayout());
         if (getEntity().hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
@@ -199,8 +196,6 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
                     Jumpship.LOC_ALS, Jumpship.LOC_ARS, Jumpship.LOC_AFT });
             col.setCellEditor(new DefaultCellEditor(cb));
             cb.setRenderer(new DefaultListCellRenderer() {
-                private static final long serialVersionUID = 7950275386647167332L;
-
                 @Override
                 public Component getListCellRendererComponent(JList<?> list, Object value, int index,
                         boolean isSelected, boolean cellHasFocus) {
@@ -527,9 +522,6 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
     }
 
     private class InstalledBaysModel extends AbstractTableModel {
-        
-        private static final long serialVersionUID = -8643492032818089043L;
-        
         private static final int COL_NAME      = 0;
         private static final int COL_SIZE      = 1;
         private static final int COL_DOORS     = 2;
@@ -540,7 +532,7 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
         private static final int NUM_COLS      = 7;
 
         private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Tabs",
-                new EncodeControl()); //$NON-NLS-1$
+                new EncodeControl());
 
         private final List<Bay> bayList = new ArrayList<>();
         private final List<BayData> bayTypeList = new ArrayList<>();
@@ -719,9 +711,6 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
     }
     
     private class AvailableBaysModel extends AbstractTableModel {
-        
-        private static final long serialVersionUID = -5456813671712646392L;
-        
         private static final int COL_NAME      = 0;
         private static final int COL_SIZE      = 1;
         private static final int COL_PERSONNEL = 2;
@@ -792,9 +781,6 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
     }
     
     private class SpinnerCellEditor extends AbstractCellEditor implements TableCellEditor, ChangeListener {
-        
-        private static final long serialVersionUID = -5334192308060664513L;
-        
         private final JSpinner spinner = new JSpinner();
         private final int column;
         
@@ -890,9 +876,6 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
     }
     
     private class BayReorderTransferHandler extends TransferHandler {
-        
-        private static final long serialVersionUID = -6442201464476396078L;
-
         @Override
         protected Transferable createTransferable(JComponent c) {
             return new StringSelection(String.valueOf(tblInstalled.getSelectedRow()));

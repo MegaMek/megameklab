@@ -1,7 +1,6 @@
 /*
- * MegaMekLab - Copyright (C) 2008
- * 
- * Original author - jtighe (torren@users.sourceforge.net)
+ * MegaMekLab
+ * Copyright (c) 2008-2022 - The MegaMek Team. All Rights Reserved.
  * 
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -45,10 +44,9 @@ import java.util.Vector;
  * 
  * @author Taharqa
  * @author arlith
+ * @author jtighe (torren@users.sourceforge.net)
  */
 public class BABuildView extends IView implements ActionListener, MouseListener {
-    private static final long serialVersionUID = 799195356642563937L;
-
     private JPanel mainPanel = new JPanel();
 
     private CriticalTableModel equipmentList;

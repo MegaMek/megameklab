@@ -28,15 +28,8 @@ import java.awt.event.ActionListener;
  * Build tab for Small Craft and Dropships
  * 
  * @author Neoancient
- *
  */
 public class LABuildTab extends ITab implements ActionListener {
-
-    /**
-     * 
-     */
-    private static final long serialVersionUID = -6625026210117558378L;
-    
     private RefreshListener refresh = null;
     private LACriticalView critView = null;
     private LABuildView buildView = null;

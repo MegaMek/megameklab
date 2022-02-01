@@ -38,8 +38,6 @@ import java.util.concurrent.ExecutionException;
  * @author Taharqa
  */
 public class LoadingDialog extends JDialog {
-    private static final long serialVersionUID = -3454307876761238915L;
-    
     Task task;
     JFrame frame;
     long type;

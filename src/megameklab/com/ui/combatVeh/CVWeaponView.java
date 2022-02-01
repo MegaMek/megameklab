@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.*;
 
 public class CVWeaponView extends IView implements ActionListener, MouseListener, KeyListener {
-    private static final long serialVersionUID = 799195356642563937L;
     private RefreshListener refresh;
 
     private JPanel mainPanel = new JPanel();

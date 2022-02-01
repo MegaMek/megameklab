@@ -34,9 +34,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class CVStructureTab extends ITab implements CVBuildListener, ArmorAllocationListener {
-
-    private static final long serialVersionUID = -6756011847500605874L;
-
     private RefreshListener refresh = null;
     private JPanel masterPanel;
     private BasicInfoView panBasicInfo; 

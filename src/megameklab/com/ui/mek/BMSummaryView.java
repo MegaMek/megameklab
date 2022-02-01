@@ -13,7 +13,6 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-
 package megameklab.com.ui.mek;
 
 import java.awt.Dimension;
@@ -42,12 +41,6 @@ import megameklab.com.ui.util.IView;
 import megameklab.com.util.UnitUtil;
 
 public class BMSummaryView extends IView{
-
-    /**
-     *
-     */
-    private static final long serialVersionUID = -8492419359401770037L;
-
     private JTextField txtStructTon = new JTextField("?");
     private JTextField txtEngineTon = new JTextField("?");
     private JTextField txtGyroTon = new JTextField("?");

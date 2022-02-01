@@ -13,7 +13,6 @@
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  */
-
 package megameklab.com.ui.convInfantry;
 
 import java.awt.BorderLayout;
@@ -66,12 +65,6 @@ import megameklab.com.ui.util.RefreshListener;
 import megameklab.com.ui.util.XTableColumnModel;
 
 public class CIArmorView extends IView implements ActionListener, ChangeListener {
-
-    /**
-     *
-     */
-    private static final long serialVersionUID = -7235362583437251408L;
-
     private RefreshListener refresh = null;
     
     private final static String CARD_TABLE = "table";

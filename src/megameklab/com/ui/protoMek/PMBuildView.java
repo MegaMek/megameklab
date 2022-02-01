@@ -46,16 +46,12 @@ import megameklab.com.util.UnitUtil;
  * Shows unallocated equipment that needs to be assigned to a slot.
  * 
  * @author Neoancient
- *
  */
 public class PMBuildView extends IView implements ActionListener, MouseListener {
-
-    private static final long serialVersionUID = 645346873340748037L;
-
     private JPanel mainPanel = new JPanel();
 
     private CriticalTableModel equipmentList;
-    private Vector<Mounted> masterEquipmentList = new Vector<Mounted>(10, 1);
+    private Vector<Mounted> masterEquipmentList = new Vector<>(10, 1);
     private JTable equipmentTable = new JTable();
     private JScrollPane equipmentScroll = new JScrollPane();
 

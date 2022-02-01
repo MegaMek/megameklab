@@ -13,7 +13,6 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-
 package megameklab.com.ui.fighterAero;
 
 import java.awt.Dimension;
@@ -35,12 +34,6 @@ import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.util.IView;
 
 public class ASSummaryView extends IView{
-
-    /**
-     *
-     */
-    private static final long serialVersionUID = -8492419359401770037L;
-
     private JTextField txtStructTon = new JTextField("?");
     private JTextField txtEngineTon = new JTextField("?");   
     private JTextField txtFuelTon = new JTextField("?");
