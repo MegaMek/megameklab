@@ -53,44 +53,11 @@ public class MegaMekLab {
         MegaMek.initializeLogging(MMLConstants.PROJECT_NAME);
         MegaMekLab.initializeLogging(MMLConstants.PROJECT_NAME);
 
-        // Third, let's set some default properties
-        System.setProperty("apple.laf.useScreenMenuBar", "true");
-        System.setProperty("com.apple.mrj.application.apple.menu.about.name","MegaMekLab");
-
-        // Fourth, register any fonts in the fonts directory
-        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        List<Font> fontList = new ArrayList<>();
-        collectFontsFromDir(Configuration.fontsDir(), fontList);
-        for (Font font : fontList) {
-            ge.registerFont(font);
-        }
+        // Third, let's handle suite graphical setup initialization
+        MegaMek.initializeSuiteGraphicalSetups(MMLConstants.PROJECT_NAME);
 
         // Finally, let's handle startup
         startup();
-    }
-
-    /**
-     * Recursively search a directory and attempt to create a truetype font from
-     * every file with the ttf suffix
-     *
-     * @param dir  The directory to search
-     * @param list The list to add fonts to as they are created
-     */
-    private static void collectFontsFromDir(File dir, List<Font> list) {
-        File[] files = dir.listFiles();
-        if (null != files) {
-            for (File f : files) {
-                if (f.isDirectory() && !f.getName().startsWith(".")) {
-                    collectFontsFromDir(f, list);
-                } else if (f.getName().toLowerCase().endsWith(".ttf")) {
-                    try {
-                        list.add(Font.createFont(Font.TRUETYPE_FONT, f));
-                    } catch (IOException | FontFormatException ex) {
-                        LogManager.getLogger().error("Error creating font from " + f, ex);
-                    }
-                }
-            }
-        }
     }
 
     public static void initializeLogging(final String originProject) {
@@ -121,12 +88,6 @@ public class MegaMekLab {
 
         // TODO : Individual localizations
         Locale.setDefault(getMMLOptions().getLocale());
-
-        // Add additional themes
-        UIManager.installLookAndFeel("Flat Light", "com.formdev.flatlaf.FlatLightLaf");
-        UIManager.installLookAndFeel("Flat IntelliJ", "com.formdev.flatlaf.FlatIntelliJLaf");
-        UIManager.installLookAndFeel("Flat Dark", "com.formdev.flatlaf.FlatDarkLaf");
-        UIManager.installLookAndFeel("Flat Darcula", "com.formdev.flatlaf.FlatDarculaLaf");
 
         setLookAndFeel();
 
