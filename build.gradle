@@ -77,7 +77,7 @@ dependencies {
     implementation 'org.apache.xmlgraphics:batik-dom:1.14'
     implementation 'org.apache.xmlgraphics:batik-rasterizer:1.14'
     implementation 'org.apache.xmlgraphics:batik-svggen:1.14'
-    implementation ('org.apache.xmlgraphics:fop:2.6') {
+    implementation ('org.apache.xmlgraphics:fop:2.7') {
         // We don't need this proprietary module
         exclude group: 'com.sun.media', module: 'jai-codec'
     }
