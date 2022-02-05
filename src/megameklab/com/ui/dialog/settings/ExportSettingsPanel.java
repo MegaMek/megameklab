@@ -51,14 +51,9 @@ class ExportSettingsPanel extends JPanel {
     private final JCheckBox chkTacOpsHeat = new JCheckBox();
     private final JComboBox<String> cbRSScale = new JComboBox<>();
     private final IntRangeTextField txtScale = new IntRangeTextField(3);
-    private final JCheckBox chkSummaryFormatTRO = new JCheckBox();
 
     ExportSettingsPanel() {
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Dialogs", new EncodeControl());
-
-        chkSummaryFormatTRO.setText(resourceMap.getString("ConfigurationDialog.chkSummaryFormatTRO.text"));
-        chkSummaryFormatTRO.setToolTipText(resourceMap.getString("ConfigurationDialog.chkSummaryFormatTRO.tooltip"));
-        chkSummaryFormatTRO.setSelected(CConfig.getBooleanParam(CConfig.SUMMARY_FORMAT_TRO));
 
         for (PaperSize paper : PaperSize.values()) {
             cbPaper.addItem(paper.displayName);
@@ -149,7 +144,6 @@ class ExportSettingsPanel extends JPanel {
         scalePanel.add(cbRSScale);
 
         JPanel gridPanel = new JPanel(new SpringLayout());
-        gridPanel.add(chkSummaryFormatTRO);
         gridPanel.add(chkProgressBar);
         gridPanel.add(paperPanel);
         gridPanel.add(fontPanel);
@@ -162,7 +156,7 @@ class ExportSettingsPanel extends JPanel {
         gridPanel.add(chkHeatProfile);
         gridPanel.add(chkTacOpsHeat);
         gridPanel.add(scalePanel);
-        SpringUtilities.makeCompactGrid(gridPanel, 13, 1, 0, 0, 15, 10);
+        SpringUtilities.makeCompactGrid(gridPanel, 12, 1, 0, 0, 15, 10);
         gridPanel.setBorder(new EmptyBorder(20, 30, 20, 30));
         setLayout(new FlowLayout(FlowLayout.LEFT));
         add(gridPanel);
@@ -183,7 +177,6 @@ class ExportSettingsPanel extends JPanel {
         recordSheetSettings.put(CConfig.RS_TAC_OPS_HEAT, Boolean.toString(chkTacOpsHeat.isSelected()));
         recordSheetSettings.put(CConfig.RS_SCALE_UNITS, CConfig.RSScale.values()[cbRSScale.getSelectedIndex()].toString());
         recordSheetSettings.put(CConfig.RS_SCALE_FACTOR, Integer.toString(txtScale.getIntVal(getDefaultScale())));
-        recordSheetSettings.put(CConfig.SUMMARY_FORMAT_TRO, Boolean.toString(chkSummaryFormatTRO.isSelected()));
         return recordSheetSettings;
     }
 

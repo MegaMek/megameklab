@@ -806,4 +806,10 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         refresh.refreshSummary();
         refresh.refreshStatus();
     }
+
+
+    @Override
+    public void mulIdChanged(int mulId) {
+        getTank().setMulId(mulId);
+    }
 }

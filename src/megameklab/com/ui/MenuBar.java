@@ -1041,7 +1041,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     }
     
     private String entitySummaryText(boolean html) {
-        if (CConfig.getBooleanParam(CConfig.SUMMARY_FORMAT_TRO)) {
+        if (CConfig.getBooleanParam(CConfig.MISC_SUMMARY_FORMAT_TRO)) {
             TROView view = TROView.createView(parentFrame.getEntity(), html);
             return view.processTemplate();
         } else {
