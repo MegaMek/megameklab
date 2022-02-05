@@ -1,17 +1,21 @@
 /*
- * MegaMekLab - Copyright (C) 2008
+ * Copyright (C) 2008
+ * Copyright (c) 2022 - The MegaMek Team. All Rights Reserved.
  *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * This file is part of MegaMekLab.
  *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option)
- * any later version.
+ * MegaMek is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
- * for more details.
+ * MegaMek is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with MegaMek. If not, see <http://www.gnu.org/licenses/>.
  */
 package megameklab.com.ui.util;
 
@@ -30,10 +34,15 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 
+/**
+ * The Transfer Handler for BA, AS and BM.
+ *
+ * @author jtighe (torren@users.sourceforge.net)
+ */
 public class BAASBMCriticalTransferHandler extends TransferHandler {
-    private EntitySource eSource;
+    private final EntitySource eSource;
     private int location = -1;
-    private RefreshListener refresh;
+    private final RefreshListener refresh;
 
     public BAASBMCriticalTransferHandler(EntitySource eSource, RefreshListener refresh) {
         this.eSource = eSource;
@@ -96,7 +105,6 @@ public class BAASBMCriticalTransferHandler extends TransferHandler {
                     mounted.setLinkedBy(null);
                 }
             }
-            //UnitUtil.compactCriticals(unit);
             refresh.refreshBuild();
         }
     }
@@ -136,7 +144,7 @@ public class BAASBMCriticalTransferHandler extends TransferHandler {
     
                         dlg.setVisible(true);
     
-                        int value = ((Integer) jop.getValue()).intValue();
+                        int value = (Integer) jop.getValue();
     
                         if (value == JOptionPane.CANCEL_OPTION) {
                             return false;
@@ -166,7 +174,7 @@ public class BAASBMCriticalTransferHandler extends TransferHandler {
     
                         dlg.setVisible(true);
     
-                        int value = ((Integer) jop.getValue()).intValue();
+                        int value = (Integer) jop.getValue();
     
                         if (value == JOptionPane.CANCEL_OPTION) {
                             return false;
@@ -181,7 +189,7 @@ public class BAASBMCriticalTransferHandler extends TransferHandler {
                 } else if (location == Mech.LOC_CT) {
                     String[] locations =
                         { "Left Torso", "Right Torso" };
-                    JComboBox<String> combo = new JComboBox<String>(locations);
+                    JComboBox<String> combo = new JComboBox<>(locations);
                     JOptionPane jop = new JOptionPane(combo,
                             JOptionPane.QUESTION_MESSAGE,
                             JOptionPane.OK_CANCEL_OPTION);
@@ -193,7 +201,7 @@ public class BAASBMCriticalTransferHandler extends TransferHandler {
 
                     dlg.setVisible(true);
 
-                    int value = ((Integer) jop.getValue()).intValue();
+                    int value = (Integer) jop.getValue();
 
                     if (value == JOptionPane.CANCEL_OPTION) {
                         return false;
@@ -299,9 +307,6 @@ public class BAASBMCriticalTransferHandler extends TransferHandler {
         return true;
     }
 
-    /**
-     *
-     */
     private boolean addEquipmentBA(BattleArmor ba, Mounted newMount, int trooper) {
         if (TestBattleArmor.isMountLegal(ba, newMount, location, trooper)){
             newMount.setBaMountLoc(location);
@@ -340,10 +345,6 @@ public class BAASBMCriticalTransferHandler extends TransferHandler {
         return true;
     }
 
-
-    /**
-     *
-     */
     @Override
     public boolean importData(TransferSupport info) {
         if (!info.isDrop() || !((getUnit() instanceof Mech) || (getUnit() instanceof Aero) ||
@@ -354,9 +355,9 @@ public class BAASBMCriticalTransferHandler extends TransferHandler {
         int trooper = 0;
         if (info.getComponent() instanceof BAASBMDropTargetCriticalList) {
             BAASBMDropTargetCriticalList<?> list = (BAASBMDropTargetCriticalList<?>) info.getComponent();
-            if (getUnit() instanceof BattleArmor){
+            if (getUnit() instanceof BattleArmor) {
                 String[] split = list.getName().split(":");
-                if (split.length != 2){
+                if (split.length != 2) {
                     return false;
                 }
                 location = Integer.parseInt(split[0]);
@@ -370,25 +371,21 @@ public class BAASBMCriticalTransferHandler extends TransferHandler {
             try {
                 Mounted eq = getUnit().getEquipment(Integer.parseInt(
                         (String) t.getTransferData(DataFlavor.stringFlavor)));
-                if (getUnit() instanceof BattleArmor){
+                if (getUnit() instanceof BattleArmor) {
                     if ((location == eq.getBaMountLoc())
-                            && (trooper == eq.getLocation())){
+                            && (trooper == eq.getLocation())) {
                         return false;
                     }
                 } else {
-                    // If this equipment is already mounted, we need to clear
-                    //  the criticals its mounted in
+                    // If this equipment is already mounted, clear the criticals it's mounted in
                     if (eq.getLocation() != Entity.LOC_NONE 
-                            || eq.getSecondLocation() != Entity.LOC_NONE){
+                            || eq.getSecondLocation() != Entity.LOC_NONE) {
                         UnitUtil.removeCriticals(getUnit(), eq);
-                        changeMountStatus(eq,Entity.LOC_NONE,false);
+                        changeMountStatus(eq, Entity.LOC_NONE,false);
                     } else {
                         eq.setOmniPodMounted(UnitUtil.canPodMount(getUnit(), eq));
                     }
                 }
-                /*if (UnitUtil.isFixedLocationSpreadEquipment(eq.getType())) {
-                    return false;
-                }*/
 
                 if (!UnitUtil.isValidLocation(getUnit(), eq.getType(), location)) {
                     JOptionPane.showMessageDialog(null, eq.getName() +
@@ -399,11 +396,11 @@ public class BAASBMCriticalTransferHandler extends TransferHandler {
                     return false;
                 }
                 
-                if (getUnit() instanceof Aero){
+                if (getUnit() instanceof Aero) {
                     return addEquipmentAero((Aero)getUnit(), eq);
                 } else if (getUnit() instanceof Mech) {
                     // superheavies can put 2 ammobins or heatsinks in one crit
-                    if ((getUnit() instanceof Mech) && ((Mech)getUnit()).isSuperHeavy()) {
+                    if ((getUnit() instanceof Mech) && getUnit().isSuperHeavy()) {
                         CriticalSlot cs = getUnit().getCritical(location, slotNumber);
                         if ((cs != null) && (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) && (cs.getMount2() == null)) {
                             EquipmentType etype = cs.getMount().getType();
@@ -422,12 +419,10 @@ public class BAASBMCriticalTransferHandler extends TransferHandler {
                             }
                         }
                     }
-                    return addEquipmentMech((Mech)getUnit(), eq, slotNumber);
-                } else if (getUnit() instanceof BattleArmor){
-                    return addEquipmentBA((BattleArmor)getUnit(), eq, trooper);
+                    return addEquipmentMech((Mech) getUnit(), eq, slotNumber);
+                } else if (getUnit() instanceof BattleArmor) {
+                    return addEquipmentBA((BattleArmor) getUnit(), eq, trooper);
                 }
-
-
             } catch (LocationFullException lfe) {
                 JOptionPane.showMessageDialog(null, lfe.getMessage(), 
                         "Location Full", JOptionPane.INFORMATION_MESSAGE);
@@ -439,8 +434,6 @@ public class BAASBMCriticalTransferHandler extends TransferHandler {
         }
         return false;
     }
-
-
 
     @Override
     public boolean canImport(TransferSupport info) {
@@ -455,9 +448,8 @@ public class BAASBMCriticalTransferHandler extends TransferHandler {
         // check if the dragged mounted should be transferrable
         Mounted mounted = null;
         try {
-            mounted = getUnit().getEquipment(Integer
-                    .parseInt((String) info.getTransferable().getTransferData(
-                            DataFlavor.stringFlavor)));
+            int index = Integer.parseInt((String) info.getTransferable().getTransferData(DataFlavor.stringFlavor));
+            mounted = getUnit().getEquipment(index);
         } catch (NumberFormatException | UnsupportedFlavorException | IOException e) {
             LogManager.getLogger().error("", e);
         }
@@ -470,14 +462,13 @@ public class BAASBMCriticalTransferHandler extends TransferHandler {
             return false;
         }
         // no transfer in the same location
-        if (getUnit() instanceof BattleArmor){
-            // Infantry weapons cannot be mounted directly, but must instead
-            //  be mounted in an AP Mount
-            if (mounted.getType() instanceof InfantryWeapon){
+        if (getUnit() instanceof BattleArmor) {
+            // Infantry weapons cannot be mounted directly, but must instead be mounted in an AP Mount
+            if (mounted.getType() instanceof InfantryWeapon) {
                 return false;
             }
             String[] split = info.getComponent().getName().split(":");
-            if (split.length != 2){
+            if (split.length != 2) {
                 return false;
             }
             if ((Integer.parseInt(split[0]) == mounted.getBaMountLoc())
@@ -492,10 +483,10 @@ public class BAASBMCriticalTransferHandler extends TransferHandler {
     protected Transferable createTransferable(JComponent c) {
         if (c instanceof JTable) {
             JTable table = (JTable) c;
-            Mounted mount = (Mounted) ((CriticalTableModel) table.getModel()).getValueAt(table.getSelectedRow(), CriticalTableModel.EQUIPMENT);
+            Mounted mount = (Mounted) table.getModel().getValueAt(table.getSelectedRow(), CriticalTableModel.EQUIPMENT);
             return new StringSelection(Integer.toString(getUnit().getEquipmentNum(mount)));
         } else if (c instanceof BAASBMDropTargetCriticalList) {
-            BAASBMDropTargetCriticalList<?> list = (BAASBMDropTargetCriticalList<?>)c;
+            BAASBMDropTargetCriticalList<?> list = (BAASBMDropTargetCriticalList<?>) c;
             Mounted mount = list.getMounted();
             if (mount != null) {
                 return new StringSelection(Integer.toString(getUnit().getEquipmentNum(mount)));
