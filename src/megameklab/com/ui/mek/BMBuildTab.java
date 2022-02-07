@@ -15,6 +15,7 @@
  */
 package megameklab.com.ui.mek;
 
+import megamek.client.ui.swing.util.UIUtil;
 import megamek.common.Entity;
 import megamek.common.Mech;
 import megamek.common.Mounted;
@@ -25,82 +26,57 @@ import megameklab.com.util.UnitUtil;
 import org.apache.logging.log4j.LogManager;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 
-public class BMBuildTab extends ITab implements ActionListener {
+public class BMBuildTab extends ITab {
+
     private RefreshListener refresh = null;
-    private BMCriticalView critView = null;
-    private BMBuildView buildView = null;
-    private JPanel buttonPanel = new JPanel();
-    private JPanel mainPanel = new JPanel();
-
-    private JButton autoFillButton = new JButton("Auto Fill");
-    private JButton resetButton = new JButton("Reset");
-    private JButton compactButton = new JButton("Compact");
-
-    private String AUTOFILLCOMMAND = "autofillbuttoncommand";
-    private String RESETCOMMAND = "resetbuttoncommand";
-    private String COMPACTCOMMAND = "compactbuttoncommand";
+    private final BMCriticalView critView;
+    private final BMBuildView buildView;
 
     public BMBuildTab(EntitySource eSource) {
         super(eSource);
-        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-        mainPanel.setLayout(new GridBagLayout());
-        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
-
-        GridBagConstraints gbc = new GridBagConstraints();
-
         critView = new BMCriticalView(eSource, refresh);
         buildView = new BMBuildView(eSource, refresh);
 
-        autoFillButton.setMnemonic('A');
-        autoFillButton.setActionCommand(AUTOFILLCOMMAND);
-        resetButton.setMnemonic('R');
-        resetButton.setActionCommand(RESETCOMMAND);
-        compactButton.setMnemonic('C');
-        compactButton.setActionCommand(COMPACTCOMMAND);
+        setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
+
+        JPanel buttonPanel = new UIUtil.FixedYPanel(new FlowLayout(FlowLayout.LEFT));
+        buttonPanel.setBackground(UIUtil.alternateTableBGColor());
+        buttonPanel.setOpaque(true);
+        buttonPanel.setBorder(BorderFactory.createCompoundBorder(
+                new LineBorder(getBackground(), 10),
+                new EmptyBorder(5, 10, 5, 10)));
+        JButton autoFillButton = new JButton("Auto Fill");
+        autoFillButton.setMnemonic(KeyEvent.VK_A);
+        autoFillButton.addActionListener(e -> autoFillCrits());
+        JButton resetButton = new JButton("Reset");
+        resetButton.addActionListener(e -> resetCrits());
+        JButton compactButton = new JButton("Compact");
+        compactButton.setMnemonic(KeyEvent.VK_C);
+        compactButton.addActionListener(e -> compactCrits());
         buttonPanel.add(autoFillButton);
         buttonPanel.add(resetButton);
         buttonPanel.add(compactButton);
 
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.fill = GridBagConstraints.VERTICAL;
-        gbc.anchor = GridBagConstraints.NORTHWEST;
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
-        mainPanel.add(buildView, gbc);
-        gbc.gridy = 1;
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.weighty = 0.0;
-        mainPanel.add(buttonPanel, gbc);
-        this.add(critView);
-        this.add(mainPanel);
+        Box leftSide = Box.createVerticalBox();
+        leftSide.add(buttonPanel);
+        leftSide.add(critView);
+
+        add(leftSide);
+        add(buildView);
         refresh();
     }
 
     public void refresh() {
-        removeAllActionListeners();
         critView.refresh();
         buildView.refresh();
-        addAllActionListeners();
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if (e.getActionCommand().equals(AUTOFILLCOMMAND)) {
-            autoFillCrits();
-        } else if (e.getActionCommand().equals(RESETCOMMAND)) {
-            resetCrits();
-        } else if (e.getActionCommand().equals(COMPACTCOMMAND)) {
-            compactCrits();
-        }
     }
 
     private void autoFillCrits() {
-
         for (Mounted mount : buildView.getTableModel().getCrits()) {
             int externalEngineHS = UnitUtil.getCriticalFreeHeatSinks(getMech(), getMech().hasCompactHeatSinks());
             for (int location = Mech.LOC_HEAD; location < getMech().locations(); location++) {
@@ -136,7 +112,6 @@ public class BMBuildTab extends ITab implements ActionListener {
             }
         }
         refresh.refreshAll();
-
     }
 
     private void resetCrits() {
@@ -146,25 +121,12 @@ public class BMBuildTab extends ITab implements ActionListener {
                 UnitUtil.changeMountStatus(getMech(), mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
             }
         }
-
         refresh.refreshAll();
     }
 
     private void compactCrits() {
         UnitUtil.compactCriticals(getMech());
         refresh.refreshAll();
-    }
-
-    public void removeAllActionListeners() {
-        autoFillButton.removeActionListener(this);
-        resetButton.removeActionListener(this);
-        compactButton.removeActionListener(this);
-    }
-
-    public void addAllActionListeners() {
-        autoFillButton.addActionListener(this);
-        resetButton.addActionListener(this);
-        compactButton.addActionListener(this);
     }
 
     public void addRefreshedListener(RefreshListener l) {
@@ -178,5 +140,4 @@ public class BMBuildTab extends ITab implements ActionListener {
             refresh.refreshAll();
         }
     }
-
 }
