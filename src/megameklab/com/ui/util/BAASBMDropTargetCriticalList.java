@@ -24,9 +24,7 @@ import megamek.common.weapons.autocannons.UACWeapon;
 import megamek.common.weapons.gaussrifles.GaussWeapon;
 import megamek.common.weapons.ppc.PPCWeapon;
 import megameklab.com.ui.EntitySource;
-import megameklab.com.ui.util.BAASBMCriticalTransferHandler;
-import megameklab.com.ui.util.CritListCellRenderer;
-import megameklab.com.ui.util.RefreshListener;
+import megameklab.com.ui.mek.BMCriticalTransferHandler;
 import megameklab.com.util.UnitUtil;
 import org.apache.logging.log4j.LogManager;
 
@@ -48,7 +46,11 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
         this.buildView = buildView;
         setCellRenderer(new CritListCellRenderer(eSource.getEntity(), buildView));
         addMouseListener(this);
-        setTransferHandler(new BAASBMCriticalTransferHandler(eSource, refresh));
+        if (eSource.getEntity() instanceof Mech) {
+            setTransferHandler(new BMCriticalTransferHandler(eSource, refresh));
+        } else {
+            setTransferHandler(new BAASCriticalTransferHandler(eSource, refresh));
+        }
     }
 
     private void changeMountStatus(Mounted eq, int location, boolean rear) {

@@ -1469,35 +1469,7 @@ public class UnitUtil {
         return critSpaces;
     }
 
-
-    /**
-     * This method will return the number of contiguous criticals in the given
-     * location, starting at the given critical slot
-     *
-     * @param unit          Unit to check critical slots on
-     * @param location      The location on the unit to check slots on
-     * @param startingSlot  The critical slot to start at
-     * @return
-     */
-    public static int getContiguousNumberOfCrits(Entity unit, int location,
-            int startingSlot){
-
-        int numCritSlots = unit.getNumberOfCriticals(location);
-        int contiguousCrits = 0;
-
-        for (int slot = startingSlot; slot < numCritSlots; slot++) {
-            if (unit.getCritical(location, slot) == null) {
-                contiguousCrits++;
-            } else {
-               break;
-            }
-        }
-        return contiguousCrits;
-    }
-
-
-    public static int getHighestContinuousNumberOfCrits(Entity unit,
-            int location) {
+    public static int getHighestContinuousNumberOfCrits(Entity unit, int location) {
         int highestNumberOfCrits = 0;
         int currentCritCount = 0;
 
