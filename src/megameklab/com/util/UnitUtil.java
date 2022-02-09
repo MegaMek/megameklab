@@ -1306,7 +1306,7 @@ public class UnitUtil {
         if (location > Entity.LOC_NONE) {
             try {
                 MechFileParser.postLoadInit(unit);
-            } catch (EntityLoadingException ignored) {
+            } catch (Exception ignored) {
                 // Exception thrown for not having equipment to link to yet, which is acceptable here
             }
         }
@@ -4446,5 +4446,18 @@ public class UnitUtil {
         }
     }
 
+    /**
+     * Returns true when a slot's equipment is not hittable and freely movable, such
+     * as Endo Steel and Ferro-Fibrous Armor but not CASE (which is unhittable but not
+     * freely movable as its location is important).
+     */
+    public static boolean isFreelyMovable(Mounted mounted) {
+        return (mounted != null)
+                && !mounted.getType().isHittable()
+                && (mounted.getType() instanceof MiscType)
+                && !mounted.getType().hasFlag(MiscType.F_CASE)
+                && !mounted.getType().hasFlag(MiscType.F_CASEP)
+                && !mounted.getType().hasFlag(MiscType.F_CASEII);
+    }
 
 }

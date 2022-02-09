@@ -49,58 +49,6 @@ public class BMCriticalTransferHandler extends TransferHandler {
         this.refresh = refresh;
     }
 
-    @Override
-    public void exportDone(JComponent source, Transferable data, int action) {
-        if (data == null) {
-            return;
-        }
-        Mounted mounted = null;
-        try {
-            mounted = getUnit().getEquipment(Integer.parseInt((String) data.getTransferData(DataFlavor.stringFlavor)));
-        } catch (NumberFormatException | UnsupportedFlavorException | IOException e) {
-            LogManager.getLogger().error("", e);
-        }
-        if ((source instanceof BAASBMDropTargetCriticalList)
-                && (mounted.getLocation() != Entity.LOC_NONE)) {
-            BAASBMDropTargetCriticalList<?> list = (BAASBMDropTargetCriticalList<?>)source;
-            int loc = Integer.parseInt(list.getName());
-            if (loc == mounted.getLocation()) {
-                return;
-            }
-            int slot = list.getSelectedIndex();
-            int startSlot = slot;
-            mounted = list.getMounted();
-            if (mounted == null) {
-                return;
-            }
-            if (UnitUtil.isFixedLocationSpreadEquipment(mounted.getType())) {
-                return;
-            }
-            while (slot > 0) {
-                slot--;
-                CriticalSlot cs = getUnit().getCritical(loc, slot);
-                if ((cs != null) && (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) && cs.getMount().equals(mounted)) {
-                    startSlot = slot;
-                }
-            }
-            for (int i = startSlot; i < (startSlot+UnitUtil.getCritsUsed(mounted)); i++) {
-                getUnit().setCritical(loc, i, null);
-            }
-            Mounted linkedBy = mounted.getLinkedBy();
-            if (linkedBy != null) {
-                UnitUtil.removeCriticals(getUnit(), linkedBy);
-                try {
-                    UnitUtil.addMounted(getUnit(), linkedBy, mounted.getLocation(), linkedBy.isRearMounted());
-                } catch (LocationFullException e) {
-                    UnitUtil.changeMountStatus(getUnit(), linkedBy, Entity.LOC_NONE, Entity.LOC_NONE, false);
-                    linkedBy.setLinked(null);
-                    mounted.setLinkedBy(null);
-                }
-            }
-            refresh.refreshBuild();
-        }
-    }
-
     private boolean addEquipmentMech(Mech mech, Mounted eq, int slotNumber) throws LocationFullException {
         int neededCrits = UnitUtil.getCritsUsed(eq);
 
@@ -114,7 +62,13 @@ public class BMCriticalTransferHandler extends TransferHandler {
                 slotNumber = locationSize - neededCrits;
             }
 
-            if (canFreeContiguousCrits(mech, location, slotNumber, neededCrits)) {
+            if (UnitUtil.isFreelyMovable(eq)) {
+                // Endo Steel and the like don't move aside other Endo Steels
+                mech.addEquipment(eq, location, false, slotNumber);
+                changeMountStatus(eq, location);
+                return true;
+
+            } else if (canFreeContiguousCrits(mech, location, slotNumber, neededCrits)) {
                 // The equipment can be placed, possibly by removing Endo Steel and the like
                 return addSingleLocationEquipment(mech, eq, slotNumber);
 
@@ -184,7 +138,7 @@ public class BMCriticalTransferHandler extends TransferHandler {
     private boolean canFreeContiguousCrits(Entity mech, int location, int startingSlot, int numOfSlots) {
         for (int slot = startingSlot; slot < startingSlot + numOfSlots; slot++) {
             CriticalSlot critSlot = mech.getCritical(location, slot);
-            if ((critSlot != null) && !isFreelyMovable(critSlot)) {
+            if ((critSlot != null) && !UnitUtil.isFreelyMovable(critSlot.getMount())) {
                 return false;
             }
         }
@@ -198,18 +152,12 @@ public class BMCriticalTransferHandler extends TransferHandler {
     private void removeUnhittables(Entity mech, int location, int startingSlot, int numOfSlots) {
         for (int slot = startingSlot; slot < startingSlot + numOfSlots; slot++) {
             CriticalSlot critSlot = mech.getCritical(location, slot);
-            if ((critSlot != null) && isFreelyMovable(critSlot)) {
+            if ((critSlot != null) && UnitUtil.isFreelyMovable(critSlot.getMount())) {
                 Mounted mounted = critSlot.getMount();
                 UnitUtil.removeCriticals(mech, mounted);
                 UnitUtil.changeMountStatus(mech, mounted, Entity.LOC_NONE, Entity.LOC_NONE, false);
             }
         }
-    }
-
-    /** Returns true when a slot's equipment is not hittable and freely movable. */
-    //TODO: Keep only if specific equipment must be excluded. Dont know if there's any.
-    private boolean isFreelyMovable(CriticalSlot critSlot) {
-        return (critSlot.getMount() != null) && !critSlot.getMount().getType().isHittable();
     }
 
     /** Adds splittable/spreadable equipment to the mek. */
@@ -420,7 +368,7 @@ public class BMCriticalTransferHandler extends TransferHandler {
                 if (eq.getLocation() != Entity.LOC_NONE
                         || eq.getSecondLocation() != Entity.LOC_NONE) {
                     UnitUtil.removeCriticals(getUnit(), eq);
-                    changeMountStatus(eq, Entity.LOC_NONE);
+                    UnitUtil.changeMountStatus(getUnit(), eq, Entity.LOC_NONE, -1, false);
                 } else {
                     eq.setOmniPodMounted(UnitUtil.canPodMount(getUnit(), eq));
                 }
@@ -490,10 +438,7 @@ public class BMCriticalTransferHandler extends TransferHandler {
             return false;
         }
         // stuff that has a fixed location is also not transferable
-        if (UnitUtil.isFixedLocationSpreadEquipment(mounted.getType())) {
-            return false;
-        }
-        return true;
+        return !UnitUtil.isFixedLocationSpreadEquipment(mounted.getType());
     }
 
     @Override
