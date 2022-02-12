@@ -16,24 +16,19 @@
 package megameklab.com.ui.mek;
 
 import megamek.client.ui.swing.util.UIUtil;
-import megamek.common.*;
+import megamek.common.Mounted;
 import megamek.common.util.EncodeControl;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.util.ITab;
 import megameklab.com.ui.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
-import org.apache.logging.log4j.LogManager;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.util.List;
-import java.util.*;
-
-import static java.util.stream.Collectors.toSet;
-import static megameklab.com.util.UnitUtil.*;
+import java.util.ResourceBundle;
 
 public class BMBuildTab extends ITab {
 
@@ -75,7 +70,7 @@ public class BMBuildTab extends ITab {
         JButton fillButton = new JButton(resources.getString("BuildTab.Fill.text"));
         fillButton.setToolTipText(resources.getString("BuildTab.Fill.tooltip"));
         fillButton.setMnemonic(KeyEvent.VK_A);
-        fillButton.addActionListener(e -> autoFillCrits());
+        fillButton.addActionListener(e -> fillInEquipment());
 
         JButton resetButton = new JButton(resources.getString("BuildTab.Reset.text"));
         resetButton.setToolTipText(resources.getString("BuildTab.Reset.tooltip"));
@@ -125,64 +120,13 @@ public class BMBuildTab extends ITab {
     }
 
     private void autoFillUnHittables() {
-        if (!autoFillUnHittables.isSelected()) {
-            return;
-        }
-        for (Mounted mount : getMech().getEquipment()) {
-            if (!UnitUtil.isFreelyMovable(mount) || (mount.getLocation() != Entity.LOC_NONE)) {
-                continue;
-            }
-            for (int location = 0; location < getMech().locations(); location++) {
-                if (!isValidLocation(getMech(), mount.getType(), location)
-                        || (getHighestContinuousNumberOfCrits(getMech(), location) < getCritsUsed(mount))) {
-                    continue;
-                }
-                try {
-                    addMounted(getMech(), mount, location, false);
-                    changeMountStatus(getMech(), mount, location, Entity.LOC_NONE, false);
-                    break;
-                } catch (Exception ex) {
-                    LogManager.getLogger().error("", ex);
-                }
-            }
+        if (autoFillUnHittables.isSelected()) {
+            BMUtils.fillInFMU(getMech());
         }
     }
 
-    private void autoFillCrits() {
-        for (Mounted mount : buildView.getTableModel().getCrits()) {
-            int externalEngineHS = UnitUtil.getCriticalFreeHeatSinks(getMech(), getMech().hasCompactHeatSinks());
-            for (int location = Mech.LOC_HEAD; location < getMech().locations(); location++) {
-
-                if (!UnitUtil.isValidLocation(getMech(), mount.getType(), location)) {
-                    continue;
-                }
-
-                int continuousNumberOfCrits = UnitUtil.getHighestContinuousNumberOfCrits(getMech(), location);
-                int critsUsed = UnitUtil.getCritsUsed(mount);
-                if (continuousNumberOfCrits < critsUsed) {
-                    continue;
-                }
-                if ((mount.getLocation() == Entity.LOC_NONE)) {
-                    if (UnitUtil.isHeatSink(mount) && (externalEngineHS-- > 0)) {
-                        continue;
-                    }
-                }
-
-                try {
-                    if (mount.getType().isSpreadable() || (mount.isSplitable() && (critsUsed > 1))) {
-                        for (int count = 0; count < critsUsed; count++) {
-                            UnitUtil.addMounted(getMech(), mount, location, false);
-                        }
-                    } else {
-                        UnitUtil.addMounted(getMech(), mount, location, false);
-                    }
-                    UnitUtil.changeMountStatus(getMech(), mount, location, Entity.LOC_NONE, false);
-                    break;
-                } catch (Exception ex) {
-                    LogManager.getLogger().error("", ex);
-                }
-            }
-        }
+    private void fillInEquipment() {
+        BMUtils.fillInAllEquipment(getMech());
         refresh.refreshAll();
     }
 
@@ -190,26 +134,10 @@ public class BMBuildTab extends ITab {
         for (Mounted mounted : getMech().getEquipment()) {
             if (!UnitUtil.isFixedLocationSpreadEquipment(mounted.getType())) {
                 UnitUtil.removeCriticals(getMech(), mounted);
-                clearMountedLocationAndLinked(mounted);
+                BMUtils.clearMountedLocationAndLinked(mounted);
             }
         }
         refresh.refreshAll();
-    }
-
-   private void clearMountedLocationAndLinked(Mounted eq) {
-        if ((Entity.LOC_NONE != eq.getLocation() && !eq.isOneShot())) {
-            if (eq.getLinked() != null) {
-                eq.getLinked().setLinkedBy(null);
-                eq.setLinked(null);
-            }
-            if (eq.getLinkedBy() != null) {
-                eq.getLinkedBy().setLinked(null);
-                eq.setLinkedBy(null);
-            }
-        }
-        eq.setLocation(Entity.LOC_NONE, false);
-        eq.setSecondLocation(Entity.LOC_NONE, false);
-        eq.setSplit(false);
     }
 
     /**
@@ -219,7 +147,7 @@ public class BMBuildTab extends ITab {
      */
     private void autoCompactCrits() {
         if (autoCompact.isSelected() && !autoSort.isSelected()) {
-            UnitUtil.compactCriticals(getMech());
+            BMUtils.compactCriticals(getMech());
         }
     }
 
@@ -228,7 +156,7 @@ public class BMBuildTab extends ITab {
      * calls a refresh and will result in a loop!
      */
     private void compactCrits() {
-        UnitUtil.compactCriticals(getMech());
+        BMUtils.compactCriticals(getMech());
         refresh.refreshAll();
     }
 
@@ -237,11 +165,7 @@ public class BMBuildTab extends ITab {
      * calls a refresh and will result in a loop!
      */
     private void sortCrits() {
-        for (int location = 0; location < getMech().locations(); location++) {
-            if (location != Mech.LOC_HEAD) {
-                sortLocationCrits(location);
-            }
-        }
+        BMUtils.sortCrits(getMech());
         refresh();
     }
 
@@ -251,161 +175,8 @@ public class BMBuildTab extends ITab {
      */
     private void autoSortCrits() {
         if (autoSort.isSelected()) {
-            for (int location = 0; location < getMech().locations(); location++) {
-                if (location != Mech.LOC_HEAD) {
-                    sortLocationCrits(location);
-                }
-            }
+            BMUtils.sortCrits(getMech());
         }
-    }
-
-    /**
-     * Sorts the crits within the given location. This extricates all non-system
-     * crits from the location, sorts them and then refills the location.
-     */
-    private void sortLocationCrits(int location) {
-        List<CriticalSlot> presentGear = new ArrayList<>();
-        for (int slot = 0; slot < getMech().getNumberOfCriticals(location); slot++) {
-            CriticalSlot critSlot = getMech().getCritical(location, slot);
-            if ((critSlot != null) && (critSlot.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
-                presentGear.add(critSlot);
-                getMech().setCritical(location, slot, null);
-            }
-        }
-        presentGear.sort(locationSorter);
-        presentGear = reOrderLinkedEquipment(presentGear);
-        presentGear.forEach(criticalSlot -> addToTopFreeSlot(location, criticalSlot));
-    }
-
-    /**
-     * Returns a reordered version of the given presentGear list of critslots wherein
-     * LinkedBy mounteds such as Artemis and PPC Capacitors are placed directly behind
-     * their weapon.
-     */
-    private List<CriticalSlot> reOrderLinkedEquipment(List<CriticalSlot> presentGear) {
-        List<CriticalSlot> resortedList = new ArrayList<>();
-        Set<Mounted> presentMounteds = presentGear.stream().map(CriticalSlot::getMount).collect(toSet());
-        // Assemble all the linked gear that is not ammo (ammo is sorted differently)
-        Set<Mounted> linkedMounteds = presentMounteds.stream()
-                .map(Mounted::getLinkedBy)
-                .filter(Objects::nonNull)
-                .filter(linked -> linked.getType() instanceof MiscType)
-                .filter(presentMounteds::contains)
-                .collect(toSet());
-
-        // Now rebuild the list by adding the linkedMounteds behind their weapon
-        Mounted lastMounted = null;
-        for (CriticalSlot critSlot : presentGear) {
-            Mounted currentMounted = critSlot.getMount();
-            // after one mounted is fully added, see if there's a linkedMounted to add below it
-            if ((lastMounted != null)
-                    && (currentMounted != lastMounted)
-                    && (lastMounted.getLinkedBy() != null)
-                    && (linkedMounteds.contains(lastMounted.getLinkedBy()))) {
-                for (CriticalSlot linkedSlot : presentGear) {
-                    if (linkedSlot.getMount() == lastMounted.getLinkedBy()) {
-                        resortedList.add(linkedSlot);
-                    }
-                }
-            }
-            // Add the current crit slot but exclude the linkedMounteds as they are added behind their weapon
-            if (!linkedMounteds.contains(critSlot.getMount())) {
-                resortedList.add(critSlot);
-            }
-            lastMounted = currentMounted;
-        }
-        return resortedList;
-    }
-
-    /**
-     * A location crit sorter using the official sort order (mostly)
-     */
-    Comparator<CriticalSlot> locationSorter = (critA, critB) -> {
-        int coarseOrderA = getCoarseOrder(critA);
-        int coarseOrderB = getCoarseOrder(critB);
-        if (coarseOrderA == 4 && coarseOrderB == 4) {
-            // compare average damage; using Aero damage here
-            double dmgA = 0;
-            double dmgB = 0;
-            if (critA.getMount().getType() instanceof WeaponType) {
-                dmgA = ((WeaponType) critA.getMount().getType()).getShortAV();
-            }
-            if (critB.getMount().getType() instanceof WeaponType) {
-                dmgB = ((WeaponType) critB.getMount().getType()).getShortAV();
-            }
-            if (dmgA != dmgB) {
-                return (dmgA > dmgB) ? -1 : 1;
-            } else {
-                // equal damage, compare crits
-                int critsA = critA.getMount().getCriticals();
-                int critsB = critB.getMount().getCriticals();
-                if (critsA != critsB) {
-                    return (critsA > critsB) ? -1 : 1;
-                } else {
-                    // equal crits, compare weight
-                    double weightA = critA.getMount().getType().getTonnage(getMech());
-                    double weightB = critB.getMount().getType().getTonnage(getMech());
-                    if (weightA != weightB) {
-                        return (weightA > weightB) ? -1 : 1;
-                    } else {
-                        return 0;
-                    }
-                }
-            }
-        } else if (coarseOrderA == 5 && coarseOrderB == 5) {
-            // TODO: compare ammo
-            return 0;
-        } else if (coarseOrderA == coarseOrderB) {
-            return 0;
-        } else {
-            return (coarseOrderA > coarseOrderB) ? 1 : -1;
-        }
-    };
-
-    private int getCoarseOrder(CriticalSlot critSlot) {
-        if (isPartialWingCrit(critSlot)) {
-            return 1;
-        } else if (UnitUtil.isHeatSink(critSlot.getMount())) {
-            return 2;
-        } else if (UnitUtil.isJumpJet(critSlot.getMount())) {
-            return 3;
-        } else if (UnitUtil.isMechWeapon(critSlot.getMount().getType(), getMech())) {
-            return 4;
-        } else if (critSlot.getMount().getType() instanceof AmmoType) {
-            return 5;
-        } else if (critSlot.getMount().getType().isHittable()) {
-            return 6;
-        } else if (isCASECrit(critSlot)) {
-            return 7;
-        } else if (EquipmentType.isStructureType(critSlot.getMount().getType())) {
-            return 8;
-        } else if (EquipmentType.isArmorType(critSlot.getMount().getType())) {
-            return 9;
-        } else {
-            return 10;
-        }
-    }
-
-    private void addToTopFreeSlot(int location, CriticalSlot critSlot) {
-        for (int slot = 0; slot < getMech().getNumberOfCriticals(location); slot++) {
-            if (getMech().getCritical(location, slot) == null) {
-                getMech().setCritical(location, slot, critSlot);
-                return;
-            }
-        }
-    }
-
-    private boolean isPartialWingCrit(CriticalSlot critSlot) {
-        return (critSlot.getMount().getType() instanceof MiscType)
-                && critSlot.getMount().getType().hasFlag(MiscType.F_PARTIAL_WING);
-
-    }
-
-    private boolean isCASECrit(CriticalSlot critSlot) {
-        return (critSlot.getMount().getType() instanceof MiscType)
-                && (critSlot.getMount().getType().hasFlag(MiscType.F_CASE)
-                || critSlot.getMount().getType().hasFlag(MiscType.F_CASEP)
-                || critSlot.getMount().getType().hasFlag(MiscType.F_CASEII));
     }
 
     public void addRefreshedListener(RefreshListener l) {

@@ -1460,12 +1460,9 @@ public class UnitUtil {
 
     public static int[] getHighestContinuousNumberOfCritsArray(Mech unit) {
         int[] critSpaces = new int[] { 0, 0, 0, 0, 0, 0, 0, 0 };
-
         for (int loc = 0; loc <= Mech.LOC_LLEG; loc++) {
-            critSpaces[loc] = UnitUtil.getHighestContinuousNumberOfCrits(unit,
-                    loc);
+            critSpaces[loc] = UnitUtil.getHighestContinuousNumberOfCrits(unit, loc);
         }
-
         return critSpaces;
     }
 
@@ -4446,18 +4443,5 @@ public class UnitUtil {
         }
     }
 
-    /**
-     * Returns true when a slot's equipment is not hittable and freely movable, such
-     * as Endo Steel and Ferro-Fibrous Armor but not CASE (which is unhittable but not
-     * freely movable as its location is important).
-     */
-    public static boolean isFreelyMovable(Mounted mounted) {
-        return (mounted != null)
-                && !mounted.getType().isHittable()
-                && (mounted.getType() instanceof MiscType)
-                && !mounted.getType().hasFlag(MiscType.F_CASE)
-                && !mounted.getType().hasFlag(MiscType.F_CASEP)
-                && !mounted.getType().hasFlag(MiscType.F_CASEII);
-    }
 
 }

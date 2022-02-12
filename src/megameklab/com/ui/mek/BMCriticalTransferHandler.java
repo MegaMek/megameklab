@@ -33,6 +33,7 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
+import java.util.*;
 
 /**
  * The crit slot Transfer Handler for BM.
@@ -49,38 +50,43 @@ public class BMCriticalTransferHandler extends TransferHandler {
         this.refresh = refresh;
     }
 
-    private boolean addEquipmentMech(Mech mech, Mounted eq, int slotNumber) throws LocationFullException {
+    private boolean addEquipmentMech(Mech mek, Mounted eq, int slotNumber) throws LocationFullException {
         int neededCrits = UnitUtil.getCritsUsed(eq);
 
         if ((eq.getType().isSpreadable() || eq.isSplitable()) && (neededCrits > 1)) {
-            return addSplittableEquipment(mech, eq, slotNumber);
+            if (addSplit(mek, eq, slotNumber)) {
+                return true;
+
+            } else {
+                throw new LocationFullException("There is no room for this " + eq.getName() + " in "
+                        + getUnit().getLocationAbbr(location) + "and the adjacent locations.");
+            }
 
         } else {
             // Move the slotnumber upwards if the drop location is too far down for the equipment (PPC in the last slot)
-            int locationSize = mech.getNumberOfCriticals(location);
+            int locationSize = mek.getNumberOfCriticals(location);
             if ((locationSize >= neededCrits) && (slotNumber + neededCrits > locationSize)) {
                 slotNumber = locationSize - neededCrits;
             }
 
-            if (UnitUtil.isFreelyMovable(eq)) {
+            if (BMUtils.isFMU(eq)) {
                 // Endo Steel and the like don't move aside other Endo Steels
-                mech.addEquipment(eq, location, false, slotNumber);
+                mek.addEquipment(eq, location, false, slotNumber);
                 changeMountStatus(eq, location);
                 return true;
 
-            } else if (canFreeContiguousCrits(mech, location, slotNumber, neededCrits)) {
-                // The equipment can be placed, possibly by removing Endo Steel and the like
-                return addSingleLocationEquipment(mech, eq, slotNumber);
+            } else if (canFreeContiguousCrits(mek, location, slotNumber, neededCrits)) {
+                // The equipment can be placed at the drop slot, possibly by removing Endo Steel and the like
+                return addSingleLocationEquipment(mek, eq, slotNumber);
 
-            } else if (getSlotWithContiguousNumberOfCrits(mech, location, neededCrits) > -1) {
+            } else if (getSlotWithContiguousNumberOfCrits(mek, location, neededCrits) > -1) {
                 // The equipment can be placed elsewhere in the location by removing Endo Steel and the like
-                slotNumber = getSlotWithContiguousNumberOfCrits(mech, location, neededCrits);
-                return addSingleLocationEquipment(mech, eq, slotNumber);
+                slotNumber = getSlotWithContiguousNumberOfCrits(mek, location, neededCrits);
+                return addSingleLocationEquipment(mek, eq, slotNumber);
 
             } else {
-                throw new LocationFullException(eq.getName() +
-                        " does not fit there in " + getUnit().getLocationAbbr(location) +
-                        " on " + getUnit().getDisplayName());
+                throw new LocationFullException("There is no room for this " + eq.getName() + " in "
+                        + getUnit().getLocationAbbr(location) + ".");
             }
         }
     }
@@ -89,7 +95,7 @@ public class BMCriticalTransferHandler extends TransferHandler {
     private boolean addSingleLocationEquipment(Mech mech, Mounted eq, int slotNumber)
             throws LocationFullException {
         int neededCrits = UnitUtil.getCritsUsed(eq);
-        removeUnhittables(mech, location, slotNumber, neededCrits);
+        BMUtils.removeFMU(mech, location, slotNumber, neededCrits);
         if ((eq.getType() instanceof WeaponType) && eq.getType().hasFlag(WeaponType.F_VGL)) {
             return addVGL(mech, eq, slotNumber);
         } else {
@@ -101,7 +107,7 @@ public class BMCriticalTransferHandler extends TransferHandler {
 
     /**
      * Returns the first slot in the location that together with following slots
-     * forms a contiguous block of the given length as size where all slotes
+     * forms a contiguous block of the given length as size where all slots
      * are either empty of contain freely movable crits such as Endo Steel.
      * Returns -1 if there is no such slot.
      */
@@ -115,30 +121,13 @@ public class BMCriticalTransferHandler extends TransferHandler {
     }
 
     /**
-     * Returns the number of contiguous criticals in the given
-     * location, starting at the given critical slot
-     */
-    private int getContiguousNumberOfCrits(Entity unit, int location, int startingSlot) {
-        int numCritSlots = unit.getNumberOfCriticals(location);
-        int contiguousCrits = 0;
-        for (int slot = startingSlot; slot < numCritSlots; slot++) {
-            if (unit.getCritical(location, slot) == null) {
-                contiguousCrits++;
-            } else {
-                break;
-            }
-        }
-        return contiguousCrits;
-    }
-
-    /**
      * Returns true when numOfSlots contiguous slots starting from startingSlot are either free or
      * can be freed by removing unhittable and movable equipment such as Endo Steel.
      */
     private boolean canFreeContiguousCrits(Entity mech, int location, int startingSlot, int numOfSlots) {
         for (int slot = startingSlot; slot < startingSlot + numOfSlots; slot++) {
             CriticalSlot critSlot = mech.getCritical(location, slot);
-            if ((critSlot != null) && !UnitUtil.isFreelyMovable(critSlot.getMount())) {
+            if ((critSlot != null) && !BMUtils.isFMU(critSlot.getMount())) {
                 return false;
             }
         }
@@ -146,154 +135,94 @@ public class BMCriticalTransferHandler extends TransferHandler {
     }
 
     /**
-     * Returns true when numOfSlots contiguous slots starting from startingSlot are either free or
-     * can be freed by removing unhittable and movable equipment such as Endo Steel.
+     * Returns the number of contiguous slots starting from startingSlot that are either free or
+     * can be freed by removing unhittable and movable (FMU) equipment such as Endo Steel.
      */
-    private void removeUnhittables(Entity mech, int location, int startingSlot, int numOfSlots) {
-        for (int slot = startingSlot; slot < startingSlot + numOfSlots; slot++) {
-            CriticalSlot critSlot = mech.getCritical(location, slot);
-            if ((critSlot != null) && UnitUtil.isFreelyMovable(critSlot.getMount())) {
-                Mounted mounted = critSlot.getMount();
-                UnitUtil.removeCriticals(mech, mounted);
-                UnitUtil.changeMountStatus(mech, mounted, Entity.LOC_NONE, Entity.LOC_NONE, false);
+    private int availableContiguousCrits(Entity mek, int location, int startingSlot) {
+        for (int slot = startingSlot; slot < mek.getNumberOfCriticals(location); slot++) {
+            CriticalSlot critSlot = mek.getCritical(location, slot);
+            if ((critSlot != null) && !BMUtils.isFMU(critSlot.getMount())) {
+                return slot - startingSlot;
             }
         }
+        return mek.getNumberOfCriticals(location) - startingSlot;
     }
 
-    /** Adds splittable/spreadable equipment to the mek. */
-    private boolean addSplittableEquipment(Mech mech, Mounted eq, int slotNumber)
-            throws LocationFullException {
-        int totalCrits = UnitUtil.getCritsUsed(eq);
-        int primaryLocSpace = getContiguousNumberOfCrits(getUnit(), location, slotNumber);
-        int critsUsed = 0;
-        int primaryLocation = location;
-        int nextLocation = getUnit().getTransferLocation(location);
+    private boolean addSplit(Mech mek, Mounted eq, int slotNumber) throws LocationFullException {
+        int neededTotalSlots = UnitUtil.getCritsUsed(eq);
+        int freePrimarySlots = availableContiguousCrits(mek, location, slotNumber);
+        // It's obvious that the equipment can't be placed on an occupied slot, so in that case
+        // a good free slot can be chosen in the location
+        if (freePrimarySlots == 0) {
+            int maxSpace = BMUtils.getMaxContiguousNumOfCrits(mek, location, true);
+            slotNumber = getSlotWithContiguousNumberOfCrits(mek, location, maxSpace);
+            freePrimarySlots = availableContiguousCrits(mek, location, slotNumber);
+            if (freePrimarySlots == 0) {
+                // This location is full
+                return false;
+            }
+        }
+        int neededPrimarySlots = Math.min(neededTotalSlots, freePrimarySlots);
+        int neededSecondarySlots = Math.max(0, neededTotalSlots - freePrimarySlots);
+        int secondLocation = mek.getTransferLocation(location);
 
         // Determine if we should spread equipment over multiple locations
-        if ((totalCrits > primaryLocSpace)
+        if ((neededTotalSlots > freePrimarySlots)
+                //TODO: why not LAM? Why not TC?
                 && !((eq.getType() instanceof MiscType) && eq.getType().hasFlag(MiscType.F_TARGCOMP))
                 && !(getUnit() instanceof LandAirMech)) {
+
+            Set<Integer> secondLocationSet = new HashSet<>();
+            secondLocationSet.add(mek.getTransferLocation(location));
             if (location == Mech.LOC_RT) {
-                // Catch torso-only equipment (e.g. heavy gauss)
-                if (!UnitUtil.isValidLocation(getUnit(), eq.getType(), Mech.LOC_RARM)) {
-                    nextLocation = Mech.LOC_CT;
-                } else {
-                    String[] locations =
-                            { "Center Torso", "Right Leg", "Right Arm" };
-                    JComboBox<String> combo = new JComboBox<>(locations);
-                    JOptionPane jop = new JOptionPane(combo,
-                            JOptionPane.QUESTION_MESSAGE,
-                            JOptionPane.OK_CANCEL_OPTION);
-
-                    JDialog dlg = jop.createDialog("Select secondary location.");
-                    combo.grabFocus();
-                    combo.getEditor().selectAll();
-
-                    dlg.setVisible(true);
-
-                    int value = (Integer) jop.getValue();
-
-                    if (value == JOptionPane.CANCEL_OPTION) {
-                        return false;
-                    }
-
-                    if (combo.getSelectedIndex() == 1) {
-                        nextLocation = Mech.LOC_RLEG;
-                    } else if (combo.getSelectedIndex() == 2) {
-                        nextLocation = Mech.LOC_RARM;
-                    }
-                }
+                secondLocationSet.add(Mech.LOC_CT);
+                secondLocationSet.add(Mech.LOC_RARM);
+                secondLocationSet.add(Mech.LOC_RLEG);
             } else if (location == Mech.LOC_LT) {
-                // Catch torso-only equipment (e.g. heavy gauss)
-                if (!UnitUtil.isValidLocation(getUnit(), eq.getType(), Mech.LOC_LARM)) {
-                    nextLocation = Mech.LOC_CT;
-                } else {
-                    String[] locations =
-                            { "Center Torso", "Left Leg", "Left Arm" };
-                    JComboBox<String> combo = new JComboBox<>(locations);
-                    JOptionPane jop = new JOptionPane(combo,
-                            JOptionPane.QUESTION_MESSAGE,
-                            JOptionPane.OK_CANCEL_OPTION);
-
-                    JDialog dlg = jop.createDialog("Select secondary location.");
-                    combo.grabFocus();
-                    combo.getEditor().selectAll();
-
-                    dlg.setVisible(true);
-
-                    int value = (Integer) jop.getValue();
-
-                    if (value == JOptionPane.CANCEL_OPTION) {
-                        return false;
-                    }
-
-                    if (combo.getSelectedIndex() == 1) {
-                        nextLocation = Mech.LOC_LLEG;
-                    } else if (combo.getSelectedIndex() == 2) {
-                        nextLocation = Mech.LOC_LARM;
-                    }
-                }
+                secondLocationSet.add(Mech.LOC_CT);
+                secondLocationSet.add(Mech.LOC_LARM);
+                secondLocationSet.add(Mech.LOC_LLEG);
             } else if (location == Mech.LOC_CT) {
-                String[] locations =
-                        { "Left Torso", "Right Torso" };
+                secondLocationSet.add(Mech.LOC_LT);
+                secondLocationSet.add(Mech.LOC_RT);
+            }
+            //TODO: Old code: How could this be LOC_DESTROYED?
+            secondLocationSet.removeIf(loc -> loc == Entity.LOC_DESTROYED);
+            secondLocationSet.removeIf(loc -> !UnitUtil.isValidLocation(mek, eq.getType(), loc));
+            secondLocationSet.removeIf(loc ->
+                    BMUtils.getMaxContiguousNumOfCrits(mek, loc, true) < neededSecondarySlots);
+            List<Integer> secondLocationsList = new ArrayList<>(secondLocationSet);
+            if (secondLocationsList.isEmpty()) {
+                return false;
+            } else if (secondLocationsList.size() == 1) {
+                secondLocation = secondLocationsList.get(0);
+            } else {
+                Vector<String> locations = new Vector<>();
+                secondLocationSet.forEach(loc -> locations.add(mek.getLocationName(loc)));
                 JComboBox<String> combo = new JComboBox<>(locations);
-                JOptionPane jop = new JOptionPane(combo,
-                        JOptionPane.QUESTION_MESSAGE,
-                        JOptionPane.OK_CANCEL_OPTION);
-
-                JDialog dlg = jop.createDialog(null,
-                        "Select secondary location.");
-                combo.grabFocus();
-                combo.getEditor().selectAll();
-
+                JOptionPane jop = new JOptionPane(combo, JOptionPane.QUESTION_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
+                JDialog dlg = jop.createDialog("Select secondary location.");
                 dlg.setVisible(true);
-
                 int value = (Integer) jop.getValue();
-
                 if (value == JOptionPane.CANCEL_OPTION) {
                     return false;
                 }
-
-                if (combo.getSelectedIndex() == 1) {
-                    nextLocation = Mech.LOC_RT;
-                } else {
-                    nextLocation = Mech.LOC_LT;
-                }
+                secondLocation = secondLocationsList.get(combo.getSelectedIndex());
             }
         }
 
-
-        // Determine how much usable space we have in both locations
-        int secondarySpace = UnitUtil.getHighestContinuousNumberOfCrits(
-                getUnit(), nextLocation);
-
-        // Check for available space
-        if ((primaryLocSpace < totalCrits)
-                && ((nextLocation == Entity.LOC_DESTROYED) || ((primaryLocSpace + secondarySpace) < totalCrits))) {
-            throw new LocationFullException(eq.getName() + " does not fit there in "
-                    + getUnit().getLocationAbbr(location) + " on " + getUnit().getDisplayName());
+        BMUtils.removeFMU(mek, location, slotNumber, freePrimarySlots);
+        for (int slot = slotNumber; slot < slotNumber + neededPrimarySlots; slot++) {
+            mek.addEquipment(eq, location, false, slot);
         }
-
-        int currLoc = location;
-        for (; critsUsed < totalCrits; critsUsed++) {
-            mech.addEquipment(eq, currLoc, false, slotNumber);
-            slotNumber = (slotNumber + 1) % mech.getNumberOfCriticals(currLoc);
-            primaryLocSpace--;
-            if (primaryLocSpace == 0) {
-                slotNumber = 0;
-                currLoc = nextLocation;
-                totalCrits -= critsUsed;
-                critsUsed = 0;
-            }
+        int secondSlotNumber = getSlotWithContiguousNumberOfCrits(mek, secondLocation, neededSecondarySlots);
+        BMUtils.removeFMU(mek, secondLocation, secondSlotNumber, neededSecondarySlots);
+        for (int slot = secondSlotNumber; slot < secondSlotNumber + neededSecondarySlots; slot++) {
+            mek.addEquipment(eq, secondLocation, false, slot);
         }
-        int secondary = Entity.LOC_NONE;
-        if ((primaryLocSpace <= 0) && (slotNumber > 0)) {
-            secondary = nextLocation;
-        }
-        changeMountStatus(eq, primaryLocation, secondary);
+        changeMountStatus(eq, location, secondLocation);
         return true;
     }
-
 
     /** Add a vehicular grenade launcher, asking the user for the facing. */
     private boolean addVGL(Mech mech, Mounted vgl, int slotNumber) throws LocationFullException {
@@ -406,6 +335,9 @@ public class BMCriticalTransferHandler extends TransferHandler {
             } catch (LocationFullException lfe) {
                 JOptionPane.showMessageDialog(null, lfe.getMessage(),
                         "Location Full", JOptionPane.INFORMATION_MESSAGE);
+                if (refresh != null) {
+                    refresh.refreshAll();
+                }
                 return false;
             } catch (Exception ex) {
                 LogManager.getLogger().error("", ex);
