@@ -5,9 +5,10 @@ Lead Developers:
 	 Carl "Neoancient" Spain
 	 NickAragua
 	 Christopher Watford
-    
+	     
 More Code:
 	Justin "Windchild" Bowen
+	Juliez
 	
 Splash Screen
 	Florian "SpOoKy777" Mellies (https://www.deviantart.com/spooky777)
