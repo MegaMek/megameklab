@@ -104,7 +104,7 @@ public class ColorSettingsPanel extends JPanel {
     }
 
     /**
-     * Returns a mapping of a String representing the type of color to an RGB Color string.
+     * @return a mapping of a String representing the type of color to an RGB Color string.
      * The type string is CConfig.COLOR_XYZ+CConfig.CONFIG_FOREGROUND or BACKGROUND.
      */
     Map<String, String> getAllColors() {

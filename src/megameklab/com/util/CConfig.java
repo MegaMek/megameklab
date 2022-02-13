@@ -239,6 +239,8 @@ public class CConfig {
 
     /**
      * Set a config value.
+     * @param param the name of the parameter
+     * @param value the value to set the parameter to
      */
     public static void setParam(String param, String value) {
         config.setProperty(param, value);
@@ -275,7 +277,8 @@ public class CConfig {
     }
 
     /**
-     * Return the boolean value of a given config property. Return a false if the
+     * @param param the parameter's name
+     * @return the boolean value of a given config property. Return a false if the
      * property does not exist.
      */
     public static boolean getBooleanParam(String param) {

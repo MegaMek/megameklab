@@ -60,7 +60,7 @@ public class IntRangeTextField extends JFormattedTextField {
     
     /**
      * Sets the minimum value for the field.
-     * @param min
+     * @param min the minimum value
      */
     public void setMinimum(Integer min) {
         minimum = min;
@@ -75,7 +75,7 @@ public class IntRangeTextField extends JFormattedTextField {
     
     /**
      * Sets the maximum legal value
-     * @param max
+     * @param max the maximum value
      */
     public void setMaximum(Integer max) {
         maximum = max;
@@ -156,10 +156,9 @@ public class IntRangeTextField extends JFormattedTextField {
 
     /**
      * Sets the text to a string representation of the provided value
-     * @param val
+     * @param val the provided value
      */
     public void setIntVal(int val) {
         setText(String.valueOf(val));
     }
-
 }

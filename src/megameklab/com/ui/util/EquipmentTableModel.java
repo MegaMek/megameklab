@@ -442,9 +442,9 @@ public class EquipmentTableModel extends AbstractTableModel {
     }
 
     /**
-     * Returns a String representation of the Tech Base of the given equipment, i.e.
-     * "All", "IS" or "Clan" - or "Unknown" if the Tech Base is not one of the standard values.
      * @param equipment The equipment in question; must not be null
+     * @return a String representation of the Tech Base of the given equipment, i.e.
+     * "All", "IS" or "Clan" - or "Unknown" if the Tech Base is not one of the standard values.
      */
     public static String getTechBaseAsString(EquipmentType equipment) {
         switch(equipment.getTechBase()) {

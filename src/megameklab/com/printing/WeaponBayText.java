@@ -13,7 +13,6 @@
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  */
-
 package megameklab.com.printing;
 
 import java.math.BigInteger;
@@ -28,11 +27,10 @@ import megamek.common.weapons.AmmoWeapon;
 
 /**
  * Convenience class for storing information about weapon pays for printing.
- * This consists of a list of the weapons in the bay with heat & damage, along
+ * This consists of a list of the weapons in the bay with heat and damage, along
  * with the location of the bay.
  *
  * @author arlith
- *
  */
 public class WeaponBayText implements Comparable<WeaponBayText> {
 

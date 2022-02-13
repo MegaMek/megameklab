@@ -2231,7 +2231,10 @@ public class UnitUtil {
         return ammoCount;
     }
 
-    /** Returns the name of the given equipment with (IS) or (Clan) added for mixed tech units when appropriate.  */
+    /**
+     * @return the name of the given equipment with (IS) or (Clan) added for mixed tech units when
+     * appropriate.
+     */
     public static String getCritName(Entity unit, EquipmentType eq) {
         String name = eq.getName();
         if (unit.isMixedTech()
@@ -2536,33 +2539,6 @@ public class UnitUtil {
             return ((AmmoType) eq).getAmmoType() == AmmoType.T_COOLANT_POD;
         }
         return eq.isHittable();
-    }
-
-    /**
-     * Returns the units tech type.
-     *
-     * @param unit
-     * @return
-     */
-    public static int getUnitTechType(Entity unit) {
-        switch (unit.getTechLevel()) {
-            case TechConstants.T_INTRO_BOXSET:
-                return UnitUtil.TECH_INTRO;
-            case TechConstants.T_IS_TW_NON_BOX:
-            case TechConstants.T_IS_TW_ALL:
-            case TechConstants.T_CLAN_TW:
-                return UnitUtil.TECH_STANDARD;
-            case TechConstants.T_IS_ADVANCED:
-            case TechConstants.T_CLAN_ADVANCED:
-                return UnitUtil.TECH_ADVANCED;
-            case TechConstants.T_IS_EXPERIMENTAL:
-            case TechConstants.T_CLAN_EXPERIMENTAL:
-                return UnitUtil.TECH_EXPERIMENTAL;
-            case TechConstants.T_IS_UNOFFICIAL:
-            case TechConstants.T_CLAN_UNOFFICIAL:
-                return UnitUtil.TECH_UNOFFICAL;
-        }
-        return UnitUtil.TECH_INTRO;
     }
 
     public static void updateLoadedUnit(Entity unit) {
@@ -3569,14 +3545,12 @@ public class UnitUtil {
     }
 
     /**
-     * Returns a TestEntity instance for the supplied Entity.
-     *
-     * @param unit
-     * @return
+     * @param unit the supplied entity
+     * @return a TestEntity instance for the supplied Entity.
      */
     public static TestEntity getEntityVerifier(Entity unit) {
         EntityVerifier entityVerifier = EntityVerifier.getInstance(new File(
-                "data/mechfiles/UnitVerifierOptions.xml"));
+                "data/mechfiles/UnitVerifierOptions.xml")); // TODO : Remove inline file path
         TestEntity testEntity = null;
 
         if (unit.hasETypeFlag(Entity.ETYPE_MECH)) {

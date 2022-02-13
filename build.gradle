@@ -389,8 +389,7 @@ publishing {
             artifactId = "megameklab${mmBranchTag}"
             from components.java
             artifact sourcesJar
-// Javadoc has errors
-//            artifact javadocJar
+            artifact javadocJar
 
             pom {
                 name = "MegaMekLab"

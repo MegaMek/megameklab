@@ -40,61 +40,61 @@ public interface InventoryEntry {
     int nRows();
 
     /**
-     * @param row The row index within the entry. Should be < nRows()
+     * @param row The row index within the entry. Should be &lt; nRows()
      * @return    The number of identical equipment pieces represented by this entry
      */
     String getQuantityField(int row);
 
     /**
-     * @param row The row index within the entry. Should be < nRows()
+     * @param row The row index within the entry. Should be &lt; nRows()
      * @return    The name of the equipment
      */
     String getNameField(int row);
 
     /**
-     * @param row The row index within the entry. Should be < nRows()
+     * @param row The row index within the entry. Should be &lt; nRows()
      * @return    The location/firing arc
      */
     String getLocationField(int row);
 
     /**
-     * @param row The row index within the entry. Should be < nRows()
+     * @param row The row index within the entry. Should be &lt; nRows()
      * @return    The amount of heat generated
      */
     String getHeatField(int row);
 
     /**
-     * @param row The row index within the entry. Should be < nRows()
+     * @param row The row index within the entry. Should be &lt; nRows()
      * @return    The damage caused by the weapon, as well as its type code
      */
     String getDamageField(int row);
 
     /**
-     * @param row The row index within the entry. Should be < nRows()
+     * @param row The row index within the entry. Should be &lt; nRows()
      * @return    The upper limit of the minimum range
      */
     String getMinField(int row);
 
     /**
-     * @param row The row index within the entry. Should be < nRows()
+     * @param row The row index within the entry. Should be &lt; nRows()
      * @return    The upper limit of the short range (ground units) or SRV (aero units)
      */
     String getShortField(int row);
 
     /**
-     * @param row The row index within the entry. Should be < nRows()
+     * @param row The row index within the entry. Should be &lt; nRows()
      * @return    The upper limit of the medium range (ground units) or MRV (aero units)
      */
     String getMediumField(int row);
 
     /**
-     * @param row The row index within the entry. Should be < nRows()
+     * @param row The row index within the entry. Should be &lt; nRows()
      * @return    The upper limit of the long range (ground units) or LRV (aero units)
      */
     String getLongField(int row);
 
     /**
-     * @param row The row index within the entry. Should be < nRows()
+     * @param row The row index within the entry. Should be &lt; nRows()
      * @return    The ERV (aero units)
      */
     String getExtremeField(int row);
