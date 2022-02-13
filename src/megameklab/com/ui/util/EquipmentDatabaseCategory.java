@@ -81,7 +81,8 @@ public enum EquipmentDatabaseCategory {
             && !(eq.hasFlag(F_PARTIAL_WING) && en.hasETypeFlag(Entity.ETYPE_PROTOMECH))
             && !eq.hasFlag(F_SPONSON_TURRET)
             && !eq.hasFlag(F_PINTLE_TURRET))
-            || (eq instanceof TAGWeapon)),
+            || (eq instanceof TAGWeapon)
+            || (eq instanceof AmmoType && ((AmmoType)eq).getAmmoType() == AmmoType.T_COOLANT_POD)),
 
     AP ("Anti-Personnel",
             (eq, en) -> UnitUtil.isBattleArmorAPWeapon(eq),
