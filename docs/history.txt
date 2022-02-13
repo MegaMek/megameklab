@@ -24,6 +24,7 @@ VERSION HISTORY:
 + Issue #932: Correctly hides/disables fuel fields for Support Vehicles that don't use fuel
 + Issue #1002: Display an error occured message when printing RS to a file that is locked
 + Updating Apache FOP from 2.6 to 2.7
++ Issue #1026: Added Coolant Pod to Other category check in EquipmentDatabaseCategory
 
 0.49.6 (2021-12-31 2200 UTC)
 + Issue #908: Corrections to the Aero reference tables
