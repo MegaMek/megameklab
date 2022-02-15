@@ -44,22 +44,24 @@ public class BMCriticalTransferHandler extends TransferHandler {
     private final EntitySource eSource;
     private int location = -1;
     private final RefreshListener refresh;
+    private final BMCriticalView parentView;
 
-    public BMCriticalTransferHandler(EntitySource eSource, RefreshListener refresh) {
+    public BMCriticalTransferHandler(EntitySource eSource, RefreshListener refresh, BMCriticalView parentView) {
         this.eSource = eSource;
         this.refresh = refresh;
+        this.parentView = parentView;
     }
 
     private boolean addEquipmentMech(Mech mek, Mounted eq, int slotNumber) throws LocationFullException {
         int neededCrits = UnitUtil.getCritsUsed(eq);
 
         if ((eq.getType().isSpreadable() || eq.isSplitable()) && (neededCrits > 1)) {
-            if (addSplit(mek, eq, slotNumber)) {
+            if (addSplitLocationEquipment(mek, eq, slotNumber)) {
                 return true;
 
             } else {
-                throw new LocationFullException("There is no room for this " + eq.getName() + " in "
-                        + getUnit().getLocationAbbr(location) + "and the adjacent locations.");
+                throw new LocationFullException("There is no room for this " + eq.getName() + " in the "
+                        + getUnit().getLocationAbbr(location) + " and the adjacent locations.");
             }
 
         } else {
@@ -75,17 +77,17 @@ public class BMCriticalTransferHandler extends TransferHandler {
                 changeMountStatus(eq, location);
                 return true;
 
-            } else if (canFreeContiguousCrits(mek, location, slotNumber, neededCrits)) {
+            } else if (BMUtils.canFreeContiguousCrits(mek, location, slotNumber, neededCrits)) {
                 // The equipment can be placed at the drop slot, possibly by removing Endo Steel and the like
                 return addSingleLocationEquipment(mek, eq, slotNumber);
 
-            } else if (getSlotWithContiguousNumberOfCrits(mek, location, neededCrits) > -1) {
+            } else if (BMUtils.findSlotWithContiguousNumOfCrits(mek, location, neededCrits) > -1) {
                 // The equipment can be placed elsewhere in the location by removing Endo Steel and the like
-                slotNumber = getSlotWithContiguousNumberOfCrits(mek, location, neededCrits);
+                slotNumber = BMUtils.findSlotWithContiguousNumOfCrits(mek, location, neededCrits);
                 return addSingleLocationEquipment(mek, eq, slotNumber);
 
             } else {
-                throw new LocationFullException("There is no room for this " + eq.getName() + " in "
+                throw new LocationFullException("There is no room for this " + eq.getName() + " in the "
                         + getUnit().getLocationAbbr(location) + ".");
             }
         }
@@ -105,58 +107,15 @@ public class BMCriticalTransferHandler extends TransferHandler {
         return true;
     }
 
-    /**
-     * Returns the first slot in the location that together with following slots
-     * forms a contiguous block of the given length as size where all slots
-     * are either empty of contain freely movable crits such as Endo Steel.
-     * Returns -1 if there is no such slot.
-     */
-    private int getSlotWithContiguousNumberOfCrits(Entity mech, int location, int length) {
-        for (int slot = 0; slot < mech.getNumberOfCriticals(location); slot++) {
-            if (canFreeContiguousCrits(mech, location, slot, length)) {
-                return slot;
-            }
-        }
-        return -1;
-    }
-
-    /**
-     * Returns true when numOfSlots contiguous slots starting from startingSlot are either free or
-     * can be freed by removing unhittable and movable equipment such as Endo Steel.
-     */
-    private boolean canFreeContiguousCrits(Entity mech, int location, int startingSlot, int numOfSlots) {
-        for (int slot = startingSlot; slot < startingSlot + numOfSlots; slot++) {
-            CriticalSlot critSlot = mech.getCritical(location, slot);
-            if ((critSlot != null) && !BMUtils.isFMU(critSlot.getMount())) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Returns the number of contiguous slots starting from startingSlot that are either free or
-     * can be freed by removing unhittable and movable (FMU) equipment such as Endo Steel.
-     */
-    private int availableContiguousCrits(Entity mek, int location, int startingSlot) {
-        for (int slot = startingSlot; slot < mek.getNumberOfCriticals(location); slot++) {
-            CriticalSlot critSlot = mek.getCritical(location, slot);
-            if ((critSlot != null) && !BMUtils.isFMU(critSlot.getMount())) {
-                return slot - startingSlot;
-            }
-        }
-        return mek.getNumberOfCriticals(location) - startingSlot;
-    }
-
-    private boolean addSplit(Mech mek, Mounted eq, int slotNumber) throws LocationFullException {
+    private boolean addSplitLocationEquipment(Mech mek, Mounted eq, int slotNumber) throws LocationFullException {
         int neededTotalSlots = UnitUtil.getCritsUsed(eq);
-        int freePrimarySlots = availableContiguousCrits(mek, location, slotNumber);
+        int freePrimarySlots = BMUtils.availableContiguousCrits(mek, location, slotNumber, true);
         // It's obvious that the equipment can't be placed on an occupied slot, so in that case
         // a good free slot can be chosen in the location
         if (freePrimarySlots == 0) {
             int maxSpace = BMUtils.getMaxContiguousNumOfCrits(mek, location, true);
-            slotNumber = getSlotWithContiguousNumberOfCrits(mek, location, maxSpace);
-            freePrimarySlots = availableContiguousCrits(mek, location, slotNumber);
+            slotNumber = BMUtils.findSlotWithContiguousNumOfCrits(mek, location, maxSpace);
+            freePrimarySlots = BMUtils.availableContiguousCrits(mek, location, slotNumber, true);
             if (freePrimarySlots == 0) {
                 // This location is full
                 return false;
@@ -186,16 +145,18 @@ public class BMCriticalTransferHandler extends TransferHandler {
                 secondLocationSet.add(Mech.LOC_LT);
                 secondLocationSet.add(Mech.LOC_RT);
             }
-            //TODO: Old code: How could this be LOC_DESTROYED?
             secondLocationSet.removeIf(loc -> loc == Entity.LOC_DESTROYED);
             secondLocationSet.removeIf(loc -> !UnitUtil.isValidLocation(mek, eq.getType(), loc));
             secondLocationSet.removeIf(loc ->
                     BMUtils.getMaxContiguousNumOfCrits(mek, loc, true) < neededSecondarySlots);
+
             List<Integer> secondLocationsList = new ArrayList<>(secondLocationSet);
             if (secondLocationsList.isEmpty()) {
                 return false;
+
             } else if (secondLocationsList.size() == 1) {
                 secondLocation = secondLocationsList.get(0);
+
             } else {
                 Vector<String> locations = new Vector<>();
                 secondLocationSet.forEach(loc -> locations.add(mek.getLocationName(loc)));
@@ -215,7 +176,7 @@ public class BMCriticalTransferHandler extends TransferHandler {
         for (int slot = slotNumber; slot < slotNumber + neededPrimarySlots; slot++) {
             mek.addEquipment(eq, location, false, slot);
         }
-        int secondSlotNumber = getSlotWithContiguousNumberOfCrits(mek, secondLocation, neededSecondarySlots);
+        int secondSlotNumber = BMUtils.findSlotWithContiguousNumOfCrits(mek, secondLocation, neededSecondarySlots);
         BMUtils.removeFMU(mek, secondLocation, secondSlotNumber, neededSecondarySlots);
         for (int slot = secondSlotNumber; slot < secondSlotNumber + neededSecondarySlots; slot++) {
             mek.addEquipment(eq, secondLocation, false, slot);
@@ -304,10 +265,9 @@ public class BMCriticalTransferHandler extends TransferHandler {
 
                 if (!UnitUtil.isValidLocation(getUnit(), eq.getType(), location)) {
                     JOptionPane.showMessageDialog(null, eq.getName() +
-                            " can't be placed in " +
-                            getUnit().getLocationName(location) + "!",
-                            "Invalid Location",
-                            JOptionPane.INFORMATION_MESSAGE);
+                            " can't be placed in " + getUnit().getLocationAbbr(location) + "!",
+                            "Invalid Location", JOptionPane.INFORMATION_MESSAGE);
+                    refresh.refreshAll();
                     return false;
                 }
 
@@ -319,8 +279,8 @@ public class BMCriticalTransferHandler extends TransferHandler {
                         EquipmentType etype2 = eq.getType();
                         boolean canDouble = false;
                         if ((etype instanceof AmmoType) && (etype2 instanceof AmmoType)) {
-                            canDouble = (((AmmoType)etype).getAmmoType() == ((AmmoType)etype2).getAmmoType())
-                                    && (((AmmoType)etype).getRackSize() == ((AmmoType)etype2).getRackSize());
+                            canDouble = (((AmmoType) etype).getAmmoType() == ((AmmoType) etype2).getAmmoType())
+                                    && (((AmmoType) etype).getRackSize() == ((AmmoType) etype2).getRackSize());
                         } else if (etype.equals(etype2) && UnitUtil.isHeatSink(etype)) {
                             canDouble = etype.getCriticals(getUnit()) == 1;
                         }
@@ -375,18 +335,20 @@ public class BMCriticalTransferHandler extends TransferHandler {
 
     @Override
     protected Transferable createTransferable(JComponent c) {
+        Mounted mount = null;
         if (c instanceof JTable) {
             JTable table = (JTable) c;
-            Mounted mount = (Mounted) table.getModel().getValueAt(table.getSelectedRow(), CriticalTableModel.EQUIPMENT);
-            return new StringSelection(Integer.toString(getUnit().getEquipmentNum(mount)));
+            mount = (Mounted) table.getModel().getValueAt(table.getSelectedRow(), CriticalTableModel.EQUIPMENT);
         } else if (c instanceof BAASBMDropTargetCriticalList) {
             BAASBMDropTargetCriticalList<?> list = (BAASBMDropTargetCriticalList<?>) c;
-            Mounted mount = list.getMounted();
-            if (mount != null) {
-                return new StringSelection(Integer.toString(getUnit().getEquipmentNum(mount)));
-            }
+            mount = list.getMounted();
         }
-        return null;
+        if (mount != null) {
+            parentView.markUnavailableLocations(mount);
+            return new StringSelection(Integer.toString(getUnit().getEquipmentNum(mount)));
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -409,4 +371,8 @@ public class BMCriticalTransferHandler extends TransferHandler {
         return eSource.getEntity();
     }
 
+    @Override
+    protected void exportDone(JComponent source, Transferable data, int action) {
+        parentView.unmarkAllLocations();
+    }
 }

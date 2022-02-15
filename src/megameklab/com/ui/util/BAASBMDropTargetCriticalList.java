@@ -25,10 +25,12 @@ import megamek.common.weapons.gaussrifles.GaussWeapon;
 import megamek.common.weapons.ppc.PPCWeapon;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.mek.BMCriticalTransferHandler;
+import megameklab.com.ui.mek.BMCriticalView;
 import megameklab.com.util.UnitUtil;
 import org.apache.logging.log4j.LogManager;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.*;
 import java.util.Vector;
 
@@ -36,18 +38,21 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
     private EntitySource eSource;
     private RefreshListener refresh;
     private boolean buildView = false;
+    private final IView parentView;
+    private boolean darkened = false;
 
     public BAASBMDropTargetCriticalList(Vector<E> vector, EntitySource eSource,
-                                        RefreshListener refresh, boolean buildView) {
+                                        RefreshListener refresh, boolean buildView, IView parentView) {
         super(vector);
         setDragEnabled(true);
         this.eSource = eSource;
         this.refresh = refresh;
         this.buildView = buildView;
+        this.parentView = parentView;
         setCellRenderer(new CritListCellRenderer(eSource.getEntity(), buildView));
         addMouseListener(this);
         if (eSource.getEntity() instanceof Mech) {
-            setTransferHandler(new BMCriticalTransferHandler(eSource, refresh));
+            setTransferHandler(new BMCriticalTransferHandler(eSource, refresh, (BMCriticalView) parentView));
         } else {
             setTransferHandler(new BAASCriticalTransferHandler(eSource, refresh));
         }
@@ -611,7 +616,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
         }
     }
     
-    private int getCritLocation() {
+    public int getCritLocation() {
         if (getUnit() instanceof BattleArmor){
             String[] split = getName().split(":");
             return Integer.parseInt(split[0]);
@@ -691,4 +696,20 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
         return eSource.getEntity();
     }
 
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        if (darkened) {
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, .5f));
+            g2.setColor(Color.BLACK);
+            g2.fillRect(0, 0, getWidth(), getHeight());
+            g2.dispose();
+        }
+    }
+
+    public void setDarkened(boolean darkened) {
+        this.darkened = darkened;
+        repaint();
+    }
 }

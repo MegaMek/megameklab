@@ -44,7 +44,7 @@ public class BMBuildTab extends ITab {
     public BMBuildTab(EntitySource eSource) {
         super(eSource);
         critView = new BMCriticalView(eSource, refresh);
-        buildView = new BMBuildView(eSource, refresh);
+        buildView = new BMBuildView(eSource, refresh, critView);
 
         Box leftSide = Box.createVerticalBox();
         leftSide.add(createButtonPanel());
@@ -62,10 +62,10 @@ public class BMBuildTab extends ITab {
         autoFillUnHittables.setSelected(true);
         autoCompact.addActionListener(e -> refresh());
         autoCompact.setToolTipText(resources.getString("BuildTab.autoCompact.tooltip"));
+        autoCompact.setSelected(true);
         autoSort.addActionListener(e -> refresh());
         autoSort.addActionListener(e -> autoCompact.setEnabled(!autoSort.isSelected()));
         autoSort.setToolTipText(resources.getString("BuildTab.autoSort.tooltip"));
-        autoSort.setSelected(true);
 
         JButton fillButton = new JButton(resources.getString("BuildTab.Fill.text"));
         fillButton.setToolTipText(resources.getString("BuildTab.Fill.tooltip"));

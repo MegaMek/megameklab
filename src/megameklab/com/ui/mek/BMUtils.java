@@ -117,27 +117,20 @@ public final class BMUtils {
      * locations on the Mek as long as there are any.
      */
     public static void fillInAllEquipment(Mech mek) {
+        int externalEngineHS = UnitUtil.getCriticalFreeHeatSinks(mek, mek.hasCompactHeatSinks());
         for (Mounted mount : mek.getEquipment()) {
-            int externalEngineHS = UnitUtil.getCriticalFreeHeatSinks(mek, mek.hasCompactHeatSinks());
+            if ((mount.getLocation() != Entity.LOC_NONE)
+                    || (UnitUtil.isHeatSink(mount) && (externalEngineHS-- > 0))) {
+                continue;
+            }
             for (int location = Mech.LOC_HEAD; location < mek.locations(); location++) {
-
                 if (!UnitUtil.isValidLocation(mek, mount.getType(), location)) {
                     continue;
                 }
-
-                int continuousNumberOfCrits = UnitUtil.getHighestContinuousNumberOfCrits(mek, location);
                 int critsUsed = UnitUtil.getCritsUsed(mount);
-                if (continuousNumberOfCrits < critsUsed) {
+                if (critsUsed > UnitUtil.getHighestContinuousNumberOfCrits(mek, location)) {
                     continue;
                 }
-                if ((mount.getLocation() == Entity.LOC_NONE)) {
-                    if (UnitUtil.isHeatSink(mount) && (externalEngineHS-- > 0)) {
-                        continue;
-                    }
-                } else {
-                    continue;
-                }
-
                 try {
                     if (mount.getType().isSpreadable() || (mount.isSplitable() && (critsUsed > 1))) {
                         for (int count = 0; count < critsUsed; count++) {
@@ -154,7 +147,6 @@ public final class BMUtils {
             }
         }
     }
-
 
     /**
      * Returns true when a slot's equipment is unhittable and freely movable ("FMU"), such
@@ -363,17 +355,49 @@ public final class BMUtils {
         if ((location == Entity.LOC_DESTROYED) || (location == Entity.LOC_NONE)) {
             return 0;
         }
-        int highestNumberOfCrits = 0;
-        int currentCritCount = 0;
+        int maxNumOfCrits = 0;
         for (int slot = 0; slot < mek.getNumberOfCriticals(location); slot++) {
-            CriticalSlot critSlot = mek.getCritical(location, slot);
-            if ((critSlot == null) || (ignoreFMU && BMUtils.isFMU(critSlot.getMount()))) {
-                currentCritCount++;
-            } else {
-                currentCritCount = 0;
-            }
-            highestNumberOfCrits = Math.max(currentCritCount, highestNumberOfCrits);
+            maxNumOfCrits = Math.max(availableContiguousCrits(mek, location, slot, ignoreFMU), maxNumOfCrits);
         }
-        return highestNumberOfCrits;
+        return maxNumOfCrits;
+    }
+
+    /**
+     * Returns the first slot in the location that together with following slots
+     * forms a contiguous block of the given length as size where all slots
+     * are either empty of contain freely movable crits such as Endo Steel.
+     * Returns -1 if there is no such slot.
+     */
+    public static int findSlotWithContiguousNumOfCrits(Entity mech, int location, int length) {
+        for (int slot = 0; slot < mech.getNumberOfCriticals(location); slot++) {
+            if (canFreeContiguousCrits(mech, location, slot, length)) {
+                return slot;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * Returns true when numOfSlots contiguous slots starting from startingSlot are either free or
+     * can be freed by removing unhittable and movable equipment such as Endo Steel.
+     */
+    public static boolean canFreeContiguousCrits(Entity mek, int location, int startingSlot, int numOfSlots) {
+        return availableContiguousCrits(mek, location, startingSlot, true) >= numOfSlots;
+    }
+
+    /**
+     * Returns the number of contiguous slots starting from startingSlot that are either free or
+     * can be freed by removing unhittable and movable (FMU) equipment such as Endo Steel.
+     * When ignoreFMU is true, slots that contain unhittable and freely moveable (FMU) equipment
+     * such as Endo Steel are counted as being free.
+     */
+    public static int availableContiguousCrits(Entity mek, int location, int startingSlot, boolean ignoreFMU) {
+        for (int slot = startingSlot; slot < mek.getNumberOfCriticals(location); slot++) {
+            CriticalSlot critSlot = mek.getCritical(location, slot);
+            if ((critSlot != null) && !(ignoreFMU && BMUtils.isFMU(critSlot.getMount()))) {
+                return slot - startingSlot;
+            }
+        }
+        return mek.getNumberOfCriticals(location) - startingSlot;
     }
 }

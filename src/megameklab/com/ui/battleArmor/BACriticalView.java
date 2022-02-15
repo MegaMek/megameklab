@@ -143,7 +143,7 @@ public class BACriticalView extends IView {
                 }
 
                 BAASBMDropTargetCriticalList<String> criticalSlotList = new BAASBMDropTargetCriticalList<>(
-                        critNames, eSource, refresh, showEmpty);
+                        critNames, eSource, refresh, showEmpty, this);
                 criticalSlotList.setVisibleRowCount(critNames.size());
                 criticalSlotList.setAlignmentX(JComponent.CENTER_ALIGNMENT);
                 criticalSlotList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);

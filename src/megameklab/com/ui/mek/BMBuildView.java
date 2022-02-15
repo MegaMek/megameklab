@@ -42,24 +42,25 @@ import java.util.Vector;
  * @author beerockxs
  */
 public class BMBuildView extends IView implements ActionListener, MouseListener {
-    private CriticalTableModel equipmentList;
-    private Vector<Mounted> masterEquipmentList = new Vector<>(10, 1);
-    private JTable equipmentTable = new JTable();
-    private JScrollPane equipmentScroll = new JScrollPane();
+    private final CriticalTableModel equipmentList;
+    private final Vector<Mounted> masterEquipmentList = new Vector<>(10, 1);
+    private final JTable equipmentTable = new JTable();
     private int engineHeatSinkCount = 0;
+    private final BMCriticalView criticalView;
     
     CriticalTransferHandler cth;
 
-    public BMBuildView(EntitySource eSource, RefreshListener refresh) {
+    public BMBuildView(EntitySource eSource, RefreshListener refresh, BMCriticalView critView) {
         super(eSource);
+        criticalView = critView;
 
         equipmentList = new CriticalTableModel(getMech(), CriticalTableModel.BUILDTABLE);
 
         equipmentTable.setModel(equipmentList);
         equipmentTable.setDragEnabled(true);
-        cth = new CriticalTransferHandler(eSource, refresh);
+        cth = new CriticalTransferHandler(eSource, refresh, critView);
         equipmentTable.setTransferHandler(cth);
-        TableColumn column = null;
+        TableColumn column;
         for (int i = 0; i < equipmentList.getColumnCount(); i++) {
             column = equipmentTable.getColumnModel().getColumn(i);
             if(i == 0) {
@@ -72,6 +73,7 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
         equipmentTable.setShowGrid(false);
         equipmentTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         equipmentTable.setDoubleBuffered(true);
+        JScrollPane equipmentScroll = new JScrollPane();
         equipmentScroll.setViewportView(equipmentTable);
         equipmentScroll.setMinimumSize(new java.awt.Dimension(300, 400));
         equipmentScroll.setPreferredSize(new java.awt.Dimension(300, 400));
@@ -130,7 +132,7 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
         }
 
         // weapons and ammo
-        Vector<Mounted> weaponsNAmmoList = new Vector<Mounted>(10, 1);
+        Vector<Mounted> weaponsNAmmoList = new Vector<>(10, 1);
         for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
             if ((masterEquipmentList.get(pos).getType() instanceof Weapon) || (masterEquipmentList.get(pos).getType() instanceof AmmoType)) {
                 weaponsNAmmoList.add(masterEquipmentList.get(pos));
@@ -225,10 +227,6 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
     private void fireTableRefresh() {
         equipmentList.updateUnit(getMech());
         equipmentList.refreshModel();
-    }
-
-    public CriticalTableModel getTableModel() {
-        return equipmentList;
     }
 
     public JTable getTable() {
