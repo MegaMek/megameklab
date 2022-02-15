@@ -45,11 +45,13 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
     private final Vector<Mounted> masterEquipmentList = new Vector<>(10, 1);
     private final JTable equipmentTable = new JTable();
     private int engineHeatSinkCount = 0;
+    private RefreshListener refresh;
 
     CriticalTransferHandler cth;
 
     public BMBuildView(EntitySource eSource, RefreshListener refresh, BMCriticalView critView) {
         super(eSource);
+        this.refresh = refresh;
         equipmentList = new CriticalTableModel(getMech(), CriticalTableModel.BUILDTABLE);
         equipmentTable.setModel(equipmentList);
         equipmentTable.setDragEnabled(true);
@@ -83,6 +85,7 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
 
     public void addRefreshedListener(RefreshListener l) {
         cth.addRefreshListener(l);
+        refresh = l;
     }
 
     private void loadEquipmentTable() {
@@ -393,10 +396,7 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
         }
 
         UnitUtil.changeMountStatus(getMech(), eq, location, secondaryLocation, false);
-
-        // go back up to grandparent build tab and fire a full refresh.
-        ((BMBuildTab) getParent().getParent()).refreshAll();
-
+        doRefresh();
     }
 
     private void jMenuLoadComponent_actionPerformed(int location, int selectedRow) {
@@ -464,8 +464,12 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
             LogManager.getLogger().error("", ex);
         }
         UnitUtil.changeMountStatus(getMech(), eq, location, -1, false);
+        doRefresh();
+    }
 
-        // go back up to grandparent build tab and fire a full refresh.
-        ((BMBuildTab) getParent().getParent()).refreshAll();
+    private void doRefresh() {
+        if (refresh != null) {
+            refresh.refreshAll();
+        }
     }
 }
