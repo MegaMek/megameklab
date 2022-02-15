@@ -34,7 +34,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.Collections;
 import java.util.Vector;
 
 /**
@@ -46,16 +45,12 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
     private final Vector<Mounted> masterEquipmentList = new Vector<>(10, 1);
     private final JTable equipmentTable = new JTable();
     private int engineHeatSinkCount = 0;
-    private final BMCriticalView criticalView;
-    
+
     CriticalTransferHandler cth;
 
     public BMBuildView(EntitySource eSource, RefreshListener refresh, BMCriticalView critView) {
         super(eSource);
-        criticalView = critView;
-
         equipmentList = new CriticalTableModel(getMech(), CriticalTableModel.BUILDTABLE);
-
         equipmentTable.setModel(equipmentList);
         equipmentTable.setDragEnabled(true);
         cth = new CriticalTransferHandler(eSource, refresh, critView);
@@ -110,7 +105,7 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
             }
         }
 
-        Collections.sort(masterEquipmentList, StringUtils.mountedComparator());
+        masterEquipmentList.sort(StringUtils.mountedComparator());
 
         // Time to Sort
         // HeatSinks first
@@ -140,7 +135,7 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
                 pos--;
             }
         }
-        Collections.sort(weaponsNAmmoList, StringUtils.mountedComparator());
+        weaponsNAmmoList.sort(StringUtils.mountedComparator());
         for (Mounted mount : weaponsNAmmoList) {
             equipmentList.addCrit(mount);
         }
@@ -182,8 +177,8 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
         }
 
         // TSM
-        for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
-            equipmentList.addCrit(masterEquipmentList.get(pos));
+        for (Mounted mounted : masterEquipmentList) {
+            equipmentList.addCrit(mounted);
         }
 
     }

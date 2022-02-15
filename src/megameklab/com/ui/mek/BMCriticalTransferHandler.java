@@ -127,7 +127,7 @@ public class BMCriticalTransferHandler extends TransferHandler {
 
         // Determine if we should spread equipment over multiple locations
         if ((neededTotalSlots > freePrimarySlots)
-                //TODO: why not LAM? Why not TC?
+                // TargComps are marked as spreadable as a workaround, see the MiscType comment
                 && !((eq.getType() instanceof MiscType) && eq.getType().hasFlag(MiscType.F_TARGCOMP))
                 && !(getUnit() instanceof LandAirMech)) {
 

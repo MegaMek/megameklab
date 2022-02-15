@@ -86,19 +86,19 @@ public class BMBuildTab extends ITab {
         sortButton.setMnemonic(KeyEvent.VK_S);
         sortButton.addActionListener(e -> sortCrits());
 
-        JPanel leftSide = new UIUtil.FixedYPanel(new FlowLayout(FlowLayout.LEFT));
-        leftSide.setOpaque(false);
-        leftSide.add(autoFillUnHittables);
-        leftSide.add(autoCompact);
-        leftSide.add(autoSort);
-        leftSide.add(Box.createHorizontalStrut(20));
-        leftSide.add(fillButton);
-        leftSide.add(compactButton);
-        leftSide.add(sortButton);
+        JPanel critBlocks = new UIUtil.FixedYPanel(new FlowLayout(FlowLayout.LEFT));
+        critBlocks.setOpaque(false);
+        critBlocks.add(autoFillUnHittables);
+        critBlocks.add(autoCompact);
+        critBlocks.add(autoSort);
+        critBlocks.add(Box.createHorizontalStrut(20));
+        critBlocks.add(fillButton);
+        critBlocks.add(compactButton);
+        critBlocks.add(sortButton);
 
-        JPanel rightSide = new UIUtil.FixedYPanel(new FlowLayout(FlowLayout.RIGHT));
-        rightSide.setOpaque(false);
-        rightSide.add(resetButton);
+        JPanel unallocatedList = new UIUtil.FixedYPanel(new FlowLayout(FlowLayout.RIGHT));
+        unallocatedList.setOpaque(false);
+        unallocatedList.add(resetButton);
 
         Box buttonPanel = Box.createHorizontalBox();
         buttonPanel.setBackground(UIUtil.alternateTableBGColor());
@@ -106,8 +106,8 @@ public class BMBuildTab extends ITab {
         buttonPanel.setBorder(BorderFactory.createCompoundBorder(
                 new LineBorder(getBackground(), 10),
                 new EmptyBorder(5, 10, 5, 10)));
-        buttonPanel.add(leftSide);
-        buttonPanel.add(rightSide);
+        buttonPanel.add(critBlocks);
+        buttonPanel.add(unallocatedList);
         return buttonPanel;
     }
 
