@@ -9,10 +9,10 @@ VERSION HISTORY:
 + Issue #295, #408: Equipment View
 + PR #1007: Updating Launch4j and GRGit to latest
 + Issue #991 - Text Overlap Issue - Record Sheets
-+ Issue: Fixes C3 issue in StringUtil/UnitUtil as part of MegaMek C3 consolidation.
++ Issue: Fixes C3 issue in StringUtil / UnitUtil as part of MegaMek C3 consolidation.
 + PR #1009: Improved Equipment Sorting
 + PR #1014: SuiteOptions: Naming standardization and finishing initial setup
-+ Issue: Removing references to deleted ammos(Streak MRMs, Hawk SRM, Phoenix LRMs)
++ Issue: Removing references to deleted ammos (Streak MRMs, Hawk SRM, Phoenix LRMs)
 + PR #1015: Improved MML Settings Dialog
 + Issue #984: Fixing No MUL Pilot Data for BA
 + Issue #1010: Improved Unit Print Queue Dialog, with the ability to Print Multiple Cached Units
@@ -46,7 +46,7 @@ VERSION HISTORY:
 0.49.5 (2021-11-06 1800 UTC)
 
 0.49.4 (2021-10-30 1800 UTC)
-+ PR #948: Update infantry record sheet printing for primary weapons doing more than .6 damage per trooper
++ PR #948: Update infantry record sheet printing for primary weapons doing more than 0.6 damage per trooper
 + PR #949: Standardized Suite Version Tracking
 + Issue #935: Can change jump MP and jump jet type on BA that didn't have jump jets without the app freaking out
 
