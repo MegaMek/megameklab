@@ -20,6 +20,7 @@
 package megameklab.com.ui.mek;
 
 import megamek.common.*;
+import megamek.common.verifier.TestEntity;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.util.BAASBMDropTargetCriticalList;
 import megameklab.com.ui.util.CriticalTableModel;
@@ -94,14 +95,16 @@ public class BMCriticalTransferHandler extends TransferHandler {
     }
 
     /** Adds standard (non-splittable/spreadable) equipment to the mek. */
-    private boolean addSingleLocationEquipment(Mech mech, Mounted eq, int slotNumber)
+    private boolean addSingleLocationEquipment(Mech mek, Mounted eq, int slotNumber)
             throws LocationFullException {
         int neededCrits = UnitUtil.getCritsUsed(eq);
-        BMUtils.removeFMU(mech, location, slotNumber, neededCrits);
+        BMUtils.removeFMU(mek, location, slotNumber, neededCrits);
         if ((eq.getType() instanceof WeaponType) && eq.getType().hasFlag(WeaponType.F_VGL)) {
-            return addVGL(mech, eq, slotNumber);
+            boolean success = BMUtils.addVGL(mek, eq, location, slotNumber);
+            doRefresh();
+            return success;
         } else {
-            mech.addEquipment(eq, location, false, slotNumber);
+            mek.addEquipment(eq, location, false, slotNumber);
         }
         changeMountStatus(eq, location);
         return true;
@@ -185,56 +188,6 @@ public class BMCriticalTransferHandler extends TransferHandler {
         return true;
     }
 
-    /** Add a vehicular grenade launcher, asking the user for the facing. */
-    private boolean addVGL(Mech mech, Mounted vgl, int slotNumber) throws LocationFullException {
-        String[] facings;
-        if (location == Mech.LOC_LT) {
-            facings = new String[4];
-            facings[0] = "Front";
-            facings[1] = "Front-Left";
-            facings[2] = "Rear-Left";
-            facings[3] = "Rear";
-        } else if (location == Mech.LOC_RT) {
-            facings = new String[4];
-            facings[0] = "Front";
-            facings[1] = "Front-Right";
-            facings[2] = "Rear-Right";
-            facings[3] = "Rear";
-        } else if (location == Mech.LOC_CT) {
-            facings = new String[2];
-            facings[0] = "Front";
-            facings[1] = "Rear";
-        }  else {
-            JOptionPane.showMessageDialog(null,
-                    "VGL must be placed in torso location!",
-                    "Invalid location",
-                    JOptionPane.WARNING_MESSAGE);
-            return false;
-        }
-        String facing = (String)JOptionPane.showInputDialog(null,
-                "Please choose the facing of the VGL",
-                "Choose Facing", JOptionPane.QUESTION_MESSAGE,
-                null, facings, facings[0]);
-        if (facing == null) {
-            return false;
-        }
-        mech.addEquipment(vgl, location, false, slotNumber);
-        changeMountStatus(vgl, location);
-        if (facing.equals("Front-Left")) {
-            vgl.setFacing(5);
-        } else if (facing.equals("Front-Right")) {
-            vgl.setFacing(1);
-        } else if (facing.equals("Rear-Right")) {
-            vgl.setFacing(2);
-        } else if (facing.equals("Rear-Left")) {
-            vgl.setFacing(4);
-        } else if (facing.equals("Rear")) {
-            vgl.setFacing(3);
-            UnitUtil.changeMountStatus(getUnit(), vgl, location, -1, true);
-        }
-        return true;
-    }
-
     @Override
     public boolean importData(TransferSupport info) {
         if (!info.isDrop() || !(getUnit() instanceof Mech)) {
@@ -263,11 +216,13 @@ public class BMCriticalTransferHandler extends TransferHandler {
                     eq.setOmniPodMounted(UnitUtil.canPodMount(getUnit(), eq));
                 }
 
-                if (!UnitUtil.isValidLocation(getUnit(), eq.getType(), location)) {
+                StringBuffer errors = new StringBuffer();
+                if (!TestEntity.isValidLocation(getUnit(), eq.getType(), location, errors)) {
                     JOptionPane.showMessageDialog(null, eq.getName() +
-                            " can't be placed in " + getUnit().getLocationAbbr(location) + "!",
+                            " can't be placed in " + getUnit().getLocationAbbr(location) + ":\n"
+                            + errors,
                             "Invalid Location", JOptionPane.INFORMATION_MESSAGE);
-                    refresh.refreshAll();
+                    doRefresh();
                     return false;
                 }
 
@@ -295,9 +250,7 @@ public class BMCriticalTransferHandler extends TransferHandler {
             } catch (LocationFullException lfe) {
                 JOptionPane.showMessageDialog(null, lfe.getMessage(),
                         "Location Full", JOptionPane.INFORMATION_MESSAGE);
-                if (refresh != null) {
-                    refresh.refreshAll();
-                }
+                doRefresh();
                 return false;
             } catch (Exception ex) {
                 LogManager.getLogger().error("", ex);
@@ -362,9 +315,7 @@ public class BMCriticalTransferHandler extends TransferHandler {
 
     private void changeMountStatus(Mounted eq, int location, int secondaryLocation) {
         UnitUtil.changeMountStatus(getUnit(), eq, location, secondaryLocation, false);
-        if (refresh != null) {
-            refresh.refreshAll();
-        }
+        doRefresh();
     }
 
     public Entity getUnit() {
@@ -374,5 +325,11 @@ public class BMCriticalTransferHandler extends TransferHandler {
     @Override
     protected void exportDone(JComponent source, Transferable data, int action) {
         parentView.unmarkAllLocations();
+    }
+
+    private void doRefresh() {
+        if (refresh != null) {
+            refresh.refreshAll();
+        }
     }
 }

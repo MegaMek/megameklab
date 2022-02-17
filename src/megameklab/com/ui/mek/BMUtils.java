@@ -22,6 +22,7 @@ import megamek.common.*;
 import megameklab.com.util.UnitUtil;
 import org.apache.logging.log4j.LogManager;
 
+import javax.swing.*;
 import java.util.*;
 
 import static java.util.stream.Collectors.toSet;
@@ -400,4 +401,56 @@ public final class BMUtils {
         }
         return mek.getNumberOfCriticals(location) - startingSlot;
     }
+
+    /** Add a vehicular grenade launcher, asking the user for the facing. */
+    public static boolean addVGL(Mech mek, Mounted vgl, int location, int slotNumber)
+            throws LocationFullException {
+        String[] facings;
+        if (location == Mech.LOC_LT) {
+            facings = new String[4];
+            facings[0] = "Front";
+            facings[1] = "Front-Left";
+            facings[2] = "Rear-Left";
+            facings[3] = "Rear";
+        } else if (location == Mech.LOC_RT) {
+            facings = new String[4];
+            facings[0] = "Front";
+            facings[1] = "Front-Right";
+            facings[2] = "Rear-Right";
+            facings[3] = "Rear";
+        } else if (location == Mech.LOC_CT) {
+            facings = new String[2];
+            facings[0] = "Front";
+            facings[1] = "Rear";
+        }  else {
+            JOptionPane.showMessageDialog(null,
+                    "VGL must be placed in torso location!",
+                    "Invalid location",
+                    JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+        String facing = (String)JOptionPane.showInputDialog(null,
+                "Please choose the facing of the VGL",
+                "Choose Facing", JOptionPane.QUESTION_MESSAGE,
+                null, facings, facings[0]);
+        if (facing == null) {
+            return false;
+        }
+        mek.addEquipment(vgl, location, false, slotNumber);
+        UnitUtil.changeMountStatus(mek, vgl, location, -1, false);
+        if (facing.equals("Front-Left")) {
+            vgl.setFacing(5);
+        } else if (facing.equals("Front-Right")) {
+            vgl.setFacing(1);
+        } else if (facing.equals("Rear-Right")) {
+            vgl.setFacing(2);
+        } else if (facing.equals("Rear-Left")) {
+            vgl.setFacing(4);
+        } else if (facing.equals("Rear")) {
+            vgl.setFacing(3);
+            UnitUtil.changeMountStatus(mek, vgl, location, -1, true);
+        }
+        return true;
+    }
+
 }
