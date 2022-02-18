@@ -14,6 +14,7 @@
  */
 package megameklab.com.ui.util;
 
+import megamek.client.ui.WrapLayout;
 import megamek.client.ui.swing.GUIPreferences;
 import megamek.client.ui.swing.util.UIUtil;
 import megamek.common.AmmoType;

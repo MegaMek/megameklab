@@ -20,7 +20,7 @@ import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestTank;
 import megameklab.com.ui.util.ITab;
 import megameklab.com.ui.util.RefreshListener;
-import megameklab.com.ui.util.WrapLayout;
+import megamek.client.ui.WrapLayout;
 import megameklab.com.util.ImageHelper;
 import megameklab.com.util.UnitUtil;
 
