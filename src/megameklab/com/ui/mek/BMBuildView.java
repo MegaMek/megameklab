@@ -1,28 +1,29 @@
 /*
- * MegaMekLab - Copyright (C) 2008
+ * Copyright (c) 2008, 2022 - The MegaMek Team. All Rights Reserved.
  *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * This file is part of MegaMekLab.
  *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option)
- * any later  version.
+ * MegaMek is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
- * for more details.
+ * MegaMek is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with MegaMek. If not, see <http://www.gnu.org/licenses/>.
  */
 package megameklab.com.ui.mek;
 
 import megamek.common.*;
-import megamek.common.weapons.Weapon;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.util.CriticalTableModel;
 import megameklab.com.ui.util.CriticalTransferHandler;
 import megameklab.com.ui.util.IView;
 import megameklab.com.ui.util.RefreshListener;
-import megameklab.com.util.StringUtils;
 import megameklab.com.util.UnitUtil;
 import org.apache.logging.log4j.LogManager;
 
@@ -34,15 +35,17 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This IView shows all the equipment that's not yet been assigned a location
+ * @author jtighe (torren@users.sourceforge.net)
  * @author beerockxs
+ * @author Simon (Juliez)
  */
 public class BMBuildView extends IView implements ActionListener, MouseListener {
     private final CriticalTableModel equipmentList = new CriticalTableModel(getMech(), CriticalTableModel.BUILDTABLE);
-    private final Vector<Mounted> masterEquipmentList = new Vector<>(10, 1);
     private final JTable equipmentTable = new JTable(equipmentList);
     private int engineHeatSinkCount = 0;
     private final CriticalTransferHandler transferHandler;
@@ -51,12 +54,9 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
     public BMBuildView(EntitySource eSource, RefreshListener refresh, BMCriticalView critView) {
         super(eSource);
         this.refresh = refresh;
-//        equipmentList = new CriticalTableModel(getMech(), CriticalTableModel.BUILDTABLE);
-//        equipmentTable.setModel(equipmentList);
-        equipmentTable.setDragEnabled(true);
         transferHandler = new CriticalTransferHandler(eSource, refresh, critView);
+        equipmentTable.setDragEnabled(true);
         equipmentTable.setTransferHandler(transferHandler);
-//        TableColumn column;
         for (int i = 0; i < equipmentList.getColumnCount(); i++) {
             TableColumn column = equipmentTable.getColumnModel().getColumn(i);
             if (i == 0) {
@@ -69,17 +69,13 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
         equipmentTable.setShowGrid(false);
         equipmentTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         equipmentTable.setDoubleBuffered(true);
-        JScrollPane equipmentScroll = new JScrollPane();
-        equipmentScroll.setViewportView(equipmentTable);
-        equipmentScroll.setMinimumSize(new java.awt.Dimension(300, 400));
-        equipmentScroll.setPreferredSize(new java.awt.Dimension(300, 400));
-        equipmentScroll.setTransferHandler(transferHandler);
-
         equipmentTable.addMouseListener(this);
-
+        JScrollPane equipmentScroll = new JScrollPane(equipmentTable);
+        equipmentScroll.setTransferHandler(transferHandler);
         setLayout(new BorderLayout());
         this.add(equipmentScroll, BorderLayout.CENTER);
-        setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Unallocated Equipment", TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
+        setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(),
+                "Unallocated Equipment", TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
     }
 
     public void addRefreshedListener(RefreshListener l) {
@@ -88,106 +84,31 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
     }
 
     private void loadEquipmentTable() {
+        final List<Mounted> masterEquipmentList = new ArrayList<>();
         equipmentList.removeAllCrits();
-        masterEquipmentList.clear();
         engineHeatSinkCount = UnitUtil.getCriticalFreeHeatSinks(getMech(), getMech().hasCompactHeatSinks());
         for (Mounted mount : getMech().getMisc()) {
             if ((mount.getLocation() == Entity.LOC_NONE) && !isEngineHeatSink(mount) && !(mount.getCriticals() == 0)) {
                 masterEquipmentList.add(mount);
             }
         }
-        for (Mounted mount : getMech().getWeaponList()) {
-            if (mount.getLocation() == Entity.LOC_NONE) {
-                masterEquipmentList.add(mount);
-            }
-        }
-        for (Mounted mount : getMech().getAmmo()) {
-            if ((mount.getLocation() == Entity.LOC_NONE) && !mount.isOneShotAmmo()) {
-                masterEquipmentList.add(mount);
-            }
-        }
+        getMech().getWeaponList().stream()
+                .filter(m -> m.getLocation() == Entity.LOC_NONE)
+                .forEach(masterEquipmentList::add);
 
-        masterEquipmentList.sort(StringUtils.mountedComparator());
+        getMech().getAmmo().stream()
+                .filter(m -> m.getLocation() == Entity.LOC_NONE)
+                .filter(m -> !m.isOneShotAmmo())
+                .forEach(masterEquipmentList::add);
 
-        // Time to Sort
-        // HeatSinks first
-        for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
-            if (UnitUtil.isHeatSink(masterEquipmentList.get(pos))) {
-                equipmentList.addCrit(masterEquipmentList.get(pos));
-                masterEquipmentList.remove(pos);
-                pos--;
-            }
-        }
-
-        // Jump Jets
-        for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
-            if (UnitUtil.isJumpJet(masterEquipmentList.get(pos).getType())) {
-                equipmentList.addCrit(masterEquipmentList.get(pos));
-                masterEquipmentList.remove(pos);
-                pos--;
-            }
-        }
-
-        // weapons and ammo
-        Vector<Mounted> weaponsNAmmoList = new Vector<>(10, 1);
-        for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
-            if ((masterEquipmentList.get(pos).getType() instanceof Weapon) || (masterEquipmentList.get(pos).getType() instanceof AmmoType)) {
-                weaponsNAmmoList.add(masterEquipmentList.get(pos));
-                masterEquipmentList.remove(pos);
-                pos--;
-            }
-        }
-        weaponsNAmmoList.sort(StringUtils.mountedComparator());
-        for (Mounted mount : weaponsNAmmoList) {
-            equipmentList.addCrit(mount);
-        }
-
-        // Equipment
-        for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
-            if ((masterEquipmentList.get(pos).getType() instanceof MiscType) && !UnitUtil.isArmor(masterEquipmentList.get(pos).getType()) && !UnitUtil.isTSM(masterEquipmentList.get(pos).getType())) {
-                equipmentList.addCrit(masterEquipmentList.get(pos));
-                masterEquipmentList.remove(pos);
-                pos--;
-            }
-        }
-
-        // structure
-        for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
-            if (UnitUtil.isStructure(masterEquipmentList.get(pos).getType())) {
-                equipmentList.addCrit(masterEquipmentList.get(pos));
-                masterEquipmentList.remove(pos);
-                pos--;
-            }
-        }
-
-        // armor
-        for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
-            if (UnitUtil.isArmor(masterEquipmentList.get(pos).getType())) {
-                equipmentList.addCrit(masterEquipmentList.get(pos));
-                masterEquipmentList.remove(pos);
-                pos--;
-            }
-        }
-
-        // everything else that is not TSM
-        for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
-            if (!UnitUtil.isTSM(masterEquipmentList.get(pos).getType())) {
-                equipmentList.addCrit(masterEquipmentList.get(pos));
-                masterEquipmentList.remove(pos);
-                pos--;
-            }
-        }
-
-        // TSM
-        for (Mounted mounted : masterEquipmentList) {
-            equipmentList.addCrit(mounted);
-        }
-
+        masterEquipmentList.sort(new BMUtils.MekMountedSorter(getMech()));
+        masterEquipmentList.forEach(equipmentList::addCrit);
     }
 
     private boolean isEngineHeatSink(Mounted mount) {
         // Note: prototype DHS and compact DHS cannot be used as engine HS
-        if ((mount.getLocation() == Entity.LOC_NONE)
+        if ((mount.getType() instanceof MiscType)
+                && (mount.getLocation() == Entity.LOC_NONE)
                 && UnitUtil.isHeatSink(mount)
                 && (engineHeatSinkCount > 0)
                 && !(mount.getType().hasFlag(MiscType.F_COMPACT_HEAT_SINK)
@@ -271,8 +192,7 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
                         rtMenu.add(item);
                     }
 
-                    int[] splitLocations = new int[]
-                        { Mech.LOC_CT, Mech.LOC_RARM, Mech.LOC_RLEG };
+                    int[] splitLocations = new int[] { Mech.LOC_CT, Mech.LOC_RARM, Mech.LOC_RLEG };
 
                     for (int location = 0; location < 3; location++) {
                         if (!UnitUtil.isValidLocation(getMech(), eq.getType(), splitLocations[location])) {

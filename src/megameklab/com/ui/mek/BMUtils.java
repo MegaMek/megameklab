@@ -30,6 +30,8 @@ import static megameklab.com.util.UnitUtil.*;
 
 /**
  * Utility methods that are likely only applicable to Meks
+ *
+ * @author Simon (Juliez)
  */
 public final class BMUtils {
 
@@ -181,7 +183,7 @@ public final class BMUtils {
      */
     public static void sortCritSlots(Mech mek, int location) {
         List<CriticalSlot> presentGear = extricateCritSlots(mek, location);
-        presentGear.sort(new BMUtils.MekLocationSorter(mek));
+        presentGear.sort(new MekCritSlotSorter(mek));
         presentGear = reOrderLinkedEquipment(presentGear);
         refillCritSlots(mek, location, presentGear);
     }
@@ -254,48 +256,65 @@ public final class BMUtils {
     }
 
     /**
-     * A location crit slot sorter using the official sort order (mostly)
+     * A location CriticalSlot sorter using the official sort order (mostly)
      */
-    public static class MekLocationSorter implements Comparator<CriticalSlot> {
+    public static class MekCritSlotSorter implements Comparator<CriticalSlot> {
+
+        private final MekMountedSorter mountedSorter;
         
-        private final Mech mek;
-        
-        public MekLocationSorter(Mech mek) {
-            this.mek = mek;
+        public MekCritSlotSorter(Mech mek) {
+            mountedSorter = new MekMountedSorter(mek);
         }
 
         @Override
         public int compare(CriticalSlot critA, CriticalSlot critB) {
-            int coarseOrderA = getCoarseOrder(mek, critA);
-            int coarseOrderB = getCoarseOrder(mek, critB);
+            return mountedSorter.compare(critA.getMount(), critB.getMount());
+        }
+    }
+
+    /**
+     * A Mounted sorter using the official sort order (mostly)
+     */
+    public static class MekMountedSorter implements Comparator<Mounted> {
+
+        private final Mech mek;
+
+        public MekMountedSorter(Mech mek) {
+            this.mek = mek;
+        }
+
+        @Override
+        public int compare(Mounted mountedA, Mounted mountedB) {
+            int coarseOrderA = getCoarseOrdering(mek, mountedA);
+            int coarseOrderB = getCoarseOrdering(mek, mountedB);
             if (coarseOrderA == 4 && coarseOrderB == 4) {
                 // compare average damage; using Aero damage here
                 double dmgA = 0;
                 double dmgB = 0;
-                if (critA.getMount().getType() instanceof WeaponType) {
-                    dmgA = ((WeaponType) critA.getMount().getType()).getShortAV();
+                if (mountedA.getType() instanceof WeaponType) {
+                    dmgA = ((WeaponType) mountedA.getType()).getShortAV();
                 }
-                if (critB.getMount().getType() instanceof WeaponType) {
-                    dmgB = ((WeaponType) critB.getMount().getType()).getShortAV();
+                if (mountedB.getType() instanceof WeaponType) {
+                    dmgB = ((WeaponType) mountedB.getType()).getShortAV();
                 }
                 if (dmgA != dmgB) {
                     return (dmgA > dmgB) ? -1 : 1;
                 } else {
                     // equal damage, compare crits
-                    int critsA = critA.getMount().getCriticals();
-                    int critsB = critB.getMount().getCriticals();
+                    int critsA = mountedA.getCriticals();
+                    int critsB = mountedB.getCriticals();
                     if (critsA != critsB) {
                         return (critsA > critsB) ? -1 : 1;
                     } else {
                         // equal crits, compare weight
-                        double weightA = critA.getMount().getType().getTonnage(mek);
-                        double weightB = critB.getMount().getType().getTonnage(mek);
+                        double weightA = mountedA.getType().getTonnage(mek);
+                        double weightB = mountedB.getType().getTonnage(mek);
                         return Double.compare(weightB, weightA);
                     }
                 }
             } else if (coarseOrderA == 5 && coarseOrderB == 5) {
-                AmmoType ammoA = (AmmoType) critA.getMount().getType();
-                AmmoType ammoB = (AmmoType) critB.getMount().getType();
+                AmmoType ammoA = (AmmoType) mountedA.getType();
+                AmmoType ammoB = (AmmoType) mountedB.getType();
                 int dmgA = ammoA.getRackSize() * ammoA.getDamagePerShot();
                 int dmgB = ammoB.getRackSize() * ammoB.getDamagePerShot();
                 return Integer.compare(dmgB, dmgA);
@@ -311,40 +330,40 @@ public final class BMUtils {
      * ammo require further internal sorting and linked equipment such as Artemis and PPC
      * Capacitors also require extra treatment to be placed behind their weapon.
      */
-    public static int getCoarseOrder(Mech mek, CriticalSlot critSlot) {
-        if (isPartialWingCrit(critSlot)) {
+    public static int getCoarseOrdering(Mech mek, Mounted mounted) {
+        if (isPartialWing(mounted)) {
             return 1;
-        } else if (UnitUtil.isHeatSink(critSlot.getMount())) {
+        } else if (UnitUtil.isHeatSink(mounted)) {
             return 2;
-        } else if (UnitUtil.isJumpJet(critSlot.getMount())) {
+        } else if (UnitUtil.isJumpJet(mounted)) {
             return 3;
-        } else if (UnitUtil.isMechWeapon(critSlot.getMount().getType(), mek)) {
+        } else if (UnitUtil.isMechWeapon(mounted.getType(), mek)) {
             return 4;
-        } else if (critSlot.getMount().getType() instanceof AmmoType) {
+        } else if (mounted.getType() instanceof AmmoType) {
             return 5;
-        } else if (critSlot.getMount().getType().isHittable()) {
+        } else if (mounted.getType().isHittable()) {
             return 6;
-        } else if (isCASECrit(critSlot)) {
+        } else if (isCASE(mounted)) {
             return 7;
-        } else if (EquipmentType.isStructureType(critSlot.getMount().getType())) {
+        } else if (EquipmentType.isStructureType(mounted.getType())) {
             return 8;
-        } else if (EquipmentType.isArmorType(critSlot.getMount().getType())) {
+        } else if (EquipmentType.isArmorType(mounted.getType())) {
             return 9;
         } else {
             return 10;
         }
     }
 
-    public static boolean isPartialWingCrit(CriticalSlot critSlot) {
-        return (critSlot.getMount().getType() instanceof MiscType)
-                && critSlot.getMount().getType().hasFlag(MiscType.F_PARTIAL_WING);
+    public static boolean isPartialWing(Mounted mounted) {
+        return (mounted.getType() instanceof MiscType)
+                && mounted.getType().hasFlag(MiscType.F_PARTIAL_WING);
     }
 
-    public static boolean isCASECrit(CriticalSlot critSlot) {
-        return (critSlot.getMount().getType() instanceof MiscType)
-                && (critSlot.getMount().getType().hasFlag(MiscType.F_CASE)
-                || critSlot.getMount().getType().hasFlag(MiscType.F_CASEP)
-                || critSlot.getMount().getType().hasFlag(MiscType.F_CASEII));
+    public static boolean isCASE(Mounted mounted) {
+        return (mounted.getType() instanceof MiscType)
+                && (mounted.getType().hasFlag(MiscType.F_CASE)
+                || mounted.getType().hasFlag(MiscType.F_CASEP)
+                || mounted.getType().hasFlag(MiscType.F_CASEII));
     }
 
     /**
