@@ -1,6 +1,6 @@
 VERSION HISTORY:
 ----------------
-0.49.7-SNAPSHOT
+0.49.7 (2021-12-18 0300 UTC)
 + Issue #901: Fixing Manual BV
 + PR #995: Adding ilClan era image to record sheets, correcting era dates
 + PR #993: Logging: Default Global Exception Handler and Standardized Legacy Logging
