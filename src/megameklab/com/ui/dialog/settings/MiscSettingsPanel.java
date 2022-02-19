@@ -35,7 +35,6 @@ import java.util.ResourceBundle;
 public class MiscSettingsPanel extends JPanel {
 
     private final JCheckBox chkSummaryFormatTRO = new JCheckBox();
-    private final JCheckBox chkAllowMulIdInput = new JCheckBox();
 
     MiscSettingsPanel() {
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Dialogs", new EncodeControl());
@@ -44,15 +43,10 @@ public class MiscSettingsPanel extends JPanel {
         chkSummaryFormatTRO.setToolTipText(resourceMap.getString("ConfigurationDialog.chkSummaryFormatTRO.tooltip"));
         chkSummaryFormatTRO.setSelected(CConfig.getBooleanParam(CConfig.MISC_SUMMARY_FORMAT_TRO));
 
-        chkAllowMulIdInput.setText(resourceMap.getString("ConfigurationDialog.chkAllowMulIdInput.text"));
-        chkAllowMulIdInput.setToolTipText(resourceMap.getString("ConfigurationDialog.chkAllowMulIdInput.tooltip"));
-        chkAllowMulIdInput.setSelected(CConfig.getBooleanParam(CConfig.MISC_SHOW_MUL_ID));
-
         JPanel gridPanel = new JPanel(new SpringLayout());
         gridPanel.add(chkSummaryFormatTRO);
-        gridPanel.add(chkAllowMulIdInput);
 
-        SpringUtilities.makeCompactGrid(gridPanel, 2, 1, 0, 0, 15, 10);
+        SpringUtilities.makeCompactGrid(gridPanel, 1, 1, 0, 0, 15, 10);
         gridPanel.setBorder(new EmptyBorder(20, 30, 20, 30));
         setLayout(new FlowLayout(FlowLayout.LEFT));
         add(gridPanel);
@@ -61,7 +55,6 @@ public class MiscSettingsPanel extends JPanel {
     Map<String, String> getMiscSettings() {
         Map<String, String> miscSettings = new HashMap<>();
         miscSettings.put(CConfig.MISC_SUMMARY_FORMAT_TRO, String.valueOf(chkSummaryFormatTRO.isSelected()));
-        miscSettings.put(CConfig.MISC_SHOW_MUL_ID, String.valueOf(chkAllowMulIdInput.isSelected()));
         return miscSettings;
     }
 }

@@ -83,7 +83,6 @@ public class CConfig {
     public static final String TECH_EXTINCT = "techShowExtinct";
     public static final String TECH_UNOFFICAL_NO_YEAR = "techUnofficialNoYear";
 
-    public static final String MISC_SHOW_MUL_ID = "miscShowMulId";
     public static final String MISC_SUMMARY_FORMAT_TRO = "useTROFormat";
     
     public static final String CONFIG_SAVE_LOC = "Save-Location-Default";
@@ -138,7 +137,6 @@ public class CConfig {
         defaults.setProperty(RS_SCALE_FACTOR, "1");
         defaults.setProperty(RS_SCALE_UNITS, RSScale.HEXES.toString());
         defaults.setProperty(NAG_EQUIPMENT_CTRLCLICK, Boolean.toString(true));
-        defaults.setProperty(MISC_SHOW_MUL_ID, Boolean.toString(false));
 
         return defaults;
     }

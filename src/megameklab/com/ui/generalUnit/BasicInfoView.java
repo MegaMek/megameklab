@@ -189,8 +189,6 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         add(txtManualBV, gbc);
         txtManualBV.addFocusListener(this);
 
-        lblMulId.setVisible(CConfig.getBooleanParam(CConfig.MISC_SHOW_MUL_ID));
-        txtMulId.setVisible(CConfig.getBooleanParam(CConfig.MISC_SHOW_MUL_ID));
         txtMulId.setMinimum(-1);
         lblFaction.setVisible(CConfig.getBooleanParam(CConfig.TECH_SHOW_FACTION));
         cbFaction.setVisible(CConfig.getBooleanParam(CConfig.TECH_SHOW_FACTION));
@@ -203,8 +201,6 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         refreshTechBase();
         setChassis(en.getChassis());
         setModel(en.getModel());
-        lblMulId.setVisible(CConfig.getBooleanParam(CConfig.MISC_SHOW_MUL_ID));
-        txtMulId.setVisible(CConfig.getBooleanParam(CConfig.MISC_SHOW_MUL_ID));
         txtMulId.setText(en.getMulId() + "");
         browseMul.setVisible(en.hasMulId());
         setYear(Math.max(en.getYear(), txtYear.getMinimum()));
