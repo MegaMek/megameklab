@@ -646,4 +646,10 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         refresh.refreshPreview();
     }
 
+
+    @Override
+    public void mulIdChanged(int mulId) {
+        getJumpship().setMulId(mulId);
+    }
+
 }

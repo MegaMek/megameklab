@@ -220,6 +220,11 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
     }
 
     @Override
+    public void mulIdChanged(int mulId) {
+        getSmallCraft().setMulId(mulId);
+    }
+
+    @Override
     public void techBaseChanged(boolean clan, boolean mixed) {
         if ((clan != getSmallCraft().isClan()) || (mixed != getSmallCraft().isMixedTech())) {
             getSmallCraft().setMixedTech(mixed);

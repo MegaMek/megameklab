@@ -704,4 +704,10 @@ public class BAStructureTab extends ITab implements ActionListener, BABuildListe
         panArmor.setFromEntity(getBattleArmor());
         panArmor.addListener(this);
     }
+
+
+    @Override
+    public void mulIdChanged(int mulId) {
+        getBattleArmor().setMulId(mulId);
+    }
 }

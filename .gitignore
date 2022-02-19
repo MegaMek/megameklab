@@ -15,6 +15,7 @@
 /.idea/
 /.vscode/
 
+/megameklab/logs/
 /megameklab/.idea/
 /megameklab/.gradle/
 /megameklab/mmconf/*.preferences

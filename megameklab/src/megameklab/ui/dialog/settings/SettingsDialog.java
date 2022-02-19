@@ -33,6 +33,7 @@ public class SettingsDialog extends AbstractMMLButtonDialog {
     private final ColorSettingsPanel colorPreferences = new ColorSettingsPanel();
     private final TechSettingsPanel techSettings = new TechSettingsPanel();
     private final ExportSettingsPanel exportSettingsPanel = new ExportSettingsPanel();
+    private final MiscSettingsPanel miscSettingsPanel = new MiscSettingsPanel();
 
     public SettingsDialog(JFrame frame) {
         super(frame, true, "ConfigurationDialog", "ConfigurationDialog.windowName.text");
@@ -42,6 +43,7 @@ public class SettingsDialog extends AbstractMMLButtonDialog {
     @Override
     protected Container createCenterPane() {
         JTabbedPane panMain = new JTabbedPane();
+        panMain.addTab(resources.getString("ConfigurationDialog.misc.title"), miscSettingsPanel);
         panMain.addTab(resources.getString("ConfigurationDialog.colorCodes.title"), colorPreferences);
         panMain.addTab(resources.getString("ConfigurationDialog.techProgression.title"), techSettings);
         panMain.addTab(resources.getString("ConfigurationDialog.printing.title"), exportSettingsPanel);
@@ -65,6 +67,7 @@ public class SettingsDialog extends AbstractMMLButtonDialog {
         colorPreferences.getAllColors().forEach(CConfig::setParam);
         techSettings.getTechSettings().forEach(CConfig::setParam);
         exportSettingsPanel.getRecordSheetSettings().forEach(CConfig::setParam);
+        miscSettingsPanel.getMiscSettings().forEach(CConfig::setParam);
         CConfig.saveConfig();
     }
 
