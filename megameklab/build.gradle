@@ -106,7 +106,7 @@ jar {
 
 task unitFilesZip () {
     description = 'Creates zip archives of all the unit file folders from the MegaMek repository.'
-    file("${mmDir}/megamek/${unitFiles}").eachDir {subDir ->
+    file("../${mmDir}/megamek/${unitFiles}").eachDir {subDir ->
         dependsOn tasks.create("${name}${subDir.name}", Zip) {
             from subDir
             archiveFileName = "${subDir.name}.zip"
