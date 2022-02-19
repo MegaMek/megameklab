@@ -712,4 +712,9 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
         getProtomech().setInterfaceCockpit(selected);
     }
 
+
+    @Override
+    public void mulIdChanged(int mulId) {
+        getProtomech().setMulId(mulId);
+    }
 }

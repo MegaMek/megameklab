@@ -32,6 +32,7 @@ public interface BuildListener {
     void yearChanged(int year);
     void updateTechLevel();
     void sourceChanged(String source);
+    void mulIdChanged(int mulId);
     void techBaseChanged(boolean clan, boolean mixed);
     void techLevelChanged(SimpleTechLevel techLevel);
 

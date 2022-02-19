@@ -809,4 +809,10 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         }
         panFuel.setFromEntity(getSV());
     }
+
+
+    @Override
+    public void mulIdChanged(int mulId) {
+        getEntity().setMulId(mulId);
+    }
 }

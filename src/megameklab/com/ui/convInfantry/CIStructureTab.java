@@ -470,4 +470,10 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
         // not used by conventional infantry
     }
 
+
+    @Override
+    public void mulIdChanged(int mulId) {
+        getInfantry().setMulId(mulId);
+    }
+
 }

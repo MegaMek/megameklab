@@ -13,38 +13,31 @@
  */
 package megameklab.com.ui.generalUnit;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import megamek.MMConstants;
+import megamek.common.*;
+import megamek.common.util.EncodeControl;
+import megameklab.com.ui.listeners.BuildListener;
+import megameklab.com.ui.util.CustomComboBox;
+import megameklab.com.ui.util.FactionComboBox;
+import megameklab.com.ui.util.IntRangeTextField;
+import megameklab.com.util.CConfig;
+import org.apache.logging.log4j.LogManager;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.net.URI;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-
-import megamek.common.Entity;
-import megamek.common.ITechManager;
-import megamek.common.ITechnology;
-import megamek.common.SimpleTechLevel;
-import megamek.common.TechAdvancement;
-import megamek.common.util.EncodeControl;
-import megameklab.com.ui.util.CustomComboBox;
-import megameklab.com.ui.util.FactionComboBox;
-import megameklab.com.ui.util.IntRangeTextField;
-import megameklab.com.ui.listeners.BuildListener;
-import megameklab.com.util.CConfig;
-
 /**
- * Basic information common to all unit types: name, year, tech level.
+ * A panel for basic information common to all unit types: name, year, tech level and others.
  * 
  * @author Neoancient
- *
  */
 public class BasicInfoView extends BuildView implements ITechManager, ActionListener, FocusListener {
     
@@ -80,6 +73,9 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
     private final CustomComboBox<Integer> cbTechBase = new CustomComboBox<>(i -> String.valueOf(techBaseNames[i]));
     private final JComboBox<SimpleTechLevel> cbTechLevel = new JComboBox<>();
     private final IntRangeTextField txtManualBV = new IntRangeTextField(3);
+    private final JLabel lblMulId = createLabel("", labelSize);
+    private final IntRangeTextField txtMulId = new IntRangeTextField(8);
+    private final JButton browseMul = new JButton("Open MUL in Browser");
     
     private int prevYear = 3145;
 
@@ -89,105 +85,113 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
     }
     
     private void initUI() {
-        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl()); //$NON-NLS-1$
+        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl()); 
         techBaseNames = resourceMap.getString("BasicInfoView.cbTechBase.values").split(",");
-        
+
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        
+
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.WEST;
         gbc.insets = new Insets(0, 0, 1, 2);
-        add(createLabel(resourceMap.getString("BasicInfoView.txtChassis.text"), labelSize), gbc); //$NON-NLS-1$
+        add(createLabel(resourceMap.getString("BasicInfoView.txtChassis.text"), labelSize), gbc);
         gbc.gridx = 1;
-        gbc.gridy = 0;
-        txtChassis.setToolTipText(resourceMap.getString("BasicInfoView.txtChassis.tooltip")); //$NON-NLS-1$
+        txtChassis.setToolTipText(resourceMap.getString("BasicInfoView.txtChassis.tooltip"));
         add(txtChassis, gbc);
         setFieldSize(txtChassis, controlSize);
         txtChassis.addFocusListener(this);
 
         gbc.gridx = 0;
-        gbc.gridy = 1;
-        add(createLabel(resourceMap.getString("BasicInfoView.txtModel.text"), labelSize), gbc); //$NON-NLS-1$
+        gbc.gridy++;
+        add(createLabel(resourceMap.getString("BasicInfoView.txtModel.text"), labelSize), gbc);
         gbc.gridx = 1;
-        gbc.gridy = 1;
-        txtModel.setToolTipText(resourceMap.getString("BasicInfoView.txtModel.tooltip")); //$NON-NLS-1$
+        txtModel.setToolTipText(resourceMap.getString("BasicInfoView.txtModel.tooltip"));
         add(txtModel, gbc);
         setFieldSize(txtModel, controlSize);
         txtModel.addFocusListener(this);
 
         gbc.gridx = 0;
-        gbc.gridy = 2;
-        add(createLabel(resourceMap.getString("BasicInfoView.txtYear.text"), labelSize), gbc); //$NON-NLS-1$
+        gbc.gridy++;
+        lblMulId.setText(resourceMap.getString("BasicInfoView.txtMulId.text"));
+        add(lblMulId, gbc);
         gbc.gridx = 1;
-        gbc.gridy = 2;
+        txtMulId.setToolTipText(resourceMap.getString("BasicInfoView.txtMulId.tooltip"));
+        add(txtMulId, gbc);
+        setFieldSize(txtMulId, controlSize);
+        txtMulId.addFocusListener(this);
+
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.gridwidth = 2;
+        gbc.insets = new Insets(0, 30, 0, 30);
+        browseMul.setToolTipText(resourceMap.getString("BasicInfoView.browseMul.tooltip"));
+        browseMul.addActionListener(e -> openMUL());
+        add(browseMul, gbc);
+        gbc.insets = new Insets(0, 0, 1, 2);
+        gbc.gridwidth = 1;
+
+        gbc.gridx = 0;
+        gbc.gridy++;
+        add(createLabel(resourceMap.getString("BasicInfoView.txtYear.text"), labelSize), gbc);
+        gbc.gridx = 1;
         add(txtYear, gbc);
-        txtYear.setToolTipText(resourceMap.getString("BasicInfoView.txtYear.tooltip")); //$NON-NLS-1$
+        txtYear.setToolTipText(resourceMap.getString("BasicInfoView.txtYear.tooltip"));
         setFieldSize(txtYear, controlSize);
         txtYear.setMaximum(9999);
         txtYear.addFocusListener(this);
 
         gbc.gridx = 0;
-        gbc.gridy = 3;
-        lblFaction.setText(resourceMap.getString("BasicInfoView.cbFaction.text")); //$NON-NLS-1$
+        gbc.gridy++;
+        lblFaction.setText(resourceMap.getString("BasicInfoView.cbFaction.text"));
         add(lblFaction, gbc);
         gbc.gridx = 1;
-        gbc.gridy = 3;
-        cbFaction.setToolTipText(resourceMap.getString("BasicInfoView.cbFaction.tooltip")); //$NON-NLS-1$
+        cbFaction.setToolTipText(resourceMap.getString("BasicInfoView.cbFaction.tooltip"));
         add(cbFaction, gbc);
         setFieldSize(cbFaction, controlSize);
         cbFaction.addActionListener(this);
 
         gbc.gridx = 0;
-        gbc.gridy = 4;
-        add(createLabel(resourceMap.getString("BasicInfoView.txtSource.text"), labelSize), gbc); //$NON-NLS-1$
+        gbc.gridy++;
+        add(createLabel(resourceMap.getString("BasicInfoView.txtSource.text"), labelSize), gbc);
         gbc.gridx = 1;
-        gbc.gridy = 4;
         setFieldSize(txtSource, controlSize);
-        txtSource.setToolTipText(resourceMap.getString("BasicInfoView.txtSource.tooltip")); //$NON-NLS-1$
+        txtSource.setToolTipText(resourceMap.getString("BasicInfoView.txtSource.tooltip"));
         add(txtSource, gbc);
         txtSource.addFocusListener(this);
 
         gbc.gridx = 0;
-        gbc.gridy = 5;
-        add(createLabel(resourceMap.getString("BasicInfoView.cbTechBase.text"), labelSize), gbc); //$NON-NLS-1$
+        gbc.gridy++;
+        add(createLabel(resourceMap.getString("BasicInfoView.cbTechBase.text"), labelSize), gbc);
         gbc.gridx = 1;
-        gbc.gridy = 5;
         setFieldSize(cbTechBase, controlSize);
-        cbTechBase.setToolTipText(resourceMap.getString("BasicInfoView.cbTechBase.tooltip")); //$NON-NLS-1$
+        cbTechBase.setToolTipText(resourceMap.getString("BasicInfoView.cbTechBase.tooltip"));
         add(cbTechBase, gbc);
         cbTechBase.addActionListener(this);
 
         gbc.gridx = 0;
-        gbc.gridy = 6;
-        add(createLabel(resourceMap.getString("BasicInfoView.cbTechLevel.text"), labelSize), gbc); //$NON-NLS-1$
+        gbc.gridy++;
+        add(createLabel(resourceMap.getString("BasicInfoView.cbTechLevel.text"), labelSize), gbc);
         gbc.gridx = 1;
-        gbc.gridy = 6;
         setFieldSize(cbTechLevel, controlSize);
-        cbTechLevel.setToolTipText(resourceMap.getString("BasicInfoView.cbTechLevel.tooltip")); //$NON-NLS-1$
+        cbTechLevel.setToolTipText(resourceMap.getString("BasicInfoView.cbTechLevel.tooltip"));
         add(cbTechLevel, gbc);
         cbTechLevel.addActionListener(this);
         refreshTechBase();
 
         gbc.gridx = 0;
-        gbc.gridy = 7;
-        add(createLabel(resourceMap.getString("BasicInfoView.txtManualBV.text"), labelSize), gbc); //$NON-NLS-1$
+        gbc.gridy++;
+        add(createLabel(resourceMap.getString("BasicInfoView.txtManualBV.text"), labelSize), gbc);
         gbc.gridx = 1;
-        gbc.gridy = 7;
         setFieldSize(txtManualBV, controlSize);
-        txtManualBV.setToolTipText(resourceMap.getString("BasicInfoView.txtManualBV.tooltip")); //$NON-NLS-1$
+        txtManualBV.setToolTipText(resourceMap.getString("BasicInfoView.txtManualBV.tooltip"));
         add(txtManualBV, gbc);
         txtManualBV.addFocusListener(this);
-        
-        if (CConfig.getBooleanParam(CConfig.TECH_SHOW_FACTION)) {
-            lblFaction.setVisible(true);
-            cbFaction.setVisible(true);
-        } else {
-            lblFaction.setVisible(false);
-            cbFaction.setVisible(false);
-        }
+
+        txtMulId.setMinimum(-1);
+        lblFaction.setVisible(CConfig.getBooleanParam(CConfig.TECH_SHOW_FACTION));
+        cbFaction.setVisible(CConfig.getBooleanParam(CConfig.TECH_SHOW_FACTION));
     }
 
     public void setFromEntity(Entity en) {
@@ -197,6 +201,8 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         refreshTechBase();
         setChassis(en.getChassis());
         setModel(en.getModel());
+        txtMulId.setText(en.getMulId() + "");
+        browseMul.setVisible(en.hasMulId());
         setYear(Math.max(en.getYear(), txtYear.getMinimum()));
         setSource(en.getSource());
         cbTechBase.removeActionListener(this);
@@ -443,6 +449,12 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
             listeners.forEach(l -> l.chassisChanged(getChassis()));
         } else if (e.getSource() == txtModel) {
             listeners.forEach(l -> l.modelChanged(getModel()));
+        } else if (e.getSource() == txtMulId) {
+            if (txtMulId.getIntVal() < 1) {
+                txtMulId.setText("-1");
+            }
+            browseMul.setVisible(shouldShowMULButton());
+            listeners.forEach(l -> l.mulIdChanged(txtMulId.getIntVal(-1)));
         } else if (e.getSource() == txtYear) {
             try {
                 int year = Math.max(getTechIntroYear(), baseTA.getIntroductionDate(useClanTechBase()));
@@ -490,6 +502,28 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
     @Override
     public boolean showExtinct() {
         return CConfig.getBooleanParam(CConfig.TECH_EXTINCT);
+    }
+
+    /**
+     * Returns true when the "Open MUL in Browser" Button can be used which is when
+     * the current MUL ID field has a valid MUL (> 0) and the system seems to support
+     * calling a standard browser.
+     */
+    private boolean shouldShowMULButton() {
+        return (txtMulId.getIntVal(-1) > 0) && Desktop.isDesktopSupported()
+                && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE);
+    }
+
+    /** Opens the Master Unit List in the System Standard Explorer, if possible. */
+    private void openMUL() {
+        try {
+            if (shouldShowMULButton()) {
+                Desktop.getDesktop().browse(URI.create(MMConstants.MUL_URL_PREFIX + txtMulId.getIntVal()));
+            }
+        } catch (Exception ex) {
+            LogManager.getLogger().error("", ex);
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
+        }
     }
     
 }

@@ -665,4 +665,10 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         refresh.refreshSummary();
         refresh.refreshStatus();
     }
+
+
+    @Override
+    public void mulIdChanged(int mulId) {
+        getAero().setMulId(mulId);
+    }
 }

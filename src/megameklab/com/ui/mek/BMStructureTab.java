@@ -590,6 +590,11 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
     }
 
     @Override
+    public void mulIdChanged(int mulId) {
+        getMech().setMulId(mulId);
+    }
+
+    @Override
     public void techBaseChanged(boolean clan, boolean mixed) {
         if ((clan != getMech().isClan()) || (mixed != getMech().isMixedTech())) {
             getMech().setMixedTech(mixed);
