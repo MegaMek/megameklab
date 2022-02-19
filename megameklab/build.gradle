@@ -218,7 +218,7 @@ createExe {
     description = 'Create Windows executable that wraps MML jar'
     mainClassName = project.mainClassName
     jar = "${project.tasks.getByName("jar").archiveFile.get()}"
-    icon = "${projectDir}/megameklab/data/images/misc/megameklab.ico"
+    icon = "${projectDir}/data/images/misc/megameklab.ico"
     internalName = 'MegaMekLab'
     classpath = ["lib/${mmJar.archiveFileName.get()}"] + project.sourceSets.main.runtimeClasspath.files
             .findAll { it.name.endsWith(".jar") && !it.name.toLowerCase().startsWith("megamek")}
@@ -326,7 +326,7 @@ task release (type: Copy) {
     group = 'distribution'
     dependsOn buildFromRepo
 
-    from "${repoDir}/megameklab/build/distributions"
+    from "${repoDir}/build/distributions"
     into "${distributionDir}"
 }
 
