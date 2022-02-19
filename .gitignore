@@ -12,9 +12,13 @@
 /.classpath
 /.project
 /properties_local.gradle
-.idea/
-.vscode/
-/mmconf/*.preferences
+/.idea/
+/.vscode/
+
+/megameklab/.idea/
+/megameklab/.gradle/
+/megameklab/mmconf/*.preferences
+/megameklab/build/
 
 # Data Files
 data/fonts/

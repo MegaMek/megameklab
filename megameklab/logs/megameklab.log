@@ -1,0 +1,33 @@
+15:30:39,270 INFO  [megamek.MegaMek] {main}
+megamek.MegaMek.initializeLogging(MegaMek.java:104) - Starting MegaMek v0.49.8-SNAPSHOT
+	Build Date: 2022-02-18T22:41:17.634519200
+	Release Date: 2022-02-18
+	Today: 2022-02-19
+	Origin Project: MegaMekLab
+	Java Vendor: Oracle Corporation
+	Java Version: 11.0.6
+	Platform: Windows 10 10.0 (amd64)
+	System Locale: en_CA
+	Total memory available to MegaMek: 8 GB
+
+15:30:39,272 INFO  [megamek.MegaMek] {main}
+megamek.MegaMek.handleLegacyLogging(MegaMek.java:117) - Redirecting System.out, System.err, and Throwable::printStackTrace output to legacy.log
+
+15:30:39,281 INFO  [megameklab.MegaMekLab] {main}
+megameklab.MegaMekLab.initializeLogging(MegaMekLab.java:64) - Starting MegaMekLab v0.49.8-SNAPSHOT
+	Build Date: 2022-02-18T22:41:17.634519200
+	Release Date: 2022-02-18
+	Today: 2022-02-19
+	Origin Project: MegaMekLab
+	Java Vendor: Oracle Corporation
+	Java Version: 11.0.6
+	Platform: Windows 10 10.0 (amd64)
+	System Locale: en_CA
+	Total memory available to MegaMekLab: 8 GB
+
+15:30:40,220 WARN  [megamek.common.QuirksHandler] {main}
+megamek.common.QuirksHandler.loadQuirksFile(QuirksHandler.java:187) - Could not load quirks from D:\9. Gaming\5. BattleTech (Master)\MegaMek-Develop\mml-directory-rework\MegaMekLab\data\canonUnitQuirks.xml
+
+15:30:40,229 WARN  [megamek.common.QuirksHandler] {main}
+megamek.common.QuirksHandler.loadQuirksFile(QuirksHandler.java:187) - Could not load quirks from D:\9. Gaming\5. BattleTech (Master)\MegaMek-Develop\mml-directory-rework\MegaMekLab\mmconf\unitQuirksOverride.xml
+
