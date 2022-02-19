@@ -1,6 +1,6 @@
 rootProject.name = 'MegaMekLabRoot'
 
-include 'MegaMekLab'
+include 'megameklab'
 
 // A settings_local.gradle file can be used to include local project dependencies as part of a composite
 // build. For example:

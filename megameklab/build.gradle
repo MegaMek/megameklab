@@ -82,9 +82,9 @@ task mmJar (type: Jar, dependsOn: compileMM) {
     from "${mmDir}/megamek/build/resources/main"
     manifest {
         attributes "Main-Class" : mainClassName
-        attributes "Class-Path" : (project.sourceSets.main.runtimeClasspath.files
+        attributes "Class-Path" : project.sourceSets.main.runtimeClasspath.files
                 .findAll { it.name.endsWith(".jar") && !it.name.toLowerCase().startsWith("megamek") }
-                .collect { "${lib}/${it.name}" }.join(' '))
+                .collect { "${lib}/${it.name}" }.join(' ')
         attributes "Build-Date" : LocalDateTime.now()
     }
     ext.jarLocation = "${buildDir}/libs/${archiveFileName.get()}"
@@ -97,7 +97,7 @@ jar {
     archiveFileName = "MegaMekLab.jar"
     manifest {
         attributes "Main-Class" : mainClassName
-        attributes "Class-Path" : "${lib}/${mmJar.archiveFileName.get()} " + (project.sourceSets.main.runtimeClasspath.files
+        attributes "Class-Path" : "${mmJar.archiveFileName.get()} " + (project.sourceSets.main.runtimeClasspath.files
                 .findAll { it.name.endsWith(".jar") && !it.name.toLowerCase().startsWith("megamek") }
                 .collect { "${lib}/${it.name}" }.join(' '))
         attributes "Build-Date" : LocalDateTime.now()
@@ -175,7 +175,7 @@ distributions {
             from (fileStagingDir) {
                 exclude 'history.txt'
             }
-            from (createStartScripts.outputs.files) {
+            from (createStartScripts) {
                 include 'lab*'
                 rename 'lab(.*)', 'mml-startup$1'
             }
@@ -316,7 +316,7 @@ task buildFromRepo (type: GradleBuild) {
     dependsOn cloneMMRepo
 
     buildFile = "${repoDir}/build.gradle"
-    buildName = "mml-repo-mm"
+    buildName = "mml-build-repo"
     dir = "${repoDir}"
     tasks = [ 'assembleDist' ]
 }
