@@ -12,24 +12,27 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-
 package megameklab.com.ui.mek;
 
 import megamek.common.*;
+import megamek.common.annotations.Nullable;
 import megameklab.com.ui.EntitySource;
+import megameklab.com.ui.util.BAASBMDropTargetCriticalList;
 import megameklab.com.ui.util.CritCellUtil;
 import megameklab.com.ui.util.IView;
-import megameklab.com.ui.util.BAASBMDropTargetCriticalList;
 import megameklab.com.ui.util.RefreshListener;
+import megameklab.com.util.UnitUtil;
 
 import javax.swing.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
 /**
  * The Crit Slots view for a Mek (including Quad and Tripod)
  *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * @author jtighe (torren@users.sourceforge.net)
  * @author arlith
  * @author Simon (Juliez)
  */
@@ -49,6 +52,8 @@ public class BMCriticalView extends IView {
     private final Map<Integer, JComponent> mekPanels = Map.of(Mech.LOC_HEAD, hdPanel, Mech.LOC_LARM, laPanel,
             Mech.LOC_RARM, raPanel, Mech.LOC_CT, ctPanel, Mech.LOC_LT, ltPanel, Mech.LOC_RT, rtPanel,
             Mech.LOC_LLEG, llPanel, Mech.LOC_RLEG, rlPanel, Mech.LOC_CLEG, clPanel);
+
+    private final List<BAASBMDropTargetCriticalList<String>> currentCritBlocks = new ArrayList<>();
 
     public BMCriticalView(EntitySource eSource, RefreshListener refresh) {
         super(eSource);
@@ -102,6 +107,7 @@ public class BMCriticalView extends IView {
     }
 
     public void refresh() {
+        currentCritBlocks.clear();
         laPanel.removeAll();
         raPanel.removeAll();
         llPanel.removeAll();
@@ -152,18 +158,35 @@ public class BMCriticalView extends IView {
                 }
 
                 BAASBMDropTargetCriticalList<String> criticalSlotList = new BAASBMDropTargetCriticalList<>(
-                        critNames, eSource, refresh, true);
+                        critNames, eSource, refresh, true, this);
                 criticalSlotList.setVisibleRowCount(critNames.size());
                 criticalSlotList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
                 criticalSlotList.setName(location + "");
                 criticalSlotList.setBorder(BorderFactory.createLineBorder(CritCellUtil.CRITCELL_BORDER_COLOR));
                 if (mekPanels.containsKey(location)) {
                     mekPanels.get(location).add(criticalSlotList);
+                    currentCritBlocks.add(criticalSlotList);
                 }
             }
             
             validate();
         }
+    }
+
+    /**
+     * Darkens all crit blocks that are unavailable to the given equipment, e.g. all but Torsos for CASE.
+     */
+    public void markUnavailableLocations(@Nullable Mounted equipment) {
+        if (equipment != null) {
+            currentCritBlocks.stream()
+                    .filter(b -> !UnitUtil.isValidLocation(getMech(), equipment.getType(), b.getCritLocation()))
+                    .forEach(b -> b.setDarkened(true));
+        }
+    }
+
+    /** Resets all crit blocks to not darkened. */
+    public void unmarkAllLocations() {
+        currentCritBlocks.forEach(b -> b.setDarkened(false));
     }
 
 }

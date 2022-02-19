@@ -1306,7 +1306,7 @@ public class UnitUtil {
         if (location > Entity.LOC_NONE) {
             try {
                 MechFileParser.postLoadInit(unit);
-            } catch (EntityLoadingException ignored) {
+            } catch (Exception ignored) {
                 // Exception thrown for not having equipment to link to yet, which is acceptable here
             }
         }
@@ -1460,44 +1460,13 @@ public class UnitUtil {
 
     public static int[] getHighestContinuousNumberOfCritsArray(Mech unit) {
         int[] critSpaces = new int[] { 0, 0, 0, 0, 0, 0, 0, 0 };
-
         for (int loc = 0; loc <= Mech.LOC_LLEG; loc++) {
-            critSpaces[loc] = UnitUtil.getHighestContinuousNumberOfCrits(unit,
-                    loc);
+            critSpaces[loc] = UnitUtil.getHighestContinuousNumberOfCrits(unit, loc);
         }
-
         return critSpaces;
     }
 
-
-    /**
-     * This method will return the number of contiguous criticals in the given
-     * location, starting at the given critical slot
-     *
-     * @param unit          Unit to check critical slots on
-     * @param location      The location on the unit to check slots on
-     * @param startingSlot  The critical slot to start at
-     * @return
-     */
-    public static int getContiguousNumberOfCrits(Entity unit, int location,
-            int startingSlot){
-
-        int numCritSlots = unit.getNumberOfCriticals(location);
-        int contiguousCrits = 0;
-
-        for (int slot = startingSlot; slot < numCritSlots; slot++) {
-            if (unit.getCritical(location, slot) == null) {
-                contiguousCrits++;
-            } else {
-               break;
-            }
-        }
-        return contiguousCrits;
-    }
-
-
-    public static int getHighestContinuousNumberOfCrits(Entity unit,
-            int location) {
+    public static int getHighestContinuousNumberOfCrits(Entity unit, int location) {
         int highestNumberOfCrits = 0;
         int currentCritCount = 0;
 

@@ -152,7 +152,7 @@ public class ASCriticalView extends IView {
                     critNames.add(CritCellUtil.EMPTY_CRITCELL_TEXT);
                 }
                 BAASBMDropTargetCriticalList<String> criticalSlotList = new BAASBMDropTargetCriticalList<>(
-                        critNames, eSource, refresh, true);
+                        critNames, eSource, refresh, true, this);
                 criticalSlotList.setAlignmentX(JLabel.CENTER_ALIGNMENT);
                 criticalSlotList.setVisibleRowCount(critNames.size());
                 criticalSlotList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);

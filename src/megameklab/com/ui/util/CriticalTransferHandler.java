@@ -17,6 +17,7 @@ package megameklab.com.ui.util;
 
 import megamek.common.*;
 import megameklab.com.ui.EntitySource;
+import megameklab.com.ui.mek.BMCriticalView;
 import megameklab.com.util.UnitUtil;
 import org.apache.logging.log4j.LogManager;
 
@@ -31,10 +32,18 @@ public class CriticalTransferHandler extends TransferHandler {
     private EntitySource eSource;
     private int location;
     private RefreshListener refresh;
+    private final BMCriticalView critView;
+
+    public CriticalTransferHandler(EntitySource eSource, RefreshListener refresh, BMCriticalView critView) {
+        this.eSource = eSource;
+        this.refresh = refresh;
+        this.critView = critView;
+    }
 
     public CriticalTransferHandler(EntitySource eSource, RefreshListener refresh) {
         this.eSource = eSource;
         this.refresh = refresh;
+        this.critView = null;
     }
 
     @Override
@@ -151,12 +160,16 @@ public class CriticalTransferHandler extends TransferHandler {
         if (c instanceof JTable) {
             JTable table = (JTable) c;
             Mounted mount = (Mounted) table.getModel().getValueAt(table.getSelectedRow(), CriticalTableModel.EQUIPMENT);
+            if (critView != null) {
+                critView.markUnavailableLocations(mount);
+            }
             return new StringSelection(Integer.toString(getUnit().getEquipmentNum(mount)));
         } else if (c instanceof ProtomekMountList) {
             Mounted mount = ((ProtomekMountList) c).getMounted();
             if (!UnitUtil.isFixedLocationSpreadEquipment(mount.getType())
-                    && !(mount.getType() instanceof AmmoType))
-            return new StringSelection(Integer.toString(getUnit().getEquipmentNum(mount)));
+                    && !(mount.getType() instanceof AmmoType)) {
+                return new StringSelection(Integer.toString(getUnit().getEquipmentNum(mount)));
+            }
         }
         return null;
     }
@@ -187,4 +200,10 @@ public class CriticalTransferHandler extends TransferHandler {
         return eSource.getEntity();
     }
 
+    @Override
+    protected void exportDone(JComponent source, Transferable data, int action) {
+        if (critView != null) {
+            critView.unmarkAllLocations();
+        }
+    }
 }
