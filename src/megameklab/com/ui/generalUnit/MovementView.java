@@ -250,7 +250,7 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
         }
         txtWalkFinal.setText(String.valueOf(en.getWalkMP()));
 
-        txtRunBase.setText(String.valueOf((int)Math.ceil(((Number) spnWalk.getValue()).intValue() * 1.5)));
+        txtRunBase.setText(String.valueOf((int) Math.ceil(((Number) spnWalk.getValue()).intValue() * 1.5)));
         txtRunFinal.setText(en.getRunMPasString());
 
         int labelIndex = LABEL_INDEX_MEK;
@@ -350,17 +350,31 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
             jumpTooltip.add("-1 (Modular armor)");
         }
         if (en instanceof Mech) {
-            if (((Mech)en).hasMPReducingHardenedArmor()) {
+            if (((Mech) en).hasMPReducingHardenedArmor()) {
                 runTooltip.add("-1 (Hardened armor)");
             }
-            if (((Mech)en).hasArmedMASC()) {
-                runTooltip.add("MASC/Supercharger");
+
+            switch (en.getMPBoosters()) {
+                case MASC_ONLY:
+                    runTooltip.add("MASC");
+                    break;
+                case SUPERCHARGER_ONLY:
+                    runTooltip.add("Supercharger");
+                    break;
+                case MASC_AND_SUPERCHARGER:
+                    runTooltip.add("MASC/Supercharger");
+                    break;
+                case NONE:
+                default:
+                    break;
             }
+
             int medShields = en.getNumberOfShields(MiscType.S_SHIELD_MEDIUM);
             int lgShields = en.getNumberOfShields(MiscType.S_SHIELD_LARGE);
             if (lgShields + medShields > 0) {
                 walkTooltip.add(String.format("-%d (Shield)", lgShields + medShields));
             }
+
             if (lgShields > 0) {
                 jumpTooltip.add("No Jump (Large Shield)");
             } else if (medShields > 0) {
@@ -376,14 +390,14 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
         if (partialWing.isPresent()) {
             int bonus = 2;
             if (en instanceof Mech) {
-                bonus = ((Mech)en).getPartialWingJumpBonus(partialWing.get());
+                bonus = ((Mech) en).getPartialWingJumpBonus(partialWing.get());
             }
             jumpTooltip.add(String.format("+%d (Partial wing)", bonus));
         }
-        txtWalkFinal.setToolTipText(walkTooltip.length() > 0? walkTooltip.toString() : null);
-        txtRunFinal.setToolTipText(runTooltip.length() > 0? runTooltip.toString() : null);
-        txtJumpFinal.setToolTipText(jumpTooltip.length() > 0 && en.getOriginalJumpMP(false) > 0?
-                jumpTooltip.toString() : null);
+        txtWalkFinal.setToolTipText((walkTooltip.length() > 0) ? walkTooltip.toString() : null);
+        txtRunFinal.setToolTipText((runTooltip.length() > 0) ? runTooltip.toString() : null);
+        txtJumpFinal.setToolTipText(((jumpTooltip.length() > 0) && (en.getOriginalJumpMP(false) > 0))
+                ? jumpTooltip.toString() : null);
     }
     
     public int getWalk() {
