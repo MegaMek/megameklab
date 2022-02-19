@@ -16,12 +16,12 @@
 
 package megameklab.com.ui.battleArmor;
 
+import megamek.client.ui.WrapLayout;
 import megamek.common.BattleArmor;
 import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestBattleArmor;
 import megameklab.com.ui.util.ITab;
 import megameklab.com.ui.util.RefreshListener;
-import megameklab.com.ui.util.WrapLayout;
 import megameklab.com.util.ImageHelper;
 import megameklab.com.util.UnitUtil;
 

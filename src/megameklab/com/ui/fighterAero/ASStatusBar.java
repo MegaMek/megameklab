@@ -15,27 +15,22 @@
  */
 package megameklab.com.ui.fighterAero;
 
-import java.awt.*;
-import java.io.File;
-import java.text.DecimalFormat;
-
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.UIManager;
-
+import megamek.client.ui.WrapLayout;
 import megamek.common.AmmoType;
 import megamek.common.Entity;
 import megamek.common.Mounted;
 import megamek.common.WeaponType;
 import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestAero;
-import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.util.ITab;
-import megameklab.com.ui.util.WrapLayout;
-import megameklab.com.util.ImageHelper;
 import megameklab.com.ui.util.RefreshListener;
+import megameklab.com.util.ImageHelper;
 import megameklab.com.util.UnitUtil;
+
+import javax.swing.*;
+import java.awt.*;
+import java.io.File;
+import java.text.DecimalFormat;
 
 public class ASStatusBar extends ITab {
 
