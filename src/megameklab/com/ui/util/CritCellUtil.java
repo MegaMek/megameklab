@@ -31,7 +31,8 @@ public final class CritCellUtil {
     public static final String EMPTY_CRITCELL_TEXT = "- Empty -";
 
     /**
-     * Returns a titled border using the given string as title placed centered atop the
+     * @param title the title for this component
+     * @return a titled border using the given string as title placed centered atop the
      * Component and using a {@link LocationBorder} as a border. To be used for crit
      * location blocks, especially when they have additional information ("Slots: 0/2")
      * above or below the crits to group them visually.
@@ -45,8 +46,9 @@ public final class CritCellUtil {
     }
 
     /**
-     * Returns a titled but otherwise empty border using the given string as title
-     * placed centered atop the Component.
+     * @param title the title for this Component
+     * @return a titled but otherwise empty border using the given string as the title placed
+     * centered atop the Component.
      */
     public static Border locationBorderNoLine(String title) {
         return BorderFactory.createTitledBorder(

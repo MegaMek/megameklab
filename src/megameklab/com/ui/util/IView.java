@@ -70,7 +70,7 @@ public class IView extends JPanel {
     }
 
     /**
-     * Returns true if the entity has the Small Craft type flag (no instanceof check).
+     * @return true if the entity has the Small Craft type flag (no instanceof check).
      * This includes DropShips.
      */
     public boolean isSmallCraft() {
@@ -78,22 +78,24 @@ public class IView extends JPanel {
     }
 
     /**
-     * Returns true if the entity has the JumpShip type flag (no instanceof check).
+     * @return true if the entity has the JumpShip type flag (no instanceof check).
      * This includes WarShips and Space Stations.
      */
     public boolean isJumpShip() {
         return getEntity().hasETypeFlag(Entity.ETYPE_JUMPSHIP);
     }
 
-    /** Returns true if the entity has the WarShip type flag (no instanceof check). */
+    /**
+     * @return true if the entity has the WarShip type flag (no instanceof check).
+     */
     public boolean isWarShip() {
         return getEntity().hasETypeFlag(Entity.ETYPE_WARSHIP);
     }
 
     /**
-     * Returns true if the entity is a VTOL Combat Vehicle. This is an instanceof check and includes
+     * @return true if the entity is a VTOL Combat Vehicle. This is an instanceof check and includes
      * Support VTOLs but not VTOL type Infantry.
-     * */
+     */
     public boolean isVTOL() {
         return getEntity() instanceof VTOL;
     }

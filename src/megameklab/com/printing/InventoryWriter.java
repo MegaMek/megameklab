@@ -842,7 +842,7 @@ public class InventoryWriter {
     }
 
     /**
-     * Convenience method for printing information related to cargo & transport bays.
+     * Convenience method for printing information related to cargo and transport bays.
      *
      * @param fontSize The font size to use for the table rows
      * @param lineHeight The height of each table row

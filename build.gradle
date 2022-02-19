@@ -1,3 +1,5 @@
+import java.time.LocalDateTime
+
 plugins {
     id 'application'
     id 'maven-publish'
@@ -8,7 +10,7 @@ plugins {
 sourceCompatibility = 11
 targetCompatibility = 11
 group = 'org.megamek'
-version = '0.49.7-SNAPSHOT'
+version = '0.49.8-SNAPSHOT'
 
 sourceSets {
     main {
@@ -65,7 +67,7 @@ configurations {
 dependencies {
     implementation "org.megamek:megamek${mmBranchTag}:${version}"
 
-    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:2.3.2'
+    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:3.0.1'
     implementation 'org.apache.logging.log4j:log4j-core:2.17.1'
     implementation 'org.apache.pdfbox:pdfbox:2.0.24'
     implementation ('org.apache.xmlgraphics:batik-bridge:1.14') {
@@ -77,10 +79,12 @@ dependencies {
     implementation 'org.apache.xmlgraphics:batik-dom:1.14'
     implementation 'org.apache.xmlgraphics:batik-rasterizer:1.14'
     implementation 'org.apache.xmlgraphics:batik-svggen:1.14'
-    implementation ('org.apache.xmlgraphics:fop:2.6') {
+    implementation ('org.apache.xmlgraphics:fop:2.7') {
         // We don't need this proprietary module
         exclude group: 'com.sun.media', module: 'jai-codec'
     }
+
+    runtimeOnly 'org.glassfish.jaxb:jaxb-runtime:3.0.2'
 }
 
 mainClassName = 'megameklab.com.MegaMekLab'
@@ -128,9 +132,10 @@ task mmJar (type: Jar, dependsOn: compileMM) {
     from "${mmDir}/megamek/build/classes/java/main"
     from "${mmDir}/megamek/build/resources/main"
     manifest {
-        attributes "Main-Class": mainClassName
-        attributes 'Class-Path' : (project.sourceSets.main.runtimeClasspath.files
+        attributes "Main-Class" : mainClassName
+        attributes "Class-Path" : (project.sourceSets.main.runtimeClasspath.files
             .findAll { it.name.endsWith(".jar") }.collect { "${lib}/${it.name}" }.join(' '))
+        attributes "Build-Date" : LocalDateTime.now()
     }
     inputs.dir "${mmDir}/megamek/build/classes/java/main"
     inputs.dir "${mmDir}/megamek/build/resources/main"
@@ -140,9 +145,10 @@ task mmJar (type: Jar, dependsOn: compileMM) {
 jar {
     archiveFileName = "${rootProject.name}.${archiveExtension.get()}"
     manifest {
-        attributes "Main-Class": mainClassName
-        attributes 'Class-Path' : "${lib}/${mmJar.archiveFileName.get()} " + (project.sourceSets.main.runtimeClasspath.files
+        attributes "Main-Class" : mainClassName
+        attributes "Class-Path" : "${lib}/${mmJar.archiveFileName.get()} " + (project.sourceSets.main.runtimeClasspath.files
             .findAll { it.name.endsWith(".jar") }.collect { "${lib}/${it.name}" }.join(' '))
+        attributes "Build-Date" : LocalDateTime.now()
     }
 }
 
@@ -389,8 +395,7 @@ publishing {
             artifactId = "megameklab${mmBranchTag}"
             from components.java
             artifact sourcesJar
-// Javadoc has errors
-//            artifact javadocJar
+            artifact javadocJar
 
             pom {
                 name = "MegaMekLab"

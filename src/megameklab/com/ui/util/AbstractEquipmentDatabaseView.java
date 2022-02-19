@@ -14,6 +14,7 @@
  */
 package megameklab.com.ui.util;
 
+import megamek.client.ui.WrapLayout;
 import megamek.client.ui.swing.GUIPreferences;
 import megamek.client.ui.swing.util.UIUtil;
 import megamek.common.AmmoType;
@@ -173,7 +174,7 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
     protected abstract void addEquipment(EquipmentType equip, int count);
 
     /**
-     * Returns the filter toggles and buttons to be used in this Equipment Database View.
+     * @return the filter toggles and buttons to be used in this Equipment Database View.
      * By default, this method returns the standard buttons suitable for the entity as defined in
      * EquipmentDatabaseCategory. It may be overridden, e.g. to hide all filter buttons by
      * returning an empty Set. When doing this, shouldShow() should be overridden to prevent
@@ -479,7 +480,9 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
         equipmentSorter.sort();
     }
 
-    /** Returns true when the given equipment is available to be added to the unit. */
+    /**
+     * @return true when the given equipment is available to be added to the unit.
+     */
     private boolean canLegallyBeAddedToUnit(@Nullable EquipmentType equipment) {
         return (equipment != null) && eSource.getTechManager().isLegal(equipment);
     }
@@ -518,7 +521,7 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
     }
 
     /**
-     * Returns true when the given equipment is allowed to be shown by an entry in the Text Filter.
+     * @return true when the given equipment is allowed to be shown by an entry in the Text Filter.
      * This is always true when the Text Filter is empty. Otherwise the name, tech base and rules
      * ref table columns are checked against the text filter.
      */
@@ -536,7 +539,7 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
     }
 
     /**
-     * Returns true when the given equipment is available at all to the unit type of the
+     * @return true when the given equipment is available at all to the unit type of the
      * current unit. For example, filters out Capital weapons for Meks.
      */
     private boolean isEquipmentForEntity(EquipmentType equipment) {
@@ -559,7 +562,7 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
     }
 
     /**
-     * Returns true when the filter toggles allow the given equipment to be shown.
+     * @return true when the filter toggles allow the given equipment to be shown.
      */
     private boolean includedByFilters(EquipmentType equipment) {
         return (showEnergyButton.isSelected() && ENERGY.passesFilter(equipment, getEntity()))
@@ -573,7 +576,7 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
     }
 
     /**
-     * Returns true when the Hide toggles hide the given equipment.
+     * @return true when the Hide toggles hide the given equipment.
      */
     private boolean hiddenEquipment(EquipmentType equipment) {
         return (hideProtoButton.isSelected() && PROTOTYPE.passesFilter(equipment, getEntity()))

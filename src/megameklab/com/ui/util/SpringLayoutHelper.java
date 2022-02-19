@@ -13,8 +13,6 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-
-
 package megameklab.com.ui.util;
 
 import javax.swing.JLabel;
@@ -27,7 +25,7 @@ import javax.swing.SpringLayout;
  * to set up springs. Uses fixed buffers of 4 pixels between
  * components and frame border.
  *
- * @urgru
+ * @author urgru
  */
 public class SpringLayoutHelper {
 
