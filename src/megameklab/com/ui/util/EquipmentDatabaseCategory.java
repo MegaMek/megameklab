@@ -143,12 +143,16 @@ public enum EquipmentDatabaseCategory {
         return filter.apply(eq, en);
     }
 
-    /** Returns a Set of the filters that should act as "Show..." filters. */
+    /**
+     * @return a Set of the filters that should act as "Show..." filters.
+     */
     public static Set<EquipmentDatabaseCategory> getShowFilters() {
         return Collections.unmodifiableSet(showFilters);
     }
 
-    /** Returns a Set of the filters that should act as "Hide..." filters. */
+    /**
+     * @return a Set of the filters that should act as "Hide..." filters.
+     */
     public static Set<EquipmentDatabaseCategory> getHideFilters() {
         return Collections.unmodifiableSet(hideFilters);
     }

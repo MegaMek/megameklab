@@ -331,8 +331,8 @@ public class ArmorAllocationView extends BuildView implements ArmorLocationListe
      * Helper function for patchwork. If used for non-patchwork, it will likely give incorrect values
      * due to rounding up by location.
      * 
-     * @param en
-     * @return   The total weight of all allocated armor.
+     * @param en the current entity
+     * @return The total weight of all allocated armor.
      */
     public double getTotalArmorWeight(Entity en) {
         double weight = 0.0;

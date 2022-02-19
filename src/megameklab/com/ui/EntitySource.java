@@ -73,7 +73,8 @@ public interface EntitySource {
     void createNewUnit(long entitytype, boolean isPrimitive, boolean isIndustrial, Entity oldUnit);
     
     /**
-     * Provides means to determine legality of any piece of tech.
+     * @return the current TechManager, which provides the means to determine legality of any piece
+     * of tech.
      */
     ITechManager getTechManager();
 }

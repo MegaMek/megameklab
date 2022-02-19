@@ -279,7 +279,9 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         txtSource.setText(source);
     }
 
-    /** Returns the entered manual BV value or -1 if it can't be parsed. */
+    /**
+     * @return the entered manual BV value or -1 if it can't be parsed.
+     */
     public int getManualBV() {
         return txtManualBV.getIntVal(-1);
     }

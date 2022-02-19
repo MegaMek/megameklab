@@ -13,7 +13,6 @@
  */
 package megameklab.com.ui.util;
 
-import megamek.MegaMek;
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
 import megameklab.com.ui.EntitySource;
@@ -28,7 +27,9 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import static megameklab.com.ui.util.CritCellUtil.*;
+import static megameklab.com.ui.util.CritCellUtil.CRITCELL_ADD_HEIGHT;
+import static megameklab.com.ui.util.CritCellUtil.CRITCELL_MIN_HEIGHT;
+import static megameklab.com.ui.util.CritCellUtil.CRITCELL_WIDTH;
 
 /**
  * The location crit block for ProtoMeks
@@ -221,7 +222,9 @@ public class ProtomekMountList extends JList<Mounted> {
         }
     }
 
-    /** Returns the selected item, or null if nothing is selected. */
+    /**
+     * @return the selected item, or null if nothing is selected.
+     */
     public @Nullable Mounted getMounted() {
         return getSelectedValue();
     }

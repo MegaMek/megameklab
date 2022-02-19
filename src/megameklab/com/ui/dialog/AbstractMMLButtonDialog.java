@@ -33,23 +33,23 @@ import java.util.ResourceBundle;
  * Inheriting classes must call initialize() in their constructors and override createCenterPane()
  *
  * The resources associated with this dialog need to contain at least the following keys:
- * - "Ok.text" -> text for the ok button
- * - "Ok.toolTipText" -> toolTipText for the ok button
- * - "Cancel.text" -> text for the cancel button
- * - "Cancel.toolTipText" -> toolTipText for the cancel button
+ * - "Ok.text" - text for the ok button
+ * - "Ok.toolTipText" - toolTipText for the ok button
+ * - "Cancel.text" - text for the cancel button
+ * - "Cancel.toolTipText" - toolTipText for the cancel button
  */
 public abstract class AbstractMMLButtonDialog extends AbstractButtonDialog {
     //region Constructors
     /**
-     * This creates a modal AbstractMHQButtonDialog using the default MHQ resource bundle. This is
-     * the normal constructor to use for an AbstractMHQButtonDialog.
+     * This creates a modal AbstractMMLButtonDialog using the default MML resource bundle. This is
+     * the normal constructor to use for an AbstractMMLButtonDialog.
      */
     protected AbstractMMLButtonDialog(final JFrame frame, final String name, final String title) {
         this(frame, true, name, title);
     }
 
     /**
-     * This creates an AbstractMHQButtonDialog using the default MHQ resource bundle. It allows one
+     * This creates an AbstractMMLButtonDialog using the default MML resource bundle. It allows one
      * to create non-modal button dialogs, which is not recommended by default.
      */
     protected AbstractMMLButtonDialog(final JFrame frame, final boolean modal, final String name,
@@ -59,7 +59,7 @@ public abstract class AbstractMMLButtonDialog extends AbstractButtonDialog {
     }
 
     /**
-     * This creates an AbstractMHQButtonDialog using the specified resource bundle. This is not
+     * This creates an AbstractMMLButtonDialog using the specified resource bundle. This is not
      * recommended by default.
      */
     protected AbstractMMLButtonDialog(final JFrame frame, final boolean modal, final ResourceBundle resources,
