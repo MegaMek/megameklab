@@ -57,14 +57,14 @@ public class BAASCriticalTransferHandler extends TransferHandler {
         Mounted mounted = null;
         try {
             mounted = getUnit().getEquipment(Integer.parseInt((String) data.getTransferData(DataFlavor.stringFlavor)));
-        } catch (NumberFormatException | UnsupportedFlavorException | IOException e) {
+        } catch (Exception e) {
             LogManager.getLogger().error("", e);
         }
         if ((source instanceof BAASBMDropTargetCriticalList)
                 && (mounted.getLocation() != Entity.LOC_NONE)) {
             BAASBMDropTargetCriticalList<?> list = (BAASBMDropTargetCriticalList<?>)source;
             int loc;
-            if (getUnit() instanceof BattleArmor){
+            if (getUnit() instanceof BattleArmor) {
                 String[] split = list.getName().split(":");
                 loc = Integer.parseInt(split[0]);
             } else {
@@ -89,13 +89,13 @@ public class BAASCriticalTransferHandler extends TransferHandler {
                     startSlot = slot;
                 }
             }
-            if (!(getUnit() instanceof BattleArmor)){
-                for (int i = startSlot; i < (startSlot+UnitUtil.getCritsUsed(mounted)); i++) {
+            if (!(getUnit() instanceof BattleArmor)) {
+                for (int i = startSlot; i < (startSlot + UnitUtil.getCritsUsed(mounted)); i++) {
                     getUnit().setCritical(loc, i, null);
                 }
             }
             Mounted linkedBy = mounted.getLinkedBy();
-            if (linkedBy != null && !(getUnit() instanceof BattleArmor)) {
+            if ((linkedBy != null) && !(getUnit() instanceof BattleArmor)) {
                 UnitUtil.removeCriticals(getUnit(), linkedBy);
                 try {
                     UnitUtil.addMounted(getUnit(), linkedBy, mounted.getLocation(), linkedBy.isRearMounted());
@@ -110,9 +110,9 @@ public class BAASCriticalTransferHandler extends TransferHandler {
     }
 
     private boolean addEquipmentBA(BattleArmor ba, Mounted newMount, int trooper) {
-        if (TestBattleArmor.isMountLegal(ba, newMount, location, trooper)){
+        if (TestBattleArmor.isMountLegal(ba, newMount, location, trooper)) {
             newMount.setBaMountLoc(location);
-            if (newMount.getLocation() == BattleArmor.LOC_SQUAD){
+            if (newMount.getLocation() == BattleArmor.LOC_SQUAD) {
                 changeMountStatus(newMount, newMount.getLocation());
             } else {
                 changeMountStatus(newMount, trooper);
@@ -125,15 +125,15 @@ public class BAASCriticalTransferHandler extends TransferHandler {
 
     private boolean addEquipmentAero(Aero aero, Mounted eq)
             throws LocationFullException{
-        if (eq.getType() instanceof WeaponType){
+        if (eq.getType() instanceof WeaponType) {
             int[] availSpace = TestAero.availableSpace(aero);
             int[] weapCount = new int[aero.locations() - 1];
-            for (Mounted m : aero.getWeaponList()){
-                if (m.getLocation() != Entity.LOC_NONE){
+            for (Mounted m : aero.getWeaponList()) {
+                if (m.getLocation() != Entity.LOC_NONE) {
                     weapCount[m.getLocation()]++;
                 }
             }
-            if ((weapCount[location] +1) > availSpace[location]){
+            if ((weapCount[location] + 1) > availSpace[location]) {
                 throw new LocationFullException(eq.getName() +
                         " does not fit in " + getUnit().getLocationAbbr(location) +
                         " on " + getUnit().getDisplayName());
@@ -180,8 +180,8 @@ public class BAASCriticalTransferHandler extends TransferHandler {
                     }
                 } else {
                     // If this equipment is already mounted, clear the criticals it's mounted in
-                    if (eq.getLocation() != Entity.LOC_NONE 
-                            || eq.getSecondLocation() != Entity.LOC_NONE) {
+                    if ((eq.getLocation() != Entity.LOC_NONE)
+                            || (eq.getSecondLocation() != Entity.LOC_NONE)) {
                         UnitUtil.removeCriticals(getUnit(), eq);
                         changeMountStatus(eq, Entity.LOC_NONE);
                     } else {
@@ -199,7 +199,7 @@ public class BAASCriticalTransferHandler extends TransferHandler {
                 }
                 
                 if (getUnit() instanceof Aero) {
-                    return addEquipmentAero((Aero)getUnit(), eq);
+                    return addEquipmentAero((Aero) getUnit(), eq);
                 } else if (getUnit() instanceof BattleArmor) {
                     return addEquipmentBA((BattleArmor) getUnit(), eq, trooper);
                 }
@@ -230,7 +230,7 @@ public class BAASCriticalTransferHandler extends TransferHandler {
         try {
             int index = Integer.parseInt((String) info.getTransferable().getTransferData(DataFlavor.stringFlavor));
             mounted = getUnit().getEquipment(index);
-        } catch (NumberFormatException | UnsupportedFlavorException | IOException e) {
+        } catch (Exception e) {
             LogManager.getLogger().error("", e);
         }
         // not actually dragged a Mounted? not transferable

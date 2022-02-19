@@ -275,7 +275,7 @@ public class BMCriticalTransferHandler extends TransferHandler {
         try {
             int index = Integer.parseInt((String) info.getTransferable().getTransferData(DataFlavor.stringFlavor));
             mounted = getUnit().getEquipment(index);
-        } catch (NumberFormatException | UnsupportedFlavorException | IOException e) {
+        } catch (Exception e) {
             LogManager.getLogger().error("", e);
         }
         // not actually dragged a Mounted? not transferable

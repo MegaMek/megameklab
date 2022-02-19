@@ -701,7 +701,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
         super.paintComponent(g);
         if (darkened) {
             Graphics2D g2 = (Graphics2D) g.create();
-            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, .5f));
+            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
             g2.setColor(Color.BLACK);
             g2.fillRect(0, 0, getWidth(), getHeight());
             g2.dispose();

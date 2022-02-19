@@ -58,7 +58,7 @@ public final class BMUtils {
      * former location. For this, use {@link UnitUtil#removeCriticals(Entity, Mounted)}
      */
     public static void clearMountedLocationAndLinked(Mounted equipment) {
-        if ((Entity.LOC_NONE != equipment.getLocation() && !equipment.isOneShot())) {
+        if ((Entity.LOC_NONE != equipment.getLocation()) && !equipment.isOneShot()) {
             if (equipment.getLinked() != null) {
                 equipment.getLinked().setLinkedBy(null);
                 equipment.setLinked(null);
@@ -287,7 +287,7 @@ public final class BMUtils {
         public int compare(Mounted mountedA, Mounted mountedB) {
             int coarseOrderA = getCoarseOrdering(mek, mountedA);
             int coarseOrderB = getCoarseOrdering(mek, mountedB);
-            if (coarseOrderA == 4 && coarseOrderB == 4) {
+            if ((coarseOrderA == 4) && (coarseOrderB == 4)) {
                 // compare average damage; using Aero damage here
                 double dmgA = 0;
                 double dmgB = 0;
@@ -312,7 +312,7 @@ public final class BMUtils {
                         return Double.compare(weightB, weightA);
                     }
                 }
-            } else if (coarseOrderA == 5 && coarseOrderB == 5) {
+            } else if ((coarseOrderA == 5) && (coarseOrderB == 5)) {
                 AmmoType ammoA = (AmmoType) mountedA.getType();
                 AmmoType ammoB = (AmmoType) mountedB.getType();
                 int dmgA = ammoA.getRackSize() * ammoA.getDamagePerShot();
