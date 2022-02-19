@@ -1,3 +1,5 @@
+import java.time.LocalDateTime
+
 plugins {
     id 'application'
     id 'maven-publish'
@@ -128,9 +130,10 @@ task mmJar (type: Jar, dependsOn: compileMM) {
     from "${mmDir}/megamek/build/classes/java/main"
     from "${mmDir}/megamek/build/resources/main"
     manifest {
-        attributes "Main-Class": mainClassName
-        attributes 'Class-Path' : (project.sourceSets.main.runtimeClasspath.files
+        attributes "Main-Class" : mainClassName
+        attributes "Class-Path" : (project.sourceSets.main.runtimeClasspath.files
             .findAll { it.name.endsWith(".jar") }.collect { "${lib}/${it.name}" }.join(' '))
+        attributes "Build-Date" : LocalDateTime.now()
     }
     inputs.dir "${mmDir}/megamek/build/classes/java/main"
     inputs.dir "${mmDir}/megamek/build/resources/main"
@@ -140,9 +143,10 @@ task mmJar (type: Jar, dependsOn: compileMM) {
 jar {
     archiveFileName = "${rootProject.name}.${archiveExtension.get()}"
     manifest {
-        attributes "Main-Class": mainClassName
-        attributes 'Class-Path' : "${lib}/${mmJar.archiveFileName.get()} " + (project.sourceSets.main.runtimeClasspath.files
+        attributes "Main-Class" : mainClassName
+        attributes "Class-Path" : "${lib}/${mmJar.archiveFileName.get()} " + (project.sourceSets.main.runtimeClasspath.files
             .findAll { it.name.endsWith(".jar") }.collect { "${lib}/${it.name}" }.join(' '))
+        attributes "Build-Date" : LocalDateTime.now()
     }
 }
 
