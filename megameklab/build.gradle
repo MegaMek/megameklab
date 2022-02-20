@@ -104,23 +104,8 @@ jar {
     }
 }
 
-task unitFilesZip () {
-    description = 'Creates zip archives of all the unit file folders from the MegaMek repository.'
-    file("${mmCompositeDirectory}/megamek/${unitFiles}").eachDir {subDir ->
-        dependsOn tasks.create("${name}${subDir.name}", Zip) {
-            from subDir
-            archiveFileName = "${subDir.name}.zip"
-            destinationDirectory = file("${fileStagingDir}/${unitFiles}")
-        }
-    }
-    inputs.dir "${mmDir}/${unitFiles}"
-    outputs.dir "${fileStagingDir}/${unitFiles}"
-}
-
 task stageFiles(type: Copy) {
     description = 'Stages files that are to be copied into the distribution.'
-
-    dependsOn unitFilesZip
 
     from projectDir
     include "${conf}/**"

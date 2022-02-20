@@ -39,7 +39,6 @@ ext {
     mmBranchTag = mmBranch.equals('master') ? '' : '-' + mmBranch
 
     mmDir = "${rootDir}/../megamek"
-    mmCompositeDirectory = "${rootDir}/../megamek"
 }
 
 // A properties_local.gradle file can be used to override any of the above options. For instance,
