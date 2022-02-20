@@ -21,7 +21,7 @@ package megameklab.ui.listeners;
 import megamek.common.Engine;
 import megamek.common.EquipmentType;
 import megamek.common.verifier.TestSupportVehicle;
-import megameklab.ui.supportVeh.SVChassisView;
+import megameklab.ui.supportVehicle.SVChassisView;
 
 /**
  * Listener for views used by support vehicle construction.

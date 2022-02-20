@@ -19,12 +19,12 @@ import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.largeAero.DSMainUI;
 import megameklab.ui.largeAero.WSMainUI;
 import megameklab.ui.battleArmor.BAMainUI;
-import megameklab.ui.combatVeh.CVMainUI;
-import megameklab.ui.convInfantry.CIMainUI;
+import megameklab.ui.combatVehicle.CVMainUI;
+import megameklab.ui.infantry.CIMainUI;
 import megameklab.ui.fighterAero.ASMainUI;
 import megameklab.ui.mek.BMMainUI;
 import megameklab.ui.protoMek.PMMainUI;
-import megameklab.ui.supportVeh.SVMainUI;
+import megameklab.ui.supportVehicle.SVMainUI;
 import megameklab.util.UnitUtil;
 import org.apache.logging.log4j.LogManager;
 
