@@ -71,7 +71,7 @@ public class MegaMekLab {
     public static String getUnderlyingInformation(final String originProject) {
         return MegaMek.getUnderlyingInformation(originProject, MMLConstants.PROJECT_NAME);
     }
-    
+
     private static void startup() {
         EquipmentType.initializeTypes();
         MechSummaryCache.getInstance();
@@ -95,16 +95,16 @@ public class MegaMekLab {
         StartupGUI sud = new StartupGUI();
         sud.setVisible(true);
     }
-    
+
     private static void setLookAndFeel() {
         try {
             String plaf = CConfig.getParam(CConfig.CONFIG_PLAF, UIManager.getSystemLookAndFeelClassName());
             UIManager.setLookAndFeel(plaf);
-        } catch (Exception e) {
-            LogManager.getLogger().error("", e);
+        } catch (Exception ex) {
+            LogManager.getLogger().error("", ex);
        }
     }
-    
+
     /**
      * Helper function that calculates the maximum screen width available locally.
      * @return Maximum screen width.

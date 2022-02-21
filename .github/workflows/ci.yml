@@ -84,7 +84,7 @@ jobs:
 
     # Make sure we can execute the Gradle wrapper
     - name: Grant execute permission for gradlew (*nix or MacOS)
-      working-directory: megameklab  
+      working-directory: megameklab
       run: chmod +x gradlew
       if: runner.os != 'Windows'
 
@@ -113,7 +113,7 @@ jobs:
 
     # Upload our Code Coverage Reports to CodeCov.io
     - name: CodeCov.io Coverage Report
-      uses: codecov/codecov-action@v1
+      uses: codecov/codecov-action@v2
       with:
         directory: ./megameklab/megameklab/build/reports/jacoco/test
         fail_ci_if_error: false
@@ -140,7 +140,7 @@ jobs:
         path: ./megameklab/megameklab/build/distributions/*.zip
 
     # Put the non-Windows release in an artifact
-    - name: Upload Nix/Mac Releases
+    - name: Upload Nix/Mac Release
       uses: actions/upload-artifact@v2.2.4
       with:
         name: release-nix-mac-${{ matrix.java-distribution }}-jdk${{ matrix.java-version }}

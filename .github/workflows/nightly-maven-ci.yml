@@ -39,7 +39,7 @@ jobs:
 
     # Composite Build is NOT setup for this job.
 
-    # Checkout the latest Megamek source and put it in: ./megamek (needed for data directory)
+    # Checkout the latest MegaMek source and put it in: ./megamek
     - name: Checkout MegaMek
       uses: actions/checkout@v2
       with:

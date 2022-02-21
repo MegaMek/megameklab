@@ -4,6 +4,7 @@ plugins {
     id 'application'
     id 'maven-publish'
     id 'edu.sc.seis.launch4j' version '2.5.1'
+    id 'jacoco'
 }
 
 sourceSets {
@@ -13,6 +14,14 @@ sourceSets {
         }
         resources {
             srcDirs = ['resources']
+        }
+    }
+    test {
+        java {
+            srcDirs = ['unittests']
+        }
+        resources {
+            srcDirs = ['testresources']
         }
     }
 }
@@ -48,18 +57,18 @@ dependencies {
 mainClassName = 'megameklab.MegaMekLab'
 
 ext {
-    jvmOptions = ['-Xmx1024m']
-    userdata='userdata'
+    mmlJvmOptions = ['-Xmx1024m']
     data = 'data'
-    conf = 'mmconf'
-    log = 'logs'
+    unitFiles = "data/mechfiles"
     docs = 'docs'
     lib = 'lib'
-    unitFiles = "data/mechfiles"
+    log = 'logs'
+    mmconf = 'mmconf'
+    userdata = 'userdata'
     distributionDir = "${buildDir}/distributions"
     fileStagingDir = "${buildDir}/files"
     mmRepoDir = "${buildDir}/repo/megamek"
-    repoDir = "${buildDir}/repo/megameklab"
+    mmlRepoDir = "${buildDir}/repo/megameklab"
     mavenPublishDir = "${buildDir}/mavenrepo"
     scriptsDir = "${projectDir}/scripts"
     scriptTemplate = "${scriptsDir}/startScriptTemplate.txt"
@@ -81,7 +90,7 @@ task mmJar (type: Jar, dependsOn: compileMM) {
     from "${mmDir}/megamek/build/classes/java/main"
     from "${mmDir}/megamek/build/resources/main"
     manifest {
-        attributes "Main-Class" : mainClassName
+        attributes "Main-Class" : 'megamek.MegaMek'
         attributes "Class-Path" : project.sourceSets.main.runtimeClasspath.files
                 .findAll { it.name.endsWith(".jar") && !it.name.toLowerCase().startsWith("megamek") }
                 .collect { "${lib}/${it.name}" }.join(' ')
@@ -108,7 +117,7 @@ task stageFiles(type: Copy) {
     description = 'Stages files that are to be copied into the distribution.'
 
     from projectDir
-    include "${conf}/**"
+    include "${mmconf}/**"
     include "${data}/**"
     include "${docs}/**"
     include 'license.txt'
@@ -116,7 +125,7 @@ task stageFiles(type: Copy) {
 
     into fileStagingDir
 
-    inputs.dir "${conf}"
+    inputs.dir "${mmconf}"
     inputs.dir "${data}"
     inputs.dir "${docs}"
     inputs.file 'license.txt'
@@ -129,12 +138,12 @@ task stageFiles(type: Copy) {
 
 task createStartScripts (type: CreateStartScripts) {
     description = 'Create shell script for generic distribution.'
-    applicationName = 'lab'
+    applicationName = 'mml'
     mainClassName = project.mainClassName
     outputDir = startScripts.outputDir
     classpath = jar.outputs.files + files(project.sourceSets.main.runtimeClasspath.files)
             .filter { it.name.endsWith(".jar") }
-    defaultJvmOpts = project.ext.jvmOptions
+    defaultJvmOpts = project.ext.mmlJvmOptions
     // The default template assumes the start script is in a subdirectory and always
     // sets APP_HOME to the parent directory of the one containing the script.
     // So we provide a modified template.
@@ -152,7 +161,7 @@ task createStartScripts (type: CreateStartScripts) {
 distributions {
     // Creates tasks which package distribution with MM jar and startup script in root directory
     unix {
-        distributionBaseName = "megameklab"
+        distributionBaseName = 'megameklab'
         contents {
             from ("${mmDir}/megamek/mmconf/log4j2.xml") {
                 exclude 'log4j2.xml'
@@ -161,8 +170,8 @@ distributions {
                 exclude 'history.txt'
             }
             from (createStartScripts) {
-                include 'lab*'
-                rename 'lab(.*)', 'mml-startup$1'
+                include 'mml*'
+                rename 'mml(.*)', 'mml-startup$1'
             }
             from (mmJar) {
                 into "${lib}"
@@ -200,7 +209,7 @@ distributions {
 }
 
 createExe {
-    description = 'Create Windows executable that wraps MML jar'
+    description = 'Create Windows executable that wraps MegaMekLab jar'
     mainClassName = project.mainClassName
     jar = "${project.tasks.getByName("jar").archiveFile.get()}"
     icon = "${projectDir}/data/images/misc/megameklab.ico"
@@ -214,7 +223,7 @@ createExe {
     doLast {
         new File("${buildDir}/${outputDir}/${inifile}").text = """# Launch4j runtime config
 # you can add arguments here that will be processed by the JVM at runtime
-${project.ext.jvmOptions.join('\n')}
+${project.ext.mmlJvmOptions.join('\n')}
 """
     }
 }
@@ -235,19 +244,12 @@ unixDistTar {
 
 // The repository can only be cloned into an empty directory so we need to delete anything left over
 // from a previous build
-task deleteRepoDir (type: Delete) {
-    delete = "${repoDir}"
-}
-
 task deleteMMRepoDir (type: Delete) {
     delete = "${mmRepoDir}"
 }
 
-task cloneRepo (type: Exec, dependsOn: deleteRepoDir) {
-    description = 'Clones the repository to ensure we are working with a clean directory tree'
-    group = 'distribution'
-    commandLine "git"
-    args "clone", "--branch", mmlBranch, "--single-branch", mmlGitRoot, "${repoDir}"
+task deleteMMLRepoDir (type: Delete) {
+    delete = "${mmlRepoDir}"
 }
 
 task cloneMMRepo (type: Exec, dependsOn: deleteMMRepoDir) {
@@ -255,6 +257,13 @@ task cloneMMRepo (type: Exec, dependsOn: deleteMMRepoDir) {
     group = 'distribution'
     commandLine "git"
     args "clone", "--branch", mmBranch, "--single-branch", mmGitRoot, "${mmRepoDir}"
+}
+
+task cloneMMLRepo (type: Exec, dependsOn: deleteMMLRepoDir) {
+    description = 'Clones the MegaMekLab repository to ensure we are working with a clean directory tree'
+    group = 'distribution'
+    commandLine "git"
+    args "clone", "--branch", mmlBranch, "--single-branch", mmlGitRoot, "${mmlRepoDir}"
 }
 
 task sourceZip (type: Zip) {
@@ -297,12 +306,12 @@ task assembleDist(overwrite: true) {
 task buildFromRepo (type: GradleBuild) {
     description = 'Assembles the distribution packages in the clean repository copy'
     group = 'distribution'
-    dependsOn cloneRepo
     dependsOn cloneMMRepo
+    dependsOn cloneMMLRepo
 
-    buildFile = "${repoDir}/build.gradle"
+    buildFile = "${mmlRepoDir}/build.gradle"
     buildName = "mml-build-repo"
-    dir = "${repoDir}"
+    dir = "${mmlRepoDir}"
     tasks = [ 'assembleDist' ]
 }
 
@@ -311,7 +320,7 @@ task release (type: Copy) {
     group = 'distribution'
     dependsOn buildFromRepo
 
-    from "${repoDir}/build/distributions"
+    from "${mmlRepoDir}/build/distributions"
     into "${distributionDir}"
 }
 
@@ -361,3 +370,17 @@ task cleanPublishingDir (type: Delete) {
 }
 
 publishPublishMMLibraryPublicationToMavenRepository.dependsOn cleanPublishingDir
+
+test {
+    // report is always generated after tests run
+    finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+    // tests are required to run before generating the report
+    dependsOn test
+    reports {
+        xml.enabled true
+        html.enabled true
+    }
+}

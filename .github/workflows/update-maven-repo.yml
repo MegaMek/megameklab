@@ -5,8 +5,8 @@ on:
   push:
     branches: [ master ]
     paths:
-    - 'src/**'
-    - 'resources/**'
+    - 'megameklab/src/**'
+    - 'megameklab/resources/**'
 
 jobs:
   update_maven_repo:
@@ -54,7 +54,7 @@ jobs:
     # Create the actual maven repo bits with Gradle
     - name: Publish Maven Repo with Gradle
       working-directory: megameklab
-      run: ./gradlew publishPublishMMLibraryPublicationToMavenRepository --stacktrace
+      run: ./gradlew publishPublishMMLibraryPublicationToMavenRepository
     
     # Get the current Maven repo contents
     - name: Checkout Maven Repo
@@ -67,9 +67,9 @@ jobs:
     # Create an update
     - name: Copy Maven Outputs to Repo
       if: github.repository == 'MegaMek/megameklab'
-      working-directory: megameklab/build/mavenrepo/
+      working-directory: megameklab/megameklab/build/mavenrepo/
       run: |
-        cp -r . ../../../mavenrepo/
+        cp -r . ../../../../mavenrepo/
         
     # In case we run into an issue, use git status to help us understand what happened.
     - name: Inspect git status output
