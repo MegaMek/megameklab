@@ -59,7 +59,7 @@ jobs:
       working-directory: megameklab
       run: chmod +x gradlew
       if: runner.os != 'Windows'
-      
+
     # Include --stacktrace to make some build failures easier to figure out.
     - name: Build with Gradle
       working-directory: megameklab
