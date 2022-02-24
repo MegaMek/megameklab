@@ -26,11 +26,6 @@ sourceSets {
     }
 }
 
-configurations {
-    jarbundler
-    all*.exclude group: 'xml-apis', module: 'xml-apis'
-}
-
 dependencies {
     implementation "org.megamek:megamek${mmBranchTag}:${version}"
 
@@ -342,7 +337,7 @@ publishing {
             artifactId = "megameklab${mmlBranchTag}"
             from components.java
             artifact sourcesJar
-            artifact javadocJar
+//            artifact javadocJar
 
             pom {
                 name = "MegaMekLab"
