@@ -15,13 +15,12 @@
 /.idea/
 /.vscode/
 
-/megameklab/logs/
-/megameklab/.idea/
 /megameklab/.gradle/
-/megameklab/mmconf/*.preferences
+/megameklab/.idea/
+/megameklab/.vscode/
 /megameklab/build/
-
-# Data Files
-data/fonts/
-data/mechfiles/
-!data/mechfiles/UnitVerifierOptions.xml
+/megameklab/data/fonts/
+/megameklab/data/mechfiles/units.cache
+/megameklab/logs/
+/megameklab/mmconf/*.preferences
+/megameklab/out/
