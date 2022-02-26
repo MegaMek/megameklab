@@ -711,7 +711,7 @@ public class PrintMech extends PrintEntity {
 
             if (UnitUtil.isTSM(m.getType())) {
                 critName.setLength(0);
-                critName.append("Triple-Strength Myomer");
+                critName.append(m.getType().getName());
             }
 
             if (m.isRearMounted()) {
