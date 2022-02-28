@@ -1,5 +1,6 @@
 /*
- * MegaMekLab - Copyright (C) 2008
+ * MegaMekLab
+ * Copyright (c) 2008-2022 - The MegaMek Team. All Rights Reserved.
  *
  * Original author - jtighe (torren@users.sourceforge.net)
  *
@@ -3791,11 +3792,13 @@ public class UnitUtil {
     public static void showUnitSpecs(Entity unit, JFrame frame) {
         HTMLEditorKit kit = new HTMLEditorKit();
 
-        MechView mechView = null;
+        MechView mechView;
         try {
             mechView = new MechView(unit, true);
-        } catch (Exception e) {
+        } catch (Exception ex) {
             // error unit didn't load right. this is bad news.
+            LogManager.getLogger().error("", ex);
+            return;
         }
 
         StringBuffer unitSpecs = new StringBuffer("<html><body>");
@@ -3822,15 +3825,7 @@ public class UnitUtil {
         JDialog jdialog = new JDialog();
 
         jdialog.add(scroll);
-        /*
-         * if (unit instanceof Mech) { EntityVerifier entityVerifier = new
-         * EntityVerifier(new File("data/mechfiles/UnitVerifierOptions.xml"));
-         * //$NON-NLS-1$ TestMech test = new TestMech((Mech)unit,
-         * entityVerifier.mechOption, null); JEditorPane pane2 = new
-         * JEditorPane();
-         * pane2.setText(test.printWeightCalculation().toString());
-         * jdialog.add(pane2); }
-         */
+
         Dimension size = new Dimension(CConfig.getIntParam("WINDOWWIDTH") / 2,
                 CConfig.getIntParam("WINDOWHEIGHT"));
 
@@ -3838,7 +3833,6 @@ public class UnitUtil {
         jdialog.setMinimumSize(size);
         scroll.setPreferredSize(size);
         scroll.setMinimumSize(size);
-        // text.setPreferredSize(size);
 
         jdialog.setLocationRelativeTo(frame);
         jdialog.setVisible(true);

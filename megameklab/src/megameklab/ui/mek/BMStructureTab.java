@@ -1,7 +1,5 @@
 /*
- * MegaMekLab - Copyright (C) 2008
- *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * Copyright (c) 2008-2022 - The MegaMek Team. All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -16,6 +14,7 @@
 package megameklab.ui.mek;
 
 import megamek.common.*;
+import megamek.common.annotations.Nullable;
 import megamek.common.loaders.EntityLoadingException;
 import megamek.common.verifier.TestEntity;
 import megameklab.ui.EntitySource;
@@ -126,7 +125,6 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         panSummary.setBorder(BorderFactory.createTitledBorder("Summary"));
         panArmorAllocation.setBorder(BorderFactory.createTitledBorder("Armor Allocation"));
         panPatchwork.setBorder(BorderFactory.createTitledBorder("Patchwork Armor"));
-
     }
 
     public void refresh() {
@@ -141,17 +139,15 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
 
         panSummary.refresh();
         addAllListeners();
-
     }
 
     public JLabel createLabel(String text, Dimension maxSize) {
-
         JLabel label = new JLabel(text, SwingConstants.RIGHT);
-
         setFieldSize(label, maxSize);
         return label;
     }
 
+    @Override
     public void setFieldSize(JComponent box, Dimension maxSize) {
         box.setPreferredSize(maxSize);
         box.setMaximumSize(maxSize);
@@ -1060,9 +1056,9 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
     }
 
     @Override
-    public void jumpChanged(int jumpMP, EquipmentType jumpJet) {
+    public void jumpChanged(int jumpMP, @Nullable EquipmentType jumpJet) {
         // Don't set jumpMP for UMU.
-        if (null == jumpJet) {
+        if (jumpJet == null) {
             getMech().setOriginalJumpMP(0);
             jumpMP = 0;
         } else if (jumpJet.hasFlag(MiscType.F_JUMP_JET) || jumpJet.hasFlag(MiscType.F_JUMP_BOOSTER)) {
@@ -1070,27 +1066,30 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         } else {
             getMech().setOriginalJumpMP(0);
         }
-        List<Mounted> jjs = getMech().getMisc().stream()
-                .filter(m -> jumpJet.equals(m.getType()))
-                .collect(Collectors.toList());
-        if (jumpJet.hasFlag(MiscType.F_JUMP_BOOSTER)) {
-            if (!getMech().hasWorkingMisc(MiscType.F_JUMP_BOOSTER)) {
-                UnitUtil.createSpreadMounts(getMech(), jumpJet);
-            }
-        } else {
-            while (jjs.size() > jumpMP) {
-                UnitUtil.removeMounted(getMech(), jjs.remove(jjs.size() - 1));
-            }
-            while (jumpMP > jjs.size()) {
-                try {
-                    UnitUtil.addMounted(getMech(), new Mounted(getMech(), jumpJet),
-                            Entity.LOC_NONE, false);
-                } catch (LocationFullException e) {
-                    // Adding to LOC_NONE
+
+        if (jumpJet != null) {
+            List<Mounted> jjs = getMech().getMisc().stream()
+                    .filter(m -> jumpJet.equals(m.getType()))
+                    .collect(Collectors.toList());
+            if (jumpJet.hasFlag(MiscType.F_JUMP_BOOSTER)) {
+                if (!getMech().hasWorkingMisc(MiscType.F_JUMP_BOOSTER)) {
+                    UnitUtil.createSpreadMounts(getMech(), jumpJet);
                 }
-                jumpMP--;
+            } else {
+                while (jjs.size() > jumpMP) {
+                    UnitUtil.removeMounted(getMech(), jjs.remove(jjs.size() - 1));
+                }
+                while (jumpMP > jjs.size()) {
+                    try {
+                        UnitUtil.addMounted(getMech(), new Mounted(getMech(), jumpJet), Entity.LOC_NONE, false);
+                    } catch (LocationFullException ignored) {
+                        // Adding to LOC_NONE
+                    }
+                    jumpMP--;
+                }
             }
         }
+
         panSummary.refresh();
         refresh.refreshBuild();
         refresh.refreshStatus();

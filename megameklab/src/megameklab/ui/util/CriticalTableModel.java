@@ -1,7 +1,6 @@
 /*
- * MegaMekLab - Copyright (C) 2008-2020 The MegaMek Team
- *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * MegaMekLab
+ * Copyright (c) 2008-2022 - The MegaMek Team. All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
@@ -15,11 +14,12 @@
  */
 package megameklab.ui.util;
 
-import java.awt.Component;
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Vector;
+import megamek.common.*;
+import megamek.common.verifier.TestEntity;
+import megamek.common.verifier.TestProtomech;
+import megamek.common.weapons.infantry.InfantryWeapon;
+import megameklab.util.CConfig;
+import megameklab.util.UnitUtil;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -28,13 +28,12 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
-
-import megamek.common.*;
-import megamek.common.verifier.TestEntity;
-import megamek.common.verifier.TestProtomech;
-import megamek.common.weapons.infantry.InfantryWeapon;
-import megameklab.util.CConfig;
-import megameklab.util.UnitUtil;
+import java.awt.*;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class CriticalTableModel extends AbstractTableModel {
     private final List<Mounted> crits = new ArrayList<>();
@@ -375,14 +374,12 @@ public class CriticalTableModel extends AbstractTableModel {
     /**
      * Remove a collection of crits specified by the given list of indices.
      * 
-     * @param locs  An array of indices that specifies the crits to remove
+     * @param locs An array of indices that specifies the crits to remove
      */
-    public void removeCrits(int[] locs) {
-        Vector<Mounted> mounts = new Vector<>(locs.length);
-        for (Integer l : locs){
-            mounts.add(crits.get(l));
-        }
-        crits.removeAll(mounts);
+    public void removeCrits(int... locs) {
+        crits.removeAll(Arrays.stream(locs)
+                .mapToObj(crits::get)
+                .collect(Collectors.toList()));
     }
 
     public void removeAllCrits() {

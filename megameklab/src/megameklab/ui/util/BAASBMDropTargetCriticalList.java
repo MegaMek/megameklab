@@ -1,7 +1,5 @@
 /*
- * MegaMekLab - Copyright (C) 2008
- *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * Copyright (C) 2008-2022 - The MegaMek Team. All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
@@ -16,6 +14,7 @@
 package megameklab.ui.util;
 
 import megamek.common.*;
+import megamek.common.annotations.Nullable;
 import megamek.common.loaders.EntityLoadingException;
 import megamek.common.verifier.TestBattleArmor;
 import megamek.common.weapons.autocannons.ACWeapon;
@@ -443,7 +442,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
                         });
                         popup.add(info);
 
-                    } else if (!(getUnit() instanceof Mech && ((Mech)getUnit()).isSuperHeavy())) {
+                    } else if (!(getUnit() instanceof Mech && ((Mech) getUnit()).isSuperHeavy())) {
                         JMenuItem info = new JMenuItem("Add Armoring");
                         info.setActionCommand(Integer.toString(location));
                         info.addActionListener(new ActionListener() {
@@ -463,33 +462,33 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
         }
     }
 
+    @Override
     public void mouseReleased(MouseEvent e) {
+
     }
 
-    public Mounted getMounted() {
+    public @Nullable Mounted getMounted() {
         // BattleArmor doesn't have a proper critical system like other units
         //  so they are handled specially
         if (getUnit() instanceof BattleArmor) {
             // The names for this list should be of the form <eq>:<slot>:<eqId>
             String[] split = ((String) this.getSelectedValue()).split(":");
-            if (split.length > 2){
+            if (split.length > 2) {
                 int eqId = Integer.parseInt(split[2]);
                 return getUnit().getEquipment(eqId);
             }
             return null;
         }
         CriticalSlot crit = getCrit();
-        Mounted mount = null;
         try {
-            if ((crit != null)
-                    && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
+            if ((crit != null) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
                 return crit.getMount();
             }
         } catch (Exception ex) {
             LogManager.getLogger().error("", ex);
         }
 
-        return mount;
+        return null;
     }
 
     public CriticalSlot getCrit() {
@@ -534,7 +533,6 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
         if (refresh != null) {
             refresh.refreshAll();
         }
-
     }
 
     public void removeCrit() {

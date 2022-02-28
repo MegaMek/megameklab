@@ -45,6 +45,7 @@ import megamek.common.SimpleTechLevel;
 import megamek.common.TechConstants;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestProtomech;
+import megamek.common.verifier.TestProtomech.ProtomechArmor;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.ArmorAllocationView;
 import megameklab.ui.generalUnit.BAProtoArmorView;
@@ -263,28 +264,30 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
     }
 
     private void createArmorMountsAndSetArmorType(EquipmentType armor) {
-        TestProtomech.ProtomechArmor pmArmor = TestProtomech.ProtomechArmor
-                .getArmor(EquipmentType.getArmorType(armor), true);
+        ProtomechArmor pmArmor = ProtomechArmor.getArmor(EquipmentType.getArmorType(armor));
         List<Mounted> armorMounts = getProtomech().getMisc().stream()
                 .filter(m -> EquipmentType.getArmorType(m.getType()) != EquipmentType.T_ARMOR_UNKNOWN)
                 .collect(Collectors.toList());
         for (Mounted m : armorMounts) {
             UnitUtil.removeMounted(getProtomech(), m);
         }
-        if (null == pmArmor) {
+
+        if (pmArmor == null) {
             getProtomech().setArmorType(EquipmentType.T_ARMOR_STANDARD);
             getProtomech().setArmorTechLevel(TechConstants.T_ALL_CLAN);
+            return;
         } else {
             getProtomech().setArmorType(pmArmor.getType());
             getProtomech().setArmorTechLevel(pmArmor.getArmorTech());
         }
+
         if (pmArmor.getTorsoSlots() > 0) {
             if (freeUpSpace(Protomech.LOC_TORSO, pmArmor.getTorsoSlots())) {
                 try {
                     Mounted mount = new Mounted(getProtomech(), pmArmor.getArmorEqType());
                     getProtomech().addEquipment(mount, Protomech.LOC_TORSO, false);
                     return;
-                } catch (LocationFullException e) {
+                } catch (LocationFullException ignored) {
                     // fall through
                 }
             }
