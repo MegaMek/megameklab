@@ -69,34 +69,8 @@ public class StartupGUI extends JPanel {
         frame = new JFrame("MegaMekLab");
         setBackground(UIManager.getColor("controlHighlight"));
 
-        // Use the current monitor so we don't "overflow" computers whose primary
-        // displays aren't as large as their secondary displays.
-        DisplayMode currentMonitor = frame.getGraphicsConfiguration().getDevice().getDisplayMode();
-        int scaledMonitorW = DisplayUtilities.getScaledScreenWidth(currentMonitor);
-        int scaledMonitorH = DisplayUtilities.getScaledScreenHeight(currentMonitor);
-        Image imgSplash = getToolkit().getImage(startupScreenImages.floorEntry(scaledMonitorW).getValue());
-
-        // wait for splash image to load completely
-        MediaTracker tracker = new MediaTracker(frame);
-        tracker.addImage(imgSplash, 0);
-        try {
-            tracker.waitForID(0);
-        } catch (InterruptedException ignored) {
-            // really should never come here
-        }
-
-        if (imgSplash != null) {
-            imgSplash = DisplayUtilities.constrainImageSize(imgSplash, frame, scaledMonitorW, scaledMonitorH);
-        }
-
-        int splashW = imgSplash == null ? (int) (scaledMonitorW * 0.75) : imgSplash.getWidth(frame);
-        int splashH = imgSplash == null ? (int) (scaledMonitorH * 0.75) : imgSplash.getHeight(frame);
-        Dimension splashDim =  new Dimension((int) splashW, (int) splashH);
-
-
-        // make splash image panel
-        ImageIcon icon = new ImageIcon(imgSplash);
-        JLabel splash = new JLabel(icon);
+        Dimension scaledMonitorSize = DisplayUtilities.getScaledScreenSize(frame);
+        JLabel splash = DisplayUtilities.createSplashComponent(startupScreenImages, frame);
         add(splash, BorderLayout.CENTER);
         
         if (skinSpec.hasBackgrounds()) {
@@ -205,9 +179,7 @@ public class StartupGUI extends JPanel {
                 System.exit(0);
             }
         });
-        
-        // Use the current monitor so we don't "overflow" computers whose primary
-        // displays aren't as large as their secondary displays.
+
         FontMetrics metrics = btnNewDropper.getFontMetrics(btnNewDropper.getFont());
         int width = metrics.stringWidth(btnNewDropper.getText());
         int height = metrics.getHeight();
@@ -215,11 +187,11 @@ public class StartupGUI extends JPanel {
 
         // Strive for no more than ~90% of the screen and use golden ratio to make
         // the button width "look" reasonable.
-        int maximumWidth = (int) (0.9 * scaledMonitorW) - splashW;
+        int maximumWidth = (int) (0.9 * scaledMonitorSize.width) - splash.getPreferredSize().width;
 
         //no more than 50% of image width
-        if(maximumWidth > (int) (0.5 * splashW)) {
-            maximumWidth = (int) (0.5 * splashW);
+        if(maximumWidth > (int) (0.5 * splash.getPreferredSize().width)) {
+            maximumWidth = (int) (0.5 * splash.getPreferredSize().width);
         }
 
         Dimension minButtonDim = new Dimension((int)(maximumWidth / 1.618), 25);
