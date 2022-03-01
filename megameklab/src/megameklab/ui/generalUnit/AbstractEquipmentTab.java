@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, 2021 - The MegaMek Team. All Rights Reserved.
+ * Copyright (c) 2008-2022 - The MegaMek Team. All Rights Reserved.
  *
  * This program is  free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
@@ -29,7 +29,6 @@ import javax.swing.*;
 import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -161,7 +160,7 @@ public abstract class AbstractEquipmentTab extends ITab {
 
     private void removeSelectedEquipment(ActionEvent e) {
         int[] selectedRows = loadoutTable.getSelectedRows();
-        for (Integer row : selectedRows) {
+        for (int row : selectedRows) {
             loadoutModel.removeMounted(row);
         }
         loadoutModel.removeCrits(selectedRows);
@@ -203,5 +202,4 @@ public abstract class AbstractEquipmentTab extends ITab {
             refresh.refreshSummary();
         }
     }
-
 }

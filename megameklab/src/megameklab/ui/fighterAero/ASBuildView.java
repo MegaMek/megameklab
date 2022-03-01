@@ -195,18 +195,15 @@ public class ASBuildView extends IView implements ActionListener, MouseListener 
     }
 
     private boolean isEngineHeatSink(Mounted mount) {
-        if ((mount.getLocation() == Entity.LOC_NONE) && 
-                UnitUtil.isHeatSink(mount) && (engineHeatSinkCount > 0)) {
-            if(mount.getType().hasFlag(MiscType.F_COMPACT_HEAT_SINK) && 
-                    mount.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK)) {
-                //only single compact HS should be used for engine sinks
-                return false;
-            }
+        if ((mount.getLocation() == Entity.LOC_NONE)
+                && UnitUtil.isHeatSink(mount) && (engineHeatSinkCount > 0)
+                && !(mount.getType().hasFlag(MiscType.F_COMPACT_HEAT_SINK)
+                && mount.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK))) {
             engineHeatSinkCount--;
-            return engineHeatSinkCount >= 0;
+            return true;
+        } else {
+            return false;
         }
-
-        return false;
     }
 
     public void refresh() {
@@ -217,9 +214,11 @@ public class ASBuildView extends IView implements ActionListener, MouseListener 
     }
 
     private void removeAllListeners() {
+
     }
 
     private void addAllListeners() {
+
     }
 
     @Override
@@ -269,35 +268,40 @@ public class ASBuildView extends IView implements ActionListener, MouseListener 
 
             String[] locNames = getAero().getLocationNames();
             // A list of the valid locations we can add the selected eq to
-            ArrayList<Integer> validLocs = new ArrayList<Integer>();
+            ArrayList<Integer> validLocs = new ArrayList<>();
             // The number of possible locations, Aeros' have LOC_WINGS and LOC_FUSELAGE, which we
             //  want ot ignore for now, hence -2
             int numLocs = getAero().locations() - 2;
             // If it's a weapon, there are restrictions
             if (eq.getType() instanceof WeaponType) {
-                int[] availSpace = TestAero.availableSpace(getAero()); 
-                int numWeapons[] = new int[availSpace.length];
-                
-                for (Mounted m : getAero().getWeaponList()){
-                    if (m.getLocation() != Aero.LOC_NONE){
-                        numWeapons[m.getLocation()]++;
+                int[] availSpace = TestAero.availableSpace(getAero());
+
+                if (availSpace != null) {
+                    int[] numWeapons = new int[availSpace.length];
+
+                    for (Mounted m : getAero().getWeaponList()) {
+                        if (m.getLocation() != Aero.LOC_NONE) {
+                            numWeapons[m.getLocation()]++;
+                        }
                     }
-                }
-                for (int loc = 0; loc < numLocs; loc++){
-                    if ((numWeapons[loc]+1) < availSpace[loc]){
-                        validLocs.add(loc);
+
+                    for (int loc = 0; loc < numLocs; loc++) {
+                        if ((numWeapons[loc] + 1) < availSpace[loc]) {
+                            validLocs.add(loc);
+                        }
                     }
                 }
             // If it's not a weapon there are no space requirements
             } else {
-                for (int loc = 0; loc < numLocs; loc++){                    
-                        validLocs.add(loc);
+                for (int loc = 0; loc < numLocs; loc++) {
+                    validLocs.add(loc);
                 }
+
                 if (!UnitUtil.isWeaponEnhancement(eq.getType())) {
                     validLocs.add(Aero.LOC_FUSELAGE);
                 }
             }
-            
+
             // Add a menu item for each potential location
             for (Integer location: validLocs) {
                 if (UnitUtil.isValidLocation(getAero(), eq.getType(), location)) {
@@ -321,7 +325,6 @@ public class ASBuildView extends IView implements ActionListener, MouseListener 
     public void mouseReleased(MouseEvent e) {
 
     }
-
     
     /**
      * When the user right-clicks on the equipment table, a context menu is
@@ -332,11 +335,9 @@ public class ASBuildView extends IView implements ActionListener, MouseListener 
      * @param location
      * @param selectedRow
      */
-    private void jMenuLoadComponent_actionPerformed(int location, 
-            int selectedRow) {
-        Mounted eq = (Mounted) 
-                equipmentTable.getModel().getValueAt(selectedRow, 
-                        CriticalTableModel.EQUIPMENT);
+    private void jMenuLoadComponent_actionPerformed(int location, int selectedRow) {
+        Mounted eq = (Mounted) equipmentTable.getModel().getValueAt(selectedRow,
+                CriticalTableModel.EQUIPMENT);
         try {
             getAero().addEquipment(eq, location, false);
         } catch (Exception ex) {
