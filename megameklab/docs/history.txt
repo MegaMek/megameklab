@@ -9,6 +9,7 @@ VERSION HISTORY:
 + PR #1043: MUL Id
 + PR #1049: Reverse the equipment filter toggle behavior: Click to single-select, Ctrl-Click to add
 + Issue #1042: Print the exact type of TSM to RS
++ PR #1052: LGTM: Fixing the vast majority of open issues
 
 0.49.7 (2021-12-18 0300 UTC)
 + Issue #901: Fixing Manual BV
