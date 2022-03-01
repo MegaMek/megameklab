@@ -104,25 +104,7 @@ public class MegaMekLab {
             LogManager.getLogger().error("", ex);
        }
     }
-
-    /**
-     * Helper function that calculates the maximum screen width available locally.
-     * @return Maximum screen width.
-     */
-    public static double calculateMaxScreenWidth() {
-        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        GraphicsDevice[] gs = ge.getScreenDevices();
-        double maxWidth = 0;
-        for (GraphicsDevice g : gs) {
-            Rectangle b = g.getDefaultConfiguration().getBounds();
-            if (b.getWidth() > maxWidth) { // Update the max size found on this monitor
-                maxWidth = b.getWidth();
-            }
-        }
-        
-        return maxWidth;
-    }
-
+    
     public static SuitePreferences getMMLPreferences() {
         return mmlPreferences;
     }

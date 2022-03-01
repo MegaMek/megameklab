@@ -13,6 +13,7 @@
  */
 package megameklab.ui.dialog;
 
+import megamek.codeUtilities.DisplayUtilities;
 import megamek.common.Entity;
 import megameklab.MegaMekLab;
 import megameklab.ui.MegaMekLabMainUI;
@@ -71,8 +72,14 @@ public class LoadingDialog extends JDialog {
         
         setUndecorated(true);
 
+        // Use the current monitor so we don't "overflow" computers whose primary
+        // displays aren't as large as their secondary displays.
+        DisplayMode currentMonitor = frame.getGraphicsConfiguration().getDevice().getDisplayMode();
+        int scaledMonitorW = DisplayUtilities.getScaledScreenWidth(currentMonitor);
+        int scaledMonitorH = DisplayUtilities.getScaledScreenHeight(currentMonitor);
+
         // initialize loading image
-        Image imgSplash = getToolkit().getImage(loadScreenImages.floorEntry((int)MegaMekLab.calculateMaxScreenWidth()).getValue());
+        Image imgSplash = getToolkit().getImage(loadScreenImages.floorEntry(scaledMonitorW).getValue());
 
         // wait for loading image to load completely
         MediaTracker tracker = new MediaTracker(frame);
@@ -82,13 +89,22 @@ public class LoadingDialog extends JDialog {
         } catch (InterruptedException e) {
             // really should never come here
         }
+
+        if (imgSplash != null) {
+            imgSplash = DisplayUtilities.constrainImageSize(imgSplash, frame, scaledMonitorW, scaledMonitorH);
+        }
+
+        int splashW = imgSplash == null ? (int) (scaledMonitorW * 0.75) : imgSplash.getWidth(frame);
+        int splashH = imgSplash == null ? (int) (scaledMonitorH * 0.75) : imgSplash.getHeight(frame);
+        Dimension splashDim =  new Dimension((int) splashW, (int) splashH);
+
         // make splash image panel
         ImageIcon icon = new ImageIcon(imgSplash);
         JLabel splash = new JLabel(icon);
         getContentPane().setLayout(new BorderLayout());
         getContentPane().add(splash, BorderLayout.CENTER);
 
-        setSize(imgSplash.getWidth(null), imgSplash.getHeight(null));
+        setSize(splashDim);
         this.setLocationRelativeTo(frame);
 
         task = new Task();
@@ -130,6 +146,7 @@ public class LoadingDialog extends JDialog {
                 newUI.reloadTabs();
                 newUI.repaint();
                 newUI.refreshAll();
+                newUI.setLocationRelativeTo(frame);
             }
             return null;
         }
