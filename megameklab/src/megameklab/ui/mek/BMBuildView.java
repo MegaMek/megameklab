@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, 2022 - The MegaMek Team. All Rights Reserved.
+ * Copyright (c) 2008-2022 - The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -115,7 +115,7 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
                 && mount.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK))
                 && !mount.getType().hasFlag(MiscType.F_IS_DOUBLE_HEAT_SINK_PROTOTYPE)) {
             engineHeatSinkCount--;
-            return engineHeatSinkCount >= 0;
+            return true;
         } else {
             return false;
         }

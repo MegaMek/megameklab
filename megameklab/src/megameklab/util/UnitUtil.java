@@ -26,7 +26,6 @@ import megamek.common.weapons.autocannons.ACWeapon;
 import megamek.common.weapons.autocannons.HVACWeapon;
 import megamek.common.weapons.autocannons.LBXACWeapon;
 import megamek.common.weapons.autocannons.UACWeapon;
-import megamek.common.weapons.battlearmor.CLBALBX;
 import megamek.common.weapons.bayweapons.BayWeapon;
 import megamek.common.weapons.c3.ISC3M;
 import megamek.common.weapons.c3.ISC3MBS;
@@ -35,11 +34,9 @@ import megamek.common.weapons.defensivepods.BPodWeapon;
 import megamek.common.weapons.defensivepods.MPodWeapon;
 import megamek.common.weapons.flamers.VehicleFlamerWeapon;
 import megamek.common.weapons.gaussrifles.GaussWeapon;
-import megamek.common.weapons.gaussrifles.HAGWeapon;
 import megamek.common.weapons.infantry.InfantryRifleAutoRifleWeapon;
 import megamek.common.weapons.infantry.InfantryWeapon;
 import megamek.common.weapons.lasers.CLChemicalLaserWeapon;
-import megamek.common.weapons.lasers.EnergyWeapon;
 import megamek.common.weapons.lrms.LRMWeapon;
 import megamek.common.weapons.lrms.LRTWeapon;
 import megamek.common.weapons.lrms.StreakLRMWeapon;
@@ -1820,74 +1817,14 @@ public class UnitUtil {
     }
 
     public static boolean hasSwitchableAmmo(WeaponType weapon) {
-
-        if (weapon instanceof StreakLRMWeapon) {
-            return false;
-        }
-        if (weapon instanceof StreakSRMWeapon) {
-            return false;
-        }
-        if (weapon instanceof EnergyWeapon) {
-            return false;
-        }
-
-        if (weapon instanceof GaussWeapon) {
-            return false;
-        }
-
-        if (weapon instanceof UACWeapon) {
-            return false;
-        }
-
-        if (weapon instanceof HVACWeapon) {
-            return false;
-        }
-
-        if (weapon instanceof HAGWeapon) {
-            return false;
-        }
-
-        if (weapon instanceof MGWeapon) {
-            return false;
-        }
-
-        if (UnitUtil.isAMS(weapon)) {
-            return false;
-        }
-
-        if (weapon instanceof ThunderBoltWeapon) {
-            return false;
-        }
-
-        if (weapon instanceof CLChemicalLaserWeapon) {
-            return false;
-        }
-
-        if (weapon instanceof MPodWeapon) {
-            return false;
-        }
-
-        if (weapon instanceof BPodWeapon) {
-            return false;
-        }
-
-        if (weapon instanceof ISPlasmaRifle) {
-            return false;
-        }
-
-        if (weapon instanceof CLPlasmaCannon) {
-            return false;
-        }
-        if (weapon instanceof VehicleFlamerWeapon) {
-            return false;
-        }
-        if (!(weapon instanceof AmmoWeapon)) {
-            return false;
-        }
-        if (weapon instanceof CLBALBX) {
-            return false;
-        }
-        return true;
+        return (weapon instanceof AmmoWeapon) && !(weapon instanceof StreakLRMWeapon)
+                && !(weapon instanceof StreakSRMWeapon) && !(weapon instanceof GaussWeapon)
+                && !(weapon instanceof UACWeapon) && !(weapon instanceof HVACWeapon)
+                && !(weapon instanceof MGWeapon) && !(weapon instanceof ThunderBoltWeapon)
+                && !(weapon instanceof CLChemicalLaserWeapon) && !(weapon instanceof MPodWeapon)
+                && !(weapon instanceof BPodWeapon) && !(weapon instanceof ISPlasmaRifle)
+                && !(weapon instanceof CLPlasmaCannon) && !(weapon instanceof VehicleFlamerWeapon)
+                && !UnitUtil.isAMS(weapon);
     }
 
     /**
@@ -3911,19 +3848,13 @@ public class UnitUtil {
      * @return Whether the unit can make use of the ammo
      */
     public static boolean canUseAmmo(Entity unit, AmmoType atype, boolean includeOneShot) {
-        if ((unit instanceof BattleArmor)
-                && !atype.hasFlag(AmmoType.F_BATTLEARMOR)){
+        if ((unit instanceof BattleArmor) && !atype.hasFlag(AmmoType.F_BATTLEARMOR)) {
             return false;
-        }
-        if (!(unit instanceof BattleArmor)
-                && atype.hasFlag(AmmoType.F_BATTLEARMOR)){
+        } else if (!(unit instanceof BattleArmor) && atype.hasFlag(AmmoType.F_BATTLEARMOR)) {
             return false;
-        }
-        if (unit.hasETypeFlag(Entity.ETYPE_AERO)
-                && !atype.canAeroUse()) {
+        } else if (unit.hasETypeFlag(Entity.ETYPE_AERO) && !atype.canAeroUse()) {
             return false;
-        }
-        if (atype.hasFlag(AmmoType.F_PROTOMECH) && !(unit instanceof Protomech)) {
+        } else if (atype.hasFlag(AmmoType.F_PROTOMECH) && !(unit instanceof Protomech)) {
             return false;
         }
 

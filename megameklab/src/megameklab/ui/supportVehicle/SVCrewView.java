@@ -1,20 +1,20 @@
 /*
- * MegaMekLab
- * Copyright (C) 2019 The MegaMek Team
+ * Copyright (c) 2019-2022 - The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * This file is part of MekHQ.
  *
- * This program is distributed in the hope that it will be useful,
+ * MekHQ is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * MekHQ is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * along with MekHQ. If not, see <http://www.gnu.org/licenses/>.
  */
 package megameklab.ui.supportVehicle;
 
@@ -29,6 +29,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.util.List;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -360,34 +361,34 @@ public class SVCrewView extends BuildView implements ChangeListener {
         for (Transporter t : entity.getTransports()) {
             if (t instanceof PillionSeatCargoBay) {
                 if (entity.isPodMountedTransport(t)) {
-                    podPillion += ((Bay) t).getCapacity();
+                    podPillion += (int) Math.round(((Bay) t).getCapacity());
                 } else {
-                    pillion += ((Bay) t).getCapacity();
+                    pillion += (int) Math.round(((Bay) t).getCapacity());
                 }
             } else if (t instanceof EjectionSeatCargoBay) {
                 if (entity.isPodMountedTransport(t)) {
-                    podEjection += ((Bay) t).getCapacity();
+                    podEjection += (int) Math.round(((Bay) t).getCapacity());
                 } else {
-                    ejection += ((Bay) t).getCapacity();
+                    ejection += (int) Math.round(((Bay) t).getCapacity());
                 }
             } else if (t instanceof StandardSeatCargoBay) {
                 if (entity.isPodMountedTransport(t)) {
-                    podStdSeats += ((Bay) t).getCapacity();
+                    podStdSeats += (int) Math.round(((Bay) t).getCapacity());
                 } else {
-                    stdSeats += ((Bay) t).getCapacity();
+                    stdSeats += (int) Math.round(((Bay) t).getCapacity());
                 }
             } else if (t instanceof FirstClassQuartersCargoBay) {
                 if (entity.isPodMountedTransport(t)) {
-                    podFirstClass += ((Bay) t).getCapacity();
+                    podFirstClass += (int) Math.round(((Bay) t).getCapacity());
                 } else {
-                    firstClass += ((Bay) t).getCapacity();
+                    firstClass += (int) Math.round(((Bay) t).getCapacity());
                 }
                 firstClassWeight += ((Bay) t).getWeight();
             } else if (t instanceof SecondClassQuartersCargoBay) {
                 if (entity.isPodMountedTransport(t)) {
-                    podSecondClass += ((Bay) t).getCapacity();
+                    podSecondClass += (int) Math.round(((Bay) t).getCapacity());
                 } else {
-                    secondClass += ((Bay) t).getCapacity();
+                    secondClass += (int) Math.round(((Bay) t).getCapacity());
                 }
                 secondClassWeight += ((Bay) t).getWeight();
             } else if (t instanceof CrewQuartersCargoBay) {
@@ -506,11 +507,7 @@ public class SVCrewView extends BuildView implements ChangeListener {
      */
     private int getSpinnerValue(JSpinner spinner) {
         Integer val = (Integer) spinner.getValue();
-        if (null != val) {
-            return val;
-        } else {
-            return 0;
-        }
+        return Objects.requireNonNullElse(val, 0);
     }
 
     @Override
