@@ -13,7 +13,7 @@
  */
 package megameklab.ui.dialog;
 
-import megamek.codeUtilities.DisplayUtilities;
+import megamek.client.ui.swing.util.UIUtil;
 import megamek.common.Entity;
 import megameklab.MegaMekLab;
 import megameklab.ui.MegaMekLabMainUI;
@@ -72,7 +72,7 @@ public class LoadingDialog extends JDialog {
         
         setUndecorated(true);
 
-        JLabel splash = DisplayUtilities.createSplashComponent(loadScreenImages, frame);
+        JLabel splash = UIUtil.createSplashComponent(loadScreenImages, frame);
 
         getContentPane().setLayout(new BorderLayout());
         getContentPane().add(splash, BorderLayout.CENTER);

@@ -15,10 +15,10 @@
 package megameklab.ui;
 
 import megamek.client.ui.swing.UnitLoadingDialog;
+import megamek.client.ui.swing.util.UIUtil;
 import megamek.client.ui.swing.widget.MegamekButton;
 import megamek.client.ui.swing.widget.SkinSpecification;
 import megamek.client.ui.swing.widget.SkinXMLHandler;
-import megamek.codeUtilities.DisplayUtilities;
 import megamek.common.*;
 import megamek.common.util.EncodeControl;
 import megamek.common.util.ImageUtil;
@@ -69,8 +69,8 @@ public class StartupGUI extends JPanel {
         frame = new JFrame("MegaMekLab");
         setBackground(UIManager.getColor("controlHighlight"));
 
-        Dimension scaledMonitorSize = DisplayUtilities.getScaledScreenSize(frame);
-        JLabel splash = DisplayUtilities.createSplashComponent(startupScreenImages, frame);
+        Dimension scaledMonitorSize = UIUtil.getScaledScreenSize(frame);
+        JLabel splash = UIUtil.createSplashComponent(startupScreenImages, frame);
         add(splash, BorderLayout.CENTER);
         
         if (skinSpec.hasBackgrounds()) {

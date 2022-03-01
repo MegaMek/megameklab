@@ -17,7 +17,7 @@
 package megameklab.ui;
 
 import megamek.MegaMek;
-import megamek.codeUtilities.DisplayUtilities;
+import megamek.client.ui.swing.util.UIUtil;
 import megamek.common.Entity;
 import megamek.common.preference.PreferenceManager;
 import megameklab.MMLConstants;
@@ -59,8 +59,8 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
     
     protected void setSizeAndLocation() {
         DisplayMode currentMonitor = getGraphicsConfiguration().getDevice().getDisplayMode();
-        int scaledMonitorW = DisplayUtilities.getScaledScreenWidth(currentMonitor);
-        int scaledMonitorH = DisplayUtilities.getScaledScreenHeight(currentMonitor);
+        int scaledMonitorW = UIUtil.getScaledScreenWidth(currentMonitor);
+        int scaledMonitorH = UIUtil.getScaledScreenHeight(currentMonitor);
 
         //figure out size dimensions
         pack();
