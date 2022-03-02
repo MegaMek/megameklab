@@ -393,23 +393,24 @@ public class SVCrewView extends BuildView implements ChangeListener {
                 secondClassWeight += ((Bay) t).getWeight();
             } else if (t instanceof CrewQuartersCargoBay) {
                 if (entity.isPodMountedTransport(t)) {
-                    podCrewQuarters += ((Bay) t).getCapacity();
+                    podCrewQuarters += (int) Math.round(((Bay) t).getCapacity());
                 } else {
-                    crewQuarters += ((Bay) t).getCapacity();
+                    crewQuarters += (int) Math.round(((Bay) t).getCapacity());
                 }
                 crewQuartersWeight += ((Bay) t).getWeight();
             } else if (t instanceof SteerageQuartersCargoBay) {
                 if (entity.isPodMountedTransport(t)) {
-                    podSteerage += ((Bay) t).getCapacity();
+                    podSteerage += (int) Math.round(((Bay) t).getCapacity());
                 } else {
-                    steerage += ((Bay) t).getCapacity();
+                    steerage += (int) Math.round(((Bay) t).getCapacity());
                 }
                 steerageWeight += ((Bay) t).getWeight();
             }
         }
+
         if ((entity.getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT)
-                || (entity.getMovementMode().equals(EntityMovementMode.VTOL))
-                || (entity.isAero())) {
+                || entity.getMovementMode().isVTOL()
+                || entity.isAero()) {
             spnEjectionSeats.setEnabled(true);
             spnEjectionSeatsPod.setEnabled(true);
         } else {
@@ -417,6 +418,7 @@ public class SVCrewView extends BuildView implements ChangeListener {
             spnEjectionSeats.setEnabled(false);
             spnEjectionSeatsPod.setEnabled(false);
         }
+
         if (entity.isOmni()) {
             lblPodSeating.setVisible(true);
             spnStandardSeatsPod.setVisible(true);
