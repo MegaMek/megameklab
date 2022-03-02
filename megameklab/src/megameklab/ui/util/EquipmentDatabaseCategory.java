@@ -23,6 +23,8 @@ import java.util.EnumSet;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+
+import static megamek.common.EquipmentTypeLookup.*;
 import static megamek.common.WeaponType.*;
 import static megamek.common.MiscType.*;
 
@@ -36,8 +38,8 @@ public enum EquipmentDatabaseCategory {
 
     ENERGY ("Energy",
             (eq, en) -> (eq instanceof WeaponType) && !((WeaponType) eq).isCapital()
-            && (eq.hasFlag(F_ENERGY)
-            || ((eq.hasFlag(F_PLASMA) && (((WeaponType) eq).getAmmoType() == AmmoType.T_PLASMA))))),
+                    && (eq.hasFlag(F_ENERGY)
+                    || ((eq.hasFlag(F_PLASMA) && (((WeaponType) eq).getAmmoType() == AmmoType.T_PLASMA))))),
 
     BALLISTIC ("Ballistic",
             (eq, en) -> (eq instanceof WeaponType) && !((WeaponType) eq).isCapital() && eq.hasFlag(F_BALLISTIC)),
@@ -55,34 +57,40 @@ public enum EquipmentDatabaseCategory {
             Entity::isLargeCraft),
 
     PHYSICAL ("Physical",
-            (eq, en) -> UnitUtil.isPhysicalWeapon(eq),
+            (eq, en) -> UnitUtil.isPhysicalWeapon(eq) || isIndustrialEquipment(eq),
             e -> e.hasETypeFlag(Entity.ETYPE_MECH)),
+
+    INDUSTRIAL ("Industrial",
+            (eq, en) -> isIndustrialEquipment(eq),
+            e -> (e instanceof Tank) || e.isSupportVehicle()),
 
     AMMO ("Ammo",
             (eq, en) -> (eq instanceof AmmoType) && !(eq instanceof BombType)
-            && UnitUtil.canUseAmmo(en, (AmmoType) eq, false),
+                    && UnitUtil.canUseAmmo(en, (AmmoType) eq, false),
             e -> e.getWeightClass() != EntityWeightClass.WEIGHT_SMALL_SUPPORT),
 
     OTHER ("Other",
             (eq, en) -> ((eq instanceof MiscType)
-            && !UnitUtil.isPhysicalWeapon(eq)
-            && !UnitUtil.isJumpJet(eq)
-            && !UnitUtil.isHeatSink(eq)
-            && !eq.hasFlag(F_TSM)
-            && !eq.hasFlag(F_INDUSTRIAL_TSM)
-            && !(eq.hasFlag(F_MASC)
-            && !eq.hasSubType(S_SUPERCHARGER)
-            && !eq.hasSubType(S_JETBOOSTER))
-            && !(en.hasETypeFlag(Entity.ETYPE_QUADVEE) && eq.hasFlag(F_TRACKS))
-            && !UnitUtil.isArmorOrStructure(eq)
-            && !eq.hasFlag(F_CHASSIS_MODIFICATION)
-            && !(en.isSupportVehicle() && (eq.hasFlag(F_BASIC_FIRECONTROL) || (eq.hasFlag(F_ADVANCED_FIRECONTROL))))
-            && !eq.hasFlag(F_MAGNETIC_CLAMP)
-            && !(eq.hasFlag(F_PARTIAL_WING) && en.hasETypeFlag(Entity.ETYPE_PROTOMECH))
-            && !eq.hasFlag(F_SPONSON_TURRET)
-            && !eq.hasFlag(F_PINTLE_TURRET))
-            || (eq instanceof TAGWeapon)
-            || ((eq instanceof AmmoType) && (((AmmoType) eq).getAmmoType() == AmmoType.T_COOLANT_POD))),
+                    && !UnitUtil.isPhysicalWeapon(eq)
+                    && !UnitUtil.isJumpJet(eq)
+                    && !UnitUtil.isHeatSink(eq)
+                    && !(isIndustrialEquipment(eq) && ((en instanceof Tank) || en.isSupportVehicle() || en instanceof Mech))
+                    && !eq.hasFlag(F_TSM)
+                    && !eq.hasFlag(F_INDUSTRIAL_TSM)
+                    && !(eq.hasFlag(F_MASC)
+                    && !eq.hasSubType(S_SUPERCHARGER)
+                    && !eq.hasSubType(S_JETBOOSTER))
+                    && !(en.hasETypeFlag(Entity.ETYPE_QUADVEE) && eq.hasFlag(F_TRACKS))
+                    && !UnitUtil.isArmorOrStructure(eq)
+                    && !(eq.hasFlag(F_CHASSIS_MODIFICATION) && en.isSupportVehicle())
+                    && !(en.isSupportVehicle() && (eq.hasFlag(F_BASIC_FIRECONTROL) || (eq.hasFlag(F_ADVANCED_FIRECONTROL))))
+                    && !eq.hasFlag(F_MAGNETIC_CLAMP)
+                    && !(eq.hasFlag(F_PARTIAL_WING) && en.hasETypeFlag(Entity.ETYPE_PROTOMECH))
+                    && !(eq.hasFlag(F_SPONSON_TURRET) && en.isSupportVehicle())
+                    && !eq.hasFlag(F_PINTLE_TURRET))
+                    || (eq instanceof TAGWeapon)
+                    || ((eq instanceof AmmoType) && (((AmmoType) eq).getAmmoType() == AmmoType.T_COOLANT_POD))
+                    || (eq.hasFlag(F_AMS))),
 
     AP ("Anti-Personnel",
             (eq, en) -> UnitUtil.isBattleArmorAPWeapon(eq),
@@ -102,7 +110,7 @@ public enum EquipmentDatabaseCategory {
             e -> !(e instanceof BattleArmor) && !(e instanceof Aero)),
 
     UNAVAILABLE ("Unavailable")
-            // TODO: Provide MM.ITechManager.isLegal in static form
+    // TODO: Provide MM.ITechManager.isLegal in static form
     ;
 
     private final static Set<EquipmentDatabaseCategory> showFilters = EnumSet.of(ENERGY, BALLISTIC, MISSILE,
@@ -156,4 +164,20 @@ public enum EquipmentDatabaseCategory {
     public static Set<EquipmentDatabaseCategory> getHideFilters() {
         return Collections.unmodifiableSet(hideFilters);
     }
+
+    /**
+     * Returns true if the given equipment is an Industrial Equipment such as a Backhoe (TM, pp. 241-249).
+     * Note: This check has nothing to do with Industrial Meks.
+     *
+     * @param equipment The equipment to check
+     * @return true if the equipment is "Industrial" equipment
+     */
+    public static boolean isIndustrialEquipment(EquipmentType equipment) {
+        return equipment.isAnyOf(BACKHOE, LIGHT_BRIDGE_LAYER, MEDIUM_BRIDGE_LAYER, HEAVY_BRIDGE_LAYER,
+                BULLDOZER, CHAINSAW, COMBINE, DUAL_SAW, DUMPER_FRONT, DUMPER_REAR, DUMPER_RIGHT, DUMPER_LEFT,
+                EXTENDED_FUEL_TANK, PILE_DRIVER, LADDER, LIFT_HOIST, MANIPULATOR_INDUSTRIAL, MINING_DRILL,
+                NAIL_RIVET_GUN, REFUELING_DROGUE, FLUID_SUCTION_LIGHT_MEK, FLUID_SUCTION_LIGHT_VEE,
+                FLUID_SUCTION, ROCK_CUTTER, SALVAGE_ARM, SPOT_WELDER, SPRAYER_MEK, SPRAYER_VEE, WRECKING_BALL);
+    }
+
 }

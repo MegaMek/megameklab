@@ -1,6 +1,6 @@
 /*
  * MegaMekLab
- * Copyright (c) 2021 - The MegaMek Team. All Rights Reserved.
+ * Copyright (c) 2021-2022 - The MegaMek Team. All Rights Reserved.
  *
  * This program is  free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
@@ -29,12 +29,13 @@ import org.apache.logging.log4j.LogManager;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.TableModelEvent;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.List;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -66,6 +67,7 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
     protected final JToggleButton showMissileButton = new JToggleButton(MISSILE.getDisplayName(), true);
     protected final JToggleButton showArtilleryButton = new JToggleButton(ARTILLERY.getDisplayName());
     protected final JToggleButton showPhysicalButton = new JToggleButton(PHYSICAL.getDisplayName());
+    protected final JToggleButton showIndustrialButton = new JToggleButton(INDUSTRIAL.getDisplayName());
     protected final JToggleButton showCapitalButton = new JToggleButton(CAPITAL.getDisplayName());
     protected final JToggleButton showAmmoButton = new JToggleButton(AMMO.getDisplayName());
     protected final JToggleButton showOtherButton = new JToggleButton(OTHER.getDisplayName());
@@ -80,8 +82,14 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
     private final JButton tableModeButton = new JButton("Switch Table Columns");
     private boolean tableMode = true;
 
-    private final List<JToggleButton> filterToggles = List.of(showEnergyButton, showBallisticButton, showMissileButton,
-            showArtilleryButton, showPhysicalButton, showCapitalButton, showAmmoButton, showOtherButton);
+    private final Map<JToggleButton, EquipmentDatabaseCategory> filterToggles = Map.of(showEnergyButton, ENERGY,
+            showBallisticButton, BALLISTIC, showMissileButton, MISSILE, showArtilleryButton, ARTILLERY,
+            showPhysicalButton, PHYSICAL, showCapitalButton, CAPITAL, showAmmoButton, AMMO, showOtherButton, OTHER,
+            showIndustrialButton, INDUSTRIAL);
+
+    private final Map<JToggleButton, EquipmentDatabaseCategory> hideToggles = Map.of(hideProtoButton, PROTOTYPE,
+            hideOneShotButton, ONE_SHOT, hideTorpedoButton, TORPEDO, hideAPButton, AP,
+            hideUnavailButton, UNAVAILABLE);
 
     private static final String ADD_TEXT = "  << Add ";
 
@@ -109,6 +117,7 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
         setLayout(new BorderLayout());
         add(setupControlPanel(), BorderLayout.PAGE_START);
         add(new JScrollPane(masterEquipmentTable), BorderLayout.CENTER);
+        updateFilterToggleVisibility();
         addListeners();
     }
 
@@ -280,34 +289,19 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
         });
 
         var showAllButton = new JButton("Show All");
-        showAllButton.addActionListener(this::showAllEquipmentTypes);
-        filterToggles.forEach(b -> b.addActionListener(this::filterToggleHandler));
-
-        if (getUsedButtons().contains(ENERGY)) {
-            buttonPanel.add(showEnergyButton);
-        }
-        if (getUsedButtons().contains(BALLISTIC)) {
-            buttonPanel.add(showBallisticButton);
-        }
-        if (getUsedButtons().contains(MISSILE)) {
-            buttonPanel.add(showMissileButton);
-        }
-        if (getUsedButtons().contains(ARTILLERY)) {
-            buttonPanel.add(showArtilleryButton);
-        }
-        if (getUsedButtons().contains(PHYSICAL)) {
-            buttonPanel.add(showPhysicalButton);
-        }
-        if (getUsedButtons().contains(CAPITAL)) {
-            buttonPanel.add(showCapitalButton);
-        }
-        if (getUsedButtons().contains(AMMO)) {
-            buttonPanel.add(showAmmoButton);
-        }
-        if (getUsedButtons().contains(OTHER)) {
-            buttonPanel.add(showOtherButton);
-        }
+        showAllButton.addActionListener(e -> showAllEquipmentTypes());
+        filterToggles.keySet().forEach(button -> button.addActionListener(this::filterToggleHandler));
+        buttonPanel.add(showEnergyButton);
+        buttonPanel.add(showBallisticButton);
+        buttonPanel.add(showMissileButton);
+        buttonPanel.add(showArtilleryButton);
+        buttonPanel.add(showPhysicalButton);
+        buttonPanel.add(showIndustrialButton);
+        buttonPanel.add(showCapitalButton);
+        buttonPanel.add(showAmmoButton);
+        buttonPanel.add(showOtherButton);
         buttonPanel.add(showAllButton);
+        updateFilterToggleVisibility();
 
         var buttonAndInfoPanel = Box.createVerticalBox();
         if (CConfig.getBooleanParam(CConfig.NAG_EQUIPMENT_CTRLCLICK)) {
@@ -324,6 +318,20 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
         return typeFilterPanel;
     }
 
+    private void updateFilterToggleVisibility() {
+        // Show/hide toggles as appropriate for this unit
+        filterToggles.forEach((toggle, category) -> toggle.setVisible(getUsedButtons().contains(category)));
+        hideToggles.forEach((toggle, category) -> toggle.setVisible(getUsedButtons().contains(category)));
+        // Deselect hidden toggles
+        filterToggles.entrySet().stream()
+                .filter(entry -> !getUsedButtons().contains(entry.getValue()))
+                .forEach(entry -> entry.getKey().setSelected(false));
+        hideToggles.entrySet().stream()
+                .filter(entry -> !getUsedButtons().contains(entry.getValue()))
+                .forEach(entry -> entry.getKey().setSelected(false));
+    }
+
+
     /**
      * Constructs and returns the Panel containing "Hide:" filter toggles
      */
@@ -339,26 +347,12 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
             }
         });
 
-        if (getUsedButtons().contains(PROTOTYPE)) {
-            buttonPanel.add(hideProtoButton);
-            hideProtoButton.addItemListener(e -> equipmentSorter.sort());
-        }
-        if (getUsedButtons().contains(ONE_SHOT)) {
-            buttonPanel.add(hideOneShotButton);
-            hideOneShotButton.addItemListener(e -> equipmentSorter.sort());
-        }
-        if (getUsedButtons().contains(TORPEDO)) {
-            buttonPanel.add(hideTorpedoButton);
-            hideTorpedoButton.addItemListener(e -> equipmentSorter.sort());
-        }
-        if (getUsedButtons().contains(AP)) {
-            buttonPanel.add(hideAPButton);
-            hideAPButton.addItemListener(e -> equipmentSorter.sort());
-        }
-        if (getUsedButtons().contains(UNAVAILABLE)) {
-            buttonPanel.add(hideUnavailButton);
-            hideUnavailButton.addItemListener(e -> equipmentSorter.sort());
-        }
+        hideToggles.keySet().forEach(button -> button.addItemListener(e -> equipmentSorter.sort()));
+        buttonPanel.add(hideProtoButton);
+        buttonPanel.add(hideOneShotButton);
+        buttonPanel.add(hideTorpedoButton);
+        buttonPanel.add(hideAPButton);
+        buttonPanel.add(hideUnavailButton);
 
         var hideFilterPanel = Box.createHorizontalBox();
         hideFilterPanel.add(new JLabel("Hide: "));
@@ -412,7 +406,7 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
         }
         if (useSwitchTableColumns()) {
             miscPanel.add(tableModeButton);
-            tableModeButton.addActionListener(this::switchTableMode);
+            tableModeButton.addActionListener(e -> switchTableMode());
         }
         miscPanel.setBackground(UIUtil.alternateTableBGColor());
         miscPanel.setOpaque(true);
@@ -441,6 +435,7 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
     }
 
     public void refreshTable() {
+        updateFilterToggleVisibility();
         updateVisibleColumns();
         equipmentSorter.sort();
     }
@@ -456,7 +451,7 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
     }
 
     /** Called from the Table Column Mode button to switch between two table column modes. */
-    private void switchTableMode(ActionEvent e) {
+    private void switchTableMode() {
         tableMode = !tableMode;
         updateVisibleColumns();
     }
@@ -467,16 +462,19 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
      */
     private void filterToggleHandler(ActionEvent e) {
         if ((e.getModifiers() & ActionEvent.CTRL_MASK) != 0) {
-            filterToggles.forEach(button -> button.setSelected(e.getSource() == button));
+            filterToggles.keySet().forEach(button -> button.setSelected(e.getSource() == button));
         }
         equipmentSorter.sort();
     }
 
     /**
-     * Called from the Show All button to activate all type filter toggles.
+     * Called from the Show All button to activate all shown type filter toggles.
      */
-    private void showAllEquipmentTypes(ActionEvent e) {
-        filterToggles.forEach(t -> t.setSelected(true));
+    private void showAllEquipmentTypes() {
+        // Select all buttons that are displayed for this unit
+        filterToggles.entrySet().stream()
+                .filter(entry -> getUsedButtons().contains(entry.getValue()))
+                .forEach(entry -> entry.getKey().setSelected(true));
         equipmentSorter.sort();
     }
 
@@ -570,6 +568,7 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
                 || (showBallisticButton.isSelected() && BALLISTIC.passesFilter(equipment, getEntity()))
                 || (showArtilleryButton.isSelected() && ARTILLERY.passesFilter(equipment, getEntity()))
                 || (showPhysicalButton.isSelected() && PHYSICAL.passesFilter(equipment, getEntity()))
+                || (showIndustrialButton.isSelected() && INDUSTRIAL.passesFilter(equipment, getEntity()))
                 || (showCapitalButton.isSelected() && CAPITAL.passesFilter(equipment, getEntity()))
                 || (showAmmoButton.isSelected() && AMMO.passesFilter(equipment, getEntity()))
                 || (showOtherButton.isSelected() && OTHER.passesFilter(equipment, getEntity()));
