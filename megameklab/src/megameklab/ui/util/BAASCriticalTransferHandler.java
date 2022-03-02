@@ -1,6 +1,5 @@
 /*
- * Copyright (C) 2008
- * Copyright (c) 2022 - The MegaMek Team. All Rights Reserved.
+ * Copyright (c) 2008-2022 - The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -31,8 +30,7 @@ import javax.swing.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.io.IOException;
+import java.util.Objects;
 
 /**
  * The crit slot Transfer Handler for BA and AS.
@@ -57,12 +55,14 @@ public class BAASCriticalTransferHandler extends TransferHandler {
         Mounted mounted = null;
         try {
             mounted = getUnit().getEquipment(Integer.parseInt((String) data.getTransferData(DataFlavor.stringFlavor)));
-        } catch (Exception e) {
-            LogManager.getLogger().error("", e);
+        } catch (Exception ex) {
+            LogManager.getLogger().error("", ex);
+            return;
         }
+
         if ((source instanceof BAASBMDropTargetCriticalList)
                 && (mounted.getLocation() != Entity.LOC_NONE)) {
-            BAASBMDropTargetCriticalList<?> list = (BAASBMDropTargetCriticalList<?>)source;
+            BAASBMDropTargetCriticalList<?> list = (BAASBMDropTargetCriticalList<?>) source;
             int loc;
             if (getUnit() instanceof BattleArmor) {
                 String[] split = list.getName().split(":");
@@ -123,16 +123,16 @@ public class BAASCriticalTransferHandler extends TransferHandler {
         }
     }
 
-    private boolean addEquipmentAero(Aero aero, Mounted eq)
-            throws LocationFullException{
+    private boolean addEquipmentAero(Aero aero, Mounted eq) throws LocationFullException {
         if (eq.getType() instanceof WeaponType) {
-            int[] availSpace = TestAero.availableSpace(aero);
+            int[] availSpace = Objects.requireNonNull(TestAero.availableSpace(aero));
             int[] weapCount = new int[aero.locations() - 1];
             for (Mounted m : aero.getWeaponList()) {
                 if (m.getLocation() != Entity.LOC_NONE) {
                     weapCount[m.getLocation()]++;
                 }
             }
+
             if ((weapCount[location] + 1) > availSpace[location]) {
                 throw new LocationFullException(eq.getName() +
                         " does not fit in " + getUnit().getLocationAbbr(location) +
@@ -294,5 +294,4 @@ public class BAASCriticalTransferHandler extends TransferHandler {
     public Entity getUnit() {
         return eSource.getEntity();
     }
-
 }

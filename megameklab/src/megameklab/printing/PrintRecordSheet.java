@@ -1,5 +1,6 @@
 /*
- * MegaMekLab - Copyright (C) 2017 - The MegaMek Team
+ * MegaMekLab
+ * Copyright (c) 2017-2022 - The MegaMek Team. All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -55,6 +56,7 @@ import java.awt.print.Printable;
 import java.io.*;
 import java.net.URLConnection;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
@@ -79,7 +81,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     public final static String FILL_WHITE = "#ffffff";
     /** Scale factor for record sheets with reference tables */
     public final static double TABLE_RATIO = 0.8;
-    
+
     enum PipType {
         CIRCLE, DIAMOND;
         
@@ -224,21 +226,21 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      * Creates a {@link Document} from an svg image file
      *
      * @param filename The name of the SVG file
-     * @return         The document object
+     * @return The document object
      */
-    static Document loadSVG(String dirName, String filename) {
+    static @Nullable Document loadSVG(String dirName, String filename) {
         File f = new File(dirName, filename);
         Document svgDocument = null;
-        try {
-            InputStream is = new FileInputStream(f);
+        try (InputStream is = new FileInputStream(f)) {
             DOMImplementation impl = SVGDOMImplementation.getDOMImplementation();
             final String parser = XMLResourceDescriptor.getXMLParserClassName();
             SAXDocumentFactory df = new SAXDocumentFactory(impl, parser);
             svgDocument = df.createDocument(f.toURI().toASCIIString(), is);
-        } catch (Exception e) {
-            LogManager.getLogger().error("", e);
+        } catch (Exception ex) {
+            LogManager.getLogger().error("", ex);
         }
-        if (null == svgDocument) {
+
+        if (svgDocument == null) {
             LogManager.getLogger().error("Failed to open SVG file! Path: data/images/recordsheets/" + filename);
         }
         return svgDocument;
@@ -248,21 +250,16 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      * Checks the <code>style</code> attribute of an {@link Element} for a given property and returns its
      * value, or null if the property does not exist.
      *
-     * @param element  The element to check the property of
+     * @param element The element to check the property of
      * @param property The name of the property
-     * @return         The value of the property, or <code>null</code> if the property does not exist.
+     * @return The value of the property, or <code>null</code> if the property does not exist.
      */
-    static @Nullable
-    String parseStyle(Element element, String property) {
+    static @Nullable String parseStyle(Element element, String property) {
         final String style = element.getAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE);
-        if (null != style) {
-            for (String field : style.split(";")) {
-                if (field.startsWith(property + ":")) {
-                    return field.substring(field.indexOf(":") + 1);
-                }
-            }
-        }
-        return null;
+        return Arrays.stream(style.split(";"))
+                .filter(field -> field.startsWith(property + ':'))
+                .findFirst()
+                .map(field -> field.substring(field.indexOf(':') + 1)).orElse(null);
     }
 
     /**
@@ -807,14 +804,15 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      * @param bbox       The bounding box for the image. The image will be scaled to fit.
      * @param center     Whether to center the image vertically and horizontally.
      */
-    public void embedImage(File imageFile, Element canvas, Rectangle2D bbox, boolean center) {
-        if (null == imageFile) {
+    public void embedImage(@Nullable File imageFile, Element canvas, Rectangle2D bbox, boolean center) {
+        if (imageFile == null) {
             return;
         }
-        try {
-            InputStream is = new BufferedInputStream(new FileInputStream(imageFile));
-            String mimeType = URLConnection.guessContentTypeFromStream(is);
-            String format = mimeType.substring(mimeType.indexOf("/") + 1);
+
+        try (InputStream fis = new FileInputStream(imageFile);
+             InputStream bis = new BufferedInputStream(fis)) {
+            String mimeType = URLConnection.guessContentTypeFromStream(bis);
+            String format = mimeType.substring(mimeType.indexOf('/') + 1);
 
             RenderedImage fluffImage = ImageIO.read(imageFile);
             ByteArrayOutputStream bytes = new ByteArrayOutputStream();

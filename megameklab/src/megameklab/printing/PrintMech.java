@@ -1,5 +1,5 @@
 /*
- * MegaMekLab - Copyright (C) 2017 - The MegaMek Team
+ * MegaMekLab - Copyright (c) 2017-2022 - The MegaMek Team. All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -34,6 +34,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -322,8 +323,7 @@ public class PrintMech extends PrintEntity {
             return null;
         }
         Document doc;
-        try {
-            InputStream is = new FileInputStream(f);
+        try (InputStream is = new FileInputStream(f)) {
             DOMImplementation impl = SVGDOMImplementation.getDOMImplementation();
             final String parser = XMLResourceDescriptor.getXMLParserClassName();
             SAXDocumentFactory df = new SAXDocumentFactory(impl, parser);
@@ -332,13 +332,15 @@ public class PrintMech extends PrintEntity {
             LogManager.getLogger().error("Failed to open pip SVG file! Path: " + f.getName());
             return null;
         }
-        if (null == doc) {
+
+        if (doc == null) {
             LogManager.getLogger().error("Failed to open pip SVG file! Path: " + f.getName());
             return null;
+        } else {
+            return doc.getElementsByTagName(SVGConstants.SVG_PATH_TAG);
         }
-        return doc.getElementsByTagName(SVGConstants.SVG_PATH_TAG);
     }
-    
+
     // Mech armor and structure pips require special handling for rear armor and superheavy head armor/IS
     @Override
     protected void drawArmorStructurePips() {
@@ -693,7 +695,7 @@ public class PrintMech extends PrintEntity {
                         name = mech.getCrew().getCrewType().getRoleName(mech.getCrewForCockpitSlot(Mech.LOC_HEAD, cs));
                     }
                 }
-                assert (name != null);
+                Objects.requireNonNull(name);
                 return name.replace("Standard ", "");
             }
         } else {
@@ -711,7 +713,7 @@ public class PrintMech extends PrintEntity {
 
             if (UnitUtil.isTSM(m.getType())) {
                 critName.setLength(0);
-                critName.append("Triple-Strength Myomer");
+                critName.append(m.getType().getName());
             }
 
             if (m.isRearMounted()) {

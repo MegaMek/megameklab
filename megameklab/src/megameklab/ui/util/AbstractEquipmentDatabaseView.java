@@ -262,7 +262,7 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
                     CConfig.saveConfig();
                 }
         );
-        var userInfoText = new JLabel("Note: Ctrl-Click a filter to select only that equipment type.");
+        var userInfoText = new JLabel("Note: Ctrl-Click a filter to add it to the selected filters.");
         userInfoText.setForeground(UIUtil.uiYellow());
         userInfoPanel.add(userInfoText);
         userInfoPanel.add(Box.createHorizontalStrut(15));
@@ -458,10 +458,11 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
 
     /**
      * Called from the type filter toggles (energy, ballistic, etc.) to trigger a re-filter.
-     * Ctrl-clicking deselects all other toggles.
+     * Contrary to standard JToggleButton behavior, normal clicking will deselect all other
+     * filter toggles while Ctrl-clicking adds the clicked filter toggle.
      */
     private void filterToggleHandler(ActionEvent e) {
-        if ((e.getModifiers() & ActionEvent.CTRL_MASK) != 0) {
+        if ((e.getModifiers() & ActionEvent.CTRL_MASK) == 0) {
             filterToggles.keySet().forEach(button -> button.setSelected(e.getSource() == button));
         }
         equipmentSorter.sort();
