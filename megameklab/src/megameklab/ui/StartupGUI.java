@@ -190,7 +190,7 @@ public class StartupGUI extends JPanel {
         int maximumWidth = (int) (0.9 * scaledMonitorSize.width) - splash.getPreferredSize().width;
 
         //no more than 50% of image width
-        if(maximumWidth > (int) (0.5 * splash.getPreferredSize().width)) {
+        if (maximumWidth > (int) (0.5 * splash.getPreferredSize().width)) {
             maximumWidth = (int) (0.5 * splash.getPreferredSize().width);
         }
 
@@ -278,7 +278,7 @@ public class StartupGUI extends JPanel {
         });
         frame.validate();
         frame.pack();
-        //center the screen
+        // center the screen
         frame.setLocationRelativeTo(null);
 
         frame.setVisible(true);

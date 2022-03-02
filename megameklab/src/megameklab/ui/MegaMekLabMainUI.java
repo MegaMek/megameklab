@@ -68,10 +68,10 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
         int w = getSize().width;
         int h = getSize().height;
 
-        if(scaledMonitorW < w) {
+        if (scaledMonitorW < w) {
             w = scaledMonitorW;
         }
-        if(scaledMonitorH < h) {
+        if (scaledMonitorH < h) {
             h = scaledMonitorH;
         }
         Dimension size = new Dimension(w, h);
