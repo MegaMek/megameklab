@@ -90,7 +90,7 @@ public enum EquipmentDatabaseCategory {
                     && !eq.hasFlag(F_PINTLE_TURRET))
                     || (eq instanceof TAGWeapon)
                     || ((eq instanceof AmmoType) && (((AmmoType) eq).getAmmoType() == AmmoType.T_COOLANT_POD))
-                    || (eq.hasFlag(F_AMS))),
+                    || eq.hasFlag(F_AMS)),
 
     AP ("Anti-Personnel",
             (eq, en) -> UnitUtil.isBattleArmorAPWeapon(eq),
