@@ -13,6 +13,7 @@
  */
 package megameklab.ui.dialog;
 
+import megamek.client.ui.swing.util.UIUtil;
 import megamek.common.Entity;
 import megameklab.MegaMekLab;
 import megameklab.ui.MegaMekLabMainUI;
@@ -71,24 +72,12 @@ public class LoadingDialog extends JDialog {
         
         setUndecorated(true);
 
-        // initialize loading image
-        Image imgSplash = getToolkit().getImage(loadScreenImages.floorEntry((int)MegaMekLab.calculateMaxScreenWidth()).getValue());
+        JLabel splash = UIUtil.createSplashComponent(loadScreenImages, frame);
 
-        // wait for loading image to load completely
-        MediaTracker tracker = new MediaTracker(frame);
-        tracker.addImage(imgSplash, 0);
-        try {
-            tracker.waitForID(0);
-        } catch (InterruptedException e) {
-            // really should never come here
-        }
-        // make splash image panel
-        ImageIcon icon = new ImageIcon(imgSplash);
-        JLabel splash = new JLabel(icon);
         getContentPane().setLayout(new BorderLayout());
         getContentPane().add(splash, BorderLayout.CENTER);
 
-        setSize(imgSplash.getWidth(null), imgSplash.getHeight(null));
+        setSize(splash.getPreferredSize());
         this.setLocationRelativeTo(frame);
 
         task = new Task();
@@ -130,6 +119,7 @@ public class LoadingDialog extends JDialog {
                 newUI.reloadTabs();
                 newUI.repaint();
                 newUI.refreshAll();
+                newUI.setLocationRelativeTo(frame);
             }
             return null;
         }

@@ -15,6 +15,7 @@
 package megameklab.ui;
 
 import megamek.client.ui.swing.UnitLoadingDialog;
+import megamek.client.ui.swing.util.UIUtil;
 import megamek.client.ui.swing.widget.MegamekButton;
 import megamek.client.ui.swing.widget.SkinSpecification;
 import megamek.client.ui.swing.widget.SkinXMLHandler;
@@ -67,21 +68,10 @@ public class StartupGUI extends JPanel {
         
         frame = new JFrame("MegaMekLab");
         setBackground(UIManager.getColor("controlHighlight"));
-        
-        imgSplash = getToolkit().getImage(startupScreenImages.floorEntry((int)MegaMekLab.calculateMaxScreenWidth()).getValue());
-        // wait for splash image to load completely
-        MediaTracker tracker = new MediaTracker(frame);
-        tracker.addImage(imgSplash, 0);
-        try {
-            tracker.waitForID(0);
-        } catch (InterruptedException e) {
-            // really should never come here
-        }
-        
-        // make splash image panel
-        ImageIcon icon = new ImageIcon(imgSplash);
-        JLabel panTitle = new JLabel(icon);
-        add(panTitle, BorderLayout.CENTER);
+
+        Dimension scaledMonitorSize = UIUtil.getScaledScreenSize(frame);
+        JLabel splash = UIUtil.createSplashComponent(startupScreenImages, frame);
+        add(splash, BorderLayout.CENTER);
         
         if (skinSpec.hasBackgrounds()) {
             if (skinSpec.backgrounds.size() > 1) {
@@ -189,10 +179,7 @@ public class StartupGUI extends JPanel {
                 System.exit(0);
             }
         });
-        
-        // Use the current monitor so we don't "overflow" computers whose primary
-        // displays aren't as large as their secondary displays.
-        DisplayMode currentMonitor = frame.getGraphicsConfiguration().getDevice().getDisplayMode();
+
         FontMetrics metrics = btnNewDropper.getFontMetrics(btnNewDropper.getFont());
         int width = metrics.stringWidth(btnNewDropper.getText());
         int height = metrics.getHeight();
@@ -200,12 +187,13 @@ public class StartupGUI extends JPanel {
 
         // Strive for no more than ~90% of the screen and use golden ratio to make
         // the button width "look" reasonable.
-        int imageWidth = imgSplash.getWidth(frame);
-        int maximumWidth = (int)(0.9 * currentMonitor.getWidth()) - imageWidth;
+        int maximumWidth = (int) (0.9 * scaledMonitorSize.width) - splash.getPreferredSize().width;
+
         //no more than 50% of image width
-        if(maximumWidth > (int) (0.5 * imageWidth)) {
-            maximumWidth = (int) (0.5 * imageWidth);
+        if (maximumWidth > (int) (0.5 * splash.getPreferredSize().width)) {
+            maximumWidth = (int) (0.5 * splash.getPreferredSize().width);
         }
+
         Dimension minButtonDim = new Dimension((int)(maximumWidth / 1.618), 25);
         if (textDim.getWidth() > minButtonDim.getWidth()) {
             minButtonDim = textDim;
@@ -246,7 +234,7 @@ public class StartupGUI extends JPanel {
         c.weightx = 0.0; c.weighty = 0.0;
         c.gridwidth = 1;
         c.gridheight = 12;
-        add(panTitle, c);
+        add(splash, c);
         // Right Column
         c.insets = new Insets(2, 2, 2, 10);
         c.fill = GridBagConstraints.BOTH;
@@ -290,14 +278,9 @@ public class StartupGUI extends JPanel {
         });
         frame.validate();
         frame.pack();
-        
-        // Determine the location of the window
-        int w = frame.getSize().width;
-        int h = frame.getSize().height;
-        int x = (currentMonitor.getWidth()-w)/2;
-        int y = (currentMonitor.getHeight()-h)/2;
-        frame.setLocation(x, y);
-        
+        // center the screen
+        frame.setLocationRelativeTo(null);
+
         frame.setVisible(true);
     }
     

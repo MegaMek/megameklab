@@ -17,6 +17,7 @@
 package megameklab.ui;
 
 import megamek.MegaMek;
+import megamek.client.ui.swing.util.UIUtil;
 import megamek.common.Entity;
 import megamek.common.preference.PreferenceManager;
 import megameklab.MMLConstants;
@@ -58,25 +59,27 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
     
     protected void setSizeAndLocation() {
         DisplayMode currentMonitor = getGraphicsConfiguration().getDevice().getDisplayMode();
-        
+        int scaledMonitorW = UIUtil.getScaledScreenWidth(currentMonitor);
+        int scaledMonitorH = UIUtil.getScaledScreenHeight(currentMonitor);
+
         //figure out size dimensions
         pack();
+        setLocationRelativeTo(null);
         int w = getSize().width;
         int h = getSize().height;
-        if(currentMonitor.getWidth() < w) {
-            w = currentMonitor.getWidth();
+
+        if (scaledMonitorW < w) {
+            w = scaledMonitorW;
         }
-        if(currentMonitor.getHeight() < h) {
-            h = currentMonitor.getHeight();
+        if (scaledMonitorH < h) {
+            h = scaledMonitorH;
         }
         Dimension size = new Dimension(w, h);
         setSize(size);
         setPreferredSize(size);
-        
-        //set location - put in center not top left
-        int x = (currentMonitor.getWidth()-w)/2;
-        int y = (currentMonitor.getHeight()-h)/2;
-        setLocation(x, y);
+
+        // center on screen
+        setLocationRelativeTo(null);
     }
     
     /**
