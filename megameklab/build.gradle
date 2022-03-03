@@ -26,6 +26,10 @@ sourceSets {
     }
 }
 
+configurations {
+    all*.exclude group: 'xml-apis'
+}
+
 dependencies {
     implementation "org.megamek:megamek${mmBranchTag}:${version}"
 
