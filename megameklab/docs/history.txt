@@ -13,6 +13,7 @@ VERSION HISTORY:
 + PR #1054: LGTM: Fixing final issues
 + Issue #1045: Missing Equipment filters
 + PR #1053: Choose splash image and sizing based on dpi scaled sizes
++ Issue #1022: Add RS ammo display to Mine/Sensor dispensers
 
 0.49.7 (2021-12-18 0300 UTC)
 + Issue #901: Fixing Manual BV
