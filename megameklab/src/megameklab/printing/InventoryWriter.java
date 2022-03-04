@@ -218,8 +218,7 @@ public class InventoryWriter {
             if (m.isWeaponGroup()) {
                 continue;
             }
-            if ((m.getType() instanceof AmmoType)
-                    && (((AmmoType) m.getType()).getAmmoType() != AmmoType.T_COOLANT_POD)) {
+            if ((m.getType() instanceof AmmoType) && (((AmmoType) m.getType()).getAmmoType() != AmmoType.T_COOLANT_POD)) {
                 if (m.getLocation() != Entity.LOC_NONE) {
                     String shortName = m.getType().getShortName().replace("Ammo", "");
                     shortName = shortName.replace("(Clan)", "");
@@ -231,6 +230,10 @@ public class InventoryWriter {
                     ammo.merge("Fusillade", m.getBaseShotsLeft(), Integer::sum);
                 }
                 continue;
+            }
+            if (m.getType().hasFlag(MiscType.F_VEHICLE_MINE_DISPENSER)
+                    || m.getType().hasFlag(MiscType.F_SENSOR_DISPENSER)) {
+                ammo.merge(m.getShortName(), m.getBaseShotsLeft(), Integer::sum);
             }
             if ((m.getType() instanceof AmmoType)
                     || (m.getLocation() == Entity.LOC_NONE)
