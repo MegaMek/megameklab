@@ -17,10 +17,14 @@
 
 /megameklab/.gradle/
 /megameklab/.idea/
+/megameklab/.settings/
 /megameklab/.vscode/
+/megameklab/bin/
 /megameklab/build/
 /megameklab/data/fonts/
 /megameklab/data/mechfiles/units.cache
 /megameklab/logs/
 /megameklab/mmconf/*.preferences
 /megameklab/out/
+/megameklab/.classpath
+/megameklab/.project
