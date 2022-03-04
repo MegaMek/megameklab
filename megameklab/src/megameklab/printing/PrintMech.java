@@ -758,8 +758,7 @@ public class PrintMech extends PrintEntity {
                     critName.trimToSize();
                 }
             }
-            if (m.getType().hasFlag(MiscType.F_VEHICLE_MINE_DISPENSER)
-                    || m.getType().hasFlag(MiscType.F_SENSOR_DISPENSER)) {
+            if (UnitUtil.isMineDispenser(m.getType()) || UnitUtil.isRemoteSensorDispenser(m.getType())) {
                 critName.append(" (").append(m.getBaseShotsLeft()).append(")");
             }
             return critName.toString();

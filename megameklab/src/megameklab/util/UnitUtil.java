@@ -151,6 +151,22 @@ public class UnitUtil {
     }
 
     /**
+     * @param eq The equipmentType to check
+     * @return true if this is a Remote Sensor Dispenser (BA or vehicular)
+     */
+    public static boolean isRemoteSensorDispenser(EquipmentType eq) {
+        return (eq instanceof MiscType) && eq.hasFlag(MiscType.F_SENSOR_DISPENSER);
+    }
+
+    /**
+     * @param eq The equipmentType to check
+     * @return true if this is a Mine Dispenser (BA or vehicular)
+     */
+    public static boolean isMineDispenser(EquipmentType eq) {
+        return (eq instanceof MiscType) && eq.hasFlag(MiscType.F_VEHICLE_MINE_DISPENSER);
+    }
+
+    /**
      * tells if EquipmentType is MASC
      *
      * @param eq

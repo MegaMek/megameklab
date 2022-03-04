@@ -231,8 +231,7 @@ public class InventoryWriter {
                 }
                 continue;
             }
-            if (m.getType().hasFlag(MiscType.F_VEHICLE_MINE_DISPENSER)
-                    || m.getType().hasFlag(MiscType.F_SENSOR_DISPENSER)) {
+            if (UnitUtil.isMineDispenser(m.getType()) || UnitUtil.isRemoteSensorDispenser(m.getType())) {
                 ammo.merge(m.getShortName(), m.getBaseShotsLeft(), Integer::sum);
             }
             if ((m.getType() instanceof AmmoType)
