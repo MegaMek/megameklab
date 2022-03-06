@@ -81,7 +81,7 @@ jobs:
       uses: actions/upload-artifact@v2.2.4
       if: always() && matrix.os == 'ubuntu-latest'
       with:
-        name: release-nix-mac-${{ matrix.java-distribution }}-jdk${{ matrix.java-version }}
+        name: mml-release-nix-mac-${{ matrix.java-distribution }}-jdk${{ matrix.java-version }}
         path: megameklab/megameklab/build/distributions/*.tar
 
     # Put the Windows Release in an artifact
@@ -91,5 +91,5 @@ jobs:
       uses: actions/upload-artifact@v2.2.4
       if: always() && matrix.os == 'windows-latest'
       with:
-        name: release-win-${{ matrix.java-distribution }}-jdk${{ matrix.java-version }}
+        name: mml-release-win-${{ matrix.java-distribution }}-jdk${{ matrix.java-version }}
         path: megameklab/megameklab/build/distributions/*.zip
