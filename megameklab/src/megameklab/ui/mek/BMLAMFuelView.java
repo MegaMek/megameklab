@@ -34,6 +34,8 @@ import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
+import static megamek.common.EquipmentTypeLookup.LAM_FUEL_TANK;
+
 /**
  * This view block allows entering additional fuel tanks for LandAirMeks
  *
@@ -41,15 +43,9 @@ import java.util.stream.Collectors;
  */
 public class BMLAMFuelView extends IView implements ChangeListener {
 
-    private static final EquipmentType FUEL_TANK = MiscType.get(EquipmentTypeLookup.LAM_FUEL_TANK);
+    private static final EquipmentType FUEL_TANK = MiscType.get(LAM_FUEL_TANK);
 
     private final List<MekBuildListener> listeners = new CopyOnWriteArrayList<>();
-    public void addListener(MekBuildListener l) {
-        listeners.add(l);
-    }
-    public void removeListener(MekBuildListener l) {
-        listeners.remove(l);
-    }
 
     private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl());
     private final SpinnerNumberModel fuelTonsSpnModel = new SpinnerNumberModel(0, 0, 84, 1);
@@ -88,9 +84,15 @@ public class BMLAMFuelView extends IView implements ChangeListener {
         updateFuelPointsLabel();
     }
 
-    /** Returns the current number of LAM Fuel Tanks on the Mek, including unallocated. Returns 0 for non-LAM. */
+    /**
+     * Returns the current number of LAM Fuel Tanks on the Mek, including unallocated.
+     * Always returns 0 for non-LAM.
+     *
+     * @param mek The Mek unit
+     * @return The Mek's current LAM Fuel Tank count
+     */
     private int fuelTanks(Mech mek) {
-        return (mek instanceof LandAirMech) ? mek.countWorkingMisc(EquipmentTypeLookup.LAM_FUEL_TANK, -1) : 0;
+        return (mek instanceof LandAirMech) ? mek.countWorkingMisc(LAM_FUEL_TANK, -1) : 0;
     }
 
     private void updateFuelPointsLabel() {
@@ -152,4 +154,11 @@ public class BMLAMFuelView extends IView implements ChangeListener {
         }
     }
 
+    public void addListener(MekBuildListener l) {
+        listeners.add(l);
+    }
+
+    public void removeListener(MekBuildListener l) {
+        listeners.remove(l);
+    }
 }
