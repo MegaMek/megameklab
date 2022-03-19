@@ -84,7 +84,6 @@ public class PMStatusBar extends ITab {
         }
         long currentCrits = getProtomech().getEquipment().stream()
                 .filter(m -> TestProtomech.requiresSlot(m.getType())).count();
-        long currentCost = Math.round(getProtomech().getCost(false));
 
         currentTonnage = testEntity.calculateWeight() * 1000;
 
@@ -99,7 +98,9 @@ public class PMStatusBar extends ITab {
         bvLabel.setText("BV: " + bv);
         bvLabel.setToolTipText("BV 2.0");
 
-        cost.setText("Cost: " + formatter.format(currentCost) + " C-bills");
+        cost.setText("Dry Cost: " + formatter.format(Math.round(getEntity().getCost(true))) + " C-bills");
+        cost.setToolTipText("The dry cost of the unit (without ammo). The unit's full cost is "
+                + formatter.format(Math.round(getEntity().getCost(false))) + " C-bills.");
 
         crits.setText("Criticals: " +  currentCrits + "/" + maxCrits);
         if(currentCrits > maxCrits) {
