@@ -83,7 +83,6 @@ public class CIStatusBar extends ITab {
         DecimalFormat roundFormat = new DecimalFormat("#.##");
         double currentTonnage;
         int bv = getInfantry().calculateBattleValue();
-        long currentCost = Math.round(getInfantry().getCost(false));
 
         currentTonnage = getInfantry().getWeight();
 
@@ -96,7 +95,10 @@ public class CIStatusBar extends ITab {
         bvLabel.setText("BV: " + bv);
         bvLabel.setToolTipText("BV 2.0");
 
-        cost.setText("Cost: " + formatter.format(currentCost) + " C-bills");
+        cost.setText("Dry Cost: " + formatter.format(Math.round(getEntity().getCost(true))) + " C-bills");
+        cost.setToolTipText("The dry cost of the unit (without ammo). The unit's full cost is "
+                + formatter.format(Math.round(getEntity().getCost(false))) + " C-bills.");
+
         String str = UnitUtil.validateUnit(getInfantry());
         invalid.setVisible(!str.isEmpty());
         invalid.setToolTipText("<html>" + str.replaceAll("\n", "<br/>") + "</html>");
