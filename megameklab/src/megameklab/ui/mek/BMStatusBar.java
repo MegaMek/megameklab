@@ -88,7 +88,6 @@ public class BMStatusBar extends ITab {
             maxCrits = 78;
         }
         int currentCrits = UnitUtil.countUsedCriticals(getMech());
-        long currentCost = Math.round(getMech().getCost(false));
 
         testEntity = new TestMech(getMech(), entityVerifier.mechOption, null);
 
@@ -106,7 +105,9 @@ public class BMStatusBar extends ITab {
         bvLabel.setText("BV: " + bv);
         bvLabel.setToolTipText("BV 2.0");
 
-        cost.setText("Cost: " + formatter.format(currentCost) + " C-bills");
+        cost.setText("Dry Cost: " + formatter.format(Math.round(getEntity().getCost(true))) + " C-bills");
+        cost.setToolTipText("The dry cost of the unit (without ammo). The unit's full cost is "
+                + formatter.format(Math.round(getEntity().getCost(false))) + " C-bills.");
 
         crits.setText("Criticals: " +  currentCrits + " / " + maxCrits);
         crits.setForeground(currentCrits > maxCrits ? GUIPreferences.getInstance().getWarningColor() : null);

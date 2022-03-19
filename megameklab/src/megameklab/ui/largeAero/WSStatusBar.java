@@ -84,8 +84,7 @@ public class WSStatusBar extends ITab {
         double tonnage = getJumpship().getWeight();
         double currentTonnage;
         int bv = getJumpship().calculateBattleValue();
-        long currentCost = Math.round(getJumpship().getCost(false));
-        
+
         TestAdvancedAerospace testAdvAero = new TestAdvancedAerospace(getJumpship(), entityVerifier.aeroOption, null);
         currentTonnage = testAdvAero.calculateWeight();
         currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getJumpship());
@@ -116,7 +115,10 @@ public class WSStatusBar extends ITab {
         bvLabel.setText("BV: " + bv);
         bvLabel.setToolTipText("BV 2.0");
 
-        cost.setText("Cost: " + formatter.format(currentCost) + " C-bills");
+        cost.setText("Dry Cost: " + formatter.format(Math.round(getEntity().getCost(true))) + " C-bills");
+        cost.setToolTipText("The dry cost of the unit (without ammo). The unit's full cost is "
+                + formatter.format(Math.round(getEntity().getCost(false))) + " C-bills.");
+
         StringBuffer sb = new StringBuffer();
         invalid.setVisible(!testAdvAero.correctEntity(sb));
         invalid.setToolTipText("<html>" + sb.toString().replaceAll("\n", "<br/>") + "</html>");

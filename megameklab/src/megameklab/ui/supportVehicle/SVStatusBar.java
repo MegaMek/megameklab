@@ -131,7 +131,6 @@ class SVStatusBar extends ITab {
         currentTonnage = testEntity.calculateWeight();
 
         currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(eSource.getEntity());
-        long currentCost = Math.round(eSource.getEntity().getCost(false));
 
         if (eSource.getEntity().getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT) {
             tons.setText(String.format("Tonnage: %.0f/%.0f (%.0f Remaining)",
@@ -158,7 +157,9 @@ class SVStatusBar extends ITab {
         bvLabel.setText("BV: " + bv);
         bvLabel.setToolTipText("BV 2.0");
 
-        cost.setText("Cost: " + formatter.format(currentCost) + " C-bills");
+        cost.setText("Dry Cost: " + formatter.format(Math.round(getEntity().getCost(true))) + " C-bills");
+        cost.setToolTipText("The dry cost of the unit (without ammo). The unit's full cost is "
+                + formatter.format(Math.round(getEntity().getCost(false))) + " C-bills.");
 
         move.setText("Movement: " + walk + "/" + run + "/" + jump);
         move.setToolTipText("Walk/Run/Jump MP");

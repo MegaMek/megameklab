@@ -103,7 +103,6 @@ public class BAStatusBar extends ITab {
         final double maxKilos = getBattleArmor().getTrooperWeight() * 1000;
         double currentKilos;
         final int bv = getBattleArmor().calculateBattleValue();
-        final long currentCost = Math.round(getBattleArmor().getCost(false));
 
         TestBattleArmor testBA = new TestBattleArmor(getBattleArmor(), entityVerifier.baOption,
                 null);
@@ -126,7 +125,10 @@ public class BAStatusBar extends ITab {
         move.setText("Movement: " + walk + "/" + jump);
         move.setToolTipText("Walk/Jump MP");
 
-        cost.setText("Squad Cost: " + formatter.format(currentCost) + " C-bills");
+        cost.setText("Dry Cost: " + formatter.format(Math.round(getEntity().getCost(true))) + " C-bills");
+        cost.setToolTipText("The dry cost of the unit (without ammo). The unit's full cost is "
+                + formatter.format(Math.round(getEntity().getCost(false))) + " C-bills.");
+
         StringBuffer sb = new StringBuffer();
         invalid.setVisible(!testBA.correctEntity(sb));
         invalid.setToolTipText("<html>" + sb.toString().replaceAll("\n", "<br/>") + "</html>");
