@@ -94,16 +94,21 @@ public class PrintCompositeTankSheet extends PrintRecordSheet {
         double ratio = includeReferenceCharts() ? TABLE_RATIO : 1.0;
         RecordSheetOptions subOptions = new RecordSheetOptions(options);
         subOptions.setReferenceCharts(false);
-        PrintRecordSheet sheet = new PrintTank(tank1, getFirstPage(), subOptions);
-        sheet.createDocument(startPage, pageFormat, false);
-        Element g = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
-        g.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
-                String.format("%s(%f 0 0 %f %f %f)", SVGConstants.SVG_MATRIX_VALUE,
-                        ratio, ratio, pageFormat.getImageableX(), pageFormat.getImageableY()));
-        sheet.hideElement(FOOTER);
-        g.appendChild(getSVGDocument().importNode(sheet.getSVGDocument().getDocumentElement(), true));
-        getSVGDocument().getDocumentElement().appendChild(g);
+        Element g;
 
+        // First Sheet
+        PrintRecordSheet sheet = new PrintTank(tank1, getFirstPage(), subOptions);
+        if (sheet.createDocument(startPage, pageFormat, false)) {
+            g = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
+            g.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
+                    String.format("%s(%f 0 0 %f %f %f)", SVGConstants.SVG_MATRIX_VALUE, ratio,
+                            ratio, pageFormat.getImageableX(), pageFormat.getImageableY()));
+            sheet.hideElement(FOOTER);
+            g.appendChild(getSVGDocument().importNode(sheet.getSVGDocument().getDocumentElement(), true));
+            getSVGDocument().getDocumentElement().appendChild(g);
+        }
+
+        // Second Sheet
         if (tank2 != null) {
             sheet = new PrintTank(tank2, getFirstPage(), subOptions);
         } else if (tank1 instanceof VTOL) {
@@ -111,14 +116,18 @@ public class PrintCompositeTankSheet extends PrintRecordSheet {
         } else {
             sheet = new TankTables(options);
         }
-        sheet.createDocument(startPage, pageFormat, false);
-        g = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
-        g.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
-                String.format("%s(%f 0 0 %f %f %f)", SVGConstants.SVG_MATRIX_VALUE,
-                        ratio, ratio, pageFormat.getImageableX(),
-                        pageFormat.getImageableY() + pageFormat.getImageableHeight() * 0.5 * ratio));
-        g.appendChild(getSVGDocument().importNode(sheet.getSVGDocument().getDocumentElement(), true));
-        getSVGDocument().getDocumentElement().appendChild(g);
+
+        if (sheet.createDocument(startPage, pageFormat, false)) {
+            g = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
+            g.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
+                    String.format("%s(%f 0 0 %f %f %f)", SVGConstants.SVG_MATRIX_VALUE, ratio,
+                            ratio, pageFormat.getImageableX(),
+                            pageFormat.getImageableY() + pageFormat.getImageableHeight() * 0.5 * ratio));
+            g.appendChild(getSVGDocument().importNode(sheet.getSVGDocument().getDocumentElement(), true));
+            getSVGDocument().getDocumentElement().appendChild(g);
+        }
+
+        // Reference Charts
         if (includeReferenceCharts()) {
             addReferenceCharts(pageFormat);
         }

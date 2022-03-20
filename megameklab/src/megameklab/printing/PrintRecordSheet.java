@@ -27,13 +27,11 @@ import org.apache.batik.dom.util.SAXDocumentFactory;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.svggen.SVGGeneratorContext;
 import org.apache.batik.svggen.SVGGraphics2D;
-import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLResourceDescriptor;
 import org.apache.fop.configuration.Configuration;
-import org.apache.fop.configuration.ConfigurationException;
 import org.apache.fop.configuration.DefaultConfigurationBuilder;
 import org.apache.fop.svg.PDFTranscoder;
 import org.apache.logging.log4j.LogManager;
@@ -45,7 +43,6 @@ import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.svg.SVGRectElement;
 import org.w3c.dom.xpath.XPathEvaluator;
 import org.w3c.dom.xpath.XPathResult;
-import org.xml.sax.SAXException;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -283,9 +280,14 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         return loadSVG(getSVGDirectoryName(), getSVGFileName(pageIndex - firstPage));
     }
 
-    protected void createDocument(int pageIndex, PageFormat pageFormat, boolean addMargin) {
+    /**
+     * @return true if the document was created successfully, otherwise false
+     */
+    protected boolean createDocument(int pageIndex, PageFormat pageFormat, boolean addMargin) {
         setSVGDocument(loadTemplate(pageIndex, pageFormat));
-
+        if (getSVGDocument() == null) {
+            return false;
+        }
         subFonts((SVGDocument) getSVGDocument());
         subColorElements();
         SVGGeneratorContext context = SVGGeneratorContext.createDefault(getSVGDocument());
@@ -311,13 +313,16 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             }
         }
         processImage(pageIndex - firstPage, pageFormat);
+        return true;
     }
 
     @Override
     public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) {
         Graphics2D g2d = (Graphics2D) graphics;
         if (null != g2d) {
-            createDocument(pageIndex, pageFormat, true);
+            if (!createDocument(pageIndex, pageFormat, true)) {
+                return NO_SUCH_PAGE;
+            }
             GraphicsNode node = build();
             node.paint(g2d);
             /* Testing code that outputs the generated svg
@@ -337,10 +342,12 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         return PAGE_EXISTS;
     }
 
-    public InputStream exportPDF(int pageNumber, PageFormat pageFormat) throws TranscoderException, SAXException, IOException, ConfigurationException {
-        createDocument(pageNumber + firstPage, pageFormat, true);
+    public @Nullable InputStream exportPDF(int pageNumber, PageFormat pageFormat) throws Exception {
+        if (!createDocument(pageNumber + firstPage, pageFormat, true)) {
+            return null;
+        }
         DefaultConfigurationBuilder cfgBuilder = new DefaultConfigurationBuilder();
-        Configuration cfg = cfgBuilder.build(getClass().getResourceAsStream("fop-config.xml"));
+        Configuration cfg = cfgBuilder.build(getClass().getResourceAsStream("fop-config.xml")); // TODO : remove inline filename
         PDFTranscoder transcoder = new PDFTranscoder();
         transcoder.configure(cfg);
         transcoder.addTranscodingHint(PDFTranscoder.KEY_AUTO_FONTS, false);

@@ -73,8 +73,9 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
             Element g = getSVGDocument().getElementById("unit_" + count);
             if (g != null) {
                 PrintEntity sheet = getBlockFor(entity, count);
-                sheet.createDocument(startPage, pageFormat, false);
-                g.appendChild(getSVGDocument().importNode(sheet.getSVGDocument().getDocumentElement(), true));
+                if (sheet.createDocument(startPage, pageFormat, false)) {
+                    g.appendChild(getSVGDocument().importNode(sheet.getSVGDocument().getDocumentElement(), true));
+                }
             }
             count++;
         }
