@@ -61,16 +61,6 @@ public class PrintMech extends PrintEntity {
         this.mech = mech;
     }
     
-    /**
-     * Creates an SVG object for the record sheet using the global printing options
-     * 
-     * @param mech The mech to print
-     * @param startPage The print job page number for this sheet
-     */
-    public PrintMech(Mech mech, int startPage) {
-        this(mech, startPage, new RecordSheetOptions());
-    }
-    
     @Override
     protected String getSVGFileName(int pageNumber) {
         String base;
