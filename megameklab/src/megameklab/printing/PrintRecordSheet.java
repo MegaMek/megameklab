@@ -208,14 +208,12 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         Element element = svgDocument.getElementById(RS_TEMPLATE);
         if (element != null) {
             String style = element.getAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE);
-            if (style != null) {
-                for (String field : style.split(";")) {
-                    if (field.startsWith(MML_COLOR_ELEMENTS + ":")) {
-                        String[] ids = field.substring(field.indexOf(":") + 1).split(",");
-                        for (String id : ids) {
-                            hideElement(id + "Color", !options.useColor());
-                            hideElement(id + "BW", options.useColor());
-                        }
+            for (String field : style.split(";")) {
+                if (field.startsWith(MML_COLOR_ELEMENTS + ":")) {
+                    String[] ids = field.substring(field.indexOf(":") + 1).split(",");
+                    for (String id : ids) {
+                        hideElement(id + "Color", !options.useColor());
+                        hideElement(id + "BW", options.useColor());
                     }
                 }
             }
@@ -228,21 +226,23 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      * @param filename The name of the SVG file
      * @return The document object
      */
-    static @Nullable Document loadSVG(String dirName, String filename) {
-        File f = new File(dirName, filename);
+    private static @Nullable Document loadSVG(String directoryPath, String filename) {
+        final File file = new File(directoryPath, filename);
+
         Document svgDocument = null;
-        try (InputStream is = new FileInputStream(f)) {
-            DOMImplementation impl = SVGDOMImplementation.getDOMImplementation();
-            final String parser = XMLResourceDescriptor.getXMLParserClassName();
-            SAXDocumentFactory df = new SAXDocumentFactory(impl, parser);
-            svgDocument = df.createDocument(f.toURI().toASCIIString(), is);
+        try (InputStream is = new FileInputStream(file)) {
+            SAXDocumentFactory df = new SAXDocumentFactory(SVGDOMImplementation.getDOMImplementation(),
+                    XMLResourceDescriptor.getXMLParserClassName());
+            svgDocument = df.createDocument(file.toURI().toASCIIString(), is);
         } catch (Exception ex) {
             LogManager.getLogger().error("", ex);
         }
 
         if (svgDocument == null) {
-            LogManager.getLogger().error("Failed to open SVG file! Path: data/images/recordsheets/" + filename);
+            LogManager.getLogger().error(String.format("Failed to open SVG file! Path: %s/%s", directoryPath, filename));
+            return null;
         }
+
         return svgDocument;
     }
 
@@ -268,43 +268,45 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      * which is then filled in using the individual record sheet templates.
      *
      * @param pageIndex   The index of this page in the print job
-     * @param pageFormat  The page format seleted by the user
+     * @param pageFormat  The page format selected by the user
      * @return            An SVG document for one page of the print job
      */
-    @Nullable Document loadTemplate(int pageIndex, PageFormat pageFormat) {
+    protected @Nullable Document loadTemplate(int pageIndex, PageFormat pageFormat) {
         return loadSVG(getSVGDirectoryName(),
                 getSVGFileName(pageIndex - firstPage));
     }
 
-    void createDocument(int pageIndex, PageFormat pageFormat, boolean addMargin) {
+    protected void createDocument(int pageIndex, PageFormat pageFormat, boolean addMargin) {
         svgDocument = loadTemplate(pageIndex, pageFormat);
-        if (null != svgDocument) {
-            subFonts((SVGDocument) svgDocument);
-            subColorElements();
-            SVGGeneratorContext context = SVGGeneratorContext.createDefault(svgDocument);
-            svgGenerator = new SVGGraphics2D(context, false);
-            double ratio = Math.min(pageFormat.getImageableWidth() / (options.getPaperSize().pxWidth - 36),
-                    pageFormat.getPaper().getImageableHeight() / (options.getPaperSize().pxHeight - 36));
-            if ((pageIndex == firstPage) && includeReferenceCharts()) {
-                ratio *= TABLE_RATIO;
-            }
-            Element svgRoot = svgDocument.getDocumentElement();
-            svgRoot.setAttributeNS(null, SVGConstants.SVG_WIDTH_ATTRIBUTE, String.valueOf(pageFormat.getWidth()));
-            svgRoot.setAttributeNS(null, SVGConstants.SVG_HEIGHT_ATTRIBUTE, String.valueOf(pageFormat.getHeight()));
-            Element g = svgDocument.getElementById(RS_TEMPLATE);
-            if (g != null) {
-                if (addMargin) {
-                    g.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
-                            String.format("%s(%f 0 0 %f %f %f)", SVGConstants.SVG_MATRIX_VALUE,
-                                    ratio, ratio, pageFormat.getImageableX(), pageFormat.getImageableY()));
-                } else {
-                    g.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
-                            String.format("%s(%f %f)", SVGConstants.SVG_SCALE_ATTRIBUTE,
-                                    ratio, ratio));
-                }
-            }
-            processImage(pageIndex - firstPage, pageFormat);
+        if (svgDocument == null) {
+            return;
         }
+
+        subFonts((SVGDocument) svgDocument);
+        subColorElements();
+        SVGGeneratorContext context = SVGGeneratorContext.createDefault(svgDocument);
+        svgGenerator = new SVGGraphics2D(context, false);
+        double ratio = Math.min(pageFormat.getImageableWidth() / (options.getPaperSize().pxWidth - 36),
+                pageFormat.getPaper().getImageableHeight() / (options.getPaperSize().pxHeight - 36));
+        if ((pageIndex == firstPage) && includeReferenceCharts()) {
+            ratio *= TABLE_RATIO;
+        }
+        Element svgRoot = svgDocument.getDocumentElement();
+        svgRoot.setAttributeNS(null, SVGConstants.SVG_WIDTH_ATTRIBUTE, String.valueOf(pageFormat.getWidth()));
+        svgRoot.setAttributeNS(null, SVGConstants.SVG_HEIGHT_ATTRIBUTE, String.valueOf(pageFormat.getHeight()));
+        Element g = svgDocument.getElementById(RS_TEMPLATE);
+        if (g != null) {
+            if (addMargin) {
+                g.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
+                        String.format("%s(%f 0 0 %f %f %f)", SVGConstants.SVG_MATRIX_VALUE,
+                                ratio, ratio, pageFormat.getImageableX(), pageFormat.getImageableY()));
+            } else {
+                g.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
+                        String.format("%s(%f %f)", SVGConstants.SVG_SCALE_ATTRIBUTE,
+                                ratio, ratio));
+            }
+        }
+        processImage(pageIndex - firstPage, pageFormat);
     }
 
     @Override

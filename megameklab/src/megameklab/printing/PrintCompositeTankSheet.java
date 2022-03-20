@@ -80,7 +80,7 @@ public class PrintCompositeTankSheet extends PrintRecordSheet {
     }
 
     @Override
-    Document loadTemplate(int pageIndex, PageFormat pageFormat) {
+    protected @Nullable Document loadTemplate(int pageIndex, PageFormat pageFormat) {
         DOMImplementation domImpl = SVGDOMImplementation.getDOMImplementation();
         Document doc = domImpl.createDocument(svgNS, SVGConstants.SVG_SVG_TAG, null);
         Element svgRoot = doc.getDocumentElement();
