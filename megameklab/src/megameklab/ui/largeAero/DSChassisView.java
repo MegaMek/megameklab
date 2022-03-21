@@ -80,7 +80,7 @@ public class DSChassisView extends BuildView implements ActionListener, ChangeLi
     }
     
     public void initUI() {
-        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl()); //$NON-NLS-1$
+        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl());
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         cbBaseType.setModel(new DefaultComboBoxModel<>(resourceMap.getString("DropshipChassisView.cbBaseType.values").split(",")));
@@ -88,28 +88,28 @@ public class DSChassisView extends BuildView implements ActionListener, ChangeLi
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        add(createLabel(resourceMap.getString("DropshipChassisView.spnTonnage.text"), labelSize), gbc); //$NON-NLS-1$
+        add(createLabel(resourceMap.getString("DropshipChassisView.spnTonnage.text"), labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
-        spnTonnage.setToolTipText(resourceMap.getString("DropshipChassisView.spnTonnage.tooltip")); //$NON-NLS-1$
+        spnTonnage.setToolTipText(resourceMap.getString("DropshipChassisView.spnTonnage.tooltip"));
         add(spnTonnage, gbc);
         spnTonnage.addChangeListener(this);
         
-        chkMilitary.setText(resourceMap.getString("DropshipChassisView.chkFunction.text")); //$NON-NLS-1$
+        chkMilitary.setText(resourceMap.getString("DropshipChassisView.chkFunction.text"));
         gbc.gridx = 2;
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.NONE;
         gbc.weightx = 0.0;
-        chkMilitary.setToolTipText(resourceMap.getString("DropshipChassisView.chkFunction.tooltip")); //$NON-NLS-1$
+        chkMilitary.setToolTipText(resourceMap.getString("DropshipChassisView.chkFunction.tooltip"));
         add(chkMilitary, gbc);
         chkMilitary.addActionListener(this);
 
-        chkKFBoom.setText(resourceMap.getString("DropshipChassisView.chkKFBoom.text")); //$NON-NLS-1$
+        chkKFBoom.setText(resourceMap.getString("DropshipChassisView.chkKFBoom.text"));
         gbc.gridx = 3;
         gbc.gridy = 0;
-        chkKFBoom.setToolTipText(resourceMap.getString("DropshipChassisView.chkKFBoom.tooltip")); //$NON-NLS-1$
+        chkKFBoom.setToolTipText(resourceMap.getString("DropshipChassisView.chkKFBoom.tooltip"));
         add(chkKFBoom, gbc);
         chkKFBoom.addActionListener(this);
         chkKFBoom.setVisible(false);
@@ -117,36 +117,36 @@ public class DSChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap.getString("DropshipChassisView.cbBaseType.text"), labelSize),gbc); //$NON-NLS-1$
+        add(createLabel(resourceMap.getString("DropshipChassisView.cbBaseType.text"), labelSize),gbc);
         gbc.gridx = 1;
         gbc.gridy = 2;
         gbc.gridwidth = 3;
         setFieldSize(cbBaseType, controlSize);
-        cbBaseType.setToolTipText(resourceMap.getString("DropshipChassisView.cbBaseType.tooltip")); //$NON-NLS-1$
+        cbBaseType.setToolTipText(resourceMap.getString("DropshipChassisView.cbBaseType.tooltip"));
         add(cbBaseType, gbc);
         cbBaseType.addActionListener(this);
 
         gbc.gridx = 0;
         gbc.gridy = 3;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap.getString("DropshipChassisView.cbChassisType.text"), labelSize),gbc); //$NON-NLS-1$
+        add(createLabel(resourceMap.getString("DropshipChassisView.cbChassisType.text"), labelSize),gbc);
         gbc.gridx = 1;
         gbc.gridy = 3;
         gbc.gridwidth = 3;
         setFieldSize(cbChassisType, controlSize);
-        cbChassisType.setToolTipText(resourceMap.getString("DropshipChassisView.cbChassisType.tooltip")); //$NON-NLS-1$
+        cbChassisType.setToolTipText(resourceMap.getString("DropshipChassisView.cbChassisType.tooltip"));
         add(cbChassisType, gbc);
         cbChassisType.addActionListener(this);
 
         gbc.gridx = 0;
         gbc.gridy = 4;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap.getString("DropshipChassisView.spnSI.text"), labelSize),gbc); //$NON-NLS-1$
+        add(createLabel(resourceMap.getString("DropshipChassisView.spnSI.text"), labelSize),gbc);
         gbc.gridx = 1;
         gbc.gridy = 4;
         gbc.gridwidth = 3;
         setFieldSize(spnSI, controlSize);
-        spnSI.setToolTipText(resourceMap.getString("DropshipChassisView.spnSI.tooltip")); //$NON-NLS-1$
+        spnSI.setToolTipText(resourceMap.getString("DropshipChassisView.spnSI.tooltip"));
         add(spnSI, gbc);
         spnSI.addChangeListener(this);
         

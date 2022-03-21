@@ -63,7 +63,7 @@ public class LoadingDialog extends JDialog {
      * @param en - a specific <code>Entity</code> to load in rather than default
      */
     public LoadingDialog(JFrame frame, long type, boolean primitive, boolean industrial, Entity en) {
-        super(frame, "MML Loading"); //$NON-NLS-1$
+        super(frame, "MML Loading");
         this.frame = frame;
         this.type = type;
         this.primitive = primitive;

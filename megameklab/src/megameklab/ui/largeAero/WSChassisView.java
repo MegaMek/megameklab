@@ -87,7 +87,7 @@ public class WSChassisView extends BuildView implements ActionListener, ChangeLi
     }
     
     public void initUI() {
-        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl()); //$NON-NLS-1$
+        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl());
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         cbBaseType.setModel(new DefaultComboBoxModel<>(resourceMap.getString("AdvAeroChassisView.cbBaseType.values").split(",")));
@@ -97,86 +97,86 @@ public class WSChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 2;
-        add(createLabel(resourceMap.getString("AdvAeroChassisView.spnTonnage.text"), labelSize), gbc); //$NON-NLS-1$
+        add(createLabel(resourceMap.getString("AdvAeroChassisView.spnTonnage.text"), labelSize), gbc);
         gbc.gridx = 2;
         gbc.gridy = 0;
         gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        spnTonnage.setToolTipText(resourceMap.getString("AdvAeroChassisView.spnTonnage.tooltip")); //$NON-NLS-1$
+        spnTonnage.setToolTipText(resourceMap.getString("AdvAeroChassisView.spnTonnage.tooltip"));
         add(spnTonnage, gbc);
         spnTonnage.addChangeListener(this);
         
-        chkSail.setText(resourceMap.getString("AdvAeroChassisView.chkSail.text")); //$NON-NLS-1$
+        chkSail.setText(resourceMap.getString("AdvAeroChassisView.chkSail.text"));
         gbc.gridx = 4;
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.NONE;
         gbc.gridwidth = 1;
-        chkSail.setToolTipText(resourceMap.getString("AdvAeroChassisView.chkSail.tooltip")); //$NON-NLS-1$
+        chkSail.setToolTipText(resourceMap.getString("AdvAeroChassisView.chkSail.tooltip"));
         add(chkSail, gbc);
         chkSail.addActionListener(this);
 
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridwidth = 2;
-        add(createLabel(resourceMap.getString("AdvAeroChassisView.cbBaseType.text"), labelSize),gbc); //$NON-NLS-1$
+        add(createLabel(resourceMap.getString("AdvAeroChassisView.cbBaseType.text"), labelSize),gbc);
         gbc.gridx = 2;
         gbc.gridy = 1;
         gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         setFieldSize(cbBaseType, controlSize);
-        cbBaseType.setToolTipText(resourceMap.getString("AdvAeroChassisView.cbBaseType.tooltip")); //$NON-NLS-1$
+        cbBaseType.setToolTipText(resourceMap.getString("AdvAeroChassisView.cbBaseType.tooltip"));
         add(cbBaseType, gbc);
         cbBaseType.addActionListener(this);
 
-        chkMilitary.setText(resourceMap.getString("AdvAeroChassisView.chkMilitary.text")); //$NON-NLS-1$
+        chkMilitary.setText(resourceMap.getString("AdvAeroChassisView.chkMilitary.text"));
         gbc.gridx = 4;
         gbc.gridy = 1;
         gbc.fill = GridBagConstraints.NONE;
         gbc.gridwidth = 1;
-        chkMilitary.setToolTipText(resourceMap.getString("AdvAeroChassisView.chkMilitary.tooltip")); //$NON-NLS-1$
+        chkMilitary.setToolTipText(resourceMap.getString("AdvAeroChassisView.chkMilitary.tooltip"));
         add(chkMilitary, gbc);
         chkMilitary.addActionListener(this);
 
-        chkLFBattery.setText(resourceMap.getString("AdvAeroChassisView.chkLFBattery.text")); //$NON-NLS-1$
+        chkLFBattery.setText(resourceMap.getString("AdvAeroChassisView.chkLFBattery.text"));
         gbc.gridx = 2;
         gbc.gridy = 2;
         gbc.fill = GridBagConstraints.NONE;
         gbc.gridwidth = 2;
-        chkLFBattery.setToolTipText(resourceMap.getString("AdvAeroChassisView.chkLFBattery.tooltip")); //$NON-NLS-1$
+        chkLFBattery.setToolTipText(resourceMap.getString("AdvAeroChassisView.chkLFBattery.tooltip"));
         add(chkLFBattery, gbc);
         chkLFBattery.addActionListener(this);
 
         gbc.gridx = 0;
         gbc.gridy = 3;
-        lblRange.setText(resourceMap.getString("AdvAeroChassisView.spnRange.text")); //$NON-NLS-1$
+        lblRange.setText(resourceMap.getString("AdvAeroChassisView.spnRange.text"));
         gbc.gridwidth = 2;
         add(lblRange, gbc);
         gbc.gridx = 2;
         gbc.gridy = 3;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridwidth = 2;
-        spnRange.setToolTipText(resourceMap.getString("AdvAeroChassisView.spnRange.tooltip")); //$NON-NLS-1$
+        spnRange.setToolTipText(resourceMap.getString("AdvAeroChassisView.spnRange.tooltip"));
         add(spnRange, gbc);
         spnRange.addChangeListener(this);
         
         gbc.gridx = 0;
         gbc.gridy = 4;
         gbc.gridwidth = 2;
-        add(createLabel(resourceMap.getString("AdvAeroChassisView.spnSI.text"), labelSize),gbc); //$NON-NLS-1$
+        add(createLabel(resourceMap.getString("AdvAeroChassisView.spnSI.text"), labelSize),gbc);
         gbc.gridx = 2;
         gbc.gridy = 4;
         gbc.gridwidth = 2;
         setFieldSize(spnSI, controlSize);
-        spnSI.setToolTipText(resourceMap.getString("AdvAeroChassisView.spnSI.tooltip")); //$NON-NLS-1$
+        spnSI.setToolTipText(resourceMap.getString("AdvAeroChassisView.spnSI.tooltip"));
         add(spnSI, gbc);
         spnSI.addChangeListener(this);
 
-        chkModular.setText(resourceMap.getString("AdvAeroChassisView.chkModular.text")); //$NON-NLS-1$
+        chkModular.setText(resourceMap.getString("AdvAeroChassisView.chkModular.text"));
         gbc.gridx = 4;
         gbc.gridy = 4;
         gbc.fill = GridBagConstraints.NONE;
         gbc.gridwidth = 1;
-        chkModular.setToolTipText(resourceMap.getString("AdvAeroChassisView.chkModular.tooltip")); //$NON-NLS-1$
+        chkModular.setToolTipText(resourceMap.getString("AdvAeroChassisView.chkModular.tooltip"));
         add(chkModular, gbc);
         chkModular.addActionListener(this);
 

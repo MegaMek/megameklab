@@ -93,7 +93,7 @@ public class PMChassisView extends BuildView implements ActionListener, ChangeLi
     }
 
     private void initUI() {
-        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl()); //$NON-NLS-1$
+        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl());
         motiveTypeNames = resourceMap.getString("ProtomekChassisView.cbMotiveType.values").split(",");
         
         setLayout(new GridBagLayout());
@@ -101,18 +101,18 @@ public class PMChassisView extends BuildView implements ActionListener, ChangeLi
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        add(createLabel(resourceMap.getString("ProtomekChassisView.spnTonnage.text"), labelSize), gbc); //$NON-NLS-1$
+        add(createLabel(resourceMap.getString("ProtomekChassisView.spnTonnage.text"), labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 0;
         setFieldSize(spnTonnage, spinnerSize);
-        spnTonnage.setToolTipText(resourceMap.getString("ProtomekChassisView.spnTonnage.tooltip")); //$NON-NLS-1$
+        spnTonnage.setToolTipText(resourceMap.getString("ProtomekChassisView.spnTonnage.tooltip"));
         add(spnTonnage, gbc);
         spnTonnage.addChangeListener(this);
         
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap.getString("ProtomekChassisView.cbMotiveType.text"), labelSize), gbc); //$NON-NLS-1$
+        add(createLabel(resourceMap.getString("ProtomekChassisView.cbMotiveType.text"), labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 1;
         gbc.gridwidth = 3;

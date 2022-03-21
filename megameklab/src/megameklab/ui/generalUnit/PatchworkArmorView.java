@@ -62,11 +62,11 @@ public class PatchworkArmorView extends BuildView implements ActionListener {
     }
     
     private void initUI() {
-        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl()); //$NON-NLS-1$
+        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl());
         setLayout(new GridBagLayout());
         
         setBorder(BorderFactory.createTitledBorder(
-                null, resourceMap.getString("ArmorAllocationView.panPatwork.title"), //$NON-NLS-1$
+                null, resourceMap.getString("ArmorAllocationView.panPatwork.title"),
                 TitledBorder.TOP,
                 TitledBorder.DEFAULT_POSITION));
 

@@ -56,8 +56,8 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
         listeners.remove(l);
     }
     
-    private final static String CMD_MAXIMIZE  = "MAXIMIZE"; //$NON-NLS-1$
-    private final static String CMD_REMAINING = "REMAINING"; //$NON-NLS-1$
+    private final static String CMD_MAXIMIZE  = "MAXIMIZE";
+    private final static String CMD_REMAINING = "REMAINING";
     
     private final TechComboBox<EquipmentType> cbArmorType = new TechComboBox<>(eq -> eq.getName());
     private final SpinnerNumberModel spnArmorPointsModel = new SpinnerNumberModel(0, 0, null, 1);
@@ -74,50 +74,50 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
     }
     
     private void initUI() {
-        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl()); //$NON-NLS-1$
+        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl());
 
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap.getString("ArmorView.cbArmorType.text"), labelSize), gbc); //$NON-NLS-1$
+        add(createLabel(resourceMap.getString("ArmorView.cbArmorType.text"), labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.gridwidth = 2;
         setFieldSize(cbArmorType, controlSize);
-        cbArmorType.setToolTipText(resourceMap.getString("ArmorView.cbArmorType.tooltip")); //$NON-NLS-1$
+        cbArmorType.setToolTipText(resourceMap.getString("ArmorView.cbArmorType.tooltip"));
         add(cbArmorType, gbc);
         cbArmorType.addActionListener(this);
         
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap.getString("ArmorView.spnArmorPoints.text"), labelSize), gbc); //$NON-NLS-1$
+        add(createLabel(resourceMap.getString("ArmorView.spnArmorPoints.text"), labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 1;
         setFieldSize(spnArmorPoints.getEditor(), editorSize);
-        spnArmorPoints.setToolTipText(resourceMap.getString("ArmorView.spnArmorPoints.tooltip")); //$NON-NLS-1$
+        spnArmorPoints.setToolTipText(resourceMap.getString("ArmorView.spnArmorPoints.tooltip"));
         add(spnArmorPoints, gbc);
         spnArmorPoints.addChangeListener(this);
 
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.gridwidth = 3;
-        btnMaximize.setText(resourceMap.getString("ArmorView.btnMaximize.text")); //$NON-NLS-1$
+        btnMaximize.setText(resourceMap.getString("ArmorView.btnMaximize.text"));
         btnMaximize.setActionCommand(CMD_MAXIMIZE);
         setFieldSize(btnMaximize, controlSize);
-        btnMaximize.setToolTipText(resourceMap.getString("ArmorView.btnMaximize.tooltip")); //$NON-NLS-1$
+        btnMaximize.setToolTipText(resourceMap.getString("ArmorView.btnMaximize.tooltip"));
         add(btnMaximize, gbc);
         btnMaximize.addActionListener(this);
         
         gbc.gridx = 0;
         gbc.gridy = 3;
         gbc.gridwidth = 3;
-        btnUseRemaining.setText(resourceMap.getString("ArmorView.btnRemaining.text")); //$NON-NLS-1$
+        btnUseRemaining.setText(resourceMap.getString("ArmorView.btnRemaining.text"));
         btnUseRemaining.setActionCommand(CMD_REMAINING);
         setFieldSize(btnUseRemaining, controlSize);
-        btnUseRemaining.setToolTipText(resourceMap.getString("ArmorView.btnRemaining.tooltip")); //$NON-NLS-1$
+        btnUseRemaining.setToolTipText(resourceMap.getString("ArmorView.btnRemaining.tooltip"));
         add(btnUseRemaining, gbc);
         btnUseRemaining.addActionListener(this);
     }

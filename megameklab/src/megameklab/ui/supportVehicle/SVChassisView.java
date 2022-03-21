@@ -98,12 +98,12 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
     }
 
     private void initUI() {
-        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl()); //$NON-NLS-1$
+        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl());
         for (TestSupportVehicle.SVType t : TestSupportVehicle.SVType.values()) {
             typeNames.put(t, resourceMap.getString("SVType." + t.toString()));
         }
-        turretNames = resourceMap.getString("CVChassisView.turrets.values").split(","); //$NON-NLS-1$
-        final String[] fireConNames = resourceMap.getString("SVChassisView.fireCon.values").split(","); //$NON-NLS-1$
+        turretNames = resourceMap.getString("CVChassisView.turrets.values").split(",");
+        final String[] fireConNames = resourceMap.getString("SVChassisView.fireCon.values").split(",");
         cbFireControl.setModel(new DefaultComboBoxModel<>(fireConNames));
 
         setLayout(new GridBagLayout());
@@ -113,16 +113,16 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.WEST;
-        add(createLabel(resourceMap.getString("SVChassisView.spnTonnage.text"), labelSize), gbc); //$NON-NLS-1$
+        add(createLabel(resourceMap.getString("SVChassisView.spnTonnage.text"), labelSize), gbc);
         gbc.gridx = 1;
         setFieldSize(spnTonnage, spinnerSizeLg);
-        spnTonnage.setToolTipText(resourceMap.getString("SVChassisView.spnTonnage.tooltip")); //$NON-NLS-1$
+        spnTonnage.setToolTipText(resourceMap.getString("SVChassisView.spnTonnage.tooltip"));
         add(spnTonnage, gbc);
         spnTonnage.addChangeListener(this);
 
         gbc.gridx = 2;
-        chkSmall.setText(resourceMap.getString("SVChassisView.chkSmall.text")); //$NON-NLS-1$
-        chkSmall.setToolTipText(resourceMap.getString("SVChassisView.chkSmall.tooltip")); //$NON-NLS-1$
+        chkSmall.setText(resourceMap.getString("SVChassisView.chkSmall.text"));
+        chkSmall.setToolTipText(resourceMap.getString("SVChassisView.chkSmall.tooltip"));
         add(chkSmall, gbc);
         chkSmall.setActionCommand(ACTION_SMALL);
         chkSmall.addActionListener(this);
@@ -133,11 +133,11 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 0;
         gbc.gridwidth = 2;
         gbc.gridy++;
-        add(createLabel(resourceMap.getString("SVChassisView.cbStructureTechRating.text"), labelSize), gbc); //$NON-NLS-1$
+        add(createLabel(resourceMap.getString("SVChassisView.cbStructureTechRating.text"), labelSize), gbc);
         gbc.gridx = 2;
         gbc.gridwidth = 1;
         setFieldSize(cbStructureTechRating, spinnerSize);
-        cbStructureTechRating.setToolTipText(resourceMap.getString("SVChassisView.cbStructureTechRating.tooltip")); //$NON-NLS-1$
+        cbStructureTechRating.setToolTipText(resourceMap.getString("SVChassisView.cbStructureTechRating.tooltip"));
         add(cbStructureTechRating, gbc);
         cbStructureTechRating.setActionCommand(ACTION_STRUCTURE_RATING);
         cbStructureTechRating.addActionListener(this);
@@ -146,11 +146,11 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 0;
         gbc.gridwidth = 1;
         gbc.gridy++;
-        add(createLabel(resourceMap.getString("SVChassisView.cbType.text"), labelSize), gbc); //$NON-NLS-1$
+        add(createLabel(resourceMap.getString("SVChassisView.cbType.text"), labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridwidth = 2;
         setFieldSize(cbType, controlSize);
-        cbType.setToolTipText(resourceMap.getString("SVChassisView.cbType.tooltip")); //$NON-NLS-1$
+        cbType.setToolTipText(resourceMap.getString("SVChassisView.cbType.tooltip"));
         add(cbType, gbc);
         cbType.setActionCommand(ACTION_TYPE);
         cbType.addActionListener(this);
@@ -159,11 +159,11 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 0;
         gbc.gridwidth = 1;
         gbc.gridy++;
-        add(createLabel(resourceMap.getString("SVChassisView.cbEngine.text"), labelSize), gbc); //$NON-NLS-1$
+        add(createLabel(resourceMap.getString("SVChassisView.cbEngine.text"), labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridwidth = 2;
         setFieldSize(cbEngine, controlSize);
-        cbEngine.setToolTipText(resourceMap.getString("SVChassisView.cbEngine.tooltip")); //$NON-NLS-1$
+        cbEngine.setToolTipText(resourceMap.getString("SVChassisView.cbEngine.tooltip"));
         add(cbEngine, gbc);
         cbEngine.setActionCommand(ACTION_ENGINE);
         cbEngine.addActionListener(this);
@@ -174,11 +174,11 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 0;
         gbc.gridwidth = 2;
         gbc.gridy++;
-        add(createLabel(resourceMap.getString("SVChassisView.cbEngineTechRating.text"), labelSize), gbc); //$NON-NLS-1$
+        add(createLabel(resourceMap.getString("SVChassisView.cbEngineTechRating.text"), labelSize), gbc);
         gbc.gridx = 2;
         gbc.gridwidth = 1;
         setFieldSize(cbEngineTechRating, spinnerSize);
-        cbEngineTechRating.setToolTipText(resourceMap.getString("SVChassisView.cbEngineTechRating.tooltip")); //$NON-NLS-1$
+        cbEngineTechRating.setToolTipText(resourceMap.getString("SVChassisView.cbEngineTechRating.tooltip"));
         add(cbEngineTechRating, gbc);
         cbEngineTechRating.setActionCommand(ACTION_ENGINE_RATING);
         cbEngineTechRating.addActionListener(this);
@@ -186,11 +186,11 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap.getString("CVChassisView.cbTurrets.text"), labelSize), gbc); //$NON-NLS-1$
+        add(createLabel(resourceMap.getString("CVChassisView.cbTurrets.text"), labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridwidth = 2;
         setFieldSize(cbTurrets, controlSize);
-        cbTurrets.setToolTipText(resourceMap.getString("CVChassisView.cbTurrets.tooltip")); //$NON-NLS-1$
+        cbTurrets.setToolTipText(resourceMap.getString("CVChassisView.cbTurrets.tooltip"));
         add(cbTurrets, gbc);
         cbTurrets.setActionCommand(ACTION_TURRET_CONFIG);
         cbTurrets.addActionListener(this);
@@ -198,8 +198,8 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 1;
         gbc.gridy++;
         gbc.gridwidth = 1;
-        chkSponson.setText(resourceMap.getString("SVChassisView.chkSponson.text")); //$NON-NLS-1$
-        chkSponson.setToolTipText(resourceMap.getString("SVChassisView.chkSponson.tooltip")); //$NON-NLS-1$
+        chkSponson.setText(resourceMap.getString("SVChassisView.chkSponson.text"));
+        chkSponson.setToolTipText(resourceMap.getString("SVChassisView.chkSponson.tooltip"));
         add(chkSponson, gbc);
         chkSponson.setActionCommand(ACTION_SPONSON);
         chkSponson.addActionListener(this);
@@ -207,17 +207,17 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 1;
-        lblPintle.setText(resourceMap.getString("SVChassisView.lblPintle.text")); //$NON-NLS-1$
+        lblPintle.setText(resourceMap.getString("SVChassisView.lblPintle.text"));
         add(lblPintle, gbc);
         gbc.gridx = 1;
-        chkPintleLeft.setText(resourceMap.getString("SVChassisView.chkPintleLeft.text")); //$NON-NLS-1$
-        chkPintleLeft.setToolTipText(resourceMap.getString("SVChassisView.chkPintle.tooltip")); //$NON-NLS-1$
+        chkPintleLeft.setText(resourceMap.getString("SVChassisView.chkPintleLeft.text"));
+        chkPintleLeft.setToolTipText(resourceMap.getString("SVChassisView.chkPintle.tooltip"));
         chkPintleLeft.setActionCommand(ACTION_PINTLE_LEFT);
         add(chkPintleLeft, gbc);
         chkPintleLeft.addActionListener(this);
         gbc.gridx = 2;
-        chkPintleRight.setText(resourceMap.getString("SVChassisView.chkPintleRight.text")); //$NON-NLS-1$
-        chkPintleRight.setToolTipText(resourceMap.getString("SVChassisView.chkPintle.tooltip")); //$NON-NLS-1$
+        chkPintleRight.setText(resourceMap.getString("SVChassisView.chkPintleRight.text"));
+        chkPintleRight.setToolTipText(resourceMap.getString("SVChassisView.chkPintle.tooltip"));
         add(chkPintleRight, gbc);
         chkPintleRight.setActionCommand(ACTION_PINTLE_RIGHT);
         chkPintleRight.addActionListener(this);
@@ -225,11 +225,11 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap.getString("SVChassisView.cbFireCon.text"), labelSize), gbc); //$NON-NLS-1$
+        add(createLabel(resourceMap.getString("SVChassisView.cbFireCon.text"), labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridwidth = 2;
         setFieldSize(cbFireControl, controlSize);
-        cbFireControl.setToolTipText(resourceMap.getString("SVChassisView.cbFireCon.tooltip")); // $NON-NLS-1$
+        cbFireControl.setToolTipText(resourceMap.getString("SVChassisView.cbFireCon.tooltip"));
         add(cbFireControl, gbc);
         cbFireControl.setActionCommand(ACTION_FIRE_CONTROL);
         cbFireControl.addActionListener(this);
@@ -256,48 +256,48 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 1;
-        JLabel lbl = createLabel(resourceMap.getString("SVChassisView.spnTurret1Wt.text"), labelSize); //$NON-NLS-1$
+        JLabel lbl = createLabel(resourceMap.getString("SVChassisView.spnTurret1Wt.text"), labelSize);
         omniPanel.add(lbl, gbc);
         gbc.gridx = 1;
         gbc.gridwidth = 2;
         setFieldSize(spnChassisTurretWt, spinnerSizeLg);
-        spnChassisTurretWt.setToolTipText(resourceMap.getString("CVChassisView.spnTurretWt.tooltip")); //$NON-NLS-1$
+        spnChassisTurretWt.setToolTipText(resourceMap.getString("CVChassisView.spnTurretWt.tooltip"));
         omniPanel.add(spnChassisTurretWt, gbc);
         spnChassisTurretWt.addChangeListener(this);
 
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 1;
-        lbl = createLabel(resourceMap.getString("SVChassisView.spnTurret2Wt.text"), labelSize); //$NON-NLS-1$
+        lbl = createLabel(resourceMap.getString("SVChassisView.spnTurret2Wt.text"), labelSize);
         omniPanel.add(lbl, gbc);
         gbc.gridx = 1;
         gbc.gridwidth = 2;
         setFieldSize(spnChassisTurret2Wt, spinnerSizeLg);
-        spnChassisTurret2Wt.setToolTipText(resourceMap.getString("CVChassisView.spnTurret2Wt.tooltip")); //$NON-NLS-1$
+        spnChassisTurret2Wt.setToolTipText(resourceMap.getString("CVChassisView.spnTurret2Wt.tooltip"));
         omniPanel.add(spnChassisTurret2Wt, gbc);
         spnChassisTurret2Wt.addChangeListener(this);
 
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 1;
-        lbl = createLabel(resourceMap.getString("SVChassisView.spnSponsonPintleWt.text"), labelSize); //$NON-NLS-1$
+        lbl = createLabel(resourceMap.getString("SVChassisView.spnSponsonPintleWt.text"), labelSize);
         omniPanel.add(lbl, gbc);
         gbc.gridx = 1;
         gbc.gridwidth = 2;
         setFieldSize(spnChassisSponsonPintleWt, spinnerSizeLg);
-        spnChassisSponsonPintleWt.setToolTipText(resourceMap.getString("SVChassisView.spnSponsonPintleWt.tooltip")); //$NON-NLS-1$
+        spnChassisSponsonPintleWt.setToolTipText(resourceMap.getString("SVChassisView.spnSponsonPintleWt.tooltip"));
         omniPanel.add(spnChassisSponsonPintleWt, gbc);
         spnChassisSponsonPintleWt.addChangeListener(this);
 
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 1;
-        lbl = createLabel(resourceMap.getString("SVChassisView.spnFireConWt.text"), labelSize); //$NON-NLS-1$
+        lbl = createLabel(resourceMap.getString("SVChassisView.spnFireConWt.text"), labelSize);
         omniPanel.add(lbl, gbc);
         gbc.gridx = 1;
         gbc.gridwidth = 2;
         setFieldSize(spnFireConWt, spinnerSizeLg);
-        spnFireConWt.setToolTipText(resourceMap.getString("SVChassisView.spnFireConWt.tooltip")); //$NON-NLS-1$
+        spnFireConWt.setToolTipText(resourceMap.getString("SVChassisView.spnFireConWt.tooltip"));
         omniPanel.add(spnFireConWt, gbc);
         spnFireConWt.addChangeListener(this);
 
@@ -629,17 +629,17 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         }
     }
 
-    private static final String ACTION_SMALL = "small"; //$NON-NLS-1
-    private static final String ACTION_TYPE = "type"; //$NON-NLS-1
-    private static final String ACTION_STRUCTURE_RATING = "structureTechRating"; //$NON-NLS-1
-    private static final String ACTION_ENGINE = "engine"; //$NON-NLS-1
-    private static final String ACTION_ENGINE_RATING = "engineRating"; //$NON-NLS-1
-    private static final String ACTION_TURRET_CONFIG = "turretConfig"; //$NON-NLS-1
-    private static final String ACTION_SPONSON = "sponson"; //$NON-NLS-1
-    private static final String ACTION_PINTLE_LEFT = "pintleLeft"; //$NON-NLS-1
-    private static final String ACTION_PINTLE_RIGHT = "pintleRight"; //$NON-NLS-1
-    private static final String ACTION_FIRE_CONTROL = "fireControl"; //$NON-NLS-1
-    private static final String ACTION_RESET_CHASSIS = "resetChassis"; //$NON-NLS-1
+    private static final String ACTION_SMALL = "small";
+    private static final String ACTION_TYPE = "type";
+    private static final String ACTION_STRUCTURE_RATING = "structureTechRating";
+    private static final String ACTION_ENGINE = "engine";
+    private static final String ACTION_ENGINE_RATING = "engineRating";
+    private static final String ACTION_TURRET_CONFIG = "turretConfig";
+    private static final String ACTION_SPONSON = "sponson";
+    private static final String ACTION_PINTLE_LEFT = "pintleLeft";
+    private static final String ACTION_PINTLE_RIGHT = "pintleRight";
+    private static final String ACTION_FIRE_CONTROL = "fireControl";
+    private static final String ACTION_RESET_CHASSIS = "resetChassis";
 
     @Override
     public void actionPerformed(ActionEvent e) {

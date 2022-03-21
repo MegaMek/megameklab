@@ -86,10 +86,10 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
     }
     
     private void initUI() {
-        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl()); //$NON-NLS-1$
-        walkNames = resourceMap.getString("MovementView.lblWalk.values").split(","); //$NON-NLS-1$
-        runNames = resourceMap.getString("MovementView.lblRun.values").split(","); //$NON-NLS-1$
-        jumpNames = resourceMap.getString("MovementView.lblJump.values").split(","); //$NON-NLS-1$
+        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl());
+        walkNames = resourceMap.getString("MovementView.lblWalk.values").split(",");
+        runNames = resourceMap.getString("MovementView.lblRun.values").split(",");
+        jumpNames = resourceMap.getString("MovementView.lblJump.values").split(",");
         
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -97,12 +97,12 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.gridwidth = 1;
-        add(new JLabel(resourceMap.getString("MovementView.lblBase.text")), gbc); //$NON-NLS-1$
+        add(new JLabel(resourceMap.getString("MovementView.lblBase.text")), gbc);
 
         gbc.gridx = 2;
         gbc.gridy = 0;
         gbc.gridwidth = 1;
-        add(new JLabel(resourceMap.getString("MovementView.lblFinal.text")), gbc); //$NON-NLS-1$
+        add(new JLabel(resourceMap.getString("MovementView.lblFinal.text")), gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 1;
@@ -111,12 +111,12 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
         gbc.gridx = 1;
         gbc.gridy = 1;
         gbc.fill = GridBagConstraints.NONE;
-        spnWalk.setToolTipText(resourceMap.getString("MovementView.spnWalk.tooltip")); //$NON-NLS-1$
+        spnWalk.setToolTipText(resourceMap.getString("MovementView.spnWalk.tooltip"));
         add(spnWalk, gbc);
         gbc.gridx = 2;
         gbc.gridy = 1;
         gbc.fill = GridBagConstraints.NONE;
-        txtWalkFinal.setToolTipText(resourceMap.getString("MovementView.txtWalkFinal.tooltip")); //$NON-NLS-1$
+        txtWalkFinal.setToolTipText(resourceMap.getString("MovementView.txtWalkFinal.tooltip"));
         add(txtWalkFinal, gbc);
         spnWalk.addChangeListener(this);
         
@@ -125,12 +125,12 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
         add(lblRun, gbc);
         gbc.gridx = 1;
         gbc.gridy = 2;
-        txtRunBase.setToolTipText(resourceMap.getString("MovementView.txtRunBase.tooltip")); //$NON-NLS-1$
+        txtRunBase.setToolTipText(resourceMap.getString("MovementView.txtRunBase.tooltip"));
         add(txtRunBase, gbc);
         gbc.gridx = 2;
         gbc.gridy = 2;
         gbc.fill = GridBagConstraints.NONE;
-        txtRunFinal.setToolTipText(resourceMap.getString("MovementView.txtRunFinal.tooltip")); //$NON-NLS-1$
+        txtRunFinal.setToolTipText(resourceMap.getString("MovementView.txtRunFinal.tooltip"));
         add(txtRunFinal, gbc);
         
         gbc.gridx = 0;
@@ -138,17 +138,17 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
         add(lblJump, gbc);
         gbc.gridx = 1;
         gbc.gridy = 3;
-        spnJump.setToolTipText(resourceMap.getString("MovementView.spnJump.tooltip")); //$NON-NLS-1$
+        spnJump.setToolTipText(resourceMap.getString("MovementView.spnJump.tooltip"));
         add(spnJump, gbc);
         gbc.gridx = 2;
         gbc.gridy = 3;
         gbc.fill = GridBagConstraints.NONE;
-        txtJumpFinal.setToolTipText(resourceMap.getString("MovementView.txtJumpFinal.tooltip")); //$NON-NLS-1$
+        txtJumpFinal.setToolTipText(resourceMap.getString("MovementView.txtJumpFinal.tooltip"));
         add(txtJumpFinal, gbc);
         spnJump.addChangeListener(this);
         
-        lblJumpType.setText(resourceMap.getString("MovementView.cbJumpType.text")); // $NON-NLS-1$
-        cbJumpType.setNullValue(resourceMap.getString("MovementView.cbJumpType.null")); //$NON-NLS-1$
+        lblJumpType.setText(resourceMap.getString("MovementView.cbJumpType.text"));
+        cbJumpType.setNullValue(resourceMap.getString("MovementView.cbJumpType.null"));
         gbc.gridx = 0;
         gbc.gridy = 4;
         add(lblJumpType, gbc);
@@ -156,7 +156,7 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
         gbc.gridy = 4;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridwidth = 2;
-        cbJumpType.setToolTipText(resourceMap.getString("MovementView.cbJumpType.tooltip")); //$NON-NLS-1$
+        cbJumpType.setToolTipText(resourceMap.getString("MovementView.cbJumpType.tooltip"));
         add(cbJumpType, gbc);
         cbJumpType.addActionListener(this);
 
