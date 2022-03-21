@@ -100,7 +100,7 @@ public class CVSummaryView extends IView{
         valueFields.add(txtJumpCrit);
 
         Dimension size = new Dimension(45,25);
-        for(JTextField field : valueFields) {
+        for (JTextField field : valueFields) {
             field.setEditable(false);
             field.setSize(size);
             field.setPreferredSize(size);
@@ -125,7 +125,7 @@ public class CVSummaryView extends IView{
         valueFields.add(txtEquipAvail);
         
         size = new Dimension(80,25);
-        for(JTextField field : valueFields) {
+        for (JTextField field : valueFields) {
             field.setEditable(false);
             field.setSize(size);
             field.setPreferredSize(size);
@@ -314,24 +314,24 @@ public class CVSummaryView extends IView{
 
         for (Mounted m : getTank().getMisc()) {
             MiscType mt = (MiscType) m.getType();
-            if(UnitUtil.isArmorOrStructure(mt)) {
+            if (UnitUtil.isArmorOrStructure(mt)) {
                 continue;
-            }
-            else if (mt.hasFlag(MiscType.F_SPONSON_TURRET)) {
+            } else if (mt.hasFlag(MiscType.F_SPONSON_TURRET)) {
                 weightSponson = m.getTonnage();
             } else if (mt.hasFlag(MiscType.F_JUMP_JET)) {
                 weightJJ += m.getTonnage();
             } else if (mt.hasFlag(MiscType.F_HEAT_SINK)
                     || mt.hasFlag(MiscType.F_DOUBLE_HEAT_SINK)) {
                 continue;
-            }
-            else {
+            } else {
                 weightEquip += m.getTonnage();
             }
         }
+
         for (Mounted m : getTank().getWeaponList()) {
             weightEquip += m.getTonnage();
         }
+
         for (Mounted m : getTank().getAmmo()) {
             weightEquip += m.getTonnage();
         }

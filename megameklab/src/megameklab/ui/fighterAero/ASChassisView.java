@@ -318,7 +318,7 @@ public class ASChassisView extends BuildView implements ActionListener, ChangeLi
         cbCockpit.removeAllItems();
         if (isPrimitive()) {
             cbCockpit.addItem(Aero.COCKPIT_PRIMITIVE);
-        } else if (isConventional()){
+        } else if (isConventional()) {
             cbCockpit.addItem(Aero.COCKPIT_STANDARD);
         } else {
             for (int cockpitType = 0; cockpitType < Aero.COCKPIT_STRING.length; cockpitType++) {

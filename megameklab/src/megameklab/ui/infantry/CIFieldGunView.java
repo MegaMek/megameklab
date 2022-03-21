@@ -15,56 +15,33 @@
  */
 package megameklab.ui.infantry;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Enumeration;
-
-import javax.swing.ButtonGroup;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
-import javax.swing.RowFilter;
-import javax.swing.RowSorter;
-import javax.swing.SortOrder;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableRowSorter;
-
 import megamek.common.AmmoType;
 import megamek.common.EquipmentType;
 import megamek.common.ITechManager;
 import megamek.common.WeaponType;
 import megamek.common.weapons.artillery.ArtilleryCannonWeapon;
 import megamek.common.weapons.artillery.ArtilleryWeapon;
-import megamek.common.weapons.autocannons.ACWeapon;
-import megamek.common.weapons.autocannons.LBXACWeapon;
-import megamek.common.weapons.autocannons.RACWeapon;
-import megamek.common.weapons.autocannons.RifleWeapon;
-import megamek.common.weapons.autocannons.UACWeapon;
+import megamek.common.weapons.autocannons.*;
 import megamek.common.weapons.gaussrifles.GaussWeapon;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.EquipmentTableModel;
 import megameklab.ui.util.IView;
 import megameklab.ui.util.RefreshListener;
-import megameklab.util.UnitUtil;
 import megameklab.ui.util.XTableColumnModel;
+import megameklab.util.UnitUtil;
+
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableRowSorter;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Enumeration;
 
 /**
  * Shows options for infantry field guns/field artillery
@@ -150,10 +127,10 @@ public class CIFieldGunView extends IView implements ActionListener {
         masterEquipmentScroll.setPreferredSize(new Dimension(200,200));
 
         Enumeration<EquipmentType> miscTypes = EquipmentType.getAllTypes();
-        ArrayList<EquipmentType> allTypes = new ArrayList<EquipmentType>();
+        ArrayList<EquipmentType> allTypes = new ArrayList<>();
         while (miscTypes.hasMoreElements()) {
             EquipmentType eq = miscTypes.nextElement();
-            if(!(eq instanceof WeaponType)
+            if (!(eq instanceof WeaponType)
                     || ((WeaponType)eq).isCapital()) {
                 continue;
             }
@@ -183,7 +160,7 @@ public class CIFieldGunView extends IView implements ActionListener {
 
         masterEquipmentList.setData(allTypes);
 
-        DefaultComboBoxModel<String> typeModel = new DefaultComboBoxModel<String>();
+        DefaultComboBoxModel<String> typeModel = new DefaultComboBoxModel<>();
         for (int i = 0; i < T_NUM; i++) {
             typeModel.addElement(getTypeName(i));
         }
@@ -196,15 +173,20 @@ public class CIFieldGunView extends IView implements ActionListener {
         });
 
         txtFilter.setText("");
-        txtFilter.setMinimumSize(new java.awt.Dimension(200, 28));
-        txtFilter.setPreferredSize(new java.awt.Dimension(200, 28));
+        txtFilter.setMinimumSize(new Dimension(200, 28));
+        txtFilter.setPreferredSize(new Dimension(200, 28));
         txtFilter.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
             public void changedUpdate(DocumentEvent e) {
                 filterEquipment();
             }
+
+            @Override
             public void insertUpdate(DocumentEvent e) {
                 filterEquipment();
             }
+
+            @Override
             public void removeUpdate(DocumentEvent e) {
                 filterEquipment();
             }
@@ -228,9 +210,8 @@ public class CIFieldGunView extends IView implements ActionListener {
         btnPanel.add(btnSetGun);
         btnPanel.add(btnRemoveGun);
 
-        //layout
-        GridBagConstraints gbc;
-        gbc = new GridBagConstraints();
+        // layout
+        GridBagConstraints gbc = new GridBagConstraints();
 
         JPanel databasePanel = new JPanel(new GridBagLayout());
 
@@ -258,7 +239,7 @@ public class CIFieldGunView extends IView implements ActionListener {
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.gridwidth = 3;
-        gbc.fill = java.awt.GridBagConstraints.BOTH;
+        gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         databasePanel.add(masterEquipmentScroll, gbc);
@@ -288,11 +269,11 @@ public class CIFieldGunView extends IView implements ActionListener {
         btnRemoveGun.addActionListener(this);
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
-
         if (e.getSource().equals(btnSetGun)) {
             int view = masterEquipmentTable.getSelectedRow();
-            if(view < 0) {
+            if (view < 0) {
                 //selection got filtered away
                 return;
             }
@@ -316,9 +297,8 @@ public class CIFieldGunView extends IView implements ActionListener {
     }
 
     private void filterEquipment() {
-        RowFilter<EquipmentTableModel, Integer> equipmentTypeFilter = null;
         final int nType = choiceType.getSelectedIndex();
-        equipmentTypeFilter = new RowFilter<EquipmentTableModel,Integer>() {
+        RowFilter<EquipmentTableModel, Integer> equipmentTypeFilter = new RowFilter<EquipmentTableModel,Integer>() {
             @Override
             public boolean include(Entry<? extends EquipmentTableModel, ? extends Integer> entry) {
                 EquipmentTableModel equipModel = entry.getModel();
@@ -330,12 +310,13 @@ public class CIFieldGunView extends IView implements ActionListener {
                         || ((nType == T_ARTILLERY) && etype instanceof ArtilleryWeapon)
                         || ((nType == T_ARTILLERY_CANNON) && etype instanceof ArtilleryCannonWeapon)
                         ) {
-                    if(null != eSource.getTechManager()
+                    if (null != eSource.getTechManager()
                             && !eSource.getTechManager().isLegal(etype)
                             && !chkShowAll.isSelected()) {
                         return false;
                     }
-                    if(txtFilter.getText().length() > 0) {
+
+                    if (txtFilter.getText().length() > 0) {
                         String text = txtFilter.getText();
                         return etype.getName().toLowerCase().contains(text.toLowerCase());
                     } else {
@@ -350,7 +331,7 @@ public class CIFieldGunView extends IView implements ActionListener {
 
     public void setEquipmentView() {
         XTableColumnModel columnModel = (XTableColumnModel)masterEquipmentTable.getColumnModel();
-        if(rbtnStats.isSelected()) {
+        if (rbtnStats.isSelected()) {
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_NAME), true);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DAMAGE), true);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DIVISOR), false);
@@ -400,7 +381,6 @@ public class CIFieldGunView extends IView implements ActionListener {
     }
 
     private ListSelectionListener selectionListener = new ListSelectionListener() {
-
         @Override
         public void valueChanged(ListSelectionEvent e) {
             int selected = masterEquipmentTable.getSelectedRow();
@@ -410,6 +390,5 @@ public class CIFieldGunView extends IView implements ActionListener {
             }
             btnSetGun.setEnabled((null != etype) && eSource.getTechManager().isLegal(etype));
         }
-        
     };
 }

@@ -24,7 +24,6 @@ import megamek.common.util.EncodeControl;
 import megamek.common.util.ImageUtil;
 import megamek.common.util.fileUtils.MegaMekFile;
 import megameklab.MMLConstants;
-import megameklab.MegaMekLab;
 import megameklab.ui.dialog.LoadingDialog;
 import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
 import megameklab.util.UnitUtil;
@@ -287,7 +286,7 @@ public class StartupGUI extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        if (backgroundIcon == null){
+        if (backgroundIcon == null) {
             return;
         }
         int w = getWidth();
@@ -298,9 +297,9 @@ public class StartupGUI extends JPanel {
         if ((iW < 1) || (iH < 1)) {
             return;
         }
-        for (int x = 0; x < w; x+=iW){
-            for (int y = 0; y < h; y+=iH){
-                g.drawImage(backgroundIcon, x, y,null);
+        for (int x = 0; x < w; x += iW) {
+            for (int y = 0; y < h; y += iH) {
+                g.drawImage(backgroundIcon, x, y, null);
             }
         }
      }
@@ -343,12 +342,11 @@ public class StartupGUI extends JPanel {
         if (newUnit.isSupportVehicle()) {
             newUnit(Entity.ETYPE_SUPPORT_TANK, false, false, newUnit);
         } else if (newUnit.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)) {
-            newUnit(Entity.ETYPE_DROPSHIP, ((Aero)newUnit).isPrimitive(), false, newUnit);
+            newUnit(Entity.ETYPE_DROPSHIP, newUnit.isPrimitive(), false, newUnit);
         } else if (newUnit.hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
-            newUnit(Entity.ETYPE_JUMPSHIP, ((Aero)newUnit).isPrimitive(), false, newUnit);
-        } else if ((newUnit instanceof Aero)
-                && !(newUnit instanceof FixedWingSupport)) {
-            newUnit(Entity.ETYPE_AERO, ((Aero)newUnit).isPrimitive(), false, newUnit);
+            newUnit(Entity.ETYPE_JUMPSHIP, newUnit.isPrimitive(), false, newUnit);
+        } else if ((newUnit instanceof Aero) && !(newUnit instanceof FixedWingSupport)) {
+            newUnit(Entity.ETYPE_AERO, newUnit.isPrimitive(), false, newUnit);
         } else if (newUnit instanceof BattleArmor) {
             newUnit(Entity.ETYPE_BATTLEARMOR, false, false, newUnit);
         } else if (newUnit instanceof Infantry) {
@@ -357,10 +355,8 @@ public class StartupGUI extends JPanel {
             newUnit(Entity.ETYPE_MECH, false, false, newUnit);
         } else if (newUnit instanceof Protomech) {
             newUnit(Entity.ETYPE_PROTOMECH, false, false, newUnit);
-        } else if ((newUnit instanceof Tank)
-                && !(newUnit instanceof GunEmplacement)) {
+        } else if ((newUnit instanceof Tank) && !(newUnit instanceof GunEmplacement)) {
             newUnit(Entity.ETYPE_TANK, false, false, newUnit);
-        } 
-        return;
+        }
     }
 }

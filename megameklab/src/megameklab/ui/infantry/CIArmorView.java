@@ -15,45 +15,6 @@
  */
 package megameklab.ui.infantry;
 
-import java.awt.BorderLayout;
-import java.awt.CardLayout;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Enumeration;
-
-import javax.swing.ButtonGroup;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComponent;
-import javax.swing.JFormattedTextField;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
-import javax.swing.JSpinner;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
-import javax.swing.RowFilter;
-import javax.swing.RowSorter;
-import javax.swing.SortOrder;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.SwingConstants;
-import javax.swing.UIManager;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableRowSorter;
-
 import megamek.common.EquipmentType;
 import megamek.common.ITechManager;
 import megamek.common.MiscType;
@@ -63,6 +24,16 @@ import megameklab.ui.util.EquipmentTableModel;
 import megameklab.ui.util.IView;
 import megameklab.ui.util.RefreshListener;
 import megameklab.ui.util.XTableColumnModel;
+
+import javax.swing.*;
+import javax.swing.event.*;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableRowSorter;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Enumeration;
 
 public class CIArmorView extends IView implements ActionListener, ChangeListener {
     private RefreshListener refresh = null;
@@ -123,7 +94,7 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
         masterEquipmentTable.getSelectionModel().addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
                 int view = masterEquipmentTable.getSelectedRow();
-                if(view < 0) {
+                if (view < 0) {
                     //selection got filtered away
                     return;
                 }
@@ -136,10 +107,10 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
         masterEquipmentScroll.setPreferredSize(new Dimension(200,200));
 
         Enumeration<EquipmentType> miscTypes = EquipmentType.getAllTypes();
-        ArrayList<EquipmentType> allTypes = new ArrayList<EquipmentType>();
+        ArrayList<EquipmentType> allTypes = new ArrayList<>();
         while (miscTypes.hasMoreElements()) {
             EquipmentType eq = miscTypes.nextElement();
-            if(eq.hasFlag(MiscType.F_ARMOR_KIT)) {
+            if (eq.hasFlag(MiscType.F_ARMOR_KIT)) {
                 allTypes.add(eq);
             }
         }
@@ -147,15 +118,20 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
         masterEquipmentList.setData(allTypes);
 
         txtFilter.setText("");
-        txtFilter.setMinimumSize(new java.awt.Dimension(200, 28));
-        txtFilter.setPreferredSize(new java.awt.Dimension(200, 28));
+        txtFilter.setMinimumSize(new Dimension(200, 28));
+        txtFilter.setPreferredSize(new Dimension(200, 28));
         txtFilter.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
             public void changedUpdate(DocumentEvent e) {
                 filterEquipment();
             }
+
+            @Override
             public void insertUpdate(DocumentEvent e) {
                 filterEquipment();
             }
+
+            @Override
             public void removeUpdate(DocumentEvent e) {
                 filterEquipment();
             }
@@ -309,7 +285,7 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
         chSneakCamo.setSelected(getInfantry().hasSneakCamo());
         chSneakIR.setSelected(getInfantry().hasSneakIR());
         chSneakECM.setSelected(getInfantry().hasSneakECM());
-        if(getInfantry().getTechLevel() < TechConstants.T_TW_ALL) {
+        if (getInfantry().getTechLevel() < TechConstants.T_TW_ALL) {
             armorValue.setEnabled(false);
             chEncumber.setEnabled(false);
             chSpaceSuit.setEnabled(false);
@@ -336,17 +312,18 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
         refresh = l;
     }
 
+    @Override
     public void actionPerformed(ActionEvent arg0) {
         removeAllListeners();
         if (arg0.getSource().equals(btnSetArmor)) {
             int view = masterEquipmentTable.getSelectedRow();
-            if(view < 0) {
-                //selection got filtered away
+            if (view < 0) {
+                // selection got filtered away
                 return;
             }
             int selected = masterEquipmentTable.convertRowIndexToModel(view);
             EquipmentType equip = masterEquipmentList.getType(selected);
-            if(equip.hasFlag(MiscType.F_ARMOR_KIT)) {
+            if (equip.hasFlag(MiscType.F_ARMOR_KIT)) {
                 getInfantry().setArmorKit(equip);
                 rbtnCustom.setEnabled(false);
             }
@@ -361,22 +338,18 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
             getInfantry().setSneakECM(false);
             rbtnCustom.setEnabled(true);
         }
+
         if (arg0.getSource().equals(chEncumber)) {
             getInfantry().setArmorEncumbering(chEncumber.isSelected());
-        } 
-        else if (arg0.getSource().equals(chSpaceSuit)) {
+        } else if (arg0.getSource().equals(chSpaceSuit)) {
             getInfantry().setSpaceSuit(chSpaceSuit.isSelected());
-        } 
-        else if (arg0.getSource().equals(chDEST)) {
+        } else if (arg0.getSource().equals(chDEST)) {
             getInfantry().setDEST(chDEST.isSelected());
-        } 
-        else if (arg0.getSource().equals(chSneakCamo)) {
+        } else if (arg0.getSource().equals(chSneakCamo)) {
             getInfantry().setSneakCamo(chSneakCamo.isSelected());
-        } 
-        else if (arg0.getSource().equals(chSneakIR)) {
+        } else if (arg0.getSource().equals(chSneakIR)) {
             getInfantry().setSneakIR(chSneakIR.isSelected());
-        } 
-        else if (arg0.getSource().equals(chSneakECM)) {
+        } else if (arg0.getSource().equals(chSneakECM)) {
             getInfantry().setSneakECM(chSneakECM.isSelected());
         } 
         addAllListeners();
@@ -407,6 +380,7 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
         armorValue.removeChangeListener(this);
     }
 
+    @Override
     public void stateChanged(ChangeEvent e) {
         JSpinner field = (JSpinner) e.getSource();
         double value = (Double) field.getModel().getValue();      
@@ -420,18 +394,15 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
     }
     
     private void filterEquipment() {
-        RowFilter<EquipmentTableModel, Integer> equipmentTypeFilter = null;
-        equipmentTypeFilter = new RowFilter<EquipmentTableModel,Integer>() {
+        RowFilter<EquipmentTableModel, Integer> equipmentTypeFilter = new RowFilter<EquipmentTableModel, Integer>() {
             @Override
             public boolean include(Entry<? extends EquipmentTableModel, ? extends Integer> entry) {
                 EquipmentTableModel equipModel = entry.getModel();
                 EquipmentType etype = equipModel.getType(entry.getIdentifier());
-                if(!(etype.hasFlag(MiscType.F_ARMOR_KIT))) {
+                if (!(etype.hasFlag(MiscType.F_ARMOR_KIT))) {
                     return false;
                 }
-                if(null != eSource.getTechManager()
-                        && !eSource.getTechManager().isLegal(etype)
-                        && !chkShowAll.isSelected()) {
+                if (null != eSource.getTechManager() && !eSource.getTechManager().isLegal(etype) && !chkShowAll.isSelected()) {
                     return false;
                 }
                 if (!etype.isAvailableIn(getInfantry().getTechLevelYear())) {
@@ -455,7 +426,7 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
         equipmentLayout.show(equipmentView, CARD_TABLE);
         btnSetArmor.setEnabled(true);
         XTableColumnModel columnModel = (XTableColumnModel)masterEquipmentTable.getColumnModel();
-        if(rbtnStats.isSelected()) {
+        if (rbtnStats.isSelected()) {
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_NAME), true);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DAMAGE), false);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DIVISOR), true);

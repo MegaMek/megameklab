@@ -536,11 +536,10 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(parentFrame, unitLoadingDialog);
 
         Entity tempEntity = viewer.getChosenEntity();
-        if(null == tempEntity) {
+        if (null == tempEntity) {
             return;
         }
         UnitUtil.showValidation(tempEntity, parentFrame);
-
     }
 
     private void jMenuGetUnitSpecsFromCache_actionPerformed() {
@@ -549,11 +548,10 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(parentFrame, unitLoadingDialog);
 
         Entity tempEntity = viewer.getChosenEntity();
-        if(null == tempEntity) {
+        if (null == tempEntity) {
             return;
         }
         UnitUtil.showUnitSpecs(tempEntity, parentFrame);
-
     }
 
     private void jMenuGetUnitBreakdownFromCache_actionPerformed() {
@@ -593,7 +591,9 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
 
     private void jMenuGetUnitValidationFromFile_actionPerformed() {
         File unitFile = loadUnitFile();
-        if (unitFile == null) return;
+        if (unitFile == null) {
+            return;
+        }
 
         try {
             Entity tempEntity = new MechFileParser(unitFile).getEntity();

@@ -60,7 +60,7 @@ public class DSSummaryView extends IView {
         valueFields.add(txtOtherTon);
 
         Dimension size = new Dimension(60,25);
-        for(JTextField field : valueFields) {
+        for (JTextField field : valueFields) {
             field.setEditable(false);
             field.setSize(size);
             field.setPreferredSize(size);
@@ -72,7 +72,7 @@ public class DSSummaryView extends IView {
         valueFields.removeAllElements();
 
         size = new Dimension(80,25);
-        for(JTextField field : valueFields) {
+        for (JTextField field : valueFields) {
             field.setEditable(false);
             field.setSize(size);
             field.setPreferredSize(size);
@@ -87,7 +87,7 @@ public class DSSummaryView extends IView {
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.insets = new Insets(0,0,0,5);
+        gbc.insets = new Insets(0, 0, 0, 5);
         this.add(createLabel("Category", size, SwingConstants.CENTER), gbc);
         gbc.gridy = 1;
         this.add(createLabel("SI:", size, SwingConstants.RIGHT), gbc);
@@ -114,10 +114,10 @@ public class DSSummaryView extends IView {
         gbc.gridy = 12;
         this.add(createLabel("Other:", size, SwingConstants.RIGHT), gbc);
 
-        size = new Dimension(45,25);
+        size = new Dimension(45, 25);
         gbc.gridx = 1;
         gbc.gridy = 0;
-        gbc.insets = new Insets(0,0,0,0);
+        gbc.insets = new Insets(0, 0, 0, 0);
         this.add(createLabel("Ton", size, SwingConstants.CENTER), gbc);
         gbc.gridy = 1;
         this.add(txtStructTon, gbc);
@@ -145,13 +145,10 @@ public class DSSummaryView extends IView {
         this.add(txtOtherTon, gbc);
 
         setBorder(BorderFactory.createTitledBorder("Summary"));
-
     }
 
     private JLabel createLabel(String text, Dimension size, int align) {
-
         JLabel label = new JLabel(text, SwingConstants.TRAILING);
-
         setFieldSize(label, size);
         label.setHorizontalAlignment(align);
         return label;
@@ -164,8 +161,7 @@ public class DSSummaryView extends IView {
     }
 
     public void refresh() {
-        TestSmallCraft testSmallCraft = 
-                new TestSmallCraft(getSmallCraft(), entityVerifier.aeroOption, null);
+        TestSmallCraft testSmallCraft = new TestSmallCraft(getSmallCraft(), entityVerifier.aeroOption, null);
        
         txtStructTon.setText(Double.toString(testSmallCraft.getWeightStructure()));
         txtEngineTon.setText(Double.toString(testSmallCraft.getWeightEngine()));

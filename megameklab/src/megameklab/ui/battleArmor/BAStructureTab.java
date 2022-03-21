@@ -182,7 +182,7 @@ public class BAStructureTab extends ITab implements ActionListener, BABuildListe
         rightManipSelect.removeAllItems();
         leftManipSelect.addItem(BattleArmor.MANIPULATOR_TYPE_STRINGS[BattleArmor.MANIPULATOR_NONE]);
         rightManipSelect.addItem(BattleArmor.MANIPULATOR_TYPE_STRINGS[BattleArmor.MANIPULATOR_NONE]);
-        for (BAManipulator manip : BAManipulator.values()){
+        for (BAManipulator manip : BAManipulator.values()) {
             EquipmentType et = EquipmentType.get(manip.internalName);
             if ((null != et) && getTechManager().isLegal(et)) {
                 leftManipSelect.addItem(et.getName());
@@ -303,14 +303,12 @@ public class BAStructureTab extends ITab implements ActionListener, BABuildListe
                 BAManipulator manipType;
                 if (rightManip != null) {
                     UnitUtil.removeMounted(getBattleArmor(), rightManip);
-                    manipType = BAManipulator.getManipulator(
-                            rightManip.getType().getInternalName());
+                    manipType = BAManipulator.getManipulator(rightManip.getType().getInternalName());
                     // If this manipulator was mounted as a pair, 
                     //   remove the paired manipulator
                     if (manipType.pairMounted) {
-                        Mounted leftManip =
-                                getBattleArmor().getLeftManipulator();
-                        if (leftManip != null){
+                        Mounted leftManip = getBattleArmor().getLeftManipulator();
+                        if (leftManip != null) {
                             UnitUtil.removeMounted(getBattleArmor(), leftManip);
                             leftManipSelect.setSelectedIndex(0);
                         }
@@ -319,27 +317,22 @@ public class BAStructureTab extends ITab implements ActionListener, BABuildListe
 
                 // If we selected something other than "None", mount it
                 if (rightManipSelect.getSelectedIndex() != 0) {
-                    String manipName =
-                            (String)rightManipSelect.getSelectedItem();
+                    String manipName = (String) rightManipSelect.getSelectedItem();
                     manipType = BAManipulator.getManipulator(manipName);
                     EquipmentType et = EquipmentType.get(manipType.internalName);
                     rightManip = new Mounted(getBattleArmor(), et);
                     rightManip.setBaMountLoc(BattleArmor.MOUNT_LOC_RARM);
                     try {
                         // Add the manipulator
-                        getBattleArmor().addEquipment(rightManip,
-                                BattleArmor.LOC_SQUAD, false);
+                        getBattleArmor().addEquipment(rightManip, BattleArmor.LOC_SQUAD, false);
                         // Check to see if we need to add its mate
-                        manipType = BAManipulator.getManipulator(
-                                rightManip.getType().getInternalName());
+                        manipType = BAManipulator.getManipulator(rightManip.getType().getInternalName());
                         // If this manipulator was mounted as a pair, 
                         //   remove the paired manipulator
                         if (manipType.pairMounted) {
                             Mounted leftManip = new Mounted(getBattleArmor(), et);
-                            leftManip.setBaMountLoc(
-                                    BattleArmor.MOUNT_LOC_LARM);
-                            getBattleArmor().addEquipment(leftManip,
-                                    BattleArmor.LOC_SQUAD, false);
+                            leftManip.setBaMountLoc(BattleArmor.MOUNT_LOC_LARM);
+                            getBattleArmor().addEquipment(leftManip, BattleArmor.LOC_SQUAD, false);
                         }
                     } catch (LocationFullException ex) {
                         // This shouldn't happen
@@ -366,7 +359,7 @@ public class BAStructureTab extends ITab implements ActionListener, BABuildListe
         panBasicInfo.setAsCustomization();
     }
 
-    public void refreshPreview(){
+    public void refreshPreview() {
         boolean populateTextFields = true;
         MechView mechView = null;
         TROView troView = null;
@@ -579,7 +572,7 @@ public class BAStructureTab extends ITab implements ActionListener, BABuildListe
                 }
             }
             getBattleArmor().autoSetInternal();
-            for(int i = 1; i < getBattleArmor().locations(); i++) {
+            for (int i = 1; i < getBattleArmor().locations(); i++) {
                 getBattleArmor().initializeArmor(armor, i);
             }
             refresh.refreshStatus();

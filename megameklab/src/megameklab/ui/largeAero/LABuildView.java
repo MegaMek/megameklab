@@ -13,40 +13,23 @@
  */
 package megameklab.ui.largeAero;
 
+import megamek.common.*;
+import megamek.common.weapons.Weapon;
+import megameklab.ui.EntitySource;
+import megameklab.ui.util.*;
+import megameklab.util.StringUtils;
+
+import javax.swing.*;
+import javax.swing.border.TitledBorder;
+import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
-
-import javax.swing.BorderFactory;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
-import javax.swing.border.TitledBorder;
-import javax.swing.table.TableColumn;
-
-import megamek.common.AmmoType;
-import megamek.common.Entity;
-import megamek.common.EquipmentType;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
-import megamek.common.WeaponType;
-import megamek.common.weapons.Weapon;
-import megameklab.ui.EntitySource;
-import megameklab.ui.util.AeroBayTransferHandler;
-import megameklab.ui.util.BayWeaponCriticalTree;
-import megameklab.ui.util.CriticalTableModel;
-import megameklab.ui.util.IView;
-import megameklab.ui.util.RefreshListener;
-import megameklab.util.StringUtils;
 
 /**
  * Shows unallocated equipment and presents menus options for adding equipment to bays.
@@ -76,7 +59,7 @@ public class LABuildView extends IView implements MouseListener {
         TableColumn column = null;
         for (int i = 0; i < equipmentList.getColumnCount(); i++) {
             column = equipmentTable.getColumnModel().getColumn(i);
-            if(i == 0) {
+            if (i == 0) {
                 column.setPreferredWidth(350);
             }
             column.setCellRenderer(equipmentList.getRenderer());
@@ -99,6 +82,7 @@ public class LABuildView extends IView implements MouseListener {
     }
 
     public void addRefreshedListener(RefreshListener l) {
+
     }
 
     private void loadEquipmentTable() {
@@ -120,10 +104,10 @@ public class LABuildView extends IView implements MouseListener {
             }
         }
 
-        Collections.sort(masterEquipmentList, StringUtils.mountedComparator());
+        masterEquipmentList.sort(StringUtils.mountedComparator());
 
         // weapons and ammo
-        Vector<Mounted> weaponsNAmmoList = new Vector<Mounted>(10, 1);
+        Vector<Mounted> weaponsNAmmoList = new Vector<>(10, 1);
         for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
             if ((masterEquipmentList.get(pos).getType() instanceof Weapon) || 
                     (masterEquipmentList.get(pos).getType() instanceof AmmoType)) {
@@ -132,7 +116,7 @@ public class LABuildView extends IView implements MouseListener {
                 pos--;
             }
         }
-        Collections.sort(weaponsNAmmoList, StringUtils.mountedComparator());
+        weaponsNAmmoList.sort(StringUtils.mountedComparator());
         for (Mounted mount : weaponsNAmmoList) {
             equipmentList.addCrit(mount);
         }

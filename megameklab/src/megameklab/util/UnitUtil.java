@@ -224,11 +224,11 @@ public class UnitUtil {
         UnitUtil.removeCriticals(unit, mount);
 
         // Some special checks for BA
-        if (unit instanceof BattleArmor){
+        if (unit instanceof BattleArmor) {
             // If we're removing a DWP and it has an attached weapon, we need
             //  to detach the weapon
             if (mount.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)
-                    && (mount.getLinked() != null)){
+                    && (mount.getLinked() != null)) {
                 Mounted link = mount.getLinked();
                 link.setDWPMounted(false);
                 link.setLinked(null);
@@ -237,16 +237,14 @@ public class UnitUtil {
             // If we are removing a weapon that is mounted in an DWP, we need
             //  to clear the mounted status of the DWP
             if ((mount.getLinkedBy() != null)
-                    && mount.getLinkedBy().getType().hasFlag(
-                            MiscType.F_DETACHABLE_WEAPON_PACK)){
+                    && mount.getLinkedBy().getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)) {
                 Mounted dwp = mount.getLinkedBy();
                 dwp.setLinked(null);
                 dwp.setLinkedBy(null);
             }
             // If we're removing an APM and it has an attached weapon, we need
             //  to detach the weapon
-            if (mount.getType().hasFlag(MiscType.F_AP_MOUNT)
-                    && (mount.getLinked() != null)){
+            if (mount.getType().hasFlag(MiscType.F_AP_MOUNT) && (mount.getLinked() != null)) {
                 Mounted link = mount.getLinked();
                 link.setAPMMounted(false);
                 link.setLinked(null);
@@ -255,8 +253,7 @@ public class UnitUtil {
             // If we are removing a weapon that is mounted in an APM, we need
             //  to clear the mounted status of the AP Mount
             if ((mount.getLinkedBy() != null)
-                    && mount.getLinkedBy().getType().hasFlag(
-                            MiscType.F_AP_MOUNT)){
+                    && mount.getLinkedBy().getType().hasFlag(MiscType.F_AP_MOUNT)) {
                 Mounted apm = mount.getLinkedBy();
                 apm.setLinked(null);
                 apm.setLinkedBy(null);
@@ -277,9 +274,9 @@ public class UnitUtil {
         if (unit instanceof Aero) {
             if (mount.getType() instanceof WeaponType) {
                 // Aeros have additional weapon lists that need to be cleared
-                ((Aero)unit).getTotalWeaponList().remove(mount);
-                ((Aero)unit).getWeaponBayList().remove(mount);
-                ((Aero)unit).getWeaponGroupList().remove(mount);
+                unit.getTotalWeaponList().remove(mount);
+                unit.getWeaponBayList().remove(mount);
+                unit.getWeaponGroupList().remove(mount);
             }
         }
         unit.getEquipment().remove(mount);
@@ -337,7 +334,7 @@ public class UnitUtil {
         }
         // It's possible that the equipment we are removing was linked to
         // something else, and so the linkedBy state may be set.  We should
-        // remove it.  Using getLinked could be unreliable, so we'll brute force
+        // remove it. Using getLinked could be unreliable, so we'll brute force
         // it
         // An example of this would be removing a linked Artemis IV FCS
         for (Mounted m : unit.getEquipment()) {
@@ -379,7 +376,6 @@ public class UnitUtil {
      * @param eq
      */
     public static void removeCriticals(Entity unit, Mounted eq) {
-
         if (eq.getLocation() == Entity.LOC_NONE) {
             return;
         }
@@ -1279,13 +1275,8 @@ public class UnitUtil {
     }
 
     public static boolean isBAMultiMount(EquipmentType equip) {
-        if ((equip instanceof WeaponType)
-                && (equip.hasFlag(WeaponType.F_TASER)
-                        || (((WeaponType)equip).getAmmoType()
-                            == AmmoType.T_NARC))){
-            return true;
-        }
-        return false;
+        return (equip instanceof WeaponType)
+                && (equip.hasFlag(WeaponType.F_TASER) || (((WeaponType) equip).getAmmoType() == AmmoType.T_NARC));
     }
 
     /**
@@ -1302,7 +1293,7 @@ public class UnitUtil {
      * @param rear               Whether to mount with a rear facing
      */
     public static void changeMountStatus(Entity unit, Mounted eq, int location,
-            int secondaryLocation, boolean rear) {
+                                         int secondaryLocation, boolean rear) {
         if ((location != eq.getLocation() && !eq.isOneShot())) {
             if (eq.getLinked() != null) {
                 eq.getLinked().setLinkedBy(null);
@@ -1615,9 +1606,8 @@ public class UnitUtil {
         } else if (unit instanceof SmallCraft) {
             return TestSmallCraft.maxArmorWeight((SmallCraft) unit);
         }
-        if (unit instanceof Aero){
-            double points =
-                    TestAero.maxArmorPoints(unit, unit.getWeight());
+        if (unit instanceof Aero) {
+            double points = TestAero.maxArmorPoints(unit, unit.getWeight());
             armorWeight = points / armorPerTon;
             armorWeight = Math.ceil(armorWeight * 2.0) / 2.0;
         }
@@ -1914,7 +1904,7 @@ public class UnitUtil {
                 locations.add(Mech.LOC_RT);
                 blocks = 6;
                 // Need to account for the center leg
-                if (unit instanceof TripodMech){
+                if (unit instanceof TripodMech) {
                     locations.add(Mech.LOC_CLEG);
                     blocks++;
                 }
@@ -1939,7 +1929,7 @@ public class UnitUtil {
                 }
                 blocks = (unit instanceof BipedMech ? 2 : 4);
                 // Need to account for the center leg
-                if (unit instanceof TripodMech){
+                if (unit instanceof TripodMech) {
                     locations.add(Mech.LOC_CLEG);
                     blocks = 3;
                 }
@@ -1958,7 +1948,7 @@ public class UnitUtil {
                     || equip.hasFlag(MiscType.F_NULLSIG)
                     || equip.hasFlag(MiscType.F_BLUE_SHIELD))) {
                 // Need to account for the center leg
-                if (unit instanceof TripodMech){
+                if (unit instanceof TripodMech) {
                     blocks++;
                 }
                 // 1 crit in each location, except the head
@@ -1967,7 +1957,7 @@ public class UnitUtil {
                 }
             } else if (equip.hasFlag(MiscType.F_CHAMELEON_SHIELD)) {
                 // Need to account for the center leg
-                if (unit instanceof TripodMech){
+                if (unit instanceof TripodMech) {
                     blocks++;
                 }
                 // 1 crit in each location except head and CT
@@ -2163,7 +2153,6 @@ public class UnitUtil {
         if (unit.isMixedTech()
                 && (eq.getTechLevel(unit.getTechLevelYear()) != TechConstants.T_ALLOWED_ALL)
                 && (eq.getTechLevel(unit.getTechLevelYear()) != TechConstants.T_TECH_UNKNOWN)) {
-
             if (unit.isClan() && !TechConstants.isClan(eq.getTechLevel(unit.getTechLevelYear()))) {
                 name += " (IS)";
             } else if (!unit.isClan() && TechConstants.isClan(eq.getTechLevel(unit.getTechLevelYear()))) {
@@ -2186,17 +2175,15 @@ public class UnitUtil {
         }
         if ((eq.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)
                 || eq.getType().hasFlag(MiscType.F_AP_MOUNT))
-                && (eq.getLinked() != null)){
-            sb.append(" (attached " + eq.getLinked().getName()
-                    + ")");
+                && (eq.getLinked() != null)) {
+            sb.append(" (attached " + eq.getLinked().getName() + ")");
         }
-        if (eq.isSquadSupportWeapon()){
+        if (eq.isSquadSupportWeapon()) {
             sb.append(" (squad support weapon)");
         }
         if (eq.getType() instanceof InfantryWeapon) {
             sb.append("<br>Damage/Trooper: ");
-            double infDamage = ((InfantryWeapon) eq.getType())
-                    .getInfantryDamage();
+            double infDamage = ((InfantryWeapon) eq.getType()).getInfantryDamage();
             sb.append(infDamage);
             sb.append("<br>Range Class: ");
             sb.append(((InfantryWeapon) eq.getType()).getInfantryRange());
@@ -2236,12 +2223,11 @@ public class UnitUtil {
             sb.append("<br>Armored");
         }
         if ((unit instanceof BattleArmor)
-
-                && eq.getType().hasFlag(WeaponType.F_INF_SUPPORT)){
+                && eq.getType().hasFlag(WeaponType.F_INF_SUPPORT)) {
            sb.append("<br>* Infantry support weapons must be held in an " +
                 "Armored Glove");
         } else if ((unit instanceof BattleArmor)
-                && eq.getType().hasFlag(WeaponType.F_INFANTRY)){
+                && eq.getType().hasFlag(WeaponType.F_INFANTRY)) {
            sb.append("<br>* Infantry weapons must be mounted in AP Mounts");
         }
 
@@ -3518,7 +3504,7 @@ public class UnitUtil {
         StringBuffer sb = new StringBuffer();
         TestEntity testEntity =  getEntityVerifier(unit);
 
-        if (testEntity != null){
+        if (testEntity != null) {
             testEntity.correctEntity(sb, unit.getTechLevel());
         }
 
@@ -3528,8 +3514,7 @@ public class UnitUtil {
     public static void removeAllMiscMounteds(Entity unit, BigInteger flag) {
         for (int pos = unit.getEquipment().size() - 1; pos >= 0; pos--) {
             Mounted mount = unit.getEquipment().get(pos);
-            if ((mount.getType() instanceof MiscType)
-                    && ((MiscType) mount.getType()).hasFlag(flag)) {
+            if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(flag)) {
                 UnitUtil.removeMounted(unit, mount);
             }
         }
@@ -3547,9 +3532,7 @@ public class UnitUtil {
     public static void removeTC(Entity unit) {
         for (int pos = unit.getEquipment().size() - 1; pos >= 0; pos--) {
             Mounted mount = unit.getEquipment().get(pos);
-            if ((mount.getType() instanceof MiscType)
-                    && ((MiscType) mount.getType())
-                            .hasFlag(MiscType.F_TARGCOMP)) {
+            if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_TARGCOMP)) {
                 UnitUtil.removeMounted(unit, mount);
             }
         }
@@ -3883,7 +3866,7 @@ public class UnitUtil {
                     return true;
                 }
             } else if ((atype instanceof SmallWeaponAmmoType)
-                    && ((SmallWeaponAmmoType) atype).isAmmoFor(m.getType())){
+                    && ((SmallWeaponAmmoType) atype).isAmmoFor(m.getType())) {
                 return true;
             }
         }

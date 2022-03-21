@@ -513,7 +513,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         } else if (getBaseTypeIndex() == BASE_TYPE_QUADVEE) {
             cbCockpit.addItem(Mech.COCKPIT_QUADVEE);
         } else if (isSuperheavy()) {
-            if (isIndustrial()){
+            if (isIndustrial()) {
                 cbCockpit.addItem(Mech.COCKPIT_SUPERHEAVY_INDUSTRIAL);
             }
             cbCockpit.addItem(Mech.COCKPIT_SUPERHEAVY);

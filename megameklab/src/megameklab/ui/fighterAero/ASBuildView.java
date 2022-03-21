@@ -65,7 +65,7 @@ public class ASBuildView extends IView implements ActionListener, MouseListener 
         TableColumn column = null;
         for (int i = 0; i < equipmentList.getColumnCount(); i++) {
             column = equipmentTable.getColumnModel().getColumn(i);
-            if(i == 0) {
+            if (i == 0) {
                 column.setPreferredWidth(350);
             }
             column.setCellRenderer(equipmentList.getRenderer());
@@ -76,8 +76,8 @@ public class ASBuildView extends IView implements ActionListener, MouseListener 
         equipmentTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         equipmentTable.setDoubleBuffered(true);
         equipmentScroll.setViewportView(equipmentTable);
-        equipmentScroll.setMinimumSize(new java.awt.Dimension(400, 400));
-        equipmentScroll.setPreferredSize(new java.awt.Dimension(400, 400));
+        equipmentScroll.setMinimumSize(new Dimension(400, 400));
+        equipmentScroll.setPreferredSize(new Dimension(400, 400));
         equipmentScroll.setTransferHandler(cth);
 
         equipmentTable.addMouseListener(this);
@@ -113,7 +113,7 @@ public class ASBuildView extends IView implements ActionListener, MouseListener 
             }
         }
 
-        Collections.sort(masterEquipmentList, StringUtils.mountedComparator());
+        masterEquipmentList.sort(StringUtils.mountedComparator());
 
         // Time to Sort
         // HeatSinks first
@@ -144,7 +144,7 @@ public class ASBuildView extends IView implements ActionListener, MouseListener 
                 pos--;
             }
         }
-        Collections.sort(weaponsNAmmoList, StringUtils.mountedComparator());
+        weaponsNAmmoList.sort(StringUtils.mountedComparator());
         for (Mounted mount : weaponsNAmmoList) {
             equipmentList.addCrit(mount);
         }
@@ -191,7 +191,6 @@ public class ASBuildView extends IView implements ActionListener, MouseListener 
         for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
             equipmentList.addCrit(masterEquipmentList.get(pos));
         }
-
     }
 
     private boolean isEngineHeatSink(Mounted mount) {
