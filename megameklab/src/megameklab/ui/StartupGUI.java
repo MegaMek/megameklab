@@ -87,13 +87,13 @@ public class StartupGUI extends JPanel {
             backgroundIcon = null;
         }
         
-        JLabel labVersion = new JLabel(resourceMap.getString("version.text") + MMLConstants.VERSION, JLabel.CENTER); //$NON-NLS-1$
+        JLabel labVersion = new JLabel(resourceMap.getString("version.text") + MMLConstants.VERSION, JLabel.CENTER);
         labVersion.setPreferredSize(new Dimension(250,15));
         if (skinSpec.fontColors.size() > 0) {
             labVersion.setForeground(skinSpec.fontColors.get(0));
         }
         
-        MegamekButton btnLoadUnit = new MegamekButton(resourceMap.getString("btnLoadUnit.text"), //$NON-NLS-1$
+        MegamekButton btnLoadUnit = new MegamekButton(resourceMap.getString("btnLoadUnit.text"),
                 SkinSpecification.UIComponents.MainMenuButton.getComp(), true);
         btnLoadUnit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -101,7 +101,7 @@ public class StartupGUI extends JPanel {
             }
         });
         
-        MegamekButton btnNewMek = new MegamekButton(resourceMap.getString("btnNewMek.text"), //$NON-NLS-1$
+        MegamekButton btnNewMek = new MegamekButton(resourceMap.getString("btnNewMek.text"),
                 SkinSpecification.UIComponents.MainMenuButton.getComp(), true);
         btnNewMek.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -109,7 +109,7 @@ public class StartupGUI extends JPanel {
             }
         });
         
-        MegamekButton btnNewVee = new MegamekButton(resourceMap.getString("btnNewVee.text"), //$NON-NLS-1$
+        MegamekButton btnNewVee = new MegamekButton(resourceMap.getString("btnNewVee.text"),
                 SkinSpecification.UIComponents.MainMenuButton.getComp(), true);
         btnNewVee.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -117,7 +117,7 @@ public class StartupGUI extends JPanel {
             }
         });
         
-        MegamekButton btnNewSupportVee = new MegamekButton(resourceMap.getString("btnNewSupportVee.text"), //$NON-NLS-1$
+        MegamekButton btnNewSupportVee = new MegamekButton(resourceMap.getString("btnNewSupportVee.text"),
                 SkinSpecification.UIComponents.MainMenuButton.getComp(), true);
         btnNewSupportVee.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -125,7 +125,7 @@ public class StartupGUI extends JPanel {
             }
         });
         
-        MegamekButton btnNewBA = new MegamekButton(resourceMap.getString("btnNewBA.text"), //$NON-NLS-1$
+        MegamekButton btnNewBA = new MegamekButton(resourceMap.getString("btnNewBA.text"),
                 SkinSpecification.UIComponents.MainMenuButton.getComp(), true);
         btnNewBA.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -133,14 +133,14 @@ public class StartupGUI extends JPanel {
             }
         });
         
-        MegamekButton btnNewAero = new MegamekButton(resourceMap.getString("btnNewAero.text"), //$NON-NLS-1$
+        MegamekButton btnNewAero = new MegamekButton(resourceMap.getString("btnNewAero.text"),
                 SkinSpecification.UIComponents.MainMenuButton.getComp(), true);
         btnNewAero.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 newUnit(Entity.ETYPE_AERO);
             }
         });
-        MegamekButton btnNewDropper = new MegamekButton(resourceMap.getString("btnNewDropper.text"), //$NON-NLS-1$
+        MegamekButton btnNewDropper = new MegamekButton(resourceMap.getString("btnNewDropper.text"),
                 SkinSpecification.UIComponents.MainMenuButton.getComp(), true);
         btnNewDropper.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -148,7 +148,7 @@ public class StartupGUI extends JPanel {
             }
         });
         
-        MegamekButton btnNewLargeCraft = new MegamekButton(resourceMap.getString("btnNewLargeCraft.text"), //$NON-NLS-1$
+        MegamekButton btnNewLargeCraft = new MegamekButton(resourceMap.getString("btnNewLargeCraft.text"),
                 SkinSpecification.UIComponents.MainMenuButton.getComp(), true);
         btnNewLargeCraft.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -156,7 +156,7 @@ public class StartupGUI extends JPanel {
             }
         });
         
-        MegamekButton btnNewProto = new MegamekButton(resourceMap.getString("btnNewProto.text"), //$NON-NLS-1$
+        MegamekButton btnNewProto = new MegamekButton(resourceMap.getString("btnNewProto.text"),
                 SkinSpecification.UIComponents.MainMenuButton.getComp(), true);
         btnNewProto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -164,7 +164,7 @@ public class StartupGUI extends JPanel {
             }
         });
         
-        MegamekButton btnNewPbi = new MegamekButton(resourceMap.getString("btnNewPbi.text"), //$NON-NLS-1$
+        MegamekButton btnNewPbi = new MegamekButton(resourceMap.getString("btnNewPbi.text"),
                 SkinSpecification.UIComponents.MainMenuButton.getComp(), true);
         btnNewPbi.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -172,7 +172,7 @@ public class StartupGUI extends JPanel {
             }
         });
         
-        MegamekButton btnQuit = new MegamekButton(resourceMap.getString("btnQuit.text"), //$NON-NLS-1$
+        MegamekButton btnQuit = new MegamekButton(resourceMap.getString("btnQuit.text"),
                 SkinSpecification.UIComponents.MainMenuButton.getComp(), true);
         btnQuit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

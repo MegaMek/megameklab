@@ -110,7 +110,7 @@ public class ArmorAllocationView extends BuildView implements ArmorLocationListe
     private final JButton btnAutoAllocate = new JButton();
     private final JLabel lblPointsPerTon = new JLabel("", SwingConstants.RIGHT);
 
-    private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl()); //$NON-NLS-1$
+    private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl());
     private long entitytype;
     private boolean showPatchwork = false;
     private String tooltipFormat;
@@ -135,7 +135,7 @@ public class ArmorAllocationView extends BuildView implements ArmorLocationListe
         gbc.gridy++;
         
         gbc.gridwidth = 1;
-        add(new JLabel(resourceMap.getString("ArmorAllocationView.txtUnallocated.text"), SwingConstants.RIGHT), gbc); //$NON-NLS-1$
+        add(new JLabel(resourceMap.getString("ArmorAllocationView.txtUnallocated.text"), SwingConstants.RIGHT), gbc);
         gbc.gridx = 1;
         txtUnallocated.setEditable(false);
         setFieldSize(txtUnallocated, editorSizeLg);
@@ -143,7 +143,7 @@ public class ArmorAllocationView extends BuildView implements ArmorLocationListe
         
         gbc.gridx = 0;
         gbc.gridy++;
-        add(new JLabel(resourceMap.getString("ArmorAllocationView.txtAllocated.text"), SwingConstants.RIGHT), gbc); //$NON-NLS-1$
+        add(new JLabel(resourceMap.getString("ArmorAllocationView.txtAllocated.text"), SwingConstants.RIGHT), gbc);
         gbc.gridx = 1;
         txtAllocated.setEditable(false);
         setFieldSize(txtAllocated, editorSizeLg);
@@ -151,7 +151,7 @@ public class ArmorAllocationView extends BuildView implements ArmorLocationListe
         
         gbc.gridx = 0;
         gbc.gridy++;
-        add(new JLabel(resourceMap.getString("ArmorAllocationView.txtTotal.text"), SwingConstants.RIGHT), gbc); //$NON-NLS-1$
+        add(new JLabel(resourceMap.getString("ArmorAllocationView.txtTotal.text"), SwingConstants.RIGHT), gbc);
         gbc.gridx = 1;
         txtTotal.setEditable(false);
         setFieldSize(txtTotal, editorSizeLg);
@@ -159,7 +159,7 @@ public class ArmorAllocationView extends BuildView implements ArmorLocationListe
         
         gbc.gridx = 0;
         gbc.gridy++;
-        add(new JLabel(resourceMap.getString("ArmorAllocationView.txtMaxPossible.text"), SwingConstants.RIGHT), gbc); //$NON-NLS-1$
+        add(new JLabel(resourceMap.getString("ArmorAllocationView.txtMaxPossible.text"), SwingConstants.RIGHT), gbc);
         gbc.gridx = 1;
         txtMaxPossible.setEditable(false);
         setFieldSize(txtMaxPossible, editorSizeLg);
@@ -167,7 +167,7 @@ public class ArmorAllocationView extends BuildView implements ArmorLocationListe
         
         gbc.gridx = 0;
         gbc.gridy++;
-        add(new JLabel(resourceMap.getString("ArmorAllocationView.txtWasted.text"), SwingConstants.RIGHT), gbc); //$NON-NLS-1$
+        add(new JLabel(resourceMap.getString("ArmorAllocationView.txtWasted.text"), SwingConstants.RIGHT), gbc);
         gbc.gridx = 1;
         txtWasted.setEditable(false);
         setFieldSize(txtWasted, editorSizeLg);
@@ -176,14 +176,14 @@ public class ArmorAllocationView extends BuildView implements ArmorLocationListe
         gbc.gridx = 0;
         gbc.gridy++;
         lblPointsPerTon.setText(resourceMap.getString("ArmorAllocationView.txtPointsPerTon.text"));
-        add(lblPointsPerTon, gbc); //$NON-NLS-1$
+        add(lblPointsPerTon, gbc);
         gbc.gridx = 1;
         txtPointsPerTon.setEditable(false);
         setFieldSize(txtPointsPerTon, editorSizeLg);
         txtPointsPerTon.setToolTipText(resourceMap.getString("ArmorAllocationView.txtPointsPerTon.tooltip"));
         add(txtPointsPerTon, gbc);
 
-        btnAutoAllocate.setText(resourceMap.getString("ArmorAllocationView.btnAutoAllocate.text")); //$NON-NLS-1$
+        btnAutoAllocate.setText(resourceMap.getString("ArmorAllocationView.btnAutoAllocate.text"));
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 2;
@@ -254,20 +254,20 @@ public class ArmorAllocationView extends BuildView implements ArmorLocationListe
         txtMaxPossible.setText(String.valueOf(maxArmorPoints));
         txtWasted.setText(String.valueOf(wastedPoints));
         if (en.hasPatchworkArmor()) {
-            txtPointsPerTon.setText("-"); //$NON-NLS-1$
+            txtPointsPerTon.setText("-");
         } else if (en.getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT){
-            txtPointsPerTon.setText(String.format("%d", //$NON-NLS-1$
+            txtPointsPerTon.setText(String.format("%d",
                     (int) (TestSupportVehicle.armorWeightPerPoint(en) * 1000)));
             lblPointsPerTon.setText(resourceMap.getString("ArmorAllocationView.txtKgPerPoint.text"));
             txtPointsPerTon.setToolTipText(resourceMap.getString("ArmorAllocationView.txtKgPerPoint.tooltip"));
         } else if (en instanceof Protomech) {
-            txtPointsPerTon.setText(String.format("%d", //$NON-NLS-1$
+            txtPointsPerTon.setText(String.format("%d",
                     (int)(EquipmentType.getProtomechArmorWeightPerPoint(en.getArmorType(Protomech.LOC_BODY))
                      * 1000)));
             lblPointsPerTon.setText(resourceMap.getString("ArmorAllocationView.txtKgPerPoint.text"));
             txtPointsPerTon.setToolTipText(resourceMap.getString("ArmorAllocationView.txtKgPerPoint.tooltip"));
         } else {
-            txtPointsPerTon.setText(String.format("%3.2f", //$NON-NLS-1$
+            txtPointsPerTon.setText(String.format("%3.2f",
                     UnitUtil.getArmorPointsPerTon(en, en.getArmorType(1), en.getArmorTechLevel(1))));
             lblPointsPerTon.setText(resourceMap.getString("ArmorAllocationView.txtPointsPerTon.text"));
             txtPointsPerTon.setToolTipText(resourceMap.getString("ArmorAllocationView.txtPointsPerTon.tooltip"));

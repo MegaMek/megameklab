@@ -67,7 +67,7 @@ public class CVTransportView extends BuildView implements ChangeListener {
     }
     
     private void initUI() {
-        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl()); //$NON-NLS-1$
+        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl());
         
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -76,14 +76,14 @@ public class CVTransportView extends BuildView implements ChangeListener {
         gbc.gridy = 0;
         gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.WEST;
-        add(createLabel(resourceMap.getString("CVTransportView.lblFixed.text"), labelSize), gbc); //$NON-NLS-1$
+        add(createLabel(resourceMap.getString("CVTransportView.lblFixed.text"), labelSize), gbc);
         gbc.gridx = 2;
         gbc.gridy = 0;
-        add(createLabel(resourceMap.getString("CVTransportView.lblPod.text"), labelSize), gbc); //$NON-NLS-1$
+        add(createLabel(resourceMap.getString("CVTransportView.lblPod.text"), labelSize), gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 1;
-        add(createLabel(resourceMap.getString("CVTransportView.lblTroopSpace.text"), labelSizeLg), gbc); //$NON-NLS-1$
+        add(createLabel(resourceMap.getString("CVTransportView.lblTroopSpace.text"), labelSizeLg), gbc);
         
         gbc.gridx = 1;
         setFieldSize(spnFixedTroop, editorSize);

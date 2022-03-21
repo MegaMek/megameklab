@@ -101,20 +101,20 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
     }
     
     private void initUI() {
-        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl()); //$NON-NLS-1$
-        mechDisplayNames = resourceMap.getString("HeatSinkView.mechNames.values").split(","); //$NON-NLS-1$
-        aeroDisplayNames = resourceMap.getString("HeatSinkView.aeroNames.values").split(","); //$NON-NLS-1$
+        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl());
+        mechDisplayNames = resourceMap.getString("HeatSinkView.mechNames.values").split(",");
+        aeroDisplayNames = resourceMap.getString("HeatSinkView.aeroNames.values").split(",");
         
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        add(createLabel(resourceMap.getString("HeatSinkView.cbHSType.text"), labelSize), gbc); //$NON-NLS-1$
+        add(createLabel(resourceMap.getString("HeatSinkView.cbHSType.text"), labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridwidth = 4;
         setFieldSize(cbHSType, controlSize);
-        cbHSType.setToolTipText(resourceMap.getString("HeatSinkView.cbHSType.tooltip")); //$NON-NLS-1$
+        cbHSType.setToolTipText(resourceMap.getString("HeatSinkView.cbHSType.tooltip"));
         add(cbHSType, gbc);
         cbHSType.addActionListener(this);
         
@@ -122,10 +122,10 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap.getString("HeatSinkView.spnCount.text"), labelSize), gbc); //$NON-NLS-1$
+        add(createLabel(resourceMap.getString("HeatSinkView.spnCount.text"), labelSize), gbc);
         gbc.gridx = 1;
         setFieldSize(spnCount.getEditor(), editorSize);
-        spnCount.setToolTipText(resourceMap.getString("HeatSinkView.spnCount.tooltip")); //$NON-NLS-1$
+        spnCount.setToolTipText(resourceMap.getString("HeatSinkView.spnCount.tooltip"));
         add(spnCount, gbc);
         spnCount.addChangeListener(this);
 
@@ -133,28 +133,28 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
         lblCritFreeText.setText(resourceMap.getString("HeatSinkView.lblCritFree.text"));
         add(lblCritFreeText, gbc);
         gbc.gridx = 4;
-        lblCritFreeCount.setToolTipText(resourceMap.getString("HeatSinkView.lblCritFree.tooltip")); //$NON-NLS-1$
+        lblCritFreeCount.setToolTipText(resourceMap.getString("HeatSinkView.lblCritFree.tooltip"));
         add(lblCritFreeCount, gbc);
 
         spnBaseCount.setModel(baseCountModel);
         gbc.gridx = 0;
         gbc.gridy++;
-        lblBaseCount.setText(resourceMap.getString("HeatSinkView.spnBaseCount.text")); //$NON-NLS-1$
+        lblBaseCount.setText(resourceMap.getString("HeatSinkView.spnBaseCount.text"));
         add(lblBaseCount, gbc);
         gbc.gridx = 1;
         setFieldSize(spnBaseCount.getEditor(), editorSize);
-        spnBaseCount.setToolTipText(resourceMap.getString("HeatSinkView.spnBaseCount.tooltip")); //$NON-NLS-1$
+        spnBaseCount.setToolTipText(resourceMap.getString("HeatSinkView.spnBaseCount.tooltip"));
         add(spnBaseCount, gbc);
         spnBaseCount.addChangeListener(this);
 
         spnPrototypeCount.setModel(prototypeCountModel);
         gbc.gridx = 0;
         gbc.gridy++;
-        lblPrototypeCount.setText(resourceMap.getString("HeatSinkView.spnPrototypeCount.text")); //$NON-NLS-1$
+        lblPrototypeCount.setText(resourceMap.getString("HeatSinkView.spnPrototypeCount.text"));
         add(lblPrototypeCount, gbc);
         gbc.gridx = 1;
         setFieldSize(spnPrototypeCount.getEditor(), editorSize);
-        spnPrototypeCount.setToolTipText(resourceMap.getString("HeatSinkView.spnPrototypeCount.tooltip")); //$NON-NLS-1$
+        spnPrototypeCount.setToolTipText(resourceMap.getString("HeatSinkView.spnPrototypeCount.tooltip"));
         add(spnPrototypeCount, gbc);
         spnPrototypeCount.addChangeListener(this);
 
@@ -163,7 +163,7 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
         lblWeightFreeText.setText(resourceMap.getString("HeatSinkView.lblWeightFree.text"));
         add(lblWeightFreeText, gbc);
         gbc.gridx = 1;
-        lblWeightFreeCount.setToolTipText(resourceMap.getString("HeatSinkView.lblWeightFree.tooltip")); //$NON-NLS-1$
+        lblWeightFreeCount.setToolTipText(resourceMap.getString("HeatSinkView.lblWeightFree.tooltip"));
         add(lblWeightFreeCount, gbc);
 
     }

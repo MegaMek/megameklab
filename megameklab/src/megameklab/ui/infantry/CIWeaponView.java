@@ -79,9 +79,9 @@ public class CIWeaponView extends BuildView implements ActionListener {
     }
     
     private void initUI() {
-        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl()); //$NON-NLS-1$
-        fgMotiveMsg = resourceMap.getString("InfantryWeaponView.txtGuns.badMotive"); //$NON-NLS-1$
-        noneMsg = resourceMap.getString("InfantryWeaponView.none"); //$NON-NLS-1$
+        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl());
+        fgMotiveMsg = resourceMap.getString("InfantryWeaponView.txtGuns.badMotive");
+        noneMsg = resourceMap.getString("InfantryWeaponView.none");
         
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -91,11 +91,11 @@ public class CIWeaponView extends BuildView implements ActionListener {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.WEST;
         gbc.insets = new Insets(0, 0, 1, 2);
-        add(new JLabel(resourceMap.getString("InfantryWeaponView.txtPrimary.text")), gbc); //$NON-NLS-1$
+        add(new JLabel(resourceMap.getString("InfantryWeaponView.txtPrimary.text")), gbc);
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.gridwidth = 3;
-        txtPrimary.setToolTipText(resourceMap.getString("InfantryWeaponView.txtPrimary.tooltip")); //$NON-NLS-1$
+        txtPrimary.setToolTipText(resourceMap.getString("InfantryWeaponView.txtPrimary.tooltip"));
         setFieldSize(txtPrimary, controlSize);
         txtPrimary.setEditable(false);
         add(txtPrimary, gbc);
@@ -103,57 +103,57 @@ public class CIWeaponView extends BuildView implements ActionListener {
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridwidth = 1;
-        add(new JLabel(resourceMap.getString("InfantryWeaponView.txtSecondary.text")), gbc); //$NON-NLS-1$
+        add(new JLabel(resourceMap.getString("InfantryWeaponView.txtSecondary.text")), gbc);
         gbc.gridx = 1;
         gbc.gridy = 1;
         gbc.gridwidth = 3;
         setFieldSize(txtSecondary, controlSize);
-        txtSecondary.setToolTipText(resourceMap.getString("InfantryWeaponView.txtSecondary.tooltip")); //$NON-NLS-1$
+        txtSecondary.setToolTipText(resourceMap.getString("InfantryWeaponView.txtSecondary.tooltip"));
         txtSecondary.setEditable(false);
         add(txtSecondary, gbc);
         
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.gridwidth = 1;
-        add(new JLabel(resourceMap.getString("InfantryWeaponView.cbNumSecondary.text")), gbc); //$NON-NLS-1$
+        add(new JLabel(resourceMap.getString("InfantryWeaponView.cbNumSecondary.text")), gbc);
         gbc.gridx = 1;
         gbc.gridy = 2;
         gbc.gridwidth = 3;
         setFieldSize(cbNumSecondary, controlSize);
-        cbNumSecondary.setToolTipText(resourceMap.getString("InfantryWeaponView.cbNumSecondary.tooltip")); //$NON-NLS-1$
+        cbNumSecondary.setToolTipText(resourceMap.getString("InfantryWeaponView.cbNumSecondary.tooltip"));
         add(cbNumSecondary, gbc);
         cbNumSecondary.addActionListener(this);
         
         gbc.gridx = 0;
         gbc.gridy = 3;
         gbc.gridwidth = 1;
-        add(new JLabel(resourceMap.getString("InfantryWeaponView.txtGuns.text")), gbc); //$NON-NLS-1$
+        add(new JLabel(resourceMap.getString("InfantryWeaponView.txtGuns.text")), gbc);
         gbc.gridx = 1;
         gbc.gridy = 3;
         gbc.gridwidth = 3;
         setFieldSize(txtGuns, controlSize);
-        txtGuns.setToolTipText(resourceMap.getString("InfantryWeaponView.txtGuns.tooltip")); //$NON-NLS-1$
+        txtGuns.setToolTipText(resourceMap.getString("InfantryWeaponView.txtGuns.tooltip"));
         txtGuns.setEditable(false);
         add(txtGuns, gbc);
         
         gbc.gridx = 0;
         gbc.gridy = 4;
         gbc.gridwidth = 1;
-        add(new JLabel(resourceMap.getString("InfantryWeaponView.cbNumGuns.text")), gbc); //$NON-NLS-1$
+        add(new JLabel(resourceMap.getString("InfantryWeaponView.cbNumGuns.text")), gbc);
         gbc.gridx = 1;
         gbc.gridy = 4;
         gbc.gridwidth = 3;
         setFieldSize(cbNumGuns, controlSize);
-        cbNumGuns.setToolTipText(resourceMap.getString("InfantryWeaponView.cbNumGuns.tooltip")); //$NON-NLS-1$
+        cbNumGuns.setToolTipText(resourceMap.getString("InfantryWeaponView.cbNumGuns.tooltip"));
         add(cbNumGuns, gbc);
         cbNumGuns.addActionListener(this);
         
-        chkAntiMek.setText(resourceMap.getString("InfantryWeaponView.chkAntiMek.text")); //$NON-NLS-1$
+        chkAntiMek.setText(resourceMap.getString("InfantryWeaponView.chkAntiMek.text"));
         gbc.gridx = 0;
         gbc.gridy = 5;
         gbc.gridwidth = 2;
         chkAntiMek.setHorizontalTextPosition(SwingConstants.LEFT);
-        chkAntiMek.setToolTipText(resourceMap.getString("InfantryWeaponView.chkAntiMek.tooltip")); //$NON-NLS-1$
+        chkAntiMek.setToolTipText(resourceMap.getString("InfantryWeaponView.chkAntiMek.tooltip"));
         add(chkAntiMek, gbc);
         chkAntiMek.addActionListener(this);
     }

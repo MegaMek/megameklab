@@ -65,7 +65,7 @@ public class WSGravDeckView extends BuildView implements ActionListener, TableMo
     }
     
     private void initUI() {
-        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl()); //$NON-NLS-1$
+        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl());
         setLayout(new BorderLayout());
         add(new JScrollPane(tblGravDecks), BorderLayout.CENTER);
         
@@ -85,7 +85,7 @@ public class WSGravDeckView extends BuildView implements ActionListener, TableMo
         model.addTableModelListener(this);
         tblGravDecks.getSelectionModel().addListSelectionListener(ev -> updateButtons());
         tblGravDecks.setPreferredScrollableViewportSize(new Dimension(400, 72));
-        tblGravDecks.setToolTipText(resourceMap.getString("GravDeckView.tblGravDecks.tooltip")); //$NON-NLS-1$
+        tblGravDecks.setToolTipText(resourceMap.getString("GravDeckView.tblGravDecks.tooltip"));
     }
     
     public void setFromEntity(Jumpship ship) {
@@ -133,8 +133,8 @@ public class WSGravDeckView extends BuildView implements ActionListener, TableMo
         private int maxSize = 250;
         
         GravDeckTableModel() {
-            ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl()); //$NON-NLS-1$
-            colNames = resourceMap.getString("GravDeckView.columnNames.values").split(","); //$NON-NLS-1$    
+            ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl());
+            colNames = resourceMap.getString("GravDeckView.columnNames.values").split(",");    
         }
 
         void setData(List<Integer> data) {

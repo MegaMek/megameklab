@@ -650,28 +650,28 @@ public class PrintMech extends PrintEntity {
                 }
                 switch (mech.getEngine().getEngineType()) {
                     case Engine.COMBUSTION_ENGINE:
-                        sb.append("I.C.E."); //$NON-NLS-1$
+                        sb.append("I.C.E.");
                         break;
                     case Engine.NORMAL_ENGINE:
-                        sb.append("Fusion"); //$NON-NLS-1$
+                        sb.append("Fusion");
                         break;
                     case Engine.XL_ENGINE:
-                        sb.append("XL Fusion"); //$NON-NLS-1$
+                        sb.append("XL Fusion");
                         break;
                     case Engine.LIGHT_ENGINE:
-                        sb.append("Light Fusion"); //$NON-NLS-1$
+                        sb.append("Light Fusion");
                         break;
                     case Engine.XXL_ENGINE:
-                        sb.append("XXL Fusion"); //$NON-NLS-1$
+                        sb.append("XXL Fusion");
                         break;
                     case Engine.COMPACT_ENGINE:
-                        sb.append("Compact Fusion"); //$NON-NLS-1$
+                        sb.append("Compact Fusion");
                         break;
                     case Engine.FUEL_CELL:
-                        sb.append("Fuel Cell"); //$NON-NLS-1$
+                        sb.append("Fuel Cell");
                         break;
                     case Engine.FISSION:
-                        sb.append("Fission"); //$NON-NLS-1$
+                        sb.append("Fission");
                         break;
                 }
                 sb.append(" Engine");

@@ -61,7 +61,7 @@ public class BAEnhancementView extends BuildView implements ActionListener {
     }
     
     private void initUI() {
-        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl()); //$NON-NLS-1$
+        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl());
         
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -69,26 +69,26 @@ public class BAEnhancementView extends BuildView implements ActionListener {
         gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.NORTHWEST;
         chkPartialWing.setText(resourceMap.getString("BAEnhancementView.chkPartialWing.text"));
-        chkPartialWing.setToolTipText(resourceMap.getString("BAEnhancementView.chkPartialWing.tooltip")); //$NON-NLS-1$
+        chkPartialWing.setToolTipText(resourceMap.getString("BAEnhancementView.chkPartialWing.tooltip"));
         add(chkPartialWing, gbc);
         chkPartialWing.addActionListener(this);
         
         gbc.gridx++;
         chkJumpBooster.setText(resourceMap.getString("BAEnhancementView.chkJumpBooster.text"));
-        chkJumpBooster.setToolTipText(resourceMap.getString("BAEnhancementView.chkJumpBooster.tooltip")); //$NON-NLS-1$
+        chkJumpBooster.setToolTipText(resourceMap.getString("BAEnhancementView.chkJumpBooster.tooltip"));
         add(chkJumpBooster, gbc);
         chkJumpBooster.addActionListener(this);
         
         gbc.gridx = 0;
         gbc.gridy++;
         chkMechJumpBooster.setText(resourceMap.getString("BAEnhancementView.chkMechJumpBooster.text"));
-        chkMechJumpBooster.setToolTipText(resourceMap.getString("BAEnhancementView.chkMechJumpBooster.tooltip")); //$NON-NLS-1$
+        chkMechJumpBooster.setToolTipText(resourceMap.getString("BAEnhancementView.chkMechJumpBooster.tooltip"));
         add(chkMechJumpBooster, gbc);
         chkMechJumpBooster.addActionListener(this);
 
         gbc.gridx++;
         chkMyomerBooster.setText(resourceMap.getString("BAEnhancementView.chkMyomerBooster.text"));
-        chkMyomerBooster.setToolTipText(resourceMap.getString("BAEnhancementView.chkMyomerBooster.tooltip")); //$NON-NLS-1$
+        chkMyomerBooster.setToolTipText(resourceMap.getString("BAEnhancementView.chkMyomerBooster.tooltip"));
         add(chkMyomerBooster, gbc);
         chkMyomerBooster.addActionListener(this);
     }

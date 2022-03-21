@@ -63,9 +63,9 @@ public class ArmorLocationView extends BuildView implements ChangeListener {
     ArmorLocationView(int location) {
         this.location = location;
         
-        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl()); //$NON-NLS-1$
-        lblRear.setText(resourceMap.getString("ArmorLocationView.lblRear.text")); //$NON-NLS-1$
-        maxFormat = resourceMap.getString("ArmorLocationView.lblMax.format"); //$NON-NLS-1$
+        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl());
+        lblRear.setText(resourceMap.getString("ArmorLocationView.lblRear.text"));
+        maxFormat = resourceMap.getString("ArmorLocationView.lblMax.format");
         setBorder(BorderFactory.createTitledBorder(
                 null, "",
                 TitledBorder.TOP,

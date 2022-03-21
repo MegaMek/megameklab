@@ -146,136 +146,136 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
     }
 
     private void initUI() {
-        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl()); //$NON-NLS-1$
-        baseTypesModel = new DefaultComboBoxModel<>(resourceMap.getString("MekChassisView.baseType.values").split(",")); //$NON-NLS-1$
-        standardTypesModel = new DefaultComboBoxModel<>(resourceMap.getString("MekChassisView.motiveType.values").split(",")); //$NON-NLS-1$
-        lamTypesModel = new DefaultComboBoxModel<>(resourceMap.getString("MekChassisView.lamType.values").split(",")); //$NON-NLS-1$
-        qvTypesModel = new DefaultComboBoxModel<>(resourceMap.getString("MekChassisView.qvType.values").split(",")); //$NON-NLS-1$
-        primitiveTypesModel = new DefaultComboBoxModel<>(resourceMap.getString("MekChassisView.primitiveType.values").split(",")); //$NON-NLS-1$
-        primitiveMotiveTypesModel = new DefaultComboBoxModel<>(resourceMap.getString("MekChassisView.primitiveMotiveType.values").split(",")); //$NON-NLS-1$
-        stdMotiveTooltip = resourceMap.getString("MekChassisView.cbMotiveType.tooltip"); //$NON-NLS-1$
-        lamMotiveTooltip = resourceMap.getString("MekChassisView.cbMotiveType.LAM.tooltip"); //$NON-NLS-1$
-        qvMotiveTooltip = resourceMap.getString("MekChassisView.cbMotiveType.QuadVee.tooltip"); //$NON-NLS-1$
+        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl());
+        baseTypesModel = new DefaultComboBoxModel<>(resourceMap.getString("MekChassisView.baseType.values").split(","));
+        standardTypesModel = new DefaultComboBoxModel<>(resourceMap.getString("MekChassisView.motiveType.values").split(","));
+        lamTypesModel = new DefaultComboBoxModel<>(resourceMap.getString("MekChassisView.lamType.values").split(","));
+        qvTypesModel = new DefaultComboBoxModel<>(resourceMap.getString("MekChassisView.qvType.values").split(","));
+        primitiveTypesModel = new DefaultComboBoxModel<>(resourceMap.getString("MekChassisView.primitiveType.values").split(","));
+        primitiveMotiveTypesModel = new DefaultComboBoxModel<>(resourceMap.getString("MekChassisView.primitiveMotiveType.values").split(","));
+        stdMotiveTooltip = resourceMap.getString("MekChassisView.cbMotiveType.tooltip");
+        lamMotiveTooltip = resourceMap.getString("MekChassisView.cbMotiveType.LAM.tooltip");
+        qvMotiveTooltip = resourceMap.getString("MekChassisView.cbMotiveType.QuadVee.tooltip");
         
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        add(createLabel(resourceMap.getString("MekChassisView.spnTonnage.text"), labelSize), gbc); //$NON-NLS-1$
+        add(createLabel(resourceMap.getString("MekChassisView.spnTonnage.text"), labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 0;
         setFieldSize(spnTonnage, spinnerSize);
-        spnTonnage.setToolTipText(resourceMap.getString("MekChassisView.spnTonnage.tooltip")); //$NON-NLS-1$
+        spnTonnage.setToolTipText(resourceMap.getString("MekChassisView.spnTonnage.tooltip"));
         add(spnTonnage, gbc);
         spnTonnage.addChangeListener(this);
         
         add(spnTonnage, gbc);
         gbc.gridx = 2;
         gbc.gridy = 0;
-        chkOmni.setText(resourceMap.getString("MekChassisView.chkOmni.text")); //$NON-NLS-1$
-        chkOmni.setToolTipText(resourceMap.getString("MekChassisView.chkOmni.tooltip")); //$NON-NLS-1$
+        chkOmni.setText(resourceMap.getString("MekChassisView.chkOmni.text"));
+        chkOmni.setToolTipText(resourceMap.getString("MekChassisView.chkOmni.tooltip"));
         add(chkOmni, gbc);
         chkOmni.addChangeListener(this);
 
         gbc.gridx = 0;
         gbc.gridy = 1;
-        add(createLabel(resourceMap.getString("MekChassisView.cbBaseType.text"), labelSize), gbc); //$NON-NLS-1$
+        add(createLabel(resourceMap.getString("MekChassisView.cbBaseType.text"), labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 1;
         gbc.gridwidth = 3;
         setFieldSize(cbBaseType, controlSize);
-        cbBaseType.setToolTipText(resourceMap.getString("MekChassisView.cbBaseType.tooltip")); //$NON-NLS-1$
+        cbBaseType.setToolTipText(resourceMap.getString("MekChassisView.cbBaseType.tooltip"));
         add(cbBaseType, gbc);
         cbBaseType.addActionListener(this);
 
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap.getString("MekChassisView.cbMotiveType.text"), labelSize), gbc); //$NON-NLS-1$
+        add(createLabel(resourceMap.getString("MekChassisView.cbMotiveType.text"), labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 2;
         gbc.gridwidth = 3;
         setFieldSize(cbMotiveType, controlSize);
-        cbMotiveType.setToolTipText(resourceMap.getString("MekChassisView.cbMotiveType.tooltip")); //$NON-NLS-1$
+        cbMotiveType.setToolTipText(resourceMap.getString("MekChassisView.cbMotiveType.tooltip"));
         add(cbMotiveType, gbc);
         cbMotiveType.addActionListener(this);
 
         gbc.gridx = 0;
         gbc.gridy = 3;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap.getString("MekChassisView.cbStructure.text"), labelSize), gbc); //$NON-NLS-1$
+        add(createLabel(resourceMap.getString("MekChassisView.cbStructure.text"), labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 3;
         gbc.gridwidth = 3;
         setFieldSize(cbStructure, controlSize);
-        cbStructure.setToolTipText(resourceMap.getString("MekChassisView.cbStructure.tooltip")); //$NON-NLS-1$
+        cbStructure.setToolTipText(resourceMap.getString("MekChassisView.cbStructure.tooltip"));
         add(cbStructure, gbc);
         cbStructure.addActionListener(this);
 
         gbc.gridx = 0;
         gbc.gridy = 4;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap.getString("MekChassisView.cbEngine.text"), labelSize), gbc); //$NON-NLS-1$
+        add(createLabel(resourceMap.getString("MekChassisView.cbEngine.text"), labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 4;
         gbc.gridwidth = 3;
         setFieldSize(cbEngine, controlSize);
-        cbEngine.setToolTipText(resourceMap.getString("MekChassisView.cbEngine.tooltip")); //$NON-NLS-1$
+        cbEngine.setToolTipText(resourceMap.getString("MekChassisView.cbEngine.tooltip"));
         add(cbEngine, gbc);
         cbEngine.addActionListener(this);
 
         gbc.gridx = 0;
         gbc.gridy = 5;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap.getString("MekChassisView.cbGyro.text"), labelSize), gbc); //$NON-NLS-1$
+        add(createLabel(resourceMap.getString("MekChassisView.cbGyro.text"), labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 5;
         gbc.gridwidth = 3;
         setFieldSize(cbGyro, controlSize);
-        cbGyro.setToolTipText(resourceMap.getString("MekChassisView.cbGyro.tooltip")); //$NON-NLS-1$
+        cbGyro.setToolTipText(resourceMap.getString("MekChassisView.cbGyro.tooltip"));
         add(cbGyro, gbc);
         cbGyro.addActionListener(this);
 
         gbc.gridx = 0;
         gbc.gridy = 6;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap.getString("MekChassisView.cbCockpit.text"), labelSize), gbc); //$NON-NLS-1$
+        add(createLabel(resourceMap.getString("MekChassisView.cbCockpit.text"), labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 6;
         gbc.gridwidth = 3;
         setFieldSize(cbCockpit, controlSize);
-        cbCockpit.setToolTipText(resourceMap.getString("MekChassisView.cbCockpit.tooltip")); //$NON-NLS-1$
+        cbCockpit.setToolTipText(resourceMap.getString("MekChassisView.cbCockpit.tooltip"));
         add(cbCockpit, gbc);
         cbCockpit.addActionListener(this);
         
         gbc.gridx = 0;
         gbc.gridy = 7;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap.getString("MekChassisView.cbEnhancement.text"), labelSize), gbc); //$NON-NLS-1$
+        add(createLabel(resourceMap.getString("MekChassisView.cbEnhancement.text"), labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 7;
         gbc.gridwidth = 3;
         setFieldSize(cbEnhancement, controlSize);
-        cbEnhancement.setNullValue(resourceMap.getString("MekChassisView.cbEnhancement.null")); //$NON-NLS-1$
-        cbEnhancement.setToolTipText(resourceMap.getString("MekChassisView.cbEnhancement.tooltip")); //$NON-NLS-1$
+        cbEnhancement.setNullValue(resourceMap.getString("MekChassisView.cbEnhancement.null"));
+        cbEnhancement.setToolTipText(resourceMap.getString("MekChassisView.cbEnhancement.tooltip"));
         add(cbEnhancement, gbc);
         cbEnhancement.addActionListener(this);
         
-        chkFullHeadEject.setText(resourceMap.getString("MekChassisView.chkFullHeadEject.text")); //$NON-NLS-1$
+        chkFullHeadEject.setText(resourceMap.getString("MekChassisView.chkFullHeadEject.text"));
         gbc.gridx = 1;
         gbc.gridy = 8;
         gbc.gridwidth = 3;
         add(chkFullHeadEject, gbc);
-        chkFullHeadEject.setToolTipText(resourceMap.getString("MekChassisView.chkFullHeadEject.tooltip")); //$NON-NLS-1$
+        chkFullHeadEject.setToolTipText(resourceMap.getString("MekChassisView.chkFullHeadEject.tooltip"));
         chkFullHeadEject.addActionListener(this);
         
-        btnResetChassis.setText(resourceMap.getString("MekChassisView.btnResetChassis.text")); //$NON-NLS-1$
+        btnResetChassis.setText(resourceMap.getString("MekChassisView.btnResetChassis.text"));
         gbc.gridx = 1;
         gbc.gridy = 9;
         gbc.gridwidth = 3;
         add(btnResetChassis, gbc);
-        btnResetChassis.setToolTipText(resourceMap.getString("MekChassisView.btnResetChassis.tooltip")); //$NON-NLS-1$
+        btnResetChassis.setToolTipText(resourceMap.getString("MekChassisView.btnResetChassis.tooltip"));
         btnResetChassis.addActionListener(this);
     }
 
@@ -558,7 +558,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         cbEnhancement.addItem(null);
         if (!isSuperheavy() && !isPrimitive()) {
             if (isIndustrial()) {
-                EquipmentType eq = EquipmentType.get(EquipmentTypeLookup.ITSM); //$NON-NLS-1$
+                EquipmentType eq = EquipmentType.get(EquipmentTypeLookup.ITSM);
                 if (techManager.isLegal(eq)) {
                     cbEnhancement.addItem(eq);
                 }

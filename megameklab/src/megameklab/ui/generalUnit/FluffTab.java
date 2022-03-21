@@ -56,8 +56,8 @@ public class FluffTab extends ITab implements FocusListener {
 
     private final JTextArea txtNotes = new JTextArea(4, 40);
     
-    private static final String TAG_MANUFACTURER = "manufacturer"; //$NON-NLS-1
-    private static final String TAG_MODEL = "model"; //$NON-NLS-1
+    private static final String TAG_MANUFACTURER = "manufacturer";
+    private static final String TAG_MODEL = "model";
     
     private RefreshListener refresh;
     
@@ -76,7 +76,7 @@ public class FluffTab extends ITab implements FocusListener {
     }
 
     private void initUi() {
-        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Tabs", new EncodeControl()); //$NON-NLS-1$
+        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Tabs", new EncodeControl());
         Border border = BorderFactory.createLineBorder(Color.BLACK);
 
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));

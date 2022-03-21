@@ -79,7 +79,7 @@ public class LACrewView extends BuildView implements ActionListener, ChangeListe
     
     public void initUI() {
         setLayout(new GridBagLayout());
-        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl()); //$NON-NLS-1$
+        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl());
         GridBagConstraints gbc = new GridBagConstraints();
         
         gbc.gridx = 0;

@@ -77,17 +77,17 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
         setLayout(new BorderLayout());
         if (getEntity().hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
             JPanel panHardpoints = new JPanel();
-            lblDockingHardpoints.setText(resourceMap.getString("TransportTab.spnDockingHardpoints.text")); //$NON-NLS-1$
+            lblDockingHardpoints.setText(resourceMap.getString("TransportTab.spnDockingHardpoints.text"));
             panHardpoints.add(lblDockingHardpoints);
             panHardpoints.add(spnDockingHardpoints);
             Dimension size = new Dimension(60, 25);
             spnDockingHardpoints.setPreferredSize(size);
             add(panHardpoints, BorderLayout.NORTH);
             spnDockingHardpoints.addChangeListener(this);
-            spnDockingHardpoints.setToolTipText(resourceMap.getString("TransportTab.spnDockingHardpoints.tooltip")); //$NON-NLS-1$
-            panHardpoints.add(new JLabel(resourceMap.getString("TransportTab.spnMaxHardpoints.text"))); //$NON-NLS-1$
+            spnDockingHardpoints.setToolTipText(resourceMap.getString("TransportTab.spnDockingHardpoints.tooltip"));
+            panHardpoints.add(new JLabel(resourceMap.getString("TransportTab.spnMaxHardpoints.text")));
             panHardpoints.add(lblMaxHardpoints);
-            lblMaxHardpoints.setToolTipText(resourceMap.getString("TransportTab.spnMaxHardpoints.tooltip")); //$NON-NLS-1$
+            lblMaxHardpoints.setToolTipText(resourceMap.getString("TransportTab.spnMaxHardpoints.tooltip"));
         } else {
             Dimension size = new Dimension(60, 25);
             spnTroopSpace.setPreferredSize(size);
@@ -96,16 +96,16 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
             GridBagConstraints gbc = new GridBagConstraints();
             gbc.gridx = 0;
             gbc.gridy = 0;
-            panTroopspace.add(new JLabel(resourceMap.getString("TransportTab.spnTroopspace.text")), gbc); //$NON-NLS-1$
-            spnTroopSpace.setToolTipText(resourceMap.getString("TransportTab.spnTroopspace.tooltip")); //$NON-NLS-1$
+            panTroopspace.add(new JLabel(resourceMap.getString("TransportTab.spnTroopspace.text")), gbc);
+            spnTroopSpace.setToolTipText(resourceMap.getString("TransportTab.spnTroopspace.tooltip"));
             spnTroopSpace.addChangeListener(this);
             gbc.gridx = 1;
             panTroopspace.add(spnTroopSpace, gbc);
             if (getEntity().isSupportVehicle()) {
                 gbc.gridx = 0;
                 gbc.gridy = 1;
-                panTroopspace.add(new JLabel(resourceMap.getString("TransportTab.spnPodTroopspace.text")), gbc); //$NON-NLS-1$
-                spnTroopSpace.setToolTipText(resourceMap.getString("TransportTab.spnPodTroopspace.tooltip")); //$NON-NLS-1$
+                panTroopspace.add(new JLabel(resourceMap.getString("TransportTab.spnPodTroopspace.text")), gbc);
+                spnTroopSpace.setToolTipText(resourceMap.getString("TransportTab.spnPodTroopspace.tooltip"));
                 gbc.gridx = 1;
                 panTroopspace.add(spnPodTroopSpace, gbc);
                 spnPodTroopSpace.addChangeListener(this);
@@ -121,12 +121,12 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 2;
-        bayPanel.add(new JLabel(resourceMap.getString("TransportTab.lblCurrentBays.text")), gbc); //$NON-NLS-1$
+        bayPanel.add(new JLabel(resourceMap.getString("TransportTab.lblCurrentBays.text")), gbc);
 
         gbc.gridy++;
         if (getEntity().isAero()) {
             gbc.gridwidth = 1;
-            bayPanel.add(new JLabel(resourceMap.getString("TransportTab.lblMaxDoors.text")), gbc); //$NON-NLS-1$
+            bayPanel.add(new JLabel(resourceMap.getString("TransportTab.lblMaxDoors.text")), gbc);
             gbc.gridx = 1;
             bayPanel.add(lblMaxDoors, gbc);
         }
@@ -134,14 +134,14 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 1;
-        btnRemoveBay.setText(resourceMap.getString("TransportTab.btnRemoveBay.text")); //$NON-NLS-1$
-        btnRemoveBay.setToolTipText(resourceMap.getString("TransportTab.btnRemoveBay.tooltip")); //$NON-NLS-1$
+        btnRemoveBay.setText(resourceMap.getString("TransportTab.btnRemoveBay.text"));
+        btnRemoveBay.setToolTipText(resourceMap.getString("TransportTab.btnRemoveBay.tooltip"));
         bayPanel.add(btnRemoveBay, gbc);
         btnRemoveBay.addActionListener(this);
 
         gbc.gridx = 1;
-        btnAddToCargo.setText(resourceMap.getString("TransportTab.btnAddToCargo.text")); //$NON-NLS-1$
-        btnAddToCargo.setToolTipText(resourceMap.getString("TransportTab.btnAddToCargo.tooltip")); //$NON-NLS-1$
+        btnAddToCargo.setText(resourceMap.getString("TransportTab.btnAddToCargo.text"));
+        btnAddToCargo.setToolTipText(resourceMap.getString("TransportTab.btnAddToCargo.tooltip"));
         bayPanel.add(btnAddToCargo, gbc);
         btnAddToCargo.addActionListener(this);
 
@@ -155,11 +155,11 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
         gbc.gridy = 0;
         gbc.gridwidth = 1;
         gbc.gridheight = 1;
-        bayPanel.add(new JLabel(resourceMap.getString("TransportTab.lblAvailableBays.text")), gbc); //$NON-NLS-1$
+        bayPanel.add(new JLabel(resourceMap.getString("TransportTab.lblAvailableBays.text")), gbc);
 
         gbc.gridy = 2;
-        btnAddBay.setText(resourceMap.getString("TransportTab.btnAddBay.text")); //$NON-NLS-1$
-        btnAddBay.setToolTipText(resourceMap.getString("TransportTab.btnAddBay.tooltip")); //$NON-NLS-1$
+        btnAddBay.setText(resourceMap.getString("TransportTab.btnAddBay.text"));
+        btnAddBay.setToolTipText(resourceMap.getString("TransportTab.btnAddBay.tooltip"));
         bayPanel.add(btnAddBay, gbc);
         btnAddBay.addActionListener(this);
 
@@ -172,21 +172,21 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
         TableColumn col = tblInstalled.getColumnModel().getColumn(InstalledBaysModel.COL_SIZE);
         col.setCellEditor(new SpinnerCellEditor(InstalledBaysModel.COL_SIZE));
         DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
-        renderer.setToolTipText(resourceMap.getString("TransportTab.colSize.tooltip")); //$NON-NLS-1$
+        renderer.setToolTipText(resourceMap.getString("TransportTab.colSize.tooltip"));
         col.setCellRenderer(renderer);
         col = tblInstalled.getColumnModel().getColumn(InstalledBaysModel.COL_DOORS);
         col.setCellEditor(new SpinnerCellEditor(InstalledBaysModel.COL_DOORS));
         renderer = new DefaultTableCellRenderer();
-        renderer.setToolTipText(resourceMap.getString("TransportTab.colDoors.tooltip")); //$NON-NLS-1$
+        renderer.setToolTipText(resourceMap.getString("TransportTab.colDoors.tooltip"));
         col.setCellRenderer(renderer);
         col = tblInstalled.getColumnModel().getColumn(InstalledBaysModel.COL_TONNAGE);
         col.setCellEditor(new SpinnerCellEditor(InstalledBaysModel.COL_TONNAGE));
         renderer = new DefaultTableCellRenderer();
-        renderer.setToolTipText(resourceMap.getString("TransportTab.colTonnage.tooltip")); //$NON-NLS-1$
+        renderer.setToolTipText(resourceMap.getString("TransportTab.colTonnage.tooltip"));
         col.setCellRenderer(renderer);
         col = tblInstalled.getColumnModel().getColumn(InstalledBaysModel.COL_PERSONNEL);
         renderer = new DefaultTableCellRenderer();
-        renderer.setToolTipText(resourceMap.getString("TransportTab.colPersonnel.tooltip")); //$NON-NLS-1$
+        renderer.setToolTipText(resourceMap.getString("TransportTab.colPersonnel.tooltip"));
         col.setCellRenderer(renderer);
         col = tblInstalled.getColumnModel().getColumn(InstalledBaysModel.COL_FACING);
         podColumn = tblInstalled.getColumnModel().getColumn(InstalledBaysModel.COL_POD);
@@ -579,21 +579,21 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
         public String getColumnName(int column) {
             switch (column) {
                 case COL_NAME:
-                    return resourceMap.getString("TransportTab.colName.text"); //$NON-NLS-1$
+                    return resourceMap.getString("TransportTab.colName.text");
                 case COL_SIZE:
-                    return resourceMap.getString("TransportTab.colSize.text"); //$NON-NLS-1$
+                    return resourceMap.getString("TransportTab.colSize.text");
                 case COL_DOORS:
-                    return resourceMap.getString("TransportTab.colDoors.text"); //$NON-NLS-1$
+                    return resourceMap.getString("TransportTab.colDoors.text");
                 case COL_TONNAGE:
                     return useKilogramStandard() ?
-                            resourceMap.getString("TransportTab.colKilograms.text") : //$NON-NLS-1$
-                            resourceMap.getString("TransportTab.colTonnage.text"); //$NON-NLS-1$
+                            resourceMap.getString("TransportTab.colKilograms.text") :
+                            resourceMap.getString("TransportTab.colTonnage.text");
                 case COL_PERSONNEL:
-                    return resourceMap.getString("TransportTab.colPersonnel.text"); //$NON-NLS-1$
+                    return resourceMap.getString("TransportTab.colPersonnel.text");
                 case COL_FACING:
-                    return resourceMap.getString("TransportTab.colFacing.text"); //$NON-NLS-1$
+                    return resourceMap.getString("TransportTab.colFacing.text");
                 case COL_POD:
-                    return resourceMap.getString("TransportTab.colPod.text"); //$NON-NLS-1$
+                    return resourceMap.getString("TransportTab.colPod.text");
             }
             return "";
         }

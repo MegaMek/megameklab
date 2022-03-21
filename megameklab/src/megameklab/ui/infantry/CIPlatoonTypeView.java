@@ -93,8 +93,8 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
     }
     
     private void initUI() {
-        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl()); //$NON-NLS-1$
-        motiveNames = resourceMap.getString("PlatoonTypeView.cbMotiveType.values").split(","); //$NON-NLS-1$
+        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl());
+        motiveNames = resourceMap.getString("PlatoonTypeView.cbMotiveType.values").split(",");
         
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -104,36 +104,36 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.WEST;
         gbc.insets = new Insets(0, 0, 1, 2);
-        add(new JLabel(resourceMap.getString("PlatoonTypeView.cbMotiveType.text")), gbc); //$NON-NLS-1$
+        add(new JLabel(resourceMap.getString("PlatoonTypeView.cbMotiveType.text")), gbc);
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.gridwidth = 3;
         setFieldSize(cbMotiveType, controlSize);
-        cbMotiveType.setToolTipText(resourceMap.getString("PlatoonTypeView.cbMotiveType.tooltip")); //$NON-NLS-1$
+        cbMotiveType.setToolTipText(resourceMap.getString("PlatoonTypeView.cbMotiveType.tooltip"));
         add(cbMotiveType, gbc);
         cbMotiveType.addActionListener(this);
         
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridwidth = 1;
-        add(new JLabel(resourceMap.getString("PlatoonTypeView.spnNumSquads.text")), gbc); //$NON-NLS-1$
+        add(new JLabel(resourceMap.getString("PlatoonTypeView.spnNumSquads.text")), gbc);
         gbc.gridx = 1;
         gbc.gridy = 1;
         gbc.gridwidth = 3;
         setFieldSize(spnNumSquads, spinnerSize);
-        spnNumSquads.setToolTipText(resourceMap.getString("PlatoonTypeView.spnNumSquads.tooltip")); //$NON-NLS-1$
+        spnNumSquads.setToolTipText(resourceMap.getString("PlatoonTypeView.spnNumSquads.tooltip"));
         add(spnNumSquads, gbc);
         spnNumSquads.addChangeListener(this);
         
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.gridwidth = 1;
-        add(new JLabel(resourceMap.getString("PlatoonTypeView.spnSquadSize.text")), gbc); //$NON-NLS-1$
+        add(new JLabel(resourceMap.getString("PlatoonTypeView.spnSquadSize.text")), gbc);
         gbc.gridx = 1;
         gbc.gridy = 2;
         gbc.gridwidth = 3;
         setFieldSize(spnSquadSize, spinnerSize);
-        spnSquadSize.setToolTipText(resourceMap.getString("PlatoonTypeView.spnSquadSize.tooltip")); //$NON-NLS-1$
+        spnSquadSize.setToolTipText(resourceMap.getString("PlatoonTypeView.spnSquadSize.tooltip"));
         add(spnSquadSize, gbc);
         spnSquadSize.addChangeListener(this);
 
@@ -141,19 +141,19 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
         gbc.gridx = 0;
         gbc.gridy = 3;
         gbc.gridwidth = 1;
-        add(new JLabel(resourceMap.getString("PlatoonTypeView.lblMaxSize.text")), gbc); //$NON-NLS-1$
+        add(new JLabel(resourceMap.getString("PlatoonTypeView.lblMaxSize.text")), gbc);
         gbc.gridx = 1;
         gbc.gridy = 3;
-        lblMaxSize.setToolTipText(resourceMap.getString("PlatoonTypeView.lblMaxSize.tooltip")); //$NON-NLS-1$
+        lblMaxSize.setToolTipText(resourceMap.getString("PlatoonTypeView.lblMaxSize.tooltip"));
         add(lblMaxSize, gbc);
         
         gbc.gridx = 2;
         gbc.gridy = 3;
         gbc.gridwidth = 1;
-        add(new JLabel(resourceMap.getString("PlatoonTypeView.lblMaxSquadSize.text")), gbc); //$NON-NLS-1$
+        add(new JLabel(resourceMap.getString("PlatoonTypeView.lblMaxSquadSize.text")), gbc);
         gbc.gridx = 3;
         gbc.gridy = 3;
-        lblMaxSquadSize.setToolTipText(resourceMap.getString("PlatoonTypeView.lblMaxSquadSize.tooltip")); //$NON-NLS-1$
+        lblMaxSquadSize.setToolTipText(resourceMap.getString("PlatoonTypeView.lblMaxSquadSize.tooltip"));
         add(lblMaxSquadSize, gbc);
         
     }

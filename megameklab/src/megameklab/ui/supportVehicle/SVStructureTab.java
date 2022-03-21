@@ -616,9 +616,9 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         }
         EquipmentType eq = null;
         if (index == SVBuildListener.FIRECON_BASIC) {
-            eq = EquipmentType.get("Basic Fire Control"); //$NON-NLS-1$
+            eq = EquipmentType.get("Basic Fire Control");
         } else if (index == SVBuildListener.FIRECON_ADVANCED) {
-            eq = EquipmentType.get("Advanced Fire Control"); //$NON-NLS-1$
+            eq = EquipmentType.get("Advanced Fire Control");
         }
         if (null != eq) {
             try {

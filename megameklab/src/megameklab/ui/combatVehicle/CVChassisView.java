@@ -128,29 +128,29 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
         add(spnTonnage, gbc);
         spnTonnage.addChangeListener(this);
         
-        chkOmni.setText(resourceMap.getString("CVChassisView.chkOmni.text")); //$NON-NLS-1$
+        chkOmni.setText(resourceMap.getString("CVChassisView.chkOmni.text"));
         gbc.gridx = 2;
-        chkOmni.setToolTipText(resourceMap.getString("CVChassisView.chkOmni.tooltip")); //$NON-NLS-1$
+        chkOmni.setToolTipText(resourceMap.getString("CVChassisView.chkOmni.tooltip"));
         add(chkOmni, gbc);
         chkOmni.addActionListener(this);
         
-        chkSuperheavy.setText(resourceMap.getString("CVChassisView.chkSuperheavy.text")); //$NON-NLS-1$
+        chkSuperheavy.setText(resourceMap.getString("CVChassisView.chkSuperheavy.text"));
         gbc.gridx = 3;
-        chkSuperheavy.setToolTipText(resourceMap.getString("CVChassisView.chkSuperheavy.tooltip")); //$NON-NLS-1$
+        chkSuperheavy.setToolTipText(resourceMap.getString("CVChassisView.chkSuperheavy.tooltip"));
         add(chkSuperheavy, gbc);
         chkSuperheavy.addActionListener(this);
         gbc.gridy++;
 
-        chkTrailer.setText(resourceMap.getString("CVChassisView.chkTrailer.text")); //$NON-NLS-1$
+        chkTrailer.setText(resourceMap.getString("CVChassisView.chkTrailer.text"));
         gbc.gridx = 0;
         gbc.gridwidth = 2;
-        chkTrailer.setToolTipText(resourceMap.getString("CVChassisView.chkTrailer.tooltip")); // $NON-NLS-1$
+        chkTrailer.setToolTipText(resourceMap.getString("CVChassisView.chkTrailer.tooltip"));
         chkTrailer.setHorizontalAlignment(SwingConstants.RIGHT);
         add(chkTrailer, gbc);
         chkTrailer.addActionListener(this);
-        chkControlSystems.setText(resourceMap.getString("CVChassisView.chkControlSystems.text")); //$NON-NLS-1$
+        chkControlSystems.setText(resourceMap.getString("CVChassisView.chkControlSystems.text"));
         gbc.gridx = 2;
-        chkControlSystems.setToolTipText(resourceMap.getString("CVChassisView.chkControlSystems.tooltip")); // $NON-NLS-1$
+        chkControlSystems.setToolTipText(resourceMap.getString("CVChassisView.chkControlSystems.tooltip"));
         add(chkControlSystems, gbc);
         chkControlSystems.addActionListener(this);
         gbc.gridwidth = 1;
@@ -158,22 +158,22 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
 
         cbMotiveType.setModel(new DefaultComboBoxModel<>(MOTIVE_TYPES));
         gbc.gridx = 0;
-        add(createLabel(resourceMap.getString("CVChassisView.cbMotiveType.text"), labelSize), gbc); //$NON-NLS-1$
+        add(createLabel(resourceMap.getString("CVChassisView.cbMotiveType.text"), labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridwidth = 3;
         setFieldSize(cbMotiveType, controlSize);
-        cbMotiveType.setToolTipText(resourceMap.getString("CVChassisView.cbMotiveType.tooltip")); //$NON-NLS-1$
+        cbMotiveType.setToolTipText(resourceMap.getString("CVChassisView.cbMotiveType.tooltip"));
         add(cbMotiveType, gbc);
         cbMotiveType.addActionListener(this);
         gbc.gridy++;
 
         gbc.gridx = 0;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap.getString("CVChassisView.cbEngine.text"), labelSize), gbc); //$NON-NLS-1$
+        add(createLabel(resourceMap.getString("CVChassisView.cbEngine.text"), labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridwidth = 3;
         setFieldSize(cbEngine, controlSize);
-        cbEngine.setToolTipText(resourceMap.getString("CVChassisView.cbEngine.tooltip")); //$NON-NLS-1$
+        cbEngine.setToolTipText(resourceMap.getString("CVChassisView.cbEngine.tooltip"));
         add(cbEngine, gbc);
         cbEngine.addActionListener(this);
         gbc.gridy++;
@@ -191,22 +191,22 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
 
         gbc.gridx = 0;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap.getString("CVChassisView.cbTurrets.text"), labelSize), gbc); //$NON-NLS-1$
+        add(createLabel(resourceMap.getString("CVChassisView.cbTurrets.text"), labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridwidth = 3;
         setFieldSize(cbTurrets, controlSize);
-        cbTurrets.setToolTipText(resourceMap.getString("CVChassisView.cbTurrets.tooltip")); //$NON-NLS-1$
+        cbTurrets.setToolTipText(resourceMap.getString("CVChassisView.cbTurrets.tooltip"));
         add(cbTurrets, gbc);
         cbTurrets.addActionListener(this);
         gbc.gridy++;
 
         gbc.gridx = 0;
         gbc.gridwidth = 3;
-        JLabel lbl = createLabel(resourceMap.getString("CVChassisView.spnTurretWt.text"), labelSize); //$NON-NLS-1$
+        JLabel lbl = createLabel(resourceMap.getString("CVChassisView.spnTurretWt.text"), labelSize);
         add(lbl, gbc);
         gbc.gridx = 3;
         setFieldSize(spnChassisTurretWt, spinnerSize);
-        spnChassisTurretWt.setToolTipText(resourceMap.getString("CVChassisView.spnTurretWt.tooltip")); //$NON-NLS-1$
+        spnChassisTurretWt.setToolTipText(resourceMap.getString("CVChassisView.spnTurretWt.tooltip"));
         add(spnChassisTurretWt, gbc);
         spnChassisTurretWt.addChangeListener(this);
         omniComponents.add(lbl);
@@ -215,24 +215,24 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
 
         gbc.gridx = 0;
         gbc.gridwidth = 3;
-        lbl = createLabel(resourceMap.getString("CVChassisView.spnTurret2Wt.text"), labelSize); //$NON-NLS-1$
+        lbl = createLabel(resourceMap.getString("CVChassisView.spnTurret2Wt.text"), labelSize);
         add(lbl, gbc);
         gbc.gridx = 3;
         gbc.gridwidth = 1;
         setFieldSize(spnChassisTurret2Wt, spinnerSize);
-        spnChassisTurret2Wt.setToolTipText(resourceMap.getString("CVChassisView.spnTurret2Wt.tooltip")); //$NON-NLS-1$
+        spnChassisTurret2Wt.setToolTipText(resourceMap.getString("CVChassisView.spnTurret2Wt.tooltip"));
         add(spnChassisTurret2Wt, gbc);
         spnChassisTurret2Wt.addChangeListener(this);
         omniComponents.add(lbl);
         omniComponents.add(spnChassisTurret2Wt);
         gbc.gridy++;
 
-        JButton btnResetChassis = new JButton(resourceMap.getString("CVChassisView.btnResetChassis.text")); //$NON-NLS-1$
+        JButton btnResetChassis = new JButton(resourceMap.getString("CVChassisView.btnResetChassis.text"));
         btnResetChassis.setActionCommand(CMD_RESET_CHASSIS);
         gbc.gridx = 1;
         gbc.gridwidth = 3;
         setFieldSize(btnResetChassis, controlSize);
-        btnResetChassis.setToolTipText(resourceMap.getString("CVChassisView.btnResetChassis.tooltip")); //$NON-NLS-1$
+        btnResetChassis.setToolTipText(resourceMap.getString("CVChassisView.btnResetChassis.tooltip"));
         add(btnResetChassis, gbc);
         btnResetChassis.addActionListener(this);
         omniComponents.add(btnResetChassis);

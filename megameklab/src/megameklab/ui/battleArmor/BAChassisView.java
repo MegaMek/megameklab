@@ -74,9 +74,9 @@ public class BAChassisView extends BuildView implements ActionListener, ChangeLi
     }
     
     private void initUI() {
-        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl()); //$NON-NLS-1$
-        cbChassisType.setModel(new DefaultComboBoxModel<>(resourceMap.getString("BAChassisView.cbBodyType.values").split(","))); //$NON-NLS-1$
-        cbTurretType.setModel(new DefaultComboBoxModel<>(resourceMap.getString("BAChassisView.cbTurretType.values").split(","))); //$NON-NLS-1$
+        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl());
+        cbChassisType.setModel(new DefaultComboBoxModel<>(resourceMap.getString("BAChassisView.cbBodyType.values").split(",")));
+        cbTurretType.setModel(new DefaultComboBoxModel<>(resourceMap.getString("BAChassisView.cbTurretType.values").split(",")));
         setLayout(new GridBagLayout());
         
         GridBagConstraints gbc = new GridBagConstraints();
@@ -85,57 +85,57 @@ public class BAChassisView extends BuildView implements ActionListener, ChangeLi
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        add(createLabel(resourceMap.getString("BAChassisView.cbChassisType.text"), labelSize), gbc); //$NON-NLS-1$
+        add(createLabel(resourceMap.getString("BAChassisView.cbChassisType.text"), labelSize), gbc);
         gbc.gridx = 1;
         setFieldSize(cbChassisType, controlSize);
-        cbChassisType.setToolTipText(resourceMap.getString("BAChassisView.cbChassisType.tooltip")); //$NON-NLS-1$
+        cbChassisType.setToolTipText(resourceMap.getString("BAChassisView.cbChassisType.tooltip"));
         add(cbChassisType, gbc);
         cbChassisType.addActionListener(this);
 
         gbc.gridx = 0;
         gbc.gridy++;
-        add(createLabel(resourceMap.getString("BAChassisView.cbWeightClass.text"), labelSize), gbc); //$NON-NLS-1$
+        add(createLabel(resourceMap.getString("BAChassisView.cbWeightClass.text"), labelSize), gbc);
         gbc.gridx = 1;
         setFieldSize(cbWeightClass, controlSize);
-        cbWeightClass.setToolTipText(resourceMap.getString("BAChassisView.cbWeightClass.tooltip")); //$NON-NLS-1$
+        cbWeightClass.setToolTipText(resourceMap.getString("BAChassisView.cbWeightClass.tooltip"));
         add(cbWeightClass, gbc);
         cbWeightClass.addActionListener(this);
 
         gbc.gridx = 0;
         gbc.gridy++;
-        add(createLabel(resourceMap.getString("BAChassisView.spnSquadSize.text"), labelSize), gbc); //$NON-NLS-1$
+        add(createLabel(resourceMap.getString("BAChassisView.spnSquadSize.text"), labelSize), gbc);
         gbc.gridx = 1;
         setFieldSize(spnSquadSize, controlSize);
-        spnSquadSize.setToolTipText(resourceMap.getString("BAChassisView.spnSquadSize.tooltip")); //$NON-NLS-1$
+        spnSquadSize.setToolTipText(resourceMap.getString("BAChassisView.spnSquadSize.tooltip"));
         add(spnSquadSize, gbc);
         spnSquadSize.addChangeListener(this);
 
         gbc.gridx = 0;
         gbc.gridy++;
-        add(createLabel(resourceMap.getString("BAChassisView.cbTurretType.text"), labelSize), gbc); //$NON-NLS-1$
+        add(createLabel(resourceMap.getString("BAChassisView.cbTurretType.text"), labelSize), gbc);
         gbc.gridx = 1;
         setFieldSize(cbTurretType, controlSize);
-        cbTurretType.setToolTipText(resourceMap.getString("BAChassisView.cbTurretType.tooltip")); //$NON-NLS-1$
+        cbTurretType.setToolTipText(resourceMap.getString("BAChassisView.cbTurretType.tooltip"));
         add(cbTurretType, gbc);
         cbTurretType.addActionListener(this);
 
         gbc.gridx = 0;
         gbc.gridy++;
-        add(createLabel(resourceMap.getString("BAChassisView.spnTurretSize.text"), labelSize), gbc); //$NON-NLS-1$
+        add(createLabel(resourceMap.getString("BAChassisView.spnTurretSize.text"), labelSize), gbc);
         gbc.gridx = 1;
         setFieldSize(spnTurretSize, controlSize);
-        spnTurretSize.setToolTipText(resourceMap.getString("BAChassisView.spnTurretSize.tooltip")); //$NON-NLS-1$
+        spnTurretSize.setToolTipText(resourceMap.getString("BAChassisView.spnTurretSize.tooltip"));
         add(spnTurretSize, gbc);
         spnTurretSize.addChangeListener(this);
 
         JPanel chassisOptions = new JPanel();
-        chkExoskeleton.setText(resourceMap.getString("BAChassisView.chkExoskeleton.text")); //$NON-NLS-1$
+        chkExoskeleton.setText(resourceMap.getString("BAChassisView.chkExoskeleton.text"));
         chkExoskeleton.addActionListener(this);
-        chkExoskeleton.setToolTipText(resourceMap.getString("BAChassisView.chkExoskeleton.tooltip")); //$NON-NLS-1$
+        chkExoskeleton.setToolTipText(resourceMap.getString("BAChassisView.chkExoskeleton.tooltip"));
         chassisOptions.add(chkExoskeleton);
-        chkHarjel.setText(resourceMap.getString("BAChassisView.chkHarjel.text")); //$NON-NLS-1$
+        chkHarjel.setText(resourceMap.getString("BAChassisView.chkHarjel.text"));
         chkHarjel.addActionListener(this);
-        chkHarjel.setToolTipText(resourceMap.getString("BAChassisView.chkHarjel.tooltip")); //$NON-NLS-1$
+        chkHarjel.setToolTipText(resourceMap.getString("BAChassisView.chkHarjel.tooltip"));
         chassisOptions.add(chkHarjel);
 
         gbc.gridx = 0;

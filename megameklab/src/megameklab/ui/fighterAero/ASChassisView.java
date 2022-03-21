@@ -86,26 +86,26 @@ public class ASChassisView extends BuildView implements ActionListener, ChangeLi
     }
     
     public void initUI() {
-        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl()); //$NON-NLS-1$
+        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl());
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         fighterTypeNames = resourceMap.getString("FighterChassisView.cbFighterType.values").split(",");
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        add(createLabel(resourceMap.getString("FighterChassisView.spnTonnage.text"), labelSize), gbc); //$NON-NLS-1$
+        add(createLabel(resourceMap.getString("FighterChassisView.spnTonnage.text"), labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 0;
         setFieldSize(spnTonnage, spinnerSize);
-        spnTonnage.setToolTipText(resourceMap.getString("FighterChassisView.spnTonnage.tooltip")); //$NON-NLS-1$
+        spnTonnage.setToolTipText(resourceMap.getString("FighterChassisView.spnTonnage.tooltip"));
         add(spnTonnage, gbc);
         spnTonnage.addChangeListener(this);
         
-        chkOmni.setText(resourceMap.getString("FighterChassisView.chkOmni.text")); //$NON-NLS-1$
+        chkOmni.setText(resourceMap.getString("FighterChassisView.chkOmni.text"));
         gbc.gridx = 2;
         gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.EAST;
-        chkOmni.setToolTipText(resourceMap.getString("FighterChassisView.chkOmni.tooltip")); //$NON-NLS-1$
+        chkOmni.setToolTipText(resourceMap.getString("FighterChassisView.chkOmni.tooltip"));
         add(chkOmni, gbc);
         chkOmni.addActionListener(this);
 
@@ -113,55 +113,55 @@ public class ASChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridy = 1;
         gbc.gridwidth = 1;
         gbc.anchor = GridBagConstraints.WEST;
-        add(createLabel(resourceMap.getString("FighterChassisView.txtSI.text"), labelSize),gbc); //$NON-NLS-1$
+        add(createLabel(resourceMap.getString("FighterChassisView.txtSI.text"), labelSize),gbc);
         setFieldSize(txtSI, editorSize);
-        txtSI.setToolTipText(resourceMap.getString("FighterChassisView.txtSI.tooltip")); //$NON-NLS-1$
+        txtSI.setToolTipText(resourceMap.getString("FighterChassisView.txtSI.tooltip"));
         txtSI.setEditable(false);
         
-        chkVSTOL.setText(resourceMap.getString("FighterChassisView.chkVSTOL.text")); //$NON-NLS-1$
-        chkVSTOL.setToolTipText(resourceMap.getString("FighterChassisView.chkVSTOL.tooltip")); //$NON-NLS-1$
+        chkVSTOL.setText(resourceMap.getString("FighterChassisView.chkVSTOL.text"));
+        chkVSTOL.setToolTipText(resourceMap.getString("FighterChassisView.chkVSTOL.tooltip"));
         gbc.gridx = 1;
         add(txtSI, gbc);
         gbc.gridx = 2;
         gbc.anchor = GridBagConstraints.EAST;
-        chkVSTOL.setToolTipText(resourceMap.getString("FighterChassisView.chkVSTOL.tooltip")); //$NON-NLS-1$
+        chkVSTOL.setToolTipText(resourceMap.getString("FighterChassisView.chkVSTOL.tooltip"));
         add(chkVSTOL,gbc);
         chkVSTOL.addActionListener(this);
 
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap.getString("FighterChassisView.cbFighterType.text"), labelSize),gbc); //$NON-NLS-1$
+        add(createLabel(resourceMap.getString("FighterChassisView.cbFighterType.text"), labelSize),gbc);
         gbc.gridx = 1;
         gbc.gridy = 2;
         gbc.gridwidth = 3;
         setFieldSize(cbFighterType, controlSize);
-        cbFighterType.setToolTipText(resourceMap.getString("FighterChassisView.cbFighterType.tooltip")); //$NON-NLS-1$
+        cbFighterType.setToolTipText(resourceMap.getString("FighterChassisView.cbFighterType.tooltip"));
         add(cbFighterType, gbc);
         cbFighterType.addActionListener(this);
 
         gbc.gridx = 0;
         gbc.gridy = 3;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap.getString("FighterChassisView.cbEngine.text"), labelSize),gbc); //$NON-NLS-1$
+        add(createLabel(resourceMap.getString("FighterChassisView.cbEngine.text"), labelSize),gbc);
         gbc.gridx = 1;
         gbc.gridy = 3;
         gbc.gridwidth = 3;
         setFieldSize(cbEngine, controlSize);
-        cbEngine.setToolTipText(resourceMap.getString("FighterChassisView.cbEngine.tooltip")); //$NON-NLS-1$
+        cbEngine.setToolTipText(resourceMap.getString("FighterChassisView.cbEngine.tooltip"));
         add(cbEngine, gbc);
         cbEngine.addActionListener(this);
 
-        btnResetChassis.setText(resourceMap.getString("FighterChassisView.btnResetChassis.text")); //$NON-NLS-1$
+        btnResetChassis.setText(resourceMap.getString("FighterChassisView.btnResetChassis.text"));
         gbc.gridx = 0;
         gbc.gridy = 4;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap.getString("FighterChassisView.cbCockpit.text"), labelSize),gbc); //$NON-NLS-1$
+        add(createLabel(resourceMap.getString("FighterChassisView.cbCockpit.text"), labelSize),gbc);
         gbc.gridx = 1;
         gbc.gridy = 4;
         gbc.gridwidth = 3;
         setFieldSize(cbCockpit, controlSize);
-        cbCockpit.setToolTipText(resourceMap.getString("FighterChassisView.cbCockpit.tooltip")); //$NON-NLS-1$
+        cbCockpit.setToolTipText(resourceMap.getString("FighterChassisView.cbCockpit.tooltip"));
         add(cbCockpit, gbc);
         cbCockpit.addActionListener(this);
         
@@ -169,7 +169,7 @@ public class ASChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridy = 5;
         gbc.gridwidth = 3;
         setFieldSize(btnResetChassis, controlSize);
-        btnResetChassis.setToolTipText(resourceMap.getString("FighterChassisView.btnResetChassis.tooltip")); //$NON-NLS-1$
+        btnResetChassis.setToolTipText(resourceMap.getString("FighterChassisView.btnResetChassis.tooltip"));
         add(btnResetChassis, gbc);
         btnResetChassis.addActionListener(this);
     }
