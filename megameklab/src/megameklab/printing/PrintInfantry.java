@@ -11,7 +11,6 @@
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  */
-
 package megameklab.printing;
 
 import megamek.common.*;
@@ -46,16 +45,6 @@ public class PrintInfantry extends PrintEntity {
     public PrintInfantry(Infantry infantry, int startPage, RecordSheetOptions options) {
         super(startPage, options);
         this.infantry = infantry;
-    }
-
-    /**
-     * Creates an SVG object for the record sheet using the global printing options
-     *
-     * @param infantry The infantry to print
-     * @param startPage The print job page number for this sheet
-     */
-    public PrintInfantry(Infantry infantry, int startPage) {
-        this(infantry, startPage, new RecordSheetOptions());
     }
 
     @Override
@@ -368,7 +357,7 @@ public class PrintInfantry extends PrintEntity {
                 sj.add("ECM");
             }
             if (sj.length() > 0) {
-                setTextField(ARMOR_KIT, "Sneak(" + sj.toString() + ")");
+                setTextField(ARMOR_KIT, "Sneak(" + sj + ")");
             }
         }
         setTextField(ARMOR_DIVISOR, infantry.calcDamageDivisor()

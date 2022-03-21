@@ -28,7 +28,9 @@ import java.awt.print.Pageable;
 import java.awt.print.Printable;
 import java.awt.print.PrinterJob;
 import java.io.File;
+import java.io.InputStream;
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -189,7 +191,10 @@ public abstract class RecordSheetTask extends SwingWorker<Void, Integer> {
                 final PrintRecordSheet rs = iter.next();
                 bookmarkNames.put(rs.getFirstPage(), rs.getBookmarkNames());
                 for (int i = 0; i < rs.getPageCount(); i++) {
-                    merger.addSource(rs.exportPDF(i, pageFormat));
+                    final InputStream is = rs.exportPDF(i, pageFormat);
+                    if (is != null) {
+                        merger.addSource(is);
+                    }
                 }
                 iter.remove();
             }
@@ -200,7 +205,7 @@ public abstract class RecordSheetTask extends SwingWorker<Void, Integer> {
             PDDocument doc = PDDocument.load(file);
             PDDocumentOutline outline = new PDDocumentOutline();
             doc.getDocumentCatalog().setDocumentOutline(outline);
-            for (Map.Entry<Integer, List<String>> entry : bookmarkNames.entrySet()) {
+            for (Entry<Integer, List<String>> entry : bookmarkNames.entrySet()) {
                 for (String name : entry.getValue()) {
                     PDOutlineItem bookmark = new PDOutlineItem();
                     bookmark.setDestination(doc.getPage(entry.getKey()));

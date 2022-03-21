@@ -41,17 +41,6 @@ public class PrintProtomech extends PrintEntity {
         this.unitIndex = unitIndex;
     }
 
-    /**
-     * Creates an SVG object for the record sheet using the global printing options
-     *
-     * @param proto        The protomech to print
-     * @param startPage    The print job page number for this sheet
-     * @param unitIndex    The index of this unit on the page
-     */
-    public PrintProtomech(Protomech proto, int startPage, int unitIndex) {
-        this(proto, startPage, unitIndex, new RecordSheetOptions());
-    }
-
     @Override
     protected String getSVGFileName(int pageNumber) {
         if (proto.isQuad()) {

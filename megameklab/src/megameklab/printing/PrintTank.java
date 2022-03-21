@@ -48,16 +48,6 @@ public class PrintTank extends PrintEntity {
         this.tank = tank;
     }
 
-    /**
-     * Creates an SVG object for the record sheet using the global printing options
-     *
-     * @param tank The tank to print
-     * @param startPage The print job page number for this sheet
-     */
-    public PrintTank(Tank tank, int startPage) {
-        this(tank, startPage, new RecordSheetOptions());
-    }
-
     @Override
     public Entity getEntity() {
         return tank;
@@ -82,7 +72,7 @@ public class PrintTank extends PrintEntity {
                     subtype = "wige";
                     break;
                 }
-                //fall through
+                // fall through
             default:
                 subtype = "vehicle";
                 break;
@@ -165,7 +155,8 @@ public class PrintTank extends PrintEntity {
     @Override
     public String formatFeatures() {
         StringJoiner sj = new StringJoiner(", ");
-        List<String> chassisMods = tank.getMisc().stream().filter(m -> m.getType().hasFlag(MiscType.F_CHASSIS_MODIFICATION))
+        List<String> chassisMods = tank.getMisc().stream()
+                .filter(m -> m.getType().hasFlag(MiscType.F_CHASSIS_MODIFICATION))
                 .map(m -> m.getType().getShortName())
                 .collect(Collectors.toList());
         if (!chassisMods.isEmpty()) {
@@ -201,9 +192,7 @@ public class PrintTank extends PrintEntity {
     @Override
     protected void drawFluffImage() {
         File f;
-        if (tank.getMovementMode().equals(EntityMovementMode.NAVAL)
-                || tank.getMovementMode().equals(EntityMovementMode.HYDROFOIL)
-                || tank.getMovementMode().equals(EntityMovementMode.SUBMARINE)) {
+        if (tank.getMovementMode().isMarine()) {
             f = ImageHelper.getFluffFile(tank, ImageHelper.imageNaval);
         } else if (tank instanceof LargeSupportTank) {
             f = ImageHelper.getFluffFile(tank, ImageHelper.imageLargeSupportVehicle);

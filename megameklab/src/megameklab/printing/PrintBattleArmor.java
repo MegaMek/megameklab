@@ -47,17 +47,6 @@ public class PrintBattleArmor extends PrintEntity {
         this.squadIndex = squadIndex;
     }
 
-    /**
-     * Creates an SVG object for the record sheet using the global printing options
-     *
-     * @param battleArmor  The BattleArmor to print
-     * @param squadIndex   The index of this unit on the page
-     * @param startPage    The print job page number for this sheet
-     */
-    public PrintBattleArmor(BattleArmor battleArmor, int squadIndex, int startPage) {
-        this(battleArmor, startPage, squadIndex, new RecordSheetOptions());
-    }
-
     @Override
     protected String getSVGFileName(int pageNumber) {
         return "battle_armor_squad.svg";

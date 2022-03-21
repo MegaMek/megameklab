@@ -53,16 +53,6 @@ public class PrintAero extends PrintEntity {
         this.aero = aero;
     }
 
-    /**
-     * Creates an SVG object for the record sheet using the global printing options
-     *
-     * @param aero      The aerospace unit to print
-     * @param startPage The print job page number for this sheet
-     */
-    public PrintAero(Aero aero, int startPage) {
-        this(aero, startPage, new RecordSheetOptions());
-    }
-
     @Override
     protected String getSVGFileName(int pageNumber) {
         if (aero instanceof SmallCraft) {

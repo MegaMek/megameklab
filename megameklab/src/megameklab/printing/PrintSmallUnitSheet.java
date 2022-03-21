@@ -11,7 +11,6 @@
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  */
-
 package megameklab.printing;
 
 import megamek.common.*;
@@ -74,8 +73,9 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
             Element g = getSVGDocument().getElementById("unit_" + count);
             if (g != null) {
                 PrintEntity sheet = getBlockFor(entity, count);
-                sheet.createDocument(startPage, pageFormat, false);
-                g.appendChild(getSVGDocument().importNode(sheet.getSVGDocument().getDocumentElement(), true));
+                if (sheet.createDocument(startPage, pageFormat, false)) {
+                    g.appendChild(getSVGDocument().importNode(sheet.getSVGDocument().getDocumentElement(), true));
+                }
             }
             count++;
         }

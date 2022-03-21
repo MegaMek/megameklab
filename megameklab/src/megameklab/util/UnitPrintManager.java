@@ -120,22 +120,19 @@ public class UnitPrintManager {
     }
 
     private static File getExportFile(Frame parent, String suggestedFileName) {
-        JFileChooser f;
-        FileNameExtensionFilter filter;
-        int returnVal;
-        f = new JFileChooser(System.getProperty("user.dir"));
+        JFileChooser f = new JFileChooser(System.getProperty("user.dir"));
         f.setLocation(parent.getLocation().x + 150, parent.getLocation().y + 100);
         f.setDialogTitle("Choose export file name");
         f.setMultiSelectionEnabled(false);
         if (!suggestedFileName.isEmpty()) {
             f.setSelectedFile(new File(suggestedFileName));
         }
-        filter = new FileNameExtensionFilter("PDF files", "pdf");
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("PDF files", "pdf");
 
         // Add a filter for mul files
         f.setFileFilter(filter);
 
-        returnVal = f.showSaveDialog(parent);
+        int returnVal = f.showSaveDialog(parent);
         if (returnVal != JFileChooser.APPROVE_OPTION) {
             // I want a file, y'know!
             return null;
@@ -158,7 +155,7 @@ public class UnitPrintManager {
                 UnitUtil.removeOneShotAmmo(unit);
                 UnitUtil.expandUnitMounts((Mech) unit);
                 sheets.add(new PrintMech((Mech) unit, pageCount++, options));
-            } else if ((unit instanceof Tank) && ((unit.getMovementMode() == EntityMovementMode.NAVAL) || (unit.getMovementMode() == EntityMovementMode.SUBMARINE) || (unit.getMovementMode() == EntityMovementMode.HYDROFOIL))) {
+            } else if ((unit instanceof Tank) && unit.getMovementMode().isMarine()) {
                 sheets.add(new PrintTank((Tank) unit, pageCount++, options));
             } else if (unit instanceof Tank) {
                 if (singlePrint || options.showReferenceCharts()) {
@@ -206,12 +203,11 @@ public class UnitPrintManager {
                     protoList = new ArrayList<>();
                 }
             } else {
-                //TODO: show a message dialog that lists the unprintable units
                 unprintable.add(unit);
             }
         }
 
-        if (unprintable.size() > 0) {
+        if (!unprintable.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Exporting is not currently supported for the following units:\n"
                     + unprintable.stream().map(en -> en.getChassis() + " " + en.getModel())
                     .collect(Collectors.joining("\n")));
@@ -220,13 +216,16 @@ public class UnitPrintManager {
         if (null != tank1) {
             sheets.add(new PrintCompositeTankSheet(tank1, null, pageCount++));
         }
-        if (baList.size() > 0) {
+
+        if (!baList.isEmpty()) {
             sheets.add(new PrintSmallUnitSheet(baList, pageCount++));
         }
-        if (infList.size() > 0) {
+
+        if (!infList.isEmpty()) {
             sheets.add(new PrintSmallUnitSheet(infList, pageCount++));
         }
-        if (protoList.size() > 0) {
+
+        if (!protoList.isEmpty()) {
             sheets.add(new PrintSmallUnitSheet(protoList, pageCount));
         }
         return sheets;
@@ -259,7 +258,7 @@ public class UnitPrintManager {
      * @param options     The options to use for this print job
      */
     public static void printAllUnits(List<Entity> loadedUnits, boolean singlePrint,
-                                        RecordSheetOptions options) {
+                                     RecordSheetOptions options) {
         HashPrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
         aset.add(options.getPaperSize().sizeName);
         aset.add(options.getPaperSize().printableArea);
@@ -277,7 +276,7 @@ public class UnitPrintManager {
 
         if (loadedUnits.size() > 1) {
             masterPrintJob.setJobName(loadedUnits.get(0).getShortNameRaw() + " etc");
-        } else if (loadedUnits.size() > 0) {
+        } else if (!loadedUnits.isEmpty()) {
             masterPrintJob.setJobName(loadedUnits.get(0).getShortNameRaw());
         }
 
