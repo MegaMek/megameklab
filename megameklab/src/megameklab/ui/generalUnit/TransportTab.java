@@ -887,14 +887,17 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
             JTable.DropLocation dl = (JTable.DropLocation) support.getDropLocation();
             int index = dl.getRow();
             int max = modelInstalled.getRowCount();
-            if (index < 0 || index > max)
-               index = max;
+            if ((index < 0) || (index > max)) {
+                index = max;
+            }
+
             try {
                int rowFrom = Integer.parseInt((String) support.getTransferable().getTransferData(DataFlavor.stringFlavor));
                if (rowFrom != -1 && rowFrom != index) {
                   modelInstalled.reorder(rowFrom, index);
-                  if (index > rowFrom)
-                     index--;
+                  if (index > rowFrom) {
+                      index--;
+                  }
                   target.getSelectionModel().addSelectionInterval(index, index);
                   return true;
                }
@@ -916,5 +919,4 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
             return COPY_OR_MOVE;
         }
     }
-
 }
