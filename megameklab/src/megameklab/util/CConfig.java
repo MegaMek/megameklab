@@ -343,10 +343,10 @@ public class CConfig {
     }
 
     public static void updateSaveFiles(String newFile) {
-
-        if (newFile.trim().length() < 1) {
+        if (newFile.isBlank()) {
             return;
         }
+
         if (CConfig.getParam(CConfig.CONFIG_SAVE_FILE_4).equalsIgnoreCase(newFile)) {
             CConfig.setParam(CConfig.CONFIG_SAVE_FILE_4, "");
         }

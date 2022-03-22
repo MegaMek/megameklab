@@ -333,7 +333,7 @@ public class StartupGUI extends JPanel {
             return;
         }
 
-        if (UnitUtil.validateUnit(newUnit).trim().length() > 0) {
+        if (!UnitUtil.validateUnit(newUnit).isBlank()) {
             JOptionPane.showMessageDialog(frame, String.format(
                     resourceMap.getString("message.invalidUnit.format"),
                             UnitUtil.validateUnit(newUnit)));

@@ -679,7 +679,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         try {
             Entity tempEntity = new MechFileParser(unitFile).getEntity();
 
-            if (UnitUtil.validateUnit(parentFrame.getEntity()).trim().length() > 0) {
+            if (!UnitUtil.validateUnit(parentFrame.getEntity()).isBlank()) {
                 JOptionPane.showMessageDialog(parentFrame,
                         resourceMap.getString("message.invalidUnit.text"));
             }
@@ -687,7 +687,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             FileDialog fDialog = new FileDialog(parentFrame,
                     resourceMap.getString("dialog.imagePath.title"), FileDialog.LOAD);
 
-            if (parentFrame.getEntity().getFluff().getMMLImagePath().trim().length() > 0) {
+            if (!parentFrame.getEntity().getFluff().getMMLImagePath().isBlank()) {
                 String fullPath = new File(parentFrame.getEntity().getFluff().getMMLImagePath()).getAbsolutePath();
                 String imageName = fullPath.substring(fullPath.lastIndexOf(File.separatorChar) + 1);
                 fullPath = fullPath.substring(0, fullPath.lastIndexOf(File.separatorChar) + 1);
@@ -938,8 +938,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     }
 
     private void jMenuSaveEntity_actionPerformed(ActionEvent event) {
-
-        if (UnitUtil.validateUnit(parentFrame.getEntity()).length() > 0) {
+        if (!UnitUtil.validateUnit(parentFrame.getEntity()).isBlank()) {
             JOptionPane.showMessageDialog(parentFrame,
                     resourceMap.getString("message.invalidUnit.text"));
         }
@@ -949,10 +948,9 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
 
         String filePathName = CConfig.getParam(CConfig.CONFIG_SAVE_FILE_1);
 
-        if ((filePathName.trim().length() < 1) || !filePathName.contains(fileName)) {
+        if (filePathName.isBlank() || !filePathName.contains(fileName)) {
             FileDialog fDialog = new FileDialog(parentFrame,
-                    resourceMap.getString("dialog.saveAs.title"),
-                    FileDialog.SAVE);
+                    resourceMap.getString("dialog.saveAs.title"), FileDialog.SAVE);
 
             filePathName = CConfig.getParam(CConfig.CONFIG_SAVE_LOC);
 
@@ -969,14 +967,13 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
                 return;
             }
         }
+
         try {
             if (parentFrame.getEntity() instanceof Mech) {
-                FileOutputStream out = new FileOutputStream(filePathName);
-                PrintStream p = new PrintStream(out);
-
-                p.println(((Mech) parentFrame.getEntity()).getMtf());
-                p.close();
-                out.close();
+                try (FileOutputStream fos = new FileOutputStream(filePathName);
+                     PrintStream ps = new PrintStream(fos)) {
+                    ps.println(((Mech) parentFrame.getEntity()).getMtf());
+                }
             } else {
                 BLKFile.encode(filePathName, parentFrame.getEntity());
             }
@@ -993,7 +990,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     }
 
     private void jMenuSaveAsEntity_actionPerformed(ActionEvent event) {
-        if (UnitUtil.validateUnit(parentFrame.getEntity()).length() > 0) {
+        if (!UnitUtil.validateUnit(parentFrame.getEntity()).isBlank()) {
             JOptionPane.showMessageDialog(parentFrame,
                     resourceMap.getString("message.savingInvalidUnit.text"));
         }
@@ -1103,7 +1100,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             return;
         }
 
-        if (UnitUtil.validateUnit(newUnit).trim().length() > 0) {
+        if (!UnitUtil.validateUnit(newUnit).isBlank()) {
             JOptionPane.showMessageDialog(parentFrame, String.format(
                     resourceMap.getString("message.invalidUnit.format"),
                             UnitUtil.validateUnit(newUnit)));
@@ -1198,7 +1195,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
                 return;
             }
 
-            if (UnitUtil.validateUnit(tempEntity).trim().length() > 0) {
+            if (!UnitUtil.validateUnit(tempEntity).isBlank()) {
                 JOptionPane.showMessageDialog(parentFrame, String.format(
                         resourceMap.getString("message.invalidUnit.format"),
                                 UnitUtil.validateUnit(tempEntity)));
