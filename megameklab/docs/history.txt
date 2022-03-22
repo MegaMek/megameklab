@@ -17,6 +17,8 @@ VERSION HISTORY:
 + Issue #1062: Reenable BA clamps in equipment DB
 + PR #1066: Show dry cost in Status bar and full cost in tooltip
 + Issue #1068: Handling null source image document creation issues
++ Issue #1067: Aerospace safe thrust turns refresh
++ Issue #927: Add LAM FuelTank
 + Updating to JAXB 3.0.1 from 2.3.2
 + Updating to Log4j2 2.17.2 from 2.17.1
 + Updating to Apache PDFBox 2.0.25 from 2.0.24
