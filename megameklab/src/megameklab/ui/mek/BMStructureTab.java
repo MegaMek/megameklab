@@ -37,6 +37,7 @@ import java.util.stream.Collectors;
 public class BMStructureTab extends ITab implements MekBuildListener, ArmorAllocationListener {
     private BasicInfoView panBasicInfo;
     private BMChassisView panChassis;
+    private BMLAMFuelView panLAMFuel;
     private MVFArmorView panArmor;
     private MovementView panMovement;
     private HeatSinkView panHeat;
@@ -62,6 +63,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         panArmor = new MVFArmorView(panBasicInfo);
         panMovement = new MovementView(panBasicInfo);
         panHeat = new HeatSinkView(panBasicInfo);
+        panLAMFuel = new BMLAMFuelView(eSource);
         panArmorAllocation = new ArmorAllocationView(panBasicInfo, Entity.ETYPE_MECH);
         panPatchwork = new PatchworkArmorView(panBasicInfo);
         panSummary = new BMSummaryView(eSource);
@@ -95,12 +97,17 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         leftPanel.add(panHeat);
         leftPanel.add(Box.createGlue());
 
-        centerPanel.add(panArmor);
-        centerPanel.add(panMovement);       
+        centerPanel.add(panMovement);
+        leftPanel.add(Box.createVerticalStrut(11));
+        centerPanel.add(panLAMFuel);
+        leftPanel.add(Box.createVerticalStrut(11));
         centerPanel.add(panSummary);
         centerPanel.add(Box.createVerticalGlue());
 
+        rightPanel.add(panArmor);
+        leftPanel.add(Box.createVerticalStrut(11));
         rightPanel.add(panArmorAllocation);
+        leftPanel.add(Box.createVerticalStrut(11));
         rightPanel.add(panPatchwork);
         rightPanel.add(Box.createVerticalGlue());
 
@@ -121,6 +128,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         panChassis.setBorder(BorderFactory.createTitledBorder("Chassis"));
         panMovement.setBorder(BorderFactory.createTitledBorder("Movement"));
         panHeat.setBorder(BorderFactory.createTitledBorder("Heat Sinks"));
+        panLAMFuel.setBorder(BorderFactory.createTitledBorder("Fuel"));
         panArmor.setBorder(BorderFactory.createTitledBorder("Armor"));
         panSummary.setBorder(BorderFactory.createTitledBorder("Summary"));
         panArmorAllocation.setBorder(BorderFactory.createTitledBorder("Armor Allocation"));
@@ -136,7 +144,8 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         panMovement.setFromEntity(getMech());
         panArmorAllocation.setFromEntity(getMech());
         panPatchwork.setFromEntity(getMech());
-
+        panLAMFuel.setFromEntity(getMech());
+        panLAMFuel.setVisible(getMech() instanceof LandAirMech);
         panSummary.refresh();
         addAllListeners();
     }
@@ -401,6 +410,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         panMovement.removeListener(this);
         panArmorAllocation.removeListener(this);
         panPatchwork.removeListener(this);
+        panLAMFuel.removeListener(this);
     }
 
     public void addAllListeners() {
@@ -411,6 +421,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         panMovement.addListener(this);
         panArmorAllocation.addListener(this);
         panPatchwork.addListener(this);
+        panLAMFuel.addListener(this);
     }
 
     public void addRefreshedListener(RefreshListener l) {
