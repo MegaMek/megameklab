@@ -170,11 +170,11 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
 
     public JLabel createLabel(String text, Dimension maxSize) {
         JLabel label = new JLabel(text, SwingConstants.RIGHT);
-
         setFieldSize(label, maxSize);
         return label;
     }
 
+    @Override
     public void setFieldSize(JComponent box, Dimension maxSize) {
         box.setPreferredSize(maxSize);
         box.setMaximumSize(maxSize);

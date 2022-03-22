@@ -155,13 +155,12 @@ public class BAStructureTab extends ITab implements ActionListener, BABuildListe
     }
 
     public JLabel createLabel(String text, Dimension maxSize) {
-
         JLabel label = new JLabel(text, SwingConstants.RIGHT);
-
         setFieldSize(label, maxSize);
         return label;
     }
 
+    @Override
     public void setFieldSize(JComponent box, Dimension maxSize) {
         box.setPreferredSize(maxSize);
         box.setMaximumSize(maxSize);
@@ -237,7 +236,6 @@ public class BAStructureTab extends ITab implements ActionListener, BABuildListe
 
     public void addRefreshedListener(RefreshListener l) {
         refresh = l;
-        //weaponView.addRefreshedListener(refresh);
     }
 
     @Override
@@ -247,16 +245,14 @@ public class BAStructureTab extends ITab implements ActionListener, BABuildListe
             @SuppressWarnings("unchecked")
             JComboBox<String> combo = (JComboBox<String>) e.getSource();
             if (combo.equals(leftManipSelect)) {
-                // If the BA already had a manipulator here, we'll need to
-                //  remove it
+                // If the BA already had a manipulator here, we'll need to  remove it
                 Mounted leftManip = getBattleArmor().getLeftManipulator();
                 BAManipulator manipType;
                 if (leftManip != null) {
                     UnitUtil.removeMounted(getBattleArmor(), leftManip);
                     manipType = BAManipulator.getManipulator(
                             leftManip.getType().getInternalName());
-                    // If this manipulator was mounted as a pair, 
-                    //   remove the paired manipulator
+                    // If this manipulator was mounted as a pair, remove the paired manipulator
                     if (manipType.pairMounted) {
                         Mounted rightManip =
                                 getBattleArmor().getRightManipulator();
@@ -269,27 +265,21 @@ public class BAStructureTab extends ITab implements ActionListener, BABuildListe
 
                 // If we selected something other than "None", mount it
                 if (leftManipSelect.getSelectedIndex() != 0) {
-                    String manipName =
-                            (String)leftManipSelect.getSelectedItem();
+                    String manipName = (String)leftManipSelect.getSelectedItem();
                     manipType = BAManipulator.getManipulator(manipName);
                     EquipmentType et = EquipmentType.get(manipType.internalName);
                     leftManip = new Mounted(getBattleArmor(), et);
                     leftManip.setBaMountLoc(BattleArmor.MOUNT_LOC_LARM);
                     try {
                         // Add the manipulator
-                        getBattleArmor().addEquipment(leftManip,
-                                BattleArmor.LOC_SQUAD, false);
+                        getBattleArmor().addEquipment(leftManip, BattleArmor.LOC_SQUAD, false);
                         // Check to see if we need to add its mate
-                        manipType = BAManipulator.getManipulator(
-                                leftManip.getType().getInternalName());
-                        // If this manipulator was mounted as a pair, 
-                        //   remove the paired manipulator
+                        manipType = BAManipulator.getManipulator(leftManip.getType().getInternalName());
+                        // If this manipulator was mounted as a pair, remove the paired manipulator
                         if (manipType.pairMounted) {
                             Mounted rightManip = new Mounted(getBattleArmor(), et);
-                            rightManip.setBaMountLoc(
-                                    BattleArmor.MOUNT_LOC_RARM);
-                            getBattleArmor().addEquipment(rightManip,
-                                    BattleArmor.LOC_SQUAD, false);
+                            rightManip.setBaMountLoc(BattleArmor.MOUNT_LOC_RARM);
+                            getBattleArmor().addEquipment(rightManip, BattleArmor.LOC_SQUAD, false);
                         }
                     } catch (LocationFullException ex) {
                         // This shouldn't happen
@@ -297,15 +287,13 @@ public class BAStructureTab extends ITab implements ActionListener, BABuildListe
                     }
                 }
             } else if (combo.equals(rightManipSelect)) {
-                // If the BA already had a manipulator here, we'll need to
-                //  remove it
+                // If the BA already had a manipulator here, we'll need to remove it
                 Mounted rightManip = getBattleArmor().getRightManipulator();
                 BAManipulator manipType;
                 if (rightManip != null) {
                     UnitUtil.removeMounted(getBattleArmor(), rightManip);
                     manipType = BAManipulator.getManipulator(rightManip.getType().getInternalName());
-                    // If this manipulator was mounted as a pair, 
-                    //   remove the paired manipulator
+                    // If this manipulator was mounted as a pair, remove the paired manipulator
                     if (manipType.pairMounted) {
                         Mounted leftManip = getBattleArmor().getLeftManipulator();
                         if (leftManip != null) {
@@ -327,8 +315,7 @@ public class BAStructureTab extends ITab implements ActionListener, BABuildListe
                         getBattleArmor().addEquipment(rightManip, BattleArmor.LOC_SQUAD, false);
                         // Check to see if we need to add its mate
                         manipType = BAManipulator.getManipulator(rightManip.getType().getInternalName());
-                        // If this manipulator was mounted as a pair, 
-                        //   remove the paired manipulator
+                        // If this manipulator was mounted as a pair, remove the paired manipulator
                         if (manipType.pairMounted) {
                             Mounted leftManip = new Mounted(getBattleArmor(), et);
                             leftManip.setBaMountLoc(BattleArmor.MOUNT_LOC_LARM);
@@ -371,7 +358,7 @@ public class BAStructureTab extends ITab implements ActionListener, BABuildListe
             // error unit didn't load right. this is bad news.
             populateTextFields = false;
         }
-        if (populateTextFields && (mechView != null)) {
+        if (populateTextFields) {
             panelMekView.setMech(getBattleArmor(), mechView);
             panelTROView.setMech(getBattleArmor(), troView);
         } else {
@@ -624,9 +611,9 @@ public class BAStructureTab extends ITab implements ActionListener, BABuildListe
                     getBattleArmor().addEquipment(newMount,
                             BattleArmor.LOC_SQUAD, false);
                 }
-            } catch (LocationFullException e) {
+            } catch (LocationFullException ex) {
                 // Shouldn't happen with BA
-                LogManager.getLogger().error("", e);
+                LogManager.getLogger().error("", ex);
             }
         } else {
             List<Mounted> mounts = getBattleArmor().getMisc().stream()

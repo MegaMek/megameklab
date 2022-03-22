@@ -24,7 +24,6 @@ import org.apache.logging.log4j.LogManager;
 
 import javax.swing.*;
 import java.awt.dnd.DropTargetDragEvent;
-import java.awt.dnd.DropTargetEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -48,12 +47,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
     }
 
     public void dragEnter(DropTargetDragEvent dtde) {
-    }
 
-    public void dragExit(DropTargetEvent dte) {
-    }
-
-    public void dragOver(DropTargetDragEvent dtde) {
     }
 
     private void changeMountStatus(Mounted eq, int location, boolean rear) {
@@ -68,28 +62,32 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
         }
     }
 
-    public void dropActionChanged(DropTargetDragEvent dtde) {
+    @Override
+    public void mouseClicked(MouseEvent evt) {
+
     }
 
-    public void mouseClicked(MouseEvent e) {
+    @Override
+    public void mouseEntered(MouseEvent evt) {
+
     }
 
-    public void mouseEntered(MouseEvent e) {
+    @Override
+    public void mouseExited(MouseEvent evt) {
+
     }
 
-    public void mouseExited(MouseEvent e) {
-    }
-
-    public void mousePressed(MouseEvent e) {
+    @Override
+    public void mousePressed(MouseEvent mouseEvent) {
         if (buildView) {
-            if (e.getButton() == MouseEvent.BUTTON2) {
-                setSelectedIndex(locationToIndex(e.getPoint()));
+            if (mouseEvent.getButton() == MouseEvent.BUTTON2) {
+                setSelectedIndex(locationToIndex(mouseEvent.getPoint()));
                 removeCrit();
-            } else if (e.getButton() == MouseEvent.BUTTON3) {
+            } else if (mouseEvent.getButton() == MouseEvent.BUTTON3) {
 
-                setSelectedIndex(locationToIndex(e.getPoint()));
+                setSelectedIndex(locationToIndex(mouseEvent.getPoint()));
 
-                if ((e.getModifiersEx() & InputEvent.CTRL_DOWN_MASK) != 0) {
+                if ((mouseEvent.getModifiersEx() & InputEvent.CTRL_DOWN_MASK) != 0) {
                     removeCrit();
                     return;
                 }
@@ -101,12 +99,12 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
 
                 Mounted mount = getMounted();
                 if (mount != null) {
-                    if ((e.getModifiersEx() & InputEvent.ALT_DOWN_MASK) != 0) {
+                    if ((mouseEvent.getModifiersEx() & InputEvent.ALT_DOWN_MASK) != 0) {
                         changeWeaponFacing(!mount.isRearMounted());
                         return;
                     }
 
-                    if ((e.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) != 0) {
+                    if ((mouseEvent.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) != 0) {
                         changeOmniMounting(!mount.isOmniPodMounted());
                         return;
                     }
@@ -181,7 +179,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                 }
 
                 if (popup.getComponentCount() > 0) {
-                    popup.show(this, e.getX(), e.getY());
+                    popup.show(this, mouseEvent.getX(), mouseEvent.getY());
                 }
             }
         }
@@ -219,7 +217,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
         CriticalSlot crit = getCrit();
         Mounted mounted = getMounted();
 
-        if ((mounted == null)) {
+        if (mounted == null) {
             return;
         }
 
@@ -309,7 +307,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
         // Check linkings after you remove everything.
         try {
             MechFileParser.postLoadInit(getUnit());
-        } catch (EntityLoadingException ele) {
+        } catch (EntityLoadingException ignored) {
             // do nothing.
         } catch (Exception ex) {
             LogManager.getLogger().error("", ex);
@@ -317,7 +315,6 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
         if (refresh != null) {
             refresh.refreshAll();
         }
-
     }
 
     public Entity getUnit() {

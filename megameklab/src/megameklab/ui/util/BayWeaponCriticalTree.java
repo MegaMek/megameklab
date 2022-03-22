@@ -626,8 +626,8 @@ public class BayWeaponCriticalTree extends JTree {
             }
             return sb.toString();
         }
-        
-        
+
+        @Override
         public String getTooltip() {
             StringBuilder sb = new StringBuilder("<html>");
             sb.append(this);
@@ -711,7 +711,6 @@ public class BayWeaponCriticalTree extends JTree {
      * Sets node name and text/background colors.
      */
     private final DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer() {
-
         private EquipmentNode node;
 
         @Override
@@ -786,8 +785,7 @@ public class BayWeaponCriticalTree extends JTree {
                     JPopupMenu popup = new JPopupMenu();
                     popup.setAutoscrolls(true);
                     JMenuItem info;
-    
-                    
+
                     if (node.isLeaf()) {
                         if (node.getMounted().getType() instanceof AmmoType) {
                             AmmoType at = (AmmoType)node.getMounted().getType();
@@ -880,7 +878,7 @@ public class BayWeaponCriticalTree extends JTree {
         }
         return eSource.getEntity().getLocationName(location);
     }
-    
+
     /**
      * Used by the unallocated equipment list to determine whether the arc represented by this
      * tree is valid for the aero unit. This filters out aft side arcs for aerodyne small
@@ -905,10 +903,9 @@ public class BayWeaponCriticalTree extends JTree {
      */
     public List<Mounted> baysFor(Mounted eq) {
         List<Mounted> retVal = new ArrayList<>();
-        for (Enumeration<?> e = ((MutableTreeNode)model.getRoot()).children(); e.hasMoreElements(); ) {
-            final Mounted bay = ((EquipmentNode)e.nextElement()).getMounted();
-            if ((bay.getType() instanceof BayWeapon)
-                    && (canTakeEquipment(bay, eq))) {
+        for (Enumeration<?> e = ((MutableTreeNode) model.getRoot()).children(); e.hasMoreElements(); ) {
+            final Mounted bay = ((EquipmentNode) e.nextElement()).getMounted();
+            if ((bay.getType() instanceof BayWeapon) && (canTakeEquipment(bay, eq))) {
                 retVal.add(bay);
             }
         }
@@ -926,7 +923,7 @@ public class BayWeaponCriticalTree extends JTree {
         if (eSource.getEntity().usesWeaponBays()
                 && ((eq.getType() instanceof AmmoType)
                         || UnitUtil.isWeaponEnhancement(eq.getType()))) {
-            return baysFor(eq).size() > 0;
+            return !baysFor(eq).isEmpty();
         }
         if (TestEntity.eqRequiresLocation(eSource.getEntity(), eq.getType())) {
             return location != TestEntity.getSystemWideLocation(eSource.getEntity());
@@ -951,8 +948,8 @@ public class BayWeaponCriticalTree extends JTree {
                 setRootVisible(false);
             }
             addToBay(bay, eq);
-        } catch (LocationFullException ex) {
-            //should not happen
+        } catch (LocationFullException ignored) {
+            // should not happen
         }
         refresh.refreshEquipment();
         refresh.refreshBuild();
@@ -1091,7 +1088,8 @@ public class BayWeaponCriticalTree extends JTree {
                 Mounted m = eSource.getEntity().addEquipment(at, bay.getLocation());
                 m.setShotsLeft(shots);
                 addToBay(bay, m);
-            } catch (LocationFullException e) {
+            } catch (LocationFullException ignored) {
+
             }
         }
     }
@@ -1103,8 +1101,8 @@ public class BayWeaponCriticalTree extends JTree {
     public void addToLocation(Mounted eq) {
         moveToArc(eq);
         EquipmentNode node = new EquipmentNode(eq);
-        model.insertNodeInto(node, (MutableTreeNode)model.getRoot(), ((TreeNode)model.getRoot()).getChildCount());
-        node.setParent((MutableTreeNode)model.getRoot());
+        model.insertNodeInto(node, (MutableTreeNode) model.getRoot(), ((TreeNode) model.getRoot()).getChildCount());
+        node.setParent((MutableTreeNode) model.getRoot());
         if (isRootVisible()) {
             expandRow(0);
             setRootVisible(false);
@@ -1125,24 +1123,20 @@ public class BayWeaponCriticalTree extends JTree {
     public void addToLocation(List<Mounted> eqList) {
         // We want to check for weapons first since they might make a new bay that creates a legal space
         // for non-weapon equipment that might not have a place otherwise.
-        Collections.sort(eqList, (m1, m2) -> {
-            return ((m1.getType() instanceof WeaponType)? 0 : 1)
-                    - ((m2.getType() instanceof WeaponType)? 0 : 1);
-        });
+        eqList.sort(Comparator.comparingInt(m -> ((m.getType() instanceof WeaponType) ? 0 : 1)));
         LIST:for (Mounted eq : eqList) {
             if (eSource.getEntity().usesWeaponBays() && ((eq.getType() instanceof WeaponType)
                     || (eq.getType() instanceof AmmoType)
                     || (UnitUtil.isWeaponEnhancement(eq.getType())))) {
-                for (Enumeration<?> e = ((MutableTreeNode)model.getRoot()).children(); e.hasMoreElements(); ) {
-                    final Mounted bay = ((EquipmentNode)e.nextElement()).getMounted();
-                    if ((bay.getType() instanceof BayWeapon)
-                            && (canTakeEquipment(bay, eq))) {
+                for (Enumeration<?> e = ((MutableTreeNode) model.getRoot()).children(); e.hasMoreElements(); ) {
+                    final Mounted bay = ((EquipmentNode) e.nextElement()).getMounted();
+                    if ((bay.getType() instanceof BayWeapon) && (canTakeEquipment(bay, eq))) {
                         addToBay(bay, eq);
                         continue LIST;
                     }
                 }
                 if (eq.getType() instanceof WeaponType) {
-                    addToNewBay(((WeaponType)eq.getType()).getBayType(), eq);
+                    addToNewBay(((WeaponType) eq.getType()).getBayType(), eq);
                 }
                 // Skip any ammo that can't go into a bay here
             } else {
@@ -1256,7 +1250,7 @@ public class BayWeaponCriticalTree extends JTree {
      */
     private boolean canTakeEquipment(Mounted bay, Mounted eq) {
         if (eq.getType() instanceof WeaponType) {
-            if (((WeaponType)eq.getType()).getBayType() != bay.getType()) {
+            if (((WeaponType) eq.getType()).getBayType() != bay.getType()) {
                 return false;
             }
             // find current av
@@ -1266,7 +1260,7 @@ public class BayWeaponCriticalTree extends JTree {
                 // Plasma weapons add the average heat to the damage to compute bay AV limit.
                 // That's 1d6 for rifle and 2d6 for canon.
                 if (w.getType().hasFlag(WeaponType.F_PLASMA)) {
-                    if (((WeaponType)w.getType()).getDamage() == WeaponType.DAMAGE_VARIABLE) {
+                    if (((WeaponType) w.getType()).getDamage() == WeaponType.DAMAGE_VARIABLE) {
                         av += 7;
                     } else {
                         av += 13.5;
@@ -1287,9 +1281,9 @@ public class BayWeaponCriticalTree extends JTree {
             }
         } else if (eq.getType() instanceof AmmoType) {
             for (int eqNum : bay.getBayWeapons()) {
-                final WeaponType weapon = (WeaponType)eSource.getEntity().getEquipment(eqNum).getType();
-                if ((weapon.getAmmoType() == ((AmmoType)eq.getType()).getAmmoType())
-                        && (weapon.getRackSize() == ((AmmoType)eq.getType()).getRackSize())) {
+                final WeaponType weapon = (WeaponType) eSource.getEntity().getEquipment(eqNum).getType();
+                if ((weapon.getAmmoType() == ((AmmoType) eq.getType()).getAmmoType())
+                        && (weapon.getRackSize() == ((AmmoType) eq.getType()).getRackSize())) {
                     return true;
                 }
             }
@@ -1374,9 +1368,9 @@ public class BayWeaponCriticalTree extends JTree {
         if (null != bay) {
             if ((eq == bay)
                     || ((eq.getType() instanceof WeaponType)
-                            && (bay.getBayWeapons().contains(eSource.getEntity().getEquipmentNum(eq))))
+                            && bay.getBayWeapons().contains(eSource.getEntity().getEquipmentNum(eq)))
                     || ((eq.getType() instanceof AmmoType)
-                            && (bay.getBayAmmo().contains(eSource.getEntity().getEquipmentNum(eq))))) {
+                            && bay.getBayAmmo().contains(eSource.getEntity().getEquipmentNum(eq)))) {
                 return false;
             }
         }
@@ -1396,7 +1390,7 @@ public class BayWeaponCriticalTree extends JTree {
         }
         return true;
     }
-    
+
     public Mounted getBayFromPath(TreePath path) {
         if (null != path) {
             MutableTreeNode node = (MutableTreeNode)path.getLastPathComponent();
@@ -1430,7 +1424,7 @@ public class BayWeaponCriticalTree extends JTree {
             return EMTPYSLOT;
         }
     }
-    
+
     public void removeExported(String selection, int action) {
         String[] sources = selection.split(":");
         if (sources.length < 2) {

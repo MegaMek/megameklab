@@ -13,12 +13,11 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-
 package megameklab.ui.util;
 
 import java.util.EventListener;
 
-public interface RefreshListener extends EventListener{
+public interface RefreshListener extends EventListener {
     void refreshHeader();
     void refreshStatus();
     void refreshAll();

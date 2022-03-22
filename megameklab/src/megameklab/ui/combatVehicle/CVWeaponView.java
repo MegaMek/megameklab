@@ -441,8 +441,9 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
         removeAllButton.setActionCommand(REMOVEALL_COMMAND);
     }
 
-    public void actionPerformed(ActionEvent e) {
-        if (e.getActionCommand().equals(LASERWEAPONADD_COMMAND)) {
+    @Override
+    public void actionPerformed(ActionEvent evt) {
+        if (evt.getActionCommand().equals(LASERWEAPONADD_COMMAND)) {
             try {
                 if (laserWeaponCombo.getSelectedIndex() > -1) {
                     for (int index : laserWeaponCombo.getSelectedIndices()) {
@@ -453,7 +454,7 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
             } catch (Exception ex) {
                 LogManager.getLogger().error("", ex);
             }
-        } else if (e.getActionCommand().equals(LASERAMMOADD_COMMAND) && (subLaserAmmoList.size() > 0)) {
+        } else if (evt.getActionCommand().equals(LASERAMMOADD_COMMAND) && !subLaserAmmoList.isEmpty()) {
             try {
                 if (laserWeaponCombo.getSelectedIndex() > -1) {
                     for (int index : laserAmmoCombo.getSelectedIndices()) {
@@ -464,7 +465,7 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
             } catch (Exception ex) {
                 LogManager.getLogger().error("", ex);
             }
-        } else if (e.getActionCommand().equals(MISSILEWEAPONADD_COMMAND)) {
+        } else if (evt.getActionCommand().equals(MISSILEWEAPONADD_COMMAND)) {
             try {
                 if (missileWeaponCombo.getSelectedIndex() > -1) {
                     for (int index : missileWeaponCombo.getSelectedIndices()) {
@@ -482,7 +483,7 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
             } catch (Exception ex) {
                 LogManager.getLogger().error("", ex);
             }
-        } else if (e.getActionCommand().equals(MISSILEAMMOADD_COMMAND)) {
+        } else if (evt.getActionCommand().equals(MISSILEAMMOADD_COMMAND)) {
             try {
                 if (missileAmmoCombo.getSelectedIndex() > -1) {
                     for (int index : missileAmmoCombo.getSelectedIndices()) {
@@ -493,7 +494,7 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
             } catch (Exception ex) {
                 LogManager.getLogger().error("", ex);
             }
-        } else if (e.getActionCommand().equals(BALLISTICWEAPONADD_COMMAND)) {
+        } else if (evt.getActionCommand().equals(BALLISTICWEAPONADD_COMMAND)) {
             try {
                 if (ballisticWeaponCombo.getSelectedIndex() > -1) {
                     for (int index : ballisticWeaponCombo.getSelectedIndices()) {
@@ -510,7 +511,7 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
             } catch (Exception ex) {
                 LogManager.getLogger().error("", ex);
             }
-        } else if (e.getActionCommand().equals(BALLISTICAMMOADD_COMMAND)) {
+        } else if (evt.getActionCommand().equals(BALLISTICAMMOADD_COMMAND)) {
             try {
                 if (ballisticAmmoCombo.getSelectedIndex() > -1) {
                     for (int index : ballisticAmmoCombo.getSelectedIndices()) {
@@ -521,7 +522,7 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
             } catch (Exception ex) {
                 LogManager.getLogger().error("", ex);
             }
-        } else if (e.getActionCommand().equals(ARTILLERYWEAPONADD_COMMAND)) {
+        } else if (evt.getActionCommand().equals(ARTILLERYWEAPONADD_COMMAND)) {
             try {
                 if (artilleryWeaponCombo.getSelectedIndex() > -1) {
                     for (int index : artilleryWeaponCombo.getSelectedIndices()) {
@@ -532,7 +533,7 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
             } catch (Exception ex) {
                 LogManager.getLogger().error("", ex);
             }
-        } else if (e.getActionCommand().equals(ARTILLERYAMMOADD_COMMAND)) {
+        } else if (evt.getActionCommand().equals(ARTILLERYAMMOADD_COMMAND)) {
             try {
                 if (artilleryAmmoCombo.getSelectedIndex() > -1) {
                     for (int index : artilleryAmmoCombo.getSelectedIndices()) {
@@ -543,7 +544,7 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
             } catch (Exception ex) {
                 LogManager.getLogger().error("", ex);
             }
-        } else if (e.getActionCommand().equals(REMOVE_COMMAND)) {
+        } else if (evt.getActionCommand().equals(REMOVE_COMMAND)) {
             int startRow = equipmentTable.getSelectedRow();
             int count = equipmentTable.getSelectedRowCount();
 
@@ -554,7 +555,7 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
                 }
             }
             refresh.refreshAll();
-        } else if (e.getActionCommand().equals(REMOVEALL_COMMAND)) {
+        } else if (evt.getActionCommand().equals(REMOVEALL_COMMAND)) {
             removeAllWeapons();
         } else {
             return;
