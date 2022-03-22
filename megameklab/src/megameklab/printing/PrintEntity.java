@@ -1,5 +1,5 @@
 /*
- * MegaMekLab - Copyright (C) 2017 - The MegaMek Team
+ * MegaMekLab - Copyright (c) 2017-2022 - The MegaMek Team. All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -13,16 +13,12 @@
  */
 package megameklab.printing;
 
-import java.awt.geom.Rectangle2D;
-import java.awt.print.PageFormat;
-import java.io.File;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.util.*;
-
 import megamek.client.generator.RandomNameGenerator;
 import megamek.common.*;
-import megameklab.printing.reference.ReferenceTable;
+import megamek.common.options.IOption;
+import megamek.common.options.IOptionGroup;
+import megamek.common.options.PilotOptions;
+import megamek.common.options.Quirks;
 import megameklab.util.CConfig;
 import org.apache.batik.anim.dom.SVGGraphicsElement;
 import org.apache.batik.anim.dom.SVGLocatableSupport;
@@ -32,16 +28,17 @@ import org.w3c.dom.svg.SVGRect;
 import org.w3c.dom.svg.SVGRectElement;
 import org.w3c.dom.svg.SVGTextContentElement;
 
-import megamek.common.options.IOption;
-import megamek.common.options.IOptionGroup;
-import megamek.common.options.PilotOptions;
-import megamek.common.options.Quirks;
+import java.awt.geom.Rectangle2D;
+import java.awt.print.PageFormat;
+import java.io.File;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.*;
 
 /**
  * Base class for printing Entity record sheets
  * 
  * @author Neoancient
- *
  */
 public abstract class PrintEntity extends PrintRecordSheet {
     
@@ -252,7 +249,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
                     if (null != element) {
                         double offset = nameOffset;
                         String prev = element.getAttribute(SVGConstants.SVG_X_ATTRIBUTE);
-                        if (null != prev) {
+                        if (!prev.isBlank()) {
                             offset += Double.parseDouble(prev);
                         } else {
                             offset += ((SVGTextContentElement) element).getStartPositionOfChar(0).getX();
@@ -282,7 +279,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
                     if (rect instanceof SVGRectElement) {
                         Rectangle2D bbox = getRectBBox((SVGRectElement) rect);
                         Element canvas = (Element) rect.getParentNode();
-                        String spaText = "Abilities: " + spaList.toString();
+                        String spaText = "Abilities: " + spaList;
                         float fontSize = FONT_SIZE_MEDIUM;
                         if (getTextLength(spaText, fontSize) > bbox.getWidth()) {
                             fontSize = (float) bbox.getHeight() / 2.4f;
@@ -508,7 +505,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
             // First check whether we can shrink them less than what is required for a new column
             if (cols * (int) (rows * nextCol) > hsCount) {
                 rows = (int) Math.ceil((double) hsCount / cols);
-                size = (double) viewHeight / rows;
+                size = viewHeight / rows;
             } else {
                 cols++;
                 size *= viewWidth / (cols * size);
