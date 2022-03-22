@@ -67,7 +67,7 @@ public class BABuildView extends IView implements ActionListener, MouseListener 
         equipmentTable.setTransferHandler(cth);
 
         equipmentList.initColumnSizes(equipmentTable);
-        TableColumn column = null;
+        TableColumn column;
         for (int i = 0; i < equipmentList.getColumnCount(); i++) {
             column = equipmentTable.getColumnModel().getColumn(i);
             if (i == 0) {
@@ -259,22 +259,16 @@ public class BABuildView extends IView implements ActionListener, MouseListener 
                         item = new JMenuItem("Add to " + locNames[location]);
     
                         final int loc = location;
-                        item.addActionListener(new ActionListener() {
-                            public void actionPerformed(ActionEvent e) {
-                                mountEquipmentInLocation(loc, selectedRow);
-                            }
-                        });
+                        item.addActionListener(evt -> mountEquipmentInLocation(loc, selectedRow));
                         popup.add(item);
                     }
                 }
             
                 if (!UnitUtil.isArmor(eq.getType()) && !eq.isSquadSupportWeapon()) {
                     item = new JMenuItem("Make individual weapon");
-                    item.addActionListener(new ActionListener() {
-                        public void actionPerformed(ActionEvent e) {
-                            eq.setLocation(BattleArmor.LOC_TROOPER_1);
-                            ((BABuildTab) getParent().getParent()).refreshAll();
-                        }
+                    item.addActionListener(evt -> {
+                        eq.setLocation(BattleArmor.LOC_TROOPER_1);
+                        ((BABuildTab) getParent().getParent()).refreshAll();
                     });
                     popup.add(item);
                 }
@@ -286,11 +280,9 @@ public class BABuildView extends IView implements ActionListener, MouseListener 
                                     || ((WeaponType)eq.getType()).getAmmoType() 
                                         == AmmoType.T_NARC))) {
                     item = new JMenuItem("Make squad weapon");
-                    item.addActionListener(new ActionListener() {
-                        public void actionPerformed(ActionEvent e) {
-                            eq.setLocation(BattleArmor.LOC_SQUAD);
-                            ((BABuildTab) getParent().getParent()).refreshAll();
-                        }
+                    item.addActionListener(evt -> {
+                        eq.setLocation(BattleArmor.LOC_SQUAD);
+                        ((BABuildTab) getParent().getParent()).refreshAll();
                     });
                     popup.add(item);
                 }
@@ -311,11 +303,9 @@ public class BABuildView extends IView implements ActionListener, MouseListener 
                     }
                     item = new JMenuItem("Set Shots: " + i);
                     final int shots = i;
-                    item.addActionListener(new ActionListener() {
-                        public void actionPerformed(ActionEvent e) {
-                            eq.setShotsLeft(shots);
-                            ((BABuildTab) getParent().getParent()).refreshAll();
-                        }
+                    item.addActionListener(evt -> {
+                        eq.setShotsLeft(shots);
+                        ((BABuildTab) getParent().getParent()).refreshAll();
                     });
                     popup.add(item);
                 }
@@ -329,11 +319,9 @@ public class BABuildView extends IView implements ActionListener, MouseListener 
                     && getBattleArmor().getChassisType() != 
                         BattleArmor.CHASSIS_TYPE_QUAD) {
                 item = new JMenuItem("Mount as squad support weapon");
-                item.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        eq.setSquadSupportWeapon(true);
-                        ((BABuildTab) getParent().getParent()).refreshAll();
-                    }
+                item.addActionListener(evt -> {
+                    eq.setSquadSupportWeapon(true);
+                    ((BABuildTab) getParent().getParent()).refreshAll();
                 });
                 popup.add(item);
             }
@@ -355,11 +343,9 @@ public class BABuildView extends IView implements ActionListener, MouseListener 
                 item = new JMenuItem("Mount as squad support weapon");
                 item.setEnabled(enabled);
                 item.setToolTipText("Ammo can only be squad mounted along with a weapon that uses it");
-                item.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        eq.setSquadSupportWeapon(true);
-                        ((BABuildTab) getParent().getParent()).refreshAll();
-                    }
+                item.addActionListener(evt -> {
+                    eq.setSquadSupportWeapon(true);
+                    ((BABuildTab) getParent().getParent()).refreshAll();
                 });
                 popup.add(item);
             }
@@ -367,16 +353,14 @@ public class BABuildView extends IView implements ActionListener, MouseListener 
             // Allow removing squad support weapon
             if (eq.isSquadSupportWeapon()) {
                 item = new JMenuItem("Remove squad support weapon mount");
-                item.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        eq.setSquadSupportWeapon(false);
-                        // Can't have squad support weapon ammo with no 
-                        // squad support weapon
-                        for (Mounted ammo : getBattleArmor().getAmmo()) {
-                            ammo.setSquadSupportWeapon(false);
-                        }
-                        ((BABuildTab) getParent().getParent()).refreshAll();
+                item.addActionListener(evt -> {
+                    eq.setSquadSupportWeapon(false);
+                    // Can't have squad support weapon ammo with no
+                    // squad support weapon
+                    for (Mounted ammo : getBattleArmor().getAmmo()) {
+                        ammo.setSquadSupportWeapon(false);
                     }
+                    ((BABuildTab) getParent().getParent()).refreshAll();
                 });
                 popup.add(item);
             }
@@ -401,18 +385,13 @@ public class BABuildView extends IView implements ActionListener, MouseListener 
                     } else {
                         locName = BattleArmor.MOUNT_LOC_NAMES[m.getBaMountLoc()];
                     }
-                    item = new JMenuItem("Mount in " + m.getName() 
-                            + " (" 
-                            + locName
-                            + ")");
+                    item = new JMenuItem("Mount in " + m.getName() + " (" + locName + ")");
                     final Mounted dwp = m;
-                    item.addActionListener(new ActionListener() {
-                        public void actionPerformed(ActionEvent e) {
-                            eq.setLinked(dwp);
-                            dwp.setLinked(eq);
-                            eq.setDWPMounted(true);
-                            ((BABuildTab) getParent().getParent()).refreshAll();
-                        }
+                    item.addActionListener(evt -> {
+                        eq.setLinked(dwp);
+                        dwp.setLinked(eq);
+                        eq.setDWPMounted(true);
+                        ((BABuildTab) getParent().getParent()).refreshAll();
                     });
                     popup.add(item);
                 }
@@ -444,53 +423,44 @@ public class BABuildView extends IView implements ActionListener, MouseListener 
                     if (m.getBaMountLoc() == BattleArmor.MOUNT_LOC_NONE) {
                         locName = "None";
                     } else {
-                        locName = 
-                                BattleArmor.MOUNT_LOC_NAMES[m.getBaMountLoc()];
+                        locName = BattleArmor.MOUNT_LOC_NAMES[m.getBaMountLoc()];
                     }
-                    item = new JMenuItem("Mount in " + m.getName() 
-                            + " (" 
-                            + locName
-                            + ")");
-                    item.setToolTipText("Ammo can only be mounted in a DWP " +
-                            "with a valid weapon.");
+                    item = new JMenuItem("Mount in " + m.getName() + " (" + locName + ")");
+                    item.setToolTipText("Ammo can only be mounted in a DWP with a valid weapon.");
                     item.setEnabled(enabled);
-                    item.addActionListener(new ActionListener() {
-                        public void actionPerformed(ActionEvent e) {
-                            m.getLinked().setLinked(eq);
-                            eq.setDWPMounted(true);
-                            ((BABuildTab) getParent().getParent()).refreshAll();
-                        }
+                    item.addActionListener(evt -> {
+                        m.getLinked().setLinked(eq);
+                        eq.setDWPMounted(true);
+                        ((BABuildTab) getParent().getParent()).refreshAll();
                     });
                     popup.add(item);
                 }
             }
-            
+
             // Right-clicked on a DWP that has an attached weapon
             if (eq.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK) 
                     && eq.getLinked() != null) {
                 item = new JMenuItem("Remove attached weapon");
-                item.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        Mounted attached = eq.getLinked();
-                        attached.setDWPMounted(false);
-                        eq.setLinked(null);
-                        eq.setLinkedBy(null);
-                        attached.setLinked(null);
-                        attached.setLinkedBy(null);
-                        // Remove any attached ammo
-                        for (Mounted ammo : getBattleArmor().getAmmo()) {
-                            if (attached.equals(ammo.getLinkedBy())) {
-                                ammo.setDWPMounted(false);
-                                ammo.setLinked(null);
-                                ammo.setLinkedBy(null);
-                            }
+                item.addActionListener(evt -> {
+                    Mounted attached = eq.getLinked();
+                    attached.setDWPMounted(false);
+                    eq.setLinked(null);
+                    eq.setLinkedBy(null);
+                    attached.setLinked(null);
+                    attached.setLinkedBy(null);
+                    // Remove any attached ammo
+                    for (Mounted ammo : getBattleArmor().getAmmo()) {
+                        if (attached.equals(ammo.getLinkedBy())) {
+                            ammo.setDWPMounted(false);
+                            ammo.setLinked(null);
+                            ammo.setLinkedBy(null);
                         }
-                        ((BABuildTab) getParent().getParent()).refreshAll();
                     }
+                    ((BABuildTab) getParent().getParent()).refreshAll();
                 });
                 popup.add(item);
             }
-            
+
             // See if we should allow linking this to an AP Mount
             if (getBattleArmor().hasWorkingMisc(MiscType.F_AP_MOUNT)
                     && eq.getType().hasFlag(WeaponType.F_INFANTRY)
@@ -529,18 +499,13 @@ public class BABuildView extends IView implements ActionListener, MouseListener 
                     } else {
                         locName = BattleArmor.MOUNT_LOC_NAMES[m.getBaMountLoc()];
                     }
-                    item = new JMenuItem("Mount in " + m.getName() 
-                            + " (" 
-                            + locName
-                            + ")");
+                    item = new JMenuItem("Mount in " + m.getName() + " (" + locName + ")");
                     final Mounted apm = m;
-                    item.addActionListener(new ActionListener() {
-                        public void actionPerformed(ActionEvent e) {
-                            eq.setLinked(apm);
-                            apm.setLinked(eq);
-                            eq.setAPMMounted(true);
-                            ((BABuildTab) getParent().getParent()).refreshAll();
-                        }
+                    item.addActionListener(evt -> {
+                        eq.setLinked(apm);
+                        apm.setLinked(eq);
+                        eq.setAPMMounted(true);
+                        ((BABuildTab) getParent().getParent()).refreshAll();
                     });
                     popup.add(item);
                 }
@@ -550,16 +515,14 @@ public class BABuildView extends IView implements ActionListener, MouseListener 
             if (eq.getType().hasFlag(MiscType.F_AP_MOUNT) 
                     && eq.getLinked() != null) {
                 item = new JMenuItem("Remove attached weapon");
-                item.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        Mounted attached = eq.getLinked();
-                        attached.setAPMMounted(false);
-                        eq.setLinked(null);
-                        eq.setLinkedBy(null);
-                        attached.setLinked(null);
-                        attached.setLinkedBy(null);
-                        ((BABuildTab) getParent().getParent()).refreshAll();
-                    }
+                item.addActionListener(evt -> {
+                    Mounted attached = eq.getLinked();
+                    attached.setAPMMounted(false);
+                    eq.setLinked(null);
+                    eq.setLinkedBy(null);
+                    attached.setLinked(null);
+                    attached.setLinkedBy(null);
+                    ((BABuildTab) getParent().getParent()).refreshAll();
                 });
                 popup.add(item);
             }
@@ -571,7 +534,6 @@ public class BABuildView extends IView implements ActionListener, MouseListener 
     public void mouseReleased(MouseEvent e) {
 
     }
-
     
     /**
      * When the user right-clicks on the equipment table, a context menu is

@@ -31,6 +31,7 @@ import megameklab.ui.util.XTableColumnModel;
 import megameklab.util.UnitUtil;
 
 import javax.swing.*;
+import javax.swing.RowSorter.SortKey;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
@@ -74,17 +75,17 @@ public class CIFieldGunView extends IView implements ActionListener {
     private JScrollPane masterEquipmentScroll = new JScrollPane();
 
     public static String getTypeName(int type) {
-        switch(type) {
-        case T_ALL:
-            return "All Weapons";
-        case T_GUN:
-            return "Field Gun";
-        case T_ARTILLERY:
-            return "Artillery";
-        case T_ARTILLERY_CANNON:
-            return "Artillery Cannon";
-        default:
-            return "?";
+        switch (type) {
+            case T_ALL:
+                return "All Weapons";
+            case T_GUN:
+                return "Field Gun";
+            case T_ARTILLERY:
+                return "Artillery";
+            case T_ARTILLERY_CANNON:
+                return "Artillery Cannon";
+            default:
+                return "?";
         }
     }
 
@@ -99,8 +100,8 @@ public class CIFieldGunView extends IView implements ActionListener {
             equipmentSorter.setComparator(col, masterEquipmentList.getSorter(col));
         }
         masterEquipmentTable.setRowSorter(equipmentSorter);
-        ArrayList<RowSorter.SortKey> sortKeys = new ArrayList<>();
-        sortKeys.add(new RowSorter.SortKey(EquipmentTableModel.COL_NAME, SortOrder.ASCENDING));
+        ArrayList<SortKey> sortKeys = new ArrayList<>();
+        sortKeys.add(new SortKey(EquipmentTableModel.COL_NAME, SortOrder.ASCENDING));
         equipmentSorter.setSortKeys(sortKeys);
         XTableColumnModel equipColumnModel = new XTableColumnModel();
         masterEquipmentTable.setColumnModel(equipColumnModel);
@@ -117,11 +118,9 @@ public class CIFieldGunView extends IView implements ActionListener {
         masterEquipmentTable.getSelectionModel().addListSelectionListener(selectionListener);
         masterEquipmentTable.setDoubleBuffered(true);
         masterEquipmentScroll.setViewportView(masterEquipmentTable);
-        masterEquipmentTable.getSelectionModel().addListSelectionListener(new javax.swing.event.ListSelectionListener() {
-            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
-                int view = masterEquipmentTable.getSelectedRow();
-                btnSetGun.setEnabled(view >= 0);
-            }
+        masterEquipmentTable.getSelectionModel().addListSelectionListener(evt -> {
+            int view = masterEquipmentTable.getSelectedRow();
+            btnSetGun.setEnabled(view >= 0);
         });
         masterEquipmentScroll.setMinimumSize(new Dimension(200,200));
         masterEquipmentScroll.setPreferredSize(new Dimension(200,200));
@@ -166,11 +165,7 @@ public class CIFieldGunView extends IView implements ActionListener {
         }
         choiceType.setModel(typeModel);
         choiceType.setSelectedIndex(1);
-        choiceType.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                filterEquipment();
-            }
-        });
+        choiceType.addActionListener(evt -> filterEquipment());
 
         txtFilter.setText("");
         txtFilter.setMinimumSize(new Dimension(200, 28));
@@ -316,7 +311,7 @@ public class CIFieldGunView extends IView implements ActionListener {
                         return false;
                     }
 
-                    if (txtFilter.getText().length() > 0) {
+                    if (!txtFilter.getText().isBlank()) {
                         String text = txtFilter.getText();
                         return etype.getName().toLowerCase().contains(text.toLowerCase());
                     } else {

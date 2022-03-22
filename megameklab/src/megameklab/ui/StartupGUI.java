@@ -18,6 +18,7 @@ import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.client.ui.swing.util.UIUtil;
 import megamek.client.ui.swing.widget.MegamekButton;
 import megamek.client.ui.swing.widget.SkinSpecification;
+import megamek.client.ui.swing.widget.SkinSpecification.UIComponents;
 import megamek.client.ui.swing.widget.SkinXMLHandler;
 import megamek.common.*;
 import megamek.common.util.EncodeControl;
@@ -50,9 +51,9 @@ public class StartupGUI extends JPanel {
     /** A map of resolution widths to file names for the startup screen */
     private final TreeMap<Integer, String> startupScreenImages = new TreeMap<>();
     {
-        startupScreenImages.put(0, "data/images/misc/mml_start_spooky_hd.jpg");
-        startupScreenImages.put(1441, "data/images/misc/mml_start_spooky_fhd.jpg");
-        startupScreenImages.put(1921, "data/images/misc/mml_start_spooky_uhd.jpg");
+        startupScreenImages.put(0, "data/images/misc/mml_start_spooky_hd.jpg"); // TODO : Remove inline filename
+        startupScreenImages.put(1441, "data/images/misc/mml_start_spooky_fhd.jpg"); // TODO : Remove inline filename
+        startupScreenImages.put(1921, "data/images/misc/mml_start_spooky_uhd.jpg"); // TODO : Remove inline filename
     }
     
     private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Splash", new EncodeControl());
@@ -62,8 +63,7 @@ public class StartupGUI extends JPanel {
     }
 
     private void initComponents() {
-        SkinSpecification skinSpec = SkinXMLHandler.getSkin(SkinSpecification.UIComponents.MainMenuBorder.getComp(),
-                true);
+        SkinSpecification skinSpec = SkinXMLHandler.getSkin(UIComponents.MainMenuBorder.getComp(), true);
         
         frame = new JFrame("MegaMekLab");
         setBackground(UIManager.getColor("controlHighlight"));
@@ -88,96 +88,53 @@ public class StartupGUI extends JPanel {
         
         JLabel labVersion = new JLabel(resourceMap.getString("version.text") + MMLConstants.VERSION, JLabel.CENTER);
         labVersion.setPreferredSize(new Dimension(250,15));
-        if (skinSpec.fontColors.size() > 0) {
+        if (!skinSpec.fontColors.isEmpty()) {
             labVersion.setForeground(skinSpec.fontColors.get(0));
         }
-        
+
         MegamekButton btnLoadUnit = new MegamekButton(resourceMap.getString("btnLoadUnit.text"),
-                SkinSpecification.UIComponents.MainMenuButton.getComp(), true);
-        btnLoadUnit.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                loadUnit();
-            }
-        });
+                UIComponents.MainMenuButton.getComp(), true);
+        btnLoadUnit.addActionListener(evt -> loadUnit());
         
         MegamekButton btnNewMek = new MegamekButton(resourceMap.getString("btnNewMek.text"),
-                SkinSpecification.UIComponents.MainMenuButton.getComp(), true);
-        btnNewMek.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                newUnit(Entity.ETYPE_MECH);
-            }
-        });
+                UIComponents.MainMenuButton.getComp(), true);
+        btnNewMek.addActionListener(evt -> newUnit(Entity.ETYPE_MECH));
         
         MegamekButton btnNewVee = new MegamekButton(resourceMap.getString("btnNewVee.text"),
-                SkinSpecification.UIComponents.MainMenuButton.getComp(), true);
-        btnNewVee.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                newUnit(Entity.ETYPE_TANK);
-            }
-        });
+                UIComponents.MainMenuButton.getComp(), true);
+        btnNewVee.addActionListener(evt -> newUnit(Entity.ETYPE_TANK));
         
         MegamekButton btnNewSupportVee = new MegamekButton(resourceMap.getString("btnNewSupportVee.text"),
-                SkinSpecification.UIComponents.MainMenuButton.getComp(), true);
-        btnNewSupportVee.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                newUnit(Entity.ETYPE_SUPPORT_TANK);
-            }
-        });
+                UIComponents.MainMenuButton.getComp(), true);
+        btnNewSupportVee.addActionListener(evt -> newUnit(Entity.ETYPE_SUPPORT_TANK));
         
         MegamekButton btnNewBA = new MegamekButton(resourceMap.getString("btnNewBA.text"),
-                SkinSpecification.UIComponents.MainMenuButton.getComp(), true);
-        btnNewBA.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                newUnit(Entity.ETYPE_BATTLEARMOR);
-            }
-        });
+                UIComponents.MainMenuButton.getComp(), true);
+        btnNewBA.addActionListener(evt -> newUnit(Entity.ETYPE_BATTLEARMOR));
         
         MegamekButton btnNewAero = new MegamekButton(resourceMap.getString("btnNewAero.text"),
-                SkinSpecification.UIComponents.MainMenuButton.getComp(), true);
-        btnNewAero.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                newUnit(Entity.ETYPE_AERO);
-            }
-        });
+                UIComponents.MainMenuButton.getComp(), true);
+        btnNewAero.addActionListener(evt -> newUnit(Entity.ETYPE_AERO));
+
         MegamekButton btnNewDropper = new MegamekButton(resourceMap.getString("btnNewDropper.text"),
-                SkinSpecification.UIComponents.MainMenuButton.getComp(), true);
-        btnNewDropper.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                newUnit(Entity.ETYPE_DROPSHIP);
-            }
-        });
+                UIComponents.MainMenuButton.getComp(), true);
+        btnNewDropper.addActionListener(evt -> newUnit(Entity.ETYPE_DROPSHIP));
         
         MegamekButton btnNewLargeCraft = new MegamekButton(resourceMap.getString("btnNewLargeCraft.text"),
-                SkinSpecification.UIComponents.MainMenuButton.getComp(), true);
-        btnNewLargeCraft.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                newUnit(Entity.ETYPE_JUMPSHIP);
-            }
-        });
+                UIComponents.MainMenuButton.getComp(), true);
+        btnNewLargeCraft.addActionListener(evt -> newUnit(Entity.ETYPE_JUMPSHIP));
         
         MegamekButton btnNewProto = new MegamekButton(resourceMap.getString("btnNewProto.text"),
-                SkinSpecification.UIComponents.MainMenuButton.getComp(), true);
-        btnNewProto.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                newUnit(Entity.ETYPE_PROTOMECH);
-            }
-        });
+                UIComponents.MainMenuButton.getComp(), true);
+        btnNewProto.addActionListener(evt -> newUnit(Entity.ETYPE_PROTOMECH));
         
         MegamekButton btnNewPbi = new MegamekButton(resourceMap.getString("btnNewPbi.text"),
-                SkinSpecification.UIComponents.MainMenuButton.getComp(), true);
-        btnNewPbi.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                newUnit(Entity.ETYPE_INFANTRY);
-            }
-        });
+                UIComponents.MainMenuButton.getComp(), true);
+        btnNewPbi.addActionListener(evt -> newUnit(Entity.ETYPE_INFANTRY));
         
         MegamekButton btnQuit = new MegamekButton(resourceMap.getString("btnQuit.text"),
-                SkinSpecification.UIComponents.MainMenuButton.getComp(), true);
-        btnQuit.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                System.exit(0);
-            }
-        });
+                UIComponents.MainMenuButton.getComp(), true);
+        btnQuit.addActionListener(evt -> System.exit(0));
 
         FontMetrics metrics = btnNewDropper.getFontMetrics(btnNewDropper.getFont());
         int width = metrics.stringWidth(btnNewDropper.getText());

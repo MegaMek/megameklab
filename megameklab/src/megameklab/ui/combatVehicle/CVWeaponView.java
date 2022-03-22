@@ -544,7 +544,6 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
                 LogManager.getLogger().error("", ex);
             }
         } else if (e.getActionCommand().equals(REMOVE_COMMAND)) {
-
             int startRow = equipmentTable.getSelectedRow();
             int count = equipmentTable.getSelectedRowCount();
 
@@ -561,7 +560,6 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
             return;
         }
         fireTableRefresh();
-
     }
 
     public void removeAllWeapons() {
@@ -576,36 +574,49 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
         return weaponList;
     }
 
-    public void mouseClicked(MouseEvent e) {
+    @Override
+    public void mouseClicked(MouseEvent evt) {
+
     }
 
-    public void mouseEntered(MouseEvent e) {
+    @Override
+    public void mouseEntered(MouseEvent evt) {
+
     }
 
-    public void mouseExited(MouseEvent e) {
+    @Override
+    public void mouseExited(MouseEvent evt) {
+
     }
 
-    public void mousePressed(MouseEvent e) {
+    @Override
+    public void mousePressed(MouseEvent evt) {
+
     }
 
-    public void mouseReleased(MouseEvent e) {
-        if (e.getSource() instanceof JList) {
-            loadAmmo(e.getComponent());
+    @Override
+    public void mouseReleased(MouseEvent evt) {
+        if (evt.getSource() instanceof JList) {
+            loadAmmo(evt.getComponent());
         }
     }
 
-    public void keyPressed(KeyEvent arg0) {
+    @Override
+    public void keyPressed(KeyEvent evt) {
+
     }
 
-    public void keyReleased(KeyEvent arg0) {
-        loadAmmo(arg0.getComponent());
+    @Override
+    public void keyReleased(KeyEvent evt) {
+        loadAmmo(evt.getComponent());
     }
 
-    public void keyTyped(KeyEvent arg0) {
+    @Override
+    public void keyTyped(KeyEvent evt) {
+
     }
 
     private void loadAmmo(Component o) {
-
         if (o instanceof JList) {
             JList<?> list = (JList<?>) o;
             if (list.equals(laserWeaponCombo)) {
@@ -615,7 +626,7 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
                 if (weapon.hasFlag(WeaponType.F_ONESHOT)) {
                     return;
                 }
-                Vector<String> equipmentList = new Vector<String>();
+                Vector<String> equipmentList = new Vector<>();
                 if (weapon.getAmmoType() != AmmoType.T_NA) {
                     for (AmmoType ammo : AmmoType.getMunitionsFor(weapon.getAmmoType())) {
                         if ((ammo.getRackSize() == weapon.getRackSize()) && UnitUtil.isLegal(getTank(), ammo) && !ammo.hasFlag(AmmoType.F_BATTLEARMOR)) {
@@ -632,7 +643,7 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
                 if (weapon.hasFlag(WeaponType.F_ONESHOT)) {
                     return;
                 }
-                Vector<String> equipmentList = new Vector<String>();
+                Vector<String> equipmentList = new Vector<>();
                 for (AmmoType ammo : AmmoType.getMunitionsFor(weapon.getAmmoType())) {
                     if ((ammo.getRackSize() == weapon.getRackSize()) && UnitUtil.isLegal(getTank(), ammo) && !ammo.hasFlag(AmmoType.F_BATTLEARMOR) && !weapon.hasFlag(WeaponType.F_ONESHOT)) {
                         subMissileAmmoList.add(ammo);
@@ -646,7 +657,7 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
                 if (weapon.hasFlag(WeaponType.F_ONESHOT)) {
                     return;
                 }
-                Vector<String> equipmentList = new Vector<String>();
+                Vector<String> equipmentList = new Vector<>();
                 for (AmmoType ammo : AmmoType.getMunitionsFor(weapon.getAmmoType())) {
                     if ((ammo.getRackSize() == weapon.getRackSize()) && UnitUtil.isLegal(getTank(), ammo) && !ammo.hasFlag(AmmoType.F_BATTLEARMOR)) {
                         subBallisticAmmoList.add(ammo);

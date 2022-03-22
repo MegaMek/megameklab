@@ -1,5 +1,5 @@
 /*
- * MegaMekLab - Copyright (C) 2008
+ * Copyright (c) 2008-2022 - The MegaMek Team. All Rights Reserved.
  *
  * Original author - jtighe (torren@users.sourceforge.net)
  *
@@ -36,7 +36,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Vector;
 
 /**
@@ -307,12 +306,7 @@ public class ASBuildView extends IView implements ActionListener, MouseListener 
                     item = new JMenuItem("Add to " + locNames[location]);
 
                     final int loc = location;
-                    item.addActionListener(new ActionListener() {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            jMenuLoadComponent_actionPerformed(loc, selectedRow);
-                        }
-                    });
+                    item.addActionListener(e1 -> jMenuLoadComponent_actionPerformed(loc, selectedRow));
                     popup.add(item);
                 }
             }

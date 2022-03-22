@@ -132,11 +132,7 @@ public class CIEquipmentView extends IView implements ActionListener {
         }
         choiceType.setModel(typeModel);
         choiceType.setSelectedIndex(1);
-        choiceType.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                filterEquipment();
-            }
-        });
+        choiceType.addActionListener(evt -> filterEquipment());
 
         txtFilter.setText("");
         txtFilter.setMinimumSize(new Dimension(200, 28));

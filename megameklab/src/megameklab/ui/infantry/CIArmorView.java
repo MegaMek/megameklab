@@ -26,6 +26,7 @@ import megameklab.ui.util.RefreshListener;
 import megameklab.ui.util.XTableColumnModel;
 
 import javax.swing.*;
+import javax.swing.JSpinner.DefaultEditor;
 import javax.swing.event.*;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
@@ -91,17 +92,15 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
         masterEquipmentTable.getSelectionModel().addListSelectionListener(selectionListener);
         masterEquipmentTable.setDoubleBuffered(true);
         masterEquipmentScroll.setViewportView(masterEquipmentTable);
-        masterEquipmentTable.getSelectionModel().addListSelectionListener(new javax.swing.event.ListSelectionListener() {
-            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
-                int view = masterEquipmentTable.getSelectedRow();
-                if (view < 0) {
-                    //selection got filtered away
-                    return;
-                }
-                int selected = masterEquipmentTable.convertRowIndexToModel(view);
-                EquipmentType equip = masterEquipmentList.getType(selected);
-                btnSetArmor.setEnabled(equip.hasFlag(MiscType.F_ARMOR_KIT));
+        masterEquipmentTable.getSelectionModel().addListSelectionListener(evt -> {
+            int view = masterEquipmentTable.getSelectedRow();
+            if (view < 0) {
+                //selection got filtered away
+                return;
             }
+            int selected = masterEquipmentTable.convertRowIndexToModel(view);
+            EquipmentType equip = masterEquipmentList.getType(selected);
+            btnSetArmor.setEnabled(equip.hasFlag(MiscType.F_ARMOR_KIT));
         });
         masterEquipmentScroll.setMinimumSize(new Dimension(200,200));
         masterEquipmentScroll.setPreferredSize(new Dimension(200,200));
@@ -153,7 +152,7 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
         setEquipmentView();
         refresh();
     }
-    
+
     private void setUpPanels() {
         JPanel databasePanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -222,7 +221,7 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
         customView.add(new JLabel("Damage Divisor:"), gbc);
         gbc.gridx = 1;
         customView.add(armorValue, gbc);
-        JFormattedTextField tf = ((JSpinner.DefaultEditor)armorValue.getEditor()).getTextField();
+        JFormattedTextField tf = ((DefaultEditor) armorValue.getEditor()).getTextField();
         tf.setEditable(false);
         tf.setBackground(UIManager.getColor("TextField.background"));
         
@@ -231,7 +230,7 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
         gbc.gridy = 1;
         gbc.anchor = GridBagConstraints.NORTHWEST;
         customView.add(chEncumber, gbc);
-        
+
         chSpaceSuit.setText("Space Suit");
         gbc.gridx = 1;
         gbc.gridy = 1;
@@ -261,15 +260,13 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
 
         equipmentView.add(customView, CARD_CUSTOM);        
     }
-    
+
     public JLabel createLabel(String text, Dimension maxSize) {
-
         JLabel label = new JLabel(text, SwingConstants.TRAILING);
-
         setFieldSize(label, maxSize);
         return label;
     }
-    
+
     public void setFieldSize(JComponent box, Dimension maxSize) {
         box.setPreferredSize(maxSize);
         box.setMaximumSize(maxSize);
@@ -278,7 +275,7 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
 
     public void refresh() {
         removeAllListeners();
-        armorValue.setValue((double)getInfantry().getArmorDamageDivisor());
+        armorValue.setValue(getInfantry().getArmorDamageDivisor());
         chEncumber.setSelected(getInfantry().isArmorEncumbering());
         chSpaceSuit.setSelected(getInfantry().hasSpaceSuit());
         chDEST.setSelected(getInfantry().hasDEST());
