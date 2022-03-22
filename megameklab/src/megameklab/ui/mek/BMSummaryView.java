@@ -61,12 +61,12 @@ public class BMSummaryView extends IView{
     private JTextField txtEquipAvail = new JTextField("?");
     private JTextField txtOtherAvail = new JTextField("?");
 
-    private EntityVerifier entityVerifier = EntityVerifier.getInstance(new File("data/mechfiles/UnitVerifierOptions.xml"));
+    private EntityVerifier entityVerifier = EntityVerifier.getInstance(new File("data/mechfiles/UnitVerifierOptions.xml")); // TODO : Remove inline file path
 
     public BMSummaryView(EntitySource eSource) {
         super(eSource);
 
-        Vector<JTextField> valueFields = new Vector<JTextField>();
+        Vector<JTextField> valueFields = new Vector<>();
 
         valueFields.add(txtStructTon);
         valueFields.add(txtEngineTon);

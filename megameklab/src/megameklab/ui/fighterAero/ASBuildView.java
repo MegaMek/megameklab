@@ -134,7 +134,7 @@ public class ASBuildView extends IView implements ActionListener, MouseListener 
         }
 
         // weapons and ammo
-        Vector<Mounted> weaponsNAmmoList = new Vector<Mounted>(10, 1);
+        Vector<Mounted> weaponsNAmmoList = new Vector<>(10, 1);
         for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
             if ((masterEquipmentList.get(pos).getType() instanceof Weapon) || 
                     (masterEquipmentList.get(pos).getType() instanceof AmmoType)) {

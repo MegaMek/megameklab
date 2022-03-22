@@ -1,5 +1,5 @@
 /*
- * MegaMekLab - Copyright (C) 2017 - The MegaMek Team
+ * Copyright (c) 2017-2022 - The MegaMek Team. All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -43,7 +43,7 @@ public class LABuildView extends IView implements MouseListener {
     }
 
     private CriticalTableModel equipmentList;
-    private Vector<Mounted> masterEquipmentList = new Vector<Mounted>(10, 1);
+    private Vector<Mounted> masterEquipmentList = new Vector<>(10, 1);
     private JTable equipmentTable = new JTable();
     private JScrollPane equipmentScroll = new JScrollPane();
 
@@ -56,7 +56,7 @@ public class LABuildView extends IView implements MouseListener {
         equipmentTable.setDragEnabled(true);
         AeroBayTransferHandler cth = new AeroBayTransferHandler(eSource);
         equipmentTable.setTransferHandler(cth);
-        TableColumn column = null;
+        TableColumn column;
         for (int i = 0; i < equipmentList.getColumnCount(); i++) {
             column = equipmentTable.getColumnModel().getColumn(i);
             if (i == 0) {
@@ -143,7 +143,7 @@ public class LABuildView extends IView implements MouseListener {
         fireTableRefresh();
     }
 
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(ActionEvent evt) {
         fireTableRefresh();
     }
 
@@ -161,50 +161,52 @@ public class LABuildView extends IView implements MouseListener {
     }
 
     @Override
-    public void mouseClicked(MouseEvent e) {
+    public void mouseClicked(MouseEvent evt) {
 
     }
 
     @Override
-    public void mouseEntered(MouseEvent e) {
+    public void mouseEntered(MouseEvent evt) {
 
     }
 
     @Override
-    public void mouseExited(MouseEvent e) {
+    public void mouseExited(MouseEvent evt) {
 
     }
 
     @Override
-    public void mousePressed(MouseEvent e) {
-        // On right-click, we want to generate menu items to add to specific 
-        //  locations, but only if those locations are make sense
-        if (e.getButton() == MouseEvent.BUTTON3) {
+    public void mousePressed(MouseEvent evt) {
+        // On right-click, we want to generate menu items to add to specific locations, but only if
+        // those locations are make sense
+        if (evt.getButton() == MouseEvent.BUTTON3) {
             JPopupMenu popup = new JPopupMenu();
-            JMenuItem item = null;
+            JMenuItem item;
 
             if (equipmentTable.getSelectedRowCount() > 1) {
                 List<Mounted> list = new ArrayList<>();
                 for (int row : equipmentTable.getSelectedRows()) {
                     list.add((Mounted) equipmentTable.getModel().getValueAt(row, CriticalTableModel.EQUIPMENT));
                 }
+
                 for (BayWeaponCriticalTree l : arcViews) {
-                    // Aerodyne small craft and dropships skip the aft side arcs
+                    // Aerodyne small craft and DropShips skip the aft side arcs
                     if (!l.validForUnit(getAero())) {
                         continue;
                     }
-                    if (list.stream().anyMatch(eq -> l.canAdd(eq))) {
+
+                    if (list.stream().anyMatch(l::canAdd)) {
                         item = new JMenuItem(l.getLocationName());
                         item.addActionListener(ev -> l.addToLocation(list));
                         popup.add(item);
                     }
                 }
             } else {
-                final int selectedRow = equipmentTable.rowAtPoint(e.getPoint());
-                Mounted eq = (Mounted)equipmentTable.getModel().getValueAt(
+                final int selectedRow = equipmentTable.rowAtPoint(evt.getPoint());
+                Mounted eq = (Mounted) equipmentTable.getModel().getValueAt(
                         selectedRow, CriticalTableModel.EQUIPMENT);
                 for (BayWeaponCriticalTree l : arcViews) {
-                    // Aerodyne small craft and dropships skip the aft side arcs
+                    // Aerodyne small craft and DropShips skip the aft side arcs
                     if (!l.validForUnit(getAero()) || !l.canAdd(eq)) {
                         continue;
                     }
@@ -213,7 +215,7 @@ public class LABuildView extends IView implements MouseListener {
                         JMenu menu = new JMenu(l.getLocationName());
                         for (Mounted bay : l.baysFor(eq)) {
                             if (eq.getType() instanceof AmmoType) {
-                                final int shotCount = ((AmmoType)eq.getType()).getShots();
+                                final int shotCount = ((AmmoType) eq.getType()).getShots();
                                 JMenu locMenu = new JMenu(bay.getName());
                                 for (int shots = shotCount; shots <= eq.getUsableShotsLeft(); shots += shotCount) {
                                     item = new JMenuItem("Add " + shots + ((shots > 1)?" shots" : " shot"));
@@ -228,16 +230,17 @@ public class LABuildView extends IView implements MouseListener {
                                 menu.add(item);
                             }
                         }
+
                         if (eq.getType() instanceof WeaponType) {
-                            final EquipmentType bayType = ((WeaponType)eq.getType()).getBayType();
+                            final EquipmentType bayType = ((WeaponType) eq.getType()).getBayType();
                             item = new JMenuItem("New " + bayType.getName());
                             item.addActionListener(ev -> l.addToNewBay(bayType,  eq));
                             menu.add(item);
                         }
+
                         if (menu.getItemCount() > 0) {
                             popup.add(menu);
-                        } else if ((eq.getType() instanceof MiscType)
-                                && l.canAdd(eq)) {
+                        } else if ((eq.getType() instanceof MiscType) && l.canAdd(eq)) {
                             item = new JMenuItem(l.getLocationName());
                             item.addActionListener(ev -> l.addToLocation(eq));
                             popup.add(item);
@@ -250,13 +253,12 @@ public class LABuildView extends IView implements MouseListener {
                 }
             }
 
-            popup.show(this, e.getX(), e.getY());
+            popup.show(this, evt.getX(), evt.getY());
         }
     }
 
     @Override
-    public void mouseReleased(MouseEvent e) {
+    public void mouseReleased(MouseEvent evt) {
 
     }
-
 }

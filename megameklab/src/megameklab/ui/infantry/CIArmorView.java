@@ -391,24 +391,23 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
     }
     
     private void filterEquipment() {
-        RowFilter<EquipmentTableModel, Integer> equipmentTypeFilter = new RowFilter<EquipmentTableModel, Integer>() {
+        RowFilter<EquipmentTableModel, Integer> equipmentTypeFilter = new RowFilter<>() {
             @Override
             public boolean include(Entry<? extends EquipmentTableModel, ? extends Integer> entry) {
                 EquipmentTableModel equipModel = entry.getModel();
                 EquipmentType etype = equipModel.getType(entry.getIdentifier());
                 if (!(etype.hasFlag(MiscType.F_ARMOR_KIT))) {
                     return false;
-                }
-                if (null != eSource.getTechManager() && !eSource.getTechManager().isLegal(etype) && !chkShowAll.isSelected()) {
+                } else if ((null != eSource.getTechManager())
+                        && !eSource.getTechManager().isLegal(etype) && !chkShowAll.isSelected()) {
                     return false;
-                }
-                if (!etype.isAvailableIn(getInfantry().getTechLevelYear())) {
+                } else if (!etype.isAvailableIn(getInfantry().getTechLevelYear())) {
                     return false;
-                }
-                if (txtFilter.getText().length() > 0) {
+                } else if (!txtFilter.getText().isBlank()) {
                     return etype.getName().toLowerCase().contains(txtFilter.getText().toLowerCase());
+                } else {
+                    return true;
                 }
-                return true;
             }
         };
         equipmentSorter.setRowFilter(equipmentTypeFilter);
@@ -471,14 +470,13 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_REF), true);
         }
     }
-    
+
     private boolean hasArmor() {
         return getInfantry().getArmorKit() != null
                 || !getInfantry().getArmorDesc().equals("1.0");
     }
-    
-    private ListSelectionListener selectionListener = new ListSelectionListener() {
 
+    private ListSelectionListener selectionListener = new ListSelectionListener() {
         @Override
         public void valueChanged(ListSelectionEvent e) {
             int selected = masterEquipmentTable.getSelectedRow();
@@ -488,6 +486,5 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
             }
             btnSetArmor.setEnabled((null != etype) && eSource.getTechManager().isLegal(etype));
         }
-        
     };
 }

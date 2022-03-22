@@ -69,17 +69,17 @@ public class CIEquipmentView extends IView implements ActionListener {
     private String ADDS_COMMAND = "ADDSECONDARY";
 
     public static String getTypeName(int type) {
-        switch(type) {
-        case T_WEAPON:
-            return "All Weapons";
-        case T_ARCHAIC:
-            return "Archaic Weapons";
-        case T_PERSONAL:
-            return "Personal Weapons";
-        case T_SUPPORT:
-            return "Support Weapons";
-        default:
-            return "?";
+        switch (type) {
+            case T_WEAPON:
+                return "All Weapons";
+            case T_ARCHAIC:
+                return "Archaic Weapons";
+            case T_PERSONAL:
+                return "Personal Weapons";
+            case T_SUPPORT:
+                return "Support Weapons";
+            default:
+                return "?";
         }
     }
 
@@ -139,17 +139,17 @@ public class CIEquipmentView extends IView implements ActionListener {
         txtFilter.setPreferredSize(new Dimension(200, 28));
         txtFilter.getDocument().addDocumentListener(new DocumentListener() {
             @Override
-            public void changedUpdate(DocumentEvent e) {
+            public void changedUpdate(DocumentEvent evt) {
                 filterEquipment();
             }
 
             @Override
-            public void insertUpdate(DocumentEvent e) {
+            public void insertUpdate(DocumentEvent evt) {
                 filterEquipment();
             }
 
             @Override
-            public void removeUpdate(DocumentEvent e) {
+            public void removeUpdate(DocumentEvent evt) {
                 filterEquipment();
             }
         });
@@ -234,13 +234,13 @@ public class CIEquipmentView extends IView implements ActionListener {
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
-        if (e.getActionCommand().equals(ADDP_COMMAND) ||
-                e.getActionCommand().equals(ADDS_COMMAND)) {
-            boolean isSecondary = e.getActionCommand().equals(ADDS_COMMAND);
+    public void actionPerformed(ActionEvent evt) {
+        if (evt.getActionCommand().equals(ADDP_COMMAND) ||
+                evt.getActionCommand().equals(ADDS_COMMAND)) {
+            boolean isSecondary = evt.getActionCommand().equals(ADDS_COMMAND);
             int view = masterEquipmentTable.getSelectedRow();
             if (view < 0) {
-                //selection got filtered away
+                // selection got filtered away
                 return;
             }
             int selected = masterEquipmentTable.convertRowIndexToModel(view);
@@ -262,7 +262,7 @@ public class CIEquipmentView extends IView implements ActionListener {
 
     private void filterEquipment() {
         final int nType = choiceType.getSelectedIndex();
-        RowFilter<EquipmentTableModel, Integer> equipmentTypeFilter = new RowFilter<EquipmentTableModel,Integer>() {
+        RowFilter<EquipmentTableModel, Integer> equipmentTypeFilter = new RowFilter<>() {
             @Override
             public boolean include(Entry<? extends EquipmentTableModel, ? extends Integer> entry) {
                 EquipmentTableModel equipModel = entry.getModel();
@@ -284,7 +284,8 @@ public class CIEquipmentView extends IView implements ActionListener {
                             && !chkShowAll.isSelected()) {
                         return false;
                     }
-                    if (txtFilter.getText().length() > 0) {
+
+                    if (!txtFilter.getText().isBlank()) {
                         String text = txtFilter.getText();
                         return etype.getName().toLowerCase().contains(text.toLowerCase());
                     } else {
@@ -350,7 +351,7 @@ public class CIEquipmentView extends IView implements ActionListener {
 
     private ListSelectionListener selectionListener = new ListSelectionListener() {
         @Override
-        public void valueChanged(ListSelectionEvent e) {
+        public void valueChanged(ListSelectionEvent evt) {
             int selected = masterEquipmentTable.getSelectedRow();
             EquipmentType etype = null;
             if (selected >= 0) {

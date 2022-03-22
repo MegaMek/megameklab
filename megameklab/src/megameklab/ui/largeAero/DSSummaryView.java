@@ -1,25 +1,14 @@
-/**
- * 
- */
 package megameklab.ui.largeAero;
-
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.io.File;
-import java.util.Vector;
-
-import javax.swing.BorderFactory;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
 
 import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestSmallCraft;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.IView;
+
+import javax.swing.*;
+import java.awt.*;
+import java.io.File;
+import java.util.Vector;
 
 /**
  * @author Neoancient
@@ -39,12 +28,12 @@ public class DSSummaryView extends IView {
     private JTextField txtOtherTon = new JTextField("?");
 
     private EntityVerifier entityVerifier = EntityVerifier.getInstance(
-            new File("data/mechfiles/UnitVerifierOptions.xml"));
+            new File("data/mechfiles/UnitVerifierOptions.xml")); // TODO : Remove inline file path
 
     public DSSummaryView(EntitySource eSource) {
         super(eSource);
 
-        Vector<JTextField> valueFields = new Vector<JTextField>();
+        Vector<JTextField> valueFields = new Vector<>();
 
         valueFields.add(txtStructTon);
         valueFields.add(txtEngineTon);
