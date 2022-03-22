@@ -310,9 +310,9 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
     }
 
     @Override
-    public void actionPerformed(ActionEvent arg0) {
+    public void actionPerformed(ActionEvent evt) {
         removeAllListeners();
-        if (arg0.getSource().equals(btnSetArmor)) {
+        if (evt.getSource().equals(btnSetArmor)) {
             int view = masterEquipmentTable.getSelectedRow();
             if (view < 0) {
                 // selection got filtered away
@@ -324,7 +324,7 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
                 getInfantry().setArmorKit(equip);
                 rbtnCustom.setEnabled(false);
             }
-        } else if (arg0.getSource().equals(btnRemoveArmor)) {
+        } else if (evt.getSource().equals(btnRemoveArmor)) {
             getInfantry().setArmorKit(null);
             getInfantry().setArmorDamageDivisor(1.0);
             getInfantry().setArmorEncumbering(false);
@@ -336,17 +336,17 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
             rbtnCustom.setEnabled(true);
         }
 
-        if (arg0.getSource().equals(chEncumber)) {
+        if (evt.getSource().equals(chEncumber)) {
             getInfantry().setArmorEncumbering(chEncumber.isSelected());
-        } else if (arg0.getSource().equals(chSpaceSuit)) {
+        } else if (evt.getSource().equals(chSpaceSuit)) {
             getInfantry().setSpaceSuit(chSpaceSuit.isSelected());
-        } else if (arg0.getSource().equals(chDEST)) {
+        } else if (evt.getSource().equals(chDEST)) {
             getInfantry().setDEST(chDEST.isSelected());
-        } else if (arg0.getSource().equals(chSneakCamo)) {
+        } else if (evt.getSource().equals(chSneakCamo)) {
             getInfantry().setSneakCamo(chSneakCamo.isSelected());
-        } else if (arg0.getSource().equals(chSneakIR)) {
+        } else if (evt.getSource().equals(chSneakIR)) {
             getInfantry().setSneakIR(chSneakIR.isSelected());
-        } else if (arg0.getSource().equals(chSneakECM)) {
+        } else if (evt.getSource().equals(chSneakECM)) {
             getInfantry().setSneakECM(chSneakECM.isSelected());
         } 
         addAllListeners();
