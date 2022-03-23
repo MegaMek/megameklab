@@ -14,19 +14,11 @@
  */
 package megameklab.ui.mek;
 
-import megamek.common.Entity;
-import megamek.common.EquipmentType;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
+import megamek.common.*;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.AbstractEquipmentTab;
 import megameklab.ui.util.AbstractEquipmentDatabaseView;
 import megameklab.util.UnitUtil;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static java.util.stream.Collectors.toList;
 
 /**
  * The Equipment Tab for Mek units showing the equipment database and the current loadout list.
@@ -51,15 +43,16 @@ public class BMEquipmentTab extends AbstractEquipmentTab {
         EquipmentType etype = mount.getType();
         return !(etype instanceof MiscType) ||
                 !(UnitUtil.isHeatSink(mount)
-                || etype.hasFlag(MiscType.F_JUMP_JET)
-                || etype.hasFlag(MiscType.F_JUMP_BOOSTER)
-                || etype.hasFlag(MiscType.F_TSM)
-                || etype.hasFlag(MiscType.F_INDUSTRIAL_TSM)
-                || (etype.hasFlag(MiscType.F_MASC) && !etype.hasSubType(MiscType.S_SUPERCHARGER))
-                || ((getMech().getEntityType() & Entity.ETYPE_QUADVEE) == Entity.ETYPE_QUADVEE
-                && etype.hasFlag(MiscType.F_TRACKS))
-                || UnitUtil.isArmorOrStructure(etype)
-                || (etype.hasFlag(MiscType.F_CASE) && etype.isClan()));
+                        || etype.isAnyOf(EquipmentTypeLookup.LAM_FUEL_TANK)
+                        || etype.hasFlag(MiscType.F_JUMP_JET)
+                        || etype.hasFlag(MiscType.F_JUMP_BOOSTER)
+                        || etype.hasFlag(MiscType.F_TSM)
+                        || etype.hasFlag(MiscType.F_INDUSTRIAL_TSM)
+                        || (etype.hasFlag(MiscType.F_MASC) && !etype.hasSubType(MiscType.S_SUPERCHARGER))
+                        || ((getMech().getEntityType() & Entity.ETYPE_QUADVEE) == Entity.ETYPE_QUADVEE
+                        && etype.hasFlag(MiscType.F_TRACKS))
+                        || UnitUtil.isArmorOrStructure(etype)
+                        || (etype.hasFlag(MiscType.F_CASE) && etype.isClan()));
     }
 
 }

@@ -2633,17 +2633,15 @@ public class UnitUtil {
         if ((eq instanceof CLTAG) || (eq instanceof ISC3MBS)
                 || (eq instanceof ISC3M) || (eq instanceof ISTAG)
                 || (eq instanceof AmmoType && ((AmmoType) eq).getAmmoType() == AmmoType.T_COOLANT_POD)
-                || (eq instanceof CLLightTAG)
-                || (eq instanceof ISAMS)
-                || (eq instanceof CLAMS)
-                || (eq instanceof ISLaserAMS)
-                || (eq instanceof CLLaserAMS)
-                || (eq instanceof ISAPDS )) {
+                || (eq instanceof CLLightTAG) || (eq instanceof ISAMS)
+                || (eq instanceof CLAMS) || (eq instanceof ISLaserAMS)
+                || (eq instanceof CLLaserAMS) || (eq instanceof ISAPDS)) {
             return true;
         }
 
         if ((eq instanceof MiscType)) {
-            if (eq.hasFlag(MiscType.F_BOMB_BAY) && !(unit instanceof LandAirMech)) {
+            if (eq.isAnyOf(EquipmentTypeLookup.LAM_FUEL_TANK, EquipmentTypeLookup.LAM_BOMB_BAY)
+                    && !(unit instanceof LandAirMech)) {
                 return false;
             }
             if ((eq.hasFlag(MiscType.F_QUAD_TURRET) || eq.hasFlag(MiscType.F_RAM_PLATE))

@@ -462,6 +462,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         panMovement.setFromEntity(getAero());
         panHeat.setFromAero(getAero());
         panChassis.setFromEntity(getAero());
+        panFuel.setFromEntity(getAero());
     }
 
     @Override
