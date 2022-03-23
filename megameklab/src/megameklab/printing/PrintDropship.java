@@ -228,7 +228,7 @@ public class PrintDropship extends PrintAero {
         }
         // Add lines equal to half the grav decks (rounded up) and one each for section
         // title and following empty line
-        if (ship instanceof Jumpship && ((Jumpship) ship).getGravDecks().size() > 0) {
+        if (ship instanceof Jumpship && !((Jumpship) ship).getGravDecks().isEmpty()) {
             linesPerBlock[BLOCK_GRAV_DECK] = ((((Jumpship) ship).getGravDecks().size() + 1) / 2) + 2;
         }
         // Add lines equal to number of transport bays and one each for section title

@@ -1048,7 +1048,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     }
 
     private void exportSummary(boolean html) {
-        if (UnitUtil.validateUnit(parentFrame.getEntity()).length() > 0) {
+        if (!UnitUtil.validateUnit(parentFrame.getEntity()).isBlank()) {
             JOptionPane.showMessageDialog(parentFrame,
                     resourceMap.getString("message.exportingInvalidUnit.text"));
         }

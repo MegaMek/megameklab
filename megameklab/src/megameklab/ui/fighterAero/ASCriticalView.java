@@ -148,7 +148,7 @@ public class ASCriticalView extends IView {
                     }
                 }
 
-                if (critNames.size() == 0) {
+                if (critNames.isEmpty()) {
                     critNames.add(CritCellUtil.EMPTY_CRITCELL_TEXT);
                 }
                 BAASBMDropTargetCriticalList<String> criticalSlotList = new BAASBMDropTargetCriticalList<>(
