@@ -1,5 +1,5 @@
 /*
- * MegaMekLab - Copyright (C) 2017 - The MegaMek Team
+ * Copyright (c) 2017-2022 - The MegaMek Team. All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -39,7 +39,7 @@ import megameklab.ui.generalUnit.BuildView;
 import megameklab.ui.listeners.DropshipBuildListener;
 
 /**
- * Structure tab chassis panel for small craft and dropships.
+ * Structure tab chassis panel for small craft and DropShips.
  * 
  * @author Neoancient
  */
@@ -51,34 +51,34 @@ public class DSChassisView extends BuildView implements ActionListener, ChangeLi
     public void removeListener(DropshipBuildListener l) {
         listeners.remove(l);
     }
-    
+
     public final static int TYPE_SMALL_CRAFT    = 0;
     public final static int TYPE_DROPSHIP       = 1;
     
     public final static int CHASSIS_AERODYNE    = 0;
     public final static int CHASSIS_SPHEROID    = 1;
-    
+
     private final SpinnerNumberModel spnTonnageModel = new SpinnerNumberModel(200, 200, null, 100);
     private final SpinnerNumberModel spnSIModel = new SpinnerNumberModel(1, 1, null, 1);
-    
+
     final private JSpinner spnTonnage = new JSpinner(spnTonnageModel);
     final private JCheckBox chkMilitary = new JCheckBox();
     final private JCheckBox chkKFBoom = new JCheckBox();
     final private JComboBox<String> cbBaseType = new JComboBox<>();
     final private JComboBox<String> cbChassisType = new JComboBox<>();
     final private JSpinner spnSI = new JSpinner(spnSIModel);
-    
+
     private ITechManager techManager;
     private boolean dropship;
     private boolean primitive;
     private int maxTonnage;
     private int maxThrust;
-    
+
     public DSChassisView(ITechManager techManager) {
         this.techManager = techManager;
         initUI();
     }
-    
+
     public void initUI() {
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl());
         setLayout(new GridBagLayout());
@@ -149,9 +149,8 @@ public class DSChassisView extends BuildView implements ActionListener, ChangeLi
         spnSI.setToolTipText(resourceMap.getString("DropshipChassisView.spnSI.tooltip"));
         add(spnSI, gbc);
         spnSI.addChangeListener(this);
-        
     }
-    
+
     public void setFromEntity(SmallCraft craft) {
         dropship = craft.hasETypeFlag(Entity.ETYPE_DROPSHIP);
         primitive = craft.isPrimitive();
@@ -238,7 +237,7 @@ public class DSChassisView extends BuildView implements ActionListener, ChangeLi
             chkKFBoom.setVisible(false);
         }
     }
-    
+
     public boolean isDropship() {
         return cbBaseType.getSelectedIndex() == TYPE_SMALL_CRAFT;
     }
@@ -252,7 +251,7 @@ public class DSChassisView extends BuildView implements ActionListener, ChangeLi
     }
     
     public void setTonnage(double tonnage) {
-        spnTonnage.setValue(Integer.valueOf((int)Math.ceil(tonnage)));
+        spnTonnage.setValue((int) Math.ceil(tonnage));
     }
     
     public boolean isMilitary() {
