@@ -58,7 +58,6 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Menu", new EncodeControl());
 
     public MenuBar(MegaMekLabMainUI parent) {
-
         parentFrame = parent;
 
         themeMenu = createThemeMenu();
@@ -405,7 +404,14 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         exportMenu.add(item);
 
         fileMenu.add(exportMenu);
-        
+
+        final JMenuItem miRefreshUnitCache = new JMenuItem(resourceMap.getString("miRefreshUnitCache.text"));
+        miRefreshUnitCache.setName("miRefreshUnitCache");
+        miRefreshUnitCache.setMnemonic(KeyEvent.VK_U);
+        miRefreshUnitCache.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, InputEvent.ALT_DOWN_MASK));
+        miRefreshUnitCache.addActionListener(evt -> MechSummaryCache.refreshUnitData(false));
+        fileMenu.add(miRefreshUnitCache);
+
         fileMenu.add(themeMenu);
 
         item = new JMenuItem(resourceMap.getString("menu.file.configuration"));
