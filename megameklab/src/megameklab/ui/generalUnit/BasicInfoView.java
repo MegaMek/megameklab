@@ -1,5 +1,5 @@
 /*
- * MegaMekLab - Copyright (C) 2017 - The MegaMek Team
+ * Copyright (c) 2017-2022 - The MegaMek Team. All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -40,30 +40,20 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @author Neoancient
  */
 public class BasicInfoView extends BuildView implements ITechManager, ActionListener, FocusListener {
-    
-    private final List<BuildListener> listeners = new CopyOnWriteArrayList<>();
-    public void addListener(BuildListener l) {
-        if (null != l) {
-            listeners.add(l);
-        }
-    }
-    public void removeListener(BuildListener l) {
-        listeners.remove(l);
-    }
-    
+    //region Variable Declarations
     private static final TechAdvancement TA_MIXED_TECH = Entity.getMixedTechAdvancement();
     private static final int CLAN_START = 2807;
     private static final int IS_MIXED_START = TA_MIXED_TECH.getIntroductionDate(false);
     private static final int CLAN_MIXED_START = TA_MIXED_TECH.getIntroductionDate(true);
-    
+
     private static final int BASE_IS = 0;
     private static final int BASE_CLAN = 1;
     private static final int BASE_IS_MIXED = 2;
     private static final int BASE_CLAN_MIXED = 3;
-    
+
     private String[] techBaseNames;
     private TechAdvancement baseTA;
-    
+
     private final JTextField txtChassis = new JTextField(5);
     private final JTextField txtModel = new JTextField(5);
     private final IntRangeTextField txtYear = new IntRangeTextField(3);
@@ -76,14 +66,18 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
     private final JLabel lblMulId = createLabel("", labelSize);
     private final IntRangeTextField txtMulId = new IntRangeTextField(8);
     private final JButton browseMul = new JButton("Open MUL in Browser");
-    
-    private int prevYear = 3145;
 
+    private int prevYear = 3145;
+    private final List<BuildListener> listeners = new CopyOnWriteArrayList<>();
+    //endregion Variable Declarations
+
+    //region Constructors
     public BasicInfoView(TechAdvancement baseTA) {
         this.baseTA = baseTA;
         initUI();
     }
-    
+    //endregion Constructors
+
     private void initUI() {
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl()); 
         techBaseNames = resourceMap.getString("BasicInfoView.cbTechBase.values").split(",");
@@ -93,7 +87,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.WEST;
         gbc.insets = new Insets(0, 0, 1, 2);
         add(createLabel(resourceMap.getString("BasicInfoView.txtChassis.text"), labelSize), gbc);
@@ -219,18 +213,28 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         
         refreshFaction();
     }
-    
+
     public void setAsCustomization() {
         txtChassis.setEditable(false);
         txtChassis.setEnabled(false);
         txtYear.setEditable(false);
         txtYear.setEnabled(false);
     }
-    
+
+    public void addListener(BuildListener l) {
+        if (null != l) {
+            listeners.add(l);
+        }
+    }
+
+    public void removeListener(BuildListener l) {
+        listeners.remove(l);
+    }
+
     public String getChassis() {
         return txtChassis.getText();
     }
-    
+
     public void setChassis(String chassis) {
         txtChassis.setText(chassis);
     }
@@ -238,7 +242,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
     public String getModel() {
         return txtModel.getText();
     }
-    
+
     public void setModel(String model) {
         txtModel.setText(model);
     }
@@ -247,24 +251,21 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
     public int getTechIntroYear() {
         return txtYear.getIntVal();
     }
-    
+
     public void setYear(int year) {
         txtYear.setIntVal(year);
         refreshTechBase();
     }
-    
+
     @Override
     public int getTechFaction() {
         if (!CConfig.getBooleanParam(CConfig.TECH_SHOW_FACTION)) {
             return ITechnology.F_NONE;
         }
         Integer retVal = (Integer) cbFaction.getSelectedItem();
-        if (retVal == null) {
-            return ITechnology.F_NONE;
-        }
-        return retVal;
+        return (retVal == null) ? ITechnology.F_NONE : retVal;
     }
-    
+
     public void setTechFaction(int techFaction) {
         cbFaction.setSelectedItem(techFaction);
     }
@@ -276,11 +277,11 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         }
         return getTechIntroYear();
     }
-    
+
     public String getSource() {
         return txtSource.getText();
     }
-    
+
     public void setSource(String source) {
         txtSource.setText(source);
     }
@@ -291,7 +292,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
     public int getManualBV() {
         return txtManualBV.getIntVal(-1);
     }
-    
+
     public void setManualBV(int bv) {
         if (bv >= 0) {
             txtManualBV.setIntVal(bv);
@@ -299,7 +300,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
             txtManualBV.setText("");
         }
     }
-    
+
     @Override
     public boolean useClanTechBase() {
         if (getTechIntroYear() < CLAN_START) {
@@ -320,31 +321,30 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         return ((null != selected)
                 && ((selected == BASE_IS_MIXED) || (selected == BASE_CLAN_MIXED)));
     }
-    
+
     public void setTechBase(boolean clan, boolean mixed) {
         int item = 0;
         if (clan && (getTechIntroYear() > CLAN_START)) {
             item++;
         }
+
         if (mixed) {
             item += 2;
         }
         cbTechBase.setSelectedItem(item);
         refreshFaction();
     }
-    
+
     @Override
     public SimpleTechLevel getTechLevel() {
-        if (cbTechLevel.getSelectedItem() == null) {
-            return SimpleTechLevel.STANDARD;
-        }
-        return (SimpleTechLevel)cbTechLevel.getSelectedItem();
+        return (cbTechLevel.getSelectedItem() == null) ? SimpleTechLevel.STANDARD
+                : (SimpleTechLevel) cbTechLevel.getSelectedItem();
     }
-    
+
     public void setTechLevel(SimpleTechLevel level) {
         cbTechLevel.setSelectedItem(level);
     }
-    
+
     private void refreshTechBase() {
         Integer prev = (Integer) cbTechBase.getSelectedItem();
         cbTechBase.removeActionListener(this);
@@ -362,20 +362,24 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         if (sphereAvailable) {
             cbTechBase.addItem(BASE_IS);
         }
+
         if (clanAvailable) {
             cbTechBase.addItem(BASE_CLAN);
         }
+
         if (sphereAvailable && mixedTechAvailable) {
             cbTechBase.addItem(BASE_IS_MIXED);
         }
+
         if (clanAvailable && mixedTechAvailable) {
             cbTechBase.addItem(BASE_CLAN_MIXED);
         }
-        if (null != prev) {
+
+        if (prev != null) {
             cbTechBase.setSelectedItem(prev);
         }
         cbTechBase.addActionListener(this);
-        if (cbTechBase.getSelectedItem() == null || !cbTechBase.getSelectedItem().equals(prev)) {
+        if ((cbTechBase.getSelectedItem() == null) || !cbTechBase.getSelectedItem().equals(prev)) {
             cbTechBase.setSelectedItem(0);
         }
         refreshTechLevel();
@@ -389,8 +393,8 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         SimpleTechLevel baseLevel;
         if (CConfig.getBooleanParam(CConfig.TECH_PROGRESSION)) {
             baseLevel = baseTA.getSimpleLevel(getGameYear());
-            if (useMixedTech() && (baseLevel.ordinal() <
-                    Entity.getMixedTechAdvancement().getSimpleLevel(getGameYear()).ordinal())) {
+            if (useMixedTech()
+                    && (baseLevel.ordinal() < Entity.getMixedTechAdvancement().getSimpleLevel(getGameYear()).ordinal())) {
                 baseLevel = Entity.getMixedTechAdvancement().getSimpleLevel(getGameYear());
             }
         } else {
@@ -400,12 +404,15 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
                 baseLevel = Entity.getMixedTechAdvancement().getStaticTechLevel();
             }
         }
-        if (!useClanTechBase() && SimpleTechLevel.INTRO.ordinal() >= baseLevel.ordinal()) {
+
+        if (!useClanTechBase() && (SimpleTechLevel.INTRO.ordinal() >= baseLevel.ordinal())) {
             cbTechLevel.addItem(SimpleTechLevel.INTRO);
         }
+
         if (SimpleTechLevel.STANDARD.ordinal() >= baseLevel.ordinal()) {
             cbTechLevel.addItem(SimpleTechLevel.STANDARD);
         }
+
         if (SimpleTechLevel.ADVANCED.ordinal() >= baseLevel.ordinal()) {
             cbTechLevel.addItem(SimpleTechLevel.ADVANCED);
         }
@@ -413,11 +420,11 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         cbTechLevel.addItem(SimpleTechLevel.UNOFFICIAL);
         cbTechLevel.setSelectedItem(prev);
         cbTechLevel.addActionListener(this);
-        if (cbTechLevel.getSelectedItem() == null || cbTechLevel.getSelectedItem() != prev) {
+        if ((cbTechLevel.getSelectedItem() == null) || (cbTechLevel.getSelectedItem() != prev)) {
             cbTechLevel.setSelectedIndex(0);
         }
     }
-    
+
     private void refreshFaction() {
         if (CConfig.getBooleanParam(CConfig.TECH_SHOW_FACTION)) {
             cbFaction.removeActionListener(this);
@@ -435,14 +442,14 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
             cbFaction.setVisible(false);
         }
     }
-    
+
     @Override
     public void focusGained(FocusEvent e) {
         if (e.getSource().equals(txtYear)) {
             prevYear = getTechIntroYear();
         }
     }
-    
+
     @Override
     public void focusLost(FocusEvent e) {
         if (e.getSource() == txtChassis) {
@@ -460,8 +467,9 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
                 int year = Math.max(getTechIntroYear(), baseTA.getIntroductionDate(useClanTechBase()));
                 listeners.forEach(l -> l.yearChanged(year));
                 prevYear = year;
-            } catch (NumberFormatException ignored) {
+            } catch (Exception ex) {
                 // If text is not a legal integer value, reset to the previous value
+                LogManager.getLogger().error("", ex);
             } finally {
                 setYear(prevYear);
             }
@@ -474,7 +482,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         }
         listeners.forEach(BuildListener::refreshSummary);
     }
-    
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == cbFaction) {
@@ -488,33 +496,35 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         }
         listeners.forEach(BuildListener::refreshSummary);
     }
-    
+
     @Override
     public boolean unofficialNoYear() {
         return CConfig.getBooleanParam(CConfig.TECH_UNOFFICAL_NO_YEAR);
     }
-    
+
     @Override
     public boolean useVariableTechLevel() {
         return CConfig.getBooleanParam(CConfig.TECH_PROGRESSION);
     }
-    
+
     @Override
     public boolean showExtinct() {
         return CConfig.getBooleanParam(CConfig.TECH_EXTINCT);
     }
 
     /**
-     * Returns true when the "Open MUL in Browser" Button can be used which is when
-     * the current MUL ID field has a valid MUL (> 0) and the system seems to support
-     * calling a standard browser.
+     * The MUL button should be shown when the current MUL ID field has a valid MUL (> 0) and the
+     * system seems to support calling a standard browser.
+     * @return true when the "Open MUL in Browser" Button can be used
      */
     private boolean shouldShowMULButton() {
         return (txtMulId.getIntVal(-1) > 0) && Desktop.isDesktopSupported()
                 && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE);
     }
 
-    /** Opens the Master Unit List in the System Standard Explorer, if possible. */
+    /**
+     * Opens the Master Unit List in the System Standard Explorer, if possible.
+     */
     private void openMUL() {
         try {
             if (shouldShowMULButton()) {
@@ -525,5 +535,4 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
             JOptionPane.showMessageDialog(this, ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
 }
