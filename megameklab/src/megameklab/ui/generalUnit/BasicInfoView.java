@@ -215,9 +215,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
     }
 
     public void setAsCustomization() {
-        txtChassis.setEditable(false);
         txtChassis.setEnabled(false);
-        txtYear.setEditable(false);
         txtYear.setEnabled(false);
     }
 
