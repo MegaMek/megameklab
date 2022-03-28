@@ -1,5 +1,5 @@
 /*
- * MegaMekLab - Copyright (C) 2017 - The MegaMek Team
+ * Copyright (c) 2017-2022 - The MegaMek Team. All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -13,34 +13,24 @@
  */
 package megameklab.ui.generalUnit;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import megamek.common.*;
+import megamek.common.annotations.Nullable;
+import megamek.common.util.EncodeControl;
+import megamek.common.verifier.TestProtomech;
+import megameklab.ui.listeners.ArmorAllocationListener;
+import megameklab.ui.util.TechComboBox;
+import megameklab.util.UnitUtil;
+
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
-
-import javax.swing.JButton;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-
-import megamek.common.BattleArmor;
-import megamek.common.Entity;
-import megamek.common.EquipmentType;
-import megamek.common.ITechManager;
-import megamek.common.MiscType;
-import megamek.common.Protomech;
-import megamek.common.TechConstants;
-import megamek.common.annotations.Nullable;
-import megamek.common.util.EncodeControl;
-import megamek.common.verifier.TestProtomech;
-import megameklab.ui.util.TechComboBox;
-import megameklab.ui.listeners.ArmorAllocationListener;
-import megameklab.util.UnitUtil;
 
 /**
  * Structure table armor panel for units that allocate armor by point instead of ton.
@@ -59,7 +49,7 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
     private final static String CMD_MAXIMIZE  = "MAXIMIZE";
     private final static String CMD_REMAINING = "REMAINING";
     
-    private final TechComboBox<EquipmentType> cbArmorType = new TechComboBox<>(eq -> eq.getName());
+    private final TechComboBox<EquipmentType> cbArmorType = new TechComboBox<>(EquipmentType::getName);
     private final SpinnerNumberModel spnArmorPointsModel = new SpinnerNumberModel(0, 0, null, 1);
     private final JSpinner spnArmorPoints = new JSpinner(spnArmorPointsModel);
     private final JButton btnMaximize = new JButton();
@@ -81,7 +71,8 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap.getString("ArmorView.cbArmorType.text"), labelSize), gbc);
+        add(createLabel(resourceMap, "lblArmorType", "ArmorView.cbArmorType.text",
+                "ArmorView.cbArmorType.tooltip", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.gridwidth = 2;
@@ -93,7 +84,8 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap.getString("ArmorView.spnArmorPoints.text"), labelSize), gbc);
+        add(createLabel(resourceMap, "lblArmorPoints", "ArmorView.spnArmorPoints.text",
+                "ArmorView.spnArmorPoints.tooltip", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 1;
         setFieldSize(spnArmorPoints.getEditor(), editorSize);

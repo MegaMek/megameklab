@@ -118,9 +118,10 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.WEST;
-        add(createLabel(resourceMap.getString("CVChassisView.spnTonnage.text"), labelSize), gbc);
+        add(createLabel(resourceMap, "lblTonnage", "CVChassisView.spnTonnage.text",
+                "CVChassisView.spnTonnage.tooltip", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 0;
         setFieldSize(spnTonnage, spinnerSize);
@@ -158,7 +159,8 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
 
         cbMotiveType.setModel(new DefaultComboBoxModel<>(MOTIVE_TYPES));
         gbc.gridx = 0;
-        add(createLabel(resourceMap.getString("CVChassisView.cbMotiveType.text"), labelSize), gbc);
+        add(createLabel(resourceMap, "lblMotiveType", "CVChassisView.cbMotiveType.text",
+                "CVChassisView.cbMotiveType.tooltip", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridwidth = 3;
         setFieldSize(cbMotiveType, controlSize);
@@ -169,7 +171,8 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
 
         gbc.gridx = 0;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap.getString("CVChassisView.cbEngine.text"), labelSize), gbc);
+        add(createLabel(resourceMap, "lblEngine", "CVChassisView.cbEngine.text",
+                "CVChassisView.cbEngine.tooltip", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridwidth = 3;
         setFieldSize(cbEngine, controlSize);
@@ -180,7 +183,8 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
 
         gbc.gridx = 0;
         gbc.gridwidth = 2;
-        add(createLabel(resourceMap.getString("CVChassisView.spnExtraSeats.text"), labelSize), gbc);
+        add(createLabel(resourceMap, "lblExtraSeats", "CVChassisView.spnExtraSeats.text",
+                "CVChassisView.spnExtraSeats.tooltip", labelSize), gbc);
         gbc.gridx = 2;
         gbc.gridwidth = 2;
         setFieldSize(spnExtraSeats, spinnerSize);
@@ -191,7 +195,8 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
 
         gbc.gridx = 0;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap.getString("CVChassisView.cbTurrets.text"), labelSize), gbc);
+        add(createLabel(resourceMap, "lblTurrets", "CVChassisView.cbTurrets.text",
+                "CVChassisView.cbTurrets.tooltip", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridwidth = 3;
         setFieldSize(cbTurrets, controlSize);
@@ -202,7 +207,8 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
 
         gbc.gridx = 0;
         gbc.gridwidth = 3;
-        JLabel lbl = createLabel(resourceMap.getString("CVChassisView.spnTurretWt.text"), labelSize);
+        JLabel lbl = createLabel(resourceMap, "lblTurretWt", "CVChassisView.spnTurretWt.text",
+                "CVChassisView.spnTurretWt.tooltip", labelSize);
         add(lbl, gbc);
         gbc.gridx = 3;
         setFieldSize(spnChassisTurretWt, spinnerSize);
@@ -215,7 +221,8 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
 
         gbc.gridx = 0;
         gbc.gridwidth = 3;
-        lbl = createLabel(resourceMap.getString("CVChassisView.spnTurret2Wt.text"), labelSize);
+        lbl = createLabel(resourceMap, "lblTurret2Wt", "CVChassisView.spnTurret2Wt.text",
+                "CVChassisView.spnTurret2Wt.tooltip", labelSize);
         add(lbl, gbc);
         gbc.gridx = 3;
         gbc.gridwidth = 1;
@@ -452,17 +459,12 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
 
     /**
      * The turret configuration should be one of {@link CVChassisView#TURRET_NONE TURRET_NONE},
-     * {@link CVChassisView#TURRET_SINGLE TURRET_SINGLE}, {@link CVChassisView#TURRET_DUAL TURRET_DUAL}, or
-     * {@link CVChassisView#TURRET_CHIN TURRET_CHIN}.
+     * {@link CVChassisView#TURRET_SINGLE TURRET_SINGLE}, {@link CVChassisView#TURRET_DUAL TURRET_DUAL},
+     * or {@link CVChassisView#TURRET_CHIN TURRET_CHIN}.
      * @return The currently selected turret configuration.
      */
     public int getTurretConfiguration() {
-        Integer config = (Integer) cbTurrets.getSelectedItem();
-        if (config == null) {
-            return TURRET_NONE; // Failsafe in case this gets called while in an indeterminate state
-        } else {
-            return config;
-        }
+        return Objects.requireNonNullElse((Integer) cbTurrets.getSelectedItem(), TURRET_NONE);
     }
 
     @Override

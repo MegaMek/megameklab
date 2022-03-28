@@ -13,26 +13,24 @@
  */
 package megameklab.ui.generalUnit;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import megamek.common.*;
+import megamek.common.util.EncodeControl;
+import megamek.common.verifier.TestEntity;
+import megameklab.ui.listeners.ArmorAllocationListener;
+import megameklab.ui.util.CustomComboBox;
+import megameklab.ui.util.TechComboBox;
+import megameklab.util.UnitUtil;
+
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
-
-import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-
-import megamek.common.*;
-import megamek.common.util.EncodeControl;
-import megamek.common.verifier.TestEntity;
-import megameklab.ui.util.CustomComboBox;
-import megameklab.ui.util.TechComboBox;
-import megameklab.ui.listeners.ArmorAllocationListener;
-import megameklab.util.UnitUtil;
 
 /**
  * Panel for assigning armor type and tonnage for mechs, (combat) vehicles, and fighters.
@@ -60,7 +58,7 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
     private final JCheckBox chkPatchwork = new JCheckBox();
     private final JButton btnMaximize = new JButton();
     private final JButton btnUseRemaining = new JButton();
-    private final JLabel lblArmorTonnage = createLabel("", labelSizeLg);
+    private final JLabel lblArmorTonnage = createLabel("lblArmorTonnage", "", labelSizeLg);
     
     private final ITechManager techManager;
     
@@ -101,7 +99,8 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap.getString("ArmorView.cbArmorType.text"), labelSizeLg), gbc);
+        add(createLabel(resourceMap, "lblArmorType", "ArmorView.cbArmorType.text",
+                "ArmorView.cbArmorType.tooltip", labelSizeLg), gbc);
         gbc.gridx = 1;
         gbc.gridwidth = 2;
         setFieldSize(cbArmorType, controlSize);
@@ -116,7 +115,8 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
             gbc.gridx = 0;
             gbc.gridy++;
             gbc.gridwidth = 1;
-            JLabel label = createLabel(resourceMap.getString("ArmorView.cbSVTechRating.text"), labelSizeLg);
+            JLabel label = createLabel(resourceMap, "lblSVTechRating", "ArmorView.cbSVTechRating.text",
+                    "ArmorView.cbSVTechRating.tooltip", labelSizeLg);
             add(label, gbc);
             svControlList.add(label);
             gbc.gridx = 1;
@@ -130,7 +130,8 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
             gbc.gridx = 0;
             gbc.gridy++;
             gbc.gridwidth = 1;
-            label = createLabel(resourceMap.getString("ArmorView.cbBARRating.text"), labelSizeLg);
+            label = createLabel(resourceMap, "lblBARRating", "ArmorView.cbBARRating.text",
+                    "ArmorView.cbBARRating.tooltip", labelSizeLg);
             add(label, gbc);
             svControlList.add(label);
             gbc.gridx = 1;

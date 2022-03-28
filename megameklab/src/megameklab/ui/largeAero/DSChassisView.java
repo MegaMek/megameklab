@@ -88,7 +88,8 @@ public class DSChassisView extends BuildView implements ActionListener, ChangeLi
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        add(createLabel(resourceMap.getString("DropshipChassisView.spnTonnage.text"), labelSize), gbc);
+        add(createLabel(resourceMap, "lblTonnage", "DropshipChassisView.spnTonnage.text",
+                "DropshipChassisView.spnTonnage.tooltip", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -117,7 +118,8 @@ public class DSChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap.getString("DropshipChassisView.cbBaseType.text"), labelSize),gbc);
+        add(createLabel(resourceMap, "lblBaseType", "DropshipChassisView.cbBaseType.text",
+                "DropshipChassisView.cbBaseType.tooltip", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 2;
         gbc.gridwidth = 3;
@@ -129,7 +131,8 @@ public class DSChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 0;
         gbc.gridy = 3;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap.getString("DropshipChassisView.cbChassisType.text"), labelSize),gbc);
+        add(createLabel(resourceMap, "lblChassisType", "DropshipChassisView.cbChassisType.text",
+                "DropshipChassisView.cbChassisType.tooltip", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 3;
         gbc.gridwidth = 3;
@@ -141,7 +144,8 @@ public class DSChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 0;
         gbc.gridy = 4;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap.getString("DropshipChassisView.spnSI.text"), labelSize),gbc);
+        add(createLabel(resourceMap, "lblSI", "DropshipChassisView.spnSI.text",
+                "DropshipChassisView.spnSI.tooltip", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 4;
         gbc.gridwidth = 3;

@@ -80,12 +80,13 @@ public class BAChassisView extends BuildView implements ActionListener, ChangeLi
         setLayout(new GridBagLayout());
         
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.WEST;
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        add(createLabel(resourceMap.getString("BAChassisView.cbChassisType.text"), labelSize), gbc);
+        add(createLabel(resourceMap, "lblChassisType", "BAChassisView.cbChassisType.text",
+                "BAChassisView.cbChassisType.tooltip", labelSize), gbc);
         gbc.gridx = 1;
         setFieldSize(cbChassisType, controlSize);
         cbChassisType.setToolTipText(resourceMap.getString("BAChassisView.cbChassisType.tooltip"));
@@ -94,7 +95,8 @@ public class BAChassisView extends BuildView implements ActionListener, ChangeLi
 
         gbc.gridx = 0;
         gbc.gridy++;
-        add(createLabel(resourceMap.getString("BAChassisView.cbWeightClass.text"), labelSize), gbc);
+        add(createLabel(resourceMap, "lblWeightClass", "BAChassisView.cbWeightClass.text",
+                "BAChassisView.cbWeightClass.tooltip", labelSize), gbc);
         gbc.gridx = 1;
         setFieldSize(cbWeightClass, controlSize);
         cbWeightClass.setToolTipText(resourceMap.getString("BAChassisView.cbWeightClass.tooltip"));
@@ -103,7 +105,8 @@ public class BAChassisView extends BuildView implements ActionListener, ChangeLi
 
         gbc.gridx = 0;
         gbc.gridy++;
-        add(createLabel(resourceMap.getString("BAChassisView.spnSquadSize.text"), labelSize), gbc);
+        add(createLabel(resourceMap, "lblSquadSize", "BAChassisView.spnSquadSize.text",
+                "BAChassisView.spnSquadSize.tooltip", labelSize), gbc);
         gbc.gridx = 1;
         setFieldSize(spnSquadSize, controlSize);
         spnSquadSize.setToolTipText(resourceMap.getString("BAChassisView.spnSquadSize.tooltip"));
@@ -112,7 +115,8 @@ public class BAChassisView extends BuildView implements ActionListener, ChangeLi
 
         gbc.gridx = 0;
         gbc.gridy++;
-        add(createLabel(resourceMap.getString("BAChassisView.cbTurretType.text"), labelSize), gbc);
+        add(createLabel(resourceMap, "lblTurretType", "BAChassisView.cbTurretType.text",
+                "BAChassisView.cbTurretType.tooltip", labelSize), gbc);
         gbc.gridx = 1;
         setFieldSize(cbTurretType, controlSize);
         cbTurretType.setToolTipText(resourceMap.getString("BAChassisView.cbTurretType.tooltip"));
@@ -121,7 +125,8 @@ public class BAChassisView extends BuildView implements ActionListener, ChangeLi
 
         gbc.gridx = 0;
         gbc.gridy++;
-        add(createLabel(resourceMap.getString("BAChassisView.spnTurretSize.text"), labelSize), gbc);
+        add(createLabel(resourceMap, "lblTurretSize", "BAChassisView.spnTurretSize.text",
+                "BAChassisView.spnTurretSize.tooltip", labelSize), gbc);
         gbc.gridx = 1;
         setFieldSize(spnTurretSize, controlSize);
         spnTurretSize.setToolTipText(resourceMap.getString("BAChassisView.spnTurretSize.tooltip"));
@@ -142,7 +147,6 @@ public class BAChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridy++;
         gbc.gridwidth = 2;
         add(chassisOptions, gbc);
-                
     }
     
     public void setFromEntity(BattleArmor ba) {

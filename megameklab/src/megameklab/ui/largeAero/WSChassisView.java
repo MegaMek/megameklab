@@ -82,7 +82,7 @@ public class WSChassisView extends BuildView implements ActionListener, ChangeLi
     
     public WSChassisView(ITechManager techManager) {
         this.techManager = techManager;
-        lblRange = createLabel("", labelSize);
+        lblRange = createLabel("lblRange", "", labelSize);
         initUI();
     }
     
@@ -97,7 +97,8 @@ public class WSChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 2;
-        add(createLabel(resourceMap.getString("AdvAeroChassisView.spnTonnage.text"), labelSize), gbc);
+        add(createLabel(resourceMap, "lblTonnage", "AdvAeroChassisView.spnTonnage.text",
+                "AdvAeroChassisView.spnTonnage.tooltip", labelSize), gbc);
         gbc.gridx = 2;
         gbc.gridy = 0;
         gbc.gridwidth = 2;
@@ -118,7 +119,8 @@ public class WSChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridwidth = 2;
-        add(createLabel(resourceMap.getString("AdvAeroChassisView.cbBaseType.text"), labelSize),gbc);
+        add(createLabel(resourceMap, "lblBaseType", "AdvAeroChassisView.cbBaseType.text",
+                "AdvAeroChassisView.cbBaseType.tooltip", labelSize), gbc);
         gbc.gridx = 2;
         gbc.gridy = 1;
         gbc.gridwidth = 2;
@@ -162,7 +164,8 @@ public class WSChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 0;
         gbc.gridy = 4;
         gbc.gridwidth = 2;
-        add(createLabel(resourceMap.getString("AdvAeroChassisView.spnSI.text"), labelSize),gbc);
+        add(createLabel(resourceMap, "lblSI", "AdvAeroChassisView.spnSI.text",
+                "AdvAeroChassisView.spnSI.tooltip", labelSize), gbc);
         gbc.gridx = 2;
         gbc.gridy = 4;
         gbc.gridwidth = 2;

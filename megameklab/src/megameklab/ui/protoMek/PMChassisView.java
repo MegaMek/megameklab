@@ -101,7 +101,8 @@ public class PMChassisView extends BuildView implements ActionListener, ChangeLi
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        add(createLabel(resourceMap.getString("ProtomekChassisView.spnTonnage.text"), labelSize), gbc);
+        add(createLabel(resourceMap, "lblTonnage", "ProtomekChassisView.spnTonnage.text",
+                "ProtomekChassisView.spnTonnage.tooltip", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 0;
         setFieldSize(spnTonnage, spinnerSize);
@@ -112,7 +113,7 @@ public class PMChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap.getString("ProtomekChassisView.cbMotiveType.text"), labelSize), gbc);
+        add(createLabel(resourceMap, "lblMotiveType", "ProtomekChassisView.cbMotiveType.text", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 1;
         gbc.gridwidth = 3;
@@ -130,34 +131,34 @@ public class PMChassisView extends BuildView implements ActionListener, ChangeLi
         chkMainGun.setToolTipText(resourceMap.getString("ProtomekChassisView.chkMainGun.tooltip"));
         add(chkMainGun, gbc);
         chkMainGun.addActionListener(this);
-        
+
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.WEST;
-        add(createLabel(resourceMap.getString("ProtomekChassisView.lblEnhancements.text"), labelSize), gbc);
-        
+        add(createLabel(resourceMap, "lblEnhancements", "ProtomekChassisView.lblEnhancements.text", labelSize), gbc);
+
         gbc.gridx = 0;
         gbc.gridy++;
         chkMyomerBooster.setText(resourceMap.getString("ProtomekChassisView.chkMyomerBooster.text"));
         chkMyomerBooster.setToolTipText(resourceMap.getString("ProtomekChassisView.chkMyomerBooster.tooltip"));
         add(chkMyomerBooster, gbc);
         chkMyomerBooster.addActionListener(this);
-        
+
         gbc.gridx = 0;
         gbc.gridy++;
         chkPartialWing.setText(resourceMap.getString("ProtomekChassisView.chkPartialWing.text"));
         chkPartialWing.setToolTipText(resourceMap.getString("ProtomekChassisView.chkPartialWing.tooltip"));
         add(chkPartialWing, gbc);
         chkPartialWing.addActionListener(this);
-        
+
         gbc.gridx = 0;
         gbc.gridy++;
         chkMagneticClamps.setText(resourceMap.getString("ProtomekChassisView.chkMagneticClamps.text"));
         chkMagneticClamps.setToolTipText(resourceMap.getString("ProtomekChassisView.chkMagneticClamps.tooltip"));
         add(chkMagneticClamps, gbc);
         chkMagneticClamps.addActionListener(this);
-        
+
         gbc.gridx = 0;
         gbc.gridy++;
         chkISInterface.setText(resourceMap.getString("ProtomekChassisView.chkISInterface.text"));
@@ -178,7 +179,7 @@ public class PMChassisView extends BuildView implements ActionListener, ChangeLi
             cbMotiveType.setSelectedItem(MOTIVE_TYPE_BIPED);
         }
         cbMotiveType.addActionListener(this);
-        
+
         chkMyomerBooster.setSelected(proto.hasMisc(MiscType.F_MASC));
         chkPartialWing.setSelected(proto.hasMisc(MiscType.F_PARTIAL_WING));
         chkMagneticClamps.setSelected(proto.hasMisc(MiscType.F_MAGNETIC_CLAMP));

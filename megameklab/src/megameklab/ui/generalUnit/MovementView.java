@@ -63,10 +63,10 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
     private final TechComboBox<EquipmentType> cbJumpType =
                 new TechComboBox<>(eq -> eq.getName().replaceAll("\\s+\\[.*?]",  ""));
     
-    private final JLabel lblWalk = createLabel("", labelSize);
-    private final JLabel lblRun = createLabel("", labelSize);
-    private final JLabel lblJump = createLabel("", labelSize);
-    private final JLabel lblJumpType = createLabel("", labelSize);
+    private final JLabel lblWalk = createLabel("lblWalk", "", labelSize);
+    private final JLabel lblRun = createLabel("lblRun", "", labelSize);
+    private final JLabel lblJump = createLabel("lblJump", "", labelSize);
+    private final JLabel lblJumpType = createLabel("lblJumpType", "", labelSize);
     
     private final JTextField txtRunBase = new JTextField();
     private final JTextField txtWalkFinal = new JTextField();

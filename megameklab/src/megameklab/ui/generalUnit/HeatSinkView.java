@@ -13,8 +13,17 @@
  */
 package megameklab.ui.generalUnit;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import megamek.common.*;
+import megamek.common.util.EncodeControl;
+import megamek.common.verifier.TestAero;
+import megameklab.ui.listeners.BuildListener;
+import megameklab.ui.util.CustomComboBox;
+import megameklab.util.UnitUtil;
+
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -22,19 +31,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
-
-import javax.swing.JLabel;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-
-import megamek.common.*;
-import megamek.common.util.EncodeControl;
-import megamek.common.verifier.TestAero;
-import megameklab.ui.util.CustomComboBox;
-import megameklab.ui.listeners.BuildListener;
-import megameklab.util.UnitUtil;
 
 /**
  * Controls for selecting type and number of heat sinks for mechs and asfs.
@@ -110,7 +106,8 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        add(createLabel(resourceMap.getString("HeatSinkView.cbHSType.text"), labelSize), gbc);
+        add(createLabel(resourceMap, "lblHSType", "HeatSinkView.cbHSType.text",
+                "HeatSinkView.cbHSType.tooltip", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridwidth = 4;
         setFieldSize(cbHSType, controlSize);
@@ -122,7 +119,8 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap.getString("HeatSinkView.spnCount.text"), labelSize), gbc);
+        add(createLabel(resourceMap, "lblCount", "HeatSinkView.spnCount.text",
+                "HeatSinkView.spnCount.tooltip", labelSize), gbc);
         gbc.gridx = 1;
         setFieldSize(spnCount.getEditor(), editorSize);
         spnCount.setToolTipText(resourceMap.getString("HeatSinkView.spnCount.tooltip"));

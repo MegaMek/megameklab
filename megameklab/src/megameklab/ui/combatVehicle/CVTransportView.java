@@ -22,8 +22,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import javax.swing.JSpinner;
-import javax.swing.SpinnerNumberModel;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -74,17 +73,18 @@ public class CVTransportView extends BuildView implements ChangeListener {
 
         gbc.gridx = 1;
         gbc.gridy = 0;
-        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.WEST;
-        add(createLabel(resourceMap.getString("CVTransportView.lblFixed.text"), labelSize), gbc);
+        add(createLabel(resourceMap, "lblFixed", "CVTransportView.lblFixed.text", labelSize), gbc);
+
         gbc.gridx = 2;
         gbc.gridy = 0;
-        add(createLabel(resourceMap.getString("CVTransportView.lblPod.text"), labelSize), gbc);
+        add(createLabel(resourceMap, "lblPod", "CVTransportView.lblPod.text", labelSize), gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 1;
-        add(createLabel(resourceMap.getString("CVTransportView.lblTroopSpace.text"), labelSizeLg), gbc);
-        
+        add(createLabel(resourceMap, "lblTroopSpace", "CVTransportView.lblTroopSpace.text", labelSize), gbc);
+
         gbc.gridx = 1;
         setFieldSize(spnFixedTroop, editorSize);
         add(spnFixedTroop, gbc);
@@ -103,7 +103,9 @@ public class CVTransportView extends BuildView implements ChangeListener {
                     1 / bayType.getWeight());
             gbc.gridx = 0;
             gbc.gridy++;
-            add(createLabel(bayType.getDisplayName(), labelSizeLg), gbc);
+            final JLabel lblBayType = createLabel("lbl" + bayType.name(), bayType.getDisplayName(), labelSizeLg);
+            lblBayType.setToolTipText(tooltip);
+            add(lblBayType, gbc);
             
             gbc.gridx = 1;
             SpinnerNumberModel model = new SpinnerNumberModel(0.0, 0.0, null, 0.5);
