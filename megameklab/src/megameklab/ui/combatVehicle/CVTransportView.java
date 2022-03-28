@@ -13,25 +13,22 @@
  */
 package megameklab.ui.combatVehicle;
 
-import java.awt.Component;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
-import java.util.concurrent.CopyOnWriteArrayList;
-
-import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-
 import megamek.common.Bay;
 import megamek.common.Tank;
 import megamek.common.util.EncodeControl;
 import megamek.common.verifier.BayData;
 import megameklab.ui.generalUnit.BuildView;
 import megameklab.ui.listeners.CVBuildListener;
+
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Panel for combat vehicle cargo and troop space.
@@ -83,7 +80,7 @@ public class CVTransportView extends BuildView implements ChangeListener {
 
         gbc.gridx = 0;
         gbc.gridy = 1;
-        add(createLabel(resourceMap, "lblTroopSpace", "CVTransportView.lblTroopSpace.text", labelSize), gbc);
+        add(createLabel(resourceMap, "lblTroopSpace", "CVTransportView.lblTroopSpace.text", labelSizeLg), gbc);
 
         gbc.gridx = 1;
         setFieldSize(spnFixedTroop, editorSize);

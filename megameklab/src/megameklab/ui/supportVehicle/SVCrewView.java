@@ -155,7 +155,7 @@ public class SVCrewView extends BuildView implements ChangeListener {
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 2;
-        add(createLabel(resourceMap, "lblSeatingHeader", "SVCrewView.lblSeatingHeader.extraSeats", labelSize), gbc);
+        add(createLabel(resourceMap, "lblSeatingHeader", "SVCrewView.lblSeatingHeader.extraSeats", labelSizeLg), gbc);
         gbc.gridwidth = 1;
         gbc.gridx = 2;
         lblPodSeating.setText(resourceMap.getString("SVCrewView.lblPodQuarters.text"));
