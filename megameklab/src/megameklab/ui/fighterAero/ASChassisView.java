@@ -1,5 +1,5 @@
 /*
- * MegaMekLab - Copyright (C) 2017 - The MegaMek Team
+ * Copyright (c) 2017-2022 - The MegaMek Team. All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -13,8 +13,20 @@
  */
 package megameklab.ui.fighterAero;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import megamek.common.Aero;
+import megamek.common.Engine;
+import megamek.common.Entity;
+import megamek.common.ITechManager;
+import megamek.common.util.EncodeControl;
+import megameklab.ui.generalUnit.BuildView;
+import megameklab.ui.listeners.AeroBuildListener;
+import megameklab.ui.util.CustomComboBox;
+import megameklab.ui.util.TechComboBox;
+
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -22,24 +34,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
-
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JSpinner;
-import javax.swing.JTextField;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-
-import megamek.common.Aero;
-import megamek.common.Engine;
-import megamek.common.Entity;
-import megamek.common.ITechManager;
-import megamek.common.util.EncodeControl;
-import megameklab.ui.util.CustomComboBox;
-import megameklab.ui.util.TechComboBox;
-import megameklab.ui.generalUnit.BuildView;
-import megameklab.ui.listeners.AeroBuildListener;
 
 /**
  * Structure tab chassis panel for aerospace and conventional fighters.

@@ -1,5 +1,4 @@
 /*
- * MegaMekLab
  * Copyright (c) 2017-2022 - The MegaMek Team. All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -14,30 +13,23 @@
  */
 package megameklab.ui.battleArmor;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import megamek.common.BattleArmor;
+import megamek.common.EntityWeightClass;
+import megamek.common.ITechManager;
+import megamek.common.util.EncodeControl;
+import megameklab.ui.generalUnit.BuildView;
+import megameklab.ui.listeners.BABuildListener;
+import megameklab.ui.util.CustomComboBox;
+
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
-
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JPanel;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-
-import megamek.common.BattleArmor;
-import megamek.common.EntityWeightClass;
-import megamek.common.ITechManager;
-import megamek.common.util.EncodeControl;
-import megameklab.ui.util.CustomComboBox;
-import megameklab.ui.generalUnit.BuildView;
-import megameklab.ui.listeners.BABuildListener;
 
 /**
  * Structure tab chassis view for BattleArmor

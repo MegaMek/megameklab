@@ -1,5 +1,5 @@
 /*
- * MegaMekLab - Copyright (C) 2017 - The MegaMek Team
+ * Copyright (c) 2017-2022 - The MegaMek Team. All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -13,30 +13,23 @@
  */
 package megameklab.ui.combatVehicle;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.*;
-import java.util.concurrent.CopyOnWriteArrayList;
+import megamek.common.*;
+import megamek.common.util.EncodeControl;
+import megamek.common.verifier.TestTank;
+import megameklab.ui.generalUnit.BuildView;
+import megameklab.ui.listeners.CVBuildListener;
+import megameklab.ui.util.CustomComboBox;
+import megameklab.ui.util.TechComboBox;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-
-import megamek.common.Engine;
-import megamek.common.Entity;
-import megamek.common.EntityMovementMode;
-import megamek.common.ITechManager;
-import megamek.common.Tank;
-import megamek.common.TechAdvancement;
-import megamek.common.VTOL;
-import megamek.common.util.EncodeControl;
-import megamek.common.verifier.TestTank;
-import megameklab.ui.util.CustomComboBox;
-import megameklab.ui.util.TechComboBox;
-import megameklab.ui.generalUnit.BuildView;
-import megameklab.ui.listeners.CVBuildListener;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.List;
+import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Chassis panel for combat vehicles
