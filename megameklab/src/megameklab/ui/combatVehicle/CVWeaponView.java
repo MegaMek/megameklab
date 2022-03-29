@@ -147,7 +147,7 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
         tScrollPanes.add(artilleryWeaponScroll);
         tScrollPanes.add(artilleryAmmoScroll);
 
-        // match JPanels to JScrollPanes, and set scrollpane properties
+        // match JPanels to JScrollPanes, and set ScrollPane properties
         for (JScrollPane tScrollPane : tScrollPanes) {
             tScrollPane.setWheelScrollingEnabled(true);
             tScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -257,9 +257,7 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
             }
 
             if (eq instanceof WeaponType) {
-
                 WeaponType weapon = (WeaponType) eq;
-
                 if (weapon.hasFlag(WeaponType.F_ENERGY) || (weapon.hasFlag(WeaponType.F_PLASMA) && (weapon.getAmmoType() == AmmoType.T_PLASMA))) {
                     masterLaserWeaponList.add(eq);
                 } else if ((eq.hasFlag(WeaponType.F_BALLISTIC) && (weapon.getAmmoType() != AmmoType.T_NA))) {
@@ -589,6 +587,7 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
 
     @Override
     public void mouseReleased(MouseEvent evt) {
+        // FIXME : I'm very much prone to causing future issues
         if (evt.getSource() instanceof JList) {
             loadAmmo(evt.getComponent());
         }

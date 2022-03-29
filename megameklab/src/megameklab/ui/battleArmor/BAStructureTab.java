@@ -46,7 +46,6 @@ public class BAStructureTab extends ITab implements ActionListener, BABuildListe
     private RefreshListener refresh;
 
     Dimension labelSize = new Dimension(110, 25);
-    Dimension enhanceLabelSz = new Dimension(200,25);
 
     private BasicInfoView panBasicInfo;
     private BAChassisView panChassis;
@@ -116,7 +115,6 @@ public class BAStructureTab extends ITab implements ActionListener, BABuildListe
         panChassis.setBorder(BorderFactory.createTitledBorder("Chassis"));
         panMovement.setBorder(BorderFactory.createTitledBorder("Movement"));
         panArmor.setBorder(BorderFactory.createTitledBorder("Armor"));
-        //weaponView.setBorder(BorderFactory.createTitledBorder("Weapon Selection"));
         manipPanel.setBorder(BorderFactory.createTitledBorder("Manipulators"));
         panEnhancements.setBorder(BorderFactory.createTitledBorder("Enhancements"));
 
@@ -124,7 +122,6 @@ public class BAStructureTab extends ITab implements ActionListener, BABuildListe
         leftPanel.add(panChassis);
         leftPanel.add(panMovement);
         leftPanel.add(panArmor);
-        //leftPanel.add(Box.createVerticalGlue());
 
         rightPanel.add(Box.createVerticalStrut(5));
         rightPanel.add(previewPanel);
@@ -143,15 +140,6 @@ public class BAStructureTab extends ITab implements ActionListener, BABuildListe
         add(leftPanel, gbc);
         gbc.gridx = 1;
         add(rightPanel,gbc);
-
-    }
-
-    public JLabel createLeftLabel(String text, Dimension maxSize) {
-
-        JLabel label = new JLabel(text, SwingConstants.LEFT);
-
-        setFieldSize(label, maxSize);
-        return label;
     }
 
     public JLabel createLabel(String text, Dimension maxSize) {
@@ -254,8 +242,7 @@ public class BAStructureTab extends ITab implements ActionListener, BABuildListe
                             leftManip.getType().getInternalName());
                     // If this manipulator was mounted as a pair, remove the paired manipulator
                     if (manipType.pairMounted) {
-                        Mounted rightManip =
-                                getBattleArmor().getRightManipulator();
+                        Mounted rightManip = getBattleArmor().getRightManipulator();
                         if (rightManip != null) {
                             UnitUtil.removeMounted(getBattleArmor(), rightManip);
                             rightManipSelect.setSelectedIndex(0);
@@ -265,7 +252,7 @@ public class BAStructureTab extends ITab implements ActionListener, BABuildListe
 
                 // If we selected something other than "None", mount it
                 if (leftManipSelect.getSelectedIndex() != 0) {
-                    String manipName = (String)leftManipSelect.getSelectedItem();
+                    String manipName = (String) leftManipSelect.getSelectedItem();
                     manipType = BAManipulator.getManipulator(manipName);
                     EquipmentType et = EquipmentType.get(manipType.internalName);
                     leftManip = new Mounted(getBattleArmor(), et);
@@ -281,7 +268,7 @@ public class BAStructureTab extends ITab implements ActionListener, BABuildListe
                             rightManip.setBaMountLoc(BattleArmor.MOUNT_LOC_RARM);
                             getBattleArmor().addEquipment(rightManip, BattleArmor.LOC_SQUAD, false);
                         }
-                    } catch (LocationFullException ex) {
+                    } catch (Exception ex) {
                         // This shouldn't happen
                         LogManager.getLogger().error("", ex);
                     }
@@ -321,7 +308,7 @@ public class BAStructureTab extends ITab implements ActionListener, BABuildListe
                             leftManip.setBaMountLoc(BattleArmor.MOUNT_LOC_LARM);
                             getBattleArmor().addEquipment(leftManip, BattleArmor.LOC_SQUAD, false);
                         }
-                    } catch (LocationFullException ex) {
+                    } catch (Exception ex) {
                         // This shouldn't happen
                         LogManager.getLogger().error("", ex);
                     }
@@ -353,11 +340,12 @@ public class BAStructureTab extends ITab implements ActionListener, BABuildListe
         try {
             mechView = new MechView(getBattleArmor(), false);
             troView = TROView.createView(getBattleArmor(), true);
-        } catch (Exception e) {
-            LogManager.getLogger().error("", e);
+        } catch (Exception ex) {
+            LogManager.getLogger().error("", ex);
             // error unit didn't load right. this is bad news.
             populateTextFields = false;
         }
+
         if (populateTextFields) {
             panelMekView.setMech(getBattleArmor(), mechView);
             panelTROView.setMech(getBattleArmor(), troView);
@@ -595,10 +583,7 @@ public class BAStructureTab extends ITab implements ActionListener, BABuildListe
     public void enhancementChanged(EquipmentType eq, boolean selected) {
         if (selected) {
             try {
-                int loc = BattleArmor.MOUNT_LOC_BODY;
-                if (eq.hasFlag(MiscType.F_MASC)) {
-                    loc = BattleArmor.MOUNT_LOC_NONE;
-                }
+                int loc = eq.hasFlag(MiscType.F_MASC) ? BattleArmor.MOUNT_LOC_NONE : BattleArmor.MOUNT_LOC_BODY;
                 int numTimesToAdd = 1;
                 // Spreadable equipment needs to have a Mounted entry
                 // for each critical
@@ -608,10 +593,9 @@ public class BAStructureTab extends ITab implements ActionListener, BABuildListe
                 for (int i = 0; i < numTimesToAdd; i++) {
                     Mounted newMount = new Mounted(getBattleArmor(), eq);
                     newMount.setBaMountLoc(loc);
-                    getBattleArmor().addEquipment(newMount,
-                            BattleArmor.LOC_SQUAD, false);
+                    getBattleArmor().addEquipment(newMount, BattleArmor.LOC_SQUAD, false);
                 }
-            } catch (LocationFullException ex) {
+            } catch (Exception ex) {
                 // Shouldn't happen with BA
                 LogManager.getLogger().error("", ex);
             }
@@ -643,8 +627,7 @@ public class BAStructureTab extends ITab implements ActionListener, BABuildListe
     public void armorTypeChanged(EquipmentType armor) {
         UnitUtil.removeISorArmorMounts(getBattleArmor(), false);
         int armorCount = armor.getCriticals(getBattleArmor());
-        getBattleArmor().setArmorTechLevel(
-                armor.getTechLevel(getBattleArmor().getYear()));
+        getBattleArmor().setArmorTechLevel(armor.getTechLevel(getBattleArmor().getYear()));
         getBattleArmor().setArmorType(armor.getInternalName());
 
         for (; armorCount > 0; armorCount--) {
@@ -684,7 +667,6 @@ public class BAStructureTab extends ITab implements ActionListener, BABuildListe
         panArmor.setFromEntity(getBattleArmor());
         panArmor.addListener(this);
     }
-
 
     @Override
     public void mulIdChanged(int mulId) {

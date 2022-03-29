@@ -287,7 +287,7 @@ public class BMSummaryView extends IView{
         } else if (getMech().hasDoubleHeatSinks()) {
             critSinks = numberSinks * 3;
         } else if (getMech().hasCompactHeatSinks()) {
-            critSinks = (critSinks/2) + (critSinks%2);
+            critSinks = (critSinks / 2) + (critSinks % 2);
         }
         txtHeatCrit.setText(Integer.toString(critSinks));
     }

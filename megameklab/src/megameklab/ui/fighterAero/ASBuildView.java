@@ -253,14 +253,14 @@ public class ASBuildView extends IView implements ActionListener, MouseListener 
     }
 
     @Override
-    public void mousePressed(MouseEvent e) {
+    public void mousePressed(MouseEvent evt) {
         // On right-click, we want to generate menu items to add to specific 
         //  locations, but only if those locations are make sense
-        if (e.getButton() == MouseEvent.BUTTON3) {
+        if (evt.getButton() == MouseEvent.BUTTON3) {
             JPopupMenu popup = new JPopupMenu();
             JMenuItem item;
 
-            final int selectedRow = equipmentTable.rowAtPoint(e.getPoint());
+            final int selectedRow = equipmentTable.rowAtPoint(evt.getPoint());
             Mounted eq = (Mounted)equipmentTable.getModel().getValueAt(
                     selectedRow, CriticalTableModel.EQUIPMENT);
 
@@ -268,7 +268,7 @@ public class ASBuildView extends IView implements ActionListener, MouseListener 
             // A list of the valid locations we can add the selected eq to
             ArrayList<Integer> validLocs = new ArrayList<>();
             // The number of possible locations, Aeros' have LOC_WINGS and LOC_FUSELAGE, which we
-            //  want ot ignore for now, hence -2
+            // want to ignore for now, hence -2
             int numLocs = getAero().locations() - 2;
             // If it's a weapon, there are restrictions
             if (eq.getType() instanceof WeaponType) {
@@ -306,16 +306,16 @@ public class ASBuildView extends IView implements ActionListener, MouseListener 
                     item = new JMenuItem("Add to " + locNames[location]);
 
                     final int loc = location;
-                    item.addActionListener(e1 -> jMenuLoadComponent_actionPerformed(loc, selectedRow));
+                    item.addActionListener(evt2 -> jMenuLoadComponent_actionPerformed(loc, selectedRow));
                     popup.add(item);
                 }
             }
-            popup.show(this, e.getX(), e.getY());
+            popup.show(this, evt.getX(), evt.getY());
         }
     }
 
     @Override
-    public void mouseReleased(MouseEvent e) {
+    public void mouseReleased(MouseEvent evt) {
 
     }
     

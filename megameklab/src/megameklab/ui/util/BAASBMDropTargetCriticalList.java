@@ -113,12 +113,12 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
                     }
                     return;
                 }
-                
+
                 if ((mount != null) && ((e.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) != 0)) {
                     changeOmniMounting(!mount.isOmniPodMounted());
                     return;
                 }                
-                
+
                 if ((mount != null)
                         && !(((getUnit().getEntityType() & Entity.ETYPE_QUADVEE) == Entity.ETYPE_QUADVEE)
                         && (mount.getType() instanceof MiscType)
@@ -271,10 +271,10 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
                             }
                         }
                     }
-                    
+
                     // Allow number of shots selection
-                    if ((getUnit() instanceof BattleArmor) 
-                            && mount.getType() instanceof AmmoType) {
+                    if ((getUnit() instanceof BattleArmor)
+                            && (mount.getType() instanceof AmmoType)) {
                         AmmoType at = (AmmoType) mount.getType();
                         int maxNumShots = TestBattleArmor.NUM_SHOTS_PER_CRIT;
                         int stepSize = 1;
@@ -289,7 +289,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
                             }
                             info = new JMenuItem("Set Shots: " + i);
                             final int shots = i;
-                            info.addActionListener(e1 -> {
+                            info.addActionListener(evt -> {
                                 mount.setOriginalShots(shots);
                                 mount.setShotsLeft(shots);
                                 if (refresh != null) {
@@ -485,8 +485,8 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
         // Check linkings after you remove everything.
         try {
             MechFileParser.postLoadInit(getUnit());
-        } catch (EntityLoadingException ele) {
-            // do nothing.
+        } catch (EntityLoadingException ignored) {
+
         } catch (Exception ex) {
             LogManager.getLogger().error("", ex);
         }
@@ -573,7 +573,6 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
                 refresh.refreshAll();
             }
         }
-
     }
 
     private void removeArm(int location) {
@@ -619,7 +618,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
             refresh.refreshAll();
         }
     }
-    
+
     public Entity getUnit() {
         return eSource.getEntity();
     }

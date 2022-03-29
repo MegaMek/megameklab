@@ -78,16 +78,16 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
     }
 
     @Override
-    public void mousePressed(MouseEvent mouseEvent) {
+    public void mousePressed(MouseEvent evt) {
         if (buildView) {
-            if (mouseEvent.getButton() == MouseEvent.BUTTON2) {
-                setSelectedIndex(locationToIndex(mouseEvent.getPoint()));
+            if (evt.getButton() == MouseEvent.BUTTON2) {
+                setSelectedIndex(locationToIndex(evt.getPoint()));
                 removeCrit();
-            } else if (mouseEvent.getButton() == MouseEvent.BUTTON3) {
+            } else if (evt.getButton() == MouseEvent.BUTTON3) {
 
-                setSelectedIndex(locationToIndex(mouseEvent.getPoint()));
+                setSelectedIndex(locationToIndex(evt.getPoint()));
 
-                if ((mouseEvent.getModifiersEx() & InputEvent.CTRL_DOWN_MASK) != 0) {
+                if ((evt.getModifiersEx() & InputEvent.CTRL_DOWN_MASK) != 0) {
                     removeCrit();
                     return;
                 }
@@ -99,12 +99,12 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
 
                 Mounted mount = getMounted();
                 if (mount != null) {
-                    if ((mouseEvent.getModifiersEx() & InputEvent.ALT_DOWN_MASK) != 0) {
+                    if ((evt.getModifiersEx() & InputEvent.ALT_DOWN_MASK) != 0) {
                         changeWeaponFacing(!mount.isRearMounted());
                         return;
                     }
 
-                    if ((mouseEvent.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) != 0) {
+                    if ((evt.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) != 0) {
                         changeOmniMounting(!mount.isOmniPodMounted());
                         return;
                     }
@@ -127,11 +127,11 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                             && ((mount.getLocation() == Tank.LOC_LEFT) || (mount.getLocation() == Tank.LOC_RIGHT))) {
                         if (!mount.isSponsonTurretMounted()) {
                             info = new JMenuItem("Mount " + mount.getName() + " in Sponson Turret");
-                            info.addActionListener(evt -> changeSponsonTurretMount(true));
+                            info.addActionListener(evt2 -> changeSponsonTurretMount(true));
                             popup.add(info);
                         } else {
                             info = new JMenuItem("Remove " + mount.getName() + " from Sponson Turret");
-                            info.addActionListener(evt -> changeSponsonTurretMount(false));
+                            info.addActionListener(evt2 -> changeSponsonTurretMount(false));
                             popup.add(info);
                         }
                     }
@@ -139,11 +139,11 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                                     mount.getLocation()) > 0) {
                         if (!mount.isPintleTurretMounted()) {
                             info = new JMenuItem("Mount " + mount.getName() + " in Pintle Turret");
-                            info.addActionListener(evt -> changePintleTurretMount(true));
+                            info.addActionListener(evt2 -> changePintleTurretMount(true));
                             popup.add(info);
                         } else {
                             info = new JMenuItem("Remove " + mount.getName() + " from Pintle Turret");
-                            info.addActionListener(evt -> changePintleTurretMount(false));
+                            info.addActionListener(evt2 -> changePintleTurretMount(false));
                             popup.add(info);
                         }
                     }
@@ -151,11 +151,11 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                     if (getUnit().isOmni() && !mount.getType().isOmniFixedOnly()) {
                         if (mount.isOmniPodMounted()) {
                             info = new JMenuItem("Change to fixed mount");
-                            info.addActionListener(evt -> changeOmniMounting(false));
+                            info.addActionListener(evt2 -> changeOmniMounting(false));
                             popup.add(info);
                         } else if (UnitUtil.canPodMount(getUnit(), mount)) {
                             info = new JMenuItem("Change to pod mount");
-                            info.addActionListener(evt -> changeOmniMounting(true));
+                            info.addActionListener(evt2 -> changeOmniMounting(true));
                             popup.add(info);
                         }                        
                     }
@@ -167,19 +167,19 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                     if (cs.isArmored()) {
                         JMenuItem info = new JMenuItem("Remove Armoring");
                         info.setActionCommand(Integer.toString(location));
-                        info.addActionListener(evt -> changeArmoring());
+                        info.addActionListener(evt2 -> changeArmoring());
                         popup.add(info);
 
                     } else {
                         JMenuItem info = new JMenuItem("Add Armoring");
                         info.setActionCommand(Integer.toString(location));
-                        info.addActionListener(evt -> changeArmoring());
+                        info.addActionListener(evt2 -> changeArmoring());
                         popup.add(info);
                     }
                 }
 
                 if (popup.getComponentCount() > 0) {
-                    popup.show(this, mouseEvent.getX(), mouseEvent.getY());
+                    popup.show(this, evt.getX(), evt.getY());
                 }
             }
         }
@@ -209,7 +209,6 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
         if ((slot >= 0) && (slot < getUnit().getNumberOfCriticals(location))) {
             crit = getUnit().getCritical(location, slot);
         }
-
         return crit;
     }
 
@@ -246,6 +245,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
         if (getMounted().getLinkedBy() != null) {
             getMounted().getLinkedBy().setSponsonTurretMounted(turret);
         }
+
         if (refresh != null) {
             refresh.refreshAll();
         }
@@ -256,6 +256,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
         if (getMounted().getLinkedBy() != null) {
             getMounted().getLinkedBy().setPintleTurretMounted(turret);
         }
+
         if (refresh != null) {
             refresh.refreshAll();
         }
@@ -266,6 +267,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
         if (!pod || UnitUtil.canPodMount(getUnit(), mount)) {
             mount.setOmniPodMounted(pod);
         }
+
         if (refresh != null) {
             refresh.refreshAll();
         }
