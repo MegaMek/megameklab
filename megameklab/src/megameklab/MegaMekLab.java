@@ -18,7 +18,6 @@ package megameklab;
 
 import megamek.MegaMek;
 import megamek.client.ui.preferences.SuitePreferences;
-import megamek.common.Configuration;
 import megamek.common.EquipmentType;
 import megamek.common.MechSummaryCache;
 import megamek.common.QuirksHandler;
@@ -28,11 +27,6 @@ import megameklab.util.UnitUtil;
 import org.apache.logging.log4j.LogManager;
 
 import javax.swing.*;
-import java.awt.*;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 public class MegaMekLab {

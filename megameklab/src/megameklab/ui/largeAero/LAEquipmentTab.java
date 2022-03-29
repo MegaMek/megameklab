@@ -19,10 +19,6 @@ import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.AbstractEquipmentTab;
 import megameklab.ui.util.AbstractEquipmentDatabaseView;
 
-import java.util.List;
-
-import static java.util.stream.Collectors.toList;
-
 /**
  * The Equipment Tab for Large Aerospace units (DS, SC, WS, SS...) showing the equipment
  * database and the current loadout list.
