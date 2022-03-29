@@ -84,7 +84,6 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                 setSelectedIndex(locationToIndex(evt.getPoint()));
                 removeCrit();
             } else if (evt.getButton() == MouseEvent.BUTTON3) {
-
                 setSelectedIndex(locationToIndex(evt.getPoint()));
 
                 if ((evt.getModifiersEx() & InputEvent.CTRL_DOWN_MASK) != 0) {
@@ -135,6 +134,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                             popup.add(info);
                         }
                     }
+
                     if (getUnit().countWorkingMisc(MiscType.F_PINTLE_TURRET,
                                     mount.getLocation()) > 0) {
                         if (!mount.isPintleTurretMounted()) {
@@ -147,7 +147,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                             popup.add(info);
                         }
                     }
-                    
+
                     if (getUnit().isOmni() && !mount.getType().isOmniFixedOnly()) {
                         if (mount.isOmniPodMounted()) {
                             info = new JMenuItem("Change to fixed mount");
@@ -169,7 +169,6 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                         info.setActionCommand(Integer.toString(location));
                         info.addActionListener(evt2 -> changeArmoring());
                         popup.add(info);
-
                     } else {
                         JMenuItem info = new JMenuItem("Add Armoring");
                         info.setActionCommand(Integer.toString(location));
