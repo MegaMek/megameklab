@@ -139,7 +139,7 @@ public class StartupGUI extends JPanel {
         FontMetrics metrics = btnNewDropper.getFontMetrics(btnNewDropper.getFont());
         int width = metrics.stringWidth(btnNewDropper.getText());
         int height = metrics.getHeight();
-        Dimension textDim =  new Dimension(width+50, height+10);
+        Dimension textDim = new Dimension(width + 50, height + 10);
 
         // Strive for no more than ~90% of the screen and use golden ratio to make
         // the button width "look" reasonable.

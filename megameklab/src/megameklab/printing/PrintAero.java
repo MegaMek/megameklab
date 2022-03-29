@@ -250,7 +250,7 @@ public class PrintAero extends PrintEntity {
                 Element path = createRoundedRectangle(xpos, ypos, boxWidth - 2.0, boxHeight - 2.0,
                         4.3, 2.375, 0.966, FILL_BLACK);
                 canvas.appendChild(path);
-                xpos +=  boxWidth;
+                xpos += boxWidth;
             }
             ypos += boxHeight;
         }

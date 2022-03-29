@@ -42,11 +42,11 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 
 public class CIEquipmentView extends IView implements ActionListener {
-    private static final int T_ARCHAIC   =  0;
-    private static final int T_PERSONAL  =  1;
-    private static final int T_SUPPORT   =  2;
-    private static final int T_WEAPON    =  3;
-    private static final int T_NUM       =  4;
+    private static final int T_ARCHAIC = 0;
+    private static final int T_PERSONAL = 1;
+    private static final int T_SUPPORT = 2;
+    private static final int T_WEAPON = 3;
+    private static final int T_NUM = 4;
 
     private RefreshListener refresh;
 
