@@ -226,11 +226,11 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         txtYear.setEditable(false);
         txtYear.setEnabled(false);
     }
-    
+
     public String getChassis() {
         return txtChassis.getText();
     }
-    
+
     public void setChassis(String chassis) {
         txtChassis.setText(chassis);
     }
@@ -238,7 +238,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
     public String getModel() {
         return txtModel.getText();
     }
-    
+
     public void setModel(String model) {
         txtModel.setText(model);
     }
@@ -247,12 +247,12 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
     public int getTechIntroYear() {
         return txtYear.getIntVal();
     }
-    
+
     public void setYear(int year) {
         txtYear.setIntVal(year);
         refreshTechBase();
     }
-    
+
     @Override
     public int getTechFaction() {
         if (!CConfig.getBooleanParam(CConfig.TECH_SHOW_FACTION)) {
@@ -264,7 +264,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         }
         return retVal;
     }
-    
+
     public void setTechFaction(int techFaction) {
         cbFaction.setSelectedItem(techFaction);
     }
@@ -276,11 +276,11 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         }
         return getTechIntroYear();
     }
-    
+
     public String getSource() {
         return txtSource.getText();
     }
-    
+
     public void setSource(String source) {
         txtSource.setText(source);
     }
