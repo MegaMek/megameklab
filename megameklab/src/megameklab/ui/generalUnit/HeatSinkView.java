@@ -1,20 +1,34 @@
 /*
- * MegaMekLab - Copyright (C) 2017 - The MegaMek Team
+ * Copyright (c) 2017-2022 - The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with MegaMekLab. If not, see <http://www.gnu.org/licenses/>.
  */
 package megameklab.ui.generalUnit;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import megamek.common.*;
+import megamek.common.util.EncodeControl;
+import megamek.common.verifier.TestAero;
+import megameklab.ui.listeners.BuildListener;
+import megameklab.ui.util.CustomComboBox;
+import megameklab.util.UnitUtil;
+
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -22,19 +36,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
-
-import javax.swing.JLabel;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-
-import megamek.common.*;
-import megamek.common.util.EncodeControl;
-import megamek.common.verifier.TestAero;
-import megameklab.ui.util.CustomComboBox;
-import megameklab.ui.listeners.BuildListener;
-import megameklab.util.UnitUtil;
 
 /**
  * Controls for selecting type and number of heat sinks for mechs and asfs.
@@ -110,7 +111,8 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        add(createLabel(resourceMap.getString("HeatSinkView.cbHSType.text"), labelSize), gbc);
+        add(createLabel(resourceMap, "lblHSType", "HeatSinkView.cbHSType.text",
+                "HeatSinkView.cbHSType.tooltip", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridwidth = 4;
         setFieldSize(cbHSType, controlSize);
@@ -122,7 +124,8 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap.getString("HeatSinkView.spnCount.text"), labelSize), gbc);
+        add(createLabel(resourceMap, "lblCount", "HeatSinkView.spnCount.text",
+                "HeatSinkView.spnCount.tooltip", labelSize), gbc);
         gbc.gridx = 1;
         setFieldSize(spnCount.getEditor(), editorSize);
         spnCount.setToolTipText(resourceMap.getString("HeatSinkView.spnCount.tooltip"));

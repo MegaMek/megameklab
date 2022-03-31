@@ -1,20 +1,34 @@
 /*
- * MegaMekLab - Copyright (C) 2017 - The MegaMek Team
+ * Copyright (c) 2017-2022 - The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with MegaMekLab. If not, see <http://www.gnu.org/licenses/>.
  */
 package megameklab.ui.mek;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import megamek.common.*;
+import megamek.common.util.EncodeControl;
+import megameklab.ui.generalUnit.BuildView;
+import megameklab.ui.listeners.MekBuildListener;
+import megameklab.ui.util.CustomComboBox;
+import megameklab.ui.util.TechComboBox;
+
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -22,23 +36,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
-
-import javax.swing.ComboBoxModel;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-
-import megamek.common.*;
-import megamek.common.util.EncodeControl;
-import megameklab.ui.util.CustomComboBox;
-import megameklab.ui.util.TechComboBox;
-import megameklab.ui.generalUnit.BuildView;
-import megameklab.ui.listeners.MekBuildListener;
 
 /**
  * Construction options and systems for Meks.
@@ -162,7 +159,8 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        add(createLabel(resourceMap.getString("MekChassisView.spnTonnage.text"), labelSize), gbc);
+        add(createLabel(resourceMap, "lblTonnage", "MekChassisView.spnTonnage.text",
+                "MekChassisView.spnTonnage.tooltip", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 0;
         setFieldSize(spnTonnage, spinnerSize);
@@ -180,7 +178,8 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
 
         gbc.gridx = 0;
         gbc.gridy = 1;
-        add(createLabel(resourceMap.getString("MekChassisView.cbBaseType.text"), labelSize), gbc);
+        add(createLabel(resourceMap, "lblBaseType", "MekChassisView.cbBaseType.text",
+                "MekChassisView.cbBaseType.tooltip", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 1;
         gbc.gridwidth = 3;
@@ -192,7 +191,8 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap.getString("MekChassisView.cbMotiveType.text"), labelSize), gbc);
+        add(createLabel(resourceMap, "lblMotiveType", "MekChassisView.cbMotiveType.text",
+                "MekChassisView.cbMotiveType.tooltip", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 2;
         gbc.gridwidth = 3;
@@ -204,7 +204,8 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 0;
         gbc.gridy = 3;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap.getString("MekChassisView.cbStructure.text"), labelSize), gbc);
+        add(createLabel(resourceMap, "lblStructure", "MekChassisView.cbStructure.text",
+                "MekChassisView.cbStructure.tooltip", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 3;
         gbc.gridwidth = 3;
@@ -216,7 +217,8 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 0;
         gbc.gridy = 4;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap.getString("MekChassisView.cbEngine.text"), labelSize), gbc);
+        add(createLabel(resourceMap, "lblEngine", "MekChassisView.cbEngine.text",
+                "MekChassisView.cbEngine.tooltip", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 4;
         gbc.gridwidth = 3;
@@ -228,7 +230,8 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 0;
         gbc.gridy = 5;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap.getString("MekChassisView.cbGyro.text"), labelSize), gbc);
+        add(createLabel(resourceMap, "lblGyro", "MekChassisView.cbGyro.text",
+                "MekChassisView.cbGyro.tooltip", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 5;
         gbc.gridwidth = 3;
@@ -240,7 +243,8 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 0;
         gbc.gridy = 6;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap.getString("MekChassisView.cbCockpit.text"), labelSize), gbc);
+        add(createLabel(resourceMap, "lblCockpit", "MekChassisView.cbCockpit.text",
+                "MekChassisView.cbCockpit.tooltip", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 6;
         gbc.gridwidth = 3;
@@ -252,7 +256,8 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 0;
         gbc.gridy = 7;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap.getString("MekChassisView.cbEnhancement.text"), labelSize), gbc);
+        add(createLabel(resourceMap, "lblEnhancement", "MekChassisView.cbEnhancement.text",
+                "MekChassisView.cbEnhancement.tooltip", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 7;
         gbc.gridwidth = 3;
