@@ -120,14 +120,6 @@ public class BMCriticalView extends IView {
 
         synchronized (getMech()) {
             clPanel.setVisible(getMech() instanceof TripodMech);
-//            String title = getMech() instanceof QuadMech ? "Front Left Leg" : "Left Arm";
-//            laPanel.setBorder(CritCellUtil.locationBorderNoLine(title));
-//            title = getMech() instanceof QuadMech ? "Front Right Leg" : "Right Arm";
-//            raPanel.setBorder(CritCellUtil.locationBorderNoLine(title));
-//            title = getMech() instanceof QuadMech ? "Rear Left Leg" : "Left Leg";
-//            llPanel.setBorder(CritCellUtil.locationBorderNoLine(title));
-//            title = getMech() instanceof QuadMech ? "Rear Right Leg" : "Right Leg";
-//            rlPanel.setBorder(CritCellUtil.locationBorderNoLine(title));
             setTitles();
 
             for (int location = 0; location < getMech().locations(); location++) {

@@ -473,30 +473,18 @@ public final class BMUtils {
     }
 
     /**
-     * For the given Mek, adds clan CASE in every location that has potentially
-     * explosive equipment (this includes PPC Capacitors) and removes it from every
-     * location that has none.
-     * <P>This method doesn't check what type the given Mek is nor its tech base.
-     * <P>As clan CASE does not need critical slots, this method does not check
-     * whether other CASE types are already present on a location.
+     * For the given Mek, adds Clan CASE in every location that has potentially
+     * explosive equipment (this includes PPC Capacitors) and removes it from all
+     * other locations.
+     * Calls {@link Mech#addClanCase()}. This method does not check if other
+     * CASE types are already present on a location.
      *
      * @param mek the mek to update
      */
     public static void updateClanCasePlacement(Mech mek) {
-        EquipmentType clCase = EquipmentType.get(EquipmentTypeLookup.CLAN_CASE);
-        removeAllMounteds(mek, clCase);
-
-        Set<Integer> autoCaseLocations = mek.getEquipment().stream()
-                .filter(m -> m.getType().isExplosive(m, true))
-                .map(Mounted::getLocation)
-                .collect(toSet());
-
-        for (int loc : autoCaseLocations) {
-            try {
-                mek.addEquipment(new Mounted(mek, clCase), loc, false);
-            } catch (LocationFullException ignore) {
-                // cannot happen as Clan CASE does not require crit slots
-            }
+        if (mek.isClan()) {
+            removeAllMounteds(mek, EquipmentType.get(EquipmentTypeLookup.CLAN_CASE));
+            mek.addClanCase();
         }
     }
 }
