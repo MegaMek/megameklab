@@ -412,7 +412,7 @@ public class UnitUtil {
             boolean rearMounted) throws LocationFullException {
         unit.addEquipment(mounted, loc, rearMounted);
         mounted.setOmniPodMounted(canPodMount(unit, mounted));
-        if ((unit instanceof Mech) && unit.isClan()) {
+        if (unit instanceof Mech) {
             BMUtils.updateClanCasePlacement((Mech) unit);
         }
     }
@@ -1325,7 +1325,7 @@ public class UnitUtil {
                 // Exception thrown for not having equipment to link to yet, which is acceptable here
             }
         }
-        if ((unit instanceof Mech) && unit.isClan()) {
+        if (unit instanceof Mech) {
             BMUtils.updateClanCasePlacement((Mech) unit);
         }
     }
