@@ -490,7 +490,7 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
                     while (getJumpship().getCollarById(num) != null) {
                         num++;
                     }
-                    getJumpship().addTransporter(new DockingCollar(1, num));
+                    getJumpship().addTransporter(new DockingCollar(num));
                 }
             }
             if (null != refresh) {

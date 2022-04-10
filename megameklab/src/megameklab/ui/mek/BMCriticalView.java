@@ -120,14 +120,15 @@ public class BMCriticalView extends IView {
 
         synchronized (getMech()) {
             clPanel.setVisible(getMech() instanceof TripodMech);
-            String title = getMech() instanceof QuadMech ? "Front Left Leg" : "Left Arm";
-            laPanel.setBorder(CritCellUtil.locationBorderNoLine(title));
-            title = getMech() instanceof QuadMech ? "Front Right Leg" : "Right Arm";
-            raPanel.setBorder(CritCellUtil.locationBorderNoLine(title));
-            title = getMech() instanceof QuadMech ? "Rear Left Leg" : "Left Leg";
-            llPanel.setBorder(CritCellUtil.locationBorderNoLine(title));
-            title = getMech() instanceof QuadMech ? "Rear Right Leg" : "Right Leg";
-            rlPanel.setBorder(CritCellUtil.locationBorderNoLine(title));
+//            String title = getMech() instanceof QuadMech ? "Front Left Leg" : "Left Arm";
+//            laPanel.setBorder(CritCellUtil.locationBorderNoLine(title));
+//            title = getMech() instanceof QuadMech ? "Front Right Leg" : "Right Arm";
+//            raPanel.setBorder(CritCellUtil.locationBorderNoLine(title));
+//            title = getMech() instanceof QuadMech ? "Rear Left Leg" : "Left Leg";
+//            llPanel.setBorder(CritCellUtil.locationBorderNoLine(title));
+//            title = getMech() instanceof QuadMech ? "Rear Right Leg" : "Right Leg";
+//            rlPanel.setBorder(CritCellUtil.locationBorderNoLine(title));
+            setTitles();
 
             for (int location = 0; location < getMech().locations(); location++) {
                 Vector<String> critNames = new Vector<>(1, 1);
@@ -170,6 +171,37 @@ public class BMCriticalView extends IView {
             }
             
             validate();
+        }
+    }
+
+    private void setTitles() {
+        String title = getMech().getLocationName(Mech.LOC_LARM) + caseSuffix(Mech.LOC_LARM);
+        laPanel.setBorder(CritCellUtil.locationBorderNoLine(title));
+        title = getMech().getLocationName(Mech.LOC_RARM) + caseSuffix(Mech.LOC_RARM);
+        raPanel.setBorder(CritCellUtil.locationBorderNoLine(title));
+        title = getMech().getLocationName(Mech.LOC_LLEG) + caseSuffix(Mech.LOC_LLEG);
+        llPanel.setBorder(CritCellUtil.locationBorderNoLine(title));
+        title = getMech().getLocationName(Mech.LOC_RLEG) + caseSuffix(Mech.LOC_RLEG);
+        rlPanel.setBorder(CritCellUtil.locationBorderNoLine(title));
+        title = getMech().getLocationName(Mech.LOC_CLEG) + caseSuffix(Mech.LOC_CLEG);
+        clPanel.setBorder(CritCellUtil.locationBorderNoLine(title));
+        title = getMech().getLocationName(Mech.LOC_LT) + caseSuffix(Mech.LOC_LT);
+        ltPanel.setBorder(CritCellUtil.locationBorderNoLine(title));
+        title = getMech().getLocationName(Mech.LOC_RT) + caseSuffix(Mech.LOC_RT);
+        rtPanel.setBorder(CritCellUtil.locationBorderNoLine(title));
+        title = getMech().getLocationName(Mech.LOC_CT) + caseSuffix(Mech.LOC_CT);
+        ctPanel.setBorder(CritCellUtil.locationBorderNoLine(title));
+        title = getMech().getLocationName(Mech.LOC_HEAD) + caseSuffix(Mech.LOC_HEAD);
+        hdPanel.setBorder(CritCellUtil.locationBorderNoLine(title));
+    }
+
+    private String caseSuffix(int location) {
+        if (getMech().hasCASEII(location)) {
+            return " (CASE II)";
+        } else if (getMech().locationHasCase(location)) {
+            return " (CASE)";
+        } else {
+            return "";
         }
     }
 
