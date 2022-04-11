@@ -102,7 +102,7 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
         txtAugmentations.setEditable(false);
         txtAugmentations.setContentType("text/html");
         
-        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.WEST;
         gbc.insets = new Insets(0, 0, 1, 2);
 
@@ -149,17 +149,16 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.fill = java.awt.GridBagConstraints.NONE;
+        gbc.fill = GridBagConstraints.NONE;
         gbc.weightx = 0.0;
         gbc.weighty = 1.0;
         gbc.anchor = GridBagConstraints.NORTHWEST;
         add(new JScrollPane(leftPanel), gbc);
         gbc.gridx = 1;
-        gbc.fill = java.awt.GridBagConstraints.BOTH;
+        gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         add(equipmentPane, gbc);
-
     }
     
     public ITechManager getTechManager() {
@@ -181,6 +180,7 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
         return label;
     }
 
+    @Override
     public void setFieldSize(JComponent box, Dimension maxSize) {
         box.setPreferredSize(maxSize);
         box.setMaximumSize(maxSize);

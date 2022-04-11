@@ -27,13 +27,11 @@ import java.io.File;
 import java.text.DecimalFormat;
 
 /**
- * Status bar for protomech construction
+ * Status bar for ProtoMek construction
  * 
  * @author Neoancient
- *
  */
 public class PMStatusBar extends ITab {
-    
     private final JLabel crits = new JLabel();
     private final JLabel bvLabel = new JLabel();
     private final JLabel tons = new JLabel();
@@ -76,7 +74,6 @@ public class PMStatusBar extends ITab {
 
     public void refresh() {
         double tonnage = getProtomech().getWeight() * 1000;
-        double currentTonnage;
         int bv = getProtomech().calculateBattleValue();
         int maxCrits = 0;
         for (int l = 0; l < getProtomech().locations(); l++) {
@@ -85,7 +82,7 @@ public class PMStatusBar extends ITab {
         long currentCrits = getProtomech().getEquipment().stream()
                 .filter(m -> TestProtomech.requiresSlot(m.getType())).count();
 
-        currentTonnage = testEntity.calculateWeight() * 1000;
+        double currentTonnage = testEntity.calculateWeight() * 1000;
 
         tons.setText(String.format("Tonnage: %,.0f/%,.0f (%,.0f Remaining)", currentTonnage, tonnage, tonnage - currentTonnage));
         tons.setToolTipText("Current Tonnage/Max Tonnage");
@@ -103,7 +100,7 @@ public class PMStatusBar extends ITab {
                 + formatter.format(Math.round(getEntity().getCost(false))) + " C-bills.");
 
         crits.setText("Criticals: " +  currentCrits + "/" + maxCrits);
-        if(currentCrits > maxCrits) {
+        if (currentCrits > maxCrits) {
             crits.setForeground(Color.red);
         } else {
             crits.setForeground(UIManager.getColor("Label.foreground"));
@@ -114,7 +111,7 @@ public class PMStatusBar extends ITab {
     }
 
     private void getFluffImage() {
-        //copied from mech StatusBar
+        // copied from mech StatusBar
         FileDialog fDialog = new FileDialog(getParentFrame(), "Image Path", FileDialog.LOAD);
         fDialog.setDirectory(new File(ImageHelper.fluffPath).getAbsolutePath() + File.separatorChar + ImageHelper.imageMech + File.separatorChar);
         fDialog.setLocationRelativeTo(this);
@@ -136,5 +133,4 @@ public class PMStatusBar extends ITab {
     public void addRefreshedListener(RefreshListener l) {
         refresh = l;
     }
-
 }

@@ -29,7 +29,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Vector;
 
@@ -95,7 +94,7 @@ public class CVEquipmentView extends IView implements ActionListener {
             }
         }
 
-        Collections.sort(masterEquipmentList, StringUtils.equipmentTypeComparator());
+        masterEquipmentList.sort(StringUtils.equipmentTypeComparator());
         loadEquipmentTable();
 
         addButton.setMnemonic('A');
@@ -111,7 +110,7 @@ public class CVEquipmentView extends IView implements ActionListener {
         equipmentCombo.setRenderer(new EquipmentListCellRenderer(getTank()));
         equipmentCombo.setKeySelectionManager(new EquipmentListCellKeySelectionManager());
         equipmentCombo.removeAllItems();
-        equipmentTypes = new Vector<EquipmentType>();
+        equipmentTypes = new Vector<>();
 
         for (EquipmentType eq : masterEquipmentList) {
             if (UnitUtil.isLegal(getTank(), eq)) {
@@ -134,7 +133,7 @@ public class CVEquipmentView extends IView implements ActionListener {
     }
 
     private void loadHeatSinks() {
-        int engineHeatSinks = 10;// UnitUtil.getBaseChassisHeatSinks(unit);
+        int engineHeatSinks = 10;
         for (Mounted mount : getTank().getMisc()) {
             if (UnitUtil.isHeatSink(mount)) {
                 if (engineHeatSinks-- > 0) {
@@ -143,13 +142,11 @@ public class CVEquipmentView extends IView implements ActionListener {
                 equipmentList.addCrit(mount);
             }
         }
-
     }
 
     private void removeHeatSinks() {
         int location = 0;
         for (; location < equipmentList.getRowCount();) {
-
             Mounted mount = (Mounted) equipmentList.getValueAt(location, CriticalTableModel.EQUIPMENT);
             if (UnitUtil.isHeatSink(mount)) {
                 try {
@@ -200,9 +197,7 @@ public class CVEquipmentView extends IView implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-
         if (e.getActionCommand().equals(ADD_COMMAND)) {
-
             EquipmentType equip = (EquipmentType) equipmentCombo.getSelectedItem();
             Mounted mount = null;
             boolean isMisc = equip instanceof MiscType;
@@ -219,7 +214,6 @@ public class CVEquipmentView extends IView implements ActionListener {
             }
             equipmentList.addCrit(mount);
         } else if (e.getActionCommand().equals(REMOVE_COMMAND)) {
-
             int startRow = equipmentTable.getSelectedRow();
             int count = equipmentTable.getSelectedRowCount();
 
@@ -255,9 +249,7 @@ public class CVEquipmentView extends IView implements ActionListener {
         }
     }
 
-
     public CriticalTableModel getEquipmentList() {
         return equipmentList;
     }
-
 }

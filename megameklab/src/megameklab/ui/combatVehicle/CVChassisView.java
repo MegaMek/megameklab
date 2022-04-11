@@ -470,7 +470,7 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
         if (e.getSource() == spnTonnage) {
             listeners.forEach(l -> l.tonnageChanged(getTonnage()));
         } else if ((e.getSource() == spnChassisTurretWt)
-                || (e.getSource() == spnChassisTurret2Wt)){
+                || (e.getSource() == spnChassisTurret2Wt)) {
             listeners.forEach(l -> l.turretBaseWtChanged(spnTurretWtModel.getNumber().doubleValue(),
                     spnTurret2WtModel.getNumber().doubleValue()));
         } else if (e.getSource() == spnExtraSeats) {

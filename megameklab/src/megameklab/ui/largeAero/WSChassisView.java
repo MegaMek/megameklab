@@ -314,7 +314,7 @@ public class WSChassisView extends BuildView implements ActionListener, ChangeLi
         if (e.getSource() == spnTonnage) {
             listeners.forEach(l -> l.tonnageChanged(getTonnage()));
         } else if (e.getSource() == spnRange) {
-            listeners.forEach(l -> l.rangeChanged(((Integer) spnRange.getValue()).intValue()));
+            listeners.forEach(l -> l.rangeChanged((Integer) spnRange.getValue()));
         } else if (e.getSource() == spnSI) {
             listeners.forEach(l -> l.siChanged(spnSIModel.getNumber().intValue()));
         }

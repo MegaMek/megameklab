@@ -27,11 +27,9 @@ import megamek.common.weapons.missiles.MMLWeapon;
 import megamek.common.weapons.other.ISCenturionWeaponSystem;
 import megameklab.util.CConfig;
 import megameklab.util.StringUtils;
-import megameklab.util.UnitUtil;
 
 import java.math.BigInteger;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Formats text for an entry in the weapons and equipment inventory section of the record sheet.
@@ -250,7 +248,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         if (showTechBase()) {
             name.append(mount.getType().isClan() ? " (C)" : " (IS)");
         }
-        // Spheroid Small Craft/Dropships use a different location name for aft side weapons
+        // Spheroid Small Craft / DropShips use a different location name for aft side weapons
         if (mount.isRearMounted()
                 && !(mount.getEntity() instanceof SmallCraft && ((Aero) mount.getEntity()).isSpheroid())) {
             name.append(" (R)");
@@ -410,7 +408,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         if (isMML) {
             if (row == MML_LRM_ROW) {
                 return "1/Msl";
-            } else if (row == MML_SRM_ROW){
+            } else if (row == MML_SRM_ROW) {
                 return "2/Msl";
             } else {
                 return "[M,C,S]";
@@ -430,8 +428,8 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         } else if (mount.getType() instanceof ISCenturionWeaponSystem) {
             return "0";
         } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_BA_MANIPULATOR)) {
-            // TODO: Put capacity of cargo lifting manipulator here when the implementation is corrected
-            // to allow capacity to be assigned
+            // TODO : Put capacity of cargo lifting manipulator here when the implementation is
+            // TODO : corrected to allow capacity to be assigned
             return "";
         } else if (row == 0) {
             return StringUtils.getEquipmentInfo(mount.getEntity(), mount);
@@ -518,6 +516,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         return "";
     }
 
+    @Override
     public int nRows() {
         if (isMML) {
             return 3;
@@ -536,8 +535,11 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        } else if ((o == null) || (getClass() != o.getClass())) {
+            return false;
+        }
         StandardInventoryEntry that = (StandardInventoryEntry) o;
         return isRear == that.isRear &&
                 isTurret == that.isTurret &&

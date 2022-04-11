@@ -170,11 +170,11 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
 
     public JLabel createLabel(String text, Dimension maxSize) {
         JLabel label = new JLabel(text, SwingConstants.RIGHT);
-
         setFieldSize(label, maxSize);
         return label;
     }
 
+    @Override
     public void setFieldSize(JComponent box, Dimension maxSize) {
         box.setPreferredSize(maxSize);
         box.setMaximumSize(maxSize);
@@ -255,11 +255,12 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
      * units tonnage, whichever is greater.  The SI for fighters does not take
      * up any tonnage.
      */
-    public void setAeroStructuralIntegrity(){
-        int si = (int)Math.max(panChassis.getTonnage() * 0.1, panMovement.getWalk());
+    public void setAeroStructuralIntegrity() {
+        int si = (int) Math.max(panChassis.getTonnage() * 0.1, panMovement.getWalk());
         getAero().setSI(si);
     }
 
+    @Override
     public void refreshSummary() {
         panSummary.refresh();
     }

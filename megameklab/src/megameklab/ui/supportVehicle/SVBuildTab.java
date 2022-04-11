@@ -84,26 +84,23 @@ public class SVBuildTab extends ITab implements ActionListener {
     }
 
     public JLabel createLabel(String text, Dimension maxSize) {
-
         JLabel label = new JLabel(text, SwingConstants.TRAILING);
-
         label.setMaximumSize(maxSize);
         label.setMinimumSize(maxSize);
         label.setPreferredSize(maxSize);
-
         return label;
     }
 
-    public void actionPerformed(ActionEvent e) {
-        if (e.getActionCommand().equals(AUTOFILLCOMMAND)) {
+    @Override
+    public void actionPerformed(ActionEvent evt) {
+        if (evt.getActionCommand().equals(AUTOFILLCOMMAND)) {
             autoFillCrits();
-        } else if (e.getActionCommand().equals(RESETCOMMAND)) {
+        } else if (evt.getActionCommand().equals(RESETCOMMAND)) {
             resetCrits();
         }
     }
 
     private void autoFillCrits() {
-
         for (Mounted mount : unallocatedView.getTableModel().getCrits()) {
             for (int location = 0; location < getTank().locations(); location++) {
                 try {
@@ -116,7 +113,6 @@ public class SVBuildTab extends ITab implements ActionListener {
             }
         }
         refresh.refreshAll();
-
     }
 
     private void resetCrits() {

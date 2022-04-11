@@ -13,22 +13,6 @@
  */
 package megameklab.ui.protoMek;
 
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.util.Collections;
-import java.util.Vector;
-
-import javax.swing.BoxLayout;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
-
 import megamek.common.AmmoType;
 import megamek.common.Entity;
 import megamek.common.MiscType;
@@ -41,6 +25,14 @@ import megameklab.ui.util.IView;
 import megameklab.ui.util.RefreshListener;
 import megameklab.util.StringUtils;
 import megameklab.util.UnitUtil;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.Vector;
 
 /**
  * Shows unallocated equipment that needs to be assigned to a slot.
@@ -111,11 +103,11 @@ public class PMBuildView extends IView implements ActionListener, MouseListener 
             }
         }
 
-        Collections.sort(masterEquipmentList, StringUtils.mountedComparator());
+        masterEquipmentList.sort(StringUtils.mountedComparator());
 
         // Time to Sort
         // weapons and ammo
-        Vector<Mounted> weaponsNAmmoList = new Vector<Mounted>(10, 1);
+        Vector<Mounted> weaponsNAmmoList = new Vector<>(10, 1);
         for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
             if ((masterEquipmentList.get(pos).getType() instanceof Weapon) || (masterEquipmentList.get(pos).getType() instanceof AmmoType)) {
                 weaponsNAmmoList.add(masterEquipmentList.get(pos));
@@ -123,7 +115,7 @@ public class PMBuildView extends IView implements ActionListener, MouseListener 
                 pos--;
             }
         }
-        Collections.sort(weaponsNAmmoList, StringUtils.mountedComparator());
+        weaponsNAmmoList.sort(StringUtils.mountedComparator());
         for (Mounted mount : weaponsNAmmoList) {
             equipmentList.addCrit(mount);
         }
@@ -141,7 +133,6 @@ public class PMBuildView extends IView implements ActionListener, MouseListener 
         for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
             equipmentList.addCrit(masterEquipmentList.get(pos));
         }
-
     }
 
     public void refresh() {
@@ -152,13 +143,15 @@ public class PMBuildView extends IView implements ActionListener, MouseListener 
     }
 
     private void removeAllListeners() {
+
     }
 
     private void addAllListeners() {
+
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(ActionEvent evt) {
         fireTableRefresh();
     }
 
@@ -176,30 +169,29 @@ public class PMBuildView extends IView implements ActionListener, MouseListener 
     }
     
     @Override
-    public void mouseClicked(MouseEvent e) {
+    public void mouseClicked(MouseEvent evt) {
 
     }
 
     @Override
-    public void mouseEntered(MouseEvent e) {
+    public void mouseEntered(MouseEvent evt) {
 
     }
 
     @Override
-    public void mouseExited(MouseEvent e) {
+    public void mouseExited(MouseEvent evt) {
 
     }
 
     @Override
-    public void mousePressed(MouseEvent e) {
-        if (e.getButton() == MouseEvent.BUTTON3) {
+    public void mousePressed(MouseEvent evt) {
+        if (evt.getButton() == MouseEvent.BUTTON3) {
             JPopupMenu popup = new JPopupMenu();
             JMenuItem item;
 
-            final int selectedRow = equipmentTable.rowAtPoint(e.getPoint());
-            String[] locations;
+            final int selectedRow = equipmentTable.rowAtPoint(evt.getPoint());
 
-            locations = getProtoMek().getLocationNames();
+            String[] locations = getProtoMek().getLocationNames();
             Mounted mount = (Mounted)equipmentTable.getModel().getValueAt(selectedRow, CriticalTableModel.EQUIPMENT);
 
             for (int location = 0; location < getProtoMek().locations(); location++) {
@@ -211,12 +203,12 @@ public class PMBuildView extends IView implements ActionListener, MouseListener 
                 }
             }
 
-            popup.show(this, e.getX(), e.getY());
+            popup.show(this, evt.getX(), evt.getY());
         }
     }
 
     @Override
-    public void mouseReleased(MouseEvent e) {
+    public void mouseReleased(MouseEvent evt) {
 
     }
 
@@ -226,5 +218,4 @@ public class PMBuildView extends IView implements ActionListener, MouseListener 
         // go back up to grandparent build tab and fire a full refresh.
         ((PMBuildTab) getParent().getParent()).refreshAll();
     }
-
 }

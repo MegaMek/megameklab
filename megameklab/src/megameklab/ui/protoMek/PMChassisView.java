@@ -228,11 +228,11 @@ public class PMChassisView extends BuildView implements ActionListener, ChangeLi
     }
     
     public void setTonnage(double tonnage) {
-        spnTonnage.setValue(Integer.valueOf((int)Math.ceil(tonnage)));
+        spnTonnage.setValue((int) Math.ceil(tonnage));
     }
     
     public int getMotiveType() {
-        return ((Integer) cbMotiveType.getSelectedItem()).intValue();
+        return (Integer) cbMotiveType.getSelectedItem();
     }
     
     @Override

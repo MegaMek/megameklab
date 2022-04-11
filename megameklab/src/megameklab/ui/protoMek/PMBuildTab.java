@@ -31,10 +31,8 @@ import java.awt.event.ActionListener;
  * Tab for assigning equipment to locations
  * 
  * @author Neoancient
- *
  */
 public class PMBuildTab extends ITab implements ActionListener {
-
     private RefreshListener refresh;
     private PMCriticalView critView;
     private PMBuildView buildView;
@@ -95,26 +93,23 @@ public class PMBuildTab extends ITab implements ActionListener {
     }
 
     public JLabel createLabel(String text, Dimension maxSize) {
-
         JLabel label = new JLabel(text, SwingConstants.TRAILING);
-
         label.setMaximumSize(maxSize);
         label.setMinimumSize(maxSize);
         label.setPreferredSize(maxSize);
-
         return label;
     }
 
-    public void actionPerformed(ActionEvent e) {
-        if (e.getActionCommand().equals(AUTOFILLCOMMAND)) {
+    @Override
+    public void actionPerformed(ActionEvent evt) {
+        if (evt.getActionCommand().equals(AUTOFILLCOMMAND)) {
             autoFillCrits();
-        } else if (e.getActionCommand().equals(RESETCOMMAND)) {
+        } else if (evt.getActionCommand().equals(RESETCOMMAND)) {
             resetCrits();
         }
     }
 
     private void autoFillCrits() {
-
         for (Mounted mount : buildView.getTableModel().getCrits()) {
             for (int location = 0; location < getProtomech().locations(); location++) {
                 if (UnitUtil.protomechHasRoom(getProtomech(), location, mount)) {
@@ -123,7 +118,6 @@ public class PMBuildTab extends ITab implements ActionListener {
             }
         }
         refresh.refreshAll();
-
     }
 
     private void resetCrits() {
@@ -158,5 +152,4 @@ public class PMBuildTab extends ITab implements ActionListener {
             refresh.refreshAll();
         }
     }
-
 }

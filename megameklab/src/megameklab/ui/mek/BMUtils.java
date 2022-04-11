@@ -441,7 +441,7 @@ public final class BMUtils {
             facings = new String[2];
             facings[0] = "Front";
             facings[1] = "Rear";
-        }  else {
+        } else {
             JOptionPane.showMessageDialog(null,
                     "VGL must be placed in torso location!",
                     "Invalid location",

@@ -490,7 +490,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         } else {
             for (int i = 0; i < Mech.GYRO_NONE; i++) {
                 if (techManager.isLegal(Mech.getGyroTechAdvancement(i))
-                        && ((i != Mech.GYRO_XL) || (getBaseTypeIndex() !=  BASE_TYPE_LAM))) {
+                        && ((i != Mech.GYRO_XL) || (getBaseTypeIndex() != BASE_TYPE_LAM))) {
                     cbGyro.addItem(i);
                 }
             }
@@ -505,7 +505,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
             cbGyro.setSelectedIndex(0);
         }
     }
-    
+
     private void refreshCockpit() {
         cbCockpit.removeActionListener(this);
         Integer prev = (Integer) cbCockpit.getSelectedItem();
@@ -518,7 +518,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         } else if (getBaseTypeIndex() == BASE_TYPE_QUADVEE) {
             cbCockpit.addItem(Mech.COCKPIT_QUADVEE);
         } else if (isSuperheavy()) {
-            if (isIndustrial()){
+            if (isIndustrial()) {
                 cbCockpit.addItem(Mech.COCKPIT_SUPERHEAVY_INDUSTRIAL);
             }
             cbCockpit.addItem(Mech.COCKPIT_SUPERHEAVY);

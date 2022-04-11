@@ -175,7 +175,7 @@ public final class CVCriticalView extends IView {
                     }
                 }
 
-                if (critNames.size() == 0) {
+                if (critNames.isEmpty()) {
                     critNames.add(CritCellUtil.EMPTY_CRITCELL_TEXT);
                 }
                 DropTargetCriticalList<String> criticalSlotList =

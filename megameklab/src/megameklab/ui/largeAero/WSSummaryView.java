@@ -13,25 +13,17 @@
  */
 package megameklab.ui.largeAero;
 
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.io.File;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.util.Vector;
-
-import javax.swing.BorderFactory;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-
 import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestAdvancedAerospace;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.IView;
+
+import javax.swing.*;
+import java.awt.*;
+import java.io.File;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Vector;
 
 /**
  * @author Neoancient
@@ -62,7 +54,7 @@ public class WSSummaryView extends IView {
     public WSSummaryView(EntitySource eSource) {
         super(eSource);
 
-        Vector<JTextField> valueFields = new Vector<JTextField>();
+        Vector<JTextField> valueFields = new Vector<>();
 
         valueFields.add(txtEngineTon);
         valueFields.add(txtFuelTon);   
@@ -83,8 +75,8 @@ public class WSSummaryView extends IView {
         valueFields.add(txtLifeBoatTon);
         valueFields.add(txtMiscTon);
 
-        Dimension size = new Dimension(100,25);
-        for(JTextField field : valueFields) {
+        Dimension size = new Dimension(100, 25);
+        for (JTextField field : valueFields) {
             field.setEditable(false);
             field.setSize(size);
             field.setPreferredSize(size);
@@ -93,8 +85,8 @@ public class WSSummaryView extends IView {
             field.setHorizontalAlignment(SwingConstants.RIGHT);
         }
 
-        size = new Dimension(100,25);
-        for(JTextField field : valueFields) {
+        size = new Dimension(100, 25);
+        for (JTextField field : valueFields) {
             field.setEditable(false);
             field.setSize(size);
             field.setPreferredSize(size);

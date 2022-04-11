@@ -1,25 +1,14 @@
-/**
- * 
- */
 package megameklab.ui.largeAero;
-
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.io.File;
-import java.util.Vector;
-
-import javax.swing.BorderFactory;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
 
 import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestSmallCraft;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.IView;
+
+import javax.swing.*;
+import java.awt.*;
+import java.io.File;
+import java.util.Vector;
 
 /**
  * @author Neoancient
@@ -39,12 +28,12 @@ public class DSSummaryView extends IView {
     private JTextField txtOtherTon = new JTextField("?");
 
     private EntityVerifier entityVerifier = EntityVerifier.getInstance(
-            new File("data/mechfiles/UnitVerifierOptions.xml"));
+            new File("data/mechfiles/UnitVerifierOptions.xml")); // TODO : Remove inline file path
 
     public DSSummaryView(EntitySource eSource) {
         super(eSource);
 
-        Vector<JTextField> valueFields = new Vector<JTextField>();
+        Vector<JTextField> valueFields = new Vector<>();
 
         valueFields.add(txtStructTon);
         valueFields.add(txtEngineTon);
@@ -60,7 +49,7 @@ public class DSSummaryView extends IView {
         valueFields.add(txtOtherTon);
 
         Dimension size = new Dimension(60,25);
-        for(JTextField field : valueFields) {
+        for (JTextField field : valueFields) {
             field.setEditable(false);
             field.setSize(size);
             field.setPreferredSize(size);
@@ -72,7 +61,7 @@ public class DSSummaryView extends IView {
         valueFields.removeAllElements();
 
         size = new Dimension(80,25);
-        for(JTextField field : valueFields) {
+        for (JTextField field : valueFields) {
             field.setEditable(false);
             field.setSize(size);
             field.setPreferredSize(size);
@@ -87,7 +76,7 @@ public class DSSummaryView extends IView {
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.insets = new Insets(0,0,0,5);
+        gbc.insets = new Insets(0, 0, 0, 5);
         this.add(createLabel("Category", size, SwingConstants.CENTER), gbc);
         gbc.gridy = 1;
         this.add(createLabel("SI:", size, SwingConstants.RIGHT), gbc);
@@ -114,10 +103,10 @@ public class DSSummaryView extends IView {
         gbc.gridy = 12;
         this.add(createLabel("Other:", size, SwingConstants.RIGHT), gbc);
 
-        size = new Dimension(45,25);
+        size = new Dimension(45, 25);
         gbc.gridx = 1;
         gbc.gridy = 0;
-        gbc.insets = new Insets(0,0,0,0);
+        gbc.insets = new Insets(0, 0, 0, 0);
         this.add(createLabel("Ton", size, SwingConstants.CENTER), gbc);
         gbc.gridy = 1;
         this.add(txtStructTon, gbc);
@@ -145,13 +134,10 @@ public class DSSummaryView extends IView {
         this.add(txtOtherTon, gbc);
 
         setBorder(BorderFactory.createTitledBorder("Summary"));
-
     }
 
     private JLabel createLabel(String text, Dimension size, int align) {
-
         JLabel label = new JLabel(text, SwingConstants.TRAILING);
-
         setFieldSize(label, size);
         label.setHorizontalAlignment(align);
         return label;
@@ -164,8 +150,7 @@ public class DSSummaryView extends IView {
     }
 
     public void refresh() {
-        TestSmallCraft testSmallCraft = 
-                new TestSmallCraft(getSmallCraft(), entityVerifier.aeroOption, null);
+        TestSmallCraft testSmallCraft = new TestSmallCraft(getSmallCraft(), entityVerifier.aeroOption, null);
        
         txtStructTon.setText(Double.toString(testSmallCraft.getWeightStructure()));
         txtEngineTon.setText(Double.toString(testSmallCraft.getWeightEngine()));

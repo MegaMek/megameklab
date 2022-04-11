@@ -104,7 +104,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.fill = java.awt.GridBagConstraints.NONE;
+        gbc.fill = GridBagConstraints.NONE;
         gbc.weightx = 0.0;
         gbc.weighty = 1.0;
         gbc.anchor = GridBagConstraints.NORTHWEST;
@@ -233,6 +233,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         panChassis.setAsCustomization();
     }
 
+    @Override
     public void refreshSummary() {
         panSummary.refresh();
     }

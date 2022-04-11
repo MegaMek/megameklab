@@ -14,7 +14,6 @@
 package megameklab.printing.reference;
 
 import megameklab.printing.PrintAero;
-import org.apache.batik.util.SVGConstants;
 
 /**
  * Thrust point cost to change facing on a space or high-altitude map
