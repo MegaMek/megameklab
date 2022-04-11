@@ -1,33 +1,22 @@
 /*
  * Copyright (c) 2017-2022 - The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with MegaMekLab. If not, see <http://www.gnu.org/licenses/>.
  */
 package megameklab.ui.largeAero;
-
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.List;
-import java.util.ResourceBundle;
-import java.util.concurrent.CopyOnWriteArrayList;
-
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import megamek.common.Dropship;
 import megamek.common.Entity;
@@ -37,6 +26,16 @@ import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestAero;
 import megameklab.ui.generalUnit.BuildView;
 import megameklab.ui.listeners.DropshipBuildListener;
+
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.List;
+import java.util.ResourceBundle;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Structure tab chassis panel for small craft and DropShips.
@@ -54,7 +53,7 @@ public class DSChassisView extends BuildView implements ActionListener, ChangeLi
 
     public final static int TYPE_SMALL_CRAFT    = 0;
     public final static int TYPE_DROPSHIP       = 1;
-    
+
     public final static int CHASSIS_AERODYNE    = 0;
     public final static int CHASSIS_SPHEROID    = 1;
 
@@ -88,7 +87,8 @@ public class DSChassisView extends BuildView implements ActionListener, ChangeLi
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        add(createLabel(resourceMap.getString("DropshipChassisView.spnTonnage.text"), labelSize), gbc);
+        add(createLabel(resourceMap, "lblTonnage", "DropshipChassisView.spnTonnage.text",
+                "DropshipChassisView.spnTonnage.tooltip", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -117,7 +117,8 @@ public class DSChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap.getString("DropshipChassisView.cbBaseType.text"), labelSize),gbc);
+        add(createLabel(resourceMap, "lblBaseType", "DropshipChassisView.cbBaseType.text",
+                "DropshipChassisView.cbBaseType.tooltip", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 2;
         gbc.gridwidth = 3;
@@ -129,7 +130,8 @@ public class DSChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 0;
         gbc.gridy = 3;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap.getString("DropshipChassisView.cbChassisType.text"), labelSize),gbc);
+        add(createLabel(resourceMap, "lblChassisType", "DropshipChassisView.cbChassisType.text",
+                "DropshipChassisView.cbChassisType.tooltip", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 3;
         gbc.gridwidth = 3;
@@ -141,7 +143,8 @@ public class DSChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 0;
         gbc.gridy = 4;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap.getString("DropshipChassisView.spnSI.text"), labelSize),gbc);
+        add(createLabel(resourceMap, "lblSI", "DropshipChassisView.spnSI.text",
+                "DropshipChassisView.spnSI.tooltip", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 4;
         gbc.gridwidth = 3;
@@ -180,13 +183,13 @@ public class DSChassisView extends BuildView implements ActionListener, ChangeLi
 
         spnSIModel.setValue(craft.get0SI());
     }
-    
+
     public void setAsCustomization() {
         spnTonnage.setEnabled(false);
         cbBaseType.setEnabled(false);
         cbChassisType.setEnabled(false);
     }
-    
+
     public void refresh() {
         refreshTonnage();
         refreshSI();
@@ -288,5 +291,4 @@ public class DSChassisView extends BuildView implements ActionListener, ChangeLi
             listeners.forEach(l -> l.chassisTypeChanged(cbChassisType.getSelectedIndex()));
         }
     }
-
 }

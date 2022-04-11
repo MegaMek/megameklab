@@ -1,15 +1,20 @@
 /*
  * Copyright (c) 2017-2022 - The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with MegaMekLab. If not, see <http://www.gnu.org/licenses/>.
  */
 package megameklab.ui.generalUnit;
 
@@ -72,7 +77,8 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap.getString("ArmorView.cbArmorType.text"), labelSize), gbc);
+        add(createLabel(resourceMap, "lblArmorType", "ArmorView.cbArmorType.text",
+                "ArmorView.cbArmorType.tooltip", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.gridwidth = 2;
@@ -84,7 +90,8 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap.getString("ArmorView.spnArmorPoints.text"), labelSize), gbc);
+        add(createLabel(resourceMap, "lblArmorPoints", "ArmorView.spnArmorPoints.text",
+                "ArmorView.spnArmorPoints.tooltip", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 1;
         setFieldSize(spnArmorPoints.getEditor(), editorSize);
