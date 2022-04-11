@@ -1,5 +1,5 @@
 /*
- * MegaMekLab - Copyright (C) 2017 - The MegaMek Team
+ * Copyright (c) 2017-2022 - The MegaMek Team. All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -13,40 +13,23 @@
  */
 package megameklab.ui.largeAero;
 
+import megamek.common.*;
+import megamek.common.weapons.Weapon;
+import megameklab.ui.EntitySource;
+import megameklab.ui.util.*;
+import megameklab.util.StringUtils;
+
+import javax.swing.*;
+import javax.swing.border.TitledBorder;
+import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
-
-import javax.swing.BorderFactory;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
-import javax.swing.border.TitledBorder;
-import javax.swing.table.TableColumn;
-
-import megamek.common.AmmoType;
-import megamek.common.Entity;
-import megamek.common.EquipmentType;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
-import megamek.common.WeaponType;
-import megamek.common.weapons.Weapon;
-import megameklab.ui.EntitySource;
-import megameklab.ui.util.AeroBayTransferHandler;
-import megameklab.ui.util.BayWeaponCriticalTree;
-import megameklab.ui.util.CriticalTableModel;
-import megameklab.ui.util.IView;
-import megameklab.ui.util.RefreshListener;
-import megameklab.util.StringUtils;
 
 /**
  * Shows unallocated equipment and presents menus options for adding equipment to bays.
@@ -60,7 +43,7 @@ public class LABuildView extends IView implements MouseListener {
     }
 
     private CriticalTableModel equipmentList;
-    private Vector<Mounted> masterEquipmentList = new Vector<Mounted>(10, 1);
+    private Vector<Mounted> masterEquipmentList = new Vector<>(10, 1);
     private JTable equipmentTable = new JTable();
     private JScrollPane equipmentScroll = new JScrollPane();
 
@@ -73,10 +56,10 @@ public class LABuildView extends IView implements MouseListener {
         equipmentTable.setDragEnabled(true);
         AeroBayTransferHandler cth = new AeroBayTransferHandler(eSource);
         equipmentTable.setTransferHandler(cth);
-        TableColumn column = null;
+        TableColumn column;
         for (int i = 0; i < equipmentList.getColumnCount(); i++) {
             column = equipmentTable.getColumnModel().getColumn(i);
-            if(i == 0) {
+            if (i == 0) {
                 column.setPreferredWidth(350);
             }
             column.setCellRenderer(equipmentList.getRenderer());
@@ -99,6 +82,7 @@ public class LABuildView extends IView implements MouseListener {
     }
 
     public void addRefreshedListener(RefreshListener l) {
+
     }
 
     private void loadEquipmentTable() {
@@ -120,10 +104,10 @@ public class LABuildView extends IView implements MouseListener {
             }
         }
 
-        Collections.sort(masterEquipmentList, StringUtils.mountedComparator());
+        masterEquipmentList.sort(StringUtils.mountedComparator());
 
         // weapons and ammo
-        Vector<Mounted> weaponsNAmmoList = new Vector<Mounted>(10, 1);
+        Vector<Mounted> weaponsNAmmoList = new Vector<>(10, 1);
         for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
             if ((masterEquipmentList.get(pos).getType() instanceof Weapon) || 
                     (masterEquipmentList.get(pos).getType() instanceof AmmoType)) {
@@ -132,7 +116,7 @@ public class LABuildView extends IView implements MouseListener {
                 pos--;
             }
         }
-        Collections.sort(weaponsNAmmoList, StringUtils.mountedComparator());
+        weaponsNAmmoList.sort(StringUtils.mountedComparator());
         for (Mounted mount : weaponsNAmmoList) {
             equipmentList.addCrit(mount);
         }
@@ -159,7 +143,7 @@ public class LABuildView extends IView implements MouseListener {
         fireTableRefresh();
     }
 
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(ActionEvent evt) {
         fireTableRefresh();
     }
 
@@ -177,50 +161,52 @@ public class LABuildView extends IView implements MouseListener {
     }
 
     @Override
-    public void mouseClicked(MouseEvent e) {
+    public void mouseClicked(MouseEvent evt) {
 
     }
 
     @Override
-    public void mouseEntered(MouseEvent e) {
+    public void mouseEntered(MouseEvent evt) {
 
     }
 
     @Override
-    public void mouseExited(MouseEvent e) {
+    public void mouseExited(MouseEvent evt) {
 
     }
 
     @Override
-    public void mousePressed(MouseEvent e) {
-        // On right-click, we want to generate menu items to add to specific 
-        //  locations, but only if those locations are make sense
-        if (e.getButton() == MouseEvent.BUTTON3) {
+    public void mousePressed(MouseEvent evt) {
+        // On right-click, we want to generate menu items to add to specific locations, but only if
+        // those locations are make sense
+        if (evt.getButton() == MouseEvent.BUTTON3) {
             JPopupMenu popup = new JPopupMenu();
-            JMenuItem item = null;
+            JMenuItem item;
 
             if (equipmentTable.getSelectedRowCount() > 1) {
                 List<Mounted> list = new ArrayList<>();
                 for (int row : equipmentTable.getSelectedRows()) {
                     list.add((Mounted) equipmentTable.getModel().getValueAt(row, CriticalTableModel.EQUIPMENT));
                 }
+
                 for (BayWeaponCriticalTree l : arcViews) {
-                    // Aerodyne small craft and dropships skip the aft side arcs
+                    // Aerodyne small craft and DropShips skip the aft side arcs
                     if (!l.validForUnit(getAero())) {
                         continue;
                     }
-                    if (list.stream().anyMatch(eq -> l.canAdd(eq))) {
+
+                    if (list.stream().anyMatch(l::canAdd)) {
                         item = new JMenuItem(l.getLocationName());
                         item.addActionListener(ev -> l.addToLocation(list));
                         popup.add(item);
                     }
                 }
             } else {
-                final int selectedRow = equipmentTable.rowAtPoint(e.getPoint());
-                Mounted eq = (Mounted)equipmentTable.getModel().getValueAt(
+                final int selectedRow = equipmentTable.rowAtPoint(evt.getPoint());
+                Mounted eq = (Mounted) equipmentTable.getModel().getValueAt(
                         selectedRow, CriticalTableModel.EQUIPMENT);
                 for (BayWeaponCriticalTree l : arcViews) {
-                    // Aerodyne small craft and dropships skip the aft side arcs
+                    // Aerodyne small craft and DropShips skip the aft side arcs
                     if (!l.validForUnit(getAero()) || !l.canAdd(eq)) {
                         continue;
                     }
@@ -229,7 +215,7 @@ public class LABuildView extends IView implements MouseListener {
                         JMenu menu = new JMenu(l.getLocationName());
                         for (Mounted bay : l.baysFor(eq)) {
                             if (eq.getType() instanceof AmmoType) {
-                                final int shotCount = ((AmmoType)eq.getType()).getShots();
+                                final int shotCount = ((AmmoType) eq.getType()).getShots();
                                 JMenu locMenu = new JMenu(bay.getName());
                                 for (int shots = shotCount; shots <= eq.getUsableShotsLeft(); shots += shotCount) {
                                     item = new JMenuItem("Add " + shots + ((shots > 1)?" shots" : " shot"));
@@ -244,16 +230,17 @@ public class LABuildView extends IView implements MouseListener {
                                 menu.add(item);
                             }
                         }
+
                         if (eq.getType() instanceof WeaponType) {
-                            final EquipmentType bayType = ((WeaponType)eq.getType()).getBayType();
+                            final EquipmentType bayType = ((WeaponType) eq.getType()).getBayType();
                             item = new JMenuItem("New " + bayType.getName());
                             item.addActionListener(ev -> l.addToNewBay(bayType,  eq));
                             menu.add(item);
                         }
+
                         if (menu.getItemCount() > 0) {
                             popup.add(menu);
-                        } else if ((eq.getType() instanceof MiscType)
-                                && l.canAdd(eq)) {
+                        } else if ((eq.getType() instanceof MiscType) && l.canAdd(eq)) {
                             item = new JMenuItem(l.getLocationName());
                             item.addActionListener(ev -> l.addToLocation(eq));
                             popup.add(item);
@@ -266,13 +253,12 @@ public class LABuildView extends IView implements MouseListener {
                 }
             }
 
-            popup.show(this, e.getX(), e.getY());
+            popup.show(this, evt.getX(), evt.getY());
         }
     }
 
     @Override
-    public void mouseReleased(MouseEvent e) {
+    public void mouseReleased(MouseEvent evt) {
 
     }
-
 }

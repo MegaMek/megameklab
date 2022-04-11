@@ -154,11 +154,11 @@ public class CriticalTableModel extends AbstractTableModel {
                 double tonnage;
                 if ((unit.hasETypeFlag(Entity.ETYPE_BATTLEARMOR)
                         || unit.hasETypeFlag(Entity.ETYPE_PROTOMECH))
-                        && (crit.getType() instanceof AmmoType)){
+                        && (crit.getType() instanceof AmmoType)) {
                     tonnage = ((AmmoType)crit.getType()).getKgPerShot() *
                             crit.getBaseShotsLeft() / 1000;
                 } else if (crit.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)
-                        && crit.getLinked() != null){
+                        && crit.getLinked() != null) {
                     tonnage = crit.getLinked().getTonnage() * 0.75;
                 } else if (unit.usesWeaponBays() && (crit.getType() instanceof AmmoType)) {
                     // Round up to the next half ton
@@ -197,9 +197,8 @@ public class CriticalTableModel extends AbstractTableModel {
                 }
                 return 0;
             case LOCATION:
-                if (unit instanceof BattleArmor){
-                    return BattleArmor.getBaMountLocAbbr(crit
-                            .getBaMountLoc());
+                if (unit instanceof BattleArmor) {
+                    return BattleArmor.getBaMountLocAbbr(crit.getBaMountLoc());
                 } else {
                     return unit.joinLocationAbbr(crit.allLocations(), 2);
                 }
@@ -268,9 +267,9 @@ public class CriticalTableModel extends AbstractTableModel {
             }
 
             Mounted mount = crits.get(row);
-            if ((unit instanceof BattleArmor) && column == NAME){
+            if ((unit instanceof BattleArmor) && column == NAME) {
                 String modifier = "";
-                if (mount.getType() instanceof AmmoType){
+                if (mount.getType() instanceof AmmoType) {
                     modifier += " (" + mount.getBaseShotsLeft() + ")";
                 }
                 if (mount.getLocation() != BattleArmor.LOC_SQUAD) {
@@ -278,20 +277,20 @@ public class CriticalTableModel extends AbstractTableModel {
                 } else {
                     modifier += " (Squad)";
                 }
-                if (mount.isDWPMounted()){
+                if (mount.isDWPMounted()) {
                     modifier += " (DWP)"; 
                 }
-                if (mount.isSquadSupportWeapon()){
+                if (mount.isSquadSupportWeapon()) {
                     modifier += " (Squad Support Weapon)"; 
                 }
                 if ((mount.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)
                         || mount.getType().hasFlag(MiscType.F_AP_MOUNT))
-                        && mount.getLinked() != null){
+                        && mount.getLinked() != null) {
                     modifier += " (attached " + mount.getLinked().getName() 
                             + ")";
                 }
                 if (mount.getType().hasFlag(WeaponType.F_INFANTRY) &&
-                        mount.getLinkedBy() == null){
+                        mount.getLinkedBy() == null) {
                     modifier += "*";
                 }
                 c.setText(c.getText() + modifier);

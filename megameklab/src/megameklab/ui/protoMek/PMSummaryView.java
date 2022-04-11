@@ -13,21 +13,6 @@
  */
 package megameklab.ui.protoMek;
 
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.io.File;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.util.Vector;
-
-import javax.swing.BorderFactory;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-
 import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.verifier.EntityVerifier;
@@ -36,8 +21,15 @@ import megameklab.ui.EntitySource;
 import megameklab.ui.util.IView;
 import megameklab.util.UnitUtil;
 
+import javax.swing.*;
+import java.awt.*;
+import java.io.File;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Vector;
+
 /**
- * Summary view that shows weight breakdown by category for Protomechs
+ * Summary view that shows weight breakdown by category for ProtoMeks
  * 
  * @author Neoancient
  */
@@ -58,7 +50,7 @@ public class PMSummaryView extends IView {
     public PMSummaryView(EntitySource eSource) {
         super(eSource);
 
-        Vector<JTextField> valueFields = new Vector<JTextField>();
+        Vector<JTextField> valueFields = new Vector<>();
 
         valueFields.add(txtStructKg);
         valueFields.add(txtEngineKg);
@@ -72,7 +64,7 @@ public class PMSummaryView extends IView {
         valueFields.add(txtMiscKg);
 
         Dimension size = new Dimension(60,25);
-        for(JTextField field : valueFields) {
+        for (JTextField field : valueFields) {
             field.setEditable(false);
             field.setSize(size);
             field.setPreferredSize(size);
@@ -140,11 +132,9 @@ public class PMSummaryView extends IView {
         this.add(txtMiscKg, gbc);
 
         setBorder(BorderFactory.createTitledBorder("Summary"));
-
     }
 
     private JLabel createLabel(String text, Dimension size, int align) {
-
         JLabel label = new JLabel(text, SwingConstants.TRAILING);
 
         setFieldSize(label, size);
@@ -181,17 +171,15 @@ public class PMSummaryView extends IView {
 
         for (Mounted m : getProtoMek().getMisc()) {
             MiscType mt = (MiscType) m.getType();
-            if(UnitUtil.isArmorOrStructure(mt)) {
+            if (UnitUtil.isArmorOrStructure(mt)) {
                 continue;
             } else if (mt.hasFlag(MiscType.F_MASC)) {
                 weightEnhance += m.getTonnage();
-            } else if (mt.hasFlag(MiscType.F_JUMP_JET)
-                    || mt.hasFlag(MiscType.F_UMU)) {
+            } else if (mt.hasFlag(MiscType.F_JUMP_JET) || mt.hasFlag(MiscType.F_UMU)) {
                 weightJJ += m.getTonnage();
             }
         }
         txtJumpKg.setText(format.format(weightJJ * 1000));
         txtEnhanceKg.setText(format.format(weightEnhance * 1000));
     }
-
 }

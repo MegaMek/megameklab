@@ -15,14 +15,13 @@ package megameklab.ui.dialog;
 
 import megamek.client.ui.swing.util.UIUtil;
 import megamek.common.Entity;
-import megameklab.MegaMekLab;
 import megameklab.ui.MegaMekLabMainUI;
-import megameklab.ui.largeAero.DSMainUI;
-import megameklab.ui.largeAero.WSMainUI;
 import megameklab.ui.battleArmor.BAMainUI;
 import megameklab.ui.combatVehicle.CVMainUI;
-import megameklab.ui.infantry.CIMainUI;
 import megameklab.ui.fighterAero.ASMainUI;
+import megameklab.ui.infantry.CIMainUI;
+import megameklab.ui.largeAero.DSMainUI;
+import megameklab.ui.largeAero.WSMainUI;
 import megameklab.ui.mek.BMMainUI;
 import megameklab.ui.protoMek.PMMainUI;
 import megameklab.ui.supportVehicle.SVMainUI;

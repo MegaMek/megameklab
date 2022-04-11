@@ -13,19 +13,18 @@
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  */
-
 package megameklab.util;
 
-import java.awt.Image;
+import megamek.common.Entity;
+import megamek.common.annotations.Nullable;
+
+import javax.swing.*;
+import java.awt.*;
 import java.io.File;
 
-import javax.swing.ImageIcon;
-
-import megamek.common.Entity;
-
 public class ImageHelper {
-    public static String fluffPath = "./data/images/fluff/";
-    public static String imagePath = "./data/images/";
+    public static String fluffPath = "./data/images/fluff/"; // TODO : Remove inline file path
+    public static String imagePath = "./data/images/"; // TODO : Remove inline file path
 
     public static String imageMech = "mech";
     public static String imageAero = "aero";
@@ -49,11 +48,11 @@ public class ImageHelper {
      * @param dir  The directory to check for a default image based on unit name
      * @return     A file to use for the fluff image, or null if no file is found.
      */
-    public static File getFluffFile(Entity unit, String dir) {
+    public static @Nullable File getFluffFile(Entity unit, String dir) {
         String path = new File(fluffPath).getAbsolutePath();
         File f;
         
-        if (unit.getFluff().getMMLImagePath().length() > 0) {
+        if (!unit.getFluff().getMMLImagePath().isBlank()) {
             f = new File(unit.getFluff().getMMLImagePath());
             if (f.exists()) {
                 return f;
@@ -85,35 +84,27 @@ public class ImageHelper {
         return null;
     }
 
-    public static Image getFluffImage(String image) {
-
-        if ((image == null) || (image.trim().length() < 1)) {
+    public static @Nullable Image getFluffImage(String image) {
+        if ((image == null) || image.isBlank()) {
             return null;
         }
 
-        Image fluff;
-
-        String path = new File(fluffPath).getAbsolutePath()
-                + File.separatorChar + image;
+        String path = new File(fluffPath).getAbsolutePath() + File.separatorChar + image;
 
         if (!(new File(path).exists())) {
-
             path = new File(image).getAbsolutePath();
             if (!(new File(path).exists())) {
                 return null;
             }
         }
-        fluff = new ImageIcon(path).getImage();
-        return fluff;
+        return new ImageIcon(path).getImage();
     }
 
     public static Image getFluffImage(Entity unit, String dir) {
-        Image fluff;
-
         String path = new File(fluffPath).getAbsolutePath()
                 + File.separatorChar + dir + File.separatorChar;
 
-        fluff = ImageHelper.getFluffImage(unit.getFluff().getMMLImagePath());
+        Image fluff = ImageHelper.getFluffImage(unit.getFluff().getMMLImagePath());
 
         if (fluff == null) {
             fluff = ImageHelper.getFluffPNG(unit, path);
@@ -130,14 +121,14 @@ public class ImageHelper {
         if (fluff == null) {
             fluff = new ImageIcon(path + "hud.png").getImage();
         }
+
         return fluff;
     }
 
     public static Image getFluffPNG(Entity unit, String path) {
         Image fluff = null;
 
-        String fluffFile = path + unit.getChassis() + " " + unit.getModel()
-                + ".png";
+        String fluffFile = path + unit.getChassis() + " " + unit.getModel() + ".png";
         if (new File(fluffFile.toLowerCase()).exists()) {
             fluff = new ImageIcon(fluffFile).getImage();
         }
@@ -162,8 +153,7 @@ public class ImageHelper {
     public static Image getFluffJPG(Entity unit, String path) {
         Image fluff = null;
 
-        String fluffFile = path + unit.getChassis() + " " + unit.getModel()
-                + ".jpg";
+        String fluffFile = path + unit.getChassis() + " " + unit.getModel() + ".jpg";
         if (new File(fluffFile.toLowerCase()).exists()) {
             fluff = new ImageIcon(fluffFile).getImage();
         }

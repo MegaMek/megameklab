@@ -15,30 +15,17 @@
  */
 package megameklab.ui.combatVehicle;
 
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.io.File;
-import java.util.Vector;
-
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-
-import megamek.common.Engine;
-import megamek.common.EquipmentType;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
-import megamek.common.TechConstants;
+import megamek.common.*;
 import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestTank;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.IView;
 import megameklab.util.UnitUtil;
+
+import javax.swing.*;
+import java.awt.*;
+import java.io.File;
+import java.util.Vector;
 
 public class CVSummaryView extends IView{
     private JTextField txtStructTon = new JTextField("?");
@@ -70,17 +57,13 @@ public class CVSummaryView extends IView{
     private JTextField txtSponsonAvail = new JTextField("?");
     private JTextField txtPowerAmpAvail = new JTextField("?");
     private JTextField txtEquipAvail = new JTextField("?");
-    
-    
-    
 
-    private EntityVerifier entityVerifier = EntityVerifier.getInstance(new File("data/mechfiles/UnitVerifierOptions.xml"));
+    private EntityVerifier entityVerifier = EntityVerifier.getInstance(new File("data/mechfiles/UnitVerifierOptions.xml")); // TODO : Remove inline file path
 
     public CVSummaryView(EntitySource eSource) {
         super(eSource);
 
-        Vector<JTextField> valueFields = new Vector<JTextField>();
-
+        Vector<JTextField> valueFields = new Vector<>();
         valueFields.add(txtStructTon);
         valueFields.add(txtEngineTon);
         valueFields.add(txtLiftTon);
@@ -92,15 +75,13 @@ public class CVSummaryView extends IView{
         valueFields.add(txtRearTurretTon);
         valueFields.add(txtSponsonTon);
         valueFields.add(txtPowerAmpTon);
-        valueFields.add(txtEquipTon);        
-
-
+        valueFields.add(txtEquipTon);
         valueFields.add(txtEngineCrit);
         valueFields.add(txtArmorCrit);
         valueFields.add(txtJumpCrit);
 
         Dimension size = new Dimension(45,25);
-        for(JTextField field : valueFields) {
+        for (JTextField field : valueFields) {
             field.setEditable(false);
             field.setSize(size);
             field.setPreferredSize(size);
@@ -125,7 +106,7 @@ public class CVSummaryView extends IView{
         valueFields.add(txtEquipAvail);
         
         size = new Dimension(80,25);
-        for(JTextField field : valueFields) {
+        for (JTextField field : valueFields) {
             field.setEditable(false);
             field.setSize(size);
             field.setPreferredSize(size);
@@ -265,13 +246,10 @@ public class CVSummaryView extends IView{
         this.add(txtEquipAvail, gbc);
 
         setBorder(BorderFactory.createTitledBorder("Summary"));
-
     }
 
     private JLabel createLabel(String text, Dimension size, int align) {
-
         JLabel label = new JLabel(text, SwingConstants.TRAILING);
-
         setFieldSize(label, size);
         label.setHorizontalAlignment(align);
         return label;
@@ -284,9 +262,7 @@ public class CVSummaryView extends IView{
     }
 
     public void refresh() {
-
         TestTank testTank = new TestTank(getTank(), entityVerifier.mechOption, null);
-
         txtStructTon.setText(Double.toString(testTank.getWeightStructure()));
         txtEngineTon.setText(Double.toString(testTank.getWeightEngine()));        
         txtLiftTon.setText(Double.toString(testTank.getTankWeightLifting()));
@@ -297,14 +273,10 @@ public class CVSummaryView extends IView{
         txtRearTurretTon.setText(Double.toString(testTank.getTankWeightDualTurret()));
         // Sponsons?
         txtPowerAmpTon.setText(Double.toString(testTank.getWeightPowerAmp()));
-
-
         txtEngineCrit.setText(Integer.toString(getEngineCrits()));
         txtArmorCrit.setText(Integer.toString(getArmorCrits()));
         txtJumpCrit.setText(Integer.toString(0));
-
         runThroughEquipment(testTank);
-
     }
 
     private void runThroughEquipment(TestTank testTank) {
@@ -314,24 +286,24 @@ public class CVSummaryView extends IView{
 
         for (Mounted m : getTank().getMisc()) {
             MiscType mt = (MiscType) m.getType();
-            if(UnitUtil.isArmorOrStructure(mt)) {
+            if (UnitUtil.isArmorOrStructure(mt)) {
                 continue;
-            }
-            else if (mt.hasFlag(MiscType.F_SPONSON_TURRET)) {
+            } else if (mt.hasFlag(MiscType.F_SPONSON_TURRET)) {
                 weightSponson = m.getTonnage();
             } else if (mt.hasFlag(MiscType.F_JUMP_JET)) {
                 weightJJ += m.getTonnage();
             } else if (mt.hasFlag(MiscType.F_HEAT_SINK)
                     || mt.hasFlag(MiscType.F_DOUBLE_HEAT_SINK)) {
                 continue;
-            }
-            else {
+            } else {
                 weightEquip += m.getTonnage();
             }
         }
+
         for (Mounted m : getTank().getWeaponList()) {
             weightEquip += m.getTonnage();
         }
+
         for (Mounted m : getTank().getAmmo()) {
             weightEquip += m.getTonnage();
         }
@@ -353,6 +325,7 @@ public class CVSummaryView extends IView{
             if (engine.getEngineType() == Engine.LIGHT_ENGINE) {
                 usedSlots++;
             }
+
             if (engine.getEngineType() == Engine.XL_ENGINE) {
                 if (engine.hasFlag(Engine.CLAN_ENGINE)) {
                     usedSlots++;
@@ -360,6 +333,7 @@ public class CVSummaryView extends IView{
                     usedSlots += 2;
                 }
             }
+
             if (engine.getEngineType() == Engine.XXL_ENGINE) {
                 if (engine.hasFlag(Engine.CLAN_ENGINE)) {
                     usedSlots += 2;
@@ -368,12 +342,15 @@ public class CVSummaryView extends IView{
                 }
             }
         }
+
         if (engine.hasFlag(Engine.LARGE_ENGINE)) {
             usedSlots++;
         }
+
         if (engine.getEngineType() == Engine.COMPACT_ENGINE) {
             usedSlots--;
         }
+
         return usedSlots;
     }
     
@@ -408,9 +385,8 @@ public class CVSummaryView extends IView{
                 default:
                     break;
             }
-
         }
+
         return usedSlots;
     }
-
 }

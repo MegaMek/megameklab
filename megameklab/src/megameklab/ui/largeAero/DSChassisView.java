@@ -38,7 +38,7 @@ import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- * Structure tab chassis panel for small craft and dropships.
+ * Structure tab chassis panel for small craft and DropShips.
  * 
  * @author Neoancient
  */
@@ -66,7 +66,7 @@ public class DSChassisView extends BuildView implements ActionListener, ChangeLi
     final private JComboBox<String> cbBaseType = new JComboBox<>();
     final private JComboBox<String> cbChassisType = new JComboBox<>();
     final private JSpinner spnSI = new JSpinner(spnSIModel);
-    
+
     private ITechManager techManager;
     private boolean dropship;
     private boolean primitive;
@@ -152,9 +152,8 @@ public class DSChassisView extends BuildView implements ActionListener, ChangeLi
         spnSI.setToolTipText(resourceMap.getString("DropshipChassisView.spnSI.tooltip"));
         add(spnSI, gbc);
         spnSI.addChangeListener(this);
-        
     }
-    
+
     public void setFromEntity(SmallCraft craft) {
         dropship = craft.hasETypeFlag(Entity.ETYPE_DROPSHIP);
         primitive = craft.isPrimitive();
@@ -241,7 +240,7 @@ public class DSChassisView extends BuildView implements ActionListener, ChangeLi
             chkKFBoom.setVisible(false);
         }
     }
-    
+
     public boolean isDropship() {
         return cbBaseType.getSelectedIndex() == TYPE_SMALL_CRAFT;
     }

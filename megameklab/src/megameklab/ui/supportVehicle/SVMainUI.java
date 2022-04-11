@@ -155,7 +155,7 @@ public class SVMainUI extends MegaMekLabMainUI {
             ((SupportVTOL) getEntity()).setHasNoTurret(true);
         } else if (entityType == Entity.ETYPE_FIXED_WING_SUPPORT) {
             setEntity(new FixedWingSupport());
-        } else if (entityType == Entity.ETYPE_LARGE_SUPPORT_TANK){
+        } else if (entityType == Entity.ETYPE_LARGE_SUPPORT_TANK) {
             setEntity(new LargeSupportTank());
             getEntity().setWeight(51);
             getEntity().setMovementMode(EntityMovementMode.WHEELED);

@@ -47,13 +47,14 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
     public void addListener(ArmorAllocationListener l) {
         listeners.add(l);
     }
+
     public void removeListener(ArmorAllocationListener l) {
         listeners.remove(l);
     }
-    
+
     private final static String CMD_MAXIMIZE  = "MAXIMIZE";
     private final static String CMD_REMAINING = "REMAINING";
-    
+
     private final TechComboBox<EquipmentType> cbArmorType = new TechComboBox<>(EquipmentType::getName);
     private final SpinnerNumberModel spnArmorPointsModel = new SpinnerNumberModel(0, 0, null, 1);
     private final JSpinner spnArmorPoints = new JSpinner(spnArmorPointsModel);
@@ -62,12 +63,12 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
     
     private final ITechManager techManager;
     private long etype;
-    
+
     public BAProtoArmorView(ITechManager techManager) {
         this.techManager = techManager;
         initUI();
     }
-    
+
     private void initUI() {
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl());
 
@@ -85,7 +86,7 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
         cbArmorType.setToolTipText(resourceMap.getString("ArmorView.cbArmorType.tooltip"));
         add(cbArmorType, gbc);
         cbArmorType.addActionListener(this);
-        
+
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridwidth = 1;
@@ -107,7 +108,7 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
         btnMaximize.setToolTipText(resourceMap.getString("ArmorView.btnMaximize.tooltip"));
         add(btnMaximize, gbc);
         btnMaximize.addActionListener(this);
-        
+
         gbc.gridx = 0;
         gbc.gridy = 3;
         gbc.gridwidth = 3;
@@ -118,7 +119,7 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
         add(btnUseRemaining, gbc);
         btnUseRemaining.addActionListener(this);
     }
-    
+
     public void setFromEntity(Entity en) {
         etype = en.getEntityType();
         refresh();
@@ -189,21 +190,20 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
     }
     
     @Override
-    public void stateChanged(ChangeEvent e) {
-        if (e.getSource() == spnArmorPoints) {
+    public void stateChanged(ChangeEvent evt) {
+        if (evt.getSource() == spnArmorPoints) {
             listeners.forEach(l -> l.armorFactorChanged(spnArmorPointsModel.getNumber().intValue()));
         }
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == cbArmorType) {
+    public void actionPerformed(ActionEvent evt) {
+        if (evt.getSource() == cbArmorType) {
             listeners.forEach(l -> l.armorTypeChanged((EquipmentType)cbArmorType.getSelectedItem()));
-        } else if (CMD_MAXIMIZE.equals(e.getActionCommand())) {
-            listeners.forEach(l -> l.maximizeArmor());
-        } else if (CMD_REMAINING.equals(e.getActionCommand())) {
-            listeners.forEach(l -> l.useRemainingTonnageArmor());
+        } else if (CMD_MAXIMIZE.equals(evt.getActionCommand())) {
+            listeners.forEach(ArmorAllocationListener::maximizeArmor);
+        } else if (CMD_REMAINING.equals(evt.getActionCommand())) {
+            listeners.forEach(ArmorAllocationListener::useRemainingTonnageArmor);
         }
     }
-
 }

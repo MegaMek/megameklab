@@ -21,6 +21,7 @@ VERSION HISTORY:
 + Issue #927: Add LAM FuelTank
 + PR #1074: Adding Cache Refresh to MML
 + PR #1079: Fixing BuildView createLabel Missing Tooltips
++ PR #1085: For Meks, display with the header of each crit location if that location is protected by CASE
 + Updating to JAXB 3.0.1 from 2.3.2
 + Updating to Log4j2 2.17.2 from 2.17.1
 + Updating to Apache PDFBox 2.0.25 from 2.0.24
@@ -1803,4 +1804,3 @@ V 0.1.1 (06/09/2008)
 + Added new utility file UnitUtil.java
 + Added code to add TSM crits.
 + fixed bugs in adding and removing TSM crits.
-
