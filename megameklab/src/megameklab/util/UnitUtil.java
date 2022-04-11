@@ -51,6 +51,7 @@ import megamek.common.weapons.srms.StreakSRMWeapon;
 import megamek.common.weapons.tag.CLLightTAG;
 import megamek.common.weapons.tag.CLTAG;
 import megamek.common.weapons.tag.ISTAG;
+import megameklab.ui.mek.BMUtils;
 import org.apache.logging.log4j.LogManager;
 
 import javax.swing.*;
@@ -401,8 +402,8 @@ public class UnitUtil {
             throws LocationFullException {
         unit.addEquipment(mounted, loc, rearMounted);
         mounted.setOmniPodMounted(canPodMount(unit, mounted));
-        if (mounted.getType().isExplosive(mounted, true) && (unit instanceof Mech) && unit.isClan()) {
-            ((Mech) unit).addClanCase();
+        if (unit instanceof Mech) {
+            BMUtils.updateClanCasePlacement((Mech) unit);
         }
     }
 
@@ -1207,9 +1208,8 @@ public class UnitUtil {
                 // Exception thrown for not having equipment to link to yet, which is acceptable here
             }
         }
-
-        if (eq.getType().isExplosive(eq, true) && (unit instanceof Mech) && unit.isClan()) {
-            ((Mech) unit).addClanCase();
+        if (unit instanceof Mech) {
+            BMUtils.updateClanCasePlacement((Mech) unit);
         }
     }
 

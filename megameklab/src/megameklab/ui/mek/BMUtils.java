@@ -472,4 +472,19 @@ public final class BMUtils {
         return true;
     }
 
+    /**
+     * For the given Mek, adds Clan CASE in every location that has potentially
+     * explosive equipment (this includes PPC Capacitors) and removes it from all
+     * other locations.
+     * Calls {@link Mech#addClanCase()}. This method does not check if other
+     * CASE types are already present on a location.
+     *
+     * @param mek the mek to update
+     */
+    public static void updateClanCasePlacement(Mech mek) {
+        if (mek.isClan()) {
+            removeAllMounteds(mek, EquipmentType.get(EquipmentTypeLookup.CLAN_CASE));
+            mek.addClanCase();
+        }
+    }
 }
