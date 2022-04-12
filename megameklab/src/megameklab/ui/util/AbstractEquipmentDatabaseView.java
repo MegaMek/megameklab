@@ -424,8 +424,8 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
      * to add equipment to the unit. Forwards to the overridable addEquipment() method.
      */
     private void addSelectedEquipment(int count) {
-        if (count >= 1) {
-            throw new AssertionError();
+        if (count < 1) {
+            throw new AssertionError("Trying to add equipment with a count of less than 1!");
         }
 
         if (allowAdd() && (masterEquipmentTable.getSelectedRowCount() >= 1)) {
