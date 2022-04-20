@@ -1,5 +1,5 @@
 /*
- * MegaMekLab - Copyright (C) 2017 - The MegaMek Team
+ * Copyright (c) 2017-2022 - The MegaMek Team. All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -13,9 +13,9 @@
  */
 package megameklab.ui.util;
 
-import java.util.function.Function;
-
 import megamek.common.ITechnology;
+
+import java.util.function.Function;
 
 /**
  * ComboBox for equipment that implement ITechnology.
@@ -26,14 +26,9 @@ import megamek.common.ITechnology;
 public class TechComboBox<T extends ITechnology> extends CustomComboBox<T> {
     private boolean showTechBase = false;
 
-    public TechComboBox(Function<T,String> toString) {
+    public TechComboBox(Function<T, String> toString) {
         super();
-        setRenderer(new Renderer<T>(t -> getTechName(toString.apply(t), t.getTechBase())));
-    }
-    
-    public TechComboBox(T[] values, Function<T,String> toString) {
-        super(values);
-        setRenderer(new Renderer<T>(t -> getTechName(toString.apply(t), t.getTechBase())));
+        setRenderer(new Renderer<>(t -> getTechName(toString.apply(t), t.getTechBase())));
     }
     
     public void showTechBase(boolean show) {
@@ -52,5 +47,4 @@ public class TechComboBox<T extends ITechnology> extends CustomComboBox<T> {
         sb.append(name);
         return sb.toString();
     }
-
 }

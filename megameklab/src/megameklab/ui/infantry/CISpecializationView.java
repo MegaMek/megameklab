@@ -100,7 +100,7 @@ public class CISpecializationView extends IView implements TableModelListener {
     }
     
     private void filterSpecializations() {
-        RowFilter<SpecializationModel, Integer> filter = new RowFilter<SpecializationModel, Integer>() {
+        RowFilter<SpecializationModel, Integer> filter = new RowFilter<>() {
             @Override
             public boolean include(Entry<? extends SpecializationModel, ? extends Integer> entry) {
                 SpecializationModel specModel = entry.getModel();
@@ -285,6 +285,5 @@ public class CISpecializationView extends IView implements TableModelListener {
                 return this;
             }
         }
-
     }
 }

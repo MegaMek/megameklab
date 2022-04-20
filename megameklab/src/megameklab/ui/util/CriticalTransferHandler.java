@@ -192,7 +192,7 @@ public class CriticalTransferHandler extends TransferHandler {
         }
     }
     
-    public void addRefreshListener(RefreshListener r){
+    public void addRefreshListener(RefreshListener r) {
         refresh = r;
     }
 

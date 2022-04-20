@@ -27,7 +27,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Vector;
 
@@ -78,7 +77,6 @@ public class BAEquipmentView extends IView implements ActionListener {
         }
 
         equipmentTable.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-        // equipmentScroll.setToolTipText("");
         equipmentScroll.setPreferredSize(new Dimension((getWidth() * 90) / 100, (getHeight() * 8) / 10));
         equipmentTable.setDoubleBuffered(true);
         equipmentScroll.setViewportView(equipmentTable);
@@ -104,7 +102,7 @@ public class BAEquipmentView extends IView implements ActionListener {
             }
         }
 
-        Collections.sort(masterEquipmentList, StringUtils.equipmentTypeComparator());
+        masterEquipmentList.sort(StringUtils.equipmentTypeComparator());
         this.add(mainPanel);
         loadEquipmentTable();
 
@@ -121,20 +119,18 @@ public class BAEquipmentView extends IView implements ActionListener {
         equipmentCombo.setRenderer(new EquipmentListCellRenderer(getBattleArmor()));
         equipmentCombo.setKeySelectionManager(new EquipmentListCellKeySelectionManager());
         equipmentCombo.removeAllItems();
-        equipmentTypes = new Vector<EquipmentType>();
+        equipmentTypes = new Vector<>();
 
         for (EquipmentType eq : masterEquipmentList) {
             if (UnitUtil.isLegal(getBattleArmor(), eq)) {
                 equipmentTypes.add(eq);
                 equipmentCombo.addItem(eq);
             }
-
         }
     }
 
     private void loadEquipmentTable() {
         for (Mounted mount : getBattleArmor().getMisc()) {
-
             if (UnitUtil.isArmorOrStructure(mount.getType())) {
                 continue;
             }
@@ -170,21 +166,21 @@ public class BAEquipmentView extends IView implements ActionListener {
         removeAllButton.setMnemonic('L');
     }
 
-    public void actionPerformed(ActionEvent e) {
-
-        if (e.getActionCommand().equals(ADD_COMMAND)) {
+    @Override
+    public void actionPerformed(ActionEvent evt) {
+        if (evt.getActionCommand().equals(ADD_COMMAND)) {
             boolean success = false;
             Mounted mount = null;
             try {
                 mount = getBattleArmor().addEquipment(equipmentTypes.elementAt(equipmentCombo.getSelectedIndex()), Entity.LOC_NONE, false);
                 success = mount != null;
-            } catch (LocationFullException lfe) {
+            } catch (LocationFullException ignored) {
                 // this can't happen, we add to Entity.LOC_NONE
             }
             if (success) {
                 equipmentList.addCrit(mount);
             }
-        } else if (e.getActionCommand().equals(REMOVE_COMMAND)) {
+        } else if (evt.getActionCommand().equals(REMOVE_COMMAND)) {
             int startRow = equipmentTable.getSelectedRow();
             int count = equipmentTable.getSelectedRowCount();
 
@@ -194,7 +190,7 @@ public class BAEquipmentView extends IView implements ActionListener {
                     equipmentList.removeCrit(startRow);
                 }
             }
-        } else if (e.getActionCommand().equals(REMOVEALL_COMMAND)) {
+        } else if (evt.getActionCommand().equals(REMOVEALL_COMMAND)) {
             removeAllEquipment();
         } else {
             return;
@@ -224,5 +220,4 @@ public class BAEquipmentView extends IView implements ActionListener {
     public CriticalTableModel getEquipmentList() {
         return equipmentList;
     }
-
 }

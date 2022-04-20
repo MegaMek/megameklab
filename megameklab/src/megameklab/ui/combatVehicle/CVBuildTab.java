@@ -87,10 +87,11 @@ public class CVBuildTab extends ITab implements ActionListener {
         return label;
     }
 
-    public void actionPerformed(ActionEvent e) {
-        if (e.getActionCommand().equals(AUTOFILLCOMMAND)) {
+    @Override
+    public void actionPerformed(ActionEvent evt) {
+        if (evt.getActionCommand().equals(AUTOFILLCOMMAND)) {
             autoFillCrits();
-        } else if (e.getActionCommand().equals(RESETCOMMAND)) {
+        } else if (evt.getActionCommand().equals(RESETCOMMAND)) {
             resetCrits();
         }
     }

@@ -1,43 +1,40 @@
 /*
- * MegaMekLab
  * Copyright (c) 2017-2022 - The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with MegaMekLab. If not, see <http://www.gnu.org/licenses/>.
  */
 package megameklab.ui.battleArmor;
-
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.List;
-import java.util.ResourceBundle;
-import java.util.concurrent.CopyOnWriteArrayList;
-
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JPanel;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import megamek.common.BattleArmor;
 import megamek.common.EntityWeightClass;
 import megamek.common.ITechManager;
 import megamek.common.util.EncodeControl;
-import megameklab.ui.util.CustomComboBox;
 import megameklab.ui.generalUnit.BuildView;
 import megameklab.ui.listeners.BABuildListener;
+import megameklab.ui.util.CustomComboBox;
+
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.List;
+import java.util.ResourceBundle;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Structure tab chassis view for BattleArmor
@@ -80,12 +77,13 @@ public class BAChassisView extends BuildView implements ActionListener, ChangeLi
         setLayout(new GridBagLayout());
         
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.WEST;
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        add(createLabel(resourceMap.getString("BAChassisView.cbChassisType.text"), labelSize), gbc);
+        add(createLabel(resourceMap, "lblChassisType", "BAChassisView.cbChassisType.text",
+                "BAChassisView.cbChassisType.tooltip", labelSize), gbc);
         gbc.gridx = 1;
         setFieldSize(cbChassisType, controlSize);
         cbChassisType.setToolTipText(resourceMap.getString("BAChassisView.cbChassisType.tooltip"));
@@ -94,7 +92,8 @@ public class BAChassisView extends BuildView implements ActionListener, ChangeLi
 
         gbc.gridx = 0;
         gbc.gridy++;
-        add(createLabel(resourceMap.getString("BAChassisView.cbWeightClass.text"), labelSize), gbc);
+        add(createLabel(resourceMap, "lblWeightClass", "BAChassisView.cbWeightClass.text",
+                "BAChassisView.cbWeightClass.tooltip", labelSize), gbc);
         gbc.gridx = 1;
         setFieldSize(cbWeightClass, controlSize);
         cbWeightClass.setToolTipText(resourceMap.getString("BAChassisView.cbWeightClass.tooltip"));
@@ -103,7 +102,8 @@ public class BAChassisView extends BuildView implements ActionListener, ChangeLi
 
         gbc.gridx = 0;
         gbc.gridy++;
-        add(createLabel(resourceMap.getString("BAChassisView.spnSquadSize.text"), labelSize), gbc);
+        add(createLabel(resourceMap, "lblSquadSize", "BAChassisView.spnSquadSize.text",
+                "BAChassisView.spnSquadSize.tooltip", labelSize), gbc);
         gbc.gridx = 1;
         setFieldSize(spnSquadSize, controlSize);
         spnSquadSize.setToolTipText(resourceMap.getString("BAChassisView.spnSquadSize.tooltip"));
@@ -112,7 +112,8 @@ public class BAChassisView extends BuildView implements ActionListener, ChangeLi
 
         gbc.gridx = 0;
         gbc.gridy++;
-        add(createLabel(resourceMap.getString("BAChassisView.cbTurretType.text"), labelSize), gbc);
+        add(createLabel(resourceMap, "lblTurretType", "BAChassisView.cbTurretType.text",
+                "BAChassisView.cbTurretType.tooltip", labelSize), gbc);
         gbc.gridx = 1;
         setFieldSize(cbTurretType, controlSize);
         cbTurretType.setToolTipText(resourceMap.getString("BAChassisView.cbTurretType.tooltip"));
@@ -121,7 +122,8 @@ public class BAChassisView extends BuildView implements ActionListener, ChangeLi
 
         gbc.gridx = 0;
         gbc.gridy++;
-        add(createLabel(resourceMap.getString("BAChassisView.spnTurretSize.text"), labelSize), gbc);
+        add(createLabel(resourceMap, "lblTurretSize", "BAChassisView.spnTurretSize.text",
+                "BAChassisView.spnTurretSize.tooltip", labelSize), gbc);
         gbc.gridx = 1;
         setFieldSize(spnTurretSize, controlSize);
         spnTurretSize.setToolTipText(resourceMap.getString("BAChassisView.spnTurretSize.tooltip"));
@@ -142,7 +144,6 @@ public class BAChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridy++;
         gbc.gridwidth = 2;
         add(chassisOptions, gbc);
-                
     }
     
     public void setFromEntity(BattleArmor ba) {

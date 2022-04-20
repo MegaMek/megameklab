@@ -1,6 +1,5 @@
 /*
- * MegaMekLab - unit design companion of MegaMek
- * Copyright (C) 2020 The MegaMek Team
+ * Copyright (c) 2020-2022 - The MegaMek Team. All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,7 +15,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-
 package megameklab.printing;
 
 import megamek.common.*;
@@ -30,7 +28,6 @@ import java.util.*;
  * Formats text for an entry for a weapon bay in the weapons and equipment inventory section of the record sheet.
  */
 public class WeaponBayInventoryEntry implements InventoryEntry {
-
     private final Aero ship;
     private final WeaponBayText bay;
     private final boolean isCapital;
@@ -121,7 +118,7 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
         for (WeaponType wtype : bay.weapons.keySet()) {
             StringJoiner locString = new StringJoiner("/");
             for (int i = 0; i < bay.loc.size(); i++) {
-                // Show official names of dropship side arcs. Rear-mounted wing bays
+                // Show official names of DropShip side arcs. Rear-mounted wing bays
                 // are indicated by (R) appended to the name field.
                 if (ship instanceof Dropship
                         && (bay.loc.get(i) == Dropship.LOC_LWING
@@ -183,6 +180,7 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
         }
     }
 
+    @Override
     public int nRows() {
         return bay.weapons.size();
     }

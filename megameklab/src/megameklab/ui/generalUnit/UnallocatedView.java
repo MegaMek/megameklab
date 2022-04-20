@@ -26,12 +26,12 @@ import megameklab.ui.util.CriticalTableModel;
 import megameklab.ui.util.CriticalTransferHandler;
 import megameklab.ui.util.IView;
 import megameklab.ui.util.RefreshListener;
-import megameklab.util.*;
+import megameklab.util.StringUtils;
+import megameklab.util.UnitUtil;
 import org.apache.logging.log4j.LogManager;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
-
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -69,8 +69,6 @@ public class UnallocatedView extends IView implements ActionListener, MouseListe
         }
 
         equipmentTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        // equipmentScroll.setToolTipText("");
-        //equipmentScroll.setPreferredSize(new Dimension(getWidth(), getHeight()));
         equipmentTable.setDoubleBuffered(true);
         JScrollPane equipmentScroll = new JScrollPane();
         equipmentScroll.setViewportView(equipmentTable);
@@ -80,8 +78,6 @@ public class UnallocatedView extends IView implements ActionListener, MouseListe
         equipmentTable.addMouseListener(this);
 
         this.add(mainPanel);
-        // loadEquipmentTable();
-
     }
 
     public void addRefreshedListener(RefreshListener l) {
@@ -173,7 +169,6 @@ public class UnallocatedView extends IView implements ActionListener, MouseListe
         for (Mounted mounted : masterEquipmentList) {
             equipmentList.addCrit(mounted);
         }
-
     }
 
     public void refresh() {
@@ -184,20 +179,21 @@ public class UnallocatedView extends IView implements ActionListener, MouseListe
     }
 
     private void removeAllListeners() {
+
     }
 
     private void addAllListeners() {
+
     }
 
-    public void actionPerformed(ActionEvent e) {
+    @Override
+    public void actionPerformed(ActionEvent evt) {
         fireTableRefresh();
     }
 
     private void fireTableRefresh() {
         equipmentList.updateUnit(getEntity());
         equipmentList.refreshModel();
-        //equipmentScroll.setPreferredSize(new Dimension(getWidth() * 90 / 100, getHeight() * 90 / 100));
-        //equipmentScroll.repaint();
     }
 
     public CriticalTableModel getTableModel() {
@@ -208,50 +204,52 @@ public class UnallocatedView extends IView implements ActionListener, MouseListe
         return equipmentTable;
     }
 
-    public void mouseClicked(MouseEvent e) {
+    @Override
+    public void mouseClicked(MouseEvent evt) {
 
     }
 
-    public void mouseEntered(MouseEvent e) {
+    @Override
+    public void mouseEntered(MouseEvent evt) {
 
     }
 
-    public void mouseExited(MouseEvent e) {
+    @Override
+    public void mouseExited(MouseEvent evt) {
 
     }
 
-    public void mousePressed(MouseEvent e) {
-        if (e.getButton() == MouseEvent.BUTTON3) {
+    @Override
+    public void mousePressed(MouseEvent evt) {
+        if (evt.getButton() == MouseEvent.BUTTON3) {
             JPopupMenu popup = new JPopupMenu();
             JMenuItem item;
 
-            final int selectedRow = equipmentTable.rowAtPoint(e.getPoint());
+            final int selectedRow = equipmentTable.rowAtPoint(evt.getPoint());
             Mounted mount = (Mounted)equipmentTable.getModel().getValueAt(selectedRow, CriticalTableModel.EQUIPMENT);
-            String[] locations;
 
-            locations = getEntity().getLocationNames();
+            String[] locations = getEntity().getLocationNames();
 
             for (int location = 0; location < getEntity().locations(); location++) {
-
                 if (UnitUtil.isValidLocation(getEntity(), mount.getType(), location)) {
                     item = new JMenuItem("Add to " + locations[location]);
                     final int loc = location;
-                    item.addActionListener(e1 -> jMenuLoadComponent_actionPerformed(loc, selectedRow));
+                    item.addActionListener(evt2 -> jMenuLoadComponent_actionPerformed(loc, selectedRow));
                     popup.add(item);
                 }
-
             }
 
-            popup.show(this, e.getX(), e.getY());
+            popup.show(this, evt.getX(), evt.getY());
         }
     }
 
-    public void mouseReleased(MouseEvent e) {
+    @Override
+    public void mouseReleased(MouseEvent evt) {
 
     }
 
     private void jMenuLoadComponent_actionPerformed(int location, int selectedRow) {
-        Mounted eq = (Mounted)equipmentTable.getModel().getValueAt(selectedRow, CriticalTableModel.EQUIPMENT);
+        Mounted eq = (Mounted) equipmentTable.getModel().getValueAt(selectedRow, CriticalTableModel.EQUIPMENT);
         UnitUtil.changeMountStatus(getEntity(), eq, location, -1, false);
 
         try {

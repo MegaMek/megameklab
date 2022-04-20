@@ -386,13 +386,18 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
         }
         if (useTextFilter()) {
             txtFilter.getDocument().addDocumentListener(new DocumentListener() {
-                public void changedUpdate(DocumentEvent e) {
+                @Override
+                public void changedUpdate(DocumentEvent evt) {
                     equipmentSorter.sort();
                 }
-                public void insertUpdate(DocumentEvent e) {
+
+                @Override
+                public void insertUpdate(DocumentEvent evt) {
                     equipmentSorter.sort();
                 }
-                public void removeUpdate(DocumentEvent e) {
+
+                @Override
+                public void removeUpdate(DocumentEvent evt) {
                     equipmentSorter.sort();
                 }
             });
@@ -419,8 +424,11 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
      * to add equipment to the unit. Forwards to the overridable addEquipment() method.
      */
     private void addSelectedEquipment(int count) {
-        assert count >= 1;
-        if (allowAdd() && masterEquipmentTable.getSelectedRowCount() >= 1) {
+        if (count < 1) {
+            throw new AssertionError("Trying to add equipment with a count of less than 1!");
+        }
+
+        if (allowAdd() && (masterEquipmentTable.getSelectedRowCount() >= 1)) {
             int selected = masterEquipmentTable.convertRowIndexToModel(masterEquipmentTable.getSelectedRow());
             EquipmentType equip = masterEquipmentModel.getType(selected);
             if (canLegallyBeAddedToUnit(equip)) {
@@ -546,13 +554,14 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
             // Only ammo for equipped weapons is listed, therefore no need to filter by unit type
             return true;
         }
+
         if (getEntity() instanceof Mech) {
-            // FIXME: This is handled strangely in UnitUtil: MekEquipment does not include weapons
+            // FIXME : This is handled strangely in UnitUtil: MekEquipment does not include weapons
             return UnitUtil.isMechEquipment(equipment, (Mech) getEntity())
                     || UnitUtil.isMechWeapon(equipment, getEntity())
                     || UnitUtil.isPhysicalWeapon(equipment);
         } else if (getEntity() instanceof BattleArmor) {
-            // FIXME: This is handled strangely in UnitUtil: BAAPWeapons are not BAEquipment
+            // FIXME : This is handled strangely in UnitUtil: BAAPWeapons are not BAEquipment
             return UnitUtil.isBAEquipment(equipment, getBattleArmor())
                     || UnitUtil.isBattleArmorAPWeapon(equipment);
         } else {
@@ -629,6 +638,4 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
             }
         }
     }
-
 }
-

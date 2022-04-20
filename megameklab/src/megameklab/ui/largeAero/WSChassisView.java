@@ -1,45 +1,39 @@
 /*
- * MegaMekLab - Copyright (C) 2018 - The MegaMek Team
+ * Copyright (c) 2018-2022 - The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with MegaMekLab. If not, see <http://www.gnu.org/licenses/>.
  */
 package megameklab.ui.largeAero;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.List;
-import java.util.ResourceBundle;
-import java.util.concurrent.CopyOnWriteArrayList;
-
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-
-import megamek.common.Aero;
-import megamek.common.Entity;
-import megamek.common.ITechManager;
-import megamek.common.Jumpship;
-import megamek.common.SpaceStation;
+import megamek.common.*;
 import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestAdvancedAerospace;
 import megamek.common.verifier.TestAero;
 import megameklab.ui.generalUnit.BuildView;
 import megameklab.ui.listeners.AdvancedAeroBuildListener;
+
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.List;
+import java.util.ResourceBundle;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Structure tab chassis panel for jumpships, warships, and space stations.
@@ -54,12 +48,12 @@ public class WSChassisView extends BuildView implements ActionListener, ChangeLi
     public void removeListener(AdvancedAeroBuildListener l) {
         listeners.remove(l);
     }
-    
+
     public final static int TYPE_JUMPSHIP      = 0;
     public final static int TYPE_WARSHIP       = 1;
     public final static int TYPE_STATION       = 2;
     public final static int TYPE_SUBCOMPACT    = 3;
-    
+
     private final SpinnerNumberModel spnTonnageModel = new SpinnerNumberModel(2000, 2000, null, 500);
     private final SpinnerNumberModel spnSIModel = new SpinnerNumberModel(1, 1, null, 1);
     
@@ -72,7 +66,7 @@ public class WSChassisView extends BuildView implements ActionListener, ChangeLi
     final private JCheckBox chkSail = new JCheckBox();
     final private JCheckBox chkMilitary = new JCheckBox();
     final private JSpinner spnSI = new JSpinner(spnSIModel);
-    
+
     private ITechManager techManager;
     private int baseType;
     private int maxTonnage;
@@ -82,7 +76,7 @@ public class WSChassisView extends BuildView implements ActionListener, ChangeLi
     
     public WSChassisView(ITechManager techManager) {
         this.techManager = techManager;
-        lblRange = createLabel("", labelSize);
+        lblRange = createLabel("lblRange", "", labelSize);
         initUI();
     }
     
@@ -97,7 +91,8 @@ public class WSChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 2;
-        add(createLabel(resourceMap.getString("AdvAeroChassisView.spnTonnage.text"), labelSize), gbc);
+        add(createLabel(resourceMap, "lblTonnage", "AdvAeroChassisView.spnTonnage.text",
+                "AdvAeroChassisView.spnTonnage.tooltip", labelSize), gbc);
         gbc.gridx = 2;
         gbc.gridy = 0;
         gbc.gridwidth = 2;
@@ -118,7 +113,8 @@ public class WSChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridwidth = 2;
-        add(createLabel(resourceMap.getString("AdvAeroChassisView.cbBaseType.text"), labelSize),gbc);
+        add(createLabel(resourceMap, "lblBaseType", "AdvAeroChassisView.cbBaseType.text",
+                "AdvAeroChassisView.cbBaseType.tooltip", labelSize), gbc);
         gbc.gridx = 2;
         gbc.gridy = 1;
         gbc.gridwidth = 2;
@@ -162,7 +158,8 @@ public class WSChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 0;
         gbc.gridy = 4;
         gbc.gridwidth = 2;
-        add(createLabel(resourceMap.getString("AdvAeroChassisView.spnSI.text"), labelSize),gbc);
+        add(createLabel(resourceMap, "lblSI", "AdvAeroChassisView.spnSI.text",
+                "AdvAeroChassisView.spnSI.tooltip", labelSize), gbc);
         gbc.gridx = 2;
         gbc.gridy = 4;
         gbc.gridwidth = 2;
@@ -179,7 +176,6 @@ public class WSChassisView extends BuildView implements ActionListener, ChangeLi
         chkModular.setToolTipText(resourceMap.getString("AdvAeroChassisView.chkModular.tooltip"));
         add(chkModular, gbc);
         chkModular.addActionListener(this);
-
     }
     
     public void setFromEntity(Jumpship craft) {
@@ -318,7 +314,7 @@ public class WSChassisView extends BuildView implements ActionListener, ChangeLi
         if (e.getSource() == spnTonnage) {
             listeners.forEach(l -> l.tonnageChanged(getTonnage()));
         } else if (e.getSource() == spnRange) {
-            listeners.forEach(l -> l.rangeChanged(((Integer) spnRange.getValue()).intValue()));
+            listeners.forEach(l -> l.rangeChanged((Integer) spnRange.getValue()));
         } else if (e.getSource() == spnSI) {
             listeners.forEach(l -> l.siChanged(spnSIModel.getNumber().intValue()));
         }

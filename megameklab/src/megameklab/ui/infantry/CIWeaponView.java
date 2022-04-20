@@ -1,5 +1,5 @@
 /*
- * MegaMekLab - Copyright (C) 2017 - The MegaMek Team
+ * Copyright (c) 2017-2022 - The MegaMek Team. All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -13,29 +13,7 @@
  */
 package megameklab.ui.infantry;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.ResourceBundle;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.stream.Collectors;
-
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-
-import megamek.common.EntityMovementMode;
-import megamek.common.EquipmentType;
-import megamek.common.ITechManager;
-import megamek.common.Infantry;
-import megamek.common.SimpleTechLevel;
-import megamek.common.WeaponType;
+import megamek.common.*;
 import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestInfantry;
 import megamek.common.weapons.artillery.ArtilleryCannonWeapon;
@@ -43,6 +21,16 @@ import megamek.common.weapons.artillery.ArtilleryWeapon;
 import megameklab.ui.generalUnit.BuildView;
 import megameklab.ui.listeners.InfantryBuildListener;
 import megameklab.util.UnitUtil;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.ResourceBundle;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
 /**
  * Panel for conventional infantry weapons (primary, secondary, field gun). The only editable
@@ -58,10 +46,10 @@ public class CIWeaponView extends BuildView implements ActionListener {
     public void removeListener(InfantryBuildListener l) {
         listeners.remove(l);
     }
-    
+
     private final EnumSet<EntityMovementMode> FIELD_GUN_MODES = EnumSet.of(
             EntityMovementMode.TRACKED, EntityMovementMode.WHEELED, EntityMovementMode.INF_MOTORIZED);
-    
+
     private final JTextField txtPrimary = new JTextField();
     private final JTextField txtSecondary = new JTextField();
     private final JTextField txtGuns = new JTextField();
@@ -72,20 +60,20 @@ public class CIWeaponView extends BuildView implements ActionListener {
     private ITechManager techManager;
     private String fgMotiveMsg;
     private String noneMsg;
-    
+
     public CIWeaponView(ITechManager techManager) {
         this.techManager = techManager;
         initUI();
     }
-    
+
     private void initUI() {
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl());
         fgMotiveMsg = resourceMap.getString("InfantryWeaponView.txtGuns.badMotive");
         noneMsg = resourceMap.getString("InfantryWeaponView.none");
-        
+
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        
+
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -99,7 +87,7 @@ public class CIWeaponView extends BuildView implements ActionListener {
         setFieldSize(txtPrimary, controlSize);
         txtPrimary.setEditable(false);
         add(txtPrimary, gbc);
-        
+
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridwidth = 1;
@@ -111,7 +99,7 @@ public class CIWeaponView extends BuildView implements ActionListener {
         txtSecondary.setToolTipText(resourceMap.getString("InfantryWeaponView.txtSecondary.tooltip"));
         txtSecondary.setEditable(false);
         add(txtSecondary, gbc);
-        
+
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.gridwidth = 1;
@@ -123,7 +111,7 @@ public class CIWeaponView extends BuildView implements ActionListener {
         cbNumSecondary.setToolTipText(resourceMap.getString("InfantryWeaponView.cbNumSecondary.tooltip"));
         add(cbNumSecondary, gbc);
         cbNumSecondary.addActionListener(this);
-        
+
         gbc.gridx = 0;
         gbc.gridy = 3;
         gbc.gridwidth = 1;
@@ -135,7 +123,7 @@ public class CIWeaponView extends BuildView implements ActionListener {
         txtGuns.setToolTipText(resourceMap.getString("InfantryWeaponView.txtGuns.tooltip"));
         txtGuns.setEditable(false);
         add(txtGuns, gbc);
-        
+
         gbc.gridx = 0;
         gbc.gridy = 4;
         gbc.gridwidth = 1;
@@ -147,7 +135,7 @@ public class CIWeaponView extends BuildView implements ActionListener {
         cbNumGuns.setToolTipText(resourceMap.getString("InfantryWeaponView.cbNumGuns.tooltip"));
         add(cbNumGuns, gbc);
         cbNumGuns.addActionListener(this);
-        
+
         chkAntiMek.setText(resourceMap.getString("InfantryWeaponView.chkAntiMek.text"));
         gbc.gridx = 0;
         gbc.gridy = 5;
@@ -157,7 +145,7 @@ public class CIWeaponView extends BuildView implements ActionListener {
         add(chkAntiMek, gbc);
         chkAntiMek.addActionListener(this);
     }
-    
+
     public void setFromEntity(Infantry inf) {
         if (inf.getPrimaryWeapon() != null) {
             txtPrimary.setText(UnitUtil.trimInfantryWeaponNames(inf.getPrimaryWeapon().getName()));
@@ -188,7 +176,8 @@ public class CIWeaponView extends BuildView implements ActionListener {
         
         List<EquipmentType> fieldGuns = inf.getWeaponList().stream()
                 .filter(m -> m.getLocation() == Infantry.LOC_FIELD_GUNS)
-                .map(m -> m.getType()).filter(et -> et instanceof WeaponType)
+                .map(Mounted::getType)
+                .filter(et -> et instanceof WeaponType)
                 .collect(Collectors.toList());
         if (fieldGuns.isEmpty()) {
             cbNumGuns.setEnabled(false);
@@ -202,7 +191,7 @@ public class CIWeaponView extends BuildView implements ActionListener {
             int maxNum = 1;
             if (!(fieldGuns.get(0) instanceof ArtilleryWeapon
                     || fieldGuns.get(0) instanceof ArtilleryCannonWeapon)) {
-                int crewReq = Math.max(2, (int)Math.ceil(fieldGuns.get(0).getTonnage(inf)));
+                int crewReq = Math.max(2, (int) Math.ceil(fieldGuns.get(0).getTonnage(inf)));
                 maxNum = inf.getShootingStrength() / crewReq;                
             }
             cbNumGuns.removeActionListener(this);
@@ -214,6 +203,7 @@ public class CIWeaponView extends BuildView implements ActionListener {
             cbNumGuns.addActionListener(this);
             txtGuns.setText(fieldGuns.get(0).getName());
         }
+
         if (techManager.getTechLevel().ordinal() >= SimpleTechLevel.ADVANCED.ordinal()) {
             txtGuns.setEnabled(true);
             cbNumGuns.setEnabled(true);
@@ -221,7 +211,7 @@ public class CIWeaponView extends BuildView implements ActionListener {
             txtGuns.setEnabled(false);
             cbNumGuns.setEnabled(false);
         }
-        
+
         if (!inf.isMechanized() && techManager.isLegal(Infantry.getAntiMekTA())) {
             chkAntiMek.setEnabled(true);
             chkAntiMek.removeActionListener(this);
@@ -232,16 +222,15 @@ public class CIWeaponView extends BuildView implements ActionListener {
             chkAntiMek.setSelected(false);
         }
     }
-    
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == cbNumSecondary) {
-            listeners.forEach(l -> l.numSecondaryChanged((Integer)cbNumSecondary.getSelectedItem()));
+            listeners.forEach(l -> l.numSecondaryChanged((Integer) cbNumSecondary.getSelectedItem()));
         } else if (e.getSource() == cbNumGuns) {
-            listeners.forEach(l -> l.numFieldGunsChanged((Integer)cbNumGuns.getSelectedItem()));
+            listeners.forEach(l -> l.numFieldGunsChanged((Integer) cbNumGuns.getSelectedItem()));
         } else if (e.getSource() == chkAntiMek) {
             listeners.forEach(l -> l.antiMekChanged(chkAntiMek.isSelected()));
         }
     }
-
 }

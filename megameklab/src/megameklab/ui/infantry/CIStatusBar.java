@@ -81,10 +81,9 @@ public class CIStatusBar extends ITab {
 
     public void refresh() {
         DecimalFormat roundFormat = new DecimalFormat("#.##");
-        double currentTonnage;
         int bv = getInfantry().calculateBattleValue();
 
-        currentTonnage = getInfantry().getWeight();
+        double currentTonnage = getInfantry().getWeight();
 
         move.setText("Movement: " + getInfantry().getWalkMP() + "/" + getInfantry().getJumpMP());
 
@@ -105,22 +104,9 @@ public class CIStatusBar extends ITab {
     }
 
     private void getFluffImage() {
-        //copied from structureTab
+        // copied from structureTab
         FileDialog fDialog = new FileDialog(getParentFrame(), "Image Path", FileDialog.LOAD);
         fDialog.setDirectory(new File(ImageHelper.fluffPath).getAbsolutePath() + File.separatorChar + ImageHelper.imageMech + File.separatorChar);
-        /*
-         //This does not seem to be working
-        if (getMech().getFluff().getMMLImagePath().trim().length() > 0) {
-            String fullPath = new File(getMech().getFluff().getMMLImagePath()).getAbsolutePath();
-            String imageName = fullPath.substring(fullPath.lastIndexOf(File.separatorChar) + 1);
-            fullPath = fullPath.substring(0, fullPath.lastIndexOf(File.separatorChar) + 1);
-            fDialog.setDirectory(fullPath);
-            fDialog.setFile(imageName);
-        } else {
-            fDialog.setDirectory(new File(ImageHelper.fluffPath).getAbsolutePath() + File.separatorChar + ImageHelper.imageMech + File.separatorChar);
-            fDialog.setFile(getMech().getChassis() + " " + getMech().getModel() + ".png");
-        }
-        */
         fDialog.setLocationRelativeTo(this);
 
         fDialog.setVisible(true);
@@ -140,5 +126,4 @@ public class CIStatusBar extends ITab {
     public void addRefreshedListener(RefreshListener l) {
         refresh = l;
     }
-
 }

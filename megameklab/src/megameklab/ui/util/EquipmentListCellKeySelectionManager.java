@@ -25,7 +25,6 @@ public class EquipmentListCellKeySelectionManager implements KeySelectionManager
         if (selectedItem != null) {
             String selectedText = ((EquipmentType) selectedItem).getName();
             String v;
-            String pattern;
 
             for (i = 0, c = aModel.getSize(); i < c; i++) {
                 if (selectedText.equals(((EquipmentType) aModel.getElementAt(i)).getName())) {
@@ -34,14 +33,14 @@ public class EquipmentListCellKeySelectionManager implements KeySelectionManager
                 }
             }
 
-            pattern = ("" + aKey).toLowerCase();
+            String pattern = ("" + aKey).toLowerCase();
             aKey = pattern.charAt(0);
 
             for (i = ++currentSelection, c = aModel.getSize(); i < c ; i++) {
                 Object elem = aModel.getElementAt(i);
                 if ((elem != null) && (elem.toString() != null)) {
                     v = ((EquipmentType) elem).getName().toLowerCase();
-                    if ((v.length() > 0) && (v.charAt(0) == aKey)) {
+                    if (!v.isBlank() && (v.charAt(0) == aKey)) {
                         return i;
                     }
                 }
@@ -51,7 +50,7 @@ public class EquipmentListCellKeySelectionManager implements KeySelectionManager
                 Object elem = aModel.getElementAt(i);
                 if ((elem != null) && (elem.toString() != null)) {
                     v = ((EquipmentType) elem).getName().toLowerCase();
-                    if ((v.length() > 0) && (v.charAt(0) == aKey)) {
+                    if (!v.isBlank() && (v.charAt(0) == aKey)) {
                         return i;
                     }
                 }

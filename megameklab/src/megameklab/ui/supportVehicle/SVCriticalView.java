@@ -1,6 +1,5 @@
 /*
- * MegaMekLab
- * Copyright (C) 2019, 2021 The MegaMek Team
+ * Copyright (c) 2019-2022 - The MegaMek Team. All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,7 +17,7 @@
  */
 package megameklab.ui.supportVehicle;
 
-import megamek.client.ui.swing.util.UIUtil;
+import megamek.client.ui.swing.util.UIUtil.FixedYPanel;
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
 import megameklab.ui.EntitySource;
@@ -26,6 +25,7 @@ import megameklab.ui.util.CritCellUtil;
 import megameklab.ui.util.DropTargetCriticalList;
 import megameklab.ui.util.IView;
 import megameklab.ui.util.RefreshListener;
+import org.apache.logging.log4j.LogManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -39,7 +39,6 @@ import java.util.Vector;
  * @author Simon (Juliez)
  */
 public class SVCriticalView extends IView {
-
     private final JPanel leftPanel = new JPanel();
     private final JPanel rightPanel = new JPanel();
     private final JPanel frontPanel = new JPanel();
@@ -48,9 +47,9 @@ public class SVCriticalView extends IView {
     private final JPanel rearLeftPanel = new JPanel();
     private final JPanel rearRightPanel = new JPanel();
     private final JPanel middlePanel2 = new JPanel();
-    private final JPanel turretPanel = new UIUtil.FixedYPanel();
-    private final JPanel dualTurretPanel = new UIUtil.FixedYPanel();
-    private final JPanel rotorPanel = new UIUtil.FixedYPanel();
+    private final JPanel turretPanel = new FixedYPanel();
+    private final JPanel dualTurretPanel = new FixedYPanel();
+    private final JPanel rotorPanel = new FixedYPanel();
     private RefreshListener refresh;
 
     private final Map<Integer, JComponent> aeroLocations = Map.of(FixedWingSupport.LOC_NOSE, frontPanel, FixedWingSupport.LOC_LWING, leftPanel,
@@ -148,7 +147,7 @@ public class SVCriticalView extends IView {
         }
 
         synchronized (getEntity()) {
-            System.out.println(getEntity().locations());
+            LogManager.getLogger().info(getEntity().locations());
             for (int location = 0; location < getEntity().locations(); location++) {
                 Vector<String> critNames = new Vector<>(1, 1);
 
@@ -184,11 +183,10 @@ public class SVCriticalView extends IView {
                     }
                 }
 
-                if (critNames.size() == 0) {
+                if (critNames.isEmpty()) {
                     critNames.add(CritCellUtil.EMPTY_CRITCELL_TEXT);
                 }
-                DropTargetCriticalList<String> criticalSlotList =
-                        new DropTargetCriticalList<>(critNames, eSource, refresh, true);
+                DropTargetCriticalList<String> criticalSlotList = new DropTargetCriticalList<>(critNames, eSource, refresh, true);
                 criticalSlotList.setVisibleRowCount(critNames.size());
                 criticalSlotList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
                 criticalSlotList.setName(location + "");
@@ -212,5 +210,4 @@ public class SVCriticalView extends IView {
             return tankLocations.get(location);
         }
     }
-
 }

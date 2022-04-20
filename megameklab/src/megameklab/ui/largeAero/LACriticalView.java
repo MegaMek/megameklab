@@ -84,7 +84,7 @@ public class LACriticalView extends IView {
         Box rightColumn = Box.createVerticalBox();
 
         // These locations do not have the same indices for SC/DS and JS/WS/SS
-        final int aftLeft =  isJumpShip() ? Jumpship.LOC_ALS : TestSmallCraft.ARC_AFT_LEFT;
+        final int aftLeft = isJumpShip() ? Jumpship.LOC_ALS : TestSmallCraft.ARC_AFT_LEFT;
         final int aftRight = isJumpShip() ? Jumpship.LOC_ARS : TestSmallCraft.ARC_AFT_RIGHT;
         
         for (int arc = 0; arc < MAX_ARCS; arc++) {

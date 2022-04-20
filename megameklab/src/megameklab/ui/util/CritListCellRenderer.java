@@ -113,7 +113,7 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
     }
 
     private int getCritLocation() {
-        if (unit instanceof BattleArmor){
+        if (unit instanceof BattleArmor) {
             String[] split = list.getName().split(":");
             return Integer.parseInt(split[0]);
         } else {

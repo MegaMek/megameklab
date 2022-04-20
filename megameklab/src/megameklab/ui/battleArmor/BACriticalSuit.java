@@ -62,7 +62,7 @@ public class BACriticalSuit {
     
     public boolean canAddMounted(int loc, Mounted m) {
         int critsToAdd;
-        if (m.getType().isSpreadable()){
+        if (m.getType().isSpreadable()) {
             critsToAdd = 1;
         } else {
             critsToAdd = m.getCriticals();
@@ -76,48 +76,46 @@ public class BACriticalSuit {
         return critsAvailable >= critsToAdd;
     }
     
-    public void addMounted(int loc, Mounted m){
+    public void addMounted(int loc, Mounted m) {
         // Don't mount unmounted equipment
-        if (loc == BattleArmor.MOUNT_LOC_NONE){
+        if (loc == BattleArmor.MOUNT_LOC_NONE) {
             return;
         }
         
         // AP Weapons that are mounted in an AP Mount don't take up slots
         if (m.isAPMMounted() && m.getLinkedBy() != null 
-                && m.getLinkedBy().getType().hasFlag(MiscType.F_AP_MOUNT)){
+                && m.getLinkedBy().getType().hasFlag(MiscType.F_AP_MOUNT)) {
             return;
         }
         
-        // Manipulators will always go in the last slot in its location,
-        //  as they get a special slot added for them
-        if (m.getType().hasFlag(MiscType.F_BA_MANIPULATOR)){
+        // Manipulators will always go in the last slot in its location, as they get a special slot
+        // added for them
+        if (m.getType().hasFlag(MiscType.F_BA_MANIPULATOR)) {
             int slot = crits[loc].length - 1;
             crits[loc][slot] = new CriticalSlot(m);
         }
         
         int critsToAdd;
-        if (m.getType().isSpreadable()){
+        if (m.getType().isSpreadable()) {
             critsToAdd = 1;
         } else {
             critsToAdd = m.getCriticals();
         }
-        if (critsToAdd == 0){
+        if (critsToAdd == 0) {
             return;
         }
-        for (int slot = 0; slot < getNumCriticals(loc); slot++){
-            if (crits[loc][slot] == null){
+        for (int slot = 0; slot < getNumCriticals(loc); slot++) {
+            if (crits[loc][slot] == null) {
                 crits[loc][slot] = new CriticalSlot(m);
                 critsToAdd--;
-                if (critsToAdd <= 0){
+                if (critsToAdd <= 0) {
                     break;
                 }
             }
         }
     }
-    
+
     public CriticalSlot getCritical(int loc, int slot) {
         return crits[loc][slot];
     }
-    
-    
 }

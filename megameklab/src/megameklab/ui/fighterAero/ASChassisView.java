@@ -1,20 +1,37 @@
 /*
- * MegaMekLab - Copyright (C) 2017 - The MegaMek Team
+ * Copyright (c) 2017-2022 - The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with MegaMekLab. If not, see <http://www.gnu.org/licenses/>.
  */
 package megameklab.ui.fighterAero;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import megamek.common.Aero;
+import megamek.common.Engine;
+import megamek.common.Entity;
+import megamek.common.ITechManager;
+import megamek.common.util.EncodeControl;
+import megameklab.ui.generalUnit.BuildView;
+import megameklab.ui.listeners.AeroBuildListener;
+import megameklab.ui.util.CustomComboBox;
+import megameklab.ui.util.TechComboBox;
+
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -22,24 +39,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
-
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JSpinner;
-import javax.swing.JTextField;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-
-import megamek.common.Aero;
-import megamek.common.Engine;
-import megamek.common.Entity;
-import megamek.common.ITechManager;
-import megamek.common.util.EncodeControl;
-import megameklab.ui.util.CustomComboBox;
-import megameklab.ui.util.TechComboBox;
-import megameklab.ui.generalUnit.BuildView;
-import megameklab.ui.listeners.AeroBuildListener;
 
 /**
  * Structure tab chassis panel for aerospace and conventional fighters.
@@ -93,7 +92,8 @@ public class ASChassisView extends BuildView implements ActionListener, ChangeLi
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        add(createLabel(resourceMap.getString("FighterChassisView.spnTonnage.text"), labelSize), gbc);
+        add(createLabel(resourceMap, "lblTonnage", "FighterChassisView.spnTonnage.text",
+                "FighterChassisView.spnTonnage.tooltip", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 0;
         setFieldSize(spnTonnage, spinnerSize);
@@ -113,7 +113,8 @@ public class ASChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridy = 1;
         gbc.gridwidth = 1;
         gbc.anchor = GridBagConstraints.WEST;
-        add(createLabel(resourceMap.getString("FighterChassisView.txtSI.text"), labelSize),gbc);
+        add(createLabel(resourceMap, "lblSI", "FighterChassisView.txtSI.text",
+                "FighterChassisView.txtSI.tooltip", labelSize), gbc);
         setFieldSize(txtSI, editorSize);
         txtSI.setToolTipText(resourceMap.getString("FighterChassisView.txtSI.tooltip"));
         txtSI.setEditable(false);
@@ -131,7 +132,8 @@ public class ASChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap.getString("FighterChassisView.cbFighterType.text"), labelSize),gbc);
+        add(createLabel(resourceMap, "lblFighterType", "FighterChassisView.cbFighterType.text",
+                "FighterChassisView.cbFighterType.tooltip", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 2;
         gbc.gridwidth = 3;
@@ -143,7 +145,8 @@ public class ASChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 0;
         gbc.gridy = 3;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap.getString("FighterChassisView.cbEngine.text"), labelSize),gbc);
+        add(createLabel(resourceMap, "lblEngine", "FighterChassisView.cbEngine.text",
+                "FighterChassisView.cbEngine.tooltip", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 3;
         gbc.gridwidth = 3;
@@ -156,7 +159,8 @@ public class ASChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 0;
         gbc.gridy = 4;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap.getString("FighterChassisView.cbCockpit.text"), labelSize),gbc);
+        add(createLabel(resourceMap, "lblCockpit", "FighterChassisView.cbCockpit.text",
+                "FighterChassisView.cbCockpit.tooltip", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 4;
         gbc.gridwidth = 3;
@@ -318,7 +322,7 @@ public class ASChassisView extends BuildView implements ActionListener, ChangeLi
         cbCockpit.removeAllItems();
         if (isPrimitive()) {
             cbCockpit.addItem(Aero.COCKPIT_PRIMITIVE);
-        } else if (isConventional()){
+        } else if (isConventional()) {
             cbCockpit.addItem(Aero.COCKPIT_STANDARD);
         } else {
             for (int cockpitType = 0; cockpitType < Aero.COCKPIT_STRING.length; cockpitType++) {

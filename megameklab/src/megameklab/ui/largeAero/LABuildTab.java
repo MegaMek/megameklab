@@ -75,8 +75,9 @@ public class LABuildTab extends ITab implements ActionListener {
         addAllActionListeners();
     }
 
-    public void actionPerformed(ActionEvent e) {
-        if (e.getActionCommand().equals(RESETCOMMAND)) {
+    @Override
+    public void actionPerformed(ActionEvent evt) {
+        if (evt.getActionCommand().equals(RESETCOMMAND)) {
             resetCrits();
         }
     }

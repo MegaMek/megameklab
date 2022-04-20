@@ -15,30 +15,17 @@
  */
 package megameklab.ui.mek;
 
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.io.File;
-import java.util.Vector;
-
-import javax.swing.BorderFactory;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-
-import megamek.common.Engine;
-import megamek.common.EquipmentType;
-import megamek.common.Mech;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
-import megamek.common.TechConstants;
+import megamek.common.*;
 import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestMech;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.IView;
 import megameklab.util.UnitUtil;
+
+import javax.swing.*;
+import java.awt.*;
+import java.io.File;
+import java.util.Vector;
 
 public class BMSummaryView extends IView{
     private JTextField txtStructTon = new JTextField("?");
@@ -74,12 +61,12 @@ public class BMSummaryView extends IView{
     private JTextField txtEquipAvail = new JTextField("?");
     private JTextField txtOtherAvail = new JTextField("?");
 
-    private EntityVerifier entityVerifier = EntityVerifier.getInstance(new File("data/mechfiles/UnitVerifierOptions.xml"));
+    private EntityVerifier entityVerifier = EntityVerifier.getInstance(new File("data/mechfiles/UnitVerifierOptions.xml")); // TODO : Remove inline file path
 
     public BMSummaryView(EntitySource eSource) {
         super(eSource);
 
-        Vector<JTextField> valueFields = new Vector<JTextField>();
+        Vector<JTextField> valueFields = new Vector<>();
 
         valueFields.add(txtStructTon);
         valueFields.add(txtEngineTon);
@@ -103,8 +90,8 @@ public class BMSummaryView extends IView{
         valueFields.add(txtEquipCrit);
         valueFields.add(txtOtherCrit);
 
-        Dimension size = new Dimension(45,25);
-        for(JTextField field : valueFields) {
+        Dimension size = new Dimension(45, 25);
+        for (JTextField field : valueFields) {
             field.setEditable(false);
             field.setSize(size);
             field.setPreferredSize(size);
@@ -126,8 +113,8 @@ public class BMSummaryView extends IView{
         valueFields.add(txtEquipAvail);
         valueFields.add(txtOtherAvail);
 
-        size = new Dimension(80,25);
-        for(JTextField field : valueFields) {
+        size = new Dimension(80, 25);
+        for (JTextField field : valueFields) {
             field.setEditable(false);
             field.setSize(size);
             field.setPreferredSize(size);
@@ -138,11 +125,11 @@ public class BMSummaryView extends IView{
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
-        size = new Dimension(120,25);
+        size = new Dimension(120, 25);
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.insets = new Insets(0,0,0,5);
+        gbc.insets = new Insets(0, 0, 0, 5);
         this.add(createLabel("Category", size, SwingConstants.CENTER), gbc);
         gbc.gridy = 1;
         this.add(createLabel("Internal Structure:", size, SwingConstants.RIGHT), gbc);
@@ -165,10 +152,10 @@ public class BMSummaryView extends IView{
         gbc.gridy = 10;
         this.add(createLabel("Other:", size, SwingConstants.RIGHT), gbc);
 
-        size = new Dimension(45,25);
+        size = new Dimension(45, 25);
         gbc.gridx = 1;
         gbc.gridy = 0;
-        gbc.insets = new Insets(0,0,0,0);
+        gbc.insets = new Insets(0, 0, 0, 0);
         this.add(createLabel("Ton", size, SwingConstants.CENTER), gbc);
         gbc.gridy = 1;
         this.add(txtStructTon, gbc);
@@ -241,13 +228,10 @@ public class BMSummaryView extends IView{
         this.add(txtOtherAvail, gbc);
 
         setBorder(BorderFactory.createTitledBorder("Summary"));
-
     }
 
     private JLabel createLabel(String text, Dimension size, int align) {
-
         JLabel label = new JLabel(text, SwingConstants.TRAILING);
-
         setFieldSize(label, size);
         label.setHorizontalAlignment(align);
         return label;
@@ -260,7 +244,6 @@ public class BMSummaryView extends IView{
     }
 
     public void refresh() {
-
         TestMech testMech = new TestMech(getMech(), entityVerifier.mechOption, null);
 
         txtGyroTon.setText(Double.toString(testMech.getWeightGyro()));
@@ -275,7 +258,6 @@ public class BMSummaryView extends IView{
         }
         txtOtherTon.setText(Double.toString(testMech.getWeightPowerAmp() + testMech.getWeightCarryingSpace() + testMech.getWeightMisc()));
 
-
         txtGyroCrit.setText(Integer.toString(getGyroCrits()));
         txtEngineCrit.setText(Integer.toString(getEngineCrits()));
         txtCockpitCrit.setText(Integer.toString(getCockpitCrits()));
@@ -286,7 +268,7 @@ public class BMSummaryView extends IView{
         } else {
             txtStructCrit.setText("?");
         }
-        //FIXME: This doesn't account for patchwork armor crits.
+        // FIXME: This doesn't account for patchwork armor crits.
         if ((getMech().getArmorType(0) >= 0)
                 && (getMech().getArmorType(0) < EquipmentType.armorNames.length)) {
             String armorName = EquipmentType.getArmorTypeName(getMech().getArmorType(0),TechConstants.isClan(getMech().getArmorTechLevel(0)));
@@ -300,18 +282,14 @@ public class BMSummaryView extends IView{
         int numberSinks = UnitUtil.countActualHeatSinks(getMech());
         numberSinks = Math.max(0, numberSinks - UnitUtil.getCriticalFreeHeatSinks(getMech(), getMech().hasCompactHeatSinks()));
         int critSinks = numberSinks;
-        if(UnitUtil.hasClanDoubleHeatSinks(getMech())) {
+        if (UnitUtil.hasClanDoubleHeatSinks(getMech())) {
             critSinks = numberSinks * 2;
-        }
-        else if(getMech().hasDoubleHeatSinks()) {
+        } else if (getMech().hasDoubleHeatSinks()) {
             critSinks = numberSinks * 3;
-        }
-        else if(getMech().hasCompactHeatSinks()) {
-            critSinks = (critSinks/2) + (critSinks%2);
+        } else if (getMech().hasCompactHeatSinks()) {
+            critSinks = (critSinks / 2) + (critSinks % 2);
         }
         txtHeatCrit.setText(Integer.toString(critSinks));
-
-
     }
 
     private void runThroughEquipment(TestMech testMech) {
@@ -324,25 +302,21 @@ public class BMSummaryView extends IView{
 
         for (Mounted m : getMech().getMisc()) {
             MiscType mt = (MiscType) m.getType();
-            if(UnitUtil.isArmorOrStructure(mt)) {
+            if (UnitUtil.isArmorOrStructure(mt)) {
                 continue;
-            }
-            else if (mt.hasFlag(MiscType.F_TSM)
+            } else if (mt.hasFlag(MiscType.F_TSM)
                     || mt.hasFlag(MiscType.F_INDUSTRIAL_TSM)
                     || mt.hasFlag(MiscType.F_MASC)) {
                 weightEnhance += m.getTonnage();
                 critEnhance += UnitUtil.getCritsUsed(m);
-            }
-            else if (mt.hasFlag(MiscType.F_JUMP_JET)
+            } else if (mt.hasFlag(MiscType.F_JUMP_JET)
                     || mt.hasFlag(MiscType.F_JUMP_BOOSTER)) {
                 weightJJ += m.getTonnage();
                 critJJ += m.getCriticals();
-            }
-            else if (mt.hasFlag(MiscType.F_HEAT_SINK)
+            } else if (mt.hasFlag(MiscType.F_HEAT_SINK)
                     || mt.hasFlag(MiscType.F_DOUBLE_HEAT_SINK)) {
                 continue;
-            }
-            else {
+            } else {
                 weightEquip += m.getTonnage();
                 critEquip += m.getCriticals();
             }
@@ -366,12 +340,12 @@ public class BMSummaryView extends IView{
 
     private int getGyroCrits() {
         switch(getMech().getGyroType()) {
-        case Mech.GYRO_COMPACT:
-            return 2;
-        case Mech.GYRO_XL:
-            return 6;
-        default:
-            return 4;
+            case Mech.GYRO_COMPACT:
+                return 2;
+            case Mech.GYRO_XL:
+                return 6;
+            default:
+                return 4;
         }
     }
 
@@ -384,11 +358,10 @@ public class BMSummaryView extends IView{
 
     private int getCockpitCrits() {
         switch(getMech().getCockpitType()) {
-        case Mech.COCKPIT_COMMAND_CONSOLE:
-            return 2;
-        default:
-            return 1;
+            case Mech.COCKPIT_COMMAND_CONSOLE:
+                return 2;
+            default:
+                return 1;
         }
     }
-
 }

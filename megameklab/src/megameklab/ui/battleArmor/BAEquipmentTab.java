@@ -18,13 +18,8 @@ package megameklab.ui.battleArmor;
 import megamek.common.*;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.AbstractEquipmentTab;
-import megameklab.ui.util.*;
+import megameklab.ui.util.AbstractEquipmentDatabaseView;
 import megameklab.util.UnitUtil;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static java.util.stream.Collectors.toList;
 
 /**
  * The Equipment Tab for BattleArmor units showing the equipment database and the current loadout list.

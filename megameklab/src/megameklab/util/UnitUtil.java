@@ -1,8 +1,5 @@
 /*
- * MegaMekLab
  * Copyright (c) 2008-2022 - The MegaMek Team. All Rights Reserved.
- *
- * Original author - jtighe (torren@users.sourceforge.net)
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -19,12 +16,12 @@ package megameklab.util;
 import megamek.client.ui.dialogs.BVDisplayDialog;
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
-import megamek.common.loaders.EntityLoadingException;
 import megamek.common.verifier.*;
+import megamek.common.verifier.TestAero.Quarters;
+import megamek.common.verifier.TestEntity.Ceil;
+import megamek.common.verifier.TestProtomech.ProtomechArmor;
 import megamek.common.weapons.*;
-import megamek.common.weapons.autocannons.ACWeapon;
 import megamek.common.weapons.autocannons.HVACWeapon;
-import megamek.common.weapons.autocannons.LBXACWeapon;
 import megamek.common.weapons.autocannons.UACWeapon;
 import megamek.common.weapons.bayweapons.BayWeapon;
 import megamek.common.weapons.c3.ISC3M;
@@ -48,13 +45,13 @@ import megamek.common.weapons.missiles.ThunderBoltWeapon;
 import megamek.common.weapons.other.*;
 import megamek.common.weapons.ppc.CLPlasmaCannon;
 import megamek.common.weapons.ppc.ISPlasmaRifle;
-import megamek.common.weapons.ppc.PPCWeapon;
 import megamek.common.weapons.srms.SRMWeapon;
 import megamek.common.weapons.srms.SRTWeapon;
 import megamek.common.weapons.srms.StreakSRMWeapon;
 import megamek.common.weapons.tag.CLLightTAG;
 import megamek.common.weapons.tag.CLTAG;
 import megamek.common.weapons.tag.ISTAG;
+import megameklab.ui.mek.BMUtils;
 import org.apache.logging.log4j.LogManager;
 
 import javax.swing.*;
@@ -71,7 +68,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Collectors;
 
 public class UnitUtil {
-
     public static int TECH_INTRO = 0;
     public static int TECH_STANDARD = 1;
     public static int TECH_ADVANCED = 2;
@@ -146,8 +142,7 @@ public class UnitUtil {
      */
     public static boolean isTSM(EquipmentType eq) {
         return (eq instanceof MiscType)
-                && (eq.hasFlag(MiscType.F_TSM) || eq
-                        .hasFlag((MiscType.F_INDUSTRIAL_TSM)));
+                && (eq.hasFlag(MiscType.F_TSM) || eq.hasFlag((MiscType.F_INDUSTRIAL_TSM)));
     }
 
     /**
@@ -209,7 +204,7 @@ public class UnitUtil {
             toReturn = 1;
         }
         if ((mount.getEntity() instanceof Mech) && mount.getEntity().isSuperHeavy()) {
-            toReturn = Math.ceil(toReturn/2.0);
+            toReturn = Math.ceil(toReturn / 2.0);
         }
         return (int) toReturn;
     }
@@ -224,11 +219,11 @@ public class UnitUtil {
         UnitUtil.removeCriticals(unit, mount);
 
         // Some special checks for BA
-        if (unit instanceof BattleArmor){
+        if (unit instanceof BattleArmor) {
             // If we're removing a DWP and it has an attached weapon, we need
             //  to detach the weapon
             if (mount.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)
-                    && (mount.getLinked() != null)){
+                    && (mount.getLinked() != null)) {
                 Mounted link = mount.getLinked();
                 link.setDWPMounted(false);
                 link.setLinked(null);
@@ -237,16 +232,14 @@ public class UnitUtil {
             // If we are removing a weapon that is mounted in an DWP, we need
             //  to clear the mounted status of the DWP
             if ((mount.getLinkedBy() != null)
-                    && mount.getLinkedBy().getType().hasFlag(
-                            MiscType.F_DETACHABLE_WEAPON_PACK)){
+                    && mount.getLinkedBy().getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)) {
                 Mounted dwp = mount.getLinkedBy();
                 dwp.setLinked(null);
                 dwp.setLinkedBy(null);
             }
             // If we're removing an APM and it has an attached weapon, we need
             //  to detach the weapon
-            if (mount.getType().hasFlag(MiscType.F_AP_MOUNT)
-                    && (mount.getLinked() != null)){
+            if (mount.getType().hasFlag(MiscType.F_AP_MOUNT) && (mount.getLinked() != null)) {
                 Mounted link = mount.getLinked();
                 link.setAPMMounted(false);
                 link.setLinked(null);
@@ -255,8 +248,7 @@ public class UnitUtil {
             // If we are removing a weapon that is mounted in an APM, we need
             //  to clear the mounted status of the AP Mount
             if ((mount.getLinkedBy() != null)
-                    && mount.getLinkedBy().getType().hasFlag(
-                            MiscType.F_AP_MOUNT)){
+                    && mount.getLinkedBy().getType().hasFlag(MiscType.F_AP_MOUNT)) {
                 Mounted apm = mount.getLinkedBy();
                 apm.setLinked(null);
                 apm.setLinkedBy(null);
@@ -267,19 +259,19 @@ public class UnitUtil {
         Map<Mounted,List<Mounted>> bayAmmo = new HashMap<>();
         for (Mounted bay : unit.getWeaponBayList()) {
             List<Mounted> list = bay.getBayWeapons().stream()
-                    .map(n -> unit.getEquipment(n)).collect(Collectors.toList());
+                    .map(unit::getEquipment).collect(Collectors.toList());
             bayWeapons.put(bay, list);
             list = bay.getBayAmmo().stream()
-                    .map(n -> unit.getEquipment(n)).collect(Collectors.toList());
+                    .map(unit::getEquipment).collect(Collectors.toList());
             bayAmmo.put(bay, list);
         }
         // Some special checks for Aeros
         if (unit instanceof Aero) {
             if (mount.getType() instanceof WeaponType) {
                 // Aeros have additional weapon lists that need to be cleared
-                ((Aero)unit).getTotalWeaponList().remove(mount);
-                ((Aero)unit).getWeaponBayList().remove(mount);
-                ((Aero)unit).getWeaponGroupList().remove(mount);
+                unit.getTotalWeaponList().remove(mount);
+                unit.getWeaponBayList().remove(mount);
+                unit.getWeaponGroupList().remove(mount);
             }
         }
         unit.getEquipment().remove(mount);
@@ -337,7 +329,7 @@ public class UnitUtil {
         }
         // It's possible that the equipment we are removing was linked to
         // something else, and so the linkedBy state may be set.  We should
-        // remove it.  Using getLinked could be unreliable, so we'll brute force
+        // remove it. Using getLinked could be unreliable, so we'll brute force
         // it
         // An example of this would be removing a linked Artemis IV FCS
         for (Mounted m : unit.getEquipment()) {
@@ -379,7 +371,6 @@ public class UnitUtil {
      * @param eq
      */
     public static void removeCriticals(Entity unit, Mounted eq) {
-
         if (eq.getLocation() == Entity.LOC_NONE) {
             return;
         }
@@ -407,71 +398,13 @@ public class UnitUtil {
         }
     }
     
-    public static void addMounted(Entity unit, Mounted mounted, int loc,
-            boolean rearMounted) throws LocationFullException {
+    public static void addMounted(Entity unit, Mounted mounted, int loc, boolean rearMounted)
+            throws LocationFullException {
         unit.addEquipment(mounted, loc, rearMounted);
         mounted.setOmniPodMounted(canPodMount(unit, mounted));
-        if (mounted.getType().isExplosive(mounted, true) && (unit instanceof Mech) && unit.isClan()) {
-            ((Mech) unit).addClanCase();
+        if (unit instanceof Mech) {
+            BMUtils.updateClanCasePlacement((Mech) unit);
         }
-    }
-
-    /**
-     * Tells if param EQ is a targetting computer.
-     *
-     * @param eq
-     *            Mounted that might be a targetting computer
-     * @return True if is a targetting computer false if not.
-     */
-    public static boolean isTargettingComputer(Mounted eq) {
-        if ((eq.getType() instanceof MiscType)
-                && eq.getType().hasFlag(MiscType.F_TARGCOMP)) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Reset all the Crits and Mounts on the Unit.
-     *
-     * @param unit
-     */
-    public static void resetCriticalsAndMounts(Mech unit) {
-        for (int location = Mech.LOC_HEAD; location <= Mech.LOC_LLEG; location++) {
-            for (int slot = 0; slot < unit.getNumberOfCriticals(location); slot++) {
-                CriticalSlot cs = unit.getCritical(location, slot);
-
-                if ((cs != null)
-                        && (cs.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
-                    cs = null;
-                    unit.setCritical(location, slot, cs);
-                }
-            }
-        }
-
-        for (Mounted mount : unit.getEquipment()) {
-            mount.setLocation(Entity.LOC_NONE, false);
-        }
-
-    }
-
-    /**
-     * Check to see if the unit is using Clan TC
-     *
-     * @param unit
-     * @return
-     */
-    public static boolean hasClanTC(Mech unit) {
-
-        for (Mounted mount : unit.getMisc()) {
-            if (mount.getType().hasFlag(MiscType.F_TARGCOMP)
-                    && TechConstants.isClan(mount.getType().getTechLevel(
-                            unit.getTechLevelYear()))) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**
@@ -490,13 +423,12 @@ public class UnitUtil {
      *
      * @param unit
      */
-    public static Mounted createTCMounts(Entity unit, EquipmentType tc) {
-        Mounted mount = null;
+    public static @Nullable Mounted createTCMounts(Entity unit, EquipmentType tc) {
         try {
-            mount = unit.addEquipment(tc, Entity.LOC_NONE);
-        } catch (Exception ex) {
+            return unit.addEquipment(tc, Entity.LOC_NONE);
+        } catch (Exception ignored) {
+            return null;
         }
-        return mount;
     }
 
     /**
@@ -516,33 +448,13 @@ public class UnitUtil {
                     && unit.isClan() != tech.isClan()) {
                 return false;
             }
+
             if (!tech.isAvailableIn(unit.getTechLevelYear(), unit.isClan())) {
                 return false;
             }
         }
         return TechConstants.convertFromNormalToSimple(tech.getTechLevel(unit.getTechLevelYear(),
                 unit.isClan())) <= TechConstants.convertFromNormalToSimple(unit.getTechLevel());
-    }
-
-    /**
-     * Checks if the unit has laser heatsinks.
-     *
-     * @param unit
-     * @return
-     */
-    public static boolean hasLaserHeatSinks(Mech unit) {
-
-        if (!unit.hasDoubleHeatSinks()) {
-            return false;
-        }
-
-        for (Mounted mounted : unit.getMisc()) {
-            if (mounted.getType().hasFlag(MiscType.F_LASER_HEAT_SINK)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     /***
@@ -552,7 +464,6 @@ public class UnitUtil {
      * @return
      */
     public static boolean hasClanDoubleHeatSinks(Mech unit) {
-
         if (!unit.hasDoubleHeatSinks()) {
             return false;
         }
@@ -563,11 +474,7 @@ public class UnitUtil {
             }
 
             if (mounted.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK)) {
-                if (mounted.getType().getInternalName()
-                        .equals("CLDoubleHeatSink")) {
-                    return true;
-                }
-                return false;
+                return mounted.getType().getInternalName().equals("CLDoubleHeatSink");
             }
         }
 
@@ -634,29 +541,26 @@ public class UnitUtil {
      * @param unit
      */
     public static void removeHeatSinks(Mech unit, int number) {
-        Vector<Mounted> toRemove = new Vector<Mounted>();
-        int base = UnitUtil.getCriticalFreeHeatSinks(unit,
-                unit.hasCompactHeatSinks());
+        Vector<Mounted> toRemove = new Vector<>();
+        int base = UnitUtil.getCriticalFreeHeatSinks(unit, unit.hasCompactHeatSinks());
         boolean splitCompact = false;
         if (unit.hasCompactHeatSinks()) {
-            // first check to see if there is a single compact heat sink outside
-            // of
-            // the engine and remove this first if so
+            // first check to see if there is a single compact heat sink outside of the engine and
+            // remove this first if so
             Mounted mount = UnitUtil.getSingleCompactHeatSink(unit);
             if ((null != mount) && (number > 0)) {
                 UnitUtil.removeMounted(unit, mount);
                 number--;
             }
-            // if number is now uneven, then note that we will need to split a
-            // compact
+            // if number is now uneven, then note that we will need to split a compact
             if ((number % 2) == 1) {
                 splitCompact = true;
                 number--;
             }
         }
-        Vector<Mounted> unassigned = new Vector<Mounted>();
-        Vector<Mounted> assigned = new Vector<Mounted>();
-        Vector<Mounted> free = new Vector<Mounted>();
+        Vector<Mounted> unassigned = new Vector<>();
+        Vector<Mounted> assigned = new Vector<>();
+        Vector<Mounted> free = new Vector<>();
         for (Mounted m : unit.getMisc()) {
             if (UnitUtil.isHeatSink(m)) {
                 if (m.getLocation() == Entity.LOC_NONE) {
@@ -675,13 +579,10 @@ public class UnitUtil {
         toRemove.addAll(assigned);
         toRemove.addAll(free);
         if (unit.hasCompactHeatSinks()) {
-            // need to do some number magic here. The unassigned and assigned
-            // slots
-            // should each contain two heat sinks, but if we dip into the free
-            // then we
-            // are looking at one heat sink.
-            int numberDouble = Math.min(number / 2, unassigned.size()
-                    + assigned.size());
+            // need to do some number magic here. The unassigned and assigned slots should each
+            // contain two heat sinks, but if we dip into the free then we are looking at one heat
+            // sink.
+            int numberDouble = Math.min(number / 2, unassigned.size() + assigned.size());
             int numberSingle = Math.max(0, number - (2 * numberDouble));
             number = numberDouble + numberSingle;
         }
@@ -690,6 +591,7 @@ public class UnitUtil {
             Mounted eq = toRemove.get(i);
             UnitUtil.removeMounted(unit, eq);
         }
+
         if (splitCompact) {
             Mounted eq = toRemove.get(number);
             int loc = eq.getLocation();
@@ -698,13 +600,11 @@ public class UnitUtil {
             if (!eq.getType().hasFlag(MiscType.F_HEAT_SINK)) {
                 try {
                     UnitUtil.addMounted(unit,
-                            new Mounted(unit, EquipmentType
-                                    .get("IS1 Compact Heat Sink")), loc, false);
+                            new Mounted(unit, EquipmentType.get("IS1 Compact Heat Sink")), loc, false);
                 } catch (Exception ex) {
                     LogManager.getLogger().error("", ex);
                 }
             }
-
         }
     }
 
@@ -732,8 +632,7 @@ public class UnitUtil {
         } else {
             for (; hsAmount > 0; hsAmount--) {
                 try {
-                    unit.addEquipment(new Mounted(unit, sinkType),
-                            Entity.LOC_NONE, false);
+                    unit.addEquipment(new Mounted(unit, sinkType), Entity.LOC_NONE, false);
                 } catch (Exception ex) {
                     LogManager.getLogger().error("", ex);
                 }
@@ -742,12 +641,9 @@ public class UnitUtil {
     }
 
     public static void addCompactHeatSinkMounts(Mech unit, int hsAmount) {
-
-        // first we need to figure out how many single compacts we need to add
-        // for the engine, if any
+        // first we need to figure out how many single compacts we need to add/ for the engine, if any
         int currentSinks = UnitUtil.countActualHeatSinks(unit);
-        int engineCompacts = Math.min(hsAmount,
-                UnitUtil.getCriticalFreeHeatSinks(unit, true));
+        int engineCompacts = Math.min(hsAmount, UnitUtil.getCriticalFreeHeatSinks(unit, true));
         int engineToAdd = Math.max(0, engineCompacts - currentSinks);
         unit.addEngineSinks("IS1 Compact Heat Sink", engineToAdd);
         int restHS = hsAmount - engineToAdd;
@@ -756,7 +652,7 @@ public class UnitUtil {
             if (null == singleCompact) {
                 try {
                     unit.addEquipment(new Mounted(unit, EquipmentType.get(EquipmentTypeLookup.COMPACT_HS_1)),
-                        Entity.LOC_NONE, false);
+                            Entity.LOC_NONE, false);
                 } catch (Exception ex) {
                     LogManager.getLogger().error("", ex);
                 }
@@ -766,7 +662,7 @@ public class UnitUtil {
                 UnitUtil.removeMounted(unit, singleCompact);
                 try {
                     addMounted(unit,new Mounted(unit, EquipmentType.get(EquipmentTypeLookup.COMPACT_HS_2)),
-                        loc, false);
+                            loc, false);
                 } catch (Exception ex) {
                     LogManager.getLogger().error("", ex);
                 }
@@ -776,7 +672,7 @@ public class UnitUtil {
         for (; restHS > 0; restHS -= 2) {
             try {
                 unit.addEquipment(new Mounted(unit, EquipmentType.get(EquipmentTypeLookup.COMPACT_HS_2)),
-                    Entity.LOC_NONE, false);
+                        Entity.LOC_NONE, false);
             } catch (Exception ex) {
                 LogManager.getLogger().error("", ex);
             }
@@ -869,8 +765,7 @@ public class UnitUtil {
             if (hsAmount < currentSinks) {
                 UnitUtil.removeHeatSinks(unit, currentSinks - hsAmount);
             } else if (hsAmount > currentSinks) {
-                UnitUtil.addHeatSinkMounts(unit, hsAmount - currentSinks,
-                        hsType);
+                UnitUtil.addHeatSinkMounts(unit, hsAmount - currentSinks, hsType);
             }
         } else {
             UnitUtil.removeHeatSinks(unit, hsAmount);
@@ -1034,10 +929,6 @@ public class UnitUtil {
                 || m.getType().hasFlag(MiscType.F_JUMP_BOOSTER));
     }
 
-    public static boolean isUmu(Mounted m) {
-        return (m.getType() instanceof MiscType) && (m.getType().hasFlag(MiscType.F_UMU));
-    }
-
     /**
      *
      * @param type The value returned by {@link Mech#getJumpType()}
@@ -1062,7 +953,7 @@ public class UnitUtil {
      * @param unit
      */
     public static void removeJumpJets(Mech unit, int number) {
-        Vector<Mounted> toRemove = new Vector<Mounted>();
+        Vector<Mounted> toRemove = new Vector<>();
         ArrayList<Mounted> misceq = unit.getMisc();
         for (Mounted eq : misceq) {
             if (UnitUtil.isJumpJet(eq)) {
@@ -1072,6 +963,7 @@ public class UnitUtil {
                 }
             }
         }
+
         for (Mounted eq : toRemove) {
             UnitUtil.removeMounted(unit, eq);
         }
@@ -1088,7 +980,8 @@ public class UnitUtil {
         unit.setOriginalJumpMP(jjAmount);
         int ctype = unit.getJumpType();
         if (jjType == ctype) {
-            int currentJJ = (int)unit.getMisc().stream().filter(m -> m.getType()
+            int currentJJ = (int) unit.getMisc().stream()
+                    .filter(m -> m.getType()
                     .hasFlag(MiscType.F_JUMP_JET))
                     .count();
             if (jjAmount < currentJJ) {
@@ -1113,8 +1006,7 @@ public class UnitUtil {
             while (jjAmount > 0) {
                 try {
                     unit.addEquipment(
-                            new Mounted(unit, EquipmentType.get(UnitUtil
-                                    .getJumpJetType(jjType))),
+                            new Mounted(unit, EquipmentType.get(UnitUtil.getJumpJetType(jjType))),
                             Entity.LOC_NONE, false);
                 } catch (Exception ex) {
                     LogManager.getLogger().error("", ex);
@@ -1146,8 +1038,7 @@ public class UnitUtil {
      * @param unit
      */
     public static void removeEnhancements(Mech unit) {
-        ConcurrentLinkedQueue<Mounted> equipmentList = new ConcurrentLinkedQueue<Mounted>(
-                unit.getMisc());
+        ConcurrentLinkedQueue<Mounted> equipmentList = new ConcurrentLinkedQueue<>(unit.getMisc());
         for (Mounted eq : equipmentList) {
             if (UnitUtil.isTSM(eq.getType()) || UnitUtil.isMASC(eq.getType())
                     || ((eq.getType() instanceof MiscType) && eq.getType().hasFlag(MiscType.F_SCM))) {
@@ -1191,7 +1082,6 @@ public class UnitUtil {
      * @return       Whether the equipment should be shown on the record sheet
      */
     public static boolean isPrintableEquipment(EquipmentType eq, boolean isMech) {
-
         if (UnitUtil.isArmorOrStructure(eq)) {
             return false;
         }
@@ -1242,7 +1132,6 @@ public class UnitUtil {
      * @return
      */
     public static boolean isPrintableBAEquipment(EquipmentType eq) {
-
         if (UnitUtil.isArmorOrStructure(eq)) {
             return false;
         }
@@ -1279,13 +1168,8 @@ public class UnitUtil {
     }
 
     public static boolean isBAMultiMount(EquipmentType equip) {
-        if ((equip instanceof WeaponType)
-                && (equip.hasFlag(WeaponType.F_TASER)
-                        || (((WeaponType)equip).getAmmoType()
-                            == AmmoType.T_NARC))){
-            return true;
-        }
-        return false;
+        return (equip instanceof WeaponType)
+                && (equip.hasFlag(WeaponType.F_TASER) || (((WeaponType) equip).getAmmoType() == AmmoType.T_NARC));
     }
 
     /**
@@ -1302,7 +1186,7 @@ public class UnitUtil {
      * @param rear               Whether to mount with a rear facing
      */
     public static void changeMountStatus(Entity unit, Mounted eq, int location,
-            int secondaryLocation, boolean rear) {
+                                         int secondaryLocation, boolean rear) {
         if ((location != eq.getLocation() && !eq.isOneShot())) {
             if (eq.getLinked() != null) {
                 eq.getLinked().setLinkedBy(null);
@@ -1324,8 +1208,8 @@ public class UnitUtil {
                 // Exception thrown for not having equipment to link to yet, which is acceptable here
             }
         }
-        if (eq.getType().isExplosive(eq, true) && (unit instanceof Mech) && unit.isClan()) {
-            ((Mech) unit).addClanCase();
+        if (unit instanceof Mech) {
+            BMUtils.updateClanCasePlacement((Mech) unit);
         }
     }
 
@@ -1452,7 +1336,6 @@ public class UnitUtil {
     }
 
     public static boolean hasTargComp(Entity unit) {
-
         for (Mounted mount : unit.getEquipment()) {
             if ((mount.getType() instanceof MiscType)
                     && mount.getType().hasFlag(MiscType.F_TARGCOMP)) {
@@ -1461,15 +1344,6 @@ public class UnitUtil {
         }
 
         return false;
-    }
-
-    public static Mounted getTargComp(Entity unit) {
-        for (Mounted misc : unit.getMisc()) {
-            if (misc.getType().hasFlag(MiscType.F_TARGCOMP)) {
-                return misc;
-            }
-        }
-        return null;
     }
 
     public static int[] getHighestContinuousNumberOfCritsArray(Mech unit) {
@@ -1550,7 +1424,7 @@ public class UnitUtil {
 
     public static int getMaximumArmorPoints(Entity unit, int loc) {
         if ((unit instanceof Mech) && (loc == Mech.LOC_HEAD)) {
-            if (((Mech) unit).isSuperHeavy()) {
+            if (unit.isSuperHeavy()) {
                 return 12;
             } else {
                 return 9;
@@ -1572,7 +1446,6 @@ public class UnitUtil {
     }
 
     public static double getMaximumArmorTonnage(Entity unit) {
-
         if (unit instanceof Jumpship) {
             return TestAdvancedAerospace.maxArmorWeight((Jumpship) unit);
         }
@@ -1587,7 +1460,7 @@ public class UnitUtil {
         if (unit instanceof Mech) {
             double points = (unit.getTotalInternal() * 2);
             // Add in extra armor points for head
-            if (((Mech) unit).isSuperHeavy()) {
+            if (unit.isSuperHeavy()) {
                 points += 4;
             } else {
                 points += 3;
@@ -1596,15 +1469,15 @@ public class UnitUtil {
             armorWeight = Math.ceil(armorWeight * 2.0) / 2.0;
         } else if (unit instanceof Protomech) {
             double points = TestProtomech.maxArmorFactor((Protomech) unit);
-            return points * TestProtomech.ProtomechArmor.getArmor((Protomech) unit).getWtPerPoint();
+            return points * ProtomechArmor.getArmor((Protomech) unit).getWtPerPoint();
         } else if (unit.isSupportVehicle()) {
             // Max armor is determined by number of points.
             double weight = TestSupportVehicle.maxArmorFactor(unit)
                     * TestSupportVehicle.armorWeightPerPoint(unit);
             if (unit.getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT) {
-                return TestEntity.round(weight, TestEntity.Ceil.KILO);
+                return TestEntity.round(weight, Ceil.KILO);
             } else {
-                return TestEntity.ceil(weight, TestEntity.Ceil.HALFTON);
+                return TestEntity.ceil(weight, Ceil.HALFTON);
             }
         } else if (unit instanceof Tank) {
             double points = Math.floor((unit.getWeight() * 3.5) + 40);
@@ -1615,9 +1488,8 @@ public class UnitUtil {
         } else if (unit instanceof SmallCraft) {
             return TestSmallCraft.maxArmorWeight((SmallCraft) unit);
         }
-        if (unit instanceof Aero){
-            double points =
-                    TestAero.maxArmorPoints(unit, unit.getWeight());
+        if (unit instanceof Aero) {
+            double points = TestAero.maxArmorPoints(unit, unit.getWeight());
             armorWeight = points / armorPerTon;
             armorWeight = Math.ceil(armorWeight * 2.0) / 2.0;
         }
@@ -1643,7 +1515,7 @@ public class UnitUtil {
             return Math.floor(armorTons / TestSupportVehicle.armorWeightPerPoint(unit));
         } else if ((unit instanceof Jumpship)
                 && unit.getArmorType(unit.firstArmorIndex()) == EquipmentType.T_ARMOR_PRIMITIVE_AERO) {
-            // Because primitive jumpship armor has an extra step of rounding we have to give it special treatment.
+            // Because primitive JumpShip armor has an extra step of rounding we have to give it special treatment.
             // Standard armor value is computed first, rounded down, then the primitive armor mod is applied.
             return Math.floor(Math.floor(armorTons * TestAdvancedAerospace.armorPointsPerTon((Jumpship) unit,
                     EquipmentType.T_ARMOR_AEROSPACE, false)) * 0.66);
@@ -1655,7 +1527,7 @@ public class UnitUtil {
     /**
      * Computes the total number of additional points provided for aerospace vessels based on
      * their SI. This is usually a whole number but may be a fractional amount for primitive
-     * jumpships.
+     * JumpShips.
      * 
      * @param entity The unit to compute bonus armor for.
      * @return       The number of extra armor points received for SI. This is the total number, which
@@ -1720,7 +1592,7 @@ public class UnitUtil {
         } else if (en.hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
             return TestAdvancedAerospace.armorPointsPerTon((Jumpship) en, at, clanArmor);
         } else if (en.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)) {
-            return SmallCraft.armorPointsPerTon(en.getWeight(), ((Aero)en).isSpheroid(), at, clanArmor);
+            return SmallCraft.armorPointsPerTon(en.getWeight(), ((Aero) en).isSpheroid(), at, clanArmor);
         } else {
             return 16.0 * EquipmentType.getArmorPointMultiplier(at, clanArmor);
         }
@@ -1785,6 +1657,7 @@ public class UnitUtil {
             if ((cs == null) && (firstEmpty == -1)) {
                 firstEmpty = slot;
             }
+
             if ((firstEmpty != -1) && (cs != null)) {
                 // move this to the first empty slot
                 unit.setCritical(loc, firstEmpty, cs);
@@ -1805,7 +1678,7 @@ public class UnitUtil {
 
     private static void compactCriticals(Mech mech, int loc) {
         if (loc == Mech.LOC_HEAD) {
-            // This location has an empty slot inbetween systems crits
+            // This location has an empty slot in-between systems crits
             // which will mess up parsing if compacted.
             return;
         }
@@ -1885,16 +1758,14 @@ public class UnitUtil {
      */
     public static Mounted createSpreadMounts(Mech unit, EquipmentType equip) {
         // how many non-spreadable contiguous blocks of crits?
-        int blocks = 0;
+        int blocks = equip.getCriticals(unit);
+
         boolean isMisc = equip instanceof MiscType;
 
-        blocks = equip.getCriticals(unit);
-
-        List<Integer> locations = new ArrayList<Integer>();
+        List<Integer> locations = new ArrayList<>();
 
         if (isMisc) {
-            if ((equip.hasFlag(MiscType.F_INDUSTRIAL_TSM) || equip
-                    .hasFlag(MiscType.F_TSM))) {
+            if ((equip.hasFlag(MiscType.F_INDUSTRIAL_TSM) || equip.hasFlag(MiscType.F_TSM))) {
                 // all crits user placeable
                 for (int i = 0; i < equip.getCriticals(unit); i++) {
                     locations.add(Entity.LOC_NONE);
@@ -1914,7 +1785,7 @@ public class UnitUtil {
                 locations.add(Mech.LOC_RT);
                 blocks = 6;
                 // Need to account for the center leg
-                if (unit instanceof TripodMech){
+                if (unit instanceof TripodMech) {
                     locations.add(Mech.LOC_CLEG);
                     blocks++;
                 }
@@ -1927,9 +1798,8 @@ public class UnitUtil {
                 locations.add(Mech.LOC_LT);
                 locations.add(Mech.LOC_RT);
                 blocks = 6;
-            } else if ((equip.hasFlag(MiscType.F_TRACKS)
-                    || equip.hasFlag(MiscType.F_TALON) || equip
-                        .hasFlag(MiscType.F_JUMP_BOOSTER))) {
+            } else if ((equip.hasFlag(MiscType.F_TRACKS) || equip.hasFlag(MiscType.F_TALON)
+                    || equip.hasFlag(MiscType.F_JUMP_BOOSTER))) {
                 // 1 block in each leg
                 locations.add(Mech.LOC_LLEG);
                 locations.add(Mech.LOC_RLEG);
@@ -1939,7 +1809,7 @@ public class UnitUtil {
                 }
                 blocks = (unit instanceof BipedMech ? 2 : 4);
                 // Need to account for the center leg
-                if (unit instanceof TripodMech){
+                if (unit instanceof TripodMech) {
                     locations.add(Mech.LOC_CLEG);
                     blocks = 3;
                 }
@@ -1958,7 +1828,7 @@ public class UnitUtil {
                     || equip.hasFlag(MiscType.F_NULLSIG)
                     || equip.hasFlag(MiscType.F_BLUE_SHIELD))) {
                 // Need to account for the center leg
-                if (unit instanceof TripodMech){
+                if (unit instanceof TripodMech) {
                     blocks++;
                 }
                 // 1 crit in each location, except the head
@@ -1967,7 +1837,7 @@ public class UnitUtil {
                 }
             } else if (equip.hasFlag(MiscType.F_CHAMELEON_SHIELD)) {
                 // Need to account for the center leg
-                if (unit instanceof TripodMech){
+                if (unit instanceof TripodMech) {
                     blocks++;
                 }
                 // 1 crit in each location except head and CT
@@ -2050,7 +1920,6 @@ public class UnitUtil {
     }
 
     public static Font deriveFont(boolean boldFont, float pointSize) {
-
         UnitUtil.loadFonts();
 
         if (boldFont) {
@@ -2076,7 +1945,7 @@ public class UnitUtil {
     }
 
     public static void removeClanCase(Entity unit) {
-        ArrayList<Mounted> caseList = new ArrayList<Mounted>();
+        ArrayList<Mounted> caseList = new ArrayList<>();
 
         for (Mounted mount : unit.getMisc()) {
             if (mount.getType().getInternalName().equals("CLCASE")) {
@@ -2106,12 +1975,9 @@ public class UnitUtil {
     }
 
     public static boolean hasAmmo(Entity unit, int location) {
-
         for (Mounted mount : unit.getEquipment()) {
-
             if (mount.getType().isExplosive(mount)
-                    && ((mount.getLocation() == location) || (mount
-                            .getSecondLocation() == location))) {
+                    && ((mount.getLocation() == location) || (mount.getSecondLocation() == location))) {
                 return true;
             }
         }
@@ -2136,24 +2002,6 @@ public class UnitUtil {
         return false;
     }
 
-    public static int getBAAmmoCount(Entity ba, WeaponType weapon, int location) {
-        int ammoCount = 0;
-
-        for (Mounted mount : ba.getAmmo()) {
-            if (mount.getLocation() != location) {
-                continue;
-            }
-            AmmoType ammo = (AmmoType) mount.getType();
-
-            if ((ammo.getRackSize() == weapon.getRackSize())
-                    && (ammo.getAmmoType() == weapon.getAmmoType())) {
-                ammoCount += mount.getUsableShotsLeft();
-            }
-        }
-
-        return ammoCount;
-    }
-
     /**
      * @return the name of the given equipment with (IS) or (Clan) added for mixed tech units when
      * appropriate.
@@ -2163,7 +2011,6 @@ public class UnitUtil {
         if (unit.isMixedTech()
                 && (eq.getTechLevel(unit.getTechLevelYear()) != TechConstants.T_ALLOWED_ALL)
                 && (eq.getTechLevel(unit.getTechLevelYear()) != TechConstants.T_TECH_UNKNOWN)) {
-
             if (unit.isClan() && !TechConstants.isClan(eq.getTechLevel(unit.getTechLevelYear()))) {
                 name += " (IS)";
             } else if (!unit.isClan() && TechConstants.isClan(eq.getTechLevel(unit.getTechLevelYear()))) {
@@ -2186,17 +2033,15 @@ public class UnitUtil {
         }
         if ((eq.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)
                 || eq.getType().hasFlag(MiscType.F_AP_MOUNT))
-                && (eq.getLinked() != null)){
-            sb.append(" (attached " + eq.getLinked().getName()
-                    + ")");
+                && (eq.getLinked() != null)) {
+            sb.append(" (attached " + eq.getLinked().getName() + ")");
         }
-        if (eq.isSquadSupportWeapon()){
+        if (eq.isSquadSupportWeapon()) {
             sb.append(" (squad support weapon)");
         }
         if (eq.getType() instanceof InfantryWeapon) {
             sb.append("<br>Damage/Trooper: ");
-            double infDamage = ((InfantryWeapon) eq.getType())
-                    .getInfantryDamage();
+            double infDamage = ((InfantryWeapon) eq.getType()).getInfantryDamage();
             sb.append(infDamage);
             sb.append("<br>Range Class: ");
             sb.append(((InfantryWeapon) eq.getType()).getInfantryRange());
@@ -2236,19 +2081,17 @@ public class UnitUtil {
             sb.append("<br>Armored");
         }
         if ((unit instanceof BattleArmor)
-
-                && eq.getType().hasFlag(WeaponType.F_INF_SUPPORT)){
+                && eq.getType().hasFlag(WeaponType.F_INF_SUPPORT)) {
            sb.append("<br>* Infantry support weapons must be held in an " +
                 "Armored Glove");
         } else if ((unit instanceof BattleArmor)
-                && eq.getType().hasFlag(WeaponType.F_INFANTRY)){
+                && eq.getType().hasFlag(WeaponType.F_INFANTRY)) {
            sb.append("<br>* Infantry weapons must be mounted in AP Mounts");
         }
 
         sb.append("</html>");
         return sb.toString();
     }
-
 
     private static String getWeaponDamageInfo(WeaponType wType) {
         if (wType.getDamage() == WeaponType.DAMAGE_BY_CLUSTERTABLE) {
@@ -2286,28 +2129,23 @@ public class UnitUtil {
      * @return T he number of critical-free heat sinks.
      */
     public static int getCriticalFreeHeatSinks(Entity unit, boolean compact) {
-        int engineHSCapacity = unit.getEngine().integralHeatSinkCapacity(
-                compact);
+        int engineHSCapacity = unit.getEngine().integralHeatSinkCapacity(compact);
 
         if (unit.isOmni()) {
-            engineHSCapacity = Math.min(engineHSCapacity, unit.getEngine()
-                    .getBaseChassisHeatSinks(compact));
+            engineHSCapacity = Math.min(engineHSCapacity, unit.getEngine().getBaseChassisHeatSinks(compact));
         }
 
         return engineHSCapacity;
     }
 
-    public static boolean isPreviousCritEmpty(Entity unit, CriticalSlot cs,
-            int slot, int location) {
+    public static boolean isPreviousCritEmpty(Entity unit, CriticalSlot cs, int slot, int location) {
         if (slot == 0) {
             return false;
+        } else if (unit instanceof Mech) {
+            return (slot <= 0) || (unit.getCritical(location, slot - 1) == null);
+        } else {
+            return true;
         }
-        if (unit instanceof Mech) {
-            if ((slot > 0) && (unit.getCritical(location, slot - 1) != null)) {
-                return false;
-            }
-        }
-        return true;
     }
 
     public static boolean isLastCrit(Entity unit, CriticalSlot cs, int slot, int location) {
@@ -2321,8 +2159,7 @@ public class UnitUtil {
         if (cs == null) {
             return true;
         }
-        // extra check for the last crit in a location, it shouldn't get a
-        // border
+        // extra check for the last crit in a location, it shouldn't get a border
         if ((slot + 1) >= unit.getNumberOfCriticals(location)) {
             return false;
         }
@@ -2330,10 +2167,8 @@ public class UnitUtil {
         int lastIndex = 0;
         if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
 
-            for (int position = 0; position < unit
-                    .getNumberOfCriticals(location); position++) {
-                if ((cs.getIndex() == Mech.SYSTEM_ENGINE) && (slot >= 3)
-                        && (position < 3)) {
+            for (int position = 0; position < unit.getNumberOfCriticals(location); position++) {
+                if ((cs.getIndex() == Mech.SYSTEM_ENGINE) && (slot >= 3) && (position < 3)) {
                     position = 3;
                 }
                 CriticalSlot crit = unit.getCritical(location, position);
@@ -2346,7 +2181,6 @@ public class UnitUtil {
                     break;
                 }
             }
-
         } else {
             CriticalSlot nextCrit = unit.getCritical(location, slot + 1);
             return (nextCrit == null) || (nextCrit.getMount() == null) || !nextCrit.getMount().equals(cs.getMount());
@@ -2404,9 +2238,8 @@ public class UnitUtil {
         }
     }
 
-    public static void updateCritsArmoredStatus(Entity unit, CriticalSlot cs,
-            int location) {
-
+    public static void updateCritsArmoredStatus(Entity unit, @Nullable CriticalSlot cs,
+                                                int location) {
         if ((cs == null) || (cs.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
             return;
         }
@@ -2438,21 +2271,18 @@ public class UnitUtil {
     }
 
     public static boolean isArmorOrStructure(EquipmentType eq) {
-
         return UnitUtil.isArmor(eq) || UnitUtil.isStructure(eq);
     }
 
-    public static boolean isArmorable(CriticalSlot cs) {
+    public static boolean isArmorable(@Nullable CriticalSlot cs) {
         if (cs == null) {
             return false;
-        }
-
-        if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
+        } else if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
             return true;
+        } else {
+            Mounted mount = cs.getMount();
+            return ((mount != null) && isArmorable(mount.getType()));
         }
-
-        Mounted mount = cs.getMount();
-        return ((mount != null) && isArmorable(mount.getType()));
     }
     
     public static boolean isArmorable(EquipmentType eq) {
@@ -2465,7 +2295,6 @@ public class UnitUtil {
     }
 
     public static void updateLoadedUnit(Entity unit) {
-
         // Check for illegal armor tech levels and set to the tech level of the unit.
         for (int loc = 0; loc < unit.locations(); loc++) {
             if (unit.getArmorType(loc) >= 0) {
@@ -2522,21 +2351,21 @@ public class UnitUtil {
             }
             // Minimum crew levels
             ((SmallCraft) unit).setNGunners(Math.max(unit.getNGunners(),
-                    TestSmallCraft.requiredGunners((SmallCraft) unit)));
-            ((SmallCraft) unit).setNCrew(Math.max(unit.getNCrew(),
+                    TestSmallCraft.requiredGunners(unit)));
+            unit.setNCrew(Math.max(unit.getNCrew(),
                     unit.getNGunners() + unit.getBayPersonnel()
                     + TestSmallCraft.minimumBaseCrew((SmallCraft) unit)));
-            if (((SmallCraft) unit).getNOfficers() == 0) {
+            if (unit.getNOfficers() == 0) {
                 ((SmallCraft) unit).setNOfficers((int) Math.ceil((unit.getNCrew() - unit.getBayPersonnel()) / 5.0));
             }
             // Check whether there are any quarters allocated. If not, assign standard levels
-            if (!unit.getTransportBays().stream().anyMatch(Bay::isQuarters)) {
-                unit.addTransporter(TestAero.Quarters.FIRST_CLASS.newQuarters(unit.getNOfficers()));
-                unit.addTransporter(TestAero.Quarters.SECOND_CLASS.newQuarters(unit.getNPassenger()));
+            if (unit.getTransportBays().stream().noneMatch(Bay::isQuarters)) {
+                unit.addTransporter(Quarters.FIRST_CLASS.newQuarters(unit.getNOfficers()));
+                unit.addTransporter(Quarters.SECOND_CLASS.newQuarters(unit.getNPassenger()));
                 int std = unit.getNCrew() - unit.getBayPersonnel() - unit.getNOfficers()
                        + unit.getNMarines() + unit.getNBattleArmor();
                 if (std > 0) {
-                    unit.addTransporter(TestAero.Quarters.STANDARD.newQuarters(std));
+                    unit.addTransporter(Quarters.STANDARD.newQuarters(std));
                 }
             }
         } else if (unit.hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
@@ -2781,8 +2610,9 @@ public class UnitUtil {
             return isBAEquipment(eq, (BattleArmor) en);
         } else if (en instanceof Aero) {
             return isAeroEquipment(eq, (Aero) en);
+        } else {
+            return true;
         }
-        return true;
     }
 
     /**
@@ -2796,7 +2626,6 @@ public class UnitUtil {
      */
     // TODO: Make this behave like the other isXYZEquipment
     public static boolean isMechEquipment(EquipmentType eq, Mech unit) {
-
         if (UnitUtil.isArmorOrStructure(eq)) {
             return false;
         }
@@ -2874,7 +2703,6 @@ public class UnitUtil {
             if (eq.hasFlag(MiscType.F_IS_DOUBLE_HEAT_SINK_PROTOTYPE)) {
                 return true;
             }
-
         }
 
         return false;
@@ -2951,8 +2779,7 @@ public class UnitUtil {
             }
 
             if (weapon.hasFlag(WeaponType.F_ENERGY)
-                    || (weapon.hasFlag(WeaponType.F_PLASMA) && (weapon
-                            .getAmmoType() == AmmoType.T_PLASMA))) {
+                    || (weapon.hasFlag(WeaponType.F_PLASMA) && (weapon.getAmmoType() == AmmoType.T_PLASMA))) {
 
                 if (weapon.hasFlag(WeaponType.F_ENERGY)
                         && weapon.hasFlag(WeaponType.F_PLASMA)
@@ -3012,23 +2839,20 @@ public class UnitUtil {
         return false;
     }
 
-    public static boolean isBattleArmorAPWeapon(EquipmentType etype) {
-        InfantryWeapon infWeap = null;
-        if ((etype == null) || !(etype instanceof InfantryWeapon)) {
+    public static boolean isBattleArmorAPWeapon(@Nullable EquipmentType etype) {
+        if (!(etype instanceof InfantryWeapon)) {
             return false;
         } else {
-            infWeap = (InfantryWeapon)etype;
+            InfantryWeapon infWeap = (InfantryWeapon) etype;
+            return infWeap.hasFlag(WeaponType.F_INFANTRY)
+                    && !infWeap.hasFlag(WeaponType.F_INF_POINT_BLANK)
+                    && !infWeap.hasFlag(WeaponType.F_INF_ARCHAIC)
+                    && (infWeap.getCrew() < 2);
         }
-        return  infWeap.hasFlag(WeaponType.F_INFANTRY)
-                && !infWeap.hasFlag(WeaponType.F_INF_POINT_BLANK)
-                && !infWeap.hasFlag(WeaponType.F_INF_ARCHAIC)
-                && (infWeap.getCrew() < 2);
     }
 
     public static boolean isBattleArmorWeapon(EquipmentType eq, Entity unit) {
-
         if (eq instanceof WeaponType) {
-
             WeaponType weapon = (WeaponType) eq;
 
             if (!weapon.hasFlag(WeaponType.F_BA_WEAPON)) {
@@ -3073,7 +2897,6 @@ public class UnitUtil {
     }
 
     public static boolean isInfantryEquipment(EquipmentType eq, Entity unit) {
-
         // TODO: adjust for field guns and artillery
         return eq instanceof InfantryWeapon;
     }
@@ -3081,9 +2904,9 @@ public class UnitUtil {
     /**
      * Tests whether equipment should be shown on the equipment tab for the unit. This is
      * used for both combat vehicles and non-aerospace support vehicles.
-     * @param eq   The equipment to show
+     * @param eq The equipment to show
      * @param tank The tank
-     * @return     Whether the equipment should show on the table
+     * @return Whether the equipment should show on the table
      */
     public static boolean isTankEquipment(EquipmentType eq, Tank tank) {
         return isTankMiscEquipment(eq, tank) || isTankWeapon(eq, tank);
@@ -3092,9 +2915,9 @@ public class UnitUtil {
     /**
      * Tests whether equipment should be shown on the equipment tab for the unit as non-weapon
      * equipment. This is used for both combat vehicles and non-aerospace support vehicles.
-     * @param eq   The equipment to show
+     * @param eq The equipment to show
      * @param tank The tank
-     * @return     Whether the equipment should show on the table
+     * @return Whether the equipment should show on the table
      */
     public static boolean isTankMiscEquipment(EquipmentType eq, Entity tank) {
         if (UnitUtil.isArmorOrStructure(eq)) {
@@ -3142,7 +2965,6 @@ public class UnitUtil {
     }
 
     public static boolean canSwarm(BattleArmor ba) {
-
         for (Mounted eq : ba.getEquipment()) {
             if ((eq.getType() instanceof SwarmAttack)
                     || (eq.getType() instanceof StopSwarmAttack)) {
@@ -3153,7 +2975,6 @@ public class UnitUtil {
     }
 
     public static boolean canLegAttack(BattleArmor ba) {
-
         for (Mounted eq : ba.getEquipment()) {
             if (eq.getType() instanceof LegAttack) {
                 return true;
@@ -3162,84 +2983,14 @@ public class UnitUtil {
         return false;
     }
 
-    public static boolean hasInfantryWeapons(BattleArmor ba) {
-
-        for (Mounted eq : ba.getEquipment()) {
-            if (eq.getType() instanceof InfantryWeapon) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public static int getShieldDamageAbsorption(Mech mech, int location) {
-        for (int slot = 0; slot < mech.getNumberOfCriticals(location); slot++) {
-            CriticalSlot cs = mech.getCritical(location, slot);
-
-            if (cs == null) {
-                continue;
-            }
-
-            if (cs.getType() != CriticalSlot.TYPE_EQUIPMENT) {
-                continue;
-            }
-
-            Mounted m = cs.getMount();
-
-            if (m == null) {
-                LogManager.getLogger().error("Null Mount index: " + cs.getIndex());
-                m = cs.getMount();
-            }
-
-            EquipmentType type = m.getType();
-            if ((type instanceof MiscType) && ((MiscType) type).isShield()) {
-                return m.getBaseDamageAbsorptionRate();
-            }
-        }
-
-        return 0;
-    }
-
-    public static int getShieldDamageCapacity(Mech mech, int location) {
-        for (int slot = 0; slot < mech.getNumberOfCriticals(location); slot++) {
-            CriticalSlot cs = mech.getCritical(location, slot);
-
-            if (cs == null) {
-                continue;
-            }
-
-            if (cs.getType() != CriticalSlot.TYPE_EQUIPMENT) {
-                continue;
-            }
-
-            Mounted m = cs.getMount();
-
-            if (m == null) {
-                LogManager.getLogger().error("Null Mount index: " + cs.getIndex());
-                m = cs.getMount();
-            }
-
-            EquipmentType type = m.getType();
-            if ((type instanceof MiscType) && ((MiscType) type).isShield()) {
-                return m.getBaseDamageCapacity();
-            }
-        }
-
-        return 0;
-    }
-
     /**
-     * remove all CriticalSlots on the passed unit that are internal structure or
-     * armor
+     * remove all CriticalSlots on the passed unit that are internal structure or armor
      *
-     * @param unit
-     *            the Entity
-     * @param internalStructure
-     *            true to remove IS, false to remove armor
+     * @param unit the Entity
+     * @param internalStructure true to remove IS, false to remove armor
      */
-    public static void removeISorArmorCrits(Entity unit,
-            boolean internalStructure) {
-        ArrayList<String> mountList = new ArrayList<String>();
+    public static void removeISorArmorCrits(Entity unit, boolean internalStructure) {
+        ArrayList<String> mountList = new ArrayList<>();
         if (internalStructure) {
             for (String struc : EquipmentType.structureNames) {
                 mountList.add("IS " + struc);
@@ -3275,15 +3026,12 @@ public class UnitUtil {
      * remove all Mounted on the passed unit that are internal structure or
      * armor
      *
-     * @param unit
-     *            the Entity
-     * @param internalStructure
-     *            true to remove IS, false to remove armor
+     * @param unit the Entity
+     * @param internalStructure true to remove IS, false to remove armor
      */
-    public static void removeISorArmorMounts(Entity unit,
-            boolean internalStructure) {
+    public static void removeISorArmorMounts(Entity unit, boolean internalStructure) {
         UnitUtil.removeISorArmorCrits(unit, internalStructure);
-        ArrayList<String> mountList = new ArrayList<String>();
+        ArrayList<String> mountList = new ArrayList<>();
 
         mountList.add("Standard");
 
@@ -3351,7 +3099,6 @@ public class UnitUtil {
     }
 
     public static void checkArmor(Entity unit) {
-
         if (!(unit instanceof Mech)) {
             return;
         }
@@ -3409,60 +3156,10 @@ public class UnitUtil {
         }
 
         if (foundError) {
-            JOptionPane
-                    .showMessageDialog(
-                            null,
-                            "Too much armor found on this unit.\n\rMegaMekLab has automatically corrected the problem.\n\rIt is suggested you check the armor allocation.",
-                            "Too much armor", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(null,
+                    "Too much armor found on this unit.\n\rMegaMekLab has automatically corrected the problem.\n\rIt is suggested you check the armor allocation.",
+                    "Too much armor", JOptionPane.WARNING_MESSAGE);
         }
-    }
-
-    public static boolean hasManipulator(BattleArmor ba) {
-
-        for (Mounted mount : ba.getMisc()) {
-            MiscType eq = (MiscType) mount.getType();
-
-            if (eq.hasFlag(MiscType.F_BA_EQUIPMENT)
-                    && (eq.hasFlag(MiscType.F_ARMORED_GLOVE)
-                            || eq.hasFlag(MiscType.F_BASIC_MANIPULATOR) || eq
-                                .hasFlag(MiscType.F_BATTLE_CLAW))) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public static boolean isManipulator(Mounted mount) {
-
-        if (!(mount.getType() instanceof MiscType)) {
-            return false;
-        }
-
-        MiscType eq = (MiscType) mount.getType();
-
-        if (eq.hasFlag(MiscType.F_BA_EQUIPMENT)
-                && (eq.hasFlag(MiscType.F_ARMORED_GLOVE)
-                        || eq.hasFlag(MiscType.F_BASIC_MANIPULATOR)
-                        || eq.hasFlag(MiscType.F_BATTLE_CLAW) || eq
-                            .hasFlag(MiscType.F_CARGOLIFTER))) {
-            return true;
-        }
-
-        return false;
-    }
-
-    public static int getNumberOfEquipmentLikeThis(Entity unit,
-            EquipmentType baseEQ) {
-        int numberOfEq = 0;
-
-        for (Mounted mount : unit.getEquipment()) {
-            if (mount.getType().equals(baseEQ)) {
-                numberOfEq++;
-            }
-        }
-
-        return numberOfEq;
     }
 
     /**
@@ -3475,32 +3172,23 @@ public class UnitUtil {
         TestEntity testEntity = null;
 
         if (unit.hasETypeFlag(Entity.ETYPE_MECH)) {
-            testEntity = new TestMech((Mech) unit, entityVerifier.mechOption,
-                    null);
+            testEntity = new TestMech((Mech) unit, entityVerifier.mechOption, null);
         } else if (unit.hasETypeFlag(Entity.ETYPE_PROTOMECH)) {
-            testEntity = new TestProtomech((Protomech) unit,
-                    entityVerifier.protomechOption, null);
+            testEntity = new TestProtomech((Protomech) unit, entityVerifier.protomechOption, null);
         } else if (unit.isSupportVehicle()) {
-            testEntity = new TestSupportVehicle(unit,
-                    entityVerifier.tankOption, null);
+            testEntity = new TestSupportVehicle(unit, entityVerifier.tankOption, null);
         } else if (unit.hasETypeFlag(Entity.ETYPE_TANK)) {
-            testEntity = new TestTank((Tank) unit,
-                    entityVerifier.tankOption, null);
+            testEntity = new TestTank((Tank) unit, entityVerifier.tankOption, null);
         } else if (unit.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)) {
-            testEntity = new TestSmallCraft((SmallCraft) unit,
-                    entityVerifier.aeroOption, null);
+            testEntity = new TestSmallCraft((SmallCraft) unit, entityVerifier.aeroOption, null);
         } else if (unit.hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
-            testEntity = new TestAdvancedAerospace((Jumpship) unit,
-                    entityVerifier.aeroOption, null);
+            testEntity = new TestAdvancedAerospace((Jumpship) unit, entityVerifier.aeroOption, null);
         } else if (unit.hasETypeFlag(Entity.ETYPE_AERO)) {
-            testEntity = new TestAero((Aero) unit,
-                    entityVerifier.aeroOption, null);
+            testEntity = new TestAero((Aero) unit, entityVerifier.aeroOption, null);
         } else if (unit.hasETypeFlag(Entity.ETYPE_BATTLEARMOR)) {
-            testEntity = new TestBattleArmor((BattleArmor) unit,
-                    entityVerifier.baOption, null);
+            testEntity = new TestBattleArmor((BattleArmor) unit, entityVerifier.baOption, null);
         } else if (unit.hasETypeFlag(Entity.ETYPE_INFANTRY)) {
-            testEntity = new TestInfantry((Infantry)unit,
-                    entityVerifier.infOption, null);
+            testEntity = new TestInfantry((Infantry)unit, entityVerifier.infOption, null);
         }
         return testEntity;
     }
@@ -3514,9 +3202,9 @@ public class UnitUtil {
      */
     public static String validateUnit(Entity unit) {
         StringBuffer sb = new StringBuffer();
-        TestEntity testEntity =  getEntityVerifier(unit);
+        TestEntity testEntity = getEntityVerifier(unit);
 
-        if (testEntity != null){
+        if (testEntity != null) {
             testEntity.correctEntity(sb, unit.getTechLevel());
         }
 
@@ -3526,8 +3214,7 @@ public class UnitUtil {
     public static void removeAllMiscMounteds(Entity unit, BigInteger flag) {
         for (int pos = unit.getEquipment().size() - 1; pos >= 0; pos--) {
             Mounted mount = unit.getEquipment().get(pos);
-            if ((mount.getType() instanceof MiscType)
-                    && ((MiscType) mount.getType()).hasFlag(flag)) {
+            if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(flag)) {
                 UnitUtil.removeMounted(unit, mount);
             }
         }
@@ -3545,9 +3232,7 @@ public class UnitUtil {
     public static void removeTC(Entity unit) {
         for (int pos = unit.getEquipment().size() - 1; pos >= 0; pos--) {
             Mounted mount = unit.getEquipment().get(pos);
-            if ((mount.getType() instanceof MiscType)
-                    && ((MiscType) mount.getType())
-                            .hasFlag(MiscType.F_TARGCOMP)) {
+            if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_TARGCOMP)) {
                 UnitUtil.removeMounted(unit, mount);
             }
         }
@@ -3595,8 +3280,10 @@ public class UnitUtil {
      * @param includeRear     Whether to include rear-mounted equipment
      * @throws LocationFullException If the target location is full
      */
-    public static void copyLocationEquipment(final Entity entity, final int fromLoc, final int toLoc,
-            final boolean includeForward, final boolean includeRear) throws LocationFullException {
+    public static void copyLocationEquipment(final Entity entity, final int fromLoc,
+                                             final int toLoc, final boolean includeForward,
+                                             final boolean includeRear)
+            throws LocationFullException {
         /*
          * First we remove any equipment already in the location, but keep a list of it
          * to use as much as possible. 
@@ -3606,7 +3293,7 @@ public class UnitUtil {
                 .filter(m -> m.isRearMounted() ? includeRear : includeForward)
                 .collect(Collectors.toList());
 
-        removed.stream().forEach(m -> UnitUtil.removeCriticals(entity, m));
+        removed.forEach(m -> UnitUtil.removeCriticals(entity, m));
 
         removed.stream()
                 .filter(m -> !(m.getType() instanceof BayWeapon))
@@ -3616,13 +3303,12 @@ public class UnitUtil {
                 .filter(m -> (m.getType() instanceof BayWeapon))
                 .forEach(m -> removeMounted(entity, m));
         
-        /*
-         * Now we go through the equipment in the location to copy and add it to the other location.
-         * If there is a match in what we removed, use that. Otherwise add the equipment to the unit.
-         * If the unit uses weapon bays, we need to create them in the new location and fill them. If
-         * the unit doesn't use bays we will iterate through the crit slots to get the equipment
-         * in the same order to be nice and tidy.
-         */
+
+        // Now we go through the equipment in the location to copy and add it to the other location.
+        // If there is a match in what we removed, use that. Otherwise, add the equipment to the
+        // unit. If the unit uses weapon bays, we need to create them in the new location and fill
+        // them. If the unit doesn't use bays, we will iterate through the crit slots to get the
+        // equipment in the same order to be nice and tidy.
         if (entity.usesWeaponBays()) {
             List<Mounted> bayList = entity.getWeaponBayList().stream()
                     .filter(bay -> (bay.getLocation() == fromLoc) && (bay.isRearMounted() ? includeRear : includeForward))
@@ -3658,14 +3344,15 @@ public class UnitUtil {
                 }
             }
         }
+
         // Link up Artemis, etc.
         try {
             MechFileParser.postLoadInit(entity);
-        } catch (EntityLoadingException e) {
-            LogManager.getLogger().error("", e);
+        } catch (Exception ex) {
+            LogManager.getLogger().error("", ex);
         }
     }
-    
+
     /**
      * Used by {@link #copyLocationEquipment(Entity, int, int, boolean, boolean)} to perform the actual
      * copy of equipment from one location to another.
@@ -3701,7 +3388,7 @@ public class UnitUtil {
     /**
      * Checks whether the space has room for the equipment within the slot and weight limits.
      * 
-     * @param location A Protomech location
+     * @param location A ProtoMek location
      * @param mount    The equipment to be added to the location
      * @return Whether the equipment can be added without exceeding the limits.
      */
@@ -3728,16 +3415,14 @@ public class UnitUtil {
     }
 
     public static void showValidation(Entity entity, JFrame frame) {
-        String sb = UnitUtil.validateUnit(entity);
-
-        if (sb.length() > 0) {
-            JOptionPane.showMessageDialog(frame, sb, "Unit Validation",
+        final String validation = UnitUtil.validateUnit(entity);
+        if (!validation.isBlank()) {
+            JOptionPane.showMessageDialog(frame, validation, "Unit Validation",
                     JOptionPane.ERROR_MESSAGE);
         } else {
             JOptionPane.showMessageDialog(frame, "Validation Passed",
                     "Unit Validation", JOptionPane.INFORMATION_MESSAGE);
         }
-
     }
 
     public static void showUnitSpecs(Entity unit, JFrame frame) {
@@ -3881,7 +3566,7 @@ public class UnitUtil {
                     return true;
                 }
             } else if ((atype instanceof SmallWeaponAmmoType)
-                    && ((SmallWeaponAmmoType) atype).isAmmoFor(m.getType())){
+                    && ((SmallWeaponAmmoType) atype).isAmmoFor(m.getType())) {
                 return true;
             }
         }
@@ -3957,7 +3642,7 @@ public class UnitUtil {
      */
     @Deprecated
     public static void checkEquipmentByTechLevel(Entity unit) {
-        Vector<Mounted> toRemove = new Vector<Mounted>();
+        Vector<Mounted> toRemove = new Vector<>();
         for (Mounted m : unit.getEquipment()) {
             EquipmentType etype = m.getType();
             if (UnitUtil.isArmorOrStructure(etype)
@@ -3981,8 +3666,7 @@ public class UnitUtil {
             if ((null != pbi.getPrimaryWeapon())
                     && !UnitUtil.isLegal(unit, pbi.getPrimaryWeapon())) {
                 UnitUtil.replaceMainWeapon((Infantry) unit,
-                        (InfantryWeapon) EquipmentType
-                                .get("Infantry Auto Rifle"), false);
+                        (InfantryWeapon) EquipmentType.get("Infantry Auto Rifle"), false);
             }
             if ((null != pbi.getSecondaryWeapon())
                     && !UnitUtil.isLegal(unit, pbi.getSecondaryWeapon())) {
@@ -4025,7 +3709,7 @@ public class UnitUtil {
                 toRemove.add(m);
             }
         }
-        dirty |= toRemove.size() > 0;
+        dirty |= !toRemove.isEmpty();
         for (Mounted m : toRemove) {
             UnitUtil.removeMounted(unit, m);
         }
@@ -4047,8 +3731,7 @@ public class UnitUtil {
         return dirty;
     }
 
-    public static void replaceMainWeapon(Infantry unit, InfantryWeapon weapon,
-            boolean secondary) {
+    public static void replaceMainWeapon(Infantry unit, InfantryWeapon weapon, boolean secondary) {
         Mounted existingInfantryMount = null;
         for (Mounted m : unit.getWeaponList()) {
             if ((m.getType() instanceof InfantryWeapon)
@@ -4070,25 +3753,21 @@ public class UnitUtil {
         // is TAG, in which case both are added.
         if (unit.getSecondaryWeapon() != null && unit.getSecondaryWeapon().hasFlag(WeaponType.F_TAG)) {
             try {
-                unit.addEquipment(unit.getPrimaryWeapon(),
-                        Infantry.LOC_INFANTRY);
-                unit.addEquipment(unit.getSecondaryWeapon(),
-                        Infantry.LOC_INFANTRY);
-            } catch (LocationFullException ex) {
+                unit.addEquipment(unit.getPrimaryWeapon(), Infantry.LOC_INFANTRY);
+                unit.addEquipment(unit.getSecondaryWeapon(), Infantry.LOC_INFANTRY);
+            } catch (LocationFullException ignored) {
 
             }            
         } else if ((unit.getSecondaryN() < 2) || (null == unit.getSecondaryWeapon())) {
             try {
-                unit.addEquipment(unit.getPrimaryWeapon(),
-                        Infantry.LOC_INFANTRY);
-            } catch (LocationFullException ex) {
+                unit.addEquipment(unit.getPrimaryWeapon(), Infantry.LOC_INFANTRY);
+            } catch (LocationFullException ignored) {
 
             }
         } else {
             try {
-                unit.addEquipment(unit.getSecondaryWeapon(),
-                        Infantry.LOC_INFANTRY);
-            } catch (LocationFullException ex) {
+                unit.addEquipment(unit.getSecondaryWeapon(), Infantry.LOC_INFANTRY);
+            } catch (LocationFullException ignored) {
 
             }
         }
@@ -4110,13 +3789,13 @@ public class UnitUtil {
                 munition = AmmoType.M_STANDARD;
             }
             Optional<AmmoType> ammo = AmmoType.getMunitionsFor(fieldGun.getAmmoType()).stream()
-                    .filter(eq -> ((AmmoType)eq).getMunitionType() == munition
-                            && ((AmmoType)eq).getRackSize() == fieldGun.getRackSize())
+                    .filter(eq -> (eq.getMunitionType() == munition)
+                            && (eq.getRackSize() == fieldGun.getRackSize()))
                     .findFirst();
-            if (!ammo.isPresent()) {
-                ammo = AmmoType.getMunitionsFor(fieldGun.getAmmoType())
-                        .stream().findFirst();
+            if (ammo.isEmpty()) {
+                ammo = AmmoType.getMunitionsFor(fieldGun.getAmmoType()).stream().findFirst();
             }
+
             for (int i = 0; i < num; i++) {
                 try {
                     unit.addEquipment(fieldGun, Infantry.LOC_FIELD_GUNS);
@@ -4125,7 +3804,7 @@ public class UnitUtil {
                     } else {
                         LogManager.getLogger().error("Could not find ammo for field gun " + fieldGun.getName());
                     }
-                } catch (LocationFullException ex) {
+                } catch (Exception ex) {
                     LogManager.getLogger().error("", ex);
                 }
             }                
@@ -4146,40 +3825,6 @@ public class UnitUtil {
         unit.setArmorDamageDivisor(1.0);
     }
 
-    public static void removeOmniArmActuators(Mech mech) {
-        if ((mech instanceof BipedMech) || (mech instanceof TripodMech)) {
-            boolean leftACGaussPPC = false;
-            boolean rightACGaussPPC = false;
-            for (Mounted weapon : mech.getWeaponList()) {
-                if ((weapon.getLocation() == Mech.LOC_LARM)
-                        && ((weapon.getType() instanceof ACWeapon)
-                                || (weapon.getType() instanceof GaussWeapon)
-                                || (weapon.getType() instanceof LBXACWeapon)
-                                || (weapon.getType() instanceof UACWeapon) || (weapon
-                                    .getType() instanceof PPCWeapon))) {
-                    leftACGaussPPC = true;
-                }
-                if ((weapon.getLocation() == Mech.LOC_RARM)
-                        && ((weapon.getType() instanceof ACWeapon)
-                                || (weapon.getType() instanceof GaussWeapon)
-                                || (weapon.getType() instanceof LBXACWeapon)
-                                || (weapon.getType() instanceof UACWeapon) || (weapon
-                                    .getType() instanceof PPCWeapon))) {
-                    rightACGaussPPC = true;
-                }
-            }
-            if (leftACGaussPPC) {
-                removeArm(mech, Mech.LOC_LARM);
-                UnitUtil.compactCriticals(mech, Mech.LOC_LARM);
-            }
-            if (rightACGaussPPC) {
-                removeArm(mech, Mech.LOC_RARM);
-                UnitUtil.compactCriticals(mech, Mech.LOC_RARM);
-            }
-        }
-
-    }
-
     public static void removeHand(Mech mech, int location) {
         if (mech.hasSystem(Mech.ACTUATOR_HAND, location)) {
             mech.setCritical(location, 3, null);
@@ -4194,9 +3839,8 @@ public class UnitUtil {
                 removeHand(mech, location);
             }
         }
-
     }
-    
+
     /**
      * Adjusts the number of crew quarters of a given type on an aerospace vessel.
      * 
@@ -4204,10 +3848,10 @@ public class UnitUtil {
      * @param quarters  The type of crew quarters to change
      * @param size      The number of personnel that can be housed in the designated type of quarters
      */
-    public static void setQuarters(Aero aero, TestAero.Quarters quarters, int size) {
+    public static void setQuarters(Aero aero, Quarters quarters, int size) {
         List<Bay> toRemove = new ArrayList<>();
         for (Bay bay : aero.getTransportBays()) {
-            if (TestAero.Quarters.getQuartersForBay(bay) == quarters) {
+            if (Quarters.getQuartersForBay(bay) == quarters) {
                 toRemove.add(bay);
             }
         }
@@ -4229,18 +3873,18 @@ public class UnitUtil {
      * @param steerage      The number of steerage class crew/passenger quarters
      */
     public static void assignQuarters(Aero aero, int officer, int standard, int secondclass, int steerage) {
-        Map<TestAero.Quarters, Integer> sizes = TestAero.Quarters.getQuartersByType(aero);
-        if (sizes.get(TestAero.Quarters.FIRST_CLASS) != officer) {
-            UnitUtil.setQuarters(aero, TestAero.Quarters.FIRST_CLASS, officer);
+        Map<Quarters, Integer> sizes = Quarters.getQuartersByType(aero);
+        if (sizes.get(Quarters.FIRST_CLASS) != officer) {
+            UnitUtil.setQuarters(aero, Quarters.FIRST_CLASS, officer);
         }
-        if (sizes.get(TestAero.Quarters.STANDARD) != standard) {
-            UnitUtil.setQuarters(aero, TestAero.Quarters.STANDARD, standard);
+        if (sizes.get(Quarters.STANDARD) != standard) {
+            UnitUtil.setQuarters(aero, Quarters.STANDARD, standard);
         }
-        if (sizes.get(TestAero.Quarters.SECOND_CLASS) != secondclass) {
-            UnitUtil.setQuarters(aero, TestAero.Quarters.SECOND_CLASS, secondclass);
+        if (sizes.get(Quarters.SECOND_CLASS) != secondclass) {
+            UnitUtil.setQuarters(aero, Quarters.SECOND_CLASS, secondclass);
         }
-        if (sizes.get(TestAero.Quarters.STEERAGE) != steerage) {
-            UnitUtil.setQuarters(aero, TestAero.Quarters.STEERAGE, steerage);
+        if (sizes.get(Quarters.STEERAGE) != steerage) {
+            UnitUtil.setQuarters(aero, Quarters.STEERAGE, steerage);
         }
     }
     
@@ -4257,16 +3901,16 @@ public class UnitUtil {
     public static void autoAssignQuarters(Aero aero) {
         int marines = aero.getNMarines() + aero.getNBattleArmor(); 
         int enlistedNeeds = aero.getNCrew() + marines - aero.getBayPersonnel() - aero.getNOfficers();
-        Map<TestAero.Quarters, Integer> quartersCount = TestAero.Quarters.getQuartersByType(aero);
+        Map<Quarters, Integer> quartersCount = Quarters.getQuartersByType(aero);
         
         // Standard crew quarters should not be larger than the crew needs, but may be smaller as
         // some crew may have officer or steerage housing.
-        int standardCrew = Math.min(enlistedNeeds, quartersCount.get(TestAero.Quarters.STANDARD));
+        int standardCrew = Math.min(enlistedNeeds, quartersCount.get(Quarters.STANDARD));
         // Limit the first class quarters to number of officers + passengers. It is possible to house
         // enlisted in first class quarters, but that is beyond the scope of this and will need to
         // be done by hand.
         int officer1stC = Math.min(aero.getNOfficers() + aero.getNPassenger(),
-                quartersCount.get(TestAero.Quarters.FIRST_CLASS));
+                quartersCount.get(Quarters.FIRST_CLASS));
         officer1stC = Math.max(officer1stC, aero.getNOfficers());
         int firstClass = Math.max(0, officer1stC - aero.getNOfficers());
         int officer = officer1stC - firstClass;
@@ -4274,7 +3918,7 @@ public class UnitUtil {
         // Limit the steerage quarters to the number of crew that have not been assigned standard
         // or officer quarters and passengers that have not been assigned first class.
         int steeragePsgr = Math.min(aero.getNPassenger() - firstClass + enlistedNeeds - standardCrew,
-                quartersCount.get(TestAero.Quarters.STEERAGE));
+                quartersCount.get(Quarters.STEERAGE));
         // Assign any existing steerage quarters first to marines that have not already been assigned standard
         // quarters
         int steerageCrew = 0;
@@ -4294,17 +3938,6 @@ public class UnitUtil {
         int secondClass = aero.getNPassenger() - firstClass - steeragePsgr;
         
         assignQuarters(aero, officer + firstClass, standardCrew, secondClass, steerageCrew + steeragePsgr);
-    }
-
-    /**
-     * Removes all empty Weapon Bays from the given entity. May be called and has no effect
-     * for entities that do not use weapon bays.
-     */
-    public static void removeEmptyBays(Entity entity) {
-        List<Mounted> emptyBays = entity.getWeaponBayList().stream()
-                .filter(bay -> bay.getBayWeapons().isEmpty())
-                .collect(Collectors.toList());
-        emptyBays.forEach(bay -> UnitUtil.removeMounted(entity, bay));
     }
 
     /** Adds the given number of shots to the already present given ammo on the given ProtoMek. */
@@ -4355,6 +3988,4 @@ public class UnitUtil {
             mounted.setSize(mounted.getType().variableStepSize());
         }
     }
-
-
 }

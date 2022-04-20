@@ -33,7 +33,6 @@ package megameklab.ui.util;
 import org.apache.logging.log4j.LogManager;
 
 import javax.swing.*;
-import javax.swing.SpringLayout;
 import javax.swing.SpringLayout.Constraints;
 import java.awt.*;
 

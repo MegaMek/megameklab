@@ -1,5 +1,5 @@
 /*
- * MegaMekLab - Copyright (C) 2017 - The MegaMek Team
+ * Copyright (c) 2017-2022 - The MegaMek Team. All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -15,7 +15,12 @@ package megameklab.ui.generalUnit;
 
 import megamek.common.*;
 import megamek.common.util.EncodeControl;
-import megamek.common.verifier.*;
+import megamek.common.verifier.BayData;
+import megamek.common.verifier.TestAdvancedAerospace;
+import megamek.common.verifier.TestAero;
+import megamek.common.verifier.TestEntity;
+import megamek.common.verifier.TestEntity.Ceil;
+import megamek.common.verifier.TestSupportVehicle.SVType;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.IView;
 import megameklab.ui.util.RefreshListener;
@@ -302,14 +307,13 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
     private boolean canMountInfantryCompartment() {
         if (getEntity().isLargeCraft()) {
             return false;
-        }
-        if ((getEntity().isSupportVehicle()
+        } else if ((getEntity().isSupportVehicle()
                 && (getEntity().getWeightClass() == EntityWeightClass.WEIGHT_LARGE_SUPPORT))) {
-            final TestSupportVehicle.SVType type = TestSupportVehicle.SVType.getVehicleType(getEntity());
-            return (type != TestSupportVehicle.SVType.NAVAL)
-                    && (type != TestSupportVehicle.SVType.AIRSHIP);
+            final SVType type = SVType.getVehicleType(getEntity());
+            return (type != SVType.NAVAL) && (type != SVType.AIRSHIP);
+        } else {
+            return true;
         }
-        return true;
     }
     
     private void checkButtons() {
@@ -419,8 +423,9 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
         modelInstalled.refreshBays();
     }
     
-    public void actionPerformed(ActionEvent ev) {
-        if (ev.getSource() == btnAddBay) {
+    @Override
+    public void actionPerformed(ActionEvent evt) {
+        if (evt.getSource() == btnAddBay) {
             int selected = tblAvailable.getSelectedRow();
             if (selected >= 0) {
                 BayData bayType = modelAvailable.getBayType(tblAvailable.convertRowIndexToModel(selected));
@@ -437,7 +442,7 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
                 rebuildBays();
                 refresh();
             }
-        } else if (ev.getSource() == btnRemoveBay) {
+        } else if (evt.getSource() == btnRemoveBay) {
             int selected = tblInstalled.getSelectedRow();
             if (selected >= 0) {
                 Bay bay = modelInstalled.getBay(tblInstalled.convertRowIndexToModel(selected));
@@ -446,12 +451,12 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
                 rebuildBays();
                 refresh();
             }
-        } else if (ev.getSource() == btnAddToCargo) {
+        } else if (evt.getSource() == btnAddToCargo) {
             double size = getEntity().getWeight() - UnitUtil.getEntityVerifier(getEntity())
                     .calculateWeight();
             // Testing has shown some floating-point precision errors creeping in here.
             if (useKilogramStandard()) {
-                size = TestEntity.round(size, TestEntity.Ceil.KILO);
+                size = TestEntity.round(size, Ceil.KILO);
             }
             if (size > 0) {
                 int selected = tblInstalled.getSelectedRow();
@@ -490,7 +495,7 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
                     while (getJumpship().getCollarById(num) != null) {
                         num++;
                     }
-                    getJumpship().addTransporter(new DockingCollar(1, num));
+                    getJumpship().addTransporter(new DockingCollar(num));
                 }
             }
             if (null != refresh) {
@@ -505,11 +510,11 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
             List<Transporter> toRemove = getEntity().getTransports().stream()
                     .filter(t -> t instanceof TroopSpace).collect(Collectors.toList());
             toRemove.forEach(t -> getEntity().removeTransporter(t));
-            double troopTons = TestEntity.round(fixed, TestEntity.Ceil.HALFTON);
+            double troopTons = TestEntity.round(fixed, Ceil.HALFTON);
             if (troopTons > 0) {
                 getEntity().addTransporter(new TroopSpace(troopTons), false);
             }
-            troopTons = TestEntity.round(pod, TestEntity.Ceil.HALFTON);
+            troopTons = TestEntity.round(pod, Ceil.HALFTON);
             if (troopTons > 0) {
                 getEntity().addTransporter(new TroopSpace(troopTons), true);
             }
@@ -645,9 +650,9 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
                         return "*";
                     }
                     return bayTypeList.get(rowIndex).getPersonnel()
-                            * (int)bayList.get(rowIndex).getCapacity();
+                            * (int) bayList.get(rowIndex).getCapacity();
                 case COL_TONNAGE:
-                    final double weight = TestEntity.round(bayList.get(rowIndex).getWeight(), TestEntity.Ceil.KILO);
+                    final double weight = TestEntity.round(bayList.get(rowIndex).getWeight(), Ceil.KILO);
                     if (useKilogramStandard()) {
                         return RoundWeight.nearestKg(weight * 1000.0);
                     } else {
@@ -707,7 +712,6 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
             rebuildBays();
             refresh();
         }
-        
     }
     
     private class AvailableBaysModel extends AbstractTableModel {
@@ -743,8 +747,9 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
                     return "Unit Weight";
                 case COL_PERSONNEL:
                     return "Personnel";
+                default:
+                    return "";
             }
-            return "";
         }
 
         @Override
@@ -887,14 +892,17 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
             JTable.DropLocation dl = (JTable.DropLocation) support.getDropLocation();
             int index = dl.getRow();
             int max = modelInstalled.getRowCount();
-            if (index < 0 || index > max)
-               index = max;
+            if ((index < 0) || (index > max)) {
+                index = max;
+            }
+
             try {
                int rowFrom = Integer.parseInt((String) support.getTransferable().getTransferData(DataFlavor.stringFlavor));
                if (rowFrom != -1 && rowFrom != index) {
                   modelInstalled.reorder(rowFrom, index);
-                  if (index > rowFrom)
-                     index--;
+                  if (index > rowFrom) {
+                      index--;
+                  }
                   target.getSelectionModel().addSelectionInterval(index, index);
                   return true;
                }
@@ -916,5 +924,4 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
             return COPY_OR_MOVE;
         }
     }
-
 }

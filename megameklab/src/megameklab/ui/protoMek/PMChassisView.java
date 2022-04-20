@@ -1,32 +1,22 @@
 /*
- * MegaMekLab - Copyright (C) 2018 - The MegaMek Team
+ * Copyright (c) 2018-2022 - The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with MegaMekLab. If not, see <http://www.gnu.org/licenses/>.
  */
 package megameklab.ui.protoMek;
-
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.ResourceBundle;
-import java.util.concurrent.CopyOnWriteArrayList;
-
-import javax.swing.JCheckBox;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import megamek.common.EquipmentType;
 import megamek.common.ITechManager;
@@ -34,15 +24,25 @@ import megamek.common.MiscType;
 import megamek.common.Protomech;
 import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestProtomech;
-import megameklab.ui.util.CustomComboBox;
 import megameklab.ui.generalUnit.BuildView;
 import megameklab.ui.listeners.ProtomekBuildListener;
+import megameklab.ui.util.CustomComboBox;
+
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.ResourceBundle;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- * Construction options and systems for Protomechs.
+ * Construction options and systems for ProtoMeks.
  * 
  * @author Neoancient
- *
  */
 public class PMChassisView extends BuildView implements ActionListener, ChangeListener {
     List<ProtomekBuildListener> listeners = new CopyOnWriteArrayList<>();
@@ -101,7 +101,8 @@ public class PMChassisView extends BuildView implements ActionListener, ChangeLi
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        add(createLabel(resourceMap.getString("ProtomekChassisView.spnTonnage.text"), labelSize), gbc);
+        add(createLabel(resourceMap, "lblTonnage", "ProtomekChassisView.spnTonnage.text",
+                "ProtomekChassisView.spnTonnage.tooltip", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 0;
         setFieldSize(spnTonnage, spinnerSize);
@@ -112,7 +113,7 @@ public class PMChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap.getString("ProtomekChassisView.cbMotiveType.text"), labelSize), gbc);
+        add(createLabel(resourceMap, "lblMotiveType", "ProtomekChassisView.cbMotiveType.text", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 1;
         gbc.gridwidth = 3;
@@ -130,34 +131,34 @@ public class PMChassisView extends BuildView implements ActionListener, ChangeLi
         chkMainGun.setToolTipText(resourceMap.getString("ProtomekChassisView.chkMainGun.tooltip"));
         add(chkMainGun, gbc);
         chkMainGun.addActionListener(this);
-        
+
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.WEST;
-        add(createLabel(resourceMap.getString("ProtomekChassisView.lblEnhancements.text"), labelSize), gbc);
-        
+        add(createLabel(resourceMap, "lblEnhancements", "ProtomekChassisView.lblEnhancements.text", labelSize), gbc);
+
         gbc.gridx = 0;
         gbc.gridy++;
         chkMyomerBooster.setText(resourceMap.getString("ProtomekChassisView.chkMyomerBooster.text"));
         chkMyomerBooster.setToolTipText(resourceMap.getString("ProtomekChassisView.chkMyomerBooster.tooltip"));
         add(chkMyomerBooster, gbc);
         chkMyomerBooster.addActionListener(this);
-        
+
         gbc.gridx = 0;
         gbc.gridy++;
         chkPartialWing.setText(resourceMap.getString("ProtomekChassisView.chkPartialWing.text"));
         chkPartialWing.setToolTipText(resourceMap.getString("ProtomekChassisView.chkPartialWing.tooltip"));
         add(chkPartialWing, gbc);
         chkPartialWing.addActionListener(this);
-        
+
         gbc.gridx = 0;
         gbc.gridy++;
         chkMagneticClamps.setText(resourceMap.getString("ProtomekChassisView.chkMagneticClamps.text"));
         chkMagneticClamps.setToolTipText(resourceMap.getString("ProtomekChassisView.chkMagneticClamps.tooltip"));
         add(chkMagneticClamps, gbc);
         chkMagneticClamps.addActionListener(this);
-        
+
         gbc.gridx = 0;
         gbc.gridy++;
         chkISInterface.setText(resourceMap.getString("ProtomekChassisView.chkISInterface.text"));
@@ -178,7 +179,7 @@ public class PMChassisView extends BuildView implements ActionListener, ChangeLi
             cbMotiveType.setSelectedItem(MOTIVE_TYPE_BIPED);
         }
         cbMotiveType.addActionListener(this);
-        
+
         chkMyomerBooster.setSelected(proto.hasMisc(MiscType.F_MASC));
         chkPartialWing.setSelected(proto.hasMisc(MiscType.F_PARTIAL_WING));
         chkMagneticClamps.setSelected(proto.hasMisc(MiscType.F_MAGNETIC_CLAMP));
@@ -227,11 +228,11 @@ public class PMChassisView extends BuildView implements ActionListener, ChangeLi
     }
     
     public void setTonnage(double tonnage) {
-        spnTonnage.setValue(Integer.valueOf((int)Math.ceil(tonnage)));
+        spnTonnage.setValue((int) Math.ceil(tonnage));
     }
     
     public int getMotiveType() {
-        return ((Integer) cbMotiveType.getSelectedItem()).intValue();
+        return (Integer) cbMotiveType.getSelectedItem();
     }
     
     @Override

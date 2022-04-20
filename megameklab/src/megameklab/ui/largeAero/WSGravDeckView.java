@@ -1,5 +1,5 @@
 /*
- * MegaMekLab - Copyright (C) 2018 - The MegaMek Team
+ * Copyright (c) 2018-2022 - The MegaMek Team. All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -13,28 +13,24 @@
  */
 package megameklab.ui.largeAero;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
+import megamek.common.Jumpship;
+import megamek.common.annotations.Nullable;
+import megamek.common.util.EncodeControl;
+import megamek.common.verifier.TestAdvancedAerospace;
+import megameklab.ui.generalUnit.BuildView;
+import megameklab.ui.listeners.AdvancedAeroBuildListener;
+
+import javax.swing.*;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.AbstractTableModel;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
-
-import javax.swing.JButton;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
-import javax.swing.table.AbstractTableModel;
-
-import megamek.common.Jumpship;
-import megamek.common.util.EncodeControl;
-import megamek.common.verifier.TestAdvancedAerospace;
-import megameklab.ui.generalUnit.BuildView;
-import megameklab.ui.listeners.AdvancedAeroBuildListener;
 
 /**
  * Sets number and sizes of gravity decks on advanced aerospace units.
@@ -101,14 +97,14 @@ public class WSGravDeckView extends BuildView implements ActionListener, TableMo
     
     private void updateButtons() {
         btnAdd.setEnabled(model.getData().size() < maxDecks);
-        btnRemove.setEnabled((model.getData().size() > 0)
-                && (tblGravDecks.getSelectedRow() >= 0));
+        btnRemove.setEnabled(!model.getData().isEmpty() && (tblGravDecks.getSelectedRow() >= 0));
     }
     
-    public void actionPerformed(ActionEvent ev) {
-        if (ev.getActionCommand().equals(ACTION_ADD)) {
+    @Override
+    public void actionPerformed(ActionEvent evt) {
+        if (evt.getActionCommand().equals(ACTION_ADD)) {
             model.addDeck();
-        } else if (ev.getActionCommand().equals(ACTION_REMOVE)) {
+        } else if (evt.getActionCommand().equals(ACTION_REMOVE)) {
             int selected = tblGravDecks.getSelectedRow();
             if (selected >= 0) {
                 model.removeDeck(tblGravDecks.convertRowIndexToModel(selected));
@@ -117,7 +113,7 @@ public class WSGravDeckView extends BuildView implements ActionListener, TableMo
     }
 
     @Override
-    public void tableChanged(TableModelEvent e) {
+    public void tableChanged(TableModelEvent evt) {
         listeners.forEach(l -> l.gravDecksChanged(model.getData()));
         updateButtons();
     }
@@ -194,7 +190,7 @@ public class WSGravDeckView extends BuildView implements ActionListener, TableMo
                     if ((newSize > 0) && (newSize <= maxSize)) {
                         deckSizes.set(rowIndex, newSize);
                     }
-                } catch (NumberFormatException ex) {
+                } catch (NumberFormatException ignored) {
                     // Do nothing; revert to prior value
                 } finally {
                     fireTableDataChanged();
@@ -205,7 +201,7 @@ public class WSGravDeckView extends BuildView implements ActionListener, TableMo
         }
 
         @Override
-        public Object getValueAt(int rowIndex, int columnIndex) {
+        public @Nullable Object getValueAt(int rowIndex, int columnIndex) {
             switch (columnIndex) {
                 case COL_DIAMETER:
                     return Integer.toString(deckSizes.get(rowIndex));
@@ -228,6 +224,5 @@ public class WSGravDeckView extends BuildView implements ActionListener, TableMo
             }
             return null;
         }
-        
     }
 }

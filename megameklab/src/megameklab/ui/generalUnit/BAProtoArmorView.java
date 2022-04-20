@@ -1,46 +1,41 @@
 /*
- * MegaMekLab - Copyright (C) 2017 - The MegaMek Team
+ * Copyright (c) 2017-2022 - The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with MegaMekLab. If not, see <http://www.gnu.org/licenses/>.
  */
 package megameklab.ui.generalUnit;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import megamek.common.*;
+import megamek.common.annotations.Nullable;
+import megamek.common.util.EncodeControl;
+import megamek.common.verifier.TestProtomech;
+import megameklab.ui.listeners.ArmorAllocationListener;
+import megameklab.ui.util.TechComboBox;
+import megameklab.util.UnitUtil;
+
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
-
-import javax.swing.JButton;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-
-import megamek.common.BattleArmor;
-import megamek.common.Entity;
-import megamek.common.EquipmentType;
-import megamek.common.ITechManager;
-import megamek.common.MiscType;
-import megamek.common.Protomech;
-import megamek.common.TechConstants;
-import megamek.common.annotations.Nullable;
-import megamek.common.util.EncodeControl;
-import megamek.common.verifier.TestProtomech;
-import megameklab.ui.util.TechComboBox;
-import megameklab.ui.listeners.ArmorAllocationListener;
-import megameklab.util.UnitUtil;
 
 /**
  * Structure table armor panel for units that allocate armor by point instead of ton.
@@ -52,14 +47,15 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
     public void addListener(ArmorAllocationListener l) {
         listeners.add(l);
     }
+
     public void removeListener(ArmorAllocationListener l) {
         listeners.remove(l);
     }
-    
+
     private final static String CMD_MAXIMIZE  = "MAXIMIZE";
     private final static String CMD_REMAINING = "REMAINING";
-    
-    private final TechComboBox<EquipmentType> cbArmorType = new TechComboBox<>(eq -> eq.getName());
+
+    private final TechComboBox<EquipmentType> cbArmorType = new TechComboBox<>(EquipmentType::getName);
     private final SpinnerNumberModel spnArmorPointsModel = new SpinnerNumberModel(0, 0, null, 1);
     private final JSpinner spnArmorPoints = new JSpinner(spnArmorPointsModel);
     private final JButton btnMaximize = new JButton();
@@ -67,12 +63,12 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
     
     private final ITechManager techManager;
     private long etype;
-    
+
     public BAProtoArmorView(ITechManager techManager) {
         this.techManager = techManager;
         initUI();
     }
-    
+
     private void initUI() {
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl());
 
@@ -81,7 +77,8 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap.getString("ArmorView.cbArmorType.text"), labelSize), gbc);
+        add(createLabel(resourceMap, "lblArmorType", "ArmorView.cbArmorType.text",
+                "ArmorView.cbArmorType.tooltip", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.gridwidth = 2;
@@ -89,11 +86,12 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
         cbArmorType.setToolTipText(resourceMap.getString("ArmorView.cbArmorType.tooltip"));
         add(cbArmorType, gbc);
         cbArmorType.addActionListener(this);
-        
+
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap.getString("ArmorView.spnArmorPoints.text"), labelSize), gbc);
+        add(createLabel(resourceMap, "lblArmorPoints", "ArmorView.spnArmorPoints.text",
+                "ArmorView.spnArmorPoints.tooltip", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 1;
         setFieldSize(spnArmorPoints.getEditor(), editorSize);
@@ -110,7 +108,7 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
         btnMaximize.setToolTipText(resourceMap.getString("ArmorView.btnMaximize.tooltip"));
         add(btnMaximize, gbc);
         btnMaximize.addActionListener(this);
-        
+
         gbc.gridx = 0;
         gbc.gridy = 3;
         gbc.gridwidth = 3;
@@ -121,7 +119,7 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
         add(btnUseRemaining, gbc);
         btnUseRemaining.addActionListener(this);
     }
-    
+
     public void setFromEntity(Entity en) {
         etype = en.getEntityType();
         refresh();
@@ -192,21 +190,20 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
     }
     
     @Override
-    public void stateChanged(ChangeEvent e) {
-        if (e.getSource() == spnArmorPoints) {
+    public void stateChanged(ChangeEvent evt) {
+        if (evt.getSource() == spnArmorPoints) {
             listeners.forEach(l -> l.armorFactorChanged(spnArmorPointsModel.getNumber().intValue()));
         }
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == cbArmorType) {
+    public void actionPerformed(ActionEvent evt) {
+        if (evt.getSource() == cbArmorType) {
             listeners.forEach(l -> l.armorTypeChanged((EquipmentType)cbArmorType.getSelectedItem()));
-        } else if (CMD_MAXIMIZE.equals(e.getActionCommand())) {
-            listeners.forEach(l -> l.maximizeArmor());
-        } else if (CMD_REMAINING.equals(e.getActionCommand())) {
-            listeners.forEach(l -> l.useRemainingTonnageArmor());
+        } else if (CMD_MAXIMIZE.equals(evt.getActionCommand())) {
+            listeners.forEach(ArmorAllocationListener::maximizeArmor);
+        } else if (CMD_REMAINING.equals(evt.getActionCommand())) {
+            listeners.forEach(ArmorAllocationListener::useRemainingTonnageArmor);
         }
     }
-
 }

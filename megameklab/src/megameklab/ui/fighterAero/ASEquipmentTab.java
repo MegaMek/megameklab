@@ -13,16 +13,9 @@
  */
 package megameklab.ui.fighterAero;
 
-import megamek.common.Mounted;
-import megamek.common.weapons.bayweapons.BayWeapon;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.AbstractEquipmentTab;
 import megameklab.ui.util.AbstractEquipmentDatabaseView;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static java.util.stream.Collectors.toList;
 
 /**
  * The Equipment Tab for Aerospace and Conventional Fighters showing the equipment
@@ -34,7 +27,6 @@ import static java.util.stream.Collectors.toList;
  * @author Simon (Juliez)
  */
 public class ASEquipmentTab extends AbstractEquipmentTab {
-
     public ASEquipmentTab(EntitySource eSource) {
         super(eSource);
     }
@@ -43,5 +35,4 @@ public class ASEquipmentTab extends AbstractEquipmentTab {
     protected AbstractEquipmentDatabaseView getEquipmentDatabaseView() {
         return new ASEquipmentDatabaseView(eSource);
     }
-
 }

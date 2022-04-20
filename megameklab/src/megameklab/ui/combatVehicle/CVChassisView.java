@@ -1,42 +1,40 @@
 /*
- * MegaMekLab - Copyright (C) 2017 - The MegaMek Team
+ * Copyright (c) 2017-2022 - The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with MegaMekLab. If not, see <http://www.gnu.org/licenses/>.
  */
 package megameklab.ui.combatVehicle;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.*;
-import java.util.concurrent.CopyOnWriteArrayList;
+import megamek.common.*;
+import megamek.common.util.EncodeControl;
+import megamek.common.verifier.TestTank;
+import megameklab.ui.generalUnit.BuildView;
+import megameklab.ui.listeners.CVBuildListener;
+import megameklab.ui.util.CustomComboBox;
+import megameklab.ui.util.TechComboBox;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-
-import megamek.common.Engine;
-import megamek.common.Entity;
-import megamek.common.EntityMovementMode;
-import megamek.common.ITechManager;
-import megamek.common.Tank;
-import megamek.common.TechAdvancement;
-import megamek.common.VTOL;
-import megamek.common.util.EncodeControl;
-import megamek.common.verifier.TestTank;
-import megameklab.ui.util.CustomComboBox;
-import megameklab.ui.util.TechComboBox;
-import megameklab.ui.generalUnit.BuildView;
-import megameklab.ui.listeners.CVBuildListener;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.List;
+import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Chassis panel for combat vehicles
@@ -118,9 +116,10 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.WEST;
-        add(createLabel(resourceMap.getString("CVChassisView.spnTonnage.text"), labelSize), gbc);
+        add(createLabel(resourceMap, "lblTonnage", "CVChassisView.spnTonnage.text",
+                "CVChassisView.spnTonnage.tooltip", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 0;
         setFieldSize(spnTonnage, spinnerSize);
@@ -158,7 +157,8 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
 
         cbMotiveType.setModel(new DefaultComboBoxModel<>(MOTIVE_TYPES));
         gbc.gridx = 0;
-        add(createLabel(resourceMap.getString("CVChassisView.cbMotiveType.text"), labelSize), gbc);
+        add(createLabel(resourceMap, "lblMotiveType", "CVChassisView.cbMotiveType.text",
+                "CVChassisView.cbMotiveType.tooltip", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridwidth = 3;
         setFieldSize(cbMotiveType, controlSize);
@@ -169,7 +169,8 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
 
         gbc.gridx = 0;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap.getString("CVChassisView.cbEngine.text"), labelSize), gbc);
+        add(createLabel(resourceMap, "lblEngine", "CVChassisView.cbEngine.text",
+                "CVChassisView.cbEngine.tooltip", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridwidth = 3;
         setFieldSize(cbEngine, controlSize);
@@ -180,7 +181,8 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
 
         gbc.gridx = 0;
         gbc.gridwidth = 2;
-        add(createLabel(resourceMap.getString("CVChassisView.spnExtraSeats.text"), labelSize), gbc);
+        add(createLabel(resourceMap, "lblExtraSeats", "CVChassisView.spnExtraSeats.text",
+                "CVChassisView.spnExtraSeats.tooltip", labelSize), gbc);
         gbc.gridx = 2;
         gbc.gridwidth = 2;
         setFieldSize(spnExtraSeats, spinnerSize);
@@ -191,7 +193,8 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
 
         gbc.gridx = 0;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap.getString("CVChassisView.cbTurrets.text"), labelSize), gbc);
+        add(createLabel(resourceMap, "lblTurrets", "CVChassisView.cbTurrets.text",
+                "CVChassisView.cbTurrets.tooltip", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridwidth = 3;
         setFieldSize(cbTurrets, controlSize);
@@ -202,7 +205,8 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
 
         gbc.gridx = 0;
         gbc.gridwidth = 3;
-        JLabel lbl = createLabel(resourceMap.getString("CVChassisView.spnTurretWt.text"), labelSize);
+        JLabel lbl = createLabel(resourceMap, "lblTurretWt", "CVChassisView.spnTurretWt.text",
+                "CVChassisView.spnTurretWt.tooltip", labelSize);
         add(lbl, gbc);
         gbc.gridx = 3;
         setFieldSize(spnChassisTurretWt, spinnerSize);
@@ -215,7 +219,8 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
 
         gbc.gridx = 0;
         gbc.gridwidth = 3;
-        lbl = createLabel(resourceMap.getString("CVChassisView.spnTurret2Wt.text"), labelSize);
+        lbl = createLabel(resourceMap, "lblTurret2Wt", "CVChassisView.spnTurret2Wt.text",
+                "CVChassisView.spnTurret2Wt.tooltip", labelSize);
         add(lbl, gbc);
         gbc.gridx = 3;
         gbc.gridwidth = 1;
@@ -452,17 +457,12 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
 
     /**
      * The turret configuration should be one of {@link CVChassisView#TURRET_NONE TURRET_NONE},
-     * {@link CVChassisView#TURRET_SINGLE TURRET_SINGLE}, {@link CVChassisView#TURRET_DUAL TURRET_DUAL}, or
-     * {@link CVChassisView#TURRET_CHIN TURRET_CHIN}.
+     * {@link CVChassisView#TURRET_SINGLE TURRET_SINGLE}, {@link CVChassisView#TURRET_DUAL TURRET_DUAL},
+     * or {@link CVChassisView#TURRET_CHIN TURRET_CHIN}.
      * @return The currently selected turret configuration.
      */
     public int getTurretConfiguration() {
-        Integer config = (Integer) cbTurrets.getSelectedItem();
-        if (config == null) {
-            return TURRET_NONE; // Failsafe in case this gets called while in an indeterminate state
-        } else {
-            return config;
-        }
+        return Objects.requireNonNullElse((Integer) cbTurrets.getSelectedItem(), TURRET_NONE);
     }
 
     @Override
@@ -470,7 +470,7 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
         if (e.getSource() == spnTonnage) {
             listeners.forEach(l -> l.tonnageChanged(getTonnage()));
         } else if ((e.getSource() == spnChassisTurretWt)
-                || (e.getSource() == spnChassisTurret2Wt)){
+                || (e.getSource() == spnChassisTurret2Wt)) {
             listeners.forEach(l -> l.turretBaseWtChanged(spnTurretWtModel.getNumber().doubleValue(),
                     spnTurret2WtModel.getNumber().doubleValue()));
         } else if (e.getSource() == spnExtraSeats) {

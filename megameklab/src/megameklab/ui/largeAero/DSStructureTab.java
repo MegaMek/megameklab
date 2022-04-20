@@ -181,6 +181,7 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
         panChassis.setAsCustomization();
     }
 
+    @Override
     public void refreshSummary() {
         panSummary.refresh();
         // We're going to cheat and recalculate minimum crew values here in case the number of gunners changed.

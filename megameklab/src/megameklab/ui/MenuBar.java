@@ -1085,10 +1085,9 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
 
         String filePathName = CConfig.getParam(CConfig.CONFIG_SAVE_FILE_1);
 
-        if ((filePathName.trim().length() < 1) || !filePathName.contains(fileName)) {
+        if (filePathName.isBlank() || !filePathName.contains(fileName)) {
             FileDialog fDialog = new FileDialog(getFrame(),
-                    resources.getString("dialog.saveAs.title"),
-                    FileDialog.SAVE);
+                    resources.getString("dialog.saveAs.title"), FileDialog.SAVE);
 
             filePathName = CConfig.getParam(CConfig.CONFIG_SAVE_LOC);
 
@@ -1108,12 +1107,10 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
 
         try {
             if (getFrame().getEntity() instanceof Mech) {
-                FileOutputStream out = new FileOutputStream(filePathName);
-                PrintStream p = new PrintStream(out);
-
-                p.println(((Mech) getFrame().getEntity()).getMtf());
-                p.close();
-                out.close();
+                try (FileOutputStream fos = new FileOutputStream(filePathName);
+                     PrintStream ps = new PrintStream(fos)) {
+                    ps.println(((Mech) getFrame().getEntity()).getMtf());
+                }
             } else {
                 BLKFile.encode(filePathName, getFrame().getEntity());
             }
@@ -1236,7 +1233,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         if (!UnitUtil.validateUnit(newUnit).trim().isBlank()) {
             JOptionPane.showMessageDialog(getFrame(), String.format(
                     resources.getString("message.invalidUnit.format"),
-                            UnitUtil.validateUnit(newUnit)));
+                    UnitUtil.validateUnit(newUnit)));
         }
 
         if (newUnit.getEntityType() != getFrame().getEntity().getEntityType()) {

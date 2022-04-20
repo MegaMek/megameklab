@@ -1,5 +1,5 @@
 /*
- * MegaMekLab - Copyright (C) 2008
+ * Copyright (c) 2008-2022 - The MegaMek Team. All Rights Reserved.
  *
  * Original author - jtighe (torren@users.sourceforge.net)
  *
@@ -36,7 +36,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Vector;
 
 /**
@@ -65,7 +64,7 @@ public class ASBuildView extends IView implements ActionListener, MouseListener 
         TableColumn column = null;
         for (int i = 0; i < equipmentList.getColumnCount(); i++) {
             column = equipmentTable.getColumnModel().getColumn(i);
-            if(i == 0) {
+            if (i == 0) {
                 column.setPreferredWidth(350);
             }
             column.setCellRenderer(equipmentList.getRenderer());
@@ -76,8 +75,8 @@ public class ASBuildView extends IView implements ActionListener, MouseListener 
         equipmentTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         equipmentTable.setDoubleBuffered(true);
         equipmentScroll.setViewportView(equipmentTable);
-        equipmentScroll.setMinimumSize(new java.awt.Dimension(400, 400));
-        equipmentScroll.setPreferredSize(new java.awt.Dimension(400, 400));
+        equipmentScroll.setMinimumSize(new Dimension(400, 400));
+        equipmentScroll.setPreferredSize(new Dimension(400, 400));
         equipmentScroll.setTransferHandler(cth);
 
         equipmentTable.addMouseListener(this);
@@ -113,7 +112,7 @@ public class ASBuildView extends IView implements ActionListener, MouseListener 
             }
         }
 
-        Collections.sort(masterEquipmentList, StringUtils.mountedComparator());
+        masterEquipmentList.sort(StringUtils.mountedComparator());
 
         // Time to Sort
         // HeatSinks first
@@ -135,7 +134,7 @@ public class ASBuildView extends IView implements ActionListener, MouseListener 
         }
 
         // weapons and ammo
-        Vector<Mounted> weaponsNAmmoList = new Vector<Mounted>(10, 1);
+        Vector<Mounted> weaponsNAmmoList = new Vector<>(10, 1);
         for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
             if ((masterEquipmentList.get(pos).getType() instanceof Weapon) || 
                     (masterEquipmentList.get(pos).getType() instanceof AmmoType)) {
@@ -144,7 +143,7 @@ public class ASBuildView extends IView implements ActionListener, MouseListener 
                 pos--;
             }
         }
-        Collections.sort(weaponsNAmmoList, StringUtils.mountedComparator());
+        weaponsNAmmoList.sort(StringUtils.mountedComparator());
         for (Mounted mount : weaponsNAmmoList) {
             equipmentList.addCrit(mount);
         }
@@ -191,7 +190,6 @@ public class ASBuildView extends IView implements ActionListener, MouseListener 
         for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
             equipmentList.addCrit(masterEquipmentList.get(pos));
         }
-
     }
 
     private boolean isEngineHeatSink(Mounted mount) {
@@ -255,14 +253,14 @@ public class ASBuildView extends IView implements ActionListener, MouseListener 
     }
 
     @Override
-    public void mousePressed(MouseEvent e) {
+    public void mousePressed(MouseEvent evt) {
         // On right-click, we want to generate menu items to add to specific 
         //  locations, but only if those locations are make sense
-        if (e.getButton() == MouseEvent.BUTTON3) {
+        if (evt.getButton() == MouseEvent.BUTTON3) {
             JPopupMenu popup = new JPopupMenu();
             JMenuItem item;
 
-            final int selectedRow = equipmentTable.rowAtPoint(e.getPoint());
+            final int selectedRow = equipmentTable.rowAtPoint(evt.getPoint());
             Mounted eq = (Mounted)equipmentTable.getModel().getValueAt(
                     selectedRow, CriticalTableModel.EQUIPMENT);
 
@@ -270,7 +268,7 @@ public class ASBuildView extends IView implements ActionListener, MouseListener 
             // A list of the valid locations we can add the selected eq to
             ArrayList<Integer> validLocs = new ArrayList<>();
             // The number of possible locations, Aeros' have LOC_WINGS and LOC_FUSELAGE, which we
-            //  want ot ignore for now, hence -2
+            // want to ignore for now, hence -2
             int numLocs = getAero().locations() - 2;
             // If it's a weapon, there are restrictions
             if (eq.getType() instanceof WeaponType) {
@@ -308,21 +306,16 @@ public class ASBuildView extends IView implements ActionListener, MouseListener 
                     item = new JMenuItem("Add to " + locNames[location]);
 
                     final int loc = location;
-                    item.addActionListener(new ActionListener() {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            jMenuLoadComponent_actionPerformed(loc, selectedRow);
-                        }
-                    });
+                    item.addActionListener(evt2 -> jMenuLoadComponent_actionPerformed(loc, selectedRow));
                     popup.add(item);
                 }
             }
-            popup.show(this, e.getX(), e.getY());
+            popup.show(this, evt.getX(), evt.getY());
         }
     }
 
     @Override
-    public void mouseReleased(MouseEvent e) {
+    public void mouseReleased(MouseEvent evt) {
 
     }
     

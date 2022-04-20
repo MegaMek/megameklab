@@ -255,14 +255,14 @@ public class ArmorAllocationView extends BuildView implements ArmorLocationListe
         txtWasted.setText(String.valueOf(wastedPoints));
         if (en.hasPatchworkArmor()) {
             txtPointsPerTon.setText("-");
-        } else if (en.getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT){
+        } else if (en.getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT) {
             txtPointsPerTon.setText(String.format("%d",
                     (int) (TestSupportVehicle.armorWeightPerPoint(en) * 1000)));
             lblPointsPerTon.setText(resourceMap.getString("ArmorAllocationView.txtKgPerPoint.text"));
             txtPointsPerTon.setToolTipText(resourceMap.getString("ArmorAllocationView.txtKgPerPoint.tooltip"));
         } else if (en instanceof Protomech) {
             txtPointsPerTon.setText(String.format("%d",
-                    (int)(EquipmentType.getProtomechArmorWeightPerPoint(en.getArmorType(Protomech.LOC_BODY))
+                    (int) (EquipmentType.getProtomechArmorWeightPerPoint(en.getArmorType(Protomech.LOC_BODY))
                      * 1000)));
             lblPointsPerTon.setText(resourceMap.getString("ArmorAllocationView.txtKgPerPoint.text"));
             txtPointsPerTon.setToolTipText(resourceMap.getString("ArmorAllocationView.txtKgPerPoint.tooltip"));
