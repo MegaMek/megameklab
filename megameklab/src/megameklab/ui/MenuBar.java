@@ -49,6 +49,7 @@ import java.util.stream.Stream;
 
 /**
  * @author jtighe (torren@users.sourceforge.net)
+ * @author Justin "Windchild" Bowen
  */
 public class MenuBar extends JMenuBar implements ClipboardOwner {
     //region Variable Declarations
@@ -71,22 +72,21 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
 
     //region Initialization
     /**
-     * The main menu uses the following Mnemonic keys as of 27-MAR-2022:
-     * F, H, U
+     * The main menu bar uses the following Mnemonic keys as of 20-Apr-2022:
+     * F, H, R, U
      */
     private void initialize() {
-        getAccessibleContext().setAccessibleName("Main Menu");
+        getAccessibleContext().setAccessibleName(resources.getString("MenuBar.accessibleName"));
         add(createFileMenu());
         add(createUnitValidationMenu());
         add(createReportsMenu());
         add(createHelpMenu());
-        add(createUnsortedMenu());
     }
 
     //region File Menu
     /**
-     * The File menu uses the following Mnemonic keys as of 27-MAR-2022:
-     *
+     * This menu uses the following Mnemonic keys as of 20-Apr-2022:
+     * C, E, I, L, O, P, R, S, U, X
      * @return the created file menu
      */
     private JMenu createFileMenu() {
@@ -94,16 +94,50 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         fileMenu.setName("fileMenu");
         fileMenu.setMnemonic(KeyEvent.VK_F);
 
+        final JMenuItem miResetCurrentUnit = new JMenuItem(resources.getString("miResetCurrentUnit.text"));
+        miResetCurrentUnit.setName("miResetCurrentUnit");
+        miResetCurrentUnit.setMnemonic(KeyEvent.VK_C);
+        miResetCurrentUnit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_DOWN_MASK));
+        miResetCurrentUnit.addActionListener(this::jMenuResetEntity_actionPerformed);
+        fileMenu.add(miResetCurrentUnit);
+
+        fileMenu.add(createSwitchUnitTypeMenu());
         fileMenu.add(createLoadMenu());
+        fileMenu.add(createSaveMenu());
         fileMenu.add(createImportMenu());
         fileMenu.add(createExportMenu());
+        fileMenu.add(createPrintMenu());
         fileMenu.add(createRefreshMenu());
         fileMenu.add(createOptionsMenu());
-        fileMenu.add(createThemesMenu());
+
         fileMenu.addSeparator();
 
-        final JMenuItem miExit = new JMenuItem();
-        miExit.setText(resources.getString("miExit.text"));
+        int fileNumber = 1;
+
+        final JMenuItem miCConfig1 = createCConfigMenuItem(CConfig.CONFIG_SAVE_FILE_1, fileNumber++);
+        if (miCConfig1 != null) {
+            fileMenu.add(miCConfig1);
+        }
+
+        final JMenuItem miCConfig2 = createCConfigMenuItem(CConfig.CONFIG_SAVE_FILE_2, fileNumber++);
+        if (miCConfig2 != null) {
+            fileMenu.add(miCConfig2);
+        }
+
+        final JMenuItem miCConfig3 = createCConfigMenuItem(CConfig.CONFIG_SAVE_FILE_3, fileNumber++);
+        if (miCConfig3 != null) {
+            fileMenu.add(miCConfig3);
+        }
+
+        final JMenuItem miCConfig4 = createCConfigMenuItem(CConfig.CONFIG_SAVE_FILE_4, fileNumber++);
+        if (miCConfig4 != null) {
+            fileMenu.add(miCConfig4);
+        }
+
+        fileMenu.addSeparator();
+
+        final JMenuItem miExit = new JMenuItem(resources.getString("miExit.text"));
+        miExit.setName("miExit");
         miExit.setMnemonic(KeyEvent.VK_E);
         miExit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.ALT_DOWN_MASK));
         miExit.addActionListener(evt -> getFrame().exit());
@@ -112,6 +146,159 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         return fileMenu;
     }
 
+    /**
+     * This menu uses the following Mnemonic keys as of 20-Apr-2022:
+     * A, B, C, D, I, J, M, P, R
+     * @return the created Switch Unit Type menu
+     */
+    private JMenu createSwitchUnitTypeMenu() {
+        final JMenu switchUnitTypeMenu = new JMenu(resources.getString("switchUnitTypeMenu.text"));
+        switchUnitTypeMenu.setName("switchUnitTypeMenu");
+        switchUnitTypeMenu.setMnemonic(KeyEvent.VK_U);
+
+        final Entity entity = getFrame().getEntity();
+
+        if (!(entity instanceof Mech) || entity.isPrimitive()) {
+            final JMenuItem miSwitchToMek = new JMenuItem(resources.getString("miSwitchToMek.text"));
+            miSwitchToMek.setName("miSwitchToMek");
+            miSwitchToMek.setMnemonic(KeyEvent.VK_M);
+            miSwitchToMek.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, InputEvent.ALT_DOWN_MASK));
+            miSwitchToMek.addActionListener(evt -> newUnit(Entity.ETYPE_MECH, false, null));
+            switchUnitTypeMenu.add(miSwitchToMek);
+        }
+
+        if (!entity.isFighter() || ((entity instanceof Aero) && entity.isPrimitive())) {
+            final JMenuItem miSwitchToFighter = new JMenuItem(resources.getString("miSwitchToFighter.text"));
+            miSwitchToFighter.setName("miSwitchToFighter");
+            miSwitchToFighter.setMnemonic(KeyEvent.VK_A);
+            miSwitchToFighter.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.ALT_DOWN_MASK));
+            miSwitchToFighter.addActionListener(evt -> newUnit(Entity.ETYPE_AERO, false, null));
+            switchUnitTypeMenu.add(miSwitchToFighter);
+        }
+
+        if (!(entity instanceof SmallCraft) || entity.isPrimitive()) {
+            final JMenuItem item = new JMenuItem(resources.getString("miSwitchToDropShipSmallCraft.text"));
+            item.setName("miSwitchToDropShipSmallCraft");
+            item.setMnemonic(KeyEvent.VK_D);
+            item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.ALT_DOWN_MASK));
+            item.addActionListener(evt -> newUnit(Entity.ETYPE_DROPSHIP, false, null));
+            switchUnitTypeMenu.add(item);
+        }
+
+        if (!(entity instanceof Jumpship) || entity.isPrimitive()) {
+            final JMenuItem miSwitchToAdvancedAero = new JMenuItem(resources.getString("miSwitchToAdvancedAero.text"));
+            miSwitchToAdvancedAero.setName("miSwitchToAdvancedAero");
+            miSwitchToAdvancedAero.setMnemonic(KeyEvent.VK_J);
+            miSwitchToAdvancedAero.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_J, InputEvent.ALT_DOWN_MASK));
+            miSwitchToAdvancedAero.addActionListener(evt -> newUnit(Entity.ETYPE_JUMPSHIP, false, null));
+            switchUnitTypeMenu.add(miSwitchToAdvancedAero);
+        }
+
+        if (!(getFrame().getEntity() instanceof Tank)
+                || getFrame().getEntity().isSupportVehicle()) {
+            final JMenuItem miSwitchToCombatVehicle = new JMenuItem(resources.getString("miSwitchToCombatVehicle.text"));
+            miSwitchToCombatVehicle.setName("miSwitchToCombatVehicle");
+            miSwitchToCombatVehicle.setMnemonic(KeyEvent.VK_C);
+            miSwitchToCombatVehicle.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.ALT_DOWN_MASK));
+            miSwitchToCombatVehicle.addActionListener(evt -> newUnit(Entity.ETYPE_TANK, false, null));
+            switchUnitTypeMenu.add(miSwitchToCombatVehicle);
+        }
+
+        if (!getFrame().getEntity().isSupportVehicle()) {
+            final JMenuItem miSwitchToSupportVehicle = new JMenuItem(resources.getString("miSwitchToSupportVehicle.text"));
+            miSwitchToSupportVehicle.setName("miSwitchToSupportVehicle");
+            miSwitchToSupportVehicle.setMnemonic(KeyEvent.VK_S);
+            miSwitchToSupportVehicle.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.ALT_DOWN_MASK));
+            miSwitchToSupportVehicle.addActionListener(evt -> newUnit(Entity.ETYPE_SUPPORT_TANK, false, null));
+            switchUnitTypeMenu.add(miSwitchToSupportVehicle);
+        }
+
+        if (!(getFrame().getEntity() instanceof BattleArmor)) {
+            final JMenuItem miSwitchToBattleArmor = new JMenuItem(resources.getString("miSwitchToBattleArmor.text"));
+            miSwitchToBattleArmor.setName("miSwitchToBattleArmor");
+            miSwitchToBattleArmor.setMnemonic(KeyEvent.VK_B);
+            miSwitchToBattleArmor.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, InputEvent.ALT_DOWN_MASK));
+            miSwitchToBattleArmor.addActionListener(evt -> newUnit(Entity.ETYPE_BATTLEARMOR, false, null));
+            switchUnitTypeMenu.add(miSwitchToBattleArmor);
+        }
+
+        if (!getFrame().getEntity().isConventionalInfantry()) {
+            final JMenuItem miSwitchToInfantry = new JMenuItem(resources.getString("miSwitchToInfantry.text"));
+            miSwitchToInfantry.setName("miSwitchToInfantry");
+            miSwitchToInfantry.setMnemonic(KeyEvent.VK_I);
+            miSwitchToInfantry.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I, InputEvent.ALT_DOWN_MASK));
+            miSwitchToInfantry.addActionListener(evt -> newUnit(Entity.ETYPE_INFANTRY, false, null));
+            switchUnitTypeMenu.add(miSwitchToInfantry);
+        }
+
+        if (!getFrame().getEntity().hasETypeFlag(Entity.ETYPE_PROTOMECH)) {
+            final JMenuItem miSwitchToProtoMek = new JMenuItem(resources.getString("miSwitchToProtoMek.text"));
+            miSwitchToProtoMek.setName("miSwitchToProtoMek");
+            miSwitchToProtoMek.setMnemonic(KeyEvent.VK_P);
+            miSwitchToProtoMek.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.ALT_DOWN_MASK));
+            miSwitchToProtoMek.addActionListener(evt -> newUnit(Entity.ETYPE_PROTOMECH, false, null));
+            switchUnitTypeMenu.add(miSwitchToProtoMek);
+        }
+
+        switchUnitTypeMenu.add(createPrimitiveMenu(entity));
+
+        return switchUnitTypeMenu;
+    }
+
+    /**
+     * This menu uses the following Mnemonic keys as of 20-Apr-2022:
+     * A, D, J, M
+     * @return the created Primitive menu
+     */
+    private JMenu createPrimitiveMenu(final Entity entity) {
+        final JMenu primitiveMenu = new JMenu(resources.getString("primitiveMenu.text"));
+        primitiveMenu.setName("primitiveMenu");
+        primitiveMenu.setMnemonic(KeyEvent.VK_R);
+
+        if (!(entity instanceof Mech) || !entity.isPrimitive()) {
+            final JMenuItem miSwitchToMek = new JMenuItem(resources.getString("miSwitchToMek.text"));
+            miSwitchToMek.setName("miSwitchToMek");
+            miSwitchToMek.setMnemonic(KeyEvent.VK_M);
+            miSwitchToMek.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, InputEvent.ALT_DOWN_MASK));
+            miSwitchToMek.addActionListener(evt -> newUnit(Entity.ETYPE_MECH, true, null));
+            primitiveMenu.add(miSwitchToMek);
+        }
+
+        if (!entity.isFighter() || ((entity instanceof Aero) && !entity.isPrimitive())) {
+            final JMenuItem miSwitchToAero = new JMenuItem(resources.getString("miSwitchToAero.text"));
+            miSwitchToAero.setName("miSwitchToAero");
+            miSwitchToAero.setMnemonic(KeyEvent.VK_A);
+            miSwitchToAero.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.ALT_DOWN_MASK));
+            miSwitchToAero.addActionListener(evt -> newUnit(Entity.ETYPE_AERO, true, null));
+            primitiveMenu.add(miSwitchToAero);
+        }
+
+        if (!(entity instanceof SmallCraft) || !entity.isPrimitive()) {
+            final JMenuItem miSwitchToDropShipSmallCraft = new JMenuItem(resources.getString("miSwitchToDropShipSmallCraft.text"));
+            miSwitchToDropShipSmallCraft.setName("miSwitchToDropShipSmallCraft");
+            miSwitchToDropShipSmallCraft.setMnemonic(KeyEvent.VK_D);
+            miSwitchToDropShipSmallCraft.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.ALT_DOWN_MASK));
+            miSwitchToDropShipSmallCraft.addActionListener(evt -> newUnit(Entity.ETYPE_DROPSHIP, true, null));
+            primitiveMenu.add(miSwitchToDropShipSmallCraft);
+        }
+
+        if (!(entity instanceof Jumpship) || !entity.isPrimitive()) {
+            final JMenuItem miSwitchToJumpShip = new JMenuItem(resources.getString("miSwitchToJumpShip.text"));
+            miSwitchToJumpShip.setName("miSwitchToJumpShip");
+            miSwitchToJumpShip.setMnemonic(KeyEvent.VK_J);
+            miSwitchToJumpShip.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_J, InputEvent.ALT_DOWN_MASK));
+            miSwitchToJumpShip.addActionListener(evt -> newUnit(Entity.ETYPE_JUMPSHIP, true, null));
+            primitiveMenu.add(miSwitchToJumpShip);
+        }
+
+        return primitiveMenu;
+    }
+
+    /**
+     * This menu uses the following Mnemonic keys as of 20-Apr-2022:
+     * C, F
+     * @return the created Load menu
+     */
     private JMenu createLoadMenu() {
         final JMenu loadMenu = new JMenu(resources.getString("loadMenu.text"));
         loadMenu.setName("loadMenu");
@@ -134,14 +321,58 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         return loadMenu;
     }
 
+    /**
+     * This menu uses the following Mnemonic keys as of 20-Apr-2022:
+     * A, S
+     * @return the created Save menu
+     */
+    private JMenu createSaveMenu() {
+        final JMenu saveMenu = new JMenu(resources.getString("Save.text"));
+        saveMenu.setName("saveMenu");
+        saveMenu.setMnemonic(KeyEvent.VK_S);
+
+        final JMenuItem miSave = new JMenuItem(resources.getString("Save.text"));
+        miSave.setName("miSave");
+        miSave.setMnemonic(KeyEvent.VK_S);
+        miSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
+        miSave.addActionListener(this::jMenuSaveEntity_actionPerformed);
+        saveMenu.add(miSave);
+
+        final JMenuItem miSaveAs = new JMenuItem(resources.getString("SaveAs.text"));
+        miSaveAs.setName("miSaveAs");
+        miSaveAs.setMnemonic(KeyEvent.VK_A);
+        miSaveAs.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.CTRL_DOWN_MASK));
+        miSaveAs.addActionListener(this::jMenuSaveAsEntity_actionPerformed);
+        saveMenu.add(miSaveAs);
+
+        return saveMenu;
+    }
+
+    /**
+     * This menu uses the following Mnemonic keys as of 20-Apr-2022:
+     * I
+     * @return the created Import menu
+     */
     private JMenu createImportMenu() {
         final JMenu importMenu = new JMenu(resources.getString("importMenu.text"));
         importMenu.setName("importMenu");
         importMenu.setMnemonic(KeyEvent.VK_I);
 
+        final JMenuItem miImportFluffImage = new JMenuItem(resources.getString("miImportFluffImage.text"));
+        miImportFluffImage.setName("miImportFluffImage");
+        miImportFluffImage.setMnemonic(KeyEvent.VK_I);
+        miImportFluffImage.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I, InputEvent.ALT_DOWN_MASK));
+        miImportFluffImage.addActionListener(evt -> importFluffImageAction());
+        importMenu.add(miImportFluffImage);
+
         return importMenu;
     }
 
+    /**
+     * This menu uses the following Mnemonic keys as of 20-Apr-2022:
+     * C, H, P, T
+     * @return the created Export menu
+     */
     private JMenu createExportMenu() {
         final JMenu exportMenu = new JMenu(resources.getString("exportMenu.text"));
         exportMenu.setName("exportMenu");
@@ -155,6 +386,11 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         return exportMenu;
     }
 
+    /**
+     * This menu uses the following Mnemonic keys as of 20-Apr-2022:
+     * C, F, L, M, Q, S, U
+     * @return the created PDF Unit Export menu
+     */
     private JMenu createPDFUnitExportMenu() {
         final JMenu pdfUnitExportMenu = new JMenu(resources.getString("pdfUnitExportMenu.text"));
         pdfUnitExportMenu.setName("pdfUnitExportMenu");
@@ -181,10 +417,10 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         miExportUnitFromFileToPDF.addActionListener(evt -> UnitPrintManager.printUnitFile(getFrame(), false, true));
         pdfUnitExportMenu.add(miExportUnitFromFileToPDF);
 
-        final JMenuItem miExportUnitFromFileToSinglePDFPage = new JMenuItem(resources.getString("miExportUnitFromFileToSinglePDFPage.text"));
+        final JMenuItem miExportUnitFromFileToSinglePDFPage = new JMenuItem(resources.getString("FromFileSingle.text"));
         miExportUnitFromFileToSinglePDFPage.setName("miExportUnitFromFileToSinglePDFPage");
-        miExportUnitFromFileToSinglePDFPage.setMnemonic(KeyEvent.VK_U);
-        miExportUnitFromFileToSinglePDFPage.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, InputEvent.ALT_DOWN_MASK));
+        miExportUnitFromFileToSinglePDFPage.setMnemonic(KeyEvent.VK_S);
+        miExportUnitFromFileToSinglePDFPage.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.ALT_DOWN_MASK));
         miExportUnitFromFileToSinglePDFPage.addActionListener(evt -> UnitPrintManager.printUnitFile(getFrame(), true, true));
         pdfUnitExportMenu.add(miExportUnitFromFileToSinglePDFPage);
 
@@ -195,23 +431,28 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         miExportUnitQueueToPDF.addActionListener(evt -> new PrintQueueDialog(getFrame(), true).setVisible(true));
         pdfUnitExportMenu.add(miExportUnitQueueToPDF);
 
-        final JMenuItem miExportUnitsFromMULFileToPDF = new JMenuItem(resources.getString("miExportUnitsFromMULFileToPDF.text"));
+        final JMenuItem miExportUnitsFromMULFileToPDF = new JMenuItem(resources.getString("FromMUL.text"));
         miExportUnitsFromMULFileToPDF.setName("miExportUnitsFromMULFileToPDF");
-        miExportUnitsFromMULFileToPDF.setMnemonic(KeyEvent.VK_U);
-        miExportUnitsFromMULFileToPDF.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, InputEvent.ALT_DOWN_MASK));
+        miExportUnitsFromMULFileToPDF.setMnemonic(KeyEvent.VK_M);
+        miExportUnitsFromMULFileToPDF.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, InputEvent.ALT_DOWN_MASK));
         miExportUnitsFromMULFileToPDF.addActionListener(evt -> UnitPrintManager.exportMUL(getFrame(), false));
         pdfUnitExportMenu.add(miExportUnitsFromMULFileToPDF);
 
-        final JMenuItem miExportUnitsFromMULFileToSinglePDFPages = new JMenuItem(resources.getString("miExportUnitsFromMULFileToSinglePDFPages.text"));
+        final JMenuItem miExportUnitsFromMULFileToSinglePDFPages = new JMenuItem(resources.getString("FromMULSingle.text"));
         miExportUnitsFromMULFileToSinglePDFPages.setName("miExportUnitsFromMULFileToSinglePDFPages");
-        miExportUnitsFromMULFileToSinglePDFPages.setMnemonic(KeyEvent.VK_U);
-        miExportUnitsFromMULFileToSinglePDFPages.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, InputEvent.ALT_DOWN_MASK));
+        miExportUnitsFromMULFileToSinglePDFPages.setMnemonic(KeyEvent.VK_L);
+        miExportUnitsFromMULFileToSinglePDFPages.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, InputEvent.ALT_DOWN_MASK));
         miExportUnitsFromMULFileToSinglePDFPages.addActionListener(evt -> UnitPrintManager.exportMUL(getFrame(), true));
         pdfUnitExportMenu.add(miExportUnitsFromMULFileToSinglePDFPages);
 
         return pdfUnitExportMenu;
     }
 
+    /**
+     * This menu uses the following Mnemonic keys as of 20-Apr-2022:
+     * U
+     * @return the created HTML Unit Export menu
+     */
     private JMenu createHTMLUnitExportMenu() {
         final JMenu htmlUnitExportMenu = new JMenu(resources.getString("htmlUnitExportMenu.text"));
         htmlUnitExportMenu.setName("htmlUnitExportMenu");
@@ -227,6 +468,11 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         return htmlUnitExportMenu;
     }
 
+    /**
+     * This menu uses the following Mnemonic keys as of 20-Apr-2022:
+     * U
+     * @return the created Text Unit Export menu
+     */
     private JMenu createTextUnitExportMenu() {
         final JMenu textUnitExportMenu = new JMenu(resources.getString("textUnitExportMenu.text"));
         textUnitExportMenu.setName("textUnitExportMenu");
@@ -242,6 +488,11 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         return textUnitExportMenu;
     }
 
+    /**
+     * This menu uses the following Mnemonic keys as of 20-Apr-2022:
+     * U
+     * @return the created Clipboard Unit Export menu
+     */
     private JMenu createClipboardUnitExportMenu() {
         final JMenu clipboardUnitExportMenu = new JMenu(resources.getString("clipboardUnitExportMenu.text"));
         clipboardUnitExportMenu.setName("clipboardUnitExportMenu");
@@ -260,6 +511,73 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         return clipboardUnitExportMenu;
     }
 
+    /**
+     * This menu uses the following Mnemonic keys as of 20-Apr-2022:
+     * C, F, L, M, Q, S, U
+     * @return the created Print menu
+     */
+    private JMenu createPrintMenu() {
+        final JMenu printMenu = new JMenu(resources.getString("printMenu.text"));
+        printMenu.setName("printMenu");
+        printMenu.setMnemonic(KeyEvent.VK_P);
+
+        final JMenuItem miPrintCurrentUnit = new JMenuItem(resources.getString("CurrentUnit.text"));
+        miPrintCurrentUnit.setName("miPrintCurrentUnit");
+        miPrintCurrentUnit.setMnemonic(KeyEvent.VK_U);
+        miPrintCurrentUnit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, InputEvent.ALT_DOWN_MASK));
+        miPrintCurrentUnit.addActionListener(evt -> UnitPrintManager.printEntity(getFrame().getEntity()));
+        printMenu.add(miPrintCurrentUnit);
+
+        final JMenuItem miPrintUnitFromCache = new JMenuItem(resources.getString("FromCache.text"));
+        miPrintUnitFromCache.setName("miPrintUnitFromCache");
+        miPrintUnitFromCache.setMnemonic(KeyEvent.VK_C);
+        miPrintUnitFromCache.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.ALT_DOWN_MASK));
+        miPrintUnitFromCache.addActionListener(evt -> UnitPrintManager.printSelectedUnit(getFrame(), false));
+        printMenu.add(miPrintUnitFromCache);
+
+        final JMenuItem miPrintUnitFromFile = new JMenuItem(resources.getString("FromFile.text"));
+        miPrintUnitFromFile.setName("miPrintUnitFromFile");
+        miPrintUnitFromFile.setMnemonic(KeyEvent.VK_F);
+        miPrintUnitFromFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, InputEvent.ALT_DOWN_MASK));
+        miPrintUnitFromFile.addActionListener(evt -> UnitPrintManager.printUnitFile(getFrame(), false, false));
+        printMenu.add(miPrintUnitFromFile);
+
+        final JMenuItem miPrintUnitFromFileToSinglePage = new JMenuItem(resources.getString("FromFileSingle.text"));
+        miPrintUnitFromFileToSinglePage.setName("miPrintUnitFromFileToSinglePage");
+        miPrintUnitFromFileToSinglePage.setMnemonic(KeyEvent.VK_S);
+        miPrintUnitFromFileToSinglePage.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.ALT_DOWN_MASK));
+        miPrintUnitFromFileToSinglePage.addActionListener(evt -> UnitPrintManager.printUnitFile(getFrame(), true, false));
+        printMenu.add(miPrintUnitFromFileToSinglePage);
+
+        final JMenuItem miPrintUnitQueue = new JMenuItem(resources.getString("miPrintUnitQueue.text"));
+        miPrintUnitQueue.setName("miPrintUnitQueue");
+        miPrintUnitQueue.setMnemonic(KeyEvent.VK_Q);
+        miPrintUnitQueue.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.ALT_DOWN_MASK));
+        miPrintUnitQueue.addActionListener(evt -> new PrintQueueDialog(getFrame(), false).setVisible(true));
+        printMenu.add(miPrintUnitQueue);
+
+        final JMenuItem miPrintUnitsFromMULFile = new JMenuItem(resources.getString("FromMUL.text"));
+        miPrintUnitsFromMULFile.setName("miPrintUnitsFromMULFile");
+        miPrintUnitsFromMULFile.setMnemonic(KeyEvent.VK_M);
+        miPrintUnitsFromMULFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, InputEvent.ALT_DOWN_MASK));
+        miPrintUnitsFromMULFile.addActionListener(evt -> UnitPrintManager.printMUL(getFrame(), false));
+        printMenu.add(miPrintUnitsFromMULFile);
+
+        final JMenuItem miPrintUnitsFromMULFileToSinglePages = new JMenuItem(resources.getString("FromMULSingle.text"));
+        miPrintUnitsFromMULFileToSinglePages.setName("miPrintUnitsFromMULFileToSinglePages");
+        miPrintUnitsFromMULFileToSinglePages.setMnemonic(KeyEvent.VK_L);
+        miPrintUnitsFromMULFileToSinglePages.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, InputEvent.ALT_DOWN_MASK));
+        miPrintUnitsFromMULFileToSinglePages.addActionListener(evt -> UnitPrintManager.printMUL(getFrame(), true));
+        printMenu.add(miPrintUnitsFromMULFileToSinglePages);
+
+        return printMenu;
+    }
+
+    /**
+     * This menu uses the following Mnemonic keys as of 20-Apr-2022:
+     * U
+     * @return the created Refresh menu
+     */
     private JMenu createRefreshMenu() {
         final JMenu refreshMenu = new JMenu(resources.getString("refreshMenu.text"));
         refreshMenu.setName("refreshMenu");
@@ -275,6 +593,11 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         return refreshMenu;
     }
 
+    /**
+     * This menu uses the following Mnemonic keys as of 20-Apr-2022:
+     * C, T
+     * @return the created Options menu
+     */
     private JMenu createOptionsMenu() {
         final JMenu optionsMenu = new JMenu(resources.getString("optionsMenu.text"));
         optionsMenu.setName("optionsMenu");
@@ -290,52 +613,14 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         });
         optionsMenu.add(miConfiguration);
 
-        int fileNumber = 1;
-
-        final JMenuItem miCConfig1 = createCConfigMenuItem(CConfig.CONFIG_SAVE_FILE_1, fileNumber++);
-        if (miCConfig1 != null) {
-            optionsMenu.add(miCConfig1);
-        }
-
-        final JMenuItem miCConfig2 = createCConfigMenuItem(CConfig.CONFIG_SAVE_FILE_2, fileNumber++);
-        if (miCConfig2 != null) {
-            optionsMenu.add(miCConfig2);
-        }
-
-        final JMenuItem miCConfig3 = createCConfigMenuItem(CConfig.CONFIG_SAVE_FILE_3, fileNumber++);
-        if (miCConfig3 != null) {
-            optionsMenu.add(miCConfig3);
-        }
-
-        final JMenuItem miCConfig4 = createCConfigMenuItem(CConfig.CONFIG_SAVE_FILE_4, fileNumber++);
-        if (miCConfig4 != null) {
-            optionsMenu.add(miCConfig4);
-        }
+        optionsMenu.add(createThemesMenu());
 
         return optionsMenu;
     }
 
-    private @Nullable JMenuItem createCConfigMenuItem(final String configSaveFile,
-                                                      final int fileNumber) {
-        final String newFile = CConfig.getParam(configSaveFile);
-        if (newFile.length() < 1) {
-            return null;
-        }
-        final JMenuItem miCConfig;
-        if (newFile.length() > 35) {
-            miCConfig = new JMenuItem(fileNumber + ". .." + newFile.substring(newFile.length() - 36));
-        } else {
-            miCConfig = new JMenuItem(fileNumber + ". " + newFile);
-        }
-        miCConfig.setName("miCConfig");
-        miCConfig.addActionListener(evt -> loadUnitFromFile(fileNumber));
-        return miCConfig;
-    }
-
     /**
      * Creates a menu that includes all installed look and feel options
-     *
-     * @return The new menu
+     * @return The created Themes menu
      */
     private JMenu createThemesMenu() {
         final JMenu themesMenu = new JMenu(resources.getString("themesMenu.text"));
@@ -360,9 +645,31 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
 
         return themesMenu;
     }
+
+    private @Nullable JMenuItem createCConfigMenuItem(final String configSaveFile,
+                                                      final int fileNumber) {
+        final String newFile = CConfig.getParam(configSaveFile);
+        if (newFile.length() < 1) {
+            return null;
+        }
+        final JMenuItem miCConfig;
+        if (newFile.length() > 35) {
+            miCConfig = new JMenuItem(fileNumber + ". .." + newFile.substring(newFile.length() - 36));
+        } else {
+            miCConfig = new JMenuItem(fileNumber + ". " + newFile);
+        }
+        miCConfig.setName("miCConfig");
+        miCConfig.addActionListener(evt -> loadUnitFromFile(fileNumber));
+        return miCConfig;
+    }
     //endregion File Menu
 
     //region Unit Validation Menu
+    /**
+     * This menu uses the following Mnemonic keys as of 20-Apr-2022:
+     * C, F, U
+     * @return the created Unit Validation menu
+     */
     private JMenu createUnitValidationMenu() {
         final JMenu unitValidationMenu = new JMenu(resources.getString("unitValidationMenu.text"));
         unitValidationMenu.setName("unitValidationMenu");
@@ -394,10 +701,15 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     //endregion Unit Validation Menu
 
     //region Reports Menu
+    /**
+     * This menu uses the following Mnemonic keys as of 20-Apr-2022:
+     * B, C, S, W
+     * @return the created reports menu
+     */
     private JMenu createReportsMenu() {
         final JMenu reportsMenu = new JMenu(resources.getString("reportsMenu.text"));
         reportsMenu.setName("reportsMenu");
-        reportsMenu.setMnemonic(KeyEvent.VK_U);
+        reportsMenu.setMnemonic(KeyEvent.VK_R);
 
         reportsMenu.add(createUnitSpecsReportMenu());
         reportsMenu.add(createUnitBVBreakdownMenu());
@@ -407,6 +719,11 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         return reportsMenu;
     }
 
+    /**
+     * This menu uses the following Mnemonic keys as of 20-Apr-2022:
+     * C, F, U
+     * @return the created Unit Specs Report menu
+     */
     private JMenu createUnitSpecsReportMenu() {
         final JMenu unitSpecsReportMenu = new JMenu(resources.getString("unitSpecsReportMenu.text"));
         unitSpecsReportMenu.setName("unitSpecsReportMenu");
@@ -436,6 +753,11 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         return unitSpecsReportMenu;
     }
 
+    /**
+     * This menu uses the following Mnemonic keys as of 20-Apr-2022:
+     * C, F, U
+     * @return the created Unit BV Breakdown menu
+     */
     private JMenu createUnitBVBreakdownMenu() {
         final JMenu unitBVBreakdownMenu = new JMenu(resources.getString("unitBVBreakdownMenu.text"));
         unitBVBreakdownMenu.setName("unitBVBreakdownMenu");
@@ -465,6 +787,11 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         return unitBVBreakdownMenu;
     }
 
+    /**
+     * This menu uses the following Mnemonic keys as of 20-Apr-2022:
+     * C, F, U
+     * @return the created Unit Cost Breakdown menu
+     */
     private JMenu createUnitCostBreakdownMenu() {
         final JMenu unitCostBreakdownMenu = new JMenu(resources.getString("unitCostBreakdownMenu.text"));
         unitCostBreakdownMenu.setName("unitCostBreakdownMenu");
@@ -494,6 +821,11 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         return unitCostBreakdownMenu;
     }
 
+    /**
+     * This menu uses the following Mnemonic keys as of 20-Apr-2022:
+     * C, F, U
+     * @return the created Unit Weight Breakdown menu
+     */
     private JMenu createUnitWeightBreakdownMenu() {
         final JMenu unitWeightBreakdownMenu = new JMenu(resources.getString("unitWeightBreakdownMenu.text"));
         unitWeightBreakdownMenu.setName("unitWeightBreakdownMenu");
@@ -525,6 +857,11 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     //endregion Reports Menu
 
     //region Help Menu
+    /**
+     * This menu uses the following Mnemonic keys as of 20-Apr-2022:
+     * A, R
+     * @return the created Help menu
+     */
     private JMenu createHelpMenu() {
         final JMenu helpMenu = new JMenu(resources.getString("helpMenu.text"));
         helpMenu.setName("helpMenu");
@@ -547,218 +884,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         return helpMenu;
     }
     //endregion Help Menu
-
-    //region Unsorted Menu
-    private JMenu createUnsortedMenu() {
-        final JMenu unsortedMenu = new JMenu(resources.getString("unsortedMenu.text"));
-        unsortedMenu.setName("unsortedMenu");
-
-        final JMenuItem miInsertImage = new JMenuItem(resources.getString("miInsertImage.text"));
-        miInsertImage.setName("miInsertImage");
-        miInsertImage.setMnemonic(KeyEvent.VK_I);
-        miInsertImage.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I, InputEvent.ALT_DOWN_MASK));
-        miInsertImage.addActionListener(evt -> insertImageAction());
-        unsortedMenu.add(miInsertImage);
-
-        return unsortedMenu;
-    }
-    //endregion Unsorted Menu
     //endregion Initialization
-
-    public JMenu printMenu(final MegaMekLabMainUI parent) {
-        JMenu printMenu = new JMenu(resources.getString("menu.file.print"));
-        printMenu.setMnemonic(KeyEvent.VK_P);
-
-        JMenuItem item = new JMenuItem(resources.getString("menu.file.print.currentUnit"));
-        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P,
-                Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-        item.setMnemonic(KeyEvent.VK_C);
-        item.addActionListener(evt -> UnitPrintManager.printEntity(parent.getEntity()));
-        printMenu.add(item);
-
-        printMenu.addSeparator();
-        item = new JMenuItem(resources.getString("menu.file.print.queueUnits"));
-        item.setMnemonic(KeyEvent.VK_Q);
-        item.addActionListener(evt -> new PrintQueueDialog(parent, false));
-
-        printMenu.add(item);
-        printMenu.addSeparator();
-
-        item = new JMenuItem(resources.getString("menu.file.print.otherUnit"));
-        item.setMnemonic(KeyEvent.VK_O);
-        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK));
-        item.addActionListener(evt -> UnitPrintManager.printSelectedUnit(parent, false));
-        printMenu.add(item);
-
-        item = new JMenuItem(resources.getString("menu.file.print.fromFile"));
-        item.setMnemonic(KeyEvent.VK_I);
-        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, InputEvent.CTRL_MASK));
-        item.addActionListener(evt -> UnitPrintManager.printUnitFile(parent, false, false));
-        printMenu.add(item);
-
-        item = new JMenuItem(resources.getString("menu.file.print.fromFileSingle"));
-        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.SHIFT_MASK | InputEvent.CTRL_MASK));
-        item.addActionListener(evt -> UnitPrintManager.printUnitFile(parent, true, false));
-        printMenu.add(item);
-
-        printMenu.addSeparator();
-        item = new JMenuItem(resources.getString("menu.file.print.fromMUL"));
-        item.setMnemonic(KeyEvent.VK_M);
-        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, InputEvent.CTRL_MASK));
-        item.addActionListener(evt -> UnitPrintManager.printMUL(parent, false));
-        printMenu.add(item);
-
-        item = new JMenuItem(resources.getString("menu.file.print.fromMULSingle"));
-        item.setMnemonic(KeyEvent.VK_R);
-        item.addActionListener(evt -> UnitPrintManager.printMUL(parent, true));
-        printMenu.add(item);
-
-        return printMenu;
-    }
-
-    private JMenu oldCreateFileMenu() {
-        JMenu fileMenu = new JMenu(resources.getString("menu.file"));
-        fileMenu.setMnemonic(KeyEvent.VK_F);
-
-        JMenuItem item = new JMenuItem(resources.getString("menu.file.resetCurrentUnit"));
-        item.setMnemonic(KeyEvent.VK_R);
-        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.ALT_DOWN_MASK));
-        item.addActionListener(this::jMenuResetEntity_actionPerformed);
-        fileMenu.add(item);
-
-        JMenu unitMenu = new JMenu(resources.getString("menu.file.switchUnitType"));
-        unitMenu.setMnemonic(KeyEvent.VK_S);
-        Entity en = getFrame().getEntity();
-
-        if (!(en instanceof Mech) || en.isPrimitive()) {
-            item = new JMenuItem();
-            item.setText(resources.getString("menu.file.unitType.mech"));
-            item.setMnemonic(KeyEvent.VK_M);
-            item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, InputEvent.ALT_DOWN_MASK));
-            item.addActionListener(evt -> newUnit(Entity.ETYPE_MECH, false, null));
-            unitMenu.add(item);
-        }
-
-        if (!en.isFighter() || ((en instanceof Aero) && en.isPrimitive())) {
-            item = new JMenuItem();
-            item.setText(resources.getString("menu.file.unitType.fighter"));
-            item.setMnemonic(KeyEvent.VK_A);
-            item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.ALT_DOWN_MASK));
-            item.addActionListener(evt -> newUnit(Entity.ETYPE_AERO, false, null));
-            unitMenu.add(item);
-        }
-
-        if (!(en instanceof SmallCraft) || en.isPrimitive()) {
-            item = new JMenuItem();
-            item.setText(resources.getString("menu.file.unitType.dropshipSmallCraft"));
-            item.setMnemonic(KeyEvent.VK_D);
-            item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.ALT_DOWN_MASK));
-            item.addActionListener(evt -> newUnit(Entity.ETYPE_DROPSHIP, false, null));
-            unitMenu.add(item);
-        }
-
-        if (!(en instanceof Jumpship) || en.isPrimitive()) {
-            item = new JMenuItem();
-            item.setText(resources.getString("menu.file.unitType.advancedAero"));
-            item.setMnemonic(KeyEvent.VK_J);
-            item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_J, InputEvent.ALT_DOWN_MASK));
-            item.addActionListener(evt -> newUnit(Entity.ETYPE_JUMPSHIP, false, null));
-            unitMenu.add(item);
-        }
-
-        if (!(getFrame().getEntity() instanceof Tank)
-                || getFrame().getEntity().isSupportVehicle()) {
-            item = new JMenuItem();
-            item.setText(resources.getString("menu.file.unitType.combatVehicle"));
-            item.setMnemonic(KeyEvent.VK_T);
-            item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.ALT_DOWN_MASK));
-            item.addActionListener(evt -> newUnit(Entity.ETYPE_TANK, false, null));
-            unitMenu.add(item);
-        }
-
-        if (!getFrame().getEntity().isSupportVehicle()) {
-            item = new JMenuItem();
-            item.setText("Support Vehicle");
-            item.addActionListener(evt -> newUnit(Entity.ETYPE_SUPPORT_TANK, false, null));
-            unitMenu.add(item);
-        }
-
-        if (!(getFrame().getEntity() instanceof BattleArmor)) {
-            item = new JMenuItem();
-            item.setText(resources.getString("menu.file.unitType.battleArmor"));
-            item.setMnemonic(KeyEvent.VK_B);
-            item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, InputEvent.ALT_DOWN_MASK));
-            item.addActionListener(evt -> newUnit(Entity.ETYPE_BATTLEARMOR, false, null));
-            unitMenu.add(item);
-        }
-
-        if (!getFrame().getEntity().isConventionalInfantry()) {
-            item = new JMenuItem();
-            item.setText(resources.getString("menu.file.unitType.infantry"));
-            item.setMnemonic(KeyEvent.VK_I);
-            item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I, InputEvent.ALT_DOWN_MASK));
-            item.addActionListener(evt -> newUnit(Entity.ETYPE_INFANTRY, false, null));
-            unitMenu.add(item);
-        }
-        
-        if (!getFrame().getEntity().hasETypeFlag(Entity.ETYPE_PROTOMECH)) {
-            item = new JMenuItem();
-            item.setText(resources.getString("menu.file.unitType.protomech"));
-            item.setMnemonic(KeyEvent.VK_P);
-            item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.ALT_DOWN_MASK));
-            item.addActionListener(evt -> newUnit(Entity.ETYPE_PROTOMECH, false, null));
-            unitMenu.add(item);
-        }
-
-        JMenu pMenu = new JMenu(resources.getString("menu.file.unitType.primitive"));
-        if (!(en instanceof Mech) || !en.isPrimitive()) {
-            item = new JMenuItem();
-            item.setText(resources.getString("menu.file.unitType.mech"));
-            item.addActionListener(evt -> newUnit(Entity.ETYPE_MECH, true, null));
-            pMenu.add(item);
-        }
-
-        if (!(en.isFighter()) || ((en instanceof Aero) && !en.isPrimitive())) {
-            item = new JMenuItem();
-            item.setText(resources.getString("menu.file.unitType.aero"));
-            item.addActionListener(evt -> newUnit(Entity.ETYPE_AERO, true, null));
-            pMenu.add(item);
-        }
-
-        if (!(en instanceof SmallCraft) || !en.isPrimitive()) {
-            item = new JMenuItem();
-            item.setText(resources.getString("menu.file.unitType.dropshipSmallCraft"));
-            item.addActionListener(evt -> newUnit(Entity.ETYPE_DROPSHIP, true, null));
-            pMenu.add(item);
-        }
-
-        if (!(en instanceof Jumpship) || !en.isPrimitive()) {
-            item = new JMenuItem();
-            item.setText(resources.getString("menu.file.unitType.jumpship"));
-            item.addActionListener(evt -> newUnit(Entity.ETYPE_JUMPSHIP, true, null));
-            pMenu.add(item);
-        }
-
-        unitMenu.add(pMenu);
-
-        fileMenu.add(unitMenu);
-
-        item = new JMenuItem();
-        item.setText(resources.getString("menu.file.save"));
-        item.setMnemonic(KeyEvent.VK_S);
-        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.ALT_DOWN_MASK));
-        item.addActionListener(this::jMenuSaveEntity_actionPerformed);
-        fileMenu.add(item);
-
-        item = new JMenuItem();
-        item.setText(resources.getString("menu.file.saveAs"));
-        item.setMnemonic(KeyEvent.VK_A);
-        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.ALT_DOWN_MASK));
-        item.addActionListener(this::jMenuSaveAsEntity_actionPerformed);
-        fileMenu.add(item);
-
-        return fileMenu;
-    }
 
     private void jMenuGetUnitBVFromCache_actionPerformed() {
         UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(getFrame());
@@ -837,7 +963,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(getFrame(),
                     String.format(resources.getString("message.invalidUnit.format"),
-                    ex.getMessage()));
+                            ex.getMessage()));
         }
     }
 
@@ -905,7 +1031,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         }
     }
 
-    private void insertImageAction() {
+    private void importFluffImageAction() {
         File unitFile = loadUnitFile();
         if (unitFile == null) {
             return;
