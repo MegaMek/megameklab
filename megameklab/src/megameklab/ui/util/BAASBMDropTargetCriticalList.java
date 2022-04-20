@@ -473,8 +473,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
             return;
         }
         
-        // BattleArmor doens't use the crit system, we we can just remove the
-        //  mounted and be done
+        // BattleArmor doesn't use the crit system, so we can just remove the mounted and be done
         if (getUnit() instanceof BattleArmor) {
             changeMountStatus(mounted, BattleArmor.MOUNT_LOC_NONE, false);
             return;
@@ -494,7 +493,6 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
         if ((crit != null) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
             changeMountStatus(mounted, Entity.LOC_NONE, false);
         }
-
     }
 
     private void changeWeaponFacing(boolean rear) {

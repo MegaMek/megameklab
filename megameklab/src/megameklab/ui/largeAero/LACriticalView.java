@@ -46,8 +46,7 @@ import java.util.ResourceBundle;
  * @author Simon (Juliez)
  */
 public class LACriticalView extends IView {
-
-    // Maximum number of arcs for small craft/dropship; aerodyne only use four, spheroid
+    // Maximum number of arcs for small craft / DropShip; aerodyne only use four, spheroid
     // and non-warship capital ships use 6, plus one for system-wide
     private static final int MAX_ARCS = 9;
     
