@@ -14,6 +14,7 @@
  */
 package megameklab.ui;
 
+import megamek.client.ui.dialogs.CostDisplayDialog;
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
@@ -566,7 +567,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(parentFrame);
         unitLoadingDialog.setVisible(true);
         MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(parentFrame, unitLoadingDialog);
-        UnitUtil.showUnitCostBreakDown(parentFrame, viewer.getChosenEntity());
+        new CostDisplayDialog(parentFrame, viewer.getChosenEntity()).setVisible(true);
     }
 
     private void jMenuGetUnitWeightBreakdownFromCache_actionPerformed() {
@@ -638,7 +639,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         }
 
         try {
-            UnitUtil.showUnitCostBreakDown(parentFrame, new MechFileParser(unitFile).getEntity());
+            new CostDisplayDialog(parentFrame, new MechFileParser(unitFile).getEntity()).setVisible(true);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(parentFrame,
                     String.format(resourceMap.getString("message.invalidUnit.format"),
@@ -726,7 +727,8 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     }
 
     private void jMenuUnitCostBreakdown_actionPerformed() {
-        UnitUtil.showUnitCostBreakDown(parentFrame, parentFrame.getEntity());
+        new CostDisplayDialog(parentFrame, parentFrame.getEntity()).setVisible(true);
+
     }
     
     private void jMenuUnitWeightBreakdown_actionPerformed() {
