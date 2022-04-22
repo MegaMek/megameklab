@@ -3,7 +3,7 @@ import java.time.LocalDateTime
 plugins {
     id 'application'
     id 'maven-publish'
-    id 'edu.sc.seis.launch4j' version '2.5.1'
+    id 'edu.sc.seis.launch4j' version '2.5.3'
     id 'jacoco'
 }
 
@@ -29,7 +29,7 @@ sourceSets {
 dependencies {
     implementation "org.megamek:megamek${mmBranchTag}:${version}"
 
-    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:3.0.1'
+    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.0'
     implementation 'org.apache.logging.log4j:log4j-core:2.17.2'
     implementation 'org.apache.pdfbox:pdfbox:2.0.25'
     implementation ('org.apache.xmlgraphics:batik-bridge:1.14') {
@@ -46,7 +46,7 @@ dependencies {
         exclude group: 'com.sun.media', module: 'jai-codec'
     }
 
-    runtimeOnly 'org.glassfish.jaxb:jaxb-runtime:3.0.2'
+    runtimeOnly 'org.glassfish.jaxb:jaxb-runtime:4.0.0-M4'
 }
 
 mainClassName = 'megameklab.MegaMekLab'
