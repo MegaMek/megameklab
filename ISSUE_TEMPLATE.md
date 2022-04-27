@@ -5,7 +5,7 @@ Search for your issue inside open and closed issues first before reporting so as
 ### Environment
 What version of MekLab does your issue apply to?  Note whether it is the stand alone MekLab or HQ's MekLab.
 What operating system are you using?  Windows, Mac, or Linux?
-What java version are you using?  If unsure it will state your java version at the top of the megameklablog.txt file.
+What java version are you using?  If unsure, it will state your java version at the top of the megameklab.log file.
 (Delete the above lines)
 
 ### Description
@@ -15,7 +15,7 @@ And provide the steps you have taken to reproduce the issue.
 (Delete the above lines)
 
 ### Files
-Provide the megameklablog.txt file for any NPE's or errors that MekLab might be reporting.
-Do not paste the entire logfile text into this ticket. Just attach the actual megameklablog.txt file
+Provide the megameklab.log file for any NPE's or errors that MekLab might be reporting.
+Do not paste the entire logfile text into this ticket. Just attach the actual megameklab.log file
 And provide the unit's file that the issue relates to if this is a unit-specific bug.
 (Delete the above lines)
