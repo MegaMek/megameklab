@@ -113,28 +113,35 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         fileMenu.addSeparator();
 
         int fileNumber = 1;
+        boolean hasCConfigMenuItem = false;
 
         final JMenuItem miCConfig1 = createCConfigMenuItem(CConfig.CONFIG_SAVE_FILE_1, fileNumber++);
         if (miCConfig1 != null) {
             fileMenu.add(miCConfig1);
+            hasCConfigMenuItem = true;
         }
 
         final JMenuItem miCConfig2 = createCConfigMenuItem(CConfig.CONFIG_SAVE_FILE_2, fileNumber++);
         if (miCConfig2 != null) {
             fileMenu.add(miCConfig2);
+            hasCConfigMenuItem = true;
         }
 
         final JMenuItem miCConfig3 = createCConfigMenuItem(CConfig.CONFIG_SAVE_FILE_3, fileNumber++);
         if (miCConfig3 != null) {
             fileMenu.add(miCConfig3);
+            hasCConfigMenuItem = true;
         }
 
         final JMenuItem miCConfig4 = createCConfigMenuItem(CConfig.CONFIG_SAVE_FILE_4, fileNumber++);
         if (miCConfig4 != null) {
             fileMenu.add(miCConfig4);
+            hasCConfigMenuItem = true;
         }
 
-        fileMenu.addSeparator();
+        if (hasCConfigMenuItem) {
+            fileMenu.addSeparator();
+        }
 
         final JMenuItem miExit = new JMenuItem(resources.getString("miExit.text"));
         miExit.setName("miExit");
@@ -314,7 +321,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         final JMenuItem miLoadUnitFromFile = new JMenuItem(resources.getString("FromFile.text"));
         miLoadUnitFromFile.setName("miLoadUnitFromFile");
         miLoadUnitFromFile.setMnemonic(KeyEvent.VK_F);
-        miLoadUnitFromFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, InputEvent.ALT_DOWN_MASK));
+        miLoadUnitFromFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, InputEvent.CTRL_DOWN_MASK));
         miLoadUnitFromFile.addActionListener(evt -> loadUnitFromFile(-1));
         loadMenu.add(miLoadUnitFromFile);
 
@@ -524,7 +531,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         final JMenuItem miPrintCurrentUnit = new JMenuItem(resources.getString("CurrentUnit.text"));
         miPrintCurrentUnit.setName("miPrintCurrentUnit");
         miPrintCurrentUnit.setMnemonic(KeyEvent.VK_U);
-        miPrintCurrentUnit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, InputEvent.ALT_DOWN_MASK));
+        miPrintCurrentUnit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.CTRL_DOWN_MASK));
         miPrintCurrentUnit.addActionListener(evt -> UnitPrintManager.printEntity(getFrame().getEntity()));
         printMenu.add(miPrintCurrentUnit);
 
