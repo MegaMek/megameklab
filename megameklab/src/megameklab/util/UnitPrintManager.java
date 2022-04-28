@@ -19,9 +19,7 @@ import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.common.*;
 import megamek.common.util.EncodeControl;
 import megameklab.printing.*;
-import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
-import megameklab.ui.dialog.PrintQueueDialog;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
 
@@ -30,8 +28,6 @@ import javax.print.attribute.standard.DialogTypeSelection;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
 import java.awt.print.PageFormat;
 import java.awt.print.PrinterJob;
 import java.io.File;
@@ -282,95 +278,6 @@ public class UnitPrintManager {
 
         RecordSheetTask task = RecordSheetTask.createPrintTask(sheets, masterPrintJob, aset, pageFormat);
         task.execute(CConfig.getBooleanParam(CConfig.RS_PROGRESS_BAR));
-    }
-
-    public static JMenu printMenu(final MegaMekLabMainUI parent) {
-        JMenu printMenu = new JMenu(menuResources.getString("menu.file.print"));
-        printMenu.setMnemonic(KeyEvent.VK_P);
-
-        JMenuItem item = new JMenuItem(menuResources.getString("menu.file.print.currentUnit"));
-        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P,
-                Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-        item.setMnemonic(KeyEvent.VK_C);
-        item.addActionListener(e -> printEntity(parent.getEntity()));
-        printMenu.add(item);
-
-        printMenu.addSeparator();
-        item = new JMenuItem(menuResources.getString("menu.file.print.queueUnits"));
-        item.setMnemonic(KeyEvent.VK_Q);
-        item.addActionListener(e -> new PrintQueueDialog(parent, false));
-
-        printMenu.add(item);
-        printMenu.addSeparator();
-
-        item = new JMenuItem(menuResources.getString("menu.file.print.otherUnit"));
-        item.setMnemonic(KeyEvent.VK_O);
-        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK));
-        item.addActionListener(e -> UnitPrintManager.printSelectedUnit(parent, false));
-        printMenu.add(item);
-
-        item = new JMenuItem(menuResources.getString("menu.file.print.fromFile"));
-        item.setMnemonic(KeyEvent.VK_I);
-        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, InputEvent.CTRL_MASK));
-        item.addActionListener(e -> UnitPrintManager.printUnitFile(parent, false, false));
-        printMenu.add(item);
-
-        item = new JMenuItem(menuResources.getString("menu.file.print.fromFileSingle"));
-        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.SHIFT_MASK | InputEvent.CTRL_MASK));
-        item.addActionListener(e -> UnitPrintManager.printUnitFile(parent, true, false));
-        printMenu.add(item);
-
-        printMenu.addSeparator();
-        item = new JMenuItem(menuResources.getString("menu.file.print.fromMUL"));
-        item.setMnemonic(KeyEvent.VK_M);
-        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, InputEvent.CTRL_MASK));
-        item.addActionListener(e -> UnitPrintManager.printMUL(parent, false));
-        printMenu.add(item);
-
-        item = new JMenuItem(menuResources.getString("menu.file.print.fromMULSingle"));
-        item.setMnemonic(KeyEvent.VK_R);
-        item.addActionListener(e -> UnitPrintManager.printMUL(parent, true));
-        printMenu.add(item);
-
-        return printMenu;
-    }
-
-    public static JMenu exportMenu(final MegaMekLabMainUI parent) {
-        JMenu exportMenu = new JMenu(menuResources.getString("menu.file.exportPDF"));
-        exportMenu.setMnemonic(KeyEvent.VK_E);
-
-        JMenuItem item = new JMenuItem(menuResources.getString("menu.file.print.currentUnit"));
-        item.addActionListener(e -> exportEntity(parent.getEntity(), parent));
-        exportMenu.add(item);
-
-        exportMenu.addSeparator();
-        item = new JMenuItem(menuResources.getString("menu.file.print.queueUnits"));
-        item.addActionListener(e -> new PrintQueueDialog(parent, true).setVisible(true));
-        exportMenu.add(item);
-
-        item = new JMenuItem(menuResources.getString("menu.file.print.otherUnit"));
-        item.addActionListener(e -> UnitPrintManager.printSelectedUnit(parent, true));
-        exportMenu.add(item);
-
-        item = new JMenuItem(menuResources.getString("menu.file.print.fromFile"));
-        item.addActionListener(e -> UnitPrintManager.printUnitFile(parent, false, true));
-        exportMenu.add(item);
-
-        item = new JMenuItem(menuResources.getString("menu.file.print.fromFileSingle"));
-        item.addActionListener(e -> UnitPrintManager.printUnitFile(parent, true, true));
-        exportMenu.add(item);
-
-        exportMenu.addSeparator();
-        item = new JMenuItem(menuResources.getString("menu.file.print.fromMUL"));
-        item.addActionListener(e -> UnitPrintManager.exportMUL(parent, false));
-        exportMenu.add(item);
-
-        item = new JMenuItem(menuResources.getString("menu.file.print.fromMULSingle"));
-        item.setMnemonic(KeyEvent.VK_R);
-        item.addActionListener(e -> UnitPrintManager.exportMUL(parent, true));
-        exportMenu.add(item);
-
-        return exportMenu;
     }
 
     public static void printSelectedUnit(JFrame parent, boolean pdf) {
