@@ -23,6 +23,7 @@ VERSION HISTORY:
 + PR #1079: Fixing BuildView createLabel Missing Tooltips
 + PR #1085: For Meks, display with the header of each crit location if that location is protected by CASE
 + PR #1092: Fixing MegaMekLab's log paths
++ PR #1090: MML Menu Bar Rework
 + Updating to JAXB 4.0.0 from 2.3.2
 + Updating to Launch4j 2.5.3 from 2.5.1
 + Updating to Log4j2 2.17.2 from 2.17.1
