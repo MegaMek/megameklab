@@ -809,7 +809,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         miCurrentUnitCostBreakdown.setName("miCurrentUnitCostBreakdown");
         miCurrentUnitCostBreakdown.setMnemonic(KeyEvent.VK_U);
         miCurrentUnitCostBreakdown.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, InputEvent.ALT_DOWN_MASK));
-        miCurrentUnitCostBreakdown.addActionListener(evt -> UnitUtil.showUnitCostBreakDown(getFrame(), getFrame().getEntity()));
+        miCurrentUnitCostBreakdown.addActionListener(evt -> new CostDisplayDialog(getFrame(), getFrame().getEntity()).setVisible(true));
         unitCostBreakdownMenu.add(miCurrentUnitCostBreakdown);
 
         final JMenuItem miUnitCostBreakdownFromCache = new JMenuItem(resources.getString("FromCache.text"));
@@ -928,7 +928,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     private void jMenuGetUnitBreakdownFromCache_actionPerformed() {
         UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(getFrame());
         unitLoadingDialog.setVisible(true);
-        MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(parentFrame, unitLoadingDialog);
+        MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(getFrame(), unitLoadingDialog);
         new CostDisplayDialog(getFrame(), viewer.getChosenEntity()).setVisible(true);
     }
 
