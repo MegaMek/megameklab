@@ -15,6 +15,7 @@
 package megameklab.ui.util;
 
 import megamek.client.ui.WrapLayout;
+import megamek.client.ui.models.XTableColumnModel;
 import megamek.client.ui.swing.GUIPreferences;
 import megamek.client.ui.swing.util.UIUtil;
 import megamek.common.AmmoType;
@@ -156,7 +157,7 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
             LogManager.getLogger().warn("Received empty or null list of table columns to show!");
             return;
         }
-        columnModel.allTableColumns
+        columnModel.getAllTableColumns()
                 .forEach(c -> columnModel.setColumnVisible(c, shownColumns.contains(c.getModelIndex())));
     }
 

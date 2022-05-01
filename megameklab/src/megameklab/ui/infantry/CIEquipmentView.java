@@ -15,6 +15,7 @@
  */
 package megameklab.ui.infantry;
 
+import megamek.client.ui.models.XTableColumnModel;
 import megamek.common.EquipmentType;
 import megamek.common.ITechManager;
 import megamek.common.Infantry;
@@ -25,7 +26,6 @@ import megameklab.ui.EntitySource;
 import megameklab.ui.util.EquipmentTableModel;
 import megameklab.ui.util.IView;
 import megameklab.ui.util.RefreshListener;
-import megameklab.ui.util.XTableColumnModel;
 import megameklab.util.UnitUtil;
 
 import javax.swing.*;
