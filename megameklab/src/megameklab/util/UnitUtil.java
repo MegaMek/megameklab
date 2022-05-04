@@ -14,6 +14,7 @@
 package megameklab.util;
 
 import megamek.client.ui.dialogs.BVDisplayDialog;
+import megamek.client.ui.dialogs.CostDisplayDialog;
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
 import megamek.common.verifier.*;
@@ -3481,15 +3482,6 @@ public class UnitUtil {
         }
     }
 
-    public static void showUnitCostBreakDown(final JFrame frame, final @Nullable Entity entity) {
-        if (entity == null) {
-            return;
-        }
-        entity.calculateBattleValue(true, true);
-        entity.getCost(true);
-        new BVDisplayDialog(frame, entity).setVisible(true);
-    }
-
     public static void showUnitWeightBreakDown(Entity unit, JFrame frame) {
         TestEntity testEntity = getEntityVerifier(unit);
 
@@ -3533,7 +3525,6 @@ public class UnitUtil {
         if (entity == null) {
             return;
         }
-        entity.calculateBattleValue(true, true);
         new BVDisplayDialog(frame, entity).setVisible(true);
     }
 

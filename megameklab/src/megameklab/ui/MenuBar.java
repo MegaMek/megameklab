@@ -14,6 +14,7 @@
  */
 package megameklab.ui;
 
+import megamek.client.ui.dialogs.CostDisplayDialog;
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
@@ -808,7 +809,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         miCurrentUnitCostBreakdown.setName("miCurrentUnitCostBreakdown");
         miCurrentUnitCostBreakdown.setMnemonic(KeyEvent.VK_U);
         miCurrentUnitCostBreakdown.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, InputEvent.ALT_DOWN_MASK));
-        miCurrentUnitCostBreakdown.addActionListener(evt -> UnitUtil.showUnitCostBreakDown(getFrame(), getFrame().getEntity()));
+        miCurrentUnitCostBreakdown.addActionListener(evt -> new CostDisplayDialog(getFrame(), getFrame().getEntity()).setVisible(true));
         unitCostBreakdownMenu.add(miCurrentUnitCostBreakdown);
 
         final JMenuItem miUnitCostBreakdownFromCache = new JMenuItem(resources.getString("FromCache.text"));
@@ -928,7 +929,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(getFrame());
         unitLoadingDialog.setVisible(true);
         MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(getFrame(), unitLoadingDialog);
-        UnitUtil.showUnitCostBreakDown(getFrame(), viewer.getChosenEntity());
+        new CostDisplayDialog(getFrame(), viewer.getChosenEntity()).setVisible(true);
     }
 
     private void jMenuGetUnitWeightBreakdownFromCache_actionPerformed() {
@@ -998,7 +999,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         }
 
         try {
-            UnitUtil.showUnitCostBreakDown(getFrame(), new MechFileParser(unitFile).getEntity());
+            new CostDisplayDialog(getFrame(), new MechFileParser(unitFile).getEntity()).setVisible(true);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(getFrame(),
                     String.format(resources.getString("message.invalidUnit.format"),
