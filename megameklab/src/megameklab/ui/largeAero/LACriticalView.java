@@ -38,7 +38,7 @@ import java.util.ResourceBundle;
 
 /**
  * The Crit Slots view for Large Craft (including Small Craft)
- * Aft side arcs on spheroid small craft and dropships are implemented as rear-mounted weapons in the
+ * Aft side arcs on spheroid small craft and DropShips are implemented as rear-mounted weapons in the
  * left/right side locations but here they are shown as separate locations both to make it less confusing
  * to the user and for the need to maintain a separate count of the number of slots filled in that arc.
  * 
@@ -47,7 +47,7 @@ import java.util.ResourceBundle;
  */
 public class LACriticalView extends IView {
     // Maximum number of arcs for small craft / DropShip; aerodyne only use four, spheroid
-    // and non-warship capital ships use 6, plus one for system-wide
+    // and non-WarShip capital ships use 6, plus one for system-wide
     private static final int MAX_ARCS = 9;
     
     private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl());

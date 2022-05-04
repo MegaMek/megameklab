@@ -869,10 +869,10 @@ v0.1.26 (2014-03-29 15:10 UTC)
 
 v0.1.25 (2014-02-22 23:21 UTC)
 + Filtered out equipment in the equipment table that gets added via the
-    StructureTab (jump boosters, partial wing, manipulators, etc).  Also removed
+    StructureTab (jump boosters, partial wing, manipulators, etc). Also removed
     some filtering that was intended for 'mechs and vees and isn't applicable
 + Bug: Enhancement check boxes weren't being checked when loading BA with those
-    enhnacements
+    enhancements
 + Filter out Support Weapons for BA use on AP Mounts. Fix Header to blk not mtf.
 + Bug: Removing DWP's and weapons mounted in DWPs via the "Remove" button in
     the Equipment tab could cause weirdness
@@ -882,8 +882,8 @@ v0.1.25 (2014-02-22 23:21 UTC)
 + Bug: Infantry weapons were being removed from the equipment list in the
     equipment tab (they weren't being considered as BA weapons)
 + Bug: Anti-personnel weapons cannot be mounted directly on BattleArmor, instead
-    they must be mounted via an AP Mount.  This wasn't enforced before and is
-    now.  To make it clear, unallocated AP weapons now display an * and the
+    they must be mounted via an AP Mount. This wasn't enforced before and is
+    now. To make it clear, unallocated AP weapons now display an * and the
     tooltip explains how to mount AP weapons
 + BA Manipulators now show in the critical view, largely so you can detach AP
     weapons attached to Armored Gloves
@@ -891,7 +891,7 @@ v0.1.25 (2014-02-22 23:21 UTC)
     removed or deleted
 + Bug: AP weapons on BA could be assigned a location via right clicking
 + Bug: Critical View now counts AP Mounts instead of infantry weapons
-+ Bug: AP weapons where showing up in the ballisics list of weapons
++ Bug: AP weapons where showing up in the ballistics list of weapons
 + Bug: BA could armor components
 + Feature: Added the ability to mount ammo in DWPs
 + Added ability to mount weapons/ammo as squad support weapons: valid weapons
@@ -978,7 +978,7 @@ v0.1.24 (2014-02-11 03:43 UTC)
 + Adjusted layout of Vehicle construction, to make the status bar more
     consistent with other views
 + Adjusted spacing in Aero Build and Equipment Tabs
-+ Bug: Aero criticals in the Assign Criticals tab would occassionally disappear
++ Bug: Aero criticals in the Assign Criticals tab would occasionally disappear
 + Feature: You can now drag assigned criticals from the critical view to the
     unallocated equipment table to unassign the item (works for Meks, Aeros,
     BA, but not Tanks yet)
