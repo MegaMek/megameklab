@@ -343,7 +343,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         miSave.setName("miSave");
         miSave.setMnemonic(KeyEvent.VK_S);
         miSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
-        miSave.addActionListener(this::jMenuSaveEntity_actionPerformed);
+        miSave.addActionListener(evt -> saveEntity());
         saveMenu.add(miSave);
 
         final JMenuItem miSaveAs = new JMenuItem(resources.getString("SaveAs.text"));
@@ -1208,14 +1208,20 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         return fileName + ((entity instanceof Mech) ? ".mtf" : ".blk");
     }
 
-    private void jMenuSaveEntity_actionPerformed(ActionEvent event) {
-        if (!UnitUtil.validateUnit(getFrame().getEntity()).isBlank()) {
+    private void saveEntity() {
+        saveEntity(getFrame().getEntity());
+    }
+
+    public boolean saveEntity(final Entity entity) {
+        if (entity == null) {
+            return false;
+        } else if (!UnitUtil.validateUnit(entity).isBlank()) {
             JOptionPane.showMessageDialog(getFrame(),
                     resources.getString("message.invalidUnit.text"));
         }
 
-        String fileName = createUnitFilename(getFrame().getEntity());
-        UnitUtil.compactCriticals(getFrame().getEntity());
+        String fileName = createUnitFilename(entity);
+        UnitUtil.compactCriticals(entity);
 
         String filePathName = CConfig.getParam(CConfig.CONFIG_SAVE_FILE_1);
 
@@ -1231,33 +1237,34 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
 
             fDialog.setVisible(true);
 
-            if (fDialog.getFile() != null) {
-                filePathName = fDialog.getDirectory() + fDialog.getFile();
-                CConfig.setParam(CConfig.CONFIG_SAVE_LOC, fDialog.getDirectory());
-            } else {
-                return;
+            if (fDialog.getFile() == null) {
+                return false;
             }
+
+            filePathName = fDialog.getDirectory() + fDialog.getFile();
+            CConfig.setParam(CConfig.CONFIG_SAVE_LOC, fDialog.getDirectory());
         }
 
         try {
-            if (getFrame().getEntity() instanceof Mech) {
+            if (entity instanceof Mech) {
                 try (FileOutputStream fos = new FileOutputStream(filePathName);
                      PrintStream ps = new PrintStream(fos)) {
-                    ps.println(((Mech) getFrame().getEntity()).getMtf());
+                    ps.println(((Mech) entity).getMtf());
                 }
             } else {
-                BLKFile.encode(filePathName, getFrame().getEntity());
+                BLKFile.encode(filePathName, entity);
             }
             CConfig.updateSaveFiles(filePathName);
         } catch (Exception ex) {
             LogManager.getLogger().error("", ex);
+            return false;
         }
 
         JOptionPane.showMessageDialog(getFrame(),
                 String.format(resources.getString("dialog.saveAs.message.format"),
-                        getFrame().getEntity().getChassis(),
-                        getFrame().getEntity().getModel(), filePathName));
-
+                        entity.getChassis(),
+                        entity.getModel(), filePathName));
+        return true;
     }
 
     private void jMenuSaveAsEntity_actionPerformed(ActionEvent event) {

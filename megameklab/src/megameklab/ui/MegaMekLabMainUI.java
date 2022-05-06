@@ -62,7 +62,7 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
         int scaledMonitorW = UIUtil.getScaledScreenWidth(currentMonitor);
         int scaledMonitorH = UIUtil.getScaledScreenHeight(currentMonitor);
 
-        //figure out size dimensions
+        // figure out size dimensions
         pack();
         setLocationRelativeTo(null);
         int w = getSize().width;
@@ -100,23 +100,28 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
 
         });
     }
-    
-    public void exit() {
-        String quitMsg = "Do you really want to quit MegaMekLab?"; 
-        int response = JOptionPane.showConfirmDialog(null, quitMsg,
-                "Quit?", JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE); 
-        
-        if (response == JOptionPane.YES_OPTION) {
-            CConfig.setParam("WINDOWSTATE", Integer.toString(getExtendedState()));
-            CConfig.setParam(CConfig.CONFIG_PLAF, UIManager.getLookAndFeel().getClass().getName());
-            CConfig.saveConfig();
-            PreferenceManager.getInstance().save();
 
-            MegaMek.getMMPreferences().saveToFile(MMLConstants.MM_PREFERENCES_FILE);
-            MegaMekLab.getMMLPreferences().saveToFile(MMLConstants.MML_PREFERENCES_FILE);
-            System.exit(0);
+    public void exit() {
+        int savePrompt = JOptionPane.showConfirmDialog(null,
+                "Do you want to save the unit before quitting MegaMekLab?",
+                "Save First?", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+        if ((savePrompt == JOptionPane.CANCEL_OPTION) || (savePrompt == JOptionPane.CLOSED_OPTION)) {
+            return;
+        } else if ((savePrompt == JOptionPane.YES_OPTION) && !menubarcreator.saveEntity(entity)) {
+            // When the user did not actually save the unit, don't close MML
+            return;
         }
+
+        CConfig.setParam("WINDOWSTATE", Integer.toString(getExtendedState()));
+        CConfig.setParam(CConfig.CONFIG_PLAF, UIManager.getLookAndFeel().getClass().getName());
+        CConfig.saveConfig();
+
+        PreferenceManager.getInstance().save();
+
+        MegaMek.getMMPreferences().saveToFile(MMLConstants.MM_PREFERENCES_FILE);
+        MegaMekLab.getMMLPreferences().saveToFile(MMLConstants.MML_PREFERENCES_FILE);
+
+        System.exit(0);
     }
     
     public abstract void reloadTabs();
