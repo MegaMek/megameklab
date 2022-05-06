@@ -109,7 +109,7 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
         }
         artemisIV = bay.countAugmentations(MiscType.F_ARTEMIS) > 0;
         /* Per the rules, if any have artemis or apollo, all eligible launchers must have it, and the types
-         * can't be mixed. But it's no great effort to accomodate illegal designs. Based on precedents elsewhere
+         * can't be mixed. But it's no great effort to accommodate illegal designs. Based on precedents elsewhere
          * in the rules, every weapon in the bay would require Artemis V or Apollo to get the to-hit bonus.
          */
         artemisV = bay.allHaveAugmentation(MiscType.F_ARTEMIS_V);
