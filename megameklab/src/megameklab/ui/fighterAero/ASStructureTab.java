@@ -29,6 +29,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import megamek.codeUtilities.MathUtility;
 import megamek.common.Aero;
 import megamek.common.CriticalSlot;
 import megamek.common.Engine;
@@ -435,7 +436,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         double totalTonnage = getAero().getWeight();
         double remainingTonnage = TestEntity.floor(totalTonnage - currentTonnage, TestEntity.Ceil.HALFTON);
         
-        double maxArmor = Math.min(getAero().getArmorWeight() + remainingTonnage,
+        double maxArmor = MathUtility.clamp(getAero().getArmorWeight() + remainingTonnage, 0,
                 UnitUtil.getMaximumArmorTonnage(getAero()));
         getAero().setArmorTonnage(maxArmor);
         panArmor.removeListener(this);

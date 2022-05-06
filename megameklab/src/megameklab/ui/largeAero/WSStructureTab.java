@@ -23,6 +23,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
+import megamek.codeUtilities.MathUtility;
 import megamek.common.Aero;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
@@ -330,7 +331,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         double remainingTonnage = TestEntity.floor(
                 totalTonnage - currentTonnage, TestEntity.Ceil.HALFTON);
         
-        double maxArmor = Math.min(getJumpship().getArmorWeight() + remainingTonnage,
+        double maxArmor = MathUtility.clamp(getJumpship().getArmorWeight() + remainingTonnage, 0,
                 UnitUtil.getMaximumArmorTonnage(getJumpship()));
         getJumpship().setArmorTonnage(maxArmor);
         panArmor.removeListener(this);

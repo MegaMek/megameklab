@@ -15,6 +15,7 @@
 package megameklab.ui.battleArmor;
 
 import megamek.client.ui.swing.MechViewPanel;
+import megamek.codeUtilities.MathUtility;
 import megamek.common.*;
 import megamek.common.templates.TROView;
 import megamek.common.verifier.TestBattleArmor;
@@ -660,7 +661,7 @@ public class BAStructureTab extends ITab implements ActionListener, BABuildListe
         double remainingTonnage = TestEntity.floor(
                 totalTonnage - currentTonnage, TestEntity.Ceil.KILO);
         int points = (int) UnitUtil.getRawArmorPoints(getBattleArmor(), remainingTonnage);
-        int maxArmor = Math.min(getBattleArmor().getMaximumArmorPoints(),
+        int maxArmor = MathUtility.clamp(getBattleArmor().getMaximumArmorPoints(), 0,
                 points + getBattleArmor().getOArmor(BattleArmor.LOC_TROOPER_1));
         armorFactorChanged(maxArmor);
         panArmor.removeListener(this);
