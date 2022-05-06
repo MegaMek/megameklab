@@ -13,7 +13,6 @@
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  */
-
 package megameklab.ui;
 
 import megamek.MegaMek;
@@ -32,9 +31,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener, EntitySource {
-
     private Entity entity = null;
-    protected MenuBar menubarcreator;
+    protected MenuBar mmlMenuBar;
     
     public MegaMekLabMainUI() {
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -49,8 +47,8 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
     }
 
     protected void finishSetup() {
-        menubarcreator = new MenuBar(this);
-        setJMenuBar(menubarcreator);
+        mmlMenuBar = new MenuBar(this);
+        setJMenuBar(mmlMenuBar);
         reloadTabs();
         setSizeAndLocation();
         setVisible(true);
@@ -118,7 +116,7 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
             System.exit(0);
         }
     }
-    
+
     public abstract void reloadTabs();
 
     @Override
