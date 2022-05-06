@@ -1212,7 +1212,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         saveEntity(getFrame().getEntity());
     }
 
-    public boolean saveEntity(final Entity entity) {
+    public boolean saveEntity(final @Nullable Entity entity) {
         if (entity == null) {
             return false;
         } else if (!UnitUtil.validateUnit(entity).isBlank()) {
