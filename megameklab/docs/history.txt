@@ -28,6 +28,8 @@ VERSION HISTORY:
 + PR #1095: Implement CostDisplayDialog in MML
 + PR #1098: Suite Cleanup 2: Fixing a Ton of Internal Typos: Phase 1
 + Issue #1088: Naval Combat Units can now take Maritime Lifeboats
++ Issue #1034: Actually Return the Calculated JumpShip SRCS Mass
++ Issue #1025: Adding MagLev Engine weights
 + Updating to JAXB 4.0.0 from 2.3.2
 + Updating to Launch4j 2.5.3 from 2.5.1
 + Updating to Log4j2 2.17.2 from 2.17.1
