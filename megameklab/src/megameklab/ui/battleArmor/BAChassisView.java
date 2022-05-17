@@ -59,7 +59,7 @@ public class BAChassisView extends BuildView implements ActionListener, ChangeLi
     private final CustomComboBox<Integer> cbWeightClass = new CustomComboBox<>(EntityWeightClass::getClassName);
     private final JCheckBox chkExoskeleton = new JCheckBox();
     private final JCheckBox chkHarjel = new JCheckBox();
-    private final JSpinner spnSquadSize = new JSpinner(new SpinnerNumberModel(4, 4, 6, 1));
+    private final JSpinner spnSquadSize = new JSpinner(new SpinnerNumberModel(4, 1, 6, 1));
     private final JComboBox<String> cbTurretType = new JComboBox<>();
     private final JSpinner spnTurretSize = new JSpinner(spnTurretSizeModel);
     
