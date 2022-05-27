@@ -13,6 +13,7 @@
  */
 package megameklab.ui.mek;
 
+import megamek.codeUtilities.MathUtility;
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
 import megamek.common.loaders.EntityLoadingException;
@@ -1037,7 +1038,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         double remainingTonnage = TestEntity.floor(
                 totalTonnage - currentTonnage, TestEntity.Ceil.HALFTON);
 
-        double maxArmor = Math.min(getMech().getArmorWeight() + remainingTonnage,
+        double maxArmor = MathUtility.clamp(getMech().getArmorWeight() + remainingTonnage, 0,
                 UnitUtil.getMaximumArmorTonnage(getMech()));
         getMech().setArmorTonnage(maxArmor);
         panArmor.removeListener(this);

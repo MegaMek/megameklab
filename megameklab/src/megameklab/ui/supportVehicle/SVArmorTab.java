@@ -18,6 +18,7 @@
  */
 package megameklab.ui.supportVehicle;
 
+import megamek.codeUtilities.MathUtility;
 import megamek.common.*;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestSupportVehicle;
@@ -172,7 +173,7 @@ public class SVArmorTab extends ITab implements ArmorAllocationListener {
             remainingTonnage = TestEntity.floor(remainingTonnage, TestEntity.Ceil.HALFTON);
         }
 
-        double maxArmor = Math.min(getEntity().getArmorWeight() + remainingTonnage,
+        double maxArmor = MathUtility.clamp(getEntity().getArmorWeight() + remainingTonnage, 0,
                 UnitUtil.getMaximumArmorTonnage(getEntity()));
         getEntity().setArmorTonnage(maxArmor);
         panArmor.removeListener(this);

@@ -31,6 +31,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import megamek.codeUtilities.MathUtility;
 import megamek.common.Engine;
 import megamek.common.Entity;
 import megamek.common.EntityMovementMode;
@@ -490,7 +491,7 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
         double remainingTonnage = TestEntity.floor(
                 totalTonnage - currentTonnage, TestEntity.Ceil.KILO);
 
-        double maxArmor = Math.min(getProtomech().getArmorWeight() + remainingTonnage,
+        double maxArmor = MathUtility.clamp(getProtomech().getArmorWeight() + remainingTonnage, 0,
                 UnitUtil.getMaximumArmorTonnage(getProtomech()));
         getProtomech().setArmorTonnage(maxArmor);
         panArmor.removeListener(this);

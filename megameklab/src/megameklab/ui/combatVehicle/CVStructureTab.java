@@ -15,6 +15,7 @@
  */
 package megameklab.ui.combatVehicle;
 
+import megamek.codeUtilities.MathUtility;
 import megamek.common.*;
 import megamek.common.verifier.BayData;
 import megamek.common.verifier.TestEntity;
@@ -434,7 +435,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         double remainingTonnage = TestEntity.floor(
                 totalTonnage - currentTonnage, TestEntity.Ceil.HALFTON);
         
-        double maxArmor = Math.min(getTank().getArmorWeight() + remainingTonnage,
+        double maxArmor = MathUtility.clamp(getTank().getArmorWeight() + remainingTonnage, 0,
                 UnitUtil.getMaximumArmorTonnage(getTank()));
         getTank().setArmorTonnage(maxArmor);
         panArmor.removeListener(this);

@@ -22,6 +22,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
+import megamek.codeUtilities.MathUtility;
 import megamek.common.Aero;
 import megamek.common.Dropship;
 import megamek.common.Entity;
@@ -321,7 +322,7 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
         double remainingTonnage = TestEntity.floor(
                 totalTonnage - currentTonnage, TestEntity.Ceil.HALFTON);
         
-        double maxArmor = Math.min(getSmallCraft().getArmorWeight() + remainingTonnage,
+        double maxArmor = MathUtility.clamp(getSmallCraft().getArmorWeight() + remainingTonnage, 0,
                 UnitUtil.getMaximumArmorTonnage(getSmallCraft()));
         getSmallCraft().setArmorTonnage(maxArmor);
         panArmor.removeListener(this);
