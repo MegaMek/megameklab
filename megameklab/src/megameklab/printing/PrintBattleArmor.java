@@ -151,15 +151,24 @@ public class PrintBattleArmor extends PrintEntity {
         }
         return sj.toString();
     }
-
+   /*
+    * Battle Armor troopers use different names based on faction and tech base. Any unaccounted-for squad configurations will be called "SQUAD".
+    * 1 Trooper: Trooper (NIU suits, The Bounty Hunter)
+    * 3 Troopers: Un (Society)
+    * 4 Troopers: Squad (Inner Sphere)
+    * 5 Troopers: Point (Clans), Maniple (Taurian Concordat)
+    * 6 Troopers: Level I (ComStar, Word of Blake)
+    */
     private String squadName() {
         switch (battleArmor.getTroopers()) {
             case 6:
                 return "LEVEL I";
             case 5:
-                return battleArmor.isClan() ? "POINT" : "SQUAD";
+                return battleArmor.isClan() ? "POINT" : "MANIPLE";
             case 3:
-                return "TREY";
+                return "UN";
+            case 1:
+                return "TROOPER";
             default:
             case 4:
                 return "SQUAD";
