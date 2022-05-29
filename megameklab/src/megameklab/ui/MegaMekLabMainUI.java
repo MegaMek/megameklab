@@ -105,7 +105,7 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
                 "Save First?", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
         if ((savePrompt == JOptionPane.CANCEL_OPTION) || (savePrompt == JOptionPane.CLOSED_OPTION)) {
             return;
-        } else if ((savePrompt == JOptionPane.YES_OPTION) && !menubarcreator.saveEntity(entity)) {
+        } else if ((savePrompt == JOptionPane.YES_OPTION) && !mmlMenuBar.saveEntity(entity)) {
             // When the user did not actually save the unit, don't close MML
             return;
         }
