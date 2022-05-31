@@ -46,7 +46,7 @@ public class PhysicalAttacks extends ReferenceTable {
         addPunchAttacks(sheet.getEntity());
         addRow(bundle.getString("kick"), "-2", String.valueOf(kickDamage));
         if (!(sheet.getEntity() instanceof QuadMech)) {
-            addRow(bundle.getString("push"), "-1", "—");
+            addRow(bundle.getString("push"), "-1", "\u2014");
         }
         if (sheet.getEntity().hasSystem(Mech.ACTUATOR_HAND, Mech.LOC_LARM)
                && sheet.getEntity().hasSystem(Mech.ACTUATOR_HAND, Mech.LOC_RARM)) {
