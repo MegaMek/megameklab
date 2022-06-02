@@ -70,9 +70,11 @@ public abstract class AbstractMMLButtonDialog extends AbstractButtonDialog {
 
     /**
      * This override forces the preferences for this class to be tracked in MML instead of MegaMek
+     * @throws Exception if there's an issue initializing the preferences. Normally this means
+     * a component has <strong>not</strong> had its name value set.
      */
     @Override
-    protected void setPreferences() {
+    protected void setPreferences() throws Exception {
         setPreferences(MegaMekLab.getMMLPreferences().forClass(getClass()));
     }
 }

@@ -28,7 +28,7 @@ import java.util.ResourceBundle;
  * Inheriting classes must call initialize() in their constructors and override createCenterPane().
  */
 public abstract class AbstractMMLDialog extends AbstractDialog {
-
+    //region Constructors
     /**
      * This creates a non-modal AbstractMMLDialog using the default MML dialog resource bundle. This is
      * the normal constructor to use for an AbstractMMLDialog.
@@ -53,12 +53,15 @@ public abstract class AbstractMMLDialog extends AbstractDialog {
                                 final String name, final String title) {
         super(frame, modal, resources, name, title);
     }
+    //endregion Constructors
 
     /**
      * This override forces the preferences for this class to be tracked in MML instead of MegaMek
+     * @throws Exception if there's an issue initializing the preferences. Normally this means
+     * a component has <strong>not</strong> had its name value set.
      */
     @Override
-    protected void setPreferences() {
+    protected void setPreferences() throws Exception {
         setPreferences(MegaMekLab.getMMLPreferences().forClass(getClass()));
     }
 }
