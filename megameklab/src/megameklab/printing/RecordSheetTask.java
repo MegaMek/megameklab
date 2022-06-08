@@ -202,20 +202,20 @@ public abstract class RecordSheetTask extends SwingWorker<Void, Integer> {
 
             // Load newly created document, add an outline, then write back to the file.
             File file = new File(fileName);
-            PDDocument doc = PDDocument.load(file);
-            PDDocumentOutline outline = new PDDocumentOutline();
-            doc.getDocumentCatalog().setDocumentOutline(outline);
-            for (Entry<Integer, List<String>> entry : bookmarkNames.entrySet()) {
-                for (String name : entry.getValue()) {
-                    PDOutlineItem bookmark = new PDOutlineItem();
-                    bookmark.setDestination(doc.getPage(entry.getKey()));
-                    bookmark.setTitle(name);
-                    outline.addLast(bookmark);
+            try (PDDocument doc = PDDocument.load(file)) {
+                PDDocumentOutline outline = new PDDocumentOutline();
+                doc.getDocumentCatalog().setDocumentOutline(outline);
+                for (Entry<Integer, List<String>> entry : bookmarkNames.entrySet()) {
+                    for (String name : entry.getValue()) {
+                        PDOutlineItem bookmark = new PDOutlineItem();
+                        bookmark.setDestination(doc.getPage(entry.getKey()));
+                        bookmark.setTitle(name);
+                        outline.addLast(bookmark);
+                    }
                 }
+                outline.openNode();
+                doc.save(file);
             }
-            outline.openNode();
-            doc.save(file);
-            doc.close();
             return null;
         }
     }
