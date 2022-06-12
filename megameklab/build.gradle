@@ -46,7 +46,7 @@ dependencies {
         exclude group: 'com.sun.media', module: 'jai-codec'
     }
 
-    runtimeOnly 'org.glassfish.jaxb:jaxb-runtime:4.0.0-M4'
+    runtimeOnly 'org.glassfish.jaxb:jaxb-runtime:4.0.0'
 }
 
 mainClassName = 'megameklab.MegaMekLab'
