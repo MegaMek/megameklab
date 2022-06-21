@@ -16,6 +16,7 @@
 package megameklab.ui.infantry;
 
 import megamek.client.ui.models.XTableColumnModel;
+import megamek.common.EntityMovementMode;
 import megamek.common.Infantry;
 import megamek.common.TechAdvancement;
 import megamek.common.verifier.TestInfantry;
@@ -98,8 +99,13 @@ public class CISpecializationView extends IView implements TableModelListener {
             public boolean include(Entry<? extends SpecializationModel, ? extends Integer> entry) {
                 SpecializationModel specModel = entry.getModel();
                 TechAdvancement techAdvancement = specModel.getTechAdvancement(entry.getIdentifier());
-                if ((1 << entry.getIdentifier() == Infantry.TAG_TROOPS)
-                        && TestInfantry.maxSecondaryWeapons(getInfantry()) < 2) {
+                final int bitFlag = 1 << entry.getIdentifier();
+                if ((bitFlag == Infantry.TAG_TROOPS)
+                        && (TestInfantry.maxSecondaryWeapons(getInfantry()) < 2)) {
+                    return false;
+                }
+                if (((bitFlag == Infantry.PARATROOPS) || (bitFlag == Infantry.MOUNTAIN_TROOPS))
+                        && (getInfantry().getMovementMode() != EntityMovementMode.INF_LEG)) {
                     return false;
                 }
                 return (null != eSource.getTechManager())
