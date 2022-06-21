@@ -1,5 +1,5 @@
 /*
- * MegaMekLab - Copyright (C) 2017 The MegaMek Team
+ * MegaMekLab - Copyright (C) 2017-2022 The MegaMek Team
  *
  * Original author - jtighe (torren@users.sourceforge.net)
  *
@@ -23,7 +23,6 @@ import megamek.common.verifier.TestInfantry;
 import megameklab.ui.EntitySource;
 import megameklab.ui.listeners.InfantryBuildListener;
 import megameklab.ui.util.IView;
-import megameklab.ui.util.RefreshListener;
 import megameklab.util.UnitUtil;
 
 import javax.swing.*;
@@ -83,10 +82,6 @@ public class CISpecializationView extends IView implements TableModelListener {
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         add(scroll);
         add(Box.createHorizontalGlue());
-    }
-
-    public void addRefreshedListener(RefreshListener l) {
-        // not used
     }
 
     public void refresh() {
