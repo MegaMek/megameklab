@@ -43,7 +43,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @author Neoancient
  */
 public class CISpecializationView extends IView implements TableModelListener {
-    private List<InfantryBuildListener> listeners = new CopyOnWriteArrayList<>();
+    private final List<InfantryBuildListener> listeners = new CopyOnWriteArrayList<>();
     public void addListener(InfantryBuildListener l) {
         listeners.add(l);
     }
@@ -51,7 +51,6 @@ public class CISpecializationView extends IView implements TableModelListener {
         listeners.remove(l);
     }
 
-    private final JTable table = new JTable();
     private final SpecializationModel model;
     private final TableRowSorter<SpecializationModel> sorter;
     
@@ -59,6 +58,7 @@ public class CISpecializationView extends IView implements TableModelListener {
         super(eSource);
         
         model = new SpecializationModel();
+        JTable table = new JTable();
         table.setModel(model);
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         sorter = new TableRowSorter<>(model);
@@ -66,7 +66,7 @@ public class CISpecializationView extends IView implements TableModelListener {
         XTableColumnModel equipColumnModel = new XTableColumnModel();
         table.setColumnModel(equipColumnModel);
         table.createDefaultColumnsFromModel();
-        TableColumn column = null;
+        TableColumn column;
         for (int i = 1; i < model.getColumnCount(); i++) {
             column = table.getColumnModel().getColumn(i);
             column.setPreferredWidth(model.getColumnWidth(i));
@@ -84,11 +84,11 @@ public class CISpecializationView extends IView implements TableModelListener {
         add(scroll);
         add(Box.createHorizontalGlue());
     }
-    
+
     public void addRefreshedListener(RefreshListener l) {
         // not used
     }
-    
+
     public void refresh() {
         filterSpecializations();
     }
