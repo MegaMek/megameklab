@@ -154,33 +154,18 @@ public class CConfig {
      * Loads the Config file.
      */
     public static void loadConfigFile() {
-        try {
-            File configfile = new File(CONFIG_FILE);
-            FileInputStream fis = new FileInputStream(configfile);
-            File backupfile = new File(CONFIG_BACKUP_FILE);
-            if (backupfile.exists()) {
-                FileInputStream backupStream = new FileInputStream(backupfile);
-                if (fis.available() < backupStream.available()) {
-                    try {
-                        config.load(backupStream);
-                        backupStream.close();
-                    } catch (Exception ex) {
-                        LogManager.getLogger().error("", ex);
-                    }
-
-                } else {
-                    config.load(fis);
+        try (FileInputStream fis = new FileInputStream(CONFIG_FILE)) {
+            File backupConfigurationFile = new File(CONFIG_BACKUP_FILE);
+            if (backupConfigurationFile.exists()) {
+                try (FileInputStream backupFIS = new FileInputStream(backupConfigurationFile)) {
+                    config.load((fis.available() < backupFIS.available()) ? backupFIS : fis);
                 }
             } else {
                 config.load(fis);
             }
-            fis.close();
         } catch (IOException ie) {
-            try {
-                File configfile = new File(CONFIG_BACKUP_FILE);
-                FileInputStream fis = new FileInputStream(configfile);
+            try (FileInputStream fis = new FileInputStream(CONFIG_BACKUP_FILE)) {
                 config.load(fis);
-                fis.close();
             } catch (Exception ex) {
                 LogManager.getLogger().error("", ex);
             }
@@ -193,17 +178,24 @@ public class CConfig {
      * Creates a new Config file, and directories, if it is missing.
      */
     public static void ensureConfigFileExists() {
-        // check to see if a config is present. if not, make one.
-        if (!(new File(CONFIG_FILE).exists()) && !(new File(CONFIG_BACKUP_FILE).exists())) {
-            if (!new File(CONFIG_DIR).exists()) {
-                new File(CONFIG_DIR).mkdir();
+        // Check to see if a config is present. if not, make one.
+        final File configurationFile = new File(CONFIG_FILE);
+        if (!configurationFile.exists() && !new File(CONFIG_BACKUP_FILE).exists()) {
+            final File configurationDirectory = new File(CONFIG_DIR);
+            if (!configurationDirectory.exists()) {
+                if (!new File(CONFIG_DIR).mkdir()) {
+                    LogManager.getLogger().error("Cannot launch MML: Failed to create Configuration Directory");
+                    System.exit(0);
+                }
             }
 
-            try (FileOutputStream fos = new FileOutputStream(CONFIG_FILE);
-                PrintStream ps = new PrintStream(fos)) {
-                ps.close();
-                fos.close();
+            try {
+                if (!configurationFile.createNewFile()) {
+                    LogManager.getLogger().error("Cannot launch MML: Failed to create Configuration File");
+                    System.exit(0);
+                }
             } catch (Exception ex) {
+                LogManager.getLogger().error("Cannot launch MML: Exception while creating Configuration File", ex);
                 System.exit(0);
             }
         }
@@ -295,26 +287,18 @@ public class CConfig {
      * Write the config file out to ./data/mwconfig.txt.
      */
     public static void saveConfig() {
-
-        try {
-
-            FileOutputStream fos = new FileOutputStream(CONFIG_BACKUP_FILE);
-            PrintStream ps = new PrintStream(fos);
+        try (FileOutputStream fos = new FileOutputStream(CONFIG_BACKUP_FILE);
+             PrintStream ps = new PrintStream(fos)) {
             config.store(ps, "Client Config Backup");
-            fos.close();
-            ps.close();
         } catch (FileNotFoundException ignored) {
 
         } catch (Exception ex) {
             LogManager.getLogger().error("", ex);
             return;
         }
-        try {
-            FileOutputStream fos = new FileOutputStream(CONFIG_FILE);
-            PrintStream ps = new PrintStream(fos);
+        try (FileOutputStream fos = new FileOutputStream(CONFIG_FILE);
+             PrintStream ps = new PrintStream(fos)) {
             config.store(ps, "Client Config");
-            fos.close();
-            ps.close();
         } catch (FileNotFoundException ignored) {
 
         } catch (Exception ex) {

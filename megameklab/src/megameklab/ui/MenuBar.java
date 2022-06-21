@@ -1295,12 +1295,10 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
 
         try {
             if (getFrame().getEntity() instanceof Mech) {
-                FileOutputStream out = new FileOutputStream(filePathName);
-                PrintStream p = new PrintStream(out);
-
-                p.println(((Mech) getFrame().getEntity()).getMtf());
-                p.close();
-                out.close();
+                try (FileOutputStream fos = new FileOutputStream(filePathName);
+                     PrintStream ps = new PrintStream(fos)) {
+                    ps.println(((Mech) getFrame().getEntity()).getMtf());
+                }
             } else {
                 BLKFile.encode(filePathName, getFrame().getEntity());
             }
@@ -1314,7 +1312,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
                         getFrame().getEntity().getChassis(),
                         getFrame().getEntity().getModel(), filePathName));
     }
-    
+
     private String entitySummaryText(boolean html) {
         if (CConfig.getBooleanParam(CConfig.MISC_SUMMARY_FORMAT_TRO)) {
             TROView view = TROView.createView(getFrame().getEntity(), html);
@@ -1347,12 +1345,9 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             return;
         }
 
-        try {
-            FileOutputStream out = new FileOutputStream(filePathName);
-            PrintStream p = new PrintStream(out);
-            p.println(entitySummaryText(html));
-            p.close();
-            out.close();
+        try (FileOutputStream fos = new FileOutputStream(filePathName);
+             PrintStream ps = new PrintStream(fos)) {
+            ps.println(entitySummaryText(html));
         } catch (Exception ex) {
             LogManager.getLogger().error("", ex);
         }
