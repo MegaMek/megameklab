@@ -1938,21 +1938,25 @@
                                                                           >(0)</text
                                                                           ><text x="63.317" y="31.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:7.200px;font-weight:bold;font-style:normal" textLength="78.526" lengthAdjust="spacingAndGlyphs"
                                                                           >Heat Generation Per Arc:</text
-                                                                          ><text x="63.317" y="42.306" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" textLength="16.648" lengthAdjust="spacingAndGlyphs"
+                                                                          ><text x="63.317" y="40.691" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" textLength="16.648" lengthAdjust="spacingAndGlyphs"
                                                                           >Nose:</text
-                                                                          ><text fill="#231f20" x="140.867" id="noseHeat" y="42.306" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal" text-anchor="middle"
+                                                                          ><text fill="#231f20" x="149.483" id="noseHeat" y="40.691" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal" text-anchor="middle"
                                                                           >0</text
-                                                                          ><text x="63.317" y="50.306" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" textLength="47.540" lengthAdjust="spacingAndGlyphs"
+                                                                          ><text x="63.317" y="48.691" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" textLength="47.540" lengthAdjust="spacingAndGlyphs"
                                                                           >Left/Right Fore:</text
-                                                                          ><text fill="#231f20" x="140.867" id="foreSidesHeat" y="50.306" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal" text-anchor="middle"
+                                                                          ><text fill="#231f20" x="149.483" id="foreSidesHeat" y="48.691" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal" text-anchor="middle"
                                                                           >0/0</text
-                                                                          ><text x="63.317" y="58.306" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" textLength="43.255" lengthAdjust="spacingAndGlyphs"
+                                                                          ><text x="63.317" y="56.691" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" textLength="67.111" lengthAdjust="spacingAndGlyphs"
+                                                                          >Left/Right Broadsides:</text
+                                                                          ><text fill="#231f20" x="149.483" id="broadsidesHeat" y="56.691" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal" text-anchor="middle"
+                                                                          >0/0</text
+                                                                          ><text x="63.317" y="64.691" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" textLength="43.255" lengthAdjust="spacingAndGlyphs"
                                                                           >Left/Right Aft:</text
-                                                                          ><text fill="#231f20" x="140.867" id="aftSidesHeat" y="58.306" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal" text-anchor="middle"
+                                                                          ><text fill="#231f20" x="149.483" id="aftSidesHeat" y="64.691" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal" text-anchor="middle"
                                                                           >0/0</text
-                                                                          ><text x="63.317" y="66.306" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" textLength="10.402" lengthAdjust="spacingAndGlyphs"
+                                                                          ><text x="63.317" y="72.691" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" textLength="10.402" lengthAdjust="spacingAndGlyphs"
                                                                           >Aft:</text
-                                                                          ><text fill="#231f20" x="140.867" id="aftHeat" y="66.306" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal" text-anchor="middle"
+                                                                          ><text fill="#231f20" x="149.483" id="aftHeat" y="72.691" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal" text-anchor="middle"
                                                                           >0</text
                                                                         ></g
                                                                       ></g
