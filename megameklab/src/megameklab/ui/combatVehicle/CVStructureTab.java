@@ -801,6 +801,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
                 }
             }
         }
+        getTank().setArmorTonnage(panArmorAllocation.getTotalArmorWeight(getTank()));
         panArmor.setFromEntity(getTank(), true);
         panArmorAllocation.setFromEntity(getTank());
         refresh.refreshBuild();

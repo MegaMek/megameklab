@@ -258,6 +258,7 @@ public class SVArmorTab extends ITab implements ArmorAllocationListener {
                 }
             }
         }
+        getEntity().setArmorTonnage(panArmorAllocation.getTotalArmorWeight(getEntity()));
         panArmor.setFromEntity(getEntity(), true);
         panArmorAllocation.setFromEntity(getEntity());
         refresh.refreshBuild();
