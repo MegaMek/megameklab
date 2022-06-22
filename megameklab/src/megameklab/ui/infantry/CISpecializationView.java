@@ -100,7 +100,7 @@ public class CISpecializationView extends IView implements TableModelListener {
                     return false;
                 }
                 if (((bitFlag == Infantry.PARATROOPS) || (bitFlag == Infantry.MOUNTAIN_TROOPS))
-                        && (getInfantry().getMovementMode() != EntityMovementMode.INF_LEG)) {
+                        && !getInfantry().getMovementMode().isLegInfantry()) {
                     return false;
                 }
                 return (null != eSource.getTechManager())
