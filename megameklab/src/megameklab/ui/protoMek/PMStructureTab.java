@@ -490,8 +490,10 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
         double totalTonnage = getProtomech().getWeight();
         double remainingTonnage = TestEntity.floor(
                 totalTonnage - currentTonnage, TestEntity.Ceil.KILO);
-
-        double maxArmor = MathUtility.clamp(getProtomech().getArmorWeight() + remainingTonnage, 0,
+        // We can only use remaining tonnage equal to whole points of armor.
+        remainingTonnage = (int) UnitUtil.getRawArmorPoints(getProtomech(), remainingTonnage)
+                * EquipmentType.getProtomechArmorWeightPerPoint(getProtomech().getArmorType(Protomech.LOC_TORSO));
+        double maxArmor = MathUtility.clamp(getProtomech().getLabArmorTonnage() + remainingTonnage, 0,
                 UnitUtil.getMaximumArmorTonnage(getProtomech()));
         getProtomech().setArmorTonnage(maxArmor);
         panArmor.removeListener(this);
