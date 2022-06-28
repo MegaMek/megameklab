@@ -1,5 +1,5 @@
 /*
- * MegaMekLab - Copyright (C) 2017 - The MegaMek Team
+ * MegaMekLab - Copyright (C) 2017-2022 - The MegaMek Team
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -50,52 +50,53 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
     public void removeListener(InfantryBuildListener l) {
         listeners.remove(l);
     }
-    
-    public static final int M_FOOT          = 0;
-    public static final int M_JUMP          = 1;
-    public static final int M_MOTOR         = 2;
-    public static final int M_HOVER         = 3;
-    public static final int M_TRACKED       = 4;
-    public static final int M_WHEELED       = 5;
-    public static final int M_VTOL          = 6;
-    public static final int M_MICROLITE     = 7;
-    public static final int M_UMU           = 8;
-    public static final int M_UMU_MOTORIZED = 9;
-    public static final int M_SUBMARINE     = 10;
-    public static final int NUM_MOTIVE      = 11;
-    
-    public static final EntityMovementMode[] MOVEMENT_MODES = {
-            EntityMovementMode.INF_LEG, EntityMovementMode.INF_JUMP,
-            EntityMovementMode.INF_MOTORIZED, EntityMovementMode.HOVER,
-            EntityMovementMode.TRACKED, EntityMovementMode.WHEELED,
-            EntityMovementMode.VTOL, EntityMovementMode.VTOL,
-            EntityMovementMode.INF_UMU, EntityMovementMode.INF_UMU,
-            EntityMovementMode.SUBMARINE
-    };
-    
-    private String[] motiveNames;
+    private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl());
+
+    private enum InfantryMotiveType {
+        FOOT(EntityMovementMode.INF_LEG, false, "PlatoonTypeView.cbMotiveType.foot"),
+        JUMP(EntityMovementMode.INF_JUMP, false, "PlatoonTypeView.cbMotiveType.jump"),
+        MOTORIZED(EntityMovementMode.INF_MOTORIZED, true, "PlatoonTypeView.cbMotiveType.motorized"),
+        HOVER(EntityMovementMode.HOVER, false, "PlatoonTypeView.cbMotiveType.hover"),
+        TRACKED(EntityMovementMode.TRACKED, true, "PlatoonTypeView.cbMotiveType.tracked"),
+        WHEELED(EntityMovementMode.WHEELED, true, "PlatoonTypeView.cbMotiveType.wheeled"),
+        VTOL(EntityMovementMode.VTOL, false, "PlatoonTypeView.cbMotiveType.vtol"),
+        MICROLITE(EntityMovementMode.VTOL, false, "PlatoonTypeView.cbMotiveType.microlite"),
+        UMU(EntityMovementMode.INF_UMU, false, "PlatoonTypeView.cbMotiveType.umu"),
+        UMU_MOTORIZED(EntityMovementMode.INF_UMU, false, "PlatoonTypeView.cbMotiveType.umu_motorized"),
+        SUBMARINE(EntityMovementMode.SUBMARINE, false, "PlatoonTypeView.cbMotiveType.submarine");
+
+        final EntityMovementMode mode;
+        final boolean legalFieldGun;
+        final String resourceId;
+
+        InfantryMotiveType(EntityMovementMode mode, boolean legalFieldGun, String resourceId) {
+            this.mode = mode;
+            this.legalFieldGun = legalFieldGun;
+            this.resourceId = resourceId;
+        }
+    }
+
     private final SpinnerNumberModel spnNumSquadsModel = new SpinnerNumberModel(4, 1, null, 1);
     private final SpinnerNumberModel spnSquadSizeModel = new SpinnerNumberModel(7, 1, 10, 1);
     
-    private final CustomComboBox<Integer> cbMotiveType = new CustomComboBox<>(i -> motiveNames[i]);
+    private final CustomComboBox<InfantryMotiveType> cbMotiveType = new CustomComboBox<>
+        (i -> resourceMap.getString(i.resourceId));
     private final JSpinner spnNumSquads = new JSpinner(spnNumSquadsModel);
     private final JSpinner spnSquadSize = new JSpinner(spnSquadSizeModel);
     private final JLabel lblMaxSize = new JLabel();
     private final JLabel lblMaxSquadSize = new JLabel();
     
-    private ITechManager techManager;
-    
-    private boolean isEngOrMountain = false;
-    
+    private final ITechManager techManager;
+
+    private int specialization = 0;
+    private boolean isFieldGunner = false;
+
     public CIPlatoonTypeView(ITechManager techManager) {
         this.techManager = techManager;
         initUI();
     }
     
     private void initUI() {
-        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl());
-        motiveNames = resourceMap.getString("PlatoonTypeView.cbMotiveType.values").split(",");
-        
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         
@@ -159,18 +160,20 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
     }
     
     public void setFromEntity(Infantry inf) {
-        isEngOrMountain = inf.hasSpecialization(Infantry.COMBAT_ENGINEERS | Infantry.MOUNTAIN_TROOPS);
+        specialization = inf.getSpecializations();
+        isFieldGunner = inf.hasFieldGun();
         refresh();
         cbMotiveType.removeActionListener(this);
         if (inf.getMovementMode() == EntityMovementMode.VTOL) {
-            cbMotiveType.setSelectedItem(inf.hasMicrolite()? M_MICROLITE : M_VTOL);
+            cbMotiveType.setSelectedItem(inf.hasMicrolite() ?
+                    InfantryMotiveType.MICROLITE : InfantryMotiveType.VTOL);
         } else if (inf.getMovementMode() == EntityMovementMode.INF_UMU) {
-            cbMotiveType.setSelectedItem((inf.getOriginalJumpMP() > 1)? M_UMU_MOTORIZED : M_UMU);
+            cbMotiveType.setSelectedItem((inf.getOriginalJumpMP() > 1) ?
+                    InfantryMotiveType.UMU_MOTORIZED : InfantryMotiveType.UMU);
         } else {
-            for (int i = 0; i < NUM_MOTIVE; i++) {
-                if (MOVEMENT_MODES[i] == inf.getMovementMode()) {
-                    cbMotiveType.setSelectedItem(i);
-                    break;
+            for (var type : InfantryMotiveType.values()) {
+                if (type.mode == inf.getMovementMode()) {
+                    cbMotiveType.setSelectedItem(type);
                 }
             }
         }
@@ -191,14 +194,23 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
             spnSquadSize.setValue(spnSquadSizeModel.getMaximum());
         }
     }
-    
+
+    private boolean legalMotiveType(InfantryMotiveType motiveType) {
+        if ((specialization & (Infantry.MOUNTAIN_TROOPS | Infantry.PARATROOPS)) != 0) {
+            return motiveType == InfantryMotiveType.FOOT;
+        } else {
+            return techManager.isLegal(Infantry.getMotiveTechAdvancement(motiveType.mode))
+                    && (!isFieldGunner || motiveType.legalFieldGun);
+        }
+    }
+
     public void refresh() {
-        Integer prevMotive = (Integer)cbMotiveType.getSelectedItem();
+        InfantryMotiveType prevMotive = (InfantryMotiveType) cbMotiveType.getSelectedItem();
         cbMotiveType.removeActionListener(this);
         cbMotiveType.removeAllItems();
-        for (int i = 0; i < NUM_MOTIVE; i++) {
-            if (techManager.isLegal(Infantry.getMotiveTechAdvancement(MOVEMENT_MODES[i]))) {
-                cbMotiveType.addItem(i);
+        for (var type : InfantryMotiveType.values()) {
+            if (legalMotiveType(type)) {
+                cbMotiveType.addItem(type);
             }
         }
         cbMotiveType.setSelectedItem(prevMotive);
@@ -207,7 +219,8 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
             cbMotiveType.setSelectedIndex(0);
         }
         
-        int maxSize = TestInfantry.maxUnitSize(getMovementMode(), isAltMode(), isEngOrMountain);
+        int maxSize = TestInfantry.maxUnitSize(getMovementMode(), isAltMode(),
+            (specialization & (Infantry.COMBAT_ENGINEERS | Infantry.MOUNTAIN_TROOPS)) != 0);
         int maxSquad = TestInfantry.maxSquadSize(getMovementMode(), isAltMode());
         spnNumSquads.removeChangeListener(this);
         spnSquadSize.removeChangeListener(this);
@@ -221,18 +234,19 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
     }
     
     public EntityMovementMode getMovementMode() {
-        return MOVEMENT_MODES[getMotiveTypeIndex()];
+        InfantryMotiveType type = (InfantryMotiveType) cbMotiveType.getSelectedItem();
+        if (type == null) {
+            return EntityMovementMode.INF_LEG;
+        } else {
+            return type.mode;
+        }
     }
     
     public boolean isAltMode() {
-        int index = getMotiveTypeIndex();
-        return (index == M_MICROLITE) || (index == M_UMU_MOTORIZED);
+        InfantryMotiveType type = (InfantryMotiveType) cbMotiveType.getSelectedItem();
+        return (type == InfantryMotiveType.MICROLITE) || (type == InfantryMotiveType.UMU_MOTORIZED);
     }
-    
-    public int getMotiveTypeIndex() {
-        return (Integer)cbMotiveType.getSelectedItem();
-    }
-    
+
     @Override
     public void stateChanged(ChangeEvent e) {
         if ((e.getSource() == spnNumSquads) ||
@@ -244,9 +258,7 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == cbMotiveType) {
-            int index = getMotiveTypeIndex();
-            listeners.forEach(l -> l.motiveTypeChanged(MOVEMENT_MODES[index],
-                    (index == M_MICROLITE) || (index == M_UMU_MOTORIZED)));
+            listeners.forEach(l -> l.motiveTypeChanged(getMovementMode(), isAltMode()));
         }
     }
 }

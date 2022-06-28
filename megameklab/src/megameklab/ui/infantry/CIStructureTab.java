@@ -251,7 +251,6 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
         weaponView.addRefreshedListener(refresh);
         fieldGunView.addRefreshedListener(refresh);
         armorView.addRefreshedListener(refresh);
-        specializationView.addRefreshedListener(refresh);
         augmentationView.addRefreshedListener(refresh);
     }
 
@@ -401,6 +400,7 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
         enableTabs();
         panPlatoonType.setFromEntity(getInfantry());
         panWeapons.setFromEntity(getInfantry());
+        specializationView.refresh();
         refresh.refreshPreview();
         refresh.refreshStatus();
     }

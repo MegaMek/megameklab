@@ -1,5 +1,5 @@
 /*
- * MegaMekLab - Copyright (C) 2017 The MegaMek Team
+ * MegaMekLab - Copyright (C) 2017-2022 The MegaMek Team
  *
  * Original author - jtighe (torren@users.sourceforge.net)
  *
@@ -16,13 +16,13 @@
 package megameklab.ui.infantry;
 
 import megamek.client.ui.models.XTableColumnModel;
+import megamek.common.EntityMovementMode;
 import megamek.common.Infantry;
 import megamek.common.TechAdvancement;
 import megamek.common.verifier.TestInfantry;
 import megameklab.ui.EntitySource;
 import megameklab.ui.listeners.InfantryBuildListener;
 import megameklab.ui.util.IView;
-import megameklab.ui.util.RefreshListener;
 import megameklab.util.UnitUtil;
 
 import javax.swing.*;
@@ -42,7 +42,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @author Neoancient
  */
 public class CISpecializationView extends IView implements TableModelListener {
-    private List<InfantryBuildListener> listeners = new CopyOnWriteArrayList<>();
+    private final List<InfantryBuildListener> listeners = new CopyOnWriteArrayList<>();
     public void addListener(InfantryBuildListener l) {
         listeners.add(l);
     }
@@ -50,7 +50,6 @@ public class CISpecializationView extends IView implements TableModelListener {
         listeners.remove(l);
     }
 
-    private final JTable table = new JTable();
     private final SpecializationModel model;
     private final TableRowSorter<SpecializationModel> sorter;
     
@@ -58,6 +57,7 @@ public class CISpecializationView extends IView implements TableModelListener {
         super(eSource);
         
         model = new SpecializationModel();
+        JTable table = new JTable();
         table.setModel(model);
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         sorter = new TableRowSorter<>(model);
@@ -65,7 +65,7 @@ public class CISpecializationView extends IView implements TableModelListener {
         XTableColumnModel equipColumnModel = new XTableColumnModel();
         table.setColumnModel(equipColumnModel);
         table.createDefaultColumnsFromModel();
-        TableColumn column = null;
+        TableColumn column;
         for (int i = 1; i < model.getColumnCount(); i++) {
             column = table.getColumnModel().getColumn(i);
             column.setPreferredWidth(model.getColumnWidth(i));
@@ -83,11 +83,7 @@ public class CISpecializationView extends IView implements TableModelListener {
         add(scroll);
         add(Box.createHorizontalGlue());
     }
-    
-    public void addRefreshedListener(RefreshListener l) {
-        // not used
-    }
-    
+
     public void refresh() {
         filterSpecializations();
     }
@@ -98,8 +94,13 @@ public class CISpecializationView extends IView implements TableModelListener {
             public boolean include(Entry<? extends SpecializationModel, ? extends Integer> entry) {
                 SpecializationModel specModel = entry.getModel();
                 TechAdvancement techAdvancement = specModel.getTechAdvancement(entry.getIdentifier());
-                if ((1 << entry.getIdentifier() == Infantry.TAG_TROOPS)
-                        && TestInfantry.maxSecondaryWeapons(getInfantry()) < 2) {
+                final int bitFlag = 1 << entry.getIdentifier();
+                if ((bitFlag == Infantry.TAG_TROOPS)
+                        && (TestInfantry.maxSecondaryWeapons(getInfantry()) < 2)) {
+                    return false;
+                }
+                if (((bitFlag == Infantry.PARATROOPS) || (bitFlag == Infantry.MOUNTAIN_TROOPS))
+                        && !getInfantry().getMovementMode().isLegInfantry()) {
                     return false;
                 }
                 return (null != eSource.getTechManager())
