@@ -661,7 +661,8 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
                 }
             }
         }
-        panArmor.refresh();
+        getAero().setArmorTonnage(panArmorAllocation.getTotalArmorWeight(getAero()));
+        panArmor.setFromEntity(getAero());
         panArmorAllocation.setFromEntity(getAero());
         refresh.refreshBuild();
         refresh.refreshPreview();

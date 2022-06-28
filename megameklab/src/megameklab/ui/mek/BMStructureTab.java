@@ -1383,7 +1383,8 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
                 }
             }
         }
-        panArmor.refresh();
+        getMech().setArmorTonnage(panArmorAllocation.getTotalArmorWeight(getMech()));
+        panArmor.setFromEntity(getMech());
         panArmorAllocation.setFromEntity(getMech());
         refresh.refreshBuild();
         refresh.refreshPreview();
