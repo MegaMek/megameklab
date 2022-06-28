@@ -206,7 +206,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
                 || getFrame().getEntity().isSupportVehicle()) {
             final JMenuItem miSwitchToCombatVehicle = new JMenuItem(resources.getString("miSwitchToCombatVehicle.text"));
             miSwitchToCombatVehicle.setName("miSwitchToCombatVehicle");
-            miSwitchToCombatVehicle.setMnemonic(KeyEvent.VK_C);
+            miSwitchToCombatVehicle.setMnemonic(KeyEvent.VK_T);
             miSwitchToCombatVehicle.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.ALT_DOWN_MASK));
             miSwitchToCombatVehicle.addActionListener(evt -> newUnit(Entity.ETYPE_TANK, false, null));
             switchUnitTypeMenu.add(miSwitchToCombatVehicle);
