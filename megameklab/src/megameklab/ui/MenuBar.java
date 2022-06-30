@@ -73,8 +73,11 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
 
     //region Initialization
     /**
-     * The main menu bar uses the following Mnemonic keys as of 20-Apr-2022:
+     * The main menu bar uses the following Mnemonic keys as of 30-Jun-2022:
      * F, H, R, U
+     *
+     * It uses the following Control-based keys as of 30-Jun-2022:
+     * A, C, L, P, R, S, U
      */
     private void initialize() {
         getAccessibleContext().setAccessibleName(resources.getString("MenuBar.accessibleName"));
@@ -86,7 +89,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
 
     //region File Menu
     /**
-     * This menu uses the following Mnemonic keys as of 20-Apr-2022:
+     * This menu uses the following Mnemonic keys as of 30-Jun-2022:
      * C, E, I, L, O, P, R, S, U, X
      * @return the created file menu
      */
@@ -155,7 +158,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     }
 
     /**
-     * This menu uses the following Mnemonic keys as of 20-Apr-2022:
+     * This menu uses the following Mnemonic keys as of 30-Jun-2022:
      * A, B, C, D, I, J, M, P, R
      * @return the created Switch Unit Type menu
      */
@@ -206,7 +209,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
                 || getFrame().getEntity().isSupportVehicle()) {
             final JMenuItem miSwitchToCombatVehicle = new JMenuItem(resources.getString("miSwitchToCombatVehicle.text"));
             miSwitchToCombatVehicle.setName("miSwitchToCombatVehicle");
-            miSwitchToCombatVehicle.setMnemonic(KeyEvent.VK_T);
+            miSwitchToCombatVehicle.setMnemonic(KeyEvent.VK_C);
             miSwitchToCombatVehicle.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.ALT_DOWN_MASK));
             miSwitchToCombatVehicle.addActionListener(evt -> newUnit(Entity.ETYPE_TANK, false, null));
             switchUnitTypeMenu.add(miSwitchToCombatVehicle);
@@ -254,7 +257,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     }
 
     /**
-     * This menu uses the following Mnemonic keys as of 20-Apr-2022:
+     * This menu uses the following Mnemonic keys as of 30-Jun-2022:
      * A, D, J, M
      * @return the created Primitive menu
      */
@@ -303,7 +306,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     }
 
     /**
-     * This menu uses the following Mnemonic keys as of 20-Apr-2022:
+     * This menu uses the following Mnemonic keys as of 30-Jun-2022:
      * C, F
      * @return the created Load menu
      */
@@ -315,7 +318,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         final JMenuItem miLoadUnitFromCache = new JMenuItem(resources.getString("FromCache.text"));
         miLoadUnitFromCache.setName("miLoadUnitFromCache");
         miLoadUnitFromCache.setMnemonic(KeyEvent.VK_C);
-        miLoadUnitFromCache.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.ALT_DOWN_MASK));
+        miLoadUnitFromCache.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, InputEvent.CTRL_DOWN_MASK));
         miLoadUnitFromCache.addActionListener(evt -> loadUnit());
         loadMenu.add(miLoadUnitFromCache);
 
@@ -330,7 +333,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     }
 
     /**
-     * This menu uses the following Mnemonic keys as of 20-Apr-2022:
+     * This menu uses the following Mnemonic keys as of 30-Jun-2022:
      * A, S
      * @return the created Save menu
      */
@@ -357,7 +360,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     }
 
     /**
-     * This menu uses the following Mnemonic keys as of 20-Apr-2022:
+     * This menu uses the following Mnemonic keys as of 30-Jun-2022:
      * I
      * @return the created Import menu
      */
@@ -377,7 +380,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     }
 
     /**
-     * This menu uses the following Mnemonic keys as of 20-Apr-2022:
+     * This menu uses the following Mnemonic keys as of 30-Jun-2022:
      * C, H, P, T
      * @return the created Export menu
      */
@@ -395,7 +398,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     }
 
     /**
-     * This menu uses the following Mnemonic keys as of 20-Apr-2022:
+     * This menu uses the following Mnemonic keys as of 30-Jun-2022:
      * C, F, L, M, Q, S, U
      * @return the created PDF Unit Export menu
      */
@@ -457,7 +460,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     }
 
     /**
-     * This menu uses the following Mnemonic keys as of 20-Apr-2022:
+     * This menu uses the following Mnemonic keys as of 30-Jun-2022:
      * U
      * @return the created HTML Unit Export menu
      */
@@ -477,7 +480,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     }
 
     /**
-     * This menu uses the following Mnemonic keys as of 20-Apr-2022:
+     * This menu uses the following Mnemonic keys as of 30-Jun-2022:
      * U
      * @return the created Text Unit Export menu
      */
@@ -497,7 +500,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     }
 
     /**
-     * This menu uses the following Mnemonic keys as of 20-Apr-2022:
+     * This menu uses the following Mnemonic keys as of 30-Jun-2022:
      * U
      * @return the created Clipboard Unit Export menu
      */
@@ -520,7 +523,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     }
 
     /**
-     * This menu uses the following Mnemonic keys as of 20-Apr-2022:
+     * This menu uses the following Mnemonic keys as of 30-Jun-2022:
      * C, F, L, M, Q, S, U
      * @return the created Print menu
      */
@@ -582,7 +585,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     }
 
     /**
-     * This menu uses the following Mnemonic keys as of 20-Apr-2022:
+     * This menu uses the following Mnemonic keys as of 30-Jun-2022:
      * U
      * @return the created Refresh menu
      */
@@ -602,7 +605,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     }
 
     /**
-     * This menu uses the following Mnemonic keys as of 20-Apr-2022:
+     * This menu uses the following Mnemonic keys as of 30-Jun-2022:
      * C, T
      * @return the created Options menu
      */
@@ -674,7 +677,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
 
     //region Unit Validation Menu
     /**
-     * This menu uses the following Mnemonic keys as of 20-Apr-2022:
+     * This menu uses the following Mnemonic keys as of 30-Jun-2022:
      * C, F, U
      * @return the created Unit Validation menu
      */
@@ -710,7 +713,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
 
     //region Reports Menu
     /**
-     * This menu uses the following Mnemonic keys as of 20-Apr-2022:
+     * This menu uses the following Mnemonic keys as of 30-Jun-2022:
      * B, C, S, W
      * @return the created reports menu
      */
@@ -728,7 +731,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     }
 
     /**
-     * This menu uses the following Mnemonic keys as of 20-Apr-2022:
+     * This menu uses the following Mnemonic keys as of 30-Jun-2022:
      * C, F, U
      * @return the created Unit Specs Report menu
      */
@@ -762,7 +765,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     }
 
     /**
-     * This menu uses the following Mnemonic keys as of 20-Apr-2022:
+     * This menu uses the following Mnemonic keys as of 30-Jun-2022:
      * C, F, U
      * @return the created Unit BV Breakdown menu
      */
@@ -796,7 +799,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     }
 
     /**
-     * This menu uses the following Mnemonic keys as of 20-Apr-2022:
+     * This menu uses the following Mnemonic keys as of 30-Jun-2022:
      * C, F, U
      * @return the created Unit Cost Breakdown menu
      */
@@ -830,7 +833,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     }
 
     /**
-     * This menu uses the following Mnemonic keys as of 20-Apr-2022:
+     * This menu uses the following Mnemonic keys as of 30-Jun-2022:
      * C, F, U
      * @return the created Unit Weight Breakdown menu
      */
@@ -866,7 +869,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
 
     //region Help Menu
     /**
-     * This menu uses the following Mnemonic keys as of 20-Apr-2022:
+     * This menu uses the following Mnemonic keys as of 30-Jun-2022:
      * A, R
      * @return the created Help menu
      */
