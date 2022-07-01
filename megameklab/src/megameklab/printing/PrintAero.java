@@ -199,7 +199,8 @@ public class PrintAero extends PrintEntity {
 
     @Override
     protected void drawFluffImage() {
-        File f = ImageHelper.getFluffFile(aero, ImageHelper.imageAero);
+        File f = ImageHelper.getFluffFile(aero, aero instanceof ConvFighter ? ImageHelper.imageConvFighter : ImageHelper.imageAero);
+        //File f = ImageHelper.getFluffFile(aero, ImageHelper.imageAero);
         if (null != f) {
             Element rect = getSVGDocument().getElementById(FLUFF_IMAGE);
             if (rect instanceof SVGRectElement) {

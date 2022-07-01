@@ -20,6 +20,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGRectElement;
 
 import java.awt.print.PageFormat;
+import java.io.File;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -357,7 +358,8 @@ public class PrintDropship extends PrintAero {
 
     @Override
     protected void drawFluffImage() {
-        String dir = ImageHelper.imageDropship;
+        String dir = ship instanceof Dropship ? ImageHelper.imageDropship : ImageHelper.imageSmallcraft;
+        //File f = ImageHelper.getFluffFile(ship, ship instanceof Dropship ? ImageHelper.imageDropship : ImageHelper.imageConvFighter);
         Element rect = getSVGDocument().getElementById("fluffImage");
         if (rect instanceof SVGRectElement) {
             embedImage(ImageHelper.getFluffFile(ship, dir),
