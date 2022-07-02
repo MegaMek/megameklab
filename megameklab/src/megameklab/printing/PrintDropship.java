@@ -20,6 +20,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGRectElement;
 
 import java.awt.print.PageFormat;
+import java.io.File;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -68,12 +69,9 @@ public class PrintDropship extends PrintAero {
     /**
      * Creates an SVG object for the record sheet
      *
-     * @param ship
-     *            The ship to print
-     * @param startPage
-     *            The print job page number for this sheet
-     * @param options
-     *            Overrides the global options for which elements are printed
+     * @param ship      The ship to print
+     * @param startPage The print job page number for this sheet
+     * @param options   Overrides the global options for which elements are printed
      */
     public PrintDropship(Aero ship, int startPage, RecordSheetOptions options) {
         super(ship, startPage, options);
@@ -85,10 +83,8 @@ public class PrintDropship extends PrintAero {
     /**
      * Creates an SVG object for the record sheet using the global printing options
      *
-     * @param ship
-     *            The ship to print
-     * @param startPage
-     *            The print job page number for this sheet
+     * @param ship      The ship to print
+     * @param startPage The print job page number for this sheet
      */
     public PrintDropship(Aero ship, int startPage) {
         this(ship, startPage, new RecordSheetOptions());
@@ -296,15 +292,13 @@ public class PrintDropship extends PrintAero {
      * decks, and bays. If there is too much to fit on a single page, the standard
      * scale weapons are moved to the second page (which is considered the reverse).
      *
-     * @param svgRect
-     *            The rectangle element that provides the dimensions of the space to
-     *            print
-     * @param reverse
-     *            Whether this is printing on the reverse side.
+     * @param svgRect The rectangle element that provides the dimensions of the space to
+     *                print
+     * @param reverse Whether this is printing on the reverse side.
      */
     private void writeEquipment(SVGRectElement svgRect, boolean reverse) {
         inventory.setRegion(svgRect);
-        float[] metrics = inventory.scaleText( f -> calcActualLines(reverse, f));
+        float[] metrics = inventory.scaleText(f -> calcActualLines(reverse, f));
         final float fontSize = metrics[0];
         final float lineHeight = metrics[1];
         double currY = inventory.startingY();
