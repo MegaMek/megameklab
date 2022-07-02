@@ -182,7 +182,7 @@ public class PrintAero extends PrintEntity {
                 transport.merge("Infantry Bay", t.getUnused(), Double::sum);
             } else if (t instanceof StandardSeatCargoBay) {
                 seating.merge(((Bay) t).getType(), (int) ((Bay) t).getCapacity(), Integer::sum);
-            // include cargo bays for fighters and fixed wing, but small craft get a block for transport bays
+                // include cargo bays for fighters and fixed wing, but small craft get a block for transport bays
             } else if (t instanceof Bay && !((Bay) t).isQuarters() && !(aero instanceof SmallCraft)) {
                 transport.merge(((Bay) t).getType(), ((Bay) t).getCapacity(), Double::sum);
             }
@@ -199,8 +199,13 @@ public class PrintAero extends PrintEntity {
 
     @Override
     protected void drawFluffImage() {
-        File f = ImageHelper.getFluffFile(aero, aero instanceof ConvFighter ? ImageHelper.imageConvFighter : ImageHelper.imageAero);
-        //File f = ImageHelper.getFluffFile(aero, ImageHelper.imageAero);
+        String dir = ImageHelper.imageAero;
+        if (aero instanceof ConvFighter) {
+            dir = ImageHelper.imageConvFighter;
+        } else if (aero instanceof SmallCraft) {
+            dir = ImageHelper.imageSmallcraft;
+        }
+        File f = ImageHelper.getFluffFile(aero, dir);
         if (null != f) {
             Element rect = getSVGDocument().getElementById(FLUFF_IMAGE);
             if (rect instanceof SVGRectElement) {

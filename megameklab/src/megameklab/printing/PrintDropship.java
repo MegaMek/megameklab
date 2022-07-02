@@ -54,7 +54,7 @@ public class PrintDropship extends PrintAero {
     private static final int BLOCK_FOOTER = 5;
     private static final int NUM_BLOCKS = 6;
     // The order in which to move blocks to the second page
-    private static final int[] SWITCH_PAGE_ORDER = { BLOCK_STANDARD, BLOCK_GRAV_DECK, BLOCK_BAYS, BLOCK_FOOTER, BLOCK_AR10_AMMO };
+    private static final int[] SWITCH_PAGE_ORDER = {BLOCK_STANDARD, BLOCK_GRAV_DECK, BLOCK_BAYS, BLOCK_FOOTER, BLOCK_AR10_AMMO};
 
     /**
      * The ship being printed
@@ -69,12 +69,9 @@ public class PrintDropship extends PrintAero {
     /**
      * Creates an SVG object for the record sheet
      *
-     * @param ship
-     *            The ship to print
-     * @param startPage
-     *            The print job page number for this sheet
-     * @param options
-     *            Overrides the global options for which elements are printed
+     * @param ship      The ship to print
+     * @param startPage The print job page number for this sheet
+     * @param options   Overrides the global options for which elements are printed
      */
     public PrintDropship(Aero ship, int startPage, RecordSheetOptions options) {
         super(ship, startPage, options);
@@ -86,10 +83,8 @@ public class PrintDropship extends PrintAero {
     /**
      * Creates an SVG object for the record sheet using the global printing options
      *
-     * @param ship
-     *            The ship to print
-     * @param startPage
-     *            The print job page number for this sheet
+     * @param ship      The ship to print
+     * @param startPage The print job page number for this sheet
      */
     public PrintDropship(Aero ship, int startPage) {
         this(ship, startPage, new RecordSheetOptions());
@@ -297,15 +292,13 @@ public class PrintDropship extends PrintAero {
      * decks, and bays. If there is too much to fit on a single page, the standard
      * scale weapons are moved to the second page (which is considered the reverse).
      *
-     * @param svgRect
-     *            The rectangle element that provides the dimensions of the space to
-     *            print
-     * @param reverse
-     *            Whether this is printing on the reverse side.
+     * @param svgRect The rectangle element that provides the dimensions of the space to
+     *                print
+     * @param reverse Whether this is printing on the reverse side.
      */
     private void writeEquipment(SVGRectElement svgRect, boolean reverse) {
         inventory.setRegion(svgRect);
-        float[] metrics = inventory.scaleText( f -> calcActualLines(reverse, f));
+        float[] metrics = inventory.scaleText(f -> calcActualLines(reverse, f));
         final float fontSize = metrics[0];
         final float lineHeight = metrics[1];
         double currY = inventory.startingY();
@@ -358,8 +351,7 @@ public class PrintDropship extends PrintAero {
 
     @Override
     protected void drawFluffImage() {
-        String dir = ship instanceof Dropship ? ImageHelper.imageDropship : ImageHelper.imageSmallcraft;
-        //File f = ImageHelper.getFluffFile(ship, ship instanceof Dropship ? ImageHelper.imageDropship : ImageHelper.imageConvFighter);
+        String dir = ImageHelper.imageDropship;
         Element rect = getSVGDocument().getElementById("fluffImage");
         if (rect instanceof SVGRectElement) {
             embedImage(ImageHelper.getFluffFile(ship, dir),
