@@ -26,18 +26,20 @@ public class ImageHelper {
     public static String fluffPath = "./data/images/fluff/"; // TODO : Remove inline file path
     public static String imagePath = "./data/images/"; // TODO : Remove inline file path
 
-    public static String imageMech = "mech";
-    public static String imageAero = "aero";
+    public static String imageMech = "Mech";
+    public static String imageAero = "Fighter";
     public static String imageBattleArmor = "BattleArmor";
-    public static String imageInfantry = "infantry";
-    public static String imageVehicle = "vehicle";
-    public static String imageNaval = "naval";
-    public static String imageLargeSupportVehicle = "largesupportvehicle";
-    public static String imageProto = "protomech";
-    public static String imageDropship = "dropship";
-    public static String imageJumpship = "jumpship";
-    public static String imageWarship = "warship";
-    public static String imageSpaceStation = "spacestation";
+    public static String imageConvFighter = "ConvFighter";
+    public static String imageInfantry = "Infantry";
+    public static String imageVehicle = "Vehicle";
+    public static String imageNaval = "Naval";
+    public static String imageLargeSupportVehicle = "LargeSupportVehicle";
+    public static String imageProto = "ProtoMek";
+    public static String imageSmallcraft = "Small Craft";
+    public static String imageDropship = "DropShip";
+    public static String imageJumpship = "JumpShip";
+    public static String imageWarship = "WarShip";
+    public static String imageSpaceStation = "Space Station";
 
     /**
      * Checks for a fluff image for the unit starting with any file explicitly associated with the
