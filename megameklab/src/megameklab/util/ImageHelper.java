@@ -34,11 +34,11 @@ public class ImageHelper {
     public static String imageVehicle = "Vehicle";
     public static String imageNaval = "Naval";
     public static String imageLargeSupportVehicle = "LargeSupportVehicle";
-    public static String imageProto = "Protomek";
+    public static String imageProto = "ProtoMek";
     public static String imageSmallcraft = "Small Craft";
-    public static String imageDropship = "Dropship";
-    public static String imageJumpship = "Jumpship";
-    public static String imageWarship = "Warship";
+    public static String imageDropship = "DropShip";
+    public static String imageJumpship = "JumpShip";
+    public static String imageWarship = "WarShip";
     public static String imageSpaceStation = "Space Station";
 
     /**
