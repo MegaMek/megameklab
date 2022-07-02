@@ -54,7 +54,7 @@ public class PrintDropship extends PrintAero {
     private static final int BLOCK_FOOTER = 5;
     private static final int NUM_BLOCKS = 6;
     // The order in which to move blocks to the second page
-    private static final int[] SWITCH_PAGE_ORDER = {BLOCK_STANDARD, BLOCK_GRAV_DECK, BLOCK_BAYS, BLOCK_FOOTER, BLOCK_AR10_AMMO};
+    private static final int[] SWITCH_PAGE_ORDER = { BLOCK_STANDARD, BLOCK_GRAV_DECK, BLOCK_BAYS, BLOCK_FOOTER, BLOCK_AR10_AMMO };
 
     /**
      * The ship being printed
