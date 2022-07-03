@@ -81,6 +81,8 @@ public enum EquipmentDatabaseCategory {
                     && !(eq.hasFlag(F_MASC)
                     && !eq.hasSubType(S_SUPERCHARGER)
                     && !eq.hasSubType(S_JETBOOSTER))
+                    && (!eq.getInternalName().equals("ISVTOLJetBooster") || (en instanceof VTOL))
+                    && (!eq.getInternalName().equals("ISMastMount") || (en instanceof VTOL))
                     && !(en.hasETypeFlag(Entity.ETYPE_QUADVEE) && eq.hasFlag(F_TRACKS))
                     && !UnitUtil.isArmorOrStructure(eq)
                     && !(eq.hasFlag(F_CHASSIS_MODIFICATION) && en.isSupportVehicle())
