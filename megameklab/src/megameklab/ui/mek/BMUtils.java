@@ -79,7 +79,8 @@ public final class BMUtils {
      * locations on the Mek as long as there are any.
      */
     public static void fillInFMU(Mech mek) {
-        for (Mounted mount : mek.getEquipment()) {
+        // Work with a copy because the equipment list may be modified.
+        for (Mounted mount : new ArrayList<>(mek.getEquipment())) {
             if (!BMUtils.isFMU(mount) || (mount.getLocation() != Entity.LOC_NONE)) {
                 continue;
             }
