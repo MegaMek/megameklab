@@ -124,7 +124,7 @@ public class BMCriticalTransferHandler extends TransferHandler {
         }
         int neededPrimarySlots = Math.min(neededTotalSlots, freePrimarySlots);
         int neededSecondarySlots = Math.max(0, neededTotalSlots - freePrimarySlots);
-        int secondLocation = mek.getTransferLocation(location);
+        int secondLocation = Entity.LOC_NONE;
 
         // Determine if we should spread equipment over multiple locations
         if ((neededTotalSlots > freePrimarySlots)
