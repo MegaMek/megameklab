@@ -133,6 +133,16 @@ public class PrintBattleArmor extends PrintEntity {
     }
 
     @Override
+    protected String formatWalk() {
+        if (battleArmor.hasDWP()) {
+            return formatMovement(battleArmor.getWalkMP(),
+                    battleArmor.getWalkMP(true, false, false, true, false));
+        } else {
+            return super.formatWalk();
+        }
+    }
+
+    @Override
     public String formatMiscNotes() {
         final StringJoiner sj = new StringJoiner(" ");
         if (battleArmor.isBurdened() && ((battleArmor.getJumpMP(false, true, true) > 0)
