@@ -74,7 +74,9 @@ public class ClusterHitsTable extends ReferenceTable {
             if (entity instanceof BattleArmor) {
                 for (Mounted mounted : entity.getIndividualWeaponList()) {
                     if (mounted.getType() instanceof MissileWeapon) {
-                        clusterSizes.add(Math.min(40, size * ((MissileWeapon) mounted.getType()).getRackSize()));
+                        for (int troopers = 1; troopers <= size; troopers++) {
+                            clusterSizes.add(Math.min(40, troopers * ((MissileWeapon) mounted.getType()).getRackSize()));
+                        }
                     }
                 }
             }
