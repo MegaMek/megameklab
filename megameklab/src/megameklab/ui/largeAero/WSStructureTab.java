@@ -392,8 +392,8 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
     @Override
     public void militaryChanged(boolean military) {
         getJumpship().setDesignType(military ? Aero.MILITARY : Aero.CIVILIAN);
-        panHeat.setFromAero(getSmallCraft());
-        panFuel.setFromEntity(getSmallCraft());
+        panHeat.setFromAero(getJumpship());
+        panFuel.setFromEntity(getJumpship());
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
