@@ -1162,6 +1162,10 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     }
 
     private void jMenuResetEntity_actionPerformed(ActionEvent event) {
+        if (!getFrame().safetyPrompt()) {
+            return;
+        }
+
         CConfig.updateSaveFiles("Reset Unit");
         CConfig.setParam(CConfig.CONFIG_SAVE_FILE_1, "");
         Entity en = getFrame().getEntity();
@@ -1399,6 +1403,10 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
                         resources.getString("message.abortUnitLoad.text"));
             }
             return;
+        } else {
+            if (!getFrame().safetyPrompt()) {
+                return;
+            }
         }
 
         UnitUtil.updateLoadedUnit(newUnit);
@@ -1514,9 +1522,11 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
      * @param type an <code>int</code> corresponding to the unit type to construct
      */
     private void newUnit(long type, boolean primitive, Entity en) {
-        getFrame().setVisible(false);
-        LoadingDialog ld = new LoadingDialog(getFrame(), type, primitive, false, en);
-        ld.setVisible(true);
+        if (frame.safetyPrompt()) {
+            getFrame().setVisible(false);
+            LoadingDialog ld = new LoadingDialog(getFrame(), type, primitive, false, en);
+            ld.setVisible(true);
+        }
     }
 
     @Override

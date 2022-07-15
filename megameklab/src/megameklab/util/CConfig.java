@@ -84,6 +84,7 @@ public class CConfig {
     public static final String TECH_UNOFFICAL_NO_YEAR = "techUnofficialNoYear";
 
     public static final String MISC_SUMMARY_FORMAT_TRO = "useTROFormat";
+    public static final String MISC_SKIP_SAFETY_PROMPTS = "skipSafetyPrompts";
     
     public static final String CONFIG_SAVE_LOC = "Save-Location-Default";
     public static final String CONFIG_PLAF = "lookAndFeel";
@@ -128,6 +129,7 @@ public class CConfig {
                 new File(System.getProperty("user.dir")
                         + "/data/mechfiles/").getAbsolutePath());
         defaults.setProperty(MISC_SUMMARY_FORMAT_TRO, Boolean.toString(true));
+        defaults.setProperty(MISC_SKIP_SAFETY_PROMPTS, Boolean.toString(false));
         defaults.setProperty(RS_PROGRESS_BAR, Boolean.toString(true));
         defaults.setProperty(RS_COLOR, Boolean.toString(true));
         defaults.setProperty(RS_SHOW_QUIRKS, Boolean.toString(true));
