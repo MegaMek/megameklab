@@ -35,6 +35,7 @@ import java.util.ResourceBundle;
 public class MiscSettingsPanel extends JPanel {
 
     private final JCheckBox chkSummaryFormatTRO = new JCheckBox();
+    private final JCheckBox chkSkipSavePrompts = new JCheckBox();
 
     MiscSettingsPanel() {
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Dialogs", new EncodeControl());
@@ -43,10 +44,15 @@ public class MiscSettingsPanel extends JPanel {
         chkSummaryFormatTRO.setToolTipText(resourceMap.getString("ConfigurationDialog.chkSummaryFormatTRO.tooltip"));
         chkSummaryFormatTRO.setSelected(CConfig.getBooleanParam(CConfig.MISC_SUMMARY_FORMAT_TRO));
 
+        chkSkipSavePrompts.setText(resourceMap.getString("ConfigurationDialog.chkSkipSavePrompts.text"));
+        chkSkipSavePrompts.setToolTipText(resourceMap.getString("ConfigurationDialog.chkSkipSavePrompts.tooltip"));
+        chkSkipSavePrompts.setSelected(CConfig.getBooleanParam(CConfig.MISC_SKIP_SAFETY_PROMPTS));
+
         JPanel gridPanel = new JPanel(new SpringLayout());
         gridPanel.add(chkSummaryFormatTRO);
+        gridPanel.add(chkSkipSavePrompts);
 
-        SpringUtilities.makeCompactGrid(gridPanel, 1, 1, 0, 0, 15, 10);
+        SpringUtilities.makeCompactGrid(gridPanel, 2, 1, 0, 0, 15, 10);
         gridPanel.setBorder(new EmptyBorder(20, 30, 20, 30));
         setLayout(new FlowLayout(FlowLayout.LEFT));
         add(gridPanel);
@@ -55,6 +61,7 @@ public class MiscSettingsPanel extends JPanel {
     Map<String, String> getMiscSettings() {
         Map<String, String> miscSettings = new HashMap<>();
         miscSettings.put(CConfig.MISC_SUMMARY_FORMAT_TRO, String.valueOf(chkSummaryFormatTRO.isSelected()));
+        miscSettings.put(CConfig.MISC_SKIP_SAFETY_PROMPTS, String.valueOf(chkSkipSavePrompts.isSelected()));
         return miscSettings;
     }
 }

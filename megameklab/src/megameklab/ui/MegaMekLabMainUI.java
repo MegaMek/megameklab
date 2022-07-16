@@ -99,14 +99,34 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
         });
     }
 
+    /**
+     * When the setting "Disable save prompts" is active (see Misc Settings), returns true directly.
+     * Otherwise, this shows a safety dialog prompting the user to consider saving the currently entered unit.
+     * This method returns true only when MML should continue with the action that led to this dialog. This is
+     * the case when the user selects NO or selects YES and actually saves the unit.
+     * When the user closes the dialog (X or ESC) or presses CANCEL or presses YES but doesn't save the
+     * unit, returns false which indicates that the current action (e.g. reset unit or switch unit or quit) should
+     * be canceled. See also {@link megameklab.ui.dialog.settings.MiscSettingsPanel}.
+     *
+     * @return True only when the user agrees to continue or has deactivated these prompts, false otherwise
+     */
+    public boolean safetyPrompt() {
+        if (CConfig.getBooleanParam(CConfig.MISC_SKIP_SAFETY_PROMPTS)) {
+            return true;
+        } else {
+            int savePrompt = JOptionPane.showConfirmDialog(this,
+                    "All unsaved changes in the current unit will be discarded. Save the unit first?",
+                    "Save Unit Before Proceeding?",
+                    JOptionPane.YES_NO_CANCEL_OPTION,
+                    JOptionPane.WARNING_MESSAGE);
+            // When the user did not actually save the unit, return as if CANCEL was pressed
+            return (savePrompt == JOptionPane.NO_OPTION)
+                    || ((savePrompt == JOptionPane.YES_OPTION) && mmlMenuBar.saveEntity(entity));
+        }
+    }
+
     public void exit() {
-        int savePrompt = JOptionPane.showConfirmDialog(null,
-                "Do you want to save the unit before quitting MegaMekLab?",
-                "Save First?", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
-        if ((savePrompt == JOptionPane.CANCEL_OPTION) || (savePrompt == JOptionPane.CLOSED_OPTION)) {
-            return;
-        } else if ((savePrompt == JOptionPane.YES_OPTION) && !mmlMenuBar.saveEntity(entity)) {
-            // When the user did not actually save the unit, don't close MML
+        if (!safetyPrompt()) {
             return;
         }
 

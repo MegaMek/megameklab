@@ -81,7 +81,7 @@ public class IntRangeTextField extends JFormattedTextField {
         maximum = max;
     }
 
-    private InputVerifier inputVerifier = new InputVerifier() {
+    private final InputVerifier inputVerifier = new InputVerifier() {
         @Override
         public boolean verify(JComponent input) {
             try {
@@ -93,7 +93,7 @@ public class IntRangeTextField extends JFormattedTextField {
         }
 
         @Override
-        public boolean shouldYieldFocus(JComponent input) {
+        public boolean shouldYieldFocus(JComponent input, JComponent target) {
             if (!verify(input)) {
                 int val = getIntVal();
                 if (minimum != null && val < minimum) {
@@ -106,7 +106,7 @@ public class IntRangeTextField extends JFormattedTextField {
         }
     };
 
-    private DocumentFilter docFilter = new DocumentFilter() {
+    private final DocumentFilter docFilter = new DocumentFilter() {
 
         @Override
         public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr)
@@ -122,7 +122,6 @@ public class IntRangeTextField extends JFormattedTextField {
         @Override
         public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs)
                 throws BadLocationException {
-            // TODO Auto-generated method stub
             for (int i = 0; i < text.length(); i++) {
                 if (!Character.isDigit(text.charAt(i))) {
                     return;
@@ -132,7 +131,7 @@ public class IntRangeTextField extends JFormattedTextField {
         }
 
     };
-    
+
     /**
      * Parses the text as an {@code int}.
      * @return The {@code int} value of the text, or zero if the text is not a valid int value
