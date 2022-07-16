@@ -13,16 +13,11 @@
  */
 package megameklab.ui.util;
 
-import java.text.NumberFormat;
-
-import javax.swing.InputVerifier;
-import javax.swing.JComponent;
-import javax.swing.JFormattedTextField;
+import javax.swing.*;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
-import javax.swing.text.NumberFormatter;
 
 /**
  * A text field for integer values that can specify a minimum and maximum value. Attempting to release
@@ -31,15 +26,12 @@ import javax.swing.text.NumberFormatter;
  * 
  * @author Neoancient
  */
-public class IntRangeTextField extends JFormattedTextField {
+public class IntRangeTextField extends JTextField {
     private Integer minimum = null;
     private Integer maximum = null;
 
     public IntRangeTextField() {
         super();
-        NumberFormat format = NumberFormat.getIntegerInstance();
-        format.setGroupingUsed(false);
-        setFormatter(new NumberFormatter(format));
         setInputVerifier(inputVerifier);
         if (getDocument() instanceof AbstractDocument) {
             ((AbstractDocument) getDocument()).setDocumentFilter(docFilter);
@@ -111,23 +103,22 @@ public class IntRangeTextField extends JFormattedTextField {
         @Override
         public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr)
                 throws BadLocationException {
-            for (int i = 0; i < string.length(); i++) {
-                if (!Character.isDigit(string.charAt(i))) {
-                    return;
-                }
+            if (string.chars().allMatch(this::isCharValid)) {
+                super.insertString(fb, offset, string, attr);
             }
-            super.insertString(fb, offset, string, attr);
         }
 
         @Override
         public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs)
                 throws BadLocationException {
-            for (int i = 0; i < text.length(); i++) {
-                if (!Character.isDigit(text.charAt(i))) {
-                    return;
-                }
+            if (text.chars().allMatch(this::isCharValid)) {
+                super.replace(fb, offset, length, text, attrs);
             }
-            super.replace(fb, offset, length, text, attrs);
+        }
+
+        // Allow digits and, if the minimum is below zero or not set, a minus sign
+        private boolean isCharValid(int chr) {
+            return Character.isDigit(chr) || ((chr == '-') && (minimum == null || minimum < 0));
         }
 
     };
