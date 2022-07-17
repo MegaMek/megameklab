@@ -621,7 +621,7 @@
                                                                       >Running:</text
                                                                       ><text fill="#231f20" x="44.000" id="mpRun" y="56.000" style="font-family:Eurostile;font-size:7.700px;font-weight:normal;font-style:normal" text-anchor="middle"
                                                                       >0</text
-                                                                      ><text x="6.000" y="65.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:7.700px;font-weight:bold;font-style:normal" textLength="29.883" lengthAdjust="spacingAndGlyphs"
+                                                                      ><text x="6.000" y="65.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:7.700px;font-weight:bold;font-style:normal" id="lblJump" textLength="29.883" lengthAdjust="spacingAndGlyphs"
                                                                       >Jumping:</text
                                                                       ><text fill="#231f20" x="44.000" id="mpJump" y="65.000" style="font-family:Eurostile;font-size:7.700px;font-weight:normal;font-style:normal" text-anchor="middle"
                                                                       >0</text
