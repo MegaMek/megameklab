@@ -613,15 +613,15 @@
                                                                       >Lorem Ipsum</text
                                                                       ><text fill="#231f20" x="6.000" y="38.000" style="font-family:Eurostile;font-size:7.700px;font-weight:bold;font-style:normal" text-anchor="start"
                                                                       >Movement Points:</text
-                                                                      ><text x="6.000" y="47.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:7.700px;font-weight:bold;font-style:normal" textLength="28.532" lengthAdjust="spacingAndGlyphs"
+                                                                      ><text fill="#231f20" x="6.000" y="47.000" style="font-family:Eurostile;font-size:7.700px;font-weight:bold;font-style:normal" text-anchor="start"
                                                                       >Walking:</text
                                                                       ><text fill="#231f20" x="56.000" id="mpWalk" y="47.000" style="font-family:Eurostile;font-size:7.700px;font-weight:normal;font-style:normal" text-anchor="middle"
                                                                       >0</text
-                                                                      ><text x="6.000" y="56.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:7.700px;font-weight:bold;font-style:normal" textLength="28.629" lengthAdjust="spacingAndGlyphs"
+                                                                      ><text fill="#231f20" x="6.000" y="56.000" style="font-family:Eurostile;font-size:7.700px;font-weight:bold;font-style:normal" text-anchor="start"
                                                                       >Running:</text
                                                                       ><text fill="#231f20" x="56.000" id="mpRun" y="56.000" style="font-family:Eurostile;font-size:7.700px;font-weight:normal;font-style:normal" text-anchor="middle"
                                                                       >0</text
-                                                                      ><text x="6.000" y="65.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:7.700px;font-weight:bold;font-style:normal" textLength="29.883" lengthAdjust="spacingAndGlyphs"
+                                                                      ><text fill="#231f20" x="6.000" id="lblJump" y="65.000" style="font-family:Eurostile;font-size:7.700px;font-weight:bold;font-style:normal" text-anchor="start"
                                                                       >Jumping:</text
                                                                       ><text fill="#231f20" x="56.000" id="mpJump" y="65.000" style="font-family:Eurostile;font-size:7.700px;font-weight:normal;font-style:normal" text-anchor="middle"
                                                                       >0</text
