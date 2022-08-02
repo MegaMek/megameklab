@@ -6,7 +6,6 @@ VERSION HISTORY:
 + Issue #1111: Physical Attack Table Encoding Error (Push attack)
 + PR #1096: Fixing all Assert Usages
 + PR #1126: Fixing Closeable Resource Leaks
-+ Updating to FlatLAF 2.3 from 2.2
 + Issue #933: "Use Remaining Tonnage" button causes Issues
 + Issue #904: Paratrooper infantry should be limited to foot movement
 + Issue #937: Able to add more armor hardened armor than tonnage allows with patchwork
@@ -22,6 +21,8 @@ VERSION HISTORY:
 + Issue #1133: Add safety prompts to Reset Unit/Change Unit Type/Load Unit
 + Issue #1127: Fix text field behavior (MUL ID and Year among others)
 + Issue #1147: UMU MPs Printed As Jumping MPs On Record Sheet Export
++ Updating to FlatLAF 2.4 from 2.2
++ Updating to Log4j 2.18.0 from 2.17.2
 
 0.49.8 (2022-05-27 1430 UTC)
 + PR #1029: Adding Build-Date to the Manifest File
