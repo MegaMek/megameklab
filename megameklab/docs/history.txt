@@ -21,6 +21,8 @@ VERSION HISTORY:
 + Issue #1133: Add safety prompts to Reset Unit/Change Unit Type/Load Unit
 + Issue #1127: Fix text field behavior (MUL ID and Year among others)
 + Issue #1147: UMU MPs Printed As Jumping MPs On Record Sheet Export
++ Updating to Gradle 7.5.1 from 6.7
++ Updating to grgit 5.0.0 from 4.1.1
 + Updating to FlatLAF 2.4 from 2.2
 + Updating to Log4j 2.18.0 from 2.17.2
 
