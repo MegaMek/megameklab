@@ -57,7 +57,7 @@ class LAEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
         } else {
             if (equip instanceof AmmoType) {
                 Mounted aMount = UnitUtil.findUnallocatedAmmo(getAero(), equip);
-                if (null != aMount) {
+                if ((null != aMount) && getAero().usesWeaponBays()) {
                     aMount.setShotsLeft(aMount.getUsableShotsLeft() + ((AmmoType) equip).getShots() * count);
                 } else {
                     mount = new Mounted(getAero(), equip);
