@@ -1,6 +1,6 @@
 VERSION HISTORY:
 ----------------
-0.49.9-SNAPSHOT
+0.49.9 (2022-09-06 2100 UTC)
 + Issue #1099: Stop at 0 tons when Selecting "Use Remaining Tonnage" for Armour
 + Issue #1040: Adding Save Option to MML Exit Dialog
 + Issue #1111: Physical Attack Table Encoding Error (Push attack)
