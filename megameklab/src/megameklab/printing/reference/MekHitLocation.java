@@ -67,15 +67,15 @@ public class MekHitLocation extends ReferenceTable {
 
     private void addTripodRows() {
         addRow("2*", "LT(C)", "CT(C)", "RT(C)");
-        addRow("3", "Leg (+1)†", "RA", "Leg (-1)†");
+        addRow("3", "Leg (+1)\u2020", "RA", "Leg (-1)\u2020");
         addRow("4", "LA", "RA", "RA");
-        addRow("5", "LA", "Leg†", "RA");
-        addRow("6", "Leg (+1)†", "RT", "Leg (-1)†");
+        addRow("5", "LA", "Leg\u2020", "RA");
+        addRow("6", "Leg (+1)\u2020", "RT", "Leg (-1)\u2020");
         addRow("7", "LT", "CT", "RT");
         addRow("8", "CT", "LT", "CT");
-        addRow("9", "RT", "Leg†", "LT");
+        addRow("9", "RT", "Leg\u2020", "LT");
         addRow("10", "RA", "LA", "LA");
-        addRow("11", "Leg (+1)†", "LA", "Leg (-1)†");
+        addRow("11", "Leg (+1)\u2020", "LA", "Leg (-1)\u2020");
         addRow("12", "HD", "HD", "HD");
         addNote(bundle.getString("tacNote"));
         addNote(bundle.getString("tripodLegNote"));
