@@ -2,6 +2,7 @@ VERSION HISTORY:
 ----------------
 0.49.11-SNAPSHOT
 + Issue #910: Fix SV Fission and TL C Fusion Engine Minimum Weight
++ PR #1168: Fixing Tripod Leg and Mech Spike Dagger Character Uses
 
 0.49.10 (2022-09-12 1500 UTC)
 	NO CHANGES FROM 0.49.9
