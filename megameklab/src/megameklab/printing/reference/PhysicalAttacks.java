@@ -53,7 +53,7 @@ public class PhysicalAttacks extends ReferenceTable {
             addRow(bundle.getString("club"), "-1", String.format("%.0f", Math.floor(sheet.getEntity().getWeight() / 5.0)));
         }
         addRow(bundle.getString("charge"), "+0*", String.format(hasTorsoSpikes ?
-                        "%.0f/%s†" : "%.0f/%s",
+                        "%.0f/%s\u2020" : "%.0f/%s",
                 Math.floor(sheet.getEntity().getWeight() / 10.0),
                 CConfig.scaleUnits().equals(CConfig.RSScale.HEXES) ?
                         bundle.getString("hex") :
