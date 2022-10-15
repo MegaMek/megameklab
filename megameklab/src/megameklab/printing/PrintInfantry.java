@@ -82,14 +82,14 @@ public class PrintInfantry extends PrintEntity {
             }
         }
         InfantryWeapon rangeWeapon = infantry.getPrimaryWeapon();
-        if (infantry.getSecondaryWeapon() != null && infantry.getSecondaryN() > 1
+        if (infantry.getSecondaryWeapon() != null && infantry.getSecondaryWeaponsPerSquad() > 1
                 && !infantry.getSecondaryWeapon().hasFlag(WeaponType.F_TAG)) {
             rangeWeapon = infantry.getSecondaryWeapon();
         }
         boolean scuba = infantry.getMovementMode() == EntityMovementMode.INF_UMU
                 || infantry.getMovementMode() == EntityMovementMode.SUBMARINE;
         hideElement(UW_LABEL, !scuba);
-        InfantryWeapon singleSecondary = (infantry.getSecondaryN() == 1)? infantry.getSecondaryWeapon() : null;
+        InfantryWeapon singleSecondary = (infantry.getSecondaryWeaponsPerSquad() == 1)? infantry.getSecondaryWeapon() : null;
         for (int j = 0; j <= 21; j++) {
             setTextField(RANGE_MOD + j, rangeMod(j, rangeWeapon, singleSecondary, false));
             if (scuba) {

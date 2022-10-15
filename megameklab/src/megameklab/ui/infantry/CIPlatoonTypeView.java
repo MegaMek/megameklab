@@ -161,7 +161,7 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
     
     public void setFromEntity(Infantry inf) {
         specialization = inf.getSpecializations();
-        isFieldGunner = inf.hasFieldGun();
+        isFieldGunner = inf.hasFieldWeapon();
         refresh();
         cbMotiveType.removeActionListener(this);
         if (inf.getMovementMode() == EntityMovementMode.VTOL) {
@@ -179,9 +179,9 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
         }
         cbMotiveType.addActionListener(this);
         
-        if (inf.getSquadN() <= (Integer)spnNumSquadsModel.getMaximum()) {
+        if (inf.getSquadCount() <= (Integer)spnNumSquadsModel.getMaximum()) {
             spnNumSquads.removeChangeListener(this);
-            spnNumSquads.setValue(inf.getSquadN());
+            spnNumSquads.setValue(inf.getSquadCount());
             spnNumSquads.addChangeListener(this);
         } else {
             spnNumSquads.setValue(spnNumSquadsModel.getMaximum());

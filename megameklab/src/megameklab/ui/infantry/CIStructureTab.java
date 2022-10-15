@@ -271,12 +271,12 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
             txtSpecializations.setText(sj.toString());
         }
         if (getInfantry().hasSpecialization(Infantry.TAG_TROOPS)
-                && ((getInfantry().getSecondaryN() < 2)
+                && ((getInfantry().getSecondaryWeaponsPerSquad() < 2)
                         || (getInfantry().getSecondaryWeapon() == null)
                         || !getInfantry().getSecondaryWeapon().hasFlag(WeaponType.F_TAG))) {
             UnitUtil.replaceMainWeapon(getInfantry(),
                     (InfantryWeapon)EquipmentType.get(EquipmentTypeLookup.INFANTRY_TAG), true);
-            getInfantry().setSecondaryN(2);
+            getInfantry().setSecondaryWeaponsPerSquad(2);
         }
     }
     
@@ -407,7 +407,7 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
 
     @Override
     public void platoonSizeChanged(int numSquads, int squadSize) {
-        getInfantry().setSquadN(numSquads);
+        getInfantry().setSquadCount(numSquads);
         getInfantry().setSquadSize(squadSize);
         getInfantry().autoSetInternal();
         panPlatoonType.setFromEntity(getInfantry());
@@ -426,12 +426,12 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
     @Override
     public void numSecondaryChanged(final int count) {
         if (getInfantry().getSecondaryWeapon() == null) {
-            getInfantry().setSecondaryN(0);
+            getInfantry().setSecondaryWeaponsPerSquad(0);
         } else if (count == 0) {
             UnitUtil.replaceMainWeapon(getInfantry(), null, true);
             getInfantry().setSpecializations(getInfantry().getSpecializations() & ~Infantry.TAG_TROOPS);
         } else {
-            getInfantry().setSecondaryN(count);
+            getInfantry().setSecondaryWeaponsPerSquad(count);
         }
         refresh.refreshStatus();
         refresh.refreshPreview();

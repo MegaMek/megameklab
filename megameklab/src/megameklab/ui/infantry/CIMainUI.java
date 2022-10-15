@@ -73,7 +73,7 @@ public class CIMainUI extends MegaMekLabMainUI {
         getEntity().setYear(3145);
         getEntity().setTechLevel(TechConstants.T_IS_TW_NON_BOX);
         getEntity().setArmorTechLevel(TechConstants.T_IS_TW_NON_BOX);
-        ((Infantry) getEntity()).setSquadN(4);
+        ((Infantry) getEntity()).setSquadCount(4);
         ((Infantry) getEntity()).setSquadSize(7);
         ((Infantry) getEntity()).setPrimaryWeapon((InfantryWeapon) EquipmentType
                 .get("InfantryAssaultRifle"));

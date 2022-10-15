@@ -3749,7 +3749,7 @@ public class UnitUtil {
             } catch (LocationFullException ignored) {
 
             }            
-        } else if ((unit.getSecondaryN() < 2) || (null == unit.getSecondaryWeapon())) {
+        } else if ((unit.getSecondaryWeaponsPerSquad() < 2) || (null == unit.getSecondaryWeapon())) {
             try {
                 unit.addEquipment(unit.getPrimaryWeapon(), Infantry.LOC_INFANTRY);
             } catch (LocationFullException ignored) {
