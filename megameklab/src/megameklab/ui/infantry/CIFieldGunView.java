@@ -252,7 +252,7 @@ public class CIFieldGunView extends IView implements ActionListener {
     public void refresh() {
         removeAllListeners();
         filterEquipment();
-        btnRemoveGun.setEnabled(getInfantry().hasFieldGun());
+        btnRemoveGun.setEnabled(getInfantry().hasFieldWeapon());
         addAllListeners();
     }
 
