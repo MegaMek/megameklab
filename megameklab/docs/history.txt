@@ -4,6 +4,8 @@ VERSION HISTORY:
 + Issue #910: Fix SV Fission and TL C Fusion Engine Minimum Weight
 + PR #1168: Fixing Tripod Leg and Mech Spike Dagger Character Uses
 + PR #1181: Infantry refactor adaptation
++ Issue #1169: Add the engine rating and type to more Record Sheets
++ Issue #1179: Remove (IS) label from Plasma Rifle on Mixed Tech units
 
 0.49.10 (2022-09-12 1500 UTC)
 	NO CHANGES FROM 0.49.9
