@@ -229,6 +229,8 @@ public class PrintMech extends PrintEntity {
             setTextField(MP_FLANK, formatQuadVeeFlank());
             setTextField(LBL_VEE_MODE, ((QuadVee) mech).getMotiveTypeString() + "s");
         }
+        setTextField(ENGINE_TYPE, mech.getEngine().getShortEngineName()
+                .replaceAll("\\[.*]", "").trim());
     }
 
     @Override

@@ -633,6 +633,10 @@
                                                                       >Rules Level:</text
                                                                       ><text fill="#231f20" x="158.240" id="rulesLevel" y="56.000" style="font-family:Eurostile;font-size:7.700px;font-weight:normal;font-style:normal;mml-field-width:64.160" text-anchor="start"
                                                                       >Standard</text
+                                                                      ><text x="6.000" y="65.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:7.700px;font-weight:bold;font-style:normal" textLength="40.915" lengthAdjust="spacingAndGlyphs"
+                                                                      >Engine Type:</text
+                                                                      ><text fill="#231f20" x="56.000" id="engineType" y="65.000" style="font-family:Eurostile;font-size:7.700px;font-weight:normal;font-style:normal" text-anchor="start"
+                                                                      >Lorem Ipsum</text
                                                                       ><text x="115.700" y="65.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:7.700px;font-weight:bold;font-style:normal" id="labelRole" textLength="16.160" lengthAdjust="spacingAndGlyphs"
                                                                       >Role:</text
                                                                       ><text fill="#231f20" x="158.240" id="role" y="65.000" style="font-family:Eurostile;font-size:7.700px;font-weight:normal;font-style:normal;mml-field-width:64.160" text-anchor="start"

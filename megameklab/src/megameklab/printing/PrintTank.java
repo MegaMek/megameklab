@@ -128,8 +128,8 @@ public class PrintTank extends PrintEntity {
     protected void writeTextFields() {
         super.writeTextFields();
         setTextField(MOVEMENT_TYPE, tank.getMovementModeAsString());
-        setTextField(ENGINE_TYPE, tank.getEngine().getEngineName()
-                .replaceAll("\\d+|\\[.*]", "").trim());
+        setTextField(ENGINE_TYPE, tank.getEngine().getShortEngineName()
+                .replaceAll("\\[.*]", "").trim());
         if (tank.getOriginalJumpMP() > 0) {
             setTextField(MP_JUMP, formatJump());
         } else {
