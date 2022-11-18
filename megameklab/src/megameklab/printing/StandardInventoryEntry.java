@@ -298,7 +298,8 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         while (e.hasMoreElements()) {
             final EquipmentType et = e.nextElement();
             if ((et.getTechBase() != mount.getType().getTechBase())
-                    && et.getName().equals(mount.getType().getName())) {
+                    && et.getName().equals(mount.getType().getName())
+                    && !et.isUnofficial()) {
                 showMixedTechBase.put(mount.getType(), true);
                 showMixedTechBase.put(et, true);
                 return true;
