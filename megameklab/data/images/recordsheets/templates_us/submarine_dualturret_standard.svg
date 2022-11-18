@@ -806,7 +806,7 @@
                                                                     ></g
                                                                     ><rect fill="none" x="233.400" width="150.600" id="fluffImage" height="90.048" y="264.952"
                                                                     /><g transform="translate (387.000 3.000)"
-                                                                    ><g transform="matrix(1.000 0 0 1.000 2.534 11.250)"
+                                                                    ><g transform="matrix(0.95 0 0 0.95 9 35)"
                                                                       >
 <g id="armor_diagram_naval_noturret" transform="translate(-399.18801,-40.430276)"
                                                                         ><path fill="#CCCECF" d="M471.111,647.098c0,0-7.461,0.54-6.394-8.374h-56.63v-3.806l27.401-44.909h9.136l-5.481-14.462h-34.711  v-9.136l27.404-13.701c0,0-18.271-47.442-21.009-87.022V190.582c0,0-1.827-32.731,4.566-51c0,0,22.379-70.789,75.814-76.12h3.02  c53.436,5.331,75.815,76.12,75.815,76.12c6.392,18.269,4.565,51,4.565,51v275.106c-2.74,39.58-21.01,87.022-21.01,87.022  l27.404,13.701v9.136h-34.709l-5.482,14.462h9.135l27.401,44.909v3.806h-56.632c1.069,8.914-6.392,8.374-6.392,8.374" id="path162"
@@ -884,8 +884,6 @@
                                                                             ></text
                                                                           ></g
                                                                           ><g transform="translate(400.56059,48.944396)"
-                                                                          ><text style="font-size:7.74px;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:1.25;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none" id="armorType"
-                                                                            >Standard</text
                                                                           ></g
                                                                           >
    
@@ -1486,7 +1484,11 @@
                                                                                                           ><path fill="#000000" d="M 0,5.625 l 3.749,-5.625 h 76.493 l 3.749,5.625 l -3.749,5.625 h -76.493 Z"
                                                                                                             /><text x="41.996" y="8.438" fill="#ffffff" text-anchor="middle" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal" textLength="69.539" lengthAdjust="spacingAndGlyphs"
                                                                                                             >ARMOR DIAGRAM</text
-                                                                                                          ></g
+                                                                                                          ><path style="fill:#c7c8ca;fill-opacity:1;fill-rule:nonzero;stroke:none" 
+                                                                                                        d="m -18,13   120,0     5, 7     -5, 7   -120,0   -5, -7, 5, -7 z" />
+                                                                                                        <text x="41.996" y="22.438" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal" id="armorType"
+                                                                                                          >Standard</text
+                                                                                                        ></g
                                                                                                         ></g
                                                                                                         ><g transform="translate (390.000 643.320)"
                                                                                                         ><g

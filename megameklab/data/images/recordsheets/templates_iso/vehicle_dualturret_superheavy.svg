@@ -954,9 +954,7 @@
                                                                                   /><rect x="494.534" width="2.24" height="5.5139999" id="rect4827" y="284.56799" style="fill:none;stroke:#231f20;stroke-width:0.97299999"
                                                                                   /><polyline style="fill:#c7c8ca" id="polyline4829" points="459.031,260.545 513.497,260.545 509.606,283.005 462.922,283.005 459.031,260.545  "
                                                                                   /><polygon style="fill:none;stroke:#231f20;stroke-width:0.97299999" id="polygon4831" points="509.606,283.007 462.922,283.007 459.031,260.545 513.497,260.545 "
-                                                                                  /><text x="406.173" id="armorType" y="43.498" style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:8.04310036px;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
-                                                                                  >Standard</text
-                                                                                  ><g transform="rotate(-90,353.48801,-52.72973)"
+                                                                                  /><g transform="rotate(-90,353.48801,-52.72973)"
                                                                                   ><text style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:8.04310036px;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none" id="text3896"
                                                                                     ><tspan x="0" y="0" id="tspan3894"
                                                                                       >Rear Left Side Armor</tspan
@@ -1539,7 +1537,11 @@
                                                                                                                     ><path fill="#000000" d="M 0,5.625 l 3.749,-5.625 h 76.493 l 3.749,5.625 l -3.749,5.625 h -76.493 Z"
                                                                                                                       /><text x="41.996" y="8.438" fill="#ffffff" text-anchor="middle" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal" textLength="69.539" lengthAdjust="spacingAndGlyphs"
                                                                                                                       >ARMOR DIAGRAM</text
-                                                                                                                    ></g
+                                                                                                                    ><path style="fill:#c7c8ca;fill-opacity:1;fill-rule:nonzero;stroke:none" 
+                                                                                                        d="m -18,13   120,0     5, 7     -5, 7   -120,0   -5, -7, 5, -7 z" />
+                                                                                                        <text x="41.996" y="22.438" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal" id="armorType"
+                                                                                                          >Standard</text
+                                                                                                        ></g
                                                                                                                   ></g
                                                                                                                 ></g
                                                                                                               ></svg

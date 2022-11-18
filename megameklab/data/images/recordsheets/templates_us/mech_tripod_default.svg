@@ -841,7 +841,11 @@
                                                                       ><path fill="#000000" d="M 0,5.625 l 3.749,-5.625 h 76.493 l 3.749,5.625 l -3.749,5.625 h -76.493 Z"
                                                                         /><text x="41.996" y="8.438" fill="#ffffff" text-anchor="middle" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal" textLength="69.539" lengthAdjust="spacingAndGlyphs"
                                                                         >ARMOR DIAGRAM</text
-                                                                      ></g
+                                                                      ><path style="fill:#c7c8ca;fill-opacity:1;fill-rule:nonzero;stroke:none" 
+                                                                                                        d="m -18,13   120,0     5, 7     -5, 7   -120,0   -5, -7, 5, -7 z" />
+                                                                                                        <text x="41.996" y="22.438" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal" id="armorType"
+                                                                                                          >Standard</text
+                                                                                                        ></g
                                                                       ><g transform="matrix(0.959 0 0 0.959 3.000 12.322)"
                                                                       >
 <g id="armor_diagram_tripod" transform="matrix(0.99999752,0,0,-1,-386.79847,762.7908)"
@@ -1526,11 +1530,7 @@
                                                                               /></g
                                                                             ></g
                                                                             ><g style="font-size:5.7954998px" id="armorValues" transform="translate(0,-3.2)"
-                                                                            ><text x="536" y="310" id="armorType" style="font-weight:bold;font-size:8.4434px"
-                                                                              >Standard</text
-                                                                              >
-<text x="536" y="318" id="armorType2" style="font-weight:bold;font-size:8.4434px"
-                                                                              />
+                                                                            >
 <text x="490.57" y="46.27" id="textArmor_HD" font-weight="bold"
                                                                               >( 0 )</text
                                                                               >

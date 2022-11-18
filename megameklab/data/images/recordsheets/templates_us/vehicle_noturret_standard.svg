@@ -786,7 +786,7 @@
                                                                     ></g
                                                                     ><rect fill="none" x="233.400" width="150.600" id="fluffImage" height="89.048" y="262.952"
                                                                     /><g transform="translate (387.000 3.000)"
-                                                                    ><g transform="matrix(1.129 0 0 1.129 0.000 13.094)"
+                                                                    ><g transform="matrix(1.129 0 0 1.129 0.000 16.094)"
                                                                       >
 <g id="armor_diagram_vee_noturret" transform="matrix(1,0,0,-1,-402.67674,716.15846)"
                                                                         ><rect fill="#ffffff" x="519.8" width="50" id="logo_spacer" y="338.289" height="30"
@@ -898,20 +898,18 @@
                                                                                   >
 
 <text id="text2758" style="font-size:7.74px;font-variant:normal;font-weight:600;font-stretch:normal;line-height:1.25;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="matrix(0.99808837,0,0,-1,483.01071,709.1456)" text-anchor="middle"
-                                                                                  ><tspan x="0" y="0" id="tspan2760"
+                                                                                  ><tspan x="0" y="13" id="tspan2760"
                                                                                     >Front Armor</tspan
-                                                                                    ><tspan x="0" y="9.2750359" id="textArmor_FR"
+                                                                                    ><tspan x="0" y="22.2750359" id="textArmor_FR"
                                                                                     >( )</tspan
-                                                                                    ><tspan x="0" y="277.91043"
+                                                                                    ><tspan x="0" y="273.91043"
                                                                                     >Rear Armor</tspan
-                                                                                    ><tspan x="0" y="287.18546" id="textArmor_RR"
+                                                                                    ><tspan x="0" y="283.18546" id="textArmor_RR"
                                                                                     >( )</tspan
                                                                                   ></text
                                                                                   >
 
-<text style="font-size:7.74px;font-variant:normal;font-weight:600;font-stretch:normal;line-height:1.25;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none" id="armorType" transform="matrix(0.99808837,0,0,-1,401.9674,710.5148)"
-                                                                                  >Standard</text
-                                                                                ></g
+</g
                                                                                 >
    <g fill="none" id="armorPips"
                                                                                 >
@@ -1308,7 +1306,11 @@
                                                                                                     ><path fill="#000000" d="M 0,5.625 l 3.749,-5.625 h 76.493 l 3.749,5.625 l -3.749,5.625 h -76.493 Z"
                                                                                                       /><text x="41.996" y="8.438" fill="#ffffff" text-anchor="middle" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal" textLength="69.539" lengthAdjust="spacingAndGlyphs"
                                                                                                       >ARMOR DIAGRAM</text
-                                                                                                    ></g
+                                                                                                    ><path style="fill:#c7c8ca;fill-opacity:1;fill-rule:nonzero;stroke:none" 
+                                                                                                        d="m -18,13   120,0     5, 7     -5, 7   -120,0   -5, -7, 5, -7 z" />
+                                                                                                        <text x="41.996" y="22.438" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal" id="armorType"
+                                                                                                          >Standard</text
+                                                                                                        ></g
                                                                                                   ></g
                                                                                                 ></g
                                                                                               ></svg

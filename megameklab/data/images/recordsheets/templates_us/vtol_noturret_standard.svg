@@ -784,7 +784,7 @@
                                                                     /><g transform="translate (387.000 3.000)"
                                                                     ><g transform="matrix(1.063 0 0 1.063 0.000 19.021)"
                                                                       >
-<g id="armor_diagram_superheavy_vtol_noturret" transform="translate(-397.93,-37.63)"
+<g id="armor_diagram_superheavy_vtol_noturret" transform="translate(-397.93,-31.63)"
                                                                         ><path fill="#CCCECF" d="M528.373,148.204v-39.706c0-1.652-1.331-2.992-2.976-2.992c-1.036,0-1.945,0.534-2.478,1.342  c-0.231-2.006-0.42-3.021-0.42-3.021c-2.225-5.37-6.234-5.11-7.028-5.001c-0.012-15.052-11.781-25.264-26.754-25.264  c-14.979,0-27.123,10.22-27.125,25.283c-0.257-0.05-4.749-0.821-7.154,4.982c0,0-0.167,0.81-0.391,2.407  c-0.52-0.448-1.188-0.729-1.927-0.729c-1.641,0-2.975,1.339-2.975,2.992v39.706h-49.158v12.942h49.158v40.322  c0,1.653,1.334,2.992,2.975,2.992c1.646,0,2.977-1.339,2.977-2.992v-40.322h0.293c1.701,7.777,10.487,47.053,16.943,58.693  l5.446-2.239l2.722,1.991l2.538,96.572c0,3.694,3.293,6.688,7.353,6.688c4.059,0,7.349-2.994,7.349-6.688l1.312-96.572l2.725-2.489  l5.69,3.485c7.783-21.777,13.041-42.184,13.954-52.919v33.8c0,1.653,1.335,2.992,2.976,2.992c1.645,0,2.976-1.339,2.976-2.992  v-40.322h48.33v-12.942" id="path30"
                                                                           />
 <polyline fill="#FFFFFF" points="517.327,166.972 519.309,166.972 519.309,171.453 516.586,171.453 " id="polyline32"
@@ -890,8 +890,6 @@
                                                                           >
 
    <g transform="translate(400.56059,42.944396)"
-                                                                          ><text style="font-size:7.74px;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:1.25;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none" id="armorType"
-                                                                            >Standard</text
                                                                           ></g
                                                                           >
    
@@ -1273,7 +1271,11 @@
                                                                                                     ><path fill="#000000" d="M 0,5.625 l 3.749,-5.625 h 76.493 l 3.749,5.625 l -3.749,5.625 h -76.493 Z"
                                                                                                       /><text x="41.996" y="8.438" fill="#ffffff" text-anchor="middle" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal" textLength="69.539" lengthAdjust="spacingAndGlyphs"
                                                                                                       >ARMOR DIAGRAM</text
-                                                                                                    ></g
+                                                                                                    ><path style="fill:#c7c8ca;fill-opacity:1;fill-rule:nonzero;stroke:none" 
+                                                                                                        d="m -18,13   120,0     5, 7     -5, 7   -120,0   -5, -7, 5, -7 z" />
+                                                                                                        <text x="41.996" y="22.438" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal" id="armorType"
+                                                                                                          >Standard</text
+                                                                                                        ></g
                                                                                                   ></g
                                                                                                 ></g
                                                                                               ></svg

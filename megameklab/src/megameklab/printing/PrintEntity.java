@@ -35,25 +35,15 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.*;
 
+import static megamek.common.EquipmentType.T_ARMOR_BA_STANDARD;
+import static megamek.common.EquipmentType.T_ARMOR_STANDARD;
+
 /**
  * Base class for printing Entity record sheets
  * 
  * @author Neoancient
  */
 public abstract class PrintEntity extends PrintRecordSheet {
-    
-    // Armor types with special properties that should be identified on the record sheet
-    private static final long AT_SPECIAL = (1 << EquipmentType.T_ARMOR_REACTIVE)
-            | (1 << EquipmentType.T_ARMOR_REFLECTIVE)
-            | (1 << EquipmentType.T_ARMOR_HARDENED)
-            | (1 << EquipmentType.T_ARMOR_STEALTH)
-            | (1 << EquipmentType.T_ARMOR_FERRO_LAMELLOR)
-            | (1 << EquipmentType.T_ARMOR_STEALTH_VEHICLE)
-            | (1 << EquipmentType.T_ARMOR_ANTI_PENETRATIVE_ABLATION)
-            | (1 << EquipmentType.T_ARMOR_HEAT_DISSIPATING)
-            | (1 << EquipmentType.T_ARMOR_IMPACT_RESISTANT)
-            | (1 << EquipmentType.T_ARMOR_BALLISTIC_REINFORCED)
-            | (1 << EquipmentType.T_ARMOR_COMMERCIAL);
     
     /**
      * Creates an SVG object for the record sheet
@@ -331,21 +321,16 @@ public abstract class PrintEntity extends PrintRecordSheet {
             setTextField(ARMOR_TYPE, "BAR: " + getEntity().getBARRating(firstArmorLocation()));
         } else if (!getEntity().hasPatchworkArmor()) {
             final int at = getEntity().getArmorType(firstArmorLocation());
-            if ((AT_SPECIAL & (1 << at)) != 0) {
-                String[] atName = EquipmentType.getArmorTypeName(at).split("-");
-                setTextField(ARMOR_TYPE, atName[0]);
-                if (atName.length > 1) {
-                    setTextField(ARMOR_TYPE_2, atName[1]);
-                } else if (getEntity().hasBARArmor(firstArmorLocation())) {
-                    setTextField(ARMOR_TYPE_2, "BAR: " + getEntity().getBARRating(firstArmorLocation()));
-                }
-            } else {
-                hideElement(ARMOR_TYPE, true);
+            String armorType = (at == T_ARMOR_STANDARD) ? "Standard Armor" : EquipmentType.getArmorTypeName(at);
+            if (getEntity().hasBARArmor(firstArmorLocation())) {
+                armorType += ", BAR: " + getEntity().getBARRating(firstArmorLocation());
             }
+            setTextField(ARMOR_TYPE, armorType);
         } else {
             boolean hasSpecial = false;
             for (int loc = firstArmorLocation(); loc < getEntity().locations(); loc++) {
-                if (((AT_SPECIAL & (1 << getEntity().getArmorType(loc))) != 0)
+                if ((getEntity().getArmorType(loc) != T_ARMOR_STANDARD)
+                        &&(getEntity().getArmorType(loc) != T_ARMOR_BA_STANDARD)
                         // Stealth armor loses special properties when used with patchwork, so we don't
                         // need to show it.
                         && (getEntity().getArmorType(loc) != EquipmentType.T_ARMOR_STEALTH)
