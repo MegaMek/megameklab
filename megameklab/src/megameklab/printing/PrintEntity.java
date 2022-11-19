@@ -352,7 +352,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
             if (hasSpecial) {
                 setTextField(ARMOR_TYPE, EquipmentType.getArmorTypeName(EquipmentType.T_ARMOR_PATCHWORK));
             } else {
-                hideElement(ARMOR_TYPE, true);
+                setTextField(ARMOR_TYPE, "Standard Armor");
             }
         }
         writeArmorStructureTextFields();
