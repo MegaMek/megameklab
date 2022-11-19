@@ -1411,10 +1411,10 @@
                                                                             >
 </g
                                                                           ></g
-                                                                          >
+                                                                          ><g id="canonArmorPips" transform="matrix (0.975 0 0 0.975,-390.621 -44.241)"
+/>
 </g
-                                                                          ><g id="canonArmorPips" transform="matrix (0.991 0 0 0.991,-393.921 -25.241)"
-                                                                        /></g
+                                                                          ></g
                                                                         ><g transform="translate (0.000 371.000)"
                                                                         ><g
                                                                           ><path fill="#ffffff" d="M 2.5,10.714 L 7.975,2.500 l 87.057,0.000 l 5.475,8.214 L 369.847,10.714 l 7.845,7.600 L 377.692,356.900 l -7.845,7.600 L 10.345,364.500 l -7.845,-7.600 Z" stroke-width="5.2" stroke-linejoin="round" stroke="#c8c7c7"
