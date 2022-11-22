@@ -794,7 +794,7 @@
                                                                     /><g transform="translate (387.000 3.000)"
                                                                     ><g transform="matrix(1.006 0 0 1.006 3.363 11.250)"
                                                                       >
-<g id="armor_diagram_superheavy_vtol_chinturret" transform="translate(-398.4775,-27.05)"
+<g id="armor_diagram_superheavy_vtol_chinturret" transform="translate(-398.4775,-13.05)"
                                                                         ><polyline fill="#C7C8CA" points="452.202,210.75 446.632,210.75 446.632,206.257 450.686,206.257 " id="polyline30"
                                                                           />
 <polyline fill="none" id="polyline32" stroke-width="1.003" points="452.202,210.75 446.632,210.75 446.632,206.257   450.686,206.257 " stroke="#C7C8CA"
@@ -1114,7 +1114,7 @@
                                                                               >( )</tspan
                                                                             ></text
                                                                           ></g
-                                                                          ><g transform="translate(488.778,361.21415)"
+                                                                          ><g transform="translate(448.778,341.21415)"
                                                                           ><text style="font-size:7.74px;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:1.25;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle" id="text2758"
                                                                             ><tspan x="0" y="0"
                                                                               >Rear Armor</tspan
@@ -1145,8 +1145,6 @@
                                                                           >
 
    <g transform="translate(400.56059,39.344648)"
-                                                                          ><text style="font-size:7.74px;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:1.25;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none" id="armorType"
-                                                                            >Standard</text
                                                                           ></g
                                                                           >
    
@@ -1548,6 +1546,10 @@
                                                                                                         ><path fill="#000000" d="M 0,5.625 l 3.749,-5.625 h 76.493 l 3.749,5.625 l -3.749,5.625 h -76.493 Z"
                                                                                                           /><text x="41.996" y="8.438" fill="#ffffff" text-anchor="middle" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal" textLength="69.539" lengthAdjust="spacingAndGlyphs"
                                                                                                           >ARMOR DIAGRAM</text
+                                                                                                        ><path style="fill:#c7c8ca;fill-opacity:1;fill-rule:nonzero;stroke:none" 
+                                                                                                        d="m -18,13   120,0     5, 7     -5, 7   -120,0   -5, -7, 5, -7 z" />
+                                                                                                        <text x="41.996" y="22.438" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal" id="armorType"
+                                                                                                          >Standard</text
                                                                                                         ></g
                                                                                                       ></g
                                                                                                     ></g

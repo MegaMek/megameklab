@@ -929,9 +929,7 @@
                                                                                   ></text
                                                                                   >
 
-<text style="font-size:7.74px;font-variant:normal;font-weight:600;font-stretch:normal;line-height:1.25;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none" id="armorType" transform="matrix(0.99808837,0,0,-1,401.9674,710.5148)"
-                                                                                  >Standard</text
-                                                                                  ><g id="g1114" transform="translate(522.44,498.5309)"
+<g id="g1114" transform="translate(522.44,498.5309)"
                                                                                   ><path style="fill:none;stroke:#000000;stroke-width:0.96600002;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" d="m 0,0 -1.369,-2.739 -68.45,0 -1.368,2.739 10.951,64.343 1.37,1.368 9.582,0 0,6.846 12.321,5.476 0,1.37 1.369,0 1.369,4.106 1.369,1.369 -1.369,1.369 1.369,4.107 5.476,0 1.369,-4.107 -1.369,-1.369 1.369,-1.369 1.37,-4.106 1.368,0 0.001,-6.846 1.368,0 0,-6.846 9.583,0 1.37,-1.368 L 0,0 Z" id="path1116"
                                                                                   /></g
                                                                                   ><g id="g1118" transform="translate(489.5836,571.088)"
@@ -1405,6 +1403,11 @@
                                                                                                         ><path fill="#000000" d="M 0,5.625 l 3.749,-5.625 h 76.493 l 3.749,5.625 l -3.749,5.625 h -76.493 Z"
                                                                                                           /><text x="41.996" y="8.438" fill="#ffffff" text-anchor="middle" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal" textLength="69.539" lengthAdjust="spacingAndGlyphs"
                                                                                                           >ARMOR DIAGRAM</text
+                                                                                                        >
+                                                                                                        <path style="fill:#c7c8ca;fill-opacity:1;fill-rule:nonzero;stroke:none" 
+                                                                                                        d="m -18,13   120,0     5, 7     -5, 7   -120,0   -5, -7, 5, -7 z" />
+                                                                                                        <text x="41.996" y="22.438" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal" id="armorType"
+                                                                                                          >Standard</text
                                                                                                         ></g
                                                                                                       ></g
                                                                                                     ></g

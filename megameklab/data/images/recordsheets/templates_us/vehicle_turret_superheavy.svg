@@ -912,8 +912,6 @@
                                                                                     /><polyline style="fill:#c7c8ca" id="polyline4761" points="513.497,162.356 459.031,162.356 462.922,139.895 509.606,139.895 513.497,162.356  "
                                                                                     /><polygon style="fill:none;stroke:#231f20;stroke-width:0.97299999" id="polygon4763" points="462.922,139.896 509.606,139.896 513.497,162.356 459.031,162.356 "
                                                                                   /></g
-                                                                                  ><text x="406.173" id="armorType" y="43.498" style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:8.04310036px;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
-                                                                                  >Standard</text
                                                                                   ><g transform="rotate(-90,353.48801,-52.72973)"
                                                                                   ><text style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:8.04310036px;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none" id="text3896"
                                                                                     ><tspan x="0" y="0" id="tspan3894"
@@ -938,7 +936,7 @@
                                                                                       >( )</tspan
                                                                                     ></text
                                                                                   ></g
-                                                                                  ><g transform="translate(485.9,59)"
+                                                                                  ><g transform="translate(485.9,61)"
                                                                                   ><text style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:8.04310036px;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle" id="text3910"
                                                                                     ><tspan x="0" y="0"
                                                                                       >Front Armor</tspan
@@ -1457,7 +1455,11 @@
                                                                                                                 ><path fill="#000000" d="M 0,5.625 l 3.749,-5.625 h 76.493 l 3.749,5.625 l -3.749,5.625 h -76.493 Z"
                                                                                                                   /><text x="41.996" y="8.438" fill="#ffffff" text-anchor="middle" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal" textLength="69.539" lengthAdjust="spacingAndGlyphs"
                                                                                                                   >ARMOR DIAGRAM</text
-                                                                                                                ></g
+                                                                                                                ><path style="fill:#c7c8ca;fill-opacity:1;fill-rule:nonzero;stroke:none" 
+                                                                                                        d="m -18,13   120,0     5, 7     -5, 7   -120,0   -5, -7, 5, -7 z" />
+                                                                                                        <text x="41.996" y="22.438" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal" id="armorType"
+                                                                                                          >Standard</text
+                                                                                                        ></g
                                                                                                               ></g
                                                                                                             ></g
                                                                                                           ></svg

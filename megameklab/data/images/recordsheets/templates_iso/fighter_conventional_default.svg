@@ -665,11 +665,15 @@
                                                                     ></g
                                                                     ><rect fill="none" x="3.000" width="217.600" id="fluffImage" height="108.900" y="409.000"
                                                                     /><g transform="translate (226.600 0.000)"
-                                                                    ><g transform="translate (0.0,68.35907133944306)"
+                                                                    ><g transform="translate (25.0,68.35907133944306)"
                                                                       ><path fill="#000000" d="M 0,5.625 l 3.749,-5.625 h 76.493 l 3.749,5.625 l -3.749,5.625 h -76.493 Z"
                                                                         /><text x="41.996" y="8.438" fill="#ffffff" text-anchor="middle" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal" textLength="69.539" lengthAdjust="spacingAndGlyphs"
                                                                         >ARMOR DIAGRAM</text
-                                                                      ></g
+                                                                      ><path style="fill:#c7c8ca;fill-opacity:1;fill-rule:nonzero;stroke:none" 
+                                                                                                        d="m -18,13   120,0     5, 7     -5, 7   -120,0   -5, -7, 5, -7 z" />
+                                                                                                        <text x="41.996" y="22.438" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal" id="armorType"
+                                                                                                          >Standard</text
+                                                                                                        ></g
                                                                       ><g transform="matrix(1.188 0 0 1.188 0.000 26.048)"
                                                                       >
 <g id="armor_diagram_convfighter" transform="matrix(1,0,0,-1,-265.03692,693.82028)"
@@ -822,9 +826,7 @@
                                                                             > ( )</tspan
                                                                           ></text
                                                                           >
-<text style="font-size:7.74px;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:1.25;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none" id="armorType" transform="matrix(1,0,0,-1,400,687.7)"
-                                                                          >Standard</text
-                                                                        ></g
+</g
                                                                         >
    <g fill="none" id="armorPips"
                                                                         >

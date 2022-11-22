@@ -785,8 +785,12 @@
                                                                       ><path fill="#000000" d="M 0,5.625 l 3.749,-5.625 h 76.493 l 3.749,5.625 l -3.749,5.625 h -76.493 Z"
                                                                         /><text x="41.996" y="8.438" fill="#ffffff" text-anchor="middle" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal" textLength="69.539" lengthAdjust="spacingAndGlyphs"
                                                                         >ARMOR DIAGRAM</text
-                                                                      ></g
-                                                                      ><g transform="matrix(1.026 0 0 1.026 3.000 18.287)"
+                                                                      ><path style="fill:#c7c8ca;fill-opacity:1;fill-rule:nonzero;stroke:none" 
+                                                                                                        d="m -18,13   120,0     5, 7     -5, 7   -120,0   -5, -7, 5, -7 z" />
+                                                                                                        <text x="41.996" y="22.438" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal" id="armorType"
+                                                                                                          >Standard</text
+                                                                                                        ></g
+                                                                      ><g transform="matrix(1 0 0 1 7 34)"
                                                                       >
 <g id="armor_diagram_biped" transform="translate(-5.070937,-22.715706)"
                                                                         ><g transform="translate(10.949996,31.587)"
@@ -1341,11 +1345,7 @@
                                                                             /></g
                                                                           ></g
                                                                           ><g style="font-size:5.7954998px" id="armorValues" transform="translate(-391.12064,-19.334069)"
-                                                                          ><text x="485.215" y="235" id="armorType" style="font-weight:bold;font-size:8.4434px" text-anchor="middle"
-                                                                            >Standard</text
-                                                                            >
-<text x="485.215" y="243" id="armorType2" style="font-weight:bold;font-size:8.4434px" text-anchor="middle"
-                                                                            />
+                                                                          >
 <text x="499.63" id="patchworkHD" y="46.27"
                                                                             />
 <text x="485.215" y="223.2" id="patchworkCT" text-anchor="middle"
@@ -1411,10 +1411,10 @@
                                                                             >
 </g
                                                                           ></g
-                                                                          >
+                                                                          ><g id="canonArmorPips" transform="matrix (0.975 0 0 0.975,-390.621 -44.241)"
+/>
 </g
-                                                                          ><g id="canonArmorPips" transform="matrix (0.991 0 0 0.991,-393.921 -25.241)"
-                                                                        /></g
+                                                                          ></g
                                                                         ><g transform="translate (0.000 371.000)"
                                                                         ><g
                                                                           ><path fill="#ffffff" d="M 2.5,10.714 L 7.975,2.500 l 87.057,0.000 l 5.475,8.214 L 369.847,10.714 l 7.845,7.600 L 377.692,356.900 l -7.845,7.600 L 10.345,364.500 l -7.845,-7.600 Z" stroke-width="5.2" stroke-linejoin="round" stroke="#c8c7c7"

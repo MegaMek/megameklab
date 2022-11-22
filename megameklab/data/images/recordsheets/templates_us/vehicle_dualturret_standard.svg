@@ -806,7 +806,7 @@
                                                                     ></g
                                                                     ><rect fill="none" x="233.400" width="150.600" id="fluffImage" height="89.048" y="262.952"
                                                                     /><g transform="translate (387.000 3.000)"
-                                                                    ><g transform="matrix(1.028 0 0 1.028 4.791 11.250)"
+                                                                    ><g transform="matrix(0.96 0 0 0.96 14.791 32.250)"
                                                                       >
 <g id="armor_diagram_vee_dualturret" transform="matrix(1,0,0,-1,-406.25377,751.72782)"
                                                                         ><rect fill="#ffffff" x="530.8" width="50" id="logo_spacer" y="420.23" height="30"
@@ -1043,9 +1043,7 @@
                                                                                     >( )</tspan
                                                                                   ></text
                                                                                   >
-<text style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:8.04310036px;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none" id="armorType" transform="matrix(0.99808532,0,0,-1,405.7834,746.3674)"
-                                                                                  >Standard</text
-                                                                                  ><text style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.03770018px;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none" id="text3940" transform="matrix(0.99808176,0,0,-1,454.7324,695.1671)"
+<text style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.03770018px;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none" id="text3940" transform="matrix(0.99808176,0,0,-1,454.7324,695.1671)"
                                                                                   ><tspan x="0" y="0"
                                                                                     >Front</tspan
                                                                                     ><tspan x="-1.4216154" y="8.43116"
@@ -1498,7 +1496,11 @@
                                                                                                             ><path fill="#000000" d="M 0,5.625 l 3.749,-5.625 h 76.493 l 3.749,5.625 l -3.749,5.625 h -76.493 Z"
                                                                                                               /><text x="41.996" y="8.438" fill="#ffffff" text-anchor="middle" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal" textLength="69.539" lengthAdjust="spacingAndGlyphs"
                                                                                                               >ARMOR DIAGRAM</text
-                                                                                                            ></g
+                                                                                                            ><path style="fill:#c7c8ca;fill-opacity:1;fill-rule:nonzero;stroke:none" 
+                                                                                                        d="m -18,13   120,0     5, 7     -5, 7   -120,0   -5, -7, 5, -7 z" />
+                                                                                                        <text x="41.996" y="22.438" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal" id="armorType"
+                                                                                                          >Standard</text
+                                                                                                        ></g
                                                                                                           ></g
                                                                                                         ></g
                                                                                                       ></svg

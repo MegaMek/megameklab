@@ -795,8 +795,12 @@
                                                                       ><path fill="#000000" d="M 0,5.625 l 3.749,-5.625 h 76.493 l 3.749,5.625 l -3.749,5.625 h -76.493 Z"
                                                                         /><text x="41.996" y="8.438" fill="#ffffff" text-anchor="middle" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal" textLength="69.539" lengthAdjust="spacingAndGlyphs"
                                                                         >ARMOR DIAGRAM</text
-                                                                      ></g
-                                                                      ><g transform="matrix(1.074 0 0 1.074 6.686 3.000)"
+                                                                      ><path style="fill:#c7c8ca;fill-opacity:1;fill-rule:nonzero;stroke:none" 
+                                                                                                        d="m -18,13   120,0     5, 7     -5, 7   -120,0   -5, -7, 5, -7 z" />
+                                                                                                        <text x="41.996" y="22.438" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal" id="armorType"
+                                                                                                          >Standard</text
+                                                                                                        ></g
+                                                                      ><g transform="matrix(1 0 0 1 9 20)"
                                                                       >
 <g id="armor_diagram_quadvee" transform="matrix(0.99999752,0,0,-1,-399.38017,738.24098)"
                                                                         ><g id="armorDiagram" transform="translate(4.33,-2.75)"
@@ -1188,11 +1192,7 @@
                                                                               /></g
                                                                             ></g
                                                                             ><g style="font-size:6.76140022px" id="armorValues"
-                                                                            ><text x="535.81" y="33" id="armorType" style="font-weight:bold;font-size:8.4434px" text-anchor="start"
-                                                                              >Standard</text
-                                                                              >
-<text x="535.81" y="41" id="armorType2" style="font-weight:bold;font-size:8.4434px" text-anchor="start"
-                                                                              />
+                                                                            >
 <text x="501.57" id="patchworkHD" y="46.27"
                                                                               />
 <text x="487.93" y="170.24" id="patchworkCT" text-anchor="middle"
