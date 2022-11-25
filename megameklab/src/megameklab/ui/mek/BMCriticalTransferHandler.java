@@ -146,6 +146,8 @@ public class BMCriticalTransferHandler extends TransferHandler {
                 secondLocationSet.add(Mech.LOC_LT);
                 secondLocationSet.add(Mech.LOC_RT);
                 secondLocationSet.add(Mech.LOC_HEAD);
+            } else if (location == Mech.LOC_HEAD) {
+                secondLocationSet.add(Mech.LOC_CT);
             }
             secondLocationSet.removeIf(loc -> loc == Entity.LOC_DESTROYED);
             secondLocationSet.removeIf(loc -> !UnitUtil.isValidLocation(mek, eq.getType(), loc));
