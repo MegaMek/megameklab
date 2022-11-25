@@ -243,11 +243,8 @@ public class PrintMech extends PrintEntity {
 
     @Override
     protected void drawStructure() {
-        if (mech.hasCompositeStructure() || mech.hasReinforcedStructure()) {
-            String isName = EquipmentType.getStructureTypeName(mech.getStructureType());
-            setTextField(STRUCTURE_TYPE, isName);
-        } else {
-            hideElement(STRUCTURE_TYPE, true);
+        if (mech.getStructureType() != EquipmentType.T_STRUCTURE_STANDARD) {
+            setTextField(STRUCTURE_TYPE, EquipmentType.getStructureTypeName(mech.getStructureType()));
         }
     }
 
