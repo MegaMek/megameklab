@@ -7,6 +7,7 @@ VERSION HISTORY:
 + Issue #1169: Add the engine rating and type to more Record Sheets
 + Issue #1179: Remove (IS) label from Plasma Rifle on Mixed Tech units
 + Issue #1176: Improve visibility of armor type on many Record Sheets
++ Issue #1197: Allow split weapons between CT and H
 + Updating to Apache PDFBox 2.0.27 from 2.0.26
 + Updating to FlatLAF 2.6 from 2.4
 + Updating to JAXB Runtime 4.0.1 from 4.0.0
