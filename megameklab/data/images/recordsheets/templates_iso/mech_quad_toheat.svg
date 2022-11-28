@@ -785,14 +785,11 @@
                                                                       ><path fill="#000000" d="M 0,5.625 l 3.749,-5.625 h 76.493 l 3.749,5.625 l -3.749,5.625 h -76.493 Z"
                                                                         /><text x="41.996" y="8.438" fill="#ffffff" text-anchor="middle" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal" textLength="69.539" lengthAdjust="spacingAndGlyphs"
                                                                         >ARMOR DIAGRAM</text
-                                                                      ><path style="fill:#c7c8ca;fill-opacity:1;fill-rule:nonzero;stroke:none" 
-                                                                                                        d="m -18,13   120,0     5, 7     -5, 7   -120,0   -5, -7, 5, -7 z" />
-                                                                                                        <text x="41.996" y="22.438" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal" id="armorType"
-                                                                                                          >Standard</text
-                                                                                                        ></g
+                                                                      ><path style="fill:#c7c8ca;fill-opacity:1;fill-rule:nonzero;stroke:none" d="m -18,13   120,0     3.749, 5.625     -3.749, 5.625   -120,0   -3.749, -5.625, 3.749, -5.625 z" />
+            <text x="41.996" y="21.5" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal" id="armorType">Standard</text></g
                                                                       ><g transform="matrix(1.054 0 0 1.054 3.000 19.185)"
                                                                       >
-<g id="armor_diagram_quad" transform="matrix(0.99999752,0,0,-1,-399.38017,738.24098)"
+<g id="armor_diagram_quad" transform="matrix(0.99999752,0,0,-1,-400.38017,733.24098)"
                                                                         >
 <g id="g3585" transform="translate(571.724,490.2083)"
                                                                           ><path style="fill:#c8c7c7;fill-opacity:1;fill-rule:nonzero;stroke:none" d="M 0,0 1.37,0 C 1.369,4.189 -3.023,8.483 -9.514,10.805 l 1.423,1.806 -1.156,13.224 -0.939,26.445 -1.617,2.779 -0.171,1.944 c 2.373,1.761 2.803,4.18 3.723,7.123 l 1.143,0.1 2.584,1.894 1.075,3.429 -0.145,1.656 -1.655,3.192 -2.872,1.416 -1.144,-0.1 c -1.417,2.738 -2.261,5.046 -4.902,6.369 l -0.171,1.945 1.111,3.017 -2.406,27.519 -2.164,15.727 -1.369,4.107 -1.369,2.739 -1.369,1.368 -2.738,1.369 -4.107,0 -20.534,0 0.917,-28.173 2.281,-26.073 1.616,-2.775 0.507,-5.797 -2.6,-1.687 1.393,-15.931 2.854,-1.21 0.509,-5.793 -1.111,-3.017 3.667,-26.206 1.156,-13.226 1.682,-1.499 C -40.831,6.13 -43.807,3.038 -43.808,0 l 1.368,0 0,-1.395 -1.368,-1.395 0,-2.79 45.177,0 0,2.79 L 0,-1.395 0,0 Z" id="path3587"
@@ -1508,14 +1505,17 @@
                                                                             ></g
                                                                           ></g
                                                                           ><g transform="translate (372.667 393.000)"
-                                                                          ><g transform="translate (9.049729097606445,0.0)"
+                                                                          ><g transform="translate (9.049729097606445,-10)"
                                                                             ><path fill="#000000" d="M 0,5.625 l 3.749,-5.625 h 140.735 l 3.749,5.625 l -3.749,5.625 h -140.735 Z"
                                                                               /><text x="74.117" y="8.438" fill="#ffffff" text-anchor="middle" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal" textLength="127.941" lengthAdjust="spacingAndGlyphs"
                                                                               >INTERNAL STRUCTURE DIAGRAM</text
-                                                                            ></g
+                                                                            ><g transform="matrix(1 0 0 1 0 1)">
+                      <path style="fill:#c7c8ca;fill-opacity:1;fill-rule:nonzero;stroke:none" d="m 14.1,13   120,0     3.749, 5.625     -3.749, 5.625   -120,0   -3.749, -5.625, 3.749, -5.625 z" />
+                      <text x="74.996" y="21.5" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal" id="structureType">Standard Structure</text>
+                  </g></g
                                                                             ><g transform="matrix(1.070 0 0 1.070 0.000 17.228)"
                                                                             >
-<g id="internal_diagram_quad" transform="matrix(1,0,0,-1,-395.32308,374.1915)"
+<g id="internal_diagram_quad" transform="matrix(1,0,0,-1,-396.82308,376.1915)"
                                                                               >
 <g id="g3613" transform="translate(465.3542,301.9333)"
                                                                                 ><path style="fill:#c8c7c7;fill-opacity:1;fill-rule:nonzero;stroke:none" d="m 0,0 -5.202,0 0,-2.6 1.301,-2.601 0,-3.902 -1.301,0 0,-2.601 1.301,-1.3 0,-5.203 -1.301,-1.301 -0.001,-9.103 1.3,-2.601 1.302,-1.302 0,-6.501 -1.3,-1.3 0,-2.602 -1.302,-1.3 0,-1.3 1.3,-1.303 0,-2.6 -1.3,-1.301 0,-3.902 1.302,0.002 -1.302,-7.805 1.302,-2.601 0,-6.501 1.3,-1.3 0,-2.602 -1.3,-1.3 0,-1.301 3.901,-1.3 0,-3.902 -20.811,0 0,3.901 3.904,1.301 0,1.301 -1.301,1.3 0,2.602 1.301,1.3 0,6.501 1.3,2.601 -1.3,10.405 1.3,3.901 0,2.603 -1.3,1.301 0,3.901 -1.301,1.3 0,6.501 1.3,1.302 0,1.3 1.301,0 0,3.901 -1.301,1.301 0,1.301 1.301,0 0,3.901 -1.3,1.301 0,3.902 -1.301,1.301 0,2.6 1.301,1.301 0,3.902 1.3,2.601 0,1.3 -1.3,1.3 0,7.805 1.3,1.3 15.605,0 L 0,0 Z" id="path3615"
@@ -1785,8 +1785,6 @@
                                                                                     >
 <text x="408.81" y="526.15" id="textIS_RLL" font-weight="bold" text-anchor="middle"
                                                                                     >( 0 )</text
-                                                                                    ><text x="471.60025" y="552.09985" id="structureType" style="font-weight:bold;text-anchor:middle;font-size:6.76" font-weight="bold"
-                                                                                    >Standard</text
                                                                                     >
 </g
                                                                                     >         </g

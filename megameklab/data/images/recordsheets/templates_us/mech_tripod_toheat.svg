@@ -845,14 +845,11 @@
                                                                       ><path fill="#000000" d="M 0,5.625 l 3.749,-5.625 h 76.493 l 3.749,5.625 l -3.749,5.625 h -76.493 Z"
                                                                         /><text x="41.996" y="8.438" fill="#ffffff" text-anchor="middle" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal" textLength="69.539" lengthAdjust="spacingAndGlyphs"
                                                                         >ARMOR DIAGRAM</text
-                                                                      ><path style="fill:#c7c8ca;fill-opacity:1;fill-rule:nonzero;stroke:none" 
-                                                                                                        d="m -18,13   120,0     5, 7     -5, 7   -120,0   -5, -7, 5, -7 z" />
-                                                                                                        <text x="41.996" y="22.438" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal" id="armorType"
-                                                                                                          >Standard</text
-                                                                                                        ></g
-                                                                      ><g transform="matrix(0.959 0 0 0.959 3.000 12.322)"
+                                                                      ><path style="fill:#c7c8ca;fill-opacity:1;fill-rule:nonzero;stroke:none" d="m -18,13   120,0     3.749, 5.625     -3.749, 5.625   -120,0   -3.749, -5.625, 3.749, -5.625 z" />
+            <text x="41.996" y="21.5" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal" id="armorType">Standard</text></g
+                                                                      ><g transform="matrix(0.959 0 0 0.959 3.000 2.322)"
                                                                       >
-<g id="armor_diagram_tripod" transform="matrix(0.99999752,0,0,-1,-386.79847,762.7908)"
+<g id="armor_diagram_tripod" transform="matrix(0.99999752,0,0,-1,-386.79847,757.7908)"
                                                                         ><g id="g3480" transform="translate(7.6,0)"
                                                                           ><g id="g3486" transform="translate(419.4648,600.0143)"
                                                                             ><path style="fill:#c7c8ca;fill-opacity:1;fill-rule:nonzero;stroke:none" d="M 0,0 1.145,-3.443 C 0.94,-2.829 0.955,-2.196 1.142,-1.63 0.624,-1.212 0.219,-0.661 0,0" id="path3488"
@@ -2062,12 +2059,17 @@
                                                                           ></g
                                                                         ></g
                                                                       ></g
-                                                                      ><g transform="translate (384.000 368.000)"
-                                                                      ><g transform="translate (11.883062430939773,0.0)"
+                                                                      ><g transform="translate (384.000 372.000)"
+                                                                      ><g transform="translate (11.883062430939773,-17)"
                                                                         ><path fill="#000000" d="M 0,5.625 l 3.749,-5.625 h 140.735 l 3.749,5.625 l -3.749,5.625 h -140.735 Z"
                                                                           /><text x="74.117" y="8.438" fill="#ffffff" text-anchor="middle" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal" textLength="127.941" lengthAdjust="spacingAndGlyphs"
                                                                           >INTERNAL STRUCTURE DIAGRAM</text
-                                                                        ></g
+                                                                        >
+                                                                        <g transform="matrix(1 0 0 1 0 1)">
+                      <path style="fill:#c7c8ca;fill-opacity:1;fill-rule:nonzero;stroke:none" d="m 14.1,13   120,0     3.749, 5.625     -3.749, 5.625   -120,0   -3.749, -5.625, 3.749, -5.625 z" />
+                      <text x="74.996" y="21.5" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal" id="structureType">Standard Structure</text>
+                  </g>
+                                                                        </g
                                                                         ><g transform="matrix(0.981 0 0 0.981 12.017 12.250)"
                                                                         >
 <g id="internal_diagram_tripod" transform="matrix(1,0,0,-1,-390.22409,379.2819)"
@@ -2375,9 +2377,7 @@
 <text x="446.22" y="535.60" id="textIS_CL" font-weight="bold" text-anchor="middle"
                                                                                 >( 0 )</text
                                                                                 >
-    <text x="496.04" font-size="6.76" y="564.26" text-anchor="middle" style="mml-field-width=45" id="structureType" font-weight="bold"
-                                                                                >Standard</text
-                                                                                >
+    
 </g
                                                                               ></g
                                                                             ></g

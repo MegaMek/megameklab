@@ -792,12 +792,9 @@
                                                                       ><path fill="#000000" d="M 0,5.625 l 3.749,-5.625 h 76.493 l 3.749,5.625 l -3.749,5.625 h -76.493 Z"
                                                                         /><text x="41.996" y="8.438" fill="#ffffff" text-anchor="middle" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal" textLength="69.539" lengthAdjust="spacingAndGlyphs"
                                                                         >ARMOR DIAGRAM</text
-                                                                      ><path style="fill:#c7c8ca;fill-opacity:1;fill-rule:nonzero;stroke:none" 
-                                                                                                        d="m -18,13   120,0     5, 7     -5, 7   -120,0   -5, -7, 5, -7 z" />
-                                                                                                        <text x="41.996" y="22.438" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal" id="armorType"
-                                                                                                          >Standard</text
-                                                                                                        ></g
-                                                                      ><g transform="matrix(1 0 0 1 5 33)"
+                                                                      ><path style="fill:#c7c8ca;fill-opacity:1;fill-rule:nonzero;stroke:none" d="m -18,13   120,0     3.749, 5.625     -3.749, 5.625   -120,0   -3.749, -5.625, 3.749, -5.625 z" />
+            <text x="41.996" y="21.5" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal" id="armorType">Standard</text></g
+                                                                      ><g transform="matrix(0.97 0 0 0.97 9 30)"
                                                                       >
 <g id="armor_diagram_biped" transform="translate(-5.070937,-22.715706)"
                                                                         ><g transform="translate(10.949996,31.587)"
@@ -1899,12 +1896,15 @@
                                                                           ></g
                                                                         ></g
                                                                         ><g transform="translate (384.000 368.000)"
-                                                                        ><g transform="translate (11.883062430939773,0.0)"
+                                                                        ><g transform="translate (11.883062430939773,-14)"
                                                                           ><path fill="#000000" d="M 0,5.625 l 3.749,-5.625 h 140.735 l 3.749,5.625 l -3.749,5.625 h -140.735 Z"
                                                                             /><text x="74.117" y="8.438" fill="#ffffff" text-anchor="middle" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal" textLength="127.941" lengthAdjust="spacingAndGlyphs"
                                                                             >INTERNAL STRUCTURE DIAGRAM</text
-                                                                          ></g
-                                                                          ><g transform="matrix(1.005 0 0 1.005 10.128 12.250)"
+                                                                          ><g transform="matrix(1 0 0 1 0 1)">
+                      <path style="fill:#c7c8ca;fill-opacity:1;fill-rule:nonzero;stroke:none" d="m 14.1,13   120,0     3.749, 5.625     -3.749, 5.625   -120,0   -3.749, -5.625, 3.749, -5.625 z" />
+                      <text x="74.996" y="21.5" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal" id="structureType">Standard Structure</text>
+                  </g></g
+                                                                          ><g transform="matrix(0.98 0 0 0.98 13.128 14.250)"
                                                                           >
 <g id="internal_diagram_biped" transform="matrix(1,0,0,-1,-397.41833,378.338)"
                                                                             >
@@ -2034,9 +2034,7 @@
     <text x="412.84" y="535.60" id="textIS_LL" font-weight="bold"
                                                                               >( 0 )</text
                                                                               >
-    <text x="473.3" font-size="6.76" y="549.3" text-anchor="middle" style="mml-field-width=45" id="structureType" font-weight="bold"
-                                                                              >Standard</text
-                                                                            ></g
+    </g
                                                                             ><g id="structurePips" transform="translate(-397.7,-386.6)"
                                                                             ><g id="isPipsHD"
                                                                               ><g id="g1680" transform="translate(476.465,408.5257)"
