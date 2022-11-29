@@ -249,9 +249,9 @@ public class CIEquipmentView extends IView implements ActionListener {
                 UnitUtil.replaceMainWeapon(getInfantry(), (InfantryWeapon) equip, isSecondary);
                 if (equip.hasFlag(WeaponType.F_TAG)) {
                     getInfantry().setSpecializations(getInfantry().getSpecializations() | Infantry.TAG_TROOPS);
-                    getInfantry().setSecondaryN(2);
-                } else if (isSecondary && (getInfantry().getSecondaryN() == 0)) {
-                    getInfantry().setSecondaryN(1);
+                    getInfantry().setSecondaryWeaponsPerSquad(2);
+                } else if (isSecondary && (getInfantry().getSecondaryWeaponsPerSquad() == 0)) {
+                    getInfantry().setSecondaryWeaponsPerSquad(1);
                 }
             }
         } else {
@@ -271,7 +271,7 @@ public class CIEquipmentView extends IView implements ActionListener {
                     return false;
                 }
                 InfantryWeapon weapon = (InfantryWeapon)etype;
-                if (getInfantry().getSquadSize() < (getInfantry().getSecondaryN() * weapon.getCrew())) {
+                if (getInfantry().getSquadSize() < (getInfantry().getSecondaryWeaponsPerSquad() * weapon.getCrew())) {
                     return false;
                 }
                 if ((nType == T_WEAPON)

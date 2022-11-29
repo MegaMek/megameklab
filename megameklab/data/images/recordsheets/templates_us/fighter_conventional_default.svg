@@ -633,6 +633,10 @@
                                                                       >Rules Level:</text
                                                                       ><text fill="#231f20" x="158.240" id="rulesLevel" y="56.000" style="font-family:Eurostile;font-size:7.700px;font-weight:normal;font-style:normal;mml-field-width:64.160" text-anchor="start"
                                                                       >Standard</text
+                                                                      ><text x="6.000" y="65.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:7.700px;font-weight:bold;font-style:normal" textLength="40.915" lengthAdjust="spacingAndGlyphs"
+                                                                      >Engine Type:</text
+                                                                      ><text fill="#231f20" x="56.000" id="engineType" y="65.000" style="font-family:Eurostile;font-size:7.700px;font-weight:normal;font-style:normal" text-anchor="start"
+                                                                      >Lorem Ipsum</text
                                                                       ><text x="115.700" y="65.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:7.700px;font-weight:bold;font-style:normal" id="labelRole" textLength="16.160" lengthAdjust="spacingAndGlyphs"
                                                                       >Role:</text
                                                                       ><text fill="#231f20" x="158.240" id="role" y="65.000" style="font-family:Eurostile;font-size:7.700px;font-weight:normal;font-style:normal;mml-field-width:64.160" text-anchor="start"
@@ -661,11 +665,15 @@
                                                                     ></g
                                                                     ><rect fill="none" x="3.000" width="224.400" id="fluffImage" height="101.400" y="384.000"
                                                                     /><g transform="translate (233.400 0.000)"
-                                                                    ><g transform="translate (0.0,69.85694451941845)"
+                                                                    ><g transform="translate (25.0,69.85694451941845)"
                                                                       ><path fill="#000000" d="M 0,5.625 l 3.749,-5.625 h 76.493 l 3.749,5.625 l -3.749,5.625 h -76.493 Z"
                                                                         /><text x="41.996" y="8.438" fill="#ffffff" text-anchor="middle" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal" textLength="69.539" lengthAdjust="spacingAndGlyphs"
                                                                         >ARMOR DIAGRAM</text
-                                                                      ></g
+                                                                      ><path style="fill:#c7c8ca;fill-opacity:1;fill-rule:nonzero;stroke:none" 
+                                                                                                        d="m -18,13   120,0     5, 7     -5, 7   -120,0   -5, -7, 5, -7 z" />
+                                                                                                        <text x="41.996" y="22.438" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal" id="armorType"
+                                                                                                          >Standard</text
+                                                                                                        ></g
                                                                       ><g transform="matrix(1.116 0 0 1.116 14.604 25.178)"
                                                                       >
 <g id="armor_diagram_convfighter" transform="matrix(1,0,0,-1,-265.03692,693.82028)"
@@ -818,9 +826,7 @@
                                                                             > ( )</tspan
                                                                           ></text
                                                                           >
-<text style="font-size:7.74px;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:1.25;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none" id="armorType" transform="matrix(1,0,0,-1,400,687.7)"
-                                                                          >Standard</text
-                                                                        ></g
+</g
                                                                         >
    <g fill="none" id="armorPips"
                                                                         >

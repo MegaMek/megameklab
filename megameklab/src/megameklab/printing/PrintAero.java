@@ -125,6 +125,8 @@ public class PrintAero extends PrintEntity {
         super.writeTextFields();
         setTextField(HS_TYPE, formatHeatSinkType());
         setTextField(HS_COUNT, formatHeatSinkCount());
+        setTextField(ENGINE_TYPE, aero.getEngine().getShortEngineName()
+                .replaceAll("\\[.*]", "").trim());
     }
 
     @Override

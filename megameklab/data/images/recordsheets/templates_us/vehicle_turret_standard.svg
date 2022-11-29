@@ -796,7 +796,7 @@
                                                                     ></g
                                                                     ><rect fill="none" x="233.400" width="150.600" id="fluffImage" height="89.048" y="262.952"
                                                                     /><g transform="translate (387.000 3.000)"
-                                                                    ><g transform="matrix(1.129 0 0 1.129 0.000 13.151)"
+                                                                    ><g transform="matrix(1.129 0 0 1.129 0.000 17.151)"
                                                                       ><g id="armor_diagram_vee_turret" transform="matrix(1,0,0,-1,-402.67674,716.15846)"
                                                                         ><rect fill="#ffffff" x="520" width="50" id="logo_spacer" y="417.26" height="30"
                                                                           /><g transform="translate(557.6664,472.0991)"
@@ -910,13 +910,13 @@
                                                                                   >
 
 <text id="text2758" style="font-size:7.74px;font-variant:normal;font-weight:600;font-stretch:normal;line-height:1.25;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="matrix(0.99808837,0,0,-1,483.01071,709.1456)" text-anchor="middle"
-                                                                                  ><tspan x="0" y="0" id="tspan2760"
+                                                                                  ><tspan x="0" y="12" id="tspan2760"
                                                                                     >Front Armor</tspan
-                                                                                    ><tspan x="0" y="9.2750359" id="textArmor_FR"
+                                                                                    ><tspan x="0" y="21.2750359" id="textArmor_FR"
                                                                                     >( )</tspan
-                                                                                    ><tspan x="0" y="277.91043"
+                                                                                    ><tspan x="0" y="269.91043"
                                                                                     >Rear Armor</tspan
-                                                                                    ><tspan x="0" y="287.18546" id="textArmor_RR"
+                                                                                    ><tspan x="0" y="279.18546" id="textArmor_RR"
                                                                                     >( )</tspan
                                                                                   ></text
                                                                                   >
@@ -929,9 +929,7 @@
                                                                                   ></text
                                                                                   >
 
-<text style="font-size:7.74px;font-variant:normal;font-weight:600;font-stretch:normal;line-height:1.25;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none" id="armorType" transform="matrix(0.99808837,0,0,-1,401.9674,710.5148)"
-                                                                                  >Standard</text
-                                                                                  ><g id="g1114" transform="translate(522.44,498.5309)"
+<g id="g1114" transform="translate(522.44,498.5309)"
                                                                                   ><path style="fill:none;stroke:#000000;stroke-width:0.96600002;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" d="m 0,0 -1.369,-2.739 -68.45,0 -1.368,2.739 10.951,64.343 1.37,1.368 9.582,0 0,6.846 12.321,5.476 0,1.37 1.369,0 1.369,4.106 1.369,1.369 -1.369,1.369 1.369,4.107 5.476,0 1.369,-4.107 -1.369,-1.369 1.369,-1.369 1.37,-4.106 1.368,0 0.001,-6.846 1.368,0 0,-6.846 9.583,0 1.37,-1.368 L 0,0 Z" id="path1116"
                                                                                   /></g
                                                                                   ><g id="g1118" transform="translate(489.5836,571.088)"
@@ -1405,6 +1403,10 @@
                                                                                                         ><path fill="#000000" d="M 0,5.625 l 3.749,-5.625 h 76.493 l 3.749,5.625 l -3.749,5.625 h -76.493 Z"
                                                                                                           /><text x="41.996" y="8.438" fill="#ffffff" text-anchor="middle" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal" textLength="69.539" lengthAdjust="spacingAndGlyphs"
                                                                                                           >ARMOR DIAGRAM</text
+                                                                                                        ><path style="fill:#c7c8ca;fill-opacity:1;fill-rule:nonzero;stroke:none" 
+                                                                                                        d="m -18,13   120,0     5, 7     -5, 7   -120,0   -5, -7, 5, -7 z" />
+                                                                                                        <text x="41.996" y="22.438" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal" id="armorType"
+                                                                                                          >Standard</text
                                                                                                         ></g
                                                                                                       ></g
                                                                                                     ></g

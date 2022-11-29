@@ -879,8 +879,6 @@
                                                                           >
 
    <g transform="translate(400.56059,48.944396)"
-                                                                          ><text style="font-size:7.74px;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:1.25;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none" id="armorType"
-                                                                            >Standard</text
                                                                           ></g
                                                                           >
    
@@ -1481,6 +1479,10 @@
                                                                                                         ><path fill="#000000" d="M 0,5.625 l 3.749,-5.625 h 76.493 l 3.749,5.625 l -3.749,5.625 h -76.493 Z"
                                                                                                           /><text x="41.996" y="8.438" fill="#ffffff" text-anchor="middle" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal" textLength="69.539" lengthAdjust="spacingAndGlyphs"
                                                                                                           >ARMOR DIAGRAM</text
+                                                                                                        ><path style="fill:#c7c8ca;fill-opacity:1;fill-rule:nonzero;stroke:none" 
+                                                                                                        d="m -18,13   120,0     5, 7     -5, 7   -120,0   -5, -7, 5, -7 z" />
+                                                                                                        <text x="41.996" y="22.438" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal" id="armorType"
+                                                                                                          >Standard</text
                                                                                                         ></g
                                                                                                       ></g
                                                                                                       ><g transform="translate (378.667 686.820)"

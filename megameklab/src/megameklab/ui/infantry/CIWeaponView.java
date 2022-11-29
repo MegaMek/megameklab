@@ -168,7 +168,7 @@ public class CIWeaponView extends BuildView implements ActionListener {
                 cbNumSecondary.addItem(i);
             }
         }
-        cbNumSecondary.setSelectedItem(inf.getSecondaryN());
+        cbNumSecondary.setSelectedItem(inf.getSecondaryWeaponsPerSquad());
         cbNumSecondary.addActionListener(this);
         if (cbNumSecondary.getSelectedIndex() < 0) {
             cbNumSecondary.setSelectedIndex(0);
