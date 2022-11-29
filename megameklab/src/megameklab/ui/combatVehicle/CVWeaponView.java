@@ -17,6 +17,7 @@ package megameklab.ui.combatVehicle;
 
 import megamek.common.*;
 import megamek.common.weapons.artillery.ArtilleryWeapon;
+import megameklab.MMLConstants;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.*;
 import megameklab.util.StringUtils;
@@ -162,7 +163,7 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
             tScrollPane.setViewportView(tPanels.get(tScrollPanes.indexOf(tScrollPane)));
         }
 
-        Font listFont = new Font("Arial", Font.PLAIN, 10);
+        Font listFont = new Font(MMLConstants.FONT_ARIAL, Font.PLAIN, 10);
         laserPane.add(laserWeaponCombo);
         laserWeaponCombo.setFixedCellWidth(155);
         laserWeaponCombo.setFont(listFont);
