@@ -16,8 +16,10 @@
 package megameklab.ui.generalUnit;
 
 import megamek.client.ui.swing.MechViewPanel;
+import megamek.client.ui.swing.alphaStrike.ConfigurableASCardPanel;
 import megamek.common.Entity;
 import megamek.common.MechView;
+import megamek.common.alphaStrike.conversion.ASConverter;
 import megamek.common.templates.TROView;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.ITab;
@@ -27,17 +29,18 @@ import javax.swing.*;
 import java.awt.*;
 
 public class PreviewTab extends ITab {
-    private final MechViewPanel panelMekView;
-    private final MechViewPanel panelTROView;
+
+    private final MechViewPanel panelMekView = new MechViewPanel();
+    private final MechViewPanel panelTROView = new MechViewPanel();
+    private final ConfigurableASCardPanel cardPanel = new ConfigurableASCardPanel(null);
 
     public PreviewTab(EntitySource eSource) {
         super(eSource);
-        this.setLayout(new BorderLayout());
+        setLayout(new BorderLayout());
         JTabbedPane panPreview = new JTabbedPane();
-        panelMekView = new MechViewPanel();
         panPreview.addTab("Summary", panelMekView);
-        panelTROView = new MechViewPanel();
         panPreview.addTab("TRO", panelTROView);
+        panPreview.addTab("AS Card", cardPanel);
         add(panPreview, BorderLayout.CENTER);
         refresh();
     }
@@ -59,9 +62,15 @@ public class PreviewTab extends ITab {
         if (populateTextFields) {
             panelMekView.setMech(selectedUnit, mechView);
             panelTROView.setMech(selectedUnit, troView);
+            if (ASConverter.canConvert(selectedUnit)) {
+                cardPanel.setASElement(ASConverter.convertForMechCache(selectedUnit));
+            } else {
+                cardPanel.setASElement(null);
+            }
         } else {
             panelMekView.reset();
             panelTROView.reset();
+            cardPanel.setASElement(null);
         }
     }
 
