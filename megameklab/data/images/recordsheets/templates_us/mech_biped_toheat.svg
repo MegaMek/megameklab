@@ -780,19 +780,18 @@
                                                                       ></g
                                                                       ><rect fill="none" x="0.000" width="142.600" id="spas1" height="13.500" y="104.000"
                                                                     /></g
-                                                                    ><g transform="translate (384.000 0.000)"
-                                                                    ><g transform="translate (54.00430113943587,0.0)"
-                                                                      ><path fill="#000000" d="M 0,5.625 l 3.749,-5.625 h 76.493 l 3.749,5.625 l -3.749,5.625 h -76.493 Z"
-                                                                        /><text x="41.996" y="8.438" fill="#ffffff" text-anchor="middle" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal" textLength="69.539" lengthAdjust="spacingAndGlyphs"
-                                                                        >ARMOR DIAGRAM</text
-                                                                      ><path style="fill:#c7c8ca;fill-opacity:1;fill-rule:nonzero;stroke:none" 
-                                                                                                        d="m -18,13   120,0     5, 7     -5, 7   -120,0   -5, -7, 5, -7 z" />
-                                                                                                        <text x="41.996" y="22.438" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal" id="armorType"
-                                                                                                          >Standard</text
-                                                                                                        ></g
-                                                                      ><g transform="matrix(1 0 0 1 7 34)"
-                                                                      >
-<g id="armor_diagram_biped" transform="translate(-5.070937,-22.715706)"
+                                                                    ><g transform="translate (384.000 0.000)">
+        <g transform="translate (54.00430113943587,0.0)">
+            <path fill="#000000" d="M 0,5.625 l 3.749,-5.625 h 76.493 l 3.749,5.625 l -3.749,5.625 h -76.493 Z"/>
+            <text x="41.996" y="8.438" fill="#ffffff" text-anchor="middle" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal"
+                  textLength="69.539" lengthAdjust="spacingAndGlyphs">ARMOR DIAGRAM</text>
+            <path style="fill:#c7c8ca;fill-opacity:1;fill-rule:nonzero;stroke:none" d="m -18,13   120,0     3.749, 5.625     -3.749, 5.625   -120,0   -3.749, -5.625, 3.749, -5.625 z" />
+            <text x="41.996" y="21.5" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal" id="armorType">Standard</text>
+
+              </g>
+              <g transform="matrix(0.97 0 0 0.97 10 29)"
+                                                                            >
+      <g id="armor_diagram_biped" transform="translate(-5.070937,-22.715706)"
                                                                         ><g transform="translate(10.949996,31.587)"
                                                                           ><g transform="matrix(1,0,0,-1,-402.56599,713.9773)"
                                                                             ><g id="g56045" transform="translate(417.2097,579.1059)"
@@ -1880,15 +1879,19 @@
                                                                             ></g
                                                                           ></g
                                                                         ></g
-                                                                        ><g transform="translate (384.000 368.000)"
-                                                                        ><g transform="translate (11.883062430939773,0.0)"
-                                                                          ><path fill="#000000" d="M 0,5.625 l 3.749,-5.625 h 140.735 l 3.749,5.625 l -3.749,5.625 h -140.735 Z"
-                                                                            /><text x="74.117" y="8.438" fill="#ffffff" text-anchor="middle" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal" textLength="127.941" lengthAdjust="spacingAndGlyphs"
-                                                                            >INTERNAL STRUCTURE DIAGRAM</text
-                                                                          ></g
-                                                                          ><g transform="matrix(1.005 0 0 1.005 10.128 12.250)"
-                                                                          >
-<g id="internal_diagram_biped" transform="matrix(1,0,0,-1,-397.41833,378.338)"
+                                                                        ><g transform="translate (384.000 370.000) scale(0.99,0.99) ">
+              <g transform="translate (11.883062430939773,-17.0)">
+                  <path fill="#000000" d="M 0,5.625 l 3.749,-5.625 h 140.735 l 3.749,5.625 l -3.749,5.625 h -140.735 Z"/>
+                  <text x="74.117" y="8.438" fill="#ffffff" text-anchor="middle" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal"
+                    textLength="127.941" lengthAdjust="spacingAndGlyphs">INTERNAL STRUCTURE DIAGRAM</text>
+                  <g transform="matrix(1 0 0 1 0 1)">
+                      <path style="fill:#c7c8ca;fill-opacity:1;fill-rule:nonzero;stroke:none" d="m 14.1,13   120,0     3.749, 5.625     -3.749, 5.625   -120,0   -3.749, -5.625, 3.749, -5.625 z" />
+                      <text x="74.996" y="21.5" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal" id="structureType">Standard Structure</text>
+                  </g>
+              </g>
+          <g transform="matrix(1.005 0 0 1.005 10.128 12.250)"
+                                                                                >
+      <g id="internal_diagram_biped" transform="matrix(1,0,0,-1,-397.41833,378.338)"
                                                                             >
 <g id="g56105" transform="translate(510.119,340.634)"
                                                                               ><path style="fill:#c8c7c7;fill-opacity:1;fill-rule:nonzero;stroke:none" d="m 0,0 0,9.193 -1.532,0.383 -0.382,3.83 -3.065,1.149 -1.916,0 -0.766,-0.383 -0.766,0.383 -1.915,0 -0.383,-0.767 -1.532,0 0,0.767 -1.15,0 -0.766,1.15 -5.363,0 -0.765,-1.15 -2.297,0 0,-29.82 -2.299,-16.203 -0.018,-13.347 18.404,0 -0.384,2.298 0.384,0.765 0.766,0.383 0,0.383 -0.766,0.384 0,0.766 -0.384,0.382 0,3.831 -0.382,0.765 -8.044,1.917 -0.766,0.765 -0.766,0 0,1.533 0.766,0 0.766,0.765 0,2.299 0.766,0.766 0,1.15 -0.766,0.382 0,2.298 1.148,0.766 1.15,3.447 1.148,0 -0.766,0.766 -0.382,0 0,0.766 0.382,0 0,0.766 -0.382,0 0,0.767 0.382,0 0.766,0.766 -1.148,0 0,2.299 1.148,0 0.384,1.149 0.766,0 2.682,1.916 0.766,0 0.766,-1.15 2.68,0 0.384,1.15 1.149,0 0.384,3.064 0.382,0.382 0,3.064 -0.382,0.384 0,1.915 L 0,0 Z" id="path56107"
@@ -2016,9 +2019,7 @@
     <text x="412.84" y="535.60" id="textIS_LL" font-weight="bold"
                                                                               >( 0 )</text
                                                                               >
-    <text x="473.3" font-size="6.76" y="549.3" text-anchor="middle" style="mml-field-width=45" id="structureType" font-weight="bold"
-                                                                              >Standard</text
-                                                                            ></g
+    </g
                                                                             ><g id="structurePips" transform="translate(-397.7,-386.6)"
                                                                             ><g id="isPipsHD"
                                                                               ><g id="g1680" transform="translate(476.465,408.5257)"
