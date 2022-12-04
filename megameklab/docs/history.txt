@@ -8,6 +8,8 @@ VERSION HISTORY:
 + Issue #1179: Remove (IS) label from Plasma Rifle on Mixed Tech units
 + Issue #1176: Improve visibility of armor type on many Record Sheets
 + Issue #1197: Allow split weapons between CT and H
++ Issue #1196: Improve visibility of the structure type on RS and resize the armor type
++ PR #1201: Add the AS Card to MML's Preview Panel  
 + Updating to Apache PDFBox 2.0.27 from 2.0.26
 + Updating to FlatLAF 2.6 from 2.4
 + Updating to JAXB Runtime 4.0.1 from 4.0.0
