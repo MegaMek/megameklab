@@ -21,7 +21,6 @@ package megameklab.ui.battleArmor;
 import megamek.common.BattleArmor;
 import megamek.common.EntityWeightClass;
 import megamek.common.ITechManager;
-import megamek.common.util.EncodeControl;
 import megameklab.ui.generalUnit.BuildView;
 import megameklab.ui.listeners.BABuildListener;
 import megameklab.ui.util.CustomComboBox;
@@ -71,7 +70,7 @@ public class BAChassisView extends BuildView implements ActionListener, ChangeLi
     }
     
     private void initUI() {
-        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl());
+        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
         cbChassisType.setModel(new DefaultComboBoxModel<>(resourceMap.getString("BAChassisView.cbBodyType.values").split(",")));
         cbTurretType.setModel(new DefaultComboBoxModel<>(resourceMap.getString("BAChassisView.cbTurretType.values").split(",")));
         setLayout(new GridBagLayout());

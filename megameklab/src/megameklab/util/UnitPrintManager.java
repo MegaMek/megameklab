@@ -17,7 +17,6 @@ package megameklab.util;
 
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.common.*;
-import megamek.common.util.EncodeControl;
 import megameklab.printing.*;
 import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
 import org.apache.commons.io.FilenameUtils;
@@ -37,7 +36,7 @@ import java.util.stream.Collectors;
 
 public class UnitPrintManager {
 
-    private static final ResourceBundle menuResources = ResourceBundle.getBundle("megameklab.resources.Menu", new EncodeControl());
+    private static final ResourceBundle menuResources = ResourceBundle.getBundle("megameklab.resources.Menu");
 
     public static void printEntity(Entity entity) {
         List<Entity> unitList = Collections.singletonList(entity);

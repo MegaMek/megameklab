@@ -19,7 +19,6 @@
 package megameklab.ui.mek;
 
 import megamek.common.*;
-import megamek.common.util.EncodeControl;
 import megameklab.ui.EntitySource;
 import megameklab.ui.listeners.MekBuildListener;
 import megameklab.ui.util.IView;
@@ -47,7 +46,7 @@ public class BMLAMFuelView extends IView implements ChangeListener {
 
     private final List<MekBuildListener> listeners = new CopyOnWriteArrayList<>();
 
-    private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl());
+    private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
     private final SpinnerNumberModel fuelTonsSpnModel = new SpinnerNumberModel(0, 0, 84, 1);
     private final JSpinner fuelTonsSpn = new JSpinner(fuelTonsSpnModel);
     private final JLabel totalFuelPointsLabel = new JLabel();

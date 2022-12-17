@@ -15,7 +15,6 @@
 package megameklab.ui.dialog;
 
 import megamek.client.ui.baseComponents.AbstractDialog;
-import megamek.common.util.EncodeControl;
 import megameklab.MegaMekLab;
 
 import javax.swing.*;
@@ -42,7 +41,7 @@ public abstract class AbstractMMLDialog extends AbstractDialog {
      * to create modal dialogs.
      */
     protected AbstractMMLDialog(final JFrame frame, final boolean modal, final String name, final String title) {
-        this(frame, modal, ResourceBundle.getBundle("megameklab.resources.Dialogs", new EncodeControl()), name, title);
+        this(frame, modal, ResourceBundle.getBundle("megameklab.resources.Dialogs"), name, title);
     }
 
     /**

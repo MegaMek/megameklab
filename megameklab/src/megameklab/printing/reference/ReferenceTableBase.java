@@ -13,7 +13,6 @@
  */
 package megameklab.printing.reference;
 
-import megamek.common.util.EncodeControl;
 import megameklab.printing.PrintRecordSheet;
 import megameklab.util.CConfig;
 import org.apache.batik.util.SVGConstants;
@@ -33,8 +32,7 @@ abstract public class ReferenceTableBase {
     private static final double STROKE_WIDTH = 1.6;
     static final double PADDING = 3.0;
 
-    protected final ResourceBundle bundle = ResourceBundle.getBundle(getClass().getName(),
-            new EncodeControl());
+    protected final ResourceBundle bundle = ResourceBundle.getBundle(getClass().getName());
     final PrintRecordSheet sheet;
 
     public static double getMargins(PrintRecordSheet sheet) {

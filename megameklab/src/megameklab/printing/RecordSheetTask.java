@@ -13,7 +13,6 @@
  */
 package megameklab.printing;
 
-import megamek.common.util.EncodeControl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.pdfbox.io.MemoryUsageSetting;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
@@ -152,8 +151,7 @@ public abstract class RecordSheetTask extends SwingWorker<Void, Integer> {
 
         @Override
         protected String popupLabel() {
-            ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Dialogs",
-                    new EncodeControl());
+            ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Dialogs");
             return resourceMap.getString("RecordSheetTask.printing");
         }
 
@@ -176,8 +174,7 @@ public abstract class RecordSheetTask extends SwingWorker<Void, Integer> {
 
         @Override
         protected String popupLabel() {
-            ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Dialogs",
-                    new EncodeControl());
+            ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Dialogs");
             return resourceMap.getString("RecordSheetTask.exporting");
         }
 

@@ -22,7 +22,6 @@ import megamek.common.EquipmentType;
 import megamek.common.ITechManager;
 import megamek.common.MiscType;
 import megamek.common.Protomech;
-import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestProtomech;
 import megameklab.ui.generalUnit.BuildView;
 import megameklab.ui.listeners.ProtomekBuildListener;
@@ -93,7 +92,7 @@ public class PMChassisView extends BuildView implements ActionListener, ChangeLi
     }
 
     private void initUI() {
-        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl());
+        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
         motiveTypeNames = resourceMap.getString("ProtomekChassisView.cbMotiveType.values").split(",");
         
         setLayout(new GridBagLayout());

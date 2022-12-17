@@ -19,7 +19,6 @@
 package megameklab.ui.combatVehicle;
 
 import megamek.common.*;
-import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestTank;
 import megameklab.ui.generalUnit.BuildView;
 import megameklab.ui.listeners.CVBuildListener;
@@ -105,7 +104,7 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
     }
     
     private void initUI() {
-        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl());
+        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
         turretNames = resourceMap.getString("CVChassisView.turrets.values").split(",");
         for (EntityMovementMode m : MOTIVE_TYPES) {
             motiveNames.put(m, m.toString());

@@ -19,7 +19,6 @@
 package megameklab.ui.generalUnit;
 
 import megamek.common.*;
-import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestAero;
 import megameklab.ui.listeners.BuildListener;
 import megameklab.ui.util.CustomComboBox;
@@ -102,7 +101,7 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
     }
     
     private void initUI() {
-        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl());
+        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
         mechDisplayNames = resourceMap.getString("HeatSinkView.mechNames.values").split(",");
         aeroDisplayNames = resourceMap.getString("HeatSinkView.aeroNames.values").split(",");
         

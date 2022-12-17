@@ -19,7 +19,6 @@
 package megameklab.ui.mek;
 
 import megamek.common.*;
-import megamek.common.util.EncodeControl;
 import megameklab.ui.generalUnit.BuildView;
 import megameklab.ui.listeners.MekBuildListener;
 import megameklab.ui.util.CustomComboBox;
@@ -143,7 +142,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
     }
 
     private void initUI() {
-        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl());
+        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
         baseTypesModel = new DefaultComboBoxModel<>(resourceMap.getString("MekChassisView.baseType.values").split(","));
         standardTypesModel = new DefaultComboBoxModel<>(resourceMap.getString("MekChassisView.motiveType.values").split(","));
         lamTypesModel = new DefaultComboBoxModel<>(resourceMap.getString("MekChassisView.lamType.values").split(","));

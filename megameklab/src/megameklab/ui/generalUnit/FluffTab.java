@@ -31,7 +31,6 @@ import javax.swing.border.Border;
 
 import megamek.common.Entity;
 import megamek.common.EntityFluff;
-import megamek.common.util.EncodeControl;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
@@ -76,7 +75,7 @@ public class FluffTab extends ITab implements FocusListener {
     }
 
     private void initUi() {
-        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Tabs", new EncodeControl());
+        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Tabs");
         Border border = BorderFactory.createLineBorder(Color.BLACK);
 
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));

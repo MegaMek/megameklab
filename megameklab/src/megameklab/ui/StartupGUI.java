@@ -21,7 +21,6 @@ import megamek.client.ui.swing.widget.SkinSpecification;
 import megamek.client.ui.swing.widget.SkinSpecification.UIComponents;
 import megamek.client.ui.swing.widget.SkinXMLHandler;
 import megamek.common.*;
-import megamek.common.util.EncodeControl;
 import megamek.common.util.ImageUtil;
 import megamek.common.util.fileUtils.MegaMekFile;
 import megameklab.MMLConstants;
@@ -56,7 +55,7 @@ public class StartupGUI extends JPanel {
         startupScreenImages.put(1921, "data/images/misc/mml_start_spooky_uhd.jpg"); // TODO : Remove inline filename
     }
     
-    private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Splash", new EncodeControl());
+    private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Splash");
     
     public StartupGUI() {       
         initComponents();

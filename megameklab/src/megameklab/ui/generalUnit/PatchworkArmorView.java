@@ -28,7 +28,6 @@ import javax.swing.JLabel;
 import javax.swing.border.TitledBorder;
 
 import megamek.common.*;
-import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestEntity;
 import megameklab.ui.util.TechComboBox;
 import megameklab.ui.listeners.ArmorAllocationListener;
@@ -62,7 +61,7 @@ public class PatchworkArmorView extends BuildView implements ActionListener {
     }
     
     private void initUI() {
-        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl());
+        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
         setLayout(new GridBagLayout());
         
         setBorder(BorderFactory.createTitledBorder(

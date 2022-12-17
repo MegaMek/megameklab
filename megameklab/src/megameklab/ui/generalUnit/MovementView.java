@@ -19,7 +19,6 @@
 package megameklab.ui.generalUnit;
 
 import megamek.common.*;
-import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestBattleArmor;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestMech;
@@ -86,7 +85,7 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
     }
     
     private void initUI() {
-        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl());
+        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
         walkNames = resourceMap.getString("MovementView.lblWalk.values").split(",");
         runNames = resourceMap.getString("MovementView.lblRun.values").split(",");
         jumpNames = resourceMap.getString("MovementView.lblJump.values").split(",");

@@ -19,7 +19,6 @@
 package megameklab.ui.supportVehicle;
 
 import megamek.common.*;
-import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestSupportVehicle;
 import megameklab.ui.generalUnit.BuildView;
 import megameklab.ui.listeners.SVBuildListener;
@@ -84,7 +83,7 @@ public class SVCrewView extends BuildView implements ChangeListener {
     private final JLabel txtSteerageWeight = new JLabel("", SwingConstants.CENTER);
     private final JLabel txtSteerageSlots = new JLabel("", SwingConstants.CENTER);
 
-    private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl());
+    private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
 
     public SVCrewView() {
         initUi();

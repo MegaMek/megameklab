@@ -14,7 +14,6 @@
 package megameklab.ui.infantry;
 
 import megamek.common.*;
-import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestInfantry;
 import megamek.common.weapons.artillery.ArtilleryCannonWeapon;
 import megamek.common.weapons.artillery.ArtilleryWeapon;
@@ -67,7 +66,7 @@ public class CIWeaponView extends BuildView implements ActionListener {
     }
 
     private void initUI() {
-        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl());
+        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
         fgMotiveMsg = resourceMap.getString("InfantryWeaponView.txtGuns.badMotive");
         noneMsg = resourceMap.getString("InfantryWeaponView.none");
 

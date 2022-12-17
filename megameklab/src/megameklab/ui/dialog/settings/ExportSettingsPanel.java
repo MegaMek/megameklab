@@ -18,7 +18,6 @@
  */
 package megameklab.ui.dialog.settings;
 
-import megamek.common.util.EncodeControl;
 import megameklab.printing.PaperSize;
 import megameklab.ui.util.IntRangeTextField;
 import megameklab.ui.util.SpringUtilities;
@@ -53,7 +52,7 @@ class ExportSettingsPanel extends JPanel {
     private final IntRangeTextField txtScale = new IntRangeTextField(3);
 
     ExportSettingsPanel() {
-        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Dialogs", new EncodeControl());
+        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Dialogs");
 
         for (PaperSize paper : PaperSize.values()) {
             cbPaper.addItem(paper.displayName);

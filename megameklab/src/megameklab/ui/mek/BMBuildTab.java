@@ -17,7 +17,6 @@ package megameklab.ui.mek;
 
 import megamek.client.ui.swing.util.UIUtil;
 import megamek.common.Mounted;
-import megamek.common.util.EncodeControl;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
@@ -35,7 +34,7 @@ public class BMBuildTab extends ITab {
     private RefreshListener refresh = null;
     private final BMCriticalView critView;
     private final BMBuildView buildView;
-    private final ResourceBundle resources = ResourceBundle.getBundle("megameklab.resources.Tabs", new EncodeControl());
+    private final ResourceBundle resources = ResourceBundle.getBundle("megameklab.resources.Tabs");
 
     private final JToggleButton autoFillUnHittables = new JToggleButton(resources.getString("BuildTab.autoFillUnhittables.text"));
     private final JToggleButton autoCompact = new JToggleButton(resources.getString("BuildTab.autoCompact.text"));

@@ -18,7 +18,6 @@
  */
 package megameklab.ui.dialog.settings;
 
-import megamek.common.util.EncodeControl;
 import megameklab.ui.util.SpringUtilities;
 import megameklab.util.CConfig;
 
@@ -38,7 +37,7 @@ public class MiscSettingsPanel extends JPanel {
     private final JCheckBox chkSkipSavePrompts = new JCheckBox();
 
     MiscSettingsPanel() {
-        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Dialogs", new EncodeControl());
+        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Dialogs");
 
         chkSummaryFormatTRO.setText(resourceMap.getString("ConfigurationDialog.chkSummaryFormatTRO.text"));
         chkSummaryFormatTRO.setToolTipText(resourceMap.getString("ConfigurationDialog.chkSummaryFormatTRO.tooltip"));
