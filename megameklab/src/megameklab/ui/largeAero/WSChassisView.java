@@ -19,7 +19,6 @@
 package megameklab.ui.largeAero;
 
 import megamek.common.*;
-import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestAdvancedAerospace;
 import megamek.common.verifier.TestAero;
 import megameklab.ui.generalUnit.BuildView;
@@ -81,7 +80,7 @@ public class WSChassisView extends BuildView implements ActionListener, ChangeLi
     }
     
     public void initUI() {
-        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl());
+        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         cbBaseType.setModel(new DefaultComboBoxModel<>(resourceMap.getString("AdvAeroChassisView.cbBaseType.values").split(",")));

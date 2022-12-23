@@ -20,7 +20,6 @@ import megamek.common.LocationFullException;
 import megamek.common.SmallCraft;
 import megamek.common.Warship;
 import megamek.common.annotations.Nullable;
-import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestAdvancedAerospace;
 import megamek.common.verifier.TestAero;
 import megamek.common.verifier.TestEntity;
@@ -50,7 +49,7 @@ public class LACriticalView extends IView {
     // and non-WarShip capital ships use 6, plus one for system-wide
     private static final int MAX_ARCS = 9;
     
-    private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl());
+    private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
 
     private final JComponent fwdLeftPanel;
     private final JComponent bsLeftPanel;

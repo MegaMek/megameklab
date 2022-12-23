@@ -14,7 +14,6 @@
 package megameklab.ui.generalUnit;
 
 import megamek.common.*;
-import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestAero;
 import megamek.common.verifier.TestEntity;
 import megameklab.ui.listeners.BuildListener;
@@ -44,7 +43,7 @@ public class FuelView extends BuildView implements ActionListener, ChangeListene
         listeners.remove(l);
     }
 
-    private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl());
+    private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
 
     private final SpinnerNumberModel spnFuelModel = new SpinnerNumberModel(0.0, 0.0, null, 0.5);
     private final SpinnerNumberModel spnFuelCapacityModel = new SpinnerNumberModel(0, 0, null, 1);

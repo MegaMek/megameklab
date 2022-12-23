@@ -22,7 +22,6 @@ import megamek.common.Aero;
 import megamek.common.Engine;
 import megamek.common.Entity;
 import megamek.common.ITechManager;
-import megamek.common.util.EncodeControl;
 import megameklab.ui.generalUnit.BuildView;
 import megameklab.ui.listeners.AeroBuildListener;
 import megameklab.ui.util.CustomComboBox;
@@ -85,7 +84,7 @@ public class ASChassisView extends BuildView implements ActionListener, ChangeLi
     }
     
     public void initUI() {
-        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl());
+        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         fighterTypeNames = resourceMap.getString("FighterChassisView.cbFighterType.values").split(",");

@@ -31,7 +31,6 @@ import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 
 import megamek.common.*;
-import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestSupportVehicle;
 import megameklab.ui.generalUnit.ArmorLocationView.ArmorLocationListener;
 import megameklab.ui.listeners.ArmorAllocationListener;
@@ -110,7 +109,7 @@ public class ArmorAllocationView extends BuildView implements ArmorLocationListe
     private final JButton btnAutoAllocate = new JButton();
     private final JLabel lblPointsPerTon = new JLabel("", SwingConstants.RIGHT);
 
-    private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl());
+    private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
     private long entitytype;
     private boolean showPatchwork = false;
     private String tooltipFormat;

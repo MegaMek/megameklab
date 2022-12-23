@@ -15,7 +15,6 @@ package megameklab.ui.combatVehicle;
 
 import megamek.common.Bay;
 import megamek.common.Tank;
-import megamek.common.util.EncodeControl;
 import megamek.common.verifier.BayData;
 import megameklab.ui.generalUnit.BuildView;
 import megameklab.ui.listeners.CVBuildListener;
@@ -63,7 +62,7 @@ public class CVTransportView extends BuildView implements ChangeListener {
     }
     
     private void initUI() {
-        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl());
+        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
         
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();

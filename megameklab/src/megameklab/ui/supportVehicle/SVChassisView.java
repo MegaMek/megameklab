@@ -19,7 +19,6 @@
 package megameklab.ui.supportVehicle;
 
 import megamek.common.*;
-import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestSupportVehicle;
 import megameklab.ui.generalUnit.BuildView;
 import megameklab.ui.listeners.SVBuildListener;
@@ -98,7 +97,7 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
     }
 
     private void initUI() {
-        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl());
+        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
         for (TestSupportVehicle.SVType t : TestSupportVehicle.SVType.values()) {
             typeNames.put(t, resourceMap.getString("SVType." + t.toString()));
         }

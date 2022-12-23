@@ -22,7 +22,6 @@ import megamek.common.Aero;
 import megamek.common.BattleArmor;
 import megamek.common.EntityWeightClass;
 import megamek.common.ITechManager;
-import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestAero;
 import megameklab.ui.generalUnit.BuildView;
 import megameklab.ui.listeners.AeroVesselBuildListener;
@@ -79,7 +78,7 @@ public class LACrewView extends BuildView implements ActionListener, ChangeListe
     
     public void initUI() {
         setLayout(new GridBagLayout());
-        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl());
+        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
         GridBagConstraints gbc = new GridBagConstraints();
         
         gbc.gridx = 0;

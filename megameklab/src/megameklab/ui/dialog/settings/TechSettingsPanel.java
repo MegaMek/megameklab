@@ -19,7 +19,6 @@
 package megameklab.ui.dialog.settings;
 
 import megamek.common.ITechnology;
-import megamek.common.util.EncodeControl;
 import megameklab.ui.util.IntRangeTextField;
 import megameklab.ui.util.SpringUtilities;
 import megameklab.util.CConfig;
@@ -44,7 +43,7 @@ public class TechSettingsPanel extends JPanel {
     private final JCheckBox chkUnofficialIgnoreYear = new JCheckBox();
 
     TechSettingsPanel() {
-        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Dialogs", new EncodeControl());
+        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Dialogs");
         chkTechProgression.addActionListener(e -> {
             chkTechUseYear.setEnabled(chkTechProgression.isSelected());
             txtTechYear.setEnabled(chkTechProgression.isSelected()

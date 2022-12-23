@@ -15,7 +15,6 @@ package megameklab.ui.largeAero;
 
 import megamek.common.Jumpship;
 import megamek.common.annotations.Nullable;
-import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestAdvancedAerospace;
 import megameklab.ui.generalUnit.BuildView;
 import megameklab.ui.listeners.AdvancedAeroBuildListener;
@@ -61,7 +60,7 @@ public class WSGravDeckView extends BuildView implements ActionListener, TableMo
     }
     
     private void initUI() {
-        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl());
+        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
         setLayout(new BorderLayout());
         add(new JScrollPane(tblGravDecks), BorderLayout.CENTER);
         
@@ -129,7 +128,7 @@ public class WSGravDeckView extends BuildView implements ActionListener, TableMo
         private int maxSize = 250;
         
         GravDeckTableModel() {
-            ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl());
+            ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
             colNames = resourceMap.getString("GravDeckView.columnNames.values").split(",");    
         }
 

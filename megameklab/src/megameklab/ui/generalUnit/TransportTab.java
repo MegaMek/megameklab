@@ -14,7 +14,6 @@
 package megameklab.ui.generalUnit;
 
 import megamek.common.*;
-import megamek.common.util.EncodeControl;
 import megamek.common.verifier.BayData;
 import megamek.common.verifier.TestAdvancedAerospace;
 import megamek.common.verifier.TestAero;
@@ -76,8 +75,7 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
     }
     
     private void initUI() {
-        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Tabs",
-                new EncodeControl());
+        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Tabs");
 
         setLayout(new BorderLayout());
         if (getEntity().hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
@@ -536,8 +534,7 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
         private static final int COL_POD       = 6;
         private static final int NUM_COLS      = 7;
 
-        private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Tabs",
-                new EncodeControl());
+        private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Tabs");
 
         private final List<Bay> bayList = new ArrayList<>();
         private final List<BayData> bayTypeList = new ArrayList<>();

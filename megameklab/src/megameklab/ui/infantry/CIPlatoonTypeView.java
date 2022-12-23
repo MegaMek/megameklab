@@ -31,7 +31,6 @@ import javax.swing.event.ChangeListener;
 import megamek.common.EntityMovementMode;
 import megamek.common.ITechManager;
 import megamek.common.Infantry;
-import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestInfantry;
 import megameklab.ui.util.CustomComboBox;
 import megameklab.ui.generalUnit.BuildView;
@@ -50,7 +49,7 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
     public void removeListener(InfantryBuildListener l) {
         listeners.remove(l);
     }
-    private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl());
+    private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
 
     private enum InfantryMotiveType {
         FOOT(EntityMovementMode.INF_LEG, false, "PlatoonTypeView.cbMotiveType.foot"),

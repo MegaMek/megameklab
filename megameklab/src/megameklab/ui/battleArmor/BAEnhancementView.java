@@ -24,7 +24,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import javax.swing.JCheckBox;
 
 import megamek.common.*;
-import megamek.common.util.EncodeControl;
 import megameklab.ui.generalUnit.BuildView;
 import megameklab.ui.listeners.BABuildListener;
 
@@ -61,7 +60,7 @@ public class BAEnhancementView extends BuildView implements ActionListener {
     }
     
     private void initUI() {
-        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl());
+        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
         
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();

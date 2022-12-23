@@ -28,7 +28,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import megamek.common.annotations.Nullable;
-import megamek.common.util.EncodeControl;
 
 /**
  * Panel used to set armor value for a single location. Optionally used for rear location as well,
@@ -63,7 +62,7 @@ public class ArmorLocationView extends BuildView implements ChangeListener {
     ArmorLocationView(int location) {
         this.location = location;
         
-        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl());
+        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
         lblRear.setText(resourceMap.getString("ArmorLocationView.lblRear.text"));
         maxFormat = resourceMap.getString("ArmorLocationView.lblMax.format");
         setBorder(BorderFactory.createTitledBorder(

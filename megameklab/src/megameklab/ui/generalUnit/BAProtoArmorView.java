@@ -20,7 +20,6 @@ package megameklab.ui.generalUnit;
 
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
-import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestProtomech;
 import megameklab.ui.listeners.ArmorAllocationListener;
 import megameklab.ui.util.TechComboBox;
@@ -70,7 +69,7 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
     }
 
     private void initUI() {
-        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl());
+        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
 
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();

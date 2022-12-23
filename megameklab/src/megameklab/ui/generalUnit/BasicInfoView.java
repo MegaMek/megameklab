@@ -20,7 +20,6 @@ package megameklab.ui.generalUnit;
 
 import megamek.MMConstants;
 import megamek.common.*;
-import megamek.common.util.EncodeControl;
 import megameklab.ui.listeners.BuildListener;
 import megameklab.ui.util.CustomComboBox;
 import megameklab.ui.util.FactionComboBox;
@@ -84,7 +83,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
     //endregion Constructors
 
     private void initUI() {
-        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl()); 
+        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
         techBaseNames = resourceMap.getString("BasicInfoView.cbTechBase.values").split(",");
 
         setLayout(new GridBagLayout());

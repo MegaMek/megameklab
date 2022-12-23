@@ -20,7 +20,6 @@ import megamek.common.*;
 import megamek.common.annotations.Nullable;
 import megamek.common.loaders.BLKFile;
 import megamek.common.templates.TROView;
-import megamek.common.util.EncodeControl;
 import megameklab.MMLConstants;
 import megameklab.ui.dialog.LoadingDialog;
 import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
@@ -55,7 +54,7 @@ import java.util.stream.Stream;
 public class MenuBar extends JMenuBar implements ClipboardOwner {
     //region Variable Declarations
     private final MegaMekLabMainUI frame;
-    private final ResourceBundle resources = ResourceBundle.getBundle("megameklab.resources.Menu", new EncodeControl());
+    private final ResourceBundle resources = ResourceBundle.getBundle("megameklab.resources.Menu");
     //endregion Variable Declarations
 
     //region Constructors

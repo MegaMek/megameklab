@@ -19,7 +19,6 @@
 package megameklab.ui.dialog;
 
 import megamek.client.ui.baseComponents.AbstractButtonDialog;
-import megamek.common.util.EncodeControl;
 import megameklab.MegaMekLab;
 
 import javax.swing.*;
@@ -54,7 +53,7 @@ public abstract class AbstractMMLButtonDialog extends AbstractButtonDialog {
      */
     protected AbstractMMLButtonDialog(final JFrame frame, final boolean modal, final String name,
                                       final String title) {
-        this(frame, modal, ResourceBundle.getBundle("megameklab.resources.Dialogs", new EncodeControl()),
+        this(frame, modal, ResourceBundle.getBundle("megameklab.resources.Dialogs"),
                 name, title);
     }
 

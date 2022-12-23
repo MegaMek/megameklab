@@ -19,7 +19,6 @@
 package megameklab.ui.generalUnit;
 
 import megamek.common.*;
-import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestEntity;
 import megameklab.ui.listeners.ArmorAllocationListener;
 import megameklab.ui.util.CustomComboBox;
@@ -75,7 +74,7 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
 
     private final List<JComponent> svControlList = new ArrayList<>();
 
-    private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl());
+    private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
 
     /**
      * Create the armor panel
