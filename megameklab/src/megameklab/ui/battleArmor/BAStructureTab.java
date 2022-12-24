@@ -66,16 +66,13 @@ public class BAStructureTab extends ITab implements ActionListener, BABuildListe
     }
 
     public void setUpPanels() {
-        previewTab = new PreviewTab(eSource);
-        JPanel previewPanel = new JPanel();
-        previewPanel.add(previewTab);
-
         JPanel leftPanel = new JPanel();
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
 
         JPanel rightPanel = new JPanel();
         rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
 
+        previewTab = new PreviewTab(eSource);
         panBasicInfo = new BasicInfoView(getBattleArmor().getConstructionTechAdvancement());
         panChassis = new BAChassisView(panBasicInfo);
         panMovement = new MovementView(panBasicInfo);
@@ -115,7 +112,7 @@ public class BAStructureTab extends ITab implements ActionListener, BABuildListe
         leftPanel.add(panArmor);
 
         rightPanel.add(Box.createVerticalStrut(5));
-        rightPanel.add(previewPanel);
+        rightPanel.add(previewTab);
         rightPanel.add(panEnhancements);
         rightPanel.add(manipPanel);
 
