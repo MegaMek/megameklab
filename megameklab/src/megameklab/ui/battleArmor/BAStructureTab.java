@@ -14,10 +14,8 @@
  */
 package megameklab.ui.battleArmor;
 
-import megamek.client.ui.swing.MechViewPanel;
 import megamek.codeUtilities.MathUtility;
 import megamek.common.*;
-import megamek.common.templates.TROView;
 import megamek.common.verifier.TestBattleArmor;
 import megamek.common.verifier.TestBattleArmor.BAManipulator;
 import megamek.common.verifier.TestEntity;
@@ -25,6 +23,7 @@ import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.BAProtoArmorView;
 import megameklab.ui.generalUnit.BasicInfoView;
 import megameklab.ui.generalUnit.MovementView;
+import megameklab.ui.generalUnit.PreviewTab;
 import megameklab.ui.listeners.ArmorAllocationListener;
 import megameklab.ui.listeners.BABuildListener;
 import megameklab.ui.util.CustomComboBox;
@@ -58,8 +57,7 @@ public class BAStructureTab extends ITab implements ActionListener, BABuildListe
     private CustomComboBox<String> leftManipSelect = new CustomComboBox<>(this::manipulatorDisplayName);
     private CustomComboBox<String> rightManipSelect = new CustomComboBox<>(this::manipulatorDisplayName);
 
-    private MechViewPanel panelMekView;
-    private MechViewPanel panelTROView;
+    private PreviewTab previewTab;
 
     public BAStructureTab(EntitySource eSource) {
         super(eSource);
@@ -68,21 +66,13 @@ public class BAStructureTab extends ITab implements ActionListener, BABuildListe
     }
 
     public void setUpPanels() {
-        JPanel previewPanel = new JPanel();
-        previewPanel.setLayout(new BoxLayout(previewPanel, BoxLayout.Y_AXIS));
-        panelMekView = new MechViewPanel(450, 480,false);
-        panelTROView = new MechViewPanel(450, 480, false);
-        JTabbedPane panPreview = new JTabbedPane();
-        panPreview.addTab("Summary", panelMekView);
-        panPreview.addTab("TRO", panelTROView);
-        previewPanel.add(panPreview);
-
         JPanel leftPanel = new JPanel();
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
 
         JPanel rightPanel = new JPanel();
         rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
 
+        previewTab = new PreviewTab(eSource);
         panBasicInfo = new BasicInfoView(getBattleArmor().getConstructionTechAdvancement());
         panChassis = new BAChassisView(panBasicInfo);
         panMovement = new MovementView(panBasicInfo);
@@ -91,9 +81,6 @@ public class BAStructureTab extends ITab implements ActionListener, BABuildListe
         panEnhancements = new BAEnhancementView(panBasicInfo);
         GridBagConstraints gbc = new GridBagConstraints();
         Dimension comboSize = new Dimension(250, 25);
-
-        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gbc.anchor = GridBagConstraints.WEST;
 
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -125,7 +112,7 @@ public class BAStructureTab extends ITab implements ActionListener, BABuildListe
         leftPanel.add(panArmor);
 
         rightPanel.add(Box.createVerticalStrut(5));
-        rightPanel.add(previewPanel);
+        rightPanel.add(previewTab);
         rightPanel.add(panEnhancements);
         rightPanel.add(manipPanel);
 
@@ -335,25 +322,7 @@ public class BAStructureTab extends ITab implements ActionListener, BABuildListe
     }
 
     public void refreshPreview() {
-        boolean populateTextFields = true;
-        MechView mechView = null;
-        TROView troView = null;
-        try {
-            mechView = new MechView(getBattleArmor(), false);
-            troView = TROView.createView(getBattleArmor(), true);
-        } catch (Exception ex) {
-            LogManager.getLogger().error("", ex);
-            // error unit didn't load right. this is bad news.
-            populateTextFields = false;
-        }
-
-        if (populateTextFields) {
-            panelMekView.setMech(getBattleArmor(), mechView);
-            panelTROView.setMech(getBattleArmor(), troView);
-        } else {
-            panelMekView.reset();
-            panelTROView.reset();
-        }
+        previewTab.refresh();
     }
 
     @Override
