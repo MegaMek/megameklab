@@ -86,7 +86,7 @@ task mmJar (type: Jar, dependsOn: compileMM) {
     manifest {
         attributes "Main-Class" : 'megamek.MegaMek'
         attributes "Class-Path" : project.sourceSets.main.runtimeClasspath.files
-                .findAll { it.name.endsWith(".jar") && !it.name.toLowerCase().startsWith("megamek") }
+                .findAll { it.name.endsWith(".jar") }
                 .collect { "${lib}/${it.name}" }.join(' ')
         attributes "Add-Opens" : 'java.base/java.util java.base/java.util.concurrent'
         attributes "Build-Date" : LocalDateTime.now()
@@ -102,7 +102,7 @@ jar {
     manifest {
         attributes "Main-Class" : mainClassName
         attributes "Class-Path" : "${mmJar.archiveFileName.get()} " + (project.sourceSets.main.runtimeClasspath.files
-                .findAll { it.name.endsWith(".jar") && !it.name.toLowerCase().startsWith("megamek") }
+                .findAll { it.name.endsWith(".jar") }
                 .collect { "${lib}/${it.name}" }.join(' '))
         attributes "Add-Opens" : 'java.base/java.util java.base/java.util.concurrent'
         attributes "Build-Date" : LocalDateTime.now()
