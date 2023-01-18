@@ -128,15 +128,15 @@
         >*A result of 2 or 12 (or an 8 if the attack strikes the side) may inflict a critical hit on the VTOL. For each such attack, apply</text
         ><text x="6.000" y="14.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="301.630" lengthAdjust="spacingAndGlyphs"
         >damage normally to the armor in that section. The attacking player then immediately rolls once on the VTOL Combat Vehicle</text
-        ><text fill="#231f20" x="6.000" y="21.000" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal;mml-field-width:16892.987" text-anchor="start"
-        >Critical Hits Table, below.</text
-        ><text x="6.000" y="28.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="40999.938" lengthAdjust="spacingAndGlyphs"
-        >† Damage Value / 10 (round up); see Rotor Hits, p. 197, </text
-        ><text x="41005.938" y="28.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:italic" textLength="11274.857" lengthAdjust="spacingAndGlyphs"
-        >Total Warfare.</text
-        ><text x="52280.795" y="28.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="33006.181" lengthAdjust="spacingAndGlyphs"
-        > Additionally, damage to rotors slows down the</text
-        ><text x="6.000" y="35.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="301.630" lengthAdjust="spacingAndGlyphs"
+        ><text fill="#231f20" x="6.000" y="21.000" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal;mml-field-width:16892.987" text-anchor="start">Critical Hits Table, below.</text>
+        
+        <text x="6.000" y="28.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="143" lengthAdjust="spacingAndGlyphs">† Damage Value / 10 (round up); see Rotor Hits, p. 197, </text>
+        
+        <text x="150" y="28.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:italic" textLength="37.320" lengthAdjust="spacingAndGlyphs">Total Warfare.</text>
+        
+        <text x="190" y="28.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="117.320" lengthAdjust="spacingAndGlyphs"> Additionally, damage to rotors slows down the</text>
+        
+        <text x="6.000" y="35.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="301.630" lengthAdjust="spacingAndGlyphs"
         >VTOL. Each hit reduces the VTOL’s Cruising MP by 1, meaning that the controlling player must also recalculate Flank MP;</text
         ><text x="6.000" y="42.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="301.630" lengthAdjust="spacingAndGlyphs"
         >multiply the new Cruising MP by 1.5 and round up. As with all damage, such movement penalties do not apply until the end</text
