@@ -71,6 +71,9 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
     private final static String[][] MML_RANGE = {
             {"", "", "", "", ""}, formatRange(6, 7, 14, 21), formatRange(0, 3, 6, 9)
     };
+    private final static String[][] MML_ARTEMIS_RANGE = { {"", "", "", "", ""},
+            {"", "", "", "", ""}, formatRange(6, 7, 14, 21), formatRange(0, 3, 6, 9)
+    };
     private final static String[][] ATM_RANGE = {
             {"", "", "", "", ""}, formatRange(4, 5, 10, 15),
             formatRange(4, 9, 18, 27), formatRange(0, 3, 6, 9)
@@ -112,7 +115,11 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
 
     private String[][] setRanges() {
         if (isMML) {
-            return mount.getEntity().isAero() ? mmlAV() : MML_RANGE;
+            if (mount.getEntity().isAero()) {
+                return mmlAV();
+            } else {
+                return (hasArtemis || hasArtemisV || hasApollo || hasArtemisProto) ? MML_ARTEMIS_RANGE : MML_RANGE;
+            }
         } else if (isATM) {
             return mount.getEntity().isAero() ? atmAV() : ATM_RANGE;
         } else if (mount.getType() instanceof ISCenturionWeaponSystem) {
@@ -357,10 +364,11 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         if (row == 0) {
             return name;
         }
+
         if (isMML) {
-            if (row == MML_LRM_ROW) {
+            if (row == MML_LRM_ROW + mmlArtemisRowDelta()) {
                 return "LRM";
-            } else if (row == MML_SRM_ROW) {
+            } else if (row == MML_SRM_ROW + mmlArtemisRowDelta()) {
                 return "SRM";
             }
         } else if (isATM) {
@@ -371,7 +379,9 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
             } else if (row == ATM_HE_ROW) {
                 return "High Explosive";
             }
-        } else if (hasArtemis) {
+        }
+
+        if (hasArtemis) {
             return "w/Artemis IV";
         } else if (hasArtemisProto) {
             return "w/Prototype Artemis IV";
@@ -410,11 +420,11 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
     @Override
     public String getDamageField(int row) {
         if (isMML) {
-            if (row == MML_LRM_ROW) {
+            if (row == MML_LRM_ROW + mmlArtemisRowDelta()) {
                 return "1/Msl";
-            } else if (row == MML_SRM_ROW) {
+            } else if (row == MML_SRM_ROW + mmlArtemisRowDelta()) {
                 return "2/Msl";
-            } else {
+            } else if (row == 0) {
                 return "[M,C,S]";
             }
         } else if (isATM) {
@@ -523,13 +533,18 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
     @Override
     public int nRows() {
         if (isMML) {
-            return 3;
+            return 3 + mmlArtemisRowDelta();
         } else if (isATM) {
             return 4;
         } else if (hasArtemis || hasArtemisV || hasApollo || hasArtemisProto || hasCapacitor) {
             return 2;
         }
         return 1;
+    }
+
+    /** @return 1 when this entry has Artemis, 0 otherwise (to be used for MML only to account for the addtl. row). */
+    private int mmlArtemisRowDelta() {
+        return (hasArtemis || hasArtemisV || hasApollo || hasArtemisProto) ? 1 : 0;
     }
 
     private boolean hasLinkedEquipment(Mounted eq, BigInteger flag) {
