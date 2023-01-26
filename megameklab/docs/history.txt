@@ -3,6 +3,7 @@ VERSION HISTORY:
 0.49.12-SNAPSHOT
 + PR #1208: BattleArmor now also feature an Alpha Strike conversion preview
 + PR #1225: Fixed a bug in the Record Sheet VTOL tables
++ Issue #1223: Record Sheets: Show Artemis for MML weapons
 + Java 17: Manifest File Add-Opens
 + Issues #1188, #1218: Fixing MML-only UNIX Jar Release
 
