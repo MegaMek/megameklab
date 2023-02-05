@@ -270,7 +270,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
             name.append(" (P)");
         }
         if (mount.isSquadSupportWeapon()) {
-            name.append(" (SSW)");
+            name.append(" (SSW: Trooper 1)");
         }
         if (mount.isDWPMounted()) {
             name.append(" (DWP)");
