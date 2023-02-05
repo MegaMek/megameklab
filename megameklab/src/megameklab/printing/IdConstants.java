@@ -171,7 +171,7 @@ public interface IdConstants {
     String CHECK_MECHANIZED = "checkMechanized";
     String CHECK_SWARM = "checkSwarm";
     String CHECK_LEG = "checkLeg";
-    String CHECK_AP = "checkAp";
+    String CHECK_AP = "checkAP";
     String SUIT = "suit";
     String PIPS = "pips_";
     String RANGE_IN_HEXES = "rangeInHexes";
