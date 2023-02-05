@@ -104,13 +104,23 @@
       /><rect fill="none" x="10.000" width="12.000" id="fluffImage_5" height="14.367" y="1.000"
       /><rect fill="none" x="24.500" width="161.250" id="pips_5" height="10.567" y="3.400"
     /></g
-    ><text x="188.966" y="129.166" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" textLength="20.411" lengthAdjust="spacingAndGlyphs"
+    >
+    
+    <text x="158.966" y="129.166" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" textLength="20.411" lengthAdjust="spacingAndGlyphs"
     >Armor:</text
-    ><text fill="#231f20" x="212.752" id="armorType" y="129.166" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal;mml-field-width:70.214" text-anchor="start"
+    >
+    
+    <text fill="#231f20" x="182.752" id="armorType" y="129.166" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal;mml-field-width:70.214" text-anchor="start"
     >Standard</text
-    ><text x="282.966" y="129.166" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" textLength="9.868" lengthAdjust="spacingAndGlyphs"
+    >
+    
+    <text x="255" y="129.166" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" id="labelRole" >Role:</text>
+    
+    <text fill="#231f20" x="272.5" id="role" y="129.166" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal;mml-field-width:64.160" text-anchor="start">None</text>
+    
+    <text x="332.966" y="129.166" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal" textLength="9.868" lengthAdjust="spacingAndGlyphs"
     >BV:</text
-    ><text fill="#231f20" x="296.209" id="bv" y="129.166" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal" text-anchor="start"
+    ><text fill="#231f20" x="346.209" id="bv" y="129.166" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal" text-anchor="start"
     >0</text
   ></g
 ></svg
