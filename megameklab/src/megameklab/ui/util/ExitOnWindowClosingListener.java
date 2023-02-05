@@ -32,6 +32,12 @@ public final class ExitOnWindowClosingListener extends WindowAdapter {
 
     private final AppCloser frame;
 
+    /**
+     * Returns a new window listener for the given frame that will react to windowClosing events by calling
+     * the frame's exit() method and closing the application when exit() returns true.
+     *
+     * @param frame The frame (implementing AppCloser) that this window listener is for
+     */
     public ExitOnWindowClosingListener(AppCloser frame) {
         this.frame = frame;
     }

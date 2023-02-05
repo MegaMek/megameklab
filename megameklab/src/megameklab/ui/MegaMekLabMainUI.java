@@ -117,6 +117,7 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
         }
     }
 
+    @Override
     public boolean exit() {
         if (!safetyPrompt()) {
             return false;
