@@ -7,6 +7,7 @@ VERSION HISTORY:
 + Java 17: Manifest File Add-Opens
 + Issues #1188, #1218: Fixing MML-only UNIX Jar Release
 + Issues #1231, #1232, #1233: BA Record Sheets: Showing unit role, fixing AP checkbox, showing SSW on Trooper 1
++ PR #1229: Remove threading from the UI loader
 
 0.49.11 (2022-12-22 1500 UTC)
 + Issue #910: Fix SV Fission and TL C Fusion Engine Minimum Weight
