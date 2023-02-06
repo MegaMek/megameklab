@@ -20,19 +20,22 @@ import megamek.client.ui.swing.widget.MegamekButton;
 import megamek.client.ui.swing.widget.SkinSpecification;
 import megamek.client.ui.swing.widget.SkinSpecification.UIComponents;
 import megamek.client.ui.swing.widget.SkinXMLHandler;
-import megamek.common.*;
+import megamek.common.Configuration;
+import megamek.common.Entity;
+import megamek.common.annotations.Nullable;
 import megamek.common.util.ImageUtil;
 import megamek.common.util.fileUtils.MegaMekFile;
 import megameklab.MMLConstants;
-import megameklab.ui.dialog.LoadingDialog;
 import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
+import megameklab.ui.dialog.UiLoader;
+import megameklab.ui.util.AppCloser;
+import megameklab.ui.util.ExitOnWindowClosingListener;
+import megameklab.util.CConfig;
 import megameklab.util.UnitUtil;
 import org.apache.logging.log4j.LogManager;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ResourceBundle;
@@ -42,17 +45,16 @@ import java.util.TreeMap;
  * A startup splash screen for MegaMekLab
  * @author Taharqa
  */
-public class StartupGUI extends JPanel {
+public class StartupGUI extends JPanel implements AppCloser {
     JFrame frame;
-    Image imgSplash;
     BufferedImage backgroundIcon;
     
     /** A map of resolution widths to file names for the startup screen */
     private final TreeMap<Integer, String> startupScreenImages = new TreeMap<>();
     {
-        startupScreenImages.put(0, "data/images/misc/mml_start_spooky_hd.jpg"); // TODO : Remove inline filename
-        startupScreenImages.put(1441, "data/images/misc/mml_start_spooky_fhd.jpg"); // TODO : Remove inline filename
-        startupScreenImages.put(1921, "data/images/misc/mml_start_spooky_uhd.jpg"); // TODO : Remove inline filename
+        startupScreenImages.put(0, Configuration.miscImagesDir() + "/mml_start_spooky_hd.jpg"); // TODO : Remove inline filename
+        startupScreenImages.put(1441, Configuration.miscImagesDir() + "/mml_start_spooky_fhd.jpg"); // TODO : Remove inline filename
+        startupScreenImages.put(1921, Configuration.miscImagesDir() + "/mml_start_spooky_uhd.jpg"); // TODO : Remove inline filename
     }
     
     private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Splash");
@@ -93,7 +95,7 @@ public class StartupGUI extends JPanel {
 
         MegamekButton btnLoadUnit = new MegamekButton(resourceMap.getString("btnLoadUnit.text"),
                 UIComponents.MainMenuButton.getComp(), true);
-        btnLoadUnit.addActionListener(evt -> loadUnit());
+        btnLoadUnit.addActionListener(evt -> selectAndLoadUnitFromCache(frame));
         
         MegamekButton btnNewMek = new MegamekButton(resourceMap.getString("btnNewMek.text"),
                 UIComponents.MainMenuButton.getComp(), true);
@@ -224,18 +226,10 @@ public class StartupGUI extends JPanel {
         frame.setResizable(false);
         frame.getContentPane().setLayout(new BorderLayout());
         frame.getContentPane().add(this, BorderLayout.CENTER);
-        frame.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                frame.setVisible(false);
-                System.exit(0);
-            }
-        });
+        frame.addWindowListener(new ExitOnWindowClosingListener(this));
         frame.validate();
         frame.pack();
-        // center the screen
         frame.setLocationRelativeTo(null);
-
         frame.setVisible(true);
     }
     
@@ -266,53 +260,64 @@ public class StartupGUI extends JPanel {
      * @param type an <code>int</code> corresponding to the unit type to construct
      */
     private void newUnit(long type) {
-        newUnit(type, false, false, null);
-    }
-    
-    private void newUnit(long type, boolean primitive, boolean industrial, Entity en) {
         frame.setVisible(false);
-        LoadingDialog ld = new LoadingDialog(frame, type, primitive, industrial, en);
-        ld.setVisible(true);
+        frame.dispose();
+        UiLoader.loadUi(type, false, false);
     }
-    
-    private void loadUnit() {
-        EquipmentType.initializeTypes();
-        UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(frame);
-        unitLoadingDialog.setVisible(true);
-        MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(frame, unitLoadingDialog);
 
+    /**
+     * Shows the Unit Selector Window and loads the unit if the user selects one. When the chosen
+     * unit fits the MageMekLabMainUI given as previousFrame this frame will be kept and updated
+     * to the chosen unit, otherwise, a new UI will be created for the unit and previousFrame will
+     * be closed and disposed.
+     *
+     * @param previousFrame The active frame before loading a new unit; can be the StartupGUI or any
+     *                      MegaMekLabMainUI.
+     */
+    public static void selectAndLoadUnitFromCache(@Nullable JFrame previousFrame) {
+        UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(previousFrame);
+        unitLoadingDialog.setVisible(true);
+        MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(previousFrame, unitLoadingDialog);
         Entity newUnit = viewer.getChosenEntity();
         viewer.setVisible(false);
         viewer.dispose();
 
-        if (null == newUnit) {
+        MegaMekLabMainUI previousUI = null;
+        if (previousFrame instanceof MegaMekLabMainUI) {
+            previousUI = (MegaMekLabMainUI) previousFrame;
+        }
+
+        if ((newUnit == null) ||
+                ((previousUI != null) && !previousUI.safetyPrompt())) {
             return;
         }
 
-        if (!UnitUtil.validateUnit(newUnit).isBlank()) {
-            JOptionPane.showMessageDialog(frame, String.format(
-                    resourceMap.getString("message.invalidUnit.format"),
-                            UnitUtil.validateUnit(newUnit)));
+        if (!UnitUtil.validateUnit(newUnit).trim().isBlank()) {
+            JOptionPane.showMessageDialog(previousFrame, String.format(
+                    ResourceBundle.getBundle("megameklab.resources.Splash").getString("message.invalidUnit.format"),
+                    UnitUtil.validateUnit(newUnit)));
         }
 
-        if (newUnit.isSupportVehicle()) {
-            newUnit(Entity.ETYPE_SUPPORT_TANK, false, false, newUnit);
-        } else if (newUnit.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)) {
-            newUnit(Entity.ETYPE_DROPSHIP, newUnit.isPrimitive(), false, newUnit);
-        } else if (newUnit.hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
-            newUnit(Entity.ETYPE_JUMPSHIP, newUnit.isPrimitive(), false, newUnit);
-        } else if ((newUnit instanceof Aero) && !(newUnit instanceof FixedWingSupport)) {
-            newUnit(Entity.ETYPE_AERO, newUnit.isPrimitive(), false, newUnit);
-        } else if (newUnit instanceof BattleArmor) {
-            newUnit(Entity.ETYPE_BATTLEARMOR, false, false, newUnit);
-        } else if (newUnit instanceof Infantry) {
-            newUnit(Entity.ETYPE_INFANTRY, false, false, newUnit);
-        } else if (newUnit instanceof Mech) {
-            newUnit(Entity.ETYPE_MECH, false, false, newUnit);
-        } else if (newUnit instanceof Protomech) {
-            newUnit(Entity.ETYPE_PROTOMECH, false, false, newUnit);
-        } else if ((newUnit instanceof Tank) && !(newUnit instanceof GunEmplacement)) {
-            newUnit(Entity.ETYPE_TANK, false, false, newUnit);
+        if ((previousUI == null) || (newUnit.getEntityType() != previousUI.getEntity().getEntityType())) {
+            if (previousFrame != null) {
+                previousFrame.setVisible(false);
+                previousFrame.dispose();
+            }
+            UiLoader.loadUi(newUnit);
+        } else {
+            UnitUtil.updateLoadedUnit(newUnit);
+            if (viewer.getChosenMechSummary().getSourceFile().getName().endsWith(".zip")) {
+                String fileName = viewer.getChosenMechSummary().getSourceFile().getAbsolutePath();
+                fileName = fileName.substring(0, fileName.lastIndexOf(File.separatorChar) + 1);
+                fileName = fileName + MenuBar.createUnitFilename(newUnit);
+                CConfig.updateSaveFiles(fileName);
+            } else {
+                CConfig.updateSaveFiles(viewer.getChosenMechSummary().getSourceFile().getAbsolutePath());
+            }
+            previousUI.setEntity(newUnit);
+            previousUI.reloadTabs();
+            previousUI.refreshAll();
+            previousUI.setVisible(true);
         }
     }
 }

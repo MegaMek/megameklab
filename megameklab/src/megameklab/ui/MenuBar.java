@@ -21,7 +21,7 @@ import megamek.common.annotations.Nullable;
 import megamek.common.loaders.BLKFile;
 import megamek.common.templates.TROView;
 import megameklab.MMLConstants;
-import megameklab.ui.dialog.LoadingDialog;
+import megameklab.ui.dialog.UiLoader;
 import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
 import megameklab.ui.dialog.PrintQueueDialog;
 import megameklab.ui.dialog.settings.SettingsDialog;
@@ -173,7 +173,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             miSwitchToMek.setName("miSwitchToMek");
             miSwitchToMek.setMnemonic(KeyEvent.VK_M);
             miSwitchToMek.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, InputEvent.ALT_DOWN_MASK));
-            miSwitchToMek.addActionListener(evt -> newUnit(Entity.ETYPE_MECH, false, null));
+            miSwitchToMek.addActionListener(evt -> newUnit(Entity.ETYPE_MECH, false));
             switchUnitTypeMenu.add(miSwitchToMek);
         }
 
@@ -182,7 +182,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             miSwitchToFighter.setName("miSwitchToFighter");
             miSwitchToFighter.setMnemonic(KeyEvent.VK_A);
             miSwitchToFighter.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.ALT_DOWN_MASK));
-            miSwitchToFighter.addActionListener(evt -> newUnit(Entity.ETYPE_AERO, false, null));
+            miSwitchToFighter.addActionListener(evt -> newUnit(Entity.ETYPE_AERO, false));
             switchUnitTypeMenu.add(miSwitchToFighter);
         }
 
@@ -191,7 +191,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             item.setName("miSwitchToDropShipSmallCraft");
             item.setMnemonic(KeyEvent.VK_D);
             item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.ALT_DOWN_MASK));
-            item.addActionListener(evt -> newUnit(Entity.ETYPE_DROPSHIP, false, null));
+            item.addActionListener(evt -> newUnit(Entity.ETYPE_DROPSHIP, false));
             switchUnitTypeMenu.add(item);
         }
 
@@ -200,7 +200,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             miSwitchToAdvancedAero.setName("miSwitchToAdvancedAero");
             miSwitchToAdvancedAero.setMnemonic(KeyEvent.VK_J);
             miSwitchToAdvancedAero.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_J, InputEvent.ALT_DOWN_MASK));
-            miSwitchToAdvancedAero.addActionListener(evt -> newUnit(Entity.ETYPE_JUMPSHIP, false, null));
+            miSwitchToAdvancedAero.addActionListener(evt -> newUnit(Entity.ETYPE_JUMPSHIP, false));
             switchUnitTypeMenu.add(miSwitchToAdvancedAero);
         }
 
@@ -210,7 +210,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             miSwitchToCombatVehicle.setName("miSwitchToCombatVehicle");
             miSwitchToCombatVehicle.setMnemonic(KeyEvent.VK_C);
             miSwitchToCombatVehicle.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.ALT_DOWN_MASK));
-            miSwitchToCombatVehicle.addActionListener(evt -> newUnit(Entity.ETYPE_TANK, false, null));
+            miSwitchToCombatVehicle.addActionListener(evt -> newUnit(Entity.ETYPE_TANK, false));
             switchUnitTypeMenu.add(miSwitchToCombatVehicle);
         }
 
@@ -219,7 +219,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             miSwitchToSupportVehicle.setName("miSwitchToSupportVehicle");
             miSwitchToSupportVehicle.setMnemonic(KeyEvent.VK_S);
             miSwitchToSupportVehicle.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.ALT_DOWN_MASK));
-            miSwitchToSupportVehicle.addActionListener(evt -> newUnit(Entity.ETYPE_SUPPORT_TANK, false, null));
+            miSwitchToSupportVehicle.addActionListener(evt -> newUnit(Entity.ETYPE_SUPPORT_TANK, false));
             switchUnitTypeMenu.add(miSwitchToSupportVehicle);
         }
 
@@ -228,7 +228,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             miSwitchToBattleArmor.setName("miSwitchToBattleArmor");
             miSwitchToBattleArmor.setMnemonic(KeyEvent.VK_B);
             miSwitchToBattleArmor.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, InputEvent.ALT_DOWN_MASK));
-            miSwitchToBattleArmor.addActionListener(evt -> newUnit(Entity.ETYPE_BATTLEARMOR, false, null));
+            miSwitchToBattleArmor.addActionListener(evt -> newUnit(Entity.ETYPE_BATTLEARMOR, false));
             switchUnitTypeMenu.add(miSwitchToBattleArmor);
         }
 
@@ -237,7 +237,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             miSwitchToInfantry.setName("miSwitchToInfantry");
             miSwitchToInfantry.setMnemonic(KeyEvent.VK_I);
             miSwitchToInfantry.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I, InputEvent.ALT_DOWN_MASK));
-            miSwitchToInfantry.addActionListener(evt -> newUnit(Entity.ETYPE_INFANTRY, false, null));
+            miSwitchToInfantry.addActionListener(evt -> newUnit(Entity.ETYPE_INFANTRY, false));
             switchUnitTypeMenu.add(miSwitchToInfantry);
         }
 
@@ -246,7 +246,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             miSwitchToProtoMek.setName("miSwitchToProtoMek");
             miSwitchToProtoMek.setMnemonic(KeyEvent.VK_P);
             miSwitchToProtoMek.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.ALT_DOWN_MASK));
-            miSwitchToProtoMek.addActionListener(evt -> newUnit(Entity.ETYPE_PROTOMECH, false, null));
+            miSwitchToProtoMek.addActionListener(evt -> newUnit(Entity.ETYPE_PROTOMECH, false));
             switchUnitTypeMenu.add(miSwitchToProtoMek);
         }
 
@@ -270,7 +270,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             miSwitchToMek.setName("miSwitchToMek");
             miSwitchToMek.setMnemonic(KeyEvent.VK_M);
             miSwitchToMek.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, InputEvent.ALT_DOWN_MASK));
-            miSwitchToMek.addActionListener(evt -> newUnit(Entity.ETYPE_MECH, true, null));
+            miSwitchToMek.addActionListener(evt -> newUnit(Entity.ETYPE_MECH, true));
             primitiveMenu.add(miSwitchToMek);
         }
 
@@ -279,7 +279,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             miSwitchToAero.setName("miSwitchToAero");
             miSwitchToAero.setMnemonic(KeyEvent.VK_A);
             miSwitchToAero.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.ALT_DOWN_MASK));
-            miSwitchToAero.addActionListener(evt -> newUnit(Entity.ETYPE_AERO, true, null));
+            miSwitchToAero.addActionListener(evt -> newUnit(Entity.ETYPE_AERO, true));
             primitiveMenu.add(miSwitchToAero);
         }
 
@@ -288,7 +288,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             miSwitchToDropShipSmallCraft.setName("miSwitchToDropShipSmallCraft");
             miSwitchToDropShipSmallCraft.setMnemonic(KeyEvent.VK_D);
             miSwitchToDropShipSmallCraft.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.ALT_DOWN_MASK));
-            miSwitchToDropShipSmallCraft.addActionListener(evt -> newUnit(Entity.ETYPE_DROPSHIP, true, null));
+            miSwitchToDropShipSmallCraft.addActionListener(evt -> newUnit(Entity.ETYPE_DROPSHIP, true));
             primitiveMenu.add(miSwitchToDropShipSmallCraft);
         }
 
@@ -297,7 +297,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             miSwitchToJumpShip.setName("miSwitchToJumpShip");
             miSwitchToJumpShip.setMnemonic(KeyEvent.VK_J);
             miSwitchToJumpShip.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_J, InputEvent.ALT_DOWN_MASK));
-            miSwitchToJumpShip.addActionListener(evt -> newUnit(Entity.ETYPE_JUMPSHIP, true, null));
+            miSwitchToJumpShip.addActionListener(evt -> newUnit(Entity.ETYPE_JUMPSHIP, true));
             primitiveMenu.add(miSwitchToJumpShip);
         }
 
@@ -318,7 +318,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         miLoadUnitFromCache.setName("miLoadUnitFromCache");
         miLoadUnitFromCache.setMnemonic(KeyEvent.VK_C);
         miLoadUnitFromCache.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, InputEvent.CTRL_DOWN_MASK));
-        miLoadUnitFromCache.addActionListener(evt -> loadUnit());
+        miLoadUnitFromCache.addActionListener(evt -> StartupGUI.selectAndLoadUnitFromCache(frame));
         loadMenu.add(miLoadUnitFromCache);
 
         final JMenuItem miLoadUnitFromFile = new JMenuItem(resources.getString("FromFile.text"));
@@ -1208,7 +1208,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
      * @param entity The Entity
      * @return A default filename for the Entity
      */
-    private String createUnitFilename(Entity entity) {
+    public static String createUnitFilename(Entity entity) {
         String fileName = (entity.getChassis() + ' ' + entity.getModel()).trim();
         fileName = fileName.replaceAll("[/\\\\<>:\"|?*]", "_");
         return fileName + ((entity instanceof Mech) ? ".mtf" : ".blk");
@@ -1359,71 +1359,6 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         }
     }
 
-    private void loadUnit() {
-        UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(getFrame());
-        unitLoadingDialog.setVisible(true);
-        MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(getFrame(), unitLoadingDialog);
-
-        Entity newUnit = viewer.getChosenEntity();
-        viewer.setVisible(false);
-        viewer.dispose();
-
-        if (null == newUnit) {
-            return;
-        }
-
-        if (!UnitUtil.validateUnit(newUnit).trim().isBlank()) {
-            JOptionPane.showMessageDialog(getFrame(), String.format(
-                    resources.getString("message.invalidUnit.format"),
-                    UnitUtil.validateUnit(newUnit)));
-        }
-
-        if (newUnit.getEntityType() != getFrame().getEntity().getEntityType()) {
-            if (newUnit.isSupportVehicle()) {
-                newUnit(Entity.ETYPE_SUPPORT_TANK, false, newUnit);
-            } else if (newUnit.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)) {
-                newUnit(Entity.ETYPE_DROPSHIP, newUnit.isPrimitive(), newUnit);
-            } else if (newUnit.hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
-                newUnit(Entity.ETYPE_JUMPSHIP, newUnit.isPrimitive(), newUnit);
-            } else if ((newUnit instanceof Aero) && !(newUnit instanceof FixedWingSupport)) {
-                newUnit(Entity.ETYPE_AERO, newUnit.isPrimitive(), newUnit);
-            } else if (newUnit instanceof BattleArmor) {
-                newUnit(Entity.ETYPE_BATTLEARMOR, false, newUnit);
-            } else if (newUnit instanceof Infantry) {
-                newUnit(Entity.ETYPE_INFANTRY, false, newUnit);
-            } else if (newUnit instanceof Mech) {
-                newUnit(Entity.ETYPE_MECH, false, newUnit);
-            } else if (newUnit instanceof Protomech) {
-                newUnit(Entity.ETYPE_PROTOMECH, false, newUnit);
-            } else if ((newUnit instanceof Tank) && !(newUnit instanceof GunEmplacement)) {
-                newUnit(Entity.ETYPE_TANK, false, newUnit);
-            } else {
-                JOptionPane.showMessageDialog(getFrame(),
-                        resources.getString("message.abortUnitLoad.text"));
-            }
-            return;
-        } else {
-            if (!getFrame().safetyPrompt()) {
-                return;
-            }
-        }
-
-        UnitUtil.updateLoadedUnit(newUnit);
-
-        if (viewer.getChosenMechSummary().getSourceFile().getName().endsWith(".zip")) {
-            String fileName = viewer.getChosenMechSummary().getSourceFile().getAbsolutePath();
-            fileName = fileName.substring(0, fileName.lastIndexOf(File.separatorChar) + 1);
-            fileName = fileName + createUnitFilename(newUnit);
-            CConfig.updateSaveFiles(fileName);
-        } else {
-            CConfig.updateSaveFiles(viewer.getChosenMechSummary().getSourceFile().getAbsolutePath());
-        }
-        getFrame().setEntity(newUnit);
-        reload();
-        refresh();
-        getFrame().setVisible(true);
-    }
-
     private void loadUnitFromFile(int fileNumber) {
         String filePathName = System.getProperty("user.dir") + "/data/mechfiles/"; // TODO : remove inline file path
 
@@ -1450,7 +1385,6 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         if (!(unitFile.isFile())) {
             unitFile = loadUnitFile();
             if (unitFile == null) {
-                // I want a file, y'know!
                 return;
             }
         }
@@ -1458,7 +1392,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         try {
             Entity tempEntity = new MechFileParser(unitFile).getEntity();
 
-            if (null == tempEntity) {
+            if ((null == tempEntity) || !getFrame().safetyPrompt()) {
                 return;
             }
 
@@ -1469,34 +1403,15 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             }
 
             if (tempEntity.getEntityType() != getFrame().getEntity().getEntityType()) {
-                if (tempEntity.isSupportVehicle()) {
-                    newUnit(Entity.ETYPE_SUPPORT_TANK, false, tempEntity);
-                } else if (tempEntity.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)) {
-                    newUnit(Entity.ETYPE_DROPSHIP, tempEntity.isPrimitive(), tempEntity);
-                } else if (tempEntity.hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
-                    newUnit(Entity.ETYPE_JUMPSHIP, tempEntity.isPrimitive(), tempEntity);
-                } else if ((tempEntity instanceof Aero) && !(tempEntity instanceof FixedWingSupport)) {
-                    newUnit(Entity.ETYPE_AERO, tempEntity.isPrimitive(), tempEntity);
-                } else if (tempEntity instanceof BattleArmor) {
-                    newUnit(Entity.ETYPE_BATTLEARMOR, false, tempEntity);
-                } else if (tempEntity instanceof Infantry) {
-                    newUnit(Entity.ETYPE_INFANTRY, false, tempEntity);
-                } else if (tempEntity instanceof Mech) {
-                    newUnit(Entity.ETYPE_MECH, false, tempEntity);
-                } else if (tempEntity instanceof Protomech) {
-                    newUnit(Entity.ETYPE_PROTOMECH, false, tempEntity);
-                } else if ((tempEntity instanceof Tank) && !(tempEntity instanceof GunEmplacement)) {
-                    newUnit(Entity.ETYPE_TANK, false, tempEntity);
-                } else {
-                    JOptionPane.showMessageDialog(getFrame(),
-                            resources.getString("message.abortUnitLoad.text"));
-                }
+                getFrame().setVisible(false);
+                getFrame().dispose();
+                UiLoader.loadUi(tempEntity);
                 return;
+            } else {
+                getFrame().setEntity(tempEntity);
+                UnitUtil.updateLoadedUnit(getFrame().getEntity());
+                CConfig.updateSaveFiles(unitFile.getAbsolutePath());
             }
-            getFrame().setEntity(tempEntity);
-            UnitUtil.updateLoadedUnit(getFrame().getEntity());
-
-            CConfig.updateSaveFiles(unitFile.getAbsolutePath());
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(getFrame(), String.format(
                     resources.getString("message.invalidUnit.format"),
@@ -1520,11 +1435,11 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
      * given unit type and get rid of the existing frame
      * @param type an <code>int</code> corresponding to the unit type to construct
      */
-    private void newUnit(long type, boolean primitive, Entity en) {
+    private void newUnit(long type, boolean primitive) {
         if (frame.safetyPrompt()) {
-            getFrame().setVisible(false);
-            LoadingDialog ld = new LoadingDialog(getFrame(), type, primitive, false, en);
-            ld.setVisible(true);
+            frame.setVisible(false);
+            frame.dispose();
+            UiLoader.loadUi(type, primitive, false);
         }
     }
 

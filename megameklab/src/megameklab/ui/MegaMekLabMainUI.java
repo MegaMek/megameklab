@@ -21,27 +21,22 @@ import megamek.common.Entity;
 import megamek.common.preference.PreferenceManager;
 import megameklab.MMLConstants;
 import megameklab.MegaMekLab;
-import megameklab.util.CConfig;
+import megameklab.ui.util.AppCloser;
+import megameklab.ui.util.ExitOnWindowClosingListener;
 import megameklab.ui.util.RefreshListener;
+import megameklab.util.CConfig;
 
 import javax.swing.*;
 import javax.swing.UIManager.LookAndFeelInfo;
 import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
-public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener, EntitySource {
+public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener, EntitySource, AppCloser {
     private Entity entity = null;
     protected MenuBar mmlMenuBar;
     
     public MegaMekLabMainUI() {
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent evt) {
-                exit();
-            }
-        });
+        addWindowListener(new ExitOnWindowClosingListener(this));
         setResizable(true);
         setExtendedState(CConfig.getIntParam("WINDOWSTATE"));
     }
@@ -51,7 +46,6 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
         setJMenuBar(mmlMenuBar);
         reloadTabs();
         setSizeAndLocation();
-        setVisible(true);
         refreshAll();
     }
     
@@ -75,8 +69,6 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
         Dimension size = new Dimension(w, h);
         setSize(size);
         setPreferredSize(size);
-
-        // center on screen
         setLocationRelativeTo(null);
     }
     
@@ -125,21 +117,19 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
         }
     }
 
-    public void exit() {
+    @Override
+    public boolean exit() {
         if (!safetyPrompt()) {
-            return;
+            return false;
         }
 
         CConfig.setParam("WINDOWSTATE", Integer.toString(getExtendedState()));
         CConfig.setParam(CConfig.CONFIG_PLAF, UIManager.getLookAndFeel().getClass().getName());
         CConfig.saveConfig();
-
         PreferenceManager.getInstance().save();
-
         MegaMek.getMMPreferences().saveToFile(MMLConstants.MM_PREFERENCES_FILE);
         MegaMekLab.getMMLPreferences().saveToFile(MMLConstants.MML_PREFERENCES_FILE);
-
-        System.exit(0);
+        return true;
     }
 
     public abstract void reloadTabs();
