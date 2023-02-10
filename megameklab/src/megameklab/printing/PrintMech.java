@@ -25,6 +25,7 @@ import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLResourceDescriptor;
 import org.apache.logging.log4j.LogManager;
 import org.w3c.dom.*;
+import org.w3c.dom.svg.SVGRect;
 import org.w3c.dom.svg.SVGRectElement;
 
 import java.awt.geom.Rectangle2D;
@@ -517,8 +518,13 @@ public class PrintMech extends PrintEntity {
             rect = getSVGDocument().getElementById(FLUFF_SINGLE_PILOT);
         }
         if (rect instanceof SVGRectElement) {
-            embedImage(ImageHelper.getFluffFile(mech, ImageHelper.imageMech),
-                    (Element) rect.getParentNode(), getRectBBox((SVGRectElement) rect), true);
+            if (options.showCondensedReferenceCharts()) {
+                ReferenceTable table = new MekLocationAndClusterTable(this);
+                rect.getParentNode().appendChild(table.createTable(getRectBBox((SVGRectElement) rect)));
+            } else {
+                embedImage(ImageHelper.getFluffFile(mech, ImageHelper.imageMech),
+                        (Element) rect.getParentNode(), getRectBBox((SVGRectElement) rect), true);
+            }
         }
     }
 

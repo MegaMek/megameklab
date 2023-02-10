@@ -18,6 +18,7 @@ import megameklab.util.CConfig;
 import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
 
+import java.awt.geom.Rectangle2D;
 import java.util.*;
 
 import static megameklab.printing.PrintRecordSheet.svgNS;
@@ -66,6 +67,10 @@ abstract public class ReferenceTableBase {
         g.appendChild(createTableBody(3.0, PADDING * 1.5 + sheet.getFontHeight(FONT_SIZE_LABEL) * 2,
                 width - 8.0, height - 9.0, PrintRecordSheet.FONT_SIZE_VSMALL));
         return g;
+    }
+
+    public Element createTable(Rectangle2D bbox) {
+        return createTable(bbox.getX(), bbox.getY(), bbox.getWidth(), bbox.getHeight());
     }
 
     private Element createLabel(double x, double y, String title, double labelWidth) {

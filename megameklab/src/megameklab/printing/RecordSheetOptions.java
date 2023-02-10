@@ -109,6 +109,10 @@ public class RecordSheetOptions {
         return referenceCharts;
     }
 
+    public boolean showCondensedReferenceCharts() {
+        return true;
+    }
+
     public void setPaperSize(PaperSize paperSize) {
         this.paperSize = paperSize;
     }
