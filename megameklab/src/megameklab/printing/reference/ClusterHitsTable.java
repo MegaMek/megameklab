@@ -24,9 +24,9 @@ import java.util.*;
  * Table showing the relevant columns of the cluster hits table
  */
 public class ClusterHitsTable extends ReferenceTable {
-    private final Set<Integer> clusterSizes = new TreeSet<>();
-    private boolean hasATM;
-    private boolean hasHAG;
+    protected final Set<Integer> clusterSizes = new TreeSet<>();
+    protected boolean hasATM;
+    protected boolean hasHAG;
 
     public ClusterHitsTable(PrintEntity sheet) {
         this(sheet, sheet.getEntity());
@@ -46,7 +46,11 @@ public class ClusterHitsTable extends ReferenceTable {
         addTable(entities.get(0));
     }
 
-    private void addTable(Entity entity) {
+    public Set<Integer> getSizes() {
+        return clusterSizes;
+    }
+
+    protected void addTable(Entity entity) {
         if (!clusterSizes.isEmpty()) {
             List<Double> offsets = new ArrayList<>();
             double spacing = 0.9 / (clusterSizes.size() + 1);
@@ -127,7 +131,7 @@ public class ClusterHitsTable extends ReferenceTable {
         }
     }
 
-    private void addRows() {
+    protected void addRows() {
         for (int roll = 2; roll <= 12; roll++) {
             List<String> row = new ArrayList<>();
             row.add(String.valueOf(roll));
@@ -138,7 +142,7 @@ public class ClusterHitsTable extends ReferenceTable {
         }
     }
 
-    private void addNotes(Entity entity) {
+    protected void addNotes(Entity entity) {
         if (hasATM || entity.hasWorkingMisc(MiscType.F_ARTEMIS)) {
             addNote(bundle.getString("artemisIV.note"));
         } else if (entity.hasWorkingMisc(MiscType.F_ARTEMIS_V)) {

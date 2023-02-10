@@ -27,57 +27,61 @@ public class MekHitLocation extends ReferenceTable {
         setHeaders(bundle.getString("dieRoll2d6"), bundle.getString("leftSide"),
                 bundle.getString("frontRear"), bundle.getString("rightSide"));
         if (sheet.getEntity() instanceof TripodMech) {
-            addTripodRows();
+            addRows(TRIPOD_LOCATIONS);
+            addNote(bundle.getString("tripodLegNote"));
         } else if (sheet.getEntity() instanceof QuadMech) {
-            addQuadRows();
+            addRows(QUAD_LOCATIONS);
         } else {
-            addBipedRows();
+            addRows(BIPED_LOCATIONS);
         }
     }
 
-    private void addBipedRows() {
-        addRow("2*", "LT(C)", "CT(C)", "RT(C)");
-        addRow("3", "LL", "RA", "RL");
-        addRow("4", "LA", "RA", "RA");
-        addRow("5", "LA", "RL", "RA");
-        addRow("6", "LL", "RT", "RL");
-        addRow("7", "LT", "CT", "RT");
-        addRow("8", "CT", "LT", "CT");
-        addRow("9", "RT", "LL", "LT");
-        addRow("10", "RA", "LA", "LA");
-        addRow("11", "RL", "LA", "LL");
-        addRow("12", "HD", "HD", "HD");
-        addNote(bundle.getString("tacNote"));
-    }
+    static final String[][] BIPED_LOCATIONS = {
+            { "2*", "LT(C)", "CT(C)", "RT(C)" },
+            { "3", "LL", "RA", "RL" },
+            { "4", "LA", "RA", "RA" },
+            { "5", "LA", "RL", "RA" },
+            { "6", "LL", "RT", "RL" },
+            { "7", "LT", "CT", "RT" },
+            { "8", "CT", "LT", "CT" },
+            { "9", "RT", "LL", "LT" },
+            { "10", "RA", "LA", "LA" },
+            { "11", "RL", "LA", "LL" },
+            { "12", "HD", "HD", "HD" }
+    };
 
-    private void addQuadRows() {
-        addRow("2*", "LT(C)", "CT(C)", "RT(C)");
-        addRow("3", "LRL", "RFL", "RRL");
-        addRow("4", "LFL", "RFL", "RFL");
-        addRow("5", "LFL", "RRL", "RFL");
-        addRow("6", "LRL", "RT", "RRL");
-        addRow("7", "LT", "CT", "RT");
-        addRow("8", "CT", "LT", "CT");
-        addRow("9", "RT", "LRL", "LT");
-        addRow("10", "RFL", "LFL", "LFL");
-        addRow("11", "RRL", "LFL", "LRL");
-        addRow("12", "HD", "HD", "HD");
-        addNote(bundle.getString("tacNote"));
-    }
+    static final String[][] QUAD_LOCATIONS = {
+            { "2*", "LT(C)", "CT(C)", "RT(C)" },
+            { "3", "LRL", "RFL", "RRL" },
+            { "4", "LFL", "RFL", "RFL" },
+            { "5", "LFL", "RRL", "RFL" },
+            { "6", "LRL", "RT", "RRL" },
+            { "7", "LT", "CT", "RT" },
+            { "8", "CT", "LT", "CT" },
+            { "9", "RT", "LRL", "LT" },
+            { "10", "RFL", "LFL", "LFL" },
+            { "11", "RRL", "LFL", "LRL" },
+            { "12", "HD", "HD", "HD" }
+    };
 
-    private void addTripodRows() {
-        addRow("2*", "LT(C)", "CT(C)", "RT(C)");
-        addRow("3", "Leg (+1)\u2020", "RA", "Leg (-1)\u2020");
-        addRow("4", "LA", "RA", "RA");
-        addRow("5", "LA", "Leg\u2020", "RA");
-        addRow("6", "Leg (+1)\u2020", "RT", "Leg (-1)\u2020");
-        addRow("7", "LT", "CT", "RT");
-        addRow("8", "CT", "LT", "CT");
-        addRow("9", "RT", "Leg\u2020", "LT");
-        addRow("10", "RA", "LA", "LA");
-        addRow("11", "Leg (+1)\u2020", "LA", "Leg (-1)\u2020");
-        addRow("12", "HD", "HD", "HD");
+    static final String[][] TRIPOD_LOCATIONS = {
+            { "2*", "LT(C)", "CT(C)", "RT(C)" },
+            { "3", "Leg (+1)\u2020", "RA", "Leg (-1)\u2020" },
+            { "4", "LA", "RA", "RA" },
+            { "5", "LA", "Leg\u2020", "RA" },
+            { "6", "Leg (+1)\u2020", "RT", "Leg (-1)\u2020" },
+            { "7", "LT", "CT", "RT" },
+            { "8", "CT", "LT", "CT" },
+            { "9", "RT", "Leg\u2020", "LT" },
+            { "10", "RA", "LA", "LA" },
+            { "11", "Leg (+1)\u2020", "LA", "Leg (-1)\u2020" },
+            { "12", "HD", "HD", "HD" }
+    };
+
+    private void addRows(String[][] locations) {
+        for (String[] row : locations) {
+            addRow(row);
+        }
         addNote(bundle.getString("tacNote"));
-        addNote(bundle.getString("tripodLegNote"));
     }
 }
