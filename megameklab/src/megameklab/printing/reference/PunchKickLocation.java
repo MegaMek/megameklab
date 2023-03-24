@@ -26,13 +26,12 @@ public class PunchKickLocation extends ReferenceTable {
         super(sheet, 0.05, 0.15, 0.3, 0.45, 0.6, 0.75, 0.9);
         setHeaders(bundle.getString("dieRoll1d6"),
                 bundle.getString("leftSide"),
-                bundle.getString("frontRear"),
+                bundle.getString("punchFrontRear"),
                 bundle.getString("rightSide"),
                 bundle.getString("leftSide"),
-                bundle.getString("frontRear"),
+                bundle.getString("kickFrontRear"),
                 bundle.getString("rightSide")
         );
-        addRow("", "", bundle.getString("punch"), "", "", bundle.getString("kick"), "");
         if (sheet.getEntity() instanceof TripodMech) {
             addTripodRows();
         } else if (sheet.getEntity() instanceof QuadMech) {
