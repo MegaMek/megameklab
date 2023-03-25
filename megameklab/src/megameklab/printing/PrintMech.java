@@ -532,7 +532,7 @@ public class PrintMech extends PrintEntity {
                             * table.lineCount() / lines + margin;
                     rect.getParentNode().appendChild(
                             table.createTable(bbox.getX(), ypos, bbox.getWidth() + BORDER, height));
-                    ypos += height;
+                    ypos += height + BORDER;
                 }
 
             } else {
