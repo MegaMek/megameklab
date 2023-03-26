@@ -42,6 +42,7 @@ class ExportSettingsPanel extends JPanel {
     private final JTextArea txtFontDisplay = new JTextArea();
     private final JCheckBox chkProgressBar = new JCheckBox();
     private final JCheckBox chkShowReferenceTables = new JCheckBox();
+    private final JCheckBox chkShowCondensedTables = new JCheckBox();
     private final JCheckBox chkShowQuirks = new JCheckBox();
     private final JCheckBox chkShowPilotData = new JCheckBox();
     private final JCheckBox chkShowEraIcon = new JCheckBox();
@@ -99,6 +100,10 @@ class ExportSettingsPanel extends JPanel {
         chkShowReferenceTables.setToolTipText(resourceMap.getString("ConfigurationDialog.chkShowReferenceTables.tooltip"));
         chkShowReferenceTables.setSelected(CConfig.getBooleanParam(CConfig.RS_REFERENCE));
 
+        chkShowCondensedTables.setText(resourceMap.getString("ConfigurationDialog.chkShowCondensedTables.text"));
+        chkShowCondensedTables.setToolTipText(resourceMap.getString("ConfigurationDialog.chkShowCondensedTables.tooltip"));
+        chkShowCondensedTables.setSelected(CConfig.getBooleanParam(CConfig.RS_CONDENSED_REFERENCE));
+
         chkShowQuirks.setText(resourceMap.getString("ConfigurationDialog.chkShowQuirks.text"));
         chkShowQuirks.setToolTipText(resourceMap.getString("ConfigurationDialog.chkShowQuirks.tooltip"));
         chkShowQuirks.setSelected(CConfig.getBooleanParam(CConfig.RS_SHOW_QUIRKS));
@@ -148,6 +153,7 @@ class ExportSettingsPanel extends JPanel {
         gridPanel.add(fontPanel);
         gridPanel.add(chkColor);
         gridPanel.add(chkShowReferenceTables);
+        gridPanel.add(chkShowCondensedTables);
         gridPanel.add(chkShowQuirks);
         gridPanel.add(chkShowPilotData);
         gridPanel.add(chkShowEraIcon);
@@ -168,6 +174,7 @@ class ExportSettingsPanel extends JPanel {
         recordSheetSettings.put(CConfig.RS_PROGRESS_BAR, String.valueOf(chkProgressBar.isSelected()));
         recordSheetSettings.put(CConfig.RS_COLOR, Boolean.toString(chkColor.isSelected()));
         recordSheetSettings.put(CConfig.RS_REFERENCE, Boolean.toString(chkShowReferenceTables.isSelected()));
+        recordSheetSettings.put(CConfig.RS_CONDENSED_REFERENCE, Boolean.toString(chkShowCondensedTables.isSelected()));
         recordSheetSettings.put(CConfig.RS_SHOW_QUIRKS, Boolean.toString(chkShowQuirks.isSelected()));
         recordSheetSettings.put(CConfig.RS_SHOW_PILOT_DATA, Boolean.toString(chkShowPilotData.isSelected()));
         recordSheetSettings.put(CConfig.RS_SHOW_ERA, Boolean.toString(chkShowEraIcon.isSelected()));
