@@ -25,7 +25,6 @@ import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLResourceDescriptor;
 import org.apache.logging.log4j.LogManager;
 import org.w3c.dom.*;
-import org.w3c.dom.svg.SVGRect;
 import org.w3c.dom.svg.SVGRectElement;
 
 import java.awt.geom.Rectangle2D;
@@ -509,7 +508,6 @@ public class PrintMech extends PrintEntity {
     
     @Override
     protected void drawFluffImage() {
-        double BORDER = 3.0;
         Element rect;
         if (mech.getCrew().getSlotCount() == 3) {
             rect = getSVGDocument().getElementById(FLUFF_TRIPLE_PILOT);
@@ -520,10 +518,16 @@ public class PrintMech extends PrintEntity {
         }
         if (rect instanceof SVGRectElement) {
             if (options.showCondensedReferenceCharts()) {
-                List<ReferenceTable> tables = List.of(new MekLocationAndClusterTable(this),
-                        new PunchKickLocation(this));
+                List<ReferenceTable> tables = new ArrayList<>();
+                tables.add(new MekLocationAndClusterTable(this));
+                // Multi-crew cockpits and LAMs have a larger crew panel that doesn't leave room
+                // for two tables so we leave off the punch/kick.
+                if ((mech.getCrew().getSlotCount() == 1) && !(mech instanceof LandAirMech)) {
+                    tables.add(new PunchKickLocation(this));
+                }
                 Rectangle2D bbox = getRectBBox((SVGRectElement) rect);
-                placeReferenceCharts(tables, rect.getParentNode(), bbox.getX(), bbox.getY(), bbox.getWidth() + 6.0, bbox.getHeight());
+                placeReferenceCharts(tables, rect.getParentNode(), bbox.getX(), bbox.getY(),
+                        bbox.getWidth() + 6.0, bbox.getHeight() + 6.0);
             } else {
                 embedImage(ImageHelper.getFluffFile(mech, ImageHelper.imageMech),
                         (Element) rect.getParentNode(), getRectBBox((SVGRectElement) rect), true);
