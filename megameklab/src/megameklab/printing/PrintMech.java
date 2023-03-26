@@ -522,19 +522,8 @@ public class PrintMech extends PrintEntity {
             if (options.showCondensedReferenceCharts()) {
                 List<ReferenceTable> tables = List.of(new MekLocationAndClusterTable(this),
                         new PunchKickLocation(this));
-                double lines = tables.stream().mapToDouble(ReferenceTable::lineCount).sum();
                 Rectangle2D bbox = getRectBBox((SVGRectElement) rect);
-
-                double margin = ReferenceTable.getMargins(this);
-                double ypos = bbox.getY() + BORDER;
-                for (ReferenceTable table : tables) {
-                    double height = (bbox.getHeight() - margin * tables.size() - BORDER)
-                            * table.lineCount() / lines + margin;
-                    rect.getParentNode().appendChild(
-                            table.createTable(bbox.getX(), ypos, bbox.getWidth() + BORDER, height));
-                    ypos += height + BORDER;
-                }
-
+                placeReferenceCharts(tables, rect.getParentNode(), bbox.getX(), bbox.getY(), bbox.getWidth() + 6.0, bbox.getHeight());
             } else {
                 embedImage(ImageHelper.getFluffFile(mech, ImageHelper.imageMech),
                         (Element) rect.getParentNode(), getRectBBox((SVGRectElement) rect), true);

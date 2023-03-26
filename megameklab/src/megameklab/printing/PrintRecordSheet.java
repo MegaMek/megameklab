@@ -872,19 +872,41 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         return Collections.emptyList();
     }
 
+    /**
+     * Adds reference charts to the right side of the record sheet.
+     * @param pageFormat The document's page format.
+     */
     protected void addReferenceCharts(PageFormat pageFormat) {
-        List<ReferenceTable> rightSide = getRightSideReferenceTables();
-        double lines = rightSide.stream().mapToDouble(ReferenceTable::lineCount).sum();
+        placeReferenceCharts(
+                getRightSideReferenceTables(),
+                getSVGDocument().getDocumentElement(),
+                pageFormat.getImageableX() + pageFormat.getImageableWidth() * 0.8 + 3.0,
+                pageFormat.getImageableY(),
+                pageFormat.getImageableWidth() *0.2, pageFormat.getImageableHeight());
+    }
 
-        double ypos = pageFormat.getImageableY();
+    /**
+     * Adds a list of reference tables to the document, sizing to fit withing the available space.
+     * Layout is vertical.
+     *
+     * @param tables The list of tables to add.
+     * @param parent The parent node of the table {@link Element}.
+     * @param x      The x coordinate of the top left corner of the tables, relative to the parent node.
+     * @param y      The y coordinate of the top left corder of the tables, relative to the parent node.
+     * @param width  The with of the table column.
+     * @param height The height of the table column.
+     */
+    protected void placeReferenceCharts(List<ReferenceTable> tables, Node parent, double x, double y, double width, double height) {
+        double BORDER = 3.0;
+        double lines = tables.stream().mapToDouble(ReferenceTable::lineCount).sum();
+        double ypos = y + BORDER;
         double margin = ReferenceTable.getMargins(this);
-        for (ReferenceTable table : rightSide) {
-            double height = (pageFormat.getImageableHeight() - margin * rightSide.size())
+        for (ReferenceTable table: tables) {
+            double tableHeight = (height - margin * tables.size())
                     * table.lineCount() / lines + margin;
-            getSVGDocument().getDocumentElement().appendChild(
-                    table.createTable(pageFormat.getImageableX() + pageFormat.getImageableWidth() * 0.8 + 3.0,
-                            ypos, pageFormat.getImageableWidth() * 0.2, height));
-            ypos += height;
+            parent.appendChild(
+                    table.createTable(x, ypos, width, tableHeight - BORDER));
+            ypos += tableHeight;
         }
     }
 }
