@@ -71,6 +71,9 @@ public class MekLocationAndClusterTable extends ClusterHitsTable {
 
     protected void addNotes(Entity entity) {
         addNote(bundle.getString("tacNote"));
+        if (entity instanceof TripodMech) {
+            addNote(bundle.getString("tripodLegNote"));
+        }
         super.addNotes(entity);
     }
 }
