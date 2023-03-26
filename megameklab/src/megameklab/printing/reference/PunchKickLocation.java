@@ -23,7 +23,7 @@ import megameklab.printing.PrintEntity;
 public class PunchKickLocation extends ReferenceTable {
 
     public PunchKickLocation(PrintEntity sheet) {
-        super(sheet, 0.05, 0.15, 0.3, 0.45, 0.6, 0.75, 0.9);
+        super(sheet, 0.08, 0.18, 0.32, 0.47, 0.61, 0.76, 0.9);
         setHeaders(bundle.getString("dieRoll1d6"),
                 bundle.getString("leftSide"),
                 bundle.getString("punchFrontRear"),
