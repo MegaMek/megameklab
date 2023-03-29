@@ -161,7 +161,7 @@ class ExportSettingsPanel extends JPanel {
         gridPanel.add(chkHeatProfile);
         gridPanel.add(chkTacOpsHeat);
         gridPanel.add(scalePanel);
-        SpringUtilities.makeCompactGrid(gridPanel, 12, 1, 0, 0, 15, 10);
+        SpringUtilities.makeCompactGrid(gridPanel, 13, 1, 0, 0, 15, 10);
         gridPanel.setBorder(new EmptyBorder(20, 30, 20, 30));
         setLayout(new FlowLayout(FlowLayout.LEFT));
         add(gridPanel);
