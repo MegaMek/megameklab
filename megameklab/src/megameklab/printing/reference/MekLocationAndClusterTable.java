@@ -31,6 +31,7 @@ public class MekLocationAndClusterTable extends ClusterHitsTable {
         super(sheet);
     }
 
+    @Override
     protected void addTable(Entity entity) {
         List<Double> offsets = new ArrayList<>();
         double spacing = 0.9 / (clusterSizes.size() + 4);
@@ -69,6 +70,7 @@ public class MekLocationAndClusterTable extends ClusterHitsTable {
         }
     }
 
+    @Override
     protected void addNotes(Entity entity) {
         addNote(bundle.getString("tacNote"));
         if (entity instanceof TripodMech) {
