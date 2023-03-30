@@ -100,6 +100,7 @@ public class CConfig {
     public static final String RS_HEAT_PROFILE = "rs_heat_profile";
     public static final String RS_TAC_OPS_HEAT = "rs_tac_ops_heat";
     public static final String RS_REFERENCE = "rs_reference";
+    public static final String RS_CONDENSED_REFERENCE = "rs_condensed_reference";
     public static final String RS_SCALE_FACTOR = "rs_scale_factor";
     public static final String RS_SCALE_UNITS = "rs_scale_units";
 

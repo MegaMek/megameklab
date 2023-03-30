@@ -517,8 +517,21 @@ public class PrintMech extends PrintEntity {
             rect = getSVGDocument().getElementById(FLUFF_SINGLE_PILOT);
         }
         if (rect instanceof SVGRectElement) {
-            embedImage(ImageHelper.getFluffFile(mech, ImageHelper.imageMech),
-                    (Element) rect.getParentNode(), getRectBBox((SVGRectElement) rect), true);
+            if (options.showCondensedReferenceCharts()) {
+                List<ReferenceTable> tables = new ArrayList<>();
+                tables.add(new MekLocationAndClusterTable(this));
+                // Multi-crew cockpits and LAMs have a larger crew panel that doesn't leave room
+                // for two tables so we leave off the punch/kick.
+                if ((mech.getCrew().getSlotCount() == 1) && !(mech instanceof LandAirMech)) {
+                    tables.add(new PunchKickLocation(this));
+                }
+                Rectangle2D bbox = getRectBBox((SVGRectElement) rect);
+                placeReferenceCharts(tables, rect.getParentNode(), bbox.getX(), bbox.getY(),
+                        bbox.getWidth() + 6.0, bbox.getHeight() + 6.0);
+            } else {
+                embedImage(ImageHelper.getFluffFile(mech, ImageHelper.imageMech),
+                        (Element) rect.getParentNode(), getRectBBox((SVGRectElement) rect), true);
+            }
         }
     }
 

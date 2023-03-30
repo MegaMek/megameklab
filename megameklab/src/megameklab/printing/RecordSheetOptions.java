@@ -33,6 +33,7 @@ public class RecordSheetOptions {
     private boolean tacOpsHeat;
     private boolean eraBasedProgression;
     private boolean referenceCharts;
+    private boolean condensedReferenceCharts;
 
     public RecordSheetOptions() {
         String paper = CConfig.getParam(CConfig.RS_PAPER_SIZE, PaperSize.US_LETTER.name());
@@ -50,6 +51,7 @@ public class RecordSheetOptions {
         this.tacOpsHeat = CConfig.getBooleanParam(CConfig.RS_TAC_OPS_HEAT);
         this.eraBasedProgression = CConfig.getBooleanParam(CConfig.TECH_PROGRESSION);
         this.referenceCharts = CConfig.getBooleanParam(CConfig.RS_REFERENCE);
+        this.condensedReferenceCharts = CConfig.getBooleanParam(CConfig.RS_CONDENSED_REFERENCE);
     }
 
     public RecordSheetOptions(RecordSheetOptions options) {
@@ -63,6 +65,7 @@ public class RecordSheetOptions {
         tacOpsHeat = options.tacOpsHeat;
         eraBasedProgression = options.eraBasedProgression;
         referenceCharts = options.referenceCharts;
+        condensedReferenceCharts = options.condensedReferenceCharts;
     }
 
     public PaperSize getPaperSize() {
@@ -109,6 +112,10 @@ public class RecordSheetOptions {
         return referenceCharts;
     }
 
+    public boolean showCondensedReferenceCharts() {
+        return condensedReferenceCharts;
+    }
+
     public void setPaperSize(PaperSize paperSize) {
         this.paperSize = paperSize;
     }
@@ -139,5 +146,9 @@ public class RecordSheetOptions {
 
     public void setReferenceCharts(boolean charts) {
         this.referenceCharts = charts;
+    }
+
+    public void setCondensedReferenceCharts(boolean charts) {
+        this.condensedReferenceCharts = charts;
     }
 }

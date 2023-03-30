@@ -18,6 +18,7 @@ import megameklab.util.CConfig;
 import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
 
+import java.awt.geom.Rectangle2D;
 import java.util.*;
 
 import static megameklab.printing.PrintRecordSheet.svgNS;
@@ -56,16 +57,20 @@ abstract public class ReferenceTableBase {
                 String.format("%s(%f %f)", SVGConstants.SVG_TRANSLATE_VALUE, x, y));
         double labelWidth = width - bevelX * 2 - 6.0f;
         final Element label = createLabel(2.5f, 3.0f, getTitle(), labelWidth);
-        final Element shadow = createCellBorder(2.0, 2.0, width - 6.0, height - 6.0,
-                PrintRecordSheet.FILL_SHADOW);
+        final Element shadow = createCellBorder(2.0, 2.0, width - 4.0, height - 4.0,
+                PrintRecordSheet.FILL_SHADOW, PrintRecordSheet.FILL_SHADOW);
         final Element border = createCellBorder(0.0, 0.0, width - 5.0, height - 5.0,
-                PrintRecordSheet.FILL_BLACK);
+                PrintRecordSheet.FILL_BLACK, PrintRecordSheet.FILL_WHITE);
         g.appendChild(shadow);
         g.appendChild(border);
         g.appendChild(label);
         g.appendChild(createTableBody(3.0, PADDING * 1.5 + sheet.getFontHeight(FONT_SIZE_LABEL) * 2,
-                width - 8.0, height - 9.0, PrintRecordSheet.FONT_SIZE_VSMALL));
+                width - 8.0, height - 15.0, PrintRecordSheet.FONT_SIZE_VSMALL));
         return g;
+    }
+
+    public Element createTable(Rectangle2D bbox) {
+        return createTable(bbox.getX(), bbox.getY(), bbox.getWidth(), bbox.getHeight());
     }
 
     private Element createLabel(double x, double y, String title, double labelWidth) {
@@ -131,9 +136,9 @@ abstract public class ReferenceTableBase {
         return sj.toString();
     }
 
-    private Element createCellBorder(double x, double y, double width, double height, String stroke) {
+    private Element createCellBorder(double x, double y, double width, double height, String stroke, String fill) {
         final Element path = sheet.getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_PATH_TAG);
-        path.setAttributeNS(null, SVGConstants.CSS_FILL_PROPERTY, PrintRecordSheet.FILL_WHITE);
+        path.setAttributeNS(null, SVGConstants.CSS_FILL_PROPERTY, fill);
         path.setAttributeNS(null, SVGConstants.CSS_STROKE_PROPERTY, stroke);
         path.setAttributeNS(null, SVGConstants.CSS_STROKE_WIDTH_PROPERTY, String.valueOf(STROKE_WIDTH));
         path.setAttributeNS(null, SVGConstants.CSS_STROKE_LINEJOIN_PROPERTY, SVGConstants.SVG_ROUND_VALUE);
