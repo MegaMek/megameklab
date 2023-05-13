@@ -89,6 +89,7 @@ public enum EquipmentDatabaseCategory {
                     && !(eq.hasFlag(F_PARTIAL_WING) && en.hasETypeFlag(Entity.ETYPE_PROTOMECH))
                     && !(eq.hasFlag(F_SPONSON_TURRET) && en.isSupportVehicle())
                     && !eq.hasFlag(F_PINTLE_TURRET))
+                    || eq.is(BattleArmor.MINE_LAUNCHER)
                     || (eq instanceof TAGWeapon)
                     || ((eq instanceof AmmoType) && (((AmmoType) eq).getAmmoType() == AmmoType.T_COOLANT_POD))
                     || eq.hasFlag(F_AMS)),
