@@ -13,15 +13,15 @@ LargeSupportTank
 </UnitType>
 
 <Name>
-O-66 'Oppie' Hazardous Materials Recovery Vehicle
+HMRV (Hazardous Materials Recovery Vehicle)
 </Name>
 
-<Model>
-O-66 HMRV
-</Model>
+<model>
+Salvage Bed
+</model>
 
 <mul id:>
-4740
+6960
 </mul id:>
 
 <Tonnage>
@@ -29,7 +29,7 @@ O-66 HMRV
 </Tonnage>
 
 <cruiseMP>
-2
+0
 </cruiseMP>
 
 <barrating>
@@ -37,12 +37,12 @@ O-66 HMRV
 </barrating>
 
 <Armor>
-100
+30
 40
 40
 40
 40
-40
+54
 </Armor>
 
 <structural_tech_rating>
@@ -50,45 +50,37 @@ O-66 HMRV
 </structural_tech_rating>
 
 <Front Equipment>
-ISMinesweeper
-Bulldozer
 Searchlight
 </Front Equipment>
 
 <Front Left Equipment>
-Manipulator
+Lift Hoist
 Searchlight
 </Front Left Equipment>
 
 <Front Right Equipment>
-Manipulator
+Lift Hoist
 Searchlight
 </Front Right Equipment>
 
 <Rear Left Equipment>
-Manipulator
-Tank Sprayer
 </Rear Left Equipment>
 
 <Rear Right Equipment>
-Manipulator
-Tank Sprayer
 </Rear Right Equipment>
 
 <Rear Equipment>
 Backhoe
 Searchlight
+Searchlight
 </Rear Equipment>
 
 <Body Equipment>
-Paramedic Equipment
-Environmental Sealing
-Tractor
+Trailer
 </Body Equipment>
 
 <transporters>
-TroopSpace:5
-liquidcargobay:18:1
+cargobay:100:1
 </transporters>
 
 <type>
@@ -96,7 +88,7 @@ IS Level 3
 </type>
 
 <year>
-3069
+2822
 </year>
 
 <internal_type>
@@ -108,7 +100,7 @@ IS Level 3
 </armor_type>
 
 <engine_type>
-0
+8
 </engine_type>
 
 <motion_type>
@@ -116,5 +108,5 @@ Tracked
 </motion_type>
 
 <source>
-TRO 3075 - Jihad
+TRO 3075 - Succession Wars
 </source>

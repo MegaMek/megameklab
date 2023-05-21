@@ -13,11 +13,11 @@ SupportTank
 </UnitType>
 
 <Name>
-'Oppie' (HMRV DeConAid Trailer)
+HMRV (Hazardous Materials Recovery Vehicle)
 </Name>
 
 <model>
-
+DeConAid Trailer
 </model>
 
 <mul id:>

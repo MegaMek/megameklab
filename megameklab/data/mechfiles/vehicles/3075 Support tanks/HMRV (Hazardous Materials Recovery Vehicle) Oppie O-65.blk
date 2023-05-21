@@ -13,11 +13,11 @@ LargeSupportTank
 </UnitType>
 
 <Name>
-O-65 'Oppie' Hazardous Materials Recovery Vehicle
+HMRV (Hazardous Materials Recovery Vehicle)
 </Name>
 
 <Model>
-O-65 HMRV
+'Oppie' O-65
 </Model>
 
 <mul id:>
