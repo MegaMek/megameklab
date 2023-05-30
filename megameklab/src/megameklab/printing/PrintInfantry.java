@@ -101,7 +101,7 @@ public class PrintInfantry extends PrintEntity {
 
         switch(infantry.getMovementMode()) {
             case INF_JUMP:
-                setTextField(MP_1, formatMovement(infantry.getJumpMP(false)));
+                setTextField(MP_1, formatMovement(infantry.getJumpMP()));
                 setTextField(MODE_1, "Jump");
                 setTextField(MP_2, formatGroundMP(), true);
                 setTextField(MODE_2, "Ground", true);
@@ -133,7 +133,7 @@ public class PrintInfantry extends PrintEntity {
                 setTextField(MODE_1, "Mechanized Wheeled");
                 break;
             case VTOL:
-                setTextField(MP_1, formatMovement(infantry.getJumpMP(false)));
+                setTextField(MP_1, formatMovement(infantry.getJumpMP()));
                 if (infantry.hasMicrolite()) {
                     setTextField(MODE_1, "VTOL (Microlite)");
                 } else {
@@ -145,7 +145,7 @@ public class PrintInfantry extends PrintEntity {
                 setTextField(MODE_1, "Mechanized SCUBA");
                 break;
             case INF_MOTORIZED:
-                setTextField(MP_1, formatMovement(infantry.getWalkMP(true, true, false)));
+                setTextField(MP_1, formatMovement(infantry.getWalkMP()));
                 setTextField(MODE_1, "Motorized");
                 break;
             case INF_LEG:
@@ -426,7 +426,7 @@ public class PrintInfantry extends PrintEntity {
     }
 
     private String formatGroundMP() {
-        int walk = infantry.getWalkMP(true, true, false);
+        int walk = infantry.getWalkMP();
         if (walk == 0) {
             return "0*";
         } else {

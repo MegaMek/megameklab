@@ -13,10 +13,8 @@
  */
 package megameklab.printing;
 
-import megamek.common.BattleArmor;
-import megamek.common.Entity;
-import megamek.common.EquipmentType;
-import megamek.common.MiscType;
+import megamek.common.*;
+import megamek.common.battlevalue.BattleArmorBVCalculator;
 import megameklab.util.UnitUtil;
 import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
@@ -72,11 +70,11 @@ public class PrintBattleArmor extends PrintEntity {
         switch (getEntity().getMovementMode()) {
             case INF_JUMP:
                 setTextField(MODE_2, "Jump MP:");
-                setTextField(MP_2, formatMovement(battleArmor.getJumpMP(true, true, true)));
+                setTextField(MP_2, formatMovement(battleArmor.getJumpMP(MPCalculationSetting.BA_UNBURDENED)));
                 break;
             case VTOL:
                 setTextField(MODE_2, "VTOL MP:");
-                setTextField(MP_2, formatMovement(battleArmor.getJumpMP(true, true, true)));
+                setTextField(MP_2, formatMovement(battleArmor.getJumpMP(MPCalculationSetting.BA_UNBURDENED)));
                 break;
             case INF_UMU:
                 setTextField(MODE_2, "UW MP:");
@@ -92,8 +90,8 @@ public class PrintBattleArmor extends PrintEntity {
         hideElement(CHECK_LEG, !UnitUtil.canLegAttack(battleArmor));
         hideElement(CHECK_AP, battleArmor.countWorkingMisc(MiscType.F_AP_MOUNT) == 0);
 
-        setTextField(BV, battleArmor.calculateBattleValue(true, !showPilotInfo(), false)
-            + "/" + battleArmor.calculateBattleValue(true, !showPilotInfo(), true));
+        setTextField(BV, battleArmor.calculateBattleValue(true, !showPilotInfo())
+            + "/" + ((BattleArmorBVCalculator)battleArmor.getBvCalculator()).singleTrooperBattleValue());
     }
 
     @Override
@@ -136,7 +134,7 @@ public class PrintBattleArmor extends PrintEntity {
     protected String formatWalk() {
         if (battleArmor.hasDWP()) {
             return formatMovement(battleArmor.getWalkMP(),
-                    battleArmor.getWalkMP(true, false, false, true, false));
+                    battleArmor.getWalkMP(MPCalculationSetting.BA_UNBURDENED));
         } else {
             return super.formatWalk();
         }
@@ -145,12 +143,12 @@ public class PrintBattleArmor extends PrintEntity {
     @Override
     public String formatMiscNotes() {
         final StringJoiner sj = new StringJoiner(" ");
-        if (battleArmor.isBurdened() && ((battleArmor.getJumpMP(false, true, true) > 0)
+        if (battleArmor.isBurdened() && ((battleArmor.getJumpMP(MPCalculationSetting.BA_UNBURDENED) > 0)
                 || UnitUtil.canLegAttack(battleArmor) || UnitUtil.canSwarm(battleArmor))) {
             sj.add("Must detach missiles before jumping or swarm/leg attacks.");
         }
         if (battleArmor.hasDWP()) {
-            if (battleArmor.getJumpMP(true, true, true) > 0) {
+            if (battleArmor.getJumpMP(MPCalculationSetting.BA_UNBURDENED) > 0) {
                 sj.add("Must detach DWP before jumping or moving full ground speed.");
             } else {
                 sj.add("Must detach DWP before moving full ground speed.");
