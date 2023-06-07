@@ -225,7 +225,7 @@ public class PrintMech extends PrintEntity {
                 hideElement(ASF_PILOTING_SKILL);
             }
         } else if (mech instanceof QuadVee) {
-            setTextField(MP_CRUISE, formatMovement(((QuadVee) mech).getCruiseMP(false, false, false)));
+            setTextField(MP_CRUISE, formatMovement(((QuadVee) mech).getCruiseMP(MPCalculationSetting.STANDARD)));
             setTextField(MP_FLANK, formatQuadVeeFlank());
             setTextField(LBL_VEE_MODE, ((QuadVee) mech).getMotiveTypeString() + "s");
         }
@@ -597,7 +597,7 @@ public class PrintMech extends PrintEntity {
     }
     
     private String formatQuadVeeFlank() {
-        double baseFlank = ((QuadVee) mech).getCruiseMP(false, false, false);
+        double baseFlank = ((QuadVee) mech).getCruiseMP(MPCalculationSetting.STANDARD);
         baseFlank *= 1.5;
         double fullFlank;
         if (mech.getSuperCharger() != null) {
