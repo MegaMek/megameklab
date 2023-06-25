@@ -15,6 +15,8 @@ package megameklab.printing;
 
 import megamek.client.generator.RandomNameGenerator;
 import megamek.common.*;
+import megamek.common.eras.Era;
+import megamek.common.eras.Eras;
 import megamek.common.options.IOption;
 import megamek.common.options.IOptionGroup;
 import megamek.common.options.PilotOptions;
@@ -196,7 +198,6 @@ public abstract class PrintEntity extends PrintRecordSheet {
         }
         setTextField(TECH_BASE, formatTechBase());
         setTextField(RULES_LEVEL, formatRulesLevel());
-        setTextField(ERA, formatEra(getEntity().getYear()));
         setTextField(COST, formatCost());
         // If we're using a MUL to print generic sheets we also want to ignore any BV adjustments
         // for C3 networks or pilot skills.
@@ -433,26 +434,11 @@ public abstract class PrintEntity extends PrintRecordSheet {
     }
 
     private void drawEraIcon() {
-        File iconFile;
-        if (getEntity().getYear() < 2781) {
-            iconFile = new File("data/images/recordsheets/era_starleague.png");
-        } else if (getEntity().getYear() < 3050) {
-            iconFile = new File("data/images/recordsheets/era_sw.png");
-        } else if (getEntity().getYear() < 3062) {
-            iconFile = new File("data/images/recordsheets/era_claninvasion.png");
-        } else if (getEntity().getYear() < 3068) {
-            iconFile = new File("data/images/recordsheets/era_civilwar.png");
-        } else if (getEntity().getYear() < 3081) {
-            iconFile = new File("data/images/recordsheets/era_jihad.png");
-        } else if (getEntity().getYear() < 3151) {
-            iconFile = new File("data/images/recordsheets/era_darkage.png");
-        } else {
-            iconFile = new File("data/images/recordsheets/era_ilclan.png");
-        }
+        Era era = Eras.getEra(getEntity().getYear());
         Element rect = getSVGDocument().getElementById(ERA_ICON);
-        if (rect instanceof SVGRectElement) {
-            embedImage(iconFile,
-                    (Element) rect.getParentNode(), getRectBBox((SVGRectElement) rect), true);
+        if ((rect instanceof SVGRectElement) && era.hasIcon()) {
+            File iconFile = new File(Configuration.universeImagesDir(), era.iconFilePath());
+            embedImage(iconFile, (Element) rect.getParentNode(), getRectBBox((SVGRectElement) rect), true);
         }
     }
 
@@ -603,30 +589,6 @@ public abstract class PrintEntity extends PrintRecordSheet {
         }
         return level.toString().substring(0, 1)
                 + level.toString().substring(1).toLowerCase();
-    }
-    
-    private static String formatEra(int year) {
-        if (year < 2571) {
-            return "Age of War";
-        } else if (year < 2781) {
-            return "Star League";
-        } else if (year < 2901) {
-            return "Early Succession War";
-        } else if (year < 3050) {
-            return "Late Succession War";
-        } else if (year < 3062) {
-            return "Clan Invasion";
-        } else if (year < 3068) {
-            return "Civil War";
-        } else if (year < 3086) {
-            return "Jihad";
-        } else if (year < 3101) {
-            return "Early Republic";
-        } else if (year < 3131) {
-            return "Late Republic";
-        } else {
-            return "Dark Ages";
-        }
     }
     
     protected String formatCost() {
