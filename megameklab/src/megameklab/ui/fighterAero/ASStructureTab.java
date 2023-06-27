@@ -533,6 +533,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
                 .getBaseChassisHeatSinks(false));
         getAero().setEngine(engine);
         panMovement.setFromEntity(getAero());
+        panFuel.setFromEntity(getAero());
         refreshSummary();
         refresh.refreshPreview();
         refresh.refreshStatus();

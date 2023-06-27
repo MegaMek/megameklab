@@ -159,8 +159,10 @@ public class FuelView extends BuildView implements ActionListener, ChangeListene
             spnFuel.setEnabled(false);
             spnFuelCapacity.setEnabled(false);
         } else {
-            lblTurnsAtSafe.setText(String.format("%1$.0f", TestAero.calculateMaxTurnsAtSafe(aero)));
-            lblTurnsAtMax.setText(String.format("%1$.0f", TestAero.calculateMaxTurnsAtMax(aero)));
+            int maxTurnsAtSafeThrust = maxTurnsAtSafeThrust(aero);
+            lblTurnsAtSafe.setText(maxTurnsAtSafeThrust > 0 ? maxTurnsAtSafeThrust + "" : "--");
+            int maxTurnsAtMaxThrust = maxTurnsAtMaxThrust(aero);
+            lblTurnsAtMax.setText(maxTurnsAtMaxThrust > 0 ? maxTurnsAtMaxThrust + "" : "--");
             spnFuel.setEnabled(true);
             spnFuel.setEnabled(true);
         }
@@ -235,5 +237,22 @@ public class FuelView extends BuildView implements ActionListener, ChangeListene
                 listeners.forEach(l -> l.fuelTypeChanged((FuelType) cbFuelType.getSelectedItem()));
             }
         }
+    }
+
+    /** @return The maximum turns at maximum thrust that the aero's fuel allows or -1 if no value can be computed. */
+    private int maxTurnsAtMaxThrust(Aero aero) {
+        return maxTurnsAtThrust(aero, aero.getRunMP());
+    }
+
+    /** @return The maximum turns at safe thrust that the aero's fuel allows or -1 if no value can be computed. */
+    private int maxTurnsAtSafeThrust(Aero aero) {
+        return maxTurnsAtThrust(aero, aero.getWalkMP());
+    }
+
+    /** @return The maximum turns at the given thrust that the aero's fuel allows or -1 if no value can be computed. */
+    private int maxTurnsAtThrust(Aero aero, int thrust) {
+        int fuelPoints = aero.getFuel();
+        float fuelPerTurn = aero.getFuelUsed(thrust);
+        return fuelPerTurn != 0 ? (int) (fuelPoints / fuelPerTurn) : -1;
     }
 }
