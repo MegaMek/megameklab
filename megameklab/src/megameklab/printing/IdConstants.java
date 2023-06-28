@@ -50,7 +50,6 @@ public interface IdConstants {
     String TONNAGE = "tonnage";
     String TECH_BASE = "techBase";
     String RULES_LEVEL = "rulesLevel";
-    String ERA = "era";
     String COST = "cost";
     String BV = "bv";
     String LBL_ROLE = "labelRole";
@@ -93,7 +92,6 @@ public interface IdConstants {
     String DEFAULT_FLUFF_IMAGE = "defaultFluffImage";
 
     String ARMOR_TYPE = "armorType";
-    String ARMOR_TYPE_2 = "armorType2";
     String STRUCTURE_TYPE = "structureType";
     String PATCHWORK = "patchwork";
     String TEXT_ARMOR = "textArmor_";
