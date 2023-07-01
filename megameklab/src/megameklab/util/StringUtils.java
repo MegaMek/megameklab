@@ -237,6 +237,8 @@ public class StringUtils {
             info = "[PB,OS,AI]";
         } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_TALON)) {
             info = Integer.toString(KickAttackAction.getDamageFor(unit, Mech.LOC_LLEG, false));
+        } else if (mount.is(EquipmentTypeLookup.COOLANT_POD)) {
+            info = "[PE,OS,X]";
         } else {
             info = "  [E]";
         }
@@ -359,6 +361,8 @@ public class StringUtils {
                 info = info.substring(0, info.length() - 1) + "]";
 
             }
+        } else if (mount.is(EquipmentTypeLookup.COOLANT_POD)) {
+            info = "[PE,OS,X]";
         } else {
             info = "[E]";
         }

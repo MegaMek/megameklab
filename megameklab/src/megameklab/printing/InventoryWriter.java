@@ -234,8 +234,7 @@ public class InventoryWriter {
             if (UnitUtil.isMineDispenser(m.getType()) || UnitUtil.isRemoteSensorDispenser(m.getType())) {
                 ammo.merge(m.getShortName(), m.getBaseShotsLeft(), Integer::sum);
             }
-            if ((m.getType() instanceof AmmoType)
-                    || (m.getLocation() == Entity.LOC_NONE)
+            if ((m.getLocation() == Entity.LOC_NONE)
                     || !UnitUtil.isPrintableEquipment(m.getType(), sheet.getEntity())) {
                 continue;
             }

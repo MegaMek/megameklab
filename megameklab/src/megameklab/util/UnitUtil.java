@@ -1068,10 +1068,13 @@ public class UnitUtil {
      * @return       Whether the equipment should be shown on the record sheet
      */
     public static boolean isPrintableEquipment(EquipmentType eq, Entity entity) {
-        if (entity instanceof BattleArmor) {
+        if (eq instanceof AmmoType) {
+            return ((AmmoType) eq).getAmmoType() == AmmoType.T_COOLANT_POD;
+        } else if (entity instanceof BattleArmor) {
             return isPrintableBAEquipment(eq);
+        } else {
+            return isPrintableEquipment(eq, entity instanceof Mech);
         }
-        return isPrintableEquipment(eq, entity instanceof Mech);
     }
 
     /**
