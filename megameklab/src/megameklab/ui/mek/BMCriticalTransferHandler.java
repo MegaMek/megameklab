@@ -109,6 +109,9 @@ public class BMCriticalTransferHandler extends TransferHandler {
     }
 
     private boolean addSplitLocationEquipment(Mech mek, Mounted eq, int slotNumber) throws LocationFullException {
+        if (mek.locationIsLeg(location)) {
+            return false; // TM p.57
+        }
         int neededTotalSlots = UnitUtil.getCritsUsed(eq);
         int freePrimarySlots = BMUtils.availableContiguousCrits(mek, location, slotNumber, true);
         // It's obvious that the equipment can't be placed on an occupied slot, so in that case
@@ -137,11 +140,9 @@ public class BMCriticalTransferHandler extends TransferHandler {
             if (location == Mech.LOC_RT) {
                 secondLocationSet.add(Mech.LOC_CT);
                 secondLocationSet.add(Mech.LOC_RARM);
-                secondLocationSet.add(Mech.LOC_RLEG);
             } else if (location == Mech.LOC_LT) {
                 secondLocationSet.add(Mech.LOC_CT);
                 secondLocationSet.add(Mech.LOC_LARM);
-                secondLocationSet.add(Mech.LOC_LLEG);
             } else if (location == Mech.LOC_CT) {
                 secondLocationSet.add(Mech.LOC_LT);
                 secondLocationSet.add(Mech.LOC_RT);
