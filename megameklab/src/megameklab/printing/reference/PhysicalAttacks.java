@@ -98,18 +98,18 @@ public class PhysicalAttacks extends ReferenceTable {
     }
 
     private void addPunchAttack(String name, int actuators, int baseDamage, boolean hasTSM) {
-        String tsmDamage = hasTSM ? " [" + baseDamage * 2 + "]" : "";
+        String modifier = "+3";
         if (actuators == 4) {
-            addRow(name, "+0", baseDamage + tsmDamage);
+            modifier = "+0";
         } else if (actuators == 3) {
-            addRow(name, "+1", baseDamage + tsmDamage);
+            modifier = "+1";
         } else if (actuators == 2) {
-            tsmDamage = hasTSM ? " [" + Math.max(baseDamage / 2, 1) * 2 + "]" : "";
-            addRow(name, "+3", Math.max(baseDamage / 2, 1) + tsmDamage);
+            baseDamage = Math.max(baseDamage / 2, 1);
         } else if (actuators == 1) {
-            tsmDamage = hasTSM ? " [" + Math.max(baseDamage / 4, 1) * 2 + "]" : "";
-            addRow(name, "+3", Math.max(baseDamage / 4, 1) + tsmDamage);
+            baseDamage = Math.max(baseDamage / 4, 1);
         }
+        String tsmDamage = hasTSM ? " [" + baseDamage * 2 + "]" : "";
+        addRow(name, modifier, baseDamage + tsmDamage);
     }
 
     private void addPhysicalWeapon(Entity entity) {
