@@ -223,8 +223,9 @@ public class StringUtils {
                 info = info.substring(0, info.length() - 1) + "]";
 
             }
-        } else if ((mount.getType() instanceof MiscType) && (mount.getType().hasFlag(MiscType.F_CLUB) || mount.getType().hasFlag(MiscType.F_HAND_WEAPON))) {
-            if (mount.getType().hasSubType(MiscType.S_VIBRO_LARGE) || mount.getType().hasSubType(MiscType.S_VIBRO_MEDIUM) || mount.getType().hasSubType(MiscType.S_VIBRO_SMALL)) {
+        } else if ((mount.getType() instanceof MiscType) && (mount.getType().hasFlag(MiscType.F_CLUB)
+                || mount.getType().hasFlag(MiscType.F_HAND_WEAPON))) {
+            if (((MiscType) mount.getType()).isVibroblade()) {
                 // manually set vibros to active to get correct damage
                 mount.setMode(1);
             }

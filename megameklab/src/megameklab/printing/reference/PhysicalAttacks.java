@@ -30,10 +30,14 @@ public class PhysicalAttacks extends ReferenceTable {
         setHeaders(bundle.getString("attack"), bundle.getString("toHit"), bundle.getString("damage"));
         setColumnAnchor(0, SVGConstants.SVG_START_VALUE);
         int kickDamage = (int) Math.floor(sheet.getEntity().getWeight() / 5.0);
-        int dfaDamage = (int) Math.floor(sheet.getEntity().getWeight() / 10.0) * 3;
+        int dfaDamage = (int) Math.ceil(sheet.getEntity().getWeight() / 10.0 * 3);
         if (sheet.getEntity().hasWorkingMisc(MiscType.F_TALON)) {
-            kickDamage = (int) Math.floor(kickDamage * 1.5);
-            dfaDamage = (int) Math.floor(dfaDamage * 1.5);
+            kickDamage = (int) Math.round(kickDamage * 1.5);
+            dfaDamage = (int) Math.round(dfaDamage * 1.5);
+        }
+        String kickDamageString = String.valueOf(kickDamage);
+        if (sheet.getEntity().hasWorkingMisc(MiscType.F_TSM)) {
+            kickDamageString += " [" + kickDamage * 2 + "]";
         }
         boolean hasTorsoSpikes = false;
         for (Mounted mounted : sheet.getEntity().getMisc()) {
@@ -44,7 +48,7 @@ public class PhysicalAttacks extends ReferenceTable {
             }
         }
         addPunchAttacks(sheet.getEntity());
-        addRow(bundle.getString("kick"), "-2", String.valueOf(kickDamage));
+        addRow(bundle.getString("kick"), "-2", kickDamageString);
         if (!(sheet.getEntity() instanceof QuadMech)) {
             addRow(bundle.getString("push"), "-1", "\u2014");
         }
@@ -71,12 +75,13 @@ public class PhysicalAttacks extends ReferenceTable {
     private void addPunchAttacks(Entity entity) {
         int left = countActuators(entity, Mech.LOC_LARM);
         int right = countActuators(entity, Mech.LOC_RARM);
-        int baseDamage = (int) Math.floor(entity.getWeight() / 10.0);
+        int baseDamage = (int) Math.ceil(entity.getWeight() / 10.0);
+        boolean hasTSM = entity.hasWorkingMisc(MiscType.F_TSM);
         if (left == right) {
-            addPunchAttack(bundle.getString("punch"), left, baseDamage);
+            addPunchAttack(bundle.getString("punch"), left, baseDamage, hasTSM);
         } else {
-            addPunchAttack(bundle.getString("punch") + " (LA)", left, baseDamage);
-            addPunchAttack(bundle.getString("punch") + " (RA)", right, baseDamage);
+            addPunchAttack(bundle.getString("punch") + " (LA)", left, baseDamage, hasTSM);
+            addPunchAttack(bundle.getString("punch") + " (RA)", right, baseDamage, hasTSM);
         }
     }
 
@@ -92,14 +97,19 @@ public class PhysicalAttacks extends ReferenceTable {
         }
     }
 
-    private void addPunchAttack(String name, int actuators, int baseDamage) {
+    private void addPunchAttack(String name, int actuators, int baseDamage, boolean hasTSM) {
+        String modifier = "+3";
         if (actuators == 4) {
-            addRow(name, "+0", String.valueOf(baseDamage));
+            modifier = "+0";
         } else if (actuators == 3) {
-            addRow(name, "+1", String.valueOf(baseDamage));
+            modifier = "+1";
         } else if (actuators == 2) {
-            addRow(name, "+2", String.valueOf(baseDamage / 2));
+            baseDamage = Math.max(baseDamage / 2, 1);
+        } else if (actuators == 1) {
+            baseDamage = Math.max(baseDamage / 4, 1);
         }
+        String tsmDamage = hasTSM ? " [" + baseDamage * 2 + "]" : "";
+        addRow(name, modifier, baseDamage + tsmDamage);
     }
 
     private void addPhysicalWeapon(Entity entity) {
