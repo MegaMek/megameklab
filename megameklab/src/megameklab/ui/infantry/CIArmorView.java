@@ -401,7 +401,7 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
                 } else if ((null != eSource.getTechManager())
                         && !eSource.getTechManager().isLegal(etype) && !chkShowAll.isSelected()) {
                     return false;
-                } else if (!etype.isAvailableIn(getInfantry().getTechLevelYear())) {
+                } else if (!etype.isAvailableIn(getInfantry().getTechLevelYear(), false)) {
                     return false;
                 } else if (!txtFilter.getText().isBlank()) {
                     return etype.getName().toLowerCase().contains(txtFilter.getText().toLowerCase());
