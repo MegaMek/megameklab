@@ -212,9 +212,9 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
                         rtMenu.add(item);
                     }
 
-                    int[] splitLocations = new int[] { Mech.LOC_CT, Mech.LOC_RARM, Mech.LOC_RLEG };
+                    int[] splitLocations = new int[] { Mech.LOC_CT, Mech.LOC_RARM };
 
-                    for (int location = 0; location < 3; location++) {
+                    for (int location = 0; location < 2; location++) {
                         if (!UnitUtil.isValidLocation(getMech(), eq.getType(), splitLocations[location])) {
                             continue;
                         }
@@ -250,9 +250,9 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
                         ltMenu.add(item);
                     }
 
-                    int[] splitLocations = new int[] { Mech.LOC_CT, Mech.LOC_LARM, Mech.LOC_LLEG };
+                    int[] splitLocations = new int[] { Mech.LOC_CT, Mech.LOC_LARM };
 
-                    for (int location = 0; location < 3; location++) {
+                    for (int location = 0; location < 2; location++) {
                         if (!UnitUtil.isValidLocation(getMech(), eq.getType(), splitLocations[location])) {
                             continue;
                         }
