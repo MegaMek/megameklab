@@ -36,27 +36,26 @@ dependencies {
         // We don't need the python and javascript engine taking up space
         exclude group: 'org.python', module: 'jython'
         exclude group: 'org.mozilla', module: 'rhino'
-        // Uncomment to work around Eclipse IDE Multiple Dependency errors. 
-        //exclude group: 'xml-apis'
+        exclude group: 'xml-apis'
     }
     implementation ('org.apache.xmlgraphics:batik-codec:1.14') {
-        // Uncomment to work around Eclipse IDE Multiple Dependency errors. 
-        //exclude group: 'xml-apis'
+        exclude group: 'xml-apis'
     }
     implementation ('org.apache.xmlgraphics:batik-dom:1.14') {
-        // Uncomment to work around Eclipse IDE Multiple Dependency errors. 
-        //exclude group: 'xml-apis'
+        exclude group: 'xml-apis'
     }
     implementation 'org.apache.xmlgraphics:batik-rasterizer:1.14'
     implementation 'org.apache.xmlgraphics:batik-svggen:1.14'
     implementation ('org.apache.xmlgraphics:fop:2.7') {
         // We don't need this proprietary module
         exclude group: 'com.sun.media', module: 'jai-codec'
-        // Uncomment to work around Eclipse IDE Multiple Dependency errors. 
-        //exclude group: 'xml-apis'
+        exclude group: 'xml-apis'
     }
 
     runtimeOnly 'org.glassfish.jaxb:jaxb-runtime:4.0.1'
+
+    //Required for printing scaled vector graphics (SVG) - EclipseIDE Comipatability.
+    runtimeOnly 'xml-apis:xml-apis-ext:1.3.04'
 }
 
 mainClassName = 'megameklab.MegaMekLab'
