@@ -441,7 +441,7 @@ public class UnitUtil {
      */
     public static boolean isLegal(Entity unit, ITechnology tech) {
         if (unit.isMixedTech()) {
-            if (!tech.isAvailableIn(unit.getTechLevelYear(), false)) {
+            if (!tech.isAvailableIn(unit.getTechLevelYear(), CConfig.getBooleanParam(CConfig.TECH_EXTINCT))) {
                 return false;
             }
         } else {
@@ -450,7 +450,8 @@ public class UnitUtil {
                 return false;
             }
 
-            if (!tech.isAvailableIn(unit.getTechLevelYear(), unit.isClan(), false)) {
+            if (!tech.isAvailableIn(unit.getTechLevelYear(), unit.isClan(),
+                    CConfig.getBooleanParam(CConfig.TECH_EXTINCT))) {
                 return false;
             }
         }
