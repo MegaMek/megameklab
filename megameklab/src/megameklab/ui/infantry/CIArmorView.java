@@ -24,6 +24,7 @@ import megameklab.ui.EntitySource;
 import megameklab.ui.util.EquipmentTableModel;
 import megameklab.ui.util.IView;
 import megameklab.ui.util.RefreshListener;
+import megameklab.util.CConfig;
 
 import javax.swing.*;
 import javax.swing.JSpinner.DefaultEditor;
@@ -401,7 +402,8 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
                 } else if ((null != eSource.getTechManager())
                         && !eSource.getTechManager().isLegal(etype) && !chkShowAll.isSelected()) {
                     return false;
-                } else if (!etype.isAvailableIn(getInfantry().getTechLevelYear())) {
+                } else if (!etype.isAvailableIn(getInfantry().getTechLevelYear(),
+                        CConfig.getBooleanParam(CConfig.TECH_EXTINCT))) {
                     return false;
                 } else if (!txtFilter.getText().isBlank()) {
                     return etype.getName().toLowerCase().contains(txtFilter.getText().toLowerCase());
