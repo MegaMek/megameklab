@@ -2402,74 +2402,74 @@
                                                                             ><text x="56.400" y="34.474" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal" textLength="19.001" lengthAdjust="spacingAndGlyphs"
                                                                             >Effects</text
                                                                             ><text x="15.000" y="42.711" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal" textLength="8.279" lengthAdjust="spacingAndGlyphs"
-                                                                            >30</text
-                                                                            ><text x="27.000" y="42.711" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal" textLength="27.735" lengthAdjust="spacingAndGlyphs"
-                                                                            >Shutdown</text
-                                                                            ><text x="15.000" y="50.947" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal" textLength="8.283" lengthAdjust="spacingAndGlyphs"
-                                                                            >28</text
-                                                                            ><text x="27.000" y="50.947" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal" textLength="65.750" lengthAdjust="spacingAndGlyphs"
-                                                                            >Ammo Exp, avoid on 8+</text
-                                                                            ><text x="15.000" y="59.184" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal" textLength="8.276" lengthAdjust="spacingAndGlyphs"
-                                                                            >26</text
-                                                                            ><text x="27.000" y="59.184" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal" textLength="67.737" lengthAdjust="spacingAndGlyphs"
-                                                                            >Shutdown, avoid on 10+</text
-                                                                            ><text x="15.000" y="67.421" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal" textLength="8.279" lengthAdjust="spacingAndGlyphs"
-                                                                            >25</text
-                                                                            ><text x="27.000" y="67.421" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal" textLength="56.413" lengthAdjust="spacingAndGlyphs"
-                                                                            >-5 Movement Points</text
-                                                                            ><text x="15.000" y="75.658" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal" textLength="8.279" lengthAdjust="spacingAndGlyphs"
-                                                                            >24</text
-                                                                            ><text x="27.000" y="75.658" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal" textLength="52.662" lengthAdjust="spacingAndGlyphs"
-                                                                            >+4 Modifier to Fire</text
-                                                                            ><text x="15.000" y="83.895" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal" textLength="8.279" lengthAdjust="spacingAndGlyphs"
-                                                                            >23</text
-                                                                            ><text x="27.000" y="83.895" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal" textLength="65.743" lengthAdjust="spacingAndGlyphs"
-                                                                            >Ammo Exp, avoid on 6+</text
-                                                                            ><text x="15.000" y="92.132" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal" textLength="8.279" lengthAdjust="spacingAndGlyphs"
-                                                                            >22</text
-                                                                            ><text x="27.000" y="92.132" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal" textLength="63.598" lengthAdjust="spacingAndGlyphs"
-                                                                            >Shutdown, avoid on 8+</text
-                                                                            ><text x="15.000" y="100.368" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal" textLength="8.279" lengthAdjust="spacingAndGlyphs"
-                                                                            >20</text
-                                                                            ><text x="27.000" y="100.368" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal" textLength="56.413" lengthAdjust="spacingAndGlyphs"
-                                                                            >-4 Movement Points</text
-                                                                            ><text x="15.000" y="108.605" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal" textLength="8.286" lengthAdjust="spacingAndGlyphs"
-                                                                            >19</text
-                                                                            ><text x="27.000" y="108.605" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal" textLength="65.747" lengthAdjust="spacingAndGlyphs"
-                                                                            >Ammo Exp, avoid on 4+</text
-                                                                            ><text x="15.000" y="116.842" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal" textLength="8.286" lengthAdjust="spacingAndGlyphs"
-                                                                            >18</text
-                                                                            ><text x="27.000" y="116.842" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal" textLength="63.591" lengthAdjust="spacingAndGlyphs"
-                                                                            >Shutdown, avoid on 6+</text
-                                                                            ><text x="15.000" y="125.079" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal" textLength="8.283" lengthAdjust="spacingAndGlyphs"
-                                                                            >17</text
-                                                                            ><text x="27.000" y="125.079" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal" textLength="52.662" lengthAdjust="spacingAndGlyphs"
-                                                                            >+3 Modifier to Fire</text
-                                                                            ><text x="15.000" y="133.316" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal" textLength="8.283" lengthAdjust="spacingAndGlyphs"
-                                                                            >15</text
-                                                                            ><text x="27.000" y="133.316" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal" textLength="56.413" lengthAdjust="spacingAndGlyphs"
-                                                                            >-3 Movement Points</text
-                                                                            ><text x="15.000" y="141.553" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal" textLength="8.283" lengthAdjust="spacingAndGlyphs"
-                                                                            >14</text
-                                                                            ><text x="27.000" y="141.553" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal" textLength="63.594" lengthAdjust="spacingAndGlyphs"
-                                                                            >Shutdown, avoid on 4+</text
-                                                                            ><text x="15.000" y="149.789" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal" textLength="8.283" lengthAdjust="spacingAndGlyphs"
-                                                                            >13</text
-                                                                            ><text x="27.000" y="149.789" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal" textLength="52.662" lengthAdjust="spacingAndGlyphs"
-                                                                            >+2 Modifier to Fire</text
-                                                                            ><text x="15.000" y="158.026" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal" textLength="8.283" lengthAdjust="spacingAndGlyphs"
-                                                                            >10</text
-                                                                            ><text x="27.000" y="158.026" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal" textLength="56.413" lengthAdjust="spacingAndGlyphs"
-                                                                            >-2 Movement Points</text
-                                                                            ><text x="15.000" y="166.263" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal" textLength="4.143" lengthAdjust="spacingAndGlyphs"
-                                                                            >8</text
-                                                                            ><text x="27.000" y="166.263" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal" textLength="52.665" lengthAdjust="spacingAndGlyphs"
-                                                                            >+1 Modifier to Fire</text
-                                                                            ><text x="15.000" y="174.500" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal" textLength="4.140" lengthAdjust="spacingAndGlyphs"
-                                                                            >5</text
-                                                                            ><text x="27.000" y="174.500" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal" textLength="56.416" lengthAdjust="spacingAndGlyphs"
-                                                                            >-1 Movement Points</text
-                                                                            ><text fill="#231f20" x="152.000" id="hsType" y="22.000" style="font-family:Eurostile;font-size:8.440px;font-weight:normal;font-style:normal" text-anchor="end"
+>30</text
+><text x="27.000" y="42.711" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+>Shutdown</text
+><text x="15.000" y="50.947" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+>28</text
+><text x="27.000" y="50.947" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+>Ammo Exp, avoid on 8+</text
+><text x="15.000" y="59.184" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+>26</text
+><text x="27.000" y="59.184" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+>Shutdown, avoid on 10+</text
+><text x="15.000" y="67.421" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+>25</text
+>
+    <text id="minus5MP" x="27.000" y="67.421" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal">-5 Movement Points</text>
+    <text x="15.000" y="75.658" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal" textLength="8.279" lengthAdjust="spacingAndGlyphs"
+    >24</text
+    ><text x="27.000" y="75.658" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+    >+4 Modifier to Fire</text
+    ><text x="15.000" y="83.895" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+    >23</text
+    ><text x="27.000" y="83.895" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+    >Ammo Exp, avoid on 6+</text
+    ><text x="15.000" y="92.132" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+    >22</text
+    ><text x="27.000" y="92.132" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+    >Shutdown, avoid on 8+</text
+    ><text x="15.000" y="100.368" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+    >20</text
+    ><text id="minus4MP" x="27.000" y="100.368" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+    >-4 Movement Points</text
+    ><text x="15.000" y="108.605" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+    >19</text
+    ><text x="27.000" y="108.605" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+    >Ammo Exp, avoid on 4+</text
+    ><text x="15.000" y="116.842" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+    >18</text
+    ><text x="27.000" y="116.842" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+    >Shutdown, avoid on 6+</text
+    ><text x="15.000" y="125.079" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+    >17</text
+    ><text x="27.000" y="125.079" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+    >+3 Modifier to Fire</text
+    ><text x="15.000" y="133.316" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+    >15</text
+    ><text id="minus3MP" x="27.000" y="133.316" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+    >-3 Movement Points</text
+    ><text x="15.000" y="141.553" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+    >14</text
+    ><text x="27.000" y="141.553" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+    >Shutdown, avoid on 4+</text
+    ><text x="15.000" y="149.789" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+    >13</text
+    ><text x="27.000" y="149.789" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+    >+2 Modifier to Fire</text
+    ><text x="15.000" y="158.026" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+    >10</text
+    ><text id="minus2MP" x="27.000" y="158.026" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+    >-2 Movement Points</text
+    ><text x="15.000" y="166.263" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+    >8</text
+    ><text x="27.000" y="166.263" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+    >+1 Modifier to Fire</text
+    ><text x="15.000" y="174.500" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+    >5</text
+    ><text id="minus1MP" x="27.000" y="174.500" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+    >-1 Movement Points</text
+    ><text fill="#231f20" x="152.000" id="hsType" y="22.000" style="font-family:Eurostile;font-size:8.440px;font-weight:normal;font-style:normal" text-anchor="end"
                                                                             >Heat Sinks:</text
                                                                             ><text fill="#231f20" x="152.000" id="hsCount" y="31.000" style="font-family:Eurostile;font-size:8.440px;font-weight:normal;font-style:normal" text-anchor="end"
                                                                             >10</text

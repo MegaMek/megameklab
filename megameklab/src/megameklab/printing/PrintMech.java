@@ -17,6 +17,7 @@ import megamek.common.Entity;
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
 import megameklab.printing.reference.*;
+import megameklab.util.CConfig;
 import megameklab.util.ImageHelper;
 import megameklab.util.UnitUtil;
 import org.apache.batik.anim.dom.SVGDOMImplementation;
@@ -196,6 +197,15 @@ public class PrintMech extends PrintEntity {
 
         setTextField(HS_TYPE, formatHeatSinkType());
         setTextField(HS_COUNT, formatHeatSinkCount());
+        setTextField(MINUS_9_MP, formatHeatMovementPenalty(9));
+        setTextField(MINUS_8_MP, formatHeatMovementPenalty(8));
+        setTextField(MINUS_7_MP, formatHeatMovementPenalty(7));
+        setTextField(MINUS_6_MP, formatHeatMovementPenalty(6));
+        setTextField(MINUS_5_MP, formatHeatMovementPenalty(5));
+        setTextField(MINUS_4_MP, formatHeatMovementPenalty(4));
+        setTextField(MINUS_3_MP, formatHeatMovementPenalty(3));
+        setTextField(MINUS_2_MP, formatHeatMovementPenalty(2));
+        setTextField(MINUS_1_MP, formatHeatMovementPenalty(1));
         if (mech.hasWorkingMisc(MiscType.F_PARTIAL_WING)) {
             hideElement(PARTIAL_WING_BONUS, false);
         }
@@ -629,6 +639,15 @@ public class PrintMech extends PrintEntity {
         } else {
             return "Heat Sinks:";
         }
+    }
+
+    private String formatHeatMovementPenalty(int penalty) {
+        // 2212 is the Unicode Minus Sign; has much better length than '-'; supported by most fonts
+        String penaltyString = "\u2212" + CConfig.formatScale(penalty, true) + " Movement";
+        if (CConfig.scaleUnits() == CConfig.RSScale.HEXES) {
+            penaltyString += " Points";
+        }
+        return penaltyString;
     }
     
     private String formatHeatSinkCount() {
