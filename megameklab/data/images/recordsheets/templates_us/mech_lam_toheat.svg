@@ -2206,7 +2206,7 @@
                                                                             >Shutdown</text
                                                                             ><text x="83.500" y="67.826" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="6.979" lengthAdjust="spacingAndGlyphs"
                                                                             >49</text
-                                                                            ><text fill="#231f20" x="89.500" y="67.826" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal;mml-field-width:62.500" text-anchor="start"
+                                                                            ><text id="minus9MP" fill="#231f20" x="89.500" y="67.826" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal;mml-field-width:62.500" text-anchor="start"
                                                                             >-9 Movement Points</text
                                                                             ><text x="83.500" y="73.283" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="6.979" lengthAdjust="spacingAndGlyphs"
                                                                             >48</text
@@ -2230,7 +2230,7 @@
                                                                             >System failure, avoid on 10+</text
                                                                             ><text x="83.500" y="100.565" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="6.976" lengthAdjust="spacingAndGlyphs"
                                                                             >43</text
-                                                                            ><text fill="#231f20" x="89.500" y="100.565" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal;mml-field-width:62.500" text-anchor="start"
+                                                                            ><text id="minus8MP" fill="#231f20" x="89.500" y="100.565" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal;mml-field-width:62.500" text-anchor="start"
                                                                             >-8 Movement Points</text
                                                                             ><text x="83.500" y="106.022" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="6.976" lengthAdjust="spacingAndGlyphs"
                                                                             >42</text
@@ -2254,7 +2254,7 @@
                                                                             >Shutdown, avoid on 16+</text
                                                                             ><text x="83.500" y="133.304" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="6.976" lengthAdjust="spacingAndGlyphs"
                                                                             >37</text
-                                                                            ><text fill="#231f20" x="89.500" y="133.304" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal;mml-field-width:62.500" text-anchor="start"
+                                                                            ><text id="minus7MP" fill="#231f20" x="89.500" y="133.304" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal;mml-field-width:62.500" text-anchor="start"
                                                                             >-7 Movement Points</text
                                                                             ><text x="83.500" y="138.761" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="6.973" lengthAdjust="spacingAndGlyphs"
                                                                             >36</text
@@ -2278,7 +2278,7 @@
                                                                             >Pilot damage, avoid on 8+</text
                                                                             ><text x="83.500" y="166.043" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="6.979" lengthAdjust="spacingAndGlyphs"
                                                                             >31</text
-                                                                            ><text fill="#231f20" x="89.500" y="166.043" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal;mml-field-width:62.500" text-anchor="start"
+                                                                            ><text id="minus6MP" fill="#231f20" x="89.500" y="166.043" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal;mml-field-width:62.500" text-anchor="start"
                                                                             >-6 Movement Points</text
                                                                             ><text x="83.500" y="171.500" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="6.976" lengthAdjust="spacingAndGlyphs"
                                                                             >30</text
@@ -2294,8 +2294,8 @@
                                                                             >Shutdown, avoid on 10+</text
                                                                             ><text x="9.000" y="73.283" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="6.976" lengthAdjust="spacingAndGlyphs"
                                                                             >25</text
-                                                                            ><text fill="#231f20" x="15.000" y="73.283" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal;mml-field-width:62.500" text-anchor="start"
-                                                                            >5 Movement Points</text
+                                                                            ><text id="minus5MP" fill="#231f20" x="15.000" y="73.283" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal;mml-field-width:62.500" text-anchor="start"
+                                                                            >-5 Movement Points</text
                                                                             ><text fill="#231f20" x="18.000" y="78.739" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal;mml-field-width:62.500" text-anchor="start"
                                                                             >/Rand. Movement 10+</text
                                                                             ><text x="9.000" y="84.196" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="6.976" lengthAdjust="spacingAndGlyphs"
@@ -2312,8 +2312,8 @@
                                                                             >Shutdown, avoid on 8+</text
                                                                             ><text x="9.000" y="100.565" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="6.976" lengthAdjust="spacingAndGlyphs"
                                                                             >20</text
-                                                                            ><text fill="#231f20" x="15.000" y="100.565" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal;mml-field-width:62.500" text-anchor="start"
-                                                                            >4 Movement Points</text
+                                                                            ><text id="minus4MP" fill="#231f20" x="15.000" y="100.565" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal;mml-field-width:62.500" text-anchor="start"
+                                                                            >-4 Movement Points</text
                                                                             ><text fill="#231f20" x="18.000" y="106.022" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal;mml-field-width:62.500" text-anchor="start"
                                                                             >/Rand. Movement 8+</text
                                                                             ><text x="9.000" y="111.478" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="6.982" lengthAdjust="spacingAndGlyphs"
@@ -2330,8 +2330,8 @@
                                                                             >+3 Modifier to Fire</text
                                                                             ><text x="9.000" y="127.848" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="6.979" lengthAdjust="spacingAndGlyphs"
                                                                             >15</text
-                                                                            ><text fill="#231f20" x="15.000" y="127.848" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal;mml-field-width:62.500" text-anchor="start"
-                                                                            >3 Movement Points</text
+                                                                            ><text id="minus3MP" fill="#231f20" x="15.000" y="127.848" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal;mml-field-width:62.500" text-anchor="start"
+                                                                            >-3 Movement Points</text
                                                                             ><text fill="#231f20" x="18.000" y="133.304" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal;mml-field-width:62.500" text-anchor="start"
                                                                             >/Rand. Movement 7+</text
                                                                             ><text x="9.000" y="138.761" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="6.979" lengthAdjust="spacingAndGlyphs"
@@ -2344,8 +2344,8 @@
                                                                             >+2 Modifier to Fire</text
                                                                             ><text x="9.000" y="149.674" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="6.979" lengthAdjust="spacingAndGlyphs"
                                                                             >10</text
-                                                                            ><text fill="#231f20" x="15.000" y="149.674" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal;mml-field-width:62.500" text-anchor="start"
-                                                                            >2 Movement Points</text
+                                                                            ><text id="minus2MP" fill="#231f20" x="15.000" y="149.674" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal;mml-field-width:62.500" text-anchor="start"
+                                                                            >-2 Movement Points</text
                                                                             ><text fill="#231f20" x="18.000" y="155.130" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal;mml-field-width:62.500" text-anchor="start"
                                                                             >/Rand. Movement 6+</text
                                                                             ><text x="9.000" y="160.587" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="3.491" lengthAdjust="spacingAndGlyphs"
@@ -2354,8 +2354,8 @@
                                                                             >+1 Modifier to Fire</text
                                                                             ><text x="9.000" y="166.043" fill="#231f20" text-anchor="middle" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal" textLength="3.488" lengthAdjust="spacingAndGlyphs"
                                                                             >5</text
-                                                                            ><text fill="#231f20" x="15.000" y="166.043" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal;mml-field-width:62.500" text-anchor="start"
-                                                                            >1 Movement Points</text
+                                                                            ><text id="minus1MP" fill="#231f20" x="15.000" y="166.043" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal;mml-field-width:62.500" text-anchor="start"
+                                                                            >-1 Movement Points</text
                                                                             ><text fill="#231f20" x="18.000" y="171.500" style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal;mml-field-width:62.500" text-anchor="start"
                                                                             >/Rand. Movement 5+</text
                                                                             ><text fill="#231f20" x="6.000" id="hsType" y="26.000" style="font-family:Eurostile;font-size:8.440px;font-weight:normal;font-style:normal;mml-field-width:55.400" text-anchor="start"

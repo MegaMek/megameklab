@@ -124,6 +124,15 @@ public interface IdConstants {
     String HEAT_SINK_PIPS = "heatSinkPips";
     String HS_TYPE = "hsType";
     String HS_COUNT = "hsCount";
+    String MINUS_9_MP = "minus9MP";
+    String MINUS_8_MP = "minus8MP";
+    String MINUS_7_MP = "minus7MP";
+    String MINUS_6_MP = "minus6MP";
+    String MINUS_5_MP = "minus5MP";
+    String MINUS_4_MP = "minus4MP";
+    String MINUS_3_MP = "minus3MP";
+    String MINUS_2_MP = "minus2MP";
+    String MINUS_1_MP = "minus1MP";
     String PARTIAL_WING_BONUS = "partialWingBonus";
     String EXTERNAL_STORES = "external_stores";
     String BOMB_BOXES = "bomb_boxes";
