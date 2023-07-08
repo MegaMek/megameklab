@@ -6,6 +6,7 @@ VERSION HISTORY:
 + Fix #1262, #1258, #1245: Physical attack modifiers and damage values in reference tables have been corrected
 + Fix #1275: Large weapon critical slots can no longer be split into a Mek's legs
 + Fix #1273: Record Sheets now show Coolant Pods in the inventory
++ Fix #1212: Record Sheets now show appropriate heat MP penalties when inch or cm movement units are selected
 
 0.49.13 (2023-05-23 2000 UTC)
 + PR #1241: On record sheets, hit location and cluster tables can now be printed in place of the fluff image; activate this option in the record sheet settings
