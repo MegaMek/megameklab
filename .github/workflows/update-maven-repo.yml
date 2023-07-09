@@ -21,12 +21,12 @@ jobs:
 
     steps:
     # Put the MML repo in a subfolder to make updating the Maven repo easier
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         path: megameklab
         
     # Grab the MM repo too
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         repository: MegaMek/megamek
         path: megamek
@@ -59,7 +59,7 @@ jobs:
     # Get the current Maven repo contents
     - name: Checkout Maven Repo
       if: github.repository == 'MegaMek/megameklab'
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         repository: MegaMek/mavenrepo
         path: mavenrepo
