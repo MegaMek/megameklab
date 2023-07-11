@@ -451,6 +451,10 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
             UnitUtil.removeMounted(getUnit(), mounted);
         }
 
+        if (getUnit().isFighter() && mounted.getLocation() != Entity.LOC_NONE) {
+            UnitUtil.compactCriticals(getUnit(), mounted.getLocation());
+        }
+
         // Check linkings after you remove everything.
         try {
             MechFileParser.postLoadInit(getUnit());
@@ -480,6 +484,9 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
         }
 
         UnitUtil.removeCriticals(getUnit(), mounted);
+        if (getUnit().isFighter() && mounted.getLocation() != Entity.LOC_NONE) {
+            UnitUtil.compactCriticals(getUnit(), mounted.getLocation());
+        }
 
         // Check linkings after you remove everything.
         try {
