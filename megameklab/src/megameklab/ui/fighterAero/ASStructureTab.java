@@ -550,7 +550,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
     @Override
     public void resetChassis() {
         UnitUtil.resetBaseChassis(getAero());
-        refresh.refreshAll();
+        refresh.scheduleRefresh();
     }
 
     @Override

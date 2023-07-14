@@ -22,6 +22,7 @@ package megameklab.ui.mek;
 import megamek.common.*;
 import megamek.common.verifier.TestEntity;
 import megameklab.ui.EntitySource;
+import megameklab.ui.util.AbstractCriticalTransferHandler;
 import megameklab.ui.util.BAASBMDropTargetCriticalList;
 import megameklab.ui.util.CriticalTableModel;
 import megameklab.ui.util.RefreshListener;
@@ -39,15 +40,12 @@ import java.util.*;
  *
  * @author jtighe (torren@users.sourceforge.net)
  */
-public class BMCriticalTransferHandler extends TransferHandler {
-    private final EntitySource eSource;
+public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
     private int location = -1;
-    private final RefreshListener refresh;
     private final BMCriticalView parentView;
 
     public BMCriticalTransferHandler(EntitySource eSource, RefreshListener refresh, BMCriticalView parentView) {
-        this.eSource = eSource;
-        this.refresh = refresh;
+        super(eSource, refresh);
         this.parentView = parentView;
     }
 
@@ -307,31 +305,7 @@ public class BMCriticalTransferHandler extends TransferHandler {
     }
 
     @Override
-    public int getSourceActions(JComponent c) {
-        return TransferHandler.MOVE;
-    }
-
-    private void changeMountStatus(Mounted eq, int location) {
-        changeMountStatus(eq, location, -1);
-    }
-
-    private void changeMountStatus(Mounted eq, int location, int secondaryLocation) {
-        UnitUtil.changeMountStatus(getUnit(), eq, location, secondaryLocation, false);
-        doRefresh();
-    }
-
-    public Entity getUnit() {
-        return eSource.getEntity();
-    }
-
-    @Override
     protected void exportDone(JComponent source, Transferable data, int action) {
         parentView.unmarkAllLocations();
-    }
-
-    private void doRefresh() {
-        if (refresh != null) {
-            refresh.refreshAll();
-        }
     }
 }

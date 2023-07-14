@@ -526,7 +526,7 @@ public class BABuildView extends IView implements ActionListener, MouseListener 
                 });
                 popup.add(item);
             }
-            popup.show(this, e.getX(), e.getY());
+            popup.show(equipmentTable, e.getX(), e.getY());
         }
     }
 
