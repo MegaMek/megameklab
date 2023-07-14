@@ -172,6 +172,7 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
     }
 
 
+    @Override
     public void scheduleRefresh() {
         refreshRequired = true;
         SwingUtilities.invokeLater(this::performRefresh);

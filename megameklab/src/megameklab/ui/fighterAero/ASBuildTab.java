@@ -88,7 +88,6 @@ public class ASBuildTab extends ITab implements ActionListener {
 
 
     private void resetCrits() {
-        long begin = System.nanoTime();
         for (Mounted mount : getAero().getEquipment()) {
             if (!mount.isWeaponGroup() && TestAero.eqRequiresLocation(mount.getType(), true)
                     && !UnitUtil.isFixedLocationSpreadEquipment(mount.getType())) {
@@ -98,8 +97,6 @@ public class ASBuildTab extends ITab implements ActionListener {
         }
 
         refresh.scheduleRefresh();
-        long dur = System.nanoTime() - begin;
-        System.out.println(dur/1000000+" ms");
     }
 
 
