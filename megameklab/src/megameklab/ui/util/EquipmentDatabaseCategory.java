@@ -66,7 +66,6 @@ public enum EquipmentDatabaseCategory {
 
     AMMO ("Ammo",
             (eq, en) -> (eq instanceof AmmoType) && !(eq instanceof BombType),
-//                    && UnitUtil.canUseAmmo(en, (AmmoType) eq, false),
             e -> e.getWeightClass() != EntityWeightClass.WEIGHT_SMALL_SUPPORT),
 
     OTHER ("Other",
