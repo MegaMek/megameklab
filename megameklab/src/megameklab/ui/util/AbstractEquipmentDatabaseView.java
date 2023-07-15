@@ -77,6 +77,7 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
     protected final JToggleButton hideOneShotButton = new JToggleButton(ONE_SHOT.getDisplayName());
     protected final JToggleButton hideTorpedoButton = new JToggleButton(TORPEDO.getDisplayName());
     protected final JToggleButton hideAPButton = new JToggleButton(AP.getDisplayName());
+    protected final JToggleButton hideUnusableAmmoButton = new JToggleButton(UNUSABLE_AMMO.getDisplayName(), true);
     protected final JToggleButton hideUnavailButton = new JToggleButton(UNAVAILABLE.getDisplayName(), true);
 
     protected final JTextField txtFilter = new JTextField("", 15);
@@ -90,7 +91,7 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
 
     private final Map<JToggleButton, EquipmentDatabaseCategory> hideToggles = Map.of(hideProtoButton, PROTOTYPE,
             hideOneShotButton, ONE_SHOT, hideTorpedoButton, TORPEDO, hideAPButton, AP,
-            hideUnavailButton, UNAVAILABLE);
+            hideUnusableAmmoButton, UNUSABLE_AMMO, hideUnavailButton, UNAVAILABLE);
 
     private static final String ADD_TEXT = "  << Add ";
 
@@ -98,7 +99,8 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
         super(eSource);
         masterEquipmentModel = new EquipmentTableModel(eSource.getEntity(), eSource.getTechManager());
         masterEquipmentTable = new EquipmentDatabaseTable(masterEquipmentModel);
-        masterEquipmentTable.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "add");
+        masterEquipmentTable.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+                .put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "add");
         masterEquipmentTable.getActionMap().put("add", addAction);
 
         equipmentSorter = new TableRowSorter<>(masterEquipmentModel);
@@ -353,6 +355,7 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
         buttonPanel.add(hideOneShotButton);
         buttonPanel.add(hideTorpedoButton);
         buttonPanel.add(hideAPButton);
+        buttonPanel.add(hideUnusableAmmoButton);
         buttonPanel.add(hideUnavailButton);
 
         var hideFilterPanel = Box.createHorizontalBox();
@@ -592,7 +595,8 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
         return (hideProtoButton.isSelected() && PROTOTYPE.passesFilter(equipment, getEntity()))
                 || (hideOneShotButton.isSelected() && ONE_SHOT.passesFilter(equipment, getEntity()))
                 || (hideTorpedoButton.isSelected() && TORPEDO.passesFilter(equipment, getEntity()))
-                || (hideAPButton.isSelected() && AP.passesFilter(equipment, getEntity()));
+                || (hideAPButton.isSelected() && AP.passesFilter(equipment, getEntity()))
+                || (hideUnusableAmmoButton.isSelected() && UNUSABLE_AMMO.passesFilter(equipment, getEntity()));
     }
 
     /**
