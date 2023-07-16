@@ -3289,13 +3289,16 @@ public class UnitUtil {
                                              final int toLoc, final boolean includeForward,
                                              final boolean includeRear)
             throws LocationFullException {
-        /*
-         * First we remove any equipment already in the location, but keep a list of it
-         * to use as much as possible. 
-         */
+        // Remove any equipment already in the location, but keep a list of it
+        // to reuse as much as possible.
         List<Mounted> removed = entity.getEquipment().stream()
                 .filter(m -> m.getLocation() == toLoc)
                 .filter(m -> m.isRearMounted() ? includeRear : includeForward)
+                .collect(Collectors.toList());
+
+        // Add to this any equipment that is already unequipped (= in Entity.LOC_NONE) and free to be used
+        List<Mounted> unequipped = entity.getEquipment().stream()
+                .filter(m -> m.getLocation() == Entity.LOC_NONE)
                 .collect(Collectors.toList());
 
         removed.forEach(m -> UnitUtil.removeCriticals(entity, m));
@@ -3307,7 +3310,8 @@ public class UnitUtil {
         removed.stream()
                 .filter(m -> (m.getType() instanceof BayWeapon))
                 .forEach(m -> removeMounted(entity, m));
-        
+
+        removed.addAll(unequipped);
 
         // Now we go through the equipment in the location to copy and add it to the other location.
         // If there is a match in what we removed, use that. Otherwise, add the equipment to the

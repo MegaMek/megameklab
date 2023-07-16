@@ -31,18 +31,20 @@ import org.apache.logging.log4j.LogManager;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.List;
 import java.util.Vector;
 
 public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseListener {
-    private EntitySource eSource;
+    private final EntitySource eSource;
     private RefreshListener refresh;
-    private boolean buildView;
+    private final boolean buildView;
     private boolean darkened = false;
+    private final AbstractCriticalTransferHandler transferHandler;
 
-    public BAASBMDropTargetCriticalList(Vector<E> vector, EntitySource eSource,
+    public BAASBMDropTargetCriticalList(List<E> vector, EntitySource eSource,
                                         RefreshListener refresh, boolean buildView,
                                         IView parentView) {
-        super(vector);
+        super(new Vector<>(vector));
         setDragEnabled(true);
         this.eSource = eSource;
         this.refresh = refresh;
@@ -50,10 +52,19 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
         setCellRenderer(new CritListCellRenderer(eSource.getEntity(), buildView));
         addMouseListener(this);
         if (eSource.getEntity() instanceof Mech) {
-            setTransferHandler(new BMCriticalTransferHandler(eSource, refresh, (BMCriticalView) parentView));
+            transferHandler = new BMCriticalTransferHandler(eSource, refresh, (BMCriticalView) parentView);
         } else {
-            setTransferHandler(new BAASCriticalTransferHandler(eSource, refresh));
+            transferHandler = new BAASCriticalTransferHandler(eSource, refresh);
         }
+        setTransferHandler(transferHandler);
+        setAlignmentX(JLabel.CENTER_ALIGNMENT);
+        setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        setBorder(BorderFactory.createLineBorder(CritCellUtil.CRITCELL_BORDER_COLOR));
+    }
+
+    public void setRefresh(RefreshListener refresh) {
+        this.refresh = refresh;
+        transferHandler.setRefresh(refresh);
     }
 
     private void changeMountStatus(Mounted eq, int location, boolean rear) {
@@ -68,7 +79,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
         }
 
         if (refresh != null) {
-            refresh.refreshAll();
+            refresh.scheduleRefresh();
         }
     }
 
@@ -451,6 +462,10 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
             UnitUtil.removeMounted(getUnit(), mounted);
         }
 
+        if (getUnit().isFighter() && mounted.getLocation() != Entity.LOC_NONE) {
+            UnitUtil.compactCriticals(getUnit(), mounted.getLocation());
+        }
+
         // Check linkings after you remove everything.
         try {
             MechFileParser.postLoadInit(getUnit());
@@ -461,7 +476,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
         }
 
         if (refresh != null) {
-            refresh.refreshAll();
+            refresh.scheduleRefresh();
         }
     }
 
@@ -480,6 +495,9 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
         }
 
         UnitUtil.removeCriticals(getUnit(), mounted);
+        if (getUnit().isFighter() && mounted.getLocation() != Entity.LOC_NONE) {
+            UnitUtil.compactCriticals(getUnit(), mounted.getLocation());
+        }
 
         // Check linkings after you remove everything.
         try {
@@ -502,7 +520,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
     }
 
     private boolean canRearMount(Mounted mount) {
-        if (mount.getEntity() instanceof BattleArmor) {
+        if ((mount.getEntity() instanceof BattleArmor) || mount.getEntity().isFighter()) {
             return false;
         }
         if (mount.getType() instanceof MiscType) {
@@ -528,7 +546,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
             }
         }
         if (refresh != null) {
-            refresh.refreshAll();
+            refresh.scheduleRefresh();
         }
     }
 
@@ -538,7 +556,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
             getMounted().getLinkedBy().setMechTurretMounted(turret);
         }
         if (refresh != null) {
-            refresh.refreshAll();
+            refresh.scheduleRefresh();
         }
     }
     
@@ -568,7 +586,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
         if (getUnit() instanceof BipedMech || getUnit() instanceof TripodMech) {
             UnitUtil.removeHand((Mech) getUnit(), location);
             if (refresh != null) {
-                refresh.refreshAll();
+                refresh.scheduleRefresh();
             }
         }
     }
@@ -577,7 +595,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
         if (getUnit() instanceof BipedMech || getUnit() instanceof TripodMech) {
             UnitUtil.removeArm((Mech)getUnit(),location);
             if (refresh != null) {
-                refresh.refreshAll();
+                refresh.scheduleRefresh();
             }
         }
     }
@@ -594,7 +612,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
         getUnit().setCritical(location, 2, new CriticalSlot(
                 CriticalSlot.TYPE_SYSTEM, Mech.ACTUATOR_LOWER_ARM));
         if (refresh != null) {
-            refresh.refreshAll();
+            refresh.scheduleRefresh();
         }
     }
 
@@ -613,7 +631,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
         }
 
         if (refresh != null) {
-            refresh.refreshAll();
+            refresh.scheduleRefresh();
         }
     }
 

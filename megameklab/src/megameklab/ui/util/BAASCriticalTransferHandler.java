@@ -37,14 +37,11 @@ import java.util.Objects;
  *
  * @author jtighe (torren@users.sourceforge.net)
  */
-public class BAASCriticalTransferHandler extends TransferHandler {
-    private final EntitySource eSource;
+public class BAASCriticalTransferHandler extends AbstractCriticalTransferHandler {
     private int location = -1;
-    private final RefreshListener refresh;
 
     public BAASCriticalTransferHandler(EntitySource eSource, RefreshListener refresh) {
-        this.eSource = eSource;
-        this.refresh = refresh;
+        super(eSource, refresh);
     }
 
     @Override
@@ -52,7 +49,7 @@ public class BAASCriticalTransferHandler extends TransferHandler {
         if (data == null) {
             return;
         }
-        Mounted mounted = null;
+        Mounted mounted;
         try {
             mounted = getUnit().getEquipment(Integer.parseInt((String) data.getTransferData(DataFlavor.stringFlavor)));
         } catch (Exception ex) {
@@ -168,8 +165,7 @@ public class BAASCriticalTransferHandler extends TransferHandler {
                 location = Integer.parseInt(list.getName());
             }
             Transferable t = info.getTransferable();
-            int slotNumber = list.getDropLocation().getIndex();
-            
+
             try {
                 Mounted eq = getUnit().getEquipment(Integer.parseInt(
                         (String) t.getTransferData(DataFlavor.stringFlavor)));
@@ -183,6 +179,9 @@ public class BAASCriticalTransferHandler extends TransferHandler {
                     if ((eq.getLocation() != Entity.LOC_NONE)
                             || (eq.getSecondLocation() != Entity.LOC_NONE)) {
                         UnitUtil.removeCriticals(getUnit(), eq);
+                        if (getUnit().isFighter() && eq.getLocation() != Entity.LOC_NONE) {
+                            UnitUtil.compactCriticals(getUnit(), eq.getLocation());
+                        }
                         changeMountStatus(eq, Entity.LOC_NONE);
                     } else {
                         eq.setOmniPodMounted(UnitUtil.canPodMount(getUnit(), eq));
@@ -273,25 +272,5 @@ public class BAASCriticalTransferHandler extends TransferHandler {
             }
         }
         return null;
-    }
-
-    @Override
-    public int getSourceActions(JComponent c) {
-        return TransferHandler.MOVE;
-    }
-
-    private void changeMountStatus(Mounted eq, int location) {
-        changeMountStatus(eq, location, -1);
-    }
-
-    private void changeMountStatus(Mounted eq, int location, int secondaryLocation) {
-        UnitUtil.changeMountStatus(getUnit(), eq, location, secondaryLocation, false);
-        if (refresh != null) {
-            refresh.refreshAll();
-        }
-    }
-
-    public Entity getUnit() {
-        return eSource.getEntity();
     }
 }

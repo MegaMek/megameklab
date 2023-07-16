@@ -253,7 +253,7 @@ public class LABuildView extends IView implements MouseListener {
                 }
             }
 
-            popup.show(this, evt.getX(), evt.getY());
+            popup.show(equipmentTable, evt.getX(), evt.getY());
         }
     }
 

@@ -147,8 +147,7 @@ public class ASMainUI extends MegaMekLabMainUI {
     }
 
     @Override
-    public void refreshArmor() {
-    }
+    public void refreshArmor() { }
 
     @Override
     public void refreshBuild() {

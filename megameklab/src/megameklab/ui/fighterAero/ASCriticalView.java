@@ -17,15 +17,15 @@ package megameklab.ui.fighterAero;
 import megamek.common.*;
 import megamek.common.verifier.TestAero;
 import megameklab.ui.EntitySource;
+import megameklab.ui.util.BAASBMDropTargetCriticalList;
 import megameklab.ui.util.CritCellUtil;
 import megameklab.ui.util.IView;
-import megameklab.ui.util.BAASBMDropTargetCriticalList;
 import megameklab.ui.util.RefreshListener;
 import megameklab.util.UnitUtil;
 import org.apache.logging.log4j.LogManager;
 
 import javax.swing.*;
-import java.awt.*;
+import java.util.ArrayList;
 import java.util.Vector;
 
 /**
@@ -38,41 +38,69 @@ import java.util.Vector;
  */
 public class ASCriticalView extends IView {
 
-    private final Box leftWingPanel = Box.createVerticalBox();
-    private final Box rightWingPanel = Box.createVerticalBox();
-    private final Box nosePanel = Box.createVerticalBox();
-    private final Box aftPanel = Box.createVerticalBox();
-    private final Box fuselagePanel = Box.createVerticalBox();
-    
+    private final BAASBMDropTargetCriticalList<String> noseCrits;
+    private final BAASBMDropTargetCriticalList<String> leftWingCrits;
+    private final BAASBMDropTargetCriticalList<String> rightWingCrits;
+    private final BAASBMDropTargetCriticalList<String> aftCrits;
+    private final BAASBMDropTargetCriticalList<String> fuselageCrits;
+
     private final JLabel noseSpace = new JLabel();
     private final JLabel leftSpace = new JLabel();
     private final JLabel rightSpace = new JLabel();
     private final JLabel aftSpace = new JLabel();
-    
+
     private final JButton btnCopyLW = new JButton("Copy from Left Wing");
     private final JButton btnCopyRW = new JButton("Copy from Right Wing");
 
-    private RefreshListener refresh;
+    private RefreshListener refreshListener;
 
-    public ASCriticalView(EntitySource eSource, RefreshListener refresh) {
+    public ASCriticalView(EntitySource eSource, RefreshListener refreshListener) {
         super(eSource);
-        this.refresh = refresh;
+        this.refreshListener = refreshListener;
+
+        noseCrits = new BAASBMDropTargetCriticalList<>(
+                new ArrayList<>(), eSource, refreshListener, true, this);
+        leftWingCrits = new BAASBMDropTargetCriticalList<>(
+                new ArrayList<>(), eSource, refreshListener, true, this);
+        rightWingCrits = new BAASBMDropTargetCriticalList<>(
+                new ArrayList<>(), eSource, refreshListener, true, this);
+        aftCrits = new BAASBMDropTargetCriticalList<>(
+                new ArrayList<>(), eSource, refreshListener, true, this);
+        fuselageCrits = new BAASBMDropTargetCriticalList<>(
+                new ArrayList<>(), eSource, refreshListener, true, this);
 
         Box mainPanel = Box.createHorizontalBox();
         Box leftPanel = Box.createVerticalBox();
         Box middlePanel = Box.createVerticalBox();
         Box rightPanel = Box.createVerticalBox();
+        Box leftWingPanel = Box.createVerticalBox();
+        Box rightWingPanel = Box.createVerticalBox();
+        Box nosePanel = Box.createVerticalBox();
+        Box aftPanel = Box.createVerticalBox();
+        Box fuselagePanel = Box.createVerticalBox();
 
+        noseSpace.setAlignmentX(JComponent.CENTER_ALIGNMENT);
         leftSpace.setAlignmentX(JComponent.CENTER_ALIGNMENT);
         rightSpace.setAlignmentX(JComponent.CENTER_ALIGNMENT);
-        noseSpace.setAlignmentX(JComponent.CENTER_ALIGNMENT);
         aftSpace.setAlignmentX(JComponent.CENTER_ALIGNMENT);
 
         nosePanel.setBorder(CritCellUtil.locationBorder("Nose"));
         leftWingPanel.setBorder(CritCellUtil.locationBorder("Left Wing"));
-        fuselagePanel.setBorder(CritCellUtil.locationBorder("Fuselage"));
         rightWingPanel.setBorder(CritCellUtil.locationBorder("Right Wing"));
         aftPanel.setBorder(CritCellUtil.locationBorder("Aft"));
+        fuselagePanel.setBorder(CritCellUtil.locationBorder("Fuselage"));
+
+        nosePanel.add(noseCrits);
+        nosePanel.add(noseSpace);
+        leftWingPanel.add(leftWingCrits);
+        leftWingPanel.add(leftSpace);
+        leftWingPanel.add(btnCopyRW);
+        rightWingPanel.add(rightWingCrits);
+        rightWingPanel.add(rightSpace);
+        rightWingPanel.add(btnCopyLW);
+        aftPanel.add(aftCrits);
+        aftPanel.add(aftSpace);
+        fuselagePanel.add(fuselageCrits);
 
         btnCopyLW.setAlignmentX(JComponent.CENTER_ALIGNMENT);
         btnCopyRW.setAlignmentX(JComponent.CENTER_ALIGNMENT);
@@ -92,113 +120,99 @@ public class ASCriticalView extends IView {
     }
 
     public void updateRefresh(RefreshListener refresh) {
-        this.refresh = refresh;
+        this.refreshListener = refresh;
+        noseCrits.setRefresh(refresh);
+        leftWingCrits.setRefresh(refresh);
+        rightWingCrits.setRefresh(refresh);
+        aftCrits.setRefresh(refresh);
+        fuselageCrits.setRefresh(refresh);
     }
 
     public void refresh() {
-        leftWingPanel.removeAll();
-        rightWingPanel.removeAll();
-        nosePanel.removeAll();
-        aftPanel.removeAll();
-        fuselagePanel.removeAll();
-        
-        int[] availSpace = TestAero.availableSpace(getAero());
-
-        if (availSpace == null) {
-            // Shouldn't happen, since we only allow valid armor types to be selected...
-            LogManager.getLogger().error("Invalid armour type!");
-            return;
-        }
-
-        synchronized (getAero()) {
-            for (int location = 0; location < getAero().locations(); location++) {
-                if (location == Aero.LOC_WINGS) {
-                    continue;
-                }
-                Vector<String> critNames = new Vector<>(1, 1);
-                int numWeapons = 0;
-                for (int slot = 0; slot < getAero().getNumberOfCriticals(location); slot++) {
-                    CriticalSlot cs = getAero().getCritical(location, slot);
-                    if ((cs != null) && (cs.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
-                        Mounted m = cs.getMount();
+        for (int location = 0; location < getAero().locations(); location++) {
+            if (location == Aero.LOC_WINGS) {
+                continue;
+            }
+            Vector<String> critNames = new Vector<>(5);
+            int numWeapons = 0;
+            for (int slot = 0; slot < getAero().getNumberOfCriticals(location); slot++) {
+                CriticalSlot cs = getAero().getCritical(location, slot);
+                if ((cs != null) && (cs.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
+                    Mounted mounted = cs.getMount();
+                    if (mounted == null) {
                         // Critical didn't get removed. Remove it now.
-                        if (m == null) {
-                            getAero().setCritical(location, slot, null);
-                            continue;
-                        }
-                        // Ignore weapon groups
-                        if (m.isWeaponGroup()) {
-                            continue;
-                        }
-                        if (m.getType() instanceof WeaponType) {
-                            numWeapons++;
-                        }
-                        StringBuilder critName = new StringBuilder(m.getName());
-                        if (m.isRearMounted()) {
-                            critName.append(" (R)");
-                        }
-                        if (m.isSponsonTurretMounted()) {
-                            critName.append(" (ST)");
-                        }
-                        if (m.isPintleTurretMounted()) {
-                            critName.append(" (PT)");
-                        }
-                        critName.append(":").append(slot);
-                        critNames.add(critName.toString());
+                        getAero().setCritical(location, slot, null);
+                        LogManager.getLogger().warn(getAero().getLocationName(location) +
+                                " equipment in slot " + slot + " had not been cleanly removed!");
+                        continue;
                     }
-                }
-
-                if (critNames.isEmpty()) {
-                    critNames.add(CritCellUtil.EMPTY_CRITCELL_TEXT);
-                }
-                BAASBMDropTargetCriticalList<String> criticalSlotList = new BAASBMDropTargetCriticalList<>(
-                        critNames, eSource, refresh, true, this);
-                criticalSlotList.setAlignmentX(JLabel.CENTER_ALIGNMENT);
-                criticalSlotList.setVisibleRowCount(critNames.size());
-                criticalSlotList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-                criticalSlotList.setName(location + "");
-                criticalSlotList.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-                
-                switch (location) {
-                    case Aero.LOC_NOSE:
-                        nosePanel.add(criticalSlotList);
-                        noseSpace.setText("Weapons: " + numWeapons + " / " + availSpace[location]);
-                        break;
-                    case Aero.LOC_LWING:
-                        leftWingPanel.add(criticalSlotList);
-                        leftSpace.setText("Weapons: " + numWeapons + " / " + availSpace[location]);
-                        break;
-                    case Aero.LOC_RWING:
-                        rightWingPanel.add(criticalSlotList);
-                        rightSpace.setText("Weapons: " + numWeapons + " / " + availSpace[location]);
-                        break;
-                    case Aero.LOC_AFT:
-                        aftPanel.add(criticalSlotList);
-                        aftSpace.setText("Weapons: " + numWeapons + " / " + availSpace[location]);
-                        break;
-                    case Aero.LOC_FUSELAGE:
-                        fuselagePanel.add(criticalSlotList);
-                        break;
+                    if (mounted.isWeaponGroup()) {
+                        continue;
+                    }
+                    if (mounted.getType() instanceof WeaponType) {
+                        numWeapons++;
+                    }
+                    critNames.add(mounted.getName() + ":" + slot);
                 }
             }
-            
-            leftWingPanel.add(leftSpace);
-            leftWingPanel.add(btnCopyRW);
-            rightWingPanel.add(rightSpace);
-            rightWingPanel.add(btnCopyLW);
-            nosePanel.add(noseSpace);
-            aftPanel.add(aftSpace);
 
-            validate();
+            if (critNames.isEmpty()) {
+                // In a completely empty location, display a single empty slot
+                critNames.add(CritCellUtil.EMPTY_CRITCELL_TEXT);
+            }
+
+            critListFor(location).setListData(critNames);
+            critListFor(location).setVisibleRowCount(critNames.size());
+            critListFor(location).setName(location + "");
+
+            String usedCritText = "Weapons: " + numWeapons + " / " + availableSpace(location);
+            if (location == Aero.LOC_NOSE) {
+                noseSpace.setText(usedCritText);
+            } else if (location == Aero.LOC_LWING) {
+                leftSpace.setText(usedCritText);
+            } else if (location == Aero.LOC_RWING) {
+                rightSpace.setText(usedCritText);
+            } else if (location == Aero.LOC_AFT) {
+                aftSpace.setText(usedCritText);
+            }
         }
     }
-    
+
+    private String availableSpace(int location) {
+        if (location == Aero.LOC_FUSELAGE) {
+            return "unlimited";
+        }
+        int[] availSpace = TestAero.availableSpace(getAero());
+        try {
+            return availSpace[location] + "";
+        } catch (Exception ex) {
+            LogManager.getLogger().error("Couldn't determine available crit space!", ex);
+            return "?";
+        }
+    }
+
+    private BAASBMDropTargetCriticalList<String> critListFor(int location) {
+        switch (location) {
+            case Aero.LOC_NOSE:
+                return noseCrits;
+            case Aero.LOC_LWING:
+                return leftWingCrits;
+            case Aero.LOC_RWING:
+                return rightWingCrits;
+            case Aero.LOC_AFT:
+                return aftCrits;
+            default:
+                return fuselageCrits;
+        }
+    }
+
     private void copyLocation(int from, int to) {
         try {
             UnitUtil.copyLocationEquipment(getAero(), from, to);
         } catch (LocationFullException ex) {
-            JOptionPane.showMessageDialog(this, "Insufficient space", "Location Full", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Insufficient space", "Location Full",
+                    JOptionPane.WARNING_MESSAGE);
         }
-        refresh.refreshAll();
+        refreshListener.scheduleRefresh();
     }
 }

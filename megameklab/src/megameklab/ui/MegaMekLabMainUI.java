@@ -33,6 +33,7 @@ import java.awt.*;
 public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener, EntitySource, AppCloser {
     private Entity entity = null;
     protected MenuBar mmlMenuBar;
+    protected boolean refreshRequired = false;
     
     public MegaMekLabMainUI() {
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -168,5 +169,19 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
     @Override
     public Entity getEntity() {
         return entity;
+    }
+
+
+    @Override
+    public void scheduleRefresh() {
+        refreshRequired = true;
+        SwingUtilities.invokeLater(this::performRefresh);
+    }
+
+    private void performRefresh() {
+        if (refreshRequired) {
+            refreshRequired = false;
+            refreshAll();
+        }
     }
 }

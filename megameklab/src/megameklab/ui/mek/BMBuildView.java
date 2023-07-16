@@ -292,7 +292,7 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
                     }
                 }
             }
-            popup.show(this, e.getX(), e.getY());
+            popup.show(equipmentTable, e.getX(), e.getY());
         }
     }
 

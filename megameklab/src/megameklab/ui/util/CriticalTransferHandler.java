@@ -119,6 +119,9 @@ public class CriticalTransferHandler extends TransferHandler {
                     mount.setBaMountLoc(BattleArmor.MOUNT_LOC_NONE);
                 } else {
                     UnitUtil.removeCriticals(getUnit(), mount);
+                    if (getUnit().isFighter() && mount.getLocation() != Entity.LOC_NONE) {
+                        UnitUtil.compactCriticals(getUnit(), mount.getLocation());
+                    }
                     changeMountStatus(mount, Entity.LOC_NONE, false);
                 }
             } catch (Exception ex) {

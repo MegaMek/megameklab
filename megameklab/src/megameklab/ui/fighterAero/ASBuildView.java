@@ -310,7 +310,7 @@ public class ASBuildView extends IView implements ActionListener, MouseListener 
                     popup.add(item);
                 }
             }
-            popup.show(this, evt.getX(), evt.getY());
+            popup.show(equipmentTable, evt.getX(), evt.getY());
         }
     }
 

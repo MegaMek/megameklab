@@ -96,7 +96,7 @@ public class ASBuildTab extends ITab implements ActionListener {
             }
         }
 
-        refresh.refreshAll();
+        refresh.scheduleRefresh();
     }
 
 
@@ -116,7 +116,7 @@ public class ASBuildTab extends ITab implements ActionListener {
 
     public void refreshAll() {
         if (refresh != null) {
-            refresh.refreshAll();
+            refresh.scheduleRefresh();
         }
     }
 
