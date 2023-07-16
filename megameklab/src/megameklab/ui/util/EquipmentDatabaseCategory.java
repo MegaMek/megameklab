@@ -65,8 +65,7 @@ public enum EquipmentDatabaseCategory {
             e -> (e instanceof Tank) || e.isSupportVehicle()),
 
     AMMO ("Ammo",
-            (eq, en) -> (eq instanceof AmmoType) && !(eq instanceof BombType)
-                    && UnitUtil.canUseAmmo(en, (AmmoType) eq, false),
+            (eq, en) -> (eq instanceof AmmoType) && !(eq instanceof BombType),
             e -> e.getWeightClass() != EntityWeightClass.WEIGHT_SMALL_SUPPORT),
 
     OTHER ("Other",
@@ -111,8 +110,12 @@ public enum EquipmentDatabaseCategory {
                     || ((WeaponType) eq).getAmmoType() == AmmoType.T_SRM_TORPEDO),
             e -> !(e instanceof BattleArmor) && !(e instanceof Aero)),
 
-    UNAVAILABLE ("Unavailable")
+    UNAVAILABLE ("Unavailable"),
     // TODO: Provide MM.ITechManager.isLegal in static form
+
+    UNUSABLE_AMMO("Ammo w/o Weapon",
+            (eq, en) -> (eq instanceof AmmoType) && !(eq instanceof BombType)
+                    && !UnitUtil.canUseAmmo(en, (AmmoType) eq, false))
     ;
 
     private final static Set<EquipmentDatabaseCategory> showFilters = EnumSet.of(ENERGY, BALLISTIC, MISSILE,
