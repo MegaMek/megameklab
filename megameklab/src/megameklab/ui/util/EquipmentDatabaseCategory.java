@@ -98,7 +98,8 @@ public enum EquipmentDatabaseCategory {
             e -> e instanceof BattleArmor),
 
     PROTOTYPE ("Prototype",
-            (eq, en) -> (eq instanceof WeaponType) && eq.hasFlag(WeaponType.F_PROTOTYPE),
+            (eq, en) -> ((eq instanceof WeaponType) && eq.hasFlag(WeaponType.F_PROTOTYPE))
+                    || ((eq instanceof MiscType) && eq.hasFlag(MiscType.F_PROTOTYPE)),
             e -> !(e instanceof BattleArmor)),
 
     ONE_SHOT ("One-Shot",
