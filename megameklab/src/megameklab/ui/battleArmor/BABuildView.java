@@ -370,8 +370,7 @@ public class BABuildView extends IView implements ActionListener, MouseListener 
                     && !eq.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)
                     && !eq.getType().hasFlag(WeaponType.F_MISSILE)
                     && !(eq.getType() instanceof AmmoType)
-                    && !eq.isDWPMounted()
-                    && (getBattleArmor()).canMountDWP()) {
+                    && !eq.isDWPMounted()) {
                 for (Mounted m : getBattleArmor().getMisc()) {
                     // If this isn't a DWP or it's a full DWP, skip
                     if (!m.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)
@@ -400,8 +399,7 @@ public class BABuildView extends IView implements ActionListener, MouseListener 
             // Should we allow mounting Ammo in a DWP?
             if ((eq.getType() instanceof AmmoType)
                     && getBattleArmor().hasWorkingMisc(MiscType.F_DETACHABLE_WEAPON_PACK)
-                    && !eq.isDWPMounted()
-                    && (getBattleArmor()).canMountDWP()) {
+                    && !eq.isDWPMounted()) {
                 for (final Mounted m : getBattleArmor().getMisc()) {
                     // If this isn't a DWP, skip
                     if (!m.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)) {

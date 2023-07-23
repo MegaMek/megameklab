@@ -66,9 +66,6 @@ class BAEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
 
     @Override
     protected boolean shouldShow(EquipmentType equipment) {
-        if (equipment.hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK) && !getBattleArmor().canMountDWP()) {
-            return false;
-        }
         if ((equipment instanceof MiscType)
                 && (equipment.hasFlag(MiscType.F_BA_MANIPULATOR)
                 || equipment.hasFlag(MiscType.F_PARTIAL_WING)
