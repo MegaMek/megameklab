@@ -16,6 +16,8 @@ VERSION HISTORY:
 + PR #1286: The equipment database filter that hides prototype equipment now also hides "other" equipment such as Prototype CASE
 + Fix #1265, #1173: Several BattleArmor validity tests have been added
 + Fix #275: BattleArmor Detachable Weapon Packs can now be found in the equipment list more easily but will register as invalid when the unit doesn't have sufficient MP
++ Fix #1252: Mek partial wings can no longer be pod-mounted; the combination of partial wings and Mek mechanical jump boosters is now marked as invalid
++ Fix #1290: The Alpha Strike conversion report can now be accessed from the unit preview
 
 0.49.13 (2023-05-23 2000 UTC)
 + PR #1241: On record sheets, hit location and cluster tables can now be printed in place of the fluff image; activate this option in the record sheet settings
