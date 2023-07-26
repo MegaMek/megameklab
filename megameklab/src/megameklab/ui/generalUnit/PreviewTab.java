@@ -17,6 +17,7 @@ package megameklab.ui.generalUnit;
 
 import megamek.client.ui.swing.MechViewPanel;
 import megamek.client.ui.swing.alphaStrike.ConfigurableASCardPanel;
+import megamek.client.ui.swing.calculationReport.FlexibleCalculationReport;
 import megamek.common.Entity;
 import megamek.common.MechView;
 import megamek.common.alphaStrike.conversion.ASConverter;
@@ -66,7 +67,7 @@ public class PreviewTab extends ITab {
             panelMekView.setMech(selectedUnit, mechView);
             panelTROView.setMech(selectedUnit, troView);
             if (ASConverter.canConvert(selectedUnit)) {
-                cardPanel.setASElement(ASConverter.convertForMechCache(selectedUnit));
+                cardPanel.setASElement(ASConverter.convertInMML(selectedUnit, new FlexibleCalculationReport()));
             } else {
                 cardPanel.setASElement(null);
             }
