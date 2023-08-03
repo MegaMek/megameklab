@@ -70,21 +70,6 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     }
     //endregion Getters
 
-    //region Conditional Exit Handler
-    /**
-     * The File menu's exit handler pops up a modal that produces a boolean;
-     * to match the functionality of ExitOnWindowClosingListener, we want to
-     * exit if that boolean is true.
-     * Otherwise, do nothing.
-     * @param okayToExit
-     */
-    public void conditionalExit( boolean okayToExit){
-        if (okayToExit){
-            System.exit(0);
-        }
-    }
-    //endregion Conditional Exit Handler
-
     //region Initialization
     /**
      * The main menu bar uses the following Mnemonic keys as of 30-Jun-2022:
@@ -165,7 +150,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         miExit.setName("miExit");
         miExit.setMnemonic(KeyEvent.VK_E);
         miExit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.ALT_DOWN_MASK));
-        miExit.addActionListener(evt -> conditionalExit(getFrame().exit()));
+        miExit.addActionListener(evt -> getFrame().exit());
         fileMenu.add(miExit);
 
         return fileMenu;
@@ -1023,7 +1008,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
                             ex.getMessage()));
         }
     }
-
+    
     private void jMenuGetUnitWeightBreakdownFromFile_actionPerformed() {
         File unitFile = loadUnitFile();
         if (unitFile == null) {
