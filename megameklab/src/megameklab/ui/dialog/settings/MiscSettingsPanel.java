@@ -35,8 +35,6 @@ public class MiscSettingsPanel extends JPanel {
 
     private final JCheckBox chkSummaryFormatTRO = new JCheckBox();
     private final JCheckBox chkSkipSavePrompts = new JCheckBox();
-    private final JCheckBox chkCritsAutofillUnhittables = new JCheckBox();
-    private final JCheckBox chkCritsAutocompact = new JCheckBox();
 
     MiscSettingsPanel() {
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Dialogs");
@@ -49,21 +47,11 @@ public class MiscSettingsPanel extends JPanel {
         chkSkipSavePrompts.setToolTipText(resourceMap.getString("ConfigurationDialog.chkSkipSavePrompts.tooltip"));
         chkSkipSavePrompts.setSelected(CConfig.getBooleanParam(CConfig.MISC_SKIP_SAFETY_PROMPTS));
 
-        chkCritsAutofillUnhittables.setText(resourceMap.getString("ConfigurationDialog.chkCritsAutofillUnhittables.text"));
-        chkCritsAutofillUnhittables.setToolTipText(resourceMap.getString("ConfigurationDialog.chkCritsAutofillUnhittables.tooltip"));
-        chkCritsAutofillUnhittables.setSelected(CConfig.getBooleanParam(CConfig.MML_CRITS_AUTOFILL_UNHITTABLES));
-
-        chkCritsAutocompact.setText(resourceMap.getString("ConfigurationDialog.chkCritsAutocompact.text"));
-        chkCritsAutocompact.setToolTipText(resourceMap.getString("ConfigurationDialog.chkCritsAutocompact.tooltip"));
-        chkCritsAutocompact.setSelected(CConfig.getBooleanParam(CConfig.MML_CRITS_AUTOCOMPACT));
-
         JPanel gridPanel = new JPanel(new SpringLayout());
         gridPanel.add(chkSummaryFormatTRO);
         gridPanel.add(chkSkipSavePrompts);
-        gridPanel.add(chkCritsAutofillUnhittables);
-        gridPanel.add(chkCritsAutocompact);
 
-        SpringUtilities.makeCompactGrid(gridPanel, 4, 1, 0, 0, 15, 10);
+        SpringUtilities.makeCompactGrid(gridPanel, 2, 1, 0, 0, 15, 10);
         gridPanel.setBorder(new EmptyBorder(20, 30, 20, 30));
         setLayout(new FlowLayout(FlowLayout.LEFT));
         add(gridPanel);
@@ -73,8 +61,6 @@ public class MiscSettingsPanel extends JPanel {
         Map<String, String> miscSettings = new HashMap<>();
         miscSettings.put(CConfig.MISC_SUMMARY_FORMAT_TRO, String.valueOf(chkSummaryFormatTRO.isSelected()));
         miscSettings.put(CConfig.MISC_SKIP_SAFETY_PROMPTS, String.valueOf(chkSkipSavePrompts.isSelected()));
-        miscSettings.put(CConfig.MML_CRITS_AUTOFILL_UNHITTABLES, String.valueOf(chkCritsAutofillUnhittables.isSelected()));
-        miscSettings.put(CConfig.MML_CRITS_AUTOCOMPACT, String.valueOf(chkCritsAutocompact.isSelected()));
         return miscSettings;
     }
 }

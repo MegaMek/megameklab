@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2008
- *
+ * 
  * Original author - jtighe (torren@users.sourceforge.net)
- *
+ * 
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- *
+ * 
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -85,7 +85,7 @@ public class CConfig {
 
     public static final String MISC_SUMMARY_FORMAT_TRO = "useTROFormat";
     public static final String MISC_SKIP_SAFETY_PROMPTS = "skipSafetyPrompts";
-
+    
     public static final String CONFIG_SAVE_LOC = "Save-Location-Default";
     public static final String CONFIG_PLAF = "lookAndFeel";
 
@@ -105,9 +105,6 @@ public class CConfig {
     public static final String RS_SCALE_UNITS = "rs_scale_units";
 
     public static final String NAG_EQUIPMENT_CTRLCLICK = "nag_equipment_ctrlclick";
-
-    public static final String MML_CRITS_AUTOFILL_UNHITTABLES = "crits_autofill_unhittables";
-    public static final String MML_CRITS_AUTOCOMPACT = "crits_autocompact";
 
     /**
      * Player configuration values.
@@ -143,8 +140,6 @@ public class CConfig {
         defaults.setProperty(RS_SCALE_FACTOR, "1");
         defaults.setProperty(RS_SCALE_UNITS, RSScale.HEXES.toString());
         defaults.setProperty(NAG_EQUIPMENT_CTRLCLICK, Boolean.toString(true));
-        defaults.setProperty(MML_CRITS_AUTOFILL_UNHITTABLES, Boolean.toString(true));
-        defaults.setProperty(MML_CRITS_AUTOCOMPACT, Boolean.toString(true));
 
         return defaults;
     }
@@ -181,7 +176,7 @@ public class CConfig {
             LogManager.getLogger().error("", ex);
         }
     }
-
+    
     /**
      * Creates a new Config file, and directories, if it is missing.
      */
@@ -211,7 +206,7 @@ public class CConfig {
 
     /**
      * Get a config value, with a default value to be used if the value is not found.
-     *
+     * 
      * @param param      The key
      * @param defaultVal The value to return if the entry is not found
      * @return           The value associated with the key
@@ -226,10 +221,10 @@ public class CConfig {
         }
         return tparam;
     }
-
+    
     /**
      * Get a config value.
-     *
+     * 
      * @param param      The key
      * @return           The value associated with the key. If not found, an empty String is returned
      */

@@ -21,7 +21,6 @@ import megameklab.ui.EntitySource;
 import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
 import megameklab.util.UnitUtil;
-import megameklab.util.CConfig;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -59,10 +58,10 @@ public class BMBuildTab extends ITab {
     private JComponent createButtonPanel() {
         autoFillUnHittables.addActionListener(e -> refresh());
         autoFillUnHittables.setToolTipText(resources.getString("BuildTab.autoFillUnhittables.tooltip"));
-        autoFillUnHittables.setSelected(CConfig.getBooleanParam(CConfig.MML_CRITS_AUTOFILL_UNHITTABLES));
+        autoFillUnHittables.setSelected(true);
         autoCompact.addActionListener(e -> refresh());
         autoCompact.setToolTipText(resources.getString("BuildTab.autoCompact.tooltip"));
-        autoCompact.setSelected(CConfig.getBooleanParam(CConfig.MML_CRITS_AUTOCOMPACT));
+        autoCompact.setSelected(true);
         autoSort.addActionListener(e -> refresh());
         autoSort.addActionListener(e -> autoCompact.setEnabled(!autoSort.isSelected()));
         autoSort.setToolTipText(resources.getString("BuildTab.autoSort.tooltip"));
