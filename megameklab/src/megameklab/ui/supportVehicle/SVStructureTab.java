@@ -192,6 +192,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
     public void chassisChanged(String chassis) {
         getSV().setChassis(chassis);
         refresh.refreshHeader();
+        refresh.refreshTransport();
         refresh.refreshPreview();
     }
 
