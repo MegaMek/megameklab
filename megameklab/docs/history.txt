@@ -1,6 +1,7 @@
 VERSION HISTORY:
 ----------------
 0.49.15-SNAPSHOT
++ Fix #1172: Clan TAG will no longer be written as TAG (Clan) (Clan) in Mixed Tech units
 
 0.49.14 (2023-07-28 2100 UTC)
 + PR #1267: Adaptations to MM's #4474 (BV calculation and reports update)
