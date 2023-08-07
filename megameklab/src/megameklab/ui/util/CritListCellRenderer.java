@@ -46,15 +46,15 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
         setText(split[0]);
         setToolTipText(null);
 
-        CriticalSlot cs;
+        CriticalSlot cs = null;
         if (split.length > 2) {
             int eqId = Integer.parseInt(split[2]);
-            cs = new CriticalSlot(unit.getEquipment(eqId));
+            /** safety against logic error where we try to redraw deleted equipment due to poor dupe slot handling **/
+            Mounted eq = unit.getEquipment(eqId);
+            cs = eq != null ? new CriticalSlot(eq) : null;
         } else if (split.length > 1) {
             cs = getCrit(Integer.parseInt(split[1]));
-        } else if (value.equals(EMPTY_CRITCELL_TEXT)) {
-            cs = null;
-        } else {
+        } else if (!value.equals(EMPTY_CRITCELL_TEXT)) {
             cs = getCrit(index);
         }
 
@@ -79,8 +79,8 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
         }
 
         int loc = getCritLocation();
-        if ((cs != null) 
-                && UnitUtil.isLastCrit(unit, cs, index, loc) 
+        if ((cs != null)
+                && UnitUtil.isLastCrit(unit, cs, index, loc)
                 && UnitUtil.isPreviousCritEmpty(unit, cs, index, loc)) {
             setBorder(BorderFactory.createMatteBorder(1, 0, 1, 0, CritCellUtil.CRITCELL_BORDER_COLOR));
         } else if ((cs != null) && UnitUtil.isLastCrit(unit, cs, index, loc)) {

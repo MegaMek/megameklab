@@ -128,7 +128,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
                 if ((mount != null) && ((e.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) != 0)) {
                     changeOmniMounting(!mount.isOmniPodMounted());
                     return;
-                }                
+                }
 
                 if ((mount != null)
                         && !(((getUnit().getEntityType() & Entity.ETYPE_QUADVEE) == Entity.ETYPE_QUADVEE)
@@ -153,7 +153,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
                             && !mount.isSquadSupportWeapon()
                             && mount.getLocation() == BattleArmor.LOC_SQUAD
                             && (getUnit() instanceof BattleArmor)
-                            && ((BattleArmor)getUnit()).getChassisType() != 
+                            && ((BattleArmor)getUnit()).getChassisType() !=
                                 BattleArmor.CHASSIS_TYPE_QUAD) {
                         info = new JMenuItem("Mount as squad support weapon");
                         info.addActionListener(evt -> {
@@ -164,7 +164,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
                         });
                         popup.add(info);
                     }
-                    
+
                     // Adding ammo as a squad support mount is slightly different
                     if ((mount.getType() instanceof AmmoType)
                             && !mount.getType().hasFlag(WeaponType.F_MISSILE)
@@ -176,7 +176,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
                         boolean enabled = false;
                         for (Mounted weapon : getUnit().getWeaponList()) {
                             WeaponType wtype = (WeaponType) weapon.getType();
-                            if (weapon.isSquadSupportWeapon() 
+                            if (weapon.isSquadSupportWeapon()
                                     && AmmoType.isAmmoValid(mount, wtype)) {
                                 enabled = true;
                             }
@@ -192,7 +192,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
                         });
                         popup.add(info);
                     }
-                    
+
                     // Allow removing squad support weapon
                     if (mount.isSquadSupportWeapon()) {
                         info = new JMenuItem("Remove squad support weapon mount");
@@ -209,9 +209,9 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
                         });
                         popup.add(info);
                     }
-                    
+
                     // Right-clicked on a DWP that has an attached weapon
-                    if (mount.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK) 
+                    if (mount.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)
                             && (mount.getLinked() != null)) {
                         info = new JMenuItem("Remove attached weapon");
                         info.addActionListener(evt -> {
@@ -227,7 +227,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
                         });
                         popup.add(info);
                     }
-                    
+
                     // Right-clicked on a AP Mount that has an attached weapon
                     if (mount.getType().hasFlag(MiscType.F_AP_MOUNT)
                             && (mount.getLinked() != null)) {
@@ -310,7 +310,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
                             popup.add(info);
                         }
                     }
-                    
+
                     if (getUnit().isOmni() && !mount.getType().isOmniFixedOnly()) {
                         if (mount.isOmniPodMounted()) {
                             info = new JMenuItem("Change to fixed mount");
@@ -395,7 +395,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
                         popup.add(info);
                     }
                 }
-                
+
                 if (popup.getComponentCount() > 0) {
                     popup.show(this, e.getX(), e.getY());
                 }
@@ -487,7 +487,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
         if (mounted == null) {
             return;
         }
-        
+
         // BattleArmor doesn't use the crit system, so we can just remove the mounted and be done
         if (getUnit() instanceof BattleArmor) {
             changeMountStatus(mounted, BattleArmor.MOUNT_LOC_NONE, false);
@@ -559,7 +559,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
             refresh.scheduleRefresh();
         }
     }
-    
+
     public int getCritLocation() {
         if (getUnit() instanceof BattleArmor) {
             String[] split = getName().split(":");
