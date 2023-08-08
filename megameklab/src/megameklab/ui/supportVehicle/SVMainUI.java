@@ -124,6 +124,11 @@ public class SVMainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshTransport() {
+        transportTab = new TransportTab(this);
+        transportTab.addRefreshedListener(this);
+        int idx = configPane.indexOfTab("Transport");
+        configPane.removeTabAt(idx);
+        configPane.insertTab("Transport", null, new TabScrollPane(transportTab), null,idx);
         transportTab.refresh();
     }
 
