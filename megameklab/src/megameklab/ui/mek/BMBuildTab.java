@@ -20,6 +20,7 @@ import megamek.common.Mounted;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
+import megameklab.util.CConfig;
 import megameklab.util.UnitUtil;
 
 import javax.swing.*;
@@ -42,6 +43,9 @@ public class BMBuildTab extends ITab {
 
     public BMBuildTab(EntitySource eSource) {
         super(eSource);
+        autoFillUnHittables.setSelected(CConfig.getBooleanParam(CConfig.MEK_AUTOFILL));
+        autoSort.setSelected(CConfig.getBooleanParam(CConfig.MEK_AUTOSORT));
+        autoCompact.setSelected(CConfig.getBooleanParam(CConfig.MEK_AUTOCOMPACT));
         critView = new BMCriticalView(eSource, refresh);
         buildView = new BMBuildView(eSource, refresh, critView);
 
@@ -58,10 +62,8 @@ public class BMBuildTab extends ITab {
     private JComponent createButtonPanel() {
         autoFillUnHittables.addActionListener(e -> refresh());
         autoFillUnHittables.setToolTipText(resources.getString("BuildTab.autoFillUnhittables.tooltip"));
-        autoFillUnHittables.setSelected(true);
         autoCompact.addActionListener(e -> refresh());
         autoCompact.setToolTipText(resources.getString("BuildTab.autoCompact.tooltip"));
-        autoCompact.setSelected(true);
         autoSort.addActionListener(e -> refresh());
         autoSort.addActionListener(e -> autoCompact.setEnabled(!autoSort.isSelected()));
         autoSort.setToolTipText(resources.getString("BuildTab.autoSort.tooltip"));
@@ -111,6 +113,9 @@ public class BMBuildTab extends ITab {
     }
 
     public void refresh() {
+        CConfig.setParam(CConfig.MEK_AUTOFILL, Boolean.toString(autoFillUnHittables.isSelected()));
+        CConfig.setParam(CConfig.MEK_AUTOSORT, Boolean.toString(autoSort.isSelected()));
+        CConfig.setParam(CConfig.MEK_AUTOCOMPACT, Boolean.toString(autoCompact.isSelected()));
         autoFillUnHittables();
         autoCompactCrits();
         autoSortCrits();

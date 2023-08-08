@@ -106,6 +106,10 @@ public class CConfig {
 
     public static final String NAG_EQUIPMENT_CTRLCLICK = "nag_equipment_ctrlclick";
 
+    public static final String MEK_AUTOFILL = "mekAutofill";
+    public static final String MEK_AUTOSORT = "mekAutosort";
+    public static final String MEK_AUTOCOMPACT = "mekAutocompact";
+
     /**
      * Player configuration values.
      */
@@ -140,6 +144,9 @@ public class CConfig {
         defaults.setProperty(RS_SCALE_FACTOR, "1");
         defaults.setProperty(RS_SCALE_UNITS, RSScale.HEXES.toString());
         defaults.setProperty(NAG_EQUIPMENT_CTRLCLICK, Boolean.toString(true));
+        defaults.setProperty(MEK_AUTOFILL, Boolean.toString(true));
+        defaults.setProperty(MEK_AUTOSORT, Boolean.toString(true));
+        defaults.setProperty(MEK_AUTOCOMPACT, Boolean.toString(true));
 
         return defaults;
     }
@@ -149,7 +156,6 @@ public class CConfig {
      */
     public static void load() {
         ensureConfigFileExists();
-
         loadConfigFile();
     }
 
