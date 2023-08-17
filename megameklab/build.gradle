@@ -110,8 +110,8 @@ jar {
     archiveFileName = "MegaMekLab.jar"
     manifest {
         attributes "Main-Class" : mainClassName
-        attributes "Class-Path" : "${mmJar.archiveFileName.get()} " + (project.sourceSets.main.runtimeClasspath.files
-                .findAll { it.name.endsWith(".jar") }
+        attributes "Class-Path" : "${lib}/${mmJar.archiveFileName.get()} " + (project.sourceSets.main.runtimeClasspath.files
+                .findAll { it.name.endsWith(".jar") && !it.name.toLowerCase().startsWith("megamek") }
                 .collect { "${lib}/${it.name}" }.join(' '))
         attributes "Add-Opens" : 'java.base/java.util java.base/java.util.concurrent'
         attributes "Build-Date" : LocalDateTime.now()
