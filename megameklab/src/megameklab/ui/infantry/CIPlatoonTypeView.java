@@ -62,7 +62,8 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
         MICROLITE(EntityMovementMode.VTOL, false, "PlatoonTypeView.cbMotiveType.microlite"),
         UMU(EntityMovementMode.INF_UMU, false, "PlatoonTypeView.cbMotiveType.umu"),
         UMU_MOTORIZED(EntityMovementMode.INF_UMU, false, "PlatoonTypeView.cbMotiveType.umu_motorized"),
-        SUBMARINE(EntityMovementMode.SUBMARINE, false, "PlatoonTypeView.cbMotiveType.submarine");
+        SUBMARINE(EntityMovementMode.SUBMARINE, false, "PlatoonTypeView.cbMotiveType.submarine"),
+        BEAST_MOUNTED(EntityMovementMode.NONE, false, "PlatoonTypeView.cbMotiveType.beast_mounted");
 
         final EntityMovementMode mode;
         final boolean legalFieldGun;
