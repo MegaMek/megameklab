@@ -340,7 +340,7 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
 
     @Override
     public void updateTechLevel() {
-        if (!panBasicInfo.isLegal(Infantry.getMotiveTechAdvancement(getInfantry().getMovementMode()))) {
+        if (!panBasicInfo.isLegal(getInfantry().getMotiveTechAdvancement())) {
             motiveTypeChanged(EntityMovementMode.INF_LEG, false);
         }
         getInfantry().setTechLevel(panBasicInfo.getTechLevel().getCompoundTechLevel(panBasicInfo.useClanTechBase()));
