@@ -53,13 +53,14 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
     public static final int T_FIELD_GUNS       = 1;
     public static final int T_ARMOR_KIT        = 2;
     public static final int T_SPECIALIZATION   = 3;
-    public static final int T_AUGMENTATION     = 4;
+    public static final int T_MOUNT            = 4;
+    public static final int T_AUGMENTATION     = 5;
 
     private BasicInfoView panBasicInfo;
     private CIPlatoonTypeView panPlatoonType;
     private CIWeaponView panWeapons;
     
-    private String[] tabNames = {"Weapons", "Field Guns", "Armor Kit", "Specializations", "Augmentation"};
+    private String[] tabNames = {"Weapons", "Field Guns", "Armor Kit", "Specializations", "Mount", "Augmentation"};
 
     private JTextField txtArmor = new JTextField("None");
     private JTextPane txtSpecializations = new JTextPane();
@@ -71,6 +72,7 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
     private CIFieldGunView fieldGunView;
     private CIArmorView armorView;
     private CISpecializationView specializationView;
+    private CIMountView mountView;
     private CIAugmentationView augmentationView;
 
     public CIStructureTab(EntitySource eSource) {
@@ -82,6 +84,7 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
         fieldGunView = new CIFieldGunView(eSource, panBasicInfo);
         armorView = new CIArmorView(eSource, panBasicInfo);
         specializationView = new CISpecializationView(eSource);
+        mountView = new CIMountView(eSource);
         augmentationView = new CIAugmentationView(eSource);
         setUpPanels();
         refresh();
@@ -98,7 +101,7 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
 
         txtArmor.setEditable(false);
         txtSpecializations.setEditable(false);
-        txtSpecializations.setContentType("text/html");        
+        txtSpecializations.setContentType("text/html");
         txtAugmentations.setEditable(false);
         txtAugmentations.setContentType("text/html");
         
@@ -138,6 +141,7 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
         equipmentPane.addTab(tabNames[T_FIELD_GUNS], fieldGunView);
         equipmentPane.addTab(tabNames[T_ARMOR_KIT], armorView);
         equipmentPane.addTab(tabNames[T_SPECIALIZATION], specializationView);
+        equipmentPane.addTab(tabNames[T_MOUNT], mountView);
         equipmentPane.addTab(tabNames[T_AUGMENTATION], augmentationView);
 
         leftPanel.add(panBasicInfo);
@@ -225,6 +229,7 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
         fieldGunView.refresh();
         armorView.refresh();
         specializationView.refresh();
+        mountView.refresh();
         augmentationView.refresh();
         
         enableTabs();
@@ -285,12 +290,13 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
         if (level.ordinal() >= SimpleTechLevel.ADVANCED.ordinal()) {
             txtArmor.setEnabled(true);
             txtSpecializations.setEnabled(true);
-            equipmentPane.setEnabledAt(T_FIELD_GUNS, 
+            equipmentPane.setEnabledAt(T_FIELD_GUNS,
                     getInfantry().getMovementMode() == EntityMovementMode.INF_MOTORIZED
                     || getInfantry().getMovementMode() == EntityMovementMode.TRACKED
                     || getInfantry().getMovementMode() == EntityMovementMode.WHEELED);
             equipmentPane.setEnabledAt(T_ARMOR_KIT, true);
             equipmentPane.setEnabledAt(T_SPECIALIZATION, true);
+            equipmentPane.setEnabledAt(T_MOUNT, true);
             //Experimental level
             txtAugmentations.setEnabled(level.ordinal() >= SimpleTechLevel.EXPERIMENTAL.ordinal());
             equipmentPane.setEnabledAt(T_AUGMENTATION, level.ordinal() >= SimpleTechLevel.EXPERIMENTAL.ordinal());
@@ -301,6 +307,7 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
             equipmentPane.setEnabledAt(T_FIELD_GUNS, false);
             equipmentPane.setEnabledAt(T_ARMOR_KIT, false);
             equipmentPane.setEnabledAt(T_SPECIALIZATION, false);
+            equipmentPane.setEnabledAt(T_MOUNT, false);
             equipmentPane.setEnabledAt(T_AUGMENTATION, false);
         }
         if (!equipmentPane.isEnabledAt(equipmentPane.getSelectedIndex())) {
