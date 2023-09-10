@@ -7,6 +7,7 @@ VERSION HISTORY:
 + Issue #1287: Fix NPE when deleting multi-slot BA equipment
 + PR #1297: Save state for auto-fill/compact toggles and sorting in mek crit view upon click
 + PR #1310: Tech level filtering in the unit selector dialog has been corrected
++ PR #1311: MML support for MegaMek PR #1552
 
 0.49.14 (2023-07-28 2100 UTC)
 + PR #1267: Adaptations to MM's #4474 (BV calculation and reports update)
