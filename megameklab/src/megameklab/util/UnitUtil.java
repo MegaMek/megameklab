@@ -3788,7 +3788,7 @@ public class UnitUtil {
                 munition = EnumSet.of(AmmoType.Munitions.M_STANDARD);
             }
             Optional<AmmoType> ammo = AmmoType.getMunitionsFor(fieldGun.getAmmoType()).stream()
-                    .filter(eq -> (eq.getMunitionType().contains(munition))
+                    .filter(eq -> (eq.getMunitionType().equals(munition))
                             && (eq.getRackSize() == fieldGun.getRackSize()))
                     .findFirst();
             if (ammo.isEmpty()) {
