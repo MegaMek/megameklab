@@ -1,6 +1,6 @@
 VERSION HISTORY:
 ----------------
-0.49.15-SNAPSHOT
+0.49.15 (2023-10-21 1530 UTC)
 + Fix #1172: Clan TAG will no longer be written as TAG (Clan) (Clan) in Mixed Tech units
 + Fix #1292: File -> Exit in the menu bar item will now actually exit MML
 + PR #1298: Add max bay door counts for fixed wing support vehicles; minimum door counts for all bays
