@@ -256,6 +256,7 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
         weaponView.addRefreshedListener(refresh);
         fieldGunView.addRefreshedListener(refresh);
         armorView.addRefreshedListener(refresh);
+        mountView.addRefreshedListener(refresh);
         augmentationView.addRefreshedListener(refresh);
     }
 
@@ -396,6 +397,7 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
             getInfantry().setMotorizedScuba();
         } else {
             getInfantry().setMovementMode(movementMode);
+            getInfantry().setMount(null);
         }
         getInfantry().setMicrolite(alt && (movementMode == EntityMovementMode.VTOL));
 

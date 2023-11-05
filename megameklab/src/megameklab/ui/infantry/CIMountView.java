@@ -252,7 +252,12 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
                 return;
             }
             int selected = creatureTable.convertRowIndexToModel(view);
-            getInfantry().setMount(getMount(creatureTable.getSelectedRow()));
+            InfantryMount newMount = getMount(selected);
+            if ((getInfantry().getMount() != null) && (getInfantry().getMount().getMovementMode().isSubmarine())
+                    && ((newMount  == null) || !newMount.getMovementMode().isSubmarine())) {
+                getInfantry().setSpecializations(getInfantry().getSpecializations() & ~Infantry.SCUBA);
+            }
+            getInfantry().setMount(getMount(selected));
             rbtnCustom.setEnabled(false);
         } else if (evt.getSource().equals(btnRemoveMount)) {
             getInfantry().setMount(null);

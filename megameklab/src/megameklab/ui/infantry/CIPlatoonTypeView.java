@@ -87,6 +87,8 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
     private final JLabel lblMaxSize = new JLabel();
     private final JLabel lblMaxSquadSize = new JLabel();
     private final JLabel lblBeastMountedTip = new JLabel();
+    private final JLabel lblBeastMountLabel = new JLabel();
+    private final JLabel lblBeastMountType = new JLabel();
     
     private final ITechManager techManager;
 
@@ -122,6 +124,14 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
         gbc.gridwidth = 2;
         lblBeastMountedTip.setText(resourceMap.getString("PlatoonTypeView.lblBeastMountedTip.text"));
         add(lblBeastMountedTip, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.gridwidth = 1;
+        lblBeastMountLabel.setText(resourceMap.getString("PlatoonTypeView.lblBeastMountLabel.text"));
+        add(lblBeastMountLabel, gbc);
+        gbc.gridx++;
+        add(lblBeastMountType, gbc);
 
         gbc.gridx = 0;
         gbc.gridy++;
@@ -239,7 +249,22 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
         
         lblMaxSize.setText(String.valueOf(maxSize));
         lblMaxSquadSize.setText(String.valueOf(maxSquad));
-        lblBeastMountedTip.setVisible(getMovementMode().isNone());
+        if (getMovementMode().isNone()) {
+            if (mount == null) {
+                lblBeastMountedTip.setVisible(true);
+                lblBeastMountLabel.setVisible(false);
+                lblBeastMountType.setVisible(false);
+            } else {
+                lblBeastMountType.setText(mount.getName());
+                lblBeastMountedTip.setVisible(false);
+                lblBeastMountLabel.setVisible(true);
+                lblBeastMountType.setVisible(true);
+            }
+        } else {
+            lblBeastMountedTip.setVisible(false);
+            lblBeastMountLabel.setVisible(false);
+            lblBeastMountType.setVisible(false);
+        }
     }
     
     public EntityMovementMode getMovementMode() {
