@@ -395,6 +395,9 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
     public void motiveTypeChanged(EntityMovementMode movementMode, boolean alt) {
         if (alt && (movementMode == EntityMovementMode.INF_UMU)) {
             getInfantry().setMotorizedScuba();
+        } else if (movementMode.isNone()) {
+            // Pick a default
+            getInfantry().setMount(InfantryMount.HORSE);
         } else {
             getInfantry().setMovementMode(movementMode);
             getInfantry().setMount(null);

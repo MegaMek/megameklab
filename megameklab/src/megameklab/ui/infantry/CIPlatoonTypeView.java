@@ -86,7 +86,6 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
     private final JSpinner spnSquadSize = new JSpinner(spnSquadSizeModel);
     private final JLabel lblMaxSize = new JLabel();
     private final JLabel lblMaxSquadSize = new JLabel();
-    private final JLabel lblBeastMountedTip = new JLabel();
     private final JLabel lblBeastMountLabel = new JLabel();
     private final JLabel lblBeastMountType = new JLabel();
     
@@ -118,12 +117,6 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
         cbMotiveType.setToolTipText(resourceMap.getString("PlatoonTypeView.cbMotiveType.tooltip"));
         add(cbMotiveType, gbc);
         cbMotiveType.addActionListener(this);
-
-        gbc.gridx = 0;
-        gbc.gridy++;
-        gbc.gridwidth = 2;
-        lblBeastMountedTip.setText(resourceMap.getString("PlatoonTypeView.lblBeastMountedTip.text"));
-        add(lblBeastMountedTip, gbc);
 
         gbc.gridx = 0;
         gbc.gridy++;
@@ -250,18 +243,10 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
         lblMaxSize.setText(String.valueOf(maxSize));
         lblMaxSquadSize.setText(String.valueOf(maxSquad));
         if (getMovementMode().isNone()) {
-            if (mount == null) {
-                lblBeastMountedTip.setVisible(true);
-                lblBeastMountLabel.setVisible(false);
-                lblBeastMountType.setVisible(false);
-            } else {
-                lblBeastMountType.setText(mount.getName());
-                lblBeastMountedTip.setVisible(false);
-                lblBeastMountLabel.setVisible(true);
-                lblBeastMountType.setVisible(true);
-            }
+            lblBeastMountType.setText(mount.getName());
+            lblBeastMountLabel.setVisible(true);
+            lblBeastMountType.setVisible(true);
         } else {
-            lblBeastMountedTip.setVisible(false);
             lblBeastMountLabel.setVisible(false);
             lblBeastMountType.setVisible(false);
         }

@@ -40,7 +40,6 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
     private final static String CARD_CUSTOM = "custom";
 
     private final JButton btnSetMount = new JButton("Set Mount");
-    private final JButton btnRemoveMount = new JButton("Remove Mount");
     private final JRadioButton rbtnStats = new JRadioButton("Stats");
     private final JRadioButton rbtnCustom = new JRadioButton("Custom");
     private final CreatureTableModel tableModel = new CreatureTableModel();
@@ -90,10 +89,6 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
         gbc.anchor = GridBagConstraints.WEST;
         databasePanel.add(btnSetMount, gbc);
         btnSetMount.addActionListener(this);
-
-        gbc.gridx = 1;
-        databasePanel.add(btnRemoveMount, gbc);
-        btnRemoveMount.addActionListener(this);
 
         JPanel btnPanel = new JPanel();
         btnPanel.add(rbtnStats);
@@ -259,9 +254,6 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
             }
             getInfantry().setMount(getMount(selected));
             rbtnCustom.setEnabled(false);
-        } else if (evt.getSource().equals(btnRemoveMount)) {
-            getInfantry().setMount(null);
-            rbtnCustom.setEnabled(true);
         }
         addAllListeners();
         if (refresh != null) {
