@@ -24,6 +24,7 @@ import megamek.client.ui.swing.dialog.AbstractUnitSelectorDialog;
 import megamek.common.Entity;
 import megamek.common.MechSummary;
 import megamek.common.TechConstants;
+import megameklab.util.CConfig;
 
 import javax.swing.*;
 import java.awt.*;
@@ -46,6 +47,7 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
         super(parent, unitLoadingDialog);
         gameTechLevel = TechConstants.T_SIMPLE_UNOFFICIAL;
         allowPickWithoutClose = false;
+        eraBasedTechLevel = CConfig.getBooleanParam(CConfig.TECH_PROGRESSION);
         initialize();
         run();
         setVisible(true);
@@ -60,6 +62,7 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
         super(parent, unitLoadingDialog);
         gameTechLevel = TechConstants.T_SIMPLE_UNOFFICIAL;
         allowPickWithoutClose = true;
+        eraBasedTechLevel = CConfig.getBooleanParam(CConfig.TECH_PROGRESSION);
         this.entityPickCallback = entityPickCallback;
         initialize();
         // This overrides the default close behavior to avoid selecting another unit when closing with ESC or
