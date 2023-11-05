@@ -22,6 +22,9 @@ import megameklab.ui.util.RefreshListener;
 
 import javax.swing.*;
 import javax.swing.event.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -59,6 +62,13 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
         super(eSource);
         creatureTable.setModel(tableModel);
         creatureTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        creatureTable.setShowGrid(false);
+        creatureTable.setDoubleBuffered(true);
+        TableCellRenderer renderer = tableModel.new Renderer();
+        for (int i = 0; i < tableModel.getColumnCount(); i++) {
+            TableColumn column = creatureTable.getColumnModel().getColumn(i);
+            column.setCellRenderer(renderer);
+        }
 
         ButtonGroup bgroupView = new ButtonGroup();
         bgroupView.add(rbtnStats);
@@ -114,7 +124,9 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
-        tableView.add(creatureTable, gbc);
+        JScrollPane scroll = new JScrollPane();
+        scroll.setViewportView(creatureTable);
+        tableView.add(scroll, gbc);
 
         creatureView.add(tableView, CARD_TABLE);
 
@@ -279,18 +291,22 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
 
     private static final class CreatureTableModel implements TableModel {
         private enum Columns {
-            TYPE("CIMountView.colType"),
-            SIZE("CIMountView.colSize"),
-            WEIGHT("CIMountView.colWeight"),
-            MP("CIMountView.colMP"),
-            BONUS_DAMAGE("CIMountView.colBonusDamage"),
-            DIVISOR("CIMountView.colDivisor"),
-            TERRAIN("CIMountView.colTerrain");
+            TYPE("CIMountView.colType", "CIMountView.colType.tooltip", SwingConstants.LEFT),
+            SIZE("CIMountView.colSize", "CIMountView.colSize.tooltip", SwingConstants.LEFT),
+            WEIGHT("CIMountView.colWeight", "CIMountView.colWeight.tooltip", SwingConstants.LEFT),
+            MP("CIMountView.colMP", "CIMountView.colMP.tooltip", SwingConstants.LEFT),
+            BONUS_DAMAGE("CIMountView.colBonusDamage", "CIMountView.colBonusDamage.tooltip", SwingConstants.CENTER),
+            DIVISOR("CIMountView.colDivisor", "CIMountView.colDivisor.tooltip", SwingConstants.CENTER),
+            TERRAIN("CIMountView.colTerrain", "CIMountView.colTerrain.tooltip", SwingConstants.LEFT);
 
             final String resId;
+            final String tooltipId;
+            final int alignment;
 
-            Columns(String resId) {
+            Columns(String resId, String tooltipId, int alignment) {
                 this.resId = resId;
+                this.tooltipId = tooltipId;
+                this.alignment = alignment;
             }
         }
 
@@ -328,7 +344,7 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
                 case TYPE:
                     return creature.getName();
                 case SIZE:
-                    return creature.getSize().toString();
+                    return creature.getSize().displayName();
                 case WEIGHT:
                     return NumberFormat.getInstance().format(creature.getWeight());
                 case MP:
@@ -366,6 +382,28 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
         @Override
         public void removeTableModelListener(TableModelListener l) {
 
+        }
+
+        int getAlignment(int columnIndex) {
+            return Columns.values()[columnIndex].alignment;
+        }
+
+        String getTooltip(int columnIndex) {
+            return resourceMap.getString(Columns.values()[columnIndex].tooltipId);
+        }
+
+        public class Renderer extends DefaultTableCellRenderer {
+            @Override
+            public Component getTableCellRendererComponent(JTable table,
+                                                           Object value, boolean isSelected, boolean hasFocus, int row,
+                                                           int column) {
+                super.getTableCellRendererComponent(table, value, isSelected,
+                        hasFocus, row, column);
+                int actualCol = table.convertColumnIndexToModel(column);
+                setHorizontalAlignment(getAlignment(actualCol));
+                setToolTipText(getTooltip(actualCol));
+                return this;
+            }
         }
     }
 }
