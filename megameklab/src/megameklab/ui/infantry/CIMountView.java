@@ -59,7 +59,8 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
     private final JSpinner spnSecondaryGround = new JSpinner();
     private final JSpinner spnUWEndurance = new JSpinner();
 
-    private final Dimension fieldSize = new Dimension(120, 28);
+    private final Dimension fieldSize = new Dimension(200, 28);
+    private final Dimension spinnerSize = new Dimension(120, 28);
     private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
 
     public CIMountView(EntitySource eSource) {
@@ -80,8 +81,6 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
 
         setUpPanels();
         rbtnStats.setSelected(true);
-        rbtnStats.addActionListener(ev -> equipmentLayout.show(creatureView, CARD_TABLE));
-        rbtnCustom.addActionListener(ev -> equipmentLayout.show(creatureView, CARD_CUSTOM));
         refresh();
     }
 
@@ -96,6 +95,8 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
         btnSetMount.addActionListener(this);
 
         JPanel btnPanel = new JPanel();
+        rbtnStats.addActionListener(ev -> equipmentLayout.show(creatureView, CARD_TABLE));
+        rbtnCustom.addActionListener(ev -> equipmentLayout.show(creatureView, CARD_CUSTOM));
         btnPanel.add(rbtnStats);
         btnPanel.add(rbtnCustom);
         gbc.gridx = 0;
@@ -140,7 +141,7 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
         customView.add(new JLabel(resourceMap.getString("CIMountView.txtMountName.text")), gbc);
         gbc.gridx = 1;
         txtMountName.setToolTipText(resourceMap.getString("CIMountView.txtMountName.tooltip"));
-        initializeField(txtMountName);
+        setFieldSize(txtMountName, fieldSize);
         customView.add(txtMountName, gbc);
 
         gbc.gridy++;
@@ -151,7 +152,7 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
         for (var size : InfantryMount.BeastSize.values()) {
             cbSize.addItem(size);
         }
-        initializeField(cbSize);
+        setFieldSize(cbSize, fieldSize);
         customView.add(cbSize, gbc);
 
         gbc.gridy++;
@@ -159,9 +160,7 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
         customView.add(new JLabel(resourceMap.getString("CIMountView.txtWeight.text")), gbc);
         gbc.gridx = 1;
         txtWeight.setToolTipText(resourceMap.getString("CIMountView.txtWeight.tooltip"));
-        txtWeight.setMinimumSize(new Dimension(200, 28));
-        txtWeight.setPreferredSize(new Dimension(200, 28));
-        initializeField(txtWeight);
+        setFieldSize(txtWeight, spinnerSize);
         customView.add(txtWeight, gbc);
 
         gbc.gridy++;
@@ -181,7 +180,7 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
         cbMovementMode.addItem(EntityMovementMode.INF_JUMP);
         cbMovementMode.addItem(EntityMovementMode.VTOL);
         cbMovementMode.addItem(EntityMovementMode.SUBMARINE);
-        initializeField(cbMovementMode);
+        setFieldSize(cbMovementMode, fieldSize);
         customView.add(cbMovementMode, gbc);
 
         gbc.gridy++;
@@ -233,18 +232,7 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
         JFormattedTextField tf = ((JSpinner.DefaultEditor) spinner.getEditor()).getTextField();
         tf.setEditable(false);
         tf.setBackground(UIManager.getColor("TextField.background"));
-        initializeField(spinner);
-    }
-
-    private void initializeField(JComponent field) {
-        field.setMinimumSize(fieldSize);
-        field.setPreferredSize(fieldSize);
-    }
-
-    public JLabel createLabel(String text, Dimension maxSize) {
-        JLabel label = new JLabel(text, SwingConstants.TRAILING);
-        setFieldSize(label, maxSize);
-        return label;
+        setFieldSize(spinner, spinnerSize);
     }
 
     public void setFieldSize(JComponent box, Dimension maxSize) {
@@ -297,7 +285,6 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
                 getInfantry().setSpecializations(getInfantry().getSpecializations() & ~Infantry.SCUBA);
             }
             getInfantry().setMount(selectedMount(selected));
-            rbtnCustom.setEnabled(false);
         }
         addAllListeners();
         if (refresh != null) {
