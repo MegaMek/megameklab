@@ -297,7 +297,7 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
                     || getInfantry().getMovementMode() == EntityMovementMode.WHEELED);
             equipmentPane.setEnabledAt(T_ARMOR_KIT, true);
             equipmentPane.setEnabledAt(T_SPECIALIZATION, true);
-            equipmentPane.setEnabledAt(T_MOUNT, true);
+            equipmentPane.setEnabledAt(T_MOUNT, getInfantry().getMount() != null);
             //Experimental level
             txtAugmentations.setEnabled(level.ordinal() >= SimpleTechLevel.EXPERIMENTAL.ordinal());
             equipmentPane.setEnabledAt(T_AUGMENTATION, level.ordinal() >= SimpleTechLevel.EXPERIMENTAL.ordinal());
