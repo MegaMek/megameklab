@@ -79,6 +79,7 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
             TableColumn column = creatureTable.getColumnModel().getColumn(i);
             column.setCellRenderer(renderer);
         }
+        creatureTable.getSelectionModel().addListSelectionListener(ev -> checkValid());
 
         ButtonGroup bgroupView = new ButtonGroup();
         bgroupView.add(rbtnStats);
@@ -100,8 +101,14 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
         btnSetMount.addActionListener(this);
 
         JPanel btnPanel = new JPanel();
-        rbtnStats.addActionListener(ev -> equipmentLayout.show(creatureView, CARD_TABLE));
-        rbtnCustom.addActionListener(ev -> equipmentLayout.show(creatureView, CARD_CUSTOM));
+        rbtnStats.addActionListener(ev ->  {
+            equipmentLayout.show(creatureView, CARD_TABLE);
+            checkValid();
+        });
+        rbtnCustom.addActionListener(ev -> {
+            equipmentLayout.show(creatureView, CARD_CUSTOM);
+            checkValid();
+        });
         btnPanel.add(rbtnStats);
         btnPanel.add(rbtnCustom);
         gbc.gridx = 0;
@@ -147,6 +154,7 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
         gbc.gridx = 1;
         txtMountName.setToolTipText(resourceMap.getString("CIMountView.txtMountName.tooltip"));
         setFieldSize(txtMountName, fieldSize);
+        txtMountName.addCaretListener(ev -> checkValid());
         customView.add(txtMountName, gbc);
 
         gbc.gridy++;
@@ -166,6 +174,7 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
         gbc.gridx = 1;
         txtWeight.setToolTipText(resourceMap.getString("CIMountView.txtWeight.tooltip"));
         setFieldSize(txtWeight, spinnerSize);
+        txtWeight.addCaretListener(ev -> checkValid());
         customView.add(txtWeight, gbc);
 
         gbc.gridy++;
@@ -255,6 +264,7 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
 
         creatureView.add(customView, CARD_CUSTOM);
         movementModeChanged();
+        checkValid();
     }
 
     private void initializeSpinner(JSpinner spinner) {
@@ -299,6 +309,21 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
 
     public void addRefreshedListener(RefreshListener l) {
         refresh = l;
+    }
+
+    private void checkValid() {
+        boolean valid;
+        if (rbtnStats.isSelected()) {
+            valid = creatureTable.getSelectedRow() >= 0;
+        } else {
+            valid = !txtMountName.getText().isEmpty();
+            try {
+                valid &= Double.parseDouble(txtWeight.getText()) > 0;
+            } catch(NumberFormatException ignored) {
+                valid = false;
+            }
+        }
+        btnSetMount.setEnabled(valid);
     }
 
     private InfantryMount selectedMount(int rowIndex) {
