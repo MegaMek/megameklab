@@ -51,7 +51,7 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
     private final JTextField txtMountName = new JTextField();
     private final JComboBox<InfantryMount.BeastSize> cbSize = new CustomComboBox<>(InfantryMount.BeastSize::displayName);
     private final JTextField txtWeight = new JTextField();
-    private final JSpinner spnMovmentPoints = new JSpinner();
+    private final JSpinner spnMovementPoints = new JSpinner();
     private final JComboBox<EntityMovementMode> cbMovementMode = new JComboBox<>();
     private final JSpinner spnInfantryBonus = new JSpinner();
     private final JSpinner spnVehicleBonus = new JSpinner();
@@ -166,17 +166,18 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
 
         gbc.gridy++;
         gbc.gridx = 0;
-        customView.add(new JLabel(resourceMap.getString("CIMountView.spnMovmentPoints.text")), gbc);
+        customView.add(new JLabel(resourceMap.getString("CIMountView.spnMovementPoints.text")), gbc);
         gbc.gridx = 1;
-        spnMovmentPoints.setToolTipText(resourceMap.getString("CIMountView.spnMovmentPoints.tooltip"));
-        initializeSpinner(spnMovmentPoints);
-        customView.add(spnMovmentPoints, gbc);
+        spnMovementPoints.setToolTipText(resourceMap.getString("CIMountView.spnMovementPoints.tooltip"));
+        initializeSpinner(spnMovementPoints);
+        spnMovementPoints.setModel(new SpinnerNumberModel(1, 1, Integer.MAX_VALUE, 1));
+        customView.add(spnMovementPoints, gbc);
 
         gbc.gridy++;
         gbc.gridx = 0;
-        customView.add(new JLabel(resourceMap.getString("CIMountView.cbMovmentMode.text")), gbc);
+        customView.add(new JLabel(resourceMap.getString("CIMountView.cbMovementMode.text")), gbc);
         gbc.gridx = 1;
-        cbMovementMode.setToolTipText(resourceMap.getString("CIMountView.cbMovmentMode.tooltip"));
+        cbMovementMode.setToolTipText(resourceMap.getString("CIMountView.cbMovementMode.tooltip"));
         cbMovementMode.addItem(EntityMovementMode.INF_LEG);
         cbMovementMode.addItem(EntityMovementMode.INF_JUMP);
         cbMovementMode.addItem(EntityMovementMode.VTOL);
@@ -190,6 +191,7 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
         gbc.gridx = 1;
         spnInfantryBonus.setToolTipText(resourceMap.getString("CIMountView.spnInfantryBonus.tooltip"));
         initializeSpinner(spnInfantryBonus);
+        spnInfantryBonus.setModel(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1));
         customView.add(spnInfantryBonus, gbc);
 
         gbc.gridy++;
@@ -198,6 +200,7 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
         gbc.gridx = 1;
         spnVehicleBonus.setToolTipText(resourceMap.getString("CIMountView.spnVehicleBonus.tooltip"));
         initializeSpinner(spnVehicleBonus);
+        spnVehicleBonus.setModel(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1));
         customView.add(spnVehicleBonus, gbc);
 
         gbc.gridy++;
@@ -206,6 +209,7 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
         gbc.gridx = 1;
         spnDamageDivisor.setToolTipText(resourceMap.getString("CIMountView.spnDamageDivisor.tooltip"));
         initializeSpinner(spnDamageDivisor);
+        spnDamageDivisor.setModel(new SpinnerNumberModel(1.0, 1.0, Double.MAX_VALUE, 1.0));
         customView.add(spnDamageDivisor, gbc);
 
         gbc.gridy++;
@@ -213,6 +217,7 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
         customView.add(new JLabel(resourceMap.getString("CIMountView.spnMaxWaterDepth.text")), gbc);
         gbc.gridx = 1;
         spnMaxWaterDepth.setToolTipText(resourceMap.getString("CIMountView.spnMaxWaterDepth.tooltip"));
+        spnMaxWaterDepth.setModel(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1));
         initializeSpinner(spnMaxWaterDepth);
         customView.add(spnMaxWaterDepth, gbc);
 
@@ -222,6 +227,7 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
         gbc.gridx = 1;
         spnSecondaryGround.setToolTipText(resourceMap.getString("CIMountView.spnSecondaryGround.tooltip"));
         initializeSpinner(spnSecondaryGround);
+        spnSecondaryGround.setModel(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1));
         customView.add(spnSecondaryGround, gbc);
 
         gbc.gridy++;
@@ -232,6 +238,7 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
         gbc.weighty = 1.0;
         spnUWEndurance.setToolTipText(resourceMap.getString("CIMountView.spnUWEndurance.tooltip"));
         initializeSpinner(spnUWEndurance);
+        spnUWEndurance.setModel(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1));
         customView.add(spnUWEndurance, gbc);
 
         creatureView.add(customView, CARD_CUSTOM);
@@ -256,7 +263,7 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
             txtMountName.setText(mount.getName());
             cbSize.setSelectedItem(mount.getSize());
             txtWeight.setText(String.valueOf(mount.getWeight()));
-            spnMovmentPoints.setValue(mount.getMP());
+            spnMovementPoints.setValue(mount.getMP());
             cbMovementMode.setSelectedItem(mount.getMovementMode());
             spnInfantryBonus.setValue(mount.getBurstDamageDice());
             spnVehicleBonus.setValue(mount.getVehicleDamage());
@@ -294,11 +301,11 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
                 txtMountName.getText(),
                 (InfantryMount.BeastSize) cbSize.getSelectedItem(),
                 getCustomWeight(),
-                (Integer) spnMovmentPoints.getValue(),
+                (Integer) spnMovementPoints.getValue(),
                 (EntityMovementMode) cbMovementMode.getSelectedItem(),
                 (Integer) spnInfantryBonus.getValue(),
                 (Integer) spnVehicleBonus.getValue(),
-                (Integer) spnDamageDivisor.getValue(),
+                (Double) spnDamageDivisor.getValue(),
                 (Integer) spnMaxWaterDepth.getValue(),
                 (Integer) spnSecondaryGround.getValue(),
                 (Integer) spnUWEndurance.getValue()
