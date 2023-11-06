@@ -56,6 +56,7 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
     private final JSpinner spnInfantryBonus = new JSpinner();
     private final JSpinner spnVehicleBonus = new JSpinner();
     private final JSpinner spnDamageDivisor = new JSpinner();
+    private final JSpinner spnMaxWaterDepth = new JSpinner();
     private final JSpinner spnSecondaryGround = new JSpinner();
     private final JSpinner spnUWEndurance = new JSpinner();
 
@@ -209,6 +210,14 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
 
         gbc.gridy++;
         gbc.gridx = 0;
+        customView.add(new JLabel(resourceMap.getString("CIMountView.spnMaxWaterDepth.text")), gbc);
+        gbc.gridx = 1;
+        spnMaxWaterDepth.setToolTipText(resourceMap.getString("CIMountView.spnMaxWaterDepth.tooltip"));
+        initializeSpinner(spnMaxWaterDepth);
+        customView.add(spnMaxWaterDepth, gbc);
+
+        gbc.gridy++;
+        gbc.gridx = 0;
         customView.add(new JLabel(resourceMap.getString("CIMountView.spnSecondaryGround.text")), gbc);
         gbc.gridx = 1;
         spnSecondaryGround.setToolTipText(resourceMap.getString("CIMountView.spnSecondaryGround.tooltip"));
@@ -252,6 +261,7 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
             spnInfantryBonus.setValue(mount.getBurstDamageDice());
             spnVehicleBonus.setValue(mount.getVehicleDamage());
             spnDamageDivisor.setValue(mount.getDamageDivisor());
+            spnMaxWaterDepth.setValue(mount.getMaxWaterDepth());
             spnSecondaryGround.setValue(mount.getSecondaryGroundMP());
             spnUWEndurance.setValue(mount.getUWEndurance());
         }
@@ -269,22 +279,52 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
         }
     }
 
+    private double getCustomWeight() {
+        double weight = 0.5;
+        try {
+            weight = Double.parseDouble(txtWeight.getText());
+        } catch (NumberFormatException ex) {
+            txtWeight.setText(String.valueOf(weight));
+        }
+        return weight;
+    }
+
+    private InfantryMount customMount() {
+        return new InfantryMount(
+                txtMountName.getText(),
+                (InfantryMount.BeastSize) cbSize.getSelectedItem(),
+                getCustomWeight(),
+                (Integer) spnMovmentPoints.getValue(),
+                (EntityMovementMode) cbMovementMode.getSelectedItem(),
+                (Integer) spnInfantryBonus.getValue(),
+                (Integer) spnVehicleBonus.getValue(),
+                (Integer) spnDamageDivisor.getValue(),
+                (Integer) spnMaxWaterDepth.getValue(),
+                (Integer) spnSecondaryGround.getValue(),
+                (Integer) spnUWEndurance.getValue()
+        );
+    }
+
     @Override
     public void actionPerformed(ActionEvent evt) {
         removeAllListeners();
         if (evt.getSource().equals(btnSetMount)) {
-            int view = creatureTable.getSelectedRow();
-            if (view < 0) {
-                // Nothing is selected
-                return;
+            if (rbtnStats.isSelected()) {
+                int view = creatureTable.getSelectedRow();
+                if (view < 0) {
+                    // Nothing is selected
+                    return;
+                }
+                int selected = creatureTable.convertRowIndexToModel(view);
+                InfantryMount newMount = selectedMount(selected);
+                if ((getInfantry().getMount() != null) && (getInfantry().getMount().getMovementMode().isSubmarine())
+                        && ((newMount == null) || !newMount.getMovementMode().isSubmarine())) {
+                    getInfantry().setSpecializations(getInfantry().getSpecializations() & ~Infantry.SCUBA);
+                }
+                getInfantry().setMount(selectedMount(selected));
+            } else {
+                getInfantry().setMount(customMount());
             }
-            int selected = creatureTable.convertRowIndexToModel(view);
-            InfantryMount newMount = selectedMount(selected);
-            if ((getInfantry().getMount() != null) && (getInfantry().getMount().getMovementMode().isSubmarine())
-                    && ((newMount  == null) || !newMount.getMovementMode().isSubmarine())) {
-                getInfantry().setSpecializations(getInfantry().getSpecializations() & ~Infantry.SCUBA);
-            }
-            getInfantry().setMount(selectedMount(selected));
         }
         addAllListeners();
         if (refresh != null) {
