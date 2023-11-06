@@ -31,6 +31,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.NumberFormat;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class CIMountView extends IView implements ActionListener, ChangeListener {
@@ -56,8 +57,11 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
     private final JSpinner spnInfantryBonus = new JSpinner();
     private final JSpinner spnVehicleBonus = new JSpinner();
     private final JSpinner spnDamageDivisor = new JSpinner();
+    private final JLabel lblMaxWaterDepth = new JLabel();
     private final JSpinner spnMaxWaterDepth = new JSpinner();
+    private final JLabel lblSecondaryGround = new JLabel();
     private final JSpinner spnSecondaryGround = new JSpinner();
+    private final JLabel lblUWEndurance = new JLabel();
     private final JSpinner spnUWEndurance = new JSpinner();
 
     private final Dimension fieldSize = new Dimension(200, 28);
@@ -183,6 +187,7 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
         cbMovementMode.addItem(EntityMovementMode.VTOL);
         cbMovementMode.addItem(EntityMovementMode.SUBMARINE);
         setFieldSize(cbMovementMode, fieldSize);
+        cbMovementMode.addItemListener(ev -> movementModeChanged());
         customView.add(cbMovementMode, gbc);
 
         gbc.gridy++;
@@ -214,7 +219,8 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
 
         gbc.gridy++;
         gbc.gridx = 0;
-        customView.add(new JLabel(resourceMap.getString("CIMountView.spnMaxWaterDepth.text")), gbc);
+        lblMaxWaterDepth.setText(resourceMap.getString("CIMountView.spnMaxWaterDepth.text"));
+        customView.add(lblMaxWaterDepth, gbc);
         gbc.gridx = 1;
         spnMaxWaterDepth.setToolTipText(resourceMap.getString("CIMountView.spnMaxWaterDepth.tooltip"));
         spnMaxWaterDepth.setModel(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1));
@@ -223,7 +229,8 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
 
         gbc.gridy++;
         gbc.gridx = 0;
-        customView.add(new JLabel(resourceMap.getString("CIMountView.spnSecondaryGround.text")), gbc);
+        lblSecondaryGround.setText(resourceMap.getString("CIMountView.spnSecondaryGround.text"));
+        customView.add(lblSecondaryGround, gbc);
         gbc.gridx = 1;
         spnSecondaryGround.setToolTipText(resourceMap.getString("CIMountView.spnSecondaryGround.tooltip"));
         initializeSpinner(spnSecondaryGround);
@@ -232,16 +239,22 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
 
         gbc.gridy++;
         gbc.gridx = 0;
-        customView.add(new JLabel(resourceMap.getString("CIMountView.spnUWEndurance.text")), gbc);
+        lblUWEndurance.setText(resourceMap.getString("CIMountView.spnUWEndurance.text"));
+        customView.add(lblUWEndurance, gbc);
         gbc.gridx = 1;
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
         spnUWEndurance.setToolTipText(resourceMap.getString("CIMountView.spnUWEndurance.tooltip"));
         initializeSpinner(spnUWEndurance);
         spnUWEndurance.setModel(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1));
         customView.add(spnUWEndurance, gbc);
 
+        gbc.gridx = 1;
+        gbc.gridy++;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        customView.add(new JLabel(), gbc);
+
         creatureView.add(customView, CARD_CUSTOM);
+        movementModeChanged();
     }
 
     private void initializeSpinner(JSpinner spinner) {
@@ -274,6 +287,16 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
         }
     }
 
+    private void movementModeChanged() {
+        EntityMovementMode mode = Objects.requireNonNull((EntityMovementMode) cbMovementMode.getSelectedItem());
+        lblMaxWaterDepth.setVisible(!mode.isSubmarine());
+        spnMaxWaterDepth.setVisible(!mode.isSubmarine());
+        lblSecondaryGround.setVisible(!mode.isLegInfantry());
+        spnSecondaryGround.setVisible(!mode.isLegInfantry());
+        lblUWEndurance.setVisible(mode.isSubmarine());
+        spnUWEndurance.setVisible(mode.isSubmarine());
+    }
+
     public void addRefreshedListener(RefreshListener l) {
         refresh = l;
     }
@@ -297,6 +320,7 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
     }
 
     private InfantryMount customMount() {
+        EntityMovementMode mode = (EntityMovementMode) Objects.requireNonNull(cbMovementMode.getSelectedItem());
         return new InfantryMount(
                 txtMountName.getText(),
                 (InfantryMount.BeastSize) cbSize.getSelectedItem(),
@@ -306,9 +330,9 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
                 (Integer) spnInfantryBonus.getValue(),
                 (Integer) spnVehicleBonus.getValue(),
                 (Double) spnDamageDivisor.getValue(),
-                (Integer) spnMaxWaterDepth.getValue(),
-                (Integer) spnSecondaryGround.getValue(),
-                (Integer) spnUWEndurance.getValue()
+                mode.isSubmarine() ? Integer.MAX_VALUE : (Integer) spnMaxWaterDepth.getValue(),
+                mode.isLegInfantry() ? 0 : (Integer) spnSecondaryGround.getValue(),
+                mode.isSubmarine() ? (Integer) spnUWEndurance.getValue() : 0
         );
     }
 
