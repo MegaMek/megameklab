@@ -17,6 +17,7 @@ package megameklab.ui.infantry;
 
 import megamek.common.*;
 import megameklab.ui.EntitySource;
+import megameklab.ui.util.CustomComboBox;
 import megameklab.ui.util.IView;
 import megameklab.ui.util.RefreshListener;
 
@@ -47,15 +48,19 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
     private final JPanel creatureView = new JPanel();
     private final CardLayout equipmentLayout = new CardLayout();
 
-    private final JComboBox<InfantryMount.BeastSize> cbSize = new JComboBox<>();
-    private final JTextField weight = new JTextField();
+    private final JTextField txtMountName = new JTextField();
+    private final JComboBox<InfantryMount.BeastSize> cbSize = new CustomComboBox<>(InfantryMount.BeastSize::displayName);
+    private final JTextField txtWeight = new JTextField();
     private final JSpinner spnMovmentPoints = new JSpinner();
-    private final JComboBox<EntityMovementMode> cbMovmentMode = new JComboBox<>();
+    private final JComboBox<EntityMovementMode> cbMovementMode = new JComboBox<>();
     private final JSpinner spnInfantryBonus = new JSpinner();
     private final JSpinner spnVehicleBonus = new JSpinner();
     private final JSpinner spnDamageDivisor = new JSpinner();
     private final JSpinner spnSecondaryGround = new JSpinner();
     private final JSpinner spnUWEndurance = new JSpinner();
+
+    private final Dimension fieldSize = new Dimension(120, 28);
+    private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
 
     public CIMountView(EntitySource eSource) {
         super(eSource);
@@ -73,10 +78,10 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
         bgroupView.add(rbtnStats);
         bgroupView.add(rbtnCustom);
 
-        rbtnStats.setSelected(true);
-
         setUpPanels();
         rbtnStats.setSelected(true);
+        rbtnStats.addActionListener(ev -> equipmentLayout.show(creatureView, CARD_TABLE));
+        rbtnCustom.addActionListener(ev -> equipmentLayout.show(creatureView, CARD_CUSTOM));
         refresh();
     }
 
@@ -125,57 +130,115 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
 
         creatureView.add(tableView, CARD_TABLE);
 
-        /*
         JPanel customView = new JPanel(new GridBagLayout());
         gbc = new GridBagConstraints();
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.fill = GridBagConstraints.NONE;
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.fill = GridBagConstraints.REMAINDER;
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        customView.add(new JLabel("Damage Divisor:"), gbc);
+        customView.add(new JLabel(resourceMap.getString("CIMountView.txtMountName.text")), gbc);
         gbc.gridx = 1;
-        customView.add(armorValue, gbc);
-        JFormattedTextField tf = ((JSpinner.DefaultEditor) armorValue.getEditor()).getTextField();
-        tf.setEditable(false);
-        tf.setBackground(UIManager.getColor("TextField.background"));
+        txtMountName.setToolTipText(resourceMap.getString("CIMountView.txtMountName.tooltip"));
+        initializeField(txtMountName);
+        customView.add(txtMountName, gbc);
 
-        chEncumber.setText("Encumbering");
+        gbc.gridy++;
         gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.anchor = GridBagConstraints.NORTHWEST;
-        customView.add(chEncumber, gbc);
-
-        chSpaceSuit.setText("Space Suit");
+        customView.add(new JLabel(resourceMap.getString("CIMountView.cbSize.text")), gbc);
         gbc.gridx = 1;
-        gbc.gridy = 1;
-        customView.add(chSpaceSuit, gbc);
+        cbSize.setToolTipText(resourceMap.getString("CIMountView.cbSize.tooltip"));
+        for (var size : InfantryMount.BeastSize.values()) {
+            cbSize.addItem(size);
+        }
+        initializeField(cbSize);
+        customView.add(cbSize, gbc);
 
-        chDEST.setText("DEST");
+        gbc.gridy++;
         gbc.gridx = 0;
-        gbc.gridy = 2;
-        customView.add(chDEST, gbc);
-
-        chSneakCamo.setText("Sneak (CAMO)");
+        customView.add(new JLabel(resourceMap.getString("CIMountView.txtWeight.text")), gbc);
         gbc.gridx = 1;
-        gbc.gridy = 2;
-        customView.add(chSneakCamo, gbc);
+        txtWeight.setToolTipText(resourceMap.getString("CIMountView.txtWeight.tooltip"));
+        txtWeight.setMinimumSize(new Dimension(200, 28));
+        txtWeight.setPreferredSize(new Dimension(200, 28));
+        initializeField(txtWeight);
+        customView.add(txtWeight, gbc);
 
-        chSneakIR.setText("Sneak (IR)");
+        gbc.gridy++;
         gbc.gridx = 0;
-        gbc.gridy = 3;
-        customView.add(chSneakIR, gbc);
-
-        chSneakECM.setText("Sneak (ECM)");
+        customView.add(new JLabel(resourceMap.getString("CIMountView.spnMovmentPoints.text")), gbc);
         gbc.gridx = 1;
-        gbc.gridy = 3;
+        spnMovmentPoints.setToolTipText(resourceMap.getString("CIMountView.spnMovmentPoints.tooltip"));
+        initializeSpinner(spnMovmentPoints);
+        customView.add(spnMovmentPoints, gbc);
+
+        gbc.gridy++;
+        gbc.gridx = 0;
+        customView.add(new JLabel(resourceMap.getString("CIMountView.cbMovmentMode.text")), gbc);
+        gbc.gridx = 1;
+        cbMovementMode.setToolTipText(resourceMap.getString("CIMountView.cbMovmentMode.tooltip"));
+        cbMovementMode.addItem(EntityMovementMode.INF_LEG);
+        cbMovementMode.addItem(EntityMovementMode.INF_JUMP);
+        cbMovementMode.addItem(EntityMovementMode.VTOL);
+        cbMovementMode.addItem(EntityMovementMode.SUBMARINE);
+        initializeField(cbMovementMode);
+        customView.add(cbMovementMode, gbc);
+
+        gbc.gridy++;
+        gbc.gridx = 0;
+        customView.add(new JLabel(resourceMap.getString("CIMountView.spnInfantryBonus.text")), gbc);
+        gbc.gridx = 1;
+        spnInfantryBonus.setToolTipText(resourceMap.getString("CIMountView.spnInfantryBonus.tooltip"));
+        initializeSpinner(spnInfantryBonus);
+        customView.add(spnInfantryBonus, gbc);
+
+        gbc.gridy++;
+        gbc.gridx = 0;
+        customView.add(new JLabel(resourceMap.getString("CIMountView.spnVehicleBonus.text")), gbc);
+        gbc.gridx = 1;
+        spnVehicleBonus.setToolTipText(resourceMap.getString("CIMountView.spnVehicleBonus.tooltip"));
+        initializeSpinner(spnVehicleBonus);
+        customView.add(spnVehicleBonus, gbc);
+
+        gbc.gridy++;
+        gbc.gridx = 0;
+        customView.add(new JLabel(resourceMap.getString("CIMountView.spnDamageDivisor.text")), gbc);
+        gbc.gridx = 1;
+        spnDamageDivisor.setToolTipText(resourceMap.getString("CIMountView.spnDamageDivisor.tooltip"));
+        initializeSpinner(spnDamageDivisor);
+        customView.add(spnDamageDivisor, gbc);
+
+        gbc.gridy++;
+        gbc.gridx = 0;
+        customView.add(new JLabel(resourceMap.getString("CIMountView.spnSecondaryGround.text")), gbc);
+        gbc.gridx = 1;
+        spnSecondaryGround.setToolTipText(resourceMap.getString("CIMountView.spnSecondaryGround.tooltip"));
+        initializeSpinner(spnSecondaryGround);
+        customView.add(spnSecondaryGround, gbc);
+
+        gbc.gridy++;
+        gbc.gridx = 0;
+        customView.add(new JLabel(resourceMap.getString("CIMountView.spnUWEndurance.text")), gbc);
+        gbc.gridx = 1;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
-        customView.add(chSneakECM, gbc);
+        spnUWEndurance.setToolTipText(resourceMap.getString("CIMountView.spnUWEndurance.tooltip"));
+        initializeSpinner(spnUWEndurance);
+        customView.add(spnUWEndurance, gbc);
 
-        equipmentView.add(customView, CARD_CUSTOM);
+        creatureView.add(customView, CARD_CUSTOM);
+    }
 
-         */
+    private void initializeSpinner(JSpinner spinner) {
+        JFormattedTextField tf = ((JSpinner.DefaultEditor) spinner.getEditor()).getTextField();
+        tf.setEditable(false);
+        tf.setBackground(UIManager.getColor("TextField.background"));
+        initializeField(spinner);
+    }
+
+    private void initializeField(JComponent field) {
+        field.setMinimumSize(fieldSize);
+        field.setPreferredSize(fieldSize);
     }
 
     public JLabel createLabel(String text, Dimension maxSize) {
@@ -191,45 +254,26 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
     }
 
     public void refresh() {
-        /*
-        removeAllListeners();
-        armorValue.setValue(getInfantry().getArmorDamageDivisor());
-        chEncumber.setSelected(getInfantry().isArmorEncumbering());
-        chSpaceSuit.setSelected(getInfantry().hasSpaceSuit());
-        chDEST.setSelected(getInfantry().hasDEST());
-        chSneakCamo.setSelected(getInfantry().hasSneakCamo());
-        chSneakIR.setSelected(getInfantry().hasSneakIR());
-        chSneakECM.setSelected(getInfantry().hasSneakECM());
-        if (getInfantry().getTechLevel() < TechConstants.T_TW_ALL) {
-            armorValue.setEnabled(false);
-            chEncumber.setEnabled(false);
-            chSpaceSuit.setEnabled(false);
-            chDEST.setEnabled(false);
-            chSneakCamo.setEnabled(false);
-            chSneakIR.setEnabled(false);
-            chSneakECM.setEnabled(false);
-        } else {
-            armorValue.setEnabled(true);
-            chEncumber.setEnabled(true);
-            chSpaceSuit.setEnabled(true);
-            chDEST.setEnabled(true);
-            chSneakCamo.setEnabled(true);
-            chSneakIR.setEnabled(true);
-            chSneakECM.setEnabled(true);
+        InfantryMount mount = getInfantry().getMount();
+        if (mount != null) {
+            txtMountName.setText(mount.getName());
+            cbSize.setSelectedItem(mount.getSize());
+            txtWeight.setText(String.valueOf(mount.getWeight()));
+            spnMovmentPoints.setValue(mount.getMP());
+            cbMovementMode.setSelectedItem(mount.getMovementMode());
+            spnInfantryBonus.setValue(mount.getBurstDamageDice());
+            spnVehicleBonus.setValue(mount.getVehicleDamage());
+            spnDamageDivisor.setValue(mount.getDamageDivisor());
+            spnSecondaryGround.setValue(mount.getSecondaryGroundMP());
+            spnUWEndurance.setValue(mount.getUWEndurance());
         }
-        filterEquipment();
-        btnRemoveArmor.setEnabled(hasArmor());
-        rbtnCustom.setEnabled(getInfantry().getArmorKit() == null);
-        addAllListeners();
-
-         */
     }
 
     public void addRefreshedListener(RefreshListener l) {
         refresh = l;
     }
 
-    private InfantryMount getMount(int rowIndex) {
+    private InfantryMount selectedMount(int rowIndex) {
         if ((rowIndex >= 0) && (rowIndex < tableModel.getRowCount())) {
             return InfantryMount.sampleMounts.get(rowIndex);
         } else {
@@ -243,16 +287,16 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
         if (evt.getSource().equals(btnSetMount)) {
             int view = creatureTable.getSelectedRow();
             if (view < 0) {
-                // selection got filtered away
+                // Nothing is selected
                 return;
             }
             int selected = creatureTable.convertRowIndexToModel(view);
-            InfantryMount newMount = getMount(selected);
+            InfantryMount newMount = selectedMount(selected);
             if ((getInfantry().getMount() != null) && (getInfantry().getMount().getMovementMode().isSubmarine())
                     && ((newMount  == null) || !newMount.getMovementMode().isSubmarine())) {
                 getInfantry().setSpecializations(getInfantry().getSpecializations() & ~Infantry.SCUBA);
             }
-            getInfantry().setMount(getMount(selected));
+            getInfantry().setMount(selectedMount(selected));
             rbtnCustom.setEnabled(false);
         }
         addAllListeners();
@@ -261,6 +305,7 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
             refresh.refreshStatus();
             refresh.refreshPreview();
         }
+        refresh();
     }
 
     private void addAllListeners() {
@@ -280,10 +325,6 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
             refresh.refreshPreview();
         }
         refresh();
-    }
-
-    private boolean hasMount() {
-        return getInfantry().getMount() != null;
     }
 
     private static final class CreatureTableModel implements TableModel {
