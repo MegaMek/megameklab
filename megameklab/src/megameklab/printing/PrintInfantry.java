@@ -202,7 +202,7 @@ public class PrintInfantry extends PrintEntity {
             sj.add(String.format("+%dD6 damage vs. conventional infantry.", burst));
         }
         if ((infantry.getMount() != null) && (infantry.getMount().getVehicleDamage() > 0)) {
-            sj.add(String.format("+%d damage vs. vehicles", infantry.getMount().getVehicleDamage()));
+            sj.add(String.format("+%d damage vs. vehicles and 'Mechs", infantry.getMount().getVehicleDamage()));
         }
         if (rangeWeapon.hasFlag(WeaponType.F_INF_NONPENETRATING)) {
             sj.add("Can only damage conventional infantry units.");
