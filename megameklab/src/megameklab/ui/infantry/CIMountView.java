@@ -194,6 +194,7 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
         cbMovementMode.addItem(EntityMovementMode.INF_LEG);
         cbMovementMode.addItem(EntityMovementMode.INF_JUMP);
         cbMovementMode.addItem(EntityMovementMode.VTOL);
+        cbMovementMode.addItem(EntityMovementMode.NAVAL);
         cbMovementMode.addItem(EntityMovementMode.SUBMARINE);
         setFieldSize(cbMovementMode, fieldSize);
         cbMovementMode.addItemListener(ev -> movementModeChanged());
