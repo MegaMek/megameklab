@@ -101,7 +101,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
     final private TechComboBox<EquipmentType> cbStructure = new TechComboBox<>(EquipmentType::getName);
     final private TechComboBox<Engine> cbEngine = new TechComboBox<>(e -> e.getEngineName().replaceAll("^\\d+ ", ""));
     final private CustomComboBox<Integer> cbGyro = new CustomComboBox<>(Mech::getGyroTypeShortString);
-    final private CustomComboBox<Integer> cbCockpit = new CustomComboBox<>(Mech::getCockpitTypeString);
+    final private CustomComboBox<Integer> cbCockpit = new CustomComboBox<>(i -> cockpitName(i, isIndustrial()));
     final private TechComboBox<EquipmentType> cbEnhancement = new TechComboBox<>(EquipmentType::getName);
     final private JCheckBox chkFullHeadEject = new JCheckBox();
     final private JButton btnResetChassis = new JButton();
@@ -123,7 +123,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
     };
 
     private static final int[] INDUSTRIAL_COCKPITS = {
-            Mech.COCKPIT_INDUSTRIAL, Mech.COCKPIT_COMMAND_CONSOLE, Mech.COCKPIT_TORSO_MOUNTED
+            Mech.COCKPIT_INDUSTRIAL, Mech.COCKPIT_STANDARD, Mech.COCKPIT_COMMAND_CONSOLE, Mech.COCKPIT_TORSO_MOUNTED
     };
 
     private static final String[] ENHANCEMENT_NAMES = {
@@ -553,6 +553,17 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
                 && (cbCockpit.getModel().getSize() > 0)) {
             cbCockpit.setSelectedIndex(0);
         }
+    }
+
+    private static String cockpitName(int index, boolean industrial) {
+        if (industrial) {
+            if (index == Mech.COCKPIT_STANDARD) {
+                return Mech.getCockpitTypeString(Mech.COCKPIT_INDUSTRIAL) + " (Adv. FireCon)";
+            } else if (index == Mech.COCKPIT_PRIMITIVE) {
+                return Mech.getCockpitTypeString(Mech.COCKPIT_PRIMITIVE_INDUSTRIAL) + " (Adv. FireCon)";
+            }
+        }
+        return Mech.getCockpitTypeString(index);
     }
     
     private void refreshEnhancement() {
