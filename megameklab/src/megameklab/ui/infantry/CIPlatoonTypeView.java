@@ -31,6 +31,7 @@ import javax.swing.event.ChangeListener;
 import megamek.common.EntityMovementMode;
 import megamek.common.ITechManager;
 import megamek.common.Infantry;
+import megamek.common.InfantryMount;
 import megamek.common.verifier.TestInfantry;
 import megameklab.ui.util.CustomComboBox;
 import megameklab.ui.generalUnit.BuildView;
@@ -62,7 +63,8 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
         MICROLITE(EntityMovementMode.VTOL, false, "PlatoonTypeView.cbMotiveType.microlite"),
         UMU(EntityMovementMode.INF_UMU, false, "PlatoonTypeView.cbMotiveType.umu"),
         UMU_MOTORIZED(EntityMovementMode.INF_UMU, false, "PlatoonTypeView.cbMotiveType.umu_motorized"),
-        SUBMARINE(EntityMovementMode.SUBMARINE, false, "PlatoonTypeView.cbMotiveType.submarine");
+        SUBMARINE(EntityMovementMode.SUBMARINE, false, "PlatoonTypeView.cbMotiveType.submarine"),
+        BEAST_MOUNTED(EntityMovementMode.NONE, false, "PlatoonTypeView.cbMotiveType.beast_mounted");
 
         final EntityMovementMode mode;
         final boolean legalFieldGun;
@@ -84,11 +86,14 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
     private final JSpinner spnSquadSize = new JSpinner(spnSquadSizeModel);
     private final JLabel lblMaxSize = new JLabel();
     private final JLabel lblMaxSquadSize = new JLabel();
+    private final JLabel lblBeastMountLabel = new JLabel();
+    private final JLabel lblBeastMountType = new JLabel();
     
     private final ITechManager techManager;
 
     private int specialization = 0;
     private boolean isFieldGunner = false;
+    private InfantryMount mount = null;
 
     public CIPlatoonTypeView(ITechManager techManager) {
         this.techManager = techManager;
@@ -112,13 +117,20 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
         cbMotiveType.setToolTipText(resourceMap.getString("PlatoonTypeView.cbMotiveType.tooltip"));
         add(cbMotiveType, gbc);
         cbMotiveType.addActionListener(this);
-        
+
         gbc.gridx = 0;
-        gbc.gridy = 1;
+        gbc.gridy++;
+        gbc.gridwidth = 1;
+        lblBeastMountLabel.setText(resourceMap.getString("PlatoonTypeView.lblBeastMountLabel.text"));
+        add(lblBeastMountLabel, gbc);
+        gbc.gridx++;
+        add(lblBeastMountType, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy++;
         gbc.gridwidth = 1;
         add(new JLabel(resourceMap.getString("PlatoonTypeView.spnNumSquads.text")), gbc);
         gbc.gridx = 1;
-        gbc.gridy = 1;
         gbc.gridwidth = 3;
         setFieldSize(spnNumSquads, spinnerSize);
         spnNumSquads.setToolTipText(resourceMap.getString("PlatoonTypeView.spnNumSquads.tooltip"));
@@ -126,11 +138,10 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
         spnNumSquads.addChangeListener(this);
         
         gbc.gridx = 0;
-        gbc.gridy = 2;
+        gbc.gridy++;
         gbc.gridwidth = 1;
         add(new JLabel(resourceMap.getString("PlatoonTypeView.spnSquadSize.text")), gbc);
         gbc.gridx = 1;
-        gbc.gridy = 2;
         gbc.gridwidth = 3;
         setFieldSize(spnSquadSize, spinnerSize);
         spnSquadSize.setToolTipText(resourceMap.getString("PlatoonTypeView.spnSquadSize.tooltip"));
@@ -139,20 +150,18 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
 
         gbc.insets = new Insets(0, 5, 0, 5);
         gbc.gridx = 0;
-        gbc.gridy = 3;
+        gbc.gridy++;
         gbc.gridwidth = 1;
         add(new JLabel(resourceMap.getString("PlatoonTypeView.lblMaxSize.text")), gbc);
         gbc.gridx = 1;
-        gbc.gridy = 3;
         lblMaxSize.setToolTipText(resourceMap.getString("PlatoonTypeView.lblMaxSize.tooltip"));
         add(lblMaxSize, gbc);
         
         gbc.gridx = 2;
-        gbc.gridy = 3;
+        gbc.gridy++;
         gbc.gridwidth = 1;
         add(new JLabel(resourceMap.getString("PlatoonTypeView.lblMaxSquadSize.text")), gbc);
         gbc.gridx = 3;
-        gbc.gridy = 3;
         lblMaxSquadSize.setToolTipText(resourceMap.getString("PlatoonTypeView.lblMaxSquadSize.tooltip"));
         add(lblMaxSquadSize, gbc);
         
@@ -161,15 +170,18 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
     public void setFromEntity(Infantry inf) {
         specialization = inf.getSpecializations();
         isFieldGunner = inf.hasFieldWeapon();
+        mount = inf.getMount();
         refresh();
         cbMotiveType.removeActionListener(this);
-        if (inf.getMovementMode() == EntityMovementMode.VTOL) {
+        if (inf.getMount() != null) {
+            cbMotiveType.setSelectedItem(InfantryMotiveType.BEAST_MOUNTED);
+        } else if (inf.getMovementMode() == EntityMovementMode.VTOL) {
             cbMotiveType.setSelectedItem(inf.hasMicrolite() ?
                     InfantryMotiveType.MICROLITE : InfantryMotiveType.VTOL);
         } else if (inf.getMovementMode() == EntityMovementMode.INF_UMU) {
             cbMotiveType.setSelectedItem((inf.getOriginalJumpMP() > 1) ?
                     InfantryMotiveType.UMU_MOTORIZED : InfantryMotiveType.UMU);
-        } else {
+       } else {
             for (var type : InfantryMotiveType.values()) {
                 if (type.mode == inf.getMovementMode()) {
                     cbMotiveType.setSelectedItem(type);
@@ -178,14 +190,14 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
         }
         cbMotiveType.addActionListener(this);
         
-        if (inf.getSquadCount() <= (Integer)spnNumSquadsModel.getMaximum()) {
+        if (inf.getSquadCount() <= (Integer) spnNumSquadsModel.getMaximum()) {
             spnNumSquads.removeChangeListener(this);
             spnNumSquads.setValue(inf.getSquadCount());
             spnNumSquads.addChangeListener(this);
         } else {
             spnNumSquads.setValue(spnNumSquadsModel.getMaximum());
         }
-        if (inf.getSquadSize() <= (Integer)spnSquadSizeModel.getMaximum()) {
+        if (inf.getSquadSize() <= (Integer) spnSquadSizeModel.getMaximum()) {
             spnSquadSize.removeChangeListener(this);
             spnSquadSize.setValue(inf.getSquadSize());
             spnSquadSize.addChangeListener(this);
@@ -219,8 +231,8 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
         }
         
         int maxSize = TestInfantry.maxUnitSize(getMovementMode(), isAltMode(),
-            (specialization & (Infantry.COMBAT_ENGINEERS | Infantry.MOUNTAIN_TROOPS)) != 0);
-        int maxSquad = TestInfantry.maxSquadSize(getMovementMode(), isAltMode());
+            (specialization & (Infantry.COMBAT_ENGINEERS | Infantry.MOUNTAIN_TROOPS)) != 0, mount);
+        int maxSquad = TestInfantry.maxSquadSize(getMovementMode(), isAltMode(), mount);
         spnNumSquads.removeChangeListener(this);
         spnSquadSize.removeChangeListener(this);
         spnNumSquadsModel.setMaximum(maxSize / spnSquadSizeModel.getNumber().intValue());
@@ -230,6 +242,14 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
         
         lblMaxSize.setText(String.valueOf(maxSize));
         lblMaxSquadSize.setText(String.valueOf(maxSquad));
+        if (getMovementMode().isNone()) {
+            lblBeastMountType.setText(mount.getName());
+            lblBeastMountLabel.setVisible(true);
+            lblBeastMountType.setVisible(true);
+        } else {
+            lblBeastMountLabel.setVisible(false);
+            lblBeastMountType.setVisible(false);
+        }
     }
     
     public EntityMovementMode getMovementMode() {
