@@ -12,6 +12,9 @@ VERSION HISTORY:
 + PR #1311: MML support for MegaMek PR #1552
 + Fix #1335: Restore option of advanced fire control for IndustrialMechs
 + PR #1331: Beast mounted infantry
++ PR #4885: Berserk v2 Cleanup
++ Fix #4807: Jumpship can expend thrust and change facing in the same turn
++ Fix #3861: Militarized Space Stations turning
 
 0.49.14 (2023-07-28 2100 UTC)
 + PR #1267: Adaptations to MM's #4474 (BV calculation and reports update)
