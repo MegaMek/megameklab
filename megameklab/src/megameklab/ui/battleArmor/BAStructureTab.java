@@ -365,6 +365,7 @@ public class BAStructureTab extends ITab implements ActionListener, ChangeListen
         } else if (evt.getSource() == spnRightManipulatorSize) {
             setManipulatorSize(BattleArmor.MOUNT_LOC_RARM, spnRightManipulatorSizeModel.getNumber().doubleValue());
         }
+        refresh.refreshAll();
     }
 
     private void setManipulatorSize(int mountLoc, double size) {
