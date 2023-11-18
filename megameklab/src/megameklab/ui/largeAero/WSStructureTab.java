@@ -24,14 +24,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
 import megamek.codeUtilities.MathUtility;
-import megamek.common.Aero;
-import megamek.common.Entity;
-import megamek.common.EquipmentType;
-import megamek.common.ITechManager;
-import megamek.common.Jumpship;
-import megamek.common.SimpleTechLevel;
-import megamek.common.SpaceStation;
-import megamek.common.Warship;
+import megamek.common.*;
 import megamek.common.verifier.TestEntity;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.*;
@@ -653,4 +646,8 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         getJumpship().setMulId(mulId);
     }
 
+    @Override
+    public void roleChanged(UnitRole role) {
+        getEntity().setUnitRole(role);
+    }
 }

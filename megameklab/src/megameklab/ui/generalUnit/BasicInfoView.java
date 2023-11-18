@@ -67,6 +67,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
     private final CustomComboBox<Integer> cbTechBase = new CustomComboBox<>(i -> String.valueOf(techBaseNames[i]));
     private final JComboBox<SimpleTechLevel> cbTechLevel = new JComboBox<>();
     private final IntRangeTextField txtManualBV = new IntRangeTextField(3);
+    private final JComboBox<UnitRole> cbRole = new JComboBox<>();
     private final JLabel lblMulId = createLabel("lblMulId", "", labelSize);
     private final IntRangeTextField txtMulId = new IntRangeTextField(8);
     private final JButton browseMul = new JButton("Open MUL in Browser");
@@ -194,6 +195,16 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         add(txtManualBV, gbc);
         txtManualBV.addFocusListener(this);
 
+        gbc.gridx = 0;
+        gbc.gridy++;
+        add(createLabel(resourceMap, "lblRole", "BasicInfoView.txtRole.text",
+                "BasicInfoView.txtRole.tooltip", labelSize), gbc);
+        gbc.gridx = 1;
+        setFieldSize(txtManualBV, controlSize);
+        cbRole.setToolTipText(resourceMap.getString("BasicInfoView.txtRole.tooltip"));
+        add(cbRole, gbc);
+        cbRole.addActionListener(this);
+
         txtMulId.setMinimum(-1);
         lblFaction.setVisible(CConfig.getBooleanParam(CConfig.TECH_SHOW_FACTION));
         cbFaction.setVisible(CConfig.getBooleanParam(CConfig.TECH_SHOW_FACTION));
@@ -221,6 +232,13 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         if (en.getManualBV() >= 0) {
             setManualBV(en.getManualBV());
         }
+        cbRole.removeAllItems();
+        for (UnitRole role : UnitRole.values()) {
+            if (role.isAvailableTo(en)) {
+                cbRole.addItem(role);
+            }
+        }
+        cbRole.setSelectedItem(en.getRole());
         
         refreshFaction();
     }
@@ -502,6 +520,9 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
             refreshTechLevel();
         } else if (e.getSource() == cbTechLevel) {
             listeners.forEach(l -> l.techLevelChanged(getTechLevel()));
+        } else if (e.getSource() == cbRole) {
+            UnitRole newRole = cbRole.getSelectedItem() == null ? UnitRole.UNDETERMINED : (UnitRole) cbRole.getSelectedItem();
+            listeners.forEach(l -> l.roleChanged(newRole));
         }
         listeners.forEach(BuildListener::refreshSummary);
     }

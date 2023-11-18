@@ -30,16 +30,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import megamek.codeUtilities.MathUtility;
-import megamek.common.Aero;
-import megamek.common.CriticalSlot;
-import megamek.common.Engine;
-import megamek.common.Entity;
-import megamek.common.EquipmentType;
-import megamek.common.ITechManager;
-import megamek.common.LocationFullException;
-import megamek.common.Mounted;
-import megamek.common.SimpleTechLevel;
-import megamek.common.TechConstants;
+import megamek.common.*;
 import megamek.common.verifier.TestAero;
 import megamek.common.verifier.TestEntity;
 import megameklab.ui.EntitySource;
@@ -675,5 +666,10 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
     @Override
     public void mulIdChanged(int mulId) {
         getAero().setMulId(mulId);
+    }
+
+    @Override
+    public void roleChanged(UnitRole role) {
+        getEntity().setUnitRole(role);
     }
 }

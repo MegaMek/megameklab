@@ -642,4 +642,9 @@ public class BAStructureTab extends ITab implements ActionListener, BABuildListe
     public void mulIdChanged(int mulId) {
         getBattleArmor().setMulId(mulId);
     }
+
+    @Override
+    public void roleChanged(UnitRole role) {
+        getEntity().setUnitRole(role);
+    }
 }

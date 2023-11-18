@@ -23,13 +23,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
 import megamek.codeUtilities.MathUtility;
-import megamek.common.Aero;
-import megamek.common.Dropship;
-import megamek.common.Entity;
-import megamek.common.EntityMovementMode;
-import megamek.common.EquipmentType;
-import megamek.common.ITechManager;
-import megamek.common.SimpleTechLevel;
+import megamek.common.*;
 import megamek.common.verifier.TestEntity;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.*;
@@ -588,5 +582,8 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
         refresh.refreshPreview();
     }
 
-
+    @Override
+    public void roleChanged(UnitRole role) {
+        getEntity().setUnitRole(role);
+    }
 }
