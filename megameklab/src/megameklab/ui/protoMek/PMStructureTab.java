@@ -32,18 +32,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import megamek.codeUtilities.MathUtility;
-import megamek.common.Engine;
-import megamek.common.Entity;
-import megamek.common.EntityMovementMode;
-import megamek.common.EquipmentType;
-import megamek.common.IArmorState;
-import megamek.common.ITechManager;
-import megamek.common.LocationFullException;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
-import megamek.common.Protomech;
-import megamek.common.SimpleTechLevel;
-import megamek.common.TechConstants;
+import megamek.common.*;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestProtomech;
 import megamek.common.verifier.TestProtomech.ProtomechArmor;
@@ -722,5 +711,10 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
     @Override
     public void mulIdChanged(int mulId) {
         getProtomech().setMulId(mulId);
+    }
+
+    @Override
+    public void roleChanged(UnitRole role) {
+        getEntity().setUnitRole(role);
     }
 }

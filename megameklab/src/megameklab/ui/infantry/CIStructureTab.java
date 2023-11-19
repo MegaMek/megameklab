@@ -489,4 +489,8 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
         getInfantry().setMulId(mulId);
     }
 
+    @Override
+    public void roleChanged(UnitRole role) {
+        getEntity().setUnitRole(role);
+    }
 }

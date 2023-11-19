@@ -816,4 +816,9 @@ public class SVStructureTab extends ITab implements SVBuildListener {
     public void mulIdChanged(int mulId) {
         getEntity().setMulId(mulId);
     }
+
+    @Override
+    public void roleChanged(UnitRole role) {
+        getEntity().setUnitRole(role);
+    }
 }

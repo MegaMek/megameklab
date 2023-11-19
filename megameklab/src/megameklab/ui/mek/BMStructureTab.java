@@ -616,6 +616,11 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
     }
 
     @Override
+    public void roleChanged(UnitRole role) {
+        getEntity().setUnitRole(role);
+    }
+
+    @Override
     public void updateTechLevel() {
         removeAllListeners();
         getMech().setTechLevel(panBasicInfo.getTechLevel().getCompoundTechLevel(panBasicInfo.useClanTechBase()));

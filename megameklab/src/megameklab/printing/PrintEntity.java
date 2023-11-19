@@ -203,7 +203,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
         // for C3 networks or pilot skills.
         setTextField(BV, NumberFormat.getInstance().format(getEntity()
                 .calculateBattleValue(!showPilotInfo(), !showPilotInfo())));
-        UnitRole role = UnitRoleHandler.getRoleFor(getEntity());
+        UnitRole role = getEntity().getRole();
         if (!options.showRole() || (role == UnitRole.UNDETERMINED)) {
             hideElement(LBL_ROLE, true);
             hideElement(ROLE, true);
