@@ -20,7 +20,6 @@ import megamek.MegaMek;
 import megamek.client.ui.preferences.SuitePreferences;
 import megamek.common.EquipmentType;
 import megamek.common.MechSummaryCache;
-import megamek.common.QuirksHandler;
 import megameklab.ui.StartupGUI;
 import megameklab.util.CConfig;
 import megameklab.util.UnitUtil;
@@ -69,11 +68,6 @@ public class MegaMekLab {
     private static void startup() {
         EquipmentType.initializeTypes();
         MechSummaryCache.getInstance();
-        try {
-            QuirksHandler.initQuirksList();
-        } catch (Exception ex) {
-            LogManager.getLogger().warn("Could not load quirks", ex);
-        }
         CConfig.load();
         UnitUtil.loadFonts();
 
