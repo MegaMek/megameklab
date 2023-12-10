@@ -16,10 +16,7 @@ package megameklab.ui.largeAero;
 import megamek.common.*;
 import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.dialog.FloatingEquipmentDatabaseDialog;
-import megameklab.ui.generalUnit.AbstractEquipmentTab;
-import megameklab.ui.generalUnit.FluffTab;
-import megameklab.ui.generalUnit.PreviewTab;
-import megameklab.ui.generalUnit.TransportTab;
+import megameklab.ui.generalUnit.*;
 import megameklab.ui.util.TabScrollPane;
 import org.apache.logging.log4j.LogManager;
 
@@ -40,6 +37,7 @@ public class DSMainUI extends MegaMekLabMainUI {
     private LABuildTab buildTab;
     private TransportTab transportTab;
     private DSStatusBar statusbar;
+    private QuirksTab quirksTab;
     private FloatingEquipmentDatabaseDialog floatingEquipmentDatabase;
     
     public DSMainUI(boolean primitive) {
@@ -150,6 +148,7 @@ public class DSMainUI extends MegaMekLabMainUI {
         equipmentTab = new LAEquipmentTab(this);
         buildTab = new LABuildTab(this);
         transportTab = new TransportTab(this);
+        quirksTab = new QuirksTab(this);
         FluffTab fluffTab = new FluffTab(this);
         structureTab.addRefreshedListener(this);
         equipmentTab.addRefreshedListener(this);
@@ -163,6 +162,7 @@ public class DSMainUI extends MegaMekLabMainUI {
         configPane.addTab("Assign Criticals", new TabScrollPane(buildTab));
         configPane.addTab("Transport Bays", new TabScrollPane(transportTab));
         configPane.addTab("Fluff", new TabScrollPane(fluffTab));
+        configPane.addTab("Quirks", new TabScrollPane(quirksTab, quirksTab.refreshOnShow));
         configPane.addTab("Preview", previewTab);
 
         add(configPane, BorderLayout.CENTER);
