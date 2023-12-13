@@ -16,6 +16,8 @@ VERSION HISTORY:
 + PR #4885: Berserk v2 Cleanup
 + Fix #4807: Jumpship can expend thrust and change facing in the same turn
 + Fix #3861: Militarized Space Stations turning
++ Fix #145: Quirks can now be edited in MML and are part of the unit files
++ PR 1337: The BA manipulator size can now be set in MML
 
 0.49.14 (2023-07-28 2100 UTC)
 + PR #1267: Adaptations to MM's #4474 (BV calculation and reports update)
