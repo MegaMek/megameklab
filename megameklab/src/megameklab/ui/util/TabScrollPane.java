@@ -20,6 +20,8 @@ package megameklab.ui.util;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 
 /**
  * This JScrollPane is used for the tabs (Structure, Fluff etc) of the various unit UIs. It
@@ -30,14 +32,39 @@ import java.awt.*;
  */
 public class TabScrollPane extends JScrollPane {
 
+    /**
+     * Creates a standardized borderless scroll pane with suitable scroll increment for one of the
+     * main tabs in MML (BMBuildTab etc).
+     *
+     * @param view The tab component (BMBuildTab etc) to show in the scroll pane
+     */
     public TabScrollPane(Component view) {
         super(view);
         initialize();
     }
 
+    /**
+     * Creates a standardized borderless scroll pane with suitable scroll increment for one of the
+     * main tabs in MML (BMBuildTab etc).
+     */
     public TabScrollPane() {
         super();
         initialize();
+    }
+
+    /**
+     * Creates a tab scroll pane with the given ComponentListener attached to it. The ComponentListener can
+     * be used, e.g., to update the tab when it is activated, {@link ComponentListener#componentShown(ComponentEvent)}.
+     * (When a tab is clicked, the "Shown" event is fired for the component directly attached as the tab, but
+     * not any subcomponents.)
+     *
+     * @param view The tab component (BMBuildTab etc) to show in the scroll pane
+     * @param componentListener The ComponentListener to attach to the scroll pane
+     */
+    public TabScrollPane(Component view, ComponentListener componentListener) {
+        super(view);
+        initialize();
+        addComponentListener(componentListener);
     }
 
     private void initialize() {

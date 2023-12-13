@@ -23,6 +23,7 @@ import megameklab.ui.dialog.FloatingEquipmentDatabaseDialog;
 import megameklab.ui.generalUnit.AbstractEquipmentTab;
 import megameklab.ui.generalUnit.FluffTab;
 import megameklab.ui.generalUnit.PreviewTab;
+import megameklab.ui.generalUnit.QuirksTab;
 import megameklab.ui.util.TabScrollPane;
 
 import javax.swing.*;
@@ -37,6 +38,7 @@ public class CVMainUI extends MegaMekLabMainUI {
     private CVBuildTab buildTab;
     private FluffTab fluffTab;
     private CVStatusBar statusbar;
+    private QuirksTab quirksTab;
     private FloatingEquipmentDatabaseDialog floatingEquipmentDatabase;
 
     public CVMainUI() {
@@ -56,6 +58,7 @@ public class CVMainUI extends MegaMekLabMainUI {
         equipmentTab = new CVEquipmentTab(this);
         buildTab = new CVBuildTab(this);
         fluffTab = new FluffTab(this);
+        quirksTab = new QuirksTab(this);
         structureTab.addRefreshedListener(this);
         equipmentTab.addRefreshedListener(this);
         buildTab.addRefreshedListener(this);
@@ -68,6 +71,7 @@ public class CVMainUI extends MegaMekLabMainUI {
         configPane.addTab("Equipment", equipmentTab);
         configPane.addTab("Assign Criticals", new TabScrollPane(buildTab));
         configPane.addTab("Fluff", new TabScrollPane(fluffTab));
+        configPane.addTab("Quirks", new TabScrollPane(quirksTab, quirksTab.refreshOnShow));
         configPane.addTab("Preview", previewTab);
 
         add(configPane, BorderLayout.CENTER);

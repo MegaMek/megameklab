@@ -21,10 +21,7 @@ package megameklab.ui.supportVehicle;
 import megamek.common.*;
 import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.dialog.FloatingEquipmentDatabaseDialog;
-import megameklab.ui.generalUnit.AbstractEquipmentTab;
-import megameklab.ui.generalUnit.FluffTab;
-import megameklab.ui.generalUnit.PreviewTab;
-import megameklab.ui.generalUnit.TransportTab;
+import megameklab.ui.generalUnit.*;
 import megameklab.ui.util.TabScrollPane;
 
 import javax.swing.*;
@@ -43,6 +40,7 @@ public class SVMainUI extends MegaMekLabMainUI {
     private SVBuildTab buildTab;
     private FluffTab fluffTab;
     private SVStatusBar statusbar;
+    private QuirksTab quirksTab;
     private FloatingEquipmentDatabaseDialog floatingEquipmentDatabase;
 
     public SVMainUI() {
@@ -64,6 +62,7 @@ public class SVMainUI extends MegaMekLabMainUI {
         buildTab = new SVBuildTab(this);
         transportTab = new TransportTab(this);
         fluffTab = new FluffTab(this);
+        quirksTab = new QuirksTab(this);
         structureTab.addRefreshedListener(this);
         armorTab.addRefreshedListener(this);
         equipmentTab.addRefreshedListener(this);
@@ -79,6 +78,7 @@ public class SVMainUI extends MegaMekLabMainUI {
         configPane.addTab("Assign Criticals", new TabScrollPane(buildTab));
         configPane.addTab("Transport", new TabScrollPane(transportTab));
         configPane.addTab("Fluff", new TabScrollPane(fluffTab));
+        configPane.addTab("Quirks", new TabScrollPane(quirksTab, quirksTab.refreshOnShow));
         configPane.addTab("Preview", previewTab);
 
         add(configPane, BorderLayout.CENTER);

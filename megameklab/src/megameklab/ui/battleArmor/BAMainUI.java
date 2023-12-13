@@ -20,6 +20,7 @@ import megamek.common.*;
 import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.dialog.FloatingEquipmentDatabaseDialog;
 import megameklab.ui.generalUnit.FluffTab;
+import megameklab.ui.generalUnit.QuirksTab;
 import megameklab.ui.util.TabScrollPane;
 
 import javax.swing.*;
@@ -33,6 +34,7 @@ public class BAMainUI extends MegaMekLabMainUI {
     private BAEquipmentTab equipTab;
     private FluffTab fluffTab;
     private BAStatusBar statusbar;
+    private QuirksTab quirksTab;
     private FloatingEquipmentDatabaseDialog floatingEquipmentDatabase;
 
     public BAMainUI() {
@@ -51,7 +53,7 @@ public class BAMainUI extends MegaMekLabMainUI {
         structureTab = new BAStructureTab(this);
         equipTab = new BAEquipmentTab(this);
         fluffTab = new FluffTab(this);
-
+        quirksTab = new QuirksTab(this);
         statusbar = new BAStatusBar(this);
         buildTab = new BABuildTab(this);
         structureTab.addRefreshedListener(this);
@@ -63,6 +65,7 @@ public class BAMainUI extends MegaMekLabMainUI {
         configPane.addTab("Equipment", equipTab);
         configPane.addTab("Assign Criticals", new TabScrollPane(buildTab));
         configPane.addTab("Fluff", new TabScrollPane(fluffTab));
+        configPane.addTab("Quirks", new TabScrollPane(quirksTab, quirksTab.refreshOnShow));
 
         add(configPane, BorderLayout.CENTER);
         add(statusbar, BorderLayout.SOUTH);
