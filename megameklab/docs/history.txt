@@ -2,6 +2,8 @@ VERSION HISTORY:
 ----------------
 0.49.16-SNAPSHOT
 + PR #1338 - Allow unit role selection in MML
++ Fix #145: Quirks can now be edited in MML and are part of the unit files
++ PR 1337: The BA manipulator size can now be set in MML
 
 0.49.15 (2023-10-21 1530 UTC)
 + Fix #1172: Clan TAG will no longer be written as TAG (Clan) (Clan) in Mixed Tech units
@@ -16,8 +18,6 @@ VERSION HISTORY:
 + PR #4885: Berserk v2 Cleanup
 + Fix #4807: Jumpship can expend thrust and change facing in the same turn
 + Fix #3861: Militarized Space Stations turning
-+ Fix #145: Quirks can now be edited in MML and are part of the unit files
-+ PR 1337: The BA manipulator size can now be set in MML
 
 0.49.14 (2023-07-28 2100 UTC)
 + PR #1267: Adaptations to MM's #4474 (BV calculation and reports update)
