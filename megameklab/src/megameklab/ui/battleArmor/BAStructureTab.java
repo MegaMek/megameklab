@@ -33,16 +33,19 @@ import megameklab.util.UnitUtil;
 import org.apache.logging.log4j.LogManager;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
  * @author jtighe (torren@users.sourceforge.net)
  */
-public class BAStructureTab extends ITab implements ActionListener, BABuildListener, ArmorAllocationListener {
+public class BAStructureTab extends ITab implements ActionListener, ChangeListener, BABuildListener, ArmorAllocationListener {
     private RefreshListener refresh;
 
     Dimension labelSize = new Dimension(110, 25);
@@ -54,8 +57,14 @@ public class BAStructureTab extends ITab implements ActionListener, BABuildListe
     private BAEnhancementView panEnhancements;
 
     // Manipulator Panel
-    private CustomComboBox<String> leftManipSelect = new CustomComboBox<>(this::manipulatorDisplayName);
-    private CustomComboBox<String> rightManipSelect = new CustomComboBox<>(this::manipulatorDisplayName);
+    private final CustomComboBox<String> leftManipSelect = new CustomComboBox<>(this::manipulatorDisplayName);
+    private final CustomComboBox<String> rightManipSelect = new CustomComboBox<>(this::manipulatorDisplayName);
+
+    private final SpinnerNumberModel spnLeftManipulatorSizeModel = new SpinnerNumberModel(0.5, 0.5, Double.MAX_VALUE, 0.5);
+    private final SpinnerNumberModel spnRightManipulatorSizeModel = new SpinnerNumberModel(0.5, 0.5, Double.MAX_VALUE, 0.5);
+    private final JSpinner spnLeftManipulatorSize = new JSpinner(spnLeftManipulatorSizeModel);
+    private final JSpinner spnRightManipulatorSize = new JSpinner(spnRightManipulatorSizeModel);
+    private final JLabel lblSize = createLabel("Size:", labelSize);
 
     private PreviewTab previewTab;
 
@@ -81,6 +90,7 @@ public class BAStructureTab extends ITab implements ActionListener, BABuildListe
         panEnhancements = new BAEnhancementView(panBasicInfo);
         GridBagConstraints gbc = new GridBagConstraints();
         Dimension comboSize = new Dimension(250, 25);
+        Dimension spinnerSize = new Dimension(100, 25);
 
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -93,11 +103,20 @@ public class BAStructureTab extends ITab implements ActionListener, BABuildListe
         gbc.gridx = 1;
         gbc.gridy = 0;
         manipPanel.add(leftManipSelect, gbc);
+        gbc.gridx = 2;
+        manipPanel.add(lblSize, gbc);
+        gbc.gridx = 3;
+        manipPanel.add(spnLeftManipulatorSize, gbc);
+        gbc.gridx = 1;
         gbc.gridy = 1;
         manipPanel.add(rightManipSelect, gbc);
+        gbc.gridx = 3;
+        manipPanel.add(spnRightManipulatorSize, gbc);
 
         setFieldSize(leftManipSelect, comboSize);
         setFieldSize(rightManipSelect, comboSize);
+        setFieldSize(spnLeftManipulatorSize, spinnerSize);
+        setFieldSize(spnRightManipulatorSize, spinnerSize);
 
         panBasicInfo.setBorder(BorderFactory.createTitledBorder("Basic Information"));
         panChassis.setBorder(BorderFactory.createTitledBorder("Chassis"));
@@ -164,17 +183,43 @@ public class BAStructureTab extends ITab implements ActionListener, BABuildListe
                 rightManipSelect.addItem(et.getName());
             }
         }
-        int manipType = BAManipulator.getManipulator(
-                getBattleArmor().getLeftManipulatorName()).type;
+        BAManipulator manipulator = BAManipulator.getManipulator(
+                getBattleArmor().getLeftManipulatorName());
         leftManipSelect.setSelectedItem(
-                BattleArmor.MANIPULATOR_NAME_STRINGS[manipType]);
-        manipType = BAManipulator.getManipulator(
-                getBattleArmor().getRightManipulatorName()).type;
+                BattleArmor.MANIPULATOR_NAME_STRINGS[manipulator.type]);
+        manipulator = BAManipulator.getManipulator(
+                getBattleArmor().getRightManipulatorName());
         rightManipSelect.setSelectedItem(
-                BattleArmor.MANIPULATOR_NAME_STRINGS[manipType]);
+                BattleArmor.MANIPULATOR_NAME_STRINGS[manipulator.type]);
+        refreshManipulatorSizes(BattleArmor.MOUNT_LOC_LARM, spnLeftManipulatorSize, spnLeftManipulatorSizeModel);
+        // For variable-sized pair-mounted manipulators, we'll only use one spinner
+        spnRightManipulatorSize.setEnabled(!manipulator.pairMounted);
+        refreshManipulatorSizes(BattleArmor.MOUNT_LOC_RARM, spnRightManipulatorSize, spnRightManipulatorSizeModel);
+        lblSize.setVisible(spnLeftManipulatorSize.isVisible() || spnRightManipulatorSize.isVisible());
+
         refreshPreview();
 
         addAllListeners();
+    }
+
+    /**
+     * Sets values for the size control if the manipulator has a variable size; otherwise hides it.
+     * @param mountLoc The mount location
+     * @param spinner  The spinner to show/hide
+     * @param model    The spinner's number model
+     */
+    private void refreshManipulatorSizes(int mountLoc, JSpinner spinner, SpinnerNumberModel model) {
+        Optional<Mounted> mounted = getBattleArmor().getMisc().stream()
+                .filter(m -> m.getType().hasFlag(MiscType.F_BA_MANIPULATOR) && (m.getBaMountLoc() == mountLoc))
+                .findFirst();
+        if (mounted.isPresent() && mounted.get().getType().isVariableSize()) {
+            model.setValue(mounted.get().getSize());
+            model.setStepSize(mounted.get().getType().variableStepSize());
+            model.setMinimum(mounted.get().getType().variableStepSize());
+            spinner.setVisible(true);
+        } else {
+            spinner.setVisible(false);
+        }
     }
 
     public ITechManager getTechManager() {
@@ -191,6 +236,8 @@ public class BAStructureTab extends ITab implements ActionListener, BABuildListe
     public void addAllListeners() {
         leftManipSelect.addActionListener(this);
         rightManipSelect.addActionListener(this);
+        spnLeftManipulatorSize.addChangeListener(this);
+        spnRightManipulatorSize.addChangeListener(this);
 
         panBasicInfo.addListener(this);
         panChassis.addListener(this);
@@ -202,6 +249,8 @@ public class BAStructureTab extends ITab implements ActionListener, BABuildListe
     public void removeAllListeners() {
         leftManipSelect.removeActionListener(this);
         rightManipSelect.removeActionListener(this);
+        spnLeftManipulatorSize.removeChangeListener(this);
+        spnRightManipulatorSize.removeChangeListener(this);
 
         panBasicInfo.removeListener(this);
         panChassis.removeListener(this);
@@ -304,6 +353,26 @@ public class BAStructureTab extends ITab implements ActionListener, BABuildListe
             }
         }
         refresh.refreshAll();
+    }
+
+    @Override
+    public void stateChanged(ChangeEvent evt) {
+        if (evt.getSource() == spnLeftManipulatorSize) {
+            setManipulatorSize(BattleArmor.MOUNT_LOC_LARM, spnLeftManipulatorSizeModel.getNumber().doubleValue());
+            if (BAManipulator.getManipulator(getBattleArmor().getLeftManipulatorName()).pairMounted) {
+                spnRightManipulatorSizeModel.setValue(spnLeftManipulatorSizeModel.getValue());
+            }
+        } else if (evt.getSource() == spnRightManipulatorSize) {
+            setManipulatorSize(BattleArmor.MOUNT_LOC_RARM, spnRightManipulatorSizeModel.getNumber().doubleValue());
+        }
+        refresh.refreshAll();
+    }
+
+    private void setManipulatorSize(int mountLoc, double size) {
+        Optional<Mounted> mounted = getBattleArmor().getMisc().stream()
+                .filter(m -> m.getType().hasFlag(MiscType.F_BA_MANIPULATOR) && (m.getBaMountLoc() == mountLoc))
+                .findFirst();
+        mounted.ifPresent(value -> value.setSize(size));
     }
 
     /**
