@@ -18,6 +18,8 @@
  */
 package megameklab.ui.dialog.settings;
 
+import megamek.client.ui.Messages;
+import megamek.client.ui.swing.CommonSettingsDialog;
 import megamek.common.preference.PreferenceManager;
 import megameklab.ui.util.SpringUtilities;
 import megameklab.util.CConfig;
@@ -36,19 +38,24 @@ public class MiscSettingsPanel extends JPanel {
 
     private final JCheckBox chkSummaryFormatTRO = new JCheckBox();
     private final JCheckBox chkSkipSavePrompts = new JCheckBox();
-    private final JTextField txtUserDir = new JTextField(40);
+    private final JTextField txtUserDir = new JTextField(20);
 
-    MiscSettingsPanel() {
+    MiscSettingsPanel(JFrame parent) {
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Dialogs");
 
         JLabel userDirLabel = new JLabel(resourceMap.getString("ConfigurationDialog.userDir.text"));
         userDirLabel.setToolTipText(resourceMap.getString("ConfigurationDialog.userDir.tooltip"));
         txtUserDir.setToolTipText(resourceMap.getString("ConfigurationDialog.userDir.tooltip"));
         txtUserDir.setText(PreferenceManager.getClientPreferences().getUserDir());
+        JButton userDirChooser = new JButton("...");
+        userDirChooser.addActionListener(e -> CommonSettingsDialog.fileChooseUserDir(txtUserDir, parent));
+        userDirChooser.setToolTipText(resourceMap.getString("ConfigurationDialog.userDir.chooser.title"));
         JPanel userDirLine = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         userDirLine.add(userDirLabel);
         userDirLine.add(Box.createHorizontalStrut(25));
         userDirLine.add(txtUserDir);
+        userDirLine.add(Box.createHorizontalStrut(10));
+        userDirLine.add(userDirChooser);
 
         chkSummaryFormatTRO.setText(resourceMap.getString("ConfigurationDialog.chkSummaryFormatTRO.text"));
         chkSummaryFormatTRO.setToolTipText(resourceMap.getString("ConfigurationDialog.chkSummaryFormatTRO.tooltip"));

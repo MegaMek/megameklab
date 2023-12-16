@@ -34,10 +34,11 @@ public class SettingsDialog extends AbstractMMLButtonDialog {
     private final ColorSettingsPanel colorPreferences = new ColorSettingsPanel();
     private final TechSettingsPanel techSettings = new TechSettingsPanel();
     private final ExportSettingsPanel exportSettingsPanel = new ExportSettingsPanel();
-    private final MiscSettingsPanel miscSettingsPanel = new MiscSettingsPanel();
+    private final MiscSettingsPanel miscSettingsPanel;
 
     public SettingsDialog(JFrame frame) {
         super(frame, true, "ConfigurationDialog", "ConfigurationDialog.windowName.text");
+        miscSettingsPanel = new MiscSettingsPanel(frame);
         initialize();
     }
 
