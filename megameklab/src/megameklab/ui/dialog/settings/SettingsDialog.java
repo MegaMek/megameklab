@@ -19,6 +19,7 @@
 package megameklab.ui.dialog.settings;
 
 import megamek.client.ui.baseComponents.MMButton;
+import megamek.common.preference.PreferenceManager;
 import megameklab.ui.dialog.AbstractMMLButtonDialog;
 import megameklab.util.CConfig;
 
@@ -69,6 +70,7 @@ public class SettingsDialog extends AbstractMMLButtonDialog {
         exportSettingsPanel.getRecordSheetSettings().forEach(CConfig::setParam);
         miscSettingsPanel.getMiscSettings().forEach(CConfig::setParam);
         CConfig.saveConfig();
+        PreferenceManager.getClientPreferences().setUserDir(miscSettingsPanel.getUserDir());
     }
 
     @Override

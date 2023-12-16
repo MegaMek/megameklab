@@ -18,6 +18,7 @@
  */
 package megameklab.ui.dialog.settings;
 
+import megamek.common.preference.PreferenceManager;
 import megameklab.ui.util.SpringUtilities;
 import megameklab.util.CConfig;
 
@@ -35,9 +36,19 @@ public class MiscSettingsPanel extends JPanel {
 
     private final JCheckBox chkSummaryFormatTRO = new JCheckBox();
     private final JCheckBox chkSkipSavePrompts = new JCheckBox();
+    private final JTextField txtUserDir = new JTextField(40);
 
     MiscSettingsPanel() {
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Dialogs");
+
+        JLabel userDirLabel = new JLabel(resourceMap.getString("ConfigurationDialog.userDir.text"));
+        userDirLabel.setToolTipText(resourceMap.getString("ConfigurationDialog.userDir.tooltip"));
+        txtUserDir.setToolTipText(resourceMap.getString("ConfigurationDialog.userDir.tooltip"));
+        txtUserDir.setText(PreferenceManager.getClientPreferences().getUserDir());
+        JPanel userDirLine = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        userDirLine.add(userDirLabel);
+        userDirLine.add(Box.createHorizontalStrut(25));
+        userDirLine.add(txtUserDir);
 
         chkSummaryFormatTRO.setText(resourceMap.getString("ConfigurationDialog.chkSummaryFormatTRO.text"));
         chkSummaryFormatTRO.setToolTipText(resourceMap.getString("ConfigurationDialog.chkSummaryFormatTRO.tooltip"));
@@ -48,10 +59,11 @@ public class MiscSettingsPanel extends JPanel {
         chkSkipSavePrompts.setSelected(CConfig.getBooleanParam(CConfig.MISC_SKIP_SAFETY_PROMPTS));
 
         JPanel gridPanel = new JPanel(new SpringLayout());
+        gridPanel.add(userDirLine);
         gridPanel.add(chkSummaryFormatTRO);
         gridPanel.add(chkSkipSavePrompts);
 
-        SpringUtilities.makeCompactGrid(gridPanel, 2, 1, 0, 0, 15, 10);
+        SpringUtilities.makeCompactGrid(gridPanel, 3, 1, 0, 0, 15, 10);
         gridPanel.setBorder(new EmptyBorder(20, 30, 20, 30));
         setLayout(new FlowLayout(FlowLayout.LEFT));
         add(gridPanel);
@@ -62,5 +74,9 @@ public class MiscSettingsPanel extends JPanel {
         miscSettings.put(CConfig.MISC_SUMMARY_FORMAT_TRO, String.valueOf(chkSummaryFormatTRO.isSelected()));
         miscSettings.put(CConfig.MISC_SKIP_SAFETY_PROMPTS, String.valueOf(chkSkipSavePrompts.isSelected()));
         return miscSettings;
+    }
+
+    String getUserDir() {
+        return txtUserDir.getText();
     }
 }
