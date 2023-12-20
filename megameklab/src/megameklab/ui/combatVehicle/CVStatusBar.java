@@ -15,6 +15,7 @@
  */
 package megameklab.ui.combatVehicle;
 
+import megamek.client.ui.swing.calculationReport.CalculationReport;
 import megamek.common.Tank;
 import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestTank;
@@ -105,7 +106,7 @@ public class CVStatusBar extends ITab {
         double tonnage = getTank().getWeight();
         double currentTonnage;
 
-        currentTonnage = testEntity.calculateWeight();
+        currentTonnage = testEntity.calculateWeightExact();
         currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getTank());
 
         tons.setText("Tonnage: " + currentTonnage + "/" + tonnage);
@@ -131,11 +132,13 @@ public class CVStatusBar extends ITab {
         testEntity = new TestTank(getTank(), entityVerifier.tankOption,
                 null);
 
-        currentTonnage = testEntity.calculateWeight();
+        currentTonnage = testEntity.calculateWeightExact();
 
         currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getTank());
-
-        tons.setText(String.format("Tonnage: %.1f/%.1f (%.1f Remaining)", currentTonnage, tonnage, tonnage - currentTonnage));
+        String current = CalculationReport.formatForReport(currentTonnage);
+        String full = CalculationReport.formatForReport(tonnage);
+        String remaining = CalculationReport.formatForReport(tonnage - currentTonnage);
+        tons.setText("Tonnage: " + current + " / " + full + ((currentTonnage != tonnage) ? " (" + remaining + " Remaining)" : ""));
         tons.setToolTipText("Current Tonnage/Max Tonnage");
         if (currentTonnage > tonnage) {
             tons.setForeground(Color.red);
