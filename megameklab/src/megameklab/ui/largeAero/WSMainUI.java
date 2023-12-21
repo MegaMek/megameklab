@@ -38,7 +38,7 @@ public class WSMainUI extends MegaMekLabMainUI {
     private TransportTab transportTab;
     private FluffTab fluffTab;
     private QuirksTab quirksTab;
-    private WSStatusBar statusbar;
+    private StatusBar statusbar;
     private FloatingEquipmentDatabaseDialog floatingEquipmentDatabase;
     
     public WSMainUI(boolean primitive) {
@@ -160,7 +160,7 @@ public class WSMainUI extends MegaMekLabMainUI {
 
         structureTab = new WSStructureTab(this);
         previewTab = new PreviewTab(this);
-        statusbar = new WSStatusBar(this);
+        statusbar = new StatusBar(this);
         equipmentTab = new LAEquipmentTab(this);
         buildTab = new LABuildTab(this);
         fluffTab = new FluffTab(this);

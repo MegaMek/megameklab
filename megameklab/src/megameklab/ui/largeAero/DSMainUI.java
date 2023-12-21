@@ -36,7 +36,7 @@ public class DSMainUI extends MegaMekLabMainUI {
     private PreviewTab previewTab;
     private LABuildTab buildTab;
     private TransportTab transportTab;
-    private DSStatusBar statusbar;
+    private StatusBar statusbar;
     private QuirksTab quirksTab;
     private FloatingEquipmentDatabaseDialog floatingEquipmentDatabase;
     
@@ -144,7 +144,7 @@ public class DSMainUI extends MegaMekLabMainUI {
 
         previewTab = new PreviewTab(this);
 
-        statusbar = new DSStatusBar(this);
+        statusbar = new StatusBar(this);
         equipmentTab = new LAEquipmentTab(this);
         buildTab = new LABuildTab(this);
         transportTab = new TransportTab(this);

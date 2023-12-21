@@ -184,4 +184,6 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
             refreshAll();
         }
     }
+
+    public abstract JDialog getFloatingEquipmentDatabase();
 }
