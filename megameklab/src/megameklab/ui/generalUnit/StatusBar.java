@@ -22,7 +22,6 @@ import megamek.client.ui.WrapLayout;
 import megamek.client.ui.swing.GUIPreferences;
 import megamek.client.ui.swing.calculationReport.CalculationReport;
 import megamek.common.*;
-import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestEntity;
 import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.util.ITab;
@@ -46,11 +45,7 @@ public class StatusBar extends ITab {
     private final JLabel cost = new JLabel();
     private final JLabel invalid = new JLabel("Invalid");
     private final DecimalFormat formatter;
-
-    protected final EntityVerifier entityVerifier = EntityVerifier.getInstance(
-            new File("data/mechfiles/UnitVerifierOptions.xml"));
     private TestEntity testEntity;
-
     private RefreshListener refresh;
 
     public StatusBar(MegaMekLabMainUI parent) {
@@ -97,7 +92,7 @@ public class StatusBar extends ITab {
      */
     protected TestEntity getTestEntity() {
         return testEntity;
-    };
+    }
 
     /**
      * This method is called whenever the status bar is refreshed. When additional type-specific information
