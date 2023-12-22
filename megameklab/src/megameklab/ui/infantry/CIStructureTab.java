@@ -443,10 +443,11 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
     public void numSecondaryChanged(final int count) {
         if (getInfantry().getSecondaryWeapon() == null) {
             getInfantry().setSecondaryWeaponsPerSquad(0);
-        } else if (count == 0) {
-            UnitUtil.replaceMainWeapon(getInfantry(), null, true);
-            getInfantry().setSpecializations(getInfantry().getSpecializations() & ~Infantry.TAG_TROOPS);
         } else {
+            if (count == 0) {
+                UnitUtil.replaceMainWeapon(getInfantry(), null, true);
+                getInfantry().setSpecializations(getInfantry().getSpecializations() & ~Infantry.TAG_TROOPS);
+            }
             getInfantry().setSecondaryWeaponsPerSquad(count);
         }
         refresh.refreshStatus();
