@@ -52,9 +52,7 @@ class ASEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
                 UnitUtil.setVariableSizeMiscTypeMinimumSize(mount);
                 int location = (equip instanceof AmmoType) ? Aero.LOC_FUSELAGE : Aero.LOC_NONE;
                 getAero().addEquipment(mount, location, false);
-                if ((equip instanceof WeaponType) && equip.hasFlag(WeaponType.F_ONESHOT)) {
-                    UnitUtil.removeOneShotAmmo(getAero());
-                }
+                UnitUtil.removeHiddenAmmo(mount);
             } catch (LocationFullException ignored) {
                 // location maximum is currently checked in menus and dragndrop
             }
