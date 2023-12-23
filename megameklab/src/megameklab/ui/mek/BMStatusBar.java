@@ -15,13 +15,13 @@
  */
 package megameklab.ui.mek;
 
-import megamek.client.ui.WrapLayout;
 import megamek.client.ui.swing.GUIPreferences;
 import megamek.common.*;
 import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestMech;
 import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
+import megamek.client.ui.WrapLayout;
 import megameklab.util.ImageHelper;
 import megameklab.util.UnitUtil;
 
