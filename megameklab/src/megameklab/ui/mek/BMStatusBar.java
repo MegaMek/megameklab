@@ -20,7 +20,6 @@ import megamek.client.ui.swing.GUIPreferences;
 import megamek.common.*;
 import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestMech;
-import megamek.utilities.DebugEntity;
 import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
 import megameklab.util.ImageHelper;
@@ -28,7 +27,6 @@ import megameklab.util.UnitUtil;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.io.File;
 import java.text.DecimalFormat;
 
@@ -43,7 +41,7 @@ public class BMStatusBar extends ITab {
     private final EntityVerifier entityVerifier = EntityVerifier.getInstance(new File("data/mechfiles/UnitVerifierOptions.xml"));
     private TestMech testEntity;
     private final DecimalFormat formatter;
-    private final BMMainUI parentFrame;
+    private final JFrame parentFrame;
 
     private RefreshListener refresh;
 
@@ -56,7 +54,7 @@ public class BMStatusBar extends ITab {
         JButton showEquipmentDatabase = new JButton("Show Equipment Database");
         showEquipmentDatabase.addActionListener(evt -> parent.getFloatingEquipmentDatabase().setVisible(true));
         JButton btnValidate = new JButton("Validate Unit");
-        btnValidate.addActionListener(this::validate);
+        btnValidate.addActionListener(evt -> UnitUtil.showValidation(getMech(), getParentFrame()));
         JButton btnFluffImage = new JButton("Set Fluff Image");
         btnFluffImage.addActionListener(evt -> getFluffImage());
         invalid.setText("Invalid");
@@ -74,15 +72,6 @@ public class BMStatusBar extends ITab {
         add(invalid);
         add(cost);
         refresh();
-    }
-
-    private void validate(ActionEvent event) {
-        if (((event.getModifiers() & Event.SHIFT_MASK) != 0)
-                && (event.getModifiers() & Event.CTRL_MASK) != 0) {
-            DebugEntity.copyEquipmentState(getEntity());
-        } else {
-            UnitUtil.showValidation(getMech(), getParentFrame());
-        }
     }
 
     public void refresh() {
