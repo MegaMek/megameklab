@@ -3399,7 +3399,7 @@ public class UnitUtil {
      * If the given Mounted is a one-shot launcher or infantry weapon, this method removes the hidden
      * ammo linked to it, if any. During construction, we have no use of hidden ammo. Cannot
      * use {@link #removeOneShotAmmo(Entity)} here as it removes all ammo that has
-     * no location (which is how it is kept when a unit is loaded from file) but during construction
+     * no location (which is how hidden ammo is kept when a unit is loaded from file) but during construction
      * normal ammo may not yet have been allocated and also have no location.
      *
      * @param mounted The weapon to remove linked hidden ammo
