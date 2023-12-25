@@ -21,16 +21,14 @@ import megamek.common.Entity;
 import megamek.common.preference.PreferenceManager;
 import megameklab.MMLConstants;
 import megameklab.MegaMekLab;
-import megameklab.ui.util.AppCloser;
 import megameklab.ui.util.ExitOnWindowClosingListener;
 import megameklab.ui.util.RefreshListener;
 import megameklab.util.CConfig;
 
 import javax.swing.*;
-import javax.swing.UIManager.LookAndFeelInfo;
 import java.awt.*;
 
-public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener, EntitySource, AppCloser {
+public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener, EntitySource, MenuBarOwner {
     private Entity entity = null;
     protected MenuBar mmlMenuBar;
     protected boolean refreshRequired = false;
@@ -72,37 +70,8 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
         setPreferredSize(size);
         setLocationRelativeTo(null);
     }
-    
-    /**
-     * Sets the look and feel for the application.
-     * 
-     * @param plaf The look and feel to use for the application.
-     */
-    public void changeTheme(LookAndFeelInfo plaf) {
-        SwingUtilities.invokeLater(() -> {
-            try {
-                UIManager.setLookAndFeel(plaf.getClassName());
-                SwingUtilities.updateComponentTreeUI(this);
-            } catch (Exception exception) {
-                JOptionPane.showMessageDialog(this,
-                        "Can't change look and feel", "Invalid PLAF",
-                        JOptionPane.ERROR_MESSAGE);
-            }
 
-        });
-    }
-
-    /**
-     * When the setting "Disable save prompts" is active (see Misc Settings), returns true directly.
-     * Otherwise, this shows a safety dialog prompting the user to consider saving the currently entered unit.
-     * This method returns true only when MML should continue with the action that led to this dialog. This is
-     * the case when the user selects NO or selects YES and actually saves the unit.
-     * When the user closes the dialog (X or ESC) or presses CANCEL or presses YES but doesn't save the
-     * unit, returns false which indicates that the current action (e.g. reset unit or switch unit or quit) should
-     * be canceled. See also {@link megameklab.ui.dialog.settings.MiscSettingsPanel}.
-     *
-     * @return True only when the user agrees to continue or has deactivated these prompts, false otherwise
-     */
+    @Override
     public boolean safetyPrompt() {
         if (CConfig.getBooleanParam(CConfig.MISC_SKIP_SAFETY_PROMPTS)) {
             return true;
@@ -183,5 +152,10 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
             refreshRequired = false;
             refreshAll();
         }
+    }
+
+    @Override
+    public JFrame getFrame() {
+        return this;
     }
 }
