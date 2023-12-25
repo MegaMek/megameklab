@@ -33,6 +33,7 @@ import org.apache.logging.log4j.LogManager;
 
 import javax.swing.*;
 import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
@@ -45,17 +46,19 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.ResourceBundle;
-import java.util.stream.Stream;
 
 /**
  * @author jtighe (torren@users.sourceforge.net)
  * @author Justin "Windchild" Bowen
  */
 public class MenuBar extends JMenuBar implements ClipboardOwner {
-    //region Variable Declarations
+
     private final MegaMekLabMainUI frame;
     private final ResourceBundle resources = ResourceBundle.getBundle("megameklab.resources.Menu");
-    //endregion Variable Declarations
+
+    private final JFileChooser loadUnitFileChooser = new JFileChooser();
+    private JMenu fileMenu = new JMenu(resources.getString("fileMenu.text"));
+
 
     //region Constructors
     public MenuBar(final MegaMekLabMainUI frame) {
@@ -99,6 +102,10 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         add(createUnitValidationMenu());
         add(createReportsMenu());
         add(createHelpMenu());
+        loadUnitFileChooser.setDialogTitle(resources.getString("dialog.chooseUnit.title"));
+        loadUnitFileChooser.setFileFilter(new FileNameExtensionFilter("Unit files",
+                "mtf", "blk", "hmp", "hmv", "mep", "tdb"));
+        loadUnitFileChooser.setCurrentDirectory(new File("data/mechfiles"));
     }
 
     //region File Menu
@@ -962,7 +969,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     }
 
     private void jMenuGetUnitBVFromFile_actionPerformed() {
-        File unitFile = loadUnitFile();
+        File unitFile = chooseUnitFileToLoad();
         if (unitFile == null) {
             return;
         }
@@ -977,7 +984,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     }
 
     private void jMenuGetUnitValidationFromFile_actionPerformed() {
-        File unitFile = loadUnitFile();
+        File unitFile = chooseUnitFileToLoad();
         if (unitFile == null) {
             return;
         }
@@ -992,25 +999,13 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         }
     }
 
-    private @Nullable File loadUnitFile() {
-        String filePathName = System.getProperty("user.dir") + "/data/mechfiles/"; // TODO : remove inline file path
-        FileDialog fDialog = new FileDialog(getFrame(),
-                resources.getString("dialog.chooseUnit.title"),
-                FileDialog.LOAD);
-        fDialog.setLocationRelativeTo(getFrame());
-        fDialog.setMultipleMode(false);
-        fDialog.setDirectory(filePathName);
-        fDialog.setFilenameFilter((dir, filename) -> {
-            String fn = filename.toLowerCase();
-            return Stream.of(".mtf", ".blk", ".hmp").anyMatch(fn::endsWith);
-        });
-
-        fDialog.setVisible(true);
-        return (fDialog.getFile() == null) ? null : new File(fDialog.getDirectory(), fDialog.getFile());
+    private @Nullable File chooseUnitFileToLoad() {
+        int result = loadUnitFileChooser.showOpenDialog(frame);
+        return result == JFileChooser.APPROVE_OPTION ? loadUnitFileChooser.getSelectedFile() : null;
     }
 
     private void jMenuGetUnitBreakdownFromFile_actionPerformed() {
-        File unitFile = loadUnitFile();
+        File unitFile = chooseUnitFileToLoad();
         if (unitFile == null) {
             return;
         }
@@ -1025,7 +1020,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     }
 
     private void jMenuGetUnitWeightBreakdownFromFile_actionPerformed() {
-        File unitFile = loadUnitFile();
+        File unitFile = chooseUnitFileToLoad();
         if (unitFile == null) {
             return;
         }
@@ -1041,7 +1036,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     }
 
     private void jMenuGetUnitSpecsFromFile_actionPerformed() {
-        File unitFile = loadUnitFile();
+        File unitFile = chooseUnitFileToLoad();
         if (unitFile == null) {
             return;
         }
@@ -1057,7 +1052,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     }
 
     private void importFluffImageAction() {
-        File unitFile = loadUnitFile();
+        File unitFile = chooseUnitFileToLoad();
         if (unitFile == null) {
             return;
         }
@@ -1398,7 +1393,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
 
         File unitFile = new File(filePathName);
         if (!(unitFile.isFile())) {
-            unitFile = loadUnitFile();
+            unitFile = chooseUnitFileToLoad();
             if (unitFile == null) {
                 return;
             }
