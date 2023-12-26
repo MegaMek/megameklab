@@ -55,6 +55,8 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     //region Variable Declarations
     private final MegaMekLabMainUI frame;
     private final ResourceBundle resources = ResourceBundle.getBundle("megameklab.resources.Menu");
+
+    private final JMenu fileMenu = new JMenu(resources.getString("fileMenu.text"));
     //endregion Variable Declarations
 
     //region Constructors
@@ -108,7 +110,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
      * @return the created file menu
      */
     private JMenu createFileMenu() {
-        final JMenu fileMenu = new JMenu(resources.getString("fileMenu.text"));
+        fileMenu.removeAll();
         fileMenu.setName("fileMenu");
         fileMenu.setMnemonic(KeyEvent.VK_F);
 
@@ -673,16 +675,22 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
 
     private @Nullable JMenuItem createCConfigMenuItem(final String configSaveFile,
                                                       final int fileNumber) {
-        final String newFile = CConfig.getParam(configSaveFile);
-        if (newFile.length() < 1) {
+        final String recentFileName = CConfig.getParam(configSaveFile);
+        if (recentFileName.isEmpty()) {
             return null;
         }
-        final JMenuItem miCConfig;
-        if (newFile.length() > 35) {
-            miCConfig = new JMenuItem(fileNumber + ". .." + newFile.substring(newFile.length() - 36));
-        } else {
-            miCConfig = new JMenuItem(fileNumber + ". " + newFile);
+        File recent = new File(recentFileName);
+        String path = recent.getParent();
+        String mmlDirectory = System.getProperty("user.dir");
+        if (recentFileName.startsWith(mmlDirectory)) {
+            path = path.substring(mmlDirectory.length());
+            if (path.length() > 40) {
+                path = path.substring(0, 40) + "...";
+            }
         }
+
+        String text = "<HTML>" + fileNumber + ". " + recent.getName() + "<BR><FONT SIZE=\"-2\">" + path;
+        final JMenuItem miCConfig = new JMenuItem(text);
         miCConfig.setName("miCConfig");
         miCConfig.addActionListener(evt -> loadUnitFromFile(fileNumber));
         return miCConfig;
@@ -1426,6 +1434,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
                 getFrame().setEntity(tempEntity);
                 UnitUtil.updateLoadedUnit(getFrame().getEntity());
                 CConfig.updateSaveFiles(unitFile.getAbsolutePath());
+                createFileMenu();
             }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(getFrame(), String.format(

@@ -15,6 +15,7 @@
  */
 package megameklab.util;
 
+import megamek.common.annotations.Nullable;
 import org.apache.logging.log4j.LogManager;
 
 import java.awt.*;
@@ -68,10 +69,11 @@ public class CConfig {
     public static final String COLOR_EMPTY = "Empty";
     public static final String COLOR_NONHITTABLE = "Nonhittable";
 
-    public static final String CONFIG_SAVE_FILE_1 = "Save_File_One";
-    public static final String CONFIG_SAVE_FILE_2 = "Save_File_Two";
-    public static final String CONFIG_SAVE_FILE_3 = "Save_File_Three";
-    public static final String CONFIG_SAVE_FILE_4 = "Save_File_Four";
+    public static final String RECENT_FILE_PREFIX = "Save_File_";
+    public static final String CONFIG_SAVE_FILE_1 = RECENT_FILE_PREFIX + "1";
+    public static final String CONFIG_SAVE_FILE_2 = RECENT_FILE_PREFIX + "2";
+    public static final String CONFIG_SAVE_FILE_3 = RECENT_FILE_PREFIX + "3";
+    public static final String CONFIG_SAVE_FILE_4 = RECENT_FILE_PREFIX + "4";
 
     public static final String CONFIG_FOREGROUND = "-Foreground";
     public static final String CONFIG_BACKGROUND = "-Background";
@@ -393,5 +395,10 @@ public class CConfig {
         } else {
             return Integer.toString(retVal);
         }
+    }
+
+    public static String getRecentFile(int recentFileNumber) {
+        String fileName = CConfig.getParam(CConfig.RECENT_FILE_PREFIX + recentFileNumber);
+        return (fileName == null) ? "" : fileName;
     }
 }
