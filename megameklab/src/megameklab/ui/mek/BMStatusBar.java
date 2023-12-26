@@ -16,183 +16,42 @@
 package megameklab.ui.mek;
 
 import megamek.client.ui.swing.GUIPreferences;
-import megamek.common.*;
-import megamek.common.verifier.EntityVerifier;
-import megamek.common.verifier.TestMech;
-import megameklab.ui.util.ITab;
-import megameklab.ui.util.RefreshListener;
-import megamek.client.ui.WrapLayout;
-import megameklab.util.ImageHelper;
+import megameklab.ui.generalUnit.StatusBar;
 import megameklab.util.UnitUtil;
 
 import javax.swing.*;
-import java.awt.*;
-import java.io.File;
-import java.text.DecimalFormat;
 
-public class BMStatusBar extends ITab {
+public class BMStatusBar extends StatusBar {
 
-    private final JLabel crits = new JLabel();
-    private final JLabel bvLabel = new JLabel();
-    private final JLabel tons = new JLabel();
-    private final JLabel heatSink = new JLabel();
-    private final JLabel cost = new JLabel();
-    private final JLabel invalid = new JLabel();
-    private final EntityVerifier entityVerifier = EntityVerifier.getInstance(new File("data/mechfiles/UnitVerifierOptions.xml"));
-    private TestMech testEntity;
-    private final DecimalFormat formatter;
-    private final JFrame parentFrame;
+    private static final String HEAT_LABEL = "Heat: %d / %d";
+    private static final String SLOTS_LABEL = "Free Slots: %d / %d";
 
-    private RefreshListener refresh;
+    private final JLabel slots = new JLabel();
+    private final JLabel heat = new JLabel();
 
     public BMStatusBar(BMMainUI parent) {
         super(parent);
-        parentFrame = parent;
-
-        formatter = new DecimalFormat();
-        testEntity = new TestMech(getMech(), entityVerifier.mechOption, null);
-        JButton showEquipmentDatabase = new JButton("Show Equipment Database");
-        showEquipmentDatabase.addActionListener(evt -> parent.getFloatingEquipmentDatabase().setVisible(true));
-        JButton btnValidate = new JButton("Validate Unit");
-        btnValidate.addActionListener(evt -> UnitUtil.showValidation(getMech(), getParentFrame()));
-        JButton btnFluffImage = new JButton("Set Fluff Image");
-        btnFluffImage.addActionListener(evt -> getFluffImage());
-        invalid.setText("Invalid");
-        invalid.setForeground(Color.RED);
-        invalid.setVisible(false);
-
-        setLayout(new WrapLayout(FlowLayout.LEFT, 22, 5));
-        add(showEquipmentDatabase);
-        add(btnValidate);
-        add(btnFluffImage);
-        add(tons);
-        add(crits);
-        add(heatSink);
-        add(bvLabel);
-        add(invalid);
-        add(cost);
-        refresh();
+        add(slots);
+        add(heat);
     }
 
-    public void refresh() {
-        int heat = getMech().getHeatCapacity();
-        double tonnage = getMech().getWeight();
-        double currentTonnage;
-        int bv = getMech().calculateBattleValue();
-        int maxCrits;
-        if (getMech() instanceof TripodMech) {
-            maxCrits = 84;
-        } else if (getMech() instanceof QuadMech) {
-            maxCrits = 66;
-        } else {
-            maxCrits = 78;
-        }
-        int currentCrits = UnitUtil.countUsedCriticals(getMech());
-
-        testEntity = new TestMech(getMech(), entityVerifier.mechOption, null);
-
-        currentTonnage = testEntity.calculateWeight();
-        currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getMech());
-
-        double totalHeat = calculateTotalHeat();
-        heatSink.setText("Heat: " + totalHeat + " / " + heat);
-        heatSink.setToolTipText("Total Heat Generated / Total Heat Dissipated");
-
-        tons.setText(String.format("Tonnage: %.1f / %.0f (%.1f Remaining)", currentTonnage, tonnage, tonnage - currentTonnage));
-        tons.setToolTipText("Current Tonnage/Max Tonnage");
-        tons.setForeground(currentTonnage > tonnage ? GUIPreferences.getInstance().getWarningColor() : null);
-
-        bvLabel.setText("BV: " + bv);
-        bvLabel.setToolTipText("BV 2.0");
-
-        cost.setText("Dry Cost: " + formatter.format(Math.round(getEntity().getCost(true))) + " C-bills");
-        cost.setToolTipText("The dry cost of the unit (without ammo). The unit's full cost is "
-                + formatter.format(Math.round(getEntity().getCost(false))) + " C-bills.");
-
-        crits.setText("Criticals: " +  currentCrits + " / " + maxCrits);
-        crits.setForeground(currentCrits > maxCrits ? GUIPreferences.getInstance().getWarningColor() : null);
-
-        StringBuffer sb = new StringBuffer();
-        invalid.setVisible(!testEntity.correctEntity(sb));
-        invalid.setToolTipText("<html>" + sb.toString().replaceAll("\n", "<br/>") + "</html>");
+    @Override
+    protected void additionalRefresh() {
+        refreshSlots();
+        refreshHeat();
     }
 
-    public double calculateTotalHeat() {
-        double heat = 0;
-
-        if (getMech().getOriginalJumpMP() > 0) {
-            if (getMech().getJumpType() == Mech.JUMP_IMPROVED) {
-                heat += Math.max(3, Math.ceil(getMech().getOriginalJumpMP() / 2.0f));
-            } else if (getMech().getJumpType() != Mech.JUMP_BOOSTER) {
-                heat += Math.max(3, getMech().getOriginalJumpMP());
-            }
-            if (getMech().getEngine().getEngineType() == Engine.XXL_ENGINE) {
-                heat *= 2;
-            }
-        } else if (getMech().getEngine().getEngineType() == Engine.XXL_ENGINE) {
-            heat += 6;
-        } else {
-            heat += 2;
-        }
-
-        for (Mounted mounted : getMech().getWeaponList()) {
-            WeaponType wtype = (WeaponType) mounted.getType();
-            double weaponHeat = wtype.getHeat();
-
-            // only count non-damaged equipment
-            if (mounted.isMissing() || mounted.isHit() || mounted.isDestroyed() || mounted.isBreached()) {
-                continue;
-            }
-
-            // one shot weapons count 1/4
-            if ((wtype.getAmmoType() == AmmoType.T_ROCKET_LAUNCHER) || wtype.hasFlag(WeaponType.F_ONESHOT)) {
-                weaponHeat *= 0.25;
-            }
-
-            // double heat for ultras
-            if ((wtype.getAmmoType() == AmmoType.T_AC_ULTRA) || (wtype.getAmmoType() == AmmoType.T_AC_ULTRA_THB)) {
-                weaponHeat *= 2;
-            }
-
-            // Six times heat for RAC
-            if (wtype.getAmmoType() == AmmoType.T_AC_ROTARY) {
-                weaponHeat *= 6;
-            }
-
-            // half heat for streaks
-            if ((wtype.getAmmoType() == AmmoType.T_SRM_STREAK) || (wtype.getAmmoType() == AmmoType.T_LRM_STREAK)) {
-                weaponHeat *= 0.5;
-            }
-            heat += weaponHeat;
-        }
-        if (getMech().hasStealth()) {
-            heat += 10;
-        }
-        for (Mounted m : getMech().getMisc()) {
-            heat += m.getType().getHeat();
-        }
-        return heat;
+    public void refreshSlots() {
+        int maxCrits = getTestEntity().totalCritSlotCount();
+        int currentSlots = UnitUtil.countUsedCriticals(getMech());
+        slots.setText(String.format(SLOTS_LABEL, currentSlots, maxCrits));
+        slots.setForeground(currentSlots > maxCrits ? GUIPreferences.getInstance().getWarningColor() : null);
     }
 
-    private void getFluffImage() {
-        FileDialog fDialog = new FileDialog(getParentFrame(), "Image Path", FileDialog.LOAD);
-        fDialog.setDirectory(new File(ImageHelper.fluffPath).getAbsolutePath() + File.separatorChar + ImageHelper.imageMech + File.separatorChar);
-        fDialog.setLocationRelativeTo(this);
-        fDialog.setVisible(true);
-        if (fDialog.getFile() != null) {
-            String relativeFilePath = new File(fDialog.getDirectory() + fDialog.getFile()).getAbsolutePath();
-            relativeFilePath = "." + File.separatorChar + relativeFilePath.substring(new File(System.getProperty("user.dir")).getAbsolutePath().length() + 1);
-            getMech().getFluff().setMMLImagePath(relativeFilePath);
-        }
-        refresh.refreshPreview();
+    public void refreshHeat() {
+        int heatCapacity = getMech().getHeatCapacity();
+        long totalHeat = estimatedHeatGeneration();
+        heat.setText(String.format(HEAT_LABEL, totalHeat, heatCapacity));
+        heat.setToolTipText("Estimated Total Heat Generated / Total Heat Dissipated");
     }
-
-    private JFrame getParentFrame() {
-        return parentFrame;
-    }
-
-    public void addRefreshedListener(RefreshListener refreshListener) {
-        refresh = refreshListener;
-    }
-
 }

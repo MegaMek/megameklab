@@ -3275,7 +3275,7 @@ public class UnitUtil {
 
     /**
      * Makes the equipment mounted in one location identical to that in another location. Any equipment
-     * previously in the target location that is does not match the source location is removed and
+     * previously in the target location that does not match the source location is removed and
      * assigned to Entity.LOC_NONE. This does not handle split location equipment.
      *
      * @param entity          The unit being modified
@@ -3391,7 +3391,30 @@ public class UnitUtil {
         }
         entity.addEquipment(toAdd, toLoc, toCopy.isRearMounted());
         changeMountStatus(entity, toAdd, toLoc, Entity.LOC_NONE, toCopy.isRearMounted());
+        removeHiddenAmmo(toAdd);
         return toAdd;
+    }
+
+    /**
+     * If the given Mounted is a one-shot launcher or infantry weapon, this method removes the hidden
+     * ammo linked to it, if any. During construction, we have no use of hidden ammo. Cannot
+     * use {@link #removeOneShotAmmo(Entity)} here as it removes all ammo that has
+     * no location (which is how hidden ammo is kept when a unit is loaded from file) but during construction
+     * normal ammo may not yet have been allocated and also have no location.
+     *
+     * @param mounted The weapon to remove linked hidden ammo
+     */
+    public static void removeHiddenAmmo(Mounted mounted) {
+        EquipmentType launcherType = mounted.getType();
+        if ((launcherType instanceof WeaponType) && (launcherType.hasFlag(WeaponType.F_ONESHOT)
+                || (((WeaponType) launcherType).getAmmoType() == AmmoType.T_INFANTRY))) {
+            Mounted oneShotAmmo = mounted.getLinked();
+            if (oneShotAmmo != null) {
+                mounted.getEntity().getEquipment().remove(oneShotAmmo);
+                mounted.getEntity().getAmmo().remove(oneShotAmmo);
+                mounted.setLinked(null);
+            }
+        }
     }
 
     /**

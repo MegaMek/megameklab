@@ -22,10 +22,14 @@ import megamek.client.ui.baseComponents.MMComboBox;
 import megameklab.ui.MMLStartUp;
 import megameklab.ui.util.SpringUtilities;
 import megameklab.util.CConfig;
+import org.apache.logging.log4j.LogManager;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -39,6 +43,7 @@ public class MiscSettingsPanel extends JPanel {
     private final MMComboBox<MMLStartUp> startUpMMComboBox = new MMComboBox<>("StartUp", MMLStartUp.values());
     private final JCheckBox chkSummaryFormatTRO = new JCheckBox();
     private final JCheckBox chkSkipSavePrompts = new JCheckBox();
+    private final JTextField txtUserDir = new JTextField(20);
 
     MiscSettingsPanel() {
         startUpMMComboBox.setRenderer(startUpRenderer);
@@ -46,6 +51,8 @@ public class MiscSettingsPanel extends JPanel {
         startUpMMComboBox.setToolTipText(resources.getString("ConfigurationDialog.startup.tooltip"));
         JLabel startUpLabel = new JLabel(resources.getString("ConfigurationDialog.startup.text"));
         startUpLabel.setToolTipText(resources.getString("ConfigurationDialog.startup.tooltip"));
+    MiscSettingsPanel(JFrame parent) {
+        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Dialogs");
 
         JPanel startUpLine = new JPanel();
         startUpLine.add(startUpLabel);
@@ -53,6 +60,33 @@ public class MiscSettingsPanel extends JPanel {
 
         chkSummaryFormatTRO.setText(resources.getString("ConfigurationDialog.chkSummaryFormatTRO.text"));
         chkSummaryFormatTRO.setToolTipText(resources.getString("ConfigurationDialog.chkSummaryFormatTRO.tooltip"));
+        JLabel userDirLabel = new JLabel(resourceMap.getString("ConfigurationDialog.userDir.text"));
+        userDirLabel.setToolTipText(resourceMap.getString("ConfigurationDialog.userDir.tooltip"));
+        txtUserDir.setToolTipText(resourceMap.getString("ConfigurationDialog.userDir.tooltip"));
+        txtUserDir.setText(PreferenceManager.getClientPreferences().getUserDir());
+        JButton userDirChooser = new JButton("...");
+        userDirChooser.addActionListener(e -> CommonSettingsDialog.fileChooseUserDir(txtUserDir, parent));
+        userDirChooser.setToolTipText(resourceMap.getString("ConfigurationDialog.userDir.chooser.title"));
+        JButton userDirHelp = new JButton("Help");
+        try {
+            String helpTitle = Messages.getString("UserDirHelpDialog.title");
+            URL helpFile = new File(MMConstants.USER_DIR_README_FILE).toURI().toURL();
+            userDirHelp.addActionListener(e -> new HelpDialog(helpTitle, helpFile, parent).setVisible(true));
+        } catch (MalformedURLException e) {
+            LogManager.getLogger().error("Could not find the user data directory readme file at "
+                    + MMConstants.USER_DIR_README_FILE);
+        }
+        JPanel userDirLine = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        userDirLine.add(userDirLabel);
+        userDirLine.add(Box.createHorizontalStrut(25));
+        userDirLine.add(txtUserDir);
+        userDirLine.add(Box.createHorizontalStrut(10));
+        userDirLine.add(userDirChooser);
+        userDirLine.add(Box.createHorizontalStrut(10));
+        userDirLine.add(userDirHelp);
+
+        chkSummaryFormatTRO.setText(resourceMap.getString("ConfigurationDialog.chkSummaryFormatTRO.text"));
+        chkSummaryFormatTRO.setToolTipText(resourceMap.getString("ConfigurationDialog.chkSummaryFormatTRO.tooltip"));
         chkSummaryFormatTRO.setSelected(CConfig.getBooleanParam(CConfig.MISC_SUMMARY_FORMAT_TRO));
 
         chkSkipSavePrompts.setText(resources.getString("ConfigurationDialog.chkSkipSavePrompts.text"));
@@ -61,6 +95,7 @@ public class MiscSettingsPanel extends JPanel {
 
         JPanel gridPanel = new JPanel(new SpringLayout());
         gridPanel.add(startUpLine);
+        gridPanel.add(userDirLine);
         gridPanel.add(chkSummaryFormatTRO);
         gridPanel.add(chkSkipSavePrompts);
 
@@ -80,6 +115,11 @@ public class MiscSettingsPanel extends JPanel {
         miscSettings.put(CConfig.STARTUP, startUp.name());
         return miscSettings;
     }
+
+    String getUserDir() {
+        return txtUserDir.getText();
+    }
+}
 
     DefaultListCellRenderer startUpRenderer = new DefaultListCellRenderer() {
         @Override

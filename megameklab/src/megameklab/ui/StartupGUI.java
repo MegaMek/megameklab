@@ -28,7 +28,6 @@ import megamek.common.util.fileUtils.MegaMekFile;
 import megameklab.MMLConstants;
 import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
 import megameklab.ui.dialog.UiLoader;
-import megameklab.ui.util.AppCloser;
 import megameklab.ui.util.ExitOnWindowClosingListener;
 import megameklab.util.CConfig;
 import megameklab.util.UnitUtil;
@@ -45,7 +44,7 @@ import java.util.TreeMap;
  * A startup splash screen for MegaMekLab
  * @author Taharqa
  */
-public class StartupGUI extends JPanel implements AppCloser {
+public class StartupGUI extends JPanel implements MenuBarOwner {
     JFrame frame;
     BufferedImage backgroundIcon;
     
@@ -68,6 +67,7 @@ public class StartupGUI extends JPanel implements AppCloser {
         
         frame = new JFrame("MegaMekLab");
         setBackground(UIManager.getColor("controlHighlight"));
+        frame.setJMenuBar(new MenuBar(this));
 
         Dimension scaledMonitorSize = UIUtil.getScaledScreenSize(frame);
         JLabel splash = UIUtil.createSplashComponent(startupScreenImages, frame);
@@ -319,5 +319,15 @@ public class StartupGUI extends JPanel implements AppCloser {
             previousUI.refreshAll();
             previousUI.setVisible(true);
         }
+    }
+
+    @Override
+    public JFrame getFrame() {
+        return frame;
+    }
+
+    @Override
+    public Entity getEntity() {
+        return null;
     }
 }

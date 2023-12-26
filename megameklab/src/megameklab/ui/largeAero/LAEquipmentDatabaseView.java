@@ -74,9 +74,7 @@ class LAEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
                         mount = new Mounted(getAero(), equip);
                         UnitUtil.setVariableSizeMiscTypeMinimumSize(mount);
                         getAero().addEquipment(mount, Entity.LOC_NONE, false);
-                        if ((equip instanceof WeaponType) && equip.hasFlag(WeaponType.F_ONESHOT)) {
-                            UnitUtil.removeOneShotAmmo(eSource.getEntity());
-                        }
+                        UnitUtil.removeHiddenAmmo(mount);
                     }
                 } catch (LocationFullException ignored) {
                     // Shouldn't happen when adding to LOC_NONE

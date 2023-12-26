@@ -243,6 +243,7 @@ public class BMMainUI extends MegaMekLabMainUI {
         return structureTab.getTechManager();
     }
 
+    @Override
     public JDialog getFloatingEquipmentDatabase() {
         return floatingEquipmentDatabase;
     }
