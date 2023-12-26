@@ -18,8 +18,7 @@ package megameklab.ui.infantry;
 
 import java.awt.BorderLayout;
 
-import javax.swing.JTabbedPane;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 
 import megamek.common.*;
 import megamek.common.weapons.infantry.InfantryWeapon;
@@ -141,6 +140,11 @@ public class CIMainUI extends MegaMekLabMainUI {
     @Override
     public void refreshPreview() {
         previewTab.refresh();
+    }
+
+    @Override
+    public JDialog getFloatingEquipmentDatabase() {
+        return null;
     }
 
     @Override

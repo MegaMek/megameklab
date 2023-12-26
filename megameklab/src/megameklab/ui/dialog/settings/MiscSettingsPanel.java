@@ -18,12 +18,21 @@
  */
 package megameklab.ui.dialog.settings;
 
+import megamek.MMConstants;
+import megamek.client.ui.Messages;
+import megamek.client.ui.swing.CommonSettingsDialog;
+import megamek.client.ui.swing.HelpDialog;
+import megamek.common.preference.PreferenceManager;
 import megameklab.ui.util.SpringUtilities;
 import megameklab.util.CConfig;
+import org.apache.logging.log4j.LogManager;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -35,9 +44,35 @@ public class MiscSettingsPanel extends JPanel {
 
     private final JCheckBox chkSummaryFormatTRO = new JCheckBox();
     private final JCheckBox chkSkipSavePrompts = new JCheckBox();
+    private final JTextField txtUserDir = new JTextField(20);
 
-    MiscSettingsPanel() {
+    MiscSettingsPanel(JFrame parent) {
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Dialogs");
+
+        JLabel userDirLabel = new JLabel(resourceMap.getString("ConfigurationDialog.userDir.text"));
+        userDirLabel.setToolTipText(resourceMap.getString("ConfigurationDialog.userDir.tooltip"));
+        txtUserDir.setToolTipText(resourceMap.getString("ConfigurationDialog.userDir.tooltip"));
+        txtUserDir.setText(PreferenceManager.getClientPreferences().getUserDir());
+        JButton userDirChooser = new JButton("...");
+        userDirChooser.addActionListener(e -> CommonSettingsDialog.fileChooseUserDir(txtUserDir, parent));
+        userDirChooser.setToolTipText(resourceMap.getString("ConfigurationDialog.userDir.chooser.title"));
+        JButton userDirHelp = new JButton("Help");
+        try {
+            String helpTitle = Messages.getString("UserDirHelpDialog.title");
+            URL helpFile = new File(MMConstants.USER_DIR_README_FILE).toURI().toURL();
+            userDirHelp.addActionListener(e -> new HelpDialog(helpTitle, helpFile, parent).setVisible(true));
+        } catch (MalformedURLException e) {
+            LogManager.getLogger().error("Could not find the user data directory readme file at "
+                    + MMConstants.USER_DIR_README_FILE);
+        }
+        JPanel userDirLine = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        userDirLine.add(userDirLabel);
+        userDirLine.add(Box.createHorizontalStrut(25));
+        userDirLine.add(txtUserDir);
+        userDirLine.add(Box.createHorizontalStrut(10));
+        userDirLine.add(userDirChooser);
+        userDirLine.add(Box.createHorizontalStrut(10));
+        userDirLine.add(userDirHelp);
 
         chkSummaryFormatTRO.setText(resourceMap.getString("ConfigurationDialog.chkSummaryFormatTRO.text"));
         chkSummaryFormatTRO.setToolTipText(resourceMap.getString("ConfigurationDialog.chkSummaryFormatTRO.tooltip"));
@@ -48,10 +83,11 @@ public class MiscSettingsPanel extends JPanel {
         chkSkipSavePrompts.setSelected(CConfig.getBooleanParam(CConfig.MISC_SKIP_SAFETY_PROMPTS));
 
         JPanel gridPanel = new JPanel(new SpringLayout());
+        gridPanel.add(userDirLine);
         gridPanel.add(chkSummaryFormatTRO);
         gridPanel.add(chkSkipSavePrompts);
 
-        SpringUtilities.makeCompactGrid(gridPanel, 2, 1, 0, 0, 15, 10);
+        SpringUtilities.makeCompactGrid(gridPanel, 3, 1, 0, 0, 15, 10);
         gridPanel.setBorder(new EmptyBorder(20, 30, 20, 30));
         setLayout(new FlowLayout(FlowLayout.LEFT));
         add(gridPanel);
@@ -62,5 +98,9 @@ public class MiscSettingsPanel extends JPanel {
         miscSettings.put(CConfig.MISC_SUMMARY_FORMAT_TRO, String.valueOf(chkSummaryFormatTRO.isSelected()));
         miscSettings.put(CConfig.MISC_SKIP_SAFETY_PROMPTS, String.valueOf(chkSkipSavePrompts.isSelected()));
         return miscSettings;
+    }
+
+    String getUserDir() {
+        return txtUserDir.getText();
     }
 }

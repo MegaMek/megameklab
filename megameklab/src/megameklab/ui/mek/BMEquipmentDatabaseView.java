@@ -54,9 +54,7 @@ class BMEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
                 mount = new Mounted(getMech(), equip);
                 UnitUtil.setVariableSizeMiscTypeMinimumSize(mount);
                 getMech().addEquipment(mount, Entity.LOC_NONE, false);
-                if ((equip instanceof WeaponType) && equip.hasFlag(WeaponType.F_ONESHOT)) {
-                    UnitUtil.removeOneShotAmmo(eSource.getEntity());
-                }
+                UnitUtil.removeHiddenAmmo(mount);
             } catch (LocationFullException ignored) {
                 // this can't happen, we add to Entity.LOC_NONE
             }

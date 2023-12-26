@@ -56,6 +56,7 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
     public static final int T_MOUNT            = 4;
     public static final int T_AUGMENTATION     = 5;
 
+
     private BasicInfoView panBasicInfo;
     private CIPlatoonTypeView panPlatoonType;
     private CIWeaponView panWeapons;
@@ -424,6 +425,8 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
         getInfantry().setSquadSize(squadSize);
         getInfantry().autoSetInternal();
         panPlatoonType.setFromEntity(getInfantry());
+        refresh.refreshStatus();
+        refresh.refreshPreview();
     }
     
     @Override
@@ -440,10 +443,11 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
     public void numSecondaryChanged(final int count) {
         if (getInfantry().getSecondaryWeapon() == null) {
             getInfantry().setSecondaryWeaponsPerSquad(0);
-        } else if (count == 0) {
-            UnitUtil.replaceMainWeapon(getInfantry(), null, true);
-            getInfantry().setSpecializations(getInfantry().getSpecializations() & ~Infantry.TAG_TROOPS);
         } else {
+            if (count == 0) {
+                UnitUtil.replaceMainWeapon(getInfantry(), null, true);
+                getInfantry().setSpecializations(getInfantry().getSpecializations() & ~Infantry.TAG_TROOPS);
+            }
             getInfantry().setSecondaryWeaponsPerSquad(count);
         }
         refresh.refreshStatus();

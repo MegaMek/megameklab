@@ -15,115 +15,49 @@
  */
 package megameklab.ui.infantry;
 
-import java.awt.*;
-import java.io.File;
+import megamek.client.ui.swing.calculationReport.CalculationReport;
+import megameklab.ui.MegaMekLabMainUI;
+import megameklab.ui.generalUnit.StatusBar;
+
+import javax.swing.*;
 import java.text.DecimalFormat;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
+public class CIStatusBar extends StatusBar {
 
-import megameklab.ui.MegaMekLabMainUI;
-import megameklab.ui.util.ITab;
-import megameklab.util.ImageHelper;
-import megameklab.ui.util.RefreshListener;
-import megameklab.util.UnitUtil;
+    private static final String MOVE_LABEL = "Movement: %d / %d";
+    private static final String DAMAGE_LABEL = "Damage per Trooper: ";
+    private static final String INF_WEIGHT_LABEL = "Weight: %s t";
+    private static final DecimalFormat roundFormat = new DecimalFormat("#.##");
 
-public class CIStatusBar extends ITab {
     private final JLabel move = new JLabel();
     private final JLabel damage = new JLabel();
-    private final JLabel bvLabel = new JLabel();
-    private final JLabel tons = new JLabel();
-    private final JLabel cost = new JLabel();
-    private final JLabel invalid = new JLabel();
-    private final DecimalFormat formatter;
-    private final JFrame parentFrame;
-
-    private RefreshListener refresh;
 
     public CIStatusBar(MegaMekLabMainUI parent) {
         super(parent);
-        this.parentFrame = parent;
-
-        formatter = new DecimalFormat();
-        JButton btnValidate = new JButton("Validate Unit");
-        btnValidate.addActionListener(evt -> UnitUtil.showValidation(getInfantry(), getParentFrame()));
-        JButton btnFluffImage = new JButton("Set Fluff Image");
-        btnFluffImage.addActionListener(evt -> getFluffImage());
-        invalid.setText("Invalid");
-        invalid.setForeground(Color.RED);
-        invalid.setVisible(false);
-        setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.insets = new Insets(5,2,2,20);
-        gbc.anchor = GridBagConstraints.WEST;
-        this.add(btnValidate, gbc);
-        gbc.gridx = 1;
-        this.add(btnFluffImage, gbc);
-        gbc.gridx = 2;
-        this.add(move, gbc);
-        gbc.gridx = 3;
-        this.add(damage, gbc);
-        gbc.gridx = 4;
-        this.add(tons, gbc);
-        gbc.gridx = 5;
-        this.add(bvLabel, gbc);
-        gbc.gridx = 6;
-        this.add(invalid, gbc);
-        gbc.gridx = 7;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 1.0;
-        this.add(cost, gbc);
-        refresh();
+        add(move);
+        add(damage);
     }
 
-    public void refresh() {
-        DecimalFormat roundFormat = new DecimalFormat("#.##");
-        int bv = getInfantry().calculateBattleValue();
-
-        double currentTonnage = getInfantry().getWeight();
-
-        move.setText("Movement: " + getInfantry().getWalkMP() + "/" + getInfantry().getJumpMP());
-
-        damage.setText("Damage/Trooper: " + roundFormat.format(getInfantry().getDamagePerTrooper()));
-
-        tons.setText("Tons: " + currentTonnage);
-
-        bvLabel.setText("BV: " + bv);
-        bvLabel.setToolTipText("BV 2.0");
-
-        cost.setText("Dry Cost: " + formatter.format(Math.round(getEntity().getCost(true))) + " C-bills");
-        cost.setToolTipText("The dry cost of the unit (without ammo). The unit's full cost is "
-                + formatter.format(Math.round(getEntity().getCost(false))) + " C-bills.");
-
-        String str = UnitUtil.validateUnit(getInfantry());
-        invalid.setVisible(!str.isEmpty());
-        invalid.setToolTipText("<html>" + str.replaceAll("\n", "<br/>") + "</html>");
+    @Override
+    protected void additionalRefresh() {
+        refreshMovement();
+        refreshDamage();
     }
 
-    private void getFluffImage() {
-        // copied from structureTab
-        FileDialog fDialog = new FileDialog(getParentFrame(), "Image Path", FileDialog.LOAD);
-        fDialog.setDirectory(new File(ImageHelper.fluffPath).getAbsolutePath() + File.separatorChar + ImageHelper.imageMech + File.separatorChar);
-        fDialog.setLocationRelativeTo(this);
-
-        fDialog.setVisible(true);
-
-        if (fDialog.getFile() != null) {
-            String relativeFilePath = new File(fDialog.getDirectory() + fDialog.getFile()).getAbsolutePath();
-            relativeFilePath = "." + File.separatorChar + relativeFilePath.substring(new File(System.getProperty("user.dir")).getAbsolutePath().length() + 1);
-            getInfantry().getFluff().setMMLImagePath(relativeFilePath);
-        }
-        refresh.refreshPreview();
+    public void refreshMovement() {
+        int walk = getInfantry().getWalkMP();
+        int jump = getInfantry().getJumpMP();
+        move.setText(String.format(MOVE_LABEL, walk, jump));
     }
 
-    private JFrame getParentFrame() {
-        return parentFrame;
+    public void refreshDamage() {
+        damage.setText(DAMAGE_LABEL + roundFormat.format(getInfantry().getDamagePerTrooper()));
     }
 
-    public void addRefreshedListener(RefreshListener l) {
-        refresh = l;
+    @Override
+    protected void refreshWeight() {
+        double tonnage = getEntity().getWeight();
+        String full = CalculationReport.formatForReport(tonnage);
+        tons.setText(String.format(INF_WEIGHT_LABEL, full));
     }
 }
