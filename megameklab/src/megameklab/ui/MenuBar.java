@@ -21,6 +21,7 @@ import megamek.common.annotations.Nullable;
 import megamek.common.loaders.BLKFile;
 import megamek.common.templates.TROView;
 import megameklab.MMLConstants;
+import megameklab.ui.dialog.MMLFileChooser;
 import megameklab.ui.dialog.UiLoader;
 import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
 import megameklab.ui.dialog.PrintQueueDialog;
@@ -56,7 +57,9 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     private final MegaMekLabMainUI frame;
     private final ResourceBundle resources = ResourceBundle.getBundle("megameklab.resources.Menu");
 
-    private final JFileChooser loadUnitFileChooser = new JFileChooser();
+    private final MMLFileChooser loadUnitFileChooser = new MMLFileChooser();
+    private final MMLFileChooser saveUnitFileChooser = new MMLFileChooser();
+    private final MMLFileChooser loadImageFileChooser = new MMLFileChooser();
 
     //region Constructors
     public MenuBar(final MegaMekLabMainUI frame) {
@@ -98,7 +101,10 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         loadUnitFileChooser.setDialogTitle(resources.getString("dialog.chooseUnit.title"));
         loadUnitFileChooser.setFileFilter(new FileNameExtensionFilter("Unit files",
                 "mtf", "blk", "hmp", "hmv", "mep", "tdb"));
-        loadUnitFileChooser.setCurrentDirectory(new File("data/mechfiles"));
+        loadImageFileChooser.setDialogTitle(resources.getString("dialog.chooseUnit.title"));
+        loadImageFileChooser.setFileFilter(new FileNameExtensionFilter("Image files (.png, .jpg, .gif)",
+                "png", "jpg", "jpeg", "gif"));
+        saveUnitFileChooser.setDialogTitle(resources.getString("dialog.saveAs.title"));
     }
 
     /**
@@ -992,6 +998,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     }
 
     private @Nullable File chooseUnitFileToLoad() {
+        loadUnitFileChooser.setCurrentDirectory(new File(CConfig.getParam(CConfig.LAST_DIRECTORY)));
         int result = loadUnitFileChooser.showOpenDialog(frame);
         return result == JFileChooser.APPROVE_OPTION ? loadUnitFileChooser.getSelectedFile() : null;
     }
@@ -1051,33 +1058,26 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
 
         try {
             Entity tempEntity = new MechFileParser(unitFile).getEntity();
-
             if (!UnitUtil.validateUnit(getFrame().getEntity()).isBlank()) {
-                JOptionPane.showMessageDialog(getFrame(),
-                        resources.getString("message.invalidUnit.text"));
+                JOptionPane.showMessageDialog(getFrame(), resources.getString("message.invalidUnit.text"));
             }
-
-            FileDialog fDialog = new FileDialog(getFrame(),
-                    resources.getString("dialog.imagePath.title"), FileDialog.LOAD);
 
             if (!getFrame().getEntity().getFluff().getMMLImagePath().isBlank()) {
                 String fullPath = new File(getFrame().getEntity().getFluff().getMMLImagePath()).getAbsolutePath();
                 String imageName = fullPath.substring(fullPath.lastIndexOf(File.separatorChar) + 1);
                 fullPath = fullPath.substring(0, fullPath.lastIndexOf(File.separatorChar) + 1);
-                fDialog.setDirectory(fullPath);
-                fDialog.setFile(imageName);
+                loadImageFileChooser.setCurrentDirectory(new File(fullPath));
+                loadImageFileChooser.setSelectedFile(new File(imageName));
             } else {
-                fDialog.setDirectory(new File(ImageHelper.fluffPath).getAbsolutePath() + File.separatorChar + "mech" + File.separatorChar);
-                fDialog.setFile(getFrame().getEntity().getChassis() + ' ' + getFrame().getEntity().getModel() + ".png");
+                loadImageFileChooser.setCurrentDirectory(new File(ImageHelper.fluffPath));
+                loadImageFileChooser.setSelectedFile(new File(getFrame().getEntity().getChassis() + ' ' + getFrame().getEntity().getModel() + ".png"));
             }
 
-            fDialog.setLocationRelativeTo(getFrame());
-
-            fDialog.setVisible(true);
-
-            if (fDialog.getFile() != null) {
-                String relativeFilePath = new File(fDialog.getDirectory() + fDialog.getFile()).getAbsolutePath();
-                relativeFilePath = "." + File.separatorChar + relativeFilePath.substring(new File(System.getProperty("user.dir")).getAbsolutePath().length() + 1);
+            int result = loadImageFileChooser.showSaveDialog(frame);
+            if ((result == JFileChooser.APPROVE_OPTION) && (loadImageFileChooser.getSelectedFile() != null)) {
+                String relativeFilePath = loadImageFileChooser.getSelectedFile().getAbsolutePath();
+                relativeFilePath = "." + File.separatorChar + relativeFilePath
+                        .substring(new File(System.getProperty("user.dir")).getAbsolutePath().length() + 1);
                 getFrame().getEntity().getFluff().setMMLImagePath(relativeFilePath);
                 BLKFile.encode(unitFile.getAbsolutePath(), tempEntity);
             }
@@ -1234,45 +1234,24 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         String filePathName = CConfig.getParam(CConfig.CONFIG_SAVE_FILE_1);
 
         if (filePathName.isBlank() || !filePathName.contains(fileName)) {
-            FileDialog fDialog = new FileDialog(getFrame(),
-                    resources.getString("dialog.saveAs.title"), FileDialog.SAVE);
-
-            filePathName = CConfig.getParam(CConfig.CONFIG_SAVE_LOC);
-
-            fDialog.setDirectory(filePathName);
-            fDialog.setFile(fileName);
-            fDialog.setLocationRelativeTo(getFrame());
-
-            fDialog.setVisible(true);
-
-            if (fDialog.getFile() == null) {
+            if (getFrame().getEntity() instanceof Mech) {
+                saveUnitFileChooser.setFileFilter(new FileNameExtensionFilter("Mek files", "mtf"));
+            } else {
+                saveUnitFileChooser.setFileFilter(new FileNameExtensionFilter("Unit files", "blk"));
+            }
+            saveUnitFileChooser.setCurrentDirectory(new File(filePathName));
+            saveUnitFileChooser.setSelectedFile(new File(createUnitFilename(getFrame().getEntity())));
+            int result = saveUnitFileChooser.showSaveDialog(frame);
+            if ((result != JFileChooser.APPROVE_OPTION) || (saveUnitFileChooser.getSelectedFile() == null)) {
                 return false;
             }
 
-            filePathName = fDialog.getDirectory() + fDialog.getFile();
-            CConfig.setParam(CConfig.CONFIG_SAVE_LOC, fDialog.getDirectory());
+            filePathName = saveUnitFileChooser.getSelectedFile().getPath();
+            CConfig.setParam(CConfig.CONFIG_SAVE_LOC, saveUnitFileChooser.getSelectedFile().getParent());
         }
 
-        try {
-            if (entity instanceof Mech) {
-                try (FileOutputStream fos = new FileOutputStream(filePathName);
-                     PrintStream ps = new PrintStream(fos)) {
-                    ps.println(((Mech) entity).getMtf());
-                }
-            } else {
-                BLKFile.encode(filePathName, entity);
-            }
-            CConfig.updateSaveFiles(filePathName);
-        } catch (Exception ex) {
-            LogManager.getLogger().error("", ex);
-            return false;
-        }
-
-        JOptionPane.showMessageDialog(getFrame(),
-                String.format(resources.getString("dialog.saveAs.message.format"),
-                        entity.getChassis(),
-                        entity.getModel(), filePathName));
-        return true;
+        CConfig.updateSaveFiles(filePathName);
+        return saveUnitTo(new File(filePathName));
     }
 
     private void jMenuSaveAsEntity_actionPerformed(ActionEvent event) {
@@ -1283,42 +1262,45 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
 
         UnitUtil.compactCriticals(getFrame().getEntity());
 
-        FileDialog fDialog = new FileDialog(getFrame(),
-                resources.getString("dialog.saveAs.title"), FileDialog.SAVE);
-
         String filePathName = CConfig.getParam(CConfig.CONFIG_SAVE_LOC);
-
-        fDialog.setDirectory(filePathName);
-        fDialog.setFile(createUnitFilename(getFrame().getEntity()));
-        fDialog.setLocationRelativeTo(getFrame());
-
-        fDialog.setVisible(true);
-
-        if (fDialog.getFile() != null) {
-            filePathName = fDialog.getDirectory() + fDialog.getFile();
-            CConfig.setParam(CConfig.CONFIG_SAVE_LOC, fDialog.getDirectory());
+        if (getFrame().getEntity() instanceof Mech) {
+            saveUnitFileChooser.setFileFilter(new FileNameExtensionFilter("Mek files", "mtf"));
         } else {
+            saveUnitFileChooser.setFileFilter(new FileNameExtensionFilter("Unit files", "blk"));
+        }
+        saveUnitFileChooser.setCurrentDirectory(new File(filePathName));
+        saveUnitFileChooser.setSelectedFile(new File(createUnitFilename(getFrame().getEntity())));
+        int result = saveUnitFileChooser.showSaveDialog(frame);
+        if ((result != JFileChooser.APPROVE_OPTION) || (saveUnitFileChooser.getSelectedFile() == null)) {
             return;
         }
 
+        File saveFile = saveUnitFileChooser.getSelectedFile();
+        CConfig.setParam(CConfig.CONFIG_SAVE_LOC, saveUnitFileChooser.getSelectedFile().getParent());
+
+        CConfig.updateSaveFiles(filePathName);
+        saveUnitTo(saveFile);
+    }
+
+    private boolean saveUnitTo(File file) {
+        if (getFrame().getEntity() == null) {
+            return false;
+        }
         try {
             if (getFrame().getEntity() instanceof Mech) {
-                try (FileOutputStream fos = new FileOutputStream(filePathName);
+                try (FileOutputStream fos = new FileOutputStream(file);
                      PrintStream ps = new PrintStream(fos)) {
                     ps.println(((Mech) getFrame().getEntity()).getMtf());
                 }
             } else {
-                BLKFile.encode(filePathName, getFrame().getEntity());
+                BLKFile.encode(file.getPath(), getFrame().getEntity());
             }
-            CConfig.updateSaveFiles(filePathName);
+            showUnitSavedMessage(file);
+            return true;
         } catch (Exception ex) {
             LogManager.getLogger().error("", ex);
+            return false;
         }
-
-        JOptionPane.showMessageDialog(getFrame(),
-                String.format(resources.getString("dialog.saveAs.message.format"),
-                        getFrame().getEntity().getChassis(),
-                        getFrame().getEntity().getModel(), filePathName));
     }
 
     private String entitySummaryText(boolean html) {
@@ -1339,21 +1321,15 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
 
         String unitName = getFrame().getEntity().getChassis() + ' ' + getFrame().getEntity().getModel();
 
-        FileDialog fDialog = new FileDialog(getFrame(),
-                resources.getString("dialog.saveAs.title"), FileDialog.SAVE);
-        String filePathName = new File(System.getProperty("user.dir")).getAbsolutePath();
-        fDialog.setDirectory(filePathName);
-        fDialog.setFile(unitName + (html?".html" : ".txt"));
-        fDialog.setLocationRelativeTo(getFrame());
-        fDialog.setVisible(true);
-
-        if (fDialog.getFile() != null) {
-            filePathName = fDialog.getDirectory() + fDialog.getFile();
-        } else {
+        MMLFileChooser fileChooser = new MMLFileChooser();
+        fileChooser.setDialogTitle(resources.getString("dialog.saveAs.title"));
+        fileChooser.setSelectedFile(new File(unitName + (html ? ".html" : ".txt")));
+        int result = fileChooser.showSaveDialog(getFrame());
+        if ((result != JFileChooser.APPROVE_OPTION) || (fileChooser.getSelectedFile() == null)) {
             return;
         }
 
-        try (FileOutputStream fos = new FileOutputStream(filePathName);
+        try (FileOutputStream fos = new FileOutputStream(fileChooser.getSelectedFile());
              PrintStream ps = new PrintStream(fos)) {
             ps.println(entitySummaryText(html));
         } catch (Exception ex) {
@@ -1448,5 +1424,12 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     @Override
     public void lostOwnership(Clipboard arg0, Transferable arg1) {
 
+    }
+
+    private void showUnitSavedMessage(File file) {
+        JOptionPane.showMessageDialog(getFrame(),
+                String.format(resources.getString("dialog.saveAs.message.format"),
+                        getFrame().getEntity().getChassis(),
+                        getFrame().getEntity().getModel(), file));
     }
 }

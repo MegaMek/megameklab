@@ -15,10 +15,14 @@
  */
 package megameklab.util;
 
+import megamek.common.Configuration;
 import org.apache.logging.log4j.LogManager;
 
+import javax.swing.*;
+import javax.swing.text.html.Option;
 import java.awt.*;
 import java.io.*;
+import java.util.Optional;
 import java.util.Properties;
 
 /**
@@ -67,6 +71,10 @@ public class CConfig {
     public static final String COLOR_SYSTEMS = "Systems";
     public static final String COLOR_EMPTY = "Empty";
     public static final String COLOR_NONHITTABLE = "Nonhittable";
+
+    public static final String LAST_DIRECTORY = "Last_directory";
+
+    public static final String FILE_CHOOSER_WINDOW = "File_Chooser_Window";
 
     public static final String CONFIG_SAVE_FILE_1 = "Save_File_One";
     public static final String CONFIG_SAVE_FILE_2 = "Save_File_Two";
@@ -147,7 +155,8 @@ public class CConfig {
         defaults.setProperty(MEK_AUTOFILL, Boolean.toString(true));
         defaults.setProperty(MEK_AUTOSORT, Boolean.toString(true));
         defaults.setProperty(MEK_AUTOCOMPACT, Boolean.toString(true));
-
+        defaults.setProperty(LAST_DIRECTORY, Configuration.unitsDir().toString());
+        defaults.setProperty(FILE_CHOOSER_WINDOW, "");
         return defaults;
     }
 
@@ -393,5 +402,33 @@ public class CConfig {
         } else {
             return Integer.toString(retVal);
         }
+    }
+
+    public static Optional<Dimension> getFileChooserSize() {
+        try {
+            String[] fileChooserSettings = getParam(FILE_CHOOSER_WINDOW).split(";");
+            int sizeX = Integer.parseInt(fileChooserSettings[2]);
+            int sizeY = Integer.parseInt(fileChooserSettings[3]);
+            return Optional.of(new Dimension(sizeX, sizeY));
+        } catch (Exception e) {
+            return Optional.empty();
+        }
+    }
+
+    public static Optional<Point> getFileChooserPosition() {
+        try {
+            String[] fileChooserSettings = getParam(FILE_CHOOSER_WINDOW).split(";");
+            int posX = Integer.parseInt(fileChooserSettings[0]);
+            int posY = Integer.parseInt(fileChooserSettings[1]);
+            return Optional.of(new Point(posX, posY));
+        } catch (Exception e) {
+            return Optional.empty();
+        }
+    }
+
+    public static void writeFileChooserSettings(JDialog dialog) {
+        Dimension size = dialog.getSize();
+        Point pos = dialog.getLocation();
+        setParam(FILE_CHOOSER_WINDOW, pos.x + ";" + pos.y + ";" + size.width + ";" + size.height);
     }
 }
