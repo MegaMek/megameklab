@@ -18,15 +18,18 @@ package megameklab;
 
 import megamek.MegaMek;
 import megamek.client.ui.preferences.SuitePreferences;
-import megamek.common.EquipmentType;
-import megamek.common.MechSummaryCache;
+import megamek.common.*;
+import megameklab.ui.MenuBar;
 import megameklab.ui.StartupGUI;
+import megameklab.ui.dialog.UiLoader;
 import megameklab.util.CConfig;
 import megameklab.util.UnitUtil;
 import org.apache.logging.log4j.LogManager;
 
 import javax.swing.*;
+import java.io.File;
 import java.util.Locale;
+import java.util.ResourceBundle;
 
 public class MegaMekLab {
     private static final SuitePreferences mmlPreferences = new SuitePreferences();
@@ -80,8 +83,44 @@ public class MegaMekLab {
         setLookAndFeel();
 
         // Create a startup frame and display it
-        StartupGUI sud = new StartupGUI();
-        sud.setVisible(true);
+        switch (CConfig.getStartUpType()) {
+            case NEW_MEK:
+                UiLoader.loadUi(Entity.ETYPE_MECH, false, false);
+                break;
+            case NEW_TANK:
+                UiLoader.loadUi(Entity.ETYPE_TANK, false, false);
+                break;
+            case NEW_FIGHTER:
+                UiLoader.loadUi(Entity.ETYPE_AERO, false, false);
+                break;
+            case NEW_DROPSHIP:
+                UiLoader.loadUi(Entity.ETYPE_DROPSHIP, false, false);
+                break;
+            case NEW_PROTOMEK:
+                UiLoader.loadUi(Entity.ETYPE_PROTOMECH, false, false);
+                break;
+            case NEW_JUMPSHIP:
+                UiLoader.loadUi(Entity.ETYPE_JUMPSHIP, false, false);
+                break;
+            case NEW_SUPPORTVEE:
+                UiLoader.loadUi(Entity.ETYPE_SUPPORT_TANK, false, false);
+                break;
+            case NEW_BATTLEARMOR:
+                UiLoader.loadUi(Entity.ETYPE_BATTLEARMOR, false, false);
+                break;
+            case NEW_CONVINFANTRY:
+                UiLoader.loadUi(Entity.ETYPE_INFANTRY, false, false);
+                break;
+            case RECENT_UNIT:
+                if (loadRecentUnit()) {
+                    return;
+                }
+                // intentional fall through when loading the most recent unit doesn't work
+            default:
+            case SPLASH_SCREEN:
+                new StartupGUI().setVisible(true);
+                break;
+        }
     }
 
     private static void setLookAndFeel() {
@@ -99,5 +138,36 @@ public class MegaMekLab {
 
     public static MMLOptions getMMLOptions() {
         return mmlOptions;
+    }
+
+    private static boolean loadRecentUnit() {
+        String filePathName = CConfig.getParam(CConfig.CONFIG_SAVE_FILE_1);
+
+        File unitFile = new File(filePathName);
+        if (!(unitFile.isFile())) {
+            return false;
+        }
+        ResourceBundle resources = ResourceBundle.getBundle("megameklab.resources.Menu");
+
+        try {
+            Entity tempEntity = new MechFileParser(unitFile).getEntity();
+            if (tempEntity == null) {
+                return false;
+            }
+
+            if (!UnitUtil.validateUnit(tempEntity).isBlank()) {
+                JOptionPane.showMessageDialog(null, String.format(
+                        resources.getString("message.invalidUnit.format"),
+                        UnitUtil.validateUnit(tempEntity)));
+            }
+
+            UiLoader.loadUi(tempEntity);
+            return true;
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, String.format(
+                    resources.getString("message.invalidUnit.format"),
+                    ex.getMessage()));
+            return false;
+        }
     }
 }

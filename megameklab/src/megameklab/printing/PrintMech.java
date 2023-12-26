@@ -19,6 +19,7 @@ import megamek.common.annotations.Nullable;
 import megameklab.printing.reference.*;
 import megameklab.util.CConfig;
 import megameklab.util.ImageHelper;
+import megameklab.util.RSScale;
 import megameklab.util.UnitUtil;
 import org.apache.batik.anim.dom.SVGDOMImplementation;
 import org.apache.batik.dom.util.SAXDocumentFactory;
@@ -644,7 +645,7 @@ public class PrintMech extends PrintEntity {
     private String formatHeatMovementPenalty(int penalty) {
         // 2212 is the Unicode Minus Sign; has much better length than '-'; supported by most fonts
         String penaltyString = "\u2212" + CConfig.formatScale(penalty, true) + " Movement";
-        if (CConfig.scaleUnits() == CConfig.RSScale.HEXES) {
+        if (CConfig.scaleUnits() == RSScale.HEXES) {
             penaltyString += " Points";
         }
         return penaltyString;

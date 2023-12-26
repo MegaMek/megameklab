@@ -22,6 +22,7 @@ import megamek.common.options.IOptionGroup;
 import megamek.common.options.PilotOptions;
 import megamek.common.options.Quirks;
 import megameklab.util.CConfig;
+import megameklab.util.RSScale;
 import org.apache.batik.anim.dom.SVGGraphicsElement;
 import org.apache.batik.anim.dom.SVGLocatableSupport;
 import org.apache.batik.util.SVGConstants;
@@ -424,7 +425,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
      */
     protected void writeEquipment(SVGRectElement svgRect) {
         new InventoryWriter(this, svgRect).writeEquipment();
-        if (!CConfig.scaleUnits().equals(CConfig.RSScale.HEXES)) {
+        if (!CConfig.scaleUnits().equals(RSScale.HEXES)) {
             setTextField(UNIT_SCALE, "(" + CConfig.scaleUnits().fullName + ")");
         }
     }

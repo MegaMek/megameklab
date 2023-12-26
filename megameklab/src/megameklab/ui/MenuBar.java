@@ -1350,22 +1350,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         String filePathName = System.getProperty("user.dir") + "/data/mechfiles/"; // TODO : remove inline file path
 
         if (fileNumber > 0) {
-            switch (fileNumber) {
-                case 1:
-                    filePathName = CConfig.getParam(CConfig.CONFIG_SAVE_FILE_1);
-                    break;
-                case 2:
-                    filePathName = CConfig.getParam(CConfig.CONFIG_SAVE_FILE_2);
-                    break;
-                case 3:
-                    filePathName = CConfig.getParam(CConfig.CONFIG_SAVE_FILE_3);
-                    break;
-                case 4:
-                    filePathName = CConfig.getParam(CConfig.CONFIG_SAVE_FILE_4);
-                    break;
-                default:
-                    break;
-            }
+            filePathName = CConfig.getRecentFile(fileNumber);
         }
 
         File unitFile = new File(filePathName);
@@ -1397,7 +1382,6 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             } else {
                 getFrame().setEntity(tempEntity);
                 UnitUtil.updateLoadedUnit(getFrame().getEntity());
-                CConfig.updateSaveFiles(unitFile.getAbsolutePath());
                 createFileMenu();
             }
         } catch (Exception ex) {
@@ -1405,9 +1389,15 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
                     resources.getString("message.invalidUnit.format"),
                     ex.getMessage()));
         }
+        newRecentUnit(unitFile.getAbsolutePath());
         reload();
         refresh();
         getFrame().setVisible(true);
+    }
+
+    private void newRecentUnit(String latestUnit) {
+        CConfig.updateSaveFiles(latestUnit);
+        createFileMenu();
     }
 
     private void refresh() {

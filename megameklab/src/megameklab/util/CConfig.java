@@ -16,55 +16,28 @@
 package megameklab.util;
 
 import megamek.common.Configuration;
-import megamek.common.annotations.Nullable;
+import megameklab.ui.MMLStartUp;
 import org.apache.logging.log4j.LogManager;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.*;
-import javax.swing.text.html.Option;
 import java.awt.*;
 import java.io.*;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 /**
  * Class for Client's configuration.
  */
-public class CConfig {
+public final class CConfig {
 
-    /**
-     * Scale to use when printing record sheets
-     */
-    public enum RSScale {
-        HEXES("hexes", ""),
-        INCHES("inches", "\""),
-        CENTIMETERS("centimeters", " cm");
-
-        public final String fullName;
-        public final String abbreviation;
-
-        RSScale(String fullName, String abbreviation) {
-            this.fullName = fullName;
-            this.abbreviation = abbreviation;
-        }
-
-        /**
-         * Used for display name when space is limited. If the full name is longer than six characters
-         * the abbreviation is used.
-         * @return A short name for display
-         */
-        public String shortName() {
-            if (fullName.length() > 6) {
-                return abbreviation.trim();
-            } else {
-                return fullName;
-            }
-        }
-    }
-
-    // VARIABLES
     public static final String CONFIG_DIR = "./mmconf";
     public static final String CONFIG_FILE = "./mmconf/megameklab.properties";
     public static final String CONFIG_BACKUP_FILE = "./mmconf/megameklab.properties.bak";
+
+    public static final String STARTUP = "StartupGui";
 
     public static final String COLOR_WEAPONS = "Weapons";
     public static final String COLOR_AMMO = "Ammo";
@@ -73,6 +46,7 @@ public class CConfig {
     public static final String COLOR_EMPTY = "Empty";
     public static final String COLOR_NONHITTABLE = "Nonhittable";
 
+    public static final int RECENT_FILE_COUNT = 4;
     public static final String RECENT_FILE_PREFIX = "Save_File_";
     public static final String CONFIG_SAVE_FILE_1 = RECENT_FILE_PREFIX + "1";
     public static final String CONFIG_SAVE_FILE_2 = RECENT_FILE_PREFIX + "2";
@@ -81,11 +55,6 @@ public class CConfig {
     public static final String LAST_DIRECTORY = "Last_directory";
 
     public static final String FILE_CHOOSER_WINDOW = "File_Chooser_Window";
-
-    public static final String CONFIG_SAVE_FILE_1 = "Save_File_One";
-    public static final String CONFIG_SAVE_FILE_2 = "Save_File_Two";
-    public static final String CONFIG_SAVE_FILE_3 = "Save_File_Three";
-    public static final String CONFIG_SAVE_FILE_4 = "Save_File_Four";
 
     public static final String CONFIG_FOREGROUND = "-Foreground";
     public static final String CONFIG_BACKGROUND = "-Background";
@@ -127,7 +96,7 @@ public class CConfig {
     /**
      * Player configuration values.
      */
-    private static Properties config = getDefaults();
+    private static final Properties config = getDefaults();
 
     // METHODS
     /**
@@ -163,6 +132,7 @@ public class CConfig {
         defaults.setProperty(MEK_AUTOCOMPACT, Boolean.toString(true));
         defaults.setProperty(LAST_DIRECTORY, Configuration.unitsDir().toString());
         defaults.setProperty(FILE_CHOOSER_WINDOW, "");
+        defaults.setProperty(STARTUP, MMLStartUp.SPLASH_SCREEN.name());
         return defaults;
     }
 
@@ -350,41 +320,35 @@ public class CConfig {
         return masterColor;
     }
 
-    public static void updateSaveFiles(String newFile) {
-        if (newFile.isBlank()) {
+    public static void updateSaveFiles(final String newFile) {
+        if ((newFile == null) || newFile.isBlank()) {
             return;
         }
 
-        if (CConfig.getParam(CConfig.CONFIG_SAVE_FILE_4).equalsIgnoreCase(newFile)) {
-            CConfig.setParam(CConfig.CONFIG_SAVE_FILE_4, "");
-        }
-
-        if (CConfig.getParam(CConfig.CONFIG_SAVE_FILE_3).equalsIgnoreCase(newFile)) {
-            CConfig.setParam(CConfig.CONFIG_SAVE_FILE_3, "");
-        }
-
-        if (CConfig.getParam(CConfig.CONFIG_SAVE_FILE_2).equalsIgnoreCase(newFile)) {
-            CConfig.setParam(CConfig.CONFIG_SAVE_FILE_2, "");
-        }
-
-        if (CConfig.getParam(CConfig.CONFIG_SAVE_FILE_1).equalsIgnoreCase(newFile)) {
-            CConfig.setParam(CConfig.CONFIG_SAVE_FILE_1, "");
-        }
-
-        if (!CConfig.getParam(CConfig.CONFIG_SAVE_FILE_4).equalsIgnoreCase(CConfig.getParam(CConfig.CONFIG_SAVE_FILE_3))) {
-            CConfig.setParam(CConfig.CONFIG_SAVE_FILE_4, CConfig.getParam(CConfig.CONFIG_SAVE_FILE_3));
-        }
-
-        if (!CConfig.getParam(CConfig.CONFIG_SAVE_FILE_3).equalsIgnoreCase(CConfig.getParam(CConfig.CONFIG_SAVE_FILE_2))) {
-            CConfig.setParam(CConfig.CONFIG_SAVE_FILE_3, CConfig.getParam(CConfig.CONFIG_SAVE_FILE_2));
-        }
-
-        if (!CConfig.getParam(CConfig.CONFIG_SAVE_FILE_2).equalsIgnoreCase(CConfig.getParam(CConfig.CONFIG_SAVE_FILE_1))) {
-            CConfig.setParam(CConfig.CONFIG_SAVE_FILE_2, CConfig.getParam(CConfig.CONFIG_SAVE_FILE_1));
-        }
-
-        CConfig.setParam(CConfig.CONFIG_SAVE_FILE_1, newFile);
+        List<String> recentFiles = getRecentFiles();
+        List<String> recentFilesWithoutDuplicates = recentFiles.stream().distinct().collect(Collectors.toList());
+        recentFilesWithoutDuplicates.removeIf(f -> f.equalsIgnoreCase(newFile));
+        recentFilesWithoutDuplicates.add(0, newFile);
+        setRecentFiles(recentFilesWithoutDuplicates);
         CConfig.saveConfig();
+    }
+
+    private static List<String> getRecentFiles() {
+        List<String> result = new ArrayList<>();
+        for (int i = 1; i <= RECENT_FILE_COUNT; i++) {
+            result.add(getRecentFile(i));
+        }
+        return result;
+    }
+
+    private static void setRecentFiles(List<String> files) {
+        for (int i = 1; i <= RECENT_FILE_COUNT; i++) {
+            if (i < files.size()) {
+                setParam(RECENT_FILE_PREFIX + i, files.get(i));
+            } else {
+                setParam(RECENT_FILE_PREFIX + i, "");
+            }
+        }
     }
 
     /**
@@ -442,4 +406,10 @@ public class CConfig {
         String fileName = CConfig.getParam(CConfig.RECENT_FILE_PREFIX + recentFileNumber);
         return (fileName == null) ? "" : fileName;
     }
+
+    public static MMLStartUp getStartUpType() {
+        return MMLStartUp.parse(CConfig.getParam(CConfig.STARTUP));
+    }
+
+    private CConfig() { }
 }
