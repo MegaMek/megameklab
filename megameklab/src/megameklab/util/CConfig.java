@@ -16,6 +16,7 @@
 package megameklab.util;
 
 import megamek.common.Configuration;
+import megamek.common.annotations.Nullable;
 import org.apache.logging.log4j.LogManager;
 
 import javax.swing.*;
@@ -72,6 +73,11 @@ public class CConfig {
     public static final String COLOR_EMPTY = "Empty";
     public static final String COLOR_NONHITTABLE = "Nonhittable";
 
+    public static final String RECENT_FILE_PREFIX = "Save_File_";
+    public static final String CONFIG_SAVE_FILE_1 = RECENT_FILE_PREFIX + "1";
+    public static final String CONFIG_SAVE_FILE_2 = RECENT_FILE_PREFIX + "2";
+    public static final String CONFIG_SAVE_FILE_3 = RECENT_FILE_PREFIX + "3";
+    public static final String CONFIG_SAVE_FILE_4 = RECENT_FILE_PREFIX + "4";
     public static final String LAST_DIRECTORY = "Last_directory";
 
     public static final String FILE_CHOOSER_WINDOW = "File_Chooser_Window";
@@ -430,5 +436,10 @@ public class CConfig {
         Dimension size = dialog.getSize();
         Point pos = dialog.getLocation();
         setParam(FILE_CHOOSER_WINDOW, pos.x + ";" + pos.y + ";" + size.width + ";" + size.height);
+    }
+
+    public static String getRecentFile(int recentFileNumber) {
+        String fileName = CConfig.getParam(CConfig.RECENT_FILE_PREFIX + recentFileNumber);
+        return (fileName == null) ? "" : fileName;
     }
 }
