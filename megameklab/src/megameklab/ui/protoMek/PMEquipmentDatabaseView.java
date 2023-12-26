@@ -49,18 +49,15 @@ class PMEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
             if ((equip instanceof MiscType) && UnitUtil.isFixedLocationSpreadEquipment(equip)) {
                 int location = TestEntity.getSystemWideLocation(eSource.getEntity());
                 Mounted mount = new Mounted(eSource.getEntity(), equip);
-                eSource.getEntity().addEquipment(mount, location, false);
+                getEntity().addEquipment(mount, location, false);
             } else {
                 if (equip instanceof AmmoType) {
                     addProtomechAmmo(equip, 1);
                     return;
                 }
                 Mounted mount = new Mounted(eSource.getEntity(), equip);
-                eSource.getEntity().addEquipment(mount, Entity.LOC_NONE, false);
-                if ((equip instanceof WeaponType) && (equip.hasFlag(WeaponType.F_ONESHOT)
-                        || (((WeaponType) equip).getAmmoType() == AmmoType.T_INFANTRY))) {
-                    UnitUtil.removeOneShotAmmo(eSource.getEntity());
-                }
+                getEntity().addEquipment(mount, Entity.LOC_NONE, false);
+                UnitUtil.removeHiddenAmmo(mount);
             }
         } catch (LocationFullException ex) {
             LogManager.getLogger().error("Location full while trying to add " + equip.getName());

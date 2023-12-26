@@ -49,40 +49,36 @@ class SVEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
         boolean isMisc = equip instanceof MiscType;
         try {
             if (isMisc && equip.hasFlag(MiscType.F_TARGCOMP)) {
-                if (!UnitUtil.hasTargComp(eSource.getEntity())) {
-                    UnitUtil.updateTC(eSource.getEntity(), equip);
+                if (!UnitUtil.hasTargComp(getEntity())) {
+                    UnitUtil.updateTC(getEntity(), equip);
                 }
             } else if (isMisc && UnitUtil.isFixedLocationSpreadEquipment(equip)) {
-                    int location = TestEntity.getSystemWideLocation(eSource.getEntity());
-                    mount = new Mounted(eSource.getEntity(), equip);
-                    eSource.getEntity().addEquipment(mount, location, false);
+                    int location = TestEntity.getSystemWideLocation(getEntity());
+                    mount = new Mounted(getEntity(), equip);
+                    getEntity().addEquipment(mount, location, false);
             } else {
                 if (equip instanceof AmmoType) {
-                    if (eSource.getEntity().usesWeaponBays()) {
+                    if (getEntity().usesWeaponBays()) {
                         addLargeCraftAmmo(equip, count);
                         return;
-                    } else if (eSource.getEntity().isAero()) {
+                    } else if (getEntity().isAero()) {
                         addBodyAmmo(equip, count, Aero.LOC_FUSELAGE);
                         return;
-                    } else if (eSource.getEntity() instanceof Tank) {
+                    } else if (getEntity() instanceof Tank) {
                         addBodyAmmo(equip, count, Tank.LOC_BODY);
                         return;
                     }
                 }
                 for (int i = 0; i < count; i++) {
-                    mount = new Mounted(eSource.getEntity(), equip);
+                    mount = new Mounted(getEntity(), equip);
                     UnitUtil.setVariableSizeMiscTypeMinimumSize(mount);
-                    if ((eSource.getEntity().isFighter()
+                    if ((getEntity().isFighter()
                             && (equip instanceof MiscType)) && equip.hasFlag(MiscType.F_BLUE_SHIELD)) {
                         getAero().addEquipment(mount, Aero.LOC_FUSELAGE, false);
                     } else {
-                        eSource.getEntity().addEquipment(mount, Entity.LOC_NONE, false);
+                        getEntity().addEquipment(mount, Entity.LOC_NONE, false);
                     }
-
-                    if ((equip instanceof WeaponType) && (equip.hasFlag(WeaponType.F_ONESHOT)
-                            || (((WeaponType) equip).getAmmoType() == AmmoType.T_INFANTRY))) {
-                        UnitUtil.removeOneShotAmmo(eSource.getEntity());
-                    }
+                    UnitUtil.removeHiddenAmmo(mount);
                 }
             }
         } catch (LocationFullException ex) {
