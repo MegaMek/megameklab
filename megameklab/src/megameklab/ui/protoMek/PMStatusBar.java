@@ -13,124 +13,42 @@
  */
 package megameklab.ui.protoMek;
 
-import megamek.common.verifier.EntityVerifier;
+import megamek.client.ui.swing.GUIPreferences;
 import megamek.common.verifier.TestProtomech;
-import megameklab.ui.util.ITab;
-import megameklab.ui.util.RefreshListener;
-import megamek.client.ui.WrapLayout;
-import megameklab.util.ImageHelper;
-import megameklab.util.UnitUtil;
+import megameklab.ui.generalUnit.StatusBar;
 
 import javax.swing.*;
-import java.awt.*;
-import java.io.File;
-import java.text.DecimalFormat;
 
 /**
  * Status bar for ProtoMek construction
  * 
  * @author Neoancient
  */
-public class PMStatusBar extends ITab {
-    private final JLabel crits = new JLabel();
-    private final JLabel bvLabel = new JLabel();
-    private final JLabel tons = new JLabel();
-    private final JLabel cost = new JLabel();
-    private final JLabel invalid = new JLabel();
-    private final TestProtomech testEntity;
-    private final DecimalFormat formatter;
-    private final JFrame parentFrame;
+public class PMStatusBar extends StatusBar {
 
-    private RefreshListener refresh;
+    private static final String SLOTS_LABEL = "Free Slots: %d / %d";
+
+    private final JLabel slots = new JLabel();
 
     public PMStatusBar(PMMainUI parent) {
         super(parent);
-        parentFrame = parent;
-
-        formatter = new DecimalFormat();
-        EntityVerifier entityVerifier = EntityVerifier.getInstance(new File("data/mechfiles/UnitVerifierOptions.xml"));
-        testEntity = new TestProtomech(getProtomech(), entityVerifier.mechOption, null);
-        JButton showEquipmentDatabase = new JButton("Show Equipment Database");
-        showEquipmentDatabase.addActionListener(evt -> parent.getFloatingEquipmentDatabase().setVisible(true));
-        JButton btnValidate = new JButton("Validate Unit");
-        btnValidate.addActionListener(ev -> UnitUtil.showValidation(getProtomech(), getParentFrame()));
-        JButton btnFluffImage = new JButton("Set Fluff Image");
-        btnFluffImage.addActionListener(ev -> getFluffImage());
-        invalid.setText("Invalid");
-        invalid.setForeground(Color.RED);
-        invalid.setVisible(false);
-
-        setLayout(new WrapLayout(FlowLayout.LEFT, 22, 5));
-        add(showEquipmentDatabase);
-        add(btnValidate);
-        add(btnFluffImage);
-        add(tons);
-        add(crits);
-        add(bvLabel);
-        add(invalid);
-        add(cost);
-        refresh();
+        add(slots);
     }
 
-    public void refresh() {
-        double tonnage = getProtomech().getWeight() * 1000;
-        int bv = getProtomech().calculateBattleValue();
+    @Override
+    protected void additionalRefresh() {
+        refreshSlots();
+    }
+
+    public void refreshSlots() {
         int maxCrits = 0;
         for (int l = 0; l < getProtomech().locations(); l++) {
             maxCrits += TestProtomech.maxSlotsByLocation(l, getProtomech());
         }
-        long currentCrits = getProtomech().getEquipment().stream()
+        long currentSlots = getProtomech().getEquipment().stream()
                 .filter(m -> TestProtomech.requiresSlot(m.getType())).count();
 
-        double currentTonnage = testEntity.calculateWeight() * 1000;
-
-        tons.setText(String.format("Tonnage: %,.0f/%,.0f (%,.0f Remaining)", currentTonnage, tonnage, tonnage - currentTonnage));
-        tons.setToolTipText("Current Tonnage/Max Tonnage");
-        if (currentTonnage > tonnage) {
-            tons.setForeground(Color.red);
-        } else {
-            tons.setForeground(UIManager.getColor("Label.foreground"));
-        }
-
-        bvLabel.setText("BV: " + bv);
-        bvLabel.setToolTipText("BV 2.0");
-
-        cost.setText("Dry Cost: " + formatter.format(Math.round(getEntity().getCost(true))) + " C-bills");
-        cost.setToolTipText("The dry cost of the unit (without ammo). The unit's full cost is "
-                + formatter.format(Math.round(getEntity().getCost(false))) + " C-bills.");
-
-        crits.setText("Criticals: " +  currentCrits + "/" + maxCrits);
-        if (currentCrits > maxCrits) {
-            crits.setForeground(Color.red);
-        } else {
-            crits.setForeground(UIManager.getColor("Label.foreground"));
-        }
-        StringBuffer sb = new StringBuffer();
-        invalid.setVisible(!testEntity.correctEntity(sb));
-        invalid.setToolTipText("<html>" + sb.toString().replaceAll("\n", "<br/>") + "</html>");
-    }
-
-    private void getFluffImage() {
-        // copied from mech StatusBar
-        FileDialog fDialog = new FileDialog(getParentFrame(), "Image Path", FileDialog.LOAD);
-        fDialog.setDirectory(new File(ImageHelper.fluffPath).getAbsolutePath() + File.separatorChar + ImageHelper.imageMech + File.separatorChar);
-        fDialog.setLocationRelativeTo(this);
-
-        fDialog.setVisible(true);
-
-        if (fDialog.getFile() != null) {
-            String relativeFilePath = new File(fDialog.getDirectory() + fDialog.getFile()).getAbsolutePath();
-            relativeFilePath = "." + File.separatorChar + relativeFilePath.substring(new File(System.getProperty("user.dir")).getAbsolutePath().length() + 1);
-            getProtomech().getFluff().setMMLImagePath(relativeFilePath);
-        }
-        refresh.refreshPreview();
-    }
-
-    private JFrame getParentFrame() {
-        return parentFrame;
-    }
-
-    public void addRefreshedListener(RefreshListener l) {
-        refresh = l;
+        slots.setText(String.format(SLOTS_LABEL, currentSlots, maxCrits));
+        slots.setForeground(currentSlots > maxCrits ? GUIPreferences.getInstance().getWarningColor() : null);
     }
 }
