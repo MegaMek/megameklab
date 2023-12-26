@@ -57,8 +57,6 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     private final ResourceBundle resources = ResourceBundle.getBundle("megameklab.resources.Menu");
 
     private final JFileChooser loadUnitFileChooser = new JFileChooser();
-    private JMenu fileMenu = new JMenu(resources.getString("fileMenu.text"));
-
 
     //region Constructors
     public MenuBar(final MegaMekLabMainUI frame) {
@@ -67,13 +65,10 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     }
     //endregion Constructors
 
-    //region Getters
     public MegaMekLabMainUI getFrame() {
         return frame;
     }
-    //endregion Getters
 
-    //region Conditional Exit Handler
     /**
      * The File menu's exit handler pops up a modal that produces a boolean;
      * to match the functionality of ExitOnWindowClosingListener, we want to
@@ -86,9 +81,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             System.exit(0);
         }
     }
-    //endregion Conditional Exit Handler
 
-    //region Initialization
     /**
      * The main menu bar uses the following Mnemonic keys as of 30-Jun-2022:
      * F, H, R, U
@@ -108,7 +101,6 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         loadUnitFileChooser.setCurrentDirectory(new File("data/mechfiles"));
     }
 
-    //region File Menu
     /**
      * This menu uses the following Mnemonic keys as of 30-Jun-2022:
      * C, E, I, L, O, P, R, S, U, X
