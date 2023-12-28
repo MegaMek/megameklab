@@ -36,6 +36,8 @@ import java.io.File;
 import java.util.ResourceBundle;
 import java.util.TreeMap;
 
+import static javax.swing.JOptionPane.YES_NO_OPTION;
+
 /**
  * A startup splash screen for MegaMekLab
  * @author Taharqa
@@ -59,9 +61,27 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
         initComponents();
     }
 
+    @Override
+    public void setVisible(boolean aFlag) {
+        super.setVisible(aFlag);
+        if (aFlag && CConfig.getBooleanParam(CConfig.NAG_IMPORT_SETTINGS)) {
+            showImportSettingsDialog();
+        }
+    }
+
+    private void showImportSettingsDialog() {
+        CConfig.setParam(CConfig.NAG_IMPORT_SETTINGS, Boolean.toString(false));
+        int choice = JOptionPane.showConfirmDialog(this,
+                "Do you wish to import settings from another MML" +
+                        "? You can also do this later from the main menu.", "Import Settings?", YES_NO_OPTION);
+        if (choice == JOptionPane.YES_OPTION) {
+            mmlMenuBar.importSettings();
+        }
+    }
+
     private void initComponents() {
         SkinSpecification skinSpec = SkinXMLHandler.getSkin(UIComponents.MainMenuBorder.getComp(), true);
-        
+
         frame = new JFrame("MegaMekLab");
         setBackground(UIManager.getColor("controlHighlight"));
         mmlMenuBar = new MenuBar(this);

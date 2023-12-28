@@ -96,14 +96,25 @@ public interface MenuBarOwner extends AppCloser {
     }
 
     /**
-     * Sets the look and feel for the application.
+     * Sets the look and feel for the application and lets Swing update the current
+     * components.
      *
-     * @param plaf The look and feel to use for the application.
+     * @param lookAndFeelInfo The look and feel to use for the application.
      */
-    default void changeTheme(UIManager.LookAndFeelInfo plaf) {
+    default void changeTheme(UIManager.LookAndFeelInfo lookAndFeelInfo) {
+        changeTheme(lookAndFeelInfo.getClassName());
+    }
+
+    /**
+     * Sets the look and feel for the application and lets Swing update the current
+     * components.
+     * *
+     * @param lookAndFeelInfo The name of the look and feel to use for the application.
+     */
+    default void changeTheme(String lookAndFeelInfo) {
         SwingUtilities.invokeLater(() -> {
             try {
-                UIManager.setLookAndFeel(plaf.getClassName());
+                UIManager.setLookAndFeel(lookAndFeelInfo);
                 SwingUtilities.updateComponentTreeUI(getFrame());
             } catch (Exception ex) {
                 PopupMessages.showLookAndFeelError(getFrame(), ex.getMessage());

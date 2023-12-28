@@ -22,9 +22,9 @@ import megamek.common.loaders.BLKFile;
 import megamek.common.templates.TROView;
 import megameklab.MMLConstants;
 import megameklab.ui.dialog.MMLFileChooser;
-import megameklab.ui.dialog.UiLoader;
 import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
 import megameklab.ui.dialog.PrintQueueDialog;
+import megameklab.ui.dialog.UiLoader;
 import megameklab.ui.dialog.settings.SettingsDialog;
 import megameklab.util.CConfig;
 import megameklab.util.ImageHelper;
@@ -67,6 +67,12 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         initialize();
     }
 
+    /**
+     * Returns the unit main UI, if this menubar is attached to one (instead of the StartupGUI
+     * aka splash screen), null otherwise.
+     *
+     * @return The unit main UI of this menubar or null
+     */
     public @Nullable MegaMekLabMainUI getUnitMainUi() {
         if (owner instanceof MegaMekLabMainUI) {
             return (MegaMekLabMainUI) owner;
@@ -1246,6 +1252,12 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         }
     }
 
+    /**
+     * Adds a new most recent unit, moving the previous recent units down the list. Renews this
+     * menubar to reflect the change.
+     *
+     * @param latestUnit The filename of the new most recent unit.
+     */
     private void newRecentUnit(String latestUnit) {
         CConfig.setMostRecentFile(latestUnit);
         createFileMenu();
@@ -1270,19 +1282,32 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         return !isStartupGui();
     }
 
+    /**
+     * Refreshes this menubar. At least this updates the file menu, showing the latest recent unit
+     * changes.
+     */
     public void refreshMenuBar() {
         createFileMenu();
     }
 
-    private void importSettings() {
+    /**
+     * Performs a settings import, currently only for the megameklab.properties file (CConfig).
+     * Shows a help message before showing a file chooser for selecting a directory. The
+     * directory should always be MML's main directory (which contains the mmconf directory
+     * with the megameklab.properties file).
+     */
+    public void importSettings() {
+        PopupMessages.showSettingsImportHelp(owner.getFrame());
+
         MMLFileChooser fileChooser = new MMLFileChooser();
         fileChooser.setDialogTitle(resources.getString("dialog.importSettings"));
-        fileChooser.setFileFilter(new FileNameExtensionFilter("MML Settings", "properties"));
-        fileChooser.setSelectedFile(new File("megameklab.properties"));
+        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         int result = fileChooser.showOpenDialog(owner.getFrame());
-        if ((result != JFileChooser.APPROVE_OPTION) || (fileChooser.getSelectedFile() == null)) {
+        if ((result != JFileChooser.APPROVE_OPTION) || (fileChooser.getSelectedFile() == null)
+                || !fileChooser.getSelectedFile().isDirectory()) {
             return;
         }
-        CConfig.importSettings(fileChooser.getSelectedFile());
+        File settingsFile = new File(fileChooser.getSelectedFile(), CConfig.CONFIG_FILE);
+        CConfig.importSettings(owner, settingsFile);
     }
 }

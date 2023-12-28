@@ -41,6 +41,14 @@ public final class PopupMessages {
         showInfoMessage(parent, resources.getString("noMostRecentUnit"));
     }
 
+    public static void showSettingsImported(Component parent) {
+        showInfoMessage(parent, resources.getString("settingsImported"));
+    }
+
+    public static void showSettingsImportHelp(Component parent) {
+        showInfoMessage(parent, resources.getString("importSettingsHelp"));
+    }
+
     public static void showUiLoadError(Component parent) {
         showErrorMessage(parent, resources.getString("loadUiError"));
     }

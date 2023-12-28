@@ -18,6 +18,8 @@ package megameklab.util;
 import megamek.common.Configuration;
 import megameklab.ui.MMLStartUp;
 import megameklab.ui.MegaMekLabMainUI;
+import megameklab.ui.MenuBarOwner;
+import megameklab.ui.PopupMessages;
 import megameklab.ui.battleArmor.BAMainUI;
 import megameklab.ui.combatVehicle.CVMainUI;
 import megameklab.ui.fighterAero.ASMainUI;
@@ -99,6 +101,7 @@ public final class CConfig {
     public static final String RS_SCALE_UNITS = "rs_scale_units";
 
     public static final String NAG_EQUIPMENT_CTRLCLICK = "nag_equipment_ctrlclick";
+    public static final String NAG_IMPORT_SETTINGS = "nag_import_settings";
 
     public static final String MEK_AUTOFILL = "mekAutofill";
     public static final String MEK_AUTOSORT = "mekAutosort";
@@ -131,6 +134,7 @@ public final class CConfig {
         defaults.setProperty(FILE_LAST_DIRECTORY, Configuration.unitsDir().toString());
         defaults.setProperty(FILE_CHOOSER_WINDOW, "");
         defaults.setProperty(MISC_STARTUP, MMLStartUp.SPLASH_SCREEN.name());
+        defaults.setProperty(NAG_IMPORT_SETTINGS, Boolean.toString(true));
         return defaults;
     }
 
@@ -142,12 +146,23 @@ public final class CConfig {
         loadConfigFile();
     }
 
-    public static void importSettings(File settingsFile) {
+    /**
+     * Tries to import settings from the given properties file. When successful, also applies
+     * some of the settings and shows a popup message.
+     *
+     * @param menuBarOwner The MenuBar owner frame calling this
+     * @param settingsFile The file (should always be megameklab.properties in another MML install)
+     */
+    public static void importSettings(MenuBarOwner menuBarOwner, File settingsFile) {
         try (FileInputStream fis = new FileInputStream(settingsFile)) {
             config.load(fis);
         } catch (Exception ex) {
+            PopupMessages.showFileReadError(menuBarOwner.getFrame(), settingsFile.toString(), ex.getMessage());
             LogManager.getLogger().error("", ex);
+            return;
         }
+        applyImportedSettings(menuBarOwner);
+        PopupMessages.showSettingsImported(menuBarOwner.getFrame());
     }
 
     /**
@@ -453,6 +468,7 @@ public final class CConfig {
         Dimension size = component.getSize();
         Point pos = component.getLocation();
         setParam(cconfigSetting, pos.x + ";" + pos.y + ";" + size.width + ";" + size.height);
+        saveConfig();
     }
 
     private static String settingForMainUi(MegaMekLabMainUI ui) {
@@ -477,6 +493,10 @@ public final class CConfig {
         }
     }
 
-    private CConfig() {
+    private static void applyImportedSettings(MenuBarOwner menuBarOwner) {
+        menuBarOwner.changeTheme(getParam(GUI_PLAF));
+        menuBarOwner.refreshAll();
     }
+
+    private CConfig() { }
 }
