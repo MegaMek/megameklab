@@ -17,6 +17,7 @@ package megameklab.ui.fighterAero;
 import megamek.common.*;
 import megamek.common.verifier.TestAero;
 import megameklab.ui.EntitySource;
+import megameklab.ui.PopupMessages;
 import megameklab.ui.util.BAASBMDropTargetCriticalList;
 import megameklab.ui.util.CritCellUtil;
 import megameklab.ui.util.IView;
@@ -210,8 +211,7 @@ public class ASCriticalView extends IView {
         try {
             UnitUtil.copyLocationEquipment(getAero(), from, to);
         } catch (LocationFullException ex) {
-            JOptionPane.showMessageDialog(this, "Insufficient space", "Location Full",
-                    JOptionPane.WARNING_MESSAGE);
+            PopupMessages.showLocationFullError(null);
         }
         refreshListener.scheduleRefresh();
     }

@@ -44,7 +44,6 @@ public class CVMainUI extends MegaMekLabMainUI {
     public CVMainUI() {
         super();
         createNewUnit(Entity.ETYPE_TANK, false, false);
-        setTitle(getEntity().getChassis() + " " + getEntity().getModel() + ".blk");
         finishSetup();
     }
 
@@ -100,9 +99,7 @@ public class CVMainUI extends MegaMekLabMainUI {
     }
 
     @Override
-    public void refreshArmor() {
-
-    }
+    public void refreshArmor() { }
 
     @Override
     public void refreshBuild() {
@@ -120,11 +117,6 @@ public class CVMainUI extends MegaMekLabMainUI {
     }
 
     @Override
-    public void refreshHeader() {
-        setTitle(getEntity().getChassis() + " " + getEntity().getModel() + ".blk");
-    }
-
-    @Override
     public void refreshStatus() {
         statusbar.refresh();
     }
@@ -135,8 +127,7 @@ public class CVMainUI extends MegaMekLabMainUI {
     }
 
     @Override
-    public void refreshWeapons() {
-    }
+    public void refreshWeapons() { }
 
     @Override
     public void createNewUnit(long entityType, boolean isPrimitive, boolean isIndustrial, Entity oldEntity) {
@@ -226,13 +217,4 @@ public class CVMainUI extends MegaMekLabMainUI {
     public JDialog getFloatingEquipmentDatabase() {
         return floatingEquipmentDatabase;
     }
-
-    @Override
-    public void setVisible(boolean b) {
-        super.setVisible(b);
-        if (!b && (floatingEquipmentDatabase != null)) {
-            floatingEquipmentDatabase.setVisible(false);
-        }
-    }
-
 }

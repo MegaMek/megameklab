@@ -23,6 +23,7 @@ import javax.swing.*;
 import megamek.common.*;
 import megamek.common.weapons.infantry.InfantryWeapon;
 import megameklab.ui.MegaMekLabMainUI;
+import megameklab.ui.PopupMessages;
 import megameklab.ui.generalUnit.PreviewTab;
 import megameklab.ui.generalUnit.FluffTab;
 import megameklab.ui.util.TabScrollPane;
@@ -38,7 +39,6 @@ public class CIMainUI extends MegaMekLabMainUI {
     public CIMainUI() {
         super();
         createNewUnit(Entity.ETYPE_INFANTRY);
-        setTitle(getEntity().getChassis() + " " + getEntity().getModel() + ".mtf");
         finishSetup();
     }
 
@@ -74,12 +74,11 @@ public class CIMainUI extends MegaMekLabMainUI {
         getEntity().setArmorTechLevel(TechConstants.T_IS_TW_NON_BOX);
         ((Infantry) getEntity()).setSquadCount(4);
         ((Infantry) getEntity()).setSquadSize(7);
-        ((Infantry) getEntity()).setPrimaryWeapon((InfantryWeapon) EquipmentType
-                .get("InfantryAssaultRifle"));
+        ((Infantry) getEntity()).setPrimaryWeapon((InfantryWeapon) EquipmentType.get("InfantryAssaultRifle"));
         try {
-            getEntity().addEquipment(EquipmentType.get(EquipmentTypeLookup.INFANTRY_ASSAULT_RIFLE),
-                    Infantry.LOC_INFANTRY);
+            getEntity().addEquipment(EquipmentType.get(EquipmentTypeLookup.INFANTRY_ASSAULT_RIFLE), Infantry.LOC_INFANTRY);
         } catch (LocationFullException ex) {
+            PopupMessages.showLocationFullError(this, EquipmentType.get("InfantryAssaultRifle").getName());
         }
         getEntity().autoSetInternal();
         getEntity().setChassis("New");
@@ -94,31 +93,17 @@ public class CIMainUI extends MegaMekLabMainUI {
     }
 
     @Override
-    public void refreshArmor() {
-        // armorTab.refresh();
-    }
+    public void refreshArmor() { }
 
     @Override
-    public void refreshBuild() {
-
-    }
+    public void refreshBuild() { }
 
     @Override
-    public void refreshEquipment() {
-
-    }
+    public void refreshEquipment() { }
 
     @Override
     public void refreshTransport() {
         // not used for infantry
-    }
-
-    @Override
-    public void refreshHeader() {
-        String title = getEntity().getChassis() + " " + getEntity().getModel()
-                + ".blk";
-        setTitle(title);
-
     }
 
     @Override
@@ -129,13 +114,10 @@ public class CIMainUI extends MegaMekLabMainUI {
     @Override
     public void refreshStructure() {
         structureTab.refresh();
-
     }
 
     @Override
-    public void refreshWeapons() {
-        // weaponTab.refresh();
-    }
+    public void refreshWeapons() { }
 
     @Override
     public void refreshPreview() {
@@ -148,8 +130,7 @@ public class CIMainUI extends MegaMekLabMainUI {
     }
 
     @Override
-    public void refreshSummary() {
-    }
+    public void refreshSummary() { }
 
     @Override
     public void refreshEquipmentTable() {
@@ -163,5 +144,4 @@ public class CIMainUI extends MegaMekLabMainUI {
         }
         return null;
     }
-
 }

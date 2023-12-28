@@ -57,20 +57,15 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
 
     private final MenuBarOwner owner;
     private final ResourceBundle resources = ResourceBundle.getBundle("megameklab.resources.Menu");
-
     private final MMLFileChooser loadUnitFileChooser = new MMLFileChooser();
     private final MMLFileChooser saveUnitFileChooser = new MMLFileChooser();
     private final MMLFileChooser loadImageFileChooser = new MMLFileChooser();
-
     private final JMenu fileMenu = new JMenu(resources.getString("fileMenu.text"));
-    //endregion Variable Declarations
 
-    //region Constructors
     public MenuBar(MenuBarOwner owner) {
         this.owner = owner;
         initialize();
     }
-    //endregion Constructors
 
     public @Nullable MegaMekLabMainUI getUnitMainUi() {
         if (owner instanceof MegaMekLabMainUI) {
@@ -94,13 +89,6 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         }
     }
 
-    /**
-     * The main menu bar uses the following Mnemonic keys as of 30-Jun-2022:
-     * F, H, R, U
-     *
-     * It uses the following Control-based keys as of 30-Jun-2022:
-     * A, C, L, P, R, S, U
-     */
     private void initialize() {
         getAccessibleContext().setAccessibleName(resources.getString("MenuBar.accessibleName"));
         add(createFileMenu());
@@ -116,9 +104,6 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         saveUnitFileChooser.setDialogTitle(resources.getString("dialog.saveAs.title"));
     }
 
-    /**
-     * @return the created file menu
-     */
     private JMenu createFileMenu() {
         fileMenu.removeAll();
         fileMenu.setName("fileMenu");
@@ -141,32 +126,14 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         fileMenu.add(createOptionsMenu());
 
         fileMenu.addSeparator();
-
-        int fileNumber = 1;
         boolean hasCConfigMenuItem = false;
+        int count = 1;
 
-        final JMenuItem miCConfig1 = createCConfigMenuItem(CConfig.CONFIG_SAVE_FILE_1, fileNumber++);
-        if (miCConfig1 != null) {
-            fileMenu.add(miCConfig1);
+        for (String file : CConfig.getRecentFiles()) {
+            final JMenuItem miCConfig = createCConfigMenuItem(file, count);
+            fileMenu.add(miCConfig);
             hasCConfigMenuItem = true;
-        }
-
-        final JMenuItem miCConfig2 = createCConfigMenuItem(CConfig.CONFIG_SAVE_FILE_2, fileNumber++);
-        if (miCConfig2 != null) {
-            fileMenu.add(miCConfig2);
-            hasCConfigMenuItem = true;
-        }
-
-        final JMenuItem miCConfig3 = createCConfigMenuItem(CConfig.CONFIG_SAVE_FILE_3, fileNumber++);
-        if (miCConfig3 != null) {
-            fileMenu.add(miCConfig3);
-            hasCConfigMenuItem = true;
-        }
-
-        final JMenuItem miCConfig4 = createCConfigMenuItem(CConfig.CONFIG_SAVE_FILE_4, fileNumber);
-        if (miCConfig4 != null) {
-            fileMenu.add(miCConfig4);
-            hasCConfigMenuItem = true;
+            count++;
         }
 
         if (hasCConfigMenuItem) {
@@ -175,7 +142,6 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
 
         final JMenuItem miExit = new JMenuItem(resources.getString("miExit.text"));
         miExit.setName("miExit");
-        miExit.setMnemonic(KeyEvent.VK_X);
         miExit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F4, InputEvent.ALT_DOWN_MASK));
         miExit.addActionListener(evt -> conditionalExit(owner.exit()));
         fileMenu.add(miExit);
@@ -183,9 +149,6 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         return fileMenu;
     }
 
-    /**
-     * @return the created Switch Unit Type menu
-     */
     private JMenu createSwitchUnitTypeMenu() {
         final JMenu switchUnitTypeMenu = new JMenu(resources.getString("switchUnitTypeMenu.text"));
         switchUnitTypeMenu.setName("switchUnitTypeMenu");
@@ -197,7 +160,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             final JMenuItem miSwitchToMek = new JMenuItem(resources.getString("miSwitchToMek.text"));
             miSwitchToMek.setName("miSwitchToMek");
             miSwitchToMek.setMnemonic(KeyEvent.VK_M);
-            miSwitchToMek.addActionListener(evt -> newUnit(Entity.ETYPE_MECH, false));
+            miSwitchToMek.addActionListener(evt -> owner.newUnit(Entity.ETYPE_MECH));
             switchUnitTypeMenu.add(miSwitchToMek);
         }
 
@@ -205,7 +168,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             final JMenuItem miSwitchToFighter = new JMenuItem(resources.getString("miSwitchToFighter.text"));
             miSwitchToFighter.setName("miSwitchToFighter");
             miSwitchToFighter.setMnemonic(KeyEvent.VK_A);
-            miSwitchToFighter.addActionListener(evt -> newUnit(Entity.ETYPE_AERO, false));
+            miSwitchToFighter.addActionListener(evt -> owner.newUnit(Entity.ETYPE_AERO));
             switchUnitTypeMenu.add(miSwitchToFighter);
         }
 
@@ -213,7 +176,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             final JMenuItem item = new JMenuItem(resources.getString("miSwitchToDropShipSmallCraft.text"));
             item.setName("miSwitchToDropShipSmallCraft");
             item.setMnemonic(KeyEvent.VK_D);
-            item.addActionListener(evt -> newUnit(Entity.ETYPE_DROPSHIP, false));
+            item.addActionListener(evt -> owner.newUnit(Entity.ETYPE_DROPSHIP));
             switchUnitTypeMenu.add(item);
         }
 
@@ -221,7 +184,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             final JMenuItem miSwitchToAdvancedAero = new JMenuItem(resources.getString("miSwitchToAdvancedAero.text"));
             miSwitchToAdvancedAero.setName("miSwitchToAdvancedAero");
             miSwitchToAdvancedAero.setMnemonic(KeyEvent.VK_J);
-            miSwitchToAdvancedAero.addActionListener(evt -> newUnit(Entity.ETYPE_JUMPSHIP, false));
+            miSwitchToAdvancedAero.addActionListener(evt -> owner.newUnit(Entity.ETYPE_JUMPSHIP));
             switchUnitTypeMenu.add(miSwitchToAdvancedAero);
         }
 
@@ -229,7 +192,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             final JMenuItem miSwitchToCombatVehicle = new JMenuItem(resources.getString("miSwitchToCombatVehicle.text"));
             miSwitchToCombatVehicle.setName("miSwitchToCombatVehicle");
             miSwitchToCombatVehicle.setMnemonic(KeyEvent.VK_C);
-            miSwitchToCombatVehicle.addActionListener(evt -> newUnit(Entity.ETYPE_TANK, false));
+            miSwitchToCombatVehicle.addActionListener(evt -> owner.newUnit(Entity.ETYPE_TANK));
             switchUnitTypeMenu.add(miSwitchToCombatVehicle);
         }
 
@@ -237,7 +200,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             final JMenuItem miSwitchToSupportVehicle = new JMenuItem(resources.getString("miSwitchToSupportVehicle.text"));
             miSwitchToSupportVehicle.setName("miSwitchToSupportVehicle");
             miSwitchToSupportVehicle.setMnemonic(KeyEvent.VK_S);
-            miSwitchToSupportVehicle.addActionListener(evt -> newUnit(Entity.ETYPE_SUPPORT_TANK, false));
+            miSwitchToSupportVehicle.addActionListener(evt -> owner.newUnit(Entity.ETYPE_SUPPORT_TANK));
             switchUnitTypeMenu.add(miSwitchToSupportVehicle);
         }
 
@@ -245,7 +208,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             final JMenuItem miSwitchToBattleArmor = new JMenuItem(resources.getString("miSwitchToBattleArmor.text"));
             miSwitchToBattleArmor.setName("miSwitchToBattleArmor");
             miSwitchToBattleArmor.setMnemonic(KeyEvent.VK_B);
-            miSwitchToBattleArmor.addActionListener(evt -> newUnit(Entity.ETYPE_BATTLEARMOR, false));
+            miSwitchToBattleArmor.addActionListener(evt -> owner.newUnit(Entity.ETYPE_BATTLEARMOR));
             switchUnitTypeMenu.add(miSwitchToBattleArmor);
         }
 
@@ -253,7 +216,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             final JMenuItem miSwitchToInfantry = new JMenuItem(resources.getString("miSwitchToInfantry.text"));
             miSwitchToInfantry.setName("miSwitchToInfantry");
             miSwitchToInfantry.setMnemonic(KeyEvent.VK_I);
-            miSwitchToInfantry.addActionListener(evt -> newUnit(Entity.ETYPE_INFANTRY, false));
+            miSwitchToInfantry.addActionListener(evt -> owner.newUnit(Entity.ETYPE_INFANTRY));
             switchUnitTypeMenu.add(miSwitchToInfantry);
         }
 
@@ -261,7 +224,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             final JMenuItem miSwitchToProtoMek = new JMenuItem(resources.getString("miSwitchToProtoMek.text"));
             miSwitchToProtoMek.setName("miSwitchToProtoMek");
             miSwitchToProtoMek.setMnemonic(KeyEvent.VK_P);
-            miSwitchToProtoMek.addActionListener(evt -> newUnit(Entity.ETYPE_PROTOMECH, false));
+            miSwitchToProtoMek.addActionListener(evt -> owner.newUnit(Entity.ETYPE_PROTOMECH));
             switchUnitTypeMenu.add(miSwitchToProtoMek);
         }
 
@@ -282,7 +245,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             final JMenuItem miSwitchToMek = new JMenuItem(resources.getString("miSwitchToMek.text"));
             miSwitchToMek.setName("miSwitchToMek");
             miSwitchToMek.setMnemonic(KeyEvent.VK_M);
-            miSwitchToMek.addActionListener(evt -> newUnit(Entity.ETYPE_MECH, true));
+            miSwitchToMek.addActionListener(evt -> owner.newUnit(Entity.ETYPE_MECH, true));
             primitiveMenu.add(miSwitchToMek);
         }
 
@@ -290,7 +253,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             final JMenuItem miSwitchToAero = new JMenuItem(resources.getString("miSwitchToAero.text"));
             miSwitchToAero.setName("miSwitchToAero");
             miSwitchToAero.setMnemonic(KeyEvent.VK_A);
-            miSwitchToAero.addActionListener(evt -> newUnit(Entity.ETYPE_AERO, true));
+            miSwitchToAero.addActionListener(evt -> owner.newUnit(Entity.ETYPE_AERO, true));
             primitiveMenu.add(miSwitchToAero);
         }
 
@@ -298,7 +261,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             final JMenuItem miSwitchToDropShipSmallCraft = new JMenuItem(resources.getString("miSwitchToDropShipSmallCraft.text"));
             miSwitchToDropShipSmallCraft.setName("miSwitchToDropShipSmallCraft");
             miSwitchToDropShipSmallCraft.setMnemonic(KeyEvent.VK_D);
-            miSwitchToDropShipSmallCraft.addActionListener(evt -> newUnit(Entity.ETYPE_DROPSHIP, true));
+            miSwitchToDropShipSmallCraft.addActionListener(evt -> owner.newUnit(Entity.ETYPE_DROPSHIP, true));
             primitiveMenu.add(miSwitchToDropShipSmallCraft);
         }
 
@@ -306,7 +269,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             final JMenuItem miSwitchToJumpShip = new JMenuItem(resources.getString("miSwitchToJumpShip.text"));
             miSwitchToJumpShip.setName("miSwitchToJumpShip");
             miSwitchToJumpShip.setMnemonic(KeyEvent.VK_J);
-            miSwitchToJumpShip.addActionListener(evt -> newUnit(Entity.ETYPE_JUMPSHIP, true));
+            miSwitchToJumpShip.addActionListener(evt -> owner.newUnit(Entity.ETYPE_JUMPSHIP, true));
             primitiveMenu.add(miSwitchToJumpShip);
         }
 
@@ -314,8 +277,6 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     }
 
     /**
-     * This menu uses the following Mnemonic keys as of 30-Jun-2022:
-     * C, F
      * @return the created Load menu
      */
     private JMenu createLoadMenu() {
@@ -327,7 +288,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         miLoadUnitFromCache.setName("miLoadUnitFromCache");
         miLoadUnitFromCache.setMnemonic(KeyEvent.VK_C);
         miLoadUnitFromCache.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, InputEvent.CTRL_DOWN_MASK));
-        miLoadUnitFromCache.addActionListener(evt -> StartupGUI.selectAndLoadUnitFromCache(owner.getFrame()));
+        miLoadUnitFromCache.addActionListener(evt -> StartupGUI.selectAndLoadUnitFromCache(owner));
         loadMenu.add(miLoadUnitFromCache);
 
         final JMenuItem miLoadUnitFromFile = new JMenuItem(resources.getString("FromFile.text"));
@@ -341,8 +302,6 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     }
 
     /**
-     * This menu uses the following Mnemonic keys as of 30-Jun-2022:
-     * A, S
      * @return the created Save menu
      */
     private JMenu createSaveMenu() {
@@ -354,7 +313,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         miSave.setName("miSave");
         miSave.setMnemonic(KeyEvent.VK_S);
         miSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
-        miSave.addActionListener(evt -> saveEntity());
+        miSave.addActionListener(evt -> saveUnit());
         miSave.setEnabled(isUnitGui());
         saveMenu.add(miSave);
 
@@ -362,7 +321,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         miSaveAs.setName("miSaveAs");
         miSaveAs.setMnemonic(KeyEvent.VK_A);
         miSaveAs.setAccelerator(KeyStroke.getKeyStroke("control shift S"));
-        miSaveAs.addActionListener(evt -> jMenuSaveAsEntity_actionPerformed());
+        miSaveAs.addActionListener(evt -> saveUnitAs());
         miSaveAs.setEnabled(isUnitGui());
         saveMenu.add(miSaveAs);
 
@@ -370,8 +329,6 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     }
 
     /**
-     * This menu uses the following Mnemonic keys as of 30-Jun-2022:
-     * I
      * @return the created Import menu
      */
     private JMenu createImportMenu() {
@@ -391,8 +348,6 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     }
 
     /**
-     * This menu uses the following Mnemonic keys as of 30-Jun-2022:
-     * C, H, P, T
      * @return the created Export menu
      */
     private JMenu createExportMenu() {
@@ -409,8 +364,6 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     }
 
     /**
-     * This menu uses the following Mnemonic keys as of 30-Jun-2022:
-     * C, F, L, M, Q, S, U
      * @return the created PDF Unit Export menu
      */
     private JMenu createPDFUnitExportMenu() {
@@ -465,8 +418,6 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     }
 
     /**
-     * This menu uses the following Mnemonic keys as of 30-Jun-2022:
-     * U
      * @return the created HTML Unit Export menu
      */
     private JMenu createHTMLUnitExportMenu() {
@@ -485,8 +436,6 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     }
 
     /**
-     * This menu uses the following Mnemonic keys as of 30-Jun-2022:
-     * U
      * @return the created Text Unit Export menu
      */
     private JMenu createTextUnitExportMenu() {
@@ -505,8 +454,6 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     }
 
     /**
-     * This menu uses the following Mnemonic keys as of 30-Jun-2022:
-     * U
      * @return the created Clipboard Unit Export menu
      */
     private JMenu createClipboardUnitExportMenu() {
@@ -528,8 +475,6 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     }
 
     /**
-     * This menu uses the following Mnemonic keys as of 30-Jun-2022:
-     * C, F, L, M, Q, S, U
      * @return the created Print menu
      */
     private JMenu createPrintMenu() {
@@ -585,8 +530,6 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     }
 
     /**
-     * This menu uses the following Mnemonic keys as of 30-Jun-2022:
-     * U
      * @return the created Refresh menu
      */
     private JMenu createRefreshMenu() {
@@ -604,14 +547,18 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     }
 
     /**
-     * This menu uses the following Mnemonic keys as of 30-Jun-2022:
-     * C, T
      * @return the created Options menu
      */
     private JMenu createOptionsMenu() {
         final JMenu optionsMenu = new JMenu(resources.getString("optionsMenu.text"));
         optionsMenu.setName("optionsMenu");
         optionsMenu.setMnemonic(KeyEvent.VK_O);
+
+        final JMenuItem miImport = new JMenuItem(resources.getString("miImport.text"));
+        miImport.setName("miImport");
+        miImport.setMnemonic(KeyEvent.VK_I);
+        miImport.addActionListener(evt -> importSettings());
+        optionsMenu.add(miImport);
 
         final JMenuItem miConfiguration = new JMenuItem(resources.getString("miConfiguration.text"));
         miConfiguration.setName("miConfiguration");
@@ -655,12 +602,8 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         return themesMenu;
     }
 
-    private @Nullable JMenuItem createCConfigMenuItem(final String configSaveFile,
+    private @Nullable JMenuItem createCConfigMenuItem(final String recentFileName,
                                                       final int fileNumber) {
-        final String recentFileName = CConfig.getParam(configSaveFile);
-        if (recentFileName.isEmpty()) {
-            return null;
-        }
         File recent = new File(recentFileName);
         String path = recent.getParent();
         String mmlDirectory = System.getProperty("user.dir");
@@ -675,15 +618,11 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         final JMenuItem miCConfig = new JMenuItem(text);
         miCConfig.setName("miCConfig");
         miCConfig.addActionListener(evt -> loadUnitFromFile(fileNumber));
-        miCConfig.setMnemonic(KeyEvent.VK_1);
+        miCConfig.setMnemonic(48 + fileNumber); // the number itself, i.e. 1, 2, 3 etc.
         return miCConfig;
     }
-    //endregion File Menu
 
-    //region Unit Validation Menu
     /**
-     * This menu uses the following Mnemonic keys as of 30-Jun-2022:
-     * C, F, U
      * @return the created Unit Validation menu
      */
     private JMenu createUnitValidationMenu() {
@@ -712,12 +651,8 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
 
         return unitValidationMenu;
     }
-    //endregion Unit Validation Menu
 
-    //region Reports Menu
     /**
-     * This menu uses the following Mnemonic keys as of 30-Jun-2022:
-     * B, C, S, W
      * @return the created reports menu
      */
     private JMenu createReportsMenu() {
@@ -775,8 +710,6 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     }
 
     /**
-     * This menu uses the following Mnemonic keys as of 30-Jun-2022:
-     * C, F, U
      * @return the created Unit Cost Breakdown menu
      */
     private JMenu createUnitCostBreakdownMenu() {
@@ -807,8 +740,6 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     }
 
     /**
-     * This menu uses the following Mnemonic keys as of 30-Jun-2022:
-     * C, F, U
      * @return the created Unit Weight Breakdown menu
      */
     private JMenu createUnitWeightBreakdownMenu() {
@@ -837,18 +768,20 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
 
         return unitWeightBreakdownMenu;
     }
-    //endregion Reports Menu
 
-    //region Help Menu
     /**
-     * This menu uses the following Mnemonic keys as of 30-Jun-2022:
-     * A, R
      * @return the created Help menu
      */
     private JMenu createHelpMenu() {
         final JMenu helpMenu = new JMenu(resources.getString("helpMenu.text"));
         helpMenu.setName("helpMenu");
         helpMenu.setMnemonic(KeyEvent.VK_H);
+
+        final JMenuItem miResetWindowPos = new JMenuItem(resources.getString("miResetWindow.text"));
+        miResetWindowPos.setName("miResetWindows");
+        miResetWindowPos.setMnemonic(KeyEvent.VK_W);
+        miResetWindowPos.addActionListener(evt -> CConfig.resetWindowPositions());
+        helpMenu.add(miResetWindowPos);
 
         final JMenuItem miAbout = new JMenuItem(resources.getString("miAbout.text"));
         miAbout.setName("miAbout");
@@ -864,8 +797,6 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
 
         return helpMenu;
     }
-    //endregion Help Menu
-    //endregion Initialization
 
     private void jMenuGetUnitValidationFromCache_actionPerformed() {
         UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(owner.getFrame());
@@ -907,9 +838,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         try {
             UnitUtil.showBVCalculations(owner.getFrame(), new MechFileParser(unitFile).getEntity());
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(owner.getFrame(),
-                    String.format(resources.getString("message.invalidUnit.format"),
-                            ex.getMessage()));
+            PopupMessages.showFileReadError(owner.getFrame(), unitFile.toString(), ex.getMessage());
         }
     }
 
@@ -923,15 +852,19 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             Entity tempEntity = new MechFileParser(unitFile).getEntity();
             UnitUtil.showValidation(tempEntity, owner.getFrame());
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(owner.getFrame(),
-                    String.format(resources.getString("message.invalidUnit.format"),
-                            ex.getMessage()));
+            PopupMessages.showFileReadError(owner.getFrame(), unitFile.toString(), ex.getMessage());
         }
     }
 
+    /**
+     * Shows a file chooser for a unit file to open. Returns the unit file if one was chosen;
+     * returns null if none was chosen or the dialog was cancelled.
+     *
+     * @return The chosen unit file or null if cancelled or nothing was chosen
+     */
     private @Nullable File chooseUnitFileToLoad() {
-        loadUnitFileChooser.setCurrentDirectory(new File(CConfig.getParam(CConfig.LAST_DIRECTORY)));
-        int result = loadUnitFileChooser.showOpenDialog(frame);
+        loadUnitFileChooser.setCurrentDirectory(new File(CConfig.getParam(CConfig.FILE_LAST_DIRECTORY)));
+        int result = loadUnitFileChooser.showOpenDialog(owner.getFrame());
         return result == JFileChooser.APPROVE_OPTION ? loadUnitFileChooser.getSelectedFile() : null;
     }
 
@@ -944,9 +877,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         try {
             new CostDisplayDialog(owner.getFrame(), new MechFileParser(unitFile).getEntity()).setVisible(true);
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(owner.getFrame(),
-                    String.format(resources.getString("message.invalidUnit.format"),
-                            ex.getMessage()));
+            PopupMessages.showFileReadError(owner.getFrame(), unitFile.toString(), ex.getMessage());
         }
     }
 
@@ -960,9 +891,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             Entity tempEntity = new MechFileParser(unitFile).getEntity();
             UnitUtil.showUnitWeightBreakDown(tempEntity, owner.getFrame());
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(owner.getFrame(),
-                    String.format(resources.getString("message.invalidUnit.format"),
-                            ex.getMessage()));
+            PopupMessages.showFileReadError(owner.getFrame(), unitFile.toString(), ex.getMessage());
         }
     }
 
@@ -976,9 +905,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             Entity tempEntity = new MechFileParser(unitFile).getEntity();
             UnitUtil.showUnitSpecs(tempEntity, owner.getFrame());
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(owner.getFrame(),
-                    String.format(resources.getString("message.invalidUnit.format"),
-                            ex.getMessage()));
+            PopupMessages.showFileReadError(owner.getFrame(), unitFile.toString(), ex.getMessage());
         }
     }
 
@@ -990,8 +917,9 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
 
         try {
             Entity tempEntity = new MechFileParser(unitFile).getEntity();
-            if (!UnitUtil.validateUnit(getFrame().getEntity()).isBlank()) {
-                JOptionPane.showMessageDialog(getFrame(), resources.getString("message.invalidUnit.text"));
+            String validationResult = UnitUtil.validateUnit(tempEntity);
+            if (!validationResult.isBlank()) {
+                PopupMessages.showUnitInvalidWarning(owner.getFrame(), validationResult);
             }
 
             if (!owner.getEntity().getFluff().getMMLImagePath().isBlank()) {
@@ -1002,15 +930,16 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
                 loadImageFileChooser.setSelectedFile(new File(imageName));
             } else {
                 loadImageFileChooser.setCurrentDirectory(new File(ImageHelper.fluffPath));
-                loadImageFileChooser.setSelectedFile(new File(getFrame().getEntity().getChassis() + ' ' + getFrame().getEntity().getModel() + ".png"));
+                loadImageFileChooser.setSelectedFile(new File(getUnitMainUi().getEntity().getChassis()
+                        + ' ' + getUnitMainUi().getEntity().getModel() + ".png"));
             }
 
-            int result = loadImageFileChooser.showSaveDialog(frame);
+            int result = loadImageFileChooser.showSaveDialog(owner.getFrame());
             if ((result == JFileChooser.APPROVE_OPTION) && (loadImageFileChooser.getSelectedFile() != null)) {
                 String relativeFilePath = loadImageFileChooser.getSelectedFile().getAbsolutePath();
                 relativeFilePath = "." + File.separatorChar + relativeFilePath
                         .substring(new File(System.getProperty("user.dir")).getAbsolutePath().length() + 1);
-                getFrame().getEntity().getFluff().setMMLImagePath(relativeFilePath);
+                getUnitMainUi().getEntity().getFluff().setMMLImagePath(relativeFilePath);
                 BLKFile.encode(unitFile.getAbsolutePath(), tempEntity);
             }
         } catch (Exception ex) {
@@ -1099,8 +1028,6 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             return;
         }
 
-        CConfig.updateSaveFiles("Reset Unit");
-        CConfig.setParam(CConfig.CONFIG_SAVE_FILE_1, "");
         Entity en = owner.getEntity();
         if (en instanceof Tank) {
             getUnitMainUi().createNewUnit(Entity.ETYPE_TANK);
@@ -1127,10 +1054,8 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         } else {
             LogManager.getLogger().warn("Received unknown entityType!");
         }
-        setVisible(true);
         reload();
         refresh();
-        getUnitMainUi().setVisible(true);
         getUnitMainUi().repaint();
     }
 
@@ -1148,88 +1073,92 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         return fileName + ((entity instanceof Mech) ? ".mtf" : ".blk");
     }
 
-    private void saveEntity() {
-        saveEntity(owner.getEntity());
-    }
-
-    public boolean saveEntity(final @Nullable Entity entity) {
+    /**
+     * Tries to save the unit directly to its file, if it has a filename already. If
+     * it hasn't, it performs a Save As... Returns true when it successfully saves the
+     * unit, false if not.
+     *
+     * @return True when the unit was actually saved, false otherwise
+     */
+    public boolean saveUnit() {
+        Entity entity = owner.getEntity();
         if (entity == null) {
+            LogManager.getLogger().error("Tried to save null entity.");
             return false;
-        } else if (!UnitUtil.validateUnit(entity).isBlank()) {
-            JOptionPane.showMessageDialog(owner.getFrame(),
-                    resources.getString("message.invalidUnit.text"));
+        } else {
+            String validationResult = UnitUtil.validateUnit(entity);
+            if (!validationResult.isBlank()) {
+                PopupMessages.showUnitInvalidWarning(owner.getFrame(), validationResult);
+            }
         }
 
-        String fileName = createUnitFilename(entity);
         UnitUtil.compactCriticals(entity);
+        owner.refreshAll(); // The crits may have moved
 
-        String filePathName = CConfig.getParam(CConfig.CONFIG_SAVE_FILE_1);
-
-        if (filePathName.isBlank() || !filePathName.contains(fileName)) {
-            if (getFrame().getEntity() instanceof Mech) {
-                saveUnitFileChooser.setFileFilter(new FileNameExtensionFilter("Mek files", "mtf"));
-            } else {
-                saveUnitFileChooser.setFileFilter(new FileNameExtensionFilter("Unit files", "blk"));
-            }
-            saveUnitFileChooser.setCurrentDirectory(new File(filePathName));
-            saveUnitFileChooser.setSelectedFile(new File(createUnitFilename(getFrame().getEntity())));
-            int result = saveUnitFileChooser.showSaveDialog(frame);
-            if ((result != JFileChooser.APPROVE_OPTION) || (saveUnitFileChooser.getSelectedFile() == null)) {
+        String filePathName = owner.getFileName();
+        // For safety, save automatically only to .mtf or .blk files, otherwise ask
+        if (!(filePathName.endsWith(".mtf") || filePathName.endsWith(".blk")) || !new File(filePathName).exists()) {
+            File selectedFile = chooseSaveFile();
+            if (selectedFile == null) {
                 return false;
             }
 
-            filePathName = saveUnitFileChooser.getSelectedFile().getPath();
-            CConfig.setParam(CConfig.CONFIG_SAVE_LOC, saveUnitFileChooser.getSelectedFile().getParent());
+            filePathName = selectedFile.getPath();
         }
 
-        CConfig.updateSaveFiles(filePathName);
+        CConfig.setMostRecentFile(filePathName);
         return saveUnitTo(new File(filePathName));
     }
 
-    private void jMenuSaveAsEntity_actionPerformed() {
-        if (!UnitUtil.validateUnit(owner.getEntity()).isBlank()) {
-            JOptionPane.showMessageDialog(owner.getFrame(),
-                    resources.getString("message.savingInvalidUnit.text"));
+    private void saveUnitAs() {
+        String validationResult = UnitUtil.validateUnit(owner.getEntity());
+        if (!validationResult.isBlank()) {
+            PopupMessages.showUnitInvalidWarning(owner.getFrame(), validationResult);
         }
 
         UnitUtil.compactCriticals(owner.getEntity());
+        owner.refreshAll(); // The crits may have moved
 
-        String filePathName = CConfig.getParam(CConfig.CONFIG_SAVE_LOC);
-        if (getFrame().getEntity() instanceof Mech) {
+        File saveFile = chooseSaveFile();
+        if (saveFile != null) {
+            CConfig.setMostRecentFile(saveFile.toString());
+            saveUnitTo(saveFile);
+        }
+    }
+
+    private @Nullable File chooseSaveFile() {
+        if (getUnitMainUi().getEntity() instanceof Mech) {
             saveUnitFileChooser.setFileFilter(new FileNameExtensionFilter("Mek files", "mtf"));
         } else {
             saveUnitFileChooser.setFileFilter(new FileNameExtensionFilter("Unit files", "blk"));
         }
-        saveUnitFileChooser.setCurrentDirectory(new File(filePathName));
-        saveUnitFileChooser.setSelectedFile(new File(createUnitFilename(getFrame().getEntity())));
-        int result = saveUnitFileChooser.showSaveDialog(frame);
+        saveUnitFileChooser.setSelectedFile(new File(createUnitFilename(getUnitMainUi().getEntity())));
+        int result = saveUnitFileChooser.showSaveDialog(owner.getFrame());
         if ((result != JFileChooser.APPROVE_OPTION) || (saveUnitFileChooser.getSelectedFile() == null)) {
-            return;
+            return null;
+        } else {
+            return saveUnitFileChooser.getSelectedFile();
         }
-
-        File saveFile = saveUnitFileChooser.getSelectedFile();
-        CConfig.setParam(CConfig.CONFIG_SAVE_LOC, saveUnitFileChooser.getSelectedFile().getParent());
-
-        CConfig.updateSaveFiles(filePathName);
-        saveUnitTo(saveFile);
     }
 
     private boolean saveUnitTo(File file) {
-        if (getFrame().getEntity() == null) {
+        if (getUnitMainUi().getEntity() == null) {
             return false;
         }
         try {
-            if (getFrame().getEntity() instanceof Mech) {
+            if (getUnitMainUi().getEntity() instanceof Mech) {
                 try (FileOutputStream fos = new FileOutputStream(file);
                      PrintStream ps = new PrintStream(fos)) {
                     ps.println(((Mech) owner.getEntity()).getMtf());
                 }
             } else {
-                BLKFile.encode(file.getPath(), getFrame().getEntity());
+                BLKFile.encode(file.getPath(), getUnitMainUi().getEntity());
             }
-            showUnitSavedMessage(file);
+            PopupMessages.showUnitSavedMessage(owner.getFrame(), getUnitMainUi().getEntity(), file);
+            getUnitMainUi().setFileName(file.toString());
             return true;
         } catch (Exception ex) {
+            PopupMessages.showFileWriteError(owner.getFrame(), ex.getMessage());
             LogManager.getLogger().error("", ex);
             return false;
         }
@@ -1246,9 +1175,9 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     }
 
     private void exportSummary(boolean html) {
-        if (!UnitUtil.validateUnit(owner.getEntity()).isBlank()) {
-            JOptionPane.showMessageDialog(owner.getFrame(),
-                    resources.getString("message.exportingInvalidUnit.text"));
+        String validationResult = UnitUtil.validateUnit(owner.getEntity());
+        if (!validationResult.isBlank()) {
+            PopupMessages.showUnitInvalidWarning(owner.getFrame(), validationResult);
         }
 
         String unitName = owner.getEntity().getChassis() + ' ' + owner.getEntity().getModel();
@@ -1256,7 +1185,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         MMLFileChooser fileChooser = new MMLFileChooser();
         fileChooser.setDialogTitle(resources.getString("dialog.saveAs.title"));
         fileChooser.setSelectedFile(new File(unitName + (html ? ".html" : ".txt")));
-        int result = fileChooser.showSaveDialog(getFrame());
+        int result = fileChooser.showSaveDialog(owner.getFrame());
         if ((result != JFileChooser.APPROVE_OPTION) || (fileChooser.getSelectedFile() == null)) {
             return;
         }
@@ -1265,19 +1194,20 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
              PrintStream ps = new PrintStream(fos)) {
             ps.println(entitySummaryText(html));
         } catch (Exception ex) {
+            PopupMessages.showFileWriteError(owner.getFrame(), ex.getMessage());
             LogManager.getLogger().error("", ex);
         }
     }
 
     private void loadUnitFromFile(int fileNumber) {
-        String filePathName = System.getProperty("user.dir") + "/data/mechfiles/"; // TODO : remove inline file path
-
+        File unitFile;
         if (fileNumber > 0) {
-            filePathName = CConfig.getRecentFile(fileNumber);
-        }
-
-        File unitFile = new File(filePathName);
-        if (!(unitFile.isFile())) {
+            String recentFileName = CConfig.getRecentFile(fileNumber);
+            if (recentFileName.isBlank()) {
+                return;
+            }
+            unitFile = new File(recentFileName);
+        } else {
             unitFile = chooseUnitFileToLoad();
             if (unitFile == null) {
                 return;
@@ -1285,41 +1215,39 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         }
 
         try {
-            Entity tempEntity = new MechFileParser(unitFile).getEntity();
+            Entity loadedUnit = new MechFileParser(unitFile).getEntity();
 
-            if ((null == tempEntity) || !owner.safetyPrompt()) {
+            if (loadedUnit == null) {
+                throw new Exception();
+            }
+
+            if (!owner.safetyPrompt()) {
                 return;
             }
 
-            if (!UnitUtil.validateUnit(tempEntity).isBlank()) {
-                JOptionPane.showMessageDialog(owner.getFrame(), String.format(
-                        resources.getString("message.invalidUnit.format"),
-                        UnitUtil.validateUnit(tempEntity)));
+            String validationResult = UnitUtil.validateUnit(loadedUnit);
+            if (!validationResult.isBlank()) {
+                PopupMessages.showUnitInvalidWarning(owner.getFrame(), validationResult);
             }
 
-            if (isStartupGui() || (tempEntity.getEntityType() != owner.getEntity().getEntityType())) {
+            newRecentUnit(unitFile.toString());
+            if (isStartupGui() || (loadedUnit.getEntityType() != owner.getEntity().getEntityType())) {
                 owner.getFrame().setVisible(false);
                 owner.getFrame().dispose();
-                UiLoader.loadUi(tempEntity);
-                return;
+                UiLoader.loadUi(loadedUnit, unitFile.toString());
             } else {
-                getFrame().setEntity(tempEntity);
-                UnitUtil.updateLoadedUnit(getFrame().getEntity());
-                createFileMenu();
+                getUnitMainUi().setEntity(loadedUnit, unitFile.toString());
+                UnitUtil.updateLoadedUnit(getUnitMainUi().getEntity());
+                reload();
+                refresh();
             }
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(owner.getFrame(), String.format(
-                    resources.getString("message.invalidUnit.format"),
-                    ex.getMessage()));
+            PopupMessages.showFileReadError(owner.getFrame(), unitFile.toString(), ex.getMessage());
         }
-        newRecentUnit(unitFile.getAbsolutePath());
-        reload();
-        refresh();
-        getUnitMainUi().setVisible(true);
     }
 
     private void newRecentUnit(String latestUnit) {
-        CConfig.updateSaveFiles(latestUnit);
+        CConfig.setMostRecentFile(latestUnit);
         createFileMenu();
     }
 
@@ -1331,19 +1259,6 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         getUnitMainUi().reloadTabs();
     }
 
-    /**
-     * This function will create a new mainUI frame (via the loading dialog) for the
-     * given unit type and get rid of the existing frame
-     * @param type an <code>int</code> corresponding to the unit type to construct
-     */
-    private void newUnit(long type, boolean primitive) {
-        if (owner.safetyPrompt()) {
-            owner.getFrame().setVisible(false);
-            owner.getFrame().dispose();
-            UiLoader.loadUi(type, primitive, false);
-        }
-    }
-
     @Override
     public void lostOwnership(Clipboard arg0, Transferable arg1) { }
 
@@ -1351,12 +1266,23 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         return owner instanceof StartupGUI;
     }
 
-    private void showUnitSavedMessage(File file) {
-        JOptionPane.showMessageDialog(getFrame(),
-                String.format(resources.getString("dialog.saveAs.message.format"),
-                        getFrame().getEntity().getChassis(),
-                        getFrame().getEntity().getModel(), file));
     private boolean isUnitGui() {
         return !isStartupGui();
+    }
+
+    public void refreshMenuBar() {
+        createFileMenu();
+    }
+
+    private void importSettings() {
+        MMLFileChooser fileChooser = new MMLFileChooser();
+        fileChooser.setDialogTitle(resources.getString("dialog.importSettings"));
+        fileChooser.setFileFilter(new FileNameExtensionFilter("MML Settings", "properties"));
+        fileChooser.setSelectedFile(new File("megameklab.properties"));
+        int result = fileChooser.showOpenDialog(owner.getFrame());
+        if ((result != JFileChooser.APPROVE_OPTION) || (fileChooser.getSelectedFile() == null)) {
+            return;
+        }
+        CConfig.importSettings(fileChooser.getSelectedFile());
     }
 }

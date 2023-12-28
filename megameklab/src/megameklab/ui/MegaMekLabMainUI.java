@@ -30,45 +30,49 @@ import java.awt.*;
 
 public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener, EntitySource, MenuBarOwner {
     private Entity entity = null;
+    private String fileName = "";
     protected MenuBar mmlMenuBar;
     protected boolean refreshRequired = false;
     
     public MegaMekLabMainUI() {
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         addWindowListener(new ExitOnWindowClosingListener(this));
-        setResizable(true);
-        setExtendedState(CConfig.getIntParam("WINDOWSTATE"));
+        setExtendedState(CConfig.getIntParam(CConfig.GUI_FULLSCREEN));
     }
 
     protected void finishSetup() {
         mmlMenuBar = new MenuBar(this);
         setJMenuBar(mmlMenuBar);
         reloadTabs();
-        setSizeAndLocation();
         refreshAll();
     }
     
     protected void setSizeAndLocation() {
+        pack();
+        restrictToScrenSize();
+        CConfig.getMainUiWindowSize(this).ifPresent(this::setSize);
+        CConfig.getMainUiWindowPosition(this).ifPresent(this::setLocation);
+        setLocationRelativeTo(null);
+    }
+
+    private void restrictToScrenSize() {
         DisplayMode currentMonitor = getGraphicsConfiguration().getDevice().getDisplayMode();
         int scaledMonitorW = UIUtil.getScaledScreenWidth(currentMonitor);
         int scaledMonitorH = UIUtil.getScaledScreenHeight(currentMonitor);
+        int w = Math.min(getSize().width, scaledMonitorW);
+        int h = Math.min(getSize().height, scaledMonitorH);
+        setSize(new Dimension(w, h));
+    }
 
-        // figure out size dimensions
-        pack();
-        setLocationRelativeTo(null);
-        int w = getSize().width;
-        int h = getSize().height;
-
-        if (scaledMonitorW < w) {
-            w = scaledMonitorW;
+    @Override
+    public void setVisible(boolean b) {
+        if (b) {
+            setSizeAndLocation();
         }
-        if (scaledMonitorH < h) {
-            h = scaledMonitorH;
+        super.setVisible(b);
+        if (!b && (getFloatingEquipmentDatabase() != null)) {
+            getFloatingEquipmentDatabase().setVisible(false);
         }
-        Dimension size = new Dimension(w, h);
-        setSize(size);
-        setPreferredSize(size);
-        setLocationRelativeTo(null);
     }
 
     @Override
@@ -83,7 +87,7 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
                     JOptionPane.WARNING_MESSAGE);
             // When the user did not actually save the unit, return as if CANCEL was pressed
             return (savePrompt == JOptionPane.NO_OPTION)
-                    || ((savePrompt == JOptionPane.YES_OPTION) && mmlMenuBar.saveEntity(entity));
+                    || ((savePrompt == JOptionPane.YES_OPTION) && mmlMenuBar.saveUnit());
         }
     }
 
@@ -93,8 +97,9 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
             return false;
         }
 
-        CConfig.setParam("WINDOWSTATE", Integer.toString(getExtendedState()));
-        CConfig.setParam(CConfig.CONFIG_PLAF, UIManager.getLookAndFeel().getClass().getName());
+        CConfig.setParam(CConfig.GUI_FULLSCREEN, Integer.toString(getExtendedState()));
+        CConfig.setParam(CConfig.GUI_PLAF, UIManager.getLookAndFeel().getClass().getName());
+        CConfig.writeMainUiWindowSettings(this);
         CConfig.saveConfig();
         PreferenceManager.getInstance().save();
         MegaMek.getMMPreferences().saveToFile(MMLConstants.MM_PREFERENCES_FILE);
@@ -117,7 +122,10 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
     public abstract void refreshEquipment();
 
     @Override
-    public abstract void refreshHeader();
+    public void refreshHeader() {
+        String fileInfo = fileName.isBlank() ? "" : " (" + fileName + ")";
+        setTitle(getEntity().getChassis() + " " + getEntity().getModel() + fileInfo);
+    }
 
     @Override
     public abstract void refreshStatus();
@@ -132,7 +140,7 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
     public abstract void refreshPreview();
 
     public void setEntity(Entity en) {
-        entity = en;
+        setEntity(en, "");
     }
 
     @Override
@@ -140,6 +148,10 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
         return entity;
     }
 
+    public void setEntity(Entity entity, String currentEntityFilename) {
+        this.entity = entity;
+        setFileName(currentEntityFilename);
+    }
 
     @Override
     public void scheduleRefresh() {
@@ -159,5 +171,20 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
     @Override
     public JFrame getFrame() {
         return this;
+    }
+
+    @Override
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+        refreshHeader();
+    }
+
+    @Override
+    public void refreshMenuBar() {
+        mmlMenuBar.refreshMenuBar();
     }
 }

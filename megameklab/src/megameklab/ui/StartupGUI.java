@@ -20,22 +20,18 @@ import megamek.client.ui.swing.widget.MegamekButton;
 import megamek.client.ui.swing.widget.SkinSpecification;
 import megamek.client.ui.swing.widget.SkinSpecification.UIComponents;
 import megamek.client.ui.swing.widget.SkinXMLHandler;
+import megamek.client.ui.swing.widget.SkinnedJPanel;
 import megamek.common.Configuration;
 import megamek.common.Entity;
-import megamek.common.annotations.Nullable;
-import megamek.common.util.ImageUtil;
-import megamek.common.util.fileUtils.MegaMekFile;
 import megameklab.MMLConstants;
 import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
 import megameklab.ui.dialog.UiLoader;
 import megameklab.ui.util.ExitOnWindowClosingListener;
 import megameklab.util.CConfig;
 import megameklab.util.UnitUtil;
-import org.apache.logging.log4j.LogManager;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ResourceBundle;
 import java.util.TreeMap;
@@ -44,9 +40,9 @@ import java.util.TreeMap;
  * A startup splash screen for MegaMekLab
  * @author Taharqa
  */
-public class StartupGUI extends JPanel implements MenuBarOwner {
+public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
     JFrame frame;
-    BufferedImage backgroundIcon;
+    MenuBar mmlMenuBar;
     
     /** A map of resolution widths to file names for the startup screen */
     private final TreeMap<Integer, String> startupScreenImages = new TreeMap<>();
@@ -58,7 +54,8 @@ public class StartupGUI extends JPanel implements MenuBarOwner {
     
     private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Splash");
     
-    public StartupGUI() {       
+    public StartupGUI() {
+        super(UIComponents.MainMenuBorder, 1);
         initComponents();
     }
 
@@ -67,25 +64,12 @@ public class StartupGUI extends JPanel implements MenuBarOwner {
         
         frame = new JFrame("MegaMekLab");
         setBackground(UIManager.getColor("controlHighlight"));
-        frame.setJMenuBar(new MenuBar(this));
+        mmlMenuBar = new MenuBar(this);
+        frame.setJMenuBar(mmlMenuBar);
 
         Dimension scaledMonitorSize = UIUtil.getScaledScreenSize(frame);
         JLabel splash = UIUtil.createSplashComponent(startupScreenImages, frame);
         add(splash, BorderLayout.CENTER);
-        
-        if (skinSpec.hasBackgrounds()) {
-            if (skinSpec.backgrounds.size() > 1) {
-                File file = new MegaMekFile(Configuration.widgetsDir(),
-                        skinSpec.backgrounds.get(1)).getFile();
-                if (!file.exists()) {
-                    LogManager.getLogger().error("Background icon doesn't exist: " + file.getAbsolutePath());
-                } else {
-                    backgroundIcon = (BufferedImage) ImageUtil.loadImageFromFile(file.toString());
-                }
-            }
-        } else {
-            backgroundIcon = null;
-        }
         
         JLabel labVersion = new JLabel(resourceMap.getString("version.text") + MMLConstants.VERSION, JLabel.CENTER);
         labVersion.setPreferredSize(new Dimension(250,15));
@@ -95,7 +79,7 @@ public class StartupGUI extends JPanel implements MenuBarOwner {
 
         MegamekButton btnLoadUnit = new MegamekButton(resourceMap.getString("btnLoadUnit.text"),
                 UIComponents.MainMenuButton.getComp(), true);
-        btnLoadUnit.addActionListener(evt -> selectAndLoadUnitFromCache(frame));
+        btnLoadUnit.addActionListener(evt -> selectAndLoadUnitFromCache(this));
         
         MegamekButton btnNewMek = new MegamekButton(resourceMap.getString("btnNewMek.text"),
                 UIComponents.MainMenuButton.getComp(), true);
@@ -232,38 +216,6 @@ public class StartupGUI extends JPanel implements MenuBarOwner {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
-    
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        if (backgroundIcon == null) {
-            return;
-        }
-        int w = getWidth();
-        int h = getHeight();
-        int iW = backgroundIcon.getWidth();
-        int iH = backgroundIcon.getHeight();
-        // If the image isn't loaded, prevent an infinite loop
-        if ((iW < 1) || (iH < 1)) {
-            return;
-        }
-        for (int x = 0; x < w; x += iW) {
-            for (int y = 0; y < h; y += iH) {
-                g.drawImage(backgroundIcon, x, y, null);
-            }
-        }
-     }
-
-    /**
-     * This function will create a new mainUI frame (via the loading dialog) for the 
-     * given unit type and get rid of the splash screen
-     * @param type an <code>int</code> corresponding to the unit type to construct
-     */
-    private void newUnit(long type) {
-        frame.setVisible(false);
-        frame.dispose();
-        UiLoader.loadUi(type, false, false);
-    }
 
     /**
      * Shows the Unit Selector Window and loads the unit if the user selects one. When the chosen
@@ -274,50 +226,43 @@ public class StartupGUI extends JPanel implements MenuBarOwner {
      * @param previousFrame The active frame before loading a new unit; can be the StartupGUI or any
      *                      MegaMekLabMainUI.
      */
-    public static void selectAndLoadUnitFromCache(@Nullable JFrame previousFrame) {
-        UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(previousFrame);
+    public static void selectAndLoadUnitFromCache(MenuBarOwner previousFrame) {
+        UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(previousFrame.getFrame());
         unitLoadingDialog.setVisible(true);
-        MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(previousFrame, unitLoadingDialog);
+        MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(previousFrame.getFrame(), unitLoadingDialog);
         Entity newUnit = viewer.getChosenEntity();
+        String fileName = viewer.getChosenMechSummary().getSourceFile().toString();
+        if (fileName.toLowerCase().endsWith(".zip")) {
+            fileName = viewer.getChosenMechSummary().getSourceFile().getAbsolutePath();
+            fileName = fileName.substring(0, fileName.lastIndexOf(File.separatorChar) + 1);
+            fileName = fileName + MenuBar.createUnitFilename(newUnit);
+        }
         viewer.setVisible(false);
         viewer.dispose();
 
-        MegaMekLabMainUI previousUI = null;
-        if (previousFrame instanceof MegaMekLabMainUI) {
-            previousUI = (MegaMekLabMainUI) previousFrame;
-        }
 
-        if ((newUnit == null) ||
-                ((previousUI != null) && !previousUI.safetyPrompt())) {
+        if ((newUnit == null) || !previousFrame.safetyPrompt()) {
             return;
         }
 
-        if (!UnitUtil.validateUnit(newUnit).trim().isBlank()) {
-            JOptionPane.showMessageDialog(previousFrame, String.format(
-                    ResourceBundle.getBundle("megameklab.resources.Splash").getString("message.invalidUnit.format"),
-                    UnitUtil.validateUnit(newUnit)));
+        String validationResult = UnitUtil.validateUnit(newUnit);
+        if (!validationResult.isBlank()) {
+            PopupMessages.showUnitInvalidWarning(previousFrame.getFrame(), validationResult);
         }
 
-        if ((previousUI == null) || (newUnit.getEntityType() != previousUI.getEntity().getEntityType())) {
-            if (previousFrame != null) {
-                previousFrame.setVisible(false);
-                previousFrame.dispose();
-            }
-            UiLoader.loadUi(newUnit);
+        CConfig.setMostRecentFile(fileName);
+        if (!(previousFrame instanceof MegaMekLabMainUI)
+                || (newUnit.getEntityType() != previousFrame.getEntity().getEntityType())) {
+            previousFrame.getFrame().setVisible(false);
+            previousFrame.getFrame().dispose();
+            UiLoader.loadUi(newUnit, fileName);
         } else {
             UnitUtil.updateLoadedUnit(newUnit);
-            if (viewer.getChosenMechSummary().getSourceFile().getName().endsWith(".zip")) {
-                String fileName = viewer.getChosenMechSummary().getSourceFile().getAbsolutePath();
-                fileName = fileName.substring(0, fileName.lastIndexOf(File.separatorChar) + 1);
-                fileName = fileName + MenuBar.createUnitFilename(newUnit);
-                CConfig.updateSaveFiles(fileName);
-            } else {
-                CConfig.updateSaveFiles(viewer.getChosenMechSummary().getSourceFile().getAbsolutePath());
-            }
-            previousUI.setEntity(newUnit);
+            previousFrame.refreshMenuBar();
+            MegaMekLabMainUI previousUI = (MegaMekLabMainUI) previousFrame;
+            previousUI.setEntity(newUnit, fileName);
             previousUI.reloadTabs();
             previousUI.refreshAll();
-            previousUI.setVisible(true);
         }
     }
 
@@ -329,5 +274,15 @@ public class StartupGUI extends JPanel implements MenuBarOwner {
     @Override
     public Entity getEntity() {
         return null;
+    }
+
+    @Override
+    public String getFileName() {
+        return null;
+    }
+
+    @Override
+    public void refreshMenuBar() {
+        mmlMenuBar.refreshMenuBar();
     }
 }

@@ -21,6 +21,7 @@ package megameklab.ui.dialog;
 import megamek.client.ui.swing.util.UIUtil;
 import megamek.common.*;
 import megameklab.ui.MegaMekLabMainUI;
+import megameklab.ui.PopupMessages;
 import megameklab.ui.battleArmor.BAMainUI;
 import megameklab.ui.combatVehicle.CVMainUI;
 import megameklab.ui.fighterAero.ASMainUI;
@@ -35,6 +36,7 @@ import megameklab.util.UnitUtil;
 import javax.swing.*;
 import java.awt.*;
 import java.util.Map;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.TreeMap;
 
@@ -62,48 +64,50 @@ public class UiLoader {
     private final boolean primitive;
     private final boolean industrial;
     private final Entity newUnit;
+    private final String fileName;
 
-    public static void loadUi(Entity newUnit) {
+    public static void loadUi(Entity newUnit, String fileName) {
         if ((newUnit == null) || (newUnit instanceof Mech)) {
-            new UiLoader(Entity.ETYPE_MECH, false, false, newUnit).show();
+            new UiLoader(Entity.ETYPE_MECH, false, false, newUnit, fileName).show();
         } else if (newUnit.isSupportVehicle()) {
-            new UiLoader(Entity.ETYPE_SUPPORT_TANK, false, false, newUnit).show();
+            new UiLoader(Entity.ETYPE_SUPPORT_TANK, false, false, newUnit, fileName).show();
         } else if (newUnit.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)) {
-            new UiLoader(Entity.ETYPE_DROPSHIP, newUnit.isPrimitive(), false, newUnit).show();
+            new UiLoader(Entity.ETYPE_DROPSHIP, newUnit.isPrimitive(), false, newUnit, fileName).show();
         } else if (newUnit.hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
-            new UiLoader(Entity.ETYPE_JUMPSHIP, newUnit.isPrimitive(), false, newUnit).show();
+            new UiLoader(Entity.ETYPE_JUMPSHIP, newUnit.isPrimitive(), false, newUnit, fileName).show();
         } else if ((newUnit instanceof Aero) && !(newUnit instanceof FixedWingSupport)) {
-            new UiLoader(Entity.ETYPE_AERO, newUnit.isPrimitive(), false, newUnit).show();
+            new UiLoader(Entity.ETYPE_AERO, newUnit.isPrimitive(), false, newUnit, fileName).show();
         } else if (newUnit instanceof BattleArmor) {
-            new UiLoader(Entity.ETYPE_BATTLEARMOR, false, false, newUnit).show();
+            new UiLoader(Entity.ETYPE_BATTLEARMOR, false, false, newUnit, fileName).show();
         } else if (newUnit instanceof Infantry) {
-            new UiLoader(Entity.ETYPE_INFANTRY, false, false, newUnit).show();
+            new UiLoader(Entity.ETYPE_INFANTRY, false, false, newUnit, fileName).show();
         } else if (newUnit instanceof Protomech) {
-            new UiLoader(Entity.ETYPE_PROTOMECH, false, false, newUnit).show();
+            new UiLoader(Entity.ETYPE_PROTOMECH, false, false, newUnit, fileName).show();
         } else if ((newUnit instanceof Tank) && !(newUnit instanceof GunEmplacement)) {
-            new UiLoader(Entity.ETYPE_TANK, false, false, newUnit).show();
+            new UiLoader(Entity.ETYPE_TANK, false, false, newUnit, fileName).show();
         } else {
-            JOptionPane.showMessageDialog(null, RESOURCES.getString("message.abortUnitLoad.text"));
-            new UiLoader(Entity.ETYPE_MECH, false, false, null).show();
+            PopupMessages.showUiLoadError(null);
+            new UiLoader(Entity.ETYPE_MECH, false, false, null, "").show();
         }
     }
 
     public static void loadUi(long type, boolean primitive, boolean industrial) {
-        new UiLoader(type, primitive, industrial, null).show();
+        new UiLoader(type, primitive, industrial, null, "").show();
     }
 
     /**
-     * 
-     * @param type - the unit type to load the mainUI from, based on the types in StartupGUI.java
-     * @param primitive - is unit primitive
+     * @param type       - the unit type to load the mainUI from, based on the types in StartupGUI.java
+     * @param primitive  - is unit primitive
      * @param industrial - is unit industrial
-     * @param newUnit - a specific <code>Entity</code> to load in rather than default
+     * @param newUnit    - a specific <code>Entity</code> to load in rather than default
+     * @param fileName   - the file name of the new unit; empty String if the unit has no file
      */
-    private UiLoader(long type, boolean primitive, boolean industrial, Entity newUnit) {
+    private UiLoader(long type, boolean primitive, boolean industrial, Entity newUnit, String fileName) {
         this.type = type;
         this.primitive = primitive;
         this.industrial = industrial;
         this.newUnit = newUnit;
+        this.fileName = Objects.requireNonNullElse(fileName, "");
 
         splashImage = new JDialog((JFrame) null, "MML Loading Splash");
         splashImage.setUndecorated(true);
@@ -122,7 +126,7 @@ public class UiLoader {
         MegaMekLabMainUI newUI = getUI(type, primitive, industrial);
         if (newUnit != null) {
             UnitUtil.updateLoadedUnit(newUnit);
-            newUI.setEntity(newUnit);
+            newUI.setEntity(newUnit, fileName);
             newUI.reloadTabs();
             newUI.refreshAll();
         }

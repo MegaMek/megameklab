@@ -20,6 +20,7 @@ package megameklab.ui;
 
 import megamek.common.Entity;
 import megamek.common.annotations.Nullable;
+import megameklab.ui.dialog.UiLoader;
 import megameklab.ui.util.AppCloser;
 
 import javax.swing.*;
@@ -34,6 +35,9 @@ public interface MenuBarOwner extends AppCloser {
 
     /** @return The entity currently worked on or null. */
     @Nullable Entity getEntity();
+
+    /** @return The file name of the currently worked on unit or an empty String. */
+    @Nullable String getFileName();
 
     /**
      * This method is called when an action will cause the currently edited unit to be discarded (exit MML,
@@ -62,6 +66,36 @@ public interface MenuBarOwner extends AppCloser {
     default void refreshAll() { }
 
     /**
+     * Refreshes the menu bar. Updates the recent units in the File menu.
+     */
+    void refreshMenuBar();
+
+    /**
+     * Creates a new main UI frame for the given unit type and disposes the
+     * existing frame (this MenuBarOwner).
+     *
+     * @param type an int corresponding to the unit type to construct
+     */
+    default void newUnit(long type) {
+        newUnit(type, false);
+    }
+
+    /**
+     * Creates a new main UI frame for the given unit type and disposes the
+     * existing frame (this MenuBarOwner).
+     *
+     * @param type an int corresponding to the unit type to construct
+     * @param primitive true when the new unit should be a primitive type
+     */
+    default void newUnit(long type, boolean primitive) {
+        if (safetyPrompt()) {
+            getFrame().setVisible(false);
+            getFrame().dispose();
+            UiLoader.loadUi(type, primitive, false);
+        }
+    }
+
+    /**
      * Sets the look and feel for the application.
      *
      * @param plaf The look and feel to use for the application.
@@ -71,10 +105,8 @@ public interface MenuBarOwner extends AppCloser {
             try {
                 UIManager.setLookAndFeel(plaf.getClassName());
                 SwingUtilities.updateComponentTreeUI(getFrame());
-            } catch (Exception exception) {
-                JOptionPane.showMessageDialog(getFrame(),
-                        "Can't change look and feel", "Invalid PLAF",
-                        JOptionPane.ERROR_MESSAGE);
+            } catch (Exception ex) {
+                PopupMessages.showLookAndFeelError(getFrame(), ex.getMessage());
             }
         });
     }

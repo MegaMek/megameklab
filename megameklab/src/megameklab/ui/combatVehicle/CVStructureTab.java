@@ -21,6 +21,7 @@ import megamek.common.verifier.BayData;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestTank;
 import megameklab.ui.EntitySource;
+import megameklab.ui.PopupMessages;
 import megameklab.ui.generalUnit.*;
 import megameklab.ui.listeners.ArmorAllocationListener;
 import megameklab.ui.listeners.CVBuildListener;

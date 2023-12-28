@@ -17,13 +17,22 @@ package megameklab.util;
 
 import megamek.common.Configuration;
 import megameklab.ui.MMLStartUp;
+import megameklab.ui.MegaMekLabMainUI;
+import megameklab.ui.battleArmor.BAMainUI;
+import megameklab.ui.combatVehicle.CVMainUI;
+import megameklab.ui.fighterAero.ASMainUI;
+import megameklab.ui.infantry.CIMainUI;
+import megameklab.ui.largeAero.DSMainUI;
+import megameklab.ui.mek.BMMainUI;
+import megameklab.ui.protoMek.PMMainUI;
+import megameklab.ui.supportVehicle.SVMainUI;
 import org.apache.logging.log4j.LogManager;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.stream.Collectors;
@@ -37,27 +46,35 @@ public final class CConfig {
     public static final String CONFIG_FILE = "./mmconf/megameklab.properties";
     public static final String CONFIG_BACKUP_FILE = "./mmconf/megameklab.properties.bak";
 
-    public static final String STARTUP = "StartupGui";
+    public static final String MISC_STARTUP = "StartupGui";
+    public static final String MISC_SUMMARY_FORMAT_TRO = "useTROFormat";
+    public static final String MISC_SKIP_SAFETY_PROMPTS = "skipSafetyPrompts";
 
-    public static final String COLOR_WEAPONS = "Weapons";
-    public static final String COLOR_AMMO = "Ammo";
-    public static final String COLOR_EQUIPMENT = "Equipment";
-    public static final String COLOR_SYSTEMS = "Systems";
-    public static final String COLOR_EMPTY = "Empty";
-    public static final String COLOR_NONHITTABLE = "Nonhittable";
+    public static final String GUI_PLAF = "lookAndFeel";
+    public static final String GUI_COLOR_WEAPONS = "Weapons";
+    public static final String GUI_COLOR_AMMO = "Ammo";
+    public static final String GUI_COLOR_EQUIPMENT = "Equipment";
+    public static final String GUI_COLOR_SYSTEMS = "Systems";
+    public static final String GUI_COLOR_EMPTY = "Empty";
+    public static final String GUI_COLOR_NONHITTABLE = "Nonhittable";
+    public static final String GUI_FOREGROUND = "-Foreground";
+    public static final String GUI_BACKGROUND = "-Background";
 
-    public static final int RECENT_FILE_COUNT = 4;
-    public static final String RECENT_FILE_PREFIX = "Save_File_";
-    public static final String CONFIG_SAVE_FILE_1 = RECENT_FILE_PREFIX + "1";
-    public static final String CONFIG_SAVE_FILE_2 = RECENT_FILE_PREFIX + "2";
-    public static final String CONFIG_SAVE_FILE_3 = RECENT_FILE_PREFIX + "3";
-    public static final String CONFIG_SAVE_FILE_4 = RECENT_FILE_PREFIX + "4";
-    public static final String LAST_DIRECTORY = "Last_directory";
+    public static final String GUI_FULLSCREEN = "FullScreen";
+    public static final String GUI_BM_MAINUI_WINDOW = "BMWindow";
+    public static final String GUI_CV_MAINUI_WINDOW = "CVWindow";
+    public static final String GUI_AS_MAINUI_WINDOW = "ASWindow";
+    public static final String GUI_SV_MAINUI_WINDOW = "SVWindow";
+    public static final String GUI_PM_MAINUI_WINDOW = "PMWindow";
+    public static final String GUI_BA_MAINUI_WINDOW = "BAWindow";
+    public static final String GUI_CI_MAINUI_WINDOW = "CIWindow";
+    public static final String GUI_DS_MAINUI_WINDOW = "DSWindow";
+    public static final String GUI_WS_MAINUI_WINDOW = "WSWindow";
 
+    public static final int RECENT_FILE_COUNT = 10;
+    public static final String FILE_RECENT_PREFIX = "Save_File_";
+    public static final String FILE_LAST_DIRECTORY = "Last_directory";
     public static final String FILE_CHOOSER_WINDOW = "File_Chooser_Window";
-
-    public static final String CONFIG_FOREGROUND = "-Foreground";
-    public static final String CONFIG_BACKGROUND = "-Background";
 
     public static final String TECH_PROGRESSION = "techProgression";
     public static final String TECH_USE_YEAR = "techUseYear";
@@ -65,12 +82,6 @@ public final class CConfig {
     public static final String TECH_SHOW_FACTION = "techShowFaction";
     public static final String TECH_EXTINCT = "techShowExtinct";
     public static final String TECH_UNOFFICAL_NO_YEAR = "techUnofficialNoYear";
-
-    public static final String MISC_SUMMARY_FORMAT_TRO = "useTROFormat";
-    public static final String MISC_SKIP_SAFETY_PROMPTS = "skipSafetyPrompts";
-    
-    public static final String CONFIG_SAVE_LOC = "Save-Location-Default";
-    public static final String CONFIG_PLAF = "lookAndFeel";
 
     public static final String RS_PAPER_SIZE = "rs_paper_size";
     public static final String RS_COLOR = "rs_color";
@@ -93,12 +104,8 @@ public final class CConfig {
     public static final String MEK_AUTOSORT = "mekAutosort";
     public static final String MEK_AUTOCOMPACT = "mekAutocompact";
 
-    /**
-     * Player configuration values.
-     */
     private static final Properties config = getDefaults();
 
-    // METHODS
     /**
      * Private method that loads hardcoded defaults. These are loaded before the
      * players config values, adding any new configs in their default position
@@ -106,16 +113,7 @@ public final class CConfig {
      */
     private static Properties getDefaults() {
         Properties defaults = new Properties();
-
-        // Window Locations
-        defaults.setProperty("WINDOWSTATE", "0");
-        defaults.setProperty("WINDOWHEIGHT", "600");
-        defaults.setProperty("WINDOWWIDTH", "800");
-        defaults.setProperty("WINDOWLEFT", "0");
-        defaults.setProperty("WINDOWTOP", "0");
-        defaults.setProperty(CONFIG_SAVE_LOC,
-                new File(System.getProperty("user.dir")
-                        + "/data/mechfiles/").getAbsolutePath());
+        defaults.setProperty(GUI_FULLSCREEN, Boolean.toString(false));
         defaults.setProperty(MISC_SUMMARY_FORMAT_TRO, Boolean.toString(true));
         defaults.setProperty(MISC_SKIP_SAFETY_PROMPTS, Boolean.toString(false));
         defaults.setProperty(RS_PROGRESS_BAR, Boolean.toString(true));
@@ -130,9 +128,9 @@ public final class CConfig {
         defaults.setProperty(MEK_AUTOFILL, Boolean.toString(true));
         defaults.setProperty(MEK_AUTOSORT, Boolean.toString(true));
         defaults.setProperty(MEK_AUTOCOMPACT, Boolean.toString(true));
-        defaults.setProperty(LAST_DIRECTORY, Configuration.unitsDir().toString());
+        defaults.setProperty(FILE_LAST_DIRECTORY, Configuration.unitsDir().toString());
         defaults.setProperty(FILE_CHOOSER_WINDOW, "");
-        defaults.setProperty(STARTUP, MMLStartUp.SPLASH_SCREEN.name());
+        defaults.setProperty(MISC_STARTUP, MMLStartUp.SPLASH_SCREEN.name());
         return defaults;
     }
 
@@ -142,6 +140,14 @@ public final class CConfig {
     public static void load() {
         ensureConfigFileExists();
         loadConfigFile();
+    }
+
+    public static void importSettings(File settingsFile) {
+        try (FileInputStream fis = new FileInputStream(settingsFile)) {
+            config.load(fis);
+        } catch (Exception ex) {
+            LogManager.getLogger().error("", ex);
+        }
     }
 
     /**
@@ -167,7 +173,7 @@ public final class CConfig {
             LogManager.getLogger().error("", ex);
         }
     }
-    
+
     /**
      * Creates a new Config file, and directories, if it is missing.
      */
@@ -197,10 +203,10 @@ public final class CConfig {
 
     /**
      * Get a config value, with a default value to be used if the value is not found.
-     * 
+     *
      * @param param      The key
      * @param defaultVal The value to return if the entry is not found
-     * @return           The value associated with the key
+     * @return The value associated with the key
      */
     public static String getParam(String param, String defaultVal) {
         if (param.endsWith(":")) {
@@ -212,12 +218,12 @@ public final class CConfig {
         }
         return tparam;
     }
-    
+
     /**
      * Get a config value.
-     * 
-     * @param param      The key
-     * @return           The value associated with the key. If not found, an empty String is returned
+     *
+     * @param param The key
+     * @return The value associated with the key. If not found, an empty String is returned
      */
     public static String getParam(String param) {
         return getParam(param, "");
@@ -225,6 +231,7 @@ public final class CConfig {
 
     /**
      * Set a config value.
+     *
      * @param param the name of the parameter
      * @param value the value to set the parameter to
      */
@@ -242,21 +249,19 @@ public final class CConfig {
      * @return The integer value of the property
      */
     public static int getIntParam(String param, int defaultVal) {
-        int toReturn;
         try {
-            toReturn = Integer.parseInt(CConfig.getParam(param));
+            return Integer.parseInt(CConfig.getParam(param));
         } catch (Exception ex) {
             return defaultVal;
         }
-        return toReturn;
     }
 
     /**
      * Return the int value of a given config property. Return a 0 if the
      * property is a non-number.
      *
-     * @param param  The parameter name
-     * @return       The integer value of the property
+     * @param param The parameter name
+     * @return The integer value of the property
      */
     public static int getIntParam(String param) {
         return getIntParam(param, 0);
@@ -301,26 +306,22 @@ public final class CConfig {
     }
 
     public static Color getForegroundColor(String fieldName) {
-        Color masterColor = Color.black;
         try {
-            masterColor = Color.getColor("", Integer.parseInt(CConfig.getParam(fieldName + CConfig.CONFIG_FOREGROUND)));
-        } catch (Exception ignored) {
+            return Color.getColor("", Integer.parseInt(CConfig.getParam(fieldName + CConfig.GUI_FOREGROUND)));
+        } catch (Exception e) {
+            return Color.BLACK;
         }
-        return masterColor;
     }
 
     public static Color getBackgroundColor(String fieldName) {
-        Color masterColor = Color.WHITE;
-
         try {
-            masterColor = Color.getColor("", Integer.parseInt(CConfig.getParam(fieldName + CConfig.CONFIG_BACKGROUND)));
-        } catch (Exception ignored) {
-
+            return Color.getColor("", Integer.parseInt(CConfig.getParam(fieldName + CConfig.GUI_BACKGROUND)));
+        } catch (Exception e) {
+            return Color.WHITE;
         }
-        return masterColor;
     }
 
-    public static void updateSaveFiles(final String newFile) {
+    public static void setMostRecentFile(final String newFile) {
         if ((newFile == null) || newFile.isBlank()) {
             return;
         }
@@ -333,20 +334,22 @@ public final class CConfig {
         CConfig.saveConfig();
     }
 
-    private static List<String> getRecentFiles() {
+    public static List<String> getRecentFiles() {
         List<String> result = new ArrayList<>();
         for (int i = 1; i <= RECENT_FILE_COUNT; i++) {
-            result.add(getRecentFile(i));
+            if (!getRecentFile(i).isBlank()) {
+                result.add(getRecentFile(i));
+            }
         }
         return result;
     }
 
     private static void setRecentFiles(List<String> files) {
-        for (int i = 1; i <= RECENT_FILE_COUNT; i++) {
+        for (int i = 0; i < RECENT_FILE_COUNT; i++) {
             if (i < files.size()) {
-                setParam(RECENT_FILE_PREFIX + i, files.get(i));
+                setParam(FILE_RECENT_PREFIX + (i + 1), files.get(i));
             } else {
-                setParam(RECENT_FILE_PREFIX + i, "");
+                setParam(FILE_RECENT_PREFIX + (i + 1), "");
             }
         }
     }
@@ -363,7 +366,7 @@ public final class CConfig {
      *
      * @param val       The base distance (standard hexes)
      * @param showUnits Whether to append the unit abbreviation
-     * @return          A String representation of the scaled value
+     * @return A String representation of the scaled value
      */
     public static String formatScale(double val, boolean showUnits) {
         int retVal = (int) Math.round(val * getIntParam(RS_SCALE_FACTOR, 1));
@@ -375,8 +378,58 @@ public final class CConfig {
     }
 
     public static Optional<Dimension> getFileChooserSize() {
+        return getWindowSize(FILE_CHOOSER_WINDOW);
+    }
+
+    public static Optional<Point> getFileChooserPosition() {
+        return getWindowPosition(FILE_CHOOSER_WINDOW);
+    }
+
+    public static void writeFileChooserSettings(JDialog dialog) {
+        writeWindowSettings(FILE_CHOOSER_WINDOW, dialog);
+    }
+
+    public static Optional<Dimension> getMainUiWindowSize(MegaMekLabMainUI mainUi) {
+        return getWindowSize(settingForMainUi(mainUi));
+    }
+
+    public static Optional<Point> getMainUiWindowPosition(MegaMekLabMainUI mainUi) {
+        return getWindowPosition(settingForMainUi(mainUi));
+    }
+
+    public static void writeMainUiWindowSettings(MegaMekLabMainUI mainUi) {
+        writeWindowSettings(settingForMainUi(mainUi), mainUi);
+    }
+
+    public static String getRecentFile(int recentFileNumber) {
+        return CConfig.getParam(CConfig.FILE_RECENT_PREFIX + recentFileNumber);
+    }
+
+    public static MMLStartUp getStartUpType() {
+        return MMLStartUp.parse(CConfig.getParam(CConfig.MISC_STARTUP));
+    }
+
+    public static void resetWindowPositions() {
+        setParam(GUI_FULLSCREEN, Boolean.toString(false));
+        setParam(FILE_CHOOSER_WINDOW, "");
+        setParam(GUI_BM_MAINUI_WINDOW, "");
+        setParam(GUI_CV_MAINUI_WINDOW, "");
+        setParam(GUI_AS_MAINUI_WINDOW, "");
+        setParam(GUI_SV_MAINUI_WINDOW, "");
+        setParam(GUI_PM_MAINUI_WINDOW, "");
+        setParam(GUI_BA_MAINUI_WINDOW, "");
+        setParam(GUI_CI_MAINUI_WINDOW, "");
+        setParam(GUI_DS_MAINUI_WINDOW, "");
+        setParam(GUI_WS_MAINUI_WINDOW, "");
+        saveConfig();
+    }
+
+    // Internals ####################
+
+
+    private static Optional<Dimension> getWindowSize(String cconfigSetting) {
         try {
-            String[] fileChooserSettings = getParam(FILE_CHOOSER_WINDOW).split(";");
+            String[] fileChooserSettings = getParam(cconfigSetting).split(";");
             int sizeX = Integer.parseInt(fileChooserSettings[2]);
             int sizeY = Integer.parseInt(fileChooserSettings[3]);
             return Optional.of(new Dimension(sizeX, sizeY));
@@ -385,9 +438,9 @@ public final class CConfig {
         }
     }
 
-    public static Optional<Point> getFileChooserPosition() {
+    private static Optional<Point> getWindowPosition(String cconfigSetting) {
         try {
-            String[] fileChooserSettings = getParam(FILE_CHOOSER_WINDOW).split(";");
+            String[] fileChooserSettings = getParam(cconfigSetting).split(";");
             int posX = Integer.parseInt(fileChooserSettings[0]);
             int posY = Integer.parseInt(fileChooserSettings[1]);
             return Optional.of(new Point(posX, posY));
@@ -396,20 +449,34 @@ public final class CConfig {
         }
     }
 
-    public static void writeFileChooserSettings(JDialog dialog) {
-        Dimension size = dialog.getSize();
-        Point pos = dialog.getLocation();
-        setParam(FILE_CHOOSER_WINDOW, pos.x + ";" + pos.y + ";" + size.width + ";" + size.height);
+    private static void writeWindowSettings(String cconfigSetting, Component component) {
+        Dimension size = component.getSize();
+        Point pos = component.getLocation();
+        setParam(cconfigSetting, pos.x + ";" + pos.y + ";" + size.width + ";" + size.height);
     }
 
-    public static String getRecentFile(int recentFileNumber) {
-        String fileName = CConfig.getParam(CConfig.RECENT_FILE_PREFIX + recentFileNumber);
-        return (fileName == null) ? "" : fileName;
+    private static String settingForMainUi(MegaMekLabMainUI ui) {
+        if (ui instanceof BMMainUI) {
+            return GUI_BM_MAINUI_WINDOW;
+        } else if (ui instanceof CVMainUI) {
+            return GUI_CV_MAINUI_WINDOW;
+        } else if (ui instanceof DSMainUI) {
+            return GUI_DS_MAINUI_WINDOW;
+        } else if (ui instanceof ASMainUI) {
+            return GUI_AS_MAINUI_WINDOW;
+        } else if (ui instanceof PMMainUI) {
+            return GUI_PM_MAINUI_WINDOW;
+        } else if (ui instanceof BAMainUI) {
+            return GUI_BA_MAINUI_WINDOW;
+        } else if (ui instanceof CIMainUI) {
+            return GUI_CI_MAINUI_WINDOW;
+        } else if (ui instanceof SVMainUI) {
+            return GUI_SV_MAINUI_WINDOW;
+        } else {
+            return GUI_WS_MAINUI_WINDOW;
+        }
     }
 
-    public static MMLStartUp getStartUpType() {
-        return MMLStartUp.parse(CConfig.getParam(CConfig.STARTUP));
+    private CConfig() {
     }
-
-    private CConfig() { }
 }

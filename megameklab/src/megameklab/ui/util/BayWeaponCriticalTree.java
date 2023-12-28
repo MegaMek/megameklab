@@ -28,7 +28,6 @@ import megameklab.util.UnitUtil;
 import org.apache.logging.log4j.LogManager;
 
 import javax.swing.*;
-import javax.swing.JTree.DropLocation;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.tree.*;
@@ -118,7 +117,7 @@ public class BayWeaponCriticalTree extends JTree {
     
     public void rebuild() {
         List<Integer> expandedBays = getExpandedBayIds();
-        setBackground(CConfig.getBackgroundColor(CConfig.COLOR_WEAPONS));
+        setBackground(CConfig.getBackgroundColor(CConfig.GUI_COLOR_WEAPONS));
         TreeNode root = initRoot();
         model.setRoot(root);
         setRootVisible(root.getChildCount() == 0);

@@ -32,7 +32,7 @@ import java.awt.event.WindowEvent;
 public class MMLFileChooser extends JFileChooser {
 
     public MMLFileChooser() {
-        super(CConfig.getParam(CConfig.LAST_DIRECTORY));
+        super(CConfig.getParam(CConfig.FILE_LAST_DIRECTORY));
     }
 
     @Override
@@ -45,7 +45,7 @@ public class MMLFileChooser extends JFileChooser {
             public void windowClosed(WindowEvent e) {
                 CConfig.writeFileChooserSettings(dialog);
                 if (getCurrentDirectory().exists()) {
-                    CConfig.setParam(CConfig.LAST_DIRECTORY, getCurrentDirectory().toString());
+                    CConfig.setParam(CConfig.FILE_LAST_DIRECTORY, getCurrentDirectory().toString());
                 }
                 super.windowClosed(e);
             }

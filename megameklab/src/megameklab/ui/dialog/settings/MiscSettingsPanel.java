@@ -18,7 +18,12 @@
  */
 package megameklab.ui.dialog.settings;
 
+import megamek.MMConstants;
+import megamek.client.ui.Messages;
 import megamek.client.ui.baseComponents.MMComboBox;
+import megamek.client.ui.swing.CommonSettingsDialog;
+import megamek.client.ui.swing.HelpDialog;
+import megamek.common.preference.PreferenceManager;
 import megameklab.ui.MMLStartUp;
 import megameklab.ui.util.SpringUtilities;
 import megameklab.util.CConfig;
@@ -45,21 +50,22 @@ public class MiscSettingsPanel extends JPanel {
     private final JCheckBox chkSkipSavePrompts = new JCheckBox();
     private final JTextField txtUserDir = new JTextField(20);
 
-    MiscSettingsPanel() {
+    MiscSettingsPanel(JFrame parent) {
         startUpMMComboBox.setRenderer(startUpRenderer);
         startUpMMComboBox.setSelectedItem(CConfig.getStartUpType());
         startUpMMComboBox.setToolTipText(resources.getString("ConfigurationDialog.startup.tooltip"));
         JLabel startUpLabel = new JLabel(resources.getString("ConfigurationDialog.startup.text"));
         startUpLabel.setToolTipText(resources.getString("ConfigurationDialog.startup.tooltip"));
-    MiscSettingsPanel(JFrame parent) {
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Dialogs");
 
-        JPanel startUpLine = new JPanel();
+        JPanel startUpLine = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         startUpLine.add(startUpLabel);
+        startUpLine.add(Box.createHorizontalStrut(5));
         startUpLine.add(startUpMMComboBox);
 
         chkSummaryFormatTRO.setText(resources.getString("ConfigurationDialog.chkSummaryFormatTRO.text"));
         chkSummaryFormatTRO.setToolTipText(resources.getString("ConfigurationDialog.chkSummaryFormatTRO.tooltip"));
+
         JLabel userDirLabel = new JLabel(resourceMap.getString("ConfigurationDialog.userDir.text"));
         userDirLabel.setToolTipText(resourceMap.getString("ConfigurationDialog.userDir.tooltip"));
         txtUserDir.setToolTipText(resourceMap.getString("ConfigurationDialog.userDir.tooltip"));
@@ -78,7 +84,7 @@ public class MiscSettingsPanel extends JPanel {
         }
         JPanel userDirLine = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         userDirLine.add(userDirLabel);
-        userDirLine.add(Box.createHorizontalStrut(25));
+        userDirLine.add(Box.createHorizontalStrut(5));
         userDirLine.add(txtUserDir);
         userDirLine.add(Box.createHorizontalStrut(10));
         userDirLine.add(userDirChooser);
@@ -99,7 +105,7 @@ public class MiscSettingsPanel extends JPanel {
         gridPanel.add(chkSummaryFormatTRO);
         gridPanel.add(chkSkipSavePrompts);
 
-        SpringUtilities.makeCompactGrid(gridPanel, 3, 1, 0, 0, 15, 10);
+        SpringUtilities.makeCompactGrid(gridPanel, 4, 1, 0, 0, 15, 10);
         gridPanel.setBorder(new EmptyBorder(20, 30, 20, 30));
         setLayout(new FlowLayout(FlowLayout.LEFT));
         add(gridPanel);
@@ -112,23 +118,23 @@ public class MiscSettingsPanel extends JPanel {
         MMLStartUp startUp = startUpMMComboBox.getSelectedItem() == null
                 ? MMLStartUp.SPLASH_SCREEN
                 : startUpMMComboBox.getSelectedItem();
-        miscSettings.put(CConfig.STARTUP, startUp.name());
+        miscSettings.put(CConfig.MISC_STARTUP, startUp.name());
+        // The user directory is stored in MM's client settings, not in CConfig, therefore not added here
         return miscSettings;
     }
 
     String getUserDir() {
         return txtUserDir.getText();
     }
-}
 
     DefaultListCellRenderer startUpRenderer = new DefaultListCellRenderer() {
         @Override
         public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-            if (value instanceof MMLStartUp) {
-                value = ((MMLStartUp) value).getDisplayName();
-            }
-            return super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            return super.getListCellRendererComponent(list, displayName(value), index, isSelected, cellHasFocus);
         }
     };
 
+    private String displayName(Object value) {
+        return (value instanceof MMLStartUp) ? ((MMLStartUp) value).getDisplayName() : "";
+    }
 }

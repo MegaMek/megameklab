@@ -26,8 +26,6 @@ import megameklab.ui.util.TabScrollPane;
 import megameklab.util.UnitUtil;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 
 public class BMMainUI extends MegaMekLabMainUI {
@@ -42,14 +40,9 @@ public class BMMainUI extends MegaMekLabMainUI {
     private QuirksTab quirksTab;
     private FloatingEquipmentDatabaseDialog floatingEquipmentDatabase;
 
-    public BMMainUI() {
-        this(false, false);
-    }
-
     public BMMainUI(boolean primitive, boolean industrial) {
         super();
         createNewUnit(Entity.ETYPE_BIPED_MECH, primitive, industrial);
-        setTitle(getEntity().getChassis() + " " + getEntity().getModel() + ".mtf");
         finishSetup();
     }
 
@@ -188,8 +181,7 @@ public class BMMainUI extends MegaMekLabMainUI {
     }
 
     @Override
-    public void refreshArmor() {
-    }
+    public void refreshArmor() { }
 
     @Override
     public void refreshBuild() {
@@ -207,11 +199,6 @@ public class BMMainUI extends MegaMekLabMainUI {
     @Override
     public void refreshPreview() {
         previewTab.refresh();
-    }
-
-    @Override
-    public void refreshHeader() {
-        setTitle(getEntity().getChassis() + " " + getEntity().getModel() + ".mtf");
     }
 
     @Override
@@ -247,13 +234,4 @@ public class BMMainUI extends MegaMekLabMainUI {
     public JDialog getFloatingEquipmentDatabase() {
         return floatingEquipmentDatabase;
     }
-
-    @Override
-    public void setVisible(boolean b) {
-        super.setVisible(b);
-        if (!b && (floatingEquipmentDatabase != null)) {
-            floatingEquipmentDatabase.setVisible(false);
-        }
-    }
-
 }
