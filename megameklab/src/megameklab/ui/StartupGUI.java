@@ -260,7 +260,6 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
         viewer.setVisible(false);
         viewer.dispose();
 
-
         if ((newUnit == null) || !previousFrame.safetyPrompt()) {
             return;
         }

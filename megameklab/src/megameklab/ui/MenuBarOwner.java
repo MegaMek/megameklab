@@ -22,6 +22,7 @@ import megamek.common.Entity;
 import megamek.common.annotations.Nullable;
 import megameklab.ui.dialog.UiLoader;
 import megameklab.ui.util.AppCloser;
+import megameklab.util.CConfig;
 
 import javax.swing.*;
 
@@ -91,6 +92,11 @@ public interface MenuBarOwner extends AppCloser {
         if (safetyPrompt()) {
             getFrame().setVisible(false);
             getFrame().dispose();
+            CConfig.setParam(CConfig.GUI_FULLSCREEN, Integer.toString(getFrame().getExtendedState()));
+            if (this instanceof MegaMekLabMainUI) {
+                CConfig.writeMainUiWindowSettings((MegaMekLabMainUI) this);
+            }
+            CConfig.saveConfig();
             UiLoader.loadUi(type, primitive, false);
         }
     }
