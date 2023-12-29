@@ -48,7 +48,7 @@ public class PMStatusBar extends StatusBar {
         long currentSlots = getProtomech().getEquipment().stream()
                 .filter(m -> TestProtomech.requiresSlot(m.getType())).count();
 
-        slots.setText(String.format(SLOTS_LABEL, currentSlots, maxCrits));
+        slots.setText(String.format(SLOTS_LABEL, maxCrits - currentSlots, maxCrits));
         slots.setForeground(currentSlots > maxCrits ? GUIPreferences.getInstance().getWarningColor() : null);
     }
 }
