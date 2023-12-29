@@ -1,0 +1,87 @@
+#building block data file
+<BlockVersion>
+1
+</BlockVersion>
+
+#Write the version number just in case...
+<Version>
+MAM0
+</Version>
+
+<UnitType>
+Tank
+</UnitType>
+
+<Name>
+Gun Trailer
+</Name>
+
+<Model>
+(Ambush)
+</Model>
+
+<Tonnage>
+10
+</Tonnage>
+
+<cruiseMP>
+0
+</cruiseMP>
+
+#Order is Tank/VTOL/LST
+<Armor>
+2
+2
+2
+18
+</Armor>
+
+<Turret Equipment>
+</Turret Equipment>
+
+<Front Equipment>
+Hitch
+</Front Equipment>
+
+<Rear Equipment>
+ISRocketLauncher15
+ISRocketLauncher15
+ISRocketLauncher15
+ISRocketLauncher15
+ISRocketLauncher15
+ISRocketLauncher15
+</Rear Equipment>
+
+<Body Equipment>
+</Body Equipment>
+
+<type>
+IS Level 2
+</type>
+
+<year>
+3150
+</year>
+
+<source>
+Dark Age
+</source>
+
+<internal_type>
+0
+</internal_type>
+
+<armor_type>
+0
+</armor_type>
+
+<engine_type>
+1
+</engine_type>
+
+<motion_type>
+Tracked
+</motion_type>
+
+<transporters>
+</transporters>

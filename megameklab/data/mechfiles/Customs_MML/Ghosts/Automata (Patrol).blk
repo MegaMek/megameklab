@@ -1,0 +1,95 @@
+#building block data file
+<BlockVersion>
+1
+</BlockVersion>
+
+##Write the version number just in case...
+<Version>
+MAM0
+</Version>
+
+<UnitType>
+BattleArmor
+</UnitType>
+
+<Name>
+Automata
+</Name>
+
+<Model>
+(Patrol)
+</Model>
+
+<year>
+3090
+</year>
+
+<originalBuildYear>
+3090
+</originalBuildYear>
+
+<type>
+IS Level 4
+</type>
+
+<motion_type>
+Leg
+</motion_type>
+
+<cruiseMP>
+5
+</cruiseMP>
+
+<armor_type>
+31
+</armor_type>
+
+<armor_tech>
+1
+</armor_tech>
+
+<Squad Equipment>
+IS BA Stealth (Basic):Body
+IS BA Stealth (Basic):Body
+IS BA Stealth (Basic):Body
+CLBAHeavyMG:Body
+</Squad Equipment>
+
+<Trooper 1 Equipment>
+</Trooper 1 Equipment>
+
+<Trooper 2 Equipment>
+</Trooper 2 Equipment>
+
+<Trooper 3 Equipment>
+</Trooper 3 Equipment>
+
+<Trooper 4 Equipment>
+</Trooper 4 Equipment>
+
+<Trooper 5 Equipment>
+</Trooper 5 Equipment>
+
+<Trooper 6 Equipment>
+</Trooper 6 Equipment>
+
+<chassis>
+quad
+</chassis>
+
+<jumpingMP>
+0
+</jumpingMP>
+
+<armor>
+6
+</armor>
+
+<Trooper Count>
+6
+</Trooper Count>
+
+<weightclass>
+1
+</weightclass>
+

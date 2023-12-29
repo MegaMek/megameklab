@@ -36,6 +36,10 @@ Prime
 Mixed (Clan Chassis) Experimental
 </type>
 
+<role>
+Striker
+</role>
+
 <motion_type>
 Hover
 </motion_type>
@@ -135,10 +139,15 @@ TARGETING:Able-Seven Sensor Suite
 </systemManufacturers>
 
 <source>
-Shrapnel 6 - ilClan
+Shrapnel #6
 </source>
 
 <tonnage>
 50.0
 </tonnage>
+
+
+<quirks>
+prototype
+</quirks>
 

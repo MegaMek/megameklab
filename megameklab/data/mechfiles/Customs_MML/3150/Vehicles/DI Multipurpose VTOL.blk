@@ -1,0 +1,83 @@
+#building block data file
+<BlockVersion>
+1
+</BlockVersion>
+
+#Write the version number just in case...
+<Version>
+MAM0
+</Version>
+
+<UnitType>
+VTOL
+</UnitType>
+
+<Name>
+DI Multipurpose VTOL
+</Name>
+
+<Model>
+
+</Model>
+
+<Tonnage>
+25
+</Tonnage>
+
+<cruiseMP>
+9
+</cruiseMP>
+
+#Order is Tank/VTOL/LST
+<Armor>
+28
+22
+22
+16
+2
+19
+</Armor>
+
+<Turret Equipment>
+ISLightPPC
+</Turret Equipment>
+
+<Front Equipment>
+ISTAG
+</Front Equipment>
+
+<Body Equipment>
+ISBeagleActiveProbe
+</Body Equipment>
+
+<type>
+IS Level 2
+</type>
+
+<year>
+3150
+</year>
+
+<source>
+Dark Age
+</source>
+
+<internal_type>
+0
+</internal_type>
+
+<armor_type>
+6
+</armor_type>
+
+<engine_type>
+4
+</engine_type>
+
+<motion_type>
+VTOL
+</motion_type>
+
+<transporters>
+TroopSpace:4
+</transporters>

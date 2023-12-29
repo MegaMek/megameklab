@@ -32,6 +32,10 @@ X-Pulse
 IS Level 4
 </type>
 
+<role>
+Striker
+</role>
+
 <motion_type>
 Hover
 </motion_type>
@@ -85,7 +89,7 @@ ISStreakSRM6
 </Turret Equipment>
 
 <source>
-TRO:Prototypes
+TRO: Prototypes
 </source>
 
 <tonnage>
@@ -125,5 +129,11 @@ TARGETING:Exeter LongScan with ReconLock
 </systemManufacturers>
 
 <source>
-TRO Prototypes - Early Republic
+TRO: Prototypes
 </source>
+
+<quirks>
+hard_pilot
+imp_com
+</quirks>
+

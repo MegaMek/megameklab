@@ -1,13 +1,17 @@
-Version:1.2
-Pack Hunter II
-3
+chassis:Pack Hunter II
+model:3
 mul id:2398
 
 Config:Biped
 TechBase:Mixed (Clan Chassis)
 Era:3082
-Source:Dark Age
+source:TRO: 3085
 Rules Level:4
+role:Striker
+
+weaponquirk:stable_weapon:RT:7:CLERPPC
+weaponquirk:stable_weapon:RT:10:CLERPPC
+
 
 Mass:30
 Engine:210 XL (Clan) Engine

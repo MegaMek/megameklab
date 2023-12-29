@@ -32,6 +32,10 @@ Karnov UR Transport
 IS Level 1
 </type>
 
+<role>
+Scout
+</role>
+
 <motion_type>
 VTOL
 </motion_type>
@@ -75,9 +79,14 @@ troopspace:6.0
 </Rotor Equipment>
 
 <source>
-TRO 3039 - Star League
+TRO: 3039
 </source>
 
 <tonnage>
 30.0
 </tonnage>
+
+<quirks>
+vtol_rotor_dual
+</quirks>
+

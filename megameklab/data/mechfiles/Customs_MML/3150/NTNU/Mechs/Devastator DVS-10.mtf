@@ -1,0 +1,153 @@
+Version:1.1
+Devastator
+DVS-10
+
+Config:Biped
+TechBase:Inner Sphere
+Era:3150
+Source:Dark Age
+Rules Level:3
+
+Mass:100
+Engine:400 XL Engine(IS)
+Structure:IS Endo-Composite
+Myomer:Standard
+Cockpit:Standard Cockpit
+Gyro:Compact Gyro
+
+Heat Sinks:18 Double
+Walk MP:4
+Jump MP:0
+
+Armor:Ferro-Fibrous(Inner Sphere)
+LA Armor:34
+RA Armor:34
+LT Armor:30
+RT Armor:30
+CT Armor:47
+HD Armor:9
+LL Armor:40
+RL Armor:40
+RTL Armor:10
+RTR Armor:10
+RTC Armor:11
+
+Weapons:4
+Large Re-engineered Laser, Right Arm
+Large Re-engineered Laser, Left Arm
+Medium Re-engineered Laser, Center Torso
+Medium Re-engineered Laser, Center Torso
+
+Left Arm:
+Shoulder (armored)
+Upper Arm Actuator
+Large Re-engineered Laser
+Large Re-engineered Laser
+Large Re-engineered Laser
+Large Re-engineered Laser
+Large Re-engineered Laser
+IS Endo-Composite
+IS Ferro-Fibrous
+IS Ferro-Fibrous
+IS Ferro-Fibrous
+IS Ferro-Fibrous
+
+Right Arm:
+Shoulder (armored)
+Upper Arm Actuator
+Large Re-engineered Laser
+Large Re-engineered Laser
+Large Re-engineered Laser
+Large Re-engineered Laser
+Large Re-engineered Laser
+IS Endo-Composite
+IS Ferro-Fibrous
+IS Ferro-Fibrous
+IS Ferro-Fibrous
+IS Ferro-Fibrous
+
+Left Torso:
+Fusion Engine
+Fusion Engine
+Fusion Engine
+ISDoubleHeatSink
+ISDoubleHeatSink
+ISDoubleHeatSink
+ISMASC
+ISMASC
+ISMASC
+ISMASC
+ISMASC
+IS Endo-Composite
+
+Right Torso:
+Fusion Engine
+Fusion Engine
+Fusion Engine
+ISDoubleHeatSink
+ISDoubleHeatSink
+ISDoubleHeatSink
+Supercharger (armored)
+IS Endo-Composite
+IS Endo-Composite
+IS Ferro-Fibrous
+IS Ferro-Fibrous
+IS Ferro-Fibrous
+
+Center Torso:
+Fusion Engine
+Fusion Engine
+Fusion Engine
+Gyro (armored)
+Gyro (armored)
+Fusion Engine
+Fusion Engine
+Fusion Engine
+Medium Re-engineered Laser
+Medium Re-engineered Laser
+Medium Re-engineered Laser
+Medium Re-engineered Laser
+
+Head:
+Life Support
+Sensors
+Cockpit
+IS Ferro-Fibrous
+Sensors
+Life Support
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+
+Left Leg:
+Hip (armored)
+Upper Leg Actuator
+Lower Leg Actuator
+Foot Actuator
+IS Endo-Composite
+IS Ferro-Fibrous
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+
+Right Leg:
+Hip (armored)
+Upper Leg Actuator
+Lower Leg Actuator
+Foot Actuator
+IS Endo-Composite
+IS Ferro-Fibrous
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+
+

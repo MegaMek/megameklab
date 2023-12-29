@@ -1,0 +1,168 @@
+Version:1.1
+Scarecrow
+UCU-F4
+
+Config:Biped
+TechBase:Mixed (IS Chassis)
+Era:3150
+Source:Dark Age
+Rules Level:4
+
+Mass:40
+Engine:200 XL Engine(IS)
+Structure:Endo-Composite
+Myomer:Standard
+Cockpit:Standard Cockpit
+Gyro:Compact Gyro
+
+Heat Sinks:10 Double
+Walk MP:5
+Jump MP:3
+
+Armor:Standard(Inner Sphere)
+LA Armor:11
+RA Armor:11
+LT Armor:14
+RT Armor:14
+CT Armor:18
+HD Armor:9
+LL Armor:18
+RL Armor:18
+RTL Armor:5
+RTR Armor:5
+RTC Armor:5
+
+Weapons:19
+B-Pod, Left Leg
+B-Pod, Right Leg
+ER Medium Laser, Left Arm
+Medium Pulse Laser, Left Arm
+ER Medium Laser, Right Arm
+Medium Pulse Laser, Right Arm
+ER Medium Laser, Center Torso
+ER Flamer, Center Torso
+ER Flamer, Head
+Light Machine Gun, Left Arm
+Light Machine Gun, Right Arm
+Light Machine Gun, Left Arm
+Light Machine Gun, Right Arm
+Light Machine Gun, Right Arm
+Light Machine Gun, Right Arm
+Light Machine Gun, Left Arm
+Light Machine Gun, Left Arm
+Light Machine Gun Array, Left Arm
+Light Machine Gun Array, Right Arm
+
+Left Arm:
+Shoulder
+Upper Arm Actuator
+CLERMediumLaser
+ISMediumPulseLaser
+CLLightMG
+CLLightMG
+CLLightMG
+CLLightMG
+CLLMGA
+Endo-Composite
+Endo-Composite
+Chameleon Light Polarization Shield
+
+Right Arm:
+Shoulder
+Upper Arm Actuator
+CLERMediumLaser
+ISMediumPulseLaser
+CLLightMG
+CLLightMG
+CLLightMG
+CLLightMG
+CLLMGA
+Endo-Composite
+Endo-Composite
+Chameleon Light Polarization Shield
+
+Left Torso:
+Fusion Engine
+Fusion Engine
+Fusion Engine
+ISDoubleHeatSink
+ISDoubleHeatSink
+ISDoubleHeatSink
+Jump Jet
+BloodhoundActiveProbe
+BloodhoundActiveProbe
+BloodhoundActiveProbe
+Endo-Composite
+Chameleon Light Polarization Shield
+
+Right Torso:
+Fusion Engine
+Fusion Engine
+Fusion Engine
+ISDoubleHeatSink
+ISDoubleHeatSink
+ISDoubleHeatSink
+Jump Jet
+Clan Light Machine Gun Ammo - Half
+ISCASEII
+Endo-Composite
+Endo-Composite
+Chameleon Light Polarization Shield
+
+Center Torso:
+Fusion Engine
+Fusion Engine
+Fusion Engine
+Gyro
+Gyro
+Fusion Engine
+Fusion Engine
+Fusion Engine
+Jump Jet
+CLERMediumLaser
+ER Flamer
+-Empty-
+
+Head:
+Life Support
+Sensors
+Cockpit
+ER Flamer
+Sensors
+Life Support
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+
+Left Leg:
+Hip
+Upper Leg Actuator
+Lower Leg Actuator
+Foot Actuator
+ISBPod
+Chameleon Light Polarization Shield
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+
+Right Leg:
+Hip
+Upper Leg Actuator
+Lower Leg Actuator
+Foot Actuator
+ISBPod
+Chameleon Light Polarization Shield
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+
+

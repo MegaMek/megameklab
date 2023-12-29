@@ -1,0 +1,155 @@
+Version:1.0
+Spartan
+SPT-N4
+
+Config:Biped
+techbase:Mixed (IS Chassis)
+era:3130
+rules level:3
+role:Brawler
+
+mass:80
+engine:400 XXL Engine(IS)
+structure:IS Reinforced
+myomer:Standard
+
+heat sinks:15 IS Double
+walk mp:5
+jump mp:0
+
+armor:Stealth(Inner Sphere)
+LA armor:26
+RA armor:26
+LT armor:26
+RT armor:26
+CT armor:31
+HD armor:9
+LL armor:26
+RL armor:26
+RTL armor:8
+RTR armor:8
+RTC armor:12
+
+Weapons:8
+Medium X-Pulse Laser, Right Arm
+Medium X-Pulse Laser, Right Arm
+Medium X-Pulse Laser, Right Arm
+Anti-Missile System, Right Torso
+Streak SRM 2, Center Torso
+Streak SRM 2, Center Torso
+ER PPC, Left Torso
+TAG, Left Torso
+
+Left Arm:
+Shoulder
+Upper Arm Actuator
+Lower Arm Actuator
+Hand Actuator
+IS Stealth
+IS Stealth
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+
+Right Arm:
+Shoulder
+Upper Arm Actuator
+Lower Arm Actuator
+Hand Actuator
+ISMediumXPulseLaser
+ISMediumXPulseLaser
+ISMediumXPulseLaser
+IS Stealth
+IS Stealth
+-Empty-
+-Empty-
+-Empty-
+
+Left Torso:
+Fusion Engine
+Fusion Engine
+Fusion Engine
+Fusion Engine
+Fusion Engine
+Fusion Engine
+CLERPPC
+CLERPPC
+ISTAG
+IS Stealth
+IS Stealth
+-Empty-
+
+Right Torso:
+Fusion Engine
+Fusion Engine
+Fusion Engine
+Fusion Engine
+Fusion Engine
+Fusion Engine
+ISAntiMissileSystem
+ISAMS Ammo
+IS Streak SRM 2 Ammo
+ISCASEII
+IS Stealth
+IS Stealth
+
+Center Torso:
+Fusion Engine
+Fusion Engine
+Fusion Engine
+Gyro
+Gyro
+Gyro
+Gyro
+Fusion Engine
+Fusion Engine
+Fusion Engine
+ISStreakSRM2
+ISStreakSRM2
+
+Head:
+Life Support
+Sensors
+Cockpit
+CLECMSuite
+Sensors
+Life Support
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+
+Left Leg:
+Hip
+Upper Leg Actuator
+Lower Leg Actuator
+Foot Actuator
+IS Stealth
+IS Stealth
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+
+Right Leg:
+Hip
+Upper Leg Actuator
+Lower Leg Actuator
+Foot Actuator
+IS Stealth
+IS Stealth
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+
+

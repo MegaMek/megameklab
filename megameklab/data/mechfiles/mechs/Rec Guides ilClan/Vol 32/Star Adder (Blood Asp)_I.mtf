@@ -1,13 +1,16 @@
-Version:1.0
-Star Adder (Blood Asp)
-I
+chassis:Star Adder (Blood Asp)
+model:I
 
 Config:Biped Omnimech
 techbase:Mixed (Clan Chassis)
 era:3148
 rules level:2
-Source:Rec Guide:ilClan #32 - Dark Age 
+role:Brawler
+Source:Rec Guide:ilClan #32 
 mul id:9485
+
+quirk:rugged_1
+
 
 mass:90
 engine:360 XL (Clan) Engine

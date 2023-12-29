@@ -1,13 +1,19 @@
-Version:1.0
-Phoenix Hawk IIC
-8
+chassis:Phoenix Hawk IIC
+model:8
 mul id:2518
 
 Config:Biped
 TechBase:Clan
 Era:3086
-Source:Dark Age
+source:TRO: 3085
 Rules Level:4
+role:Skirmisher
+
+quirk:easy_maintain
+weaponquirk:fast_reload:CT:11:CLMG
+weaponquirk:fast_reload:RT:4:CLUltraAC10
+weaponquirk:fast_reload:LT:4:CLUltraAC10
+
 
 Mass:80
 Engine:400 XXL (Clan) Engine(IS)

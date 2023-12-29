@@ -1,13 +1,17 @@
-Version:1.1
-Gladiator (Executioner)
-Prime
+chassis:Gladiator (Executioner)
+model:Prime
 mul id:1211
 
 Config:Biped Omnimech
 techbase:Clan
 era:3001
-source:TRO 3050 - Succession Wars
+source:TRO: 3050
 rules level:2
+role:Sniper
+
+
+quirk:distracting
+
 
 mass:95
 engine:380 XL (Clan) Engine(IS)

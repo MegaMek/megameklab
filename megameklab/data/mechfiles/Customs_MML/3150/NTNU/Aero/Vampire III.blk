@@ -1,0 +1,106 @@
+<BlockVersion>
+1
+</BlockVersion>
+<Version>
+MAM0
+</Version>
+<UnitType>
+Dropship
+</UnitType>
+<Name>
+Vampire
+</Name>
+<Model>
+III
+</Model>
+<Tonnage>
+400
+</Tonnage>
+<SafeThrust>
+6
+</SafeThrust>
+<Armor>
+144
+112
+112
+92
+</Armor>
+<Nose Equipment> 
+#Weapons for the nose bays.  (R) for rear weapons (B) to start a new bay. 
+#MM will automatically create new bays based on weight and weapons type restrictions
+#Note ammo for the weapons must be places right after the last of the same weapon types.
+IS ER Medium Laser
+IS ER Medium Laser
+SRM 6
+ISArtemisIV
+IS SRM 6 Ammo Artemis-capable:30
+</Nose Equipment>
+<Left Side Equipment>
+LRM 20
+ISArtemisIV
+IS LRM 20 Ammo Artemis-capable:18
+IS ER Medium Laser
+IS ER Medium Laser
+</Left Side Equipment>
+<Right Side Equipment> 
+LRM 20
+ISArtemisIV
+IS LRM 20 Ammo Artemis-capable:18
+IS ER Medium Laser
+IS ER Medium Laser
+</Right Side Equipment>
+<Aft Equipment> 
+IS ER Medium Laser
+IS ER Medium Laser
+</Aft Equipment>
+<structural_integrity>
+11
+</structural_integrity>
+<heatsinks>
+23
+</heatsinks>
+<sink_type>
+1
+</sink_type>
+<fuel>
+2660
+</fuel>
+<type>
+IS Level 2
+</type>
+<year>
+3150
+</year>
+<source>
+Dark Age
+</source>
+<internal_type>
+0
+</internal_type>
+<armor_type>
+6
+</armor_type>
+<engine_type>
+0
+</engine_type>
+<motion_type>
+#aerodyne
+#spheroid
+aerodyne
+</motion_type>
+<transporters>
+BattleArmorBay:4:4:1
+CargoBay:16:1:2
+</transporters>
+<escape_pod>
+0
+</escape_pod>
+<life_boat>
+0
+</life_boat>
+<crew>
+6
+</crew>
+<otherpassenger>
+24
+</otherpassenger>

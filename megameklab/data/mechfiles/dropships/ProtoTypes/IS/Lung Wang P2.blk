@@ -36,6 +36,10 @@ P2
 IS Level 3
 </type>
 
+<role>
+None
+</role>
+
 <motion_type>
 Spheroid
 </motion_type>
@@ -141,7 +145,7 @@ ISArtemisIV
 </structural_integrity>
 
 <source>
-TRO Prototypes - Jihad
+TRO: Prototypes
 </source>
 
 <tonnage>
@@ -187,3 +191,10 @@ TRO Prototypes - Jihad
 <escape_pod>
 4
 </escape_pod>
+
+<quirks>
+atmo_instability
+weak_undercarriage
+imp_com
+</quirks>
+

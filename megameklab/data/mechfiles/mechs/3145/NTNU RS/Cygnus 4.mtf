@@ -1,13 +1,23 @@
-Version:1.0
-Cygnus
-4
+chassis:Cygnus
+model:4
 mul id:6843
 
 Config:Biped
 TechBase:Clan
 Era:3090
-Source:RS 3145 NT NU
+Source:Record Sheets: 3145 New Tech New Upgrades
 Rules Level:2
+role:Juggernaut
+
+weaponquirk:exposed_linkage:RA:3:CLUltraAC10
+weaponquirk:static_feed:RA:3:CLUltraAC10
+weaponquirk:exposed_linkage:LA:3:CLUltraAC10
+weaponquirk:static_feed:LA:3:CLUltraAC10
+weaponquirk:exposed_linkage:RA:3:CLLBXAC20
+weaponquirk:static_feed:RA:3:CLLBXAC20
+weaponquirk:exposed_linkage:LA:3:CLLBXAC20
+weaponquirk:static_feed:LA:3:CLLBXAC20
+
 
 Mass:95
 Engine:380 XL (Clan) Engine(IS)

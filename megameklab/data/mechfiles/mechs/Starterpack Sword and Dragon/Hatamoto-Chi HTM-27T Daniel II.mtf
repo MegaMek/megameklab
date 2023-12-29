@@ -1,13 +1,21 @@
-Version:1.0
-Hatamoto-Chi
-HTM-27T (Daniel II)
+chassis:Hatamoto-Chi
+model:HTM-27T (Daniel II)
 mul id:1399
 
 Config:Biped
 TechBase:Inner Sphere
 Era:3052
-Source:Starterbook: Sword and Dragon - Clan Invasion
+Source:Starterbook: Sword and Dragon
 Rules Level:2
+role:Juggernaut
+
+
+
+quirk:barrel_fists_la
+quirk:easy_maintain
+weaponquirk:mod_weapons:RT:5:ISStreakSRM6
+weaponquirk:mod_weapons:LT:0:ISStreakSRM6
+
 
 Mass:80
 Engine:240 Fusion Engine

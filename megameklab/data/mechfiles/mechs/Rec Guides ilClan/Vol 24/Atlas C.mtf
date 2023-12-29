@@ -1,13 +1,22 @@
-Version:1.0
-Atlas
-C
+chassis:Atlas
+model:C
 mul id:3750
 
 Config:Biped
 techbase:Mixed (Clan Chassis)
 era:2830
-source:Rec Guide:ilClan #24 - Early Succession War
+source:Rec Guide:ilClan #24
 rules level:4
+role:Juggernaut
+
+
+
+quirk:battle_fists_la
+quirk:battle_fists_ra
+quirk:command_mech
+quirk:distracting
+quirk:imp_com
+
 
 mass:100
 engine:300 Fusion (Clan) Engine

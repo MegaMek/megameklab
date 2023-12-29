@@ -1,13 +1,23 @@
-Version:1.0
-Phoenix Hawk IIC
-2
+chassis:Phoenix Hawk IIC
+model:2
 mul id:2512
 
 Config:Biped
 TechBase:Clan
 Era:2852
-source:Rec Guide:ilClan #15 - Succession Wars
+source:Rec Guide:ilClan #15
 Rules Level:2
+role:Missile Boat
+
+quirk:easy_maintain
+weaponquirk:fast_reload:CT:11:CLMG
+weaponquirk:fast_reload:RT:4:CLUltraAC10
+weaponquirk:fast_reload:LT:4:CLUltraAC10
+weaponquirk:fast_reload:RT:4:CLLRM20
+weaponquirk:fast_reload:RT:8:CLLRM20
+weaponquirk:fast_reload:LT:4:CLLRM20
+weaponquirk:fast_reload:LT:8:CLLRM20
+
 
 Mass:80
 Engine:400 XL (Clan) Engine

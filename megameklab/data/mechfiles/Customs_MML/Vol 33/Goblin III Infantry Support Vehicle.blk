@@ -1,0 +1,95 @@
+#Saved from version 0.49.16-SNAPSHOT on 2023-12-17
+<BlockVersion>
+1
+</BlockVersion>
+
+<UnitType>
+Tank
+</UnitType>
+
+<Name>
+Goblin III Infantry Support Vehicle
+</Name>
+
+<Model>
+
+</Model>
+
+<year>
+3150
+</year>
+
+<originalBuildYear>
+3150
+</originalBuildYear>
+
+<type>
+IS Level 3
+</type>
+
+<role>
+Juggernaut
+</role>
+
+<motion_type>
+Tracked
+</motion_type>
+
+<transporters>
+troopspace:4.0
+</transporters>
+
+<cruiseMP>
+5
+</cruiseMP>
+
+<engine_type>
+0
+</engine_type>
+
+<armor_type>
+6
+</armor_type>
+
+<armor_tech>
+1
+</armor_tech>
+
+<armor>
+40
+31
+31
+26
+40
+</armor>
+
+<Body Equipment>
+ISCASE
+IS Machine Gun Ammo - Half
+</Body Equipment>
+
+<Front Equipment>
+Machine Gun
+</Front Equipment>
+
+<Right Equipment>
+</Right Equipment>
+
+<Left Equipment>
+</Left Equipment>
+
+<Rear Equipment>
+</Rear Equipment>
+
+<Turret Equipment>
+Large Re-engineered Laser
+</Turret Equipment>
+
+<source>
+Rec Guide:ilClan #33
+</source>
+
+<tonnage>
+45.0
+</tonnage>
+

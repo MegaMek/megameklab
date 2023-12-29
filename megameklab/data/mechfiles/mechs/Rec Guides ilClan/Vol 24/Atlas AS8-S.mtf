@@ -1,13 +1,22 @@
-Version:1.1
-Atlas
-AS8-S
+chassis:Atlas
+model:AS8-S
 mul id:8433
 
 Config:Biped
 techbase:Mixed (IS Chassis)
 era:3138
-source:Rec Guide:ilClan #24 - Dark Age
+source:Rec Guide:ilClan #24
 rules level:3
+role:Sniper
+
+
+
+quirk:battle_fists_la
+quirk:battle_fists_ra
+quirk:command_mech
+quirk:distracting
+quirk:imp_com
+
 
 mass:100
 engine:300 XL (Clan) Engine

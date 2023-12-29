@@ -36,6 +36,10 @@ Pegasus Scout Hover Tank
 IS Level 2
 </type>
 
+<role>
+Scout
+</role>
+
 <motion_type>
 Hover
 </motion_type>
@@ -127,7 +131,7 @@ TARGETING:Exeter LongScan with ReconLock
 </systemManufacturers>
 
 <source>
-Rec Guide 25 - Early Republic
+Rec Guide:ilClan #25
 </source>
 
 <tonnage>

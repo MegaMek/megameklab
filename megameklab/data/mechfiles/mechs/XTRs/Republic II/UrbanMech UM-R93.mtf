@@ -1,12 +1,19 @@
-Version:1.3
-UrbanMech
-UM-R93
+chassis:UrbanMech
+model:UM-R93
 mul id:9499
 Config:Biped
 techbase:Inner Sphere
 era:3130
-source:XTRO Republic II - Late Republic
+source:XTR: Republic II
 rules level:3
+role:Ambusher
+
+
+
+quirk:ext_twist
+quirk:low_profile
+quirk:no_arms
+
 
 mass:30
 engine:60 Fusion Engine(IS)

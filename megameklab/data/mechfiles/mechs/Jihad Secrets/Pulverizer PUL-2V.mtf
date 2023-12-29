@@ -1,12 +1,20 @@
-Version:1.0
-Pulverizer
-PUL-2V
+chassis:Pulverizer
+model:PUL-2V
 mul id:2590
+source:Jihad Secrets: The Blake Documents
 
 Config:Biped
 TechBase:Inner Sphere
 Era:2823
 Rules Level:4
+role:Brawler
+
+quirk:easy_maintain
+quirk:pro_actuator
+quirk:bad_rep_clan
+weaponquirk:accurate:RT:2:CLERPPC
+weaponquirk:accurate:RT:0:ISEHERPPC
+
 
 Mass:90
 Engine:360 Fusion Engine

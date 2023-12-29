@@ -1,13 +1,19 @@
-Version:1.0
-Phoenix Hawk IIC
-10
+chassis:Phoenix Hawk IIC
+model:10
 mul id:8197
 
 Config:Biped
 techbase:Mixed (Clan Chassis)
 era:3146
-source:Rec Guide:ilClan #15 - Dark Age
+source:Rec Guide:ilClan #15
 rules level:2
+role:Skirmisher
+
+quirk:easy_maintain
+weaponquirk:fast_reload:CT:11:CLMG
+weaponquirk:fast_reload:RT:4:CLUltraAC10
+weaponquirk:fast_reload:LT:4:CLUltraAC10
+
 
 mass:80
 engine:400 XL (Clan) Engine

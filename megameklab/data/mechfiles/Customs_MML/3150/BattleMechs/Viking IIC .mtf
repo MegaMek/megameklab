@@ -1,0 +1,157 @@
+Version:1.0
+Viking IIC
+
+
+Config:Biped
+TechBase:Clan
+Era:3150
+Source:Dark Age
+Rules Level:3
+
+Mass:90
+Engine:270 Fusion (Clan) Engine(IS)
+Structure:Endo Steel
+Myomer:Standard
+
+Heat Sinks:11 Double
+Walk MP:3
+Jump MP:0
+
+Armor:Hardened(Clan)
+LA Armor:30
+RA Armor:30
+LT Armor:31
+RT Armor:31
+CT Armor:33
+HD Armor:9
+LL Armor:30
+RL Armor:30
+RTL Armor:7
+RTR Armor:7
+RTC Armor:10
+
+Weapons:10
+ER Micro Laser, Left Torso
+ER Micro Laser, Right Torso
+LRM 15, Right Torso
+LRM 15, Left Torso
+LRM 20, Right Arm
+LRM 20, Left Arm
+Machine Gun, Left Leg
+Machine Gun, Right Leg
+Machine Gun, Right Leg
+Machine Gun, Left Leg
+
+Left Arm:
+Shoulder
+Upper Arm Actuator
+CLLRM20
+CLLRM20
+CLLRM20
+CLLRM20
+CLArtemisV
+CLArtemisV
+Endo Steel
+-Empty-
+-Empty-
+-Empty-
+
+Right Arm:
+Shoulder
+Upper Arm Actuator
+CLLRM20
+CLLRM20
+CLLRM20
+CLLRM20
+CLArtemisV
+CLArtemisV
+Endo Steel
+-Empty-
+-Empty-
+-Empty-
+
+Left Torso:
+CLLRM15
+CLLRM15
+CLArtemisV
+CLArtemisV
+CLERMicroLaser
+Clan Ammo LRM-20 (Clan) Artemis V-capable
+Clan Ammo LRM-20 (Clan) Artemis V-capable
+Clan Ammo LRM-15 (Clan) Artemis V-capable
+Clan Ammo LRM-15 (Clan) Artemis V-capable
+CLCASEII
+Endo Steel
+Endo Steel
+
+Right Torso:
+CLLRM15
+CLLRM15
+CLArtemisV
+CLArtemisV
+CLERMicroLaser
+Clan Ammo LRM-20 (Clan) Artemis V-capable
+Clan Ammo LRM-20 (Clan) Artemis V-capable
+Clan Ammo LRM-15 (Clan) Artemis V-capable
+Clan Machine Gun Ammo - Half
+CLCASEII
+Endo Steel
+Endo Steel
+
+Center Torso:
+Fusion Engine
+Fusion Engine
+Fusion Engine
+Gyro
+Gyro
+Gyro
+Gyro
+Fusion Engine
+Fusion Engine
+Fusion Engine
+CLDoubleHeatSink
+CLDoubleHeatSink
+
+Head:
+Life Support
+Sensors
+Cockpit
+Endo Steel
+Sensors
+Life Support
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+
+Left Leg:
+Hip
+Upper Leg Actuator
+Lower Leg Actuator
+Foot Actuator
+CLMG
+CLMG
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+
+Right Leg:
+Hip
+Upper Leg Actuator
+Lower Leg Actuator
+Foot Actuator
+CLMG
+CLMG
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+
+

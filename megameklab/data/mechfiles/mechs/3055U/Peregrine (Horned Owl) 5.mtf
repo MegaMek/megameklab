@@ -1,13 +1,17 @@
-Version:1.0
-Peregrine (Horned Owl)
-5
+chassis:Peregrine (Horned Owl)
+model:5
 mul id:2476
 
 Config:Biped
 TechBase:Clan
 Era:3066
-Source:TRO 3055 - Civil War
+Source:TRO: 3055
 Rules Level:2
+role:Sniper
+
+weaponquirk:stable_weapon:CT:10:CLLargePulseLaser
+weaponquirk:stable_weapon:CT:10:CLHeavyMediumLaser
+
 
 Mass:35
 Engine:210 Fusion (Clan) Engine

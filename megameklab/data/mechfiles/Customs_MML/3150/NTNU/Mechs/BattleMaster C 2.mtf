@@ -1,0 +1,156 @@
+Version:1.1
+BattleMaster
+C 2
+
+Config:Biped
+TechBase:Mixed (IS Chassis)
+Era:3150
+Source:Dark Age
+Rules Level:3
+
+Mass:85
+Engine:340 Fusion Engine(IS)
+Structure:IS Endo Steel
+Myomer:Standard
+Cockpit:Command Console
+Gyro:Standard Gyro
+
+Heat Sinks:17 Double
+Walk MP:4
+Jump MP:0
+
+Armor:Standard(IS/Clan)
+LA Armor:24
+RA Armor:24
+LT Armor:28
+RT Armor:28
+CT Armor:40
+HD Armor:9
+LL Armor:26
+RL Armor:26
+RTL Armor:8
+RTR Armor:8
+RTC Armor:11
+
+Weapons:7
+ER Medium Laser, Right Torso
+ER Medium Laser, Right Torso
+ER Medium Laser, Left Torso
+ER Medium Laser, Left Torso
+ER PPC, Right Arm
+ER PPC, Left Arm
+Large Pulse Laser, Center Torso
+
+Left Arm:
+Shoulder
+Upper Arm Actuator
+Lower Arm Actuator
+Hand Actuator
+ISDoubleHeatSink
+ISDoubleHeatSink
+ISDoubleHeatSink
+CLERPPC
+CLERPPC
+IS Endo Steel
+IS Endo Steel
+IS Endo Steel
+
+Right Arm:
+Shoulder
+Upper Arm Actuator
+Lower Arm Actuator
+Hand Actuator
+ISDoubleHeatSink
+ISDoubleHeatSink
+ISDoubleHeatSink
+CLERPPC
+CLERPPC
+IS Endo Steel
+IS Endo Steel
+IS Endo Steel
+
+Left Torso:
+ISDoubleHeatSink
+ISDoubleHeatSink
+ISDoubleHeatSink
+CLERMediumLaser
+CLERMediumLaser
+IS Endo Steel
+IS Endo Steel
+IS Endo Steel
+IS Endo Steel
+-Empty-
+-Empty-
+-Empty-
+
+Right Torso:
+ISDoubleHeatSink
+ISDoubleHeatSink
+ISDoubleHeatSink
+CLERMediumLaser
+CLERMediumLaser
+IS Endo Steel
+IS Endo Steel
+IS Endo Steel
+IS Endo Steel
+-Empty-
+-Empty-
+-Empty-
+
+Center Torso:
+Fusion Engine
+Fusion Engine
+Fusion Engine
+Gyro
+Gyro
+Gyro
+Gyro
+Fusion Engine
+Fusion Engine
+Fusion Engine
+CLLargePulseLaser
+CLLargePulseLaser
+
+Head:
+Life Support
+Sensors
+Cockpit
+Cockpit
+Sensors
+Life Support
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+
+Left Leg:
+Hip
+Upper Leg Actuator
+Lower Leg Actuator
+Foot Actuator
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+
+Right Leg:
+Hip
+Upper Leg Actuator
+Lower Leg Actuator
+Foot Actuator
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+
+

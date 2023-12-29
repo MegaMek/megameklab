@@ -1,0 +1,160 @@
+Version:1.0
+Jaguar
+2
+
+Config:Quad
+TechBase:Clan
+Era:3150
+Source:Dark Age
+Rules Level:2
+
+Mass:35
+Engine:280 XL (Clan) Engine(IS)
+Structure:Endo Steel
+Myomer:Standard
+
+Heat Sinks:10 Double
+Walk MP:8
+Jump MP:0
+
+Armor:Ferro-Fibrous(Clan)
+FLL Armor:16
+FRL Armor:16
+LT Armor:11
+RT Armor:11
+CT Armor:17
+HD Armor:9
+RLL Armor:16
+RRL Armor:16
+RTL Armor:5
+RTR Armor:5
+RTC Armor:5
+
+Weapons:13
+ER Medium Laser, Right Torso
+ER Medium Laser, Left Torso
+Machine Gun, Right Torso
+Machine Gun, Right Torso
+Machine Gun, Left Torso
+Machine Gun, Right Torso
+Machine Gun, Left Torso
+Machine Gun, Left Torso
+Machine Gun Array, Right Torso
+Machine Gun Array, Left Torso
+Medium Pulse Laser, Left Torso
+Medium Pulse Laser, Right Torso
+Light TAG, Center Torso
+
+Front Left Leg:
+Hip
+Upper Leg Actuator
+Lower Leg Actuator
+Foot Actuator
+Endo Steel
+Ferro-Fibrous
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+
+Front Right Leg:
+Hip
+Upper Leg Actuator
+Lower Leg Actuator
+Foot Actuator
+Endo Steel
+Ferro-Fibrous
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+
+Left Torso:
+Fusion Engine
+Fusion Engine
+CLERMediumLaser
+CLMediumPulseLaser
+CLMG
+CLMG
+CLMG
+CLMGA
+Clan Machine Gun Ammo - Half
+Ferro-Fibrous
+Ferro-Fibrous
+Ferro-Fibrous
+
+Right Torso:
+Fusion Engine
+Fusion Engine
+CLERMediumLaser
+CLMediumPulseLaser
+CLMG
+CLMG
+CLMG
+CLMGA
+CLTargeting Computer
+CLTargeting Computer
+Endo Steel
+Endo Steel
+
+Center Torso:
+Fusion Engine
+Fusion Engine
+Fusion Engine
+Gyro
+Gyro
+Gyro
+Gyro
+Fusion Engine
+Fusion Engine
+Fusion Engine
+CLActiveProbe
+CLLightTAG
+
+Head:
+Life Support
+Sensors
+Cockpit
+Endo Steel
+Sensors
+Life Support
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+
+Rear Left Leg:
+Hip
+Upper Leg Actuator
+Lower Leg Actuator
+Foot Actuator
+Endo Steel
+Ferro-Fibrous
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+
+Rear Right Leg:
+Hip
+Upper Leg Actuator
+Lower Leg Actuator
+Foot Actuator
+Endo Steel
+Ferro-Fibrous
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+
+

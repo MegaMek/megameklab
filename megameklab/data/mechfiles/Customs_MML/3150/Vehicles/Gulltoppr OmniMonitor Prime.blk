@@ -1,0 +1,97 @@
+#building block data file
+<BlockVersion>
+1
+</BlockVersion>
+
+##Write the version number just in case...
+<Version>
+MAM0
+</Version>
+
+<UnitType>
+Tank
+</UnitType>
+
+<Name>
+Gulltoppr OmniMonitor
+</Name>
+
+<Model>
+Prime
+</Model>
+
+<year>
+3150
+</year>
+
+<type>
+IS Level 3
+</type>
+
+<motion_type>
+Tracked
+</motion_type>
+
+<cruiseMP>
+2
+</cruiseMP>
+
+<engine_type>
+2
+</engine_type>
+
+<armor_type>
+0
+</armor_type>
+
+<armor_tech>
+0
+</armor_tech>
+
+<armor>
+136
+104
+104
+90
+90
+64
+50
+66
+</armor>
+
+<Body Equipment>
+ISCASE
+ISGauss Ammo
+ISGauss Ammo
+ISGauss Ammo
+ISGauss Ammo
+ISLongTomCannonAmmo
+ISLongTomCannonAmmo
+ISLongTomCannonAmmo
+ISAMS Ammo
+ISAMS Ammo
+ISGuardianECMSuite
+</Body Equipment>
+
+<Rear Turret Equipment>
+ISLongTomCannon
+ISAntiMissileSystem
+ISAntiMissileSystem
+</Rear Turret Equipment>
+
+<Front Turret Equipment>
+ISGaussRifle
+ISGaussRifle
+</Front Turret Equipment>
+
+<source>
+Dark Age
+</source>
+
+<tonnage>
+190
+</tonnage>
+
+<omni>
+1
+</omni>

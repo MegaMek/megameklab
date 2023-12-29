@@ -1,0 +1,89 @@
+#building block data file
+<BlockVersion>
+1
+</BlockVersion>
+
+#Write the version number just in case...
+<Version>
+MAM0
+</Version>
+
+<UnitType>
+Tank
+</UnitType>
+
+<Name>
+Gun Trailer
+</Name>
+
+<Model>
+(Thumper)
+</Model>
+
+<Tonnage>
+35
+</Tonnage>
+
+<cruiseMP>
+0
+</cruiseMP>
+
+#Order is Tank/VTOL/LST
+<Armor>
+8
+8
+8
+12
+12
+</Armor>
+
+<Turret Equipment>
+ISThumper
+</Turret Equipment>
+
+<Front Equipment>
+Hitch
+</Front Equipment>
+
+<Rear Equipment>
+</Rear Equipment>
+
+<Body Equipment>
+ISThumper Ammo
+ISThumper Ammo
+ISThumper Ammo
+ISThumper Ammo
+ISThumper Ammo
+ISThumper Ammo
+</Body Equipment>
+
+<type>
+IS Level 3
+</type>
+
+<year>
+3150
+</year>
+
+<source>
+Dark Age
+</source>
+
+<internal_type>
+0
+</internal_type>
+
+<armor_type>
+4
+</armor_type>
+
+<engine_type>
+1
+</engine_type>
+
+<motion_type>
+Wheeled
+</motion_type>
+
+<transporters>
+</transporters>

@@ -1,0 +1,152 @@
+Version:1.0
+Perseus
+P1S
+
+Config:Biped Omnimech
+TechBase:Inner Sphere
+Era:3150
+Source:Jihad
+Rules Level:2
+
+Mass:75
+Engine:300 XL Engine(IS)
+Structure:IS Endo Steel
+Myomer:Standard
+
+Heat Sinks:12 Double
+Base Chassis Heat Sinks:12
+Walk MP:4
+Jump MP:5
+
+Armor:Standard(Inner Sphere)
+LA Armor:21
+RA Armor:21
+LT Armor:24
+RT Armor:24
+CT Armor:36
+HD Armor:9
+LL Armor:32
+RL Armor:32
+RTL Armor:8
+RTR Armor:8
+RTC Armor:9
+
+Weapons:4
+ER Medium Laser, Left Arm
+Light Gauss Rifle, Right Arm
+ER PPC, Right Torso
+Rocket Launcher 10, Left Torso
+
+Left Arm:
+Shoulder
+Upper Arm Actuator
+Lower Arm Actuator
+ISERMediumLaser
+ISTargeting Computer
+ISTargeting Computer
+ISTargeting Computer
+ISTargeting Computer
+ISTargeting Computer
+IS Endo Steel
+IS Endo Steel
+IS Endo Steel
+
+Right Arm:
+Shoulder
+Upper Arm Actuator
+ISLightGaussRifle
+ISLightGaussRifle
+ISLightGaussRifle
+ISLightGaussRifle
+ISLightGaussRifle
+IS Light Gauss Ammo
+IS Light Gauss Ammo
+IS Endo Steel
+IS Endo Steel
+IS Endo Steel
+
+Left Torso:
+Fusion Engine
+Fusion Engine
+Fusion Engine
+IS Improved Jump Jet
+IS Improved Jump Jet
+RL10
+Supercharger
+IS Endo Steel
+IS Endo Steel
+IS Endo Steel
+IS Endo Steel
+-Empty-
+
+Right Torso:
+Fusion Engine
+Fusion Engine
+Fusion Engine
+IS Improved Jump Jet
+IS Improved Jump Jet
+ISERPPC
+ISERPPC
+ISERPPC
+IS Endo Steel
+IS Endo Steel
+IS Endo Steel
+IS Endo Steel
+
+Center Torso:
+Fusion Engine
+Fusion Engine
+Fusion Engine
+Gyro
+Gyro
+Gyro
+Gyro
+Fusion Engine
+Fusion Engine
+Fusion Engine
+IS Improved Jump Jet
+IS Improved Jump Jet
+
+Head:
+Life Support
+Sensors
+Cockpit
+ISC3SlaveUnit
+Sensors
+Life Support
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+
+Left Leg:
+Hip
+Upper Leg Actuator
+Lower Leg Actuator
+Foot Actuator
+IS Improved Jump Jet
+IS Improved Jump Jet
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+
+Right Leg:
+Hip
+Upper Leg Actuator
+Lower Leg Actuator
+Foot Actuator
+IS Improved Jump Jet
+IS Improved Jump Jet
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+
+

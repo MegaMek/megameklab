@@ -1,0 +1,85 @@
+#building block data file
+<BlockVersion>
+1
+</BlockVersion>
+
+#Write the version number just in case...
+<Version>
+MAM0
+</Version>
+
+<UnitType>
+VTOL
+</UnitType>
+
+<Name>
+Red Kite Attack VTOL
+</Name>
+
+<Model>
+
+</Model>
+
+<Tonnage>
+25
+</Tonnage>
+
+<cruiseMP>
+11
+</cruiseMP>
+
+#Order is Tank/VTOL/LST
+<Armor>
+16
+10
+10
+8
+2
+16
+</Armor>
+
+<Turret Equipment>
+CLMediumChemicalLaser
+CLMediumChemicalLaser
+CLMediumChemicalLaser
+CLMediumChemicalLaser
+</Turret Equipment>
+
+<Front Equipment>
+CLMediumChemicalLaser
+CLMediumChemicalLaser
+</Front Equipment>
+
+<Body Equipment>
+CLMediumChemLaserAmmo
+CLMediumChemLaserAmmo
+CLMediumChemLaserAmmo
+</Body Equipment>
+
+<type>
+Mixed (IS Chassis)
+</type>
+
+<year>
+3150
+</year>
+
+<source>
+Dark Age
+</source>
+
+<internal_type>
+0
+</internal_type>
+
+<armor_type>
+1
+</armor_type>
+
+<engine_type>
+6
+</engine_type>
+
+<motion_type>
+VTOL
+</motion_type>

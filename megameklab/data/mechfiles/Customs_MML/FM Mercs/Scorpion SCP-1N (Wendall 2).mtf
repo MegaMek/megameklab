@@ -1,0 +1,166 @@
+Version:1.3
+Scorpion
+SCP-1N (Wendall 2)
+mul id:8276
+Config:Quad
+techbase:Inner Sphere
+era:3053
+source:FM: Mercenaries
+rules level:2
+role:Skirmisher
+
+mass:55
+engine:385 XL Engine(IS)
+structure:IS Standard
+myomer:Standard
+
+heat sinks:10 IS Double
+walk mp:7
+jump mp:0
+
+armor:Standard(Inner Sphere)
+FLL armor:16
+FRL armor:16
+LT armor:21
+RT armor:21
+CT armor:26
+HD armor:9
+RLL armor:21
+RRL armor:21
+RTL armor:5
+RTR armor:5
+RTC armor:7
+
+Weapons:3
+Medium Laser, Head
+Large Laser, Right Torso
+SRM 6, Right Torso
+
+Front Left Leg:
+Hip
+Upper Leg Actuator
+Lower Leg Actuator
+Foot Actuator
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+
+Front Right Leg:
+Hip
+Upper Leg Actuator
+Lower Leg Actuator
+Foot Actuator
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+
+Left Torso:
+Fusion Engine
+Fusion Engine
+Fusion Engine
+IS Ammo SRM-6
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+
+Right Torso:
+Fusion Engine
+Fusion Engine
+Fusion Engine
+Large Laser
+Large Laser
+SRM 6
+SRM 6
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+
+Center Torso:
+Fusion Engine
+Fusion Engine
+Fusion Engine
+Gyro
+Gyro
+Gyro
+Gyro
+Fusion Engine
+Fusion Engine
+Fusion Engine
+-Empty-
+-Empty-
+
+Head:
+Life Support
+Sensors
+Cockpit
+Medium Laser
+Sensors
+Life Support
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+
+Rear Left Leg:
+Hip
+Upper Leg Actuator
+Lower Leg Actuator
+Foot Actuator
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+
+Rear Right Leg:
+Hip
+Upper Leg Actuator
+Lower Leg Actuator
+Foot Actuator
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+
+overview: Every company has their beginnings. Many know Brigadier Corporation as one of the industrial powerhouses of the Free Worlds League. But at first, Brigadier was little more than a contract manufacturer for existing Hegemony designs. Ambition—along with a healthy lust for profits—would eventually spurn Brigadier to lunge towards manufacturing their own in-house designs, which would be boldly launched with the Scorpion: a quad BattleMech. Though Dr. Harrison, a strong proponent for quad designs, claimed that his new Scorpion would revolutionize 'Mech warfare, the Scorpion turned out to be barely more than a boondoggle. Sales were low, and few mourned the loss of the main factory on Oliver when they were destroyed in 2837.
+capabilities: The Scorpion is typically armed with a reliable one-two weapon combination. A primary large energy weapon or autocannon opens up holes, while a missile weapon usually takes advantage of any exposed weaknesses. While powerful in theory, in practice the Scorpion mounts barely more firepower than 'Mechs twenty tons lighter. With armor coverage barely better than some light 'Mechs, a badly positioned Scorpion is easy prey for better-armed BattleMechs. Combined with the bucking, bumpy ride the Scorpion has to offer, few choose to voluntarily pilot the design.
+deployment:No information on this variant
+manufacturer:Field Refit
+primaryfactory:Various
+systemmanufacturer:CHASSIS:Brigadier
+systemmode:CHASSIS:800F
+systemmanufacturer:ENGINE:Vox
+systemmode:ENGINE:330
+systemmanufacturer:ARMOR:StarSlab
+systemmode:ARMOR:/4
+systemmanufacturer:COMMUNICATIONS:Garret
+systemmode:COMMUNICATIONS:500A
+systemmanufacturer:TARGETING:Garret
+systemmode:TARGETING:GRNDTRK 9
+

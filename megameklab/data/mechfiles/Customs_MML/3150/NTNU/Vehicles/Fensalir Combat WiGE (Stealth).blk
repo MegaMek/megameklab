@@ -1,0 +1,95 @@
+#building block data file
+<BlockVersion>
+1
+</BlockVersion>
+
+##Write the version number just in case...
+<Version>
+MAM0
+</Version>
+
+<UnitType>
+Tank
+</UnitType>
+
+<Name>
+Fensalir Combat WiGE
+</Name>
+
+<Model>
+(Stealth)
+</Model>
+
+<year>
+3150
+</year>
+
+<type>
+IS Level 2
+</type>
+
+<motion_type>
+WiGE
+</motion_type>
+
+<cruiseMP>
+5
+</cruiseMP>
+
+<engine_type>
+2
+</engine_type>
+
+<armor_type>
+22
+</armor_type>
+
+<armor_tech>
+7
+</armor_tech>
+
+<armor>
+52
+42
+42
+32
+</armor>
+
+<Body Equipment>
+ISGuardianECMSuite
+ISCASE
+IS Vehicular Stealth
+IS Vehicular Stealth
+ISImprovedHeavyGauss Ammo
+ISImprovedHeavyGauss Ammo
+ISImprovedHeavyGauss Ammo
+ISTargeting Computer
+IS Ammo LRM-10 Artemis-capable
+ISAMS Ammo
+</Body Equipment>
+
+<Front Equipment>
+ISImprovedHeavyGaussRifle
+LRM 10
+ISArtemisIV
+ISAntiMissileSystem
+</Front Equipment>
+
+<Right Equipment>
+</Right Equipment>
+
+<Left Equipment>
+</Left Equipment>
+
+<Rear Equipment>
+ISAntiMissileSystem
+</Rear Equipment>
+
+<source>
+Dark Age
+</source>
+
+<tonnage>
+80.0
+</tonnage>
+

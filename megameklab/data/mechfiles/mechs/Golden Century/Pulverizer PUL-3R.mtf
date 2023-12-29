@@ -1,13 +1,20 @@
-Version:1.1
-Pulverizer
-PUL-3R
+chassis:Pulverizer
+model:PUL-3R
 mul id:7647
 
 Config:Biped
 techbase:Mixed (IS Chassis)
 era:2823
-source:Succession Wars
+source:TRO: Golden Century
 rules level:4
+role:Brawler
+
+quirk:easy_maintain
+quirk:pro_actuator
+quirk:bad_rep_clan
+weaponquirk:accurate:RT:2:CLERPPC
+weaponquirk:accurate:RT:3:CLWERPPC
+
 
 mass:90
 engine:360 Fusion Engine(IS)

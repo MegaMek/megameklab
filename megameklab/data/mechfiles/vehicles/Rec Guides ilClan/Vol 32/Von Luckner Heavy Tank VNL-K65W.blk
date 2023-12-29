@@ -33,12 +33,16 @@ VNL-K65W
 </mul id:>
 
 <source>
-Rec Guide:ilClan #32 - Jihad
+Rec Guide:ilClan #32
 </source>
 
 <type>
 IS Level 2
 </type>
+
+<role>
+Juggernaut
+</role>
 
 <motion_type>
 Tracked
@@ -84,8 +88,8 @@ IS Light Machine Gun Ammo - Half
 </Body Equipment>
 
 <Front Equipment>
-ISMML5
-ISMML5
+ISMML5 Artemis-capable
+ISMML5 Artemis-capable
 ISSmallPulseLaser
 ISArtemisIV
 ISArtemisIV
@@ -142,3 +146,8 @@ ARMOR:StarSlab/4
 COMMUNICATIONS:O/P 300
 TARGETING:O/P GRNDSTAT 50A
 </systemManufacturers>
+
+<quirks>
+difficult_maintain
+</quirks>
+

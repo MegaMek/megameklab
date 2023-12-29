@@ -36,6 +36,10 @@ Lung Wang
 IS Level 3
 </type>
 
+<role>
+None
+</role>
+
 <motion_type>
 Aerodyne
 </motion_type>
@@ -141,7 +145,7 @@ ISMobileHPG
 </structural_integrity>
 
 <source>
-XTRO Liao - Jihad
+XTR: Liao
 </source>
 
 <tonnage>

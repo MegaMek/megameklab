@@ -32,6 +32,10 @@ X
 IS Level 4
 </type>
 
+<role>
+Brawler
+</role>
+
 <tonnage>
 45.0
 </tonnage>
@@ -95,3 +99,6 @@ ISMagshotGR
 ISMagshotGR
 </Front Turret Equipment>
 
+<source>
+XTR: Boondocks
+</source>

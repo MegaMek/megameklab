@@ -1,13 +1,20 @@
-Version:1.1
-Pulverizer
-
+chassis:Pulverizer
+model:
 mul id:7648
 
 Config:Biped
 techbase:Clan
 era:2845
-source:Succession Wars
+source:TRO: Golden Century
 rules level:2
+role:Sniper
+
+
+quirk:easy_maintain
+quirk:pro_actuator
+quirk:bad_rep_clan
+weaponquirk:accurate:RT:2:CLERPPC
+
 
 mass:90
 engine:360 Fusion (Clan) Engine(IS)

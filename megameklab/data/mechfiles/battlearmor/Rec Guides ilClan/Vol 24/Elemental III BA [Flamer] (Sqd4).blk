@@ -35,6 +35,10 @@ Elemental III Battle Armor
 Clan Level 2
 </type>
 
+<role>
+Ambusher
+</role>
+
 <motion_type>
 Jump
 </motion_type>
@@ -115,7 +119,7 @@ TARGETING:Various
 </systemManufacturers>
 
 <source>
-Rec Guide:ilClan #24 - Dark Age
+Rec Guide:ilClan #24
 </source>
 
 <chassis>

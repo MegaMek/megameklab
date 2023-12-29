@@ -1,13 +1,18 @@
-Version:1.0
-Parash
-2
+chassis:Parash
+model:2
 mul id:2427
 
 Config:Biped
 TechBase:Clan
 Era:3084
-Source:Dark Age
+source:TRO: 3085
 Rules Level:4
+role:Striker
+
+quirk:low_profile
+weaponquirk:jettison_capable:RA:4:CLLargePulseLaser
+weaponquirk:jettison_capable:RA:4:CLERLargePulseLaser
+
 
 Mass:35
 Engine:245 XL (Clan) Engine

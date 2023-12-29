@@ -1,0 +1,155 @@
+Version:1.0
+Avalanche
+AVL-1OR
+
+Config:Biped
+TechBase:Mixed (IS Chassis)
+Era:3150
+Source:Dark Age
+Rules Level:2
+
+Mass:50
+Engine:250 Fusion Engine(IS)
+Structure:Endo Steel
+Myomer:Standard
+
+Heat Sinks:10 Double
+Walk MP:5
+Jump MP:5
+
+Armor:Standard(Inner Sphere)
+LA Armor:15
+RA Armor:15
+LT Armor:17
+RT Armor:17
+CT Armor:24
+HD Armor:8
+LL Armor:21
+RL Armor:21
+RTL Armor:7
+RTR Armor:7
+RTC Armor:8
+
+Weapons:8
+ER Medium Laser, Right Arm
+ER Medium Laser, Left Arm
+ER Medium Laser, Right Arm
+ER Medium Laser, Left Arm
+LRM 10, Left Torso
+LRM 10, Right Torso
+ATM 3, Right Leg
+ATM 3, Left Leg
+
+Left Arm:
+Shoulder
+Upper Arm Actuator
+CLERMediumLaser
+CLERMediumLaser
+Endo Steel
+Endo Steel
+Endo Steel
+Endo Steel
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+
+Right Arm:
+Shoulder
+Upper Arm Actuator
+CLERMediumLaser
+CLERMediumLaser
+Endo Steel
+Endo Steel
+Endo Steel
+Endo Steel
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+
+Left Torso:
+Jump Jet
+Jump Jet
+CLLRM10
+Endo Steel
+Endo Steel
+Endo Steel
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+
+Right Torso:
+Jump Jet
+Jump Jet
+CLLRM10
+Clan Ammo LRM-10
+Clan Ammo LRM-10
+Clan Ammo ATM-3
+Clan Ammo ATM-3
+ISCASE
+Endo Steel
+-Empty-
+-Empty-
+-Empty-
+
+Center Torso:
+Fusion Engine
+Fusion Engine
+Fusion Engine
+Gyro
+Gyro
+Gyro
+Gyro
+Fusion Engine
+Fusion Engine
+Fusion Engine
+Jump Jet
+Endo Steel
+
+Head:
+Life Support
+Sensors
+Cockpit
+Endo Steel
+Sensors
+Life Support
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+
+Left Leg:
+Hip
+Upper Leg Actuator
+Lower Leg Actuator
+Foot Actuator
+CLATM3
+CLATM3
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+
+Right Leg:
+Hip
+Upper Leg Actuator
+Lower Leg Actuator
+Foot Actuator
+CLATM3
+CLATM3
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+
+

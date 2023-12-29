@@ -32,6 +32,10 @@ Striker Light Tank
 IS Level 1
 </type>
 
+<role>
+Missile Boat
+</role>
+
 <motion_type>
 Wheeled
 </motion_type>
@@ -78,7 +82,7 @@ SRM 2
 </Turret Equipment>
 
 <source>
-TRO 3039 - Succession Wars
+TRO: 3039
 </source>
 
 <tonnage>

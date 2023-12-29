@@ -1,0 +1,102 @@
+#building block data file
+<BlockVersion>
+1
+</BlockVersion>
+
+##Write the version number just in case...
+<Version>
+MAM0
+</Version>
+
+<UnitType>
+BattleArmor
+</UnitType>
+
+<Name>
+Zou
+</Name>
+
+<Model>
+(C3)
+</Model>
+
+<year>
+3150
+</year>
+
+<originalBuildYear>
+3150
+</originalBuildYear>
+
+<type>
+IS Level 4
+</type>
+
+<motion_type>
+Jump
+</motion_type>
+
+<transporters>
+</transporters>
+
+<cruiseMP>
+2
+</cruiseMP>
+
+<armor_type>
+37
+</armor_type>
+
+<armor_tech>
+1
+</armor_tech>
+
+<Squad Equipment>
+BABattleClaw:LA
+CLBAMedium Recoilless Rifle:RA
+BattleArmorC3:Body
+IS BA Laser Reflective (Reflec/Glazed):Body
+IS BA Laser Reflective (Reflec/Glazed):Body
+IS BA Laser Reflective (Reflec/Glazed):Body
+IS BA Laser Reflective (Reflec/Glazed):Body
+IS BA Laser Reflective (Reflec/Glazed):Body
+IS BA Laser Reflective (Reflec/Glazed):RA
+IS BA Laser Reflective (Reflec/Glazed):LA
+</Squad Equipment>
+
+<Trooper 1 Equipment>
+</Trooper 1 Equipment>
+
+<Trooper 2 Equipment>
+</Trooper 2 Equipment>
+
+<Trooper 3 Equipment>
+</Trooper 3 Equipment>
+
+<Trooper 4 Equipment>
+</Trooper 4 Equipment>
+
+<source>
+Dark Age
+</source>
+
+<chassis>
+biped
+</chassis>
+
+<jumpingMP>
+0
+</jumpingMP>
+
+<armor>
+11
+</armor>
+
+<Trooper Count>
+4
+</Trooper Count>
+
+<weightclass>
+3
+</weightclass>
+

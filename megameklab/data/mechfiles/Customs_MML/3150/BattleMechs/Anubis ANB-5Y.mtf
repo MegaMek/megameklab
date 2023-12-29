@@ -1,0 +1,151 @@
+Version:1.0
+Anubis
+ANB-5Y
+
+Config:Biped
+TechBase:Inner Sphere
+Era:3150
+Source:Dark Age
+Rules Level:2
+
+Mass:30
+Engine:210 XL Engine(IS)
+Structure:Endo Steel
+Myomer:Standard
+
+Heat Sinks:10 Double
+Walk MP:7
+Jump MP:0
+
+Armor:Stealth(Inner Sphere)
+LA Armor:8
+RA Armor:8
+LT Armor:9
+RT Armor:9
+CT Armor:11
+HD Armor:9
+LL Armor:12
+RL Armor:12
+RTL Armor:3
+RTR Armor:3
+RTC Armor:4
+
+Weapons:4
+Light PPC, Right Arm
+Light PPC, Left Arm
+LRM 5, Left Torso
+LRM 5, Right Torso
+
+Left Arm:
+Shoulder
+Upper Arm Actuator
+Lower Arm Actuator
+Light PPC
+Light PPC
+Endo Steel
+Endo Steel
+Endo Steel
+Endo Steel
+Endo Steel
+Stealth
+Stealth
+
+Right Arm:
+Shoulder
+Upper Arm Actuator
+Lower Arm Actuator
+Light PPC
+Light PPC
+Endo Steel
+Endo Steel
+Endo Steel
+Endo Steel
+Endo Steel
+Stealth
+Stealth
+
+Left Torso:
+Fusion Engine
+Fusion Engine
+Fusion Engine
+ISDoubleHeatSink
+ISDoubleHeatSink
+ISDoubleHeatSink
+LRM 5
+Endo Steel
+Endo Steel
+Stealth
+Stealth
+-Empty-
+
+Right Torso:
+Fusion Engine
+Fusion Engine
+Fusion Engine
+ISDoubleHeatSink
+ISDoubleHeatSink
+ISDoubleHeatSink
+LRM 5
+IS Ammo LRM-5
+Endo Steel
+Endo Steel
+Stealth
+Stealth
+
+Center Torso:
+Fusion Engine
+Fusion Engine
+Fusion Engine
+Gyro
+Gyro
+Gyro
+Gyro
+Fusion Engine
+Fusion Engine
+Fusion Engine
+ISGuardianECMSuite
+ISGuardianECMSuite
+
+Head:
+Life Support
+Sensors
+Cockpit
+-Empty-
+Sensors
+Life Support
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+
+Left Leg:
+Hip
+Upper Leg Actuator
+Lower Leg Actuator
+Foot Actuator
+Stealth
+Stealth
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+
+Right Leg:
+Hip
+Upper Leg Actuator
+Lower Leg Actuator
+Foot Actuator
+Stealth
+Stealth
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+
+

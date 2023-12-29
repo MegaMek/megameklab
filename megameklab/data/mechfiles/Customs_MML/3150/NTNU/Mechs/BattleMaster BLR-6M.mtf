@@ -1,0 +1,155 @@
+Version:1.1
+BattleMaster
+BLR-6M
+
+Config:Biped
+TechBase:Inner Sphere
+Era:3150
+Source:Dark Age
+Rules Level:3
+
+Mass:85
+Engine:340 Fusion Engine(IS)
+Structure:IS Endo Steel
+Myomer:Standard
+Cockpit:Command Console
+Gyro:XL Gyro
+
+Heat Sinks:14 Double
+Walk MP:4
+Jump MP:0
+
+Armor:Light Ferro-Fibrous(Inner Sphere)
+LA Armor:24
+RA Armor:24
+LT Armor:28
+RT Armor:28
+CT Armor:40
+HD Armor:9
+LL Armor:28
+RL Armor:28
+RTL Armor:8
+RTR Armor:8
+RTC Armor:12
+
+Weapons:6
+ER Medium Laser, Left Torso
+ER Medium Laser, Right Torso
+ER Small Laser, Left Torso
+ER Small Laser, Right Torso
+Heavy PPC, Right Arm
+Thunderbolt 15, Left Torso
+
+Left Arm:
+Shoulder
+Upper Arm Actuator
+Lower Arm Actuator
+Hand Actuator
+IS Endo Steel
+IS Endo Steel
+IS Endo Steel
+IS Endo Steel
+IS Light Ferro-Fibrous
+IS Light Ferro-Fibrous
+IS Light Ferro-Fibrous
+IS Light Ferro-Fibrous
+
+Right Arm:
+Shoulder
+Upper Arm Actuator
+Lower Arm Actuator
+Hand Actuator
+Heavy PPC
+Heavy PPC
+Heavy PPC
+Heavy PPC
+IS Endo Steel
+IS Endo Steel
+IS Endo Steel
+IS Endo Steel
+
+Left Torso:
+ISDoubleHeatSink
+ISDoubleHeatSink
+ISDoubleHeatSink
+Thunderbolt 15
+Thunderbolt 15
+Thunderbolt 15
+ISERMediumLaser
+ISERSmallLaser
+IS Ammo Thunderbolt-15
+IS Ammo Thunderbolt-15
+IS Ammo Thunderbolt-15
+ISCASE
+
+Right Torso:
+ISERMediumLaser
+ISERSmallLaser
+IS Endo Steel
+IS Endo Steel
+IS Endo Steel
+IS Endo Steel
+IS Endo Steel
+IS Endo Steel
+IS Light Ferro-Fibrous
+IS Light Ferro-Fibrous
+IS Light Ferro-Fibrous
+-Empty-
+
+Center Torso:
+Fusion Engine
+Fusion Engine
+Fusion Engine
+Gyro
+Gyro
+Gyro
+Gyro
+Gyro
+Gyro
+Fusion Engine
+Fusion Engine
+Fusion Engine
+
+Head:
+Life Support
+Sensors
+Cockpit
+Cockpit
+Sensors
+Life Support
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+
+Left Leg:
+Hip
+Upper Leg Actuator
+Lower Leg Actuator
+Foot Actuator
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+
+Right Leg:
+Hip
+Upper Leg Actuator
+Lower Leg Actuator
+Foot Actuator
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+
+

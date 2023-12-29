@@ -32,6 +32,10 @@ Karnov UR Transport
 IS Level 3
 </type>
 
+<role>
+Missile Boat
+</role>
+
 <motion_type>
 VTOL
 </motion_type>
@@ -73,9 +77,14 @@ ISThumper
 </Rotor Equipment>
 
 <source>
-TRO 3039 - Succession Wars
+TRO: 3039
 </source>
 
 <tonnage>
 30.0
 </tonnage>
+
+<quirks>
+vtol_rotor_dual
+</quirks>
+

@@ -1,0 +1,85 @@
+﻿#building block data file
+<BlockVersion>
+1
+</BlockVersion>
+#Write the version number just in case...
+<Version>
+MAM0
+</Version>
+<UnitType>
+SmallCraft
+</UnitType>
+<Name>
+Zhen Niao
+</Name>
+<Model>
+(Standard)
+</Model>
+<Tonnage>
+140
+</Tonnage>
+<SafeThrust>
+5
+</SafeThrust>
+<Armor>
+84
+61
+61
+41
+</Armor>
+<Nose Equipment>
+ISBeagleActiveProbe
+</Nose Equipment>
+<Left Side Equipment>
+</Left Side Equipment>
+<Right Side Equipment>
+</Right Side Equipment>
+<Aft Equipment>
+ISSpaceMineDispenser
+ISHyperspectralImager
+ISGuardianECMSuite
+ISERMediumLaser
+ISERMediumLaser
+</Aft Equipment>
+<structural_integrity>
+8
+</structural_integrity>
+<heatsinks>
+5
+</heatsinks>
+<sink_type>
+1
+</sink_type>
+<fuel>
+1920
+</fuel>
+<type>
+IS Level 3
+</type>
+<year>
+3150
+</year>
+<source>
+Dark Age
+</source>
+<internal_type>
+0
+</internal_type>
+<armor_type>
+1
+</armor_type>
+<engine_type>
+0
+</engine_type>
+<motion_type>
+aerodyne
+</motion_type>
+<crew>
+4
+</crew>
+<passengers>
+0
+</passengers>
+<transporters>
+CargoBay:3:1:1
+</transporters> 

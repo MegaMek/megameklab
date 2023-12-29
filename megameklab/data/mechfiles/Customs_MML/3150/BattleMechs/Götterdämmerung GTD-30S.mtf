@@ -1,0 +1,155 @@
+Version:1.1
+Götterdämmerung
+GTD-30S
+
+Config:Biped
+TechBase:Inner Sphere
+Era:3150
+Source:Dark Age
+Rules Level:2
+
+Mass:75
+Engine:300 Compact Engine(IS)
+Structure:IS Endo Steel
+Myomer:Standard
+Cockpit:Torso-Mounted Cockpit
+Gyro:Compact Gyro
+
+Heat Sinks:14 Double
+Walk MP:4
+Jump MP:0
+
+Armor:Heavy Ferro-Fibrous(Inner Sphere)
+LA Armor:24
+RA Armor:24
+LT Armor:24
+RT Armor:24
+CT Armor:36
+HD Armor:9
+LL Armor:32
+RL Armor:32
+RTL Armor:8
+RTR Armor:8
+RTC Armor:10
+
+Weapons:6
+ER PPC, Right Arm
+Medium Pulse Laser, Center Torso
+Medium Pulse Laser, Center Torso
+Medium Pulse Laser, Center Torso
+ER Flamer, Center Torso
+SRM 6, Head
+
+Left Arm:
+Shoulder
+Upper Arm Actuator
+Lower Arm Actuator
+Hand Actuator
+IS Heavy Ferro-Fibrous
+IS Heavy Ferro-Fibrous
+IS Heavy Ferro-Fibrous
+IS Heavy Ferro-Fibrous
+IS Heavy Ferro-Fibrous
+IS Heavy Ferro-Fibrous
+IS Heavy Ferro-Fibrous
+IS Heavy Ferro-Fibrous
+
+Right Arm:
+Shoulder
+Upper Arm Actuator
+Lower Arm Actuator
+Hand Actuator
+ISERPPC
+ISERPPC
+ISERPPC
+IS Heavy Ferro-Fibrous
+IS Heavy Ferro-Fibrous
+IS Heavy Ferro-Fibrous
+IS Heavy Ferro-Fibrous
+IS Heavy Ferro-Fibrous
+
+Left Torso:
+Life Support
+ISDoubleHeatSink
+ISDoubleHeatSink
+ISDoubleHeatSink
+IS Endo Steel
+IS Endo Steel
+IS Endo Steel
+IS Endo Steel
+IS Endo Steel
+IS Endo Steel
+IS Endo Steel
+IS Heavy Ferro-Fibrous
+
+Right Torso:
+Life Support
+ISDoubleHeatSink
+ISDoubleHeatSink
+ISDoubleHeatSink
+IS Endo Steel
+IS Endo Steel
+IS Endo Steel
+IS Endo Steel
+IS Endo Steel
+IS Endo Steel
+IS Endo Steel
+IS Heavy Ferro-Fibrous
+
+Center Torso:
+Fusion Engine
+Fusion Engine
+Fusion Engine
+Gyro
+Gyro
+Cockpit
+Sensors
+ISMediumPulseLaser
+ISMediumPulseLaser
+ISMediumPulseLaser
+ER Flamer
+IS Heavy Ferro-Fibrous
+
+Head:
+Sensors
+Sensors
+SRM 6
+SRM 6
+IS Ammo SRM-6
+IS Heavy Ferro-Fibrous
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+
+Left Leg:
+Hip
+Upper Leg Actuator
+Lower Leg Actuator
+Foot Actuator
+IS Heavy Ferro-Fibrous
+IS Heavy Ferro-Fibrous
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+
+Right Leg:
+Hip
+Upper Leg Actuator
+Lower Leg Actuator
+Foot Actuator
+IS Heavy Ferro-Fibrous
+IS Heavy Ferro-Fibrous
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+
+

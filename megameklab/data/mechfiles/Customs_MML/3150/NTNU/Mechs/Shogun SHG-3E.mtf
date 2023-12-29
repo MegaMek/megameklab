@@ -1,0 +1,152 @@
+Version:1.0
+Shogun
+SHG-3E
+
+Config:Biped
+TechBase:Inner Sphere
+Era:3150
+Source:Dark Age
+Rules Level:2
+
+Mass:85
+Engine:255 Fusion Engine(IS)
+Structure:IS Standard
+Myomer:Standard
+
+Heat Sinks:14 Double
+Walk MP:3
+Jump MP:3
+
+Armor:Ferro-Fibrous(Inner Sphere)
+LA Armor:27
+RA Armor:27
+LT Armor:27
+RT Armor:27
+CT Armor:40
+HD Armor:9
+LL Armor:27
+RL Armor:27
+RTL Armor:9
+RTR Armor:9
+RTC Armor:12
+
+Weapons:5
+Snub-Nose PPC, Right Torso
+LRM 15, Right Arm
+LRM 15, Left Arm
+Streak SRM 6, Right Torso
+Streak SRM 6, Left Torso
+
+Left Arm:
+Shoulder
+Upper Arm Actuator
+Lower Arm Actuator
+ISDoubleHeatSink
+ISDoubleHeatSink
+ISDoubleHeatSink
+LRM 15
+LRM 15
+LRM 15
+IS Ferro-Fibrous
+IS Ferro-Fibrous
+IS Ferro-Fibrous
+
+Right Arm:
+Shoulder
+Upper Arm Actuator
+Lower Arm Actuator
+ISDoubleHeatSink
+ISDoubleHeatSink
+ISDoubleHeatSink
+LRM 15
+LRM 15
+LRM 15
+IS Ferro-Fibrous
+IS Ferro-Fibrous
+IS Ferro-Fibrous
+
+Left Torso:
+ISDoubleHeatSink
+ISDoubleHeatSink
+ISDoubleHeatSink
+ISStreakSRM6
+ISStreakSRM6
+IS Streak SRM 6 Ammo
+IS Ammo LRM-15
+IS Ammo LRM-15
+ISCASEII
+IS Ferro-Fibrous
+IS Ferro-Fibrous
+IS Ferro-Fibrous
+
+Right Torso:
+ISDoubleHeatSink
+ISDoubleHeatSink
+ISDoubleHeatSink
+ISStreakSRM6
+ISStreakSRM6
+ISSNPPC
+ISSNPPC
+IS Streak SRM 6 Ammo
+IS Ammo LRM-15
+IS Ammo LRM-15
+ISCASEII
+IS Ferro-Fibrous
+
+Center Torso:
+Fusion Engine
+Fusion Engine
+Fusion Engine
+Gyro
+Gyro
+Gyro
+Gyro
+Fusion Engine
+Fusion Engine
+Fusion Engine
+Jump Jet
+IS Ferro-Fibrous
+
+Head:
+Life Support
+Sensors
+Cockpit
+IS Ferro-Fibrous
+Sensors
+Life Support
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+
+Left Leg:
+Hip
+Upper Leg Actuator
+Lower Leg Actuator
+Foot Actuator
+Jump Jet
+IS Ferro-Fibrous
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+
+Right Leg:
+Hip
+Upper Leg Actuator
+Lower Leg Actuator
+Foot Actuator
+Jump Jet
+IS Ferro-Fibrous
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+
+

@@ -1,13 +1,18 @@
-Version:1.0
-Morrigan
-5
+chassis:Morrigan
+model:5
 mul id:6926
 
 Config:Biped
 TechBase:Clan
 Era:3124
-Source:RS 3145 NT NU
+Source:Record Sheets: 3145 New Tech New Upgrades
 Rules Level:2
+role:Sniper
+
+quirk:weak_legs
+weaponquirk:stable_weapon:RA:3:CLHeavyLargeLaser
+weaponquirk:stable_weapon:RA:3:CLERPPC
+
 
 Mass:35
 Engine:280 XL (Clan) Engine(IS)

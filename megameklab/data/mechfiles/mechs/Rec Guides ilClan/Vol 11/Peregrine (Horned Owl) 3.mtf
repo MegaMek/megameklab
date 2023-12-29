@@ -1,13 +1,17 @@
-Version:1.0
-Peregrine (Horned Owl)
-3
+chassis:Peregrine (Horned Owl)
+model:3
 mul id:2474
 
 Config:Biped
 techbase:Clan
 era:3061
-source:Rec Guide:ilClan #11 - Clan Invasion
+source:Rec Guide:ilClan #11
 rules level:2
+role:Sniper
+
+weaponquirk:stable_weapon:CT:10:CLLargePulseLaser
+weaponquirk:stable_weapon:CT:10:CLERPPC
+
 
 mass:35
 engine:210 Fusion (Clan) Engine(IS)

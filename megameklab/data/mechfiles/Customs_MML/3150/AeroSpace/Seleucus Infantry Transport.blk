@@ -1,0 +1,212 @@
+#DropShip Primer File
+#building block data file
+<BlockVersion>
+1 #Alway 1
+</BlockVersion>
+#Write the version number just in case...
+<Version>
+MAM0 #always MAM0
+</Version>
+<UnitType>
+Dropship
+</UnitType>
+<Name>
+Seleucus Infantry Transport
+</Name>
+<Model>
+(Standard)
+</Model>
+<Tonnage>
+2600
+</Tonnage>
+<SafeThrust>
+4
+</SafeThrust>
+<Armor>
+251
+230
+230
+201
+</Armor>
+<Nose Equipment> 
+#Weapons for the nose bays.  (R) for rear weapons (B) to start a new bay. 
+#MM will automatically create new bays based on weight and weapons type restrictions
+#Note ammo for the weapons must be places right after the last of the same weapon types.
+ISERPPC
+ISERPPC
+ISLightGaussRifle
+ISLightGaussRifle
+ISLightGaussRifle
+ISLightGaussRifle
+ISLightGauss Ammo:64
+ISERLargeLaser
+ISERLargeLaser
+ISERMediumLaser
+ISERMediumLaser
+</Nose Equipment>
+<Left Side Equipment>
+#Weapons for the left side bays.  (R) for rear weapons (B) to start a new bay. 
+#MM will automatically create new bays based on weight and weapons type restrictions
+#Note ammo for the weapons must be places right after the last of the same weapon types.
+ISERPPC
+ISExtendedLRM20
+ISExtendedLRM20
+ISExtendedLRM20 Ammo:32
+ISERLargeLaser
+ISERLargeLaser
+ISERMediumLaser
+ISERMediumLaser
+ISERMediumLaser
+ISERMediumLaser
+IS AMS 
+IS AMS
+IS AMS
+IS AMS Ammo:72
+(R) IS AMS 
+(R) IS AMS
+(R) IS AMS
+(R) IS AMS Ammo:72
+</Left Side Equipment>
+<Right Side Equipment> 
+#Weapons for the right side bays.  (R) for rear weapons (B) to start a new bay. 
+#MM will automatically create new bays based on weight and weapons type restrictions
+#Note ammo for the weapons must be places right after the last of the same weapon types.
+ISERPPC
+ISExtendedLRM20
+ISExtendedLRM20
+ISExtendedLRM20 Ammo:32
+ISERLargeLaser
+ISERLargeLaser
+ISERMediumLaser
+ISERMediumLaser
+ISERMediumLaser
+ISERMediumLaser
+IS AMS 
+IS AMS
+IS AMS
+IS AMS Ammo:72
+(R) IS AMS 
+(R) IS AMS
+(R) IS AMS
+(R) IS AMS Ammo:72
+</Right Side Equipment>
+<Aft Equipment> 
+#Weapons for the aft bays.  (R) for rear weapons (B) to start a new bay. 
+#MM will automatically create new bays based on weight and weapons type restrictions
+#Note ammo for the weapons must be places right after the last of the same weapon types.
+LRM 20
+ISArtemisIV
+LRM 20
+ISArtemisIV
+IS Ammo LRM-20 Artemis-capable
+IS Ammo LRM-20 Artemis-capable
+IS Ammo LRM-20 Artemis-capable
+IS Ammo LRM-20 Artemis-capable
+IS Ammo LRM-20 Artemis-capable
+ISERLargeLaser
+ISERLargeLaser
+ISERMediumLaser
+ISERMediumLaser
+</Aft Equipment>
+<structural_integrity>
+#structural_integrity for the Drop Ship
+12
+</structural_integrity>
+<heatsinks>
+#Total number of Heat Sinks for the drop ship
+102
+</heatsinks>
+<sink_type>
+#Type of heat skins the Drop ship uses
+#0 for Single
+#1 for Double
+1
+</sink_type>
+<fuel>
+#How much fuel this puppy carries
+6000
+</fuel>
+<type>
+#Tech level of the Unit
+IS Level 2
+</type>
+<year>
+#Year DS was made
+3150
+</year>
+<source>
+#Source/Era DS is found in.
+Dark Age
+</source>
+<internal_type>
+#Internal Structure Type
+#"Standard" = 0
+#"Industrial" = 1
+#"Endo Steel" = 2
+#"Endo Steel Prototype" = 3
+#"Reinforced" = 4
+#"Composite" = 5
+#"Endo-Composite" = 6
+0
+</internal_type>
+<armor_type>
+#Armor Types
+#"Standard" = 0
+#"Ferro-Fibrous" = 1
+#"Reactive" = 2
+#"Reflective" = 3
+#"Hardened" = 4
+#"Light Ferro-Fibrous" = 5
+#"Heavy Ferro-Fibrous" = 6
+#"Patchwork" = 7
+#"Stealth" = 8
+#"Ferro-Fibrous Prototype" = 9
+#"Commercial" = 10
+#"Ferro-Carbide" = 11
+#"Lamellor Ferro-Carbide" = 12
+#"Improved Ferro-Aluminum" = 13
+#"Industrial" = 14
+#"Heavy Industrial" = 15
+#"Ferro-Lamellor" = 16
+0
+</armor_type>
+<engine_type>
+#This tag is not used.
+0
+</engine_type>
+<motion_type>
+#What type of DS do you have
+#aerodyne
+#spheroid
+aerodyne
+</motion_type>
+<transporters>
+#types of bays used Notation is bayType:tonange/size:doors
+#Note Bays names are Case sensitive!
+#Aero Space Bay
+#Small Craft Bays
+#Mech Bays
+#Light Vehicle Bays
+LightVehicleBay:12:1:2
+#Heavy Vehicle Bays
+#InfantryBay
+#BattleArmor bays
+BattleArmorBay:20:5:1
+#Cargo Bays
+CargoBay:217:1:3
+</transporters>
+<escape_pod>
+#How many Escape pods does the ship have?
+4
+</escape_pod>
+<life_boat>
+#How many Life boats does the ship have?
+4
+</life_boat>
+<crew>
+#Who is going to crew this puppy?
+21
+</crew>
+<otherpassenger>
+180
+</otherpassenger>
