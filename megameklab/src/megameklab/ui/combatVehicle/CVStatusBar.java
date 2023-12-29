@@ -53,8 +53,8 @@ public class CVStatusBar extends StatusBar {
 
     public void refreshSlots() {
         Tank tank = getTank();
-        int currentSlots = tank.getTotalSlots() - tank.getFreeSlots();
-        slots.setText(String.format(SLOTS_LABEL, currentSlots, tank.getTotalSlots()));
-        slots.setForeground(currentSlots > tank.getTotalSlots() ? GUIPreferences.getInstance().getWarningColor() : null);
+        int freeSlots = tank.getFreeSlots();
+        slots.setText(String.format(SLOTS_LABEL, freeSlots, tank.getTotalSlots()));
+        slots.setForeground((freeSlots < 0) ? GUIPreferences.getInstance().getWarningColor() : null);
     }
 }

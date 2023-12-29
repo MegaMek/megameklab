@@ -44,7 +44,7 @@ public class BMStatusBar extends StatusBar {
     public void refreshSlots() {
         int maxCrits = getTestEntity().totalCritSlotCount();
         int currentSlots = UnitUtil.countUsedCriticals(getMech());
-        slots.setText(String.format(SLOTS_LABEL, currentSlots, maxCrits));
+        slots.setText(String.format(SLOTS_LABEL, maxCrits - currentSlots, maxCrits));
         slots.setForeground(currentSlots > maxCrits ? GUIPreferences.getInstance().getWarningColor() : null);
     }
 
