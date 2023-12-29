@@ -21,13 +21,14 @@ import megamek.common.annotations.Nullable;
 import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestMech;
 import megameklab.ui.EntitySource;
+import megameklab.ui.generalUnit.summary.*;
 import megameklab.ui.util.IView;
 import megameklab.util.UnitUtil;
 
+import java.util.List;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
-import java.util.Vector;
 
 public class BMSummaryView extends IView {
     private final JTextField txtStructTon = new JTextField("-");
@@ -63,178 +64,76 @@ public class BMSummaryView extends IView {
     private final JTextField txtEquipAvail = new JTextField("-");
     private final JTextField txtOtherAvail = new JTextField("-");
 
+    private final SummaryItem structureSummary = new StructureSummaryItem();
+    private final SummaryItem engineSummary = new EngineSummaryItem();
+    private final SummaryItem gyroSummary = new GyroSummaryItem();
+    private final SummaryItem cockpitSummary = new CockpitSummaryItem();
+    private final SummaryItem heatsinkSummary = new HeatsinkSummaryItem();
+
+    private final List<SummaryItem> summaryItemList = List.of(structureSummary, engineSummary, gyroSummary,
+            cockpitSummary, heatsinkSummary);
+
     private final EntityVerifier entityVerifier =
             EntityVerifier.getInstance(new File("data/mechfiles/UnitVerifierOptions.xml"));
+
+    private final Dimension weightCritSize = new Dimension(55, 25);
+    private final Dimension availSize = new Dimension(110, 25);
+    private final Dimension categorySize = new Dimension(110, 25);
+
 
     public BMSummaryView(EntitySource eSource) {
         super(eSource);
 
-        Vector<JTextField> valueFields = new Vector<>();
-
-        valueFields.add(txtStructTon);
-        valueFields.add(txtEngineTon);
-        valueFields.add(txtGyroTon);
-        valueFields.add(txtCockpitTon);
-        valueFields.add(txtHeatTon);
-        valueFields.add(txtArmorTon);
-        valueFields.add(txtEnhanceTon);
-        valueFields.add(txtJumpTon);
-        valueFields.add(txtEquipTon);
-        valueFields.add(txtOtherTon);
-
-        valueFields.add(txtStructCrit);
-        valueFields.add(txtEngineCrit);
-        valueFields.add(txtGyroCrit);
-        valueFields.add(txtCockpitCrit);
-        valueFields.add(txtHeatCrit);
-        valueFields.add(txtArmorCrit);
-        valueFields.add(txtEnhanceCrit);
-        valueFields.add(txtJumpCrit);
-        valueFields.add(txtEquipCrit);
-        valueFields.add(txtOtherCrit);
-
-        Dimension size = new Dimension(45, 25);
-        for (JTextField field : valueFields) {
-            field.setEditable(false);
-            field.setSize(size);
-            field.setPreferredSize(size);
-            field.setMinimumSize(size);
-            field.setMaximumSize(size);
-            field.setHorizontalAlignment(SwingConstants.RIGHT);
-        }
-
-        valueFields.removeAllElements();
-
-        valueFields.add(txtStructAvail);
-        valueFields.add(txtEngineAvail);
-        valueFields.add(txtGyroAvail);
-        valueFields.add(txtCockpitAvail);
-        valueFields.add(txtHeatAvail);
-        valueFields.add(txtArmorAvail);
-        valueFields.add(txtEnhanceAvail);
-        valueFields.add(txtJumpAvail);
-        valueFields.add(txtEquipAvail);
-        valueFields.add(txtOtherAvail);
-
-        size = new Dimension(90, 25);
-        for (JTextField field : valueFields) {
-            field.setEditable(false);
-            field.setSize(size);
-            field.setPreferredSize(size);
-            field.setMinimumSize(size);
-            field.setMaximumSize(size);
+        for (SummaryItem summaryItem : summaryItemList) {
+            summaryItem.getWeightComponent().setPreferredSize(weightCritSize);
+            summaryItem.getCritsComponent().setPreferredSize(weightCritSize);
+            summaryItem.getAvailabilityComponent().setPreferredSize(availSize);
         }
 
         setLayout(new GridBagLayout());
+        setBorder(BorderFactory.createTitledBorder("Summary"));
         GridBagConstraints gbc = new GridBagConstraints();
-
-        size = new Dimension(120, 25);
 
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.insets = new Insets(0, 0, 0, 5);
-        this.add(createLabel("Category", size, SwingConstants.CENTER), gbc);
-        gbc.gridy = 1;
-        this.add(createLabel("Internal Structure:", size, SwingConstants.RIGHT), gbc);
-        gbc.gridy = 2;
-        this.add(createLabel("Engine:", size, SwingConstants.RIGHT), gbc);
-        gbc.gridy = 3;
-        this.add(createLabel("Gyro:", size, SwingConstants.RIGHT), gbc);
-        gbc.gridy = 4;
-        this.add(createLabel("Cockpit:", size, SwingConstants.RIGHT), gbc);
-        gbc.gridy = 5;
-        this.add(createLabel("Heat Sinks:", size, SwingConstants.RIGHT), gbc);
-        gbc.gridy = 6;
-        this.add(createLabel("Armor:", size, SwingConstants.RIGHT), gbc);
-        gbc.gridy = 7;
-        this.add(createLabel("Enhancements:", size, SwingConstants.RIGHT), gbc);
-        gbc.gridy = 8;
-        this.add(createLabel("Jump Jets:", size, SwingConstants.RIGHT), gbc);
-        gbc.gridy = 9;
-        this.add(createLabel("Equipment", size, SwingConstants.RIGHT), gbc);
-        gbc.gridy = 10;
-        this.add(createLabel("Other:", size, SwingConstants.RIGHT), gbc);
+        add(createLabel("Category", categorySize, SwingConstants.CENTER), gbc);
+        gbc.gridy++;
+        for (SummaryItem summaryItem : summaryItemList) {
+            this.add(createLabel(summaryItem.getName(), categorySize, SwingConstants.RIGHT), gbc);
+            gbc.gridy++;
+        }
 
-        size = new Dimension(45, 25);
         gbc.gridx = 1;
         gbc.gridy = 0;
-        gbc.insets = new Insets(0, 0, 0, 0);
-        this.add(createLabel("Weight", size, SwingConstants.CENTER), gbc);
-        gbc.gridy = 1;
-        this.add(txtStructTon, gbc);
-        gbc.gridy = 2;
-        this.add(txtEngineTon, gbc);
-        gbc.gridy = 3;
-        this.add(txtGyroTon, gbc);
-        gbc.gridy = 4;
-        this.add(txtCockpitTon, gbc);
-        gbc.gridy = 5;
-        this.add(txtHeatTon, gbc);
-        gbc.gridy = 6;
-        this.add(txtArmorTon, gbc);
-        gbc.gridy = 7;
-        this.add(txtEnhanceTon, gbc);
-        gbc.gridy = 8;
-        this.add(txtJumpTon, gbc);
-        gbc.gridy = 9;
-        this.add(txtEquipTon, gbc);
-        gbc.gridy = 10;
-        this.add(txtOtherTon, gbc);
+        add(createLabel("Weight", weightCritSize, SwingConstants.CENTER), gbc);
+        gbc.gridy++;
+        for (SummaryItem summaryItem : summaryItemList) {
+            this.add(summaryItem.getWeightComponent(), gbc);
+            gbc.gridy++;
+        }
 
         gbc.gridx = 2;
         gbc.gridy = 0;
-        this.add(createLabel("Crits", size, SwingConstants.CENTER), gbc);
-        gbc.gridy = 1;
-        this.add(txtStructCrit, gbc);
-        gbc.gridy = 2;
-        this.add(txtEngineCrit, gbc);
-        gbc.gridy = 3;
-        this.add(txtGyroCrit, gbc);
-        gbc.gridy = 4;
-        this.add(txtCockpitCrit, gbc);
-        gbc.gridy = 5;
-        this.add(txtHeatCrit, gbc);
-        gbc.gridy = 6;
-        this.add(txtArmorCrit, gbc);
-        gbc.gridy = 7;
-        this.add(txtEnhanceCrit, gbc);
-        gbc.gridy = 8;
-        this.add(txtJumpCrit, gbc);
-        gbc.gridy = 9;
-        this.add(txtEquipCrit, gbc);
-        gbc.gridy = 10;
-        this.add(txtOtherCrit, gbc);
+        add(createLabel("Crits", weightCritSize, SwingConstants.CENTER), gbc);
+        gbc.gridy++;
+        for (SummaryItem summaryItem : summaryItemList) {
+            this.add(summaryItem.getCritsComponent(), gbc);
+            gbc.gridy++;
+        }
 
-        size = new Dimension(80,25);
         gbc.gridx = 3;
         gbc.gridy = 0;
-        this.add(createLabel("Availability", size, SwingConstants.CENTER), gbc);
-        gbc.gridy = 1;
-        this.add(txtStructAvail, gbc);
-        gbc.gridy = 2;
-        this.add(txtEngineAvail, gbc);
-        gbc.gridy = 3;
-        this.add(txtGyroAvail, gbc);
-        gbc.gridy = 4;
-        this.add(txtCockpitAvail, gbc);
-        gbc.gridy = 5;
-        this.add(txtHeatAvail, gbc);
-        gbc.gridy = 6;
-        this.add(txtArmorAvail, gbc);
-        gbc.gridy = 7;
-        this.add(txtEnhanceAvail, gbc);
-        gbc.gridy = 8;
-        this.add(txtJumpAvail, gbc);
-        gbc.gridy = 9;
-        this.add(txtEquipAvail, gbc);
-        gbc.gridy = 10;
-        this.add(txtOtherAvail, gbc);
-
-        setBorder(BorderFactory.createTitledBorder("Summary"));
+        add(createLabel("Availability", weightCritSize, SwingConstants.CENTER), gbc);
+        gbc.gridy++;
+        for (SummaryItem summaryItem : summaryItemList) {
+            this.add(summaryItem.getAvailabilityComponent(), gbc);
+            gbc.gridy++;
+        }
     }
 
     private JLabel createLabel(String text, Dimension size, int align) {
-        JLabel label = new JLabel(text, SwingConstants.TRAILING);
+        JLabel label = new JLabel(text + ":", SwingConstants.TRAILING);
         setFieldSize(label, size);
         label.setHorizontalAlignment(align);
         return label;
@@ -248,6 +147,7 @@ public class BMSummaryView extends IView {
 
     public void refresh() {
         TestMech testMech = new TestMech(getMech(), entityVerifier.mechOption, null);
+        summaryItemList.forEach(summaryItem -> summaryItem.refresh(getEntity()));
         refreshEngine(testMech);
         refreshGyro(testMech);
         refreshCockpit(testMech);
