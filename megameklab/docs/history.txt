@@ -6,10 +6,10 @@ VERSION HISTORY:
 + PR #1337: The BA manipulator size can now be set in MML
 + Fix #1005: Fixed issues with conventional infantry where the GUI was not updating correctly after changes to the number of infantry in a squad or the primary weapon
 + Fix #1154: Protomech Armor Limits Inconsistent 0.49.8
-+ Fix #1345: Some ProtoMech arm armor maximums are incorrect
-+ Fix #1341: Clan ferro-aluminum armor not taking correct amount of slots off
-+ Issue #1061: Add 'Generator' key to .mtf format
-+ Fix #1334: Adding a oneshot launcher removes any ammo from other weapon from the equipment list
++ Fix #1345: Some ProtoMech arm armor maximums were incorrect
++ Fix #1341: Clan ferro-aluminum armor no takes up the right number of slots on Aerospace units
++ Issue #1061: Add 'Generator' key to .mtf format, MM/MML can now load .mtf files exported from SSW
++ Fix #1334: Adding a oneshot launcher no longer removes ammo for other weapons from the equipment list
 + PR #1351: MML's splash startup screen now also shows the menu bar, adding some missing functionality like loading from file
 + Fix 1354: Coolant Pods now show up in the "Other" category instead of Ammo and are no longer hidden by the Ammo w/o wepaon filter
 
