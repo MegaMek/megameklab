@@ -1,19 +1,4 @@
-/*
- * MegaMekLab - Copyright (C) 2008
- *
- * Original author - jtighe (torren@users.sourceforge.net)
- *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
- * for more details.
- */
-package megameklab.ui.mek;
+package megameklab.ui.generalUnit;
 
 import megamek.client.ui.swing.calculationReport.CalculationReport;
 import megamek.common.*;
@@ -29,7 +14,8 @@ import java.awt.*;
 import java.io.File;
 import java.util.Vector;
 
-public class BMSummaryView extends IView {
+public class SummaryView extends IView {
+
     private final JTextField txtStructTon = new JTextField("-");
     private final JTextField txtEngineTon = new JTextField("-");
     private final JTextField txtGyroTon = new JTextField("-");
@@ -40,6 +26,12 @@ public class BMSummaryView extends IView {
     private final JTextField txtJumpTon = new JTextField("-");
     private final JTextField txtEquipTon = new JTextField("-");
     private final JTextField txtOtherTon = new JTextField("-");
+    private final JTextField txtLiftTon = new JTextField("?");
+    private final JTextField txtControlsTon = new JTextField("?");
+    private final JTextField txtTurretTon = new JTextField("?");
+    private final JTextField txtRearTurretTon = new JTextField("?");
+    private final JTextField txtSponsonTon = new JTextField("?");
+    private final JTextField txtPowerAmpTon = new JTextField("?");
 
     private final JTextField txtStructCrit = new JTextField("-");
     private final JTextField txtEngineCrit = new JTextField("-");
@@ -62,11 +54,17 @@ public class BMSummaryView extends IView {
     private final JTextField txtJumpAvail = new JTextField("-");
     private final JTextField txtEquipAvail = new JTextField("-");
     private final JTextField txtOtherAvail = new JTextField("-");
+    private final JTextField txtLiftAvail = new JTextField("?");
+    private final JTextField txtControlsAvail = new JTextField("?");
+    private final JTextField txtTurretAvail = new JTextField("?");
+    private final JTextField txtRearTurretAvail = new JTextField("?");
+    private final JTextField txtSponsonAvail = new JTextField("?");
+    private final JTextField txtPowerAmpAvail = new JTextField("?");
 
     private final EntityVerifier entityVerifier =
             EntityVerifier.getInstance(new File("data/mechfiles/UnitVerifierOptions.xml"));
 
-    public BMSummaryView(EntitySource eSource) {
+    public SummaryView(EntitySource eSource) {
         super(eSource);
 
         Vector<JTextField> valueFields = new Vector<>();
@@ -138,8 +136,12 @@ public class BMSummaryView extends IView {
         this.add(createLabel("Internal Structure:", size, SwingConstants.RIGHT), gbc);
         gbc.gridy = 2;
         this.add(createLabel("Engine:", size, SwingConstants.RIGHT), gbc);
-        gbc.gridy = 3;
-        this.add(createLabel("Gyro:", size, SwingConstants.RIGHT), gbc);
+        if (showGyro()) {
+            gbc.gridy++;
+            this.add(createLabel("Gyro:", size, SwingConstants.RIGHT), gbc);
+            gbc.gridx = 2;
+            this.add(txtGyroCrit, gbc);
+        }
         gbc.gridy = 4;
         this.add(createLabel("Cockpit:", size, SwingConstants.RIGHT), gbc);
         gbc.gridy = 5;
@@ -233,6 +235,10 @@ public class BMSummaryView extends IView {
         setBorder(BorderFactory.createTitledBorder("Summary"));
     }
 
+    protected boolean showGyro() {
+        return false;
+    }
+
     private JLabel createLabel(String text, Dimension size, int align) {
         JLabel label = new JLabel(text, SwingConstants.TRAILING);
         setFieldSize(label, size);
@@ -240,7 +246,7 @@ public class BMSummaryView extends IView {
         return label;
     }
 
-    public void setFieldSize(JComponent box, Dimension maxSize) {
+    protected void setFieldSize(JComponent box, Dimension maxSize) {
         box.setPreferredSize(maxSize);
         box.setMaximumSize(maxSize);
         box.setMinimumSize(maxSize);
