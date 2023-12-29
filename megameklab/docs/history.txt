@@ -11,6 +11,7 @@ VERSION HISTORY:
 + Issue #1061: Add 'Generator' key to .mtf format
 + Fix #1334: Adding a oneshot launcher removes any ammo from other weapon from the equipment list
 + PR #1351: MML's splash startup screen now also shows the menu bar, adding some missing functionality like loading from file
++ Fix 1354: Coolant Pods now show up in the "Other" category instead of Ammo and are no longer hidden by the Ammo w/o wepaon filter
 
 0.49.15 (2023-10-21 1530 UTC)
 + Fix #1172: Clan TAG will no longer be written as TAG (Clan) (Clan) in Mixed Tech units
