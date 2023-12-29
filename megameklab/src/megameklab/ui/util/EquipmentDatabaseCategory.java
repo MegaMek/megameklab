@@ -91,7 +91,6 @@ public enum EquipmentDatabaseCategory {
                     || eq.is(COOLANT_POD)
                     || eq.is(BattleArmor.MINE_LAUNCHER)
                     || (eq instanceof TAGWeapon)
-                    || ((eq instanceof AmmoType) && (((AmmoType) eq).getAmmoType() == AmmoType.T_COOLANT_POD))
                     || eq.hasFlag(F_AMS)),
 
     AP ("Anti-Personnel",
