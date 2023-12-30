@@ -32,6 +32,6 @@ public class ControlsSummaryItem extends AbstractSummaryItem {
     @Override
     public void refresh(Entity entity) {
         TestEntity testEntity = UnitUtil.getEntityVerifier(entity);
-        weightLabel.setText(formatWeight(testEntity.getWeightControls()));
+        weightLabel.setText(formatWeight(testEntity.getWeightControls(), entity));
     }
 }

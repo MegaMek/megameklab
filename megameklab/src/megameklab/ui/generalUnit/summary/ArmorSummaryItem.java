@@ -20,6 +20,7 @@ package megameklab.ui.generalUnit.summary;
 
 import megamek.common.*;
 import megamek.common.verifier.TestEntity;
+import megamek.common.verifier.TestSupportVehicle;
 import megameklab.util.UnitUtil;
 
 public class ArmorSummaryItem extends AbstractSummaryItem {
@@ -32,27 +33,61 @@ public class ArmorSummaryItem extends AbstractSummaryItem {
     @Override
     public void refresh(Entity entity) {
         TestEntity testEntity = UnitUtil.getEntityVerifier(entity);
-        if (entity.hasPatchworkArmor()) {
-            weightLabel.setText(formatWeight(testEntity.getWeightAllocatedArmor()));
-        } else {
-            weightLabel.setText(formatWeight(testEntity.getWeightArmor()));
-        }
-        // FIXME: This doesn't account for patchwork armor crits.
+
+        weightLabel.setText("");
+        critLabel.setText("");
+        availabilityLabel.setText("");
+
+        EquipmentType armor = null;
         int armorType = entity.getArmorType(0);
         if ((armorType >= 0) && (armorType < EquipmentType.armorNames.length)) {
             String armorName = EquipmentType.getArmorTypeName(armorType,
                     TechConstants.isClan(entity.getArmorTechLevel(0)));
-            EquipmentType armor = EquipmentType.get(armorName);
-            if (entity instanceof Mech) {
-                critLabel.setText(formatCrits(armor.getCriticals(entity)));
-            } else if (entity instanceof Tank) {
-                critLabel.setText(formatCrits(getTankArmorCrits(entity)));
-            }
+            armor = EquipmentType.get(armorName);
             availabilityLabel.setText(armor.getFullRatingName(entity.isClan()));
-        } else {
-            critLabel.setText("-");
-            availabilityLabel.setText("-");
         }
+
+        if (entity.isSupportVehicle()) {
+            // FIXME: This doesn't account for patchwork armor crits.
+            TestSupportVehicle testSupportVehicle = (TestSupportVehicle) testEntity;
+            critLabel.setText(formatCrits(testSupportVehicle.getArmorSlots()));
+            weightLabel.setText(formatWeight(testSupportVehicle.getWeightArmor(), entity));
+        } else if (entity instanceof Mech) {
+            if (armor != null) {
+                critLabel.setText(formatCrits(armor.getCriticals(entity)));
+            }
+        } else if (entity instanceof Tank) {
+            critLabel.setText(formatCrits(getTankArmorCrits(entity)));
+        }
+
+        if (entity.hasPatchworkArmor()) {
+            weightLabel.setText(formatWeight(testEntity.getWeightAllocatedArmor(), entity));
+        } else {
+            weightLabel.setText(formatWeight(testEntity.getWeightArmor(), entity));
+        }
+
+
+//        if (entity.isSupportVehicle()) {
+//            TestSupportVehicle testSupportVehicle = (TestSupportVehicle) UnitUtil.getEntityVerifier(entity);
+//            critLabel.setText(formatCrits(testSupportVehicle.getArmorSlots()));
+//            weightLabel.setText(formatWeight(testSupportVehicle.getWeightArmor(), entity));
+//        } else {
+//            int armorType = entity.getArmorType(0);
+//            if ((armorType >= 0) && (armorType < EquipmentType.armorNames.length)) {
+//                String armorName = EquipmentType.getArmorTypeName(armorType,
+//                        TechConstants.isClan(entity.getArmorTechLevel(0)));
+//                EquipmentType armor = EquipmentType.get(armorName);
+//                if (entity instanceof Mech) {
+//                    critLabel.setText(formatCrits(armor.getCriticals(entity)));
+//                } else if (entity instanceof Tank) {
+//                    critLabel.setText(formatCrits(getTankArmorCrits(entity)));
+//                }
+//                availabilityLabel.setText(armor.getFullRatingName(entity.isClan()));
+//            } else {
+//                critLabel.setText("-");
+//                availabilityLabel.setText("-");
+//            }
+//        }
     }
 
     private int getTankArmorCrits(Entity entity) {

@@ -20,6 +20,7 @@ package megameklab.ui.generalUnit.summary;
 
 import megamek.common.Entity;
 import megamek.common.Tank;
+import megamek.common.verifier.TestSupportVehicle;
 import megamek.common.verifier.TestTank;
 import megameklab.util.UnitUtil;
 
@@ -32,9 +33,12 @@ public class TurretSummaryItem extends AbstractSummaryItem {
 
     @Override
     public void refresh(Entity entity) {
-        if (entity instanceof Tank) {
+        if (entity.isSupportVehicle()) {
+            TestSupportVehicle testSV = (TestSupportVehicle) UnitUtil.getEntityVerifier(entity);
+            weightLabel.setText(formatWeight(testSV.getTankWeightTurret(), entity));
+        } else if (entity instanceof Tank) {
             TestTank testTank = (TestTank) UnitUtil.getEntityVerifier(entity);
-            weightLabel.setText(formatWeight(testTank.getTankWeightTurret()));
+            weightLabel.setText(formatWeight(testTank.getTankWeightTurret(), entity));
         }
     }
 }

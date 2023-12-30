@@ -37,7 +37,7 @@ public class EngineSummaryItem extends AbstractSummaryItem {
         TestEntity testEntity = UnitUtil.getEntityVerifier(entity);
         if (entity.hasEngine()) {
             availabilityLabel.setText(entity.getEngine().getFullRatingName(entity.isClan()));
-            weightLabel.setText(formatWeight(testEntity.getWeightEngine()));
+            weightLabel.setText(formatWeight(testEntity.getWeightEngine(), entity));
             critLabel.setText(formatCrits(getEngineCrits(entity)));
         } else {
             availabilityLabel.setText("-");

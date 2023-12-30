@@ -43,7 +43,7 @@ public class JumpSummaryItem extends AbstractSummaryItem {
                 availabilityLabel.setText(mt.getFullRatingName(entity.isClan()));
             }
         }
-        weightLabel.setText(formatWeight(totalWeight));
+        weightLabel.setText(formatWeight(totalWeight, entity));
         if (entity instanceof Tank) {
             totalCrits = Math.min(totalCrits, 1);
         }

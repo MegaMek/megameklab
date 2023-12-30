@@ -49,7 +49,7 @@ public class EquipmentSummaryItem extends AbstractSummaryItem {
             totalWeight += m.getTonnage();
             totalCrits += m.getCriticals();
         }
-        weightLabel.setText(formatWeight(totalWeight));
+        weightLabel.setText(formatWeight(totalWeight, entity));
         critLabel.setText(formatCrits(totalCrits));
     }
 

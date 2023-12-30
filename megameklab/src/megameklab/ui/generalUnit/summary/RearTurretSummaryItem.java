@@ -34,7 +34,7 @@ public class RearTurretSummaryItem extends AbstractSummaryItem {
     public void refresh(Entity entity) {
         if (entity instanceof Tank) {
             TestTank testTank = (TestTank) UnitUtil.getEntityVerifier(entity);
-            weightLabel.setText(formatWeight(testTank.getTankWeightDualTurret()));
+            weightLabel.setText(formatWeight(testTank.getTankWeightDualTurret(), entity));
         }
     }
 }

@@ -33,7 +33,7 @@ public class SponsonTurretSummaryItem extends AbstractSummaryItem {
     @Override
     public void refresh(Entity entity) {
         if (entity instanceof Tank) {
-            weightLabel.setText(formatWeight(getSponsonTurretWeight(entity)));
+            weightLabel.setText(formatWeight(getSponsonTurretWeight(entity), entity));
         }
     }
 

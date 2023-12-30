@@ -21,6 +21,7 @@ package megameklab.ui.generalUnit.summary;
 import megamek.common.Aero;
 import megamek.common.Entity;
 import megamek.common.verifier.TestAero;
+import megamek.common.verifier.TestSupportVehicle;
 import megameklab.util.UnitUtil;
 
 public class FuelSummaryItem extends AbstractSummaryItem {
@@ -32,9 +33,12 @@ public class FuelSummaryItem extends AbstractSummaryItem {
 
     @Override
     public void refresh(Entity entity) {
-        if (entity instanceof Aero) {
+        if (entity.isSupportVehicle()) {
+            TestSupportVehicle testSupportVehicle = (TestSupportVehicle) UnitUtil.getEntityVerifier(entity);
+            weightLabel.setText(formatWeight(testSupportVehicle.getFuelTonnage(), entity));
+        } else if (entity instanceof Aero) {
             TestAero testEntity = (TestAero) UnitUtil.getEntityVerifier(entity);
-            weightLabel.setText(formatWeight(testEntity.getWeightFuel()));
+            weightLabel.setText(formatWeight(testEntity.getWeightFuel(), entity));
         }
     }
 }

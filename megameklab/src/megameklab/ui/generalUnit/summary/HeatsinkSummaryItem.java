@@ -45,11 +45,11 @@ public class HeatsinkSummaryItem extends AbstractSummaryItem {
             } else if (mek.hasCompactHeatSinks()) {
                 critSinks = (critSinks / 2) + (critSinks % 2);
             }
-            weightLabel.setText(formatWeight(testMech.getWeightHeatSinks()));
+            weightLabel.setText(formatWeight(testMech.getWeightHeatSinks(), entity));
             critLabel.setText(formatCrits(critSinks));
         } else {
             TestEntity testEntity = UnitUtil.getEntityVerifier(entity);
-            weightLabel.setText(formatWeight(testEntity.getWeightHeatSinks()));
+            weightLabel.setText(formatWeight(testEntity.getWeightHeatSinks(), entity));
         }
 
         availabilityLabel.setText("-");

@@ -16,7 +16,7 @@ public class PropulsionSummaryItem extends AbstractSummaryItem {
     public void refresh(Entity entity) {
         if (entity instanceof Tank) {
             TestTank testTank = (TestTank) UnitUtil.getEntityVerifier(entity);
-            weightLabel.setText(formatWeight(testTank.getTankWeightLifting()));
+            weightLabel.setText(formatWeight(testTank.getTankWeightLifting(), entity));
         }
     }
 }

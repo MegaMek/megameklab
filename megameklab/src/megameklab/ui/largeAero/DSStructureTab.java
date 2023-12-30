@@ -113,7 +113,6 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
         panHeat.setBorder(BorderFactory.createTitledBorder("Heat Sinks"));
         panArmor.setBorder(BorderFactory.createTitledBorder("Armor"));
         panCrew.setBorder(BorderFactory.createTitledBorder("Crew and Quarters"));
-        panSummary.setBorder(BorderFactory.createTitledBorder("Summary"));
         panArmorAllocation.setBorder(BorderFactory.createTitledBorder("Armor Allocation"));
     }
     

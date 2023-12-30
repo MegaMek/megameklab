@@ -5,25 +5,34 @@ import megamek.common.Entity;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class SummaryView extends JPanel {
 
-    private final Dimension weightCritSize = new Dimension(55, 25);
+    private final Dimension weightCritSize = new Dimension(65, 25);
     private final Dimension availSize = new Dimension(110, 25);
     private final Dimension categorySize = new Dimension(110, 25);
 
     private final List<SummaryItem> summaryItemList = new ArrayList<>();
 
     public SummaryView(List<SummaryItem> summaryItems) {
-        initialize(summaryItems, true);
+        initialize(true, summaryItems);
+    }
+
+    public SummaryView(SummaryItem... summaryItems) {
+        initialize(true, Arrays.asList(summaryItems));
+    }
+
+    public SummaryView(boolean showCrits, SummaryItem... summaryItems) {
+        initialize(showCrits, Arrays.asList(summaryItems));
     }
 
     public SummaryView(List<SummaryItem> summaryItems, boolean showCrits) {
-        initialize(summaryItems, showCrits);
+        initialize(showCrits, summaryItems);
     }
 
-    public void initialize(List<SummaryItem> getSummaryItems, boolean showCrits) {
+    public void initialize(boolean showCrits, List<SummaryItem> getSummaryItems) {
 
         summaryItemList.clear();
         summaryItemList.addAll(getSummaryItems);
@@ -41,10 +50,10 @@ public class SummaryView extends JPanel {
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.insets = new Insets(0, 0, 0, 5);
-        add(createLabel("Category", categorySize, SwingConstants.CENTER), gbc);
+        add(createLabel("", categorySize, SwingConstants.CENTER), gbc);
         gbc.gridy++;
         for (SummaryItem summaryItem : summaryItemList) {
-            this.add(createLabel(summaryItem.getName(), categorySize, SwingConstants.RIGHT), gbc);
+            this.add(createLabel(summaryItem.getName() + ":", categorySize, SwingConstants.RIGHT), gbc);
             gbc.gridy++;
         }
 
@@ -79,7 +88,7 @@ public class SummaryView extends JPanel {
     }
 
     private JLabel createLabel(String text, Dimension size,int align){
-        JLabel label = new JLabel(text + ":", SwingConstants.TRAILING);
+        JLabel label = new JLabel(text, SwingConstants.TRAILING);
         setFieldSize(label, size);
         label.setHorizontalAlignment(align);
         return label;

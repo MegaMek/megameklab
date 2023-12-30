@@ -123,7 +123,6 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         panChassis.setBorder(BorderFactory.createTitledBorder("Chassis"));
         panMovement.setBorder(BorderFactory.createTitledBorder("Movement"));
         panFuel.setBorder(BorderFactory.createTitledBorder("Fuel"));
-        panSummary.setBorder(BorderFactory.createTitledBorder("Summary"));
         panChassisMod.setBorder(BorderFactory.createTitledBorder("Chassis Modifications"));
         panCrew.setBorder(BorderFactory.createTitledBorder("Crew and Quarters"));
     }

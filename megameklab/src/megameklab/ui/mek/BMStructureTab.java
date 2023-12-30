@@ -20,6 +20,7 @@ import megamek.common.loaders.EntityLoadingException;
 import megamek.common.verifier.TestEntity;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.*;
+import megameklab.ui.generalUnit.summary.*;
 import megameklab.ui.listeners.ArmorAllocationListener;
 import megameklab.ui.listeners.MekBuildListener;
 import megameklab.ui.util.ITab;
@@ -40,12 +41,16 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
     private BMChassisView panChassis;
     private BMLAMFuelView panLAMFuel;
     private MVFArmorView panArmor;
+    private BMSummaryView panSummary;
     private MovementView panMovement;
     private HeatSinkView panHeat;
-    private BMSummaryView panSummary;
     private ArmorAllocationView panArmorAllocation;
     private PatchworkArmorView panPatchwork;
-
+//    private SummaryView panSummary = new SummaryView(new StructureSummaryItem(), new EngineSummaryItem(),
+//            new GyroSummaryItem(), new CockpitSummaryItem(), new HeatsinkSummaryItem(), new ArmorSummaryItem(),
+//            new JumpSummaryItem(), new EquipmentSummaryItem(), new MyomerEnhancementSummaryItem(),
+//            new OtherSummaryItem());
+    
     RefreshListener refresh = null;
     JPanel masterPanel;
 

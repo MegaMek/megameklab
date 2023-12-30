@@ -41,7 +41,7 @@ public class MyomerEnhancementSummaryItem extends AbstractSummaryItem {
                 break;
             }
         }
-        weightLabel.setText(formatWeight(totalWeight));
+        weightLabel.setText(formatWeight(totalWeight, entity));
         critLabel.setText(formatCrits(totalCrits));
     }
 

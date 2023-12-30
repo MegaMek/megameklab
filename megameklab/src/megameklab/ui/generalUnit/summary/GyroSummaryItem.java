@@ -35,7 +35,7 @@ public class GyroSummaryItem extends AbstractSummaryItem {
         if ((entity instanceof Mech) && (entity.getGyroType() != Mech.GYRO_NONE)) {
             TestMech testMech = (TestMech) UnitUtil.getEntityVerifier(entity);
             availabilityLabel.setText("tbd");
-            weightLabel.setText(formatWeight(testMech.getWeightGyro()));
+            weightLabel.setText(formatWeight(testMech.getWeightGyro(), entity));
             critLabel.setText(formatCrits(getGyroCrits(entity)));
         } else {
             availabilityLabel.setText("-");

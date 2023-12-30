@@ -17,7 +17,7 @@ public class CockpitSummaryItem extends AbstractSummaryItem {
         if ((entity instanceof Mech) && (((Mech) entity).getCockpitType() != Mech.COCKPIT_UNKNOWN)) {
             TestMech testMech = (TestMech) UnitUtil.getEntityVerifier(entity);
             availabilityLabel.setText("tbd");
-            weightLabel.setText(formatWeight(testMech.getWeightCockpit()));
+            weightLabel.setText(formatWeight(testMech.getWeightCockpit(), entity));
             critLabel.setText(formatCrits(getCockpitCrits((Mech) entity)));
         } else {
             availabilityLabel.setText("-");
