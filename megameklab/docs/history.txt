@@ -1,5 +1,7 @@
 VERSION HISTORY:
 ----------------
+0.49.17-SNAPSHOT
+
 0.49.16 (2023-12-30 2200 UTC)
 + PR #1338 - Allow unit role selection in MML
 + Fix #145: Quirks can now be edited in MML and are part of the unit files
