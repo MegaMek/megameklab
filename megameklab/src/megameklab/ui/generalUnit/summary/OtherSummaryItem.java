@@ -18,26 +18,21 @@
  */
 package megameklab.ui.generalUnit.summary;
 
-import javax.swing.*;
+import megamek.common.Entity;
+import megamek.common.verifier.TestEntity;
+import megameklab.util.UnitUtil;
 
-public abstract class AbstractSummaryItem implements SummaryItem {
-
-    protected final JLabel weightLabel = new SummaryWeightLabel("");
-    protected final JLabel critLabel = new SummaryWeightLabel("");
-    protected final JLabel availabilityLabel = new SummaryAvailabilityLabel("");
+public class OtherSummaryItem extends AbstractSummaryItem {
 
     @Override
-    public JComponent getWeightComponent() {
-        return weightLabel;
+    public String getName() {
+        return "Other";
     }
 
     @Override
-    public JComponent getCritsComponent() {
-        return critLabel;
-    }
-
-    @Override
-    public JComponent getAvailabilityComponent() {
-        return availabilityLabel;
+    public void refresh(Entity entity) {
+        TestEntity testEntity = UnitUtil.getEntityVerifier(entity);
+        weightLabel.setText(formatWeight(testEntity.getWeightPowerAmp()
+                + testEntity.getWeightCarryingSpace() + testEntity.getWeightMisc()));
     }
 }

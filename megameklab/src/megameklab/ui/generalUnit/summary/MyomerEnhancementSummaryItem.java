@@ -19,39 +19,36 @@
 package megameklab.ui.generalUnit.summary;
 
 import megamek.common.Entity;
-import megamek.common.Mech;
-import megamek.common.verifier.TestMech;
-import megameklab.util.UnitUtil;
+import megamek.common.MiscType;
+import megamek.common.Mounted;
 
-public class GyroSummaryItem extends AbstractSummaryItem {
+public class MyomerEnhancementSummaryItem extends AbstractSummaryItem {
 
     @Override
     public String getName() {
-        return "Gyro";
+        return "Myomer Enhancement";
     }
 
     @Override
     public void refresh(Entity entity) {
-        if ((entity instanceof Mech) && (entity.getGyroType() != Mech.GYRO_NONE)) {
-            TestMech testMech = (TestMech) UnitUtil.getEntityVerifier(entity);
-            availabilityLabel.setText("tbd");
-            weightLabel.setText(formatWeight(testMech.getWeightGyro()));
-            critLabel.setText(formatCrits(getGyroCrits(entity)));
-        } else {
-            availabilityLabel.setText("-");
-            weightLabel.setText("-");
-            critLabel.setText("-");
+        double totalWeight = 0;
+        int totalCrits = 0;
+
+        for (Mounted m : entity.getMisc()) {
+            if (isMyomerEnhancement(m)) {
+                totalWeight = m.getTonnage();
+                totalCrits = m.getCriticals();
+                break;
+            }
         }
+        weightLabel.setText(formatWeight(totalWeight));
+        critLabel.setText(formatCrits(totalCrits));
     }
 
-    private int getGyroCrits(Entity entity) {
-        switch(entity.getGyroType()) {
-            case Mech.GYRO_COMPACT:
-                return 2;
-            case Mech.GYRO_XL:
-                return 6;
-            default:
-                return 4;
-        }
+    private boolean isMyomerEnhancement(Mounted mounted) {
+        MiscType miscType = (MiscType) mounted.getType();
+        return miscType.hasFlag(MiscType.F_TSM)
+                || miscType.hasFlag(MiscType.F_INDUSTRIAL_TSM)
+                || miscType.hasFlag(MiscType.F_MASC);
     }
 }

@@ -1,7 +1,26 @@
+/*
+ * Copyright (c) 2023 - The MegaMek Team. All Rights Reserved.
+ *
+ * This file is part of MegaMekLab.
+ *
+ * MegaMek is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * MegaMek is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with MegaMek. If not, see <http://www.gnu.org/licenses/>.
+ */
 package megameklab.ui.generalUnit.summary;
 
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
+import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestMech;
 import megameklab.util.UnitUtil;
 
@@ -26,19 +45,25 @@ public class HeatsinkSummaryItem extends AbstractSummaryItem {
             } else if (mek.hasCompactHeatSinks()) {
                 critSinks = (critSinks / 2) + (critSinks % 2);
             }
-            EquipmentType hsType = EquipmentType.get(getHeatSinkType(mek));
-            if (hsType != null) {
-                availabilityLabel.setText(hsType.getFullRatingName(mek.isClan()));
-            } else {
-                availabilityLabel.setText("-");
-            }
             weightLabel.setText(formatWeight(testMech.getWeightHeatSinks()));
             critLabel.setText(formatCrits(critSinks));
+        } else {
+            TestEntity testEntity = UnitUtil.getEntityVerifier(entity);
+            weightLabel.setText(formatWeight(testEntity.getWeightHeatSinks()));
+        }
+
+        availabilityLabel.setText("-");
+        String heatSinkName = getHeatSinkType(entity);
+        if (heatSinkName != null) {
+            EquipmentType hsType = EquipmentType.get(getHeatSinkType(entity));
+            if (hsType != null) {
+                availabilityLabel.setText(hsType.getFullRatingName(entity.isClan()));
+            }
         }
     }
 
-    public @Nullable String getHeatSinkType(Mech mek) {
-        for (Mounted m : mek.getMisc()) {
+    public @Nullable String getHeatSinkType(Entity entity) {
+        for (Mounted m : entity.getMisc()) {
             if (m.getType().hasFlag(MiscType.F_COMPACT_HEAT_SINK)
                     || m.getType().hasFlag(MiscType.F_HEAT_SINK)
                     || m.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK)

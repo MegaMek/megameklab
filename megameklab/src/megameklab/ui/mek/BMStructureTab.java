@@ -131,7 +131,6 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         panHeat.setBorder(BorderFactory.createTitledBorder("Heat Sinks"));
         panLAMFuel.setBorder(BorderFactory.createTitledBorder("Fuel"));
         panArmor.setBorder(BorderFactory.createTitledBorder("Armor"));
-        panSummary.setBorder(BorderFactory.createTitledBorder("Summary"));
         panArmorAllocation.setBorder(BorderFactory.createTitledBorder("Armor Allocation"));
         panPatchwork.setBorder(BorderFactory.createTitledBorder("Patchwork Armor"));
     }

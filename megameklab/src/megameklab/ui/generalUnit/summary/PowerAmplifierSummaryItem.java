@@ -18,26 +18,23 @@
  */
 package megameklab.ui.generalUnit.summary;
 
-import javax.swing.*;
+import megamek.common.Entity;
+import megamek.common.Tank;
+import megamek.common.verifier.TestTank;
+import megameklab.util.UnitUtil;
 
-public abstract class AbstractSummaryItem implements SummaryItem {
-
-    protected final JLabel weightLabel = new SummaryWeightLabel("");
-    protected final JLabel critLabel = new SummaryWeightLabel("");
-    protected final JLabel availabilityLabel = new SummaryAvailabilityLabel("");
+public class PowerAmplifierSummaryItem extends AbstractSummaryItem {
 
     @Override
-    public JComponent getWeightComponent() {
-        return weightLabel;
+    public String getName() {
+        return "Power Amplifier";
     }
 
     @Override
-    public JComponent getCritsComponent() {
-        return critLabel;
-    }
-
-    @Override
-    public JComponent getAvailabilityComponent() {
-        return availabilityLabel;
+    public void refresh(Entity entity) {
+        if (entity instanceof Tank) {
+            TestTank testTank = (TestTank) UnitUtil.getEntityVerifier(entity);
+            weightLabel.setText(formatWeight(testTank.getWeightPowerAmp()));
+        }
     }
 }

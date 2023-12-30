@@ -18,26 +18,32 @@
  */
 package megameklab.ui.generalUnit.summary;
 
-import javax.swing.*;
+import megamek.common.Entity;
+import megamek.common.MiscType;
+import megamek.common.Mounted;
+import megamek.common.Tank;
 
-public abstract class AbstractSummaryItem implements SummaryItem {
-
-    protected final JLabel weightLabel = new SummaryWeightLabel("");
-    protected final JLabel critLabel = new SummaryWeightLabel("");
-    protected final JLabel availabilityLabel = new SummaryAvailabilityLabel("");
+public class SponsonTurretSummaryItem extends AbstractSummaryItem {
 
     @Override
-    public JComponent getWeightComponent() {
-        return weightLabel;
+    public String getName() {
+        return "Sponson Turret";
     }
 
     @Override
-    public JComponent getCritsComponent() {
-        return critLabel;
+    public void refresh(Entity entity) {
+        if (entity instanceof Tank) {
+            weightLabel.setText(formatWeight(getSponsonTurretWeight(entity)));
+        }
     }
 
-    @Override
-    public JComponent getAvailabilityComponent() {
-        return availabilityLabel;
+    private double getSponsonTurretWeight(Entity entity) {
+        for (Mounted m : entity.getMisc()) {
+            MiscType mt = (MiscType) m.getType();
+            if (mt.hasFlag(MiscType.F_SPONSON_TURRET)) {
+                return m.getTonnage();
+            }
+        }
+        return 0;
     }
 }
