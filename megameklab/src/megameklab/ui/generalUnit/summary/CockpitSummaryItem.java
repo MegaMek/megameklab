@@ -16,13 +16,13 @@ public class CockpitSummaryItem extends AbstractSummaryItem {
     public void refresh(Entity entity) {
         if ((entity instanceof Mech) && (((Mech) entity).getCockpitType() != Mech.COCKPIT_UNKNOWN)) {
             TestMech testMech = (TestMech) UnitUtil.getEntityVerifier(entity);
-            availabilityLabel.setText("tbd");
+            availabilityLabel.setText("");
             weightLabel.setText(formatWeight(testMech.getWeightCockpit(), entity));
             critLabel.setText(formatCrits(getCockpitCrits((Mech) entity)));
         } else {
-            availabilityLabel.setText("-");
-            weightLabel.setText("-");
-            critLabel.setText("-");
+            availabilityLabel.setText("");
+            weightLabel.setText("");
+            critLabel.setText("");
         }
     }
 

@@ -65,29 +65,6 @@ public class ArmorSummaryItem extends AbstractSummaryItem {
         } else {
             weightLabel.setText(formatWeight(testEntity.getWeightArmor(), entity));
         }
-
-
-//        if (entity.isSupportVehicle()) {
-//            TestSupportVehicle testSupportVehicle = (TestSupportVehicle) UnitUtil.getEntityVerifier(entity);
-//            critLabel.setText(formatCrits(testSupportVehicle.getArmorSlots()));
-//            weightLabel.setText(formatWeight(testSupportVehicle.getWeightArmor(), entity));
-//        } else {
-//            int armorType = entity.getArmorType(0);
-//            if ((armorType >= 0) && (armorType < EquipmentType.armorNames.length)) {
-//                String armorName = EquipmentType.getArmorTypeName(armorType,
-//                        TechConstants.isClan(entity.getArmorTechLevel(0)));
-//                EquipmentType armor = EquipmentType.get(armorName);
-//                if (entity instanceof Mech) {
-//                    critLabel.setText(formatCrits(armor.getCriticals(entity)));
-//                } else if (entity instanceof Tank) {
-//                    critLabel.setText(formatCrits(getTankArmorCrits(entity)));
-//                }
-//                availabilityLabel.setText(armor.getFullRatingName(entity.isClan()));
-//            } else {
-//                critLabel.setText("-");
-//                availabilityLabel.setText("-");
-//            }
-//        }
     }
 
     private int getTankArmorCrits(Entity entity) {

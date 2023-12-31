@@ -40,9 +40,9 @@ public class EngineSummaryItem extends AbstractSummaryItem {
             weightLabel.setText(formatWeight(testEntity.getWeightEngine(), entity));
             critLabel.setText(formatCrits(getEngineCrits(entity)));
         } else {
-            availabilityLabel.setText("-");
-            weightLabel.setText("-");
-            critLabel.setText("-");
+            availabilityLabel.setText("");
+            weightLabel.setText("");
+            critLabel.setText("");
         }
     }
 
