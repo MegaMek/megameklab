@@ -25,9 +25,8 @@ public class StructureSummaryItem extends AbstractSummaryItem{
             availabilityLabel.setText(structureType.getFullRatingName(entity.isClan()));
             critLabel.setText(formatCrits(structureType.getCriticals(entity)));
         } else {
-            availabilityLabel.setText("-");
-//            weightLabel.setText("-");
-            critLabel.setText("-");
+            availabilityLabel.setText("");
+            critLabel.setText("");
         }
     }
 }

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2023 - The MegaMek Team. All Rights Reserved.
  *
- * This file is part of MegaMekLab.
+ * This file is part of MegaMek.
  *
  * MegaMek is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,36 +19,22 @@
 package megameklab.ui.generalUnit.summary;
 
 import megamek.common.Entity;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
+import megamek.common.Jumpship;
+import megamek.common.verifier.TestAdvancedAerospace;
+import megameklab.util.UnitUtil;
 
-public class MyomerEnhancementSummaryItem extends AbstractSummaryItem {
+public class LfBatterySummaryItem extends AbstractSummaryItem {
 
     @Override
     public String getName() {
-        return "Myomer";
+        return "LF Battery";
     }
 
     @Override
     public void refresh(Entity entity) {
-        double totalWeight = 0;
-        int totalCrits = 0;
-
-        for (Mounted m : entity.getMisc()) {
-            if (isMyomerEnhancement(m)) {
-                totalWeight = m.getTonnage();
-                totalCrits = m.getCriticals();
-                break;
-            }
+        if (entity instanceof Jumpship) {
+            TestAdvancedAerospace testShip = (TestAdvancedAerospace) UnitUtil.getEntityVerifier(entity);
+            weightLabel.setText(formatWeight(testShip.getWeightLFBattery(), entity));
         }
-        weightLabel.setText(formatWeight(totalWeight, entity));
-        critLabel.setText(formatCrits(totalCrits));
-    }
-
-    private boolean isMyomerEnhancement(Mounted mounted) {
-        MiscType miscType = (MiscType) mounted.getType();
-        return miscType.hasFlag(MiscType.F_TSM)
-                || miscType.hasFlag(MiscType.F_INDUSTRIAL_TSM)
-                || miscType.hasFlag(MiscType.F_MASC);
     }
 }

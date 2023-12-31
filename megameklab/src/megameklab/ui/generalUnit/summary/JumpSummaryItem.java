@@ -34,10 +34,11 @@ public class JumpSummaryItem extends AbstractSummaryItem {
     public void refresh(Entity entity) {
         double totalWeight = 0.0f;
         int totalCrits = 0;
-        availabilityLabel.setText("-");
+        availabilityLabel.setText("");
         for (Mounted m : entity.getMisc()) {
             MiscType mt = (MiscType) m.getType();
-            if (mt.hasFlag(MiscType.F_JUMP_JET) || mt.hasFlag(MiscType.F_JUMP_BOOSTER)) {
+            if (mt.hasFlag(MiscType.F_JUMP_JET) || mt.hasFlag(MiscType.F_JUMP_BOOSTER)
+                    | mt.hasFlag(MiscType.F_UMU)) {
                 totalWeight += m.getTonnage();
                 totalCrits += m.getCriticals();
                 availabilityLabel.setText(mt.getFullRatingName(entity.isClan()));

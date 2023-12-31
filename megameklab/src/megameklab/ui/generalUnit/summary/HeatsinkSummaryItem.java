@@ -52,7 +52,7 @@ public class HeatsinkSummaryItem extends AbstractSummaryItem {
             weightLabel.setText(formatWeight(testEntity.getWeightHeatSinks(), entity));
         }
 
-        availabilityLabel.setText("-");
+        availabilityLabel.setText("");
         String heatSinkName = getHeatSinkType(entity);
         if (heatSinkName != null) {
             EquipmentType hsType = EquipmentType.get(getHeatSinkType(entity));

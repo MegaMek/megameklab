@@ -38,9 +38,9 @@ public class GyroSummaryItem extends AbstractSummaryItem {
             weightLabel.setText(formatWeight(testMech.getWeightGyro(), entity));
             critLabel.setText(formatCrits(getGyroCrits(entity)));
         } else {
-            availabilityLabel.setText("-");
-            weightLabel.setText("-");
-            critLabel.setText("-");
+            availabilityLabel.setText("");
+            weightLabel.setText("");
+            critLabel.setText("");
         }
     }
 

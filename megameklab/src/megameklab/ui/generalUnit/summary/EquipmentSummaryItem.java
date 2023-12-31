@@ -60,9 +60,10 @@ public class EquipmentSummaryItem extends AbstractSummaryItem {
                 && !miscType.hasFlag(MiscType.F_INDUSTRIAL_TSM)
                 && !miscType.hasFlag(MiscType.F_MASC)
                 && !miscType.hasFlag(MiscType.F_JUMP_JET)
+                && !miscType.hasFlag(MiscType.F_UMU)
                 && !miscType.hasFlag(MiscType.F_JUMP_BOOSTER)
-                && !miscType.hasFlag(MiscType.F_HEAT_SINK)
                 && !miscType.hasFlag(MiscType.F_SPONSON_TURRET)
+                && !miscType.hasFlag(MiscType.F_HEAT_SINK)
                 && !miscType.hasFlag(MiscType.F_DOUBLE_HEAT_SINK);
     }
 }

@@ -1,6 +1,8 @@
 package megameklab.ui.generalUnit.summary;
 
 import megamek.common.Entity;
+import megameklab.ui.EntitySource;
+import megameklab.ui.util.IView;
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class SummaryView extends JPanel {
+public class SummaryView extends IView {
 
     private final Dimension weightCritSize = new Dimension(65, 25);
     private final Dimension availSize = new Dimension(110, 25);
@@ -16,19 +18,23 @@ public class SummaryView extends JPanel {
 
     private final List<SummaryItem> summaryItemList = new ArrayList<>();
 
-    public SummaryView(List<SummaryItem> summaryItems) {
+    public SummaryView(List<SummaryItem> summaryItems, EntitySource entitySource) {
+        super(entitySource);
         initialize(true, summaryItems);
     }
 
-    public SummaryView(SummaryItem... summaryItems) {
+    public SummaryView(EntitySource entitySource, SummaryItem... summaryItems) {
+        super(entitySource);
         initialize(true, Arrays.asList(summaryItems));
     }
 
-    public SummaryView(boolean showCrits, SummaryItem... summaryItems) {
+    public SummaryView(EntitySource entitySource, boolean showCrits, SummaryItem... summaryItems) {
+        super(entitySource);
         initialize(showCrits, Arrays.asList(summaryItems));
     }
 
-    public SummaryView(List<SummaryItem> summaryItems, boolean showCrits) {
+    public SummaryView(EntitySource entitySource, List<SummaryItem> summaryItems, boolean showCrits) {
+        super(entitySource);
         initialize(showCrits, summaryItems);
     }
 
@@ -98,6 +104,10 @@ public class SummaryView extends JPanel {
         box.setPreferredSize(maxSize);
         box.setMaximumSize(maxSize);
         box.setMinimumSize(maxSize);
+    }
+
+    public void refresh() {
+        refresh(getEntity());
     }
 
     public void refresh(Entity entity) {

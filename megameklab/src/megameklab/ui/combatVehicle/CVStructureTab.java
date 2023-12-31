@@ -22,6 +22,7 @@ import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestTank;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.*;
+import megameklab.ui.generalUnit.summary.*;
 import megameklab.ui.listeners.ArmorAllocationListener;
 import megameklab.ui.listeners.CVBuildListener;
 import megameklab.ui.util.ITab;
@@ -41,7 +42,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
     private CVChassisView panChassis;
     private MVFArmorView panArmor;
     private MovementView panMovement;
-    private CVSummaryView panSummary;
+    private SummaryView panSummary;
     private ArmorAllocationView panArmorAllocation;
     private PatchworkArmorView panPatchwork;
     private CVTransportView panTransport;
@@ -62,13 +63,25 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         panMovement = new MovementView(panBasicInfo);
         panArmorAllocation = new ArmorAllocationView(panBasicInfo, Entity.ETYPE_TANK);
         panPatchwork = new PatchworkArmorView(panBasicInfo);
-        panSummary = new CVSummaryView(eSource);
         panTransport = new CVTransportView();
         if (getTank().hasPatchworkArmor()) {
             panArmorAllocation.showPatchwork(true);
         } else {
             panPatchwork.setVisible(false);
         }
+        panSummary = new SummaryView(eSource,
+                new StructureSummaryItem(),
+                new EngineSummaryItem(),
+                new PropulsionSummaryItem(),
+                new HeatsinkSummaryItem(),
+                new ControlsSummaryItem(),
+                new ArmorSummaryItem(),
+                new JumpSummaryItem(),
+                new TurretSummaryItem(),
+                new RearTurretSummaryItem(),
+                new SponsonTurretSummaryItem(),
+                new PowerAmplifierSummaryItem(),
+                new EquipmentSummaryItem());
 
         GridBagConstraints gbc;
 

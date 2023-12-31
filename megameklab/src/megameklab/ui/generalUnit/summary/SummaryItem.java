@@ -45,7 +45,7 @@ public interface SummaryItem {
     void refresh(Entity entity);
 
     default String formatCrits(int crits) {
-        return (crits == 0) ? "-" : Integer.toString(crits);
+        return (crits == 0) ? "" : Integer.toString(crits);
     }
 
     default String formatWeight(double weight, Entity entity) {
@@ -57,10 +57,10 @@ public interface SummaryItem {
     }
 
     private static String formatWeight(double weight) {
-        return (weight == 0 ? "-" : CalculationReport.formatForReport(weight) + " t");
+        return (weight == 0 ? "" : CalculationReport.formatForReport(weight) + " t");
     }
 
     private static String formatWeightKg(double weight) {
-        return (weight == 0 ? "-" : CalculationReport.formatForReport(weight * 1000) + " kg");
+        return (weight == 0 ? "" : CalculationReport.formatForReport(weight * 1000) + " kg");
     }
 }

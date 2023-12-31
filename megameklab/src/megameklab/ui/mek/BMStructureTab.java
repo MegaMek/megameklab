@@ -41,16 +41,12 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
     private BMChassisView panChassis;
     private BMLAMFuelView panLAMFuel;
     private MVFArmorView panArmor;
-    private BMSummaryView panSummary;
+    private SummaryView panSummary;
     private MovementView panMovement;
     private HeatSinkView panHeat;
     private ArmorAllocationView panArmorAllocation;
     private PatchworkArmorView panPatchwork;
-//    private SummaryView panSummary = new SummaryView(new StructureSummaryItem(), new EngineSummaryItem(),
-//            new GyroSummaryItem(), new CockpitSummaryItem(), new HeatsinkSummaryItem(), new ArmorSummaryItem(),
-//            new JumpSummaryItem(), new EquipmentSummaryItem(), new MyomerEnhancementSummaryItem(),
-//            new OtherSummaryItem());
-    
+
     RefreshListener refresh = null;
     JPanel masterPanel;
 
@@ -72,7 +68,18 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         panLAMFuel = new BMLAMFuelView(eSource);
         panArmorAllocation = new ArmorAllocationView(panBasicInfo, Entity.ETYPE_MECH);
         panPatchwork = new PatchworkArmorView(panBasicInfo);
-        panSummary = new BMSummaryView(eSource);
+        panSummary = new SummaryView(eSource,
+                new StructureSummaryItem(),
+                new EngineSummaryItem(),
+                new GyroSummaryItem(),
+                new CockpitSummaryItem(),
+                new HeatsinkSummaryItem(),
+                new ArmorSummaryItem(),
+                new JumpSummaryItem(),
+                new EquipmentSummaryItem(),
+                new MyomerEnhancementSummaryItem(),
+                new OtherSummaryItem());
+
         if (getMech().hasPatchworkArmor()) {
             panArmorAllocation.showPatchwork(true);
         } else {

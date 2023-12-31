@@ -28,6 +28,7 @@ import megamek.common.*;
 import megamek.common.verifier.TestEntity;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.*;
+import megameklab.ui.generalUnit.summary.*;
 import megameklab.ui.listeners.AdvancedAeroBuildListener;
 import megameklab.ui.listeners.ArmorAllocationListener;
 import megameklab.ui.util.ITab;
@@ -47,7 +48,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
     private HeatSinkView panHeat;
     private LACrewView panCrew;
     private WSGravDeckView panGravDecks;
-    private WSSummaryView panSummary;
+    private SummaryView panSummary;
     private ArmorAllocationView panArmorAllocation;
 
     RefreshListener refresh = null;
@@ -71,7 +72,25 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         panCrew = new LACrewView(panInfo);
         panGravDecks = new WSGravDeckView();
         panArmorAllocation = new ArmorAllocationView(panInfo, Entity.ETYPE_AERO);
-        panSummary = new WSSummaryView(eSource);
+        panSummary = new SummaryView(eSource,
+                new StructureSummaryItem(),
+                new EngineSummaryItem(),
+                new FuelSummaryItem(),
+                new HeatsinkSummaryItem(),
+                new ControlsSummaryItem(),
+                new LfBatterySummaryItem(),
+                new KfDriveSummaryItem(),
+                new SailSummaryItem(),
+                new ArmorSummaryItem(),
+                new WeaponsSummaryItem(),
+                new AmmoSummaryItem(),
+                new MiscEquipmentSummaryItem(),
+                new CrewSummaryItem(),
+                new TransportSummaryItem(),
+                new HardpointSummaryItem(),
+                new GravDeckSummaryItem(),
+                new LifeBoatSummaryItem(),
+                new SpecialsSummaryItem());
 
         GridBagConstraints gbc;
 
@@ -119,7 +138,6 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         panArmor.setBorder(BorderFactory.createTitledBorder("Armor"));
         panCrew.setBorder(BorderFactory.createTitledBorder("Crew and Quarters"));
         panGravDecks.setBorder(BorderFactory.createTitledBorder("Gravity Decks"));
-        panSummary.setBorder(BorderFactory.createTitledBorder("Summary"));
         panArmorAllocation.setBorder(BorderFactory.createTitledBorder("Armor Allocation"));
     }
     

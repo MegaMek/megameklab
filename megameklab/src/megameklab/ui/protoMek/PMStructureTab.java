@@ -41,6 +41,7 @@ import megameklab.ui.generalUnit.ArmorAllocationView;
 import megameklab.ui.generalUnit.BAProtoArmorView;
 import megameklab.ui.generalUnit.BasicInfoView;
 import megameklab.ui.generalUnit.MovementView;
+import megameklab.ui.generalUnit.summary.*;
 import megameklab.ui.listeners.ArmorAllocationListener;
 import megameklab.ui.listeners.ProtomekBuildListener;
 import megameklab.ui.util.ITab;
@@ -57,7 +58,7 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
     private PMChassisView panChassis;
     private BAProtoArmorView panArmor;
     private MovementView panMovement;
-    private PMSummaryView panSummary;
+    private SummaryView panSummary;
     private ArmorAllocationView panArmorAllocation;
 
     RefreshListener refresh = null;
@@ -78,7 +79,17 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
         panArmor = new BAProtoArmorView(panBasicInfo);
         panMovement = new MovementView(panBasicInfo);
         panArmorAllocation = new ArmorAllocationView(panBasicInfo, Entity.ETYPE_PROTOMECH);
-        panSummary = new PMSummaryView(eSource);
+        panSummary = new SummaryView(eSource,
+                new StructureSummaryItem(),
+                new EngineSummaryItem(),
+                new HeatsinkSummaryItem(),
+                new ControlsSummaryItem(),
+                new ArmorSummaryItem(),
+                new JumpSummaryItem(),
+                new WeaponsSummaryItem(),
+                new AmmoSummaryItem(),
+                new MiscEquipmentSummaryItem(),
+                new MyomerEnhancementSummaryItem());
 
         GridBagConstraints gbc;
 
