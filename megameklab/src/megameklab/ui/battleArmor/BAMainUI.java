@@ -38,10 +38,8 @@ public class BAMainUI extends MegaMekLabMainUI {
     private FloatingEquipmentDatabaseDialog floatingEquipmentDatabase;
 
     public BAMainUI() {
-
         super();
         createNewUnit(Entity.ETYPE_BATTLEARMOR);
-        setTitle(getEntity().getChassis() + " " + getEntity().getModel() + ".blk");
         finishSetup();
     }
 
@@ -113,9 +111,7 @@ public class BAMainUI extends MegaMekLabMainUI {
     }
 
     @Override
-    public void refreshArmor() {
-
-    }
+    public void refreshArmor() { }
 
     @Override
     public void refreshBuild() {
@@ -133,11 +129,6 @@ public class BAMainUI extends MegaMekLabMainUI {
     }
 
     @Override
-    public void refreshHeader() {
-        setTitle(getEntity().getChassis() + " " + getEntity().getModel() + ".blk");
-    }
-
-    @Override
     public void refreshStatus() {
         statusbar.refresh();
     }
@@ -148,8 +139,7 @@ public class BAMainUI extends MegaMekLabMainUI {
     }
 
     @Override
-    public void refreshWeapons() {
-    }
+    public void refreshWeapons() { }
 
     @Override
     public void refreshPreview() {
@@ -157,8 +147,7 @@ public class BAMainUI extends MegaMekLabMainUI {
     }
     
     @Override
-    public void refreshSummary() {
-    }
+    public void refreshSummary() { }
     
     @Override
     public void refreshEquipmentTable() {
@@ -168,22 +157,10 @@ public class BAMainUI extends MegaMekLabMainUI {
 
     @Override
     public ITechManager getTechManager() {
-        if (structureTab != null) {
-            return structureTab.getTechManager();
-        }
-        return null;
+        return (structureTab != null) ? structureTab.getTechManager() : null;
     }
 
     public JDialog getFloatingEquipmentDatabase() {
         return floatingEquipmentDatabase;
     }
-
-    @Override
-    public void setVisible(boolean b) {
-        super.setVisible(b);
-        if (!b && (floatingEquipmentDatabase != null)) {
-            floatingEquipmentDatabase.setVisible(false);
-        }
-    }
-
 }

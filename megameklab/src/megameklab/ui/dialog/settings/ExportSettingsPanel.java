@@ -22,6 +22,7 @@ import megameklab.printing.PaperSize;
 import megameklab.ui.util.IntRangeTextField;
 import megameklab.ui.util.SpringUtilities;
 import megameklab.util.CConfig;
+import megameklab.util.RSScale;
 import megameklab.util.UnitUtil;
 
 import javax.swing.*;
@@ -128,7 +129,7 @@ class ExportSettingsPanel extends JPanel {
         chkTacOpsHeat.setToolTipText(resourceMap.getString("ConfigurationDialog.chkTacOpsHeat.tooltip"));
         chkTacOpsHeat.setSelected(CConfig.getBooleanParam(CConfig.RS_TAC_OPS_HEAT));
 
-        for (CConfig.RSScale val : CConfig.RSScale.values()) {
+        for (RSScale val : RSScale.values()) {
             cbRSScale.addItem(val.fullName);
         }
         cbRSScale.setSelectedIndex(CConfig.scaleUnits().ordinal());
@@ -181,7 +182,7 @@ class ExportSettingsPanel extends JPanel {
         recordSheetSettings.put(CConfig.RS_SHOW_ROLE, Boolean.toString(chkShowRole.isSelected()));
         recordSheetSettings.put(CConfig.RS_HEAT_PROFILE, Boolean.toString(chkHeatProfile.isSelected()));
         recordSheetSettings.put(CConfig.RS_TAC_OPS_HEAT, Boolean.toString(chkTacOpsHeat.isSelected()));
-        recordSheetSettings.put(CConfig.RS_SCALE_UNITS, CConfig.RSScale.values()[cbRSScale.getSelectedIndex()].toString());
+        recordSheetSettings.put(CConfig.RS_SCALE_UNITS, RSScale.values()[cbRSScale.getSelectedIndex()].toString());
         recordSheetSettings.put(CConfig.RS_SCALE_FACTOR, Integer.toString(txtScale.getIntVal(getDefaultScale())));
         return recordSheetSettings;
     }
@@ -192,9 +193,9 @@ class ExportSettingsPanel extends JPanel {
     }
 
     private int getDefaultScale() {
-        if (CConfig.RSScale.INCHES.fullName.equals(cbRSScale.getSelectedItem())) {
+        if (RSScale.INCHES.fullName.equals(cbRSScale.getSelectedItem())) {
             return 2;
-        } else if (CConfig.RSScale.CENTIMETERS.fullName.equals(cbRSScale.getSelectedItem())) {
+        } else if (RSScale.CENTIMETERS.fullName.equals(cbRSScale.getSelectedItem())) {
             return 5;
         } else {
             return 1;

@@ -52,6 +52,7 @@ import megamek.common.weapons.srms.StreakSRMWeapon;
 import megamek.common.weapons.tag.CLLightTAG;
 import megamek.common.weapons.tag.CLTAG;
 import megamek.common.weapons.tag.ISTAG;
+import megameklab.ui.PopupMessages;
 import megameklab.ui.mek.BMUtils;
 import org.apache.logging.log4j.LogManager;
 
@@ -1889,13 +1890,8 @@ public class UnitUtil {
                         }
                     }
                 } catch (LocationFullException lfe) {
+                    PopupMessages.showLocationFullError(null, mount.getName());
                     LogManager.getLogger().error(lfe);
-                    JOptionPane.showMessageDialog(
-                            null,
-                            lfe.getMessage(),
-                            mount.getName() + " does not fit into "
-                                    + unit.getLocationName(locations.get(0)),
-                            JOptionPane.INFORMATION_MESSAGE);
                     unit.getMisc().remove(mount);
                     unit.getEquipment().remove(mount);
                     return null;
@@ -3448,12 +3444,10 @@ public class UnitUtil {
 
     public static void showValidation(Entity entity, JFrame frame) {
         final String validation = UnitUtil.validateUnit(entity);
-        if (!validation.isBlank()) {
-            JOptionPane.showMessageDialog(frame, validation, "Unit Validation",
-                    JOptionPane.ERROR_MESSAGE);
+        if (validation.isBlank()) {
+            PopupMessages.showUnitIsValid(frame);
         } else {
-            JOptionPane.showMessageDialog(frame, "Validation Passed",
-                    "Unit Validation", JOptionPane.INFORMATION_MESSAGE);
+            PopupMessages.showUnitInvalidWarning(frame, validation);
         }
     }
 
@@ -3494,13 +3488,7 @@ public class UnitUtil {
 
         jdialog.add(scroll);
 
-        Dimension size = new Dimension(CConfig.getIntParam("WINDOWWIDTH") / 2,
-                CConfig.getIntParam("WINDOWHEIGHT"));
-
-        jdialog.setPreferredSize(size);
-        jdialog.setMinimumSize(size);
-        scroll.setPreferredSize(size);
-        scroll.setMinimumSize(size);
+        jdialog.pack();
 
         jdialog.setLocationRelativeTo(frame);
         jdialog.setVisible(true);
@@ -3533,14 +3521,7 @@ public class UnitUtil {
         JDialog jdialog = new JDialog();
 
         jdialog.add(scroll);
-        Dimension size = new Dimension(CConfig.getIntParam("WINDOWWIDTH") / 2,
-                CConfig.getIntParam("WINDOWHEIGHT"));
-
-        jdialog.setPreferredSize(size);
-        jdialog.setMinimumSize(size);
-        scroll.setPreferredSize(size);
-        scroll.setMinimumSize(size);
-
+        jdialog.pack();
         jdialog.setLocationRelativeTo(frame);
         jdialog.setVisible(true);
 

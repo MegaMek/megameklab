@@ -17,11 +17,11 @@ package megameklab.ui.protoMek;
 import megamek.common.*;
 import megamek.common.verifier.TestEntity;
 import megameklab.ui.EntitySource;
+import megameklab.ui.PopupMessages;
 import megameklab.ui.util.AbstractEquipmentDatabaseView;
 import megameklab.util.UnitUtil;
 import org.apache.logging.log4j.LogManager;
 
-import javax.swing.*;
 import java.util.Collection;
 import java.util.List;
 
@@ -60,10 +60,8 @@ class PMEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
                 UnitUtil.removeHiddenAmmo(mount);
             }
         } catch (LocationFullException ex) {
+            PopupMessages.showLocationFullError(this, equip.getName());
             LogManager.getLogger().error("Location full while trying to add " + equip.getName());
-            JOptionPane.showMessageDialog(
-                    this, "Could not add " + equip.getName(),
-                    "Location Full", JOptionPane.ERROR_MESSAGE);
         }
     }
 

@@ -17,6 +17,7 @@ package megameklab.ui.util;
 
 import megamek.common.*;
 import megameklab.ui.EntitySource;
+import megameklab.ui.PopupMessages;
 import megameklab.ui.mek.BMCriticalView;
 import megameklab.util.UnitUtil;
 import org.apache.logging.log4j.LogManager;
@@ -61,17 +62,12 @@ public class CriticalTransferHandler extends TransferHandler {
                         .getTransferData(DataFlavor.stringFlavor)));
                 
                 if (!UnitUtil.isValidLocation(getUnit(), mount.getType(), location)) {
-                    JOptionPane.showMessageDialog(null, mount.getName() +
-                            " can't be placed in " +
-                            getUnit().getLocationName(location) + "!",
-                            "Invalid Location",
-                            JOptionPane.INFORMATION_MESSAGE);
+                    PopupMessages.showInvalidLocationInfo(null, mount.getName(), getUnit().getLocationName(location));
                     return false;
                 }
                 
                 if (!getUnit().addCritical(location, new CriticalSlot(mount))) {
-                    JOptionPane.showMessageDialog(null, "Location Full",
-                            "Location Full", JOptionPane.INFORMATION_MESSAGE);
+                    PopupMessages.showLocationFullError(null, mount.getName());
                 } else {
                     changeMountStatus(mount, location, false);
                 }
@@ -89,17 +85,12 @@ public class CriticalTransferHandler extends TransferHandler {
                         .getTransferData(DataFlavor.stringFlavor)));
 
                 if (!UnitUtil.isValidLocation(getUnit(), mount.getType(), location)) {
-                    JOptionPane.showMessageDialog(null, mount.getName() +
-                            " can't be placed in " +
-                            getUnit().getLocationName(location) + "!",
-                            "Invalid Location",
-                            JOptionPane.INFORMATION_MESSAGE);
+                    PopupMessages.showInvalidLocationInfo(null, mount.getName(), getUnit().getLocationName(location));
                     return false;
                 }
 
                 if (!UnitUtil.protomechHasRoom(list.getProtomech(), location, mount)) {
-                    JOptionPane.showMessageDialog(null, "Location Full",
-                            "Not enough room", JOptionPane.INFORMATION_MESSAGE);
+                    PopupMessages.showLocationFullError(null, mount.getName());
                 } else {
                     changeMountStatus(mount, location, false);
                 }

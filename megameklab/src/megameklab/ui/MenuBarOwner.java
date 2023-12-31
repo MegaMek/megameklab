@@ -20,7 +20,9 @@ package megameklab.ui;
 
 import megamek.common.Entity;
 import megamek.common.annotations.Nullable;
+import megameklab.ui.dialog.UiLoader;
 import megameklab.ui.util.AppCloser;
+import megameklab.util.CConfig;
 
 import javax.swing.*;
 
@@ -34,6 +36,9 @@ public interface MenuBarOwner extends AppCloser {
 
     /** @return The entity currently worked on or null. */
     @Nullable Entity getEntity();
+
+    /** @return The file name of the currently worked on unit or an empty String. */
+    @Nullable String getFileName();
 
     /**
      * This method is called when an action will cause the currently edited unit to be discarded (exit MML,
@@ -62,19 +67,63 @@ public interface MenuBarOwner extends AppCloser {
     default void refreshAll() { }
 
     /**
-     * Sets the look and feel for the application.
-     *
-     * @param plaf The look and feel to use for the application.
+     * Refreshes the menu bar. Updates the recent units in the File menu.
      */
-    default void changeTheme(UIManager.LookAndFeelInfo plaf) {
+    void refreshMenuBar();
+
+    /**
+     * Creates a new main UI frame for the given unit type and disposes the
+     * existing frame (this MenuBarOwner).
+     *
+     * @param type an int corresponding to the unit type to construct
+     */
+    default void newUnit(long type) {
+        newUnit(type, false);
+    }
+
+    /**
+     * Creates a new main UI frame for the given unit type and disposes the
+     * existing frame (this MenuBarOwner).
+     *
+     * @param type an int corresponding to the unit type to construct
+     * @param primitive true when the new unit should be a primitive type
+     */
+    default void newUnit(long type, boolean primitive) {
+        if (safetyPrompt()) {
+            getFrame().setVisible(false);
+            getFrame().dispose();
+            CConfig.setParam(CConfig.GUI_FULLSCREEN, Integer.toString(getFrame().getExtendedState()));
+            if (this instanceof MegaMekLabMainUI) {
+                CConfig.writeMainUiWindowSettings((MegaMekLabMainUI) this);
+            }
+            CConfig.saveConfig();
+            UiLoader.loadUi(type, primitive, false);
+        }
+    }
+
+    /**
+     * Sets the look and feel for the application and lets Swing update the current
+     * components.
+     *
+     * @param lookAndFeelInfo The look and feel to use for the application.
+     */
+    default void changeTheme(UIManager.LookAndFeelInfo lookAndFeelInfo) {
+        changeTheme(lookAndFeelInfo.getClassName());
+    }
+
+    /**
+     * Sets the look and feel for the application and lets Swing update the current
+     * components.
+     * *
+     * @param lookAndFeelInfo The name of the look and feel to use for the application.
+     */
+    default void changeTheme(String lookAndFeelInfo) {
         SwingUtilities.invokeLater(() -> {
             try {
-                UIManager.setLookAndFeel(plaf.getClassName());
+                UIManager.setLookAndFeel(lookAndFeelInfo);
                 SwingUtilities.updateComponentTreeUI(getFrame());
-            } catch (Exception exception) {
-                JOptionPane.showMessageDialog(getFrame(),
-                        "Can't change look and feel", "Invalid PLAF",
-                        JOptionPane.ERROR_MESSAGE);
+            } catch (Exception ex) {
+                PopupMessages.showLookAndFeelError(getFrame(), ex.getMessage());
             }
         });
     }

@@ -43,7 +43,6 @@ public class DSMainUI extends MegaMekLabMainUI {
     public DSMainUI(boolean primitive) {
         super();
         createNewUnit(Entity.ETYPE_DROPSHIP, primitive, false);
-        setTitle(getEntity().getChassis() + " " + getEntity().getModel() + ".blk");
         finishSetup();
         MechSummaryCache.getInstance();
     }
@@ -125,7 +124,7 @@ public class DSMainUI extends MegaMekLabMainUI {
             smallCraft.setTechLevel(lvl.getCompoundTechLevel(oldUnit.isClan()));
             smallCraft.setMixedTech(oldUnit.isMixedTech());
 
-            smallCraft.setSpheroid(((SmallCraft) oldUnit).isSpheroid());
+            smallCraft.setSpheroid(oldUnit.isSpheroid());
             smallCraft.setMovementMode(oldUnit.getMovementMode());
         }
     }
@@ -189,8 +188,7 @@ public class DSMainUI extends MegaMekLabMainUI {
     }
 
     @Override
-    public void refreshArmor() {
-    }
+    public void refreshArmor() { }
 
     @Override
     public void refreshBuild() {
@@ -200,12 +198,6 @@ public class DSMainUI extends MegaMekLabMainUI {
     @Override
     public void refreshEquipment() {
         equipmentTab.refresh();
-    }
-
-    @Override
-    public void refreshHeader() {
-        String title = getEntity().getChassis() + " " + getEntity().getModel() + ".blk";
-        setTitle(title);
     }
 
     @Override
@@ -219,8 +211,7 @@ public class DSMainUI extends MegaMekLabMainUI {
     }
 
     @Override
-    public void refreshWeapons() {
-    }
+    public void refreshWeapons() { }
 
     @Override
     public void refreshPreview() {
@@ -229,13 +220,5 @@ public class DSMainUI extends MegaMekLabMainUI {
 
     public JDialog getFloatingEquipmentDatabase() {
         return floatingEquipmentDatabase;
-    }
-
-    @Override
-    public void setVisible(boolean b) {
-        super.setVisible(b);
-        if (!b && (floatingEquipmentDatabase != null)) {
-            floatingEquipmentDatabase.setVisible(false);
-        }
     }
 }
