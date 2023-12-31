@@ -15,7 +15,12 @@ VERSION HISTORY:
 + PR #1351: MML's splash startup screen now also shows the menu bar, adding some missing functionality like loading from file
 + Fix 1354: Coolant Pods now show up in the "Other" category instead of Ammo and are no longer hidden by the Ammo w/o weapon filter
 + PR #1355: StatusBar: correct free slot displays
-
++ PR #1352: Adds an option to start MML in its splash screen (current behavior) or directly load the most recent unit or start on a new unit of a choosable type;
+            Most file choosers now use Swing's JFileChooser and remember their size and position as well as the last directory; also file extension filters have been added where applicable;
+            Recent files will now behave as such 
+            All unit type main UIs now individually remember their size and position; there is a menu item to reset all window positions;
+            It is now possible to import settings from another MML setup. 
+            Save As now uses the accelerator Ctrl-Shift-S instead of Ctrl-A (which doesnt work as it does a select-all)
 
 0.49.15 (2023-10-21 1530 UTC)
 + Fix #1172: Clan TAG will no longer be written as TAG (Clan) (Clan) in Mixed Tech units
