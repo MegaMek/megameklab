@@ -28,6 +28,12 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
+/**
+ * This interface is implemented by items that each make up one line in the unit weight/crit/avail summary on the
+ * structure tab. For example, {@link EngineSummaryItem} controls the "Engine:" line in the unit summary for
+ * all unit types, i.e. it calculates and shows weight, crits and availability of the unit's engine.
+ * A base implementation is present in {@link AbstractSummaryItem}.
+ */
 public interface SummaryItem {
 
     Border outerLabelBorder = new LineBorder(UIManager.getColor("Separator.foreground"));

@@ -1,3 +1,21 @@
+/*
+ * Copyright (c) 2023 - The MegaMek Team. All Rights Reserved.
+ *
+ * This file is part of MegaMekLab.
+ *
+ * MegaMek is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * MegaMek is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with MegaMek. If not, see <http://www.gnu.org/licenses/>.
+ */
 package megameklab.ui.generalUnit.summary;
 
 import megamek.common.Entity;
@@ -10,35 +28,49 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * This class represents the unit weight / crit / availability summary table on the structure tab. To construct it,
+ * it needs an {@link EntitySource} as well as a list of {@link SummaryItem} that can be directly constructed
+ * in the constructor call of this view.
+ */
 public class SummaryView extends IView {
 
-    private final Dimension weightCritSize = new Dimension(65, 25);
-    private final Dimension availSize = new Dimension(110, 25);
-    private final Dimension categorySize = new Dimension(110, 25);
+    private static final Dimension weightCritSize = new Dimension(65, 25);
+    private static final Dimension availSize = new Dimension(110, 25);
+    private static final Dimension categorySize = new Dimension(110, 25);
 
     private final List<SummaryItem> summaryItemList = new ArrayList<>();
 
-    public SummaryView(List<SummaryItem> summaryItems, EntitySource entitySource) {
-        super(entitySource);
-        initialize(true, summaryItems);
-    }
-
+    /**
+     * Constructs a new summary table having the given summary items in the order they are listed.
+     *
+     * @param entitySource The EntitySource (cannot be null)
+     * @param summaryItems The SummaryItems to show
+     */
     public SummaryView(EntitySource entitySource, SummaryItem... summaryItems) {
         super(entitySource);
         initialize(true, Arrays.asList(summaryItems));
     }
 
+    /**
+     * Constructs a new summary table having the given summary items in the order they are listed.
+     *
+     * @param entitySource The EntitySource (cannot be null)
+     * @param showCrits When false, the crits column is hidden
+     * @param summaryItems The SummaryItems to show
+     */
     public SummaryView(EntitySource entitySource, boolean showCrits, SummaryItem... summaryItems) {
         super(entitySource);
         initialize(showCrits, Arrays.asList(summaryItems));
     }
 
-    public SummaryView(EntitySource entitySource, List<SummaryItem> summaryItems, boolean showCrits) {
-        super(entitySource);
-        initialize(showCrits, summaryItems);
+    public void refresh() {
+        refresh(getEntity());
     }
 
-    public void initialize(boolean showCrits, List<SummaryItem> getSummaryItems) {
+    // Internals ######################
+
+    private void initialize(boolean showCrits, List<SummaryItem> getSummaryItems) {
 
         summaryItemList.clear();
         summaryItemList.addAll(getSummaryItems);
@@ -100,17 +132,13 @@ public class SummaryView extends IView {
         return label;
     }
 
-    public void setFieldSize(JComponent box, Dimension maxSize){
+    private void setFieldSize(JComponent box, Dimension maxSize){
         box.setPreferredSize(maxSize);
         box.setMaximumSize(maxSize);
         box.setMinimumSize(maxSize);
     }
 
-    public void refresh() {
-        refresh(getEntity());
-    }
-
-    public void refresh(Entity entity) {
+    private void refresh(Entity entity) {
         summaryItemList.forEach(summaryItem -> summaryItem.refresh(entity));
     }
 }
