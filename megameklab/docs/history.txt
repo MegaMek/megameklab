@@ -1,5 +1,7 @@
 MEGAMEKLAB VERSION HISTORY:
 ----------------
+0.49.18-SNAPSHOT
+
 0.49.17 (2023-12-31 1900 UTC)
 + PR #1352 MML interface changes
 
