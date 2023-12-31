@@ -22,6 +22,8 @@ import megamek.common.Entity;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
 
+import java.util.Optional;
+
 public class MyomerEnhancementSummaryItem extends AbstractSummaryItem {
 
     @Override
@@ -31,18 +33,21 @@ public class MyomerEnhancementSummaryItem extends AbstractSummaryItem {
 
     @Override
     public void refresh(Entity entity) {
-        double totalWeight = 0;
-        int totalCrits = 0;
+        Optional<Mounted> enhancement = getEnhancement(entity);
+        if (enhancement.isPresent()) {
+            availabilityLabel.setText(enhancement.get().getType().getFullRatingName(entity.isClan()));
+            weightLabel.setText(formatWeight(enhancement.get().getTonnage(), entity));
+            critLabel.setText(formatCrits(enhancement.get().getCriticals()));
+        }
+    }
 
+    private Optional<Mounted> getEnhancement(Entity entity) {
         for (Mounted m : entity.getMisc()) {
             if (isMyomerEnhancement(m)) {
-                totalWeight = m.getTonnage();
-                totalCrits = m.getCriticals();
-                break;
+                return Optional.of(m);
             }
         }
-        weightLabel.setText(formatWeight(totalWeight, entity));
-        critLabel.setText(formatCrits(totalCrits));
+        return Optional.empty();
     }
 
     private boolean isMyomerEnhancement(Mounted mounted) {
