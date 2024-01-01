@@ -2690,7 +2690,7 @@ public class UnitUtil {
                         && ((unit.getEngine().getEngineType() == Engine.COMBUSTION_ENGINE)
                             || (unit.getEngine().getEngineType() == Engine.FUEL_CELL));
             }
-            if (eq.hasFlag(MiscType.F_ENVIRONMENTAL_SEALING)) {
+            if (eq.hasFlag(MiscType.F_ENVIRONMENTAL_SEALING) || eq.is("Cargo Container (10 tons)")) {
                 return unit.isIndustrial();
             }
 
