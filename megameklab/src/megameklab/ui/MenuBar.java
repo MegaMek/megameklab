@@ -809,7 +809,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         unitLoadingDialog.setVisible(true);
         MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(owner.getFrame(), unitLoadingDialog);
         Entity chosenEntity = viewer.getChosenEntity();
-        if (null != chosenEntity) {
+        if (chosenEntity != null) {
             UnitUtil.showValidation(chosenEntity, owner.getFrame());
         }
         viewer.dispose();
@@ -820,7 +820,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         unitLoadingDialog.setVisible(true);
         MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(owner.getFrame(), unitLoadingDialog);
         Entity chosenEntity = viewer.getChosenEntity();
-        if (null != chosenEntity) {
+        if (chosenEntity != null) {
             new CostDisplayDialog(owner.getFrame(), chosenEntity).setVisible(true);
         }
         viewer.dispose();
@@ -832,7 +832,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(owner.getFrame(), unitLoadingDialog);
 
         Entity chosenEntity = viewer.getChosenEntity();
-        if (null != chosenEntity) {
+        if (chosenEntity != null) {
             UnitUtil.showUnitWeightBreakDown(chosenEntity, owner.getFrame());
         }
         viewer.dispose();

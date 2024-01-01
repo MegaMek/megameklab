@@ -254,7 +254,7 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
         Entity newUnit = viewer.getChosenEntity();
         MechSummary mechSummary = viewer.getChosenMechSummary();
         viewer.dispose();
-        if (mechSummary == null || newUnit == null) {
+        if ((mechSummary == null) || (newUnit == null)) {
             return;
         }
 
