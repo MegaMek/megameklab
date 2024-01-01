@@ -144,9 +144,8 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
         UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(parent);
         unitLoadingDialog.setVisible(true);
         MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(parent, unitLoadingDialog, this::entitySelected);
-
-        viewer.setVisible(false);
         Entity entity = viewer.getChosenEntity();
+        viewer.dispose();
 
         if (entity != null) {
             units.add(entity);

@@ -808,19 +808,22 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(owner.getFrame());
         unitLoadingDialog.setVisible(true);
         MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(owner.getFrame(), unitLoadingDialog);
-
-        Entity tempEntity = viewer.getChosenEntity();
-        if (null == tempEntity) {
-            return;
+        Entity chosenEntity = viewer.getChosenEntity();
+        if (null != chosenEntity) {
+            UnitUtil.showValidation(chosenEntity, owner.getFrame());
         }
-        UnitUtil.showValidation(tempEntity, owner.getFrame());
+        viewer.dispose();
     }
 
     private void jMenuGetUnitBreakdownFromCache_actionPerformed() {
         UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(owner.getFrame());
         unitLoadingDialog.setVisible(true);
         MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(owner.getFrame(), unitLoadingDialog);
-        new CostDisplayDialog(owner.getFrame(), viewer.getChosenEntity()).setVisible(true);
+        Entity chosenEntity = viewer.getChosenEntity();
+        if (null != chosenEntity) {
+            new CostDisplayDialog(owner.getFrame(), chosenEntity).setVisible(true);
+        }
+        viewer.dispose();
     }
 
     private void jMenuGetUnitWeightBreakdownFromCache_actionPerformed() {
@@ -828,11 +831,11 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         unitLoadingDialog.setVisible(true);
         MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(owner.getFrame(), unitLoadingDialog);
 
-        Entity tempEntity = viewer.getChosenEntity();
-        if (null == tempEntity) {
-            return;
+        Entity chosenEntity = viewer.getChosenEntity();
+        if (null != chosenEntity) {
+            UnitUtil.showUnitWeightBreakDown(chosenEntity, owner.getFrame());
         }
-        UnitUtil.showUnitWeightBreakDown(tempEntity, owner.getFrame());
+        viewer.dispose();
     }
 
     private void jMenuGetUnitBVFromFile_actionPerformed() {
