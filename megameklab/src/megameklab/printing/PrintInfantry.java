@@ -99,60 +99,78 @@ public class PrintInfantry extends PrintEntity {
 
         setTextField(TRANSPORT_WT, String.format("%.1f tons", infantry.getWeight()));
 
+        String
+            mode1 = null,
+            mode2 = null,
+            mp1 = null,
+            mp2 = null;
         switch(infantry.getMovementMode()) {
             case INF_JUMP:
-                setTextField(MP_1, formatMovement(infantry.getJumpMP()));
-                setTextField(MODE_1, "Jump");
-                setTextField(MP_2, formatGroundMP(), true);
-                setTextField(MODE_2, "Ground", true);
-                hideElement(MP_2_LABEL, false);
-                hideElement(MODE_2_LABEL, false);
+                mp1 = formatMovement(infantry.getJumpMP());
+                mode1 = "Jump";
+                mp2 = formatGroundMP();
+                mode2 = "Ground";
                 break;
             case INF_UMU:
-                setTextField(MP_1, infantry.getActiveUMUCount());
+                mp1 = formatMovement(infantry.getActiveUMUCount());
                 if (infantry.getOriginalJumpMP() > 1) {
-                    setTextField(MODE_1, "SCUBA (Motorized)");
+                    mode1 = "SCUBA (Motorized)";
                 } else {
-                    setTextField(MODE_1, "SCUBA");
+                    mode1 = "SCUBA";
                 }
-                setTextField(MP_2, formatGroundMP(), true);
-                setTextField(MODE_2, "Ground", true);
-                hideElement(MP_2_LABEL, false);
-                hideElement(MODE_2_LABEL, false);
                 break;
             case HOVER:
-                setTextField(MP_1, formatGroundMP());
-                setTextField(MODE_1, "Mechanized Hover");
+                mp1 = formatGroundMP();
+                mode1 = "Mechanized Hover";
                 break;
             case TRACKED:
-                setTextField(MP_1, formatGroundMP());
-                setTextField(MODE_1, "Mechanized Tracked");
+                mp1 = formatGroundMP();
+                mode1 = "Mechanized Tracked";
                 break;
             case WHEELED:
-                setTextField(MP_1, formatGroundMP());
-                setTextField(MODE_1, "Mechanized Wheeled");
+                mp1 = formatGroundMP();
+                mode1 = "Mechanized Wheeled";
                 break;
             case VTOL:
-                setTextField(MP_1, formatMovement(infantry.getJumpMP()));
+                mp1 = formatMovement(infantry.getJumpMP());
                 if (infantry.hasMicrolite()) {
-                    setTextField(MODE_1, "VTOL (Microlite)");
+                    mode1 = "VTOL (Microlite)";
                 } else {
-                    setTextField(MODE_1, "VTOL (Micro-copter)");
+                    mode1 = "VTOL (Micro-copter)";
                 }
                 break;
             case SUBMARINE:
-                setTextField(MP_1, formatMovement(infantry.getActiveUMUCount()));
-                setTextField(MODE_1, "Mechanized SCUBA");
+                mp1 = formatMovement(infantry.getActiveUMUCount());
+                mode1 = "Mechanized SCUBA";
+                // As of writing, the only time Mechanized SCUBA infantry might have nonzero walk mp is if it is beast-mounted.
+                if (infantry.getOriginalWalkMP() > 0) {
+                    mp2 = formatGroundMP();
+                    mode2 = "Ground";
+                }
                 break;
             case INF_MOTORIZED:
-                setTextField(MP_1, formatMovement(infantry.getWalkMP()));
-                setTextField(MODE_1, "Motorized");
+                mp1 = formatMovement(infantry.getWalkMP());
+                mode1 = "Motorized";
                 break;
             case INF_LEG:
             default:
-                setTextField(MP_1, formatGroundMP());
-                setTextField(MODE_1, "Ground");
+                mp1 = formatGroundMP();
+                mode1 = "Ground";
                 break;
+        }
+
+        // Add name of beast for beast-mounted infantry
+        if (infantry.getMount() != null) {
+            mode1 = String.format("%s [beast: %s]", mode1, infantry.getMount().getName());
+        }
+
+        setTextField(MP_1, mp1);
+        setTextField(MODE_1, mode1);
+        if (mode2 != null) {
+            setTextField(MP_2, mp2, true);
+            setTextField(MODE_2, mode2, true);
+            hideElement(MP_2_LABEL, false);
+            hideElement(MODE_2_LABEL, false);
         }
 
         final String notes = generateNotesText(rangeWeapon);
@@ -189,6 +207,11 @@ public class PrintInfantry extends PrintEntity {
         StringJoiner sj = new StringJoiner(" ");
         if (infantry.hasSpaceSuit()) {
             sj.add("Can operate in vacuum.");
+        }
+        if (infantry.getMount() != null) {
+            if (infantry.getMount().getUWEndurance() > 0) {
+                sj.add(String.format("Must surface every %d turns.", infantry.getMount().getUWEndurance()));
+            }
         }
         int burst = 0;
         if (rangeWeapon.hasFlag(WeaponType.F_INF_BURST) ||
