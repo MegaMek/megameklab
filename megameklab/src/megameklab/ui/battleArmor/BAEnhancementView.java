@@ -46,7 +46,6 @@ public class BAEnhancementView extends BuildView implements ActionListener {
     private final JCheckBox chkMechJumpBooster = new JCheckBox();
     private final JCheckBox chkMyomerBooster = new JCheckBox();
 
-    private ITechManager techManager;
     private boolean ignoreEvents = false;
     
     private final EquipmentType partialWing = EquipmentType.get(EquipmentTypeLookup.BA_PARTIAL_WING);
@@ -55,7 +54,6 @@ public class BAEnhancementView extends BuildView implements ActionListener {
     private final EquipmentType myomerBooster = EquipmentType.get(EquipmentTypeLookup.BA_MYOMER_BOOSTER);
 
     public BAEnhancementView(ITechManager techManager) {
-        this.techManager = techManager;
         initUI();
     }
     
@@ -93,53 +91,12 @@ public class BAEnhancementView extends BuildView implements ActionListener {
     }
     
     public void setFromEntity(BattleArmor ba) {
-        if ((ba.getMovementMode() == EntityMovementMode.INF_JUMP)
-                && (ba.getOriginalJumpMP() > 0)
-                && !ba.hasWorkingMisc(MiscType.F_JUMP_BOOSTER)
-                && techManager.isLegal(partialWing)) {
-            chkPartialWing.setEnabled(true);
             ignoreEvents = true;
             chkPartialWing.setSelected(ba.hasWorkingMisc(MiscType.F_PARTIAL_WING));
-            ignoreEvents = false;
-        } else {
-            chkPartialWing.setEnabled(false);
-            chkPartialWing.setSelected(false);
-        }
-        
-        if ((ba.getMovementMode() == EntityMovementMode.INF_JUMP)
-                && (ba.getOriginalJumpMP() > 0)
-                && !ba.hasWorkingMisc(MiscType.F_PARTIAL_WING)
-                && techManager.isLegal(jumpBooster)) {
-            chkJumpBooster.setEnabled(true);
-            ignoreEvents = true;
             chkJumpBooster.setSelected(ba.hasWorkingMisc(MiscType.F_JUMP_BOOSTER));
-            ignoreEvents = false;
-        } else {
-            chkJumpBooster.setEnabled(false);
-            chkJumpBooster.setSelected(false);
-        }
-        
-        if (techManager.isLegal(mechJumpBooster)
-                && !ba.hasWorkingMisc(MiscType.F_MASC)) {
-            chkMechJumpBooster.setEnabled(true);
-            ignoreEvents = true;
             chkMechJumpBooster.setSelected(ba.hasWorkingMisc(MiscType.F_MECHANICAL_JUMP_BOOSTER));
-            ignoreEvents = false;
-        } else {
-            chkMechJumpBooster.setEnabled(false);
-            chkMechJumpBooster.setSelected(false);
-        }
-        
-        if (techManager.isLegal(myomerBooster)
-                && !ba.hasWorkingMisc(MiscType.F_MECHANICAL_JUMP_BOOSTER)) {
-            chkMyomerBooster.setEnabled(true);
-            ignoreEvents = true;
             chkMyomerBooster.setSelected(ba.hasWorkingMisc(MiscType.F_MASC));
             ignoreEvents = false;
-        } else {
-            chkMyomerBooster.setEnabled(false);
-            chkMyomerBooster.setSelected(false);
-        }
     }
     
     @Override
