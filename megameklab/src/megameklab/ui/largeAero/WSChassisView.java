@@ -65,8 +65,9 @@ public class WSChassisView extends BuildView implements ActionListener, ChangeLi
     final private JCheckBox chkSail = new JCheckBox();
     final private JCheckBox chkMilitary = new JCheckBox();
     final private JSpinner spnSI = new JSpinner(spnSIModel);
+    final private ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
 
-    private ITechManager techManager;
+    private final ITechManager techManager;
     private int baseType;
     private int maxTonnage;
     private int minTonnage;
@@ -80,7 +81,6 @@ public class WSChassisView extends BuildView implements ActionListener, ChangeLi
     }
     
     public void initUI() {
-        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         cbBaseType.setModel(new DefaultComboBoxModel<>(resourceMap.getString("AdvAeroChassisView.cbBaseType.values").split(",")));
@@ -252,8 +252,20 @@ public class WSChassisView extends BuildView implements ActionListener, ChangeLi
         chkLFBattery.setVisible((baseType != TYPE_STATION)
                 && techManager.isLegal(Jumpship.getLFBatteryTA()));
         chkMilitary.setVisible((baseType == TYPE_STATION));
+        if (baseType == TYPE_STATION) {
+            if ((getTonnage() <= SpaceStation.MODULAR_MININUM_WEIGHT)
+                    && techManager.isLegal(SpaceStation.getKFAdapterTA())) {
+                chkModular.setText(resourceMap.getString("AdvAeroChassisView.chkKFAdapter.text"));
+                chkModular.setToolTipText(resourceMap.getString("AdvAeroChassisView.chkKFAdapter.tooltip"));
+            } else if ((getTonnage() > SpaceStation.MODULAR_MININUM_WEIGHT)
+                    && techManager.isLegal(SpaceStation.getModularTA())) {
+                chkModular.setText(resourceMap.getString("AdvAeroChassisView.chkModular.text"));
+                chkModular.setToolTipText(resourceMap.getString("AdvAeroChassisView.chkModular.tooltip"));
+            }
+        }
         chkModular.setVisible((baseType == TYPE_STATION)
-                && techManager.isLegal(SpaceStation.getModularTA()));
+                && techManager.isLegal(getTonnage() <= 100000.0 ?
+                SpaceStation.getKFAdapterTA() : SpaceStation.getModularTA()));
     }
 
     private void refreshTonnage() {
