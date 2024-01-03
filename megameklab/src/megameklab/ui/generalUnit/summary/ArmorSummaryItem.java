@@ -19,7 +19,9 @@
 package megameklab.ui.generalUnit.summary;
 
 import megamek.common.*;
+import megamek.common.verifier.TestAero;
 import megamek.common.verifier.TestEntity;
+import megamek.common.verifier.TestSmallCraft;
 import megamek.common.verifier.TestSupportVehicle;
 import megameklab.util.UnitUtil;
 
@@ -58,6 +60,8 @@ public class ArmorSummaryItem extends AbstractSummaryItem {
             }
         } else if (entity instanceof Tank) {
             critLabel.setText(formatCrits(getTankArmorCrits(entity)));
+        } else if (entity instanceof AeroSpaceFighter) {
+            critLabel.setText(getFighterCrits(entity));
         }
 
         if (entity.hasPatchworkArmor()) {
@@ -101,5 +105,29 @@ public class ArmorSummaryItem extends AbstractSummaryItem {
         }
 
         return usedSlots;
+    }
+
+    private String getFighterCrits(Entity entity) {
+        if (entity.hasPatchworkArmor()) {
+            int slots = 0;
+            for (int loc = 0; loc < Aero.LOC_WINGS; loc++) {
+                TestAero.AeroArmor aeroArmor = getArmorType(entity, loc);
+                if (aeroArmor == null) {
+                    return "?";
+                }
+                slots += aeroArmor.patchworkSpace;
+            }
+            return formatCrits(slots);
+        } else {
+            TestAero.AeroArmor aeroArmor = getArmorType(entity, Aero.LOC_NOSE);
+            if (aeroArmor == null) {
+                return "?";
+            }
+            return formatCrits(aeroArmor.space);
+        }
+    }
+
+    private TestAero.AeroArmor getArmorType(Entity entity, int location) {
+        return TestAero.AeroArmor.getArmor(entity.getArmorType(location), entity.isClanArmor(location));
     }
 }
