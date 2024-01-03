@@ -212,7 +212,7 @@ public class WSChassisView extends BuildView implements ActionListener, ChangeLi
         chkMilitary.addActionListener(this);
         chkModular.removeActionListener(this);
         chkModular.setSelected(craft.hasETypeFlag(Entity.ETYPE_SPACE_STATION)
-                && ((SpaceStation) craft).isModular());
+                && ((SpaceStation) craft).isModularOrKFAdapter());
         chkModular.addActionListener(this);
         
         
