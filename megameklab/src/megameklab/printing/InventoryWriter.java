@@ -880,7 +880,18 @@ public class InventoryWriter {
                 for (int i = 0; i < bays.size(); i++) {
                     Bay b = bays.get(i);
                     bayTypeString.append(b.getType());
-                    bayCapacityString.append(NumberFormat.getInstance().format(b.getCapacity()));
+                    // BA bays are shown per suit rather than squad
+                    double capacity = b.getCapacity();
+                    if (b instanceof BattleArmorBay) {
+                        if (((BattleArmorBay) b).isClan()) {
+                            capacity *= 5;
+                        } else if (((BattleArmorBay) b).isComStar()) {
+                            capacity *= 6;
+                        } else {
+                            capacity *= 4;
+                        }
+                    }
+                    bayCapacityString.append(NumberFormat.getInstance().format(capacity));
                     if ((i + 1) < bays.size()) {
                         bayTypeString.append("/");
                         bayCapacityString.append("/");
