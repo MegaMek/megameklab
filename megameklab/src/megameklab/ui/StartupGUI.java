@@ -23,6 +23,7 @@ import megamek.client.ui.swing.widget.SkinXMLHandler;
 import megamek.client.ui.swing.widget.SkinnedJPanel;
 import megamek.common.Configuration;
 import megamek.common.Entity;
+import megamek.common.MechSummary;
 import megameklab.MMLConstants;
 import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
 import megameklab.ui.dialog.UiLoader;
@@ -251,16 +252,20 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
         unitLoadingDialog.setVisible(true);
         MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(previousFrame.getFrame(), unitLoadingDialog);
         Entity newUnit = viewer.getChosenEntity();
+        MechSummary mechSummary = viewer.getChosenMechSummary();
+        viewer.dispose();
+        if ((mechSummary == null) || (newUnit == null)) {
+            return;
+        }
+
         String fileName = viewer.getChosenMechSummary().getSourceFile().toString();
         if (fileName.toLowerCase().endsWith(".zip")) {
             fileName = viewer.getChosenMechSummary().getSourceFile().getAbsolutePath();
             fileName = fileName.substring(0, fileName.lastIndexOf(File.separatorChar) + 1);
             fileName = fileName + MenuBar.createUnitFilename(newUnit);
         }
-        viewer.setVisible(false);
-        viewer.dispose();
 
-        if ((newUnit == null) || !previousFrame.safetyPrompt()) {
+        if (!previousFrame.safetyPrompt()) {
             return;
         }
 
