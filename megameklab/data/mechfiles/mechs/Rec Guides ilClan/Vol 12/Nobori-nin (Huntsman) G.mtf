@@ -1,13 +1,16 @@
-Version:1.1
-Nobori-nin (Huntsman)
-G
+chassis:Nobori-nin (Huntsman)
+model:G
 mul id:7783
 
 Config:Biped Omnimech
 techbase:Mixed (Clan Chassis)
 era:3139
 rules level:2
-source:Rec Guide:ilClan #12 - Dark Age
+role:Skirmisher
+source:Rec Guide:ilClan #12
+
+quirk:stable
+
 
 mass:50
 engine:250 XL (Clan) Engine

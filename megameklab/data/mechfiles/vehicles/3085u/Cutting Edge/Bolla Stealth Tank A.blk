@@ -32,15 +32,16 @@ A
 IS Level 4
 </type>
 
+<role>
+Sniper
+</role>
+
 <motion_type>
 Wheeled
 </motion_type>
 
 <transporters>
 troopspace:4.0
-</transporters>
-
-<transporters>
 BattleArmorHandles - troopers:-1
 </transporters>
 
@@ -104,7 +105,7 @@ ISTAG:OMNI
 </Turret Equipment>
 
 <source>
-Dark Age
+TRO: 3085
 </source>
 
 <tonnage>

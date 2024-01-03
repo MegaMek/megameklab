@@ -1,13 +1,19 @@
-Version:1.0
-Naga
-Prime
+chassis:Naga
+model:Prime
 mul id:2251
 
 Config:Biped Omnimech
 TechBase:Clan
 Era:2945
-Source:TRO 3055 - Succession Wars
+Source:TRO: 3055
 Rules Level:3
+role:Missile Boat
+
+
+quirk:ext_twist
+quirk:bad_rep_clan
+quirk:no_arms
+
 
 Mass:80
 Engine:400 XL (Clan) Engine(IS)

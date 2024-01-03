@@ -65,7 +65,7 @@ public enum EquipmentDatabaseCategory {
             e -> (e instanceof Tank) || e.isSupportVehicle()),
 
     AMMO ("Ammo",
-            (eq, en) -> (eq instanceof AmmoType) && !(eq instanceof BombType),
+            (eq, en) -> (eq instanceof AmmoType) && !(eq instanceof BombType) && !eq.is(COOLANT_POD),
             e -> e.getWeightClass() != EntityWeightClass.WEIGHT_SMALL_SUPPORT),
 
     OTHER ("Other",
@@ -88,9 +88,9 @@ public enum EquipmentDatabaseCategory {
                     && !(eq.hasFlag(F_PARTIAL_WING) && en.hasETypeFlag(Entity.ETYPE_PROTOMECH))
                     && !(eq.hasFlag(F_SPONSON_TURRET) && en.isSupportVehicle())
                     && !eq.hasFlag(F_PINTLE_TURRET))
+                    || eq.is(COOLANT_POD)
                     || eq.is(BattleArmor.MINE_LAUNCHER)
                     || (eq instanceof TAGWeapon)
-                    || ((eq instanceof AmmoType) && (((AmmoType) eq).getAmmoType() == AmmoType.T_COOLANT_POD))
                     || eq.hasFlag(F_AMS)),
 
     AP ("Anti-Personnel",
@@ -115,7 +115,7 @@ public enum EquipmentDatabaseCategory {
     // TODO: Provide MM.ITechManager.isLegal in static form
 
     UNUSABLE_AMMO("Ammo w/o Weapon",
-            (eq, en) -> (eq instanceof AmmoType) && !(eq instanceof BombType)
+            (eq, en) -> (eq instanceof AmmoType) && !(eq instanceof BombType) && !eq.is(COOLANT_POD)
                     && !UnitUtil.canUseAmmo(en, (AmmoType) eq, false))
     ;
 

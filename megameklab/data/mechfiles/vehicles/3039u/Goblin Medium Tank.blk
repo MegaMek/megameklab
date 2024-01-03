@@ -32,6 +32,10 @@ Goblin Medium Tank
 IS Level 1
 </type>
 
+<role>
+Brawler
+</role>
+
 <motion_type>
 Tracked
 </motion_type>
@@ -78,7 +82,7 @@ Large Laser
 </Turret Equipment>
 
 <source>
-TRO 3039 - Age of War
+TRO: 3039
 </source>
 
 <tonnage>

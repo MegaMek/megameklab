@@ -17,6 +17,7 @@ import megamek.common.*;
 import megameklab.printing.PrintEntity;
 import megameklab.printing.PrintRecordSheet;
 import megameklab.util.CConfig;
+import megameklab.util.RSScale;
 import org.apache.batik.util.SVGConstants;
 
 /**
@@ -91,7 +92,7 @@ public class GroundToHitMods extends ReferenceTable {
     private void addTerrainMods() {
         addRow(bundle.getString("terrain"), "", "");
         String hexName;
-        if (CConfig.scaleUnits().equals(CConfig.RSScale.HEXES)) {
+        if (CConfig.scaleUnits().equals(RSScale.HEXES)) {
             hexName = "hex";
         } else {
             hexName = CConfig.getIntParam(CConfig.RS_SCALE_FACTOR)
@@ -104,7 +105,7 @@ public class GroundToHitMods extends ReferenceTable {
 
     private void addTargetMods() {
         addRow(bundle.getString("target"), "", "");
-        if (CConfig.scaleUnits().equals(CConfig.RSScale.HEXES)) {
+        if (CConfig.scaleUnits().equals(RSScale.HEXES)) {
             addRow("", bundle.getString("proneAdjacent"), "-2");
         } else {
             addRow("", bundle.getString("proneBasesToBase"), "-2");

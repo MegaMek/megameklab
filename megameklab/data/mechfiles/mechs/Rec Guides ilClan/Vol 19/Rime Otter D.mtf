@@ -1,13 +1,18 @@
-Version:1.0
-Rime Otter
-D
+chassis:Rime Otter
+model:D
 mul id:8313
 
 Config:Biped Omnimech
 techbase:Clan
 era:3146
-source:Rec Guide:ilClan #19 - Dark Age
+source:Rec Guide:ilClan #19
 rules level:2
+role:Scout
+
+quirk:imp_sensors
+quirk:rugged_1
+quirk:difficult_maintain
+
 
 mass:55
 engine:275 XL (Clan) Engine(IS)
@@ -61,8 +66,8 @@ Lower Arm Actuator
 Hand Actuator
 CLSRM6 (OMNIPOD)
 CLNarcBeacon (OMNIPOD)
-ISNarc Pods (OMNIPOD)
-ISNarc Pods (OMNIPOD)
+CLNarc Pods (OMNIPOD)
+CLNarc Pods (OMNIPOD)
 Clan Ammo SRM-6 (OMNIPOD)
 CLLightTAG (OMNIPOD)
 -Empty-

@@ -1,13 +1,20 @@
-Version:1.0
-Hatamoto-Kaze
-HTM-27V
+chassis:Hatamoto-Kaze
+model:HTM-27V
 mul id:1407
 
 Config:Biped
 TechBase:Inner Sphere
 Era:3048
-Source:TRO 3050 - Succession Wars
+Source:TRO: 3050
 Rules Level:2
+role:Sniper
+
+
+
+
+quirk:barrel_fists_la
+quirk:easy_maintain
+
 
 Mass:80
 Engine:320 Fusion Engine

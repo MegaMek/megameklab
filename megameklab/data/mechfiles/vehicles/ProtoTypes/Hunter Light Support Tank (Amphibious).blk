@@ -32,6 +32,10 @@ Hunter Light Support Tank
 IS Level 4
 </type>
 
+<role>
+Missile Boat
+</role>
+
 <motion_type>
 Tracked
 </motion_type>
@@ -86,9 +90,18 @@ Enhanced LRM 10
 </Turret Equipment>
 
 <source>
-TRO:Prototypes
+TRO: Prototypes
 </source>
 
 <tonnage>
 35.0
 </tonnage>
+
+<quirks>
+gas_hog
+</quirks>
+
+<weaponQuirks>
+accurate:FR:0:ISLRT10
+accurate:TU:0:ISEnhancedLRM10
+</weaponQuirks>

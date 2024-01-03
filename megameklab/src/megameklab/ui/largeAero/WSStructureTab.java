@@ -413,7 +413,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
     @Override
     public void modularChanged(boolean modular) {
         if (getJumpship() instanceof SpaceStation) {
-            ((SpaceStation) getJumpship()).setModular(modular);
+            ((SpaceStation) getJumpship()).setModularOrKFAdapter(modular);
         }
         refresh.refreshPreview();
         refresh.refreshStatus();

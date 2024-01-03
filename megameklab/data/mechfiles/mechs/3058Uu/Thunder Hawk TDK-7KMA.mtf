@@ -1,13 +1,21 @@
-Version:1.0
-Thunder Hawk
-TDK-7KMA
+chassis:Thunder Hawk
+model:TDK-7KMA
 mul id:3220
 
 Config:Biped
 TechBase:Inner Sphere
 Era:3059
-Source:TRO 3058 - Clan Invasion
+Source:TRO: 3058
 Rules Level:3
+role:Missile Boat
+
+
+
+quirk:command_mech
+quirk:good_rep_1
+quirk:variable_range_long
+quirk:difficult_maintain
+
 
 Mass:100
 Engine:300 XL Engine

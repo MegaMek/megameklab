@@ -1,13 +1,18 @@
-Version:1.0
-Spartan
-SPT-N2
+chassis:Spartan
+model:SPT-N2
 mul id:2995
 
 Config:Biped
 TechBase:Inner Sphere
 Era:2765
-Source:TRO 3058 - Star League
+Source:TRO: 3058
 Rules Level:2
+role:Skirmisher
+
+
+
+quirk:imp_sensors
+
 
 Mass:80
 Engine:400 XL Engine

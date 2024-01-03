@@ -37,12 +37,12 @@ public class ColorSettingsPanel extends JPanel {
     private final Map<String, String> allColors = new HashMap<>();
 
     ColorSettingsPanel() {
-        addColorRow(CConfig.COLOR_WEAPONS);
-        addColorRow(CConfig.COLOR_EQUIPMENT);
-        addColorRow(CConfig.COLOR_AMMO);
-        addColorRow(CConfig.COLOR_SYSTEMS);
-        addColorRow(CConfig.COLOR_NONHITTABLE);
-        addColorRow(CConfig.COLOR_EMPTY);
+        addColorRow(CConfig.GUI_COLOR_WEAPONS);
+        addColorRow(CConfig.GUI_COLOR_EQUIPMENT);
+        addColorRow(CConfig.GUI_COLOR_AMMO);
+        addColorRow(CConfig.GUI_COLOR_SYSTEMS);
+        addColorRow(CConfig.GUI_COLOR_NONHITTABLE);
+        addColorRow(CConfig.GUI_COLOR_EMPTY);
         SpringUtilities.makeCompactGrid(gridPanel, 6, 4, 0, 0, 15, 10);
         setLayout(new FlowLayout(FlowLayout.LEFT));
         setBorder(new EmptyBorder(20, 30, 20, 30));
@@ -61,11 +61,11 @@ public class ColorSettingsPanel extends JPanel {
 
         JButton foregroundButton = new JButton("Foreground");
         foregroundButton.addActionListener(e ->
-                callColorChooser(colorType, CConfig.CONFIG_FOREGROUND, coloredExample));
+                callColorChooser(colorType, CConfig.GUI_FOREGROUND, coloredExample));
 
         JButton backgroundButton = new JButton("Background");
         backgroundButton.addActionListener(e ->
-                callColorChooser(colorType, CConfig.CONFIG_BACKGROUND, coloredExample));
+                callColorChooser(colorType, CConfig.GUI_BACKGROUND, coloredExample));
 
         gridPanel.add(typeLabel);
         gridPanel.add(foregroundButton);
@@ -75,15 +75,15 @@ public class ColorSettingsPanel extends JPanel {
 
     private String exampleText(String colorType) {
         switch (colorType) {
-            case CConfig.COLOR_WEAPONS:
+            case CConfig.GUI_COLOR_WEAPONS:
                 return "Medium Pulse Laser";
-            case CConfig.COLOR_EQUIPMENT:
+            case CConfig.GUI_COLOR_EQUIPMENT:
                 return "Heat Sink";
-            case CConfig.COLOR_AMMO:
+            case CConfig.GUI_COLOR_AMMO:
                 return "AC/5 Ammo";
-            case CConfig.COLOR_SYSTEMS:
+            case CConfig.GUI_COLOR_SYSTEMS:
                 return "XL Engine";
-            case CConfig.COLOR_NONHITTABLE:
+            case CConfig.GUI_COLOR_NONHITTABLE:
                 return "Endo Steel";
             default:
                 return CritCellUtil.EMPTY_CRITCELL_TEXT;
@@ -91,10 +91,10 @@ public class ColorSettingsPanel extends JPanel {
     }
 
     private void callColorChooser(String type, String fgOrBg, JLabel exampleLabel) {
-        Color preset = fgOrBg.equals(CConfig.CONFIG_BACKGROUND) ? exampleLabel.getBackground() : exampleLabel.getForeground();
+        Color preset = fgOrBg.equals(CConfig.GUI_BACKGROUND) ? exampleLabel.getBackground() : exampleLabel.getForeground();
         Color newColor = JColorChooser.showDialog(this, "Choose a color", preset);
         if (newColor != null) {
-            if (fgOrBg.equals(CConfig.CONFIG_BACKGROUND)) {
+            if (fgOrBg.equals(CConfig.GUI_BACKGROUND)) {
                 exampleLabel.setBackground(newColor);
             } else {
                 exampleLabel.setForeground(newColor);

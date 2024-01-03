@@ -1,13 +1,17 @@
-Version:1.0
-Gyrfalcon
-4
+chassis:Gyrfalcon
+model:4
 mul id:6269
 
 Config:Biped
 TechBase:Mixed (Clan Chassis)
 Era:3112
-Source:TRO 3145 The Clans - Late Republic
+Source:TRO: 3145 The Clans
 Rules Level:4
+role:Skirmisher
+
+quirk:distracting
+quirk:reinforced_legs
+
 
 Mass:55
 Engine:275 XL (Clan) Engine

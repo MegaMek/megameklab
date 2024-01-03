@@ -1,13 +1,17 @@
-Version:1.0
-Gyrfalcon
-5
+chassis:Gyrfalcon
+model:5
 mul id:7694
 
 Config:Biped
 techbase:Clan
 era:3133
-source:Shrapnel 2 - Late Republic
+source:Shrapnel #2
 rules level:3
+role:Skirmisher
+
+quirk:distracting
+quirk:reinforced_legs
+
 
 mass:55
 engine:275 XL (Clan) Engine(IS)

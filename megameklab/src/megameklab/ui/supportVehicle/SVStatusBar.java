@@ -58,7 +58,7 @@ class SVStatusBar extends StatusBar {
         TestSupportVehicle testEntity = (TestSupportVehicle) getTestEntity();
         final int totalSlots = testEntity.totalSlotCount();
         final int currentSlots = testEntity.occupiedSlotCount();
-        slots.setText(String.format(SLOTS_LABEL, currentSlots, totalSlots));
+        slots.setText(String.format(SLOTS_LABEL, totalSlots - currentSlots, totalSlots));
         slots.setForeground(currentSlots > totalSlots ? GUIPreferences.getInstance().getWarningColor() : null);
     }
 }

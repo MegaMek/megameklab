@@ -42,10 +42,8 @@ public class ASMainUI extends MegaMekLabMainUI {
     private FloatingEquipmentDatabaseDialog floatingEquipmentDatabase;
 
     public ASMainUI(boolean primitive) {
-
         super();
         createNewUnit(Entity.ETYPE_AERO, primitive);
-        setTitle(getEntity().getChassis() + " " + getEntity().getModel() + ".blk");
         finishSetup();
     }
 
@@ -161,7 +159,6 @@ public class ASMainUI extends MegaMekLabMainUI {
     @Override
     public void refreshEquipment() {
         equipmentTab.refresh();
-
     }
 
     @Override
@@ -176,14 +173,6 @@ public class ASMainUI extends MegaMekLabMainUI {
     }
 
     @Override
-    public void refreshHeader() {
-
-        String title = getEntity().getChassis() + " " + getEntity().getModel() + ".blk";
-        setTitle(title);
-
-    }
-
-    @Override
     public void refreshStatus() {
         statusbar.refresh();
     }
@@ -194,8 +183,7 @@ public class ASMainUI extends MegaMekLabMainUI {
     }
 
     @Override
-    public void refreshWeapons() {
-    }
+    public void refreshWeapons() { }
     
     @Override
     public void refreshSummary() {
@@ -216,13 +204,4 @@ public class ASMainUI extends MegaMekLabMainUI {
     public JDialog getFloatingEquipmentDatabase() {
         return floatingEquipmentDatabase;
     }
-
-    @Override
-    public void setVisible(boolean b) {
-        super.setVisible(b);
-        if (!b && (floatingEquipmentDatabase != null)) {
-            floatingEquipmentDatabase.setVisible(false);
-        }
-    }
-
 }

@@ -1,13 +1,21 @@
-Version:1.1
-Hatamoto-Kaeru
-HTM-35X
+chassis:Hatamoto-Kaeru
+model:HTM-35X
 mul id:1406
 
 Config:Biped
 TechBase:Inner Sphere
 Era:3075
-Source:XTRO Kurita - Jihad
+Source:XTR: Kurita
 Rules Level:4
+role:Brawler
+
+
+
+
+quirk:multi_trac
+quirk:difficult_maintain
+quirk:non_standard
+
 
 Mass:80
 Engine:320 XL Fusion Engine

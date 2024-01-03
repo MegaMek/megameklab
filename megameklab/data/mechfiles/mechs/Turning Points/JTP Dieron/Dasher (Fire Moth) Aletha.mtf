@@ -1,12 +1,17 @@
-Version:1.0
-Dasher (Fire Moth)
-(Aletha)
+chassis:Dasher (Fire Moth)
+model:(Aletha)
 mul id:837
 
 Config:Biped Omnimech
 TechBase:Clan
 Era:3068
 Rules Level:2
+role:Striker
+source:Jihad Turning Points: Dieron
+
+quirk:low_profile
+quirk:overhead_arms
+
 
 Mass:20
 Engine:200 XL (Clan) Engine(IS)

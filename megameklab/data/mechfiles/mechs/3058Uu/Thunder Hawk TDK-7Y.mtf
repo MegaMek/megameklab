@@ -1,13 +1,21 @@
-Version:1.0
-Thunder Hawk
-TDK-7Y
+chassis:Thunder Hawk
+model:TDK-7Y
 mul id:3223
 
 Config:Biped
 TechBase:Inner Sphere
 Era:3058
-Source:TRO 3058 - Clan Invasion
+Source:TRO: 3058
 Rules Level:2
+role:Sniper
+
+
+
+quirk:command_mech
+quirk:good_rep_1
+quirk:variable_range_long
+quirk:difficult_maintain
+
 
 Mass:100
 Engine:300 XL Engine

@@ -23,6 +23,7 @@ import megamek.common.verifier.TestAero;
 import megamek.common.verifier.TestBattleArmor;
 import megamek.common.weapons.infantry.InfantryWeapon;
 import megameklab.ui.EntitySource;
+import megameklab.ui.PopupMessages;
 import megameklab.util.UnitUtil;
 import org.apache.logging.log4j.LogManager;
 
@@ -189,11 +190,7 @@ public class BAASCriticalTransferHandler extends AbstractCriticalTransferHandler
                 }
 
                 if (!UnitUtil.isValidLocation(getUnit(), eq.getType(), location)) {
-                    JOptionPane.showMessageDialog(null, eq.getName() +
-                            " can't be placed in " +
-                            getUnit().getLocationName(location) + "!",
-                            "Invalid Location",
-                            JOptionPane.INFORMATION_MESSAGE);
+                    PopupMessages.showInvalidLocationInfo(null, eq.getName(), getUnit().getLocationName(location));
                     return false;
                 }
                 
@@ -203,8 +200,7 @@ public class BAASCriticalTransferHandler extends AbstractCriticalTransferHandler
                     return addEquipmentBA((BattleArmor) getUnit(), eq, trooper);
                 }
             } catch (LocationFullException lfe) {
-                JOptionPane.showMessageDialog(null, lfe.getMessage(), 
-                        "Location Full", JOptionPane.INFORMATION_MESSAGE);
+                PopupMessages.showLocationFullError(null);
                 return false;
             } catch (Exception ex) {
                 LogManager.getLogger().error("", ex);

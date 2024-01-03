@@ -46,6 +46,10 @@ ISNarc Pods
 <type>
 IS Level 2
 </type>
+
+<role>
+Missile Boat
+</role>
 <year>
 3053
 </year>
@@ -62,5 +66,5 @@ IS Level 2
 Wheeled
 </motion_type>
 <source>
-Clan Invasion
+TRO: 3058
 </source>

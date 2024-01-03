@@ -36,6 +36,10 @@ Lexan Surveillance VTOL
 IS Level 3
 </type>
 
+<role>
+Scout
+</role>
+
 <motion_type>
 VTOL
 </motion_type>
@@ -103,7 +107,7 @@ ISReconCamera
 </armor_tech_rating>
 
 <source>
-TRO:Prototypes
+TRO: Prototypes
 </source>
 
 <tonnage>
@@ -113,3 +117,10 @@ TRO:Prototypes
 <fuel>
 0.0
 </fuel>
+
+<quirks>
+bad_rep_is
+vtol_rotor_dual
+imp_sensors
+</quirks>
+

@@ -49,6 +49,10 @@ ISLightMG Ammo (100)
 <type>
 IS Level 2
 </type>
+
+<role>
+Striker
+</role>
 <year>
 3077
 </year>
@@ -65,5 +69,5 @@ IS Level 2
 Wheeled
 </motion_type>
 <source>
-TRO3085
+TRO: 3085
 </source>

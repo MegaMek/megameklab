@@ -18,14 +18,16 @@ package megameklab;
 
 import megamek.MegaMek;
 import megamek.client.ui.preferences.SuitePreferences;
-import megamek.common.EquipmentType;
-import megamek.common.MechSummaryCache;
+import megamek.common.*;
+import megameklab.ui.PopupMessages;
 import megameklab.ui.StartupGUI;
+import megameklab.ui.dialog.UiLoader;
 import megameklab.util.CConfig;
 import megameklab.util.UnitUtil;
 import org.apache.logging.log4j.LogManager;
 
 import javax.swing.*;
+import java.io.File;
 import java.util.Locale;
 
 public class MegaMekLab {
@@ -36,20 +38,14 @@ public class MegaMekLab {
         // First, create a global default exception handler
         Thread.setDefaultUncaughtExceptionHandler((thread, t) -> {
             LogManager.getLogger().error("Uncaught Exception Detected", t);
-            final String name = t.getClass().getName();
-            JOptionPane.showMessageDialog(null,
-                    String.format("Uncaught %s detected. Please open up an issue containing all logs and the current unit file at https://github.com/MegaMek/megameklab/issues", name),
-                    "Uncaught " + name, JOptionPane.ERROR_MESSAGE);
+            PopupMessages.showUncaughtException(null, t);
         });
 
-        // Second, let's handle logging
         MegaMek.initializeLogging(MMLConstants.PROJECT_NAME);
         MegaMekLab.initializeLogging(MMLConstants.PROJECT_NAME);
-
-        // Third, let's handle suite graphical setup initialization
         MegaMek.initializeSuiteGraphicalSetups(MMLConstants.PROJECT_NAME);
-
-        // Finally, let's handle startup
+        ToolTipManager.sharedInstance().setDismissDelay(1000000);
+        ToolTipManager.sharedInstance().setReshowDelay(50);
         startup();
     }
 
@@ -80,13 +76,49 @@ public class MegaMekLab {
         setLookAndFeel();
 
         // Create a startup frame and display it
-        StartupGUI sud = new StartupGUI();
-        sud.setVisible(true);
+        switch (CConfig.getStartUpType()) {
+            case NEW_MEK:
+                UiLoader.loadUi(Entity.ETYPE_MECH, false, false);
+                break;
+            case NEW_TANK:
+                UiLoader.loadUi(Entity.ETYPE_TANK, false, false);
+                break;
+            case NEW_FIGHTER:
+                UiLoader.loadUi(Entity.ETYPE_AERO, false, false);
+                break;
+            case NEW_DROPSHIP:
+                UiLoader.loadUi(Entity.ETYPE_DROPSHIP, false, false);
+                break;
+            case NEW_PROTOMEK:
+                UiLoader.loadUi(Entity.ETYPE_PROTOMECH, false, false);
+                break;
+            case NEW_JUMPSHIP:
+                UiLoader.loadUi(Entity.ETYPE_JUMPSHIP, false, false);
+                break;
+            case NEW_SUPPORTVEE:
+                UiLoader.loadUi(Entity.ETYPE_SUPPORT_TANK, false, false);
+                break;
+            case NEW_BATTLEARMOR:
+                UiLoader.loadUi(Entity.ETYPE_BATTLEARMOR, false, false);
+                break;
+            case NEW_CONVINFANTRY:
+                UiLoader.loadUi(Entity.ETYPE_INFANTRY, false, false);
+                break;
+            case RECENT_UNIT:
+                if (loadMostRecentUnit()) {
+                    return;
+                }
+                // intentional fall through when loading the most recent unit doesn't work
+            default:
+            case SPLASH_SCREEN:
+                new StartupGUI().setVisible(true);
+                break;
+        }
     }
 
     private static void setLookAndFeel() {
         try {
-            String plaf = CConfig.getParam(CConfig.CONFIG_PLAF, UIManager.getSystemLookAndFeelClassName());
+            String plaf = CConfig.getParam(CConfig.GUI_PLAF, UIManager.getSystemLookAndFeelClassName());
             UIManager.setLookAndFeel(plaf);
         } catch (Exception ex) {
             LogManager.getLogger().error("", ex);
@@ -100,4 +132,41 @@ public class MegaMekLab {
     public static MMLOptions getMMLOptions() {
         return mmlOptions;
     }
+
+    /**
+     * Tries loading the most recent unit. Returns true when successful, false when no such
+     * unit could be found or the unit doesn't load.
+     *
+     * @return True when the most recent unit is successfully loaded
+     */
+    private static boolean loadMostRecentUnit() {
+        String mostRecentName = CConfig.getRecentFile(1);
+        if (mostRecentName.isBlank()) {
+            PopupMessages.showNoMostRecentUnitError(null);
+            return false;
+        }
+
+        File unitFile = new File(mostRecentName);
+        if (!unitFile.isFile()) {
+            PopupMessages.showMostRecentUnitMissingError(null);
+            return false;
+        }
+
+        try {
+            Entity recentUnit = new MechFileParser(unitFile).getEntity();
+            if (recentUnit == null) {
+                return false;
+            } else if (!UnitUtil.validateUnit(recentUnit).isBlank()) {
+                PopupMessages.showUnitInvalidWarning(null, UnitUtil.validateUnit(recentUnit));
+            }
+
+            UiLoader.loadUi(recentUnit, unitFile.toString());
+            return true;
+        } catch (Exception ex) {
+            PopupMessages.showFileReadError(null, unitFile.toString(), ex.getMessage());
+            return false;
+        }
+    }
+
+    private MegaMekLab() { }
 }

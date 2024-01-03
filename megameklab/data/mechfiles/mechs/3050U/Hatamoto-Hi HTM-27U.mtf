@@ -1,13 +1,19 @@
-Version:1.0
-Hatamoto-Hi
-HTM-27U
+chassis:Hatamoto-Hi
+model:HTM-27U
 mul id:1403
 
 Config:Biped
 TechBase:Inner Sphere
 Era:3047
-Source:TRO 3050 - Succession Wars
+Source:TRO: 3050
 Rules Level:2
+role:Brawler
+
+
+
+
+quirk:barrel_fists_la
+
 
 Mass:80
 Engine:320 Fusion Engine

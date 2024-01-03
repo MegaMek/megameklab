@@ -45,7 +45,6 @@ public class PMMainUI extends MegaMekLabMainUI {
     public PMMainUI() {
         super();
         createNewUnit(Entity.ETYPE_PROTOMECH);
-        setTitle(getEntity().getChassis() + " " + getEntity().getModel() + ".blk");
         finishSetup();
     }
 
@@ -158,12 +157,6 @@ public class PMMainUI extends MegaMekLabMainUI {
     }
 
     @Override
-    public void refreshHeader() {
-        String title = getEntity().getChassis() + " " + getEntity().getModel() + ".blk";
-        setTitle(title);
-    }
-
-    @Override
     public void refreshStatus() {
         statusbar.refresh();
     }
@@ -174,8 +167,7 @@ public class PMMainUI extends MegaMekLabMainUI {
     }
 
     @Override
-    public void refreshWeapons() {
-    }
+    public void refreshWeapons() { }
     
     @Override
     public void refreshSummary() {
@@ -195,13 +187,5 @@ public class PMMainUI extends MegaMekLabMainUI {
 
     public JDialog getFloatingEquipmentDatabase() {
         return floatingEquipmentDatabase;
-    }
-
-    @Override
-    public void setVisible(boolean b) {
-        super.setVisible(b);
-        if (!b && (floatingEquipmentDatabase != null)) {
-            floatingEquipmentDatabase.setVisible(false);
-        }
     }
 }

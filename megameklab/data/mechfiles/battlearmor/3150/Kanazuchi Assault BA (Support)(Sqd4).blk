@@ -36,6 +36,10 @@ Kanazuchi Assault Battle Armor
 IS Level 2
 </type>
 
+<role>
+Juggernaut
+</role>
+
 <motion_type>
 Leg
 </motion_type>
@@ -82,7 +86,7 @@ BA-SRM4 Ammo:Body:Shots1#
 </Trooper 4 Equipment>
 
 <source>
-Dark Age
+TRO: 3150
 </source>
 
 <chassis>

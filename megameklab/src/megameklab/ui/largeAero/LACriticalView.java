@@ -25,6 +25,7 @@ import megamek.common.verifier.TestAero;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestSmallCraft;
 import megameklab.ui.EntitySource;
+import megameklab.ui.PopupMessages;
 import megameklab.ui.util.BayWeaponCriticalTree;
 import megameklab.ui.util.CritCellUtil;
 import megameklab.ui.util.IView;
@@ -264,8 +265,7 @@ public class LACriticalView extends IView {
         try {
             UnitUtil.copyLocationEquipment(getAero(), from, to, forward, rear);
         } catch (LocationFullException ex) {
-            JOptionPane.showMessageDialog(this, "Insufficient space", "Location Full",
-                    JOptionPane.WARNING_MESSAGE);
+            PopupMessages.showLocationFullError(null);
         }
         if (null != refresh) {
             refresh.refreshAll();

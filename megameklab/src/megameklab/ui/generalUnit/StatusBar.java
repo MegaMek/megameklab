@@ -65,7 +65,7 @@ public class StatusBar extends ITab {
         invalid.setVisible(false);
 
         if (!getEntity().isConventionalInfantry()) {
-            JButton showEquipmentDatabase = new JButton("Show Equipment Database");
+            JButton showEquipmentDatabase = new JButton("Equipment Database");
             showEquipmentDatabase.addActionListener(evt -> parent.getFloatingEquipmentDatabase().setVisible(true));
             add(showEquipmentDatabase);
         }

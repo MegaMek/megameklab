@@ -36,6 +36,10 @@ Partisan Heavy Tank
 IS Level 2
 </type>
 
+<role>
+Sniper
+</role>
+
 <motion_type>
 Tracked
 </motion_type>
@@ -86,7 +90,7 @@ Autocannon/5
 </Turret Equipment>
 
 <source>
-TRO 3058 - Civil War
+TRO: 3058
 </source>
 
 <tonnage>

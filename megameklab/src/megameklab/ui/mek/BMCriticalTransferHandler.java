@@ -22,6 +22,7 @@ package megameklab.ui.mek;
 import megamek.common.*;
 import megamek.common.verifier.TestEntity;
 import megameklab.ui.EntitySource;
+import megameklab.ui.PopupMessages;
 import megameklab.ui.util.AbstractCriticalTransferHandler;
 import megameklab.ui.util.BAASBMDropTargetCriticalList;
 import megameklab.ui.util.CriticalTableModel;
@@ -218,10 +219,7 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
 
                 StringBuffer errors = new StringBuffer();
                 if (!TestEntity.isValidLocation(getUnit(), eq.getType(), location, errors)) {
-                    JOptionPane.showMessageDialog(null, eq.getName() +
-                            " can't be placed in " + getUnit().getLocationAbbr(location) + ":\n"
-                            + errors,
-                            "Invalid Location", JOptionPane.INFORMATION_MESSAGE);
+                    PopupMessages.showInvalidLocationInfo(null, eq.getName(), getUnit().getLocationName(location));
                     doRefresh();
                     return false;
                 }
@@ -248,8 +246,7 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
                 }
                 return addEquipmentMech((Mech) getUnit(), eq, slotNumber);
             } catch (LocationFullException lfe) {
-                JOptionPane.showMessageDialog(null, lfe.getMessage(),
-                        "Location Full", JOptionPane.INFORMATION_MESSAGE);
+                PopupMessages.showLocationFullError(null);
                 doRefresh();
                 return false;
             } catch (Exception ex) {

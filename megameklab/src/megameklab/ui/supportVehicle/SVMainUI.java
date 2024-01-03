@@ -46,7 +46,6 @@ public class SVMainUI extends MegaMekLabMainUI {
     public SVMainUI() {
         super();
         createNewUnit(Entity.ETYPE_SUPPORT_TANK, false, false);
-        setTitle(getEntity().getChassis() + " " + getEntity().getModel() + ".blk");
         finishSetup();
     }
 
@@ -128,13 +127,8 @@ public class SVMainUI extends MegaMekLabMainUI {
         transportTab.addRefreshedListener(this);
         int idx = configPane.indexOfTab("Transport");
         configPane.removeTabAt(idx);
-        configPane.insertTab("Transport", null, new TabScrollPane(transportTab), null,idx);
+        configPane.insertTab("Transport", null, new TabScrollPane(transportTab), null, idx);
         transportTab.refresh();
-    }
-
-    @Override
-    public void refreshHeader() {
-        setTitle(getEntity().getChassis() + " " + getEntity().getModel() + ".blk");
     }
 
     @Override
@@ -235,13 +229,5 @@ public class SVMainUI extends MegaMekLabMainUI {
 
     public JDialog getFloatingEquipmentDatabase() {
         return floatingEquipmentDatabase;
-    }
-
-    @Override
-    public void setVisible(boolean b) {
-        super.setVisible(b);
-        if (!b && (floatingEquipmentDatabase != null)) {
-            floatingEquipmentDatabase.setVisible(false);
-        }
     }
 }

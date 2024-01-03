@@ -1,12 +1,20 @@
-Version:1.0
-Hatamoto-Kaeru
-HTM-35K
+chassis:Hatamoto-Kaeru
+model:HTM-35K
 mul id:4266
 
 Config:Biped
 TechBase:Inner Sphere
 Era:3076
 Rules Level:4
+role:Brawler
+Source:TRO: Prototypes 
+
+
+
+quirk:multi_trac
+quirk:difficult_maintain
+quirk:non_standard
+
 
 Mass:80
 Engine:320 XL Engine(IS)
