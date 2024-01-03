@@ -1,6 +1,14 @@
 MEGAMEKLAB VERSION HISTORY:
 ----------------
 0.49.18-SNAPSHOT
++ Fix #1370: Closing a unit selection dialog without selecting a unit no longer leads to an error message displayed
++ Fix #1309: Cargo containers can no longer be added to battle meks (they remain available to industrial meks)
++ Fix #1358: Record sheets for beast-mounted infantry now show additional movement information
++ Fix #1033: BA bays now show their capacity as the number of BA suits instead of BA squads
++ Fix #1312: Modular armor can now be added to fighters
++ Fix #1305: MASH can now be added to clan units
++ Fix #1308: Improved weapon sorting in the equipment database
++ Fix #1041: On space stations, the "modular" checkbox is now used to configure the "modular" or "KF adapter" features depending on the weight of the space station
 
 0.49.17 (2023-12-31 1900 UTC)
 + PR #1352 MML interface changes
