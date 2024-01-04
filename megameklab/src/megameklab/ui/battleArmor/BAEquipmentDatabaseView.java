@@ -17,6 +17,7 @@ package megameklab.ui.battleArmor;
 import megamek.common.*;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.AbstractEquipmentDatabaseView;
+import megameklab.util.BattleArmorUtil;
 import megameklab.util.UnitUtil;
 
 import java.util.Collection;
@@ -47,7 +48,7 @@ class BAEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
             }
         } else {
             try {
-                if (UnitUtil.isBAMultiMount(equip)) {
+                if (BattleArmorUtil.isBAMultiMount(equip)) {
                     for (int t = 1; t <= getBattleArmor().getTroopers(); t++) {
                         Mounted mount = new Mounted(getBattleArmor(), equip);
                         mount.setBaMountLoc(BattleArmor.MOUNT_LOC_NONE);

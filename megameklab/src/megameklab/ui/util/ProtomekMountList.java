@@ -16,6 +16,7 @@ package megameklab.ui.util;
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
 import megameklab.ui.EntitySource;
+import megameklab.util.ProtoMekUtil;
 import megameklab.util.UnitUtil;
 import org.apache.logging.log4j.LogManager;
 
@@ -123,7 +124,7 @@ public class ProtomekMountList extends JList<Mounted> {
             if (SwingUtilities.isLeftMouseButton(e)) {
                 if (e.isControlDown() && (mounted.getType() instanceof AmmoType)) {
                     try {
-                        UnitUtil.addProtoMechAmmo(getProtomech(), mounted.getType(), 1);
+                        ProtoMekUtil.addProtoMechAmmo(getProtomech(), mounted.getType(), 1);
                     } catch (LocationFullException ex) {
                         LogManager.getLogger().error("", ex);
                     }
@@ -139,7 +140,7 @@ public class ProtomekMountList extends JList<Mounted> {
                 }
                 if (e.isControlDown()) {
                     if ((mounted.getType() instanceof AmmoType)) {
-                        UnitUtil.reduceProtoMechAmmo(getProtomech(), mounted.getType(), 1);
+                        ProtoMekUtil.reduceProtoMechAmmo(getProtomech(), mounted.getType(), 1);
                     } else {
                         removeMount(mounted);
                     }

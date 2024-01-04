@@ -23,6 +23,7 @@ import megameklab.ui.util.CriticalTableModel;
 import megameklab.ui.util.CriticalTransferHandler;
 import megameklab.ui.util.IView;
 import megameklab.ui.util.RefreshListener;
+import megameklab.util.ProtoMekUtil;
 import megameklab.util.StringUtils;
 import megameklab.util.UnitUtil;
 
@@ -195,7 +196,7 @@ public class PMBuildView extends IView implements ActionListener, MouseListener 
             Mounted mount = (Mounted)equipmentTable.getModel().getValueAt(selectedRow, CriticalTableModel.EQUIPMENT);
 
             for (int location = 0; location < getProtoMek().locations(); location++) {
-                if (UnitUtil.protomechHasRoom(getProtoMek(), location, mount)) {
+                if (ProtoMekUtil.protomechHasRoom(getProtoMek(), location, mount)) {
                     item = new JMenuItem("Add to " + locations[location]);
                     final int loc = location;
                     item.addActionListener(ev -> addToLocation(loc, mount));

@@ -148,7 +148,7 @@ public class UnitPrintManager {
         for (Entity unit : entities) {
             if (unit instanceof Mech) {
                 UnitUtil.removeOneShotAmmo(unit);
-                UnitUtil.expandUnitMounts((Mech) unit);
+                MekUtil.expandUnitMounts((Mech) unit);
                 sheets.add(new PrintMech((Mech) unit, pageCount++, options));
             } else if ((unit instanceof Tank) && unit.getMovementMode().isMarine()) {
                 sheets.add(new PrintTank((Tank) unit, pageCount++, options));

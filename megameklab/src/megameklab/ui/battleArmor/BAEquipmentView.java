@@ -20,6 +20,7 @@ import megamek.common.LocationFullException;
 import megamek.common.Mounted;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.*;
+import megameklab.util.BattleArmorUtil;
 import megameklab.util.StringUtils;
 import megameklab.util.UnitUtil;
 
@@ -97,7 +98,7 @@ public class BAEquipmentView extends IView implements ActionListener {
         while (miscTypes.hasMoreElements()) {
             EquipmentType eq = miscTypes.nextElement();
 
-            if (UnitUtil.isBAEquipment(eq, getBattleArmor())) {
+            if (BattleArmorUtil.isBAEquipment(eq, getBattleArmor())) {
                 masterEquipmentList.add(eq);
             }
         }
@@ -134,7 +135,7 @@ public class BAEquipmentView extends IView implements ActionListener {
             if (UnitUtil.isArmorOrStructure(mount.getType())) {
                 continue;
             }
-            if (UnitUtil.isBAEquipment(mount.getType(), getBattleArmor())) {
+            if (BattleArmorUtil.isBAEquipment(mount.getType(), getBattleArmor())) {
                 equipmentList.addCrit(mount);
             }
         }

@@ -26,7 +26,7 @@ import megameklab.ui.EntitySource;
 import megameklab.ui.util.EquipmentTableModel;
 import megameklab.ui.util.IView;
 import megameklab.ui.util.RefreshListener;
-import megameklab.util.UnitUtil;
+import megameklab.util.InfantryUtil;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -246,7 +246,7 @@ public class CIEquipmentView extends IView implements ActionListener {
             int selected = masterEquipmentTable.convertRowIndexToModel(view);
             EquipmentType equip = masterEquipmentList.getType(selected);
             if (equip instanceof InfantryWeapon) {
-                UnitUtil.replaceMainWeapon(getInfantry(), (InfantryWeapon) equip, isSecondary);
+                InfantryUtil.replaceMainWeapon(getInfantry(), (InfantryWeapon) equip, isSecondary);
                 if (equip.hasFlag(WeaponType.F_TAG)) {
                     getInfantry().setSpecializations(getInfantry().getSpecializations() | Infantry.TAG_TROOPS);
                     getInfantry().setSecondaryWeaponsPerSquad(2);

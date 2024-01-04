@@ -16,14 +16,13 @@
 package megameklab.ui.infantry;
 
 import megamek.client.ui.models.XTableColumnModel;
-import megamek.common.EntityMovementMode;
 import megamek.common.Infantry;
 import megamek.common.TechAdvancement;
 import megamek.common.verifier.TestInfantry;
 import megameklab.ui.EntitySource;
 import megameklab.ui.listeners.InfantryBuildListener;
 import megameklab.ui.util.IView;
-import megameklab.util.UnitUtil;
+import megameklab.util.InfantryUtil;
 
 import javax.swing.*;
 import javax.swing.event.TableModelEvent;
@@ -229,13 +228,13 @@ public class CISpecializationView extends IView implements TableModelListener {
             if ((Infantry.TAG_TROOPS != spec)
                     && getInfantry().hasSpecialization(Infantry.TAG_TROOPS)
                     && TestInfantry.maxSecondaryWeapons(getInfantry()) < 2) {
-                UnitUtil.replaceMainWeapon(getInfantry(), null, true);
+                InfantryUtil.replaceMainWeapon(getInfantry(), null, true);
                 getInfantry().setSecondaryWeaponsPerSquad(0);
                 getInfantry().setSpecializations(getInfantry().getSpecializations() & ~Infantry.TAG_TROOPS);
             } else if (TestInfantry.maxSecondaryWeapons(getInfantry()) > getInfantry().getSecondaryWeaponsPerSquad()) {
                 getInfantry().setSecondaryWeaponsPerSquad(TestInfantry.maxSecondaryWeapons(getInfantry()));
                 if (getInfantry().getSecondaryWeaponsPerSquad() == 0) {
-                    UnitUtil.replaceMainWeapon(getInfantry(), null, true);
+                    InfantryUtil.replaceMainWeapon(getInfantry(), null, true);
                 }
             }
             fireTableCellUpdated(row, col);

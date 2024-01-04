@@ -45,6 +45,7 @@ import megameklab.ui.listeners.ArmorAllocationListener;
 import megameklab.ui.listeners.ProtomekBuildListener;
 import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
+import megameklab.util.ProtoMekUtil;
 import megameklab.util.UnitUtil;
 
 /**
@@ -422,7 +423,7 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
             }
         }
         List<Mounted> toRemove = getProtomech().getMisc().stream()
-                .filter(m -> !UnitUtil.isProtomechEquipment(m.getType(), getProtomech(), true))
+                .filter(m -> !ProtoMekUtil.isProtomechEquipment(m.getType(), getProtomech(), true))
                 .collect(Collectors.toList());
         toRemove.forEach(m -> UnitUtil.removeMounted(getProtomech(), m));
         panMovement.setFromEntity(getProtomech());

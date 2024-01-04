@@ -25,6 +25,7 @@ import megameklab.ui.listeners.MekBuildListener;
 import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
 
+import megameklab.util.MekUtil;
 import megameklab.util.UnitUtil;
 import org.apache.logging.log4j.LogManager;
 
@@ -323,7 +324,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
             if ((mount.getLocation() == Entity.LOC_NONE)
                     && UnitUtil.isFixedLocationSpreadEquipment(mount.getType())) {
                 UnitUtil.removeMounted(getMech(), mount);
-                UnitUtil.createSpreadMounts(getMech(), mount.getType());
+                MekUtil.createSpreadMounts(getMech(), mount.getType());
             }
         }
         refresh.refreshBuild();
@@ -497,7 +498,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
                 engine.setBaseChassisHeatSinks(getMech().getEngine()
                         .getBaseChassisHeatSinks(getMech().hasCompactHeatSinks()));
                 getMech().setEngine(engine);
-                UnitUtil.updateAutoSinks(getMech(), getMech().hasCompactHeatSinks());
+                MekUtil.updateAutoSinks(getMech(), getMech().hasCompactHeatSinks());
                 resetSystemCrits();
             }
         }
@@ -538,7 +539,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         }
         // auto-place stealth crits
         if (getMech().getArmorType(0) == EquipmentType.T_ARMOR_STEALTH) {
-            Mounted mount = UnitUtil.createSpreadMounts(
+            Mounted mount = MekUtil.createSpreadMounts(
                     getMech(),
                     EquipmentType.get(EquipmentType.getArmorTypeName(
                             getMech().getArmorType(0), false)));
@@ -729,7 +730,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         getMech().getEngine().setBaseChassisHeatSinks(
                 omni? Math.max(0, panHeat.getBaseCount()) : -1);
         panHeat.setFromMech(getMech());
-        UnitUtil.updateAutoSinks(getMech(), getMech().hasCompactHeatSinks());
+        MekUtil.updateAutoSinks(getMech(), getMech().hasCompactHeatSinks());
         refresh.refreshPreview();
     }
 
@@ -775,11 +776,11 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
 
                         if (motiveType == QuadVee.MOTIVE_WHEEL) {
                             ((QuadVee)getMech()).setMotiveType(QuadVee.MOTIVE_WHEEL);
-                            UnitUtil.createSpreadMounts(getMech(),
+                            MekUtil.createSpreadMounts(getMech(),
                                     EquipmentType.get(EquipmentTypeLookup.QUADVEE_WHEELS));
                         } else {
                             ((QuadVee)getMech()).setMotiveType(QuadVee.MOTIVE_TRACK);
-                            UnitUtil.createSpreadMounts(getMech(),
+                            MekUtil.createSpreadMounts(getMech(),
                                     EquipmentType.get(EquipmentTypeLookup.MECH_TRACKS));
                         }
                     }
@@ -828,9 +829,9 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
             // If the new engine has more weight-free heat sinks than are currently installed, add the extras.
             int newHS = engine.getWeightFreeEngineHeatSinks() - getMech().heatSinks();
             if (newHS > 0) {
-                UnitUtil.addHeatSinkMounts(getMech(), newHS, panHeat.getHeatSinkType());
+                MekUtil.addHeatSinkMounts(getMech(), newHS, panHeat.getHeatSinkType());
             }
-            UnitUtil.updateAutoSinks(getMech(), getMech().hasCompactHeatSinks());
+            MekUtil.updateAutoSinks(getMech(), getMech().hasCompactHeatSinks());
             getMech().resetSinks();
             panMovement.setFromEntity(getMech());
             panHeat.setFromMech(getMech());
@@ -884,7 +885,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
 
     @Override
     public void enhancementChanged(EquipmentType enhancement) {
-        UnitUtil.removeEnhancements(getMech());
+        MekUtil.removeEnhancements(getMech());
         if (null != enhancement) {
             if (enhancement.hasFlag(MiscType.F_MASC)) {
                 Mounted mount = new Mounted(getMech(), enhancement);
@@ -894,7 +895,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
                     // this can't happen, we add to Entity.LOC_NONE
                 }
             } else {
-                UnitUtil.createSpreadMounts(getMech(), enhancement);
+                MekUtil.createSpreadMounts(getMech(), enhancement);
             }
         }
         refresh.refreshBuild();
@@ -917,17 +918,17 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
     public void heatSinksChanged(EquipmentType hsType, int count) {
         // if we have the same type of heat sink, then we should not remove the
         // existing heat sinks
-        int currentSinks = UnitUtil.countActualHeatSinks(getMech());
+        int currentSinks = MekUtil.countActualHeatSinks(getMech());
         if (getMech().hasWorkingMisc(hsType.getInternalName())) {
             if (count < currentSinks) {
-                UnitUtil.removeHeatSinks(getMech(), currentSinks - count);
+                MekUtil.removeHeatSinks(getMech(), currentSinks - count);
             } else if (count > currentSinks) {
-                UnitUtil.addHeatSinkMounts(getMech(), count - currentSinks,
+                MekUtil.addHeatSinkMounts(getMech(), count - currentSinks,
                         hsType);
             }
         } else {
-            UnitUtil.removeHeatSinks(getMech(), count);
-            UnitUtil.addHeatSinkMounts(getMech(), count, hsType);
+            MekUtil.removeHeatSinks(getMech(), count);
+            MekUtil.addHeatSinkMounts(getMech(), count, hsType);
             // If we're switching to prototype doubles, start with the assumption that the integrated sinks are singles,
             // with a minimum of one double
             if (hsType.hasFlag(MiscType.F_IS_DOUBLE_HEAT_SINK_PROTOTYPE)) {
@@ -946,7 +947,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
     public void heatSinkBaseCountChanged(int count) {
         getMech().getEngine().setBaseChassisHeatSinks(
                 Math.max(0, count));
-        UnitUtil.updateAutoSinks(getMech(), panHeat.getHeatSinkType().hasFlag(MiscType.F_COMPACT_HEAT_SINK));
+        MekUtil.updateAutoSinks(getMech(), panHeat.getHeatSinkType().hasFlag(MiscType.F_COMPACT_HEAT_SINK));
         refresh.refreshBuild();
         refresh.refreshStatus();
         refresh.refreshPreview();
@@ -967,7 +968,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
                 }
                 UnitUtil.removeMounted(getMech(), doubles.get(i));
             }
-            UnitUtil.addHeatSinkMounts(getMech(), -netChange, EquipmentType.get(EquipmentTypeLookup.SINGLE_HS));
+            MekUtil.addHeatSinkMounts(getMech(), -netChange, EquipmentType.get(EquipmentTypeLookup.SINGLE_HS));
         } else if (netChange > 0) {
             // Find all the single heat sinks, and prioritize the ones that are already assigned critical slots
             List<Mounted> singles = getMech().getMisc().stream()
@@ -981,9 +982,9 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
                 }
                 UnitUtil.removeMounted(getMech(), singles.get(i));
             }
-            UnitUtil.addHeatSinkMounts(getMech(), netChange, panHeat.getHeatSinkType());
+            MekUtil.addHeatSinkMounts(getMech(), netChange, panHeat.getHeatSinkType());
         }
-        UnitUtil.updateAutoSinks(getMech(), false);
+        MekUtil.updateAutoSinks(getMech(), false);
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshSummary();
@@ -1090,7 +1091,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
                     .collect(Collectors.toList());
             if (jumpJet.hasFlag(MiscType.F_JUMP_BOOSTER)) {
                 if (!getMech().hasWorkingMisc(MiscType.F_JUMP_BOOSTER)) {
-                    UnitUtil.createSpreadMounts(getMech(), jumpJet);
+                    MekUtil.createSpreadMounts(getMech(), jumpJet);
                 }
             } else {
                 while (jjs.size() > jumpMP) {

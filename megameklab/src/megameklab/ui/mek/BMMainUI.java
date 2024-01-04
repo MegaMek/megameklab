@@ -23,7 +23,7 @@ import megameklab.ui.generalUnit.FluffTab;
 import megameklab.ui.generalUnit.PreviewTab;
 import megameklab.ui.generalUnit.QuirksTab;
 import megameklab.ui.util.TabScrollPane;
-import megameklab.util.UnitUtil;
+import megameklab.util.MekUtil;
 
 import javax.swing.*;
 import java.awt.*;
@@ -115,7 +115,7 @@ public class BMMainUI extends MegaMekLabMainUI {
         } else if (entityType == Entity.ETYPE_QUADVEE) {
             setEntity(new QuadVee(Mech.GYRO_STANDARD, QuadVee.MOTIVE_TRACK));
             getEntity().setTechLevel(TechConstants.T_CLAN_ADVANCED);
-            UnitUtil.createSpreadMounts((Mech)getEntity(), EquipmentType.get(EquipmentTypeLookup.MECH_TRACKS));
+            MekUtil.createSpreadMounts((Mech)getEntity(), EquipmentType.get(EquipmentTypeLookup.MECH_TRACKS));
             getEntity().setManualBV(-1);
         } else { // type == 0
             setEntity(new BipedMech(Mech.GYRO_STANDARD, cockpit));
@@ -125,7 +125,7 @@ public class BMMainUI extends MegaMekLabMainUI {
         getEntity().setWeight(25);
         if (entityType == Entity.ETYPE_LAND_AIR_MECH) {
             mech.setEngine(new Engine(75, Engine.NORMAL_ENGINE, 0));
-            UnitUtil.updateJumpJets(((Mech)getEntity()), 3, Mech.JUMP_STANDARD);
+            MekUtil.updateJumpJets(((Mech)getEntity()), 3, Mech.JUMP_STANDARD);
         } else {
             mech.setEngine(new Engine(25, Engine.NORMAL_ENGINE, 0));
         }
@@ -144,7 +144,7 @@ public class BMMainUI extends MegaMekLabMainUI {
         } else {
             mech.addCockpit();
         }
-        UnitUtil.updateHeatSinks(mech, 10, "Single");
+        MekUtil.updateHeatSinks(mech, 10, "Single");
 
         getEntity().autoSetInternal();
         for (int loc = 0; loc < getEntity().locations(); loc++) {

@@ -18,6 +18,7 @@ import megamek.common.*;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestProtomech;
 import megamek.common.weapons.infantry.InfantryWeapon;
+import megameklab.ui.EquipmentToolTip;
 import megameklab.util.CConfig;
 import megameklab.util.UnitUtil;
 
@@ -298,7 +299,7 @@ public class CriticalTableModel extends AbstractTableModel {
                     && (mount.getType() instanceof AmmoType)) {
                 c.setText(c.getText() + " (" + mount.getBaseShotsLeft() + ")");
             }
-            c.setToolTipText(UnitUtil.getToolTipInfo(unit, mount));
+            c.setToolTipText(EquipmentToolTip.getToolTipInfo(unit, mount));
             c.setHorizontalAlignment(getAlignment(column));
 
             if (isSelected) {

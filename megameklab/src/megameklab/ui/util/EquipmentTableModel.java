@@ -27,7 +27,7 @@ import megamek.common.weapons.missiles.MissileWeapon;
 import megamek.common.weapons.missiles.ThunderBoltWeapon;
 import megamek.common.weapons.mortars.MekMortarWeapon;
 import megameklab.util.CConfig;
-import megameklab.util.UnitUtil;
+import megameklab.util.InfantryUtil;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
@@ -553,7 +553,7 @@ public class EquipmentTableModel extends AbstractTableModel {
             EquipmentType etype = ((EquipmentTableModel) table.getModel()).getType(actualRow);
             if (column == COL_NAME) {
                 // Reinstate the real name, as the value will be the sorting-optimized name
-                value = UnitUtil.trimInfantryWeaponNames(etype.getName());
+                value = InfantryUtil.trimInfantryWeaponNames(etype.getName());
             }
             super.getTableCellRendererComponent(table, value, isSelected,
                     hasFocus, row, column);

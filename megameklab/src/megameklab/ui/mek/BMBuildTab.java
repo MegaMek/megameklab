@@ -21,6 +21,7 @@ import megameklab.ui.EntitySource;
 import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
 import megameklab.util.CConfig;
+import megameklab.util.MekUtil;
 import megameklab.util.UnitUtil;
 
 import javax.swing.*;
@@ -125,12 +126,12 @@ public class BMBuildTab extends ITab {
 
     private void autoFillUnHittables() {
         if (autoFillUnHittables.isSelected()) {
-            BMUtils.fillInFMU(getMech());
+            MekUtil.fillInFMU(getMech());
         }
     }
 
     private void fillInEquipment() {
-        BMUtils.fillInAllEquipment(getMech());
+        MekUtil.fillInAllEquipment(getMech());
         refresh.refreshAll();
     }
 
@@ -138,7 +139,7 @@ public class BMBuildTab extends ITab {
         for (Mounted mounted : getMech().getEquipment()) {
             if (!UnitUtil.isFixedLocationSpreadEquipment(mounted.getType())) {
                 UnitUtil.removeCriticals(getMech(), mounted);
-                BMUtils.clearMountedLocationAndLinked(mounted);
+                MekUtil.clearMountedLocationAndLinked(mounted);
             }
         }
         refresh.refreshAll();
@@ -151,7 +152,7 @@ public class BMBuildTab extends ITab {
      */
     private void autoCompactCrits() {
         if (autoCompact.isSelected() && !autoSort.isSelected()) {
-            BMUtils.compactCriticals(getMech());
+            MekUtil.compactCriticals(getMech());
         }
     }
 
@@ -160,7 +161,7 @@ public class BMBuildTab extends ITab {
      * calls a refresh and will result in a loop!
      */
     private void compactCrits() {
-        BMUtils.compactCriticals(getMech());
+        MekUtil.compactCriticals(getMech());
         refresh.refreshAll();
     }
 
@@ -169,7 +170,7 @@ public class BMBuildTab extends ITab {
      * calls a refresh and will result in a loop!
      */
     private void sortCrits() {
-        BMUtils.sortCrits(getMech());
+        MekUtil.sortCrits(getMech());
         refresh();
     }
 
@@ -179,7 +180,7 @@ public class BMBuildTab extends ITab {
      */
     private void autoSortCrits() {
         if (autoSort.isSelected()) {
-            BMUtils.sortCrits(getMech());
+            MekUtil.sortCrits(getMech());
         }
     }
 

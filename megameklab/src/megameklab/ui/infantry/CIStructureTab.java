@@ -44,6 +44,7 @@ import megameklab.ui.generalUnit.BasicInfoView;
 import megameklab.ui.listeners.InfantryBuildListener;
 import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
+import megameklab.util.InfantryUtil;
 import megameklab.util.UnitUtil;
 
 public class CIStructureTab extends ITab implements InfantryBuildListener {
@@ -281,7 +282,7 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
                 && ((getInfantry().getSecondaryWeaponsPerSquad() < 2)
                         || (getInfantry().getSecondaryWeapon() == null)
                         || !getInfantry().getSecondaryWeapon().hasFlag(WeaponType.F_TAG))) {
-            UnitUtil.replaceMainWeapon(getInfantry(),
+            InfantryUtil.replaceMainWeapon(getInfantry(),
                     (InfantryWeapon)EquipmentType.get(EquipmentTypeLookup.INFANTRY_TAG), true);
             getInfantry().setSecondaryWeaponsPerSquad(2);
         }
@@ -354,7 +355,7 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
         }
         getInfantry().setTechLevel(panBasicInfo.getTechLevel().getCompoundTechLevel(panBasicInfo.useClanTechBase()));
         UnitUtil.checkEquipmentByTechLevel(getInfantry(), panBasicInfo);
-        UnitUtil.resetInfantryArmor(getInfantry());
+        InfantryUtil.resetInfantryArmor(getInfantry());
         panPlatoonType.setFromEntity(getInfantry());
         panWeapons.setFromEntity(getInfantry());
         updateSpecializations();
@@ -408,7 +409,7 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
         if (getInfantry().getMovementMode() != EntityMovementMode.INF_MOTORIZED
                 && getInfantry().getMovementMode() != EntityMovementMode.TRACKED
                 && getInfantry().getMovementMode() != EntityMovementMode.WHEELED) {
-            UnitUtil.replaceFieldGun(getInfantry(), null, 0);
+            InfantryUtil.replaceFieldGun(getInfantry(), null, 0);
         }
         enableTabs();
         panPlatoonType.setFromEntity(getInfantry());
@@ -445,7 +446,7 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
             getInfantry().setSecondaryWeaponsPerSquad(0);
         } else {
             if (count == 0) {
-                UnitUtil.replaceMainWeapon(getInfantry(), null, true);
+                InfantryUtil.replaceMainWeapon(getInfantry(), null, true);
                 getInfantry().setSpecializations(getInfantry().getSpecializations() & ~Infantry.TAG_TROOPS);
             }
             getInfantry().setSecondaryWeaponsPerSquad(count);
@@ -460,7 +461,7 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
                 .stream().filter(m -> m.getLocation() == Infantry.LOC_FIELD_GUNS)
                 .map(Mounted::getType).filter(eq -> eq instanceof WeaponType)
                 .findAny();
-        UnitUtil.replaceFieldGun(getInfantry(), (WeaponType)fieldGun.orElse(null),
+        InfantryUtil.replaceFieldGun(getInfantry(), (WeaponType)fieldGun.orElse(null),
                 count);
         refresh.refreshStatus();
         refresh.refreshPreview();

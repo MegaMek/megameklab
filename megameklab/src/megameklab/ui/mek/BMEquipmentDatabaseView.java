@@ -16,6 +16,7 @@ package megameklab.ui.mek;
 import megamek.common.*;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.AbstractEquipmentDatabaseView;
+import megameklab.util.MekUtil;
 import megameklab.util.UnitUtil;
 
 import java.util.Collection;
@@ -48,7 +49,7 @@ class BMEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
                 UnitUtil.updateTC(getMech(), equip);
             }
         } else if (isMisc && UnitUtil.isFixedLocationSpreadEquipment(equip)) {
-            UnitUtil.createSpreadMounts(getMech(), equip);
+            MekUtil.createSpreadMounts(getMech(), equip);
         } else {
             try {
                 mount = new Mounted(getMech(), equip);

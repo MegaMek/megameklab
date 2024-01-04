@@ -25,6 +25,7 @@ import megamek.common.weapons.ppc.PPCWeapon;
 import megameklab.ui.EntitySource;
 import megameklab.ui.mek.BMCriticalTransferHandler;
 import megameklab.ui.mek.BMCriticalView;
+import megameklab.util.MekUtil;
 import megameklab.util.UnitUtil;
 import org.apache.logging.log4j.LogManager;
 
@@ -584,7 +585,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
 
     private void removeHand(int location) {
         if (getUnit() instanceof BipedMech || getUnit() instanceof TripodMech) {
-            UnitUtil.removeHand((Mech) getUnit(), location);
+            MekUtil.removeHand((Mech) getUnit(), location);
             if (refresh != null) {
                 refresh.scheduleRefresh();
             }
@@ -593,7 +594,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
 
     private void removeArm(int location) {
         if (getUnit() instanceof BipedMech || getUnit() instanceof TripodMech) {
-            UnitUtil.removeArm((Mech)getUnit(),location);
+            MekUtil.removeArm((Mech)getUnit(),location);
             if (refresh != null) {
                 refresh.scheduleRefresh();
             }

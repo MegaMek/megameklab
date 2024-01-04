@@ -14,12 +14,14 @@
  */
 package megameklab.ui;
 
+import megamek.client.ui.dialogs.BVDisplayDialog;
 import megamek.client.ui.dialogs.CostDisplayDialog;
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
 import megamek.common.loaders.BLKFile;
 import megamek.common.templates.TROView;
+import megamek.common.verifier.TestEntity;
 import megameklab.MMLConstants;
 import megameklab.ui.dialog.MMLFileChooser;
 import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
@@ -35,6 +37,8 @@ import org.apache.logging.log4j.LogManager;
 import javax.swing.*;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.text.DefaultCaret;
+import javax.swing.text.html.HTMLEditorKit;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
@@ -702,7 +706,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         final JMenuItem miCurrentUnitBVBreakdown = new JMenuItem(resources.getString("CurrentUnit.text"));
         miCurrentUnitBVBreakdown.setName("miCurrentUnitBVBreakdown");
         miCurrentUnitBVBreakdown.setMnemonic(KeyEvent.VK_U);
-        miCurrentUnitBVBreakdown.addActionListener(evt -> UnitUtil.showBVCalculations(owner.getFrame(), owner.getEntity()));
+        miCurrentUnitBVBreakdown.addActionListener(evt -> showBVCalculations(owner.getFrame(), owner.getEntity()));
         miCurrentUnitBVBreakdown.setEnabled(isUnitGui());
         unitBVBreakdownMenu.add(miCurrentUnitBVBreakdown);
 
@@ -756,7 +760,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         final JMenuItem miCurrentUnitWeightBreakdown = new JMenuItem(resources.getString("CurrentUnit.text"));
         miCurrentUnitWeightBreakdown.setName("miCurrentUnitWeightBreakdown");
         miCurrentUnitWeightBreakdown.setMnemonic(KeyEvent.VK_U);
-        miCurrentUnitWeightBreakdown.addActionListener(evt -> UnitUtil.showUnitWeightBreakDown(owner.getEntity(), owner.getFrame()));
+        miCurrentUnitWeightBreakdown.addActionListener(evt -> showUnitWeightBreakDown(owner.getEntity(), owner.getFrame()));
         miCurrentUnitWeightBreakdown.setEnabled(isUnitGui());
         unitWeightBreakdownMenu.add(miCurrentUnitWeightBreakdown);
 
@@ -833,7 +837,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
 
         Entity chosenEntity = viewer.getChosenEntity();
         if (chosenEntity != null) {
-            UnitUtil.showUnitWeightBreakDown(chosenEntity, owner.getFrame());
+            showUnitWeightBreakDown(chosenEntity, owner.getFrame());
         }
         viewer.dispose();
     }
@@ -845,7 +849,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         }
 
         try {
-            UnitUtil.showBVCalculations(owner.getFrame(), new MechFileParser(unitFile).getEntity());
+            showBVCalculations(owner.getFrame(), new MechFileParser(unitFile).getEntity());
         } catch (Exception ex) {
             PopupMessages.showFileReadError(owner.getFrame(), unitFile.toString(), ex.getMessage());
         }
@@ -898,7 +902,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
 
         try {
             Entity tempEntity = new MechFileParser(unitFile).getEntity();
-            UnitUtil.showUnitWeightBreakDown(tempEntity, owner.getFrame());
+            showUnitWeightBreakDown(tempEntity, owner.getFrame());
         } catch (Exception ex) {
             PopupMessages.showFileReadError(owner.getFrame(), unitFile.toString(), ex.getMessage());
         }
@@ -912,7 +916,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
 
         try {
             Entity tempEntity = new MechFileParser(unitFile).getEntity();
-            UnitUtil.showUnitSpecs(tempEntity, owner.getFrame());
+            showUnitSpecs(tempEntity, owner.getFrame());
         } catch (Exception ex) {
             PopupMessages.showFileReadError(owner.getFrame(), unitFile.toString(), ex.getMessage());
         }
@@ -1312,5 +1316,92 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         }
         File settingsFile = new File(fileChooser.getSelectedFile(), CConfig.CONFIG_FILE);
         CConfig.importSettings(owner, settingsFile);
+    }
+
+    public static void showUnitSpecs(Entity unit, JFrame frame) {
+        HTMLEditorKit kit = new HTMLEditorKit();
+
+        MechView mechView;
+        try {
+            mechView = new MechView(unit, true);
+        } catch (Exception ex) {
+            // error unit didn't load right. this is bad news.
+            LogManager.getLogger().error("", ex);
+            return;
+        }
+
+        String unitSpecs = "<html><body>" + mechView.getMechReadoutBasic() +
+                mechView.getMechReadoutLoadout() + "</body></html>";
+
+        JEditorPane textPane = new JEditorPane("text/html", "");
+        JScrollPane scroll = new JScrollPane();
+
+        textPane.setEditable(false);
+        textPane.setCaret(new DefaultCaret());
+        textPane.setEditorKit(kit);
+
+        scroll.setViewportView(textPane);
+        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scroll.getVerticalScrollBar().setUnitIncrement(20);
+
+        textPane.setText(unitSpecs);
+
+        scroll.setVisible(true);
+
+        JDialog jdialog = new JDialog();
+
+        jdialog.add(scroll);
+
+        jdialog.pack();
+
+        jdialog.setLocationRelativeTo(frame);
+        jdialog.setVisible(true);
+
+        try {
+            textPane.setSelectionStart(0);
+            textPane.setSelectionEnd(0);
+        } catch (Exception ignored) {
+
+        }
+    }
+
+    public static void showUnitWeightBreakDown(Entity unit, JFrame frame) {
+        TestEntity testEntity = UnitUtil.getEntityVerifier(unit);
+
+        JTextPane textPane = new JTextPane();
+        JScrollPane scroll = new JScrollPane();
+
+        textPane.setText(testEntity.printEntity().toString());
+        textPane.setEditable(false);
+        textPane.setCaret(new DefaultCaret());
+
+        scroll.setViewportView(textPane);
+        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scroll.getVerticalScrollBar().setUnitIncrement(20);
+
+        scroll.setVisible(true);
+
+        JDialog jdialog = new JDialog();
+
+        jdialog.add(scroll);
+        jdialog.pack();
+        jdialog.setLocationRelativeTo(frame);
+        jdialog.setVisible(true);
+
+        try {
+            textPane.setSelectionStart(0);
+            textPane.setSelectionEnd(0);
+        } catch (Exception ignored) {
+
+        }
+    }
+
+    public static void showBVCalculations(final JFrame frame, final @Nullable Entity entity) {
+        if (entity == null) {
+            return;
+        }
+        new BVDisplayDialog(frame, entity).setVisible(true);
     }
 }

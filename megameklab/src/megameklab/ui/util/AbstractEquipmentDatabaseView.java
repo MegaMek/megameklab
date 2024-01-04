@@ -24,7 +24,9 @@ import megamek.common.EquipmentType;
 import megamek.common.Mech;
 import megamek.common.annotations.Nullable;
 import megameklab.ui.EntitySource;
+import megameklab.util.BattleArmorUtil;
 import megameklab.util.CConfig;
+import megameklab.util.MekUtil;
 import megameklab.util.UnitUtil;
 import org.apache.logging.log4j.LogManager;
 
@@ -561,13 +563,13 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
 
         if (getEntity() instanceof Mech) {
             // FIXME : This is handled strangely in UnitUtil: MekEquipment does not include weapons
-            return UnitUtil.isMechEquipment(equipment, (Mech) getEntity())
-                    || UnitUtil.isMechWeapon(equipment, getEntity())
+            return MekUtil.isMechEquipment(equipment, (Mech) getEntity())
+                    || MekUtil.isMechWeapon(equipment, getEntity())
                     || UnitUtil.isPhysicalWeapon(equipment);
         } else if (getEntity() instanceof BattleArmor) {
             // FIXME : This is handled strangely in UnitUtil: BAAPWeapons are not BAEquipment
-            return UnitUtil.isBAEquipment(equipment, getBattleArmor())
-                    || UnitUtil.isBattleArmorAPWeapon(equipment);
+            return BattleArmorUtil.isBAEquipment(equipment, getBattleArmor())
+                    || BattleArmorUtil.isBattleArmorAPWeapon(equipment);
         } else {
             return UnitUtil.isEntityEquipment(equipment, getEntity());
         }

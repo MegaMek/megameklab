@@ -19,7 +19,7 @@ import megamek.common.weapons.artillery.ArtilleryCannonWeapon;
 import megamek.common.weapons.artillery.ArtilleryWeapon;
 import megameklab.ui.generalUnit.BuildView;
 import megameklab.ui.listeners.InfantryBuildListener;
-import megameklab.util.UnitUtil;
+import megameklab.util.InfantryUtil;
 
 import javax.swing.*;
 import java.awt.*;
@@ -147,12 +147,12 @@ public class CIWeaponView extends BuildView implements ActionListener {
 
     public void setFromEntity(Infantry inf) {
         if (inf.getPrimaryWeapon() != null) {
-            txtPrimary.setText(UnitUtil.trimInfantryWeaponNames(inf.getPrimaryWeapon().getName()));
+            txtPrimary.setText(InfantryUtil.trimInfantryWeaponNames(inf.getPrimaryWeapon().getName()));
         } else {
             txtPrimary.setText(noneMsg);
         }
         if (inf.getSecondaryWeapon() != null) {
-            txtSecondary.setText(UnitUtil.trimInfantryWeaponNames(inf.getSecondaryWeapon().getName()));
+            txtSecondary.setText(InfantryUtil.trimInfantryWeaponNames(inf.getSecondaryWeapon().getName()));
         } else {
             txtSecondary.setText(noneMsg);
         }

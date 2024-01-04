@@ -20,6 +20,7 @@ import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestMech;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.IView;
+import megameklab.util.MekUtil;
 import megameklab.util.UnitUtil;
 
 import javax.swing.*;
@@ -279,10 +280,10 @@ public class BMSummaryView extends IView{
 
         runThroughEquipment(testMech);
 
-        int numberSinks = UnitUtil.countActualHeatSinks(getMech());
+        int numberSinks = MekUtil.countActualHeatSinks(getMech());
         numberSinks = Math.max(0, numberSinks - UnitUtil.getCriticalFreeHeatSinks(getMech(), getMech().hasCompactHeatSinks()));
         int critSinks = numberSinks;
-        if (UnitUtil.hasClanDoubleHeatSinks(getMech())) {
+        if (MekUtil.hasClanDoubleHeatSinks(getMech())) {
             critSinks = numberSinks * 2;
         } else if (getMech().hasDoubleHeatSinks()) {
             critSinks = numberSinks * 3;
