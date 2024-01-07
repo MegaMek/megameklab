@@ -123,10 +123,10 @@ public final class InfantryUtil {
         unit.setArmorDamageDivisor(1.0);
     }
 
-    private InfantryUtil() { }
-
     public static boolean isInfantryEquipment(EquipmentType eq, Entity unit) {
         // TODO: adjust for field guns and artillery
         return eq instanceof InfantryWeapon;
     }
+
+    private InfantryUtil() { }
 }

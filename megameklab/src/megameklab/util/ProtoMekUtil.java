@@ -76,8 +76,6 @@ public final class ProtoMekUtil {
         }
     }
 
-    private ProtoMekUtil() { }
-
     /**
      * Checks whether the space has room for the equipment within the slot and weight limits.
      *
@@ -106,4 +104,6 @@ public final class ProtoMekUtil {
         }
         return true;
     }
+
+    private ProtoMekUtil() { }
 }

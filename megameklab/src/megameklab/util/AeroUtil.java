@@ -260,8 +260,6 @@ public final class AeroUtil {
         assignQuarters(aero, officer + firstClass, standardCrew, secondClass, steerageCrew + steeragePsgr);
     }
 
-    private AeroUtil() { }
-
     public static void updateLoadedAero(Aero unit) {
         if (unit.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)) {
             if (unit.getArmorType(Aero.LOC_NOSE) == EquipmentType.T_ARMOR_STANDARD) {
@@ -310,4 +308,6 @@ public final class AeroUtil {
             UnitUtil.removeMounted(unit, group);
         }
     }
+
+    private AeroUtil() { }
 }

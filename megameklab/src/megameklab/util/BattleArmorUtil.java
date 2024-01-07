@@ -118,10 +118,10 @@ public final class BattleArmorUtil {
         return false;
     }
 
-    private BattleArmorUtil() { }
-
     public static boolean isBAMultiMount(EquipmentType equip) {
         return (equip instanceof WeaponType)
                 && (equip.hasFlag(WeaponType.F_TASER) || (((WeaponType) equip).getAmmoType() == AmmoType.T_NARC));
     }
+
+    private BattleArmorUtil() { }
 }
