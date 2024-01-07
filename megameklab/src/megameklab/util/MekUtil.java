@@ -22,13 +22,7 @@ import megamek.common.*;
 import megamek.common.weapons.c3.ISC3M;
 import megamek.common.weapons.c3.ISC3MBS;
 import megamek.common.weapons.infantry.InfantryWeapon;
-import megamek.common.weapons.lrms.LRMWeapon;
-import megamek.common.weapons.lrms.LRTWeapon;
-import megamek.common.weapons.missiles.MRMWeapon;
-import megamek.common.weapons.missiles.RLWeapon;
 import megamek.common.weapons.other.*;
-import megamek.common.weapons.srms.SRMWeapon;
-import megamek.common.weapons.srms.SRTWeapon;
 import megamek.common.weapons.tag.CLLightTAG;
 import megamek.common.weapons.tag.CLTAG;
 import megamek.common.weapons.tag.ISTAG;
@@ -1313,53 +1307,10 @@ public final class MekUtil {
         }
 
         if (eq instanceof WeaponType) {
-
             WeaponType weapon = (WeaponType) eq;
-
-            if (!weapon.hasFlag(WeaponType.F_MECH_WEAPON)) {
+            if (!weapon.hasFlag(WeaponType.F_MECH_WEAPON) || isNonMekOrTankWeapon(unit, weapon)) {
                 return false;
             }
-
-            if (weapon.getTonnage(unit) <= 0) {
-                return false;
-            }
-
-            if (weapon.isCapital() || weapon.isSubCapital()) {
-                return false;
-            }
-
-            if (((weapon instanceof LRMWeapon) || (weapon instanceof LRTWeapon))
-                    && (weapon.getRackSize() != 5)
-                    && (weapon.getRackSize() != 10)
-                    && (weapon.getRackSize() != 15)
-                    && (weapon.getRackSize() != 20)) {
-                return false;
-            }
-            if (((weapon instanceof SRMWeapon) || (weapon instanceof SRTWeapon))
-                    && (weapon.getRackSize() != 2)
-                    && (weapon.getRackSize() != 4)
-                    && (weapon.getRackSize() != 6)) {
-                return false;
-            }
-            if ((weapon instanceof MRMWeapon) && (weapon.getRackSize() < 10)) {
-                return false;
-            }
-
-            if ((weapon instanceof RLWeapon) && (weapon.getRackSize() < 10)) {
-                return false;
-            }
-
-            if (weapon.hasFlag(WeaponType.F_ENERGY)
-                    || (weapon.hasFlag(WeaponType.F_PLASMA) && (weapon
-                            .getAmmoType() == AmmoType.T_PLASMA))) {
-
-                if (weapon.hasFlag(WeaponType.F_ENERGY)
-                        && weapon.hasFlag(WeaponType.F_PLASMA)
-                        && (weapon.getAmmoType() == AmmoType.T_NA)) {
-                    return false;
-                }
-            }
-
             if ((unit instanceof LandAirMech)
                     && (weapon.getAmmoType() == AmmoType.T_GAUSS_HEAVY
                     || weapon.getAmmoType() == AmmoType.T_IGAUSS_HEAVY)) {

@@ -33,11 +33,17 @@ import megamek.common.weapons.flamers.VehicleFlamerWeapon;
 import megamek.common.weapons.gaussrifles.GaussWeapon;
 import megamek.common.weapons.infantry.InfantryWeapon;
 import megamek.common.weapons.lasers.CLChemicalLaserWeapon;
+import megamek.common.weapons.lrms.LRMWeapon;
+import megamek.common.weapons.lrms.LRTWeapon;
 import megamek.common.weapons.lrms.StreakLRMWeapon;
 import megamek.common.weapons.mgs.MGWeapon;
+import megamek.common.weapons.missiles.MRMWeapon;
+import megamek.common.weapons.missiles.RLWeapon;
 import megamek.common.weapons.missiles.ThunderBoltWeapon;
 import megamek.common.weapons.ppc.CLPlasmaCannon;
 import megamek.common.weapons.ppc.ISPlasmaRifle;
+import megamek.common.weapons.srms.SRMWeapon;
+import megamek.common.weapons.srms.SRTWeapon;
 import megamek.common.weapons.srms.StreakSRMWeapon;
 import megameklab.ui.PopupMessages;
 import org.apache.logging.log4j.LogManager;
@@ -2022,4 +2028,45 @@ public class UnitUtil {
     }
 
     private UnitUtil() { }
+
+    static boolean isNonMekOrTankWeapon(Entity unit, WeaponType weapon) {
+        if (weapon.getTonnage(unit) <= 0) {
+            return true;
+        }
+
+        if (weapon.isCapital() || weapon.isSubCapital()) {
+            return true;
+        }
+
+        if (((weapon instanceof LRMWeapon) || (weapon instanceof LRTWeapon))
+                && (weapon.getRackSize() != 5)
+                && (weapon.getRackSize() != 10)
+                && (weapon.getRackSize() != 15)
+                && (weapon.getRackSize() != 20)) {
+            return true;
+        }
+        if (((weapon instanceof SRMWeapon) || (weapon instanceof SRTWeapon))
+                && (weapon.getRackSize() != 2)
+                && (weapon.getRackSize() != 4)
+                && (weapon.getRackSize() != 6)) {
+            return true;
+        }
+        if ((weapon instanceof MRMWeapon) && (weapon.getRackSize() < 10)) {
+            return true;
+        }
+
+        if ((weapon instanceof RLWeapon) && (weapon.getRackSize() < 10)) {
+            return true;
+        }
+
+        if (weapon.hasFlag(WeaponType.F_ENERGY)
+                || (weapon.hasFlag(WeaponType.F_PLASMA) && (weapon
+                        .getAmmoType() == AmmoType.T_PLASMA))) {
+
+            return weapon.hasFlag(WeaponType.F_ENERGY)
+                    && weapon.hasFlag(WeaponType.F_PLASMA)
+                    && (weapon.getAmmoType() == AmmoType.T_NA);
+        }
+        return false;
+    }
 }

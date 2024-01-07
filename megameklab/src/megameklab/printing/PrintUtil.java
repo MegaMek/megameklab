@@ -106,8 +106,8 @@ public final class PrintUtil {
      * simple method to let us know if eq should be printed on the weapons and
      * equipment section of the Record sheet.
      *
-     * @param eq
-     * @return
+     * @param eq The equipment to test
+     * @return True when it should appear on the record sheet
      */
     public static boolean isPrintableBAEquipment(EquipmentType eq) {
         if (UnitUtil.isArmorOrStructure(eq)) {

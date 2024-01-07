@@ -112,11 +112,9 @@ public final class AeroUtil {
                 || (weapon.hasFlag(WeaponType.F_PLASMA) && (weapon
                         .getAmmoType() == AmmoType.T_PLASMA))) {
 
-            if (weapon.hasFlag(WeaponType.F_ENERGY)
-                    && weapon.hasFlag(WeaponType.F_PLASMA)
-                    && (weapon.getAmmoType() == AmmoType.T_NA)) {
-                return false;
-            }
+            return !weapon.hasFlag(WeaponType.F_ENERGY)
+                    || !weapon.hasFlag(WeaponType.F_PLASMA)
+                    || (weapon.getAmmoType() != AmmoType.T_NA);
         }
         return true;
     }
