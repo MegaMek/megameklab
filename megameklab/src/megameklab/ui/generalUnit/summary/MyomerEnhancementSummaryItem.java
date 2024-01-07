@@ -38,6 +38,10 @@ public class MyomerEnhancementSummaryItem extends AbstractSummaryItem {
             availabilityLabel.setText(enhancement.get().getType().getFullRatingName(entity.isClan()));
             weightLabel.setText(formatWeight(enhancement.get().getTonnage(), entity));
             critLabel.setText(formatCrits(enhancement.get().getCriticals()));
+        } else {
+            availabilityLabel.setText("");
+            weightLabel.setText("");
+            critLabel.setText("");
         }
     }
 

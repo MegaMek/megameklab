@@ -71,6 +71,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
             panPatchwork.setVisible(false);
         }
         panSummary = new SummaryView(eSource,
+                new UnitTypeSummaryItem(),
                 new StructureSummaryItem(),
                 new EngineSummaryItem(),
                 new PropulsionSummaryItem(),

@@ -73,6 +73,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         panGravDecks = new WSGravDeckView();
         panArmorAllocation = new ArmorAllocationView(panInfo, Entity.ETYPE_AERO);
         panSummary = new SummaryView(eSource,
+                new UnitTypeSummaryItem(),
                 new StructureSummaryItem(),
                 new EngineSummaryItem(),
                 new FuelSummaryItem(),

@@ -73,6 +73,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         panChassisMod = new SVChassisModView(panBasicInfo);
         panCrew = new SVCrewView();
         panSummary = new SummaryView(eSource,
+                new UnitTypeSummaryItem(),
                 new StructureSummaryItem(),
                 new EngineSummaryItem(),
                 new FuelSummaryItem(),
