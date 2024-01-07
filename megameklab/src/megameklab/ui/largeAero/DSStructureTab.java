@@ -27,6 +27,7 @@ import megamek.common.*;
 import megamek.common.verifier.TestEntity;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.*;
+import megameklab.ui.generalUnit.summary.*;
 import megameklab.ui.listeners.ArmorAllocationListener;
 import megameklab.ui.listeners.DropshipBuildListener;
 import megameklab.ui.util.ITab;
@@ -46,7 +47,7 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
     private FuelView panFuel;
     private HeatSinkView panHeat;
     private LACrewView panCrew;
-    private DSSummaryView panSummary;
+    private SummaryView panSummary;
     private ArmorAllocationView panArmorAllocation;
 
     RefreshListener refresh = null;
@@ -69,7 +70,19 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
         panHeat = new HeatSinkView(panInfo);
         panCrew = new LACrewView(panInfo);
         panArmorAllocation = new ArmorAllocationView(panInfo, Entity.ETYPE_AERO);
-        panSummary = new DSSummaryView(eSource);
+        panSummary = new SummaryView(eSource,
+                new StructureSummaryItem(),
+                new EngineSummaryItem(),
+                new FuelSummaryItem(),
+                new HeatsinkSummaryItem(),
+                new ControlsSummaryItem(),
+                new ArmorSummaryItem(),
+                new WeaponsSummaryItem(),
+                new AmmoSummaryItem(),
+                new MiscEquipmentSummaryItem(),
+                new CrewSummaryItem(),
+                new TransportSummaryItem(),
+                new SpecialsSummaryItem());
 
         GridBagConstraints gbc;
 
@@ -114,7 +127,6 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
         panHeat.setBorder(BorderFactory.createTitledBorder("Heat Sinks"));
         panArmor.setBorder(BorderFactory.createTitledBorder("Armor"));
         panCrew.setBorder(BorderFactory.createTitledBorder("Crew and Quarters"));
-        panSummary.setBorder(BorderFactory.createTitledBorder("Summary"));
         panArmorAllocation.setBorder(BorderFactory.createTitledBorder("Armor Allocation"));
     }
     

@@ -89,7 +89,7 @@ public class ASMainUI extends MegaMekLabMainUI {
     public void createNewUnit(long entityType, boolean isPrimitive, boolean isIndustrial, Entity oldEntity) {
 
         if (entityType == Entity.ETYPE_AERO) {
-            setEntity(new Aero());
+            setEntity(new AeroSpaceFighter());
             getEntity().setTechLevel(TechConstants.T_IS_TW_NON_BOX);
         } else if (entityType == Entity.ETYPE_CONV_FIGHTER) {
             setEntity(new ConvFighter());

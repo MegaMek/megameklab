@@ -35,6 +35,7 @@ import megamek.common.verifier.TestAero;
 import megamek.common.verifier.TestEntity;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.*;
+import megameklab.ui.generalUnit.summary.*;
 import megameklab.ui.listeners.AeroBuildListener;
 import megameklab.ui.listeners.ArmorAllocationListener;
 import megameklab.ui.util.ITab;
@@ -49,7 +50,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
     private MovementView panMovement;
     private FuelView panFuel;
     private HeatSinkView panHeat;
-    private ASSummaryView panSummary;
+    private SummaryView panSummary;
     private ArmorAllocationView panArmorAllocation;
     private PatchworkArmorView panPatchwork;
 
@@ -73,12 +74,22 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         panHeat = new HeatSinkView(panInfo);
         panArmorAllocation = new ArmorAllocationView(panInfo, Entity.ETYPE_AERO);
         panPatchwork = new PatchworkArmorView(panInfo);
-        panSummary = new ASSummaryView(eSource);
         if (getAero().hasPatchworkArmor()) {
             panArmorAllocation.showPatchwork(true);
         } else {
             panPatchwork.setVisible(false);
         }
+        panSummary = new SummaryView(eSource,
+                new StructureSummaryItem(),
+                new EngineSummaryItem(),
+                new FuelSummaryItem(),
+                new HeatsinkSummaryItem(),
+                new ControlsSummaryItem(),
+                new ArmorSummaryItem(),
+                new WeaponsSummaryItem(),
+                new AmmoSummaryItem(),
+                new MiscEquipmentSummaryItem(),
+                new OtherSummaryItem());
 
         GridBagConstraints gbc = new GridBagConstraints();
 
@@ -124,7 +135,6 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         panFuel.setBorder(BorderFactory.createTitledBorder("Fuel"));
         panHeat.setBorder(BorderFactory.createTitledBorder("Heat Sinks"));
         panArmor.setBorder(BorderFactory.createTitledBorder("Armor"));
-        panSummary.setBorder(BorderFactory.createTitledBorder("Summary"));
         panArmorAllocation.setBorder(BorderFactory.createTitledBorder("Armor Allocation"));
         panPatchwork.setBorder(BorderFactory.createTitledBorder("Patchwork Armor"));
     }

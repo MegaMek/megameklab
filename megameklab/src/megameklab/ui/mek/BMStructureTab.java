@@ -20,6 +20,7 @@ import megamek.common.loaders.EntityLoadingException;
 import megamek.common.verifier.TestEntity;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.*;
+import megameklab.ui.generalUnit.summary.*;
 import megameklab.ui.listeners.ArmorAllocationListener;
 import megameklab.ui.listeners.MekBuildListener;
 import megameklab.ui.util.ITab;
@@ -41,9 +42,9 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
     private BMChassisView panChassis;
     private BMLAMFuelView panLAMFuel;
     private MVFArmorView panArmor;
+    private SummaryView panSummary;
     private MovementView panMovement;
     private HeatSinkView panHeat;
-    private BMSummaryView panSummary;
     private ArmorAllocationView panArmorAllocation;
     private PatchworkArmorView panPatchwork;
 
@@ -68,7 +69,18 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         panLAMFuel = new BMLAMFuelView(eSource);
         panArmorAllocation = new ArmorAllocationView(panBasicInfo, Entity.ETYPE_MECH);
         panPatchwork = new PatchworkArmorView(panBasicInfo);
-        panSummary = new BMSummaryView(eSource);
+        panSummary = new SummaryView(eSource,
+                new StructureSummaryItem(),
+                new EngineSummaryItem(),
+                new GyroSummaryItem(),
+                new CockpitSummaryItem(),
+                new HeatsinkSummaryItem(),
+                new ArmorSummaryItem(),
+                new JumpSummaryItem(),
+                new EquipmentSummaryItem(),
+                new MyomerEnhancementSummaryItem(),
+                new OtherSummaryItem());
+
         if (getMech().hasPatchworkArmor()) {
             panArmorAllocation.showPatchwork(true);
         } else {
@@ -132,7 +144,6 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         panHeat.setBorder(BorderFactory.createTitledBorder("Heat Sinks"));
         panLAMFuel.setBorder(BorderFactory.createTitledBorder("Fuel"));
         panArmor.setBorder(BorderFactory.createTitledBorder("Armor"));
-        panSummary.setBorder(BorderFactory.createTitledBorder("Summary"));
         panArmorAllocation.setBorder(BorderFactory.createTitledBorder("Armor Allocation"));
         panPatchwork.setBorder(BorderFactory.createTitledBorder("Patchwork Armor"));
     }
