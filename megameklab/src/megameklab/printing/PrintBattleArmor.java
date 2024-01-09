@@ -169,14 +169,14 @@ public class PrintBattleArmor extends PrintEntity {
     */
     private String squadName() {
         switch (battleArmor.getTroopers()) {
-            case 6:
-                return "LEVEL I";
-            case 5:
-                return battleArmor.isClan() ? "POINT" : "MANIPLE";
+            case 1:
+                return "SUIT";
             case 3:
                 return "UN";
-            case 1:
-                return "TROOPER";
+            case 5:
+                return "POINT";
+            case 6:
+                return "LEVEL I";
             default:
             case 4:
                 return "SQUAD";
