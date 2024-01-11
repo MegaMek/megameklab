@@ -10,6 +10,9 @@ MEGAMEKLAB VERSION HISTORY:
 + Fix #1308: Improved weapon sorting in the equipment database
 + Fix #1041: On space stations, the "modular" checkbox is now used to configure the "modular" or "KF adapter" features depending on the weight of the space station
 + PR #1357: The summary view has been reworked; it now shows availability data for some of the systems on the unit
++ Fix #1081: Summary: BMCore Equipment Availability Display is Always ?
++ Fix #1289: Battle Armor Mechanical Jump booster Error
++ Fix #1228: SV Mast Mount not being assigned to rotor, fixed to body and cannot be moved
 
 0.49.17 (2023-12-31 1900 UTC)
 + PR #1352 MML interface changes
