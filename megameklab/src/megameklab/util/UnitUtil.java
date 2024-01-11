@@ -1185,6 +1185,9 @@ public class UnitUtil {
      */
     public static String getCritName(Entity unit, EquipmentType eq) {
         String name = eq.getName();
+        if (name.length() > 22) {
+            name = eq.getShortName();
+        }
         if (unit.isMixedTech()
                 && (eq.getTechLevel(unit.getTechLevelYear()) != TechConstants.T_ALLOWED_ALL)
                 && (eq.getTechLevel(unit.getTechLevelYear()) != TechConstants.T_TECH_UNKNOWN)) {
