@@ -80,6 +80,7 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
         panMovement = new MovementView(panBasicInfo);
         panArmorAllocation = new ArmorAllocationView(panBasicInfo, Entity.ETYPE_PROTOMECH);
         panSummary = new SummaryView(eSource,
+                new UnitTypeSummaryItem(),
                 new StructureSummaryItem(),
                 new EngineSummaryItem(),
                 new HeatsinkSummaryItem(),

@@ -69,6 +69,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         panArmorAllocation = new ArmorAllocationView(panBasicInfo, Entity.ETYPE_MECH);
         panPatchwork = new PatchworkArmorView(panBasicInfo);
         panSummary = new SummaryView(eSource,
+                new UnitTypeSummaryItem(),
                 new StructureSummaryItem(),
                 new EngineSummaryItem(),
                 new GyroSummaryItem(),
@@ -911,6 +912,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         refresh.refreshBuild();
         refresh.refreshPreview();
         refresh.refreshStatus();
+        refresh.refreshSummary();
     }
 
     @Override

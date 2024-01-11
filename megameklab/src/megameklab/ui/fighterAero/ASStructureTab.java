@@ -80,8 +80,10 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
             panPatchwork.setVisible(false);
         }
         panSummary = new SummaryView(eSource,
+                new UnitTypeSummaryItem(),
                 new StructureSummaryItem(),
                 new EngineSummaryItem(),
+                new CockpitSummaryItem(),
                 new FuelSummaryItem(),
                 new HeatsinkSummaryItem(),
                 new ControlsSummaryItem(),

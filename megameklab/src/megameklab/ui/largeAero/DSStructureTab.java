@@ -70,6 +70,7 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
         panCrew = new LACrewView(panInfo);
         panArmorAllocation = new ArmorAllocationView(panInfo, Entity.ETYPE_AERO);
         panSummary = new SummaryView(eSource,
+                new UnitTypeSummaryItem(),
                 new StructureSummaryItem(),
                 new EngineSummaryItem(),
                 new FuelSummaryItem(),
