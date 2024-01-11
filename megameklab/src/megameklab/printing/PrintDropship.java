@@ -15,12 +15,10 @@ package megameklab.printing;
 
 import megamek.common.*;
 import megameklab.util.ImageHelper;
-import megameklab.util.UnitUtil;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGRectElement;
 
 import java.awt.print.PageFormat;
-import java.io.File;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -332,7 +330,7 @@ public class PrintDropship extends PrintAero {
         StringJoiner sj = new StringJoiner(", ");
         Map<String, Integer> eqCount = new HashMap<>();
         for (Mounted mount : ship.getMisc()) {
-            if (UnitUtil.isPrintableEquipment(mount.getType())) {
+            if (PrintUtil.isPrintableEquipment(mount.getType())) {
                 eqCount.merge(mount.getShortName(), 1, Integer::sum);
             }
         }

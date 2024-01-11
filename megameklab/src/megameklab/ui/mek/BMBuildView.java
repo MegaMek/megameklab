@@ -24,6 +24,7 @@ import megameklab.ui.util.CriticalTableModel;
 import megameklab.ui.util.CriticalTransferHandler;
 import megameklab.ui.util.IView;
 import megameklab.ui.util.RefreshListener;
+import megameklab.util.MekUtil;
 import megameklab.util.UnitUtil;
 import org.apache.logging.log4j.LogManager;
 
@@ -101,7 +102,7 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
                 .filter(m -> !m.isOneShotAmmo())
                 .forEach(masterEquipmentList::add);
 
-        masterEquipmentList.sort(new BMUtils.MekMountedSorter(getMech()));
+        masterEquipmentList.sort(new MekUtil.MekMountedSorter(getMech()));
         masterEquipmentList.forEach(equipmentList::addCrit);
     }
 
@@ -343,9 +344,9 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
         }
         try {
             if ((eq.getType() instanceof WeaponType) && eq.getType().hasFlag(WeaponType.F_VGL)) {
-                int slotNumber = BMUtils.findSlotWithContiguousNumOfCrits(getMech(), location,
+                int slotNumber = MekUtil.findSlotWithContiguousNumOfCrits(getMech(), location,
                         UnitUtil.getCritsUsed(eq));
-                BMUtils.addVGL(getMech(), eq, location, slotNumber);
+                MekUtil.addVGL(getMech(), eq, location, slotNumber);
             } else {
                 UnitUtil.addMounted(getMech(), eq, location, false);
             }

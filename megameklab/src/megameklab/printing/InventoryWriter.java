@@ -235,7 +235,7 @@ public class InventoryWriter {
                 ammo.merge(m.getShortName(), m.getBaseShotsLeft(), Integer::sum);
             }
             if ((m.getLocation() == Entity.LOC_NONE)
-                    || !UnitUtil.isPrintableEquipment(m.getType(), sheet.getEntity())) {
+                    || !PrintUtil.isPrintableEquipment(m.getType(), sheet.getEntity())) {
                 continue;
             }
             if ((sheet.getEntity() instanceof QuadVee)

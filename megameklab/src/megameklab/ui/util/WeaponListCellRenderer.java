@@ -24,6 +24,7 @@ import javax.swing.JList;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.Mounted;
+import megameklab.ui.EquipmentToolTip;
 import megameklab.util.UnitUtil;
 
 public class WeaponListCellRenderer extends DefaultListCellRenderer {
@@ -47,7 +48,7 @@ public class WeaponListCellRenderer extends DefaultListCellRenderer {
         label.setText(UnitUtil.getCritName(unit, eq));
         label.setName(value.toString());
 
-        label.setToolTipText(UnitUtil.getToolTipInfo(unit, new Mounted(unit, eq)));
+        label.setToolTipText(EquipmentToolTip.getToolTipInfo(unit, new Mounted(unit, eq)));
         return label;
     }
 

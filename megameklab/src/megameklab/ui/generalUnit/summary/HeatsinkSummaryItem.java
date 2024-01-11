@@ -22,6 +22,7 @@ import megamek.common.*;
 import megamek.common.annotations.Nullable;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestMech;
+import megameklab.util.MekUtil;
 import megameklab.util.UnitUtil;
 
 public class HeatsinkSummaryItem extends AbstractSummaryItem {
@@ -35,10 +36,10 @@ public class HeatsinkSummaryItem extends AbstractSummaryItem {
         if (entity instanceof Mech) {
             TestMech testMech = (TestMech) UnitUtil.getEntityVerifier(entity);
             Mech mek = (Mech) entity;
-            int numberSinks = UnitUtil.countActualHeatSinks(mek);
+            int numberSinks = MekUtil.countActualHeatSinks(mek);
             numberSinks = Math.max(0, numberSinks - UnitUtil.getCriticalFreeHeatSinks(mek, mek.hasCompactHeatSinks()));
             int critSinks = numberSinks;
-            if (UnitUtil.hasClanDoubleHeatSinks(mek)) {
+            if (MekUtil.hasClanDoubleHeatSinks(mek)) {
                 critSinks = numberSinks * 2;
             } else if (mek.hasDoubleHeatSinks()) {
                 critSinks = numberSinks * 3;

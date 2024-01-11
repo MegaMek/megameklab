@@ -26,7 +26,7 @@ import megameklab.ui.EntitySource;
 import megameklab.ui.util.EquipmentTableModel;
 import megameklab.ui.util.IView;
 import megameklab.ui.util.RefreshListener;
-import megameklab.util.UnitUtil;
+import megameklab.util.InfantryUtil;
 
 import javax.swing.*;
 import javax.swing.RowSorter.SortKey;
@@ -284,9 +284,9 @@ public class CIFieldGunView extends IView implements ActionListener {
                 int crewReq = Math.max(2, (int) Math.ceil(equip.getTonnage(getInfantry())));
                 num = getInfantry().getShootingStrength() / crewReq;
             }
-            UnitUtil.replaceFieldGun(getInfantry(), (WeaponType) equip, num);
+            InfantryUtil.replaceFieldGun(getInfantry(), (WeaponType) equip, num);
         } else if (e.getSource().equals(btnRemoveGun)) {
-            UnitUtil.replaceFieldGun(getInfantry(), null, 0);
+            InfantryUtil.replaceFieldGun(getInfantry(), null, 0);
         } else {
             return;
         }

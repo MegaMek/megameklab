@@ -20,6 +20,7 @@ import megameklab.ui.EntitySource;
 import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
 import megameklab.ui.util.SpringLayoutHelper;
+import megameklab.util.ProtoMekUtil;
 import megameklab.util.UnitUtil;
 
 import javax.swing.*;
@@ -112,7 +113,7 @@ public class PMBuildTab extends ITab implements ActionListener {
     private void autoFillCrits() {
         for (Mounted mount : buildView.getTableModel().getCrits()) {
             for (int location = 0; location < getProtomech().locations(); location++) {
-                if (UnitUtil.protomechHasRoom(getProtomech(), location, mount)) {
+                if (ProtoMekUtil.protomechHasRoom(getProtomech(), location, mount)) {
                     UnitUtil.changeMountStatus(getProtomech(), mount, location, Entity.LOC_NONE, false);
                 }
             }

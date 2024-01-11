@@ -19,6 +19,7 @@ import megamek.common.*;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.AbstractEquipmentTab;
 import megameklab.ui.util.AbstractEquipmentDatabaseView;
+import megameklab.util.BattleArmorUtil;
 import megameklab.util.UnitUtil;
 
 /**
@@ -48,8 +49,8 @@ public class BAEquipmentTab extends AbstractEquipmentTab {
     }
 
     private boolean showWeaponInLoadout(Mounted mount) {
-        return UnitUtil.isBattleArmorWeapon(mount.getType(), getBattleArmor())
-                || UnitUtil.isBattleArmorAPWeapon(mount.getType());
+        return BattleArmorUtil.isBattleArmorWeapon(mount.getType(), getBattleArmor())
+                || BattleArmorUtil.isBattleArmorAPWeapon(mount.getType());
     }
 
     private boolean showAmmoInLoadout(Mounted mount) {

@@ -16,6 +16,7 @@ package megameklab.ui.util;
 
 import megamek.common.*;
 import megamek.common.weapons.tag.TAGWeapon;
+import megameklab.util.BattleArmorUtil;
 import megameklab.util.UnitUtil;
 
 import java.util.Collections;
@@ -94,7 +95,7 @@ public enum EquipmentDatabaseCategory {
                     || eq.hasFlag(F_AMS)),
 
     AP ("Anti-Personnel",
-            (eq, en) -> UnitUtil.isBattleArmorAPWeapon(eq),
+            (eq, en) -> BattleArmorUtil.isBattleArmorAPWeapon(eq),
             e -> e instanceof BattleArmor),
 
     PROTOTYPE ("Prototype",

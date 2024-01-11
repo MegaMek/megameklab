@@ -17,7 +17,7 @@ package megameklab.ui.mek;
 
 import megamek.client.ui.swing.GUIPreferences;
 import megameklab.ui.generalUnit.StatusBar;
-import megameklab.util.UnitUtil;
+import megameklab.util.MekUtil;
 
 import javax.swing.*;
 
@@ -43,7 +43,7 @@ public class BMStatusBar extends StatusBar {
 
     public void refreshSlots() {
         int maxCrits = getTestEntity().totalCritSlotCount();
-        int currentSlots = UnitUtil.countUsedCriticals(getMech());
+        int currentSlots = MekUtil.countUsedCriticals(getMech());
         slots.setText(String.format(SLOTS_LABEL, maxCrits - currentSlots, maxCrits));
         slots.setForeground(currentSlots > maxCrits ? GUIPreferences.getInstance().getWarningColor() : null);
     }

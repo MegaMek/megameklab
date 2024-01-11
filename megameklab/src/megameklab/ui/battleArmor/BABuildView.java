@@ -23,6 +23,7 @@ import megameklab.ui.util.CriticalTableModel;
 import megameklab.ui.util.CriticalTransferHandler;
 import megameklab.ui.util.IView;
 import megameklab.ui.util.RefreshListener;
+import megameklab.util.BattleArmorUtil;
 import megameklab.util.StringUtils;
 import megameklab.util.UnitUtil;
 import org.apache.logging.log4j.LogManager;
@@ -111,8 +112,8 @@ public class BABuildView extends IView implements ActionListener, MouseListener 
                 continue;
             }
             if ((mount.getBaMountLoc() == BattleArmor.MOUNT_LOC_NONE) 
-                    && (UnitUtil.isBattleArmorWeapon(mount.getType(), getBattleArmor())
-                            || UnitUtil.isBattleArmorAPWeapon(mount.getType()))) {
+                    && (BattleArmorUtil.isBattleArmorWeapon(mount.getType(), getBattleArmor())
+                            || BattleArmorUtil.isBattleArmorAPWeapon(mount.getType()))) {
                 masterEquipmentList.add(mount);
             }
         }

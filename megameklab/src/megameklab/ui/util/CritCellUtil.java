@@ -2,6 +2,7 @@ package megameklab.ui.util;
 
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
+import megameklab.ui.EquipmentToolTip;
 import megameklab.util.CConfig;
 import megameklab.util.UnitUtil;
 
@@ -114,7 +115,7 @@ public final class CritCellUtil {
 
             cell.setText(" " + name);
 
-            String toolTipText = UnitUtil.getToolTipInfo(entity, mounted);
+            String toolTipText = EquipmentToolTip.getToolTipInfo(entity, mounted);
             // distinguish tooltips of equal adjacent one-slot equipment (e.g. ammo) to make the tip renew itself
             // when crossing from one such slot to the next (avoids them feeling like a single equipment)
             if (mounted.getCriticals() == 1) {

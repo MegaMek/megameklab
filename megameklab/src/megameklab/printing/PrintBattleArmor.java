@@ -15,7 +15,7 @@ package megameklab.printing;
 
 import megamek.common.*;
 import megamek.common.battlevalue.BattleArmorBVCalculator;
-import megameklab.util.UnitUtil;
+import megameklab.util.BattleArmorUtil;
 import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGRectElement;
@@ -86,8 +86,8 @@ public class PrintBattleArmor extends PrintEntity {
                 break;
         }
         hideElement(CHECK_MECHANIZED, !battleArmor.canDoMechanizedBA());
-        hideElement(CHECK_SWARM, !UnitUtil.canSwarm(battleArmor));
-        hideElement(CHECK_LEG, !UnitUtil.canLegAttack(battleArmor));
+        hideElement(CHECK_SWARM, !BattleArmorUtil.canSwarm(battleArmor));
+        hideElement(CHECK_LEG, !BattleArmorUtil.canLegAttack(battleArmor));
         hideElement(CHECK_AP, battleArmor.countWorkingMisc(MiscType.F_AP_MOUNT) == 0);
 
         setTextField(BV, battleArmor.calculateBattleValue(true, !showPilotInfo())
@@ -144,7 +144,7 @@ public class PrintBattleArmor extends PrintEntity {
     public String formatMiscNotes() {
         final StringJoiner sj = new StringJoiner(" ");
         if (battleArmor.isBurdened() && ((battleArmor.getJumpMP(MPCalculationSetting.BA_UNBURDENED) > 0)
-                || UnitUtil.canLegAttack(battleArmor) || UnitUtil.canSwarm(battleArmor))) {
+                || BattleArmorUtil.canLegAttack(battleArmor) || BattleArmorUtil.canSwarm(battleArmor))) {
             sj.add("Must detach missiles before jumping or swarm/leg attacks.");
         }
         if (battleArmor.hasDWP()) {

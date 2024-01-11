@@ -19,6 +19,7 @@ import megamek.common.*;
 import megameklab.ui.EntitySource;
 import megameklab.ui.PopupMessages;
 import megameklab.ui.mek.BMCriticalView;
+import megameklab.util.ProtoMekUtil;
 import megameklab.util.UnitUtil;
 import org.apache.logging.log4j.LogManager;
 
@@ -89,7 +90,7 @@ public class CriticalTransferHandler extends TransferHandler {
                     return false;
                 }
 
-                if (!UnitUtil.protomechHasRoom(list.getProtomech(), location, mount)) {
+                if (!ProtoMekUtil.protomechHasRoom(list.getProtomech(), location, mount)) {
                     PopupMessages.showLocationFullError(null, mount.getName());
                 } else {
                     changeMountStatus(mount, location, false);

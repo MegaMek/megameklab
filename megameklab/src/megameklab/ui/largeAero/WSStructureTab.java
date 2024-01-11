@@ -33,6 +33,7 @@ import megameklab.ui.listeners.AdvancedAeroBuildListener;
 import megameklab.ui.listeners.ArmorAllocationListener;
 import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
+import megameklab.util.AeroUtil;
 import megameklab.util.UnitUtil;
 
 /**
@@ -625,7 +626,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
 
     @Override
     public void quartersChanged(int officer, int standard, int secondclass, int steerage) {
-        UnitUtil.assignQuarters(getJumpship(), officer, standard, secondclass, steerage);
+        AeroUtil.assignQuarters(getJumpship(), officer, standard, secondclass, steerage);
         panCrew.setFromEntity(getJumpship());
         refreshSummary();
         refresh.refreshStatus();
@@ -634,7 +635,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
     
     @Override
     public void autoAssignQuarters() {
-        UnitUtil.autoAssignQuarters(getJumpship());
+        AeroUtil.autoAssignQuarters(getJumpship());
         panCrew.setFromEntity(getJumpship());
         refreshSummary();
         refresh.refreshStatus();

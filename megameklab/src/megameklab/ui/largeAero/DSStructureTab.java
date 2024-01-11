@@ -32,6 +32,7 @@ import megameklab.ui.listeners.ArmorAllocationListener;
 import megameklab.ui.listeners.DropshipBuildListener;
 import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
+import megameklab.util.AeroUtil;
 import megameklab.util.UnitUtil;
 
 /**
@@ -570,7 +571,7 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
 
     @Override
     public void quartersChanged(int officer, int standard, int secondclass, int steerage) {
-        UnitUtil.assignQuarters(getSmallCraft(), officer, standard, secondclass, steerage);
+        AeroUtil.assignQuarters(getSmallCraft(), officer, standard, secondclass, steerage);
         panCrew.setFromEntity(getSmallCraft());
         refreshSummary();
         refresh.refreshStatus();
@@ -579,7 +580,7 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
     
     @Override
     public void autoAssignQuarters() {
-        UnitUtil.autoAssignQuarters(getSmallCraft());
+        AeroUtil.autoAssignQuarters(getSmallCraft());
         panCrew.setFromEntity(getSmallCraft());
         refreshSummary();
         refresh.refreshStatus();

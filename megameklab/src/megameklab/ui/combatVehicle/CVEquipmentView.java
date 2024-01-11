@@ -22,6 +22,7 @@ import megamek.common.Mounted;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.*;
 import megameklab.util.StringUtils;
+import megameklab.util.TankUtil;
 import megameklab.util.UnitUtil;
 import org.apache.logging.log4j.LogManager;
 
@@ -89,7 +90,7 @@ public class CVEquipmentView extends IView implements ActionListener {
         while (miscTypes.hasMoreElements()) {
             EquipmentType eq = miscTypes.nextElement();
 
-            if (UnitUtil.isTankEquipment(eq, getTank())) {
+            if (TankUtil.isTankEquipment(eq, getTank())) {
                 masterEquipmentList.add(eq);
             }
         }
@@ -126,7 +127,7 @@ public class CVEquipmentView extends IView implements ActionListener {
             if (UnitUtil.isHeatSink(mount) || UnitUtil.isArmorOrStructure(mount.getType())) {
                 continue;
             }
-            if (UnitUtil.isTankEquipment(mount.getType(), getTank())) {
+            if (TankUtil.isTankEquipment(mount.getType(), getTank())) {
                 equipmentList.addCrit(mount);
             }
         }
