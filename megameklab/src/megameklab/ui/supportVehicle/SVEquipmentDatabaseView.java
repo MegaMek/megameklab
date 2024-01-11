@@ -52,10 +52,13 @@ class SVEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
                 if (!UnitUtil.hasTargComp(getEntity())) {
                     UnitUtil.updateTC(getEntity(), equip);
                 }
+            } else if (isMisc && equip.is("ISMastMount")) {
+                mount = new Mounted(getEntity(), equip);
+                getEntity().addEquipment(mount, VTOL.LOC_ROTOR, false);
             } else if (isMisc && UnitUtil.isFixedLocationSpreadEquipment(equip)) {
-                    int location = TestEntity.getSystemWideLocation(getEntity());
-                    mount = new Mounted(getEntity(), equip);
-                    getEntity().addEquipment(mount, location, false);
+                int location = TestEntity.getSystemWideLocation(getEntity());
+                mount = new Mounted(getEntity(), equip);
+                getEntity().addEquipment(mount, location, false);
             } else {
                 if (equip instanceof AmmoType) {
                     if (getEntity().usesWeaponBays()) {
