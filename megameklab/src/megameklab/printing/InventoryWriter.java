@@ -49,12 +49,12 @@ public class InventoryWriter {
      * The minimum font size to use when scaling inventory text to fit into
      * available space
      */
-    private static final float MIN_FONT_SIZE = 5.0f;
+    private static final float MIN_FONT_SIZE = 4.5f;
     /**
      * The amount of space between lines, as a factor of the font height determined
      * by {@link java.awt.FontMetrics}
      */
-    public static final float MIN_LINE_SPACING = 0.8f;
+    public static final float MIN_LINE_SPACING = 0.7f;
 
     enum Column {
         QUANTITY ("Qty", 0.037),
@@ -457,19 +457,16 @@ public class InventoryWriter {
      */
     public float[] scaleText(double height, Function<Float, Integer> calcLines) {
         float fontSize = FONT_SIZE_MEDIUM;
-        float lineHeight = sheet.getFontHeight(fontSize) * 1.2f;
-
-        int lines = calcLines.apply(fontSize);
         float lineSpacing = 1.2f;
-        while ((fontSize > MIN_FONT_SIZE) && (lineSpacing > MIN_LINE_SPACING)
-                && ((lineHeight * lines) >= height)) {
-            if (fontSize > MIN_FONT_SIZE) {
-                fontSize = Math.max(MIN_FONT_SIZE, fontSize - 0.5f);
-                // A smaller font may allow fewer lines
-                lines = calcLines.apply(fontSize);
-            } else {
+        float lineHeight = sheet.getFontHeight(fontSize) * lineSpacing;
+        int lines = calcLines.apply(fontSize);
+        while ((fontSize > MIN_FONT_SIZE) && (lineHeight * lines >= height)) {
+            if (lineSpacing > MIN_LINE_SPACING) {
                 lineSpacing -= 0.1f;
+            } else {
+                fontSize = Math.max(MIN_FONT_SIZE, fontSize - 0.5f);
             }
+            lines = calcLines.apply(fontSize);
             lineHeight = sheet.getFontHeight(fontSize) * lineSpacing;
         }
         return new float[] { fontSize, lineHeight };
@@ -537,7 +534,7 @@ public class InventoryWriter {
             sheet.addTextElement(canvas, colX[i], currY, columnTypes[i].header, FONT_SIZE_MEDIUM,
                     anchor, SVGConstants.SVG_BOLD_VALUE);
         }
-        return currY + sheet.getFontHeight(FONT_SIZE_MEDIUM) * 1.2;
+        return currY + sheet.getFontHeight(FONT_SIZE_MEDIUM) * 1.1;
     }
 
     /**
@@ -564,8 +561,7 @@ public class InventoryWriter {
             int rows = line.nRows();
             // If the name or damage field is too long to fit in the space, make sure there is a second row
             if ((rows == 1) &&
-                    ((sheet.getTextLength(line.getNameField(0),
-                            fontSize) > nameWidth) ||
+                    ((sheet.getTextLength(line.getNameField(0), fontSize) > nameWidth) ||
                         sheet.getTextLength(line.getDamageField(0), fontSize) > dmgWidth - fontSize)) {
                 rows++;
             }
@@ -640,8 +636,10 @@ public class InventoryWriter {
                             // Calculate the width of the name field to determine if wrapping is required.
                             // The following column is always location, which is centered, so we need
                             // to subtract half the width of that field as well, plus a bit of extra space.
-                            double width = colX[i + 1] - colX[i] - indent
-                                    - sheet.getTextLength(line.getLocationField(row), fontSize) * 0.5;
+                            double width = colX[i + 1] - colX[i] - indent;
+                            if (!(sheet.getEntity() instanceof BattleArmor)) {
+                                width -= sheet.getTextLength(line.getLocationField(row), fontSize) * 0.5;
+                            }
                             if (row == 0) {
                                 lines = sheet.addMultilineTextElement(canvas, colX[i], ypos, width, lineHeight,
                                         line.getNameField(row), fontSize, SVGConstants.SVG_START_VALUE,
