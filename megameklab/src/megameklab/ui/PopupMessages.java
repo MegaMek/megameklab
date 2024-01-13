@@ -102,15 +102,31 @@ public final class PopupMessages {
     // ############ Internal message handlers
 
     private static void showErrorMessage(Component parent, String message) {
-        JOptionPane.showMessageDialog(parent, message, "MML encountered a problem", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(parent, possiblyWrapInScrollBar(message),
+                "MML encountered a problem", JOptionPane.ERROR_MESSAGE);
     }
 
     private static void showWarningMessage(Component parent, String message) {
-        JOptionPane.showMessageDialog(parent, message, "Warning", JOptionPane.WARNING_MESSAGE);
+        JOptionPane.showMessageDialog(parent, possiblyWrapInScrollBar(message),
+                "Warning", JOptionPane.WARNING_MESSAGE);
     }
 
     private static void showInfoMessage(Component parent, String message) {
-        JOptionPane.showMessageDialog(parent, message, "Information", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(parent, possiblyWrapInScrollBar(message),
+                "Information", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private static Object possiblyWrapInScrollBar(String message) {
+        if (message.length() < 200) {
+            return message;
+        } else {
+            JTextArea textArea = new JTextArea(message);
+            JScrollPane scrollPane = new JScrollPane(textArea);
+            textArea.setLineWrap(true);
+            textArea.setWrapStyleWord(true);
+            scrollPane.setPreferredSize(new Dimension(600, 500));
+            return scrollPane;
+        }
     }
 
     private PopupMessages() { }
