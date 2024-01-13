@@ -244,6 +244,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         if (en.getManualBV() >= 0) {
             setManualBV(en.getManualBV());
         }
+        cbRole.removeActionListener(this);
         cbRole.removeAllItems();
         for (UnitRole role : UnitRole.values()) {
             if (role.isAvailableTo(en)) {
@@ -251,6 +252,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
             }
         }
         cbRole.setSelectedItem(en.getRole());
+        cbRole.addActionListener(this);
         
         refreshFaction();
     }
