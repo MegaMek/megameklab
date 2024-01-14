@@ -1390,4 +1390,20 @@ public final class MekUtil {
             }
         }
     }
+
+    /**
+     * Removes the system crits of the given type from the location on the given mek.
+     *
+     * @param mek The Mek
+     * @param systemType The system type, e.g. {@link Mech#SYSTEM_LIFE_SUPPORT}
+     * @param loc The location
+     */
+    public static void removeSystemCrits(Mech mek, int systemType, int loc) {
+        for (int slot = 0; slot < mek.getNumberOfCriticals(loc); slot++) {
+            CriticalSlot cs = mek.getCritical(loc, slot);
+            if ((cs != null) && (cs.getType() == CriticalSlot.TYPE_SYSTEM) && (cs.getIndex() == systemType)) {
+                mek.setCritical(loc, slot, null);
+            }
+        }
+    }
 }
