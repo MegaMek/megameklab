@@ -18,6 +18,9 @@
  */
 package megameklab.ui.generalUnit.summary;
 
+import megamek.client.ui.swing.unitSelector.ASAdvancedSearchPanel;
+import megamek.client.ui.swing.util.UIUtil;
+import megamek.client.ui.swing.widget.SimpleLine;
 import megamek.common.Entity;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.IView;
@@ -40,6 +43,8 @@ public class SummaryView extends IView {
     private static final Dimension categorySize = new Dimension(110, 25);
 
     private final List<SummaryItem> summaryItemList = new ArrayList<>();
+    private final JLabel earliestYear = new JLabel("");
+
 
     /**
      * Constructs a new summary table having the given summary items in the order they are listed.
@@ -56,7 +61,7 @@ public class SummaryView extends IView {
      * Constructs a new summary table having the given summary items in the order they are listed.
      *
      * @param entitySource The EntitySource (cannot be null)
-     * @param showCrits When false, the crits column is hidden
+     * @param showCrits    When false, the crits column is hidden
      * @param summaryItems The SummaryItems to show
      */
     public SummaryView(EntitySource entitySource, boolean showCrits, SummaryItem... summaryItems) {
@@ -123,16 +128,31 @@ public class SummaryView extends IView {
             this.add(summaryItem.getAvailabilityComponent(), gbc);
             gbc.gridy++;
         }
+
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.gridx = 0;
+        gbc.gridy++;
+        add(Box.createVerticalStrut(12), gbc);
+
+        gbc.gridy++;
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.gridx = 0;
+        add(earliestYear, gbc);
+
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.gridx = 0;
+        gbc.gridy++;
+        add(Box.createVerticalStrut(12), gbc);
     }
 
-    private JLabel createLabel(String text, Dimension size,int align){
+    private JLabel createLabel(String text, Dimension size, int align) {
         JLabel label = new JLabel(text, SwingConstants.TRAILING);
         setFieldSize(label, size);
         label.setHorizontalAlignment(align);
         return label;
     }
 
-    private void setFieldSize(JComponent box, Dimension maxSize){
+    private void setFieldSize(JComponent box, Dimension maxSize) {
         box.setPreferredSize(maxSize);
         box.setMaximumSize(maxSize);
         box.setMinimumSize(maxSize);
@@ -140,5 +160,7 @@ public class SummaryView extends IView {
 
     private void refresh(Entity entity) {
         summaryItemList.forEach(summaryItem -> summaryItem.refresh(entity));
+        entity.recalculateTechAdvancement();
+        earliestYear.setText("Earliest Possible Year: " + entity.getEarliestTechDate());
     }
 }
