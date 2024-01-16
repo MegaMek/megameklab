@@ -564,6 +564,9 @@ public final class MekUtil {
                 for (int i = 0; i < unit.locations(); i++) {
                     locations.add(i);
                 }
+                if (unit instanceof TripodMech) {
+                    blocks++;
+                }
             } else if (equip.hasFlag(MiscType.F_STEALTH)) {
                 // 2 in arms, legs, side torsos
                 locations.add(Mech.LOC_LLEG);
