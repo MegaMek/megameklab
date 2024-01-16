@@ -49,18 +49,15 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
     private PatchworkArmorView panPatchwork;
 
     RefreshListener refresh = null;
-    JPanel masterPanel;
 
     public BMStructureTab(EntitySource eSource) {
         super(eSource);
-        setLayout(new BorderLayout());
         setUpPanels();
-        this.add(masterPanel, BorderLayout.CENTER);
         refresh();
     }
 
     private void setUpPanels() {
-        masterPanel = new JPanel(new GridBagLayout());
+        setLayout(new GridBagLayout());
         panBasicInfo = new BasicInfoView(getMech().getConstructionTechAdvancement());
         panChassis = new BMChassisView(panBasicInfo);
         panArmor = new MVFArmorView(panBasicInfo);
@@ -87,8 +84,6 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         } else {
             panPatchwork.setVisible(false);
         }
-
-        GridBagConstraints gbc;
 
         panBasicInfo.setFromEntity(getMech());
         panChassis.setFromEntity(getMech());
@@ -126,18 +121,18 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         rightPanel.add(panPatchwork);
         rightPanel.add(Box.createVerticalGlue());
 
-        gbc = new GridBagConstraints();
+        GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.fill = java.awt.GridBagConstraints.NONE;
         gbc.weightx = 0.0;
         gbc.weighty = 1.0;
         gbc.anchor = GridBagConstraints.NORTHWEST;
-        masterPanel.add(leftPanel, gbc);
+        add(leftPanel, gbc);
         gbc.gridx = 1;
-        masterPanel.add(centerPanel, gbc);
+        add(centerPanel, gbc);
         gbc.gridx = 2;
-        masterPanel.add(rightPanel, gbc);
+        add(rightPanel, gbc);
 
         panBasicInfo.setBorder(BorderFactory.createTitledBorder("Basic Information"));
         panChassis.setBorder(BorderFactory.createTitledBorder("Chassis"));
@@ -181,9 +176,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         return panBasicInfo;
     }
 
-    /*
-     * Used by MekHQ to set the tech faction for custom refits.
-     */
+    @SuppressWarnings("unused") // Used by MekHQ to set the tech faction for custom refits
     public void setTechFaction(int techFaction) {
         panBasicInfo.setTechFaction(techFaction);
     }
@@ -192,7 +185,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         getMech().clearCockpitCrits();
         getMech().clearGyroCrits();
         getMech().clearEngineCrits();
-        removeSystemCrits(LandAirMech.LAM_LANDING_GEAR, Mech.LOC_CT);
+        MekUtil.removeSystemCrits(getMech(), LandAirMech.LAM_LANDING_GEAR, Mech.LOC_CT);
 
         int[] ctEngine = getMech().getEngine().getCenterTorsoCriticalSlots(getMech().getGyroType());
         int lastEngine = ctEngine[ctEngine.length - 1];
@@ -391,27 +384,12 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
             LogManager.getLogger().error("", ex);
         }
 
-        if ((crit != null) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
+        if (crit.getType() == CriticalSlot.TYPE_EQUIPMENT) {
             UnitUtil.changeMountStatus(getMech(), mounted, Entity.LOC_NONE, Entity.LOC_NONE,
                     false);
             if (crit.getMount2() != null) {
                 UnitUtil.changeMountStatus(getMech(), crit.getMount2(), Entity.LOC_NONE, Entity.LOC_NONE,
                         false);
-            }
-        }
-
-    }
-    
-    private void removeSystemCrits(int systemType, int loc) {
-        for (int slot = 0; slot < getMech().getNumberOfCriticals(loc); slot++) {
-            CriticalSlot cs = getMech().getCritical(loc, slot);
-
-            if ((cs == null) || (cs.getType() != CriticalSlot.TYPE_SYSTEM)) {
-                continue;
-            }
-
-            if (cs.getIndex() == systemType) {
-                getMech().setCritical(loc, slot, null);
             }
         }
     }
@@ -442,26 +420,8 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         refresh = l;
     }
 
-    public boolean isQuad() {
-        return (panChassis.getBaseTypeIndex() == BMChassisView.BASE_TYPE_STANDARD)
-                && (panChassis.getMotiveTypeIndex() == BMChassisView.MOTIVE_TYPE_QUAD);
-    }
-
-    public boolean isTripod() {
-        return (panChassis.getBaseTypeIndex() == BMChassisView.BASE_TYPE_STANDARD)
-                && (panChassis.getMotiveTypeIndex() == BMChassisView.MOTIVE_TYPE_TRIPOD);
-    }
-
-    public boolean isLAM() {
-        return (panChassis.getBaseTypeIndex() == BMChassisView.BASE_TYPE_LAM);
-    }
-
-    public boolean isQuadVee() {
-        return (panChassis.getBaseTypeIndex() == BMChassisView.BASE_TYPE_QUADVEE);
-    }
-
     private void createISMounts(EquipmentType structure) {
-        int isCount = 0;
+        int isCount;
         getMech().setStructureType(EquipmentType.getStructureType(structure));
         getMech().setStructureTechLevel(structure.getStaticTechLevel().getCompoundTechLevel(structure.isClan()));
 
@@ -532,8 +492,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         } else if (gyroType == Mech.GYRO_XL) {
             crits += 2;
         }
-        if ((cockpitType == Mech.COCKPIT_TORSO_MOUNTED)
-                || (cockpitType == Mech.COCKPIT_VRRP)) {
+        if ((cockpitType == Mech.COCKPIT_TORSO_MOUNTED) || (cockpitType == Mech.COCKPIT_VRRP)) {
             crits += 2;
         }
         return crits <= 12;
@@ -567,9 +526,8 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         } else {
             for (; armorCount > 0; armorCount--) {
                 try {
-                    getMech().addEquipment(new Mounted(getMech(),
-                            armor), Entity.LOC_NONE, false);
-                } catch (Exception ex) {
+                    getMech().addEquipment(new Mounted(getMech(), armor), Entity.LOC_NONE, false);
+                } catch (Exception ignored) {
                 }
             }
         }
@@ -699,8 +657,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         boolean changedSuperHeavyStatus = getMech().isSuperHeavy() != tonnage > 100;
 
         if (changedSuperHeavyStatus) {
-            // if we switch from being superheavy to not being superheavy,
-            // remove crits
+            // if we switch from being superheavy to not being superheavy, remove crits
             for (Mounted mount : getMech().getEquipment()) {
                 if (!UnitUtil.isFixedLocationSpreadEquipment(mount.getType())) {
                     UnitUtil.removeCriticals(getMech(), mount);
@@ -739,8 +696,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
     @Override
     public void omniChanged(boolean omni) {
         getMech().setOmni(omni);
-        getMech().getEngine().setBaseChassisHeatSinks(
-                omni? Math.max(0, panHeat.getBaseCount()) : -1);
+        getMech().getEngine().setBaseChassisHeatSinks(omni? Math.max(0, panHeat.getBaseCount()) : -1);
         panHeat.setFromMech(getMech());
         MekUtil.updateAutoSinks(getMech(), getMech().hasCompactHeatSinks());
         refresh.refreshPreview();
@@ -782,9 +738,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
                         Optional<Mounted> mount = getMech().getMisc().stream()
                                 .filter(m -> m.getType().hasFlag(MiscType.F_TRACKS))
                                 .findAny();
-                        if (mount.isPresent()) {
-                            UnitUtil.removeMounted(getMech(), mount.get());
-                        }
+                        mount.ifPresent(mounted -> UnitUtil.removeMounted(getMech(), mounted));
 
                         if (motiveType == QuadVee.MOTIVE_WHEEL) {
                             ((QuadVee)getMech()).setMotiveType(QuadVee.MOTIVE_WHEEL);
@@ -802,7 +756,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
                 break;
         }
         if (getMech().isIndustrial() != industrial) {
-            getMech().setStructureType(industrial?
+            getMech().setStructureType(industrial ?
                     EquipmentType.T_STRUCTURE_INDUSTRIAL : EquipmentType.T_STRUCTURE_STANDARD);
         }
 
@@ -929,15 +883,13 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
 
     @Override
     public void heatSinksChanged(EquipmentType hsType, int count) {
-        // if we have the same type of heat sink, then we should not remove the
-        // existing heat sinks
+        // if we have the same type of heat sink, then we should not remove the existing heat sinks
         int currentSinks = MekUtil.countActualHeatSinks(getMech());
         if (getMech().hasWorkingMisc(hsType.getInternalName())) {
             if (count < currentSinks) {
                 MekUtil.removeHeatSinks(getMech(), currentSinks - count);
             } else if (count > currentSinks) {
-                MekUtil.addHeatSinkMounts(getMech(), count - currentSinks,
-                        hsType);
+                MekUtil.addHeatSinkMounts(getMech(), count - currentSinks, hsType);
             }
         } else {
             MekUtil.removeHeatSinks(getMech(), count);
@@ -958,8 +910,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
 
     @Override
     public void heatSinkBaseCountChanged(int count) {
-        getMech().getEngine().setBaseChassisHeatSinks(
-                Math.max(0, count));
+        getMech().getEngine().setBaseChassisHeatSinks(Math.max(0, count));
         MekUtil.updateAutoSinks(getMech(), panHeat.getHeatSinkType().hasFlag(MiscType.F_COMPACT_HEAT_SINK));
         refresh.refreshBuild();
         refresh.refreshStatus();
@@ -1306,11 +1257,9 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
             // max
             if (points == 1) {
                 if ((getMech().getOArmor(Mech.LOC_HEAD) == headMaxArmor)
-                        && ((getMech().getOArmor(Mech.LOC_CT) + getMech().getOArmor(
-                                Mech.LOC_CT, true)) == (getMech()
-                                        .getOInternal(Mech.LOC_CT) * 2))) {
-                    getMech().initializeArmor(getMech().getOArmor(Mech.LOC_CT) - 1,
-                            Mech.LOC_CT);
+                        && ((getMech().getOArmor(Mech.LOC_CT) + getMech().getOArmor(Mech.LOC_CT, true))
+                        == (getMech().getOInternal(Mech.LOC_CT) * 2))) {
+                    getMech().initializeArmor(getMech().getOArmor(Mech.LOC_CT) - 1, Mech.LOC_CT);
                     points++;
                 }
             }
@@ -1410,5 +1359,4 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         refresh.refreshSummary();
         refresh.refreshStatus();
     }
-
 }
