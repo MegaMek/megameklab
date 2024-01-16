@@ -16,6 +16,7 @@ package megameklab.ui;
 
 import megamek.client.ui.dialogs.BVDisplayDialog;
 import megamek.client.ui.dialogs.CostDisplayDialog;
+import megamek.client.ui.dialogs.WeightDisplayDialog;
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
@@ -1366,42 +1367,15 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         }
     }
 
-    public static void showUnitWeightBreakDown(Entity unit, JFrame frame) {
-        TestEntity testEntity = UnitUtil.getEntityVerifier(unit);
-
-        JTextPane textPane = new JTextPane();
-        JScrollPane scroll = new JScrollPane();
-
-        textPane.setText(testEntity.printEntity().toString());
-        textPane.setEditable(false);
-        textPane.setCaret(new DefaultCaret());
-
-        scroll.setViewportView(textPane);
-        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scroll.getVerticalScrollBar().setUnitIncrement(20);
-
-        scroll.setVisible(true);
-
-        JDialog jdialog = new JDialog();
-
-        jdialog.add(scroll);
-        jdialog.pack();
-        jdialog.setLocationRelativeTo(frame);
-        jdialog.setVisible(true);
-
-        try {
-            textPane.setSelectionStart(0);
-            textPane.setSelectionEnd(0);
-        } catch (Exception ignored) {
-
+    public static void showUnitWeightBreakDown(Entity entity, JFrame frame) {
+        if (entity != null) {
+            new WeightDisplayDialog(frame, entity).setVisible(true);
         }
     }
 
     public static void showBVCalculations(final JFrame frame, final @Nullable Entity entity) {
-        if (entity == null) {
-            return;
+        if (entity != null) {
+            new BVDisplayDialog(frame, entity).setVisible(true);
         }
-        new BVDisplayDialog(frame, entity).setVisible(true);
     }
 }
