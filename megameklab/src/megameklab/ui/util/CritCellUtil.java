@@ -96,7 +96,7 @@ public final class CritCellUtil {
             name += mounted.isSponsonTurretMounted() ? " (ST)" : "";
             name += mounted.isPintleTurretMounted() ? " (PT)" : "";
             name += mounted.isDWPMounted() ? " (DWP)" : "";
-            if (mounted.getType() instanceof AmmoType) {
+            if ((mounted.getType() instanceof AmmoType) && !mounted.is(EquipmentTypeLookup.COOLANT_POD)) {
                 name = mounted.getBaseShotsLeft() + " shot" + (mounted.getBaseShotsLeft() > 1 ? "s " : " ") + name;
             }
             if (entity.isOmni() && !mounted.getType().isOmniFixedOnly()) {
