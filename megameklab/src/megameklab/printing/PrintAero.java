@@ -181,7 +181,7 @@ public class PrintAero extends PrintEntity {
         Map<String, Integer> seating = new HashMap<>();
         for (Transporter t : aero.getTransports()) {
             if (t instanceof TroopSpace) {
-                transport.merge("Infantry Bay", t.getUnused(), Double::sum);
+                transport.merge("Infantry Compartment", t.getUnused(), Double::sum);
             } else if (t instanceof StandardSeatCargoBay) {
                 seating.merge(((Bay) t).getType(), (int) ((Bay) t).getCapacity(), Integer::sum);
                 // include cargo bays for fighters and fixed wing, but small craft get a block for transport bays
