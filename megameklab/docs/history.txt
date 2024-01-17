@@ -14,12 +14,14 @@ MEGAMEKLAB VERSION HISTORY:
 + Fix #1289: Battle Armor Mechanical Jump booster Error
 + Fix #1228: SV Mast Mount not being assigned to rotor, fixed to body and cannot be moved
 + PR #1380: Show the earliest possible construction year in the summary
-+ Fix #1314: Superheavy industrial tripod issue.
-+ PR #1382: Crit cell display improvements
-+ PR #1383: fix (partly) BA equipment text overlap
-+ Fix #1385: Role not saving for BA
-+ PR #1387: -Use a scrollbar for long popup messages
++ Fix #1314: On industrial tripods, environmental sealing now correctly adds a crit to the center leg
++ PR #1382: Crit cells now use equipment abbreviations for long names
++ PR #1383: Text overlap on BA record sheets for lots of equipment has been fixed for most cases
++ Fix #1385: Units that use .blk files now save their Combat Role
++ PR #1387: Long unit validation popup messages now use a scrollbar
 + Fix #494: Problem with infantry unit weight breakdown in the Reports menu
++ Fix #1037: infantry bays on record sheets now show their platoon capacity rather than weight
++ Fix #1038: Record sheets no longer list infantry compartments as infantry bays
 
 0.49.17 (2023-12-31 1900 UTC)
 + PR #1352 MML interface changes
