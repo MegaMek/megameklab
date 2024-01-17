@@ -888,6 +888,9 @@ public class InventoryWriter {
                         } else {
                             capacity *= 4;
                         }
+                    } else if (b instanceof InfantryBay) {
+                        // Divide total weight by weight required by platoon to get platoon capacity
+                        capacity /= ((InfantryBay) b).getPlatoonType().getWeight();
                     }
                     bayCapacityString.append(NumberFormat.getInstance().format(capacity));
                     if ((i + 1) < bays.size()) {
