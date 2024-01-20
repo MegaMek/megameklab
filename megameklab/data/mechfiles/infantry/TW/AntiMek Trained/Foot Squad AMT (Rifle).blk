@@ -1,13 +1,4 @@
-#building block data file
-<BlockVersion>
-1
-</BlockVersion>
-
-# Write the version number just in case...
-<Version>
-MAM0
-</Version>
-
+#Saved from version 0.49.18-SNAPSHOT on 2024-01-20
 <UnitType>
 Infantry
 </UnitType>
@@ -24,6 +15,10 @@ Foot Squad (Anti-'Mech)
 1900
 </year>
 
+<originalBuildYear>
+1900
+</originalBuildYear>
+
 <type>
 IS Level 2
 </type>
@@ -31,6 +26,11 @@ IS Level 2
 <motion_type>
 Leg
 </motion_type>
+
+<Troopers Equipment>
+Generic Infantry Kit
+AntiMekGear
+</Troopers Equipment>
 
 <Field Guns Equipment>
 </Field Guns Equipment>
@@ -48,13 +48,6 @@ Total Warfare
 </squadn>
 
 <Primary>
-Auto-Rifle
+InfantryAssaultRifle
 </Primary>
 
-<antimek>
-5
-</antimek>
-
-<armorKit>
-GenericKit
-</armorKit>
