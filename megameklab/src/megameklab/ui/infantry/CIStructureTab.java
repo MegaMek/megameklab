@@ -38,6 +38,7 @@ import javax.swing.SwingConstants;
 import megamek.common.*;
 import megamek.common.options.IOption;
 import megamek.common.options.PilotOptions;
+import megamek.common.verifier.TestInfantry;
 import megamek.common.weapons.infantry.InfantryWeapon;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.BasicInfoView;
@@ -56,7 +57,7 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
     public static final int T_SPECIALIZATION   = 3;
     public static final int T_MOUNT            = 4;
     public static final int T_AUGMENTATION     = 5;
-
+    private static final EquipmentType antiMekGear = EquipmentType.get(EquipmentTypeLookup.ANTI_MEK_GEAR);
 
     private BasicInfoView panBasicInfo;
     private CIPlatoonTypeView panPlatoonType;
@@ -412,6 +413,7 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
             InfantryUtil.replaceFieldGun(getInfantry(), null, 0);
         }
         enableTabs();
+        TestInfantry.adaptAntiMekAttacks(getInfantry());
         panPlatoonType.setFromEntity(getInfantry());
         panWeapons.setFromEntity(getInfantry());
         specializationView.refresh();
@@ -469,7 +471,16 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
 
     @Override
     public void antiMekChanged(final boolean antiMek) {
-        getInfantry().setAntiMekSkill(antiMek);
+        if (antiMek) {
+            try {
+                getInfantry().addEquipment(antiMekGear, Infantry.LOC_INFANTRY);
+            } catch (LocationFullException ignored) {
+                // Not on infantry
+            }
+        } else {
+            UnitUtil.removeAllMounteds(getInfantry(), antiMekGear);
+        }
+        TestInfantry.adaptAntiMekAttacks(getInfantry());
         refresh.refreshStatus();
     }
 
