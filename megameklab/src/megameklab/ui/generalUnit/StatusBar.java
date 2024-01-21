@@ -35,27 +35,24 @@ import megameklab.util.UnitUtil;
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.io.File;
 import java.text.DecimalFormat;
 
-public class StatusBar extends ITab implements MouseListener {
+public class StatusBar extends ITab {
 
     private static final String WEIGHT_LABEL = "Weight: %s %s / %s %s %s";
 
     private final MegaMekLabMainUI parentFrame;
-    private final JLabel bvLabel = new JLabel();
-    protected final JLabel tons = new JLabel();
-    private final JLabel cost = new JLabel();
+    private final JLabel bvLabel = new ClickableLabel(
+            e -> new BVDisplayDialog(getParentFrame(), getEntity()).setVisible(true));
+    protected final JLabel tons = new ClickableLabel(
+            e -> new WeightDisplayDialog(getParentFrame(), getEntity()).setVisible(true));
+    private final JLabel cost = new ClickableLabel(
+            e -> new CostDisplayDialog(getParentFrame(), getEntity()).setVisible(true));
     private final JLabel invalid = new JLabel("Invalid");
     private final DecimalFormat formatter;
     private TestEntity testEntity;
     private RefreshListener refresh;
-    private boolean costHovered = false;
-    protected boolean weightHovered = false;
-    private boolean bvHovered = false;
 
     public StatusBar(MegaMekLabMainUI parent) {
         super(parent);
@@ -85,10 +82,6 @@ public class StatusBar extends ITab implements MouseListener {
         add(bvLabel);
         add(invalid);
         add(cost);
-
-        cost.addMouseListener(this);
-        bvLabel.addMouseListener(this);
-        tons.addMouseListener(this);
     }
 
     public final void refresh() {
@@ -132,19 +125,19 @@ public class StatusBar extends ITab implements MouseListener {
             remaining = Math.round((tonnage - currentTonnage) * 1000) + "";
         }
         String remainingText = ((currentTonnage < tonnage) ? " (" + remaining + " " + unit + " Remaining)" : "");
-        tons.setText((weightHovered ? "<HTML><U>" : "") + String.format(WEIGHT_LABEL, current, unit, full, unit, remainingText));
+        tons.setText(String.format(WEIGHT_LABEL, current, unit, full, unit, remainingText).trim());
         tons.setToolTipText("Current Weight / Max Weight (Remaining Weight, if any). Click to show the weight calculation.");
         tons.setForeground((currentTonnage > tonnage) ? GUIPreferences.getInstance().getWarningColor() : null);
     }
 
     private void refreshBV() {
         int bv = getEntity().calculateBattleValue();
-        bvLabel.setText((bvHovered ? "<HTML><U>" : "") + "BV: " + bv);
+        bvLabel.setText("BV: " + bv);
         bvLabel.setToolTipText("Battle Value 2.0. Click to show the BV calculation.");
     }
 
     private void refreshCost() {
-        cost.setText((costHovered ? "<HTML><U>" : "") + "Dry Cost: " + formatter.format(Math.round(getEntity().getCost(true))) + " C-bills");
+        cost.setText("Dry Cost: " + formatter.format(Math.round(getEntity().getCost(true))) + " C-bills");
         cost.setToolTipText("The dry cost of the unit (without ammo). The unit's full cost is "
                 + formatter.format(Math.round(getEntity().getCost(false))) + " C-bills. "
                 + "Click to show the cost calculation.");
@@ -247,54 +240,5 @@ public class StatusBar extends ITab implements MouseListener {
             heat += m.getType().getHeat();
         }
         return Math.round(heat);
-    }
-
-    @Override
-    public void mouseClicked(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-        if (e.getSource() == cost) {
-            new CostDisplayDialog(getParentFrame(), getEntity()).setVisible(true);
-        } else if (e.getSource() == bvLabel) {
-            new BVDisplayDialog(getParentFrame(), getEntity()).setVisible(true);
-        } else if (e.getSource() == tons) {
-            new WeightDisplayDialog(getParentFrame(), getEntity()).setVisible(true);
-        }
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-        if (e.getSource() == cost) {
-            costHovered = true;
-            refreshCost();
-        } else if (e.getSource() == bvLabel) {
-            bvHovered = true;
-            refreshBV();
-        } else if (e.getSource() == tons) {
-            weightHovered = true;
-            refreshWeight();
-        }
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-        if (e.getSource() == cost) {
-            costHovered = false;
-            refreshCost();
-        } else if (e.getSource() == bvLabel) {
-            bvHovered = false;
-            refreshBV();
-        } else if (e.getSource() == tons) {
-            weightHovered = false;
-            refreshWeight();
-        }
     }
 }

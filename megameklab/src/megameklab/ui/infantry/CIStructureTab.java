@@ -172,9 +172,7 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
         return panBasicInfo;
     }
 
-    /*
-     * Used by MekHQ to set the tech faction for custom refits.
-     */
+    @SuppressWarnings("unused") // used by MekHQ to set the tech faction for custom refits
     public void setTechFaction(int techFaction) {
         panBasicInfo.setTechFaction(techFaction);
     }
