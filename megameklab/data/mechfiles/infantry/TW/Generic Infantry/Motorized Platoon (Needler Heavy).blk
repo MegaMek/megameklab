@@ -1,4 +1,13 @@
-#Saved from version 0.49.18-SNAPSHOT on 2024-01-20
+#building block data file
+<BlockVersion>
+1
+</BlockVersion>
+
+# Write the version number just in case...
+<Version>
+MAM0
+</Version>
+
 <UnitType>
 Infantry
 </UnitType>
@@ -27,10 +36,8 @@ IS Level 3
 Motorized
 </motion_type>
 
-<Troopers Equipment>
-Lyran Alliance/Lyran Commonwealth (3060+) Infantry Kit
-AntiMekGear
-</Troopers Equipment>
+<transporters>
+</transporters>
 
 <Field Guns Equipment>
 </Field Guns Equipment>
@@ -63,7 +70,14 @@ Needler Rifle (M&G Flechette)
 Needler, Support (Firedrake)
 </Secondary>
 
+<antimek>
+8
+</antimek>
+
+<armorKit>
+Lyran Alliance/Lyran Commonwealth (3060+) Infantry Kit
+</armorKit>
+
 <armordivisor>
 2.0
 </armordivisor>
-
