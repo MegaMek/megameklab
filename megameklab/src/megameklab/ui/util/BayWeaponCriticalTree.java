@@ -1221,7 +1221,8 @@ public class BayWeaponCriticalTree extends JTree {
      */
     private boolean canTakeEquipment(Mounted bay, Mounted eq) {
         if (eq.getType() instanceof WeaponType) {
-            if (((WeaponType) eq.getType()).getBayType() != bay.getType()) {
+            if ((((WeaponType) eq.getType()).getBayType(false) != bay.getType())
+                    && (((WeaponType) eq.getType()).getBayType(true) != bay.getType())) {
                 return false;
             }
             // find current av
