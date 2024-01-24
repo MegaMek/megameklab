@@ -22,6 +22,9 @@ MEGAMEKLAB VERSION HISTORY:
 + Fix #494: Problem with infantry unit weight breakdown in the Reports menu
 + Fix #1037: infantry bays on record sheets now show their platoon capacity rather than weight
 + Fix #1038: Record sheets no longer list infantry compartments as infantry bays
++ Fix #1086: Subcapital weapons can now be placed in a corresponding capital weapon bay
++ Fix #1064: Support vehicles should no longer be incorrectly classified as tech rating D minimum regardless of components
++ Fix #1065: Combat vehicles should no longer incorrectly be classified as tech rating E
 
 0.49.17 (2023-12-31 1900 UTC)
 + PR #1352 MML interface changes
