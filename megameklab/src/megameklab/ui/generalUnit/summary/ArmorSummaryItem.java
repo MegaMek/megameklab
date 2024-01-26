@@ -19,6 +19,7 @@
 package megameklab.ui.generalUnit.summary;
 
 import megamek.common.*;
+import megamek.common.equipment.ArmorType;
 import megamek.common.verifier.TestAero;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestSmallCraft;
@@ -72,62 +73,34 @@ public class ArmorSummaryItem extends AbstractSummaryItem {
     }
 
     private int getTankArmorCrits(Entity entity) {
-        //TODO this should be implemented in EquipmentType armor.getCriticals(entity)
-        int usedSlots = 0;
-        if (!entity.hasPatchworkArmor()) {
-            int type = entity.getArmorType(1);
-            switch (type) {
-                case EquipmentType.T_ARMOR_FERRO_FIBROUS:
-                case EquipmentType.T_ARMOR_REACTIVE:
-                    if (TechConstants.isClan(entity.getArmorTechLevel(1))) {
-                        usedSlots++;
-                    } else {
-                        usedSlots += 2;
-                    }
-                    break;
-                case EquipmentType.T_ARMOR_HEAVY_FERRO:
-                    usedSlots += 3;
-                    break;
-                case EquipmentType.T_ARMOR_LIGHT_FERRO:
-                case EquipmentType.T_ARMOR_FERRO_LAMELLOR:
-                case EquipmentType.T_ARMOR_REFLECTIVE:
-                case EquipmentType.T_ARMOR_HARDENED:
-                case EquipmentType.T_ARMOR_ANTI_PENETRATIVE_ABLATION:
-                case EquipmentType.T_ARMOR_BALLISTIC_REINFORCED:
-                    usedSlots++;
-                    break;
-                case EquipmentType.T_ARMOR_STEALTH:
-                    usedSlots += 2;
-                    break;
-                default:
-                    break;
-            }
+        if (entity.hasPatchworkArmor()) {
+            return 0;
+        } else  {
+            return getArmorType(entity, entity.firstArmorIndex()).getTankSlots(entity);
         }
-
-        return usedSlots;
     }
 
     private String getFighterCrits(Entity entity) {
         if (entity.hasPatchworkArmor()) {
             int slots = 0;
             for (int loc = 0; loc < Aero.LOC_WINGS; loc++) {
-                TestAero.AeroArmor aeroArmor = getArmorType(entity, loc);
+                ArmorType aeroArmor = getArmorType(entity, loc);
                 if (aeroArmor == null) {
                     return "?";
                 }
-                slots += aeroArmor.patchworkSpace;
+                slots += aeroArmor.getPatchworkSlotsCVFtr();
             }
             return formatCrits(slots);
         } else {
-            TestAero.AeroArmor aeroArmor = getArmorType(entity, Aero.LOC_NOSE);
+            ArmorType aeroArmor = getArmorType(entity, Aero.LOC_NOSE);
             if (aeroArmor == null) {
                 return "?";
             }
-            return formatCrits(aeroArmor.space);
+            return formatCrits(aeroArmor.getFighterSlots());
         }
     }
 
-    private TestAero.AeroArmor getArmorType(Entity entity, int location) {
-        return TestAero.AeroArmor.getArmor(entity.getArmorType(location), entity.isClanArmor(location));
+    private ArmorType getArmorType(Entity entity, int location) {
+        return ArmorType.of(entity.getArmorType(location), entity.isClanArmor(location));
     }
 }
