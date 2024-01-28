@@ -349,10 +349,9 @@ public class PrintDropship extends PrintAero {
 
     @Override
     protected void drawFluffImage() {
-        String dir = ImageHelper.imageDropship;
         Element rect = getSVGDocument().getElementById("fluffImage");
         if (rect instanceof SVGRectElement) {
-            embedImage(ImageHelper.getFluffFile(ship, dir),
+            embedImage(ImageHelper.getFluffFile(ship),
                     (Element) rect.getParentNode(), getRectBBox((SVGRectElement) rect), true);
         }
         hideElement(getSVGDocument().getElementById(NOTES));

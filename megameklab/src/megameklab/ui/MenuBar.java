@@ -943,7 +943,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
                 loadImageFileChooser.setCurrentDirectory(new File(fullPath));
                 loadImageFileChooser.setSelectedFile(new File(imageName));
             } else {
-                loadImageFileChooser.setCurrentDirectory(new File(ImageHelper.fluffPath));
+                loadImageFileChooser.setCurrentDirectory(Configuration.fluffImagesDir());
                 loadImageFileChooser.setSelectedFile(new File(getUnitMainUi().getEntity().getChassis()
                         + ' ' + getUnitMainUi().getEntity().getModel() + ".png"));
             }

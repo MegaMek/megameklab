@@ -144,7 +144,7 @@ public class StatusBar extends ITab {
 
     private void getFluffImage() {
         FileDialog fDialog = new FileDialog(getParentFrame(), "Image Path", FileDialog.LOAD);
-        fDialog.setDirectory(new File(ImageHelper.fluffPath).getAbsolutePath() + File.separatorChar + ImageHelper.imageMech + File.separatorChar);
+        fDialog.setDirectory(Configuration.fluffImagesDir().toString());
         fDialog.setLocationRelativeTo(this);
         fDialog.setVisible(true);
         if (fDialog.getFile() != null) {
