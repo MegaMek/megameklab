@@ -902,8 +902,7 @@ public class UnitUtil {
      */
     public static double getRawArmorPoints(Entity unit, double armorTons) {
         if (unit.hasETypeFlag(Entity.ETYPE_PROTOMECH)) {
-            return Math.round(armorTons /
-                    EquipmentType.getProtomechArmorWeightPerPoint(unit.getArmorType(Protomech.LOC_TORSO)));
+            return Math.round(armorTons / ArmorType.forEntity(unit).getWeightPerPoint());
         } else if (unit.isSupportVehicle()) {
             return Math.floor(armorTons / TestSupportVehicle.armorWeightPerPoint(unit));
         } else if ((unit instanceof Jumpship)

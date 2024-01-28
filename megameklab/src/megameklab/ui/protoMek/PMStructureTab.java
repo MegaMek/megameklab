@@ -33,6 +33,7 @@ import javax.swing.SwingConstants;
 
 import megamek.codeUtilities.MathUtility;
 import megamek.common.*;
+import megamek.common.equipment.ArmorType;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestProtomech;
 import megamek.common.verifier.TestProtomech.ProtomechArmor;
@@ -459,9 +460,7 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
 
     @Override
     public void armorFactorChanged(int points) {
-        double tonnage = EquipmentType.getProtomechArmorWeightPerPoint(
-                getProtomech().getArmorType(Protomech.LOC_TORSO))
-                * points;
+        double tonnage = ArmorType.forEntity(getProtomech()).getWeightPerPoint() * points;
         getProtomech().setArmorTonnage(tonnage);
         panArmorAllocation.setFromEntity(getProtomech());
         panSummary.refresh();
@@ -493,7 +492,7 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
                 totalTonnage - currentTonnage, TestEntity.Ceil.KILO);
         // We can only use remaining tonnage equal to whole points of armor.
         remainingTonnage = (int) UnitUtil.getRawArmorPoints(getProtomech(), remainingTonnage)
-                * EquipmentType.getProtomechArmorWeightPerPoint(getProtomech().getArmorType(Protomech.LOC_TORSO));
+                * ArmorType.forEntity(getProtomech()).getWeightPerPoint();
         double maxArmor = MathUtility.clamp(getProtomech().getLabArmorTonnage() + remainingTonnage, 0,
                 UnitUtil.getMaximumArmorTonnage(getProtomech()));
         getProtomech().setArmorTonnage(maxArmor);
