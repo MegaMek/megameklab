@@ -53,14 +53,16 @@ public final class ImageHelper {
         // UserDir matches
         String userDir = PreferenceManager.getClientPreferences().getUserDir();
         if (!userDir.isBlank() && new File(userDir).isDirectory()) {
-            var fluffPath = new File(userDir, fluffDir.toString());
+            var fluffUserDir = new File(userDir, fluffDir.toString());
             for (String ext : FluffImageHelper.EXTENSIONS_FLUFF_IMAGE_FORMATS) {
-                fileCandidates.add(new File(fluffPath, unit.getFullChassis() + ext));
+                fileCandidates.add(new File(fluffUserDir, unit.getChassis() + ext));
+                fileCandidates.add(new File(fluffUserDir, unit.getFullChassis() + ext));
             }
         }
 
         // Chassis matches
         for (String ext : FluffImageHelper.EXTENSIONS_FLUFF_IMAGE_FORMATS) {
+            fileCandidates.add(new File(fluffDir, unit.getChassis() + ext));
             fileCandidates.add(new File(fluffDir, unit.getFullChassis() + ext));
         }
 
