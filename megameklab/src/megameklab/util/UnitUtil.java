@@ -20,6 +20,7 @@ package megameklab.util;
 
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
+import megamek.common.equipment.ArmorType;
 import megamek.common.verifier.*;
 import megamek.common.verifier.TestEntity.Ceil;
 import megamek.common.verifier.TestProtomech.ProtomechArmor;
@@ -843,8 +844,7 @@ public class UnitUtil {
             return TestAdvancedAerospace.maxArmorWeight((Jumpship) unit);
         }
 
-        double armorPerTon = 16.0 * EquipmentType.getArmorPointMultiplier(
-                unit.getArmorType(1), unit.getArmorTechLevel(1));
+        double armorPerTon = ArmorType.forEntity(unit).getPointsPerTon(unit);
         double armorWeight = 0;
 
         if (unit.getArmorType(1) == EquipmentType.T_ARMOR_HARDENED) {
@@ -934,7 +934,7 @@ public class UnitUtil {
             points = Math.round(((Jumpship) entity).getSI() / 10.0) * 6;
         }
         if (entity.isPrimitive()) {
-            return points * EquipmentType.getArmorPointMultiplier(EquipmentType.T_ARMOR_PRIMITIVE_AERO);
+            return points * ArmorType.of(EquipmentType.T_ARMOR_PRIMITIVE_AERO, false).getArmorPointsMultiplier();
         } else {
             return points;
         }
@@ -954,23 +954,6 @@ public class UnitUtil {
     }
 
     /**
-     * NOTE: only use for non-patchwork armor
-     *
-     * @param unit The entity
-     * @param armorTons
-     * @return
-     */
-    public static int getArmorPoints(Entity unit, int loc, double armorTons) {
-        double armorPerTon = 16.0 * EquipmentType.getArmorPointMultiplier(
-                unit.getArmorType(loc), unit.getArmorTechLevel(loc));
-        if (unit.getArmorType(loc) == EquipmentType.T_ARMOR_HARDENED) {
-            armorPerTon = 8.0;
-        }
-        return Math.min((int) Math.floor(armorPerTon * armorTons),
-                UnitUtil.getMaximumArmorPoints(unit, loc));
-    }
-
-    /**
      * Calculate the number of armor points per ton of armor for the given unit.
      *
      * @param en
@@ -980,15 +963,7 @@ public class UnitUtil {
      */
     // TODO: aerospace and support vehicle armor
     public static double getArmorPointsPerTon(Entity en, int at, boolean clanArmor) {
-        if (at == EquipmentType.T_ARMOR_HARDENED) {
-            return 8.0;
-        } else if (en.hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
-            return TestAdvancedAerospace.armorPointsPerTon((Jumpship) en, at, clanArmor);
-        } else if (en.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)) {
-            return SmallCraft.armorPointsPerTon(en.getWeight(), ((Aero) en).isSpheroid(), at, clanArmor);
-        } else {
-            return 16.0 * EquipmentType.getArmorPointMultiplier(at, clanArmor);
-        }
+        return ArmorType.of(at, clanArmor).getPointsPerTon(en);
     }
 
     /**
