@@ -19,6 +19,9 @@
 package megameklab.ui.generalUnit;
 
 import megamek.client.ui.WrapLayout;
+import megamek.client.ui.dialogs.BVDisplayDialog;
+import megamek.client.ui.dialogs.CostDisplayDialog;
+import megamek.client.ui.dialogs.WeightDisplayDialog;
 import megamek.client.ui.swing.GUIPreferences;
 import megamek.client.ui.swing.calculationReport.CalculationReport;
 import megamek.common.*;
@@ -40,9 +43,12 @@ public class StatusBar extends ITab {
     private static final String WEIGHT_LABEL = "Weight: %s %s / %s %s %s";
 
     private final MegaMekLabMainUI parentFrame;
-    private final JLabel bvLabel = new JLabel();
-    protected final JLabel tons = new JLabel();
-    private final JLabel cost = new JLabel();
+    private final JLabel bvLabel = new ClickableLabel(
+            e -> new BVDisplayDialog(getParentFrame(), getEntity()).setVisible(true));
+    protected final JLabel tons = new ClickableLabel(
+            e -> new WeightDisplayDialog(getParentFrame(), getEntity()).setVisible(true));
+    private final JLabel cost = new ClickableLabel(
+            e -> new CostDisplayDialog(getParentFrame(), getEntity()).setVisible(true));
     private final JLabel invalid = new JLabel("Invalid");
     private final DecimalFormat formatter;
     private TestEntity testEntity;
@@ -119,21 +125,22 @@ public class StatusBar extends ITab {
             remaining = Math.round((tonnage - currentTonnage) * 1000) + "";
         }
         String remainingText = ((currentTonnage < tonnage) ? " (" + remaining + " " + unit + " Remaining)" : "");
-        tons.setText(String.format(WEIGHT_LABEL, current, unit, full, unit, remainingText));
-        tons.setToolTipText("Current Weight / Max Weight (Remaining Weight, if any)");
+        tons.setText(String.format(WEIGHT_LABEL, current, unit, full, unit, remainingText).trim());
+        tons.setToolTipText("Current Weight / Max Weight (Remaining Weight, if any). Click to show the weight calculation.");
         tons.setForeground((currentTonnage > tonnage) ? GUIPreferences.getInstance().getWarningColor() : null);
     }
 
     private void refreshBV() {
         int bv = getEntity().calculateBattleValue();
         bvLabel.setText("BV: " + bv);
-        bvLabel.setToolTipText("Battle Value 2.0");
+        bvLabel.setToolTipText("Battle Value 2.0. Click to show the BV calculation.");
     }
 
     private void refreshCost() {
         cost.setText("Dry Cost: " + formatter.format(Math.round(getEntity().getCost(true))) + " C-bills");
         cost.setToolTipText("The dry cost of the unit (without ammo). The unit's full cost is "
-                + formatter.format(Math.round(getEntity().getCost(false))) + " C-bills.");
+                + formatter.format(Math.round(getEntity().getCost(false))) + " C-bills. "
+                + "Click to show the cost calculation.");
     }
 
     private void refreshInvalid() {

@@ -59,5 +59,6 @@ public class CIStatusBar extends StatusBar {
         double tonnage = getEntity().getWeight();
         String full = CalculationReport.formatForReport(tonnage);
         tons.setText(String.format(INF_WEIGHT_LABEL, full));
+        tons.setToolTipText("Click to show the weight calculation.");
     }
 }

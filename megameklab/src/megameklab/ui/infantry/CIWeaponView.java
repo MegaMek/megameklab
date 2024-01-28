@@ -211,15 +211,9 @@ public class CIWeaponView extends BuildView implements ActionListener {
             cbNumGuns.setEnabled(false);
         }
 
-        if (!inf.isMechanized() && techManager.isLegal(Infantry.getAntiMekTA())) {
-            chkAntiMek.setEnabled(true);
-            chkAntiMek.removeActionListener(this);
-            chkAntiMek.setSelected(inf.isAntiMekTrained());
-            chkAntiMek.addActionListener(this);
-        } else {
-            chkAntiMek.setEnabled(false);
-            chkAntiMek.setSelected(false);
-        }
+        chkAntiMek.removeActionListener(this);
+        chkAntiMek.setSelected(inf.hasAntiMekGear());
+        chkAntiMek.addActionListener(this);
     }
 
     @Override
