@@ -551,6 +551,13 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
     }
 
     @Override
+    public void clanNameChanged(String clanName) {
+        getMech().setClanChassisName(clanName);
+        refresh.refreshHeader();
+        refresh.refreshPreview();
+    }
+
+    @Override
     public void modelChanged(String model) {
         getMech().setModel(model);
         refresh.refreshHeader();

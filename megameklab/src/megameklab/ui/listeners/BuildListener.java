@@ -29,6 +29,9 @@ public interface BuildListener {
 
     void refreshSummary();
     void chassisChanged(String chassis);
+
+    default void clanNameChanged(String clanName) { }
+
     void modelChanged(String model);
     void yearChanged(int year);
     void updateTechLevel();

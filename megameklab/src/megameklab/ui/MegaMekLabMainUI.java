@@ -124,7 +124,7 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
     @Override
     public void refreshHeader() {
         String fileInfo = fileName.isBlank() ? "" : " (" + fileName + ")";
-        setTitle(getEntity().getChassis() + " " + getEntity().getModel() + fileInfo);
+        setTitle(getEntity().getFullChassis() + " " + getEntity().getModel() + fileInfo);
     }
 
     @Override
