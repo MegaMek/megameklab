@@ -238,6 +238,14 @@ public class StatusBar extends ITab {
 
         for (Mounted m : getEntity().getMisc()) {
             heat += m.getType().getHeat();
+
+            if (m.getType().hasFlag(MiscType.F_LASER_INSULATOR)) {
+                heat--;
+            } else if (m.getType().hasFlag(MiscType.F_PPC_CAPACITOR)) {
+                heat += 5;
+            } else if (m.getType().hasFlag(MiscType.F_RISC_LASER_PULSE_MODULE)) {
+                heat += 2;
+            }
         }
         return Math.round(heat);
     }
