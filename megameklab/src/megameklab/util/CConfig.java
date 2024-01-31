@@ -16,6 +16,7 @@
 package megameklab.util;
 
 import megamek.common.Configuration;
+import megameklab.printing.MekChassisArrangement;
 import megameklab.ui.MMLStartUp;
 import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.MenuBarOwner;
@@ -99,6 +100,7 @@ public final class CConfig {
     public static final String RS_CONDENSED_REFERENCE = "rs_condensed_reference";
     public static final String RS_SCALE_FACTOR = "rs_scale_factor";
     public static final String RS_SCALE_UNITS = "rs_scale_units";
+    public static final String RS_MEK_NAMES = "rs_mek_names";
 
     public static final String NAG_EQUIPMENT_CTRLCLICK = "nag_equipment_ctrlclick";
     public static final String NAG_IMPORT_SETTINGS = "nag_import_settings";
@@ -127,6 +129,7 @@ public final class CConfig {
         defaults.setProperty(RS_SHOW_PILOT_DATA, Boolean.toString(true));
         defaults.setProperty(RS_SCALE_FACTOR, "1");
         defaults.setProperty(RS_SCALE_UNITS, RSScale.HEXES.toString());
+        defaults.setProperty(RS_MEK_NAMES, MekChassisArrangement.IS_CLAN.name());
         defaults.setProperty(NAG_EQUIPMENT_CTRLCLICK, Boolean.toString(true));
         defaults.setProperty(MEK_AUTOFILL, Boolean.toString(true));
         defaults.setProperty(MEK_AUTOSORT, Boolean.toString(true));
@@ -422,6 +425,10 @@ public final class CConfig {
 
     public static MMLStartUp getStartUpType() {
         return MMLStartUp.parse(CConfig.getParam(CConfig.MISC_STARTUP));
+    }
+
+    public static MekChassisArrangement getMekNameArrangement() {
+        return MekChassisArrangement.parse(CConfig.getParam(CConfig.RS_MEK_NAMES));
     }
 
     public static void resetWindowPositions() {

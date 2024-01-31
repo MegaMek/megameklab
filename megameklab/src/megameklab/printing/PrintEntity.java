@@ -14,6 +14,7 @@
 package megameklab.printing;
 
 import megamek.client.generator.RandomNameGenerator;
+import megamek.codeUtilities.StringUtility;
 import megamek.common.*;
 import megamek.common.eras.Era;
 import megamek.common.eras.Eras;
@@ -62,7 +63,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
 
     @Override
     public List<String> getBookmarkNames() {
-        return Collections.singletonList(getEntity().getShortNameRaw());
+        return Collections.singletonList(entityName());
     }
     
     /**
@@ -187,7 +188,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
     
     protected void writeTextFields() {
         setTextField(TITLE, getRecordSheetTitle().toUpperCase());
-        setTextField(TYPE, getEntity().getShortNameRaw());
+        setTextField(TYPE, entityName());
         setTextField(MP_WALK, formatWalk());
         setTextField(MP_RUN, formatRun());
         setTextField(MP_JUMP, formatJump());
@@ -596,5 +597,10 @@ public abstract class PrintEntity extends PrintRecordSheet {
         NumberFormat nf = NumberFormat.getNumberInstance(Locale.getDefault());
         return nf.format(getEntity().getCost(true)) + " C-bills";
     }
-    
+
+    private String entityName() {
+        return CConfig.getMekNameArrangement().printChassis(getEntity())
+                + (StringUtility.isNullOrBlank(getEntity().getModel()) ? "" : " " + getEntity().getModel());
+    }
+
 }

@@ -45,10 +45,10 @@ public class SettingsDialog extends AbstractMMLButtonDialog {
     @Override
     protected Container createCenterPane() {
         JTabbedPane panMain = new JTabbedPane();
-        panMain.addTab(resources.getString("ConfigurationDialog.misc.title"), miscSettingsPanel);
-        panMain.addTab(resources.getString("ConfigurationDialog.colorCodes.title"), colorPreferences);
-        panMain.addTab(resources.getString("ConfigurationDialog.techProgression.title"), techSettings);
-        panMain.addTab(resources.getString("ConfigurationDialog.printing.title"), exportSettingsPanel);
+        panMain.addTab(resources.getString("ConfigurationDialog.misc.title"), new SettingsScrollPane(miscSettingsPanel));
+        panMain.addTab(resources.getString("ConfigurationDialog.colorCodes.title"), new SettingsScrollPane(colorPreferences));
+        panMain.addTab(resources.getString("ConfigurationDialog.techProgression.title"), new SettingsScrollPane(techSettings));
+        panMain.addTab(resources.getString("ConfigurationDialog.printing.title"), new SettingsScrollPane(exportSettingsPanel));
         return panMain;
     }
 
@@ -77,5 +77,13 @@ public class SettingsDialog extends AbstractMMLButtonDialog {
     @Override
     protected void cancelAction() {
         CConfig.loadConfigFile();
+    }
+
+    private static class SettingsScrollPane extends JScrollPane {
+        SettingsScrollPane(Component view) {
+            super(view);
+            setBorder(null);
+            getVerticalScrollBar().setUnitIncrement(16);
+        }
     }
 }

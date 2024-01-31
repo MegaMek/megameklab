@@ -18,6 +18,8 @@
  */
 package megameklab.ui.dialog.settings;
 
+import megamek.client.ui.baseComponents.MMComboBox;
+import megameklab.printing.MekChassisArrangement;
 import megameklab.printing.PaperSize;
 import megameklab.ui.util.IntRangeTextField;
 import megameklab.ui.util.SpringUtilities;
@@ -30,6 +32,7 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 /**
@@ -52,6 +55,8 @@ class ExportSettingsPanel extends JPanel {
     private final JCheckBox chkTacOpsHeat = new JCheckBox();
     private final JComboBox<String> cbRSScale = new JComboBox<>();
     private final IntRangeTextField txtScale = new IntRangeTextField(3);
+    private final MMComboBox<MekChassisArrangement> mekChassis =
+            new MMComboBox<>("Mek Names", MekChassisArrangement.values());
 
     ExportSettingsPanel() {
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Dialogs");
@@ -129,6 +134,17 @@ class ExportSettingsPanel extends JPanel {
         chkTacOpsHeat.setToolTipText(resourceMap.getString("ConfigurationDialog.chkTacOpsHeat.tooltip"));
         chkTacOpsHeat.setSelected(CConfig.getBooleanParam(CConfig.RS_TAC_OPS_HEAT));
 
+        mekChassis.setRenderer(mekNameArrangementRenderer);
+        mekChassis.setSelectedItem(CConfig.getMekNameArrangement());
+        mekChassis.setToolTipText(resourceMap.getString("ConfigurationDialog.mekChassis.tooltip"));
+        JLabel startUpLabel = new JLabel(resourceMap.getString("ConfigurationDialog.mekChassis.text"));
+        startUpLabel.setToolTipText(resourceMap.getString("ConfigurationDialog.mekChassis.tooltip"));
+
+        JPanel mekNameLine = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        mekNameLine.add(startUpLabel);
+        mekNameLine.add(Box.createHorizontalStrut(5));
+        mekNameLine.add(mekChassis);
+
         for (RSScale val : RSScale.values()) {
             cbRSScale.addItem(val.fullName);
         }
@@ -161,8 +177,9 @@ class ExportSettingsPanel extends JPanel {
         gridPanel.add(chkShowRole);
         gridPanel.add(chkHeatProfile);
         gridPanel.add(chkTacOpsHeat);
+        gridPanel.add(mekNameLine);
         gridPanel.add(scalePanel);
-        SpringUtilities.makeCompactGrid(gridPanel, 13, 1, 0, 0, 15, 10);
+        SpringUtilities.makeCompactGrid(gridPanel, 14, 1, 0, 0, 15, 10);
         gridPanel.setBorder(new EmptyBorder(20, 30, 20, 30));
         setLayout(new FlowLayout(FlowLayout.LEFT));
         add(gridPanel);
@@ -184,6 +201,8 @@ class ExportSettingsPanel extends JPanel {
         recordSheetSettings.put(CConfig.RS_TAC_OPS_HEAT, Boolean.toString(chkTacOpsHeat.isSelected()));
         recordSheetSettings.put(CConfig.RS_SCALE_UNITS, RSScale.values()[cbRSScale.getSelectedIndex()].toString());
         recordSheetSettings.put(CConfig.RS_SCALE_FACTOR, Integer.toString(txtScale.getIntVal(getDefaultScale())));
+        recordSheetSettings.put(CConfig.RS_MEK_NAMES,
+                Objects.requireNonNullElse(mekChassis.getSelectedItem(), MekChassisArrangement.CLAN_IS).name());
         return recordSheetSettings;
     }
 
@@ -200,5 +219,16 @@ class ExportSettingsPanel extends JPanel {
         } else {
             return 1;
         }
+    }
+
+    DefaultListCellRenderer mekNameArrangementRenderer = new DefaultListCellRenderer() {
+        @Override
+        public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+            return super.getListCellRendererComponent(list, displayName(value), index, isSelected, cellHasFocus);
+        }
+    };
+
+    private String displayName(Object value) {
+        return (value instanceof MekChassisArrangement) ? ((MekChassisArrangement) value).getDisplayName() : "";
     }
 }
