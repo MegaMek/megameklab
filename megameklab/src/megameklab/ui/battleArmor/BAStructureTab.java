@@ -463,7 +463,6 @@ public class BAStructureTab extends ITab implements ActionListener, ChangeListen
                 != getBattleArmor().getArmorTechLevel(BattleArmor.LOC_SQUAD))) {
             armorTypeChanged(armor);
         }
-        armorTypeChanged(panArmor.getArmor());
         addAllListeners();
         refresh.refreshPreview();
     }
