@@ -373,6 +373,7 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
         panCrew.setFromEntity(getSmallCraft());
         getSmallCraft().autoSetInternal();
         refresh();
+        refresh.refreshTransport();
         refresh.refreshPreview();
         refresh.refreshStatus();
     }
