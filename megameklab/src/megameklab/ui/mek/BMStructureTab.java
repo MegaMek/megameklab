@@ -325,12 +325,12 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
             getMech().setCritical(Mech.LOC_CT, lgSlot, crit);
         }
         // Replace any fixed spreadable equipment
-        for (Mounted mount : getMech().getMisc()) {
-            if ((mount.getLocation() == Entity.LOC_NONE)
-                    && UnitUtil.isFixedLocationSpreadEquipment(mount.getType())) {
-                UnitUtil.removeMounted(getMech(), mount);
-                MekUtil.createSpreadMounts(getMech(), mount.getType());
-            }
+        List<Mounted> toRemove = getMech().getMisc().stream()
+                .filter(m -> (m.getLocation() == Entity.LOC_NONE) && UnitUtil.isFixedLocationSpreadEquipment(m.getType()))
+                .collect(Collectors.toList());
+        for (Mounted mounted : toRemove) {
+            UnitUtil.removeMounted(getMech(), mounted);
+            MekUtil.createSpreadMounts(getMech(), mounted.getType());
         }
         refresh.refreshBuild();
     }
