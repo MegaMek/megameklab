@@ -96,7 +96,7 @@ public class PrintBattleArmor extends PrintEntity {
 
     @Override
     protected void drawArmor() {
-        final String armorName = EquipmentType.getBaArmorTypeName(battleArmor.getArmorType(BattleArmor.LOC_SQUAD));
+        final String armorName = EquipmentType.getArmorTypeName(battleArmor.getArmorType(BattleArmor.LOC_SQUAD));
         setTextField(ARMOR_TYPE, armorName.replace("BA ", ""));
         for (int i = 0; i < 6; i++) {
             if (i < battleArmor.getTroopers()) {

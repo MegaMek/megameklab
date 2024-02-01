@@ -31,6 +31,7 @@ import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 
 import megamek.common.*;
+import megamek.common.equipment.ArmorType;
 import megamek.common.verifier.TestSupportVehicle;
 import megameklab.ui.generalUnit.ArmorLocationView.ArmorLocationListener;
 import megameklab.ui.listeners.ArmorAllocationListener;
@@ -261,8 +262,7 @@ public class ArmorAllocationView extends BuildView implements ArmorLocationListe
             txtPointsPerTon.setToolTipText(resourceMap.getString("ArmorAllocationView.txtKgPerPoint.tooltip"));
         } else if (en instanceof Protomech) {
             txtPointsPerTon.setText(String.format("%d",
-                    (int) (EquipmentType.getProtomechArmorWeightPerPoint(en.getArmorType(Protomech.LOC_BODY))
-                     * 1000)));
+                    (int) (ArmorType.forEntity(en).getWeightPerPoint() * 1000)));
             lblPointsPerTon.setText(resourceMap.getString("ArmorAllocationView.txtKgPerPoint.text"));
             txtPointsPerTon.setToolTipText(resourceMap.getString("ArmorAllocationView.txtKgPerPoint.tooltip"));
         } else {
