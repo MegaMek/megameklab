@@ -20,6 +20,7 @@ package megameklab.ui.generalUnit;
 
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
+import megamek.common.equipment.ArmorType;
 import megamek.common.verifier.TestProtomech;
 import megameklab.ui.listeners.ArmorAllocationListener;
 import megameklab.ui.util.TechComboBox;
@@ -164,19 +165,9 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
         } else if ((etype & Entity.ETYPE_PROTOMECH) != 0) {
             flag = MiscType.F_PROTOMECH_EQUIPMENT;
         }
-        for (int at = 0; at < EquipmentType.armorNames.length; at++) {
-            String name = EquipmentType.getArmorTypeName(at, techManager.useClanTechBase());
-            EquipmentType eq = EquipmentType.get(name);
-            if ((null != eq) && eq.hasFlag(flag) && techManager.isLegal(eq)) {
-                cbArmorType.addItem(eq);
-            }
-            if (techManager.useMixedTech()) {
-                name = EquipmentType.getArmorTypeName(at, !techManager.useClanTechBase());
-                EquipmentType eq2 = EquipmentType.get(name);
-                if ((null != eq2) && (eq != eq2) && eq2.hasFlag(flag)
-                        && techManager.isLegal(eq2)) {
-                    cbArmorType.addItem(eq2);
-                }
+        for (ArmorType armor : ArmorType.allArmorTypes()) {
+            if (armor.hasFlag(flag) && techManager.isLegal(armor)) {
+                cbArmorType.addItem(armor);
             }
         }
         cbArmorType.setSelectedItem(prev);

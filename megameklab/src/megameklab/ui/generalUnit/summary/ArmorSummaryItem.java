@@ -41,14 +41,8 @@ public class ArmorSummaryItem extends AbstractSummaryItem {
         critLabel.setText("");
         availabilityLabel.setText("");
 
-        EquipmentType armor = null;
-        int armorType = entity.getArmorType(0);
-        if ((armorType >= 0) && (armorType < EquipmentType.armorNames.length)) {
-            String armorName = EquipmentType.getArmorTypeName(armorType,
-                    TechConstants.isClan(entity.getArmorTechLevel(0)));
-            armor = EquipmentType.get(armorName);
-            availabilityLabel.setText(armor.getFullRatingName(entity.isClan()));
-        }
+        ArmorType armor = ArmorType.forEntity(entity);
+        availabilityLabel.setText(armor.getFullRatingName());
 
         if (entity.isSupportVehicle()) {
             // FIXME: This doesn't account for patchwork armor crits.
@@ -56,9 +50,7 @@ public class ArmorSummaryItem extends AbstractSummaryItem {
             critLabel.setText(formatCrits(testSupportVehicle.getArmorSlots()));
             weightLabel.setText(formatWeight(testSupportVehicle.getWeightArmor(), entity));
         } else if (entity instanceof Mech) {
-            if (armor != null) {
-                critLabel.setText(formatCrits(armor.getCriticals(entity)));
-            }
+            critLabel.setText(formatCrits(armor.getCriticals(entity)));
         } else if (entity instanceof Tank) {
             critLabel.setText(formatCrits(getTankArmorCrits(entity)));
         } else if (entity instanceof AeroSpaceFighter) {

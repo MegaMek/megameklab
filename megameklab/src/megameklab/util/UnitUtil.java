@@ -100,7 +100,7 @@ public class UnitUtil {
      * @return
      */
     public static boolean isArmor(EquipmentType eq) {
-        return Arrays.asList(EquipmentType.armorNames).contains(eq.getName());
+        return eq instanceof ArmorType;
     }
 
     /**
@@ -1423,17 +1423,14 @@ public class UnitUtil {
      * @param internalStructure true to remove IS, false to remove armor
      */
     public static void removeISorArmorCrits(Entity unit, boolean internalStructure) {
-        ArrayList<String> mountList = new ArrayList<>();
+        List<String> mountList = new ArrayList<>();
         if (internalStructure) {
             for (String struc : EquipmentType.structureNames) {
                 mountList.add("IS " + struc);
                 mountList.add("Clan " + struc);
             }
         } else {
-            for (String armor : EquipmentType.armorNames) {
-                mountList.add("IS " + armor);
-                mountList.add("Clan " + armor);
-            }
+            mountList = ArmorType.allArmorTypes().stream().map(ArmorType::getInternalName).collect(Collectors.toList());
         }
 
         for (int location = Mech.LOC_HEAD; location < unit.locations(); location++) {
@@ -1472,7 +1469,7 @@ public class UnitUtil {
         if (internalStructure) {
             names = Arrays.asList(EquipmentType.structureNames);
         } else {
-            names = Arrays.asList(EquipmentType.armorNames);
+            names = ArmorType.allArmorNames();
         }
         for (String name : names) {
             mountList.add(String.format("Clan %1s", name));
