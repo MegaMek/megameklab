@@ -36,7 +36,6 @@ import megamek.common.*;
 import megamek.common.equipment.ArmorType;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestProtomech;
-import megamek.common.verifier.TestProtomech.ProtomechArmor;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.ArmorAllocationView;
 import megameklab.ui.generalUnit.BAProtoArmorView;
@@ -266,28 +265,21 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
         return false;
     }
 
-    private void createArmorMountsAndSetArmorType(EquipmentType armor) {
-        ProtomechArmor pmArmor = ProtomechArmor.getArmor(EquipmentType.getArmorType(armor));
+    private void createArmorMountsAndSetArmorType(ArmorType armor) {
         List<Mounted> armorMounts = getProtomech().getMisc().stream()
-                .filter(m -> EquipmentType.getArmorType(m.getType()) != EquipmentType.T_ARMOR_UNKNOWN)
+                .filter(m -> m.getType() instanceof ArmorType)
                 .collect(Collectors.toList());
         for (Mounted m : armorMounts) {
             UnitUtil.removeMounted(getProtomech(), m);
         }
 
-        if (pmArmor == null) {
-            getProtomech().setArmorType(EquipmentType.T_ARMOR_STANDARD);
-            getProtomech().setArmorTechLevel(TechConstants.T_ALL_CLAN);
-            return;
-        } else {
-            getProtomech().setArmorType(pmArmor.getType());
-            getProtomech().setArmorTechLevel(pmArmor.getArmorTech());
-        }
+        getProtomech().setArmorType(armor.getArmorType());
+        getProtomech().setArmorTechLevel(armor.getStaticTechLevel().getCompoundTechLevel(armor.isClan()));
 
-        if (pmArmor.getTorsoSlots() > 0) {
-            if (freeUpSpace(Protomech.LOC_TORSO, pmArmor.getTorsoSlots())) {
+        if (armor.getCriticals(getProtomech()) > 0) {
+            if (freeUpSpace(Protomech.LOC_TORSO, armor.getCriticals(getProtomech()))) {
                 try {
-                    Mounted mount = new Mounted(getProtomech(), pmArmor.getArmorEqType());
+                    Mounted mount = new Mounted(getProtomech(), armor);
                     getProtomech().addEquipment(mount, Protomech.LOC_TORSO, false);
                     return;
                 } catch (LocationFullException ignored) {
@@ -298,7 +290,7 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
                     "Requires free torso slot. Resetting to Standard Armor",
                     "Location Full",
                     JOptionPane.INFORMATION_MESSAGE);
-            getProtomech().setArmorType(EquipmentType.T_ARMOR_STANDARD);
+            getProtomech().setArmorType(EquipmentType.T_ARMOR_STANDARD_PROTOMEK);
             getProtomech().setArmorTechLevel(TechConstants.T_ALL_CLAN);
             panArmor.setFromEntity(getProtomech());
         }
@@ -448,7 +440,7 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
     }
 
     @Override
-    public void armorTypeChanged(EquipmentType armor) {
+    public void armorTypeChanged(ArmorType armor) {
         UnitUtil.removeISorArmorMounts(getProtomech(), false);
         createArmorMountsAndSetArmorType(armor);
         panArmorAllocation.setFromEntity(getProtomech());

@@ -55,7 +55,7 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
     private final static String CMD_MAXIMIZE  = "MAXIMIZE";
     private final static String CMD_REMAINING = "REMAINING";
 
-    private final TechComboBox<EquipmentType> cbArmorType = new TechComboBox<>(EquipmentType::getName);
+    private final TechComboBox<ArmorType> cbArmorType = new TechComboBox<>(EquipmentType::getName);
     private final SpinnerNumberModel spnArmorPointsModel = new SpinnerNumberModel(0, 0, null, 1);
     private final JSpinner spnArmorPoints = new JSpinner(spnArmorPointsModel);
     private final JButton btnMaximize = new JButton();
@@ -125,10 +125,7 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
         refresh();
         cbArmorType.removeActionListener(this);
         spnArmorPoints.removeChangeListener(this);
-        String name = EquipmentType.getArmorTypeName(en.getArmorType(0),
-                TechConstants.isClan(en.getArmorTechLevel(0)));
-        EquipmentType eq = EquipmentType.get(name);
-        cbArmorType.setSelectedItem(eq);
+        cbArmorType.setSelectedItem(ArmorType.forEntity(en));
         if (en.hasETypeFlag(Entity.ETYPE_BATTLEARMOR)) {
             spnArmorPointsModel.setValue(Math.min(((BattleArmor)en).getMaximumArmorPoints(),
                     en.getOArmor(BattleArmor.LOC_TROOPER_1)));
@@ -146,8 +143,8 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
         spnArmorPoints.addChangeListener(this);
     }
     
-    public @Nullable EquipmentType getArmor() {
-        return (EquipmentType) cbArmorType.getSelectedItem();
+    public @Nullable ArmorType getArmor() {
+        return (ArmorType) cbArmorType.getSelectedItem();
     }
     
     public int getArmorPoints() {
@@ -189,7 +186,7 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
     @Override
     public void actionPerformed(ActionEvent evt) {
         if (evt.getSource() == cbArmorType) {
-            listeners.forEach(l -> l.armorTypeChanged((EquipmentType)cbArmorType.getSelectedItem()));
+            listeners.forEach(l -> l.armorTypeChanged((ArmorType) cbArmorType.getSelectedItem()));
         } else if (CMD_MAXIMIZE.equals(evt.getActionCommand())) {
             listeners.forEach(ArmorAllocationListener::maximizeArmor);
         } else if (CMD_REMAINING.equals(evt.getActionCommand())) {

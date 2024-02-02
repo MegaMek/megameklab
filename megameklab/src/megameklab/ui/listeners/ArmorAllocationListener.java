@@ -19,6 +19,7 @@
 package megameklab.ui.listeners;
 
 import megamek.common.EquipmentType;
+import megamek.common.equipment.ArmorType;
 
 /**
  * Listener for changes to armor. No method is required by all implementing classes so all are given a default
@@ -42,7 +43,7 @@ public interface ArmorAllocationListener {
      *
      * @param armor The equipment instance of the armor to use.
      */
-    default void armorTypeChanged(EquipmentType armor) {
+    default void armorTypeChanged(ArmorType armor) {
 
     }
 

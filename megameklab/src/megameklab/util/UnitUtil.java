@@ -23,7 +23,6 @@ import megamek.common.annotations.Nullable;
 import megamek.common.equipment.ArmorType;
 import megamek.common.verifier.*;
 import megamek.common.verifier.TestEntity.Ceil;
-import megamek.common.verifier.TestProtomech.ProtomechArmor;
 import megamek.common.weapons.*;
 import megamek.common.weapons.autocannons.HVACWeapon;
 import megamek.common.weapons.autocannons.UACWeapon;
@@ -862,7 +861,7 @@ public class UnitUtil {
             armorWeight = Math.ceil(armorWeight * 2.0) / 2.0;
         } else if (unit instanceof Protomech) {
             double points = TestProtomech.maxArmorFactor((Protomech) unit);
-            return points * ProtomechArmor.getArmor((Protomech) unit).getWtPerPoint();
+            return points * ArmorType.forEntity(unit).getWeightPerPoint();
         } else if (unit.isSupportVehicle()) {
             // Max armor is determined by number of points.
             double weight = TestSupportVehicle.maxArmorFactor(unit)
