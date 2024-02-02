@@ -129,11 +129,11 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
         }
         File f = null;
         if (entities.get(0) instanceof BattleArmor) {
-            f = ImageHelper.getFluffFile(entities.get(0), ImageHelper.imageBattleArmor);
+            f = ImageHelper.getFluffFile(entities.get(0));
         } else if (entities.get(0) instanceof Infantry) {
-            f = ImageHelper.getFluffFile(entities.get(0), ImageHelper.imageInfantry);
+            f = ImageHelper.getFluffFile(entities.get(0));
         } else if (entities.get(0) instanceof Protomech) {
-            f = ImageHelper.getFluffFile(entities.get(0), ImageHelper.imageProto);
+            f = ImageHelper.getFluffFile(entities.get(0));
         }
         if (f != null) {
             Element rect = getSVGDocument().getElementById(FLUFF_IMAGE);

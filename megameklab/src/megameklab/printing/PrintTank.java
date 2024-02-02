@@ -193,11 +193,11 @@ public class PrintTank extends PrintEntity {
     protected void drawFluffImage() {
         File f;
         if (tank.getMovementMode().isMarine()) {
-            f = ImageHelper.getFluffFile(tank, ImageHelper.imageNaval);
+            f = ImageHelper.getFluffFile(tank);
         } else if (tank instanceof LargeSupportTank) {
-            f = ImageHelper.getFluffFile(tank, ImageHelper.imageLargeSupportVehicle);
+            f = ImageHelper.getFluffFile(tank);
         } else {
-            f = ImageHelper.getFluffFile(tank, ImageHelper.imageVehicle);
+            f = ImageHelper.getFluffFile(tank);
         }
         if (null != f) {
             Element rect = getSVGDocument().getElementById(FLUFF_IMAGE);
