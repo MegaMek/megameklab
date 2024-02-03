@@ -19,6 +19,7 @@
 package megameklab.ui.generalUnit;
 
 import megamek.common.*;
+import megamek.common.equipment.ArmorType;
 import megamek.common.verifier.TestEntity;
 import megameklab.ui.listeners.ArmorAllocationListener;
 import megameklab.ui.util.CustomComboBox;
@@ -248,7 +249,7 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
             cbBARRating.removeActionListener(this);
             cbBARRating.removeAllItems();
             for (int bar = 2; bar <= 10; bar++) {
-                double weight = EquipmentType.getSupportVehicleArmorWeightPerPoint(bar, en.getArmorTechRating());
+                double weight = ArmorType.svArmor(bar).getSVWeightPerPoint(en.getArmorTechRating());
                 if ((weight > 0.0) && (!svLimitedArmor || (weight <= 0.05))) {
                     cbBARRating.addItem(bar);
                 }
