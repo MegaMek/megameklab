@@ -39,8 +39,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.*;
 
-import static megamek.common.EquipmentType.T_ARMOR_BA_STANDARD;
-import static megamek.common.EquipmentType.T_ARMOR_STANDARD;
+import static megamek.common.EquipmentType.*;
 
 /**
  * Base class for printing Entity record sheets
@@ -333,7 +332,8 @@ public abstract class PrintEntity extends PrintRecordSheet {
             boolean hasSpecial = false;
             for (int loc = firstArmorLocation(); loc < getEntity().locations(); loc++) {
                 if ((getEntity().getArmorType(loc) != T_ARMOR_STANDARD)
-                        &&(getEntity().getArmorType(loc) != T_ARMOR_BA_STANDARD)
+                        && (getEntity().getArmorType(loc) != T_ARMOR_BA_STANDARD)
+                        && (getEntity().getArmorType(loc) != T_ARMOR_STANDARD_PROTOMEK)
                         // Stealth armor loses special properties when used with patchwork, so we don't
                         // need to show it.
                         && (getEntity().getArmorType(loc) != EquipmentType.T_ARMOR_STEALTH)

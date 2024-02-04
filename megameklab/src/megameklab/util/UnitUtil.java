@@ -23,7 +23,6 @@ import megamek.common.annotations.Nullable;
 import megamek.common.equipment.ArmorType;
 import megamek.common.verifier.*;
 import megamek.common.verifier.TestEntity.Ceil;
-import megamek.common.verifier.TestProtomech.ProtomechArmor;
 import megamek.common.weapons.*;
 import megamek.common.weapons.autocannons.HVACWeapon;
 import megamek.common.weapons.autocannons.UACWeapon;
@@ -100,7 +99,7 @@ public class UnitUtil {
      * @return
      */
     public static boolean isArmor(EquipmentType eq) {
-        return Arrays.asList(EquipmentType.armorNames).contains(eq.getName());
+        return eq instanceof ArmorType;
     }
 
     /**
@@ -862,7 +861,7 @@ public class UnitUtil {
             armorWeight = Math.ceil(armorWeight * 2.0) / 2.0;
         } else if (unit instanceof Protomech) {
             double points = TestProtomech.maxArmorFactor((Protomech) unit);
-            return points * ProtomechArmor.getArmor((Protomech) unit).getWtPerPoint();
+            return points * ArmorType.forEntity(unit).getWeightPerPoint();
         } else if (unit.isSupportVehicle()) {
             // Max armor is determined by number of points.
             double weight = TestSupportVehicle.maxArmorFactor(unit)
@@ -1423,17 +1422,14 @@ public class UnitUtil {
      * @param internalStructure true to remove IS, false to remove armor
      */
     public static void removeISorArmorCrits(Entity unit, boolean internalStructure) {
-        ArrayList<String> mountList = new ArrayList<>();
+        List<String> mountList = new ArrayList<>();
         if (internalStructure) {
             for (String struc : EquipmentType.structureNames) {
                 mountList.add("IS " + struc);
                 mountList.add("Clan " + struc);
             }
         } else {
-            for (String armor : EquipmentType.armorNames) {
-                mountList.add("IS " + armor);
-                mountList.add("Clan " + armor);
-            }
+            mountList = ArmorType.allArmorTypes().stream().map(ArmorType::getInternalName).collect(Collectors.toList());
         }
 
         for (int location = Mech.LOC_HEAD; location < unit.locations(); location++) {
@@ -1472,7 +1468,7 @@ public class UnitUtil {
         if (internalStructure) {
             names = Arrays.asList(EquipmentType.structureNames);
         } else {
-            names = Arrays.asList(EquipmentType.armorNames);
+            names = ArmorType.allArmorNames();
         }
         for (String name : names) {
             mountList.add(String.format("Clan %1s", name));

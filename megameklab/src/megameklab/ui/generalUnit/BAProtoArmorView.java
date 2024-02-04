@@ -20,6 +20,7 @@ package megameklab.ui.generalUnit;
 
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
+import megamek.common.equipment.ArmorType;
 import megamek.common.verifier.TestProtomech;
 import megameklab.ui.listeners.ArmorAllocationListener;
 import megameklab.ui.util.TechComboBox;
@@ -54,7 +55,7 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
     private final static String CMD_MAXIMIZE  = "MAXIMIZE";
     private final static String CMD_REMAINING = "REMAINING";
 
-    private final TechComboBox<EquipmentType> cbArmorType = new TechComboBox<>(EquipmentType::getName);
+    private final TechComboBox<ArmorType> cbArmorType = new TechComboBox<>(EquipmentType::getName);
     private final SpinnerNumberModel spnArmorPointsModel = new SpinnerNumberModel(0, 0, null, 1);
     private final JSpinner spnArmorPoints = new JSpinner(spnArmorPointsModel);
     private final JButton btnMaximize = new JButton();
@@ -124,10 +125,7 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
         refresh();
         cbArmorType.removeActionListener(this);
         spnArmorPoints.removeChangeListener(this);
-        String name = EquipmentType.getArmorTypeName(en.getArmorType(0),
-                TechConstants.isClan(en.getArmorTechLevel(0)));
-        EquipmentType eq = EquipmentType.get(name);
-        cbArmorType.setSelectedItem(eq);
+        cbArmorType.setSelectedItem(ArmorType.forEntity(en));
         if (en.hasETypeFlag(Entity.ETYPE_BATTLEARMOR)) {
             spnArmorPointsModel.setValue(Math.min(((BattleArmor)en).getMaximumArmorPoints(),
                     en.getOArmor(BattleArmor.LOC_TROOPER_1)));
@@ -145,8 +143,8 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
         spnArmorPoints.addChangeListener(this);
     }
     
-    public @Nullable EquipmentType getArmor() {
-        return (EquipmentType) cbArmorType.getSelectedItem();
+    public @Nullable ArmorType getArmor() {
+        return (ArmorType) cbArmorType.getSelectedItem();
     }
     
     public int getArmorPoints() {
@@ -164,19 +162,9 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
         } else if ((etype & Entity.ETYPE_PROTOMECH) != 0) {
             flag = MiscType.F_PROTOMECH_EQUIPMENT;
         }
-        for (int at = 0; at < EquipmentType.armorNames.length; at++) {
-            String name = EquipmentType.getArmorTypeName(at, techManager.useClanTechBase());
-            EquipmentType eq = EquipmentType.get(name);
-            if ((null != eq) && eq.hasFlag(flag) && techManager.isLegal(eq)) {
-                cbArmorType.addItem(eq);
-            }
-            if (techManager.useMixedTech()) {
-                name = EquipmentType.getArmorTypeName(at, !techManager.useClanTechBase());
-                EquipmentType eq2 = EquipmentType.get(name);
-                if ((null != eq2) && (eq != eq2) && eq2.hasFlag(flag)
-                        && techManager.isLegal(eq2)) {
-                    cbArmorType.addItem(eq2);
-                }
+        for (ArmorType armor : ArmorType.allArmorTypes()) {
+            if (armor.hasFlag(flag) && techManager.isLegal(armor)) {
+                cbArmorType.addItem(armor);
             }
         }
         cbArmorType.setSelectedItem(prev);
@@ -198,7 +186,7 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
     @Override
     public void actionPerformed(ActionEvent evt) {
         if (evt.getSource() == cbArmorType) {
-            listeners.forEach(l -> l.armorTypeChanged((EquipmentType)cbArmorType.getSelectedItem()));
+            listeners.forEach(l -> l.armorTypeChanged((ArmorType) cbArmorType.getSelectedItem()));
         } else if (CMD_MAXIMIZE.equals(evt.getActionCommand())) {
             listeners.forEach(ArmorAllocationListener::maximizeArmor);
         } else if (CMD_REMAINING.equals(evt.getActionCommand())) {
