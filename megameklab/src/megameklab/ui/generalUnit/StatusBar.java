@@ -25,6 +25,7 @@ import megamek.client.ui.dialogs.WeightDisplayDialog;
 import megamek.client.ui.swing.GUIPreferences;
 import megamek.client.ui.swing.calculationReport.CalculationReport;
 import megamek.common.*;
+import megamek.common.verifier.TestBattleArmor;
 import megamek.common.verifier.TestEntity;
 import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.util.ITab;
@@ -112,6 +113,9 @@ public class StatusBar extends ITab {
      */
     protected void refreshWeight() {
         double tonnage = getEntity().getWeight();
+        if (getEntity() instanceof BattleArmor) {
+            tonnage = getBattleArmor().getTrooperWeight() * getBattleArmor().getSquadSize();
+        }
         double currentTonnage = testEntity.calculateWeight();
         currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getEntity());
         String current = CalculationReport.formatForReport(currentTonnage);
