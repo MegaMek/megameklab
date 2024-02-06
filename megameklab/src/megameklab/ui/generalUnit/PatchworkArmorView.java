@@ -28,6 +28,7 @@ import javax.swing.JLabel;
 import javax.swing.border.TitledBorder;
 
 import megamek.common.*;
+import megamek.common.equipment.ArmorType;
 import megamek.common.verifier.TestEntity;
 import megameklab.ui.util.TechComboBox;
 import megameklab.ui.listeners.ArmorAllocationListener;
@@ -92,7 +93,7 @@ public class PatchworkArmorView extends BuildView implements ActionListener {
     }
     
     public void setFromEntity(Entity en) {
-        List<EquipmentType> armors = TestEntity.legalArmorsFor(en.getEntityType(),
+        List<ArmorType> armors = TestEntity.legalArmorsFor(en.getEntityType(),
                 (en instanceof Mech) && ((Mech)en).isIndustrial(),
                 en.isPrimitive(),
                 en.getMovementMode(), techManager);

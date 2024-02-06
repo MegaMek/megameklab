@@ -20,6 +20,7 @@ package megameklab.ui.supportVehicle;
 
 import megamek.codeUtilities.MathUtility;
 import megamek.common.*;
+import megamek.common.equipment.ArmorType;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestSupportVehicle;
 import megameklab.ui.EntitySource;
@@ -105,13 +106,9 @@ public class SVArmorTab extends ITab implements ArmorAllocationListener {
             UnitUtil.removeISorArmorMounts(getEntity(), false);
             getEntity().setArmorTechLevel(armorTechLevel);
             getEntity().setArmorType(at);
-            if (at != EquipmentType.T_ARMOR_STANDARD) {
-                getEntity().setBARRating(10);
-            } else {
-                getEntity().setArmorTechRating(panArmor.getTechRating());
-                getEntity().setBARRating(panArmor.getBARRating());
-                getEntity().recalculateTechAdvancement();
-            }
+            ArmorType armor = ArmorType.of(at, TechConstants.isClan(armorTechLevel));
+            getEntity().setBARRating(armor.getBAR());
+            getEntity().setArmorTechRating(panArmor.getTechRating());
             panArmorAllocation.showPatchwork(false);
             panPatchwork.setVisible(false);
         } else {
