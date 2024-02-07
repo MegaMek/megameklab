@@ -17,6 +17,7 @@ package megameklab.ui.combatVehicle;
 
 import megamek.codeUtilities.MathUtility;
 import megamek.common.*;
+import megamek.common.equipment.ArmorType;
 import megamek.common.verifier.BayData;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestTank;
@@ -776,27 +777,10 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
     }
 
     @Override
-    public void patchworkChanged(int location, EquipmentType armor) {
+    public void patchworkChanged(int location, ArmorType armor) {
         UnitUtil.resetArmor(getTank(), location);
 
-        //TODO: move this construction data out of the ui
-        int crits = 0;
-        switch (EquipmentType.getArmorType(armor)) {
-            case EquipmentType.T_ARMOR_STEALTH_VEHICLE:
-            case EquipmentType.T_ARMOR_LIGHT_FERRO:
-            case EquipmentType.T_ARMOR_FERRO_FIBROUS:
-            case EquipmentType.T_ARMOR_FERRO_FIBROUS_PROTO:
-            case EquipmentType.T_ARMOR_FERRO_LAMELLOR:
-            case EquipmentType.T_ARMOR_REFLECTIVE:
-            case EquipmentType.T_ARMOR_REACTIVE:
-            case EquipmentType.T_ARMOR_ANTI_PENETRATIVE_ABLATION:
-            case EquipmentType.T_ARMOR_BALLISTIC_REINFORCED:
-                crits = 1;
-                break;
-            case EquipmentType.T_ARMOR_HEAVY_FERRO:
-                crits = 2;
-                break;
-        }
+        int crits = armor.getPatchworkSlotsCVFtr();
         if (getTank().getEmptyCriticals(location) < crits) {
             JOptionPane .showMessageDialog(
                     null, armor.getName()
@@ -805,8 +789,10 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
                     + ". Resetting to Standard Armor in this location.",
                     "Error",
                     JOptionPane.INFORMATION_MESSAGE);
+            getEntity().setArmorType(EquipmentType.T_ARMOR_STANDARD, location);
+            getEntity().setArmorTechLevel(TechConstants.T_INTRO_BOXSET);
         } else {
-            getTank().setArmorType(EquipmentType.getArmorType(armor), location);
+            getTank().setArmorType(armor.getArmorType(), location);
             getTank().setArmorTechLevel(armor.getTechLevel(getTechManager().getGameYear(), armor.isClan()));
             for (; crits > 0; crits--) {
                 try {

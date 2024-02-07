@@ -174,7 +174,7 @@ public class SVMainUI extends MegaMekLabMainUI {
                 Engine.SUPPORT_VEE_ENGINE));
 
         getEntity().autoSetInternal();
-        getEntity().setArmorType(EquipmentType.T_ARMOR_STANDARD);
+        getEntity().setArmorType(EquipmentType.T_ARMOR_SV_BAR_2);
         for (int loc = 0; loc < getEntity().locations(); loc++) {
             getEntity().initializeArmor(0, loc);
         }
@@ -185,6 +185,7 @@ public class SVMainUI extends MegaMekLabMainUI {
             getEntity().setModel("Support Tank");
             getEntity().setYear(3145);
             getEntity().setStructuralTechRating(ITechnology.RATING_D);
+            getEntity().setArmorTechRating(ITechnology.RATING_D);
             getEntity().setOriginalWalkMP(1);
         } else {
             getEntity().setChassis(oldEntity.getChassis());
