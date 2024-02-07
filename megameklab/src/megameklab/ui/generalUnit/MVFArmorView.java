@@ -32,7 +32,6 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -71,8 +70,6 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
     private boolean primitive;
     private EntityMovementMode movementMode;
     private boolean svLimitedArmor;
-
-    private final List<JComponent> svControlList = new ArrayList<>();
 
     private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
 
@@ -122,13 +119,11 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
             JLabel label = createLabel(resourceMap, "lblSVTechRating", "ArmorView.cbSVTechRating.text",
                     "ArmorView.cbSVTechRating.tooltip", labelSizeLg);
             add(label, gbc);
-            svControlList.add(label);
             gbc.gridx = 1;
             gbc.gridwidth = 2;
             setFieldSize(cbSVTechRating, controlSize);
             cbSVTechRating.setToolTipText(resourceMap.getString("ArmorView.cbSVTechRating.tooltip"));
             add(cbSVTechRating, gbc);
-            svControlList.add(cbSVTechRating);
             cbSVTechRating.addActionListener(this);
         }
 
@@ -226,12 +221,9 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
         }
         if (en.isSupportVehicle() && !en.hasPatchworkArmor()
                 && ArmorType.forEntity(en).hasFlag(MiscType.F_SUPPORT_VEE_BAR_ARMOR)) {
-            svControlList.forEach(c -> c.setVisible(true));
             cbSVTechRating.removeActionListener(this);
             cbSVTechRating.setSelectedItem(en.getArmorTechRating());
             cbSVTechRating.addActionListener(this);
-        } else {
-            svControlList.forEach(c -> c.setVisible(false));
         }
         if (en.getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT) {
             lblArmorTonnage.setText(resourceMap.getString("ArmorView.spnFactor.text"));
