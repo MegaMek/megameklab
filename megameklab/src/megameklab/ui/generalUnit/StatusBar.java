@@ -25,18 +25,23 @@ import megamek.client.ui.dialogs.WeightDisplayDialog;
 import megamek.client.ui.swing.GUIPreferences;
 import megamek.client.ui.swing.calculationReport.CalculationReport;
 import megamek.common.*;
-import megamek.common.verifier.TestBattleArmor;
+import megamek.common.util.ImageUtil;
 import megamek.common.verifier.TestEntity;
 import megameklab.ui.MegaMekLabMainUI;
+import megameklab.ui.PopupMessages;
+import megameklab.ui.dialog.MMLFileChooser;
 import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
-import megameklab.util.ImageHelper;
 import megameklab.util.UnitUtil;
+import org.apache.logging.log4j.LogManager;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.text.DecimalFormat;
 
 public class StatusBar extends ITab {
@@ -66,7 +71,7 @@ public class StatusBar extends ITab {
         btnValidate.addActionListener(evt -> UnitUtil.showValidation(getEntity(), getParentFrame()));
 
         JButton btnFluffImage = new JButton("Set Fluff Image");
-        btnFluffImage.addActionListener(evt -> getFluffImage());
+        btnFluffImage.addActionListener(evt -> chooseFluffImage());
 
         invalid.setForeground(GUIPreferences.getInstance().getWarningColor());
         invalid.setVisible(false);
@@ -153,17 +158,21 @@ public class StatusBar extends ITab {
         invalid.setToolTipText("<html>" + sb.toString().replaceAll("\n", "<br/>") + "</html>");
     }
 
-    private void getFluffImage() {
-        FileDialog fDialog = new FileDialog(getParentFrame(), "Image Path", FileDialog.LOAD);
-        fDialog.setDirectory(Configuration.fluffImagesDir().toString());
-        fDialog.setLocationRelativeTo(this);
-        fDialog.setVisible(true);
-        if (fDialog.getFile() != null) {
-            String relativeFilePath = new File(fDialog.getDirectory() + fDialog.getFile()).getAbsolutePath();
-            relativeFilePath = "." + File.separatorChar + relativeFilePath.substring(new File(System.getProperty("user.dir")).getAbsolutePath().length() + 1);
-            getEntity().getFluff().setMMLImagePath(relativeFilePath);
+    private void chooseFluffImage() {
+        var imageChooser = new MMLFileChooser();
+        int result = imageChooser.showOpenDialog(parentFrame);
+        if ((result == JFileChooser.APPROVE_OPTION) && (imageChooser.getSelectedFile() != null)) {
+            File imageFile = imageChooser.getSelectedFile();
+            if (imageFile.isFile()) {
+                try {
+                    BufferedImage image = ImageIO.read(imageFile);
+                    getEntity().getFluff().setFluffImageEncoded(ImageUtil.base64TextEncodeImage(image));
+                } catch (IOException ex) {
+                    PopupMessages.showFileReadError(parentFrame, imageFile.toString(), ex.getMessage());
+                    LogManager.getLogger().error("", ex);
+                }
+            }
         }
-        refresh.refreshPreview();
     }
 
     private JFrame getParentFrame() {
