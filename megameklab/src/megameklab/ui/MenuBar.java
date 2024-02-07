@@ -932,8 +932,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         if (chosenEntity != null) {
             try {
                 Image fluffImage = chosenEntity.getFluffImage();
-                BufferedImage bim = ImageUtil.getScaledImage(fluffImage, fluffImage.getWidth(null), fluffImage.getHeight(null));
-                owner.getEntity().getFluff().setFluffImageEncoded(ImageUtil.base64TextEncodeImage(bim));
+                owner.getEntity().getFluff().setFluffImageEncoded(ImageUtil.base64TextEncodeImage(fluffImage));
             } catch (Exception ex) {
                 PopupMessages.showFileReadError(owner.getFrame(), "", ex.getMessage());
                 LogManager.getLogger().error("Fluff could not be copied!", ex);
