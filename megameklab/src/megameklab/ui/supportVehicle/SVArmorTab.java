@@ -233,6 +233,7 @@ public class SVArmorTab extends ITab implements ArmorAllocationListener {
         } else {
             getEntity().setArmorType(armor.getArmorType(), location);
             getEntity().setArmorTechLevel(armor.getTechLevel(techManager.getGameYear(), armor.isClan()));
+            getEntity().setBARRating(armor.getBAR(), location);
             for (; crits > 0; crits--) {
                 try {
                     getEntity().addEquipment( new Mounted(getEntity(), armor), location, false);
