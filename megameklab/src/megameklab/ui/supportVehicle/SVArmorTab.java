@@ -216,27 +216,10 @@ public class SVArmorTab extends ITab implements ArmorAllocationListener {
     }
 
     @Override
-    public void patchworkChanged(int location, EquipmentType armor) {
+    public void patchworkChanged(int location, ArmorType armor) {
         UnitUtil.resetArmor(getEntity(), location);
 
-        //TODO: move this construction data out of the ui
-        int crits = 0;
-        switch (EquipmentType.getArmorType(armor)) {
-            case EquipmentType.T_ARMOR_STEALTH_VEHICLE:
-            case EquipmentType.T_ARMOR_LIGHT_FERRO:
-            case EquipmentType.T_ARMOR_FERRO_FIBROUS:
-            case EquipmentType.T_ARMOR_FERRO_FIBROUS_PROTO:
-            case EquipmentType.T_ARMOR_FERRO_LAMELLOR:
-            case EquipmentType.T_ARMOR_REFLECTIVE:
-            case EquipmentType.T_ARMOR_REACTIVE:
-            case EquipmentType.T_ARMOR_ANTI_PENETRATIVE_ABLATION:
-                crits = 1;
-                break;
-            case EquipmentType.T_ARMOR_HEAVY_FERRO:
-            case EquipmentType.T_ARMOR_BALLISTIC_REINFORCED:
-                crits = 2;
-                break;
-        }
+        int crits = armor.getPatchworkSlotsMechSV();
         if (getEntity().getEmptyCriticals(location) < crits) {
             JOptionPane .showMessageDialog(
                     null, armor.getName()
@@ -245,13 +228,15 @@ public class SVArmorTab extends ITab implements ArmorAllocationListener {
                             + ". Resetting to Standard Armor in this location.",
                     "Error",
                     JOptionPane.INFORMATION_MESSAGE);
+            getEntity().setArmorType(EquipmentType.T_ARMOR_STANDARD, location);
+            getEntity().setArmorTechLevel(TechConstants.T_INTRO_BOXSET);
         } else {
-            getEntity().setArmorType(EquipmentType.getArmorType(armor), location);
+            getEntity().setArmorType(armor.getArmorType(), location);
             getEntity().setArmorTechLevel(armor.getTechLevel(techManager.getGameYear(), armor.isClan()));
             for (; crits > 0; crits--) {
                 try {
                     getEntity().addEquipment( new Mounted(getEntity(), armor), location, false);
-                } catch (LocationFullException ex) {
+                } catch (LocationFullException ignored) {
                 }
             }
         }

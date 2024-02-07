@@ -51,7 +51,7 @@ public class PatchworkArmorView extends BuildView implements ActionListener {
     private final static int MAX_LOC = 10;
     
     private final List<JLabel> labels = new ArrayList<>();
-    private final List<TechComboBox<EquipmentType>> combos = new ArrayList<>();
+    private final List<TechComboBox<ArmorType>> combos = new ArrayList<>();
     
     private final ITechManager techManager;
     private boolean ignoreEvents = false;
@@ -77,7 +77,7 @@ public class PatchworkArmorView extends BuildView implements ActionListener {
         gbc.insets = new Insets(0, 5, 0, 5);
         for (int loc = 0; loc < MAX_LOC; loc++) {
             JLabel label = new JLabel();
-            TechComboBox<EquipmentType> combo = new TechComboBox<>(EquipmentType::getName);
+            TechComboBox<ArmorType> combo = new TechComboBox<>(ArmorType::getName);
             combo.setActionCommand(Integer.toString(loc));
             combo.addActionListener(this);
             labels.add(label);
@@ -104,12 +104,17 @@ public class PatchworkArmorView extends BuildView implements ActionListener {
                     && !((en.hasETypeFlag(Entity.ETYPE_AERO) && (loc >= Aero.LOC_WINGS)))) {
                 labels.get(loc).setText(en.getLocationName(loc));
                 combos.get(loc).removeAllItems();
-                for (EquipmentType eq : armors) {
-                    combos.get(loc).addItem(eq);
+                for (ArmorType armor : armors) {
+                    // Check whether SV armor exists at this tech rating or it requires the armored chassis mod.
+                    if (armor.hasFlag(MiscType.F_SUPPORT_VEE_BAR_ARMOR)
+                            && ((armor.getSVWeightPerPoint(en.getArmorTechRating()) == 0.0)
+                            || (!en.hasMisc(MiscType.F_ARMORED_CHASSIS)
+                                && armor.getSVWeightPerPoint(en.getArmorTechRating()) >= 0.050))) {
+                        continue;
+                    }
+                    combos.get(loc).addItem(armor);
                 }
-                String name = EquipmentType.getArmorTypeName(en.getArmorType(loc),
-                        TechConstants.isClan(en.getArmorTechLevel(loc)));
-                combos.get(loc).setSelectedItem(EquipmentType.get(name));
+                combos.get(loc).setSelectedItem(ArmorType.forEntity(en, loc));
                 labels.get(loc).setVisible(true);
                 combos.get(loc).setVisible(true);
                 combos.get(loc).showTechBase(en.isMixedTech());
@@ -121,11 +126,11 @@ public class PatchworkArmorView extends BuildView implements ActionListener {
         ignoreEvents = false;
     }
     
-    public EquipmentType getArmor(int location) {
-        return (EquipmentType)combos.get(location).getSelectedItem();
+    public ArmorType getArmor(int location) {
+        return (ArmorType) combos.get(location).getSelectedItem();
     }
     
-    public void setArmorType(EquipmentType armor, int location) {
+    public void setArmorType(ArmorType armor, int location) {
         combos.get(location).setSelectedItem(armor);
     }
     
