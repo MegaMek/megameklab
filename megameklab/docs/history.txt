@@ -31,7 +31,7 @@ MEGAMEKLAB VERSION HISTORY:
 + Fix #1183: The Dropship bay door maximum now updates consistently
 + Fix #1405: Fixed a bug with resetting system crits that lead to what seemed conflicts between XLFE, NullSig, and CLPS
 + Fix #1192: Fixed a bug with internal weapon and equipment linkage that lead to laser insulators sometimes affecting multiple lasers
-+ PR #1402, #1412: Rework of the internal representation of Armor
++ PR #1402, #1412, #1417: Rework of the internal representation of Armor
 + PR #1410: Adaptation to Mek Clan name separation in MM; Adds a clan chassis name field for Meks; for units such as the Mad Cat, 
             the IS name and clan name can be reordered on record sheets
 + PR #1411: StatusBar: calculate the correct total max weight for BA
