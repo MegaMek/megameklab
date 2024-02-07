@@ -167,12 +167,13 @@ public class StatusBar extends ITab {
                 try {
                     BufferedImage image = ImageIO.read(imageFile);
                     getEntity().getFluff().setFluffImageEncoded(ImageUtil.base64TextEncodeImage(image));
-                } catch (IOException ex) {
+                } catch (Exception ex) {
                     PopupMessages.showFileReadError(parentFrame, imageFile.toString(), ex.getMessage());
                     LogManager.getLogger().error("", ex);
                 }
             }
         }
+        refresh.refreshAll();
     }
 
     private JFrame getParentFrame() {

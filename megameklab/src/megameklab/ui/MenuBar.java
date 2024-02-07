@@ -22,7 +22,7 @@ import megamek.common.*;
 import megamek.common.annotations.Nullable;
 import megamek.common.loaders.BLKFile;
 import megamek.common.templates.TROView;
-import megamek.common.verifier.TestEntity;
+import megamek.common.util.ImageUtil;
 import megameklab.MMLConstants;
 import megameklab.ui.dialog.MMLFileChooser;
 import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
@@ -30,11 +30,11 @@ import megameklab.ui.dialog.PrintQueueDialog;
 import megameklab.ui.dialog.UiLoader;
 import megameklab.ui.dialog.settings.SettingsDialog;
 import megameklab.util.CConfig;
-import megameklab.util.ImageHelper;
 import megameklab.util.UnitPrintManager;
 import megameklab.util.UnitUtil;
 import org.apache.logging.log4j.LogManager;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -48,9 +48,9 @@ import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.util.Base64;
 import java.util.ResourceBundle;
 
 /**
@@ -64,7 +64,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     private final ResourceBundle resources = ResourceBundle.getBundle("megameklab.resources.Menu");
     private final MMLFileChooser loadUnitFileChooser = new MMLFileChooser();
     private final MMLFileChooser saveUnitFileChooser = new MMLFileChooser();
-    private final MMLFileChooser loadImageFileChooser = new MMLFileChooser();
+    public final MMLFileChooser loadImageFileChooser = new MMLFileChooser();
     private final JMenu fileMenu = new JMenu(resources.getString("fileMenu.text"));
 
     public MenuBar(MenuBarOwner owner) {
@@ -924,41 +924,23 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     }
 
     private void importFluffImageAction() {
-        File unitFile = chooseUnitFileToLoad();
-        if (unitFile == null) {
-            return;
+        UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(owner.getFrame());
+        unitLoadingDialog.setVisible(true);
+        MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(owner.getFrame(), unitLoadingDialog);
+
+        Entity chosenEntity = viewer.getChosenEntity();
+        if (chosenEntity != null) {
+            try {
+                Image fluffImage = chosenEntity.getFluffImage();
+                BufferedImage bim = ImageUtil.getScaledImage(fluffImage, fluffImage.getWidth(null), fluffImage.getHeight(null));
+                owner.getEntity().getFluff().setFluffImageEncoded(ImageUtil.base64TextEncodeImage(bim));
+            } catch (Exception ex) {
+                PopupMessages.showFileReadError(owner.getFrame(), "", ex.getMessage());
+                LogManager.getLogger().error("Fluff could not be copied!", ex);
+            }
         }
-
-        try {
-            Entity tempEntity = new MechFileParser(unitFile).getEntity();
-            String validationResult = UnitUtil.validateUnit(tempEntity);
-            if (!validationResult.isBlank()) {
-                PopupMessages.showUnitInvalidWarning(owner.getFrame(), validationResult);
-            }
-
-            if (!owner.getEntity().getFluff().getMMLImagePath().isBlank()) {
-                String fullPath = new File(owner.getEntity().getFluff().getMMLImagePath()).getAbsolutePath();
-                String imageName = fullPath.substring(fullPath.lastIndexOf(File.separatorChar) + 1);
-                fullPath = fullPath.substring(0, fullPath.lastIndexOf(File.separatorChar) + 1);
-                loadImageFileChooser.setCurrentDirectory(new File(fullPath));
-                loadImageFileChooser.setSelectedFile(new File(imageName));
-            } else {
-                loadImageFileChooser.setCurrentDirectory(Configuration.fluffImagesDir());
-                loadImageFileChooser.setSelectedFile(new File(getUnitMainUi().getEntity().getChassis()
-                        + ' ' + getUnitMainUi().getEntity().getModel() + ".png"));
-            }
-
-            int result = loadImageFileChooser.showSaveDialog(owner.getFrame());
-            if ((result == JFileChooser.APPROVE_OPTION) && (loadImageFileChooser.getSelectedFile() != null)) {
-                String relativeFilePath = loadImageFileChooser.getSelectedFile().getAbsolutePath();
-                relativeFilePath = "." + File.separatorChar + relativeFilePath
-                        .substring(new File(System.getProperty("user.dir")).getAbsolutePath().length() + 1);
-                getUnitMainUi().getEntity().getFluff().setMMLImagePath(relativeFilePath);
-                BLKFile.encode(unitFile.getAbsolutePath(), tempEntity);
-            }
-        } catch (Exception ex) {
-            LogManager.getLogger().error("", ex);
-        }
+        viewer.dispose();
+        owner.refreshAll();
     }
 
     // Show data about MegaMekLab
