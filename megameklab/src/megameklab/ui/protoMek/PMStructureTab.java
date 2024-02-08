@@ -34,6 +34,7 @@ import javax.swing.SwingConstants;
 import megamek.codeUtilities.MathUtility;
 import megamek.common.*;
 import megamek.common.equipment.ArmorType;
+import megamek.common.equipment.MiscMounted;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestProtomech;
 import megameklab.ui.EntitySource;
@@ -420,7 +421,7 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
             getProtomech().autoSetInternal();
             getProtomech().initializeArmor(0, Protomech.LOC_LARM);
             getProtomech().initializeArmor(0, Protomech.LOC_RARM);
-            Optional<Mounted> qms = getProtomech().getMisc().stream().filter(m -> m.getType()
+            Optional<MiscMounted> qms = getProtomech().getMisc().stream().filter(m -> m.getType()
                     .hasFlag(MiscType.F_CLUB) && m.getType().hasSubType(MiscType.S_PROTO_QMS)).findFirst();
             if (qms.isPresent()) {
                 UnitUtil.removeMounted(getProtomech(), qms.get());
@@ -692,11 +693,9 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
                 // We've already checked for enough space where there are limits
             }
         } else {
-            Optional<Mounted> mounted = getProtomech().getMisc().stream()
+            Optional<MiscMounted> mounted = getProtomech().getMisc().stream()
                     .filter(m -> eq.equals(m.getType())).findFirst();
-            if (mounted.isPresent()) {
-                UnitUtil.removeMounted(getProtomech(), mounted.get());
-            }
+            mounted.ifPresent(miscMounted -> UnitUtil.removeMounted(getProtomech(), miscMounted));
         }
         panMovement.setFromEntity(getProtomech());
         panSummary.refresh();

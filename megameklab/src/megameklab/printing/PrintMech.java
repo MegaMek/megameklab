@@ -16,6 +16,7 @@ package megameklab.printing;
 import megamek.common.Entity;
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
+import megamek.common.equipment.MiscMounted;
 import megameklab.printing.reference.*;
 import megameklab.util.CConfig;
 import megameklab.util.ImageHelper;
@@ -703,7 +704,7 @@ public class PrintMech extends PrintEntity {
                         || ((cs.getIndex() >= Mech.ACTUATOR_UPPER_LEG) && (cs.getIndex() <= Mech.ACTUATOR_FOOT))) {
                     name += " Actuator";
                 } else if (cs.getIndex() == Mech.SYSTEM_COCKPIT) {
-                    Optional<Mounted> robotics = mech.getMisc().stream()
+                    Optional<MiscMounted> robotics = mech.getMisc().stream()
                             .filter(m -> m.getType().hasFlag(MiscType.F_SRCS)).findAny();
                     if (robotics.isPresent()) {
                         name = robotics.get().getType().getShortName();

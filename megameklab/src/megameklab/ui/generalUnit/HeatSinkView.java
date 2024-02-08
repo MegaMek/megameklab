@@ -180,7 +180,7 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
         hasPrototypeDoubles = mech.hasWorkingMisc(MiscType.F_IS_DOUBLE_HEAT_SINK_PROTOTYPE);
         refresh();
         // If there are prototype doubles, we want to skip any singles and select that as the base type.
-        Optional<EquipmentType> hs = mech.getMisc().stream().map(Mounted::getType)
+        Optional<MiscType> hs = mech.getMisc().stream().map(Mounted::getType)
                 .filter(et -> et.hasFlag(MiscType.F_IS_DOUBLE_HEAT_SINK_PROTOTYPE)).findAny();
         if (hs.isEmpty()) {
             hs = mech.getMisc().stream().map(Mounted::getType)

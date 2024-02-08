@@ -19,6 +19,7 @@
 package megameklab.util;
 
 import megamek.common.*;
+import megamek.common.equipment.MiscMounted;
 import megamek.common.weapons.c3.ISC3M;
 import megamek.common.weapons.c3.ISC3MBS;
 import megamek.common.weapons.infantry.InfantryWeapon;
@@ -403,9 +404,8 @@ public final class MekUtil {
      * @param unit
      */
     public static void removeJumpJets(Mech unit, int number) {
-        Vector<Mounted> toRemove = new Vector<>();
-        ArrayList<Mounted> misceq = unit.getMisc();
-        for (Mounted eq : misceq) {
+        Vector<MiscMounted> toRemove = new Vector<>();
+        for (MiscMounted eq : unit.getMisc()) {
             if (UnitUtil.isJumpJet(eq)) {
                 toRemove.add(eq);
                 if (toRemove.size() >= number) {
@@ -414,7 +414,7 @@ public final class MekUtil {
             }
         }
 
-        for (Mounted eq : toRemove) {
+        for (MiscMounted eq : toRemove) {
             UnitUtil.removeMounted(unit, eq);
         }
     }
@@ -518,20 +518,24 @@ public final class MekUtil {
                 if ((cs == null) || (cs.getType() == CriticalSlot.TYPE_SYSTEM)) {
                     continue;
                 }
-                Mounted mount = cs.getMount();
+                Mounted<?> mount = cs.getMount();
 
                 if (!UnitUtil.isFixedLocationSpreadEquipment(mount.getType())
                         && (UnitUtil.isTSM(mount.getType())
                         || UnitUtil.isArmorOrStructure(mount.getType()))) {
-                    Mounted newMount = Mounted.createMounted(unit, mount.getType());
+                    Mounted<?> newMount = Mounted.createMounted(unit, mount.getType());
                     newMount.setLocation(location, mount.isRearMounted());
                     newMount.setArmored(mount.isArmored());
                     cs.setMount(newMount);
                     cs.setArmored(mount.isArmored());
                     unit.getEquipment().remove(mount);
-                    unit.getMisc().remove(mount);
+                    if (mount instanceof MiscMounted) {
+                        unit.getMisc().remove(mount);
+                    }
                     unit.getEquipment().add(newMount);
-                    unit.getMisc().add(newMount);
+                    if (newMount instanceof MiscMounted) {
+                        unit.getMisc().add((MiscMounted) newMount);
+                    }
                 }
             }
         }

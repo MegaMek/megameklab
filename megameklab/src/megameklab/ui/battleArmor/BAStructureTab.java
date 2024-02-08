@@ -17,6 +17,7 @@ package megameklab.ui.battleArmor;
 import megamek.codeUtilities.MathUtility;
 import megamek.common.*;
 import megamek.common.equipment.ArmorType;
+import megamek.common.equipment.MiscMounted;
 import megamek.common.verifier.TestBattleArmor;
 import megamek.common.verifier.TestBattleArmor.BAManipulator;
 import megamek.common.verifier.TestEntity;
@@ -210,7 +211,7 @@ public class BAStructureTab extends ITab implements ActionListener, ChangeListen
      * @param model    The spinner's number model
      */
     private void refreshManipulatorSizes(int mountLoc, JSpinner spinner, SpinnerNumberModel model) {
-        Optional<Mounted> mounted = getBattleArmor().getMisc().stream()
+        Optional<MiscMounted> mounted = getBattleArmor().getMisc().stream()
                 .filter(m -> m.getType().hasFlag(MiscType.F_BA_MANIPULATOR) && (m.getBaMountLoc() == mountLoc))
                 .findFirst();
         if (mounted.isPresent() && mounted.get().getType().isVariableSize()) {
@@ -370,7 +371,7 @@ public class BAStructureTab extends ITab implements ActionListener, ChangeListen
     }
 
     private void setManipulatorSize(int mountLoc, double size) {
-        Optional<Mounted> mounted = getBattleArmor().getMisc().stream()
+        Optional<MiscMounted> mounted = getBattleArmor().getMisc().stream()
                 .filter(m -> m.getType().hasFlag(MiscType.F_BA_MANIPULATOR) && (m.getBaMountLoc() == mountLoc))
                 .findFirst();
         mounted.ifPresent(value -> value.setSize(size));

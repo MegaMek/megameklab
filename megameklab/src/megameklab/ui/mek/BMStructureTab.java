@@ -17,6 +17,7 @@ import megamek.codeUtilities.MathUtility;
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
 import megamek.common.equipment.ArmorType;
+import megamek.common.equipment.MiscMounted;
 import megamek.common.loaders.EntityLoadingException;
 import megamek.common.verifier.TestEntity;
 import megameklab.ui.EntitySource;
@@ -743,7 +744,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
             case BMChassisView.BASE_TYPE_QUADVEE:
                 if (getMech() instanceof QuadVee) {
                     if (motiveType != ((QuadVee)getMech()).getMotiveType()) {
-                        Optional<Mounted> mount = getMech().getMisc().stream()
+                        Optional<MiscMounted> mount = getMech().getMisc().stream()
                                 .filter(m -> m.getType().hasFlag(MiscType.F_TRACKS))
                                 .findAny();
                         mount.ifPresent(mounted -> UnitUtil.removeMounted(getMech(), mounted));
