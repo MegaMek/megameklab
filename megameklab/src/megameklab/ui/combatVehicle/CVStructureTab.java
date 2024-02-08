@@ -796,7 +796,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
             getTank().setArmorTechLevel(armor.getTechLevel(getTechManager().getGameYear(), armor.isClan()));
             for (; crits > 0; crits--) {
                 try {
-                    getTank().addEquipment( new Mounted(getTank(), armor), location, false);
+                    getTank().addEquipment(Mounted.createMounted(getTank(), armor), location, false);
                 } catch (LocationFullException ignored) {
                 }
             }

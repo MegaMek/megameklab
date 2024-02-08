@@ -433,7 +433,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         for (; isCount > 0; isCount--) {
             try {
                 getMech().addEquipment(
-                        new Mounted(getMech(), structure),
+                        Mounted.createMounted(getMech(), structure),
                         Entity.LOC_NONE, false);
             } catch (Exception ex) {
                 LogManager.getLogger().error("", ex);
@@ -527,7 +527,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         } else {
             for (; armorCount > 0; armorCount--) {
                 try {
-                    getMech().addEquipment(new Mounted(getMech(), armor), Entity.LOC_NONE, false);
+                    getMech().addEquipment(Mounted.createMounted(getMech(), armor), Entity.LOC_NONE, false);
                 } catch (Exception ignored) {
                 }
             }
@@ -862,7 +862,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         MekUtil.removeEnhancements(getMech());
         if (null != enhancement) {
             if (enhancement.hasFlag(MiscType.F_MASC)) {
-                Mounted mount = new Mounted(getMech(), enhancement);
+                Mounted mount = Mounted.createMounted(getMech(), enhancement);
                 try {
                     getMech().addEquipment(mount, Entity.LOC_NONE, false);
                 } catch (LocationFullException lfe) {
@@ -1071,7 +1071,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
                 }
                 while (jumpMP > jjs.size()) {
                     try {
-                        UnitUtil.addMounted(getMech(), new Mounted(getMech(), jumpJet), Entity.LOC_NONE, false);
+                        UnitUtil.addMounted(getMech(), Mounted.createMounted(getMech(), jumpJet), Entity.LOC_NONE, false);
                     } catch (LocationFullException ignored) {
                         // Adding to LOC_NONE
                     }
@@ -1330,7 +1330,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
             getMech().setArmorTechLevel(armor.getTechLevel(getTechManager().getGameYear(), armor.isClan()));
             for (; crits > 0; crits--) {
                 try {
-                    getMech().addEquipment( new Mounted(getMech(), armor), location, false);
+                    getMech().addEquipment( Mounted.createMounted(getMech(), armor), location, false);
                 } catch (LocationFullException ignored) {
 
                 }

@@ -48,14 +48,14 @@ class PMEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
         try {
             if ((equip instanceof MiscType) && UnitUtil.isFixedLocationSpreadEquipment(equip)) {
                 int location = TestEntity.getSystemWideLocation(eSource.getEntity());
-                Mounted mount = new Mounted(eSource.getEntity(), equip);
+                Mounted<?> mount = Mounted.createMounted(eSource.getEntity(), equip);
                 getEntity().addEquipment(mount, location, false);
             } else {
                 if (equip instanceof AmmoType) {
                     addProtomechAmmo(equip, 1);
                     return;
                 }
-                Mounted mount = new Mounted(eSource.getEntity(), equip);
+                Mounted<?> mount = Mounted.createMounted(eSource.getEntity(), equip);
                 getEntity().addEquipment(mount, Entity.LOC_NONE, false);
                 UnitUtil.removeHiddenAmmo(mount);
             }
@@ -66,12 +66,12 @@ class PMEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
     }
 
     private void addProtomechAmmo(EquipmentType ammo, int shots) throws LocationFullException {
-        Mounted aMount = getProtoMek().getAmmo().stream()
+        Mounted<?> aMount = getProtoMek().getAmmo().stream()
                 .filter(m -> ammo.equals(m.getType())).findFirst().orElse(null);
         if (null != aMount) {
             aMount.setShotsLeft(aMount.getUsableShotsLeft() + shots);
         } else {
-            Mounted mount = new Mounted(getProtoMek(), ammo);
+            Mounted mount = Mounted.createMounted(getProtoMek(), ammo);
             getProtoMek().addEquipment(mount, Protomech.LOC_BODY, false);
             mount.setShotsLeft(shots);
         }

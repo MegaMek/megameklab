@@ -48,7 +48,7 @@ class ASEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
             }
         } else {
             try {
-                Mounted mount = new Mounted(getAero(), equip);
+                Mounted<?> mount = Mounted.createMounted(getAero(), equip);
                 UnitUtil.setVariableSizeMiscTypeMinimumSize(mount);
                 int location = (equip instanceof AmmoType) ? Aero.LOC_FUSELAGE : Aero.LOC_NONE;
                 getAero().addEquipment(mount, location, false);

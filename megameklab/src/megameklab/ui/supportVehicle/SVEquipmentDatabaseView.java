@@ -45,7 +45,7 @@ class SVEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
     @Override
     protected void addEquipment(EquipmentType equip, int count) {
         // TODO: This contains code for Large Craft. Not sure if needed for SV
-        Mounted mount;
+        Mounted<?> mount;
         boolean isMisc = equip instanceof MiscType;
         try {
             if (isMisc && equip.hasFlag(MiscType.F_TARGCOMP)) {
@@ -53,11 +53,11 @@ class SVEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
                     UnitUtil.updateTC(getEntity(), equip);
                 }
             } else if (isMisc && equip.is("ISMastMount")) {
-                mount = new Mounted(getEntity(), equip);
+                mount = Mounted.createMounted(getEntity(), equip);
                 getEntity().addEquipment(mount, VTOL.LOC_ROTOR, false);
             } else if (isMisc && UnitUtil.isFixedLocationSpreadEquipment(equip)) {
                 int location = TestEntity.getSystemWideLocation(getEntity());
-                mount = new Mounted(getEntity(), equip);
+                mount = Mounted.createMounted(getEntity(), equip);
                 getEntity().addEquipment(mount, location, false);
             } else {
                 if (equip instanceof AmmoType) {
@@ -73,7 +73,7 @@ class SVEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
                     }
                 }
                 for (int i = 0; i < count; i++) {
-                    mount = new Mounted(getEntity(), equip);
+                    mount = Mounted.createMounted(getEntity(), equip);
                     UnitUtil.setVariableSizeMiscTypeMinimumSize(mount);
                     if ((getEntity().isFighter()
                             && (equip instanceof MiscType)) && equip.hasFlag(MiscType.F_BLUE_SHIELD)) {
@@ -93,11 +93,11 @@ class SVEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
     }
 
     private void addLargeCraftAmmo(EquipmentType ammo, int count) throws LocationFullException {
-        Mounted aMount = UnitUtil.findUnallocatedAmmo(getAero(), ammo);
+        Mounted<?> aMount = UnitUtil.findUnallocatedAmmo(getAero(), ammo);
         if (null != aMount) {
             aMount.setShotsLeft(aMount.getUsableShotsLeft() + ((AmmoType) ammo).getShots() * count);
         } else {
-            Mounted mount = new Mounted(getAero(), ammo);
+            Mounted<?> mount = Mounted.createMounted(getAero(), ammo);
             mount.setShotsLeft(((AmmoType) ammo).getShots() * count);
             getAero().addEquipment(mount, Entity.LOC_NONE, false);
         }
@@ -112,7 +112,7 @@ class SVEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
      */
     private void addBodyAmmo(EquipmentType equip, int count, int loc) throws LocationFullException {
         for (int i = 0; i < count; i++) {
-            Mounted mount = new Mounted(getEntity(), equip);
+            Mounted<?> mount = Mounted.createMounted(getEntity(), equip);
             getEntity().addEquipment(mount, loc, false);
         }
     }

@@ -646,7 +646,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
             getAero().setArmorTechLevel(armor.getTechLevel(getTechManager().getGameYear(), armor.isClan()));
             for (; crits > 0; crits--) {
                 try {
-                    getAero().addEquipment( new Mounted(getAero(), armor), location, false);
+                    getAero().addEquipment(Mounted.createMounted(getAero(), armor), location, false);
                 } catch (LocationFullException ignored) {
                 }
             }

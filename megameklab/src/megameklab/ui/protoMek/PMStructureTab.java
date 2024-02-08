@@ -279,7 +279,7 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
         if (armor.getCriticals(getProtomech()) > 0) {
             if (freeUpSpace(Protomech.LOC_TORSO, armor.getCriticals(getProtomech()))) {
                 try {
-                    Mounted mount = new Mounted(getProtomech(), armor);
+                    Mounted<?> mount = Mounted.createMounted(getProtomech(), armor);
                     getProtomech().addEquipment(mount, Protomech.LOC_TORSO, false);
                     return;
                 } catch (LocationFullException ignored) {
@@ -530,7 +530,7 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
         }
         while (jumpMP > jjs.size()) {
             try {
-                UnitUtil.addMounted(getProtomech(), new Mounted(getProtomech(), jumpJet),
+                UnitUtil.addMounted(getProtomech(), Mounted.createMounted(getProtomech(), jumpJet),
                         Protomech.LOC_BODY, false);
             } catch (LocationFullException e) {
                 // Shouldn't be able to fill location
@@ -681,7 +681,7 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
                     return;
                 }
             }
-            Mounted m = new Mounted(getProtomech(), eq);
+            Mounted m = Mounted.createMounted(getProtomech(), eq);
             try {
                 if (TestProtomech.requiresSlot(eq) && this.freeUpSpace(Protomech.LOC_TORSO, 1)) {
                         getProtomech().addEquipment(m, Protomech.LOC_TORSO, false);

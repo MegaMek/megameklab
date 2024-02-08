@@ -42,7 +42,7 @@ class CVEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
 
     @Override
     protected void addEquipment(EquipmentType equip, int count) {
-        Mounted mount;
+        Mounted<?> mount;
         boolean isMisc = equip instanceof MiscType;
         if (isMisc && equip.hasFlag(MiscType.F_TARGCOMP)) {
             if (!UnitUtil.hasTargComp(getTank())) {
@@ -50,7 +50,7 @@ class CVEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
             }
         } else {
             try {
-                mount = new Mounted(getTank(), equip);
+                mount = Mounted.createMounted(getTank(), equip);
                 UnitUtil.setVariableSizeMiscTypeMinimumSize(mount);
                 int loc = Entity.LOC_NONE;
                 if (isMisc && equip.hasFlag(MiscType.F_MAST_MOUNT)) {

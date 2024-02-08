@@ -28,7 +28,7 @@ import megameklab.ui.EquipmentToolTip;
 import megameklab.util.UnitUtil;
 
 public class WeaponListCellRenderer extends DefaultListCellRenderer {
-    private Entity unit = null;
+    private final Entity unit;
 
     public WeaponListCellRenderer(Entity unit) {
         this.unit = unit;
@@ -48,7 +48,7 @@ public class WeaponListCellRenderer extends DefaultListCellRenderer {
         label.setText(UnitUtil.getCritName(unit, eq));
         label.setName(value.toString());
 
-        label.setToolTipText(EquipmentToolTip.getToolTipInfo(unit, new Mounted(unit, eq)));
+        label.setToolTipText(EquipmentToolTip.getToolTipInfo(unit, Mounted.createMounted(unit, eq)));
         return label;
     }
 

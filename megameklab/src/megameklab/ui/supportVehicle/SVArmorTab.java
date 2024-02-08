@@ -236,7 +236,7 @@ public class SVArmorTab extends ITab implements ArmorAllocationListener {
             getEntity().setBARRating(armor.getBAR(), location);
             for (; crits > 0; crits--) {
                 try {
-                    getEntity().addEquipment( new Mounted(getEntity(), armor), location, false);
+                    getEntity().addEquipment(Mounted.createMounted(getEntity(), armor), location, false);
                 } catch (LocationFullException ignored) {
                 }
             }

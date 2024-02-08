@@ -71,13 +71,13 @@ public final class MekUtil {
      * @param unit
      */
     public static void removeHeatSinks(Mech unit, int number) {
-        Vector<Mounted> toRemove = new Vector<>();
+        Vector<Mounted<?>> toRemove = new Vector<>();
         int base = UnitUtil.getCriticalFreeHeatSinks(unit, unit.hasCompactHeatSinks());
         boolean splitCompact = false;
         if (unit.hasCompactHeatSinks()) {
             // first check to see if there is a single compact heat sink outside of the engine and
             // remove this first if so
-            Mounted mount = getSingleCompactHeatSink(unit);
+            Mounted<?> mount = getSingleCompactHeatSink(unit);
             if ((null != mount) && (number > 0)) {
                 UnitUtil.removeMounted(unit, mount);
                 number--;
@@ -88,10 +88,10 @@ public final class MekUtil {
                 number--;
             }
         }
-        Vector<Mounted> unassigned = new Vector<>();
-        Vector<Mounted> assigned = new Vector<>();
-        Vector<Mounted> free = new Vector<>();
-        for (Mounted m : unit.getMisc()) {
+        Vector<Mounted<?>> unassigned = new Vector<>();
+        Vector<Mounted<?>> assigned = new Vector<>();
+        Vector<Mounted<?>> free = new Vector<>();
+        for (Mounted<?> m : unit.getMisc()) {
             if (UnitUtil.isHeatSink(m)) {
                 if (m.getLocation() == Entity.LOC_NONE) {
                     if (base > 0) {
@@ -130,7 +130,7 @@ public final class MekUtil {
             if (!eq.getType().hasFlag(MiscType.F_HEAT_SINK)) {
                 try {
                     UnitUtil.addMounted(unit,
-                            new Mounted(unit, EquipmentType.get("IS1 Compact Heat Sink")), loc, false);
+                            Mounted.createMounted(unit, EquipmentType.get("IS1 Compact Heat Sink")), loc, false);
                 } catch (Exception ex) {
                     LogManager.getLogger().error("", ex);
                 }
@@ -162,7 +162,7 @@ public final class MekUtil {
         } else {
             for (; hsAmount > 0; hsAmount--) {
                 try {
-                    unit.addEquipment(new Mounted(unit, sinkType), Entity.LOC_NONE, false);
+                    unit.addEquipment(Mounted.createMounted(unit, sinkType), Entity.LOC_NONE, false);
                 } catch (Exception ex) {
                     LogManager.getLogger().error("", ex);
                 }
@@ -181,7 +181,7 @@ public final class MekUtil {
         if ((restHS % 2) == 1) {
             if (null == singleCompact) {
                 try {
-                    unit.addEquipment(new Mounted(unit, EquipmentType.get(EquipmentTypeLookup.COMPACT_HS_1)),
+                    unit.addEquipment(Mounted.createMounted(unit, EquipmentType.get(EquipmentTypeLookup.COMPACT_HS_1)),
                             Entity.LOC_NONE, false);
                 } catch (Exception ex) {
                     LogManager.getLogger().error("", ex);
@@ -191,7 +191,7 @@ public final class MekUtil {
                 // remove singleCompact mount and replace with a double
                 UnitUtil.removeMounted(unit, singleCompact);
                 try {
-                    UnitUtil.addMounted(unit,new Mounted(unit, EquipmentType.get(EquipmentTypeLookup.COMPACT_HS_2)),
+                    UnitUtil.addMounted(unit,Mounted.createMounted(unit, EquipmentType.get(EquipmentTypeLookup.COMPACT_HS_2)),
                             loc, false);
                 } catch (Exception ex) {
                     LogManager.getLogger().error("", ex);
@@ -201,7 +201,7 @@ public final class MekUtil {
         }
         for (; restHS > 0; restHS -= 2) {
             try {
-                unit.addEquipment(new Mounted(unit, EquipmentType.get(EquipmentTypeLookup.COMPACT_HS_2)),
+                unit.addEquipment(Mounted.createMounted(unit, EquipmentType.get(EquipmentTypeLookup.COMPACT_HS_2)),
                         Entity.LOC_NONE, false);
             } catch (Exception ex) {
                 LogManager.getLogger().error("", ex);
@@ -456,7 +456,7 @@ public final class MekUtil {
             while (jjAmount > 0) {
                 try {
                     unit.addEquipment(
-                            new Mounted(unit, EquipmentType.get(UnitUtil.getJumpJetType(jjType))),
+                            Mounted.createMounted(unit, EquipmentType.get(UnitUtil.getJumpJetType(jjType))),
                             Entity.LOC_NONE, false);
                 } catch (Exception ex) {
                     LogManager.getLogger().error("", ex);
@@ -523,7 +523,7 @@ public final class MekUtil {
                 if (!UnitUtil.isFixedLocationSpreadEquipment(mount.getType())
                         && (UnitUtil.isTSM(mount.getType())
                         || UnitUtil.isArmorOrStructure(mount.getType()))) {
-                    Mounted newMount = new Mounted(unit, mount.getType());
+                    Mounted newMount = Mounted.createMounted(unit, mount.getType());
                     newMount.setLocation(location, mount.isRearMounted());
                     newMount.setArmored(mount.isArmored());
                     cs.setMount(newMount);
@@ -640,7 +640,7 @@ public final class MekUtil {
         }
 
         boolean firstBlock = true;
-        Mounted mount = new Mounted(unit, equip);
+        Mounted mount = Mounted.createMounted(unit, equip);
         for (; blocks > 0; blocks--) {
             // how many crits per block?
             int crits = UnitUtil.getCritsUsed(mount);
@@ -657,7 +657,7 @@ public final class MekUtil {
                             // for those, we need to create a mount for each crit,
                             // otherwise we can't correctly let the user place them
                             // luckily, that only affects TSM, so BV works out correctly
-                            mount = new Mounted(unit, equip);
+                            mount = Mounted.createMounted(unit, equip);
                         }
                     } else {
                         CriticalSlot cs = new CriticalSlot(mount);

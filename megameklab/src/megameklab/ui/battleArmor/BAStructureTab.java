@@ -293,7 +293,7 @@ public class BAStructureTab extends ITab implements ActionListener, ChangeListen
                     String manipName = (String) leftManipSelect.getSelectedItem();
                     manipType = BAManipulator.getManipulator(manipName);
                     EquipmentType et = EquipmentType.get(manipType.internalName);
-                    leftManip = new Mounted(getBattleArmor(), et);
+                    leftManip = Mounted.createMounted(getBattleArmor(), et);
                     leftManip.setBaMountLoc(BattleArmor.MOUNT_LOC_LARM);
                     try {
                         // Add the manipulator
@@ -302,7 +302,7 @@ public class BAStructureTab extends ITab implements ActionListener, ChangeListen
                         manipType = BAManipulator.getManipulator(leftManip.getType().getInternalName());
                         // If this manipulator was mounted as a pair, remove the paired manipulator
                         if (manipType.pairMounted) {
-                            Mounted rightManip = new Mounted(getBattleArmor(), et);
+                            Mounted rightManip = Mounted.createMounted(getBattleArmor(), et);
                             rightManip.setBaMountLoc(BattleArmor.MOUNT_LOC_RARM);
                             getBattleArmor().addEquipment(rightManip, BattleArmor.LOC_SQUAD, false);
                         }
@@ -333,7 +333,7 @@ public class BAStructureTab extends ITab implements ActionListener, ChangeListen
                     String manipName = (String) rightManipSelect.getSelectedItem();
                     manipType = BAManipulator.getManipulator(manipName);
                     EquipmentType et = EquipmentType.get(manipType.internalName);
-                    rightManip = new Mounted(getBattleArmor(), et);
+                    rightManip = Mounted.createMounted(getBattleArmor(), et);
                     rightManip.setBaMountLoc(BattleArmor.MOUNT_LOC_RARM);
                     try {
                         // Add the manipulator
@@ -342,7 +342,7 @@ public class BAStructureTab extends ITab implements ActionListener, ChangeListen
                         manipType = BAManipulator.getManipulator(rightManip.getType().getInternalName());
                         // If this manipulator was mounted as a pair, remove the paired manipulator
                         if (manipType.pairMounted) {
-                            Mounted leftManip = new Mounted(getBattleArmor(), et);
+                            Mounted leftManip = Mounted.createMounted(getBattleArmor(), et);
                             leftManip.setBaMountLoc(BattleArmor.MOUNT_LOC_LARM);
                             getBattleArmor().addEquipment(leftManip, BattleArmor.LOC_SQUAD, false);
                         }
@@ -630,7 +630,7 @@ public class BAStructureTab extends ITab implements ActionListener, ChangeListen
                     numTimesToAdd = eq.getCriticals(getBattleArmor());
                 }
                 for (int i = 0; i < numTimesToAdd; i++) {
-                    Mounted newMount = new Mounted(getBattleArmor(), eq);
+                    Mounted newMount = Mounted.createMounted(getBattleArmor(), eq);
                     newMount.setBaMountLoc(loc);
                     getBattleArmor().addEquipment(newMount, BattleArmor.LOC_SQUAD, false);
                 }
@@ -671,7 +671,7 @@ public class BAStructureTab extends ITab implements ActionListener, ChangeListen
 
         for (; armorCount > 0; armorCount--) {
             try {
-                getBattleArmor().addEquipment(new Mounted(getBattleArmor(), armor),
+                getBattleArmor().addEquipment(Mounted.createMounted(getBattleArmor(), armor),
                         BattleArmor.LOC_SQUAD, false);
             } catch (Exception ex) {
                 LogManager.getLogger().error("", ex);

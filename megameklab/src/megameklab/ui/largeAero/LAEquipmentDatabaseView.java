@@ -60,7 +60,7 @@ class LAEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
                 if ((null != aMount) && getAero().usesWeaponBays()) {
                     aMount.setShotsLeft(aMount.getUsableShotsLeft() + ((AmmoType) equip).getShots() * count);
                 } else {
-                    mount = new Mounted(getAero(), equip);
+                    mount = Mounted.createMounted(getAero(), equip);
                     mount.setShotsLeft(((AmmoType) equip).getShots() * count);
                     try {
                         getAero().addEquipment(mount, Entity.LOC_NONE, false);
@@ -71,7 +71,7 @@ class LAEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
             } else {
                 try {
                     for (int i = 0; i < count; i++) {
-                        mount = new Mounted(getAero(), equip);
+                        mount = Mounted.createMounted(getAero(), equip);
                         UnitUtil.setVariableSizeMiscTypeMinimumSize(mount);
                         getAero().addEquipment(mount, Entity.LOC_NONE, false);
                         UnitUtil.removeHiddenAmmo(mount);

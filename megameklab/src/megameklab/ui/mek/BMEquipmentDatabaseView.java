@@ -42,7 +42,7 @@ class BMEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
 
     @Override
     protected void addEquipment(EquipmentType equip, int count) {
-        Mounted mount;
+        Mounted<?> mount;
         boolean isMisc = equip instanceof MiscType;
         if (isMisc && equip.hasFlag(MiscType.F_TARGCOMP)) {
             if (!UnitUtil.hasTargComp(getMech())) {
@@ -52,7 +52,7 @@ class BMEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
             MekUtil.createSpreadMounts(getMech(), equip);
         } else {
             try {
-                mount = new Mounted(getMech(), equip);
+                mount = Mounted.createMounted(getMech(), equip);
                 UnitUtil.setVariableSizeMiscTypeMinimumSize(mount);
                 getMech().addEquipment(mount, Entity.LOC_NONE, false);
                 UnitUtil.removeHiddenAmmo(mount);

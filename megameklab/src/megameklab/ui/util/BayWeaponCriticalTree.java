@@ -15,6 +15,7 @@ package megameklab.ui.util;
 
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
+import megamek.common.equipment.WeaponMounted;
 import megamek.common.verifier.TestAero;
 import megamek.common.verifier.TestEntity;
 import megamek.common.weapons.bayweapons.BayWeapon;
@@ -336,7 +337,7 @@ public class BayWeaponCriticalTree extends JTree {
         if (null != unallocated) {
             unallocated.setShotsLeft(ammo.getBaseShotsLeft() + shots);
         } else {
-            unallocated = new Mounted(eSource.getEntity(), at);
+            unallocated = Mounted.createMounted(eSource.getEntity(), at);
             unallocated.setShotsLeft(shots);
             try {
                 eSource.getEntity().addEquipment(unallocated, Entity.LOC_NONE, false);
@@ -978,7 +979,7 @@ public class BayWeaponCriticalTree extends JTree {
             // If adding ammo, check for an existing mount for this ammo type first. If found, add
             // the shots there.
             if (eq.getType() instanceof AmmoType) {
-                Optional<Mounted> addMount = bay.getBayAmmo().stream()
+                Optional<? extends Mounted<?>> addMount = bay.getBayAmmo().stream()
                         .map(n -> eSource.getEntity().getEquipment(n))
                         .filter(m -> eq.getType().equals(m.getType()))
                         .findFirst();
@@ -1044,7 +1045,7 @@ public class BayWeaponCriticalTree extends JTree {
         } else {
             updateAmmoCapacity(eq);
         }
-        Optional<Mounted> addMount = bay.getBayAmmo().stream().map(n -> eSource.getEntity().getEquipment(n))
+        Optional<? extends Mounted<?>> addMount = bay.getBayAmmo().stream().map(n -> eSource.getEntity().getEquipment(n))
                 .filter(m -> at.equals(m.getType())).findFirst();
         if (addMount.isPresent()) {
             addMount.get().setShotsLeft(addMount.get().getBaseShotsLeft() + shots);

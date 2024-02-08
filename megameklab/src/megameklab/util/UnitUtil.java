@@ -1734,14 +1734,14 @@ public class UnitUtil {
             for (Mounted<?> bay : bayList) {
                 if ((bay.getLocation() == fromLoc)
                         && (bay.isRearMounted() ? includeRear : includeForward)) {
-                    Mounted newBay = new Mounted(entity, bay.getType());
+                    Mounted<?> newBay = Mounted.createMounted(entity, bay.getType());
                     entity.addEquipment(newBay, toLoc, bay.isRearMounted());
                     for (Integer eqNum : bay.getBayWeapons()) {
-                        Mounted toAdd = copyEquipment(entity, toLoc, entity.getEquipment(eqNum), removed);
+                        Mounted<?> toAdd = copyEquipment(entity, toLoc, entity.getEquipment(eqNum), removed);
                         newBay.addWeaponToBay(entity.getEquipmentNum(toAdd));
                     }
                     for (Integer eqNum : bay.getBayAmmo()) {
-                        Mounted toAdd = copyEquipment(entity, toLoc, entity.getEquipment(eqNum), removed);
+                        Mounted<?> toAdd = copyEquipment(entity, toLoc, entity.getEquipment(eqNum), removed);
                         newBay.addAmmoToBay(entity.getEquipmentNum(toAdd));
                     }
                 }
@@ -1792,7 +1792,7 @@ public class UnitUtil {
         if (null != toAdd) {
             reuse.remove(toAdd);
         } else {
-            toAdd = new Mounted(entity, toCopy.getType());
+            toAdd = Mounted.createMounted(entity, toCopy.getType());
         }
         if (toCopy.getType() instanceof AmmoType) {
             toAdd.setAmmoCapacity(toCopy.getAmmoCapacity());
