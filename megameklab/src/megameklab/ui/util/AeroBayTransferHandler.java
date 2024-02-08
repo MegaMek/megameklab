@@ -103,7 +103,7 @@ public class AeroBayTransferHandler extends TransferHandler {
             }
         } else {
             // Target is unallocated bay table.
-            for (Mounted mount : eqList) {
+            for (Mounted<?> mount : eqList) {
                 if (mount.getType() instanceof AmmoType) {
                     AmmoType at = (AmmoType)mount.getType();
                     // Check whether we are moving one of multiple slots. 

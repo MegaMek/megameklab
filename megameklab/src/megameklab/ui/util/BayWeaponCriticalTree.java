@@ -124,7 +124,7 @@ public class BayWeaponCriticalTree extends JTree {
         restoreExpandedBays(expandedBays);
     }
 
-    private int slotCount(Mounted bay) {
+    private int slotCount(Mounted<?> bay) {
         int count = 0;
         for (int eqNum : bay.getBayWeapons()) {
             final Mounted mount = eSource.getEntity().getEquipment(eqNum);
@@ -165,7 +165,7 @@ public class BayWeaponCriticalTree extends JTree {
     private TreeNode initRoot() {
         MutableTreeNode root = new DefaultMutableTreeNode();
         Set<Integer> eqSet = new HashSet<>();
-        for (Mounted bay : eSource.getEntity().getWeaponBayList()) {
+        for (Mounted<?> bay : eSource.getEntity().getWeaponBayList()) {
             if ((bay.getLocation() == location)
                     && ((facing == BOTH)
                             || (bay.isRearMounted() == (facing == AFT)))) {
@@ -430,8 +430,8 @@ public class BayWeaponCriticalTree extends JTree {
             this.object = object;
         }
         
-        Mounted getMounted() {
-            return (Mounted)object;
+        Mounted<?> getMounted() {
+            return (Mounted<?>) object;
         }
         
         @Override
@@ -934,7 +934,7 @@ public class BayWeaponCriticalTree extends JTree {
      * @param bay The receiving weapon bay
      * @param eq The equipment to add to the bay
      */
-    public void addToBay(@Nullable Mounted bay, Mounted eq) {
+    public void addToBay(@Nullable Mounted<?> bay, Mounted eq) {
         // Check that we have a bay
         if ((null == bay) || !canTakeEquipment(bay, eq)) {
             if (eq.getType() instanceof WeaponType) {
@@ -1036,7 +1036,7 @@ public class BayWeaponCriticalTree extends JTree {
         ammoMount.setAmmoCapacity(weight);
     }
     
-    public void addAmmoToBay(Mounted bay, Mounted eq, int shots) {
+    public void addAmmoToBay(Mounted<?> bay, Mounted eq, int shots) {
         AmmoType at = (AmmoType) eq.getType();
         eq.setShotsLeft(eq.getBaseShotsLeft() - shots);
         if (eq.getBaseShotsLeft() <= 0) {
@@ -1167,7 +1167,7 @@ public class BayWeaponCriticalTree extends JTree {
      * Moves a bay and all its contents from another location
      * @param bay The bay to move in
      */
-    public void addBay(Mounted bay) {
+    public void addBay(Mounted<?> bay) {
         // First move the bay here
         moveToArc(bay);
         BayNode bayNode = new BayNode(bay);
@@ -1219,7 +1219,7 @@ public class BayWeaponCriticalTree extends JTree {
      * @param bay The target bay
      * @param eq The equipment to test
      */
-    private boolean canTakeEquipment(Mounted bay, Mounted eq) {
+    private boolean canTakeEquipment(Mounted<?> bay, Mounted eq) {
         if (eq.getType() instanceof WeaponType) {
             if ((((WeaponType) eq.getType()).getBayType(false) != bay.getType())
                     && (((WeaponType) eq.getType()).getBayType(true) != bay.getType())) {
@@ -1313,7 +1313,7 @@ public class BayWeaponCriticalTree extends JTree {
         } else if (!eSource.getEntity().usesWeaponBays()) {
             return true;
         }
-        Mounted bay = null;
+        Mounted<?> bay = null;
         TreePath path = loc.getPath();
         if (null != path) {
             // If we're dropping a PPC capacitor on a PPC we need to check that it doesn't already

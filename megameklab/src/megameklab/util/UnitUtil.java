@@ -241,7 +241,7 @@ public class UnitUtil {
         // We will need to reset the equipment numbers of the bay ammo and weapons
         Map<Mounted,List<Mounted>> bayWeapons = new HashMap<>();
         Map<Mounted,List<Mounted>> bayAmmo = new HashMap<>();
-        for (Mounted bay : unit.getWeaponBayList()) {
+        for (Mounted<?> bay : unit.getWeaponBayList()) {
             List<Mounted> list = bay.getBayWeapons().stream()
                     .map(unit::getEquipment).collect(Collectors.toList());
             bayWeapons.put(bay, list);
@@ -1323,7 +1323,7 @@ public class UnitUtil {
         }
         // Replace bay weapon and ammo equipment numbers with the current index by looking
         // up the old index in the old list
-        for (Mounted mounted : unit.getEquipment()) {
+        for (Mounted<?> mounted : unit.getEquipment()) {
             for (int i = 0; i < mounted.getBayWeapons().size(); i++) {
                 int eqNum = mounted.getBayWeapons().get(i);
                 mounted.getBayWeapons().set(i, unit.getEquipmentNum(oldEquipmentList.get(eqNum)));
@@ -1731,7 +1731,7 @@ public class UnitUtil {
             List<Mounted> bayList = entity.getWeaponBayList().stream()
                     .filter(bay -> (bay.getLocation() == fromLoc) && (bay.isRearMounted() ? includeRear : includeForward))
                     .collect(Collectors.toList());
-            for (Mounted bay : bayList) {
+            for (Mounted<?> bay : bayList) {
                 if ((bay.getLocation() == fromLoc)
                         && (bay.isRearMounted() ? includeRear : includeForward)) {
                     Mounted newBay = new Mounted(entity, bay.getType());
