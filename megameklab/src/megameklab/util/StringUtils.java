@@ -18,6 +18,7 @@ package megameklab.util;
 import megamek.common.*;
 import megamek.common.actions.ClubAttackAction;
 import megamek.common.actions.KickAttackAction;
+import megamek.common.equipment.MiscMounted;
 import megamek.common.weapons.artillery.ArtilleryCannonWeapon;
 import megamek.common.weapons.artillery.ArtilleryWeapon;
 import megamek.common.weapons.autocannons.ACWeapon;
@@ -72,7 +73,7 @@ public class StringUtils {
         };
     }
 
-    public static String getEquipmentInfo(Entity unit, Mounted mount) {
+    public static String getEquipmentInfo(Entity unit, Mounted<?> mount) {
         String info = "";
 
         if (mount.getType() instanceof WeaponType) {
@@ -223,7 +224,7 @@ public class StringUtils {
                 info = info.substring(0, info.length() - 1) + "]";
 
             }
-        } else if ((mount.getType() instanceof MiscType) && (mount.getType().hasFlag(MiscType.F_CLUB)
+        } else if ((mount instanceof MiscMounted) && (mount.getType().hasFlag(MiscType.F_CLUB)
                 || mount.getType().hasFlag(MiscType.F_HAND_WEAPON))) {
             if (((MiscType) mount.getType()).isVibroblade()) {
                 // manually set vibros to active to get correct damage
@@ -232,7 +233,7 @@ public class StringUtils {
             if (mount.getType().hasSubType(MiscType.S_CLAW) || mount.getType().hasSubType(MiscType.S_CLAW_THB)) {
                 info = Integer.toString((int) Math.ceil(unit.getWeight() / 7.0));
             } else {
-                info = Integer.toString(ClubAttackAction.getDamageFor(unit, mount, false, false));
+                info = Integer.toString(ClubAttackAction.getDamageFor(unit, (MiscMounted) mount, false, false));
             }
         } else if ((mount.getType() instanceof MiscType) && (mount.getType().hasFlag(MiscType.F_AP_POD))) {
             info = "[PB,OS,AI]";
@@ -246,7 +247,7 @@ public class StringUtils {
         return info.trim();
     }
 
-    public static String getAeroEquipmentInfo(Mounted mount) {
+    public static String getAeroEquipmentInfo(Mounted<?> mount) {
         String info;
 
         if (mount.getType() instanceof WeaponType) {

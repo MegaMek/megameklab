@@ -161,8 +161,8 @@ public class PrintMech extends PrintEntity {
     }
     
     private void printShields() {
-        for (Mounted m : mech.getMisc()) {
-            if (((MiscType) m.getType()).isShield()) {
+        for (MiscMounted m : mech.getMisc()) {
+            if (m.getType().isShield()) {
                 String loc = mech.getLocationAbbr(m.getLocation());
                 Element element = getSVGDocument().getElementById(ARMOR_DIAGRAM + loc);
                 if (null != element) {
