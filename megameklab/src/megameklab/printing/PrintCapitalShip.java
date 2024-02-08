@@ -369,17 +369,9 @@ public class PrintCapitalShip extends PrintDropship {
 
     @Override
     protected void drawFluffImage() {
-        String dir;
-        if (getEntity() instanceof Warship) {
-            dir = ImageHelper.imageWarship;
-        } else if (getEntity() instanceof SpaceStation) {
-            dir = ImageHelper.imageSpaceStation;
-        } else {
-            dir = ImageHelper.imageJumpship;
-        }
         Element rect = getSVGDocument().getElementById(FLUFF_IMAGE);
         if (rect instanceof SVGRectElement) {
-            embedImage(ImageHelper.getFluffFile(ship, dir),
+            embedImage(ImageHelper.getFluffFile(ship),
                     (Element) rect.getParentNode(), getRectBBox((SVGRectElement) rect), true);
         }
         hideElement(getSVGDocument().getElementById(NOTES));

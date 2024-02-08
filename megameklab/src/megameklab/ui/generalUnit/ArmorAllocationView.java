@@ -31,6 +31,7 @@ import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 
 import megamek.common.*;
+import megamek.common.equipment.ArmorType;
 import megamek.common.verifier.TestSupportVehicle;
 import megameklab.ui.generalUnit.ArmorLocationView.ArmorLocationListener;
 import megameklab.ui.listeners.ArmorAllocationListener;
@@ -214,7 +215,7 @@ public class ArmorAllocationView extends BuildView implements ArmorLocationListe
                     locView.setMinimum((int) (UnitUtil.getSIBonusArmorPoints(en) / locationViews.size()));
                 }
                 if (showPatchwork) {
-                    double pointsPerTon = UnitUtil.getArmorPointsPerTon(en, en.getArmorType(location),  en.getArmorTechLevel(location));
+                    double pointsPerTon = UnitUtil.getArmorPointsPerTon(en);
                     double points = en.getArmor(location, false);
                     if (en.hasRearArmor(location)) {
                         points += en.getArmor(location, true);
@@ -261,13 +262,12 @@ public class ArmorAllocationView extends BuildView implements ArmorLocationListe
             txtPointsPerTon.setToolTipText(resourceMap.getString("ArmorAllocationView.txtKgPerPoint.tooltip"));
         } else if (en instanceof Protomech) {
             txtPointsPerTon.setText(String.format("%d",
-                    (int) (EquipmentType.getProtomechArmorWeightPerPoint(en.getArmorType(Protomech.LOC_BODY))
-                     * 1000)));
+                    (int) (ArmorType.forEntity(en).getWeightPerPoint() * 1000)));
             lblPointsPerTon.setText(resourceMap.getString("ArmorAllocationView.txtKgPerPoint.text"));
             txtPointsPerTon.setToolTipText(resourceMap.getString("ArmorAllocationView.txtKgPerPoint.tooltip"));
         } else {
             txtPointsPerTon.setText(String.format("%3.2f",
-                    UnitUtil.getArmorPointsPerTon(en, en.getArmorType(1), en.getArmorTechLevel(1))));
+                    UnitUtil.getArmorPointsPerTon(en)));
             lblPointsPerTon.setText(resourceMap.getString("ArmorAllocationView.txtPointsPerTon.text"));
             txtPointsPerTon.setToolTipText(resourceMap.getString("ArmorAllocationView.txtPointsPerTon.tooltip"));
         }
@@ -338,7 +338,7 @@ public class ArmorAllocationView extends BuildView implements ArmorLocationListe
         for (ArmorLocationView locView : locationViews) {
             final int loc = locView.getLocationIndex();
             if (loc < en.locations()) {
-                double pointsPerTon = UnitUtil.getArmorPointsPerTon(en, en.getArmorType(loc),  en.getArmorTechLevel(loc));
+                double pointsPerTon = UnitUtil.getArmorPointsPerTon(en);
                 weight += (locView.getPoints() + locView.getPointsRear()) / pointsPerTon;
             }
         }

@@ -25,6 +25,7 @@ import megamek.client.ui.dialogs.WeightDisplayDialog;
 import megamek.client.ui.swing.GUIPreferences;
 import megamek.client.ui.swing.calculationReport.CalculationReport;
 import megamek.common.*;
+import megamek.common.verifier.TestBattleArmor;
 import megamek.common.verifier.TestEntity;
 import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.util.ITab;
@@ -112,6 +113,9 @@ public class StatusBar extends ITab {
      */
     protected void refreshWeight() {
         double tonnage = getEntity().getWeight();
+        if (getEntity() instanceof BattleArmor) {
+            tonnage = getBattleArmor().getTrooperWeight() * getBattleArmor().getSquadSize();
+        }
         double currentTonnage = testEntity.calculateWeight();
         currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getEntity());
         String current = CalculationReport.formatForReport(currentTonnage);
@@ -151,7 +155,7 @@ public class StatusBar extends ITab {
 
     private void getFluffImage() {
         FileDialog fDialog = new FileDialog(getParentFrame(), "Image Path", FileDialog.LOAD);
-        fDialog.setDirectory(new File(ImageHelper.fluffPath).getAbsolutePath() + File.separatorChar + ImageHelper.imageMech + File.separatorChar);
+        fDialog.setDirectory(Configuration.fluffImagesDir().toString());
         fDialog.setLocationRelativeTo(this);
         fDialog.setVisible(true);
         if (fDialog.getFile() != null) {

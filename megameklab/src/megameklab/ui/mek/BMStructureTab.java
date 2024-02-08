@@ -16,6 +16,7 @@ package megameklab.ui.mek;
 import megamek.codeUtilities.MathUtility;
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
+import megamek.common.equipment.ArmorType;
 import megamek.common.loaders.EntityLoadingException;
 import megamek.common.verifier.TestEntity;
 import megameklab.ui.EntitySource;
@@ -325,12 +326,12 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
             getMech().setCritical(Mech.LOC_CT, lgSlot, crit);
         }
         // Replace any fixed spreadable equipment
-        for (Mounted mount : getMech().getMisc()) {
-            if ((mount.getLocation() == Entity.LOC_NONE)
-                    && UnitUtil.isFixedLocationSpreadEquipment(mount.getType())) {
-                UnitUtil.removeMounted(getMech(), mount);
-                MekUtil.createSpreadMounts(getMech(), mount.getType());
-            }
+        List<Mounted> toRemove = getMech().getMisc().stream()
+                .filter(m -> (m.getLocation() == Entity.LOC_NONE) && UnitUtil.isFixedLocationSpreadEquipment(m.getType()))
+                .collect(Collectors.toList());
+        for (Mounted mounted : toRemove) {
+            UnitUtil.removeMounted(getMech(), mounted);
+            MekUtil.createSpreadMounts(getMech(), mounted.getType());
         }
         refresh.refreshBuild();
     }
@@ -546,6 +547,13 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
     @Override
     public void chassisChanged(String chassis) {
         getMech().setChassis(chassis);
+        refresh.refreshHeader();
+        refresh.refreshPreview();
+    }
+
+    @Override
+    public void clanNameChanged(String clanName) {
+        getMech().setClanChassisName(clanName);
         refresh.refreshHeader();
         refresh.refreshPreview();
     }
@@ -1299,36 +1307,10 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
     }
 
     @Override
-    public void patchworkChanged(int location, EquipmentType armor) {
+    public void patchworkChanged(int location, ArmorType armor) {
         UnitUtil.resetArmor(getMech(), location);
 
-        //TODO: move this construction data out of the ui
-        int crits = 0;
-        switch (EquipmentType.getArmorType(armor)) {
-            case EquipmentType.T_ARMOR_STEALTH:
-            case EquipmentType.T_ARMOR_FERRO_LAMELLOR:
-            case EquipmentType.T_ARMOR_BALLISTIC_REINFORCED:
-            case EquipmentType.T_ARMOR_IMPACT_RESISTANT:
-                crits = 2;
-                break;
-            case EquipmentType.T_ARMOR_HEAVY_FERRO:
-                crits = 3;
-                break;
-            case EquipmentType.T_ARMOR_LIGHT_FERRO:
-            case EquipmentType.T_ARMOR_ANTI_PENETRATIVE_ABLATION:
-            case EquipmentType.T_ARMOR_HEAT_DISSIPATING:
-                crits = 1;
-                break;
-            case EquipmentType.T_ARMOR_FERRO_FIBROUS:
-            case EquipmentType.T_ARMOR_REFLECTIVE:
-            case EquipmentType.T_ARMOR_REACTIVE:
-                if (armor.isClan()) {
-                    crits = 1;
-                } else {
-                    crits = 2;
-                }
-                break;
-        }
+        int crits = armor.getPatchworkSlotsMechSV();
         if (getMech().isSuperHeavy()) {
             crits = (crits + 1) / 2;
         }
@@ -1340,8 +1322,11 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
                     + ". Resetting to Standard Armor in this location.",
                     "Error",
                     JOptionPane.INFORMATION_MESSAGE);
+            getEntity().setArmorType(getMech().isIndustrial() ?
+                    EquipmentType.T_ARMOR_HEAVY_INDUSTRIAL : EquipmentType.T_ARMOR_STANDARD, location);
+            getEntity().setArmorTechLevel(TechConstants.T_INTRO_BOXSET);
         } else {
-            getMech().setArmorType(EquipmentType.getArmorType(armor), location);
+            getMech().setArmorType(armor.getArmorType(), location);
             getMech().setArmorTechLevel(armor.getTechLevel(getTechManager().getGameYear(), armor.isClan()));
             for (; crits > 0; crits--) {
                 try {

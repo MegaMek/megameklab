@@ -96,7 +96,7 @@ public class PMMainUI extends MegaMekLabMainUI {
         proto.setTechLevel(TechConstants.T_CLAN_TW);
         proto.setOriginalWalkMP(1);
         proto.setEngine(new Engine(TestProtomech.calcEngineRating(proto), Engine.NORMAL_ENGINE, Engine.CLAN_ENGINE));
-        proto.setArmorType(EquipmentType.T_ARMOR_STANDARD);
+        proto.setArmorType(EquipmentType.T_ARMOR_STANDARD_PROTOMEK);
         proto.setArmorTechLevel(getEntity().getTechLevel());
 
         proto.autoSetInternal();

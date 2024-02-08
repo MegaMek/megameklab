@@ -540,7 +540,7 @@ public class PrintMech extends PrintEntity {
                 placeReferenceCharts(tables, rect.getParentNode(), bbox.getX(), bbox.getY(),
                         bbox.getWidth() + 6.0, bbox.getHeight() + 6.0);
             } else {
-                embedImage(ImageHelper.getFluffFile(mech, ImageHelper.imageMech),
+                embedImage(ImageHelper.getFluffFile(mech),
                         (Element) rect.getParentNode(), getRectBBox((SVGRectElement) rect), true);
             }
         }
@@ -643,8 +643,7 @@ public class PrintMech extends PrintEntity {
     }
 
     private String formatHeatMovementPenalty(int penalty) {
-        // 2212 is the Unicode Minus Sign; has much better length than '-'; supported by most fonts
-        String penaltyString = "\u2212" + CConfig.formatScale(penalty, true) + " Movement";
+        String penaltyString = "-" + CConfig.formatScale(penalty, true) + " Movement";
         if (CConfig.scaleUnits() == RSScale.HEXES) {
             penaltyString += " Points";
         }

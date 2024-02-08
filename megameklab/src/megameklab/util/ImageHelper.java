@@ -15,31 +15,17 @@
  */
 package megameklab.util;
 
+import megamek.client.ui.swing.util.FluffImageHelper;
+import megamek.common.Configuration;
 import megamek.common.Entity;
 import megamek.common.annotations.Nullable;
+import megamek.common.preference.PreferenceManager;
 
-import javax.swing.*;
-import java.awt.*;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
-public class ImageHelper {
-    public static String fluffPath = "./data/images/fluff/"; // TODO : Remove inline file path
-    public static String imagePath = "./data/images/"; // TODO : Remove inline file path
-
-    public static String imageMech = "Mech";
-    public static String imageAero = "Fighter";
-    public static String imageBattleArmor = "BattleArmor";
-    public static String imageConvFighter = "ConvFighter";
-    public static String imageInfantry = "Infantry";
-    public static String imageVehicle = "Vehicle";
-    public static String imageNaval = "Naval";
-    public static String imageLargeSupportVehicle = "LargeSupportVehicle";
-    public static String imageProto = "ProtoMek";
-    public static String imageSmallcraft = "Small Craft";
-    public static String imageDropship = "DropShip";
-    public static String imageJumpship = "JumpShip";
-    public static String imageWarship = "WarShip";
-    public static String imageSpaceStation = "Space Station";
+public final class ImageHelper {
 
     /**
      * Checks for a fluff image for the unit starting with any file explicitly associated with the
@@ -47,159 +33,47 @@ public class ImageHelper {
      * unit with an image format extension.
      * 
      * @param unit The unit to find a fluff image for
-     * @param dir  The directory to check for a default image based on unit name
      * @return     A file to use for the fluff image, or null if no file is found.
      */
-    public static @Nullable File getFluffFile(Entity unit, String dir) {
-        String path = new File(fluffPath).getAbsolutePath();
-        File f;
-        
+    public static @Nullable File getFluffFile(Entity unit) {
+        List<File> fileCandidates = new ArrayList<>();
+        var fluffDir = new File(Configuration.fluffImagesDir(), FluffImageHelper.getImagePath(unit));
+
+        // MML Path matches (??)
         if (!unit.getFluff().getMMLImagePath().isBlank()) {
-            f = new File(unit.getFluff().getMMLImagePath());
-            if (f.exists()) {
-                return f;
-            }
-            f = new File(path, unit.getFluff().getMMLImagePath());
-            if (f.exists()) {
-                return f;
+            fileCandidates.add(new File(unit.getFluff().getMMLImagePath()));
+            fileCandidates.add(new File(fluffDir, unit.getFluff().getMMLImagePath()));
+        }
+
+        // Internal fluff path matches
+        for (String ext : FluffImageHelper.EXTENSIONS_FLUFF_IMAGE_FORMATS) {
+            fileCandidates.add(new File(fluffDir, unit.getShortNameRaw() + ext));
+        }
+
+        // UserDir matches
+        String userDir = PreferenceManager.getClientPreferences().getUserDir();
+        if (!userDir.isBlank() && new File(userDir).isDirectory()) {
+            var fluffUserDir = new File(userDir, fluffDir.toString());
+            for (String ext : FluffImageHelper.EXTENSIONS_FLUFF_IMAGE_FORMATS) {
+                fileCandidates.add(new File(fluffUserDir, unit.getChassis() + ext));
+                fileCandidates.add(new File(fluffUserDir, unit.getFullChassis() + ext));
             }
         }
 
-        path = new File(path, dir).getAbsolutePath();
-        final String [] EXTENSIONS = { ".png", ".PNG", ".jpg", ".JPG", ".jpeg", ".JPEG", ".gif", ".GIF" };
-        for (String ext : EXTENSIONS) {
-            f = new File(path, unit.getShortNameRaw() + ext);
-            if (f.exists()) {
-                return f;
-            }
+        // Chassis matches
+        for (String ext : FluffImageHelper.EXTENSIONS_FLUFF_IMAGE_FORMATS) {
+            fileCandidates.add(new File(fluffDir, unit.getChassis() + ext));
+            fileCandidates.add(new File(fluffDir, unit.getFullChassis() + ext));
         }
-        for (String ext : EXTENSIONS) {
-            f = new File(path, unit.getChassis() + ext);
-            if (f.exists()) {
-                return f;
+
+        // Fallback
+        fileCandidates.add(new File(fluffDir, "hud.png"));
+
+        for (File possibleFile : fileCandidates) {
+            if (possibleFile.exists() && !possibleFile.isDirectory()) {
+                return possibleFile;
             }
-        }
-        f = new File(path, "hud.png");
-        if (f.exists()) {
-            return f;
         }
         return null;
-    }
-
-    public static @Nullable Image getFluffImage(String image) {
-        if ((image == null) || image.isBlank()) {
-            return null;
-        }
-
-        String path = new File(fluffPath).getAbsolutePath() + File.separatorChar + image;
-
-        if (!(new File(path).exists())) {
-            path = new File(image).getAbsolutePath();
-            if (!(new File(path).exists())) {
-                return null;
-            }
-        }
-        return new ImageIcon(path).getImage();
-    }
-
-    public static Image getFluffImage(Entity unit, String dir) {
-        String path = new File(fluffPath).getAbsolutePath()
-                + File.separatorChar + dir + File.separatorChar;
-
-        Image fluff = ImageHelper.getFluffImage(unit.getFluff().getMMLImagePath());
-
-        if (fluff == null) {
-            fluff = ImageHelper.getFluffPNG(unit, path);
-        }
-
-        if (fluff == null) {
-            fluff = ImageHelper.getFluffJPG(unit, path);
-        }
-
-        if (fluff == null) {
-            fluff = ImageHelper.getFluffGIF(unit, path);
-        }
-
-        if (fluff == null) {
-            fluff = new ImageIcon(path + "hud.png").getImage();
-        }
-
-        return fluff;
-    }
-
-    public static Image getFluffPNG(Entity unit, String path) {
-        Image fluff = null;
-
-        String fluffFile = path + unit.getChassis() + " " + unit.getModel() + ".png";
-        if (new File(fluffFile.toLowerCase()).exists()) {
-            fluff = new ImageIcon(fluffFile).getImage();
-        }
-
-        if (fluff == null) {
-            fluffFile = path + unit.getModel() + ".png";
-            if (new File(fluffFile.toLowerCase()).exists()) {
-                fluff = new ImageIcon(fluffFile).getImage();
-            }
-        }
-
-        if (fluff == null) {
-            fluffFile = path + unit.getChassis() + ".png";
-            if (new File(fluffFile.toLowerCase()).exists()) {
-                fluff = new ImageIcon(fluffFile).getImage();
-            }
-        }
-
-        return fluff;
-    }
-
-    public static Image getFluffJPG(Entity unit, String path) {
-        Image fluff = null;
-
-        String fluffFile = path + unit.getChassis() + " " + unit.getModel() + ".jpg";
-        if (new File(fluffFile.toLowerCase()).exists()) {
-            fluff = new ImageIcon(fluffFile).getImage();
-        }
-
-        if (fluff == null) {
-            fluffFile = path + unit.getModel() + ".jpg";
-            if (new File(fluffFile.toLowerCase()).exists()) {
-                fluff = new ImageIcon(fluffFile).getImage();
-            }
-        }
-
-        if (fluff == null) {
-            fluffFile = path + unit.getChassis() + ".jpg";
-            if (new File(fluffFile.toLowerCase()).exists()) {
-                fluff = new ImageIcon(fluffFile).getImage();
-            }
-        }
-
-        return fluff;
-    }
-
-    public static Image getFluffGIF(Entity unit, String path) {
-        Image fluff = null;
-
-        String fluffFile = path + unit.getChassis() + " " + unit.getModel()
-                + ".gif";
-        if (new File(fluffFile.toLowerCase()).exists()) {
-            fluff = new ImageIcon(fluffFile).getImage();
-        }
-
-        if (fluff == null) {
-            fluffFile = path + unit.getModel() + ".gif";
-            if (new File(fluffFile.toLowerCase()).exists()) {
-                fluff = new ImageIcon(fluffFile).getImage();
-            }
-        }
-
-        if (fluff == null) {
-            fluffFile = path + unit.getChassis() + ".gif";
-            if (new File(fluffFile.toLowerCase()).exists()) {
-                fluff = new ImageIcon(fluffFile).getImage();
-            }
-        }
-
-        return fluff;
     }
 }

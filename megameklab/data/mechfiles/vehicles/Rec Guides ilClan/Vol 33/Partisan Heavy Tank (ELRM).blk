@@ -1,35 +1,30 @@
-#building block data file
+#Saved from version 0.49.18-SNAPSHOT on 2024-01-13
 <BlockVersion>
 1
 </BlockVersion>
-
-# Write the version number just in case...
-<Version>
-MAM0
-</Version>
 
 <UnitType>
 Tank
 </UnitType>
 
 <Name>
-Desert Scorpion Light Tank
+Partisan Heavy Tank
 </Name>
 
-<model>
-
-</model>
+<Model>
+(ELRM)
+</Model>
 
 <mul id:>
-8078
+9567
 </mul id:>
 
 <year>
-3055
+3106
 </year>
 
 <originalBuildYear>
-3055
+3106
 </originalBuildYear>
 
 <type>
@@ -37,38 +32,53 @@ IS Level 2
 </type>
 
 <role>
-None
+Sniper
 </role>
 
 <motion_type>
 Tracked
 </motion_type>
 
-<transporters>
-</transporters>
-
 <cruiseMP>
-5
+3
 </cruiseMP>
 
 <engine_type>
-0
+6
 </engine_type>
 
+<armor_type>
+6
+</armor_type>
+
+<armor_tech>
+1
+</armor_tech>
+
 <armor>
-32
+40
+24
+24
 20
-20
-20
-20
+30
 </armor>
 
 <Body Equipment>
-IS Machine Gun Ammo - Half
 ISCASE
+ISC3SlaveUnit
+IS Ammo Extended LRM-10
+IS Ammo Extended LRM-10
+IS Ammo Extended LRM-10
+IS Ammo Extended LRM-10
+IS Ammo Extended LRM-10
+IS Ammo Extended LRM-10
+IS Ammo Extended LRM-10
+IS Ammo Extended LRM-10
+IS Ammo MG - Full
 </Body Equipment>
 
 <Front Equipment>
+Machine Gun
 Machine Gun
 </Front Equipment>
 
@@ -82,33 +92,34 @@ Machine Gun
 </Rear Equipment>
 
 <Turret Equipment>
-Large Laser
-Machine Gun
+Extended LRM 10
+Extended LRM 10
+Extended LRM 10
+Extended LRM 10
 </Turret Equipment>
 
 <manufacturer>
-Stotzing
+Kallon Industries
 </manufacturer>
 
 <primaryFactory>
-Stotzing Coastal Shipyards
+Kirklin
 </primaryFactory>
 
 <systemManufacturers>
-ENGINE:GM
+CHASSIS:Unknown
+ENGINE:Unknown
+ARMOR:Heavy Ferro-Fibrous with CASE
+JUMPJET:Unknown
+COMMUNICATIONS:Kallon Secure Net with C3
+TARGETING:AntiAir Flak Systems-1
 </systemManufacturers>
 
-<systemModels>
-ENGINE:125
-ARMOR:ProtecTech 9 Standard with CASE
-COMMUNICATIONS:Scarborough Talky-1
-TARGETING:Scarborough Track-1-1
-</systemModels>
-
 <source>
-Touring the Stars: Stotzing
+Rec Guide:ilClan #33
 </source>
 
 <tonnage>
-25.0
+80.0
 </tonnage>
+

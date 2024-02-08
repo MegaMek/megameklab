@@ -59,7 +59,11 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
     private String[] techBaseNames;
     private TechAdvancement baseTA;
 
+    private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
     private final JTextField txtChassis = new JTextField(5);
+    private final JTextField txtClanName = new JTextField(5);
+    private final JLabel lblClanName = createLabel(resourceMap, "lblClanName", "BasicInfoView.txtClanName.text",
+            "BasicInfoView.txtClanName.tooltip", labelSize);
     private final JTextField txtModel = new JTextField(5);
     private final IntRangeTextField txtYear = new IntRangeTextField(3);
     private final FactionComboBox cbFaction = new FactionComboBox();
@@ -85,7 +89,6 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
     //endregion Constructors
 
     private void initUI() {
-        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
         techBaseNames = resourceMap.getString("BasicInfoView.cbTechBase.values").split(",");
 
         setLayout(new GridBagLayout());
@@ -103,6 +106,15 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         add(txtChassis, gbc);
         setFieldSize(txtChassis, controlSize);
         txtChassis.addFocusListener(this);
+
+        gbc.gridx = 0;
+        gbc.gridy++;
+        add(lblClanName, gbc);
+        gbc.gridx = 1;
+        txtClanName.setToolTipText(resourceMap.getString("BasicInfoView.txtModel.tooltip"));
+        add(txtClanName, gbc);
+        setFieldSize(txtClanName, controlSize);
+        txtClanName.addFocusListener(this);
 
         gbc.gridx = 0;
         gbc.gridy++;
@@ -228,6 +240,9 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         txtYear.setMinimum(Math.max(baseTA.getIntroductionDate(useClanTechBase()), ITechnology.DATE_PS));
         refreshTechBase();
         setChassis(en.getChassis());
+        txtClanName.setText(en.getClanChassisName());
+        txtClanName.setVisible(en instanceof Mech);
+        lblClanName.setVisible(en instanceof Mech);
         setModel(en.getModel());
         txtMulId.setText(en.getMulId() + "");
         browseMul.setVisible(en.hasMulId());
@@ -259,6 +274,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
 
     public void setAsCustomization() {
         txtChassis.setEnabled(false);
+        txtClanName.setEnabled(false);
         txtYear.setEnabled(false);
     }
 
@@ -495,6 +511,8 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
     public void focusLost(FocusEvent e) {
         if (e.getSource() == txtChassis) {
             listeners.forEach(l -> l.chassisChanged(getChassis()));
+        } else if (e.getSource() == txtClanName) {
+            listeners.forEach(l -> l.clanNameChanged(txtClanName.getText()));
         } else if (e.getSource() == txtModel) {
             listeners.forEach(l -> l.modelChanged(getModel()));
         } else if (e.getSource() == txtMulId) {

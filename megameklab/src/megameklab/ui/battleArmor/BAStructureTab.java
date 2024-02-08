@@ -16,6 +16,7 @@ package megameklab.ui.battleArmor;
 
 import megamek.codeUtilities.MathUtility;
 import megamek.common.*;
+import megamek.common.equipment.ArmorType;
 import megamek.common.verifier.TestBattleArmor;
 import megamek.common.verifier.TestBattleArmor.BAManipulator;
 import megamek.common.verifier.TestEntity;
@@ -456,14 +457,13 @@ public class BAStructureTab extends ITab implements ActionListener, ChangeListen
         panMovement.refresh();
         panEnhancements.setFromEntity(getBattleArmor());
         panArmor.refresh();
-        EquipmentType armor = panArmor.getArmor();
+        ArmorType armor = panArmor.getArmor();
         // If the current armor is no longer available, switch to the current selection
         if (EquipmentType.getArmorType(armor) != getBattleArmor().getArmorType(BattleArmor.LOC_SQUAD)
                 || (armor.getTechLevel(getBattleArmor().getYear())
                 != getBattleArmor().getArmorTechLevel(BattleArmor.LOC_SQUAD))) {
             armorTypeChanged(armor);
         }
-        armorTypeChanged(panArmor.getArmor());
         addAllListeners();
         refresh.refreshPreview();
     }
@@ -668,7 +668,7 @@ public class BAStructureTab extends ITab implements ActionListener, ChangeListen
     }
 
     @Override
-    public void armorTypeChanged(EquipmentType armor) {
+    public void armorTypeChanged(ArmorType armor) {
         UnitUtil.removeISorArmorMounts(getBattleArmor(), false);
         int armorCount = armor.getCriticals(getBattleArmor());
         getBattleArmor().setArmorTechLevel(armor.getTechLevel(getBattleArmor().getYear()));

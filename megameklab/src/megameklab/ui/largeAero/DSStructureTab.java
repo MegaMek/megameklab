@@ -24,6 +24,7 @@ import javax.swing.JPanel;
 
 import megamek.codeUtilities.MathUtility;
 import megamek.common.*;
+import megamek.common.equipment.ArmorType;
 import megamek.common.verifier.TestEntity;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.*;
@@ -373,6 +374,7 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
         panCrew.setFromEntity(getSmallCraft());
         getSmallCraft().autoSetInternal();
         refresh();
+        refresh.refreshTransport();
         refresh.refreshPreview();
         refresh.refreshStatus();
     }
@@ -524,7 +526,7 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
     }
 
     @Override
-    public void patchworkChanged(int location, EquipmentType armor) {
+    public void patchworkChanged(int location, ArmorType armor) {
         // Cannot have patchwork armor
     }
 

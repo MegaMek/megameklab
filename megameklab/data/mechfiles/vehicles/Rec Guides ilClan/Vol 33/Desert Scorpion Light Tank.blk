@@ -1,30 +1,35 @@
-#Saved from version 0.49.16-SNAPSHOT on 2023-12-16
+#building block data file
 <BlockVersion>
 1
 </BlockVersion>
+
+# Write the version number just in case...
+<Version>
+MAM0
+</Version>
 
 <UnitType>
 Tank
 </UnitType>
 
 <Name>
-Scorpion Light Tank
+Desert Scorpion Light Tank
 </Name>
 
-<Model>
-(MRM)
-</Model>
+<model>
+
+</model>
 
 <mul id:>
-2845
+8078
 </mul id:>
 
 <year>
-3060
+3055
 </year>
 
 <originalBuildYear>
-3060
+3055
 </originalBuildYear>
 
 <type>
@@ -35,44 +40,32 @@ IS Level 2
 Brawler
 </role>
 
-<quirks>
-ubiquitous_clan
-ubiquitous_is
-poor_work
-</quirks>
-
 <motion_type>
 Tracked
 </motion_type>
 
+<transporters>
+</transporters>
+
 <cruiseMP>
-4
+5
 </cruiseMP>
 
 <engine_type>
-1
+0
 </engine_type>
 
-<armor_type>
-1
-</armor_type>
-
-<armor_tech>
-1
-</armor_tech>
-
 <armor>
-18
-13
-13
-11
-16
+32
+20
+20
+20
+20
 </armor>
 
 <Body Equipment>
-IS MRM 20 Ammo
-IS MRM 20 Ammo
 IS Machine Gun Ammo - Half
+ISCASE
 </Body Equipment>
 
 <Front Equipment>
@@ -89,37 +82,43 @@ Machine Gun
 </Rear Equipment>
 
 <Turret Equipment>
-MRM 20
+Large Laser
+Machine Gun
 </Turret Equipment>
 
 <manufacturer>
-Quikscell Company
+Stotzing
 </manufacturer>
 
 <primaryFactory>
-Oliver
+Stotzing Coastal Shipyards
 </primaryFactory>
 
 <systemManufacturers>
-CHASSIS:Unknown
-ENGINE:Unknown
-ARMOR:Unknown
-JUMPJET:Unknown
-COMMUNICATIONS:Unknown
-TARGETING:Unknown
+ENGINE:GM
 </systemManufacturers>
 
+<systemModels>
+ENGINE:125
+ARMOR:ProtecTech 9 Standard with CASE
+COMMUNICATIONS:Scarborough Talky-1
+TARGETING:Scarborough Track-1-1
+</systemModels>
+
 <source>
-TRO: 3058
+Rec Guide:ilClan #33
 </source>
 
 <tonnage>
 25.0
 </tonnage>
 
-<fuelType>
-PETROCHEMICALS
-</fuelType>
+<quirks>
+ubiquitous_clan
+ubiquitous_is
+poor_work
+</quirks>
+
 <capabilities>
 The Scorpion Light Tank's performance is modest, especially against similar light armor units. Its main weapon, the Deleon Autocannon, delivers limited damage at long ranges but struggles with accuracy at closer distances. The 20mm Gatling gun, though reliable, falls short compared to the secondary armaments typically found on other light tanks. The tank's lack of speed and weak armor present significant tactical challenges.<p>Complicating its operational efficacy is Quikscell Company's notorious reputation for inconsistent quality control. Many new Scorpions come with minor defects that require time-consuming troubleshooting and repairs, affecting their readiness for immediate deployment.</p>
 </capabilities>
@@ -129,7 +128,7 @@ The Scorpion Light Tank, originating from the Quikscell Company, is widely recog
 </overview>
 
 <deployment>
-The MRM Scorpion, emerging in 3060, represents an evolution in missile technology. By substituting the autocannon for an MRM-20 missile rack, along with increased ammunition storage, this variant becomes a formidable mid-range missile platform, balancing firepower with mobility.
+Designed specifically for the Stotzing militia, the Desert Scorpion is a comprehensive modification of the original design. It features a fusion engine for increased speed, a large laser for augmented firepower, and significantly reinforced armor. This variant excels in arid and challenging environments, showcasing the Scorpion's adaptability to specific tactical requirements.
 </deployment>
 
 <history>
@@ -141,17 +140,17 @@ Since its inception in 2807, the Scorpion Light Tank has been a ubiquitous eleme
 </history>
 
 <manufacturer>
-Unknown
+Stotzing Coastal Shipyards (Refit)
 </manufacturer>
 
 <primaryFactory>
-Unknown
+Stotzing
 </primaryFactory>
 
 <systemManufacturers>
 CHASSIS:Unknown
 ENGINE:SitiCide 100 ICE
-ARMOR:Compound Alpha Ferro-Fibrous
+ARMOR:ProtecTech Light
 COMMUNICATIONS:Basix 200
 TARGETING:OptiSight-12
 </systemManufacturers>

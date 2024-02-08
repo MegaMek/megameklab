@@ -14,6 +14,7 @@
 package megameklab.printing;
 
 import megamek.client.generator.RandomNameGenerator;
+import megamek.codeUtilities.StringUtility;
 import megamek.common.*;
 import megamek.common.eras.Era;
 import megamek.common.eras.Eras;
@@ -38,8 +39,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.*;
 
-import static megamek.common.EquipmentType.T_ARMOR_BA_STANDARD;
-import static megamek.common.EquipmentType.T_ARMOR_STANDARD;
+import static megamek.common.EquipmentType.*;
 
 /**
  * Base class for printing Entity record sheets
@@ -62,7 +62,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
 
     @Override
     public List<String> getBookmarkNames() {
-        return Collections.singletonList(getEntity().getShortNameRaw());
+        return Collections.singletonList(entityName());
     }
     
     /**
@@ -187,7 +187,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
     
     protected void writeTextFields() {
         setTextField(TITLE, getRecordSheetTitle().toUpperCase());
-        setTextField(TYPE, getEntity().getShortNameRaw());
+        setTextField(TYPE, entityName());
         setTextField(MP_WALK, formatWalk());
         setTextField(MP_RUN, formatRun());
         setTextField(MP_JUMP, formatJump());
@@ -332,7 +332,8 @@ public abstract class PrintEntity extends PrintRecordSheet {
             boolean hasSpecial = false;
             for (int loc = firstArmorLocation(); loc < getEntity().locations(); loc++) {
                 if ((getEntity().getArmorType(loc) != T_ARMOR_STANDARD)
-                        &&(getEntity().getArmorType(loc) != T_ARMOR_BA_STANDARD)
+                        && (getEntity().getArmorType(loc) != T_ARMOR_BA_STANDARD)
+                        && (getEntity().getArmorType(loc) != T_ARMOR_STANDARD_PROTOMEK)
                         // Stealth armor loses special properties when used with patchwork, so we don't
                         // need to show it.
                         && (getEntity().getArmorType(loc) != EquipmentType.T_ARMOR_STEALTH)
@@ -596,5 +597,10 @@ public abstract class PrintEntity extends PrintRecordSheet {
         NumberFormat nf = NumberFormat.getNumberInstance(Locale.getDefault());
         return nf.format(getEntity().getCost(true)) + " C-bills";
     }
-    
+
+    private String entityName() {
+        return CConfig.getMekNameArrangement().printChassis(getEntity())
+                + (StringUtility.isNullOrBlank(getEntity().getModel()) ? "" : " " + getEntity().getModel());
+    }
+
 }

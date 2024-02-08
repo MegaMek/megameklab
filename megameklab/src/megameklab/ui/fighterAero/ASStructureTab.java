@@ -31,6 +31,7 @@ import javax.swing.SwingConstants;
 
 import megamek.codeUtilities.MathUtility;
 import megamek.common.*;
+import megamek.common.equipment.ArmorType;
 import megamek.common.verifier.TestAero;
 import megamek.common.verifier.TestEntity;
 import megameklab.ui.EntitySource;
@@ -629,34 +630,19 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
     }
 
     @Override
-    public void patchworkChanged(int location, EquipmentType armor) {
+    public void patchworkChanged(int location, ArmorType armor) {
         UnitUtil.resetArmor(getAero(), location);
 
-        //TODO: move this construction data out of the ui
-        int crits = 0;
-        switch (EquipmentType.getArmorType(armor)) {
-            case EquipmentType.T_ARMOR_STEALTH_VEHICLE:
-            case EquipmentType.T_ARMOR_LIGHT_ALUM:
-            case EquipmentType.T_ARMOR_ALUM:
-            case EquipmentType.T_ARMOR_FERRO_ALUM_PROTO:
-            case EquipmentType.T_ARMOR_FERRO_LAMELLOR:
-            case EquipmentType.T_ARMOR_REFLECTIVE:
-            case EquipmentType.T_ARMOR_REACTIVE:
-            case EquipmentType.T_ARMOR_ANTI_PENETRATIVE_ABLATION:
-            case EquipmentType.T_ARMOR_BALLISTIC_REINFORCED:
-                crits = 1;
-                break;
-            case EquipmentType.T_ARMOR_HEAVY_ALUM:
-                crits = 2;
-                break;
-        }
+        int crits = armor.getPatchworkSlotsCVFtr();
         if (getAero().getEmptyCriticals(location) < crits) {
             JOptionPane .showMessageDialog(null,
                     String.format("%s does not fit in location %s. Resetting to Standard Armor in this location.",
                             armor.getName(), getAero().getLocationName(location)),
                     "Error", JOptionPane.INFORMATION_MESSAGE);
+            getEntity().setArmorType(EquipmentType.T_ARMOR_STANDARD, location);
+            getEntity().setArmorTechLevel(TechConstants.T_INTRO_BOXSET);
         } else {
-            getAero().setArmorType(EquipmentType.getArmorType(armor), location);
+            getAero().setArmorType(armor.getArmorType(), location);
             getAero().setArmorTechLevel(armor.getTechLevel(getTechManager().getGameYear(), armor.isClan()));
             for (; crits > 0; crits--) {
                 try {
