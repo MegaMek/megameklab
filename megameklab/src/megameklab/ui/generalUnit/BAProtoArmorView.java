@@ -141,6 +141,7 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
         
         cbArmorType.addActionListener(this);
         spnArmorPoints.addChangeListener(this);
+        refresh();
     }
     
     public @Nullable ArmorType getArmor() {
@@ -167,6 +168,14 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
                 cbArmorType.addItem(armor);
             }
         }
+        if (cbArmorType.getItemCount() > 0) {
+            spnArmorPoints.setEnabled(true);
+        } else {
+            cbArmorType.addItem(ArmorType.of(EquipmentType.T_ARMOR_UNKNOWN, false));
+            spnArmorPoints.setValue(0);
+            spnArmorPoints.setEnabled(false);
+        }
+
         cbArmorType.setSelectedItem(prev);
         cbArmorType.addActionListener(this);
         if ((cbArmorType.getSelectedIndex() < 0)

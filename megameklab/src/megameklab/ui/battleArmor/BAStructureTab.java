@@ -559,6 +559,7 @@ public class BAStructureTab extends ITab implements ActionListener, ChangeListen
             getBattleArmor().setClanExoWithoutHarjel(panChassis.hasHarjel());
         }
         panBasicInfo.setFromEntity(getBattleArmor());
+        panArmor.refresh();
         refresh.refreshStatus();
         refreshPreview();
     }
