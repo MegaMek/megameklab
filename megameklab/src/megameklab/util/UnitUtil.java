@@ -1795,7 +1795,7 @@ public class UnitUtil {
             toAdd = Mounted.createMounted(entity, toCopy.getType());
         }
         if (toCopy.getType() instanceof AmmoType) {
-            toAdd.setAmmoCapacity(toCopy.getAmmoCapacity());
+            toAdd.setSize(toCopy.getSize());
             toAdd.setShotsLeft(toCopy.getBaseShotsLeft());
         }
         entity.addEquipment(toAdd, toLoc, toCopy.isRearMounted());

@@ -14,6 +14,7 @@
 package megameklab.ui.util;
 
 import megamek.common.*;
+import megamek.common.equipment.AmmoMounted;
 import megamek.common.weapons.bayweapons.BayWeapon;
 import megameklab.ui.EntitySource;
 import megameklab.util.UnitUtil;
@@ -86,13 +87,13 @@ public class AeroBayTransferHandler extends TransferHandler {
                 // dropped on and add it there. A weapon dropped on an illegal bay will create a new one
                 // and non-bay equipment will be added at the top level regardless of the drop location.
                 // Non-weapon bay equipment cannot be dropped on an illegal bay.
-                final Mounted mount = eqList.get(0);
+                final Mounted<?> mount = eqList.get(0);
                 if (mount.getType() instanceof BayWeapon) {
                     tree.addBay(mount);
-                } else if ((mount.getType() instanceof AmmoType) && (support.getUserDropAction() == AMMO_SINGLE)) {
+                } else if ((mount instanceof AmmoMounted) && (support.getUserDropAction() == AMMO_SINGLE)) {
                     // Default action for ammo is to move a single slot. Holding the ctrl key when dropping
                     // will create a AMMO_ALL command, which adds all the ammo of the type.
-                    tree.addAmmo(mount, ((AmmoType)mount.getType()).getShots(),
+                    tree.addAmmo((AmmoMounted) mount, ((AmmoMounted) mount).getType().getShots(),
                             ((JTree.DropLocation) support.getDropLocation()).getPath());
                 } else {
                     tree.addToArc(mount, ((JTree.DropLocation) support.getDropLocation()).getPath());

@@ -14,6 +14,7 @@
 package megameklab.ui.largeAero;
 
 import megamek.common.*;
+import megamek.common.equipment.AmmoMounted;
 import megamek.common.weapons.Weapon;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.*;
@@ -214,13 +215,13 @@ public class LABuildView extends IView implements MouseListener {
                     if (getAero().usesWeaponBays()) {
                         JMenu menu = new JMenu(l.getLocationName());
                         for (Mounted bay : l.baysFor(eq)) {
-                            if (eq.getType() instanceof AmmoType) {
+                            if (eq instanceof AmmoMounted) {
                                 final int shotCount = ((AmmoType) eq.getType()).getShots();
                                 JMenu locMenu = new JMenu(bay.getName());
                                 for (int shots = shotCount; shots <= eq.getUsableShotsLeft(); shots += shotCount) {
                                     item = new JMenuItem("Add " + shots + ((shots > 1)?" shots" : " shot"));
                                     final int addShots = shots;
-                                    item.addActionListener(ev -> l.addAmmoToBay(bay, eq, addShots));
+                                    item.addActionListener(ev -> l.addAmmoToBay(bay, (AmmoMounted) eq, addShots));
                                     locMenu.add(item);
                                 }
                                 menu.add(locMenu);

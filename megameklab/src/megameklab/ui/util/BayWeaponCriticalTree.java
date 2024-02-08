@@ -15,7 +15,7 @@ package megameklab.ui.util;
 
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
-import megamek.common.equipment.WeaponMounted;
+import megamek.common.equipment.AmmoMounted;
 import megamek.common.verifier.TestAero;
 import megamek.common.verifier.TestEntity;
 import megamek.common.weapons.bayweapons.BayWeapon;
@@ -978,14 +978,14 @@ public class BayWeaponCriticalTree extends JTree {
         } else {
             // If adding ammo, check for an existing mount for this ammo type first. If found, add
             // the shots there.
-            if (eq.getType() instanceof AmmoType) {
+            if (eq instanceof AmmoMounted) {
                 Optional<? extends Mounted<?>> addMount = bay.getBayAmmo().stream()
                         .map(n -> eSource.getEntity().getEquipment(n))
                         .filter(m -> eq.getType().equals(m.getType()))
                         .findFirst();
                 if (addMount.isPresent()) {
                     addMount.get().setShotsLeft(addMount.get().getBaseShotsLeft() + eq.getBaseShotsLeft());
-                    updateAmmoCapacity(addMount.get());
+                    updateAmmoCapacity((AmmoMounted) addMount.get());
                     UnitUtil.removeMounted(eSource.getEntity(), eq);
                     refresh.refreshEquipment();
                     refresh.refreshBuild();
@@ -1029,7 +1029,7 @@ public class BayWeaponCriticalTree extends JTree {
         refresh.refreshSummary();
     }
 
-    private void updateAmmoCapacity(Mounted ammoMount) {
+    private void updateAmmoCapacity(AmmoMounted ammoMount) {
         // Mounted#getTonnage will give us the weight of one slot of ammo; multiply it by the number
         // of slots to get the total capacity of the ammo bin.
         double weight = ammoMount.getTonnage()
@@ -1037,8 +1037,8 @@ public class BayWeaponCriticalTree extends JTree {
         ammoMount.setAmmoCapacity(weight);
     }
     
-    public void addAmmoToBay(Mounted<?> bay, Mounted eq, int shots) {
-        AmmoType at = (AmmoType) eq.getType();
+    public void addAmmoToBay(Mounted<?> bay, AmmoMounted eq, int shots) {
+        AmmoType at = eq.getType();
         eq.setShotsLeft(eq.getBaseShotsLeft() - shots);
         if (eq.getBaseShotsLeft() <= 0) {
             UnitUtil.removeMounted(eSource.getEntity(), eq);
@@ -1049,7 +1049,7 @@ public class BayWeaponCriticalTree extends JTree {
                 .filter(m -> at.equals(m.getType())).findFirst();
         if (addMount.isPresent()) {
             addMount.get().setShotsLeft(addMount.get().getBaseShotsLeft() + shots);
-            updateAmmoCapacity(addMount.get());
+            updateAmmoCapacity((AmmoMounted) addMount.get());
             refresh.refreshEquipment();
             refresh.refreshBuild();
             refresh.refreshPreview();
@@ -1057,7 +1057,7 @@ public class BayWeaponCriticalTree extends JTree {
             refresh.refreshSummary();
         } else {
             try {
-                Mounted m = eSource.getEntity().addEquipment(at, bay.getLocation());
+                Mounted<?> m = eSource.getEntity().addEquipment(at, bay.getLocation());
                 m.setShotsLeft(shots);
                 addToBay(bay, m);
             } catch (Exception ignored) {
@@ -1155,7 +1155,7 @@ public class BayWeaponCriticalTree extends JTree {
      * @param eq
      * @param path
      */
-    public void addAmmo(Mounted eq, int shots, TreePath path) {
+    public void addAmmo(AmmoMounted eq, int shots, TreePath path) {
         EquipmentNode node = (EquipmentNode)path.getLastPathComponent();
         if (node instanceof BayNode) {
             addAmmoToBay(node.getMounted(), eq, shots);
