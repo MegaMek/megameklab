@@ -15,6 +15,7 @@ package megameklab.ui.util;
 
 import megamek.common.*;
 import megamek.common.equipment.AmmoMounted;
+import megamek.common.equipment.WeaponMounted;
 import megamek.common.weapons.bayweapons.BayWeapon;
 import megameklab.ui.EntitySource;
 import megameklab.util.UnitUtil;
@@ -60,14 +61,14 @@ public class AeroBayTransferHandler extends TransferHandler {
         }
         
         // Fields are equipmentNum, node child index, bay child index
-        String[] source = null;
-        List<Mounted> eqList = new ArrayList<>();
+        String[] source;
+        List<Mounted<?>> eqList = new ArrayList<>();
         
         try {
             source = ((String) support.getTransferable().getTransferData(DataFlavor.stringFlavor)).split(":");
             for (String field : source[0].split(",")) {
                 int eqNum = Integer.parseInt(field);
-                Mounted m = eSource.getEntity().getEquipment(eqNum);
+                Mounted<?> m = eSource.getEntity().getEquipment(eqNum);
                 if (null != m) {
                     eqList.add(m);
                 }
@@ -89,7 +90,7 @@ public class AeroBayTransferHandler extends TransferHandler {
                 // Non-weapon bay equipment cannot be dropped on an illegal bay.
                 final Mounted<?> mount = eqList.get(0);
                 if (mount.getType() instanceof BayWeapon) {
-                    tree.addBay(mount);
+                    tree.addBay((WeaponMounted) mount);
                 } else if ((mount instanceof AmmoMounted) && (support.getUserDropAction() == AMMO_SINGLE)) {
                     // Default action for ammo is to move a single slot. Holding the ctrl key when dropping
                     // will create a AMMO_ALL command, which adds all the ammo of the type.
@@ -111,7 +112,7 @@ public class AeroBayTransferHandler extends TransferHandler {
                     if ((support.getUserDropAction() == AMMO_SINGLE) && (mount.getUsableShotsLeft() > at.getShots())) {
                         mount.setShotsLeft(mount.getUsableShotsLeft() - at.getShots());
                     }
-                    Mounted addMount = UnitUtil.findUnallocatedAmmo(eSource.getEntity(), at);
+                    Mounted<?> addMount = UnitUtil.findUnallocatedAmmo(eSource.getEntity(), at);
                     if (null != addMount) {
                         if (support.getUserDropAction() == AMMO_SINGLE) {
                             addMount.setShotsLeft(addMount.getUsableShotsLeft() + at.getShots());
@@ -120,7 +121,7 @@ public class AeroBayTransferHandler extends TransferHandler {
                         }
                     } else {
                         try {
-                            Mounted m = eSource.getEntity().addEquipment(at, Entity.LOC_NONE);
+                            Mounted<?> m = eSource.getEntity().addEquipment(at, Entity.LOC_NONE);
                             if (support.getUserDropAction() == AMMO_ALL) {
                                 m.setShotsLeft(mount.getUsableShotsLeft());
                             }
@@ -129,21 +130,21 @@ public class AeroBayTransferHandler extends TransferHandler {
                         }
                     }
                 } else {
-                    List<Mounted> toRemove;
+                    List<Mounted<?>> toRemove;
                     if (mount.getType() instanceof BayWeapon) {
                         toRemove = new ArrayList<>();
-                        for (Integer num : mount.getBayWeapons()) {
+                        for (Integer num : ((WeaponMounted) mount).getBayWeapons()) {
                             toRemove.add(eSource.getEntity().getEquipment(num));
                         }
-                        for (Integer num : mount.getBayAmmo()) {
+                        for (Integer num : ((WeaponMounted) mount).getBayAmmo()) {
                             toRemove.add(eSource.getEntity().getEquipment(num));
                         }
                     } else {
                         toRemove = Collections.singletonList(mount);
                     }
-                    for (Mounted m : toRemove) {
+                    for (Mounted<?> m : toRemove) {
                         if (m.getType() instanceof AmmoType) {
-                            Mounted aMount = UnitUtil.findUnallocatedAmmo(eSource.getEntity(), m.getType());
+                            Mounted<?> aMount = UnitUtil.findUnallocatedAmmo(eSource.getEntity(), m.getType());
                             if (null != aMount) {
                                 aMount.setShotsLeft(aMount.getUsableShotsLeft() + m.getUsableShotsLeft());
                                 m.setShotsLeft(0);
@@ -163,8 +164,8 @@ public class AeroBayTransferHandler extends TransferHandler {
                     UnitUtil.compactCriticals(eSource.getEntity());
                 }
                 if (mount.getType() instanceof BayWeapon) {
-                    mount.getBayWeapons().clear();
-                    mount.getBayAmmo().clear();
+                    ((WeaponMounted) mount).getBayWeapons().clear();
+                    ((WeaponMounted) mount).getBayAmmo().clear();
                     UnitUtil.removeMounted(eSource.getEntity(), mount);
                 }
             }
@@ -179,7 +180,7 @@ public class AeroBayTransferHandler extends TransferHandler {
             return false;
         }
         // check if the dragged mounted should be transferrable
-        List<Mounted> mounted = new ArrayList<>();
+        List<Mounted<?>> mounted = new ArrayList<>();
         try {
             String str = (String) support.getTransferable().getTransferData(DataFlavor.stringFlavor);
             if (str.equals(EMTPYSLOT)) {
@@ -202,7 +203,7 @@ public class AeroBayTransferHandler extends TransferHandler {
         
         // If allocating to an arc, make sure the bay can receive it
         if (support.getComponent() instanceof BayWeaponCriticalTree) {
-            for (Mounted m : mounted) {
+            for (Mounted<?> m : mounted) {
                 if (((BayWeaponCriticalTree)support.getComponent())
                         .isValidDropLocation((JTree.DropLocation)support.getDropLocation(), m)) {
                     return true;
@@ -221,7 +222,7 @@ public class AeroBayTransferHandler extends TransferHandler {
             JTable table = (JTable) c;
             StringJoiner sj = new StringJoiner(",");
             for (int row : table.getSelectedRows()) {
-                Mounted mount = (Mounted) ((CriticalTableModel) table.getModel()).getValueAt(row, CriticalTableModel.EQUIPMENT);
+                Mounted<?> mount = (Mounted<?>) table.getModel().getValueAt(row, CriticalTableModel.EQUIPMENT);
                 sj.add(Integer.toString(eSource.getEntity().getEquipmentNum(mount)));
             }
             return new StringSelection(sj.toString());

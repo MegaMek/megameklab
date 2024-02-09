@@ -15,6 +15,7 @@ package megameklab.ui.largeAero;
 
 import megamek.common.*;
 import megamek.common.equipment.AmmoMounted;
+import megamek.common.equipment.WeaponMounted;
 import megamek.common.weapons.Weapon;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.*;
@@ -185,9 +186,9 @@ public class LABuildView extends IView implements MouseListener {
             JMenuItem item;
 
             if (equipmentTable.getSelectedRowCount() > 1) {
-                List<Mounted> list = new ArrayList<>();
+                List<Mounted<?>> list = new ArrayList<>();
                 for (int row : equipmentTable.getSelectedRows()) {
-                    list.add((Mounted) equipmentTable.getModel().getValueAt(row, CriticalTableModel.EQUIPMENT));
+                    list.add((Mounted<?>) equipmentTable.getModel().getValueAt(row, CriticalTableModel.EQUIPMENT));
                 }
 
                 for (BayWeaponCriticalTree l : arcViews) {
@@ -204,7 +205,7 @@ public class LABuildView extends IView implements MouseListener {
                 }
             } else {
                 final int selectedRow = equipmentTable.rowAtPoint(evt.getPoint());
-                Mounted eq = (Mounted) equipmentTable.getModel().getValueAt(
+                Mounted<?> eq = (Mounted<?>) equipmentTable.getModel().getValueAt(
                         selectedRow, CriticalTableModel.EQUIPMENT);
                 for (BayWeaponCriticalTree l : arcViews) {
                     // Aerodyne small craft and DropShips skip the aft side arcs
@@ -214,7 +215,7 @@ public class LABuildView extends IView implements MouseListener {
 
                     if (getAero().usesWeaponBays()) {
                         JMenu menu = new JMenu(l.getLocationName());
-                        for (Mounted bay : l.baysFor(eq)) {
+                        for (WeaponMounted bay : l.baysFor(eq)) {
                             if (eq instanceof AmmoMounted) {
                                 final int shotCount = ((AmmoType) eq.getType()).getShots();
                                 JMenu locMenu = new JMenu(bay.getName());
@@ -232,10 +233,10 @@ public class LABuildView extends IView implements MouseListener {
                             }
                         }
 
-                        if (eq.getType() instanceof WeaponType) {
+                        if (eq instanceof WeaponMounted) {
                             final EquipmentType bayType = ((WeaponType) eq.getType()).getBayType();
                             item = new JMenuItem("New " + bayType.getName());
-                            item.addActionListener(ev -> l.addToNewBay(bayType,  eq));
+                            item.addActionListener(ev -> l.addToNewBay(bayType, (WeaponMounted) eq));
                             menu.add(item);
                         }
 

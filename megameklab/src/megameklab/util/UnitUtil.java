@@ -21,6 +21,8 @@ package megameklab.util;
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
 import megamek.common.equipment.ArmorType;
+import megamek.common.equipment.MiscMounted;
+import megamek.common.equipment.WeaponMounted;
 import megamek.common.verifier.*;
 import megamek.common.verifier.TestEntity.Ceil;
 import megamek.common.weapons.*;
@@ -1728,13 +1730,13 @@ public class UnitUtil {
         // them. If the unit doesn't use bays, we will iterate through the crit slots to get the
         // equipment in the same order to be nice and tidy.
         if (entity.usesWeaponBays()) {
-            List<Mounted> bayList = entity.getWeaponBayList().stream()
+            List<WeaponMounted> bayList = entity.getWeaponBayList().stream()
                     .filter(bay -> (bay.getLocation() == fromLoc) && (bay.isRearMounted() ? includeRear : includeForward))
                     .collect(Collectors.toList());
-            for (Mounted<?> bay : bayList) {
+            for (WeaponMounted bay : bayList) {
                 if ((bay.getLocation() == fromLoc)
                         && (bay.isRearMounted() ? includeRear : includeForward)) {
-                    Mounted<?> newBay = Mounted.createMounted(entity, bay.getType());
+                    WeaponMounted newBay = (WeaponMounted) Mounted.createMounted(entity, bay.getType());
                     entity.addEquipment(newBay, toLoc, bay.isRearMounted());
                     for (Integer eqNum : bay.getBayWeapons()) {
                         Mounted<?> toAdd = copyEquipment(entity, toLoc, entity.getEquipment(eqNum), removed);
@@ -1747,8 +1749,8 @@ public class UnitUtil {
                 }
             }
             // Now we copy any other equipment
-            bayList = new ArrayList<>(entity.getMisc());
-            for (Mounted m : bayList) {
+            List<MiscMounted> miscList = new ArrayList<>(entity.getMisc());
+            for (MiscMounted m : miscList) {
                 if ((m.getLocation() == fromLoc)
                         && (m.isRearMounted() ? includeRear : includeForward)) {
                     copyEquipment(entity, toLoc, m, removed);
