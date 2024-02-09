@@ -84,14 +84,14 @@ public class ProtomekMountList extends JList<Mounted> {
         setVisibleRowCount(model.getSize());
     }
     
-    private void removeMount(Mounted mount) {
+    private void removeMount(Mounted<?> mount) {
         mount.setLocation(Entity.LOC_NONE, false);
         refresh();
     }
     
-    private void deleteMount(Mounted mount) {
-        if (mount.isOneShotWeapon()) {
-            Mounted ammo = mount.getLinked();
+    private void deleteMount(Mounted<?> mount) {
+        if ((mount.getType() instanceof WeaponType) && mount.isOneShot()) {
+            Mounted<?> ammo = mount.getLinked();
             if (null != ammo) {
                 UnitUtil.removeMounted(getProtomech(), ammo);
             }
@@ -100,7 +100,7 @@ public class ProtomekMountList extends JList<Mounted> {
         refresh();
     }
     
-    private void changeFacing(Mounted mount) {
+    private void changeFacing(Mounted<?> mount) {
         mount.setLocation(location, !mount.isRearMounted());
         refresh();
     }
@@ -108,7 +108,7 @@ public class ProtomekMountList extends JList<Mounted> {
     private final MouseListener mouseListener = new MouseAdapter() {
         @Override
         public void mousePressed(MouseEvent e) {
-            final Mounted mounted = getModel().getElementAt(locationToIndex(e.getPoint()));
+            final Mounted<?> mounted = getModel().getElementAt(locationToIndex(e.getPoint()));
             if (e.isPopupTrigger() && isChangeable(mounted)) {
                 showPopup(e, mounted);
             }
@@ -116,7 +116,7 @@ public class ProtomekMountList extends JList<Mounted> {
 
         @Override
         public void mouseReleased(MouseEvent e) {
-            final Mounted mounted = getModel().getElementAt(locationToIndex(e.getPoint()));
+            final Mounted<?> mounted = getModel().getElementAt(locationToIndex(e.getPoint()));
             if (!isChangeable(mounted)) {
                 return;
             }
