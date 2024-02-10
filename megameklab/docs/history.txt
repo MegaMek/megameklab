@@ -36,6 +36,7 @@ MEGAMEKLAB VERSION HISTORY:
             the IS name and clan name can be reordered on record sheets
 + PR #1411: StatusBar: calculate the correct total max weight for BA
 + Fix #1400: VTOLS print with an incorrect Hit chart
++ Fix #1203: Allow construction of BA exoskeleton before 2710
 
 0.49.17 (2023-12-31 1900 UTC)
 + PR #1352 MML interface changes
