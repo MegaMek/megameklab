@@ -25,6 +25,7 @@ import javax.swing.JPanel;
 
 import megamek.codeUtilities.MathUtility;
 import megamek.common.*;
+import megamek.common.equipment.ArmorType;
 import megamek.common.verifier.TestEntity;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.*;
@@ -579,7 +580,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
     }
 
     @Override
-    public void patchworkChanged(int location, EquipmentType armor) {
+    public void patchworkChanged(int location, ArmorType armor) {
         // Cannot have patchwork armor
     }
 

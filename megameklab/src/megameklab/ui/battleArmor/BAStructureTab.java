@@ -539,6 +539,10 @@ public class BAStructureTab extends ITab implements ActionListener, ChangeListen
     @Override
     public void weightClassChanged(int weightClass) {
         getBattleArmor().setWeightClass(weightClass);
+        if (weightClass > EntityWeightClass.WEIGHT_ULTRA_LIGHT) {
+            getBattleArmor().setIsExoskeleton(false);
+            getBattleArmor().setClanExoWithoutHarjel(false);
+        }
         panBasicInfo.setFromEntity(getBattleArmor());
         panChassis.refresh();
         panMovement.setFromEntity(getBattleArmor());
@@ -554,6 +558,8 @@ public class BAStructureTab extends ITab implements ActionListener, ChangeListen
         if (exoskeleton && !panBasicInfo.useClanTechBase()) {
             getBattleArmor().setClanExoWithoutHarjel(panChassis.hasHarjel());
         }
+        panBasicInfo.setFromEntity(getBattleArmor());
+        panArmor.refresh();
         refresh.refreshStatus();
         refreshPreview();
     }

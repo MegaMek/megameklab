@@ -116,7 +116,7 @@ public interface ArmorAllocationListener {
      * @param location The location constant
      * @param armor    The type of armor used in the location.
      */
-    default void patchworkChanged(int location, EquipmentType armor) {
+    default void patchworkChanged(int location, ArmorType armor) {
 
     }
 

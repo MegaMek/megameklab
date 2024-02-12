@@ -911,8 +911,7 @@ public class UnitUtil {
             return Math.floor(Math.floor(armorTons * TestAdvancedAerospace.armorPointsPerTon((Jumpship) unit,
                     EquipmentType.T_ARMOR_AEROSPACE, false)) * 0.66);
         }
-        return armorTons * UnitUtil.getArmorPointsPerTon(unit,
-                unit.getArmorType(1), unit.getArmorTechLevel(1));
+        return armorTons * UnitUtil.getArmorPointsPerTon(unit);
     }
 
     /**
@@ -954,30 +953,16 @@ public class UnitUtil {
     /**
      * Calculate the number of armor points per ton of armor for the given unit.
      *
-     * @param en
-     * @param at
-     * @param clanArmor
-     * @return
-     */
-    // TODO: aerospace and support vehicle armor
-    public static double getArmorPointsPerTon(Entity en, int at, boolean clanArmor) {
-        return ArmorType.of(at, clanArmor).getPointsPerTon(en);
-    }
-
-    /**
-     * Calculate the number of armor points per ton of armor for the given unit.
-     *
      * @param en        The unit
-     * @param at        The armor type constant
-     * @param techLevel The {@link TechConstants} constant for the armor
      * @return          The number of armor points per ton
      */
-    public static double getArmorPointsPerTon(Entity en, int at, int techLevel) {
-        if (en.isSupportVehicle() && (at == EquipmentType.T_ARMOR_STANDARD)) {
-            return 1.0 / EquipmentType.getSupportVehicleArmorWeightPerPoint(en.getBARRating(en.firstArmorIndex()),
-                    en.getArmorTechRating());
+    public static double getArmorPointsPerTon(Entity en) {
+        ArmorType armor = ArmorType.forEntity(en);
+        if (armor.hasFlag(MiscType.F_SUPPORT_VEE_BAR_ARMOR)) {
+            return 1.0 / armor.getSVWeightPerPoint(en.getArmorTechRating());
+        } else {
+            return armor.getPointsPerTon(en);
         }
-        return getArmorPointsPerTon(en, at, TechConstants.isClan(techLevel));
     }
 
     public static void compactCriticals(Entity unit) {

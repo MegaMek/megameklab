@@ -642,8 +642,7 @@ public class PrintMech extends PrintEntity {
     }
 
     private String formatHeatMovementPenalty(int penalty) {
-        // 2212 is the Unicode Minus Sign; has much better length than '-'; supported by most fonts
-        String penaltyString = "\u2212" + CConfig.formatScale(penalty, true) + " Movement";
+        String penaltyString = "-" + CConfig.formatScale(penalty, true) + " Movement";
         if (CConfig.scaleUnits() == RSScale.HEXES) {
             penaltyString += " Points";
         }
