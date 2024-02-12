@@ -17,7 +17,6 @@ import megamek.common.Jumpship;
 import megamek.common.SpaceStation;
 import megamek.common.UnitType;
 import megamek.common.Warship;
-import megameklab.util.ImageHelper;
 import org.apache.batik.util.SVGConstants;
 import org.apache.logging.log4j.LogManager;
 import org.w3c.dom.Element;
@@ -25,7 +24,6 @@ import org.w3c.dom.svg.SVGElement;
 import org.w3c.dom.svg.SVGRectElement;
 
 import java.awt.geom.Rectangle2D;
-import java.io.File;
 
 /**
  * Generates a record sheet image for JumpShips, WarShips, and space stations.

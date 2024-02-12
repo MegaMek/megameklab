@@ -18,7 +18,6 @@ import megamek.common.*;
 import megamek.common.annotations.Nullable;
 import megameklab.printing.reference.*;
 import megameklab.util.CConfig;
-import megameklab.util.ImageHelper;
 import megameklab.util.RSScale;
 import megameklab.util.UnitUtil;
 import org.apache.batik.anim.dom.SVGDOMImplementation;

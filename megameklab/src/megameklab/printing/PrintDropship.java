@@ -14,12 +14,10 @@
 package megameklab.printing;
 
 import megamek.common.*;
-import megameklab.util.ImageHelper;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGRectElement;
 
 import java.awt.print.PageFormat;
-import java.io.File;
 import java.time.LocalDate;
 import java.util.*;
 

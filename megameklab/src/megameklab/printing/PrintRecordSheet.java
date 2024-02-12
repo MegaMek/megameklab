@@ -49,11 +49,9 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.io.*;
-import java.net.URLConnection;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Base64;
@@ -875,7 +873,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         String mimeType = "image/png";
         String format = "png";
         try (ByteArrayOutputStream bytes = new ByteArrayOutputStream()) {
-            BufferedImage bufferedImage = ImageUtil.getBufferedImage(image);
+            BufferedImage bufferedImage = ImageUtil.convertToBufferedImage(image);
             ImageIO.write(bufferedImage, format, bytes);
 
             double width = bufferedImage.getWidth();
