@@ -136,18 +136,6 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
     //endregion Button Methods
 
     /**
-     * @return the MechSummary for the chosen mech
-     */
-    public MechSummary getChosenMechSummary() {
-        int view = tableUnits.getSelectedRow();
-        if (view < 0) {
-            // selection got filtered away
-            return null;
-        }
-        return mechs[tableUnits.convertRowIndexToModel(view)];
-    }
-
-    /**
      * @return the chosenEntity
      */
     public Entity getChosenEntity() {

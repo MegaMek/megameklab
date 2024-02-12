@@ -16,6 +16,7 @@ package megameklab.printing;
 
 import megamek.common.EquipmentType;
 import megamek.common.annotations.Nullable;
+import megamek.common.util.ImageUtil;
 import megameklab.printing.reference.ReferenceTable;
 import megameklab.util.CConfig;
 import org.apache.batik.anim.dom.SVGDOMImplementation;
@@ -47,6 +48,7 @@ import org.w3c.dom.xpath.XPathResult;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
@@ -822,17 +824,62 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             return;
         }
 
-        try (InputStream fis = new FileInputStream(imageFile);
-             InputStream bis = new BufferedInputStream(fis)) {
-            String mimeType = URLConnection.guessContentTypeFromStream(bis);
-            String format = mimeType.substring(mimeType.indexOf('/') + 1);
+        try {
+//            String mimeType = URLConnection.guessContentTypeFromStream(bis);
+//            String format = mimeType.substring(mimeType.indexOf('/') + 1);
 
-            RenderedImage fluffImage = ImageIO.read(imageFile);
-            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-            ImageIO.write(fluffImage, format, bytes);
-            
-            double width = fluffImage.getWidth();
-            double height = fluffImage.getHeight();
+            embedImage(ImageIO.read(imageFile), canvas, bbox, center);
+
+//            RenderedImage fluffImage = ImageIO.read(imageFile);
+//
+//            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+//            ImageIO.write(fluffImage, format, bytes);
+//
+//            double width = fluffImage.getWidth();
+//            double height = fluffImage.getHeight();
+//            double scale = Math.min(bbox.getWidth() / width, bbox.getHeight() / height);
+//            width *= scale;
+//            height *= scale;
+//            double x = bbox.getX();
+//            double y = bbox.getY();
+//            if (center) {
+//                x += (bbox.getWidth() - width) / 2;
+//                y += (bbox.getHeight() - height) / 2;
+//            }
+//            Element img = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_IMAGE_TAG);
+//            img.setAttributeNS(null, SVGConstants.SVG_X_ATTRIBUTE, Double.toString(x));
+//            img.setAttributeNS(null, SVGConstants.SVG_Y_ATTRIBUTE, Double.toString(y));
+//            img.setAttributeNS(null, SVGConstants.SVG_WIDTH_ATTRIBUTE, Double.toString(width));
+//            img.setAttributeNS(null, SVGConstants.SVG_HEIGHT_ATTRIBUTE, Double.toString(height));
+//            img.setAttributeNS(SVGConstants.XLINK_NAMESPACE_URI, SVGConstants.XLINK_HREF_QNAME,
+//                    "data:" + mimeType + ";base64," + Base64.getEncoder().encodeToString(bytes.toByteArray()));
+//            canvas.appendChild(img);
+        } catch (IOException e) {
+            LogManager.getLogger().error("Error reading fluff image file: " + imageFile.getPath());
+        }
+    }
+
+    /**
+     * Inserts an image into the SVG diagram scaled to fit into the provided bounds.
+     *
+     * @param image  The file containing the image to embed.
+     * @param canvas     The parent element for the image element.
+     * @param bbox       The bounding box for the image. The image will be scaled to fit.
+     * @param center     Whether to center the image vertically and horizontally.
+     */
+    public void embedImage(@Nullable Image image, Element canvas, Rectangle2D bbox, boolean center) {
+        if (image == null) {
+            return;
+        }
+
+        String mimeType = "image/png";
+        String format = "png";
+        try (ByteArrayOutputStream bytes = new ByteArrayOutputStream()) {
+            BufferedImage bufferedImage = ImageUtil.getBufferedImage(image);
+            ImageIO.write(bufferedImage, format, bytes);
+
+            double width = bufferedImage.getWidth();
+            double height = bufferedImage.getHeight();
             double scale = Math.min(bbox.getWidth() / width, bbox.getHeight() / height);
             width *= scale;
             height *= scale;
@@ -850,10 +897,8 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             img.setAttributeNS(SVGConstants.XLINK_NAMESPACE_URI, SVGConstants.XLINK_HREF_QNAME,
                     "data:" + mimeType + ";base64," + Base64.getEncoder().encodeToString(bytes.toByteArray()));
             canvas.appendChild(img);
-        } catch (FileNotFoundException e) {
-            LogManager.getLogger().error("Fluff image file not found: " + imageFile.getPath());
-        } catch (IOException e) {
-            LogManager.getLogger().error("Error reading fluff image file: " + imageFile.getPath());
+        } catch (IOException ignored) {
+            // do nothing
         }
     }
 

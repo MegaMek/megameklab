@@ -37,13 +37,7 @@ public final class ImageHelper {
      */
     public static @Nullable File getFluffFile(Entity unit) {
         List<File> fileCandidates = new ArrayList<>();
-        var fluffDir = new File(Configuration.fluffImagesDir(), FluffImageHelper.getImagePath(unit));
-
-        // MML Path matches (??)
-        if (!unit.getFluff().getMMLImagePath().isBlank()) {
-            fileCandidates.add(new File(unit.getFluff().getMMLImagePath()));
-            fileCandidates.add(new File(fluffDir, unit.getFluff().getMMLImagePath()));
-        }
+        var fluffDir = new File(Configuration.fluffImagesDir(), FluffImageHelper.getFluffPath(unit));
 
         // Internal fluff path matches
         for (String ext : FluffImageHelper.EXTENSIONS_FLUFF_IMAGE_FORMATS) {

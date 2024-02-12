@@ -19,16 +19,17 @@ package megameklab.printing;
 
 import megamek.common.*;
 import megameklab.printing.reference.*;
-import megameklab.util.ImageHelper;
 import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGRectElement;
 
+import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.awt.print.PageFormat;
 import java.io.File;
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -201,11 +202,11 @@ public class PrintAero extends PrintEntity {
 
     @Override
     protected void drawFluffImage() {
-        File f = ImageHelper.getFluffFile(aero);
-        if (null != f) {
+        Image fluffImage = getFluffImage();
+        if (null != fluffImage) {
             Element rect = getSVGDocument().getElementById(FLUFF_IMAGE);
             if (rect instanceof SVGRectElement) {
-                embedImage(f, (Element) rect.getParentNode(), getRectBBox((SVGRectElement) rect), true);
+                embedImage(fluffImage, (Element) rect.getParentNode(), getRectBBox((SVGRectElement) rect), true);
             }
             hideElement(getSVGDocument().getElementById(NOTES));
         }

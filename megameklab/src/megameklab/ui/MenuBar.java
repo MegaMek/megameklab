@@ -34,7 +34,6 @@ import megameklab.util.UnitPrintManager;
 import megameklab.util.UnitUtil;
 import org.apache.logging.log4j.LogManager;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -48,9 +47,7 @@ import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-import java.awt.image.BufferedImage;
 import java.io.*;
-import java.util.Base64;
 import java.util.ResourceBundle;
 
 /**
@@ -932,7 +929,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         if (chosenEntity != null) {
             try {
                 Image fluffImage = chosenEntity.getFluffImage();
-                owner.getEntity().getFluff().setFluffImageEncoded(ImageUtil.base64TextEncodeImage(fluffImage));
+                owner.getEntity().getFluff().setFluffImage(ImageUtil.base64TextEncodeImage(fluffImage));
             } catch (Exception ex) {
                 PopupMessages.showFileReadError(owner.getFrame(), "", ex.getMessage());
                 LogManager.getLogger().error("Fluff could not be copied!", ex);

@@ -25,6 +25,7 @@ import org.w3c.dom.svg.SVGElement;
 import org.w3c.dom.svg.SVGRectElement;
 
 import java.awt.geom.Rectangle2D;
+import java.io.File;
 
 /**
  * Generates a record sheet image for JumpShips, WarShips, and space stations.
@@ -365,15 +366,5 @@ public class PrintCapitalShip extends PrintDropship {
         }
         box.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, fillColor);
         return box;
-    }
-
-    @Override
-    protected void drawFluffImage() {
-        Element rect = getSVGDocument().getElementById(FLUFF_IMAGE);
-        if (rect instanceof SVGRectElement) {
-            embedImage(ImageHelper.getFluffFile(ship),
-                    (Element) rect.getParentNode(), getRectBBox((SVGRectElement) rect), true);
-        }
-        hideElement(getSVGDocument().getElementById(NOTES));
     }
 }

@@ -41,7 +41,6 @@ import javax.swing.border.MatteBorder;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.text.DecimalFormat;
 
 public class StatusBar extends ITab {
@@ -166,7 +165,7 @@ public class StatusBar extends ITab {
             if (imageFile.isFile()) {
                 try {
                     BufferedImage image = ImageIO.read(imageFile);
-                    getEntity().getFluff().setFluffImageEncoded(ImageUtil.base64TextEncodeImage(image));
+                    getEntity().getFluff().setFluffImage(ImageUtil.base64TextEncodeImage(image));
                 } catch (Exception ex) {
                     PopupMessages.showFileReadError(parentFrame, imageFile.toString(), ex.getMessage());
                     LogManager.getLogger().error("", ex);

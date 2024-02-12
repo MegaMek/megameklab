@@ -540,7 +540,7 @@ public class PrintMech extends PrintEntity {
                 placeReferenceCharts(tables, rect.getParentNode(), bbox.getX(), bbox.getY(),
                         bbox.getWidth() + 6.0, bbox.getHeight() + 6.0);
             } else {
-                embedImage(ImageHelper.getFluffFile(mech),
+                embedImage(getFluffImage(),
                         (Element) rect.getParentNode(), getRectBBox((SVGRectElement) rect), true);
             }
         }
