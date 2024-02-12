@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 - The MegaMek Team. All Rights Reserved.
+ * Copyright (c) 2023, 2024 - The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -25,22 +25,15 @@ import megamek.client.ui.dialogs.WeightDisplayDialog;
 import megamek.client.ui.swing.GUIPreferences;
 import megamek.client.ui.swing.calculationReport.CalculationReport;
 import megamek.common.*;
-import megamek.common.util.ImageUtil;
 import megamek.common.verifier.TestEntity;
 import megameklab.ui.MegaMekLabMainUI;
-import megameklab.ui.PopupMessages;
-import megameklab.ui.dialog.MMLFileChooser;
 import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
 import megameklab.util.UnitUtil;
-import org.apache.logging.log4j.LogManager;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.text.DecimalFormat;
 
 public class StatusBar extends ITab {
@@ -69,9 +62,6 @@ public class StatusBar extends ITab {
         JButton btnValidate = new JButton("Validate Unit");
         btnValidate.addActionListener(evt -> UnitUtil.showValidation(getEntity(), getParentFrame()));
 
-        JButton btnFluffImage = new JButton("Set Fluff Image");
-        btnFluffImage.addActionListener(evt -> chooseFluffImage());
-
         invalid.setForeground(GUIPreferences.getInstance().getWarningColor());
         invalid.setVisible(false);
 
@@ -82,7 +72,6 @@ public class StatusBar extends ITab {
         }
 
         add(btnValidate);
-        add(btnFluffImage);
         add(tons);
         add(bvLabel);
         add(invalid);
@@ -155,24 +144,6 @@ public class StatusBar extends ITab {
         StringBuffer sb = new StringBuffer();
         invalid.setVisible(!testEntity.correctEntity(sb));
         invalid.setToolTipText("<html>" + sb.toString().replaceAll("\n", "<br/>") + "</html>");
-    }
-
-    private void chooseFluffImage() {
-        var imageChooser = new MMLFileChooser();
-        int result = imageChooser.showOpenDialog(parentFrame);
-        if ((result == JFileChooser.APPROVE_OPTION) && (imageChooser.getSelectedFile() != null)) {
-            File imageFile = imageChooser.getSelectedFile();
-            if (imageFile.isFile()) {
-                try {
-                    BufferedImage image = ImageIO.read(imageFile);
-                    getEntity().getFluff().setFluffImage(ImageUtil.base64TextEncodeImage(image));
-                } catch (Exception ex) {
-                    PopupMessages.showFileReadError(parentFrame, imageFile.toString(), ex.getMessage());
-                    LogManager.getLogger().error("", ex);
-                }
-            }
-        }
-        refresh.refreshAll();
     }
 
     private JFrame getParentFrame() {

@@ -127,7 +127,6 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         fileMenu.add(createSwitchUnitTypeMenu());
         fileMenu.add(createLoadMenu());
         fileMenu.add(createSaveMenu());
-        fileMenu.add(createImportMenu());
         fileMenu.add(createExportMenu());
         fileMenu.add(createPrintMenu());
         fileMenu.add(createRefreshMenu());
@@ -334,25 +333,6 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         saveMenu.add(miSaveAs);
 
         return saveMenu;
-    }
-
-    /**
-     * @return the created Import menu
-     */
-    private JMenu createImportMenu() {
-        final JMenu importMenu = new JMenu(resources.getString("importMenu.text"));
-        importMenu.setName("importMenu");
-        importMenu.setMnemonic(KeyEvent.VK_I);
-
-        final JMenuItem miImportFluffImage = new JMenuItem(resources.getString("miImportFluffImage.text"));
-        miImportFluffImage.setName("miImportFluffImage");
-        miImportFluffImage.setMnemonic(KeyEvent.VK_I);
-        miImportFluffImage.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I, InputEvent.ALT_DOWN_MASK));
-        miImportFluffImage.addActionListener(evt -> importFluffImageAction());
-        miImportFluffImage.setEnabled(isUnitGui());
-        importMenu.add(miImportFluffImage);
-
-        return importMenu;
     }
 
     /**
@@ -918,25 +898,6 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         } catch (Exception ex) {
             PopupMessages.showFileReadError(owner.getFrame(), unitFile.toString(), ex.getMessage());
         }
-    }
-
-    private void importFluffImageAction() {
-        UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(owner.getFrame());
-        unitLoadingDialog.setVisible(true);
-        MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(owner.getFrame(), unitLoadingDialog);
-
-        Entity chosenEntity = viewer.getChosenEntity();
-        if (chosenEntity != null) {
-            try {
-                Image fluffImage = chosenEntity.getFluffImage();
-                owner.getEntity().getFluff().setFluffImage(ImageUtil.base64TextEncodeImage(fluffImage));
-            } catch (Exception ex) {
-                PopupMessages.showFileReadError(owner.getFrame(), "", ex.getMessage());
-                LogManager.getLogger().error("Fluff could not be copied!", ex);
-            }
-        }
-        viewer.dispose();
-        owner.refreshAll();
     }
 
     // Show data about MegaMekLab
