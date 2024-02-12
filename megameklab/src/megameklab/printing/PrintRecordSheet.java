@@ -823,35 +823,9 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         }
 
         try {
-//            String mimeType = URLConnection.guessContentTypeFromStream(bis);
-//            String format = mimeType.substring(mimeType.indexOf('/') + 1);
-
             embedImage(ImageIO.read(imageFile), canvas, bbox, center);
-
-//            RenderedImage fluffImage = ImageIO.read(imageFile);
-//
-//            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-//            ImageIO.write(fluffImage, format, bytes);
-//
-//            double width = fluffImage.getWidth();
-//            double height = fluffImage.getHeight();
-//            double scale = Math.min(bbox.getWidth() / width, bbox.getHeight() / height);
-//            width *= scale;
-//            height *= scale;
-//            double x = bbox.getX();
-//            double y = bbox.getY();
-//            if (center) {
-//                x += (bbox.getWidth() - width) / 2;
-//                y += (bbox.getHeight() - height) / 2;
-//            }
-//            Element img = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_IMAGE_TAG);
-//            img.setAttributeNS(null, SVGConstants.SVG_X_ATTRIBUTE, Double.toString(x));
-//            img.setAttributeNS(null, SVGConstants.SVG_Y_ATTRIBUTE, Double.toString(y));
-//            img.setAttributeNS(null, SVGConstants.SVG_WIDTH_ATTRIBUTE, Double.toString(width));
-//            img.setAttributeNS(null, SVGConstants.SVG_HEIGHT_ATTRIBUTE, Double.toString(height));
-//            img.setAttributeNS(SVGConstants.XLINK_NAMESPACE_URI, SVGConstants.XLINK_HREF_QNAME,
-//                    "data:" + mimeType + ";base64," + Base64.getEncoder().encodeToString(bytes.toByteArray()));
-//            canvas.appendChild(img);
+        } catch (FileNotFoundException e) {
+            LogManager.getLogger().error("Fluff image file not found: " + imageFile.getPath());
         } catch (IOException e) {
             LogManager.getLogger().error("Error reading fluff image file: " + imageFile.getPath());
         }
@@ -895,8 +869,8 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             img.setAttributeNS(SVGConstants.XLINK_NAMESPACE_URI, SVGConstants.XLINK_HREF_QNAME,
                     "data:" + mimeType + ";base64," + Base64.getEncoder().encodeToString(bytes.toByteArray()));
             canvas.appendChild(img);
-        } catch (IOException ignored) {
-            // do nothing
+        } catch (IOException ex) {
+            LogManager.getLogger().error("Error embedding fluff image", ex);
         }
     }
 

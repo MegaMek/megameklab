@@ -436,10 +436,6 @@ public abstract class PrintEntity extends PrintRecordSheet {
     }
 
     protected void drawFluffImage() { }
-//
-//    protected @Nullable File getFluffImageFile() {
-//        return FluffImageHelper.getRecordSheetFluffImageFile(getEntity());
-//    }
 
     protected @Nullable Image getFluffImage() {
         return FluffImageHelper.getRecordSheetFluffImage(getEntity());
