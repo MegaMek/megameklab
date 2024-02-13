@@ -940,6 +940,7 @@ public final class MekUtil {
      */
     public static boolean isFMU(Mounted equipment) {
         return (equipment != null)
+                && equipment.getType().getCriticals(equipment.getEntity()) > 0
                 && !equipment.getType().isHittable()
                 && (equipment.getType() instanceof MiscType)
                 && !equipment.getType().hasFlag(MiscType.F_CASE)
