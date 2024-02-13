@@ -25,12 +25,10 @@ import megamek.client.ui.dialogs.WeightDisplayDialog;
 import megamek.client.ui.swing.GUIPreferences;
 import megamek.client.ui.swing.calculationReport.CalculationReport;
 import megamek.common.*;
-import megamek.common.verifier.TestBattleArmor;
 import megamek.common.verifier.TestEntity;
 import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
-import megameklab.util.ImageHelper;
 import megameklab.util.UnitUtil;
 
 import javax.swing.*;
