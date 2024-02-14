@@ -239,16 +239,6 @@ public class StatusBar extends ITab {
             heat += weaponHeat;
         }
 
-        if (getEntity().hasWorkingMisc(MiscType.F_STEALTH, -1)
-                || getEntity().hasWorkingMisc(MiscType.F_VOIDSIG, -1)
-                || getEntity().hasWorkingMisc(MiscType.F_NULLSIG, -1)) {
-            heat += 10;
-        }
-
-        if (getEntity().hasWorkingMisc(MiscType.F_CHAMELEON_SHIELD, -1)) {
-            heat += 6;
-        }
-
         for (Mounted m : getEntity().getMisc()) {
             heat += m.getType().getHeat();
 
