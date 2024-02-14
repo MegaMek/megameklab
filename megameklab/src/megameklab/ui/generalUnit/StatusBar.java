@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 - The MegaMek Team. All Rights Reserved.
+ * Copyright (c) 2023, 2024 - The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -25,17 +25,18 @@ import megamek.client.ui.dialogs.WeightDisplayDialog;
 import megamek.client.ui.swing.GUIPreferences;
 import megamek.client.ui.swing.calculationReport.CalculationReport;
 import megamek.common.*;
-import megamek.common.verifier.TestBattleArmor;
 import megamek.common.verifier.TestEntity;
+import megamek.utilities.DebugEntity;
 import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
-import megameklab.util.ImageHelper;
 import megameklab.util.UnitUtil;
 
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
 import java.awt.*;
+import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
 import java.io.File;
 import java.text.DecimalFormat;
 
@@ -63,7 +64,7 @@ public class StatusBar extends ITab {
         formatter = new DecimalFormat();
 
         JButton btnValidate = new JButton("Validate Unit");
-        btnValidate.addActionListener(evt -> UnitUtil.showValidation(getEntity(), getParentFrame()));
+        btnValidate.addActionListener(validationListener);
 
         JButton btnFluffImage = new JButton("Set Fluff Image");
         btnFluffImage.addActionListener(evt -> getFluffImage());
@@ -173,6 +174,14 @@ public class StatusBar extends ITab {
     public void addRefreshedListener(RefreshListener refreshListener) {
         refresh = refreshListener;
     }
+
+    private final ActionListener validationListener = e -> {
+        if ((e.getModifiers() & Event.CTRL_MASK) != 0) {
+            DebugEntity.copyEquipmentState(getEntity());
+        } else {
+            UnitUtil.showValidation(getEntity(), getParentFrame());
+        }
+    };
 
     /**
      * Returns an estimated value of the total heat generation for Meks and Aeros (0 for other types).
