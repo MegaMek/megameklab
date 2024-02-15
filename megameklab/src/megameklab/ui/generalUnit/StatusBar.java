@@ -26,6 +26,7 @@ import megamek.client.ui.swing.GUIPreferences;
 import megamek.client.ui.swing.calculationReport.CalculationReport;
 import megamek.common.*;
 import megamek.common.verifier.TestEntity;
+import megamek.utilities.DebugEntity;
 import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
@@ -34,6 +35,7 @@ import megameklab.util.UnitUtil;
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.text.DecimalFormat;
 
 public class StatusBar extends ITab {
@@ -60,7 +62,7 @@ public class StatusBar extends ITab {
         formatter = new DecimalFormat();
 
         JButton btnValidate = new JButton("Validate Unit");
-        btnValidate.addActionListener(evt -> UnitUtil.showValidation(getEntity(), getParentFrame()));
+        btnValidate.addActionListener(validationListener);
 
         invalid.setForeground(GUIPreferences.getInstance().getWarningColor());
         invalid.setVisible(false);
@@ -154,6 +156,14 @@ public class StatusBar extends ITab {
         refresh = refreshListener;
     }
 
+    private final ActionListener validationListener = e -> {
+        if ((e.getModifiers() & Event.CTRL_MASK) != 0) {
+            DebugEntity.copyEquipmentState(getEntity());
+        } else {
+            UnitUtil.showValidation(getEntity(), getParentFrame());
+        }
+    };
+
     /**
      * Returns an estimated value of the total heat generation for Meks and Aeros (0 for other types).
      * This method is very specific to this use and cannot be generalized. It shouldn't be used elsewhere. It is
@@ -208,16 +218,6 @@ public class StatusBar extends ITab {
                 weaponHeat *= 0.5;
             }
             heat += weaponHeat;
-        }
-
-        if (getEntity().hasWorkingMisc(MiscType.F_STEALTH, -1)
-                || getEntity().hasWorkingMisc(MiscType.F_VOIDSIG, -1)
-                || getEntity().hasWorkingMisc(MiscType.F_NULLSIG, -1)) {
-            heat += 10;
-        }
-
-        if (getEntity().hasWorkingMisc(MiscType.F_CHAMELEON_SHIELD, -1)) {
-            heat += 6;
         }
 
         for (Mounted m : getEntity().getMisc()) {
