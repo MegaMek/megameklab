@@ -111,6 +111,10 @@ public final class PopupMessages {
         showErrorMessage(parent, resources.getString("noFluffImage"));
     }
 
+    public static void showWrongIconSize(Component parent) {
+        showErrorMessage(parent, resources.getString("wrongIconSize"));
+    }
+
     // ############ Internal message handlers
 
     private static void showErrorMessage(Component parent, String message) {

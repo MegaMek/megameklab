@@ -48,6 +48,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
     private ArmorAllocationView panArmorAllocation;
     private PatchworkArmorView panPatchwork;
     private CVTransportView panTransport;
+    private IconView iconView;
     
     public CVStructureTab(EntitySource eSource) {
         super(eSource);
@@ -66,6 +67,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         panArmorAllocation = new ArmorAllocationView(panBasicInfo, Entity.ETYPE_TANK);
         panPatchwork = new PatchworkArmorView(panBasicInfo);
         panTransport = new CVTransportView();
+        iconView = new IconView();
         if (getTank().hasPatchworkArmor()) {
             panArmorAllocation.showPatchwork(true);
         } else {
@@ -95,6 +97,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         panArmorAllocation.setFromEntity(getTank());
         panPatchwork.setFromEntity(getTank());
         panTransport.setFromEntity(getTank());
+        iconView.setFromEntity(getEntity());
 
         JPanel leftPanel = new JPanel();
         JPanel midPanel = new JPanel();
@@ -104,6 +107,8 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
 
         leftPanel.add(panBasicInfo);
+        leftPanel.add(Box.createVerticalStrut(6));
+        leftPanel.add(iconView);
         leftPanel.add(Box.createVerticalStrut(6));
         leftPanel.add(panChassis);
         leftPanel.add(Box.createVerticalStrut(6));
@@ -150,6 +155,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         panArmorAllocation.setFromEntity(getTank());
         panPatchwork.setFromEntity(getTank());
         panTransport.setFromEntity(getTank());
+        iconView.setFromEntity(getEntity());
 
         panSummary.refresh();
 
@@ -259,6 +265,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         getTank().setChassis(chassis);
         refresh.refreshHeader();
         refresh.refreshPreview();
+        iconView.refresh();
     }
 
     @Override
@@ -266,6 +273,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         getTank().setModel(model);
         refresh.refreshHeader();
         refresh.refreshPreview();
+        iconView.refresh();
     }
 
     @Override

@@ -52,6 +52,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
     private WSGravDeckView panGravDecks;
     private SummaryView panSummary;
     private ArmorAllocationView panArmorAllocation;
+    private IconView iconView;
 
     RefreshListener refresh = null;
 
@@ -73,6 +74,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         panHeat = new HeatSinkView(panInfo);
         panCrew = new LACrewView(panInfo);
         panGravDecks = new WSGravDeckView();
+        iconView = new IconView();
         panArmorAllocation = new ArmorAllocationView(panInfo, Entity.ETYPE_AERO);
         panSummary = new SummaryView(eSource,
                 new UnitTypeSummaryItem(),
@@ -106,6 +108,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
 
         leftPanel.add(panInfo);
+        leftPanel.add(iconView);
         leftPanel.add(panChassis);
         leftPanel.add(panHeat);
         leftPanel.add(panCrew);
@@ -167,6 +170,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         panCrew.setFromEntity(getJumpship());
         panGravDecks.setFromEntity(getJumpship());
         panArmorAllocation.setFromEntity(getJumpship());
+        iconView.setFromEntity(getEntity());
         
         panMovement.setVisible(getJumpship().hasETypeFlag(Entity.ETYPE_WARSHIP));
         panSummary.refresh();
@@ -219,6 +223,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         getJumpship().setChassis(chassis);
         refresh.refreshHeader();
         refresh.refreshPreview();
+        iconView.refresh();
     }
 
     @Override
@@ -226,6 +231,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         getJumpship().setModel(model);
         refresh.refreshHeader();
         refresh.refreshPreview();
+        iconView.refresh();
     }
 
     @Override
