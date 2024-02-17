@@ -1,5 +1,7 @@
 MEGAMEKLAB VERSION HISTORY:
 ----------------
+0.49.19-SNAPSHOT
+
 0.49.18 (2024-02-17 1800 UTC)
 + Fix #1370: Closing a unit selection dialog without selecting a unit no longer leads to an error message displayed
 + Fix #1309: Cargo containers can no longer be added to battle meks (they remain available to industrial meks)
