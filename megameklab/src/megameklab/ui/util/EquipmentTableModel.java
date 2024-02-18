@@ -319,7 +319,7 @@ public class EquipmentTableModel extends AbstractTableModel {
                 }
             } else if (type instanceof WeaponType) {
                 // Field gun crew size
-                special += Math.max(2, (int)Math.ceil(type.getTonnage(entity))); 
+                special += Math.max(2, (int)Math.ceil(type.getTonnage(entity)));
             }
             return special;
         } else if (col == COL_HEAT) {
@@ -341,7 +341,7 @@ public class EquipmentTableModel extends AbstractTableModel {
         } else if (col == COL_RANGE) {
             if (null != wtype) {
                 if (entity instanceof Aero) {
-                    switch (wtype.getMaxRange(null)) {
+                    switch (wtype.getMaxRange()) {
                         case RangeType.RANGE_SHORT:
                             return "Short";
                         case RangeType.RANGE_MEDIUM:
@@ -468,16 +468,16 @@ public class EquipmentTableModel extends AbstractTableModel {
             attackValue[RangeType.RANGE_LONG] = wtype.getRoundLongAV();
             attackValue[RangeType.RANGE_EXTREME] = wtype.getRoundExtAV();
             boolean allEq = true;
-            for (int i = 2; i <= wtype.getMaxRange(null); i++) {
+            for (int i = 2; i <= wtype.getMaxRange(); i++) {
                 if (attackValue[i - 1] != attackValue[i]) {
                     allEq = false;
                     break;
-                }                    
+                }
             }
             StringBuilder avString = new StringBuilder();
             avString.append(attackValue[RangeType.RANGE_SHORT]);
             if (!allEq) {
-                for (int i = 2; i <= wtype.getMaxRange(null); i++) {
+                for (int i = 2; i <= wtype.getMaxRange(); i++) {
                     avString.append('/').append(attackValue[i]);
                 }
             }
@@ -495,7 +495,7 @@ public class EquipmentTableModel extends AbstractTableModel {
                     + wtype.getDamage(wtype.getLongRange());
         } else if (wtype.getDamage() == WeaponType.DAMAGE_BY_CLUSTERTABLE) {
             if (wtype instanceof HAGWeapon) {
-                return wtype.getRackSize() + ""; 
+                return wtype.getRackSize() + "";
             } else if (wtype instanceof MekMortarWeapon) {
                 return "Special";
             } else if (wtype instanceof MissileWeapon) {
@@ -513,7 +513,7 @@ public class EquipmentTableModel extends AbstractTableModel {
                         default :
                             return "0";
                     }
-                } else if ((wtype instanceof ATMWeapon) 
+                } else if ((wtype instanceof ATMWeapon)
                         ||(wtype.getAmmoType() == AmmoType.T_SRM)
                         || (wtype.getAmmoType() == AmmoType.T_SRM_STREAK)
                         || (wtype.getAmmoType() == AmmoType.T_SRM_ADVANCED)
@@ -525,12 +525,12 @@ public class EquipmentTableModel extends AbstractTableModel {
                     dmg = 1;
                 }
                 return dmg + "/msl";
-            }            
+            }
             return "Cluster";
         } else if (wtype.getDamage() == WeaponType.DAMAGE_ARTILLERY) {
             return wtype.getRackSize() + "A";
         } else if (wtype instanceof UACWeapon) {
-            return wtype.getDamage() + "/Shot";            
+            return wtype.getDamage() + "/Shot";
         } else if (wtype.getDamage() < 0) {
             return "Special";
         } else {
