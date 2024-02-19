@@ -1,6 +1,6 @@
 /*
- * MegaMekLab - Copyright (C) 2008 
- * 
+ * MegaMekLab - Copyright (C) 2008
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -35,7 +35,7 @@ public class ITab extends JPanel {
     public Mech getMech() {
         return (Mech) eSource.getEntity();
     }
-    
+
     public Protomech getProtomech() {
         return (Protomech) eSource.getEntity();
     }
@@ -49,9 +49,9 @@ public class ITab extends JPanel {
     }
 
     public Aero getAero() {
-        return (Aero) eSource.getEntity();
+        return (AeroSpaceFighter) eSource.getEntity();
     }
-    
+
     public SmallCraft getSmallCraft() {
         return (SmallCraft) eSource.getEntity();
     }
@@ -63,7 +63,7 @@ public class ITab extends JPanel {
     public BattleArmor getBattleArmor() {
         return (BattleArmor) eSource.getEntity();
     }
-    
+
     public Infantry getInfantry() {
         return (Infantry) eSource.getEntity();
     }
