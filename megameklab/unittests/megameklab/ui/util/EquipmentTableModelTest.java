@@ -1,10 +1,7 @@
 package megameklab.ui.util;
 
 import megamek.common.*;
-import megamek.common.loaders.BLKAeroSpaceFighterFile;
-import megamek.common.loaders.BLKFile;
 import megamek.common.loaders.EntityLoadingException;
-import megamek.common.weapons.Weapon;
 import megameklab.ui.EntitySource;
 import megameklab.ui.fighterAero.ASMainUI;
 import megameklab.ui.generalUnit.BasicInfoView;
@@ -15,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 
 import org.mockito.Mockito.*;
