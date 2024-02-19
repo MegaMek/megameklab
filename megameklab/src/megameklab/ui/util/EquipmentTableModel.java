@@ -459,7 +459,7 @@ public class EquipmentTableModel extends AbstractTableModel {
         }
     }
 
-    private static String getDamageString(WeaponType wtype, boolean isAero) {
+    static String getDamageString(WeaponType wtype, boolean isAero) {
         // Aeros should print AV instead
         if (isAero) {
             int[] attackValue = new int[RangeType.RANGE_EXTREME + 1];
