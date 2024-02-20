@@ -43,7 +43,7 @@ public class ASMainUI extends MegaMekLabMainUI {
 
     public ASMainUI(boolean primitive) {
         super();
-        createNewUnit(Entity.ETYPE_AERO, primitive);
+        createNewUnit(Entity.ETYPE_AEROSPACEFIGHTER, primitive);
         finishSetup();
     }
 
@@ -88,7 +88,7 @@ public class ASMainUI extends MegaMekLabMainUI {
     @Override
     public void createNewUnit(long entityType, boolean isPrimitive, boolean isIndustrial, Entity oldEntity) {
 
-        if (entityType == Entity.ETYPE_AERO) {
+        if (entityType == Entity.ETYPE_AEROSPACEFIGHTER) {
             setEntity(new AeroSpaceFighter());
             getEntity().setTechLevel(TechConstants.T_IS_TW_NON_BOX);
         } else if (entityType == Entity.ETYPE_CONV_FIGHTER) {
@@ -184,12 +184,12 @@ public class ASMainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshWeapons() { }
-    
+
     @Override
     public void refreshSummary() {
         structureTab.refreshSummary();
     }
-    
+
     @Override
     public void refreshEquipmentTable() {
         equipmentTab.refreshTable();

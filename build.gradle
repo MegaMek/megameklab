@@ -30,10 +30,10 @@ ext {
     mmlGitRoot = 'https://github.com/MegaMek/megameklab.git'
     // Work on MML or MHQ sometimes requires changes in MM as well. The maven publishing tasks use
     // these properties to append the branch name to the artifact id if the repo is not in the master
-    // branch, making it available separately to the child project. 
+    // branch, making it available separately to the child project.
     mmlBranch = grgit.branch.current().name
     mmlBranchTag = mmlBranch.equals('master') ? '' : '-' + mmlBranch
-    
+
     // Allows setting a dependency on a different MM branch.
     mmBranch = 'master'
     mmBranchTag = mmBranch.equals('master') ? '' : '-' + mmBranch
@@ -46,6 +46,10 @@ ext {
 // local copy of the repository rather than downloading it.
 
 def localProperties = file('properties_local.gradle')
+
+dependencies {
+    implementation 'org.mockito:mockito-core:5.2.0'
+}
 if (localProperties.exists()) {
     apply from: localProperties
 }
