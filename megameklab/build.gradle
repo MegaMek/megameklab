@@ -51,7 +51,7 @@ dependencies {
         exclude group: 'com.sun.media', module: 'jai-codec'
         exclude group: 'xml-apis'
     }
-    implementation 'org.mockito:mockito-core:5.2.0'
+    testImplementation 'org.mockito:mockito-core:5.2.0'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
 
     runtimeOnly 'org.glassfish.jaxb:jaxb-runtime:4.0.2'

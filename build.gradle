@@ -47,9 +47,6 @@ ext {
 
 def localProperties = file('properties_local.gradle')
 
-dependencies {
-    implementation 'org.mockito:mockito-core:5.2.0'
-}
 if (localProperties.exists()) {
     apply from: localProperties
 }

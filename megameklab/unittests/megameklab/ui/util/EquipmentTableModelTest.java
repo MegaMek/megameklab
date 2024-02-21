@@ -14,8 +14,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
-import org.mockito.Mockito.*;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -58,7 +56,7 @@ class EquipmentTableModelTest {
     @Test
     void testGetValueAtForAll() throws EntityLoadingException {
         // Test getValue() in EquipmentTableModel; the exercises conversions and lookups
-        ArrayList<String> testItems = new ArrayList<String>(Arrays.asList(
+        ArrayList<String> testItems = new ArrayList<>(Arrays.asList(
                 "/Kirghiz C.blk",                                           // ASF
                 "/Beast Infantry (Elephant)(Laser Rifle_Support PPC).blk",  // Beast Inf
                 "/Black Wolf BA (ER Pulse) (Sqd5).blk",                     // BA, Clan
@@ -92,7 +90,7 @@ class EquipmentTableModelTest {
         // Test reading damage strings for ASF weapons
         String fname = "/Kirghiz C.blk";
         Entity te = configureFromFilename(fname);
-        assertEquals(true, te.isAero());
+        assertTrue(te.isAero());
         for (Mounted weapon: te.getWeaponList()) {
             WeaponType weaponType = (WeaponType) weapon.getType();
             String dString = EquipmentTableModel.getDamageString(weaponType, te.isAero());
@@ -112,7 +110,7 @@ class EquipmentTableModelTest {
         // Test reading damage strings for CI weapons
         String fname = "/Jump Squad (LRM).blk";
         Entity te = configureFromFilename(fname);
-        assertEquals(false, te.isAero());
+        assertFalse(te.isAero());
         for (Mounted weapon: te.getWeaponList()) {
             WeaponType weaponType = (WeaponType) weapon.getType();
             String dString = EquipmentTableModel.getDamageString(weaponType, te.isAero());
@@ -128,13 +126,12 @@ class EquipmentTableModelTest {
         // Test reading damage strings for CI weapons
         String fname = "/Long Tom Cannon Turret (Quad).blk";
         Entity te = configureFromFilename(fname);
-        assertEquals(false, te.isAero());
+        assertFalse(te.isAero());
         for (Mounted weapon: te.getWeaponList()) {
             WeaponType weaponType = (WeaponType) weapon.getType();
             String dString = EquipmentTableModel.getDamageString(weaponType, te.isAero());
             // Confirm can convert to double
-            assertEquals(Integer.toString(weaponType.getRackSize())+"A",
-                    dString);
+            assertEquals(weaponType.getRackSize() + "A", dString);
         }
     }
 }
