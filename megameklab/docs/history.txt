@@ -1,6 +1,12 @@
 MEGAMEKLAB VERSION HISTORY:
 ----------------
-0.49.18-SNAPSHOT
+0.49.19-SNAPSHOT
++ Fix MML#1430: Fixes issue with SV armor weight and space calculations
++ Fix MML#1429: Fixes a bug with aero construction in MML
++ Fix #1242: Fixes a bug with determining the maximum number of bay doors
++ PR #1435: Code cleanup (Dependencies)
+
+0.49.18 (2024-02-17 1800 UTC)
 + Fix #1370: Closing a unit selection dialog without selecting a unit no longer leads to an error message displayed
 + Fix #1309: Cargo containers can no longer be added to battle meks (they remain available to industrial meks)
 + Fix #1358: Record sheets for beast-mounted infantry now show additional movement information
@@ -37,6 +43,10 @@ MEGAMEKLAB VERSION HISTORY:
 + PR #1411: StatusBar: calculate the correct total max weight for BA
 + Fix #1400: VTOLS print with an incorrect Hit chart
 + Fix #1203: Allow construction of BA exoskeleton before 2710
++ PR #1428: Use the configurable unit summary in MML
++ PR #1427: Debug helper update  
++ Fix #1419: Fix automatic placement of armors without crit requirement
++ Fix #1421: Remove misc heat duplication in the status bar 
 
 0.49.17 (2023-12-31 1900 UTC)
 + PR #1352 MML interface changes
