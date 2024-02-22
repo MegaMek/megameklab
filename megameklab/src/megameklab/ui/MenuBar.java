@@ -179,7 +179,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             final JMenuItem miSwitchToFighter = new JMenuItem(resources.getString("miSwitchToFighter.text"));
             miSwitchToFighter.setName("miSwitchToFighter");
             miSwitchToFighter.setMnemonic(KeyEvent.VK_A);
-            miSwitchToFighter.addActionListener(evt -> owner.newUnit(Entity.ETYPE_AEROSPACEFIGHTER));
+            miSwitchToFighter.addActionListener(evt -> owner.newUnit(Entity.ETYPE_AERO));
             switchUnitTypeMenu.add(miSwitchToFighter);
         }
 
@@ -1058,7 +1058,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         } else if (en.hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
             getUnitMainUi().createNewUnit(Entity.ETYPE_JUMPSHIP);
         } else if (owner.getEntity() instanceof Aero) {
-            getUnitMainUi().createNewUnit(Entity.ETYPE_AEROSPACEFIGHTER, en.isPrimitive());
+            getUnitMainUi().createNewUnit(Entity.ETYPE_AERO, en.isPrimitive());
         } else if (owner.getEntity() instanceof BattleArmor) {
             getUnitMainUi().createNewUnit(Entity.ETYPE_BATTLEARMOR);
         } else if (owner.getEntity() instanceof Infantry) {
