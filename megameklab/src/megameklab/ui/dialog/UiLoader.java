@@ -76,7 +76,7 @@ public class UiLoader {
         } else if (newUnit.hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
             new UiLoader(Entity.ETYPE_JUMPSHIP, newUnit.isPrimitive(), false, newUnit, fileName).show();
         } else if ((newUnit instanceof Aero) && !(newUnit instanceof FixedWingSupport)) {
-            new UiLoader(Entity.ETYPE_AEROSPACEFIGHTER, newUnit.isPrimitive(), false, newUnit, fileName).show();
+            new UiLoader(Entity.ETYPE_AERO, newUnit.isPrimitive(), false, newUnit, fileName).show();
         } else if (newUnit instanceof BattleArmor) {
             new UiLoader(Entity.ETYPE_BATTLEARMOR, false, false, newUnit, fileName).show();
         } else if (newUnit instanceof Infantry) {
