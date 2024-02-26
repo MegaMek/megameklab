@@ -22,7 +22,7 @@ import megamek.common.*;
 import megamek.common.annotations.Nullable;
 import megamek.common.loaders.BLKFile;
 import megamek.common.templates.TROView;
-import megamek.common.verifier.TestEntity;
+import megamek.common.util.ImageUtil;
 import megameklab.MMLConstants;
 import megameklab.ui.dialog.MMLFileChooser;
 import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
@@ -30,7 +30,6 @@ import megameklab.ui.dialog.PrintQueueDialog;
 import megameklab.ui.dialog.UiLoader;
 import megameklab.ui.dialog.settings.SettingsDialog;
 import megameklab.util.CConfig;
-import megameklab.util.ImageHelper;
 import megameklab.util.UnitPrintManager;
 import megameklab.util.UnitUtil;
 import org.apache.logging.log4j.LogManager;
@@ -48,9 +47,7 @@ import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
+import java.io.*;
 import java.util.ResourceBundle;
 
 /**
@@ -64,7 +61,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     private final ResourceBundle resources = ResourceBundle.getBundle("megameklab.resources.Menu");
     private final MMLFileChooser loadUnitFileChooser = new MMLFileChooser();
     private final MMLFileChooser saveUnitFileChooser = new MMLFileChooser();
-    private final MMLFileChooser loadImageFileChooser = new MMLFileChooser();
+    public final MMLFileChooser loadImageFileChooser = new MMLFileChooser();
     private final JMenu fileMenu = new JMenu(resources.getString("fileMenu.text"));
 
     public MenuBar(MenuBarOwner owner) {
@@ -130,7 +127,6 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         fileMenu.add(createSwitchUnitTypeMenu());
         fileMenu.add(createLoadMenu());
         fileMenu.add(createSaveMenu());
-        fileMenu.add(createImportMenu());
         fileMenu.add(createExportMenu());
         fileMenu.add(createPrintMenu());
         fileMenu.add(createRefreshMenu());
@@ -337,25 +333,6 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         saveMenu.add(miSaveAs);
 
         return saveMenu;
-    }
-
-    /**
-     * @return the created Import menu
-     */
-    private JMenu createImportMenu() {
-        final JMenu importMenu = new JMenu(resources.getString("importMenu.text"));
-        importMenu.setName("importMenu");
-        importMenu.setMnemonic(KeyEvent.VK_I);
-
-        final JMenuItem miImportFluffImage = new JMenuItem(resources.getString("miImportFluffImage.text"));
-        miImportFluffImage.setName("miImportFluffImage");
-        miImportFluffImage.setMnemonic(KeyEvent.VK_I);
-        miImportFluffImage.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I, InputEvent.ALT_DOWN_MASK));
-        miImportFluffImage.addActionListener(evt -> importFluffImageAction());
-        miImportFluffImage.setEnabled(isUnitGui());
-        importMenu.add(miImportFluffImage);
-
-        return importMenu;
     }
 
     /**
@@ -920,44 +897,6 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             showUnitSpecs(tempEntity, owner.getFrame());
         } catch (Exception ex) {
             PopupMessages.showFileReadError(owner.getFrame(), unitFile.toString(), ex.getMessage());
-        }
-    }
-
-    private void importFluffImageAction() {
-        File unitFile = chooseUnitFileToLoad();
-        if (unitFile == null) {
-            return;
-        }
-
-        try {
-            Entity tempEntity = new MechFileParser(unitFile).getEntity();
-            String validationResult = UnitUtil.validateUnit(tempEntity);
-            if (!validationResult.isBlank()) {
-                PopupMessages.showUnitInvalidWarning(owner.getFrame(), validationResult);
-            }
-
-            if (!owner.getEntity().getFluff().getMMLImagePath().isBlank()) {
-                String fullPath = new File(owner.getEntity().getFluff().getMMLImagePath()).getAbsolutePath();
-                String imageName = fullPath.substring(fullPath.lastIndexOf(File.separatorChar) + 1);
-                fullPath = fullPath.substring(0, fullPath.lastIndexOf(File.separatorChar) + 1);
-                loadImageFileChooser.setCurrentDirectory(new File(fullPath));
-                loadImageFileChooser.setSelectedFile(new File(imageName));
-            } else {
-                loadImageFileChooser.setCurrentDirectory(Configuration.fluffImagesDir());
-                loadImageFileChooser.setSelectedFile(new File(getUnitMainUi().getEntity().getChassis()
-                        + ' ' + getUnitMainUi().getEntity().getModel() + ".png"));
-            }
-
-            int result = loadImageFileChooser.showSaveDialog(owner.getFrame());
-            if ((result == JFileChooser.APPROVE_OPTION) && (loadImageFileChooser.getSelectedFile() != null)) {
-                String relativeFilePath = loadImageFileChooser.getSelectedFile().getAbsolutePath();
-                relativeFilePath = "." + File.separatorChar + relativeFilePath
-                        .substring(new File(System.getProperty("user.dir")).getAbsolutePath().length() + 1);
-                getUnitMainUi().getEntity().getFluff().setMMLImagePath(relativeFilePath);
-                BLKFile.encode(unitFile.getAbsolutePath(), tempEntity);
-            }
-        } catch (Exception ex) {
-            LogManager.getLogger().error("", ex);
         }
     }
 

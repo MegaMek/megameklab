@@ -66,9 +66,6 @@ public class StatusBar extends ITab {
         JButton btnValidate = new JButton("Validate Unit");
         btnValidate.addActionListener(validationListener);
 
-        JButton btnFluffImage = new JButton("Set Fluff Image");
-        btnFluffImage.addActionListener(evt -> getFluffImage());
-
         invalid.setForeground(GUIPreferences.getInstance().getWarningColor());
         invalid.setVisible(false);
 
@@ -79,7 +76,6 @@ public class StatusBar extends ITab {
         }
 
         add(btnValidate);
-        add(btnFluffImage);
         add(tons);
         add(bvLabel);
         add(invalid);
@@ -152,19 +148,6 @@ public class StatusBar extends ITab {
         StringBuffer sb = new StringBuffer();
         invalid.setVisible(!testEntity.correctEntity(sb));
         invalid.setToolTipText("<html>" + sb.toString().replaceAll("\n", "<br/>") + "</html>");
-    }
-
-    private void getFluffImage() {
-        FileDialog fDialog = new FileDialog(getParentFrame(), "Image Path", FileDialog.LOAD);
-        fDialog.setDirectory(Configuration.fluffImagesDir().toString());
-        fDialog.setLocationRelativeTo(this);
-        fDialog.setVisible(true);
-        if (fDialog.getFile() != null) {
-            String relativeFilePath = new File(fDialog.getDirectory() + fDialog.getFile()).getAbsolutePath();
-            relativeFilePath = "." + File.separatorChar + relativeFilePath.substring(new File(System.getProperty("user.dir")).getAbsolutePath().length() + 1);
-            getEntity().getFluff().setMMLImagePath(relativeFilePath);
-        }
-        refresh.refreshPreview();
     }
 
     private JFrame getParentFrame() {

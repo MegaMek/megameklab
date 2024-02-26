@@ -14,7 +14,6 @@
 package megameklab.printing;
 
 import megamek.common.*;
-import megameklab.util.ImageHelper;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGRectElement;
 
@@ -345,15 +344,5 @@ public class PrintDropship extends PrintAero {
             }
         }
         return sj.toString();
-    }
-
-    @Override
-    protected void drawFluffImage() {
-        Element rect = getSVGDocument().getElementById("fluffImage");
-        if (rect instanceof SVGRectElement) {
-            embedImage(ImageHelper.getFluffFile(ship),
-                    (Element) rect.getParentNode(), getRectBBox((SVGRectElement) rect), true);
-        }
-        hideElement(getSVGDocument().getElementById(NOTES));
     }
 }

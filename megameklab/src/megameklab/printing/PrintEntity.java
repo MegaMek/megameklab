@@ -14,8 +14,10 @@
 package megameklab.printing;
 
 import megamek.client.generator.RandomNameGenerator;
+import megamek.client.ui.swing.util.FluffImageHelper;
 import megamek.codeUtilities.StringUtility;
 import megamek.common.*;
+import megamek.common.annotations.Nullable;
 import megamek.common.eras.Era;
 import megamek.common.eras.Eras;
 import megamek.common.options.IOption;
@@ -32,12 +34,14 @@ import org.w3c.dom.svg.SVGRect;
 import org.w3c.dom.svg.SVGRectElement;
 import org.w3c.dom.svg.SVGTextContentElement;
 
+import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.awt.print.PageFormat;
 import java.io.File;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.*;
+import java.util.List;
 
 import static megamek.common.EquipmentType.*;
 
@@ -431,8 +435,10 @@ public abstract class PrintEntity extends PrintRecordSheet {
         }
     }
 
-    protected void drawFluffImage() {
+    protected void drawFluffImage() { }
 
+    protected @Nullable Image getFluffImage() {
+        return FluffImageHelper.getRecordSheetFluffImage(getEntity());
     }
 
     private void drawEraIcon() {
