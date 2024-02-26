@@ -1,6 +1,15 @@
 MEGAMEKLAB VERSION HISTORY:
 ----------------
-0.49.18-SNAPSHOT
+0.49.19-SNAPSHOT
++ Fix MML#1430: Fixes issue with SV armor weight and space calculations
++ Fix MML#1429: Fixes a bug with aero construction in MML
++ Fix #1242: Fixes a bug with determining the maximum number of bay doors
++ PR #1435: Code cleanup (Dependencies)
++ PR #1437: Fixes a bug that would load the Mek UI for ASF units
++ Fix #269: Setting a fluff image for a unit is now done in the fluff tab; MML will embed a chosen image in the unit file; the original image is no longer required for the unit fluff to show in MM / MML / MHQ
+
+
+0.49.18 (2024-02-17 1800 UTC)
 + Fix #1370: Closing a unit selection dialog without selecting a unit no longer leads to an error message displayed
 + Fix #1309: Cargo containers can no longer be added to battle meks (they remain available to industrial meks)
 + Fix #1358: Record sheets for beast-mounted infantry now show additional movement information
