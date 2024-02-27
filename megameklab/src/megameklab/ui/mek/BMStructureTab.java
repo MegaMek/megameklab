@@ -502,8 +502,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
     private void createArmorMountsAndSetArmorType(int at, int aTechLevel) {
         getMech().setArmorTechLevel(aTechLevel);
         getMech().setArmorType(at);
-        final EquipmentType armor = EquipmentType.get(EquipmentType.getArmorTypeName(at,
-                TechConstants.isClan(aTechLevel)));
+        final EquipmentType armor = ArmorType.of(at, TechConstants.isClan(aTechLevel));
         int armorCount = armor.getCriticals(getMech());
 
         if (armorCount < 1) {
