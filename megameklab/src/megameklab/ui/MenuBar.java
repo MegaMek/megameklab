@@ -17,6 +17,7 @@ package megameklab.ui;
 import megamek.client.ui.dialogs.BVDisplayDialog;
 import megamek.client.ui.dialogs.CostDisplayDialog;
 import megamek.client.ui.dialogs.WeightDisplayDialog;
+import megamek.client.ui.swing.GUIPreferences;
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
@@ -572,6 +573,9 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         themesMenu.setMnemonic(KeyEvent.VK_T);
 
         for (final LookAndFeelInfo laf : UIManager.getInstalledLookAndFeels()) {
+            if (!GUIPreferences.isSupportedLookAndFeel(laf)) {
+                continue;
+            }
             final JCheckBoxMenuItem miLookAndFeel = new JCheckBoxMenuItem(laf.getName());
             miLookAndFeel.setName("miLookAndFeel");
             miLookAndFeel.setSelected(laf.getName().equalsIgnoreCase(UIManager.getLookAndFeel().getName()));
