@@ -22,6 +22,7 @@ import megamek.client.ui.baseComponents.MMButton;
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.common.Entity;
 import megamek.common.MechFileParser;
+import megameklab.printing.PageBreak;
 import megameklab.util.UnitPrintManager;
 import org.apache.logging.log4j.LogManager;
 
@@ -50,6 +51,7 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
     private final boolean printToPdf;
     private final JButton addFromFileButton = new JButton("Add From File");
     private final JButton addFromCacheButton = new JButton("Add From Cache");
+    private final JButton addPageBreakButton = new JButton("Add Page Break");
     private final JButton removeButton = new JButton("Remove Selected");
     private final JCheckBox oneUnitPerSheetCheck = new JCheckBox("Print each unit to a separate page");
     private final JFrame parent;
@@ -69,6 +71,8 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
         addFromCacheButton.setMnemonic(KeyEvent.VK_A);
         addFromFileButton.addActionListener(e -> selectFromFile());
         addFromFileButton.setMnemonic(KeyEvent.VK_F);
+        addPageBreakButton.addActionListener(e -> pageBreak());
+        addPageBreakButton.setMnemonic(KeyEvent.VK_P);
         removeButton.addActionListener(e -> removeSelectedUnits());
         removeButton.setEnabled(false);
         removeButton.setMnemonic(KeyEvent.VK_R);
@@ -80,9 +84,10 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
         queuedUnitList.setVisibleRowCount(15);
 
         JPanel buttonPanel = new FixedXYPanel(new GridLayout(4, 1));
-        buttonPanel.add(new JLabel());
+        //buttonPanel.add(new JLabel());
         buttonPanel.add(addFromCacheButton);
         buttonPanel.add(addFromFileButton);
+        buttonPanel.add(addPageBreakButton);
         buttonPanel.add(removeButton);
         buttonPanel.setAlignmentY(JComponent.TOP_ALIGNMENT);
         JScrollPane queuedUnitListScrollPane = new JScrollPane(queuedUnitList);
@@ -138,6 +143,11 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
             UnitPrintManager.printAllUnits(units, oneUnitPerSheetCheck.isSelected());
         }
         super.okButtonActionPerformed(evt);
+    }
+
+    private void pageBreak() {
+        units.add(new PageBreak());
+        refresh();
     }
 
     private void selectFromCache() {

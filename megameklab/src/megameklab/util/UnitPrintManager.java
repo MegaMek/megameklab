@@ -16,7 +16,9 @@
 package megameklab.util;
 
 import megamek.client.ui.swing.UnitLoadingDialog;
+import megamek.client.ui.swing.calculationReport.CalculationReport;
 import megamek.common.*;
+import megamek.common.enums.AimingMode;
 import megameklab.printing.*;
 import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
 import org.apache.commons.io.FilenameUtils;
@@ -197,7 +199,28 @@ public class UnitPrintManager {
                     sheets.add(prs);
                     protoList = new ArrayList<>();
                 }
-            } else {
+            } else if (unit instanceof PageBreak) {
+                if (!singlePrint) {
+                    if (!baList.isEmpty()) {
+                        PrintRecordSheet prs = new PrintSmallUnitSheet(baList, pageCount, options);
+                        pageCount += prs.getPageCount();
+                        sheets.add(prs);
+                        baList = new ArrayList<>();
+                    }
+                    if (!infList.isEmpty()) {
+                        PrintRecordSheet prs = new PrintSmallUnitSheet(infList, pageCount, options);
+                        pageCount += prs.getPageCount();
+                        sheets.add(prs);
+                        infList = new ArrayList<>();
+                    }
+                    if (!protoList.isEmpty()) {
+                        PrintRecordSheet prs = new PrintSmallUnitSheet(protoList, pageCount, options);
+                        pageCount += prs.getPageCount();
+                        sheets.add(prs);
+                        protoList = new ArrayList<>();
+                    }
+                }
+            }else {
                 unprintable.add(unit);
             }
         }
