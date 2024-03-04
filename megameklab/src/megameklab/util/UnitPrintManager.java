@@ -219,6 +219,10 @@ public class UnitPrintManager {
                         sheets.add(prs);
                         protoList = new ArrayList<>();
                     }
+                    if (null != tank1) {
+                        sheets.add(new PrintCompositeTankSheet(tank1, null, pageCount++, options));
+                        tank1 = null;
+                    }
                 }
             }else {
                 unprintable.add(unit);
