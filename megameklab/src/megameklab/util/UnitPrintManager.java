@@ -16,9 +16,7 @@
 package megameklab.util;
 
 import megamek.client.ui.swing.UnitLoadingDialog;
-import megamek.client.ui.swing.calculationReport.CalculationReport;
 import megamek.common.*;
-import megamek.common.enums.AimingMode;
 import megameklab.printing.*;
 import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
 import org.apache.commons.io.FilenameUtils;
@@ -224,7 +222,7 @@ public class UnitPrintManager {
                         tank1 = null;
                     }
                 }
-            }else {
+            } else {
                 unprintable.add(unit);
             }
         }

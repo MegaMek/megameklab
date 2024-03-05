@@ -84,7 +84,6 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
         queuedUnitList.setVisibleRowCount(15);
 
         JPanel buttonPanel = new FixedXYPanel(new GridLayout(4, 1));
-        //buttonPanel.add(new JLabel());
         buttonPanel.add(addFromCacheButton);
         buttonPanel.add(addFromFileButton);
         buttonPanel.add(addPageBreakButton);
