@@ -1950,7 +1950,7 @@ public class UnitUtil {
         if (unit instanceof Infantry) {
             Infantry pbi = (Infantry) unit;
             if ((null != pbi.getPrimaryWeapon())
-                    && techManager.isLegal(pbi.getPrimaryWeapon())) {
+                    && !techManager.isLegal(pbi.getPrimaryWeapon())) {
                 dirty = true;
                 InfantryUtil.replaceMainWeapon((Infantry) unit,
                         (InfantryWeapon) EquipmentType
