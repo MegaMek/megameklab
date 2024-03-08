@@ -135,69 +135,72 @@ public class UnitPrintManager {
         return f.getSelectedFile();
     }
 
-    private static List<PrintRecordSheet> createSheets(List<Entity> entities, boolean singlePrint,
+    private static List<PrintRecordSheet> createSheets(List<? extends BTObject> entities, boolean singlePrint,
                                                        RecordSheetOptions options) {
         List<PrintRecordSheet> sheets = new ArrayList<>();
         List<Infantry> infList = new ArrayList<>();
         List<BattleArmor> baList = new ArrayList<>();
         List<Protomech> protoList = new ArrayList<>();
-        List<Entity> unprintable = new ArrayList<>();
+        List<BTObject> unprintable = new ArrayList<>();
         Tank tank1 = null;
 
         int pageCount = 0;
-        for (Entity unit : entities) {
-            if (unit instanceof Mech) {
-                UnitUtil.removeOneShotAmmo(unit);
-                MekUtil.expandUnitMounts((Mech) unit);
-                sheets.add(new PrintMech((Mech) unit, pageCount++, options));
-            } else if ((unit instanceof Tank) && unit.getMovementMode().isMarine()) {
-                sheets.add(new PrintTank((Tank) unit, pageCount++, options));
-            } else if (unit instanceof Tank) {
-                if (singlePrint || options.showReferenceCharts()) {
-                    sheets.add(new PrintCompositeTankSheet((Tank) unit, null, pageCount++, options));
-                } else if (null != tank1) {
-                    sheets.add(new PrintCompositeTankSheet(tank1, (Tank) unit, pageCount++, options));
-                    tank1 = null;
-                } else {
-                    tank1 = (Tank) unit;
+        for (BTObject object : entities) {
+            if (object instanceof Entity) {
+                Entity unit = (Entity) object;
+                if (unit instanceof Mech) {
+                    UnitUtil.removeOneShotAmmo(unit);
+                    MekUtil.expandUnitMounts((Mech) unit);
+                    sheets.add(new PrintMech((Mech) unit, pageCount++, options));
+                } else if ((unit instanceof Tank) && unit.getMovementMode().isMarine()) {
+                    sheets.add(new PrintTank((Tank) unit, pageCount++, options));
+                } else if (unit instanceof Tank) {
+                    if (singlePrint || options.showReferenceCharts()) {
+                        sheets.add(new PrintCompositeTankSheet((Tank) unit, null, pageCount++, options));
+                    } else if (null != tank1) {
+                        sheets.add(new PrintCompositeTankSheet(tank1, (Tank) unit, pageCount++, options));
+                        tank1 = null;
+                    } else {
+                        tank1 = (Tank) unit;
+                    }
+                } else if (unit.hasETypeFlag(Entity.ETYPE_AERO)) {
+                    if (unit instanceof Jumpship) {
+                        PrintCapitalShip pcs = new PrintCapitalShip((Jumpship) unit, pageCount, options);
+                        pageCount += pcs.getPageCount();
+                        sheets.add(pcs);
+                    } else if (unit instanceof Dropship) {
+                        PrintDropship pds = new PrintDropship((Aero) unit, pageCount, options);
+                        pageCount += pds.getPageCount();
+                        sheets.add(pds);
+                    } else {
+                        sheets.add(new PrintAero((Aero) unit, pageCount++, options));
+                    }
+                } else if (unit instanceof BattleArmor) {
+                    baList.add((BattleArmor) unit);
+                    if (singlePrint || baList.size() > 4) {
+                        PrintRecordSheet prs = new PrintSmallUnitSheet(baList, pageCount, options);
+                        pageCount += prs.getPageCount();
+                        sheets.add(prs);
+                        baList = new ArrayList<>();
+                    }
+                } else if (unit instanceof Infantry) {
+                    infList.add((Infantry) unit);
+                    if (singlePrint || infList.size() > (options.showReferenceCharts() ? 2 : 3)) {
+                        PrintRecordSheet prs = new PrintSmallUnitSheet(infList, pageCount, options);
+                        pageCount += prs.getPageCount();
+                        sheets.add(prs);
+                        infList = new ArrayList<>();
+                    }
+                } else if (unit instanceof Protomech) {
+                    protoList.add((Protomech) unit);
+                    if (singlePrint || protoList.size() > 4) {
+                        PrintRecordSheet prs = new PrintSmallUnitSheet(protoList, pageCount, options);
+                        pageCount += prs.getPageCount();
+                        sheets.add(prs);
+                        protoList = new ArrayList<>();
+                    }
                 }
-            } else if (unit.hasETypeFlag(Entity.ETYPE_AERO)) {
-                if (unit instanceof Jumpship) {
-                    PrintCapitalShip pcs = new PrintCapitalShip((Jumpship) unit, pageCount, options);
-                    pageCount += pcs.getPageCount();
-                    sheets.add(pcs);
-                } else if (unit instanceof Dropship) {
-                    PrintDropship pds = new PrintDropship((Aero) unit, pageCount, options);
-                    pageCount += pds.getPageCount();
-                    sheets.add(pds);
-                } else {
-                    sheets.add(new PrintAero((Aero) unit, pageCount++, options));
-                }
-            } else if (unit instanceof BattleArmor) {
-                baList.add((BattleArmor) unit);
-                if (singlePrint || baList.size() > 4) {
-                    PrintRecordSheet prs = new PrintSmallUnitSheet(baList, pageCount, options);
-                    pageCount += prs.getPageCount();
-                    sheets.add(prs);
-                    baList = new ArrayList<>();
-                }
-            } else if (unit instanceof Infantry) {
-                infList.add((Infantry) unit);
-                if (singlePrint || infList.size() > (options.showReferenceCharts() ? 2 : 3)) {
-                    PrintRecordSheet prs = new PrintSmallUnitSheet(infList, pageCount, options);
-                    pageCount += prs.getPageCount();
-                    sheets.add(prs);
-                    infList = new ArrayList<>();
-                }
-            } else if (unit instanceof Protomech) {
-                protoList.add((Protomech) unit);
-                if (singlePrint || protoList.size() > 4) {
-                    PrintRecordSheet prs = new PrintSmallUnitSheet(protoList, pageCount, options);
-                    pageCount += prs.getPageCount();
-                    sheets.add(prs);
-                    protoList = new ArrayList<>();
-                }
-            } else if (unit instanceof PageBreak) {
+            } else if (object instanceof PageBreak) {
                 if (!singlePrint) {
                     if (!baList.isEmpty()) {
                         PrintRecordSheet prs = new PrintSmallUnitSheet(baList, pageCount, options);
@@ -223,13 +226,13 @@ public class UnitPrintManager {
                     }
                 }
             } else {
-                unprintable.add(unit);
+                unprintable.add(object);
             }
         }
 
         if (!unprintable.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Exporting is not currently supported for the following units:\n"
-                    + unprintable.stream().map(en -> en.getChassis() + " " + en.getModel())
+                    + unprintable.stream().map(en -> en.generalName() + ' ' + en.specificName())
                     .collect(Collectors.joining("\n")));
         }
 
@@ -251,7 +254,7 @@ public class UnitPrintManager {
         return sheets;
     }
 
-    public static void exportUnits(List<Entity> units, File exportFile, boolean singlePrint) {
+    public static void exportUnits(List<? extends BTObject> units, File exportFile, boolean singlePrint) {
         RecordSheetOptions options = new RecordSheetOptions();
         List<PrintRecordSheet> sheets = createSheets(units, singlePrint, options);
         PageFormat pageFormat = new PageFormat();
@@ -266,7 +269,7 @@ public class UnitPrintManager {
      * @param loadedUnits The units to print
      * @param singlePrint Whether to limit each record sheet to a single unit
      */
-    public static void printAllUnits(List<Entity> loadedUnits, boolean singlePrint) {
+    public static void printAllUnits(List<? extends BTObject> loadedUnits, boolean singlePrint) {
         printAllUnits(loadedUnits, singlePrint, new RecordSheetOptions());
     }
 
@@ -277,7 +280,7 @@ public class UnitPrintManager {
      * @param singlePrint Whether to limit each record sheet to a single unit
      * @param options     The options to use for this print job
      */
-    public static void printAllUnits(List<Entity> loadedUnits, boolean singlePrint,
+    public static void printAllUnits(List<? extends BTObject> loadedUnits, boolean singlePrint,
                                      RecordSheetOptions options) {
         HashPrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
         aset.add(options.getPaperSize().sizeName);
@@ -295,9 +298,21 @@ public class UnitPrintManager {
         List<PrintRecordSheet> sheets = createSheets(loadedUnits, singlePrint, options);
 
         if (loadedUnits.size() > 1) {
-            masterPrintJob.setJobName(loadedUnits.get(0).getShortNameRaw() + " etc");
+            String name;
+            if (loadedUnits.get(0) instanceof Entity) {
+                name = ((Entity) loadedUnits.get(0)).getShortNameRaw();
+            } else {
+                name = loadedUnits.get(0).generalName();
+            }
+            masterPrintJob.setJobName(name + " etc");
         } else if (!loadedUnits.isEmpty()) {
-            masterPrintJob.setJobName(loadedUnits.get(0).getShortNameRaw());
+            String name;
+            if (loadedUnits.get(0) instanceof Entity) {
+                name = ((Entity) loadedUnits.get(0)).getShortNameRaw();
+            } else {
+                name = loadedUnits.get(0).generalName();
+            }
+            masterPrintJob.setJobName(name);
         }
 
         RecordSheetTask task = RecordSheetTask.createPrintTask(sheets, masterPrintJob, aset, pageFormat);

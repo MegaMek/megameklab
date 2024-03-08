@@ -20,6 +20,7 @@ package megameklab.ui.dialog;
 
 import megamek.client.ui.baseComponents.MMButton;
 import megamek.client.ui.swing.UnitLoadingDialog;
+import megamek.common.BTObject;
 import megamek.common.Entity;
 import megamek.common.MechFileParser;
 import megameklab.printing.PageBreak;
@@ -55,7 +56,7 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
     private final JButton removeButton = new JButton("Remove Selected");
     private final JCheckBox oneUnitPerSheetCheck = new JCheckBox("Print each unit to a separate page");
     private final JFrame parent;
-    private final List<Entity> units = new ArrayList<>();
+    private final List<BTObject> units = new ArrayList<>();
     private final JList<String> queuedUnitList = new JList<>();
 
     public PrintQueueDialog(JFrame parent, boolean printToPdf) {
@@ -121,7 +122,7 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
 
     private void refresh() {
         List<String> nameList = units.stream()
-                .map(unit -> " " + unit.getChassis() + " " + unit.getModel())
+                .map(unit -> ' ' + unit.generalName() + ' ' + unit.specificName())
                 .collect(toList());
 
         var replacementModel = new DefaultListModel<String>();
@@ -202,7 +203,7 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
     }
 
     private void removeSelectedUnits() {
-        List<Entity> newList = new ArrayList<>();
+        List<BTObject> newList = new ArrayList<>();
         for (int i = 0; i < units.size(); i++) {
             final int index = i;
             if (Arrays.stream(queuedUnitList.getSelectedIndices()).noneMatch(idx -> idx == index)) {
