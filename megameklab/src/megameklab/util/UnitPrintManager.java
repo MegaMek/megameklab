@@ -199,6 +199,8 @@ public class UnitPrintManager {
                         sheets.add(prs);
                         protoList = new ArrayList<>();
                     }
+                } else {
+                    unprintable.add(unit);
                 }
             } else if (object instanceof PageBreak) {
                 if (!singlePrint) {
