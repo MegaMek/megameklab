@@ -21,10 +21,7 @@ import megamek.common.verifier.TestBattleArmor;
 import megamek.common.verifier.TestBattleArmor.BAManipulator;
 import megamek.common.verifier.TestEntity;
 import megameklab.ui.EntitySource;
-import megameklab.ui.generalUnit.BAProtoArmorView;
-import megameklab.ui.generalUnit.BasicInfoView;
-import megameklab.ui.generalUnit.MovementView;
-import megameklab.ui.generalUnit.PreviewTab;
+import megameklab.ui.generalUnit.*;
 import megameklab.ui.listeners.ArmorAllocationListener;
 import megameklab.ui.listeners.BABuildListener;
 import megameklab.ui.util.CustomComboBox;
@@ -56,6 +53,7 @@ public class BAStructureTab extends ITab implements ActionListener, ChangeListen
     private MovementView panMovement;
     private BAProtoArmorView panArmor;
     private BAEnhancementView panEnhancements;
+    private IconView iconView;
 
     // Manipulator Panel
     private final CustomComboBox<String> leftManipSelect = new CustomComboBox<>(this::manipulatorDisplayName);
@@ -87,6 +85,7 @@ public class BAStructureTab extends ITab implements ActionListener, ChangeListen
         panChassis = new BAChassisView(panBasicInfo);
         panMovement = new MovementView(panBasicInfo);
         panArmor = new BAProtoArmorView(panBasicInfo);
+        iconView = new IconView();
         JPanel manipPanel = new JPanel(new GridBagLayout());
         panEnhancements = new BAEnhancementView(panBasicInfo);
         GridBagConstraints gbc = new GridBagConstraints();
@@ -127,6 +126,7 @@ public class BAStructureTab extends ITab implements ActionListener, ChangeListen
         panEnhancements.setBorder(BorderFactory.createTitledBorder("Enhancements"));
 
         leftPanel.add(panBasicInfo);
+        leftPanel.add(iconView);
         leftPanel.add(panChassis);
         leftPanel.add(panMovement);
         leftPanel.add(panArmor);
@@ -169,6 +169,7 @@ public class BAStructureTab extends ITab implements ActionListener, ChangeListen
         panMovement.setFromEntity(getBattleArmor());
         panArmor.setFromEntity(getBattleArmor());
         panEnhancements.setFromEntity(getBattleArmor());
+        iconView.setFromEntity(getEntity());
 
         removeAllListeners();
 
@@ -405,6 +406,7 @@ public class BAStructureTab extends ITab implements ActionListener, ChangeListen
         getBattleArmor().setChassis(chassis);
         refresh.refreshHeader();
         refresh.refreshPreview();
+        iconView.refresh();
     }
 
     @Override
@@ -412,6 +414,7 @@ public class BAStructureTab extends ITab implements ActionListener, ChangeListen
         getBattleArmor().setModel(model);
         refresh.refreshHeader();
         refresh.refreshPreview();
+        iconView.refresh();
     }
 
     @Override

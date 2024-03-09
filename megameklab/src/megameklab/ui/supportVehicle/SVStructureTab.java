@@ -24,6 +24,7 @@ import megamek.common.verifier.TestSupportVehicle;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.BasicInfoView;
 import megameklab.ui.generalUnit.FuelView;
+import megameklab.ui.generalUnit.IconView;
 import megameklab.ui.generalUnit.MovementView;
 import megameklab.ui.generalUnit.summary.*;
 import megameklab.ui.listeners.SVBuildListener;
@@ -51,6 +52,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
     private SummaryView panSummary;
     private SVChassisModView panChassisMod;
     private SVCrewView panCrew;
+    private IconView iconView;
 
     public SVStructureTab(EntitySource eSource) {
         super(eSource);
@@ -72,6 +74,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         panFuel = new FuelView();
         panChassisMod = new SVChassisModView(panBasicInfo);
         panCrew = new SVCrewView();
+        iconView = new IconView();
         panSummary = new SummaryView(eSource,
                 new UnitTypeSummaryItem(),
                 new StructureSummaryItem(),
@@ -100,6 +103,8 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         gbc.gridx = 0;
         gbc.gridy = 0;
         leftPanel.add(panBasicInfo, gbc);
+        gbc.gridy++;
+        leftPanel.add(iconView, gbc);
         gbc.gridy++;
         leftPanel.add(panChassis, gbc);
 
@@ -148,6 +153,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         panChassisMod.setFromEntity(getSV());
         panCrew.setFromEntity(getSV());
         panSummary.refresh();
+        iconView.setFromEntity(getEntity());
 
         addAllListeners();
     }
@@ -204,6 +210,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         refresh.refreshHeader();
         refresh.refreshTransport();
         refresh.refreshPreview();
+        iconView.refresh();
     }
 
     @Override
@@ -211,6 +218,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         getSV().setModel(model);
         refresh.refreshHeader();
         refresh.refreshPreview();
+        iconView.refresh();
     }
 
     @Override

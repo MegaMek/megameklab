@@ -36,8 +36,6 @@ import javax.swing.*;
 import javax.swing.border.MatteBorder;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
-import java.io.File;
 import java.text.DecimalFormat;
 
 public class StatusBar extends ITab {

@@ -42,6 +42,7 @@ import megamek.common.verifier.TestInfantry;
 import megamek.common.weapons.infantry.InfantryWeapon;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.BasicInfoView;
+import megameklab.ui.generalUnit.IconView;
 import megameklab.ui.listeners.InfantryBuildListener;
 import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
@@ -62,6 +63,7 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
     private BasicInfoView panBasicInfo;
     private CIPlatoonTypeView panPlatoonType;
     private CIWeaponView panWeapons;
+    private IconView iconView;
     
     private String[] tabNames = {"Weapons", "Field Guns", "Armor Kit", "Specializations", "Mount", "Augmentation"};
 
@@ -89,6 +91,7 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
         specializationView = new CISpecializationView(eSource);
         mountView = new CIMountView(eSource);
         augmentationView = new CIAugmentationView(eSource);
+        iconView = new IconView();
         setUpPanels();
         refresh();
     }
@@ -148,6 +151,7 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
         equipmentPane.addTab(tabNames[T_AUGMENTATION], augmentationView);
 
         leftPanel.add(panBasicInfo);
+        leftPanel.add(iconView);
         leftPanel.add(panPlatoonType);
         leftPanel.add(panWeapons);
         leftPanel.add(advancedPanel);
@@ -197,6 +201,7 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
         panBasicInfo.setFromEntity(getInfantry());
         panPlatoonType.setFromEntity(getInfantry());
         panWeapons.setFromEntity(getInfantry());
+        iconView.setFromEntity(getEntity());
 
         removeAllListeners();
         
@@ -332,6 +337,7 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
         getInfantry().setChassis(chassis);
         refresh.refreshHeader();
         refresh.refreshPreview();
+        iconView.refresh();
     }
 
     @Override
@@ -339,6 +345,7 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
         getInfantry().setModel(model);
         refresh.refreshHeader();
         refresh.refreshPreview();
+        iconView.refresh();
     }
 
     @Override

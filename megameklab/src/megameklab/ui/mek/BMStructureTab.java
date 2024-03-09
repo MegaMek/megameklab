@@ -48,6 +48,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
     private HeatSinkView panHeat;
     private ArmorAllocationView panArmorAllocation;
     private PatchworkArmorView panPatchwork;
+    private IconView iconView;
 
     RefreshListener refresh = null;
 
@@ -67,6 +68,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         panLAMFuel = new BMLAMFuelView(eSource);
         panArmorAllocation = new ArmorAllocationView(panBasicInfo, Entity.ETYPE_MECH);
         panPatchwork = new PatchworkArmorView(panBasicInfo);
+        iconView = new IconView();
         panSummary = new SummaryView(eSource,
                 new UnitTypeSummaryItem(),
                 new StructureSummaryItem(),
@@ -93,6 +95,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         panHeat.setFromMech(getMech());
         panArmorAllocation.setFromEntity(getMech());
         panPatchwork.setFromEntity(getMech());
+        iconView.setFromEntity(getMech());
 
         JPanel leftPanel = new JPanel();
         JPanel centerPanel = new JPanel();
@@ -103,22 +106,24 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
 
         leftPanel.add(panBasicInfo);
         leftPanel.add(Box.createVerticalStrut(11));
+        leftPanel.add(iconView);
+        leftPanel.add(Box.createVerticalStrut(11));
         leftPanel.add(panChassis);
-        leftPanel.add(Box.createVerticalStrut(11));
-        leftPanel.add(panHeat);
-        leftPanel.add(Box.createGlue());
+        leftPanel.add(Box.createVerticalGlue());
 
+        centerPanel.add(panHeat);
+        centerPanel.add(Box.createVerticalStrut(11));
         centerPanel.add(panMovement);
-        leftPanel.add(Box.createVerticalStrut(11));
+        centerPanel.add(Box.createVerticalStrut(11));
         centerPanel.add(panLAMFuel);
-        leftPanel.add(Box.createVerticalStrut(11));
+        centerPanel.add(Box.createVerticalStrut(11));
         centerPanel.add(panSummary);
         centerPanel.add(Box.createVerticalGlue());
 
         rightPanel.add(panArmor);
-        leftPanel.add(Box.createVerticalStrut(11));
+        rightPanel.add(Box.createVerticalStrut(11));
         rightPanel.add(panArmorAllocation);
-        leftPanel.add(Box.createVerticalStrut(11));
+        rightPanel.add(Box.createVerticalStrut(11));
         rightPanel.add(panPatchwork);
         rightPanel.add(Box.createVerticalGlue());
 
@@ -157,6 +162,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         panLAMFuel.setFromEntity(getMech());
         panLAMFuel.setVisible(getMech() instanceof LandAirMech);
         panSummary.refresh();
+        iconView.setFromEntity(getMech());
         addAllListeners();
     }
 
@@ -548,6 +554,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         getMech().setChassis(chassis);
         refresh.refreshHeader();
         refresh.refreshPreview();
+        iconView.refresh();
     }
 
     @Override
@@ -555,6 +562,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         getMech().setClanChassisName(clanName);
         refresh.refreshHeader();
         refresh.refreshPreview();
+        iconView.refresh();
     }
 
     @Override
@@ -562,6 +570,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         getMech().setModel(model);
         refresh.refreshHeader();
         refresh.refreshPreview();
+        iconView.refresh();
     }
 
     @Override

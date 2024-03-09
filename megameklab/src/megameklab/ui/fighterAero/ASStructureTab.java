@@ -54,6 +54,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
     private SummaryView panSummary;
     private ArmorAllocationView panArmorAllocation;
     private PatchworkArmorView panPatchwork;
+    private IconView iconView;
 
     RefreshListener refresh = null;
 
@@ -75,6 +76,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         panHeat = new HeatSinkView(panInfo);
         panArmorAllocation = new ArmorAllocationView(panInfo, Entity.ETYPE_AERO);
         panPatchwork = new PatchworkArmorView(panInfo);
+        iconView = new IconView();
         if (getAero().hasPatchworkArmor()) {
             panArmorAllocation.showPatchwork(true);
         } else {
@@ -105,6 +107,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
 
         leftPanel.add(panInfo);
+        leftPanel.add(iconView);
         leftPanel.add(panChassis);
         leftPanel.add(panHeat);
         //leftPanel.add(Box.createGlue());
@@ -164,6 +167,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         panArmor.setFromEntity(getAero());
         panArmorAllocation.setFromEntity(getAero());
         panPatchwork.setFromEntity(getAero());
+        iconView.setFromEntity(getEntity());
         
         panHeat.setVisible(!getAero().hasETypeFlag(Entity.ETYPE_CONV_FIGHTER));
         
@@ -275,6 +279,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         getAero().setChassis(chassis);
         refresh.refreshHeader();
         refresh.refreshPreview();
+        iconView.refresh();
     }
 
     @Override
@@ -282,6 +287,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         getAero().setModel(model);
         refresh.refreshHeader();
         refresh.refreshPreview();
+        iconView.refresh();
     }
 
     @Override
