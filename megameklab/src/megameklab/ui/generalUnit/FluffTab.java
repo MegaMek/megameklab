@@ -57,6 +57,8 @@ public class FluffTab extends ITab implements FocusListener {
     private final JTextField txtHeight = new JTextField(8);
 
     private final JTextArea txtNotes = new JTextArea(4, 40);
+
+    private final JButton btnRemoveFluff = new JButton("Remove Fluff Image");
     
     private static final String TAG_MANUFACTURER = "manufacturer";
     private static final String TAG_MODEL = "model";
@@ -107,6 +109,11 @@ public class FluffTab extends ITab implements FocusListener {
         JButton btnImportFluffImage = new JButton("Import Fluff Image from Unit");
         btnImportFluffImage.addActionListener(evt -> importFluffImage());
         panLeft.add(btnImportFluffImage, gbc);
+        gbc.gridy++;
+
+        btnRemoveFluff.addActionListener(evt -> removeFluffImage());
+        panLeft.add(btnRemoveFluff, gbc);
+        refreshGUI();
         gbc.gridy++;
 
         panLeft.add(new JLabel(resourceMap.getString("FluffTab.txtCapabilities")), gbc);
@@ -315,6 +322,7 @@ public class FluffTab extends ITab implements FocusListener {
                 }
             }
         }
+        refreshGUI();
         refresh.refreshAll();
     }
 
@@ -338,6 +346,18 @@ public class FluffTab extends ITab implements FocusListener {
             }
         }
         viewer.dispose();
+        refreshGUI();
         refresh.refreshAll();
+    }
+
+    private void removeFluffImage() {
+        if (getEntity() != null) {
+            getEntity().getFluff().setFluffImage("");
+        }
+        refreshGUI();
+    }
+
+    private void refreshGUI() {
+        btnRemoveFluff.setEnabled((getEntity() != null) && getEntity().getFluff().hasEmbeddedFluffImage());
     }
 }
