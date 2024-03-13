@@ -8,6 +8,7 @@ MEGAMEKLAB VERSION HISTORY:
 + PR #1437: Fixes a bug that would load the Mek UI for ASF units
 + Fix #269: Setting a fluff image for a unit is now done in the fluff tab; MML will embed a chosen image in the unit file; the original image is no longer required for the unit fluff to show in MM / MML / MHQ
 + PR #1444, #1450: MML now shows the unit icon a unit will be using in MM/MHQ and allows choosing an icon. A manually chosen icon will be embedded in the unit file so that the unit is fully portable
++ PR #1455: The MML unit selector now shows the unit icon
 + Fix #1283: Columns for MGA and streak weapons have been added to the cluster hits table on record sheets
 + Fix #1440: Fixes a bug with placing industrial armor on a Mek
 + PR #1441: Java LookAndFeels choices have been restricted to FlatLaf and the system default; the default is now FlatLaf Darcula
