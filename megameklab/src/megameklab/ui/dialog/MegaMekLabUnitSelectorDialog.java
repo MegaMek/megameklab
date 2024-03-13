@@ -21,9 +21,13 @@ package megameklab.ui.dialog;
 import megamek.client.ui.Messages;
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.client.ui.swing.dialog.AbstractUnitSelectorDialog;
+import megamek.client.ui.swing.tileset.EntityImage;
+import megamek.client.ui.swing.tileset.MMStaticDirectoryManager;
+import megamek.client.ui.swing.util.PlayerColour;
 import megamek.common.Entity;
 import megamek.common.MechSummary;
 import megamek.common.TechConstants;
+import megamek.common.icons.Camouflage;
 import megameklab.util.CConfig;
 
 import javax.swing.*;
@@ -140,5 +144,17 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
      */
     public Entity getChosenEntity() {
         return chosenEntity;
+    }
+
+    @Override
+    protected Entity refreshUnitView() {
+        Entity selectedEntity = super.refreshUnitView();
+        if (selectedEntity != null) {
+            Image base = MMStaticDirectoryManager.getMechTileset().imageFor(selectedEntity);
+            EntityImage entityImage = EntityImage.createIcon(base, Camouflage.of(PlayerColour.GOLD), labelImage, selectedEntity);
+            entityImage.loadFacings();
+            labelImage.setIcon(new ImageIcon(entityImage.getFacing(0)));
+        }
+        return selectedEntity;
     }
 }
