@@ -21,6 +21,7 @@ package megameklab.ui.dialog;
 import megamek.client.ui.baseComponents.MMButton;
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.common.BTObject;
+import megamek.common.Configuration;
 import megamek.common.Entity;
 import megamek.common.MechFileParser;
 import megameklab.printing.PageBreak;
@@ -37,6 +38,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -51,7 +53,6 @@ import static java.util.stream.Collectors.toList;
  * @author Simon (Juliez)
  */
 public class PrintQueueDialog extends AbstractMMLButtonDialog {
-
     private final boolean printToPdf;
     private final JButton addFromFileButton = new JButton("Add From File");
     private final JButton addFromCacheButton = new JButton("Add From Cache");
@@ -59,10 +60,10 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
     private final JButton removeButton = new JButton("Remove Selected");
 
     // todo: replace these with pretty up/down arrow symbols
-    private final JButton moveTopButton = new JButton("Move Top");
-    private final JButton moveUpButton = new JButton("Move Up");
-    private final JButton moveDownButton = new JButton("Move Down");
-    private final JButton moveBottomButton = new JButton("Move Bottom");
+    private final JButton moveTopButton = new JButton(icon("moveTop.png"));
+    private final JButton moveUpButton = new JButton(icon("moveUp.png"));
+    private final JButton moveDownButton = new JButton(icon("moveDown.png"));
+    private final JButton moveBottomButton = new JButton(icon("moveBottom.png"));
 
     private final JCheckBox oneUnitPerSheetCheck = new JCheckBox("Print each unit to a separate page");
     private final JFrame parent;
@@ -74,6 +75,15 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
         this.parent = parent;
         this.printToPdf = printToPdf;
         initialize();
+    }
+
+    private static ImageIcon icon(String name) {
+        var path = Configuration.widgetsDir().toPath().resolve(name);
+        try {
+            return new ImageIcon(path.toUri().toURL());
+        } catch (MalformedURLException e) {
+            return null;
+        }
     }
 
     @Override
@@ -110,14 +120,18 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
 
         JPanel buttonPanel = new FixedXYPanel(new GridLayout(4, 2));
         buttonPanel.add(addFromCacheButton);
-        buttonPanel.add(moveTopButton);
         buttonPanel.add(addFromFileButton);
-        buttonPanel.add(moveUpButton);
         buttonPanel.add(addPageBreakButton);
-        buttonPanel.add(moveDownButton);
         buttonPanel.add(removeButton);
-        buttonPanel.add(moveBottomButton);
         buttonPanel.setAlignmentY(JComponent.TOP_ALIGNMENT);
+
+        JPanel moveButtonPanel = new FixedXYPanel(new GridLayout(4, 1));
+        moveButtonPanel.add(moveTopButton);
+        moveButtonPanel.add(moveUpButton);
+        moveButtonPanel.add(moveDownButton);
+        moveButtonPanel.add(moveBottomButton);
+        moveButtonPanel.setAlignmentY(JComponent.TOP_ALIGNMENT);
+
         JScrollPane queuedUnitListScrollPane = new JScrollPane(queuedUnitList);
         queuedUnitListScrollPane.setAlignmentY(JComponent.TOP_ALIGNMENT);
         queuedUnitListScrollPane.setBorder(new TitledBorder("Selected Units:"));
@@ -125,6 +139,7 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
         Box centerPanel = Box.createHorizontalBox();
         centerPanel.add(buttonPanel);
         centerPanel.add(Box.createHorizontalStrut(30));
+        centerPanel.add(moveButtonPanel);
         centerPanel.add(queuedUnitListScrollPane);
         centerPanel.setBorder(new EmptyBorder(20, 30, 20, 30));
 
