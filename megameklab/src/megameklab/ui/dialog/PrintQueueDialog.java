@@ -58,8 +58,7 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
     private final JButton addFromCacheButton = new JButton("Add From Cache");
     private final JButton addPageBreakButton = new JButton("Add Page Break");
     private final JButton removeButton = new JButton("Remove Selected");
-
-    // todo: replace these with pretty up/down arrow symbols
+    
     private final JButton moveTopButton = new JButton(icon("moveTop.png"));
     private final JButton moveUpButton = new JButton(icon("moveUp.png"));
     private final JButton moveDownButton = new JButton(icon("moveDown.png"));
