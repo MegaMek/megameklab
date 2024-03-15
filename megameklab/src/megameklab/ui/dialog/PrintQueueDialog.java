@@ -30,6 +30,8 @@ import org.apache.logging.log4j.LogManager;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -38,6 +40,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toList;
 
@@ -54,6 +57,13 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
     private final JButton addFromCacheButton = new JButton("Add From Cache");
     private final JButton addPageBreakButton = new JButton("Add Page Break");
     private final JButton removeButton = new JButton("Remove Selected");
+
+    // todo: replace these with pretty up/down arrow symbols
+    private final JButton moveTopButton = new JButton("Move Top");
+    private final JButton moveUpButton = new JButton("Move Up");
+    private final JButton moveDownButton = new JButton("Move Down");
+    private final JButton moveBottomButton = new JButton("Move Bottom");
+
     private final JCheckBox oneUnitPerSheetCheck = new JCheckBox("Print each unit to a separate page");
     private final JFrame parent;
     private final List<BTObject> units = new ArrayList<>();
@@ -77,18 +87,36 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
         removeButton.addActionListener(e -> removeSelectedUnits());
         removeButton.setEnabled(false);
         removeButton.setMnemonic(KeyEvent.VK_R);
+
+        moveTopButton.addActionListener(e -> moveTop());
+        moveTopButton.setMnemonic(KeyEvent.VK_PAGE_UP);
+        moveTopButton.setEnabled(false);
+        moveBottomButton.addActionListener(e -> moveBottom());
+        moveBottomButton.setMnemonic(KeyEvent.VK_PAGE_DOWN);
+        moveBottomButton.setEnabled(false);
+        moveUpButton.addActionListener(e -> moveUp());
+        moveUpButton.setMnemonic(KeyEvent.VK_UP);
+        moveUpButton.setEnabled(false);
+        moveDownButton.addActionListener(e -> moveDown());
+        moveDownButton.setMnemonic(KeyEvent.VK_DOWN);
+        moveDownButton.setEnabled(false);
+
         oneUnitPerSheetCheck.setAlignmentX(JComponent.CENTER_ALIGNMENT);
         oneUnitPerSheetCheck.setToolTipText("When unchecked, the record sheets for some unit types may be printed on the same page. " +
                 "Note that the result may depend on whether reference tables are printed. This can be changed in the Settings.");
         queuedUnitList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        queuedUnitList.addListSelectionListener(e -> removeButton.setEnabled(!queuedUnitList.isSelectionEmpty()));
+        queuedUnitList.addListSelectionListener(new OnSelectionChanged());
         queuedUnitList.setVisibleRowCount(15);
 
-        JPanel buttonPanel = new FixedXYPanel(new GridLayout(4, 1));
+        JPanel buttonPanel = new FixedXYPanel(new GridLayout(4, 2));
         buttonPanel.add(addFromCacheButton);
+        buttonPanel.add(moveTopButton);
         buttonPanel.add(addFromFileButton);
+        buttonPanel.add(moveUpButton);
         buttonPanel.add(addPageBreakButton);
+        buttonPanel.add(moveDownButton);
         buttonPanel.add(removeButton);
+        buttonPanel.add(moveBottomButton);
         buttonPanel.setAlignmentY(JComponent.TOP_ALIGNMENT);
         JScrollPane queuedUnitListScrollPane = new JScrollPane(queuedUnitList);
         queuedUnitListScrollPane.setAlignmentY(JComponent.TOP_ALIGNMENT);
@@ -213,6 +241,110 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
         units.clear();
         units.addAll(newList);
         refresh();
+    }
+
+    private void moveTop() {
+        List<BTObject> newListTop = new ArrayList<>();
+        List<BTObject> newListBottom = new ArrayList<>();
+        boolean state = false;
+        for (int i = 0; i < units.size(); i++) {
+            if (i == topSelectedIndex()) {
+                state = true;
+            } else if (i > bottomSelectedIndex()) {
+                state = false;
+            }
+            (state ? newListTop : newListBottom).add(units.get(i));
+        }
+        units.clear();
+        units.addAll(newListTop);
+        units.addAll(newListBottom);
+        refresh();
+        queuedUnitList.setSelectedIndices(IntStream.range(0, newListTop.size()).toArray());
+    }
+
+    private void moveBottom() {
+        List<BTObject> newListBottom = new ArrayList<>();
+        List<BTObject> newListTop = new ArrayList<>();
+        boolean state = false;
+        for (int i = 0; i < units.size(); i++) {
+            if (i == topSelectedIndex()) {
+                state = true;
+            } else if (i > bottomSelectedIndex()) {
+                state = false;
+            }
+            (state ? newListBottom : newListTop).add(units.get(i));
+        }
+        units.clear();
+        units.addAll(newListTop);
+        units.addAll(newListBottom);
+        refresh();
+        queuedUnitList.setSelectedIndices(IntStream.range(newListTop.size(), newListTop.size() + newListBottom.size()).toArray());
+    }
+
+    private void moveUp() {
+        var unit = units.remove(topSelectedIndex() - 1);
+        units.add(bottomSelectedIndex(), unit);
+        var indices = queuedUnitList.getSelectedIndices();
+        refresh();
+        queuedUnitList.setSelectedIndices(Arrays.stream(indices).map(i -> i - 1).toArray());
+    }
+
+    private void moveDown() {
+        var unit = units.remove(bottomSelectedIndex() + 1);
+        units.add(topSelectedIndex(), unit);
+        var indices = queuedUnitList.getSelectedIndices();
+        refresh();
+        queuedUnitList.setSelectedIndices(Arrays.stream(indices).map(i -> i + 1).toArray());
+    }
+
+    private int topSelectedIndex() {
+        return queuedUnitList.getSelectedIndex();
+    }
+
+    private int bottomSelectedIndex() {
+        var indices = queuedUnitList.getSelectedIndices();
+        return indices[indices.length - 1];
+    }
+
+    private class OnSelectionChanged implements ListSelectionListener {
+        @Override
+        public void valueChanged(ListSelectionEvent e) {
+            removeButton.setEnabled(!queuedUnitList.isSelectionEmpty());
+
+            if (!isSelectionContiguous()) {
+                moveTopButton.setEnabled(false);
+                moveUpButton.setEnabled(false);
+                moveDownButton.setEnabled(false);
+                moveBottomButton.setEnabled(false);
+            } else {
+                if (topSelectedIndex() == 0) {
+                    moveTopButton.setEnabled(false);
+                    moveUpButton.setEnabled(false);
+                } else {
+                    moveTopButton.setEnabled(true);
+                    moveUpButton.setEnabled(true);
+                }
+                if (bottomSelectedIndex() == units.size() - 1) {
+                    moveBottomButton.setEnabled(false);
+                    moveDownButton.setEnabled(false);
+                } else {
+                    moveBottomButton.setEnabled(true);
+                    moveDownButton.setEnabled(true);
+                }
+            }
+        }
+
+        private boolean isSelectionContiguous() {
+            // getSelectedIndices is guaranteed to return the indices in ascending order
+            var indices = queuedUnitList.getSelectedIndices();
+            if (indices.length == 0) {
+                return false;
+            }
+
+            var start = indices[0];
+            var end = indices[indices.length - 1];
+            return end - start == indices.length - 1;
+        }
     }
 
     // TODO: Move to UIUtil
