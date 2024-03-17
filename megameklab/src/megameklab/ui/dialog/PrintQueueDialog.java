@@ -58,7 +58,7 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
     private final JButton addFromCacheButton = new JButton("Add From Cache");
     private final JButton addPageBreakButton = new JButton("Add Page Break");
     private final JButton removeButton = new JButton("Remove Selected");
-    
+
     private final JButton moveTopButton = new JButton(icon("moveTop.png"));
     private final JButton moveUpButton = new JButton(icon("moveUp.png"));
     private final JButton moveDownButton = new JButton(icon("moveDown.png"));
@@ -69,11 +69,22 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
     private final List<BTObject> units = new ArrayList<>();
     private final JList<String> queuedUnitList = new JList<>();
 
-    public PrintQueueDialog(JFrame parent, boolean printToPdf) {
+    private final boolean fromMul;
+
+    public PrintQueueDialog(JFrame parent, boolean printToPdf, List<? extends BTObject> units, boolean fromMul) {
         super(parent, true, "PrintQueueDialog", "PrintQueueDialog.windowName.text");
         this.parent = parent;
         this.printToPdf = printToPdf;
+        this.fromMul = fromMul;
         initialize();
+        if (units != null) {
+            this.units.addAll(units);
+            refresh();
+        }
+    }
+
+    public PrintQueueDialog(JFrame parent, boolean printToPdf) {
+        this(parent, printToPdf, null, false);
     }
 
     private static ImageIcon icon(String name) {
@@ -118,8 +129,10 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
         queuedUnitList.setVisibleRowCount(15);
 
         JPanel buttonPanel = new FixedXYPanel(new GridLayout(4, 1));
-        buttonPanel.add(addFromCacheButton);
-        buttonPanel.add(addFromFileButton);
+        if (!fromMul) {
+            buttonPanel.add(addFromCacheButton);
+            buttonPanel.add(addFromFileButton);
+        }
         buttonPanel.add(addPageBreakButton);
         buttonPanel.add(removeButton);
         buttonPanel.setAlignmentY(JComponent.TOP_ALIGNMENT);
@@ -164,7 +177,14 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
 
     private void refresh() {
         List<String> nameList = units.stream()
-                .map(unit -> ' ' + unit.generalName() + ' ' + unit.specificName())
+                .map(unit -> {
+                    String title = String.format(" %s %s", unit.generalName(), unit.specificName());
+                    if (fromMul && unit instanceof Entity) {
+                        var crew = ((Entity) unit).getCrew();
+                        title += String.format("  {%s %d/%d}", crew.getName(), crew.getGunnery(), crew.getPiloting());
+                    }
+                    return title;
+                })
                 .collect(toList());
 
         var replacementModel = new DefaultListModel<String>();
