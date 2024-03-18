@@ -17,6 +17,7 @@ package megameklab.util;
 
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.common.*;
+import megamek.common.util.C3Util;
 import megameklab.printing.*;
 import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
 import megameklab.ui.dialog.PrintQueueDialog;
@@ -73,6 +74,15 @@ public class UnitPrintManager {
         } catch (Exception ex) {
             LogManager.getLogger().error("", ex);
             return;
+        }
+
+        // Dummy player and game allow bonus BV from C3 and TAG to be calculated
+        Game g = new Game();
+        Player p = new Player(1, "Nobody");
+        for (Entity e : loadedUnits) {
+            e.setOwner(p);
+            g.addEntity(e);
+            C3Util.wireC3(g, e);
         }
 
         new PrintQueueDialog(parent, printToPdf, loadedUnits, true).setVisible(true);
