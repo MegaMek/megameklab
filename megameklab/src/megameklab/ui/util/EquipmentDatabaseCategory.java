@@ -87,7 +87,6 @@ public enum EquipmentDatabaseCategory {
                     && !(en.isSupportVehicle() && (eq.hasFlag(F_BASIC_FIRECONTROL) || (eq.hasFlag(F_ADVANCED_FIRECONTROL))))
                     && !(eq.hasFlag(F_MAGNETIC_CLAMP) && en.hasETypeFlag(Entity.ETYPE_PROTOMECH))
                     && !(eq.hasFlag(F_PARTIAL_WING) && en.hasETypeFlag(Entity.ETYPE_PROTOMECH))
-                    && !(eq.hasFlag(F_SPONSON_TURRET) && en.isSupportVehicle())
                     && !eq.hasFlag(F_PINTLE_TURRET))
                     || eq.is(COOLANT_POD)
                     || eq.is(BattleArmor.MINE_LAUNCHER)
