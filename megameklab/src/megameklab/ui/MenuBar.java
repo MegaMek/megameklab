@@ -23,7 +23,6 @@ import megamek.common.*;
 import megamek.common.annotations.Nullable;
 import megamek.common.loaders.BLKFile;
 import megamek.common.templates.TROView;
-import megamek.common.util.ImageUtil;
 import megameklab.MMLConstants;
 import megameklab.ui.dialog.MMLFileChooser;
 import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
@@ -394,14 +393,8 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         final JMenuItem miExportUnitsFromMULFileToPDF = new JMenuItem(resources.getString("FromMUL.text"));
         miExportUnitsFromMULFileToPDF.setName("miExportUnitsFromMULFileToPDF");
         miExportUnitsFromMULFileToPDF.setMnemonic(KeyEvent.VK_M);
-        miExportUnitsFromMULFileToPDF.addActionListener(evt -> UnitPrintManager.exportMUL(owner.getFrame(), false));
+        miExportUnitsFromMULFileToPDF.addActionListener(evt -> UnitPrintManager.printMUL(owner.getFrame(), true));
         pdfUnitExportMenu.add(miExportUnitsFromMULFileToPDF);
-
-        final JMenuItem miExportUnitsFromMULFileToSinglePDFPages = new JMenuItem(resources.getString("FromMULSingle.text"));
-        miExportUnitsFromMULFileToSinglePDFPages.setName("miExportUnitsFromMULFileToSinglePDFPages");
-        miExportUnitsFromMULFileToSinglePDFPages.setMnemonic(KeyEvent.VK_L);
-        miExportUnitsFromMULFileToSinglePDFPages.addActionListener(evt -> UnitPrintManager.exportMUL(owner.getFrame(), true));
-        pdfUnitExportMenu.add(miExportUnitsFromMULFileToSinglePDFPages);
 
         return pdfUnitExportMenu;
     }
@@ -508,12 +501,6 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         miPrintUnitsFromMULFile.setMnemonic(KeyEvent.VK_M);
         miPrintUnitsFromMULFile.addActionListener(evt -> UnitPrintManager.printMUL(owner.getFrame(), false));
         printMenu.add(miPrintUnitsFromMULFile);
-
-        final JMenuItem miPrintUnitsFromMULFileToSinglePages = new JMenuItem(resources.getString("FromMULSingle.text"));
-        miPrintUnitsFromMULFileToSinglePages.setName("miPrintUnitsFromMULFileToSinglePages");
-        miPrintUnitsFromMULFileToSinglePages.setMnemonic(KeyEvent.VK_L);
-        miPrintUnitsFromMULFileToSinglePages.addActionListener(evt -> UnitPrintManager.printMUL(owner.getFrame(), true));
-        printMenu.add(miPrintUnitsFromMULFileToSinglePages);
 
         return printMenu;
     }

@@ -17,9 +17,10 @@ package megameklab.util;
 
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.common.*;
+import megamek.common.util.C3Util;
 import megameklab.printing.*;
 import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
-import org.apache.commons.io.FilenameUtils;
+import megameklab.ui.dialog.PrintQueueDialog;
 import org.apache.logging.log4j.LogManager;
 
 import javax.print.attribute.HashPrintRequestAttributeSet;
@@ -50,7 +51,7 @@ public class UnitPrintManager {
         }
     }
 
-    public static void printMUL(Frame parent, boolean singlePrint) {
+    public static void printMUL(JFrame parent, boolean printToPdf) {
         JFileChooser f = new JFileChooser(System.getProperty("user.dir"));
         f.setLocation(parent.getLocation().x + 150, parent.getLocation().y + 100);
         f.setDialogTitle("Print From MUL");
@@ -75,39 +76,16 @@ public class UnitPrintManager {
             return;
         }
 
-        printAllUnits(loadedUnits, singlePrint);
-    }
-
-    public static void exportMUL(Frame parent, boolean singlePrint) {
-        JFileChooser f = new JFileChooser(System.getProperty("user.dir"));
-        f.setLocation(parent.getLocation().x + 150, parent.getLocation().y + 100);
-        f.setDialogTitle("Export from MUL");
-        f.setMultiSelectionEnabled(false);
-
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("Mul Files", "mul");
-
-        // Add a filter for mul files
-        f.setFileFilter(filter);
-
-        int returnVal = f.showOpenDialog(parent);
-        if ((returnVal != JFileChooser.APPROVE_OPTION) || (f.getSelectedFile() == null)) {
-            // I want a file, y'know!
-            return;
-        }
-        File mulFile = f.getSelectedFile();
-        final Vector<Entity> loadedUnits;
-        try {
-            loadedUnits = new MULParser(mulFile, null).getEntities();
-            loadedUnits.trimToSize();
-        } catch (Exception ex) {
-            LogManager.getLogger().error("", ex);
-            return;
+        // Dummy player and game allow bonus BV from C3 and TAG to be calculated
+        Game g = new Game();
+        Player p = new Player(1, "Nobody");
+        for (Entity e : loadedUnits) {
+            e.setOwner(p);
+            g.addEntity(e);
+            C3Util.wireC3(g, e);
         }
 
-        File exportFile = getExportFile(parent, FilenameUtils.removeExtension(mulFile.getPath()) + ".pdf");
-        if (exportFile != null) {
-            exportUnits(loadedUnits, exportFile, singlePrint);
-        }
+        new PrintQueueDialog(parent, printToPdf, loadedUnits, true).setVisible(true);
     }
 
     public static File getExportFile(Frame parent) {
