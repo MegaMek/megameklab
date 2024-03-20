@@ -1961,6 +1961,9 @@ public class UnitUtil {
                 dirty = true;
                 InfantryUtil.replaceMainWeapon((Infantry) unit, null, true);
             }
+            if (techManager.getTechLevel().ordinal() <= SimpleTechLevel.STANDARD.ordinal() && pbi.hasFieldWeapon()) {
+                InfantryUtil.replaceFieldGun(pbi, null, 0);
+            }
         }
         return dirty;
     }
