@@ -21,6 +21,9 @@ MEGAMEKLAB VERSION HISTORY:
 + PR #1451: Add a button to the fluff tab to remove an embedded fluff image
 + PR #1457: Print queue interface improvements 
 + PR #1462: When printing from MUL, calculate BV from C3/Tag 
++ Fix #1306: BA manipulator will no longer stack up during construction
++ PR #1465: With the setting 'Use game year' enabled, that year is used in the unit selector to determine the tech level
+
 
 0.49.18 (2024-02-17 1800 UTC)
 + Fix #1370: Closing a unit selection dialog without selecting a unit no longer leads to an error message displayed
