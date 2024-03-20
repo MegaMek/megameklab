@@ -52,6 +52,9 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
         gameTechLevel = TechConstants.T_SIMPLE_UNOFFICIAL;
         allowPickWithoutClose = false;
         eraBasedTechLevel = CConfig.getBooleanParam(CConfig.TECH_PROGRESSION);
+        if (CConfig.getBooleanParam(CConfig.TECH_USE_YEAR)) {
+            allowedYear = CConfig.getIntParam(CConfig.TECH_YEAR);
+        }
         initialize();
         run();
         setVisible(true);
@@ -130,7 +133,7 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
     @Override
     protected void select(boolean close) {
         chosenEntity = getSelectedEntity();
-        
+
         if (close) {
             setVisible(false);
         } else if (entityPickCallback != null) {
