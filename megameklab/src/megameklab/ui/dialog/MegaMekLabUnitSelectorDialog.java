@@ -70,6 +70,9 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
         gameTechLevel = TechConstants.T_SIMPLE_UNOFFICIAL;
         allowPickWithoutClose = true;
         eraBasedTechLevel = CConfig.getBooleanParam(CConfig.TECH_PROGRESSION);
+        if (CConfig.getBooleanParam(CConfig.TECH_USE_YEAR)) {
+            allowedYear = CConfig.getIntParam(CConfig.TECH_YEAR);
+        }
         this.entityPickCallback = entityPickCallback;
         initialize();
         // This overrides the default close behavior to avoid selecting another unit when closing with ESC or
