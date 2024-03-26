@@ -101,7 +101,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
     final private TechComboBox<EquipmentType> cbStructure = new TechComboBox<>(EquipmentType::getName);
     final private TechComboBox<Engine> cbEngine = new TechComboBox<>(e -> e.getEngineName().replaceAll("^\\d+ ", ""));
     final private CustomComboBox<Integer> cbGyro = new CustomComboBox<>(Mech::getGyroTypeShortString);
-    final private CustomComboBox<Integer> cbCockpit = new CustomComboBox<>(i -> cockpitName(i, isIndustrial()));
+    final private CustomComboBox<Integer> cbCockpit = new CustomComboBox<>(i -> Mech.getCockpitTypeString(i, isIndustrial()));
     final private TechComboBox<EquipmentType> cbEnhancement = new TechComboBox<>(EquipmentType::getName);
     final private JCheckBox chkFullHeadEject = new JCheckBox();
     final private JButton btnResetChassis = new JButton();
@@ -555,17 +555,6 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         }
     }
 
-    private static String cockpitName(int index, boolean industrial) {
-        if (industrial) {
-            if (index == Mech.COCKPIT_STANDARD) {
-                return Mech.getCockpitTypeString(Mech.COCKPIT_INDUSTRIAL) + " (Adv. FireCon)";
-            } else if (index == Mech.COCKPIT_PRIMITIVE) {
-                return Mech.getCockpitTypeString(Mech.COCKPIT_PRIMITIVE_INDUSTRIAL) + " (Adv. FireCon)";
-            }
-        }
-        return Mech.getCockpitTypeString(index);
-    }
-    
     private void refreshEnhancement() {
         cbEnhancement.removeActionListener(this);
         EquipmentType prev = (EquipmentType) cbEnhancement.getSelectedItem();
