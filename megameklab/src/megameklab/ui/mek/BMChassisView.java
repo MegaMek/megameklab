@@ -509,8 +509,13 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         cbCockpit.removeActionListener(this);
         Integer prev = (Integer) cbCockpit.getSelectedItem();
         cbCockpit.removeAllItems();
-        if ((getBaseTypeIndex() == BASE_TYPE_STANDARD) && (getMotiveTypeIndex() == MOTIVE_TYPE_TRIPOD)) {
-            cbCockpit.addItem(isSuperheavy()? Mech.COCKPIT_SUPERHEAVY_TRIPOD : Mech.COCKPIT_TRIPOD);
+        if (((getBaseTypeIndex() == BASE_TYPE_STANDARD) || getBaseTypeIndex() == BASE_TYPE_INDUSTRIAL)
+                && (getMotiveTypeIndex() == MOTIVE_TYPE_TRIPOD)) {
+            if (isIndustrial()) {
+                cbCockpit.addItem(isSuperheavy() ?
+                        Mech.COCKPIT_SUPERHEAVY_TRIPOD_INDUSTRIAL : Mech.COCKPIT_TRIPOD_INDUSTRIAL);
+            }
+            cbCockpit.addItem(isSuperheavy() ? Mech.COCKPIT_SUPERHEAVY_TRIPOD : Mech.COCKPIT_TRIPOD);
         } else if (getBaseTypeIndex() == BASE_TYPE_LAM) {
             cbCockpit.addItem(Mech.COCKPIT_STANDARD);
             cbCockpit.addItem(Mech.COCKPIT_SMALL);
