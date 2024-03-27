@@ -312,8 +312,12 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
                 break;
             default:
                 clearCritsForCockpit(false, false);
+                int cockpitType = getMech().getCockpitType();
                 getMech().addCockpit();
+                // addCockpit sets the criticals but also sets the type to the default.
+                getMech().setCockpitType(cockpitType);
         }
+
         // For LAMs we want to put the landing gear in the first available slot after the engine and gyro.
         if (getMech().hasETypeFlag(Entity.ETYPE_LAND_AIR_MECH)) {
             int lgSlot = 10;
