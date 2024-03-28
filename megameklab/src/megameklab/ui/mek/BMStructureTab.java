@@ -686,8 +686,22 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
             }
             if (tonnage > 100) {
                 getMech().setGyroType(Mech.GYRO_SUPERHEAVY);
+                if (getMech().isTripodMek()) {
+                    cockpitChanged(getMech().hasAdvancedFireControl() ?
+                            Mech.COCKPIT_SUPERHEAVY_TRIPOD : Mech.COCKPIT_SUPERHEAVY_TRIPOD_INDUSTRIAL);
+                } else {
+                    cockpitChanged(getMech().hasAdvancedFireControl() ?
+                            Mech.COCKPIT_SUPERHEAVY : Mech.COCKPIT_SUPERHEAVY_INDUSTRIAL);
+                }
             } else {
                 getMech().setGyroType(Mech.GYRO_STANDARD);
+                if (getMech().isTripodMek()) {
+                    cockpitChanged(getMech().hasAdvancedFireControl() ?
+                            Mech.COCKPIT_TRIPOD : Mech.COCKPIT_TRIPOD_INDUSTRIAL);
+                } else {
+                    cockpitChanged(getMech().hasAdvancedFireControl() ?
+                            Mech.COCKPIT_STANDARD : Mech.COCKPIT_INDUSTRIAL);
+                }
             }
         }
         getMech().setWeight(tonnage);
