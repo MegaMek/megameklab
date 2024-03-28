@@ -23,6 +23,7 @@ import megamek.common.weapons.c3.ISC3M;
 import megamek.common.weapons.c3.ISC3MBS;
 import megamek.common.weapons.infantry.InfantryWeapon;
 import megamek.common.weapons.other.*;
+import megamek.common.weapons.ppc.CLPlasmaCannon;
 import megamek.common.weapons.tag.CLLightTAG;
 import megamek.common.weapons.tag.CLTAG;
 import megamek.common.weapons.tag.ISTAG;
@@ -1362,10 +1363,13 @@ public final class MekUtil {
                 // compare average damage; using Aero damage here
                 double dmgA = 0;
                 double dmgB = 0;
-                if (mountedA.getType() instanceof WeaponType) {
+                // Weapons that deal heat but not damage should sort last after weapons that deal damage
+                // The only weapon I could find with positive aerospace damage but only heat damage against mechs
+                // is the plasma cannon. If others exist, this could be made to be a more comprehensive check.
+                if (mountedA.getType() instanceof WeaponType && !(mountedA.getType() instanceof CLPlasmaCannon)) {
                     dmgA = ((WeaponType) mountedA.getType()).getShortAV();
                 }
-                if (mountedB.getType() instanceof WeaponType) {
+                if (mountedB.getType() instanceof WeaponType && !(mountedB.getType() instanceof CLPlasmaCannon)) {
                     dmgB = ((WeaponType) mountedB.getType()).getShortAV();
                 }
                 if (dmgA != dmgB) {
