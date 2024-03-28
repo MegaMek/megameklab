@@ -968,8 +968,47 @@ public final class MekUtil {
     public static void sortCritSlots(Mech mek, int location) {
         List<CriticalSlot> presentGear = extricateCritSlots(mek, location);
         presentGear.sort(new MekCritSlotSorter(mek));
+        floatAmmo(presentGear);
         presentGear = reOrderLinkedEquipment(presentGear);
         refillCritSlots(mek, location, presentGear);
+    }
+
+    /**
+     * If the last weapon in the location uses ammo, floats compatible ammo above other ammo
+     * Requires the slots to have already been sorted beforehand
+     */
+    private static void floatAmmo(List<CriticalSlot> slots) {
+        WeaponType lastWeapon = null;
+        for (CriticalSlot slot : slots) {
+            if (slot.getMount().getType() instanceof WeaponType) {
+                lastWeapon = (WeaponType) slot.getMount().getType();
+            }
+        }
+        if (lastWeapon == null) {
+            return;
+        }
+
+        List<CriticalSlot> compatibleAmmo = new ArrayList<>();
+        int insertPosition = -1;
+        for (int i = 0; i < slots.size(); ++i) {
+            if (slots.get(i).getMount().getType() instanceof AmmoType) {
+                if (insertPosition < 0) {
+                    insertPosition = i;
+                }
+
+                AmmoType ammoType = (AmmoType) slots.get(i).getMount().getType();
+                if (lastWeapon.rackSize == ammoType.getRackSize() && lastWeapon.getAmmoType() == lastWeapon.getAmmoType()) {
+                    compatibleAmmo.add(slots.get(i));
+                }
+            }
+        }
+
+        if (insertPosition < 0) {
+            return;
+        }
+
+        slots.removeAll(compatibleAmmo);
+        slots.addAll(insertPosition, compatibleAmmo);
     }
 
     /**
@@ -1343,6 +1382,7 @@ public final class MekUtil {
             return mountedSorter.compare(critA.getMount(), critB.getMount());
         }
     }
+
 
     /**
      * A Mounted sorter using the official sort order (mostly)
