@@ -101,7 +101,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
     final private TechComboBox<EquipmentType> cbStructure = new TechComboBox<>(EquipmentType::getName);
     final private TechComboBox<Engine> cbEngine = new TechComboBox<>(e -> e.getEngineName().replaceAll("^\\d+ ", ""));
     final private CustomComboBox<Integer> cbGyro = new CustomComboBox<>(Mech::getGyroTypeShortString);
-    final private CustomComboBox<Integer> cbCockpit = new CustomComboBox<>(i -> cockpitName(i, isIndustrial()));
+    final private CustomComboBox<Integer> cbCockpit = new CustomComboBox<>(i -> Mech.getCockpitTypeString(i, isIndustrial()));
     final private TechComboBox<EquipmentType> cbEnhancement = new TechComboBox<>(EquipmentType::getName);
     final private JCheckBox chkFullHeadEject = new JCheckBox();
     final private JButton btnResetChassis = new JButton();
@@ -509,8 +509,13 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         cbCockpit.removeActionListener(this);
         Integer prev = (Integer) cbCockpit.getSelectedItem();
         cbCockpit.removeAllItems();
-        if ((getBaseTypeIndex() == BASE_TYPE_STANDARD) && (getMotiveTypeIndex() == MOTIVE_TYPE_TRIPOD)) {
-            cbCockpit.addItem(isSuperheavy()? Mech.COCKPIT_SUPERHEAVY_TRIPOD : Mech.COCKPIT_TRIPOD);
+        if (((getBaseTypeIndex() == BASE_TYPE_STANDARD) || getBaseTypeIndex() == BASE_TYPE_INDUSTRIAL)
+                && (getMotiveTypeIndex() == MOTIVE_TYPE_TRIPOD)) {
+            if (isIndustrial()) {
+                cbCockpit.addItem(isSuperheavy() ?
+                        Mech.COCKPIT_SUPERHEAVY_TRIPOD_INDUSTRIAL : Mech.COCKPIT_TRIPOD_INDUSTRIAL);
+            }
+            cbCockpit.addItem(isSuperheavy() ? Mech.COCKPIT_SUPERHEAVY_TRIPOD : Mech.COCKPIT_TRIPOD);
         } else if (getBaseTypeIndex() == BASE_TYPE_LAM) {
             cbCockpit.addItem(Mech.COCKPIT_STANDARD);
             cbCockpit.addItem(Mech.COCKPIT_SMALL);
@@ -555,17 +560,6 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         }
     }
 
-    private static String cockpitName(int index, boolean industrial) {
-        if (industrial) {
-            if (index == Mech.COCKPIT_STANDARD) {
-                return Mech.getCockpitTypeString(Mech.COCKPIT_INDUSTRIAL) + " (Adv. FireCon)";
-            } else if (index == Mech.COCKPIT_PRIMITIVE) {
-                return Mech.getCockpitTypeString(Mech.COCKPIT_PRIMITIVE_INDUSTRIAL) + " (Adv. FireCon)";
-            }
-        }
-        return Mech.getCockpitTypeString(index);
-    }
-    
     private void refreshEnhancement() {
         cbEnhancement.removeActionListener(this);
         EquipmentType prev = (EquipmentType) cbEnhancement.getSelectedItem();

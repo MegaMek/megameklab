@@ -137,8 +137,6 @@ public class BMMainUI extends MegaMekLabMainUI {
         mech.addEngineCrits();
         if (isPrimitive) {
             mech.addPrimitiveCockpit();
-        } else if (isIndustrial) {
-            mech.addIndustrialCockpit();
         } else if (Entity.ETYPE_QUADVEE == entityType) {
             mech.addQuadVeeCockpit();
         } else {
