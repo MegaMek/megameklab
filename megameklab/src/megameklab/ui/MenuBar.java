@@ -362,7 +362,10 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         final JMenuItem miExportCurrentUnitToPDF = new JMenuItem(resources.getString("CurrentUnit.text"));
         miExportCurrentUnitToPDF.setName("miExportCurrentUnitToPDF");
         miExportCurrentUnitToPDF.setMnemonic(KeyEvent.VK_U);
-        miExportCurrentUnitToPDF.addActionListener(evt -> UnitPrintManager.exportEntity(owner.getEntity(), owner.getFrame()));
+        miExportCurrentUnitToPDF.addActionListener(evt -> {
+            warnOnInvalid();
+            UnitPrintManager.exportEntity(owner.getEntity(), owner.getFrame());
+        });
         miExportCurrentUnitToPDF.setEnabled(isUnitGui());
         pdfUnitExportMenu.add(miExportCurrentUnitToPDF);
 
@@ -410,7 +413,10 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         final JMenuItem miExportCurrentUnitToHTML = new JMenuItem(resources.getString("CurrentUnit.text"));
         miExportCurrentUnitToHTML.setName("miExportCurrentUnitToHTML");
         miExportCurrentUnitToHTML.setMnemonic(KeyEvent.VK_U);
-        miExportCurrentUnitToHTML.addActionListener(evt -> exportSummary(true));
+        miExportCurrentUnitToHTML.addActionListener(evt -> {
+            warnOnInvalid();
+            exportSummary(true);
+        });
         miExportCurrentUnitToHTML.setEnabled(isUnitGui());
         htmlUnitExportMenu.add(miExportCurrentUnitToHTML);
 
@@ -428,7 +434,10 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         final JMenuItem miExportCurrentUnitToText = new JMenuItem(resources.getString("CurrentUnit.text"));
         miExportCurrentUnitToText.setName("miExportCurrentUnitToText");
         miExportCurrentUnitToText.setMnemonic(KeyEvent.VK_U);
-        miExportCurrentUnitToText.addActionListener(evt -> exportSummary(false));
+        miExportCurrentUnitToText.addActionListener(evt -> {
+            warnOnInvalid();
+            exportSummary(false);
+        });
         miExportCurrentUnitToText.setEnabled(isUnitGui());
         textUnitExportMenu.add(miExportCurrentUnitToText);
 
@@ -447,6 +456,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         miExportCurrentUnitToClipboard.setName("miExportCurrentUnitToClipboard");
         miExportCurrentUnitToClipboard.setMnemonic(KeyEvent.VK_U);
         miExportCurrentUnitToClipboard.addActionListener(evt -> {
+            warnOnInvalid();
             StringSelection stringSelection = new StringSelection(entitySummaryText(false));
             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(stringSelection, this);
         });
@@ -468,7 +478,10 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         miPrintCurrentUnit.setName("miPrintCurrentUnit");
         miPrintCurrentUnit.setMnemonic(KeyEvent.VK_U);
         miPrintCurrentUnit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.CTRL_DOWN_MASK));
-        miPrintCurrentUnit.addActionListener(evt -> UnitPrintManager.printEntity(owner.getEntity()));
+        miPrintCurrentUnit.addActionListener(evt -> {
+            warnOnInvalid();
+            UnitPrintManager.printEntity(owner.getEntity());
+        });
         miPrintCurrentUnit.setEnabled(isUnitGui());
         printMenu.add(miPrintCurrentUnit);
 
@@ -1030,10 +1043,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             LogManager.getLogger().error("Tried to save null entity.");
             return false;
         } else {
-            String validationResult = UnitUtil.validateUnit(entity);
-            if (!validationResult.isBlank()) {
-                PopupMessages.showUnitInvalidWarning(owner.getFrame(), validationResult);
-            }
+            warnOnInvalid();
         }
 
         UnitUtil.compactCriticals(entity);
@@ -1055,10 +1065,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     }
 
     private void saveUnitAs() {
-        String validationResult = UnitUtil.validateUnit(owner.getEntity());
-        if (!validationResult.isBlank()) {
-            PopupMessages.showUnitInvalidWarning(owner.getFrame(), validationResult);
-        }
+        warnOnInvalid();
 
         UnitUtil.compactCriticals(owner.getEntity());
         owner.refreshAll(); // The crits may have moved
@@ -1119,10 +1126,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     }
 
     private void exportSummary(boolean html) {
-        String validationResult = UnitUtil.validateUnit(owner.getEntity());
-        if (!validationResult.isBlank()) {
-            PopupMessages.showUnitInvalidWarning(owner.getFrame(), validationResult);
-        }
+        warnOnInvalid();
 
         String unitName = owner.getEntity().getChassis() + ' ' + owner.getEntity().getModel();
 
@@ -1169,10 +1173,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
                 return;
             }
 
-            String validationResult = UnitUtil.validateUnit(loadedUnit);
-            if (!validationResult.isBlank()) {
-                PopupMessages.showUnitInvalidWarning(owner.getFrame(), validationResult);
-            }
+            warnOnInvalid(loadedUnit);
 
             newRecentUnit(unitFile.toString());
             if (isStartupGui() || (loadedUnit.getEntityType() != owner.getEntity().getEntityType())) {
@@ -1294,6 +1295,17 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             textPane.setSelectionEnd(0);
         } catch (Exception ignored) {
 
+        }
+    }
+
+    private void warnOnInvalid() {
+        warnOnInvalid(owner.getEntity());
+    }
+
+    private void warnOnInvalid(Entity entity) {
+        var report = UnitUtil.validateUnit(entity);
+        if (!report.isBlank()) {
+            PopupMessages.showUnitInvalidWarning(owner.getFrame(), report);
         }
     }
 
