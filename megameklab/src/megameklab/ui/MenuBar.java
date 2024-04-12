@@ -414,7 +414,6 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         miExportCurrentUnitToHTML.setName("miExportCurrentUnitToHTML");
         miExportCurrentUnitToHTML.setMnemonic(KeyEvent.VK_U);
         miExportCurrentUnitToHTML.addActionListener(evt -> {
-            warnOnInvalid();
             exportSummary(true);
         });
         miExportCurrentUnitToHTML.setEnabled(isUnitGui());
@@ -435,7 +434,6 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         miExportCurrentUnitToText.setName("miExportCurrentUnitToText");
         miExportCurrentUnitToText.setMnemonic(KeyEvent.VK_U);
         miExportCurrentUnitToText.addActionListener(evt -> {
-            warnOnInvalid();
             exportSummary(false);
         });
         miExportCurrentUnitToText.setEnabled(isUnitGui());
