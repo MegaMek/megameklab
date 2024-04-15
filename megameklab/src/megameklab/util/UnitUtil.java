@@ -1143,7 +1143,8 @@ public class UnitUtil {
      */
     public static String getCritName(Entity unit, EquipmentType eq) {
         String name = eq.getName();
-        if (name.length() > 22) {
+        // Only shorten non-ammo; getShortName leaves off "Ammo" and "[Half]" that we want
+        if (name.length() > 22 && !(eq instanceof AmmoType) ) {
             name = eq.getShortName();
         }
         if (unit.isMixedTech()
