@@ -27,6 +27,7 @@ MEGAMEKLAB VERSION HISTORY:
 + Fix #1343: Match critical slot sort order to specification
 + PR #1473: MML portion of fix for MHQ 3803: Fixed WOB.pm/PM mismatch 
 + Fix: #1315: Industrial tripod cockpit fixes
++ Fix MM #5252: critical assignment tab eq list missing keywords like "Ammo" and "[Half]" or "[Full]"
 
 0.49.18 (2024-02-17 1800 UTC)
 + Fix #1370: Closing a unit selection dialog without selecting a unit no longer leads to an error message displayed
