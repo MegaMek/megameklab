@@ -1,6 +1,6 @@
 MEGAMEKLAB VERSION HISTORY:
 ----------------
-0.49.19-SNAPSHOT
+0.49.19 (2024-04-19 2030 UTC)
 + Fix MML#1430: Fixes issue with SV armor weight and space calculations
 + Fix MML#1429: Fixes a bug with aero construction in MML
 + Fix #1242: Fixes a bug with determining the maximum number of bay doors
@@ -26,8 +26,9 @@ MEGAMEKLAB VERSION HISTORY:
 + Fix #1466: Field Guns available as Standard Tech Level
 + Fix #1343: Match critical slot sort order to specification
 + PR #1473: MML portion of fix for MHQ 3803: Fixed WOB.pm/PM mismatch 
-+ Fix: #1315: Industrial tripod cockpit fixes
++ Fix #1315: Industrial tripod cockpit fixes
 + Fix MM #5252: critical assignment tab eq list missing keywords like "Ammo" and "[Half]" or "[Full]"
++ PR #1478: Show a warning when attempting to print the invalid current unit 
 
 0.49.18 (2024-02-17 1800 UTC)
 + Fix #1370: Closing a unit selection dialog without selecting a unit no longer leads to an error message displayed
