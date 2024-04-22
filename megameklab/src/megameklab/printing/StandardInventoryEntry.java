@@ -20,6 +20,7 @@
 package megameklab.printing;
 
 import megamek.common.*;
+import megamek.common.equipment.WeaponMounted;
 import megamek.common.weapons.CLIATMWeapon;
 import megamek.common.weapons.infantry.InfantryWeapon;
 import megamek.common.weapons.missiles.ATMWeapon;
@@ -479,8 +480,8 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
     @Override
     public String getMediumField(int row) {
         if (mount.getEntity().isAero() && !isMML && !isATM) {
-            if ((row == 0) && (mount.getType() instanceof WeaponType)
-                    && ((WeaponType) mount.getType()).getMaxRange(mount) >= WeaponType.RANGE_MED) {
+            if ((row == 0) && (mount instanceof WeaponMounted)
+                    && ((WeaponType) mount.getType()).getMaxRange((WeaponMounted) mount) >= WeaponType.RANGE_MED) {
                 return String.valueOf(((WeaponType) mount.getType()).getRoundMedAV() + aeroAVMod(mount));
             } else if (row == 0) {
                 return DASH;
@@ -497,8 +498,8 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
     @Override
     public String getLongField(int row) {
         if (mount.getEntity().isAero() && !isMML && !isATM) {
-            if ((row == 0) && (mount.getType() instanceof WeaponType)
-                    && ((WeaponType) mount.getType()).getMaxRange(mount) >= WeaponType.RANGE_LONG) {
+            if ((row == 0) && (mount instanceof WeaponMounted)
+                    && ((WeaponType) mount.getType()).getMaxRange((WeaponMounted) mount) >= WeaponType.RANGE_LONG) {
                 return String.valueOf(((WeaponType) mount.getType()).getRoundLongAV() + aeroAVMod(mount));
             } else if (row == 0) {
                 return DASH;
@@ -515,8 +516,8 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
     @Override
     public String getExtremeField(int row) {
         if (mount.getEntity().isAero() && !isMML && !isATM) {
-            if ((row == 0) && (mount.getType() instanceof WeaponType)
-                    && ((WeaponType) mount.getType()).getMaxRange(mount) >= WeaponType.RANGE_EXT) {
+            if ((row == 0) && (mount instanceof WeaponMounted)
+                    && ((WeaponType) mount.getType()).getMaxRange((WeaponMounted) mount) >= WeaponType.RANGE_EXT) {
                 return String.valueOf(((WeaponType) mount.getType()).getRoundExtAV() + aeroAVMod(mount));
             } else if (row == 0) {
                 return DASH;
