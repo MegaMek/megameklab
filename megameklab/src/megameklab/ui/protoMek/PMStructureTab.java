@@ -38,10 +38,7 @@ import megamek.common.equipment.MiscMounted;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestProtomech;
 import megameklab.ui.EntitySource;
-import megameklab.ui.generalUnit.ArmorAllocationView;
-import megameklab.ui.generalUnit.BAProtoArmorView;
-import megameklab.ui.generalUnit.BasicInfoView;
-import megameklab.ui.generalUnit.MovementView;
+import megameklab.ui.generalUnit.*;
 import megameklab.ui.generalUnit.summary.*;
 import megameklab.ui.listeners.ArmorAllocationListener;
 import megameklab.ui.listeners.ProtomekBuildListener;
@@ -62,6 +59,7 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
     private MovementView panMovement;
     private SummaryView panSummary;
     private ArmorAllocationView panArmorAllocation;
+    private IconView iconView;
 
     RefreshListener refresh = null;
     JPanel masterPanel;
@@ -81,6 +79,7 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
         panArmor = new BAProtoArmorView(panBasicInfo);
         panMovement = new MovementView(panBasicInfo);
         panArmorAllocation = new ArmorAllocationView(panBasicInfo, Entity.ETYPE_PROTOMECH);
+        iconView = new IconView();
         panSummary = new SummaryView(eSource,
                 new UnitTypeSummaryItem(),
                 new StructureSummaryItem(),
@@ -101,6 +100,7 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
         panArmor.setFromEntity(getProtomech());
         panMovement.setFromEntity(getProtomech());
         panArmorAllocation.setFromEntity(getProtomech());
+        iconView.setFromEntity(getEntity());
 
         JPanel leftPanel = new JPanel();
         JPanel centerPanel = new JPanel();
@@ -110,6 +110,8 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
         rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
 
         leftPanel.add(panBasicInfo);
+        leftPanel.add(Box.createVerticalStrut(11));
+        leftPanel.add(iconView);
         leftPanel.add(Box.createVerticalStrut(11));
         leftPanel.add(panChassis);
         leftPanel.add(Box.createGlue());
@@ -149,6 +151,7 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
         panArmor.setFromEntity(getProtomech());
         panMovement.setFromEntity(getProtomech());
         panArmorAllocation.setFromEntity(getProtomech());
+        iconView.setFromEntity(getEntity());
 
         panSummary.refresh();
         addAllListeners();
@@ -312,6 +315,7 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
         getProtomech().setChassis(chassis);
         refresh.refreshHeader();
         refresh.refreshPreview();
+        iconView.refresh();
     }
 
     @Override
@@ -319,6 +323,7 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
         getProtomech().setModel(model);
         refresh.refreshHeader();
         refresh.refreshPreview();
+        iconView.refresh();
     }
 
     @Override

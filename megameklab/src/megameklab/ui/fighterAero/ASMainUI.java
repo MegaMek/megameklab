@@ -184,12 +184,12 @@ public class ASMainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshWeapons() { }
-    
+
     @Override
     public void refreshSummary() {
         structureTab.refreshSummary();
     }
-    
+
     @Override
     public void refreshEquipmentTable() {
         equipmentTab.refreshTable();

@@ -17,7 +17,6 @@ import megamek.common.Jumpship;
 import megamek.common.SpaceStation;
 import megamek.common.UnitType;
 import megamek.common.Warship;
-import megameklab.util.ImageHelper;
 import org.apache.batik.util.SVGConstants;
 import org.apache.logging.log4j.LogManager;
 import org.w3c.dom.Element;
@@ -365,15 +364,5 @@ public class PrintCapitalShip extends PrintDropship {
         }
         box.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, fillColor);
         return box;
-    }
-
-    @Override
-    protected void drawFluffImage() {
-        Element rect = getSVGDocument().getElementById(FLUFF_IMAGE);
-        if (rect instanceof SVGRectElement) {
-            embedImage(ImageHelper.getFluffFile(ship),
-                    (Element) rect.getParentNode(), getRectBBox((SVGRectElement) rect), true);
-        }
-        hideElement(getSVGDocument().getElementById(NOTES));
     }
 }

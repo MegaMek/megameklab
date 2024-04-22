@@ -21,9 +21,13 @@ package megameklab.ui.dialog;
 import megamek.client.ui.Messages;
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.client.ui.swing.dialog.AbstractUnitSelectorDialog;
+import megamek.client.ui.swing.tileset.EntityImage;
+import megamek.client.ui.swing.tileset.MMStaticDirectoryManager;
+import megamek.client.ui.swing.util.PlayerColour;
 import megamek.common.Entity;
 import megamek.common.MechSummary;
 import megamek.common.TechConstants;
+import megamek.common.icons.Camouflage;
 import megameklab.util.CConfig;
 
 import javax.swing.*;
@@ -48,6 +52,9 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
         gameTechLevel = TechConstants.T_SIMPLE_UNOFFICIAL;
         allowPickWithoutClose = false;
         eraBasedTechLevel = CConfig.getBooleanParam(CConfig.TECH_PROGRESSION);
+        if (CConfig.getBooleanParam(CConfig.TECH_USE_YEAR)) {
+            allowedYear = CConfig.getIntParam(CConfig.TECH_YEAR);
+        }
         initialize();
         run();
         setVisible(true);
@@ -63,6 +70,9 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
         gameTechLevel = TechConstants.T_SIMPLE_UNOFFICIAL;
         allowPickWithoutClose = true;
         eraBasedTechLevel = CConfig.getBooleanParam(CConfig.TECH_PROGRESSION);
+        if (CConfig.getBooleanParam(CConfig.TECH_USE_YEAR)) {
+            allowedYear = CConfig.getIntParam(CConfig.TECH_YEAR);
+        }
         this.entityPickCallback = entityPickCallback;
         initialize();
         // This overrides the default close behavior to avoid selecting another unit when closing with ESC or
@@ -126,7 +136,7 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
     @Override
     protected void select(boolean close) {
         chosenEntity = getSelectedEntity();
-        
+
         if (close) {
             setVisible(false);
         } else if (entityPickCallback != null) {
@@ -136,21 +146,21 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
     //endregion Button Methods
 
     /**
-     * @return the MechSummary for the chosen mech
-     */
-    public MechSummary getChosenMechSummary() {
-        int view = tableUnits.getSelectedRow();
-        if (view < 0) {
-            // selection got filtered away
-            return null;
-        }
-        return mechs[tableUnits.convertRowIndexToModel(view)];
-    }
-
-    /**
      * @return the chosenEntity
      */
     public Entity getChosenEntity() {
         return chosenEntity;
+    }
+
+    @Override
+    protected Entity refreshUnitView() {
+        Entity selectedEntity = super.refreshUnitView();
+        if (selectedEntity != null) {
+            Image base = MMStaticDirectoryManager.getMechTileset().imageFor(selectedEntity);
+            EntityImage entityImage = EntityImage.createIcon(base, Camouflage.of(PlayerColour.GOLD), labelImage, selectedEntity);
+            entityImage.loadFacings();
+            labelImage.setIcon(new ImageIcon(entityImage.getFacing(0)));
+        }
+        return selectedEntity;
     }
 }

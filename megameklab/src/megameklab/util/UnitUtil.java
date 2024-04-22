@@ -1145,7 +1145,8 @@ public class UnitUtil {
      */
     public static String getCritName(Entity unit, EquipmentType eq) {
         String name = eq.getName();
-        if (name.length() > 22) {
+        // Only shorten non-ammo; getShortName leaves off "Ammo" and "[Half]" that we want
+        if (name.length() > 22 && !(eq instanceof AmmoType) ) {
             name = eq.getShortName();
         }
         if (unit.isMixedTech()
@@ -1952,7 +1953,7 @@ public class UnitUtil {
         if (unit instanceof Infantry) {
             Infantry pbi = (Infantry) unit;
             if ((null != pbi.getPrimaryWeapon())
-                    && techManager.isLegal(pbi.getPrimaryWeapon())) {
+                    && !techManager.isLegal(pbi.getPrimaryWeapon())) {
                 dirty = true;
                 InfantryUtil.replaceMainWeapon((Infantry) unit,
                         (InfantryWeapon) EquipmentType
@@ -1962,6 +1963,9 @@ public class UnitUtil {
                     && !techManager.isLegal(pbi.getSecondaryWeapon())) {
                 dirty = true;
                 InfantryUtil.replaceMainWeapon((Infantry) unit, null, true);
+            }
+            if (techManager.getTechLevel().ordinal() <= SimpleTechLevel.STANDARD.ordinal() && pbi.hasFieldWeapon()) {
+                InfantryUtil.replaceFieldGun(pbi, null, 0);
             }
         }
         return dirty;

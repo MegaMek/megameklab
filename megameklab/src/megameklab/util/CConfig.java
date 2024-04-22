@@ -118,6 +118,7 @@ public final class CConfig {
      */
     private static Properties getDefaults() {
         Properties defaults = new Properties();
+        defaults.setProperty(GUI_PLAF, "com.formdev.flatlaf.FlatDarculaLaf");
         defaults.setProperty(GUI_FULLSCREEN, Boolean.toString(false));
         defaults.setProperty(MISC_SUMMARY_FORMAT_TRO, Boolean.toString(true));
         defaults.setProperty(MISC_SKIP_SAFETY_PROMPTS, Boolean.toString(false));

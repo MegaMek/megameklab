@@ -30,7 +30,7 @@ dependencies {
     implementation "org.megamek:megamek${mmBranchTag}:${version}"
 
     implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.0'
-    implementation 'org.apache.logging.log4j:log4j-core:2.19.0'
+    implementation 'org.apache.logging.log4j:log4j-core:2.20.0'
     implementation 'org.apache.pdfbox:pdfbox:2.0.27'
     implementation ('org.apache.xmlgraphics:batik-bridge:1.14') {
         // We don't need the python and javascript engine taking up space
@@ -51,8 +51,10 @@ dependencies {
         exclude group: 'com.sun.media', module: 'jai-codec'
         exclude group: 'xml-apis'
     }
+    testImplementation 'org.mockito:mockito-core:5.2.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
 
-    runtimeOnly 'org.glassfish.jaxb:jaxb-runtime:4.0.1'
+    runtimeOnly 'org.glassfish.jaxb:jaxb-runtime:4.0.2'
 
     //Required for printing scaled vector graphics (SVG) - EclipseIDE Comipatability.
     runtimeOnly 'xml-apis:xml-apis-ext:1.3.04'
@@ -376,6 +378,7 @@ task cleanPublishingDir (type: Delete) {
 publishPublishMMLibraryPublicationToMavenRepository.dependsOn cleanPublishingDir
 
 test {
+    useJUnitPlatform()
     // report is always generated after tests run
     finalizedBy jacocoTestReport
 }

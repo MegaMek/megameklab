@@ -61,6 +61,10 @@ public final class PopupMessages {
         showErrorMessage(parent, String.format(resources.getString("fileReadError"), fileName, errorMessage));
     }
 
+    public static void showFileReadError(Component parent, String fileName) {
+        showErrorMessage(parent, String.format(resources.getString("fileReadErrorNoEx"), fileName));
+    }
+
     public static void showLocationFullError(Component parent, String equipmentName) {
         showErrorMessage(parent, String.format(resources.getString("locationFull"), equipmentName));
     }
@@ -97,6 +101,18 @@ public final class PopupMessages {
     public static void showUncaughtException(Component parent, Throwable throwable) {
         final String name = throwable.getClass().getName();
         showErrorMessage(parent, String.format(resources.getString("uncaughtException"), name));
+    }
+
+    public static void showImproperFileType(Component parent) {
+        showErrorMessage(parent, resources.getString("improperFileType"));
+    }
+
+    public static void showNoFluffImage(Component parent) {
+        showErrorMessage(parent, resources.getString("noFluffImage"));
+    }
+
+    public static void showWrongIconSize(Component parent) {
+        showErrorMessage(parent, resources.getString("wrongIconSize"));
     }
 
     // ############ Internal message handlers

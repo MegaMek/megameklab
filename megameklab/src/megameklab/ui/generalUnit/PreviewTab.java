@@ -1,25 +1,29 @@
 /*
- * MegaMekLab - Copyright (C) 2008
+ * Copyright (c) 2008 - jtighe (torren@users.sourceforge.net)
+ * Copyright (c) 2024 - The MegaMek Team. All Rights Reserved.
  *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * This file is part of MegaMekLab.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * MegaMek is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMek is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with MegaMek. If not, see <http://www.gnu.org/licenses/>.
  */
 package megameklab.ui.generalUnit;
 
+import megamek.client.ui.panes.ConfigurableMechViewPanel;
 import megamek.client.ui.swing.MechViewPanel;
 import megamek.client.ui.swing.alphaStrike.ConfigurableASCardPanel;
 import megamek.client.ui.swing.calculationReport.FlexibleCalculationReport;
 import megamek.common.Entity;
-import megamek.common.MechView;
 import megamek.common.alphaStrike.conversion.ASConverter;
 import megamek.common.templates.TROView;
 import megameklab.ui.EntitySource;
@@ -34,7 +38,7 @@ import java.awt.event.ComponentListener;
 
 public class PreviewTab extends ITab {
 
-    private final MechViewPanel panelMekView = new MechViewPanel();
+    private final ConfigurableMechViewPanel panelMekView = new ConfigurableMechViewPanel();
     private final MechViewPanel panelTROView = new MechViewPanel();
     private final ConfigurableASCardPanel cardPanel = new ConfigurableASCardPanel(null);
 
@@ -53,10 +57,8 @@ public class PreviewTab extends ITab {
         boolean populateTextFields = true;
         final Entity selectedUnit = eSource.getEntity();
         selectedUnit.recalculateTechAdvancement();
-        MechView mechView = null;
         TROView troView = null;
         try {
-            mechView = new MechView(selectedUnit, false);
             troView = TROView.createView(selectedUnit, true);
         } catch (Exception e) {
             LogManager.getLogger().error("", e);
@@ -64,7 +66,7 @@ public class PreviewTab extends ITab {
             populateTextFields = false;
         }
         if (populateTextFields) {
-            panelMekView.setMech(selectedUnit, mechView);
+            panelMekView.setEntity(selectedUnit);
             panelTROView.setMech(selectedUnit, troView);
             if (ASConverter.canConvert(selectedUnit)) {
                 cardPanel.setASElement(ASConverter.convertInMML(selectedUnit, new FlexibleCalculationReport()));

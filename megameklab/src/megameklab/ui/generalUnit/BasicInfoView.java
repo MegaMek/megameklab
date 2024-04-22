@@ -237,7 +237,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
     public void setFromEntity(Entity en) {
         boolean useTP = CConfig.getBooleanParam(CConfig.TECH_PROGRESSION);
         baseTA = en.getConstructionTechAdvancement();
-        txtYear.setMinimum(Math.max(baseTA.getIntroductionDate(), ITechnology.DATE_PS));
+        txtYear.setMinimum(Math.max(baseTA.getIntroductionDate(useClanTechBase()), ITechnology.DATE_PS));
         refreshTechBase();
         setChassis(en.getChassis());
         txtClanName.setText(en.getClanChassisName());

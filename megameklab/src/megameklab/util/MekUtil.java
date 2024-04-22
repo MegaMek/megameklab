@@ -24,6 +24,7 @@ import megamek.common.weapons.c3.ISC3M;
 import megamek.common.weapons.c3.ISC3MBS;
 import megamek.common.weapons.infantry.InfantryWeapon;
 import megamek.common.weapons.other.*;
+import megamek.common.weapons.ppc.CLPlasmaCannon;
 import megamek.common.weapons.tag.CLLightTAG;
 import megamek.common.weapons.tag.CLTAG;
 import megamek.common.weapons.tag.ISTAG;
@@ -944,6 +945,7 @@ public final class MekUtil {
      */
     public static boolean isFMU(Mounted equipment) {
         return (equipment != null)
+                && equipment.getType().getCriticals(equipment.getEntity()) > 0
                 && !equipment.getType().isHittable()
                 && (equipment.getType() instanceof MiscType)
                 && !equipment.getType().hasFlag(MiscType.F_CASE)
@@ -970,8 +972,47 @@ public final class MekUtil {
     public static void sortCritSlots(Mech mek, int location) {
         List<CriticalSlot> presentGear = extricateCritSlots(mek, location);
         presentGear.sort(new MekCritSlotSorter(mek));
+        floatAmmo(presentGear);
         presentGear = reOrderLinkedEquipment(presentGear);
         refillCritSlots(mek, location, presentGear);
+    }
+
+    /**
+     * If the last weapon in the location uses ammo, floats compatible ammo above other ammo
+     * Requires the slots to have already been sorted beforehand
+     */
+    private static void floatAmmo(List<CriticalSlot> slots) {
+        WeaponType lastWeapon = null;
+        for (CriticalSlot slot : slots) {
+            if (slot.getMount().getType() instanceof WeaponType) {
+                lastWeapon = (WeaponType) slot.getMount().getType();
+            }
+        }
+        if (lastWeapon == null) {
+            return;
+        }
+
+        List<CriticalSlot> compatibleAmmo = new ArrayList<>();
+        int insertPosition = -1;
+        for (int i = 0; i < slots.size(); ++i) {
+            if (slots.get(i).getMount().getType() instanceof AmmoType) {
+                if (insertPosition < 0) {
+                    insertPosition = i;
+                }
+
+                AmmoType ammoType = (AmmoType) slots.get(i).getMount().getType();
+                if (lastWeapon.rackSize == ammoType.getRackSize() && lastWeapon.getAmmoType() == lastWeapon.getAmmoType()) {
+                    compatibleAmmo.add(slots.get(i));
+                }
+            }
+        }
+
+        if (insertPosition < 0) {
+            return;
+        }
+
+        slots.removeAll(compatibleAmmo);
+        slots.addAll(insertPosition, compatibleAmmo);
     }
 
     /**
@@ -1346,6 +1387,7 @@ public final class MekUtil {
         }
     }
 
+
     /**
      * A Mounted sorter using the official sort order (mostly)
      */
@@ -1365,10 +1407,13 @@ public final class MekUtil {
                 // compare average damage; using Aero damage here
                 double dmgA = 0;
                 double dmgB = 0;
-                if (mountedA.getType() instanceof WeaponType) {
+                // Weapons that deal heat but not damage should sort last after weapons that deal damage
+                // The only weapon I could find with positive aerospace damage but only heat damage against mechs
+                // is the plasma cannon. If others exist, this could be made to be a more comprehensive check.
+                if (mountedA.getType() instanceof WeaponType && !(mountedA.getType() instanceof CLPlasmaCannon)) {
                     dmgA = ((WeaponType) mountedA.getType()).getShortAV();
                 }
-                if (mountedB.getType() instanceof WeaponType) {
+                if (mountedB.getType() instanceof WeaponType && !(mountedB.getType() instanceof CLPlasmaCannon)) {
                     dmgB = ((WeaponType) mountedB.getType()).getShortAV();
                 }
                 if (dmgA != dmgB) {

@@ -252,15 +252,15 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
         unitLoadingDialog.setVisible(true);
         MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(previousFrame.getFrame(), unitLoadingDialog);
         Entity newUnit = viewer.getChosenEntity();
-        MechSummary mechSummary = viewer.getChosenMechSummary();
+        MechSummary mechSummary = viewer.getSelectedMechSummary();
         viewer.dispose();
         if ((mechSummary == null) || (newUnit == null)) {
             return;
         }
 
-        String fileName = viewer.getChosenMechSummary().getSourceFile().toString();
+        String fileName = viewer.getSelectedMechSummary().getSourceFile().toString();
         if (fileName.toLowerCase().endsWith(".zip")) {
-            fileName = viewer.getChosenMechSummary().getSourceFile().getAbsolutePath();
+            fileName = viewer.getSelectedMechSummary().getSourceFile().getAbsolutePath();
             fileName = fileName.substring(0, fileName.lastIndexOf(File.separatorChar) + 1);
             fileName = fileName + MenuBar.createUnitFilename(newUnit);
         }

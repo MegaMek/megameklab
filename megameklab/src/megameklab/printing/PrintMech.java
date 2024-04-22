@@ -19,7 +19,6 @@ import megamek.common.annotations.Nullable;
 import megamek.common.equipment.MiscMounted;
 import megameklab.printing.reference.*;
 import megameklab.util.CConfig;
-import megameklab.util.ImageHelper;
 import megameklab.util.RSScale;
 import megameklab.util.UnitUtil;
 import org.apache.batik.anim.dom.SVGDOMImplementation;
@@ -541,7 +540,7 @@ public class PrintMech extends PrintEntity {
                 placeReferenceCharts(tables, rect.getParentNode(), bbox.getX(), bbox.getY(),
                         bbox.getWidth() + 6.0, bbox.getHeight() + 6.0);
             } else {
-                embedImage(ImageHelper.getFluffFile(mech),
+                embedImage(getFluffImage(),
                         (Element) rect.getParentNode(), getRectBBox((SVGRectElement) rect), true);
             }
         }
