@@ -33,6 +33,7 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
     private String fileName = "";
     protected MenuBar mmlMenuBar;
     protected boolean refreshRequired = false;
+    private String originalName = "";
     
     public MegaMekLabMainUI() {
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -150,6 +151,7 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
 
     public void setEntity(Entity entity, String currentEntityFilename) {
         this.entity = entity;
+        originalName = MenuBar.createUnitFilename(entity);
         setFileName(currentEntityFilename);
     }
 
@@ -180,11 +182,18 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
 
     public void setFileName(String fileName) {
         this.fileName = fileName;
+        // If the filename is reloaded, restart tracking of the unit name changing.
+        this.originalName = MenuBar.createUnitFilename(entity);
         refreshHeader();
     }
 
     @Override
     public void refreshMenuBar() {
         mmlMenuBar.refreshMenuBar();
+    }
+
+    @Override
+    public boolean hasEntityNameChanged() {
+        return !MenuBar.createUnitFilename(entity).equals(originalName);
     }
 }

@@ -41,6 +41,11 @@ public interface MenuBarOwner extends AppCloser {
     @Nullable String getFileName();
 
     /**
+     * @return True if the entity's name has changed since load.
+     */
+    boolean hasEntityNameChanged();
+
+    /**
      * This method is called when an action will cause the currently edited unit to be discarded (exit MML,
      * load a new unit or switch unit type).
      * <BR><BR>

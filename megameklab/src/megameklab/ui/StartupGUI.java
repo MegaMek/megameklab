@@ -306,6 +306,11 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
     }
 
     @Override
+    public boolean hasEntityNameChanged() {
+        return false;
+    }
+
+    @Override
     public void refreshMenuBar() {
         mmlMenuBar.refreshMenuBar();
     }
