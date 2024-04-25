@@ -13,12 +13,13 @@
  */
 package megameklab.printing;
 
+import megamek.client.ui.swing.util.FluffImageHelper;
 import megamek.common.*;
 import megameklab.printing.reference.*;
-import megameklab.util.ImageHelper;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGRectElement;
 
+import java.awt.*;
 import java.awt.print.PageFormat;
 import java.io.File;
 import java.time.LocalDate;
@@ -120,6 +121,10 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
     }
 
     private void drawFluffImage() {
+        Entity unit = entities.get(0);
+        if (!unit.isProtoMek() && !unit.isInfantry()) {
+            return;
+        }
         if (entities.size() > 1) {
             for (int i = 1; i < entities.size(); i++) {
                 if (!entities.get(i).getChassis().equals(entities.get(0).getChassis())) {
@@ -127,18 +132,12 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
                 }
             }
         }
-        File f = null;
-        if (entities.get(0) instanceof BattleArmor) {
-            f = ImageHelper.getFluffFile(entities.get(0));
-        } else if (entities.get(0) instanceof Infantry) {
-            f = ImageHelper.getFluffFile(entities.get(0));
-        } else if (entities.get(0) instanceof Protomech) {
-            f = ImageHelper.getFluffFile(entities.get(0));
-        }
-        if (f != null) {
+
+        Image fluffImage = FluffImageHelper.getRecordSheetFluffImage(unit);
+        if (fluffImage != null) {
             Element rect = getSVGDocument().getElementById(FLUFF_IMAGE);
             if (rect instanceof SVGRectElement) {
-                embedImage(f, (Element) rect.getParentNode(), getRectBBox((SVGRectElement) rect), true);
+                embedImage(fluffImage, (Element) rect.getParentNode(), getRectBBox((SVGRectElement) rect), true);
                 hideElement(DEFAULT_FLUFF_IMAGE, true);
             }
         }

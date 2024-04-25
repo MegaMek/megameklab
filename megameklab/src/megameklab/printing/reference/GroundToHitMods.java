@@ -64,9 +64,7 @@ public class GroundToHitMods extends ReferenceTable {
         addRow("", bundle.getString("skidding"), "+1");
         if (((Mech) entity).getCockpitType() == Mech.COCKPIT_PRIMITIVE_INDUSTRIAL) {
             addRow("", bundle.getString("noFireCon"), "+2");
-        } else if ((((Mech) entity).getCockpitType() == Mech.COCKPIT_PRIMITIVE)
-                || (((Mech) entity).getCockpitType() == Mech.COCKPIT_INDUSTRIAL)
-                || (((Mech) entity).getCockpitType() == Mech.COCKPIT_SUPERHEAVY_INDUSTRIAL)) {
+        } else if (!((Mech) entity).hasAdvancedFireControl()) {
             addRow("", bundle.getString("basicFireCon"), "+1");
         }
     }

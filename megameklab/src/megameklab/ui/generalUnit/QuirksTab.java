@@ -118,6 +118,11 @@ public class QuirksTab extends ITab implements DialogOptionListener {
         option.setValue(state);
     }
 
+    @Override
+    public void optionSwitched(DialogOptionComponent comp, IOption option, int i) {
+
+    }
+
     public ComponentListener refreshOnShow = new ComponentAdapter() {
         @Override
         public void componentShown(ComponentEvent e) {

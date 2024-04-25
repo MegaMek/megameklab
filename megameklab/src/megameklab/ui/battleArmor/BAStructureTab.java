@@ -16,16 +16,14 @@ package megameklab.ui.battleArmor;
 
 import megamek.codeUtilities.MathUtility;
 import megamek.common.*;
+import megamek.common.annotations.Nullable;
 import megamek.common.equipment.ArmorType;
 import megamek.common.equipment.MiscMounted;
 import megamek.common.verifier.TestBattleArmor;
 import megamek.common.verifier.TestBattleArmor.BAManipulator;
 import megamek.common.verifier.TestEntity;
 import megameklab.ui.EntitySource;
-import megameklab.ui.generalUnit.BAProtoArmorView;
-import megameklab.ui.generalUnit.BasicInfoView;
-import megameklab.ui.generalUnit.MovementView;
-import megameklab.ui.generalUnit.PreviewTab;
+import megameklab.ui.generalUnit.*;
 import megameklab.ui.listeners.ArmorAllocationListener;
 import megameklab.ui.listeners.BABuildListener;
 import megameklab.ui.util.CustomComboBox;
@@ -57,6 +55,7 @@ public class BAStructureTab extends ITab implements ActionListener, ChangeListen
     private MovementView panMovement;
     private BAProtoArmorView panArmor;
     private BAEnhancementView panEnhancements;
+    private IconView iconView;
 
     // Manipulator Panel
     private final CustomComboBox<String> leftManipSelect = new CustomComboBox<>(this::manipulatorDisplayName);
@@ -88,6 +87,7 @@ public class BAStructureTab extends ITab implements ActionListener, ChangeListen
         panChassis = new BAChassisView(panBasicInfo);
         panMovement = new MovementView(panBasicInfo);
         panArmor = new BAProtoArmorView(panBasicInfo);
+        iconView = new IconView();
         JPanel manipPanel = new JPanel(new GridBagLayout());
         panEnhancements = new BAEnhancementView(panBasicInfo);
         GridBagConstraints gbc = new GridBagConstraints();
@@ -128,6 +128,7 @@ public class BAStructureTab extends ITab implements ActionListener, ChangeListen
         panEnhancements.setBorder(BorderFactory.createTitledBorder("Enhancements"));
 
         leftPanel.add(panBasicInfo);
+        leftPanel.add(iconView);
         leftPanel.add(panChassis);
         leftPanel.add(panMovement);
         leftPanel.add(panArmor);
@@ -170,6 +171,7 @@ public class BAStructureTab extends ITab implements ActionListener, ChangeListen
         panMovement.setFromEntity(getBattleArmor());
         panArmor.setFromEntity(getBattleArmor());
         panEnhancements.setFromEntity(getBattleArmor());
+        iconView.setFromEntity(getEntity());
 
         removeAllListeners();
 
@@ -269,92 +271,57 @@ public class BAStructureTab extends ITab implements ActionListener, ChangeListen
     public void actionPerformed(ActionEvent e) {
         removeAllListeners();
         if (e.getSource() instanceof JComboBox) {
-            @SuppressWarnings("unchecked")
-            JComboBox<String> combo = (JComboBox<String>) e.getSource();
-            if (combo.equals(leftManipSelect)) {
-                // If the BA already had a manipulator here, we'll need to  remove it
-                Mounted leftManip = getBattleArmor().getLeftManipulator();
-                BAManipulator manipType;
-                if (leftManip != null) {
-                    UnitUtil.removeMounted(getBattleArmor(), leftManip);
-                    manipType = BAManipulator.getManipulator(
-                            leftManip.getType().getInternalName());
-                    // If this manipulator was mounted as a pair, remove the paired manipulator
-                    if (manipType.pairMounted) {
-                        Mounted rightManip = getBattleArmor().getRightManipulator();
-                        if (rightManip != null) {
-                            UnitUtil.removeMounted(getBattleArmor(), rightManip);
-                            rightManipSelect.setSelectedIndex(0);
-                        }
-                    }
-                }
-
-                // If we selected something other than "None", mount it
-                if (leftManipSelect.getSelectedIndex() != 0) {
-                    String manipName = (String) leftManipSelect.getSelectedItem();
-                    manipType = BAManipulator.getManipulator(manipName);
-                    EquipmentType et = EquipmentType.get(manipType.internalName);
-                    leftManip = Mounted.createMounted(getBattleArmor(), et);
-                    leftManip.setBaMountLoc(BattleArmor.MOUNT_LOC_LARM);
-                    try {
-                        // Add the manipulator
-                        getBattleArmor().addEquipment(leftManip, BattleArmor.LOC_SQUAD, false);
-                        // Check to see if we need to add its mate
-                        manipType = BAManipulator.getManipulator(leftManip.getType().getInternalName());
-                        // If this manipulator was mounted as a pair, remove the paired manipulator
-                        if (manipType.pairMounted) {
-                            Mounted rightManip = Mounted.createMounted(getBattleArmor(), et);
-                            rightManip.setBaMountLoc(BattleArmor.MOUNT_LOC_RARM);
-                            getBattleArmor().addEquipment(rightManip, BattleArmor.LOC_SQUAD, false);
-                        }
-                    } catch (Exception ex) {
-                        // This shouldn't happen
-                        LogManager.getLogger().error("", ex);
-                    }
-                }
-            } else if (combo.equals(rightManipSelect)) {
-                // If the BA already had a manipulator here, we'll need to remove it
-                Mounted rightManip = getBattleArmor().getRightManipulator();
-                BAManipulator manipType;
-                if (rightManip != null) {
-                    UnitUtil.removeMounted(getBattleArmor(), rightManip);
-                    manipType = BAManipulator.getManipulator(rightManip.getType().getInternalName());
-                    // If this manipulator was mounted as a pair, remove the paired manipulator
-                    if (manipType.pairMounted) {
-                        Mounted leftManip = getBattleArmor().getLeftManipulator();
-                        if (leftManip != null) {
-                            UnitUtil.removeMounted(getBattleArmor(), leftManip);
-                            leftManipSelect.setSelectedIndex(0);
-                        }
-                    }
-                }
-
-                // If we selected something other than "None", mount it
-                if (rightManipSelect.getSelectedIndex() != 0) {
-                    String manipName = (String) rightManipSelect.getSelectedItem();
-                    manipType = BAManipulator.getManipulator(manipName);
-                    EquipmentType et = EquipmentType.get(manipType.internalName);
-                    rightManip = Mounted.createMounted(getBattleArmor(), et);
-                    rightManip.setBaMountLoc(BattleArmor.MOUNT_LOC_RARM);
-                    try {
-                        // Add the manipulator
-                        getBattleArmor().addEquipment(rightManip, BattleArmor.LOC_SQUAD, false);
-                        // Check to see if we need to add its mate
-                        manipType = BAManipulator.getManipulator(rightManip.getType().getInternalName());
-                        // If this manipulator was mounted as a pair, remove the paired manipulator
-                        if (manipType.pairMounted) {
-                            Mounted leftManip = Mounted.createMounted(getBattleArmor(), et);
-                            leftManip.setBaMountLoc(BattleArmor.MOUNT_LOC_LARM);
-                            getBattleArmor().addEquipment(leftManip, BattleArmor.LOC_SQUAD, false);
-                        }
-                    } catch (Exception ex) {
-                        // This shouldn't happen
-                        LogManager.getLogger().error("", ex);
-                    }
-                }
+            if (e.getSource().equals(leftManipSelect) || e.getSource().equals(rightManipSelect)) {
+                String name = (String) ((JComboBox<?>) e.getSource()).getSelectedItem();
+                setManipulator(BAManipulator.getManipulator(name),
+                        e.getSource().equals(leftManipSelect) ? BattleArmor.MOUNT_LOC_LARM : BattleArmor.MOUNT_LOC_RARM,
+                        true);
             }
         }
         refresh.refreshAll();
+    }
+
+    private void setManipulator(BAManipulator manipulator, int mountLoc, boolean checkPaired) {
+        MiscMounted current = getManipulator(mountLoc);
+        if (current != null) {
+            UnitUtil.removeMounted(getBattleArmor(), current);
+        }
+        if (manipulator != BAManipulator.NONE) {
+            MiscMounted newMount = new MiscMounted(getBattleArmor(), (MiscType) EquipmentType.get(manipulator.internalName));
+            newMount.setBaMountLoc(mountLoc);
+            try {
+                getBattleArmor().addEquipment(newMount, BattleArmor.LOC_SQUAD, false);
+            } catch (LocationFullException ex) {
+                LogManager.getLogger().error("Could not mount " + manipulator, ex);
+            }
+        }
+        if (checkPaired) {
+            int otherArm = mountLoc == (BattleArmor.MOUNT_LOC_LARM) ?
+                    BattleArmor.MOUNT_LOC_RARM : BattleArmor.MOUNT_LOC_LARM;
+            if (manipulator.pairMounted) {
+                setManipulator(manipulator, otherArm, false);
+            } else if ((current != null) && isPairedManipulator(current.getType())) {
+                MiscMounted toRemove = getManipulator(otherArm);
+                if (toRemove != null) {
+                    UnitUtil.removeMounted(getBattleArmor(), toRemove);
+                }
+            }
+        }
+    }
+
+    private @Nullable MiscMounted getManipulator(int mountLoc) {
+        return getBattleArmor().getMisc().stream()
+                .filter(m -> (m.getBaMountLoc() == mountLoc) && m.getType().hasFlag(MiscType.F_BA_MANIPULATOR))
+                .findFirst().orElse(null);
+    }
+
+    private boolean isPairedManipulator(EquipmentType eq) {
+        BAManipulator manipulator = BAManipulator.getManipulator(eq.getInternalName());
+        if (manipulator != null) {
+            return manipulator.pairMounted;
+        } else {
+            return false;
+        }
     }
 
     @Override
@@ -406,6 +373,7 @@ public class BAStructureTab extends ITab implements ActionListener, ChangeListen
         getBattleArmor().setChassis(chassis);
         refresh.refreshHeader();
         refresh.refreshPreview();
+        iconView.refresh();
     }
 
     @Override
@@ -413,6 +381,7 @@ public class BAStructureTab extends ITab implements ActionListener, ChangeListen
         getBattleArmor().setModel(model);
         refresh.refreshHeader();
         refresh.refreshPreview();
+        iconView.refresh();
     }
 
     @Override
@@ -540,6 +509,10 @@ public class BAStructureTab extends ITab implements ActionListener, ChangeListen
     @Override
     public void weightClassChanged(int weightClass) {
         getBattleArmor().setWeightClass(weightClass);
+        if (weightClass > EntityWeightClass.WEIGHT_ULTRA_LIGHT) {
+            getBattleArmor().setIsExoskeleton(false);
+            getBattleArmor().setClanExoWithoutHarjel(false);
+        }
         panBasicInfo.setFromEntity(getBattleArmor());
         panChassis.refresh();
         panMovement.setFromEntity(getBattleArmor());
@@ -555,6 +528,8 @@ public class BAStructureTab extends ITab implements ActionListener, ChangeListen
         if (exoskeleton && !panBasicInfo.useClanTechBase()) {
             getBattleArmor().setClanExoWithoutHarjel(panChassis.hasHarjel());
         }
+        panBasicInfo.setFromEntity(getBattleArmor());
+        panArmor.refresh();
         refresh.refreshStatus();
         refreshPreview();
     }

@@ -1,5 +1,5 @@
 /*
- * MegaMekLab - Copyright (C) 2018 - The MegaMek Team
+ * MegaMekLab - Copyright (C) 2018, 2024 - The MegaMek Team
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -13,27 +13,30 @@
  */
 package megameklab.ui.generalUnit;
 
-import java.awt.Color;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
+import javax.imageio.ImageIO;
+import javax.swing.*;
 import javax.swing.border.Border;
 
+import megamek.client.ui.swing.UnitLoadingDialog;
+import megamek.client.ui.swing.util.FluffImageHelper;
 import megamek.common.Entity;
 import megamek.common.EntityFluff;
+import megamek.common.util.ImageUtil;
 import megameklab.ui.EntitySource;
+import megameklab.ui.PopupMessages;
+import megameklab.ui.dialog.MMLFileChooser;
+import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
 import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
+import org.apache.logging.log4j.LogManager;
 
 /**
  * Panel for editing unit fluff
@@ -54,6 +57,8 @@ public class FluffTab extends ITab implements FocusListener {
     private final JTextField txtHeight = new JTextField(8);
 
     private final JTextArea txtNotes = new JTextArea(4, 40);
+
+    private final JButton btnRemoveFluff = new JButton("Remove Fluff Image");
     
     private static final String TAG_MANUFACTURER = "manufacturer";
     private static final String TAG_MODEL = "model";
@@ -95,6 +100,22 @@ public class FluffTab extends ITab implements FocusListener {
         gbc.insets = new Insets(5, 5, 5, 5);
         
         panLeft.setLayout(new GridBagLayout());
+
+        JButton btnSetFluffImage = new JButton("Set Fluff Image from File");
+        btnSetFluffImage.addActionListener(evt -> chooseFluffImage());
+        panLeft.add(btnSetFluffImage, gbc);
+        gbc.gridy++;
+
+        JButton btnImportFluffImage = new JButton("Import Fluff Image from Unit");
+        btnImportFluffImage.addActionListener(evt -> importFluffImage());
+        panLeft.add(btnImportFluffImage, gbc);
+        gbc.gridy++;
+
+        btnRemoveFluff.addActionListener(evt -> removeFluffImage());
+        panLeft.add(btnRemoveFluff, gbc);
+        refreshGUI();
+        gbc.gridy++;
+
         panLeft.add(new JLabel(resourceMap.getString("FluffTab.txtCapabilities")), gbc);
         gbc.gridy++;
         txtCapabilities.setLineWrap(true);
@@ -275,5 +296,68 @@ public class FluffTab extends ITab implements FocusListener {
         if (null != refresh) {
             refresh.refreshPreview();
         }
+    }
+
+    private void chooseFluffImage() {
+        var imageChooser = new MMLFileChooser();
+        int result = imageChooser.showOpenDialog(getParent());
+        if ((result == JFileChooser.APPROVE_OPTION) && (imageChooser.getSelectedFile() != null)) {
+            File imageFile = imageChooser.getSelectedFile();
+            if (imageFile.isFile()) {
+                String lowerCaseName = imageFile.toString();
+                if (Arrays.stream(FluffImageHelper.EXTENSIONS_FLUFF_IMAGE_FORMATS).noneMatch(lowerCaseName::endsWith)) {
+                    PopupMessages.showImproperFileType(getParent());
+                    return;
+                }
+                try {
+                    BufferedImage image = ImageIO.read(imageFile);
+                    if (image == null) {
+                        PopupMessages.showFileReadError(getParent(), imageFile.toString());
+                        return;
+                    }
+                    getEntity().getFluff().setFluffImage(ImageUtil.base64TextEncodeImage(image));
+                } catch (Exception ex) {
+                    PopupMessages.showFileReadError(getParent(), imageFile.toString(), ex.getMessage());
+                    LogManager.getLogger().error("", ex);
+                }
+            }
+        }
+        refreshGUI();
+        refresh.refreshAll();
+    }
+
+    private void importFluffImage() {
+        UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(null);
+        unitLoadingDialog.setVisible(true);
+        MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(null, unitLoadingDialog);
+
+        Entity chosenEntity = viewer.getChosenEntity();
+        if (chosenEntity != null) {
+            try {
+                Image fluffImage = FluffImageHelper.getFluffImage(chosenEntity);
+                if (fluffImage == null) {
+                    PopupMessages.showNoFluffImage(getParent());
+                    return;
+                }
+                eSource.getEntity().getFluff().setFluffImage(ImageUtil.base64TextEncodeImage(fluffImage));
+            } catch (Exception ex) {
+                PopupMessages.showFileReadError(getParent(), "", ex.getMessage());
+                LogManager.getLogger().error("Fluff could not be copied!", ex);
+            }
+        }
+        viewer.dispose();
+        refreshGUI();
+        refresh.refreshAll();
+    }
+
+    private void removeFluffImage() {
+        if (getEntity() != null) {
+            getEntity().getFluff().setFluffImage("");
+        }
+        refreshGUI();
+    }
+
+    private void refreshGUI() {
+        btnRemoveFluff.setEnabled((getEntity() != null) && getEntity().getFluff().hasEmbeddedFluffImage());
     }
 }

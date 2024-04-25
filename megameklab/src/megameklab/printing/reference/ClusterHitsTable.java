@@ -97,6 +97,7 @@ public class ClusterHitsTable extends ReferenceTable {
                     case AmmoType.T_LRM_IMP:
                     case AmmoType.T_LRM_PRIMITIVE:
                     case AmmoType.T_LRM_TORPEDO:
+                    case AmmoType.T_LRM_STREAK:
                     case AmmoType.T_MML:
                     case AmmoType.T_MRM:
                     case AmmoType.T_NLRM:
@@ -107,6 +108,7 @@ public class ClusterHitsTable extends ReferenceTable {
                     case AmmoType.T_SRM_IMP:
                     case AmmoType.T_SRM_PRIMITIVE:
                     case AmmoType.T_SRM_TORPEDO:
+                    case AmmoType.T_SRM_STREAK:
                         clusterSizes.add(weapon.getRackSize());
                         break;
                     case AmmoType.T_ATM:
@@ -125,6 +127,15 @@ public class ClusterHitsTable extends ReferenceTable {
                     case AmmoType.T_AC_ULTRA:
                     case AmmoType.T_AC_ULTRA_THB:
                         clusterSizes.add(2);
+                        break;
+                    case AmmoType.T_MG:
+                    case AmmoType.T_MG_HEAVY:
+                    case AmmoType.T_MG_LIGHT:
+                        if (weapon.hasFlag(WeaponType.F_MGA)) {
+                            for (int i = 2; i <= 4; i++) {
+                                clusterSizes.add(i);
+                            }
+                        }
                         break;
                 }
             }

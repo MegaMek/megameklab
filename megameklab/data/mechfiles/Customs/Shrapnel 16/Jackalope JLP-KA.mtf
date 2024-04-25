@@ -1,0 +1,156 @@
+generator:MegaMek Suite 0.49.19-SNAPSHOT on 2024-03-05
+chassis:Jackalope
+model:JLP-KA
+mul id:6712
+
+Config:Biped
+techbase:Mixed (Clan Chassis)
+era:3135
+source:TRO: 3145 Republic of the Sphere
+rules level:3
+role:Striker
+
+quirk:compact_mech
+quirk:low_profile
+
+mass:30
+engine:300 XXL (Clan) Engine
+structure:Clan Endo Steel
+myomer:Standard
+
+heat sinks:10 Clan Double
+walk mp:10
+jump mp:4
+
+armor:Ferro-Fibrous(Clan)
+LA armor:10
+RA armor:10
+LT armor:10
+RT armor:10
+CT armor:15
+HD armor:9
+LL armor:14
+RL armor:14
+RTL armor:4
+RTR armor:4
+RTC armor:5
+
+Weapons:4
+ER Medium Laser, Left Arm
+ER Medium Laser, Right Arm
+ATM 6, Right Torso
+Laser AMS, Head
+
+Left Arm:
+Shoulder
+Upper Arm Actuator
+CLERMediumLaser
+Clan Endo Steel
+Clan Endo Steel
+Clan Endo Steel
+Clan Endo Steel
+Clan Endo Steel
+Clan Endo Steel
+Clan Endo Steel
+-Empty-
+-Empty-
+
+Right Arm:
+Shoulder
+Upper Arm Actuator
+CLERMediumLaser
+Clan Ferro-Fibrous
+Clan Ferro-Fibrous
+Clan Ferro-Fibrous
+Clan Ferro-Fibrous
+Clan Ferro-Fibrous
+Clan Ferro-Fibrous
+Clan Ferro-Fibrous
+-Empty-
+-Empty-
+
+Left Torso:
+Fusion Engine
+Fusion Engine
+Fusion Engine
+Fusion Engine
+Jump Jet
+Jump Jet
+Clan Ammo ATM-6
+CLCASEII
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+
+Right Torso:
+Fusion Engine
+Fusion Engine
+Fusion Engine
+Fusion Engine
+Jump Jet
+Jump Jet
+CLATM6
+CLATM6
+CLATM6
+CLLightActiveProbe
+-Empty-
+-Empty-
+
+Center Torso:
+Fusion Engine
+Fusion Engine
+Fusion Engine
+Gyro
+Gyro
+Gyro
+Gyro
+Fusion Engine
+Fusion Engine
+Fusion Engine
+-Empty-
+-Empty-
+
+Head:
+Life Support
+Sensors
+Cockpit
+CLLaserAntiMissileSystem
+Sensors
+Life Support
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+
+Left Leg:
+Hip
+Upper Leg Actuator
+Lower Leg Actuator
+Foot Actuator
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+
+Right Leg:
+Hip
+Upper Leg Actuator
+Lower Leg Actuator
+Foot Actuator
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+-Empty-
+
+

@@ -50,6 +50,7 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
     private LACrewView panCrew;
     private SummaryView panSummary;
     private ArmorAllocationView panArmorAllocation;
+    private IconView iconView;
 
     RefreshListener refresh = null;
 
@@ -71,6 +72,7 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
         panHeat = new HeatSinkView(panInfo);
         panCrew = new LACrewView(panInfo);
         panArmorAllocation = new ArmorAllocationView(panInfo, Entity.ETYPE_AERO);
+        iconView = new IconView();
         panSummary = new SummaryView(eSource,
                 new UnitTypeSummaryItem(),
                 new StructureSummaryItem(),
@@ -97,10 +99,11 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
         rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
 
         leftPanel.add(panInfo);
+        leftPanel.add(iconView);
         leftPanel.add(panChassis);
-        leftPanel.add(panHeat);
         leftPanel.add(panCrew);
 
+        midPanel.add(panHeat);
         midPanel.add(panMovement);
         midPanel.add(panFuel);
         midPanel.add(panSummary);
@@ -154,6 +157,7 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
         panArmor.setFromEntity(getSmallCraft());
         panCrew.setFromEntity(getSmallCraft());
         panArmorAllocation.setFromEntity(getSmallCraft());
+        iconView.setFromEntity(getEntity());
         
         panSummary.refresh();
         addAllListeners();
@@ -203,6 +207,7 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
         getSmallCraft().setChassis(chassis);
         refresh.refreshHeader();
         refresh.refreshPreview();
+        iconView.refresh();
     }
 
     @Override
@@ -210,6 +215,7 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
         getSmallCraft().setModel(model);
         refresh.refreshHeader();
         refresh.refreshPreview();
+        iconView.refresh();
     }
 
     @Override

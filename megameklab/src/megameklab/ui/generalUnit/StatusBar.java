@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 - The MegaMek Team. All Rights Reserved.
+ * Copyright (c) 2023, 2024 - The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -25,18 +25,17 @@ import megamek.client.ui.dialogs.WeightDisplayDialog;
 import megamek.client.ui.swing.GUIPreferences;
 import megamek.client.ui.swing.calculationReport.CalculationReport;
 import megamek.common.*;
-import megamek.common.verifier.TestBattleArmor;
 import megamek.common.verifier.TestEntity;
+import megamek.utilities.DebugEntity;
 import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
-import megameklab.util.ImageHelper;
 import megameklab.util.UnitUtil;
 
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
 import java.awt.*;
-import java.io.File;
+import java.awt.event.ActionListener;
 import java.text.DecimalFormat;
 
 public class StatusBar extends ITab {
@@ -63,10 +62,7 @@ public class StatusBar extends ITab {
         formatter = new DecimalFormat();
 
         JButton btnValidate = new JButton("Validate Unit");
-        btnValidate.addActionListener(evt -> UnitUtil.showValidation(getEntity(), getParentFrame()));
-
-        JButton btnFluffImage = new JButton("Set Fluff Image");
-        btnFluffImage.addActionListener(evt -> getFluffImage());
+        btnValidate.addActionListener(validationListener);
 
         invalid.setForeground(GUIPreferences.getInstance().getWarningColor());
         invalid.setVisible(false);
@@ -78,7 +74,6 @@ public class StatusBar extends ITab {
         }
 
         add(btnValidate);
-        add(btnFluffImage);
         add(tons);
         add(bvLabel);
         add(invalid);
@@ -153,19 +148,6 @@ public class StatusBar extends ITab {
         invalid.setToolTipText("<html>" + sb.toString().replaceAll("\n", "<br/>") + "</html>");
     }
 
-    private void getFluffImage() {
-        FileDialog fDialog = new FileDialog(getParentFrame(), "Image Path", FileDialog.LOAD);
-        fDialog.setDirectory(Configuration.fluffImagesDir().toString());
-        fDialog.setLocationRelativeTo(this);
-        fDialog.setVisible(true);
-        if (fDialog.getFile() != null) {
-            String relativeFilePath = new File(fDialog.getDirectory() + fDialog.getFile()).getAbsolutePath();
-            relativeFilePath = "." + File.separatorChar + relativeFilePath.substring(new File(System.getProperty("user.dir")).getAbsolutePath().length() + 1);
-            getEntity().getFluff().setMMLImagePath(relativeFilePath);
-        }
-        refresh.refreshPreview();
-    }
-
     private JFrame getParentFrame() {
         return parentFrame;
     }
@@ -173,6 +155,14 @@ public class StatusBar extends ITab {
     public void addRefreshedListener(RefreshListener refreshListener) {
         refresh = refreshListener;
     }
+
+    private final ActionListener validationListener = e -> {
+        if ((e.getModifiers() & Event.CTRL_MASK) != 0) {
+            DebugEntity.copyEquipmentState(getEntity());
+        } else {
+            UnitUtil.showValidation(getEntity(), getParentFrame());
+        }
+    };
 
     /**
      * Returns an estimated value of the total heat generation for Meks and Aeros (0 for other types).
@@ -228,16 +218,6 @@ public class StatusBar extends ITab {
                 weaponHeat *= 0.5;
             }
             heat += weaponHeat;
-        }
-
-        if (getEntity().hasWorkingMisc(MiscType.F_STEALTH, -1)
-                || getEntity().hasWorkingMisc(MiscType.F_VOIDSIG, -1)
-                || getEntity().hasWorkingMisc(MiscType.F_NULLSIG, -1)) {
-            heat += 10;
-        }
-
-        if (getEntity().hasWorkingMisc(MiscType.F_CHAMELEON_SHIELD, -1)) {
-            heat += 6;
         }
 
         for (Mounted m : getEntity().getMisc()) {
