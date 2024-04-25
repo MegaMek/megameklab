@@ -133,12 +133,8 @@ public class AeroBayTransferHandler extends TransferHandler {
                     List<Mounted<?>> toRemove;
                     if (mount.getType() instanceof BayWeapon) {
                         toRemove = new ArrayList<>();
-                        for (Integer num : ((WeaponMounted) mount).getBayWeapons()) {
-                            toRemove.add(eSource.getEntity().getEquipment(num));
-                        }
-                        for (Integer num : ((WeaponMounted) mount).getBayAmmo()) {
-                            toRemove.add(eSource.getEntity().getEquipment(num));
-                        }
+                        toRemove.addAll(((WeaponMounted) mount).getBayWeapons());
+                        toRemove.addAll(((WeaponMounted) mount).getBayAmmo());
                     } else {
                         toRemove = Collections.singletonList(mount);
                     }

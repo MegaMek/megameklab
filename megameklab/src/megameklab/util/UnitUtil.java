@@ -20,6 +20,7 @@ package megameklab.util;
 
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
+import megamek.common.equipment.AmmoMounted;
 import megamek.common.equipment.ArmorType;
 import megamek.common.equipment.MiscMounted;
 import megamek.common.equipment.WeaponMounted;
@@ -201,7 +202,7 @@ public class UnitUtil {
      * @param unit The entity  The Entity
      * @param mount The equipment
      */
-    public static void removeMounted(Entity unit, Mounted mount) {
+    public static void removeMounted(Entity unit, Mounted<?> mount) {
         UnitUtil.removeCriticals(unit, mount);
 
         // Some special checks for BA
@@ -210,7 +211,7 @@ public class UnitUtil {
             //  to detach the weapon
             if (mount.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)
                     && (mount.getLinked() != null)) {
-                Mounted link = mount.getLinked();
+                Mounted<?> link = mount.getLinked();
                 link.setDWPMounted(false);
                 link.setLinked(null);
                 link.setLinkedBy(null);
@@ -219,14 +220,14 @@ public class UnitUtil {
             //  to clear the mounted status of the DWP
             if ((mount.getLinkedBy() != null)
                     && mount.getLinkedBy().getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)) {
-                Mounted dwp = mount.getLinkedBy();
+                Mounted<?> dwp = mount.getLinkedBy();
                 dwp.setLinked(null);
                 dwp.setLinkedBy(null);
             }
             // If we're removing an APM and it has an attached weapon, we need
             //  to detach the weapon
             if (mount.getType().hasFlag(MiscType.F_AP_MOUNT) && (mount.getLinked() != null)) {
-                Mounted link = mount.getLinked();
+                Mounted<?> link = mount.getLinked();
                 link.setAPMMounted(false);
                 link.setLinked(null);
                 link.setLinkedBy(null);
@@ -235,25 +236,21 @@ public class UnitUtil {
             //  to clear the mounted status of the AP Mount
             if ((mount.getLinkedBy() != null)
                     && mount.getLinkedBy().getType().hasFlag(MiscType.F_AP_MOUNT)) {
-                Mounted apm = mount.getLinkedBy();
+                Mounted<?> apm = mount.getLinkedBy();
                 apm.setLinked(null);
                 apm.setLinkedBy(null);
             }
         }
         // We will need to reset the equipment numbers of the bay ammo and weapons
-        Map<Mounted,List<Mounted>> bayWeapons = new HashMap<>();
-        Map<Mounted,List<Mounted>> bayAmmo = new HashMap<>();
-        for (Mounted<?> bay : unit.getWeaponBayList()) {
-            List<Mounted> list = bay.getBayWeapons().stream()
-                    .map(unit::getEquipment).collect(Collectors.toList());
-            bayWeapons.put(bay, list);
-            list = bay.getBayAmmo().stream()
-                    .map(unit::getEquipment).collect(Collectors.toList());
-            bayAmmo.put(bay, list);
+        Map<WeaponMounted,List<WeaponMounted>> bayWeapons = new HashMap<>();
+        Map<WeaponMounted,List<AmmoMounted>> bayAmmo = new HashMap<>();
+        for (WeaponMounted bay : unit.getWeaponBayList()) {
+            bayWeapons.put(bay, bay.getBayWeapons());
+            bayAmmo.put(bay, bay.getBayAmmo());
         }
         // Some special checks for Aeros
         if (unit instanceof Aero) {
-            if (mount.getType() instanceof WeaponType) {
+            if (mount instanceof WeaponMounted) {
                 // Aeros have additional weapon lists that need to be cleared
                 unit.getTotalWeaponList().remove(mount);
                 unit.getWeaponBayList().remove(mount);
@@ -261,11 +258,11 @@ public class UnitUtil {
             }
         }
         unit.getEquipment().remove(mount);
-        if (mount.getType() instanceof MiscType) {
+        if (mount instanceof MiscMounted) {
             unit.getMisc().remove(mount);
-        } else if (mount.getType() instanceof AmmoType) {
+        } else if (mount instanceof AmmoMounted) {
             unit.getAmmo().remove(mount);
-        } else {
+        } else if (mount instanceof WeaponMounted) {
             unit.getWeaponList().remove(mount);
             unit.getTotalWeaponList().remove(mount);
         }
@@ -286,26 +283,26 @@ public class UnitUtil {
             bayWeapons.remove(mount);
             bayAmmo.remove(mount);
         }
-        for (Mounted bay : bayWeapons.keySet()) {
-            bay.getBayWeapons().clear();
-            for (Mounted w : bayWeapons.get(bay)) {
+        for (WeaponMounted bay : bayWeapons.keySet()) {
+            bay.clearBayWeapons();
+            for (WeaponMounted w : bayWeapons.get(bay)) {
                 if (mount != w) {
-                    bay.getBayWeapons().add(unit.getEquipmentNum(w));
+                    bay.addWeaponToBay(w);
                 }
             }
         }
-        for (Mounted bay : bayAmmo.keySet()) {
-            bay.getBayAmmo().clear();
-            for (Mounted a : bayAmmo.get(bay)) {
+        for (WeaponMounted bay : bayAmmo.keySet()) {
+            bay.clearBayAmmo();
+            for (AmmoMounted a : bayAmmo.get(bay)) {
                 if (mount != a) {
-                    bay.getBayAmmo().add(unit.getEquipmentNum(a));
+                    bay.addAmmoToBay(a);
                 }
             }
         }
         // Remove ammo added for a one-shot launcher
         if ((mount.getType() instanceof WeaponType) && mount.isOneShot()) {
-            List<Mounted> osAmmo = new ArrayList<>();
-            for (Mounted ammo = mount.getLinked(); ammo != null; ammo = ammo.getLinked()) {
+            List<AmmoMounted> osAmmo = new ArrayList<>();
+            for (AmmoMounted ammo = (AmmoMounted) mount.getLinked(); ammo != null; ammo = (AmmoMounted) ammo.getLinked()) {
                 osAmmo.add(ammo);
             }
             osAmmo.forEach(m -> {
@@ -318,7 +315,7 @@ public class UnitUtil {
         // remove it. Using getLinked could be unreliable, so we'll brute force
         // it
         // An example of this would be removing a linked Artemis IV FCS
-        for (Mounted m : unit.getEquipment()) {
+        for (Mounted<?> m : unit.getEquipment()) {
             if (mount.equals(m.getLinkedBy())) {
                 m.setLinkedBy(null);
             }
@@ -327,7 +324,7 @@ public class UnitUtil {
             && (mount.getType().hasFlag(MiscType.F_HEAD_TURRET)
                 || mount.getType().hasFlag(MiscType.F_SHOULDER_TURRET)
                 || mount.getType().hasFlag(MiscType.F_QUAD_TURRET))) {
-            for (Mounted m : unit.getEquipment()) {
+            for (Mounted<?> m : unit.getEquipment()) {
                 if (m.getLocation() == mount.getLocation()) {
                     m.setMechTurretMounted(false);
                 }
@@ -335,13 +332,13 @@ public class UnitUtil {
         }
         if ((mount.getType() instanceof MiscType)
                 && mount.getType().hasFlag(MiscType.F_SPONSON_TURRET)) {
-            for (Mounted m : unit.getEquipment()) {
+            for (Mounted<?> m : unit.getEquipment()) {
                 m.setSponsonTurretMounted(false);
             }
         }
         if ((mount.getType() instanceof MiscType)
                 && mount.getType().hasFlag(MiscType.F_PINTLE_TURRET)) {
-            for (Mounted m : unit.getEquipment()) {
+            for (Mounted<?> m : unit.getEquipment()) {
                 if (m.getLocation() == mount.getLocation()) {
                     m.setPintleTurretMounted(false);
                 }
@@ -1316,7 +1313,12 @@ public class UnitUtil {
         // Removing equipment for construction purposes can shift the equipment indices.
         // We need to be able to update bay weapon and ammo indices. This includes
         // weapon bays and machine gun arrays.
-        List<Mounted> oldEquipmentList = new ArrayList<>(unit.getEquipment());
+        Map<WeaponMounted, List<WeaponMounted>> bayWeapons = new HashMap<>();
+        Map<WeaponMounted, List<AmmoMounted>> bayAmmo = new HashMap<>();
+        for (WeaponMounted m : unit.getTotalWeaponList()) {
+            bayWeapons.put(m, m.getBayWeapons());
+            bayAmmo.put(m, m.getBayAmmo());
+        }
         UnitUtil.removeOneShotAmmo(unit);
 
         if (unit instanceof Mech) {
@@ -1326,14 +1328,16 @@ public class UnitUtil {
         }
         // Replace bay weapon and ammo equipment numbers with the current index by looking
         // up the old index in the old list
-        for (Mounted<?> mounted : unit.getEquipment()) {
-            for (int i = 0; i < mounted.getBayWeapons().size(); i++) {
-                int eqNum = mounted.getBayWeapons().get(i);
-                mounted.getBayWeapons().set(i, unit.getEquipmentNum(oldEquipmentList.get(eqNum)));
-            }
-            for (int i = 0; i < mounted.getBayAmmo().size(); i++) {
-                int eqNum = mounted.getBayAmmo().get(i);
-                mounted.getBayAmmo().set(i, unit.getEquipmentNum(oldEquipmentList.get(eqNum)));
+        for (WeaponMounted bay : unit.getTotalWeaponList()) {
+            if (bayWeapons.containsKey(bay)) {
+                bay.clearBayWeapons();
+                bay.clearBayAmmo();
+                for (WeaponMounted w : bayWeapons.get(bay)) {
+                    bay.addWeaponToBay(w);
+                }
+                for (AmmoMounted a : bayAmmo.get(bay)) {
+                    bay.addAmmoToBay(a);
+                }
             }
         }
     }
@@ -1739,12 +1743,12 @@ public class UnitUtil {
                         && (bay.isRearMounted() ? includeRear : includeForward)) {
                     WeaponMounted newBay = (WeaponMounted) Mounted.createMounted(entity, bay.getType());
                     entity.addEquipment(newBay, toLoc, bay.isRearMounted());
-                    for (Integer eqNum : bay.getBayWeapons()) {
-                        Mounted<?> toAdd = copyEquipment(entity, toLoc, entity.getEquipment(eqNum), removed);
-                        newBay.addWeaponToBay(entity.getEquipmentNum(toAdd));
+                    for (WeaponMounted bayW : bay.getBayWeapons()) {
+                        WeaponMounted toAdd = (WeaponMounted) copyEquipment(entity, toLoc, bayW, removed);
+                        newBay.addWeaponToBay(toAdd);
                     }
-                    for (Integer eqNum : bay.getBayAmmo()) {
-                        Mounted<?> toAdd = copyEquipment(entity, toLoc, entity.getEquipment(eqNum), removed);
+                    for (AmmoMounted ammo : bay.getBayAmmo()) {
+                        Mounted<?> toAdd = copyEquipment(entity, toLoc, ammo, removed);
                         newBay.addAmmoToBay(entity.getEquipmentNum(toAdd));
                     }
                 }

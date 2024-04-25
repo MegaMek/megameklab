@@ -19,6 +19,7 @@
 package megameklab.printing;
 
 import megamek.common.*;
+import megamek.common.equipment.WeaponMounted;
 import megameklab.util.UnitUtil;
 import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
@@ -124,7 +125,7 @@ public class InventoryWriter {
         /**
          * Column types when printing weapon bays
          */
-        static Column[] BAY_COLUMNS = {BAY, LOCATION, HEAT, SRV, MRV, LRV, ERV};
+        final static Column[] BAY_COLUMNS = {BAY, LOCATION, HEAT, SRV, MRV, LRV, ERV};
     }
 
     private final List<StandardInventoryEntry> equipment;
@@ -214,7 +215,7 @@ public class InventoryWriter {
     }
 
     private void parseEquipment() {
-        for (Mounted m : sheet.getEntity().getEquipment()) {
+        for (Mounted<?> m : sheet.getEntity().getEquipment()) {
             if (m.isWeaponGroup()) {
                 continue;
             }
@@ -254,11 +255,10 @@ public class InventoryWriter {
     }
 
     private void parseBays() {
-        List<Mounted> standardWeapons = new ArrayList<>();
-        List<Mounted> capitalWeapons = new ArrayList<>();
-        for (Mounted m : sheet.getEntity().getWeaponList()) {
-            WeaponType wtype = (WeaponType) m.getType();
-            if (wtype.isCapital()) {
+        List<WeaponMounted> standardWeapons = new ArrayList<>();
+        List<WeaponMounted> capitalWeapons = new ArrayList<>();
+        for (WeaponMounted m : sheet.getEntity().getWeaponList()) {
+            if (m.getType().isCapital()) {
                 capitalWeapons.add(m);
             } else {
                 standardWeapons.add(m);
@@ -298,13 +298,12 @@ public class InventoryWriter {
      * @param weapons A list of weapon bays
      * @return A list of bays condensed by weapon type and symmetric location
      */
-    private List<WeaponBayText> computeWeaponBayTexts(List<Mounted> weapons) {
+    private List<WeaponBayText> computeWeaponBayTexts(List<WeaponMounted> weapons) {
         List<WeaponBayText> weaponBayTexts = new ArrayList<>();
         // Collection info on weapons to print
-        for (Mounted<?> bay : weapons) {
+        for (WeaponMounted bay : weapons) {
             WeaponBayText wbt = new WeaponBayText(bay.getLocation(), bay.isRearMounted());
-            for (Integer wId : bay.getBayWeapons()) {
-                Mounted weap = sheet.getEntity().getEquipment(wId);
+            for (WeaponMounted weap : bay.getBayWeapons()) {
                 wbt.addBayWeapon(weap);
             }
             // Combine or add
@@ -881,7 +880,7 @@ public class InventoryWriter {
                     // BA bays are shown per suit rather than squad
                     double capacity = b.getCapacity();
                     if (b instanceof BattleArmorBay) {
-                        if (((BattleArmorBay) b).isClan()) {
+                        if (b.isClan()) {
                             capacity *= 5;
                         } else if (((BattleArmorBay) b).isComStar()) {
                             capacity *= 6;
