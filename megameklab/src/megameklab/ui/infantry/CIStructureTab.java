@@ -464,10 +464,9 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
 
     @Override
     public void numFieldGunsChanged(final int count) {
-        Optional<EquipmentType> fieldGun = getInfantry().getWeaponList()
+        Optional<WeaponType> fieldGun = getInfantry().getWeaponList()
                 .stream().filter(m -> m.getLocation() == Infantry.LOC_FIELD_GUNS)
-                .map(Mounted::getType).filter(eq -> eq instanceof WeaponType)
-                .findAny();
+                .map(Mounted::getType).findAny();
         InfantryUtil.replaceFieldGun(getInfantry(), (WeaponType)fieldGun.orElse(null),
                 count);
         refresh.refreshStatus();

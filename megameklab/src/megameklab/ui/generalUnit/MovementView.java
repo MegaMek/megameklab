@@ -19,6 +19,7 @@
 package megameklab.ui.generalUnit;
 
 import megamek.common.*;
+import megamek.common.equipment.MiscMounted;
 import megamek.common.verifier.TestBattleArmor;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestMech;
@@ -179,7 +180,7 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
         industrial = (en instanceof Mech) && ((Mech) en).isIndustrial();
         refresh();
 
-        Optional<EquipmentType> jj = en.getMisc().stream().map(Mounted::getType)
+        Optional<MiscType> jj = en.getMisc().stream().map(Mounted::getType)
                 .filter(eq -> eq.hasFlag(MiscType.F_JUMP_JET) || eq.hasFlag(MiscType.F_UMU)
                         || eq.hasFlag(MiscType.F_JUMP_BOOSTER)).findAny();
         if (jj.isPresent()) {
@@ -384,7 +385,7 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
         } else if (en.hasWorkingMisc(MiscType.F_JET_BOOSTER)) {
             runTooltip.add("Jet Booster");
         }
-        Optional<Mounted> partialWing = en.getMisc().stream()
+        Optional<MiscMounted> partialWing = en.getMisc().stream()
                 .filter(m -> m.getType().hasFlag(MiscType.F_PARTIAL_WING)).findAny();
         if (partialWing.isPresent()) {
             int bonus = 2;

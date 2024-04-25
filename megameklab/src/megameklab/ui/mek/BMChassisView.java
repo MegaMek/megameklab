@@ -334,7 +334,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         setCockpitType(mech.getCockpitType());
         // A simple hasWorkingMisc() will not tell us whether we have IS or Clan MASC, so we need to search
         // the list for the first matching.
-        Optional<EquipmentType> enh = mech.getMisc().stream().map(Mounted::getType)
+        Optional<MiscType> enh = mech.getMisc().stream().map(Mounted::getType)
                 .filter(et -> (et.hasFlag(MiscType.F_MASC) && et.getSubType() == 0)
                     || et.hasFlag(MiscType.F_TSM)
                     || et.hasFlag(MiscType.F_INDUSTRIAL_TSM)

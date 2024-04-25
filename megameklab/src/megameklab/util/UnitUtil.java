@@ -21,6 +21,8 @@ package megameklab.util;
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
 import megamek.common.equipment.ArmorType;
+import megamek.common.equipment.MiscMounted;
+import megamek.common.equipment.WeaponMounted;
 import megamek.common.verifier.*;
 import megamek.common.verifier.TestEntity.Ceil;
 import megamek.common.weapons.*;
@@ -241,7 +243,7 @@ public class UnitUtil {
         // We will need to reset the equipment numbers of the bay ammo and weapons
         Map<Mounted,List<Mounted>> bayWeapons = new HashMap<>();
         Map<Mounted,List<Mounted>> bayAmmo = new HashMap<>();
-        for (Mounted bay : unit.getWeaponBayList()) {
+        for (Mounted<?> bay : unit.getWeaponBayList()) {
             List<Mounted> list = bay.getBayWeapons().stream()
                     .map(unit::getEquipment).collect(Collectors.toList());
             bayWeapons.put(bay, list);
@@ -1324,7 +1326,7 @@ public class UnitUtil {
         }
         // Replace bay weapon and ammo equipment numbers with the current index by looking
         // up the old index in the old list
-        for (Mounted mounted : unit.getEquipment()) {
+        for (Mounted<?> mounted : unit.getEquipment()) {
             for (int i = 0; i < mounted.getBayWeapons().size(); i++) {
                 int eqNum = mounted.getBayWeapons().get(i);
                 mounted.getBayWeapons().set(i, unit.getEquipmentNum(oldEquipmentList.get(eqNum)));
@@ -1729,27 +1731,27 @@ public class UnitUtil {
         // them. If the unit doesn't use bays, we will iterate through the crit slots to get the
         // equipment in the same order to be nice and tidy.
         if (entity.usesWeaponBays()) {
-            List<Mounted> bayList = entity.getWeaponBayList().stream()
+            List<WeaponMounted> bayList = entity.getWeaponBayList().stream()
                     .filter(bay -> (bay.getLocation() == fromLoc) && (bay.isRearMounted() ? includeRear : includeForward))
                     .collect(Collectors.toList());
-            for (Mounted bay : bayList) {
+            for (WeaponMounted bay : bayList) {
                 if ((bay.getLocation() == fromLoc)
                         && (bay.isRearMounted() ? includeRear : includeForward)) {
-                    Mounted newBay = new Mounted(entity, bay.getType());
+                    WeaponMounted newBay = (WeaponMounted) Mounted.createMounted(entity, bay.getType());
                     entity.addEquipment(newBay, toLoc, bay.isRearMounted());
                     for (Integer eqNum : bay.getBayWeapons()) {
-                        Mounted toAdd = copyEquipment(entity, toLoc, entity.getEquipment(eqNum), removed);
+                        Mounted<?> toAdd = copyEquipment(entity, toLoc, entity.getEquipment(eqNum), removed);
                         newBay.addWeaponToBay(entity.getEquipmentNum(toAdd));
                     }
                     for (Integer eqNum : bay.getBayAmmo()) {
-                        Mounted toAdd = copyEquipment(entity, toLoc, entity.getEquipment(eqNum), removed);
+                        Mounted<?> toAdd = copyEquipment(entity, toLoc, entity.getEquipment(eqNum), removed);
                         newBay.addAmmoToBay(entity.getEquipmentNum(toAdd));
                     }
                 }
             }
             // Now we copy any other equipment
-            bayList = new ArrayList<>(entity.getMisc());
-            for (Mounted m : bayList) {
+            List<MiscMounted> miscList = new ArrayList<>(entity.getMisc());
+            for (MiscMounted m : miscList) {
                 if ((m.getLocation() == fromLoc)
                         && (m.isRearMounted() ? includeRear : includeForward)) {
                     copyEquipment(entity, toLoc, m, removed);
@@ -1793,10 +1795,10 @@ public class UnitUtil {
         if (null != toAdd) {
             reuse.remove(toAdd);
         } else {
-            toAdd = new Mounted(entity, toCopy.getType());
+            toAdd = Mounted.createMounted(entity, toCopy.getType());
         }
         if (toCopy.getType() instanceof AmmoType) {
-            toAdd.setAmmoCapacity(toCopy.getAmmoCapacity());
+            toAdd.setSize(toCopy.getSize());
             toAdd.setShotsLeft(toCopy.getBaseShotsLeft());
         }
         entity.addEquipment(toAdd, toLoc, toCopy.isRearMounted());

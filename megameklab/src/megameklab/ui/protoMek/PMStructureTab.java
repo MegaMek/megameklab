@@ -34,6 +34,7 @@ import javax.swing.SwingConstants;
 import megamek.codeUtilities.MathUtility;
 import megamek.common.*;
 import megamek.common.equipment.ArmorType;
+import megamek.common.equipment.MiscMounted;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestProtomech;
 import megameklab.ui.EntitySource;
@@ -282,7 +283,7 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
         if (armor.getCriticals(getProtomech()) > 0) {
             if (freeUpSpace(Protomech.LOC_TORSO, armor.getCriticals(getProtomech()))) {
                 try {
-                    Mounted mount = new Mounted(getProtomech(), armor);
+                    Mounted<?> mount = Mounted.createMounted(getProtomech(), armor);
                     getProtomech().addEquipment(mount, Protomech.LOC_TORSO, false);
                     return;
                 } catch (LocationFullException ignored) {
@@ -425,7 +426,7 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
             getProtomech().autoSetInternal();
             getProtomech().initializeArmor(0, Protomech.LOC_LARM);
             getProtomech().initializeArmor(0, Protomech.LOC_RARM);
-            Optional<Mounted> qms = getProtomech().getMisc().stream().filter(m -> m.getType()
+            Optional<MiscMounted> qms = getProtomech().getMisc().stream().filter(m -> m.getType()
                     .hasFlag(MiscType.F_CLUB) && m.getType().hasSubType(MiscType.S_PROTO_QMS)).findFirst();
             if (qms.isPresent()) {
                 UnitUtil.removeMounted(getProtomech(), qms.get());
@@ -535,7 +536,7 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
         }
         while (jumpMP > jjs.size()) {
             try {
-                UnitUtil.addMounted(getProtomech(), new Mounted(getProtomech(), jumpJet),
+                UnitUtil.addMounted(getProtomech(), Mounted.createMounted(getProtomech(), jumpJet),
                         Protomech.LOC_BODY, false);
             } catch (LocationFullException e) {
                 // Shouldn't be able to fill location
@@ -686,7 +687,7 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
                     return;
                 }
             }
-            Mounted m = new Mounted(getProtomech(), eq);
+            Mounted m = Mounted.createMounted(getProtomech(), eq);
             try {
                 if (TestProtomech.requiresSlot(eq) && this.freeUpSpace(Protomech.LOC_TORSO, 1)) {
                         getProtomech().addEquipment(m, Protomech.LOC_TORSO, false);
@@ -697,11 +698,9 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
                 // We've already checked for enough space where there are limits
             }
         } else {
-            Optional<Mounted> mounted = getProtomech().getMisc().stream()
+            Optional<MiscMounted> mounted = getProtomech().getMisc().stream()
                     .filter(m -> eq.equals(m.getType())).findFirst();
-            if (mounted.isPresent()) {
-                UnitUtil.removeMounted(getProtomech(), mounted.get());
-            }
+            mounted.ifPresent(miscMounted -> UnitUtil.removeMounted(getProtomech(), miscMounted));
         }
         panMovement.setFromEntity(getProtomech());
         panSummary.refresh();

@@ -301,7 +301,7 @@ public class InventoryWriter {
     private List<WeaponBayText> computeWeaponBayTexts(List<Mounted> weapons) {
         List<WeaponBayText> weaponBayTexts = new ArrayList<>();
         // Collection info on weapons to print
-        for (Mounted bay : weapons) {
+        for (Mounted<?> bay : weapons) {
             WeaponBayText wbt = new WeaponBayText(bay.getLocation(), bay.isRearMounted());
             for (Integer wId : bay.getBayWeapons()) {
                 Mounted weap = sheet.getEntity().getEquipment(wId);

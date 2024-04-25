@@ -18,6 +18,7 @@ import megamek.codeUtilities.MathUtility;
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
 import megamek.common.equipment.ArmorType;
+import megamek.common.equipment.MiscMounted;
 import megamek.common.verifier.TestBattleArmor;
 import megamek.common.verifier.TestBattleArmor.BAManipulator;
 import megamek.common.verifier.TestEntity;
@@ -212,7 +213,7 @@ public class BAStructureTab extends ITab implements ActionListener, ChangeListen
      * @param model    The spinner's number model
      */
     private void refreshManipulatorSizes(int mountLoc, JSpinner spinner, SpinnerNumberModel model) {
-        Optional<Mounted> mounted = getBattleArmor().getMisc().stream()
+        Optional<MiscMounted> mounted = getBattleArmor().getMisc().stream()
                 .filter(m -> m.getType().hasFlag(MiscType.F_BA_MANIPULATOR) && (m.getBaMountLoc() == mountLoc))
                 .findFirst();
         if (mounted.isPresent() && mounted.get().getType().isVariableSize()) {
@@ -281,12 +282,12 @@ public class BAStructureTab extends ITab implements ActionListener, ChangeListen
     }
 
     private void setManipulator(BAManipulator manipulator, int mountLoc, boolean checkPaired) {
-        Mounted current = getManipulator(mountLoc);
+        MiscMounted current = getManipulator(mountLoc);
         if (current != null) {
             UnitUtil.removeMounted(getBattleArmor(), current);
         }
         if (manipulator != BAManipulator.NONE) {
-            Mounted newMount = new Mounted(getBattleArmor(), EquipmentType.get(manipulator.internalName));
+            MiscMounted newMount = new MiscMounted(getBattleArmor(), (MiscType) EquipmentType.get(manipulator.internalName));
             newMount.setBaMountLoc(mountLoc);
             try {
                 getBattleArmor().addEquipment(newMount, BattleArmor.LOC_SQUAD, false);
@@ -300,7 +301,7 @@ public class BAStructureTab extends ITab implements ActionListener, ChangeListen
             if (manipulator.pairMounted) {
                 setManipulator(manipulator, otherArm, false);
             } else if ((current != null) && isPairedManipulator(current.getType())) {
-                Mounted toRemove = getManipulator(otherArm);
+                MiscMounted toRemove = getManipulator(otherArm);
                 if (toRemove != null) {
                     UnitUtil.removeMounted(getBattleArmor(), toRemove);
                 }
@@ -308,7 +309,7 @@ public class BAStructureTab extends ITab implements ActionListener, ChangeListen
         }
     }
 
-    private @Nullable Mounted getManipulator(int mountLoc) {
+    private @Nullable MiscMounted getManipulator(int mountLoc) {
         return getBattleArmor().getMisc().stream()
                 .filter(m -> (m.getBaMountLoc() == mountLoc) && m.getType().hasFlag(MiscType.F_BA_MANIPULATOR))
                 .findFirst().orElse(null);
@@ -337,7 +338,7 @@ public class BAStructureTab extends ITab implements ActionListener, ChangeListen
     }
 
     private void setManipulatorSize(int mountLoc, double size) {
-        Optional<Mounted> mounted = getBattleArmor().getMisc().stream()
+        Optional<MiscMounted> mounted = getBattleArmor().getMisc().stream()
                 .filter(m -> m.getType().hasFlag(MiscType.F_BA_MANIPULATOR) && (m.getBaMountLoc() == mountLoc))
                 .findFirst();
         mounted.ifPresent(value -> value.setSize(size));
@@ -605,7 +606,7 @@ public class BAStructureTab extends ITab implements ActionListener, ChangeListen
                     numTimesToAdd = eq.getCriticals(getBattleArmor());
                 }
                 for (int i = 0; i < numTimesToAdd; i++) {
-                    Mounted newMount = new Mounted(getBattleArmor(), eq);
+                    Mounted newMount = Mounted.createMounted(getBattleArmor(), eq);
                     newMount.setBaMountLoc(loc);
                     getBattleArmor().addEquipment(newMount, BattleArmor.LOC_SQUAD, false);
                 }
@@ -646,7 +647,7 @@ public class BAStructureTab extends ITab implements ActionListener, ChangeListen
 
         for (; armorCount > 0; armorCount--) {
             try {
-                getBattleArmor().addEquipment(new Mounted(getBattleArmor(), armor),
+                getBattleArmor().addEquipment(Mounted.createMounted(getBattleArmor(), armor),
                         BattleArmor.LOC_SQUAD, false);
             } catch (Exception ex) {
                 LogManager.getLogger().error("", ex);

@@ -145,7 +145,7 @@ public class BMLAMFuelView extends IView implements ChangeListener {
     private void addTanks(int number) {
         for (int i = 0; i < number; i++) {
             try {
-                Mounted mount = new Mounted(getMech(), FUEL_TANK);
+                Mounted<?> mount = Mounted.createMounted(getMech(), FUEL_TANK);
                 getMech().addEquipment(mount, Entity.LOC_NONE, false);
             } catch (LocationFullException ignored) {
                 // this can't happen, we add to Entity.LOC_NONE

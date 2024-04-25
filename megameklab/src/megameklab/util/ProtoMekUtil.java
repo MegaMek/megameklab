@@ -49,12 +49,12 @@ public final class ProtoMekUtil {
 
     /** Adds the given number of shots to the already present given ammo on the given ProtoMek. */
     public static void addProtoMechAmmo(Protomech entity, EquipmentType ammo, int shots) throws LocationFullException {
-        Mounted aMount = entity.getAmmo().stream()
+        Mounted<?> aMount = entity.getAmmo().stream()
                 .filter(m -> ammo.equals(m.getType())).findFirst().orElse(null);
         if (null != aMount) {
             aMount.setShotsLeft(aMount.getUsableShotsLeft() + shots);
         } else {
-            Mounted mount = new Mounted(entity, ammo);
+            Mounted<?> mount = Mounted.createMounted(entity, ammo);
             entity.addEquipment(mount, Protomech.LOC_BODY, false);
             mount.setShotsLeft(shots);
         }
@@ -65,7 +65,7 @@ public final class ProtoMekUtil {
      * May remove the entire Mounted from the ProtoMek.
      */
     public static void reduceProtoMechAmmo(Protomech entity, EquipmentType ammo, int shots) {
-        Mounted aMount = entity.getAmmo().stream()
+        Mounted<?> aMount = entity.getAmmo().stream()
                 .filter(m -> ammo.equals(m.getType())).findFirst().orElse(null);
         if (aMount != null) {
             if (aMount.getUsableShotsLeft() <= shots) {
@@ -83,7 +83,7 @@ public final class ProtoMekUtil {
      * @param mount    The equipment to be added to the location
      * @return Whether the equipment can be added without exceeding the limits.
      */
-    public static boolean protomechHasRoom(Protomech proto, int location, Mounted mount) {
+    public static boolean protomechHasRoom(Protomech proto, int location, Mounted<?> mount) {
         if (!TestProtomech.requiresSlot(mount.getType())) {
             return true;
         }
@@ -93,7 +93,7 @@ public final class ProtoMekUtil {
         if ((slots < 0) || (weight < 0)) {
             return false;
         }
-        for (Mounted m : proto.getEquipment()) {
+        for (Mounted<?> m : proto.getEquipment()) {
             if (m.getLocation() == location) {
                 slots--;
                 weight -= m.getTonnage();
