@@ -1045,7 +1045,9 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
 
         String filePathName = owner.getFileName();
         // For safety, save automatically only to .mtf or .blk files, otherwise ask
-        if (!(filePathName.endsWith(".mtf") || filePathName.endsWith(".blk")) || !new File(filePathName).exists()) {
+        if (!(filePathName.endsWith(".mtf") || filePathName.endsWith(".blk"))
+                || !new File(filePathName).exists()
+                || owner.hasEntityNameChanged()) {
             File selectedFile = chooseSaveFile();
             if (selectedFile == null) {
                 return false;
