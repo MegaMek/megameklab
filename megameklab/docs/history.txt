@@ -4,6 +4,7 @@ MEGAMEKLAB VERSION HISTORY:
 + PR #1486: Code internals: DialogOptionsListener update
 + Fix #1494: Heavy gauss rifles can no longer be mounted in mek turrets
 + Fix #1490: Upon saving a unit that was loaded from file, MML will now always ask for a new filename when that unit's name is changed
++ Fix #1497: BA Partial Wing bonus tooltip incorrectly listed +2 instead of +1
 
 0.49.19 (2024-04-19 2030 UTC)
 + Fix MML#1430: Fixes issue with SV armor weight and space calculations
