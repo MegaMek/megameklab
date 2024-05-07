@@ -22,7 +22,7 @@ allprojects {
 
 subprojects {
     group = 'org.megamek'
-    version = '0.49.19'
+    version = '0.49.19.1'
 }
 
 ext {
@@ -35,7 +35,7 @@ ext {
     mmlBranchTag = mmlBranch.equals('master') ? '' : '-' + mmlBranch
 
     // Allows setting a dependency on a different MM branch.
-    mmBranch = 'master'
+    mmBranch = '0.49.19.1'
     mmBranchTag = mmBranch.equals('master') ? '' : '-' + mmBranch
 
     mmDir = "${rootDir}/../megamek"
