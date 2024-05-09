@@ -2,6 +2,8 @@ MEGAMEKLAB VERSION HISTORY:
 ----------------
 0.49.19.1 (2024-05-06 1744 UTC)
 + Fix MML#1498: Add separate handling for BA PW jump bonus tooltip
++ Commit 8555ebe data fixes
++ Fix for Commando filename collisions
 
 0.49.19 (2024-04-19 2030 UTC)
 + Fix MML#1430: Fixes issue with SV armor weight and space calculations
