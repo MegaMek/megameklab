@@ -7,6 +7,9 @@ MEGAMEKLAB VERSION HISTORY:
 + Fix #1497: BA Partial Wing bonus tooltip incorrectly listed +2 instead of +1
 + PR #1507: Fix missing Fighter Return Table column header in CF sheets
 
+0.49.19.1 (2024-05-14 1800 UTC)
++ Milestone Release. Backported fixes.
+
 0.49.19 (2024-04-19 2030 UTC)
 + Fix MML#1430: Fixes issue with SV armor weight and space calculations
 + Fix MML#1429: Fixes a bug with aero construction in MML
@@ -26,16 +29,16 @@ MEGAMEKLAB VERSION HISTORY:
 + Fix #1307: Improves Targeting Computer placement
 + PR #1447: Manual Pagebreaks can now be added in the print queue
 + PR #1451: Add a button to the fluff tab to remove an embedded fluff image
-+ PR #1457: Print queue interface improvements 
-+ PR #1462: When printing from MUL, calculate BV from C3/Tag 
++ PR #1457: Print queue interface improvements
++ PR #1462: When printing from MUL, calculate BV from C3/Tag
 + Fix #1306: BA manipulator will no longer stack up during construction
 + PR #1465: With the setting 'Use game year' enabled, that year is used in the unit selector to determine the tech level
 + Fix #1466: Field Guns available as Standard Tech Level
 + Fix #1343: Match critical slot sort order to specification
-+ PR #1473: MML portion of fix for MHQ 3803: Fixed WOB.pm/PM mismatch 
++ PR #1473: MML portion of fix for MHQ 3803: Fixed WOB.pm/PM mismatch
 + Fix #1315: Industrial tripod cockpit fixes
 + Fix MM #5252: critical assignment tab eq list missing keywords like "Ammo" and "[Half]" or "[Full]"
-+ PR #1478: Show a warning when attempting to print the invalid current unit 
++ PR #1478: Show a warning when attempting to print the invalid current unit
 
 0.49.18 (2024-02-17 1800 UTC)
 + Fix #1370: Closing a unit selection dialog without selecting a unit no longer leads to an error message displayed
@@ -69,15 +72,15 @@ MEGAMEKLAB VERSION HISTORY:
 + Fix #1405: Fixed a bug with resetting system crits that lead to what seemed conflicts between XLFE, NullSig, and CLPS
 + Fix #1192: Fixed a bug with internal weapon and equipment linkage that lead to laser insulators sometimes affecting multiple lasers
 + PR #1402, #1412, #1417: Rework of the internal representation of Armor
-+ PR #1410: Adaptation to Mek Clan name separation in MM; Adds a clan chassis name field for Meks; for units such as the Mad Cat, 
++ PR #1410: Adaptation to Mek Clan name separation in MM; Adds a clan chassis name field for Meks; for units such as the Mad Cat,
             the IS name and clan name can be reordered on record sheets
 + PR #1411: StatusBar: calculate the correct total max weight for BA
 + Fix #1400: VTOLS print with an incorrect Hit chart
 + Fix #1203: Allow construction of BA exoskeleton before 2710
 + PR #1428: Use the configurable unit summary in MML
-+ PR #1427: Debug helper update  
++ PR #1427: Debug helper update
 + Fix #1419: Fix automatic placement of armors without crit requirement
-+ Fix #1421: Remove misc heat duplication in the status bar 
++ Fix #1421: Remove misc heat duplication in the status bar
 
 0.49.17 (2023-12-31 1900 UTC)
 + PR #1352 MML interface changes
@@ -97,9 +100,9 @@ MEGAMEKLAB VERSION HISTORY:
 + PR #1355: StatusBar: correct free slot displays
 + PR #1352: Adds an option to start MML in its splash screen (current behavior) or directly load the most recent unit or start on a new unit of a choosable type;
             Most file choosers now use Swing's JFileChooser and remember their size and position as well as the last directory; also file extension filters have been added where applicable;
-            Recent files will now behave as such 
+            Recent files will now behave as such
             All unit type main UIs now individually remember their size and position; there is a menu item to reset all window positions;
-            It is now possible to import settings from another MML setup. 
+            It is now possible to import settings from another MML setup.
             Save As now uses the accelerator Ctrl-Shift-S instead of Ctrl-A (which doesnt work as it does a select-all)
 
 0.49.15 (2023-10-21 1530 UTC)
@@ -159,7 +162,7 @@ MEGAMEKLAB VERSION HISTORY:
 + Issue #1176: Improve visibility of armor type on many Record Sheets
 + Issue #1197: Allow split weapons between CT and H
 + Issue #1196: Improve visibility of the structure type on RS and resize the armor type
-+ PR #1201: Add the AS Card to MML's Preview Panel  
++ PR #1201: Add the AS Card to MML's Preview Panel
 + PR #1206: Java 17 CI
 + Updating to Apache PDFBox 2.0.27 from 2.0.26
 + Updating to FlatLAF 2.6 from 2.4
@@ -228,7 +231,7 @@ MEGAMEKLAB VERSION HISTORY:
 + Issue #1034: Actually Return the Calculated JumpShip SRCS Mass
 + Issue #1025: Adding MagLev Engine weights
 + Issue #1104: Allow Single Suit Battle Armour Units
-+ PR #1134: Improvements to Fluff Image folders and printing. 
++ PR #1134: Improvements to Fluff Image folders and printing.
 + Updating to JAXB 4.0.0 from 2.3.2
 + Updating to Launch4j 2.5.3 from 2.5.1
 + Updating to Log4j2 2.17.2 from 2.17.1
@@ -342,11 +345,11 @@ MEGAMEKLAB VERSION HISTORY:
 + Issue #824: Rocket launchers and large craft
 + Issue #826: Fix Hit Location Table title typo
 
-0.47.13 (2020-11-09 1600 UTC) 
+0.47.13 (2020-11-09 1600 UTC)
 + Issue #821: Primitive Armor on large spacecraft errors
 + Issue #823: Primitive DropShip engine and control mass by year not applied correctly
 
-0.47.12 (2020-11-08 2230 UTC) 
+0.47.12 (2020-11-08 2230 UTC)
 + Issue #761: Cost of communications equipment does not reflect size
 + Issue #758: Damage notation for torpedoes and prototype rockets incorrect
 + Issue #762: No cost for heat sinks and power amplifier for spot welders on ICE vehicles
@@ -355,7 +358,7 @@ MEGAMEKLAB VERSION HISTORY:
 + Issue #773: Superheavy IndustrialMechs fail validation
 + Issue #793: IndustrialMechs with DHS loaded as SHS
 + Issue #770: Status message about unallocated heat sinks is confusing
-+ Issue #775: Quarters on large aerospace craft again have a c-bill cost, but other bays do not 
++ Issue #775: Quarters on large aerospace craft again have a c-bill cost, but other bays do not
 + Issue #777: Direct Neural Interface blanks out Summary and TRO
 + Issue #784: Sub-Cap Ammo weight discrepancy
 + PR #801: Printing progress bar and memory use improvement
@@ -427,7 +430,7 @@ MEGAMEKLAB VERSION HISTORY:
 + Issue #681: StringIndexOutOfBoundsException errors, possibly a problem loading Mission Equipment Storage
 + Issue #682: Equipment from older version of MML failing to load
 + Issue #679: LRM/SRM bays on large aerospace units do not reflect damage increase from Artemis IV
-+ Issue #695: Specialized Infantry, No Secondary Weapons error with no 2nd weapons 
++ Issue #695: Specialized Infantry, No Secondary Weapons error with no 2nd weapons
 + Issue #705: External engine type in Rail Support Vehicle causes load failure
 + Issue #703: Printing issues for HMG and VSP
 + Issue #708: Heavy Vibro-Claw causes NPE
@@ -547,7 +550,7 @@ v0.47.4 (2020-2-09 2200 UTC)
 + Issue #433: Infantry not retaining specializations or equipment
 + PR #434: Expand theme support and include dark themes
 
-v0.47.3 (2020-2-01 2200 UTC) 
+v0.47.3 (2020-2-01 2200 UTC)
 + Issue #371: Capital Missile Bays wrongly grouped as Tele (also warnings on load)
 + Issue #375: Maximum armor calculation is incorrect for Warships
 + Issue #376: Can't build Primitive JumpShips
@@ -730,7 +733,7 @@ v0.43.7-RC1 (2018-01-21 22:00 UTC)
 + Issue #126: LAM split crit weapons erroneous warning
 + Issue #127: Combat Vehicle Internal Structure Calculation
 + Added "Show Unavailable" checkbox to equipment tab that will show equipment that is filtered out so user
-  can check intro dates and tech levels. 
+  can check intro dates and tech levels.
 + Issue #129: Fusion Powered vehicle has no shielding
 + PR #130: Embedded fonts for mech record sheet printing.
 + Issue #132: Aero heat sinks added as pod-mounted on non-omnifighter.
@@ -768,7 +771,7 @@ v0.43.5 (2017-12-17 11:00 UTC)
   o Unit-specific sheets for LAMs and QuadVees
   o Move layout info into the svg files to allow for custom record sheets without need to alter code.
   o Show quirks and SPAs on record sheet (SPAs require printing from a mul file which contains the pilot data).
-+ Issue #22: Can't print Superheavy 'mechs  
++ Issue #22: Can't print Superheavy 'mechs
 + Issue #106: LAM landing gear not placed correctly with compact engine or gyro.
 + Issue #117: VTOL Jet Booster not showing
 + Issue #116: Vehicle Grenade Launcher not being applied to mechs.
