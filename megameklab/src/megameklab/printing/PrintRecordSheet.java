@@ -221,6 +221,10 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         }
     }
 
+    private void shadeTableRows() {
+        hideElement(ROW_SHADING, !options.useRowShading());
+    }
+
     /**
      * Creates a {@link Document} from an svg image file
      *
@@ -290,6 +294,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         }
         subFonts((SVGDocument) getSVGDocument());
         subColorElements();
+        shadeTableRows();
         SVGGeneratorContext context = SVGGeneratorContext.createDefault(getSVGDocument());
         svgGenerator = new SVGGraphics2D(context, false);
         double ratio = Math.min(pageFormat.getImageableWidth() / (options.getPaperSize().pxWidth - 36),
