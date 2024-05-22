@@ -34,6 +34,7 @@ public class RecordSheetOptions {
     private boolean eraBasedProgression;
     private boolean referenceCharts;
     private boolean condensedReferenceCharts;
+    private boolean rowShading;
 
     public RecordSheetOptions() {
         String paper = CConfig.getParam(CConfig.RS_PAPER_SIZE, PaperSize.US_LETTER.name());
@@ -52,6 +53,7 @@ public class RecordSheetOptions {
         this.eraBasedProgression = CConfig.getBooleanParam(CConfig.TECH_PROGRESSION);
         this.referenceCharts = CConfig.getBooleanParam(CConfig.RS_REFERENCE);
         this.condensedReferenceCharts = CConfig.getBooleanParam(CConfig.RS_CONDENSED_REFERENCE);
+        this.rowShading = CConfig.getBooleanParam(CConfig.RS_ROW_SHADING);
     }
 
     public RecordSheetOptions(RecordSheetOptions options) {
@@ -66,6 +68,7 @@ public class RecordSheetOptions {
         eraBasedProgression = options.eraBasedProgression;
         referenceCharts = options.referenceCharts;
         condensedReferenceCharts = options.condensedReferenceCharts;
+        rowShading = options.rowShading;
     }
 
     public PaperSize getPaperSize() {
@@ -116,6 +119,10 @@ public class RecordSheetOptions {
         return condensedReferenceCharts;
     }
 
+    public boolean useRowShading() {
+        return rowShading;
+    }
+
     public void setPaperSize(PaperSize paperSize) {
         this.paperSize = paperSize;
     }
@@ -150,5 +157,9 @@ public class RecordSheetOptions {
 
     public void setCondensedReferenceCharts(boolean charts) {
         this.condensedReferenceCharts = charts;
+    }
+
+    public void setRowShading(boolean rowShading) {
+        this.rowShading = rowShading;
     }
 }

@@ -57,6 +57,7 @@ class ExportSettingsPanel extends JPanel {
     private final IntRangeTextField txtScale = new IntRangeTextField(3);
     private final MMComboBox<MekChassisArrangement> mekChassis =
             new MMComboBox<>("Mek Names", MekChassisArrangement.values());
+    private final JCheckBox chkRowShading = new JCheckBox();
 
     ExportSettingsPanel() {
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Dialogs");
@@ -101,6 +102,10 @@ class ExportSettingsPanel extends JPanel {
         chkColor.setText(resourceMap.getString("ConfigurationDialog.chkColor.text"));
         chkColor.setToolTipText(resourceMap.getString("ConfigurationDialog.chkColor.tooltip"));
         chkColor.setSelected(CConfig.getBooleanParam(CConfig.RS_COLOR));
+
+        chkRowShading.setText(resourceMap.getString("ConfigurationDialog.chkRowShading.text"));
+        chkRowShading.setToolTipText(resourceMap.getString("ConfigurationDialog.chkRowShading.tooltip"));
+        chkRowShading.setSelected(CConfig.getBooleanParam(CConfig.RS_ROW_SHADING));
 
         chkShowReferenceTables.setText(resourceMap.getString("ConfigurationDialog.chkShowReferenceTables.text"));
         chkShowReferenceTables.setToolTipText(resourceMap.getString("ConfigurationDialog.chkShowReferenceTables.tooltip"));
@@ -169,6 +174,7 @@ class ExportSettingsPanel extends JPanel {
         gridPanel.add(paperPanel);
         gridPanel.add(fontPanel);
         gridPanel.add(chkColor);
+        gridPanel.add(chkRowShading);
         gridPanel.add(chkShowReferenceTables);
         gridPanel.add(chkShowCondensedTables);
         gridPanel.add(chkShowQuirks);
@@ -179,7 +185,7 @@ class ExportSettingsPanel extends JPanel {
         gridPanel.add(chkTacOpsHeat);
         gridPanel.add(mekNameLine);
         gridPanel.add(scalePanel);
-        SpringUtilities.makeCompactGrid(gridPanel, 14, 1, 0, 0, 15, 10);
+        SpringUtilities.makeCompactGrid(gridPanel, 15, 1, 0, 0, 15, 8);
         gridPanel.setBorder(new EmptyBorder(20, 30, 20, 30));
         setLayout(new FlowLayout(FlowLayout.LEFT));
         add(gridPanel);
@@ -191,6 +197,7 @@ class ExportSettingsPanel extends JPanel {
         recordSheetSettings.put(CConfig.RS_FONT, (String) cbFont.getSelectedItem());
         recordSheetSettings.put(CConfig.RS_PROGRESS_BAR, String.valueOf(chkProgressBar.isSelected()));
         recordSheetSettings.put(CConfig.RS_COLOR, Boolean.toString(chkColor.isSelected()));
+        recordSheetSettings.put(CConfig.RS_ROW_SHADING, Boolean.toString(chkRowShading.isSelected()));
         recordSheetSettings.put(CConfig.RS_REFERENCE, Boolean.toString(chkShowReferenceTables.isSelected()));
         recordSheetSettings.put(CConfig.RS_CONDENSED_REFERENCE, Boolean.toString(chkShowCondensedTables.isSelected()));
         recordSheetSettings.put(CConfig.RS_SHOW_QUIRKS, Boolean.toString(chkShowQuirks.isSelected()));

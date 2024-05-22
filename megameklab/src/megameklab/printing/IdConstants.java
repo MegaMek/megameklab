@@ -28,6 +28,7 @@ public interface IdConstants {
     String COPYRIGHT = "tspanCopyright";
     String TITLE = "title";
     String UNIT_SCALE = "unitScale";
+    String ROW_SHADING = "tableshading";
 
     String TYPE = "type";
     String TYPE2 = "type2";
