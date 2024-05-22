@@ -6,6 +6,7 @@ MEGAMEKLAB VERSION HISTORY:
 + Fix #1490: Upon saving a unit that was loaded from file, MML will now always ask for a new filename when that unit's name is changed
 + Fix #1497: BA Partial Wing bonus tooltip incorrectly listed +2 instead of +1
 + PR #1507: Fix missing Fighter Return Table column header in CF sheets
++ PR #1510: Improve readability of tables
 
 0.49.19.1 (2024-05-14 1800 UTC)
 + Milestone Release. Backported fixes.
