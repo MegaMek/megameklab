@@ -27,14 +27,14 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:zoom="2.91067"
-     inkscape:cx="254.40878"
-     inkscape:cy="664.96718"
+     inkscape:cx="512.08141"
+     inkscape:cy="659.12659"
      inkscape:window-width="2560"
      inkscape:window-height="1369"
      inkscape:window-x="3832"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
-     inkscape:current-layer="g335" />
+     inkscape:current-layer="rs_template" />
   <g
      style="mml-color-elements:btLogo,cglLogo"
      id="rs_template">
@@ -1175,6 +1175,66 @@
              id="text227">BURST-FIRE WEAPON DAMAGE VS. CONVENTIONAL INFANTRY</text>
         </g>
       </g>
+      <g
+         id="shade1"
+         class="tableshading"
+         style="fill:#bbbbbb"
+         transform="translate(0,-565)">
+        <rect
+           id="rect327"
+           width="260"
+           height="6.5"
+           x="7"
+           y="610.5" />
+        <rect
+           id="rect328"
+           width="260"
+           height="6.5"
+           x="7"
+           y="623.5" />
+        <rect
+           id="rect329"
+           width="260"
+           height="6.5"
+           x="7"
+           y="637" />
+      </g>
+      <g
+         id="shade2"
+         transform="translate(0,-559.5)"
+         class="tableshading"
+         style="fill:#bbbbbb">
+        <rect
+           id="rect330"
+           width="260"
+           height="6.5"
+           x="7"
+           y="671" />
+        <rect
+           id="rect331"
+           width="260"
+           height="6.5"
+           x="7"
+           y="684" />
+        <rect
+           id="rect332"
+           width="260"
+           height="6.5"
+           x="7"
+           y="697" />
+        <rect
+           id="rect333"
+           width="260"
+           height="6.5"
+           x="7"
+           y="710.5" />
+        <rect
+           id="rect334"
+           width="260"
+           height="6.5"
+           x="7"
+           y="723.5" />
+      </g>
       <text
          fill="#231f20"
          x="10.860"
@@ -1372,6 +1432,30 @@
              lengthAdjust="spacingAndGlyphs"
              id="text268">NON-INFANTRY WEAPON AGAINST INFANTRY</text>
         </g>
+      </g>
+      <g
+         id="shade3"
+         transform="translate(-291,-574)"
+         class="tableshading"
+         style="fill:#bbbbbb">
+        <rect
+           id="rect334-9"
+           width="260"
+           height="7"
+           x="297"
+           y="616" />
+        <rect
+           id="rect335"
+           width="260"
+           height="7"
+           x="297"
+           y="631" />
+        <rect
+           id="rect336"
+           width="260"
+           height="7"
+           x="297"
+           y="646" />
       </g>
       <text
          fill="#231f20"
@@ -2006,98 +2090,6 @@
                id="path324" />
           </g>
         </g>
-      </g>
-    </g>
-    <g
-       id="tableshading"
-       transform="translate(0,33)">
-      <g
-         id="g329">
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect327"
-           width="260"
-           height="6.5"
-           x="7"
-           y="610.5" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect328"
-           width="260"
-           height="6.5"
-           x="7"
-           y="623.5" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect329"
-           width="260"
-           height="6.5"
-           x="7"
-           y="637" />
-      </g>
-      <g
-         id="g330"
-         transform="translate(0,12)">
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect330"
-           width="260"
-           height="6.5"
-           x="7"
-           y="671" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect331"
-           width="260"
-           height="6.5"
-           x="7"
-           y="684" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect332"
-           width="260"
-           height="6.5"
-           x="7"
-           y="697" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect333"
-           width="260"
-           height="6.5"
-           x="7"
-           y="710.5" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect334"
-           width="260"
-           height="6.5"
-           x="7"
-           y="723.5" />
-      </g>
-      <g
-         id="g335"
-         transform="translate(-8,6)">
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect334-9"
-           width="260"
-           height="7"
-           x="297"
-           y="616" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect335"
-           width="260"
-           height="7"
-           x="297"
-           y="631" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect336"
-           width="260"
-           height="7"
-           x="297"
-           y="646" />
       </g>
     </g>
   </g>

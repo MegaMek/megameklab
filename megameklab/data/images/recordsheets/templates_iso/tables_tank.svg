@@ -25,15 +25,15 @@
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="2.9325"
-     inkscape:cx="279.45439"
-     inkscape:cy="172.71952"
+     inkscape:zoom="4.1471813"
+     inkscape:cx="259.57389"
+     inkscape:cy="243.41834"
      inkscape:window-width="2560"
      inkscape:window-height="1369"
      inkscape:window-x="3832"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
-     inkscape:current-layer="tableshading" />
+     inkscape:current-layer="g155" />
   <g
      style="mml-color-elements:"
      id="rs_template">
@@ -91,6 +91,42 @@
              lengthAdjust="spacingAndGlyphs"
              id="text3">GROUND COMBAT VEHICLE HIT LOCATION</text>
         </g>
+      </g>
+      <g
+         id="shade1"
+         class="tableshading"
+         style="fill:#bbbbbb"
+         transform="translate(0,-3)">
+        <rect
+           id="rect155"
+           width="256"
+           height="7"
+           x="24"
+           y="43.5" />
+        <rect
+           id="rect156"
+           width="256"
+           height="7"
+           x="24"
+           y="57.5" />
+        <rect
+           id="rect157"
+           width="256"
+           height="7"
+           x="24"
+           y="71.5" />
+        <rect
+           id="rect158"
+           width="256"
+           height="7"
+           x="24"
+           y="85.5" />
+        <rect
+           id="rect159"
+           width="256"
+           height="7"
+           x="24"
+           y="99.5" />
       </g>
       <text
          fill="#231f20"
@@ -682,6 +718,36 @@
              id="text109">GROUND COMBAT VEHICLE CRITICALS TABLE</text>
         </g>
       </g>
+      <g
+         id="shade2"
+         transform="translate(-5.5,-219.5)"
+         class="tableshading"
+         style="fill:#bbbbbb">
+        <rect
+           id="rect160"
+           width="418"
+           height="8"
+           x="77"
+           y="263" />
+        <rect
+           id="rect161"
+           width="418"
+           height="8"
+           x="77"
+           y="279" />
+        <rect
+           id="rect162"
+           width="418"
+           height="8"
+           x="77"
+           y="295" />
+        <rect
+           id="rect163"
+           width="418"
+           height="8"
+           x="77"
+           y="311" />
+      </g>
       <text
          fill="#231f20"
          x="297.540"
@@ -851,79 +917,6 @@
          style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal"
          text-anchor="start"
          id="text155">** If Combat Vehicle carries no ammunition, treat this result as Weapon Destroyed.</text>
-    </g>
-    <g
-       id="tableshading">
-      <g
-         id="g159">
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect155"
-           width="256"
-           height="7"
-           x="24"
-           y="43.5" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect156"
-           width="256"
-           height="7"
-           x="24"
-           y="57.5" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect157"
-           width="256"
-           height="7"
-           x="24"
-           y="71.5" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect158"
-           width="256"
-           height="7"
-           x="24"
-           y="85.5" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect159"
-           width="256"
-           height="7"
-           x="24"
-           y="99.5" />
-      </g>
-      <g
-         id="g160"
-         transform="translate(0,15)">
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect160"
-           width="418"
-           height="8"
-           x="77"
-           y="263" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect161"
-           width="418"
-           height="8"
-           x="77"
-           y="279" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect162"
-           width="418"
-           height="8"
-           x="77"
-           y="295" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect163"
-           width="418"
-           height="8"
-           x="77"
-           y="311" />
-      </g>
     </g>
   </g>
 </svg>
