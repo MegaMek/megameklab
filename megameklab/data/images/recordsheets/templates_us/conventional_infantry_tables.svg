@@ -26,9 +26,9 @@
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="4.3885516"
-     inkscape:cx="472.70721"
-     inkscape:cy="662.2914"
+     inkscape:zoom="3.1031746"
+     inkscape:cx="386.53964"
+     inkscape:cy="573.44501"
      inkscape:window-width="2560"
      inkscape:window-height="1369"
      inkscape:window-x="3832"
@@ -1183,6 +1183,30 @@
          text-anchor="start"
          id="text228">'MECHS, PROTOMECHS AND VEHICLES</text>
       <g
+         id="shade1"
+         class="tableshading"
+         style="fill:#bbbbbb"
+         transform="translate(0,-567)">
+        <rect
+           id="rect327"
+           width="268"
+           height="6"
+           x="7"
+           y="610.5" />
+        <rect
+           id="rect328"
+           width="268"
+           height="6"
+           x="7"
+           y="622.5" />
+        <rect
+           id="rect329"
+           width="268"
+           height="6"
+           x="7"
+           y="634.5" />
+      </g>
+      <g
          transform="translate (0.000 36.240)"
          id="g241">
         <text
@@ -1247,6 +1271,42 @@
          style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal"
          text-anchor="start"
          id="text242">BATTLE ARMOR</text>
+      <g
+         id="shade2"
+         class="tableshading"
+         style="fill:#bbbbbb"
+         transform="translate(0,-567)">
+        <rect
+           id="rect330"
+           width="268"
+           height="6"
+           x="7"
+           y="671" />
+        <rect
+           id="rect331"
+           width="268"
+           height="6"
+           x="7"
+           y="683.5" />
+        <rect
+           id="rect332"
+           width="268"
+           height="6"
+           x="7"
+           y="695.5" />
+        <rect
+           id="rect333"
+           width="268"
+           height="6"
+           x="7"
+           y="707.5" />
+        <rect
+           id="rect334"
+           width="268"
+           height="6"
+           x="7"
+           y="720" />
+      </g>
       <g
          transform="translate (0.000 97.040)"
          id="g265">
@@ -1380,6 +1440,30 @@
          style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal"
          text-anchor="middle"
          id="text269">NUMBER OF CONVENTIONAL</text>
+      <g
+         id="shade3"
+         class="tableshading"
+         style="fill:#bbbbbb"
+         transform="translate(-291,-575)">
+        <rect
+           id="rect334-9"
+           width="268"
+           height="6"
+           x="297"
+           y="615.5" />
+        <rect
+           id="rect335"
+           width="268"
+           height="6"
+           x="297"
+           y="629.5" />
+        <rect
+           id="rect336"
+           width="268"
+           height="6"
+           x="297"
+           y="643" />
+      </g>
       <g
          transform="translate (0.000 31.694)"
          id="g284">
@@ -2006,95 +2090,6 @@
                id="path324" />
           </g>
         </g>
-      </g>
-    </g>
-    <g
-       id="tableshading">
-      <g
-         id="g329">
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect327"
-           width="268"
-           height="6"
-           x="7"
-           y="610.5" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect328"
-           width="268"
-           height="6"
-           x="7"
-           y="622.5" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect329"
-           width="268"
-           height="6"
-           x="7"
-           y="634.5" />
-      </g>
-      <g
-         id="g330">
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect330"
-           width="268"
-           height="6"
-           x="7"
-           y="671" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect331"
-           width="268"
-           height="6"
-           x="7"
-           y="683.5" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect332"
-           width="268"
-           height="6"
-           x="7"
-           y="695.5" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect333"
-           width="268"
-           height="6"
-           x="7"
-           y="707.5" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect334"
-           width="268"
-           height="6"
-           x="7"
-           y="720" />
-      </g>
-      <g
-         id="g335">
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect334-9"
-           width="268"
-           height="6"
-           x="297"
-           y="615.5" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect335"
-           width="268"
-           height="6"
-           x="297"
-           y="629.5" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect336"
-           width="268"
-           height="6"
-           x="297"
-           y="643" />
       </g>
     </g>
   </g>

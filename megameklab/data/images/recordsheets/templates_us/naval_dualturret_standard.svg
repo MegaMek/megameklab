@@ -34,7 +34,7 @@
      inkscape:window-x="3832"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
-     inkscape:current-layer="tableshading" />
+     inkscape:current-layer="rs_template" />
   <g
      style="mml-color-elements:btLogo,cglLogo"
      id="rs_template">
@@ -3784,6 +3784,42 @@
          text-anchor="middle"
          id="text320">ATTACK DIRECTION</text>
       <g
+         id="shade1"
+         transform="translate(-16.5,-3)"
+         style="fill:#bbbbbb"
+         class="tableshading">
+        <rect
+           id="rect155"
+           width="210"
+           height="7"
+           x="24"
+           y="43.5" />
+        <rect
+           id="rect156"
+           width="210"
+           height="7"
+           x="24"
+           y="57.5" />
+        <rect
+           id="rect157"
+           width="210"
+           height="7"
+           x="24"
+           y="71.5" />
+        <rect
+           id="rect158"
+           width="210"
+           height="7"
+           x="24"
+           y="85.5" />
+        <rect
+           id="rect159"
+           width="210"
+           height="7"
+           x="24"
+           y="99.5" />
+      </g>
+      <g
          transform="translate (0.000 32.000)"
          id="g366">
         <text
@@ -4406,6 +4442,36 @@
          text-anchor="middle"
          id="text430">LOCATION HIT</text>
       <g
+         id="shade2"
+         style="fill:#bbbbbb"
+         class="tableshading"
+         transform="translate(-65,-219.5)">
+        <rect
+           id="rect160"
+           width="360"
+           height="8"
+           x="77"
+           y="263" />
+        <rect
+           id="rect161"
+           width="360"
+           height="8"
+           x="77"
+           y="279" />
+        <rect
+           id="rect162"
+           width="360"
+           height="8"
+           x="77"
+           y="295" />
+        <rect
+           id="rect163"
+           width="360"
+           height="8"
+           x="77"
+           y="311" />
+      </g>
+      <g
          transform="translate (0.000 34.000)"
          id="g473">
         <text
@@ -4567,80 +4633,6 @@
          style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal"
          text-anchor="start"
          id="text475">** If Combat Vehicle carries no ammunition, treat this result as Weapon Destroyed.</text>
-    </g>
-    <g
-       id="tableshading"
-       transform="translate(-66,364)">
-      <g
-         id="g159"
-         transform="translate(50,1)">
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect155"
-           width="210"
-           height="7"
-           x="24"
-           y="43.5" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect156"
-           width="210"
-           height="7"
-           x="24"
-           y="57.5" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect157"
-           width="210"
-           height="7"
-           x="24"
-           y="71.5" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect158"
-           width="210"
-           height="7"
-           x="24"
-           y="85.5" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect159"
-           width="210"
-           height="7"
-           x="24"
-           y="99.5" />
-      </g>
-      <g
-         id="g160">
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect160"
-           width="360"
-           height="8"
-           x="77"
-           y="263" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect161"
-           width="360"
-           height="8"
-           x="77"
-           y="279" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect162"
-           width="360"
-           height="8"
-           x="77"
-           y="295" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect163"
-           width="360"
-           height="8"
-           x="77"
-           y="311" />
-      </g>
     </g>
   </g>
 </svg>
