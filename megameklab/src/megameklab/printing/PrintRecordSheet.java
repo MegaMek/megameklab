@@ -53,9 +53,7 @@ import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.io.*;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.Collections;
+import java.util.*;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -222,7 +220,15 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     }
 
     private void shadeTableRows() {
-        hideElement(ROW_SHADING, !options.useRowShading());
+        var tags = getSVGDocument().getElementsByTagName("g");
+        for (int i = 0; i < tags.getLength(); i++) {
+            var tag = tags.item(i);
+            if (ROW_SHADING.equals(
+                    Optional.ofNullable(tag.getAttributes().getNamedItem("class")).map(Node::getNodeValue).orElse(null))
+            ) {
+                hideElement(tag.getAttributes().getNamedItem("id").getNodeValue(), !options.useRowShading());
+            }
+        }
     }
 
     /**
