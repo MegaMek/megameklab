@@ -219,15 +219,26 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         }
     }
 
-    private void shadeTableRows() {
-        var tags = getSVGDocument().getElementsByTagName("g");
+    private ArrayList<Element> getElementsByClass(String className) {
+        var tags = getSVGDocument().getElementsByTagName("*");
+        var ret = new ArrayList<Element>(tags.getLength());
         for (int i = 0; i < tags.getLength(); i++) {
             var tag = tags.item(i);
-            if (ROW_SHADING.equals(
-                    Optional.ofNullable(tag.getAttributes().getNamedItem("class")).map(Node::getNodeValue).orElse(null))
+            if (className.equals(
+                    Optional.ofNullable(tag.getAttributes().getNamedItem("class"))
+                            .map(Node::getNodeValue)
+                            .orElse(null))
             ) {
-                hideElement(tag.getAttributes().getNamedItem("id").getNodeValue(), !options.useRowShading());
+                ret.add((Element) tag);
             }
+        }
+
+        return ret;
+    }
+
+    private void shadeTableRows() {
+        for (Element e : getElementsByClass(ROW_SHADING)) {
+            hideElement(e.getAttributes().getNamedItem("id").getNodeValue(), !options.useRowShading());
         }
     }
 
