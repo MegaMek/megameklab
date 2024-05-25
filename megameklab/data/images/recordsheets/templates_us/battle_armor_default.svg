@@ -26,9 +26,9 @@
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="3.1031746"
-     inkscape:cx="487.40409"
-     inkscape:cy="612.43734"
+     inkscape:zoom="4.3885516"
+     inkscape:cx="483.87263"
+     inkscape:cy="674.59615"
      inkscape:window-width="2560"
      inkscape:window-height="1369"
      inkscape:window-x="3832"
@@ -1193,6 +1193,24 @@
          text-anchor="middle"
          id="text228">BASE TO-HIT</text>
       <g
+         id="shade1"
+         class="tableshading"
+         style="fill:#bbbbbb"
+         transform="translate(-388,-65.5)">
+        <rect
+           id="rect422"
+           width="175"
+           height="9"
+           x="392"
+           y="104" />
+        <rect
+           id="rect423"
+           width="175"
+           height="9"
+           x="392"
+           y="122" />
+      </g>
+      <g
          transform="translate (0.000 36.150)"
          id="g237">
         <text
@@ -1390,6 +1408,30 @@
          style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
          text-anchor="middle"
          id="text254">ARMOR TROOPERS ACTIVE</text>
+      <g
+         id="shade2"
+         class="tableshading"
+         style="fill:#bbbbbb"
+         transform="translate(-388,-221.5)">
+        <rect
+           id="rect424"
+           width="175"
+           height="9.5"
+           x="392"
+           y="280" />
+        <rect
+           id="rect425"
+           width="175"
+           height="9.5"
+           x="392"
+           y="299" />
+        <rect
+           id="rect426"
+           width="175"
+           height="9.5"
+           x="392"
+           y="318" />
+      </g>
       <g
          transform="translate (0.000 46.515)"
          id="g302">
@@ -1681,6 +1723,42 @@
          text-anchor="middle"
          id="text318">QUAD</text>
       <g
+         id="shade3"
+         class="tableshading"
+         style="fill:#bbbbbb"
+         transform="translate(-388,-428)">
+        <rect
+           id="rect428"
+           width="175"
+           height="9"
+           x="392"
+           y="475" />
+        <rect
+           id="rect429"
+           width="175"
+           height="9"
+           x="392"
+           y="493" />
+        <rect
+           id="rect430"
+           width="175"
+           height="9"
+           x="392"
+           y="511" />
+        <rect
+           id="rect431"
+           width="175"
+           height="9"
+           x="392"
+           y="529" />
+        <rect
+           id="rect432"
+           width="175"
+           height="9"
+           x="392"
+           y="547" />
+      </g>
+      <g
          transform="translate (0.000 35.929)"
          id="g353">
         <text
@@ -1863,6 +1941,54 @@
          style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
          text-anchor="middle"
          id="text359">VEHICLE</text>
+      <g
+         id="shade4"
+         class="tableshading"
+         style="fill:#bbbbbb"
+         transform="translate(-388,-580)">
+        <rect
+           id="rect433"
+           width="175"
+           height="7"
+           x="392"
+           y="620" />
+        <rect
+           id="rect434"
+           width="175"
+           height="7"
+           x="392"
+           y="634" />
+        <rect
+           id="rect435"
+           width="175"
+           height="7"
+           x="392"
+           y="648" />
+      </g>
+      <g
+         id="shade5"
+         class="tableshading"
+         style="fill:#bbbbbb"
+         transform="translate(-388,-580)">
+        <rect
+           id="rect436"
+           width="120"
+           height="7"
+           x="392"
+           y="682.5" />
+        <rect
+           id="rect437"
+           width="120"
+           height="7"
+           x="392"
+           y="696.5" />
+        <rect
+           id="rect438"
+           width="120"
+           height="7"
+           x="392"
+           y="710.5" />
+      </g>
       <g
          transform="translate (0.000 31.927)"
          id="g379">
@@ -2462,136 +2588,6 @@
          style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
          text-anchor="start"
          id="text421">*Unit 1 and Unit 2 represent two battle armor units.</text>
-    </g>
-    <g
-       id="tableshading">
-      <g
-         id="g426">
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect422"
-           width="175"
-           height="9"
-           x="392"
-           y="104" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect423"
-           width="175"
-           height="9"
-           x="392"
-           y="122" />
-      </g>
-      <g
-         id="g427">
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect424"
-           width="175"
-           height="9.5"
-           x="392"
-           y="280" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect425"
-           width="175"
-           height="9.5"
-           x="392"
-           y="299" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect426"
-           width="175"
-           height="9.5"
-           x="392"
-           y="318" />
-      </g>
-      <g
-         id="g428">
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect428"
-           width="175"
-           height="9"
-           x="392"
-           y="475" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect429"
-           width="175"
-           height="9"
-           x="392"
-           y="493" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect430"
-           width="175"
-           height="9"
-           x="392"
-           y="511" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect431"
-           width="175"
-           height="9"
-           x="392"
-           y="529" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect432"
-           width="175"
-           height="9"
-           x="392"
-           y="547" />
-      </g>
-      <g
-         id="g432">
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect433"
-           width="175"
-           height="7"
-           x="392"
-           y="620" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect434"
-           width="175"
-           height="7"
-           x="392"
-           y="634" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect435"
-           width="175"
-           height="7"
-           x="392"
-           y="648" />
-      </g>
-      <g
-         id="g435">
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect436"
-           width="120"
-           height="7"
-           x="392"
-           y="682.5" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect437"
-           width="120"
-           height="7"
-           x="392"
-           y="696.5" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect438"
-           width="120"
-           height="7"
-           x="392"
-           y="710.5" />
-      </g>
     </g>
   </g>
 </svg>

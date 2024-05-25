@@ -26,15 +26,15 @@
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="2.91067"
-     inkscape:cx="460.54689"
-     inkscape:cy="648.13257"
+     inkscape:zoom="4.116309"
+     inkscape:cx="455.3837"
+     inkscape:cy="692.24638"
      inkscape:window-width="2560"
      inkscape:window-height="1369"
      inkscape:window-x="3832"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
-     inkscape:current-layer="g435" />
+     inkscape:current-layer="g421" />
   <g
      style="mml-color-elements:btLogo,cglLogo"
      id="rs_template">
@@ -1178,6 +1178,24 @@
              id="text226">LEG ATTACKS TABLE</text>
         </g>
       </g>
+      <g
+         id="shade1"
+         style="fill:#bbbbbb"
+         class="tableshading"
+         transform="translate(-385,-51.5)">
+        <rect
+           id="rect422"
+           width="165"
+           height="10"
+           x="392"
+           y="102.5" />
+        <rect
+           id="rect423"
+           width="165"
+           height="10"
+           x="392"
+           y="122.5" />
+      </g>
       <text
          fill="#231f20"
          x="52.600"
@@ -1361,6 +1379,30 @@
              lengthAdjust="spacingAndGlyphs"
              id="text250">SWARM ATTACK MODIFIERS TABLE</text>
         </g>
+      </g>
+      <g
+         id="shade2"
+         style="fill:#bbbbbb"
+         class="tableshading"
+         transform="translate(-385,-218)">
+        <rect
+           id="rect424"
+           width="165"
+           height="10.5"
+           x="392"
+           y="280" />
+        <rect
+           id="rect425"
+           width="165"
+           height="10.5"
+           x="392"
+           y="301" />
+        <rect
+           id="rect426"
+           width="165"
+           height="9.5"
+           x="392"
+           y="322" />
       </g>
       <text
          fill="#231f20"
@@ -1659,6 +1701,42 @@
              id="text315">SWARM ATTACKS HIT LOCATION TABLE</text>
         </g>
       </g>
+      <g
+         id="shade3"
+         style="fill:#bbbbbb"
+         class="tableshading"
+         transform="translate(-385,-425.5)">
+        <rect
+           id="rect428"
+           width="165"
+           height="9"
+           x="392"
+           y="475" />
+        <rect
+           id="rect429"
+           width="165"
+           height="9"
+           x="392"
+           y="495" />
+        <rect
+           id="rect430"
+           width="165"
+           height="9"
+           x="392"
+           y="514.5" />
+        <rect
+           id="rect431"
+           width="165"
+           height="9"
+           x="392"
+           y="534" />
+        <rect
+           id="rect432"
+           width="165"
+           height="9"
+           x="392"
+           y="554" />
+      </g>
       <text
          fill="#231f20"
          x="14.027"
@@ -1841,6 +1919,54 @@
              lengthAdjust="spacingAndGlyphs"
              id="text356">TRANSPORT POSITIONS TABLE</text>
         </g>
+      </g>
+      <g
+         id="shade4"
+         style="fill:#bbbbbb"
+         class="tableshading"
+         transform="translate(-385,-578)">
+        <rect
+           id="rect433"
+           width="165"
+           height="8"
+           x="392"
+           y="620" />
+        <rect
+           id="rect434"
+           width="165"
+           height="8"
+           x="392"
+           y="635" />
+        <rect
+           id="rect435"
+           width="165"
+           height="8"
+           x="392"
+           y="650" />
+      </g>
+      <g
+         id="shade5"
+         style="fill:#bbbbbb"
+         class="tableshading"
+         transform="translate(-385,-572.25)">
+        <rect
+           id="rect436"
+           width="120"
+           height="8"
+           x="392"
+           y="682.5" />
+        <rect
+           id="rect437"
+           width="120"
+           height="8"
+           x="392"
+           y="698" />
+        <rect
+           id="rect438"
+           width="120"
+           height="8"
+           x="392"
+           y="713" />
       </g>
       <text
          fill="#231f20"
@@ -2465,138 +2591,6 @@
     </g>
     <g
        id="tableshading"
-       transform="translate(-10,3)">
-      <g
-         id="g426">
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect422"
-           width="165"
-           height="10"
-           x="392"
-           y="102.5" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect423"
-           width="165"
-           height="10"
-           x="392"
-           y="122.5" />
-      </g>
-      <g
-         id="g427"
-         transform="translate(0,11.5)">
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect424"
-           width="165"
-           height="10.5"
-           x="392"
-           y="280" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect425"
-           width="165"
-           height="10.5"
-           x="392"
-           y="301" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect426"
-           width="165"
-           height="9.5"
-           x="392"
-           y="322" />
-      </g>
-      <g
-         id="g428"
-         transform="translate(0,26.5)">
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect428"
-           width="165"
-           height="9"
-           x="392"
-           y="475" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect429"
-           width="165"
-           height="9"
-           x="392"
-           y="495" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect430"
-           width="165"
-           height="9"
-           x="392"
-           y="514.5" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect431"
-           width="165"
-           height="9"
-           x="392"
-           y="534" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect432"
-           width="165"
-           height="9"
-           x="392"
-           y="554" />
-      </g>
-      <g
-         id="g432"
-         transform="translate(0,36.5)">
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect433"
-           width="165"
-           height="8"
-           x="392"
-           y="620" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect434"
-           width="165"
-           height="8"
-           x="392"
-           y="635" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect435"
-           width="165"
-           height="8"
-           x="392"
-           y="650" />
-      </g>
-      <g
-         id="g435"
-         transform="translate(0,42)">
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect436"
-           width="120"
-           height="8"
-           x="392"
-           y="682.5" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect437"
-           width="120"
-           height="8"
-           x="392"
-           y="698" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect438"
-           width="120"
-           height="8"
-           x="392"
-           y="713" />
-      </g>
-    </g>
+       transform="translate(-10,3)" />
   </g>
 </svg>

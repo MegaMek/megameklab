@@ -26,15 +26,15 @@
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="2.91067"
-     inkscape:cx="470.51023"
-     inkscape:cy="666.685"
+     inkscape:zoom="5.82134"
+     inkscape:cx="469.39365"
+     inkscape:cy="734.10933"
      inkscape:window-width="2560"
      inkscape:window-height="1369"
      inkscape:window-x="3832"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
-     inkscape:current-layer="g413" />
+     inkscape:current-layer="g403" />
   <g
      style="mml-color-elements:btLogo,cglLogo,heatScale"
      id="rs_template">
@@ -3580,6 +3580,48 @@
              id="text349">GROUND MAP STRAIGHT MOVEMENT</text>
         </g>
       </g>
+      <g
+         id="shade1"
+         style="fill:#bbbbbb"
+         class="tableshading"
+         transform="translate(-384.5,-488)">
+        <rect
+           id="rect413"
+           width="160"
+           height="7.5"
+           x="394"
+           y="547" />
+        <rect
+           id="rect408"
+           width="160"
+           height="7.5"
+           x="394"
+           y="562" />
+        <rect
+           id="rect409"
+           width="160"
+           height="7.5"
+           x="394"
+           y="577" />
+        <rect
+           id="rect410"
+           width="160"
+           height="7.5"
+           x="394"
+           y="592.5" />
+        <rect
+           id="rect411"
+           width="160"
+           height="7.5"
+           x="394"
+           y="607.5" />
+        <rect
+           id="rect412"
+           width="160"
+           height="7.5"
+           x="394"
+           y="622.5" />
+      </g>
       <text
          fill="#231f20"
          x="87.667"
@@ -3777,6 +3819,24 @@
         </g>
       </g>
       <g
+         id="shade2"
+         transform="translate(-384.5,-654.5)"
+         style="fill:#bbbbbb"
+         class="tableshading">
+        <rect
+           id="rect407"
+           width="160"
+           height="10"
+           x="394"
+           y="699.5" />
+        <rect
+           id="rect414"
+           width="160"
+           height="10"
+           x="394"
+           y="719" />
+      </g>
+      <g
          transform="translate (0.000 32.536)"
          id="g402">
         <text
@@ -3887,73 +3947,6 @@
            style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal"
            text-anchor="start"
            id="text408">RL - Rocket Launcher</text>
-      </g>
-    </g>
-    <g
-       id="tableshading"
-       transform="translate(-10,36)">
-      <g
-         id="g407">
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect413"
-           width="160"
-           height="7.5"
-           x="394"
-           y="547" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect408"
-           width="160"
-           height="7.5"
-           x="394"
-           y="562" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect409"
-           width="160"
-           height="7.5"
-           x="394"
-           y="577" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect410"
-           width="160"
-           height="7.5"
-           x="394"
-           y="592.5" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect411"
-           width="160"
-           height="7.5"
-           x="394"
-           y="607.5" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect412"
-           width="160"
-           height="7.5"
-           x="394"
-           y="622.5" />
-      </g>
-      <g
-         id="g413"
-         transform="translate(0,10)">
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect407"
-           width="160"
-           height="10"
-           x="394"
-           y="699.5" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect414"
-           width="160"
-           height="10"
-           x="394"
-           y="719" />
       </g>
     </g>
   </g>

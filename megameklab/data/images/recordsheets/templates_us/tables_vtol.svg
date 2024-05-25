@@ -25,15 +25,15 @@
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="2.21183"
-     inkscape:cx="190.56618"
-     inkscape:cy="139.92938"
+     inkscape:zoom="3.128"
+     inkscape:cx="270.9399"
+     inkscape:cy="278.29284"
      inkscape:window-width="2560"
      inkscape:window-height="1369"
      inkscape:window-x="3832"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
-     inkscape:current-layer="rs_template" />
+     inkscape:current-layer="g171" />
   <g
      style="mml-color-elements:"
      id="rs_template">
@@ -91,6 +91,42 @@
              lengthAdjust="spacingAndGlyphs"
              id="text3">VTOL COMBAT VEHICLE HIT LOCATION</text>
         </g>
+      </g>
+      <g
+         id="shade1"
+         style="fill:#bbbbbb"
+         class="tableshading"
+         transform="translate(0,-3)">
+        <rect
+           id="rect155"
+           width="256"
+           height="7"
+           x="24"
+           y="43.5" />
+        <rect
+           id="rect156"
+           width="256"
+           height="7"
+           x="24"
+           y="57.5" />
+        <rect
+           id="rect157"
+           width="256"
+           height="7"
+           x="24"
+           y="71.5" />
+        <rect
+           id="rect158"
+           width="256"
+           height="7"
+           x="24"
+           y="85.5" />
+        <rect
+           id="rect159"
+           width="256"
+           height="7"
+           x="24"
+           y="99.5" />
       </g>
       <text
          fill="#231f20"
@@ -779,6 +815,36 @@
              id="text116">VTOL COMBAT VEHICLE CRITICAL HITS TABLE</text>
         </g>
       </g>
+      <g
+         id="shade2"
+         class="tableshading"
+         style="fill:#bbbbbb"
+         transform="translate(0,-219.5)">
+        <rect
+           id="rect160"
+           width="470"
+           height="8"
+           x="47"
+           y="263" />
+        <rect
+           id="rect161"
+           width="470"
+           height="8"
+           x="47"
+           y="279" />
+        <rect
+           id="rect162"
+           width="470"
+           height="8"
+           x="47"
+           y="295" />
+        <rect
+           id="rect163"
+           width="470"
+           height="8"
+           x="47"
+           y="311" />
+      </g>
       <text
          fill="#231f20"
          x="306.720"
@@ -975,79 +1041,6 @@
          style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal"
          text-anchor="start"
          id="text171">** If the VTOL carries no ammunition, treat this result as Weapon Destroyed.</text>
-    </g>
-    <g
-       id="tableshading"
-       transform="translate(0,0)">
-      <g
-         id="g159">
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect155"
-           width="256"
-           height="7"
-           x="24"
-           y="43.5" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect156"
-           width="256"
-           height="7"
-           x="24"
-           y="57.5" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect157"
-           width="256"
-           height="7"
-           x="24"
-           y="71.5" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect158"
-           width="256"
-           height="7"
-           x="24"
-           y="85.5" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect159"
-           width="256"
-           height="7"
-           x="24"
-           y="99.5" />
-      </g>
-      <g
-         id="g160">
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect160"
-           width="470"
-           height="8"
-           x="47"
-           y="263" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect161"
-           width="470"
-           height="8"
-           x="47"
-           y="279" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect162"
-           width="470"
-           height="8"
-           x="47"
-           y="295" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect163"
-           width="470"
-           height="8"
-           x="47"
-           y="311" />
-      </g>
     </g>
   </g>
 </svg>

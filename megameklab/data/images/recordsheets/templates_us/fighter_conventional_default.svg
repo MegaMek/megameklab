@@ -27,14 +27,14 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:zoom="4.3885516"
-     inkscape:cx="531.95227"
-     inkscape:cy="610.56591"
+     inkscape:cx="583.33597"
+     inkscape:cy="717.66275"
      inkscape:window-width="2560"
      inkscape:window-height="1369"
      inkscape:window-x="3832"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
-     inkscape:current-layer="g413" />
+     inkscape:current-layer="rs_template" />
   <g
      style="mml-color-elements:btLogo,cglLogo,heatScale"
      id="rs_template">
@@ -3602,6 +3602,48 @@
          text-anchor="middle"
          id="text352">SMALL CRAFT AND FIXED</text>
       <g
+         id="shade1"
+         class="tableshading"
+         style="fill:#bbbbbb"
+         transform="translate(-387,-491.5)">
+        <rect
+           id="rect413"
+           width="170"
+           height="7"
+           x="394"
+           y="547" />
+        <rect
+           id="rect408"
+           width="170"
+           height="7"
+           x="394"
+           y="561" />
+        <rect
+           id="rect409"
+           width="170"
+           height="7"
+           x="394"
+           y="575" />
+        <rect
+           id="rect410"
+           width="170"
+           height="7"
+           x="394"
+           y="589" />
+        <rect
+           id="rect411"
+           width="170"
+           height="7"
+           x="394"
+           y="603" />
+        <rect
+           id="rect412"
+           width="170"
+           height="7"
+           x="394"
+           y="617" />
+      </g>
+      <g
          transform="translate (0.000 47.377)"
          id="g389">
         <text
@@ -3777,6 +3819,24 @@
         </g>
       </g>
       <g
+         id="shade2"
+         class="tableshading"
+         style="fill:#bbbbbb"
+         transform="translate(-387,-657)">
+        <rect
+           id="rect407"
+           width="170"
+           height="9"
+           x="394"
+           y="699.5" />
+        <rect
+           id="rect414"
+           width="170"
+           height="9"
+           x="394"
+           y="717" />
+      </g>
+      <g
          transform="translate (0.000 31.224)"
          id="g401">
         <text
@@ -3884,71 +3944,6 @@
            style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal"
            text-anchor="start"
            id="text407">RL - Rocket Launcher</text>
-      </g>
-    </g>
-    <g
-       id="tableshading">
-      <g
-         id="g407">
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect413"
-           width="170"
-           height="7"
-           x="394"
-           y="547" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect408"
-           width="170"
-           height="7"
-           x="394"
-           y="561" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect409"
-           width="170"
-           height="7"
-           x="394"
-           y="575" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect410"
-           width="170"
-           height="7"
-           x="394"
-           y="589" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect411"
-           width="170"
-           height="7"
-           x="394"
-           y="603" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect412"
-           width="170"
-           height="7"
-           x="394"
-           y="617" />
-      </g>
-      <g
-         id="g413">
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect407"
-           width="170"
-           height="9"
-           x="394"
-           y="699.5" />
-        <rect
-           style="opacity:0.25;fill:#000000"
-           id="rect414"
-           width="170"
-           height="9"
-           x="394"
-           y="717" />
       </g>
     </g>
   </g>
