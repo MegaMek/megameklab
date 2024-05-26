@@ -80,16 +80,10 @@ ext {
     scriptTemplate = "${scriptsDir}/startScriptTemplate.txt"
 }
 
-task compileMM (type: GradleBuild) {
-    description = 'Compiles the MM directory for packaging in a Jar'
-
-    buildName = "mml-compile-mm"
-    dir = "${mmDir}"
-    tasks = [ 'compileTestJava' ]
-}
-
-task mmJar (type: Jar, dependsOn: compileMM) {
+task mmJar (type: Jar) {
     description = 'Builds a MegaMek jar from the current source'
+
+    dependsOn gradle.includedBuild('megamek').task(':compileTestJava')
 
     archiveFileName = "MegaMek.jar"
     from "${mmDir}/megamek/build/classes/java/main"
