@@ -20,7 +20,7 @@ import megamek.client.ui.dialogs.WeightDisplayDialog;
 import megamek.client.ui.swing.GUIPreferences;
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.common.*;
-import megamek.common.MechView.ViewFormatting;
+import megamek.common.ViewFormatting;
 import megamek.common.annotations.Nullable;
 import megamek.common.loaders.BLKFile;
 import megamek.common.templates.TROView;
@@ -415,7 +415,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         final JMenuItem miExportCurrentUnitToHTML = new JMenuItem(resources.getString("CurrentUnit.text"));
         miExportCurrentUnitToHTML.setName("miExportCurrentUnitToHTML");
         miExportCurrentUnitToHTML.setMnemonic(KeyEvent.VK_U);
-        miExportCurrentUnitToHTML.addActionListener(evt -> exportSummary(ViewFormatting.Html));
+        miExportCurrentUnitToHTML.addActionListener(evt -> exportSummary(ViewFormatting.HTML));
         miExportCurrentUnitToHTML.setEnabled(isUnitGui());
         htmlUnitExportMenu.add(miExportCurrentUnitToHTML);
 
@@ -433,7 +433,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         final JMenuItem miExportCurrentUnitToText = new JMenuItem(resources.getString("CurrentUnit.text"));
         miExportCurrentUnitToText.setName("miExportCurrentUnitToText");
         miExportCurrentUnitToText.setMnemonic(KeyEvent.VK_U);
-        miExportCurrentUnitToText.addActionListener(evt -> exportSummary(ViewFormatting.None));
+        miExportCurrentUnitToText.addActionListener(evt -> exportSummary(ViewFormatting.NONE));
         miExportCurrentUnitToText.setEnabled(isUnitGui());
         textUnitExportMenu.add(miExportCurrentUnitToText);
 
@@ -453,7 +453,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         miExportCurrentUnitToClipboard.setMnemonic(KeyEvent.VK_U);
         miExportCurrentUnitToClipboard.addActionListener(evt -> {
             warnOnInvalid();
-            StringSelection stringSelection = new StringSelection(entitySummaryText(ViewFormatting.None));
+            StringSelection stringSelection = new StringSelection(entitySummaryText(ViewFormatting.NONE));
             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(stringSelection, this);
         });
         miExportCurrentUnitToClipboard.setEnabled(isUnitGui());
@@ -475,7 +475,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         miExportCurrentUnitToClipboard.setMnemonic(KeyEvent.VK_U);
         miExportCurrentUnitToClipboard.addActionListener(evt -> {
             warnOnInvalid();
-            StringSelection stringSelection = new StringSelection(entitySummaryText(ViewFormatting.Discord));
+            StringSelection stringSelection = new StringSelection(entitySummaryText(ViewFormatting.DISCORD));
             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(stringSelection, this);
         });
         miExportCurrentUnitToClipboard.setEnabled(isUnitGui());
@@ -1136,11 +1136,11 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     }
 
     private String entitySummaryText(ViewFormatting formatting) {
-        if (CConfig.getBooleanParam(CConfig.MISC_SUMMARY_FORMAT_TRO) && formatting != ViewFormatting.Discord) {
+        if (CConfig.getBooleanParam(CConfig.MISC_SUMMARY_FORMAT_TRO) && formatting != ViewFormatting.DISCORD) {
             TROView view = TROView.createView(owner.getEntity(), formatting);
             return view.processTemplate();
         } else {
-            MechView view = new MechView(owner.getEntity(), formatting == ViewFormatting.None, false, formatting);
+            MechView view = new MechView(owner.getEntity(), formatting == ViewFormatting.NONE, false, formatting);
             return view.getMechReadout();
         }
     }
@@ -1152,7 +1152,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
 
         MMLFileChooser fileChooser = new MMLFileChooser();
         fileChooser.setDialogTitle(resources.getString("dialog.saveAs.title"));
-        fileChooser.setSelectedFile(new File(unitName + (formatting == ViewFormatting.Html ? ".html" : ".txt")));
+        fileChooser.setSelectedFile(new File(unitName + (formatting == ViewFormatting.HTML ? ".html" : ".txt")));
         int result = fileChooser.showSaveDialog(owner.getFrame());
         if ((result != JFileChooser.APPROVE_OPTION) || (fileChooser.getSelectedFile() == null)) {
             return;

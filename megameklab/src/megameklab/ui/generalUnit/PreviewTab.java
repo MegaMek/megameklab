@@ -24,7 +24,7 @@ import megamek.client.ui.swing.MechViewPanel;
 import megamek.client.ui.swing.alphaStrike.ConfigurableASCardPanel;
 import megamek.client.ui.swing.calculationReport.FlexibleCalculationReport;
 import megamek.common.Entity;
-import megamek.common.MechView;
+import megamek.common.ViewFormatting;
 import megamek.common.alphaStrike.conversion.ASConverter;
 import megamek.common.templates.TROView;
 import megameklab.ui.EntitySource;
@@ -60,7 +60,7 @@ public class PreviewTab extends ITab {
         selectedUnit.recalculateTechAdvancement();
         TROView troView = null;
         try {
-            troView = TROView.createView(selectedUnit, MechView.ViewFormatting.Html);
+            troView = TROView.createView(selectedUnit, ViewFormatting.HTML);
         } catch (Exception e) {
             LogManager.getLogger().error("", e);
             // error unit didn't load right. this is bad news.
