@@ -9,6 +9,7 @@ MEGAMEKLAB VERSION HISTORY:
 + PR #1510: Improve readability of tables
 + Fix #1514: Fix Atrocious table shading render speed
 + Fix #1479: The support vehicle TRO plain text no longer contains HTML tags
++ Fix #1513: Units can now be copied to clipboard with discord-formatting applied
 
 0.49.19.1 (2024-05-14 1800 UTC)
 + Milestone Release. Backported fixes.
