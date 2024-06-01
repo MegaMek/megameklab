@@ -20,6 +20,7 @@ import megamek.client.ui.dialogs.WeightDisplayDialog;
 import megamek.client.ui.swing.GUIPreferences;
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.common.*;
+import megamek.common.ViewFormatting;
 import megamek.common.annotations.Nullable;
 import megamek.common.loaders.BLKFile;
 import megamek.common.templates.TROView;
@@ -347,6 +348,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         exportMenu.add(createHTMLUnitExportMenu());
         exportMenu.add(createTextUnitExportMenu());
         exportMenu.add(createClipboardUnitExportMenu());
+        exportMenu.add(createDiscordClipboardUnitExportMenu());
 
         return exportMenu;
     }
@@ -413,7 +415,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         final JMenuItem miExportCurrentUnitToHTML = new JMenuItem(resources.getString("CurrentUnit.text"));
         miExportCurrentUnitToHTML.setName("miExportCurrentUnitToHTML");
         miExportCurrentUnitToHTML.setMnemonic(KeyEvent.VK_U);
-        miExportCurrentUnitToHTML.addActionListener(evt -> exportSummary(true));
+        miExportCurrentUnitToHTML.addActionListener(evt -> exportSummary(ViewFormatting.HTML));
         miExportCurrentUnitToHTML.setEnabled(isUnitGui());
         htmlUnitExportMenu.add(miExportCurrentUnitToHTML);
 
@@ -431,7 +433,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         final JMenuItem miExportCurrentUnitToText = new JMenuItem(resources.getString("CurrentUnit.text"));
         miExportCurrentUnitToText.setName("miExportCurrentUnitToText");
         miExportCurrentUnitToText.setMnemonic(KeyEvent.VK_U);
-        miExportCurrentUnitToText.addActionListener(evt -> exportSummary(false));
+        miExportCurrentUnitToText.addActionListener(evt -> exportSummary(ViewFormatting.NONE));
         miExportCurrentUnitToText.setEnabled(isUnitGui());
         textUnitExportMenu.add(miExportCurrentUnitToText);
 
@@ -451,7 +453,29 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         miExportCurrentUnitToClipboard.setMnemonic(KeyEvent.VK_U);
         miExportCurrentUnitToClipboard.addActionListener(evt -> {
             warnOnInvalid();
-            StringSelection stringSelection = new StringSelection(entitySummaryText(false));
+            StringSelection stringSelection = new StringSelection(entitySummaryText(ViewFormatting.NONE));
+            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(stringSelection, this);
+        });
+        miExportCurrentUnitToClipboard.setEnabled(isUnitGui());
+        clipboardUnitExportMenu.add(miExportCurrentUnitToClipboard);
+
+        return clipboardUnitExportMenu;
+    }
+
+    /**
+     * @return the created Clipboard Unit Export menu
+     */
+    private JMenu createDiscordClipboardUnitExportMenu() {
+        final JMenu clipboardUnitExportMenu = new JMenu(resources.getString("discordClipboardUnitExportMenu.text"));
+        clipboardUnitExportMenu.setName("discordClipboardUnitExportMenu");
+        clipboardUnitExportMenu.setMnemonic(KeyEvent.VK_D);
+
+        final JMenuItem miExportCurrentUnitToClipboard = new JMenuItem(resources.getString("CurrentUnit.text"));
+        miExportCurrentUnitToClipboard.setName("miExportCurrentUnitToClipboard");
+        miExportCurrentUnitToClipboard.setMnemonic(KeyEvent.VK_U);
+        miExportCurrentUnitToClipboard.addActionListener(evt -> {
+            warnOnInvalid();
+            StringSelection stringSelection = new StringSelection(entitySummaryText(ViewFormatting.DISCORD));
             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(stringSelection, this);
         });
         miExportCurrentUnitToClipboard.setEnabled(isUnitGui());
@@ -1111,24 +1135,24 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         }
     }
 
-    private String entitySummaryText(boolean html) {
-        if (CConfig.getBooleanParam(CConfig.MISC_SUMMARY_FORMAT_TRO)) {
-            TROView view = TROView.createView(owner.getEntity(), html);
+    private String entitySummaryText(ViewFormatting formatting) {
+        if (CConfig.getBooleanParam(CConfig.MISC_SUMMARY_FORMAT_TRO) && formatting != ViewFormatting.DISCORD) {
+            TROView view = TROView.createView(owner.getEntity(), formatting);
             return view.processTemplate();
         } else {
-            MechView view = new MechView(owner.getEntity(), !html, false, html);
+            MechView view = new MechView(owner.getEntity(), formatting == ViewFormatting.NONE, false, formatting);
             return view.getMechReadout();
         }
     }
 
-    private void exportSummary(boolean html) {
+    private void exportSummary(ViewFormatting formatting) {
         warnOnInvalid();
 
         String unitName = owner.getEntity().getChassis() + ' ' + owner.getEntity().getModel();
 
         MMLFileChooser fileChooser = new MMLFileChooser();
         fileChooser.setDialogTitle(resources.getString("dialog.saveAs.title"));
-        fileChooser.setSelectedFile(new File(unitName + (html ? ".html" : ".txt")));
+        fileChooser.setSelectedFile(new File(unitName + (formatting == ViewFormatting.HTML ? ".html" : ".txt")));
         int result = fileChooser.showSaveDialog(owner.getFrame());
         if ((result != JFileChooser.APPROVE_OPTION) || (fileChooser.getSelectedFile() == null)) {
             return;
@@ -1136,7 +1160,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
 
         try (FileOutputStream fos = new FileOutputStream(fileChooser.getSelectedFile());
              PrintStream ps = new PrintStream(fos)) {
-            ps.println(entitySummaryText(html));
+            ps.println(entitySummaryText(formatting));
         } catch (Exception ex) {
             PopupMessages.showFileWriteError(owner.getFrame(), ex.getMessage());
             LogManager.getLogger().error("", ex);
