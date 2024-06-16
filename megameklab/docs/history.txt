@@ -10,6 +10,10 @@ MEGAMEKLAB VERSION HISTORY:
 + Fix #1514: Fix Atrocious table shading render speed
 + Fix #1479: The support vehicle TRO plain text no longer contains HTML tags
 + Fix #1513: Units can now be copied to clipboard with discord-formatting applied
++ PR #1519: Added a missing "(resourceMap.getString", fixing a tooltip
++ PR #1520: Removed printing of pilot Edge abilities
++ PR #1521: Fixed to-hit modifier for pilot damage on aerospace record sheets.
+
 
 0.49.19.1 (2024-05-14 1800 UTC)
 + Milestone Release. Backported fixes.
