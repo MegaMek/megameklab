@@ -78,9 +78,9 @@ public class AeroToHitMods extends ReferenceTable {
         addRow("", bundle.getString("excessThrust"), "+2");
         addRow("", bundle.getString("outOfControl"), "+2");
         if (entity.isFighter() && !entity.isSupportVehicle()) {
-            addRow("", bundle.getString("pilotDamage"), "+2");
+            addRow("", bundle.getString("pilotDamage"), "+1" + bundle.getString("perHit"));
         } else {
-            addRow("", bundle.getString("crewDamage"), "+2");
+            addRow("", bundle.getString("crewDamage"), "+1" + bundle.getString("perHit"));
         }
         if (entity instanceof Jumpship) {
             addRow("", bundle.getString("cicDamage"), "+2" + bundle.getString("perHit"));
