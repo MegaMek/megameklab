@@ -15,6 +15,7 @@ package megameklab.printing;
 
 import megamek.common.*;
 import megamek.common.options.IOption;
+import megamek.common.options.IOptionGroup;
 import megamek.common.weapons.artillery.ArtilleryCannonWeapon;
 import megamek.common.weapons.artillery.ArtilleryWeapon;
 import megamek.common.weapons.infantry.InfantryWeapon;
@@ -26,6 +27,7 @@ import org.w3c.dom.svg.SVGRectElement;
 import java.util.Enumeration;
 import java.util.StringJoiner;
 
+import static megamek.common.options.PilotOptions.EDGE_ADVANTAGES;
 import static megameklab.printing.InventoryEntry.DASH;
 
 /**
@@ -286,10 +288,20 @@ public class PrintInfantry extends PrintEntity {
         }
 
         StringJoiner enhancements = new StringJoiner(", ");
-        for (Enumeration<IOption> e = infantry.getCrew().getOptions().getOptions(); e.hasMoreElements(); ) {
-            final IOption option = e.nextElement();
-            if (option.booleanValue()) {
-                enhancements.add(option.getDisplayableName().replaceAll("\\s+\\(Not Implemented\\)", ""));
+        var spas = infantry.getCrew().getOptions();
+        for (Enumeration<IOptionGroup> e = spas.getGroups(); e.hasMoreElements(); ) {
+            final IOptionGroup optiongroup = e.nextElement();
+            if (optiongroup.getKey().equals(EDGE_ADVANTAGES)) {
+                // Don't print Edge abilities, only SPAs and Cybernetics
+                continue;
+            }
+            if (spas.count(optiongroup.getKey()) > 0) {
+                for (Enumeration<IOption> options = optiongroup.getOptions(); options.hasMoreElements();) {
+                    IOption option = options.nextElement();
+                    if (option != null && option.booleanValue()) {
+                        enhancements.add(option.getDisplayableNameWithValue().replaceAll("\\s+\\(Not Implemented\\)", ""));
+                    }
+                }
             }
         }
         if (enhancements.length() > 0) {
