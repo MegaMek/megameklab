@@ -14,10 +14,8 @@
 package megameklab.ui.infantry;
 
 import megamek.client.ui.models.XTableColumnModel;
-import megamek.common.AmmoType;
-import megamek.common.EquipmentType;
-import megamek.common.ITechManager;
-import megamek.common.WeaponType;
+import megamek.common.*;
+import megamek.common.weapons.artillery.ArrowIV;
 import megamek.common.weapons.artillery.ArtilleryCannonWeapon;
 import megamek.common.weapons.artillery.ArtilleryWeapon;
 import megamek.common.weapons.autocannons.*;
@@ -42,7 +40,7 @@ import java.util.Enumeration;
 
 /**
  * Shows options for infantry field guns/field artillery
- * 
+ *
  * @author Neoancient
  */
 public class CIFieldGunView extends IView implements ActionListener {
@@ -301,10 +299,10 @@ public class CIFieldGunView extends IView implements ActionListener {
                 EquipmentTableModel equipModel = entry.getModel();
                 EquipmentType etype = equipModel.getType(entry.getIdentifier());
                 if ((nType == T_ALL)
-                        || ((nType == T_GUN) 
+                        || ((nType == T_GUN)
                                 && !(etype instanceof ArtilleryWeapon)
                                 && !(etype instanceof ArtilleryCannonWeapon))
-                        || ((nType == T_ARTILLERY) && etype instanceof ArtilleryWeapon)
+                        || ((nType == T_ARTILLERY) && etype instanceof ArtilleryWeapon && !(etype.hasFlag(AmmoType.F_SPACE_BOMB)))
                         || ((nType == T_ARTILLERY_CANNON) && etype instanceof ArtilleryCannonWeapon)
                         ) {
                     if (null != eSource.getTechManager()
