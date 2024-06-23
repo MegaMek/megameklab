@@ -14,6 +14,8 @@ MEGAMEKLAB VERSION HISTORY:
 + PR #1520: Removed printing of pilot Edge abilities
 + PR #1521: Fixed to-hit modifier for pilot damage on aerospace record sheets.
 + PR #1529: Don't print Edge abilities of troopers
++ PR #1529: Don't print Edge abilities of troopers
++ FIX #1533: Filter out space bomb artillery (only Arrow IV Bombs for now)
 
 
 0.49.19.1 (2024-05-14 1800 UTC)
