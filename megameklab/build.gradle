@@ -60,7 +60,9 @@ dependencies {
     runtimeOnly 'xml-apis:xml-apis-ext:1.3.04'
 }
 
-mainClassName = 'megameklab.MegaMekLab'
+application {
+    mainClass = 'megameklab.MegaMekLab'
+}
 
 ext {
     mmlJvmOptions = ['-Xmx1024m']
@@ -83,7 +85,7 @@ ext {
 task mmJar (type: Jar) {
     description = 'Builds a MegaMek jar from the current source'
 
-    dependsOn gradle.includedBuild('megamek').task(':compileTestJava')
+    dependsOn gradle.includedBuild('megamek').task(':megamek:compileTestJava')
 
     archiveFileName = "MegaMek.jar"
     from "${mmDir}/megamek/build/classes/java/main"
@@ -105,7 +107,7 @@ task mmJar (type: Jar) {
 jar {
     archiveFileName = "MegaMekLab.jar"
     manifest {
-        attributes "Main-Class" : mainClassName
+        attributes "Main-Class" : application.mainClass
         attributes "Class-Path" : "${lib}/${mmJar.archiveFileName.get()} " + (project.sourceSets.main.runtimeClasspath.files
                 .findAll { it.name.endsWith(".jar") && !it.name.toLowerCase().startsWith("megamek") }
                 .collect { "${lib}/${it.name}" }.join(' '))
