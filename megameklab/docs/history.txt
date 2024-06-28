@@ -1,6 +1,8 @@
 MEGAMEKLAB VERSION HISTORY:
 ----------------
-0.49.20 (2024-06-28 2100 UTC)
+0.50.0-SNAPSHOT (THIS MARKS THE START OF JAVA 17 AS THE MINIMUM REQUIRED)
+
+0.49.20 (2024-06-28 2100 UTC) (THIS IS THE LAST VERSION TO SUPPORT JAVA 11)
 + PR #1486: Code internals: DialogOptionsListener update
 + Fix #1494: Heavy gauss rifles can no longer be mounted in mek turrets
 + Fix #1490: Upon saving a unit that was loaded from file, MML will now always ask for a new filename when that unit's name is changed
