@@ -44,6 +44,7 @@ import java.util.*;
 import java.util.List;
 
 import static megamek.common.EquipmentType.*;
+import static megamek.common.options.PilotOptions.EDGE_ADVANTAGES;
 
 /**
  * Base class for printing Entity record sheets
@@ -261,6 +262,10 @@ public abstract class PrintEntity extends PrintRecordSheet {
                 PilotOptions spas = getEntity().getCrew().getOptions();
                 for (Enumeration<IOptionGroup> optionGroups = spas.getGroups(); optionGroups.hasMoreElements();) {
                     IOptionGroup optiongroup = optionGroups.nextElement();
+                    if (optiongroup.getKey().equals(EDGE_ADVANTAGES)) {
+                        // Don't print Edge abilities, only SPAs and Cybernetics
+                        continue;
+                    }
                     if (spas.count(optiongroup.getKey()) > 0) {
                         for (Enumeration<IOption> options = optiongroup.getOptions(); options.hasMoreElements();) {
                             IOption option = options.nextElement();
