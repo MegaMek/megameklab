@@ -9,7 +9,7 @@ name: MegaMekLab CI with Gradle
 # Pull Requests being added/updated against master.
 on:
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 # Setup the Build Scan "VCS" link for all gradle invocations
 env:
@@ -20,129 +20,119 @@ jobs:
   ci_cd:
     runs-on: ${{ matrix.os }}
 
+    outputs:
+      mmRepo: ${{ steps.find_mm.outputs.mmRepo }}
+      mmBranch: ${{ steps.find_mm.outputs.mmBranch }}
+
     # Run this job once for each combination in the matrix below.
     strategy:
       matrix:
-        os: [ ubuntu-latest ] # For CI/CD running on *nix is sufficient
-        java-distribution: [ temurin ]
-        java-version: [ 11, 17 ]
+        os: [ubuntu-latest] # For CI/CD running on *nix is sufficient
+        java-distribution: [temurin]
+        java-version: [17]
       fail-fast: false
 
     steps:
-    # Checkout the Pull Request source and put it in: ./megameklab
-    - uses: actions/checkout@v3
-      with:
-        path: megameklab
+      # Checkout the Pull Request source and put it in: ./megameklab
+      - name: Checking out MegaMekLab
+        uses: actions/checkout@v4
+        with:
+          path: megameklab
 
-    # Setup composite build for MegaMekLab
-    # See: https://github.com/MegaMek/megamek/wiki/Working-With-Gradle
-    - name: Setup Composite Build for MegaMekLab
-      run: |
-        echo "includeBuild '../megamek'" >./megameklab/settings_local.gradle
+      # Setup composite build for MegaMekLab
+      # See: https://github.com/MegaMek/megamek/wiki/Working-With-Gradle
+      - name: Setup Composite Build for MegaMekLab
+        run: |
+          echo "includeBuild '../megamek'" >> ./megameklab/settings_local.gradle
 
-    # Find the repo and branch to use for MM
-    #
-    # Output variables:
-    #
-    #    - mmRepo: The MM repository to use.
-    #    - mmBranch: The MM branch to use.
-    - name: Find the Right MegaMek Branch
-      id: find_mm
-      # Override bash so that it doesn't fail fast (the default)
-      # if we can't find the branch
-      shell: bash {0}
-      # This shell script searches the PR submitter's MM repo for
-      # a branch that has the same name as the current PR branch.
-      # If found it sets the `mmRepo` and `mmBranch` step output variables
-      # to that branch.
-      run: |
-        git ls-remote --exit-code --heads ${{ github.event.pull_request.head.repo.owner.html_url }}/megamek.git ${{ github.event.pull_request.head.ref }}
-        if [ "$?" == "0" ]
-        then
-          echo "${{ github.event.pull_request.head.repo.owner.html_url }}" | awk -F/ '{print "::set-output name=mmRepo::" $4 "/megamek"}'
-          echo "::set-output name=mmBranch::${{ github.event.pull_request.head.ref }}"
-        else
-          echo "::set-output name=mmRepo::MegaMek/megamek"
-          echo "::set-output name=mmBranch::master"
-        fi
-        exit 0
+      # Find the repo and branch to use for MM
+      #
+      # Output variables:
+      #
+      #    - mmRepo: The MM repository to use.
+      #    - mmBranch: The MM branch to use.
+      - name: Find the Right MegaMek Branch
+        id: find_mm
+        # Override bash so that it doesn't fail fast (the default) if we can't find the branch
+        shell: bash {0}
+        # This shell script searches the PR submitter's MM repo for
+        # a branch that has the same name as the current PR branch.
+        # If found it sets the `mmRepo` and `mmBranch` step output variables
+        # to that branch.
+        run: |
+          git ls-remote --exit-code --heads ${{ github.event.pull_request.head.repo.owner.html_url }}/megamek.git ${{ github.event.pull_request.head.ref }}
+          if [ "$?" == "0" ]
+          then
+            echo "mmRepo=${{ github.event.pull_request.head.repo.owner.login }}/megamek" >> $GITHUB_OUTPUT
+            echo "mmBranch=${{ github.event.pull_request.head.ref }}" >> $GITHUB_OUTPUT
+          else
+            echo "mmRepo=MegaMek/megamek" >> $GITHUB_OUTPUT
+            echo "mmBranch=master" >> $GITHUB_OUTPUT
+          fi
+          exit 0
 
-    # Checkout the latest MegaMek source and put it in: ./megamek
-    - name: Checkout MegaMek
-      uses: actions/checkout@v3
-      with:
-        repository: ${{ steps.find_mm.outputs.mmRepo }}
-        ref:  ${{ steps.find_mm.outputs.mmBranch }}
-        path: megamek
+      # Checkout the latest MegaMek source and put it in: ./megamek
+      - name: Checkout MegaMek
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ steps.find_mm.outputs.mmRepo }}
+          ref: ${{ steps.find_mm.outputs.mmBranch }}
+          path: megamek
 
-    # Setup the requested Java Distribution and Version from the matrix
-    - name: Set up ${{ matrix.java-distribution }} JDK ${{ matrix.java-version }}
-      uses: actions/setup-java@v3
-      with:
-        distribution: ${{ matrix.java-distribution }}
-        java-version: ${{ matrix.java-version }}
+      # Setup the requested Java Distribution and Version from the matrix
+      - name: Set up ${{ matrix.java-distribution }} JDK ${{ matrix.java-version }}
+        uses: actions/setup-java@v4
+        with:
+          distribution: ${{ matrix.java-distribution }}
+          java-version: ${{ matrix.java-version }}
 
-    # Make sure we can execute the Gradle wrapper
-    - name: Grant execute permission for gradlew (*nix or MacOS)
-      working-directory: megameklab
-      run: chmod +x gradlew
-      if: runner.os != 'Windows'
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
 
-    # Build the MegaMekLab project
-    #
-    # Directory layout:
-    #    /megameklab
-    #        /gradlew
-    #    /megamek
-    #
-    # Output Variables:
-    #    - buildScanUri
-    - name: Build with Gradle
-      uses: gradle/gradle-build-action@v2
-      with:
-        arguments: build --stacktrace --max-workers=1 --scan
-        build-root-directory: megameklab
+      - name: Build with Gradle
+        working-directory: megameklab
+        run: ./gradlew build --stacktrace --scan
 
-    # If the build step fails, try to upload any test logs in case it was a unit test failure.
-    # The logs will be relative to the ./megameklab directory.
-    - name: Upload Test Logs on Failure
-      uses: actions/upload-artifact@v3
-      if: failure()
-      with:
-        name: cd-failure-logs
-        path: ./megameklab/megameklab/build/reports/
+      # If the build step fails, try to upload any test logs in case it was a unit test failure.
+      # The logs will be relative to the ./megameklab directory.
+      - name: Upload Test Logs on Failure
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: cd-failure-logs
+          path: ./megameklab/megameklab/build/reports/
 
-    # Upload our Code Coverage Reports to CodeCov.io
-    - name: CodeCov.io Coverage Report
-      uses: codecov/codecov-action@v3
-      with:
-        directory: ./megameklab/megameklab/build/reports/jacoco/test
-        fail_ci_if_error: false
-        verbose: true
+      # Upload our Code Coverage Reports to CodeCov.io
+      - name: CodeCov.io Coverage Report
+        uses: codecov/codecov-action@v4
+        with:
+          directory: ./megameklab/megameklab/build/reports/jacoco/test
+          fail_ci_if_error: false
+          verbose: true
 
-    # If we have a buildScanUri comment on the PR
-    #
-    # NB: This only works if you're on the main MegaMek\megameklab repo
-    #     for now due to a GitHub Actions limitation.
-# CAW: temporarily halted https://github.com/thollander/actions-comment-pull-request/issues/17
-#    - name: Comment on PR with Build Scan URI
-#      uses: thollander/actions-comment-pull-request@master
-#      if: always() && steps.gradle_build.outputs.buildScanUri != ''
-#      with:
-#        message: Build scan available at ${{ steps.gradle_build.outputs.buildScanUri }}
-#        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # If we have a buildScanUri comment on the PR
+      #
+      # NB: This only works if you're on the main MegaMek\megameklab repo
+      #     for now due to a GitHub Actions limitation.
+      # CAW: temporarily halted https://github.com/thollander/actions-comment-pull-request/issues/17
+      #    - name: Comment on PR with Build Scan URI
+      #      uses: thollander/actions-comment-pull-request@master
+      #      if: always() && steps.gradle_build.outputs.buildScanUri != ''
+      #      with:
+      #        message: Build scan available at ${{ steps.gradle_build.outputs.buildScanUri }}
+      #        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    # Put the Windows Release in an artifact
-    # NB: Due to a GitHub Actions limitation we won't know what the filename is in order to display it somewhere.
-    - name: Upload Windows Release
-      uses: actions/upload-artifact@v3
-      with:
-        name: mml-release-win-${{ matrix.java-distribution }}-jdk${{ matrix.java-version }}
-        path: ./megameklab/megameklab/build/distributions/*.zip
+      # Put the Windows Release in an artifact
+      # NB: Due to a GitHub Actions limitation we won't know what the filename is in order to display it somewhere.
+      - name: Upload Windows Release
+        uses: actions/upload-artifact@v4
+        with:
+          name: mml-release-win-${{ matrix.java-distribution }}-jdk${{ matrix.java-version }}
+          path: ./megameklab/megameklab/build/distributions/*.zip
 
-    # Put the non-Windows release in an artifact
-    - name: Upload Nix/Mac Release
-      uses: actions/upload-artifact@v3
-      with:
-        name: mml-release-nix-mac-${{ matrix.java-distribution }}-jdk${{ matrix.java-version }}
-        path: ./megameklab/megameklab/build/distributions/*.tar
+      # Put the non-Windows release in an artifact
+      - name: Upload Nix/Mac Release
+        uses: actions/upload-artifact@v4
+        with:
+          name: mml-release-nix-mac-${{ matrix.java-distribution }}-jdk${{ matrix.java-version }}
+          path: ./megameklab/megameklab/build/distributions/*.tar.gz

@@ -12,64 +12,101 @@ name: "CodeQL"
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
     # The branches below must be a subset of the branches above
-    branches: [ master ]
+    branches: [master]
   schedule:
-    - cron: '24 16 * * 4'
+    - cron: "24 16 * * 4"
 
 jobs:
   analyze:
     name: Analyze
     runs-on: ${{ matrix.os }}
 
+    outputs:
+      mmRepo: ${{ steps.find_mm.outputs.mmRepo }}
+      mmBranch: ${{ steps.find_mm.outputs.mmBranch }}
+
     # Run this job once for each combination in the matrix below.
     strategy:
       matrix:
-        os: [ ubuntu-latest ] # For Code QL running on *nix is sufficient
-        language: [ 'java' ]
-        java-distribution: [ temurin ]
-        java-version: [ 17 ]
+        os: [ubuntu-latest] # For Code QL running on *nix is sufficient
+        language: ["java"]
+        java-distribution: [temurin]
+        java-version: [17]
       fail-fast: false
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      - name: Checkout MegaMekLab
+        uses: actions/checkout@v4
+        with:
+          path: megameklab
 
-    # Setup the requested Java Distribution and Version from the matrix
-    - name: Set up ${{ matrix.java-distribution }} JDK ${{ matrix.java-version }}
-      uses: actions/setup-java@v3
-      with:
-        distribution: ${{ matrix.java-distribution }}
-        java-version: ${{ matrix.java-version }}
+      # Setup composite build for MegaMekLab
+      # See: https://github.com/MegaMek/megamek/wiki/Working-With-Gradle
+      - name: Setup Composite Build for MegaMekLab
+        run: |
+          echo "includeBuild '../megamek'" >> ./megameklab/settings_local.gradle
 
-    # Initializes the CodeQL tools for scanning.
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v2
-      with:
-        languages: ${{ matrix.language }}
-        # If you wish to specify custom queries, you can do so here or in a config file.
-        # By default, queries listed here will override any specified in a config file.
-        # Prefix the list here with "+" to use these queries and those in the config file.
-        # queries: ./path/to/local/query, your-org/your-repo/queries@main
-        queries: +security-and-quality
+      # Find the repo and branch to use for MM
+      #
+      # Output variables:
+      #
+      #    - mmRepo: The MM repository to use.
+      #    - mmBranch: The MM branch to use.
+      - name: Find the Right MegaMek Branch
+        id: find_mm
+        # Override bash so that it doesn't fail fast (the default) if we can't find the branch
+        shell: bash {0}
+        # This shell script searches the PR submitter's MM repo for
+        # a branch that has the same name as the current PR branch.
+        # If found it sets the `mmRepo` and `mmBranch` step output variables
+        # to that branch.
+        run: |
+          git ls-remote --exit-code --heads ${{ github.event.pull_request.head.repo.owner.html_url }}/megamek.git ${{ github.event.pull_request.head.ref }}
+          if [ "$?" == "0" ]
+          then
+            echo "mmRepo=${{ github.event.pull_request.head.repo.owner.login }}/megamek" >> $GITHUB_OUTPUT
+            echo "mmBranch=${{ github.event.pull_request.head.ref }}" >> $GITHUB_OUTPUT
+          else
+            echo "mmRepo=MegaMek/megamek" >> $GITHUB_OUTPUT
+            echo "mmBranch=master" >> $GITHUB_OUTPUT
+          fi
+          exit 0
 
-    # Autobuild attempts to build any compiled languages  (C/C++, C#, or Java).
-    # If this step fails, then you should remove it and run the build manually (see below)
-    - name: Autobuild MegaMekLab
-      uses: github/codeql-action/autobuild@v2
+      # Checkout the latest MegaMek source and put it in: ./megamek
+      - name: Checkout MegaMek
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ steps.find_mm.outputs.mmRepo }}
+          ref: ${{ steps.find_mm.outputs.mmBranch }}
+          path: megamek
 
-    # ℹ️ Command-line programs to run using the OS shell.
-    # 📚 https://git.io/JvXDl
+      # Setup the requested Java Distribution and Version from the matrix
+      - name: Set up ${{ matrix.java-distribution }} JDK ${{ matrix.java-version }}
+        uses: actions/setup-java@v4
+        with:
+          distribution: ${{ matrix.java-distribution }}
+          java-version: ${{ matrix.java-version }}
 
-    # ✏️ If the Autobuild fails above, remove it and uncomment the following three lines
-    #    and modify them (or add more) to build your code if your project
-    #    uses a compiled language
+      # Initializes the CodeQL tools for scanning.
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+          # If you wish to specify custom queries, you can do so here or in a config file.
+          # By default, queries listed here will override any specified in a config file.
+          # Prefix the list here with "+" to use these queries and those in the config file.
+          # queries: ./path/to/local/query, your-org/your-repo/queries@main
+          queries: +security-and-quality
 
-    #- run: |
-    #   make bootstrap
-    #   make release
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
 
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v2
+      - name: Build with Gradle
+        working-directory: megameklab
+        run: ./gradlew build --stacktrace --scan
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
