@@ -40,6 +40,8 @@ jobs:
     steps:
       - name: Checkout MegaMekLab
         uses: actions/checkout@v4
+        with:
+          path: megameklab
 
       # Setup composite build for MegaMekLab
       # See: https://github.com/MegaMek/megamek/wiki/Working-With-Gradle
