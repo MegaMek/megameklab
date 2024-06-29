@@ -66,6 +66,7 @@ jobs:
             echo "mmRepo=MegaMek/megamek" >> $GITHUB_OUTPUT
             echo "mmBranch=master" >> $GITHUB_OUTPUT
           fi
+          echo $GITHUB_OUTPUT
           exit 0
 
       # Checkout the latest MegaMek source and put it in: ./megamek
