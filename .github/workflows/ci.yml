@@ -30,7 +30,8 @@ jobs:
 
     steps:
       # Checkout the Pull Request source and put it in: ./megameklab
-      - uses: actions/checkout@v4
+      - name: Checking out MegaMekLab
+        uses: actions/checkout@v4
         with:
           path: megameklab
 
@@ -59,11 +60,11 @@ jobs:
           git ls-remote --exit-code --heads ${{ github.event.pull_request.head.repo.owner.html_url }}/megamek.git ${{ github.event.pull_request.head.ref }}
           if [ "$?" == "0" ]
           then
-            echo "${{ github.event.pull_request.head.repo.owner.html_url }}" | awk -F/ '{print "name=mmRepo::" $4 "/megamek"}' >> $GITHUB_OUTPUT
-            echo "name=mmBranch::${{ github.event.pull_request.head.ref }}" >> $GITHUB_OUTPUT
+            echo "${{ github.event.pull_request.head.repo.owner.html_url }}" | awk -F/ '{print "mmRepo=" $4 "/megamek"}' >> $GITHUB_OUTPUT
+            echo "mmBranch=${{ github.event.pull_request.head.ref }}" >> $GITHUB_OUTPUT
           else
-            echo "name=mmRepo::MegaMek/megamek" >> $GITHUB_OUTPUT
-            echo "name=mmBranch::master" >> $GITHUB_OUTPUT
+            echo "mmRepo=MegaMek/megamek" >> $GITHUB_OUTPUT
+            echo "mmBranch=master" >> $GITHUB_OUTPUT
           fi
           exit 0
 
@@ -71,8 +72,8 @@ jobs:
       - name: Checkout MegaMek
         uses: actions/checkout@v4
         with:
-          repository: ${{ steps.find_mm.outputs.mmRepo }}
-          ref: ${{ steps.find_mm.outputs.mmBranch }}
+          repository: ${{ steps.vars.outputs.mmRepo }}
+          ref: ${{ steps.vars.outputs.mmBranch }}
           path: megamek
 
       # Setup the requested Java Distribution and Version from the matrix
@@ -81,12 +82,6 @@ jobs:
         with:
           distribution: ${{ matrix.java-distribution }}
           java-version: ${{ matrix.java-version }}
-
-      # Make sure we can execute the Gradle wrapper
-      - name: Grant execute permission for gradlew (*nix or MacOS)
-        working-directory: megameklab
-        run: chmod +x gradlew
-        if: runner.os != 'Windows'
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
