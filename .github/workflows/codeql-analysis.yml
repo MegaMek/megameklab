@@ -62,7 +62,7 @@ jobs:
           git ls-remote --exit-code --heads ${{ github.event.pull_request.head.repo.owner.html_url }}/megamek.git ${{ github.event.pull_request.head.ref }}
           if [ "$?" == "0" ]
           then
-            echo "${{ github.event.pull_request.head.repo.owner.html_url }}" | awk -F/ '{print "name=mmRepo::" $4 "/megamek" >> $GITHUB_OUTPUT}'
+            echo "${{ github.event.pull_request.head.repo.owner.html_url }}" | awk -F/ '{print "name=mmRepo::" $4 "/megamek"}' >> $GITHUB_OUTPUT
             echo "name=mmBranch::${{ github.event.pull_request.head.ref }}" >> $GITHUB_OUTPUT
           else
             echo "name=mmRepo::MegaMek/megamek" >> $GITHUB_OUTPUT
