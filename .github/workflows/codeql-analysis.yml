@@ -38,7 +38,7 @@ jobs:
       fail-fast: false
 
     steps:
-      - name: Checkout repository
+      - name: Checkout MegaMekLab
         uses: actions/checkout@v4
 
       # Setup composite build for MegaMekLab
@@ -77,8 +77,8 @@ jobs:
       - name: Checkout MegaMek
         uses: actions/checkout@v4
         with:
-          repository: ${{ steps.vars.outputs.mmRepo }}
-          ref: ${{ steps.vars.outputs.mmBranch }}
+          repository: ${{ steps.find_mm.outputs.mmRepo }}
+          ref: ${{ steps.find_mm.outputs.mmBranch }}
           path: megamek
 
       # Setup the requested Java Distribution and Version from the matrix
