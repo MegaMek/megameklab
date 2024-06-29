@@ -24,6 +24,10 @@ jobs:
     name: Analyze
     runs-on: ${{ matrix.os }}
 
+    outputs:
+      mmRepo: ${{ steps.find_mm.outputs.mmRepo }}
+      mmBranch: ${{ steps.find_mm.outputs.mmBranch }}
+
     # Run this job once for each combination in the matrix below.
     strategy:
       matrix:
@@ -51,8 +55,7 @@ jobs:
       #    - mmBranch: The MM branch to use.
       - name: Find the Right MegaMek Branch
         id: find_mm
-        # Override bash so that it doesn't fail fast (the default)
-        # if we can't find the branch
+        # Override bash so that it doesn't fail fast (the default) if we can't find the branch
         shell: bash {0}
         # This shell script searches the PR submitter's MM repo for
         # a branch that has the same name as the current PR branch.
@@ -62,7 +65,7 @@ jobs:
           git ls-remote --exit-code --heads ${{ github.event.pull_request.head.repo.owner.html_url }}/megamek.git ${{ github.event.pull_request.head.ref }}
           if [ "$?" == "0" ]
           then
-            echo "${{ github.event.pull_request.head.repo.owner.html_url }}" | awk -F/ '{print "mmRepo=" $4 "/megamek"}' >> $GITHUB_OUTPUT
+            echo "mmRepo=${{ github.event.pull_request.head.repo.owner.login }}/megamek" >> $GITHUB_OUTPUT
             echo "mmBranch=${{ github.event.pull_request.head.ref }}" >> $GITHUB_OUTPUT
           else
             echo "mmRepo=MegaMek/megamek" >> $GITHUB_OUTPUT
