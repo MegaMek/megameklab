@@ -43,7 +43,7 @@ jobs:
       # See: https://github.com/MegaMek/megamek/wiki/Working-With-Gradle
       - name: Setup Composite Build for MegaMekLab
         run: |
-          echo "includeBuild '../megamek'" >./megameklab/settings_local.gradle
+          echo "includeBuild '../megamek'" >> ./megameklab/settings_local.gradle
 
       # Find the repo and branch to use for MM
       #
