@@ -35,11 +35,52 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+
+      # Setup composite build for MegaMekLab
+      # See: https://github.com/MegaMek/megamek/wiki/Working-With-Gradle
+      - name: Setup Composite Build for MegaMekLab
+        run: |
+          echo "includeBuild '../megamek'" >./megameklab/settings_local.gradle
+
+      # Find the repo and branch to use for MM
+      #
+      # Output variables:
+      #
+      #    - mmRepo: The MM repository to use.
+      #    - mmBranch: The MM branch to use.
+      - name: Find the Right MegaMek Branch
+        id: find_mm
+        # Override bash so that it doesn't fail fast (the default)
+        # if we can't find the branch
+        shell: bash {0}
+        # This shell script searches the PR submitter's MM repo for
+        # a branch that has the same name as the current PR branch.
+        # If found it sets the `mmRepo` and `mmBranch` step output variables
+        # to that branch.
+        run: |
+          git ls-remote --exit-code --heads ${{ github.event.pull_request.head.repo.owner.html_url }}/megamek.git ${{ github.event.pull_request.head.ref }}
+          if [ "$?" == "0" ]
+          then
+            echo "${{ github.event.pull_request.head.repo.owner.html_url }}" | awk -F/ '{print "name=mmRepo::" $4 "/megamek" >> $GITHUB_OUTPUT}'
+            echo "name=mmBranch::${{ github.event.pull_request.head.ref }}" >> $GITHUB_OUTPUT
+          else
+            echo "name=mmRepo::MegaMek/megamek" >> $GITHUB_OUTPUT
+            echo "name=mmBranch::master" >> $GITHUB_OUTPUT
+          fi
+          exit 0
+
+      # Checkout the latest MegaMek source and put it in: ./megamek
+      - name: Checkout MegaMek
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ steps.find_mm.outputs.mmRepo }}
+          ref: ${{ steps.find_mm.outputs.mmBranch }}
+          path: megamek
 
       # Setup the requested Java Distribution and Version from the matrix
       - name: Set up ${{ matrix.java-distribution }} JDK ${{ matrix.java-version }}
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: ${{ matrix.java-distribution }}
           java-version: ${{ matrix.java-version }}

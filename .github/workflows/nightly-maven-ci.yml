@@ -33,7 +33,7 @@ jobs:
 
     steps:
       # Checkout the latest source and put it in: ./megameklab
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           path: megameklab
 
@@ -41,14 +41,14 @@ jobs:
 
       # Checkout the latest MegaMek source and put it in: ./megamek
       - name: Checkout MegaMek
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: MegaMek/megamek
           path: megamek
 
       # Setup the requested Java Distribution and Version from the matrix
       - name: Set up ${{ matrix.java-distribution }} JDK ${{ matrix.java-version }}
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: ${{ matrix.java-distribution }}
           java-version: ${{ matrix.java-version }}
@@ -61,13 +61,13 @@ jobs:
 
       # Include --stacktrace to make some build failures easier to figure out.
       - name: Build with Gradle
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@v3
         with:
           arguments: clean build --continue --stacktrace --max-workers=1 --scan
           build-root-directory: megameklab
 
       - name: Upload Test Logs on Failure
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: ${{ matrix.os }}-${{ matrix.java-distribution }}-jdk${{ matrix.java-version }}-maven-ci-failure-logs

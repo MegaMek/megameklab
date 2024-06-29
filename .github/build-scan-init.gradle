@@ -36,17 +36,8 @@ void configureExtension(extension) {
         termsOfServiceUrl = "https://gradle.com/terms-of-service"
         termsOfServiceAgree = "yes"
 
-        //
-        // After the build scan is published, put on STDOUT the special
-        // GitHub Actions syntax to set an Output Variable for the job
-        // step:
-        //
-        //     ::set-output name={variable}::{value}
-        //
-        // ref: https://help.github.com/en/actions/reference/workflow-commands-for-github-actions#setting-an-output-parameter
-        //
         buildScanPublished { PublishedBuildScan scan ->
-            println "::set-output name=buildScanUri::${scan.buildScanUri}\n"
+            echo "name=buildScanUri::${scan.buildScanUri}\n" >> $GITHUB_OUTPUT
         }
     }
 }

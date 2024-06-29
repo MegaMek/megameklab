@@ -21,12 +21,12 @@ jobs:
 
     steps:
       # Put the MML repo in a subfolder to make updating the Maven repo easier
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           path: megameklab
 
       # Grab the MM repo too
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           repository: MegaMek/megamek
           path: megamek
@@ -40,7 +40,7 @@ jobs:
 
       # Setup the requested Java Distribution and Version from the matrix
       - name: Set up ${{ matrix.java-distribution }} JDK ${{ matrix.java-version }}
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: ${{ matrix.java-distribution }}
           java-version: ${{ matrix.java-version }}
@@ -59,7 +59,7 @@ jobs:
       # Get the current Maven repo contents
       - name: Checkout Maven Repo
         if: github.repository == 'MegaMek/megameklab'
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: MegaMek/mavenrepo
           path: mavenrepo
