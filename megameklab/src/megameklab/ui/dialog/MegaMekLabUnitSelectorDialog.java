@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 - The MegaMek Team. All rights reserved.
+ * Copyright (c) 2024 - The MegaMek Team. All rights reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -18,6 +18,23 @@
  */
 package megameklab.ui.dialog;
 
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.util.function.Consumer;
+
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JRootPane;
+import javax.swing.KeyStroke;
+
 import megamek.client.ui.Messages;
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.client.ui.swing.dialog.AbstractUnitSelectorDialog;
@@ -25,27 +42,21 @@ import megamek.client.ui.swing.tileset.EntityImage;
 import megamek.client.ui.swing.tileset.MMStaticDirectoryManager;
 import megamek.client.ui.swing.util.PlayerColour;
 import megamek.common.Entity;
-import megamek.common.MechSummary;
 import megamek.common.TechConstants;
 import megamek.common.icons.Camouflage;
 import megameklab.util.CConfig;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.util.function.Consumer;
-
 public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
-    //region Variable Declarations
+    // region Variable Declarations
     private Entity chosenEntity;
     private final boolean allowPickWithoutClose;
     private Consumer<Entity> entityPickCallback;
 
-    //endregion Variable Declarations
+    // endregion Variable Declarations
 
     /**
-     * Constructs a Unit Selector Dialog that only allows choosing with closing the dialog.
+     * Constructs a Unit Selector Dialog that only allows choosing with closing the
+     * dialog.
      */
     public MegaMekLabUnitSelectorDialog(JFrame parent, UnitLoadingDialog unitLoadingDialog) {
         super(parent, unitLoadingDialog);
@@ -61,11 +72,12 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
     }
 
     /**
-     * Constructs a Unit Selector Dialog that allows choosing a Unit while keeping the
-     * dialog open by pressing Enter or the "Select" button. The entityPickCallback
-     * method will be called when a Unit is selected in this way.
+     * Constructs a Unit Selector Dialog that allows choosing a Unit while keeping
+     * the dialog open by pressing Enter or the "Select" button. The
+     * entityPickCallback method will be called when a Unit is selected in this way.
      */
-    public MegaMekLabUnitSelectorDialog(JFrame parent, UnitLoadingDialog unitLoadingDialog, Consumer<Entity> entityPickCallback) {
+    public MegaMekLabUnitSelectorDialog(JFrame parent, UnitLoadingDialog unitLoadingDialog,
+            Consumer<Entity> entityPickCallback) {
         super(parent, unitLoadingDialog);
         gameTechLevel = TechConstants.T_SIMPLE_UNOFFICIAL;
         allowPickWithoutClose = true;
@@ -75,9 +87,9 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
         }
         this.entityPickCallback = entityPickCallback;
         initialize();
-        // This overrides the default close behavior to avoid selecting another unit when closing with ESC or
-        // the Close button. AbstractUnitSelectorDialog should probably be changed to make the
-        // selectedEntity null in these cases
+        // This overrides the default close behavior to avoid selecting another unit
+        // when closing with ESC or the Close button. AbstractUnitSelectorDialog should
+        // probably be changed to make the selectedEntity null in these cases
         JRootPane rootPane = getRootPane();
         KeyStroke escape = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
         rootPane.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(escape, CLOSE_ACTION);
@@ -88,7 +100,7 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
         setVisible(true);
     }
 
-    // Only necessary to override the default close behavior, see contructor
+    // Only necessary to override the default close behavior, see constructor
     Action closeAction = new AbstractAction() {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -98,10 +110,10 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
 
     @Override
     public void updateOptionValues() {
-
+        // Why is this empty?
     }
 
-    //region Button Methods
+    // region Button Methods
     @Override
     protected JPanel createButtonsPanel() {
         JPanel panelButtons = new JPanel(new GridBagLayout());
@@ -117,7 +129,7 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
         panelButtons.add(buttonSelectClose, new GridBagConstraints());
 
         buttonClose = new JButton(Messages.getString("Close"));
-        // Override the default close behavior, see contructor
+        // Override the default close behavior, see constructor
         buttonClose.addActionListener(e -> closeWithoutSelection());
         panelButtons.add(buttonClose, new GridBagConstraints());
 
@@ -143,7 +155,7 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
             entityPickCallback.accept(chosenEntity);
         }
     }
-    //endregion Button Methods
+    // endregion Button Methods
 
     /**
      * @return the chosenEntity
@@ -157,7 +169,7 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
         Entity selectedEntity = super.refreshUnitView();
         if (selectedEntity != null) {
             Image base = MMStaticDirectoryManager.getMechTileset().imageFor(selectedEntity);
-            EntityImage entityImage = EntityImage.createIcon(base, Camouflage.of(PlayerColour.GOLD), labelImage, selectedEntity);
+            EntityImage entityImage = EntityImage.createIcon(base, Camouflage.of(PlayerColour.GOLD), selectedEntity);
             entityImage.loadFacings();
             labelImage.setIcon(new ImageIcon(entityImage.getFacing(0)));
         }

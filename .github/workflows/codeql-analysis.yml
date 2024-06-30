@@ -14,7 +14,6 @@ on:
   push:
     branches: [master]
   pull_request:
-    # The branches below must be a subset of the branches above
     branches: [master]
   schedule:
     - cron: "24 16 * * 4"
@@ -106,7 +105,7 @@ jobs:
 
       - name: Build with Gradle
         working-directory: megameklab
-        run: ./gradlew build --stacktrace --scan
+        run: ./gradlew jar
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
