@@ -67,7 +67,7 @@ application {
 ext {
     mmlJvmOptions = ['-Xmx1024m']
     data = 'data'
-    unitFiles = "data/mechfiles"
+    unitFiles = "${data}/mechfiles"
     docs = 'docs'
     lib = 'lib'
     log = 'logs'
@@ -77,7 +77,6 @@ ext {
     fileStagingDir = "${buildDir}/files"
     mmRepoDir = "${buildDir}/repo/megamek"
     mmlRepoDir = "${buildDir}/repo/megameklab"
-    mavenPublishDir = "${buildDir}/mavenrepo"
     scriptsDir = "${projectDir}/scripts"
     scriptTemplate = "${scriptsDir}/startScriptTemplate.txt"
 }
@@ -142,7 +141,7 @@ task stageFiles(type: Copy) {
 task createStartScripts (type: CreateStartScripts) {
     description = 'Create shell script for generic distribution.'
     applicationName = 'mml'
-    mainClass = project.mainClassName
+    mainClass = application.mainClass
     outputDir = startScripts.outputDir
     classpath = jar.outputs.files + files(project.sourceSets.main.runtimeClasspath.files)
             .filter { it.name.endsWith(".jar") }
@@ -164,7 +163,7 @@ task createStartScripts (type: CreateStartScripts) {
 distributions {
     // Creates tasks which package distribution with MM jar and startup script in root directory
     unix {
-        distributionBaseName = 'megameklab'
+        distributionBaseName = 'megameklab-unix'
         contents {
             from ("${mmDir}/megamek/mmconf/log4j2.xml") {
                 exclude 'log4j2.xml'
@@ -198,6 +197,7 @@ distributions {
                 include '*.exe'
                 include '*.ini'
             }
+            from(jar)
             from fileStagingDir
             from (project.sourceSets.main.runtimeClasspath.files
                     .findAll { it.name.endsWith(".jar") && !it.name.toLowerCase().startsWith("megamek") }) {
@@ -213,11 +213,13 @@ distributions {
 
 createExe {
     description = 'Create Windows executable that wraps MegaMekLab jar'
-    mainClassName = project.mainClassName
-    jarTask = project.tasks.jar
+    mainClassName = application.mainClass
+    outfile = 'MegaMekLab.exe'
+    def iniFile = 'MegaMekLab.l4j.ini'
     icon = "${projectDir}/data/images/misc/megameklab.ico"
+    jarTask = project.tasks.jar
     internalName = 'MegaMekLab'
-    downloadUrl = 'https://adoptium.net/temurin/releases/?os=windows&arch=x64'
+    downloadUrl = 'https://github.com/MegaMek/megamek/wiki/Updating-to-Adoptium'
     supportUrl = 'https://megamek.org'
     copyright = '2024 MegaMek Development Team'
     companyName = "MegaMek Development Team"
@@ -225,9 +227,16 @@ createExe {
             .findAll { it.name.endsWith(".jar") && !it.name.toLowerCase().startsWith("megamek")}
             .collect { "${lib}/${it.name}" }
     outputs.file "${buildDir}/launch4j/${outfile}"
+    outputs.file "${buildDir}/launch4j/${iniFile}"
     jvmOptions = project.ext.mmlJvmOptions
     jreMinVersion = '17'
     messagesJreNotFoundError = 'Go here for instructions on installing the correct version of Java: https://github.com/MegaMek/megamek/wiki/Updating-to-Adoptium'
+    doLast {
+        new File("${buildDir}/launch4j/${iniFile}").text = """# Launch4j runtime config
+# you can add arguments here that will be processed by the JVM at runtime
+${project.ext.mmlJvmOptions.join('\n')}
+"""
+    }
 }
 
 windowsDistTar {
@@ -388,19 +397,7 @@ publishing {
             }
         }
     }
-
-    repositories {
-        maven {
-            url uri(mavenPublishDir)
-        }
-    }
 }
-
-task cleanPublishingDir (type: Delete) {
-    delete = mavenPublishDir
-}
-
-publishPublishMMLibraryPublicationToMavenRepository.dependsOn cleanPublishingDir
 
 test {
     useJUnitPlatform()
