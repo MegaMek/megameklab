@@ -71,7 +71,11 @@ application {
 }
 
 ext {
-    mmlJvmOptions = ['-Xmx1024m']
+    mmlJvmOptions = [
+        '-Xmx1024m',
+        '--add-opens java.base/java.util=ALL-UNNAMED',
+        '--add-opens java.base/java.util.concurrent=ALL-UNNAMED'
+    ]
     data = 'data'
     unitFiles = "${data}/mechfiles"
     docs = 'docs'
@@ -159,7 +163,7 @@ task createStartScripts (type: CreateStartScripts) {
     doLast {
         // The start script assumes all the files on the classpath will be in the lib directory.
         unixScript.text = unixScript.text.replace('lib/MegaMekLab', 'MegaMekLab')
-        windowsScript.text = windowsScript.text.replace('lib\\MegaMekLab', 'MegaMekLab')
+        windowsScript.text = windowsScript.text.replace('lib/MegaMekLab', 'MegaMekLab')
         // The Windows script just has a single line that needs to be changed to put the script in the root,
         // so we'll do a simple replace
         windowsScript.text = windowsScript.text.replace('set APP_HOME=%DIRNAME%..', '')
