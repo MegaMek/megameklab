@@ -71,11 +71,7 @@ application {
 }
 
 ext {
-    mmlJvmOptions = [
-        '-Xmx1024m',
-        '--add-opens java.base/java.util=ALL-UNNAMED',
-        '--add-opens java.base/java.util.concurrent=ALL-UNNAMED'
-    ]
+    mmlJvmOptions = ['-Xmx1024m']
     data = 'data'
     unitFiles = "${data}/mechfiles"
     docs = 'docs'
