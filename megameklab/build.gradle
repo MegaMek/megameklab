@@ -204,6 +204,9 @@ distributions {
                 include '*.exe'
                 include '*.ini'
             }
+            from(jar) {
+                into "${lib}"
+            }
             from(jar)
             from fileStagingDir
             from (project.sourceSets.main.runtimeClasspath.files
