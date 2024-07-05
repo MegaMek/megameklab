@@ -200,20 +200,27 @@ distributions {
             from ("${mmDir}/megamek/mmconf/log4j2.xml") {
                 exclude 'log4j2.xml'
             }
+            from (fileStagingDir) {
+                exclude 'history.txt'
+            }
+            from (createStartScripts) {
+                include 'mml*'
+                rename 'mml(.*)', 'mml-startup$1'
+            }
+            from (mmJar) {
+                into "${lib}"
+            }
+            from (jar)
+            from (project.sourceSets.main.runtimeClasspath.files
+                    .findAll { it.name.endsWith(".jar") && !it.name.toLowerCase().startsWith("megamek") }) {
+                into "${lib}"
+            }
+
             from ("${buildDir}/launch4j") {
                 include '*.exe'
                 include '*.ini'
             }
             from(jar) {
-                into "${lib}"
-            }
-            from(jar)
-            from fileStagingDir
-            from (project.sourceSets.main.runtimeClasspath.files
-                    .findAll { it.name.endsWith(".jar") && !it.name.toLowerCase().startsWith("megamek") }) {
-                into "${lib}"
-            }
-            from (mmJar) {
                 into "${lib}"
             }
             duplicatesStrategy = 'exclude'
@@ -240,9 +247,16 @@ launch4j {
     messagesJreNotFoundError = 'Go here for instructions on installing the correct version of Java: https://github.com/MegaMek/megamek/wiki/Updating-to-Adoptium'
 }
 
+tasks.register("packagePrepWork") {
+    description = 'General Catch All for all distributions'
+    dependsOn stageFiles
+    dependsOn startScripts
+    dependsOn createStartScripts
+}
+
 windowsDistTar {
     description = 'Creates Windows distribution packaged as a tar.gz archive'
-    dependsOn stageFiles
+    dependsOn packagePrepWork
     dependsOn createAllExecutables
     archiveExtension = 'tar.gz'
     compression = Compression.GZIP
@@ -250,36 +264,30 @@ windowsDistTar {
 
 windowsDistZip {
     description = 'Creates Windows distribution packaged as a zip archive'
-    dependsOn stageFiles
+    dependsOn packagePrepWork
     dependsOn createAllExecutables
 }
 
 unixDistZip {
     description = 'Creates *nix distribution packaged as a zip'
-    dependsOn stageFiles
-    dependsOn startScripts
+    dependsOn packagePrepWork
 }
 
 unixDistTar {
     description = 'Creates *nix distribution packaged as a tar ball'
-    dependsOn stageFiles
-    dependsOn startScripts
+    dependsOn packagePrepWork
     archiveExtension = 'tar.gz'
     compression = Compression.GZIP
 }
 
 distZip {
     description = 'Creates *nix distribution packaged as a zip'
-    dependsOn stageFiles
-    dependsOn createStartScripts
-    dependsOn startScripts
+    dependsOn packagePrepWork
 }
 
 distTar {
     description = 'Creates *nix distribution packaged as a tar ball'
-    dependsOn stageFiles
-    dependsOn createStartScripts
-    dependsOn startScripts
+    dependsOn packagePrepWork
     archiveExtension = 'tar.gz'
     compression = Compression.GZIP
 }
