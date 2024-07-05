@@ -6,6 +6,7 @@ plugins {
     id 'edu.sc.seis.launch4j' version '3.0.5'
     id 'jacoco'
     id 'java'
+    id "io.sentry.jvm.gradle" version "4.9.0"
 }
 
 java {
@@ -130,6 +131,8 @@ task stageFiles(type: Copy) {
     include "${docs}/**"
     include 'license.txt'
     include 'SubmitBug.html'
+    include "sentry.properties"
+    include "mml-revision.txt"
     exclude "**/*.psd"
 
     into fileStagingDir
@@ -137,7 +140,7 @@ task stageFiles(type: Copy) {
     inputs.dir "${mmconf}"
     inputs.dir "${data}"
     inputs.dir "${docs}"
-    inputs.files 'license.txt', 'SubmitBug.html'
+    inputs.files 'license.txt', 'SubmitBug.html', 'sentry.properties', 'mml-revision.txt'
     outputs.dir fileStagingDir
 
     doLast {
@@ -168,34 +171,8 @@ task createStartScripts (type: CreateStartScripts) {
 }
 
 distributions {
-    // Creates tasks which package distribution with MM jar and startup script in root directory
-    unix {
-        distributionBaseName = 'megameklab-unix'
-        contents {
-            from ("${mmDir}/megamek/mmconf/log4j2.xml") {
-                exclude 'log4j2.xml'
-            }
-            from (fileStagingDir) {
-                exclude 'history.txt'
-            }
-            from (createStartScripts) {
-                include 'mml*'
-                rename 'mml(.*)', 'mml-startup$1'
-            }
-            from (mmJar) {
-                into "${lib}"
-            }
-            from (jar)
-            from (project.sourceSets.main.runtimeClasspath.files
-                    .findAll { it.name.endsWith(".jar") && !it.name.toLowerCase().startsWith("megamek") }) {
-                into "${lib}"
-            }
-            duplicatesStrategy = 'exclude'
-        }
-    }
-    // Creates tasks which package distribution with MM jar wrapped in Windows executable
-    windows {
-        distributionBaseName = 'megameklab-windows'
+    main {
+        distributionBaseName = 'MegaMekLab'
         contents {
             from ("${mmDir}/megamek/mmconf/log4j2.xml") {
                 exclude 'log4j2.xml'
@@ -252,41 +229,16 @@ tasks.register("packagePrepWork") {
     dependsOn stageFiles
     dependsOn startScripts
     dependsOn createStartScripts
-}
-
-windowsDistTar {
-    description = 'Creates Windows distribution packaged as a tar.gz archive'
-    dependsOn packagePrepWork
     dependsOn createAllExecutables
-    archiveExtension = 'tar.gz'
-    compression = Compression.GZIP
-}
-
-windowsDistZip {
-    description = 'Creates Windows distribution packaged as a zip archive'
-    dependsOn packagePrepWork
-    dependsOn createAllExecutables
-}
-
-unixDistZip {
-    description = 'Creates *nix distribution packaged as a zip'
-    dependsOn packagePrepWork
-}
-
-unixDistTar {
-    description = 'Creates *nix distribution packaged as a tar ball'
-    dependsOn packagePrepWork
-    archiveExtension = 'tar.gz'
-    compression = Compression.GZIP
 }
 
 distZip {
-    description = 'Creates *nix distribution packaged as a zip'
+    description = 'Creates zip Package'
     dependsOn packagePrepWork
 }
 
 distTar {
-    description = 'Creates *nix distribution packaged as a tar ball'
+    description = 'Creates a TGZ package'
     dependsOn packagePrepWork
     archiveExtension = 'tar.gz'
     compression = Compression.GZIP
@@ -349,8 +301,8 @@ task assembleDist(overwrite: true) {
     description = 'Build unix, Windows, and source packages'
     group = 'distribution'
     dependsOn test
-    dependsOn unixDistTar
-    dependsOn windowsDistZip
+    dependsOn distTar
+    dependsOn distZip
 }
 
 task buildFromRepo (type: GradleBuild) {
@@ -383,29 +335,6 @@ task javadocJar(type: Jar) {
     description = 'Creates a documentation archive for publication to a maven repository'
     from javadoc
     archiveClassifier = 'javadoc'
-}
-
-publishing {
-    publications {
-        publishMMLibrary(MavenPublication) {
-            artifactId = "megameklab${mmlBranchTag}"
-            from components.java
-            artifact sourcesJar
-//            artifact javadocJar
-
-            pom {
-                name = "MegaMekLab"
-                description = "MegaMekLab"
-                url = "https://megamek.org"
-                licenses {
-                    license {
-                        name = "GNU General Public License, version 2"
-                        url = "https://www.gnu.org/licenses/gpl-2.0.html"
-                    }
-                }
-            }
-        }
-    }
 }
 
 test {
