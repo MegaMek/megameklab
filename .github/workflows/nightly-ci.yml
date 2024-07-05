@@ -34,12 +34,6 @@ jobs:
         with:
           path: megameklab
 
-      # Setup composite build for MegaMekLab
-      # See: https://github.com/MegaMek/megamek/wiki/Working-With-Gradle
-      - name: Setup Composite Build for MegaMekLab
-        run: |
-          echo "includeBuild '../megamek'" >> ./megameklab/settings_local.gradle
-
       # Checkout the latest MegaMek source and put it in: ./megamek
       - name: Checkout MegaMek
         uses: actions/checkout@v4
