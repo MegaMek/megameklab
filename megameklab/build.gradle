@@ -3,8 +3,14 @@ import java.time.LocalDateTime
 plugins {
     id 'application'
     id 'maven-publish'
-    id 'edu.sc.seis.launch4j' version '2.5.4'
+    id 'edu.sc.seis.launch4j' version '3.0.5'
     id 'jacoco'
+    id 'java'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 sourceSets {
@@ -29,8 +35,8 @@ sourceSets {
 dependencies {
     implementation "org.megamek:megamek${mmBranchTag}:${version}"
 
-    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.0'
-    implementation 'org.apache.logging.log4j:log4j-core:2.20.0'
+    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.2'
+    implementation 'org.apache.logging.log4j:log4j-core:2.23.1'
     implementation 'org.apache.pdfbox:pdfbox:2.0.27'
     implementation ('org.apache.xmlgraphics:batik-bridge:1.14') {
         // We don't need the python and javascript engine taking up space
@@ -51,21 +57,23 @@ dependencies {
         exclude group: 'com.sun.media', module: 'jai-codec'
         exclude group: 'xml-apis'
     }
-    testImplementation 'org.mockito:mockito-core:5.2.0'
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
+    testImplementation 'org.mockito:mockito-core:5.12.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
 
-    runtimeOnly 'org.glassfish.jaxb:jaxb-runtime:4.0.2'
+    runtimeOnly 'org.glassfish.jaxb:jaxb-runtime:4.0.5'
 
     //Required for printing scaled vector graphics (SVG) - EclipseIDE Comipatability.
     runtimeOnly 'xml-apis:xml-apis-ext:1.3.04'
 }
 
-mainClassName = 'megameklab.MegaMekLab'
+application {
+    mainClass = 'megameklab.MegaMekLab'
+}
 
 ext {
     mmlJvmOptions = ['-Xmx1024m']
     data = 'data'
-    unitFiles = "data/mechfiles"
+    unitFiles = "${data}/mechfiles"
     docs = 'docs'
     lib = 'lib'
     log = 'logs'
@@ -75,21 +83,14 @@ ext {
     fileStagingDir = "${buildDir}/files"
     mmRepoDir = "${buildDir}/repo/megamek"
     mmlRepoDir = "${buildDir}/repo/megameklab"
-    mavenPublishDir = "${buildDir}/mavenrepo"
     scriptsDir = "${projectDir}/scripts"
     scriptTemplate = "${scriptsDir}/startScriptTemplate.txt"
 }
 
-task compileMM (type: GradleBuild) {
-    description = 'Compiles the MM directory for packaging in a Jar'
-
-    buildName = "mml-compile-mm"
-    dir = "${mmDir}"
-    tasks = [ 'compileTestJava' ]
-}
-
-task mmJar (type: Jar, dependsOn: compileMM) {
+task mmJar (type: Jar) {
     description = 'Builds a MegaMek jar from the current source'
+
+    dependsOn gradle.includedBuild('megamek').task(':megamek:compileTestJava')
 
     archiveFileName = "MegaMek.jar"
     from "${mmDir}/megamek/build/classes/java/main"
@@ -111,7 +112,7 @@ task mmJar (type: Jar, dependsOn: compileMM) {
 jar {
     archiveFileName = "MegaMekLab.jar"
     manifest {
-        attributes "Main-Class" : mainClassName
+        attributes "Main-Class" : application.mainClass
         attributes "Class-Path" : "${lib}/${mmJar.archiveFileName.get()} " + (project.sourceSets.main.runtimeClasspath.files
                 .findAll { it.name.endsWith(".jar") && !it.name.toLowerCase().startsWith("megamek") }
                 .collect { "${lib}/${it.name}" }.join(' '))
@@ -128,6 +129,7 @@ task stageFiles(type: Copy) {
     include "${data}/**"
     include "${docs}/**"
     include 'license.txt'
+    include 'SubmitBug.html'
     exclude "**/*.psd"
 
     into fileStagingDir
@@ -135,7 +137,7 @@ task stageFiles(type: Copy) {
     inputs.dir "${mmconf}"
     inputs.dir "${data}"
     inputs.dir "${docs}"
-    inputs.file 'license.txt'
+    inputs.files 'license.txt', 'SubmitBug.html'
     outputs.dir fileStagingDir
 
     doLast {
@@ -146,7 +148,7 @@ task stageFiles(type: Copy) {
 task createStartScripts (type: CreateStartScripts) {
     description = 'Create shell script for generic distribution.'
     applicationName = 'mml'
-    mainClass = project.mainClassName
+    mainClass = application.mainClass
     outputDir = startScripts.outputDir
     classpath = jar.outputs.files + files(project.sourceSets.main.runtimeClasspath.files)
             .filter { it.name.endsWith(".jar") }
@@ -158,7 +160,7 @@ task createStartScripts (type: CreateStartScripts) {
     doLast {
         // The start script assumes all the files on the classpath will be in the lib directory.
         unixScript.text = unixScript.text.replace('lib/MegaMekLab', 'MegaMekLab')
-        windowsScript.text = windowsScript.text.replace('lib\\MegaMekLab', 'MegaMekLab')
+        windowsScript.text = windowsScript.text.replace('lib/MegaMekLab', 'MegaMekLab')
         // The Windows script just has a single line that needs to be changed to put the script in the root,
         // so we'll do a simple replace
         windowsScript.text = windowsScript.text.replace('set APP_HOME=%DIRNAME%..', '')
@@ -168,7 +170,7 @@ task createStartScripts (type: CreateStartScripts) {
 distributions {
     // Creates tasks which package distribution with MM jar and startup script in root directory
     unix {
-        distributionBaseName = 'megameklab'
+        distributionBaseName = 'megameklab-unix'
         contents {
             from ("${mmDir}/megamek/mmconf/log4j2.xml") {
                 exclude 'log4j2.xml'
@@ -198,16 +200,27 @@ distributions {
             from ("${mmDir}/megamek/mmconf/log4j2.xml") {
                 exclude 'log4j2.xml'
             }
-            from ("${buildDir}/launch4j") {
-                include '*.exe'
-                include '*.ini'
+            from (fileStagingDir) {
+                exclude 'history.txt'
             }
-            from fileStagingDir
+            from (createStartScripts) {
+                include 'mml*'
+                rename 'mml(.*)', 'mml-startup$1'
+            }
+            from (mmJar) {
+                into "${lib}"
+            }
+            from (jar)
             from (project.sourceSets.main.runtimeClasspath.files
                     .findAll { it.name.endsWith(".jar") && !it.name.toLowerCase().startsWith("megamek") }) {
                 into "${lib}"
             }
-            from (mmJar) {
+
+            from ("${buildDir}/launch4j") {
+                include '*.exe'
+                include '*.ini'
+            }
+            from(jar) {
                 into "${lib}"
             }
             duplicatesStrategy = 'exclude'
@@ -215,36 +228,66 @@ distributions {
     }
 }
 
-createExe {
-    description = 'Create Windows executable that wraps MegaMekLab jar'
-    mainClassName = project.mainClassName
-    jar = "${project.tasks.getByName("jar").archiveFile.get()}"
+launch4j {
+    description = 'Create Windows executable for MegaMekLab'
+    mainClassName = application.mainClass
+    outfile = "MegaMekLab.exe"
     icon = "${projectDir}/data/images/misc/megameklab.ico"
+    jarTask = project.tasks.jar
     internalName = 'MegaMekLab'
-    classpath = ["lib/${mmJar.archiveFileName.get()}"] + project.sourceSets.main.runtimeClasspath.files
-            .findAll { it.name.endsWith(".jar") && !it.name.toLowerCase().startsWith("megamek")}
-            .collect { "${lib}/${it.name}" }
-    def iniFile = outfile.replace('.exe', '.l4j.ini')
-    outputs.file "${buildDir}/launch4j/${outfile}"
-    outputs.file "${buildDir}/launch4j/${iniFile}"
-    doLast {
-        new File("${buildDir}/${outputDir}/${iniFile}").text = """# Launch4j runtime config
-# you can add arguments here that will be processed by the JVM at runtime
-${project.ext.mmlJvmOptions.join('\n')}
-"""
-    }
+    downloadUrl = 'https://github.com/MegaMek/megamek/wiki/Updating-to-Adoptium'
+    supportUrl = 'https://megamek.org'
+    copyright = '2024 MegaMek Development Team.'
+    trademarks = 'MechWarrior, BattleMech, `Mech and Aerotech - The The Topps Company, Inc. Catalyst Game Labs - InMediaRes Productions, LLC.'
+    companyName = "MegaMek Development Team"
+    jvmOptions = project.ext.mmlJvmOptions
+    jreMinVersion = '17'
+    dontWrapJar = true
+    messagesJreVersionError = 'We require a Java Runtime of version 17 or higher installed. https://github.com/MegaMek/megamek/wiki/Updating-to-Adoptium'
+    messagesJreNotFoundError = 'Go here for instructions on installing the correct version of Java: https://github.com/MegaMek/megamek/wiki/Updating-to-Adoptium'
+}
+
+tasks.register("packagePrepWork") {
+    description = 'General Catch All for all distributions'
+    dependsOn stageFiles
+    dependsOn startScripts
+    dependsOn createStartScripts
+}
+
+windowsDistTar {
+    description = 'Creates Windows distribution packaged as a tar.gz archive'
+    dependsOn packagePrepWork
+    dependsOn createAllExecutables
+    archiveExtension = 'tar.gz'
+    compression = Compression.GZIP
 }
 
 windowsDistZip {
     description = 'Creates Windows distribution packaged as a zip archive'
-    dependsOn stageFiles
-    dependsOn createExe
+    dependsOn packagePrepWork
+    dependsOn createAllExecutables
+}
+
+unixDistZip {
+    description = 'Creates *nix distribution packaged as a zip'
+    dependsOn packagePrepWork
 }
 
 unixDistTar {
     description = 'Creates *nix distribution packaged as a tar ball'
-    dependsOn stageFiles
-    dependsOn startScripts
+    dependsOn packagePrepWork
+    archiveExtension = 'tar.gz'
+    compression = Compression.GZIP
+}
+
+distZip {
+    description = 'Creates *nix distribution packaged as a zip'
+    dependsOn packagePrepWork
+}
+
+distTar {
+    description = 'Creates *nix distribution packaged as a tar ball'
+    dependsOn packagePrepWork
     archiveExtension = 'tar.gz'
     compression = Compression.GZIP
 }
@@ -363,19 +406,7 @@ publishing {
             }
         }
     }
-
-    repositories {
-        maven {
-            url uri(mavenPublishDir)
-        }
-    }
 }
-
-task cleanPublishingDir (type: Delete) {
-    delete = mavenPublishDir
-}
-
-publishPublishMMLibraryPublicationToMavenRepository.dependsOn cleanPublishingDir
 
 test {
     useJUnitPlatform()

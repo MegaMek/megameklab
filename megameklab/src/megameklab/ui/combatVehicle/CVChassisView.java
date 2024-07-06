@@ -185,7 +185,7 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 2;
         gbc.gridwidth = 2;
         setFieldSize(spnExtraSeats, spinnerSize);
-        spnExtraSeats.setToolTipText("CVChassisView.spnExtraSeats.tooltip");
+        spnExtraSeats.setToolTipText(resourceMap.getString("CVChassisView.spnExtraSeats.tooltip"));
         add(spnExtraSeats, gbc);
         spnExtraSeats.addChangeListener(this);
         gbc.gridy++;

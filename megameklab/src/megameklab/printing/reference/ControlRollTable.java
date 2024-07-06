@@ -71,7 +71,8 @@ public class ControlRollTable extends ReferenceTable {
             addRow("", bundle.getString("pilotDamage"), "", "+1" + bundle.getString("perHit"));
         }
         addRow("", bundle.getString("avionicsDamage"), "", "+1" + bundle.getString("perHit"));
-        addRow("", bundle.getString("lifeSupportDamage"), "", "+1" + bundle.getString("perHit"));
+        addRow("", bundle.getString("avionicsDestroyed"), "", "+5");
+        addRow("", bundle.getString("lifeSupportDamage"), "", "+2");
         if (entity.getWalkMP() > 0) {
             addRow("", bundle.getString("aboveSafeThrust"), "", "+1");
         }
