@@ -65,7 +65,7 @@ jobs:
 
       - name: Add MMLRevision file
         run: |
-          echo ${{ github.sha }} >> megameklab/mml-revision.txt
+          echo ${{ github.sha }} >> megameklab/megameklab//mml-revision.txt
 
       - name: Build with Gradle
         working-directory: megameklab
