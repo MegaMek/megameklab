@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2022 - The MegaMek Team. All Rights Reserved.
+ * Copyright (c) 2021-2024 - The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -24,16 +24,16 @@ import megamek.SuiteConstants;
  * These are constants that hold across MegaMekLab.
  */
 public final class MMLConstants extends SuiteConstants {
-    //region General Constants
+    // region General Constants
     public static final String PROJECT_NAME = "MegaMekLab";
-    //endregion General Constants
+    // endregion General Constants
 
-    //region GUI Constants
-    //endregion GUI Constants
+    // region GUI Constants
+    // endregion GUI Constants
 
-    //region MMLOptions
-    //endregion MMLOptions
+    // region MMLOptions
+    // endregion MMLOptions
 
-    //region File Paths
-    //endregion File Paths
+    // region File Paths
+    // endregion File Paths
 }
