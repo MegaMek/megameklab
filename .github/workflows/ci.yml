@@ -85,14 +85,14 @@ jobs:
           fail_ci_if_error: false
           verbose: true
 
-      - name: Upload Zip Release
-        uses: actions/upload-artifact@v4
-        with:
-          name: mml-release-zip-${{ matrix.java-distribution }}-jdk${{ matrix.java-version }}
-          path: ./megameklab/megameklab/build/distributions/MegaMekLab-*.zip
+      #      - name: Upload Zip Release
+      #        uses: actions/upload-artifact@v4
+      #        with:
+      #          name: mml-release-zip-${{ matrix.java-distribution }}-jdk${{ matrix.java-version }}
+      #          path: ./megameklab/megameklab/build/distributions/*.zip
 
       - name: Upload TarGZ Release
         uses: actions/upload-artifact@v4
         with:
           name: mml-release-tgz-${{ matrix.java-distribution }}-jdk${{ matrix.java-version }}
-          path: ./megameklab/megameklab/build/distributions/MegaMekLab-*.tar.gz
+          path: ./megameklab/megameklab/build/distributions/*.tar.gz
