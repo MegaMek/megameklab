@@ -20,6 +20,7 @@
 package megameklab.ui.generalUnit;
 
 import megamek.common.Entity;
+import megameklab.printing.PaperSize;
 import megameklab.printing.PrintRecordSheet;
 import megameklab.printing.RecordSheetOptions;
 import megameklab.util.UnitPrintManager;
@@ -27,8 +28,16 @@ import org.apache.batik.gvt.GraphicsNode;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 import java.awt.print.PageFormat;
+import java.io.IOException;
 import java.util.List;
 
 
@@ -38,26 +47,66 @@ import java.util.List;
  * Simply fills itself with the record sheet for the given unit.
  */
 public class RecordSheetPreviewPanel extends JPanel {
+    private class RightClickListener extends MouseAdapter {
+        private final JPopupMenu popup = new JPopupMenu();
+        {
+            var item = new JMenuItem("Copy to clipboard");
+            item.addActionListener(l -> {
+                var parent = RecordSheetPreviewPanel.this;
+                PaperSize pz = new RecordSheetOptions().getPaperSize();
+                BufferedImage img = new BufferedImage(pz.pxWidth * 2, pz.pxHeight * 2, BufferedImage.TYPE_INT_ARGB);
+                parent.paintComponent(img.createGraphics(), pz.pxWidth * 2, pz.pxHeight * 2);
+
+                Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new Transferable() {
+                    @Override
+                    public DataFlavor[] getTransferDataFlavors() {
+                        return new DataFlavor[] {DataFlavor.imageFlavor};
+                    }
+
+                    @Override
+                    public boolean isDataFlavorSupported(DataFlavor flavor) {
+                        return DataFlavor.imageFlavor.equals(flavor);
+                    }
+
+                    @Override
+                    public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
+                        if (!isDataFlavorSupported(flavor)) {
+                            throw new UnsupportedFlavorException(flavor);
+                        }
+                        return img;
+                    }
+                }, null);
+            });
+            popup.add(item);
+        }
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            super.mouseClicked(e);
+            popup.show(e.getComponent(), e.getX(), e.getY());
+        }
+    }
+
+    public RecordSheetPreviewPanel() {
+        addMouseListener(new RightClickListener());
+    }
+
     private Entity entity;
 
     public void setEntity(Entity entity) {
         this.entity = entity;
     }
 
-    @Override
-    public void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        Graphics2D g2d = (Graphics2D) g;
-
+    private void paintComponent(Graphics2D g, int width, int height) {
         // Set render quality, antialiasing is extremely necessary
         RenderingHints rh = new RenderingHints(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
         rh.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         rh.put(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-        g2d.setRenderingHints(rh);
+        g.setRenderingHints(rh);
 
         // White background for image
-        g2d.setColor(Color.WHITE);
-        g2d.clearRect(0, 0, getWidth(), getHeight());
+        g.setBackground(Color.WHITE);
+        g.clearRect(0, 0, width, height);
 
 
         if (entity != null) {
@@ -73,13 +122,19 @@ public class RecordSheetPreviewPanel extends JPanel {
 
             // Scale record sheet to the size of the panel, taking into account the 10 pixels taken up by margin
             var bounds = gn.getBounds();
-            var yscale = (getHeight() - 10) / bounds.getHeight();
-            var xscale = (getWidth() - 10) / bounds.getWidth();
+            var yscale = (height - 10) / bounds.getHeight();
+            var xscale = (width - 10) / bounds.getWidth();
             var scale = Math.min(yscale, xscale);
             gn.setTransform(AffineTransform.getScaleInstance(scale, scale));
 
             // Draw the completed record sheet SVG to the panel
-            gn.paint(g2d);
+            gn.paint(g);
         }
+    }
+
+    @Override
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        paintComponent((Graphics2D) g, getWidth(), getHeight());
     }
 }
