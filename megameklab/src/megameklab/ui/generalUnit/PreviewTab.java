@@ -42,6 +42,7 @@ public class PreviewTab extends ITab {
     private final ConfigurableMechViewPanel panelMekView = new ConfigurableMechViewPanel();
     private final MechViewPanel panelTROView = new MechViewPanel();
     private final ConfigurableASCardPanel cardPanel = new ConfigurableASCardPanel(null);
+    private final RecordSheetPreviewPanel rsPanel = new RecordSheetPreviewPanel();
 
     public PreviewTab(EntitySource eSource) {
         super(eSource);
@@ -50,6 +51,7 @@ public class PreviewTab extends ITab {
         panPreview.addTab("Summary", panelMekView);
         panPreview.addTab("TRO", panelTROView);
         panPreview.addTab("AS Card", cardPanel);
+        panPreview.addTab("Record Sheet", rsPanel);
         add(panPreview, BorderLayout.CENTER);
         addComponentListener(refreshOnShow);
     }
@@ -74,10 +76,12 @@ public class PreviewTab extends ITab {
             } else {
                 cardPanel.setASElement(null);
             }
+            rsPanel.setEntity(selectedUnit);
         } else {
             panelMekView.reset();
             panelTROView.reset();
             cardPanel.setASElement(null);
+            rsPanel.setEntity(null);
         }
     }
 

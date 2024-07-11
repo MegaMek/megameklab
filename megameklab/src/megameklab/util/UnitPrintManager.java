@@ -113,7 +113,7 @@ public class UnitPrintManager {
         return f.getSelectedFile();
     }
 
-    private static List<PrintRecordSheet> createSheets(List<? extends BTObject> entities, boolean singlePrint,
+    public static List<PrintRecordSheet> createSheets(List<? extends BTObject> entities, boolean singlePrint,
                                                        RecordSheetOptions options) {
         List<PrintRecordSheet> sheets = new ArrayList<>();
         List<Infantry> infList = new ArrayList<>();
