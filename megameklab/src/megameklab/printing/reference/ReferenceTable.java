@@ -147,7 +147,31 @@ public abstract class ReferenceTable extends ReferenceTableBase {
             g.appendChild(text);
             ypos += rowSpacing + lineHeight * (lineCount - 1);
         }
-        for (List<String> row : data) {
+
+        int rowParity = 0;
+
+        for (int i = 0, dataSize = data.size(); i < dataSize; i++) {
+            List<String> row = data.get(i);
+
+            boolean sectionHeader = false;
+            boolean noShade = false;
+            if (!row.isEmpty() && row.get(0).startsWith(SECTION_HEADER)) {
+                sectionHeader = true;
+                row.set(0, row.get(0).replace(SECTION_HEADER, ""));
+            }
+            if (!row.isEmpty() && row.get(0).startsWith(NO_SHADE)) {
+                noShade = true;
+                row.set(0, row.get(0).replace(NO_SHADE, ""));
+            }
+
+            if (sectionHeader || noShade) {
+                rowParity = (i + 1) % 2;
+            } else {
+                if (i % 2 == rowParity) {
+                    g.appendChild(createShadeElement(0, ypos - fontSize / 3 - rowSpacing / 2, width * 0.97, rowSpacing * lineCount(row)));
+                }
+            }
+
             for (int c = 0; c < row.size(); c++) {
                 if (c == colOffsets.size()) {
                     break;
@@ -155,7 +179,7 @@ public abstract class ReferenceTable extends ReferenceTableBase {
                 String[] lines = row.get(c).split("\\n");
                 for (int l = 0; l < lines.length; l++) {
                     g.appendChild(createTextElement(width * colOffsets.get(c), ypos + rowSpacing * l,
-                            lines[l], fontSize, fontWeight.getOrDefault(c, SVGConstants.SVG_NORMAL_VALUE),
+                            lines[l], fontSize, fontWeight.getOrDefault(c, sectionHeader ? SVGConstants.SVG_BOLD_VALUE : SVGConstants.SVG_NORMAL_VALUE),
                             PrintRecordSheet.FILL_BLACK, anchor.getOrDefault(c, defaultAnchor), false, null));
                 }
             }

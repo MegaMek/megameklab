@@ -311,7 +311,6 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         }
         subFonts((SVGDocument) getSVGDocument());
         subColorElements();
-        shadeTableRows();
         SVGGeneratorContext context = SVGGeneratorContext.createDefault(getSVGDocument());
         svgGenerator = new SVGGraphics2D(context, false);
         double ratio = Math.min(pageFormat.getImageableWidth() / (options.getPaperSize().pxWidth - 36),
@@ -335,6 +334,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             }
         }
         processImage(pageIndex - firstPage, pageFormat);
+        shadeTableRows();
         return true;
     }
 

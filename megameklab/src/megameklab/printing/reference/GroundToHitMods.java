@@ -51,7 +51,7 @@ public class GroundToHitMods extends ReferenceTable {
     }
 
     private void addMekAttackerMods() {
-        addRow(bundle.getString("attacker"), "", "");
+        addRow(SECTION_HEADER + bundle.getString("attacker"), "", "");
         addRow("", bundle.getString("stationary"), "+0");
         addRow("", bundle.getString("walked"), "+1");
         addRow("", bundle.getString("ran"), "+2");
@@ -70,7 +70,7 @@ public class GroundToHitMods extends ReferenceTable {
     }
 
     private void addVeeAttackerMods() {
-        addRow(bundle.getString("attacker"), "", "");
+        addRow(SECTION_HEADER + bundle.getString("attacker"), "", "");
         addRow("", bundle.getString("stationary"), "+0");
         addRow("", bundle.getString("cruised"), "+1");
         addRow("", bundle.getString("flanked"), "+2");
@@ -88,7 +88,7 @@ public class GroundToHitMods extends ReferenceTable {
     }
 
     private void addTerrainMods() {
-        addRow(bundle.getString("terrain"), "", "");
+        addRow(SECTION_HEADER + bundle.getString("terrain"), "", "");
         String hexName;
         if (CConfig.scaleUnits().equals(RSScale.HEXES)) {
             hexName = "hex";
@@ -102,7 +102,7 @@ public class GroundToHitMods extends ReferenceTable {
     }
 
     private void addTargetMods() {
-        addRow(bundle.getString("target"), "", "");
+        addRow(SECTION_HEADER + bundle.getString("target"), "", "");
         if (CConfig.scaleUnits().equals(RSScale.HEXES)) {
             addRow("", bundle.getString("proneAdjacent"), "-2");
         } else {
@@ -138,7 +138,7 @@ public class GroundToHitMods extends ReferenceTable {
     }
 
     private void addDamageMods() {
-        addRow(bundle.getString("damage"), "", "");
+        addRow(SECTION_HEADER + bundle.getString("damage"), "", "");
         addRow("", bundle.getString("sensorHit"), "+2");
         addRow("", bundle.getString("shoulderHit"), "+4");
         addRow("", bundle.getString("armActuator"), "+1");

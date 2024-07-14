@@ -33,6 +33,15 @@ abstract public class ReferenceTableBase {
     private static final double STROKE_WIDTH = 1.6;
     static final double PADDING = 3.0;
 
+    /*
+     * If the first item of a table row starts with SECTION_HEADER, it will be skipped past in table shading and will be bolded
+     */
+    protected static final String SECTION_HEADER = "$SECT$";
+    /*
+     * If the first item of a table row starts with SECTION_HEADER, it will be skipped past in table shading
+     */
+    protected static final String NO_SHADE = "$NOSHADE$";
+
     protected final ResourceBundle bundle = ResourceBundle.getBundle(getClass().getName());
     final PrintRecordSheet sheet;
 
@@ -123,6 +132,20 @@ abstract public class ReferenceTableBase {
                     String.valueOf(textLength));
         }
         t.setTextContent(text);
+
+        return t;
+    }
+
+    protected Element createShadeElement(double x, double y, double width, double height) {
+        final Element t = sheet.getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_RECT_TAG);
+        t.setAttribute(SVGConstants.SVG_X_ATTRIBUTE, String.valueOf(x));
+        t.setAttribute(SVGConstants.SVG_Y_ATTRIBUTE, String.valueOf(y));
+        t.setAttribute(SVGConstants.SVG_STYLE_ATTRIBUTE, "fill:#BBBBBB");
+        t.setAttribute(SVGConstants.SVG_WIDTH_ATTRIBUTE, String.valueOf(width));
+        t.setAttribute(SVGConstants.SVG_HEIGHT_ATTRIBUTE, String.valueOf(height));
+        t.setAttribute("class", "tableshading");
+        t.setAttribute(SVGConstants.SVG_ID_ATTRIBUTE, UUID.randomUUID().toString());
+
 
         return t;
     }

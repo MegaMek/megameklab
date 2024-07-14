@@ -40,9 +40,9 @@ public class ControlRollTable extends ReferenceTable {
     }
 
     private void addMods() {
-        addRow(bundle.getString("situation"), "", "", "");
+        addRow(SECTION_HEADER + bundle.getString("situation"), "", "", "");
         if (entity.getWalkMP() > 0) {
-            addRow("", bundle.getString("movement"), "", "");
+            addRow(NO_SHADE, bundle.getString("movement"), "", "");
             if (atmosphereOnly) {
                 addRow("", "", bundle.getString("exceedCeiling"), "");
             }
@@ -56,14 +56,14 @@ public class ControlRollTable extends ReferenceTable {
                 addRow("", "", bundle.getString("descending3plus") + "", "");
             }
         }
-        addRow("", bundle.getString("damage"), "", "");
+        addRow(NO_SHADE, bundle.getString("damage"), "", "");
         addRow("", "", bundle.getString("avionicsCritical"), "");
         addRow("", "", bundle.getString("controlCritical"), "");
         if (!spaceOnly) {
             addRow("", "", bundle.getString("damagedInAtmosphere"), "");
         }
 
-        addRow(bundle.getString("modifiers"), "", "", "");
+        addRow(SECTION_HEADER + bundle.getString("modifiers"), "", "", "");
         if ((entity instanceof SmallCraft) || (entity instanceof Jumpship)
                 || entity.isSupportVehicle()) {
             addRow("", bundle.getString("crewDamage"), "", "+1" + bundle.getString("perHit"));
