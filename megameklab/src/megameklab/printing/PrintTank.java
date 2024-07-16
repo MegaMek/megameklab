@@ -202,9 +202,13 @@ public class PrintTank extends PrintEntity {
                     hideElement(getSVGDocument().getElementById(NOTES));
                 }
             } else {
+                var table = new ClusterHitsTable(this, true);
+                if (!table.required()) {
+                    return;
+                }
                 Rectangle2D bbox = getRectBBox((SVGRectElement) rect);
                 placeReferenceCharts(
-                        List.of(new ClusterHitsTable(this, true)),
+                        List.of(table),
                         rect.getParentNode(), bbox.getX() - 3.0, bbox.getY() - 6.0,
                         bbox.getWidth() + 6.0, bbox.getHeight() + 12.0);
                 hideElement(getSVGDocument().getElementById(NOTES));
