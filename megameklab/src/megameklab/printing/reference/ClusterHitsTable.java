@@ -17,6 +17,9 @@ import megamek.common.*;
 import megamek.common.weapons.missiles.MissileWeapon;
 import megameklab.printing.PrintEntity;
 import megameklab.printing.PrintRecordSheet;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 
@@ -24,22 +27,26 @@ import java.util.*;
  * Table showing the relevant columns of the cluster hits table
  */
 public class ClusterHitsTable extends ReferenceTable {
+    private static final Logger log = LogManager.getLogger(ClusterHitsTable.class);
     protected final Set<Integer> clusterSizes = new TreeSet<>();
     protected boolean hasATM;
     protected boolean hasHAG;
+    protected boolean condensed;
 
-    public ClusterHitsTable(PrintEntity sheet) {
-        this(sheet, sheet.getEntity());
+    public ClusterHitsTable(PrintEntity sheet, boolean condensed) {
+        this(sheet, sheet.getEntity(), condensed);
     }
 
-    public ClusterHitsTable(PrintRecordSheet sheet, Entity entity) {
+    public ClusterHitsTable(PrintRecordSheet sheet, Entity entity, boolean condensed) {
         super(sheet);
+        this.condensed = condensed;
         calculateClusterSizes(entity);
         addTable(entity);
     }
 
-    public ClusterHitsTable(PrintRecordSheet sheet, List<Entity> entities) {
+    public ClusterHitsTable(PrintRecordSheet sheet, List<Entity> entities, boolean condensed) {
         super(sheet);
+        this.condensed = condensed;
         for (Entity en : entities) {
             calculateClusterSizes(en);
         }
@@ -59,7 +66,11 @@ public class ClusterHitsTable extends ReferenceTable {
             }
             setColOffsets(offsets);
             List<String> headers = new ArrayList<>();
-            headers.add(bundle.getString("dieRoll2d6"));
+            if (!condensed) {
+                headers.add(bundle.getString("dieRoll2d6"));
+            } else {
+                headers.add(bundle.getString("2d6"));
+            }
             for (int size : clusterSizes) {
                 headers.add(String.valueOf(size));
             }

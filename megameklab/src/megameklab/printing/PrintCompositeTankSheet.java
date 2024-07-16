@@ -205,7 +205,7 @@ public class PrintCompositeTankSheet extends PrintRecordSheet {
         } else {
             list.add(new NotesTable(this, 12));
         }
-        ClusterHitsTable table = new ClusterHitsTable(this, tank1);
+        ClusterHitsTable table = new ClusterHitsTable(this, tank1, false);
         if (table.required()) {
             list.add(table);
         }

@@ -19,6 +19,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGRectElement;
 
 import java.awt.*;
+import java.awt.geom.Rectangle2D;
 import java.awt.print.PageFormat;
 import java.io.File;
 import java.util.*;
@@ -192,13 +193,22 @@ public class PrintTank extends PrintEntity {
 
     @Override
     protected void drawFluffImage() {
-        Image fluffImage = getFluffImage();
-        if (null != fluffImage) {
-            Element rect = getSVGDocument().getElementById(FLUFF_IMAGE);
-            if (rect instanceof SVGRectElement) {
-                embedImage(fluffImage, (Element) rect.getParentNode(), getRectBBox((SVGRectElement) rect), true);
+        Element rect = getSVGDocument().getElementById(FLUFF_IMAGE);
+        if (rect instanceof SVGRectElement) {
+            if (!options.showCondensedReferenceCharts()) {
+                Image fluffImage = getFluffImage();
+                if (null != fluffImage) {
+                    embedImage(fluffImage, (Element) rect.getParentNode(), getRectBBox((SVGRectElement) rect), true);
+                    hideElement(getSVGDocument().getElementById(NOTES));
+                }
+            } else {
+                Rectangle2D bbox = getRectBBox((SVGRectElement) rect);
+                placeReferenceCharts(
+                        List.of(new ClusterHitsTable(this, true)),
+                        rect.getParentNode(), bbox.getX() - 3.0, bbox.getY() - 6.0,
+                        bbox.getWidth() + 6.0, bbox.getHeight() + 12.0);
+                hideElement(getSVGDocument().getElementById(NOTES));
             }
-            hideElement(getSVGDocument().getElementById(NOTES));
         }
     }
 
@@ -212,7 +222,7 @@ public class PrintTank extends PrintEntity {
         List<ReferenceTable> list = new ArrayList<>();
         list.add(new GroundToHitMods(this));
         list.add(new MovementCost(this));
-        ClusterHitsTable table = new ClusterHitsTable(this);
+        ClusterHitsTable table = new ClusterHitsTable(this, false);
         if (table.required()) {
             list.add(table);
         }
