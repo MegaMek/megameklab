@@ -159,7 +159,7 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
             list.add(new AntiMekAttackTable(this));
             list.add(new SwarmAttackHitLocation(this));
         }
-        ClusterHitsTable table = new ClusterHitsTable(this, entities);
+        ClusterHitsTable table = new ClusterHitsTable(this, entities, false);
         if (table.required() && table.columnCount() <= 10) {
             list.add(table);
         }
@@ -169,7 +169,7 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
     @Override
     protected void addReferenceCharts(PageFormat pageFormat) {
         super.addReferenceCharts(pageFormat);
-        ClusterHitsTable clusterTable = new ClusterHitsTable(this, entities);
+        ClusterHitsTable clusterTable = new ClusterHitsTable(this, entities, false);
         if (clusterTable.columnCount() > 10) {
             printBottomTable(clusterTable, pageFormat);
         } else {

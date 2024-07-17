@@ -28,7 +28,7 @@ import java.util.List;
 public class MekLocationAndClusterTable extends ClusterHitsTable {
 
     public MekLocationAndClusterTable(PrintEntity sheet) {
-        super(sheet);
+        super(sheet, true);
     }
 
     @Override
