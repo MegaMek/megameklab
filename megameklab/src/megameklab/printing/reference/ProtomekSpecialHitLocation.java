@@ -26,7 +26,7 @@ public class ProtomekSpecialHitLocation extends ReferenceTable {
     }
 
     private void addRows() {
-        addRow(bundle.getString("2d6Result"), bundle.getString("hitLocation"));
+        setHeaders(bundle.getString("2d6Result"), bundle.getString("hitLocation"));
         addRow("2", bundle.getString("mainGun"));
         addRow("3", bundle.getString("legs"));
         addRow("4", bundle.getString("legs"));

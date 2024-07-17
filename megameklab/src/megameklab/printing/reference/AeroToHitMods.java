@@ -36,13 +36,13 @@ public class AeroToHitMods extends ReferenceTable {
     }
 
     private void addMods() {
-        addRow(bundle.getString("range"), "", "");
+        addRow(SECTION_HEADER + bundle.getString("range"), "", "");
         addRow("", bundle.getString("short"), "+0");
         addRow("", bundle.getString("medium"), "+2");
         addRow("", bundle.getString("long"), "+4");
         addRow("", bundle.getString("extreme"), "+6");
 
-        addRow(bundle.getString("targetInterveningConditions"), "", "");
+        addRow(SECTION_HEADER + bundle.getString("targetInterveningConditions"), "", "");
         addRow("", bundle.getString("attackAgainstAft"), "+0");
         addRow("", bundle.getString("attackAgainstSide"), "+2");
         addRow("", bundle.getString("attackAgainstNose"), "+1");
@@ -74,7 +74,7 @@ public class AeroToHitMods extends ReferenceTable {
         }
         addRow("", bundle.getString("targetEvading"), bundle.getString("variable"));
 
-        addRow(bundle.getString("attackerConditions"), "", "");
+        addRow(SECTION_HEADER + bundle.getString("attackerConditions"), "", "");
         addRow("", bundle.getString("excessThrust"), "+2");
         addRow("", bundle.getString("outOfControl"), "+2");
         if (entity.isFighter() && !entity.isSupportVehicle()) {

@@ -78,8 +78,8 @@ public class MovementCost extends ReferenceTable {
     }
 
     private void addGroundMods() {
-        addRow(bundle.getString("costToEnterAnyHex"), "", "", "1");
-        addRow(bundle.getString("terrainCost"), "", "", "");
+        addRow(SECTION_HEADER + bundle.getString("costToEnterAnyHex"), "", "", "1");
+        addRow(SECTION_HEADER + bundle.getString("terrainCost"), "", "", "");
         if (entity.isSupportVehicle() && !entity.hasMisc(MiscType.F_OFF_ROAD)) {
             addRow("", bundle.getString("clear"), "", "+1");
         } else {
@@ -135,19 +135,19 @@ public class MovementCost extends ReferenceTable {
             addRow("", bundle.getString("hardenedBuilding"), "", "+4");
         }
         if (entity.getMovementMode().equals(EntityMovementMode.VTOL)) {
-            addRow(bundle.getString("levelChangeUpOrDown"), "", "", bundle.getString("1perLevel"));
+            addRow(SECTION_HEADER + bundle.getString("levelChangeUpOrDown"), "", "", bundle.getString("1perLevel"));
         } else if ((entity instanceof Tank) || (entity instanceof Protomech)) {
-            addRow(bundle.getString("levelChangeUpOrDown"), "", "", "");
+            addRow(SECTION_HEADER + bundle.getString("levelChangeUpOrDown"), "", "", "");
             addRow("", bundle.getString("1level"), "",
                     (entity instanceof Protomech) ? "+1" : "+2");
             addRow("", bundle.getString("2plusLevels"), "", bundle.getString("prohibited"));
         } else {
-            addRow(bundle.getString("levelChangeUpOrDown"), "", "", "");
+            addRow(SECTION_HEADER + bundle.getString("levelChangeUpOrDown"), "", "", "");
             addRow("", bundle.getString("1level"), "", "+1");
             addRow("", bundle.getString("2levels"), "", "+2");
             addRow("", bundle.getString("3plusLevels"), "", bundle.getString("prohibited"));
         }
-        addRow(bundle.getString("additionalMovementActions"), "", "", "");
+        addRow(SECTION_HEADER + bundle.getString("additionalMovementActions"), "", "", "");
         addRow("", bundle.getString("facingChange"), "", bundle.getString("1perHexside"));
         if (entity instanceof Mech) {
             addRow("", bundle.getString("dropToGround"), "", "1");
@@ -164,30 +164,30 @@ public class MovementCost extends ReferenceTable {
     }
 
     private void addNavalMods() {
-        addRow(bundle.getString("water"), "", "", "");
+        addRow(SECTION_HEADER + bundle.getString("water"), "", "", "");
         addRow("", bundle.getString("depth0"), "", bundle.getString("prohibited"));
         addRow("", bundle.getString("depth1plus"), "", "1");
         if (entity.getMovementMode().equals(EntityMovementMode.SUBMARINE)) {
-            addRow(bundle.getString("levelChangeUpOrDown"), "", "", bundle.getString("1perLevel"));
+            addRow(SECTION_HEADER + bundle.getString("levelChangeUpOrDown"), "", "", bundle.getString("1perLevel"));
         }
-        addRow(bundle.getString("additionalMovementActions"), "", "", "");
+        addRow(SECTION_HEADER + bundle.getString("additionalMovementActions"), "", "", "");
         addRow("", bundle.getString("facingChange"), "", bundle.getString("1perHexside"));
     }
 
     private void addAerialMods() {
-        addRow(bundle.getString("costToEnterAirborne"), "", "", "1");
+        addRow(SECTION_HEADER + bundle.getString("costToEnterAirborne"), "", "", "1");
         addRow("", bundle.getString("woods"), "", bundle.getString("prohibited"));
         addRow("", "", bundle.getString("exceptAlongRoad"), "");
         addRow("", bundle.getString("building"), "", bundle.getString("prohibited"));
         if (entity.getMovementMode().equals(EntityMovementMode.VTOL)) {
-            addRow(bundle.getString("levelChangeUpOrDown"), "", "", bundle.getString("1perLevel"));
+            addRow(SECTION_HEADER + bundle.getString("levelChangeUpOrDown"), "", "", bundle.getString("1perLevel"));
         } else if (entity.getMovementMode().equals(EntityMovementMode.WIGE)) {
-            addRow(bundle.getString("levelChange"), "", "", "");
+            addRow(SECTION_HEADER + bundle.getString("levelChange"), "", "", "");
             addRow("", bundle.getString("up1level"), "", "+0");
             addRow("", bundle.getString("up2plusLevels"), "", bundle.getString("prohibited"));
             addRow("", bundle.getString("down1plusLevels"), "", "+0");
         }
-        addRow(bundle.getString("additionalMovementActions"), "", "", "");
+        addRow(SECTION_HEADER + bundle.getString("additionalMovementActions"), "", "", "");
         addRow("", bundle.getString("facingChange"), "", bundle.getString("1perHexside"));
         if (entity.getMovementMode().equals(EntityMovementMode.WIGE)) {
             addRow("", bundle.getString("liftOff"), "", "5");
@@ -196,11 +196,11 @@ public class MovementCost extends ReferenceTable {
     }
 
     private void addRailMods() {
-        addRow(bundle.getString("costToEnterAnyHex"), "", "", "1");
-        addRow(bundle.getString("maximumChange"), "", "",
+        addRow(SECTION_HEADER + bundle.getString("costToEnterAnyHex"), "", "", "1");
+        addRow(SECTION_HEADER + bundle.getString("maximumChange"), "", "",
                 entity.isSuperHeavy() ? "+/- 1 MP" : "+/- 2 MP");
         if (entity.isTractor()) {
-            addRow(bundle.getString("trailerWeight"), "", "", bundle.getString("cruiseMP"));
+            addRow(SECTION_HEADER + bundle.getString("trailerWeight"), "", "", bundle.getString("cruiseMP"));
             addRow("", "<=" + formatWeightThreshold(0.5), "", String.valueOf(entity.getWalkMP()));
             addRow("", "<=" + formatWeightThreshold(2.0), "",
                     String.valueOf(Math.max(2, entity.getWalkMP() - Math.min(3, entity.getWalkMP() * 2 / 3))));
@@ -247,10 +247,10 @@ public class MovementCost extends ReferenceTable {
         // This only includes ground mechanized
         int mechanizedCount = wheeledCount + hoverCount + trackedCount;
 
-        addRow(bundle.getString("move"), "", "", bundle.getString("cost"),
+        addRow(SECTION_HEADER + bundle.getString("move"), "", "", bundle.getString("cost"),
                 bundle.getString("prohibited"));
-        addRow(bundle.getString("costToEnterAnyHex"), "", "", "1");
-        addRow(bundle.getString("terrainCost"), "", "", "");
+        addRow(SECTION_HEADER + bundle.getString("costToEnterAnyHex"), "", "", "1");
+        addRow(SECTION_HEADER + bundle.getString("terrainCost"), "", "", "");
         addRow("", bundle.getString("clear"), "", "+0");
         addRow("", bundle.getString("paved"), "", "+0");
         addRow("", bundle.getString("road"), "", "+0");

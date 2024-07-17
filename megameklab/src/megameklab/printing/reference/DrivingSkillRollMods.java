@@ -40,20 +40,17 @@ public class DrivingSkillRollMods extends ReferenceTable {
     }
 
     private void addMods() {
-        addRow(bundle.getString("unitActions"), "", "", "");
+        addRow(SECTION_HEADER + bundle.getString("unitActions"), "", "", "");
         if (entity.getMovementMode().equals(EntityMovementMode.HOVER)
                 || entity.getMovementMode().equals(EntityMovementMode.VTOL)
                 || entity.getMovementMode().equals(EntityMovementMode.WIGE)) {
-            addRow("", bundle.getString("flankingMovement"), "",
+            addRow(NO_SHADE, bundle.getString("flankingMovement") + "\n" + bundle.getString("afterFacingChange"), "",
                     bundle.getString("possibleSideslip"));
-            addRow("", bundle.getString("afterFacingChange"), "", "");
-            addRow(bundle.getString("sideslipMovement"), "", "", "");
+            addRow(SECTION_HEADER + bundle.getString("sideslipMovement"), "", "", "");
         } else {
-            addRow("", bundle.getString("flankingMovement"), "",
+            addRow(NO_SHADE, bundle.getString("flankingMovement") + "\n" + bundle.getString("afterFacingChange") + "\n" + bundle.getString("onPavement"), "",
                     bundle.getString("possibleSkid"));
-            addRow("", bundle.getString("afterFacingChange"), "", "");
-            addRow("", bundle.getString("onPavement"), "", "");
-            addRow(bundle.getString("skiddingMovement"), "", "", "");
+            addRow(SECTION_HEADER + bundle.getString("skiddingMovement"), "", "", "");
         }
         addRow("", bundle.getString("hexesMovedInTurn"), "", "");
         addRow("", "", "0-2", "-1");
@@ -63,12 +60,12 @@ public class DrivingSkillRollMods extends ReferenceTable {
         addRow("", "", "11-17", "+3");
         addRow("", "", "18-24", "+4");
         addRow("", "", "25+", "+5");
-        addRow(bundle.getString("enteringLeavingBuilding"), "", "", "");
+        addRow(SECTION_HEADER + bundle.getString("enteringLeavingBuilding"), "", "", "");
         addRow("", bundle.getString("lightBuilding"), "", "0");
         addRow("", bundle.getString("mediumBuilding"), "", "+1");
         addRow("", bundle.getString("heavyBuilding"), "", "+2");
         addRow("", bundle.getString("hardenedBuilding"), "", "+3");
-        addRow("", bundle.getString("hexesMovedInTurn"), "", "");
+        addRow(SECTION_HEADER, bundle.getString("hexesMovedInTurn"), "", "");
         addRow("", "", "1-2", "0");
         addRow("", "", "3-4", "+1");
         addRow("", "", "5-6", "+2");
