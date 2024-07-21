@@ -5,24 +5,26 @@
     </Properties>
 
     <Appenders>
-        <Console name="Console">
+        <Console name="Console" target="SYSTEM_OUT" follow="true">
             <PatternLayout pattern="${layout}" />
         </Console>
         <File name="MegaMekLabLog" fileName="logs/megameklab.log" append="false">
-            <PatternLayout pattern="${layout}"/>
+            <PatternLayout pattern="${layout}" />
         </File>
     </Appenders>
 
     <Loggers>
-        <Logger name="megamek" level="info" additivity="false" >
+        <Logger name="megamek" level="info" additivity="false">
             <AppenderRef ref="MegaMekLabLog" />
+            <AppenderRef ref="Console" />
         </Logger>
-        <Logger name="megameklab" level="info" additivity="false" >
+        <Logger name="megameklab" level="info" additivity="false">
             <AppenderRef ref="MegaMekLabLog" />
+            <AppenderRef ref="Console" />
         </Logger>
 
         <Root level="info">
-            <AppenderRef ref="MegaMekLabLog" />
+            <AppenderRef ref="Console" />
         </Root>
     </Loggers>
 </Configuration>

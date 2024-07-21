@@ -28,3 +28,7 @@
 /megameklab/out/
 /megameklab/.classpath
 /megameklab/.project
+/megameklab/sheets
+
+/megameklab/docs/mml-revision.txt
+/megameklab/MegaMekLab.l4j.ini
