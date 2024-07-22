@@ -83,6 +83,9 @@ public class RecordSheetPreviewPanel extends JPanel {
         @Override
         public void mouseClicked(MouseEvent e) {
             super.mouseClicked(e);
+            if (e.getButton() != MouseEvent.BUTTON3) {
+                return;
+            }
             popup.show(e.getComponent(), e.getX(), e.getY());
         }
     }
