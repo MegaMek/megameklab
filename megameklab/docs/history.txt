@@ -8,6 +8,7 @@ MEGAMEKLAB VERSION HISTORY:
 + PR #1556: Allow right-click-to-copy for RS preview
 + PR #1560: Added row shading for procedurally generated reference tables
 + PR #1562: Replaced vehicle fluff art with cluster table when condensed reference tables enabled
++ PR #1568: Don't open Record Sheet right click menu on left click
 
 0.49.20 (2024-06-28 2100 UTC) (THIS IS THE LAST VERSION TO SUPPORT JAVA 11)
 + PR #1486: Code internals: DialogOptionsListener update
