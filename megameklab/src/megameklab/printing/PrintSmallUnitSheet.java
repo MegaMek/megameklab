@@ -230,7 +230,7 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
         if (numTypes > 1) {
             throw new IllegalArgumentException("Heterogeneous unit types are not supported");
         }
-        if (entities.get(0) instanceof BattleArmor || entities.get(0) instanceof Protomech) {
+        if ((entities.get(0) instanceof BattleArmor) || (entities.get(0) instanceof Protomech)) {
             return entities.size() > 4;
         }
         if (entities.get(0) instanceof Infantry) {
