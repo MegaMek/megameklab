@@ -16,12 +16,6 @@ import static org.junit.jupiter.api.Assertions.*;
 class PrintSmallUnitSheetTest {
     private RecordSheetOptions noTables, yesTables;
 
-    @BeforeAll
-    static void before() {
-        // Has to be done so all types are populated for lookups
-        EquipmentType.initializeTypes();
-    }
-
     @BeforeEach
     void setUp() {
         noTables = new RecordSheetOptions();
