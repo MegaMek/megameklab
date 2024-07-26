@@ -122,11 +122,12 @@ public class RecordSheetPreviewPanel extends JPanel {
             PageFormat pf = new PageFormat();
             if (sheet instanceof PrintSmallUnitSheet) {
                 pf.setPaper(options.getPaperSize().createPaper());
+                sheet.createDocument(0, pf, false);
             }
             else {
                 pf.setPaper(options.getPaperSize().createPaper(5, 5, 5, 5));
+                sheet.createDocument(0, pf, true);
             }
-            sheet.createDocument(0, pf, true);
 
 
             GraphicsNode gn = sheet.build();
