@@ -36,13 +36,10 @@ sourceSets {
 ext {
     mmlJvmOptions = ['-Xmx1024m']
     data = 'data'
-    unitFiles = "${data}/mechfiles"
     docs = 'docs'
     lib = 'lib'
     log = 'logs'
     mmconf = 'mmconf'
-    userdata = 'userdata'
-    distributionDir = "${buildDir}/distributions"
     fileStagingDir = "${buildDir}/files"
     scriptsDir = "${projectDir}/scripts"
     scriptTemplate = "${scriptsDir}/startScriptTemplate.txt"
@@ -59,7 +56,7 @@ dependencies {
 
     implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.2'
     implementation 'org.apache.logging.log4j:log4j-core:2.23.1'
-    implementation 'org.apache.pdfbox:pdfbox:2.0.27'
+    implementation 'org.apache.pdfbox:pdfbox:2.0.32'
     implementation ('org.apache.xmlgraphics:batik-bridge:1.14') {
         // We don't need the python and javascript engine taking up space
         exclude group: 'org.python', module: 'jython'
@@ -80,14 +77,14 @@ dependencies {
         exclude group: 'xml-apis'
     }
     testImplementation 'org.mockito:mockito-core:5.12.0'
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.3'
 
     runtimeOnly 'org.glassfish.jaxb:jaxb-runtime:4.0.5'
 
     //Required for printing scaled vector graphics (SVG) - EclipseIDE Comipatability.
     runtimeOnly 'xml-apis:xml-apis-ext:1.3.04'
 
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.10.3'
 }
 
 application {
@@ -129,16 +126,10 @@ task stageFiles(type: Copy) {
     include 'license.txt'
     include 'SubmitBug.html'
     include "sentry.properties"
-    include "MegaMekLab.l4j.ini"
+    include "*.ini"
     exclude "**/*.psd"
 
     into fileStagingDir
-
-    inputs.dir "${mmconf}"
-    inputs.dir "${data}"
-    inputs.dir "${docs}"
-    inputs.files 'license.txt', 'SubmitBug.html', 'sentry.properties', 'MegaMekLab.l4j.ini'
-    outputs.dir fileStagingDir
 
     doLast {
         mkdir "${fileStagingDir}/${log}"
@@ -147,7 +138,7 @@ task stageFiles(type: Copy) {
 
 task createStartScripts (type: CreateStartScripts) {
     description = 'Create shell script for generic distribution.'
-    applicationName = 'mml'
+    applicationName = 'megameklab'
     mainClass = application.mainClass
     outputDir = startScripts.outputDir
     classpath = jar.outputs.files + files(project.sourceSets.main.runtimeClasspath.files)
@@ -178,8 +169,8 @@ distributions {
                 exclude 'history.txt'
             }
             from (createStartScripts) {
-                include 'mml*'
-                rename 'mml(.*)', 'mml-startup$1'
+                include 'megameklab*'
+                rename 'megameklab(.*)', 'megameklab-startup$1'
             }
             from ("${mmDir}/megamek/build/libs/MegaMek.jar") {
                 into "${lib}"
@@ -192,7 +183,6 @@ distributions {
 
             from ("${buildDir}/launch4j") {
                 include '*.exe'
-                include '*.ini'
             }
             from(jar) {
                 into "${lib}"
@@ -276,4 +266,11 @@ task processSystemTest(type: JavaExec, dependsOn: stageFiles) {
     group = 'other'
     classpath = sourceSets.main.runtimeClasspath
     mainClass = 'megameklab.printing.CGLMassPrinter'
+}
+
+task cleanAll() {
+    description = 'Cleans all related projects to ensure a proper build.'
+    group ='build'
+    dependsOn gradle.includedBuild('megamek').task(':megamek:clean')
+    dependsOn clean
 }
