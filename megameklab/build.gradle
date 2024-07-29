@@ -170,9 +170,8 @@ distributions {
             }
 
             // MM Data
-            from ("${mmDir}/megamek/data/fonts") {
-                include 'btclassic'
-                into "${data}/fonts"
+            from ("${mmDir}/megamek/data/fonts/btclassic") {
+                into "${data}/fonts/btclassic"
             }
             from ("${mmDir}/megamek/data/forcegenerator") {
                 include 'factions.xml'
@@ -187,12 +186,14 @@ distributions {
             from ("${mmDir}/megamek/data/images/widgets") {
                 into "${data}/images/widgets"
             }
-            from ("${mmDir}/megamek/data/images") {
-                include 'units'
-                include 'universe'
-                into "${data}/images"
+            from ("${mmDir}/megamek/data/units") {
+                into "${data}/images/units"
+            }
+            from ("${mmDir}/megamek/data/universe") {
+                into "${data}/images/universe"
             }
             from ("${mmDir}/megamek/data/mechfiles") {
+                exclude "units.cache"
                 into "${unitFiles}"
             }
             from ("${mmDir}/megamek/data/universe") {
