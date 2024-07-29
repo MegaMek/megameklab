@@ -129,16 +129,10 @@ task stageFiles(type: Copy) {
     include 'license.txt'
     include 'SubmitBug.html'
     include "sentry.properties"
-    include "MegaMekLab.l4j.ini"
+    include "*.ini"
     exclude "**/*.psd"
 
     into fileStagingDir
-
-    inputs.dir "${mmconf}"
-    inputs.dir "${data}"
-    inputs.dir "${docs}"
-    inputs.files 'license.txt', 'SubmitBug.html', 'sentry.properties', 'MegaMekLab.l4j.ini'
-    outputs.dir fileStagingDir
 
     doLast {
         mkdir "${fileStagingDir}/${log}"
@@ -174,6 +168,41 @@ distributions {
             from ("${mmDir}/megamek/mmconf/log4j2.xml") {
                 exclude 'log4j2.xml'
             }
+
+            // MM Data
+            from ("${mmDir}/megamek/data/fonts") {
+                include 'btclassic'
+                into "${data}/fonts"
+            }
+            from ("${mmDir}/megamek/data/forcegenerator") {
+                include 'factions.xml'
+                into "${data}/forcegenerator"
+            }
+            from ("${mmDir}/megamek/data/images/fluff") {
+                into "${data}/images/fluff"
+            }
+            from ("${mmDir}/megamek/data/images/misc") {
+                into "${data}/images/misc"
+            }
+            from ("${mmDir}/megamek/data/images/widgets") {
+                into "${data}/images/widgets"
+            }
+            from ("${mmDir}/megamek/data/images") {
+                include 'units'
+                include 'universe'
+                into "${data}/images"
+            }
+            from ("${mmDir}/megamek/data/mechfiles") {
+                into "${unitFiles}"
+            }
+            from ("${mmDir}/megamek/data/universe") {
+                into "${data}/universe"
+            }
+            from ("${mmDir}/megamek/data/fonts") {
+                include 'btclassic'
+                into "${data}/fonts"
+            }
+
             from (fileStagingDir) {
                 exclude 'history.txt'
             }
@@ -192,12 +221,11 @@ distributions {
 
             from ("${buildDir}/launch4j") {
                 include '*.exe'
-                include '*.ini'
             }
             from(jar) {
                 into "${lib}"
             }
-            duplicatesStrategy = 'exclude'
+            duplicatesStrategy = "exclude"
         }
     }
 }
@@ -276,4 +304,9 @@ task processSystemTest(type: JavaExec, dependsOn: stageFiles) {
     group = 'other'
     classpath = sourceSets.main.runtimeClasspath
     mainClass = 'megameklab.printing.CGLMassPrinter'
+}
+
+tasks.register("cleanAll") {
+    dependsOn gradle.includedBuild('megamek').task(':clean')
+    dependsOn clean
 }
