@@ -9,6 +9,7 @@ MEGAMEKLAB VERSION HISTORY:
 + PR #1560: Added row shading for procedurally generated reference tables
 + PR #1562: Replaced vehicle fluff art with cluster table when condensed reference tables enabled
 + PR #1568: Don't open Record Sheet right click menu on left click
++ PR #1574: Record sheet fixes and improvements
 
 0.49.20 (2024-06-28 2100 UTC) (THIS IS THE LAST VERSION TO SUPPORT JAVA 11)
 + PR #1486: Code internals: DialogOptionsListener update
