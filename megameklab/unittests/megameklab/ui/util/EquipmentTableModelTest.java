@@ -2,12 +2,14 @@ package megameklab.ui.util;
 
 import megamek.common.*;
 import megamek.common.loaders.EntityLoadingException;
+import megameklab.testing.util.InitializeTypes;
 import megameklab.ui.EntitySource;
 import megameklab.ui.fighterAero.ASMainUI;
 import megameklab.ui.generalUnit.BasicInfoView;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -17,17 +19,12 @@ import java.util.Collections;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(value = InitializeTypes.class)
 class EquipmentTableModelTest {
 
     private BasicInfoView techManager;
     private EntitySource eSource;
     private EquipmentTableModel etm;
-
-    @BeforeAll
-    static void before() {
-        // Has to be done so all types are populated for lookups
-        EquipmentType.initializeTypes();
-    }
 
     @BeforeEach
     void setUp() {

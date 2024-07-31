@@ -16,12 +16,17 @@ package megameklab.printing;
 import megamek.client.ui.swing.util.FluffImageHelper;
 import megamek.common.*;
 import megameklab.printing.reference.*;
+import org.apache.batik.anim.dom.SVGLocatableSupport;
+import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.bridge.DocumentLoader;
+import org.apache.batik.bridge.GVTBuilder;
+import org.apache.batik.bridge.UserAgentAdapter;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGRectElement;
 
 import java.awt.*;
+import java.awt.geom.Rectangle2D;
 import java.awt.print.PageFormat;
-import java.io.File;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -83,6 +88,8 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
         drawFluffImage();
         if (includeReferenceCharts()) {
             addReferenceCharts(pageFormat);
+        } else if (options.showCondensedReferenceCharts() && !fillsSheet(entities, options)) {
+            addClusterChart();
         }
     }
 
@@ -148,6 +155,7 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
         return options.showReferenceCharts();
     }
 
+
     @Override
     protected List<ReferenceTable> getRightSideReferenceTables() {
         List<ReferenceTable> list = new ArrayList<>();
@@ -174,7 +182,7 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
             printBottomTable(clusterTable, pageFormat);
         } else {
             printBottomTable(new GroundMovementRecord(this, false,
-                            entities.get(0) instanceof Protomech), pageFormat);
+                entities.get(0) instanceof Protomech), pageFormat);
         }
     }
 
@@ -182,5 +190,52 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
         getSVGDocument().getDocumentElement().appendChild(table.createTable(pageFormat.getImageableX(),
                 pageFormat.getImageableY() + pageFormat.getImageableHeight() * TABLE_RATIO + 3.0,
                 pageFormat.getImageableWidth() * TABLE_RATIO, pageFormat.getImageableHeight() * 0.2 - 3.0));
+    }
+
+    private void addClusterChart() {
+        Element g = getSVGDocument().getElementById("unit_" + entities.size());
+        if (g == null) {
+            return;
+        }
+
+        var table = new ClusterHitsTable(this, entities, true);
+        if (!table.required()) {
+            return;
+        }
+
+        var uaa = new UserAgentAdapter();
+        var loader = new DocumentLoader(uaa);
+        var ctx = new BridgeContext(uaa, loader);
+        ctx.setDynamicState(BridgeContext.DYNAMIC);
+        new GVTBuilder().build(ctx, getSVGDocument());
+
+        var dims = SVGLocatableSupport.getBBox(getSVGDocument().getElementById("unit_0"));
+
+        var bbox = new Rectangle2D.Double(0, 10, dims.getWidth() + 5, dims.getHeight() - 20);
+
+        g.appendChild(table.createTable(bbox));
+    }
+
+    /**
+     * Determines if the supplied list of units fills the sheet or if there's room for more
+     * @param entities The list of entities to place on the sheet
+     * @param options The record sheet options, as reference tables can reduce available space
+     * @return {@code true} if no more entities can be printed on a single sheet
+     */
+    public static boolean fillsSheet(List<? extends Entity> entities, RecordSheetOptions options) {
+        var numTypes = entities.stream().map(Entity::getClass).distinct().count();
+        if (numTypes == 0) {
+            return false;
+        }
+        if (numTypes > 1) {
+            throw new IllegalArgumentException("Heterogeneous unit types are not supported");
+        }
+        if ((entities.get(0) instanceof BattleArmor) || (entities.get(0) instanceof Protomech)) {
+            return entities.size() > 4;
+        }
+        if (entities.get(0) instanceof Infantry) {
+            return entities.size() > (options.showReferenceCharts() ? 2 : 3);
+        }
+        throw new IllegalArgumentException("Small unit sheet only supports CI, BA, and Protomeks");
     }
 }
