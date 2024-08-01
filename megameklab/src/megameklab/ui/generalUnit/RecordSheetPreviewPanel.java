@@ -22,6 +22,7 @@ package megameklab.ui.generalUnit;
 import megamek.common.Entity;
 import megameklab.printing.PaperSize;
 import megameklab.printing.PrintRecordSheet;
+import megameklab.printing.PrintSmallUnitSheet;
 import megameklab.printing.RecordSheetOptions;
 import megameklab.util.UnitPrintManager;
 import org.apache.batik.gvt.GraphicsNode;
@@ -117,16 +118,24 @@ public class RecordSheetPreviewPanel extends JPanel {
             PrintRecordSheet sheet = UnitPrintManager.createSheets(List.of(entity), true, options).get(0);
 
             // 5-pixel margin around rs
+            // Except for SmallUnitSheets which have weird clipping issues with nonstandard margin
             PageFormat pf = new PageFormat();
-            pf.setPaper(options.getPaperSize().createPaper(5, 5, 5, 5));
-            sheet.createDocument(0, pf, true);
+            if (sheet instanceof PrintSmallUnitSheet) {
+                pf.setPaper(options.getPaperSize().createPaper());
+                sheet.createDocument(0, pf, false);
+            }
+            else {
+                pf.setPaper(options.getPaperSize().createPaper(5, 5, 5, 5));
+                sheet.createDocument(0, pf, true);
+            }
+
 
             GraphicsNode gn = sheet.build();
 
-            // Scale record sheet to the size of the panel, taking into account the 10 pixels taken up by margin
+            // Scale record sheet to the size of the panel
             var bounds = gn.getBounds();
-            var yscale = (height - 10) / bounds.getHeight();
-            var xscale = (width - 10) / bounds.getWidth();
+            var yscale = (height - 5) / bounds.getHeight();
+            var xscale = (width - 5) / bounds.getWidth();
             var scale = Math.min(yscale, xscale);
             gn.setTransform(AffineTransform.getScaleInstance(scale, scale));
 

@@ -155,7 +155,7 @@ public class UnitPrintManager {
                     }
                 } else if (unit instanceof BattleArmor) {
                     baList.add((BattleArmor) unit);
-                    if (singlePrint || baList.size() > 4) {
+                    if (singlePrint || PrintSmallUnitSheet.fillsSheet(baList, options)) {
                         PrintRecordSheet prs = new PrintSmallUnitSheet(baList, pageCount, options);
                         pageCount += prs.getPageCount();
                         sheets.add(prs);
@@ -163,7 +163,7 @@ public class UnitPrintManager {
                     }
                 } else if (unit instanceof Infantry) {
                     infList.add((Infantry) unit);
-                    if (singlePrint || infList.size() > (options.showReferenceCharts() ? 2 : 3)) {
+                    if (singlePrint || PrintSmallUnitSheet.fillsSheet(infList, options)) {
                         PrintRecordSheet prs = new PrintSmallUnitSheet(infList, pageCount, options);
                         pageCount += prs.getPageCount();
                         sheets.add(prs);
@@ -171,7 +171,7 @@ public class UnitPrintManager {
                     }
                 } else if (unit instanceof Protomech) {
                     protoList.add((Protomech) unit);
-                    if (singlePrint || protoList.size() > 4) {
+                    if (singlePrint || PrintSmallUnitSheet.fillsSheet(protoList, options)) {
                         PrintRecordSheet prs = new PrintSmallUnitSheet(protoList, pageCount, options);
                         pageCount += prs.getPageCount();
                         sheets.add(prs);

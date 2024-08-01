@@ -168,7 +168,7 @@ public abstract class ReferenceTable extends ReferenceTableBase {
                 rowParity = (i + 1) % 2;
             } else {
                 if (i % 2 == rowParity) {
-                    g.appendChild(createShadeElement(0, ypos - fontSize / 3 - rowSpacing / 2, width * 0.97, rowSpacing * lineCount(row)));
+                    g.appendChild(createShadeElement(1, ypos - fontSize / 3 - rowSpacing / 2, width - 5, rowSpacing * lineCount(row)));
                 }
             }
 
