@@ -20,12 +20,11 @@ package megameklab.ui.dialog;
 
 import megamek.client.ui.baseComponents.MMButton;
 import megamek.client.ui.swing.UnitLoadingDialog;
-import megamek.common.BTObject;
-import megamek.common.Configuration;
-import megamek.common.Entity;
-import megamek.common.MechFileParser;
+import megamek.common.*;
+import megamek.common.util.C3Util;
 import megameklab.printing.PageBreak;
 import megameklab.util.UnitPrintManager;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
 
 import javax.swing.*;
@@ -65,17 +64,21 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
     private final JButton moveBottomButton = new JButton(icon("moveBottom.png"));
 
     private final JCheckBox oneUnitPerSheetCheck = new JCheckBox("Print each unit to a separate page");
+    private final JCheckBox adjustedBvCheck = new JCheckBox("Print force-adjusted BV");
     private final JFrame parent;
     private final List<BTObject> units = new ArrayList<>();
     private final JList<String> queuedUnitList = new JList<>();
 
     private final boolean fromMul;
 
-    public PrintQueueDialog(JFrame parent, boolean printToPdf, List<? extends BTObject> units, boolean fromMul) {
+    private final String mulFileName;
+
+    public PrintQueueDialog(JFrame parent, boolean printToPdf, List<? extends BTObject> units, boolean fromMul, String mulFileName) {
         super(parent, true, "PrintQueueDialog", "PrintQueueDialog.windowName.text");
         this.parent = parent;
         this.printToPdf = printToPdf;
         this.fromMul = fromMul;
+        this.mulFileName = mulFileName;
         initialize();
         if (units != null) {
             this.units.addAll(units);
@@ -84,7 +87,7 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
     }
 
     public PrintQueueDialog(JFrame parent, boolean printToPdf) {
-        this(parent, printToPdf, null, false);
+        this(parent, printToPdf, null, false, "");
     }
 
     private static ImageIcon icon(String name) {
@@ -124,6 +127,11 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
         oneUnitPerSheetCheck.setAlignmentX(JComponent.CENTER_ALIGNMENT);
         oneUnitPerSheetCheck.setToolTipText("When unchecked, the record sheets for some unit types may be printed on the same page. " +
                 "Note that the result may depend on whether reference tables are printed. This can be changed in the Settings.");
+
+        adjustedBvCheck.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+        adjustedBvCheck.setToolTipText("When checked, printed BV is adjusted for force modifiers (C3, TAG, etc.). " +
+                "BV is always adjusted for pilot skill.");
+
         queuedUnitList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         queuedUnitList.addListSelectionListener(new OnSelectionChanged());
         queuedUnitList.setVisibleRowCount(15);
@@ -158,6 +166,9 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
         Box panel = Box.createVerticalBox();
         panel.add(centerPanel);
         panel.add(oneUnitPerSheetCheck);
+        if (fromMul) {
+            panel.add(adjustedBvCheck);
+        }
         panel.add(Box.createVerticalStrut(20));
         return panel;
     }
@@ -194,8 +205,25 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
 
     @Override
     protected void okButtonActionPerformed(ActionEvent evt) {
+        if (fromMul) {
+            if (adjustedBvCheck.isSelected()) {
+                Game g = new Game();
+                Player p = new Player(1, "Nobody");
+                for (Entity e : units.stream().filter(i -> i instanceof Entity).map(i -> (Entity) i).toList()) {
+                    e.setOwner(p);
+                    g.addEntity(e);
+                    C3Util.wireC3(g, e);
+                }
+            }
+        }
+
         if (printToPdf) {
-            File exportFile = UnitPrintManager.getExportFile(parent);
+            File exportFile;
+            if (mulFileName.isBlank()) {
+                exportFile = UnitPrintManager.getExportFile(parent);
+            } else {
+                exportFile = UnitPrintManager.getExportFile(parent, FilenameUtils.removeExtension(mulFileName) + ".pdf");
+            }
             if (exportFile != null) {
                 UnitPrintManager.exportUnits(units, exportFile, oneUnitPerSheetCheck.isSelected());
             } else {

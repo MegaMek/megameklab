@@ -76,23 +76,14 @@ public class UnitPrintManager {
             return;
         }
 
-        // Dummy player and game allow bonus BV from C3 and TAG to be calculated
-        Game g = new Game();
-        Player p = new Player(1, "Nobody");
-        for (Entity e : loadedUnits) {
-            e.setOwner(p);
-            g.addEntity(e);
-            C3Util.wireC3(g, e);
-        }
-
-        new PrintQueueDialog(parent, printToPdf, loadedUnits, true).setVisible(true);
+        new PrintQueueDialog(parent, printToPdf, loadedUnits, true, f.getSelectedFile().getName()).setVisible(true);
     }
 
     public static File getExportFile(Frame parent) {
         return getExportFile(parent, "");
     }
 
-    private static File getExportFile(Frame parent, String suggestedFileName) {
+    public static File getExportFile(Frame parent, String suggestedFileName) {
         JFileChooser f = new JFileChooser(System.getProperty("user.dir"));
         f.setLocation(parent.getLocation().x + 150, parent.getLocation().y + 100);
         f.setDialogTitle("Choose export file name");
