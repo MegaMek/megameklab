@@ -41,142 +41,142 @@ import megameklab.util.CConfig;
 import megameklab.util.UnitUtil;
 
 public class MegaMekLab {
-	private static final SuitePreferences mmlPreferences = new SuitePreferences();
-	private static final MMLOptions mmlOptions = new MMLOptions();
-	private static final SanityInputFilter sanityInputFilter = new SanityInputFilter();
+    private static final SuitePreferences mmlPreferences = new SuitePreferences();
+    private static final MMLOptions mmlOptions = new MMLOptions();
+    private static final SanityInputFilter sanityInputFilter = new SanityInputFilter();
 
-	public static void main(String... args) {
-		ObjectInputFilter.Config.setSerialFilter(sanityInputFilter);
+    public static void main(String... args) {
+        ObjectInputFilter.Config.setSerialFilter(sanityInputFilter);
 
-		Sentry.init(options -> {
-			options.setEnableExternalConfiguration(true);
-			options.setDsn("https://6dfac298f9ed6fb0d9a9f7e5669d386b@sentry.tapenvy.us/9");
-			options.setEnvironment("production");
-			options.setTracesSampleRate(0.2);
-			options.setDebug(true);
-			options.setServerName("MegaMekLabClient");
-			options.setRelease(SuiteConstants.VERSION.toString());
-		});
+        Sentry.init(options -> {
+            options.setEnableExternalConfiguration(true);
+            options.setDsn("https://6dfac298f9ed6fb0d9a9f7e5669d386b@sentry.tapenvy.us/9");
+            options.setEnvironment("production");
+            options.setTracesSampleRate(0.2);
+            options.setDebug(true);
+            options.setServerName("MegaMekLabClient");
+            options.setRelease(SuiteConstants.VERSION.toString());
+        });
 
-		// First, create a global default exception handler
-		Thread.setDefaultUncaughtExceptionHandler((thread, t) -> {
-			Sentry.captureException(t);
-			LogManager.getLogger().error("Uncaught Exception Detected", t);
-			PopupMessages.showUncaughtException(null, t);
-		});
+        // First, create a global default exception handler
+        Thread.setDefaultUncaughtExceptionHandler((thread, t) -> {
+            Sentry.captureException(t);
+            LogManager.getLogger().error("Uncaught Exception Detected", t);
+            PopupMessages.showUncaughtException(null, t);
+        });
 
-		MegaMek.initializeLogging(MMLConstants.PROJECT_NAME);
-		MegaMekLab.initializeLogging(MMLConstants.PROJECT_NAME);
-		MegaMek.initializeSuiteGraphicalSetups(MMLConstants.PROJECT_NAME);
-		ToolTipManager.sharedInstance().setDismissDelay(1000000);
-		ToolTipManager.sharedInstance().setReshowDelay(50);
-		startup();
-	}
+        MegaMek.initializeLogging(MMLConstants.PROJECT_NAME);
+        MegaMekLab.initializeLogging(MMLConstants.PROJECT_NAME);
+        MegaMek.initializeSuiteGraphicalSetups(MMLConstants.PROJECT_NAME);
+        ToolTipManager.sharedInstance().setDismissDelay(1000000);
+        ToolTipManager.sharedInstance().setReshowDelay(50);
+        startup();
+    }
 
-	public static void initializeLogging(final String originProject) {
-		if (LogManager.getLogger().isInfoEnabled()) {
-			LogManager.getLogger().info(getUnderlyingInformation(originProject));
-		}
-	}
+    public static void initializeLogging(final String originProject) {
+        if (LogManager.getLogger().isInfoEnabled()) {
+            LogManager.getLogger().info(getUnderlyingInformation(originProject));
+        }
+    }
 
-	/**
-	 * @param originProject the project that launched MegaMekLab
-	 * @return the underlying information for this launch of MegaMekLab
-	 */
-	public static String getUnderlyingInformation(final String originProject) {
-		return MegaMek.getUnderlyingInformation(originProject, MMLConstants.PROJECT_NAME);
-	}
+    /**
+     * @param originProject the project that launched MegaMekLab
+     * @return the underlying information for this launch of MegaMekLab
+     */
+    public static String getUnderlyingInformation(final String originProject) {
+        return MegaMek.getUnderlyingInformation(originProject, MMLConstants.PROJECT_NAME);
+    }
 
-	private static void startup() {
-		EquipmentType.initializeTypes();
-		MechSummaryCache.getInstance();
-		CConfig.load();
-		UnitUtil.loadFonts();
+    private static void startup() {
+        EquipmentType.initializeTypes();
+        MechSummaryCache.getInstance();
+        CConfig.load();
+        UnitUtil.loadFonts();
 
-		MegaMek.getMMPreferences().loadFromFile(SuiteConstants.MM_PREFERENCES_FILE);
-		getMMLPreferences().loadFromFile(SuiteConstants.MML_PREFERENCES_FILE);
+        MegaMek.getMMPreferences().loadFromFile(SuiteConstants.MM_PREFERENCES_FILE);
+        getMMLPreferences().loadFromFile(SuiteConstants.MML_PREFERENCES_FILE);
 
-		// TODO : Individual localizations
-		Locale.setDefault(getMMLOptions().getLocale());
+        // TODO : Individual localizations
+        Locale.setDefault(getMMLOptions().getLocale());
 
-		setLookAndFeel();
+        setLookAndFeel();
 
-		// Create a startup frame and display it
-		switch (CConfig.getStartUpType()) {
-		case NEW_MEK -> UiLoader.loadUi(Entity.ETYPE_MECH, false, false);
-		case NEW_TANK -> UiLoader.loadUi(Entity.ETYPE_TANK, false, false);
-		case NEW_FIGHTER -> UiLoader.loadUi(Entity.ETYPE_AERO, false, false);
-		case NEW_DROPSHIP -> UiLoader.loadUi(Entity.ETYPE_DROPSHIP, false, false);
-		case NEW_PROTOMEK -> UiLoader.loadUi(Entity.ETYPE_PROTOMECH, false, false);
-		case NEW_JUMPSHIP -> UiLoader.loadUi(Entity.ETYPE_JUMPSHIP, false, false);
-		case NEW_SUPPORTVEE -> UiLoader.loadUi(Entity.ETYPE_SUPPORT_TANK, false, false);
-		case NEW_BATTLEARMOR -> UiLoader.loadUi(Entity.ETYPE_BATTLEARMOR, false, false);
-		case NEW_CONVINFANTRY -> UiLoader.loadUi(Entity.ETYPE_INFANTRY, false, false);
-		case RECENT_UNIT -> {
-			if (!loadMostRecentUnit()) {
-				new StartupGUI().setVisible(true);
-			}
-		}
-		default -> {
-			new StartupGUI().setVisible(true);
-		}
-		}
-	}
+        // Create a startup frame and display it
+        switch (CConfig.getStartUpType()) {
+            case NEW_MEK -> UiLoader.loadUi(Entity.ETYPE_MECH, false, false);
+            case NEW_TANK -> UiLoader.loadUi(Entity.ETYPE_TANK, false, false);
+            case NEW_FIGHTER -> UiLoader.loadUi(Entity.ETYPE_AERO, false, false);
+            case NEW_DROPSHIP -> UiLoader.loadUi(Entity.ETYPE_DROPSHIP, false, false);
+            case NEW_PROTOMEK -> UiLoader.loadUi(Entity.ETYPE_PROTOMECH, false, false);
+            case NEW_JUMPSHIP -> UiLoader.loadUi(Entity.ETYPE_JUMPSHIP, false, false);
+            case NEW_SUPPORTVEE -> UiLoader.loadUi(Entity.ETYPE_SUPPORT_TANK, false, false);
+            case NEW_BATTLEARMOR -> UiLoader.loadUi(Entity.ETYPE_BATTLEARMOR, false, false);
+            case NEW_CONVINFANTRY -> UiLoader.loadUi(Entity.ETYPE_INFANTRY, false, false);
+            case RECENT_UNIT -> {
+                if (!loadMostRecentUnit()) {
+                    new StartupGUI().setVisible(true);
+                }
+            }
+            default -> {
+                new StartupGUI().setVisible(true);
+            }
+        }
+    }
 
-	private static void setLookAndFeel() {
-		try {
-			String plaf = CConfig.getParam(CConfig.GUI_PLAF, UIManager.getSystemLookAndFeelClassName());
-			UIManager.setLookAndFeel(plaf);
-		} catch (Exception ex) {
-			Sentry.captureException(ex);
-			LogManager.getLogger().error("", ex);
-		}
-	}
+    private static void setLookAndFeel() {
+        try {
+            String plaf = CConfig.getParam(CConfig.GUI_PLAF, UIManager.getSystemLookAndFeelClassName());
+            UIManager.setLookAndFeel(plaf);
+        } catch (Exception ex) {
+            Sentry.captureException(ex);
+            LogManager.getLogger().error("", ex);
+        }
+    }
 
-	public static SuitePreferences getMMLPreferences() {
-		return mmlPreferences;
-	}
+    public static SuitePreferences getMMLPreferences() {
+        return mmlPreferences;
+    }
 
-	public static MMLOptions getMMLOptions() {
-		return mmlOptions;
-	}
+    public static MMLOptions getMMLOptions() {
+        return mmlOptions;
+    }
 
-	/**
-	 * Tries loading the most recent unit. Returns true when successful, false when
-	 * no such unit could be found or the unit doesn't load.
-	 *
-	 * @return True when the most recent unit is successfully loaded
-	 */
-	private static boolean loadMostRecentUnit() {
-		String mostRecentName = CConfig.getRecentFile(1);
-		if (mostRecentName.isBlank()) {
-			PopupMessages.showNoMostRecentUnitError(null);
-			return false;
-		}
+    /**
+     * Tries loading the most recent unit. Returns true when successful, false when
+     * no such unit could be found or the unit doesn't load.
+     *
+     * @return True when the most recent unit is successfully loaded
+     */
+    private static boolean loadMostRecentUnit() {
+        String mostRecentName = CConfig.getRecentFile(1);
+        if (mostRecentName.isBlank()) {
+            PopupMessages.showNoMostRecentUnitError(null);
+            return false;
+        }
 
-		File unitFile = new File(mostRecentName);
-		if (!unitFile.isFile()) {
-			PopupMessages.showMostRecentUnitMissingError(null);
-			return false;
-		}
+        File unitFile = new File(mostRecentName);
+        if (!unitFile.isFile()) {
+            PopupMessages.showMostRecentUnitMissingError(null);
+            return false;
+        }
 
-		try {
-			Entity recentUnit = new MechFileParser(unitFile).getEntity();
-			if (recentUnit == null) {
-				return false;
-			} else if (!UnitUtil.validateUnit(recentUnit).isBlank()) {
-				PopupMessages.showUnitInvalidWarning(null, UnitUtil.validateUnit(recentUnit));
-			}
+        try {
+            Entity recentUnit = new MechFileParser(unitFile).getEntity();
+            if (recentUnit == null) {
+                return false;
+            } else if (!UnitUtil.validateUnit(recentUnit).isBlank()) {
+                PopupMessages.showUnitInvalidWarning(null, UnitUtil.validateUnit(recentUnit));
+            }
 
-			UiLoader.loadUi(recentUnit, unitFile.toString());
-			return true;
-		} catch (Exception ex) {
-			Sentry.captureException(ex);
-			PopupMessages.showFileReadError(null, unitFile.toString(), ex.getMessage());
-			return false;
-		}
-	}
+            UiLoader.loadUi(recentUnit, unitFile.toString());
+            return true;
+        } catch (Exception ex) {
+            Sentry.captureException(ex);
+            PopupMessages.showFileReadError(null, unitFile.toString(), ex.getMessage());
+            return false;
+        }
+    }
 
-	private MegaMekLab() {
-	}
+    private MegaMekLab() {
+    }
 }
