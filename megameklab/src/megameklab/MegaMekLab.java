@@ -17,6 +17,7 @@
 package megameklab;
 
 import java.io.File;
+import java.io.ObjectInputFilter;
 import java.util.Locale;
 
 import javax.swing.ToolTipManager;
@@ -32,6 +33,7 @@ import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.MechFileParser;
 import megamek.common.MechSummaryCache;
+import megamek.common.net.marshalling.SanityInputFilter;
 import megameklab.ui.PopupMessages;
 import megameklab.ui.StartupGUI;
 import megameklab.ui.dialog.UiLoader;
@@ -41,8 +43,11 @@ import megameklab.util.UnitUtil;
 public class MegaMekLab {
     private static final SuitePreferences mmlPreferences = new SuitePreferences();
     private static final MMLOptions mmlOptions = new MMLOptions();
+    private static final SanityInputFilter sanityInputFilter = new SanityInputFilter();
 
     public static void main(String... args) {
+        ObjectInputFilter.Config.setSerialFilter(sanityInputFilter);
+
         Sentry.init(options -> {
             options.setEnableExternalConfiguration(true);
             options.setDsn("https://6dfac298f9ed6fb0d9a9f7e5669d386b@sentry.tapenvy.us/9");
@@ -138,8 +143,7 @@ public class MegaMekLab {
 
     /**
      * Tries loading the most recent unit. Returns true when successful, false when
-     * no such
-     * unit could be found or the unit doesn't load.
+     * no such unit could be found or the unit doesn't load.
      *
      * @return True when the most recent unit is successfully loaded
      */
