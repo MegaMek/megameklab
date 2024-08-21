@@ -18,7 +18,9 @@
  */
 package megameklab.ui.dialog;
 
+import megamek.client.Client;
 import megamek.client.ui.baseComponents.MMButton;
+import megamek.client.ui.swing.ClientGUI;
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.common.*;
 import megamek.common.util.C3Util;
@@ -38,6 +40,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.net.MalformedURLException;
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -57,6 +60,7 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
     private final JButton addFromCacheButton = new JButton("Add From Cache");
     private final JButton addPageBreakButton = new JButton("Add Page Break");
     private final JButton removeButton = new JButton("Remove Selected");
+    private final JButton saveButton = new JButton("Save Unit List");
 
     private final JButton moveTopButton = new JButton(icon("moveTop.png"));
     private final JButton moveUpButton = new JButton(icon("moveUp.png"));
@@ -110,6 +114,8 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
         removeButton.addActionListener(e -> removeSelectedUnits());
         removeButton.setEnabled(false);
         removeButton.setMnemonic(KeyEvent.VK_R);
+        saveButton.addActionListener(e -> saveUnitList());
+        saveButton.setMnemonic(KeyEvent.VK_S);
 
         moveTopButton.addActionListener(e -> moveTop());
         moveTopButton.setMnemonic(KeyEvent.VK_PAGE_UP);
@@ -136,13 +142,15 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
         queuedUnitList.addListSelectionListener(new OnSelectionChanged());
         queuedUnitList.setVisibleRowCount(15);
 
-        JPanel buttonPanel = new FixedXYPanel(new GridLayout(4, 1));
+        JPanel buttonPanel = new FixedXYPanel(new GridLayout(5, 1));
         if (!fromMul) {
             buttonPanel.add(addFromCacheButton);
             buttonPanel.add(addFromFileButton);
+            saveButton.setEnabled(false);
         }
         buttonPanel.add(addPageBreakButton);
         buttonPanel.add(removeButton);
+        buttonPanel.add(saveButton);
         buttonPanel.setAlignmentY(JComponent.TOP_ALIGNMENT);
 
         JPanel moveButtonPanel = new FixedXYPanel(new GridLayout(4, 1));
@@ -163,12 +171,15 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
         centerPanel.add(queuedUnitListScrollPane);
         centerPanel.setBorder(new EmptyBorder(20, 30, 20, 30));
 
+        JPanel checkboxPanel = new FixedXYPanel(new GridLayout(2, 1));
+        checkboxPanel.add(oneUnitPerSheetCheck);
+        if (fromMul) {
+            checkboxPanel.add(adjustedBvCheck);
+        }
+
         Box panel = Box.createVerticalBox();
         panel.add(centerPanel);
-        panel.add(oneUnitPerSheetCheck);
-        if (fromMul) {
-            panel.add(adjustedBvCheck);
-        }
+        panel.add(checkboxPanel);
         panel.add(Box.createVerticalStrut(20));
         return panel;
     }
@@ -201,6 +212,8 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
         var replacementModel = new DefaultListModel<String>();
         replacementModel.addAll(nameList);
         queuedUnitList.setModel(replacementModel);
+
+        saveButton.setEnabled(units.stream().anyMatch(unit -> unit instanceof Entity));
     }
 
     @Override
@@ -209,7 +222,7 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
             if (adjustedBvCheck.isSelected()) {
                 Game g = new Game();
                 Player p = new Player(1, "Nobody");
-                for (Entity e : units.stream().filter(i -> i instanceof Entity).map(i -> (Entity) i).toList()) {
+                for (Entity e : getEntities()) {
                     e.setOwner(p);
                     g.addEntity(e);
                     C3Util.wireC3(g, e);
@@ -233,6 +246,12 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
             UnitPrintManager.printAllUnits(units, oneUnitPerSheetCheck.isSelected());
         }
         super.okButtonActionPerformed(evt);
+    }
+
+    private void saveUnitList() {
+        // todo: Refactor saveListFile to be a static method of some util class
+        // --Pavel
+        new ClientGUI(new Client("", "", 0), null).saveListFile(getEntities(), "Units");
     }
 
     private void pageBreak() {
@@ -366,6 +385,13 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
     private int bottomSelectedIndex() {
         var indices = queuedUnitList.getSelectedIndices();
         return indices[indices.length - 1];
+    }
+
+    /**
+     * Gets all the Entities currently queued (i.e., with pagebreaks removed).
+     */
+    private ArrayList<Entity> getEntities() {
+        return new ArrayList<>(units.stream().filter(i -> i instanceof Entity).map(i -> (Entity) i).toList());
     }
 
     private class OnSelectionChanged implements ListSelectionListener {
