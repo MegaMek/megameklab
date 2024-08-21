@@ -19,6 +19,7 @@
 package megameklab.ui.dialog;
 
 import megamek.client.Client;
+import megamek.client.generator.RandomNameGenerator;
 import megamek.client.ui.baseComponents.MMButton;
 import megamek.client.ui.swing.ClientGUI;
 import megamek.client.ui.swing.UnitLoadingDialog;
@@ -40,7 +41,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.net.MalformedURLException;
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -144,10 +144,10 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
 
         JPanel buttonPanel = new FixedXYPanel(new GridLayout(5, 1));
         if (!fromMul) {
-            buttonPanel.add(addFromCacheButton);
-            buttonPanel.add(addFromFileButton);
             saveButton.setEnabled(false);
         }
+        buttonPanel.add(addFromCacheButton);
+        buttonPanel.add(addFromFileButton);
         buttonPanel.add(addPageBreakButton);
         buttonPanel.add(removeButton);
         buttonPanel.add(saveButton);
@@ -175,6 +175,7 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
         checkboxPanel.add(oneUnitPerSheetCheck);
         if (fromMul) {
             checkboxPanel.add(adjustedBvCheck);
+            adjustedBvCheck.setSelected(true);
         }
 
         Box panel = Box.createVerticalBox();
@@ -203,7 +204,9 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
                     String title = String.format(" %s %s", unit.generalName(), unit.specificName());
                     if (fromMul && unit instanceof Entity) {
                         var crew = ((Entity) unit).getCrew();
-                        title += String.format("  {%s %d/%d}", crew.getName(), crew.getGunnery(), crew.getPiloting());
+                        if (!crew.getName().startsWith(RandomNameGenerator.UNNAMED)) {
+                            title += String.format("  {%s %d/%d}", crew.getName(), crew.getGunnery(), crew.getPiloting());
+                        }
                     }
                     return title;
                 })
@@ -216,17 +219,30 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
         saveButton.setEnabled(units.stream().anyMatch(unit -> unit instanceof Entity));
     }
 
+    private void linkForce() {
+        Game g = new Game();
+        Player p = new Player(1, "Nobody");
+        for (Entity e : getEntities()) {
+            e.setOwner(p);
+            g.addEntity(e);
+            C3Util.wireC3(g, e);
+        }
+    }
+
+    private void unlinkForce() {
+        int id = 1;
+        for (Entity e : getEntities()) {
+            e.setOwner(new Player(id++, "Nobody"));
+        }
+    }
+
     @Override
     protected void okButtonActionPerformed(ActionEvent evt) {
         if (fromMul) {
             if (adjustedBvCheck.isSelected()) {
-                Game g = new Game();
-                Player p = new Player(1, "Nobody");
-                for (Entity e : getEntities()) {
-                    e.setOwner(p);
-                    g.addEntity(e);
-                    C3Util.wireC3(g, e);
-                }
+                linkForce();
+            } else {
+                unlinkForce();
             }
         }
 
@@ -251,6 +267,7 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
     private void saveUnitList() {
         // todo: Refactor saveListFile to be a static method of some util class
         // --Pavel
+        linkForce();
         new ClientGUI(new Client("", "", 0), null).saveListFile(getEntities(), "Units");
     }
 
