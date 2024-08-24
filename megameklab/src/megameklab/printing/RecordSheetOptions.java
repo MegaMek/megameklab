@@ -35,6 +35,7 @@ public class RecordSheetOptions {
     private boolean referenceCharts;
     private boolean condensedReferenceCharts;
     private boolean rowShading;
+    private boolean alternateArmorGrouping;
 
     public RecordSheetOptions() {
         String paper = CConfig.getParam(CConfig.RS_PAPER_SIZE, PaperSize.US_LETTER.name());
@@ -54,6 +55,7 @@ public class RecordSheetOptions {
         this.referenceCharts = CConfig.getBooleanParam(CConfig.RS_REFERENCE);
         this.condensedReferenceCharts = CConfig.getBooleanParam(CConfig.RS_CONDENSED_REFERENCE);
         this.rowShading = CConfig.getBooleanParam(CConfig.RS_ROW_SHADING);
+        this.alternateArmorGrouping = CConfig.getBooleanParam(CConfig.RS_ARMOR_GROUPING);
     }
 
     public RecordSheetOptions(RecordSheetOptions options) {
@@ -69,6 +71,7 @@ public class RecordSheetOptions {
         referenceCharts = options.referenceCharts;
         condensedReferenceCharts = options.condensedReferenceCharts;
         rowShading = options.rowShading;
+        alternateArmorGrouping = options.alternateArmorGrouping;
     }
 
     public PaperSize getPaperSize() {
@@ -123,6 +126,10 @@ public class RecordSheetOptions {
         return rowShading;
     }
 
+    public boolean useAlternateArmorGrouping() {
+        return alternateArmorGrouping;
+    }
+
     public void setPaperSize(PaperSize paperSize) {
         this.paperSize = paperSize;
     }
@@ -161,5 +168,9 @@ public class RecordSheetOptions {
 
     public void setRowShading(boolean rowShading) {
         this.rowShading = rowShading;
+    }
+
+    public void setAlternateArmorGrouping(boolean alternateArmorGrouping) {
+        this.alternateArmorGrouping = alternateArmorGrouping;
     }
 }

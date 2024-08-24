@@ -171,6 +171,11 @@ public class PrintProtoMek extends PrintEntity {
     }
 
     @Override
+    protected boolean supportsAlternateArmorGrouping() {
+        return false;
+    }
+
+    @Override
     protected void drawArmor() {
         super.drawArmor();
         String armorName = EquipmentType.getArmorTypeName(proto.getArmorType(ProtoMek.LOC_TORSO),

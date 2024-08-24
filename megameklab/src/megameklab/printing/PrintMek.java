@@ -179,12 +179,12 @@ public class PrintMek extends PrintEntity {
                 element = getSVGDocument().getElementById(SHIELD_DC + loc);
                 if (null != element) {
                     ArmorPipLayout.addPips(this, element, m.getCurrentDamageCapacity(mek, m.getLocation()),
-                            PipType.CIRCLE);
+                            PipType.CIRCLE, useAlternateArmorGrouping());
                 }
                 element = getSVGDocument().getElementById(SHIELD_DA + loc);
                 if (null != element) {
                     ArmorPipLayout.addPips(this, element, m.getDamageAbsorption(mek, m.getLocation()),
-                            PipType.DIAMOND);
+                            PipType.DIAMOND, useAlternateArmorGrouping());
                 }
             }
         }
@@ -350,6 +350,7 @@ public class PrintMek extends PrintEntity {
     @Override
     protected void drawArmorStructurePips() {
         final String FORMAT = "( %d )";
+        boolean alternateMethod = useAlternateArmorGrouping();
         Element element;
         boolean structComplete = (mek instanceof BipedMek) && loadISPips();
         for (int loc = 0; loc < mek.locations(); loc++) {
@@ -360,7 +361,7 @@ public class PrintMek extends PrintEntity {
             } else {
                 // For consistency, only use the canon pip layout on non-superheavies.
                 // Otherwise superheavies may get a mix of pattern types.
-                if (!mek.isSuperHeavy() && (mek instanceof BipedMek)) {
+                if (!mek.isSuperHeavy() && (mek instanceof BipedMek) && !alternateMethod) {
                     frontComplete = loadArmorPips(loc, false);
                     rearComplete = !mek.hasRearArmor(loc) || loadArmorPips(loc, true);
                     if (frontComplete && rearComplete) {
@@ -371,13 +372,13 @@ public class PrintMek extends PrintEntity {
             }
             if ((null != element) && !frontComplete) {
                 ArmorPipLayout.addPips(this, element, mek.getOArmor(loc),
-                        PipType.forAT(mek.getArmorType(loc)));
+                        PipType.forAT(mech.getArmorType(loc)), alternateMethod);
 
             }
             if ((loc > Mek.LOC_HEAD) && !structComplete) {
                 element = getSVGDocument().getElementById(IS_PIPS + mek.getLocationAbbr(loc));
                 if (null != element) {
-                    ArmorPipLayout.addPips(this, element, mek.getOInternal(loc));
+                    ArmorPipLayout.addPips(this, element, mek.getOInternal(loc), alternateMethod);
                 }
             }
             if (mek.hasRearArmor(loc) && !rearComplete) {
@@ -388,7 +389,7 @@ public class PrintMek extends PrintEntity {
                 element = getSVGDocument().getElementById(ARMOR_PIPS + mek.getLocationAbbr(loc) + "R");
                 if (null != element) {
                     ArmorPipLayout.addPips(this, element, mek.getOArmor(loc, true),
-                            PipType.forAT(mek.getArmorType(loc)));
+                            PipType.forAT(mech.getArmorType(loc)), alternateMethod);
 
                 }
             }
@@ -638,6 +639,11 @@ public class PrintMek extends PrintEntity {
         } else {
             return super.formatJump();
         }
+    }
+
+    @Override
+    protected boolean supportsAlternateArmorGrouping() {
+        return true;
     }
 
     private String formatHeatSinkType() {

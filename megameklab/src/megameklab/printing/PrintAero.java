@@ -139,7 +139,7 @@ public class PrintAero extends PrintEntity {
         Element element = getSVGDocument().getElementById(SI_PIPS);
         if (null != element) {
             ArmorPipLayout.addPips(this, element, aero.get0SI(),
-                    PipType.CIRCLE, 0.5, FILL_WHITE);
+                    PipType.CIRCLE, 0.5, FILL_WHITE, useAlternateArmorGrouping());
         }
     }
 
@@ -275,6 +275,11 @@ public class PrintAero extends PrintEntity {
     @Override
     protected String formatRun() {
         return Integer.toString(getEntity().getRunMP());
+    }
+
+    @Override
+    protected boolean supportsAlternateArmorGrouping() {
+        return false;
     }
 
     @Override

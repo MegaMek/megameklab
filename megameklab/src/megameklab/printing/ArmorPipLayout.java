@@ -15,13 +15,9 @@ package megameklab.printing;
 
 import static megameklab.printing.PrintRecordSheet.DEFAULT_PIP_SIZE;
 
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -111,9 +107,11 @@ class ArmorPipLayout {
      * @param pipType     The shape of pip to add
      * @param strokeWidth The width of the pip outline stroke
      * @param fill        The color to use for the inside of the pip
+     * @param alternateMethod If the armor pips should be attempted to be grouped in 5s
      */
     static void addPips(PrintRecordSheet sheet, Element group, int pipCount,
-            PrintRecordSheet.PipType pipType, double strokeWidth, String fill) {
+                        PrintRecordSheet.PipType pipType, double strokeWidth,
+                        String fill, boolean alternateMethod) {
         if (pipCount > 0) {
             boolean multi = false;
             final String multiVal = PrintRecordSheet.parseStyle(group, IdConstants.MML_MULTISECTION);
@@ -161,14 +159,14 @@ class ArmorPipLayout {
                 }
                 for (int s = 0; s < sections.size(); s++) {
                     if (pipCounts.get(s) > 0) {
-                        sections.get(s).process(pipCounts.get(s));
+                        sections.get(s).process(pipCounts.get(s), alternateMethod);
                     }
                 }
             } else {
                 ArmorPipLayout layout = new ArmorPipLayout(sheet, group,
                         pipType, strokeWidth, fill);
                 if (!layout.regions.isEmpty()) {
-                    layout.process(pipCount);
+                    layout.process(pipCount, alternateMethod);
                 }
             }
         }
@@ -179,16 +177,16 @@ class ArmorPipLayout {
      * at each marked point and adds pip elements to the group layed out in a
      * symmetric pattern.
      *
-     * @param sheet    The record sheet being printed.
-     * @param group    The group element that contains the rect elements that
-     *                 mark the dimensions of the area on the armor or structure
-     *                 diagram.
-     * @param pipCount The number of armor or structure pips to add
-     * @param pipType  The shape of pip to add
+     * @param sheet       The record sheet being printed.
+     * @param group       The group element that contains the rect elements that
+     *                    mark the dimensions of the area on the armor or structure diagram.
+     * @param pipCount    The number of armor or structure pips to add
+     * @param pipType     The shape of pip to add
+     *  @param alternateMethod If the armor pips should be attempted to be grouped in 5s
      */
     static void addPips(PrintRecordSheet sheet, Element group, int pipCount,
-            PrintRecordSheet.PipType pipType) {
-        addPips(sheet, group, pipCount, pipType, 0.55, PrintRecordSheet.FILL_WHITE);
+                        PrintRecordSheet.PipType pipType, boolean alternateMethod) {
+        addPips(sheet, group, pipCount, pipType, 0.55, PrintRecordSheet.FILL_WHITE, alternateMethod);
     }
 
     /**
@@ -197,15 +195,15 @@ class ArmorPipLayout {
      * a symmetric
      * pattern.
      *
-     * @param sheet    The record sheet being printed.
-     * @param group    The group element that contains the rect elements that
-     *                 mark the dimensions of the area on the armor or structure
-     *                 diagram.
-     * @param pipCount The number of armor or structure pips to add
+     * @param sheet       The record sheet being printed.
+     * @param group       The group element that contains the rect elements that
+     *                    mark the dimensions of the area on the armor or structure diagram.
+     * @param pipCount    The number of armor or structure pips to add
+     * @param alternateMethod If the armor pips should be attempted to be grouped in 5s
      */
-    static void addPips(PrintRecordSheet sheet, Element group, int pipCount) {
+    static void addPips(PrintRecordSheet sheet, Element group, int pipCount, boolean alternateMethod) {
         addPips(sheet, group, pipCount, PrintRecordSheet.PipType.CIRCLE, 0.5,
-                PrintRecordSheet.FILL_WHITE);
+                PrintRecordSheet.FILL_WHITE, alternateMethod);
     }
 
     private ArmorPipLayout(PrintRecordSheet sheet, Element group, PrintRecordSheet.PipType pipType,
@@ -298,14 +296,79 @@ class ArmorPipLayout {
         return null;
     }
 
+    void process(int pipCount, boolean alternate) {
+        if (!alternate) {
+            process(pipCount);
+            return;
+        }
+        int attempts = 0;
+        double diameter = regions.firstEntry().getValue().height();
+        double originalDiameter = diameter;
+
+        int remaining;
+        List<Point2D.Double> pips;
+        do {
+            remaining = pipCount;
+            pips = new ArrayList<>(pipCount);
+            for (Bounds bbox : regions.values()) {
+                int capacity = (int)(bbox.width() / diameter);
+                capacity -= capacity / 6;
+
+                int groups = Math.min(remaining / 5, capacity / 5);
+                remaining -= groups * 5;
+                capacity -= groups * 5;
+                int leftovers = 0;
+                if (remaining < 5) {
+                    leftovers = Math.min(remaining, capacity);
+                    remaining -= leftovers;
+                }
+
+                double totalWidth = groups * diameter * 6;
+                if (leftovers > 0) {
+                    totalWidth += leftovers * diameter;
+                } else {
+                    totalWidth -= diameter;
+                }
+
+                double posY = bbox.top;
+                double posX = bbox.centerX() - totalWidth / 2;
+                for (int i = 0; i < groups; i++) {
+                    for (int j = 0; j < 5; j++) {
+                        pips.add(new Point2D.Double(posX, posY));
+                        posX += diameter;
+                    }
+                    posX += diameter;
+                }
+                for (int i = 0; i < leftovers; i++) {
+                    pips.add(new Point2D.Double(posX, posY));
+                    posX += diameter;
+                }
+                if (remaining == 0) {
+                    break;
+                }
+            }
+            if (remaining > 0) {
+                attempts++;
+                if (attempts > 5) {
+                    process(pipCount);
+                    return;
+                }
+                diameter *= 0.9;
+            }
+        } while (remaining > 0);
+
+        for (var pip : pips) {
+            group.appendChild(sheet.createPip(pip.x, pip.y + (originalDiameter / 2 - diameter / 2.2), diameter / 2.2, strokeWidth, pipType, fill));
+        }
+    }
+
     /**
      * Performs the calculations to lay out the pips and adds them to the document.
      *
      * @param pipCount The number of pips to place in the region
      */
-    void process(int pipCount) {
-        /*
-         * Estimate the number of rows required by finding the height of a rectangle
+    private void process(int pipCount) {
+        /* Estimate the number of rows required by finding the height of a rectangle
          * with an area of pipCount that has the same aspect ratio as the bounding box.
          */
         int nRows = Math.max(1, (int) Math.round(Math.sqrt(pipCount * bounds.height() / bounds.width())));

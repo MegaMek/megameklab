@@ -403,12 +403,12 @@ public abstract class PrintEntity extends PrintRecordSheet {
             }
             if (null != element) {
                 ArmorPipLayout.addPips(this, element, getEntity().getOArmor(loc),
-                        PipType.forAT(getEntity().getArmorType(loc)), 0.5, FILL_WHITE);
+                        PipType.forAT(getEntity().getArmorType(loc)), 0.5, FILL_WHITE, useAlternateArmorGrouping());
             }
             element = getSVGDocument().getElementById(STRUCTURE_PIPS + getEntity().getLocationAbbr(loc));
             if (null != element) {
                 ArmorPipLayout.addPips(this, element, getEntity().getOInternal(loc),
-                        PipType.CIRCLE, 0.5, structurePipFill());
+                        PipType.CIRCLE, 0.5, structurePipFill(), useAlternateArmorGrouping());
             }
         }
     }
@@ -620,4 +620,9 @@ public abstract class PrintEntity extends PrintRecordSheet {
                 + (StringUtility.isNullOrBlank(getEntity().getModel()) ? "" : " " + getEntity().getModel());
     }
 
+    protected boolean useAlternateArmorGrouping() {
+        return options.useAlternateArmorGrouping() && supportsAlternateArmorGrouping();
+    }
+
+    protected abstract boolean supportsAlternateArmorGrouping();
 }

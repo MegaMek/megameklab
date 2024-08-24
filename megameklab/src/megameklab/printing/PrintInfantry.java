@@ -434,6 +434,11 @@ public class PrintInfantry extends PrintEntity {
 
     }
 
+    @Override
+    protected boolean supportsAlternateArmorGrouping() {
+        return false;
+    }
+
     private static final int[][] RANGE_MODS = {
             { 0 },
             { -2, 0, 2, 4 },
