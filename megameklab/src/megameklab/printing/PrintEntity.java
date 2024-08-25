@@ -396,16 +396,36 @@ public abstract class PrintEntity extends PrintRecordSheet {
     protected void drawArmorStructurePips() {
         Element element;
         for (int loc = firstArmorLocation(); loc < getEntity().locations(); loc++) {
+            String elementName;
             if ((getEntity() instanceof Mek) && getEntity().isSuperHeavy() && (loc == Mek.LOC_HEAD)) {
-                element = getSVGDocument().getElementById(ARMOR_PIPS + getEntity().getLocationAbbr(loc) + "_SH");
+                elementName = ARMOR_PIPS + getEntity().getLocationAbbr(loc) + "_SH";
             } else {
-                element = getSVGDocument().getElementById(ARMOR_PIPS + getEntity().getLocationAbbr(loc));
+                elementName = ARMOR_PIPS + getEntity().getLocationAbbr(loc);
+            }
+            if (useAlternateArmorGrouping()) {
+                // Try to get the alternate armor location, if it exists, or use the default one
+                element = getSVGDocument().getElementById(elementName + "grouped");
+                if (element == null) {
+                    element = getSVGDocument().getElementById(elementName);
+                }
+            } else {
+                element = getSVGDocument().getElementById(elementName);
             }
             if (null != element) {
                 ArmorPipLayout.addPips(this, element, getEntity().getOArmor(loc),
                         PipType.forAT(getEntity().getArmorType(loc)), 0.5, FILL_WHITE, useAlternateArmorGrouping());
             }
-            element = getSVGDocument().getElementById(STRUCTURE_PIPS + getEntity().getLocationAbbr(loc));
+
+            elementName = STRUCTURE_PIPS + getEntity().getLocationAbbr(loc);
+            if (useAlternateArmorGrouping()) {
+                // Try to get the alternate armor location, if it exists, or use the default one
+                element = getSVGDocument().getElementById(elementName + "grouped");
+                if (element == null) {
+                    element = getSVGDocument().getElementById(elementName);
+                }
+            } else {
+                element = getSVGDocument().getElementById(elementName);
+            }
             if (null != element) {
                 ArmorPipLayout.addPips(this, element, getEntity().getOInternal(loc),
                         PipType.CIRCLE, 0.5, structurePipFill(), useAlternateArmorGrouping());
