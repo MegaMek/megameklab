@@ -318,9 +318,9 @@ class ArmorPipLayout {
                 remaining -= groups * 5;
                 capacity -= groups * 5;
                 int leftovers = 0;
-                if (remaining < 5) {
-                    leftovers = Math.min(remaining, capacity);
-                    remaining -= leftovers;
+                if (remaining < 5 && remaining <= capacity) {
+                    leftovers = remaining;
+                    remaining = 0;
                 }
 
                 double totalWidth = groups * diameter * 6;

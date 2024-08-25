@@ -32,6 +32,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.svg.GetSVGDocument;
 import org.w3c.dom.svg.SVGRectElement;
 
 import megamek.common.*;
@@ -354,10 +355,11 @@ public class PrintMek extends PrintEntity {
         Element element;
         boolean structComplete = (mek instanceof BipedMek) && loadISPips();
         for (int loc = 0; loc < mek.locations(); loc++) {
+            String elementName;
             boolean frontComplete = false;
             boolean rearComplete = false;
             if (mek.isSuperHeavy() && (loc == Mek.LOC_HEAD)) {
-                element = getSVGDocument().getElementById(ARMOR_PIPS + mek.getLocationAbbr(loc) + "_SH");
+                elementName = ARMOR_PIPS + mek.getLocationAbbr(loc) + "_SH";
             } else {
                 // For consistency, only use the canon pip layout on non-superheavies.
                 // Otherwise superheavies may get a mix of pattern types.
@@ -368,8 +370,18 @@ public class PrintMek extends PrintEntity {
                         continue;
                     }
                 }
-                element = getSVGDocument().getElementById(ARMOR_PIPS + mek.getLocationAbbr(loc));
+                elementName = ARMOR_PIPS + mek.getLocationAbbr(loc);
             }
+
+            if (useAlternateArmorGrouping()) {
+                element = getSVGDocument().getElementById(elementName + "grouped");
+                if (element == null) {
+                    element = getSVGDocument().getElementById(elementName);
+                }
+            } else {
+                element = getSVGDocument().getElementById(elementName);
+            }
+
             if ((null != element) && !frontComplete) {
                 ArmorPipLayout.addPips(this, element, mek.getOArmor(loc),
                         PipType.forAT(mech.getArmorType(loc)), alternateMethod);

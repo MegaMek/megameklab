@@ -279,7 +279,7 @@ public class PrintAero extends PrintEntity {
 
     @Override
     protected boolean supportsAlternateArmorGrouping() {
-        return false;
+        return true;
     }
 
     @Override
