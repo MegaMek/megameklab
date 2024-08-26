@@ -1163,17 +1163,14 @@
                                                                                 ></g
                                                                                 >
       <g id="armorPips" transform="translate(-391.72064,-19.834069)"
-                                                                                ><g fill="none" id="armorPipsHD" transform="translate(475.8385,68.1505)"
-                                                                                  ><rect x="6.15152" width="6.2" y="0" height="6.15152" id="armorHDRow00"
-                                                                                    /><rect x="0" width="18.5" y="5.3272" height="6.15152" id="armorHDRow01"
-                                                                                    /><rect x="0" width="18.5" y="10.6544" height="6.15152" id="armorHDRow02"
-                                                                                    /><rect x="0" width="18.5" y="16.9" height="6.15152" id="armorHDRow03"
+                                                                                ><g fill="none" id="armorPipsHD" transform="translate(467,68)"
+                                                                                  ><rect x="0" width="36" y="0" height="6.1" id="armorHDRow00"
+                                                                                    /><rect x="0" width="36" y="7" height="6.1" id="armorHDRow01"
                                                                                   /></g
-                                                                                  ><g fill="none" id="armorPipsHD_SH" transform="translate(472.7384,68.1505)"
-                                                                                  ><rect x="6.15152" width="12.4" y="0" height="6.15152" id="armorHDSHRow00"
-                                                                                    /><rect x="0" width="24.7" y="5.3272" height="6.15152" id="armorHDSHRow01"
-                                                                                    /><rect x="0" width="24.7" y="10.6544" height="6.15152" id="armorHDSHRow02"
-                                                                                    /><rect x="0" width="24.7" y="15.9816" height="6.15152" id="armorHDSHRow03"
+                                                                                  ><g fill="none" id="armorPipsHD_SH" transform="translate(467,68)"
+                                                                                  ><rect x="0" width="36" y="0" height="6.1" id="armorHDSHRow00"
+                                                                                    /><rect x="0" width="36" y="7" height="6.1" id="armorHDSHRow01"
+                                                                                    /><rect x="8" width="20" y="14" height="6.1" id="armorHDSHRow02"
                                                                                   /></g
                                                                                   ><g fill="none" id="armorPipsCT" transform="translate(468.57,100.5541)"
                                                                                   ><rect x="0" width="33.04" y="0" height="6.15152" id="armorCTRow00"
@@ -1246,8 +1243,18 @@
                                                                                     /><rect x="0" width="18.5" y="69.2538" height="6.15152" id="armorRARow13"
                                                                                     /><rect x="0" width="18.5" y="74.5810" height="6.15152" id="armorRARow14"
                                                                                     /><rect x="0" width="18.5" y="79.9082" height="6.15152" id="armorRARow15"
-                                                                                  /></g
-                                                                                  ><g fill="none" id="armorPipsLA" transform="matrix(-0.9962,-0.08715,-0.08715,0.99619,430.83558,82.5344)"
+                                                                                  />
+                                                                                  </g>
+                                                                                  
+                                                                                  <g fill="none" id="armorPipsRAgrouped" transform="matrix(0.087, 0.996, -0.996, 0.087, 543, 58)">
+                                                                                    <rect x="12" width="100" y="0" height="6" id="armorRAgroupedRow00"/>
+                                                                                    <rect x="12" width="100" y="-6" height="6" id="armorRAgroupedRow01"/>
+                                                                                    <rect x="22" width="90" y="-12" height="6" id="armorRAgroupedRow02"/>
+                                                                                    <rect x="26" width="26" y="-18" height="6" id="armorRAgroupedRow03"/>
+                                                                                  </g>
+                                                                                  
+                                                                                  
+                                                                                  <g fill="none" id="armorPipsLA" transform="matrix(-0.9962,-0.08715,-0.08715,0.99619,430.83558,82.5344)"
                                                                                   ><rect x="0" width="18.5" y="0" height="6.15152" id="armorLARow00"
                                                                                     /><rect x="0" width="18.5" y="5.3272" height="6.15152" id="armorLARow01"
                                                                                     /><rect x="0" width="18.5" y="10.6544" height="6.15152" id="armorLARow02"
@@ -1264,8 +1271,19 @@
                                                                                     /><rect x="0" width="18.5" y="69.2538" height="6.15152" id="armorLARow13"
                                                                                     /><rect x="0" width="18.5" y="74.5810" height="6.15152" id="armorLARow14"
                                                                                     /><rect x="0" width="18.5" y="79.9082" height="6.15152" id="armorLARow15"
-                                                                                  /></g
-                                                                                  ><g fill="none" id="armorPipsRL" transform="matrix(0.9751,-0.2215,0.2215,0.9751,487.66592,183.7983)"
+                                                                                  />
+                                                                                  </g>
+                                                                                  
+                                                                                  <g fill="none" id="armorPipsLAgrouped" transform="matrix(-0.087, 0.996, 0.996, 0.087, 428, 58)">
+                                                                                    <rect x="12" width="100" y="0" height="6" id="armorRAgroupedRow00"/>
+                                                                                    <rect x="12" width="100" y="-6" height="6" id="armorRAgroupedRow01"/>
+                                                                                    <rect x="22" width="90" y="-12" height="6" id="armorRAgroupedRow02"/>
+                                                                                    <rect x="26" width="26" y="-18" height="6" id="armorRAgroupedRow02"/>
+                                                                                  </g>
+                                                                                  
+                                                                                  
+                                                                                  
+                                                                                  <g fill="none" id="armorPipsRL" transform="matrix(0.9751,-0.2215,0.2215,0.9751,487.66592,183.7983)"
                                                                                   ><rect x="15.3788" width="18.5" y="0" height="6.15152" id="armorRLRow00"
                                                                                     /><rect x="15.3788" width="18.5" y="5.3272" height="6.15152" id="armorRLRow01"
                                                                                     /><rect x="15.3788" width="18.5" y="10.6544" height="6.15152" id="armorRLRow02"
@@ -1287,8 +1305,18 @@
                                                                                     /><rect x="15.3788" width="18.5" y="95.8899" height="6.15152" id="armorRLRow18"
                                                                                     /><rect x="15.3788" width="18.5" y="101.2171" height="6.15152" id="armorRLRow19"
                                                                                     /><rect x="15.3788" width="18.5" y="106.5443" height="6.15152" id="armorRLRow20"
-                                                                                  /></g
-                                                                                  ><g fill="none" id="armorPipsLL" transform="matrix(-0.9751,-0.2215,-0.2215,0.9751,482.61792,183.7983)"
+                                                                                  />
+                                                                                  
+                                                                                  
+                                                                                  </g>
+                                                                                  <g fill="none" id="armorPipsRLgrouped" transform="matrix(-0.225, -0.974, 0.974, -0.225, 499, 180)">
+                                                                                    <rect x="-122" width="125" y="0" height="6" id="armorRLgroupedRow00"/>
+                                                                                    <rect x="-123" width="125" y="6.5" height="6" id="armorRLgroupedRow01"/>
+                                                                                    <rect x="-124" width="125" y="13" height="6" id="armorRLgroupedRow02"/>
+                                                                                    <rect x="-125" width="125" y="19.5" height="6" id="armorRLgroupedRow03"/>
+                                                                                  </g>
+
+                                                                                  <g fill="none" id="armorPipsLL" transform="matrix(-0.9751,-0.2215,-0.2215,0.9751,482.61792,183.7983)"
                                                                                   ><rect x="15.3788" width="18.5" y="0" height="6.15152" id="armorLLRow00"
                                                                                     /><rect x="15.3788" width="18.5" y="5.3272" height="6.15152" id="armorLLRow01"
                                                                                     /><rect x="15.3788" width="18.5" y="10.6544" height="6.15152" id="armorLLRow02"
@@ -1310,8 +1338,16 @@
                                                                                     /><rect x="15.3788" width="18.5" y="95.8899" height="6.15152" id="armorLLRow18"
                                                                                     /><rect x="15.3788" width="18.5" y="101.2171" height="6.15152" id="armorLLRow19"
                                                                                     /><rect x="15.3788" width="18.5" y="106.5443" height="6.15152" id="armorLLRow20"
-                                                                                  /></g
-                                                                                  ><g fill="none" id="armorPipsCTR" transform="translate(465.01,297.1276)"
+                                                                                  />
+                                                                                  </g>
+                                                                                  <g fill="none" id="armorPipsLLgrouped" transform="matrix(0.225, -0.974, -0.974, -0.225, 444, 299)">
+                                                                                    <rect x="0" width="125" y="0" height="6" id="armorLLgroupedRow00"/>
+                                                                                    <rect x="-1" width="125" y="6.5" height="6" id="armorLLgroupedRow01"/>
+                                                                                    <rect x="-2" width="125" y="13" height="6" id="armorLLgroupedRow02"/>
+                                                                                    <rect x="-3" width="125" y="19.5" height="6" id="armorLLgroupedRow03"/>
+                                                                                  </g>
+                                                                                  
+                                                                                  <g fill="none" id="armorPipsCTR" transform="translate(465.01,297.1276)"
                                                                                   ><rect x="7.56" width="25.84" y="0" height="6.15152" id="armorCTRRow00"
                                                                                     /><rect x="7.56" width="25.84" y="5.3272" height="6.15152" id="armorCTRRow01"
                                                                                     /><rect x="7.56" width="25.84" y="10.6544" height="6.15152" id="armorCTRRow02"
@@ -2106,8 +2142,14 @@
                                                                                       /><rect x="0.65" width="7.81" y="56.4421" height="5.4313" id="isRARow12"
                                                                                       /><rect x="0.9" width="7.63" y="61.1456" height="5.4313" id="isRARow13"
                                                                                       /><rect x="2.46" width="6.07" y="65.8491" height="5.4313" id="isRARow14"
-                                                                                    /></g
-                                                                                    ><g fill="none" id="isPipsLA" transform="matrix(-0.9962,-0.08715,-0.08715,0.99619,432,408.64626)"
+                                                                                    /></g>
+
+                                                                                    <g fill="none" id="isPipsRAgrouped" transform="matrix(-0.087, -0.996, 0.996, -0.087, 518, 482.5)">
+                                                                                    <rect x="0" width="75" y="0" height="6" id="isRAgroupedRow00"/>
+                                                                                    <rect x="10" width="65" y="6" height="6" id="isRAgroupedRow01"/>
+                                                                                    </g>
+                                                                                    
+                                                                                    <g fill="none" id="isPipsLA" transform="matrix(-0.9962,-0.08715,-0.08715,0.99619,432,408.64626)"
                                                                                     ><rect x="0" width="9.85" y="0" height="5.4313" id="isLARow00"
                                                                                       /><rect x="0" width="9.85" y="4.7035" height="5.4313" id="isLARow01"
                                                                                       /><rect x="0" width="10.61" y="9.4070" height="5.4313" id="isLARow02"
@@ -2123,8 +2165,14 @@
                                                                                       /><rect x="0.65" width="7.81" y="56.4421" height="5.4313" id="isLARow12"
                                                                                       /><rect x="0.9" width="7.63" y="61.1456" height="5.4313" id="isLARow13"
                                                                                       /><rect x="2.46" width="6.07" y="65.8491" height="5.4313" id="isLARow14"
-                                                                                    /></g
-                                                                                    ><g fill="none" id="isPipsRL" transform="matrix(0.9832,-0.1822,0.1822,0.9832,485.35,472.27)"
+                                                                                    /></g>
+
+                                                                                    <g fill="none" id="isPipsLAgrouped" transform="matrix(0.087, -0.996, -0.996, -0.087, 427.5, 483)">
+                                                                                    <rect x="0" width="75" y="0" height="6" id="isLAgroupedRow00"/>
+                                                                                    <rect x="10" width="65" y="6" height="6" id="isLAgroupedRow01"/>
+                                                                                    </g>
+                                                                                    
+                                                                                    <g fill="none" id="isPipsRL" transform="matrix(0.9832,-0.1822,0.1822,0.9832,485.35,472.27)"
                                                                                     ><rect x="0" width="11.95" y="0" height="5.4313" id="isRLRow00"
                                                                                       /><rect x="0" width="12.74" y="4.7035" height="5.4313" id="isRLRow01"
                                                                                       /><rect x="0.63" width="11.46" y="9.4070" height="5.4313" id="isRLRow02"
@@ -2141,8 +2189,14 @@
                                                                                       /><rect x="0" width="11.4" y="61.1456" height="5.4313" id="isRLRow13"
                                                                                       /><rect x="0.9" width="8.21" y="65.8491" height="5.4313" id="isRLRow14"
                                                                                       /><rect x="0.9" width="8.21" y="70.5526" height="5.4313" id="isRLRow15"
-                                                                                    /></g
-                                                                                    ><g fill="none" id="isPipsLL" transform="matrix(-0.9832,-0.1822,-0.1822,0.9832,459.07,472.27)"
+                                                                                    /></g>
+                                                                                    
+                                                                                    <g fill="none" id="isPipsRLgrouped" transform="matrix(-0.208, -0.978, 0.978, -0.208, 502.5, 555)">
+                                                                                    <rect x="0" width="86" y="0" height="6" id="isRLgroupedRow00"/>
+                                                                                    <rect x="16" width="70" y="6" height="6" id="isRLgroupedRow01"/>
+                                                                                    </g>
+                                                                                    
+                                                                                    <g fill="none" id="isPipsLL" transform="matrix(-0.9832,-0.1822,-0.1822,0.9832,459.07,472.27)"
                                                                                     ><rect x="0" width="11.95" y="0" height="5.4313" id="isLLRow00"
                                                                                       /><rect x="0" width="12.74" y="4.7035" height="5.4313" id="isLLRow01"
                                                                                       /><rect x="0.63" width="11.46" y="9.4070" height="5.4313" id="isLLRow02"
@@ -2160,8 +2214,12 @@
                                                                                       /><rect x="0.9" width="8.21" y="65.8491" height="5.4313" id="isLLRow14"
                                                                                       /><rect x="0.9" width="8.21" y="70.5526" height="5.4313" id="isLLRow15"
                                                                                     /></g
-                                                                                  ></g
-                                                                                  >
+                                                                                     >
+                                                                                     <g fill="none" id="isPipsLLgrouped" transform="matrix(0.208, -0.978, -0.978, -0.208, 442, 555)">
+                                                                                    <rect x="0" width="86" y="0" height="6" id="isLLgroupedRow00"/>
+                                                                                    <rect x="16" width="70" y="6" height="6" id="isLLgroupedRow01"/>
+                                                                                    </g>
+                                                                                    </g>
       </g
                                                                                   ><g id="canonStructurePips" transform="matrix (0.971 0 0 0.971 -378.511,-376.966)"
                                                                                 /></g
