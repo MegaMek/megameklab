@@ -396,36 +396,17 @@ public abstract class PrintEntity extends PrintRecordSheet {
     protected void drawArmorStructurePips() {
         Element element;
         for (int loc = firstArmorLocation(); loc < getEntity().locations(); loc++) {
-            String elementName;
             if ((getEntity() instanceof Mek) && getEntity().isSuperHeavy() && (loc == Mek.LOC_HEAD)) {
-                elementName = ARMOR_PIPS + getEntity().getLocationAbbr(loc) + "_SH";
+                element = getElementById(ARMOR_PIPS + getEntity().getLocationAbbr(loc) + "_SH");
             } else {
-                elementName = ARMOR_PIPS + getEntity().getLocationAbbr(loc);
-            }
-            if (useAlternateArmorGrouping()) {
-                // Try to get the alternate armor location, if it exists, or use the default one
-                element = getSVGDocument().getElementById(elementName + "grouped");
-                if (element == null) {
-                    element = getSVGDocument().getElementById(elementName);
-                }
-            } else {
-                element = getSVGDocument().getElementById(elementName);
+                element = getElementById(ARMOR_PIPS + getEntity().getLocationAbbr(loc));
             }
             if (null != element) {
                 ArmorPipLayout.addPips(this, element, getEntity().getOArmor(loc),
                         PipType.forAT(getEntity().getArmorType(loc)), 0.5, FILL_WHITE, useAlternateArmorGrouping());
             }
 
-            elementName = STRUCTURE_PIPS + getEntity().getLocationAbbr(loc);
-            if (useAlternateArmorGrouping()) {
-                // Try to get the alternate armor location, if it exists, or use the default one
-                element = getSVGDocument().getElementById(elementName + "grouped");
-                if (element == null) {
-                    element = getSVGDocument().getElementById(elementName);
-                }
-            } else {
-                element = getSVGDocument().getElementById(elementName);
-            }
+            element = getElementById(STRUCTURE_PIPS + getEntity().getLocationAbbr(loc));
             if (null != element) {
                 ArmorPipLayout.addPips(this, element, getEntity().getOInternal(loc),
                         PipType.CIRCLE, 0.5, structurePipFill(), useAlternateArmorGrouping());
@@ -645,4 +626,15 @@ public abstract class PrintEntity extends PrintRecordSheet {
     }
 
     protected abstract boolean supportsAlternateArmorGrouping();
+
+    protected Element getElementById(String id) {
+        Element e = null;
+        if (useAlternateArmorGrouping()) {
+            e = getSVGDocument().getElementById(id + "grouped");
+        }
+        if (e == null) {
+            e = getSVGDocument().getElementById(id);
+        }
+        return e;
+    }
 }

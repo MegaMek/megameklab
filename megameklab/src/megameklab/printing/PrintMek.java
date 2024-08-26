@@ -353,13 +353,12 @@ public class PrintMek extends PrintEntity {
         final String FORMAT = "( %d )";
         boolean alternateMethod = useAlternateArmorGrouping();
         Element element;
-        boolean structComplete = (mek instanceof BipedMek) && loadISPips();
+        boolean structComplete = !alternateMethod && (mek instanceof BipedMek) && loadISPips();
         for (int loc = 0; loc < mek.locations(); loc++) {
-            String elementName;
             boolean frontComplete = false;
             boolean rearComplete = false;
             if (mek.isSuperHeavy() && (loc == Mek.LOC_HEAD)) {
-                elementName = ARMOR_PIPS + mek.getLocationAbbr(loc) + "_SH";
+                element = getElementById(ARMOR_PIPS + mek.getLocationAbbr(loc) + "_SH");
             } else {
                 // For consistency, only use the canon pip layout on non-superheavies.
                 // Otherwise superheavies may get a mix of pattern types.
@@ -370,16 +369,7 @@ public class PrintMek extends PrintEntity {
                         continue;
                     }
                 }
-                elementName = ARMOR_PIPS + mek.getLocationAbbr(loc);
-            }
-
-            if (useAlternateArmorGrouping()) {
-                element = getSVGDocument().getElementById(elementName + "grouped");
-                if (element == null) {
-                    element = getSVGDocument().getElementById(elementName);
-                }
-            } else {
-                element = getSVGDocument().getElementById(elementName);
+                element = getElementById(ARMOR_PIPS + mek.getLocationAbbr(loc));
             }
 
             if ((null != element) && !frontComplete) {
@@ -388,17 +378,17 @@ public class PrintMek extends PrintEntity {
 
             }
             if ((loc > Mek.LOC_HEAD) && !structComplete) {
-                element = getSVGDocument().getElementById(IS_PIPS + mek.getLocationAbbr(loc));
+                element = getElementById(IS_PIPS + mek.getLocationAbbr(loc));
                 if (null != element) {
                     ArmorPipLayout.addPips(this, element, mek.getOInternal(loc), alternateMethod);
                 }
             }
             if (mek.hasRearArmor(loc) && !rearComplete) {
-                element = getSVGDocument().getElementById(TEXT_ARMOR + mek.getLocationAbbr(loc) + "R");
+                element = getElementById(TEXT_ARMOR + mek.getLocationAbbr(loc) + "R");
                 if (null != element) {
                     element.setTextContent(String.format(FORMAT, mek.getOArmor(loc, true)));
                 }
-                element = getSVGDocument().getElementById(ARMOR_PIPS + mek.getLocationAbbr(loc) + "R");
+                element = getElementById(ARMOR_PIPS + mek.getLocationAbbr(loc) + "R");
                 if (null != element) {
                     ArmorPipLayout.addPips(this, element, mek.getOArmor(loc, true),
                             PipType.forAT(mech.getArmorType(loc)), alternateMethod);
