@@ -136,7 +136,7 @@ public class PrintAero extends PrintEntity {
     @Override
     protected void drawArmorStructurePips() {
         super.drawArmorStructurePips();
-        Element element = getSVGDocument().getElementById(SI_PIPS);
+        Element element = getElementById(SI_PIPS);
         if (null != element) {
             ArmorPipLayout.addPips(this, element, aero.get0SI(),
                     PipType.CIRCLE, 0.5, FILL_WHITE, useAlternateArmorGrouping());
