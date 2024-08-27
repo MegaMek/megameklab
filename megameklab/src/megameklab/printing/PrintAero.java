@@ -26,10 +26,9 @@ import org.w3c.dom.svg.SVGRectElement;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.awt.print.PageFormat;
-import java.io.File;
 import java.text.DecimalFormat;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -126,8 +125,12 @@ public class PrintAero extends PrintEntity {
         super.writeTextFields();
         setTextField(HS_TYPE, formatHeatSinkType());
         setTextField(HS_COUNT, formatHeatSinkCount());
-        setTextField(ENGINE_TYPE, aero.getEngine().getShortEngineName()
+        if (aero.getEngine() != null) {
+            setTextField(ENGINE_TYPE, aero.getEngine().getShortEngineName()
                 .replaceAll("\\[.*]", "").trim());
+        } else {
+            setTextField(ENGINE_TYPE, "Unknown");
+        }
     }
 
     @Override
