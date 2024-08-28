@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import java.awt.print.PageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,5 +72,29 @@ class PrintSmallUnitSheetTest {
 
         var unsupportedEntities = List.of(new SupportTank());
         assertThrows(IllegalArgumentException.class, () -> PrintSmallUnitSheet.fillsSheet(unsupportedEntities, noTables));
+    }
+
+    /**
+     * Verify that we can process the image (basically, create the record sheet output) for an Aero with a null Engine object
+     * without throwing an NPE.
+     */
+    @Test
+    void testAeroWithoutEngineDoesNotThrowNPE() {
+        // Required setting objects
+        PageFormat pf = new PageFormat();
+        RecordSheetOptions rso = new RecordSheetOptions();
+
+        // Set up DS entity with required attributes
+        Dropship testDS = new Dropship();
+        testDS.setChassis("Test Dropship");
+        testDS.setModel("TDS-999");
+
+        // Create print object
+        PrintAero pa = new PrintDropship(testDS, 1, rso);
+
+        // Test A) Document is created, B) Engine is null, C) processImage() doesn't throw.
+        assertTrue(pa.createDocument(1, pf, false));
+        assertNull(testDS.getEngine());
+        pa.processImage(1, pf);
     }
 }
