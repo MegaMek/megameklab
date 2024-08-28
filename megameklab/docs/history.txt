@@ -12,6 +12,7 @@ MEGAMEKLAB VERSION HISTORY:
 + PR #1574: Record sheet fixes and improvements
 + Fix #1581: Add toggle for RS adjusted BV printing, and set default export filename
 + Fix #1592: Allow saving a MUL file from the queue-to-print dialog.
++ FIX #1588: Fixed NPE when Printing or Previewing DropShip
 
 0.49.20 (2024-06-28 2100 UTC) (THIS IS THE LAST VERSION TO SUPPORT JAVA 11)
 + PR #1486: Code internals: DialogOptionsListener update
