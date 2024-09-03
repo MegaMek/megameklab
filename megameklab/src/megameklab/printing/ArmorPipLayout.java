@@ -296,6 +296,36 @@ class ArmorPipLayout {
         return null;
     }
 
+    private Iterable<Bounds> iterateRegionsFromMiddle() {
+        return () -> new Iterator<>() {
+            private Bounds[] r = regions.values().toArray(new Bounds[0]);
+            private int left = regions.size() / 2 - 1;
+            private int right = regions.size() / 2;
+            private boolean nextRight = true;
+
+            @Override
+            public boolean hasNext() {
+                if (nextRight) {
+                    return right < r.length;
+                } else {
+                    return left >= 0;
+                }
+            }
+
+            @Override
+            public Bounds next() {
+                Bounds ret;
+                if (nextRight) {
+                    ret = r[right++];
+                } else {
+                    ret = r[left--];
+                }
+                nextRight = !nextRight;
+                return ret;
+            }
+        };
+    }
+
     void process(int pipCount, boolean alternate) {
         if (!alternate) {
             process(pipCount);
@@ -310,7 +340,7 @@ class ArmorPipLayout {
         do {
             remaining = pipCount;
             pips = new ArrayList<>(pipCount);
-            for (Bounds bbox : regions.values()) {
+            for (Bounds bbox : iterateRegionsFromMiddle()) {
                 int capacity = (int)(bbox.width() / diameter);
                 capacity -= capacity / 6;
 
