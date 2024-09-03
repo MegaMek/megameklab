@@ -348,9 +348,9 @@ class ArmorPipLayout {
                 remaining -= groups * 5;
                 capacity -= groups * 5;
                 int leftovers = 0;
-                if (remaining < 5 && remaining <= capacity) {
-                    leftovers = remaining;
-                    remaining = 0;
+                if ((remaining % 5 != 0) && (capacity >= remaining % 5)) {
+                    leftovers = remaining % 5;
+                    remaining -= leftovers;
                 }
 
                 double totalWidth = groups * diameter * 6;
