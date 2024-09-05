@@ -28,13 +28,13 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:zoom="3.0028353"
      inkscape:cx="317.36672"
-     inkscape:cy="482.87696"
+     inkscape:cy="489.20432"
      inkscape:window-width="1920"
      inkscape:window-height="1128"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
-     inkscape:current-layer="isPipsLAgrouped" />
+     inkscape:current-layer="structurePipsGrouped" />
   <g
      style="mml-color-elements:btLogo,cglLogo,heatScale"
      id="rs_template">
@@ -1810,7 +1810,7 @@
     </g>
     <g
        transform="translate (384.000 0.000)"
-       id="g278">
+       id="ArmorDiagram">
       <g
          transform="translate (54.00430113943587,0.0)"
          id="g269">
@@ -3277,35 +3277,6 @@
             </g>
             <g
                fill="none"
-               id="armorPipsRAgrouped"
-               transform="matrix(0.087, 0.996, -0.996, 0.087, 543, 58)">
-              <rect
-                 x="12"
-                 width="100"
-                 y="0"
-                 height="6"
-                 id="armorRAgroupedRow00" />
-              <rect
-                 x="12"
-                 width="100"
-                 y="-6"
-                 height="6"
-                 id="armorRAgroupedRow01" />
-              <rect
-                 x="22"
-                 width="90"
-                 y="-12"
-                 height="6"
-                 id="armorRAgroupedRow02" />
-              <rect
-                 x="26"
-                 width="26"
-                 y="-18"
-                 height="6"
-                 id="armorRAgroupedRow03" />
-            </g>
-            <g
-               fill="none"
                id="armorPipsLA"
                transform="matrix(-0.9962,-0.08715,-0.08715,0.99619,430.83558,82.5344)">
               <rect
@@ -3404,35 +3375,6 @@
                  y="79.9082"
                  height="6.15152"
                  id="armorLARow15" />
-            </g>
-            <g
-               fill="none"
-               id="armorPipsLAgrouped"
-               transform="matrix(-0.087, 0.996, 0.996, 0.087, 428, 58)">
-              <rect
-                 x="12"
-                 width="100"
-                 y="0"
-                 height="6"
-                 id="rect274" />
-              <rect
-                 x="12"
-                 width="100"
-                 y="-6"
-                 height="6"
-                 id="rect275" />
-              <rect
-                 x="22"
-                 width="90"
-                 y="-12"
-                 height="6"
-                 id="rect276" />
-              <rect
-                 x="26"
-                 width="26"
-                 y="-18"
-                 height="6"
-                 id="rect277" />
             </g>
             <g
                fill="none"
@@ -3567,35 +3509,6 @@
             </g>
             <g
                fill="none"
-               id="armorPipsRLgrouped"
-               transform="matrix(-0.225, -0.974, 0.974, -0.225, 499, 180)">
-              <rect
-                 x="-122"
-                 width="125"
-                 y="0"
-                 height="6"
-                 id="armorRLgroupedRow00" />
-              <rect
-                 x="-123"
-                 width="125"
-                 y="6.5"
-                 height="6"
-                 id="armorRLgroupedRow01" />
-              <rect
-                 x="-124"
-                 width="125"
-                 y="13"
-                 height="6"
-                 id="armorRLgroupedRow02" />
-              <rect
-                 x="-125"
-                 width="125"
-                 y="19.5"
-                 height="6"
-                 id="armorRLgroupedRow03" />
-            </g>
-            <g
-               fill="none"
                id="armorPipsLL"
                transform="matrix(-0.9751,-0.2215,-0.2215,0.9751,482.61792,183.7983)">
               <rect
@@ -3724,35 +3637,6 @@
                  y="106.5443"
                  height="6.15152"
                  id="armorLLRow20" />
-            </g>
-            <g
-               fill="none"
-               id="armorPipsLLgrouped"
-               transform="matrix(0.225, -0.974, -0.974, -0.225, 444, 299)">
-              <rect
-                 x="0"
-                 width="125"
-                 y="0"
-                 height="6"
-                 id="armorLLgroupedRow00" />
-              <rect
-                 x="-1"
-                 width="125"
-                 y="6.5"
-                 height="6"
-                 id="armorLLgroupedRow01" />
-              <rect
-                 x="-2"
-                 width="125"
-                 y="13"
-                 height="6"
-                 id="armorLLgroupedRow02" />
-              <rect
-                 x="-3"
-                 width="125"
-                 y="19.5"
-                 height="6"
-                 id="armorLLgroupedRow03" />
             </g>
             <g
                fill="none"
@@ -3924,6 +3808,126 @@
                  y="31.9632"
                  height="6.15152"
                  id="armorLTRRow06" />
+            </g>
+          </g>
+          <g
+             id="armorPipsGrouped"
+             transform="translate(-391.72064,-19.834069)">
+            <g
+               fill="none"
+               id="armorPipsLLgrouped"
+               transform="matrix(0.225, -0.974, -0.974, -0.225, 444, 299)">
+              <rect
+                 x="0"
+                 width="125"
+                 y="0"
+                 height="6"
+                 id="armorLLgroupedRow00" />
+              <rect
+                 x="-1"
+                 width="125"
+                 y="6.5"
+                 height="6"
+                 id="armorLLgroupedRow01" />
+              <rect
+                 x="-2"
+                 width="125"
+                 y="13"
+                 height="6"
+                 id="armorLLgroupedRow02" />
+              <rect
+                 x="-3"
+                 width="125"
+                 y="19.5"
+                 height="6"
+                 id="armorLLgroupedRow03" />
+            </g>
+            <g
+               fill="none"
+               id="armorPipsRLgrouped"
+               transform="matrix(-0.225, -0.974, 0.974, -0.225, 499, 180)">
+              <rect
+                 x="-122"
+                 width="125"
+                 y="0"
+                 height="6"
+                 id="armorRLgroupedRow00" />
+              <rect
+                 x="-123"
+                 width="125"
+                 y="6.5"
+                 height="6"
+                 id="armorRLgroupedRow01" />
+              <rect
+                 x="-124"
+                 width="125"
+                 y="13"
+                 height="6"
+                 id="armorRLgroupedRow02" />
+              <rect
+                 x="-125"
+                 width="125"
+                 y="19.5"
+                 height="6"
+                 id="armorRLgroupedRow03" />
+            </g>
+            <g
+               fill="none"
+               id="armorPipsLAgrouped"
+               transform="matrix(-0.087, 0.996, 0.996, 0.087, 428, 58)">
+              <rect
+                 x="12"
+                 width="100"
+                 y="0"
+                 height="6"
+                 id="rect274" />
+              <rect
+                 x="12"
+                 width="100"
+                 y="-6"
+                 height="6"
+                 id="rect275" />
+              <rect
+                 x="22"
+                 width="90"
+                 y="-12"
+                 height="6"
+                 id="rect276" />
+              <rect
+                 x="26"
+                 width="26"
+                 y="-18"
+                 height="6"
+                 id="rect277" />
+            </g>
+            <g
+               fill="none"
+               id="armorPipsRAgrouped"
+               transform="matrix(0.087, 0.996, -0.996, 0.087, 543, 58)">
+              <rect
+                 x="12"
+                 width="100"
+                 y="0"
+                 height="6"
+                 id="armorRAgroupedRow00" />
+              <rect
+                 x="12"
+                 width="100"
+                 y="-6"
+                 height="6"
+                 id="armorRAgroupedRow01" />
+              <rect
+                 x="22"
+                 width="90"
+                 y="-12"
+                 height="6"
+                 id="armorRAgroupedRow02" />
+              <rect
+                 x="26"
+                 width="26"
+                 y="-18"
+                 height="6"
+                 id="armorRAgroupedRow03" />
             </g>
           </g>
           <g
@@ -6126,23 +6130,6 @@
           </g>
           <g
              fill="none"
-             id="isPipsRAgrouped"
-             transform="matrix(-0.087, -0.996, 0.996, -0.087, 518, 482.5)">
-            <rect
-               x="0"
-               width="75"
-               y=".5"
-               height="5.5"
-               id="isRAgroupedRow00" />
-            <rect
-               x="10"
-               width="65"
-               y="6"
-               height="5.5"
-               id="isRAgroupedRow01" />
-          </g>
-          <g
-             fill="none"
              id="isPipsLA"
              transform="matrix(-0.9962,-0.08715,-0.08715,0.99619,432,408.64626)">
             <rect
@@ -6235,23 +6222,6 @@
                y="65.8491"
                height="5.4313"
                id="isLARow14" />
-          </g>
-          <g
-             fill="none"
-             id="isPipsLAgrouped"
-             transform="matrix(0.087, -0.996, -0.996, -0.087, 427.5, 483)">
-            <rect
-               x="0"
-               width="75"
-               y=".5"
-               height="5.5"
-               id="isLAgroupedRow00" />
-            <rect
-               x="10"
-               width="65"
-               y="6"
-               height="5.5"
-               id="isLAgroupedRow01" />
           </g>
           <g
              fill="none"
@@ -6356,23 +6326,6 @@
           </g>
           <g
              fill="none"
-             id="isPipsRLgrouped"
-             transform="matrix(-0.208, -0.978, 0.978, -0.208, 502.5, 555)">
-            <rect
-               x="0"
-               width="86"
-               y="0"
-               height="6"
-               id="isRLgroupedRow00" />
-            <rect
-               x="16"
-               width="70"
-               y="6"
-               height="6"
-               id="isRLgroupedRow01" />
-          </g>
-          <g
-             fill="none"
              id="isPipsLL"
              transform="matrix(-0.9832,-0.1822,-0.1822,0.9832,459.07,472.27)">
             <rect
@@ -6472,6 +6425,10 @@
                height="5.4313"
                id="isLLRow15" />
           </g>
+        </g>
+        <g
+           id="structurePipsGrouped"
+           transform="translate(-397.7,-386.6)">
           <g
              fill="none"
              id="isPipsLLgrouped"
@@ -6488,6 +6445,57 @@
                y="6"
                height="6"
                id="isLLgroupedRow01" />
+          </g>
+          <g
+             fill="none"
+             id="isPipsRLgrouped"
+             transform="matrix(-0.208, -0.978, 0.978, -0.208, 502.5, 555)">
+            <rect
+               x="0"
+               width="86"
+               y="0"
+               height="6"
+               id="isRLgroupedRow00" />
+            <rect
+               x="16"
+               width="70"
+               y="6"
+               height="6"
+               id="isRLgroupedRow01" />
+          </g>
+          <g
+             fill="none"
+             id="isPipsLAgrouped"
+             transform="matrix(0.087, -0.996, -0.996, -0.087, 427.5, 483)">
+            <rect
+               x="0"
+               width="75"
+               y=".5"
+               height="5.5"
+               id="isLAgroupedRow00" />
+            <rect
+               x="10"
+               width="65"
+               y="6"
+               height="5.5"
+               id="isLAgroupedRow01" />
+          </g>
+          <g
+             fill="none"
+             id="isPipsRAgrouped"
+             transform="matrix(-0.087, -0.996, 0.996, -0.087, 518, 482.5)">
+            <rect
+               x="0"
+               width="75"
+               y=".5"
+               height="5.5"
+               id="isRAgroupedRow00" />
+            <rect
+               x="10"
+               width="65"
+               y="6"
+               height="5.5"
+               id="isRAgroupedRow01" />
           </g>
         </g>
       </g>
