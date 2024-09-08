@@ -57,8 +57,8 @@ public class ProtoMekMountList extends JList<Mounted> {
         setBorder(BorderFactory.createLineBorder(Color.BLACK));
     }
 
-    public Protomech getProtomech() {
-        return (Protomech) eSource.getEntity();
+    public ProtoMek getProtoMek() {
+        return (ProtoMek) eSource.getEntity();
     }
 
     public int getMountLocation() {
@@ -79,7 +79,7 @@ public class ProtoMekMountList extends JList<Mounted> {
 
     public void refreshContents() {
         MountedListModel model = new MountedListModel();
-        getProtomech().getEquipment().stream().filter(m -> m.getLocation() == location).forEach(model::add);
+        getProtoMek().getEquipment().stream().filter(m -> m.getLocation() == location).forEach(model::add);
         setModel(model);
         setVisibleRowCount(model.getSize());
     }
@@ -93,10 +93,10 @@ public class ProtoMekMountList extends JList<Mounted> {
         if ((mount.getType() instanceof WeaponType) && mount.isOneShot()) {
             Mounted<?> ammo = mount.getLinked();
             if (null != ammo) {
-                UnitUtil.removeMounted(getProtomech(), ammo);
+                UnitUtil.removeMounted(getProtoMek(), ammo);
             }
         }
-        UnitUtil.removeMounted(getProtomech(), mount);
+        UnitUtil.removeMounted(getProtoMek(), mount);
         refresh();
     }
 
@@ -124,7 +124,7 @@ public class ProtoMekMountList extends JList<Mounted> {
             if (SwingUtilities.isLeftMouseButton(e)) {
                 if (e.isControlDown() && (mounted.getType() instanceof AmmoType)) {
                     try {
-                        ProtoMekUtil.addProtoMechAmmo(getProtomech(), mounted.getType(), 1);
+                        ProtoMekUtil.addProtoMekAmmo(getProtoMek(), mounted.getType(), 1);
                     } catch (LocationFullException ex) {
                         LogManager.getLogger().error("", ex);
                     }
@@ -140,7 +140,7 @@ public class ProtoMekMountList extends JList<Mounted> {
                 }
                 if (e.isControlDown()) {
                     if ((mounted.getType() instanceof AmmoType)) {
-                        ProtoMekUtil.reduceProtoMechAmmo(getProtomech(), mounted.getType(), 1);
+                        ProtoMekUtil.reduceProtoMekAmmo(getProtoMek(), mounted.getType(), 1);
                     } else {
                         removeMount(mounted);
                     }
@@ -231,6 +231,6 @@ public class ProtoMekMountList extends JList<Mounted> {
     }
 
     private boolean isTorso() {
-        return location == Protomech.LOC_TORSO;
+        return location == ProtoMek.LOC_TORSO;
     }
 }

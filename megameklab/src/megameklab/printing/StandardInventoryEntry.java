@@ -107,7 +107,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         name = formatName();
         location = formatLocation();
         isRear = m.isRearMounted();
-        isTurret = m.isMechTurretMounted();
+        isTurret = m.isMekTurretMounted();
         isSquadSupport = m.isSquadSupportWeapon();
         isMML = m.getType() instanceof MMLWeapon;
         isATM = m.getType() instanceof ATMWeapon || m.getType() instanceof CLIATMWeapon;
@@ -266,7 +266,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
                 && !(mount.getEntity() instanceof SmallCraft && ((Aero) mount.getEntity()).isSpheroid())) {
             name.append(" (R)");
         }
-        if (mount.isMechTurretMounted()) {
+        if (mount.isMekTurretMounted()) {
             name.append(" (T)");
         }
         if (mount.isSponsonTurretMounted()) {

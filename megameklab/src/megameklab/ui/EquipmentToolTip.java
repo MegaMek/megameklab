@@ -84,7 +84,7 @@ public final class EquipmentToolTip {
         if (eq.isRearMounted()) {
             sb.append("<br>Rear Facing");
         }
-        if (eq.isMechTurretMounted()) {
+        if (eq.isMekTurretMounted()) {
             sb.append("<br>Turret mounted");
         }
         if (eq.isArmored()) {

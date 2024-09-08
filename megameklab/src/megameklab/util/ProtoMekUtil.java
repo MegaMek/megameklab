@@ -23,16 +23,16 @@ import megamek.common.verifier.TestProtoMek;
 
 public final class ProtoMekUtil {
 
-    public static boolean isProtomechEquipment(EquipmentType eq, Protomech proto) {
-        return isProtomechEquipment(eq, proto, false);
+    public static boolean isProtoMekEquipment(EquipmentType eq, ProtoMek proto) {
+        return isProtoMekEquipment(eq, proto, false);
     }
 
-    public static boolean isProtomechEquipment(EquipmentType eq, Protomech proto, boolean checkConfiguration) {
+    public static boolean isProtoMekEquipment(EquipmentType eq, ProtoMek proto, boolean checkConfiguration) {
         if (checkConfiguration && (eq instanceof MiscType)) {
             if (eq.hasFlag(MiscType.F_MAGNETIC_CLAMP) && (proto.isQuad() || proto.isGlider())) {
                 return false;
             }
-            if (eq.hasFlag(MiscType.F_CLUB) && eq.hasSubType(MiscType.S_PROTOMECH_WEAPON) && proto.isQuad()) {
+            if (eq.hasFlag(MiscType.F_CLUB) && eq.hasSubType(MiscType.S_PROTOMEK_WEAPON) && proto.isQuad()) {
                 return false;
             }
             if (eq.hasFlag(MiscType.F_CLUB) && eq.hasSubType(MiscType.S_PROTO_QMS) && !proto.isQuad()) {
@@ -40,7 +40,7 @@ public final class ProtoMekUtil {
             }
         }
         if (eq instanceof MiscType) {
-            return eq.hasFlag(MiscType.F_PROTOMECH_EQUIPMENT);
+            return eq.hasFlag(MiscType.F_PROTOMEK_EQUIPMENT);
         } else if (eq instanceof WeaponType) {
             return eq.hasFlag(WeaponType.F_PROTO_WEAPON);
         }
@@ -48,14 +48,14 @@ public final class ProtoMekUtil {
     }
 
     /** Adds the given number of shots to the already present given ammo on the given ProtoMek. */
-    public static void addProtoMechAmmo(Protomech entity, EquipmentType ammo, int shots) throws LocationFullException {
+    public static void addProtoMekAmmo(ProtoMek entity, EquipmentType ammo, int shots) throws LocationFullException {
         Mounted<?> aMount = entity.getAmmo().stream()
                 .filter(m -> ammo.equals(m.getType())).findFirst().orElse(null);
         if (null != aMount) {
             aMount.setShotsLeft(aMount.getUsableShotsLeft() + shots);
         } else {
             Mounted<?> mount = Mounted.createMounted(entity, ammo);
-            entity.addEquipment(mount, Protomech.LOC_BODY, false);
+            entity.addEquipment(mount, ProtoMek.LOC_BODY, false);
             mount.setShotsLeft(shots);
         }
     }
@@ -64,7 +64,7 @@ public final class ProtoMekUtil {
      * Subtracts the given number of shots from the given ammo on the given ProtoMek.
      * May remove the entire Mounted from the ProtoMek.
      */
-    public static void reduceProtoMechAmmo(Protomech entity, EquipmentType ammo, int shots) {
+    public static void reduceProtoMekAmmo(ProtoMek entity, EquipmentType ammo, int shots) {
         Mounted<?> aMount = entity.getAmmo().stream()
                 .filter(m -> ammo.equals(m.getType())).findFirst().orElse(null);
         if (aMount != null) {
@@ -83,7 +83,7 @@ public final class ProtoMekUtil {
      * @param mount    The equipment to be added to the location
      * @return Whether the equipment can be added without exceeding the limits.
      */
-    public static boolean protomechHasRoom(Protomech proto, int location, Mounted<?> mount) {
+    public static boolean protoMekHasRoom(ProtoMek proto, int location, Mounted<?> mount) {
         if (!TestProtoMek.requiresSlot(mount.getType())) {
             return true;
         }

@@ -76,7 +76,7 @@ public class CriticalTableModel extends AbstractTableModel {
         this.tableType = tableType;
         kgStandard = TestEntity.usesKgStandard(unit);
 
-        if ((unit instanceof Mech) || unit.isSupportVehicle()) {
+        if ((unit instanceof Mek) || unit.isSupportVehicle()) {
             columnNames[CRITS] = "Crits";
         }
 
@@ -154,7 +154,7 @@ public class CriticalTableModel extends AbstractTableModel {
             case TONNAGE:
                 double tonnage;
                 if ((unit.hasETypeFlag(Entity.ETYPE_BATTLEARMOR)
-                        || unit.hasETypeFlag(Entity.ETYPE_PROTOMECH))
+                        || unit.hasETypeFlag(Entity.ETYPE_PROTOMEK))
                         && (crit.getType() instanceof AmmoType)) {
                     tonnage = ((AmmoType)crit.getType()).getKgPerShot() *
                             crit.getBaseShotsLeft() / 1000;
@@ -180,7 +180,7 @@ public class CriticalTableModel extends AbstractTableModel {
                 if (unit instanceof Tank) {
                     return crit.getType().getTankSlots(unit);
                 }
-                if (unit.hasETypeFlag(Entity.ETYPE_PROTOMECH)) {
+                if (unit.hasETypeFlag(Entity.ETYPE_PROTOMEK)) {
                     return TestProtoMek.requiresSlot(crit.getType())? 1 : 0;
                 }
                 if (unit.usesWeaponBays() && (crit.getType() instanceof AmmoType)) {
@@ -295,7 +295,7 @@ public class CriticalTableModel extends AbstractTableModel {
                     modifier += "*";
                 }
                 c.setText(c.getText() + modifier);
-            } else if ((column == NAME) && unit.hasETypeFlag(Entity.ETYPE_PROTOMECH)
+            } else if ((column == NAME) && unit.hasETypeFlag(Entity.ETYPE_PROTOMEK)
                     && (mount.getType() instanceof AmmoType)) {
                 c.setText(c.getText() + " (" + mount.getBaseShotsLeft() + ")");
             }

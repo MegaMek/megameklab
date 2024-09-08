@@ -45,16 +45,16 @@ class BMEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
         Mounted<?> mount;
         boolean isMisc = equip instanceof MiscType;
         if (isMisc && equip.hasFlag(MiscType.F_TARGCOMP)) {
-            if (!UnitUtil.hasTargComp(getMech())) {
-                UnitUtil.updateTC(getMech(), equip);
+            if (!UnitUtil.hasTargComp(getMek())) {
+                UnitUtil.updateTC(getMek(), equip);
             }
         } else if (isMisc && UnitUtil.isFixedLocationSpreadEquipment(equip)) {
-            MekUtil.createSpreadMounts(getMech(), equip);
+            MekUtil.createSpreadMounts(getMek(), equip);
         } else {
             try {
-                mount = Mounted.createMounted(getMech(), equip);
+                mount = Mounted.createMounted(getMek(), equip);
                 UnitUtil.setVariableSizeMiscTypeMinimumSize(mount);
-                getMech().addEquipment(mount, Entity.LOC_NONE, false);
+                getMek().addEquipment(mount, Entity.LOC_NONE, false);
                 UnitUtil.removeHiddenAmmo(mount);
             } catch (LocationFullException ignored) {
                 // this can't happen, we add to Entity.LOC_NONE

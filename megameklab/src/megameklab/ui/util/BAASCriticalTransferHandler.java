@@ -147,7 +147,7 @@ public class BAASCriticalTransferHandler extends AbstractCriticalTransferHandler
 
     @Override
     public boolean importData(TransferSupport info) {
-        if (!info.isDrop() || !((getUnit() instanceof Mech) || (getUnit() instanceof Aero) ||
+        if (!info.isDrop() || !((getUnit() instanceof Mek) || (getUnit() instanceof Aero) ||
                 (getUnit() instanceof BattleArmor))) {
             return false;
         }
@@ -193,7 +193,7 @@ public class BAASCriticalTransferHandler extends AbstractCriticalTransferHandler
                     PopupMessages.showInvalidLocationInfo(null, eq.getName(), getUnit().getLocationName(location));
                     return false;
                 }
-                
+
                 if (getUnit() instanceof Aero) {
                     return addEquipmentAero((Aero) getUnit(), eq);
                 } else if (getUnit() instanceof BattleArmor) {

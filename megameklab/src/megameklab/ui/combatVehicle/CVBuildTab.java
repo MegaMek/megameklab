@@ -28,7 +28,7 @@ import javax.swing.SwingConstants;
 import org.apache.logging.log4j.LogManager;
 
 import megamek.common.Entity;
-import megamek.common.MechFileParser;
+import megamek.common.MekFileParser;
 import megamek.common.Mounted;
 import megamek.common.loaders.EntityLoadingException;
 import megameklab.ui.EntitySource;
@@ -130,7 +130,7 @@ public class CVBuildTab extends ITab implements ActionListener {
         }
         // Check linking after you remove everything.
         try {
-            MechFileParser.postLoadInit(getTank());
+            MekFileParser.postLoadInit(getTank());
         } catch (EntityLoadingException ele) {
             // do nothing.
         } catch (Exception ex) {

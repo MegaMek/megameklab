@@ -90,7 +90,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
                 new StructureSummaryItem(),
                 new EngineSummaryItem(),
                 new PropulsionSummaryItem(),
-                new HeatsinkSummaryItem(),
+                new HeatSinkSummaryItem(),
                 new ControlsSummaryItem(),
                 new ArmorSummaryItem(),
                 new JumpSummaryItem(),

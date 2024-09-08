@@ -25,7 +25,7 @@ import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.annotations.Nullable;
 import megamek.common.verifier.TestEntity;
-import megamek.common.verifier.TestMech;
+import megamek.common.verifier.TestMek;
 import megameklab.util.MekUtil;
 import megameklab.util.UnitUtil;
 
@@ -38,7 +38,7 @@ public class HeatSinkSummaryItem extends AbstractSummaryItem {
     @Override
     public void refresh(Entity entity) {
         if (entity instanceof Mek) {
-            TestMech testMek = (TestMech) UnitUtil.getEntityVerifier(entity);
+            TestMek testMek = (TestMek) UnitUtil.getEntityVerifier(entity);
             Mek mek = (Mek) entity;
             int numberSinks = MekUtil.countActualHeatSinks(mek);
             numberSinks = Math.max(0, numberSinks - UnitUtil.getCriticalFreeHeatSinks(mek, mek.hasCompactHeatSinks()));

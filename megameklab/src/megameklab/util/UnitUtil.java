@@ -89,17 +89,17 @@ public class UnitUtil {
                         || eq.hasFlag(MiscType.F_TRACKS)
                         || eq.hasFlag(MiscType.F_TALON)
                         || (eq.hasFlag(MiscType.F_STEALTH)
-                            && (eq.hasFlag(MiscType.F_MECH_EQUIPMENT)
+                            && (eq.hasFlag(MiscType.F_MEK_EQUIPMENT)
                                 || eq.hasFlag(MiscType.F_TANK_EQUIPMENT)))
                         || eq.hasFlag(MiscType.F_CHAMELEON_SHIELD)
                         || eq.hasFlag(MiscType.F_BLUE_SHIELD)
                         || eq.hasFlag(MiscType.F_MAST_MOUNT)
                         || eq.hasFlag(MiscType.F_SCM)
                         || (eq.hasFlag(MiscType.F_RAM_PLATE)
-                        || (eq.hasFlag(MiscType.F_JUMP_JET) && eq.hasFlag(MiscType.F_PROTOMECH_EQUIPMENT))
-                        || (eq.hasFlag(MiscType.F_UMU) && eq.hasFlag(MiscType.F_PROTOMECH_EQUIPMENT))
-                        || (eq.hasFlag(MiscType.F_MAGNETIC_CLAMP) && eq.hasFlag(MiscType.F_PROTOMECH_EQUIPMENT))
-                        || (eq.hasFlag(MiscType.F_MASC) && eq.hasFlag(MiscType.F_PROTOMECH_EQUIPMENT))));
+                        || (eq.hasFlag(MiscType.F_JUMP_JET) && eq.hasFlag(MiscType.F_PROTOMEK_EQUIPMENT))
+                        || (eq.hasFlag(MiscType.F_UMU) && eq.hasFlag(MiscType.F_PROTOMEK_EQUIPMENT))
+                        || (eq.hasFlag(MiscType.F_MAGNETIC_CLAMP) && eq.hasFlag(MiscType.F_PROTOMEK_EQUIPMENT))
+                        || (eq.hasFlag(MiscType.F_MASC) && eq.hasFlag(MiscType.F_PROTOMEK_EQUIPMENT))));
     }
 
     /**
@@ -548,7 +548,7 @@ public class UnitUtil {
         } else if (type == Mek.JUMP_PROTOTYPE) {
             return EquipmentTypeLookup.PROTOTYPE_JUMP_JET;
         } else if (type == Mek.JUMP_BOOSTER) {
-            return EquipmentTypeLookup.MECH_JUMP_BOOSTER;
+            return EquipmentTypeLookup.MECHANICAL_JUMP_BOOSTER;
         } else if (type == Mek.JUMP_PROTOTYPE_IMPROVED) {
             return EquipmentTypeLookup.PROTOTYPE_IMPROVED_JJ;
         }
@@ -602,7 +602,7 @@ public class UnitUtil {
         // If we're adding it to a location on the unit, check equipment linkages
         if (location > Entity.LOC_NONE) {
             try {
-                MechFileParser.postLoadInit(unit);
+                MekFileParser.postLoadInit(unit);
             } catch (Exception ignored) {
                 // Exception thrown for not having equipment to link to yet, which is acceptable here
             }
@@ -1596,13 +1596,13 @@ public class UnitUtil {
      */
     public static TestEntity getEntityVerifier(Entity unit) {
         EntityVerifier entityVerifier = EntityVerifier.getInstance(new File(
-                "data/mechfiles/UnitVerifierOptions.xml")); // TODO : Remove inline file path
+                "data/mekfiles/UnitVerifierOptions.xml")); // TODO : Remove inline file path
         TestEntity testEntity = null;
 
         if (unit.hasETypeFlag(Entity.ETYPE_MEK)) {
-            testEntity = new TestMech((Mek) unit, entityVerifier.mechOption, null);
+            testEntity = new TestMek((Mek) unit, entityVerifier.mekOption, null);
         } else if (unit.hasETypeFlag(Entity.ETYPE_PROTOMEK)) {
-            testEntity = new TestProtoMek((ProtoMek) unit, entityVerifier.protomechOption, null);
+            testEntity = new TestProtoMek((ProtoMek) unit, entityVerifier.protomekOption, null);
         } else if (unit.isSupportVehicle()) {
             testEntity = new TestSupportVehicle(unit, entityVerifier.tankOption, null);
         } else if (unit.hasETypeFlag(Entity.ETYPE_TANK)) {
@@ -1779,7 +1779,7 @@ public class UnitUtil {
 
         // Link up Artemis, etc.
         try {
-            MechFileParser.postLoadInit(entity);
+            MekFileParser.postLoadInit(entity);
         } catch (Exception ex) {
             LogManager.getLogger().error("", ex);
         }

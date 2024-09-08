@@ -52,7 +52,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
         this.buildView = buildView;
         setCellRenderer(new CritListCellRenderer(eSource.getEntity(), buildView));
         addMouseListener(this);
-        if (eSource.getEntity() instanceof Mech) {
+        if (eSource.getEntity() instanceof Mek) {
             transferHandler = new BMCriticalTransferHandler(eSource, refresh, (BMCriticalView) parentView);
         } else {
             transferHandler = new BAASCriticalTransferHandler(eSource, refresh);
@@ -247,8 +247,8 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
                         popup.add(info);
                     }
 
-                    if ((mount.getLocation() != Mech.LOC_LARM)
-                            && (mount.getLocation() != Mech.LOC_RARM)) {
+                    if ((mount.getLocation() != Mek.LOC_LARM)
+                            && (mount.getLocation() != Mek.LOC_RARM)) {
                         if (mount.getType() instanceof WeaponType) {
                             if (getUnit().hasWorkingMisc(MiscType.F_QUAD_TURRET, -1,
                                     mount.getLocation())
@@ -257,9 +257,9 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
                                             mount.getLocation())
                                     || (getUnit().hasWorkingMisc(
                                             MiscType.F_HEAD_TURRET, -1,
-                                            Mech.LOC_CT) && (mount
-                                            .getLocation() == Mech.LOC_HEAD))) {
-                                if (!mount.isMechTurretMounted()) {
+                                            Mek.LOC_CT) && (mount
+                                            .getLocation() == Mek.LOC_HEAD))) {
+                                if (!mount.isMekTurretMounted()) {
                                     info = new JMenuItem("Mount " + mount.getName() + " in Turret");
                                     info.addActionListener(evt -> changeTurretMount(true));
                                     popup.add(info);
@@ -325,8 +325,8 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
                     }
                 }
 
-                if ((getUnit() instanceof BipedMech || getUnit() instanceof TripodMech)
-                        && ((location == Mech.LOC_LARM) || (location == Mech.LOC_RARM))) {
+                if ((getUnit() instanceof BipedMek || getUnit() instanceof TripodMek)
+                        && ((location == Mek.LOC_LARM) || (location == Mek.LOC_RARM))) {
                     boolean canHaveLowerArm = true;
                     if (getUnit().isOmni()) {
                         int numCrits = getUnit().getNumberOfCriticals(location);
@@ -389,7 +389,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
                         info.setActionCommand(Integer.toString(location));
                         info.addActionListener(evt -> changeArmoring());
                         popup.add(info);
-                    } else if (!((getUnit() instanceof Mech) && getUnit().isSuperHeavy())) {
+                    } else if (!((getUnit() instanceof Mek) && getUnit().isSuperHeavy())) {
                         JMenuItem info = new JMenuItem("Add Armoring");
                         info.setActionCommand(Integer.toString(location));
                         info.addActionListener(evt -> changeArmoring());
@@ -469,7 +469,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
 
         // Check linkings after you remove everything.
         try {
-            MechFileParser.postLoadInit(getUnit());
+            MekFileParser.postLoadInit(getUnit());
         } catch (EntityLoadingException ele) {
             // do nothing.
         } catch (Exception ex) {
@@ -502,7 +502,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
 
         // Check linkings after you remove everything.
         try {
-            MechFileParser.postLoadInit(getUnit());
+            MekFileParser.postLoadInit(getUnit());
         } catch (EntityLoadingException ignored) {
 
         } catch (Exception ex) {
@@ -526,8 +526,8 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
         }
         if (mount.getType() instanceof MiscType) {
             if (mount.getType().hasFlag(MiscType.F_MODULAR_ARMOR)) {
-                return (mount.getEntity() instanceof Mech)
-                        && ((Mech) mount.getEntity()).locationIsTorso(mount.getLocation());
+                return (mount.getEntity() instanceof Mek)
+                        && ((Mek) mount.getEntity()).locationIsTorso(mount.getLocation());
             } else {
                 return mount.getType().hasFlag(MiscType.F_LIFTHOIST)
                         || mount.getType().hasFlag(MiscType.F_SPRAYER)
@@ -552,9 +552,9 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
     }
 
     private void changeTurretMount(boolean turret) {
-        getMounted().setMechTurretMounted(turret);
+        getMounted().setMekTurretMounted(turret);
         if (getMounted().getLinkedBy() != null) {
-            getMounted().getLinkedBy().setMechTurretMounted(turret);
+            getMounted().getLinkedBy().setMekTurretMounted(turret);
         }
         if (refresh != null) {
             refresh.scheduleRefresh();
@@ -579,13 +579,13 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
             changeMountStatus(mount, Entity.LOC_NONE, false);
         }
         getUnit().setCritical(location, 3, new CriticalSlot(
-                CriticalSlot.TYPE_SYSTEM, Mech.ACTUATOR_HAND));
+                CriticalSlot.TYPE_SYSTEM, Mek.ACTUATOR_HAND));
         addArm(location);
     }
 
     private void removeHand(int location) {
-        if (getUnit() instanceof BipedMech || getUnit() instanceof TripodMech) {
-            MekUtil.removeHand((Mech) getUnit(), location);
+        if (getUnit() instanceof BipedMek || getUnit() instanceof TripodMek) {
+            MekUtil.removeHand((Mek) getUnit(), location);
             if (refresh != null) {
                 refresh.scheduleRefresh();
             }
@@ -593,8 +593,8 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
     }
 
     private void removeArm(int location) {
-        if (getUnit() instanceof BipedMech || getUnit() instanceof TripodMech) {
-            MekUtil.removeArm((Mech)getUnit(),location);
+        if (getUnit() instanceof BipedMek || getUnit() instanceof TripodMek) {
+            MekUtil.removeArm((Mek)getUnit(),location);
             if (refresh != null) {
                 refresh.scheduleRefresh();
             }
@@ -611,7 +611,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
         }
 
         getUnit().setCritical(location, 2, new CriticalSlot(
-                CriticalSlot.TYPE_SYSTEM, Mech.ACTUATOR_LOWER_ARM));
+                CriticalSlot.TYPE_SYSTEM, Mek.ACTUATOR_LOWER_ARM));
         if (refresh != null) {
             refresh.scheduleRefresh();
         }

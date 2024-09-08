@@ -1341,7 +1341,7 @@ public final class MekUtil {
                 return unit.isIndustrial();
             }
 
-            if (eq.hasFlag(MiscType.F_MECH_EQUIPMENT)
+            if (eq.hasFlag(MiscType.F_MEK_EQUIPMENT)
                     && !eq.hasFlag(MiscType.F_CLUB)
                     && !eq.hasFlag(MiscType.F_HAND_WEAPON)
                     && !eq.hasFlag(MiscType.F_TALON)) {
@@ -1373,7 +1373,7 @@ public final class MekUtil {
 
         if (eq instanceof WeaponType) {
             WeaponType weapon = (WeaponType) eq;
-            if (!weapon.hasFlag(WeaponType.F_MECH_WEAPON) || isNonMekOrTankWeapon(unit, weapon)) {
+            if (!weapon.hasFlag(WeaponType.F_MEK_WEAPON) || isNonMekOrTankWeapon(unit, weapon)) {
                 return false;
             }
             if ((unit instanceof LandAirMek)

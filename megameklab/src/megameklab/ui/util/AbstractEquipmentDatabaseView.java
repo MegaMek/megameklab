@@ -578,8 +578,8 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
 
         if (getEntity() instanceof Mek) {
             // FIXME : This is handled strangely in UnitUtil: MekEquipment does not include weapons
-            return MekUtil.isMechEquipment(equipment, (Mek) getEntity())
-                    || MekUtil.isMechWeapon(equipment, getEntity())
+            return MekUtil.isMekEquipment(equipment, (Mek) getEntity())
+                    || MekUtil.isMekWeapon(equipment, getEntity())
                     || UnitUtil.isPhysicalWeapon(equipment);
         } else if (getEntity() instanceof BattleArmor) {
             // FIXME : This is handled strangely in UnitUtil: BAAPWeapons are not BAEquipment

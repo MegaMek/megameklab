@@ -19,8 +19,17 @@
  */
 package megameklab.ui.generalUnit;
 
-import megamek.client.ui.panes.ConfigurableMechViewPanel;
-import megamek.client.ui.swing.MechViewPanel;
+import java.awt.BorderLayout;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+
+import javax.swing.JTabbedPane;
+
+import org.apache.logging.log4j.LogManager;
+
+import megamek.client.ui.panes.ConfigurableMekViewPanel;
+import megamek.client.ui.swing.MekViewPanel;
 import megamek.client.ui.swing.alphaStrike.ConfigurableASCardPanel;
 import megamek.client.ui.swing.calculationReport.FlexibleCalculationReport;
 import megamek.common.Entity;
@@ -29,18 +38,11 @@ import megamek.common.alphaStrike.conversion.ASConverter;
 import megamek.common.templates.TROView;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.ITab;
-import org.apache.logging.log4j.LogManager;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 
 public class PreviewTab extends ITab {
 
-    private final ConfigurableMechViewPanel panelMekView = new ConfigurableMechViewPanel();
-    private final MechViewPanel panelTROView = new MechViewPanel();
+    private final ConfigurableMekViewPanel panelMekView = new ConfigurableMekViewPanel();
+    private final MekViewPanel panelTROView = new MekViewPanel();
     private final ConfigurableASCardPanel cardPanel = new ConfigurableASCardPanel(null);
     private final RecordSheetPreviewPanel rsPanel = new RecordSheetPreviewPanel();
 
@@ -70,7 +72,7 @@ public class PreviewTab extends ITab {
         }
         if (populateTextFields) {
             panelMekView.setEntity(selectedUnit);
-            panelTROView.setMech(selectedUnit, troView);
+            panelTROView.setMek(selectedUnit, troView);
             if (ASConverter.canConvert(selectedUnit)) {
                 cardPanel.setASElement(ASConverter.convertInMML(selectedUnit, new FlexibleCalculationReport()));
             } else {

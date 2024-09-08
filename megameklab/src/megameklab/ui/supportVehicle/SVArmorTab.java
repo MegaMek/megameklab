@@ -219,7 +219,7 @@ public class SVArmorTab extends ITab implements ArmorAllocationListener {
     public void patchworkChanged(int location, ArmorType armor) {
         UnitUtil.resetArmor(getEntity(), location);
 
-        int crits = armor.getPatchworkSlotsMechSV();
+        int crits = armor.getPatchworkSlotsMekSV();
         if (getEntity().getEmptyCriticals(location) < crits) {
             JOptionPane .showMessageDialog(
                     null, armor.getName()

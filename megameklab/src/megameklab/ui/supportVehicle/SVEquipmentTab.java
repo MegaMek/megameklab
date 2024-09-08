@@ -40,7 +40,7 @@ public class SVEquipmentTab extends AbstractEquipmentTab {
     }
 
     @Override
-    protected boolean showInLoadout(Mounted mount) {
+    protected boolean showInLoadOut(Mounted mount) {
         EquipmentType etype = mount.getType();
         return !(etype instanceof MiscType) ||
                 !(UnitUtil.isHeatSink(mount)

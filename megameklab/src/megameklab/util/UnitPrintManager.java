@@ -115,7 +115,7 @@ public class UnitPrintManager {
         List<PrintRecordSheet> sheets = new ArrayList<>();
         List<Infantry> infList = new ArrayList<>();
         List<BattleArmor> baList = new ArrayList<>();
-        List<Protomech> protoList = new ArrayList<>();
+        List<ProtoMek> protoList = new ArrayList<>();
         List<BTObject> unprintable = new ArrayList<>();
         Tank tank1 = null;
 
@@ -123,10 +123,10 @@ public class UnitPrintManager {
         for (BTObject object : entities) {
             if (object instanceof Entity) {
                 Entity unit = (Entity) object;
-                if (unit instanceof Mech) {
+                if (unit instanceof Mek) {
                     UnitUtil.removeOneShotAmmo(unit);
-                    MekUtil.expandUnitMounts((Mech) unit);
-                    sheets.add(new PrintMek((Mech) unit, pageCount++, options));
+                    MekUtil.expandUnitMounts((Mek) unit);
+                    sheets.add(new PrintMek((Mek) unit, pageCount++, options));
                 } else if ((unit instanceof Tank) && unit.getMovementMode().isMarine()) {
                     sheets.add(new PrintTank((Tank) unit, pageCount++, options));
                 } else if (unit instanceof Tank) {
@@ -166,8 +166,8 @@ public class UnitPrintManager {
                         sheets.add(prs);
                         infList = new ArrayList<>();
                     }
-                } else if (unit instanceof Protomech) {
-                    protoList.add((Protomech) unit);
+                } else if (unit instanceof ProtoMek) {
+                    protoList.add((ProtoMek) unit);
                     if (singlePrint || PrintSmallUnitSheet.fillsSheet(protoList, options)) {
                         PrintRecordSheet prs = new PrintSmallUnitSheet(protoList, pageCount, options);
                         pageCount += prs.getPageCount();
@@ -315,7 +315,7 @@ public class UnitPrintManager {
     }
 
     public static void printUnitFile(JFrame parent, boolean singleUnit, boolean pdf) {
-        String filePathName = System.getProperty("user.dir") + "/data/mechfiles/"; // TODO : Remove inline file path
+        String filePathName = System.getProperty("user.dir") + "/data/mekfiles/"; // TODO : Remove inline file path
 
         JFileChooser f = new JFileChooser(filePathName);
         f.setLocation(parent.getLocation().x + 150, parent.getLocation().y + 100);
@@ -337,7 +337,7 @@ public class UnitPrintManager {
             List<Entity> unitList = new ArrayList<>();
 
             for (File entityFile : f.getSelectedFiles()) {
-                Entity tempEntity = new MechFileParser(entityFile).getEntity();
+                Entity tempEntity = new MekFileParser(entityFile).getEntity();
                 unitList.add(tempEntity);
             }
             if (pdf) {

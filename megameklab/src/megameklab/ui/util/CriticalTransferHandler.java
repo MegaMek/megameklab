@@ -61,12 +61,12 @@ public class CriticalTransferHandler extends TransferHandler {
             try {
                 Mounted mount = getUnit().getEquipment(Integer.parseInt((String) t
                         .getTransferData(DataFlavor.stringFlavor)));
-                
+
                 if (!UnitUtil.isValidLocation(getUnit(), mount.getType(), location)) {
                     PopupMessages.showInvalidLocationInfo(null, mount.getName(), getUnit().getLocationName(location));
                     return false;
                 }
-                
+
                 if (!getUnit().addCritical(location, new CriticalSlot(mount))) {
                     PopupMessages.showLocationFullError(null, mount.getName());
                 } else {
@@ -77,8 +77,8 @@ public class CriticalTransferHandler extends TransferHandler {
             }
 
             return true;
-        } else if (info.getComponent() instanceof ProtomekMountList) {
-            ProtomekMountList list = (ProtomekMountList) info.getComponent();
+        } else if (info.getComponent() instanceof ProtoMekMountList) {
+            ProtoMekMountList list = (ProtoMekMountList) info.getComponent();
             location = list.getMountLocation();
             Transferable t = info.getTransferable();
             try {
@@ -90,7 +90,7 @@ public class CriticalTransferHandler extends TransferHandler {
                     return false;
                 }
 
-                if (!ProtoMekUtil.protomechHasRoom(list.getProtomech(), location, mount)) {
+                if (!ProtoMekUtil.protoMekHasRoom(list.getProtoMek(), location, mount)) {
                     PopupMessages.showLocationFullError(null, mount.getName());
                 } else {
                     changeMountStatus(mount, location, false);
@@ -159,8 +159,8 @@ public class CriticalTransferHandler extends TransferHandler {
                 critView.markUnavailableLocations(mount);
             }
             return new StringSelection(Integer.toString(getUnit().getEquipmentNum(mount)));
-        } else if (c instanceof ProtomekMountList) {
-            Mounted mount = ((ProtomekMountList) c).getMounted();
+        } else if (c instanceof ProtoMekMountList) {
+            Mounted mount = ((ProtoMekMountList) c).getMounted();
             if (!UnitUtil.isFixedLocationSpreadEquipment(mount.getType())
                     && !(mount.getType() instanceof AmmoType)) {
                 return new StringSelection(Integer.toString(getUnit().getEquipmentNum(mount)));
@@ -173,7 +173,7 @@ public class CriticalTransferHandler extends TransferHandler {
     public int getSourceActions(JComponent c) {
         return TransferHandler.LINK;
     }
-    
+
     private void changeMountStatus(Mounted eq, int location, boolean rear) {
         changeMountStatus(eq, location, -1, rear);
     }
@@ -186,7 +186,7 @@ public class CriticalTransferHandler extends TransferHandler {
             refresh.refreshAll();
         }
     }
-    
+
     public void addRefreshListener(RefreshListener r) {
         refresh = r;
     }
@@ -198,7 +198,7 @@ public class CriticalTransferHandler extends TransferHandler {
     @Override
     protected void exportDone(JComponent source, Transferable data, int action) {
         if (critView != null) {
-            critView.unmarkAllLocations();
+            critView.unMarkAllLocations();
         }
     }
 }

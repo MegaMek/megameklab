@@ -303,7 +303,7 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
     }
 
     private void selectFromFile() {
-        String filePathName = System.getProperty("user.dir") + "/data/mechfiles/";
+        String filePathName = System.getProperty("user.dir") + "/data/mekfiles/";
 
         JFileChooser f = new JFileChooser(filePathName);
         f.setLocation(parent.getLocation().x + 150, parent.getLocation().y + 100);
@@ -319,7 +319,7 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
 
         for (File entityFile : f.getSelectedFiles()) {
             try {
-                Entity tempEntity = new MechFileParser(entityFile).getEntity();
+                Entity tempEntity = new MekFileParser(entityFile).getEntity();
                 units.add(tempEntity);
             } catch (Exception ex) {
                 LogManager.getLogger().error("", ex);

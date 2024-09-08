@@ -26,7 +26,7 @@ import java.awt.*;
 
 /**
  * MainUI for JumpShips, WarShips, and Space Stations
- * 
+ *
  * @author Neoancient
  */
 public class WSMainUI extends MegaMekLabMainUI {
@@ -40,7 +40,7 @@ public class WSMainUI extends MegaMekLabMainUI {
     private QuirksTab quirksTab;
     private StatusBar statusbar;
     private FloatingEquipmentDatabaseDialog floatingEquipmentDatabase;
-    
+
     public WSMainUI(boolean primitive) {
         super();
         if (!primitive) {
@@ -49,7 +49,7 @@ public class WSMainUI extends MegaMekLabMainUI {
             createNewUnit(Entity.ETYPE_WARSHIP, true, false);
         }
         finishSetup();
-        MechSummaryCache.getInstance();
+        MekSummaryCache.getInstance();
     }
 
     @Override
@@ -62,7 +62,7 @@ public class WSMainUI extends MegaMekLabMainUI {
         equipmentTab.refreshTable();
         floatingEquipmentDatabase.refresh();
     }
-    
+
     @Override
     public void refreshTransport() {
         transportTab.refresh();
@@ -110,7 +110,7 @@ public class WSMainUI extends MegaMekLabMainUI {
             ship.set0SI(1);
         }
         ship.setArmorTechLevel(getEntity().getTechLevel());
-        
+
         ship.setHeatType(Aero.HEAT_SINGLE);
 
         ship.autoSetInternal();

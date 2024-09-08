@@ -25,7 +25,7 @@ import java.awt.*;
 
 /**
  * Main UI for DropShips and Small Craft
- * 
+ *
  * @author Neoancient
  */
 public class DSMainUI extends MegaMekLabMainUI {
@@ -39,12 +39,12 @@ public class DSMainUI extends MegaMekLabMainUI {
     private StatusBar statusbar;
     private QuirksTab quirksTab;
     private FloatingEquipmentDatabaseDialog floatingEquipmentDatabase;
-    
+
     public DSMainUI(boolean primitive) {
         super();
         createNewUnit(Entity.ETYPE_DROPSHIP, primitive, false);
         finishSetup();
-        MechSummaryCache.getInstance();
+        MekSummaryCache.getInstance();
     }
 
     @Override
@@ -57,7 +57,7 @@ public class DSMainUI extends MegaMekLabMainUI {
         equipmentTab.refreshTable();
         floatingEquipmentDatabase.refresh();
     }
-    
+
     @Override
     public void refreshTransport() {
         transportTab.refresh();
@@ -91,7 +91,7 @@ public class DSMainUI extends MegaMekLabMainUI {
         smallCraft.setArmorTechLevel(getEntity().getTechLevel());
         smallCraft.set0SI(3);
         smallCraft.setDesignType(SmallCraft.MILITARY);
-        
+
         smallCraft.setHeatType(Aero.HEAT_SINGLE);
 
         smallCraft.autoSetInternal();

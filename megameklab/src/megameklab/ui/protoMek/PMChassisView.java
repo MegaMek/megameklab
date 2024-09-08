@@ -36,10 +36,10 @@ import javax.swing.event.ChangeListener;
 import megamek.common.EquipmentType;
 import megamek.common.ITechManager;
 import megamek.common.MiscType;
-import megamek.common.Protomech;
+import megamek.common.ProtoMek;
 import megamek.common.verifier.TestProtoMek;
 import megameklab.ui.generalUnit.BuildView;
-import megameklab.ui.listeners.ProtomekBuildListener;
+import megameklab.ui.listeners.ProtoMekBuildListener;
 import megameklab.ui.util.CustomComboBox;
 
 /**
@@ -48,11 +48,11 @@ import megameklab.ui.util.CustomComboBox;
  * @author Neoancient
  */
 public class PMChassisView extends BuildView implements ActionListener, ChangeListener {
-    List<ProtomekBuildListener> listeners = new CopyOnWriteArrayList<>();
-    public void addListener(ProtomekBuildListener l) {
+    List<ProtoMekBuildListener> listeners = new CopyOnWriteArrayList<>();
+    public void addListener(ProtoMekBuildListener l) {
         listeners.add(l);
     }
-    public void removeListener(ProtomekBuildListener l) {
+    public void removeListener(ProtoMekBuildListener l) {
         listeners.remove(l);
     }
 
@@ -82,7 +82,7 @@ public class PMChassisView extends BuildView implements ActionListener, ChangeLi
         // Get the equipment based on the correct flags rather than relying on magic String literals.
         for (Enumeration<EquipmentType> e = EquipmentType.getAllTypes(); e.hasMoreElements(); ) {
             final EquipmentType eq = e.nextElement();
-            if ((eq instanceof MiscType) && eq.hasFlag(MiscType.F_PROTOMECH_EQUIPMENT)) {
+            if ((eq instanceof MiscType) && eq.hasFlag(MiscType.F_PROTOMEK_EQUIPMENT)) {
                 if (eq.hasFlag(MiscType.F_MASC)) {
                     myomerBooster = eq;
                 } else if (eq.hasFlag(MiscType.F_PARTIAL_WING)) {
@@ -170,7 +170,7 @@ public class PMChassisView extends BuildView implements ActionListener, ChangeLi
         chkISInterface.addActionListener(this);
     }
 
-    public void setFromEntity(Protomech proto) {
+    public void setFromEntity(ProtoMek proto) {
         refresh();
         setTonnage(proto.getWeight());
         cbMotiveType.removeActionListener(this);
@@ -206,14 +206,14 @@ public class PMChassisView extends BuildView implements ActionListener, ChangeLi
         chkMagneticClamps.setVisible((null != magneticClamps)
                 && (getMotiveType() == MOTIVE_TYPE_BIPED)
                 && techManager.isLegal(magneticClamps));
-        chkISInterface.setVisible(techManager.isLegal(Protomech.TA_INTERFACE_COCKPIT));
+        chkISInterface.setVisible(techManager.isLegal(ProtoMek.TA_INTERFACE_COCKPIT));
     }
 
     private void refreshTonnage() {
         int min = (int) TestProtoMek.MIN_TONNAGE;
         int max = (int) TestProtoMek.MAX_STD_TONNAGE;
         spnTonnage.removeChangeListener(this);
-        if (techManager.isLegal(Protomech.TA_ULTRA)) {
+        if (techManager.isLegal(ProtoMek.TA_ULTRA)) {
             max = (int) TestProtoMek.MAX_TONNAGE;
         }
         tonnageModel.setMinimum(min);

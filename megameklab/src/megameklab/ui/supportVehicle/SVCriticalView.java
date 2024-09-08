@@ -157,7 +157,7 @@ public class SVCriticalView extends IView {
                         continue;
                     }
                     if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
-                        critNames.add(getMech().getSystemName(cs.getIndex()));
+                        critNames.add(getMek().getSystemName(cs.getIndex()));
                     } else if (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) {
                         Mounted m = cs.getMount();
                         // Critical didn't get removed. Remove it now.

@@ -27,7 +27,7 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * Main UI for building protomechs
+ * Main UI for building protomeks
  *
  * @author Neoancient
  */
@@ -44,7 +44,7 @@ public class PMMainUI extends MegaMekLabMainUI {
 
     public PMMainUI() {
         super();
-        createNewUnit(Entity.ETYPE_PROTOMECH);
+        createNewUnit(Entity.ETYPE_PROTOMEK);
         finishSetup();
     }
 
@@ -88,7 +88,7 @@ public class PMMainUI extends MegaMekLabMainUI {
     @Override
     public void createNewUnit(long entitytype, boolean isPrimitive, boolean isIndustrial, Entity oldEntity) {
 
-        Protomech proto = new Protomech();
+        ProtoMek proto = new ProtoMek();
         setEntity(proto);
 
         getEntity().setWeight(2);
@@ -148,7 +148,7 @@ public class PMMainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshTransport() {
-        // not used for protomechs
+        // not used for protomeks
     }
 
     @Override

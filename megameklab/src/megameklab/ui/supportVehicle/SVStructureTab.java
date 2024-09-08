@@ -80,7 +80,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
                 new StructureSummaryItem(),
                 new EngineSummaryItem(),
                 new FuelSummaryItem(),
-                new HeatsinkSummaryItem(),
+                new HeatSinkSummaryItem(),
                 new ControlsSummaryItem(),
                 new ArmorSummaryItem(),
                 new TurretSummaryItem(),

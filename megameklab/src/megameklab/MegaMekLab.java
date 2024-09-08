@@ -31,8 +31,8 @@ import megamek.SuiteConstants;
 import megamek.client.ui.preferences.SuitePreferences;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
-import megamek.common.MechFileParser;
-import megamek.common.MechSummaryCache;
+import megamek.common.MekFileParser;
+import megamek.common.MekSummaryCache;
 import megamek.common.net.marshalling.SanityInputFilter;
 import megameklab.ui.PopupMessages;
 import megameklab.ui.StartupGUI;
@@ -89,7 +89,7 @@ public class MegaMekLab {
 
     private static void startup() {
         EquipmentType.initializeTypes();
-        MechSummaryCache.getInstance();
+        MekSummaryCache.getInstance();
         CConfig.load();
         UnitUtil.loadFonts();
 
@@ -103,11 +103,11 @@ public class MegaMekLab {
 
         // Create a startup frame and display it
         switch (CConfig.getStartUpType()) {
-            case NEW_MEK -> UiLoader.loadUi(Entity.ETYPE_MECH, false, false);
+            case NEW_MEK -> UiLoader.loadUi(Entity.ETYPE_MEK, false, false);
             case NEW_TANK -> UiLoader.loadUi(Entity.ETYPE_TANK, false, false);
             case NEW_FIGHTER -> UiLoader.loadUi(Entity.ETYPE_AERO, false, false);
             case NEW_DROPSHIP -> UiLoader.loadUi(Entity.ETYPE_DROPSHIP, false, false);
-            case NEW_PROTOMEK -> UiLoader.loadUi(Entity.ETYPE_PROTOMECH, false, false);
+            case NEW_PROTOMEK -> UiLoader.loadUi(Entity.ETYPE_PROTOMEK, false, false);
             case NEW_JUMPSHIP -> UiLoader.loadUi(Entity.ETYPE_JUMPSHIP, false, false);
             case NEW_SUPPORTVEE -> UiLoader.loadUi(Entity.ETYPE_SUPPORT_TANK, false, false);
             case NEW_BATTLEARMOR -> UiLoader.loadUi(Entity.ETYPE_BATTLEARMOR, false, false);
@@ -161,7 +161,7 @@ public class MegaMekLab {
         }
 
         try {
-            Entity recentUnit = new MechFileParser(unitFile).getEntity();
+            Entity recentUnit = new MekFileParser(unitFile).getEntity();
             if (recentUnit == null) {
                 return false;
             } else if (!UnitUtil.validateUnit(recentUnit).isBlank()) {

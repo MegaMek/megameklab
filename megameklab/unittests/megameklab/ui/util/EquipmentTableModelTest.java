@@ -40,7 +40,7 @@ class EquipmentTableModelTest {
         assertNotNull(is);
 
         // Read InputStream into Entity
-        Entity testEntity = new MechFileParser(is, fname).getEntity();
+        Entity testEntity = new MekFileParser(is, fname).getEntity();
         doReturn(testEntity).when(eSource).getEntity();
 
         // Set up EquipmentTypeModel instance
@@ -64,10 +64,10 @@ class EquipmentTableModelTest {
                 "/Long Tom Cannon Turret (Quad).blk",                       // Generic Clan Turret
                 "/Explorer JumpShip (HPG).blk",                             // JumpShip
                 "/Jump Squad (LRM).blk",                                    // Jump CI
-                "/Siren 4.blk",                                             // ProtoMech
+                "/Siren 4.blk",                                             // ProtoMek
                 "/Aquarius Escort.blk",                                     // Small Craft
                 "/Olympus Recharge Station (3072).blk",                     // SpaceStation
-                "/Harpagos.mtf",                                            // QuadMech
+                "/Harpagos.mtf",                                            // QuadMek
                 "/Sleipnir APC.blk",                                        // Vehicle
                 "/Peregrine Corvette.blk"                                   // WarShip
         ));

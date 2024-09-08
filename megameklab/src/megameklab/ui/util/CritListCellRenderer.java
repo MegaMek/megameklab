@@ -97,7 +97,7 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
     @Override
     public Dimension getPreferredSize() {
         int width = CRITCELL_WIDTH;
-        width = (unit instanceof Mech) ? CRITCELL_MEK_WIDTH : width;
+        width = (unit instanceof Mek) ? CRITCELL_MEK_WIDTH : width;
         width = (unit instanceof Tank) ? CRITCELL_VEH_WIDTH : width;
         int height = Math.max(CRITCELL_MIN_HEIGHT, super.getPreferredSize().height + CRITCELL_ADD_HEIGHT);
         return new Dimension(width, height);

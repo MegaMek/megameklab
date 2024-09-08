@@ -119,12 +119,12 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
         JPanel panelButtons = new JPanel(new GridBagLayout());
 
         if (allowPickWithoutClose) {
-            buttonSelect = new JButton(Messages.getString("MechSelectorDialog.m_bPick"));
+            buttonSelect = new JButton(Messages.getString("MekSelectorDialog.m_bPick"));
             buttonSelect.addActionListener(this);
             panelButtons.add(buttonSelect, new GridBagConstraints());
         }
 
-        buttonSelectClose = new JButton(Messages.getString("MechSelectorDialog.m_bPickClose"));
+        buttonSelectClose = new JButton(Messages.getString("MekSelectorDialog.m_bPickClose"));
         buttonSelectClose.addActionListener(this);
         panelButtons.add(buttonSelectClose, new GridBagConstraints());
 
@@ -133,7 +133,7 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
         buttonClose.addActionListener(e -> closeWithoutSelection());
         panelButtons.add(buttonClose, new GridBagConstraints());
 
-        buttonShowBV = new JButton(Messages.getString("MechSelectorDialog.BV"));
+        buttonShowBV = new JButton(Messages.getString("MekSelectorDialog.BV"));
         buttonShowBV.addActionListener(this);
         panelButtons.add(buttonShowBV, new GridBagConstraints());
 
@@ -168,7 +168,7 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
     protected Entity refreshUnitView() {
         Entity selectedEntity = super.refreshUnitView();
         if (selectedEntity != null) {
-            Image base = MMStaticDirectoryManager.getMechTileset().imageFor(selectedEntity);
+            Image base = MMStaticDirectoryManager.getMekTileset().imageFor(selectedEntity);
             EntityImage entityImage = EntityImage.createIcon(base, Camouflage.of(PlayerColour.GOLD), selectedEntity);
             entityImage.loadFacings();
             labelImage.setIcon(new ImageIcon(entityImage.getFacing(0)));

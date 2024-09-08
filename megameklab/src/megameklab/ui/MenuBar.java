@@ -164,11 +164,11 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
 
         final Entity entity = owner.getEntity();
 
-        if ((entity == null) || (!(entity instanceof Mech) || entity.isPrimitive())) {
+        if ((entity == null) || (!(entity instanceof Mek) || entity.isPrimitive())) {
             final JMenuItem miSwitchToMek = new JMenuItem(resources.getString("miSwitchToMek.text"));
             miSwitchToMek.setName("miSwitchToMek");
             miSwitchToMek.setMnemonic(KeyEvent.VK_M);
-            miSwitchToMek.addActionListener(evt -> owner.newUnit(Entity.ETYPE_MECH));
+            miSwitchToMek.addActionListener(evt -> owner.newUnit(Entity.ETYPE_MEK));
             switchUnitTypeMenu.add(miSwitchToMek);
         }
 
@@ -228,11 +228,11 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             switchUnitTypeMenu.add(miSwitchToInfantry);
         }
 
-        if ((entity == null) || (!entity.hasETypeFlag(Entity.ETYPE_PROTOMECH))) {
+        if ((entity == null) || (!entity.hasETypeFlag(Entity.ETYPE_PROTOMEK))) {
             final JMenuItem miSwitchToProtoMek = new JMenuItem(resources.getString("miSwitchToProtoMek.text"));
             miSwitchToProtoMek.setName("miSwitchToProtoMek");
             miSwitchToProtoMek.setMnemonic(KeyEvent.VK_P);
-            miSwitchToProtoMek.addActionListener(evt -> owner.newUnit(Entity.ETYPE_PROTOMECH));
+            miSwitchToProtoMek.addActionListener(evt -> owner.newUnit(Entity.ETYPE_PROTOMEK));
             switchUnitTypeMenu.add(miSwitchToProtoMek);
         }
 
@@ -249,11 +249,11 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         primitiveMenu.setName("primitiveMenu");
         primitiveMenu.setMnemonic(KeyEvent.VK_R);
 
-        if ((entity == null) || (!(entity instanceof Mech) || !entity.isPrimitive())) {
+        if ((entity == null) || (!(entity instanceof Mek) || !entity.isPrimitive())) {
             final JMenuItem miSwitchToMek = new JMenuItem(resources.getString("miSwitchToMek.text"));
             miSwitchToMek.setName("miSwitchToMek");
             miSwitchToMek.setMnemonic(KeyEvent.VK_M);
-            miSwitchToMek.addActionListener(evt -> owner.newUnit(Entity.ETYPE_MECH, true));
+            miSwitchToMek.addActionListener(evt -> owner.newUnit(Entity.ETYPE_MEK, true));
             primitiveMenu.add(miSwitchToMek);
         }
 
@@ -547,7 +547,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         final JMenuItem miRefreshUnitCache = new JMenuItem(resources.getString("miRefreshUnitCache.text"));
         miRefreshUnitCache.setName("miRefreshUnitCache");
         miRefreshUnitCache.setMnemonic(KeyEvent.VK_U);
-        miRefreshUnitCache.addActionListener(evt -> MechSummaryCache.refreshUnitData(false));
+        miRefreshUnitCache.addActionListener(evt -> MekSummaryCache.refreshUnitData(false));
         refreshMenu.add(miRefreshUnitCache);
 
         return refreshMenu;
@@ -849,7 +849,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         }
 
         try {
-            showBVCalculations(owner.getFrame(), new MechFileParser(unitFile).getEntity());
+            showBVCalculations(owner.getFrame(), new MekFileParser(unitFile).getEntity());
         } catch (Exception ex) {
             PopupMessages.showFileReadError(owner.getFrame(), unitFile.toString(), ex.getMessage());
         }
@@ -862,7 +862,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         }
 
         try {
-            Entity tempEntity = new MechFileParser(unitFile).getEntity();
+            Entity tempEntity = new MekFileParser(unitFile).getEntity();
             UnitUtil.showValidation(tempEntity, owner.getFrame());
         } catch (Exception ex) {
             PopupMessages.showFileReadError(owner.getFrame(), unitFile.toString(), ex.getMessage());
@@ -888,7 +888,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         }
 
         try {
-            new CostDisplayDialog(owner.getFrame(), new MechFileParser(unitFile).getEntity()).setVisible(true);
+            new CostDisplayDialog(owner.getFrame(), new MekFileParser(unitFile).getEntity()).setVisible(true);
         } catch (Exception ex) {
             PopupMessages.showFileReadError(owner.getFrame(), unitFile.toString(), ex.getMessage());
         }
@@ -901,7 +901,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         }
 
         try {
-            Entity tempEntity = new MechFileParser(unitFile).getEntity();
+            Entity tempEntity = new MekFileParser(unitFile).getEntity();
             showUnitWeightBreakDown(tempEntity, owner.getFrame());
         } catch (Exception ex) {
             PopupMessages.showFileReadError(owner.getFrame(), unitFile.toString(), ex.getMessage());
@@ -915,7 +915,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         }
 
         try {
-            Entity tempEntity = new MechFileParser(unitFile).getEntity();
+            Entity tempEntity = new MekFileParser(unitFile).getEntity();
             showUnitSpecs(tempEntity, owner.getFrame());
         } catch (Exception ex) {
             PopupMessages.showFileReadError(owner.getFrame(), unitFile.toString(), ex.getMessage());
@@ -1006,8 +1006,8 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         Entity en = owner.getEntity();
         if (en instanceof Tank) {
             getUnitMainUi().createNewUnit(Entity.ETYPE_TANK);
-        } else if (en instanceof Mech) {
-            getUnitMainUi().createNewUnit(Entity.ETYPE_BIPED_MECH, en.isPrimitive(), ((Mech)en).isIndustrial());
+        } else if (en instanceof Mek) {
+            getUnitMainUi().createNewUnit(Entity.ETYPE_BIPED_MEK, en.isPrimitive(), ((Mek)en).isIndustrial());
         } else if (en.hasETypeFlag(Entity.ETYPE_DROPSHIP)) {
             getUnitMainUi().createNewUnit(Entity.ETYPE_DROPSHIP, en.isPrimitive());
         } else if (en.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)) {
@@ -1024,8 +1024,8 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             getUnitMainUi().createNewUnit(Entity.ETYPE_BATTLEARMOR);
         } else if (owner.getEntity() instanceof Infantry) {
             getUnitMainUi().createNewUnit(Entity.ETYPE_INFANTRY);
-        } else if (owner.getEntity() instanceof Protomech) {
-            getUnitMainUi().createNewUnit(Entity.ETYPE_PROTOMECH);
+        } else if (owner.getEntity() instanceof ProtoMek) {
+            getUnitMainUi().createNewUnit(Entity.ETYPE_PROTOMEK);
         } else {
             LogManager.getLogger().warn("Received unknown entityType!");
         }
@@ -1045,7 +1045,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     public static String createUnitFilename(Entity entity) {
         String fileName = (entity.getChassis() + ' ' + entity.getModel()).trim();
         fileName = fileName.replaceAll("[/\\\\<>:\"|?*]", "_");
-        return fileName + ((entity instanceof Mech) ? ".mtf" : ".blk");
+        return fileName + ((entity instanceof Mek) ? ".mtf" : ".blk");
     }
 
     /**
@@ -1098,7 +1098,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     }
 
     private @Nullable File chooseSaveFile() {
-        if (getUnitMainUi().getEntity() instanceof Mech) {
+        if (getUnitMainUi().getEntity() instanceof Mek) {
             saveUnitFileChooser.setFileFilter(new FileNameExtensionFilter("Mek files", "mtf"));
         } else {
             saveUnitFileChooser.setFileFilter(new FileNameExtensionFilter("Unit files", "blk"));
@@ -1117,10 +1117,10 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             return false;
         }
         try {
-            if (getUnitMainUi().getEntity() instanceof Mech) {
+            if (getUnitMainUi().getEntity() instanceof Mek) {
                 try (FileOutputStream fos = new FileOutputStream(file);
                      PrintStream ps = new PrintStream(fos)) {
-                    ps.println(((Mech) owner.getEntity()).getMtf());
+                    ps.println(((Mek) owner.getEntity()).getMtf());
                 }
             } else {
                 BLKFile.encode(file.getPath(), getUnitMainUi().getEntity());
@@ -1140,8 +1140,8 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             TROView view = TROView.createView(owner.getEntity(), formatting);
             return view.processTemplate();
         } else {
-            MechView view = new MechView(owner.getEntity(), formatting == ViewFormatting.NONE, false, formatting);
-            return view.getMechReadout();
+            MekView view = new MekView(owner.getEntity(), formatting == ViewFormatting.NONE, false, formatting);
+            return view.getMekReadout();
         }
     }
 
@@ -1183,7 +1183,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         }
 
         try {
-            Entity loadedUnit = new MechFileParser(unitFile).getEntity();
+            Entity loadedUnit = new MekFileParser(unitFile).getEntity();
 
             if (loadedUnit == null) {
                 throw new Exception();
@@ -1273,17 +1273,17 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     public static void showUnitSpecs(Entity unit, JFrame frame) {
         HTMLEditorKit kit = new HTMLEditorKit();
 
-        MechView mechView;
+        MekView mekView;
         try {
-            mechView = new MechView(unit, true);
+            mekView = new MekView(unit, true);
         } catch (Exception ex) {
             // error unit didn't load right. this is bad news.
             LogManager.getLogger().error("", ex);
             return;
         }
 
-        String unitSpecs = "<html><body>" + mechView.getMechReadoutBasic() +
-                mechView.getMechReadoutLoadout() + "</body></html>";
+        String unitSpecs = "<html><body>" + mekView.getMekReadoutBasic() +
+                mekView.getMekReadoutLoadout() + "</body></html>";
 
         JEditorPane textPane = new JEditorPane("text/html", "");
         JScrollPane scroll = new JScrollPane();

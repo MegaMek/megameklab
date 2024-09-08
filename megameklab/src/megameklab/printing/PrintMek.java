@@ -71,15 +71,15 @@ public class PrintMek extends PrintEntity {
     protected String getSVGFileName(int pageNumber) {
         String base;
         if (mek.hasETypeFlag(Entity.ETYPE_QUADVEE)) {
-            base = "mech_quadvee";
+            base = "mek_quadvee";
         } else if (mek.hasETypeFlag(Entity.ETYPE_QUAD_MEK)) {
-            base = "mech_quad";
+            base = "mek_quad";
         } else if (mek.hasETypeFlag(Entity.ETYPE_TRIPOD_MEK)) {
-            base = "mech_tripod";
+            base = "mek_tripod";
         } else if (mek.hasETypeFlag(Entity.ETYPE_LAND_AIR_MEK)) {
-            base = "mech_lam";
+            base = "mek_lam";
         } else {
-            base = "mech_biped";
+            base = "mek_biped";
         }
         if (options.useTacOpsHeat()) {
             return base + "_toheat.svg";
@@ -217,15 +217,15 @@ public class PrintMek extends PrintEntity {
 
         if (mek instanceof LandAirMek lam) {
             if (lam.getLAMType() == LandAirMek.LAM_BIMODAL) {
-                setTextField(MP_AIRMECH_WALK, "\u2014"); // em dash
-                setTextField(MP_AIRMECH_RUN, "\u2014");
-                setTextField(MP_AIRMECH_CRUISE, "\u2014");
-                setTextField(MP_AIRMECH_FLANK, "\u2014");
+                setTextField(MP_AIRMEK_WALK, "\u2014"); // em dash
+                setTextField(MP_AIRMEK_RUN, "\u2014");
+                setTextField(MP_AIRMEK_CRUISE, "\u2014");
+                setTextField(MP_AIRMEK_FLANK, "\u2014");
             } else {
-                setTextField(MP_AIRMECH_WALK, formatMovement(lam.getAirMechWalkMP()));
-                setTextField(MP_AIRMECH_RUN, formatMovement(lam.getAirMechWalkMP() * 1.5));
-                setTextField(MP_AIRMECH_CRUISE, formatMovement(lam.getAirMechCruiseMP()));
-                setTextField(MP_AIRMECH_FLANK, formatMovement(lam.getAirMechCruiseMP() * 1.5));
+                setTextField(MP_AIRMEK_WALK, formatMovement(lam.getAirMekWalkMP()));
+                setTextField(MP_AIRMEK_RUN, formatMovement(lam.getAirMekWalkMP() * 1.5));
+                setTextField(MP_AIRMEK_CRUISE, formatMovement(lam.getAirMekCruiseMP()));
+                setTextField(MP_AIRMEK_FLANK, formatMovement(lam.getAirMekCruiseMP() * 1.5));
             }
             setTextField(MP_SAFE_THRUST, Integer.toString(lam.getJumpMP()));
             setTextField(MP_MAX_THRUST, Integer.toString((int) Math.ceil(lam.getJumpMP() * 1.5)));
@@ -742,7 +742,7 @@ public class PrintMek extends PrintEntity {
 
             if (m.isRearMounted()) {
                 critName.append(" (R)");
-            } else if (m.isMechTurretMounted()) {
+            } else if (m.isMekTurretMounted()) {
                 critName.append(" (T)");
             } else if ((m.getType() instanceof AmmoType)
                     && (((AmmoType) m.getType()).getAmmoType() != AmmoType.T_COOLANT_POD)) {

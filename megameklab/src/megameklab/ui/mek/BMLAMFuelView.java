@@ -78,7 +78,7 @@ public class BMLAMFuelView extends IView implements ChangeListener {
         add(Box.createVerticalStrut(5));
     }
 
-    public void setFromEntity(Mech mek) {
+    public void setFromEntity(Mek mek) {
         fuelTonsSpnModel.setValue(fuelTanks(mek));
         updateFuelPointsLabel();
     }
@@ -90,19 +90,19 @@ public class BMLAMFuelView extends IView implements ChangeListener {
      * @param mek The Mek unit
      * @return The Mek's current LAM Fuel Tank count
      */
-    private int fuelTanks(Mech mek) {
+    private int fuelTanks(Mek mek) {
         return (mek instanceof LandAirMek) ? mek.countWorkingMisc(LAM_FUEL_TANK, -1) : 0;
     }
 
     private void updateFuelPointsLabel() {
         totalFuelPointsLabel.setText(resourceMap.getString("BMLAMFuelView.totalFuelLabel.text")
-                + (80 * (1 + fuelTanks(getMech()))));
+                + (80 * (1 + fuelTanks(getMek()))));
     }
 
     @Override
     public void stateChanged(ChangeEvent e) {
         if (e.getSource() == fuelTonsSpn) {
-            int currentTanks = fuelTanks(getMech());
+            int currentTanks = fuelTanks(getMek());
             int newTanks = (int) fuelTonsSpn.getValue();
             if (newTanks > currentTanks) {
                 addTanks(newTanks - currentTanks);
@@ -110,31 +110,31 @@ public class BMLAMFuelView extends IView implements ChangeListener {
                 deleteTanks(currentTanks - newTanks);
             }
             updateFuelPointsLabel();
-            listeners.forEach(l -> l.engineChanged(getMech().getEngine()));
+            listeners.forEach(l -> l.engineChanged(getMek().getEngine()));
         }
     }
 
     private void deleteTanks(int number) {
         // Remove unallocated fuel tanks first
-        List<Mounted> fuelTanks = getMech().getMisc().stream()
+        List<Mounted> fuelTanks = getMek().getMisc().stream()
                 .filter(mounted -> mounted.getType().equals(FUEL_TANK))
                 .filter(mounted -> mounted.getLocation() == Entity.LOC_NONE)
                 .collect(Collectors.toList());
         for (Mounted fuelTank : fuelTanks) {
             if (number > 0) {
-                UnitUtil.removeMounted(getMech(), fuelTank);
+                UnitUtil.removeMounted(getMek(), fuelTank);
                 number--;
             } else {
                 return;
             }
         }
         // Must remove more, so take allocated fuel tanks
-        fuelTanks = getMech().getMisc().stream()
+        fuelTanks = getMek().getMisc().stream()
                 .filter(mounted -> mounted.getType().equals(FUEL_TANK))
                 .collect(Collectors.toList());
         for (Mounted fuelTank : fuelTanks) {
             if (number > 0) {
-                UnitUtil.removeMounted(getMech(), fuelTank);
+                UnitUtil.removeMounted(getMek(), fuelTank);
                 number--;
             } else {
                 return;
@@ -145,8 +145,8 @@ public class BMLAMFuelView extends IView implements ChangeListener {
     private void addTanks(int number) {
         for (int i = 0; i < number; i++) {
             try {
-                Mounted<?> mount = Mounted.createMounted(getMech(), FUEL_TANK);
-                getMech().addEquipment(mount, Entity.LOC_NONE, false);
+                Mounted<?> mount = Mounted.createMounted(getMek(), FUEL_TANK);
+                getMek().addEquipment(mount, Entity.LOC_NONE, false);
             } catch (LocationFullException ignored) {
                 // this can't happen, we add to Entity.LOC_NONE
             }

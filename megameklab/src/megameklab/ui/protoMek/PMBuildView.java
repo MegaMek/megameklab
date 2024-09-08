@@ -37,7 +37,7 @@ import java.util.Vector;
 
 /**
  * Shows unallocated equipment that needs to be assigned to a slot.
- * 
+ *
  * @author Neoancient
  */
 public class PMBuildView extends IView implements ActionListener, MouseListener {
@@ -168,7 +168,7 @@ public class PMBuildView extends IView implements ActionListener, MouseListener 
     public JTable getTable() {
         return equipmentTable;
     }
-    
+
     @Override
     public void mouseClicked(MouseEvent evt) {
 
@@ -196,7 +196,7 @@ public class PMBuildView extends IView implements ActionListener, MouseListener 
             Mounted mount = (Mounted)equipmentTable.getModel().getValueAt(selectedRow, CriticalTableModel.EQUIPMENT);
 
             for (int location = 0; location < getProtoMek().locations(); location++) {
-                if (ProtoMekUtil.protomechHasRoom(getProtoMek(), location, mount)) {
+                if (ProtoMekUtil.protoMekHasRoom(getProtoMek(), location, mount)) {
                     item = new JMenuItem("Add to " + locations[location]);
                     final int loc = location;
                     item.addActionListener(ev -> addToLocation(loc, mount));

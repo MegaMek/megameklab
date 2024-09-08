@@ -20,7 +20,7 @@ package megameklab.ui.generalUnit.summary;
 
 import megamek.common.Entity;
 import megamek.common.Mek;
-import megamek.common.verifier.TestMech;
+import megamek.common.verifier.TestMek;
 import megameklab.util.UnitUtil;
 
 public class GyroSummaryItem extends AbstractSummaryItem {
@@ -35,7 +35,7 @@ public class GyroSummaryItem extends AbstractSummaryItem {
         if ((entity instanceof Mek) && (entity.getGyroType() != Mek.GYRO_NONE)) {
             Mek mek = (Mek) entity;
             availabilityLabel.setText(mek.getGyroTechAdvancement().getFullRatingName(entity.isClan()));
-            TestMech testMek = (TestMech) UnitUtil.getEntityVerifier(entity);
+            TestMek testMek = (TestMek) UnitUtil.getEntityVerifier(entity);
             weightLabel.setText(formatWeight(testMek.getWeightGyro(), entity));
             critLabel.setText(formatCrits(getGyroCrits(entity)));
         } else {

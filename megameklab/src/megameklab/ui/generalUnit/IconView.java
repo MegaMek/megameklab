@@ -42,11 +42,11 @@ import java.util.Arrays;
  * This view displays the icon that the unit will use in MM and MHQ and allows selecting a different icon
  * from file or from another unit from the cache. If an icon is selected, it will be stored as part of the
  * unit file in base64 encoding when saved. Note that this is for custom units, as canon units will
- * use the mechset to identify and load icons and will not store them in the unit file.
+ * use the mekset to identify and load icons and will not store them in the unit file.
  */
 public class IconView extends BuildView {
 
-    private static final Camouflage CAMO_MECHSET = Camouflage.of(PlayerColour.GRAY);
+    private static final Camouflage CAMO_MEKSET = Camouflage.of(PlayerColour.GRAY);
     private static final Camouflage CAMO_EMBEDDED = Camouflage.of(PlayerColour.GOLD);
 
     private final EntityImagePanel entityImage = new EntityImagePanel(null, null);
@@ -96,7 +96,7 @@ public class IconView extends BuildView {
 
     public void refresh() {
         if (entity != null) {
-            entityImage.updateDisplayedEntity(entity, entity.hasEmbeddedIcon() ? CAMO_EMBEDDED : CAMO_MECHSET);
+            entityImage.updateDisplayedEntity(entity, entity.hasEmbeddedIcon() ? CAMO_EMBEDDED : CAMO_MEKSET);
             if (entity.hasEmbeddedIcon()) {
                 entityImage.setToolTipText("This icon will be saved with the unit. The unit will use this icon in MM " +
                         "and MHQ. The original image file, if this was chosen from file, is not needed.");
@@ -148,7 +148,7 @@ public class IconView extends BuildView {
 
         Entity chosenEntity = viewer.getChosenEntity();
         if (chosenEntity != null) {
-            final Image image = MMStaticDirectoryManager.getMechTileset().imageFor(chosenEntity);
+            final Image image = MMStaticDirectoryManager.getMekTileset().imageFor(chosenEntity);
             entity.setIcon(ImageUtil.base64TextEncodeImage(image));
         }
         viewer.dispose();

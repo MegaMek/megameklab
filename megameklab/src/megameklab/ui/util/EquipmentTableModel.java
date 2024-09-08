@@ -376,7 +376,7 @@ public class EquipmentTableModel extends AbstractTableModel {
         } else if (col == COL_TON) {
             final double weight = type.getTonnage(entity);
             if ((atype != null) && (entity.hasETypeFlag(Entity.ETYPE_BATTLEARMOR)
-                    || entity.hasETypeFlag(Entity.ETYPE_PROTOMECH))) {
+                    || entity.hasETypeFlag(Entity.ETYPE_PROTOMEK))) {
                 return String.format("%.2f kg/shot", atype.getKgPerShot());
             } else if (type.isVariableTonnage()) {
                 return VARIABLE;
@@ -387,14 +387,14 @@ public class EquipmentTableModel extends AbstractTableModel {
             }
         } else if (col == COL_CRIT) {
             if (type.isVariableCriticals()
-                    && (entity.isSupportVehicle() || (entity instanceof Mech))) {
-                // Only Mechs and support vehicles require multiple slots for equipment
+                    && (entity.isSupportVehicle() || (entity instanceof Mek))) {
+                // Only Meks and support vehicles require multiple slots for equipment
                 return "variable";
             } else if (entity.isSupportVehicle()) {
                 return type.getSupportVeeSlots(entity);
             } else if (entity instanceof Tank) {
                 return type.getTankSlots(entity);
-            } else if (entity.hasETypeFlag(Entity.ETYPE_PROTOMECH)) {
+            } else if (entity.hasETypeFlag(Entity.ETYPE_PROTOMEK)) {
                 return TestProtoMek.requiresSlot(type)? 1 : 0;
             }
             return type.getCriticals(entity);

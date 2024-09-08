@@ -92,7 +92,7 @@ public final class CritCellUtil {
             String name = UnitUtil.getCritName(entity, mounted.getType());
             name += mounted.isRearMounted() ? " (R)" : "";
             name += mounted.isArmored() ? " (A)" : "";
-            name += mounted.isMechTurretMounted() ? " (T)" : "";
+            name += mounted.isMekTurretMounted() ? " (T)" : "";
             name += mounted.isSponsonTurretMounted() ? " (ST)" : "";
             name += mounted.isPintleTurretMounted() ? " (PT)" : "";
             name += mounted.isDWPMounted() ? " (DWP)" : "";

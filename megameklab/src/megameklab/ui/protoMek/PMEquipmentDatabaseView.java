@@ -72,7 +72,7 @@ class PMEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
             aMount.setShotsLeft(aMount.getUsableShotsLeft() + shots);
         } else {
             Mounted mount = Mounted.createMounted(getProtoMek(), ammo);
-            getProtoMek().addEquipment(mount, Protomech.LOC_BODY, false);
+            getProtoMek().addEquipment(mount, ProtoMek.LOC_BODY, false);
             mount.setShotsLeft(shots);
         }
     }

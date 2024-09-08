@@ -38,7 +38,7 @@ public class PMEquipmentTab extends AbstractEquipmentTab {
     }
 
     @Override
-    protected boolean showInLoadout(Mounted mount) {
+    protected boolean showInLoadOut(Mounted mount) {
         EquipmentType etype = mount.getType();
         return !(etype instanceof MiscType) ||
                 !(etype.hasFlag(MiscType.F_JUMP_JET)

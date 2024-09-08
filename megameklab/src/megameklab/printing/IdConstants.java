@@ -41,10 +41,10 @@ public interface IdConstants {
     String MP_FLANK = "mpFlank";
     String MP_SAFE_THRUST = "mpSafeThrust";
     String MP_MAX_THRUST = "mpMaxThrust";
-    String MP_AIRMECH_WALK = "mpAirMechWalk";
-    String MP_AIRMECH_RUN = "mpAirMechRun";
-    String MP_AIRMECH_CRUISE = "mpAirMechCruise";
-    String MP_AIRMECH_FLANK = "mpAirMechFlank";
+    String MP_AIRMEK_WALK = "mpAirMekWalk";
+    String MP_AIRMEK_RUN = "mpAirMekRun";
+    String MP_AIRMEK_CRUISE = "mpAirMekCruise";
+    String MP_AIRMEK_FLANK = "mpAirMekFlank";
     String LBL_VEE_MODE = "lblVeeMode";
     String MOVEMENT_TYPE = "movementType";
     String ENGINE_TYPE = "engineType";
@@ -185,7 +185,7 @@ public interface IdConstants {
     String RANGE_IN_HEXES = "rangeInHexes";
     String RANGE = "range_";
 
-    String PROTOMECH_INDEX = "protomechIndex";
+    String PROTOMEK_INDEX = "protomekIndex";
     String MAIN_GUN_ARMOR = "armor_MG";
     String MAIN_GUN_SHADOW = "shadow_MG";
     String MAIN_GUN_TEXT = "text_MG";

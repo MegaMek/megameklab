@@ -39,7 +39,7 @@ public class BMEquipmentTab extends AbstractEquipmentTab {
     }
 
     @Override
-    protected boolean showInLoadout(Mounted mount) {
+    protected boolean showInLoadOut(Mounted mount) {
         EquipmentType etype = mount.getType();
         return !(etype instanceof MiscType) ||
                 !(UnitUtil.isHeatSink(mount)
@@ -49,7 +49,7 @@ public class BMEquipmentTab extends AbstractEquipmentTab {
                         || etype.hasFlag(MiscType.F_TSM)
                         || etype.hasFlag(MiscType.F_INDUSTRIAL_TSM)
                         || (etype.hasFlag(MiscType.F_MASC) && !etype.hasSubType(MiscType.S_SUPERCHARGER))
-                        || ((getMech().getEntityType() & Entity.ETYPE_QUADVEE) == Entity.ETYPE_QUADVEE
+                        || ((getMek().getEntityType() & Entity.ETYPE_QUADVEE) == Entity.ETYPE_QUADVEE
                         && etype.hasFlag(MiscType.F_TRACKS))
                         || UnitUtil.isArmorOrStructure(etype)
                         || (etype.hasFlag(MiscType.F_CASE) && etype.isClan()));

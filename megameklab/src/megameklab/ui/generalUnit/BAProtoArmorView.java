@@ -170,7 +170,7 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
         if ((etype & Entity.ETYPE_BATTLEARMOR) != 0) {
             flag = MiscType.F_BA_EQUIPMENT;
         } else if ((etype & Entity.ETYPE_PROTOMEK) != 0) {
-            flag = MiscType.F_PROTOMECH_EQUIPMENT;
+            flag = MiscType.F_PROTOMEK_EQUIPMENT;
         }
         for (ArmorType armor : ArmorType.allArmorTypes()) {
             if (armor.hasFlag(flag) && techManager.isLegal(armor)) {

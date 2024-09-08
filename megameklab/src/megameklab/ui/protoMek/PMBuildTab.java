@@ -118,9 +118,9 @@ public class PMBuildTab extends ITab implements ActionListener {
 
     private void autoFillCrits() {
         for (Mounted mount : buildView.getTableModel().getCrits()) {
-            for (int location = 0; location < getProtomech().locations(); location++) {
-                if (ProtoMekUtil.protomechHasRoom(getProtomech(), location, mount)) {
-                    UnitUtil.changeMountStatus(getProtomech(), mount, location, Entity.LOC_NONE, false);
+            for (int location = 0; location < getProtoMek().locations(); location++) {
+                if (ProtoMekUtil.protoMekHasRoom(getProtoMek(), location, mount)) {
+                    UnitUtil.changeMountStatus(getProtoMek(), mount, location, Entity.LOC_NONE, false);
                 }
             }
         }
@@ -128,10 +128,10 @@ public class PMBuildTab extends ITab implements ActionListener {
     }
 
     private void resetCrits() {
-        for (Mounted mount : getProtomech().getEquipment()) {
+        for (Mounted mount : getProtoMek().getEquipment()) {
             // Fixed shouldn't be removed
             if (TestProtoMek.requiresSlot(mount.getType())) {
-                UnitUtil.changeMountStatus(getProtomech(), mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
+                UnitUtil.changeMountStatus(getProtoMek(), mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
             }
         }
 

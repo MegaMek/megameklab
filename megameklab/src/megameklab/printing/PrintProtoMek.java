@@ -50,11 +50,11 @@ public class PrintProtoMek extends PrintEntity {
     @Override
     protected String getSVGFileName(int pageNumber) {
         if (proto.isQuad()) {
-            return "protomech_quad.svg";
+            return "protomek_quad.svg";
         } else if (proto.isGlider()) {
-            return "protomech_glider.svg";
+            return "protomek_glider.svg";
         } else {
-            return "protomech_biped.svg";
+            return "protomek_biped.svg";
         }
     }
 
@@ -72,7 +72,7 @@ public class PrintProtoMek extends PrintEntity {
     @Override
     protected void writeTextFields() {
         super.writeTextFields();
-        setTextField(PROTOMECH_INDEX, "PROTOMECH " + (unitIndex + 1));
+        setTextField(PROTOMEK_INDEX, "PROTOMEK " + (unitIndex + 1));
         splitName();
         if (proto.isGlider()) {
             setTextField(MP_GROUND, formatMovement(1));

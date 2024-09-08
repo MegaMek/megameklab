@@ -157,11 +157,11 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                             info = new JMenuItem("Change to pod mount");
                             info.addActionListener(evt2 -> changeOmniMounting(true));
                             popup.add(info);
-                        }                        
+                        }
                     }
                 }
 
-                if ((getUnit() instanceof Mech) && UnitUtil.isArmorable(cs)
+                if ((getUnit() instanceof Mek) && UnitUtil.isArmorable(cs)
                         && eSource.getTechManager().isLegal(Entity.getArmoredComponentTechAdvancement())) {
                     popup.addSeparator();
                     if (cs.isArmored()) {
@@ -307,7 +307,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
         UnitUtil.compactCriticals(getUnit());
         // Check linkings after you remove everything.
         try {
-            MechFileParser.postLoadInit(getUnit());
+            MekFileParser.postLoadInit(getUnit());
         } catch (EntityLoadingException ignored) {
             // do nothing.
         } catch (Exception ex) {

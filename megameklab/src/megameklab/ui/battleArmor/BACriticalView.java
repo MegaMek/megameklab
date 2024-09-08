@@ -179,13 +179,13 @@ public class BACriticalView extends IView {
             String[] apTxt = new String[BattleArmor.MOUNT_NUM_LOCS];
             for (int loc = 0; loc < BattleArmor.MOUNT_NUM_LOCS; loc++) {
                 amTxt[loc] = "Anti-Mech Weapons: " + numAMWeapons[loc] + "/"
-                        + getBattleArmor().getNumAllowedAntiMechWeapons(loc);
+                        + getBattleArmor().getNumAllowedAntiMekWeapons(loc);
                 apTxt[loc] = "Anti-Personnel Weapons: " + numAPWeapons[loc] + "/"
                         + getBattleArmor().getNumAllowedAntiPersonnelWeapons(loc, trooper);
-                if (numAMWeapons[loc] > getBattleArmor().getNumAllowedAntiMechWeapons(loc)) {
+                if (numAMWeapons[loc] > getBattleArmor().getNumAllowedAntiMekWeapons(loc)) {
                     amTxt[loc] = "<html><font color='C00000'>" + amTxt[loc] + "</font></html>";
                 }
-                if (numAPWeapons[loc] > getBattleArmor().getNumAllowedAntiMechWeapons(loc)) {
+                if (numAPWeapons[loc] > getBattleArmor().getNumAllowedAntiMekWeapons(loc)) {
                     apTxt[loc] = "<html><font color='C00000'>" + apTxt[loc] + "</font></html>";
                 }
             }
@@ -206,7 +206,7 @@ public class BACriticalView extends IView {
             turretPanel.setVisible(isQuad && (getBattleArmor().getTurretCapacity() > 0));
 
             EntityVerifier entityVerifier = EntityVerifier.getInstance(new File(
-                    "data/mechfiles/UnitVerifierOptions.xml"));
+                    "data/mekfiles/UnitVerifierOptions.xml"));
             TestBattleArmor testBA = new TestBattleArmor(getBattleArmor(), entityVerifier.baOption, null);
 
             String weightTxt = "Weight: "

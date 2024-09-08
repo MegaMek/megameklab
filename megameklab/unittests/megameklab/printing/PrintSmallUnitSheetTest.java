@@ -2,7 +2,6 @@ package megameklab.printing;
 
 import megamek.common.*;
 import megameklab.testing.util.InitializeTypes;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,11 +25,11 @@ class PrintSmallUnitSheetTest {
     }
 
     @Test
-    void fillsSheetProtomech() {
-        var entities = new ArrayList<>(List.of(new Protomech(), new Protomech(), new Protomech(), new Protomech()));
+    void fillsSheetProtoMek() {
+        var entities = new ArrayList<>(List.of(new ProtoMek(), new ProtoMek(), new ProtoMek(), new ProtoMek()));
         assertFalse(PrintSmallUnitSheet.fillsSheet(entities, noTables));
         assertFalse(PrintSmallUnitSheet.fillsSheet(entities, yesTables));
-        entities.add(new Protomech());
+        entities.add(new ProtoMek());
         assertTrue(PrintSmallUnitSheet.fillsSheet(entities, noTables));
         assertTrue(PrintSmallUnitSheet.fillsSheet(entities, yesTables));
     }

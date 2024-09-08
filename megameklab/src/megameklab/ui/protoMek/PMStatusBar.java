@@ -42,10 +42,10 @@ public class PMStatusBar extends StatusBar {
 
     public void refreshSlots() {
         int maxCrits = 0;
-        for (int l = 0; l < getProtomech().locations(); l++) {
-            maxCrits += TestProtoMek.maxSlotsByLocation(l, getProtomech());
+        for (int l = 0; l < getProtoMek().locations(); l++) {
+            maxCrits += TestProtoMek.maxSlotsByLocation(l, getProtoMek());
         }
-        long currentSlots = getProtomech().getEquipment().stream()
+        long currentSlots = getProtoMek().getEquipment().stream()
                 .filter(m -> TestProtoMek.requiresSlot(m.getType())).count();
 
         slots.setText(String.format(SLOTS_LABEL, maxCrits - currentSlots, maxCrits));

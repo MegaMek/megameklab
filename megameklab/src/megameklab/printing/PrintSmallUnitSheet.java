@@ -36,15 +36,7 @@ import megamek.common.Entity;
 import megamek.common.Infantry;
 import megamek.common.ProtoMek;
 import megamek.common.UnitType;
-import megameklab.printing.reference.AntiMekAttackTable;
-import megameklab.printing.reference.ClusterHitsTable;
-import megameklab.printing.reference.GroundMovementRecord;
-import megameklab.printing.reference.GroundToHitMods;
-import megameklab.printing.reference.MovementCost;
-import megameklab.printing.reference.ProtomekSpecialHitLocation;
-import megameklab.printing.reference.ReferenceTable;
-import megameklab.printing.reference.ReferenceTableBase;
-import megameklab.printing.reference.SwarmAttackHitLocation;
+import megameklab.printing.reference.*;
 
 /**
  * Lays out a record sheet for infantry, BA, or protoMeks
@@ -175,7 +167,7 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
         list.add(new GroundToHitMods(this, entities.get(0)));
         list.add(new MovementCost(this, entities));
         if (entities.get(0) instanceof ProtoMek) {
-            list.add(new ProtomekSpecialHitLocation(this));
+            list.add(new ProtoMekSpecialHitLocation(this));
         } else if (entities.get(0).isConventionalInfantry()) {
             list.add(new AntiMekAttackTable(this));
             list.add(new SwarmAttackHitLocation(this));

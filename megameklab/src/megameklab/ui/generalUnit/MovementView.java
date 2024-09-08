@@ -41,7 +41,7 @@ import megamek.common.*;
 import megamek.common.equipment.MiscMounted;
 import megamek.common.verifier.TestBattleArmor;
 import megamek.common.verifier.TestEntity;
-import megamek.common.verifier.TestMech;
+import megamek.common.verifier.TestMek;
 import megamek.common.verifier.TestProtoMek;
 import megameklab.ui.listeners.BuildListener;
 import megameklab.ui.util.TechComboBox;
@@ -205,7 +205,7 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
         if (cbJumpType.getModel().getSize() == 0) { // No legal jump jet tech for this unit type
             maxJump = 0;
         } else if (en instanceof Mek) {
-            maxJump = TestMech.maxJumpMP((Mek)en);
+            maxJump = TestMek.maxJumpMP((Mek)en);
         } else if (en instanceof ProtoMek) {
             maxJump = TestProtoMek.maxJumpMP((ProtoMek) en);
         }
