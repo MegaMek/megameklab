@@ -13,20 +13,25 @@
  */
 package megameklab.printing.reference;
 
-import megamek.common.*;
+import org.apache.batik.util.SVGConstants;
+
+import megamek.common.Entity;
+import megamek.common.Mek;
+import megamek.common.MiscType;
+import megamek.common.Mounted;
+import megamek.common.QuadMek;
 import megamek.common.actions.ClubAttackAction;
-import megameklab.printing.PrintMech;
+import megameklab.printing.PrintMek;
 import megameklab.util.CConfig;
 import megameklab.util.RSScale;
 import megameklab.util.StringUtils;
-import org.apache.batik.util.SVGConstants;
 
 /**
  * Attack mods and damage for Mek physical attacks
  */
 public class PhysicalAttacks extends ReferenceTable {
 
-    public PhysicalAttacks(PrintMech sheet) {
+    public PhysicalAttacks(PrintMek sheet) {
         super(sheet, 0.05, 0.5, 0.8);
         setHeaders(bundle.getString("attack"), bundle.getString("toHit"), bundle.getString("damage"));
         setColumnAnchor(0, SVGConstants.SVG_START_VALUE);
@@ -41,20 +46,20 @@ public class PhysicalAttacks extends ReferenceTable {
             kickDamageString += " [" + kickDamage * 2 + "]";
         }
         boolean hasTorsoSpikes = false;
-        for (Mounted mounted : sheet.getEntity().getMisc()) {
+        for (Mounted<?> mounted : sheet.getEntity().getMisc()) {
             if (mounted.getType().hasFlag(MiscType.F_SPIKES)
-                    && ((Mech) sheet.getEntity()).locationIsTorso(mounted.getLocation())) {
+                    && ((Mek) sheet.getEntity()).locationIsTorso(mounted.getLocation())) {
                 hasTorsoSpikes = true;
                 break;
             }
         }
         addPunchAttacks(sheet.getEntity());
         addRow(bundle.getString("kick"), "-2", kickDamageString);
-        if (!(sheet.getEntity() instanceof QuadMech)) {
+        if (!(sheet.getEntity() instanceof QuadMek)) {
             addRow(bundle.getString("push"), "-1", "\u2014");
         }
-        if (sheet.getEntity().hasSystem(Mech.ACTUATOR_HAND, Mech.LOC_LARM)
-               && sheet.getEntity().hasSystem(Mech.ACTUATOR_HAND, Mech.LOC_RARM)) {
+        if (sheet.getEntity().hasSystem(Mek.ACTUATOR_HAND, Mek.LOC_LARM)
+               && sheet.getEntity().hasSystem(Mek.ACTUATOR_HAND, Mek.LOC_RARM)) {
             addRow(bundle.getString("club"), "-1", String.format("%.0f", Math.floor(sheet.getEntity().getWeight() / 5.0)));
         }
         addRow(bundle.getString("charge"), "+0*", String.format(hasTorsoSpikes ?
@@ -74,8 +79,8 @@ public class PhysicalAttacks extends ReferenceTable {
     }
 
     private void addPunchAttacks(Entity entity) {
-        int left = countActuators(entity, Mech.LOC_LARM);
-        int right = countActuators(entity, Mech.LOC_RARM);
+        int left = countActuators(entity, Mek.LOC_LARM);
+        int right = countActuators(entity, Mek.LOC_RARM);
         int baseDamage = (int) Math.ceil(entity.getWeight() / 10.0);
         boolean hasTSM = entity.hasWorkingMisc(MiscType.F_TSM);
         if (left == right) {
@@ -87,11 +92,11 @@ public class PhysicalAttacks extends ReferenceTable {
     }
 
     private int countActuators(Entity entity, int location) {
-        if (entity.hasSystem(Mech.ACTUATOR_HAND, location)) {
+        if (entity.hasSystem(Mek.ACTUATOR_HAND, location)) {
             return 4;
-        } else if (entity.hasSystem(Mech.ACTUATOR_LOWER_ARM, location)) {
+        } else if (entity.hasSystem(Mek.ACTUATOR_LOWER_ARM, location)) {
             return 3;
-        } else if (entity.hasSystem(Mech.ACTUATOR_UPPER_ARM, location)) {
+        } else if (entity.hasSystem(Mek.ACTUATOR_UPPER_ARM, location)) {
             return 2;
         } else {
             return 1;
@@ -114,7 +119,7 @@ public class PhysicalAttacks extends ReferenceTable {
     }
 
     private void addPhysicalWeapon(Entity entity) {
-        for (Mounted mounted : entity.getMisc()) {
+        for (Mounted<?> mounted : entity.getMisc()) {
             if (mounted.getType().hasFlag(MiscType.F_CLUB) || mounted.getType().hasFlag(MiscType.F_HAND_WEAPON)) {
                 addRow(mounted.getName(),
                         String.format("%+d", ClubAttackAction.getHitModFor((MiscType) mounted.getType())),

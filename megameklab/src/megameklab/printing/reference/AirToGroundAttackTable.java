@@ -13,9 +13,14 @@
  */
 package megameklab.printing.reference;
 
-import megamek.common.*;
-import megameklab.printing.PrintAero;
 import org.apache.batik.util.SVGConstants;
+
+import megamek.common.Aero;
+import megamek.common.AmmoType;
+import megamek.common.MiscType;
+import megamek.common.Mounted;
+import megamek.common.WeaponType;
+import megameklab.printing.PrintAero;
 
 /**
  * Hit mods and altitude requirements for air-to-ground attacks
@@ -49,7 +54,7 @@ public class AirToGroundAttackTable extends ReferenceTable {
         if (aero.isSpheroid()) {
             return false;
         }
-        for (Mounted mounted : aero.getIndividualWeaponList()) {
+        for (Mounted<?> mounted : aero.getIndividualWeaponList()) {
             if (mounted.getType().hasFlag(WeaponType.F_ENERGY)
                     && ((WeaponType) mounted.getType()).getAmmoType() == AmmoType.F_NONE) {
                 return true;

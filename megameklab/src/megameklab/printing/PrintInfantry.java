@@ -13,22 +13,29 @@
  */
 package megameklab.printing;
 
-import megamek.common.*;
+import static megamek.common.options.PilotOptions.EDGE_ADVANTAGES;
+import static megameklab.printing.InventoryEntry.DASH;
+
+import java.util.Enumeration;
+import java.util.StringJoiner;
+
+import org.apache.batik.util.SVGConstants;
+import org.w3c.dom.Element;
+import org.w3c.dom.svg.SVGRectElement;
+
+import megamek.common.AmmoType;
+import megamek.common.Entity;
+import megamek.common.EntityMovementMode;
+import megamek.common.EquipmentType;
+import megamek.common.Infantry;
+import megamek.common.Mounted;
+import megamek.common.WeaponType;
 import megamek.common.options.IOption;
 import megamek.common.options.IOptionGroup;
 import megamek.common.weapons.artillery.ArtilleryCannonWeapon;
 import megamek.common.weapons.artillery.ArtilleryWeapon;
 import megamek.common.weapons.infantry.InfantryWeapon;
 import megameklab.util.CConfig;
-import org.apache.batik.util.SVGConstants;
-import org.w3c.dom.Element;
-import org.w3c.dom.svg.SVGRectElement;
-
-import java.util.Enumeration;
-import java.util.StringJoiner;
-
-import static megamek.common.options.PilotOptions.EDGE_ADVANTAGES;
-import static megameklab.printing.InventoryEntry.DASH;
 
 /**
  * Lays out a record sheet block for a single infantry unit
@@ -290,13 +297,13 @@ public class PrintInfantry extends PrintEntity {
         StringJoiner enhancements = new StringJoiner(", ");
         var spas = infantry.getCrew().getOptions();
         for (Enumeration<IOptionGroup> e = spas.getGroups(); e.hasMoreElements(); ) {
-            final IOptionGroup optiongroup = e.nextElement();
-            if (optiongroup.getKey().equals(EDGE_ADVANTAGES)) {
+            final IOptionGroup optionGroup = e.nextElement();
+            if (optionGroup.getKey().equals(EDGE_ADVANTAGES)) {
                 // Don't print Edge abilities, only SPAs and Cybernetics
                 continue;
             }
-            if (spas.count(optiongroup.getKey()) > 0) {
-                for (Enumeration<IOption> options = optiongroup.getOptions(); options.hasMoreElements();) {
+            if (spas.count(optionGroup.getKey()) > 0) {
+                for (Enumeration<IOption> options = optionGroup.getOptions(); options.hasMoreElements();) {
                     IOption option = options.nextElement();
                     if (option != null && option.booleanValue()) {
                         enhancements.add(option.getDisplayableNameWithValue().replaceAll("\\s+\\(Not Implemented\\)", ""));
@@ -326,7 +333,7 @@ public class PrintInfantry extends PrintEntity {
         int numGuns = 0;
         int numShots = 0;
         WeaponType gun = null;
-        for (Mounted m : infantry.getEquipment()) {
+        for (Mounted<?> m : infantry.getEquipment()) {
             if (m.getLocation() == Infantry.LOC_FIELD_GUNS) {
                 if (m.getType() instanceof WeaponType) {
                     gun = (WeaponType)m.getType();

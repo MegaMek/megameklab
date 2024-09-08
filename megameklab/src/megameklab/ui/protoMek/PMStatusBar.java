@@ -13,15 +13,15 @@
  */
 package megameklab.ui.protoMek;
 
-import megamek.client.ui.swing.GUIPreferences;
-import megamek.common.verifier.TestProtomech;
-import megameklab.ui.generalUnit.StatusBar;
+import javax.swing.JLabel;
 
-import javax.swing.*;
+import megamek.client.ui.swing.GUIPreferences;
+import megamek.common.verifier.TestProtoMek;
+import megameklab.ui.generalUnit.StatusBar;
 
 /**
  * Status bar for ProtoMek construction
- * 
+ *
  * @author Neoancient
  */
 public class PMStatusBar extends StatusBar {
@@ -43,10 +43,10 @@ public class PMStatusBar extends StatusBar {
     public void refreshSlots() {
         int maxCrits = 0;
         for (int l = 0; l < getProtomech().locations(); l++) {
-            maxCrits += TestProtomech.maxSlotsByLocation(l, getProtomech());
+            maxCrits += TestProtoMek.maxSlotsByLocation(l, getProtomech());
         }
         long currentSlots = getProtomech().getEquipment().stream()
-                .filter(m -> TestProtomech.requiresSlot(m.getType())).count();
+                .filter(m -> TestProtoMek.requiresSlot(m.getType())).count();
 
         slots.setText(String.format(SLOTS_LABEL, maxCrits - currentSlots, maxCrits));
         slots.setForeground(currentSlots > maxCrits ? GUIPreferences.getInstance().getWarningColor() : null);

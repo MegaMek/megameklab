@@ -19,6 +19,14 @@
 
 package megameklab.printing;
 
+import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
 import megamek.common.*;
 import megamek.common.equipment.WeaponMounted;
 import megamek.common.weapons.CLIATMWeapon;
@@ -29,9 +37,6 @@ import megamek.common.weapons.other.ISCenturionWeaponSystem;
 import megameklab.util.CConfig;
 import megameklab.util.StringUtils;
 
-import java.math.BigInteger;
-import java.util.*;
-
 /**
  * Formats text for an entry in the weapons and equipment inventory section of the record sheet.
  * This is for single pieces of equipment. WeaponBays should use {@link WeaponBayInventoryEntry}.
@@ -41,7 +46,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
     // it's IS or Clan
     private static final Map<EquipmentType, Boolean> showMixedTechBase = new HashMap<>();
 
-    private final Mounted mount;
+    private final Mounted<?> mount;
 
     private final String[][] ranges;
     private final boolean isMML;
@@ -97,7 +102,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
                 CConfig.formatScale(resistant, false));
     }
 
-    public StandardInventoryEntry(Mounted m) {
+    public StandardInventoryEntry(Mounted<?> m) {
         this.mount = m;
         name = formatName();
         location = formatLocation();
@@ -136,26 +141,26 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
                     r[RangeType.RANGE_LONG] = CConfig.formatScale(weapon.getInfantryRange() * 3, false);
                 }
             } else if (mount.getType() instanceof WeaponType) {
-                final WeaponType wtype = (WeaponType) mount.getType();
-                if (wtype.getMinimumRange() > 0) {
-                    r[RangeType.RANGE_MINIMUM] = CConfig.formatScale(wtype.getMinimumRange(), false);
+                final WeaponType weaponType = (WeaponType) mount.getType();
+                if (weaponType.getMinimumRange() > 0) {
+                    r[RangeType.RANGE_MINIMUM] = CConfig.formatScale(weaponType.getMinimumRange(), false);
                 }
-                if ((wtype.getAmmoType() == AmmoType.T_LRM_TORPEDO)
-                        || (wtype.getAmmoType() == AmmoType.T_SRM_TORPEDO)) {
-                    r[RangeType.RANGE_SHORT] = CConfig.formatScale(wtype.getWShortRange(), false);
-                    if (wtype.getWMediumRange() > wtype.getWShortRange()) {
-                        r[RangeType.RANGE_MEDIUM] = CConfig.formatScale(wtype.getWMediumRange(), false);
+                if ((weaponType.getAmmoType() == AmmoType.T_LRM_TORPEDO)
+                        || (weaponType.getAmmoType() == AmmoType.T_SRM_TORPEDO)) {
+                    r[RangeType.RANGE_SHORT] = CConfig.formatScale(weaponType.getWShortRange(), false);
+                    if (weaponType.getWMediumRange() > weaponType.getWShortRange()) {
+                        r[RangeType.RANGE_MEDIUM] = CConfig.formatScale(weaponType.getWMediumRange(), false);
                     }
-                    if (wtype.getWLongRange() > wtype.getWMediumRange()) {
-                        r[RangeType.RANGE_LONG] = CConfig.formatScale(wtype.getWLongRange(), false);
+                    if (weaponType.getWLongRange() > weaponType.getWMediumRange()) {
+                        r[RangeType.RANGE_LONG] = CConfig.formatScale(weaponType.getWLongRange(), false);
                     }
                 } else {
-                    r[RangeType.RANGE_SHORT] = CConfig.formatScale(wtype.getShortRange(), false);
-                    if (wtype.getMediumRange() > wtype.getShortRange()) {
-                        r[RangeType.RANGE_MEDIUM] = CConfig.formatScale(wtype.getMediumRange(), false);
+                    r[RangeType.RANGE_SHORT] = CConfig.formatScale(weaponType.getShortRange(), false);
+                    if (weaponType.getMediumRange() > weaponType.getShortRange()) {
+                        r[RangeType.RANGE_MEDIUM] = CConfig.formatScale(weaponType.getMediumRange(), false);
                     }
-                    if (wtype.getLongRange() > wtype.getMediumRange()) {
-                        r[RangeType.RANGE_LONG] = CConfig.formatScale(wtype.getLongRange(), false);
+                    if (weaponType.getLongRange() > weaponType.getMediumRange()) {
+                        r[RangeType.RANGE_LONG] = CConfig.formatScale(weaponType.getLongRange(), false);
                     }
                 }
             } else if ((mount.getType() instanceof MiscType)
@@ -340,13 +345,13 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
      * @param locations The list of locations the equipment occupies
      * @return The abbreviated location string
      */
-    private String formatMechLocations(List<Integer> locations) {
+    private String formatMekLocations(List<Integer> locations) {
         if (locations.stream().allMatch(l -> mount.getEntity().locationIsLeg(l))) {
             if ((mount.getEntity().entityIsQuad() && (locations.size() == 4))
-                   || ((mount.getEntity() instanceof TripodMech) && (locations.size() == 3))) {
+                   || ((mount.getEntity() instanceof TripodMek) && (locations.size() == 3))) {
                 return "Legs";
             }
-        } else if (locations.stream().allMatch(l -> ((Mech) mount.getEntity()).locationIsTorso(l))) {
+        } else if (locations.stream().allMatch(l -> ((Mek) mount.getEntity()).locationIsTorso(l))) {
             return "R/L/CT";
         }
         return "*";
@@ -543,12 +548,12 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         return 1;
     }
 
-    /** @return 1 when this entry has Artemis, 0 otherwise (to be used for MML only to account for the addtl. row). */
+    /** @return 1 when this entry has Artemis, 0 otherwise (to be used for MML only to account for the additional. row). */
     private int mmlArtemisRowDelta() {
         return (hasArtemis || hasArtemisV || hasApollo || hasArtemisProto) ? 1 : 0;
     }
 
-    private boolean hasLinkedEquipment(Mounted eq, BigInteger flag) {
+    private boolean hasLinkedEquipment(Mounted<?> eq, BigInteger flag) {
         return (eq.getLinkedBy() != null) && (eq.getLinkedBy().getType() instanceof MiscType)
                 && eq.getLinkedBy().getType().hasFlag(flag);
     }

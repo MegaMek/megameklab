@@ -161,7 +161,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         panArmorAllocation.setFromEntity(getMech());
         panPatchwork.setFromEntity(getMech());
         panLAMFuel.setFromEntity(getMech());
-        panLAMFuel.setVisible(getMech() instanceof LandAirMech);
+        panLAMFuel.setVisible(getMech() instanceof LandAirMek);
         panSummary.refresh();
         iconView.setFromEntity(getMech());
         addAllListeners();
@@ -193,7 +193,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         getMech().clearCockpitCrits();
         getMech().clearGyroCrits();
         getMech().clearEngineCrits();
-        MekUtil.removeSystemCrits(getMech(), LandAirMech.LAM_LANDING_GEAR, Mech.LOC_CT);
+        MekUtil.removeSystemCrits(getMech(), LandAirMek.LAM_LANDING_GEAR, Mech.LOC_CT);
 
         int[] ctEngine = getMech().getEngine().getCenterTorsoCriticalSlots(getMech().getGyroType());
         int lastEngine = ctEngine[ctEngine.length - 1];
@@ -331,7 +331,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
                 }
             }
             CriticalSlot crit = new CriticalSlot(CriticalSlot.TYPE_SYSTEM,
-                    LandAirMech.LAM_LANDING_GEAR);
+                    LandAirMek.LAM_LANDING_GEAR);
             getMech().removeCriticals(Mech.LOC_CT, crit);
             clearCrit(Mech.LOC_CT, lgSlot);
             getMech().setCritical(Mech.LOC_CT, lgSlot, crit);
@@ -350,7 +350,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
     /**
      * Removes equipment placed in head locations that are needed for a cockpit. For most cockpit
      * types, this is all but the fourth slot.
-     * 
+     *
      * @param small If true, only clears the first four slots.
      * @param dual  If true, removes all equipment mounted in the head.
      */
@@ -362,7 +362,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
             clearCrit(Mech.LOC_HEAD, slot);
         }
     }
-    
+
     private void clearCritsForGyro(int first, int numSlots) {
         for (int i = first; i < first + numSlots; i++) {
             clearCrit(Mech.LOC_CT, i);
@@ -761,8 +761,8 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
                 }
                 break;
             case BMChassisView.BASE_TYPE_LAM:
-                if (getMech() instanceof LandAirMech) {
-                    ((LandAirMech)getMech()).setLAMType(motiveType);
+                if (getMech() instanceof LandAirMek) {
+                    ((LandAirMek)getMech()).setLAMType(motiveType);
                 } else {
                     eSource.createNewUnit(Entity.ETYPE_LAND_AIR_MECH, getMech());
                 }

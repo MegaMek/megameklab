@@ -18,18 +18,23 @@
  */
 package megameklab.ui.generalUnit.summary;
 
-import megamek.client.ui.swing.unitSelector.ASAdvancedSearchPanel;
-import megamek.client.ui.swing.util.UIUtil;
-import megamek.client.ui.swing.widget.SimpleLine;
-import megamek.common.Entity;
-import megameklab.ui.EntitySource;
-import megameklab.ui.util.IView;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
+
+import megamek.common.Entity;
+import megameklab.ui.EntitySource;
+import megameklab.ui.util.IView;
 
 /**
  * This class represents the unit weight / crit / availability summary table on the structure tab. To construct it,

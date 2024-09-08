@@ -109,7 +109,7 @@ public class BMMainUI extends MegaMekLabMainUI {
             setEntity(new QuadMech(Mech.GYRO_STANDARD, cockpit));
             getEntity().setTechLevel(TechConstants.T_IS_TW_NON_BOX);
         } else if (entityType == Entity.ETYPE_LAND_AIR_MECH) {
-            setEntity(new LandAirMech(Mech.GYRO_STANDARD, Mech.COCKPIT_STANDARD, LandAirMech.LAM_STANDARD));
+            setEntity(new LandAirMek(Mech.GYRO_STANDARD, Mech.COCKPIT_STANDARD, LandAirMek.LAM_STANDARD));
             getEntity().setTechLevel(TechConstants.T_IS_ADVANCED);
             getEntity().setManualBV(-1);
         } else if (entityType == Entity.ETYPE_QUADVEE) {
@@ -211,12 +211,12 @@ public class BMMainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshWeapons() { }
-    
+
     @Override
     public void refreshSummary() {
         structureTab.refreshSummary();
     }
-    
+
     @Override
     public void refreshEquipmentTable() {
         equipmentTab.refreshTable();

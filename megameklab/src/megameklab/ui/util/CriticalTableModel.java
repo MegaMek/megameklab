@@ -16,7 +16,7 @@ package megameklab.ui.util;
 
 import megamek.common.*;
 import megamek.common.verifier.TestEntity;
-import megamek.common.verifier.TestProtomech;
+import megamek.common.verifier.TestProtoMek;
 import megamek.common.weapons.infantry.InfantryWeapon;
 import megameklab.ui.EquipmentToolTip;
 import megameklab.util.CConfig;
@@ -79,7 +79,7 @@ public class CriticalTableModel extends AbstractTableModel {
         if ((unit instanceof Mech) || unit.isSupportVehicle()) {
             columnNames[CRITS] = "Crits";
         }
-        
+
         this.unit = unit;
     }
 
@@ -181,7 +181,7 @@ public class CriticalTableModel extends AbstractTableModel {
                     return crit.getType().getTankSlots(unit);
                 }
                 if (unit.hasETypeFlag(Entity.ETYPE_PROTOMECH)) {
-                    return TestProtomech.requiresSlot(crit.getType())? 1 : 0;
+                    return TestProtoMek.requiresSlot(crit.getType())? 1 : 0;
                 }
                 if (unit.usesWeaponBays() && (crit.getType() instanceof AmmoType)) {
                     return crit.getUsableShotsLeft() / ((AmmoType)crit.getType()).getShots();
@@ -259,7 +259,7 @@ public class CriticalTableModel extends AbstractTableModel {
 
             JLabel c = (JLabel) super.getTableCellRendererComponent(table,
                     value, isSelected, hasFocus, row, column);
-            
+
             if ((crits.size() < row) || (row < 0)) {
                 return c;
             }
@@ -279,15 +279,15 @@ public class CriticalTableModel extends AbstractTableModel {
                     modifier += " (Squad)";
                 }
                 if (mount.isDWPMounted()) {
-                    modifier += " (DWP)"; 
+                    modifier += " (DWP)";
                 }
                 if (mount.isSquadSupportWeapon()) {
-                    modifier += " (Squad Support Weapon)"; 
+                    modifier += " (Squad Support Weapon)";
                 }
                 if ((mount.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)
                         || mount.getType().hasFlag(MiscType.F_AP_MOUNT))
                         && mount.getLinked() != null) {
-                    modifier += " (attached " + mount.getLinked().getName() 
+                    modifier += " (attached " + mount.getLinked().getName()
                             + ")";
                 }
                 if (mount.getType().hasFlag(WeaponType.F_INFANTRY) &&
@@ -370,10 +370,10 @@ public class CriticalTableModel extends AbstractTableModel {
     public void removeCrit(int location) {
         crits.remove(location);
     }
-    
+
     /**
      * Remove a collection of crits specified by the given list of indices.
-     * 
+     *
      * @param locs An array of indices that specifies the crits to remove
      */
     public void removeCrits(int... locs) {

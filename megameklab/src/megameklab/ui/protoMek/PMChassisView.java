@@ -18,19 +18,8 @@
  */
 package megameklab.ui.protoMek;
 
-import megamek.common.EquipmentType;
-import megamek.common.ITechManager;
-import megamek.common.MiscType;
-import megamek.common.Protomech;
-import megamek.common.verifier.TestProtomech;
-import megameklab.ui.generalUnit.BuildView;
-import megameklab.ui.listeners.ProtomekBuildListener;
-import megameklab.ui.util.CustomComboBox;
-
-import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import java.awt.*;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Enumeration;
@@ -38,9 +27,24 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import javax.swing.JCheckBox;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
+import megamek.common.EquipmentType;
+import megamek.common.ITechManager;
+import megamek.common.MiscType;
+import megamek.common.Protomech;
+import megamek.common.verifier.TestProtoMek;
+import megameklab.ui.generalUnit.BuildView;
+import megameklab.ui.listeners.ProtomekBuildListener;
+import megameklab.ui.util.CustomComboBox;
+
 /**
  * Construction options and systems for ProtoMeks.
- * 
+ *
  * @author Neoancient
  */
 public class PMChassisView extends BuildView implements ActionListener, ChangeListener {
@@ -51,7 +55,7 @@ public class PMChassisView extends BuildView implements ActionListener, ChangeLi
     public void removeListener(ProtomekBuildListener l) {
         listeners.remove(l);
     }
-    
+
     public static final int MOTIVE_TYPE_BIPED          = 0;
     public static final int MOTIVE_TYPE_QUAD           = 1;
     public static final int MOTIVE_TYPE_GLIDER         = 2;
@@ -61,18 +65,18 @@ public class PMChassisView extends BuildView implements ActionListener, ChangeLi
     final private JSpinner spnTonnage = new JSpinner(tonnageModel);
     final private CustomComboBox<Integer> cbMotiveType = new CustomComboBox<>(i -> motiveTypeNames[i]);
     final private JCheckBox chkMainGun = new JCheckBox();
-    
+
     final private JCheckBox chkMyomerBooster = new JCheckBox();
     final private JCheckBox chkPartialWing = new JCheckBox();
     final private JCheckBox chkMagneticClamps = new JCheckBox();
     final private JCheckBox chkISInterface = new JCheckBox();
-    
+
     private EquipmentType myomerBooster = null;
     private EquipmentType partialWing = null;
     private EquipmentType magneticClamps = null;
-    
+
     private final ITechManager techManager;
-    
+
     public PMChassisView(ITechManager techManager) {
         this.techManager = techManager;
         // Get the equipment based on the correct flags rather than relying on magic String literals.
@@ -94,7 +98,7 @@ public class PMChassisView extends BuildView implements ActionListener, ChangeLi
     private void initUI() {
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
         motiveTypeNames = resourceMap.getString("ProtomekChassisView.cbMotiveType.values").split(",");
-        
+
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
@@ -108,7 +112,7 @@ public class PMChassisView extends BuildView implements ActionListener, ChangeLi
         spnTonnage.setToolTipText(resourceMap.getString("ProtomekChassisView.spnTonnage.tooltip"));
         add(spnTonnage, gbc);
         spnTonnage.addChangeListener(this);
-        
+
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridwidth = 1;
@@ -122,7 +126,7 @@ public class PMChassisView extends BuildView implements ActionListener, ChangeLi
         setFieldSize(cbMotiveType, controlSize);
         add(cbMotiveType, gbc);
         cbMotiveType.addActionListener(this);
-        
+
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 2;
@@ -185,16 +189,16 @@ public class PMChassisView extends BuildView implements ActionListener, ChangeLi
         chkISInterface.setSelected(proto.hasInterfaceCockpit());
         chkMainGun.setSelected(proto.hasMainGun());
     }
-    
+
     public void setAsCustomization() {
         spnTonnage.setEnabled(false);
         cbMotiveType.setEnabled(false);
     }
-    
+
     public boolean isUltraHeavy() {
-        return getTonnage() > TestProtomech.MAX_STD_TONNAGE;
+        return getTonnage() > TestProtoMek.MAX_STD_TONNAGE;
     }
-    
+
     public void refresh() {
         refreshTonnage();
         chkMyomerBooster.setVisible((null != myomerBooster) && techManager.isLegal(myomerBooster));
@@ -206,11 +210,11 @@ public class PMChassisView extends BuildView implements ActionListener, ChangeLi
     }
 
     private void refreshTonnage() {
-        int min = (int) TestProtomech.MIN_TONNAGE;
-        int max = (int) TestProtomech.MAX_STD_TONNAGE;
+        int min = (int) TestProtoMek.MIN_TONNAGE;
+        int max = (int) TestProtoMek.MAX_STD_TONNAGE;
         spnTonnage.removeChangeListener(this);
         if (techManager.isLegal(Protomech.TA_ULTRA)) {
-            max = (int) TestProtomech.MAX_TONNAGE;
+            max = (int) TestProtoMek.MAX_TONNAGE;
         }
         tonnageModel.setMinimum(min);
         tonnageModel.setMaximum(max);
@@ -221,19 +225,19 @@ public class PMChassisView extends BuildView implements ActionListener, ChangeLi
             tonnageModel.setValue(max);
         }
     }
-    
+
     public double getTonnage() {
         return tonnageModel.getNumber().doubleValue();
     }
-    
+
     public void setTonnage(double tonnage) {
         spnTonnage.setValue((int) Math.ceil(tonnage));
     }
-    
+
     public int getMotiveType() {
         return (Integer) cbMotiveType.getSelectedItem();
     }
-    
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == cbMotiveType) {

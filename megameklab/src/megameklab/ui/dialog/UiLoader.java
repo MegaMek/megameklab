@@ -18,6 +18,16 @@
  */
 package megameklab.ui.dialog;
 
+import java.awt.BorderLayout;
+import java.util.Map;
+import java.util.Objects;
+import java.util.ResourceBundle;
+import java.util.TreeMap;
+
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
+
 import megamek.client.ui.swing.util.UIUtil;
 import megamek.common.*;
 import megameklab.ui.MegaMekLabMainUI;
@@ -32,13 +42,6 @@ import megameklab.ui.mek.BMMainUI;
 import megameklab.ui.protoMek.PMMainUI;
 import megameklab.ui.supportVehicle.SVMainUI;
 import megameklab.util.UnitUtil;
-
-import javax.swing.*;
-import java.awt.*;
-import java.util.Map;
-import java.util.Objects;
-import java.util.ResourceBundle;
-import java.util.TreeMap;
 
 /**
  * This class prepares a new editing UI for either a given Entity or an Entity type (new unit). While
@@ -67,8 +70,8 @@ public class UiLoader {
     private final String fileName;
 
     public static void loadUi(Entity newUnit, String fileName) {
-        if ((newUnit == null) || (newUnit instanceof Mech)) {
-            new UiLoader(Entity.ETYPE_MECH, false, false, newUnit, fileName).show();
+        if ((newUnit == null) || (newUnit instanceof Mek)) {
+            new UiLoader(Entity.ETYPE_MEK, false, false, newUnit, fileName).show();
         } else if (newUnit.isSupportVehicle()) {
             new UiLoader(Entity.ETYPE_SUPPORT_TANK, false, false, newUnit, fileName).show();
         } else if (newUnit.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)) {
@@ -81,13 +84,13 @@ public class UiLoader {
             new UiLoader(Entity.ETYPE_BATTLEARMOR, false, false, newUnit, fileName).show();
         } else if (newUnit instanceof Infantry) {
             new UiLoader(Entity.ETYPE_INFANTRY, false, false, newUnit, fileName).show();
-        } else if (newUnit instanceof Protomech) {
-            new UiLoader(Entity.ETYPE_PROTOMECH, false, false, newUnit, fileName).show();
+        } else if (newUnit instanceof ProtoMek) {
+            new UiLoader(Entity.ETYPE_PROTOMEK, false, false, newUnit, fileName).show();
         } else if ((newUnit instanceof Tank) && !(newUnit instanceof GunEmplacement)) {
             new UiLoader(Entity.ETYPE_TANK, false, false, newUnit, fileName).show();
         } else {
             PopupMessages.showUiLoadError(null);
-            new UiLoader(Entity.ETYPE_MECH, false, false, null, "").show();
+            new UiLoader(Entity.ETYPE_MEK, false, false, null, "").show();
         }
     }
 
@@ -141,7 +144,7 @@ public class UiLoader {
             return new CVMainUI();
         } else if (type == Entity.ETYPE_SUPPORT_TANK) {
             return new SVMainUI();
-        } else if (type == Entity.ETYPE_PROTOMECH) {
+        } else if (type == Entity.ETYPE_PROTOMEK) {
             return new PMMainUI();
         } else if (type == Entity.ETYPE_BATTLEARMOR) {
             return new BAMainUI();

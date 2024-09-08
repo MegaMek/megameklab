@@ -15,25 +15,31 @@
  */
 package megameklab.util;
 
-import megamek.client.ui.swing.UnitLoadingDialog;
-import megamek.common.*;
-import megamek.common.util.C3Util;
-import megameklab.printing.*;
-import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
-import megameklab.ui.dialog.PrintQueueDialog;
-import org.apache.logging.log4j.LogManager;
-
-import javax.print.attribute.HashPrintRequestAttributeSet;
-import javax.print.attribute.standard.DialogTypeSelection;
-import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import java.awt.*;
+import java.awt.Frame;
 import java.awt.print.PageFormat;
 import java.awt.print.PrinterJob;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.*;
+import java.util.ResourceBundle;
+import java.util.Vector;
 import java.util.stream.Collectors;
+
+import javax.print.attribute.HashPrintRequestAttributeSet;
+import javax.print.attribute.standard.DialogTypeSelection;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
+import org.apache.logging.log4j.LogManager;
+
+import megamek.client.ui.swing.UnitLoadingDialog;
+import megamek.common.*;
+import megameklab.printing.*;
+import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
+import megameklab.ui.dialog.PrintQueueDialog;
 
 public class UnitPrintManager {
 
@@ -120,7 +126,7 @@ public class UnitPrintManager {
                 if (unit instanceof Mech) {
                     UnitUtil.removeOneShotAmmo(unit);
                     MekUtil.expandUnitMounts((Mech) unit);
-                    sheets.add(new PrintMech((Mech) unit, pageCount++, options));
+                    sheets.add(new PrintMek((Mech) unit, pageCount++, options));
                 } else if ((unit instanceof Tank) && unit.getMovementMode().isMarine()) {
                     sheets.add(new PrintTank((Tank) unit, pageCount++, options));
                 } else if (unit instanceof Tank) {

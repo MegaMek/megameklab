@@ -19,6 +19,23 @@
  */
 package megameklab.ui.mek;
 
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.Vector;
+
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
+
+import org.apache.logging.log4j.LogManager;
+
 import megamek.common.*;
 import megamek.common.verifier.TestEntity;
 import megameklab.ui.EntitySource;
@@ -29,13 +46,6 @@ import megameklab.ui.util.CriticalTableModel;
 import megameklab.ui.util.RefreshListener;
 import megameklab.util.MekUtil;
 import megameklab.util.UnitUtil;
-import org.apache.logging.log4j.LogManager;
-
-import javax.swing.*;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.StringSelection;
-import java.awt.datatransfer.Transferable;
-import java.util.*;
 
 /**
  * The crit slot Transfer Handler for BM.
@@ -51,7 +61,7 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
         this.parentView = parentView;
     }
 
-    private boolean addEquipmentMech(Mech mek, Mounted eq, int slotNumber) throws LocationFullException {
+    private boolean addEquipmentMek(Mek mek, Mounted<?> eq, int slotNumber) throws LocationFullException {
         int neededCrits = UnitUtil.getCritsUsed(eq);
 
         if ((eq.getType().isSpreadable() || eq.isSplitable()) && (neededCrits > 1)) {
@@ -64,7 +74,7 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
             }
 
         } else {
-            // Move the slotnumber upwards if the drop location is too far down for the equipment (PPC in the last slot)
+            // Move the slot number upwards if the drop location is too far down for the equipment (PPC in the last slot)
             int locationSize = mek.getNumberOfCriticals(location);
             if ((locationSize >= neededCrits) && (slotNumber + neededCrits > locationSize)) {
                 slotNumber = locationSize - neededCrits;
@@ -93,7 +103,7 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
     }
 
     /** Adds standard (non-splittable/spreadable) equipment to the mek. */
-    private boolean addSingleLocationEquipment(Mech mek, Mounted eq, int slotNumber)
+    private boolean addSingleLocationEquipment(Mek mek, Mounted<?> eq, int slotNumber)
             throws LocationFullException {
         int neededCrits = UnitUtil.getCritsUsed(eq);
         MekUtil.removeFMU(mek, location, slotNumber, neededCrits);
@@ -108,7 +118,7 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
         return true;
     }
 
-    private boolean addSplitLocationEquipment(Mech mek, Mounted eq, int slotNumber) throws LocationFullException {
+    private boolean addSplitLocationEquipment(Mek mek, Mounted<?> eq, int slotNumber) throws LocationFullException {
         if (mek.locationIsLeg(location)) {
             return false; // TM p.57
         }
@@ -133,22 +143,22 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
         if ((neededTotalSlots > freePrimarySlots)
                 // TargComps are marked as spreadable as a workaround, see the MiscType comment
                 && !((eq.getType() instanceof MiscType) && eq.getType().hasFlag(MiscType.F_TARGCOMP))
-                && !(getUnit() instanceof LandAirMech)) {
+                && !(getUnit() instanceof LandAirMek)) {
 
             Set<Integer> secondLocationSet = new HashSet<>();
             secondLocationSet.add(mek.getTransferLocation(location));
-            if (location == Mech.LOC_RT) {
-                secondLocationSet.add(Mech.LOC_CT);
-                secondLocationSet.add(Mech.LOC_RARM);
-            } else if (location == Mech.LOC_LT) {
-                secondLocationSet.add(Mech.LOC_CT);
-                secondLocationSet.add(Mech.LOC_LARM);
-            } else if (location == Mech.LOC_CT) {
-                secondLocationSet.add(Mech.LOC_LT);
-                secondLocationSet.add(Mech.LOC_RT);
-                secondLocationSet.add(Mech.LOC_HEAD);
-            } else if (location == Mech.LOC_HEAD) {
-                secondLocationSet.add(Mech.LOC_CT);
+            if (location == Mek.LOC_RT) {
+                secondLocationSet.add(Mek.LOC_CT);
+                secondLocationSet.add(Mek.LOC_RARM);
+            } else if (location == Mek.LOC_LT) {
+                secondLocationSet.add(Mek.LOC_CT);
+                secondLocationSet.add(Mek.LOC_LARM);
+            } else if (location == Mek.LOC_CT) {
+                secondLocationSet.add(Mek.LOC_LT);
+                secondLocationSet.add(Mek.LOC_RT);
+                secondLocationSet.add(Mek.LOC_HEAD);
+            } else if (location == Mek.LOC_HEAD) {
+                secondLocationSet.add(Mek.LOC_CT);
             }
             secondLocationSet.removeIf(loc -> loc == Entity.LOC_DESTROYED);
             secondLocationSet.removeIf(loc -> !UnitUtil.isValidLocation(mek, eq.getType(), loc));
@@ -192,7 +202,7 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
 
     @Override
     public boolean importData(TransferSupport info) {
-        if (!info.isDrop() || !(getUnit() instanceof Mech)) {
+        if (!info.isDrop() || !(getUnit() instanceof Mek)) {
             return false;
         }
 
@@ -204,9 +214,9 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
             if ((slotNumber < 0) || (slotNumber >= getUnit().getNumberOfCriticals(location))) {
                 return false;
             }
-            
+
             try {
-                Mounted eq = getUnit().getEquipment(Integer.parseInt(
+                Mounted<?> eq = getUnit().getEquipment(Integer.parseInt(
                         (String) t.getTransferData(DataFlavor.stringFlavor)));
 
                 // If this equipment is already mounted, clear the criticals it's mounted in
@@ -225,8 +235,8 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
                     return false;
                 }
 
-                // superheavies can put 2 ammobins or heatsinks in one crit
-                if ((getUnit() instanceof Mech) && getUnit().isSuperHeavy()) {
+                // super-heavies can put 2 ammo-bins or heat sinks in one crit
+                if ((getUnit() instanceof Mek) && getUnit().isSuperHeavy()) {
                     CriticalSlot cs = getUnit().getCritical(location, slotNumber);
                     if ((cs != null) && (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) && (cs.getMount2() == null)) {
                         EquipmentType etype = cs.getMount().getType();
@@ -245,7 +255,7 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
                         }
                     }
                 }
-                return addEquipmentMech((Mech) getUnit(), eq, slotNumber);
+                return addEquipmentMek((Mek) getUnit(), eq, slotNumber);
             } catch (LocationFullException lfe) {
                 PopupMessages.showLocationFullError(null);
                 doRefresh();
@@ -269,7 +279,7 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
             return false;
         }
         // check if the dragged mounted should be transferrable
-        Mounted mounted = null;
+        Mounted<?> mounted = null;
         try {
             int index = Integer.parseInt((String) info.getTransferable().getTransferData(DataFlavor.stringFlavor));
             mounted = getUnit().getEquipment(index);
@@ -286,10 +296,10 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
 
     @Override
     protected Transferable createTransferable(JComponent c) {
-        Mounted mount = null;
+        Mounted<?> mount = null;
         if (c instanceof JTable) {
             JTable table = (JTable) c;
-            mount = (Mounted) table.getModel().getValueAt(table.getSelectedRow(), CriticalTableModel.EQUIPMENT);
+            mount = (Mounted<?>) table.getModel().getValueAt(table.getSelectedRow(), CriticalTableModel.EQUIPMENT);
         } else if (c instanceof BAASBMDropTargetCriticalList) {
             BAASBMDropTargetCriticalList<?> list = (BAASBMDropTargetCriticalList<?>) c;
             mount = list.getMounted();
@@ -304,6 +314,6 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
 
     @Override
     protected void exportDone(JComponent source, Transferable data, int action) {
-        parentView.unmarkAllLocations();
+        parentView.unMarkAllLocations();
     }
 }

@@ -18,6 +18,16 @@
  */
 package megameklab.ui.generalUnit;
 
+import java.awt.GridBagLayout;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
+
+import javax.swing.JLabel;
+
 import megamek.client.ui.GBC;
 import megamek.client.ui.swing.DialogOptionComponent;
 import megamek.client.ui.swing.DialogOptionListener;
@@ -29,15 +39,6 @@ import megamek.common.options.Quirks;
 import megamek.common.options.WeaponQuirks;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.ITab;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
 
 public class QuirksTab extends ITab implements DialogOptionListener {
 
@@ -52,11 +53,11 @@ public class QuirksTab extends ITab implements DialogOptionListener {
 
     public void refreshQuirks() {
         wpnQuirks.clear();
-        for (Mounted m : getEntity().getWeaponList()) {
+        for (Mounted<?> m : getEntity().getWeaponList()) {
             wpnQuirks.put(getEntity().getEquipmentNum(m), m.getQuirks());
         }
         // Also need to consider melee weapons
-        for (Mounted m : getEntity().getMisc()) {
+        for (Mounted<?> m : getEntity().getMisc()) {
             if (m.getType().hasFlag(MiscType.F_CLUB)) {
                 wpnQuirks.put(getEntity().getEquipmentNum(m), m.getQuirks());
             }
@@ -83,7 +84,7 @@ public class QuirksTab extends ITab implements DialogOptionListener {
 
         // now for weapon quirks
         for (int key : wpnQuirks.keySet()) {
-            Mounted m = getEntity().getEquipment(key);
+            Mounted<?> m = getEntity().getEquipment(key);
             WeaponQuirks wpnQuirks = m.getQuirks();
             JLabel labWpn = new JLabel(m.getName() + " ("
                     + getEntity().getLocationName(m.getLocation()) + ")");

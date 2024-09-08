@@ -14,7 +14,7 @@
 package megameklab.ui.protoMek;
 
 import megamek.common.*;
-import megamek.common.verifier.TestProtomech;
+import megamek.common.verifier.TestProtoMek;
 import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.dialog.FloatingEquipmentDatabaseDialog;
 import megameklab.ui.generalUnit.AbstractEquipmentTab;
@@ -28,7 +28,7 @@ import java.awt.*;
 
 /**
  * Main UI for building protomechs
- * 
+ *
  * @author Neoancient
  */
 public class PMMainUI extends MegaMekLabMainUI {
@@ -95,7 +95,7 @@ public class PMMainUI extends MegaMekLabMainUI {
         proto.setMovementMode(EntityMovementMode.BIPED);
         proto.setTechLevel(TechConstants.T_CLAN_TW);
         proto.setOriginalWalkMP(1);
-        proto.setEngine(new Engine(TestProtomech.calcEngineRating(proto), Engine.NORMAL_ENGINE, Engine.CLAN_ENGINE));
+        proto.setEngine(new Engine(TestProtoMek.calcEngineRating(proto), Engine.NORMAL_ENGINE, Engine.CLAN_ENGINE));
         proto.setArmorType(EquipmentType.T_ARMOR_STANDARD_PROTOMEK);
         proto.setArmorTechLevel(getEntity().getTechLevel());
 
@@ -168,12 +168,12 @@ public class PMMainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshWeapons() { }
-    
+
     @Override
     public void refreshSummary() {
         structureTab.refreshSummary();
     }
-    
+
     @Override
     public void refreshEquipmentTable() {
         equipmentTab.refreshTable();

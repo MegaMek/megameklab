@@ -41,7 +41,7 @@ import megameklab.util.UnitUtil;
  * Panel for allocating armor to various locations on an Entity. The assignment of armor values for specific
  * locations is delegated to ArmorLocationView. This class handles positioning of the subviews to approximate
  * the position on the unit and tracking the total amount of armor allocated.
- * 
+ *
  * @author Neoancient
  */
 public class ArmorAllocationView extends BuildView implements ArmorLocationListener {
@@ -52,19 +52,19 @@ public class ArmorAllocationView extends BuildView implements ArmorLocationListe
     public void removeListener(ArmorAllocationListener l) {
         listeners.remove(l);
     }
-    
+
     private static final int[][] MEK_LAYOUT = {
-            {-1, -1, Mech.LOC_HEAD, -1, -1},
-            {Mech.LOC_LARM, Mech.LOC_LT, Mech.LOC_CT, Mech.LOC_RT, Mech.LOC_RARM},
-            {-1, Mech.LOC_LLEG, Mech.LOC_CLEG, Mech.LOC_RLEG, -1}
+            {-1, -1, Mek.LOC_HEAD, -1, -1},
+            {Mek.LOC_LARM, Mek.LOC_LT, Mek.LOC_CT, Mek.LOC_RT, Mek.LOC_RARM},
+            {-1, Mek.LOC_LLEG, Mek.LOC_CLEG, Mek.LOC_RLEG, -1}
     };
-    
+
     private static final int[][] PROTOMEK_LAYOUT = {
-            {Protomech.LOC_MAINGUN, Protomech.LOC_HEAD, -1 },
-            {Protomech.LOC_LARM, Protomech.LOC_TORSO, Protomech.LOC_RARM },
-            {-1, Protomech.LOC_LEG, -1}
+            {ProtoMek.LOC_MAINGUN, ProtoMek.LOC_HEAD, -1 },
+            {ProtoMek.LOC_LARM, ProtoMek.LOC_TORSO, ProtoMek.LOC_RARM },
+            {-1, ProtoMek.LOC_LEG, -1}
     };
-    
+
     private static final int[][] TANK_LAYOUT = {
             {-1, Tank.LOC_FRONT, -1},
             {Tank.LOC_LEFT, Tank.LOC_TURRET, Tank.LOC_RIGHT},
@@ -85,20 +85,20 @@ public class ArmorAllocationView extends BuildView implements ArmorLocationListe
             {-1, VTOL.LOC_TURRET, -1},
             {-1, VTOL.LOC_REAR, -1}
     };
-    
+
     private static final int[][] AERODYNE_LAYOUT = {
             {-1, Aero.LOC_NOSE, -1},
             {Aero.LOC_LWING, -1, Aero.LOC_RWING},
             {-1, Aero.LOC_AFT, -1}
     };
-    
+
     private static final int[][] CAPITAL_LAYOUT = {
             {-1, Jumpship.LOC_NOSE, -1},
             {Jumpship.LOC_FLS, -1, Jumpship.LOC_FRS},
             {Jumpship.LOC_ALS, -1, Jumpship.LOC_ARS},
             {-1, Jumpship.LOC_AFT, -1}
     };
-    
+
     private final List<ArmorLocationView> locationViews = new ArrayList<>();
     private final JPanel panLocations = new JPanel();
     private final JTextField txtUnallocated = new JTextField();
@@ -114,33 +114,33 @@ public class ArmorAllocationView extends BuildView implements ArmorLocationListe
     private long entitytype;
     private boolean showPatchwork = false;
     private String tooltipFormat;
-    
+
     public ArmorAllocationView(ITechManager techManager, long entitytype) {
         this.entitytype = entitytype;
         initUI();
     }
-    
+
     private void initUI() {
         tooltipFormat = resourceMap.getString("ArmorAllocationView.locationTooltip.format");
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        
+
         panLocations.setLayout(new GridBagLayout());
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = GridBagConstraints.REMAINDER;
         add(panLocations, gbc);
-        
+
         updateLayout();
         gbc.gridy++;
-        
+
         gbc.gridwidth = 1;
         add(new JLabel(resourceMap.getString("ArmorAllocationView.txtUnallocated.text"), SwingConstants.RIGHT), gbc);
         gbc.gridx = 1;
         txtUnallocated.setEditable(false);
         setFieldSize(txtUnallocated, editorSizeLg);
         add(txtUnallocated, gbc);
-        
+
         gbc.gridx = 0;
         gbc.gridy++;
         add(new JLabel(resourceMap.getString("ArmorAllocationView.txtAllocated.text"), SwingConstants.RIGHT), gbc);
@@ -148,7 +148,7 @@ public class ArmorAllocationView extends BuildView implements ArmorLocationListe
         txtAllocated.setEditable(false);
         setFieldSize(txtAllocated, editorSizeLg);
         add(txtAllocated, gbc);
-        
+
         gbc.gridx = 0;
         gbc.gridy++;
         add(new JLabel(resourceMap.getString("ArmorAllocationView.txtTotal.text"), SwingConstants.RIGHT), gbc);
@@ -156,7 +156,7 @@ public class ArmorAllocationView extends BuildView implements ArmorLocationListe
         txtTotal.setEditable(false);
         setFieldSize(txtTotal, editorSizeLg);
         add(txtTotal, gbc);
-        
+
         gbc.gridx = 0;
         gbc.gridy++;
         add(new JLabel(resourceMap.getString("ArmorAllocationView.txtMaxPossible.text"), SwingConstants.RIGHT), gbc);
@@ -164,7 +164,7 @@ public class ArmorAllocationView extends BuildView implements ArmorLocationListe
         txtMaxPossible.setEditable(false);
         setFieldSize(txtMaxPossible, editorSizeLg);
         add(txtMaxPossible, gbc);
-        
+
         gbc.gridx = 0;
         gbc.gridy++;
         add(new JLabel(resourceMap.getString("ArmorAllocationView.txtWasted.text"), SwingConstants.RIGHT), gbc);
@@ -260,7 +260,7 @@ public class ArmorAllocationView extends BuildView implements ArmorLocationListe
                     (int) (TestSupportVehicle.armorWeightPerPoint(en) * 1000)));
             lblPointsPerTon.setText(resourceMap.getString("ArmorAllocationView.txtKgPerPoint.text"));
             txtPointsPerTon.setToolTipText(resourceMap.getString("ArmorAllocationView.txtKgPerPoint.tooltip"));
-        } else if (en instanceof Protomech) {
+        } else if (en instanceof ProtoMek) {
             txtPointsPerTon.setText(String.format("%d",
                     (int) (ArmorType.forEntity(en).getWeightPerPoint() * 1000)));
             lblPointsPerTon.setText(resourceMap.getString("ArmorAllocationView.txtKgPerPoint.text"));
@@ -272,12 +272,12 @@ public class ArmorAllocationView extends BuildView implements ArmorLocationListe
             txtPointsPerTon.setToolTipText(resourceMap.getString("ArmorAllocationView.txtPointsPerTon.tooltip"));
         }
     }
-    
+
     private void updateLayout() {
         int[][] layout;
-        if ((entitytype & Entity.ETYPE_MECH) != 0) {
+        if ((entitytype & Entity.ETYPE_MEK) != 0) {
             layout = MEK_LAYOUT;
-        } else if ((entitytype & Entity.ETYPE_PROTOMECH) != 0) {
+        } else if ((entitytype & Entity.ETYPE_PROTOMEK) != 0) {
             layout = PROTOMEK_LAYOUT;
         } else if ((entitytype & Entity.ETYPE_JUMPSHIP) != 0) {
             layout = CAPITAL_LAYOUT;
@@ -316,7 +316,7 @@ public class ArmorAllocationView extends BuildView implements ArmorLocationListe
             gbc.gridy++;
         }
     }
-    
+
     public void setEntityType(long etype) {
         if (etype != entitytype) {
             entitytype = etype;
@@ -325,11 +325,11 @@ public class ArmorAllocationView extends BuildView implements ArmorLocationListe
             panLocations.repaint();
         }
     }
-    
+
     /**
      * Helper function for patchwork. If used for non-patchwork, it will likely give incorrect values
      * due to rounding up by location.
-     * 
+     *
      * @param en the current entity
      * @return The total weight of all allocated armor.
      */
@@ -344,11 +344,11 @@ public class ArmorAllocationView extends BuildView implements ArmorLocationListe
         }
         return Math.ceil(weight * 2.0) * 0.5;
     }
-    
+
     public void showPatchwork(boolean show) {
         showPatchwork = show;
     }
-    
+
     @Override
     public void armorPointsChanged(int location, int front, int rear) {
         listeners.forEach(l -> l.armorPointsChanged(location, front, rear));

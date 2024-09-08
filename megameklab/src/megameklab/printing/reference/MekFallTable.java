@@ -13,14 +13,14 @@
  */
 package megameklab.printing.reference;
 
-import megameklab.printing.PrintMech;
+import megameklab.printing.PrintMek;
 
 /**
  * Table showing the direction of a fall and side taking damage
  */
 public class MekFallTable extends ReferenceTable {
 
-    public MekFallTable(PrintMech sheet) {
+    public MekFallTable(PrintMek sheet) {
         super(sheet, 0.1, 0.45, 0.8);
         setHeaders(bundle.getString("dieRoll1d6"), bundle.getString("newFacing"),
                 bundle.getString("hitLocation"));

@@ -13,29 +13,35 @@
  */
 package megameklab.printing;
 
-import megamek.common.*;
 import org.apache.batik.anim.dom.SVGLocatableSupport;
 import org.apache.batik.util.SVGConstants;
 import org.apache.logging.log4j.LogManager;
 import org.w3c.dom.Element;
 
+import megamek.common.Entity;
+import megamek.common.EquipmentType;
+import megamek.common.MiscType;
+import megamek.common.Mounted;
+import megamek.common.ProtoMek;
+import megamek.common.TechConstants;
+
 /**
  * Lays out a record sheet block for a single ProtoMek
  */
-public class PrintProtomech extends PrintEntity {
+public class PrintProtoMek extends PrintEntity {
 
-    private final Protomech proto;
+    private final ProtoMek proto;
     private final int unitIndex;
 
     /**
      * Creates an SVG object for the record sheet
      *
-     * @param proto        The protomech to print
+     * @param proto        The protoMek to print
      * @param startPage    The print job page number for this sheet
      * @param unitIndex    The index of this unit on the page
      * @param options      Overrides the global options for which elements are printed
      */
-    public PrintProtomech(Protomech proto, int startPage, int unitIndex, RecordSheetOptions options) {
+    public PrintProtoMek(ProtoMek proto, int startPage, int unitIndex, RecordSheetOptions options) {
         super(startPage, options);
         this.proto = proto;
         this.unitIndex = unitIndex;
@@ -121,7 +127,7 @@ public class PrintProtomech extends PrintEntity {
     private void printTorsoCritChart() {
         int roll = 1;
         for (int i = 0; i < 6; i++) {
-            Mounted weapon = proto.getTorsoWeapon(Protomech.SYSTEM_TORSO_WEAPON_A + i);
+            Mounted<?> weapon = proto.getTorsoWeapon(ProtoMek.SYSTEM_TORSO_WEAPON_A + i);
             StringBuilder sb = new StringBuilder();
             if (weapon != null) {
                 sb.append(roll);
@@ -162,8 +168,8 @@ public class PrintProtomech extends PrintEntity {
     @Override
     protected void drawArmor() {
         super.drawArmor();
-        String armorName = EquipmentType.getArmorTypeName(proto.getArmorType(Protomech.LOC_TORSO),
-                TechConstants.isClan(proto.getArmorTechLevel(Protomech.LOC_TORSO)));
+        String armorName = EquipmentType.getArmorTypeName(proto.getArmorType(ProtoMek.LOC_TORSO),
+                TechConstants.isClan(proto.getArmorTechLevel(ProtoMek.LOC_TORSO)));
         EquipmentType armor = EquipmentType.get(armorName);
         if (armor != null) {
             setTextField(ARMOR_TYPE, armor.getShortName(), true);

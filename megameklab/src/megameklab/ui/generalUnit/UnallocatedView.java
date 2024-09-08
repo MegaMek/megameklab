@@ -16,6 +16,23 @@
  */
 package megameklab.ui.generalUnit;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.Vector;
+import java.util.function.Supplier;
+
+import javax.swing.BoxLayout;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+
+import org.apache.logging.log4j.LogManager;
+
 import megamek.common.AmmoType;
 import megamek.common.Entity;
 import megamek.common.MiscType;
@@ -28,22 +45,13 @@ import megameklab.ui.util.IView;
 import megameklab.ui.util.RefreshListener;
 import megameklab.util.StringUtils;
 import megameklab.util.UnitUtil;
-import org.apache.logging.log4j.LogManager;
-
-import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.util.Vector;
-import java.util.function.Supplier;
 
 /**
  * View that displays unallocated equipment on the build tab.
  */
 public class UnallocatedView extends IView implements ActionListener, MouseListener {
     private CriticalTableModel equipmentList;
-    private Vector<Mounted> masterEquipmentList = new Vector<>(10, 1);
+    private Vector<Mounted<?>> masterEquipmentList = new Vector<>(10, 1);
     private JTable equipmentTable = new JTable();
 
     private final CriticalTransferHandler cth;
@@ -87,17 +95,17 @@ public class UnallocatedView extends IView implements ActionListener, MouseListe
     private void loadEquipmentTable() {
         equipmentList.removeAllCrits();
         masterEquipmentList.clear();
-        for (Mounted mount : getEntity().getMisc()) {
+        for (Mounted<?> mount : getEntity().getMisc()) {
             if (mount.getLocation() == Entity.LOC_NONE) {
                 masterEquipmentList.add(mount);
             }
         }
-        for (Mounted mount : getEntity().getWeaponList()) {
+        for (Mounted<?> mount : getEntity().getWeaponList()) {
             if (mount.getLocation() == Entity.LOC_NONE) {
                 masterEquipmentList.add(mount);
             }
         }
-        for (Mounted mount : getEntity().getAmmo()) {
+        for (Mounted<?> mount : getEntity().getAmmo()) {
             if ((mount.getLocation() == Entity.LOC_NONE) && !mount.isOneShotAmmo()) {
                 masterEquipmentList.add(mount);
             }
@@ -125,7 +133,7 @@ public class UnallocatedView extends IView implements ActionListener, MouseListe
         }
 
         // weapons and ammo
-        Vector<Mounted> weaponsNAmmoList = new Vector<>(10, 1);
+        Vector<Mounted<?>> weaponsNAmmoList = new Vector<>(10, 1);
         for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
             if ((masterEquipmentList.get(pos).getType() instanceof Weapon) || (masterEquipmentList.get(pos).getType() instanceof AmmoType)) {
                 weaponsNAmmoList.add(masterEquipmentList.get(pos));
@@ -134,7 +142,7 @@ public class UnallocatedView extends IView implements ActionListener, MouseListe
             }
         }
         weaponsNAmmoList.sort(StringUtils.mountedComparator());
-        for (Mounted mount : weaponsNAmmoList) {
+        for (Mounted<?> mount : weaponsNAmmoList) {
             equipmentList.addCrit(mount);
         }
 
@@ -166,7 +174,7 @@ public class UnallocatedView extends IView implements ActionListener, MouseListe
         }
 
         // everything else
-        for (Mounted mounted : masterEquipmentList) {
+        for (Mounted<?> mounted : masterEquipmentList) {
             equipmentList.addCrit(mounted);
         }
     }
@@ -226,7 +234,7 @@ public class UnallocatedView extends IView implements ActionListener, MouseListe
             JMenuItem item;
 
             final int selectedRow = equipmentTable.rowAtPoint(evt.getPoint());
-            Mounted mount = (Mounted)equipmentTable.getModel().getValueAt(selectedRow, CriticalTableModel.EQUIPMENT);
+            Mounted<?> mount = (Mounted<?>)equipmentTable.getModel().getValueAt(selectedRow, CriticalTableModel.EQUIPMENT);
 
             String[] locations = getEntity().getLocationNames();
 
@@ -249,7 +257,7 @@ public class UnallocatedView extends IView implements ActionListener, MouseListe
     }
 
     private void jMenuLoadComponent_actionPerformed(int location, int selectedRow) {
-        Mounted eq = (Mounted) equipmentTable.getModel().getValueAt(selectedRow, CriticalTableModel.EQUIPMENT);
+        Mounted<?> eq = (Mounted<?>) equipmentTable.getModel().getValueAt(selectedRow, CriticalTableModel.EQUIPMENT);
         UnitUtil.changeMountStatus(getEntity(), eq, location, -1, false);
 
         try {

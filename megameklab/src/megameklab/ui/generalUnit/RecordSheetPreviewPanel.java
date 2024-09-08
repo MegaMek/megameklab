@@ -19,20 +19,14 @@
 
 package megameklab.ui.generalUnit;
 
-import megamek.common.Entity;
-import megameklab.printing.PaperSize;
-import megameklab.printing.PrintRecordSheet;
-import megameklab.printing.PrintSmallUnitSheet;
-import megameklab.printing.RecordSheetOptions;
-import megameklab.util.UnitPrintManager;
-import org.apache.batik.gvt.GraphicsNode;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
@@ -40,6 +34,19 @@ import java.awt.image.BufferedImage;
 import java.awt.print.PageFormat;
 import java.io.IOException;
 import java.util.List;
+
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+
+import org.apache.batik.gvt.GraphicsNode;
+
+import megamek.common.Entity;
+import megameklab.printing.PaperSize;
+import megameklab.printing.PrintRecordSheet;
+import megameklab.printing.PrintSmallUnitSheet;
+import megameklab.printing.RecordSheetOptions;
+import megameklab.util.UnitPrintManager;
 
 
 /**

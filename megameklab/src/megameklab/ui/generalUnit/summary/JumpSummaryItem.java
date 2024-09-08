@@ -35,7 +35,7 @@ public class JumpSummaryItem extends AbstractSummaryItem {
         double totalWeight = 0.0f;
         int totalCrits = 0;
         availabilityLabel.setText("");
-        for (Mounted m : entity.getMisc()) {
+        for (Mounted<?> m : entity.getMisc()) {
             MiscType mt = (MiscType) m.getType();
             if (mt.hasFlag(MiscType.F_JUMP_JET) || mt.hasFlag(MiscType.F_JUMP_BOOSTER)
                     || mt.hasFlag(MiscType.F_UMU)) {

@@ -18,7 +18,12 @@
  */
 package megameklab.printing;
 
-import megamek.common.*;
+import megamek.common.AmmoType;
+import megamek.common.BattleArmor;
+import megamek.common.Entity;
+import megamek.common.EquipmentType;
+import megamek.common.Mek;
+import megamek.common.MiscType;
 import megamek.common.weapons.LegAttack;
 import megamek.common.weapons.StopSwarmAttack;
 import megamek.common.weapons.SwarmAttack;
@@ -46,7 +51,7 @@ public final class PrintUtil {
         } else if (entity instanceof BattleArmor) {
             return isPrintableBAEquipment(eq);
         } else {
-            return isPrintableEquipment(eq, entity instanceof Mech);
+            return isPrintableEquipment(eq, entity instanceof Mek);
         }
     }
 
@@ -55,10 +60,10 @@ public final class PrintUtil {
      * equipment section of the Record sheet.
      *
      * @param eq The equipment to test     The equipment
-     * @param isMech Whether the equipment is mounted on a mech
+     * @param isMek Whether the equipment is mounted on a Mek
      * @return       Whether the equipment should be shown on the record sheet
      */
-    public static boolean isPrintableEquipment(EquipmentType eq, boolean isMech) {
+    public static boolean isPrintableEquipment(EquipmentType eq, boolean isMek) {
         if (UnitUtil.isArmorOrStructure(eq)) {
             return false;
         }
@@ -71,7 +76,7 @@ public final class PrintUtil {
         if (UnitUtil.isJumpJet(eq)) {
             return false;
         }
-        if (!eq.isHittable() && isMech) {
+        if (!eq.isHittable() && isMek) {
             return false;
         }
 
@@ -82,7 +87,7 @@ public final class PrintUtil {
                         || eq.hasFlag(MiscType.F_ARTEMIS_V)
                         || eq.hasFlag(MiscType.F_APOLLO)
                         || eq.hasFlag(MiscType.F_PPC_CAPACITOR)
-                        || (eq.hasFlag(MiscType.F_MASC) && isMech)
+                        || (eq.hasFlag(MiscType.F_MASC) && isMek)
                         || eq.hasFlag(MiscType.F_HARJEL)
                         || eq.hasFlag(MiscType.F_MASS)
                         || eq.hasFlag(MiscType.F_CHASSIS_MODIFICATION)

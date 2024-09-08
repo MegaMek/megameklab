@@ -35,17 +35,17 @@ public class EquipmentSummaryItem extends AbstractSummaryItem {
         double totalWeight = 0;
         int totalCrits = 0;
 
-        for (Mounted m : entity.getMisc()) {
+        for (Mounted<?> m : entity.getMisc()) {
             if (isEquipment(m)) {
                 totalWeight += m.getTonnage();
                 totalCrits += m.getCriticals();
             }
         }
-        for (Mounted m : entity.getWeaponList()) {
+        for (Mounted<?> m : entity.getWeaponList()) {
             totalWeight += m.getTonnage();
             totalCrits += m.getCriticals();
         }
-        for (Mounted m : entity.getAmmo()) {
+        for (Mounted<?> m : entity.getAmmo()) {
             totalWeight += m.getTonnage();
             totalCrits += m.getCriticals();
         }
@@ -53,7 +53,7 @@ public class EquipmentSummaryItem extends AbstractSummaryItem {
         critLabel.setText(formatCrits(totalCrits));
     }
 
-    private boolean isEquipment(Mounted mounted) {
+    private boolean isEquipment(Mounted<?> mounted) {
         MiscType miscType = (MiscType) mounted.getType();
         return !UnitUtil.isArmorOrStructure(miscType)
                 && !miscType.hasFlag(MiscType.F_TSM)

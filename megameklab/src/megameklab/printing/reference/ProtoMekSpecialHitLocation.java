@@ -18,9 +18,9 @@ import megameklab.printing.PrintRecordSheet;
 /**
  * Table for proto damage due to area effect, falling, or collisions.
  */
-public class ProtomekSpecialHitLocation extends ReferenceTable {
+public class ProtoMekSpecialHitLocation extends ReferenceTable {
 
-    public ProtomekSpecialHitLocation(PrintRecordSheet sheet) {
+    public ProtoMekSpecialHitLocation(PrintRecordSheet sheet) {
         super(sheet, 0.2, 0.7);
         addRows();
     }

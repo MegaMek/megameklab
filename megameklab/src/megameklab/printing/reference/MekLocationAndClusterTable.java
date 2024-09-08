@@ -14,12 +14,15 @@
 
 package megameklab.printing.reference;
 
-import megamek.common.*;
-import megameklab.printing.PrintEntity;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import megamek.common.Compute;
+import megamek.common.Entity;
+import megamek.common.QuadMek;
+import megamek.common.TripodMek;
+import megameklab.printing.PrintEntity;
 
 /**
  * Adds hit location and cluster tables to the fluff image region instead of shrinking sheet and
@@ -54,9 +57,9 @@ public class MekLocationAndClusterTable extends ClusterHitsTable {
 
     private void addRows(Entity entity) {
         String[][] locations;
-        if (entity instanceof TripodMech) {
+        if (entity instanceof TripodMek) {
             locations = MekHitLocation.TRIPOD_LOCATIONS;
-        } else if (entity instanceof QuadMech) {
+        } else if (entity instanceof QuadMek) {
             locations = MekHitLocation.QUAD_LOCATIONS;
         } else {
             locations = MekHitLocation.BIPED_LOCATIONS;
@@ -73,7 +76,7 @@ public class MekLocationAndClusterTable extends ClusterHitsTable {
     @Override
     protected void addNotes(Entity entity) {
         addNote(bundle.getString("tacNote"));
-        if (entity instanceof TripodMech) {
+        if (entity instanceof TripodMek) {
             addNote(bundle.getString("tripodLegNote"));
         }
         super.addNotes(entity);

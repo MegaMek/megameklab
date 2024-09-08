@@ -14,7 +14,21 @@
  */
 package megameklab.ui.fighterAero;
 
-import megamek.common.*;
+import java.util.ArrayList;
+import java.util.Vector;
+
+import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+
+import org.apache.logging.log4j.LogManager;
+
+import megamek.common.Aero;
+import megamek.common.CriticalSlot;
+import megamek.common.LocationFullException;
+import megamek.common.Mounted;
+import megamek.common.WeaponType;
 import megamek.common.verifier.TestAero;
 import megameklab.ui.EntitySource;
 import megameklab.ui.PopupMessages;
@@ -23,11 +37,6 @@ import megameklab.ui.util.CritCellUtil;
 import megameklab.ui.util.IView;
 import megameklab.ui.util.RefreshListener;
 import megameklab.util.UnitUtil;
-import org.apache.logging.log4j.LogManager;
-
-import javax.swing.*;
-import java.util.ArrayList;
-import java.util.Vector;
 
 /**
  * The Crit Slots view for a Fighter (Aerospace and Conventional)
@@ -139,7 +148,7 @@ public class ASCriticalView extends IView {
             for (int slot = 0; slot < getAero().getNumberOfCriticals(location); slot++) {
                 CriticalSlot cs = getAero().getCritical(location, slot);
                 if ((cs != null) && (cs.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
-                    Mounted mounted = cs.getMount();
+                    Mounted<?> mounted = cs.getMount();
                     if (mounted == null) {
                         // Critical didn't get removed. Remove it now.
                         getAero().setCritical(location, slot, null);

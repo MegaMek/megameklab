@@ -32,12 +32,12 @@ public class ITab extends JPanel {
 
     public Entity getEntity() { return eSource.getEntity(); }
 
-    public Mech getMech() {
-        return (Mech) eSource.getEntity();
+    public Mek getMek() {
+        return (Mek) eSource.getEntity();
     }
 
-    public Protomech getProtomech() {
-        return (Protomech) eSource.getEntity();
+    public ProtoMek getProtoMek() {
+        return (ProtoMek) eSource.getEntity();
     }
 
     public Tank getTank() {

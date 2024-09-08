@@ -18,7 +18,31 @@
  */
 package megameklab.ui.generalUnit;
 
-import megamek.common.*;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.List;
+import java.util.ResourceBundle;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
+import megamek.common.Entity;
+import megamek.common.EntityMovementMode;
+import megamek.common.EntityWeightClass;
+import megamek.common.EquipmentType;
+import megamek.common.ITechManager;
+import megamek.common.ITechnology;
+import megamek.common.Mek;
+import megamek.common.MiscType;
+import megamek.common.TechConstants;
 import megamek.common.equipment.ArmorType;
 import megamek.common.verifier.TestEntity;
 import megameklab.ui.listeners.ArmorAllocationListener;
@@ -26,18 +50,8 @@ import megameklab.ui.util.CustomComboBox;
 import megameklab.ui.util.TechComboBox;
 import megameklab.util.UnitUtil;
 
-import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.List;
-import java.util.ResourceBundle;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 /**
- * Panel for assigning armor type and tonnage for mechs, (combat) vehicles, and fighters.
+ * Panel for assigning armor type and tonnage for Meks, (combat) vehicles, and fighters.
  *
  * @author Neoancient
  */
@@ -187,7 +201,7 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
      */
     public void setFromEntity(Entity en, boolean ignoreEntityPatchwork) {
         etype = en.getEntityType();
-        industrial = (en instanceof Mech) && ((Mech)en).isIndustrial();
+        industrial = (en instanceof Mek) && ((Mek)en).isIndustrial();
         primitive = en.isPrimitive();
         movementMode = en.getMovementMode();
         svLimitedArmor = en.isSupportVehicle() && !en.hasArmoredChassis();

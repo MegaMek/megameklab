@@ -60,7 +60,7 @@ public class BACriticalSuit {
         return crits[loc].length;
     }
 
-    public boolean canAddMounted(int loc, Mounted m) {
+    public boolean canAddMounted(int loc, Mounted<?> m) {
         int critsToAdd;
         if (m.getType().isSpreadable()) {
             critsToAdd = 1;
@@ -76,7 +76,7 @@ public class BACriticalSuit {
         return critsAvailable >= critsToAdd;
     }
 
-    public void addMounted(int loc, Mounted m) {
+    public void addMounted(int loc, Mounted<?> m) {
         // Don't mount unmounted equipment
         if (loc == BattleArmor.MOUNT_LOC_NONE) {
             return;

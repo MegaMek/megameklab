@@ -17,12 +17,21 @@
  */
 package megameklab.printing;
 
-import megamek.common.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.StringJoiner;
+
+import megamek.common.Aero;
+import megamek.common.AmmoType;
+import megamek.common.Dropship;
+import megamek.common.EquipmentType;
+import megamek.common.MiscType;
+import megamek.common.Mounted;
+import megamek.common.WeaponType;
 import megamek.common.weapons.CLIATMWeapon;
 import megamek.common.weapons.missiles.ATMWeapon;
 import megamek.common.weapons.missiles.MMLWeapon;
-
-import java.util.*;
 
 /**
  * Formats text for an entry for a weapon bay in the weapons and equipment inventory section of the record sheet.
@@ -51,18 +60,18 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
     }
 
     private void processBay() {
-        for (WeaponType wtype : bay.weapons.keySet()) {
-            int numWeapons = bay.weapons.get(wtype);
-            heat += wtype.getHeat() * numWeapons;
+        for (WeaponType weaponType : bay.weapons.keySet()) {
+            int numWeapons = bay.weapons.get(weaponType);
+            heat += weaponType.getHeat() * numWeapons;
             if (isCapital) {
-                baySRV += wtype.getShortAV() * numWeapons;
-                bayMRV += wtype.getMedAV() * numWeapons;
-                bayLRV += wtype.getLongAV() * numWeapons;
-                bayERV += wtype.getExtAV() * numWeapons;
-            } else if (wtype instanceof ATMWeapon || wtype instanceof CLIATMWeapon) {
+                baySRV += weaponType.getShortAV() * numWeapons;
+                bayMRV += weaponType.getMedAV() * numWeapons;
+                bayLRV += weaponType.getLongAV() * numWeapons;
+                bayERV += weaponType.getExtAV() * numWeapons;
+            } else if (weaponType instanceof ATMWeapon || weaponType instanceof CLIATMWeapon) {
                 // The default AVs assume standard ammo. Per footnote on TW, p. 304, the SRV is multiplied
                 // by 1.5 for HE and the long and extreme by 0.5 for ER, both rounded up.
-                double av = Math.ceil(wtype.getShortAV() * numWeapons * 0.5);
+                double av = Math.ceil(weaponType.getShortAV() * numWeapons * 0.5);
                 baySRV += Math.round(Math.ceil(av * 1.5) / 10.0);
                 bayMRV += Math.round(av / 10.0);
                 bayLRV += Math.round(Math.ceil(av * 0.5) / 10.0);
@@ -73,29 +82,30 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
                 standardBayERV += Math.ceil(av * 0.5);
             } else {
                 int bonus = 0;
-                if (bay.augmentations.containsKey(wtype)) {
-                    bonus = bay.augmentations.get(wtype).entrySet().stream()
-                        .mapToInt(e -> aeroAVMod(wtype, e.getKey(), true) * e.getValue()).sum();
+                if (bay.augmentations.containsKey(weaponType)) {
+                    bonus = bay.augmentations.get(
+                            weaponType).entrySet().stream()
+                        .mapToInt(e -> aeroAVMod(weaponType, e.getKey(), true) * e.getValue()).sum();
                 }
-                if (wtype.getShortAV() > 0) {
-                    double av = wtype.getShortAV() * numWeapons + bonus;
-                    if (wtype instanceof MMLWeapon) {
+                if (weaponType.getShortAV() > 0) {
+                    double av = weaponType.getShortAV() * numWeapons + bonus;
+                    if (weaponType instanceof MMLWeapon) {
                         av *= 2; // SRM ammo
                     }
                     baySRV += Math.round(av / 10.0);
-                    standardBaySRV += wtype.getShortAV() * numWeapons + bonus;
+                    standardBaySRV += weaponType.getShortAV() * numWeapons + bonus;
                 }
-                if (wtype.getMedAV() > 0) {
-                    bayMRV += Math.round((wtype.getMedAV() * numWeapons + bonus) / 10);
-                    standardBayMRV += wtype.getMedAV() * numWeapons + bonus;
+                if (weaponType.getMedAV() > 0) {
+                    bayMRV += Math.round((weaponType.getMedAV() * numWeapons + bonus) / 10);
+                    standardBayMRV += weaponType.getMedAV() * numWeapons + bonus;
                 }
-                if (wtype.getLongAV() > 0) {
-                    bayLRV += Math.round((wtype.getLongAV() * numWeapons + bonus) / 10);
-                    standardBayLRV += wtype.getLongAV() * numWeapons + bonus;
+                if (weaponType.getLongAV() > 0) {
+                    bayLRV += Math.round((weaponType.getLongAV() * numWeapons + bonus) / 10);
+                    standardBayLRV += weaponType.getLongAV() * numWeapons + bonus;
                 }
-                if (wtype.getExtAV() > 0) {
-                    bayERV += Math.round((wtype.getExtAV() * numWeapons + bonus) / 10);
-                    standardBayERV += wtype.getExtAV() * numWeapons + bonus;
+                if (weaponType.getExtAV() > 0) {
+                    bayERV += Math.round((weaponType.getExtAV() * numWeapons + bonus) / 10);
+                    standardBayERV += weaponType.getExtAV() * numWeapons + bonus;
                 }
             }
         }
@@ -115,7 +125,7 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
         artemisV = bay.allHaveAugmentation(MiscType.F_ARTEMIS_V);
         apollo = bay.allHaveAugmentation((MiscType.F_APOLLO));
 
-        for (WeaponType wtype : bay.weapons.keySet()) {
+        for (WeaponType weaponType : bay.weapons.keySet()) {
             StringJoiner locString = new StringJoiner("/");
             for (int i = 0; i < bay.loc.size(); i++) {
                 // Show official names of DropShip side arcs. Rear-mounted wing bays
@@ -141,19 +151,19 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
                 }
             }
             location = locString.toString();
-            StringBuilder nameString = new StringBuilder(wtype.getShortName());
-            if (bay.weaponAmmo.containsKey(wtype)) {
-                Mounted ammo = bay.weaponAmmo.get(wtype);
-                if (wtype.getAmmoType() == AmmoType.T_AR10) {
+            StringBuilder nameString = new StringBuilder(weaponType.getShortName());
+            if (bay.weaponAmmo.containsKey(weaponType)) {
+                Mounted<?> ammo = bay.weaponAmmo.get(weaponType);
+                if (weaponType.getAmmoType() == AmmoType.T_AR10) {
                     nameString.append(" (").append((int) ammo.getSize()).append(" ton capacity)");
-                } else if (wtype.isCapital() && wtype.hasFlag(WeaponType.F_MISSILE)) {
+                } else if (weaponType.isCapital() && weaponType.hasFlag(WeaponType.F_MISSILE)) {
                     nameString.append(" (").append(ammo.getBaseShotsLeft()).append(" missiles)");
                 } else {
                     nameString.append(" (").append(ammo.getBaseShotsLeft()).append(" rounds)");
                 }
             }
-            int capacitors = bay.countAugmentations(wtype, MiscType.F_PPC_CAPACITOR);
-            if (capacitors == bay.weapons.get(wtype)) {
+            int capacitors = bay.countAugmentations(weaponType, MiscType.F_PPC_CAPACITOR);
+            if (capacitors == bay.weapons.get(weaponType)) {
                 nameString.append(" w/Capacitor");
             } else if (capacitors > 0) {
                 nameString.append(" w/").append(capacitors);
@@ -176,7 +186,7 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
                 }
             }
             weaponNames.add(nameString.toString());
-            quantities.add(String.valueOf(bay.weapons.get(wtype)));
+            quantities.add(String.valueOf(bay.weapons.get(weaponType)));
         }
     }
 

@@ -18,11 +18,11 @@
  */
 package megameklab.ui.generalUnit.summary;
 
+import java.util.Optional;
+
 import megamek.common.Entity;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
-
-import java.util.Optional;
 
 public class MyomerEnhancementSummaryItem extends AbstractSummaryItem {
 
@@ -33,7 +33,7 @@ public class MyomerEnhancementSummaryItem extends AbstractSummaryItem {
 
     @Override
     public void refresh(Entity entity) {
-        Optional<Mounted> enhancement = getEnhancement(entity);
+        Optional<Mounted<?>> enhancement = getEnhancement(entity);
         if (enhancement.isPresent()) {
             availabilityLabel.setText(enhancement.get().getType().getFullRatingName(entity.isClan()));
             weightLabel.setText(formatWeight(enhancement.get().getTonnage(), entity));
@@ -45,8 +45,8 @@ public class MyomerEnhancementSummaryItem extends AbstractSummaryItem {
         }
     }
 
-    private Optional<Mounted> getEnhancement(Entity entity) {
-        for (Mounted m : entity.getMisc()) {
+    private Optional<Mounted<?>> getEnhancement(Entity entity) {
+        for (Mounted<?> m : entity.getMisc()) {
             if (isMyomerEnhancement(m)) {
                 return Optional.of(m);
             }
@@ -54,7 +54,7 @@ public class MyomerEnhancementSummaryItem extends AbstractSummaryItem {
         return Optional.empty();
     }
 
-    private boolean isMyomerEnhancement(Mounted mounted) {
+    private boolean isMyomerEnhancement(Mounted<?> mounted) {
         MiscType miscType = (MiscType) mounted.getType();
         return miscType.hasFlag(MiscType.F_TSM)
                 || miscType.hasFlag(MiscType.F_INDUSTRIAL_TSM)

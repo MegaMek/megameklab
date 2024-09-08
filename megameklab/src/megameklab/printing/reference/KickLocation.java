@@ -13,22 +13,22 @@
  */
 package megameklab.printing.reference;
 
-import megamek.common.QuadMech;
-import megamek.common.TripodMech;
-import megameklab.printing.PrintMech;
+import megamek.common.QuadMek;
+import megamek.common.TripodMek;
+import megameklab.printing.PrintMek;
 
 /**
  * Hit location table for kick attacks
  */
 public class KickLocation extends ReferenceTable {
 
-    public KickLocation(PrintMech sheet) {
+    public KickLocation(PrintMek sheet) {
         super(sheet, 0.1, 0.35, 0.6, 0.85);
         setHeaders(bundle.getString("dieRoll1d6"), bundle.getString("leftSide"),
                 bundle.getString("frontRear"), bundle.getString("rightSide"));
-        if (sheet.getEntity() instanceof QuadMech) {
+        if (sheet.getEntity() instanceof QuadMek) {
             addQuadRows();
-        } else if (sheet.getEntity() instanceof TripodMech) {
+        } else if (sheet.getEntity() instanceof TripodMek) {
             addTripodRows();
         } else {
             addBipedRows();

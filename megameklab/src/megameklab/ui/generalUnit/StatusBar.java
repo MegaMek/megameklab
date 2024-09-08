@@ -18,25 +18,37 @@
  */
 package megameklab.ui.generalUnit;
 
+import java.awt.Event;
+import java.awt.FlowLayout;
+import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.UIManager;
+import javax.swing.border.MatteBorder;
+
 import megamek.client.ui.WrapLayout;
 import megamek.client.ui.dialogs.BVDisplayDialog;
 import megamek.client.ui.dialogs.CostDisplayDialog;
 import megamek.client.ui.dialogs.WeightDisplayDialog;
 import megamek.client.ui.swing.GUIPreferences;
 import megamek.client.ui.swing.calculationReport.CalculationReport;
-import megamek.common.*;
+import megamek.common.Aero;
+import megamek.common.AmmoType;
+import megamek.common.BattleArmor;
+import megamek.common.Engine;
+import megamek.common.Mek;
+import megamek.common.MiscType;
+import megamek.common.Mounted;
+import megamek.common.WeaponType;
 import megamek.common.verifier.TestEntity;
 import megamek.utilities.DebugEntity;
 import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
 import megameklab.util.UnitUtil;
-
-import javax.swing.*;
-import javax.swing.border.MatteBorder;
-import java.awt.*;
-import java.awt.event.ActionListener;
-import java.text.DecimalFormat;
 
 public class StatusBar extends ITab {
 
@@ -172,16 +184,16 @@ public class StatusBar extends ITab {
      * @return An estimated value of the total heat generation.
      */
     protected long estimatedHeatGeneration() {
-        if (!(getEntity() instanceof Mech) && !(getEntity() instanceof Aero)) {
+        if (!(getEntity() instanceof Mek) && !(getEntity() instanceof Aero)) {
             return 0;
         }
         double heat = 0;
 
-        if (getEntity() instanceof Mech) {
+        if (getEntity() instanceof Mek) {
             if (getEntity().getOriginalJumpMP() > 0) {
-                if (getEntity().getJumpType() == Mech.JUMP_IMPROVED) {
-                    heat += Math.max(3, Math.ceil(getMech().getOriginalJumpMP() / 2.0f));
-                } else if (getEntity().getJumpType() != Mech.JUMP_BOOSTER) {
+                if (getEntity().getJumpType() == Mek.JUMP_IMPROVED) {
+                    heat += Math.max(3, Math.ceil(getMek().getOriginalJumpMP() / 2.0f));
+                } else if (getEntity().getJumpType() != Mek.JUMP_BOOSTER) {
                     heat += Math.max(3, getEntity().getOriginalJumpMP());
                 }
                 if (getEntity().getEngineType() == Engine.XXL_ENGINE) {
@@ -194,33 +206,33 @@ public class StatusBar extends ITab {
             }
         }
 
-        for (Mounted mounted : getEntity().getTotalWeaponList()) {
-            WeaponType wtype = (WeaponType) mounted.getType();
-            double weaponHeat = wtype.getHeat();
+        for (Mounted<?> mounted : getEntity().getTotalWeaponList()) {
+            WeaponType weaponType = (WeaponType) mounted.getType();
+            double weaponHeat = weaponType.getHeat();
 
             if (mounted.isMissing() || mounted.isHit() || mounted.isDestroyed() || mounted.isBreached()) {
                 continue;
             }
 
-            if ((wtype.getAmmoType() == AmmoType.T_ROCKET_LAUNCHER) || wtype.hasFlag(WeaponType.F_ONESHOT)) {
+            if ((weaponType.getAmmoType() == AmmoType.T_ROCKET_LAUNCHER) || weaponType.hasFlag(WeaponType.F_ONESHOT)) {
                 weaponHeat *= 0.25;
             }
 
-            if ((wtype.getAmmoType() == AmmoType.T_AC_ULTRA) || (wtype.getAmmoType() == AmmoType.T_AC_ULTRA_THB)) {
+            if ((weaponType.getAmmoType() == AmmoType.T_AC_ULTRA) || (weaponType.getAmmoType() == AmmoType.T_AC_ULTRA_THB)) {
                 weaponHeat *= 2;
             }
 
-            if (wtype.getAmmoType() == AmmoType.T_AC_ROTARY) {
+            if (weaponType.getAmmoType() == AmmoType.T_AC_ROTARY) {
                 weaponHeat *= 6;
             }
 
-            if ((wtype.getAmmoType() == AmmoType.T_SRM_STREAK) || (wtype.getAmmoType() == AmmoType.T_LRM_STREAK)) {
+            if ((weaponType.getAmmoType() == AmmoType.T_SRM_STREAK) || (weaponType.getAmmoType() == AmmoType.T_LRM_STREAK)) {
                 weaponHeat *= 0.5;
             }
             heat += weaponHeat;
         }
 
-        for (Mounted m : getEntity().getMisc()) {
+        for (Mounted<?> m : getEntity().getMisc()) {
             heat += m.getType().getHeat();
 
             if (m.getType().hasFlag(MiscType.F_LASER_INSULATOR)) {

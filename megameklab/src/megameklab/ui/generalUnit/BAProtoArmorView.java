@@ -18,18 +18,8 @@
  */
 package megameklab.ui.generalUnit;
 
-import megamek.common.*;
-import megamek.common.annotations.Nullable;
-import megamek.common.equipment.ArmorType;
-import megamek.common.verifier.TestProtomech;
-import megameklab.ui.listeners.ArmorAllocationListener;
-import megameklab.ui.util.TechComboBox;
-import megameklab.util.UnitUtil;
-
-import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import java.awt.*;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigInteger;
@@ -37,9 +27,28 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import javax.swing.JButton;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
+import megamek.common.BattleArmor;
+import megamek.common.Entity;
+import megamek.common.EquipmentType;
+import megamek.common.ITechManager;
+import megamek.common.MiscType;
+import megamek.common.ProtoMek;
+import megamek.common.annotations.Nullable;
+import megamek.common.equipment.ArmorType;
+import megamek.common.verifier.TestProtoMek;
+import megameklab.ui.listeners.ArmorAllocationListener;
+import megameklab.ui.util.TechComboBox;
+import megameklab.util.UnitUtil;
+
 /**
  * Structure table armor panel for units that allocate armor by point instead of ton.
- * 
+ *
  * @author Neoancient
  */
 public class BAProtoArmorView extends BuildView implements ActionListener, ChangeListener {
@@ -60,7 +69,7 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
     private final JSpinner spnArmorPoints = new JSpinner(spnArmorPointsModel);
     private final JButton btnMaximize = new JButton();
     private final JButton btnUseRemaining = new JButton();
-    
+
     private final ITechManager techManager;
     private long etype;
 
@@ -130,37 +139,37 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
             spnArmorPointsModel.setValue(Math.min(((BattleArmor)en).getMaximumArmorPoints(),
                     en.getOArmor(BattleArmor.LOC_TROOPER_1)));
             spnArmorPointsModel.setMaximum(((BattleArmor)en).getMaximumArmorPoints());
-        } else if (en.hasETypeFlag(Entity.ETYPE_PROTOMECH)) {
-            final int max = TestProtomech.maxArmorFactor((Protomech) en);
+        } else if (en.hasETypeFlag(Entity.ETYPE_PROTOMEK)) {
+            final int max = TestProtoMek.maxArmorFactor((ProtoMek) en);
             spnArmorPointsModel.setValue(Math.min(max,
                     (int) UnitUtil.getRawArmorPoints(en, en.getLabArmorTonnage())));
             spnArmorPointsModel.setMaximum(max);
         } else {
             spnArmorPointsModel.setValue(en.getTotalOArmor());
         }
-        
+
         cbArmorType.addActionListener(this);
         spnArmorPoints.addChangeListener(this);
         refresh();
     }
-    
+
     public @Nullable ArmorType getArmor() {
         return (ArmorType) cbArmorType.getSelectedItem();
     }
-    
+
     public int getArmorPoints() {
         return spnArmorPointsModel.getNumber().intValue();
     }
-    
+
     public void refresh() {
         EquipmentType prev = (EquipmentType)cbArmorType.getSelectedItem();
         cbArmorType.removeActionListener(this);
         cbArmorType.removeAllItems();
-        
+
         BigInteger flag = BigInteger.valueOf(0);
         if ((etype & Entity.ETYPE_BATTLEARMOR) != 0) {
             flag = MiscType.F_BA_EQUIPMENT;
-        } else if ((etype & Entity.ETYPE_PROTOMECH) != 0) {
+        } else if ((etype & Entity.ETYPE_PROTOMEK) != 0) {
             flag = MiscType.F_PROTOMECH_EQUIPMENT;
         }
         for (ArmorType armor : ArmorType.allArmorTypes()) {
@@ -184,7 +193,7 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
         }
         cbArmorType.showTechBase(techManager.useMixedTech());
     }
-    
+
     @Override
     public void stateChanged(ChangeEvent evt) {
         if (evt.getSource() == spnArmorPoints) {

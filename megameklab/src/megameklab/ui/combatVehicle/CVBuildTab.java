@@ -15,6 +15,18 @@
  */
 package megameklab.ui.combatVehicle;
 
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+
+import org.apache.logging.log4j.LogManager;
+
 import megamek.common.Entity;
 import megamek.common.MechFileParser;
 import megamek.common.Mounted;
@@ -24,12 +36,6 @@ import megameklab.ui.generalUnit.UnallocatedView;
 import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
 import megameklab.util.UnitUtil;
-import org.apache.logging.log4j.LogManager;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class CVBuildTab extends ITab implements ActionListener {
     private RefreshListener refresh = null;
@@ -98,7 +104,7 @@ public class CVBuildTab extends ITab implements ActionListener {
 
     private void autoFillCrits() {
 
-        for (Mounted mount : unallocatedView.getTableModel().getCrits()) {
+        for (Mounted<?> mount : unallocatedView.getTableModel().getCrits()) {
             for (int location = 0; location < getTank().locations(); location++) {
                 try {
                     getTank().addEquipment(mount, location, false);
@@ -114,7 +120,7 @@ public class CVBuildTab extends ITab implements ActionListener {
     }
 
     private void resetCrits() {
-        for (Mounted mount : getTank().getEquipment()) {
+        for (Mounted<?> mount : getTank().getEquipment()) {
             // Fixed shouldn't be removed
             if (UnitUtil.isFixedLocationSpreadEquipment(mount.getType())) {
                 continue;
@@ -122,7 +128,7 @@ public class CVBuildTab extends ITab implements ActionListener {
             UnitUtil.removeCriticals(getTank(), mount);
             UnitUtil.changeMountStatus(getTank(), mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
         }
-        // Check linkings after you remove everything.
+        // Check linking after you remove everything.
         try {
             MechFileParser.postLoadInit(getTank());
         } catch (EntityLoadingException ele) {

@@ -16,15 +16,19 @@
 
 package megameklab.ui.battleArmor;
 
+import java.util.ArrayList;
+
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+
 import megamek.common.BattleArmor;
 import megamek.common.Mounted;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
 import megameklab.util.UnitUtil;
-
-import javax.swing.*;
-import java.util.ArrayList;
 
 /**
  * A component that creates a table for building the criticals of a unit.  This
@@ -103,14 +107,14 @@ public class BABuildTab extends ITab {
         // BattleArmor doesn't track crits implicitly, so they need to be tracked explicitly
         BACriticalSuit crits = new BACriticalSuit(getBattleArmor());
         // Populate with equipment that is already installed
-        for (Mounted m : getBattleArmor().getEquipment()) {
+        for (Mounted<?> m : getBattleArmor().getEquipment()) {
             if ((m.getLocation() == BattleArmor.LOC_SQUAD)
                     && (m.getBaMountLoc() != BattleArmor.MOUNT_LOC_NONE)) {
                 crits.addMounted(m.getBaMountLoc(), m);
             }
         }
-        for (Mounted mount : buildView.getTableModel().getCrits()) {
-            for (int location = BattleArmor.MOUNT_LOC_BODY; 
+        for (Mounted<?> mount : buildView.getTableModel().getCrits()) {
+            for (int location = BattleArmor.MOUNT_LOC_BODY;
                     location < BattleArmor.MOUNT_NUM_LOCS; location++) {
                 if (!UnitUtil.isValidLocation(getBattleArmor(), mount.getType(), location)) {
                     continue;
@@ -131,7 +135,7 @@ public class BABuildTab extends ITab {
     }
 
     private void resetCrits() {
-        for (Mounted mount : getBattleArmor().getEquipment()) {
+        for (Mounted<?> mount : getBattleArmor().getEquipment()) {
             if (UnitUtil.isFixedLocationSpreadEquipment(mount.getType())) {
                 continue;
             }

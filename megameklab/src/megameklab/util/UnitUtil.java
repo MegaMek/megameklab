@@ -18,6 +18,22 @@
  */
 package megameklab.util;
 
+import java.awt.Font;
+import java.io.File;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+import java.util.stream.Collectors;
+
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+
+import org.apache.logging.log4j.LogManager;
+
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
 import megamek.common.equipment.AmmoMounted;
@@ -26,7 +42,7 @@ import megamek.common.equipment.MiscMounted;
 import megamek.common.equipment.WeaponMounted;
 import megamek.common.verifier.*;
 import megamek.common.verifier.TestEntity.Ceil;
-import megamek.common.weapons.*;
+import megamek.common.weapons.AmmoWeapon;
 import megamek.common.weapons.autocannons.HVACWeapon;
 import megamek.common.weapons.autocannons.UACWeapon;
 import megamek.common.weapons.bayweapons.BayWeapon;
@@ -49,15 +65,6 @@ import megamek.common.weapons.srms.SRMWeapon;
 import megamek.common.weapons.srms.SRTWeapon;
 import megamek.common.weapons.srms.StreakSRMWeapon;
 import megameklab.ui.PopupMessages;
-import org.apache.logging.log4j.LogManager;
-
-import javax.swing.*;
-import java.awt.*;
-import java.io.File;
-import java.math.BigInteger;
-import java.util.List;
-import java.util.*;
-import java.util.stream.Collectors;
 
 public class UnitUtil {
 
@@ -183,14 +190,14 @@ public class UnitUtil {
         } else  if ((eq instanceof MiscType)
                 && (eq.hasFlag(MiscType.F_JUMP_BOOSTER)
                         || eq.hasFlag(MiscType.F_TALON)
-                        // Stealth armor is allocated 2 slots/location in mechs, but by individual slot for BA
+                        // Stealth armor is allocated 2 slots/location in Meks, but by individual slot for BA
                         || (eq.hasFlag(MiscType.F_STEALTH) && !(mount.getEntity() instanceof BattleArmor)))) {
             toReturn = 2;
         } else  if (UnitUtil.isFixedLocationSpreadEquipment(eq) || UnitUtil.isTSM(eq)
                 || UnitUtil.isArmorOrStructure(eq)) {
             toReturn = 1;
         }
-        if ((mount.getEntity() instanceof Mech) && mount.getEntity().isSuperHeavy()) {
+        if ((mount.getEntity() instanceof Mek) && mount.getEntity().isSuperHeavy()) {
             toReturn = Math.ceil(toReturn / 2.0);
         }
         return (int) toReturn;
@@ -326,7 +333,7 @@ public class UnitUtil {
                 || mount.getType().hasFlag(MiscType.F_QUAD_TURRET))) {
             for (Mounted<?> m : unit.getEquipment()) {
                 if (m.getLocation() == mount.getLocation()) {
-                    m.setMechTurretMounted(false);
+                    m.setMekTurretMounted(false);
                 }
             }
         }
@@ -385,8 +392,8 @@ public class UnitUtil {
             throws LocationFullException {
         unit.addEquipment(mounted, loc, rearMounted);
         mounted.setOmniPodMounted(canPodMount(unit, mounted));
-        if (unit instanceof Mech) {
-            MekUtil.updateClanCasePlacement((Mech) unit);
+        if (unit instanceof Mek) {
+            MekUtil.updateClanCasePlacement((Mek) unit);
         }
     }
 
@@ -474,7 +481,7 @@ public class UnitUtil {
     }
 
     /**
-     * Checks if EquipmentType is a Mech Physical weapon.
+     * Checks if EquipmentType is a Mek Physical weapon.
      *
      * @param eq The equipment to test The equipment to check
      * @return   Whether the equipment is a physical weapon
@@ -532,17 +539,17 @@ public class UnitUtil {
 
     /**
      *
-     * @param type The value returned by {@link Mech#getJumpType()}
+     * @param type The value returned by {@link Mek#getJumpType()}
      * @return     The {@link EquipmentType} lookup key for the jump jet
      */
     public static String getJumpJetType(int type) {
-        if (type == Mech.JUMP_IMPROVED) {
+        if (type == Mek.JUMP_IMPROVED) {
             return EquipmentTypeLookup.IMPROVED_JUMP_JET;
-        } else if (type == Mech.JUMP_PROTOTYPE) {
+        } else if (type == Mek.JUMP_PROTOTYPE) {
             return EquipmentTypeLookup.PROTOTYPE_JUMP_JET;
-        } else if (type == Mech.JUMP_BOOSTER) {
+        } else if (type == Mek.JUMP_BOOSTER) {
             return EquipmentTypeLookup.MECH_JUMP_BOOSTER;
-        } else if (type == Mech.JUMP_PROTOTYPE_IMPROVED) {
+        } else if (type == Mek.JUMP_PROTOTYPE_IMPROVED) {
             return EquipmentTypeLookup.PROTOTYPE_IMPROVED_JJ;
         }
         return EquipmentTypeLookup.JUMP_JET;
@@ -600,8 +607,8 @@ public class UnitUtil {
                 // Exception thrown for not having equipment to link to yet, which is acceptable here
             }
         }
-        if (unit instanceof Mech) {
-            MekUtil.updateClanCasePlacement((Mech) unit);
+        if (unit instanceof Mek) {
+            MekUtil.updateClanCasePlacement((Mek) unit);
         }
     }
 
@@ -611,8 +618,8 @@ public class UnitUtil {
             return;
         }
         final Entity entity = mount.getEntity();
-        // Mechs may need to shift the crits around to make room if the equipment grows
-        if (entity instanceof Mech) {
+        // Meks may need to shift the crits around to make room if the equipment grows
+        if (entity instanceof Mek) {
             final int loc = mount.getLocation();
             int start = -1;
             for (int slot = 0; slot < entity.getNumberOfCriticals(loc); slot++) {
@@ -683,13 +690,13 @@ public class UnitUtil {
             return false;
         }
 
-        if (eq.getType() instanceof MiscType && unit instanceof Mech
+        if (eq.getType() instanceof MiscType && unit instanceof Mek
                 && (eq.getType().hasFlag(MiscType.F_HEAT_SINK)
                         || eq.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK)
                         || eq.getType().hasFlag(MiscType.F_IS_DOUBLE_HEAT_SINK_PROTOTYPE))
                 && unit.hasEngine()) {
             int needed = Math.max(0, unit.getEngine().getWeightFreeEngineHeatSinks() -
-                    UnitUtil.getCriticalFreeHeatSinks(unit, ((Mech)unit).hasCompactHeatSinks()));
+                    UnitUtil.getCriticalFreeHeatSinks(unit, ((Mek)unit).hasCompactHeatSinks()));
             long fixed = unit.getMisc().stream().filter(m ->
             (m.getType().hasFlag(MiscType.F_HEAT_SINK)
                     || m.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK)
@@ -738,9 +745,9 @@ public class UnitUtil {
         return false;
     }
 
-    public static int[] getHighestContinuousNumberOfCritsArray(Mech unit) {
+    public static int[] getHighestContinuousNumberOfCritsArray(Mek unit) {
         int[] critSpaces = new int[] { 0, 0, 0, 0, 0, 0, 0, 0 };
-        for (int loc = 0; loc <= Mech.LOC_LLEG; loc++) {
+        for (int loc = 0; loc <= Mek.LOC_LLEG; loc++) {
             critSpaces[loc] = UnitUtil.getHighestContinuousNumberOfCrits(unit, loc);
         }
         return critSpaces;
@@ -788,14 +795,14 @@ public class UnitUtil {
 
     public static int getMaximumArmorPoints(Entity unit) {
         int points = 0;
-        if (unit.hasETypeFlag(Entity.ETYPE_MECH)) {
+        if (unit.hasETypeFlag(Entity.ETYPE_MEK)) {
             int headPoints = 3;
             if (unit.getWeightClass() == EntityWeightClass.WEIGHT_SUPER_HEAVY) {
                 headPoints = 4;
             }
             points = (unit.getTotalInternal() * 2) + headPoints;
-        } else if (unit.hasETypeFlag(Entity.ETYPE_PROTOMECH)) {
-            points = TestProtomech.maxArmorFactor((Protomech) unit);
+        } else if (unit.hasETypeFlag(Entity.ETYPE_PROTOMEK)) {
+            points = TestProtoMek.maxArmorFactor((ProtoMek) unit);
         } else if (unit.isSupportVehicle()) {
             points = TestSupportVehicle.maxArmorFactor(unit);
         } else if (unit.hasETypeFlag(Entity.ETYPE_TANK)) {
@@ -815,13 +822,13 @@ public class UnitUtil {
     }
 
     public static int getMaximumArmorPoints(Entity unit, int loc) {
-        if ((unit instanceof Mech) && (loc == Mech.LOC_HEAD)) {
+        if ((unit instanceof Mek) && (loc == Mek.LOC_HEAD)) {
             if (unit.isSuperHeavy()) {
                 return 12;
             } else {
                 return 9;
             }
-        } else if (unit instanceof Mech) {
+        } else if (unit instanceof Mek) {
             return unit.getInternal(loc) * 2;
         } else if (unit.isSupportVehicle()) {
             return TestSupportVehicle.maxArmorFactor(unit);
@@ -830,8 +837,8 @@ public class UnitUtil {
                 return 2;
             }
             return (int) Math.floor((unit.getWeight() * 3.5) + 40);
-        } else if (unit instanceof Protomech) {
-            return TestProtomech.maxArmorFactor((Protomech) unit, loc);
+        } else if (unit instanceof ProtoMek) {
+            return TestProtoMek.maxArmorFactor((ProtoMek) unit, loc);
         } else {
             return 0;
         }
@@ -848,7 +855,7 @@ public class UnitUtil {
         if (unit.getArmorType(1) == EquipmentType.T_ARMOR_HARDENED) {
             armorPerTon = 8.0;
         }
-        if (unit instanceof Mech) {
+        if (unit instanceof Mek) {
             double points = (unit.getTotalInternal() * 2);
             // Add in extra armor points for head
             if (unit.isSuperHeavy()) {
@@ -858,8 +865,8 @@ public class UnitUtil {
             }
             armorWeight = points / armorPerTon;
             armorWeight = Math.ceil(armorWeight * 2.0) / 2.0;
-        } else if (unit instanceof Protomech) {
-            double points = TestProtomech.maxArmorFactor((Protomech) unit);
+        } else if (unit instanceof ProtoMek) {
+            double points = TestProtoMek.maxArmorFactor((ProtoMek) unit);
             return points * ArmorType.forEntity(unit).getWeightPerPoint();
         } else if (unit.isSupportVehicle()) {
             // Max armor is determined by number of points.
@@ -899,7 +906,7 @@ public class UnitUtil {
      * @return  the number of armor points available for the armor tonnage
      */
     public static double getRawArmorPoints(Entity unit, double armorTons) {
-        if (unit.hasETypeFlag(Entity.ETYPE_PROTOMECH)) {
+        if (unit.hasETypeFlag(Entity.ETYPE_PROTOMEK)) {
             return Math.round(armorTons / ArmorType.forEntity(unit).getWeightPerPoint());
         } else if (unit.isSupportVehicle()) {
             return Math.floor(armorTons / TestSupportVehicle.armorWeightPerPoint(unit));
@@ -966,8 +973,8 @@ public class UnitUtil {
 
     public static void compactCriticals(Entity unit) {
         for (int loc = 0; loc < unit.locations(); loc++) {
-            if (unit instanceof Mech) {
-                MekUtil.compactCriticals((Mech) unit, loc);
+            if (unit instanceof Mek) {
+                MekUtil.compactCriticals((Mek) unit, loc);
             } else {
                 compactCriticals(unit, loc);
             }
@@ -985,14 +992,14 @@ public class UnitUtil {
         if ((location < 0) || (location >= entity.locations())) {
             return 0;
         }
-        if (entity.hasETypeFlag(Entity.ETYPE_MECH)) {
-            if (location == Mech.LOC_HEAD) {
+        if (entity.hasETypeFlag(Entity.ETYPE_MEK)) {
+            if (location == Mek.LOC_HEAD) {
                 return (entity.getWeightClass() == EntityWeightClass.WEIGHT_SUPER_HEAVY)? 12 : 9;
             } else {
                 return entity.getOInternal(location) * 2;
             }
-        } else if (entity.hasETypeFlag(Entity.ETYPE_PROTOMECH)) {
-            return TestProtomech.maxArmorFactor((Protomech) entity, location);
+        } else if (entity.hasETypeFlag(Entity.ETYPE_PROTOMEK)) {
+            return TestProtoMek.maxArmorFactor((ProtoMek) entity, location);
         } else if ((entity instanceof VTOL) && (location == VTOL.LOC_ROTOR)) {
             return 2;
         }
@@ -1092,7 +1099,7 @@ public class UnitUtil {
             unit.getEquipment().remove(mount);
             unit.getMisc().remove(mount);
 
-            for (int location = 0; location <= Mech.LOC_LLEG; location++) {
+            for (int location = 0; location <= Mek.LOC_LLEG; location++) {
                 for (int slot = 0; slot < unit.getNumberOfCriticals(location); slot++) {
                     CriticalSlot cs = unit.getCritical(location, slot);
                     if ((cs == null)
@@ -1181,7 +1188,7 @@ public class UnitUtil {
     public static boolean isPreviousCritEmpty(Entity unit, CriticalSlot cs, int slot, int location) {
         if (slot == 0) {
             return false;
-        } else if (unit instanceof Mech) {
+        } else if (unit instanceof Mek) {
             return (slot <= 0) || (unit.getCritical(location, slot - 1) == null);
         } else {
             return true;
@@ -1189,8 +1196,8 @@ public class UnitUtil {
     }
 
     public static boolean isLastCrit(Entity unit, CriticalSlot cs, int slot, int location) {
-        if (unit instanceof Mech) {
-            return MekUtil.isLastMechCrit((Mech) unit, cs, slot, location);
+        if (unit instanceof Mek) {
+            return MekUtil.isLastMekCrit((Mek) unit, cs, slot, location);
         }
         return true;
     }
@@ -1227,7 +1234,7 @@ public class UnitUtil {
         /* Several types of equipment have multiple fixed locations. These
          * are always mounted in the primary location and added to critical
          * slots in the other location(s). Examples are partial wing (both side torsos)
-         * and mech tracks (all legs). Rather than dealing with each piece of equipment
+         * and Mek tracks (all legs). Rather than dealing with each piece of equipment
          * individually and risking missing one, just check everywhere.
          */
         if (isFixedLocationSpreadEquipment(mount.getType())) {
@@ -1250,8 +1257,8 @@ public class UnitUtil {
             return;
         }
 
-        if (cs.getIndex() <= Mech.SYSTEM_GYRO) {
-            for (int loc = Mech.LOC_HEAD; loc <= Mech.LOC_LT; loc++) {
+        if (cs.getIndex() <= Mek.SYSTEM_GYRO) {
+            for (int loc = Mek.LOC_HEAD; loc <= Mek.LOC_LT; loc++) {
                 for (int slot = 0; slot < unit.getNumberOfCriticals(loc); slot++) {
                     CriticalSlot newCrit = unit.getCritical(loc, slot);
 
@@ -1321,8 +1328,8 @@ public class UnitUtil {
         }
         UnitUtil.removeOneShotAmmo(unit);
 
-        if (unit instanceof Mech) {
-            MekUtil.updateLoadedMech((Mech) unit);
+        if (unit instanceof Mek) {
+            MekUtil.updateLoadedMek((Mek) unit);
         } else if (unit instanceof Aero) {
             AeroUtil.updateLoadedAero((Aero) unit);
         }
@@ -1355,14 +1362,14 @@ public class UnitUtil {
             return InfantryUtil.isInfantryEquipment(eq, unit);
         }
 
-        return MekUtil.isMechWeapon(eq, unit);
+        return MekUtil.isMekWeapon(eq, unit);
     }
 
     public static boolean isEntityEquipment(EquipmentType eq, Entity en) {
-        if (en instanceof Mech) {
-            return MekUtil.isMechEquipment(eq, (Mech) en);
-        } else if (en instanceof Protomech) {
-            return ProtoMekUtil.isProtomechEquipment(eq, (Protomech) en);
+        if (en instanceof Mek) {
+            return MekUtil.isMekEquipment(eq, (Mek) en);
+        } else if (en instanceof ProtoMek) {
+            return ProtoMekUtil.isProtoMekEquipment(eq, (ProtoMek) en);
         } else if (en.isSupportVehicle()) {
             return isSupportVehicleEquipment(eq, en);
         } else if (en instanceof Tank) {
@@ -1424,7 +1431,7 @@ public class UnitUtil {
             mountList = ArmorType.allArmorTypes().stream().map(ArmorType::getInternalName).collect(Collectors.toList());
         }
 
-        for (int location = Mech.LOC_HEAD; location < unit.locations(); location++) {
+        for (int location = Mek.LOC_HEAD; location < unit.locations(); location++) {
             for (int slot = 0; slot < unit.getNumberOfCriticals(location); slot++) {
                 CriticalSlot crit = unit.getCritical(location, slot);
                 if ((crit != null)
@@ -1520,34 +1527,34 @@ public class UnitUtil {
     }
 
     public static void checkArmor(Entity unit) {
-        if (!(unit instanceof Mech)) {
+        if (!(unit instanceof Mek)) {
             return;
         }
 
         boolean foundError = false;
 
-        Mech mech = (Mech) unit;
+        Mek mek = (Mek) unit;
 
-        // Check all the mechs locations to see if any armor is greater than can
+        // Check all the meks locations to see if any armor is greater than can
         // be in there.
-        for (int location = 0; location < mech.locations(); location++) {
+        for (int location = 0; location < mek.locations(); location++) {
             // Head armor has a max of 9
-            if (location == Mech.LOC_HEAD) {
-                int armor = mech.getArmor(location);
+            if (location == Mek.LOC_HEAD) {
+                int armor = mek.getArmor(location);
 
-                if ((armor > 9) && !mech.isSuperHeavy()) {
+                if ((armor > 9) && !mek.isSuperHeavy()) {
                     foundError = true;
-                    mech.initializeArmor(9, location);
+                    mek.initializeArmor(9, location);
                 } else if (armor > 12) {
                     foundError = true;
-                    mech.initializeArmor(9, location);
+                    mek.initializeArmor(9, location);
                 }
             } else {
-                int armor = mech.getArmor(location);
-                if (mech.hasRearArmor(location)) {
-                    armor += mech.getArmor(location, true);
+                int armor = mek.getArmor(location);
+                if (mek.hasRearArmor(location)) {
+                    armor += mek.getArmor(location, true);
                 }
-                int totalArmor = mech.getInternal(location) * 2;
+                int totalArmor = mek.getInternal(location) * 2;
                 // Armor on the location is greater than what can be there.
                 if (armor > totalArmor) {
                     foundError = true;
@@ -1555,23 +1562,23 @@ public class UnitUtil {
 
                     // check for locations with rear armor first and remove the
                     // extra armor from the rear first.
-                    if (mech.hasRearArmor(location)) {
-                        int rearArmor = mech.getArmor(location, true);
+                    if (mek.hasRearArmor(location)) {
+                        int rearArmor = mek.getArmor(location, true);
                         if (rearArmor >= armorOverage) {
-                            mech.initializeRearArmor(rearArmor - armorOverage,
+                            mek.initializeRearArmor(rearArmor - armorOverage,
                                     location);
                             armorOverage = 0;
                         } else {
                             armorOverage -= rearArmor;
-                            mech.initializeRearArmor(0, location);
+                            mek.initializeRearArmor(0, location);
                         }
                     }
 
                     // Any armor overage left remove it from the front. Min 0
                     // armor in the location.
-                    armor = mech.getArmor(location);
+                    armor = mek.getArmor(location);
                     armor = Math.max(0, armor - armorOverage);
-                    mech.initializeArmor(armor, location);
+                    mek.initializeArmor(armor, location);
                 }
             }
         }
@@ -1592,10 +1599,10 @@ public class UnitUtil {
                 "data/mechfiles/UnitVerifierOptions.xml")); // TODO : Remove inline file path
         TestEntity testEntity = null;
 
-        if (unit.hasETypeFlag(Entity.ETYPE_MECH)) {
-            testEntity = new TestMech((Mech) unit, entityVerifier.mechOption, null);
-        } else if (unit.hasETypeFlag(Entity.ETYPE_PROTOMECH)) {
-            testEntity = new TestProtomech((Protomech) unit, entityVerifier.protomechOption, null);
+        if (unit.hasETypeFlag(Entity.ETYPE_MEK)) {
+            testEntity = new TestMech((Mek) unit, entityVerifier.mechOption, null);
+        } else if (unit.hasETypeFlag(Entity.ETYPE_PROTOMEK)) {
+            testEntity = new TestProtoMek((ProtoMek) unit, entityVerifier.protomechOption, null);
         } else if (unit.isSupportVehicle()) {
             testEntity = new TestSupportVehicle(unit, entityVerifier.tankOption, null);
         } else if (unit.hasETypeFlag(Entity.ETYPE_TANK)) {
@@ -1858,7 +1865,7 @@ public class UnitUtil {
             return false;
         } else if (unit.hasETypeFlag(Entity.ETYPE_AERO) && !atype.canAeroUse()) {
             return false;
-        } else if (atype.hasFlag(AmmoType.F_PROTOMECH) && !(unit instanceof Protomech)) {
+        } else if (atype.hasFlag(AmmoType.F_PROTOMEK) && !(unit instanceof ProtoMek)) {
             return false;
         }
 

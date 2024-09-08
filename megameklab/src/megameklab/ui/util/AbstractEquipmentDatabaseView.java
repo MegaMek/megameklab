@@ -14,21 +14,25 @@
  */
 package megameklab.ui.util;
 
-import megamek.client.ui.WrapLayout;
-import megamek.client.ui.models.XTableColumnModel;
-import megamek.client.ui.swing.GUIPreferences;
-import megamek.client.ui.swing.util.UIUtil;
-import megamek.common.AmmoType;
-import megamek.common.BattleArmor;
-import megamek.common.EquipmentType;
-import megamek.common.Mech;
-import megamek.common.annotations.Nullable;
-import megameklab.ui.EntitySource;
-import megameklab.util.BattleArmorUtil;
-import megameklab.util.CConfig;
-import megameklab.util.MekUtil;
-import megameklab.util.UnitUtil;
-import org.apache.logging.log4j.LogManager;
+import static megameklab.ui.util.EquipmentDatabaseCategory.*;
+
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -37,12 +41,23 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
-import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
-import java.util.stream.Collectors;
 
-import static megameklab.ui.util.EquipmentDatabaseCategory.*;
+import org.apache.logging.log4j.LogManager;
+
+import megamek.client.ui.WrapLayout;
+import megamek.client.ui.models.XTableColumnModel;
+import megamek.client.ui.swing.GUIPreferences;
+import megamek.client.ui.swing.util.UIUtil;
+import megamek.common.AmmoType;
+import megamek.common.BattleArmor;
+import megamek.common.EquipmentType;
+import megamek.common.Mek;
+import megamek.common.annotations.Nullable;
+import megameklab.ui.EntitySource;
+import megameklab.util.BattleArmorUtil;
+import megameklab.util.CConfig;
+import megameklab.util.MekUtil;
+import megameklab.util.UnitUtil;
 
 /**
  * A base class for creating an equipment database table that shows all equipment available to the
@@ -561,9 +576,9 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
             return true;
         }
 
-        if (getEntity() instanceof Mech) {
+        if (getEntity() instanceof Mek) {
             // FIXME : This is handled strangely in UnitUtil: MekEquipment does not include weapons
-            return MekUtil.isMechEquipment(equipment, (Mech) getEntity())
+            return MekUtil.isMechEquipment(equipment, (Mek) getEntity())
                     || MekUtil.isMechWeapon(equipment, getEntity())
                     || UnitUtil.isPhysicalWeapon(equipment);
         } else if (getEntity() instanceof BattleArmor) {

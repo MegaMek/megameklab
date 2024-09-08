@@ -17,11 +17,11 @@ import megamek.common.EquipmentType;
 
 /**
  * Listener for views used by Protomechs.
- * 
+ *
  * @author Neoancient
  *
  */
-public interface ProtomekBuildListener extends BuildListener {
+public interface ProtoMekBuildListener extends BuildListener {
     void tonnageChanged(double tonnage);
     void typeChanged(int motiveType);
     void mainGunChanged(boolean mainGun);

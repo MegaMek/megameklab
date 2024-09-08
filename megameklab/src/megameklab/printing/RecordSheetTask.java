@@ -13,24 +13,35 @@
  */
 package megameklab.printing;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.pdfbox.io.MemoryUsageSetting;
-import org.apache.pdfbox.multipdf.PDFMergerUtility;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDDocumentOutline;
-import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlineItem;
-
-import javax.print.attribute.PrintRequestAttributeSet;
-import javax.swing.*;
 import java.awt.print.PageFormat;
 import java.awt.print.Pageable;
 import java.awt.print.Printable;
 import java.awt.print.PrinterJob;
 import java.io.File;
 import java.io.InputStream;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.ResourceBundle;
+import java.util.TreeMap;
 import java.util.concurrent.ExecutionException;
+
+import javax.print.attribute.PrintRequestAttributeSet;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.SwingWorker;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.pdfbox.io.MemoryUsageSetting;
+import org.apache.pdfbox.multipdf.PDFMergerUtility;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDDocumentOutline;
+import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlineItem;
 
 /**
  * Renders one or more record sheets as a background task. The task is created using
@@ -40,7 +51,7 @@ import java.util.concurrent.ExecutionException;
  * Executing the task with {@link #execute(boolean)} allows showing a popup dialog with a progress bar.
  */
 public abstract class RecordSheetTask extends SwingWorker<Void, Integer> {
-    
+
     private final ProgressPopup popup;
     protected final List<PrintRecordSheet> sheets;
 

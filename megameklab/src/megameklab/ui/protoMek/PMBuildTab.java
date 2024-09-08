@@ -13,9 +13,20 @@
  */
 package megameklab.ui.protoMek;
 
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SpringLayout;
+import javax.swing.SwingConstants;
+
 import megamek.common.Entity;
 import megamek.common.Mounted;
-import megamek.common.verifier.TestProtomech;
+import megamek.common.verifier.TestProtoMek;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
@@ -23,14 +34,9 @@ import megameklab.ui.util.SpringLayoutHelper;
 import megameklab.util.ProtoMekUtil;
 import megameklab.util.UnitUtil;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 /**
  * Tab for assigning equipment to locations
- * 
+ *
  * @author Neoancient
  */
 public class PMBuildTab extends ITab implements ActionListener {
@@ -124,7 +130,7 @@ public class PMBuildTab extends ITab implements ActionListener {
     private void resetCrits() {
         for (Mounted mount : getProtomech().getEquipment()) {
             // Fixed shouldn't be removed
-            if (TestProtomech.requiresSlot(mount.getType())) {
+            if (TestProtoMek.requiresSlot(mount.getType())) {
                 UnitUtil.changeMountStatus(getProtomech(), mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
             }
         }

@@ -19,7 +19,7 @@
 package megameklab.util;
 
 import megamek.common.*;
-import megamek.common.verifier.TestProtomech;
+import megamek.common.verifier.TestProtoMek;
 
 public final class ProtoMekUtil {
 
@@ -84,11 +84,11 @@ public final class ProtoMekUtil {
      * @return Whether the equipment can be added without exceeding the limits.
      */
     public static boolean protomechHasRoom(Protomech proto, int location, Mounted<?> mount) {
-        if (!TestProtomech.requiresSlot(mount.getType())) {
+        if (!TestProtoMek.requiresSlot(mount.getType())) {
             return true;
         }
-        int slots = TestProtomech.maxSlotsByLocation(location, proto) - 1;
-        double weight = TestProtomech.maxWeightByLocation(location, proto)
+        int slots = TestProtoMek.maxSlotsByLocation(location, proto) - 1;
+        double weight = TestProtoMek.maxWeightByLocation(location, proto)
                 - mount.getTonnage();
         if ((slots < 0) || (weight < 0)) {
             return false;

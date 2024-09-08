@@ -18,14 +18,18 @@
  */
 package megameklab.ui.generalUnit.summary;
 
-import megamek.common.*;
+import megamek.common.Entity;
+import megamek.common.EquipmentType;
+import megamek.common.Mek;
+import megamek.common.MiscType;
+import megamek.common.Mounted;
 import megamek.common.annotations.Nullable;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestMech;
 import megameklab.util.MekUtil;
 import megameklab.util.UnitUtil;
 
-public class HeatsinkSummaryItem extends AbstractSummaryItem {
+public class HeatSinkSummaryItem extends AbstractSummaryItem {
     @Override
     public String getName() {
         return "Heatsinks";
@@ -33,9 +37,9 @@ public class HeatsinkSummaryItem extends AbstractSummaryItem {
 
     @Override
     public void refresh(Entity entity) {
-        if (entity instanceof Mech) {
-            TestMech testMech = (TestMech) UnitUtil.getEntityVerifier(entity);
-            Mech mek = (Mech) entity;
+        if (entity instanceof Mek) {
+            TestMech testMek = (TestMech) UnitUtil.getEntityVerifier(entity);
+            Mek mek = (Mek) entity;
             int numberSinks = MekUtil.countActualHeatSinks(mek);
             numberSinks = Math.max(0, numberSinks - UnitUtil.getCriticalFreeHeatSinks(mek, mek.hasCompactHeatSinks()));
             int critSinks = numberSinks;
@@ -46,7 +50,7 @@ public class HeatsinkSummaryItem extends AbstractSummaryItem {
             } else if (mek.hasCompactHeatSinks()) {
                 critSinks = (critSinks / 2) + (critSinks % 2);
             }
-            weightLabel.setText(formatWeight(testMech.getWeightHeatSinks(), entity));
+            weightLabel.setText(formatWeight(testMek.getWeightHeatSinks(), entity));
             critLabel.setText(formatCrits(critSinks));
         } else {
             TestEntity testEntity = UnitUtil.getEntityVerifier(entity);
@@ -64,7 +68,7 @@ public class HeatsinkSummaryItem extends AbstractSummaryItem {
     }
 
     public @Nullable String getHeatSinkType(Entity entity) {
-        for (Mounted m : entity.getMisc()) {
+        for (Mounted<?> m : entity.getMisc()) {
             if (m.getType().hasFlag(MiscType.F_COMPACT_HEAT_SINK)
                     || m.getType().hasFlag(MiscType.F_HEAT_SINK)
                     || m.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK)

@@ -36,7 +36,7 @@ import megamek.common.*;
 import megamek.common.equipment.ArmorType;
 import megamek.common.equipment.MiscMounted;
 import megamek.common.verifier.TestEntity;
-import megamek.common.verifier.TestProtomech;
+import megamek.common.verifier.TestProtoMek;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.*;
 import megameklab.ui.generalUnit.summary.*;
@@ -49,7 +49,7 @@ import megameklab.util.UnitUtil;
 
 /**
  * Structure tab for protomechs
- * 
+ *
  * @author Neoancient
  */
 public class PMStructureTab extends ITab implements ProtomekBuildListener, ArmorAllocationListener {
@@ -214,14 +214,14 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
 
     /**
      * Calculates required engine rating for speed and tonnage and updates engine if possible.
-     * 
+     *
      * @param walkMP The base walk MP
      * @param tonnage The design weight
      * @param quadOrGlider Whether the Protomech is a quad or glider configuration
-     * @return Whether the engine rating changed 
+     * @return Whether the engine rating changed
      */
     private boolean recalculateEngineRating(int walkMP, double tonnage, boolean quadOrGlider) {
-        int rating = TestProtomech.calcEngineRating(walkMP, tonnage, quadOrGlider);
+        int rating = TestProtoMek.calcEngineRating(walkMP, tonnage, quadOrGlider);
         int oldRating = getProtomech().getEngine().getRating();
         if (oldRating != rating) {
             Engine engine = new Engine(rating, Engine.NORMAL_ENGINE, Engine.CLAN_ENGINE);
@@ -230,20 +230,20 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
         }
         return false;
     }
-    
+
     /**
      * Creates room for installing fixed equipment in a location by removing as much non-fixed
      * equipment as necessary (if any) until there are a sufficient number of slots.
-     * 
+     *
      * @param loc    The location to clear
      * @param count  The number of slots required
      * @return       Whether enough space was freed up
      */
     private boolean freeUpSpace(int loc, int count) {
-        int maxAvail = TestProtomech.maxSlotsByLocation(loc, getProtomech());
+        int maxAvail = TestProtoMek.maxSlotsByLocation(loc, getProtomech());
         List<Mounted> optional = new ArrayList<>();
         for (Mounted m : getProtomech().getEquipment()) {
-            if ((m.getLocation() != loc) || !TestProtomech.requiresSlot(m.getType())) {
+            if ((m.getLocation() != loc) || !TestProtoMek.requiresSlot(m.getType())) {
                 continue;
             }
             if (UnitUtil.isFixedLocationSpreadEquipment(m.getType())) {
@@ -642,10 +642,10 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
             }
         }
     }
-    
+
     /**
      * Convenience method for armor auto-allocation
-     * 
+     *
      * @param location
      */
     private void addArmorPoint(int location) {
@@ -689,7 +689,7 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
             }
             Mounted m = Mounted.createMounted(getProtomech(), eq);
             try {
-                if (TestProtomech.requiresSlot(eq) && this.freeUpSpace(Protomech.LOC_TORSO, 1)) {
+                if (TestProtoMek.requiresSlot(eq) && this.freeUpSpace(Protomech.LOC_TORSO, 1)) {
                         getProtomech().addEquipment(m, Protomech.LOC_TORSO, false);
                 } else {
                     getProtomech().addEquipment(m,  Protomech.LOC_BODY, false);

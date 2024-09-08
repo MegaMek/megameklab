@@ -13,6 +13,27 @@
  */
 package megameklab.ui.generalUnit;
 
+import static java.util.stream.Collectors.toList;
+
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.util.List;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import javax.swing.table.TableColumn;
+
+import org.apache.logging.log4j.LogManager;
+
 import megamek.client.ui.swing.util.UIUtil;
 import megamek.common.EquipmentType;
 import megamek.common.MiscType;
@@ -23,20 +44,11 @@ import megameklab.ui.util.CriticalTableModel;
 import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
 import megameklab.util.UnitUtil;
-import org.apache.logging.log4j.LogManager;
-
-import javax.swing.*;
-import javax.swing.table.TableColumn;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.util.List;
-
-import static java.util.stream.Collectors.toList;
 
 /**
  * The base class for Equipment Tabs for all unit types. It shows the equipment database and the
- * current loadout list.
- * The loadout list is obtained through the abstract method getLoadout() and may be either the full
+ * current load out list.
+ * The load out list is obtained through the abstract method getLoadOut() and may be either the full
  * equipment of the unit or filtered somehow so that equipment controlled in the Structure tab cannot
  * be removed in the Equipment Tab.
  * An EquipmentDatabaseView must be provided through the abstract method getEquipmentDatabaseView.
@@ -50,34 +62,34 @@ public abstract class AbstractEquipmentTab extends ITab {
 
     private RefreshListener refresh;
 
-    protected final CriticalTableModel loadoutModel;
-    private final JTable loadoutTable = new JTable();
+    protected final CriticalTableModel loadOutModel;
+    private final JTable loadOutTable = new JTable();
     private final AbstractEquipmentDatabaseView equipDatabase;
 
     public AbstractEquipmentTab(EntitySource eSource) {
         super(eSource);
 
-        loadoutModel = new CriticalTableModel(eSource.getEntity(), CriticalTableModel.WEAPONTABLE);
-        loadoutTable.setModel(loadoutModel);
-        loadoutTable.setIntercellSpacing(new Dimension(0, 0));
-        loadoutTable.setShowGrid(false);
-        loadoutTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        loadoutTable.setDoubleBuffered(true);
+        loadOutModel = new CriticalTableModel(eSource.getEntity(), CriticalTableModel.WEAPONTABLE);
+        loadOutTable.setModel(loadOutModel);
+        loadOutTable.setIntercellSpacing(new Dimension(0, 0));
+        loadOutTable.setShowGrid(false);
+        loadOutTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        loadOutTable.setDoubleBuffered(true);
         TableColumn column;
-        for (int i = 0; i < loadoutModel.getColumnCount(); i++) {
-            column = loadoutTable.getColumnModel().getColumn(i);
+        for (int i = 0; i < loadOutModel.getColumnCount(); i++) {
+            column = loadOutTable.getColumnModel().getColumn(i);
             if (i == CriticalTableModel.NAME) {
                 column.setPreferredWidth(200);
             } else if (i == CriticalTableModel.SIZE) {
-                column.setCellEditor(loadoutModel.new SpinnerCellEditor());
+                column.setCellEditor(loadOutModel.new SpinnerCellEditor());
             }
-            column.setCellRenderer(loadoutModel.getRenderer());
+            column.setCellRenderer(loadOutModel.getRenderer());
 
         }
-        loadoutModel.addTableModelListener(ev -> refreshOtherTabs());
+        loadOutModel.addTableModelListener(ev -> refreshOtherTabs());
         JScrollPane equipmentScroll = new JScrollPane();
-        equipmentScroll.setViewportView(loadoutTable);
-        getLoadout().forEach(loadoutModel::addCrit);
+        equipmentScroll.setViewportView(loadOutTable);
+        getLoadOut().forEach(loadOutModel::addCrit);
 
         JButton removeButton = new JButton("Remove");
         removeButton.setMnemonic('R');
@@ -91,7 +103,7 @@ public abstract class AbstractEquipmentTab extends ITab {
 
         JPanel databasePanel = new JPanel(new GridLayout(1, 1)) {
             @Override
-            // Allow downsizing the database with the Splitpane for small screen sizes
+            // Allow downsizing the database with the Split pane for small screen sizes
             public Dimension getMinimumSize() {
                 Dimension prefSize = super.getPreferredSize();
                 return new Dimension(prefSize.width / 2, prefSize.height);
@@ -100,16 +112,16 @@ public abstract class AbstractEquipmentTab extends ITab {
         databasePanel.setBorder(BorderFactory.createTitledBorder("Equipment Database"));
         databasePanel.add(equipDatabase);
 
-        Box loadoutPanel = Box.createVerticalBox();
-        loadoutPanel.setBorder(BorderFactory.createTitledBorder("Current Loadout"));
+        Box loadOutPanel = Box.createVerticalBox();
+        loadOutPanel.setBorder(BorderFactory.createTitledBorder("Current Load out"));
 
         var buttonPanel = new UIUtil.FixedYPanel(new FlowLayout(FlowLayout.LEFT));
         buttonPanel.add(removeButton);
         buttonPanel.add(removeAllButton);
-        loadoutPanel.add(buttonPanel);
-        loadoutPanel.add(equipmentScroll);
+        loadOutPanel.add(buttonPanel);
+        loadOutPanel.add(equipmentScroll);
 
-        JSplitPane pane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, loadoutPanel, databasePanel);
+        JSplitPane pane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, loadOutPanel, databasePanel);
         pane.setOneTouchExpandable(true);
         setLayout(new BorderLayout());
         add(pane, BorderLayout.CENTER);
@@ -120,32 +132,32 @@ public abstract class AbstractEquipmentTab extends ITab {
         equipDatabase.setRefresh(refresh);
     }
 
-    private List<Mounted> getLoadout() {
-        return getEntity().getEquipment().stream().filter(this::showInLoadout).collect(toList());
+    private List<Mounted<?>> getLoadOut() {
+        return getEntity().getEquipment().stream().filter(this::showInLoadOut).collect(toList());
     }
 
     /**
      * This method is called for all of a unit's equipment to determine if it is to be shown
-     * in the loadout view. It may be overridden to hide some equipment in the Equipment Tab's
-     * loadout view to prevent it from being removed here. Use to hide equipment that is
+     * in the load out view. It may be overridden to hide some equipment in the Equipment Tab's
+     * load out view to prevent it from being removed here. Use to hide equipment that is
      * controlled from the Structure Tab.
      * By default, this method returns true.
      * @param mount the mounted to be checked
-     * @return true when the given mounted may be shown in the loadout view
+     * @return true when the given mounted may be shown in the load out view
      */
-    protected boolean showInLoadout(Mounted mount) {
+    protected boolean showInLoadOut(Mounted<?> mount) {
         return true;
     }
 
     protected abstract AbstractEquipmentDatabaseView getEquipmentDatabaseView();
 
     private void removeHeatSinks() {
-        for (int location = 0; location < loadoutModel.getRowCount(); ) {
-            Mounted mount = (Mounted) loadoutModel.getValueAt(location, CriticalTableModel.EQUIPMENT);
+        for (int location = 0; location < loadOutModel.getRowCount(); ) {
+            Mounted<?> mount = (Mounted<?>) loadOutModel.getValueAt(location, CriticalTableModel.EQUIPMENT);
             EquipmentType eq = mount.getType();
             if ((eq instanceof MiscType) && (UnitUtil.isHeatSink(mount))) {
                 try {
-                    loadoutModel.removeCrit(location);
+                    loadOutModel.removeCrit(location);
                 } catch (IndexOutOfBoundsException ignored) {
                     return;
                 } catch (Exception ex) {
@@ -159,27 +171,27 @@ public abstract class AbstractEquipmentTab extends ITab {
     }
 
     private void removeSelectedEquipment(ActionEvent e) {
-        int[] selectedRows = loadoutTable.getSelectedRows();
+        int[] selectedRows = loadOutTable.getSelectedRows();
         for (int row : selectedRows) {
-            loadoutModel.removeMounted(row);
+            loadOutModel.removeMounted(row);
         }
-        loadoutModel.removeCrits(selectedRows);
+        loadOutModel.removeCrits(selectedRows);
         fireTableRefresh();
     }
 
     private void removeAllEquipment(ActionEvent e) {
         removeHeatSinks();
-        for (int count = 0; count < loadoutModel.getRowCount(); count++) {
-            loadoutModel.removeMounted(count);
+        for (int count = 0; count < loadOutModel.getRowCount(); count++) {
+            loadOutModel.removeMounted(count);
         }
-        loadoutModel.removeAllCrits();
+        loadOutModel.removeAllCrits();
         fireTableRefresh();
     }
 
     public void refresh() {
         removeHeatSinks();
-        loadoutModel.removeAllCrits();
-        getLoadout().forEach(loadoutModel::addCrit);
+        loadOutModel.removeAllCrits();
+        getLoadOut().forEach(loadOutModel::addCrit);
         fireTableRefresh();
     }
 
@@ -188,8 +200,8 @@ public abstract class AbstractEquipmentTab extends ITab {
     }
 
     private void fireTableRefresh() {
-        loadoutModel.updateUnit(getEntity());
-        loadoutModel.refreshModel();
+        loadOutModel.updateUnit(getEntity());
+        loadOutModel.refreshModel();
         refreshTable();
         refreshOtherTabs();
     }

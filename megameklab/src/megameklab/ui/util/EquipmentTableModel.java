@@ -18,7 +18,7 @@ package megameklab.ui.util;
 
 import megamek.common.*;
 import megamek.common.verifier.TestEntity;
-import megamek.common.verifier.TestProtomech;
+import megamek.common.verifier.TestProtoMek;
 import megamek.common.weapons.autocannons.UACWeapon;
 import megamek.common.weapons.gaussrifles.HAGWeapon;
 import megamek.common.weapons.infantry.InfantryWeapon;
@@ -395,7 +395,7 @@ public class EquipmentTableModel extends AbstractTableModel {
             } else if (entity instanceof Tank) {
                 return type.getTankSlots(entity);
             } else if (entity.hasETypeFlag(Entity.ETYPE_PROTOMECH)) {
-                return TestProtomech.requiresSlot(type)? 1 : 0;
+                return TestProtoMek.requiresSlot(type)? 1 : 0;
             }
             return type.getCriticals(entity);
         } else if (col == COL_TRATING) {

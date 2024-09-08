@@ -15,23 +15,37 @@
  */
 package megameklab.ui.combatVehicle;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Enumeration;
+import java.util.Vector;
+
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+
+import org.apache.logging.log4j.LogManager;
+
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megameklab.ui.EntitySource;
-import megameklab.ui.util.*;
+import megameklab.ui.util.CriticalTableModel;
+import megameklab.ui.util.EquipmentListCellKeySelectionManager;
+import megameklab.ui.util.EquipmentListCellRenderer;
+import megameklab.ui.util.IView;
+import megameklab.ui.util.RefreshListener;
 import megameklab.util.StringUtils;
 import megameklab.util.TankUtil;
 import megameklab.util.UnitUtil;
-import org.apache.logging.log4j.LogManager;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Enumeration;
-import java.util.Vector;
 
 public class CVEquipmentView extends IView implements ActionListener {
     private RefreshListener refresh;
@@ -122,7 +136,7 @@ public class CVEquipmentView extends IView implements ActionListener {
     }
 
     private void loadEquipmentTable() {
-        for (Mounted mount : getTank().getMisc()) {
+        for (Mounted<?> mount : getTank().getMisc()) {
 
             if (UnitUtil.isHeatSink(mount) || UnitUtil.isArmorOrStructure(mount.getType())) {
                 continue;
@@ -135,7 +149,7 @@ public class CVEquipmentView extends IView implements ActionListener {
 
     private void loadHeatSinks() {
         int engineHeatSinks = 10;
-        for (Mounted mount : getTank().getMisc()) {
+        for (Mounted<?> mount : getTank().getMisc()) {
             if (UnitUtil.isHeatSink(mount)) {
                 if (engineHeatSinks-- > 0) {
                     continue;
@@ -148,11 +162,11 @@ public class CVEquipmentView extends IView implements ActionListener {
     private void removeHeatSinks() {
         int location = 0;
         for (; location < equipmentList.getRowCount();) {
-            Mounted mount = (Mounted) equipmentList.getValueAt(location, CriticalTableModel.EQUIPMENT);
+            Mounted<?> mount = (Mounted<?>) equipmentList.getValueAt(location, CriticalTableModel.EQUIPMENT);
             if (UnitUtil.isHeatSink(mount)) {
                 try {
                     equipmentList.removeCrit(location);
-                } catch (ArrayIndexOutOfBoundsException aioobe) {
+                } catch (ArrayIndexOutOfBoundsException ex) {
                     return;
                 } catch (Exception ex) {
                     LogManager.getLogger().error("", ex);
@@ -200,7 +214,7 @@ public class CVEquipmentView extends IView implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getActionCommand().equals(ADD_COMMAND)) {
             EquipmentType equip = (EquipmentType) equipmentCombo.getSelectedItem();
-            Mounted mount = null;
+            Mounted<?> mount = null;
             boolean isMisc = equip instanceof MiscType;
             if (isMisc && equip.hasFlag(MiscType.F_TARGCOMP)) {
                 if (!UnitUtil.hasTargComp(getTank())) {

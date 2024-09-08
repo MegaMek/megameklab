@@ -91,7 +91,7 @@ public class BMLAMFuelView extends IView implements ChangeListener {
      * @return The Mek's current LAM Fuel Tank count
      */
     private int fuelTanks(Mech mek) {
-        return (mek instanceof LandAirMech) ? mek.countWorkingMisc(LAM_FUEL_TANK, -1) : 0;
+        return (mek instanceof LandAirMek) ? mek.countWorkingMisc(LAM_FUEL_TANK, -1) : 0;
     }
 
     private void updateFuelPointsLabel() {

@@ -15,18 +15,27 @@
 
 package megameklab.ui.combatVehicle;
 
+import java.awt.Color;
+import java.util.Map;
+import java.util.Vector;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.ListSelectionModel;
+
 import megamek.client.ui.swing.util.UIUtil;
-import megamek.common.*;
+import megamek.common.CriticalSlot;
+import megamek.common.Mounted;
+import megamek.common.SuperHeavyTank;
+import megamek.common.Tank;
+import megamek.common.VTOL;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.CritCellUtil;
 import megameklab.ui.util.DropTargetCriticalList;
 import megameklab.ui.util.IView;
 import megameklab.ui.util.RefreshListener;
-
-import javax.swing.*;
-import java.awt.*;
-import java.util.Map;
-import java.util.Vector;
 
 /**
  * The Crit Slots view for a Combat Vehicle (including VTOL)
@@ -153,9 +162,9 @@ public final class CVCriticalView extends IView {
                         continue;
                     }
                     if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
-                        critNames.add(getMech().getSystemName(cs.getIndex()));
+                        critNames.add(getMek().getSystemName(cs.getIndex()));
                     } else if (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) {
-                        Mounted m = cs.getMount();
+                        Mounted<?> m = cs.getMount();
                         // Critical didn't get removed. Remove it now.
                         if (m == null) {
                             getTank().setCritical(location, slot, null);

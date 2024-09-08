@@ -38,13 +38,13 @@ import static megameklab.ui.util.CritCellUtil.CRITCELL_WIDTH;
  * @author Neoancient
  * @author Simon (Juliez)
  */
-public class ProtomekMountList extends JList<Mounted> {
+public class ProtoMekMountList extends JList<Mounted> {
 
     private final EntitySource eSource;
     private final int location;
     private RefreshListener refresh;
-    
-    public ProtomekMountList(EntitySource eSource, RefreshListener refresh, int location) {
+
+    public ProtoMekMountList(EntitySource eSource, RefreshListener refresh, int location) {
         this.eSource = eSource;
         this.refresh = refresh;
         this.location = location;
@@ -56,19 +56,19 @@ public class ProtomekMountList extends JList<Mounted> {
         setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         setBorder(BorderFactory.createLineBorder(Color.BLACK));
     }
-    
+
     public Protomech getProtomech() {
         return (Protomech) eSource.getEntity();
     }
-    
+
     public int getMountLocation() {
         return location;
     }
-    
+
     public void setRefresh(RefreshListener refresh) {
         this.refresh = refresh;
     }
-    
+
     private void refresh() {
         if (null != refresh) {
             refresh.refreshEquipment();
@@ -76,19 +76,19 @@ public class ProtomekMountList extends JList<Mounted> {
             refresh.refreshBuild();
         }
     }
-    
+
     public void refreshContents() {
         MountedListModel model = new MountedListModel();
         getProtomech().getEquipment().stream().filter(m -> m.getLocation() == location).forEach(model::add);
         setModel(model);
         setVisibleRowCount(model.getSize());
     }
-    
+
     private void removeMount(Mounted<?> mount) {
         mount.setLocation(Entity.LOC_NONE, false);
         refresh();
     }
-    
+
     private void deleteMount(Mounted<?> mount) {
         if ((mount.getType() instanceof WeaponType) && mount.isOneShot()) {
             Mounted<?> ammo = mount.getLinked();
@@ -99,12 +99,12 @@ public class ProtomekMountList extends JList<Mounted> {
         UnitUtil.removeMounted(getProtomech(), mount);
         refresh();
     }
-    
+
     private void changeFacing(Mounted<?> mount) {
         mount.setLocation(location, !mount.isRearMounted());
         refresh();
     }
-    
+
     private final MouseListener mouseListener = new MouseAdapter() {
         @Override
         public void mousePressed(MouseEvent e) {
@@ -179,7 +179,7 @@ public class ProtomekMountList extends JList<Mounted> {
                 popup.add(menuItem);
             }
 
-            popup.show(ProtomekMountList.this, e.getX(), e.getY());
+            popup.show(ProtoMekMountList.this, e.getX(), e.getY());
         }
     };
 
@@ -196,18 +196,18 @@ public class ProtomekMountList extends JList<Mounted> {
         public Mounted getElementAt(int index) {
             return (index >= list.size()) ? null : list.get(index);
         }
-        
+
         public void add(Mounted mounted) {
             list.add(mounted);
             fireContentsChanged(this, list.size() - 1, list.size() - 1);
         }
     }
-    
+
     private static class MountCellRenderer extends DefaultListCellRenderer {
 
         @Override
         public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean hasFocus) {
-            final ProtomekMountList lstMount = (ProtomekMountList) list;
+            final ProtoMekMountList lstMount = (ProtoMekMountList) list;
             final Entity entity = lstMount.eSource.getEntity();
             CritCellUtil.formatCell(this, (Mounted) value, true, entity, index);
             if ((index > 0) && (index < list.getModel().getSize())) {

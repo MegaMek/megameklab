@@ -13,18 +13,33 @@
  */
 package megameklab.printing;
 
-import megamek.common.*;
-import megameklab.printing.reference.*;
+import java.awt.Image;
+import java.awt.geom.Rectangle2D;
+import java.awt.print.PageFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.StringJoiner;
+import java.util.stream.Collectors;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGRectElement;
 
-import java.awt.*;
-import java.awt.geom.Rectangle2D;
-import java.awt.print.PageFormat;
-import java.io.File;
-import java.util.*;
-import java.util.List;
-import java.util.stream.Collectors;
+import megamek.common.Bay;
+import megamek.common.Entity;
+import megamek.common.EntityMovementMode;
+import megamek.common.MiscType;
+import megamek.common.StandardSeatCargoBay;
+import megamek.common.Tank;
+import megamek.common.Transporter;
+import megamek.common.TroopSpace;
+import megamek.common.VTOL;
+import megameklab.printing.reference.ClusterHitsTable;
+import megameklab.printing.reference.GroundMovementRecord;
+import megameklab.printing.reference.GroundToHitMods;
+import megameklab.printing.reference.MovementCost;
+import megameklab.printing.reference.ReferenceTable;
 
 /**
  * Configures record sheet for ground combat and support vehicles. When two units are printed
@@ -206,11 +221,11 @@ public class PrintTank extends PrintEntity {
                 if (!table.required()) {
                     return;
                 }
-                Rectangle2D bbox = getRectBBox((SVGRectElement) rect);
+                Rectangle2D bindingBox = getRectBBox((SVGRectElement) rect);
                 placeReferenceCharts(
                         List.of(table),
-                        rect.getParentNode(), bbox.getX() - 3.0, bbox.getY() - 6.0,
-                        bbox.getWidth() + 6.0, bbox.getHeight() + 12.0);
+                        rect.getParentNode(), bindingBox.getX() - 3.0, bindingBox.getY() - 6.0,
+                        bindingBox.getWidth() + 6.0, bindingBox.getHeight() + 12.0);
                 hideElement(getSVGDocument().getElementById(NOTES));
             }
         }

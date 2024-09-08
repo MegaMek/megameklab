@@ -110,7 +110,7 @@ public interface InventoryEntry {
      * @param weapon The weapon mount
      * @return       The AV modification, if any
      */
-    default int aeroAVMod(Mounted weapon) {
+    default int aeroAVMod(Mounted<?> weapon) {
         if (weapon.getType() instanceof WeaponType && weapon.getLinkedBy() != null) {
             return aeroAVMod((WeaponType) weapon.getType(),
                     weapon.getLinkedBy().getType(), weapon.getEntity().usesWeaponBays());
