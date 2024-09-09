@@ -59,7 +59,7 @@ public class CriticalTransferHandler extends TransferHandler {
             location = Integer.parseInt(list.getName());
             Transferable t = info.getTransferable();
             try {
-                Mounted mount = getUnit().getEquipment(Integer.parseInt((String) t
+                Mounted<?> mount = getUnit().getEquipment(Integer.parseInt((String) t
                         .getTransferData(DataFlavor.stringFlavor)));
 
                 if (!UnitUtil.isValidLocation(getUnit(), mount.getType(), location)) {
@@ -82,7 +82,7 @@ public class CriticalTransferHandler extends TransferHandler {
             location = list.getMountLocation();
             Transferable t = info.getTransferable();
             try {
-                Mounted mount = getUnit().getEquipment(Integer.parseInt((String) t
+                Mounted<?> mount = getUnit().getEquipment(Integer.parseInt((String) t
                         .getTransferData(DataFlavor.stringFlavor)));
 
                 if (!UnitUtil.isValidLocation(getUnit(), mount.getType(), location)) {
@@ -104,7 +104,7 @@ public class CriticalTransferHandler extends TransferHandler {
                 || (info.getComponent() instanceof JScrollPane)) {
             try {
                 Transferable t = info.getTransferable();
-                Mounted mount = getUnit().getEquipment(Integer.parseInt((String) t
+                Mounted<?> mount = getUnit().getEquipment(Integer.parseInt((String) t
                         .getTransferData(DataFlavor.stringFlavor)));
 
                 if (getUnit() instanceof BattleArmor) {
@@ -131,7 +131,7 @@ public class CriticalTransferHandler extends TransferHandler {
             return false;
         }
         // check if the dragged mounted should be transferrable
-        Mounted mounted = null;
+        Mounted<?> mounted = null;
         try {
             mounted = getUnit().getEquipment(Integer
                     .parseInt((String) info.getTransferable().getTransferData(
@@ -154,13 +154,14 @@ public class CriticalTransferHandler extends TransferHandler {
     protected Transferable createTransferable(JComponent c) {
         if (c instanceof JTable) {
             JTable table = (JTable) c;
-            Mounted mount = (Mounted) table.getModel().getValueAt(table.getSelectedRow(), CriticalTableModel.EQUIPMENT);
+            Mounted<?> mount = (Mounted<?>) table.getModel().getValueAt(table.getSelectedRow(),
+                    CriticalTableModel.EQUIPMENT);
             if (critView != null) {
                 critView.markUnavailableLocations(mount);
             }
             return new StringSelection(Integer.toString(getUnit().getEquipmentNum(mount)));
         } else if (c instanceof ProtoMekMountList) {
-            Mounted mount = ((ProtoMekMountList) c).getMounted();
+            Mounted<?> mount = ((ProtoMekMountList) c).getMounted();
             if (!UnitUtil.isFixedLocationSpreadEquipment(mount.getType())
                     && !(mount.getType() instanceof AmmoType)) {
                 return new StringSelection(Integer.toString(getUnit().getEquipmentNum(mount)));
@@ -174,11 +175,11 @@ public class CriticalTransferHandler extends TransferHandler {
         return TransferHandler.LINK;
     }
 
-    private void changeMountStatus(Mounted eq, int location, boolean rear) {
+    private void changeMountStatus(Mounted<?> eq, int location, boolean rear) {
         changeMountStatus(eq, location, -1, rear);
     }
 
-    private void changeMountStatus(Mounted eq, int location, int secondaryLocation, boolean rear) {
+    private void changeMountStatus(Mounted<?> eq, int location, int secondaryLocation, boolean rear) {
 
         UnitUtil.changeMountStatus(getUnit(), eq, location, secondaryLocation, rear);
 

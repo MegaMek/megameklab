@@ -126,7 +126,7 @@ public final class AeroUtil {
         }
 
         if ((eq instanceof AmmoType)
-                && (((AmmoType)eq).getAmmoType() == AmmoType.T_COOLANT_POD)) {
+                && (((AmmoType) eq).getAmmoType() == AmmoType.T_COOLANT_POD)) {
             return !unit.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT);
         }
 
@@ -162,9 +162,10 @@ public final class AeroUtil {
     /**
      * Adjusts the number of crew quarters of a given type on an aerospace vessel.
      *
-     * @param aero      The aerospace unit to change crew quarters sizes for
-     * @param quarters  The type of crew quarters to change
-     * @param size      The number of personnel that can be housed in the designated type of quarters
+     * @param aero     The aerospace unit to change crew quarters sizes for
+     * @param quarters The type of crew quarters to change
+     * @param size     The number of personnel that can be housed in the designated
+     *                 type of quarters
      */
     public static void setQuarters(Aero aero, TestAero.Quarters quarters, int size) {
         List<Bay> toRemove = new ArrayList<>();
@@ -184,11 +185,11 @@ public final class AeroUtil {
     /**
      * Adjusts the number of all types of crew quarters on an aerospace vessel.
      *
-     * @param aero          The vessel
-     * @param officer       The number of officer/first class quarters
-     * @param standard      The number of standard crew quarters
-     * @param secondclass   The number second class passenger quarters
-     * @param steerage      The number of steerage class crew/passenger quarters
+     * @param aero        The vessel
+     * @param officer     The number of officer/first class quarters
+     * @param standard    The number of standard crew quarters
+     * @param secondclass The number second class passenger quarters
+     * @param steerage    The number of steerage class crew/passenger quarters
      */
     public static void assignQuarters(Aero aero, int officer, int standard, int secondclass, int steerage) {
         Map<TestAero.Quarters, Integer> sizes = TestAero.Quarters.getQuartersByType(aero);
@@ -207,11 +208,16 @@ public final class AeroUtil {
     }
 
     /**
-     * Adjusts the number of quarters of each to match the crew and passenger needs. If no quarters
-     * are already assigned, this will put all officers in officer/first class cabins, enlisted crew
-     * in standard crew quarters, and passengers in second class cabins. If there are already more
-     * officer/first class cabins assigned than there are officers, the extra will be used as first
-     * class passenger cabins. Any steerage quarters will be assigned first to marines, then to passengers,
+     * Adjusts the number of quarters of each to match the crew and passenger needs.
+     * If no quarters
+     * are already assigned, this will put all officers in officer/first class
+     * cabins, enlisted crew
+     * in standard crew quarters, and passengers in second class cabins. If there
+     * are already more
+     * officer/first class cabins assigned than there are officers, the extra will
+     * be used as first
+     * class passenger cabins. Any steerage quarters will be assigned first to
+     * marines, then to passengers,
      * then to remaining enlisted.
      *
      * @param aero The vessel to assign quarters for.
@@ -221,11 +227,14 @@ public final class AeroUtil {
         int enlistedNeeds = aero.getNCrew() + marines - aero.getBayPersonnel() - aero.getNOfficers();
         Map<TestAero.Quarters, Integer> quartersCount = TestAero.Quarters.getQuartersByType(aero);
 
-        // Standard crew quarters should not be larger than the crew needs, but may be smaller as
+        // Standard crew quarters should not be larger than the crew needs, but may be
+        // smaller as
         // some crew may have officer or steerage housing.
         int standardCrew = Math.min(enlistedNeeds, quartersCount.get(TestAero.Quarters.STANDARD));
-        // Limit the first class quarters to number of officers + passengers. It is possible to house
-        // enlisted in first class quarters, but that is beyond the scope of this and will need to
+        // Limit the first class quarters to number of officers + passengers. It is
+        // possible to house
+        // enlisted in first class quarters, but that is beyond the scope of this and
+        // will need to
         // be done by hand.
         int officer1stC = Math.min(aero.getNOfficers() + aero.getNPassenger(),
                 quartersCount.get(TestAero.Quarters.FIRST_CLASS));
@@ -233,18 +242,21 @@ public final class AeroUtil {
         int firstClass = Math.max(0, officer1stC - aero.getNOfficers());
         int officer = officer1stC - firstClass;
 
-        // Limit the steerage quarters to the number of crew that have not been assigned standard
+        // Limit the steerage quarters to the number of crew that have not been assigned
+        // standard
         // or officer quarters and passengers that have not been assigned first class.
         int steeragePsgr = Math.min(aero.getNPassenger() - firstClass + enlistedNeeds - standardCrew,
                 quartersCount.get(TestAero.Quarters.STEERAGE));
-        // Assign any existing steerage quarters first to marines that have not already been assigned standard
+        // Assign any existing steerage quarters first to marines that have not already
+        // been assigned standard
         // quarters
         int steerageCrew = 0;
         if (enlistedNeeds > standardCrew) {
             steerageCrew = Math.min(steeragePsgr, marines);
             steeragePsgr -= steerageCrew;
         }
-        // Assign any remaining steerage quarters to passengers first, then remaining crew.
+        // Assign any remaining steerage quarters to passengers first, then remaining
+        // crew.
         if (steeragePsgr > aero.getNPassenger() - firstClass) {
             int excess = steeragePsgr - aero.getNPassenger() - firstClass;
             steerageCrew += excess;
@@ -267,10 +279,10 @@ public final class AeroUtil {
             }
             if (unit.isPrimitive() && (unit instanceof Dropship)) {
                 if (unit.getYear() < Dropship.getCollarTA().getIntroductionDate()) {
-                    ((Dropship)unit).setCollarType(Dropship.COLLAR_NO_BOOM);
+                    ((Dropship) unit).setCollarType(Dropship.COLLAR_NO_BOOM);
                 } else if ((unit.getYear() < Dropship.getCollarTA().getIntroductionDate())
-                        && (((Dropship)unit).getCollarType() == Dropship.COLLAR_STANDARD)) {
-                    ((Dropship)unit).setCollarType(Dropship.COLLAR_PROTOTYPE);
+                        && (((Dropship) unit).getCollarType() == Dropship.COLLAR_STANDARD)) {
+                    ((Dropship) unit).setCollarType(Dropship.COLLAR_PROTOTYPE);
                 }
             }
             // Minimum crew levels
@@ -278,16 +290,17 @@ public final class AeroUtil {
                     TestSmallCraft.requiredGunners(unit)));
             unit.setNCrew(Math.max(unit.getNCrew(),
                     unit.getNGunners() + unit.getBayPersonnel()
-                    + TestSmallCraft.minimumBaseCrew((SmallCraft) unit)));
+                            + TestSmallCraft.minimumBaseCrew((SmallCraft) unit)));
             if (unit.getNOfficers() == 0) {
                 ((SmallCraft) unit).setNOfficers((int) Math.ceil((unit.getNCrew() - unit.getBayPersonnel()) / 5.0));
             }
-            // Check whether there are any quarters allocated. If not, assign standard levels
+            // Check whether there are any quarters allocated. If not, assign standard
+            // levels
             if (unit.getTransportBays().stream().noneMatch(Bay::isQuarters)) {
                 unit.addTransporter(TestAero.Quarters.FIRST_CLASS.newQuarters(unit.getNOfficers()));
                 unit.addTransporter(TestAero.Quarters.SECOND_CLASS.newQuarters(unit.getNPassenger()));
                 int std = unit.getNCrew() - unit.getBayPersonnel() - unit.getNOfficers()
-                       + unit.getNMarines() + unit.getNBattleArmor();
+                        + unit.getNMarines() + unit.getNBattleArmor();
                 if (std > 0) {
                     unit.addTransporter(TestAero.Quarters.STANDARD.newQuarters(std));
                 }
@@ -301,11 +314,12 @@ public final class AeroUtil {
                 unit.setArmorType(EquipmentType.T_ARMOR_PRIMITIVE_FIGHTER);
             }
         }
-        List<Mounted> weaponGroups = new ArrayList<>(unit.getWeaponGroupList());
-        for (Mounted group : weaponGroups) {
+        List<Mounted<?>> weaponGroups = new ArrayList<>(unit.getWeaponGroupList());
+        for (Mounted<?> group : weaponGroups) {
             UnitUtil.removeMounted(unit, group);
         }
     }
 
-    private AeroUtil() { }
+    private AeroUtil() {
+    }
 }

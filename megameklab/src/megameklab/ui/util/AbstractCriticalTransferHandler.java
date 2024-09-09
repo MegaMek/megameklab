@@ -40,11 +40,11 @@ public class AbstractCriticalTransferHandler extends TransferHandler {
         return TransferHandler.MOVE;
     }
 
-    protected void changeMountStatus(Mounted eq, int location) {
+    protected void changeMountStatus(Mounted<?> eq, int location) {
         changeMountStatus(eq, location, -1);
     }
 
-    protected void changeMountStatus(Mounted eq, int location, int secondaryLocation) {
+    protected void changeMountStatus(Mounted<?> eq, int location, int secondaryLocation) {
         UnitUtil.changeMountStatus(getUnit(), eq, location, secondaryLocation, false);
         doRefresh();
     }

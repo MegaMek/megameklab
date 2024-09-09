@@ -84,7 +84,8 @@ public class BMLAMFuelView extends IView implements ChangeListener {
     }
 
     /**
-     * Returns the current number of LAM Fuel Tanks on the Mek, including unallocated.
+     * Returns the current number of LAM Fuel Tanks on the Mek, including
+     * unallocated.
      * Always returns 0 for non-LAM.
      *
      * @param mek The Mek unit
@@ -116,11 +117,11 @@ public class BMLAMFuelView extends IView implements ChangeListener {
 
     private void deleteTanks(int number) {
         // Remove unallocated fuel tanks first
-        List<Mounted> fuelTanks = getMek().getMisc().stream()
+        List<Mounted<?>> fuelTanks = getMek().getMisc().stream()
                 .filter(mounted -> mounted.getType().equals(FUEL_TANK))
                 .filter(mounted -> mounted.getLocation() == Entity.LOC_NONE)
                 .collect(Collectors.toList());
-        for (Mounted fuelTank : fuelTanks) {
+        for (Mounted<?> fuelTank : fuelTanks) {
             if (number > 0) {
                 UnitUtil.removeMounted(getMek(), fuelTank);
                 number--;
@@ -132,7 +133,7 @@ public class BMLAMFuelView extends IView implements ChangeListener {
         fuelTanks = getMek().getMisc().stream()
                 .filter(mounted -> mounted.getType().equals(FUEL_TANK))
                 .collect(Collectors.toList());
-        for (Mounted fuelTank : fuelTanks) {
+        for (Mounted<?> fuelTank : fuelTanks) {
             if (number > 0) {
                 UnitUtil.removeMounted(getMek(), fuelTank);
                 number--;

@@ -36,7 +36,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
     private boolean buildView;
 
     public DropTargetCriticalList(Vector<E> vector, EntitySource eSource, RefreshListener refresh,
-                                  boolean buildView) {
+            boolean buildView) {
         super(vector);
         this.eSource = eSource;
         this.refresh = refresh;
@@ -50,11 +50,11 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
 
     }
 
-    private void changeMountStatus(Mounted eq, int location, boolean rear) {
+    private void changeMountStatus(Mounted<?> eq, int location, boolean rear) {
         changeMountStatus(eq, location, -1, rear);
     }
 
-    private void changeMountStatus(Mounted eq, int location, int secondaryLocation, boolean rear) {
+    private void changeMountStatus(Mounted<?> eq, int location, int secondaryLocation, boolean rear) {
         UnitUtil.changeMountStatus(getUnit(), eq, location, secondaryLocation, rear);
 
         if (refresh != null) {
@@ -96,7 +96,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
 
                 CriticalSlot cs = getCrit();
 
-                Mounted mount = getMounted();
+                Mounted<?> mount = getMounted();
                 if (mount != null) {
                     if ((evt.getModifiersEx() & InputEvent.ALT_DOWN_MASK) != 0) {
                         changeWeaponFacing(!mount.isRearMounted());
@@ -136,7 +136,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                     }
 
                     if (getUnit().countWorkingMisc(MiscType.F_PINTLE_TURRET,
-                                    mount.getLocation()) > 0) {
+                            mount.getLocation()) > 0) {
                         if (!mount.isPintleTurretMounted()) {
                             info = new JMenuItem("Mount " + mount.getName() + " in Pintle Turret");
                             info.addActionListener(evt2 -> changePintleTurretMount(true));
@@ -189,7 +189,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
 
     }
 
-    private @Nullable Mounted getMounted() {
+    private @Nullable Mounted<?> getMounted() {
         CriticalSlot crit = getCrit();
         try {
             if ((crit != null) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
@@ -213,7 +213,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
 
     private void removeCrit() {
         CriticalSlot crit = getCrit();
-        Mounted mounted = getMounted();
+        Mounted<?> mounted = getMounted();
 
         if (mounted == null) {
             return;
@@ -234,7 +234,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
     }
 
     private void changeWeaponFacing(boolean rear) {
-        Mounted mount = getMounted();
+        Mounted<?> mount = getMounted();
         int location = getCritLocation();
         changeMountStatus(mount, location, rear);
     }
@@ -262,7 +262,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
     }
 
     private void changeOmniMounting(boolean pod) {
-        Mounted mount = getMounted();
+        Mounted<?> mount = getMounted();
         if (!pod || UnitUtil.canPodMount(getUnit(), mount)) {
             mount.setOmniPodMounted(pod);
         }
@@ -281,7 +281,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
 
         if (cs != null) {
             if (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) {
-                Mounted mount = Objects.requireNonNull(getMounted());
+                Mounted<?> mount = Objects.requireNonNull(getMounted());
                 mount.setArmored(!cs.isArmored());
                 UnitUtil.updateCritsArmoredStatus(getUnit(), mount);
             } else {
@@ -296,7 +296,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
     }
 
     private void removeMount() {
-        Mounted mounted = getMounted();
+        Mounted<?> mounted = getMounted();
 
         if (mounted == null) {
             return;

@@ -38,7 +38,7 @@ import static megameklab.ui.util.CritCellUtil.CRITCELL_WIDTH;
  * @author Neoancient
  * @author Simon (Juliez)
  */
-public class ProtoMekMountList extends JList<Mounted> {
+public class ProtoMekMountList extends JList<Mounted<?>> {
 
     private final EntitySource eSource;
     private final int location;
@@ -154,13 +154,13 @@ public class ProtoMekMountList extends JList<Mounted> {
             }
         }
 
-        private boolean isChangeable(@Nullable Mounted mounted) {
+        private boolean isChangeable(@Nullable Mounted<?> mounted) {
             return (mounted != null)
                     && !UnitUtil.isFixedLocationSpreadEquipment(mounted.getType())
                     && !UnitUtil.isArmor(mounted.getType());
         }
 
-        private void showPopup(MouseEvent e, Mounted mounted) {
+        private void showPopup(MouseEvent e, Mounted<?> mounted) {
             JPopupMenu popup = new JPopupMenu();
             JMenuItem menuItem;
             if (!(mounted.getType() instanceof AmmoType)) {
@@ -183,9 +183,9 @@ public class ProtoMekMountList extends JList<Mounted> {
         }
     };
 
-    private static class MountedListModel extends AbstractListModel<Mounted> {
+    private static class MountedListModel extends AbstractListModel<Mounted<?>> {
 
-        private final List<Mounted> list = new ArrayList<>();
+        private final List<Mounted<?>> list = new ArrayList<>();
 
         @Override
         public int getSize() {
@@ -193,11 +193,11 @@ public class ProtoMekMountList extends JList<Mounted> {
         }
 
         @Override
-        public Mounted getElementAt(int index) {
+        public Mounted<?> getElementAt(int index) {
             return (index >= list.size()) ? null : list.get(index);
         }
 
-        public void add(Mounted mounted) {
+        public void add(Mounted<?> mounted) {
             list.add(mounted);
             fireContentsChanged(this, list.size() - 1, list.size() - 1);
         }
@@ -206,10 +206,11 @@ public class ProtoMekMountList extends JList<Mounted> {
     private static class MountCellRenderer extends DefaultListCellRenderer {
 
         @Override
-        public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean hasFocus) {
+        public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
+                boolean hasFocus) {
             final ProtoMekMountList lstMount = (ProtoMekMountList) list;
             final Entity entity = lstMount.eSource.getEntity();
-            CritCellUtil.formatCell(this, (Mounted) value, true, entity, index);
+            CritCellUtil.formatCell(this, (Mounted<?>) value, true, entity, index);
             if ((index > 0) && (index < list.getModel().getSize())) {
                 setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.black));
             }
@@ -226,7 +227,7 @@ public class ProtoMekMountList extends JList<Mounted> {
     /**
      * @return the selected item, or null if nothing is selected.
      */
-    public @Nullable Mounted getMounted() {
+    public @Nullable Mounted<?> getMounted() {
         return getSelectedValue();
     }
 

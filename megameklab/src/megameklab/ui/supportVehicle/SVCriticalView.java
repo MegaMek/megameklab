@@ -52,15 +52,18 @@ public class SVCriticalView extends IView {
     private final JPanel rotorPanel = new FixedYPanel();
     private RefreshListener refresh;
 
-    private final Map<Integer, JComponent> aeroLocations = Map.of(FixedWingSupport.LOC_NOSE, frontPanel, FixedWingSupport.LOC_LWING, leftPanel,
-            FixedWingSupport.LOC_RWING, rightPanel, FixedWingSupport.LOC_BODY, bodyPanel, FixedWingSupport.LOC_AFT, rearPanel);
+    private final Map<Integer, JComponent> aeroLocations = Map.of(FixedWingSupport.LOC_NOSE, frontPanel,
+            FixedWingSupport.LOC_LWING, leftPanel,
+            FixedWingSupport.LOC_RWING, rightPanel, FixedWingSupport.LOC_BODY, bodyPanel, FixedWingSupport.LOC_AFT,
+            rearPanel);
 
     private final Map<Integer, JComponent> vtolLocations = Map.of(Tank.LOC_FRONT, frontPanel, Tank.LOC_LEFT, leftPanel,
             Tank.LOC_RIGHT, rightPanel, Tank.LOC_BODY, bodyPanel, Tank.LOC_REAR, rearPanel, VTOL.LOC_ROTOR, rotorPanel,
             VTOL.LOC_TURRET, turretPanel);
 
     private final Map<Integer, JComponent> tankLocations = Map.of(Tank.LOC_FRONT, frontPanel, Tank.LOC_LEFT, leftPanel,
-            Tank.LOC_RIGHT, rightPanel, Tank.LOC_BODY, bodyPanel, Tank.LOC_REAR, rearPanel, Tank.LOC_TURRET, turretPanel,
+            Tank.LOC_RIGHT, rightPanel, Tank.LOC_BODY, bodyPanel, Tank.LOC_REAR, rearPanel, Tank.LOC_TURRET,
+            turretPanel,
             Tank.LOC_TURRET_2, dualTurretPanel);
 
     private final Map<Integer, JComponent> superHvyLocations = Map.of(Tank.LOC_FRONT, frontPanel,
@@ -159,7 +162,7 @@ public class SVCriticalView extends IView {
                     if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
                         critNames.add(getMek().getSystemName(cs.getIndex()));
                     } else if (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) {
-                        Mounted m = cs.getMount();
+                        Mounted<?> m = cs.getMount();
                         // Critical didn't get removed. Remove it now.
                         if (m == null) {
                             getEntity().setCritical(location, slot, null);
@@ -186,7 +189,8 @@ public class SVCriticalView extends IView {
                 if (critNames.isEmpty()) {
                     critNames.add(CritCellUtil.EMPTY_CRITCELL_TEXT);
                 }
-                DropTargetCriticalList<String> criticalSlotList = new DropTargetCriticalList<>(critNames, eSource, refresh, true);
+                DropTargetCriticalList<String> criticalSlotList = new DropTargetCriticalList<>(critNames, eSource,
+                        refresh, true);
                 criticalSlotList.setVisibleRowCount(critNames.size());
                 criticalSlotList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
                 criticalSlotList.setName(location + "");

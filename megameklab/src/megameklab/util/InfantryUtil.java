@@ -30,8 +30,8 @@ import java.util.stream.Collectors;
 public final class InfantryUtil {
 
     public static void replaceMainWeapon(Infantry unit, InfantryWeapon weapon, boolean secondary) {
-        Mounted existingInfantryMount = null;
-        for (Mounted m : unit.getWeaponList()) {
+        Mounted<?> existingInfantryMount = null;
+        for (Mounted<?> m : unit.getWeaponList()) {
             if ((m.getType() instanceof InfantryWeapon)
                     && (m.getLocation() == Infantry.LOC_INFANTRY)) {
                 existingInfantryMount = m;
@@ -72,7 +72,7 @@ public final class InfantryUtil {
     }
 
     public static void replaceFieldGun(Infantry unit, WeaponType fieldGun, int num) {
-        List<Mounted> toRemove = unit.getEquipment().stream()
+        List<Mounted<?>> toRemove = unit.getEquipment().stream()
                 .filter(m -> m.getLocation() == Infantry.LOC_FIELD_GUNS)
                 .collect(Collectors.toList());
         unit.getEquipment().removeAll(toRemove);
@@ -128,5 +128,6 @@ public final class InfantryUtil {
         return eq instanceof InfantryWeapon;
     }
 
-    private InfantryUtil() { }
+    private InfantryUtil() {
+    }
 }

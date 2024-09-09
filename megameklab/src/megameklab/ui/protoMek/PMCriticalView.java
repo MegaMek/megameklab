@@ -131,13 +131,13 @@ public class PMCriticalView extends IView {
         rightList.refreshContents();
         bodyList.refreshContents();
 
-        Map<Integer, List<Mounted>> eqByLocation = getProtoMek().getEquipment().stream()
+        Map<Integer, List<Mounted<?>>> eqByLocation = getProtoMek().getEquipment().stream()
                 .collect(Collectors.groupingBy(Mounted::getLocation));
         for (int location = 0; location < getProtoMek().locations(); location++) {
             int slotsUsed = 0;
             double weightUsed = 0.0;
             if (eqByLocation.containsKey(location)) {
-                for (Mounted m : eqByLocation.get(location)) {
+                for (Mounted<?> m : eqByLocation.get(location)) {
                     if (TestProtoMek.requiresSlot(m.getType())) {
                         slotsUsed++;
                     }

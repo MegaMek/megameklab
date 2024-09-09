@@ -101,7 +101,7 @@ public class SVBuildTab extends ITab implements ActionListener {
     }
 
     private void autoFillCrits() {
-        for (Mounted mount : unallocatedView.getTableModel().getCrits()) {
+        for (Mounted<?> mount : unallocatedView.getTableModel().getCrits()) {
             for (int location = 0; location < getTank().locations(); location++) {
                 try {
                     getTank().addEquipment(mount, location, false);
@@ -116,7 +116,7 @@ public class SVBuildTab extends ITab implements ActionListener {
     }
 
     private void resetCrits() {
-        for (Mounted mount : getTank().getEquipment()) {
+        for (Mounted<?> mount : getTank().getEquipment()) {
             // Fixed shouldn't be removed
             if (UnitUtil.isFixedLocationSpreadEquipment(mount.getType())) {
                 continue;

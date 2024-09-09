@@ -44,7 +44,7 @@ public class PMBuildView extends IView implements ActionListener, MouseListener 
     private JPanel mainPanel = new JPanel();
 
     private CriticalTableModel equipmentList;
-    private Vector<Mounted> masterEquipmentList = new Vector<>(10, 1);
+    private Vector<Mounted<?>> masterEquipmentList = new Vector<>(10, 1);
     private JTable equipmentTable = new JTable();
     private JScrollPane equipmentScroll = new JScrollPane();
 
@@ -88,17 +88,17 @@ public class PMBuildView extends IView implements ActionListener, MouseListener 
     private void loadEquipmentTable() {
         equipmentList.removeAllCrits();
         masterEquipmentList.clear();
-        for (Mounted mount : getProtoMek().getMisc()) {
+        for (Mounted<?> mount : getProtoMek().getMisc()) {
             if (mount.getLocation() == Entity.LOC_NONE) {
                 masterEquipmentList.add(mount);
             }
         }
-        for (Mounted mount : getProtoMek().getWeaponList()) {
+        for (Mounted<?> mount : getProtoMek().getWeaponList()) {
             if (mount.getLocation() == Entity.LOC_NONE) {
                 masterEquipmentList.add(mount);
             }
         }
-        for (Mounted mount : getProtoMek().getAmmo()) {
+        for (Mounted<?> mount : getProtoMek().getAmmo()) {
             if ((mount.getLocation() == Entity.LOC_NONE) && !mount.isOneShotAmmo()) {
                 masterEquipmentList.add(mount);
             }
@@ -108,22 +108,24 @@ public class PMBuildView extends IView implements ActionListener, MouseListener 
 
         // Time to Sort
         // weapons and ammo
-        Vector<Mounted> weaponsNAmmoList = new Vector<>(10, 1);
+        Vector<Mounted<?>> weaponsNAmmoList = new Vector<>(10, 1);
         for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
-            if ((masterEquipmentList.get(pos).getType() instanceof Weapon) || (masterEquipmentList.get(pos).getType() instanceof AmmoType)) {
+            if ((masterEquipmentList.get(pos).getType() instanceof Weapon)
+                    || (masterEquipmentList.get(pos).getType() instanceof AmmoType)) {
                 weaponsNAmmoList.add(masterEquipmentList.get(pos));
                 masterEquipmentList.remove(pos);
                 pos--;
             }
         }
         weaponsNAmmoList.sort(StringUtils.mountedComparator());
-        for (Mounted mount : weaponsNAmmoList) {
+        for (Mounted<?> mount : weaponsNAmmoList) {
             equipmentList.addCrit(mount);
         }
 
         // Equipment
         for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
-            if ((masterEquipmentList.get(pos).getType() instanceof MiscType) && UnitUtil.isArmor(masterEquipmentList.get(pos).getType())) {
+            if ((masterEquipmentList.get(pos).getType() instanceof MiscType)
+                    && UnitUtil.isArmor(masterEquipmentList.get(pos).getType())) {
                 equipmentList.addCrit(masterEquipmentList.get(pos));
                 masterEquipmentList.remove(pos);
                 pos--;
@@ -193,7 +195,8 @@ public class PMBuildView extends IView implements ActionListener, MouseListener 
             final int selectedRow = equipmentTable.rowAtPoint(evt.getPoint());
 
             String[] locations = getProtoMek().getLocationNames();
-            Mounted mount = (Mounted)equipmentTable.getModel().getValueAt(selectedRow, CriticalTableModel.EQUIPMENT);
+            Mounted<?> mount = (Mounted<?>) equipmentTable.getModel().getValueAt(selectedRow,
+                    CriticalTableModel.EQUIPMENT);
 
             for (int location = 0; location < getProtoMek().locations(); location++) {
                 if (ProtoMekUtil.protoMekHasRoom(getProtoMek(), location, mount)) {
@@ -213,7 +216,7 @@ public class PMBuildView extends IView implements ActionListener, MouseListener 
 
     }
 
-    private void addToLocation(int location, Mounted mount) {
+    private void addToLocation(int location, Mounted<?> mount) {
         UnitUtil.changeMountStatus(getProtoMek(), mount, location, -1, false);
 
         // go back up to grandparent build tab and fire a full refresh.

@@ -65,7 +65,7 @@ public class StringUtils {
         };
     }
 
-    public static Comparator<Mounted> mountedComparator() {
+    public static Comparator<Mounted<?>> mountedComparator() {
         return (m1, m2) -> {
             String s1 = m1.getName().toLowerCase();
             String s2 = m2.getName().toLowerCase();
@@ -163,7 +163,8 @@ public class StringUtils {
             } else if (weapon instanceof UACWeapon) {
                 info = Integer.toString(weapon.getDamage());
                 info += "/Sht [DB,R/C]";
-            } else if ((weapon instanceof ISVehicularGrenadeLauncher) || (weapon instanceof CLVehicularGrenadeLauncher)) {
+            } else if ((weapon instanceof ISVehicularGrenadeLauncher)
+                    || (weapon instanceof CLVehicularGrenadeLauncher)) {
                 info = "[AE,OS]";
             } else {
                 if (!UnitUtil.isAMS(weapon)) {
@@ -209,11 +210,13 @@ public class StringUtils {
                         (weapon instanceof CLPulseLaserMicro) ||
                         (weapon instanceof CLBAPulseLaserMicro) ||
                         (weapon.hasFlag(WeaponType.F_FLAMER) ||
-                        (weapon.hasFlag(WeaponType.F_BURST_FIRE)))) {
+                                (weapon.hasFlag(WeaponType.F_BURST_FIRE)))) {
                     info += "AI,";
                 }
 
-                if (weapon.isExplosive(mount) && !(weapon instanceof ACWeapon) && (!(weapon instanceof PPCWeapon) || ((mount.getLinkedBy() != null) && mount.getLinkedBy().getType().hasFlag(MiscType.F_PPC_CAPACITOR)))) {
+                if (weapon.isExplosive(mount) && !(weapon instanceof ACWeapon)
+                        && (!(weapon instanceof PPCWeapon) || ((mount.getLinkedBy() != null)
+                                && mount.getLinkedBy().getType().hasFlag(MiscType.F_PPC_CAPACITOR)))) {
                     info += "X,";
                 }
 
@@ -352,7 +355,9 @@ public class StringUtils {
                     info += "H,AI,";
                 }
 
-                if (weapon.isExplosive(mount) && !(weapon instanceof ACWeapon) && (!(weapon instanceof PPCWeapon) || ((mount.getLinkedBy() != null) && mount.getLinkedBy().getType().hasFlag(MiscType.F_PPC_CAPACITOR)))) {
+                if (weapon.isExplosive(mount) && !(weapon instanceof ACWeapon)
+                        && (!(weapon instanceof PPCWeapon) || ((mount.getLinkedBy() != null)
+                                && mount.getLinkedBy().getType().hasFlag(MiscType.F_PPC_CAPACITOR)))) {
                     info += "X,";
                 }
 

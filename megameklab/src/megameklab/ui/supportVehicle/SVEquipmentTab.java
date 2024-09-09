@@ -24,7 +24,8 @@ import megameklab.ui.util.AbstractEquipmentDatabaseView;
 import megameklab.util.UnitUtil;
 
 /**
- * The Equipment Tab for Support Vehicles units showing the equipment database and the current loadout list.
+ * The Equipment Tab for Support Vehicles units showing the equipment database
+ * and the current loadout list.
  *
  * @author Simon (Juliez)
  */
@@ -40,7 +41,7 @@ public class SVEquipmentTab extends AbstractEquipmentTab {
     }
 
     @Override
-    protected boolean showInLoadOut(Mounted mount) {
+    protected boolean showInLoadOut(Mounted<?> mount) {
         EquipmentType etype = mount.getType();
         return !(etype instanceof MiscType) ||
                 !(UnitUtil.isHeatSink(mount)
@@ -49,10 +50,10 @@ public class SVEquipmentTab extends AbstractEquipmentTab {
                         || etype.hasFlag(MiscType.F_TSM)
                         || etype.hasFlag(MiscType.F_INDUSTRIAL_TSM)
                         || (etype.hasFlag(MiscType.F_MASC)
-                        && !etype.hasSubType(MiscType.S_SUPERCHARGER)
-                        && !etype.hasSubType(MiscType.S_JETBOOSTER))
+                                && !etype.hasSubType(MiscType.S_SUPERCHARGER)
+                                && !etype.hasSubType(MiscType.S_JETBOOSTER))
                         || (((eSource.getEntity().getEntityType() & Entity.ETYPE_QUADVEE) == Entity.ETYPE_QUADVEE)
-                        && etype.hasFlag(MiscType.F_TRACKS))
+                                && etype.hasFlag(MiscType.F_TRACKS))
                         || etype.hasFlag(MiscType.F_CHASSIS_MODIFICATION)
                         || etype.hasFlag(MiscType.F_ADVANCED_FIRECONTROL)
                         || etype.hasFlag(MiscType.F_BASIC_FIRECONTROL)

@@ -50,7 +50,7 @@ public class BAASCriticalTransferHandler extends AbstractCriticalTransferHandler
         if (data == null) {
             return;
         }
-        Mounted mounted;
+        Mounted<?> mounted;
         try {
             mounted = getUnit().getEquipment(Integer.parseInt((String) data.getTransferData(DataFlavor.stringFlavor)));
         } catch (Exception ex) {
@@ -92,7 +92,7 @@ public class BAASCriticalTransferHandler extends AbstractCriticalTransferHandler
                     getUnit().setCritical(loc, i, null);
                 }
             }
-            Mounted linkedBy = mounted.getLinkedBy();
+            Mounted<?> linkedBy = mounted.getLinkedBy();
             if ((linkedBy != null) && !(getUnit() instanceof BattleArmor)) {
                 UnitUtil.removeCriticals(getUnit(), linkedBy);
                 try {
@@ -107,7 +107,7 @@ public class BAASCriticalTransferHandler extends AbstractCriticalTransferHandler
         }
     }
 
-    private boolean addEquipmentBA(BattleArmor ba, Mounted newMount, int trooper) {
+    private boolean addEquipmentBA(BattleArmor ba, Mounted<?> newMount, int trooper) {
         if (TestBattleArmor.isMountLegal(ba, newMount, location, trooper)) {
             newMount.setBaMountLoc(location);
             if (newMount.getLocation() == BattleArmor.LOC_SQUAD) {
@@ -121,11 +121,11 @@ public class BAASCriticalTransferHandler extends AbstractCriticalTransferHandler
         }
     }
 
-    private boolean addEquipmentAero(Aero aero, Mounted eq) throws LocationFullException {
+    private boolean addEquipmentAero(Aero aero, Mounted<?> eq) throws LocationFullException {
         if (eq.getType() instanceof WeaponType) {
             int[] availSpace = Objects.requireNonNull(TestAero.availableSpace(aero));
             int[] weapCount = new int[aero.locations() - 1];
-            for (Mounted m : aero.getWeaponList()) {
+            for (Mounted<?> m : aero.getWeaponList()) {
                 if (m.getLocation() != Entity.LOC_NONE) {
                     weapCount[m.getLocation()]++;
                 }
@@ -168,7 +168,7 @@ public class BAASCriticalTransferHandler extends AbstractCriticalTransferHandler
             Transferable t = info.getTransferable();
 
             try {
-                Mounted eq = getUnit().getEquipment(Integer.parseInt(
+                Mounted<?> eq = getUnit().getEquipment(Integer.parseInt(
                         (String) t.getTransferData(DataFlavor.stringFlavor)));
                 if (getUnit() instanceof BattleArmor) {
                     if ((location == eq.getBaMountLoc())
@@ -221,7 +221,7 @@ public class BAASCriticalTransferHandler extends AbstractCriticalTransferHandler
             return false;
         }
         // check if the dragged mounted should be transferrable
-        Mounted mounted = null;
+        Mounted<?> mounted = null;
         try {
             int index = Integer.parseInt((String) info.getTransferable().getTransferData(DataFlavor.stringFlavor));
             mounted = getUnit().getEquipment(index);
@@ -238,7 +238,8 @@ public class BAASCriticalTransferHandler extends AbstractCriticalTransferHandler
         }
         // no transfer in the same location
         if (getUnit() instanceof BattleArmor) {
-            // Infantry weapons cannot be mounted directly, but must instead be mounted in an AP Mount
+            // Infantry weapons cannot be mounted directly, but must instead be mounted in
+            // an AP Mount
             if (mounted.getType() instanceof InfantryWeapon) {
                 return false;
             }
@@ -258,11 +259,12 @@ public class BAASCriticalTransferHandler extends AbstractCriticalTransferHandler
     protected Transferable createTransferable(JComponent c) {
         if (c instanceof JTable) {
             JTable table = (JTable) c;
-            Mounted mount = (Mounted) table.getModel().getValueAt(table.getSelectedRow(), CriticalTableModel.EQUIPMENT);
+            Mounted<?> mount = (Mounted<?>) table.getModel().getValueAt(table.getSelectedRow(),
+                    CriticalTableModel.EQUIPMENT);
             return new StringSelection(Integer.toString(getUnit().getEquipmentNum(mount)));
         } else if (c instanceof BAASBMDropTargetCriticalList) {
             BAASBMDropTargetCriticalList<?> list = (BAASBMDropTargetCriticalList<?>) c;
-            Mounted mount = list.getMounted();
+            Mounted<?> mount = list.getMounted();
             if (mount != null) {
                 return new StringSelection(Integer.toString(getUnit().getEquipmentNum(mount)));
             }
