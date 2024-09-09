@@ -6,7 +6,6 @@ import megameklab.testing.util.InitializeTypes;
 import megameklab.ui.EntitySource;
 import megameklab.ui.fighterAero.ASMainUI;
 import megameklab.ui.generalUnit.BasicInfoView;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -54,26 +53,26 @@ class EquipmentTableModelTest {
     void testGetValueAtForAll() throws EntityLoadingException {
         // Test getValue() in EquipmentTableModel; the exercises conversions and lookups
         ArrayList<String> testItems = new ArrayList<>(Arrays.asList(
-                "/Kirghiz C.blk",                                           // ASF
-                "/Beast Infantry (Elephant)(Laser Rifle_Support PPC).blk",  // Beast Inf
-                "/Black Wolf BA (ER Pulse) (Sqd5).blk",                     // BA, Clan
-                "/Fusilier BA (Sqd4).blk",                                  // BA, IS
-                "/Raubvogel Aerobomber AB-18C.blk",                         // ConventionalFighter
-                "/Union 'Pocket Warship'.blk",                              // DropShip
-                "/Clan Field Artillery (Thumper).blk",          // Field Gun/Artillery CI
-                "/Long Tom Cannon Turret (Quad).blk",                       // Generic Clan Turret
-                "/Explorer JumpShip (HPG).blk",                             // JumpShip
-                "/Jump Squad (LRM).blk",                                    // Jump CI
-                "/Siren 4.blk",                                             // ProtoMek
-                "/Aquarius Escort.blk",                                     // Small Craft
-                "/Olympus Recharge Station (3072).blk",                     // SpaceStation
-                "/Harpagos.mtf",                                            // QuadMek
-                "/Sleipnir APC.blk",                                        // Vehicle
-                "/Peregrine Corvette.blk"                                   // WarShip
+                "/Kirghiz C.blk", // ASF
+                "/Beast Infantry (Elephant)(Laser Rifle_Support PPC).blk", // Beast Inf
+                "/Black Wolf BA (ER Pulse) (Sqd5).blk", // BA, Clan
+                "/Fusilier BA (Sqd4).blk", // BA, IS
+                "/Raubvogel Aerobomber AB-18C.blk", // ConventionalFighter
+                "/Union 'Pocket Warship'.blk", // DropShip
+                "/Clan Field Artillery (Thumper).blk", // Field Gun/Artillery CI
+                "/Long Tom Cannon Turret (Quad).blk", // Generic Clan Turret
+                "/Explorer JumpShip (HPG).blk", // JumpShip
+                "/Jump Squad (LRM).blk", // Jump CI
+                "/Siren 4.blk", // ProtoMek
+                "/Aquarius Escort.blk", // Small Craft
+                "/Olympus Recharge Station (3072).blk", // SpaceStation
+                "/Harpagos.mtf", // QuadMek
+                "/Sleipnir APC.blk", // Vehicle
+                "/Peregrine Corvette.blk" // WarShip
         ));
         Entity e;
 
-        for (String fname: testItems) {
+        for (String fname : testItems) {
             e = configureFromFilename(fname);
             assertNotNull(e);
             for (int i = 0; i < etm.getColumnCount(); i++) {
@@ -88,7 +87,7 @@ class EquipmentTableModelTest {
         String fname = "/Kirghiz C.blk";
         Entity te = configureFromFilename(fname);
         assertTrue(te.isAero());
-        for (Mounted weapon: te.getWeaponList()) {
+        for (Mounted weapon : te.getWeaponList()) {
             WeaponType weaponType = (WeaponType) weapon.getType();
             String dString = EquipmentTableModel.getDamageString(weaponType, te.isAero());
             if (dString.contains("/")) {
@@ -108,7 +107,7 @@ class EquipmentTableModelTest {
         String fname = "/Jump Squad (LRM).blk";
         Entity te = configureFromFilename(fname);
         assertFalse(te.isAero());
-        for (Mounted weapon: te.getWeaponList()) {
+        for (Mounted weapon : te.getWeaponList()) {
             WeaponType weaponType = (WeaponType) weapon.getType();
             String dString = EquipmentTableModel.getDamageString(weaponType, te.isAero());
             // Confirm can convert to double
@@ -124,7 +123,7 @@ class EquipmentTableModelTest {
         String fname = "/Long Tom Cannon Turret (Quad).blk";
         Entity te = configureFromFilename(fname);
         assertFalse(te.isAero());
-        for (Mounted weapon: te.getWeaponList()) {
+        for (Mounted weapon : te.getWeaponList()) {
             WeaponType weaponType = (WeaponType) weapon.getType();
             String dString = EquipmentTableModel.getDamageString(weaponType, te.isAero());
             // Confirm can convert to double
