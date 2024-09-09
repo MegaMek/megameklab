@@ -22,7 +22,7 @@
 /megameklab/bin/
 /megameklab/build/
 /megameklab/data/fonts/
-/megameklab/data/mechfiles/units.cache
+/megameklab/data/mekfiles/units.cache
 /megameklab/logs/
 /megameklab/mmconf/*.preferences
 /megameklab/out/
