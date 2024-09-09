@@ -8,7 +8,7 @@
       /><path fill="#ffffff" d="M 0.0,8.214 L 5.475,0.000 l 82.038,0.000 l 5.475,8.214 L 551.025,8.214 l 5.475,8.214 L 556.500,135.986 l -5.475,8.214 L 95.988,144.200 l -5.475,-8.214 L 5.475,135.986 l -5.475,-8.214 Z" stroke-width="1.932" stroke-linejoin="round" stroke="#231f20"
       /><g transform="translate (2.5,3.0)"
       ><path fill="#000000" d="M 0,7.500 l 4.999,-7.500 h 78.038 l 4.999,7.500 l -4.999,7.500 h -78.038 Z"
-        /><text fill="#ffffff" x="7.999" id="protomechIndex" y="11.250" style="font-family:Eurostile;font-size:10.600px;font-weight:bold;font-style:normal;mml-field-width:70.944" text-anchor="start"
+        /><text fill="#ffffff" x="7.999" id="protomekIndex" y="11.250" style="font-family:Eurostile;font-size:10.600px;font-weight:bold;font-style:normal;mml-field-width:70.944" text-anchor="start"
         >PROTOMECH #</text
       ></g
     ></g
@@ -158,7 +158,7 @@
       ></g
       ><g transform="matrix(1.089 0 0 1.089 0.000 11.988)"
       >
-<g id="armor_diagram_protomech_biped" transform="matrix(1,0,0,-1,-485.35066,668.7845)"
+<g id="armor_diagram_protomek_biped" transform="matrix(1,0,0,-1,-485.35066,668.7845)"
         ><g id="shadow_MG"
           ><g id="g2514" transform="translate(516.7427,666.7183)"
             ><path style="fill:#c7c8ca;fill-opacity:1;fill-rule:nonzero;stroke:none" d="m 0,0 c -2.655,0 -4.809,-2.692 -4.809,-6.013 0,-3.321 2.154,-6.014 4.809,-6.014 2.657,0 4.811,2.693 4.811,6.014 C 4.811,-2.692 2.657,0 0,0" id="path2516"

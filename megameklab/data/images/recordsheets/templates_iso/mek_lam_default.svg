@@ -647,19 +647,19 @@
                                                                       >AirMech</text
                                                                       ><text x="57.024" y="74.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:7.700px;font-weight:bold;font-style:normal" textLength="28.532" lengthAdjust="spacingAndGlyphs"
                                                                       >Walking:</text
-                                                                      ><text fill="#231f20" x="95.024" id="mpAirMechWalk" y="74.000" style="font-family:Eurostile;font-size:7.700px;font-weight:normal;font-style:normal" text-anchor="middle"
+                                                                      ><text fill="#231f20" x="95.024" id="mpAirMekWalk" y="74.000" style="font-family:Eurostile;font-size:7.700px;font-weight:normal;font-style:normal" text-anchor="middle"
                                                                       >0</text
                                                                       ><text x="57.024" y="83.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:7.700px;font-weight:bold;font-style:normal" textLength="28.629" lengthAdjust="spacingAndGlyphs"
                                                                       >Running:</text
-                                                                      ><text fill="#231f20" x="95.024" id="mpAirMechRun" y="83.000" style="font-family:Eurostile;font-size:7.700px;font-weight:normal;font-style:normal" text-anchor="middle"
+                                                                      ><text fill="#231f20" x="95.024" id="mpAirMekRun" y="83.000" style="font-family:Eurostile;font-size:7.700px;font-weight:normal;font-style:normal" text-anchor="middle"
                                                                       >0</text
                                                                       ><text x="108.048" y="74.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:7.700px;font-weight:bold;font-style:normal" textLength="29.020" lengthAdjust="spacingAndGlyphs"
                                                                       >Cruising:</text
-                                                                      ><text fill="#231f20" x="146.048" id="mpAirMechCruise" y="74.000" style="font-family:Eurostile;font-size:7.700px;font-weight:normal;font-style:normal" text-anchor="middle"
+                                                                      ><text fill="#231f20" x="146.048" id="mpAirMekCruise" y="74.000" style="font-family:Eurostile;font-size:7.700px;font-weight:normal;font-style:normal" text-anchor="middle"
                                                                       >0</text
                                                                       ><text x="108.048" y="83.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:7.700px;font-weight:bold;font-style:normal" textLength="28.937" lengthAdjust="spacingAndGlyphs"
                                                                       >Flanking:</text
-                                                                      ><text fill="#231f20" x="146.048" id="mpAirMechFlank" y="83.000" style="font-family:Eurostile;font-size:7.700px;font-weight:normal;font-style:normal" text-anchor="middle"
+                                                                      ><text fill="#231f20" x="146.048" id="mpAirMekFlank" y="83.000" style="font-family:Eurostile;font-size:7.700px;font-weight:normal;font-style:normal" text-anchor="middle"
                                                                       >0</text
                                                                       ><text fill="#231f20" x="159.072" y="65.000" style="font-family:Eurostile;font-size:7.700px;font-weight:bold;font-style:normal" text-anchor="start"
                                                                       >Fighter</text
