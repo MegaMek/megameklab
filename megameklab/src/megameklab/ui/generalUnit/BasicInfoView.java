@@ -70,7 +70,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
     private final JLabel lblFaction = createLabel("lblFaction", "", labelSize);
     private final JTextField txtSource = new JTextField(3);
     private final CustomComboBox<Integer> cbTechBase = new CustomComboBox<>(i -> String.valueOf(techBaseNames[i]));
-    private final JComboBox<SimpleTechLevel> cbTechLevel = new JComboBox<>();
+    private final JComboBox<String> cbTechLevel = new JComboBox<>();
     private final IntRangeTextField txtManualBV = new IntRangeTextField(3);
     private final MMComboBox<UnitRole> cbRole = new MMComboBox<>("Role Combo");
     private final JLabel lblMulId = createLabel("lblMulId", "", labelSize);
@@ -97,14 +97,13 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.insets = new Insets(0, 0, 1, 2);
+        gbc.anchor = GridBagConstraints.EAST;
+        gbc.insets = STANDARD_INSETS;
         add(createLabel(resourceMap, "lblChassis", "BasicInfoView.txtChassis.text",
                 "BasicInfoView.txtChassis.tooltip", labelSize), gbc);
         gbc.gridx = 1;
         txtChassis.setToolTipText(resourceMap.getString("BasicInfoView.txtChassis.tooltip"));
         add(txtChassis, gbc);
-        setFieldSize(txtChassis, controlSize);
         txtChassis.addFocusListener(this);
 
         gbc.gridx = 0;
@@ -113,7 +112,6 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         gbc.gridx = 1;
         txtClanName.setToolTipText(resourceMap.getString("BasicInfoView.txtModel.tooltip"));
         add(txtClanName, gbc);
-        setFieldSize(txtClanName, controlSize);
         txtClanName.addFocusListener(this);
 
         gbc.gridx = 0;
@@ -123,7 +121,6 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         gbc.gridx = 1;
         txtModel.setToolTipText(resourceMap.getString("BasicInfoView.txtModel.tooltip"));
         add(txtModel, gbc);
-        setFieldSize(txtModel, controlSize);
         txtModel.addFocusListener(this);
 
         gbc.gridx = 0;
@@ -133,7 +130,6 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         gbc.gridx = 1;
         txtMulId.setToolTipText(resourceMap.getString("BasicInfoView.txtMulId.tooltip"));
         add(txtMulId, gbc);
-        setFieldSize(txtMulId, controlSize);
         txtMulId.addFocusListener(this);
 
         gbc.gridx = 0;
@@ -143,7 +139,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         browseMul.setToolTipText(resourceMap.getString("BasicInfoView.browseMul.tooltip"));
         browseMul.addActionListener(e -> openMUL());
         add(browseMul, gbc);
-        gbc.insets = new Insets(0, 0, 1, 2);
+        gbc.insets = STANDARD_INSETS;
         gbc.gridwidth = 1;
 
         gbc.gridx = 0;
@@ -153,7 +149,6 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         gbc.gridx = 1;
         add(txtYear, gbc);
         txtYear.setToolTipText(resourceMap.getString("BasicInfoView.txtYear.tooltip"));
-        setFieldSize(txtYear, controlSize);
         txtYear.setMaximum(9999);
         txtYear.addFocusListener(this);
 
@@ -164,15 +159,14 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         gbc.gridx = 1;
         cbFaction.setToolTipText(resourceMap.getString("BasicInfoView.cbFaction.tooltip"));
         add(cbFaction, gbc);
-        setFieldSize(cbFaction, controlSize);
         cbFaction.addActionListener(this);
+        cbFaction.setPrototypeDisplayValue(0);
 
         gbc.gridx = 0;
         gbc.gridy++;
         add(createLabel(resourceMap, "lblSource", "BasicInfoView.txtSource.text",
                 "BasicInfoView.txtSource.tooltip", labelSize), gbc);
         gbc.gridx = 1;
-        setFieldSize(txtSource, controlSize);
         txtSource.setToolTipText(resourceMap.getString("BasicInfoView.txtSource.tooltip"));
         add(txtSource, gbc);
         txtSource.addFocusListener(this);
@@ -182,20 +176,20 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         add(createLabel(resourceMap, "lblTechBase", "BasicInfoView.cbTechBase.text",
                 "BasicInfoView.cbTechBase.tooltip", labelSize), gbc);
         gbc.gridx = 1;
-        setFieldSize(cbTechBase, controlSize);
         cbTechBase.setToolTipText(resourceMap.getString("BasicInfoView.cbTechBase.tooltip"));
         add(cbTechBase, gbc);
         cbTechBase.addActionListener(this);
+        cbTechBase.setPrototypeDisplayValue(0);
 
         gbc.gridx = 0;
         gbc.gridy++;
         add(createLabel(resourceMap, "lblTechLevel", "BasicInfoView.cbTechLevel.text",
                 "BasicInfoView.cbTechLevel.tooltip", labelSize), gbc);
         gbc.gridx = 1;
-        setFieldSize(cbTechLevel, controlSize);
         cbTechLevel.setToolTipText(resourceMap.getString("BasicInfoView.cbTechLevel.tooltip"));
         add(cbTechLevel, gbc);
         cbTechLevel.addActionListener(this);
+        cbTechLevel.setPrototypeDisplayValue(CB_SIZE_VALUE);
         refreshTechBase();
 
         gbc.gridx = 0;
@@ -203,7 +197,6 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         add(createLabel(resourceMap, "lblManualBV", "BasicInfoView.txtManualBV.text",
                 "BasicInfoView.txtManualBV.tooltip", labelSize), gbc);
         gbc.gridx = 1;
-        setFieldSize(txtManualBV, controlSize);
         txtManualBV.setToolTipText(resourceMap.getString("BasicInfoView.txtManualBV.tooltip"));
         add(txtManualBV, gbc);
         txtManualBV.addFocusListener(this);
@@ -213,10 +206,10 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         add(createLabel(resourceMap, "lblRole", "BasicInfoView.txtRole.text",
                 "BasicInfoView.txtRole.tooltip", labelSize), gbc);
         gbc.gridx = 1;
-        setFieldSize(txtManualBV, controlSize);
         cbRole.setToolTipText(resourceMap.getString("BasicInfoView.txtRole.tooltip"));
         add(cbRole, gbc);
         cbRole.addActionListener(this);
+        cbRole.setPrototypeDisplayValue(UnitRole.ATTACK_FIGHTER);
         // Show the role UNDETERMINED as an empty selection to differentiate it from NONE
         // UNDETERMINED means that no role at all will be saved to the unit
         cbRole.setRenderer(new DefaultListCellRenderer() {
@@ -394,12 +387,15 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
 
     @Override
     public SimpleTechLevel getTechLevel() {
-        return (cbTechLevel.getSelectedItem() == null) ? SimpleTechLevel.STANDARD
-                : (SimpleTechLevel) cbTechLevel.getSelectedItem();
+        try {
+            return SimpleTechLevel.valueOf((String) cbTechLevel.getSelectedItem());
+        } catch (Exception e) {
+            return SimpleTechLevel.STANDARD;
+        }
     }
 
     public void setTechLevel(SimpleTechLevel level) {
-        cbTechLevel.setSelectedItem(level);
+        cbTechLevel.setSelectedItem(level.toString());
     }
 
     private void refreshTechBase() {
@@ -463,21 +459,21 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         }
 
         if (!useClanTechBase() && (SimpleTechLevel.INTRO.ordinal() >= baseLevel.ordinal())) {
-            cbTechLevel.addItem(SimpleTechLevel.INTRO);
+            cbTechLevel.addItem(SimpleTechLevel.INTRO.toString());
         }
 
         if (SimpleTechLevel.STANDARD.ordinal() >= baseLevel.ordinal()) {
-            cbTechLevel.addItem(SimpleTechLevel.STANDARD);
+            cbTechLevel.addItem(SimpleTechLevel.STANDARD.toString());
         }
 
         if (SimpleTechLevel.ADVANCED.ordinal() >= baseLevel.ordinal()) {
-            cbTechLevel.addItem(SimpleTechLevel.ADVANCED);
+            cbTechLevel.addItem(SimpleTechLevel.ADVANCED.toString());
         }
-        cbTechLevel.addItem(SimpleTechLevel.EXPERIMENTAL);
-        cbTechLevel.addItem(SimpleTechLevel.UNOFFICIAL);
+        cbTechLevel.addItem(SimpleTechLevel.EXPERIMENTAL.toString());
+        cbTechLevel.addItem(SimpleTechLevel.UNOFFICIAL.toString());
         cbTechLevel.setSelectedItem(prev);
         cbTechLevel.addActionListener(this);
-        if ((cbTechLevel.getSelectedItem() == null) || (cbTechLevel.getSelectedItem() != prev)) {
+        if ((cbTechLevel.getSelectedItem() == null) || (cbTechLevel.getSelectedItem().equals(prev.toString()))) {
             cbTechLevel.setSelectedIndex(0);
         }
     }

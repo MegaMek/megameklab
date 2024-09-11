@@ -36,6 +36,8 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import static megamek.common.EquipmentType.T_STRUCTURE_REINFORCED;
+
 /**
  * Construction options and systems for Meks.
  * 
@@ -83,7 +85,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
     // Internal structure for non-industrial mechs
     private final static int[] STRUCTURE_TYPES = {
             EquipmentType.T_STRUCTURE_STANDARD, EquipmentType.T_STRUCTURE_ENDO_STEEL,
-            EquipmentType.T_STRUCTURE_ENDO_PROTOTYPE, EquipmentType.T_STRUCTURE_REINFORCED,
+            EquipmentType.T_STRUCTURE_ENDO_PROTOTYPE, T_STRUCTURE_REINFORCED,
             EquipmentType.T_STRUCTURE_COMPOSITE, EquipmentType.T_STRUCTURE_ENDO_COMPOSITE
     };
 
@@ -158,15 +160,17 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
 
         gbc.gridx = 0;
         gbc.gridy = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.insets = STANDARD_INSETS;
         add(createLabel(resourceMap, "lblTonnage", "MekChassisView.spnTonnage.text",
                 "MekChassisView.spnTonnage.tooltip", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 0;
-        setFieldSize(spnTonnage, spinnerSize);
         spnTonnage.setToolTipText(resourceMap.getString("MekChassisView.spnTonnage.tooltip"));
         add(spnTonnage, gbc);
         spnTonnage.addChangeListener(this);
-        
+
         add(spnTonnage, gbc);
         gbc.gridx = 2;
         gbc.gridy = 0;
@@ -182,10 +186,10 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 1;
         gbc.gridy = 1;
         gbc.gridwidth = 3;
-        setFieldSize(cbBaseType, controlSize);
         cbBaseType.setToolTipText(resourceMap.getString("MekChassisView.cbBaseType.tooltip"));
         add(cbBaseType, gbc);
         cbBaseType.addActionListener(this);
+        cbBaseType.setPrototypeDisplayValue(CB_SIZE_VALUE);
 
         gbc.gridx = 0;
         gbc.gridy = 2;
@@ -195,10 +199,10 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 1;
         gbc.gridy = 2;
         gbc.gridwidth = 3;
-        setFieldSize(cbMotiveType, controlSize);
         cbMotiveType.setToolTipText(resourceMap.getString("MekChassisView.cbMotiveType.tooltip"));
         add(cbMotiveType, gbc);
         cbMotiveType.addActionListener(this);
+        cbMotiveType.setPrototypeDisplayValue(CB_SIZE_VALUE);
 
         gbc.gridx = 0;
         gbc.gridy = 3;
@@ -208,10 +212,10 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 1;
         gbc.gridy = 3;
         gbc.gridwidth = 3;
-        setFieldSize(cbStructure, controlSize);
         cbStructure.setToolTipText(resourceMap.getString("MekChassisView.cbStructure.tooltip"));
         add(cbStructure, gbc);
         cbStructure.addActionListener(this);
+        cbEnhancement.setPrototypeDisplayValue(CB_SIZE_EQUIPMENT);
 
         gbc.gridx = 0;
         gbc.gridy = 4;
@@ -221,10 +225,10 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 1;
         gbc.gridy = 4;
         gbc.gridwidth = 3;
-        setFieldSize(cbEngine, controlSize);
         cbEngine.setToolTipText(resourceMap.getString("MekChassisView.cbEngine.tooltip"));
         add(cbEngine, gbc);
         cbEngine.addActionListener(this);
+        cbEngine.setPrototypeDisplayValue(CB_SIZE_ENGINE);
 
         gbc.gridx = 0;
         gbc.gridy = 5;
@@ -234,10 +238,10 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 1;
         gbc.gridy = 5;
         gbc.gridwidth = 3;
-        setFieldSize(cbGyro, controlSize);
         cbGyro.setToolTipText(resourceMap.getString("MekChassisView.cbGyro.tooltip"));
         add(cbGyro, gbc);
         cbGyro.addActionListener(this);
+        cbGyro.setPrototypeDisplayValue(1);
 
         gbc.gridx = 0;
         gbc.gridy = 6;
@@ -247,10 +251,10 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 1;
         gbc.gridy = 6;
         gbc.gridwidth = 3;
-        setFieldSize(cbCockpit, controlSize);
         cbCockpit.setToolTipText(resourceMap.getString("MekChassisView.cbCockpit.tooltip"));
         add(cbCockpit, gbc);
         cbCockpit.addActionListener(this);
+        cbCockpit.setPrototypeDisplayValue(0);
         
         gbc.gridx = 0;
         gbc.gridy = 7;
@@ -260,11 +264,11 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 1;
         gbc.gridy = 7;
         gbc.gridwidth = 3;
-        setFieldSize(cbEnhancement, controlSize);
         cbEnhancement.setNullValue(resourceMap.getString("MekChassisView.cbEnhancement.null"));
         cbEnhancement.setToolTipText(resourceMap.getString("MekChassisView.cbEnhancement.tooltip"));
         add(cbEnhancement, gbc);
         cbEnhancement.addActionListener(this);
+        cbEnhancement.setPrototypeDisplayValue(CB_SIZE_EQUIPMENT);
         
         chkFullHeadEject.setText(resourceMap.getString("MekChassisView.chkFullHeadEject.text"));
         gbc.gridx = 1;

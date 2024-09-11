@@ -23,6 +23,7 @@ import java.util.Locale;
 import javax.swing.ToolTipManager;
 import javax.swing.UIManager;
 
+import megamek.client.ui.swing.GUIPreferences;
 import org.apache.logging.log4j.LogManager;
 
 import io.sentry.Sentry;
@@ -65,6 +66,8 @@ public class MegaMekLab {
             PopupMessages.showUncaughtException(null, t);
         });
 
+        System.setProperty("flatlaf.uiScale", Double.toString(GUIPreferences.getInstance().getGUIScale()));
+        System.setProperty("flatlaf.uiScale", "1.7");
         MegaMek.initializeLogging(MMLConstants.PROJECT_NAME);
         MegaMekLab.initializeLogging(MMLConstants.PROJECT_NAME);
         MegaMek.initializeSuiteGraphicalSetups(MMLConstants.PROJECT_NAME);

@@ -624,7 +624,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             }
         }
 
-        String text = "<HTML>" + fileNumber + ". " + recent.getName() + "<BR><FONT SIZE=\"-2\">" + path;
+        String text = "<HTML><NOBR>" + fileNumber + ". " + recent.getName() + "<BR><FONT SIZE=\"-2\">" + path;
         final JMenuItem miCConfig = new JMenuItem(text);
         miCConfig.setName("miCConfig");
         miCConfig.addActionListener(evt -> loadUnitFromFile(fileNumber));

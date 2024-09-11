@@ -159,6 +159,7 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
         cbJumpType.setToolTipText(resourceMap.getString("MovementView.cbJumpType.tooltip"));
         add(cbJumpType, gbc);
         cbJumpType.addActionListener(this);
+        cbJumpType.setPrototypeDisplayValue(CB_SIZE_EQUIPMENT);
 
         setFieldSize(spnWalk.getEditor(), editorSize);
         setFieldSize(txtWalkFinal, editorSize);

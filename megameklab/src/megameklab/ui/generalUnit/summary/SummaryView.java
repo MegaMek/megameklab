@@ -80,11 +80,11 @@ public class SummaryView extends IView {
         summaryItemList.clear();
         summaryItemList.addAll(getSummaryItems);
 
-        for (SummaryItem summaryItem : summaryItemList) {
-            summaryItem.getWeightComponent().setPreferredSize(weightCritSize);
-            summaryItem.getCritsComponent().setPreferredSize(weightCritSize);
-            summaryItem.getAvailabilityComponent().setPreferredSize(availSize);
-        }
+//        for (SummaryItem summaryItem : summaryItemList) {
+//            summaryItem.getWeightComponent().setPreferredSize(weightCritSize);
+//            summaryItem.getCritsComponent().setPreferredSize(weightCritSize);
+//            summaryItem.getAvailabilityComponent().setPreferredSize(availSize);
+//        }
 
         setLayout(new GridBagLayout());
         setBorder(BorderFactory.createTitledBorder("Summary"));
@@ -153,9 +153,9 @@ public class SummaryView extends IView {
     }
 
     private void setFieldSize(JComponent box, Dimension maxSize) {
-        box.setPreferredSize(maxSize);
-        box.setMaximumSize(maxSize);
-        box.setMinimumSize(maxSize);
+//        box.setPreferredSize(maxSize);
+//        box.setMaximumSize(maxSize);
+//        box.setMinimumSize(maxSize);
     }
 
     private void refresh(Entity entity) {
